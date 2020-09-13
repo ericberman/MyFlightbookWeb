@@ -62,6 +62,7 @@ public partial class Controls_mfbHeader : System.Web.UI.UserControl
             mvCrossSellOrEvents.SetActiveView(vwMobileCrossSell);
 
             mvLoginStatus.SetActiveView(Page.User.Identity.IsAuthenticated ? vwSignedIn : vwNotSignedIn);
+
             if (Page.User.Identity.IsAuthenticated)
             {
                 Refresh();
@@ -84,6 +85,8 @@ public partial class Controls_mfbHeader : System.Web.UI.UserControl
                     lblWebinarDetails.Text = se.Body.Linkify(true);
                 }
             }
+            else
+                imgHdSht.Visible = false;
         }
     }
 
