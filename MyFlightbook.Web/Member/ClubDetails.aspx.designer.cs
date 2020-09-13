@@ -247,6 +247,33 @@ public partial class Member_ClubDetails
     protected global::System.Web.UI.WebControls.Label lblErr;
 
     /// <summary>
+    /// accClub control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::AjaxControlToolkit.Accordion accClub;
+
+    /// <summary>
+    /// acpDetails control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::AjaxControlToolkit.AccordionPane acpDetails;
+
+    /// <summary>
+    /// locClubInfo control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Localize locClubInfo;
+
+    /// <summary>
     /// ViewClub1 control.
     /// </summary>
     /// <remarks>
@@ -281,6 +308,51 @@ public partial class Member_ClubDetails
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::AjaxControlToolkit.ConfirmButtonExtender confirmLeave;
+
+    /// <summary>
+    /// acpMembers control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::AjaxControlToolkit.AccordionPane acpMembers;
+
+    /// <summary>
+    /// locClubMembers control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Localize locClubMembers;
+
+    /// <summary>
+    /// gvMembers control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.GridView gvMembers;
+
+    /// <summary>
+    /// acpSchedules control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::AjaxControlToolkit.AccordionPane acpSchedules;
+
+    /// <summary>
+    /// locClubSchedules control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Localize locClubSchedules;
 
     /// <summary>
     /// mvMain control.

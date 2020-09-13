@@ -69,6 +69,13 @@ public partial class Member_ClubDetails : System.Web.UI.Page
                     lnkManageClub.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/ClubManage.aspx/{0}", CurrentClub.ID);
                     mvMain.SetActiveView(cm == null ? vwMainGuest : vwSchedules);
                     mvTop.SetActiveView(cm == null ? vwTopGuest : (fIsManager ? vwTopAdmin : vwTopMember));
+
+                    if (cm == null)
+                    {
+                        accClub.SelectedIndex = 0;
+                        acpMembers.Visible = acpSchedules.Visible = false;
+                    }
+
                     pnlLeaveGroup.Visible = (cm != null && !cm.IsManager);
 
                     switch (CurrentClub.Status)
@@ -95,6 +102,12 @@ public partial class Member_ClubDetails : System.Web.UI.Page
                         mfbEditAppt1.DefaultTitle = MyFlightbook.Profile.GetUser(Page.User.Identity.Name).UserFullName;
 
                     RefreshAircraft();
+
+                    if (cm != null)
+                    {
+                        gvMembers.DataSource = CurrentClub.Members;
+                        gvMembers.DataBind();
+                    }
                 }
                 catch (MyFlightbookException ex)
                 {

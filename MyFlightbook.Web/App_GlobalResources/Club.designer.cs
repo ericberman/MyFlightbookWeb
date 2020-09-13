@@ -416,6 +416,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CFI.
+        /// </summary>
+        internal static string ClubStatusCFI {
+            get {
+                return ResourceManager.GetString("ClubStatusCFI", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mobile Number.
+        /// </summary>
+        internal static string ClubStatusContact {
+            get {
+                return ResourceManager.GetString("ClubStatusContact", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The trial period for this club will end on {0} unless the owner makes a one-time donation to support %APP_NAME%..
         /// </summary>
         internal static string clubStatusTrial {
@@ -1826,6 +1844,15 @@ namespace Resources {
         internal static string TabClubReports {
             get {
                 return ResourceManager.GetString("TabClubReports", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Schedules.
+        /// </summary>
+        internal static string TabClubSchedules {
+            get {
+                return ResourceManager.GetString("TabClubSchedules", resourceCulture);
             }
         }
         

@@ -15,10 +15,6 @@
 <%@ Register Src="~/Controls/ClubControls/MaintenanceReport.ascx" TagPrefix="uc1" TagName="MaintenanceReport" %>
 <%@ Register Src="~/Controls/ClubControls/InsuranceReport.ascx" TagPrefix="uc1" TagName="InsuranceReport" %>
 
-
-
-
-
 <asp:Content ID="Content1" ContentPlaceHolderID="cpPageTitle" Runat="Server">
     <asp:Label ID="lblClubHeader" runat="server" Text=""></asp:Label>
 </asp:Content>
@@ -28,74 +24,95 @@
     <asp:TabContainer ID="tabManage" runat="server" CssClass="mfbDefault">
         <asp:TabPanel ID="tabpanelMembers" runat="server" HeaderText="<%$ Resources:Club, TabClubMembers %>">
             <ContentTemplate>
-                <asp:Panel ID="pnlManageMembers" runat="server">
-                    <asp:GridView ID="gvMembers" DataKeyNames="UserName" runat="server" AutoGenerateColumns="False" GridLines="None" AutoGenerateEditButton="True" OnRowCancelingEdit="gvMembers_RowCancelingEdit" 
-                        OnRowDataBound="gvMembers_RowDataBound" CellPadding="3" OnRowCommand="gvMembers_RowCommand" OnRowUpdating="gvMembers_RowUpdating" OnRowEditing="gvMembers_RowEditing">
-                        <Columns>
-                            <asp:BoundField HeaderText="<%$ Resources:Club, LabelMemberName %>" DataField="UserFullName" ReadOnly="True" />
-                            <asp:BoundField HeaderText="<%$ Resources:Club, LabelMemberJoinDate %>" DataField="JoinedDate" ReadOnly="True" DataFormatString="{0:d}" />
-                            <asp:TemplateField>
-                                <ItemTemplate>
-                                    <%# Eval("DisplayRoleInClub") %>
-                                </ItemTemplate>
-                                <HeaderTemplate>
-                                    <%# Resources.Club.LabelMemberRole %>
-                                    <uc1:mfbTooltip runat="server" ID="mfbTooltip">
-                                        <TooltipBody>
-                                            <div style="font-weight:normal; text-align:left">
-                                                <% =Resources.Club.ClubRolesDescription %>
+                <asp:UpdatePanel ID="updMembers" runat="server">
+                    <ContentTemplate>
+                        <asp:Panel ID="pnlManageMembers" runat="server">
+                            <asp:GridView ID="gvMembers" DataKeyNames="UserName" runat="server" AutoGenerateColumns="False" GridLines="None" AutoGenerateEditButton="True" OnRowCancelingEdit="gvMembers_RowCancelingEdit" 
+                                OnRowDataBound="gvMembers_RowDataBound" Width="100%" CellPadding="3" OnRowCommand="gvMembers_RowCommand" OnRowUpdating="gvMembers_RowUpdating" OnRowEditing="gvMembers_RowEditing">
+                                <RowStyle CssClass="clubMemberRow" />
+                                <AlternatingRowStyle CssClass="clubMemberAlternateRow" />
+                                <Columns>
+                                    <asp:TemplateField ItemStyle-Width="60px">
+                                        <ItemTemplate>
+                                            <img src='<%# Eval("HeadShotHRef") %>' runat="server" class="roundedImg" style="width: 60px; height:60px;" />
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="<%$ Resources:Club, LabelMemberName %>" HeaderStyle-HorizontalAlign="Left" ItemStyle-Font-Bold="true" ItemStyle-Font-Size="Larger">
+                                        <ItemTemplate>
+                                            <%# Eval("UserFullName") %>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderStyle-HorizontalAlign="Left">
+                                        <ItemTemplate>
+                                            <asp:Label runat="server" Visible='<%# !String.IsNullOrEmpty((string) Eval("Certificate")) %>' style="background-color:lightgrey; font-weight:bold; border-radius: 3px; padding: 3px; margin: 2px;"><%# Resources.Club.ClubStatusCFI %></asp:Label>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:BoundField HeaderText="<%$ Resources:Club, LabelMemberJoinDate %>" DataField="JoinedDate" HeaderStyle-HorizontalAlign="Left" ReadOnly="True" DataFormatString="{0:d}" />
+                                    <asp:TemplateField HeaderStyle-HorizontalAlign="Left">
+                                        <ItemTemplate>
+                                            <%# Eval("DisplayRoleInClub") %>
+                                        </ItemTemplate>
+                                        <HeaderTemplate>
+                                            <%# Resources.Club.LabelMemberRole %>
+                                            <uc1:mfbTooltip runat="server" ID="mfbTooltip">
+                                                <TooltipBody>
+                                                    <div style="font-weight:normal; text-align:left">
+                                                        <% =Resources.Club.ClubRolesDescription %>
+                                                    </div>
+                                                </TooltipBody>
+                                            </uc1:mfbTooltip>
+                                        </HeaderTemplate>
+                                        <EditItemTemplate>
+                                            <div>
+                                                <asp:RadioButtonList ID="rblRole" RepeatDirection="Vertical" runat="server">
+                                                    <asp:ListItem Text="<%$ Resources:Club, RoleMember %>" Value="Member"></asp:ListItem>
+                                                    <asp:ListItem Text="<%$ Resources:Club, RoleManager %>" Value="Admin"></asp:ListItem>
+                                                    <asp:ListItem Text="<%$ Resources:Club, RoleOwner %>" Value="Owner"></asp:ListItem>
+                                                </asp:RadioButtonList>
                                             </div>
-                                        </TooltipBody>
-                                    </uc1:mfbTooltip>
-                                </HeaderTemplate>
-                                <EditItemTemplate>
-                                    <div>
-                                        <asp:RadioButtonList ID="rblRole" RepeatDirection="Horizontal" runat="server">
-                                            <asp:ListItem Text="<%$ Resources:Club, RoleMember %>" Value="Member"></asp:ListItem>
-                                            <asp:ListItem Text="<%$ Resources:Club, RoleManager %>" Value="Admin"></asp:ListItem>
-                                            <asp:ListItem Text="<%$ Resources:Club, RoleOwner %>" Value="Owner"></asp:ListItem>
-                                        </asp:RadioButtonList>
-                                    </div>
-                                    <div><asp:CheckBox ID="ckMaintenanceOfficer" runat="server" Text="<%$ Resources:Club, RoleMaintenanceOfficer %>" /></div>
-                                    <div><asp:CheckBox ID="ckTreasurer" runat="server" Text="<%$ Resources:Club, RoleTreasurer %>" /></div>
-                                    <div><asp:CheckBox ID="ckInsuranceOfficer" runat="server" Text="<%$ Resources:Club, RoleInsuranceOfficer %>" /></div>
-                                </EditItemTemplate>
-                            </asp:TemplateField>
-                            <asp:TemplateField>
-                                <ItemTemplate>
-                                    <asp:ConfirmButtonExtender ID="confirmDeleteMember" TargetControlID="lnkDelete" ConfirmText="<%$ Resources:Club, confirmMemberDelete %>" runat="server"></asp:ConfirmButtonExtender>
-                                    <asp:LinkButton ID="lnkDelete" CommandName="_Delete" CommandArgument='<%# Eval("UserName") %>' runat="server">
-                                        <asp:Image ID="imgDelete" ImageUrl="~/images/x.gif" AlternateText="<%$ Resources:LogbookEntry, LogbookDeleteTooltip %>" ToolTip="<%$ Resources:LogbookEntry, LogbookDeleteTooltip %>" runat="server" />
-                                    </asp:LinkButton>
-                                </ItemTemplate>
-                            </asp:TemplateField>
-                        </Columns>
-                    </asp:GridView>
-                    <asp:Label ID="lblManageMemberError" runat="server" CssClass="error" EnableViewState="False"></asp:Label>
-                    <hr />
-                    <asp:Panel ID="pnlAddMember" runat="server" DefaultButton="btnAddMember">
-                        <asp:Localize ID="locAddMemberPrompt" runat="server" Text="<%$ Resources:Club, LabelInviteMember %>"></asp:Localize>
-                        <br />
-                        <asp:Label ID="lblEmailDisclaimer2" Font-Bold="True" runat="server" 
-                            Text="<%$ Resources:Club, LabelEmailDisclaimer %>"></asp:Label>
-                        <br />
-                        <br />
-                        <asp:TextBox ID="txtMemberEmail" runat="server" Width="300px" ValidationGroup="vgAddMember" AutoCompleteType="Email"></asp:TextBox>
-                        <asp:TextBoxWatermarkExtender ID="txtMemberEmail_TextBoxWatermarkExtender" WatermarkText="<%$ Resources:Club, WatermarkInviteMember %>" WatermarkCssClass="watermark" runat="server" TargetControlID="txtMemberEmail" BehaviorID="_content_txtMemberEmail_TextBoxWatermarkExtender">
-                        </asp:TextBoxWatermarkExtender>
-                        &nbsp;&nbsp;&nbsp; <asp:Button ID="btnAddMember" runat="server" Text="<%$ Resources:Club, ButtonInviteMember %>" ValidationGroup="vgAddMember" onclick="btnAddMember_Click"  />
-                        <asp:RequiredFieldValidator ID="RequiredFieldValidator3" 
-                            ControlToValidate="txtMemberEmail" runat="server" 
-                            ErrorMessage="<%$ Resources:Club, errValidEmailRequired %>" CssClass="error" 
-                            ValidationGroup="vgAddMember" Display="Dynamic"></asp:RequiredFieldValidator>
-                        <asp:RegularExpressionValidator ID="RegularExpressionValidator2" runat="server" 
-                            ControlToValidate="txtMemberEmail" 
-                            ErrorMessage="<%$ Resources:Club, errValidEmailRequired %>" CssClass="error" 
-                            ValidationGroup="vgAddMember" Display="Dynamic" 
-                                ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"></asp:RegularExpressionValidator>
-                    </asp:Panel>
-                    <asp:Label ID="lblAddMemberSuccess" runat="server" EnableViewState="False"></asp:Label>
-                </asp:Panel>
+                                            <div><asp:CheckBox ID="ckMaintenanceOfficer" runat="server" Text="<%$ Resources:Club, RoleMaintenanceOfficer %>" /></div>
+                                            <div><asp:CheckBox ID="ckTreasurer" runat="server" Text="<%$ Resources:Club, RoleTreasurer %>" /></div>
+                                            <div><asp:CheckBox ID="ckInsuranceOfficer" runat="server" Text="<%$ Resources:Club, RoleInsuranceOfficer %>" /></div>
+                                        </EditItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:BoundField DataField="MobilePhone" HeaderText="<%$ Resources:Club, ClubStatusContact %>" HeaderStyle-HorizontalAlign="Left" ReadOnly="true" />
+                                    <asp:TemplateField>
+                                        <ItemTemplate>
+                                            <asp:ConfirmButtonExtender ID="confirmDeleteMember" TargetControlID="lnkDelete" ConfirmText="<%$ Resources:Club, confirmMemberDelete %>" runat="server"></asp:ConfirmButtonExtender>
+                                            <asp:LinkButton ID="lnkDelete" CommandName="_Delete" CommandArgument='<%# Eval("UserName") %>' runat="server">
+                                                <asp:Image ID="imgDelete" ImageUrl="~/images/x.gif" AlternateText="<%$ Resources:LogbookEntry, LogbookDeleteTooltip %>" ToolTip="<%$ Resources:LogbookEntry, LogbookDeleteTooltip %>" runat="server" />
+                                            </asp:LinkButton>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                </Columns>
+                            </asp:GridView>
+                            <asp:Label ID="lblManageMemberError" runat="server" CssClass="error" EnableViewState="False"></asp:Label>
+                            <hr />
+                            <asp:Panel ID="pnlAddMember" runat="server" DefaultButton="btnAddMember">
+                                <asp:Localize ID="locAddMemberPrompt" runat="server" Text="<%$ Resources:Club, LabelInviteMember %>"></asp:Localize>
+                                <br />
+                                <asp:Label ID="lblEmailDisclaimer2" Font-Bold="True" runat="server" 
+                                    Text="<%$ Resources:Club, LabelEmailDisclaimer %>"></asp:Label>
+                                <br />
+                                <br />
+                                <asp:TextBox ID="txtMemberEmail" runat="server" Width="300px" ValidationGroup="vgAddMember" AutoCompleteType="Email"></asp:TextBox>
+                                <asp:TextBoxWatermarkExtender ID="txtMemberEmail_TextBoxWatermarkExtender" WatermarkText="<%$ Resources:Club, WatermarkInviteMember %>" WatermarkCssClass="watermark" runat="server" TargetControlID="txtMemberEmail" BehaviorID="_content_txtMemberEmail_TextBoxWatermarkExtender">
+                                </asp:TextBoxWatermarkExtender>
+                                &nbsp;&nbsp;&nbsp; <asp:Button ID="btnAddMember" runat="server" Text="<%$ Resources:Club, ButtonInviteMember %>" ValidationGroup="vgAddMember" onclick="btnAddMember_Click"  />
+                                <asp:RequiredFieldValidator ID="RequiredFieldValidator3" 
+                                    ControlToValidate="txtMemberEmail" runat="server" 
+                                    ErrorMessage="<%$ Resources:Club, errValidEmailRequired %>" CssClass="error" 
+                                    ValidationGroup="vgAddMember" Display="Dynamic"></asp:RequiredFieldValidator>
+                                <asp:RegularExpressionValidator ID="RegularExpressionValidator2" runat="server" 
+                                    ControlToValidate="txtMemberEmail" 
+                                    ErrorMessage="<%$ Resources:Club, errValidEmailRequired %>" CssClass="error" 
+                                    ValidationGroup="vgAddMember" Display="Dynamic" 
+                                        ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"></asp:RegularExpressionValidator>
+                            </asp:Panel>
+                            <asp:Label ID="lblAddMemberSuccess" runat="server" EnableViewState="False"></asp:Label>
+                        </asp:Panel>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
             </ContentTemplate>
         </asp:TabPanel>
         <asp:TabPanel ID="tabpanelAircraft" runat="server" HeaderText="<%$ Resources:Club, TabClubAircraft %>">

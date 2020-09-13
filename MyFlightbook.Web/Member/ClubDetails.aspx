@@ -45,12 +45,12 @@
                     <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ValidationGroup="clubContact" ControlToValidate="txtContact" CssClass="error" Display="Dynamic" ErrorMessage="<%$ Resources:Club, errNoContactMessageBody %>"></asp:RequiredFieldValidator>
                 </p>
                 <table>
-                    <tr valign="top">
+                    <tr style="vertical-align:top;">
                         <td><asp:CheckBox ID="ckRequestMembership" Text="" runat="server" /></td>
                         <td><asp:Label ID="lblCkRequest" runat="server" Text="<%$ Resources:Club, LabelRequestMembership %>" AssociatedControlID="ckRequestMembership"></asp:Label></td>
                     </tr>
                     <tr>
-                        <td colspan="2" align="center">
+                        <td colspan="2" style="text-align:center">
                             <asp:Button ID="btnCancel" runat="server" Text="<%$ Resources:LocalizedText, Cancel %>" />&nbsp;&nbsp;<asp:Button ID="btnSendMessage" ValidationGroup="clubContact" runat="server" Text="<%$ Resources:Club, LabelContactClub %>" OnClick="btnSendMessage_Click" />
                         </td>
                     </tr>
@@ -78,83 +78,138 @@
         </asp:View>
     </asp:MultiView>
     <asp:Label ID="lblErr" runat="server" CssClass="error" EnableViewState="False"></asp:Label>
-    <uc1:ViewClub ID="ViewClub1" runat="server" LinkToDetails="false" />
-    <asp:Panel ID="pnlLeaveGroup" runat="server" Visible="false">
-        <asp:LinkButton ID="lnkLeaveGroup" Text="<%$ Resources:Club, ButtonLeaveClub %>" runat="server" OnClick="lnkLeaveGroup_Click"></asp:LinkButton>
-        <asp:ConfirmButtonExtender ID="confirmLeave" runat="server" TargetControlID="lnkLeaveGroup" ConfirmText="<%$ Resources:Club, errConfirmLeaveClub %>"></asp:ConfirmButtonExtender>
-    </asp:Panel>
-    <asp:MultiView ID="mvMain" runat="server">
-        <asp:View ID="vwSchedules" runat="server">
-            <uc3:mfbEditAppt ID="mfbEditAppt1" runat="server" />
-            <script>
-                var clubCalendars = [];
-                var clubNavControl;
+    <asp:Accordion ID="accClub" runat="server" HeaderCssClass="accordianHeader" HeaderSelectedCssClass="accordianHeaderSelected" ContentCssClass="accordianContent" TransitionDuration="250" SelectedIndex="2">
+        <Panes>
+            <asp:AccordionPane ID="acpDetails" runat="server">
+                <Header>
+                    <asp:Localize ID="locClubInfo" runat="server" Text="<%$ Resources:Club, TabClubInfo %>" ></asp:Localize>
+                </Header>
+                <Content>
+                    <uc1:ViewClub ID="ViewClub1" runat="server" LinkToDetails="false" />
+                    <asp:Panel ID="pnlLeaveGroup" runat="server" Visible="false">
+                        <asp:LinkButton ID="lnkLeaveGroup" Text="<%$ Resources:Club, ButtonLeaveClub %>" runat="server" OnClick="lnkLeaveGroup_Click"></asp:LinkButton>
+                        <asp:ConfirmButtonExtender ID="confirmLeave" runat="server" TargetControlID="lnkLeaveGroup" ConfirmText="<%$ Resources:Club, errConfirmLeaveClub %>"></asp:ConfirmButtonExtender>
+                    </asp:Panel>
+                </Content>
+            </asp:AccordionPane>
+            <asp:AccordionPane ID="acpMembers" runat="server">
+                <Header>
+                    <asp:Localize ID="locClubMembers" runat="server" Text="<%$ Resources:Club, TabClubMembers %>" ></asp:Localize>
+                </Header>
+                <Content>
+                    <asp:GridView ID="gvMembers" DataKeyNames="UserName" runat="server" AutoGenerateColumns="False" GridLines="None" Width="100%" CellPadding="3">
+                        <RowStyle CssClass="clubMemberRow" />
+                        <AlternatingRowStyle CssClass="clubMemberAlternateRow" />
+                        <Columns>
+                            <asp:TemplateField ItemStyle-Width="60px">
+                                <ItemTemplate>
+                                    <img src='<%# Eval("HeadShotHRef") %>' runat="server" class="roundedImg" style="width: 60px; height:60px;" />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="<%$ Resources:Club, LabelMemberName %>" HeaderStyle-HorizontalAlign="Left" ItemStyle-Font-Bold="true" ItemStyle-Font-Size="Larger">
+                                <ItemTemplate>
+                                    <%# Eval("UserFullName") %>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField>
+                                <ItemTemplate>
+                                    <asp:Label runat="server" CssClass="clubCFI" Visible='<%# !String.IsNullOrEmpty((string) Eval("Certificate")) %>'><%# Resources.Club.ClubStatusCFI %></asp:Label>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderStyle-HorizontalAlign="Left">
+                                <ItemTemplate>
+                                    <%# Eval("DisplayRoleInClub") %>
+                                </ItemTemplate>
+                                <HeaderTemplate>
+                                    <%# Resources.Club.LabelMemberRole %>
+                                </HeaderTemplate>
+                            </asp:TemplateField>
+                            <asp:BoundField DataField="MobilePhone" HeaderText="<%$ Resources:Club, ClubStatusContact %>" HeaderStyle-HorizontalAlign="Left" ReadOnly="true" />
+                        </Columns>
+                    </asp:GridView>
+                </Content>
+            </asp:AccordionPane>
+            <asp:AccordionPane ID="acpSchedules" runat="server">
+                <Header>
+                    <asp:Localize ID="locClubSchedules" runat="server" Text="<%$ Resources:Club, TabClubSchedules %>" ></asp:Localize>
+                </Header>
+                <Content>
+                    <asp:MultiView ID="mvMain" runat="server">
+                            <asp:View ID="vwSchedules" runat="server">
+                                <uc3:mfbEditAppt ID="mfbEditAppt1" runat="server" />
+                                <script>
+                                    var clubCalendars = [];
+                                    var clubNavControl;
 
-                function refreshAllCalendars(args) {
-                    for (i = 0; i < clubCalendars.length; i++) {
-                        var cc = clubCalendars[i];
-                        cc.dpCalendar.startDate = args.day;
-                        cc.dpCalendar.update();
-                        cc.refreshEvents();
-                    }
-                }
+                                    function refreshAllCalendars(args) {
+                                        for (i = 0; i < clubCalendars.length; i++) {
+                                            var cc = clubCalendars[i];
+                                            cc.dpCalendar.startDate = args.day;
+                                            cc.dpCalendar.update();
+                                            cc.refreshEvents();
+                                        }
+                                    }
 
-                function InitClubNav(cal) {
-                    clubCalendars[clubCalendars.length] = cal;
-                    if (typeof clubNavControl == 'undefined') {
-                        clubNavControl = cal.initNav('<% =pnlCalendarNav.ClientID %>');
-                        clubNavControl.onTimeRangeSelected = refreshAllCalendars;   // override the default function
-                        clubNavControl.select(new DayPilot.Date('<% =NowUTCInClubTZ %>'));
-                    }
-                }
-            </script>
-            <h2><asp:Label ID="lblSchedules" runat="server" Text="<%$ Resources:Club, LabelAircraftSchedules %>"></asp:Label></h2>
-            <p>
-                <asp:Label ID="lblNoteTZ" Font-Bold="true" runat="server" Text="<%$ Resources:LocalizedText, Note %>"></asp:Label>
-                <asp:Label ID="lblTZDisclaimer" Text="" runat="server"></asp:Label>
-                <% =Resources.Club.TimeZoneCurrentTime %>
-                <asp:Label ID="lblCurTime" runat="server" Text=""></asp:Label>
-            </p>
-            <div style="padding:3px; display:inline-block; width: 220px; vertical-align:top;">
-                <div style="margin: auto">
-                    <asp:Panel ID="pnlCalendarNav" runat="server"></asp:Panel>
-                </div>
-                <div>
-                    <p>
-                        <asp:RadioButtonList ID="rbScheduleMode" runat="server" AutoPostBack="True" OnSelectedIndexChanged="rbScheduleMode_SelectedIndexChanged" RepeatDirection="Horizontal">
-                            <asp:ListItem Selected="True" Text="<%$ Resources:Schedule, Day %>" Value="Day"></asp:ListItem>
-                            <asp:ListItem Selected="False" Text="<%$ Resources:Schedule, Week %>" Value="Week"></asp:ListItem>
-                        </asp:RadioButtonList>
-                    </p>
-                </div>
-                <p><asp:Label Font-Bold="true" ID="locSummary" Text="<%$ Resources:Club, LabelUpcomingSchedule %>" runat="server"></asp:Label></p>
-                <asp:UpdatePanel ID="UpdatePanel1" runat="server">
-                    <ContentTemplate>
-                        <div style="border:1px solid black; padding:3px; ">
-                            <uc7:SchedSummary ID="SchedSummary1" runat="server" />
-                            <p><asp:CheckBox ID="ckSummaryScope" Text="<%$ Resources:Club, upcomingUser %>" runat="server" OnCheckedChanged="ckSummaryScope_CheckedChanged" AutoPostBack="True" Checked="true" /></p>
-                        </div>
-                    </ContentTemplate>
-                </asp:UpdatePanel>
-            </div>
-            <div style="padding:3px; display: inline-block;" runat="server" id="divCalendar">
-                <asp:MultiView ID="mvClubAircraft" runat="server">
-                    <asp:View ID="vwNoAircraft" runat="server">
-                        <asp:Label ID="lblNoAircraft" runat="server" Text="<%$Resources:Club, LabelNoAircraft %>"></asp:Label>
-                    </asp:View>
-                    <asp:View ID="vwOneAircraft" runat="server">
-                        <uc8:ClubAircraftSchedule runat="server" ID="casSingleAircraft" />
-                    </asp:View>
-                    <asp:View ID="vwMultipleAircraft" runat="server">
-                        <asp:TabContainer ID="tcAircraftSchedules" runat="server" CssClass="mfbDefault" >
-                        </asp:TabContainer>
-                    </asp:View>
-                </asp:MultiView>
-            </div>
-        </asp:View>
-        <asp:View runat="server" ID="vwMainGuest">
+                                    function InitClubNav(cal) {
+                                        clubCalendars[clubCalendars.length] = cal;
+                                        if (typeof clubNavControl == 'undefined') {
+                                            clubNavControl = cal.initNav('<% =pnlCalendarNav.ClientID %>');
+                                            clubNavControl.onTimeRangeSelected = refreshAllCalendars;   // override the default function
+                                            clubNavControl.select(new DayPilot.Date('<% =NowUTCInClubTZ %>'));
+                                        }
+                                    }
+                                </script>
+                                <h2><asp:Label ID="lblSchedules" runat="server" Text="<%$ Resources:Club, LabelAircraftSchedules %>"></asp:Label></h2>
+                                <p>
+                                    <asp:Label ID="lblNoteTZ" Font-Bold="true" runat="server" Text="<%$ Resources:LocalizedText, Note %>"></asp:Label>
+                                    <asp:Label ID="lblTZDisclaimer" Text="" runat="server"></asp:Label>
+                                    <% =Resources.Club.TimeZoneCurrentTime %>
+                                    <asp:Label ID="lblCurTime" runat="server" Text=""></asp:Label>
+                                </p>
+                                <div style="padding:3px; display:inline-block; width: 220px; vertical-align:top;">
+                                    <div style="margin: auto">
+                                        <asp:Panel ID="pnlCalendarNav" runat="server"></asp:Panel>
+                                    </div>
+                                    <div>
+                                        <p>
+                                            <asp:RadioButtonList ID="rbScheduleMode" runat="server" AutoPostBack="True" OnSelectedIndexChanged="rbScheduleMode_SelectedIndexChanged" RepeatDirection="Horizontal">
+                                                <asp:ListItem Selected="True" Text="<%$ Resources:Schedule, Day %>" Value="Day"></asp:ListItem>
+                                                <asp:ListItem Selected="False" Text="<%$ Resources:Schedule, Week %>" Value="Week"></asp:ListItem>
+                                            </asp:RadioButtonList>
+                                        </p>
+                                    </div>
+                                    <p><asp:Label Font-Bold="true" ID="locSummary" Text="<%$ Resources:Club, LabelUpcomingSchedule %>" runat="server"></asp:Label></p>
+                                    <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+                                        <ContentTemplate>
+                                            <div style="border:1px solid black; padding:3px; ">
+                                                <uc7:SchedSummary ID="SchedSummary1" runat="server" />
+                                                <p><asp:CheckBox ID="ckSummaryScope" Text="<%$ Resources:Club, upcomingUser %>" runat="server" OnCheckedChanged="ckSummaryScope_CheckedChanged" AutoPostBack="True" Checked="true" /></p>
+                                            </div>
+                                        </ContentTemplate>
+                                    </asp:UpdatePanel>
+                                </div>
+                                <div style="padding:3px; display: inline-block;" runat="server" id="divCalendar">
+                                    <asp:MultiView ID="mvClubAircraft" runat="server">
+                                        <asp:View ID="vwNoAircraft" runat="server">
+                                            <asp:Label ID="lblNoAircraft" runat="server" Text="<%$Resources:Club, LabelNoAircraft %>"></asp:Label>
+                                        </asp:View>
+                                        <asp:View ID="vwOneAircraft" runat="server">
+                                            <uc8:ClubAircraftSchedule runat="server" ID="casSingleAircraft" />
+                                        </asp:View>
+                                        <asp:View ID="vwMultipleAircraft" runat="server">
+                                            <asp:TabContainer ID="tcAircraftSchedules" runat="server" CssClass="mfbDefault" >
+                                            </asp:TabContainer>
+                                        </asp:View>
+                                    </asp:MultiView>
+                                </div>
+                            </asp:View>
+                            <asp:View runat="server" ID="vwMainGuest">
 
-        </asp:View>
-    </asp:MultiView>
+                            </asp:View>
+                        </asp:MultiView>
+                </Content>
+            </asp:AccordionPane>
+        </Panes>
+    </asp:Accordion>
 </asp:Content>
 

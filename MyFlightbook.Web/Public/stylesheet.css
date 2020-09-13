@@ -1095,6 +1095,26 @@ table.dataDescription thead tr td
     box-shadow: 6px 6px 5px #888888;
 }
 
+.clubCFI {
+    background-color: lightgrey;
+    font-weight: bold;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.clubMemberRow, .clubMemberAlternateRow {
+    vertical-align: middle;
+    border-bottom: 1px solid #cccccc;
+}
+
+.clubMemberAlternateRow {
+    background-color: #eeeeee;
+}
+
+.clubMemberRow:nth-last-child(1), .clubMemberAlternateRow:nth-last-child(1) {
+    border-bottom: none;
+}
+
 /* Drag & drop */
 .draggableItem{
     padding-left: 4px; 
@@ -1506,6 +1526,12 @@ table.featureTable {
 
 .imageMenu div {
     padding: 4px;
+}
+
+/* Rounded Images */
+.roundedImg {
+    border-radius: 50%;
+    vertical-align: middle;
 }
 
 /* Printing */

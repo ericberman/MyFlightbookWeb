@@ -722,4 +722,13 @@ Sender Email: {1}</value>
   <data name="ClubMembersForReport" xml:space="preserve">
     <value>Members:</value>
   </data>
+  <data name="ClubStatusCFI" xml:space="preserve">
+    <value>CFI</value>
+  </data>
+  <data name="ClubStatusContact" xml:space="preserve">
+    <value>Mobile Number</value>
+  </data>
+  <data name="TabClubSchedules" xml:space="preserve">
+    <value>Schedules</value>
+  </data>
 </root>

@@ -2964,6 +2964,7 @@
     <Content Include="App_GlobalResources\Totals.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>
       <LastGenOutput>Totals.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="App_GlobalResources\Weather.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>
