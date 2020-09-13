@@ -771,6 +771,7 @@
     <Content Include="Public\ContactMe.aspx" />
     <Content Include="Public\CrashReport.aspx" />
     <Content Include="Public\CSS\ChecklistBase.css" />
+    <Content Include="Public\CSS\mfbheader.css" />
     <Content Include="Public\CSS\MobileSheet.css" />
     <Content Include="Public\CSS\NightMode.css" />
     <Content Include="Public\CSS\printCanada.css" />

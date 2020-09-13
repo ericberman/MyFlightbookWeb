@@ -9,38 +9,42 @@
             <div id="headerLogo">
                 <asp:HyperLink ID="lnkLogo" NavigateUrl="~/Default.aspx" runat="server"></asp:HyperLink>
             </div>
-            <div id="headerSearchAndSign">
-                <div id="headerSearchBox">
-                    <uc2:mfbSearchbox runat="server" ID="mfbSearchbox" OnSearchClicked="btnSearch_Click" Hint="<%$ Resources:LocalizedText, SearchBoxWatermark %>" />
-                </div>
-                <div id="headerLoginStatus">
-                    <asp:MultiView ID="mvLoginStatus" runat="server">
-                        <asp:View ID="vwSignedIn" runat="server">
-                            <asp:Panel runat="server" ID="pnlUser" style="padding: 2px; margin-top: 2px; width: 180px">
-                                <img runat="server" id="imgHdSht" style="width:20px; height:20px; vertical-align:middle; border-radius:50%;" src="~/Public/tabimages/ProfileTab.png" />&nbsp;
-                                <asp:Label ID="lblUser" runat="server" style="vertical-align:middle;"></asp:Label>  
+            <div id="headerProfile">
+                <div id="headerSearchAndSign">
+                    <div id="headerSearchBox">
+                        <uc2:mfbSearchbox runat="server" ID="mfbSearchbox" OnSearchClicked="btnSearch_Click" Hint="<%$ Resources:LocalizedText, SearchBoxWatermark %>" />
+                    </div>
+                    <div id="headerLoginStatus">
+                        <img runat="server" id="imgHdSht" class="headerHeadSht" src="~/Public/tabimages/ProfileTab.png" />
+                        <div id="headerWelcome">
+                            <asp:MultiView ID="mvLoginStatus" runat="server">
+                                <asp:View ID="vwSignedIn" runat="server">
+                                    <asp:Panel runat="server" ID="pnlUser" style="padding: 2px; margin-top: 2px; width: 180px">
+                                        <asp:Label ID="lblUser" runat="server" style="vertical-align:middle;"></asp:Label>  
+                                    </asp:Panel>
+                                    <asp:Panel ID="pnlMenuContent" runat="server" CssClass="popMenuContent" style="padding: 3px; line-height:16pt; display:none; width: 180px">
+                                        <div style="padding:4px; text-align:center;">
+                                            <div><asp:Label ID="lblMemberSince" runat="server"></asp:Label></div>
+                                            <div><asp:Label ID="lblLastLogin" runat="server"></asp:Label></div>
+                                            <div runat="server" id="itemLastActivity"><asp:Label ID="lblLastActivity" runat="server"></asp:Label></div>
+                                            <div id="signOutRow"><asp:LoginStatus ID="LoginStatus2" runat="server" LogoutPageUrl="~/secure/login.aspx" Width="100%" LoginText="<%$ Resources:LocalizedText, LoginStatusSignIn %>" LogoutText="<%$ Resources:LocalizedText, LoginStatusSignOut %>" LogoutAction="RedirectToLoginPage" /></div>
+                                        </div>
+                                    </asp:Panel>
+                                    <asp:dropshadowextender ID="DropShadowExtender1" runat="server" TargetControlID="pnlMenuContent" Opacity=".5"></asp:dropshadowextender>
+                                    <asp:HoverMenuExtender ID="hme" HoverCssClass="hoverPopMenu" runat="server" TargetControlID="imgHdSht" PopupControlID="pnlMenuContent" PopupPosition="Bottom"></asp:HoverMenuExtender>
+                                </asp:View>
+                                <asp:View ID="vwNotSignedIn" runat="server">
+                                    <asp:LoginStatus ID="LoginStatus1" runat="server" LogoutPageUrl="~/secure/login.aspx" LoginText="<%$ Resources:LocalizedText, LoginStatusSignIn %>" LogoutText="<%$ Resources:LocalizedText, LoginStatusSignOut %>" LogoutAction="RedirectToLoginPage" />
+                                    <asp:Label ID="lblCreateAccount" runat="server"> | 
+                                    <asp:HyperLink ID="lnkCreateAccount" runat="server" NavigateUrl="~/Logon/newuser.aspx" Text="<%$ Resources:LocalizedText, LoginStatusCreateAccount %>"></asp:HyperLink></asp:Label>
+                                </asp:View>
+                            </asp:MultiView>
+                            <asp:Panel ID="pnlDonate" runat="server" style="padding: 2px;">
+                                <asp:HyperLink ID="lnkDonate" Font-Bold="true" runat="server" NavigateUrl="~/Member/EditProfile.aspx/pftDonate"></asp:HyperLink>
                             </asp:Panel>
-                            <asp:Panel ID="pnlMenuContent" runat="server" CssClass="popMenuContent" style="padding: 3px; display:none; width: 180px">
-                                <div style="padding:4px; text-align:center;">
-                                    <div><asp:Label ID="lblMemberSince" runat="server"></asp:Label></div>
-                                    <div><asp:Label ID="lblLastLogin" runat="server"></asp:Label></div>
-                                    <div runat="server" id="itemLastActivity"><asp:Label ID="lblLastActivity" runat="server"></asp:Label></div>
-                                    <div><asp:LoginStatus ID="LoginStatus2" runat="server" LogoutPageUrl="~/secure/login.aspx" LoginText="<%$ Resources:LocalizedText, LoginStatusSignIn %>" LogoutText="<%$ Resources:LocalizedText, LoginStatusSignOut %>" LogoutAction="RedirectToLoginPage" /></div>
-                                </div>
-                            </asp:Panel>
-                            <asp:dropshadowextender ID="DropShadowExtender1" runat="server" TargetControlID="pnlMenuContent" Opacity=".5"></asp:dropshadowextender>
-                            <asp:HoverMenuExtender ID="hme" HoverCssClass="hoverPopMenu" runat="server" TargetControlID="pnlUser" PopupControlID="pnlMenuContent" PopupPosition="Bottom"></asp:HoverMenuExtender>
-                        </asp:View>
-                        <asp:View ID="vwNotSignedIn" runat="server">
-                            <asp:LoginStatus ID="LoginStatus1" runat="server" LogoutPageUrl="~/secure/login.aspx" LoginText="<%$ Resources:LocalizedText, LoginStatusSignIn %>" LogoutText="<%$ Resources:LocalizedText, LoginStatusSignOut %>" LogoutAction="RedirectToLoginPage" />
-                            <asp:Label ID="lblCreateAccount" runat="server"> | 
-                            <asp:HyperLink ID="lnkCreateAccount" runat="server" NavigateUrl="~/Logon/newuser.aspx" Text="<%$ Resources:LocalizedText, LoginStatusCreateAccount %>"></asp:HyperLink></asp:Label>
-                        </asp:View>
-                    </asp:MultiView>
+                        </div>
+                    </div>
                 </div>
-                <asp:Panel ID="pnlDonate" runat="server">
-                    <asp:HyperLink ID="lnkDonate" Font-Bold="true" runat="server" NavigateUrl="~/Member/EditProfile.aspx/pftDonate"></asp:HyperLink>
-                </asp:Panel>
             </div>
             <div id="headerMiddleContainer">
                 <asp:MultiView ID="mvCrossSellOrEvents" runat="server">

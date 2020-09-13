@@ -40,6 +40,15 @@ public partial class Controls_mfbHeader
     protected global::Controls_mfbSearchbox mfbSearchbox;
 
     /// <summary>
+    /// imgHdSht control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.HtmlControls.HtmlImage imgHdSht;
+
+    /// <summary>
     /// mvLoginStatus control.
     /// </summary>
     /// <remarks>
@@ -65,15 +74,6 @@ public partial class Controls_mfbHeader
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.Panel pnlUser;
-
-    /// <summary>
-    /// imgHdSht control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.HtmlControls.HtmlImage imgHdSht;
 
     /// <summary>
     /// lblUser control.

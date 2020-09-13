@@ -2,6 +2,8 @@
 using MyFlightbook.Schedule;
 using System;
 using System.Globalization;
+using System.Web;
+using System.Web.UI.HtmlControls;
 
 /******************************************************
  * 
@@ -27,6 +29,11 @@ public partial class Controls_mfbHeader : System.Web.UI.UserControl
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        HtmlLink lnk = new HtmlLink() { Href = VirtualPathUtility.ToAbsolute("~/Public/CSS/mfbheader.css") };
+        Page.Header.Controls.Add(lnk);
+        lnk.Attributes["type"] = "text/css";
+        lnk.Attributes["rel"] = "stylesheet";
+
         if (!IsPostBack)
         {
             // fix up the appropriate app name
