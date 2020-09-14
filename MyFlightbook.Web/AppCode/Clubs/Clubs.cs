@@ -605,6 +605,16 @@ namespace MyFlightbook.Clubs
             return lst;
         }
 
+        public static void UncacheClubsForUser(string szUser)
+        {
+            if (String.IsNullOrEmpty(szUser))
+                return;
+
+            IEnumerable<Club> lst = AllClubsForUser(szUser);
+            foreach (Club c in lst)
+                Club.ClearCachedClub(c.ID);
+        }
+
         public static IEnumerable<Club> ClubsForAircraft(int idaircraft, string szUser = null)
         {
             List<Club> lst = new List<Club>();

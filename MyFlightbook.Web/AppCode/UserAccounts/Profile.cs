@@ -1107,6 +1107,8 @@ namespace MyFlightbook
                 szErr = "";
                 // save the updated object into the cache
                 CacheProfile(this);
+
+                Clubs.Club.UncacheClubsForUser(UserName);
             }
             else
             {
