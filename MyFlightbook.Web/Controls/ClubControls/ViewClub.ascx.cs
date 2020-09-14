@@ -17,6 +17,7 @@ using System.Web.UI.WebControls;
 public partial class Controls_ClubControls_ViewClub : System.Web.UI.UserControl
 {
     const string szVSKeyActiveClub = "ActiveClubVSKey";
+    const string szVSCanDelete = "vsCanDelete";
 
     public Club ActiveClub {
         get { return (Club)ViewState[szVSKeyActiveClub]; }
@@ -29,12 +30,16 @@ public partial class Controls_ClubControls_ViewClub : System.Web.UI.UserControl
 
     public bool LinkToDetails { get; set; }
 
-    public event System.EventHandler<ClubChangedEventArgs> ClubChanged = null;
-    public event System.EventHandler<ClubChangedEventArgs> ClubChangeCanceled = null;
-    public event System.EventHandler<ClubChangedEventArgs> ClubDeleted = null;
+    public event EventHandler<ClubChangedEventArgs> ClubChanged = null;
+    public event EventHandler<ClubChangedEventArgs> ClubChangeCanceled = null;
+    public event EventHandler<ClubChangedEventArgs> ClubDeleted = null;
 
     public bool ShowCancel { get; set; }
-    public bool ShowDelete { get; set; }
+    public bool ShowDelete
+    {
+        get { return ViewState[szVSCanDelete] != null && (bool) ViewState[szVSCanDelete]; }
+        set { ViewState[szVSCanDelete] = value; }
+    }
 
     public FormViewMode DefaultMode
     {
@@ -107,6 +112,8 @@ public partial class Controls_ClubControls_ViewClub : System.Web.UI.UserControl
             c.ID = Convert.ToInt32(e.NewValues["ID"], CultureInfo.InvariantCulture);
             c.RestrictEditingToOwnersAndAdmins = Convert.ToBoolean(e.NewValues["RestrictEditingToOwnersAndAdmins"], CultureInfo.InvariantCulture);
             c.IsPrivate = Convert.ToBoolean(e.NewValues["IsPrivate"], CultureInfo.InvariantCulture);
+            c.ShowHeadshots = Convert.ToBoolean(e.NewValues["ShowHeadshots"], CultureInfo.InvariantCulture);
+            c.ShowMobileNumbers= Convert.ToBoolean(e.NewValues["ShowMobileNumbers"], CultureInfo.InvariantCulture);
             c.PrependsScheduleWithOwnerName = Convert.ToBoolean(e.NewValues["PrependsScheduleWithOwnerName"], CultureInfo.InvariantCulture);
             c.DeleteNotifications = (Club.DeleteNoficiationPolicy) Enum.Parse(typeof(Club.DeleteNoficiationPolicy), (string) e.NewValues["DeleteNotifications"]);
             c.DoubleBookRoleRestriction = (Club.DoubleBookPolicy)Enum.Parse(typeof(Club.DoubleBookPolicy), (string)e.NewValues["DoubleBookRoleRestriction"]);

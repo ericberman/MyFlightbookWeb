@@ -731,4 +731,13 @@ Sender Email: {1}</value>
   <data name="TabClubSchedules" xml:space="preserve">
     <value>Schedules</value>
   </data>
+  <data name="PolicyShowHeadshots" xml:space="preserve">
+    <value>Show member profile pictures to other members</value>
+  </data>
+  <data name="PolicyShowMobileNumbers" xml:space="preserve">
+    <value>Show member phone numbers to other members</value>
+  </data>
+  <data name="PolicyShowMobileNumbersHint" xml:space="preserve">
+    <value>This can make it easier to contact the owner of a reservation.</value>
+  </data>
 </root>

@@ -36,6 +36,19 @@ namespace MyFlightbook.Clubs
         private const int policyMaskDoubleBookShift = 5;             // shift above 5 bits to get the policy mask for double booking
         private const UInt32 policyMaskAddModifyNotification = 0x00000180;
         private const int policyMaskAddModifyNotificationShift = 7; // Shift above 7 bits to get the policy mask for add/modify notification
+        private const UInt32 policyFlagShowHeadshots = 0x00000200;
+        private const UInt32 policyFlagShowMobileNumber = 0x00000400;
+
+        /// <summary>
+        /// Returns database bitmask to use to check for suppression of photo sharing, mobile sharing, or both.
+        /// </summary>
+        /// <param name="fPhoto"></param>
+        /// <param name="fMobile"></param>
+        /// <returns></returns>
+        public static UInt32 maskForSharing(bool fPhoto, bool fMobile)
+        {
+            return (fPhoto ? policyFlagShowHeadshots : 0) | (fMobile ? policyFlagShowMobileNumber : 0);
+        }
 
         public enum DeleteNoficiationPolicy { None = 0x00, Admins = 0x01, WholeClub = 0x02 }
         public enum AddModifyNotificationPolicy { None = 0x00, Admins = 0x01, WholeClub = 0x02 }
@@ -313,6 +326,41 @@ namespace MyFlightbook.Clubs
         {
             get { return (Policy & policyFlagPrivateClub) == policyFlagPrivateClub; }
             set { Policy = value ? (Policy | policyFlagPrivateClub) : (Policy & ~policyFlagPrivateClub); }
+        }
+
+        /// <summary>
+        /// Convenience property, since the policy flag is set to *hide* (not show) headshots
+        /// </summary>
+        public bool ShowHeadshots
+        {
+            get { return !HideHeadshots; }
+            set { HideHeadshots = !value; }
+        }
+
+        /// <summary>
+        /// Indicates whether or not to show headshots of other club members.
+        /// </summary>
+        public bool HideHeadshots {
+            get { return (Policy & policyFlagShowHeadshots) == policyFlagShowHeadshots;}
+            set { Policy = value ? (Policy | policyFlagShowHeadshots) : (Policy & ~policyFlagShowHeadshots); }
+        }
+
+        /// <summary>
+        /// Convenience property, since the policy flag is set to *hide* (not show) mobile number
+        /// </summary>
+        public bool ShowMobileNumbers
+        {
+            get { return !HideMobileNumbers; }
+            set { HideMobileNumbers = !value; }
+        }
+
+        /// <summary>
+        /// Indicates whether or not to expose members' mobile phone #'s.
+        /// </summary>
+        public bool HideMobileNumbers
+        {
+            get { return (Policy & policyFlagShowMobileNumber) == policyFlagShowMobileNumber; }
+            set { Policy = value ? (Policy | policyFlagShowMobileNumber) : (Policy & ~policyFlagShowMobileNumber); }
         }
 
         /// <summary>
@@ -1187,7 +1235,7 @@ namespace MyFlightbook.Clubs
         /// <param name="szUser1"></param>
         /// <param name="szUser2"></param>
         /// <returns></returns>
-        public static bool CheckUsersShareClub(string szUser1, string szUser2)
+        public static bool CheckUsersShareClub(string szUser1, string szUser2, bool fPhoto, bool fMobile)
         {
             bool fResult = false;
             if (String.IsNullOrEmpty(szUser1) || String.IsNullOrEmpty(szUser2))
@@ -1197,14 +1245,18 @@ namespace MyFlightbook.Clubs
             if (szUser1.CompareOrdinal(szUser2) == 0)
                 return true;
 
-            DBHelper dbh = new DBHelper(@"SELECT 
-                cm1.*
-            FROM
-                clubmembers cm1
-                    INNER JOIN
-                clubmembers cm2 ON cm1.idclub = cm2.idclub
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, @"SELECT 
+                        cm1.*
+                    FROM
+                        clubmembers cm1
+                            INNER JOIN
+                        clubmembers cm2 ON cm1.idclub = cm2.idclub
+                            INNER JOIN
+                        clubs c ON cm1.idclub = c.idclub
+                    WHERE
+                    (c.policyFlags & 0x{0} = 0)
                     AND cm1.username = ?u1
-                    AND cm2.username = ?u2");
+                    AND cm2.username = ?u2", Club.maskForSharing(fPhoto, fMobile).ToString("x", CultureInfo.InvariantCulture)));
 
             dbh.ReadRow((comm) =>
             {

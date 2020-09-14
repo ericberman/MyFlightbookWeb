@@ -1335,6 +1335,33 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show member profile pictures to other members.
+        /// </summary>
+        internal static string PolicyShowHeadshots {
+            get {
+                return ResourceManager.GetString("PolicyShowHeadshots", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show member phone numbers to other members.
+        /// </summary>
+        internal static string PolicyShowMobileNumbers {
+            get {
+                return ResourceManager.GetString("PolicyShowMobileNumbers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This can make it easier to contact the owner of a reservation..
+        /// </summary>
+        internal static string PolicyShowMobileNumbersHint {
+            get {
+                return ResourceManager.GetString("PolicyShowMobileNumbersHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Download as spreadsheet.
         /// </summary>
         internal static string ReportDownload {

@@ -87,7 +87,7 @@
             <tr>
                 <td style="padding:3px" colspan="2">
                     <hr />
-                    <div><asp:Localize ID="locPolicy" Text="<%$ Resources:Club, LabelPolicy %>" runat="server"></asp:Localize></div>
+                    <h2><asp:Localize ID="locPolicy" Text="<%$ Resources:Club, LabelPolicy %>" runat="server"></asp:Localize></h2>
                     <table>
                         <tr>
                             <td><asp:CheckBox ID="ckPolicyRestrictEditing" runat="server" Checked='<%# Bind("RestrictEditingToOwnersAndAdmins") %>' /></td>
@@ -102,8 +102,18 @@
                             <td><asp:Label AssociatedControlID="ckPolicyPrivate" ID="locPolicyPrivate" Text="<%$ Resources:Club, LabelPolicyClubIsPrivate %>" runat="server"></asp:Label></td>
                         </tr>
                         <tr>
-                            <td></td>
-                            <td>
+                            <td style="vertical-align:top;"><asp:CheckBox ID="ckPolicyShowMobile" runat="server" Checked='<%# Bind("ShowMobileNumbers") %>' /></td>
+                            <td style="vertical-align:top;">
+                                <div><asp:Label AssociatedControlID="ckPolicyShowMobile" ID="lblPolicyShowMobile" Text="<%$ Resources:Club, PolicyShowMobileNumbers %>" runat="server" /></div>
+                                <div class="fineprint"><% =Resources.Club.PolicyShowMobileNumbersHint %></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><asp:CheckBox ID="ckPolicyShowHeadshots" runat="server" Checked='<%# Bind("ShowHeadshots") %>' /></td>
+                            <td><asp:Label AssociatedControlID="ckPolicyShowHeadshots" ID="lblPolicyShowHead" Text="<%$ Resources:Club, PolicyShowHeadshots %>" runat="server"></asp:Label></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
                                 <asp:Localize ID="locDeletePolicy" Text="<%$ Resources:Club, LabelPolicyDeleteNotification %>" runat="server"></asp:Localize>
                                 <asp:DropDownList ID="cmbDeletePolicy" SelectedValue='<%# Bind("DeleteNotifications") %>' runat="server">
                                     <asp:ListItem Text="<%$ Resources:Club, PolicyDeleteNotificationNone %>" Value="None"></asp:ListItem>
@@ -113,8 +123,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td></td>
-                            <td>
+                            <td colspan="2">
                                 <asp:Localize ID="Localize1" Text="<%$ Resources:Club, LabelPolicyAddModifyNotification %>" runat="server"></asp:Localize>
                                 <asp:DropDownList ID="cmbAddModifyPolicy" SelectedValue='<%# Bind("AddModifyNotifications") %>' runat="server">
                                     <asp:ListItem Text="<%$ Resources:Club, PolicyAddModifyNotificationNone %>" Value="None"></asp:ListItem>
@@ -124,8 +133,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td></td>
-                            <td>
+                            <td colspan="2">
                                 <asp:Localize ID="locDoubleBookPolicy" Text="<%$ Resources:Club, LabelPolicyDoubleBook %>" runat="server"></asp:Localize>
                                 <asp:DropDownList ID="cmbDoubleBookPolicy" SelectedValue='<%# Bind("DoubleBookRoleRestriction") %>' runat="server">
                                     <asp:ListItem Text="<%$ Resources:Club, PolicyDoubleBookNone %>" Value="None"></asp:ListItem>

@@ -103,7 +103,7 @@
                         <Columns>
                             <asp:TemplateField ItemStyle-Width="60px">
                                 <ItemTemplate>
-                                    <img src='<%# Eval("HeadShotHRef") %>' runat="server" class="roundedImg" style="width: 60px; height:60px;" />
+                                    <img src='<%# CurrentClub.ShowHeadshots ? Eval("HeadShotHRef") : VirtualPathUtility.ToAbsolute("~/Public/tabimages/ProfileTab.png") %>' runat="server" class="roundedImg" style="width: 60px; height:60px;" />
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="<%$ Resources:Club, LabelMemberName %>" HeaderStyle-HorizontalAlign="Left" ItemStyle-Font-Bold="true" ItemStyle-Font-Size="Larger">

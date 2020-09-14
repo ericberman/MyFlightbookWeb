@@ -26,7 +26,7 @@ namespace MyFlightbook.Web.Member
                 // (a) we're the user or 
                 // (b) we are both in the same club.
                 // ClubMember.ShareClub returns true for both of these.
-                if (ClubMember.CheckUsersShareClub(Page.User.Identity.Name, szUser))
+                if (ClubMember.CheckUsersShareClub(Page.User.Identity.Name, szUser, true, false))
                 {
                     Profile pf = Profile.GetUser(szUser);
                     if (pf.HasHeadShot)

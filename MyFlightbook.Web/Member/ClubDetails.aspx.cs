@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net.Mail;
 using System.Web.UI;
+using System.Windows.Controls;
 
 /******************************************************
  * 
@@ -107,6 +108,9 @@ public partial class Member_ClubDetails : System.Web.UI.Page
                     {
                         gvMembers.DataSource = CurrentClub.Members;
                         gvMembers.DataBind();
+                        // Hack - trim the last column if not showing mobiles.  This is fragile.
+                        if (CurrentClub.HideMobileNumbers)
+                            gvMembers.Columns[gvMembers.Columns.Count - 1].Visible = false;
                     }
                 }
                 catch (MyFlightbookException ex)

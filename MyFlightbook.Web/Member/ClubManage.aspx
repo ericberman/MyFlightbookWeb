@@ -188,7 +188,7 @@
         </asp:TabPanel>
         <asp:TabPanel ID="tabpanelClubDetails" runat="server" HeaderText="<%$ Resources:Club, TabClubInfo %>">
             <ContentTemplate>
-                <uc1:ViewClub ID="vcEdit" runat="server" DefaultMode="Edit" OnClubChanged="vcEdit_ClubChanged" OnClubDeleted="btnDeleteClub_Click" ShowCancel="false" ShowDelete="true" OnClubChangeCanceled="vcEdit_ClubChangeCanceled" />
+                <uc1:ViewClub ID="vcEdit" runat="server" DefaultMode="Edit" OnClubChanged="vcEdit_ClubChanged" OnClubDeleted="btnDeleteClub_Click" ShowCancel="false" OnClubChangeCanceled="vcEdit_ClubChangeCanceled" />
             </ContentTemplate>
         </asp:TabPanel>
         <asp:TabPanel ID="tabpanelClubReports" runat="server" HeaderText="<%$ Resources:Club, TabClubReports %>">
