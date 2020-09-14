@@ -896,7 +896,7 @@
     <Content Include="Secure\login.aspx" />
     <Content Include="SecurityError.aspx" />
     <Content Include="Shunt.aspx" />
-    <Content Include="Support\2020-04-08 - PersistedUserPrefs.txt" />
+    <Content Include="Support\2020-09-13 - Headshot in database.txt" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>

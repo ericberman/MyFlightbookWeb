@@ -475,8 +475,6 @@ namespace MyFlightbook.Subscriptions
                             case StorageID.GoogleDrive:
                                 await BackupGoogleDrive(lb, pf, sb, sbFailures).ConfigureAwait(false);
                                 break;
-                            case StorageID.iCloud:
-                                break;
                             default:
                                 break;
                         }

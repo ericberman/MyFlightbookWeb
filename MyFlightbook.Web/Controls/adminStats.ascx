@@ -9,8 +9,6 @@
         ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" 
         SelectCommand="SELECT COUNT(username) AS 'Users', 
 	SUM(emailsubscriptions&lt;&gt; 0) AS Subscriptions, 
-    SUM(FacebookAccessToken &lt;&gt; '') 'Facebook Users', 
-    SUM(TwitterAccessToken &lt;&gt; '') AS 'Twitter Users', 
     SUM(propertyblacklist &lt;&gt; '') AS blocklistcount,
     SUM(DropboxAccesstoken &lt;&gt; '') AS dropboxusers,
     SUM(GoogleDriveAccessToken &lt;&gt; '') AS googleusers,
@@ -87,7 +85,7 @@ FROM users;"
     </table>
     <h3>Flights and Aircraft:</h3>
     <table>
-        <tr valign="top">
+        <tr style="vertical-align:top">
             <td>
                 <asp:GridView ID="GridViewMisc" runat="server" DataSourceID="sqlSiteOther">
                 </asp:GridView>

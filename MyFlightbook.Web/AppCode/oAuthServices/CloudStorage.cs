@@ -30,7 +30,7 @@ namespace MyFlightbook.CloudStorage
     /// <summary>
     /// Specifies the default cloud storage to use for a given user if they've authorized more than one.
     /// </summary>
-    public enum StorageID { None, Dropbox, GoogleDrive, OneDrive, iCloud }
+    public enum StorageID { None, Dropbox, GoogleDrive, OneDrive }
 
     /// <summary>
     /// Base class for cloud storage
@@ -58,8 +58,6 @@ namespace MyFlightbook.CloudStorage
                     return Resources.LocalizedText.CloudStorageDropbox;
                 case StorageID.GoogleDrive:
                     return Resources.LocalizedText.CloudStorageGDrive;
-                case StorageID.iCloud:
-                    return Resources.LocalizedText.CloudStorageICloud;
                 case StorageID.OneDrive:
                     return Resources.LocalizedText.CloudStorageOneDrive;
                 case StorageID.None:

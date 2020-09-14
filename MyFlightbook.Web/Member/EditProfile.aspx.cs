@@ -381,7 +381,8 @@ public partial class Member_EditProfile : System.Web.UI.Page
             byte[] rgb = MFBImageInfo.ScaledImage(fuHdSht.PostedFile.InputStream, 90, 90);
             if (rgb != null && rgb.Length > 0)
             {
-                m_pf.HeadShot = Convert.ToBase64String(rgb);
+                m_pf.HeadShot = rgb;
+                m_pf.FCommit();
                 SetHeadShot();
             }
         }

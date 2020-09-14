@@ -1,5 +1,6 @@
 ﻿using MyFlightbook.Clubs;
 using System;
+using System.Linq;
 using System.Web.UI;
 
 /******************************************************
@@ -28,14 +29,13 @@ namespace MyFlightbook.Web.Member
                 if (ClubMember.CheckUsersShareClub(Page.User.Identity.Name, szUser))
                 {
                     Profile pf = Profile.GetUser(szUser);
-                    string szImage = pf.HeadShot;
-                    if (!String.IsNullOrEmpty(szImage))
+                    if (pf.HasHeadShot)
                     {
                         Response.Clear();
                         Response.ContentType = "image/jpeg";
                         Response.Cache.SetExpires(DateTime.UtcNow.AddDays(14));
 #pragma warning disable CA3002 // Review code for XSS vulnerabilities - this came from the database, it's not arbitrary.
-                        Response.BinaryWrite(Convert.FromBase64String(szImage));
+                        Response.BinaryWrite(pf.HeadShot.ToArray());
 #pragma warning restore CA3002 // Review code for XSS vulnerabilities
                         Response.Flush();
                         Response.End();

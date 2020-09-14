@@ -1,2 +1,0 @@
-﻿ALTER TABLE `logbook`.`users` 
-ADD COLUMN `prefs` JSON NULL COMMENT 'Additional preferences, in JSON dictionary format.' AFTER `timezone`;

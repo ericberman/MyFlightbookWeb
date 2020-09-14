@@ -561,11 +561,6 @@ namespace MyFlightbook
         public IAuthorizationState GoogleDriveAccessToken { get; set; }
 
         /// <summary>
-        /// The ICloud Drive access token
-        /// </summary>
-        public IAuthorizationState ICloudDriveAccessToken { get; set; }
-
-        /// <summary>
         /// The default cloud storage provider to use, if multiple are specified.
         /// </summary>
         public StorageID DefaultCloudStorage { get; set; }
@@ -585,8 +580,6 @@ namespace MyFlightbook
                     lst.Add(StorageID.OneDrive);
                 if (GoogleDriveAccessToken != null && GoogleDriveAccessToken.RefreshToken != null)
                     lst.Add(StorageID.GoogleDrive);
-                if (ICloudDriveAccessToken != null && ICloudDriveAccessToken.RefreshToken != null)
-                    lst.Add(StorageID.iCloud);
                 return lst;
             }
         }
@@ -824,17 +817,7 @@ namespace MyFlightbook
             set { SetPreferenceForKey(prefKeyPreferredGreeting, value, String.IsNullOrEmpty(value)); }
         }
 
-        private const string prefKeyHeadshot = "headShot";
-
-        /// <summary>
-        /// Returns a base64 encoded JPEG of the user's headshot, if present
-        /// </summary>
-        [System.Runtime.Serialization.IgnoreDataMember]
-        public string HeadShot
-        {
-            get { return (string)GetPreferenceForKey(prefKeyHeadshot); }
-            set { SetPreferenceForKey(prefKeyHeadshot, value, String.IsNullOrEmpty(value)); }
-        }
+        public IEnumerable<byte> HeadShot { get; set; }
 
         /// <summary>
         /// Determines if the user has a headshot
@@ -842,7 +825,7 @@ namespace MyFlightbook
         [System.Runtime.Serialization.IgnoreDataMember]
         public bool HasHeadShot
         {
-            get { return PreferenceExists(prefKeyHeadshot); }
+            get { return HeadShot != null && HeadShot.Any(); }
         }
 
         /// <summary>
@@ -981,7 +964,6 @@ namespace MyFlightbook
                 DropboxAccessToken = (string)util.ReadNullableField(dr, "DropboxAccessToken", null);
                 GoogleDriveAccessToken = AuthStateFromString((string) util.ReadNullableField(dr, "GoogleDriveAccessToken", null));
                 OneDriveAccessToken = AuthStateFromString((string)util.ReadNullableField(dr, "OnedriveAccessToken", null));
-                ICloudDriveAccessToken = AuthStateFromString((string)util.ReadNullableField(dr, "ICloudAccessToken", null));
                 DefaultCloudStorage = (StorageID)Convert.ToInt32(dr["DefaultCloudDriveID"], CultureInfo.InvariantCulture);
                 OverwriteCloudBackup = Convert.ToBoolean(dr["OverwriteDropbox"], CultureInfo.InvariantCulture);
 
@@ -1016,6 +998,8 @@ namespace MyFlightbook
 
                 string szBlockList = util.ReadNullableString(dr, "PropertyBlackList");
                 BlocklistedProperties.AddRange(szBlockList.ToInts());
+
+                HeadShot = (byte[])util.ReadNullableField(dr, "HeadShot", null);
 
                 PersistedPrefsDictionary.Clear();
                 PersistedPrefsAsJSon = util.ReadNullableString(dr, "prefs");
@@ -1075,10 +1059,10 @@ namespace MyFlightbook
                 return false;
 
             szQ = @"UPDATE users SET Email=?Email, FirstName=?FirstName, LastName=?LastName, Address=?address, 
-            DropboxAccessToken=?dropboxAccesstoken, OnedriveAccessToken=?onedrive, GoogleDriveAccessToken=?gdrive, ICloudAccessToken=?icloud, DefaultCloudDriveID=?defcloud, OverwriteDropbox=?overwriteCloud, CloudAhoyAccessToken=?cloudAhoy,
+            DropboxAccessToken=?dropboxAccesstoken, OnedriveAccessToken=?onedrive, GoogleDriveAccessToken=?gdrive, DefaultCloudDriveID=?defcloud, OverwriteDropbox=?overwriteCloud, CloudAhoyAccessToken=?cloudAhoy,
             LastBFR = ?LastBFR, LastMedical=?LastMedical, MonthsToMedical=?MonthsToMedical, IsInstructor=?IsInstructor, UsesSIC=?UsesSIC, UsesHHMM=?UsesHHMM, UsesUTCDates=?useUTCDates, License=?license, CertificateNumber=?cert, CFIExpiration=?cfiExp, 
             CurrencyFlags=?currencyFlags, ShowTimes=?showTimes, EnglishProficiencyExpiration=?engProfExpiration, EmailSubscriptions=?subscriptions, LastEmail=?lastemail, AchievementStatus=?achievementstatus, PropertyBlackList=?blocklist, timezone=?prefTimeZone,
-            prefs=?prefs
+            HeadShot=?hs, prefs=?prefs
             WHERE PKID = ?PKID";
 
             string szErr = "";
@@ -1093,7 +1077,6 @@ namespace MyFlightbook
                     comm.Parameters.AddWithValue("dropboxAccessToken", DropboxAccessToken);
                     comm.Parameters.AddWithValue("onedrive", OneDriveAccessToken == null ? null : JsonConvert.SerializeObject(OneDriveAccessToken));
                     comm.Parameters.AddWithValue("gdrive", GoogleDriveAccessToken == null ? null : JsonConvert.SerializeObject(GoogleDriveAccessToken));
-                    comm.Parameters.AddWithValue("icloud", ICloudDriveAccessToken == null ? null : JsonConvert.SerializeObject(ICloudDriveAccessToken));
                     comm.Parameters.AddWithValue("defcloud", (int)DefaultCloudStorage);
                     comm.Parameters.AddWithValue("overwriteCloud", OverwriteCloudBackup ? 1 : 0);
                     comm.Parameters.AddWithValue("cloudAhoy", CloudAhoyToken == null ? null : JsonConvert.SerializeObject(CloudAhoyToken));
@@ -1115,6 +1098,7 @@ namespace MyFlightbook
                     comm.Parameters.AddWithValue("lastemail", LastEmailDate);
                     comm.Parameters.AddWithValue("achievementstatus", (int)AchievementStatus);
                     comm.Parameters.AddWithValue("blocklist", String.Join(",", BlocklistedProperties));
+                    comm.Parameters.AddWithValue("hs", HeadShot);
                     comm.Parameters.AddWithValue("prefs", PersistedPrefsAsJSon = JsonConvert.SerializeObject(PersistedPrefsDictionary));
                     comm.Parameters.AddWithValue("prefTimeZone", String.IsNullOrEmpty(PreferredTimeZoneID) || PreferredTimeZoneID.CompareCurrentCultureIgnoreCase("UTC") == 0 ? null : PreferredTimeZoneID);
                 });

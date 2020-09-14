@@ -415,10 +415,7 @@ namespace MyFlightbook.Payments
 
         public override string UserRestriction
         {
-            get
-            {
-                return "  (users.DropboxAccessToken <> '' || users.OneDriveAccessToken <> '' || users.GoogleDriveAccessToken <> '' || users.ICloudAccessToken <> '') ";
-            }
+            get { return "  (users.DropboxAccessToken <> '' || users.OneDriveAccessToken <> '' || users.GoogleDriveAccessToken <> '') "; }
         }
 
         public override string ReminderSubject(EarnedGratuity eg)
