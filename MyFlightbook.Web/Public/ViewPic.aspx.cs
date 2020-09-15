@@ -33,29 +33,21 @@ public partial class Public_ViewPic : System.Web.UI.Page
                 throw new MyFlightbookException("Null request in ViewPic");
 
             string ua = String.IsNullOrEmpty(Request.UserAgent) ? string.Empty : Request.UserAgent.ToUpperInvariant();
-            if (mfbii.ImageType == MFBImageInfo.ImageFileType.S3VideoMP4 && !ua.Contains("IPHONE") && !ua.Contains("IPAD"))
+            try
             {
-                // For android devices, need to put it into actual HTML for it to play in-line in the browser.
-                mfbEditableImage1.MFBImageInfo = mfbii;
+                Response.Redirect(mfbii.ResolveFullImage());
             }
-            else
+            catch (ArgumentException ex)
             {
-                try
-                {
-                    Response.Redirect(mfbii.ResolveFullImage());
-                }
-                catch (ArgumentException ex)
-                {
-                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Argument Exception in ViewPic key={0}\r\nthumb={1}\r\n", szKey, szThumb), ex);
-                }
-                catch (System.Web.HttpUnhandledException ex)
-                {
-                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Argument Exception in ViewPic key={0}\r\nthumb={1}\r\n", szKey, szThumb), ex);
-                }
-                catch (NullReferenceException ex)
-                {
-                    throw new MyFlightbookException("Null reference on resolve full image (but where?) ", ex);
-                }
+                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Argument Exception in ViewPic key={0}\r\nthumb={1}\r\n", szKey, szThumb), ex);
+            }
+            catch (System.Web.HttpUnhandledException ex)
+            {
+                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Argument Exception in ViewPic key={0}\r\nthumb={1}\r\n", szKey, szThumb), ex);
+            }
+            catch (NullReferenceException ex)
+            {
+                throw new MyFlightbookException("Null reference on resolve full image (but where?) ", ex);
             }
         }
         else
