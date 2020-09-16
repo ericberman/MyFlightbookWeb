@@ -3291,7 +3291,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Callback URL that was provided is not allowed for this service..
+        ///   Looks up a localized string similar to Callback URL &quot;{0}&quot; is not allowed for this service..
         /// </summary>
         internal static string oAuthErrBadRedirectURL {
             get {

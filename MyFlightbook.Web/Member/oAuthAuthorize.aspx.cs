@@ -40,14 +40,14 @@ public partial class Secure_oAuthAuthorize : System.Web.UI.Page
                 bool fIsValidCallback = false;
                 foreach (string callback in client.Callbacks)
                 {
-                    if (Uri.Compare(m_pendingRequest.Callback, new Uri(callback), UriComponents.HostAndPort | UriComponents.PathAndQuery, UriFormat.UriEscaped, StringComparison.CurrentCultureIgnoreCase) != 0)
+                    if (Uri.Compare(m_pendingRequest.Callback, new Uri(callback), UriComponents.HostAndPort | UriComponents.PathAndQuery, UriFormat.SafeUnescaped, StringComparison.CurrentCultureIgnoreCase) == 0)
                     {
                         fIsValidCallback = true;
                         break;
                     }
                 }
                 if (!fIsValidCallback)
-                    throw new HttpException((int)HttpStatusCode.BadRequest, Resources.LocalizedText.oAuthErrBadRedirectURL);
+                    throw new HttpException((int)HttpStatusCode.BadRequest, String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.oAuthErrBadRedirectURL, m_pendingRequest.Callback.ToString()));
 
                 HashSet<string> allowedScopes = OAuthUtilities.SplitScopes(client.Scope);
 

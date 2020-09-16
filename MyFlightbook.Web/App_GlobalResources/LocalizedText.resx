@@ -1356,7 +1356,7 @@
     <value>(Optional)</value>
   </data>
   <data name="oAuthErrBadRedirectURL" xml:space="preserve">
-    <value>Callback URL that was provided is not allowed for this service.</value>
+    <value>Callback URL "{0}" is not allowed for this service.</value>
   </data>
   <data name="oAuthErrUnauthorizedScopes" xml:space="preserve">
     <value>Request is for scopes that the service is not authorized to have.</value>
