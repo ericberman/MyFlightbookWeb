@@ -70,17 +70,7 @@ public partial class Secure_oAuthAuthorize : System.Web.UI.Page
             else
                 m_pendingRequest = (EndUserAuthorizationRequest)ViewState[szVSKeyPendingRequest];
         }
-        catch (Exception ex) when (ex is HttpException || ex is ProtocolException || ex is ProtocolFaultResponseException)
-        {
-            if (m_pendingRequest != null)
-                RejectWithError(ex.Message);
-            else
-            {
-                lblErr.Text = ex.Message;
-                mvAuthorize.SetActiveView(vwErr);
-            }
-        }
-        catch (Exception ex) when (ex is MyFlightbook.MyFlightbookException)
+        catch (Exception ex) when (ex is HttpException || ex is ProtocolException || ex is ProtocolFaultResponseException || ex is MyFlightbook.MyFlightbookException)
         {
             lblErr.Text = ex.Message;
             mvAuthorize.SetActiveView(vwErr);
