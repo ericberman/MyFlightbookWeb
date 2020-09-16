@@ -32,16 +32,11 @@ public partial class Public_ViewPic : System.Web.UI.Page
             if (Request == null)
                 throw new MyFlightbookException("Null request in ViewPic");
 
-            string ua = String.IsNullOrEmpty(Request.UserAgent) ? string.Empty : Request.UserAgent.ToUpperInvariant();
             try
             {
                 Response.Redirect(mfbii.ResolveFullImage());
             }
-            catch (ArgumentException ex)
-            {
-                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Argument Exception in ViewPic key={0}\r\nthumb={1}\r\n", szKey, szThumb), ex);
-            }
-            catch (System.Web.HttpUnhandledException ex)
+            catch (Exception ex) when (ex is ArgumentException || ex is System.Web.HttpUnhandledException)
             {
                 throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Argument Exception in ViewPic key={0}\r\nthumb={1}\r\n", szKey, szThumb), ex);
             }
