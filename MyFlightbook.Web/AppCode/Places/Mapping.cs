@@ -91,7 +91,7 @@ namespace MyFlightbook.Mapping
         /// </summary>
         public string ClubClickHandler { get; set; }
 
-        private List<AirportList> m_Airports = null;
+        private List<AirportList> m_Airports;
         /// <summary>
         /// A list of AirportLists containing the airports to display.  If markers are on, the airports within an airportlist will be connected
         /// </summary>

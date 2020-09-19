@@ -846,10 +846,10 @@ namespace MyFlightbook
             }
         }
 
-        private static Regex rQuotedExpressions = null;
-        private static Regex rSplitWords = null;
-        private static Regex rMergeOR = null;
-        private static Regex rTrailing = null;
+        private static Regex rQuotedExpressions;
+        private static Regex rSplitWords;
+        private static Regex rMergeOR;
+        private static Regex rTrailing;
 
         private void UpdateGeneralText(StringBuilder sbQuery)
         {

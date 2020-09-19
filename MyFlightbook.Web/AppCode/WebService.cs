@@ -28,7 +28,7 @@ namespace MyFlightbook
     public class AuthResult
     {
         public AuthStatus Result { get; set; } = AuthStatus.Failed;
-        public string AuthToken { get; set; } = null;
+        public string AuthToken { get; set; }
 
         public AuthResult() { }
 
@@ -208,7 +208,7 @@ namespace MyFlightbook
         private const long SecondsPerDay = (24 * 3600);
         private const long TicksPerSecond = (1000 * 10000);
 
-        private static string[] rgszAuthorizedService = null;
+        private static string[] rgszAuthorizedService;
         private static string[] AuthorizedServices
         {
             get

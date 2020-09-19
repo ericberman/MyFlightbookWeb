@@ -24,7 +24,7 @@ namespace MyFlightbook
     {
         public enum CSVStatus { OK, Fixed, Broken }
 
-        private readonly DataTable m_dt = null;
+        private readonly DataTable m_dt;
 
         private StringBuilder sbAudit = new StringBuilder();
 

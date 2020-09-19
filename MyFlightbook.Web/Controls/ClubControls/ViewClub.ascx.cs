@@ -30,9 +30,9 @@ public partial class Controls_ClubControls_ViewClub : System.Web.UI.UserControl
 
     public bool LinkToDetails { get; set; }
 
-    public event EventHandler<ClubChangedEventArgs> ClubChanged = null;
-    public event EventHandler<ClubChangedEventArgs> ClubChangeCanceled = null;
-    public event EventHandler<ClubChangedEventArgs> ClubDeleted = null;
+    public event EventHandler<ClubChangedEventArgs> ClubChanged;
+    public event EventHandler<ClubChangedEventArgs> ClubChangeCanceled;
+    public event EventHandler<ClubChangedEventArgs> ClubDeleted;
 
     public bool ShowCancel { get; set; }
     public bool ShowDelete

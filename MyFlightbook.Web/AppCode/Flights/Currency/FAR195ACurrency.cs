@@ -16,7 +16,7 @@ namespace MyFlightbook.Currency
     public class FAR195ACurrency : FAR117Currency
     {
         private readonly DateTime dt24HoursAgo = DateTime.UtcNow.AddHours(-24);
-        private double totalInstruction = 0.0;
+        private double totalInstruction;
         private const double MaxInstruction = 8.0;
         private const double CloseToMaxInstruction = 5.0;
 

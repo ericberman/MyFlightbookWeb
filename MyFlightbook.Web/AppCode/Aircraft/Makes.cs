@@ -644,7 +644,7 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
             return new Collection<MakeModel>(lst);
         }
 
-        private string m_szSearchNormal = null;
+        private string m_szSearchNormal;
         private string NormalSearchString
         {
             get
@@ -659,7 +659,7 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
             }
         }
 
-        private string m_szModelNormal = null;
+        private string m_szModelNormal;
         private string NormalModel
         {
             get

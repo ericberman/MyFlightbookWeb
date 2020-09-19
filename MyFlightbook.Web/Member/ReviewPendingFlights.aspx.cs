@@ -15,7 +15,7 @@ using System.Web.UI.WebControls;
 
 public partial class Member_ReviewPendingFlights : System.Web.UI.Page
 {
-    private MyFlightbook.Profile m_pfUser = null;
+    private MyFlightbook.Profile m_pfUser;
     const string szKeyLastSortExpr = "LastSort";
     const string szKeylastSortDir = "LastSortDir";
     const string szVSKeyFlights = "vsPendingFlights";

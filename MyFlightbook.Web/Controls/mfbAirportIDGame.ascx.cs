@@ -17,29 +17,19 @@ using System.Web.UI;
 [ParseChildren(ChildrenAsProperties=true)]
 public partial class Controls_mfbAirportIDGame : System.Web.UI.UserControl, INamingContainer
 {
-    AirportQuiz m_AirportQuiz = null;
+    AirportQuiz m_AirportQuiz;
     private const string keyQuiz = "QuizState";
     private int m_cQuestions = 10;
     private int m_BluffCount = 3;
 
-    private ITemplate m_Intro = null;
-    private ITemplate m_Outtro = null;
-    private Control m_IntroContainer = null;
-    private Control m_OuttroContainer = null;
+    private Control m_IntroContainer;
+    private Control m_OuttroContainer;
 
     [TemplateContainer(typeof(QuizIntroTemplate)), PersistenceMode(PersistenceMode.InnerDefaultProperty), TemplateInstance(TemplateInstance.Single)]
-    public ITemplate QuizIntro
-    {
-        get { return m_Intro; }
-        set { m_Intro = value; }
-    }
+    public ITemplate QuizIntro { get; set; }
 
     [TemplateContainer(typeof(QuizSummaryTemplate)), PersistenceMode(PersistenceMode.InnerDefaultProperty), TemplateInstance(TemplateInstance.Single)]
-    public ITemplate QuizSummary
-    {
-        get { return m_Outtro; }
-        set { m_Outtro = value; }
-    }
+    public ITemplate QuizSummary { get; set; }
 
     protected override void CreateChildControls()
     {

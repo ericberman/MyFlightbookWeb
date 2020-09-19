@@ -75,12 +75,12 @@ namespace MyFlightbook.Currency
         // 61.57(d) - IPC (Instrument checkride counts here too)
         readonly FlightCurrency fcIPCOrCheckride = new FlightCurrency(1, 6, true, "IPC or Instrument Checkride");
 
-        readonly private Boolean m_fUseLoose6157c4 = false;
-        private Boolean m_fCacheValid = false;
+        readonly private Boolean m_fUseLoose6157c4;
+        private Boolean m_fCacheValid;
         private CurrencyState m_csCurrent = CurrencyState.NotCurrent;
         private DateTime m_dtExpiration = DateTime.MinValue;
         private string m_szDiscrepancy = string.Empty;
-        private Boolean fSeenCheckride = false;
+        private Boolean fSeenCheckride;
 
         #region Adding Events
         /// <summary>

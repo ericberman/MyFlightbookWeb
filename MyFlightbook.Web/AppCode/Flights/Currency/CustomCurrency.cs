@@ -199,7 +199,7 @@ namespace MyFlightbook.Currency
     public static class CustomCurrencyEventTypeExtensions
     {
         #region extension methods for CustomCurrencyEvenType
-        private static Dictionary<CustomCurrency.CustomCurrencyEventType, string[]> s_eventTypeLabels = null;
+        private static Dictionary<CustomCurrency.CustomCurrencyEventType, string[]> s_eventTypeLabels;
 
         private static string[] LabelsForEventType(CustomCurrency.CustomCurrencyEventType ccet)
         {

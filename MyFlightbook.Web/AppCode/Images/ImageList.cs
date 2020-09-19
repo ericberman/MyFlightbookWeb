@@ -16,7 +16,7 @@ namespace MyFlightbook.Image
     {
         private string m_szBase;
         private string m_szKey;
-        private MFBImageInfo[] rgMfbii = null;
+        private MFBImageInfo[] rgMfbii;
         private MFBImageInfo.ImageClass m_imageClass = MFBImageInfo.ImageClass.Unknown;
 
         #region properties

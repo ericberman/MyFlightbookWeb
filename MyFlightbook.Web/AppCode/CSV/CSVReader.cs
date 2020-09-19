@@ -13,7 +13,7 @@ namespace JouniHeikniemi.Tools.Text
         #region Private variables
         private readonly Stream stream;
         private readonly StreamReader reader;
-        private bool fNoReadahead = false;  // suppresses read-ahead (for multi-line).
+        private bool fNoReadahead;  // suppresses read-ahead (for multi-line).
         private const string KnownCSVSeparators = ", ; \t"; // space separates them
         private const string QuoteAsString = "\"";
         private const char QuoteChar = '"';

@@ -18,7 +18,7 @@ public partial class Controls_PrintingLayouts_pageFooter : System.Web.UI.UserCon
         set { pnlPageCount.Visible = lblCertification.Visible = value; }
     }
 
-    private Profile m_user = null;
+    private Profile m_user;
     protected Profile CurrentUser
     {
         get

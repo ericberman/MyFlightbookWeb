@@ -13,7 +13,7 @@ using System.Web.UI.WebControls;
 
 public partial class Controls_mfbMakeListItem : System.Web.UI.UserControl
 {
-    private MakeModel m_model = null;
+    private MakeModel m_model;
 
     #region Properties
     public ModelQuery.ModelSortMode SortMode { get; set; }

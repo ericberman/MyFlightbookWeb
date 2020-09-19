@@ -72,7 +72,7 @@ public partial class Controls_mfbEditMake : System.Web.UI.UserControl
         }
     }
 
-    public event System.EventHandler MakeUpdated = null;
+    public event System.EventHandler MakeUpdated;
 
     protected void RepopulateManufacturerDropdown(string defVal = null)
     {

@@ -431,7 +431,7 @@ public partial class Member_FlightDetail : Member_FlightDetailBase
     const string PathLatLongArrayID = "rgll";
 
     #region properties
-    private Profile m_pfUser = null;
+    private Profile m_pfUser;
 
     protected Profile Viewer
     {

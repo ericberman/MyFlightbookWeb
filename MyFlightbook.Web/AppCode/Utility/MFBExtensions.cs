@@ -445,8 +445,8 @@ namespace MyFlightbook
         }
         #endregion
 
-        private static Regex regexpWebLink = null;
-        private static Regex regexMarkDown = null;
+        private static Regex regexpWebLink;
+        private static Regex regexMarkDown;
 
         /// <summary>
         /// Turn links in the string into anchor tags.  Does html escaping first.

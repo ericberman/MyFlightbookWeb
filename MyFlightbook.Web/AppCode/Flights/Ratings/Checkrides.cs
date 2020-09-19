@@ -412,7 +412,7 @@ namespace MyFlightbook.Achievements
         /// </summary>
         public string Username { get; set; }
 
-        private List<Checkride> m_lstCheckrides = null;
+        private List<Checkride> m_lstCheckrides;
         public IEnumerable<Checkride> Checkrides
         {
             get
@@ -423,7 +423,7 @@ namespace MyFlightbook.Achievements
             }
         }
 
-        private List<PilotLicense> m_lstLicenses = null;
+        private List<PilotLicense> m_lstLicenses;
         public IEnumerable<PilotLicense> Licenses
         {
             get

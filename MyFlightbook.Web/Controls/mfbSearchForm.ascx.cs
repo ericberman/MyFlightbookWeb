@@ -17,8 +17,8 @@ using System.Web.UI.WebControls;
 
 public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
 {
-    private FlightQuery m_fq = null;
-    private string m_szUser = null;
+    private FlightQuery m_fq;
+    private string m_szUser;
 
     public const string FullStopAirportAnchor = "!";
 
@@ -399,7 +399,7 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
         SetUpDateJScript();
     }
 
-    private bool fHasBeenSetUp = false; // have we already been initialized for the user?
+    private bool fHasBeenSetUp; // have we already been initialized for the user?
 
     protected void SetUpForUser()
     {

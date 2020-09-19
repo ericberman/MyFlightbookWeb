@@ -908,7 +908,7 @@ namespace MyFlightbook.Telemetry
         public enum SpeedUnitTypes { Knots, MilesPerHour, MetersPerSecond, FeetPerSecond, KmPerHour };
 
         #region IDisposable Implementation
-        private bool disposed = false; // to detect redundant calls
+        private bool disposed; // to detect redundant calls
 
         protected virtual void Dispose(bool disposing)
         {
@@ -1352,7 +1352,7 @@ namespace MyFlightbook.Telemetry
             /// </summary>
             public string DateColumn { get; set; }
 
-            private string _szSpeedCol = null;
+            private string _szSpeedCol;
 
             /// <summary>
             /// The column to use for the speed

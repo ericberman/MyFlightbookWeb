@@ -259,7 +259,7 @@ namespace MyFlightbook.Currency
     public abstract class Part135_267BBase : FlightCurrency
     {
         private readonly DateTime dt24HoursAgo = DateTime.UtcNow.AddHours(-24);
-        private double TotalFlying = 0.0;
+        private double TotalFlying;
 
         protected double MaxFlying { get; set; }
         protected double GettingClose { get; set; }

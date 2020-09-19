@@ -19,8 +19,8 @@ using MyFlightbook;
 
 public partial class Member_AddRelationship : System.Web.UI.Page
 {
-    private CFIStudentMapRequest m_smr = null;
-    private CFIStudentMap m_sm = null;
+    private CFIStudentMapRequest m_smr;
+    private CFIStudentMap m_sm;
 
     protected void Page_Load(object sender, EventArgs e)
     {

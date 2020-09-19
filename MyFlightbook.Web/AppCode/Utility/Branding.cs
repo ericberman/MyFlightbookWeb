@@ -111,7 +111,7 @@ namespace MyFlightbook
             return String.Compare(HostName, szHost, StringComparison.OrdinalIgnoreCase) == 0;
         }
 
-        static private Collection<Brand> _knownBrands = null;
+        static private Collection<Brand> _knownBrands;
 
         static public Collection<Brand> KnownBrands
         {

@@ -15,7 +15,7 @@ using System.Web.UI.WebControls;
 
 public partial class Member_StartingTotals : MyFlightbook.Web.WizardPage.MFBWizardPage
 {
-    Collection<StartingFlight> m_lstStartingFlights = null;
+    Collection<StartingFlight> m_lstStartingFlights;
     const string szKeyStartingFlights = "startingFlightsViewState";
 
     protected enum StartingFlightColumn { PIC, SIC, CFI, Total };

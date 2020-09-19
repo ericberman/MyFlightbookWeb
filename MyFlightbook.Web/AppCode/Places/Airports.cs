@@ -29,7 +29,7 @@ namespace MyFlightbook.Airports
     /// </summary>
     public class NavAidTypes
     {
-        private static NavAidTypes[] _rgKnownTypes = null;
+        private static NavAidTypes[] _rgKnownTypes;
 
         #region Properties
         /// <summary>
@@ -586,7 +586,7 @@ namespace MyFlightbook.Airports
                         AirportList al = alMaster.CloneSubset(le.Route);
                         kw.AddRoute(al.GetNormalizedAirports(), String.Format(CultureInfo.CurrentCulture, "{0:d} - {1}", le.Date, le.Route));
                     },
-                    lstIDs != null && lstIDs.Count() > 0);
+                    lstIDs != null && lstIDs.Any());
                 kw.EndKML();
             }
         }
@@ -767,7 +767,7 @@ namespace MyFlightbook.Airports
         }
         #endregion  // properties
 
-        private Boolean isNew = false;
+        private Boolean isNew;
 
         public const int minNavaidCodeLength = 2;
         public const int minAirportCodeLength = 3;
@@ -2578,7 +2578,7 @@ namespace MyFlightbook.Airports
     public class AirportQuizQuestion
     {
         private int m_CorrectAnswer = -1;
-        private readonly airport[] m_Answers = null;
+        private readonly airport[] m_Answers;
 
         /// <summary>
         /// The index of the answer to the most recently asked question

@@ -18,7 +18,7 @@ using System.Web.UI.WebControls;
 
 public partial class Member_EditProfile : System.Web.UI.Page
 {
-    private Profile m_pf = null;
+    private Profile m_pf;
 
     #region Page Lifecycle, setup
     private static tabID HandleUnknownSidebar(string szPref)

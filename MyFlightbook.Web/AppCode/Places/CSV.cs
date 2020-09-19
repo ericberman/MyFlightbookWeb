@@ -192,13 +192,13 @@ namespace MyFlightbook.Telemetry
 
             public int derivedColumnCount { get; set; }
 
-            private List<KnownColumn> _columnList = null;
+            private List<KnownColumn> _columnList;
             public List<KnownColumn> ColumnList
             {
                 get { return _columnList ?? (_columnList = new List<KnownColumn>()); }
             }
 
-            private List<Position> _samplesList = null;
+            private List<Position> _samplesList;
             public List<Position> SamplesList
             {
                 get { return _samplesList ?? (_samplesList = new List<Position>()); }

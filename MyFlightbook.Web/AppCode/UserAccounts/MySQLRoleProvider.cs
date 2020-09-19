@@ -56,7 +56,7 @@ namespace Andri.Web
         // exceptions are written to the event log.
         //
 
-        private bool pWriteExceptionsToEventLog = false;
+        private bool pWriteExceptionsToEventLog;
 
         public bool WriteExceptionsToEventLog
         {

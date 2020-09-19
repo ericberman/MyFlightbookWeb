@@ -21,7 +21,7 @@ namespace MyFlightbook.ImportFlights
     [Serializable]
     public class CSVImporter
     {
-        private ImportContext m_ImportContext = null;
+        private ImportContext m_ImportContext;
         private List<AircraftImportMatchRow> m_missingAircraft = new List<AircraftImportMatchRow>();
 
         #region properties

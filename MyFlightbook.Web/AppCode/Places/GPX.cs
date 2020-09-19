@@ -87,7 +87,7 @@ namespace MyFlightbook.Telemetry
             return new GPXPathRoot { xnamespace = ns, elements = ele };
         }
 
-        private XNamespace _badElfExtensionNamespace = null;
+        private XNamespace _badElfExtensionNamespace;
         private XNamespace BadElfExtensionNamespace
         {
             get

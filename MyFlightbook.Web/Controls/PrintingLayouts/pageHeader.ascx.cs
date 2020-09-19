@@ -5,7 +5,7 @@ public partial class Controls_PrintingLayouts_pageHeader : System.Web.UI.UserCon
 {
     public string UserName { get; set; }
 
-    private Profile m_user = null;
+    private Profile m_user;
     protected Profile CurrentUser
     {
         get

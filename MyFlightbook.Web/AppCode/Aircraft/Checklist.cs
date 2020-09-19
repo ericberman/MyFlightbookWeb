@@ -202,7 +202,7 @@ namespace MyFlightbook.Checklists
 
     public class Checklist
     {
-        private readonly ContainerRow m_rootContainer = null;
+        private readonly ContainerRow m_rootContainer;
 
         #region Properties
         public ContainerRow Root { get { return m_rootContainer; } }

@@ -12,7 +12,7 @@ using MyFlightbook.SocialMedia;
 
 public partial class Controls_mfbTweetThis : System.Web.UI.UserControl
 {
-    private LogbookEntry m_le = null;
+    private LogbookEntry m_le;
 
     protected void Page_Load(object sender, EventArgs e)
     {

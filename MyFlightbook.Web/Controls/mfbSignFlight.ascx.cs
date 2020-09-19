@@ -15,15 +15,15 @@ using System.Web.UI.WebControls;
 
 public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
 {
-    private LogbookEntry m_le = null;
+    private LogbookEntry m_le;
     private const string szKeyVSIDFlight = "keyVSEntryToSign";
     private const string szKeyVSIDStudent = "keyVSStudentName";
     private const string szKeyCFIUserName = "keyVSCFIUserName";
     private const string szKeyCookieCopy = "cookieCopy";
 
-    public event EventHandler Cancel = null;
-    public event EventHandler SigningFinished = null;
-    private MyFlightbook.Profile m_pf = null;
+    public event EventHandler Cancel;
+    public event EventHandler SigningFinished;
+    private MyFlightbook.Profile m_pf;
 
     public enum SignMode { Authenticated, AdHoc };
 
@@ -100,7 +100,7 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
         get { return m_pf ?? (m_pf = MyFlightbook.Profile.GetUser(Page.User.Identity.Name)); }
     }
 
-    private Profile m_pfCFI = null;
+    private Profile m_pfCFI;
     /// <summary>
     /// Set the profile of the CFI.  If null, automatically switches to AdHoc mode.
     /// </summary>

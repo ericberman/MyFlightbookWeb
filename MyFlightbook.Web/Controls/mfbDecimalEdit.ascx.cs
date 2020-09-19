@@ -22,7 +22,7 @@ public partial class Controls_mfbDecimalEdit : System.Web.UI.UserControl
     private const string regInteger = "([0-9])*";
 
     private Decimal m_defValueDec = 0.0M;
-    private int m_defValueInt = 0;
+    private int m_defValueInt;
     private EditMode m_EditMode = EditMode.Decimal;
 
     private const string keyViewStateEditMode = "EM";

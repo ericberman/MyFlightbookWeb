@@ -15,7 +15,7 @@ public partial class Controls_mfbSimpleTotals : System.Web.UI.UserControl
         UpdateTotals();
     }
 
-    public event EventHandler DateRangeChanged = null;
+    public event EventHandler DateRangeChanged;
 
     public FlightQuery.DateRanges DateRange
     {

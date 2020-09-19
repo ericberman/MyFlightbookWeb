@@ -44,7 +44,7 @@ namespace MyFlightbook.Currency
         public string TypeDesignator { get; set; }
 
         // Computing composite currency
-        private Boolean m_fCacheValid = false;
+        private Boolean m_fCacheValid;
         private CurrencyState m_csCurrent = CurrencyState.NotCurrent;
         private DateTime m_dtExpiration = DateTime.MinValue;
         private string m_szDiscrepancy = string.Empty;

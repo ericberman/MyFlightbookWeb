@@ -2975,7 +2975,7 @@ namespace MyFlightbook
             get { return (CFISignatureState == LogbookEntry.SignatureState.Valid) ? Resources.SignOff.FlightSignatureValid : Resources.SignOff.FlightSignatureInvalid; }
         }
 
-        private string[] m_airports = null;
+        private string[] m_airports;
         public IEnumerable<string> Airports
         {
             get

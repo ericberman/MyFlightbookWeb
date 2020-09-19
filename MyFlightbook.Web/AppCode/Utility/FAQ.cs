@@ -125,7 +125,7 @@ namespace MyFlightbook
         /// </summary>
         public string Category { get; set; }
 
-        private List<FAQItem> m_lstFAQs = null;
+        private List<FAQItem> m_lstFAQs;
 
         /// <summary>
         /// The FAQ Items

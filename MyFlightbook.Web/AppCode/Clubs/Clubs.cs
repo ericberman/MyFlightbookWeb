@@ -253,8 +253,8 @@ namespace MyFlightbook.Clubs
         /// </summary>
         public string LastError {get; set;}
 
-        private List<ClubAircraft> m_clubAircraft = null;
-        private List<ClubMember> m_clubMembers = null;
+        private List<ClubAircraft> m_clubAircraft;
+        private List<ClubMember> m_clubMembers;
 
         /// <summary>
         /// The aircraft for the club.  This is lazy-loaded (on first access) to reduce DB hits.

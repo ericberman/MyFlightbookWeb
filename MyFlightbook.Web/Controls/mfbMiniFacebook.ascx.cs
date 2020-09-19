@@ -13,7 +13,7 @@ using System.Web.UI.HtmlControls;
 
 public partial class Controls_mfbMiniFacebook : System.Web.UI.UserControl
 {
-    private LogbookEntry m_le = null;
+    private LogbookEntry m_le;
 
     const string szFBTemplate = "https://www.facebook.com/dialog/feed?app_id={0}&link={1}&name={2}&caption={3}&description={4}&redirect_uri={5}";
 

@@ -18,9 +18,9 @@ public partial class Controls_mfbDeadlines : UserControl
 {
     private const string szDeadlinesKey = "viewstateKeyDeadlines";
 
-    public event EventHandler<DeadlineEventArgs> DeadlineUpdated = null;
-    public event EventHandler<DeadlineEventArgs> DeadlineAdded = null;
-    public event EventHandler<DeadlineEventArgs> DeadlineDeleted = null;
+    public event EventHandler<DeadlineEventArgs> DeadlineUpdated;
+    public event EventHandler<DeadlineEventArgs> DeadlineAdded;
+    public event EventHandler<DeadlineEventArgs> DeadlineDeleted;
 
     #region Properties
     private List<DeadlineCurrency> UserDeadlines

@@ -34,7 +34,7 @@ public partial class Controls_mfbQueryDescriptorItem : System.Web.UI.UserControl
         set { hdnPropName.Value = value; }
     }
 
-    public event EventHandler<FilterItemClickedEventArgs> DeleteItemClicked = null;
+    public event EventHandler<FilterItemClickedEventArgs> DeleteItemClicked;
     #endregion
 
     protected void Page_Load(object sender, EventArgs e)

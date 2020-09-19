@@ -31,7 +31,7 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
         set { ViewState[vsPropUser] = value; }
     }
 
-    private List<CustomFlightProperty> m_cfpActive = null;
+    private List<CustomFlightProperty> m_cfpActive;
     /// <summary>
     /// These are the properties that are instantiated to edit
     /// </summary>
@@ -103,7 +103,7 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
     /// </summary>
     private List<CustomFlightProperty> Properties { get; set; }
 
-    private List<CustomFlightProperty> m_propertiesFromPropSet = null;
+    private List<CustomFlightProperty> m_propertiesFromPropSet;
 
     /// <summary>
     /// Gets/sets a list of properties to edit.

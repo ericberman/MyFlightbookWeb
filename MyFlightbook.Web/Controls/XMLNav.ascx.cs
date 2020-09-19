@@ -48,7 +48,7 @@ public partial class XMLNav : System.Web.UI.UserControl
 
     protected bool NeedsAndroidHack { get; set; }
 
-    public event EventHandler<TabBoundEventArgs> TabItemBound = null;
+    public event EventHandler<TabBoundEventArgs> TabItemBound;
     #endregion
 
     private ProfileRoles.UserRoles m_userRole;

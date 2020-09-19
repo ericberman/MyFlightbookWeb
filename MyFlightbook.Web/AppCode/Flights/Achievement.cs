@@ -869,7 +869,7 @@ namespace MyFlightbook.Achievements
     [Serializable]
     public class TrainingBadgeBegan : Badge
     {
-        bool fSeen1stFlight = false;
+        bool fSeen1stFlight;
 
         public TrainingBadgeBegan()
             : base(BadgeID.FirstLesson, Resources.Achievements.nameFirstLesson)
@@ -925,7 +925,7 @@ namespace MyFlightbook.Achievements
     [Serializable]
     public class TrainingBadgeFirstNightLanding : Badge
     {
-        bool fSeenFirstLanding = false;
+        bool fSeenFirstLanding;
 
         public TrainingBadgeFirstNightLanding()
             : base(BadgeID.FirstNightLanding, Resources.Achievements.nameFirstNightLanding)
@@ -952,7 +952,7 @@ namespace MyFlightbook.Achievements
     [Serializable]
     public class TrainingBadgeFirstXC : Badge
     {
-        bool fSeen1stXC = false;
+        bool fSeen1stXC;
 
         public TrainingBadgeFirstXC()
             : base(BadgeID.FirstXC, Resources.Achievements.nameFirstXC)
@@ -979,7 +979,7 @@ namespace MyFlightbook.Achievements
     [Serializable]
     public class TrainingBadgeFirstSoloXC : Badge
     {
-        bool fSeen1stXC = false;
+        bool fSeen1stXC;
 
         public TrainingBadgeFirstSoloXC()
             : base(BadgeID.FirstSoloXC, Resources.Achievements.nameFirstSoloXCFlight)
@@ -1410,7 +1410,7 @@ namespace MyFlightbook.Achievements
     [Serializable]
     public class MultiLevelBadgeFlyingStreak : MultiLevelCountBadgeBase
     {
-        int daysInARow = 0;
+        int daysInARow;
         DateTime dtLastSeen = DateTime.MinValue;
         
         public MultiLevelBadgeFlyingStreak() : base(BadgeID.FlyingStreak, Resources.Achievements.nameFlyingStreak, 10, 20, 30, 50) { }

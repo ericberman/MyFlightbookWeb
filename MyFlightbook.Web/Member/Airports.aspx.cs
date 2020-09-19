@@ -17,7 +17,7 @@ using System.Web.UI.WebControls;
 
 public partial class Member_Airports : System.Web.UI.Page
 {
-    private VisitedAirport[] m_rgVisitedAirport = null;
+    private VisitedAirport[] m_rgVisitedAirport;
 
     private const string szKeyVAState = "VisitedAirports";
 

@@ -16,11 +16,11 @@ using System.Web.UI.WebControls;
 
 public partial class Controls_mfbCustCurrency : System.Web.UI.UserControl
 {
-    public event EventHandler<CustomCurrencyEventArgs> CurrencyAdded = null;
-    public event EventHandler<CustomCurrencyEventArgs> CurrencyUpdated = null;
+    public event EventHandler<CustomCurrencyEventArgs> CurrencyAdded;
+    public event EventHandler<CustomCurrencyEventArgs> CurrencyUpdated;
 
     #region Properties
-    private CustomCurrency m_cc = null;
+    private CustomCurrency m_cc;
 
     /// <summary>
     /// The currency being edited

@@ -11,7 +11,7 @@ using System;
 
 public partial class Controls_ClubControls_ClubAircraftSchedule : System.Web.UI.UserControl
 {
-    private ClubAircraft m_ca = null;
+    private ClubAircraft m_ca;
 
     public ClubAircraft Aircraft
     {

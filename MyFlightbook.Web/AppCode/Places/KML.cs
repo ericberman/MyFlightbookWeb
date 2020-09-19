@@ -27,7 +27,7 @@ namespace MyFlightbook.Telemetry
         XmlWriter kml;
 
         #region IDisposable Implementation
-        private bool disposed = false; // to detect redundant calls
+        private bool disposed; // to detect redundant calls
 
         protected virtual void Dispose(bool disposing)
         {

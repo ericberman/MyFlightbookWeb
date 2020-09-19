@@ -16,7 +16,7 @@ namespace gma.Drawing.ImageInfo
  	///This Class helps to manipulate and display those numbers.</summary>
 	public class Fraction 
 	{
-   		Int32 num = 0;
+   		Int32 num;
    		Int32 den = 1;
 		///<summary>Creates a Fraction Number having Numerator and Denumerator.</summary>
 		///<param name="num">Numerator</param>

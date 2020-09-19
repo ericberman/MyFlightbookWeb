@@ -421,9 +421,9 @@ namespace MyFlightbook.Geography
         private double m_Altitude;
         private double m_Speed;
         private DateTime m_dt = DateTime.MinValue;
-        private bool m_HasAltitude = false;
-        private bool m_HasSpeed = false;
-        private bool m_HasTimestamp = false;
+        private bool m_HasAltitude;
+        private bool m_HasSpeed;
+        private bool m_HasTimestamp;
 
         public enum SpeedType { Reported, Derived }
 
@@ -1484,7 +1484,7 @@ namespace MyFlightbook.Geography
 
     public static class KnownGeoRegions
     {
-        private static IEnumerable<IPolyRegion> _AllContinents = null;
+        private static IEnumerable<IPolyRegion> _AllContinents;
 
         public static IEnumerable<IPolyRegion> AllContinents
         {

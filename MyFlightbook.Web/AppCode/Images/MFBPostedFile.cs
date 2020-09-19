@@ -128,7 +128,7 @@ namespace MyFlightbook.Image
         /// </summary>
         public string FileID { get; set; }
 
-        private byte[] m_ThumbBytes = null;
+        private byte[] m_ThumbBytes;
 
         /// <summary>
         /// Returns the bytes of the posted file, converted if needed from HEIC.

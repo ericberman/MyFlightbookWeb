@@ -210,7 +210,7 @@ public partial class Controls_mfbEditAircraft : Controls_mfbEditAircraftBase
 {
     private const string szKeyVSAircraftInProgress = "AircraftInProgress";
 
-    public event System.EventHandler AircraftUpdated = null;
+    public event System.EventHandler AircraftUpdated;
 
     #region Properties
     /// <summary>

@@ -633,7 +633,7 @@ namespace MyFlightbook.Currency
         public Dictionary<string, CurrencyExaminer> dictIFRCurrency { get; set; } = new Dictionary<string, CurrencyExaminer>();      // IFR currency per 61.57(c)(1) or 61.57(c)(2) (Real airplane or certified flight simulator
         public Dictionary<string, PIC6158Currency> dictPICProficiencyChecks { get; set; } = new Dictionary<string, PIC6158Currency>();     // PIC Proficiency checks
         public Dictionary<string, SIC6155Currency> dictSICProficiencyChecks { get; set; } = new Dictionary<string, SIC6155Currency>();   // 61.55 SIC Proficiency checks
-        public bool fHasIR { get; set; } = false;    // for EASA currency, don't bother reporting night currency if user holds an instrument rating (defined as having seen an IPC/instrument checkride.
+        public bool fHasIR { get; set; }    // for EASA currency, don't bother reporting night currency if user holds an instrument rating (defined as having seen an IPC/instrument checkride.
 
         public GliderIFRCurrency gliderIFR { get; set; } = new GliderIFRCurrency(); // IFR currency in a glider.
 

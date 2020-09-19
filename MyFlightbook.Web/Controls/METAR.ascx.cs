@@ -16,7 +16,7 @@ using System.Web.UI.WebControls;
 public partial class Controls_METAR : System.Web.UI.UserControl
 {
     #region Properties
-    private IEnumerable<METAR> m_METARS = null;
+    private IEnumerable<METAR> m_METARS;
 
     /// <summary>
     /// Specify the enumerable set of METARs

@@ -267,7 +267,7 @@
                 Text="" meta:resourcekey="lblPixForFlightResource1"></asp:Label>
         </div>
         <div>
-            <uc5:mfbMultiFileUpload ID="mfbMFUFlightImages" Mode="Ajax" Class="Flight" IncludeDocs="true" RefreshOnUpload="true" runat="server" OnBeforeGooglePhotoFetch="Fetch_GooglePhotos" OnUploadComplete="mfbMFUFlightImages_UploadComplete" OnBeforeImportGooglePhoto="mfbMFUFlightImages_GeotagPhoto" />
+            <uc5:mfbMultiFileUpload ID="mfbMFUFlightImages" Mode="Ajax" Class="Flight" IncludeDocs="true" RefreshOnUpload="true" runat="server" OnFetchingGooglePhotos="Fetch_GooglePhotos" OnUploadComplete="mfbMFUFlightImages_UploadComplete" OnImportingGooglePhoto="mfbMFUFlightImages_GeotagPhoto" />
             <br />
             <uc2:mfbImageList ID="mfbFlightImages" ImageClass="Flight" IncludeDocs="true"
                 runat="server" AltText="Images from flight" CanEdit="true" Columns="4" 

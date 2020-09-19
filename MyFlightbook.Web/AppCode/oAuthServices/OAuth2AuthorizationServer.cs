@@ -472,8 +472,8 @@ namespace OAuthAuthorizationServer.Code
     /// </summary>
     public class OAuth2AuthorizationServer : IAuthorizationServerHost
     {
-        static MySqlNonceStore _nonceStore = null;
-        static MySqlCryptoKeyStore _cryptoStore = null;
+        static MySqlNonceStore _nonceStore;
+        static MySqlCryptoKeyStore _cryptoStore;
 
         static List<MFBOauth2Client> _lstClients = new List<MFBOauth2Client>(MFBOauth2Client.GetAvailableClients());
 

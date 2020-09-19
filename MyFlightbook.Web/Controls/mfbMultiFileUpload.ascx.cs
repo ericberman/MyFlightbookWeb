@@ -22,7 +22,7 @@ public partial class Controls_mfbMultiFileUpload : System.Web.UI.UserControl
     private const int MaxFiles = 5;
 
     private Controls_mfbFileUpload[] rgmfbFu;
-    private bool m_fHasProcessed = false;   // don't process twice.
+    private bool m_fHasProcessed;   // don't process twice.
 
     // Note: when adjusting this list, check against https://github.com/DevExpress/AjaxControlToolkit/wiki/AjaxFileUpload-setup to see if we need to edit web.config.
     private const string szFileTypesImages = "jpg,jpeg,jpe,png,heic";
@@ -46,17 +46,17 @@ public partial class Controls_mfbMultiFileUpload : System.Web.UI.UserControl
     /// <summary>
     /// Called when upload is complete on a single file 
     /// </summary>
-    public event EventHandler UploadComplete = null;
+    public event EventHandler UploadComplete;
 
     /// <summary>
     /// Called before fetching images from GooglePhotos - allows setting of things like date to fetch
     /// </summary>
-    public event EventHandler BeforeGooglePhotoFetch = null;
+    public event EventHandler FetchingGooglePhotos;
 
     /// <summary>
     /// Called before importing an image from GooglePhotos - allows for geotagging, if possible.
     /// </summary>
-    public event EventHandler<PositionEventArgs> BeforeImportGooglePhoto = null;
+    public event EventHandler<PositionEventArgs> ImportingGooglePhoto;
 
     #region Google Photos import
     private GoogleMediaResponse RetrievedGooglePhotos
@@ -388,7 +388,7 @@ return false;
         string szAuthJSon = pf.GetPreferenceForKey<string>(GooglePhoto.PrefKeyAuthToken);
 
         // Get an update
-        BeforeGooglePhotoFetch?.Invoke(this, new EventArgs());
+        FetchingGooglePhotos?.Invoke(this, new EventArgs());
 
         if (!GooglePhotosDateToRetrieve.HasValue())
             return; // nothing to do.
@@ -440,7 +440,7 @@ return false;
             throw new ArgumentOutOfRangeException("Can't find item with id " + e.CommandArgument);
 
         PositionEventArgs pea = new PositionEventArgs(null, clickedItem.mediaMetadata.CreationTime);
-        BeforeImportGooglePhoto?.Invoke(sender, pea);
+        ImportingGooglePhoto?.Invoke(sender, pea);
 
         MFBPostedFile pf = RetrievedGooglePhotos.ImportImage(e.CommandArgument.ToString());
 

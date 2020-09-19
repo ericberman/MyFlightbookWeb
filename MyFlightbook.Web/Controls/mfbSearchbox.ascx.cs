@@ -30,7 +30,7 @@ public partial class Controls_mfbSearchbox : System.Web.UI.UserControl
 
     #endregion
 
-    public event EventHandler<EventArgs> SearchClicked = null;
+    public event EventHandler<EventArgs> SearchClicked;
 
     protected void Page_Load(object sender, EventArgs e)
     {

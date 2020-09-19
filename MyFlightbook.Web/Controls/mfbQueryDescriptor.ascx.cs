@@ -16,7 +16,7 @@ public partial class Controls_mfbQueryDescriptor : System.Web.UI.UserControl
 
     public FlightQuery DataSource { get; set; }
 
-    public event EventHandler<FilterItemClickedEventArgs> QueryUpdated = null;
+    public event EventHandler<FilterItemClickedEventArgs> QueryUpdated;
 
     public bool ShowEmptyFilter
     {

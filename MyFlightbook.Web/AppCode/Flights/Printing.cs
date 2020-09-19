@@ -303,7 +303,7 @@ namespace MyFlightbook.Printing
         /// <summary>
         /// Include images when printing?
         /// </summary>
-        public bool IncludeImages { get; set; } = false;
+        public bool IncludeImages { get; set; }
 
         /// <summary>
         /// Include signatures when printing?
@@ -313,7 +313,7 @@ namespace MyFlightbook.Printing
         /// <summary>
         /// Start a new page when encountering a month boundary (non-continuous only)
         /// </summary>
-        public bool BreakAtMonthBoundary { get; set; } = false;
+        public bool BreakAtMonthBoundary { get; set; }
 
         /// <summary>
         /// Layout to use

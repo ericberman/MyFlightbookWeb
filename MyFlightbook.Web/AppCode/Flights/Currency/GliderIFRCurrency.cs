@@ -18,12 +18,12 @@ namespace MyFlightbook.Currency
         readonly FlightCurrency fcGliderInstrumentPassengers = new FlightCurrency(1, 6, true, "Instrument Maneuvers required for passengers, per 61.57(c)(6)(ii) => (c)(3)(ii)");
         readonly FlightCurrency fcGliderIPC = new FlightCurrency(1, 6, true, "Glider IPC");
 
-        private Boolean m_fCacheValid = false;
+        private Boolean m_fCacheValid;
 
-        Boolean m_fCurrentSolo = false;
-        Boolean m_fCurrentPassengers = false;
+        Boolean m_fCurrentSolo;
+        Boolean m_fCurrentPassengers;
 
-        private string m_szDiscrepancy = "";
+        private string m_szDiscrepancy = string.Empty;
         private CurrencyState m_csCurrent = CurrencyState.NotCurrent;
         private DateTime m_dtExpiration = DateTime.MinValue;
 

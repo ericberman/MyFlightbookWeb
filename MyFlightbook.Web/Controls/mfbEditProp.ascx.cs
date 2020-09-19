@@ -12,7 +12,7 @@ using System.Web.UI;
 
 public partial class Controls_mfbEditProp : System.Web.UI.UserControl
 {
-    private CustomFlightProperty m_fp = null;
+    private CustomFlightProperty m_fp;
 
     #region properties
     public string Username { get; set; }

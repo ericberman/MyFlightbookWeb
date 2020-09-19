@@ -19,8 +19,8 @@ using System.Web.UI.WebControls;
 public partial class Member_Training : System.Web.UI.Page
 {
 
-    private CFIStudentMap m_sm = null;
-    private Profile m_pf = null;
+    private CFIStudentMap m_sm;
+    private Profile m_pf;
 
     protected void Page_Load(object sender, EventArgs e)
     {

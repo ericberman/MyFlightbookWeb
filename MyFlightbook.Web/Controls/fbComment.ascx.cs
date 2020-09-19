@@ -2,14 +2,14 @@
 
 /******************************************************
  * 
- * Copyright (c) 2013-2019 MyFlightbook LLC
+ * Copyright (c) 2013-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
 public partial class Controls_fbComment : System.Web.UI.UserControl
 {
-    private Uri m_szURI = null;
+    private Uri m_szURI;
 
     /// <summary>
     /// The ABSOLUTE URI to use.  If it is empty, the current page's URL will be used

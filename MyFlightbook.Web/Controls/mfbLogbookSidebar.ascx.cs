@@ -13,7 +13,7 @@ using System.Web.UI.WebControls;
 public partial class Controls_mfbLogbookSidebar : System.Web.UI.UserControl
 {
 
-    private TabList m_tl = null;
+    private TabList m_tl;
 
     #region properties
     /// <summary>

@@ -80,7 +80,7 @@ namespace MyFlightbook.ImportFlights
 
     public class AASchedulerImporter : ExternalFormatImporter
     {
-        private MatchCollection Matches = null;
+        private MatchCollection Matches;
 
         public override string Name { get { return "AA Scheduler"; } }
 

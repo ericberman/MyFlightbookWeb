@@ -47,7 +47,7 @@ public partial class Controls_mfbFlightContextMenu : UserControl
 
     public string SignTargetFormatString { get; set; }
 
-    private LogbookEntryDisplay m_le = null;
+    private LogbookEntryDisplay m_le;
     public LogbookEntryDisplay Flight
     {
         get { return m_le; }

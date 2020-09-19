@@ -31,7 +31,7 @@ public partial class Controls_mfbFlightInfo : System.Web.UI.UserControl
         }
     }
 
-    public event EventHandler<AutofillEventArgs> AutoFill = null;
+    public event EventHandler<AutofillEventArgs> AutoFill;
 
     public short InitialTabIndex
     {

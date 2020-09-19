@@ -20,9 +20,9 @@ public partial class Controls_GoogleChart : System.Web.UI.UserControl
     private int m_Width = 800;
     private int m_Height = 400;
     private int m_tickSpacing = 1;
-    private ArrayList m_XVals = null;
-    private ArrayList m_YVals = null;
-    private ArrayList m_Y2Vals = null;
+    private ArrayList m_XVals;
+    private ArrayList m_YVals;
+    private ArrayList m_Y2Vals;
     private GoogleColumnDataType m_XDataType = GoogleColumnDataType.@string;
     private GoogleColumnDataType m_YDataType = GoogleColumnDataType.number;
     private GoogleColumnDataType m_Y2DataType = GoogleColumnDataType.number;

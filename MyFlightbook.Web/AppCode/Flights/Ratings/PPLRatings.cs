@@ -846,7 +846,7 @@ namespace MyFlightbook.RatingsProgress
         /// <summary>
         /// Multi-engine uses DPIC instead of solo
         /// </summary>
-        private bool _AllowDPICInsteadOfSolo = false;
+        private bool _AllowDPICInsteadOfSolo;
 
         protected bool AllowDPICInsteadOfSolo
         {

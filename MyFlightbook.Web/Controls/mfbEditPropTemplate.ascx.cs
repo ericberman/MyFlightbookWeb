@@ -18,7 +18,7 @@ using System.Web.UI.WebControls;
 
 public partial class Controls_mfbEditPropTemplate : System.Web.UI.UserControl
 {
-    public event EventHandler<PropertyTemplateEventArgs> TemplateCreated = null;
+    public event EventHandler<PropertyTemplateEventArgs> TemplateCreated;
 
     #region Properties
     private const string szvsActiveTemplate = "vsActiveTemplate";

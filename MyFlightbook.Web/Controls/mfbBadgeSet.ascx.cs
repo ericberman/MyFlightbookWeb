@@ -11,7 +11,7 @@ using System;
 
 public partial class Controls_mfbBadgeSet : System.Web.UI.UserControl
 {
-    private BadgeSet m_badgeset = null;
+    private BadgeSet m_badgeset;
 
     public BadgeSet BadgeSet
     {

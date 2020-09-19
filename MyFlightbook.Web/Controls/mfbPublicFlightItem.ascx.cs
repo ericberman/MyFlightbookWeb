@@ -14,7 +14,7 @@ using System.Web.UI.WebControls;
 
 public partial class Controls_mfbPublicFlightItem : System.Web.UI.UserControl
 {
-    private LogbookEntry m_le = null;
+    private LogbookEntry m_le;
 
     public LogbookEntry Entry
     {

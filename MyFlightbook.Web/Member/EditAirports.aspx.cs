@@ -95,7 +95,7 @@ public partial class Member_EditAirports : Page
     #endregion
 
 
-    private airport[] m_rgAirportsForUser = null;
+    private airport[] m_rgAirportsForUser;
 
     protected void Page_Load(object sender, EventArgs e)
     {

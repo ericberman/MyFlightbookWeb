@@ -15,14 +15,14 @@ using System.Web.UI.WebControls;
 
 public partial class Controls_mfbEditableImage : System.Web.UI.UserControl
 {
-    private MFBImageInfo mfbii = null;
+    private MFBImageInfo mfbii;
     private string m_szAltTextDefault = "";
     private GeoLinkType m_zoomLinkType = GeoLinkType.None;
 
     public enum GeoLinkType { None, ZoomOnLocalMap, ZoomOnGoogleMaps };
 
-    public event System.EventHandler<MFBImageInfoEventArgs> ImageDeleted = null;
-    public event System.EventHandler<MFBImageInfoEventArgs> ImageMadeDefault = null;
+    public event System.EventHandler<MFBImageInfoEventArgs> ImageDeleted;
+    public event System.EventHandler<MFBImageInfoEventArgs> ImageMadeDefault;
 
     /// <summary>
     /// Gets/sets the image which can be edited.

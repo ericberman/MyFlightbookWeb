@@ -302,7 +302,7 @@ namespace MyFlightbook
         }
         #endregion
 
-        static private List<CountryCodePrefix> _cachedCountryCodes = null;
+        static private List<CountryCodePrefix> _cachedCountryCodes;
 
         /// <summary>
         /// Returns a cached array of all country codes

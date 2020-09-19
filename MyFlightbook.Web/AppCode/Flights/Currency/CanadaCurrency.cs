@@ -16,8 +16,8 @@ namespace MyFlightbook.Currency
             get { return fHasPICExperience || fHasFlightReview; }
         }
 
-        private bool fHasPICExperience = false;
-        private bool fHasFlightReview = false;
+        private bool fHasPICExperience;
+        private bool fHasFlightReview;
 
         public FlightExperienceCanada() { }
 
@@ -128,7 +128,7 @@ namespace MyFlightbook.Currency
         readonly FlightCurrency fc401_05_3_cTime = new FlightCurrency(6.0M, 6, true, "6 Hours of IFR time in a real aircraft");
         readonly FlightCurrency fc401_05_3_cApproaches = new FlightCurrency(6.0M, 6, true, "6 approaches in a real aircraft");
 
-        private Boolean m_fCacheValid = false;
+        private Boolean m_fCacheValid;
         private CurrencyState m_csCurrent = CurrencyState.NotCurrent;
         private DateTime m_dtExpiration = DateTime.MinValue;
         private string m_szDiscrepancy = string.Empty;

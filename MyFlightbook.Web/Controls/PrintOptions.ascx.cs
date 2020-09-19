@@ -15,7 +15,7 @@ using System.Web.UI.WebControls;
 
 public partial class Controls_PrintOptions : System.Web.UI.UserControl
 {
-    public event EventHandler<PrintingOptionsEventArgs> OptionsChanged = null;
+    public event EventHandler<PrintingOptionsEventArgs> OptionsChanged;
 
     private DropDownList[] m_optionalColumnsDropdowns;
 
@@ -46,7 +46,7 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
         }
     }
 
-    private PrintingOptions m_options = null;
+    private PrintingOptions m_options;
     public PrintingOptions Options
     {
         get

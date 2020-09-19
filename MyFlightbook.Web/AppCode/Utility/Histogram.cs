@@ -122,7 +122,7 @@ namespace MyFlightbook.Histogram
         /// <summary>
         /// Does this bucket have running totals?
         /// </summary>
-        public bool HasRunningTotals { get; set; } = false;
+        public bool HasRunningTotals { get; set; }
 
         /// <summary>
         /// The running totals for the Y-axis for this bucket, if appropriate
@@ -132,7 +132,7 @@ namespace MyFlightbook.Histogram
         /// <summary>
         /// True to exclude this bucket from average (e.g., if it is a month bucket that only exists to align to January)
         /// </summary>
-        public bool ExcludeFromAverage { get; set; } = false;
+        public bool ExcludeFromAverage { get; set; }
         #endregion
 
         #region Object creation

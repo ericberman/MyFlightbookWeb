@@ -20,7 +20,7 @@ public partial class Controls_mfbImageList : System.Web.UI.UserControl
     private ImageList m_imgList;
     private Controls_mfbEditableImage.GeoLinkType m_LinkType = Controls_mfbEditableImage.GeoLinkType.None;
 
-    public event EventHandler<MFBImageInfoEventArgs> MakeDefault = null;
+    public event EventHandler<MFBImageInfoEventArgs> MakeDefault;
 
     #region properties
     /// <summary>

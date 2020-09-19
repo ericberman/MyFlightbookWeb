@@ -22,10 +22,10 @@ public partial class Controls_mfbEditEndorsement : System.Web.UI.UserControl
     private const string keyVSSourceUser = "vsSource";
     private const string keyVSStudentType = "vsStudentType";
 
-    public event EventHandler<EndorsementEventArgs> NewEndorsement = null;
+    public event EventHandler<EndorsementEventArgs> NewEndorsement;
 
-    private MyFlightbook.Profile m_TargetUser = null;
-    private MyFlightbook.Profile m_SourceUser = null;
+    private MyFlightbook.Profile m_TargetUser;
+    private MyFlightbook.Profile m_SourceUser;
 
     /// <summary>
     /// Student

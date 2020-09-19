@@ -17,7 +17,7 @@ namespace MyFlightbook.Currency
     {
         #region properties
         private readonly List<DateTime> lstDatesOfCurrencyChecks = new List<DateTime>();
-        private DateTime? dtExpiration = null;
+        private DateTime? dtExpiration;
         #endregion
 
         public PIC6158Currency(decimal cThreshold, int period, bool fMonths, string szName) : base(cThreshold, period, fMonths, szName) { }

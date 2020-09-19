@@ -21,8 +21,8 @@ public partial class Controls_MFBLogbookBase : UserControl
     const string szFQViewStateKeyPrefix = "FQ";
     const string szKeyLastSortExpr = "LastSort";
     const string szKeylastSortDir = "LastSortDir";
-    private MyFlightbook.Profile m_pfPilot = null;
-    private MyFlightbook.Profile m_pfUser = null;
+    private MyFlightbook.Profile m_pfPilot;
+    private MyFlightbook.Profile m_pfUser;
 
     #region Properties that DON'T Depend on controls on the page
     private string RestrictionVSKey { get { return szFQViewStateKeyPrefix + ID; } }
@@ -293,7 +293,7 @@ public partial class Controls_MFBLogbookBase : UserControl
     }
 
     #region Badges
-    private Dictionary<int, List<Badge>> m_cachedBadges = null;
+    private Dictionary<int, List<Badge>> m_cachedBadges;
 
     private Dictionary<int, List<Badge>> CachedBadgesByFlight
     {
@@ -350,11 +350,11 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
 {
     const string szKeyAllowsPaging = "allowsPaging";
     const string szKeyMiniMode = "minimode";
-    private Boolean m_fMiniMode = false;
+    private Boolean m_fMiniMode;
     private readonly Dictionary<int, string> m_dictAircraftHoverIDs = new Dictionary<int,string>();
 
     #region Properties
-    public event EventHandler<LogbookEventArgs> ItemDeleted = null;
+    public event EventHandler<LogbookEventArgs> ItemDeleted;
 
     /// <summary>
     /// Display in mini (mobile) mode?
@@ -472,8 +472,8 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
     const string szCookieImages = "mfbLogbookDisplayImages";
     const string szCookiesFlightsPerPage = "mfbLogbookDisplayFlightsPerPage";
 
-    private bool m_isCompact = false;
-    private bool m_showImagesInline = false;
+    private bool m_isCompact;
+    private bool m_showImagesInline;
 
     protected bool IsCompact
     {

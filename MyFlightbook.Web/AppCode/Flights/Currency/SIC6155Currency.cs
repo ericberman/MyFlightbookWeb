@@ -29,7 +29,7 @@ namespace MyFlightbook.Currency
 
         private readonly FlightCurrency fcFSLandings = new FlightCurrency(1, 12, true, "61.55 landings");
 
-        private bool fHasSICTime = false;
+        private bool fHasSICTime;
 
         private DateTime? dtExpiration;
 

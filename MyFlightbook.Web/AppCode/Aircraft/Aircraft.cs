@@ -387,8 +387,8 @@ WHERE
 
         private MaintenanceRecord m_mr;
 
-        private Boolean m_fIsTailwheel = false;
-        private IList<MFBImageInfo> rgImages = null;
+        private Boolean m_fIsTailwheel;
+        private IList<MFBImageInfo> rgImages;
         #endregion
 
         #region Flags
@@ -2540,7 +2540,7 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
         #endregion
 
         static readonly private Regex rNormalize = new Regex("[^a-zA-Z0-9]*", RegexOptions.Compiled);
-        private readonly AircraftInstance[] m_rgAircraftInstances = null;
+        private readonly AircraftInstance[] m_rgAircraftInstances;
         #endregion
 
         #region Initialization/constructors

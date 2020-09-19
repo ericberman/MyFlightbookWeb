@@ -1483,7 +1483,7 @@ namespace MyFlightbook
 
         #region Achievements
 
-        private IEnumerable<Badge> m_cachedBadges = null;
+        private IEnumerable<Badge> m_cachedBadges;
 
         /// <summary>
         /// Returns the most recently computed badges for the user, if valid, else null.

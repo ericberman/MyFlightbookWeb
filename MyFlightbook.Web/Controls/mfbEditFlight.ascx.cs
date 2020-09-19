@@ -172,7 +172,7 @@ public partial class Controls_mfbEditFlight : Controls_mfbEditFlightBase
     protected bool UseLastTail { get; set; }
     protected bool IsAdmin { get; set; }
 
-    private Profile m_CurrentUser = null;
+    private Profile m_CurrentUser;
     protected Profile CurrentUser
     {
         get

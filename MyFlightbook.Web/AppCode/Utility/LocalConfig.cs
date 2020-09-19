@@ -15,7 +15,7 @@ namespace MyFlightbook
     /// </summary>
     public static class LocalConfig
     {
-        static private Dictionary<string, string> dictConfig = null;
+        static private Dictionary<string, string> dictConfig;
 
         public static string SettingForKey(string szKey)
         {
