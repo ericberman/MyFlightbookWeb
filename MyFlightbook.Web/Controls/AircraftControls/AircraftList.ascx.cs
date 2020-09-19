@@ -31,11 +31,11 @@ public partial class Controls_AircraftControls_AircraftList : System.Web.UI.User
         }
     }
 
-    public event EventHandler<CommandEventArgs> AircraftDeleted = null;
+    public event EventHandler<CommandEventArgs> AircraftDeleted;
 
-    public event EventHandler<EventArgs> FavoriteChanged = null;
+    public event EventHandler<EventArgs> FavoriteChanged;
 
-    public event EventHandler<EventArgs> AircraftPrefChanged = null;
+    public event EventHandler<EventArgs> AircraftPrefChanged;
 
     public bool EnableAircraftViewState
     {
@@ -133,17 +133,19 @@ public partial class Controls_AircraftControls_AircraftList : System.Web.UI.User
             }
             catch (MyFlightbookException ex)
             {
-                GridView gvSource = (GridView)sender;
-                IList<Aircraft> src = (IList<Aircraft>)gvSource.DataSource;
-                for (int iRow = 0; iRow < src.Count; iRow++)
+                if (sender is GridView gvSource)
                 {
-                    if (src[iRow].AircraftID == ac.AircraftID)
+                    IList<Aircraft> src = (IList<Aircraft>)gvSource.DataSource;
+                    for (int iRow = 0; iRow < src.Count; iRow++)
                     {
-                        GridViewRow gvr = gvSource.Rows[iRow];
-                        Label l = (Label)gvr.FindControl("lblAircraftErr");
-                        l.Text = HttpUtility.HtmlEncode(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MyAircraftDeleteError, ac.TailNumber, ex.Message));
-                        l.Visible = true;
-                        break;
+                        if (src[iRow].AircraftID == ac.AircraftID)
+                        {
+                            GridViewRow gvr = gvSource.Rows[iRow];
+                            Label l = (Label)gvr.FindControl("lblAircraftErr");
+                            l.Text = HttpUtility.HtmlEncode(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MyAircraftDeleteError, ac.TailNumber, ex.Message));
+                            l.Visible = true;
+                            break;
+                        }
                     }
                 }
             }
