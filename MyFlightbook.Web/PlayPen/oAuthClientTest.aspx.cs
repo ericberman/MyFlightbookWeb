@@ -169,7 +169,7 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
         if (sb == null)
             throw new ArgumentNullException(nameof(sb));
         if (sb.Length > 0)
-            sb.Append("&");
+            sb.Append('&');
         sb.AppendFormat(CultureInfo.CurrentCulture, "{0}={1}", szKey, HttpUtility.UrlEncode(szVal));
     }
 

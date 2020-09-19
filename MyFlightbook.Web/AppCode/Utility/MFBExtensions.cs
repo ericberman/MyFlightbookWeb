@@ -637,7 +637,7 @@ namespace MyFlightbook
             {
                 sb.Append(((i & (1 << j)) != 0) ? "1" : "0");
                 if ((j % 8) == 0)
-                    sb.Append(" ");
+                    sb.Append(' ');
             }
             return sb.ToString();
         }

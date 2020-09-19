@@ -178,15 +178,15 @@ namespace AWSNotifications
         public Boolean VerifySignature()
         {
             StringBuilder sbGenerated = new StringBuilder();
-            sbGenerated.Append("Message\n").Append(Message).Append("\n");
-            sbGenerated.Append("MessageId\n").Append(MessageId).Append("\n");
+            sbGenerated.Append("Message\n").Append(Message).Append('\n');
+            sbGenerated.Append("MessageId\n").Append(MessageId).Append('\n');
 
             if (!String.IsNullOrEmpty(Subject))
-                sbGenerated.Append("Subject\n").Append(Subject).Append("\n");
+                sbGenerated.Append("Subject\n").Append(Subject).Append('\n');
 
-            sbGenerated.Append("Timestamp\n").Append(Timestamp).Append("\n");
-            sbGenerated.Append("TopicArn\n").Append(TopicArn).Append("\n");
-            sbGenerated.Append("Type\n").Append(Type).Append("\n");
+            sbGenerated.Append("Timestamp\n").Append(Timestamp).Append('\n');
+            sbGenerated.Append("TopicArn\n").Append(TopicArn).Append('\n');
+            sbGenerated.Append("Type\n").Append(Type).Append('\n');
 
             return SNSUtility.ValidateSignature(sbGenerated.ToString(), SigningCertLink, Signature);
         }
@@ -244,13 +244,13 @@ namespace AWSNotifications
                 return false;
 
             StringBuilder sbGenerated = new StringBuilder();
-            sbGenerated.Append("Message\n").Append(Message).Append("\n");
-            sbGenerated.Append("MessageId\n").Append(MessageId).Append("\n");
-            sbGenerated.Append("SubscribeURL\n").Append(SubscribeLink).Append("\n");
-            sbGenerated.Append("Timestamp\n").Append(Timestamp).Append("\n");
-            sbGenerated.Append("Token\n").Append(Token).Append("\n");
-            sbGenerated.Append("TopicArn\n").Append(TopicArn).Append("\n");
-            sbGenerated.Append("Type\n").Append(Type).Append("\n");
+            sbGenerated.Append("Message\n").Append(Message).Append('\n');
+            sbGenerated.Append("MessageId\n").Append(MessageId).Append('\n');
+            sbGenerated.Append("SubscribeURL\n").Append(SubscribeLink).Append('\n');
+            sbGenerated.Append("Timestamp\n").Append(Timestamp).Append('\n');
+            sbGenerated.Append("Token\n").Append(Token).Append('\n');
+            sbGenerated.Append("TopicArn\n").Append(TopicArn).Append('\n');
+            sbGenerated.Append("Type\n").Append(Type).Append('\n');
 
             return SNSUtility.ValidateSignature(sbGenerated.ToString(), SigningCertLink, Signature);
         }

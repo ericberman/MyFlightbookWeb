@@ -1029,7 +1029,7 @@ namespace MyFlightbook
                     sbAirportDesc.Append(lstAirports[i] + Resources.LocalizedText.LocalizedSpace);
                 }
 
-                sbAirports.Append(")");
+                sbAirports.Append(')');
                 AddClause(sbQuery, sbAirports.ToString());
 
                 Filters.Add(new QueryFilterItem(Resources.FlightQuery.ContainsAirports, sbAirportDesc.ToString().Trim(), "AirportList"));
@@ -1080,7 +1080,7 @@ namespace MyFlightbook
                 }
                 if (sbModelName.Length > 0)
                 {
-                    sbModelName.Append(")");
+                    sbModelName.Append(')');
                     szModelsTextQuery = sbModelName.ToString();
                     Filters.Add(new QueryFilterItem(String.IsNullOrEmpty(szModelsIDQuery) ? Resources.FlightQuery.ContainsMakeModelText : Resources.FlightQuery.ContainsMakeModelTextOR, ModelName, "ModelName"));
                 }
@@ -1110,7 +1110,7 @@ namespace MyFlightbook
                     }
                     if (sbTypes.Length > 0)
                     {
-                        sbTypes.Append(")");
+                        sbTypes.Append(')');
                         szModelsTypeQuery = sbTypes.ToString();
                         Filters.Add(new QueryFilterItem(TypeNames.Count == 1 ? Resources.FlightQuery.ContainsType : Resources.FlightQuery.ContainsTypeMultiple, String.Join(",", TypeNames), "TypeNames"));
                     }

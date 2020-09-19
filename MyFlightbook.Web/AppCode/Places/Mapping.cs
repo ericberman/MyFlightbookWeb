@@ -296,7 +296,7 @@ namespace MyFlightbook.Mapping
                 }
                 szImages.Append(String.Join(", ", lstPhotoMarkers.ToArray()));
             }
-            szImages.Append("]");
+            szImages.Append(']');
 
             return szImages.ToString();
         }
@@ -320,7 +320,7 @@ namespace MyFlightbook.Mapping
                 }
                 szClubs.AppendFormat(CultureInfo.InvariantCulture, "{0}", String.Join(",\r\n", lstClubs.ToArray()));
             }
-            szClubs.Append("]");
+            szClubs.Append(']');
             return szClubs.ToString();
         }
 
