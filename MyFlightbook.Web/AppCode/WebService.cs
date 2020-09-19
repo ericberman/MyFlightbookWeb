@@ -195,6 +195,8 @@ namespace MyFlightbook
         }
     }
 
+// All of the public methods in this class technically can be marked static (CA1822), but that breaks it as a webservice.  So we will suppress that here for the entire class
+#pragma warning disable CA1822 // Mark members as static
     /// <summary>
     /// The main SOAP service for mobile use
     /// NOTE: iPhone sends HTML entities URL encoded, so we need to decode them on receipt.  Bleah.
@@ -1392,4 +1394,5 @@ namespace MyFlightbook
         }
         #endregion
     }
+#pragma warning restore CA1822 // Mark members as static
 }
