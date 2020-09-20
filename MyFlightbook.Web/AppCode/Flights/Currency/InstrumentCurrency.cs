@@ -56,7 +56,7 @@ namespace MyFlightbook.Currency
          * 
          * I'll implement this interpretation here as LOOSE, and require an approach and hold in a real airplane but the balance in anything.
          * 
-         * Update: 6/1/2013: I'm lossening this a bit more, so the hold can be in a real airplane OR ATD OR FS/FTD.
+         * Update: 6/1/2013: I'm loosening this a bit more, so the hold can be in a real airplane OR ATD OR FS/FTD.
          * 
          * Update: 7/6/2018 - pending changes to regs make all of this moot.
         */
@@ -68,14 +68,13 @@ namespace MyFlightbook.Currency
         readonly FlightCurrency fcAirplaneApproach6Month = new FlightCurrency(1, 6, true, "IFR - at least one approach in 6 months in airplane");
 
         // 61.57(c)(4) - LOOSE Interpretation  OBSOLETE AS OF Nov 26, 2018
-        readonly FlightCurrency fcComboApproach6Month = new FlightCurrency(6, 6, true, "IFR - 6 Approaches (Real AND (FS/FTD OR ATD))");
+        // readonly FlightCurrency fcComboApproach6Month = new FlightCurrency(6, 6, true, "IFR - 6 Approaches (Real AND (FS/FTD OR ATD))");
 
         // 61.57(c)(5) - seems redundant with (c)(2).  OBSOLETE
 
         // 61.57(d) - IPC (Instrument checkride counts here too)
         readonly FlightCurrency fcIPCOrCheckride = new FlightCurrency(1, 6, true, "IPC or Instrument Checkride");
 
-        readonly private Boolean m_fUseLoose6157c4;
         private Boolean m_fCacheValid;
         private CurrencyState m_csCurrent = CurrencyState.NotCurrent;
         private DateTime m_dtExpiration = DateTime.MinValue;
@@ -236,15 +235,17 @@ namespace MyFlightbook.Currency
             FlightCurrency fc6157c4 = fcATDAppch6Month.AND(fcATDHold6Month).AND(fcIFRHold).AND(fcAirplaneApproach6Month).AND(fcFTDApproach6Month).AND(fcFTDHold);
 
             // 61.57(c)(4) - Combo LOOSE - any combination that yields 66-HIT, but require at least one aircraft approach and hold.
-            FlightCurrency fc6157c4Loose = fcComboApproach6Month.AND(fcAirplaneApproach6Month).AND(fcIFRHold.OR(fcATDHold6Month).OR(fcFTDHold));
+            // FlightCurrency fc6157c4Loose = fcComboApproach6Month.AND(fcAirplaneApproach6Month).AND(fcIFRHold.OR(fcATDHold6Month).OR(fcFTDHold));
 
             // 61.57(c)(5) - combo meal, but seems redundant with (c)(2)/(3).  I.e., if you've met this, you've met (2) or (3).
 
             // 61.57 (e) - IPC; no need to AND anything together for this one.
 
             FlightCurrency fcIFR = fc6157c1.OR(fc6157c2).OR(fc6157c3).OR(fc6157c4).OR(fcIPCOrCheckride);
+            /*
             if (m_fUseLoose6157c4)
                 fcIFR = fcIFR.OR(fc6157c4Loose);
+            */
 
             m_csCurrent = fcIFR.CurrentState;
             m_dtExpiration = fcIFR.ExpirationDate;
