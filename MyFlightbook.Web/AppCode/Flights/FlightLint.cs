@@ -363,7 +363,7 @@ namespace MyFlightbook.Lint
 
             foreach (CustomFlightProperty cfp in le.CustomProperties)
             {
-                AddConditionalIssue(cfp.PropertyType.Type == CFPPropertyType.cfpDecimal && !cfp.PropertyType.IsBasicDecimal &&
+                AddConditionalIssue(cfp.PropertyType.Type == CFPPropertyType.cfpDecimal && !cfp.PropertyType.IsBasicDecimal && !cfp.PropertyType.IsNoSum &&
                     cfp.PropTypeID != (int)CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven &&
                     cfp.PropTypeID != (int)CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived &&
                     cfp.DecValue.ToMinutes() > totalMinutes, 
