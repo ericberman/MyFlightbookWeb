@@ -222,6 +222,15 @@ namespace MyFlightbook.Web
         protected global::Controls_mfbFooter MfbFooter;
 
         /// <summary>
+        /// updCook control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel updCook;
+
+        /// <summary>
         /// pnlCookies control.
         /// </summary>
         /// <remarks>
