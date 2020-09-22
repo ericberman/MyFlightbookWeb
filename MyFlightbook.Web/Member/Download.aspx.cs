@@ -31,8 +31,6 @@ public partial class Member_Download : System.Web.UI.Page
             lnkSaveDropbox.Enabled = !String.IsNullOrEmpty(pf.DropboxAccessToken);
             lnkSaveOneDrive.Enabled = pf.OneDriveAccessToken != null && !String.IsNullOrEmpty(pf.OneDriveAccessToken.RefreshToken);
             lnkSaveGoogleDrive.Enabled = pf.GoogleDriveAccessToken != null && !String.IsNullOrEmpty(pf.GoogleDriveAccessToken.RefreshToken);
-
-            pnlSkyWatch.Visible = util.GetIntParam(Request, "ins", 0) != 0;
         }
     }
 
@@ -94,8 +92,8 @@ public partial class Member_Download : System.Web.UI.Page
                         sw.Write(mfbDownload1.CSVData());
                 }
 
-                    // And add the user's information, in JSON format.
-                    zae = zip.CreateEntry("PilotInfo.JSON");
+                // And add the user's information, in JSON format.
+                zae = zip.CreateEntry("PilotInfo.JSON");
                 using (StreamWriter sw = new StreamWriter(zae.Open()))
                 {
                     sw.Write(LogbookBackup.PilotInfoAsJSon(pf));
@@ -137,7 +135,7 @@ public partial class Member_Download : System.Web.UI.Page
                         fs.Seek(0, SeekOrigin.Begin);
                         StreamContent strc = new StreamContent(fs);
                         objectsToDispose.Add(strc);
-                        formData.Add(strc, "Files", szFile);
+                        formData.Add(strc, "Files", szFile + ".zip");
 
                         StringContent sc = new StringContent(Profile.GetUser(Page.User.Identity.Name).Email);
                         objectsToDispose.Add(sc);

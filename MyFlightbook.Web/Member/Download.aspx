@@ -127,10 +127,10 @@
             </td>
         </tr>
     </table>
-        <asp:Panel ID="pnlSkyWatch" runat="server" Visible="false" style="text-align:center; border-radius: 5px; border: 1px solid gray; margin-right:auto; margin-left: auto; margin-top: 40px; padding: 8px; max-width: 400px; box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);">
+        <asp:Panel ID="pnlSkyWatch" runat="server" style="text-align:center; border-radius: 5px; border: 1px solid gray; margin-right:auto; margin-left: auto; margin-top: 40px; padding: 8px; max-width: 400px; box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);">
             <div style="vertical-align:middle;">
                 <asp:LinkButton ID="lnkPostInsurance" runat="server" OnClick="lnkPostInsurance_Click">
-                    <asp:Image ID="imgPostIns" runat="server" ImageAlign="Middle" ImageUrl="~/images/SkyWatch_Logo_New2020.png" Width="250px" style="padding-right: 5px;"/><br />
+                    <asp:Image ID="imgPostIns" runat="server" ImageAlign="Middle" ImageUrl="~/images/SkyWatch_Logo_New2020.png" Width="200px" style="padding-right: 5px;"/><br />
                     <asp:Localize ID="locIns2" runat="server" Text="<%$ Resources:LocalizedText, InsurancePostPrompt %>" />
                 </asp:LinkButton>
             </div>
