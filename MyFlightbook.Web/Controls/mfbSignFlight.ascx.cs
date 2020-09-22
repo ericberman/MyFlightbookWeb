@@ -276,6 +276,13 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
         le.PIC = le.CFI = Flight.Dual;  // Assume you were PIC for the time you were giving instruction.
         le.Dual = le.SimulatedIFR = 0.0M;
 
+        // Swap flight review properties, if given to the student.
+        if (le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropFlightReview) || le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropBFR))
+        {
+            lstProps.Add(new CustomFlightProperty(new CustomPropertyType(CustomPropertyType.KnownProperties.IDPropFlightReviewGiven)) { FlightID = le.FlightID, TextValue = szStudentName });
+            lstProps.RemoveAll(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropFlightReview || cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropBFR);
+        }
+
         // Swap ground instruction given/ground-instruction received
         CustomFlightProperty cfpGIReceived = lstProps.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived);
         if (cfpGIReceived != null)

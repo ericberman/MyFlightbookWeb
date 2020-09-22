@@ -51,6 +51,7 @@ namespace MyFlightbook
             IDPropIPC = 41,                     // Not flagged as a known property
             IDPropCheckrideCommercial = 42,
             IDPropCheckRide = 43,               // Not flagged as a known property
+            IDPropBFR = 44,
             IDPropCheckrideATP = 45,
             IDPropNVLandings = 51,              // Not flagged as a known property
             IDPropNVGoggleProficiencyCheck = 55,
@@ -84,6 +85,7 @@ namespace MyFlightbook
             IDPropCheckrideNewCatClassType = 161,
             IDPropFlightReview = 164,           // Not flagged as a known property
             IDPropStudentName = 166,            // Not flagged as a known property - just used for copying to instructor's flight.
+            IDPropFlightReviewGiven = 167,
             IDPropCombatTime = 172,
             IDPropCheckrideCFI = 176,
             IDPropCheckrideCFII = 177,
@@ -158,9 +160,9 @@ namespace MyFlightbook
             IDPropNightRating = 623,
             IDPropSequence = 630,
             IDPropXCMoreThan100nm = 665,
-            IDPropEnhancedVisionApproach = 670,
             IDPropLessonStart = 668,
             IDPropLessonEnd = 669,
+            IDPropEnhancedVisionApproach = 670,
             IDProp6155SICCheck = 677,
             IDPropSpecialAuthorizationApproach = 695
         }
