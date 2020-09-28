@@ -316,7 +316,9 @@
         </asp:UpdateProgress>
         <asp:UpdatePanel ID="updpDupes" runat="server">
             <ContentTemplate>
-            <p><asp:Label ID="lblAdminReviewDupeAirports" runat="server" Text="Review likely duplicate airports"></asp:Label> <asp:Button ID="btnRefreshDupes" runat="server" Text="Refresh (slow)" OnClick="btnRefreshDupes_Click" />
+            <p><asp:Label ID="lblAdminReviewDupeAirports" runat="server" Text="Review likely duplicate airports"></asp:Label> 
+                <asp:Button ID="btnRefreshDupes" runat="server" Text="Refresh (slow)" OnClick="btnRefreshDupes_Click" />
+                Limit to dupes of: <asp:TextBox ID="txtDupeSeed" runat="server"></asp:TextBox>
             </p>
             <asp:Panel ID="pnlDupeAirports" runat="server" ScrollBars="Auto" Height="400px" Width="100%" Visible="false"> 
                 <asp:GridView ID="gvDupes" runat="server" AutoGenerateColumns="false">
@@ -368,9 +370,12 @@
             AND ROUND(ap1.latitude, 2) = ROUND(ap2.latitude, 2)
             AND ROUND(ap1.longitude, 2) = ROUND(ap2.longitude, 2)
     WHERE
-        ap1.sourceusername &lt;&gt; '' AND ap1.type IN ('A', 'H', 'S')
+        ap1.sourceusername &lt;&gt; '' AND ap1.type IN ('A', 'H', 'S') AND (?dupeSeed='' OR ap1.airportID=?dupeSeed OR ap2.airportID=?dupeSeed)
     ORDER BY
         ap1.type ASC, ap1.AirportID ASC;">
+                    <SelectParameters>
+                        <asp:ControlParameter ControlID="txtDupeSeed" ConvertEmptyStringToNull="false" DbType="String" Name="dupeSeed" PropertyName="Text" />
+                     </SelectParameters>
                 </asp:SqlDataSource>
             </asp:Panel>
             </ContentTemplate>
