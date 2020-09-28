@@ -4268,11 +4268,38 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to FAR 61.313(a) - Sport Pilot, Airplane Single Engine Land/Sea.
+        ///   Looks up a localized string similar to FAR 61.313(a) - Sport Pilot, Airplane Single Engine Land.
         /// </summary>
-        internal static string TitleSportSingleEngine {
+        internal static string TitleSportSingleEngineLand {
             get {
-                return ResourceManager.GetString("TitleSportSingleEngine", resourceCulture);
+                return ResourceManager.GetString("TitleSportSingleEngineLand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FAR 61.313(a) - Sport Pilot, Airplane Single Engine Sea.
+        /// </summary>
+        internal static string TitleSportSingleEngineSea {
+            get {
+                return ResourceManager.GetString("TitleSportSingleEngineSea", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FAR 61.313(h) - Sport Pilot, Weight-shift Control Land.
+        /// </summary>
+        internal static string TitleSportWeightShiftControlLand {
+            get {
+                return ResourceManager.GetString("TitleSportWeightShiftControlLand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FAR 61.313(h) - Sport Pilot, Weight-shift Control Sea.
+        /// </summary>
+        internal static string TitleSportWeightShiftControlSea {
+            get {
+                return ResourceManager.GetString("TitleSportWeightShiftControlSea", resourceCulture);
             }
         }
         

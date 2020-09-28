@@ -895,8 +895,8 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
   <data name="TitleSportGyroplane" xml:space="preserve">
     <value>FAR 61.313(d) - Sport Pilot, Gyroplane</value>
   </data>
-  <data name="TitleSportSingleEngine" xml:space="preserve">
-    <value>FAR 61.313(a) - Sport Pilot, Airplane Single Engine Land/Sea</value>
+  <data name="TitleSportSingleEngineLand" xml:space="preserve">
+    <value>FAR 61.313(a) - Sport Pilot, Airplane Single Engine Land</value>
   </data>
   <data name="Comm141DayXCFlight" xml:space="preserve">
     <value>One cross-country flight in daytime conditions that is at least {0}hrs and goes at least {1}nm from the point of departure</value>
@@ -1530,5 +1530,14 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
   </data>
   <data name="Title42146Helicopter" xml:space="preserve">
     <value>Canada - Helicopter</value>
+  </data>
+  <data name="TitleSportSingleEngineSea" xml:space="preserve">
+    <value>FAR 61.313(a) - Sport Pilot, Airplane Single Engine Sea</value>
+  </data>
+  <data name="TitleSportWeightShiftControlLand" xml:space="preserve">
+    <value>FAR 61.313(h) - Sport Pilot, Weight-shift Control Land</value>
+  </data>
+  <data name="TitleSportWeightShiftControlSea" xml:space="preserve">
+    <value>FAR 61.313(h) - Sport Pilot, Weight-shift Control Sea</value>
   </data>
 </root>

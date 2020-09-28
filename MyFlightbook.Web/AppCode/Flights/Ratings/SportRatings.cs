@@ -29,9 +29,12 @@ namespace MyFlightbook.RatingsProgress
             get
             {
                 return new Collection<MilestoneProgress> {
-                new SportPilotAirplane(),
+                new SportPilotAirplaneSEL(),
+                new SportPilotAirplaneSES(),
                 new SportPilotGlider(),
-                new SportPilotGyroplane()
+                new SportPilotGyroplane(),
+                new SportPilotWeightShiftControlLand(),
+                new SportPilotWeightShiftControlSea()
                 };
             }
         }
@@ -58,7 +61,7 @@ namespace MyFlightbook.RatingsProgress
 
     #region Concrete Sport Pilot Classes
     /// <summary>
-    /// Airplane and rotorcraft share a lot of features, so put them in a common base class
+    /// Airplane, rotorcraft, and weight-shift-control share a lot of features, so put them in a common base class
     /// </summary>
     [Serializable]
     public abstract class SportPilotAirplaneGyroplane : SportPilotBase
@@ -94,8 +97,7 @@ namespace MyFlightbook.RatingsProgress
             miMinTime.AddEvent(cfr.Total);
 
             // Everything else must be in matching category/class
-            // allow perfect match or ASEL->ASES match
-            if (CatClassID != cfr.idCatClassOverride && !(CatClassID == CategoryClass.CatClassID.ASEL && cfr.idCatClassOverride == CategoryClass.CatClassID.ASES))
+            if (CatClassID != cfr.idCatClassOverride)
                 return;
 
             miMinInstruction.AddEvent(cfr.Dual);
@@ -129,13 +131,13 @@ namespace MyFlightbook.RatingsProgress
     }
 
     [Serializable]
-    public class SportPilotAirplane : SportPilotAirplaneGyroplane
+    public abstract class SportPilotAirplane : SportPilotAirplaneGyroplane
     {
-        public SportPilotAirplane() : base()
+        protected SportPilotAirplane(string szTitle, CategoryClass.CatClassID catClassID) : base()
         {
             // Basic MilestoneProgress stuff
-            Title = Resources.MilestoneProgress.TitleSportSingleEngine;
-            CatClassID = CategoryClass.CatClassID.ASEL;
+            Title = szTitle;
+            CatClassID = catClassID;
             BaseFAR = "61.313(a)";
             RatingSought = RatingType.SportSingleEngine;
 
@@ -147,6 +149,41 @@ namespace MyFlightbook.RatingsProgress
             CategoryName = Resources.MilestoneProgress.SportAirplaneCategory;
             Init();
         }
+    }
+
+    [Serializable]
+    public class SportPilotAirplaneSEL : SportPilotAirplane
+    {
+        public SportPilotAirplaneSEL() : base(Resources.MilestoneProgress.TitleSportSingleEngineLand, CategoryClass.CatClassID.ASEL) { }
+    }
+
+    [Serializable]
+    public class SportPilotAirplaneSES : SportPilotAirplane
+    {
+        public SportPilotAirplaneSES() : base(Resources.MilestoneProgress.TitleSportSingleEngineSea, CategoryClass.CatClassID.ASES) { }
+    }
+
+
+    [Serializable]
+    public abstract class SportPilotWeightShiftControlBase : SportPilotAirplane
+    {
+        protected SportPilotWeightShiftControlBase(string szTitle, CategoryClass.CatClassID catClassID) : base(szTitle, catClassID)
+        {
+            Title = szTitle;
+            CatClassID = catClassID;
+            MinXCDistance = 50;
+            RatingSought = RatingType.SportWeightShift;
+        }
+    }
+
+    public class SportPilotWeightShiftControlLand : SportPilotWeightShiftControlBase
+    {
+        public SportPilotWeightShiftControlLand() : base(Resources.MilestoneProgress.TitleSportWeightShiftControlLand, CategoryClass.CatClassID.WeightShiftControlLand) { }
+    }
+
+    public class SportPilotWeightShiftControlSea : SportPilotWeightShiftControlBase
+    {
+        public SportPilotWeightShiftControlSea() : base(Resources.MilestoneProgress.TitleSportWeightShiftControlSea, CategoryClass.CatClassID.WeightShiftControlSea) { }
     }
 
     [Serializable]

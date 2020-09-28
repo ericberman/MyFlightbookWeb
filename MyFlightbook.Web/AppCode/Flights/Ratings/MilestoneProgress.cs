@@ -258,6 +258,7 @@ namespace MyFlightbook.RatingsProgress
         SportSingleEngine,
         SportGlider,
         SportRotorcraft,
+        SportWeightShift,
 
         // Commercial - 61.129
         CommercialASEL,
