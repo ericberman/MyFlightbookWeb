@@ -31,17 +31,23 @@ namespace MyFlightbook.Web.Controls
             set { ViewState[szVSAuthCode] = value; }
         }
 
+        protected string valGroup
+        {
+            get { return "tfaCode" + ID; }
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
                 FailureCount = 0;
+                util.SetValidationGroup(pnlValidate, valGroup);
             }
         }
 
         protected void btnVerifyCode_Click(object sender, EventArgs e)
         {
-            Page.Validate("tfaCode");
+            Page.Validate(valGroup);
             if (!Page.IsValid)
                 return;
 
