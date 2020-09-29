@@ -344,6 +344,12 @@ namespace MyFlightbook.Lint
             AddConditionalIssue(le.PIC.ToMinutes() + le.SIC.ToMinutes() + le.Dual.ToMinutes() - le.TotalFlightTime.ToMinutes() != 0, LintOptions.PICSICDualMath, Resources.FlightLint.warningPICSICDualBroken);
         }
 
+        private readonly static HashSet<int> hsExcludedTimeProps = new HashSet<int>() {
+            (int) CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven,
+            (int) CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived,
+            (int) CustomPropertyType.KnownProperties.IDPropPilotMonitoringTime
+        };
+
         private void CheckTimeIssues(LogbookEntryBase le)
         {
             if (currentAircraft.InstanceType != AircraftInstanceTypes.RealAircraft)
@@ -363,9 +369,7 @@ namespace MyFlightbook.Lint
 
             foreach (CustomFlightProperty cfp in le.CustomProperties)
             {
-                AddConditionalIssue(cfp.PropertyType.Type == CFPPropertyType.cfpDecimal && !cfp.PropertyType.IsBasicDecimal && !cfp.PropertyType.IsNoSum &&
-                    cfp.PropTypeID != (int)CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven &&
-                    cfp.PropTypeID != (int)CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived &&
+                AddConditionalIssue(cfp.PropertyType.Type == CFPPropertyType.cfpDecimal && !cfp.PropertyType.IsBasicDecimal && !cfp.PropertyType.IsNoSum && !hsExcludedTimeProps.Contains(cfp.PropTypeID) &&  
                     cfp.DecValue.ToMinutes() > totalMinutes, 
                     LintOptions.TimeIssues, String.Format(CultureInfo.CurrentCulture, Resources.FlightLint.warningPropertyGreaterThanTotal, cfp.PropertyType.Title));
             }
