@@ -38,7 +38,7 @@ namespace MyFlightbook.Image
         public const string S3PDF = ".s3pdf";
         public const string MP4 = ".mp4";
         public const string VidInProgress = ".vid";
-        public const string RegExpVideoFileExtensions = "(avi|wmv|mp4|mov|m4v|m2p|mpeg|mpg|hdmov|flv|avchd|mpeg4|m2t|h264)$";
+        public const string RegExpVideoFileExtensions = "(avi|wmv|mp4|mov|m4v|m2p|mpeg|mpg|hdmov|flv|avchd|mpeg4|m2t|h264|mp3|wav)$";
         public const string RegExpImageFileExtensions = "(jpg|jpeg|jpe|gif|png|heic)$";
     }
 

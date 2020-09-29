@@ -27,7 +27,7 @@ public partial class Controls_mfbMultiFileUpload : System.Web.UI.UserControl
     // Note: when adjusting this list, check against https://github.com/DevExpress/AjaxControlToolkit/wiki/AjaxFileUpload-setup to see if we need to edit web.config.
     private const string szFileTypesImages = "jpg,jpeg,jpe,png,heic";
     private const string szFileTypesPdf = "pdf";
-    private const string szFileTypesVideos = "avi,wmv,mp4,mov,m4v,m2p,mpeg,mpg,hdmov,flv,avchd,mpeg4,m2t,h264";
+    private const string szFileTypesVideos = "avi,wmv,mp4,mov,m4v,m2p,mpeg,mpg,hdmov,flv,avchd,mpeg4,m2t,h264,mp3,wav";
 
     private const string keyVSGPhotos = "VSGPhotosResult";
     private const string keyVSLastPhotosDate = "VSPhotosDate";

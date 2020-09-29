@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
+using System.Web.Hosting;
 
 /******************************************************
  * 
@@ -144,37 +145,46 @@ namespace MyFlightbook.Image
             // Copy the thumbnail over
             using (IAmazonS3 s3 = AWSConfiguration.S3Client())
             {
-                GetObjectResponse gor = s3.GetObject(new GetObjectRequest() { BucketName = Bucket, Key = srcFile });
-                if (gor != null && gor.ResponseStream != null)
+                try
                 {
-                    using (gor.ResponseStream)
+                    GetObjectResponse gor = s3.GetObject(new GetObjectRequest() { BucketName = Bucket, Key = srcFile });
+                    if (gor != null && gor.ResponseStream != null)
                     {
-                        using (System.Drawing.Image image = MFBImageInfo.DrawingCompatibleImageFromStream(gor.ResponseStream))
+                        using (gor.ResponseStream)
                         {
-                            Info inf = MFBImageInfo.InfoFromImage(image);
-
-                            // save the thumbnail locally.
-                            using (inf.Image)
+                            using (System.Drawing.Image image = MFBImageInfo.DrawingCompatibleImageFromStream(gor.ResponseStream))
                             {
+                                Info inf = MFBImageInfo.InfoFromImage(image);
 
-                                inf.ImageDescription = Comment;
-
-                                Bitmap bmp = MFBImageInfo.BitmapFromImage(inf.Image, MFBImageInfo.ThumbnailHeight, MFBImageInfo.ThumbnailWidth);
-                                ThumbWidth = bmp.Width;
-                                ThumbHeight = bmp.Height;
-
-                                using (bmp)
+                                // save the thumbnail locally.
+                                using (inf.Image)
                                 {
-                                    // get all properties of the original image and copy them to the new image.  This should include the annotation (above)
-                                    foreach (PropertyItem pi in inf.Image.PropertyItems)
-                                        bmp.SetPropertyItem(pi);
 
-                                    bmp.Save(szPhysicalPath, ImageFormat.Jpeg);
+                                    inf.ImageDescription = Comment;
+
+                                    Bitmap bmp = MFBImageInfo.BitmapFromImage(inf.Image, MFBImageInfo.ThumbnailHeight, MFBImageInfo.ThumbnailWidth);
+                                    ThumbWidth = bmp.Width;
+                                    ThumbHeight = bmp.Height;
+
+                                    using (bmp)
+                                    {
+                                        // get all properties of the original image and copy them to the new image.  This should include the annotation (above)
+                                        foreach (PropertyItem pi in inf.Image.PropertyItems)
+                                            bmp.SetPropertyItem(pi);
+
+                                        bmp.Save(szPhysicalPath, ImageFormat.Jpeg);
+                                    }
                                 }
                             }
                         }
                     }
                 }
+                catch (AmazonS3Exception)
+                {
+                    // Thumbnail was not found - audio file perhaps?  Use the generic audio file.
+                    System.IO.File.Copy(HostingEnvironment.MapPath("~/images/audio.png"), szPhysicalPath);
+                }
+
 
                 // clean up the folder on S3 - anything that has the GUID but not .mp4 in it or the thumbnail in it.  (Save space!)  i.e., delete excess thumbnails and the source video file.
                 List<S3Object> lstS3Objects = new List<S3Object>();
