@@ -1,4 +1,4 @@
-# MyFlightbookWeb
+# MyFlightbookWeb-An amazing project
 The website and service for MyFlightbook.  This provides the back-end for the mobile apps as well.
 
  ## Getting Started
@@ -47,7 +47,7 @@ and the application should be called "logbook" and point to the /logbook branch.
  * Depending on where MySQL is hosted, may need to set  lower_case_table_names=1, since the code is not consistent about upper/lower case for table names.
  * If on 5.7, may need any of the following:
      *  sql_mode ALLOW_INVALID_DATES
- #### LocalConfig settings
+ #### Local Configuration settings
   * AdminAuthAccessKey - enables use of certain admin-only functionality 
  * AuthorizedWebServiceClients - comma separated list of authorized clients of the web services.
  * AWSAccessKey - Access key for Amazon Web services
