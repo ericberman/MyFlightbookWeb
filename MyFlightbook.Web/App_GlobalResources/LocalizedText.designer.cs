@@ -2816,6 +2816,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Visit SkyWatch.ai.
+        /// </summary>
+        internal static string InsurancePostVisit {
+            get {
+                return ResourceManager.GetString("InsurancePostVisit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Why can&apos;t I edit this aircraft?.
         /// </summary>
         internal static string LabelWhyCantEditSims {

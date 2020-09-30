@@ -1845,4 +1845,7 @@
   <data name="ImagesBackupPilotInfoHeader" xml:space="preserve">
     <value>Pilot Information for {0}</value>
   </data>
+  <data name="InsurancePostVisit" xml:space="preserve">
+    <value>Visit SkyWatch.ai</value>
+  </data>
 </root>

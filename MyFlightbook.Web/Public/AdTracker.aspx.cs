@@ -1,4 +1,5 @@
-﻿using MyFlightbook.SponsoredAds;
+﻿using MyFlightbook;
+using MyFlightbook.SponsoredAds;
 using System;
 using System.Globalization;
 
@@ -24,7 +25,11 @@ public partial class Public_AdTracker : System.Web.UI.Page
                 SponsoredAd ad = SponsoredAd.GetAd(idAd);
                 if (ad != null)
                 {
-                    ad.AddClick();
+                    // Yeah, it's a click, but if "imp=1" is present, treat it as an impression, not a click.
+                    if (util.GetIntParam(Request, "imp", 0) != 0)
+                        ad.AddImpression();
+                    else
+                        ad.AddClick();
                     GoogleAnalytics1.RedirHref = ad.TargetLink;
                 }
             }

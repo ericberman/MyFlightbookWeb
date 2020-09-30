@@ -9,6 +9,7 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register Src="../Controls/mfbDownload.ascx" TagName="mfbDownload" TagPrefix="uc10" %>
 <%@ Register src="../Controls/mfbTooltip.ascx" tagname="mfbTooltip" tagprefix="uc4" %>
+
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server"><% = Resources.LocalizedText.DownloadHeader %></asp:Content>
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
     <div style="width:600px; margin-left: auto; margin-right: auto">
@@ -130,17 +131,23 @@
         <asp:Panel ID="pnlSkyWatch" runat="server" style="text-align:center; border-radius: 5px; border: 1px solid gray; margin-right:auto; margin-left: auto; margin-top: 40px; padding: 8px; max-width: 400px; box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);">
             <div style="vertical-align:middle;">
                 <asp:LinkButton ID="lnkPostInsurance" runat="server" OnClick="lnkPostInsurance_Click">
-                    <asp:Image ID="imgPostIns" runat="server" ImageAlign="Middle" ImageUrl="~/images/SkyWatch_Logo_New2020.png" Width="200px" style="padding-right: 5px;"/><br />
+                    <asp:Image ID="imgPostIns" runat="server" ImageAlign="Middle" ImageUrl="~/images/SponsoredAds/SkyWatch_Logo_New2020.png" Width="200px" style="padding-right: 5px;"/><br />
                     <asp:Localize ID="locIns2" runat="server" Text="<%$ Resources:LocalizedText, InsurancePostPrompt %>" />
                 </asp:LinkButton>
             </div>
             <div class="error"><asp:Label ID="lblInsErr" runat="server" EnableViewState="false" /></div>
             <div class="fineprint"><% = Resources.LocalizedText.InsurancePostDisclaimer %></div>
-            <div style="vertical-align:middle; text-align:center;" class="fineprint" >
-                <asp:LinkButton ID="lnkDownloadInsurance" runat="server" OnClick="lnkDownloadInsurance_Click">
-                    <asp:Image ID="imgDwnIns" ImageUrl="~/images/download.png" runat="server" ImageAlign="Middle" style="padding-right: 5px;" />
-                    <asp:Localize ID="locIns1" runat="server" Text="<%$ Resources:LocalizedText, InsuranceBackupPrompt %>"></asp:Localize>
-                </asp:LinkButton>
+            <div style="vertical-align:middle; margin-top: 3px;" class="fineprint" >
+                <div style="float:right">
+                    <asp:LinkButton ID="lnkDownloadInsurance" runat="server" OnClick="lnkDownloadInsurance_Click">
+                        <asp:Image ID="imgDwnIns" ImageUrl="~/images/download.png" runat="server" ImageAlign="Middle" style="padding-right: 5px;" />
+                        <asp:Localize ID="locIns1" runat="server" Text="<%$ Resources:LocalizedText, InsuranceBackupPrompt %>"></asp:Localize>
+                    </asp:LinkButton>
+                </div>
+                <div style="float:left">
+                    <asp:HyperLink ID="lnkVisitInsurance" runat="server" Text="<%$ Resources:LocalizedText, InsurancePostVisit %>" Target="_blank" NavigateUrl="~/Public/AdTracker.aspx/4?imp=1" />
+                </div>
+                &nbsp;
             </div>
         </asp:Panel>
     </div>

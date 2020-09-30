@@ -1,5 +1,6 @@
 ﻿using MyFlightbook;
 using MyFlightbook.CloudStorage;
+using MyFlightbook.SponsoredAds;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -155,6 +156,8 @@ public partial class Member_Download : System.Web.UI.Page
                         // If we're here, we were successful.
                         lblInsErr.Text = Resources.LocalizedText.InsurancePostSuccessful;
                         lblInsErr.CssClass = "success";
+
+                        SponsoredAd.GetAd(4)?.AddClick();  // Skywatch is 4.  We're treating POST as a click, and click-through as an impression.
                     }
                 }
             }
