@@ -367,12 +367,11 @@
         airports ap1
             INNER JOIN
         airports ap2 ON ap1.AirportID &lt;&gt; ap2.airportid AND ap1.type = ap2.type
-            AND ROUND(ap1.latitude, 2) = ROUND(ap2.latitude, 2)
-            AND ROUND(ap1.longitude, 2) = ROUND(ap2.longitude, 2)
+            AND Abs(ap1.latitude - ap2.latitude) &lt; 0.01 AND abs(ap1.longitude - ap2.longitude) &lt; 0.01
     WHERE
-        ap1.sourceusername &lt;&gt; '' AND ap1.type IN ('A', 'H', 'S') AND (?dupeSeed='' OR ap1.airportID=?dupeSeed OR ap2.airportID=?dupeSeed)
+        ap1.sourceusername &lt;&gt; '' AND ap1.type IN ('A', 'H', 'S') AND ap2.type IN ('A', 'H', 'S') AND (?dupeSeed='' OR ap1.airportID=?dupeSeed OR ap2.airportID=?dupeSeed)
     ORDER BY
-        ap1.type ASC, ap1.AirportID ASC;">
+        ap1.type ASC, ap1.latitude ASC, ap1.AirportID ASC;">
                     <SelectParameters>
                         <asp:ControlParameter ControlID="txtDupeSeed" ConvertEmptyStringToNull="false" DbType="String" Name="dupeSeed" PropertyName="Text" />
                      </SelectParameters>
