@@ -53,7 +53,7 @@ and the application should be called "logbook" and point to the /logbook branch.
  * AuthorizedWebServiceClients - Comma separated list of authorized clients of the web services
  * AWSAccessKey - Access key for Amazon Web services
  * AWSSecretKey - Secret for Amazon Web Services
- * DebugDomains - Identifies local domains (e.g., http://localhost) from which Auth requests may originate
+ * DebugDomains - Identifies local domains (e.g., http://localhost) from which oAuth requests may originate
  * DropboxAccessID - Access key for Dropbox
  * DropboxClientSecret - Secret for Dropbox
  * ETSPipelineID - Amazon Elastic Transcoder ID for processing videos
