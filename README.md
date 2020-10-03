@@ -41,7 +41,7 @@ and the application should be called "logbook" and point to the /logbook branch.
  
  ### Setting up the database
  * Install MySQL and import "MinimalDB-xxxx-xx-xx.sql" (in the Support folder), then apply any/all scripts in that folder that are after that date.  The scripts all assue that your database schema is "logbook" (see connection.config above), but you can use any connection you like; just be sure to edit the update scripts if you use other than "logbook".
- * Populate the LocalConfig table with values for the relevant keys.  LocalConfig is for keys and secrets (e.g., oAuth access/secret pairs) that youet don't want to have in the code, and this is necessary for mapping, social media, etc. to work.  A development site should work without most of these, but will have degraded functionality.  See below for LocalConfig settings and what they mean
+ * Populate the LocalConfig table with values for the relevant keys.  LocalConfig is for keys and secrets (e.g., oAuth access/secret pairs) that one doesn't want to have in the code, and this is necessary for mapping, social media, etc. to work.  A development site should work without most of these, but will have degraded functionality.  See below for LocalConfig settings and what they mean
  * Need to set packet size to at least 10-15MB:	show variables like 'max_allowed_packet';	SET GLOBAL max_allowed_packet=16777216.
  * Not a bad idea to bump up group_concat_max_len to something like 2048.
  * Depending on where MySQL is hosted, may need to set  lower_case_table_names=1, since the code is not consistent about upper/lower case for table names.
