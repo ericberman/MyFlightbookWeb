@@ -151,6 +151,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create a new endorsement starting from the text of this one.
+        /// </summary>
+        internal static string CopyEndorsement {
+            get {
+                return ResourceManager.GetString("CopyEndorsement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Important information about the validity of digital endorsements..
         /// </summary>
         internal static string DigitalEndorsementDisclaimer {
@@ -826,11 +835,9 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;% Requestor %&gt; has invited you to be their &lt;% Role %&gt; on %APP_NAME% (http://%APP_URL%), a free online logbook for pilots.
+        ///   Looks up a localized string similar to &lt;% Requestor %&gt; has invited you to be their &lt;% Role %&gt; on [%APP_NAME%](https://%APP_URL%), a free online logbook for pilots.
         ///
-        ///If you know &lt;% Requestor %&gt;, please confirm this by visiting:
-        ///
-        ///&lt;% ConfirmRoleLink %&gt;
+        ///If you know &lt;% Requestor %&gt;, please confirm this by visiting [this page](&lt;% ConfirmRoleLink %&gt;).
         ///
         ///Thank-you
         ///

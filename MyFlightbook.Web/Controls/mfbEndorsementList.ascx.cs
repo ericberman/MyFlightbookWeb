@@ -18,6 +18,8 @@ using System.Web.UI.WebControls;
 
 public partial class Controls_mfbEndorsementList : UserControl
 {
+    public event EventHandler<EndorsementEventArgs> CopyEndorsement;
+
     /// <summary>
     /// The name of the student to restrict on
     /// </summary>
@@ -39,6 +41,11 @@ public partial class Controls_mfbEndorsementList : UserControl
     protected bool CanDelete(Endorsement e)
     {
         return (e != null && e.StudentName.CompareCurrentCultureIgnoreCase(Page.User.Identity.Name) == 0);
+    }
+
+    protected bool CanCopy(Endorsement e)
+    {
+        return e != null && e.IsMemberEndorsement && e.StudentName.CompareCurrentCultureIgnoreCase(Page.User.Identity.Name) != 0;
     }
 
     public int RefreshEndorsements()
@@ -105,6 +112,18 @@ public partial class Controls_mfbEndorsementList : UserControl
 
                 en.FDelete();
                 RefreshEndorsements();
+            }
+            else if (e.CommandName.CompareOrdinalIgnoreCase("_Copy") == 0 && !String.IsNullOrEmpty(e.CommandArgument.ToString()))
+            {
+                Endorsement en = Endorsement.EndorsementWithID(Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture));
+
+                if (en == null)
+                    throw new MyFlightbookException("Can't find endorsement with ID=" + id.ToString(CultureInfo.InvariantCulture));
+
+                if (en.StudentType == Endorsement.StudentTypes.External)
+                    throw new MyFlightbookException("Can't copy external endorsement with ID=" + id.ToString(CultureInfo.InvariantCulture));
+
+                CopyEndorsement?.Invoke(this, new EndorsementEventArgs(en));
             }
         }
         catch (MyFlightbookException ex)

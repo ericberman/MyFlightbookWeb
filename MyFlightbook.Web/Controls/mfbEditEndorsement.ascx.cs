@@ -133,6 +133,17 @@ public partial class Controls_mfbEditEndorsement : System.Web.UI.UserControl
         }
     }
 
+    public void SetEndorsement(Endorsement e)
+    {
+        if (e == null)
+            throw new ArgumentNullException(nameof(e));
+
+        int id = 1;  // freeform
+        hdnEndorsementID.Value = id.ToString(CultureInfo.InvariantCulture);
+        UpdateFormForTemplate(id, true, e.EndorsementText);
+        txtTitle.Text = e.Title;
+    }
+
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
@@ -183,7 +194,7 @@ public partial class Controls_mfbEditEndorsement : System.Web.UI.UserControl
     }
     #endregion
 
-    protected void NewTextBox(Control parent, string id, string szDefault, Boolean fMultiline, Boolean fRequired, string szName)
+    protected TextBox NewTextBox(Control parent, string id, string szDefault, Boolean fMultiline, Boolean fRequired, string szName)
     {
         if (parent == null)
             throw new ArgumentNullException(nameof(parent));
@@ -202,9 +213,11 @@ public partial class Controls_mfbEditEndorsement : System.Web.UI.UserControl
         // no validations for preview mode
         if (fRequired && !PreviewMode)
             plcValidations.Controls.Add(new RequiredFieldValidator() { ID = "val" + id, ControlToValidate = tb.ID, ErrorMessage =String.Format(CultureInfo.CurrentCulture, Resources.SignOff.EditEndorsementRequiredField, szName), CssClass="error", Display = ValidatorDisplay.Dynamic});
+
+        return tb;
     }
 
-    protected void UpdateFormForTemplate(int id, bool fResetTitle)
+    protected void UpdateFormForTemplate(int id, bool fResetTitle, string defaultText = null)
     {
         EndorsementType et = EndorsementType.GetEndorsementByID(id);
         if (et == null)
@@ -252,7 +265,7 @@ public partial class Controls_mfbEditEndorsement : System.Web.UI.UserControl
                     }
                     break;
                 case "{FreeForm}":
-                    NewTextBox(plcTemplateForm, idNewControl, "", true, true, "Free-form text");
+                    NewTextBox(plcTemplateForm, idNewControl, "", true, true, "Free-form text").Text = defaultText ?? string.Empty;
                     break;
                 case "{Student}":
                     NewTextBox(plcTemplateForm, idNewControl, TargetUser == null ? Resources.SignOff.EditEndorsementStudentNamePrompt : TargetUser.UserFullName, false, true, Resources.SignOff.EditEndorsementStudentNamePrompt);

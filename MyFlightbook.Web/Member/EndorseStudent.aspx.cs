@@ -127,6 +127,13 @@ public partial class Member_EndorseStudent : System.Web.UI.Page
         }
     }
 
+    public void mfbEndorsementList1_CopyEndorsement(object sender, EndorsementEventArgs e)
+    {
+        if (e == null)
+            throw new ArgumentNullException(nameof(e));
+        mfbEditEndorsement1.SetEndorsement(e.Endorsement);
+    }
+
     protected void RefreshTemplateList()
     {
         List<EndorsementType> lst = new List<EndorsementType>(EndorsementType.LoadTemplates(mfbSearchTemplates.SearchText));

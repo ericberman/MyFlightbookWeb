@@ -443,4 +443,7 @@
   <data name="SignFlightATP" xml:space="preserve">
     <value>I hold an ATP certificate</value>
   </data>
+  <data name="CopyEndorsement" xml:space="preserve">
+    <value>Create a new endorsement starting from the text of this one</value>
+  </data>
 </root>

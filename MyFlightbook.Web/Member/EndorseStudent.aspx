@@ -44,7 +44,7 @@
     <br />
     <asp:Panel ID="pnlExistingEndorsements" runat="server">
         <h2><asp:Label ID="lblExistingEndorsementHeader" runat="server" Text=""></asp:Label></h2>
-        <uc2:mfbEndorsementList ID="mfbEndorsementList1" runat="server" />
+        <uc2:mfbEndorsementList ID="mfbEndorsementList1" runat="server" OnCopyEndorsement="mfbEndorsementList1_CopyEndorsement" />
     </asp:Panel>
     <asp:HiddenField ID="hdnLastTemplate" runat="server" />
 </asp:Content>

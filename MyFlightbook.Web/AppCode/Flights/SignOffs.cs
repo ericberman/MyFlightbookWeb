@@ -343,6 +343,14 @@ namespace MyFlightbook.Instruction
 
             return lst;
         }
+
+        public static Endorsement EndorsementWithID(int id)
+        {
+            DBHelper dbh = new DBHelper("SELECT *, LENGTH(DigitizedSignature) AS FileSize FROM Endorsements WHERE id=?idEndorsement");
+            Endorsement en = null;
+            dbh.ReadRow((comm) => { comm.Parameters.AddWithValue("idEndorsement", id); }, (dr) => { en = new Endorsement(dr); });
+            return en;
+        }
     }
 
     /// <summary>
