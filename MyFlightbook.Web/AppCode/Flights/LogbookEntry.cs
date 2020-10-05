@@ -2478,7 +2478,7 @@ namespace MyFlightbook
                         // Group ports (no navaids, ad-hoc fixes, etc.) geographically
                         foreach (airport ap in al.UniqueAirports)
                             if (ap.IsPort)
-                                dictGroupedAirports[String.Format(CultureInfo.InvariantCulture, "{0:#.#00}{1:#.#00}", ap.LatLong.Latitude, ap.LatLong.Longitude)] = ap;
+                                dictGroupedAirports[String.Format(CultureInfo.InvariantCulture, "{0:#.000}{1:#.000}", ap.LatLong.Latitude, ap.LatLong.Longitude)] = ap;
 
                         List<airport> uniques = new List<airport>(dictGroupedAirports.Values);
                         if (uniques.Count > 2)
