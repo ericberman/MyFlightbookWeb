@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySqlX.XDevAPI;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
@@ -311,7 +312,7 @@ namespace MyFlightbook.Histogram
             return String.Format(CultureInfo.InvariantCulture, "{0}?{1}", BaseHRef, string.Join("&", lst));
         }
 
-        protected static string FormatForType(object o, HistogramValueTypes valueType)
+        public static string FormatForType(object o, HistogramValueTypes valueType, bool fUseHHMM = false, bool fUse2Digits = false, bool fIncludeZero = true)
         {
             if (o == null)
                 return string.Empty;
@@ -322,7 +323,7 @@ namespace MyFlightbook.Histogram
                     return String.Format(CultureInfo.CurrentCulture, "{0:C}", o);
                 case HistogramValueTypes.Decimal:
                 case HistogramValueTypes.Time:
-                    return String.Format(CultureInfo.CurrentCulture, "{0:#,##0.0#}", o);
+                    return o.FormatDecimal(fUseHHMM, fIncludeZero, fUse2Digits);
                 case HistogramValueTypes.Integer:
                     return String.Format(CultureInfo.CurrentCulture, "{0:#,##0}", o);
                 default:
@@ -644,6 +645,30 @@ namespace MyFlightbook.Histogram
     }
 
     /// <summary>
+    /// Encapsulates a year of historgramable results.
+    /// </summary>
+    public class MonthsOfYearData
+    {
+        #region properties
+        public int Year { get; set; }
+
+        public IDictionary<int, Bucket> ValuesByMonth { get; }
+        #endregion
+
+        public Bucket ValueForMonth(int i)
+        {
+            if (ValuesByMonth.TryGetValue(i, out Bucket b))
+                return b;
+            return null;
+        }
+
+        public MonthsOfYearData()
+        {
+            ValuesByMonth = new Dictionary<int, Bucket>();
+        }
+    }
+
+    /// <summary>
     /// BucketManager for year-month (e.g., "2016-May") data
     /// </summary>
     public class YearMonthBucketManager : DateBucketManager
@@ -726,6 +751,32 @@ namespace MyFlightbook.Histogram
                 {"y",  d.Year.ToString(CultureInfo.InvariantCulture) },
                 {"m", (d.Month - 1).ToString(CultureInfo.InvariantCulture) }
             };
+        }
+
+        /// <summary>
+        /// Provides a month-by-month grouped-by-year summary of the buckets.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<MonthsOfYearData> ToYearlySummary()
+        {
+            Dictionary<int, MonthsOfYearData> d = new Dictionary<int, MonthsOfYearData>();
+
+            foreach (Bucket b in Buckets)
+            {
+                if (!(b.OrdinalValue is DateTime dt))
+                    throw new InvalidOperationException("Bucket must have a datetime ordinal");
+
+                if (!d.TryGetValue(dt.Year, out MonthsOfYearData moy))
+                    d[dt.Year] = moy = new MonthsOfYearData() { Year = dt.Year };
+
+                moy.ValuesByMonth[dt.Month] = b;
+            }
+
+            List<MonthsOfYearData> lst = new List<MonthsOfYearData>();
+            foreach (MonthsOfYearData moy in d.Values)
+                lst.Add(moy);
+            lst.Sort((moy1, moy2) => { return moy1.Year.CompareTo(moy2.Year); });
+            return lst;
         }
     }
 

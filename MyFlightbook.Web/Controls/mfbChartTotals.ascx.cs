@@ -1,6 +1,7 @@
 ﻿using MyFlightbook;
 using MyFlightbook.Charting;
 using MyFlightbook.Histogram;
+using MySqlX.XDevAPI.Relational;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -42,6 +43,10 @@ public partial class Controls_mfbChartTotals : System.Web.UI.UserControl
         set { lnkDownloadCSV.Visible = value; }
     }
 
+    protected bool UseHHMM { get; set; }
+
+    protected bool Use2Digits { get; set; }
+
     protected void SetUpSelectors()
     {
         if (HistogramManager != null && (cmbFieldToView.Items.Count == 0 || cmbGrouping.Items.Count == 0))
@@ -66,9 +71,25 @@ public partial class Controls_mfbChartTotals : System.Web.UI.UserControl
 
             SetUpSelectors();
         }
-        
+
+        Profile pf = Profile.GetUser(Page.User.Identity.Name);
+        UseHHMM = pf.UsesHHMM;
+        Use2Digits = pf.Use2DigitTotals;
+
         if (Visible)
             Refresh();
+    }
+
+    protected string FormatBucketForMonthlyData(MonthsOfYearData moy, int month)
+    {
+        if (moy == null)
+            throw new ArgumentNullException(nameof(moy));
+        Bucket b = moy.ValueForMonth(month);
+
+        if (b == null)
+            return string.Empty;
+
+        return BucketManager.FormatForType(b.Values[SelectedFieldToGraph.DataField], SelectedFieldToGraph.DataType, UseHHMM, Use2Digits, false);
     }
 
     /// <summary>
@@ -185,6 +206,23 @@ public partial class Controls_mfbChartTotals : System.Web.UI.UserControl
         }
 
         RefreshChartAndTable(bm.Buckets);
+
+        if (bm is YearMonthBucketManager ybm)
+        {
+            gvYearly.Visible = true;
+            gvYearly.DataSource = ybm.ToYearlySummary();
+            gvYearly.DataBind();
+
+            // Set the column headers so that they're localized
+            for (int i = 0; i < 12; i++)
+                gvYearly.HeaderRow.Cells[i + 1].Text = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.AbbreviatedMonthNames[i];
+        }
+        else
+        {
+            gvYearly.DataSource = Array.Empty<YearMonthBucketManager>();
+            gvYearly.DataBind();
+            gvYearly.Visible = false;
+        }
     }
 
     protected void cmbGrouping_SelectedIndexChanged(object sender, EventArgs e)
@@ -208,5 +246,14 @@ public partial class Controls_mfbChartTotals : System.Web.UI.UserControl
     protected void ckIncludeAverage_CheckedChanged(object sender, EventArgs e)
     {
         Refresh();
+    }
+
+    protected void gvRawData_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        if (e == null)
+            throw new ArgumentNullException(nameof(e));
+
+        foreach (TableCell c in e.Row.Cells)
+            c.CssClass = "PaddedCell";
     }
 }

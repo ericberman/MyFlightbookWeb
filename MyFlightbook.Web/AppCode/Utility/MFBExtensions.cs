@@ -714,7 +714,7 @@ namespace MyFlightbook
         {
             if (o == null || o == System.DBNull.Value) return string.Empty;
             Decimal d = Convert.ToDecimal(o, CultureInfo.CurrentCulture);
-            return (d == 0.0M && !fIncludeZero) ? string.Empty : (fUseHHMM ? d.ToHHMM() : d.ToString(f2Digits ? "#,#0.00" : "#,#0.0#", CultureInfo.CurrentCulture));
+            return (d == 0.0M && !fIncludeZero) ? string.Empty : (fUseHHMM ? d.ToHHMM() : d.ToString(f2Digits ? "#,##0.00" : "#,##0.0#", CultureInfo.CurrentCulture));
         }
 
         /// <summary>
