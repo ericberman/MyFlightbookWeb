@@ -514,6 +514,7 @@
                                     <asp:ListItem Text="<%$ Resources:Currency, CurrencyOptionsGroupModel %>" Value="Model" />
                                     <asp:ListItem Text="<%$ Resources:Currency, CurrencyOptionsGroupICAO %>" Value="Family" />
                                 </asp:RadioButtonList>
+                                <div><asp:CheckBox ID="ck2Decimal" runat="server" Text="<%$ Resources:Currency, CurrencyTotalsDigits %>" /></div>
                                 <div><asp:CheckBox ID="ckIncludeModelFeatureTotals" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsTotalsModelFeatures %>" /></div>
                                 <div><asp:Localize ID="locExpireCurrency" Text="<%$ Resources:Currency, CurrencyOptionsExpiredCurrency %>" runat="server" /> <asp:DropDownList ID="cmbExpiredCurrency" runat="server" /></div>
                                 <h3><%=Resources.Currency.CurrencyPrefsHeader %></h3>

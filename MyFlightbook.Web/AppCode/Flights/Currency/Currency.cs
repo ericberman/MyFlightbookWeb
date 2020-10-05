@@ -48,6 +48,7 @@ namespace MyFlightbook.Currency
         flagSuppressModelFeatureTotals = 0x00020000,
         flagAllowNightTouchAndGo = 0x00040000,
         flagRequireDayLandingsDayCurrency = 0x00080000,
+        flagShow2DigitTotals = 0x00100000
     }
 
     /// <summary>

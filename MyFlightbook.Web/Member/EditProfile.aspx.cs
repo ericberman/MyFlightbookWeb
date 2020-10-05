@@ -167,6 +167,7 @@ public partial class Member_EditProfile : System.Web.UI.Page
         ckCanadianCurrency.Checked = m_pf.UseCanadianCurrencyRules;
         rblTotalsOptions.SelectedValue = m_pf.TotalsGroupingMode.ToString();
         ckIncludeModelFeatureTotals.Checked = !m_pf.SuppressModelFeatureTotals;
+        ck2Decimal.Checked = m_pf.Use2DigitTotals;
         rblCurrencyPref.SelectedIndex = (m_pf.UsesPerModelCurrency ? 1 : 0);
         rblTimeEntryPreference.SelectedIndex = (m_pf.UsesHHMM ? 1 : 0);
         rblDateEntryPreferences.SelectedIndex = (m_pf.UsesUTCDateOfFlight ? 1 : 0);
@@ -560,6 +561,7 @@ public partial class Member_EditProfile : System.Web.UI.Page
         m_pf.UsesPerModelCurrency = (rblCurrencyPref.SelectedIndex > 0);
         m_pf.TotalsGroupingMode = (TotalsGrouping) Enum.Parse(typeof(TotalsGrouping), rblTotalsOptions.SelectedValue);
         m_pf.SuppressModelFeatureTotals = !ckIncludeModelFeatureTotals.Checked;
+        m_pf.Use2DigitTotals = ck2Decimal.Checked;
         m_pf.CurrencyExpiration = (CurrencyExpiration.Expiration)Enum.Parse(typeof(CurrencyExpiration.Expiration), cmbExpiredCurrency.SelectedValue);
 
         try

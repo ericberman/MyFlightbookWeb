@@ -2,7 +2,6 @@
 using MyFlightbook.Currency;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Web.UI;
 
@@ -25,6 +24,8 @@ public partial class Controls_mfbTotalSummary : System.Web.UI.UserControl
     public string Username { get; set; }
 
     public Boolean UseHHMM { get; set; }
+
+    public Boolean Use2Digits { get; set; }
 
     /// <summary>
     /// True (default) to linkify totals
@@ -63,7 +64,9 @@ public partial class Controls_mfbTotalSummary : System.Web.UI.UserControl
         if (Page.User.Identity.IsAuthenticated)
         {
             Username = Page.User.Identity.Name;
-            UseHHMM = MyFlightbook.Profile.GetUser(Page.User.Identity.Name).UsesHHMM;
+            Profile pf = Profile.GetUser(Page.User.Identity.Name);
+            UseHHMM = pf.UsesHHMM;
+            Use2Digits = pf.Use2DigitTotals;
         }
         IsGrouped = DefaultGroupMode;
     }

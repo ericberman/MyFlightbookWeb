@@ -707,12 +707,14 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="o">The object</param>
         /// <param name="fIncludeZero">True to return an "0" for zero values.</param>
+        /// <param name="fUseHHMM">True for hh:mm format</param>
+        /// <param name="f2Digits">True to pad out to 2 digits always</param>
         /// <returns></returns>
-        public static string FormatDecimal(this object o, bool fUseHHMM, bool fIncludeZero = false)
+        public static string FormatDecimal(this object o, bool fUseHHMM, bool fIncludeZero = false, bool f2Digits = false)
         {
             if (o == null || o == System.DBNull.Value) return string.Empty;
             Decimal d = Convert.ToDecimal(o, CultureInfo.CurrentCulture);
-            return (d == 0.0M && !fIncludeZero) ? string.Empty : (fUseHHMM ? d.ToHHMM() : d.ToString("#,#0.0#", CultureInfo.CurrentCulture));
+            return (d == 0.0M && !fIncludeZero) ? string.Empty : (fUseHHMM ? d.ToHHMM() : d.ToString(f2Digits ? "#,#0.00" : "#,#0.0#", CultureInfo.CurrentCulture));
         }
 
         /// <summary>

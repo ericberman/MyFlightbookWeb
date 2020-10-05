@@ -264,7 +264,7 @@ namespace MyFlightbook.Currency
         /// </summary>
         /// <param name="fUseHHMM">Whether or not to use hhmm format, if it's a time</param>
         /// <returns>The formatted string in the current culture</returns>
-        public string ValueString(bool fUseHHMM)
+        public string ValueString(bool fUseHHMM, bool fUse2Digits)
         {
             switch (NumericType)
             {
@@ -273,7 +273,7 @@ namespace MyFlightbook.Currency
                 case TotalsItem.NumType.Decimal:
                     return Value.FormatDecimal(false);
                 case TotalsItem.NumType.Time:
-                    return Value.FormatDecimal(IsTime && fUseHHMM);
+                    return Value.FormatDecimal(IsTime && fUseHHMM, false, fUse2Digits);
                 case TotalsItem.NumType.Currency:
                     return String.Format(CultureInfo.CurrentCulture, "{0:C}", Value);
                 default:

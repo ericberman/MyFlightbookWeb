@@ -24,7 +24,7 @@
                 </asp:TemplateField>
                 <asp:TemplateField ItemStyle-HorizontalAlign="Right" ItemStyle-VerticalAlign="Top">
                     <ItemTemplate>
-                        <asp:Label ID="lblValue" runat="server" Text='<%# ((MyFlightbook.Currency.TotalsItem) Container.DataItem).ValueString(UseHHMM) %>' />
+                        <asp:Label ID="lblValue" runat="server" Text='<%# ((MyFlightbook.Currency.TotalsItem) Container.DataItem).ValueString(UseHHMM, Use2Digits) %>' />
                     </ItemTemplate>
                 </asp:TemplateField>
             </Columns>
@@ -41,7 +41,7 @@
                     <ItemTemplate>
                         <div class="totalsBox">
                             <div class="totalsValue">
-                                <%# ((MyFlightbook.Currency.TotalsItem) Container.DataItem).ValueString(UseHHMM) %>
+                                <%# ((MyFlightbook.Currency.TotalsItem) Container.DataItem).ValueString(UseHHMM, Use2Digits) %>
                             </div>
                             <div>
                                 <asp:MultiView ID="MultiView1" runat="server" ActiveViewIndex='<%# (LinkTotalsToQuery && Eval("Query") != null) ? 0 : 1 %>'>

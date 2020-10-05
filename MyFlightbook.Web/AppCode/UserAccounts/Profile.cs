@@ -310,6 +310,15 @@ namespace MyFlightbook
         }
 
         /// <summary>
+        /// Determines whether totals should be displayed padded to 2 decimal places (if not in hh:mm)
+        /// </summary>
+        public Boolean Use2DigitTotals
+        {
+            get { return hasFlag(CurrencyOptionFlags.flagShow2DigitTotals); }
+            set { setCurrencyFlag(CurrencyOptionFlags.flagShow2DigitTotals, value); }
+        }
+
+        /// <summary>
         /// Suppress aircraft characteristics in totals (complex, turbine, tailwheel, etc.)
         /// </summary>
         public Boolean SuppressModelFeatureTotals

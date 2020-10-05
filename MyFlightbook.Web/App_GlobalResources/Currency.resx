@@ -1062,4 +1062,7 @@
   <data name="CurrencyOptionNoteNightTouchAndGo" xml:space="preserve">
     <value>In some jurisdictions, night landings do not need to be to a full stop to count for currency.  Note that this option is ignored if you use Canadian or EASA rules, since they already allow for night touch-and-go landings.</value>
   </data>
+  <data name="CurrencyTotalsDigits" xml:space="preserve">
+    <value>Always Display 2 decimal places for totals (if not using HH:MM format)</value>
+  </data>
 </root>

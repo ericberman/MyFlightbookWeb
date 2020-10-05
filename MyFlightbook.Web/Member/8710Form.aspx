@@ -50,21 +50,21 @@
                             </asp:BoundField>
                             <asp:TemplateField HeaderText="<%$ Resources:Totals, Total %>">
                                 <ItemTemplate>
-                                    <%# Eval("TotalTime").FormatDecimal(UseHHMM) %>
+                                    <%# Eval("TotalTime").FormatDecimal(UseHHMM, false, Use2Digits) %>
                                 </ItemTemplate>
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="<%$ Resources:Totals, 8710InstructionReceived %>">
                                 <ItemTemplate>
-                                    <%# Eval("InstructionReceived").FormatDecimal(UseHHMM)%>
+                                    <%# Eval("InstructionReceived").FormatDecimal(UseHHMM, false, Use2Digits)%>
                                 </ItemTemplate>
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="<%$ Resources:Totals, 8710Solo %>">
                                 <ItemTemplate>
-                                    <%# Eval("SoloTime").FormatDecimal(UseHHMM)%>
+                                    <%# Eval("SoloTime").FormatDecimal(UseHHMM, false, Use2Digits)%>
                                 </ItemTemplate>
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
@@ -75,7 +75,7 @@
                                         <tr>
                                             <td style="border-bottom: 1px solid black; padding: 3px">
                                                 <asp:Localize ID="locPICMain" runat="server" Text="<%$ Resources:Totals, PIC %>" /></td>
-                                            <td style="border-bottom: 1px solid black; padding:3px"><%# Eval("PIC").FormatDecimal(UseHHMM)%>
+                                            <td style="border-bottom: 1px solid black; padding:3px"><%# Eval("PIC").FormatDecimal(UseHHMM, false, Use2Digits)%>
                                             </td>
                                         </tr>
                                         <tr>
@@ -83,7 +83,7 @@
                                                 <asp:Localize ID="locSICHeaderPIC" runat="server" Text="<%$ Resources:Totals, SIC %>" />
                                             </td>
                                             <td style="padding: 3px">
-                                                <%# Eval("SIC").FormatDecimal(UseHHMM)%>
+                                                <%# Eval("SIC").FormatDecimal(UseHHMM, false, Use2Digits)%>
                                             </td>
                                         </tr>
                                     </table>
@@ -97,7 +97,7 @@
                                         Text="<%$ Resources:Totals, 8710XCDual %>" /><span class="FootNote">1</span>
                                 </HeaderTemplate>
                                 <ItemTemplate>
-                                    <%# Eval("CrossCountryDual").FormatDecimal(UseHHMM)%>
+                                    <%# Eval("CrossCountryDual").FormatDecimal(UseHHMM, false, Use2Digits)%>
                                 </ItemTemplate>
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
@@ -108,7 +108,7 @@
                                         Text="<%$ Resources:Totals, 8710XCSolo %>" /><span class="FootNote">1</span>
                                 </HeaderTemplate>
                                 <ItemTemplate>
-                                    <%# Eval("CrossCountrySolo").FormatDecimal(UseHHMM)%>
+                                    <%# Eval("CrossCountrySolo").FormatDecimal(UseHHMM, false, Use2Digits)%>
                                 </ItemTemplate>
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
@@ -123,13 +123,13 @@
                                         <tr>
                                             <td style="border-bottom: 1px solid black; padding: 3px">
                                                 <asp:Localize ID="locPICHeader" runat="server" Text="<%$ Resources:Totals, PIC %>" /></td>
-                                                <td style="border-bottom: 1px solid black; padding: 3px"><%# Eval("CrossCountryPIC").FormatDecimal(UseHHMM)%>
+                                                <td style="border-bottom: 1px solid black; padding: 3px"><%# Eval("CrossCountryPIC").FormatDecimal(UseHHMM, false, Use2Digits)%>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td style="padding: 3px">
                                                 <asp:Localize ID="locSICHeaderXCPIC" runat="server" Text="<%$ Resources:Totals, SIC %>" /></td>
-                                            <td style="padding: 3px"><%# Eval("CrossCountrySIC").FormatDecimal(UseHHMM)%>
+                                            <td style="padding: 3px"><%# Eval("CrossCountrySIC").FormatDecimal(UseHHMM, false, Use2Digits)%>
                                             </td>
                                         </tr>
                                     </table>
@@ -142,7 +142,7 @@
                                     <asp:Localize ID="locInstrumentHeader" runat="server" Text="<%$ Resources:Totals, 8710Instrument %>" /><span class="FootNote">2</span>
                                 </HeaderTemplate>
                                 <ItemTemplate>
-                                    <%# Eval("InstrumentTime").FormatDecimal(UseHHMM)%>
+                                    <%# Eval("InstrumentTime").FormatDecimal(UseHHMM, false, Use2Digits)%>
                                 </ItemTemplate>
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
@@ -153,7 +153,7 @@
                                         Text="<%$ Resources:Totals, 8710NightDual %>"></asp:Localize><span class="FootNote">1</span>
                                 </HeaderTemplate>
                                 <ItemTemplate>
-                                    <%# Eval("NightDual").FormatDecimal(UseHHMM)%>
+                                    <%# Eval("NightDual").FormatDecimal(UseHHMM, false, Use2Digits)%>
                                 </ItemTemplate>
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
@@ -178,7 +178,7 @@
                                                 <asp:Localize ID="locPICNight" runat="server" Text="<%$ Resources:Totals, PIC %>"></asp:Localize>
                                             </td>
                                             <td style="border-bottom: 1px solid black; padding: 3px">
-                                                <%# Eval("NightPIC").FormatDecimal(UseHHMM)%>
+                                                <%# Eval("NightPIC").FormatDecimal(UseHHMM, false, Use2Digits)%>
                                             </td>
                                         </tr>
                                         <tr>
@@ -186,7 +186,7 @@
                                                 <asp:Localize ID="locSICNight" runat="server" Text="<%$ Resources:Totals, SIC %>"></asp:Localize>
                                             </td>
                                             <td style="padding: 3px">
-                                                <%# Eval("NightSIC").FormatDecimal(UseHHMM)%>       
+                                                <%# Eval("NightSIC").FormatDecimal(UseHHMM, false, Use2Digits)%>       
                                             </td>
                                         </tr>
                                     </table>
@@ -232,9 +232,9 @@
                                                 <ItemTemplate>
                                                     <tr>
                                                         <td style="border-right: 1px solid darkgray; border-top: 1px solid darkgray;"><%# Eval("ClassName") %></td>
-                                                        <td style="border-right: 1px solid darkgray; border-top: 1px solid darkgray;"><%# Eval("Total").FormatDecimal(UseHHMM) %></td>
-                                                        <td style="border-right: 1px solid darkgray; border-top: 1px solid darkgray;"><%# Eval("PIC").FormatDecimal(UseHHMM) %></td>
-                                                        <td style="border-top: 1px solid darkgray;"><%# Eval("SIC").FormatDecimal(UseHHMM) %></td>
+                                                        <td style="border-right: 1px solid darkgray; border-top: 1px solid darkgray;"><%# Eval("Total").FormatDecimal(UseHHMM, false, Use2Digits) %></td>
+                                                        <td style="border-right: 1px solid darkgray; border-top: 1px solid darkgray;"><%# Eval("PIC").FormatDecimal(UseHHMM, false, Use2Digits) %></td>
+                                                        <td style="border-top: 1px solid darkgray;"><%# Eval("SIC").FormatDecimal(UseHHMM, false, Use2Digits) %></td>
                                                     </tr>
                                                 </ItemTemplate>
                                             </asp:Repeater>
@@ -280,56 +280,56 @@
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText ="<%$ Resources:LogbookEntry, FieldDual %>">
                                 <ItemTemplate>
-                                    <%# Eval("DualReceived").FormatDecimal(UseHHMM) %>
+                                    <%# Eval("DualReceived").FormatDecimal(UseHHMM, false, Use2Digits) %>
                                 </ItemTemplate>
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText ="Flight<br />Eng.">
                                 <ItemTemplate>
-                                    <%# Eval("flightengineer").FormatDecimal(UseHHMM) %>
+                                    <%# Eval("flightengineer").FormatDecimal(UseHHMM, false, Use2Digits) %>
                                 </ItemTemplate>
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText ="Military">
                                 <ItemTemplate>
-                                    <%# Eval("MilTime").FormatDecimal(UseHHMM) %>
+                                    <%# Eval("MilTime").FormatDecimal(UseHHMM, false, Use2Digits) %>
                                 </ItemTemplate>
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText ="<%$ Resources:LogbookEntry, FieldCFI %>">
                                 <ItemTemplate>
-                                    <%# Eval("CFI").FormatDecimal(UseHHMM) %>
+                                    <%# Eval("CFI").FormatDecimal(UseHHMM, false, Use2Digits) %>
                                 </ItemTemplate>
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText ="<%$ Resources:LogbookEntry, FieldNight %>">
                                 <ItemTemplate>
-                                    <%# Eval("Night").FormatDecimal(UseHHMM) %>
+                                    <%# Eval("Night").FormatDecimal(UseHHMM, false, Use2Digits) %>
                                 </ItemTemplate>
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText ="<%$ Resources:LogbookEntry, FieldIMC %>">
                                 <ItemTemplate>
-                                    <%# Eval("IMC").FormatDecimal(UseHHMM) %>
+                                    <%# Eval("IMC").FormatDecimal(UseHHMM, false, Use2Digits) %>
                                 </ItemTemplate>
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText ="<%$ Resources:LogbookEntry, FieldSimIMC %>">
                                 <ItemTemplate>
-                                    <%# Eval("SimIMC").FormatDecimal(UseHHMM) %>
+                                    <%# Eval("SimIMC").FormatDecimal(UseHHMM, false, Use2Digits) %>
                                 </ItemTemplate>
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText ="<%$ Resources:LogbookEntry, FieldXCountry %>">
                                 <ItemTemplate>
-                                    <%# Eval("XC").FormatDecimal(UseHHMM) %>
+                                    <%# Eval("XC").FormatDecimal(UseHHMM, false, Use2Digits) %>
                                 </ItemTemplate>
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
