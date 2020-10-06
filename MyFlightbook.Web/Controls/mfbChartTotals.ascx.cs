@@ -1,12 +1,12 @@
 ﻿using MyFlightbook;
 using MyFlightbook.Charting;
 using MyFlightbook.Histogram;
-using MySqlX.XDevAPI.Relational;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -89,7 +89,9 @@ public partial class Controls_mfbChartTotals : System.Web.UI.UserControl
         if (b == null)
             return string.Empty;
 
-        return BucketManager.FormatForType(b.Values[SelectedFieldToGraph.DataField], SelectedFieldToGraph.DataType, UseHHMM, Use2Digits, false);
+        string szTitle = BucketManager.FormatForType(b.Values[SelectedFieldToGraph.DataField], SelectedFieldToGraph.DataType, UseHHMM, Use2Digits, false);
+
+        return String.IsNullOrEmpty(b.HRef) ? szTitle : String.Format(CultureInfo.InvariantCulture, "<a href=\"{0}\" target=\"_blank\">{1}</a>", VirtualPathUtility.ToAbsolute(b.HRef), szTitle);
     }
 
     /// <summary>

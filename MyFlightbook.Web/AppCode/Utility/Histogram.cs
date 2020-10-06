@@ -1,5 +1,4 @@
-﻿using MySqlX.XDevAPI;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
@@ -363,7 +362,10 @@ namespace MyFlightbook.Histogram
                 DataRow dr = dt.NewRow();
                 dt.Rows.Add(dr);
                 dr[ColumnNameDisplayName] = b.DisplayName;
-                dr[ColumnNameHRef] = FullHRef(ParametersForBucket(b));
+                string szHRef = FullHRef(ParametersForBucket(b));
+                dr[ColumnNameHRef] = szHRef;
+                if (String.IsNullOrEmpty(b.HRef))
+                    b.HRef = szHRef;
 
                 foreach (HistogramableValue hv in hm.Values)
                 {
