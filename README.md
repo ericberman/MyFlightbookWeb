@@ -7,7 +7,7 @@ The website and services for MyFlightbook. This provides the back-end for the mo
  * Make sure IIS has ASP turned on under "application development features".
  * Create 6 folders under "Images": "Aircraft", "BasicMed", "Endorsements", "OfflineEndorsements", "Flights", and "Telemetry".  Set permissions on them so that Network Service has full control (so that the website can write thumbnails to these folders).  
  NOTE: Visual studio debugging can get very slow if these contain a lot of files/folders, so it's a good idea to mark them as hidden in the file system (top level only is sufficient).
- * Add the following web.config to the Telemetry file created above, so that it can't serve telemetry directly:
+ * Add the following web.config to the Telemetry folder created above, so that it can't serve telemetry directly:
  ~~~~
  <?xml version="1.0"?>
 <configuration>
