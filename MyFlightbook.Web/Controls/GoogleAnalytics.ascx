@@ -1,9 +1,10 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="GoogleAnalytics.ascx.cs" Inherits="Controls_GoogleAnalytics" %>
-<!-- Google Analytics -->
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src='<% =String.Format(System.Globalization.CultureInfo.InvariantCulture, "https://www.googletagmanager.com/gtag/js?id={0}", AnalyticsID) %>'></script>
 <script>
-    window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-    ga('create', 'UA-1545617-1', 'auto');
-    ga('send', 'pageview' <% =RedirJScript %>);
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', '<% = AnalyticsID %>');
 </script>
-<script async src='https://www.google-analytics.com/analytics.js'></script>
-<!-- End Google Analytics -->

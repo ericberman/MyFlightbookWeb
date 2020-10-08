@@ -6,13 +6,13 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
+    <uc1:GoogleAnalytics ID="GoogleAnalytics1" runat="server" />
     <title></title>
 </head>
 <body>
     <form id="form1" runat="server">
     <div>
         <asp:Image ID="imgWorking" ImageUrl="~/images/ajax-loader.gif" runat="server" />
-        <uc1:GoogleAnalytics ID="GoogleAnalytics1" runat="server" />
     </div>
     </form>
 </body>

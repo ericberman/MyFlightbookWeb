@@ -30,7 +30,6 @@ public partial class Public_AdTracker : System.Web.UI.Page
                         ad.AddImpression();
                     else
                         ad.AddClick();
-                    GoogleAnalytics1.RedirHref = ad.TargetLink;
                 }
             }
         }

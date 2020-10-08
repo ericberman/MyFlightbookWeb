@@ -7,6 +7,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
+    <uc4:GoogleAnalytics ID="GoogleAnalytics1" runat="server" />
     <meta name="verify-v1" content="7D/8Uvt4SqfWiyxmBjdh6ee4Kmr8ckec9yCd8wGU9n0=" />
     <meta name="apple-itunes-app" content="app-id=349983064" />
     <meta name="format-detection" content="telephone=no" runat="server" id="metaFormat" visible="false" />
@@ -72,7 +73,6 @@
                 <asp:AlwaysVisibleControlExtender runat="server" ID="avceCookies" TargetControlID="pnlCookies" HorizontalSide="Center" VerticalSide="Bottom" VerticalOffset="5" />
             </ContentTemplate>
         </asp:UpdatePanel>
-        <uc4:GoogleAnalytics ID="GoogleAnalytics1" runat="server" />
         <asp:Panel ID="pnlViewImg" runat="server" style="display:none;">
             <asp:ImageButton ID="btnClose" runat="server" style="position: absolute; top: 15px; right: 15px; z-index: 3" ImageUrl="~/images/closeimg.png" />
             <asp:Image ID="imgImgToView" runat="server" />

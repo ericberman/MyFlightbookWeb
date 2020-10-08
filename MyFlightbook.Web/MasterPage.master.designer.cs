@@ -15,6 +15,15 @@ namespace MyFlightbook.Web
     {
 
         /// <summary>
+        /// GoogleAnalytics1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Controls_GoogleAnalytics GoogleAnalytics1;
+
+        /// <summary>
         /// metaFormat control.
         /// </summary>
         /// <remarks>
@@ -265,15 +274,6 @@ namespace MyFlightbook.Web
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::AjaxControlToolkit.AlwaysVisibleControlExtender avceCookies;
-
-        /// <summary>
-        /// GoogleAnalytics1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Controls_GoogleAnalytics GoogleAnalytics1;
 
         /// <summary>
         /// pnlViewImg control.

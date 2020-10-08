@@ -242,9 +242,6 @@ namespace MyFlightbook.Web
                     lblAdmin.Text = ProfileRoles.OriginalAdmin;
                     lblImpersonated.Text = Page.User.Identity.Name;
                 }
-
-                if (Request.IsLocal)
-                    GoogleAnalytics1.Visible = false;
             }
 
             if (IsIOSORAndroid) // set in Page INIT
