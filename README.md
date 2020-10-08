@@ -53,13 +53,19 @@ and the application should be called "logbook" and point to the /logbook branch.
  * AuthorizedWebServiceClients - Comma separated list of authorized clients of the web services
  * AWSAccessKey - Access key for Amazon Web services
  * AWSSecretKey - Secret for Amazon Web Services
+ * CloudAhoyID - ID for CloudAhoy oAuth
+ * CloudAhoySecret - Secret for CloudAhoy oAuth
  * DebugDomains - Identifies local domains (e.g., http://localhost) from which oAuth requests may originate
  * DropboxAccessID - Access key for Dropbox
  * DropboxClientSecret - Secret for Dropbox
  * ETSPipelineID - Amazon Elastic Transcoder ID for processing videos
  * ETSPipelineIDDebug - Amazon Elastic Transcoder ID for processing videos from a debug/development website
+ * ETSPipelineIDStaging - Amazon Elastic Transcoder ID for processing videos from staging website
  * FacebookAccessID - Access key for Facebook
  * FacebookClientSecret - Secret for Facebook
+ * facebookAppId - ID for MyFlightbook app on Facebook
+ * GoogleAnalyticsDeveloper - ID for google analytics on developer machines
+ * GoogleAnalyticsProduction - ID for google analytics on production environment.
  * GoogleDriveAccessID - Access key for Google Drive
  * GoogleDriveClientSecret - Secret for Google Drive
  * GoogleMapsKey - Key for using Google maps. Get your own
