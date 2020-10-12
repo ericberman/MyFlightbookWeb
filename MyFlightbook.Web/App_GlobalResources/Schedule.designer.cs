@@ -132,6 +132,33 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add to Google Calendar.
+        /// </summary>
+        internal static string DownloadApptGoogle {
+            get {
+                return ResourceManager.GetString("DownloadApptGoogle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add to Outlook (.ics).
+        /// </summary>
+        internal static string DownloadApptICS {
+            get {
+                return ResourceManager.GetString("DownloadApptICS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add to Yahoo Calendar.
+        /// </summary>
+        internal static string DownloadApptYahoo {
+            get {
+                return ResourceManager.GetString("DownloadApptYahoo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Download event to your calendar.
         /// </summary>
         internal static string DownloadICal {

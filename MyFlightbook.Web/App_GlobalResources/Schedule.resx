@@ -223,4 +223,13 @@
   <data name="ResourceBooked" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>content.en\email\resourcebooked.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="DownloadApptGoogle" xml:space="preserve">
+    <value>Add to Google Calendar</value>
+  </data>
+  <data name="DownloadApptICS" xml:space="preserve">
+    <value>Add to Outlook (.ics)</value>
+  </data>
+  <data name="DownloadApptYahoo" xml:space="preserve">
+    <value>Add to Yahoo Calendar</value>
+  </data>
 </root>
