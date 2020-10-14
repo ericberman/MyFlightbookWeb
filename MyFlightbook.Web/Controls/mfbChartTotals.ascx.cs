@@ -209,7 +209,7 @@ public partial class Controls_mfbChartTotals : System.Web.UI.UserControl
 
         RefreshChartAndTable(bm.Buckets);
 
-        if (bm is YearMonthBucketManager ybm)
+        if (bm is YearMonthBucketManager ybm && ybm.Buckets.Any())
         {
             gvYearly.Visible = true;
             gvYearly.DataSource = ybm.ToYearlySummary();
