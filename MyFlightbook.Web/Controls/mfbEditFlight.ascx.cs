@@ -583,7 +583,7 @@ public partial class Controls_mfbEditFlight : Controls_mfbEditFlightBase
         UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
         Aircraft ac = ua.GetUserAircraftByID(idAircraft);
         if (ac != null)
-            SetTemplatesForAircraft(ac, mfbEditPropSet1, FlightUser ?? Page.User.Identity.Name, FlightUser.CompareCurrentCultureIgnoreCase(Page.User.Identity.Name) != 0);
+            SetTemplatesForAircraft(ac, mfbEditPropSet1, FlightUser ?? Page.User.Identity.Name, FlightUser != null && FlightUser.CompareCurrentCultureIgnoreCase(Page.User.Identity.Name) != 0);
     }
 
     /// <summary>
