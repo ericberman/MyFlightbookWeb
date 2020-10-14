@@ -136,6 +136,7 @@ public partial class Controls_mfbEditFlight : Controls_mfbEditFlightBase
     const string keySessionInProgress = "InProgressFlight";
     const string keyVSFlightUser = "VSFlightUser";
     const string szValGroupEdit = "vgEditFlight";
+    const string keyLastSelectedAircraft = "vsLastAircraft";
 
     #region Properties
     private int FlightID
@@ -157,6 +158,12 @@ public partial class Controls_mfbEditFlight : Controls_mfbEditFlightBase
     {
         get { return Convert.ToInt32(cmbCatClasses.SelectedValue, CultureInfo.InvariantCulture); }
         set { cmbCatClasses.SelectedValue = value.ToString(CultureInfo.InvariantCulture); }
+    }
+
+    public string LastAircraftID
+    {
+        get { return (string) ViewState[keyLastSelectedAircraft]; }
+        set { ViewState[keyLastSelectedAircraft] = value; }
     }
 
     /// <summary>
@@ -267,7 +274,7 @@ public partial class Controls_mfbEditFlight : Controls_mfbEditFlightBase
 
         InitializeHobbs(le);
 
-        SetUpAircraftForFlight(le);
+        SetUpAircraftForFlight(le, false);
 
         InitFormFromLogbookEntry(le);
 
@@ -376,13 +383,15 @@ public partial class Controls_mfbEditFlight : Controls_mfbEditFlightBase
     /// For editing existing flights, we set up aircraft for the owner's aircraft list.
     /// </summary>
     /// <param name="le">The flight for which we want to set up</param>
-    private void SetUpAircraftForFlight(LogbookEntry le)
+    private void SetUpAircraftForFlight(LogbookEntry le, bool fShowAll)
     {
         if (le.IsNewFlight)
-            SetUpAircraftForUser(CurrentUser.UserName, UseLastTail ? Aircraft.idAircraftUnknown : le.AircraftID);
+            SetUpAircraftForUser(CurrentUser.UserName, UseLastTail ? Aircraft.idAircraftUnknown : le.AircraftID, fShowAll);
         else
-            SetUpAircraftForUser(le.User, le.AircraftID);
+            SetUpAircraftForUser(le.User, le.AircraftID, fShowAll);
     }
+
+    private const string szValShowAllAircraft = "sa";
 
     /// <summary>
     /// Populates the aircraft drop-down for the specified username and aircraft.
@@ -392,7 +401,7 @@ public partial class Controls_mfbEditFlight : Controls_mfbEditFlightBase
     /// </summary>
     /// <param name="username"></param>
     /// <param name="idFlightAircraft"></param>
-    protected void SetUpAircraftForUser(string username, int idFlightAircraft)
+    protected void SetUpAircraftForUser(string username, int idFlightAircraft, bool fShowAll)
     {
         UserAircraft ua = new UserAircraft(username);
         Aircraft[] rgac = ua.GetAircraftForUser();
@@ -401,14 +410,23 @@ public partial class Controls_mfbEditFlight : Controls_mfbEditFlightBase
         {
             foreach (Aircraft ac in rgac)
             {
-                if (ac.HideFromSelection && ac.AircraftID != idFlightAircraft)
+                if (!fShowAll && ac.HideFromSelection && ac.AircraftID != idFlightAircraft)
                     continue;
 
-                cmbAircraft.Items.Add(new ListItem(ac.DisplayTailnumberWithModel, ac.AircraftID.ToString(CultureInfo.InvariantCulture)));
+                cmbAircraft.Items.Add(new ListItem(ac.DisplayTailnumberWithModel, ac.AircraftID.ToString(CultureInfo.InvariantCulture)) { Selected = ac.AircraftID == idFlightAircraft });
                 if (ac.IsTailwheel)
                     m_rgTailwheelAircraft.Add(ac.AircraftID);
             }
+
+            // add an additional "Show all..." if some aircraft were suppressed, unless ALL aircraft were suppressed
+            if (cmbAircraft.Items.Count < rgac.Length && cmbAircraft.Items.Count > 0)
+            {
+                ListItem li = new ListItem(Resources.Aircraft.PromptShowAllAircraft, szValShowAllAircraft);
+                li.Attributes["style"] = "font-style:italic;";
+                cmbAircraft.Items.Add(li);
+            }
         }
+
         util.SetValidationGroup(this, szValGroupEdit);
         Session[keyTailwheelList] = m_rgTailwheelAircraft;
     }
@@ -819,7 +837,17 @@ public partial class Controls_mfbEditFlight : Controls_mfbEditFlightBase
 
     protected void cmbAircraft_SelectedIndexChanged(object sender, EventArgs e)
     {
-        InitFormFromLogbookEntry(InitLogbookEntryFromForm());
+        if (cmbAircraft.SelectedValue.CompareOrdinal(szValShowAllAircraft) == 0)
+        {
+            if (LastAircraftID != null && int.TryParse(LastAircraftID, out int _))
+                cmbAircraft.SelectedValue = LastAircraftID; // select whatever was selected last time.
+            SetUpAircraftForFlight(InitLogbookEntryFromForm(), true);
+        }
+        else
+        {
+            InitFormFromLogbookEntry(InitLogbookEntryFromForm());
+            LastAircraftID = cmbAircraft.SelectedValue; // save for next time
+        }
     }
 
     protected void lnkCheckFlight_Click(object sender, EventArgs e)

@@ -650,4 +650,7 @@
   <data name="MaintenanceXPonderPrompt" xml:space="preserve">
     <value>Transponder:</value>
   </data>
+  <data name="PromptShowAllAircraft" xml:space="preserve">
+    <value>Show all aircraft...</value>
+  </data>
 </root>

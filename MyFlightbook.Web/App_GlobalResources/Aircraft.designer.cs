@@ -1561,6 +1561,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show all aircraft....
+        /// </summary>
+        internal static string PromptShowAllAircraft {
+            get {
+                return ResourceManager.GetString("PromptShowAllAircraft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to registration renewal.
         /// </summary>
         internal static string RegistrationRenewal {
