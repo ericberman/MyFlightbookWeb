@@ -16,34 +16,38 @@ namespace MyFlightbook.Web.Member
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            string szUser = (Request.PathInfo.Length > 0 && Request.PathInfo.StartsWith("/", StringComparison.OrdinalIgnoreCase)) ? Request.PathInfo.Substring(1) : string.Empty;
-
-            const string szDefault = "~/Public/tabimages/ProfileTab.png";
-            string szReturn = szDefault;
-            if (!String.IsNullOrEmpty(szUser) && Page.User.Identity.IsAuthenticated)
+            try
             {
-                // Two scenarios where we're allowed to see the image:
-                // (a) we're the user or 
-                // (b) we are both in the same club.
-                // ClubMember.ShareClub returns true for both of these.
-                if (ClubMember.CheckUsersShareClub(Page.User.Identity.Name, szUser, true, false))
+                string szUser = (Request.PathInfo.Length > 0 && Request.PathInfo.StartsWith("/", StringComparison.OrdinalIgnoreCase)) ? Request.PathInfo.Substring(1) : string.Empty;
+
+                const string szDefault = "~/Public/tabimages/ProfileTab.png";
+                string szReturn = szDefault;
+                if (!String.IsNullOrEmpty(szUser) && Page.User.Identity.IsAuthenticated)
                 {
-                    Profile pf = Profile.GetUser(szUser);
-                    if (pf.HasHeadShot)
+                    // Two scenarios where we're allowed to see the image:
+                    // (a) we're the user or 
+                    // (b) we are both in the same club.
+                    // ClubMember.ShareClub returns true for both of these.
+                    if (ClubMember.CheckUsersShareClub(Page.User.Identity.Name, szUser, true, false))
                     {
-                        Response.Clear();
-                        Response.ContentType = "image/jpeg";
-                        Response.Cache.SetExpires(DateTime.UtcNow.AddDays(14));
+                        Profile pf = Profile.GetUser(szUser);
+                        if (pf.HasHeadShot)
+                        {
+                            Response.Clear();
+                            Response.ContentType = "image/jpeg";
+                            Response.Cache.SetExpires(DateTime.UtcNow.AddDays(14));
 #pragma warning disable CA3002 // Review code for XSS vulnerabilities - this came from the database, it's not arbitrary.
-                        Response.BinaryWrite(pf.HeadShot.ToArray());
+                            Response.BinaryWrite(pf.HeadShot.ToArray());
 #pragma warning restore CA3002 // Review code for XSS vulnerabilities
-                        Response.Flush();
-                        Response.End();
+                            Response.Flush();
+                            Response.End();
+                        }
                     }
                 }
-            }
 
-            Response.Redirect(szReturn);
+                Response.Redirect(szReturn);
+            }
+            catch (System.Web.HttpException) { }    // eat any exception.
         }
     }
 }
