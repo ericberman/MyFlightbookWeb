@@ -240,25 +240,25 @@
     <comment>Text (not shown) to align integers with times in hh:mm format.</comment>
   </data>
   <data name="TotalGroupCapabilities" xml:space="preserve">
-    <value>Times by aircraft features</value>
+    <value>Times by Aircraft Features</value>
   </data>
   <data name="TotalGroupCoreFields" xml:space="preserve">
     <value>Standard Logbook Times</value>
   </data>
   <data name="TotalGroupProperties" xml:space="preserve">
-    <value>Other Totals</value>
+    <value>Other Times and Counts</value>
   </data>
   <data name="TotalGroupCategoryClass" xml:space="preserve">
-    <value>Totals by Category/Class</value>
+    <value>Times by Category/Class</value>
   </data>
   <data name="TotalGroupICAO" xml:space="preserve">
-    <value>Totals by ICAO code</value>
+    <value>Times by ICAO Code</value>
   </data>
   <data name="TotalGroupModel" xml:space="preserve">
-    <value>Totals by Model</value>
+    <value>Times by Model</value>
   </data>
   <data name="TotalGroupTotal" xml:space="preserve">
-    <value>Overall Total Flight Time</value>
+    <value>Overall</value>
   </data>
   <data name="TotalsModeFlat" xml:space="preserve">
     <value>Show as flat list</value>
@@ -350,5 +350,8 @@
   </data>
   <data name="RollupTotalByPeriod" xml:space="preserve">
     <value>Total&lt;br /&gt;(All/12/24)&lt;br /&gt;Month</value>
+  </data>
+  <data name="Flights" xml:space="preserve">
+    <value>Flights</value>
   </data>
 </root>

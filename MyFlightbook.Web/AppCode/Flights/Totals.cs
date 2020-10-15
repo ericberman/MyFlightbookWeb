@@ -876,6 +876,7 @@ namespace MyFlightbook.Currency
 
                         string szDesc = fIncludeSubtotals ? SubDescFromLandings(cLandings, cFSDayLandings, cFSNightLandings, cApproaches) : string.Empty;
 
+                        AddToList(new TotalsItem(Resources.Totals.Flights, Convert.ToInt32(util.ReadNullableField(dr, "numFlights", 0), CultureInfo.InvariantCulture), TotalsItem.NumType.Integer) { Group = TotalsGroup.Total });
                         AddToList(new TotalsItem(Resources.Totals.TotalTime, Convert.ToDecimal(util.ReadNullableField(dr, "Total", 0.0M), CultureInfo.InvariantCulture), szDesc) { Query = Restriction.IsDefault ? null : new FlightQuery(Restriction), Group = TotalsGroup.Total });
                     }
                 }

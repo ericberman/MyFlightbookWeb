@@ -169,6 +169,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flights.
+        /// </summary>
+        internal static string Flights {
+            get {
+                return ResourceManager.GetString("Flights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Flights with &quot;{0}&quot;.
         /// </summary>
         internal static string FlightsWithBooleanProp {
@@ -430,7 +439,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Times by aircraft features.
+        ///   Looks up a localized string similar to Times by Aircraft Features.
         /// </summary>
         internal static string TotalGroupCapabilities {
             get {
@@ -439,7 +448,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Totals by Category/Class.
+        ///   Looks up a localized string similar to Times by Category/Class.
         /// </summary>
         internal static string TotalGroupCategoryClass {
             get {
@@ -457,7 +466,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Totals by ICAO code.
+        ///   Looks up a localized string similar to Times by ICAO Code.
         /// </summary>
         internal static string TotalGroupICAO {
             get {
@@ -466,7 +475,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Totals by Model.
+        ///   Looks up a localized string similar to Times by Model.
         /// </summary>
         internal static string TotalGroupModel {
             get {
@@ -475,7 +484,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Other Totals.
+        ///   Looks up a localized string similar to Other Times and Counts.
         /// </summary>
         internal static string TotalGroupProperties {
             get {
@@ -484,7 +493,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Overall Total Flight Time.
+        ///   Looks up a localized string similar to Overall.
         /// </summary>
         internal static string TotalGroupTotal {
             get {
