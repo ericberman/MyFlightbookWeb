@@ -113,8 +113,8 @@
                         <td runat="server" visible='<%# CurrentUser.IsInstructor %>' style="border-right: 2px solid black;"><%# ((decimal)Eval("CFI")).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                         <td runat="server" visible='<%# CurrentUser.TracksSecondInCommandTime %>' style="border-right: 2px solid black;"><%# ((decimal)Eval("SIC")).FormatDecimal(CurrentUser.UsesHHMM) %></td>
 
-                        <td class="centered"><%# Eval("DayTakeoffs") %>&nbsp;/&nbsp;<%# Math.Max((int) Eval("Landings") - (int) Eval("NightLandings") - (int) Eval("NightTouchAndGoLandings"), 0) %></td>
-                        <td class="centered" style="border-right: 2px solid black;"><%# Eval("NightTakeoffs") %>&nbsp;/&nbsp;<%# (int) Eval("NightLandings") + (int) Eval("NightTouchAndGoLandings") %></td>
+                        <td class="centered"><%# Eval("DayTakeoffs") %>&nbsp;/&nbsp;<%# Math.Max((int) Eval("NetDayLandings"), 0) %></td>
+                        <td class="centered" style="border-right: 2px solid black;"><%# Eval("NightTakeoffs") %>&nbsp;/&nbsp;<%# (int) Eval("NetNightLandings") %></td>
 
                         <td runat="server" id="td1" visible="<%# ShowOptionalColumn(0) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(0) %></div></td>
                         <td runat="server" id="td2" visible="<%# ShowOptionalColumn(1) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(1) %></div></td>
