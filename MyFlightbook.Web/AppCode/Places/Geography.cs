@@ -482,10 +482,10 @@ namespace MyFlightbook.Geography
         #endregion
 
         #region Constructors
-        public Position(double Lat = 0, double Lon = 0)
-            : base(Lat, Lon)
-        {
-        }
+        public Position(double Lat, double Lon)
+            : base(Lat, Lon) { }
+
+        public Position() : this(0, 0) { }
 
         public Position(double Lat, double Lon, DateTime timeStamp)
             : base(Lat, Lon)
