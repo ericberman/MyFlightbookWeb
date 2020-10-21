@@ -1828,7 +1828,7 @@
     <value>View the data that will be sent</value>
   </data>
   <data name="InsurancePostDisclaimer" xml:space="preserve">
-    <value>By clicking this, you consent to share your logbook, any telemetry, and personal data such as your name, email, certificates, flight reviews, and so forth, to our partner SkyWatch.ai for the purpose of generating a customized insurance quote.</value>
+    <value>By clicking this, you will send a one-time snapshot of your logbook, any telemetry, and personal data such as your name, email, certificates, flight reviews, and so forth, to our partner SkyWatch.ai for the purpose of generating a customized insurance quote.</value>
   </data>
   <data name="InsurancePostFailed" xml:space="preserve">
     <value>An error occured trying to send your insuranceData</value>
