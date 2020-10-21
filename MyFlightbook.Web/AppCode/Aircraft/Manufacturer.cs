@@ -65,7 +65,7 @@ namespace MyFlightbook
             FLoad("WHERE idmanufacturer=?idMan", new MySqlParameter("idMan", id));
         }
 
-        static readonly Regex rGeneric = new Regex("VARIOUS|UNKNOWN|MISC|MISCELLANEOUS", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        static readonly Regex rGeneric = new Regex("VARIOUS|UNKNOWN|MISC|MISCELLANEOUS|OTHER", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         const string szGeneric = "Generic";
 
         /// <summary>
