@@ -11,6 +11,28 @@
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
     <div>
         <p><% =Resources.LocalizedText.MyAircraftDesc %></p>
+        <div style="margin-left:auto; margin-right:auto; max-width: 300px">
+            <p>
+                <asp:HyperLink ID="btnAddNew" runat="server" NavigateUrl="~/Member/EditAircraft.aspx?id=-1">
+                    <asp:Image ID="imgAdd" runat="server" ImageUrl="~/images/add.png" style="margin-right: 15px; margin-left: 0px; vertical-align:middle;" />
+                    <asp:Label ID="lblAdd" runat="server" Text="<%$ Resources:LocalizedText, MyAircraftAddAircraft %>" />
+                </asp:HyperLink>
+            </p>
+            <p>
+                <asp:HyperLink ID="lnkImportAircraft" runat="server" NavigateUrl="~/Member/ImpAircraft.aspx">
+                    <asp:Image ID="imgImport" runat="server" ImageUrl="~/images/import.png" style="margin-right: 5px; vertical-align:middle;" />
+                    <asp:Label ID="lblImport" runat="server" Text="<%$ Resources:Aircraft, ImportTitle %>" />
+                </asp:HyperLink>
+            </p>
+            <p>
+            <asp:Panel ID="pnlDownload" runat="server">
+                <asp:LinkButton ID="lnkDownloadCSV" runat="server" OnClick="lnkDownloadCSV_Click">
+                    <asp:Image ID="imgDownloadCSV" ImageUrl="~/images/download.png" runat="server" style="margin-right: 15px; margin-left:5px; vertical-align:middle;" />
+                    <asp:Localize ID="locDownloadCSV" runat="server" Text="<%$ Resources:Aircraft, DownloadCSV %>"></asp:Localize>
+                </asp:LinkButton>
+            </asp:Panel>
+            </p>
+        </div>
         <asp:Panel ID="pnlGrouping" runat="server">
             <% =Resources.Aircraft.ViewAircraftPrompt %>
             <asp:DropDownList ID="cmbAircraftGrouping" runat="server" AutoPostBack="true" OnSelectedIndexChanged="cmbAircraftGrouping_SelectedIndexChanged">
@@ -21,19 +43,6 @@
                 <asp:ListItem Text="<%$ Resources:Aircraft, ViewAircraftCategoryClass %>" Value="CategoryClass"></asp:ListItem>
                 <asp:ListItem Text="<%$ Resources:Aircraft, ViewAircraftRecency %>" Value="Recency"></asp:ListItem>
             </asp:DropDownList>
-        </asp:Panel>
-        <p>
-            <asp:Button ID="btnAddNew" runat="server" Text="<%$ Resources:LocalizedText, MyAircraftAddAircraft %>" 
-            onclick="btnAddNew_Click" />
-            <% =Resources.Aircraft.ImportPrompt %>
-            <asp:HyperLink ID="lnkImportAircraft" runat="server" Text="<%$ Resources:Aircraft, ImportTitle %>" NavigateUrl="~/Member/ImpAircraft.aspx"></asp:HyperLink>
-        </p>
-        <asp:Panel ID="pnlDownload" runat="server">
-            <asp:LinkButton ID="lnkDownloadCSV" runat="server" OnClick="lnkDownloadCSV_Click">
-                <asp:Image ID="imgDownloadCSV" ImageUrl="~/images/download.png" runat="server" style="padding-right: 5px; vertical-align:middle;" />
-                <asp:Image ID="imgCSVIcon" runat="server" ImageUrl="~/images/csvicon_med.png" style="padding-right: 5px; vertical-align: middle" />
-                <asp:Localize ID="locDownloadCSV" runat="server" Text="<%$ Resources:Aircraft, DownloadCSV %>"></asp:Localize>
-            </asp:LinkButton>
         </asp:Panel>
     </div>
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">

@@ -958,16 +958,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can also bulk import aircraft from a spreadsheet..
-        /// </summary>
-        internal static string ImportPrompt {
-            get {
-                return ResourceManager.GetString("ImportPrompt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Go to Import Aircraft.
+        ///   Looks up a localized string similar to Bulk import aircraft from a spreadsheet.
         /// </summary>
         internal static string ImportTitle {
             get {

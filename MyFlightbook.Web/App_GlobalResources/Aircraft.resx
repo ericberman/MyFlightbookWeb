@@ -227,11 +227,8 @@
     <value>{0} - Aircraft</value>
     <comment>{0} is the name of the app</comment>
   </data>
-  <data name="ImportPrompt" xml:space="preserve">
-    <value>You can also bulk import aircraft from a spreadsheet.</value>
-  </data>
   <data name="ImportTitle" xml:space="preserve">
-    <value>Go to Import Aircraft</value>
+    <value>Bulk import aircraft from a spreadsheet</value>
   </data>
   <data name="AircraftEditAdd" xml:space="preserve">
     <value>Add</value>

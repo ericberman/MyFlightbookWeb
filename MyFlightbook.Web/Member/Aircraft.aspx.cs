@@ -88,11 +88,6 @@ public partial class Member_Aircraft : System.Web.UI.Page
         rptAircraftGroups.DataBind();
     }
 
-    protected void btnAddNew_Click(object sender, EventArgs e)
-    {
-        Response.Redirect("~/Member/EditAircraft.aspx?id=-1");
-    }
-
     protected void cmbAircraftGrouping_SelectedIndexChanged(object sender, EventArgs e)
     {
         Refresh();

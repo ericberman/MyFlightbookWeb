@@ -31,31 +31,31 @@ public partial class Member_Aircraft
     protected global::System.Web.UI.WebControls.Label lblAdminMode;
 
     /// <summary>
-    /// pnlGrouping control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Panel pnlGrouping;
-
-    /// <summary>
-    /// cmbAircraftGrouping control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.DropDownList cmbAircraftGrouping;
-
-    /// <summary>
     /// btnAddNew control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Button btnAddNew;
+    protected global::System.Web.UI.WebControls.HyperLink btnAddNew;
+
+    /// <summary>
+    /// imgAdd control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Image imgAdd;
+
+    /// <summary>
+    /// lblAdd control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblAdd;
 
     /// <summary>
     /// lnkImportAircraft control.
@@ -65,6 +65,24 @@ public partial class Member_Aircraft
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.HyperLink lnkImportAircraft;
+
+    /// <summary>
+    /// imgImport control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Image imgImport;
+
+    /// <summary>
+    /// lblImport control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblImport;
 
     /// <summary>
     /// pnlDownload control.
@@ -94,15 +112,6 @@ public partial class Member_Aircraft
     protected global::System.Web.UI.WebControls.Image imgDownloadCSV;
 
     /// <summary>
-    /// imgCSVIcon control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Image imgCSVIcon;
-
-    /// <summary>
     /// locDownloadCSV control.
     /// </summary>
     /// <remarks>
@@ -110,6 +119,24 @@ public partial class Member_Aircraft
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.Localize locDownloadCSV;
+
+    /// <summary>
+    /// pnlGrouping control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Panel pnlGrouping;
+
+    /// <summary>
+    /// cmbAircraftGrouping control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.DropDownList cmbAircraftGrouping;
 
     /// <summary>
     /// UpdatePanel1 control.
