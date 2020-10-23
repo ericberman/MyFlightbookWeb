@@ -31,7 +31,12 @@ namespace MyFlightbook.Printing
         void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, PrintingOptions options, bool showFooter = true);
     }
 
-    public enum PrintLayoutType { Native, Portrait, EASA, USA, Canada, SACAA, CASA, NZ, Glider}
+    public interface ICondenseFlights
+    {
+        IList<LogbookEntryDisplay> CondenseFlights(IEnumerable<LogbookEntryDisplay> lstIn);
+    }
+
+    public enum PrintLayoutType { Native, Portrait, EASA, USA, Canada, SACAA, CASA, NZ, Glider, Condensed}
 
     #region Printing Layout implementations
     public abstract class PrintLayout
@@ -84,6 +89,8 @@ namespace MyFlightbook.Printing
                     return new PrintLayoutGlider() { CurrentUser = pf };
                 case PrintLayoutType.CASA:
                     return new PrintLayoutCASA() { CurrentUser = pf };
+                case PrintLayoutType.Condensed:
+                    return new PrintLayoutCondensed() { CurrentUser = pf };
                 default:
                     throw new ArgumentOutOfRangeException(nameof(plt));
             }
@@ -278,6 +285,17 @@ namespace MyFlightbook.Printing
         }
 
         public override string CSSPath { get { return "~/Public/CSS/printUSA.css"; } }
+    }
+
+    public class PrintLayoutCondensed : PrintLayout
+    {
+        public override bool SupportsImages { get { return false; } }
+
+        public override bool SupportsOptionalColumns { get { return true; } }
+
+        public override int RowHeight(LogbookEntryDisplay le) { return 1; }
+
+        public override string CSSPath { get { return "~/Public/CSS/printCondensed.css"; } }
     }
     #endregion
 
@@ -856,6 +874,10 @@ namespace MyFlightbook.Printing
                     led.CFISignatureState = LogbookEntryBase.SignatureState.None;
                 led.RowHeight = pl.RowHeight(led);
             }
+
+            // Condense the flights, if the template supports condensing
+            if (pt is ICondenseFlights cf)
+                lstFlights = cf.CondenseFlights(lstFlights);
 
             pt.BindPages(LogbookPrintedPage.Paginate(lstFlights, printingOptions), pf, printingOptions, !fSuppressFooter);
 

@@ -209,7 +209,7 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
     {
         if (!IsPostBack)
         {
-            for (int i = 3; i <= 20; i++)
+            for (int i = 3; i <= 40; i++)
                 cmbFlightsPerPage.Items.Add(new ListItem(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrintViewXPerPage, i), i.ToString(CultureInfo.InvariantCulture)) { Selected = (i == 15) });
 
             SetPropsForUser();

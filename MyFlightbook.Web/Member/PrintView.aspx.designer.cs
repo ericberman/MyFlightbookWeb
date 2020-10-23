@@ -22,15 +22,6 @@ public partial class Member_PrintView
     protected global::System.Web.UI.WebControls.Label lblUserName;
 
     /// <summary>
-    /// lblDescription control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Label lblDescription;
-
-    /// <summary>
     /// lnkReturnToFlights control.
     /// </summary>
     /// <remarks>
@@ -38,6 +29,15 @@ public partial class Member_PrintView
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.HyperLink lnkReturnToFlights;
+
+    /// <summary>
+    /// lblDescription control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblDescription;
 
     /// <summary>
     /// TabContainer1 control.
@@ -596,6 +596,24 @@ public partial class Member_PrintView
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::Controls_PrintingLayouts_layoutGlider layoutGlider;
+
+    /// <summary>
+    /// vwCondensed control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.View vwCondensed;
+
+    /// <summary>
+    /// layoutCondensed control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::Controls_PrintingLayouts_layoutCondensed layoutCondensed;
 
     /// <summary>
     /// pnlEndorsements control.

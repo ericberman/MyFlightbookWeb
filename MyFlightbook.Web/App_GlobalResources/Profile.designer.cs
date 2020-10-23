@@ -889,7 +889,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Return to Students.
+        ///   Looks up a localized string similar to ← Return to Students.
         /// </summary>
         internal static string EndorsementReturnToProfile {
             get {

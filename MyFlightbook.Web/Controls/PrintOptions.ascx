@@ -15,6 +15,7 @@
         <asp:ListItem Value="CASA" Text="<%$ Resources:LogbookEntry, PrintFormatCASA %>"></asp:ListItem>
         <asp:ListItem Value="NZ" Text="<%$ Resources:LogbookEntry, PrintFormatNZ %>"></asp:ListItem>
         <asp:ListItem Value="Glider" Text="<%$ Resources:LogbookEntry, PrintFormatGlider %>"></asp:ListItem>
+        <asp:ListItem Value="Condensed" Text="<%$ Resources:LogbookEntry, PrintFormatCondensed %>"></asp:ListItem>
     </asp:DropDownList>
     <asp:Panel ID="pnlIncludeImages" runat="server">
         <asp:CheckBox ID="ckIncludeImages" runat="server" Text="<%$ Resources:LocalizedText, PrintViewIncludeImages %>" AutoPostBack="True" OnCheckedChanged="ckIncludeImages_CheckedChanged" />

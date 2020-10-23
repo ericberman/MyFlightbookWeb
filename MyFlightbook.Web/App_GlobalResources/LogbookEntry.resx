@@ -1325,4 +1325,10 @@ Proceed with import?</value>
   <data name="TemplateStudentDesc" xml:space="preserve">
     <value>Contains properties useful for students</value>
   </data>
+  <data name="PrintFormatCondensed" xml:space="preserve">
+    <value>Condensed</value>
+  </data>
+  <data name="PrintHeaderSegments" xml:space="preserve">
+    <value>Flights</value>
+  </data>
 </root>

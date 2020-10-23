@@ -1944,6 +1944,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Condensed.
+        /// </summary>
+        internal static string PrintFormatCondensed {
+            get {
+                return ResourceManager.GetString("PrintFormatCondensed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to EASA FCL.050.
         /// </summary>
         internal static string PrintFormatEASA {
@@ -2489,6 +2498,15 @@ namespace Resources {
         internal static string PrintHeaderRoute {
             get {
                 return ResourceManager.GetString("PrintHeaderRoute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flights.
+        /// </summary>
+        internal static string PrintHeaderSegments {
+            get {
+                return ResourceManager.GetString("PrintHeaderSegments", resourceCulture);
             }
         }
         
