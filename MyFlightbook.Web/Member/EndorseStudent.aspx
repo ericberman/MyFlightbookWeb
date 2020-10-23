@@ -39,7 +39,7 @@
     <asp:Panel ID="pnlError" runat="server" Visible="false">
         <asp:Label ID="lblError" CssClass="error" runat="server" Text=""></asp:Label>
         <br />
-        <asp:HyperLink ID="lnkReturnHome" NavigateUrl="~/Member/Training.aspx/instStudents" runat="server" Text="<%$ Resources:Profile, EndorsementReturnToProfile %>"></asp:HyperLink>
+        <asp:Image ID="ib" ImageAlign="AbsMiddle" ImageUrl="~/images/back.png" runat="server" /><asp:HyperLink ID="lnkReturnHome" NavigateUrl="~/Member/Training.aspx/instStudents" runat="server" Text="<%$ Resources:Profile, EndorsementReturnToProfile %>"></asp:HyperLink>
     </asp:Panel>
     <br />
     <asp:Panel ID="pnlExistingEndorsements" runat="server">

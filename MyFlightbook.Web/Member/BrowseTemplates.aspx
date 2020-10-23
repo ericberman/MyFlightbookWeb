@@ -2,7 +2,7 @@
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server"><asp:Localize ID="locHeader" runat="server" Text="<%$ Resources:LogbookEntry, TemplateBrowseTemplatesheader %>"></asp:Localize></asp:Content>
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
-    <p><asp:HyperLink ID="lnkReturn" runat="server" Text="<%$ Resources:LogbookEntry, TemplateBrowseReturn %>" NavigateUrl="~/Member/EditProfile.aspx/pftPrefs?pane=props"></asp:HyperLink></p>
+    <p><asp:Image ID="ib" ImageAlign="AbsMiddle" ImageUrl="~/images/back.png" runat="server" /><asp:HyperLink ID="lnkReturn" runat="server" Text="<%$ Resources:LogbookEntry, TemplateBrowseReturn %>" NavigateUrl="~/Member/EditProfile.aspx/pftPrefs?pane=props"></asp:HyperLink></p>
     <p><asp:Label ID="lblDesc1" runat="server"></asp:Label></p>
     <p><asp:Label ID="lblDesc2" runat="server" Text="<%$ Resources:LogbookEntry, TemplateBrowseHeaderDescription2 %>"></asp:Label></p>
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">

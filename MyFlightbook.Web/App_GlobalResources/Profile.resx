@@ -223,7 +223,7 @@
     <value>Don't see a template you need?</value>
   </data>
   <data name="EndorsementReturnToProfile" xml:space="preserve">
-    <value>← Return to Students</value>
+    <value>Return to Students</value>
     <comment>Shown when there is an error.</comment>
   </data>
   <data name="EndorsementsExistingEndorsementHeader" xml:space="preserve">
@@ -289,7 +289,7 @@
     <value>Click here to manage your email subscription settings.</value>
   </data>
   <data name="ReturnToProfile" xml:space="preserve">
-    <value>← Return to Students</value>
+    <value>Return to Students</value>
   </data>
   <data name="EmailMonthlyMailIntro" xml:space="preserve">
     <value>Your monthly flying report from {0}</value>
@@ -471,7 +471,7 @@
     <value>You have authorized %APP_NAME% to save backups to your OneDrive account.</value>
   </data>
   <data name="ReturnToStudent" xml:space="preserve">
-    <value>← Return to logbook for student {0}</value>
+    <value>Return to logbook for student {0}</value>
   </data>
   <data name="PasswordChangedSubject" xml:space="preserve">
     <value>{0} - Notification of password change</value>

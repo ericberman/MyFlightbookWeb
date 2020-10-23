@@ -3266,7 +3266,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ← Return to my templates.
+        ///   Looks up a localized string similar to Return to my templates.
         /// </summary>
         internal static string TemplateBrowseReturn {
             get {

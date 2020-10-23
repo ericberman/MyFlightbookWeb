@@ -31,7 +31,7 @@
                 <asp:HyperLink ID="lnkListView" runat="server" Text="Return to list view" NavigateUrl="~/Member/LogbookNew.aspx" meta:resourcekey="lnkListViewResource1"></asp:HyperLink>
             </asp:View>
             <asp:View ID="vwReturnStudent" runat="server">
-                <asp:HyperLink ID="lnkReturnStudent" runat="server"></asp:HyperLink>
+                <asp:Image ID="ib" ImageAlign="AbsMiddle" ImageUrl="~/images/back.png" runat="server" /><asp:HyperLink ID="lnkReturnStudent" runat="server"></asp:HyperLink>
             </asp:View>
         </asp:MultiView>
     </div>

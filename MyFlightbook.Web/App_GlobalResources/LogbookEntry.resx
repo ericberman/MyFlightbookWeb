@@ -1173,7 +1173,7 @@ Proceed with import?</value>
     <value>Flight Properties</value>
   </data>
   <data name="TemplateBrowseReturn" xml:space="preserve">
-    <value>← Return to my templates</value>
+    <value>Return to my templates</value>
   </data>
   <data name="TemplateCopy" xml:space="preserve">
     <value>Copy this template</value>

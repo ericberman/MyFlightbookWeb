@@ -889,7 +889,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ← Return to Students.
+        ///   Looks up a localized string similar to Return to Students.
         /// </summary>
         internal static string EndorsementReturnToProfile {
             get {
@@ -1450,7 +1450,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ← Return to Students.
+        ///   Looks up a localized string similar to Return to Students.
         /// </summary>
         internal static string ReturnToProfile {
             get {
@@ -1459,7 +1459,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ← Return to logbook for student {0}.
+        ///   Looks up a localized string similar to Return to logbook for student {0}.
         /// </summary>
         internal static string ReturnToStudent {
             get {
