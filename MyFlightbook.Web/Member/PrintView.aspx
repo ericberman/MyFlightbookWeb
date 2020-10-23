@@ -18,16 +18,15 @@
 <%@ Register Src="~/Controls/PrintingLayouts/layoutCanada.ascx" TagPrefix="uc1" TagName="layoutCanada" %>
 <%@ Register Src="~/Controls/PrintingLayouts/layoutCASA.ascx" TagPrefix="uc1" TagName="layoutCASA" %>
 <%@ Register Src="~/Controls/SponsoredAd.ascx" TagPrefix="uc1" TagName="SponsoredAd" %>
-
-
+<%@ Register Src="~/Controls/PrintingLayouts/layoutCondensed.ascx" TagPrefix="uc1" TagName="layoutCondensed" %>
 
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
     <asp:Label ID="lblUserName" runat="server" ></asp:Label>
 </asp:Content>
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
     <div class="noprint">
+        <div style="float:left; margin-right: 10px; font-weight:bold"><span style="font-size:18pt; vertical-align:middle;">← </span><asp:HyperLink ID="lnkReturnToFlights" style="vertical-align:middle;" runat="server" Text="<%$ Resources:LocalizedText, PrintViewReturnLogbook %>"></asp:HyperLink></div>
         <p><asp:Label ID="lblDescription" runat="server" Text="<%$ Resources:LocalizedText, PrintViewDescription %>" ></asp:Label></p>
-        <p><asp:HyperLink ID="lnkReturnToFlights" runat="server" Text="<%$ Resources:LocalizedText, PrintViewReturnLogbook %>"></asp:HyperLink></p>
         <ajaxToolkit:TabContainer ID="TabContainer1" runat="server" CssClass="mfbDefault" ActiveTabIndex="0" >
             <ajaxToolkit:TabPanel ID="tpOptions" runat="server" HeaderText="<%$ Resources:LocalizedText, PrintViewTabOptions %>" >
                 <ContentTemplate>
@@ -236,6 +235,9 @@
             </asp:View>
             <asp:View ID="vwGlider" runat="server">
                 <uc1:layoutGlider runat="server" id="layoutGlider" />
+            </asp:View>
+            <asp:View ID="vwCondensed" runat="server">
+                <uc1:layoutCondensed runat="server" id="layoutCondensed" />
             </asp:View>
         </asp:MultiView>
         <asp:Panel ID="pnlEndorsements" runat="server" style="page-break-after:always;">

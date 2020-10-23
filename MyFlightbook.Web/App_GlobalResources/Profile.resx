@@ -223,7 +223,7 @@
     <value>Don't see a template you need?</value>
   </data>
   <data name="EndorsementReturnToProfile" xml:space="preserve">
-    <value>Return to Students</value>
+    <value>← Return to Students</value>
     <comment>Shown when there is an error.</comment>
   </data>
   <data name="EndorsementsExistingEndorsementHeader" xml:space="preserve">
