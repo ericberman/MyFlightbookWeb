@@ -950,7 +950,7 @@
     <value>Canada</value>
   </data>
   <data name="PrintHeaderTakeoffsLandings" xml:space="preserve">
-    <value>Takeoffs / Landings</value>
+    <value>Takeoffs (T) / Landings (L)</value>
   </data>
   <data name="CompareAdded" xml:space="preserve">
     <value>Added</value>

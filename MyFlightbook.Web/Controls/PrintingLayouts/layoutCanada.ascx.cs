@@ -37,6 +37,16 @@ public partial class Controls_PrintingLayouts_layoutCanada : System.Web.UI.UserC
 
     protected string PropSeparator { get; set; }
 
+    protected static string FormatTakeoffs(int i)
+    {
+        return (i == 0) ? string.Empty : String.Format(CultureInfo.CurrentCulture, "{0}T", i);
+    }
+
+    protected static string FormatLandings(int i)
+    {
+        return (i == 0) ? string.Empty : String.Format(CultureInfo.CurrentCulture, "{0}L", i);
+    }
+
     #region IPrintingTemplate
     public void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, PrintingOptions options, bool showFooter = true)
     {

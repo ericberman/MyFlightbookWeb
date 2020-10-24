@@ -2547,7 +2547,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Takeoffs / Landings.
+        ///   Looks up a localized string similar to Takeoffs (T) / Landings (L).
         /// </summary>
         internal static string PrintHeaderTakeoffsLandings {
             get {
