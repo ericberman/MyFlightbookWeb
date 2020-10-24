@@ -20,6 +20,7 @@
                     <th class="headerSmall" style="width:1cm"><%=Resources.LogbookEntry.PrintHeaderLandingsShort %></th>
                     <th class="headerSmall" style="width:1cm"><%=Resources.LogbookEntry.PrintHeaderApproachesShort %></th>
                     <th class="headerSmall" style="width:1cm"><%=Resources.LogbookEntry.FieldNight %></th>
+                    <th class="headerSmall" style="width:1cm"><%=Resources.LogbookEntry.FieldXCountry %></th>
                     <th class="headerSmall" style="width:1cm"><%=Resources.LogbookEntry.FieldIMC %></th>
                     <th class="headerSmall" style="width:1cm"><%=Resources.LogbookEntry.FieldSimIMC %></th>
                     <th class="headerSmall" style="width:1cm"><%=Resources.LogbookEntry.FieldDual %></th>
@@ -43,6 +44,7 @@
                         <td><%# Eval("Landings").FormatInt() %></td>
                         <td><%# Eval("Approaches").FormatInt() %></td>
                         <td><%# Eval("Nighttime").FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                        <td><%# Eval("CrossCountry").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                         <td><%# Eval("IMC").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                         <td><%# Eval("SimulatedIFR").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                         <td><%# Eval("Dual").FormatDecimal(CurrentUser.UsesHHMM) %></td>
@@ -68,6 +70,7 @@
                                 <td><%# (((LogbookEntryDisplay) Container.DataItem).LandingsTotal).FormatInt() %></td>
                                 <td><%# (((LogbookEntryDisplay) Container.DataItem).Approaches).FormatInt() %></td>
                                 <td><%# (((LogbookEntryDisplay) Container.DataItem).Nighttime).FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                                <td><%# (((LogbookEntryDisplay) Container.DataItem).CrossCountry).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td><%# (((LogbookEntryDisplay) Container.DataItem).IMC).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td><%# (((LogbookEntryDisplay) Container.DataItem).SimulatedIFR).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td><%# (((LogbookEntryDisplay) Container.DataItem).Dual).FormatDecimal(CurrentUser.UsesHHMM) %></td>
