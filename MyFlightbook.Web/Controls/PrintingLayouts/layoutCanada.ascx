@@ -157,8 +157,8 @@
                                 <td runat="server" style="border-right: 2px solid black;" id="CFISubtotal" visible='<%# CurrentUser.IsInstructor %>'><%# ((LogbookEntryDisplay) Container.DataItem).CFI.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td runat="server" style="border-right: 2px solid black;" id="SICSubtotal" visible='<%# CurrentUser.TracksSecondInCommandTime %>'><%# ((LogbookEntryDisplay) Container.DataItem).SIC.FormatDecimal(CurrentUser.UsesHHMM) %></td>
 
-                                <td class="centered"><%# (int) Eval("DayTakeoffTotal") %>&nbsp;/&nbsp;<%# (int) Eval("LandingsTotal") - (int) Eval("NightLandings") - (int) Eval("NightTouchAndGoLandings") %></td>
-                                <td class="centered" style="border-right: 2px solid black;"><%# (int) Eval("NightTakeoffTotal") %>&nbsp;/&nbsp;<%# (int) Eval("NightLandings") + (int) Eval("NightTouchAndGoLandings") %></td>
+                                <td class="centered"><%# FormatTakeoffs((int) Eval("DayTakeoffTotal")) %> <%# FormatLandings((int) Eval("LandingsTotal") - (int) Eval("NightLandings") - (int) Eval("NightTouchAndGoLandings")) %></td>
+                                <td class="centered" style="border-right: 2px solid black;"><%# FormatTakeoffs((int) Eval("NightTakeoffTotal")) %> <%# FormatLandings((int) Eval("NightLandings") + (int) Eval("NightTouchAndGoLandings")) %></td>
 
                                 <td runat="server" id="tdoptColumnTotal1" visible="<%# ShowOptionalColumn(0) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnTotalDisplayValue(0, CurrentUser.UsesHHMM) %></div></td>
                                 <td runat="server" id="tdoptColumnTotal2" visible="<%# ShowOptionalColumn(1) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnTotalDisplayValue(1, CurrentUser.UsesHHMM) %></div></td>
