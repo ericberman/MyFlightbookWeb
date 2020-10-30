@@ -202,6 +202,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show FAR 125.287, 291 Status.
+        /// </summary>
+        internal static string CurrencyOptions1252xx {
+            get {
+                return ResourceManager.GetString("CurrencyOptions1252xx", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show FAR 135.265/135.267 Progress.
         /// </summary>
         internal static string CurrencyOptions13526x {
@@ -2371,6 +2380,33 @@ namespace Resources {
         internal static string NVProficiencyCheckRequired {
             get {
                 return ResourceManager.GetString("NVProficiencyCheckRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 125.287(a) - Knowledge Test.
+        /// </summary>
+        internal static string Part125287aTitle {
+            get {
+                return ResourceManager.GetString("Part125287aTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 125.287(b) - Competency Check.
+        /// </summary>
+        internal static string Part125287bTitle {
+            get {
+                return ResourceManager.GetString("Part125287bTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 125.291(a) - IPC.
+        /// </summary>
+        internal static string Part125291aTitle {
+            get {
+                return ResourceManager.GetString("Part125291aTitle", resourceCulture);
             }
         }
         

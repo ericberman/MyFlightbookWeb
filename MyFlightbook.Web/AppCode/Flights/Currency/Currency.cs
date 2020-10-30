@@ -48,7 +48,8 @@ namespace MyFlightbook.Currency
         flagSuppressModelFeatureTotals = 0x00020000,
         flagAllowNightTouchAndGo = 0x00040000,
         flagRequireDayLandingsDayCurrency = 0x00080000,
-        flagShow2DigitTotals = 0x00100000
+        flagShow2DigitTotals = 0x00100000,
+        flagUseFAR125_2xxStatus = 0x00200000
     }
 
     /// <summary>
@@ -984,6 +985,7 @@ namespace MyFlightbook.Currency
                 ExamineLAPLCurrency(cfr, ccc, catclasscontext);
 
                 ExamineFAR13529x(cfr, ccc, catclasscontext);
+                ExamineFAR1252xx(cfr, ccc, catclasscontext);
             } // foreach catclass
         }
 
@@ -1018,6 +1020,29 @@ namespace MyFlightbook.Currency
                 if (!ccc.dictFlightCurrency.ContainsKey(szKey299))
                     ccc.dictFlightCurrency.Add(szKey299, new Part135_299a(szCatClass, Resources.Currency.Part135299aTitle));
                 ccc.dictFlightCurrency[szKey299].ExamineFlight(cfr);
+            }
+        }
+
+        private static void ExamineFAR1252xx(ExaminerFlightRow cfr, ComputeCurrencyContext ccc, CatClassContext catClassContext)
+        {
+            if (ccc.pf.UsesFAR1252xxCurrency)
+            {
+                string szCatClass = catClassContext.Name;
+                const string szKey287a = "125.287(a)";    // not striped by cat/class!!
+                string szKey287b = szCatClass + "125.287(b)";
+                string szKey291a = szCatClass + "125.291(a)";
+
+                if (!ccc.dictFlightCurrency.ContainsKey(szKey287a))
+                    ccc.dictFlightCurrency.Add(szKey287a, new Part125_287a(Resources.Currency.Part125287aTitle));
+                ccc.dictFlightCurrency[szKey287a].ExamineFlight(cfr);
+
+                if (!ccc.dictFlightCurrency.ContainsKey(szKey287b))
+                    ccc.dictFlightCurrency.Add(szKey287b, new Part125_287b(szCatClass, Resources.Currency.Part125287bTitle));
+                ccc.dictFlightCurrency[szKey287b].ExamineFlight(cfr);
+
+                if (!ccc.dictFlightCurrency.ContainsKey(szKey291a))
+                    ccc.dictFlightCurrency.Add(szKey291a, new Part125_291a(szCatClass, Resources.Currency.Part135297aTitle));
+                ccc.dictFlightCurrency[szKey291a].ExamineFlight(cfr);
             }
         }
 

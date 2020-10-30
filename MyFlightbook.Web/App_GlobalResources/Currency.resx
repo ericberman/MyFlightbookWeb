@@ -1065,4 +1065,16 @@
   <data name="CurrencyTotalsDigits" xml:space="preserve">
     <value>Always Display 2 decimal places for totals (if not using HH:MM format)</value>
   </data>
+  <data name="CurrencyOptions1252xx" xml:space="preserve">
+    <value>Show FAR 125.287, 291 Status</value>
+  </data>
+  <data name="Part125287aTitle" xml:space="preserve">
+    <value>125.287(a) - Knowledge Test</value>
+  </data>
+  <data name="Part125287bTitle" xml:space="preserve">
+    <value>125.287(b) - Competency Check</value>
+  </data>
+  <data name="Part125291aTitle" xml:space="preserve">
+    <value>125.291(a) - IPC</value>
+  </data>
 </root>

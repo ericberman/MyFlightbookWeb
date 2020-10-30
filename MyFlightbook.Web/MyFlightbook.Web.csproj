@@ -979,6 +979,7 @@
     <Compile Include="AppCode\Flights\Currency\InstrumentCurrency.cs" />
     <Compile Include="AppCode\Flights\Currency\NightCurrency.cs" />
     <Compile Include="AppCode\Flights\Currency\NVCurrency.cs" />
+    <Compile Include="AppCode\Flights\Currency\Part125Currency.cs" />
     <Compile Include="AppCode\Flights\Currency\PassengerCurrency.cs" />
     <Compile Include="AppCode\Flights\Currency\PIC6158Currency.cs" />
     <Compile Include="AppCode\Flights\Currency\SFAR73Currency.cs" />

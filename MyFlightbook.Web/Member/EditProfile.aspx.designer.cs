@@ -1597,6 +1597,15 @@ public partial class Member_EditProfile
     protected global::System.Web.UI.WebControls.CheckBox ckUse135DutyTime;
 
     /// <summary>
+    /// ckUse1252xxCurrency control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.CheckBox ckUse1252xxCurrency;
+
+    /// <summary>
     /// ckUse13529xCurrency control.
     /// </summary>
     /// <remarks>

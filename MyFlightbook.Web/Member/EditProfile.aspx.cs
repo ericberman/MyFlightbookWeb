@@ -158,6 +158,7 @@ public partial class Member_EditProfile : System.Web.UI.Page
         ckUse117DutyTime.Checked = m_pf.UsesFAR117DutyTime;
         rbl117Rules.SelectedIndex = m_pf.UsesFAR117DutyTimeAllFlights ? 1 : 0;
         ckUse135DutyTime.Checked = m_pf.UsesFAR135DutyTime;
+        ckUse1252xxCurrency.Checked = m_pf.UsesFAR1252xxCurrency;
         ckUse13529xCurrency.Checked = m_pf.UsesFAR13529xCurrency;
         ckUse13526xCurrency.Checked = m_pf.UsesFAR13526xCurrency;
         ckUse61217Currency.Checked = m_pf.UsesFAR61217Currency;
@@ -550,6 +551,7 @@ public partial class Member_EditProfile : System.Web.UI.Page
         m_pf.UsesArmyCurrency = ckUseArmyCurrency.Checked;
         m_pf.UsesFAR117DutyTime = ckUse117DutyTime.Checked;
         m_pf.UsesFAR117DutyTimeAllFlights = rbl117Rules.SelectedIndex != 0;
+        m_pf.UsesFAR1252xxCurrency = ckUse1252xxCurrency.Checked;
         m_pf.UsesFAR135DutyTime = ckUse135DutyTime.Checked;
         m_pf.UsesFAR13529xCurrency = ckUse13529xCurrency.Checked;
         m_pf.UsesFAR13526xCurrency = ckUse13526xCurrency.Checked;

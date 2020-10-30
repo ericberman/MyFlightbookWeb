@@ -366,6 +366,12 @@ namespace MyFlightbook
             set { setCurrencyFlag(CurrencyOptionFlags.flagUseFAR135_26xStatus, value); }
         }
 
+        public Boolean UsesFAR1252xxCurrency
+        {
+            get { return hasFlag(CurrencyOptionFlags.flagUseFAR125_2xxStatus); }
+            set { setCurrencyFlag(CurrencyOptionFlags.flagUseFAR125_2xxStatus, value); }
+        }
+
         public Boolean UsesFAR61217Currency
         {
             get { return hasFlag(CurrencyOptionFlags.flagUseFAR61217); }

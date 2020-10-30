@@ -529,6 +529,7 @@
                                 <div runat="server" id="div135DutyTime" visible="False">
                                     <asp:CheckBox ID="ckUse135DutyTime" runat="server" Text="Show FAR 135 Duty Time Status" />
                                 </div>
+                                <div><asp:CheckBox ID="ckUse1252xxCurrency" runat="server" Text="<%$ Resources:Currency, CurrencyOptions1252xx %>" /></div>
                                 <div><asp:CheckBox ID="ckUse13529xCurrency" runat="server" Text="<%$ Resources:Currency, CurrencyOptions13529x %>" /></div>
                                 <div><asp:CheckBox ID="ckUse13526xCurrency" runat="server" Text="<%$ Resources:Currency, CurrencyOptions13526x %>" /></div>
                                 <div><asp:CheckBox ID="ckUse61217Currency" runat="server" Text="<%$ Resources:Currency, Part61217Option %>" /></div>
