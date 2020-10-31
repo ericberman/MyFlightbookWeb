@@ -205,7 +205,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Time accounting issues.
+        ///   Looks up a localized string similar to Time accounting issues (Leave UNCHECKED if flying under FAA rules).
         /// </summary>
         internal static string LintCategoryPICSICDualMath {
             get {

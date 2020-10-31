@@ -166,7 +166,7 @@
     <value>Checks for other common issues</value>
   </data>
   <data name="LintCategoryPICSICDualMath" xml:space="preserve">
-    <value>Time accounting issues</value>
+    <value>Time accounting issues (Leave UNCHECKED if flying under FAA rules)</value>
   </data>
   <data name="LintCategoryPICSICDualMathTip" xml:space="preserve">
     <value>In much of the world (but NOT the US), Total=PIC+SIC+Dual.  This checks for scenarios where this equation doesn't hold</value>
