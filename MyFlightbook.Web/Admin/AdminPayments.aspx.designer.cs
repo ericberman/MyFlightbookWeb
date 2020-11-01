@@ -87,6 +87,15 @@ namespace MyFlightbook.Web.Admin
         protected global::System.Web.UI.WebControls.Button btnComputeStats;
 
         /// <summary>
+        /// gchRunning30 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Controls_GoogleChart gchRunning30;
+
+        /// <summary>
         /// plcPayments control.
         /// </summary>
         /// <remarks>

@@ -3,6 +3,8 @@
 <%@ Register Src="~/Controls/mfbTypeInDate.ascx" TagPrefix="uc1" TagName="mfbTypeInDate" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register src="../Controls/mfbDecimalEdit.ascx" tagname="mfbDecimalEdit" tagprefix="uc3" %>
+<%@ Register Src="~/Controls/GoogleChart.ascx" TagPrefix="uc1" TagName="GoogleChart" %>
+
 <asp:Content ID="Content2" ContentPlaceHolderID="cpPageTitle" runat="Server">
     Admin Tools - Payments
 </asp:Content>
@@ -26,13 +28,17 @@
         <p>View donations for: <asp:TextBox ID="txtDonationUser" runat="server"></asp:TextBox><asp:CheckBoxList ID="ckTransactionTypes" runat="server" RepeatColumns="4"><asp:ListItem Selected="True" Text="Payments" Value="0"></asp:ListItem><asp:ListItem Selected="True" Text="Refunds" Value="1"></asp:ListItem><asp:ListItem Text="Adjustments" Value="2"></asp:ListItem><asp:ListItem Text="Test Transactions" Value="3"></asp:ListItem></asp:CheckBoxList><asp:Button ID="btnFindDonations" runat="server" onclick="btnFindDonations_Click" Text="Find" /></p><p>
             <asp:Button ID="btnComputeStats" runat="server" onclick="btnComputeStats_Click" 
                 Text="Fix Donation Fees" />
-            <asp:PlaceHolder ID="plcPayments" runat="server"></asp:PlaceHolder>
-            <asp:SqlDataSource ID="sqlDSTotalPayments" runat="server" DataSourceMode="DataReader"
-                ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>" 
-                ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" 
-                SelectCommand="SELECT CAST(CONCAT(YEAR(Date), '-', LPAD(MONTH(Date), 2, '0')) AS CHAR) AS MonthPeriod, SUM(Amount) AS Gross, SUM(Fee) AS Fee, SUM(Amount - Fee) AS Net, SUM(IF(TransactionID='', 0, Amount-FEE)) AS NetPaypal From Payments WHERE TransactionType IN (0, 1) GROUP BY MonthPeriod ORDER BY MonthPeriod ASC">
-            </asp:SqlDataSource>
         </p>
+        <div style="width:800px;">
+            <div style="font-weight:bold; text-align:center;" >Running-30-day donations for the past year</div>
+            <uc1:GoogleChart runat="server" ID="gchRunning30" ChartType="LineChart" Title="Running 30 donations" YDataType="number" Width="800" Height="300" YLabel="Donations" XDataType="date" XLabel="Date" />
+        </div>
+        <asp:PlaceHolder ID="plcPayments" runat="server"></asp:PlaceHolder>
+        <asp:SqlDataSource ID="sqlDSTotalPayments" runat="server" DataSourceMode="DataReader"
+            ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>" 
+            ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" 
+            SelectCommand="SELECT CAST(CONCAT(YEAR(Date), '-', LPAD(MONTH(Date), 2, '0')) AS CHAR) AS MonthPeriod, SUM(Amount) AS Gross, SUM(Fee) AS Fee, SUM(Amount - Fee) AS Net, SUM(IF(TransactionID='', 0, Amount-FEE)) AS NetPaypal From Payments WHERE TransactionType IN (0, 1) GROUP BY MonthPeriod ORDER BY MonthPeriod ASC">
+        </asp:SqlDataSource>
     </asp:Panel>
     <cc1:CollapsiblePanelExtender Collapsed="true" ID="CollapsiblePanelExtender1" runat="server" TargetControlID="pnlTestTransaction" CollapseControlID="lblShowHideTestTransaction" ExpandControlID="lblShowHideTestTransaction"
         TextLabelID="lblShowHideTestTransaction" CollapsedText="Click to show" ExpandedText="Click to hide"></cc1:CollapsiblePanelExtender>

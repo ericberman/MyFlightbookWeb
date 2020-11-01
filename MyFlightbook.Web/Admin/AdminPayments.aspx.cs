@@ -26,6 +26,7 @@ namespace MyFlightbook.Web.Admin
             if (!IsPostBack)
             {
                 RefreshDonations();
+                RefreshRunning30();
 
                 util.SetValidationGroup(pnlTestTransaction, "valTestTransaction");
                 dateTestTransaction.Date = DateTime.Now;
@@ -33,6 +34,64 @@ namespace MyFlightbook.Web.Admin
         }
 
         protected const string szDonationsTemplate = "SELECT *, (Amount - ABS(Fee)) AS Net FROM payments WHERE username LIKE ?user {0} ORDER BY date DESC";
+
+        protected void RefreshRunning30()
+        {
+            List<Payment> lstPayments = new List<Payment>();
+            DateTime dtMin = DateTime.Now.AddYears(-1).Date;
+            DateTime dtMax = DateTime.Now.Date;
+
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, szDonationsTemplate, " AND date > ?dtMin AND TransactionType IN (0, 2, 3) "));
+            dbh.ReadRows((comm) =>
+            {
+                comm.Parameters.AddWithValue("user", "%");
+                comm.Parameters.AddWithValue("dtMin", dtMin);
+            }, (dr) =>
+            {
+                lstPayments.Add(new Payment(Convert.ToDateTime(dr["Date"], CultureInfo.InvariantCulture), string.Empty, Convert.ToDecimal(dr["Amount"], CultureInfo.InvariantCulture), Convert.ToDecimal(dr["Fee"], CultureInfo.InvariantCulture), (Payment.TransactionType)((int)dr["TransactionType"]), string.Empty, string.Empty, string.Empty));
+            });
+            lstPayments.Reverse();  // go in ascending order
+
+            // Now compute a year's worth of 30-day averages.
+            DateTime dtMin30 = DateTime.Now.AddYears(-1).AddDays(30).Date;
+            Queue<Payment> queue = new Queue<Payment>();
+
+            int iPayment = 0;
+            decimal running30 = 0.0M;
+            for (DateTime dt = dtMin; dt.CompareTo(dtMax) <= 0; dt = dt.AddDays(1))
+            {
+                // while there are payments to add to the rolling 30-day window, add them
+                while (iPayment < lstPayments.Count)
+                {
+                    Payment p = lstPayments[iPayment];
+                    if (p.Timestamp.Date.CompareTo(dt) <= 0)
+                    {
+                        queue.Enqueue(p);   // add it to the queue
+                        running30 += (p.Amount - p.Fee);
+                        iPayment++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                // And de-queue anything that's fallen out of the 30 day window
+                while (queue.Peek().Timestamp.Date.CompareTo(dt.AddDays(-30)) < 0)
+                {
+                    Payment p = queue.Dequeue();
+                    running30 -= (p.Amount - p.Fee);
+                }
+
+                // OK, we should have our running average.
+                if (dt.CompareTo(dtMin30) >= 0)
+                {
+                    gchRunning30.XVals.Add(dt);
+                    gchRunning30.YVals.Add(running30);
+                }
+            }
+        }
+
         protected void RefreshDonations()
         {
             sqlDSDonations.SelectParameters.Clear();
