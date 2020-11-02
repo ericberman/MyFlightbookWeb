@@ -77,7 +77,7 @@ namespace MyFlightbook.Web.Admin
                 }
 
                 // And de-queue anything that's fallen out of the 30 day window
-                while (queue.Peek().Timestamp.Date.CompareTo(dt.AddDays(-30)) < 0)
+                while (queue.Count > 0 && queue.Peek().Timestamp.Date.CompareTo(dt.AddDays(-30)) < 0)
                 {
                     Payment p = queue.Dequeue();
                     running30 -= (p.Amount - p.Fee);
