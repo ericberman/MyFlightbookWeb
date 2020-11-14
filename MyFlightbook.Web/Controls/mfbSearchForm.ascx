@@ -69,11 +69,11 @@
                         runat="server" Text="Flight visited any of these airports" 
                         meta:resourcekey="locAirportsResource1"></asp:Localize> 
                     <asp:Label ID="lblAirportsLabel" runat="server" 
-                        meta:resourcekey="lblAirportsLabelResource1"></asp:Label>:</p>
+                        meta:resourcekey="lblAirportsLabelResource1"></asp:Label></p>
                 <asp:Panel ID="pnlAirports" runat="server" style="overflow:hidden" 
                     meta:resourcekey="pnlAirportsResource1">
                         <asp:TextBox ID="txtAirports" runat="server" Width="50%" 
-                            meta:resourcekey="txtAirportsResource1"></asp:TextBox>
+                            meta:resourcekey="txtAirportsResource1"></asp:TextBox><uc2:mfbTooltip runat="server" ID="MfbTooltip1" BodyContent="<%$ Resources:LocalizedText, SearchTipsAirportToolTip %>" />
                         <br />
                         <asp:RadioButtonList ID="rblFlightDistance" runat="server" 
                             RepeatDirection="Horizontal" meta:resourcekey="rblFlightDistanceResource1">

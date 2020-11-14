@@ -1848,4 +1848,7 @@
   <data name="InsurancePostVisit" xml:space="preserve">
     <value>Visit SkyWatch.ai</value>
   </data>
+  <data name="SearchTipsAirportToolTip" xml:space="preserve">
+    <value>Use "!" as a prefix or suffix to indicate departure/arrival. !ABC matches flights that depart from ABC (i.e., ABC is the first airport in the route of flight), and ABC! matches flights that arrive at ABC (i.e., ABC is the last airport in the route of flight).</value>
+  </data>
 </root>
