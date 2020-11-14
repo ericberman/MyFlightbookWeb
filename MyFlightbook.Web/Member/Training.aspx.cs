@@ -129,6 +129,11 @@ public partial class Member_Training : System.Web.UI.Page
         else
             imgCurrSig.Src = ScribbleImage.DataLinkForByteArray(rgbDefaultScribble);
 
+        Profile pf = Profile.GetUser(Page.User.Identity.Name);
+        pnlCertificate.Visible = String.IsNullOrEmpty(pf.Certificate);
+        txtCertificate.Text = pf.Certificate;
+        mfbTypeInDateCFIExpiration.Date = pf.CertificateExpiration;
+
         mfbScribbleSignature.WatermarkRef = ResolveClientUrl("~/images/rubberstamp.png");
     }
 
@@ -184,6 +189,13 @@ public partial class Member_Training : System.Web.UI.Page
             return;
         try
         {
+            Profile pf = Profile.GetUser(Page.User.Identity.Name);
+            if (String.IsNullOrEmpty(pf.Certificate) && !String.IsNullOrEmpty(txtCertificate.Text))
+            {
+                pf.Certificate = txtCertificate.Text.LimitTo(30);
+                pf.CertificateExpiration = mfbTypeInDateCFIExpiration.Date;
+                pf.FCommit();
+            }
             CFIStudentMapRequest smr = m_sm.GetRequest(CFIStudentMapRequest.RoleType.RoleStudent, txtStudentEmail.Text);
             smr.Send();
             lblAddStudentSuccess.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.EditProfileRequestHasBeenSent, HttpUtility.HtmlEncode(txtStudentEmail.Text));

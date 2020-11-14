@@ -247,6 +247,51 @@ public partial class Member_Training
     protected global::System.Web.UI.WebControls.Label lblEmailDisclaimer;
 
     /// <summary>
+    /// pnlCertificate control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Panel pnlCertificate;
+
+    /// <summary>
+    /// txtCertificate control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.TextBox txtCertificate;
+
+    /// <summary>
+    /// wmeCertificate control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::AjaxControlToolkit.TextBoxWatermarkExtender wmeCertificate;
+
+    /// <summary>
+    /// locExpiration control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Localize locExpiration;
+
+    /// <summary>
+    /// mfbTypeInDateCFIExpiration control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::Controls_mfbTypeInDate mfbTypeInDateCFIExpiration;
+
+    /// <summary>
     /// txtStudentEmail control.
     /// </summary>
     /// <remarks>

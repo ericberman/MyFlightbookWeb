@@ -170,6 +170,12 @@
                     Text="This e-mail address will NOT be stored or used for any other purpose." meta:resourcekey="lblEmailDisclaimerResource1" 
                     ></asp:Label>
                 </p>
+                <asp:Panel ID="pnlCertificate" runat="server">
+                        <asp:TextBox ID="txtCertificate" runat="server" ValidationGroup="valPilotInfo" /> &nbsp;
+                        <cc1:TextBoxWatermarkExtender ID="wmeCertificate" WatermarkCssClass="watermark" WatermarkText="<%$ Resources:Preferences, PilotInfoCertificateCFIWatermark %>" TargetControlID="txtCertificate" runat="server" BehaviorID="wmeCertificate" />
+                        <asp:Localize ID="locExpiration" runat="server" Text="<%$ Resources:Preferences, PilotInfoCFIExpiration %>" />
+                        <uc2:mfbTypeInDate ID="mfbTypeInDateCFIExpiration" runat="server" DefaultType="None" />
+                </asp:Panel>
                 <p>
                 <asp:TextBox runat="server" ID="txtStudentEmail" TextMode="Email"
                             AutoCompleteType="Email" ValidationGroup="vgAddStudent" meta:resourcekey="txtStudentEmailResource1" 
