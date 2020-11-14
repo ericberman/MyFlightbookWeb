@@ -336,8 +336,7 @@ ORDER BY NormalTail ASC, numUsers DESC, idaircraft ASC"></asp:SqlDataSource>
                     </asp:GridView>
                 </asp:View>
                 <asp:View ID="vwPseudoGeneric" runat="server">
-                    <asp:GridView ID="gvPseudoGeneric" runat="server" AutoGenerateColumns="false"
-                        EnableViewState="false" OnRowDataBound="gvPseudoGeneric_RowDataBound">
+                    <asp:GridView ID="gvPseudoGeneric" runat="server" AutoGenerateColumns="false" OnRowCommand="gvPseudoGeneric_RowCommand" OnRowDataBound="gvPseudoGeneric_RowDataBound">
                         <Columns>
                             <asp:TemplateField>
                                 <ItemTemplate>
@@ -351,6 +350,7 @@ ORDER BY NormalTail ASC, numUsers DESC, idaircraft ASC"></asp:SqlDataSource>
                             <asp:TemplateField>
                                 <ItemTemplate>
                                     <asp:HyperLink ID="lnkViewFixedTail" Target="_blank" runat="server"></asp:HyperLink>
+                                    <asp:LinkButton ID="lnkRemoveLeadingN" Visible="false" runat="server" Text="Remove Leading N" CommandArgument='<%# Eval("idaircraft") %>' CommandName="TrimLeadingN" />
                                 </ItemTemplate>
                             </asp:TemplateField>
                         </Columns>
@@ -368,7 +368,9 @@ LEFT JOIN (select idaircraft, tailnumber, m.idmodel, model, modelname
        ON ac.idaircraft=modelTails.idaircraft
 LEFT JOIN Flights f ON f.idaircraft=ac.idaircraft
 WHERE
-	ac.tailnumber RLIKE '^N-?[ABD-FH-KM-QT-WYZ][-0-9A-Z]+'
+	ac.tailnumber RLIKE '^N-?[ABD-FH-KM-QT-WYZ][-0-9A-Z]+' 
+    OR ac.tailnumber RLIKE '^N.*[ioIO].*'
+    OR ac.tailnumber RLIKE '^N-?0'
     OR modelTails.tailnumber IS NOT NULL
     OR REPLACE(RIGHT(ac.tailnumber, LENGTH(ac.tailnumber) - 1), '-', '') = REPLACE(RIGHT(m.model, LENGTH(m.model) - 1), '-', '')
     OR (ac.instancetype=1 AND REPLACE(ac.tailnumber, '-', '') RLIKE 'SIM|FTD|ATD|FFS|REDB|FRAS|ELIT|CAE|ALSIM|FLIG|SAFE|PREC|TRUF|FMX|GROU|VARI|MISC|NONE|UNKN')

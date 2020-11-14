@@ -76,6 +76,7 @@ namespace MyFlightbook.Web.Admin
         }
 
         static readonly Regex regexPseudoSim = new Regex("N[a-zA-Z-]+([0-9].*)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        static readonly Regex regexOOrI = new Regex("^N.*[oOiI].*", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         protected void gvPseudoGeneric_RowDataBound(object sender, GridViewRowEventArgs e)
         {
@@ -91,9 +92,38 @@ namespace MyFlightbook.Web.Admin
                     h.Text = HttpUtility.HtmlEncode(String.Format(CultureInfo.CurrentCulture, Resources.Admin.ViewRegistrationTemplate, szTailnumFixed));
                     h.NavigateUrl = Aircraft.LinkForTailnumberRegistry(szTailnumFixed);
                 }
+                else if (regexOOrI.IsMatch(l.Text))
+                {
+                    string szTailnumFixed = l.Text.ToUpper(CultureInfo.CurrentCulture).Replace('I', '1').Replace('O', '0');
+                    h.Text = HttpUtility.HtmlEncode(String.Format(CultureInfo.CurrentCulture, Resources.Admin.ViewRegistrationTemplate, szTailnumFixed));
+                    h.NavigateUrl = Aircraft.LinkForTailnumberRegistry(szTailnumFixed);
+                }
                 else
                     h.Visible = false;
+
+                e.Row.FindControl("lnkRemoveLeadingN").Visible = l.Text.StartsWith("N0", StringComparison.CurrentCultureIgnoreCase) || l.Text.StartsWith("NN", StringComparison.CurrentCultureIgnoreCase);
             }
+        }
+
+
+        protected void gvPseudoGeneric_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            if (e == null)
+                throw new ArgumentNullException(nameof(e));
+
+            string szAircraftID = (string) e.CommandArgument;
+
+            if (!int.TryParse(szAircraftID, out int idAircraft))
+                throw new MyFlightbookValidationException("Missing tail");
+
+            Aircraft ac = new Aircraft(idAircraft);
+
+            if (String.IsNullOrWhiteSpace(ac.TailNumber) || ac.AircraftID <= 0)
+                throw new MyFlightbookValidationException("No aircraft with ID " + szAircraftID);
+
+            Aircraft.AdminRenameAircraft(ac, ac.TailNumber.Replace("-", string.Empty).Substring(1));
+            LinkButton l = (LinkButton)e.CommandSource;
+            l.Visible = false;
         }
 
         protected void btnOrphans_Click(object sender, EventArgs e)

@@ -885,7 +885,7 @@ WHERE
             PublicNotes = PrivateNotes = string.Empty;
             IsLocked = false;
             AircraftID = idAircraftUnknown;
-            ErrorString = ModelCommonName = ModelDescription = InstanceTypeDescription = string.Empty;
+            ErrorString = ModelCommonName = ModelDescription = InstanceTypeDescription = TailNumber = string.Empty;
             MaintenanceChanges = new List<MaintenanceLog>();
             m_mr = new MaintenanceRecord();
             DefaultTemplates = new HashSet<int>();
@@ -1563,6 +1563,66 @@ WHERE
                     szAlternatives));
 
                 util.NotifyUser(String.Format(CultureInfo.CurrentCulture,Resources.Aircraft.ModelCollisionSubjectLine, this.TailNumber, Branding.CurrentBrand.AppName), szEmailNotification, new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, false);
+            }
+        }
+
+        /// <summary>
+        /// Map an aircraft's tail number, updating all relevant users.  Typically for NNxxxx to Nxxxx or N0xxx to 0xxxx
+        /// </summary>
+        /// <param name="szTailOld">The old tail number</param>
+        /// <param name="szTailNew">The new tail number</param>
+        public static void AdminRenameAircraft(Aircraft ac, string szTailNew)
+        {
+            if (ac == null)
+                throw new ArgumentNullException(nameof(ac));
+            if (ac.AircraftID <= 0 || String.IsNullOrEmpty(ac.TailNumber))
+                throw new MyFlightbookValidationException("Invalid aircraft");
+            if (szTailNew == null)
+                throw new ArgumentNullException(nameof(szTailNew));
+            if (!Regex.IsMatch(szTailNew, AircraftUtility.RegexValidTail))
+                throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "{0} is not a valid tail", szTailNew));
+            if (ac.TailNumber.CompareCurrentCultureIgnoreCase(szTailNew) == 0)
+                return; // nothing to do - nothing changed.
+
+            if (Regex.IsMatch(szTailNew, "^[0-9]{3,}$"))   // if all-numeric, insert a hyphen
+                szTailNew = szTailNew.Insert(2, "-");
+
+            /*
+             * 3 scenarios:
+             *   - szTailNew does NOT exist in the system - simply rename this one.  Easy peasy - just rename
+             *   - szTailnew DOES exist, but not with the same model.  Rename the aircraft as a new version.
+             *   - szTailNew DOES exist in the system, with the same model.  Migrate all users to the existing aircraft and delete the now orphaned one
+             * */
+
+            List<Aircraft> lstAc = Aircraft.AircraftMatchingTail(szTailNew);
+
+            if (!lstAc.Any())
+            {
+                // No collision - simple rename, no need to send notifications or update useraircraft or similar.
+                ac.TailNumber = szTailNew;
+                ac.Commit();
+                return;
+            }
+
+            Aircraft acMatch = lstAc.Find(ac2 => ac.ModelID == ac2.ModelID);
+            if (acMatch == null)
+            {
+                // Collision, but this is now a new version.  Save this as yet another version.  No need to update useraircraft or send notifications
+                int v = 0;
+                lstAc.ForEach((ac2) => v = Math.Max(v, ac2.Version));
+                ac.TailNumber = szTailNew;
+                ac.Version = ++v;
+                ac.CommitToDB();
+            }
+            else
+            {
+                // Exists with the same model.  Now we need to map everybody to that aircraft, orphaning this one, which we can then delete.
+                AircraftStats aircraftStats = new AircraftStats(string.Empty, ac.AircraftID);
+                foreach (string szUser in aircraftStats.UserNames)
+                {
+                    UserAircraft ua = new UserAircraft(szUser);
+                    ua.ReplaceAircraftForUser(acMatch, ac, true);
+                }
             }
         }
 
