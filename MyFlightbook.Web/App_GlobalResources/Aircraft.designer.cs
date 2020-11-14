@@ -778,6 +778,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to US Registrations (&quot;N&quot; numbers) cannot start with &quot;NN&quot; or &quot;N0&quot;, nor contain the letters &quot;O&quot; or &quot;I&quot; because of potential confusion with &quot;0&quot; and &quot;1&quot;..
+        /// </summary>
+        internal static string errInvalidNNumber {
+            get {
+                return ResourceManager.GetString("errInvalidNNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please provide a complete tail number, including country prefix (or choose &quot;Other&quot; from the list of countries)..
         /// </summary>
         internal static string errInvalidTail {

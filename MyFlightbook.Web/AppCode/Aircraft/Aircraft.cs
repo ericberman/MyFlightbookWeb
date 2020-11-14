@@ -1264,10 +1264,12 @@ WHERE
             }
             else
             {
-                Regex r = new Regex(AircraftUtility.RegexValidTail, RegexOptions.IgnoreCase | RegexOptions.Compiled);
-                Match mt = r.Match(TailNumber);
+                Match mt = AircraftUtility.rValidTail.Match(TailNumber);
                 if (mt.Captures.Count != 1 || String.Compare(TailNumber, mt.Captures[0].Value, StringComparison.OrdinalIgnoreCase) != 0)
                     ErrorString = Resources.Aircraft.errInvalidChars;
+
+                if (TailNumber.StartsWith("N", StringComparison.CurrentCultureIgnoreCase) && !AircraftUtility.rValidNNumber.IsMatch(TailNumber))
+                    ErrorString = Resources.Aircraft.errInvalidNNumber;
             }
 
             CountryCodePrefix cc = CountryCodePrefix.BestMatchCountryCode(TailNumber);
@@ -1579,7 +1581,7 @@ WHERE
                 throw new MyFlightbookValidationException("Invalid aircraft");
             if (szTailNew == null)
                 throw new ArgumentNullException(nameof(szTailNew));
-            if (!Regex.IsMatch(szTailNew, AircraftUtility.RegexValidTail))
+            if (!AircraftUtility.rValidTail.IsMatch(szTailNew))
                 throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "{0} is not a valid tail", szTailNew));
             if (ac.TailNumber.CompareCurrentCultureIgnoreCase(szTailNew) == 0)
                 return; // nothing to do - nothing changed.
@@ -2008,7 +2010,9 @@ WHERE
             HttpContext.Current.Session[MFBConstants.keyLastTail] = ID.ToString(CultureInfo.InvariantCulture);
         }
 
-        public const string RegexValidTail = "^[a-zA-Z0-9]+-?[a-zA-Z0-9]+-?[a-zA-Z0-9]+$";
+        private const string RegexValidTail = "^[a-zA-Z0-9]+-?[a-zA-Z0-9]+-?[a-zA-Z0-9]+$";
+        public static readonly Regex rValidTail = new Regex(RegexValidTail, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        public static readonly Regex rValidNNumber = new Regex("^N[^inoINO0][^ioIO]+$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         /// <summary>
         /// Admin utility to quickly find all invalid aircraft (since examining them one at a time is painfully slow and pounds the database)

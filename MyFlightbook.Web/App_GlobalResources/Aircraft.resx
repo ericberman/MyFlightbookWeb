@@ -650,4 +650,7 @@
   <data name="PromptShowAllAircraft" xml:space="preserve">
     <value>Show all aircraft...</value>
   </data>
+  <data name="errInvalidNNumber" xml:space="preserve">
+    <value>US Registrations ("N" numbers) cannot start with "NN" or "N0", nor contain the letters "O" or "I" because of potential confusion with "0" and "1".</value>
+  </data>
 </root>

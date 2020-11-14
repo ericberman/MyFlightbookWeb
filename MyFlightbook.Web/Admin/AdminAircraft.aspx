@@ -370,7 +370,7 @@ LEFT JOIN (select idaircraft, tailnumber, m.idmodel, model, modelname
 LEFT JOIN Flights f ON f.idaircraft=ac.idaircraft
 WHERE
 	ac.tailnumber RLIKE '^N-?[ABD-FH-KM-QT-WYZ][-0-9A-Z]+' 
-    OR ac.tailnumber RLIKE '^N.*[ioIO].*'
+    OR ac.tailnumber RLIKE '^N.*[ioIO]'
     OR ac.tailnumber RLIKE '^N-?0'
     OR modelTails.tailnumber IS NOT NULL
     OR REPLACE(RIGHT(ac.tailnumber, LENGTH(ac.tailnumber) - 1), '-', '') = REPLACE(RIGHT(m.model, LENGTH(m.model) - 1), '-', '')
