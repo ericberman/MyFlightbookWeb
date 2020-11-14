@@ -349,8 +349,9 @@ ORDER BY NormalTail ASC, numUsers DESC, idaircraft ASC"></asp:SqlDataSource>
                             <asp:HyperLinkField Text="View" Target="_blank" DataNavigateUrlFormatString="~/Member/EditAircraft.aspx?id={0}&a=1&genCandidate=1" DataNavigateUrlFields="idaircraft" />
                             <asp:TemplateField>
                                 <ItemTemplate>
-                                    <asp:HyperLink ID="lnkViewFixedTail" Target="_blank" runat="server"></asp:HyperLink>
-                                    <asp:LinkButton ID="lnkRemoveLeadingN" Visible="false" runat="server" Text="Remove Leading N" CommandArgument='<%# Eval("idaircraft") %>' CommandName="TrimLeadingN" />
+                                    <asp:HyperLink ID="lnkViewFixedTail" Target="_blank" runat="server"></asp:HyperLink>&nbsp;
+                                    <asp:LinkButton ID="lnkRemoveLeadingN" Visible="false" runat="server" Text=" Remove Leading N" CommandArgument='<%# Eval("idaircraft") %>' CommandName="TrimLeadingN" />&nbsp;
+                                    <asp:LinkButton ID="lnkConvertOandI" Visible="false" runat="server" Text=" Convert O/I to 0/1" CommandArgument='<%# Eval("idaircraft") %>' CommandName="ConvertOandI" />
                                 </ItemTemplate>
                             </asp:TemplateField>
                         </Columns>

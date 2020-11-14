@@ -151,7 +151,7 @@
     <value>{0} ({1}UTC)</value>
   </data>
   <data name="ViewRegistrationTemplate" xml:space="preserve">
-    <value>View Registration for {0}</value>
+    <value>Registration for {0}</value>
   </data>
   <data name="VisitedRoutesExaminedTemplate" xml:space="preserve">
     <value>"{0} of {1} segments examined"</value>

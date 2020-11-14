@@ -102,6 +102,7 @@ namespace MyFlightbook.Web.Admin
                     h.Visible = false;
 
                 e.Row.FindControl("lnkRemoveLeadingN").Visible = l.Text.StartsWith("N0", StringComparison.CurrentCultureIgnoreCase) || l.Text.StartsWith("NN", StringComparison.CurrentCultureIgnoreCase);
+                e.Row.FindControl("lnkConvertOandI").Visible = regexOOrI.IsMatch(l.Text);
             }
         }
 
@@ -121,9 +122,12 @@ namespace MyFlightbook.Web.Admin
             if (String.IsNullOrWhiteSpace(ac.TailNumber) || ac.AircraftID <= 0)
                 throw new MyFlightbookValidationException("No aircraft with ID " + szAircraftID);
 
-            Aircraft.AdminRenameAircraft(ac, ac.TailNumber.Replace("-", string.Empty).Substring(1));
-            LinkButton l = (LinkButton)e.CommandSource;
-            l.Visible = false;
+            if (e.CommandName.CompareCurrentCultureIgnoreCase("TrimLeadingN") == 0)
+                Aircraft.AdminRenameAircraft(ac, ac.TailNumber.Replace("-", string.Empty).Substring(1));
+            else if (e.CommandName.CompareCurrentCultureIgnoreCase("ConvertOandI") == 0)
+                Aircraft.AdminRenameAircraft(ac, ac.TailNumber.ToUpper(CultureInfo.CurrentCulture).Replace('O', '0').Replace('I', '1'));
+
+            ((Control)e.CommandSource).Visible = false;
         }
 
         protected void btnOrphans_Click(object sender, EventArgs e)

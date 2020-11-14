@@ -160,7 +160,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to View Registration for {0}.
+        ///   Looks up a localized string similar to Registration for {0}.
         /// </summary>
         internal static string ViewRegistrationTemplate {
             get {
