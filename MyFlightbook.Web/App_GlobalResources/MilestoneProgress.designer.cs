@@ -2909,7 +2909,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ATP Rating.
+        ///   Looks up a localized string similar to ATP Ratings.
         /// </summary>
         internal static string RatingGroupATP {
             get {
@@ -2918,7 +2918,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CFI Rating.
+        ///   Looks up a localized string similar to CFI Ratings.
         /// </summary>
         internal static string RatingGroupCFI {
             get {
@@ -2927,7 +2927,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Commercial Rating.
+        ///   Looks up a localized string similar to Commercial Ratings.
         /// </summary>
         internal static string RatingGroupCommercial {
             get {
@@ -2936,7 +2936,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Designated Pilot Examiner (DPE).
+        ///   Looks up a localized string similar to Designated Pilot Examiner (DPE) Ratings.
         /// </summary>
         internal static string RatingGroupDPE {
             get {
@@ -2945,7 +2945,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Instrument Rating.
+        ///   Looks up a localized string similar to Instrument Ratings.
         /// </summary>
         internal static string RatingGroupInstrument {
             get {
@@ -2954,7 +2954,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to EASA LAPL (Light Aircraft Pilot License).
+        ///   Looks up a localized string similar to EASA LAPL Ratings.
         /// </summary>
         internal static string RatingGroupLAPL {
             get {
@@ -2963,7 +2963,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Private Pilot Rating.
+        ///   Looks up a localized string similar to Private Pilot Ratings.
         /// </summary>
         internal static string RatingGroupPrivatePilot {
             get {
@@ -2972,7 +2972,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Recreational Pilot Rating.
+        ///   Looks up a localized string similar to Recreational Pilot Ratings.
         /// </summary>
         internal static string RatingGroupRecreational {
             get {
@@ -2981,7 +2981,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sport Pilot Rating.
+        ///   Looks up a localized string similar to Sport Pilot Ratings.
         /// </summary>
         internal static string RatingGroupSportPilot {
             get {

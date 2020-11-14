@@ -353,22 +353,22 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <value>a glider</value>
   </data>
   <data name="RatingGroupATP" xml:space="preserve">
-    <value>ATP Rating</value>
+    <value>ATP Ratings</value>
   </data>
   <data name="RatingGroupCommercial" xml:space="preserve">
-    <value>Commercial Rating</value>
+    <value>Commercial Ratings</value>
   </data>
   <data name="RatingGroupInstrument" xml:space="preserve">
-    <value>Instrument Rating</value>
+    <value>Instrument Ratings</value>
   </data>
   <data name="RatingGroupPrivatePilot" xml:space="preserve">
-    <value>Private Pilot Rating</value>
+    <value>Private Pilot Ratings</value>
   </data>
   <data name="RatingGroupRecreational" xml:space="preserve">
-    <value>Recreational Pilot Rating</value>
+    <value>Recreational Pilot Ratings</value>
   </data>
   <data name="RatingGroupSportPilot" xml:space="preserve">
-    <value>Sport Pilot Rating</value>
+    <value>Sport Pilot Ratings</value>
   </data>
   <data name="RatingGroupUnknown" xml:space="preserve">
     <value>(Please Select)</value>
@@ -1070,7 +1070,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <value>EASA - LAPL(H) - Light Aircraft Pilot License, Helicopter</value>
   </data>
   <data name="RatingGroupLAPL" xml:space="preserve">
-    <value>EASA LAPL (Light Aircraft Pilot License)</value>
+    <value>EASA LAPL Ratings</value>
   </data>
   <data name="EASALAPLSailplaneDual" xml:space="preserve">
     <value>10 hours of dual flight instruction in a sailplane</value>
@@ -1295,7 +1295,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <value>{0} hours PIC time in past 12 months in {1}</value>
   </data>
   <data name="RatingGroupDPE" xml:space="preserve">
-    <value>Designated Pilot Examiner (DPE)</value>
+    <value>Designated Pilot Examiner (DPE) Ratings</value>
   </data>
   <data name="TitleDPECommAMEL" xml:space="preserve">
     <value>Commercial, Airplane - Multi-Engine Land</value>
@@ -1439,7 +1439,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <value>15 hours of this must be in an aircraft certified as an LSA; %APP_NAME% does not know which aircraft are certified as an LSA, so cannot determine this for you</value>
   </data>
   <data name="RatingGroupCFI" xml:space="preserve">
-    <value>CFI Rating</value>
+    <value>CFI Ratings</value>
   </data>
   <data name="Title61183AMEL" xml:space="preserve">
     <value>CFI - Airplane, Multi-Engine Land</value>
