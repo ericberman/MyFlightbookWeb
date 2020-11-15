@@ -175,7 +175,9 @@ namespace MyFlightbook.Web.Admin
             if (!dbh.DoNonQuery())
                 throw new MyFlightbookException("Error deleting model: " + szQ + "\r\n" + dbh.LastError);
             sbAudit.Append(System.Web.HttpUtility.HtmlEncode(szQ) + "<br />");
+#pragma warning disable CA3002 // Review code for XSS vulnerabilities - dangerous bits already encoded above.
             lblPreview.Text = sbAudit.ToString();
+#pragma warning restore CA3002 // Review code for XSS vulnerabilities
 
             RefreshDupeModels();
             gvOrphanMakes.DataBind();

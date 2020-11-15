@@ -20,7 +20,7 @@
                         window.alert(xhr.responseJSON.Message);
                     },
                     complete: function (response) { },
-                    success: function (response) { document.getElementById(sender).parentElement.parentElement.style.backgroundColor = 'gray'; }
+                    success: function (response) { document.getElementById(sender).parentElement.parentElement.className = 'handled'; }
                 });
         }
         function trimLeadingN(sender, idAircraft) {
@@ -35,7 +35,7 @@
                         window.alert(xhr.responseJSON.Message);
                     },
                     complete: function (response) {  },
-                    success: function (response) { document.getElementById(sender).parentElement.parentElement.style.backgroundColor = 'gray'; }
+                    success: function (response) { document.getElementById(sender).parentElement.parentElement.className = 'handled'; }
                 });
         }
         function migrateGeneric(sender, idAircraft) {
@@ -50,10 +50,39 @@
                         window.alert(xhr.responseJSON.Message);
                     },
                     complete: function (response) { },
-                    success: function (response) { document.getElementById(sender).parentElement.parentElement.style.backgroundColor = 'gray'; }
+                    success: function (response) { document.getElementById(sender).parentElement.parentElement.className = 'handled'; }
+                });
+        }
+        function trimN0(sender, idAircraft) {
+            var params = new Object();
+            params.idAircraft = idAircraft;
+            var d = JSON.stringify(params);
+            $.ajax(
+                {
+                    url: '<% =ResolveUrl("~/Admin/AdminAircraft.aspx/TrimN0") %>',
+                    type: "POST", data: d, dataType: "json", contentType: "application/json",
+                    error: function (xhr, status, error) {
+                        window.alert(xhr.responseJSON.Message);
+                    },
+                    complete: function (response) { },
+                    success: function (response) { document.getElementById(sender).parentElement.parentElement.className = 'handled'; }
                 });
         }
     </script>
+    <style type="text/css">
+        .adm .admItem {
+        }
+        .adm .admItem:after {
+            content: " | ";
+        }
+        .adm .admItem:last-child:after {
+            content: "";
+        }
+        .handled {
+            background-color: lightgray;
+            color: darkgray;
+        }
+    </style>
     <h2>Aircraft</h2>
     <asp:UpdatePanel ID="updpanelAircraft" runat="server">
         <Triggers>
@@ -389,19 +418,21 @@ ORDER BY NormalTail ASC, numUsers DESC, idaircraft ASC"></asp:SqlDataSource>
                         <Columns>
                             <asp:TemplateField>
                                 <ItemTemplate>
-                                    <asp:Label ID="lblTailnumber" Font-Bold="true" runat="server" Text='<%# Eval("Tailnumber") %>'></asp:Label>
+                                    <asp:HyperLInk ID="lblTailnumber" Font-Bold="true" runat="server" Text='<%# Eval("Tailnumber") %>' Target="_blank" NavigateUrl='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}&a=1&genCandidate=1", Eval("idaircraft")) %>' />
                                     <asp:Label ID="lblManufacturer" runat="server" Text='<%# Eval("manufacturer") %>'></asp:Label>
                                     <asp:Label ID="lblModel" runat="server" Text='<%# Eval("model") %>'></asp:Label>
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:BoundField DataField="numFlights" HeaderText="numFlights" />
-                            <asp:HyperLinkField Text="View" Target="_blank" DataNavigateUrlFormatString="~/Member/EditAircraft.aspx?id={0}&a=1&genCandidate=1" DataNavigateUrlFields="idaircraft" />
                             <asp:TemplateField>
                                 <ItemTemplate>
-                                    <asp:HyperLink ID="lnkViewFixedTail" Target="_blank" runat="server"></asp:HyperLink>&nbsp;
-                                    <asp:HyperLink ID="lnkRemoveLeadingN" Visible="false" runat="server" Text=" * Remove Leading N" />&nbsp;
-                                    <asp:HyperLink ID="lnkConvertOandI" Visible="false" runat="server" Text=" * Convert O/I to 0/1" />
-                                    <asp:HyperLink ID="lnkMigrateGeneric" runat="server" Text=" * Migrate Generic" />
+                                    <div class="adm">
+                                        <asp:HyperLink ID="lnkViewFixedTail" Target="_blank" runat="server" CssClass="admItem" />
+                                        <asp:HyperLink ID="lnkRemoveLeadingN" Visible="false" runat="server" Text="Remove Leading N" CssClass="admItem" />
+                                        <asp:HyperLink ID="lnkConvertOandI" Visible="false" runat="server" Text="Convert O/I to 0/1" CssClass="admItem" />
+                                        <asp:HyperLink ID="lnkN0ToN" Visible="false" runat="server" Text="N0 → N" CssClass="admItem" />
+                                        <asp:HyperLink ID="lnkMigrateGeneric" runat="server" Text="Migrate Generic" CssClass="admItem" />
+                                    </div>
                                 </ItemTemplate>
                             </asp:TemplateField>
                         </Columns>

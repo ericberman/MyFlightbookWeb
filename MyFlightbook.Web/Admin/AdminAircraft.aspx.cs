@@ -47,7 +47,29 @@ namespace MyFlightbook.Web.Admin
             if (String.IsNullOrWhiteSpace(ac.TailNumber) || ac.AircraftID <= 0)
                 throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "No aircraft with ID {0}", idAircraft));
 
+            if (!ac.TailNumber.StartsWith("N", StringComparison.CurrentCultureIgnoreCase))
+                return;
+
             Aircraft.AdminRenameAircraft(ac, ac.TailNumber.Replace("-", string.Empty).Substring(1));
+        }
+
+        [WebMethod(EnableSession = true)]
+        public static void TrimN0(int idAircraft)
+        {
+            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+                throw new MyFlightbookException("Unauthenticated call to TrimN0");
+
+            Aircraft ac = new Aircraft(idAircraft);
+
+            if (String.IsNullOrWhiteSpace(ac.TailNumber) || ac.AircraftID <= 0)
+                throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "No aircraft with ID {0}", idAircraft));
+
+            string szTail = ac.TailNumber.Replace("-", string.Empty);
+
+            if (!szTail.StartsWith("N0", StringComparison.CurrentCultureIgnoreCase) || szTail.Length <= 2)
+                return;
+
+            Aircraft.AdminRenameAircraft(ac, "N" + szTail.Substring(2));
         }
 
         [WebMethod(EnableSession = true)]
@@ -141,23 +163,20 @@ namespace MyFlightbook.Web.Admin
             if (e != null && e.Row.RowType == DataControlRowType.DataRow)
             {
                 HyperLink h = (HyperLink)e.Row.FindControl("lnkViewFixedTail");
-                Label l = (Label)e.Row.FindControl("lblTailnumber");
+                HyperLink l = (HyperLink)e.Row.FindControl("lblTailnumber");
 
                 GroupCollection gc = regexPseudoSim.Match(l.Text).Groups;
+                string szTailnumFixed = l.Text;
                 if (gc != null && gc.Count > 1)
-                {
-                    string szTailnumFixed = String.Format(CultureInfo.InvariantCulture, "N{0}", gc[1].Value);
-                    h.Text = HttpUtility.HtmlEncode(String.Format(CultureInfo.CurrentCulture, Resources.Admin.ViewRegistrationTemplate, szTailnumFixed));
-                    h.NavigateUrl = Aircraft.LinkForTailnumberRegistry(szTailnumFixed);
-                }
+                    szTailnumFixed = String.Format(CultureInfo.InvariantCulture, "N{0}", gc[1].Value);
                 else if (regexOOrI.IsMatch(l.Text))
-                {
-                    string szTailnumFixed = l.Text.ToUpper(CultureInfo.CurrentCulture).Replace('I', '1').Replace('O', '0');
-                    h.Text = HttpUtility.HtmlEncode(String.Format(CultureInfo.CurrentCulture, Resources.Admin.ViewRegistrationTemplate, szTailnumFixed));
-                    h.NavigateUrl = Aircraft.LinkForTailnumberRegistry(szTailnumFixed);
-                }
-                else
-                    h.Visible = false;
+                    szTailnumFixed = l.Text.ToUpper(CultureInfo.CurrentCulture).Replace('I', '1').Replace('O', '0');
+                else if (szTailnumFixed.StartsWith("N0", StringComparison.CurrentCultureIgnoreCase))
+                    szTailnumFixed = "N" + szTailnumFixed.Substring(2);
+
+                h.Text = HttpUtility.HtmlEncode(String.Format(CultureInfo.CurrentCulture, Resources.Admin.ViewRegistrationTemplate, szTailnumFixed));
+                h.NavigateUrl = Aircraft.LinkForTailnumberRegistry(szTailnumFixed);
+                h.Visible = !String.IsNullOrEmpty(h.NavigateUrl);
 
                 int idAircraft = Convert.ToInt32(DataBinder.Eval(e.Row.DataItem, "idaircraft"), CultureInfo.InvariantCulture);
 
@@ -171,6 +190,10 @@ namespace MyFlightbook.Web.Admin
 
                 HyperLink hMigrateGeneric = (HyperLink)e.Row.FindControl("lnkMigrateGeneric");
                 hMigrateGeneric.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:migrateGeneric('{0}',{1});", hMigrateGeneric.ClientID, idAircraft);
+
+                HyperLink hN0ToN = (HyperLink)e.Row.FindControl("lnkN0ToN");
+                hN0ToN.Visible = l.Text.StartsWith("N0", StringComparison.CurrentCultureIgnoreCase);
+                hN0ToN.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:trimN0('{0}', {1});", hN0ToN.ClientID, idAircraft);
             }
         }
 
