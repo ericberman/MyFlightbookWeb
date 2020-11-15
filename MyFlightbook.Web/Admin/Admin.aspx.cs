@@ -113,8 +113,8 @@ namespace MyFlightbook.Web.Admin
 
             StringBuilder sb = new StringBuilder();
 
-            sb.Append(String.Format(CultureInfo.CurrentCulture, "Model {0} will be deleted<br />", cmbModelToDelete.SelectedItem.Text));
-            sb.Append(String.Format(CultureInfo.CurrentCulture, "The following airplanes will be mapped from model {0} to {1}<br />", cmbModelToDelete.SelectedItem.Text, cmbModelToMergeInto.SelectedItem.Text));
+            sb.Append(String.Format(CultureInfo.CurrentCulture, "Model {0} will be deleted<br />", System.Web.HttpUtility.HtmlEncode(cmbModelToDelete.SelectedItem.Text)));
+            sb.Append(String.Format(CultureInfo.CurrentCulture, "The following airplanes will be mapped from model {0} to {1}<br />", System.Web.HttpUtility.HtmlEncode(cmbModelToDelete.SelectedItem.Text), System.Web.HttpUtility.HtmlEncode(cmbModelToMergeInto.SelectedItem.Text)));
 
             pnlPreview.Visible = true;
 
@@ -156,7 +156,7 @@ namespace MyFlightbook.Web.Admin
                     string szIdAircraft = idr["idaircraft"].ToString();
                     Aircraft ac = new Aircraft(Convert.ToInt32(szIdAircraft, CultureInfo.InvariantCulture)) { ModelID = idModelToMergeInto };
                     ac.Commit();
-                    sbAudit.Append(String.Format(CultureInfo.CurrentCulture, "Updated aircraft {0} to model {1}<br />", szIdAircraft, idModelToMergeInto));
+                    sbAudit.Append(String.Format(CultureInfo.CurrentCulture, "Updated aircraft {0} to model {1}<br />", System.Web.HttpUtility.HtmlEncode(szIdAircraft), idModelToMergeInto));
                 }
             }
 
@@ -174,7 +174,7 @@ namespace MyFlightbook.Web.Admin
             DBHelper dbh = new DBHelper(szQ);
             if (!dbh.DoNonQuery())
                 throw new MyFlightbookException("Error deleting model: " + szQ + "\r\n" + dbh.LastError);
-            sbAudit.Append(szQ + "<br />");
+            sbAudit.Append(System.Web.HttpUtility.HtmlEncode(szQ) + "<br />");
             lblPreview.Text = sbAudit.ToString();
 
             RefreshDupeModels();
@@ -231,8 +231,8 @@ namespace MyFlightbook.Web.Admin
 
             StringBuilder sb = new StringBuilder();
 
-            sb.Append(String.Format(CultureInfo.CurrentCulture, "Manufacturer {0} will be deleted<br />", cmbManToKill.SelectedItem.Text));
-            sb.Append(String.Format(CultureInfo.CurrentCulture, "The following models will be mapped from manufacturer {0} to {1}<br />", cmbManToKill.SelectedItem.Text, cmbManToKeep.SelectedItem.Text));
+            sb.Append(String.Format(CultureInfo.CurrentCulture, "Manufacturer {0} will be deleted<br />", System.Web.HttpUtility.HtmlEncode(cmbManToKill.SelectedItem.Text)));
+            sb.Append(String.Format(CultureInfo.CurrentCulture, "The following models will be mapped from manufacturer {0} to {1}<br />", System.Web.HttpUtility.HtmlEncode(cmbManToKill.SelectedItem.Text), System.Web.HttpUtility.HtmlEncode(cmbManToKeep.SelectedItem.Text)));
 
             pnlPreviewDupeMan.Visible = true;
 
@@ -245,13 +245,13 @@ namespace MyFlightbook.Web.Admin
             StringBuilder sbAudit = new StringBuilder("<br /><br /><b>Audit of changes made:</b><br />");
 
             DBHelper dbh = new DBHelper(String.Format(CultureInfo.CurrentCulture, "UPDATE models SET idManufacturer={0} WHERE idmanufacturer={1}", cmbManToKeep.SelectedValue, cmbManToKill.SelectedValue));
-            sbAudit.AppendFormat(CultureInfo.CurrentCulture, "Executed this command: {0}<br />", dbh.CommandText);
+            sbAudit.AppendFormat(CultureInfo.CurrentCulture, "Executed this command: {0}<br />", System.Web.HttpUtility.HtmlEncode(dbh.CommandText));
             if (!dbh.DoNonQuery())
                 throw new MyFlightbookException("Error remapping model: " + dbh.CommandText + "\r\n" + dbh.LastError);
 
             // Then delete the old manufacturer
             dbh.CommandText = String.Format(CultureInfo.InvariantCulture, "DELETE FROM manufacturers WHERE idmanufacturer={0}", cmbManToKill.SelectedValue);
-            sbAudit.AppendFormat(CultureInfo.CurrentCulture, "Deleted this manufacturer: {0}<br />", dbh.CommandText);
+            sbAudit.AppendFormat(CultureInfo.CurrentCulture, "Deleted this manufacturer: {0}<br />", System.Web.HttpUtility.HtmlEncode(dbh.CommandText));
             if (!dbh.DoNonQuery())
                 throw new MyFlightbookException("Error deleting manufacturer: " + dbh.CommandText + "\r\n" + dbh.LastError);
 
