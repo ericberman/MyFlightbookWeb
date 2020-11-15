@@ -5,6 +5,55 @@
     Admin Tools - Aircraft
 </asp:Content>
 <asp:Content ID="Content1" ContentPlaceHolderID="cpTopForm" runat="Server">
+    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src='<%= ResolveUrl("~/public/Scripts/jquery.json-2.4.min.js") %>'></script>
+    <script>
+        function convertOandI(sender, idAircraft) {
+            var params = new Object();
+            params.idAircraft = idAircraft;
+            var d = JSON.stringify(params);
+            $.ajax(
+                {
+                    url: '<% =ResolveUrl("~/Admin/AdminAircraft.aspx/ConvertOandI") %>',
+                    type: "POST", data: d, dataType: "json", contentType: "application/json",
+                    error: function (xhr, status, error) {
+                        window.alert(xhr.responseJSON.Message);
+                    },
+                    complete: function (response) { },
+                    success: function (response) { document.getElementById(sender).parentElement.parentElement.style.backgroundColor = 'gray'; }
+                });
+        }
+        function trimLeadingN(sender, idAircraft) {
+            var params = new Object();
+            params.idAircraft = idAircraft;
+            var d = JSON.stringify(params);
+            $.ajax(
+                {
+                    url: '<% =ResolveUrl("~/Admin/AdminAircraft.aspx/TrimLeadingN") %>',
+                    type: "POST", data: d, dataType: "json", contentType: "application/json",
+                    error: function (xhr, status, error) {
+                        window.alert(xhr.responseJSON.Message);
+                    },
+                    complete: function (response) {  },
+                    success: function (response) { document.getElementById(sender).parentElement.parentElement.style.backgroundColor = 'gray'; }
+                });
+        }
+        function migrateGeneric(sender, idAircraft) {
+            var params = new Object();
+            params.idAircraft = idAircraft;
+            var d = JSON.stringify(params);
+            $.ajax(
+                {
+                    url: '<% =ResolveUrl("~/Admin/AdminAircraft.aspx/MigrateGeneric") %>',
+                    type: "POST", data: d, dataType: "json", contentType: "application/json",
+                    error: function (xhr, status, error) {
+                        window.alert(xhr.responseJSON.Message);
+                    },
+                    complete: function (response) { },
+                    success: function (response) { document.getElementById(sender).parentElement.parentElement.style.backgroundColor = 'gray'; }
+                });
+        }
+    </script>
     <h2>Aircraft</h2>
     <asp:UpdatePanel ID="updpanelAircraft" runat="server">
         <Triggers>
@@ -336,7 +385,7 @@ ORDER BY NormalTail ASC, numUsers DESC, idaircraft ASC"></asp:SqlDataSource>
                     </asp:GridView>
                 </asp:View>
                 <asp:View ID="vwPseudoGeneric" runat="server">
-                    <asp:GridView ID="gvPseudoGeneric" runat="server" AutoGenerateColumns="false" OnRowCommand="gvPseudoGeneric_RowCommand" OnRowDataBound="gvPseudoGeneric_RowDataBound">
+                    <asp:GridView ID="gvPseudoGeneric" runat="server" AutoGenerateColumns="false" OnRowDataBound="gvPseudoGeneric_RowDataBound">
                         <Columns>
                             <asp:TemplateField>
                                 <ItemTemplate>
@@ -350,8 +399,9 @@ ORDER BY NormalTail ASC, numUsers DESC, idaircraft ASC"></asp:SqlDataSource>
                             <asp:TemplateField>
                                 <ItemTemplate>
                                     <asp:HyperLink ID="lnkViewFixedTail" Target="_blank" runat="server"></asp:HyperLink>&nbsp;
-                                    <asp:LinkButton ID="lnkRemoveLeadingN" Visible="false" runat="server" Text=" Remove Leading N" CommandArgument='<%# Eval("idaircraft") %>' CommandName="TrimLeadingN" />&nbsp;
-                                    <asp:LinkButton ID="lnkConvertOandI" Visible="false" runat="server" Text=" Convert O/I to 0/1" CommandArgument='<%# Eval("idaircraft") %>' CommandName="ConvertOandI" />
+                                    <asp:HyperLink ID="lnkRemoveLeadingN" Visible="false" runat="server" Text=" * Remove Leading N" />&nbsp;
+                                    <asp:HyperLink ID="lnkConvertOandI" Visible="false" runat="server" Text=" * Convert O/I to 0/1" />
+                                    <asp:HyperLink ID="lnkMigrateGeneric" runat="server" Text=" * Migrate Generic" />
                                 </ItemTemplate>
                             </asp:TemplateField>
                         </Columns>

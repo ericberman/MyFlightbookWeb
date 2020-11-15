@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -20,6 +21,63 @@ namespace MyFlightbook.Web.Admin
 {
     public partial class AdminAircraft : AdminPage
     {
+        #region WebMethods
+        [WebMethod(EnableSession = true)]
+        public static void ConvertOandI(int idAircraft)
+        {
+            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+                throw new MyFlightbookException("Unauthenticated call to ConvertOandI");
+
+            Aircraft ac = new Aircraft(idAircraft);
+
+            if (String.IsNullOrWhiteSpace(ac.TailNumber) || ac.AircraftID <= 0)
+                throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "No aircraft with ID {0}", idAircraft));
+
+            Aircraft.AdminRenameAircraft(ac, ac.TailNumber.ToUpper(CultureInfo.CurrentCulture).Replace('O', '0').Replace('I', '1'));
+        }
+
+        [WebMethod(EnableSession = true)]
+        public static void TrimLeadingN(int idAircraft)
+        {
+            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+                throw new MyFlightbookException("Unauthenticated call to TrimLeadingN");
+
+            Aircraft ac = new Aircraft(idAircraft);
+
+            if (String.IsNullOrWhiteSpace(ac.TailNumber) || ac.AircraftID <= 0)
+                throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "No aircraft with ID {0}", idAircraft));
+
+            Aircraft.AdminRenameAircraft(ac, ac.TailNumber.Replace("-", string.Empty).Substring(1));
+        }
+
+        [WebMethod(EnableSession = true)]
+        public static void MigrateGeneric(int idAircraft)
+        {
+            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+                throw new MyFlightbookException("Unauthenticated call to MigrateGeneric");
+
+            Aircraft ac = new Aircraft(idAircraft);
+
+            if (String.IsNullOrWhiteSpace(ac.TailNumber) || ac.AircraftID <= 0)
+                throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "No aircraft with ID {0}", idAircraft));
+
+            Aircraft acOriginal = new Aircraft(ac.AircraftID);
+
+            // See if there is a generic for the model
+            string szTailNumGeneric = Aircraft.AnonymousTailnumberForModel(acOriginal.ModelID);
+            Aircraft acGeneric = new Aircraft(szTailNumGeneric);
+            if (acGeneric.IsNew)
+            {
+                acGeneric.TailNumber = szTailNumGeneric;
+                acGeneric.ModelID = acOriginal.ModelID;
+                acGeneric.InstanceType = AircraftInstanceTypes.RealAircraft;
+                acGeneric.Commit();
+            }
+
+            AircraftUtility.AdminMergeDupeAircraft(acGeneric, acOriginal);
+        }
+        #endregion
+
         protected void Page_Load(object sender, EventArgs e)
         {
             CheckAdmin(Profile.GetUser(Page.User.Identity.Name).CanManageData);
@@ -101,33 +159,19 @@ namespace MyFlightbook.Web.Admin
                 else
                     h.Visible = false;
 
-                e.Row.FindControl("lnkRemoveLeadingN").Visible = l.Text.StartsWith("N0", StringComparison.CurrentCultureIgnoreCase) || l.Text.StartsWith("NN", StringComparison.CurrentCultureIgnoreCase);
-                e.Row.FindControl("lnkConvertOandI").Visible = regexOOrI.IsMatch(l.Text);
+                int idAircraft = Convert.ToInt32(DataBinder.Eval(e.Row.DataItem, "idaircraft"), CultureInfo.InvariantCulture);
+
+                HyperLink hLeadingN = (HyperLink)e.Row.FindControl("lnkRemoveLeadingN");
+                hLeadingN.Visible = l.Text.StartsWith("N0", StringComparison.CurrentCultureIgnoreCase) || l.Text.StartsWith("NN", StringComparison.CurrentCultureIgnoreCase);
+                hLeadingN.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:trimLeadingN('{0}',{1});", hLeadingN.ClientID, idAircraft);
+
+                HyperLink hConvertOandI = (HyperLink)e.Row.FindControl("lnkConvertOandI");
+                hConvertOandI.Visible = regexOOrI.IsMatch(l.Text);
+                hConvertOandI.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:convertOandI('{0}',{1});", hConvertOandI.ClientID, idAircraft);
+
+                HyperLink hMigrateGeneric = (HyperLink)e.Row.FindControl("lnkMigrateGeneric");
+                hMigrateGeneric.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:migrateGeneric('{0}',{1});", hMigrateGeneric.ClientID, idAircraft);
             }
-        }
-
-
-        protected void gvPseudoGeneric_RowCommand(object sender, GridViewCommandEventArgs e)
-        {
-            if (e == null)
-                throw new ArgumentNullException(nameof(e));
-
-            string szAircraftID = (string) e.CommandArgument;
-
-            if (!int.TryParse(szAircraftID, out int idAircraft))
-                throw new MyFlightbookValidationException("Missing tail");
-
-            Aircraft ac = new Aircraft(idAircraft);
-
-            if (String.IsNullOrWhiteSpace(ac.TailNumber) || ac.AircraftID <= 0)
-                throw new MyFlightbookValidationException("No aircraft with ID " + szAircraftID);
-
-            if (e.CommandName.CompareCurrentCultureIgnoreCase("TrimLeadingN") == 0)
-                Aircraft.AdminRenameAircraft(ac, ac.TailNumber.Replace("-", string.Empty).Substring(1));
-            else if (e.CommandName.CompareCurrentCultureIgnoreCase("ConvertOandI") == 0)
-                Aircraft.AdminRenameAircraft(ac, ac.TailNumber.ToUpper(CultureInfo.CurrentCulture).Replace('O', '0').Replace('I', '1'));
-
-            ((Control)e.CommandSource).Visible = false;
         }
 
         protected void btnOrphans_Click(object sender, EventArgs e)
