@@ -285,6 +285,15 @@ namespace MyFlightbook.Web.Admin
         protected global::System.Web.UI.WebControls.Button btnRefreshInvalidSigs;
 
         /// <summary>
+        /// hdnSigOffset control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnSigOffset;
+
+        /// <summary>
         /// lblSigResults control.
         /// </summary>
         /// <remarks>
@@ -292,6 +301,60 @@ namespace MyFlightbook.Web.Admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblSigResults;
+
+        /// <summary>
+        /// lblSigProgress control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblSigProgress;
+
+        /// <summary>
+        /// mvCheckSigs control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.MultiView mvCheckSigs;
+
+        /// <summary>
+        /// vwSigProgress control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.View vwSigProgress;
+
+        /// <summary>
+        /// imgProgress control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Image imgProgress;
+
+        /// <summary>
+        /// vwInvalidSigs control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.View vwInvalidSigs;
+
+        /// <summary>
+        /// gvInvalidSignatures control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvInvalidSignatures;
 
         /// <summary>
         /// btnFlushCache control.
@@ -580,15 +643,6 @@ namespace MyFlightbook.Web.Admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.View vwMainMisc;
-
-        /// <summary>
-        /// gvInvalidSignatures control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvInvalidSignatures;
 
         /// <summary>
         /// Master property.

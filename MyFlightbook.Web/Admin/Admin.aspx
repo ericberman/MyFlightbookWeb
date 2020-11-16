@@ -6,6 +6,8 @@
     Admin Tools
 </asp:Content>
 <asp:Content ID="Content1" ContentPlaceHolderID="cpTopForm" runat="Server">
+    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src='<%= ResolveUrl("~/public/Scripts/jquery.json-2.4.min.js") %>'></script>
     <asp:MultiView ID="mvAdmin" runat="server" ActiveViewIndex="0">
         <asp:View ID="vwUsers" runat="server">
             <h2>User Management</h2>
@@ -158,9 +160,43 @@
                 </EmptyDataTemplate>
             </asp:GridView>
             <div><asp:Button ID="btnRefreshProps" runat="server" Text="Refresh empty/dupe props" OnClick="btnRefreshProps_Click" /></div>
-            <h2>Invalid signatures</h2><p>
-                        <asp:Button ID="btnRefreshInvalidSigs" runat="server" OnClick="btnRefreshInvalidSigs_Click" Text="Refresh" /></p>
-            <p><asp:Label ID="lblSigResults" runat="server" Text=""></asp:Label></p>
+                    <h2>Invalid signatures</h2><p>
+                    <script type="text/javascript">
+                        function startScan() {
+                            document.getElementById('<% =btnRefreshInvalidSigs.ClientID %>').click();
+                        }
+                    </script>
+                    <asp:Button ID="btnRefreshInvalidSigs" runat="server" OnClick="btnRefreshInvalidSigs_Click" Text="Refresh" />
+                    <asp:HiddenField ID="hdnSigOffset" runat="server" Value="0" />
+                    <p><asp:Label ID="lblSigResults" runat="server" Text=""></asp:Label></p>
+                    <asp:Label ID="lblSigProgress" runat="server" />
+                    <asp:MultiView ID="mvCheckSigs" runat="server" ActiveViewIndex="1">
+                        <asp:View ID="vwSigProgress" runat="server">
+                            <asp:Image ID="imgProgress" runat="server" ImageUrl="~/images/ajax-loader.gif" />
+                            <script type="text/javascript">
+                                $(document).ready(function () { startScan(); });
+                            </script>
+                        </asp:View>
+                        <asp:View ID="vwInvalidSigs" runat="server">
+                            <asp:GridView ID="gvInvalidSignatures" runat="server" AutoGenerateColumns="false" OnRowCommand="gvInvalidSignatures_RowCommand">
+                                <Columns>
+                                    <asp:HyperLinkField DataNavigateUrlFields="FlightID" DataNavigateUrlFormatString="~/Member/LogbookNew.aspx/{0}?a=1" DataTextField="FlightID" DataTextFormatString="{0}" Target="_blank" />
+                                    <asp:TemplateField>
+                                        <ItemTemplate>
+                                            <%# Eval("User") %><br />
+                                            <%# ((DateTime) Eval("Date")).ToShortDateString() %><br />
+                                            Saved State: <%# Eval("CFISignatureState") %><br /><%# Eval("AdminSignatureSanityCheckState").ToString() %></ItemTemplate></asp:TemplateField><asp:TemplateField>
+                                        <ItemTemplate>
+                                            <asp:Label ID="Label5" runat="server" Width="60px" Text="Saved:"></asp:Label><%# Eval("DecryptedFlightHash") %><br /><asp:Label ID="Label6" runat="server" Width="60px" Text="Current:"></asp:Label><%# Eval("DecryptedCurrentHash") %></ItemTemplate></asp:TemplateField><asp:TemplateField>
+                                        <ItemTemplate>
+                                            <asp:Button ID="btnSetValidity" runat="server" Text="Fix" CommandArgument='<%# Bind("FlightID") %>' CommandName="FixValidity" /><br />
+                                            <asp:Button ID="btnForceValidSig" runat="server" Text="Force Valid" CommandArgument='<%# Bind("FlightID") %>' CommandName="ForceValidity" />
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                </Columns>
+                            </asp:GridView>
+                        </asp:View>
+                    </asp:MultiView>
             <p><asp:Button ID="btnFlushCache" runat="server" Text="Flush Cache" OnClick="btnFlushCache_Click" /><span class="fineprint">Removes all entries from the cache; will make things slow, but useful for picking up DB changes or debugging</span></p>
         </asp:View>
     </asp:MultiView>
@@ -386,17 +422,6 @@ order by cc.idcatclass ASC, man.manufacturer asc, m.model asc, m.typename asc;"
             </asp:UpdatePanel>
         </asp:View>
         <asp:View ID="vwMainMisc" runat="server">
-            <asp:GridView ID="gvInvalidSignatures" runat="server" AutoGenerateColumns="false" OnRowCommand="gvInvalidSignatures_RowCommand">
-                <Columns>
-                    <asp:HyperLinkField DataNavigateUrlFields="FlightID" DataNavigateUrlFormatString="~/Member/LogbookNew.aspx/{0}?a=1" DataTextField="FlightID" DataTextFormatString="{0}" Target="_blank" />
-                    <asp:TemplateField>
-                        <ItemTemplate>
-                            <%# Eval("User") %><br />
-                            <%# ((DateTime) Eval("Date")).ToShortDateString() %><br />
-                            Saved State: <%# Eval("CFISignatureState") %><br /><%# Eval("AdminSignatureSanityCheckState").ToString() %></ItemTemplate></asp:TemplateField><asp:TemplateField>
-                        <ItemTemplate>
-                            <asp:Label ID="Label5" runat="server" Width="60px" Text="Saved:"></asp:Label><%# Eval("DecryptedFlightHash") %><br /><asp:Label ID="Label6" runat="server" Width="60px" Text="Current:"></asp:Label><%# Eval("DecryptedCurrentHash") %></ItemTemplate></asp:TemplateField><asp:TemplateField>
-                        <ItemTemplate>
-                            <asp:Button ID="btnSetValidity" runat="server" Text="Fix" CommandArgument='<%# Bind("FlightID") %>' CommandName="FixValidity" /><br />
-                            <asp:Button ID="btnForceValidSig" runat="server" Text="Force Valid" CommandArgument='<%# Bind("FlightID") %>' CommandName="ForceValidity" />
-                            </ItemTemplate></asp:TemplateField></Columns></asp:GridView></asp:View></asp:MultiView></asp:Content>
+        </asp:View>
+    </asp:MultiView>
+</asp:Content>

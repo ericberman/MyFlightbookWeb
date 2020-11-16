@@ -4,6 +4,8 @@ using System.Data;
 using System.Globalization;
 using System.Net.Mail;
 using System.Text;
+using System.Threading.Tasks;
+using System.Linq;
 using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -356,52 +358,55 @@ namespace MyFlightbook.Web.Admin
 
         protected void UpdateInvalidSigs()
         {
-            List<LogbookEntry> lst = new List<LogbookEntry>();
+            List<int> lstSigned = new List<int>();
+            List<LogbookEntry> lstToFix = new List<LogbookEntry>();
             List<LogbookEntry> lstAutoFix = new List<LogbookEntry>();
 
-            List<int> lstIDs = new List<int>();
-            DBHelper dbh = new DBHelper("SELECT idFlight FROM Flights WHERE signatureState<>0 ORDER BY Username ASC, Date DESC");
+            // Pick up where we left off.
+            int offset = Convert.ToInt32(hdnSigOffset.Value, CultureInfo.InvariantCulture);
+
+            const int chunkSize = 250;
+
+            DBHelper dbh = new DBHelper("SELECT idFlight FROM Flights WHERE signatureState<>0 ORDER BY Username ASC, Date DESC LIMIT ?lim, ?chunk");
             dbh.CommandArgs.Timeout = 300;  // up to 300 seconds.
-            dbh.ReadRows((comm) => { }, (dr) => { lstIDs.Add(Convert.ToInt32(dr["idFlight"], CultureInfo.InvariantCulture)); });
+            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("lim", offset); comm.Parameters.AddWithValue("chunk", chunkSize); },
+                (dr) => { lstSigned.Add(Convert.ToInt32(dr["idFlight"], CultureInfo.InvariantCulture)); });
 
-            int cTotalSigned = lstIDs.Count;
-
-            lstIDs.ForEach((idFlight) =>
+            lstSigned.ForEach((idFlight) =>
                 {
                     LogbookEntry le = new LogbookEntry();
                     le.FLoadFromDB(idFlight, string.Empty, LogbookEntry.LoadTelemetryOption.None, true);
                     if (le.AdminSignatureSanityCheckState != LogbookEntry.SignatureSanityCheckState.OK)
                     {
-                    // see if we can auto-fix these.  Auto-fixed = decrypted hash matches case insenstive and trimmed.
-                    if (le.DecryptedCurrentHash.Trim().CompareCurrentCultureIgnoreCase(le.DecryptedFlightHash.Trim()) == 0)
+                        // see if we can auto-fix these.  Auto-fixed = decrypted hash matches case insenstive and trimmed.
+                        if (le.DecryptedCurrentHash.Trim().CompareCurrentCultureIgnoreCase(le.DecryptedFlightHash.Trim()) == 0)
                         {
                             lstAutoFix.Add(le);
                             le.AdminSignatureSanityFix(true);
                         }
                         else
-                            lst.Add(le);
+                            lstToFix.Add(le);
                     }
                 });
 
-            gvInvalidSignatures.DataSource = ViewState["InvalidSigs"] = lst;
-            gvInvalidSignatures.DataBind();
+            offset += lstSigned.Count;
 
-            lblSigResults.Text = String.Format(CultureInfo.CurrentCulture, "Found {0} signed flights, {1} appear to have problems, {2} were autofixed (capitalization or leading/trailing whitespace)", cTotalSigned, lst.Count, lstAutoFix.Count);
-        }
+            if (lstSigned.Any())
+            {
+                // we have more to go, so show the progress view that auto-clicks for the next chunk.
+                mvCheckSigs.SetActiveView(vwSigProgress);
+                hdnSigOffset.Value = offset.ToString(CultureInfo.InvariantCulture);
+                lblSigResults.Text = String.Format(CultureInfo.CurrentCulture, "Scanned {0} flights so far...", offset);
+            }
+            else
+            {
+                mvCheckSigs.SetActiveView(vwInvalidSigs);   // stop pressing 
+                hdnSigOffset.Value = 0.ToString(CultureInfo.InvariantCulture);  // and reset the offset so you can press it again.
+                gvInvalidSignatures.DataSource = ViewState["InvalidSigs"] = lstToFix;
+                gvInvalidSignatures.DataBind();
 
-        protected void btnFixInvalidSigState_Click(object sender, EventArgs e)
-        {
-            List<LogbookEntry> lst = (List<LogbookEntry>)gvInvalidSignatures.DataSource;
-            if (lst == null)
-                return;
-
-            lst.ForEach((le) =>
-                {
-                    if (le.IsValidSignature())
-                        le.FCommit(false, true);
-                });
-
-            UpdateInvalidSigs();
+                lblSigResults.Text = String.Format(CultureInfo.CurrentCulture, "Found {0} signed flights, {1} appear to have problems, {2} were autofixed (capitalization or leading/trailing whitespace)", offset, lstToFix.Count, lstAutoFix.Count);
+            }
         }
 
         protected void gvInvalidSignatures_RowCommand(object sender, CommandEventArgs e)
