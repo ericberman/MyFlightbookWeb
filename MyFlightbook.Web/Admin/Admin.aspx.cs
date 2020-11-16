@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using System.Linq;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
-using System.Linq;
 using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -351,9 +351,9 @@ namespace MyFlightbook.Web.Admin
         #endregion
 
         #region Misc
-        protected void btnRefreshInvalidSigs_Click(object sender, EventArgs e)
+        protected async void btnRefreshInvalidSigs_Click(object sender, EventArgs e)
         {
-            UpdateInvalidSigs();
+            await Task.Run(() => { UpdateInvalidSigs(); }).ConfigureAwait(true);
         }
 
         protected void UpdateInvalidSigs()
