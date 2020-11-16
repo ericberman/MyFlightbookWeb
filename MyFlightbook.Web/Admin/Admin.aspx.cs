@@ -367,7 +367,7 @@ namespace MyFlightbook.Web.Admin
 
             const int chunkSize = 250;
 
-            DBHelper dbh = new DBHelper("SELECT idFlight FROM Flights WHERE signatureState<>0 ORDER BY Username ASC, Date DESC LIMIT ?lim, ?chunk");
+            DBHelper dbh = new DBHelper("SELECT idFlight FROM Flights WHERE signatureState<>0 LIMIT ?lim, ?chunk");
             dbh.CommandArgs.Timeout = 300;  // up to 300 seconds.
             dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("lim", offset); comm.Parameters.AddWithValue("chunk", chunkSize); },
                 (dr) => { lstSigned.Add(Convert.ToInt32(dr["idFlight"], CultureInfo.InvariantCulture)); });
