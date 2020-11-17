@@ -356,11 +356,34 @@ namespace MyFlightbook.Web.Admin
             await Task.Run(() => { UpdateInvalidSigs(); }).ConfigureAwait(true);
         }
 
+        private const string szVSAutoFixed = "autoFixed";
+        private const string szVSFlightsToFix = "InvalidSigs";
+
+        private List<LogbookEntry> lstToFix
+        {
+            get
+            {
+                if (ViewState[szVSFlightsToFix] == null)
+                    ViewState[szVSFlightsToFix] = new List<LogbookEntry>();
+                return (List<LogbookEntry>)ViewState[szVSFlightsToFix];
+            }
+            set { ViewState[szVSFlightsToFix] = value; }
+        }
+
+        private List<LogbookEntry> lstAutoFix
+        {
+            get
+            {
+                if (ViewState[szVSAutoFixed] == null)
+                    ViewState[szVSAutoFixed] = new List<LogbookEntry>();
+                return (List<LogbookEntry>)ViewState[szVSAutoFixed];
+            }
+            set { ViewState[szVSAutoFixed] = value; }
+        }
+
         protected void UpdateInvalidSigs()
         {
             List<int> lstSigned = new List<int>();
-            List<LogbookEntry> lstToFix = new List<LogbookEntry>();
-            List<LogbookEntry> lstAutoFix = new List<LogbookEntry>();
 
             // Pick up where we left off.
             int offset = Convert.ToInt32(hdnSigOffset.Value, CultureInfo.InvariantCulture);
@@ -391,21 +414,20 @@ namespace MyFlightbook.Web.Admin
 
             offset += lstSigned.Count;
 
+            lblSigResults.Text = String.Format(CultureInfo.CurrentCulture, "Found {0} signed flights, {1} appear to have problems, {2} were autofixed (capitalization or leading/trailing whitespace)", offset, lstToFix.Count, lstAutoFix.Count);
+
             if (lstSigned.Any())
             {
                 // we have more to go, so show the progress view that auto-clicks for the next chunk.
                 mvCheckSigs.SetActiveView(vwSigProgress);
                 hdnSigOffset.Value = offset.ToString(CultureInfo.InvariantCulture);
-                lblSigResults.Text = String.Format(CultureInfo.CurrentCulture, "Scanned {0} flights so far...", offset);
             }
             else
             {
                 mvCheckSigs.SetActiveView(vwInvalidSigs);   // stop pressing 
                 hdnSigOffset.Value = 0.ToString(CultureInfo.InvariantCulture);  // and reset the offset so you can press it again.
-                gvInvalidSignatures.DataSource = ViewState["InvalidSigs"] = lstToFix;
+                gvInvalidSignatures.DataSource = lstToFix;
                 gvInvalidSignatures.DataBind();
-
-                lblSigResults.Text = String.Format(CultureInfo.CurrentCulture, "Found {0} signed flights, {1} appear to have problems, {2} were autofixed (capitalization or leading/trailing whitespace)", offset, lstToFix.Count, lstAutoFix.Count);
             }
         }
 
@@ -420,9 +442,9 @@ namespace MyFlightbook.Web.Admin
                 le.FLoadFromDB(idFlight, string.Empty, LogbookEntry.LoadTelemetryOption.None, true);
                 if (le.AdminSignatureSanityFix(e.CommandName.CompareOrdinalIgnoreCase("ForceValidity") == 0))
                 {
-                    List<LogbookEntry> lst = (List<LogbookEntry>)ViewState["InvalidSigs"];
+                    List<LogbookEntry> lst = lstToFix;
                     lst.RemoveAll(l => l.FlightID == idFlight);
-                    gvInvalidSignatures.DataSource = ViewState["InvalidSigs"] = lst;
+                    gvInvalidSignatures.DataSource = lstToFix = lst;
                     gvInvalidSignatures.DataBind();
                 }
             }
