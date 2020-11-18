@@ -55,16 +55,16 @@ public partial class Member_StudentLogbook : System.Web.UI.Page
                     hdnStudent.Value = student.UserName;
                     Restriction = new FlightQuery(student.UserName);
 
-                    if (!String.IsNullOrEmpty(hdnStudent.Value))
-                        UpdateForUser(hdnStudent.Value);
-
-                    if (student.CanAddLogbook)
+                    if (mfbLogbook1.CanResignValidFlights = student.CanAddLogbook)
                     {
                         mfbEditFlight.FlightUser = student.UserName;
                         mfbEditFlight.SetUpNewOrEdit(LogbookEntry.idFlightNew);
                     }
                     else
                         apcNewFlight.Visible = false;
+
+                    if (!String.IsNullOrEmpty(hdnStudent.Value))
+                        UpdateForUser(hdnStudent.Value);
 
                     mfbSearchForm.Username = printOptions.UserName = student.UserName;
                     ResolvePrintLink();

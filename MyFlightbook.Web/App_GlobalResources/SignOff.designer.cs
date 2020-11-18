@@ -754,6 +754,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Remove Signature from this entry.
+        /// </summary>
+        internal static string LogbookRevokeSignature {
+            get {
+                return ResourceManager.GetString("LogbookRevokeSignature", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sign this entry.
         /// </summary>
         internal static string LogbookSign {

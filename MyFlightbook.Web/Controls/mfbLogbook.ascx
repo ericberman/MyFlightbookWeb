@@ -95,6 +95,7 @@
             PagerSettings-Mode="NumericFirstLast"
             GridLines="None" OnDataBound="gvFlightLogs_DataBound" 
             OnSorting="gvFlightLogs_Sorting" 
+            OnRowCommand="gvFlightLogs_RowCommand"
             OnPageIndexChanging="gridView_PageIndexChanging">
             <Columns>
                 <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldFlight %>" SortExpression="Date">
@@ -325,7 +326,7 @@
                     <ItemTemplate>
                         <uc7:popmenu ID="popmenu1" runat="server" Visible="<%# IsViewingOwnFlights && !IsInSelectMode && !IsReadOnly %>" OffsetX="-180" OffsetY="-20">
                             <MenuContent>
-                                <uc1:mfbFlightContextMenu runat="server" ID="mfbFlightContextMenu" SignTargetFormatString="~/Member/RequestSigs.aspx?id={0}" OnDeleteFlight="mfbFlightContextMenu_DeleteFlight" OnSendFlight="mfbFlightContextMenu_SendFlight" />
+                                <uc1:mfbFlightContextMenu runat="server" ID="mfbfcm" SignTargetFormatString="~/Member/RequestSigs.aspx?id={0}" OnDeleteFlight="mfbFlightContextMenu_DeleteFlight" OnSendFlight="mfbFlightContextMenu_SendFlight" />
                             </MenuContent>
                         </uc7:popmenu>
                         <asp:CheckBox ID="ckSelected" runat="server" Visible="<%# IsViewingOwnFlights && IsInSelectMode %>" Checked='<%# IsViewingOwnFlights && IsInSelectMode && SelectedItems.Contains((int) Eval("FlightID")) %>' />
@@ -338,8 +339,15 @@
                     <ItemTemplate>
                         <asp:HyperLink ID="lnkSignEntry" runat="server"
                             NavigateUrl='<%# String.Format("~/Member/SignFlight.aspx?idFlight={0}&ret={1}", Eval("FlightID"), HttpUtility.UrlEncode(Page.Request.Url.PathAndQuery)) %>'
-                            Text='<%# ((LogbookEntry.SignatureState) Eval("CFISignatureState")) == LogbookEntry.SignatureState.Invalid ? Resources.SignOff.LogbookResign : Resources.SignOff.LogbookSign %>' 
-                            Visible='<%# !IsViewingOwnFlights && !IsReadOnly && ((LogbookEntry.SignatureState) Eval("CFISignatureState")) != LogbookEntry.SignatureState.Valid %>'></asp:HyperLink>
+                            Visible='<%# !IsViewingOwnFlights && !IsReadOnly && ((LogbookEntry.SignatureState) Eval("CFISignatureState")) != LogbookEntry.SignatureState.Valid %>'>
+                            <asp:Image ID="imgSign" runat="server" ImageUrl="~/images/signaturesm.png" style="margin-right: 3px;" 
+                                AlternateText='<%# ((LogbookEntry.SignatureState) Eval("CFISignatureState")) == LogbookEntry.SignatureState.Invalid ? Resources.SignOff.LogbookResign : Resources.SignOff.LogbookSign %>'
+                                ToolTip='<%# ((LogbookEntry.SignatureState) Eval("CFISignatureState")) == LogbookEntry.SignatureState.Invalid ? Resources.SignOff.LogbookResign : Resources.SignOff.LogbookSign %>' />
+                        </asp:HyperLink>
+                        <asp:LinkButton ID="lnkRmvSig" runat="server" Visible='<%# CanResignValidFlights && ((LogbookEntry) Container.DataItem).IsSignedByInstructor(Page.User.Identity.Name) %>'
+                            CommandName="_revSig" CommandArgument='<%# Eval("FlightID") %>'>
+                            <asp:Image ID="imgUnsign" ImageUrl="~/images/x.gif" runat="server" style="margin-right: 3px;" AlternateText="<%$ Resources:SignOff, LogbookRevokeSignature %>" ToolTip="<%$ Resources:SignOff, LogbookRevokeSignature %>" />
+                        </asp:LinkButton>
                     </ItemTemplate>
                     <ItemStyle CssClass="noprint" />
                 </asp:TemplateField>

@@ -101,18 +101,19 @@
                                         </asp:Repeater>
                                     </td>
                                 </tr>
-                                <%--
-                                    // Only allow editing if the CFI is:
-                                    // a) authenticated (i.e., not ad-hoc signing)
-                                    // b) signed in (no need for a password)
-                                    // c) named on the flight (i.e., the flight is awaiting this CFI's signature or has previously signed it)
-                                --%>
-                                <tr runat="server" visible='<%# SigningMode == SignMode.Authenticated && Page.User.Identity.IsAuthenticated && ((LogbookEntry) Container.DataItem).CanEditThisFlight(Page.User.Identity.Name) %>'>
-                                    <td colspan="4">
-                                        <asp:LinkButton ID="lnkEditFlightToSign" runat="server" OnClick="lnkEditFlightToSign_Click" Text="<%$ Resources:SignOff, InstructorEditFlightPrompt %>"></asp:LinkButton>
-                                    </td>
-                                </tr>
                             </table>
+                            <%--
+                                // Only allow editing if the CFI is:
+                                // a) authenticated (i.e., not ad-hoc signing)
+                                // b) signed in (no need for a password)
+                                // c) named on the flight (i.e., the flight is awaiting this CFI's signature or has previously signed it)
+                            --%>
+                            <asp:Panel ID="pnlEdit" runat="server" Visible='<%# SigningMode == SignMode.Authenticated && Page.User.Identity.IsAuthenticated && ((LogbookEntry) Container.DataItem).CanSignStudentFlight(Page.User.Identity.Name, true) %>'>
+                                <asp:LinkButton ID="lnkEditFlightToSign" runat="server" OnClick="lnkEditFlightToSign_Click">
+                                    <asp:Image ID="imgPencil" runat="server" style="padding-right: 4px;" ImageUrl="~/images/pencilsm.png" />
+                                    <asp:Label ID="lblEdit" runat="server"  Text="<%$ Resources:SignOff, InstructorEditFlightPrompt %>" AssociatedControlID="imgPencil" />
+                                </asp:LinkButton>
+                            </asp:Panel>
                         </ItemTemplate>
                     </asp:FormView>
                 </div>

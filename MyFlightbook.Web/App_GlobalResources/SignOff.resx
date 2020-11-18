@@ -446,4 +446,7 @@
   <data name="CopyEndorsement" xml:space="preserve">
     <value>Create a new endorsement starting from the text of this one</value>
   </data>
+  <data name="LogbookRevokeSignature" xml:space="preserve">
+    <value>Remove Signature from this entry</value>
+  </data>
 </root>

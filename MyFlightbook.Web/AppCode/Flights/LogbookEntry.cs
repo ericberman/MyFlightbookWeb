@@ -1092,7 +1092,6 @@ namespace MyFlightbook
         /// <param name="szCFIUsername">The CFI's username</param>
         /// <param name="err">The resulting error message</param>
         /// <returns>True if the pilot is authorized; else, false.  ErrorString contains the message</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", MessageId = "1#")]
         public bool CanSignThisFlight(string szCFIUsername, out string err)
         {
             err = String.Empty;
@@ -1106,9 +1105,10 @@ namespace MyFlightbook
             }
 
             // If the student has given us permission to view the logbook, we can sign it.
+            // we have permission to view the logbook.  UNLESS it already has a valid signature, in which case it requires CanAdd privileges.
             foreach (InstructorStudent stud in sm.Students)
                 if (String.Compare(stud.UserName, this.User, StringComparison.OrdinalIgnoreCase) == 0 && stud.CanViewLogbook)
-                    return true; // we have permission to view the logbook.
+                    return stud.CanAddLogbook || CFISignatureState != SignatureState.Valid; 
 
             // Otherwise, look for evidence that the user has requested us to sign it - look in the email or username field for an outstanding request.
             Profile pfCFI = Profile.GetUser(szCFIUsername);
@@ -1128,6 +1128,47 @@ namespace MyFlightbook
         public bool CanEditThisFlight(string szCFIUsername)
         {
             return (this.CFISignatureState != SignatureState.Valid && this.CFIUsername != null && !String.IsNullOrEmpty(szCFIUsername) && String.Compare(this.CFIUsername, szCFIUsername, StringComparison.OrdinalIgnoreCase) == 0);
+        }
+
+        public bool IsSignedByInstructor(string szCFIUsername)
+        {
+            return CFISignatureState == SignatureState.Valid && szCFIUsername != null && CFIUsername.CompareOrdinalIgnoreCase(szCFIUsername) == 0;
+        }
+
+        public void RevokeSignature(string szCFIUsername)
+        {
+            if (!IsSignedByInstructor(szCFIUsername))
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, "Flight {0} (user {1}) is not signed by {2}", FlightID, User, szCFIUsername ?? string.Empty));
+
+            CFISignatureDate = CFIExpiration = DateTime.MinValue;
+            CFIComments = CFICertificate = CFIEmail = CFIName = string.Empty;
+            CFISignatureState = SignatureState.None;
+            FCommit(false, true);
+        }
+
+        /// <summary>
+        /// Determines if we should offer signing to a CFI viewing this flight
+        /// </summary>
+        /// <param name="szCFIUsername">Username of the instructor</param>
+        /// <param name="fAllowReSign">True if we should allow a new signature on existing validly signed-flights</param>
+        /// <returns>True if the flight is (a) unsigned, (b) signed by another instructor but not valid, (c) signed by this instructor but invalidated, or (d) signed by this instructor and valid but fAllowResign is true</returns>
+        public bool CanSignStudentFlight(string szCFIUsername, bool fAllowReSign)
+        {
+            // Null/empty user can never sign:
+            if (String.IsNullOrWhiteSpace(szCFIUsername))
+                return false;
+
+            // Instructor can always sign any unsigned student flight
+            if (String.IsNullOrEmpty(CFIUsername))
+                return true;
+
+            // Can't sign a flight signed by another CFI if that signature is still valid
+            if (CFIUsername.CompareOrdinalIgnoreCase(szCFIUsername) != 0)
+                return CFISignatureState != SignatureState.Valid;
+
+            // So if we're here, we have EITHER no existing signature OR we're re-signing a flight we've previously signed.
+            // Allow signing if we aren't already valid OR if we allow re-signing
+            return CFISignatureState != SignatureState.Valid || fAllowReSign;
         }
 
         /// <summary>
@@ -1315,7 +1356,6 @@ namespace MyFlightbook
         /// <param name="fAsc">True to sort in ascending order (vs. descending)</param>
         /// <param name="fIncludeTelemetry">True to include telemetry</param>
         /// <returns>Command object.</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         public static DBHelperCommandArgs QueryCommand(FlightQuery fq, int offset = -1, int limit = -1, bool fAsc = false, LoadTelemetryOption lto = LoadTelemetryOption.None)
         {
             if (fq == null)
@@ -1513,9 +1553,9 @@ namespace MyFlightbook
                     {
                         comm.Parameters.AddWithValue("sigState", UpdateSignatureState());
                         comm.Parameters.AddWithValue("cficomment", CFIComments?.LimitTo(255));
-                        comm.Parameters.AddWithValue("sigDate", this.CFISignatureDate);
+                        comm.Parameters.AddWithValue("sigDate", CFISignatureDate.HasValue() ? (object) CFISignatureDate : null);
                         comm.Parameters.AddWithValue("cficert", this.CFICertificate);
-                        comm.Parameters.AddWithValue("cfiExpiration", this.CFIExpiration);
+                        comm.Parameters.AddWithValue("cfiExpiration", CFIExpiration.HasValue() ? (object) CFIExpiration : null);
                         comm.Parameters.AddWithValue("cfiUserName", this.CFIUsername);
                         comm.Parameters.AddWithValue("cfiEmail", this.CFIEmail);
                         comm.Parameters.AddWithValue("cfiName", this.CFIName);

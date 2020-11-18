@@ -161,6 +161,16 @@ public partial class Controls_MFBLogbookBase : UserControl
         get { return String.Compare(Page.User.Identity.Name, this.User, StringComparison.Ordinal) == 0; }
     }
 
+    private const string szVSReSignFlights = "vsReSign";
+    /// <summary>
+    /// Determines if we allow for re-signing of flights that have valid signatures (requires add permission).
+    /// </summary>
+    public bool CanResignValidFlights
+    {
+        get { return (bool)(ViewState[szVSReSignFlights] ?? false); }
+        set { ViewState[szVSReSignFlights] = value; }
+    }
+
     public bool IsReadOnly { get; set; }
 
     #region Data
@@ -721,7 +731,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
     private void SetUpContextMenuForRow(LogbookEntryDisplay le, GridViewRow row)
     {
         // Wire up the drop-menu.  We have to do this here because it is an iNamingContainer and can't access the gridviewrow
-        Controls_mfbFlightContextMenu cm = (Controls_mfbFlightContextMenu)row.FindControl("popmenu1").FindControl("mfbFlightContextMenu");
+        Controls_mfbFlightContextMenu cm = (Controls_mfbFlightContextMenu)row.FindControl("popmenu1").FindControl("mfbfcm");
 
         string szEditContext = EditContextParams(gvFlightLogs.PageIndex);
 
@@ -927,7 +937,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
     protected void lnkReqSigs_Click(object sender, EventArgs e)
     {
         IsInSelectMode = false;
-        Response.Redirect(String.Format(CultureInfo.InvariantCulture, mfbFlightContextMenu.SignTargetFormatString, String.Join(",", SelectedItems)));
+        Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/RequestSigs.aspx?id={0}", String.Join(",", SelectedItems)));
     }
 
     protected void ckSelectAll_CheckedChanged(object sender, EventArgs e)
@@ -1021,4 +1031,23 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
         mfbSendFlight.SendFlight(e.FlightID);
     }
     #endregion
+
+    protected void gvFlightLogs_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        if (e == null)
+            throw new ArgumentNullException(nameof(e));
+
+        if (e.CommandName.CompareOrdinal("_revSig") == 0)
+        {
+            int idFlight = Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture);
+            // Can't edit a LogbookEntryDisplay, so load a logbookentry
+            LogbookEntry le = new LogbookEntry();
+            if (le.FLoadFromDB(idFlight, User))
+            {
+                le.RevokeSignature(Page.User.Identity.Name);
+                FlushCache();
+                BindData(Data);
+            }
+        }
+    }
 }
