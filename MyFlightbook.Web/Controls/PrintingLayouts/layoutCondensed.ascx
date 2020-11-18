@@ -36,7 +36,7 @@
                         <td><%# ((DateTime) Eval("Date")).ToShortDateString() %></td>
                         <td><%# ((int) Eval("FlightCount")).FormatInt() %></td>
                         <td class="clipped"><%#: Eval("ModelDisplay") %></td>
-                        <td class="clipped"><span style="font-weight:bold"><%# Eval("Route") %></span> <%#Eval("Comment") %></td>
+                        <td class="clipped"><span style="font-weight:bold"><%# Eval("Route") %></span> <%#Eval("RedactedCommentWithReplacedApproaches") %></td>
                         <td runat="server" id="tdOptColumnCatClass1" visible="<%# ShowOptionalColumn(0) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(0) %></div></td>
                         <td runat="server" id="tdOptColumnCatClass2" visible="<%# ShowOptionalColumn(1) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(1) %></div></td>
                         <td runat="server" id="tdOptColumnCatClass3" visible="<%# ShowOptionalColumn(2) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(2) %></div></td>
