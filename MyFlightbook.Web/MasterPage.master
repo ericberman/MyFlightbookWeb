@@ -12,6 +12,7 @@
     <meta name="apple-itunes-app" content="app-id=349983064" />
     <meta name="format-detection" content="telephone=no" runat="server" id="metaFormat" visible="false" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" runat="server" id="metaViewport" visible="false" />
+    <meta charset="UTF-8" />
     <title></title>
     <link rel="shortcut icon" href="/favicon.ico?v2" />
     <link rel="icon" href="/favicon.ico?v2" /> 
