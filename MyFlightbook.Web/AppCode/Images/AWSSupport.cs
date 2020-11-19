@@ -1,4 +1,5 @@
 ﻿using Amazon;
+using Amazon.ElasticTranscoder;
 using Amazon.ElasticTranscoder.Model;
 using Amazon.S3;
 using Amazon.S3.Model;
@@ -74,14 +75,12 @@ namespace MyFlightbook.Image
         /// <returns>The S3 client</returns>
         public static IAmazonS3 S3Client()
         {
-            AWSConfigs.S3Config.UseSignatureVersion4 = true;
-            return AWSClientFactory.CreateAmazonS3Client(AWSAccessKey, AWSSecretKey, RegionEndpoint.USEast1);
+            return new AmazonS3Client(AWSAccessKey, AWSSecretKey, RegionEndpoint.USEast1);
         }
 
-        public static Amazon.ElasticTranscoder.IAmazonElasticTranscoder ElasticTranscoderClient()
+        public static IAmazonElasticTranscoder ElasticTranscoderClient()
         {
-            AWSConfigs.S3Config.UseSignatureVersion4 = true;
-            return AWSClientFactory.CreateAmazonElasticTranscoderClient(AWSAccessKey, AWSSecretKey, RegionEndpoint.USEast1);
+            return new AmazonElasticTranscoderClient(AWSAccessKey, AWSSecretKey, RegionEndpoint.USEast1);
         }
     }
 

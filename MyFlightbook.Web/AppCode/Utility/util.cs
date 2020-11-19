@@ -301,7 +301,6 @@ namespace MyFlightbook
         /// <param name="lst">The set of objects to slice</param>
         /// <param name="PropertyName">The name of the property - obviously must exist</param>
         /// <returns>An IDictionary grouped by names of the properties</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         public static IDictionary<string, IEnumerable<T>> GroupByProperty<T>(IEnumerable<T> lst, string PropertyName)
         {
             if (lst == null)

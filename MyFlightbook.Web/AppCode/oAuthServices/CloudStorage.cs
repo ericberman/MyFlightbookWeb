@@ -1,5 +1,4 @@
-﻿using Amazon.IdentityManagement.Model;
-using DotNetOpenAuth.OAuth2;
+﻿using DotNetOpenAuth.OAuth2;
 using Dropbox.Api;
 using MyFlightbook.Image;
 using MyFlightbook.OAuth;
