@@ -1251,7 +1251,7 @@ namespace MyFlightbook
         {
             const string szAnyPending = "((f.CFIUsername IS NOT NULL AND f.CFIUserName <> '') OR (f.CFIEmail IS NOT NULL AND f.CFIEmail <> ''))";
             const string szJustForCFI = "(f.CFIUsername=?user OR f.CFIEmail=?email)";
-            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "SELECT f.Date, f.idFlight, f.Comments, f.Route FROM Flights f WHERE f.username=?student AND {0} AND f.SignatureState=0 ORDER BY f.Date DESC", pfCFI == null ? szAnyPending : szJustForCFI));
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "SELECT f.Date, f.idFlight, f.Comments, f.Route, f.CFIUsername, f.CFIEmail FROM Flights f WHERE f.username=?student AND {0} AND f.SignatureState=0 ORDER BY f.Date DESC", pfCFI == null ? szAnyPending : szJustForCFI));
             List<LogbookEntry> lstFlightsToSign = new List<LogbookEntry>();
             dbh.ReadRows(
                 (comm) =>
@@ -1272,8 +1272,15 @@ namespace MyFlightbook
                         Date = Convert.ToDateTime(dr["Date"], CultureInfo.InvariantCulture),
                         Comment = (string) dr["Comments"],
                         Route = (string) dr["Route"],
-                        User = pfStudent.UserName
+                        User = pfStudent.UserName 
                     };
+                    string szCFIUser = (string)dr["CFIUsername"];
+                    string szCFIEmail = (string)dr["CFIEmail"];
+
+                    if (!String.IsNullOrEmpty(szCFIUser))
+                        le.CFIName = Profile.GetUser(szCFIUser).UserFullName;
+                    else if (!String.IsNullOrEmpty(szCFIEmail))
+                        le.CFIName = szCFIEmail;
                     lstFlightsToSign.Add(le);
                 });
             return lstFlightsToSign;

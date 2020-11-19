@@ -58,12 +58,10 @@
                     ></asp:Localize>&nbsp; <asp:HyperLink ID="lnkRequestSignatures" runat="server" 
                     Text="Request Signatures"  NavigateUrl="~/Member/RequestSigs.aspx" meta:resourcekey="lnkRequestSignaturesResource1"></asp:HyperLink></p>
             <asp:GridView ID="gvFlightsAwaitingSignatures" GridLines="None"  OnRowCommand="DeletePendingFlightSignature" 
-                OnRowDataBound="LinkToPendingFlightDataBound" runat="server" 
-                AutoGenerateColumns="False" meta:resourcekey="gvFlightsAwaitingSignaturesResource1" 
-                >
+                OnRowDataBound="LinkToPendingFlightDataBound" runat="server" CellPadding="3"
+                AutoGenerateColumns="False">
                 <Columns>
-                    <asp:TemplateField HeaderText="Flights Awaiting Signature" meta:resourcekey="TemplateFieldResource1" 
-                        >
+                    <asp:TemplateField HeaderText="Flights Awaiting Signature">
                         <ItemTemplate>
                             <asp:ImageButton ID="btnIgnore" CommandName="Ignore" ImageUrl="~/images/x.gif" AlternateText="<%$ Resources:SignOff, SignFlightIgnore %>"
                             ToolTip="<%$ Resources:SignOff, SignFlightIgnore %>" runat="server" />
@@ -72,6 +70,12 @@
                                 ></asp:Label>
                         </ItemTemplate>
                         <HeaderStyle HorizontalAlign="Left" />
+                    </asp:TemplateField>
+                    <asp:TemplateField>
+                        <ItemTemplate>
+                            (<%# Eval("CFIName") %>)
+                        </ItemTemplate>
+                        <ItemStyle Font-Italic="true" />
                     </asp:TemplateField>
                 </Columns>
                 <EmptyDataTemplate>
