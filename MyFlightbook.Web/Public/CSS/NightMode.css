@@ -107,7 +107,7 @@ p, div, h2, h3, topTab, a.topTab, a.topTab:visited, #menu-bar .topTab, #menu-bar
     color: black;
 }
 
-input[type=text], input[type=password], input[type=number], input[type=email], input[type=text], textarea, select {
+input[type=text], input[type=password], input[type=number], input[type=email], input[type=text], input[type=date], textarea, select {
  background-color: #d8d8d8;
 }
 
