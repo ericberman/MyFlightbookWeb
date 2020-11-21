@@ -137,6 +137,7 @@ public partial class Public_SignEntry : System.Web.UI.Page
             catch (MyFlightbookException ex)
             {
                 lblErr.Text = ex.Message;
+                mvSignFlight.Visible = false;
             }
         }
     }
