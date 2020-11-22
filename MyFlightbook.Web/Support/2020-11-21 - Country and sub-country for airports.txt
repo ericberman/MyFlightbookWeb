@@ -1,0 +1,22 @@
+﻿ALTER TABLE `logbook`.`airports` 
+ADD COLUMN `country` VARCHAR(255) NULL COMMENT 'The country (top-level administrative area) in which the airport lies' AFTER `Preferred`,
+ADD COLUMN `admin1` VARCHAR(255) NULL COMMENT 'The top-level administrative region in which the airport lies.  In the US, these are states.' AFTER `country`;
+
+/* Sample update from a temp table might look something like this: */
+UPDATE airports ap
+        INNER JOIN
+    airports2 ap2 ON ap.type = ap2.type
+        AND (ap.airportid = ap2.faa
+        OR ap.airportid = ap2.icao)
+        AND ABS(ap.latitude - ap2.latitude) < 0.1
+        AND ABS(ap.longitude - ap2.longitude) < 0.1 
+SET 
+    ap.country = ap2.country,
+    ap.admin1 = ap2.admin1
+WHERE
+    ap.type IN ('A' , 'H', 'S')
+        AND ap.airportid <> ''
+        AND ap.country IS NULL
+        AND ap.admin1 IS NULL
+        AND ap2.country IS NOT NULL
+        AND ap2.admin1 IS NOT NULL;
