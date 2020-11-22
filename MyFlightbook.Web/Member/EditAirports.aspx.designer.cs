@@ -535,6 +535,15 @@ public partial class Member_EditAirports
     protected global::System.Web.UI.WebControls.SqlDataSource sqlDSUserDupes;
 
     /// <summary>
+    /// lnkManageGeo control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.HyperLink lnkManageGeo;
+
+    /// <summary>
     /// pnlMyAirports control.
     /// </summary>
     /// <remarks>

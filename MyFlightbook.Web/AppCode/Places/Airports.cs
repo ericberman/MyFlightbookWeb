@@ -641,6 +641,22 @@ namespace MyFlightbook.Airports
         /// </summary>
         public string Name { get; set; }
 
+        public const string szDisputedRegion = "--";
+
+        /// <summary>
+        /// The name of the top-level administrative region (i.e., country)
+        /// </summary>
+        public string Country { get; set; }
+
+        /// <summary>
+        /// The name of the 1st-level administrative region under country (e.g., states in the US, provinces in Canada)
+        /// </summary>
+        public string Admin1 { get; set; }
+
+        public string CountryDisplay { get { return (Country ?? string.Empty).StartsWith(szDisputedRegion, StringComparison.CurrentCultureIgnoreCase) ? szDisputedRegion : Country ?? string.Empty; } }
+
+        public string Admin1Display { get { return (Admin1 ?? string.Empty).StartsWith(szDisputedRegion, StringComparison.CurrentCultureIgnoreCase) ? szDisputedRegion : Admin1 ?? string.Empty; } }
+
         /// <summary>
         /// Latitude/longitude of the airport
         /// </summary>
@@ -860,7 +876,7 @@ namespace MyFlightbook.Airports
         #region Object Creation
         public airport()
         {
-            Code = Name = FacilityType = FacilityTypeCode = UserName = string.Empty;
+            Code = Name = FacilityType = FacilityTypeCode = UserName = Country = Admin1 = string.Empty;
             DistanceFromPosition = 0.0;
             LatLong = new LatLong(0, 0);
         }
@@ -902,6 +918,8 @@ namespace MyFlightbook.Airports
             FacilityTypeCode = dr["Type"].ToString();
             FacilityType = dr["FriendlyName"].ToString();
             UserName = dr["SourceUserName"].ToString();
+            Country = (string) util.ReadNullableField(dr, "country", string.Empty);
+            Admin1 = (string) util.ReadNullableField(dr, "admin1", string.Empty);
             object o = dr["dist"];
             DistanceFromPosition = o == DBNull.Value ? 0.0 : Convert.ToDouble(o, CultureInfo.InvariantCulture);
         }
@@ -1409,6 +1427,80 @@ namespace MyFlightbook.Airports
             },
             (dr) => { result = new AdminAirport(dr); });
             return result;
+        }
+
+        /// <summary>
+        /// Finds airports in the specified country and/or admin region.  Pass null to search for one or the other being missing, empty string for "don't care"
+        /// </summary>
+        /// <param name="szCountry"></param>
+        /// <param name="szAdmin"></param>
+        /// <param name="start"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        public static IEnumerable<AdminAirport> AirportsMatchingGeoReference(string szCountry, string szAdmin, int start, int limit)
+        {
+            List<AdminAirport> lst = new List<AdminAirport>();
+
+            List<string> lstWhere = new List<string>() { "type IN ('A', 'H', 'S')" };
+            if (szCountry == null)
+                lstWhere.Add("(country IS NULL OR country='')");
+            else if (!String.IsNullOrWhiteSpace(szCountry))
+                lstWhere.Add("country=?country");
+            if (szAdmin == null)
+                lstWhere.Add("(admin1 IS NULL OR admin1='')");
+            else if (!String.IsNullOrWhiteSpace(szAdmin))
+                lstWhere.Add("admin1=?admin1");
+
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "{0} WHERE {1} LIMIT ?start, ?lim", DefaultSelectStatement("0.0"), String.Join(" AND ", lstWhere)));
+
+            dbh.ReadRows((comm) =>
+            {
+                comm.Parameters.AddWithValue("country", szCountry);
+                comm.Parameters.AddWithValue("admin1", szAdmin);
+                comm.Parameters.AddWithValue("start", start);
+                comm.Parameters.AddWithValue("lim", limit);
+            },
+              (dr) => { lst.Add(new AdminAirport(dr)); });
+
+            return lst;
+        }
+
+        public static IEnumerable<AdminAirport> UntaggedAirportsInBox(LatLongBox llb)
+        {
+            if (llb == null)
+                throw new ArgumentNullException(nameof(llb));
+
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "{0} WHERE type IN ('A', 'H', 'S') AND country IS NULL AND latitude BETWEEN ?latmin AND ?latmax AND longitude BETWEEN ?lonmin AND ?lonMax",
+                DefaultSelectStatement("0.0")));
+            List<AdminAirport> lst = new List<AdminAirport>();
+            dbh.ReadRows((comm) =>
+            {
+                comm.Parameters.AddWithValue("latmin", llb.LatMin);
+                comm.Parameters.AddWithValue("latmax", llb.LatMax);
+                comm.Parameters.AddWithValue("lonmin", llb.LongMin);
+                comm.Parameters.AddWithValue("lonmax", llb.LongMax);
+            }, (dr) => { lst.Add(new AdminAirport(dr)); });
+            return lst;
+        }
+
+        public void SetLocale(string szCountry, string szAdmin)
+        {
+            // Can't have Admin1 without country
+            if (String.IsNullOrWhiteSpace(szCountry) && !String.IsNullOrWhiteSpace(szAdmin))
+                throw new MyFlightbookValidationException("Must specify a country!");
+
+            Country = szCountry;
+            Admin1 = szAdmin;
+            DBHelper dbh = new DBHelper("UPDATE airports SET country = ?country, admin1 = ?admin1 WHERE airportID=?Code && Type=?Type");
+            dbh.DoNonQuery((comm) =>
+            {
+                comm.Parameters.AddWithValue("country", String.IsNullOrWhiteSpace(szCountry) ? null : szCountry);
+                comm.Parameters.AddWithValue("admin1", String.IsNullOrWhiteSpace(szAdmin) ? null : szAdmin);
+                comm.Parameters.AddWithValue("Code", this.Code);
+                comm.Parameters.AddWithValue("Type", this.FacilityTypeCode);
+            });
+            if (!String.IsNullOrEmpty(dbh.LastError))
+                throw new MyFlightbookException("Error setting locale: " + dbh.LastError);
         }
 
         /// <summary>
@@ -2046,6 +2138,21 @@ namespace MyFlightbook.Airports
             }
 
             m_rgszAirportsNormal = alAirports.ToArray();
+        }
+
+        public AirportList(IEnumerable<airport> rgap) : this()
+        {
+            if (rgap == null)
+                throw new ArgumentNullException(nameof(rgap));
+            m_rgAirports = new List<airport>(rgap);
+            List<string> rgszap = new List<string>();
+            foreach (airport ap in rgap)
+            {
+                m_rgAirports.Add(ap);
+                m_htAirportsByCode[ap.Code] = ap;
+                rgszap.Add(ap.Code);
+            }
+            m_rgszAirportsNormal = rgszap.ToArray();
         }
 
         public AirportList(string szAirports) : this()

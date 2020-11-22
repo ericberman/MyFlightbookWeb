@@ -300,6 +300,7 @@
   <ItemGroup>
     <Content Include="Admin\AdminAchievements.aspx" />
     <Content Include="Admin\AdminAircraft.aspx" />
+    <Content Include="Admin\AdminAirportGeocoder.aspx" />
     <Content Include="Admin\AdminEndorsements.aspx" />
     <Content Include="Admin\AdminImgs.aspx" />
     <Content Include="Admin\AdminPayments.aspx" />
@@ -910,6 +911,7 @@
     <Content Include="SecurityError.aspx" />
     <Content Include="Shunt.aspx" />
     <Content Include="Support\2020-09-13 - Headshot in database.txt" />
+    <Content Include="Support\2020-11-21 - Country and sub-country for airports.txt" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -926,6 +928,13 @@
     </Compile>
     <Compile Include="Admin\AdminAircraft.aspx.designer.cs">
       <DependentUpon>AdminAircraft.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\AdminAirportGeocoder.aspx.cs">
+      <DependentUpon>AdminAirportGeocoder.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\AdminAirportGeocoder.aspx.designer.cs">
+      <DependentUpon>AdminAirportGeocoder.aspx</DependentUpon>
     </Compile>
     <Compile Include="Admin\AdminEndorsements.aspx.cs">
       <DependentUpon>AdminEndorsements.aspx</DependentUpon>

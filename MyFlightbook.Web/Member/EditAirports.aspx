@@ -379,6 +379,7 @@
             </asp:Panel>
             </ContentTemplate>
         </asp:UpdatePanel>
+        <p><asp:HyperLink ID="lnkManageGeo" runat="server" Text="Manage Georeferences" NavigateUrl="~/Admin/AdminAirportGeocoder.aspx" /></p>
     </asp:Panel>
 </asp:Content>
 <asp:Content ID="Content1" ContentPlaceHolderID="cpMain" runat="Server">
