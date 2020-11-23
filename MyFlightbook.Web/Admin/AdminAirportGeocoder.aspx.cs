@@ -30,7 +30,7 @@ namespace MyFlightbook.Web.Admin
                 return Array.Empty<string>();
             List<string> lst = new List<string>();
             DBHelper dbh = new DBHelper("SELECT distinct Country from Airports where Country like ?prefix ORDER BY Country ASC LIMIT ?count");
-            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("prefix", prefixText + '%'); comm.Parameters.AddWithValue("count", count); },
+            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("prefix", "%" + prefixText + "%"); comm.Parameters.AddWithValue("count", count); },
                 (dr) => { lst.Add((string)dr["Country"]); });
 
             return lst.ToArray();
@@ -44,7 +44,7 @@ namespace MyFlightbook.Web.Admin
                 return Array.Empty<string>();
             List<string> lst = new List<string>();
             DBHelper dbh = new DBHelper("SELECT distinct Admin1 from Airports where Admin1 like ?prefix ORDER BY Admin1 ASC LIMIT ?count");
-            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("prefix", prefixText + '%'); comm.Parameters.AddWithValue("count", count); },
+            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("prefix", "%" + prefixText + "%"); comm.Parameters.AddWithValue("count", count); },
                 (dr) => { lst.Add((string)dr["Admin1"]); });
 
             return lst.ToArray();
@@ -52,6 +52,8 @@ namespace MyFlightbook.Web.Admin
         #endregion
 
         protected StringBuilder AuditString { get; set; }
+
+        protected StringBuilder UpdateString { get; set; }
 
         private const string szVSItemsToEdit = "vsItemsToEdit";
         protected IEnumerable<AdminAirport> UnReferencedAirports
@@ -120,6 +122,7 @@ namespace MyFlightbook.Web.Admin
             foreach (AdminAirport ap in rgap)
                 if (geo.ContainsLocation(ap.LatLong))
                 {
+                    UpdateString.AppendLine(String.Format(CultureInfo.InvariantCulture, "UPDATE airports SET Country='{0}' {1} WHERE type='{2}' AND airportID='{3}';", szCountry, String.IsNullOrWhiteSpace(szAdmin) ? string.Empty : String.Format(CultureInfo.InvariantCulture, ", admin1 = '{0}' ", szAdmin), ap.FacilityTypeCode, ap.Code));
                     ap.SetLocale(szCountry, szAdmin);
                     cAirports++;
                 }
@@ -139,6 +142,7 @@ namespace MyFlightbook.Web.Admin
                 return;
 
             AuditString = new StringBuilder();
+            UpdateString = new StringBuilder();
             string szActiveCountry = string.Empty;
             string szActiveAdmin1 = string.Empty;
             string szName = string.Empty;
@@ -216,6 +220,7 @@ namespace MyFlightbook.Web.Admin
                 }
             }
             lblAudit.Text = AuditString.ToString();
+            lblCommands.Text = UpdateString.ToString();
         }
 
         protected void gvEdit_RowDataBound(object sender, System.Web.UI.WebControls.GridViewRowEventArgs e)

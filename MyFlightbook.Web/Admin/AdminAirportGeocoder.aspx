@@ -82,6 +82,7 @@
                         </asp:TemplateField>
                         <asp:BoundField DataField="FacilityTypeCode" ReadOnly="true" HeaderText="Type" />
                         <asp:BoundField DataField="Name" ReadOnly="true" HeaderText="Name" />
+                        <asp:BoundField DataField="UserName" ReadOnly="true" />
                         <asp:TemplateField HeaderText="Country">
                             <ItemTemplate>
                                 <asp:Label ID="lblCountry" runat="server" Text='<%# Bind("Country") %>' />
@@ -123,6 +124,7 @@
         <p>THIS IS HIDDEN BECAUSE IT IS DANGEROUS - ONLY USE ON LOCAL MACHINE WITH LOCAL DATABASE</p>
         <p><asp:FileUpload ID="fuGPX" runat="server" /> <asp:Button ID="btnLocate" runat="server" Text="GeoLocate" OnClick="btnLocate_Click" /></p>
         <div><asp:Label ID="lblAudit" EnableViewState="false" runat="server" style="white-space:pre" /></div>
+        <div><asp:Label ID="lblCommands" EnableViewState="false" runat="server" style="white-space:pre" /></div>
     </asp:Panel>
 </asp:Content>
 
