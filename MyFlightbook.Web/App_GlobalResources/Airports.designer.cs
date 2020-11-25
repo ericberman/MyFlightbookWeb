@@ -70,6 +70,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Country*.
+        /// </summary>
+        internal static string airportCountry {
+            get {
+                return ResourceManager.GetString("airportCountry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Country here is distinct from Nations - %APP_NAME% makes no statement about political boundaries.  E.g., in the taxonomy here, Greenland is distinct from Denmark, even though it is governed by Denmark..
+        /// </summary>
+        internal static string airportCountryDisclaimer {
+            get {
+                return ResourceManager.GetString("airportCountryDisclaimer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Date of first visit.
         /// </summary>
         internal static string airportEarliestVisit {
@@ -120,6 +138,15 @@ namespace Resources {
         internal static string airportName {
             get {
                 return ResourceManager.GetString("airportName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to State/Province/Region.
+        /// </summary>
+        internal static string airportRegion {
+            get {
+                return ResourceManager.GetString("airportRegion", resourceCulture);
             }
         }
         
@@ -416,6 +443,24 @@ namespace Resources {
         internal static string MapZoomOut {
             get {
                 return ResourceManager.GetString("MapZoomOut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Countries/Regions.
+        /// </summary>
+        internal static string ViewRegions {
+            get {
+                return ResourceManager.GetString("ViewRegions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (No countries/regions detected).
+        /// </summary>
+        internal static string ViewRegionsNone {
+            get {
+                return ResourceManager.GetString("ViewRegionsNone", resourceCulture);
             }
         }
         

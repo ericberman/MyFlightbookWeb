@@ -54,6 +54,10 @@ public partial class Member_Airports : System.Web.UI.Page
 
         gvAirports.DataSource = CurrentVisitedAirports;
         gvAirports.DataBind();
+
+        gvRegions.DataSource = VisitedAirport.VisitedCountriesAndAdmins(CurrentVisitedAirports);
+        gvRegions.DataBind();
+
         mfbGoogleMapManager1.Visible = CurrentVisitedAirports.Length > 0;   //  Avoid excessive map loads.
 
         AirportList alMatches = new AirportList(CurrentVisitedAirports);
@@ -144,6 +148,9 @@ public partial class Member_Airports : System.Web.UI.Page
 
         int Direction = LastSortDirection;
 
+        foreach (DataControlField dcf in gvAirports.Columns)
+            dcf.HeaderStyle.CssClass = "headerBase" + ((dcf.SortExpression.CompareCurrentCultureIgnoreCase(LastSortExpression) == 0) ? (LastSortDirection == 1 ? " headerSortAsc" : " headerSortDesc") : string.Empty);
+
         switch (e.SortExpression.ToUpperInvariant())
         {
             case "CODE":
@@ -160,6 +167,12 @@ public partial class Member_Airports : System.Web.UI.Page
                 break;
             case "LATESTVISITDATE":
                 Array.Sort(CurrentVisitedAirports, delegate(VisitedAirport va1, VisitedAirport va2) { return Direction * va1.LatestVisitDate.CompareTo(va2.LatestVisitDate); });
+                break;
+            case "COUNTRY":
+                Array.Sort(CurrentVisitedAirports, delegate (VisitedAirport va1, VisitedAirport va2) { return Direction * va1.Country.CompareCurrentCultureIgnoreCase(va2.Country); });
+                break;
+            case "ADMIN1":
+                Array.Sort(CurrentVisitedAirports, delegate (VisitedAirport va1, VisitedAirport va2) { return Direction * va1.Admin1.CompareCurrentCultureIgnoreCase(va2.Admin1); });
                 break;
         }
         gvAirports.DataSource = CurrentVisitedAirports;
@@ -233,7 +246,7 @@ public partial class Member_Airports : System.Web.UI.Page
         Response.Write('\uFEFF');   // UTF-8 BOM.
         gvAirportsDownload.DataSource = CurrentVisitedAirports;
         gvAirportsDownload.DataBind();
-        Response.Write(gvAirportsDownload.CSVFromData());
+        Response.Write(String.Format(CultureInfo.CurrentCulture, "{0}\r\n\r\n\" *{1}\"", gvAirportsDownload.CSVFromData(), Branding.ReBrand(Resources.Airports.airportCountryDisclaimer)));
         Response.End();
     }
 }

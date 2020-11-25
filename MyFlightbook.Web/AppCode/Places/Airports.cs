@@ -89,6 +89,21 @@ namespace MyFlightbook.Airports
             get { return Airport.FullName; }
         }
 
+        public string Country
+        {
+            get { return Airport.CountryDisplay; }
+        }
+
+        public string Admin1
+        {
+            get { return Airport.Admin1Display; }
+        }
+
+        public string NameWithGeoRegion
+        {
+            get { return Airport.NameWithGeoRegion; }
+        }
+
         /// <summary>
         /// If an airport has multiple codes (e.g., PHOG/OGG, or even KSFO/SFO), this has the alternatives by which it could be known (for searching)
         /// </summary>
@@ -454,6 +469,43 @@ namespace MyFlightbook.Airports
             return Airport == null ? base.ToString() : Airport.ToString();
         }
 
+        #region Countries and Regions
+        /// <summary>
+        /// Returns a dictionary of countries and admin regions (states/provinces/regions) visited
+        /// </summary>
+        /// <param name="rgva">A list of airports</param>
+        /// <returns>A dictionary of places.  Keys are country names, each IEnumerable is a set of admin1 regions</returns>
+        public static Dictionary<string, List<string>> VisitedCountriesAndAdmins(IEnumerable<VisitedAirport> rgva)
+        {
+            Dictionary<string, List<string>> result = new Dictionary<string, List<string>>();
+            if (rgva == null)
+                return result;
+
+            foreach (VisitedAirport va in rgva)
+            {
+                string szCountry = va.Airport.CountryDisplay;
+                string szAdmin = va.Airport.Admin1Display;
+                if (String.IsNullOrEmpty(szCountry))
+                    continue;
+
+                if (!result.ContainsKey(szCountry))
+                    result[szCountry] = new List<string>();
+
+                if (String.IsNullOrEmpty(szAdmin))
+                    continue;
+
+                if (!result[szCountry].Contains(szAdmin))
+                    result[szCountry].Add(szAdmin);
+            }
+
+            // Sort the resulting admin regions
+            foreach (string szKey in result.Keys)
+                result[szKey].Sort();
+
+            return result;
+        }
+        #endregion
+
         #region Total distance and flights
         /// <summary>
         /// Gets all routes ever flown, appends them together and INCLUDES any relevant navaids.
@@ -641,6 +693,16 @@ namespace MyFlightbook.Airports
         /// </summary>
         public string Name { get; set; }
 
+        public string NameWithGeoRegion
+        {
+            get
+            {
+                List<string> lst = new List<string>() { CountryDisplay, Admin1Display };
+                lst = lst.FindAll(sz => !String.IsNullOrWhiteSpace(sz));
+                return String.Format(CultureInfo.CurrentCulture, "{0}{1}", Name, lst.Count == 0 ? string.Empty : String.Format(CultureInfo.CurrentCulture, " ({0})", String.Join(", ", lst)));
+            }
+        }
+
         public const string szDisputedRegion = "--";
 
         /// <summary>
@@ -653,9 +715,9 @@ namespace MyFlightbook.Airports
         /// </summary>
         public string Admin1 { get; set; }
 
-        public string CountryDisplay { get { return (Country ?? string.Empty).StartsWith(szDisputedRegion, StringComparison.CurrentCultureIgnoreCase) ? szDisputedRegion : Country ?? string.Empty; } }
+        public string CountryDisplay { get { return (Country ?? string.Empty).StartsWith(szDisputedRegion, StringComparison.CurrentCultureIgnoreCase) ? string.Empty : Country ?? string.Empty; } }
 
-        public string Admin1Display { get { return (Admin1 ?? string.Empty).StartsWith(szDisputedRegion, StringComparison.CurrentCultureIgnoreCase) ? szDisputedRegion : Admin1 ?? string.Empty; } }
+        public string Admin1Display { get { return (Admin1 ?? string.Empty).StartsWith(szDisputedRegion, StringComparison.CurrentCultureIgnoreCase) ? string.Empty : Admin1 ?? string.Empty; } }
 
         /// <summary>
         /// Latitude/longitude of the airport

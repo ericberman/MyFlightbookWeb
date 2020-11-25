@@ -256,4 +256,19 @@
   <data name="EditAirportsTitle" xml:space="preserve">
     <value>Edit Airports and Navigation Aids</value>
   </data>
+  <data name="airportCountry" xml:space="preserve">
+    <value>Country*</value>
+  </data>
+  <data name="airportCountryDisclaimer" xml:space="preserve">
+    <value>Country here is distinct from Nations - %APP_NAME% makes no statement about political boundaries.  E.g., in the taxonomy here, Greenland is distinct from Denmark, even though it is governed by Denmark.</value>
+  </data>
+  <data name="airportRegion" xml:space="preserve">
+    <value>State/Province/Region</value>
+  </data>
+  <data name="ViewRegions" xml:space="preserve">
+    <value>Countries/Regions</value>
+  </data>
+  <data name="ViewRegionsNone" xml:space="preserve">
+    <value>(No countries/regions detected)</value>
+  </data>
 </root>

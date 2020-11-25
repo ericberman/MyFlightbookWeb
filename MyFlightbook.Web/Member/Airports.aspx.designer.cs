@@ -94,6 +94,15 @@ public partial class Member_Airports
     protected global::System.Web.UI.WebControls.Panel Panel1;
 
     /// <summary>
+    /// UpdatePanel1 control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.UpdatePanel UpdatePanel1;
+
+    /// <summary>
     /// gvAirports control.
     /// </summary>
     /// <remarks>
@@ -173,15 +182,6 @@ public partial class Member_Airports
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.GridView gvAirportsDownload;
-
-    /// <summary>
-    /// pnlViewGoogleEarth control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Panel pnlViewGoogleEarth;
 
     /// <summary>
     /// lnkViewKML control.
@@ -335,6 +335,69 @@ public partial class Member_Airports
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.Localize locDistance;
+
+    /// <summary>
+    /// lnkViewRegions control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.HyperLink lnkViewRegions;
+
+    /// <summary>
+    /// imgGlobe control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Image imgGlobe;
+
+    /// <summary>
+    /// locViewRgns control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label locViewRgns;
+
+    /// <summary>
+    /// cpeRegion control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::AjaxControlToolkit.CollapsiblePanelExtender cpeRegion;
+
+    /// <summary>
+    /// pnlRegions control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Panel pnlRegions;
+
+    /// <summary>
+    /// gvRegions control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.GridView gvRegions;
+
+    /// <summary>
+    /// lblNoteReg control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblNoteReg;
 
     /// <summary>
     /// vwSearch control.

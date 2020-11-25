@@ -4,6 +4,7 @@
 <%@ Register src="../Controls/mfbSearchForm.ascx" tagname="mfbSearchForm" tagprefix="uc3" %>
 <%@ Register src="../Controls/mfbTooltip.ascx" tagname="mfbTooltip" tagprefix="uc5" %>
 <%@ Register src="../Controls/mfbQueryDescriptor.ascx" tagname="mfbQueryDescriptor" tagprefix="uc2" %>
+<%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="asp" %>
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
     <asp:Localize ID="locVAHeader" runat="server" Text="<%$ Resources:Airports, visitedAirportTitle %>"></asp:Localize>
 </asp:Content>
@@ -19,42 +20,49 @@
                 <asp:Button ID="btnChangeQuery" runat="server" Text="<%$ Resources:LocalizedText, ChangeQuery %>" onclick="btnChangeQuery_Click" />
                 <uc2:mfbQueryDescriptor ID="mfbQueryDescriptor1" runat="server" ShowEmptyFilter="true" OnQueryUpdated="mfbQueryDescriptor1_QueryUpdated" />
             </div>
-            <asp:Panel ID="Panel1" runat="server" ScrollBars="Vertical" Height="300px">
-                <asp:GridView ID="gvAirports" runat="server" AllowSorting="True" 
-                    AutoGenerateColumns="False" EnableModelValidation="True" OnRowDataBound="gvAirports_DataBound"
-                    EnableViewState="False"  BorderStyle="None" onsorting="gvAirports_Sorting"
-                        CellPadding="3" GridLines="None">
-                        <AlternatingRowStyle BackColor="#E0E0E0" />
-                        <Columns>
-                            <asp:TemplateField HeaderText="<%$ Resources:Airports, airportCode %>" SortExpression="Code">
-                                <ItemTemplate>
-                                    <asp:PlaceHolder ID="plcZoomCode" runat="server"></asp:PlaceHolder>
-                                </ItemTemplate>
-                            </asp:TemplateField>
-                            <asp:BoundField DataField="FacilityName" HeaderText="<%$ Resources:Airports, airportName %>" SortExpression="FacilityName" />
-                            <asp:TemplateField SortExpression="NumberOfVisits">
-                                <HeaderTemplate>
-                                    <asp:LinkButton ID="lnkVisits" runat="server" CommandArgument="NumberOfVisits" CommandName="Sort" Text="<%$ Resources:Airports, airportVisits %>"></asp:LinkButton>
-                                    <span style="font-weight:normal"><uc5:mfbTooltip ID="mfbTooltip1" runat="server" BodyContent="<%$ Resources:Airports, vistedAirportsCountTip %>" /></span>
-                                </HeaderTemplate>
-                                <ItemTemplate>
-                                    <%# ((int) Eval("NumberOfVisits")).ToString("#,##0") %>
-                                </ItemTemplate>
-                            </asp:TemplateField>
-                            <asp:BoundField DataField="EarliestVisitDate" DataFormatString="{0:d}" HeaderText="<%$ Resources:Airports, airportEarliestVisit %>" SortExpression="EarliestVisitDate" />
-                            <asp:BoundField DataField="LatestVisitDate" DataFormatString="{0:d}" HeaderText="<%$ Resources:Airports, airportLatestVisit %>" SortExpression="LatestVisitDate" />
-                            <asp:HyperLinkField DataNavigateUrlFields="AllCodes" DataNavigateUrlFormatString="~/Member/LogbookNew.aspx?ap={0}" ShowHeader="False" Text="<%$ Resources:Airports, airportViewFlights %>" />
-                        </Columns>
-                        <HeaderStyle HorizontalAlign="Center"></HeaderStyle>
-                        <RowStyle VerticalAlign="Top" />
-                    </asp:GridView>
+            <asp:Panel ID="Panel1" runat="server" ScrollBars="Auto" Height="300px">
+                <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+                    <ContentTemplate>
+                        <asp:GridView ID="gvAirports" runat="server" AllowSorting="True" 
+                            AutoGenerateColumns="False" EnableModelValidation="True" OnRowDataBound="gvAirports_DataBound"
+                            EnableViewState="False"  BorderStyle="None" onsorting="gvAirports_Sorting"
+                                CellPadding="3" GridLines="None">
+                                <AlternatingRowStyle BackColor="#E0E0E0" />
+                                <Columns>
+                                    <asp:TemplateField HeaderText="<%$ Resources:Airports, airportCode %>" SortExpression="Code">
+                                        <ItemTemplate>
+                                            <asp:PlaceHolder ID="plcZoomCode" runat="server"></asp:PlaceHolder>
+                                        </ItemTemplate>
+                                        <HeaderStyle CssClass="headerBase headerSortAsc" HorizontalAlign="Left" />
+                                    </asp:TemplateField>
+                                    <asp:BoundField DataField="FacilityName" HeaderText="<%$ Resources:Airports, airportName %>" HeaderStyle-CssClass="headerBase" SortExpression="FacilityName" HeaderStyle-HorizontalAlign="Left" />
+                                    <asp:BoundField DataField="Country" HeaderText="<%$ Resources:Airports, airportCountry %>" HeaderStyle-CssClass="headerBase" SortExpression="Country" HeaderStyle-HorizontalAlign="Left" />
+                                    <asp:BoundField DataField="Admin1" HeaderText="<%$ Resources:Airports, airportRegion %>" HeaderStyle-CssClass="headerBase" SortExpression="Admin1" HeaderStyle-HorizontalAlign="Left" />
+                                    <asp:TemplateField SortExpression="NumberOfVisits" HeaderStyle-CssClass="headerBase" HeaderStyle-HorizontalAlign="Left">
+                                        <HeaderTemplate>
+                                            <asp:LinkButton ID="lnkVisits" runat="server" CommandArgument="NumberOfVisits" CommandName="Sort" Text="<%$ Resources:Airports, airportVisits %>"></asp:LinkButton>
+                                            <span style="font-weight:normal; text-align:left;"><uc5:mfbTooltip ID="mfbTooltip1" runat="server" BodyContent="<%$ Resources:Airports, vistedAirportsCountTip %>" /></span>
+                                        </HeaderTemplate>
+                                        <ItemTemplate>
+                                            <%# ((int) Eval("NumberOfVisits")).ToString("#,##0") %>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:BoundField DataField="EarliestVisitDate" HeaderStyle-CssClass="headerBase" DataFormatString="{0:d}" HeaderText="<%$ Resources:Airports, airportEarliestVisit %>" SortExpression="EarliestVisitDate" HeaderStyle-HorizontalAlign="Left" />
+                                    <asp:BoundField DataField="LatestVisitDate" HeaderStyle-CssClass="headerBase" DataFormatString="{0:d}" HeaderText="<%$ Resources:Airports, airportLatestVisit %>" SortExpression="LatestVisitDate" HeaderStyle-HorizontalAlign="Left" />
+                                    <asp:HyperLinkField DataNavigateUrlFields="AllCodes" DataNavigateUrlFormatString="~/Member/LogbookNew.aspx?ap={0}" ShowHeader="False" Text="<%$ Resources:Airports, airportViewFlights %>" />
+                                </Columns>
+                                <HeaderStyle HorizontalAlign="Center"></HeaderStyle>
+                                <RowStyle VerticalAlign="Top" />
+                            </asp:GridView>
+                            <asp:HiddenField ID="hdnLastSortDirection" runat="server" Value="0" />
+                            <asp:HiddenField ID="hdnLastSortExpression" runat="server" />
+                        </ContentTemplate>
+                    </asp:UpdatePanel>
                 </asp:Panel>
-                <asp:HiddenField ID="hdnLastSortDirection" runat="server" Value="0" />
-                <asp:HiddenField ID="hdnLastSortExpression" runat="server" />
                 <br />
             <table style="width:100%">
                 <tr style="vertical-align:top;">
-                    <td style="width:33%; padding: 3px;">
+                    <td style="width:25%; padding: 3px;">
                         <asp:Panel ID="pnlDownload" runat="server">
                             <asp:LinkButton ID="lnkDownloadCSV" runat="server" OnClick="lnkDownloadAirports_Click">
                                 <asp:Image ID="imgDownloadCSV" ImageUrl="~/images/download.png" runat="server" ImageAlign="Middle" style="padding-right: 5px;" />
@@ -65,6 +73,8 @@
                                 <Columns>
                                     <asp:BoundField DataField="Code" HeaderText="<%$ Resources:Airports, airportCode %>" />
                                     <asp:BoundField DataField="FacilityName" HeaderText="<%$ Resources:Airports, airportName %>" />
+                                    <asp:BoundField DataField="Country" HeaderText="<%$ Resources:Airports, airportCountry %>" />
+                                    <asp:BoundField DataField="Admin1" HeaderText="<%$ Resources:Airports, airportRegion %>" />
                                     <asp:TemplateField HeaderText="<%$ Resources:Airports, airportType %>">
                                         <ItemTemplate>
                                             <asp:Label ID="lblFacilityType" runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "Airport.FacilityType") %>'></asp:Label>
@@ -87,16 +97,14 @@
                             </asp:GridView>
                         </asp:Panel>
                     </td>
-                    <td style="width:33%; padding: 3px;">
-                        <asp:Panel ID="pnlViewGoogleEarth" runat="server">
-                            <asp:LinkButton ID="lnkViewKML" runat="server" onclick="btnGetTotalKML">
-                                <asp:Image ID="imgDownloadKML" ImageUrl="~/images/download.png" runat="server" ImageAlign="Middle" style="padding-right: 5px;" />
-                                <asp:Image ID="imgKMLIcon" ImageAlign="Middle" runat="server" ImageUrl="~/images/kmlicon_med.png" style="padding-right: 5px;" />
-                                <div style="display:inline-block;vertical-align:middle"><asp:Localize ID="locViewGoogleEarth" runat="server" Text="<%$ Resources:Airports, DownloadKML %>"></asp:Localize><br /><asp:Label ID="locKMLSlow" runat="server" Text="<%$ Resources:Airports, WarningSlow %>"></asp:Label></div> 
-                            </asp:LinkButton>
-                        </asp:Panel>
+                    <td style="width:25%; padding: 3px;">
+                        <asp:LinkButton ID="lnkViewKML" runat="server" onclick="btnGetTotalKML">
+                            <asp:Image ID="imgDownloadKML" ImageUrl="~/images/download.png" runat="server" ImageAlign="Middle" style="padding-right: 5px;" />
+                            <asp:Image ID="imgKMLIcon" ImageAlign="Middle" runat="server" ImageUrl="~/images/kmlicon_med.png" style="padding-right: 5px;" />
+                            <div style="display:inline-block;vertical-align:middle"><asp:Localize ID="locViewGoogleEarth" runat="server" Text="<%$ Resources:Airports, DownloadKML %>"></asp:Localize><br /><asp:Label ID="locKMLSlow" runat="server" Text="<%$ Resources:Airports, WarningSlow %>"></asp:Label></div> 
+                        </asp:LinkButton>
                     </td>
-                    <td style="width:33%; padding: 3px;">
+                    <td style="width:25%; padding: 3px;">
                         <asp:UpdatePanel ID="UpdatePanel2" runat="server">
                             <ContentTemplate>
                                 <div>
@@ -126,8 +134,41 @@
                             </ContentTemplate>
                         </asp:UpdatePanel>
                     </td>
+                    <td style="width:25%; padding: 3px;">
+                        <asp:Hyperlink ID="lnkViewRegions" runat="server" NavigateUrl="#" >
+                            <asp:Image ID="imgGlobe" runat="server" ImageUrl="~/images/globe.png" ImageAlign="Middle" style="margin-right: 4px;" />
+                            <asp:Label ID="locViewRgns" runat="server" Text="<%$ Resources:Airports, ViewRegions %>" />
+                        </asp:Hyperlink>
+                        <asp:CollapsiblePanelExtender ID="cpeRegion" runat="server"
+                            ExpandedText="<%$ Resources:Airports, ViewRegions %>" CollapsedText ="<%$ Resources:Airports, ViewRegions %>"
+                            ExpandControlID="lnkViewRegions" CollapseControlID="lnkViewRegions"
+                            Collapsed="true" TargetControlID="pnlRegions" TextLabelID="locViewRgns" />
+                    </td>
                 </tr>
             </table>
+            <asp:Panel ID="pnlRegions" runat="server" Height="0px" style="overflow:hidden;">
+                <asp:GridView ID="gvRegions" GridLines="None" CellPadding="3" runat="server" AutoGenerateColumns="false">
+                    <Columns>
+                        <asp:TemplateField>
+                            <ItemStyle VerticalAlign="Top" />
+                            <ItemTemplate>
+                                <asp:Label ID="lblCountry" runat="server" Text='<%# Eval("Key") %>' Font-Bold="true" />
+                                <ul>
+                                    <asp:Repeater ID="rptAdmin" runat="server" DataSource='<%# Eval("Value") %>'>
+                                        <ItemTemplate>
+                                            <li><%# Container.DataItem.ToString() %></li>
+                                        </ItemTemplate>
+                                    </asp:Repeater>
+                                </ul>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                    </Columns>
+                    <EmptyDataTemplate>
+                        <asp:Label ID="lblNone" runat="server" Text="<%$ Resources:Airports, ViewRegionsNone %>" />
+                    </EmptyDataTemplate>
+                </asp:GridView>
+                <asp:Label ID="lblNoteReg" Font-Bold="true" runat="server" Text="<%$ Resources:LocalizedText, Note %>" /> <% =Branding.ReBrand(Resources.Airports.airportCountryDisclaimer) %>
+            </asp:Panel>
         </asp:View>
         <asp:View ID="vwSearch" runat="server">
             <uc3:mfbSearchForm ID="mfbSearchForm1" runat="server" OnQuerySubmitted="ShowResults" OnReset="ClearForm" InitialCollapseState="true" />

@@ -261,7 +261,7 @@ namespace MyFlightbook.Mapping
                         if (Math.Abs(rgap[i].LatLong.Latitude) > 88)
                             continue;
 
-                        lstRoute.Add(String.Format(CultureInfo.InvariantCulture, "new MFBAirportMarker({0}, {1}, '{2}', '{3}', '{4}', {5})", rgap[i].LatLong.Latitude, rgap[i].LatLong.Longitude, rgap[i].Name.JavascriptEncode(), rgap[i].Code, rgap[i].FacilityType, ShowMarkers ? 1 : 0));
+                        lstRoute.Add(String.Format(CultureInfo.InvariantCulture, "new MFBAirportMarker({0}, {1}, '{2}', '{3}', '{4}', {5})", rgap[i].LatLong.Latitude, rgap[i].LatLong.Longitude, rgap[i].NameWithGeoRegion.JavascriptEncode(), rgap[i].Code, rgap[i].FacilityType, ShowMarkers ? 1 : 0));
 
                         if (BoundingBox == null)
                             BoundingBox = new LatLongBox(rgap[i].LatLong);
