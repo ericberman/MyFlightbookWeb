@@ -36,7 +36,15 @@
                                         <HeaderStyle CssClass="headerBase headerSortAsc" HorizontalAlign="Left" />
                                     </asp:TemplateField>
                                     <asp:BoundField DataField="FacilityName" HeaderText="<%$ Resources:Airports, airportName %>" HeaderStyle-CssClass="headerBase" SortExpression="FacilityName" HeaderStyle-HorizontalAlign="Left" />
-                                    <asp:BoundField DataField="Country" HeaderText="<%$ Resources:Airports, airportCountry %>" HeaderStyle-CssClass="headerBase" SortExpression="Country" HeaderStyle-HorizontalAlign="Left" />
+                                    <asp:TemplateField HeaderStyle-CssClass="headerBase" HeaderStyle-HorizontalAlign="Left" SortExpression="Country">
+                                        <HeaderTemplate>
+                                            <asp:LinkButton ID="lnkCountry" runat="server" CommandArgument="Country" CommandName="Sort" Text="<%$ Resources:Airports, airportCountry %>"></asp:LinkButton>
+                                            <span style="font-weight:normal; text-align:left;"><uc5:mfbTooltip ID="mfbttCountry" runat="server" BodyContent="<%# Branding.ReBrand(Resources.Airports.airportCountryDisclaimer) %>" /></span>
+                                        </HeaderTemplate>
+                                        <ItemTemplate>
+                                            <%# Eval("Country") %>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
                                     <asp:BoundField DataField="Admin1" HeaderText="<%$ Resources:Airports, airportRegion %>" HeaderStyle-CssClass="headerBase" SortExpression="Admin1" HeaderStyle-HorizontalAlign="Left" />
                                     <asp:TemplateField SortExpression="NumberOfVisits" HeaderStyle-CssClass="headerBase" HeaderStyle-HorizontalAlign="Left">
                                         <HeaderTemplate>
@@ -73,7 +81,7 @@
                                 <Columns>
                                     <asp:BoundField DataField="Code" HeaderText="<%$ Resources:Airports, airportCode %>" />
                                     <asp:BoundField DataField="FacilityName" HeaderText="<%$ Resources:Airports, airportName %>" />
-                                    <asp:BoundField DataField="Country" HeaderText="<%$ Resources:Airports, airportCountry %>" />
+                                    <asp:BoundField DataField="Country" HeaderText="<%$ Resources:Airports, airportCountryWithDisclaimer %>" />
                                     <asp:BoundField DataField="Admin1" HeaderText="<%$ Resources:Airports, airportRegion %>" />
                                     <asp:TemplateField HeaderText="<%$ Resources:Airports, airportType %>">
                                         <ItemTemplate>
@@ -135,7 +143,7 @@
                         </asp:UpdatePanel>
                     </td>
                     <td style="width:25%; padding: 3px;">
-                        <asp:Hyperlink ID="lnkViewRegions" runat="server" NavigateUrl="#" >
+                        <asp:Hyperlink ID="lnkViewRegions" runat="server">
                             <asp:Image ID="imgGlobe" runat="server" ImageUrl="~/images/globe.png" ImageAlign="Middle" style="margin-right: 4px;" />
                             <asp:Label ID="locViewRgns" runat="server" Text="<%$ Resources:Airports, ViewRegions %>" />
                         </asp:Hyperlink>
@@ -147,27 +155,19 @@
                 </tr>
             </table>
             <asp:Panel ID="pnlRegions" runat="server" Height="0px" style="overflow:hidden;">
-                <asp:GridView ID="gvRegions" GridLines="None" CellPadding="3" runat="server" AutoGenerateColumns="false">
-                    <Columns>
-                        <asp:TemplateField>
-                            <ItemStyle VerticalAlign="Top" />
-                            <ItemTemplate>
-                                <asp:Label ID="lblCountry" runat="server" Text='<%# Eval("Key") %>' Font-Bold="true" />
-                                <ul>
-                                    <asp:Repeater ID="rptAdmin" runat="server" DataSource='<%# Eval("Value") %>'>
-                                        <ItemTemplate>
-                                            <li><%# Container.DataItem.ToString() %></li>
-                                        </ItemTemplate>
-                                    </asp:Repeater>
-                                </ul>
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                    </Columns>
-                    <EmptyDataTemplate>
-                        <asp:Label ID="lblNone" runat="server" Text="<%$ Resources:Airports, ViewRegionsNone %>" />
-                    </EmptyDataTemplate>
-                </asp:GridView>
-                <asp:Label ID="lblNoteReg" Font-Bold="true" runat="server" Text="<%$ Resources:LocalizedText, Note %>" /> <% =Branding.ReBrand(Resources.Airports.airportCountryDisclaimer) %>
+                <asp:Repeater ID="rptRegions" runat="server">
+                    <ItemTemplate>
+                        <div style="display:inline-block; vertical-align: top; margin-left: 8px; margin-right: 8px;">
+                            <asp:Label ID="lblCountry" runat="server" Text='<%# Eval("Key") %>' Font-Bold="true" Font-Underline="true" />
+                                <asp:Repeater ID="rptAdmin" runat="server" DataSource='<%# Eval("Value") %>'>
+                                    <ItemTemplate>
+                                        <div><%# Container.DataItem.ToString() %></div>
+                                    </ItemTemplate>
+                                </asp:Repeater>
+                        </div>
+                    </ItemTemplate>
+                </asp:Repeater>
+                <div><asp:Label ID="lblNone" runat="server" Text="<%$ Resources:Airports, ViewRegionsNone %>" /></div>
             </asp:Panel>
         </asp:View>
         <asp:View ID="vwSearch" runat="server">

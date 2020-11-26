@@ -55,8 +55,10 @@ public partial class Member_Airports : System.Web.UI.Page
         gvAirports.DataSource = CurrentVisitedAirports;
         gvAirports.DataBind();
 
-        gvRegions.DataSource = VisitedAirport.VisitedCountriesAndAdmins(CurrentVisitedAirports);
-        gvRegions.DataBind();
+        Dictionary<string, List<string>> d = VisitedAirport.VisitedCountriesAndAdmins(CurrentVisitedAirports);
+        rptRegions.DataSource = d;
+        rptRegions.DataBind();
+        lblNone.Visible = d.Count == 0;
 
         mfbGoogleMapManager1.Visible = CurrentVisitedAirports.Length > 0;   //  Avoid excessive map loads.
 

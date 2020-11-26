@@ -70,7 +70,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Country*.
+        ///   Looks up a localized string similar to Country.
         /// </summary>
         internal static string airportCountry {
             get {
@@ -84,6 +84,15 @@ namespace Resources {
         internal static string airportCountryDisclaimer {
             get {
                 return ResourceManager.GetString("airportCountryDisclaimer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Country*.
+        /// </summary>
+        internal static string airportCountryWithDisclaimer {
+            get {
+                return ResourceManager.GetString("airportCountryWithDisclaimer", resourceCulture);
             }
         }
         
