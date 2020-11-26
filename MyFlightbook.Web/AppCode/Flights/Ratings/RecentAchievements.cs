@@ -87,6 +87,9 @@ namespace MyFlightbook.RatingsProgress
 
         // Airports
         protected HashSet<string> Airports { get; private set; }
+
+        protected Dictionary<string, HashSet<string>> GeoRegions { get; private set; }
+
         protected int MostAirportsFlightCount { get; set; }
 
         #region MilestoneItems
@@ -146,6 +149,16 @@ namespace MyFlightbook.RatingsProgress
         /// Most airports in a single flight
         /// </summary>
         protected RecentAchievementMilestone miMostAirportsFlight { get; set; }
+
+        /// <summary>
+        /// Countries visited
+        /// </summary>
+        protected RecentAchievementMilestone miCountries { get; set; }
+
+        /// <summary>
+        /// Countries visited
+        /// </summary>
+        protected RecentAchievementMilestone miAdmin1 { get; set; }
         #endregion
         #endregion
 
@@ -174,6 +187,7 @@ namespace MyFlightbook.RatingsProgress
             DistinctModels = new HashSet<int>();
             DistinctICAO = new HashSet<string>();
             Airports = new HashSet<string>();
+            GeoRegions = new Dictionary<string, HashSet<string>>();
 
             miFlightCount = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsFlightsLogged, MilestoneItem.MilestoneType.Count, 1);
             miLongestStreak = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementFlyingStreakTitle, MilestoneItem.MilestoneType.Count, 1);
@@ -187,6 +201,8 @@ namespace MyFlightbook.RatingsProgress
             miModels = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsDistinctModelsTitle, MilestoneItem.MilestoneType.Count, 1);
             miAirports = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsAirportsVisitedTitle, MilestoneItem.MilestoneType.Count, 1) { QueryLinkTemplate = "~/Member/Airports.aspx?fq={0}" };
             miMostAirportsFlight = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsAirportsOnFlightTitle, MilestoneItem.MilestoneType.AchieveOnce, 1);
+            miCountries = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsCountriesVisited, MilestoneItem.MilestoneType.Count, 2);
+            miAdmin1 = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsAdmin1Visited, MilestoneItem.MilestoneType.Count, 2);
         }
 
         public override Collection<MilestoneItem> Milestones
@@ -232,6 +248,18 @@ namespace MyFlightbook.RatingsProgress
 
                 miAirports.Progress = Airports.Count;
                 miAirports.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementsAirportsVisited, Airports.Count);
+
+                // If multiple countries, then we'll say how many countries visited.
+                // If only one country, then show how many states/provinces/regions visited
+                miCountries.Progress = GeoRegions.Count;
+                miCountries.MatchingEventText = GeoRegions.Count.ToString("#,##0", CultureInfo.CurrentCulture);
+                if (GeoRegions.Count == 1)
+                {
+                    int cRegions = GeoRegions.Values.First().Count;
+                    miAdmin1.Progress = cRegions;
+                    miAdmin1.MatchingEventText = cRegions.ToString("#,##0", CultureInfo.CurrentCulture);
+                }
+
                 miAirports.Query = miFlyingDates.Query; // both use the entire time period.
 
                 List<MilestoneItem> l = new List<MilestoneItem>()
@@ -246,6 +274,8 @@ namespace MyFlightbook.RatingsProgress
                     miFurthestFlight,
                     miAirports,
                     miMostAirportsFlight,
+                    miCountries,
+                    miAdmin1,
                     miAircraft,
                     miModels
                 };
@@ -254,6 +284,43 @@ namespace MyFlightbook.RatingsProgress
 
                 return new Collection<MilestoneItem>(l);
             }
+        }
+
+        private int MatchAirports(IEnumerable<airport> rgap)
+        {
+            int cUniqueAirports = 0;
+            HashSet<string> hsThisFlight = new HashSet<string>();
+            foreach (airport ap in rgap)
+            {
+                // Dedupe as we go based on latitude/longitude, ignoring non-ports.  
+                // We don't actually need the facility name here - so we can just round off the latitude/longitude and distinguish by type code.
+                // Note: this can differ slightly from Visited Airports counts because for achievements, we're ignoring flights in training devices; visited airports doesn't ignore them.
+                if (ap.IsPort)
+                {
+                    string szHash = ap.GeoHashKey;
+                    if (!Airports.Contains(szHash))
+                    {
+                        Airports.Add(ap.GeoHashKey);
+                        cUniqueAirports++;
+                    }
+                    hsThisFlight.Add(szHash);
+
+                    string szCountry = ap.CountryDisplay;
+                    string szAdmin1 = ap.Admin1Display;
+
+                    // Keep track of visited countries/regions
+                    if (!String.IsNullOrWhiteSpace(szCountry))
+                    {
+                        if (!GeoRegions.ContainsKey(szCountry))
+                            GeoRegions[szCountry] = new HashSet<string>();
+
+                        if (!String.IsNullOrWhiteSpace(szAdmin1) && !GeoRegions[szCountry].Contains(szAdmin1))
+                            GeoRegions[szCountry].Add(szAdmin1);
+                    }
+                }
+            }
+
+            return hsThisFlight.Count;
         }
 
         public override void ExamineFlight(ExaminerFlightRow cfr)
@@ -349,26 +416,7 @@ namespace MyFlightbook.RatingsProgress
                 miFurthestFlight.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementsFurthestFlight, distance, dtFlight);
             }
 
-            int cUniqueAirports = 0;
-            HashSet<string> hsThisFlight = new HashSet<string>();
-            foreach (airport ap in al.UniqueAirports)
-            {
-                // Dedupe as we go based on latitude/longitude, ignoring non-ports.  
-                // We don't actually need the facility name here - so we can just round off the latitude/longitude and distinguish by type code.
-                // Note: this can differ slightly from Visited Airports counts because for achievements, we're ignoring flights in training devices; visited airports doesn't ignore them.
-                if (ap.IsPort)
-                {
-                    string szHash = ap.GeoHashKey;
-                    if (!Airports.Contains(szHash))
-                    {
-                        Airports.Add(ap.GeoHashKey);
-                        cUniqueAirports++;
-                    }
-                    hsThisFlight.Add(szHash);
-                }
-            }
-
-            int cAirportsThisFlight = hsThisFlight.Count;
+            int cAirportsThisFlight = MatchAirports(al.UniqueAirports);
             if (cAirportsThisFlight > MostAirportsFlightCount)
             {
                 MostAirportsFlightCount = cAirportsThisFlight;

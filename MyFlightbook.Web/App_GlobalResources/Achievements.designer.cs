@@ -430,6 +430,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flown in {0:#,##0} countries!.
+        /// </summary>
+        internal static string NameNumberCountries {
+            get {
+                return ResourceManager.GetString("NameNumberCountries", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Logged {0:#,###} Flights!.
         /// </summary>
         internal static string nameNumberFlights {
@@ -493,11 +502,56 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flown in {0:#,##0} Canadian Provinces!.
+        /// </summary>
+        internal static string NameNumberProvincesCanada {
+            get {
+                return ResourceManager.GetString("NameNumberProvincesCanada", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0:#,###} hours as SIC logged!.
         /// </summary>
         internal static string nameNumberSIC {
             get {
                 return ResourceManager.GetString("nameNumberSIC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flown in {0:#,##0} Australian States / Territories!.
+        /// </summary>
+        internal static string NameNumberStatesAustralia {
+            get {
+                return ResourceManager.GetString("NameNumberStatesAustralia", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flown in {0:#,##0} Brazilian States!.
+        /// </summary>
+        internal static string NameNumberStatesBrazil {
+            get {
+                return ResourceManager.GetString("NameNumberStatesBrazil", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flown in {0:#,##0} Mexican States!.
+        /// </summary>
+        internal static string NameNumberStatesMexico {
+            get {
+                return ResourceManager.GetString("NameNumberStatesMexico", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flown in {0:#,##0} US states/territories!.
+        /// </summary>
+        internal static string NameNumberStatesUS {
+            get {
+                return ResourceManager.GetString("NameNumberStatesUS", resourceCulture);
             }
         }
         
@@ -727,6 +781,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to States/Provinces/Regions Visited:.
+        /// </summary>
+        internal static string RecentAchievementsAdmin1Visited {
+            get {
+                return ResourceManager.GetString("RecentAchievementsAdmin1Visited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} airports on {1:d}.
         /// </summary>
         internal static string RecentAchievementsAirportsOnFlight {
@@ -768,6 +831,15 @@ namespace Resources {
         internal static string RecentAchievementsCalendarHeader {
             get {
                 return ResourceManager.GetString("RecentAchievementsCalendarHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Countries Visited:.
+        /// </summary>
+        internal static string RecentAchievementsCountriesVisited {
+            get {
+                return ResourceManager.GetString("RecentAchievementsCountriesVisited", resourceCulture);
             }
         }
         

@@ -405,4 +405,28 @@
   <data name="RecentAchievementsFlightsLogged" xml:space="preserve">
     <value>Flights logged: </value>
   </data>
+  <data name="NameNumberCountries" xml:space="preserve">
+    <value>Flown in {0:#,##0} countries!</value>
+  </data>
+  <data name="NameNumberProvincesCanada" xml:space="preserve">
+    <value>Flown in {0:#,##0} Canadian Provinces!</value>
+  </data>
+  <data name="NameNumberStatesAustralia" xml:space="preserve">
+    <value>Flown in {0:#,##0} Australian States / Territories!</value>
+  </data>
+  <data name="NameNumberStatesBrazil" xml:space="preserve">
+    <value>Flown in {0:#,##0} Brazilian States!</value>
+  </data>
+  <data name="NameNumberStatesMexico" xml:space="preserve">
+    <value>Flown in {0:#,##0} Mexican States!</value>
+  </data>
+  <data name="NameNumberStatesUS" xml:space="preserve">
+    <value>Flown in {0:#,##0} US states/territories!</value>
+  </data>
+  <data name="RecentAchievementsAdmin1Visited" xml:space="preserve">
+    <value>States/Provinces/Regions Visited:</value>
+  </data>
+  <data name="RecentAchievementsCountriesVisited" xml:space="preserve">
+    <value>Countries Visited:</value>
+  </data>
 </root>

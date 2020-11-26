@@ -354,6 +354,12 @@ namespace MyFlightbook.Achievements
             FlyingStreak,
             NumberOfCatClasses,
             NumberOfNVHours,
+            NumberOfCountries,
+            NumberOfStatesUS,
+            NumberOfProvincesCanada,
+            NumberOfStatesBrazil,
+            NumberOfStatesAustralia,
+            NumberOfStatesMexico,
 
             Antarctica = BadgeCategory.Miscellaneous,
 
@@ -748,7 +754,13 @@ namespace MyFlightbook.Achievements
                     new MultiLevelBadgeCFITime(),
                     new MultiLevelBadgeIMCTime(),
                     new MultiLevelBadgeNightTime(),
-                    new MultiLevelBadgeNightVision()
+                    new MultiLevelBadgeNightVision(),
+                    new MultiLevelBadgeCountries(),
+                    new VisitedStatesUS(),
+                    new VisitedProvincesCanada(),
+                    new VisitedStatesMexico(),
+                    new VisitedStatesBrazil(),
+                    new VisitedStatesAustralia()
                 };
 
             List<Badge> lst = new List<Badge>(rgAchievements);
@@ -1406,6 +1418,117 @@ namespace MyFlightbook.Achievements
             base.PostFlight(context);
         }
     }
+
+    [Serializable]
+    public class MultiLevelBadgeCountries : MultiLevelCountBadgeBase
+    {
+        public MultiLevelBadgeCountries() : base(BadgeID.NumberOfCountries, Resources.Achievements.NameNumberCountries, 3, 10, 30, 80) { }
+
+        public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context) { }
+
+        public override void PostFlight(IDictionary<string, object> context)
+        {
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+            if (context.ContainsKey(Achievement.KeyVisitedAirports))
+            {
+                VisitedAirport[] rgva = (VisitedAirport[])context[Achievement.KeyVisitedAirports];
+                HashSet<string> hsCountries = new HashSet<string>();
+
+                if (rgva != null)
+                    foreach (VisitedAirport va in rgva)
+                    {
+                        if (va.Airport == null || String.IsNullOrWhiteSpace(va.Airport.CountryDisplay) || hsCountries.Contains(va.Airport.CountryDisplay))
+                            continue;
+
+                        hsCountries.Add(va.Airport.CountryDisplay);
+                        if (AddToCount(1, null))
+                        {
+                            DateEarned = va.EarliestVisitDate;
+                            IDFlightEarned = va.FlightIDOfFirstVisit;
+                        }
+                    }
+
+            }
+            base.PostFlight(context);
+        }
+    }
+
+    [Serializable]
+    public abstract class MultiLevelBadgeAdmin1 : MultiLevelCountBadgeBase
+    {
+        protected string CountryName { get; set; }
+
+        protected MultiLevelBadgeAdmin1(string szCountry, string szNameTemplate, BadgeID badge, int Bronze, int Silver, int Gold, int Platinum) :
+            base(badge, szNameTemplate, Bronze, Silver, Gold, Platinum)
+        {
+            CountryName = szCountry;
+        }
+
+        public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context) { }
+
+        public override void PostFlight(IDictionary<string, object> context)
+        {
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+            if (context.ContainsKey(Achievement.KeyVisitedAirports))
+            {
+                VisitedAirport[] rgva = (VisitedAirport[])context[Achievement.KeyVisitedAirports];
+                HashSet<string> hsAdmin1 = new HashSet<string>();
+
+                if (rgva != null)
+                    foreach (VisitedAirport va in rgva)
+                    {
+                        if (va.Airport == null || String.IsNullOrWhiteSpace(va.Airport.CountryDisplay))
+                            continue;
+
+                        if (va.Airport.CountryDisplay.CompareCurrentCultureIgnoreCase(CountryName) == 0 && !hsAdmin1.Contains(va.Airport.Admin1Display))
+                        {
+                            hsAdmin1.Add(va.Airport.Admin1Display);
+                            if (AddToCount(1, null))
+                            {
+                                DateEarned = va.EarliestVisitDate;
+                                IDFlightEarned = va.FlightIDOfFirstVisit;
+                            }
+                        }
+                    }
+
+            }
+            base.PostFlight(context);
+        }
+    }
+
+    #region Concrete Admin1 (state/province) badges
+    [Serializable]
+    public class VisitedStatesUS : MultiLevelBadgeAdmin1
+    {
+        public VisitedStatesUS() : base("United States", Resources.Achievements.NameNumberStatesUS, BadgeID.NumberOfStatesUS, 5, 15, 30, 50) { }
+    }
+
+    [Serializable]
+    public class VisitedProvincesCanada : MultiLevelBadgeAdmin1
+    {
+        public VisitedProvincesCanada() : base("Canada", Resources.Achievements.NameNumberProvincesCanada, BadgeID.NumberOfProvincesCanada, 3, 8, 10, 13) { }
+    }
+
+    [Serializable]
+    public class VisitedStatesBrazil : MultiLevelBadgeAdmin1
+    {
+        public VisitedStatesBrazil() : base("Brazil", Resources.Achievements.NameNumberStatesBrazil, BadgeID.NumberOfStatesBrazil, 5, 10, 20, 27) { }
+    }
+
+    [Serializable]
+    public class VisitedStatesAustralia : MultiLevelBadgeAdmin1
+    {
+        public VisitedStatesAustralia() : base("Australia", Resources.Achievements.NameNumberStatesAustralia, BadgeID.NumberOfStatesAustralia, 2, 3, 5, 7) { }
+    }
+
+    [Serializable]
+    public class VisitedStatesMexico : MultiLevelBadgeAdmin1
+    {
+        public VisitedStatesMexico() : base("Mexico", Resources.Achievements.NameNumberStatesMexico, BadgeID.NumberOfStatesMexico, 5, 10, 20, 30) { }
+    }
+    #endregion
 
     [Serializable]
     public class MultiLevelBadgeFlyingStreak : MultiLevelCountBadgeBase
