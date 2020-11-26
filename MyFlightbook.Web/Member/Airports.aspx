@@ -35,7 +35,7 @@
                                         </ItemTemplate>
                                         <HeaderStyle CssClass="headerBase headerSortAsc" HorizontalAlign="Left" />
                                     </asp:TemplateField>
-                                    <asp:BoundField DataField="FacilityName" HeaderText="<%$ Resources:Airports, airportName %>" HeaderStyle-CssClass="headerBase" SortExpression="FacilityName" HeaderStyle-HorizontalAlign="Left" />
+                                    <asp:BoundField DataField="Airport.Name" HeaderText="<%$ Resources:Airports, airportName %>" HeaderStyle-CssClass="headerBase" SortExpression="Name" HeaderStyle-HorizontalAlign="Left" />
                                     <asp:TemplateField HeaderStyle-CssClass="headerBase" HeaderStyle-HorizontalAlign="Left" SortExpression="Country">
                                         <HeaderTemplate>
                                             <asp:LinkButton ID="lnkCountry" runat="server" CommandArgument="Country" CommandName="Sort" Text="<%$ Resources:Airports, airportCountry %>"></asp:LinkButton>

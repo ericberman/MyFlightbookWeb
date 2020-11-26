@@ -158,8 +158,8 @@ public partial class Member_Airports : System.Web.UI.Page
             case "CODE":
                 Array.Sort(CurrentVisitedAirports, delegate(VisitedAirport va1, VisitedAirport va2) { return Direction * va1.Code.CompareCurrentCultureIgnoreCase(va2.Code); });
                 break;
-            case "FACILITYNAME":
-                Array.Sort(CurrentVisitedAirports, delegate(VisitedAirport va1, VisitedAirport va2) { return Direction * va1.FacilityName.CompareCurrentCultureIgnoreCase(va2.FacilityName); });
+            case "NAME":
+                Array.Sort(CurrentVisitedAirports, delegate(VisitedAirport va1, VisitedAirport va2) { return Direction * va1.Airport.Name.CompareCurrentCultureIgnoreCase(va2.Airport.Name); });
                 break;
             case "NUMBEROFVISITS":
                 Array.Sort(CurrentVisitedAirports, delegate(VisitedAirport va1, VisitedAirport va2) { return Direction * va1.NumberOfVisits.CompareTo(va2.NumberOfVisits); });
