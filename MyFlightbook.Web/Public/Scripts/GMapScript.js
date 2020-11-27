@@ -212,7 +212,7 @@ function MFBMap()
                         mfbMap.clearMarkers();
                         var rgAirports = new Array();
                         for (var i = 0; i < result.length; i++) {
-                            rgAirports.push(new MFBAirportMarker(result[i].LatLong.Latitude, result[i].LatLong.Longitude, result[i].Name, result[i].Code, result[i].FacilityType, true));
+                            rgAirports.push(new MFBAirportMarker(result[i].LatLong.Latitude, result[i].LatLong.Longitude, result[i].NameWithGeoRegion, result[i].Code, result[i].FacilityType, true));
                         }
                         mfbMap.rgAirports = new Array();
                         mfbMap.rgAirports.push(rgAirports);
@@ -365,7 +365,7 @@ function MFBMap()
                         var key = airportList[j].Code + airportList[j].Type;
                         if (!airports[key]) {
                             airports[key] = point;
-                            this.oms.addMarker(this.createNavaidMarker(point, airportList[j].Name + " (" + airportList[j].Code + ")", airportList[j], this.id));
+                            this.oms.addMarker(this.createNavaidMarker(point, airportList[j].Code + " - " + airportList[j].Name, airportList[j], this.id));
                         }
                         points.push(point);
                     }
