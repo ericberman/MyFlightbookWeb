@@ -280,6 +280,14 @@ namespace MyFlightbook.Airports
                     string szRoute = dr["route"].ToString();
                     int idFlight = Convert.ToInt32(dr["idflight"], CultureInfo.InvariantCulture);
 
+                    decimal total = Convert.ToDecimal(util.ReadNullableField(dr, "totalFlightTime", 0.0M), CultureInfo.InvariantCulture);
+                    decimal PIC = Convert.ToDecimal(util.ReadNullableField(dr, "PIC", 0.0M), CultureInfo.InvariantCulture);
+                    decimal SIC = Convert.ToDecimal(util.ReadNullableField(dr, "SIC", 0.0M), CultureInfo.InvariantCulture);
+                    decimal CFI = Convert.ToDecimal(util.ReadNullableField(dr, "CFI", 0.0M), CultureInfo.InvariantCulture);
+                    decimal Dual = Convert.ToDecimal(util.ReadNullableField(dr, "dualReceived", 0.0M), CultureInfo.InvariantCulture);
+                    if (total + PIC + SIC + CFI + Dual == 0)
+                        return;
+
                     // we want to defer any db hit to the airport list until later, so we create an uninitialized airportlist
                     // We then visit each airport in the flight.
                     string[] rgszapFlight = AirportList.NormalizeAirportList(szRoute);
