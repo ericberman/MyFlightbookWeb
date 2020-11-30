@@ -1251,9 +1251,9 @@ namespace MyFlightbook.RatingsProgress
             RatingSought = rt;
 
             miTotal = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CANightTotalTime, CATotalTime, szCategory), ResolvedFAR("(a)"), string.Empty, MilestoneItem.MilestoneType.Time, CATotalTime);
-            miNightTime = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.JARPPLNight, CANightTime), ResolvedFAR("(a)(i)"), string.Empty, MilestoneItem.MilestoneType.Time, CANightTime);
-            miNightDual = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.JARPPLNightDual, CANightDual), ResolvedFAR("(a)(i)(A)"), string.Empty, MilestoneItem.MilestoneType.Time, CANightDual);
-            miNightXC = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.JARPPLNightDualXC, CANightXCDual), ResolvedFAR("(a)(i)(A)"), string.Empty, MilestoneItem.MilestoneType.Time, CANightXCDual);
+            miNightTime = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.JARPPLNight, CANightTime), ResolvedFAR("(a)(i)"), Resources.MilestoneProgress.CANightDualNote, MilestoneItem.MilestoneType.Time, CANightTime);
+            miNightDual = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.JARPPLNightDual, CANightDual), ResolvedFAR("(a)(i)(A)"), Resources.MilestoneProgress.CANightDualNote, MilestoneItem.MilestoneType.Time, CANightDual);
+            miNightXC = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.JARPPLNightDualXC, CANightXCDual), ResolvedFAR("(a)(i)(A)"), Resources.MilestoneProgress.CANightDualNote, MilestoneItem.MilestoneType.Time, CANightXCDual);
 
             miNightSolo = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CANightSolo, CANightSolo), ResolvedFAR("(a)(i)(B)"), string.Empty, MilestoneItem.MilestoneType.Time, CANightSolo);
 
@@ -1293,14 +1293,25 @@ namespace MyFlightbook.RatingsProgress
 
             miTotal.AddEvent(cfr.Total);
 
-            if (cfr.Night <= 0)
+
+            // Issue #689 - Can't count hood time or IMC time as night time while working on this rating.
+            // Sooo...if you have both instrument and night time on the flight, we want to make sure we're not 
+            // double counting.  Reduce night by any amount that was likely instrument.
+            // Therefore, reduce night by any amount of (Sim + IMC) that MUST have been night.
+            // Day = Total - Night
+            // Instr = SimulatedInstrument + IMC
+            // Night Instr = Math.Max(0, Instr - Day) = Math.Max(0, (Simulated + IMC) - (Total - Night))
+            decimal nightInstr = Math.Max(0, cfr.IMCSim + cfr.IMC - (cfr.Total - cfr.Night));
+            decimal night = Math.Max(0, cfr.Night - nightInstr);
+
+            if (night <= 0)
                 return;
 
-            miNightTime.AddEvent(cfr.Night);
-            miNightDual.AddEvent(Math.Min(cfr.Dual, cfr.Night));
-            miNightXC.AddEvent(Math.Min(cfr.Dual, Math.Min(cfr.Night, cfr.XC)));
+            miNightTime.AddEvent(night);
+            miNightDual.AddEvent(Math.Min(cfr.Dual, night));
+            miNightXC.AddEvent(Math.Min(cfr.Dual, Math.Min(night, cfr.XC)));
 
-            decimal soloTime = Math.Min(cfr.Night, cfr.FlightProps.TotalTimeForPredicate(p => p.PropertyType.IsSolo));
+            decimal soloTime = Math.Min(night, cfr.FlightProps.TotalTimeForPredicate(p => p.PropertyType.IsSolo));
             if (soloTime > 0)
             {
                 miNightSolo.AddEvent(soloTime);

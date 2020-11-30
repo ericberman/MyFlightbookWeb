@@ -529,6 +529,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Prior to earning your night rating, you cannot simultaneously apply night and instrument (IMC or hood) time, so any time that is clearly night and instrument here does not contribute to progress here..
+        /// </summary>
+        internal static string CANightDualNote {
+            get {
+                return ResourceManager.GetString("CANightDualNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} hours of dual instrument flying.
         /// </summary>
         internal static string CANightInstrument {

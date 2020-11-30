@@ -1540,4 +1540,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
   <data name="TitleSportWeightShiftControlSea" xml:space="preserve">
     <value>FAR 61.313(h) - Sport Pilot, Weight-shift Control Sea</value>
   </data>
+  <data name="CANightDualNote" xml:space="preserve">
+    <value>Prior to earning your night rating, you cannot simultaneously apply night and instrument (IMC or hood) time, so any time that is clearly night and instrument here does not contribute to progress here.</value>
+  </data>
 </root>
