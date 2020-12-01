@@ -1618,6 +1618,8 @@ namespace MyFlightbook.Airports
             LatLong = apSource.LatLong;
             if (!FCommit(fAdmin:true))
                 throw new MyFlightbookException("Error merging airport: " + ErrorText);
+            if ((!String.IsNullOrWhiteSpace(apSource.Country) && String.IsNullOrWhiteSpace(Country)) || (!String.IsNullOrWhiteSpace(apSource.Admin1) && String.IsNullOrWhiteSpace(Admin1)))
+                SetLocale(apSource.Country, apSource.Admin1);
         }
 
         /// <summary>
