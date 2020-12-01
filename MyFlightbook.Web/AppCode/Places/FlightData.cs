@@ -122,7 +122,7 @@ namespace MyFlightbook.Telemetry
         private static object ParseUnixTimeStamp(string szValue)
         {
             // UnixTimeStamp, at least in ForeFlight, is # of ms since Jan 1 1970.
-            if (Int64.TryParse(szValue, out Int64 i))
+            if (double.TryParse(szValue, out double i))
                 return i.DateFromUnixSeconds();
             else
                 return szValue.ParseUTCDate();
@@ -206,7 +206,6 @@ namespace MyFlightbook.Telemetry
         }
 
         #region Static utilities
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public static IEnumerable<KnownColumn> GetKnownColumns()
         {
             List<KnownColumn> lst = new List<KnownColumn>();

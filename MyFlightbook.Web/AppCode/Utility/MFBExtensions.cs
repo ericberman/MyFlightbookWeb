@@ -622,6 +622,17 @@ namespace MyFlightbook
         {
             return (int) Math.Round(d * 60);
         }
+
+        /// <summary>
+        /// Converts seconds (or milliseconds) since a reference unix date (Jan 1, 1970).  The system will assume seconds unless that's more than 5 days in the future.
+        /// </summary>
+        /// <param name="i">Number of seconds (milliseconds)</param>
+        /// <returns></returns>
+        public static DateTime DateFromUnixSeconds(this double i)
+        {
+            // check for whole seconds - if that yields a date more than 5 days in the future, we can assume milliseconds
+            return dtUnixReferenceDate.AddSeconds(dtUnixReferenceDate.AddSeconds(i).CompareTo(DateTime.UtcNow.AddDays(5)) > 0 ? i / 1000 : i);
+        }
         #endregion
 
         #region Integer Extensions
