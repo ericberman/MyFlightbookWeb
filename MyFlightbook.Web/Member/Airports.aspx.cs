@@ -4,6 +4,7 @@ using MyFlightbook.Telemetry;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
@@ -55,10 +56,10 @@ public partial class Member_Airports : System.Web.UI.Page
         gvAirports.DataSource = CurrentVisitedAirports;
         gvAirports.DataBind();
 
-        Dictionary<string, List<string>> d = VisitedAirport.VisitedCountriesAndAdmins(CurrentVisitedAirports);
+        IEnumerable<VisitedRegion> d = VisitedAirport.VisitedCountriesAndAdmins(CurrentVisitedAirports);
         rptRegions.DataSource = d;
         rptRegions.DataBind();
-        lblNone.Visible = d.Count == 0;
+        lblNone.Visible = !d.Any();
 
         mfbGoogleMapManager1.Visible = CurrentVisitedAirports.Length > 0;   //  Avoid excessive map loads.
 

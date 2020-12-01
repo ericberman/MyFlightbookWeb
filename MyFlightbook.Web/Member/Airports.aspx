@@ -158,12 +158,12 @@
                 <asp:Repeater ID="rptRegions" runat="server">
                     <ItemTemplate>
                         <div style="display:inline-block; vertical-align: top; margin-left: 8px; margin-right: 8px;">
-                            <asp:Label ID="lblCountry" runat="server" Text='<%# Eval("Key") %>' Font-Bold="true" Font-Underline="true" />
-                                <asp:Repeater ID="rptAdmin" runat="server" DataSource='<%# Eval("Value") %>'>
-                                    <ItemTemplate>
-                                        <div><%# Container.DataItem.ToString() %></div>
-                                    </ItemTemplate>
-                                </asp:Repeater>
+                            <div><asp:HyperLink ID="lnkCountry" runat="server" Font-Bold="true" Text='<%# Eval("Name") %>' NavigateUrl='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?ap={0}", Eval("JoinedCodes")) %>' /></div>
+                            <asp:Repeater ID="rptAdmin" runat="server" DataSource='<%# Eval("SubRegions") %>'>
+                                <ItemTemplate>
+                                    <div><asp:HyperLink ID="lnkAdmin" runat="server" Text='<%# Eval("Name") %>' NavigateUrl='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?ap={0}", Eval("JoinedCodes")) %>' /></div>
+                                </ItemTemplate>
+                            </asp:Repeater>
                         </div>
                     </ItemTemplate>
                 </asp:Repeater>

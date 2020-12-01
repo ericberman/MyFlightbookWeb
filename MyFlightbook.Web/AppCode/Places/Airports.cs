@@ -479,15 +479,15 @@ namespace MyFlightbook.Airports
 
         #region Countries and Regions
         /// <summary>
-        /// Returns a dictionary of countries and admin regions (states/provinces/regions) visited
+        /// Returns a set of visited regions
         /// </summary>
         /// <param name="rgva">A list of airports</param>
-        /// <returns>A dictionary of places.  Keys are country names, each IEnumerable is a set of admin1 regions</returns>
-        public static Dictionary<string, List<string>> VisitedCountriesAndAdmins(IEnumerable<VisitedAirport> rgva)
+        /// <returns>An enumerable of visited regions.</returns>
+        public static IEnumerable<VisitedRegion> VisitedCountriesAndAdmins(IEnumerable<VisitedAirport> rgva)
         {
-            Dictionary<string, List<string>> result = new Dictionary<string, List<string>>();
+            Dictionary<string, VisitedRegion> dCountries = new Dictionary<string, VisitedRegion>();
             if (rgva == null)
-                return result;
+                return dCountries.Values;
 
             foreach (VisitedAirport va in rgva)
             {
@@ -496,21 +496,16 @@ namespace MyFlightbook.Airports
                 if (String.IsNullOrEmpty(szCountry))
                     continue;
 
-                if (!result.ContainsKey(szCountry))
-                    result[szCountry] = new List<string>();
+                if (!dCountries.ContainsKey(szCountry))
+                    dCountries[szCountry] = new VisitedRegion(szCountry);
 
-                if (String.IsNullOrEmpty(szAdmin))
-                    continue;
-
-                if (!result[szCountry].Contains(szAdmin))
-                    result[szCountry].Add(szAdmin);
+                dCountries[szCountry].AddCodeForSubRegion(va.Code, szAdmin);
             }
 
-            // Sort the resulting admin regions
-            foreach (string szKey in result.Keys)
-                result[szKey].Sort();
+            List<VisitedRegion> lst = new List<VisitedRegion>(dCountries.Values);
+            lst.Sort((vr1, vr2) => { return vr1.Name.CompareCurrentCultureIgnoreCase(vr2.Name); });
 
-            return result;
+            return lst;
         }
         #endregion
 
@@ -2115,6 +2110,65 @@ namespace MyFlightbook.Airports
         public override bool FCommit(bool fAdmin = false, bool fForceNew = false)
         {
             throw new InvalidOperationException("Cannot commit an adhoc fix!");
+        }
+    }
+
+    public class VisitedRegion
+    {
+        private readonly Dictionary<string, VisitedRegion> mSubRegions = new Dictionary<string, VisitedRegion>();
+
+        private readonly HashSet<string> mCodes = new HashSet<string>();
+
+        #region properties
+        /// <summary>
+        /// Name for the region
+        /// </summary>
+        public string Name { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Level.  0 = Country, 1 = Admin1.
+        /// </summary>
+        public int Level { get; set; }
+
+        /// <summary>
+        /// Subregions (e.g., states in a country
+        /// </summary>
+        public IEnumerable<VisitedRegion> SubRegions
+        {
+            get
+            {
+                List<VisitedRegion> lst = new List<VisitedRegion>(mSubRegions.Values);
+                lst.Sort((vr1, vr2) => { return vr1.Name.CompareCurrentCultureIgnoreCase(vr2.Name); });
+                return lst;
+            }
+        }
+
+        public IEnumerable<string> Codes { get { return mCodes; } }
+
+        public string JoinedCodes { get { return string.Join(",", mCodes); } }
+
+        #endregion
+
+        public VisitedRegion(string szName)
+        {
+            Name = szName;
+        }
+
+        public void AddCode(string szCode)
+        {
+            if (!String.IsNullOrWhiteSpace(szCode) && !mCodes.Contains(szCode.ToUpper(CultureInfo.CurrentCulture)))
+                mCodes.Add(szCode.ToUpper(CultureInfo.CurrentCulture));
+        }
+
+        public void AddCodeForSubRegion(string szCode, string szRegion)
+        {
+            AddCode(szCode);
+            if (!String.IsNullOrWhiteSpace(szRegion))
+            {
+                if (!mSubRegions.ContainsKey(szRegion))
+                    mSubRegions[szRegion] = new VisitedRegion(szRegion);
+                mSubRegions[szRegion].AddCode(szCode);
+            }
         }
     }
 
