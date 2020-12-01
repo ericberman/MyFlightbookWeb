@@ -89,8 +89,39 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
 
         return TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, MyFlightbook.Profile.GetUser(HttpContext.Current.User.Identity.Name).PreferredTimeZone).UTCDateFormatString();
     }
+
+    [WebMethod(EnableSession = true)]
+    public static string[] SuggestTraining(string prefixText, int count)
+    {
+        const string szCacheKey = "keyTrainingAutocomplete";
+
+        if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+            throw new MyFlightbookException("Unauthenticated call to SuggestTraining");
+
+        if (String.IsNullOrEmpty(prefixText))
+            return Array.Empty<string>();
+
+        // Don't do anything if the cache is null - bad things afoot!
+        if (HttpRuntime.Cache == null)
+            return Array.Empty<string>();
+
+        List<string> lst = (List<string>)HttpRuntime.Cache[szCacheKey];
+        if (lst == null)
+        {
+            lst = new List<string>();
+            DBHelper dbh = new DBHelper("SELECT * FROM trainingitems");
+            dbh.ReadRows((comm) => { }, (dr) => { lst.Add(String.Format(CultureInfo.CurrentCulture, "[{0}]", dr["task"])); });
+            HttpRuntime.Cache[szCacheKey] = lst;
+        }
+
+        List<string> lstResult = lst.FindAll(sz => sz.StartsWith(prefixText, StringComparison.CurrentCultureIgnoreCase));
+        if (lstResult.Count > count)
+            lstResult.RemoveRange(count, lstResult.Count - count);
+
+        return lstResult.ToArray();
+    }
     #endregion
- 
+
     private const string szParamIDFlight = "idFlight";
 
     public enum FlightsTab { None, Add, Search, Totals, Currency, Analysis, Printing, More }

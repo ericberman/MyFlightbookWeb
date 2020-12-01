@@ -389,8 +389,8 @@ td.totalsByTimeCell:nth-child(even), td.totalsDateRange:nth-child(even) {
     background-color: #EFEFEF;
 }
 
-/* Autocomplete AJAX */
-.AutoExtender {
+/* Autocomplete AJAX.  Insert Training uses "autoInsertxxx */
+.AutoExtender, .autoInsertItems {
     font-weight: normal;
     border: solid 1px #006699;
     line-height: 20px;
@@ -403,7 +403,16 @@ td.totalsByTimeCell:nth-child(even), td.totalsDateRange:nth-child(even) {
     box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
 }
 
-.AutoExtenderList
+.autoInsertItems {
+    position: absolute;
+    display: inline-block;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 99;
+}
+
+.AutoExtenderList, .autoInsertItem
 {
     border-bottom: dotted 1px #006699;
     cursor: pointer;
@@ -411,18 +420,16 @@ td.totalsByTimeCell:nth-child(even), td.totalsDateRange:nth-child(even) {
     list-style-type: none;
 }
 
-.AutoExtenderHighlight
-{
+.AutoExtenderHighlight, .autoInsertItem:hover {
     color: White;
     background-color: #006699;
     cursor: pointer;
     list-style-type: none;
 }
 
-.AutoExtenderList:nth-last-child(1) {
+.AutoExtenderList:nth-last-child(1), .autoInsertItem:nth-last-child(1) {
     border-bottom: none;
 }
-
 
 /* Accordian AJAX */
 .accordianHeader{

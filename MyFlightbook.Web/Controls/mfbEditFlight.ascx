@@ -92,9 +92,14 @@
                         meta:resourcekey="Label10Resource1"></asp:Label>
                 </div>
                 <div class="itemdata">
-                    <asp:TextBox ID="txtComments" runat="server" TextMode="MultiLine" dir="auto" Font-Names="Arial"
-                        Font-Size="Small" TabIndex="5" Rows="2" Width="90%" 
-                        meta:resourcekey="txtCommentsResource1"></asp:TextBox>
+                    <div style="position:relative; display:inline-block">
+                        <asp:TextBox ID="txtComments" runat="server" TextMode="MultiLine" dir="auto" Font-Names="Arial"
+                            Font-Size="Small" TabIndex="5" Rows="2" Width="90%" 
+                            meta:resourcekey="txtCommentsResource1"></asp:TextBox>
+                    </div>
+                    <script type="text/javascript">
+                        autoInsert(document.getElementById("<% =txtComments.ClientID %>"), '<% =ResolveUrl("~/Member/LogbookNew.aspx/SuggestTraining") %>', '[');
+                    </script> 
                 </div>
             </div>
         </div>
