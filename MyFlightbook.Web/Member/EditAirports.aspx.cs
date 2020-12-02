@@ -484,6 +484,8 @@ public partial class Member_EditAirports : Page
             case AirportImportRowCommand.FixLocation:
                 ap.LatLong = aic.LatLong;
                 ap.FCommit(true, false);
+                if (!String.IsNullOrWhiteSpace(aic.Country))
+                    ap.SetLocale(aic.Country, aic.Admin1);
                 break;
             case AirportImportRowCommand.FixType:
                 ap.FDelete(true);   // delete the existing one before we update - otherwise REPLACE INTO will not succeed (because we are changing the REPLACE INTO primary key, which includes Type)
@@ -509,6 +511,8 @@ public partial class Member_EditAirports : Page
                 }
                 aic.Code = Regex.Replace(aic.Code, "[^a-zA-Z0-9]", string.Empty);
                 aic.FCommit(true, true);
+                if (!String.IsNullOrWhiteSpace(aic.Country))
+                    aic.SetLocale(aic.Country, aic.Admin1);
                 break;
         }
 

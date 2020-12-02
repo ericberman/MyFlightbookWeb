@@ -499,7 +499,10 @@ namespace MyFlightbook.Airports
                 if (!dCountries.ContainsKey(szCountry))
                     dCountries[szCountry] = new VisitedRegion(szCountry);
 
-                dCountries[szCountry].AddCodeForSubRegion(va.Code, szAdmin);
+                string[] rgCodes = va.AllCodes.Split(new char[] { ',' });
+
+                foreach (string szCode in rgCodes)
+                    dCountries[szCountry].AddCodeForSubRegion(szCode, szAdmin);
             }
 
             List<VisitedRegion> lst = new List<VisitedRegion>(dCountries.Values);
@@ -1444,6 +1447,26 @@ namespace MyFlightbook.Airports
             return (ErrorText.Length == 0);
         }
 
+        public void SetLocale(string szCountry, string szAdmin)
+        {
+            // Can't have Admin1 without country
+            if (String.IsNullOrWhiteSpace(szCountry) && !String.IsNullOrWhiteSpace(szAdmin))
+                throw new MyFlightbookValidationException("Must specify a country!");
+
+            Country = szCountry;
+            Admin1 = szAdmin;
+            DBHelper dbh = new DBHelper("UPDATE airports SET country = ?country, admin1 = ?admin1 WHERE airportID=?Code && Type=?Type");
+            dbh.DoNonQuery((comm) =>
+            {
+                comm.Parameters.AddWithValue("country", String.IsNullOrWhiteSpace(szCountry) ? null : szCountry);
+                comm.Parameters.AddWithValue("admin1", String.IsNullOrWhiteSpace(szAdmin) ? null : szAdmin);
+                comm.Parameters.AddWithValue("Code", this.Code);
+                comm.Parameters.AddWithValue("Type", this.FacilityTypeCode);
+            });
+            if (!String.IsNullOrEmpty(dbh.LastError))
+                throw new MyFlightbookException("Error setting locale: " + dbh.LastError);
+        }
+
         /// <summary>
         /// Deletes the airport.  Must be admin or owner.
         /// </summary>
@@ -1546,26 +1569,6 @@ namespace MyFlightbook.Airports
                 comm.Parameters.AddWithValue("lonmax", llb.LongMax);
             }, (dr) => { lst.Add(new AdminAirport(dr)); });
             return lst;
-        }
-
-        public void SetLocale(string szCountry, string szAdmin)
-        {
-            // Can't have Admin1 without country
-            if (String.IsNullOrWhiteSpace(szCountry) && !String.IsNullOrWhiteSpace(szAdmin))
-                throw new MyFlightbookValidationException("Must specify a country!");
-
-            Country = szCountry;
-            Admin1 = szAdmin;
-            DBHelper dbh = new DBHelper("UPDATE airports SET country = ?country, admin1 = ?admin1 WHERE airportID=?Code && Type=?Type");
-            dbh.DoNonQuery((comm) =>
-            {
-                comm.Parameters.AddWithValue("country", String.IsNullOrWhiteSpace(szCountry) ? null : szCountry);
-                comm.Parameters.AddWithValue("admin1", String.IsNullOrWhiteSpace(szAdmin) ? null : szAdmin);
-                comm.Parameters.AddWithValue("Code", this.Code);
-                comm.Parameters.AddWithValue("Type", this.FacilityTypeCode);
-            });
-            if (!String.IsNullOrEmpty(dbh.LastError))
-                throw new MyFlightbookException("Error setting locale: " + dbh.LastError);
         }
 
         /// <summary>
@@ -1834,6 +1837,10 @@ namespace MyFlightbook.Airports
         public int iColLatLong { get; set; } = -1;
         public int iColType { get; set; } = -1;
 
+        public int iColCountry { get; set; } = -1;
+
+        public int iColAdmin1 { get; set; } = -1;
+
         public ImportAirportContext()
         {
         }
@@ -1862,6 +1869,10 @@ namespace MyFlightbook.Airports
                     iColLatLong = i;
                 if (String.Compare(sz, "Type", StringComparison.OrdinalIgnoreCase) == 0)
                     iColType = i;
+                if (String.Compare(sz, "Country", StringComparison.OrdinalIgnoreCase) == 0)
+                    iColCountry = i;
+                if (String.Compare(sz, "Admin1", StringComparison.OrdinalIgnoreCase) == 0)
+                    iColAdmin1 = i;
             }
 
             if (iColFAA == -1 && iColIATA == -1 && iColICAO == -1)
@@ -2038,7 +2049,9 @@ namespace MyFlightbook.Airports
                         IATA = GetCol(rgCols, ic.iColIATA).Replace("-", ""),
                         ICAO = GetCol(rgCols, ic.iColICAO).Replace("-", ""),
                         Name = GetCol(rgCols, ic.iColName),
-                        FacilityTypeCode = GetCol(rgCols, ic.iColType)
+                        FacilityTypeCode = GetCol(rgCols, ic.iColType),
+                        Country = GetCol(rgCols, ic.iColCountry),
+                        Admin1 = GetCol(rgCols, ic.iColAdmin1)
                     };
                     if (String.IsNullOrEmpty(aic.FacilityTypeCode))
                         aic.FacilityTypeCode = "A";     // default to airport
