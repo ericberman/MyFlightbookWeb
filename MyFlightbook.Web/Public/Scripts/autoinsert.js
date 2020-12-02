@@ -43,6 +43,7 @@ function autoInsert(inp, uri, triggerChar) {
         a.setAttribute("id", this.id + "autoInsertList");
         a.setAttribute("class", "autoInsertItems");
         a.style.display = "none";   // avoid flashing if no matches
+        a.style.width = "150%";
         /*append the DIV element as a child of the autocomplete container:*/
         this.parentNode.appendChild(a);
 
@@ -52,7 +53,7 @@ function autoInsert(inp, uri, triggerChar) {
 
         var params = new Object();
         params.prefixText = prefix;
-        params.count = 10;
+        params.count = 15;
         var d = JSON.stringify(params);
 
         $.ajax(
