@@ -114,7 +114,17 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
             HttpRuntime.Cache[szCacheKey] = lst;
         }
 
-        List<string> lstResult = lst.FindAll(sz => sz.StartsWith(prefixText, StringComparison.CurrentCultureIgnoreCase));
+        string[] rgszTerms = prefixText.ToUpper(CultureInfo.CurrentCulture).Split(new char[] { '-', '[' }, StringSplitOptions.RemoveEmptyEntries);
+        if (rgszTerms.Length == 0)
+            return Array.Empty<string>();
+
+        List<string> lstResult = lst.FindAll((sz) => {
+            foreach (string szTerm in rgszTerms)
+                if (!sz.ToUpper(CultureInfo.CurrentCulture).Contains(szTerm))
+                    return false;
+            return true;
+            });
+
         if (lstResult.Count > count)
             lstResult.RemoveRange(count, lstResult.Count - count);
 

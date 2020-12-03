@@ -127,7 +127,7 @@ public partial class Controls_mfbEditFlightBase : UserControl
 
     protected void InitScript()
     {
-        Page.ClientScript.RegisterClientScriptInclude("autoInsert", ResolveClientUrl("~/public/Scripts/autoinsert.js"));
+        Page.ClientScript.RegisterClientScriptInclude("autoInsert", ResolveClientUrl("~/public/Scripts/autoinsert.js?v=2"));
         Page.ClientScript.RegisterClientScriptInclude("jquery2", ResolveClientUrl("~/public/Scripts/jquery.json-2.4.min.js"));
     }
 }
