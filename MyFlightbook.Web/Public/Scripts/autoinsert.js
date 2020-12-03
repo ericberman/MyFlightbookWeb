@@ -43,7 +43,7 @@ function autoInsert(inp, uri, triggerChar) {
         a.setAttribute("id", this.id + "autoInsertList");
         a.setAttribute("class", "autoInsertItems");
         a.style.display = "none";   // avoid flashing if no matches
-        a.style.width = "150%";
+        a.style.width = "120%";
         /*append the DIV element as a child of the autocomplete container:*/
         this.parentNode.appendChild(a);
 
@@ -53,7 +53,7 @@ function autoInsert(inp, uri, triggerChar) {
 
         var params = new Object();
         params.prefixText = prefix;
-        params.count = 15;
+        params.count = 20;
         var d = JSON.stringify(params);
 
         $.ajax(
@@ -75,8 +75,9 @@ function autoInsert(inp, uri, triggerChar) {
                         b = document.createElement("li");
                         b.setAttribute("class", "autoInsertItem")
                         // make the matching letters bold:
-                        b.innerHTML = "<strong>" + arr[i].substr(0, prefix.length) + "</strong>";
-                        b.innerHTML += arr[i].substr(prefix.length);
+                        b.innerHTML = arr[i];
+                        // b.innerHTML = "<strong>" + arr[i].substr(0, prefix.length) + "</strong>";
+                        // b.innerHTML += arr[i].substr(prefix.length);
                         // insert a input field that will hold the current array item's value:
                         b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
                         // execute a function when someone clicks on the item value (DIV element):
@@ -117,7 +118,8 @@ function autoInsert(inp, uri, triggerChar) {
                 /*and simulate a click on the "active" item:*/
                 if (x) x[currentFocus].click();
             }
-        }
+        } else if (e.keyCode === 27)
+            closeAllLists();
     });
     function addActive(x) {
         /*a function to classify an item as "active":*/
