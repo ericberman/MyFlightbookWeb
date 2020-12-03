@@ -124,6 +124,12 @@ public partial class Controls_mfbEditFlightBase : UserControl
         container.Visible = true;
     }
     #endregion
+
+    protected void InitScript()
+    {
+        Page.ClientScript.RegisterClientScriptInclude("autoInsert", ResolveClientUrl("~/public/Scripts/autoinsert.js"));
+        Page.ClientScript.RegisterClientScriptInclude("jquery2", ResolveClientUrl("~/public/Scripts/jquery.json-2.4.min.js"));
+    }
 }
 
 public partial class Controls_mfbEditFlight : Controls_mfbEditFlightBase
@@ -315,8 +321,7 @@ public partial class Controls_mfbEditFlight : Controls_mfbEditFlightBase
     {
         mfbDate.DefaultDate = DateTime.Now; // if the field is blank, assume today.
 
-        Page.ClientScript.RegisterClientScriptInclude("autoInsert", ResolveClientUrl("~/public/Scripts/autoinsert.js"));
-        Page.ClientScript.RegisterClientScriptInclude("jquery2", ResolveClientUrl("~/public/Scripts/jquery.json-2.4.min.js"));
+        InitScript();
 
         if (!IsPostBack)
         {
