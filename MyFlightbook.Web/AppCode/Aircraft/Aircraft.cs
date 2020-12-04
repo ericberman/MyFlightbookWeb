@@ -27,9 +27,7 @@ namespace MyFlightbook
     /// Does NOT have a 0 value, since that doesn't correspond to anything in the database.
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1008:EnumsShouldHaveZeroValue")]
-#pragma warning disable CA1027 // Mark enums with FlagsAttribute
     public enum AircraftInstanceTypes
-#pragma warning restore CA1027 // Mark enums with FlagsAttribute
     {
         RealAircraft = 1, Mintype = RealAircraft,
         UncertifiedSimulator,
@@ -1629,6 +1627,38 @@ WHERE
         }
 
         /// <summary>
+        /// Migrates flights in one aircraft to another
+        /// </summary>
+        /// <param name="szUser"></param>
+        /// <param name="acSrc"></param>
+        /// <param name="acTarget"></param>
+        /// <returns>The number of flights migrated</returns>
+        public static int AdminMigrateFlights(string szUser, Aircraft acSrc, Aircraft acTarget)
+        {
+            if (String.IsNullOrWhiteSpace(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+            if (acSrc == null)
+                throw new ArgumentNullException(nameof(acSrc));
+            if (acTarget == null)
+                throw new ArgumentNullException(nameof(acTarget));
+            if (acSrc.AircraftID < 0)
+                throw new InvalidOperationException("Source aircraft is not valid");
+            if (acTarget.AircraftID < 0)
+                throw new InvalidOperationException("Target aircraft is not valid");
+            if (acSrc.AircraftID == acTarget.AircraftID)
+                throw new InvalidOperationException("Source and target aircraft are identical");
+
+            DBHelper dbh = new DBHelper("UPDATE flights SET idAircraft=?targ WHERE username=?user AND idAircraft=?src");
+            dbh.DoNonQuery((comm) =>
+            {
+                comm.Parameters.AddWithValue("user", szUser);
+                comm.Parameters.AddWithValue("targ", acTarget.AircraftID);
+                comm.Parameters.AddWithValue("src", acSrc.AircraftID);
+            });
+            return dbh.AffectedRowCount;
+        }
+
+        /// <summary>
         /// In case two aircraft in the system really should be one, this will merge the two aircraft, updating the maintenance records as well
         /// NOTE: this does NOT update any flights, nor does it update any user aircraft.
         /// </summary>
@@ -3010,5 +3040,18 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
                     comm.Parameters.AddWithValue("idNew", NewAircraftID);
                 });
         }
+    }
+
+    public class AircraftEventArgs : EventArgs
+    {
+        public int AircraftID { get; set; }
+
+        public Aircraft Aircraft { get; set; }
+
+        public AircraftEventArgs() { AircraftID = Aircraft.idAircraftUnknown; }
+
+        public AircraftEventArgs(int id) : this() { AircraftID = id; }
+
+        public AircraftEventArgs(Aircraft ac) : this() { Aircraft = ac; AircraftID = (ac == null) ? Aircraft.idAircraftUnknown : ac.AircraftID; }
     }
 }

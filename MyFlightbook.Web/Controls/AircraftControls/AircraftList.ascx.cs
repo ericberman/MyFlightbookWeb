@@ -37,6 +37,8 @@ public partial class Controls_AircraftControls_AircraftList : System.Web.UI.User
 
     public event EventHandler<EventArgs> AircraftPrefChanged;
 
+    public event EventHandler<AircraftEventArgs> MigrateAircraft;
+
     public bool EnableAircraftViewState
     {
         get { return gvAircraft.EnableViewState; }
@@ -253,5 +255,14 @@ public partial class Controls_AircraftControls_AircraftList : System.Web.UI.User
         UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
         ua.FAddAircraftForUser(ac);
         AircraftPrefChanged?.Invoke(this, e);
+    }
+
+    protected void lnkMigrate_Click(object sender, EventArgs e)
+    {
+        if (e == null)
+            throw new ArgumentNullException(nameof(e));
+
+        Aircraft ac = RowFromControl((Control) sender);
+        MigrateAircraft?.Invoke(this, new AircraftEventArgs(ac));
     }
 }

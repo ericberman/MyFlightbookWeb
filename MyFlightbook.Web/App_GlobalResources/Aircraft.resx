@@ -653,4 +653,19 @@
   <data name="errInvalidNNumber" xml:space="preserve">
     <value>US Registrations ("N" numbers) cannot start with "NN" or "N0", nor contain the letters "O" or "I" because of potential confusion with "0" and "1".</value>
   </data>
+  <data name="editAircraftMigrate" xml:space="preserve">
+    <value>Migrate flights to another aircraft</value>
+  </data>
+  <data name="editAircraftMigrateConfirm" xml:space="preserve">
+    <value>Are you sure you want to migrate flights?  This CANNOT be undone.</value>
+  </data>
+  <data name="editAircraftMigratePrompt" xml:space="preserve">
+    <value>Migrate flights in "{0}" to:</value>
+  </data>
+  <data name="editAircraftMigrateReplace" xml:space="preserve">
+    <value>Migrate</value>
+  </data>
+  <data name="editAircraftRemoveAfterMigrate" xml:space="preserve">
+    <value>Remove this aircraft from my account after migration</value>
+  </data>
 </root>

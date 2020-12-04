@@ -175,6 +175,96 @@ public partial class Member_Aircraft
     protected global::System.Web.UI.WebControls.Repeater rptAircraftGroups;
 
     /// <summary>
+    /// pnlMigrate control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Panel pnlMigrate;
+
+    /// <summary>
+    /// lblMigrate control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblMigrate;
+
+    /// <summary>
+    /// cmbMigr control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.DropDownList cmbMigr;
+
+    /// <summary>
+    /// ckDelAfterMigr control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.CheckBox ckDelAfterMigr;
+
+    /// <summary>
+    /// btnMigrate control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Button btnMigrate;
+
+    /// <summary>
+    /// btnMigrateCancel control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Button btnMigrateCancel;
+
+    /// <summary>
+    /// hdnMigSrc control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.HiddenField hdnMigSrc;
+
+    /// <summary>
+    /// cbeMig control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::AjaxControlToolkit.ConfirmButtonExtender cbeMig;
+
+    /// <summary>
+    /// lblUnused control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblUnused;
+
+    /// <summary>
+    /// mpeMigrate control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::AjaxControlToolkit.ModalPopupExtender mpeMigrate;
+
+    /// <summary>
     /// Master property.
     /// </summary>
     /// <remarks>

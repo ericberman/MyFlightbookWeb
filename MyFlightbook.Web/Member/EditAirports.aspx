@@ -520,8 +520,7 @@
         }
     </script>
 
-<asp:Panel ID="pnlDupeAirport" runat="server" CssClass="modalpopup"
-    DefaultButton="btnAddAnyway" meta:resourcekey="pnlManufacturerResource1">
+<asp:Panel ID="pnlDupeAirport" runat="server" CssClass="modalpopup" DefaultButton="btnAddAnyway">
     <div style="text-align:center; max-width: 450px">
         <div><asp:Label ID="lblDupe" runat="server" Text="<%$ Resources:Airports, errDupeAirport %>" /></div>
         <div style="margin-left:auto; margin-right: auto;">
@@ -542,7 +541,6 @@
 <asp:Label ID="lblUnused" runat="server" style="display:none;" />
 <cc1:ModalPopupExtender ID="mpeDupeAirport" runat="server" TargetControlID="lblUnused"
     PopupControlID="pnlDupeAirport" BackgroundCssClass="modalBackground" 
-    CancelControlID="btnAirportCancel" OnCancelScript="getFlickerSolved();">
-</cc1:ModalPopupExtender>
+    CancelControlID="btnAirportCancel" OnCancelScript="getFlickerSolved();" />
 
 </asp:Content>

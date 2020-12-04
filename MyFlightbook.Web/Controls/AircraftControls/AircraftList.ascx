@@ -62,10 +62,10 @@
             <ItemTemplate>
                 <uc2:popmenu ID="popmenu1" runat="server" Visible='<%# !IsAdminMode %>' >
                     <MenuContent>
-                        <h2><asp:Label ID="lblOptionHeader" runat="server" Text=""></asp:Label></h2>
-                        <asp:CheckBox ID="ckShowInFavorites" OnCheckedChanged="ckShowInFavorites_CheckedChanged" AutoPostBack="true" Text="<%$ Resources:Aircraft, optionHideFromMainList %>" runat="server" /><br />
+                        <h2><asp:Label ID="lblOptionHeader" runat="server" /></h2>
+                        <div><asp:CheckBox ID="ckShowInFavorites" OnCheckedChanged="ckShowInFavorites_CheckedChanged" AutoPostBack="true" Text="<%$ Resources:Aircraft, optionHideFromMainList %>" runat="server" /></div>
                         <hr />
-                        <div><asp:Label ID="lblRolePrompt" runat="server" Font-Bold="true" Text="<%$ Resources:Aircraft, optionRolePrompt %>"></asp:Label></div>
+                        <h3><asp:Label ID="lblRolePrompt" runat="server" Font-Bold="true" Text="<%$ Resources:Aircraft, optionRolePrompt %>" /></h3>
                         <table>
                             <tr style="vertical-align:top">
                                 <td><asp:RadioButton ID="rbRoleCFI" runat="server" AutoPostBack="true" GroupName="rblGroup" OnCheckedChanged="rbRoleCFI_CheckedChanged" /></td>
@@ -88,8 +88,13 @@
                             </tr>
                         </table>
                         <asp:Panel ID="pnlTemplates" runat="server">
+                            <hr />
                             <div><asp:Label ID="lblTemplates" Font-Bold="true" runat="server" Text="<%$ Resources:LogbookEntry, TemplateAircraftHeader %>"></asp:Label></div>
                             <uc1:mfbSelectTemplates runat="server" ID="mfbSelectTemplates" IncludeAutomaticTemplates="false" OnTemplatesReady="mfbSelectTemplates_TemplatesReady" OnTemplateSelected="mfbSelectTemplates_TemplateSelected" OnTemplateUnselected="mfbSelectTemplates_TemplateUnselected" />
+                        </asp:Panel>
+                        <asp:Panel ID="pnlMigrate" runat="server">
+                            <hr />
+                            <div style="margin-left: 20px;"><asp:LinkButton ID="lnkMigrate" runat="server" Text="<%$ Resources:Aircraft, editAircraftMigrate %>" CommandArgument="-1" OnClick="lnkMigrate_Click" /></div>
                         </asp:Panel>
                     </MenuContent>
                 </uc2:popmenu>

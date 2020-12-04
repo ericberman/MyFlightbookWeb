@@ -571,6 +571,42 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Migrate flights to another aircraft.
+        /// </summary>
+        internal static string editAircraftMigrate {
+            get {
+                return ResourceManager.GetString("editAircraftMigrate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to migrate flights?  This CANNOT be undone..
+        /// </summary>
+        internal static string editAircraftMigrateConfirm {
+            get {
+                return ResourceManager.GetString("editAircraftMigrateConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Migrate flights in &quot;{0}&quot; to:.
+        /// </summary>
+        internal static string editAircraftMigratePrompt {
+            get {
+                return ResourceManager.GetString("editAircraftMigratePrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Migrate.
+        /// </summary>
+        internal static string editAircraftMigrateReplace {
+            get {
+                return ResourceManager.GetString("editAircraftMigrateReplace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Aircraft on %APP_NAME% are shared between pilots, so any change you make here could impact other pilots..
         /// </summary>
         internal static string editAircraftModelChange1 {
@@ -630,6 +666,15 @@ namespace Resources {
         internal static string editAircraftRegistrationPrompt {
             get {
                 return ResourceManager.GetString("editAircraftRegistrationPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove this aircraft from my account after migration.
+        /// </summary>
+        internal static string editAircraftRemoveAfterMigrate {
+            get {
+                return ResourceManager.GetString("editAircraftRemoveAfterMigrate", resourceCulture);
             }
         }
         

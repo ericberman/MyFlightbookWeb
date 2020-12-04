@@ -148,4 +148,41 @@ public partial class Member_Aircraft : System.Web.UI.Page
         Response.Write(gvAircraftToDownload.CSVFromData());
         Response.End();
     }
+
+    protected void btnMigrate_Click(object sender, EventArgs e)
+    {
+        if (Int32.TryParse(cmbMigr.SelectedValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out int idTarget) && idTarget > 0 &&
+            Int32.TryParse(hdnMigSrc.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int idSrc) && idSrc > 0)
+        {
+            UserAircraft ua = new UserAircraft(User.Identity.Name);
+            Aircraft acSrc = ua.GetUserAircraftByID(idSrc);
+            Aircraft acTarg = ua.GetUserAircraftByID(idTarget);
+            if (Aircraft.AdminMigrateFlights(User.Identity.Name, acSrc, acTarg) > 0 && ckDelAfterMigr.Checked)
+            {
+                ua.FDeleteAircraftforUser(acSrc.AircraftID);
+                RefreshAircraftList();
+                Refresh(true);
+            }
+        }
+        mpeMigrate.Hide();
+    }
+
+    protected void AircraftList_MigrateAircraft(object sender, AircraftEventArgs e)
+    {
+        if (e == null)
+            throw new ArgumentNullException(nameof(e));
+
+        hdnMigSrc.Value = e.AircraftID.ToString(CultureInfo.InvariantCulture);
+
+        lblMigrate.Text = String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.editAircraftMigratePrompt, e.Aircraft.DisplayTailnumber);
+
+        // Show all other aircraft, removing the source one.
+        List<Aircraft> lst = new List<Aircraft>(new UserAircraft(Page.User.Identity.Name).GetAircraftForUser());
+        lst.RemoveAll(ac => ac.AircraftID == e.AircraftID);
+
+        cmbMigr.Items.Clear();
+        cmbMigr.DataSource = lst;
+        cmbMigr.DataBind();
+        mpeMigrate.Show();
+    }
 }
