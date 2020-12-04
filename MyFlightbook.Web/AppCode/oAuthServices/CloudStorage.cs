@@ -970,7 +970,7 @@ namespace MyFlightbook.CloudStorage
                     szToken = AuthState.AccessToken;
                 }
                 catch (JsonException) { }
-                catch (DotNetOpenAuth.Messaging.ProtocolException) { }
+                catch (DotNetOpenAuth.Messaging.ProtocolException ex) { throw new UnauthorizedAccessException(ex.Message, ex); }
             }
 
             using (DropboxClient dbx = new DropboxClient(szToken))
