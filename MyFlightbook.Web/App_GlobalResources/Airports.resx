@@ -274,4 +274,10 @@
   <data name="airportCountryWithDisclaimer" xml:space="preserve">
     <value>Country*</value>
   </data>
+  <data name="errDupeAirport" xml:space="preserve">
+    <value>The airport you are creating looks like it may be a duplicate of one of the following.  This is OK, but if there is an "official" code, then you should probably use that to avoid your code conflicting in the future:</value>
+  </data>
+  <data name="errDupeAirportCreateAnyway" xml:space="preserve">
+    <value>Create it anyway</value>
+  </data>
 </root>

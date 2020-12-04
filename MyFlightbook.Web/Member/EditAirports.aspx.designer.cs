@@ -508,6 +508,24 @@ public partial class Member_EditAirports
     protected global::System.Web.UI.WebControls.TextBox txtDupeSeed;
 
     /// <summary>
+    /// hdnSeedLat control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.HiddenField hdnSeedLat;
+
+    /// <summary>
+    /// hdnSeedLon control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.HiddenField hdnSeedLon;
+
+    /// <summary>
     /// pnlDupeAirports control.
     /// </summary>
     /// <remarks>
@@ -533,6 +551,15 @@ public partial class Member_EditAirports
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.SqlDataSource sqlDSUserDupes;
+
+    /// <summary>
+    /// sqlDSSingleDupe control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.SqlDataSource sqlDSSingleDupe;
 
     /// <summary>
     /// lnkManageGeo control.
@@ -569,6 +596,69 @@ public partial class Member_EditAirports
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.GridView gvMyAirports;
+
+    /// <summary>
+    /// pnlDupeAirport control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Panel pnlDupeAirport;
+
+    /// <summary>
+    /// lblDupe control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblDupe;
+
+    /// <summary>
+    /// gvUserDupes control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.GridView gvUserDupes;
+
+    /// <summary>
+    /// btnAddAnyway control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Button btnAddAnyway;
+
+    /// <summary>
+    /// btnAirportCancel control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Button btnAirportCancel;
+
+    /// <summary>
+    /// lblUnused control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblUnused;
+
+    /// <summary>
+    /// mpeDupeAirport control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::AjaxControlToolkit.ModalPopupExtender mpeDupeAirport;
 
     /// <summary>
     /// Master property.

@@ -71,6 +71,7 @@ namespace MyFlightbook.Web.Admin
         {
             Profile pf = Profile.GetUser(Page.User.Identity.Name);
             CheckAdmin(pf.CanManageData);
+            mfbGoogleMapManager.Map.AutofillOnPanZoom = true;
         }
 
         protected void RefreshPending()

@@ -268,6 +268,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The airport you are creating looks like it may be a duplicate of one of the following.  This is OK, but if there is an &quot;official&quot; code, then you should probably use that to avoid your code conflicting in the future:.
+        /// </summary>
+        internal static string errDupeAirport {
+            get {
+                return ResourceManager.GetString("errDupeAirport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create it anyway.
+        /// </summary>
+        internal static string errDupeAirportCreateAnyway {
+            get {
+                return ResourceManager.GetString("errDupeAirportCreateAnyway", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Facility name is empty; please provide a name..
         /// </summary>
         internal static string errEmptyName {

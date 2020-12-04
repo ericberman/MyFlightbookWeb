@@ -234,13 +234,13 @@ public partial class Member_EditAirports : Page
         pnlAdminImport.Visible = rowAdmin.Visible = IsAdmin;
     }
 
-    protected void btnAdd_Click(object sender, EventArgs e)
+    protected void AddAirport(bool forceAdd)
     {
-        if (!double.TryParse(txtLat.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double lat) ||
-            !double.TryParse(txtLong.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double lon))
+        bool fValidLatLon = double.TryParse(txtLat.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double lat);
+        fValidLatLon = double.TryParse(txtLong.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double lon) && fValidLatLon;
+        if (!fValidLatLon)
         {
             lblErr.Text = Resources.Airports.errInvalidLatLong;
-            return;
         }
 
         bool fAdmin = (IsAdmin && ckAsAdmin.Checked);
@@ -249,18 +249,26 @@ public partial class Member_EditAirports : Page
         if (fAdmin && ap.Code.CompareOrdinalIgnoreCase("TBD") == 0)
         {
             lblErr.Text = Resources.Airports.errTBDIsInvalidCode;
-            return;
         }
 
         lblErr.Text = string.Empty;
 
+        // Check to see if this looks like a duplicate
+        List<airport> lstDupes = new List<airport>(airport.AirportsNearPosition(ap.LatLong.Latitude, ap.LatLong.Longitude, 20, ap.FacilityTypeCode.CompareCurrentCultureIgnoreCase("H") == 0));
+        lstDupes.RemoveAll(a => !a.IsPort || a.Code.CompareCurrentCultureIgnoreCase(ap.Code) == 0 || a.DistanceFromPosition > 3);
+        if (lstDupes.Any() && !forceAdd)
+        {
+            gvUserDupes.DataSource = lstDupes;
+            gvUserDupes.DataBind();
+            mpeDupeAirport.Show();
+            return;
+        }
+
         if (ap.FCommit(fAdmin, fAdmin))
         {
-            // Check to see if this looks like a duplicate - if so, submit it for review
-            List<airport> lstDupes = new List<airport>(airport.AirportsNearPosition(ap.LatLong.Latitude, ap.LatLong.Longitude, 20, ap.FacilityTypeCode.CompareCurrentCultureIgnoreCase("H") == 0));
-            lstDupes.RemoveAll(a => !a.IsPort || a.Code.CompareCurrentCultureIgnoreCase(ap.Code) == 0 || a.DistanceFromPosition > 3);
-            if (lstDupes.Count > 0)
+            if (lstDupes.Any())
             {
+                // needs review
                 StringBuilder sb = new StringBuilder();
                 sb.AppendFormat(CultureInfo.CurrentCulture, "User: {0}, Airport: {1} ({2}) {3} {4}\r\n\r\nCould match:\r\n", ap.UserName, ap.Code, ap.FacilityTypeCode, ap.Name, ap.LatLong.ToDegMinSecString());
                 foreach (airport a in lstDupes)
@@ -284,6 +292,16 @@ public partial class Member_EditAirports : Page
         }
         else
             lblErr.Text = HttpUtility.HtmlEncode(ap.ErrorText);
+    }
+
+    protected void btnAddAnyway_Click(object sender, EventArgs e)
+    {
+        AddAirport(true);
+    }
+
+    protected void btnAdd_Click(object sender, EventArgs e)
+    {
+        AddAirport(false);
     }
 
     #region Admin - BulkAirportImport
@@ -531,11 +549,28 @@ public partial class Member_EditAirports : Page
     #region ADMIN - dupe management
     protected void btnRefreshDupes_Click(object sender, EventArgs e)
     {
-        gvDupes.DataSourceID = sqlDSUserDupes.ID;
+        if (String.IsNullOrWhiteSpace(txtDupeSeed.Text))
+            gvDupes.DataSourceID = sqlDSUserDupes.ID;
+        else
+        {
+            gvDupes.DataSourceID = sqlDSSingleDupe.ID;
+            List<airport> rgap = new List<airport>(airport.AirportsWithExactMatch(txtDupeSeed.Text.Trim()));
+
+            rgap.RemoveAll(ap => !ap.IsPort);
+            if (rgap.Count == 0)
+            {
+                pnlDupeAirports.Visible = false;
+                return;
+            }
+            hdnSeedLat.Value = rgap[0].LatLong.Latitude.ToString(CultureInfo.InvariantCulture);
+            hdnSeedLon.Value = rgap[0].LatLong.Longitude.ToString(CultureInfo.InvariantCulture);
+        }
+
         gvDupes.DataBind();
         pnlDupeAirports.Visible = true;
         pnlMyAirports.Visible = false;
     }
+
     protected static string DeleteDupeScript(string user, string codeDelete, string codeMap, string type)
     { 
         return String.Format(CultureInfo.InvariantCulture, "deleteDupeUserAirport('{0}', '{1}', '{2}', '{3}', this); return false;", user, codeDelete, codeMap, type);

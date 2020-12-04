@@ -318,7 +318,9 @@
             <ContentTemplate>
             <p><asp:Label ID="lblAdminReviewDupeAirports" runat="server" Text="Review likely duplicate airports"></asp:Label> 
                 <asp:Button ID="btnRefreshDupes" runat="server" Text="Refresh (slow)" OnClick="btnRefreshDupes_Click" />
-                Limit to dupes of: <asp:TextBox ID="txtDupeSeed" runat="server"></asp:TextBox>
+                Limit to dupes of: <asp:TextBox ID="txtDupeSeed" runat="server" />
+                <asp:HiddenField ID="hdnSeedLat" runat="server" />
+                <asp:HiddenField ID="hdnSeedLon" runat="server" />
             </p>
             <asp:Panel ID="pnlDupeAirports" runat="server" ScrollBars="Auto" Height="400px" Width="100%" Visible="false"> 
                 <asp:GridView ID="gvDupes" runat="server" AutoGenerateColumns="false">
@@ -369,11 +371,25 @@
         airports ap2 ON ap1.AirportID &lt;&gt; ap2.airportid AND ap1.type = ap2.type
             AND Abs(ap1.latitude - ap2.latitude) &lt; 0.01 AND abs(ap1.longitude - ap2.longitude) &lt; 0.01
     WHERE
-        ap1.sourceusername &lt;&gt; '' AND ap1.type IN ('A', 'H', 'S') AND ap2.type IN ('A', 'H', 'S') AND (?dupeSeed='' OR ap1.airportID=?dupeSeed OR ap2.airportID=?dupeSeed)
+        ap1.sourceusername &lt;&gt; '' AND ap1.type IN ('A', 'H', 'S') AND ap2.type IN ('A', 'H', 'S')
+    ORDER BY
+        ap1.type ASC, ap1.latitude ASC, ap1.AirportID ASC;">
+                </asp:SqlDataSource>
+                <asp:SqlDataSource ID="sqlDSSingleDupe" runat="server" ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>"
+                    ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" SelectCommand="SELECT 
+        ap1.sourceusername AS 'user1', ap1.AirportID AS 'id1', ap1.facilityname AS 'facname1', ap1.latitude AS 'lat1', ap1.longitude AS 'lon1', ap1.Preferred AS 'pref1', ap1.Type AS type1, ap2.sourceusername AS 'user2', ap2.AirportID AS 'id2', ap2.facilityname AS 'facname2', ap2.latitude AS 'lat2', ap2.longitude AS 'lon2', ap2.Preferred AS 'pref2', ap2.Type as type2
+    FROM
+        airports ap1
+            INNER JOIN
+        airports ap2 ON ap1.AirportID &lt;&gt; ap2.airportid AND ap1.type = ap2.type
+    WHERE
+        ap1.sourceusername &lt;&gt; '' AND ap1.type IN ('A', 'H', 'S') AND ap2.type IN ('A', 'H', 'S')
+        AND Abs(ap1.latitude - ?lat) &lt; 0.01 AND abs(ap1.longitude - ?lon) &lt; 0.01 AND Abs(ap2.latitude - ?lat) &lt; 0.01 AND abs(ap2.longitude - ?lon) &lt; 0.01 
     ORDER BY
         ap1.type ASC, ap1.latitude ASC, ap1.AirportID ASC;">
                     <SelectParameters>
-                        <asp:ControlParameter ControlID="txtDupeSeed" ConvertEmptyStringToNull="false" DbType="String" Name="dupeSeed" PropertyName="Text" />
+                        <asp:ControlParameter ControlID="hdnSeedLat" DbType="Double" Name="lat" PropertyName="Value" />
+                        <asp:ControlParameter ControlID="hdnSeedLon" DbType="Double" Name="lon" PropertyName="Value" />
                      </SelectParameters>
                 </asp:SqlDataSource>
             </asp:Panel>
@@ -487,6 +503,46 @@
             }
         }
 //]]>
+        /* Handle escape to dismiss */
+        function pageLoad(sender, args) {
+            if (!args.get_isPartialLoad()) {
+                $addHandler(document, "keydown", onKeyDown);
+            }
+        }
+
+        function onKeyDown(e) {
+            if (e && e.keyCode == Sys.UI.Key.esc)
+                $find("mpeDupeAirport").hide();
+        }
+
+        function getFlickerSolved() {
+            document.getElementById('<%=pnlDupeAirport.ClientID%>').style.display = 'none';
+        }
     </script>
+
+<asp:Panel ID="pnlDupeAirport" runat="server" CssClass="modalpopup"
+    DefaultButton="btnAddAnyway" meta:resourcekey="pnlManufacturerResource1">
+    <div style="text-align:center; max-width: 450px">
+        <div><asp:Label ID="lblDupe" runat="server" Text="<%$ Resources:Airports, errDupeAirport %>" /></div>
+        <div style="margin-left:auto; margin-right: auto;">
+            <asp:GridView ID="gvUserDupes" runat="server" CellPadding="3" AutoGenerateColumns="false" GridLines="None">
+                <Columns>
+                    <asp:BoundField ItemStyle-Font-Bold="true" DataField="Code" ItemStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top" />
+                    <asp:BoundField DataField="Name" ItemStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top" />
+                    <asp:BoundField DataField="FacilityType" DataFormatString="({0})" ItemStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top" />
+                </Columns>
+            </asp:GridView>
+        </div>
+        <div style="margin-top: 5px;">
+            <asp:Button ID="btnAddAnyway" runat="server" Text="<%$ Resources:Airports, errDupeAirportCreateAnyway %>" OnClick="btnAddAnyway_Click" />&nbsp;&nbsp;
+            <asp:Button ID="btnAirportCancel" runat="server" Text="<%$ Resources:LocalizedText, Cancel %>"  />
+        </div>
+    </div>
+</asp:Panel>
+<asp:Label ID="lblUnused" runat="server" style="display:none;" />
+<cc1:ModalPopupExtender ID="mpeDupeAirport" runat="server" TargetControlID="lblUnused"
+    PopupControlID="pnlDupeAirport" BackgroundCssClass="modalBackground" 
+    CancelControlID="btnAirportCancel" OnCancelScript="getFlickerSolved();">
+</cc1:ModalPopupExtender>
 
 </asp:Content>
