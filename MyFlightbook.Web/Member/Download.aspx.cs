@@ -187,7 +187,7 @@ public partial class Member_Download : System.Web.UI.Page
 
         try
         {
-            if (await new MFBDropbox().ValidateDropboxToken(pf, true).ConfigureAwait(false) == MFBDropbox.TokenStatus.None)
+            if (await new MFBDropbox(pf).ValidateDropboxToken().ConfigureAwait(false) == MFBDropbox.TokenStatus.None)
                 return;
 
             Dropbox.Api.Files.FileMetadata result = await lb.BackupToDropbox().ConfigureAwait(false);
@@ -219,7 +219,7 @@ public partial class Member_Download : System.Web.UI.Page
             return;
         try
         {
-            OneDrive od = new OneDrive(pf.OneDriveAccessToken);
+            OneDrive od = new OneDrive(pf);
             await lb.BackupToOneDrive(od).ConfigureAwait(false);
 
             if (ckIncludeImages.Checked)
@@ -248,7 +248,7 @@ public partial class Member_Download : System.Web.UI.Page
 
         try
         {
-            GoogleDrive gd = new GoogleDrive(pf.GoogleDriveAccessToken);
+            GoogleDrive gd = new GoogleDrive(pf);
 
             await lb.BackupToGoogleDrive(gd).ConfigureAwait(false);
 

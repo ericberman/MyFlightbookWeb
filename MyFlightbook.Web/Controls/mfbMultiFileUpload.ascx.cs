@@ -385,7 +385,6 @@ return false;
     protected void AppendMoreGoogleImages()
     {
         Profile pf = Profile.GetUser(Page.User.Identity.Name);
-        string szAuthJSon = pf.GetPreferenceForKey<string>(GooglePhoto.PrefKeyAuthToken);
 
         // Get an update
         FetchingGooglePhotos?.Invoke(this, new EventArgs());
@@ -401,7 +400,7 @@ return false;
 
         RetrievedGooglePhotosDate = GooglePhotosDateToRetrieve;
 
-        GoogleMediaResponse result = RetrievedGooglePhotos = GooglePhoto.AppendImagesForDate(szAuthJSon, GooglePhotosDateToRetrieve, IncludeVideos, RetrievedGooglePhotos).Result;
+        GoogleMediaResponse result = RetrievedGooglePhotos = GooglePhoto.AppendImagesForDate(pf, GooglePhotosDateToRetrieve, IncludeVideos, RetrievedGooglePhotos).Result;
 
         lnkMoreGPhotos.Visible = false;
         if (result == null || !result.mediaItems.Any())

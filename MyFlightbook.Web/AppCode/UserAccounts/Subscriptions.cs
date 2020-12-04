@@ -258,7 +258,7 @@ namespace MyFlightbook.Subscriptions
         {
             try
             {
-                MFBDropbox.TokenStatus ts = await new MFBDropbox().ValidateDropboxToken(pf, true).ConfigureAwait(false);
+                MFBDropbox.TokenStatus ts = await new MFBDropbox(pf).ValidateDropboxToken().ConfigureAwait(false);
                 if (ts == MFBDropbox.TokenStatus.None)
                     return true;
 
@@ -357,7 +357,7 @@ namespace MyFlightbook.Subscriptions
                 if (pf.OneDriveAccessToken == null)
                     throw new UnauthorizedAccessException();
 
-                OneDrive od = new OneDrive(pf.OneDriveAccessToken);
+                OneDrive od = new OneDrive(pf);
                 if (await lb.BackupToOneDrive(od).ConfigureAwait(false))
                     sb.AppendFormat(CultureInfo.CurrentCulture, "OneDrive: user {0} Logbook backed up for user {0}...", pf.UserName);
 
@@ -403,7 +403,7 @@ namespace MyFlightbook.Subscriptions
                 if (pf.GoogleDriveAccessToken == null)
                     throw new UnauthorizedAccessException();
 
-                GoogleDrive gd = new GoogleDrive(pf.GoogleDriveAccessToken);
+                GoogleDrive gd = new GoogleDrive(pf);
 
                 sb.AppendFormat(CultureInfo.CurrentCulture, "GoogleDrive: user {0} ", pf.UserName);
                 GoogleDriveResultDictionary meta = await lb.BackupToGoogleDrive(gd, Branding.CurrentBrand).ConfigureAwait(false);

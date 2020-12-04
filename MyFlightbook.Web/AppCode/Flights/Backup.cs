@@ -382,7 +382,6 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="activeBrand">The brand to use - null for current brand</param>
         /// <param name="ms">The stream to which to write</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         public void WriteZipOfImagesToStream(Stream ms, Brand activeBrand, Action<ZipArchive> finalize = null)
         {
             if (ms == null)
@@ -486,7 +485,7 @@ namespace MyFlightbook
             using (FileStream fs = new FileStream(Path.GetTempFileName(), FileMode.Open, FileAccess.ReadWrite, FileShare.None, Int16.MaxValue, FileOptions.DeleteOnClose))
             {
                 WriteZipOfImagesToStream(fs, activeBrand);
-                Dropbox.Api.Files.FileMetadata result = await MFBDropbox.PutFile(User.DropboxAccessToken, fs, BackupImagesFilename(activeBrand)).ConfigureAwait(true);
+                Dropbox.Api.Files.FileMetadata result = await new MFBDropbox(User).PutFile(fs, BackupImagesFilename(activeBrand)).ConfigureAwait(true);
                 return result;
             }
         }
@@ -508,7 +507,7 @@ namespace MyFlightbook
             if (activeBrand == null)
                 activeBrand = Branding.CurrentBrand;
 
-            return await MFBDropbox.PutFile(User.DropboxAccessToken, BackupFilename(activeBrand), LogbookDataForBackup()).ConfigureAwait(true);
+            return await new MFBDropbox(User).PutFile(BackupFilename(activeBrand), LogbookDataForBackup()).ConfigureAwait(true);
         }
         #endregion
 
@@ -529,7 +528,7 @@ namespace MyFlightbook
                 throw new MyFlightbookException(Resources.Profile.errNotConfiguredOneDrive);
 
             if (od == null)
-                od = new OneDrive(User.OneDriveAccessToken);
+                od = new OneDrive(User);
 
             using (FileStream fs = new FileStream(Path.GetTempFileName(), FileMode.Open, FileAccess.ReadWrite, FileShare.None, Int16.MaxValue, FileOptions.DeleteOnClose))
             {
@@ -555,7 +554,7 @@ namespace MyFlightbook
                 activeBrand = Branding.CurrentBrand;
 
             if (od == null)
-                od = new OneDrive(User.OneDriveAccessToken);
+                od = new OneDrive(User);
 
             return await od.PutFileDirect(BackupFilename(activeBrand), LogbookDataForBackup(), "text/csv").ConfigureAwait(true);
         }

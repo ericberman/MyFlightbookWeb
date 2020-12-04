@@ -55,7 +55,7 @@ namespace MyFlightbook.Web.Controls.Prefs
         {
             if (!String.IsNullOrEmpty(Request.Params[MFBDropbox.szParamDropboxAuth])) // redirect from Dropbox oAuth request.
             {
-                CurrentUser.DropboxAccessToken = new MFBDropbox().ConvertToken(Request).AccessToken;
+                CurrentUser.DropboxAccessToken = JsonConvert.SerializeObject(new MFBDropbox().ConvertToken(Request));
                 CurrentUser.FCommit();
 
                 Response.Redirect(String.Format(CultureInfo.InvariantCulture, "{0}?pane=backup", Request.Path));
