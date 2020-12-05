@@ -50,7 +50,7 @@
                                     <asp:BoundField HeaderText="<%$ Resources:Club, LabelMemberJoinDate %>" DataField="JoinedDate" HeaderStyle-HorizontalAlign="Left" ReadOnly="True" DataFormatString="{0:d}" />
                                     <asp:TemplateField HeaderStyle-HorizontalAlign="Left">
                                         <ItemTemplate>
-                                            <%# Eval("DisplayRoleInClub") %>
+                                            <%# Eval("DisplayRoleInClub") %> <%# Eval("ClubOffice") %>
                                         </ItemTemplate>
                                         <HeaderTemplate>
                                             <%# Resources.Club.LabelMemberRole %>
@@ -73,6 +73,7 @@
                                             <div><asp:CheckBox ID="ckMaintenanceOfficer" runat="server" Text="<%$ Resources:Club, RoleMaintenanceOfficer %>" /></div>
                                             <div><asp:CheckBox ID="ckTreasurer" runat="server" Text="<%$ Resources:Club, RoleTreasurer %>" /></div>
                                             <div><asp:CheckBox ID="ckInsuranceOfficer" runat="server" Text="<%$ Resources:Club, RoleInsuranceOfficer %>" /></div>
+                                            <div><asp:Label ID="lblOffice" runat="server" Text="<%$ Resources:Club, RoleOfficeHeld %>" /> <asp:TextBox ID="txtOffice" runat="server" /></div>
                                         </EditItemTemplate>
                                     </asp:TemplateField>
                                     <asp:BoundField DataField="MobilePhone" HeaderText="<%$ Resources:Club, ClubStatusContact %>" HeaderStyle-HorizontalAlign="Left" ReadOnly="true" />

@@ -740,4 +740,7 @@ Sender Email: {1}</value>
   <data name="PolicyShowMobileNumbersHint" xml:space="preserve">
     <value>This can make it easier to contact the owner of a reservation.</value>
   </data>
+  <data name="RoleOfficeHeld" xml:space="preserve">
+    <value>Name of other office(s) held in club (e.g., President, Chief Pilot, etc.):</value>
+  </data>
 </root>

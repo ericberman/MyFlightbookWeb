@@ -1812,6 +1812,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Name of other office(s) held in club (e.g., President, Chief Pilot, etc.):.
+        /// </summary>
+        internal static string RoleOfficeHeld {
+            get {
+                return ResourceManager.GetString("RoleOfficeHeld", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Owner.
         /// </summary>
         internal static string RoleOwner {

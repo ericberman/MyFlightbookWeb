@@ -239,6 +239,8 @@ public partial class Member_ClubManage : System.Web.UI.Page
             ((CheckBox)e.Row.FindControl("ckMaintenanceOfficer")).Checked = cm.IsMaintanenceOfficer;
             ((CheckBox)e.Row.FindControl("ckTreasurer")).Checked = cm.IsTreasurer;
             ((CheckBox)e.Row.FindControl("ckInsuranceOfficer")).Checked = cm.IsInsuranceOfficer;
+
+            ((TextBox)e.Row.FindControl("txtOffice")).Text = cm.ClubOffice ?? string.Empty;
         }
     }
     protected void gvMembers_RowUpdating(object sender, GridViewUpdateEventArgs e)
@@ -254,6 +256,7 @@ public partial class Member_ClubManage : System.Web.UI.Page
             cm.IsMaintanenceOfficer = ((CheckBox)gvr.FindControl("ckMaintenanceOfficer")).Checked;
             cm.IsTreasurer = ((CheckBox)gvr.FindControl("ckTreasurer")).Checked;
             cm.IsInsuranceOfficer = ((CheckBox)gvr.FindControl("ckInsuranceOfficer")).Checked;
+            cm.ClubOffice = ((TextBox)gvr.FindControl("txtOffice")).Text.Trim();
 
             bool fResult = true;
             try

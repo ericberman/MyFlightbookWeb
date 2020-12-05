@@ -915,6 +915,7 @@
     <Content Include="Support\2020-09-13 - Headshot in database.txt" />
     <Content Include="Support\2020-11-21 - Country and sub-country for airports.txt" />
     <Content Include="Support\2020-12-01 - Training Items.txt" />
+    <Content Include="Support\2020-12-05 - Club member role.txt" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>

@@ -1027,6 +1027,11 @@ namespace MyFlightbook.Clubs
         public ClubMemberRole RoleInClub { get; set; }
 
         /// <summary>
+        /// Name of the office the member holds in the club.  E.g., "Chief Pilot".
+        /// </summary>
+        public string ClubOffice { get; set; }
+
+        /// <summary>
         /// Can this person manage the group?
         /// </summary>
         public bool IsManager
@@ -1104,7 +1109,7 @@ namespace MyFlightbook.Clubs
             ClubID = Club.ClubIDNew;
             RoleInClub = ClubMemberRole.Member;
             IsMaintanenceOfficer = IsTreasurer = IsInsuranceOfficer = false;
-            LastError = string.Empty;
+            ClubOffice = LastError = string.Empty;
             JoinedDate = DateTime.MinValue;
         }
 
@@ -1127,6 +1132,7 @@ namespace MyFlightbook.Clubs
             IsInsuranceOfficer = ((roleFlags & InsuranceOfficerMask) != 0);
             JoinedDate = Convert.ToDateTime(dr["joindate"], CultureInfo.InvariantCulture);
             LastError = string.Empty;
+            ClubOffice = (string) util.ReadNullableField(dr, "cluboffice", string.Empty);
         }
         #endregion
 
@@ -1155,12 +1161,13 @@ namespace MyFlightbook.Clubs
             // We don't use REPLACE INTO here because doing so loses the original joindate
             DBHelper dbh = new DBHelper(cmExisting == null ? 
                 "INSERT INTO clubmembers SET idclub=?id, username=?user, role=?role, joindate=NOW()" :
-                "UPDATE clubmembers SET role=?role WHERE idclub=?id AND username=?user");
+                "UPDATE clubmembers SET role=?role, cluboffice=?office WHERE idclub=?id AND username=?user");
             bool fResult = dbh.DoNonQuery((comm) => 
             {
                 comm.Parameters.AddWithValue("id", ClubID);
                 comm.Parameters.AddWithValue("user", UserName);
                 comm.Parameters.AddWithValue("role", (int)ConsolidatedRoleFlags);
+                comm.Parameters.AddWithValue("office", String.IsNullOrWhiteSpace(ClubOffice) ? null : ClubOffice.LimitTo(254));
             });
             if (!fResult)
                 LastError = dbh.LastError;

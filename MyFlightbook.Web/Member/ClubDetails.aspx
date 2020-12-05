@@ -118,7 +118,7 @@
                             </asp:TemplateField>
                             <asp:TemplateField HeaderStyle-HorizontalAlign="Left">
                                 <ItemTemplate>
-                                    <%# Eval("DisplayRoleInClub") %>
+                                    <%# Eval("DisplayRoleInClub") %> <%# Eval("ClubOffice") %>
                                 </ItemTemplate>
                                 <HeaderTemplate>
                                     <%# Resources.Club.LabelMemberRole %>
