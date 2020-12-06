@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net.Mail;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 using System.Windows.Controls;
 
 /******************************************************
@@ -227,5 +228,41 @@ public partial class Member_ClubDetails : System.Web.UI.Page
     protected void ckSummaryScope_CheckedChanged(object sender, EventArgs e)
     {
         RefreshSummary();
+    }
+
+    protected void gvMembers_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        if (e == null)
+            throw new ArgumentNullException(nameof(e));
+
+        if (e.CommandName.CompareCurrentCultureIgnoreCase("_sndMsg") == 0)
+        {
+            Profile pf = Profile.GetUser((string) e.CommandArgument);
+            lblSendPrompt.Text = System.Web.HttpUtility.HtmlEncode(String.Format(CultureInfo.CurrentCulture, Resources.Club.LabelContactMember, pf.UserFullName));
+            hdnTargetUser.Value = pf.UserName;
+            mpeSendMsg.Show();
+        }
+    }
+
+    protected void btnSendMsg_Click(object sender, EventArgs e)
+    {
+        if (!String.IsNullOrWhiteSpace(txtContactSubject.Text + txtMsg.Text))
+        {
+            Profile pf = Profile.GetUser(hdnTargetUser.Value);
+            Profile pfSender = Profile.GetUser(User.Identity.Name);
+            using (MailMessage msg = new MailMessage())
+            {
+                MailAddress maFrom = new MailAddress(pf.Email, pf.UserFullName);
+                msg.To.Add(new MailAddress(pf.Email, pf.UserFullName));
+                msg.From = new MailAddress(Branding.CurrentBrand.EmailAddress, String.Format(CultureInfo.CurrentCulture, Resources.SignOff.EmailSenderAddress, Branding.CurrentBrand.AppName, pf.UserFullName));
+                msg.ReplyToList.Add(new MailAddress(pfSender.Email, pfSender.UserFullName));
+                msg.Subject = txtContactSubject.Text;
+                msg.Body = txtMsg.Text;
+                msg.IsBodyHtml = false;
+                util.SendMessage(msg);
+            }
+        }
+        hdnTargetUser.Value = txtContactSubject.Text = txtMsg.Text = string.Empty;
+        mpeSendMsg.Hide();
     }
 }

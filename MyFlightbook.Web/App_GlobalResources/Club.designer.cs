@@ -803,6 +803,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Send a message to {0}:.
+        /// </summary>
+        internal static string LabelContactMember {
+            get {
+                return ResourceManager.GetString("LabelContactMember", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to They will see your email address, and, if they reply, you will see theirs..
+        /// </summary>
+        internal static string LabelContactMemberDisclaimer {
+            get {
+                return ResourceManager.GetString("LabelContactMemberDisclaimer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Country:.
         /// </summary>
         internal static string LabelCountry {
@@ -1222,6 +1240,15 @@ namespace Resources {
         internal static string LabelViewClubDetails {
             get {
                 return ResourceManager.GetString("LabelViewClubDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send a message to the club.
+        /// </summary>
+        internal static string LebelContactAllMembers {
+            get {
+                return ResourceManager.GetString("LebelContactAllMembers", resourceCulture);
             }
         }
         

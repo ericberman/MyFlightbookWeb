@@ -67,8 +67,10 @@
                         }
 
                         function onKeyDown(e) {
-                            if (e && e.keyCode == Sys.UI.Key.esc)
+                            if (e && e.keyCode == Sys.UI.Key.esc) {
                                 $find("mpuGuestContact").hide();
+                                $find("mpeSendMsg").hide();
+                            }
                         }
             </script>
         </asp:View>
@@ -97,7 +99,7 @@
                     <asp:Localize ID="locClubMembers" runat="server" Text="<%$ Resources:Club, TabClubMembers %>" ></asp:Localize>
                 </Header>
                 <Content>
-                    <asp:GridView ID="gvMembers" DataKeyNames="UserName" runat="server" AutoGenerateColumns="False" GridLines="None" Width="100%" CellPadding="3">
+                    <asp:GridView ID="gvMembers" DataKeyNames="UserName" OnRowCommand="gvMembers_RowCommand" runat="server" AutoGenerateColumns="False" GridLines="None" Width="100%" CellPadding="3">
                         <RowStyle CssClass="clubMemberRow" />
                         <AlternatingRowStyle CssClass="clubMemberAlternateRow" />
                         <Columns>
@@ -125,6 +127,11 @@
                                 </HeaderTemplate>
                             </asp:TemplateField>
                             <asp:BoundField DataField="MobilePhone" HeaderText="<%$ Resources:Club, ClubStatusContact %>" HeaderStyle-HorizontalAlign="Left" ReadOnly="true" />
+                            <asp:TemplateField>
+                                <ItemTemplate>
+                                    <asp:ImageButton ID="imgSndMsg" runat="server" ImageUrl="~/images/sendflight.png" CommandArgument='<%# Eval("UserName") %>' CommandName="_sndMsg" AlternateText="<%$ Resources:Club, LinkSendMessage %>" ToolTip="<%$ Resources:Club, LinkSendMessage %>" />
+                                </ItemTemplate>
+                            </asp:TemplateField>
                         </Columns>
                     </asp:GridView>
                 </Content>
@@ -211,5 +218,22 @@
             </asp:AccordionPane>
         </Panes>
     </asp:Accordion>
+    <asp:Panel ID="pnlSendMsg" runat="server" style="max-width: 350px; display:none;" CssClass="modalpopup" >
+        <h2><asp:Label ID="lblSendPrompt" runat="server" Text="<%$ Resources:Club, LabelContactMember %>" /></h2>
+        <p class="fineprint"><asp:Label ID="lblDisclaimer" runat="server" Text="<%$ Resources:Club, LabelContactMemberDisclaimer %>" /></p>
+        <asp:HiddenField ID="hdnTargetUser" runat="server" />
+        <div><asp:Label ID="lblSubject" runat="server" Text="<%$ Resources:LocalizedText, ContactUsSubject %>" /></div>
+        <div><asp:TextBox ID="txtContactSubject" runat="server" Width="100%" /></div>
+        <div><asp:TextBox ID="txtMsg" runat="server" TextMode="MultiLine" Rows="4" Width="100%" /></div>
+        <div style="text-align:center">
+            <asp:Button ID="btnSendMsg" OnClick="btnSendMsg_Click" runat="server" Text="<%$ Resources:LogbookEntry, SendFlightButton %>" /> <asp:Button ID="btnCancelSend" runat="server" Text="<%$ Resources:LogbookEntry, SendFlightCancel %>" />
+        </div>
+    </asp:Panel>
+    <asp:HiddenField ID="hdn" runat="server" />
+    <ajaxToolkit:ModalPopupExtender ID="mpeSendMsg" runat="server" 
+    PopupControlID="pnlSendMsg" TargetControlID="hdn"
+    BackgroundCssClass="modalBackground"
+    CancelControlID="btnCancelSend" Enabled="true">
+    </ajaxToolkit:ModalPopupExtender>
 </asp:Content>
 

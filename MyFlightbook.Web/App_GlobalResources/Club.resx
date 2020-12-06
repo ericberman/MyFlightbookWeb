@@ -743,4 +743,13 @@ Sender Email: {1}</value>
   <data name="RoleOfficeHeld" xml:space="preserve">
     <value>Name of other office(s) held in club (e.g., President, Chief Pilot, etc.):</value>
   </data>
+  <data name="LabelContactMember" xml:space="preserve">
+    <value>Send a message to {0}:</value>
+  </data>
+  <data name="LabelContactMemberDisclaimer" xml:space="preserve">
+    <value>They will see your email address, and, if they reply, you will see theirs.</value>
+  </data>
+  <data name="LebelContactAllMembers" xml:space="preserve">
+    <value>Send a message to the club</value>
+  </data>
 </root>
