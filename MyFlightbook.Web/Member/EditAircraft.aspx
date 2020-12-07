@@ -14,7 +14,7 @@
     <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script src='<%= ResolveUrl("~/public/Scripts/jquery.json-2.4.min.js") %>'></script>
     <script src='<%= ResolveUrl("~/public/Scripts/mfbcalendar.js?v=3") %>'></script>
-    <div class="noprint">
+    <div>
         <uc1:mfbEditAircraft id="MfbEditAircraft1" runat="server" OnAircraftUpdated="AircraftUpdated"></uc1:mfbEditAircraft>
     </div>
     <asp:HiddenField ID="hdnReturnURL" runat="server" />
