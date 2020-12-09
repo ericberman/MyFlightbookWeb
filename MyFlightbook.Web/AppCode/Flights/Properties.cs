@@ -139,6 +139,8 @@ namespace MyFlightbook
             IDPropScheduledDeparture = 502,     // Not flagged as a known property
             IDPropScheduledArrival = 503,       // Not flagged as a known property
             IDPropHighAltitudeLandings = 504,
+            IDPropMilitaryPrimaryTime = 511,
+            IDPropMilitarySecondaryTime = 512,
             IDPropUASKnowledgeTest10773 = 527,
             IDPropUASTrainingCourse10774 = 528,
             IDPropPilotFlyingTime = 529,        // Not flagged as a known property
@@ -159,6 +161,7 @@ namespace MyFlightbook
             IDPropDutyEnd = 609,
             IDPropNightRating = 623,
             IDPropSequence = 630,
+            IDPropMilitaryAircraftCommander = 659,
             IDPropXCMoreThan100nm = 665,
             IDPropLessonStart = 668,
             IDPropLessonEnd = 669,

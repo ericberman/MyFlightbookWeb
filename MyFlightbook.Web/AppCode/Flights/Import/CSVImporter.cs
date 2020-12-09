@@ -84,23 +84,23 @@ namespace MyFlightbook.ImportFlights
         */
         private readonly static string[] colFlightID = { "Flight ID" };
         private readonly static string[] colDate = { "Date", "FLT_DATE", "Date Flown", "flight_date" };
-        private readonly static string[] colTail = { "Tail Number", "Registration", "Tail", "Ident", "SERIAL_NUM", "ACFT", "Aircraft ID", "Reg", "AIRCRAFT REGISTRATION", "aircraft_registration", "tailNo", "aircraft_tail_number" };
+        private readonly static string[] colTail = { "Tail Number", "Registration", "Tail", "Ident", "SERIAL_NUM", "ACFT", "Aircraft ID", "Reg", "AIRCRAFT REGISTRATION", "aircraft_registration", "tailNo", "aircraft_tail_number", "Tail #" };
         private readonly static string[] colAircraftID = { "Aircraft ID" };
         private readonly static string[] colTotal = { "Total Flight Time", "Total Time", "TotalDuration", "Total Duration", "Flt Time", "Block", "HRS", "TIME FLOWN", "FltTime", "Total", "total_time", "totalFlightTime", "flight_time" };
         private readonly static string[] colApproaches = { "Approaches", "NumApproaches", "Inst App (D/N)", "Inst App", "IAP", "APPROACHES & TYPE", "instrumentApproaches" };
         private readonly static string[] colHold = { "Hold", "Holds", "Holding", "Holding Patterns", "nbr_hold" };
         private readonly static string[] colLandings = { "Landings", "LAND_STD" };
-        private readonly static string[] colNightLandings = { "FS Night Landings", "flight_nightLandings", "Night Ldg", "Night Ldgs", "Ngt Ldgs", "Full-Stop Night Landings", "LANDINGS NIGHT", "Night Landings", "LandsNight", "landings_night", "ldgs_night", "nightLandings", "night_landings" };
-        private readonly static string[] colFullStopLandings = { "FS Day Landings", "flight_dayLandings", "Day Ldg", "Day Ldgs", "Full-Stop Day Landings", "LANDINGS DAY", "Day Landings", "LandsDay", "landings_day", "ldgs_day", "dayLandings", "day_landings" };
+        private readonly static string[] colNightLandings = { "FS Night Landings", "flight_nightLandings", "Night Ldg", "Night Ldgs", "Ngt Ldgs", "Full-Stop Night Landings", "LANDINGS NIGHT", "Night Landings", "LandsNight", "landings_night", "ldgs_night", "Ldg Night", "nightLandings", "night_landings" };
+        private readonly static string[] colFullStopLandings = { "FS Day Landings", "flight_dayLandings", "Day Ldg", "Day Ldgs", "Full-Stop Day Landings", "LANDINGS DAY", "Day Landings", "LandsDay", "landings_day", "ldgs_day", "dayLandings", "day_landings", "Ldg Day" };
         private readonly static string[] colCrossCountry = { "X-Country", "flight_crossCountry", "XCountry", "XC", "X CNTY", "X/Ctry", "X/C", "CROSS COUNTRY", "CrossCountry", "Cross Country Duration", "cross_country" };
         private readonly static string[] colNight = { "Night", "flight_night", "Night Duration", "nightTime" };
-        private readonly static string[] colIMC = { "IMC", "flight_actualInstrument", "Actual Inst", "INSTRUMENT", "Actual Instrument Duration", "Instr", "ifr", "actualInstrument", "actual_instrument" };
-        private readonly static string[] colSimIFR = { "Simulated Instrument", "flight_simulatedInstrument", "Hood", "Sim Inst", "Simulated Instrument Duration", "simulated_instrument" };
+        private readonly static string[] colIMC = { "IMC", "flight_actualInstrument", "Actual Inst", "INSTRUMENT", "Actual Instrument Duration", "Instr", "Inst", "Actual Instrument", "ifr", "actualInstrument", "actual_instrument" };
+        private readonly static string[] colSimIFR = { "Simulated Instrument", "flight_simulatedInstrument", "Hood", "Sim Inst", "Simulated Instrument Duration", "simulated_instrument", "Simulated Instrument (Hood)" };
         private readonly static string[] colGroundSim = { "Ground Simulator", "flight_simulator", "Sim/FTD", "SIMULATOR", "Simulator Duration", "SimTime", "synthetic_training", "simulator_time" };
-        private readonly static string[] colDual = { "Dual Received", "flight_dualReceived", "Dualreceived", "Dual Recd", "Dual", "Dual Received Duration", "dual_received" };
-        private readonly static string[] colCFI = { "CFI", "flight_dualGiven", "DualGiven", "Dual Given", "Dual Given Duration", "flight_instructor", "instructor", "as_instructor" };
-        private readonly static string[] colSIC = { "SIC", "flight_sic", "SECOND IN COMMAND", "SIC Duration", "CoPlt", "co_pilot", "copilot" };
-        private readonly static string[] colPIC = { "PIC", "flight_pic", "PILOT IN COMMAND", "PIC Duration", "pilot_in_command_time" };
+        private readonly static string[] colDual = { "Dual Received", "flight_dualReceived", "Dualreceived", "Dual Recd", "Dual", "Dual Received Duration", "dual_received", "Dual Received (Student)" };
+        private readonly static string[] colCFI = { "CFI", "flight_dualGiven", "DualGiven", "Dual Given", "Dual Given Duration", "flight_instructor", "instructor", "as_instructor", "IP" };
+        private readonly static string[] colSIC = { "SIC", "flight_sic", "SECOND IN COMMAND", "SIC Duration", "CoPlt", "co_pilot", "copilot", "Co-Pilot" };
+        private readonly static string[] colPIC = { "PIC", "flight_pic", "PILOT IN COMMAND", "PIC Duration", "pilot_in_command_time", "Pilot in CMD" };
         private readonly static string[] colRoute = { "Route", "flight_route", "Via", "ROUTE OF FLIGHT", "LOC_INTM" };
         private readonly static string[] colFrom = { "From", "flight_from", "Departure", "Origin", "LOC_FROM", "DepPlace", "departure_airport_name", "departure_airport", "departureAirport" };
         private readonly static string[] colTo = { "To", "flight_to", "Arrival", "Dest", "Destination", "LOC_TO", "ArrPlace", "arrival_airport_name", "arrival_airport", "arrivalAirport" };
@@ -115,7 +115,7 @@ namespace MyFlightbook.ImportFlights
         private readonly static string[] colPublic = { "Public" };
         private readonly static string[] colModelName = { "Model", "Aircraft Type", "MakeModel", "MAKE & MODEL", "A/C Type", "AIRCRAFT MAKE & MODEL", "ACFT_MDS", "ACFT_MDS", "ACType", "type_of_aircraft", "acModel", "aircraft_type" };
         private readonly static string[] colFlightConditions = { "FS_ID", "CONDITION" };  // For CAFRS - specifies flight conditions
-        private readonly static string[] colPilotRole = { "DS_ID", "DUTY" };    // For CAFRS - specifies role of pilot ("Duty Position")
+        private readonly static string[] colPilotRole = { "DS_ID", "DUTY", "Duty Posn", "Duty Position" };    // For CAFRS - specifies role of pilot ("Duty Position")
         private readonly static string[] colPilotMission = { "MISSION", "MI_ID"};  // For CAFRS - specifies the mission for the pilot
 
         /// <summary>
@@ -128,10 +128,11 @@ namespace MyFlightbook.ImportFlights
             { "Name of PIC", new string[] {"Name of PIC", "flight_selectedCrewPIC", "PIC/P1 Crew", "Captain", "PIC Name", "PICName", "name_of_pilot_in_command", "pic_name" }},
             { "Name of SIC", new string[] {"Name of SIC", "SIC/P2 Crew", "First Officer" }},
             { "Instructor Name", new string[] {"Instructor Name", "instructor_name" } },
-            { "Takeoffs - Night", new string[] {"Takeoffs - Night", "flight_nightTakeoffs", "Night T/O", "Night Takeoffs", "TKoffsNight", "to_night" }},
+            { "Takeoffs - Night", new string[] {"Takeoffs - Night", "flight_nightTakeoffs", "Night T/O", "Night Takeoffs", "TKoffsNight", "to_night", "T/O Night" }},
             { "Landings - Water", new string[] {"Landings - Water", "flight_waterLandings"}},
             { "Takeoffs - Water", new string[] {"Takeoffs - Water", "flight_waterTakeoffs"}},
-            { "Takeoffs (any)", new string[] {"Takeoffs (any)", "to_day" } },
+            { "Takeoffs (any)", new string[] {"Takeoffs (any)", "to_day", "T/O Day" } },
+            { "Night Vision Time (Goggles)", new string[] { "Night Vision Time (Goggles)", "NVG" } },
             {"Night Vision - Landing", new string[] {"Night Vision - Landing", "flight_nightVisionGoggleLandings"}},
             {"Night Vision - Takeoff", new string[] {"Night Vision - Takeoff", "flight_nightVisionGoggleTakeoffs"}},
             {"Go-arounds", new string[] {"Go-arounds", "flight_goArounds"}},
@@ -146,6 +147,10 @@ namespace MyFlightbook.ImportFlights
             {"Block Out Time", new string[] {"Block Out Time", "Block Out", "Off Block", "DepTime", "Departure Time", "off_block", "block_start", "departureTime" } },
             {"Block In Time", new string[] {"Block In Time", "Block In", "On Block", "ArrTime", "Arrival Time", "on_block", "block_end", "arrivalTime" } },
             {"Flight Attendant Name(s)", new string[] { "Flight Attendant Name(s)", "Flight Attendant" } },
+            {"Military Pilot Primary Time", new string[] {"Military Pilot Primary Time", "PRI", "Primary" } },
+            {"Military Pilot Secondary Time", new string[] {"Military Pilot Secondary Time", "SEC", "Secondary" } },
+            {"Mission and Sortie", new string[] { "Mission and Sortie", "Mission #" } },
+            {"Aircraft Commander Time", new string[] { "Aircraft Commander Time", "A/C Cmdr", "A/C Cdr"} },
             {"Number of Passengers", new string[] {"Number of Passengers", "PAX" } },
             {"Student Name", new string[] {"Student Name", "Student"} },
             {"Approaches - ILS", new string[] {"Approaches - ILS", "nbr_ils"}},
@@ -425,7 +430,14 @@ namespace MyFlightbook.ImportFlights
                 if (String.IsNullOrEmpty(szPilotRole) || le == null || le.TotalFlightTime == 0)
                     return;
 
-                switch (szPilotRole.ToUpperInvariant())
+                // Look for Primary or Secondary time - disambiguates PIC/SIC in air-force (not really used in Army, I don't think.)
+                bool fPrimary = lstProps.Find(cfp => cfp.PropTypeID == (int) CustomPropertyType.KnownProperties.IDPropMilitaryPrimaryTime) != null;
+                bool fSecondary = lstProps.Find(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropMilitarySecondaryTime) != null;
+                bool fCommander = lstProps.Find(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropMilitaryAircraftCommander) != null;
+                bool fAirForce = fPrimary || fSecondary;    // use this as a proxy for air force rules vs. Army rules.
+
+                szPilotRole = ((szPilotRole.Length > 2) ? szPilotRole.Substring(0, 2) : szPilotRole).ToUpperInvariant();
+                switch (szPilotRole)
                 {
                     case "PI":  // Second in command
                         CrossFillSIC(le);
@@ -438,20 +450,56 @@ namespace MyFlightbook.ImportFlights
                     case "CP":  // Co-pilot
                         AddCrossFilledPropertyWithID(le, (int)CustomPropertyType.KnownProperties.IDPropMilitaryCoPilottime, lstProps);
                         break;
-                    case "SP":  // Standardization Pilot
-                    case "IP":  // Instructor Pilot
+                    case "SP":  // Standardization Instructor Pilot (Army), Student pilot (Air force) - inherently ambiguous and contradictory, but I'm told air force doesn't use this much, so we'll go with Standardization Pilot.
+                    case "IP":  // Instructor Pilot.  PIC in army, but PIC/SIC in air-force depending on whether primary or secondary.
+                    case "ME":  // Maintenance Test Flight Evaluator
                         CrossFillCFI(le);
-                        CrossFillPIC(le);
+                        if (fAirForce && !fCommander)
+                            CrossFillSIC(le);
+                        else
+                            CrossFillPIC(le);
                         break;
-                    case "IE":  // Instrument evaluator
+                    case "IE":  // Instrument evaluator (Flight examiner)
                         AddCrossFilledPropertyWithID(le, (int)CustomPropertyType.KnownProperties.IDPropInstrumentExaminer, lstProps);
                         CrossFillCFI(le);
                         CrossFillPIC(le);
                         break;
-                    case "MP":  // Maintenance Pilot evaluator
-                        AddCrossFilledPropertyWithID(le, (int)CustomPropertyType.KnownProperties.IDPropMaintTestPilot, lstProps);
-                        CrossFillPIC(le);
+                    case "MP":  // Maintenance Pilot evaluator (Army) or Mission Pilot (Air Force)
+                        if (fAirForce)
+                        {
+                            if (fCommander)
+                                CrossFillPIC(le);
+                            else
+                                CrossFillSIC(le);
+                        }
+                        else
+                        {
+                            AddCrossFilledPropertyWithID(le, (int)CustomPropertyType.KnownProperties.IDPropMaintTestPilot, lstProps);
+                            CrossFillPIC(le);
+                        }
                         break;
+                    case "EP":  // Air-force Evaluator Pilot
+                        if (fAirForce || fCommander)
+                            CrossFillPIC(le);
+                        else
+                            CrossFillSIC(le);
+                        CrossFillCFI(le);   // it's CFI time regardless.
+                        break;
+                    case "FP":  // Air-force - first pilot
+                    case "MC":  // Air-foce - Mission co-pilot
+                        if (fAirForce)
+                        {
+                            CrossFillSIC(le);
+                            if (le.Dual == 0)
+                                le.Dual = le.TotalFlightTime;
+                        }
+                        break;
+                    case "UP":  // Air Force - unqualified pilot - just treat as dual if primary or secondary time is logged
+                        if (fAirForce && le.Dual == 0)
+                            le.Dual = le.TotalFlightTime;
+                        break;
+                    case "UC":  // Unqualified co-pilot
+                    case "AO":  // Aerial observer - doesn't map to anything
                     default:
                         break;
                 }
