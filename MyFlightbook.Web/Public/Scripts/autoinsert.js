@@ -83,10 +83,13 @@ function autoInsert(inp, uri, triggerChar) {
                         // execute a function when someone clicks on the item value (DIV element):
                         b.addEventListener("click", function (e) {
                             // insert the value for the autocomplete text field:
-                            inp.value = inp.value.substring(0, startPos) + this.getElementsByTagName("input")[0].value + inp.value.substr(endPos);
+                            var val = this.getElementsByTagName("input")[0].value;
+                            inp.value = inp.value.substring(0, startPos) + val + inp.value.substr(endPos);
                             // close the list of autocompleted values,
                             // (or any other open lists of autocompleted values:
                             closeAllLists();
+                            inp.focus();
+                            inp.selectionStart = inp.selectionEnd = startPos + val.length;
                         });
                         a.appendChild(b);
                         a.style.display = "inline-block";
@@ -105,18 +108,22 @@ function autoInsert(inp, uri, triggerChar) {
             currentFocus++;
             /*and and make the current item more visible:*/
             addActive(x);
+            if (x && currentFocus > -1)
+                e.preventDefault();
         } else if (e.keyCode === 38) { //up
             /*If the arrow UP key is pressed,
             decrease the currentFocus variable:*/
             currentFocus--;
+            if (x && currentFocus > -1)
+                e.preventDefault();
             /*and and make the current item more visible:*/
             addActive(x);
         } else if (e.keyCode === 13) {
-            /*If the ENTER key is pressed, prevent the form from being submitted,*/
-            e.preventDefault();
-            if (currentFocus > -1) {
+            if (currentFocus > -1 && x) {
+                /*If the ENTER key is pressed, prevent the form from being submitted,*/
+                e.preventDefault();
                 /*and simulate a click on the "active" item:*/
-                if (x) x[currentFocus].click();
+                x[currentFocus].click();
             }
         } else if (e.keyCode === 27)
             closeAllLists();
@@ -146,6 +153,7 @@ function autoInsert(inp, uri, triggerChar) {
                 x[i].parentNode.removeChild(x[i]);
             }
         }
+        currentFocus = -1;
     }
     /*execute a function when someone clicks in the document:*/
     document.addEventListener("click", function (e) {
