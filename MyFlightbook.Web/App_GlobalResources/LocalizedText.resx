@@ -700,10 +700,6 @@
   <data name="DefaultPageAddFlightHeader" xml:space="preserve">
     <value>Add a new flight</value>
   </data>
-  <data name="DefaultPageRecentFlightsHeader" xml:space="preserve">
-    <value>Recent flights taken by members of the %APP_NAME% community</value>
-    <comment>{0} is the name of the app.</comment>
-  </data>
   <data name="DefaultPageWelcomeBack" xml:space="preserve">
     <value>Welcome Back {0}</value>
     <comment>{0} is user name</comment>
@@ -756,8 +752,8 @@
   <data name="ContactUsReadFAQ" xml:space="preserve">
     <value>Please note that many questions can be answered in the FAQ.</value>
   </data>
-  <data name="HomePageStats" xml:space="preserve">
-    <value>{0:N0} pilots have recorded {1:N0} flights over the past {2:N0} days!</value>
+  <data name="DefaultPageRecentStatsUsersFlights" xml:space="preserve">
+    <value>{0:N0} pilots logged {1:N0} flights</value>
   </data>
   <data name="AnswerWhyCantEditSims" xml:space="preserve">
     <value>This aircraft is a "virtual" aircraft that is either an unspecified instance of the representative model, or a training device that emulates that model. As such is shared by all pilots who want to fly a virtual version of this model with this set of capabilities (e.g., logging landings or approaches).&lt;br /&gt;&lt;br /&gt;If you need to record training time in a training device that represents another model of aircraft, or with a different certification level, or in a different model without specifying a specific tailnumber, you can create a new virtual aircraft to represent that (if one already exists, it will be reused).&lt;br /&gt;&lt;br /&gt;If you have existing flights that you would like to switch from one aircraft to another, contact us and we can do a bulk-edit for you.</value>
@@ -1566,17 +1562,8 @@
   <data name="DefaultPageCurrentUsers" xml:space="preserve">
     <value>{0:#,##0} pilots online using the website right now!</value>
   </data>
-  <data name="DefaultPageRecentStats" xml:space="preserve">
-    <value>%APP_NAME% currently has:</value>
-  </data>
-  <data name="DefaultPageRecentStatsAircraft" xml:space="preserve">
-    <value>{0:#,##0} aircraft</value>
-  </data>
   <data name="DefaultPageRecentStatsFlights" xml:space="preserve">
-    <value>{0:#,##0} flights</value>
-  </data>
-  <data name="DefaultPagerecentStatsModels" xml:space="preserve">
-    <value>{0:#,##0} models of aircraft</value>
+    <value>The system reached a total of {0:N0} flights in {1:N0} aircraft, representing {2:N0} models</value>
   </data>
   <data name="PrintOptionsEntriesPerPageDescription" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>content.en\printoptionsentriesperpagedescription.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
@@ -1850,5 +1837,29 @@
   </data>
   <data name="SearchTipsAirportToolTip" xml:space="preserve">
     <value>Use "!" as a prefix or suffix to indicate departure/arrival. !ABC matches flights that depart from ABC (i.e., ABC is the first airport in the route of flight), and ABC! matches flights that arrive at ABC (i.e., ABC is the last airport in the route of flight).</value>
+  </data>
+  <data name="DefaultPageRecentStatsFurthestRoute" xml:space="preserve">
+    <value>Someone logged a flight that went {0:#,##0.0}nm from the starting point!</value>
+  </data>
+  <data name="DefaultPageRecentStatsLongestRoute" xml:space="preserve">
+    <value>Someone logged a flight that was {0:#,##0.0}nm long!</value>
+  </data>
+  <data name="DefaultPageRecentStatsHeader" xml:space="preserve">
+    <value>In the last {0} days on %APP_NAME%:</value>
+  </data>
+  <data name="DefaultPageRecentStatsAirports" xml:space="preserve">
+    <value>{0:N0} pilots recorded {1:N0} flights to {2:N0} airports in {3:N0} countries</value>
+  </data>
+  <data name="DefaultPageRecentStatsPopularAirports" xml:space="preserve">
+    <value>Most visited airports:</value>
+  </data>
+  <data name="DefaultPageRecentStatsPopularModels" xml:space="preserve">
+    <value>Most flown models:</value>
+  </data>
+  <data name="DefaultPageRecentStatsAirportInfo" xml:space="preserve">
+    <value>Recorded in {0:N0} flights representing {1:N0} pilots, {2:N0} aircraft, and {3:N0} models of aircraft</value>
+  </data>
+  <data name="DefaultPageRecentStatsModelInfo" xml:space="preserve">
+    <value>{0} {1} - {2:N0} flights</value>
   </data>
 </root>

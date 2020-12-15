@@ -1577,34 +1577,25 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Recent flights taken by members of the %APP_NAME% community.
+        ///   Looks up a localized string similar to Recorded in {0:N0} flights representing {1:N0} pilots, {2:N0} aircraft, and {3:N0} models of aircraft.
         /// </summary>
-        internal static string DefaultPageRecentFlightsHeader {
+        internal static string DefaultPageRecentStatsAirportInfo {
             get {
-                return ResourceManager.GetString("DefaultPageRecentFlightsHeader", resourceCulture);
+                return ResourceManager.GetString("DefaultPageRecentStatsAirportInfo", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to %APP_NAME% currently has:.
+        ///   Looks up a localized string similar to {0:N0} pilots recorded {1:N0} flights to {2:N0} airports in {3:N0} countries.
         /// </summary>
-        internal static string DefaultPageRecentStats {
+        internal static string DefaultPageRecentStatsAirports {
             get {
-                return ResourceManager.GetString("DefaultPageRecentStats", resourceCulture);
+                return ResourceManager.GetString("DefaultPageRecentStatsAirports", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0:#,##0} aircraft.
-        /// </summary>
-        internal static string DefaultPageRecentStatsAircraft {
-            get {
-                return ResourceManager.GetString("DefaultPageRecentStatsAircraft", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0:#,##0} flights.
+        ///   Looks up a localized string similar to The system reached a total of {0:N0} flights in {1:N0} aircraft, representing {2:N0} models.
         /// </summary>
         internal static string DefaultPageRecentStatsFlights {
             get {
@@ -1613,11 +1604,65 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0:#,##0} models of aircraft.
+        ///   Looks up a localized string similar to Someone logged a flight that went {0:#,##0.0}nm from the starting point!.
         /// </summary>
-        internal static string DefaultPagerecentStatsModels {
+        internal static string DefaultPageRecentStatsFurthestRoute {
             get {
-                return ResourceManager.GetString("DefaultPagerecentStatsModels", resourceCulture);
+                return ResourceManager.GetString("DefaultPageRecentStatsFurthestRoute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In the last {0} days on %APP_NAME%:.
+        /// </summary>
+        internal static string DefaultPageRecentStatsHeader {
+            get {
+                return ResourceManager.GetString("DefaultPageRecentStatsHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Someone logged a flight that was {0:#,##0.0}nm long!.
+        /// </summary>
+        internal static string DefaultPageRecentStatsLongestRoute {
+            get {
+                return ResourceManager.GetString("DefaultPageRecentStatsLongestRoute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} {1} - {2:N0} flights.
+        /// </summary>
+        internal static string DefaultPageRecentStatsModelInfo {
+            get {
+                return ResourceManager.GetString("DefaultPageRecentStatsModelInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Most visited airports:.
+        /// </summary>
+        internal static string DefaultPageRecentStatsPopularAirports {
+            get {
+                return ResourceManager.GetString("DefaultPageRecentStatsPopularAirports", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Most flown models:.
+        /// </summary>
+        internal static string DefaultPageRecentStatsPopularModels {
+            get {
+                return ResourceManager.GetString("DefaultPageRecentStatsPopularModels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0:N0} pilots logged {1:N0} flights.
+        /// </summary>
+        internal static string DefaultPageRecentStatsUsersFlights {
+            get {
+                return ResourceManager.GetString("DefaultPageRecentStatsUsersFlights", resourceCulture);
             }
         }
         
@@ -2668,15 +2713,6 @@ namespace Resources {
         internal static string HeaderDownloadWP7 {
             get {
                 return ResourceManager.GetString("HeaderDownloadWP7", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0:N0} pilots have recorded {1:N0} flights over the past {2:N0} days!.
-        /// </summary>
-        internal static string HomePageStats {
-            get {
-                return ResourceManager.GetString("HomePageStats", resourceCulture);
             }
         }
         

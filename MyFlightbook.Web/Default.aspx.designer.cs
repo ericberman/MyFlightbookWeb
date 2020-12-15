@@ -67,24 +67,6 @@ public partial class Public_Home
     protected global::System.Web.UI.WebControls.Repeater rptStats;
 
     /// <summary>
-    /// locRecentFlightsHeader control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Localize locRecentFlightsHeader;
-
-    /// <summary>
-    /// lblRecentFlightsStats control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.HyperLink lblRecentFlightsStats;
-
-    /// <summary>
     /// imageSlider control.
     /// </summary>
     /// <remarks>

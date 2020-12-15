@@ -54,8 +54,6 @@ public partial class Public_Home : System.Web.UI.Page
             };
             rptFeatures.DataSource = lst;
             rptFeatures.DataBind();
-            locRecentFlightsHeader.Text = Branding.ReBrand(Resources.LocalizedText.DefaultPageRecentFlightsHeader);
-
 
             if (User.Identity.IsAuthenticated)
             {
@@ -68,17 +66,9 @@ public partial class Public_Home : System.Web.UI.Page
                 pnlWelcome.Visible = true;
             }
 
-            lblRecentFlightsStats.Text = fs.ToString();
+            locRecentStats.Text = Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsHeader, fs.MaxDays));
 
-            locRecentStats.Text = Branding.ReBrand(Resources.LocalizedText.DefaultPageRecentStats);
-            List<string> lstStats = new List<string>()
-            {
-                String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsFlights, fs.NumFlightsTotal),
-                String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsAircraft, fs.NumAircraft),
-                String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPagerecentStatsModels, fs.NumModels)
-            };
-
-            rptStats.DataSource = lstStats;
+            rptStats.DataSource = fs.Stats;
             rptStats.DataBind();
         }
 

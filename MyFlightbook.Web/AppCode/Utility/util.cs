@@ -88,6 +88,11 @@ namespace MyFlightbook
             Value = szValue;
             Link = null;
         }
+
+        public override string ToString()
+        {
+            return Value ?? string.Empty;
+        }
     }
 
     /// <summary>

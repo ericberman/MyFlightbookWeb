@@ -28,13 +28,44 @@
             <asp:Label ID="lblFollowTwitter" runat="server" style="vertical-align:middle"></asp:Label>
         </asp:HyperLink>
     </div>
-    <p style="text-align:center">
-        <asp:Label ID="locRecentStats" runat="server" Font-Bold="true"></asp:Label>
-        <asp:Repeater ID="rptStats" runat="server">
-            <ItemTemplate>
-                ● <%# Container.DataItem %></li>
-            </ItemTemplate>                        
-        </asp:Repeater>
-    </p>
-    <p style="text-align:center"><asp:Hyperlink ID="lblRecentFlightsStats" Font-Bold="true" runat="server" NavigateUrl="~/Public/MyFlights.aspx"></asp:Hyperlink></p>
+    <div style="margin-left:auto; margin-right:auto; max-width: 800px; margin-top: 10px; padding: 5px; border-radius: 5px; border: 1px solid gray;">
+        <h2><asp:Label ID="locRecentStats" runat="server" /></h2>
+        <ul>
+            <asp:Repeater ID="rptStats" runat="server">
+                <ItemTemplate>
+                    <li>
+                        <asp:MultiView ID="mvStat" runat="server" ActiveViewIndex='<%# String.IsNullOrWhiteSpace(((LinkedString) Container.DataItem).Link) ? 0 : 1 %>'>
+                            <asp:View ID="v1" runat="server"><%#: ((LinkedString) Container.DataItem).Value %></asp:View>
+                            <asp:View ID="v2" runat="server"><asp:HyperLink ID="lnkStat" runat="server" NavigateUrl='<%# ((LinkedString) Container.DataItem).Link %>' Target="_blank" Text="<%# ((LinkedString) Container.DataItem).Value %>" /></asp:View>
+                        </asp:MultiView>
+                    </li>
+                </ItemTemplate>                        
+            </asp:Repeater>
+        </ul>
+        <asp:Panel ID="pnlLazyStats" runat="server" Visible="false" style="margin-left:auto; margin-right: auto;">
+            <div style="display:inline-block; vertical-align:top;">
+                <h3><asp:Label ID="lblAp" runat="server" Text="<%$ Resources:LocalizedText, DefaultPageRecentStatsPopularAirports %>" /></h3>
+                <ol>
+                    <asp:Repeater ID="rptTopAirports" runat="server">
+                        <ItemTemplate>
+                            <li>
+                                <div><asp:HyperLink ID="lnkAp" runat="server" Target="_blank" Text='<%# Eval("FullName") %>' NavigateUrl='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/Public/MapRoute2.aspx?sm=1&Airports={0}", Eval("Code")) %>' /></div>
+                                <div class="fineprint"><asp:Label ID="lblApStat" runat="server" Text='<%# Eval("StatsDisplay") %>' /></div>
+                            </li>
+                        </ItemTemplate>
+                    </asp:Repeater>
+                </ol>
+            </div>
+            <div style="display:inline-block; vertical-align:top;">
+                <h3><asp:Label ID="lblModel" runat="server" Text="<%$ Resources:LocalizedText, DefaultPageRecentStatsPopularModels %>" /></h3>
+                <ol>
+                    <asp:Repeater ID="rptTopModels" runat="server">
+                        <ItemTemplate>
+                            <li><%# Container.DataItem %></li>
+                        </ItemTemplate>
+                    </asp:Repeater>
+                </ol>
+            </div>
+        </asp:Panel>
+    </div>
 </asp:Content>

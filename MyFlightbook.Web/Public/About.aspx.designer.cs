@@ -123,13 +123,49 @@ namespace MyFlightbook.Web.PublicPages
         protected global::System.Web.UI.WebControls.Repeater rptStats;
 
         /// <summary>
-        /// lblRecentFlightsStats control.
+        /// pnlLazyStats control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink lblRecentFlightsStats;
+        protected global::System.Web.UI.WebControls.Panel pnlLazyStats;
+
+        /// <summary>
+        /// lblAp control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblAp;
+
+        /// <summary>
+        /// rptTopAirports control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptTopAirports;
+
+        /// <summary>
+        /// lblModel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblModel;
+
+        /// <summary>
+        /// rptTopModels control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptTopModels;
 
         /// <summary>
         /// Master property.

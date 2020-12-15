@@ -14,6 +14,7 @@ namespace MyFlightbook.Web.PublicPages
 {
     public partial class About : System.Web.UI.Page
     {
+        private const int maxAirports = 20;
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -25,18 +26,25 @@ namespace MyFlightbook.Web.PublicPages
                 lblFollowTwitter.Text = Branding.ReBrand(Resources.LocalizedText.FollowOnTwitter);
 
                 FlightStats fs = FlightStats.GetFlightStats();
-                lblRecentFlightsStats.Text = fs.ToString();
 
-                locRecentStats.Text = Branding.ReBrand(Resources.LocalizedText.DefaultPageRecentStats);
-                List<string> lstStats = new List<string>()
-                {
-                String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsFlights, fs.NumFlightsTotal),
-                String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsAircraft, fs.NumAircraft),
-                String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPagerecentStatsModels, fs.NumModels)
-                };
+                locRecentStats.Text = Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsHeader, fs.MaxDays));
 
-                rptStats.DataSource = lstStats;
+                rptStats.DataSource = fs.Stats;
                 rptStats.DataBind();
+
+                if (fs.HasSlowInformation)
+                {
+                    List<AirportStats> lstTopAirports = new List<AirportStats>(fs.AirportsVisited);
+                    if (lstTopAirports.Count > maxAirports)
+                        lstTopAirports.RemoveRange(maxAirports, lstTopAirports.Count - maxAirports);
+                    rptTopAirports.DataSource = lstTopAirports;
+                    rptTopAirports.DataBind();
+
+                    rptTopModels.DataSource = fs.ModelsUsed;
+                    rptTopModels.DataBind();
+
+                    pnlLazyStats.Visible = true;
+                }
             }
         }
     }

@@ -35,15 +35,16 @@
                         </ItemTemplate>
                     </asp:Repeater>
                     <p>
-                        <asp:Label ID="locRecentStats" runat="server" Font-Bold="true"></asp:Label>
+                        <asp:Label ID="locRecentStats" runat="server" Font-Bold="true" />
                         <asp:Repeater ID="rptStats" runat="server">
                             <ItemTemplate>
-                                ● <%# Container.DataItem %></li>
+                                ● <asp:MultiView ID="mvStat" runat="server" ActiveViewIndex='<%# String.IsNullOrWhiteSpace(((LinkedString) Container.DataItem).Link) ? 0 : 1 %>'>
+                                    <asp:View ID="v1" runat="server"><%#: ((LinkedString) Container.DataItem).Value %></asp:View>
+                                    <asp:View ID="v2" runat="server"><asp:HyperLink ID="lnkStat" runat="server" NavigateUrl='<%# ((LinkedString) Container.DataItem).Link %>' Target="_blank" Text="<%# ((LinkedString) Container.DataItem).Value %>" /></asp:View>
+                                  </asp:MultiView>
                             </ItemTemplate>                        
                         </asp:Repeater>
                     </p>
-                    <h2><asp:Localize ID="locRecentFlightsHeader" runat="server"></asp:Localize></h2>
-                    <p><asp:Hyperlink ID="lblRecentFlightsStats" Font-Bold="true" runat="server" NavigateUrl="~/Public/MyFlights.aspx"></asp:Hyperlink></p>
                     <div style="max-width: 480px; margin-left:auto; margin-right:auto;">
                         <uc1:imageSlider runat="server" ID="imageSlider" />
                     </div>
