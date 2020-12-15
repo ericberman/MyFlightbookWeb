@@ -698,16 +698,24 @@ namespace MyFlightbook.CloudStorage
             if (ex == null)
                 throw new ArgumentNullException(nameof(ex));
 
-            dynamic error = JsonConvert.DeserializeObject(ExtractResponseString(ex.InnerException as WebException));
-            if (error == null)
-                throw new MyFlightbookException("Unknown error refreshing access token", ex);
-            else if (error.error != null && String.Compare(error.error.ToString(), "invalid_grant", StringComparison.InvariantCulture) == 0)
+            string szResponse = ExtractResponseString(ex.InnerException as WebException);
+            try
             {
-                OneDriveMFBException ode = new OneDriveMFBException(new OneDriveError(OneDriveErrorCodeMFB.AuthenticationFailure), ex);
-                throw new UnauthorizedAccessException(ode.Message, ode);
+                dynamic error = JsonConvert.DeserializeObject(szResponse);
+                if (error == null)
+                    throw new MyFlightbookException("Unknown error refreshing access token", ex);
+                else if (error.error != null && String.Compare(error.error.ToString(), "invalid_grant", StringComparison.InvariantCulture) == 0)
+                {
+                    OneDriveMFBException ode = new OneDriveMFBException(new OneDriveError(OneDriveErrorCodeMFB.AuthenticationFailure), ex);
+                    throw new UnauthorizedAccessException(ode.Message, ode);
+                }
+                else
+                    throw new MyFlightbookException(Branding.ReBrand(Resources.LocalizedText.OneDriveBadAuth));
             }
-            else
-                throw new MyFlightbookException(Branding.ReBrand(Resources.LocalizedText.OneDriveBadAuth));
+            catch (JsonReaderException ex2)
+            {
+                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Unable to deserialize response '{0}': {1}", szResponse, ex2.Message), ex);
+            }
         }
 
         private UriBuilder BuilderForPath(string szPath)
