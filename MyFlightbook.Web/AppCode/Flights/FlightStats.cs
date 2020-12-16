@@ -327,7 +327,7 @@ namespace MyFlightbook.FlightStatistics
 
                 // Popular models
                 const string szPopularModels = @"SELECT 
-                    man.manufacturer, m.family, COUNT(f.idflight) AS num
+                    man.manufacturer, IF(m.typename='', m.family, m.typename) AS icao, COUNT(f.idflight) AS num
                 FROM
                     flights f
                         INNER JOIN
@@ -340,7 +340,7 @@ namespace MyFlightbook.FlightStatistics
                     f.date > ?dateMin AND f.date <= ?dateMax
                         AND ac.InstanceType = 1
                         AND m.family <> ''
-                GROUP BY m.family
+                GROUP BY icao
                 ORDER BY num DESC
                 LIMIT 30";
 
@@ -352,7 +352,7 @@ namespace MyFlightbook.FlightStatistics
                         comm.Parameters.AddWithValue("dateMin", DateTime.Now.AddDays(-MaxDays));
                         comm.Parameters.AddWithValue("dateMax", DateTime.Now.AddDays(1));
                     }, 
-                    (dr) => { m_lstPopularModels.Add(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsModelInfo, dr["manufacturer"], dr["family"], dr["num"])); });
+                    (dr) => { m_lstPopularModels.Add(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsModelInfo, dr["manufacturer"], dr["icao"], dr["num"])); });
 
                 HasSlowInformation = true;
             }).Start();
