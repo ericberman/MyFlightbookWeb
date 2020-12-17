@@ -1892,6 +1892,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Too many requests - will try again tomorrow..
+        /// </summary>
+        internal static string DropboxErrorTooManyRequests {
+            get {
+                return ResourceManager.GetString("DropboxErrorTooManyRequests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ──────────────.
         /// </summary>
         internal static string DropDownListSeparator {

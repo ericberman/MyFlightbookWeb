@@ -1862,4 +1862,7 @@
   <data name="DefaultPageRecentStatsModelInfo" xml:space="preserve">
     <value>{0} {1} - {2:N0} flights</value>
   </data>
+  <data name="DropboxErrorTooManyRequests" xml:space="preserve">
+    <value>Too many requests - will try again tomorrow.</value>
+  </data>
 </root>
