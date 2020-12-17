@@ -50,7 +50,16 @@
                         <ItemTemplate>
                             <li>
                                 <div><asp:HyperLink ID="lnkAp" runat="server" Target="_blank" Text='<%# Eval("FullName") %>' NavigateUrl='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/Public/MapRoute2.aspx?sm=1&Airports={0}", Eval("Code")) %>' /></div>
-                                <div class="fineprint"><asp:Label ID="lblApStat" runat="server" Text='<%# Eval("StatsDisplay") %>' /></div>
+                                <div class="fineprint"><asp:Label ID="lblApStat" runat="server" Text='<%# Eval("StatsDisplay") %>' /> <asp:Image ID="imgMods" runat="server" ImageUrl="~/images/expand.png" /></div>
+                                <asp:Panel ID="pnlMods" runat="server">
+                                    <asp:Repeater ID="rptModes" runat="server" DataSource='<%# Eval("ModelsUsed") %>'>
+                                        <ItemTemplate>
+                                            <div><%# Container.DataItem.ToString() %></div>
+                                        </ItemTemplate>
+                                    </asp:Repeater>
+                                </asp:Panel>
+                                <ajaxToolkit:CollapsiblePanelExtender ID="cpeMods" runat="server" Collapsed="true" CollapseControlID="imgMods" ExpandControlID="imgMods" CollapsedImage="~/images/expand.png" ExpandedImage="~/images/collapse.png"
+                                    TargetControlID="pnlMods" ImageControlID="imgMods" />
                             </li>
                         </ItemTemplate>
                     </asp:Repeater>

@@ -18,7 +18,7 @@ namespace MyFlightbook.FlightStatistics
     public class AirportStats : airport
     {
         private readonly HashSet<string> mUsers = new HashSet<string>();
-        private readonly HashSet<string> mModels = new HashSet<string>();
+        private readonly Dictionary<string, int> mModels = new Dictionary<string, int>();
         private readonly HashSet<string> mAircraft = new HashSet<string>();
 
         #region properties
@@ -36,6 +36,18 @@ namespace MyFlightbook.FlightStatistics
         /// # of unique models (typically ICAO code) that visited in the period
         /// </summary>
         public int Models { get { return mModels.Count; } }
+
+        /// <summary>
+        /// The names of the models that were used in DESCENDING order of frequency.
+        /// </summary>
+        public IEnumerable<string> ModelsUsed { 
+            get 
+            {
+                List<string> lst = new List<string>(mModels.Keys);
+                lst.Sort((s1, s2) => { return mModels[s2].CompareTo(mModels[s1]); });
+                return lst; 
+            }
+        }
 
         /// <summary>
         /// # of distinct aircraft that visited in the period.
@@ -57,8 +69,12 @@ namespace MyFlightbook.FlightStatistics
 
             if (!String.IsNullOrEmpty(szUser))
                 mUsers.Add(szUser);
-            if (!String.IsNullOrEmpty(szModel))
-                mModels.Add(szModel);
+            if (!String.IsNullOrWhiteSpace(szModel))
+            {
+                if (!mModels.ContainsKey(szModel))
+                    mModels[szModel] = 1;
+                mModels[szModel]++;
+            }
             if (!String.IsNullOrEmpty(szTail))
                 mAircraft.Add(szTail);
         }
@@ -156,7 +172,6 @@ namespace MyFlightbook.FlightStatistics
                 return lstStats;
             }
         }
-
         #endregion
 
         public FlightStats() { }
@@ -257,7 +272,24 @@ namespace MyFlightbook.FlightStatistics
             new Thread(() =>
             {
                 // Get all of the airports recorded for the last 30 days
-                DBHelper dbh = new DBHelper("SELECT f.route, f.username, ac.tailnumber, m.family FROM flights f INNER JOIN aircraft ac ON f.idaircraft=ac.idaircraft INNER JOIN models m ON ac.idmodel=m.idmodel WHERE f.Date > ?dateMin AND f.Date < ?dateMax");
+                DBHelper dbh = new DBHelper(@"SELECT 
+    f.route,
+    f.username,
+    ac.tailnumber,
+    CONCAT(man.manufacturer,
+            ' ',
+            IF(m.typename = '',
+                IF(m.family = '', m.model, m.family),
+                m.typename)) AS family
+FROM
+    flights f
+        INNER JOIN
+    aircraft ac ON f.idaircraft = ac.idaircraft
+        INNER JOIN
+    models m ON ac.idmodel = m.idmodel
+        INNER JOIN
+    manufacturers man ON m.idmanufacturer = man.idmanufacturer
+WHERE f.Date > ?dateMin AND f.Date < ?dateMax AND ac.InstanceType = 1");
                 dbh.ReadRows((comm) =>
                 {
                     comm.Parameters.AddWithValue("dateMin", DateTime.Now.AddDays(-MaxDays));
@@ -327,7 +359,7 @@ namespace MyFlightbook.FlightStatistics
 
                 // Popular models
                 const string szPopularModels = @"SELECT 
-                    man.manufacturer, IF(m.typename='', m.family, m.typename) AS icao, COUNT(f.idflight) AS num
+                    man.manufacturer, IF(m.typename='', IF(m.family = '', m.model, m.family), m.typename) AS icao, COUNT(f.idflight) AS num
                 FROM
                     flights f
                         INNER JOIN
@@ -339,7 +371,6 @@ namespace MyFlightbook.FlightStatistics
                 WHERE
                     f.date > ?dateMin AND f.date <= ?dateMax
                         AND ac.InstanceType = 1
-                        AND m.family <> ''
                 GROUP BY icao
                 ORDER BY num DESC
                 LIMIT 30";
