@@ -2,6 +2,7 @@
 using MyFlightbook.Currency;
 using MyFlightbook.Payments;
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -262,15 +263,16 @@ namespace MyFlightbook.Subscriptions
                 if (ts == MFBDropbox.TokenStatus.None)
                     return true;
 
+                System.Threading.Thread.Sleep(1);
                 Dropbox.Api.Files.FileMetadata result = null;
-                result = await lb.BackupToDropbox(Branding.CurrentBrand).ConfigureAwait(false);
+                result =await lb.BackupToDropbox(Branding.CurrentBrand).ConfigureAwait(false);
                 sb.AppendFormat(CultureInfo.CurrentCulture, "Dropbox: user {0} ", pf.UserName);
                 if (ts == MFBDropbox.TokenStatus.oAuth1)
                     sb.Append("Token UPDATED from oauth1! ");
                 sb.AppendFormat(CultureInfo.CurrentCulture, "Logbook backed up for user {0}...", pf.UserName);
-                System.Threading.Thread.Sleep(0);
+                System.Threading.Thread.Sleep(1);
                 result = await lb.BackupImagesToDropbox(Branding.CurrentBrand).ConfigureAwait(false);
-                System.Threading.Thread.Sleep(0);
+                System.Threading.Thread.Sleep(1);
                 sb.AppendFormat(CultureInfo.CurrentCulture, "and images backed up for user {0}.\r\n \r\n", pf.UserName);
             }
             catch (Dropbox.Api.ApiException<Dropbox.Api.Files.UploadError> ex)
@@ -279,6 +281,14 @@ namespace MyFlightbook.Subscriptions
                 string szMessage = (ex.ErrorResponse.IsPath && ex.ErrorResponse.AsPath != null && ex.ErrorResponse.AsPath.Value.Reason.IsInsufficientSpace) ? Resources.LocalizedText.DropboxErrorOutOfSpace : ex.Message;
                 util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.DropboxFailureSubject, ActiveBrand),
                     Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.DropboxFailure, pf.PreferredGreeting, szMessage, string.Empty), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
+            }
+            catch (Dropbox.Api.RateLimitException ex)
+            {
+                // Should try again, but for now just ignore until tomorrow
+                sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Dropbox FAILED for user (Dropbox.Api.ApiException<Dropbox.Api.Files.UploadError) {0}: {1}\r\n\r\n", pf.UserName, ex.Message);
+                util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.DropboxFailureSubject, ActiveBrand),
+                    Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.DropboxFailure, pf.PreferredGreeting, Resources.LocalizedText.DropboxErrorTooManyRequests, string.Empty), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
+
             }
             catch (Dropbox.Api.ApiException<Dropbox.Api.Auth.TokenFromOAuth1Error> ex)
             {
@@ -447,47 +457,72 @@ namespace MyFlightbook.Subscriptions
 
         private async Task<bool> BackupToCloud()
         {
-            StringBuilder sb = new StringBuilder();
-            StringBuilder sbFailures = new StringBuilder();
-            List<EarnedGratuity> lstUsersWithCloudBackup = EarnedGratuity.GratuitiesForUser(string.Empty, Gratuity.GratuityTypes.CloudBackup);
-
-            if (!String.IsNullOrEmpty(UserRestriction))
-                lstUsersWithCloudBackup.RemoveAll(eg => eg.Username.CompareCurrentCultureIgnoreCase(UserRestriction) != 0);
-
-            foreach (EarnedGratuity eg in lstUsersWithCloudBackup)
+            string szBackups = Path.Combine(Path.GetTempPath(), String.Format(CultureInfo.InvariantCulture, "{0}-CloudBackup.txt", DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
+            string szBackupFailures = Path.Combine(Path.GetTempPath(), String.Format(CultureInfo.InvariantCulture, "{0}-CloudBackup-errors.txt", DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
+            using (StreamWriter swSuccess = new StreamWriter(szBackups, false, Encoding.UTF8))
+            using (StreamWriter swFailure = new StreamWriter(szBackupFailures, false, Encoding.UTF8))
             {
-                StorageID sid = StorageID.None;
-                if (eg.UserProfile != null && ((sid = eg.UserProfile.BestCloudStorage) != StorageID.None) && eg.CurrentStatus != EarnedGratuity.EarnedGratuityStatus.Expired)
-                {
-                    try
-                    {
-                        Profile pf = eg.UserProfile;
-                        LogbookBackup lb = new LogbookBackup(pf);
+                List<EarnedGratuity> lstUsersWithCloudBackup = EarnedGratuity.GratuitiesForUser(string.Empty, Gratuity.GratuityTypes.CloudBackup);
 
-                        switch (sid)
+                if (!String.IsNullOrEmpty(UserRestriction))
+                    lstUsersWithCloudBackup.RemoveAll(eg => eg.Username.CompareCurrentCultureIgnoreCase(UserRestriction) != 0);
+
+                foreach (EarnedGratuity eg in lstUsersWithCloudBackup)
+                {
+                    StringBuilder sb = new StringBuilder();
+                    StringBuilder sbFailures = new StringBuilder();
+
+                    StorageID sid = StorageID.None;
+                    if (eg.UserProfile != null && ((sid = eg.UserProfile.BestCloudStorage) != StorageID.None) && eg.CurrentStatus != EarnedGratuity.EarnedGratuityStatus.Expired)
+                    {
+                        try
                         {
-                            case StorageID.Dropbox:
-                                await BackupDropbox(lb, pf, sb, sbFailures).ConfigureAwait(false);
-                                break;
-                            case StorageID.OneDrive:
-                                await BackupOneDrive(lb, pf, sb, sbFailures).ConfigureAwait(false);
-                                break;
-                            case StorageID.GoogleDrive:
-                                await BackupGoogleDrive(lb, pf, sb, sbFailures).ConfigureAwait(false);
-                                break;
-                            default:
-                                break;
+                            Profile pf = eg.UserProfile;
+                            LogbookBackup lb = new LogbookBackup(pf);
+
+                            switch (sid)
+                            {
+                                case StorageID.Dropbox:
+                                    await BackupDropbox(lb, pf, sb, sbFailures).ConfigureAwait(false);
+                                    break;
+                                case StorageID.OneDrive:
+                                    await BackupOneDrive(lb, pf, sb, sbFailures).ConfigureAwait(false);
+                                    break;
+                                case StorageID.GoogleDrive:
+                                    await BackupGoogleDrive(lb, pf, sb, sbFailures).ConfigureAwait(false);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        catch (Exception ex) when (!(ex is OutOfMemoryException))
+                        {
+                            string szError = String.Format(CultureInfo.CurrentCulture, "eg user={0}{1}\r\n\r\n{2}\r\n\r\n{3}", eg == null ? "NULL eg!" : eg.Username, (eg != null && eg.UserProfile == null) ? " NULL PROFILE" : string.Empty, sbFailures.ToString(), sb.ToString());
+                            util.NotifyAdminException("ERROR running nightly backup", new MyFlightbookException(szError, ex));
+                        }
+                        finally
+                        {
+                            // Regardless of what happens, write this to the file (in case something dies).
+                            swSuccess.WriteLine(sb.ToString());
+                            swFailure.WriteLine(sbFailures.ToString());
                         }
                     }
-                    catch (Exception ex) when (!(ex is OutOfMemoryException))
-                    {
-                        string szError = String.Format(CultureInfo.CurrentCulture, "eg user={0}{1}\r\n\r\n{2}\r\n\r\n{3}", eg == null ? "NULL eg!" : eg.Username, (eg != null && eg.UserProfile == null) ? " NULL PROFILE" : string.Empty, sbFailures.ToString(), sb.ToString());
-                        util.NotifyAdminException("ERROR running nightly backup", new MyFlightbookException(szError, ex));
-                    }
                 }
-            };
+            }
 
-            util.NotifyAdminEvent("Dropbox report", sbFailures.ToString() + sb.ToString(), ProfileRoles.maskCanReport);
+            using (StreamReader srSuccess = new StreamReader(szBackups, Encoding.UTF8)) 
+            using (StreamReader srFailure = new StreamReader(szBackupFailures, Encoding.UTF8)) {
+                util.NotifyAdminEvent("Cloud Backup report", srFailure.ReadToEnd() + srSuccess.ReadToEnd(), ProfileRoles.maskCanReport);
+            }
+
+            // if we are here, we should be able to delete the temp files
+            try
+            {
+                File.Delete(szBackups);
+                File.Delete(szBackupFailures);
+            }
+            finally {  }
+
             return true;
         }
 
