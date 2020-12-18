@@ -346,6 +346,7 @@ namespace MyFlightbook.RatingsProgress
             decimal dutiesOfPICTime = 0.0M;
             int cNightLandingsAtToweredAirport = 0;
             int cNightTakefoffsAtToweredAirport = 0;
+            int cNightTouchAndGo = 0;
             int nightTakeoffs = 0;
             if (fCatClassMatches)
             {
@@ -355,6 +356,7 @@ namespace MyFlightbook.RatingsProgress
                 nightTakeoffs = cfr.FlightProps.TotalCountForPredicate(fp => fp.PropertyType.IsNightTakeOff);
                 cNightLandingsAtToweredAirport = cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropLandingToweredNight);
                 cNightTakefoffsAtToweredAirport = cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropTakeoffToweredNight);
+                cNightTouchAndGo = cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropNightTouchAndGo);
             }
 
             if (fInstructorOnBoard)
@@ -435,13 +437,13 @@ namespace MyFlightbook.RatingsProgress
                         {
                             miMinSoloNight.AddEvent(Math.Min(soloTime, cfr.Night - cfr.IMC));
                             miMinSoloNightTO.AddEvent(Math.Max(nightTakeoffs, cNightTakefoffsAtToweredAirport));
-                            miMinSoloNightLandings.AddEvent(Math.Max(cfr.cFullStopNightLandings, cNightLandingsAtToweredAirport));
+                            miMinSoloNightLandings.AddEvent(Math.Max(cfr.cFullStopNightLandings + cNightTouchAndGo, cNightLandingsAtToweredAirport));
                         }
                         if (substituteSolo > 0)
                         {
                             miMinSoloSubNight.AddEvent(Math.Min(substituteSolo, cfr.Night - cfr.IMC));
                             miMinSoloSubNightTO.AddEvent(Math.Max(nightTakeoffs, cNightTakefoffsAtToweredAirport));
-                            miMinSoloSubNightLandings.AddEvent(Math.Max(cfr.cFullStopNightLandings, cNightLandingsAtToweredAirport));
+                            miMinSoloSubNightLandings.AddEvent(Math.Max(cfr.cFullStopNightLandings + cNightTouchAndGo, cNightLandingsAtToweredAirport));
                         }
                     }
                 }
