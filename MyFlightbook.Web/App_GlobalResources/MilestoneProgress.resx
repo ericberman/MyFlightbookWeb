@@ -163,7 +163,7 @@
     <value>See FAR 61.110 for possible exceptions that may apply to you.  Night landings are assumed to have involved flight in the traffic pattern.</value>
   </data>
   <data name="NoteXCLandings" xml:space="preserve">
-    <value>Landings are assumed to have been at the listed airports.  The requirement for an operating control tower is NOT being enforced/checked here.</value>
+    <value>Landings are assumed to have been at the listed airports.</value>
   </data>
   <data name="NotMet" xml:space="preserve">
     <value>Not yet completed.</value>
