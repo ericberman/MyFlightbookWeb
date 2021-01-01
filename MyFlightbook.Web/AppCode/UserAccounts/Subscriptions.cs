@@ -505,10 +505,10 @@ namespace MyFlightbook.Subscriptions
                             // Regardless of what happens, write this to the file (in case something dies).
                             string sz = sb.ToString();
                             if (!String.IsNullOrWhiteSpace(sz))
-                                swSuccess.WriteLine(sz);
+                                swSuccess.WriteLine(sz.Trim());
                             sz = sbFailures.ToString();
                             if (!String.IsNullOrWhiteSpace(sz))
-                                swFailure.WriteLine(sz);
+                                swFailure.WriteLine(sz.Trim());
                         }
                     }
                 }
