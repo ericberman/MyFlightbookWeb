@@ -184,7 +184,7 @@ namespace OAuthAuthorizationServer.Code
 
             foreach (string callback in Callbacks)
             {
-                if (!callback.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+                if (!callback.StartsWith("https:", StringComparison.OrdinalIgnoreCase) && !callback.StartsWith("com.", StringComparison.OrdinalIgnoreCase))
                     throw new MyFlightbookValidationException(String.Format(CultureInfo.InvariantCulture, "Callback URL {0} is not https", callback));
                 if (!Uri.IsWellFormedUriString(callback, UriKind.Absolute))
                     throw new MyFlightbookValidationException(String.Format(CultureInfo.InvariantCulture, "Callback URL {0} is not a valid https URL", callback));
