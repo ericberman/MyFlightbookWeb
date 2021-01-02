@@ -254,7 +254,7 @@ public partial class Member_EditAirports : Page
         lblErr.Text = string.Empty;
 
         // Check to see if this looks like a duplicate
-        List<airport> lstDupes = new List<airport>(airport.AirportsNearPosition(ap.LatLong.Latitude, ap.LatLong.Longitude, 20, ap.FacilityTypeCode.CompareCurrentCultureIgnoreCase("H") == 0));
+        List<airport> lstDupes = ap.IsPort ? new List<airport>(airport.AirportsNearPosition(ap.LatLong.Latitude, ap.LatLong.Longitude, 20, ap.FacilityTypeCode.CompareCurrentCultureIgnoreCase("H") == 0)) : new List<airport>();
         lstDupes.RemoveAll(a => !a.IsPort || a.Code.CompareCurrentCultureIgnoreCase(ap.Code) == 0 || a.DistanceFromPosition > 3);
         if (lstDupes.Any() && !forceAdd)
         {
