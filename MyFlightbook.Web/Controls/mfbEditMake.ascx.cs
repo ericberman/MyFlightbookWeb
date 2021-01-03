@@ -6,7 +6,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2019 MyFlightbook LLC
+ * Copyright (c) 2009-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -123,15 +123,15 @@ public partial class Controls_mfbEditMake : System.Web.UI.UserControl
     protected void InitFormForMake()
     {
         if (MakeID == MakeModel.UnknownModel)
-            {
-                btnAddMake.Text = Resources.LocalizedText.EditMakeAddMake;
-                Model = new MakeModel();
-            }
-            else
-            {
-                btnAddMake.Text = Resources.LocalizedText.EditMakeUpdateMake;
-                Model = MakeModel.GetModel(MakeID);
-            }
+        {
+            btnAddMake.Text = Resources.LocalizedText.EditMakeAddMake;
+            Model = new MakeModel();
+        }
+        else
+        {
+            btnAddMake.Text = Resources.LocalizedText.EditMakeUpdateMake;
+            Model = MakeModel.GetModel(MakeID);
+        }
 
         txtModel.Text = Model.Model;
         txtName.Text = Model.ModelName;
@@ -149,7 +149,7 @@ public partial class Controls_mfbEditMake : System.Web.UI.UserControl
         ckRetract.Checked = Model.IsRetract;
         AvionicsTechnology = Model.AvionicsTechnology;
         rblTurbineType.SelectedIndex = (int)Model.EngineType;
-        rblAircraftAllowedTypes.SelectedIndex = (int) Model.AllowedTypes;
+        rblAircraftAllowedTypes.SelectedIndex = (int)Model.AllowedTypes;
         ckTMG.Checked = ((Model.CategoryClassID == CategoryClass.CatClassID.Glider) && Model.IsMotorGlider);
         ckMultiHeli.Checked = ((Model.CategoryClassID == CategoryClass.CatClassID.Helicopter) && Model.IsMultiEngineHelicopter);
         ckSinglePilot.Checked = Model.IsCertifiedSinglePilot;
@@ -182,11 +182,37 @@ public partial class Controls_mfbEditMake : System.Web.UI.UserControl
         pnlLegacyHighPerf.Style["display"] = fIsLegacyEligible ? "inline" : "none";
         if (ckLegacyHighPerf.Checked && !fIsLegacyEligible)
             HighPerfType = MakeModel.HighPerfType.NotHighPerf;
+
+        rowFamily.Visible = HasICAO(idCatClass);
+    }
+
+    private static bool HasICAO(CategoryClass.CatClassID ccid)
+    {
+        switch (ccid)
+        {
+            case CategoryClass.CatClassID.ASEL:
+            case CategoryClass.CatClassID.ASES:
+            case CategoryClass.CatClassID.AMEL:
+            case CategoryClass.CatClassID.AMES:
+            case CategoryClass.CatClassID.Helicopter:
+            case CategoryClass.CatClassID.Gyroplane:
+            case CategoryClass.CatClassID.Airship:
+                return true;
+            case CategoryClass.CatClassID.GasBalloon:
+            case CategoryClass.CatClassID.HotAirBalloon:
+            case CategoryClass.CatClassID.Glider:
+            case CategoryClass.CatClassID.UnmannedAerialSystem:
+            case CategoryClass.CatClassID.WeightShiftControlLand:
+            case CategoryClass.CatClassID.WeightShiftControlSea:
+                return false;
+            default:
+                return true;
+        }
     }
 
     protected MakeModel MakeFromForm()
     {
-        CategoryClass.CatClassID ccId = (CategoryClass.CatClassID) Enum.Parse(typeof(CategoryClass.CatClassID), cmbCatClass.SelectedValue, true);
+        CategoryClass.CatClassID ccId = (CategoryClass.CatClassID)Enum.Parse(typeof(CategoryClass.CatClassID), cmbCatClass.SelectedValue, true);
         Boolean fSea = CategoryClass.IsSeaClass(ccId);
 
         if (ckComplex.Checked)
@@ -203,14 +229,14 @@ public partial class Controls_mfbEditMake : System.Web.UI.UserControl
         if ((fSea || ckRetract.Checked) &&
             ckConstantProp.Checked && ckCowlFlaps.Checked)
             ckComplex.Checked = true;
-        
+
         MakeModel mk = (MakeID == -1) ? new MakeModel() : new MakeModel(MakeID);
 
         mk.Model = txtModel.Text.Trim();
         mk.ModelName = txtName.Text.Trim();
         mk.TypeName = txtType.Text.Trim();
-        mk.FamilyName = txtFamilyName.Text.Trim().ToUpper(CultureInfo.InvariantCulture).Replace("-", string.Empty).Replace(" ", string.Empty);
         mk.CategoryClassID = ccId;
+        mk.FamilyName = HasICAO(ccId) ? txtFamilyName.Text.Trim().ToUpper(CultureInfo.InvariantCulture).Replace("-", string.Empty).Replace(" ", string.Empty) : string.Empty;
         mk.ManufacturerID = Convert.ToInt32(cmbManufacturer.SelectedValue, CultureInfo.InvariantCulture);
         mk.IsComplex = ckComplex.Checked;
         mk.PerformanceType = HighPerfType;
@@ -219,9 +245,9 @@ public partial class Controls_mfbEditMake : System.Web.UI.UserControl
         mk.HasFlaps = ckCowlFlaps.Checked;
         mk.IsRetract = ckRetract.Checked;
         mk.AvionicsTechnology = AvionicsTechnology;
-        mk.EngineType = (MakeModel.TurbineLevel) rblTurbineType.SelectedIndex;
+        mk.EngineType = (MakeModel.TurbineLevel)rblTurbineType.SelectedIndex;
         mk.ArmyMDS = txtArmyMDS.Text;
-        mk.AllowedTypes = (AllowedAircraftTypes) rblAircraftAllowedTypes.SelectedIndex;
+        mk.AllowedTypes = (AllowedAircraftTypes)rblAircraftAllowedTypes.SelectedIndex;
         mk.IsMotorGlider = (ckTMG.Checked && (ccId == CategoryClass.CatClassID.Glider));
         mk.IsMultiEngineHelicopter = (ckMultiHeli.Checked && (ccId == CategoryClass.CatClassID.Helicopter));
         mk.IsCertifiedSinglePilot = ckSinglePilot.Checked && mk.EngineType.IsTurbine() && !String.IsNullOrEmpty(mk.TypeName);
@@ -279,10 +305,10 @@ public partial class Controls_mfbEditMake : System.Web.UI.UserControl
             else
             {
                 if (String.Compare(szNewDesc, szOriginalDesc, StringComparison.Ordinal) != 0)
-                    util.NotifyAdminEvent("Model updated", String.Format(CultureInfo.InvariantCulture, "User: {0}\r\n\r\nWas:\r\n{1}\r\n\r\nIs Now: \r\n{2}\r\n \r\nID: {3}, {4}", 
-                        MyFlightbook.Profile.GetUser(Page.User.Identity.Name).DetailedName, 
-                        szOriginalDesc, 
-                        szNewDesc, 
+                    util.NotifyAdminEvent("Model updated", String.Format(CultureInfo.InvariantCulture, "User: {0}\r\n\r\nWas:\r\n{1}\r\n\r\nIs Now: \r\n{2}\r\n \r\nID: {3}, {4}",
+                        MyFlightbook.Profile.GetUser(Page.User.Identity.Name).DetailedName,
+                        szOriginalDesc,
+                        szNewDesc,
                         Model.MakeModelID, szLinkEditModel), ProfileRoles.maskCanManageData);
             }
 
@@ -383,6 +409,6 @@ public partial class Controls_mfbEditMake : System.Web.UI.UserControl
 
     protected void cmbCatClass_SelectedIndexChanged(object sender, EventArgs e)
     {
-        MakeFromForm(); 
+        MakeFromForm();
     }
 }
