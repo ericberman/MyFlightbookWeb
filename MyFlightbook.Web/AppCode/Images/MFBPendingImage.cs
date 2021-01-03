@@ -4,7 +4,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2020 MyFlightbook LLC
+ * Copyright (c) 2008-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -63,12 +63,17 @@ namespace MyFlightbook.Image
                 if (!IsValid)
                     return string.Empty;
 
-                if (ImageType == ImageFileType.JPEG)
-                    return String.Format(CultureInfo.InvariantCulture, "~/Public/PendingImg.aspx?i={0}&full=1", HttpUtility.UrlEncode(SessionKey));
-                else if (ImageType == ImageFileType.S3VideoMP4)
-                    return string.Empty;    // nothing to click on, at least not yet.
-
-                return base.URLFullImage;
+                switch (ImageType)
+                {
+                    case ImageFileType.JPEG:
+                    case ImageFileType.S3PDF:   // should never happen for a pending image...
+                    case ImageFileType.PDF:
+                        return String.Format(CultureInfo.InvariantCulture, "~/Public/PendingImg.aspx?i={0}&full=1", HttpUtility.UrlEncode(SessionKey));
+                    case ImageFileType.S3VideoMP4:
+                        return string.Empty;    // nothing to click on, at least not yet.
+                    default:
+                        return base.URLFullImage;
+                }
             }
             set
             {
