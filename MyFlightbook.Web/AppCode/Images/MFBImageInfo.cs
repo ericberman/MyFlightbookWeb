@@ -20,7 +20,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2020 MyFlightbook LLC
+ * Copyright (c) 2008-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1668,18 +1668,20 @@ namespace MyFlightbook.Image
         private void InitFilePDF(MFBPostedFile myFile)
         {
             // just save the file as-is; we virtualize the thumbanil.
-            string szFilename = Path.GetFileName(myFile.FileName);
+            string szBase = Regex.Replace(Path.GetFileNameWithoutExtension(myFile.FileName), @"[^a-zA-Z0-9]", string.Empty);
+            if (String.IsNullOrWhiteSpace(szBase))
+                szBase = DateTime.Now.ToString("yyyyMMddHHmmss");
+            
             if (Comment.Length > 0)
             {
                 string szCleaned = Regex.Replace(Comment, @"[^a-zA-Z0-9]", string.Empty);
-                Regex r = new Regex("[a-zA-Z0-9]+");
-                if (szCleaned.Length > 0 && r.IsMatch(szCleaned))
-                    szFilename = szCleaned + FileExtensions.PDF;
+                if (!string.IsNullOrWhiteSpace(szCleaned))
+                    szBase = szCleaned;
             }
             else
-                Comment = Path.GetFileNameWithoutExtension(szFilename);
+                Comment = szBase;
 
-            szFilename = Path.GetFileNameWithoutExtension(szFilename) + szNewS3KeySuffix + FileExtensions.PDF;
+            string szFilename = szBase + szNewS3KeySuffix + FileExtensions.PDF;
 
             ThumbnailFile = szFilename;
             WidthThumbnail = HeightThumbnail = 100;

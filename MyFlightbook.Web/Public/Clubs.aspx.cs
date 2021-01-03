@@ -14,7 +14,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2014-2020 MyFlightbook LLC
+ * Copyright (c) 2014-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -40,7 +40,7 @@ public partial class Public_Clubs : System.Web.UI.Page
 
                 HttpRequest r = HttpContext.Current.Request;
                 if (!r.IsLocal && !r.UrlReferrer.Host.EndsWith(Branding.CurrentBrand.HostName, StringComparison.OrdinalIgnoreCase))
-                    throw new MyFlightbookException("Unauthorized attempt to populate club! {0}, {1}");
+                    throw new MyFlightbookException("Unauthorized attempt to populate club!");
 
                 Club c = Club.ClubWithID(idClub);
                 if (c == null)
