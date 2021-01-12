@@ -19,7 +19,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2020 MyFlightbook LLC
+ * Copyright (c) 2008-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1478,7 +1478,6 @@ namespace MyFlightbook
         /// <param name="fUpdateFlightData">True if telemetry is to be updated</param>
         /// <param name="fUpdateSignature">True if the signature is to be recomputed and saved</param>
         /// <returns>True if success, else false</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         public virtual bool FCommit(bool fUpdateFlightData = false, bool fUpdateSignature = false)
         {
             Boolean fResult = false;
@@ -3664,6 +3663,32 @@ namespace MyFlightbook
             }
         }
         #endregion
+
+        #region Coloring Support
+        /// <summary>
+        /// Given a mapping of keywords/color pairs, returns the color for the first keyword found in the display of the flight, or Color.Empty if none.
+        /// </summary>
+        /// <param name="d"></param>
+        /// <returns></returns>
+        public System.Drawing.Color KeywordColor(IEnumerable<FlightColor> rgfc)
+        {
+            if (rgfc == null || !rgfc.Any())
+                return System.Drawing.Color.Empty;
+
+            // Create a search string
+            List<string> lst = new List<string>() { Comment, Route, ModelDisplay, TailNumDisplay, CatClassDisplay, CFIComments, CFIName };
+            lst.AddRange(CustomFlightProperty.PropDisplayAsList(CustomProperties, UseHHMM));
+            string szMatch = String.Join(" ", lst).ToUpper(CultureInfo.CurrentCulture);
+
+            foreach (FlightColor fc in rgfc)
+            {
+                if (szMatch.Contains(fc.UpperKey))
+                    return fc.Color;
+            }
+
+            return System.Drawing.Color.Empty;
+        }
+        #endregion
     }
 
     /// <summary>
@@ -3712,6 +3737,74 @@ namespace MyFlightbook
 
         public string HTMLRowText { get; set; }
         public string FBDivID { get; set; }
+    }
+
+    /// <summary>
+    /// Class to encapsulate coloring of flights based on keyword matching
+    /// </summary>
+    [Serializable]
+    public class FlightColor
+    {
+        #region properties
+        private string m_colorString = string.Empty;
+
+        private string m_keywordString = string.Empty;
+
+        private string m_keywordUpper = string.Empty;
+
+        private System.Drawing.Color color = System.Drawing.Color.Empty;
+
+        /// <summary>
+        /// The keyword to match
+        /// </summary>
+        public string KeyWord
+        {
+            get { return m_keywordString; }
+            set
+            {
+                m_keywordString = value;
+                m_keywordUpper = (value == null) ? string.Empty : value.Trim().ToUpper(CultureInfo.CurrentCulture);
+            }
+        }
+
+        [Newtonsoft.Json.JsonIgnoreAttribute]
+        /// <summary>
+        /// The normalized (uppercase) version of the keyword
+        /// </summary>
+        public string UpperKey { get { return m_keywordUpper; } }
+
+        /// <summary>
+        /// The string representation of the color
+        /// </summary>
+        public string ColorString
+        {
+            get { return m_colorString; }
+            set { 
+                m_colorString = value; 
+                if (!String.IsNullOrWhiteSpace(value))
+                {
+                    try
+                    {
+                        if (Regex.IsMatch(value, "^[0-9a-fA-F]{6}$"))
+                            value = "#" + value;
+                        color = System.Drawing.ColorTranslator.FromHtml(value);
+                    }
+                    catch (Exception ex) when (!(ex is OutOfMemoryException)) { }
+                }
+            }
+        }
+
+        [Newtonsoft.Json.JsonIgnoreAttribute]
+        public System.Drawing.Color Color { get { return color; } }
+        #endregion
+
+        public FlightColor() { }
+
+        public FlightColor(string szKey, string szColor) : this()
+        {
+            KeyWord = szKey;
+            ColorString = szColor;
+        }
     }
 }
 

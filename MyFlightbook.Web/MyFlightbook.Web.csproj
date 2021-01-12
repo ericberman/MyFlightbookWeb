@@ -405,6 +405,7 @@
     <Content Include="App_GlobalResources\Content.en\TermsAndConditions.htm" />
     <Content Include="App_GlobalResources\Content.en\WhyStartingFlights.txt" />
     <Content Include="App_GlobalResources\Content.en\wkhtmlnote.htm" />
+    <Content Include="Controls\Prefs\mfbFlightColoring.ascx" />
     <Content Include="Controls\PrintingLayouts\layoutCondensed.ascx" />
     <Content Include="Controls\TwoFactorAuth.ascx" />
     <Content Include="Controls\AccountQuestions.ascx" />
@@ -1284,6 +1285,13 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>WebService.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Prefs\mfbFlightColoring.ascx.cs">
+      <DependentUpon>mfbFlightColoring.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\Prefs\mfbFlightColoring.ascx.designer.cs">
+      <DependentUpon>mfbFlightColoring.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\PrintingLayouts\layoutCondensed.ascx.cs">
       <DependentUpon>layoutCondensed.ascx</DependentUpon>

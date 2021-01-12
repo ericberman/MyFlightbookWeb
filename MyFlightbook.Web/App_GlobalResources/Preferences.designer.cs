@@ -160,6 +160,60 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to With color:.
+        /// </summary>
+        internal static string FlightColoringColorHeader {
+            get {
+                return ResourceManager.GetString("FlightColoringColorHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Highlight flights that contain keywords with colors to make them stand out.  If a flight matches multiple keywords, the color will reflect the first match that is found..
+        /// </summary>
+        internal static string FlightColoringDescription {
+            get {
+                return ResourceManager.GetString("FlightColoringDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flight Coloring.
+        /// </summary>
+        internal static string FlightColoringHeader {
+            get {
+                return ResourceManager.GetString("FlightColoringHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Color flights containing:.
+        /// </summary>
+        internal static string FlightColoringKeywordHeader {
+            get {
+                return ResourceManager.GetString("FlightColoringKeywordHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keyword.
+        /// </summary>
+        internal static string FlightColoringKeywordPrompt {
+            get {
+                return ResourceManager.GetString("FlightColoringKeywordPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sample (Click to change).
+        /// </summary>
+        internal static string FlightColoringSample {
+            get {
+                return ResourceManager.GetString("FlightColoringSample", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Your payment was canceled..
         /// </summary>
         internal static string PaymentCancelled {

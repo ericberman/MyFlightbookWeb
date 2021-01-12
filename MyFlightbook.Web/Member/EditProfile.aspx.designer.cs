@@ -1363,6 +1363,42 @@ public partial class Member_EditProfile
     protected global::System.Web.UI.WebControls.Label lblLocalPrefsUpdated;
 
     /// <summary>
+    /// accColoring control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::AjaxControlToolkit.AccordionPane accColoring;
+
+    /// <summary>
+    /// locFlightColoring control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Localize locFlightColoring;
+
+    /// <summary>
+    /// updColor control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.UpdatePanel updColor;
+
+    /// <summary>
+    /// mfbFlightColoring control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::MyFlightbook.Web.Controls.Prefs.mfbFlightColoring mfbFlightColoring;
+
+    /// <summary>
     /// acpProperties control.
     /// </summary>
     /// <remarks>

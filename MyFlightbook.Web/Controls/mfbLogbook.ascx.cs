@@ -11,7 +11,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2020 MyFlightbook LLC
+ * Copyright (c) 2012-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -37,8 +37,16 @@ public partial class Controls_MFBLogbookBase : UserControl
             if (ViewState[key] == null)
                 ViewState[key] = new FlightQuery(String.IsNullOrEmpty(User) ? Page.User.Identity.Name : this.User);
             return (FlightQuery)ViewState[key];
-            }
+        }
         set { ViewState[RestrictionVSKey] = value; }
+    }
+
+    private const string colorMapKey = "szVSColorMap";
+
+    protected IEnumerable<FlightColor> colorMap 
+    {
+        get { return (IEnumerable<FlightColor>) ViewState[colorMapKey]; }
+        set { ViewState[colorMapKey] = value; }
     }
 
     private const string szViewStateSuppressImages = "vsSI";
@@ -102,7 +110,6 @@ public partial class Controls_MFBLogbookBase : UserControl
     /// <summary>
     /// The URL for details page, ID of the flight replaces {0}
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Scope = "member", Justification = "this is a format string and thus is a string, not a URI")]
     public string DetailsPageUrlFormatString
     {
         get { return m_szDetailsPageTemplate; }
@@ -112,7 +119,6 @@ public partial class Controls_MFBLogbookBase : UserControl
     /// <summary>
     /// URL template to edit the flight; ID of the flight replaces {0}
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Scope = "member", Justification = "this is a format string and thus is a string, not a URI")]
     public string EditPageUrlFormatString
     {
         get { return m_szEditPageTemplate; }
@@ -122,7 +128,6 @@ public partial class Controls_MFBLogbookBase : UserControl
     /// <summary>
     /// URL template for flight analysis; ID of the flight replaces {0}
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Scope = "member", Justification = "this is a format string and thus is a string, not a URI")]
     public string AnalysisPageUrlFormatString
     {
         get { return m_szAnalysisPageTemplate; }
@@ -132,7 +137,6 @@ public partial class Controls_MFBLogbookBase : UserControl
     /// <summary>
     /// URL Template for public page; ID of the flight replaces {0}
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Scope = "member", Justification = "this is a format string and thus is a string, not a URI")]
     public string PublicPageUrlFormatString
     {
         get { return m_szPublicRouteTemplate; }
@@ -831,6 +835,13 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
             SetUpSelectionForRow(le, e.Row);
             SetUpImagesForRow(le, e.Row);
             SetStyleForRow(le, e.Row);
+
+            if (colorMap == null)
+                colorMap = Pilot.KeywordColors;
+
+            System.Drawing.Color c = le.KeywordColor(colorMap);
+            if (c != System.Drawing.Color.Empty)
+                e.Row.BackColor = c;
         }
     }
 
