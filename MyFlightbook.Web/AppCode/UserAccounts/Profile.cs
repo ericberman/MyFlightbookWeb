@@ -23,7 +23,7 @@ using System.Web.Security;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2020 MyFlightbook LLC
+ * Copyright (c) 2009-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -88,7 +88,6 @@ namespace MyFlightbook
         /// Returns all users on the site who have some sort of admin privileges.
         /// </summary>
         /// <returns>A list of profile objects</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         static public IEnumerable<ProfileBase> GetNonUsers()
         {
             List<Profile> lst = new List<Profile>();
@@ -863,7 +862,17 @@ namespace MyFlightbook
         {
             get { return (string)GetPreferenceForKey(prefKeyCell); }
             set { SetPreferenceForKey(prefKeyCell, value, String.IsNullOrEmpty(value)); }
-        }        
+        }
+
+        private const string prefKeyColors = "keywordColors";
+
+        [System.Runtime.Serialization.IgnoreDataMemberAttribute]
+        public IEnumerable<FlightColor> KeywordColors
+        {
+            get { return GetPreferenceForKey<FlightColor[]>(prefKeyColors); }
+            set { SetPreferenceForKey(prefKeyColors, value, value == null || !value.Any()); }
+        }
+
         #endregion
 
         /// <summary>
@@ -1564,7 +1573,6 @@ namespace MyFlightbook
         /// <param name="szCFIUsername">The name of the potential signer</param>
         /// <param name="szError">The error that results</param>
         /// <returns>True if they can sign</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", MessageId = "0#")]
         public bool CanSignFlights(out string szError)
         {
             szError = String.Empty;

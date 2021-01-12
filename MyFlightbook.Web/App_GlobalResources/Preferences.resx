@@ -150,6 +150,24 @@
   <data name="DonationHistoryHeader" xml:space="preserve">
     <value>Your donation history</value>
   </data>
+  <data name="FlightColoringColorHeader" xml:space="preserve">
+    <value>With color:</value>
+  </data>
+  <data name="FlightColoringDescription" xml:space="preserve">
+    <value>Highlight flights that contain keywords with colors to make them stand out.  If a flight matches multiple keywords, the color will reflect the first match that is found.</value>
+  </data>
+  <data name="FlightColoringHeader" xml:space="preserve">
+    <value>Flight Coloring</value>
+  </data>
+  <data name="FlightColoringKeywordHeader" xml:space="preserve">
+    <value>Color flights containing:</value>
+  </data>
+  <data name="FlightColoringKeywordPrompt" xml:space="preserve">
+    <value>Keyword</value>
+  </data>
+  <data name="FlightColoringSample" xml:space="preserve">
+    <value>Sample (Click to change)</value>
+  </data>
   <data name="PaymentCancelled" xml:space="preserve">
     <value>Your payment was canceled.</value>
   </data>

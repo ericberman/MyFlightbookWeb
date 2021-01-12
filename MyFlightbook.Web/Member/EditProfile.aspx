@@ -22,7 +22,7 @@
 <%@ Register Src="~/Controls/Prefs/mfbPilotInfo.ascx" TagPrefix="uc1" TagName="mfbPilotInfo" %>
 <%@ Register Src="~/Controls/TwoFactorAuth.ascx" TagPrefix="uc1" TagName="FactorAuth" %>
 <%@ Register Src="~/Controls/TwoFactorAuthVerifyCode.ascx" TagPrefix="uc1" TagName="TwoFactorAuthVerifyCode" %>
-
+<%@ Register Src="~/Controls/Prefs/mfbFlightColoring.ascx" TagPrefix="uc1" TagName="mfbFlightColoring" %>
 
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
     <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
@@ -436,6 +436,18 @@
                                 <asp:Label ID="lblLocalPrefsUpdated" runat="server" CssClass="success" EnableViewState="False"
                                     Text="<%$ Resources:LocalizedText, profilePreferencesUpdated %>" Visible="False" meta:resourcekey="lblLocalPrefsUpdatedResource2"></asp:Label>
                             </div>
+                        </Content>
+                    </cc1:AccordionPane>
+                    <cc1:AccordionPane ID="accColoring" runat="server" HeaderCssClass="accordianHeader" HeaderSelectedCssClass="accordianHeaderSelected" ContentCssClass="accordianContent" TransitionDuration="250">
+                        <Header>
+                            <asp:Localize ID="locFlightColoring" runat="server" Text="<%$ Resources:Preferences, FlightColoringHeader %>" />
+                        </Header>
+                        <Content>
+                            <asp:UpdatePanel ID="updColor" runat="server">
+                                <ContentTemplate>
+                                    <uc1:mfbFlightColoring runat="server" id="mfbFlightColoring" />
+                                </ContentTemplate>
+                            </asp:UpdatePanel>
                         </Content>
                     </cc1:AccordionPane>
                     <cc1:AccordionPane runat="server" ID="acpProperties" ContentCssClass="" HeaderCssClass="" meta:resourcekey="acpPropertiesResource1">
