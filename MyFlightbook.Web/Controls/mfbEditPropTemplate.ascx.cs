@@ -11,7 +11,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2020 MyFlightbook LLC
+ * Copyright (c) 2019-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -147,7 +147,10 @@ public partial class Controls_mfbEditPropTemplate : System.Web.UI.UserControl
         if (c == null)
             throw new ArgumentNullException(nameof(c));
         HiddenField h = (HiddenField)c.NamingContainer.FindControl("hdnID");
-        UserPropertyTemplate pt = new UserPropertyTemplate(Convert.ToInt32(h.Value, CultureInfo.InvariantCulture));
+        if (!Int32.TryParse(h.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int ptid))
+            throw new FormatException(String.Format(CultureInfo.InvariantCulture, "Invalid property template ID '{0}'", h.Value));
+
+        UserPropertyTemplate pt = new UserPropertyTemplate(ptid);
         return pt;
     }
 
