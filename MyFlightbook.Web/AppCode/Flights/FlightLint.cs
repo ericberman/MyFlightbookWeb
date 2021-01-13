@@ -7,7 +7,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2020 MyFlightbook LLC
+ * Copyright (c) 2020-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -373,6 +373,27 @@ namespace MyFlightbook.Lint
                     cfp.DecValue.ToMinutes() > totalMinutes, 
                     LintOptions.TimeIssues, String.Format(CultureInfo.CurrentCulture, Resources.FlightLint.warningPropertyGreaterThanTotal, cfp.PropertyType.Title));
             }
+
+
+            CustomFlightProperty cfpTachStart = le.CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropTachStart);
+            CustomFlightProperty cfpTachEnd = le.CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropTachEnd);
+            AddConditionalIssue(cfpTachStart != null && cfpTachEnd != null && cfpTachEnd.DecValue < cfpTachStart.DecValue, LintOptions.TimeIssues, Resources.FlightLint.warningTachEndBeforeTachStart);
+
+            if (le.TotalFlightTime > 0)
+            {
+                // Look for block time or engine time that varies significantly from total time UNLESS hobbs is present; if so, compare hobbs to that.  Ditto tach, if tach is of by more than 30%.
+                const decimal maxHobbsVariation = 0.2M;
+                const decimal maxBlockVariation = 0.1M;
+
+                CustomFlightProperty cfpBlockOut = le.CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDBlockOut);
+                CustomFlightProperty cfpBlockIn = le.CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDBlockIn);
+
+                bool fHasHobbs = le.HobbsEnd > 0 && le.HobbsStart > 0 && le.HobbsEnd > le.HobbsStart;
+                decimal hobbsVariation = Math.Abs(le.HobbsEnd - le.HobbsStart - le.TotalFlightTime);
+                decimal blockTimeVariation = (cfpBlockIn != null && cfpBlockOut != null) ? Math.Abs((decimal)cfpBlockIn.DateValue.Subtract(cfpBlockOut.DateValue).TotalHours - le.TotalFlightTime) : 0;
+                AddConditionalIssue(fHasHobbs && hobbsVariation > maxHobbsVariation, LintOptions.TimeIssues, String.Format(CultureInfo.CurrentCulture, Resources.FlightLint.warningHobbsAndTotalsDiffer, hobbsVariation.ToHHMM()));
+                AddConditionalIssue(!fHasHobbs && blockTimeVariation > maxBlockVariation, LintOptions.TimeIssues, String.Format(CultureInfo.CurrentCulture, Resources.FlightLint.warningBlockAndTotalsDiffer, blockTimeVariation.ToHHMM()));
+            }
         }
 
         private void CheckFlightLengthIssues(LogbookEntryBase le)
@@ -423,10 +444,6 @@ namespace MyFlightbook.Lint
             AddConditionalIssue(fHasFlightEnd && fHasEngineEnd && le.FlightEnd.CompareTo(le.EngineEnd) > 0, LintOptions.DateTimeIssues, Resources.FlightLint.warningFlightEndAfterEngineEnd);
 
             AddConditionalIssue(fHasEngineEnd && cfpBlockIn != null && le.EngineEnd.CompareTo(cfpBlockIn.DateValue) < 0, LintOptions.DateTimeIssues, Resources.FlightLint.warningEngineEndBeforeBlockIn);
-
-            CustomFlightProperty cfpTachStart = le.CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropTachStart);
-            CustomFlightProperty cfpTachEnd = le.CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropTachEnd);
-            AddConditionalIssue(cfpTachStart != null && cfpTachEnd != null && cfpTachEnd.DecValue < cfpTachStart.DecValue, LintOptions.DateTimeIssues, Resources.FlightLint.warningTachEndBeforeTachStart);
 
             CheckFlightLengthIssues(le);
 

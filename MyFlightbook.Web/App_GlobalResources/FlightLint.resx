@@ -227,6 +227,9 @@
   <data name="warningAirportUnlikelyImpliedSpeed" xml:space="preserve">
     <value>Route and total time imply a speed of {0:#,##0}kts.  Errant airport code?</value>
   </data>
+  <data name="warningBlockAndTotalsDiffer" xml:space="preserve">
+    <value>Block time and total time differ by {0}</value>
+  </data>
   <data name="warningBlockTimeDiffersDate" xml:space="preserve">
     <value>Block in or out differs from date of flight by more than a day</value>
   </data>
@@ -274,6 +277,9 @@
   </data>
   <data name="warningFlightTimeDiffersDate" xml:space="preserve">
     <value>Flight start or end differs from date of flight by more than a day</value>
+  </data>
+  <data name="warningHobbsAndTotalsDiffer" xml:space="preserve">
+    <value>Hobbs time and total time differ by {0}</value>
   </data>
   <data name="warningIFRApproachesButNoIFR" xml:space="preserve">
     <value>Instrument approaches or holding is indicated without IMC or simulated IMC</value>
@@ -348,31 +354,31 @@
     <value>Total time logged in a training device - check that this is OK to do!</value>
   </data>
   <data name="warningTachEndBeforeTachStart" xml:space="preserve">
-    <value>Tachometer end is less than tachometer start.</value>
+    <value>Tachometer end is less than tachometer start</value>
   </data>
   <data name="warningTimesCFIGreaterThanTotal" xml:space="preserve">
-    <value>More CFI time recorded than total time.</value>
+    <value>More CFI time recorded than total time</value>
   </data>
   <data name="warningTimesDualGreaterThanTotal" xml:space="preserve">
-    <value>More dual time recorded than total time.</value>
+    <value>More dual time recorded than total time</value>
   </data>
   <data name="warningTimesIMCGreaterThanTotal" xml:space="preserve">
-    <value>More IMC time recorded than total time.</value>
+    <value>More IMC time recorded than total time</value>
   </data>
   <data name="warningTimesNightGreaterThanTotal" xml:space="preserve">
-    <value>More night time recorded than total time.</value>
+    <value>More night time recorded than total time</value>
   </data>
   <data name="warningTimesPICGreaterThanTotal" xml:space="preserve">
-    <value>More PIC time recorded than total time.</value>
+    <value>More PIC time recorded than total time</value>
   </data>
   <data name="warningTimesSICGreaterThanTotal" xml:space="preserve">
-    <value>More SIC time recorded than total time.</value>
+    <value>More SIC time recorded than total time</value>
   </data>
   <data name="warningTimesSimIFRGreaterThanTotal" xml:space="preserve">
-    <value>More simulated time recorded than total time.</value>
+    <value>More simulated time recorded than total time</value>
   </data>
   <data name="warningTimesSimPlusIMCGreaterThanTotal" xml:space="preserve">
-    <value>More simulated and actual IMC time recorded than total time.</value>
+    <value>More simulated and actual IMC time recorded than total time</value>
   </data>
   <data name="warningTimesSuspectTime" xml:space="preserve">
     <value>Flight includes a time ({0}) that is...a bit in the future.  Is it valid?</value>
@@ -405,6 +411,6 @@
     <value>Flight includes a property indicating time with a particular distance of cross-country flight, but this doesn't match the total cross-country time logged on the flight.</value>
   </data>
   <data name="warningXCTimeFoundButNoRole" xml:space="preserve">
-    <value>Flight indicates cross-country time, but no PIC, SIC, CFI, or Dual was indicated.</value>
+    <value>Flight indicates cross-country time, but no PIC, SIC, CFI, or Dual was indicated</value>
   </data>
 </root>

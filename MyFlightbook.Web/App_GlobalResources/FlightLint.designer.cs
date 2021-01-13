@@ -385,6 +385,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Block time and total time differ by {0}.
+        /// </summary>
+        internal static string warningBlockAndTotalsDiffer {
+            get {
+                return ResourceManager.GetString("warningBlockAndTotalsDiffer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Block in or out differs from date of flight by more than a day.
         /// </summary>
         internal static string warningBlockTimeDiffersDate {
@@ -525,6 +534,15 @@ namespace Resources {
         internal static string warningFlightTimeDiffersDate {
             get {
                 return ResourceManager.GetString("warningFlightTimeDiffersDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hobbs time and total time differ by {0}.
+        /// </summary>
+        internal static string warningHobbsAndTotalsDiffer {
+            get {
+                return ResourceManager.GetString("warningHobbsAndTotalsDiffer", resourceCulture);
             }
         }
         
@@ -745,7 +763,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tachometer end is less than tachometer start..
+        ///   Looks up a localized string similar to Tachometer end is less than tachometer start.
         /// </summary>
         internal static string warningTachEndBeforeTachStart {
             get {
@@ -754,7 +772,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to More CFI time recorded than total time..
+        ///   Looks up a localized string similar to More CFI time recorded than total time.
         /// </summary>
         internal static string warningTimesCFIGreaterThanTotal {
             get {
@@ -763,7 +781,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to More dual time recorded than total time..
+        ///   Looks up a localized string similar to More dual time recorded than total time.
         /// </summary>
         internal static string warningTimesDualGreaterThanTotal {
             get {
@@ -772,7 +790,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to More IMC time recorded than total time..
+        ///   Looks up a localized string similar to More IMC time recorded than total time.
         /// </summary>
         internal static string warningTimesIMCGreaterThanTotal {
             get {
@@ -781,7 +799,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to More night time recorded than total time..
+        ///   Looks up a localized string similar to More night time recorded than total time.
         /// </summary>
         internal static string warningTimesNightGreaterThanTotal {
             get {
@@ -790,7 +808,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to More PIC time recorded than total time..
+        ///   Looks up a localized string similar to More PIC time recorded than total time.
         /// </summary>
         internal static string warningTimesPICGreaterThanTotal {
             get {
@@ -799,7 +817,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to More SIC time recorded than total time..
+        ///   Looks up a localized string similar to More SIC time recorded than total time.
         /// </summary>
         internal static string warningTimesSICGreaterThanTotal {
             get {
@@ -808,7 +826,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to More simulated time recorded than total time..
+        ///   Looks up a localized string similar to More simulated time recorded than total time.
         /// </summary>
         internal static string warningTimesSimIFRGreaterThanTotal {
             get {
@@ -817,7 +835,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to More simulated and actual IMC time recorded than total time..
+        ///   Looks up a localized string similar to More simulated and actual IMC time recorded than total time.
         /// </summary>
         internal static string warningTimesSimPlusIMCGreaterThanTotal {
             get {
@@ -916,7 +934,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Flight indicates cross-country time, but no PIC, SIC, CFI, or Dual was indicated..
+        ///   Looks up a localized string similar to Flight indicates cross-country time, but no PIC, SIC, CFI, or Dual was indicated.
         /// </summary>
         internal static string warningXCTimeFoundButNoRole {
             get {
