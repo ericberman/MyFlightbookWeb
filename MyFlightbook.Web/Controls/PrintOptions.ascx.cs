@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2020 MyFlightbook LLC
+ * Copyright (c) 2016-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -57,6 +57,7 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
             m_options.FlightsPerPage = Convert.ToInt32(cmbFlightsPerPage.SelectedValue, CultureInfo.InvariantCulture);
             m_options.IncludeImages = ckIncludeImages.Checked;
             m_options.IncludeSignatures = ckIncludeSignatures.Checked;
+            m_options.UseFlightColoring = ckFlightColoring.Checked;
             m_options.BreakAtMonthBoundary = ckBreakAtMonth.Checked;
             m_options.Layout = (PrintLayoutType) Enum.Parse(typeof(PrintLayoutType), cmbLayout.SelectedValue);
             m_options.PropertySeparator = (PrintingOptions.PropertySeparatorType)Enum.Parse(typeof(PrintingOptions.PropertySeparatorType), rblPropertySeparator.SelectedValue);
@@ -86,6 +87,7 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
             cmbFlightsPerPage.SelectedValue = m_options.FlightsPerPage.ToString(CultureInfo.InvariantCulture);
             ckIncludeImages.Checked = m_options.IncludeImages;
             ckIncludeSignatures.Checked = m_options.IncludeSignatures;
+            ckFlightColoring.Checked = m_options.UseFlightColoring;
             ckBreakAtMonth.Checked = m_options.BreakAtMonthBoundary;
             cmbLayout.SelectedValue = m_options.Layout.ToString();
             rblPropertySeparator.SelectedValue = m_options.PropertySeparator.ToString();
@@ -305,6 +307,11 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
     }
 
     protected void ckBreakAtMonth_CheckedChanged(object sender, EventArgs e)
+    {
+        NotifyDelegate();
+    }
+
+    protected void ckFlightColoring_CheckedChanged(object sender, EventArgs e)
     {
         NotifyDelegate();
     }

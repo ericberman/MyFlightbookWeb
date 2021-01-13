@@ -6,31 +6,23 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2019 MyFlightbook LLC
+ * Copyright (c) 2016-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
-public partial class Controls_PrintingLayouts_layoutEASAFCL : System.Web.UI.UserControl, IPrintingTemplate
+public partial class Controls_PrintingLayouts_layoutEASAFCL : PrintLayoutBase, IPrintingTemplate
 {
-    protected MyFlightbook.Profile CurrentUser { get; set; }
-
-    protected PrintingOptions Options { get; set; }
-
-    protected bool ShowFooter { get; set; }
-
     #region IPrintingTemplate
-    public void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, PrintingOptions options, bool showFooter = true)
+    public override void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, PrintingOptions options, bool showFooter = true)
     {
-        ShowFooter = showFooter;
-        CurrentUser = user;
-        Options = options;
+        base.BindPages(lst, user, options, showFooter);
         rptPages.DataSource = lst;
         rptPages.DataBind();
     }
     #endregion
 
-    protected void Page_Load(object sender, EventArgs e) { CurrentUser = MyFlightbook.Profile.GetUser(Page.User.Identity.Name); }
+    protected void Page_Load(object sender, EventArgs e) { }
 
     protected void rptPages_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {

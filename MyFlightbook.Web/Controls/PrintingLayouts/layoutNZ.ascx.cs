@@ -2,59 +2,29 @@
 using MyFlightbook.Printing;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2018-2020 MyFlightbook LLC
+ * Copyright (c) 2018-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
-public partial class Controls_PrintingLayouts_layoutNZ : System.Web.UI.UserControl, IPrintingTemplate
+public partial class Controls_PrintingLayouts_layoutNZ : PrintLayoutBase
 {
-    public MyFlightbook.Profile CurrentUser { get; set; }
-
-    public bool IncludeImages { get; set; }
-
-    protected bool ShowFooter { get; set; }
-
-    protected PrintingOptions Options { get; set; }
-
-    protected Collection<OptionalColumn> OptionalColumns { get; private set; }
-
-    protected Boolean ShowOptionalColumn(int index)
-    {
-        return OptionalColumns != null && index >= 0 && index < OptionalColumns.Count;
-    }
-
-    protected string OptionalColumnName(int index)
-    {
-        return ShowOptionalColumn(index) ? OptionalColumns[index].Title : string.Empty;
-    }
-
-    protected string PropSeparator { get; set; }
-
     #region IPrintingTemplate
-    public void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, PrintingOptions options, bool showFooter = true)
+    public override void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, PrintingOptions options, bool showFooter = true)
     {
-        if (options == null)
-            throw new ArgumentNullException(nameof(options));
-        ShowFooter = showFooter;
-        IncludeImages = options.IncludeImages;
-        CurrentUser = user;
-        Options = options;
-        OptionalColumns = options.OptionalColumns;
-        PropSeparator = options.PropertySeparatorText;
+        base.BindPages(lst, user, options, showFooter);
 
         rptPages.DataSource = lst;
         rptPages.DataBind();
     }
     #endregion
 
-    protected void Page_Load(object sender, EventArgs e) { CurrentUser = MyFlightbook.Profile.GetUser(Page.User.Identity.Name); }
+    protected void Page_Load(object sender, EventArgs e) { }
 
     protected void rptPages_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {

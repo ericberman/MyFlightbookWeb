@@ -14,47 +14,24 @@ using System.Web.UI.WebControls;
 *******************************************************/
 
 
-public partial class Controls_PrintingLayouts_layoutPortrait : System.Web.UI.UserControl, IPrintingTemplate
+public partial class Controls_PrintingLayouts_layoutPortrait : PrintLayoutBase
 {
-    public MyFlightbook.Profile CurrentUser { get; set; }
-
-    public bool IncludeImages { get; set; }
-
-    protected bool ShowFooter { get; set; }
-
-    protected Collection<OptionalColumn> OptionalColumns { get; private set; }
-
-    protected Boolean ShowOptionalColumn(int index)
-    {
-        return OptionalColumns != null && index >= 0 && index < OptionalColumns.Count;
-    }
-
-    protected string OptionalColumnName(int index)
-    {
-        return ShowOptionalColumn(index) ? OptionalColumns[index].Title : string.Empty;
-    }
-
-    protected int ColumnCount
+     protected int ColumnCount
     {
         get { return Math.Min(OptionalColumns.Count, 4) + 17; }
     }
 
     #region IPrintingTemplate
-    public void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, PrintingOptions options, bool showFooter = true)
+    public override void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, PrintingOptions options, bool showFooter = true)
     {
-        if (options == null)
-            throw new ArgumentNullException(nameof(options));
-        ShowFooter = showFooter;
-        IncludeImages = options.IncludeImages;
-        CurrentUser = user;
-        OptionalColumns = options.OptionalColumns;
+        base.BindPages(lst, user, options, showFooter);
 
         rptPages.DataSource = lst;
         rptPages.DataBind();
     }
     #endregion
 
-    protected void Page_Load(object sender, EventArgs e) { CurrentUser = MyFlightbook.Profile.GetUser(Page.User.Identity.Name); }
+    protected void Page_Load(object sender, EventArgs e) { }
 
     protected void rptPages_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {

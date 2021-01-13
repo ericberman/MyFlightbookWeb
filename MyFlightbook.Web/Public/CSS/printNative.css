@@ -74,5 +74,5 @@ thead.header th > div.custColumn {
 }
 
 @media screen {
-    tr.bordered td { background-color:#ffffcc; }
+    tr.bordered { background-color:#ffffcc; }
 }

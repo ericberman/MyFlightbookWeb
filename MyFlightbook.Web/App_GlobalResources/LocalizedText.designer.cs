@@ -3860,6 +3860,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use Flight Coloring.
+        /// </summary>
+        internal static string PrintViewFlightColoring {
+            get {
+                return ResourceManager.GetString("PrintViewFlightColoring", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In Preferences, you can specify a background color to use for flights that contain specific keywords..
+        /// </summary>
+        internal static string PrintViewFlightColoringTip {
+            get {
+                return ResourceManager.GetString("PrintViewFlightColoringTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Flights per page (approximate):.
         /// </summary>
         internal static string PrintViewFlightsPerPage {

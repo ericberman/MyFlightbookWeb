@@ -32,7 +32,7 @@
             </thead>
             <asp:Repeater EnableViewState="false" ID="rptFlight" runat="server">
                 <ItemTemplate>
-                    <tr class="bordered">
+                    <tr class="bordered" <%# FlightColor(Container.DataItem) %>>
                         <td><%# ((DateTime) Eval("Date")).ToShortDateString() %></td>
                         <td><%# ((int) Eval("FlightCount")).FormatInt() %></td>
                         <td class="clipped"><%#: Eval("ModelDisplay") %></td>

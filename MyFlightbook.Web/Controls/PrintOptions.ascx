@@ -21,6 +21,8 @@
         <asp:CheckBox ID="ckIncludeImages" runat="server" Text="<%$ Resources:LocalizedText, PrintViewIncludeImages %>" AutoPostBack="True" OnCheckedChanged="ckIncludeImages_CheckedChanged" />
     </asp:Panel>
     <div><asp:CheckBox ID="ckIncludeSignatures" runat="server" Text="<%$ Resources:LocalizedText, PrintViewIncludeSignatures %>" Checked="true" AutoPostBack="true" OnCheckedChanged="ckIncludeSignatures_CheckedChanged" /></div>
+    <div><asp:CheckBox ID="ckFlightColoring" runat="server" Text="<%$ Resources:LocalizedText, PrintViewFlightColoring %>" AutoPostBack="true" OnCheckedChanged="ckFlightColoring_CheckedChanged" /><uc1:mfbTooltip runat="server" ID="ttFlightCol" BodyContent="<%$ Resources:LocalizedText, PrintViewFlightColoringTip %>" />
+    </div>
 </div>
 <asp:Panel ID="pnlFlightsPerPage" runat="server">
     <p><asp:Label ID="lblFlightsPerPage" Font-Bold="true" runat="server" Text="<%$ Resources:LocalizedText, PrintViewFlightsPerPage %>"></asp:Label>

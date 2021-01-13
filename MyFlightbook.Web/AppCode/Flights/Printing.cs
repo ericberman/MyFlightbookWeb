@@ -9,7 +9,7 @@ using System.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2020 MyFlightbook LLC
+ * Copyright (c) 2008-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -129,7 +129,7 @@ namespace MyFlightbook.Printing
             return Math.Max(1 + imgHeight + sigHeight + times, (le.RedactedComment.Length + le.CustPropertyDisplay.Length) / 100);
         }
 
-        public override string CSSPath { get { return "~/Public/CSS/printNative.css"; } }
+        public override string CSSPath { get { return "~/Public/CSS/printNative.css?v=2"; } }
     }
 
     public class PrintLayoutPortrait : PrintLayout
@@ -163,7 +163,7 @@ namespace MyFlightbook.Printing
             return Math.Max(1 + imgHeight + sigHeight + times, (le.RedactedComment.Length + le.CustPropertyDisplay.Length) / 100);
         }
 
-        public override string CSSPath { get { return "~/Public/CSS/printPortrait.css"; } }
+        public override string CSSPath { get { return "~/Public/CSS/printPortrait.css?v=2"; } }
     }
 
     public class PrintLayoutGlider : PrintLayout
@@ -180,7 +180,7 @@ namespace MyFlightbook.Printing
             return Math.Max(1, (le.RedactedComment.Length + le.CustPropertyDisplay.Length) / 100);
         }
 
-        public override string CSSPath { get { return "~/Public/CSS/printGlider.css"; } }
+        public override string CSSPath { get { return "~/Public/CSS/printGlider.css?v=2"; } }
     }
 
     public class PrintLayoutEASA : PrintLayout
@@ -197,7 +197,7 @@ namespace MyFlightbook.Printing
 
         public override bool SupportsOptionalColumns { get { return false; } }
 
-        public override string CSSPath { get { return "~/Public/CSS/printEASA.css"; } }
+        public override string CSSPath { get { return "~/Public/CSS/printEASA.css?v=2"; } }
     }
 
     public class PrintLayoutCASA : PrintLayout
@@ -214,7 +214,7 @@ namespace MyFlightbook.Printing
 
         public override bool SupportsOptionalColumns { get { return true; } }
 
-        public override string CSSPath { get { return "~/Public/CSS/printCASA.css"; } }
+        public override string CSSPath { get { return "~/Public/CSS/printCASA.css?v=2"; } }
     }
 
     public class PrintLayoutSACAA : PrintLayout
@@ -231,7 +231,7 @@ namespace MyFlightbook.Printing
 
         public override bool SupportsOptionalColumns { get { return false; } }
 
-        public override string CSSPath { get { return "~/Public/CSS/printSACAA.css"; } }
+        public override string CSSPath { get { return "~/Public/CSS/printSACAA.css?v=2"; } }
     }
 
     public class PrintLayoutNZ : PrintLayout
@@ -248,7 +248,7 @@ namespace MyFlightbook.Printing
 
         public override bool SupportsOptionalColumns { get { return true; } }
 
-        public override string CSSPath { get { return "~/Public/CSS/printNZ.css"; } }
+        public override string CSSPath { get { return "~/Public/CSS/printNZ.css?v=2"; } }
     }
 
     public class PrintLayoutCanada : PrintLayout
@@ -265,7 +265,7 @@ namespace MyFlightbook.Printing
 
         public override bool SupportsOptionalColumns { get { return true; } }
 
-        public override string CSSPath { get { return "~/Public/CSS/printCanada.css"; } }
+        public override string CSSPath { get { return "~/Public/CSS/printCanada.css?v=2"; } }
     }
 
     public class PrintLayoutUSA : PrintLayout
@@ -284,7 +284,7 @@ namespace MyFlightbook.Printing
             return Math.Max(1, (linesOfText + routeLine + 1) / 2);
         }
 
-        public override string CSSPath { get { return "~/Public/CSS/printUSA.css"; } }
+        public override string CSSPath { get { return "~/Public/CSS/printUSA.css?v=2"; } }
     }
 
     public class PrintLayoutCondensed : PrintLayout
@@ -295,7 +295,7 @@ namespace MyFlightbook.Printing
 
         public override int RowHeight(LogbookEntryDisplay le) { return 1; }
 
-        public override string CSSPath { get { return "~/Public/CSS/printCondensed.css"; } }
+        public override string CSSPath { get { return "~/Public/CSS/printCondensed.css?v=2"; } }
     }
     #endregion
 
@@ -332,6 +332,11 @@ namespace MyFlightbook.Printing
         /// Start a new page when encountering a month boundary (non-continuous only)
         /// </summary>
         public bool BreakAtMonthBoundary { get; set; }
+
+        /// <summary>
+        /// Use flight coloring in the print view?
+        /// </summary>
+        public bool UseFlightColoring { get; set; }
 
         /// <summary>
         /// Layout to use
@@ -883,5 +888,90 @@ namespace MyFlightbook.Printing
 
             return pl;
         }
+    }
+
+    /// <summary>
+    /// Base class for actual print layouts
+    /// </summary>
+    public class PrintLayoutBase : System.Web.UI.UserControl, IPrintingTemplate
+    {
+        #region Properties
+        public MyFlightbook.Profile CurrentUser { get; private set; }
+
+        protected PrintingOptions Options { get; private set; }
+
+        protected bool ShowFooter { get; private set; }
+
+        public bool IncludeImages { get; private set; }
+
+        protected IEnumerable<FlightColor> flightColors { get; private set; }
+
+        protected Collection<OptionalColumn> OptionalColumns { get; private set; }
+
+        protected string PropSeparator { get; private set; }
+
+        #endregion
+
+        #region common utilities.
+        protected Boolean ShowOptionalColumn(int index)
+        {
+            return OptionalColumns != null && index >= 0 && index < OptionalColumns.Count;
+        }
+
+        protected string OptionalColumnName(int index)
+        {
+            return ShowOptionalColumn(index) ? OptionalColumns[index].Title : string.Empty;
+        }
+
+        protected string OtherCatClassValue(LogbookEntryDisplay led)
+        {
+            return (led != null && led.EffectiveCatClass != (int)CategoryClass.CatClassID.ASEL && led.EffectiveCatClass != (int)CategoryClass.CatClassID.AMEL && OptionalColumn.ShowOtherCatClass(OptionalColumns, (CategoryClass.CatClassID)led.EffectiveCatClass)) ?
+                String.Format(CultureInfo.CurrentCulture, "{0}: {1}", led.CategoryClassNoType, led.TotalFlightTime.FormatDecimal(CurrentUser.UsesHHMM)) :
+                string.Empty;
+        }
+
+        protected static string FormatTakeoffs(int i)
+        {
+            return (i == 0) ? string.Empty : String.Format(CultureInfo.CurrentCulture, "{0}T", i);
+        }
+
+        protected static string FormatLandings(int i)
+        {
+            return (i == 0) ? string.Empty : String.Format(CultureInfo.CurrentCulture, "{0}L", i);
+        }
+        #endregion
+
+        #region Common utilities
+        /// <summary>
+        /// Return the direct-style flight coloring for a logbookentrydisplay
+        /// </summary>
+        /// <returns></returns>
+        protected string FlightColor(object o)
+        {
+            if (o == null || !Options.UseFlightColoring || (!(o is LogbookEntryDisplay led)))
+                return string.Empty;
+
+            if (flightColors == null)
+                flightColors = CurrentUser.KeywordColors;
+
+            System.Drawing.Color c = led.KeywordColor(flightColors);
+            return c == System.Drawing.Color.Empty ? string.Empty : String.Format(CultureInfo.InvariantCulture, "style=\"background-color: {0};\" ", System.Drawing.ColorTranslator.ToHtml(c));
+        }
+        #endregion
+
+        #region IPrintingTemplate
+        public virtual void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, PrintingOptions options, bool showFooter = true)
+        {
+            if (options == null)
+                throw new ArgumentNullException(nameof(options));
+            ShowFooter = showFooter;
+            CurrentUser = user;
+            OptionalColumns = options.OptionalColumns;
+            IncludeImages = options.IncludeImages;
+            Options = options;
+            PropSeparator = options.PropertySeparatorText;
+
+        }
+        #endregion
     }
 }

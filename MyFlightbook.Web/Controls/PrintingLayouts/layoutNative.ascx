@@ -32,7 +32,7 @@
             </thead>
             <asp:Repeater ID="rptFlight" runat="server" OnItemDataBound="rptFlight_ItemDataBound">
                 <ItemTemplate>
-                    <tr class="bordered">
+                    <tr class="bordered" <%# FlightColor(Container.DataItem) %>>
                         <td colspan="2">
                             <div>
                                 <asp:Label Font-Bold="true" EnableViewState="false" ID="lblStaticDate" runat="server" Text='<%# ((DateTime) Eval("Date")).ToShortDateString() %>' Font-Size="Larger"></asp:Label>

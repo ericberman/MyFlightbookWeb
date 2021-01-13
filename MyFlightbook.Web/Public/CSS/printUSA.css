@@ -30,7 +30,7 @@ tr.subtotal td.subtotalLabel {
 }
 
 @media screen {
-    tr.bordered td, tr.bordered th { background-color:#ace6ba; }
+    tr.bordered, tr.bordered th { background-color:#ace6ba; }
 }
 
 .headerBig {

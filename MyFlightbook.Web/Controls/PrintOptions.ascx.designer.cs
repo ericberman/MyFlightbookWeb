@@ -58,6 +58,24 @@ public partial class Controls_PrintOptions
     protected global::System.Web.UI.WebControls.CheckBox ckIncludeSignatures;
 
     /// <summary>
+    /// ckFlightColoring control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.CheckBox ckFlightColoring;
+
+    /// <summary>
+    /// ttFlightCol control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::Controls_mfbTooltip ttFlightCol;
+
+    /// <summary>
     /// pnlFlightsPerPage control.
     /// </summary>
     /// <remarks>

@@ -1865,4 +1865,10 @@
   <data name="DropboxErrorTooManyRequests" xml:space="preserve">
     <value>Too many requests - will try again tomorrow.</value>
   </data>
+  <data name="PrintViewFlightColoring" xml:space="preserve">
+    <value>Use Flight Coloring</value>
+  </data>
+  <data name="PrintViewFlightColoringTip" xml:space="preserve">
+    <value>In Preferences, you can specify a background color to use for flights that contain specific keywords.</value>
+  </data>
 </root>

@@ -58,7 +58,7 @@ tr.bordered th.headerSmall {
 }
 
 @media screen {
-    tr.bordered td, tr.bordered th {
+    tr.bordered, tr.bordered th {
         background-color: #faeded;
     }
 
