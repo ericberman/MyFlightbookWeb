@@ -674,4 +674,13 @@
   <data name="saveChanges" xml:space="preserve">
     <value>Save Changes</value>
   </data>
+  <data name="accountDateOfBirth" xml:space="preserve">
+    <value>Date of birth:</value>
+  </data>
+  <data name="accountDateOfBirthPromptNote" xml:space="preserve">
+    <value>(Optional, but required in some jurisdictions; Only used when printing your logbook)</value>
+  </data>
+  <data name="dateOfBirthFormat" xml:space="preserve">
+    <value>Date of birth: {0:d}</value>
+  </data>
 </root>

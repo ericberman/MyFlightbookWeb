@@ -88,6 +88,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Date of birth:.
+        /// </summary>
+        internal static string accountDateOfBirth {
+            get {
+                return ResourceManager.GetString("accountDateOfBirth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Optional, but required in some jurisdictions; Only used when printing your logbook).
+        /// </summary>
+        internal static string accountDateOfBirthPromptNote {
+            get {
+                return ResourceManager.GetString("accountDateOfBirthPromptNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Email.
         /// </summary>
         internal static string accountEmailPrompt {
@@ -588,6 +606,15 @@ namespace Resources {
         internal static string CloudAhoyIsAuthed {
             get {
                 return ResourceManager.GetString("CloudAhoyIsAuthed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Date of birth: {0:d}.
+        /// </summary>
+        internal static string dateOfBirthFormat {
+            get {
+                return ResourceManager.GetString("dateOfBirthFormat", resourceCulture);
             }
         }
         

@@ -873,6 +873,15 @@ namespace MyFlightbook
             set { SetPreferenceForKey(prefKeyColors, value, value == null || !value.Any()); }
         }
 
+        private const string prefDOB = "dateOfBirth";
+
+        [System.Runtime.Serialization.IgnoreDataMemberAttribute]
+        public DateTime? DateOfBirth
+        {
+            get { return GetPreferenceForKey<DateTime?>(prefDOB); }
+            set { SetPreferenceForKey(prefDOB, value, value == null || !value.HasValue || !value.Value.HasValue()); }
+        }
+
         #endregion
 
         /// <summary>

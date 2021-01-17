@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master"
-    Codebehind="EditProfile.aspx.cs" Inherits="Member_EditProfile" Title="Edit Profile" culture="auto" meta:resourcekey="PageResource1" %>
+    Codebehind="EditProfile.aspx.cs" Inherits="MyFlightbook.MemberPages.Member_EditProfile" Title="Edit Profile" culture="auto" meta:resourcekey="PageResource1" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register src="../Controls/mfbEndorsementList.ascx" tagname="mfbEndorsementList" tagprefix="uc6" %>
@@ -23,6 +23,7 @@
 <%@ Register Src="~/Controls/TwoFactorAuth.ascx" TagPrefix="uc1" TagName="FactorAuth" %>
 <%@ Register Src="~/Controls/TwoFactorAuthVerifyCode.ascx" TagPrefix="uc1" TagName="TwoFactorAuthVerifyCode" %>
 <%@ Register Src="~/Controls/Prefs/mfbFlightColoring.ascx" TagPrefix="uc1" TagName="mfbFlightColoring" %>
+<%@ Register Src="~/Controls/mfbTypeInDate.ascx" TagPrefix="uc1" TagName="mfbTypeInDate" %>
 
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
     <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
@@ -138,7 +139,18 @@
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td style="vertical-align:text-top">
+                                                <td style="vertical-align: text-top; max-width: 200px">
+                                                    <asp:Localize ID="locDOB" runat="server" Text="<%$ Resources:Profile, accountDateOfBirth %>" />
+                                                    <br />
+                                                    <asp:Label ID="lblDOBNote" runat="server" CssClass="fineprint" 
+                                                        Text="<%$ Resources:Profile, accountDateOfBirthPromptNote %>" />
+                                                </td>
+                                                <td>
+                                                    <uc1:mfbTypeInDate runat="server" ID="dateDOB" DefaultType="None" />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="vertical-align:text-top; max-width: 200px">
                                                     <div><asp:Localize ID="locCell" runat="server" Text="<%$ Resources:Profile, accountCellPhone %>" /></div>
                                                     <div class="fineprint"><% =Resources.Profile.accountCellPhoneHint %></div>
                                                 </td>
@@ -147,7 +159,7 @@
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td style="vertical-align:text-top">
+                                                <td style="vertical-align:text-top; max-width: 200px">
                                                     <div><asp:Localize ID="locHeadShot" runat="server" Text="<%$ Resources:Profile, accountHeadShot %>" /></div>
                                                     <div class="fineprint"><asp:Localize ID="locHeadShtHint" runat="server" Text="<%$ Resources:Profile, accountHeadShotHint %>" /></div>
                                                 </td>
@@ -438,7 +450,7 @@
                             </div>
                         </Content>
                     </cc1:AccordionPane>
-                    <cc1:AccordionPane ID="accColoring" runat="server" HeaderCssClass="accordianHeader" HeaderSelectedCssClass="accordianHeaderSelected" ContentCssClass="accordianContent" TransitionDuration="250">
+                    <cc1:AccordionPane ID="accColoring" runat="server" HeaderCssClass="accordianHeader" ContentCssClass="accordianContent">
                         <Header>
                             <asp:Localize ID="locFlightColoring" runat="server" Text="<%$ Resources:Preferences, FlightColoringHeader %>" />
                         </Header>

@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Async="true" Codebehind="PrintView.aspx.cs" Inherits="Member_PrintView" Title="" culture="auto"  %>
+﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Async="true" Codebehind="PrintView.aspx.cs" Inherits="MyFlightbook.MemberPages.Member_PrintView" Title="" culture="auto"  %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Src="../Controls/mfbLogbook.ascx" TagName="mfbLogbook" TagPrefix="uc6" %>
 <%@ Register src="../Controls/mfbTotalSummary.ascx" tagname="mfbTotalSummary" tagprefix="uc2" %>
@@ -203,6 +203,7 @@
                     </p>
                 </div>
                 <div style="white-space:pre-line"><% =CurrentUser.Address %></div>
+                <div><% = CurrentUserDOB %></div>
                 <div><%=Resources.LogbookEntry.PrintHeaderLicense %> <% =CurrentUser.License %></div>
                 <div><asp:Image ID="imgLogo" runat="server" style="max-width: 300px;" /></div>
                 <p><asp:Label ID="lblCoverDate" runat="server" /></p>
