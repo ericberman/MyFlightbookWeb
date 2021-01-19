@@ -16,7 +16,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2020 MyFlightbook LLC
+ * Copyright (c) 2010-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1067,7 +1067,7 @@ namespace MyFlightbook.Airports
         /// <param name="latNorth">Northern point of the bounds</param>
         /// <param name="lonEast">Eastern point of the bounds</param>
         /// <returns>Matching airports</returns>
-        public static IEnumerable<airport> AirportsWithinBounds(double latSouth, double lonWest, double latNorth, double lonEast)
+        public static IEnumerable<airport> AirportsWithinBounds(double latSouth, double lonWest, double latNorth, double lonEast, bool fIncludeHeliports)
         {
             List<airport> lst = new List<airport>();
 
@@ -1083,7 +1083,9 @@ namespace MyFlightbook.Airports
             if (llb.Width > 5.0 || llb.Height > 5.0)
                 return lst;
 
-            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "{0} WHERE Type IN ('A', 'S') AND Latitude BETWEEN ?lat1 AND ?lat2 AND Longitude BETWEEN ?lon1 AND ?lon2 LIMIT 200", airport.DefaultSelectStatement("0.0")));
+            string szTypes = fIncludeHeliports ? "('A', 'S', 'H')" : "('A', 'S')";
+
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "{0} WHERE Type IN {1} AND Latitude BETWEEN ?lat1 AND ?lat2 AND Longitude BETWEEN ?lon1 AND ?lon2 LIMIT 200", airport.DefaultSelectStatement("0.0"), szTypes));
             dbh.ReadRows(
                 (comm) =>
                 {
@@ -1102,7 +1104,6 @@ namespace MyFlightbook.Airports
         /// </summary>
         /// <param name="szSearchText">The words to find</param>
         /// <returns>A set of matching airports</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         public static IEnumerable<airport> AirportsMatchingText(string szSearchText)
         {
             List<airport> lstAp = new List<airport>();
@@ -2231,7 +2232,6 @@ namespace MyFlightbook.Airports
         /// Note that arrays serialize/de-serialize just fine, but List does not.  Also dictionaries/hashtables do NOT serialize."  
         /// So we are suppressing the error message and using this as a way to ensure that serialization works
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
         public string[] NormalizedAirportsForSerialization
         {
             get { return m_rgszAirportsNormal; }
@@ -2243,7 +2243,6 @@ namespace MyFlightbook.Airports
         /// On deserialization, we also initialize the hashtable, since hashtables/dictionaries also do NOT serialize
         /// So we are suppressing the error message and using this as a way to ensure that serialization works
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
         public airport[] AirportArrayForSerialization
         {
             get { return m_rgAirports.ToArray(); }
@@ -2649,7 +2648,6 @@ namespace MyFlightbook.Airports
         /// So, when we get this we enumerate all of the values inthe dictionary and put them into a list, which we then convert to an array and return.
         /// When setting, we store the values into the dictionary, since it is keyed off of the Segment property anyhow.
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
         public FlownSegment[] SerializedSegments
         {
             get
@@ -2671,7 +2669,6 @@ namespace MyFlightbook.Airports
         /// <summary>
         /// This exposes the Routes list, but since Lists do not serialize properly, we convert to/from an array.  We suppress the warning for this reason.
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
         public AirportList[] SerializedRoutes
         {
             get { return Routes.ToArray(); }

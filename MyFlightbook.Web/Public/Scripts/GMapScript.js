@@ -203,11 +203,11 @@ function MFBMap()
     this.autofillPanZoom = function () {
         var mfbMap = getMfbMap();
         if (mfbMap.fAutofillPanZoom) {
-            if (mfbMap.gmap.getZoom() >= 7) {
+            if (mfbMap.gmap.getZoom() >= 6) {
                 var llb = mfbMap.gmap.getBounds();
                 var llbSW = llb.getSouthWest();
                 var llbNE = llb.getNorthEast();
-                MyFlightbook.MFBWebService.AirportsInBoundingBox(llbSW.lat(), llbSW.lng(), llbNE.lat(), llbNE.lng(),
+                MyFlightbook.MFBWebService.AirportsInBoundingBox(llbSW.lat(), llbSW.lng(), llbNE.lat(), llbNE.lng(), mfbMap.fAutofillHeliports,
                     function (result) {
                         mfbMap.clearMarkers();
                         var rgAirports = new Array();
@@ -451,6 +451,7 @@ function MFBNewMapOptions(mfbMapOptions)
     mfbNewMap.fDisableUserManip = mfbMapOptions.fDisableUserManip;
     mfbNewMap.fAutoZoom = mfbMapOptions.fAutoZoom;
     mfbNewMap.fAutofillPanZoom = mfbMapOptions.fAutofillPanZoom;
+    mfbNewMap.fAutofillHeliports = mfbMapOptions.fAutofillHeliports;
         
     return mfbNewMap;        
 }        

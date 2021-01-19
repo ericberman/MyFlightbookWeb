@@ -6,12 +6,12 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2020 MyFlightbook LLC
+ * Copyright (c) 2008-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
-public partial class Controls_mfbGoogleMapMgr : System.Web.UI.UserControl
+public partial class Controls_mfbGoogleMapMgr : UserControl
 {
 
     #region Properties
@@ -51,7 +51,7 @@ public partial class Controls_mfbGoogleMapMgr : System.Web.UI.UserControl
         get { return ResizableControlExtender1.Enabled; }
         set { ResizableControlExtender1.Enabled = value; }
     }
-    
+
     /// <summary>
     /// Width of the map
     /// </summary>
@@ -87,7 +87,7 @@ public partial class Controls_mfbGoogleMapMgr : System.Web.UI.UserControl
     /// </summary>
     public string MapID
     {
-        get {return "gm" + UniqueID;}
+        get { return "gm" + UniqueID; }
     }
 
     /// <summary>
@@ -101,15 +101,16 @@ public partial class Controls_mfbGoogleMapMgr : System.Web.UI.UserControl
 
     protected override void OnPreRender(EventArgs e)
     {
-        switch (Mode) {
+        switch (Mode)
+        {
             case GMap_Mode.Dynamic:
                 Page.ClientScript.RegisterClientScriptInclude("googleMaps", String.Format(CultureInfo.InvariantCulture, "https://maps.googleapis.com/maps/api/js?key={0}", MyFlightbook.SocialMedia.GooglePlusConstants.MapsKey));
-                Page.ClientScript.RegisterClientScriptInclude("MFBMapScript", ResolveClientUrl("~/Public/Scripts/GMapScript.js?v=4"));
+                Page.ClientScript.RegisterClientScriptInclude("MFBMapScript", ResolveClientUrl("~/Public/Scripts/GMapScript.js?v=5"));
                 Page.ClientScript.RegisterClientScriptInclude("MFBMapOMS", ResolveClientUrl("~/Public/Scripts/oms.min.js"));
                 Page.ClientScript.RegisterStartupScript(GetType(), "MapInit" + UniqueID, Map.MapJScript(MapID, pnlMap.ClientID), true);
                 break;
             case GMap_Mode.Static:
-                imgMap.ImageUrl = Map.StaticMapHRef(MyFlightbook.SocialMedia.GooglePlusConstants.MapsKey, (int) Height.Value, (int) Width.Value);
+                imgMap.ImageUrl = Map.StaticMapHRef(MyFlightbook.SocialMedia.GooglePlusConstants.MapsKey, (int)Height.Value, (int)Width.Value);
                 break;
         }
         base.OnPreRender(e);

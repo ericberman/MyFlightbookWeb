@@ -1,17 +1,17 @@
-﻿using System;
+﻿using MyFlightbook.Airports;
+using MyFlightbook.Clubs;
+using MyFlightbook.Geography;
+using MyFlightbook.Image;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Web;
-using MyFlightbook.Airports;
-using MyFlightbook.Clubs;
-using MyFlightbook.Image;
-using MyFlightbook.Geography;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2020 MyFlightbook LLC
+ * Copyright (c) 2015-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -122,6 +122,11 @@ namespace MyFlightbook.Mapping
         /// Auto-fill airports on pan/zoom?
         /// </summary>
         public Boolean AutofillOnPanZoom { get; set; }
+
+        /// <summary>
+        /// Autofill should include heliports or not?
+        /// </summary>
+        public Boolean IncludeHeliportsAutofill { get; set; }
 
         /// <summary>
         /// Normally, the airportlist is normalized; set this to "true" to use the raw (including duplicate) list.
@@ -378,6 +383,7 @@ namespace MyFlightbook.Mapping
             sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "divContainer: '{0}', ", containerID);
             sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "fZoom: {0}, ", 1);
             sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "fAutofillPanZoom: {0}, ", AutofillOnPanZoom ? 1 : 0);
+            sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "fAutofillHeliports: {0}, ", IncludeHeliportsAutofill ? "true" : "false");
             sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "fShowMap: {0}, ", MapVisible ? 1 : 0);
             sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "fShowMarkers: {0}, ", ShowMarkers ? 1 : 0);
             sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "fShowRoute: {0}, ", ShowRoute ? 1 : 0);

@@ -12,7 +12,7 @@ using System.Xml;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2020 MyFlightbook LLC
+ * Copyright (c) 2009-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -71,7 +71,7 @@ namespace MyFlightbook.Web.Admin
         {
             Profile pf = Profile.GetUser(Page.User.Identity.Name);
             CheckAdmin(pf.CanManageData);
-            mfbGoogleMapManager.Map.AutofillOnPanZoom = true;
+            mfbGoogleMapManager.Map.AutofillOnPanZoom = mfbGoogleMapManager.Map.IncludeHeliportsAutofill = true;
         }
 
         protected void RefreshPending()
@@ -94,6 +94,7 @@ namespace MyFlightbook.Web.Admin
             decStart.IntValue = (results < decMaxAirports.IntValue) ? 0 : last;
 
             mfbGoogleMapManager.Map.SetAirportList(new AirportList(lst));
+            mfbGoogleMapManager.Map.AutofillOnPanZoom = ckNoCountry.Checked;
 
             UnReferencedAirports = lst;
             RefreshPending();

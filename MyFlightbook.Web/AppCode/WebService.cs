@@ -15,7 +15,7 @@ using System.Web.Services;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2020 MyFlightbook LLC
+ * Copyright (c) 2008-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -196,7 +196,6 @@ namespace MyFlightbook
     }
 
 // All of the public methods in this class technically can be marked static (CA1822), but that breaks it as a webservice.  So we will suppress that here for the entire class
-#pragma warning disable CA1822 // Mark members as static
     /// <summary>
     /// The main SOAP service for mobile use
     /// NOTE: iPhone sends HTML entities URL encoded, so we need to decode them on receipt.  Bleah.
@@ -1388,11 +1387,10 @@ namespace MyFlightbook
 
         #region Other Ajax
         [WebMethod]
-        public airport[] AirportsInBoundingBox(double latSouth, double lonWest, double latNorth, double lonEast)
+        public airport[] AirportsInBoundingBox(double latSouth, double lonWest, double latNorth, double lonEast, bool fIncludeHeliports = false)
         {
-            return (IsValidCaller()) ? airport.AirportsWithinBounds(latSouth, lonWest, latNorth, lonEast).ToArray() : Array.Empty<airport>();
+            return (IsValidCaller()) ? airport.AirportsWithinBounds(latSouth, lonWest, latNorth, lonEast, fIncludeHeliports).ToArray() : Array.Empty<airport>();
         }
         #endregion
     }
-#pragma warning restore CA1822 // Mark members as static
 }
