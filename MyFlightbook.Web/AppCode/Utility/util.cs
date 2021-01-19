@@ -14,7 +14,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2020 MyFlightbook LLC
+ * Copyright (c) 2008-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -344,6 +344,7 @@ namespace MyFlightbook
             {
                 if (!smtpClient.Host.Contains("local"))
                     smtpClient.EnableSsl = true;
+                System.Net.ServicePointManager.SecurityProtocol |= System.Net.SecurityProtocolType.Tls12;
                 smtpClient.Send(msg);
             }
         }
