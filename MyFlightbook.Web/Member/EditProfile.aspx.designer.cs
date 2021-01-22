@@ -1551,7 +1551,7 @@ namespace MyFlightbook.MemberPages
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_mfbEditPropTemplate mfbEditPropTemplate;
+        protected global::MyFlightbook.Templates.Controls.Controls_mfbEditPropTemplate mfbEditPropTemplate;
 
         /// <summary>
         /// acpCurrency control.

@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbEditPropTemplate.ascx.cs" Inherits="Controls_mfbEditPropTemplate" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbEditPropTemplate.ascx.cs" Inherits="MyFlightbook.Templates.Controls.Controls_mfbEditPropTemplate" %>
 <%@ Register Src="~/Controls/mfbSearchbox.ascx" TagPrefix="uc1" TagName="mfbSearchbox" %>
 <%@ Register Src="~/Controls/Expando.ascx" TagPrefix="uc1" TagName="Expando" %>
 <%@ Register Src="~/Controls/popmenu.ascx" TagPrefix="uc1" TagName="popmenu" %>
