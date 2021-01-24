@@ -700,14 +700,15 @@ namespace MyFlightbook.RatingsProgress
             if (!CatClassMatchesRatingSought(cfr.idCatClassOverride))
                 return;
 
+            // In a glider, you can't do a touch-and-go (right?) so landings = flights.
+            int cLandings = Math.Max(1, cfr.cLandingsThisFlight);
+
             miGliderTime.AddEvent(cfr.Total);
             if (cfr.PIC > 0)
             {
-                miGliderFlightsPIC1i.AddEvent(1);
-                miGliderFlightsPIC2i.AddEvent(1);
+                miGliderFlightsPIC1i.AddEvent(cLandings);
+                miGliderFlightsPIC2i.AddEvent(cLandings);
             }
-
-            int cLandings = Math.Max(1, cfr.cLandingsThisFlight);
 
             if (cfr.Dual > 0)
             {
