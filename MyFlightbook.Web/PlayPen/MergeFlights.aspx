@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" Codebehind="MergeFlights.aspx.cs" MasterPageFile="~/MasterPage.master" Inherits="PlayPen_MergeFlights" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" Codebehind="MergeFlights.aspx.cs" MasterPageFile="~/MasterPage.master" Inherits="MyFlightbook.Playpen.PlayPen_MergeFlights" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Src="~/Controls/mfbLogbook.ascx" TagPrefix="uc1" TagName="mfbLogbook" %>
 

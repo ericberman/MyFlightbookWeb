@@ -32,7 +32,8 @@ public partial class Controls_MFBLogbookBase : UserControl
     /// </summary>
     public FlightQuery Restriction
     {
-        get {
+        get
+        {
             string key = RestrictionVSKey;
             if (ViewState[key] == null)
                 ViewState[key] = new FlightQuery(String.IsNullOrEmpty(User) ? Page.User.Identity.Name : this.User);
@@ -43,9 +44,9 @@ public partial class Controls_MFBLogbookBase : UserControl
 
     private const string colorMapKey = "szVSColorMap";
 
-    protected IEnumerable<FlightColor> colorMap 
+    protected IEnumerable<FlightColor> colorMap
     {
-        get { return (IEnumerable<FlightColor>) ViewState[colorMapKey]; }
+        get { return (IEnumerable<FlightColor>)ViewState[colorMapKey]; }
         set { ViewState[colorMapKey] = value; }
     }
 
@@ -53,9 +54,9 @@ public partial class Controls_MFBLogbookBase : UserControl
     /// <summary>
     /// True for this to be "print view": suppresses images
     /// </summary>
-    public Boolean SuppressImages 
+    public Boolean SuppressImages
     {
-        get { return !String.IsNullOrEmpty((string) ViewState[szViewStateSuppressImages]); }
+        get { return !String.IsNullOrEmpty((string)ViewState[szViewStateSuppressImages]); }
         set { ViewState[szViewStateSuppressImages] = value ? value.ToString(CultureInfo.InvariantCulture) : string.Empty; }
     }
     public IEnumerable<LogbookEntryDisplay> DirectData { get; set; }
@@ -365,7 +366,7 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
     const string szKeyAllowsPaging = "allowsPaging";
     const string szKeyMiniMode = "minimode";
     private Boolean m_fMiniMode;
-    private readonly Dictionary<int, string> m_dictAircraftHoverIDs = new Dictionary<int,string>();
+    private readonly Dictionary<int, string> m_dictAircraftHoverIDs = new Dictionary<int, string>();
 
     #region Properties
     public event EventHandler<LogbookEventArgs> ItemDeleted;
@@ -376,11 +377,11 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
     public Boolean MiniMode
     {
         get { return m_fMiniMode; }
-        set 
+        set
         {
             for (int iCol = 2; iCol < gvFlightLogs.Columns.Count - 2; iCol++)
                 gvFlightLogs.Columns[iCol].Visible = !m_fMiniMode;
-            ViewState[szKeyMiniMode] = m_fMiniMode = value; 
+            ViewState[szKeyMiniMode] = m_fMiniMode = value;
         }
     }
 
@@ -604,9 +605,10 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
             if (!CacheFlushed)
                 FlushCache();
 
+            // Customer-facing utility function: if you add "dupesOnly=1" to the URL, we add a custom restriction that limits flights to ONLY flights that look like potential duplicates
             if (util.GetIntParam(Request, "dupesOnly", 0) != 0)
             {
-                RestrictToDupes();
+                Restriction.EnumeratedFlights = LogbookEntry.DupeCandidatesForUser(Restriction.UserName);
                 FlushCache();
                 HasBeenBound = false;
             }
@@ -640,43 +642,6 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
         gvFlightLogs.Columns[FindColumn(gvFlightLogs, "CFI")].Visible = Pilot.IsInstructor && !MiniMode;
         gvFlightLogs.Columns[FindColumn(gvFlightLogs, "SIC")].Visible = Pilot.TracksSecondInCommandTime && !MiniMode;
     }
-
-    #region Restrict to show only potentially duplicate flights
-    /// <summary>
-    /// Customer-facing utility function: if you add "dupesOnly=1" to the URL, we add a custom restriction that limits flights to ONLY flights that look like potential duplicates
-    /// </summary>
-    public void RestrictToDupes()
-    {
-        FlightQuery fq = Restriction;
-        fq.CustomRestriction = @" (flights.idflight IN (select distinct f1.idflight 
-from flights f1 inner join flights f2 on
-f1.username = ?uName AND
-f1.username=f2.username and
-f1.date = f2.date AND
-f1.idflight <> f2.idflight AND 
-f1.idaircraft = f2.idaircraft AND
-f1.cLandings = f2.cLandings AND
-f1.cInstrumentApproaches = f2.cInstrumentApproaches AND
-f1.Comments = f2.comments AND
-f1.route = f2.route AND
-f1.night = f2.night AND
-f1.crossCountry = f2.crossCountry AND
-f1.IMC = f2.IMC AND
-f1.simulatedInstrument = f2.simulatedInstrument AND
-f1.groundSim = f2.groundSim AND
-f1.dualReceived = f2.dualReceived AND
-f1.cfi = f2.cfi AND
-f1.pic = f2.pic AND
-f1.SIC = f2.SIC AND
-f1.totalFlightTime = f2.totalFlightTime AND
-f1.hobbsStart = f2.hobbsStart AND
-f1.hobbsEnd = f2.hobbsEnd AND
-f1.dtEngineStart <=> f2.dtEngineStart AND
-f1.dtEngineEnd <=> f2.dtEngineEnd AND
-f1.dtFlightStart <=> f2.dtFlightStart AND
-f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
-    }
-    #endregion
 
     protected void SortGridview(GridView gv, List<LogbookEntryDisplay> lst)
     {
@@ -828,7 +793,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
         }
         else if (e.Row.RowType == DataControlRowType.DataRow)
         {
-            LogbookEntryDisplay le = (LogbookEntryDisplay) e.Row.DataItem;
+            LogbookEntryDisplay le = (LogbookEntryDisplay)e.Row.DataItem;
 
             SetUpContextMenuForRow(le, e.Row);
             SetUpBadgesForRow(le, e.Row);
@@ -856,7 +821,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
         if (gvr == null)
             return;
 
-        Label lbl = (Label) gvr.FindControl("lblPage");
+        Label lbl = (Label)gvr.FindControl("lblPage");
         lbl.Text = gvFlightLogs.PageCount.ToString(CultureInfo.CurrentCulture);
 
         TextBox decCurPage = (TextBox)gvr.FindControl("decPage");
@@ -943,6 +908,13 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
         if (!SelectedItems.Any())
             BindData();
         SelectedItems = null;
+    }
+
+    protected void lnkRestrictSelected_Click(object sender, EventArgs e)
+    {
+        IsInSelectMode = false;
+        Restriction.EnumeratedFlights = SelectedItems;
+        Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/Logbooknew.aspx?fq={0}", HttpUtility.UrlEncode(Restriction.ToBase64CompressedJSONString())));
     }
 
     protected void lnkReqSigs_Click(object sender, EventArgs e)

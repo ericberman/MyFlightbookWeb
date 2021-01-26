@@ -7,94 +7,97 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-
-
-public partial class PlayPen_MergeFlights
+namespace MyFlightbook.Playpen
 {
 
-    /// <summary>
-    /// wzMerge control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Wizard wzMerge;
 
-    /// <summary>
-    /// wsSelectFlights control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.WizardStep wsSelectFlights;
-
-    /// <summary>
-    /// lblNeed2Flights control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Label lblNeed2Flights;
-
-    /// <summary>
-    /// lblHeterogeneousAircraft control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Label lblHeterogeneousAircraft;
-
-    /// <summary>
-    /// pnlFlights control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Panel pnlFlights;
-
-    /// <summary>
-    /// rptSelectedFlights control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Repeater rptSelectedFlights;
-
-    /// <summary>
-    /// wsPreview control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.WizardStep wsPreview;
-
-    /// <summary>
-    /// mfbLogbookPreview control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::Controls_mfbLogbook mfbLogbookPreview;
-
-    /// <summary>
-    /// Master property.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated property.
-    /// </remarks>
-    public new MyFlightbook.Web.MasterPage Master
+    public partial class PlayPen_MergeFlights
     {
-        get
+
+        /// <summary>
+        /// wzMerge control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Wizard wzMerge;
+
+        /// <summary>
+        /// wsSelectFlights control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.WizardStep wsSelectFlights;
+
+        /// <summary>
+        /// lblNeed2Flights control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblNeed2Flights;
+
+        /// <summary>
+        /// lblHeterogeneousAircraft control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblHeterogeneousAircraft;
+
+        /// <summary>
+        /// pnlFlights control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlFlights;
+
+        /// <summary>
+        /// rptSelectedFlights control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptSelectedFlights;
+
+        /// <summary>
+        /// wsPreview control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.WizardStep wsPreview;
+
+        /// <summary>
+        /// mfbLogbookPreview control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Controls_mfbLogbook mfbLogbookPreview;
+
+        /// <summary>
+        /// Master property.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated property.
+        /// </remarks>
+        public new MyFlightbook.Web.MasterPage Master
         {
-            return ((MyFlightbook.Web.MasterPage)(base.Master));
+            get
+            {
+                return ((MyFlightbook.Web.MasterPage)(base.Master));
+            }
         }
     }
 }

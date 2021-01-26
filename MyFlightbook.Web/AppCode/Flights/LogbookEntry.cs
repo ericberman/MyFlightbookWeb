@@ -1811,6 +1811,48 @@ namespace MyFlightbook
         }
 
         /// <summary>
+        /// Return a set of possible duplicate flights for the specified user
+        /// </summary>
+        /// <param name="szUser"></param>
+        /// <returns></returns>
+        public static IEnumerable<int> DupeCandidatesForUser(string szUser)
+        {
+            List<int> lst = new List<int>();
+
+            DBHelper dbh = new DBHelper(@" SELECT DISTINCT f1.idflight 
+FROM flights f1 INNER JOIN flights f2 ON
+f1.username=f2.username 
+WHERE f1.username = ?uName AND
+f1.username=f2.username and
+f1.date = f2.date AND
+f1.idflight <> f2.idflight AND 
+f1.idaircraft = f2.idaircraft AND
+f1.cLandings = f2.cLandings AND
+f1.cInstrumentApproaches = f2.cInstrumentApproaches AND
+f1.Comments = f2.comments AND
+f1.route = f2.route AND
+f1.night = f2.night AND
+f1.crossCountry = f2.crossCountry AND
+f1.IMC = f2.IMC AND
+f1.simulatedInstrument = f2.simulatedInstrument AND
+f1.groundSim = f2.groundSim AND
+f1.dualReceived = f2.dualReceived AND
+f1.cfi = f2.cfi AND
+f1.pic = f2.pic AND
+f1.SIC = f2.SIC AND
+f1.totalFlightTime = f2.totalFlightTime AND
+f1.hobbsStart = f2.hobbsStart AND
+f1.hobbsEnd = f2.hobbsEnd AND
+f1.dtEngineStart <=> f2.dtEngineStart AND
+f1.dtEngineEnd <=> f2.dtEngineEnd AND
+f1.dtFlightStart <=> f2.dtFlightStart AND
+f1.dtFlightEnd <=> f2.dtFlightEnd ");
+            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("uName", szUser); },
+                (dr) => { lst.Add(Convert.ToInt32(dr["idFlight"], CultureInfo.InvariantCulture)); });
+            return lst;
+        }
+
+        /// <summary>
         /// Read the specified logbook row from the database and initialize the object from that row.
         /// The username of the database entry MUST match the username that is supplied unless fForceLoad is true.
         /// We use additionalInit so that this can be called by LogbookEntryDisplay without making this method virtual (which generates
@@ -1829,7 +1871,7 @@ namespace MyFlightbook
             User = szUserName;    // in case we don't actually load anything, we should at least set this so that subsequent saves do the right thing.
             if (idRow > 0)
             {
-                FlightQuery fq = new FlightQuery(string.Empty) { CustomRestriction = String.Format(CultureInfo.InvariantCulture, " (flights.idflight={0}) ", idRow) };
+                FlightQuery fq = new FlightQuery(string.Empty) { EnumeratedFlights = new int[] { idRow } };
                 DBHelper dbh = new DBHelper(QueryCommand(fq, 0, 1, false, lto));
 
                 bool fRowFound = false;

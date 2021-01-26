@@ -65,6 +65,12 @@
                                             <asp:Label ID="lblRequestSignature" runat="server" Text="<%$ Resources:SignOff, RequestSignatures %>"></asp:Label>
                                         </asp:LinkButton>
                                     </div>
+                                    <div runat="server" visible='<%# IsInSelectMode %>'>
+                                        <asp:LinkButton ID="lnkRestrictSelected" runat="server" OnClick="lnkRestrictSelected_Click">
+                                            <asp:Image ID="imgSrch" runat="server" style="padding-right: 4px; height:20px; width:20px;" ImageUrl="~/images/search.png" AlternateText="<%$ Resources:LogbookEntry, LogbookSearchSelected %>" />
+                                            <asp:Label ID="lblSearchSelected" runat="server" Text="<%$ Resources:LogbookEntry, LogbookSearchSelected %>"></asp:Label>
+                                        </asp:LinkButton>
+                                    </div>
                                 </div>
                             </MenuContent>
                         </uc7:popmenu>

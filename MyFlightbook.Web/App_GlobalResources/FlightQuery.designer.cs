@@ -475,6 +475,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Explicitly selected flights.
+        /// </summary>
+        internal static string EnumeratedFlights {
+            get {
+                return ResourceManager.GetString("EnumeratedFlights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dates.
         /// </summary>
         internal static string FilterDate {

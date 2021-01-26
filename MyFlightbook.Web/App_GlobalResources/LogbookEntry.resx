@@ -1331,4 +1331,7 @@ Proceed with import?</value>
   <data name="PrintHeaderSegments" xml:space="preserve">
     <value>Flights</value>
   </data>
+  <data name="LogbookSearchSelected" xml:space="preserve">
+    <value>Show only selected flights</value>
+  </data>
 </root>

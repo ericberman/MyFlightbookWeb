@@ -346,4 +346,7 @@
   <data name="ClearAllCriteria" xml:space="preserve">
     <value>(Clear All Search Criteria)</value>
   </data>
+  <data name="EnumeratedFlights" xml:space="preserve">
+    <value>Explicitly selected flights</value>
+  </data>
 </root>

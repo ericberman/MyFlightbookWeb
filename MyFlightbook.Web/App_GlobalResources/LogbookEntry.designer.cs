@@ -1845,6 +1845,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show only selected flights.
+        /// </summary>
+        internal static string LogbookSearchSelected {
+            get {
+                return ResourceManager.GetString("LogbookSearchSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Quickly checks/unchecks all of the flights on this page; does not affect selection of flights on other pages..
         /// </summary>
         internal static string LogbookSelectAll {

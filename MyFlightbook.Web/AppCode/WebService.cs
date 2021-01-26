@@ -598,7 +598,6 @@ namespace MyFlightbook
             SetCultureForRequest();
             if (fq == null)
                 fq = new FlightQuery(szUser);
-            fq.CustomRestriction = string.Empty;    // security sanity check
             util.UnescapeObject(fq);    // fix for HTML encoding issues.
             fq.UserName = szUser; // just to be safe
             UserTotals ut = new UserTotals(szUser, fq, true);
@@ -632,7 +631,6 @@ namespace MyFlightbook
             if (String.IsNullOrEmpty(fq.UserName))
                 throw new MyFlightbookException("FlightsWithQuery - no valid username specified");
 
-            fq.CustomRestriction = string.Empty;    // sanity check for security
             util.UnescapeObject(fq);    // fix for iPhone HTML encoding issues.
 
             return LogbookEntry.GetFlightsForUser(fq, offset, maxCount).ToArray();
@@ -655,7 +653,6 @@ namespace MyFlightbook
             if (fq == null)
                 fq = new FlightQuery(szUser);
             fq.UserName = szUser; //just to be sure.
-            fq.CustomRestriction = string.Empty;    // sanity check for security
             return FlightsWithQuery(fq, offset, maxCount);
         }
 
@@ -674,7 +671,6 @@ namespace MyFlightbook
                 throw new MyFlightbookException(Resources.WebService.errBadAuth);
             if (fq == null)
                 fq = new FlightQuery(szUser);
-            fq.CustomRestriction = string.Empty;    // sanity check for security
             fq.UserName = szUser; //just to be sure.
             return FlightsWithQuery(fq, 0, maxCount);
         }

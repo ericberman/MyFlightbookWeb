@@ -220,6 +220,33 @@ public partial class Controls_mfbLogbook
     protected global::System.Web.UI.WebControls.Label lblRequestSignature;
 
     /// <summary>
+    /// lnkRestrictSelected control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.LinkButton lnkRestrictSelected;
+
+    /// <summary>
+    /// imgSrch control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Image imgSrch;
+
+    /// <summary>
+    /// lblSearchSelected control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblSearchSelected;
+
+    /// <summary>
     /// pnlFlightsPerPage control.
     /// </summary>
     /// <remarks>

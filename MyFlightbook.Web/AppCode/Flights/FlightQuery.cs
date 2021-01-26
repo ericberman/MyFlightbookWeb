@@ -1,5 +1,4 @@
-﻿using Microsoft.Win32.SafeHandles;
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -11,7 +10,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2020 MyFlightbook LLC
+ * Copyright (c) 2009-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -102,11 +101,10 @@ namespace MyFlightbook
         public bool IsPublic { get; set; }
 
         /// <summary>
-        /// Any additional custom restriciton, suitable for inclusion in a "WHERE" clause
+        /// Any additional enumeration of specific flight IDs.  NOT sent over the wire.
         /// </summary>
         [System.Xml.Serialization.XmlIgnore]
-        [JsonIgnoreAttribute]
-        public string CustomRestriction { get; set; }
+        public IEnumerable<int> EnumeratedFlights { get; set; } = Array.Empty<int>();
 
         /// <summary>
         /// Flight Characteristics - AND?  OR?  NOT?  Default is AND ("ALL")
@@ -546,9 +544,7 @@ namespace MyFlightbook
 
         #region JSON Management
         #region Serialization of empty arrays
-#pragma warning disable CA1822 // Mark members as static
         public bool ShouldSerializeSearchColumns() { return false; }
-#pragma warning restore CA1822 // Mark members as static
         #endregion
 
         /// <summary>
@@ -1319,6 +1315,15 @@ namespace MyFlightbook
                 Filters.Add(new QueryFilterItem(Resources.FlightQuery.CategoryClass, String.Join(", ", lstDesc), "CatClasses"));
             }
         }
+
+        private void UpdateEnumeratedFlights(StringBuilder sbQuery)
+        {
+            if (EnumeratedFlights != null && EnumeratedFlights.Any())
+            {
+                AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, " (flights.idFlight IN ({0})) ", String.Join(", ", EnumeratedFlights)));
+                Filters.Add(new QueryFilterItem(Resources.FlightQuery.EnumeratedFlights, string.Empty, "EnumeratedFlights"));
+            }
+        }
         #endregion
 
         protected void UpdateRestriction()
@@ -1344,9 +1349,7 @@ namespace MyFlightbook
             UpdateFlightCharacteristics(sbQuery);
             UpdateFlightProperties(sbQuery);
             UpdateCatClass(sbQuery);
-
-            if (!String.IsNullOrEmpty(CustomRestriction))
-                AddClause(sbQuery, CustomRestriction);
+            UpdateEnumeratedFlights(sbQuery);
 
             szHaving = sbHaving.ToString();
 

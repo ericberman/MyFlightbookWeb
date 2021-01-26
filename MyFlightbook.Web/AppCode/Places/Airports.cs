@@ -610,7 +610,7 @@ namespace MyFlightbook.Airports
                 throw new MyFlightbookException("Don't get all flights as KML for an empty user!!");
 
             if (lstIDs != null)
-                fq.CustomRestriction = String.Format(CultureInfo.InvariantCulture, " flights.idFlight IN ({0}) ", String.Join(", ", lstIDs));
+                fq.EnumeratedFlights = lstIDs;
 
             // Get the master airport list
             AirportList alMaster = AllFlightsAndNavaids(fq);
