@@ -13,7 +13,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2020 MyFlightbook LLC
+ * Copyright (c) 2008-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -225,6 +225,7 @@ namespace MyFlightbook
         }
 
         static readonly Regex rZuluDateLocalWithOffset = new Regex("(?<sign>[-+])(?<hours>\\d{2})(?<minutes>\\d{2})$", RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant);
+        static readonly Regex rZuluDateTime = new Regex("^(?<year>\\d{4})[-/.](?<month>\\d{2})[-/.](?<day>\\d{2})T(?<hour>\\d{2})[-:.](?<minute>\\d{2})[-:.](?<seconds>\\d{2}([.,]\\d*)?)Z$", RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant);
 
         /// <summary>
         /// Parse the specified string, assigning it UTC if it is in 8601 format
@@ -233,10 +234,18 @@ namespace MyFlightbook
         /// <returns>A date time, in UTC if it was a UTC string</returns>
         public static DateTime ParseUTCDate(this string sz)
         {
+            MatchCollection mc;
             if (String.IsNullOrEmpty(sz))
                 return DateTime.MinValue;
-            else if (sz.EndsWith("Z", StringComparison.OrdinalIgnoreCase))
-                return DateTime.Parse(sz, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
+            else if ((mc = rZuluDateTime.Matches(sz)) != null && mc.Count == 1)
+            {
+                GroupCollection gc = mc[0].Groups;
+                double seconds = Convert.ToDouble(gc["seconds"].Value, CultureInfo.InvariantCulture);
+                int wholeseconds = (int)Math.Truncate(seconds);
+                int milliseconds = (int)Math.Truncate((seconds - wholeseconds) * 1000);
+                return new DateTime(Convert.ToInt32(gc["year"].Value, CultureInfo.InvariantCulture), Convert.ToInt32(gc["month"].Value, CultureInfo.InvariantCulture), Convert.ToInt32(gc["day"].Value, CultureInfo.InvariantCulture),
+                    Convert.ToInt32(gc["hour"].Value, CultureInfo.InvariantCulture), Convert.ToInt32(gc["minute"].Value, CultureInfo.InvariantCulture), wholeseconds, milliseconds, DateTimeKind.Utc);
+            }
             else if (rZuluDateLocalWithOffset.IsMatch(sz))
                 return DateTime.Parse(sz, CultureInfo.CurrentCulture, DateTimeStyles.AdjustToUniversal);
             else
