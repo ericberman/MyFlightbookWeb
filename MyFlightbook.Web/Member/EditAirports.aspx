@@ -327,7 +327,7 @@
                     <Columns>
                         <asp:TemplateField HeaderText="Airport 1">
                             <ItemTemplate>
-                                <asp:ImageButton ID="imgDeleteDupe1" ImageUrl="~/images/x.gif" CausesValidation="False" 
+                                <asp:ImageButton ID="imgDeleteDupe1" ImageUrl="~/images/x.gif" CausesValidation="False" Visible="false" 
                                     AlternateText="Delete this airport" ToolTip="Delete this airport"
                                     OnClientClick='<%# DeleteDupeScript((string)Eval("user1"), (string)Eval("id1"), (string)Eval("id2"), (string)Eval("type1")) %>'
                                     runat="server" />
@@ -343,7 +343,7 @@
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Airport 2">
                             <ItemTemplate>
-                                <asp:ImageButton ID="imgDeleteDupe2" ImageUrl="~/images/x.gif" CausesValidation="False"
+                                <asp:ImageButton ID="imgDeleteDupe2" ImageUrl="~/images/x.gif" CausesValidation="False" Visible="false"
                                     AlternateText="Delete this airport" ToolTip="Delete this airport"
                                     OnClientClick='<%# DeleteDupeScript((string)Eval("user2"), (string)Eval("id2"), (string)Eval("id1"), (string)Eval("type2")) %>'
                                     runat="server" />
