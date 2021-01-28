@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="FlightDetail.aspx.cs" Inherits="Member_FlightDetail" culture="auto" meta:resourcekey="PageResource1" Async="true" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="FlightDetail.aspx.cs" Inherits="MyFlightbook.MemberPages.FlightDetail" culture="auto" meta:resourcekey="PageResource1" Async="true" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Reference Control="~/Controls/mfbLogbookSidebar.ascx" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
@@ -224,22 +224,65 @@
             </ajaxToolkit:AccordionPane>
             <ajaxToolkit:AccordionPane runat="server" ID="acpChart" meta:resourcekey="acpChartResource1">
                 <Content>
-                    <div style="width: 90%; margin-left: 5%; margin-right: 5%; text-align: center;">
-                        <asp:Localize ID="locDataToChart" runat="server" Text="Data to chart:" meta:resourcekey="locDataToChartResource1"></asp:Localize>
-                        <br />
-                        <asp:DropDownList ID="cmbYAxis1" runat="server" AutoPostBack="True"
-                            OnSelectedIndexChanged="cmbYAxis1_SelectedIndexChanged" meta:resourcekey="cmbYAxis1Resource1">
-                        </asp:DropDownList><br />
-                        <asp:Localize ID="locY2AxisSelection" runat="server" Text="2nd data to chart:" meta:resourcekey="locY2AxisSelectionResource1"></asp:Localize><br />
-                        <asp:DropDownList ID="cmbYAxis2" runat="server" AutoPostBack="True"
-                            OnSelectedIndexChanged="cmbYAxis2_SelectedIndexChanged" meta:resourcekey="cmbYAxis2Resource1">
-                        </asp:DropDownList><br />
-                        <asp:Localize ID="locXAxisSelection" runat="server" Text="X-axis:" meta:resourcekey="locXAxisSelectionResource1"></asp:Localize><br />
-                        <asp:DropDownList ID="cmbXAxis" runat="server" AutoPostBack="True"
-                            OnSelectedIndexChanged="cmbXAxis_SelectedIndexChanged" meta:resourcekey="cmbXAxisResource1">
-                        </asp:DropDownList>
-                        <br />
-                        <uc2:GoogleChart ID="gcData" SlantAngle="0" LegendType="bottom" Width="800" Height="500" runat="server" />
+                    <div style="width: 90%; margin-left: 5%; margin-right: 5%;">
+                        <div>
+                            <div style="display: inline-block; float: left">
+                                <asp:Localize ID="locDataToChart" runat="server" Text="Data to chart:" meta:resourcekey="locDataToChartResource1"></asp:Localize>
+                                <br />
+                                <asp:DropDownList ID="cmbYAxis1" runat="server" AutoPostBack="True"
+                                    OnSelectedIndexChanged="cmbYAxis1_SelectedIndexChanged" meta:resourcekey="cmbYAxis1Resource1">
+                                </asp:DropDownList> 
+                                <uc1:popmenu runat="server" ID="pmConv1">
+                                    <MenuContent>
+                                        <asp:RadioButtonList ID="rblConvert1" runat="server" AutoPostBack="true" OnSelectedIndexChanged="rblConvert1_SelectedIndexChanged">
+                                            <asp:ListItem Text="<%$ Resources:FlightData, ConversionNone %>" Selected="True" Value="1" />
+                                            <asp:ListItem Text="<%$ Resources:FlightData, ConversionMToFt %>" Value="3.28084" />
+                                            <asp:ListItem Text="<%$ Resources:FlightData, ConversionFtToM %>" Value="0.3048" />
+                                            <asp:ListItem Text="<%$ Resources:FlightData, ConversionKtsToMph %>" Value="1.15078" />
+                                            <asp:ListItem Text="<%$ Resources:FlightData, ConverstionKtsToKmh %>" Value="1.852" />
+                                            <asp:ListItem Text="<%$ Resources:FlightData, ConversionMSToKts %>" Value="1.94384" />
+                                            <asp:ListItem Text="<%$ Resources:FlightData, ConversionMSToKmh %>" Value="3.6" />
+                                            <asp:ListItem Text="<%$ Resources:FlightData, ConverstionMSToMph %>" Value="2.23694" />
+                                            <asp:ListItem Text="<%$ Resources:FlightData, ConversionMphToKts %>" Value="0.868976" />
+                                            <asp:ListItem Text="<%$ Resources:FlightData, ConversionMphToKmh %>" Value="1.60934" />
+                                        </asp:RadioButtonList>
+                                    </MenuContent>
+                                </uc1:popmenu>
+                            </div>
+                            <div style="display: inline-block; float:right;">
+                                <asp:Localize ID="locY2AxisSelection" runat="server" Text="2nd data to chart:" meta:resourcekey="locY2AxisSelectionResource1"></asp:Localize><br />
+                                <asp:DropDownList ID="cmbYAxis2" runat="server" AutoPostBack="True"
+                                    OnSelectedIndexChanged="cmbYAxis2_SelectedIndexChanged" meta:resourcekey="cmbYAxis2Resource1">
+                                </asp:DropDownList>
+                                <uc1:popmenu runat="server" ID="Popmenu1">
+                                    <MenuContent>
+                                        <asp:RadioButtonList ID="rblConvert2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="rblConvert2_SelectedIndexChanged">
+                                            <asp:ListItem Text="<%$ Resources:FlightData, ConversionNone %>" Selected="True" Value="1" />
+                                            <asp:ListItem Text="<%$ Resources:FlightData, ConversionMToFt %>" Value="3.28084" />
+                                            <asp:ListItem Text="<%$ Resources:FlightData, ConversionFtToM %>" Value="0.3048" />
+                                            <asp:ListItem Text="<%$ Resources:FlightData, ConversionKtsToMph %>" Value="1.15078" />
+                                            <asp:ListItem Text="<%$ Resources:FlightData, ConverstionKtsToKmh %>" Value="1.852" />
+                                            <asp:ListItem Text="<%$ Resources:FlightData, ConversionMSToKts %>" Value="1.94384" />
+                                            <asp:ListItem Text="<%$ Resources:FlightData, ConversionMSToKmh %>" Value="3.6" />
+                                            <asp:ListItem Text="<%$ Resources:FlightData, ConverstionMSToMph %>" Value="2.23694" />
+                                            <asp:ListItem Text="<%$ Resources:FlightData, ConversionMphToKts %>" Value="0.868976" />
+                                            <asp:ListItem Text="<%$ Resources:FlightData, ConversionMphToKmh %>" Value="1.60934" />
+                                        </asp:RadioButtonList>
+                                    </MenuContent>
+                                </uc1:popmenu>
+                            </div>
+                            <div style="text-align:center">
+                                <div style="display: inline-block;">
+                                    <asp:Localize ID="locXAxisSelection" runat="server" Text="X-axis:" meta:resourcekey="locXAxisSelectionResource1"></asp:Localize><br />
+                                    <asp:DropDownList ID="cmbXAxis" runat="server" AutoPostBack="True"
+                                        OnSelectedIndexChanged="cmbXAxis_SelectedIndexChanged" meta:resourcekey="cmbXAxisResource1">
+                                    </asp:DropDownList>
+                                </div>
+                            </div>
+                            <div style="text-align: center">
+                                <uc2:GoogleChart ID="gcData" SlantAngle="0" LegendType="bottom" Width="800" Height="500" runat="server" />
+                            </div>
+                        </div>
                     </div>
                     <div style="text-align:center;">
                         <asp:Label ID="lblMinY" runat="server" meta:resourcekey="lblMinYResource1"></asp:Label>

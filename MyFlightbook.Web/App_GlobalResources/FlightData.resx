@@ -252,4 +252,34 @@
   <data name="FlightDataOriginalFormat" xml:space="preserve">
     <value>Data was stored as:</value>
   </data>
+  <data name="ConversionFtToM" xml:space="preserve">
+    <value>Convert Feet to Meters</value>
+  </data>
+  <data name="ConversionKtsToMph" xml:space="preserve">
+    <value>Convert Knots to Miles/Hour</value>
+  </data>
+  <data name="ConversionMphToKmh" xml:space="preserve">
+    <value>Convert Miles/Hour to Km/Hour</value>
+  </data>
+  <data name="ConversionMphToKts" xml:space="preserve">
+    <value>Convert Miles/Hour to Knots</value>
+  </data>
+  <data name="ConversionMSToKmh" xml:space="preserve">
+    <value>Convert Meters/Second to Km/Hour</value>
+  </data>
+  <data name="ConversionMSToKts" xml:space="preserve">
+    <value>Convert Meters/Second to Knots</value>
+  </data>
+  <data name="ConversionMToFt" xml:space="preserve">
+    <value>Convert Meters to Feet</value>
+  </data>
+  <data name="ConversionNone" xml:space="preserve">
+    <value>Raw (Unconverted)</value>
+  </data>
+  <data name="ConverstionKtsToKmh" xml:space="preserve">
+    <value>Convert Knots to Km/Hour</value>
+  </data>
+  <data name="ConverstionMSToMph" xml:space="preserve">
+    <value>Convert Meters/Second to Miles/Hour</value>
+  </data>
 </root>

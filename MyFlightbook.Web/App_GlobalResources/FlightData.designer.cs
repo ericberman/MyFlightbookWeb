@@ -61,6 +61,96 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Convert Feet to Meters.
+        /// </summary>
+        internal static string ConversionFtToM {
+            get {
+                return ResourceManager.GetString("ConversionFtToM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Convert Knots to Miles/Hour.
+        /// </summary>
+        internal static string ConversionKtsToMph {
+            get {
+                return ResourceManager.GetString("ConversionKtsToMph", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Convert Miles/Hour to Km/Hour.
+        /// </summary>
+        internal static string ConversionMphToKmh {
+            get {
+                return ResourceManager.GetString("ConversionMphToKmh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Convert Miles/Hour to Knots.
+        /// </summary>
+        internal static string ConversionMphToKts {
+            get {
+                return ResourceManager.GetString("ConversionMphToKts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Convert Meters/Second to Km/Hour.
+        /// </summary>
+        internal static string ConversionMSToKmh {
+            get {
+                return ResourceManager.GetString("ConversionMSToKmh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Convert Meters/Second to Knots.
+        /// </summary>
+        internal static string ConversionMSToKts {
+            get {
+                return ResourceManager.GetString("ConversionMSToKts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Convert Meters to Feet.
+        /// </summary>
+        internal static string ConversionMToFt {
+            get {
+                return ResourceManager.GetString("ConversionMToFt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Raw (Unconverted).
+        /// </summary>
+        internal static string ConversionNone {
+            get {
+                return ResourceManager.GetString("ConversionNone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Convert Knots to Km/Hour.
+        /// </summary>
+        internal static string ConverstionKtsToKmh {
+            get {
+                return ResourceManager.GetString("ConverstionKtsToKmh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Convert Meters/Second to Miles/Hour.
+        /// </summary>
+        internal static string ConverstionMSToMph {
+            get {
+                return ResourceManager.GetString("ConverstionMSToMph", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Airbly File.
         /// </summary>
         internal static string dataTypeAirbly {
@@ -284,7 +374,7 @@ namespace Resources {
         ///    &lt;ul&gt;
         ///        &lt;li&gt;&lt;a href=&quot;http://en.wikipedia.org/wiki/Kml&quot; Target=&quot;_blank&quot;&gt;KML&lt;/a&gt;&lt;/li&gt;
         ///        &lt;li&gt;&lt;a href=&quot;http://en.wikipedia.org/wiki/GPS_eXchange_Format&quot; target=&quot;_blank&quot;&gt;GPX&lt;/a&gt;&lt;/li&gt;
-        ///		&lt;li&gt;&lt;a href=&quot;http://carrier.csi.cam.ac.uk/fo [rest of string was truncated]&quot;;.
+        ///		&lt;li&gt;&lt;a href=&quot;https://aerofiles.readthedocs.i [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string FlightDataKey {
             get {
