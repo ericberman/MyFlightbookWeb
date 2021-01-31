@@ -36,7 +36,7 @@ namespace MyFlightbook.Printing
         IList<LogbookEntryDisplay> CondenseFlights(IEnumerable<LogbookEntryDisplay> lstIn);
     }
 
-    public enum PrintLayoutType { Native, Portrait, EASA, USA, Canada, SACAA, CASA, NZ, Glider, Condensed}
+    public enum PrintLayoutType { Native, Portrait, EASA, USA, Canada, SACAA, CASA, NZ, Glider, Condensed }
 
     #region Printing Layout implementations
     public abstract class PrintLayout
@@ -279,7 +279,7 @@ namespace MyFlightbook.Printing
             if (le == null)
                 throw new ArgumentNullException(nameof(le));
             // Very rough computation: look at customproperties + comments, shoot for ~120chars/line
-            int linesOfText = (int) Math.Ceiling(le.RedactedComment.Length / 120.0) + (int) Math.Ceiling(le.CustPropertyDisplay.Length / 120.0);
+            int linesOfText = (int)Math.Ceiling(le.RedactedComment.Length / 120.0) + (int)Math.Ceiling(le.CustPropertyDisplay.Length / 120.0);
             int routeLine = le.Airports.Count() > 2 ? 1 : 0;
             return Math.Max(1, (linesOfText + routeLine + 1) / 2);
         }
@@ -405,7 +405,7 @@ namespace MyFlightbook.Printing
     public class PDFOptions
     {
         public enum PageOrientation { Landscape, Portrait };
-        public enum PageSize { Letter, Legal, Tabloid, Executive, A1, A2, A3, A4, A5, B1, B2, B3, B4, B5, Custom};
+        public enum PageSize { Letter, Legal, Tabloid, Executive, A1, A2, A3, A4, A5, B1, B2, B3, B4, B5, Custom };
 
         #region properties
         /// <summary>
@@ -454,6 +454,40 @@ namespace MyFlightbook.Printing
         {
             get { return String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrintedFooterPageCount, "[page]" /* , "[topage]" */); }
         }
+        #endregion
+
+        #region Options encoded to pass to the footer
+        private const UInt32 flagCoverPage = 0x00000001;
+        private const UInt32 flagTotalPages = 0x00000002;
+
+        public static string PathEncodeOptions(bool fCover, bool fTotal)
+        {
+            UInt32 flags = ((fCover ? 0xffffffff : 0) & flagCoverPage) | ((fTotal ? 0xffffffff : 0) & flagTotalPages);
+            return flags.ToString(CultureInfo.InvariantCulture);
+        }
+
+        public static bool CoverFromEncodedOptions(string sz)
+        {
+            if (sz == null)
+                throw new ArgumentNullException(nameof(sz));
+
+            if (UInt32.TryParse(sz, NumberStyles.Integer, CultureInfo.InvariantCulture, out UInt32 flags))
+                return (flags & flagCoverPage) != 0;
+            else
+                return false;
+        }
+
+        public static bool TotalPagesFromEncodedOptions(string sz)
+        {
+            if (sz == null)
+                throw new ArgumentNullException(nameof(sz));
+
+            if (UInt32.TryParse(sz, NumberStyles.Integer, CultureInfo.InvariantCulture, out UInt32 flags))
+                return (flags & flagTotalPages) != 0;
+            else
+                return false;
+        }
+
         #endregion
 
         public PDFOptions()
@@ -755,7 +789,7 @@ namespace MyFlightbook.Printing
                 if (po.FlightsPerPage > 0)
                 {
                     if (!dictPageTotals.ContainsKey(szCatClassKey))
-                        dictPageTotals[szCatClassKey] = new LogbookEntryDisplay(po.OptionalColumns) { RowType = LogbookEntryDisplay.LogbookRowType.PageTotal, CatClassDisplay = szCatClassKey  };
+                        dictPageTotals[szCatClassKey] = new LogbookEntryDisplay(po.OptionalColumns) { RowType = LogbookEntryDisplay.LogbookRowType.PageTotal, CatClassDisplay = szCatClassKey };
                     dictPageTotals[szCatClassKey].AddFrom(led);
                 }
                 if (!dictRunningTotals.ContainsKey(szCatClassKey))

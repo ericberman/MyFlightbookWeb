@@ -1182,7 +1182,7 @@
     <value>Unable to create PDF file.</value>
   </data>
   <data name="PrintedFooterPageCount" xml:space="preserve">
-    <value>Page {0}</value>
+    <value>Page {0:#,##0}</value>
   </data>
   <data name="wkhtmlnote" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>content.en\wkhtmlnote.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
@@ -1870,5 +1870,11 @@
   </data>
   <data name="PrintViewFlightColoringTip" xml:space="preserve">
     <value>In Preferences, you can specify a background color to use for flights that contain specific keywords.</value>
+  </data>
+  <data name="PrintedFooterPageCountWithTotals" xml:space="preserve">
+    <value>Page {0:#,##0} of {1:#,##0}</value>
+  </data>
+  <data name="PrintViewShowTotalPages" xml:space="preserve">
+    <value>Show page count along with page number in PDF</value>
   </data>
 </root>

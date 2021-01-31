@@ -11,7 +11,7 @@ namespace MyFlightbook.MemberPages
 {
 
 
-    public partial class Member_PrintView
+    public partial class PrintView
     {
 
         /// <summary>
@@ -364,6 +364,15 @@ namespace MyFlightbook.MemberPages
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::Controls_mfbDecimalEdit decBottomMargin;
+
+        /// <summary>
+        /// ckPrintTotalPages control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox ckPrintTotalPages;
 
         /// <summary>
         /// imgPDF control.

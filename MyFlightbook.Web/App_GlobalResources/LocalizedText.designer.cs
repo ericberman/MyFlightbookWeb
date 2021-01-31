@@ -3786,11 +3786,20 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Page {0}.
+        ///   Looks up a localized string similar to Page {0:#,##0}.
         /// </summary>
         internal static string PrintedFooterPageCount {
             get {
                 return ResourceManager.GetString("PrintedFooterPageCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Page {0:#,##0} of {1:#,##0}.
+        /// </summary>
+        internal static string PrintedFooterPageCountWithTotals {
+            get {
+                return ResourceManager.GetString("PrintedFooterPageCountWithTotals", resourceCulture);
             }
         }
         
@@ -4135,6 +4144,15 @@ namespace Resources {
         internal static string PrintViewSelectedFlightsLabel {
             get {
                 return ResourceManager.GetString("PrintViewSelectedFlightsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show page count along with page number in PDF.
+        /// </summary>
+        internal static string PrintViewShowTotalPages {
+            get {
+                return ResourceManager.GetString("PrintViewShowTotalPages", resourceCulture);
             }
         }
         

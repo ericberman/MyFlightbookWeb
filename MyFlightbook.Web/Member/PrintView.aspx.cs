@@ -21,7 +21,7 @@ using System.Web.UI.WebControls;
 
 namespace MyFlightbook.MemberPages
 {
-    public partial class Member_PrintViewBase : Page
+    public partial class PrintViewBase : Page
     {
         protected Profile CurrentUser { get; set; }
 
@@ -105,7 +105,7 @@ namespace MyFlightbook.MemberPages
         }
     }
 
-    public partial class Member_PrintView : Member_PrintViewBase
+    public partial class PrintView : PrintViewBase
     {
         #region properties
         protected IPrintingTemplate ActiveTemplate
@@ -277,9 +277,7 @@ namespace MyFlightbook.MemberPages
                     PageHeight = decCustHeight.IntValue,
                     PageWidth = decCustWidth.IntValue,
                     Orientation = rbLandscape.Checked ? PDFOptions.PageOrientation.Landscape : PDFOptions.PageOrientation.Portrait,
-                    FooterUri = (VirtualPathUtility.ToAbsolute("~/Public/PrintFooter.aspx") + (ckIncludeCoverSheet.Checked ? "/Cover" : string.Empty)).ToAbsoluteURL(Request),
-                    // FooterLeft = Resources.LogbookEntry.LogbookCertification,
-                    // FooterRight = PDFOptions.FooterPageCountArg,
+                    FooterUri = VirtualPathUtility.ToAbsolute("~/Public/PrintFooter.aspx/" + PDFOptions.PathEncodeOptions(ckIncludeCoverSheet.Checked, ckPrintTotalPages.Checked)).ToAbsoluteURL(Request),
                     LeftMargin = decLeftMargin.IntValue,
                     RightMargin = decRightMargin.IntValue,
                     TopMargin = decTopMargin.IntValue,

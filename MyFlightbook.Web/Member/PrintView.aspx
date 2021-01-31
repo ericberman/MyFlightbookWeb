@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Async="true" Codebehind="PrintView.aspx.cs" Inherits="MyFlightbook.MemberPages.Member_PrintView" Title="" culture="auto"  %>
+﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Async="true" Codebehind="PrintView.aspx.cs" Inherits="MyFlightbook.MemberPages.PrintView" Title="" culture="auto"  %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Src="../Controls/mfbLogbook.ascx" TagName="mfbLogbook" TagPrefix="uc6" %>
 <%@ Register src="../Controls/mfbTotalSummary.ascx" tagname="mfbTotalSummary" tagprefix="uc2" %>
@@ -174,6 +174,9 @@
                                     </tr>
                                 </table>
                             </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><div><asp:CheckBox ID="ckPrintTotalPages" runat="server" Text="<%$ Resources:LocalizedText, PrintViewShowTotalPages %>" /></div></td>
                         </tr>
                         <tr>
                             <td>
