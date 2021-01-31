@@ -1943,9 +1943,7 @@ namespace MyFlightbook
             Aircraft ac = ua.GetUserAircraftByID(le.AircraftID);
 
             // OK, now we're on to general search.  First, generate - once - the string to search
-            List<string> lst = new List<string>() { le.ModelDisplay, le.TailNumDisplay, le.Route, le.Comment, le.CatClassDisplay, le.CustPropertyDisplay, le.CFIComments, le.CFIName, ac.PrivateNotes };
-            lst.AddRange(CustomFlightProperty.PropDisplayAsList(le.CustomProperties, Profile.GetUser(le.User).UsesHHMM));
-            string szMatch = String.Join(" ", lst).ToUpper(CultureInfo.CurrentCulture);
+            string szMatch = le.SearchStringForFlight(ac.PrivateNotes);
 
             List<string> lstSearchTerms = new List<string>();
 

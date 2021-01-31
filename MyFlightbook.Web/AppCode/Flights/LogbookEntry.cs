@@ -3185,6 +3185,17 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
         {
             get { return CustomFlightProperty.PropDisplayAsList(CustomProperties, UseHHMM, true, true); }
         }
+
+        /// <summary>
+        /// For CannedQuery matching (flight coloring) - return the search string, appending any additional text.
+        /// </summary>
+        /// <param name="ac"></param>
+        /// <returns></returns>
+        public string SearchStringForFlight(string szAdditional)
+        {
+            List<string> lst = new List<string>() { ModelDisplay, TailNumDisplay, Route, Comment, CatClassDisplay, CustPropertyDisplay, CFIComments ?? string.Empty, CFIName ?? string.Empty, szAdditional ?? string.Empty };
+            return String.Join(" ", lst).ToUpper(CultureInfo.CurrentCulture).Trim();
+        }
         #endregion
         #endregion
 
