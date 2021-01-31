@@ -10,7 +10,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2020 MyFlightbook LLC
+ * Copyright (c) 2008-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -715,6 +715,16 @@ function setDates(isCustom)
         foreach (string sz in TypeNames)
             m_fq.TypeNames.Add(sz);
 
+        // Save it, if it was given a name, before refreshing it, since refresh can be destructive (e.g., can change trailing:2D to actual dates.
+        // We'll clear the queryname field at the same time to prevent doing this multiple times.
+        if (m_fq is CannedQuery cq && !String.IsNullOrEmpty(cq.QueryName))
+        {
+            cq.Commit();
+            UpdateSavedQueries();
+            txtQueryName.Text = string.Empty;
+        }
+
+
         m_fq.Refresh();
 
         return m_fq;
@@ -723,14 +733,6 @@ function setDates(isCustom)
     protected void DoSearch()
     {
         GetFlightQuery();
-
-        // Save it, if it was given a name
-        if (m_fq is CannedQuery cq && !String.IsNullOrEmpty(cq.QueryName))
-        {
-            cq.Commit();
-            UpdateSavedQueries();
-            txtQueryName.Text = string.Empty;
-        }
 
         QuerySubmitted?.Invoke(this, new FlightQueryEventArgs(m_fq));
     }

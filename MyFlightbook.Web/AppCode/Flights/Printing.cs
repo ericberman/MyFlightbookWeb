@@ -904,7 +904,7 @@ namespace MyFlightbook.Printing
 
         public bool IncludeImages { get; private set; }
 
-        protected IEnumerable<FlightColor> flightColors { get; private set; }
+        protected IEnumerable<CannedQuery> QueriesToColor { get; private set; }
 
         protected Collection<OptionalColumn> OptionalColumns { get; private set; }
 
@@ -946,15 +946,23 @@ namespace MyFlightbook.Printing
         /// Return the direct-style flight coloring for a logbookentrydisplay
         /// </summary>
         /// <returns></returns>
-        protected string FlightColor(object o)
+        protected string ColorForFlight(object o)
         {
             if (o == null || !Options.UseFlightColoring || (!(o is LogbookEntryDisplay led)))
                 return string.Empty;
 
-            if (flightColors == null)
-                flightColors = CurrentUser.KeywordColors;
+            if (QueriesToColor == null)
+                QueriesToColor = FlightColor.QueriesToColor(led.User);
 
-            System.Drawing.Color c = led.KeywordColor(flightColors);
+            System.Drawing.Color c = System.Drawing.Color.Empty;
+            foreach (CannedQuery cq in QueriesToColor)
+            {
+                if (cq.MatchesFlight(led))
+                {
+                    c = FlightColor.TryParseColor(cq.ColorString);
+                    break;
+                }
+            }
             return c == System.Drawing.Color.Empty ? string.Empty : String.Format(CultureInfo.InvariantCulture, "style=\"background-color: {0};\" ", System.Drawing.ColorTranslator.ToHtml(c));
         }
         #endregion

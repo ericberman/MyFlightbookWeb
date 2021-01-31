@@ -3705,32 +3705,6 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
             }
         }
         #endregion
-
-        #region Coloring Support
-        /// <summary>
-        /// Given a mapping of keywords/color pairs, returns the color for the first keyword found in the display of the flight, or Color.Empty if none.
-        /// </summary>
-        /// <param name="d"></param>
-        /// <returns></returns>
-        public System.Drawing.Color KeywordColor(IEnumerable<FlightColor> rgfc)
-        {
-            if (rgfc == null || !rgfc.Any())
-                return System.Drawing.Color.Empty;
-
-            // Create a search string
-            List<string> lst = new List<string>() { Comment, Route, ModelDisplay, TailNumDisplay, CatClassDisplay, CFIComments, CFIName };
-            lst.AddRange(CustomFlightProperty.PropDisplayAsList(CustomProperties, UseHHMM));
-            string szMatch = String.Join(" ", lst).ToUpper(CultureInfo.CurrentCulture);
-
-            foreach (FlightColor fc in rgfc)
-            {
-                if (szMatch.Contains(fc.UpperKey))
-                    return fc.Color;
-            }
-
-            return System.Drawing.Color.Empty;
-        }
-        #endregion
     }
 
     /// <summary>
@@ -3815,24 +3789,51 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
         /// </summary>
         public string UpperKey { get { return m_keywordUpper; } }
 
+        public static System.Drawing.Color TryParseColor(string sz)
+        {
+            if(!String.IsNullOrWhiteSpace(sz))
+                {
+                try
+                {
+                    if (Regex.IsMatch(sz, "^[0-9a-fA-F]{6}$"))
+                        sz = "#" + sz;
+                    return System.Drawing.ColorTranslator.FromHtml(sz);
+                }
+                catch (Exception ex) when (!(ex is OutOfMemoryException)) { }
+            }
+            return System.Drawing.Color.Empty;
+        }
+
+        public static IEnumerable<CannedQuery> QueriesToColor(string szUser)
+        {
+            if (String.IsNullOrWhiteSpace(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+
+            Profile pf = Profile.GetUser(szUser);
+
+            List<CannedQuery> lst = new List<CannedQuery>(CannedQuery.QueriesForUser(pf.UserName));
+            lst.RemoveAll(cq => String.IsNullOrWhiteSpace(cq.ColorString));
+
+            IEnumerable<FlightColor> colorMap = pf.KeywordColors;
+
+            // Convert any KeywordColors into canned queries; don't bother persisting them, though.
+            if (colorMap != null)
+                foreach (FlightColor fc in colorMap)
+                    lst.Add(new CannedQuery(pf.UserName) { GeneralText = fc.KeyWord, ColorString = fc.ColorString });
+
+            return lst;
+        }
+
         /// <summary>
         /// The string representation of the color
         /// </summary>
         public string ColorString
         {
             get { return m_colorString; }
-            set { 
-                m_colorString = value; 
-                if (!String.IsNullOrWhiteSpace(value))
-                {
-                    try
-                    {
-                        if (Regex.IsMatch(value, "^[0-9a-fA-F]{6}$"))
-                            value = "#" + value;
-                        color = System.Drawing.ColorTranslator.FromHtml(value);
-                    }
-                    catch (Exception ex) when (!(ex is OutOfMemoryException)) { }
-                }
+            set
+            {
+                m_colorString = value;
+                color = TryParseColor(value);
             }
         }
 

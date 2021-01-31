@@ -42,13 +42,7 @@ public partial class Controls_MFBLogbookBase : UserControl
         set { ViewState[RestrictionVSKey] = value; }
     }
 
-    private const string colorMapKey = "szVSColorMap";
-
-    protected IEnumerable<FlightColor> colorMap
-    {
-        get { return (IEnumerable<FlightColor>)ViewState[colorMapKey]; }
-        set { ViewState[colorMapKey] = value; }
-    }
+    protected IEnumerable<CannedQuery> colorQueryMap { get; set; }
 
     private const string szViewStateSuppressImages = "vsSI";
     /// <summary>
@@ -538,6 +532,7 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
         AircraftForUser.Clear();
         AircraftForUser.AddRange(new UserAircraft(User).GetAircraftForUser());
         BoundItems = new HashSet<int>();
+        colorQueryMap = null;   // fetch on each databind
         gvFlightLogs.DataBind();
         HasBeenBound = true;
     }
@@ -726,6 +721,9 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
             // Flight images
             mfbIl.Key = le.FlightID.ToString(CultureInfo.InvariantCulture);
             mfbIl.Refresh();
+            if (!le.FlightImages.Any()) // populate images, so that flight coloring can work
+                foreach (MyFlightbook.Image.MFBImageInfo mfbii in mfbIl.Images.ImageArray)
+                    le.FlightImages.Add(mfbii);
 
             // wire up images
             if (mfbIl.Images.ImageArray.Count > 0 || le.Videos.Count > 0)
@@ -801,12 +799,17 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
             SetUpImagesForRow(le, e.Row);
             SetStyleForRow(le, e.Row);
 
-            if (colorMap == null)
-                colorMap = Pilot.KeywordColors;
+            if (colorQueryMap == null)
+                colorQueryMap = FlightColor.QueriesToColor(Pilot.UserName);
 
-            System.Drawing.Color c = le.KeywordColor(colorMap);
-            if (c != System.Drawing.Color.Empty)
-                e.Row.BackColor = c;
+            foreach (CannedQuery cq in colorQueryMap)
+            {
+                if (cq.MatchesFlight(le))
+                {
+                    e.Row.BackColor = FlightColor.TryParseColor(cq.ColorString);
+                    break;
+                }
+            }
         }
     }
 

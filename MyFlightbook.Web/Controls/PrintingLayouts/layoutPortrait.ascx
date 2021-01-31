@@ -43,7 +43,7 @@
             </thead>
             <asp:Repeater ID="rptFlight" runat="server" OnItemDataBound="rptFlight_ItemDataBound">
                 <ItemTemplate>
-                    <tr class="bordered" <%# FlightColor(Container.DataItem) %>>
+                    <tr class="bordered" <%# ColorForFlight(Container.DataItem) %>>
                         <td class="row1"><asp:Label Font-Bold="true" EnableViewState="false" ID="lblStaticDate" runat="server" Text='<%# ((DateTime) Eval("Date")).ToShortDateString() %>'></asp:Label></td>
                         <td class="row1"><asp:Label ID="lblModel" runat="server" Text='<%#: Eval("ModelDisplay") %>'></asp:Label></td>
                         <td class="row1"><asp:Label ID="lblCatClass" runat="server" Text='<%#: Eval("CatClassDisplay") %>'></asp:Label></td>

@@ -449,9 +449,9 @@ namespace MyFlightbook
         /// Determines if this object is in its default (empty) state.  A hack, but I do this by comparing JSON serializations - should be robust against new/modified properties.
         /// </summary>
         [JsonIgnoreAttribute]
-        public bool IsDefault
+        public virtual bool IsDefault
         {
-            get { return JsonConvert.SerializeObject(this).CompareCurrentCultureIgnoreCase(JsonConvert.SerializeObject(new FlightQuery(this.UserName))) == 0; }
+            get { return JsonConvert.SerializeObject(this, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore }).CompareCurrentCultureIgnoreCase(JsonConvert.SerializeObject(new FlightQuery(this.UserName), new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore })) == 0; }
         }
         #endregion
 
@@ -547,16 +547,21 @@ namespace MyFlightbook
         public bool ShouldSerializeSearchColumns() { return false; }
         #endregion
 
+        protected virtual FlightQuery Clone()
+        {
+            return new FlightQuery(this);
+        }
+
         /// <summary>
         /// Returns the flight query in JSON format
         /// </summary>
         public string ToJSONString()
         {
             // Nullify any empty strings or empty arrays or unused values.  Can't rely on "ShouldSerializeXXXX" methods because that disables the XML serialization as well.
-            FlightQuery fqNew = new FlightQuery(this);
-            if (String.IsNullOrEmpty(fqNew.GeneralText))
+            FlightQuery fqNew = Clone();
+            if (String.IsNullOrWhiteSpace(fqNew.GeneralText))
                 fqNew.GeneralText = null;
-            if (String.IsNullOrEmpty(fqNew.ModelName))
+            if (String.IsNullOrWhiteSpace(fqNew.ModelName))
                 fqNew.ModelName = null;
             if (fqNew.CatClasses == null || fqNew.CatClasses.Count == 0)
                 fqNew.CatClasses = null;
@@ -568,6 +573,8 @@ namespace MyFlightbook
                 fqNew.MakeIDList = null;
             if (fqNew.TypeNames == null || fqNew.TypeNames.Count == 0)
                 fqNew.TypeNames = null;
+            if (fqNew.EnumeratedFlights == null || !fqNew.EnumeratedFlights.Any())
+                fqNew.EnumeratedFlights = null;
 
             if (fqNew.PropertyTypes == null || fqNew.PropertyTypes.Count == 0)
                 fqNew.PropertyTypes = null;
@@ -624,7 +631,7 @@ namespace MyFlightbook
         [NonSerialized]
         private List<MySqlParameter> m_rgParams = null;
 
-        private static DateTime dtStartOfYear { get { return new DateTime(DateTime.Now.Year, 1, 1); } }
+        protected static DateTime dtStartOfYear { get { return new DateTime(DateTime.Now.Year, 1, 1); } }
 
         private const string szBreak = "\r\n";
 
@@ -842,123 +849,114 @@ namespace MyFlightbook
             }
         }
 
-        private static Regex rQuotedExpressions;
-        private static Regex rSplitWords;
-        private static Regex rMergeOR;
-        private static Regex rTrailing;
+        protected static Regex rQuotedExpressions { get; } = new Regex("(?<negated>-?)\"(?<phrase>[^\"]*)\"", RegexOptions.Compiled);
+        protected static Regex rSplitWords { get; } = new Regex("\\s");
+        protected static Regex rMergeOR { get; } = new Regex("\\sOR\\s", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        protected static Regex rTrailing { get; } = new Regex("\\bTrailing:(?<quantity>\\d{1,3}?)(?<rangetype>D|CM|M|W?)\\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private void UpdateGeneralText(StringBuilder sbQuery)
         {
-            if (GeneralText.Length > 0)
+            if (String.IsNullOrWhiteSpace(GeneralText))
+                return;
+
+            List<string> lstSearchTerms = new List<string>();
+
+            /* following Google model (sorta) here:
+                * dog cat = must contain "dog" and must contain "cat" (but not necessarily in that order, separated by anything)
+                * "dog cat" = must contains "dog cat" (inclusive of spaces)
+                * dog OR cat = contains dog OR contains cat
+                * -dog = must NOT contain dog
+                * -"dog cat" = must NOT contain "dog cat"
+                * -"dog -cat" must NOT contain "dog -cat" (i.e., the hyphen inside the quoted text is preserved, not negation)
+                * -dog -cat = contains neither dog nor cat ("NOT dog AND NOT cat") - so there is no negation of an "OR", since this can express that.
+                * -dog OR cat = doesn't contain dog OR does contain cat.
+
+                This is nice because we can largely just look at prefixes
+
+                Searches are ALWAYS case insensitive, ALWAYS partial word search
+
+                Finally - issue #662: add support for Trailing:##{D|CM|M} for trailing ## days, calendar months, or months.  Will adjust the date parameters.
+            */
+
+            // First, look for trailing ##.  If we find this, we will then strip it out.
+            MatchCollection mcTrailing = rTrailing.Matches(GeneralText);
+            if (mcTrailing.Count > 0)
             {
-                List<string> lstSearchTerms = new List<string>();
-
-                /* following Google model (sorta) here:
-                    * dog cat = must contain "dog" and must contain "cat" (but not necessarily in that order, separated by anything)
-                    * "dog cat" = must contains "dog cat" (inclusive of spaces)
-                    * dog OR cat = contains dog OR contains cat
-                    * -dog = must NOT contain dog
-                    * -"dog cat" = must NOT contain "dog cat"
-                    * -"dog -cat" must NOT contain "dog -cat" (i.e., the hyphen inside the quoted text is preserved, not negation)
-                    * -dog -cat = contains neither dog nor cat ("NOT dog AND NOT cat") - so there is no negation of an "OR", since this can express that.
-                    * -dog OR cat = doesn't contain dog OR does contain cat.
-
-                    This is nice because we can largely just look at prefixes
-
-                    Searches are ALWAYS case insensitive, ALWAYS partial word search
-
-                    Finally - issue #662: add support for Trailing:##{D|CM|M} for trailing ## days, calendar months, or months.  Will adjust the date parameters.
-                */
-
-                if (rQuotedExpressions == null)
-                    rQuotedExpressions = new Regex("(?<negated>-?)\"(?<phrase>[^\"]*)\"", RegexOptions.Compiled);
-                if (rSplitWords == null)
-                    rSplitWords = new Regex("\\s");
-                if (rMergeOR == null)
-                    rMergeOR = new Regex("\\sOR\\s", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-                // First, look for trailing ##.  If we find this, we will then strip it out.
-                if (rTrailing == null)
-                    rTrailing = new Regex("\\bTrailing:(?<quantity>\\d{1,3}?)(?<rangetype>D|CM|M|W?)\\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-                MatchCollection mcTrailing = rTrailing.Matches(GeneralText);
-                if (mcTrailing.Count > 0)
+                string szType = mcTrailing[0].Groups["rangetype"].Value;
+                if (int.TryParse(mcTrailing[0].Groups["quantity"].Value, out int count))
                 {
-                    string szType = mcTrailing[0].Groups["rangetype"].Value;
-                    if (int.TryParse(mcTrailing[0].Groups["quantity"].Value, out int count))
+                    DateRange = DateRanges.Custom;
+                    DateMax = DateTime.MinValue;
+                    switch (szType.ToUpperInvariant())
                     {
-                        DateRange = DateRanges.Custom;
-                        DateMax = DateTime.MinValue;
-                        switch (szType.ToUpperInvariant())
-                        {
-                            case "D":
-                                DateMin = DateTime.Now.Date.AddDays(-count);
-                                break;
-                            case "CM":
-                                DateMin = DateTime.Now.Date.AddCalendarMonths(-count);
-                                break;
-                            case "M":
-                                DateMin = DateTime.Now.Date.AddMonths(-count);
-                                break;
-                            case "W":
-                                DateMin = DateTime.Now.Date.AddDays(-count * 7);
-                                break;
-                        }
-
-                        // Now remove this from GeneralText because we're not actually searching for the text.
-                        GeneralText = rTrailing.Replace(GeneralText, string.Empty);
+                        case "D":
+                            DateMin = DateTime.Now.Date.AddDays(-count);
+                            break;
+                        case "CM":
+                            DateMin = DateTime.Now.Date.AddCalendarMonths(-count);
+                            break;
+                        case "M":
+                            DateMin = DateTime.Now.Date.AddMonths(-count);
+                            break;
+                        case "W":
+                            DateMin = DateTime.Now.Date.AddDays(-count * 7);
+                            break;
                     }
+
+                    // Now remove this from GeneralText because we're not actually searching for the text.
+                    GeneralText = rTrailing.Replace(GeneralText, string.Empty);
                 }
-
-                // Convert " OR " pattern with "|" so that it survives string split at word boundaries; we'll separate them later
-                string szMerged = rMergeOR.Replace(GeneralText.Trim(), "|");
-                if (String.IsNullOrEmpty(szMerged)) // we could have removed Trailing:## from the search string and now be left with nothing.
-                    return;
-
-                // Extract out the quoted expressions first
-                MatchCollection quoted = rQuotedExpressions.Matches(szMerged);
-                foreach (Match m in quoted)
-                {
-                    if (m.Groups["phrase"].Value.Trim().Length > 0)
-                        lstSearchTerms.Add(m.Groups["negated"] + m.Groups["phrase"].Value.Trim());
-                    szMerged = szMerged.Replace(m.Value, string.Empty); // pull it out of the remaining search text so that we can do a word search
-                }
-
-                // Split what is left
-                lstSearchTerms.AddRange(rSplitWords.Split(szMerged));
-
-                const string szFreeText = "CONCAT_WS(' ', ModelDisplay, TailNumber, Route, Comments, CustomProperties, CFIComment, CFIName, AircraftPrivateNotes)";
-
-                int iWord = 0;
-                foreach (string term in lstSearchTerms)
-                {
-                    string[] phrases = term.Split(new char[] { '|', '"' }, StringSplitOptions.RemoveEmptyEntries);
-
-                    if (phrases.Length == 0)    // naked "|", perhaps?
-                        continue;
-                    else
-                    {
-                        // Treat as the "AND" of a set of OR clauses.  Of course, if only one clause it's just an AND...
-                        List<string> lstORClauses = new List<string>();
-                        foreach (string phrase in phrases)
-                        {
-                            string szPhrase = phrase;
-                            bool fNegate = szPhrase.StartsWith("-", StringComparison.CurrentCulture);
-                            if (fNegate)
-                                szPhrase = szPhrase.Substring(1);
-
-                            if (szPhrase.Trim().Length == 0)
-                                continue;
-                            string szParam = "SearchWord" + (iWord++).ToString(CultureInfo.InvariantCulture);
-                            lstORClauses.Add(String.Format(CultureInfo.InvariantCulture, "{0} {1} LIKE ?{2}", szFreeText, fNegate ? "NOT " : string.Empty, szParam));
-                            AddParameter(szParam, String.Format(CultureInfo.InvariantCulture, "%{0}%", szPhrase.Trim()));
-                        }
-                        if (lstORClauses.Count > 0)
-                            AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, "({0}) ", String.Join(" OR ", lstORClauses)));
-                    }
-                }
-
-                Filters.Add(new QueryFilterItem(Resources.FlightQuery.ContainsText, GeneralText, "GeneralText"));
             }
+
+            // Convert " OR " pattern with "|" so that it survives string split at word boundaries; we'll separate them later
+            string szMerged = rMergeOR.Replace(GeneralText.Trim(), "|");
+            if (String.IsNullOrEmpty(szMerged)) // we could have removed Trailing:## from the search string and now be left with nothing.
+                return;
+
+            // Extract out the quoted expressions first
+            MatchCollection quoted = rQuotedExpressions.Matches(szMerged);
+            foreach (Match m in quoted)
+            {
+                if (m.Groups["phrase"].Value.Trim().Length > 0)
+                    lstSearchTerms.Add(m.Groups["negated"] + m.Groups["phrase"].Value.Trim());
+                szMerged = szMerged.Replace(m.Value, string.Empty); // pull it out of the remaining search text so that we can do a word search
+            }
+
+            // Split what is left
+            lstSearchTerms.AddRange(rSplitWords.Split(szMerged));
+
+            const string szFreeText = "CONCAT_WS(' ', ModelDisplay, TailNumber, Route, Comments, CustomProperties, CFIComment, CFIName, AircraftPrivateNotes)";
+
+            int iWord = 0;
+            foreach (string term in lstSearchTerms)
+            {
+                string[] phrases = term.Split(new char[] { '|', '"' }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (phrases.Length == 0)    // naked "|", perhaps?
+                    continue;
+                else
+                {
+                    // Treat as the "AND" of a set of OR clauses.  Of course, if only one clause it's just an AND...
+                    List<string> lstORClauses = new List<string>();
+                    foreach (string phrase in phrases)
+                    {
+                        string szPhrase = phrase;
+                        bool fNegate = szPhrase.StartsWith("-", StringComparison.CurrentCulture);
+                        if (fNegate)
+                            szPhrase = szPhrase.Substring(1);
+
+                        if (szPhrase.Trim().Length == 0)
+                            continue;
+                        string szParam = "SearchWord" + (iWord++).ToString(CultureInfo.InvariantCulture);
+                        lstORClauses.Add(String.Format(CultureInfo.InvariantCulture, "{0} {1} LIKE ?{2}", szFreeText, fNegate ? "NOT " : string.Empty, szParam));
+                        AddParameter(szParam, String.Format(CultureInfo.InvariantCulture, "%{0}%", szPhrase.Trim()));
+                    }
+                    if (lstORClauses.Count > 0)
+                        AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, "({0}) ", String.Join(" OR ", lstORClauses)));
+                }
+            }
+
+            Filters.Add(new QueryFilterItem(Resources.FlightQuery.ContainsText, GeneralText, "GeneralText"));
         }
 
         private void UpdateAircraft(StringBuilder sbQuery)
@@ -1014,12 +1012,15 @@ namespace MyFlightbook
 
                     string szParam = "SearchAirport" + i.ToString(CultureInfo.InvariantCulture);
 
-                    sbAirports.Append(String.Format(CultureInfo.InvariantCulture, "(flights.Route LIKE ?{0})", szParam));
+                    sbAirports.Append(String.Format(CultureInfo.InvariantCulture, "(flights.Route RLIKE ?{0})", szParam));
                     string szCode = lstAirports[i];
                     bool fIsDepart = szCode.StartsWith(SearchFullStopAnchor, StringComparison.CurrentCultureIgnoreCase);
                     bool fIsArrival = szCode.EndsWith(SearchFullStopAnchor, StringComparison.CurrentCultureIgnoreCase);
-                    string szNormalAirport = Airports.airport.USPrefixConvenienceAlias(szCode.Replace(SearchFullStopAnchor, string.Empty));
-                    string szParamValue = String.Format(CultureInfo.InvariantCulture, "{0}{1}{2}", fIsDepart ? string.Empty : "%", szNormalAirport, fIsArrival ? string.Empty : "%");
+                    string szNormalAirport = szCode.Replace(SearchFullStopAnchor, string.Empty);    // remove any anchor
+                    // Make the leading "K" optional
+                    if (szNormalAirport.StartsWith(Airports.airport.USAirportPrefix, StringComparison.CurrentCultureIgnoreCase))
+                        szNormalAirport = String.Format(CultureInfo.InvariantCulture, "({0})?{1}", Airports.airport.USAirportPrefix, szNormalAirport.Substring(Airports.airport.USAirportPrefix.Length));
+                    string szParamValue = String.Format(CultureInfo.InvariantCulture, "{0}{1}{2}", fIsDepart ? "^" : string.Empty, szNormalAirport, fIsArrival ? "$" : string.Empty);
                     AddParameter(szParam, szParamValue);
 
                     sbAirportDesc.Append(lstAirports[i] + Resources.LocalizedText.LocalizedSpace);
@@ -1032,13 +1033,15 @@ namespace MyFlightbook
             }
         }
 
+        protected const string szICAOPrefix = "ICAO:";
+
         private void UpdateModels(StringBuilder sbQuery)
         {
             string szModelsIDQuery = string.Empty;
             string szModelsTextQuery = string.Empty;
             string szModelsTypeQuery = string.Empty;
 
-            if (MakeList.Count > 0)
+            if (MakeList.Any())
             {
                 List<string> lstIds = new List<string>();
                 List<string> lstDesc = new List<string>();
@@ -1060,7 +1063,6 @@ namespace MyFlightbook
                 StringBuilder sbModelName = new StringBuilder();
                 foreach (string sz in rgModelFragment)
                 {
-                    const string szICAOPrefix = "ICAO:";
                     string szSearch = sz.Trim();
                     bool fICAO = szSearch.ToUpperInvariant().StartsWith(szICAOPrefix, StringComparison.CurrentCultureIgnoreCase);
                     if (fICAO)
@@ -1414,6 +1416,11 @@ namespace MyFlightbook
         /// </summary>
         [JsonIgnore]
         public string QueryName { get; set; }
+
+        /// <summary>
+        /// Optional string representation for flightcoloring
+        /// </summary>
+        public string ColorString { get; set; }
         #endregion
 
         #region Constructors
@@ -1427,10 +1434,29 @@ namespace MyFlightbook
             QueryName = string.Empty;
         }
 
-        public CannedQuery(FlightQuery fq, string szName) : base()
+        public CannedQuery(FlightQuery fq, string szName) : base(fq)
         {
-            util.CopyObject(fq, this);
             QueryName = szName;
+        }
+        #endregion
+
+        #region Overrides
+        protected override FlightQuery Clone()
+        {
+            return new CannedQuery(this, QueryName);
+        }
+
+        public override bool IsDefault
+        {
+            get
+            {
+                // Use base IsDefault, but colorstring shouldn't factor if otherwise default.
+                string szColor = ColorString;
+                ColorString = null;
+                bool fResult = base.IsDefault;
+                ColorString = szColor;
+                return fResult;
+            }
         }
         #endregion
 
@@ -1476,13 +1502,21 @@ namespace MyFlightbook
         /// <summary>
         /// Saves this cannedquery to the database
         /// </summary>
-        public void Commit()
+        public void Commit(bool fPreserveColor = true)
         {
             if (String.IsNullOrWhiteSpace(QueryName) || IsDefault)
                 return;
 
             if (String.IsNullOrEmpty(UserName))
                 throw new MyFlightbookValidationException("No username provided for canned query!");
+
+            if (fPreserveColor && String.IsNullOrWhiteSpace(ColorString))
+            {
+                List<CannedQuery> lst = new List<CannedQuery>(CannedQuery.QueriesForUser(UserName));
+                CannedQuery cq = lst.FirstOrDefault(cq2 => cq2.QueryName.CompareCurrentCultureIgnoreCase(QueryName) == 0);
+                if (cq != null)
+                    ColorString = cq.ColorString;
+            }
 
             DBHelperCommandArgs dba = new DBHelperCommandArgs("REPLACE INTO storedQueries SET username=?uname, name=?qname, queryjson=?fqjson");
             dba.AddWithValue("uname", UserName);
@@ -1566,6 +1600,423 @@ namespace MyFlightbook
         public static bool operator >=(CannedQuery left, CannedQuery right)
         {
             return left is null ? right is null : left.CompareTo(right) >= 0;
+        }
+        #endregion
+
+        #region Matching LogbookEntry Objects
+        #region Handling conjuctives
+        private static void AddResultIfCondition(List<bool> lst, bool condition, bool result)
+        {
+            if (condition)
+                lst.Add(result);
+        }
+
+        private static bool TestConditionsForConjunction(GroupConjunction groupConjunction, List<bool> lst)
+        {
+            // empty list is always a match
+            if (lst == null || !lst.Any())
+                return true;
+
+            // count the number of true elements
+            int cTrue = 0;
+            lst.ForEach((b) => { if (b) cTrue++; });
+
+            switch (groupConjunction)
+            {
+                case GroupConjunction.All:
+                    return cTrue == lst.Count;
+                case GroupConjunction.Any:
+                    return cTrue > 0;
+                case GroupConjunction.None:
+                    return cTrue == 0;
+                default:
+                    throw new InvalidOperationException("Unknown conjunction: " + groupConjunction.ToString());
+            }
+        }
+        #endregion
+
+        private bool IsDateMatch(LogbookEntryCore le)
+        {
+            switch (DateRange)
+            {
+                case DateRanges.AllTime:
+                    return true;
+                case DateRanges.Tailing6Months:
+                    return le.Date.CompareTo(DateTime.Now.AddMonths(-6)) >= 0;
+                case DateRanges.Trailing12Months:
+                    return le.Date.CompareTo(DateTime.Now.AddYears(-1)) >= 0;
+                case DateRanges.Trailing30:
+                    return le.Date.CompareTo(DateTime.Now.AddDays(-30)) >= 0;
+                case DateRanges.Trailing90:
+                    return le.Date.CompareTo(DateTime.Now.AddDays(-90)) >= 0;
+                case DateRanges.YTD:
+                    return le.Date.CompareTo(dtStartOfYear) >= 0;
+                case DateRanges.ThisMonth:
+                    return le.Date.CompareTo(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)) >= 0;
+                case DateRanges.PrevMonth:
+                    DateTime dtPrevMonthEnd = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddDays(-1);
+                    DateTime dtPrevMonthStart = new DateTime(dtPrevMonthEnd.Year, dtPrevMonthEnd.Month, 1);
+                    return le.Date.CompareTo(dtPrevMonthStart.Date) >= 0 && le.Date.Date.CompareTo(dtPrevMonthEnd.Date) <= 0;
+                case DateRanges.PrevYear:
+                    DateTime dtPrevYearStart = new DateTime(DateTime.Now.Year - 1, 1, 1);
+                    DateTime dtPrevYearEnd = new DateTime(DateTime.Now.Year - 1, 12, 31);
+                    return le.Date.CompareTo(dtPrevYearStart.Date) >= 0 && le.Date.Date.CompareTo(dtPrevYearEnd.Date) <= 0;
+                case DateRanges.Custom:
+                    bool fHasStartDate = DateMin.HasValue();
+                    bool fHasEndDate = DateMax.HasValue();
+                    if (!fHasStartDate && fHasEndDate)
+                        return le.Date.Date.CompareTo(DateMax.Date) <= 0;
+                    else if (fHasStartDate & !fHasEndDate)
+                        return le.Date.Date.CompareTo(DateMin.Date) >= 0;
+                    else
+                        return le.Date.Date.CompareTo(DateMin.Date) >= 0 && le.Date.Date.CompareTo(DateMax.Date) <= 0;
+                default:
+                    throw new MyFlightbookValidationException("Unknown date range!");
+            }
+        }
+
+        private bool IsAircraftMatch(LogbookEntryCore le)
+        {
+            return !AircraftList.Any() || (AircraftList.FirstOrDefault(ac => ac.AircraftID == le.AircraftID) != null);
+        }
+
+        private static readonly Regex rLocal = new Regex("^([a-zA-Z0-9]{3,4})([^a-zA-Z0-9]+\\1)?$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        private bool IsAirportMatch(LogbookEntryCore le)
+        {
+            if (String.IsNullOrWhiteSpace(le.Route) && (Distance != FlightDistance.AllFlights || AirportList.Any()))
+                return false;
+
+            string szRoute = le.Route.ToUpper(CultureInfo.CurrentCulture).Trim();
+
+            switch (Distance)
+            {
+                case FlightDistance.AllFlights:
+                    break;
+                case FlightDistance.LocalOnly:
+                    if (!rLocal.IsMatch(szRoute))
+                        return false;
+                    break;
+                case FlightDistance.NonLocalOnly:
+                    if (rLocal.IsMatch(szRoute))
+                        return false;
+                    break;
+                default:
+                    break;
+            }
+
+            foreach (string szAirport in AirportList)
+            {
+                if (String.IsNullOrWhiteSpace(szAirport))
+                    continue;
+
+                string szTerm = szAirport.ToUpper(CultureInfo.CurrentCulture).Replace(SearchFullStopAnchor, string.Empty);
+                string szAltTerm = Airports.airport.USPrefixConvenienceAlias(szTerm);
+
+                if (szAirport.StartsWith(SearchFullStopAnchor, StringComparison.CurrentCultureIgnoreCase) && !szRoute.StartsWith(szTerm) && !szRoute.StartsWith(szAltTerm))
+                    return false;
+                else if (szAirport.EndsWith(SearchFullStopAnchor, StringComparison.CurrentCultureIgnoreCase) && !szRoute.EndsWith(szTerm) && !szRoute.EndsWith(szAltTerm))
+                    return false;
+                else if (!szRoute.Contains(szTerm) && !szRoute.Contains(szAltTerm))
+                    return false;
+            }
+
+            return true;
+        }
+
+        private bool IsModelMatch(LogbookEntryDisplay le)
+        {
+            if (MakeList.Any() && MakeList.FirstOrDefault(mm => le.ModelID == mm.MakeModelID) == null)
+                return false;
+
+            string[] rgModelFragment = Regex.Split(ModelName, "[^a-zA-Z0-9:]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            foreach (string sz in rgModelFragment)
+            {
+                string szSearch = sz.Trim().ToUpper(CultureInfo.CurrentCulture);
+                bool fICAO = szSearch.StartsWith(szICAOPrefix, StringComparison.CurrentCultureIgnoreCase);
+                if (fICAO)
+                    szSearch = szSearch.Substring(szICAOPrefix.Length).Trim();
+                if (szSearch.Length > 0)
+                {
+                    // ICAO has to match the icao, exactly
+                    if (fICAO && le.FamilyName.CompareCurrentCultureIgnoreCase(szSearch) != 0)
+                        return false;
+                    // Otherwise, must contain the words
+                    if (!le.FamilyName.Contains(szSearch) && !le.ModelDisplay.ToUpper(CultureInfo.CurrentCulture).Contains(szSearch))
+                        return false;
+                }
+            }
+
+            if (TypeNames.Any())
+            {
+                // Need to get the actual model to do this.
+                MakeModel mm = MakeModel.GetModel(le.ModelID);
+                if (String.IsNullOrEmpty(TypeNames.ElementAt(0)) && !String.IsNullOrWhiteSpace(mm.TypeName))
+                    return false;
+
+                foreach (string szType in TypeNames)
+                    if (!String.IsNullOrWhiteSpace(szType) && !mm.TypeName.ToUpperInvariant().Contains(szType.ToUpperInvariant()))
+                        return false;
+            }
+
+            return true;
+        }
+
+        private bool IsInstanceTypeMatch(Aircraft ac)
+        {
+            switch (AircraftInstanceTypes)
+            {
+                default:
+                case AircraftInstanceRestriction.AllAircraft:
+                    break;
+                case AircraftInstanceRestriction.RealOnly:
+                    if (ac.InstanceType != MyFlightbook.AircraftInstanceTypes.RealAircraft)
+                        return false;
+                    break;
+                case AircraftInstanceRestriction.TrainingOnly:
+                    if (ac.InstanceType == MyFlightbook.AircraftInstanceTypes.RealAircraft)
+                        return false;
+                    break;
+            }
+            return true;
+        }
+
+        private bool IsEngineTypeMatch(MakeModel mm, LogbookEntryDisplay le)
+        {
+            if (CategoryClass.IsPowered(le.IsOverridden ? (CategoryClass.CatClassID)le.CatClassOverride : mm.CategoryClassID) || mm.IsMotorGlider)
+            {
+                switch (EngineType)
+                {
+                    default:
+                    case EngineTypeRestriction.AllEngines:
+                        return true;
+                    case EngineTypeRestriction.AnyTurbine:
+                        if (mm.EngineType != MakeModel.TurbineLevel.Jet && mm.EngineType != MakeModel.TurbineLevel.UnspecifiedTurbine && mm.EngineType != MakeModel.TurbineLevel.TurboProp)
+                            return false;
+                        break;
+                    case EngineTypeRestriction.Piston:
+                        if (mm.EngineType != MakeModel.TurbineLevel.Piston)
+                            return false;
+                        break;
+                    case EngineTypeRestriction.Turboprop:
+                        if (mm.EngineType != MakeModel.TurbineLevel.TurboProp)
+                            return false;
+                        break;
+                    case EngineTypeRestriction.Jet:
+                        if (mm.EngineType != MakeModel.TurbineLevel.Jet)
+                            return false;
+                        break;
+                    case EngineTypeRestriction.Electric:
+                        if (mm.EngineType != MakeModel.TurbineLevel.Electric)
+                            return false;
+                        break;
+                }
+            }
+            return true;
+        }
+
+        private bool IsAircraftCharacteristicsMatch(LogbookEntryDisplay le)
+        {
+            UserAircraft ua = new UserAircraft(le.User);
+            Aircraft ac = ua.GetUserAircraftByID(le.AircraftID);
+
+            if (!IsInstanceTypeMatch(ac))
+                return false;
+
+            MakeModel mm = MakeModel.GetModel(ac.ModelID);
+
+            List<bool> lst = new List<bool>();
+            AddResultIfCondition(lst, IsTailwheel, mm.IsTailWheel); 
+            AddResultIfCondition(lst, IsHighPerformance, mm.IsHighPerf || (mm.Is200HP && le.Date.CompareTo(Convert.ToDateTime(MakeModel.Date200hpHighPerformanceCutoverDate, CultureInfo.InvariantCulture)) < 0));
+            AddResultIfCondition(lst, IsGlass, mm.AvionicsTechnology != MakeModel.AvionicsTechnologyType.None || (ac.AvionicsTechnologyUpgrade != MakeModel.AvionicsTechnologyType.None && (ac.GlassUpgradeDate.HasValue && le.Date.CompareTo(ac.GlassUpgradeDate) >= 0)));
+            AddResultIfCondition(lst, IsTechnicallyAdvanced, mm.AvionicsTechnology == MakeModel.AvionicsTechnologyType.TAA || (ac.AvionicsTechnologyUpgrade == MakeModel.AvionicsTechnologyType.TAA && (ac.GlassUpgradeDate.HasValue && le.Date.CompareTo(ac.GlassUpgradeDate) >= 0)));
+            AddResultIfCondition(lst, IsComplex, mm.IsComplex);
+            AddResultIfCondition(lst,IsMotorglider, mm.IsMotorGlider);
+            AddResultIfCondition(lst, IsMultiEngineHeli, mm.IsMultiEngineHelicopter);
+            AddResultIfCondition(lst, HasFlaps, mm.HasFlaps);
+            AddResultIfCondition(lst, IsConstantSpeedProp, mm.IsConstantProp);
+            AddResultIfCondition(lst, IsRetract, mm.IsRetract);
+
+            if (!TestConditionsForConjunction(GroupConjunction.All, lst))
+                return false;
+
+            if (!IsEngineTypeMatch(mm, le))
+                return false;
+
+            // Do category class here, since we have aircraft already loaded
+            if (CatClasses != null && CatClasses.Any() && !CatClasses.Contains(CategoryClass.CategoryClassFromID(le.IsOverridden ? (CategoryClass.CatClassID)le.CatClassOverride : mm.CategoryClassID)))
+                return false;
+
+            return true;
+        }
+
+        private bool IsFlightCharacteristicsMatch(LogbookEntryBase le)
+        {
+            List<bool> lst = new List<bool>();
+            AddResultIfCondition(lst, HasNightLandings, le.NightLandings != 0);
+            AddResultIfCondition(lst, HasFullStopLandings, le.FullStopLandings != 0);
+            AddResultIfCondition(lst, HasLandings, le.Landings != 0);
+            AddResultIfCondition(lst, HasApproaches, le.Approaches != 0);
+            AddResultIfCondition(lst, HasHolds, le.fHoldingProcedures);
+            AddResultIfCondition(lst, HasXC, le.CrossCountry != 0);
+            AddResultIfCondition(lst, HasSimIMCTime, le.SimulatedIFR != 0);
+            AddResultIfCondition(lst, HasGroundSim, le.GroundSim != 0);
+            AddResultIfCondition(lst, HasIMC, le.IMC != 0);
+            AddResultIfCondition(lst, HasAnyInstrument, le.IMC + le.SimulatedIFR > 0);
+            AddResultIfCondition(lst, HasNight, le.Nighttime != 0);
+            AddResultIfCondition(lst, HasDual, le.Dual != 0);
+            AddResultIfCondition(lst, HasCFI, le.CFI != 0);
+            AddResultIfCondition(lst, HasSIC, le.SIC != 0);
+            AddResultIfCondition(lst, HasPIC, le.PIC != 0);
+            AddResultIfCondition(lst, HasTotalTime, le.TotalFlightTime != 0);
+            AddResultIfCondition(lst, IsPublic, le.fIsPublic);
+            AddResultIfCondition(lst, IsSigned, le.CFISignatureState != LogbookEntryCore.SignatureState.None);
+            AddResultIfCondition(lst, HasTelemetry, le.HasFlightData);
+            AddResultIfCondition(lst, HasImages, le.FlightImages.Any());
+
+            return TestConditionsForConjunction(FlightCharacteristicsConjunction, lst);
+        }
+
+        private bool IsPropertiesMatch(LogbookEntryCore le)
+        {
+            if (PropertyTypes == null || !PropertyTypes.Any())
+                return true;
+
+            List<bool> lst = new List<bool>();
+            foreach (CustomPropertyType cpt in PropertyTypes)
+                AddResultIfCondition(lst, true, le.CustomProperties.GetEventWithTypeID(cpt.PropTypeID) != null);
+
+            return TestConditionsForConjunction(PropertiesConjunction, lst);
+        }
+
+        private bool IsEnumerated(LogbookEntryCore le)
+        {
+            return (EnumeratedFlights == null || !EnumeratedFlights.Any() || EnumeratedFlights.Contains(le.FlightID));
+        }
+
+        private bool IsGeneralTextMatch(LogbookEntryDisplay le)
+        {
+            // This is the most complicated to match what the database does.
+            if (String.IsNullOrWhiteSpace(GeneralText))
+                return true;
+
+            string szGeneral = GeneralText; // so that we can modify this without modifying the underlying query.
+
+            // First, look for trailing ##.
+            MatchCollection mcTrailing = rTrailing.Matches(szGeneral);
+            if (mcTrailing.Count > 0)
+            {
+                string szType = mcTrailing[0].Groups["rangetype"].Value;
+                if (int.TryParse(mcTrailing[0].Groups["quantity"].Value, out int count))
+                {
+                    switch (szType.ToUpperInvariant())
+                    {
+                        case "D":
+                            if (le.Date.Date.CompareTo(DateTime.Now.Date.AddDays(-count)) < 0)
+                                return false;
+                            break;
+                        case "CM":
+                            if (le.Date.Date.CompareTo(DateTime.Now.Date.AddCalendarMonths(-count)) < 0)
+                                return false;
+                            break;
+                        case "M":
+                            if (le.Date.Date.CompareTo(DateTime.Now.Date.AddMonths(-count)) < 0)
+                                return false;
+                            break;
+                        case "W":
+                            if (le.Date.Date.CompareTo(DateTime.Now.Date.AddDays(-count * 7)) < 0)
+                                return false;
+                            break;
+                    }
+
+                    // Now remove this from szGeneral because we're not actually searching for the text.
+                    szGeneral = rTrailing.Replace(szGeneral, string.Empty);
+                }
+            }
+
+            // Convert " OR " pattern with "|" so that it survives string split at word boundaries; we'll separate them later
+            string szMerged = rMergeOR.Replace(szGeneral.Trim().ToUpper(CultureInfo.CurrentCulture), "|"); ;
+            if (String.IsNullOrWhiteSpace(szMerged)) // we could have removed Trailing:## from the search string and now be left with nothing.
+                return true;
+
+            UserAircraft ua = new UserAircraft(le.User);
+            Aircraft ac = ua.GetUserAircraftByID(le.AircraftID);
+
+            // OK, now we're on to general search.  First, generate - once - the string to search
+            List<string> lst = new List<string>() { le.ModelDisplay, le.TailNumDisplay, le.Route, le.Comment, le.CatClassDisplay, le.CustPropertyDisplay, le.CFIComments, le.CFIName, ac.PrivateNotes };
+            lst.AddRange(CustomFlightProperty.PropDisplayAsList(le.CustomProperties, Profile.GetUser(le.User).UsesHHMM));
+            string szMatch = String.Join(" ", lst).ToUpper(CultureInfo.CurrentCulture);
+
+            List<string> lstSearchTerms = new List<string>();
+
+            // Extract out the quoted expressions first
+            MatchCollection quoted = rQuotedExpressions.Matches(szMerged);
+            foreach (Match m in quoted)
+            {
+                if (m.Groups["phrase"].Value.Trim().Length > 0)
+                    lstSearchTerms.Add(m.Groups["negated"] + m.Groups["phrase"].Value.Trim());
+                szMerged = szMerged.Replace(m.Value, string.Empty); // pull it out of the remaining search text so that we can do a word search
+            }
+
+            // Split what is left
+            lstSearchTerms.AddRange(rSplitWords.Split(szMerged));
+
+            foreach (string term in lstSearchTerms)
+            {
+                string[] phrases = term.Split(new char[] { '|', '"' }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (!phrases.Any())    // naked "|", perhaps?
+                    continue;
+                else
+                {
+                    bool fMatchesPhrases = false;
+
+                    // Treat as the "AND" of a set of OR clauses.  Of course, if only one clause it's just an AND...
+                    // But the gist is that any clause failse, we fail.
+                    foreach (string phrase in phrases)
+                    {
+                        string szPhrase = phrase;
+                        bool fNegate = szPhrase.StartsWith("-", StringComparison.CurrentCulture);
+
+                        if (fNegate)
+                            szPhrase = szPhrase.Substring(1);
+
+                        if (String.IsNullOrWhiteSpace(szPhrase))
+                            continue;
+
+                        bool fContains = (szMatch.Contains(szPhrase));
+
+                        // match the phrase if the phrase contains the search and not negated, or if negation and doesn't contain
+                        if (fNegate ^ fContains)
+                        {
+                            fMatchesPhrases = true;
+                            break;
+                        }
+                    }
+
+                    // if we didn't match any of the phrases, then return false
+                    if (!fMatchesPhrases)
+                        return false;
+                }
+            }
+
+            return true;
+        }
+
+        public bool MatchesFlight(LogbookEntryDisplay le)
+        {
+            if (le == null)
+                return false;
+
+            return IsEnumerated(le) &&
+                IsAircraftMatch(le) && 
+                IsPropertiesMatch(le) &&
+                IsDateMatch(le) &&
+                IsAirportMatch(le) &&
+                IsGeneralTextMatch(le) && 
+                IsFlightCharacteristicsMatch(le) &&
+                IsAircraftCharacteristicsMatch(le) &&
+                IsModelMatch(le);
         }
         #endregion
     }
