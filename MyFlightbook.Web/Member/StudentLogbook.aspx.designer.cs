@@ -244,7 +244,7 @@ public partial class Member_StudentLogbook
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::Controls_PrintOptions printOptions;
+    protected global::MyFlightbook.Printing.PrintOptions printOptions;
 
     /// <summary>
     /// lnkPrintView control.

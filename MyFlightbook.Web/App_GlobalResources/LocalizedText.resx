@@ -1530,7 +1530,7 @@
     <value>Copy to clipboard</value>
   </data>
   <data name="PrintViewBreakMonth" xml:space="preserve">
-    <value>Start each month on a new page</value>
+    <value>Start of new month</value>
   </data>
   <data name="MemberLastActivity" xml:space="preserve">
     <value>Your last activity on the website was {0:d}</value>
@@ -1876,5 +1876,14 @@
   </data>
   <data name="PrintViewShowTotalPages" xml:space="preserve">
     <value>Show page count along with page number in PDF</value>
+  </data>
+  <data name="PrintViewBreakNone" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="PrintViewBreakPeriodPrompt" xml:space="preserve">
+    <value>Force a new page:</value>
+  </data>
+  <data name="PrintViewBreakYear" xml:space="preserve">
+    <value>Start of new year</value>
   </data>
 </root>

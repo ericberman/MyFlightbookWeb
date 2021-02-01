@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="PrintOptions.ascx.cs" Inherits="Controls_PrintOptions" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="PrintOptions.ascx.cs" Inherits="MyFlightbook.Printing.PrintOptions" %>
 <%@ Register Src="~/Controls/Expando.ascx" TagPrefix="uc1" TagName="Expando" %>
 <%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc1" TagName="mfbTooltip" %>
 
@@ -37,7 +37,13 @@
     </asp:DropDownList>
     <div><asp:CheckBox ID="ckPullForwardTotals" runat="server" Text="<%$ Resources:LocalizedText, PrintViewIncludePreviousPageTotals %>" Checked="true" AutoPostBack="true" OnCheckedChanged="ckPullForwardTotals_CheckedChanged" /></div>
     <div><asp:CheckBox ID="ckSeparateCategoryClass" runat="server" Text="<%$ Resources:LocalizedText, PrintViewSubtotalsByCategoryClass %>" Checked="true" AutoPostBack="true" OnCheckedChanged="ckSeparateCategoryClass_CheckedChanged" /></div>
-    <div><asp:CheckBox ID="ckBreakAtMonth" runat="server" Text="<%$ Resources:LocalizedText, PrintViewBreakMonth %>" AutoPostBack="true" OnCheckedChanged="ckBreakAtMonth_CheckedChanged" /></div>
+    <div><asp:Label ID="lblForceBreak" runat="server" Text="<%$ Resources:LocalizedText, PrintViewBreakPeriodPrompt %>" />
+        <asp:RadioButtonList ID="rblForceBreak" runat="server" AutoPostBack="true" OnSelectedIndexChanged="rblForceBreak_SelectedIndexChanged" RepeatLayout="Flow" RepeatDirection="Horizontal">
+            <asp:ListItem Text="<%$ Resources:LocalizedText, PrintViewBreakNone %>" Value="0" Selected="True" />
+            <asp:ListItem Text="<%$ Resources:LocalizedText, PrintViewBreakMonth %>" Value="1" />
+            <asp:ListItem Text="<%$ Resources:LocalizedText, PrintViewBreakYear %>" Value="2" />
+        </asp:RadioButtonList>
+    </div>
 </asp:Panel>
 <asp:Panel ID="pnlModelDisplay" runat="server">
     <p><asp:Label ID="lblModelDisplay" runat="server" Font-Bold="true" Text="<%$ Resources:LocalizedText, PrintViewModelDisplay %>"></asp:Label></p>

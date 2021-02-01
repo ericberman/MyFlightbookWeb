@@ -3833,11 +3833,38 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Start each month on a new page.
+        ///   Looks up a localized string similar to Start of new month.
         /// </summary>
         internal static string PrintViewBreakMonth {
             get {
                 return ResourceManager.GetString("PrintViewBreakMonth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to None.
+        /// </summary>
+        internal static string PrintViewBreakNone {
+            get {
+                return ResourceManager.GetString("PrintViewBreakNone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Force a new page:.
+        /// </summary>
+        internal static string PrintViewBreakPeriodPrompt {
+            get {
+                return ResourceManager.GetString("PrintViewBreakPeriodPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start of new year.
+        /// </summary>
+        internal static string PrintViewBreakYear {
+            get {
+                return ResourceManager.GetString("PrintViewBreakYear", resourceCulture);
             }
         }
         

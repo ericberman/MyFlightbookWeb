@@ -75,7 +75,7 @@ namespace MyFlightbook.MemberPages
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_PrintOptions PrintOptions1;
+        protected global::MyFlightbook.Printing.PrintOptions PrintOptions1;
 
         /// <summary>
         /// tpFilter control.

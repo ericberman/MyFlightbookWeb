@@ -334,6 +334,11 @@ namespace MyFlightbook.Printing
         public bool BreakAtMonthBoundary { get; set; }
 
         /// <summary>
+        /// Start a new page when encountering a year boundary (non-continuous only)
+        /// </summary>
+        public bool BreakAtYearBoundary { get; set; }
+
+        /// <summary>
         /// Use flight coloring in the print view?
         /// </summary>
         public bool UseFlightColoring { get; set; }
@@ -748,7 +753,9 @@ namespace MyFlightbook.Printing
             foreach (LogbookEntryDisplay led in lstIn)
             {
                 // force a page break if a new month is starting IF the option to do so has been set
-                if (po.FlightsPerPage > 0 && po.BreakAtMonthBoundary && dtLastEntry != null && dtLastEntry.HasValue && (led.Date.Month != dtLastEntry.Value.Month || led.Date.Year != dtLastEntry.Value.Year))
+                if (po.FlightsPerPage > 0 && dtLastEntry != null && dtLastEntry.HasValue &&
+                    ((po.BreakAtMonthBoundary &&  (led.Date.Month != dtLastEntry.Value.Month || led.Date.Year != dtLastEntry.Value.Year)) ||
+                    (po.BreakAtYearBoundary && led.Date.Year != dtLastEntry.Value.Year)))
                     flightIndexOnPage = po.FlightsPerPage;
 
                 dtLastEntry = led.Date;
