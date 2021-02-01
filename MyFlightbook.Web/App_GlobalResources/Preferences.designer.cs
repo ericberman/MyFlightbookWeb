@@ -169,11 +169,20 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Highlight flights that contain keywords with colors to make them stand out.  If a flight matches multiple keywords, the color will reflect the first match that is found..
+        ///   Looks up a localized string similar to Choose colors to highlight flights that match saved queries.  If a flight matches multiple queries, the color will reflect the first match that is found. .
         /// </summary>
         internal static string FlightColoringDescription {
             get {
                 return ResourceManager.GetString("FlightColoringDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Learn more about saving queries.
+        /// </summary>
+        internal static string FlightColoringDescriptionLearnMore {
+            get {
+                return ResourceManager.GetString("FlightColoringDescriptionLearnMore", resourceCulture);
             }
         }
         
@@ -201,6 +210,33 @@ namespace Resources {
         internal static string FlightColoringKeywordPrompt {
             get {
                 return ResourceManager.GetString("FlightColoringKeywordPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove color.
+        /// </summary>
+        internal static string FlightColoringNoColor {
+            get {
+                return ResourceManager.GetString("FlightColoringNoColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have no saved queries.  Create one here based on a simple text search..
+        /// </summary>
+        internal static string FlightColoringNoSaveQueries {
+            get {
+                return ResourceManager.GetString("FlightColoringNoSaveQueries", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Query.
+        /// </summary>
+        internal static string FlightColoringQuickAddQuery {
+            get {
+                return ResourceManager.GetString("FlightColoringQuickAddQuery", resourceCulture);
             }
         }
         

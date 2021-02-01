@@ -3773,33 +3773,49 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
     public class FlightColor
     {
         #region properties
-        private string m_colorString = string.Empty;
-
-        private string m_keywordString = string.Empty;
-
-        private string m_keywordUpper = string.Empty;
-
-        private System.Drawing.Color color = System.Drawing.Color.Empty;
-
         /// <summary>
         /// The keyword to match
         /// </summary>
-        public string KeyWord
-        {
-            get { return m_keywordString; }
-            set
-            {
-                m_keywordString = value;
-                m_keywordUpper = (value == null) ? string.Empty : value.Trim().ToUpper(CultureInfo.CurrentCulture);
-            }
-        }
+        public string KeyWord { get; set; }
 
-        [Newtonsoft.Json.JsonIgnoreAttribute]
         /// <summary>
-        /// The normalized (uppercase) version of the keyword
+        /// The color to use when matching
         /// </summary>
-        public string UpperKey { get { return m_keywordUpper; } }
+        public string ColorString;
 
+        /// <summary>
+        /// The color as a SystemDrawingColor
+        /// </summary>
+        [Newtonsoft.Json.JsonIgnoreAttribute]
+        public System.Drawing.Color Color { get { return TryParseColor(ColorString); } }
+        #endregion
+
+        #region Conversion to Canned Query 
+        public CannedQuery AsQuery(string szUser)
+        {
+            if (String.IsNullOrWhiteSpace(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+
+            if (String.IsNullOrWhiteSpace(KeyWord))
+                return null;
+
+
+            Dictionary<string, CannedQuery> d = new Dictionary<string, CannedQuery>();
+            foreach (CannedQuery cq in CannedQuery.QueriesForUser(szUser))
+                d[cq.QueryName] = cq;
+
+            // Generate a name that is not in use.
+            string szQueryName = KeyWord;
+
+            int i = 0;
+            while (d.ContainsKey(szQueryName))
+                szQueryName = String.Format(CultureInfo.CurrentCulture, "{0}{1}", KeyWord, ++i);
+
+            return new CannedQuery(szUser) { ColorString = this.ColorString, GeneralText = KeyWord, QueryName = szQueryName };
+        }
+        #endregion
+
+        #region Static utilities
         public static System.Drawing.Color TryParseColor(string sz)
         {
             if(!String.IsNullOrWhiteSpace(sz))
@@ -3815,6 +3831,28 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
             return System.Drawing.Color.Empty;
         }
 
+        public static void MigrateFlightColors(string szUser)
+        {
+            if (String.IsNullOrWhiteSpace(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+            Profile pf = Profile.GetUser(szUser);
+            MigrateFlightColors(pf);
+        }
+
+        public static void MigrateFlightColors(Profile pf) 
+        {
+            if (pf == null)
+                throw new ArgumentNullException(nameof(pf));
+
+            IEnumerable<FlightColor> colorMap = pf.KeywordColors;
+            if (colorMap != null)
+            {
+                foreach (FlightColor fc in colorMap)
+                    fc.AsQuery(pf.UserName).Commit(false);
+                pf.KeywordColors = null;
+            }
+        }
+
         public static IEnumerable<CannedQuery> QueriesToColor(string szUser)
         {
             if (String.IsNullOrWhiteSpace(szUser))
@@ -3822,43 +3860,17 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
 
             Profile pf = Profile.GetUser(szUser);
 
+            // Convert any KeywordColors into canned queries, clear the keyword colors, and return the result.
+            MigrateFlightColors(pf);
+
             List<CannedQuery> lst = new List<CannedQuery>(CannedQuery.QueriesForUser(pf.UserName));
             lst.RemoveAll(cq => String.IsNullOrWhiteSpace(cq.ColorString));
 
-            IEnumerable<FlightColor> colorMap = pf.KeywordColors;
-
-            // Convert any KeywordColors into canned queries; don't bother persisting them, though.
-            if (colorMap != null)
-                foreach (FlightColor fc in colorMap)
-                    lst.Add(new CannedQuery(pf.UserName) { GeneralText = fc.KeyWord, ColorString = fc.ColorString });
-
             return lst;
         }
-
-        /// <summary>
-        /// The string representation of the color
-        /// </summary>
-        public string ColorString
-        {
-            get { return m_colorString; }
-            set
-            {
-                m_colorString = value;
-                color = TryParseColor(value);
-            }
-        }
-
-        [Newtonsoft.Json.JsonIgnoreAttribute]
-        public System.Drawing.Color Color { get { return color; } }
         #endregion
 
         public FlightColor() { }
-
-        public FlightColor(string szKey, string szColor) : this()
-        {
-            KeyWord = szKey;
-            ColorString = szColor;
-        }
     }
 }
 
