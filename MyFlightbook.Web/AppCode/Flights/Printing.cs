@@ -717,6 +717,14 @@ namespace MyFlightbook.Printing
         }
         #endregion
 
+        private static void CheckPaginateArgs(IEnumerable<LogbookEntryDisplay> lstIn, PrintingOptions po)
+        {
+            if (lstIn == null)
+                throw new ArgumentNullException(nameof(lstIn));
+            if (po == null)
+                throw new ArgumentNullException(nameof(po));
+        }
+
         /// <summary>
         /// Inserts subtotals into an enumerable set of flights, returning an enumerable set of LogbookPrintedPages.
         /// </summary>
@@ -725,10 +733,8 @@ namespace MyFlightbook.Printing
         /// <returns>A new enumerable with per-page subtotals and (optional) running totals</returns>
         public static IEnumerable<LogbookPrintedPage> Paginate(IEnumerable<LogbookEntryDisplay> lstIn, PrintingOptions po)
         {
-            if (lstIn == null)
-                throw new ArgumentNullException(nameof(lstIn));
-            if (po == null)
-                throw new ArgumentNullException(nameof(po));
+            CheckPaginateArgs(lstIn, po);   // will throw an exception
+
             int cIn = lstIn.Count();
             if (cIn == 0)
                 return Array.Empty<LogbookPrintedPage>();
