@@ -1104,8 +1104,8 @@ namespace MyFlightbook
                 (comm) =>
                 {
                     comm.Parameters.AddWithValue("Email", Email);
-                    comm.Parameters.AddWithValue("FirstName", FirstName.LimitTo(15));
-                    comm.Parameters.AddWithValue("LastName", LastName.LimitTo(15));
+                    comm.Parameters.AddWithValue("FirstName", FirstName.LimitTo(32));
+                    comm.Parameters.AddWithValue("LastName", LastName.LimitTo(32));
                     comm.Parameters.AddWithValue("address", Address.LimitTo(254));
                     comm.Parameters.AddWithValue("dropboxAccessToken", DropboxAccessToken);
                     comm.Parameters.AddWithValue("onedrive", OneDriveAccessToken == null ? null : JsonConvert.SerializeObject(OneDriveAccessToken));
