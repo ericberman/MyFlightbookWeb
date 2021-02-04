@@ -1,5 +1,5 @@
 <%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbEditAircraft.ascx.cs"
-    Inherits="Controls_mfbEditAircraft" %>
+    Inherits="MyFlightbook.AircraftControls.mfbEditAircraft" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register Src="mfbImageList.ascx" TagName="mfbImageList" TagPrefix="uc1" %>
 <%@ Register Src="mfbMultiFileUpload.ascx" TagName="mfbMultiFileUpload" TagPrefix="uc3" %>
@@ -110,6 +110,7 @@
                                     <asp:TextBox ID="txtTail" runat="server" autocomplete="off"
                                         AutoCompleteType="Disabled"
                                         ValidationGroup="EditAircraft"></asp:TextBox>
+                                    <asp:Label ID="lblReadTail" Font-Bold="True" Font-Size="Larger" runat="server" />
                                     <cc1:AutoCompleteExtender ID="txtTail_AutoCompleteExtender" runat="server"
                                         CompletionInterval="100" CompletionListCssClass="AutoExtender"
                                         CompletionListHighlightedItemCssClass="AutoExtenderHighlight"

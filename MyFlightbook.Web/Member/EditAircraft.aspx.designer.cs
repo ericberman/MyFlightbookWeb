@@ -55,7 +55,7 @@ public partial class Member_EditAircraft
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::Controls_mfbEditAircraft MfbEditAircraft1;
+    protected global::MyFlightbook.AircraftControls.mfbEditAircraft MfbEditAircraft1;
 
     /// <summary>
     /// hdnReturnURL control.
