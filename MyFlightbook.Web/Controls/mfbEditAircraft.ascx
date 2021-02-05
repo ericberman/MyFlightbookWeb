@@ -93,11 +93,10 @@
                                     <% =Resources.Aircraft.editAircraftCountryPrompt %>
                                 </td>
                                 <td>
-                                    <asp:DropDownList ID="cmbCountryCode" runat="server" AutoPostBack="True" EnableViewState="False"
+                                    <asp:DropDownList ID="cmbCountryCode" runat="server" AutoPostBack="True"
                                         DataTextField="CountryName" DataValueField="HyphenatedPrefix"
                                         OnSelectedIndexChanged="cmbCountryCode_SelectedIndexChanged">
                                     </asp:DropDownList>
-                                    <asp:HiddenField ID="hdnSimCountry" runat="server" EnableViewState="false" />
                                     <asp:HiddenField ID="hdnLastCountry" runat="server" />
                                     <asp:HiddenField ID="hdnLastTail" runat="server" />
                                 </td>

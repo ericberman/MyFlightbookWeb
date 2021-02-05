@@ -310,25 +310,16 @@ namespace MyFlightbook.AircraftControls
         #endregion
 
         #region Page setup
-        protected void Page_Init(object sender, EventArgs e)
-        {
-            // For efficiency of viewstate, we repopulate country code on each postback.
-            cmbCountryCode.DataSource = CountryCodePrefix.CountryCodes();
-            cmbCountryCode.DataBind();
-            hdnSimCountry.Value = CountryCodePrefix.szSimPrefix; // hack, but avoids "CA1303:Do not pass literals as localized parameters" warning.
-        }
-
         protected void Page_Load(object sender, EventArgs e)
         {
             if (ViewState[szKeyVSAircraftInProgress] != null)
                 m_ac = (Aircraft)ViewState[szKeyVSAircraftInProgress];
 
-            // Make sure for read-only tails aren't affected by the country code changinge on them.  It defaults to "N" on postback.
-            if (!String.IsNullOrWhiteSpace(hdnLastCountry.Value))
-                cmbCountryCode.SelectedValue = hdnLastCountry.Value;
-
             if (!IsPostBack)
             {
+                cmbCountryCode.DataSource = CountryCodePrefix.CountryCodes();
+                cmbCountryCode.DataBind();
+
                 List<AircraftInstance> lst = new List<AircraftInstance>(AircraftInstance.GetInstanceTypes());
                 lst.RemoveAll(aic => aic.IsRealAircraft);
                 rblTrainingDevices.DataSource = lst;
