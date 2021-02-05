@@ -323,6 +323,10 @@ namespace MyFlightbook.AircraftControls
             if (ViewState[szKeyVSAircraftInProgress] != null)
                 m_ac = (Aircraft)ViewState[szKeyVSAircraftInProgress];
 
+            // Make sure for read-only tails aren't affected by the country code changinge on them.  It defaults to "N" on postback.
+            if (!String.IsNullOrWhiteSpace(hdnLastCountry.Value))
+                cmbCountryCode.SelectedValue = hdnLastCountry.Value;
+
             if (!IsPostBack)
             {
                 List<AircraftInstance> lst = new List<AircraftInstance>(AircraftInstance.GetInstanceTypes());
