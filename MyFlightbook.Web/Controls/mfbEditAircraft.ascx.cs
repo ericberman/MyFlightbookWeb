@@ -807,8 +807,11 @@ namespace MyFlightbook.AircraftControls
             }
             else if (fChangedTail)
             {
+                CountryCodePrefix ccp = CountryCodePrefix.BestMatchCountryCode(txtTail.Text);
+
                 // sync the countrycode to the tail.  Note that we set hdnLastCountry.Value here as well to prevent a potential loop.
-                cmbCountryCode.SelectedValue = hdnLastCountry.Value = CountryCodePrefix.BestMatchCountryCode(txtTail.Text).HyphenatedPrefix;
+                if (!ccp.IsSim && !ccp.IsAnonymous)
+                    cmbCountryCode.SelectedValue = hdnLastCountry.Value = ccp.HyphenatedPrefix;
             }
             hdnLastCountry.Value = cmbCountryCode.SelectedValue;
             hdnLastTail.Value = txtTail.Text;
