@@ -9,17 +9,17 @@
             <asp:Panel ID="pnlContactDetails" runat="server" CssClass="clubDetailsRight">
                 <asp:MultiView ID="mvClubHeader" runat="server">
                     <asp:View ID="vwLink" runat="server">
-                        <asp:HyperLink ID="lnkClubDetails" Font-Bold="true" runat="server" NavigateUrl='<%# Eval("EditLink") %>' Text='<%# Eval("Name") %>'></asp:HyperLink>
+                        <asp:HyperLink ID="lnkClubDetails" Font-Bold="true" runat="server" NavigateUrl='<%# Eval("EditLink") %>' Text='<%#: Eval("Name") %>'></asp:HyperLink>
                     </asp:View>
                     <asp:View ID="vwNoLink" runat="server">
-                        <asp:Label ID="lblClubDetails" runat="server" Font-Bold="true" Text='<%# Eval("Name") %>'></asp:Label>
+                        <asp:Label ID="lblClubDetails" runat="server" Font-Bold="true" Text='<%#: Eval("Name") %>'></asp:Label>
                     </asp:View>
                 </asp:MultiView>
                 <asp:Panel ID="pnlHomeAirport" runat="server" Visible='<%# !String.IsNullOrEmpty(Eval("HomeAirportCode").ToString()) %>'>
-                    <asp:HyperLink ID="lnkViewAirport" NavigateUrl='<%# String.Format("~/Public/MapRoute2.aspx/?sm=1&Airports={0}", Eval("HomeAirport.Code")) %>' runat="server"><%# Eval("HomeAirport.Code") %></asp:HyperLink> - <%# Eval("HomeAirport.Name") %>
+                    <asp:HyperLink ID="lnkViewAirport" NavigateUrl='<%# String.Format("~/Public/MapRoute2.aspx/?sm=1&Airports={0}", Eval("HomeAirport.Code")) %>' runat="server"><%#: Eval("HomeAirport.Code") %></asp:HyperLink> - <%#: Eval("HomeAirport.Name") %>
                 </asp:Panel>
                 <asp:Panel ID="pnlLocation" Visible='<%# Eval("HasContactInfo") %>' runat="server">
-                    <%# Eval("LocationString") %> <%# Eval("ContactPhone") %></asp:Panel>
+                    <%#: Eval("LocationString") %> <%#: Eval("ContactPhone") %></asp:Panel>
                 <asp:Panel ID="pnlURL" Visible='<%# !String.IsNullOrEmpty(Eval("ProvidedLink").ToString()) %>' runat="server">
                     <asp:HyperLink ID="lnkClub" NavigateUrl='<%# Eval("Link") %>' Target="_blank" runat="server" Text='<%$ Resources:Club, LabelClubWebsite %>'></asp:HyperLink>
                 </asp:Panel>
@@ -49,7 +49,7 @@
             <tr>
                 <td style="width:400px; padding:3px" colspan="2">
                     <div><asp:Label ID="Label3" runat="server" Text="<%$ Resources:Club, labelURL %>"></asp:Label></div>
-                    http://<asp:TextBox ID="txtURL" runat="server" Text='<%# Bind("ProvidedLink") %>' Width="400px"></asp:TextBox>
+                    http://<asp:TextBox ID="txtURL" runat="server" Text='<%#: Bind("ProvidedLink") %>' Width="400px"></asp:TextBox>
                 </td>
             </tr>
             <tr>

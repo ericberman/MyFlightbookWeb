@@ -149,21 +149,21 @@ namespace MyFlightbook.MemberPages
             txtFirst.Text = m_pf.FirstName;
             txtFirst.Attributes["oninput"] = "javascript:updateGreeting(this);";
             txtLast.Text = m_pf.LastName;
-            lblStaticEmail.Text = txtEmail2.Text = txtEmail.Text = m_pf.Email;
+            lblStaticEmail.Text = HttpUtility.HtmlEncode(txtEmail2.Text = txtEmail.Text = m_pf.Email);
             wmeGreeting.WatermarkText = String.IsNullOrEmpty(m_pf.FirstName) ? Resources.Profile.accountPreferredGreetingWatermark : m_pf.FirstName;
             string szPreferredGreeting = m_pf.PreferredGreeting.Trim();
             if (szPreferredGreeting.CompareCurrentCultureIgnoreCase(m_pf.UserFirstName.Trim()) == 0)
             {
                 txtPreferredGreeting.Text = string.Empty;
-                lblFullName.Text = m_pf.UserFullName;
+                lblFullName.Text = HttpUtility.HtmlEncode(m_pf.UserFullName);
             }
             else
             {
                 txtPreferredGreeting.Text = szPreferredGreeting;
-                lblFullName.Text = String.Format(CultureInfo.CurrentCulture, "{0} ({1})", m_pf.UserFullName, szPreferredGreeting);
+                lblFullName.Text = HttpUtility.HtmlEncode(String.Format(CultureInfo.CurrentCulture, "{0} ({1})", m_pf.UserFullName, szPreferredGreeting));
             }
-            lblQuestion.Text = m_pf.SecurityQuestion;
-            lblAddress.Text = txtAddress.Text = m_pf.Address;
+            lblQuestion.Text = HttpUtility.HtmlEncode(m_pf.SecurityQuestion);
+            lblAddress.Text = HttpUtility.HtmlEncode(txtAddress.Text = m_pf.Address);
             dateDOB.Date = m_pf.DateOfBirth ?? DateTime.MinValue;
             accordianAccount.SelectedIndex = (sidebarTab == tabID.pftQA) ? 2 : (sidebarTab == tabID.pftPass ? 1 : 0);
 

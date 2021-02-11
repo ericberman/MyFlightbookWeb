@@ -5,7 +5,7 @@
             <ItemStyle CssClass="PaddedCell" />
             <HeaderStyle CssClass="PaddedCell" />
             <ItemTemplate>
-                <asp:Label ID="lblName" runat="server" Font-Bold="true" Text='<%# ((MyFlightbook.Clubs.ClubInsuranceReportItem) Container.DataItem).User.UserFullName %>'></asp:Label>
+                <asp:Label ID="lblName" runat="server" Font-Bold="true" Text='<%#: ((MyFlightbook.Clubs.ClubInsuranceReportItem) Container.DataItem).User.UserFullName %>'></asp:Label>
             </ItemTemplate>
         </asp:TemplateField>
         <asp:TemplateField HeaderText="<%$ Resources:Club, ReportHeaderInsurancePilotStatus %>" ItemStyle-VerticalAlign="Top" >
@@ -14,7 +14,7 @@
             <ItemTemplate>
                 <asp:Repeater ID="rptPilotStatus" runat="server">
                     <ItemTemplate>
-                        <div><asp:Label ID="lblTitle" runat="server" CssClass="currencylabel" Text='<%# Eval("Attribute") %>'></asp:Label>: <asp:Label ID="lblStatus" runat="server" CssClass='<%# CSSForItem((MyFlightbook.Currency.CurrencyState) Eval("Status")) %>' Text='<%# Eval("Value") %>'></asp:Label></div>
+                        <div><asp:Label ID="lblTitle" runat="server" CssClass="currencylabel" Text='<%#: Eval("Attribute") %>'></asp:Label>: <asp:Label ID="lblStatus" runat="server" CssClass='<%# CSSForItem((MyFlightbook.Currency.CurrencyState) Eval("Status")) %>' Text='<%#: Eval("Value") %>'></asp:Label></div>
                     </ItemTemplate>
                 </asp:Repeater>
             </ItemTemplate>

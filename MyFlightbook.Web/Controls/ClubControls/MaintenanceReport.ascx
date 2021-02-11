@@ -140,14 +140,14 @@
             <ItemStyle CssClass="PaddedCell" />
             <HeaderStyle CssClass="PaddedCell" />
             <ItemTemplate>
-                <asp:Label ID="lblDeadlines" runat="server" Text='<%# MyFlightbook.Currency.DeadlineCurrency.CoalescedDeadlinesForAircraft(null, (int) Eval("AircraftID")) %>' />
+                <asp:Label ID="lblDeadlines" runat="server" Text='<%#: MyFlightbook.Currency.DeadlineCurrency.CoalescedDeadlinesForAircraft(null, (int) Eval("AircraftID")) %>' />
             </ItemTemplate>
         </asp:TemplateField>
         <asp:TemplateField HeaderText="<%$ Resources:Club, ReportHeaderNotes %>" ItemStyle-VerticalAlign="Top">
             <ItemStyle CssClass="PaddedCell" />
             <HeaderStyle CssClass="PaddedCell" />
             <ItemTemplate>
-                <asp:Label ID="lblNotes" runat="server" Text='<%# Eval("PublicNotes") %>'></asp:Label>
+                <asp:Label ID="lblNotes" runat="server" Text='<%#: Eval("PublicNotes") %>'></asp:Label>
             </ItemTemplate>
         </asp:TemplateField>
     </Columns>

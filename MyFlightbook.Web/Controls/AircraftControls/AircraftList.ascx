@@ -23,7 +23,7 @@
                 <asp:Panel ID="pnlAircraftID" runat="server">
                     <div>
                         <asp:HyperLink ID="lnkEditAircraft" Font-Size="Larger" Font-Bold="true" runat="server" NavigateUrl='<%#  String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}{1}", Eval("AircraftID"), IsAdminMode ? "&a=1" : string.Empty) %>'><%# Eval("DisplayTailNumber") %></asp:HyperLink>
-                        - <%#: Eval("ModelDescription")%> - <%# Eval("ModelCommonName")%> (<%# Eval("CategoryClassDisplay") %>)
+                        - <%#: Eval("ModelDescription")%> - <%#: Eval("ModelCommonName")%> (<%#: Eval("CategoryClassDisplay") %>)
                     </div>
                     <asp:Panel ID="pnlInst" runat="server" Visible='<%# !String.IsNullOrEmpty((string) Eval("InstanceTypeDescription")) %>'><%#: Eval("InstanceTypeDescription")%></asp:Panel>
                 </asp:Panel>
@@ -37,10 +37,10 @@
                                 <li>
                                     <asp:MultiView ID="mvAttribute" runat="server" ActiveViewIndex='<%# String.IsNullOrEmpty((string) Eval("Link")) ? 0 : 1 %>'>
                                         <asp:View ID="vwNoLink" runat="server">
-                                            <%# Eval("Value") %>
+                                            <%#: Eval("Value") %>
                                         </asp:View>
                                         <asp:View ID="vwLink" runat="server">
-                                            <asp:HyperLink ID="lnkAttrib" runat="server" Text='<%# Eval("Value") %>' NavigateUrl='<%# Eval("Link") %>'></asp:HyperLink>
+                                            <asp:HyperLink ID="lnkAttrib" runat="server" Text='<%#: Eval("Value") %>' NavigateUrl='<%# Eval("Link") %>'></asp:HyperLink>
                                         </asp:View>
                                     </asp:MultiView>
                                 </li>

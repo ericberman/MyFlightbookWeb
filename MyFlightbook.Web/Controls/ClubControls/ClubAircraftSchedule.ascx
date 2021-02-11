@@ -9,11 +9,11 @@
                     <asp:HyperLink ID="lnkImage" runat="server" NavigateUrl='<%# Eval("SampleImageFull") %>' Target="_blank">
                         <asp:Image ID="imgSample" ImageUrl='<%# Eval("SampleImageThumbnail") %>' ImageAlign="Middle" runat="server" />
                     </asp:HyperLink>
-                    <div><%# Eval("SampleImageComment") %></div>
+                    <div><%#: Eval("SampleImageComment") %></div>
                     <br />
                 </asp:Panel>
                 <div><%# Eval("ClubDescription") %></div>
-                <div><%# Eval("PublicNotes") %></div>
+                <div><%#: Eval("PublicNotes") %></div>
             </ResourceTemplate>
         </uc1:mfbResourceSchedule>
     </ItemTemplate>

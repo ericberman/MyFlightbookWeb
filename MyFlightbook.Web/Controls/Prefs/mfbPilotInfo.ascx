@@ -86,7 +86,7 @@
                                     <ItemTemplate>
                                         <asp:Repeater ID="rptPrivs" runat="server" DataSource='<%# Eval("Privileges") %>'>
                                             <ItemTemplate>
-                                                <div><%# Container.DataItem %></div>
+                                                <div><%#: Container.DataItem %></div>
                                             </ItemTemplate>
                                         </asp:Repeater>
                                     </ItemTemplate>

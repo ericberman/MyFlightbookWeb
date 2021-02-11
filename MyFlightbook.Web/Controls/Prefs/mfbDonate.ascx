@@ -22,7 +22,7 @@
     <asp:Repeater ID="rptAvailableGratuities" runat="server">
         <ItemTemplate>
             <tr>
-                <td style="max-width: 250px; text-align:left; padding: 3px; border-bottom: 1px solid gray;"><%# Eval("Name") %>&nbsp;<uc1:mfbTooltip runat="server" ID="mfbTooltip" BodyContent='<%# Eval("Description") %>' />
+                <td style="max-width: 250px; text-align:left; padding: 3px; border-bottom: 1px solid gray;"><%#: Eval("Name") %>&nbsp;<uc1:mfbTooltip runat="server" ID="mfbTooltip" BodyContent='<%#: Eval("Description") %>' />
                 </td>
                 <td style="border: 1px solid gray; padding: 3px; text-align:center;"><%# ((decimal)(Eval("Threshold"))) <= 10 ? "●" : string.Empty %></td>
                 <td style="border: 1px solid gray; padding: 3px; text-align:center;"><%# ((decimal)(Eval("Threshold"))) <= 15 ? "●" : string.Empty %></td>
@@ -45,7 +45,7 @@
     <ul>
         <asp:Repeater ID="rptEarnedGratuities" runat="server">
             <ItemTemplate>
-                <li><%# Eval("ThankYou") %></li>
+                <li><%#: Eval("ThankYou") %></li>
             </ItemTemplate>
         </asp:Repeater>
     </ul>

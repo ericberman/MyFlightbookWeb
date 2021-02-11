@@ -7,11 +7,11 @@
             <ItemTemplate>
                 <div><asp:Label ID="lblDate" Font-Bold="true" runat="server" Text='<%# String.Format("{0:d}", Eval("LocalStart")) %>' Font-Size="Larger" /></div>
                 <div><asp:Label ID="lblTime" Font-Bold="false" runat="server" Text='<%# String.Format("{0:t} ({1})", Eval("LocalStart"), Eval("DurationDisplay")) %>' /></div>
-                <asp:Label ID="lblName" Font-Bold="true" runat="server" Text='<%# String.IsNullOrEmpty(UserName) ? Eval("OwnerProfile.UserFullName") : "" %>'></asp:Label>
+                <asp:Label ID="lblName" Font-Bold="true" runat="server" Text='<%#: String.IsNullOrEmpty(UserName) ? Eval("OwnerProfile.UserFullName") : "" %>'></asp:Label>
                 <%# (String.IsNullOrEmpty(UserName) && String.IsNullOrEmpty(ResourceName)) ? " - " : "" %>
-                <asp:Label ID="lblTail" Font-Bold="true" runat="server" Text='<%# String.IsNullOrEmpty(ResourceName) ? Eval("ResourceAircraft.DisplayTailnumber") : "" %>'></asp:Label>
+                <asp:Label ID="lblTail" Font-Bold="true" runat="server" Text='<%#: String.IsNullOrEmpty(ResourceName) ? Eval("ResourceAircraft.DisplayTailnumber") : "" %>'></asp:Label>
                 <%# (!String.IsNullOrEmpty(UserName) && !String.IsNullOrEmpty(ResourceName)) ? "" : " - " %>
-                <asp:Label ID="lblBody" runat="server" Text='<%# Eval("Body") %>'></asp:Label>
+                <asp:Label ID="lblBody" runat="server" Text='<%#: Eval("Body") %>'></asp:Label>
             </ItemTemplate>
             <ItemStyle VerticalAlign="Top" />
         </asp:TemplateField>
