@@ -26,13 +26,13 @@
                 <asp:TemplateField meta:resourcekey="TemplateFieldResource2">
                     <EditItemTemplate>
                         <div>
-                            <asp:Label ID="lblName" runat="server" Text='<%# Bind("DisplayName") %>'
+                            <asp:Label ID="lblName" runat="server" Text='<%#: Bind("DisplayName") %>'
                                 Font-Bold="True" meta:resourcekey="lblNameResource1"></asp:Label>
-                            <asp:Label ID="lblDue" runat="server" Text='<%# Bind("ExpirationDisplay") %>' meta:resourcekey="lblDueResource1"></asp:Label>
+                            <asp:Label ID="lblDue" runat="server" Text='<%#: Bind("ExpirationDisplay") %>' meta:resourcekey="lblDueResource1"></asp:Label>
                         </div>
                         <div>
                             <asp:Label ID="lblEnterRegenDate" runat="server"
-                                Text='<%# Bind("RegenPrompt") %>' meta:resourcekey="lblEnterRegenDateResource1"></asp:Label>
+                                Text='<%#: Bind("RegenPrompt") %>' meta:resourcekey="lblEnterRegenDateResource1"></asp:Label>
                             <asp:MultiView ID="mvRegenTarget" runat="server" ActiveViewIndex='<%# ((bool) Eval("UsesHours")) ? 1 : 0 %>'>
                                 <asp:View ID="vwRegenDate" runat="server">
                                     <uc1:mfbTypeInDate ID="mfbUpdateDeadlineDate" DefaultType="None" runat="server" />
@@ -46,13 +46,13 @@
                     <ItemTemplate>
                         <div>
                             <asp:Label ID="lblName" runat="server" Font-Bold="True"
-                                Text='<%# Bind("DisplayName") %>' meta:resourcekey="lblNameResource2"></asp:Label>
+                                Text='<%#: Bind("DisplayName") %>' meta:resourcekey="lblNameResource2"></asp:Label>
                             <asp:Label ID="lblDue" runat="server"
-                                Text='<%# Bind("ExpirationDisplay") %>' meta:resourcekey="lblDueResource2"></asp:Label>
+                                Text='<%#: Bind("ExpirationDisplay") %>' meta:resourcekey="lblDueResource2"></asp:Label>
                         </div>
                         <div class="fineprint">
                             <asp:Label ID="lblRegenRule" runat="server"
-                                Text='<%# Bind("RegenDescription") %>' meta:resourcekey="lblRegenRuleResource1"></asp:Label>
+                                Text='<%#: Bind("RegenDescription") %>' meta:resourcekey="lblRegenRuleResource1"></asp:Label>
                         </div>
                     </ItemTemplate>
                 </asp:TemplateField>

@@ -28,7 +28,7 @@ public partial class Game_Game
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::Controls_mfbAirportIDGame MfbAirportIDGame1;
+    protected global::MyFlightbook.Airports.mfbAirportIDGame MfbAirportIDGame1;
 
     /// <summary>
     /// Master property.

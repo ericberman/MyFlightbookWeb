@@ -5,10 +5,10 @@
         <ItemTemplate>
             <div style="display:inline-block; text-align:center; vertical-align:top; margin-left: 5px; margin-right:5px; width:140px">
                 <div style="position:relative; display:inline;">
-                    <asp:Image ID="imgBadge" runat="server" Width="70" Height="113" ImageUrl='<%# VirtualPathUtility.ToAbsolute((string) Eval("BadgeImage")) %>' ToolTip='<%# Eval("BadgeImageAltText") %>' AlternateText='<%# Eval("BadgeImageAltText") %>' />
+                    <asp:Image ID="imgBadge" runat="server" Width="70" Height="113" ImageUrl='<%# VirtualPathUtility.ToAbsolute((string) Eval("BadgeImage")) %>' ToolTip='<%#: Eval("BadgeImageAltText") %>' AlternateText='<%#: Eval("BadgeImageAltText") %>' />
                     <asp:Image ID="imgOverlay" runat="server" Width="70" ImageUrl='<%# String.IsNullOrEmpty((string) Eval("BadgeImageOverlay")) ? string.Empty : VirtualPathUtility.ToAbsolute((string) Eval("BadgeImageOverlay")) %>' ToolTip="" AlternateText="" Visible='<%# Eval("BadgeImageOverlay").ToString().Length > 0 %>' style="position:absolute; bottom: 0; left: 0; z-index:1;" />
                 </div>
-                <div><asp:Label ID="lblBadgeName" runat="server" Text='<%# Eval("Name") %>' Font-Bold="true"></asp:Label></div>
+                <div><asp:Label ID="lblBadgeName" runat="server" Text='<%#: Eval("Name") %>' Font-Bold="true"></asp:Label></div>
                 <div style="font-size:smaller">
                     <asp:MultiView ID="mvEarned" runat="server" ActiveViewIndex='<%# ViewIndexForBadge((MyFlightbook.Achievements.Badge) Container.DataItem) %>'>
                         <asp:View ID="vwNotAchieved" runat="server">

@@ -27,16 +27,18 @@
             </ItemTemplate>
             <ItemStyle VerticalAlign="Top" />
         </asp:TemplateField>
-        <asp:HyperLinkField Target="_blank" DataTextField="DisplayName" DataNavigateUrlFields="FlightQueryJSON"
-            DataNavigateUrlFormatString="~/member/logbooknew.aspx?fq={0}">
+        <asp:TemplateField>
+            <ItemTemplate>
+                <asp:HyperLink ID="lnkNav" runat="server" Text='<%#: Eval("DisplayName") %>' Target="_blank" NavigateUrl='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/member/logbooknew.aspx?fq={0}", Eval("FlightQueryJSON")) %>' />
+            </ItemTemplate>
             <ItemStyle Font-Bold="True" VerticalAlign="Top" />
-        </asp:HyperLinkField>
+        </asp:TemplateField>
         <asp:TemplateField>
             <EditItemTemplate>
                 <uc1:mfbCustCurrency ID="mfbEditCustCurrency" runat="server" />
             </EditItemTemplate>
             <ItemTemplate>
-                <asp:Label ID="lblDisplay" runat="server" Text='<%# Eval("DisplayString") %>'></asp:Label>
+                <asp:Label ID="lblDisplay" runat="server" Text='<%#: Eval("DisplayString") %>'></asp:Label>
             </ItemTemplate>
             <ItemStyle VerticalAlign="Top" />
         </asp:TemplateField>

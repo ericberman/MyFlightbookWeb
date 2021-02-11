@@ -316,7 +316,7 @@ public partial class Member_Download
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::Controls_mfbDownload mfbDownload1;
+    protected global::MyFlightbook.mfbDownload mfbDownload1;
 
     /// <summary>
     /// pnlSkyWatch control.

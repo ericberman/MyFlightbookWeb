@@ -105,6 +105,7 @@ public partial class Controls_MFBLogbookBase : UserControl
     /// <summary>
     /// The URL for details page, ID of the flight replaces {0}
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings")]
     public string DetailsPageUrlFormatString
     {
         get { return m_szDetailsPageTemplate; }
@@ -114,6 +115,7 @@ public partial class Controls_MFBLogbookBase : UserControl
     /// <summary>
     /// URL template to edit the flight; ID of the flight replaces {0}
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings")]
     public string EditPageUrlFormatString
     {
         get { return m_szEditPageTemplate; }
@@ -123,6 +125,7 @@ public partial class Controls_MFBLogbookBase : UserControl
     /// <summary>
     /// URL template for flight analysis; ID of the flight replaces {0}
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings")]
     public string AnalysisPageUrlFormatString
     {
         get { return m_szAnalysisPageTemplate; }
@@ -132,6 +135,7 @@ public partial class Controls_MFBLogbookBase : UserControl
     /// <summary>
     /// URL Template for public page; ID of the flight replaces {0}
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings")]
     public string PublicPageUrlFormatString
     {
         get { return m_szPublicRouteTemplate; }

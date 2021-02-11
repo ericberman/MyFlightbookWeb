@@ -392,9 +392,9 @@ namespace MyFlightbook.Image
             // No exact match - try looking for other clues
             if (szVirtPath.Contains("AIRCRAFT"))
                 return ImageClass.Aircraft;
-            if (szVirtPath.Contains("FLIGHTS"))
+            else if (szVirtPath.Contains("FLIGHTS"))
                 return ImageClass.Flight;
-            if (szVirtPath.Contains("ENDORSEMENTS"))
+            else if (szVirtPath.Contains("ENDORSEMENTS"))
                 return ImageClass.Endorsement;
 
             return ImageClass.Unknown;
@@ -1436,9 +1436,9 @@ namespace MyFlightbook.Image
         public static System.Drawing.Image DrawingCompatibleImageFromStream(Stream s)
         {
             System.Drawing.Image result = DrawingCompatibleImageFromStream(s, out string szTempFile);
-            if (szTempFile != null || File.Exists(szTempFile))
-                throw new InvalidOperationException("DrawingCompatibleImageBytesFromStream called on an image that generated a temp file, but without the temp file being cleaned up.");
-            return result;
+            return szTempFile != null || File.Exists(szTempFile)
+                ? throw new InvalidOperationException("DrawingCompatibleImageBytesFromStream called on an image that generated a temp file, but without the temp file being cleaned up.")
+                : result;
         }
 
         /// <summary>
@@ -1670,7 +1670,7 @@ namespace MyFlightbook.Image
             // just save the file as-is; we virtualize the thumbanil.
             string szBase = Regex.Replace(Path.GetFileNameWithoutExtension(myFile.FileName), @"[^a-zA-Z0-9]", string.Empty);
             if (String.IsNullOrWhiteSpace(szBase))
-                szBase = DateTime.Now.ToString("yyyyMMddHHmmss");
+                szBase = DateTime.Now.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture);
             
             if (Comment.Length > 0)
             {

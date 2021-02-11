@@ -7,11 +7,11 @@
                     <asp:MultiView ID="mvImage" runat="server" ActiveViewIndex='<%# (MyFlightbook.Image.MFBImageInfo.ImageFileType)Eval("ImageType") == MyFlightbook.Image.MFBImageInfo.ImageFileType.S3VideoMP4 ? 0 : 1 %>'>
                         <asp:View ID="vwVideo" runat="server">
                             <div><video width="480" height="360" controls><source src='<%# ((MyFlightbook.Image.MFBImageInfo)Container.DataItem).ResolveFullImage() %>' type="video/mp4"></div>
-                            <div><%# Eval("Comment") %></div>
+                            <div><%#: Eval("Comment") %></div>
                         </asp:View>
                         <asp:View ID="vwImage" runat="server">
                             <asp:HyperLink ID="lnkImage" runat="server" Target="_blank" NavigateUrl='<%# Eval("URLFullImage") %>'>
-                                <asp:Image ID="img" runat="server" AlternateText='<%# Eval("Comment") %>' title='<%# Eval("Comment") %>' ImageUrl='<%# Eval("URLFullImage") %>' />
+                                <asp:Image ID="img" runat="server" AlternateText='<%#: Eval("Comment") %>' title='<%#: Eval("Comment") %>' ImageUrl='<%# Eval("URLFullImage") %>' />
                             </asp:HyperLink>
                         </asp:View>
                     </asp:MultiView>

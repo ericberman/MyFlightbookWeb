@@ -7,8 +7,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-
-
-public partial class Member_Schedule
+namespace MyFlightbook.Clubs
 {
+
+
+    public partial class Member_Schedule
+    {
+    }
 }

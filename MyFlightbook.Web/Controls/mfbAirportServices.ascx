@@ -9,11 +9,11 @@
                 <asp:MultiView ID="mvAirportName" runat="server">
                     <asp:View ID="vwDynamic" runat="server">
                         <asp:HyperLink ID="lnkZoom" runat="server">
-                            <%# Eval("FullName") %>
+                            <%#: Eval("FullName") %>
                         </asp:HyperLink>
                     </asp:View>
                     <asp:View ID="vwStatic" runat="server">
-                        <%# Eval("FullName") %>
+                        <%#: Eval("FullName") %>
                     </asp:View>
                 </asp:MultiView>
             </ItemTemplate>

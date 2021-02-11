@@ -273,5 +273,8 @@
   <Rules AnalyzerId="Microsoft.CodeAnalysis.NetAnalyzers" RuleNamespace="Microsoft.CodeAnalysis.NetAnalyzers">
     <Rule Id="CA1304" Action="Warning" />
     <Rule Id="CA1305" Action="Warning" />
+    <Rule Id="CA1056" Action="Warning" />
+    <Rule Id="CA1055" Action="Warning" />
+    <Rule Id="CA1054" Action="Warning" />
   </Rules>
 </RuleSet>

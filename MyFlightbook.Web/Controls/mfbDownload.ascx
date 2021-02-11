@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbDownload.ascx.cs" Inherits="Controls_mfbDownload" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbDownload.ascx.cs" Inherits="MyFlightbook.mfbDownload" %>
 <asp:Panel ID="pnlDownloadPDF" Visible="false" runat="server">
     <p>
         <asp:Hyperlink ID="lnkDownloadPDF" runat="server" NavigateUrl="~/Member/Printview.aspx">
@@ -21,7 +21,7 @@
         <asp:BoundField DataField="FamilyName" HeaderText="ICAO Model" ReadOnly="true" />
         <asp:TemplateField HeaderText="Tail Number" >
             <ItemTemplate>
-                <asp:Label ID="lblTail" runat="server" Text='<%# AircraftForUser[(int) Eval("AircraftID")].TailNumber %>'></asp:Label>
+                <asp:Label ID="lblTail" runat="server" Text='<%#: AircraftForUser[(int) Eval("AircraftID")].TailNumber %>'></asp:Label>
             </ItemTemplate>
         </asp:TemplateField>
         <asp:BoundField DataField="TailNumDisplay" HeaderText="Display Tail" ReadOnly="True" />

@@ -8,10 +8,10 @@
                 <asp:Panel ID="pnlTitle" runat="server">
                     <asp:MultiView ID="mvTitle" runat="server">
                         <asp:View ID="vwNoLink" runat="server">
-                            <asp:Label ID="lblTitle" runat="server" CssClass="<%# CssCurrencyLabel %>" Text='<%# Eval("Attribute") %>'></asp:Label>
+                            <asp:Label ID="lblTitle" runat="server" CssClass="<%# CssCurrencyLabel %>" Text='<%#: Eval("Attribute") %>'></asp:Label>
                         </asp:View>
                         <asp:View ID="vwLink" runat="server">
-                            <asp:HyperLink ID="lnkTitle" runat="server" Text='<%# Eval("Attribute") %>' CssClass="<%# CssCurrencyLabel %>" />
+                            <asp:HyperLink ID="lnkTitle" runat="server" Text='<%#: Eval("Attribute") %>' CssClass="<%# CssCurrencyLabel %>" />
                         </asp:View>
                     </asp:MultiView>
                 </asp:Panel>
@@ -19,8 +19,8 @@
         </asp:TemplateField>
         <asp:TemplateField ItemStyle-VerticalAlign="Top">
             <ItemTemplate>
-                <div><asp:Label ID="lblStatus" runat="server" CssClass='<%# CSSForItem((MyFlightbook.Currency.CurrencyState) Eval("Status")) %>' Text='<%# Eval("Value") %>'></asp:Label></div>
-                <div><asp:Label ID="lblDiscrepancy" CssClass="<%# CssCurrencyGap %>" runat="server" Text='<%# Eval("Discrepancy") %>'></asp:Label></div>
+                <div><asp:Label ID="lblStatus" runat="server" CssClass='<%# CSSForItem((MyFlightbook.Currency.CurrencyState) Eval("Status")) %>' Text='<%#: Eval("Value") %>' /></div>
+                <div><asp:Label ID="lblDiscrepancy" CssClass="<%# CssCurrencyGap %>" runat="server" Text='<%#: Eval("Discrepancy") %>'></asp:Label></div>
             </ItemTemplate>
         </asp:TemplateField>
     </Columns>
