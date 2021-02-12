@@ -80,6 +80,7 @@
                     <td><%# Eval("GroundSim").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                     <td>
                         <div style="clear:left; white-space:pre-line;" dir="auto"><%# Eval("RedactedCommentWithReplacedApproaches") %></div>
+                        <div><%# ((LogbookEntryDisplay) Container.DataItem).CrossCountry > 0 ? String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0}: {1}", Resources.LogbookEntry.PrintHeaderCrossCountry, ((LogbookEntryDisplay) Container.DataItem).CrossCountry.FormatDecimal(CurrentUser.UsesHHMM)) : string.Empty %></div>
                         <div style="white-space:pre-line;"><%#: Eval("CustPropertyDisplay") %></div>
                         <div><uc1:mfbSignature runat="server" ID="mfbSignature" EnableViewState="false" /></div>
                     </td>
