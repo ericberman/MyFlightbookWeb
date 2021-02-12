@@ -18,14 +18,14 @@
                             <td style="width:40%">
                                 <div>
                                     <asp:HyperLink ID="lnkEditMake" runat="server" NavigateUrl='<%# "~/Member/EditMake.aspx?id=" + Eval("MakeModelID").ToString() %>' Font-Bold='<%# SortMode == ModelQuery.ModelSortMode.ModelName %>' Font-Size='<%# SortMode == ModelQuery.ModelSortMode.ModelName ? FontUnit.Larger : FontUnit.Empty %>'>
-                                        <%# Eval("ModelDisplayNameNoCatclass") %>
+                                        <%#: Eval("ModelDisplayNameNoCatclass") %>
                                     </asp:HyperLink>
                                 </div>
                                 <asp:Panel ID="pnlICAO" Visible='<%# !String.IsNullOrEmpty((string) Eval("FamilyName")) %>' runat="server">
-                                    <% = ModelQuery.ICAOPrefix %> <%# Eval("FamilyName") %>
+                                    <% = ModelQuery.ICAOPrefix %> <%#: Eval("FamilyName") %>
                                 </asp:Panel>
                                 <asp:Panel ID="pnlMDS" runat="server" Visible='<%# !String.IsNullOrEmpty((string) Eval("ArmyMDS")) %>'>
-                                    <% = Resources.LocalizedText.EditMakeWatermarkMDS %> <%# Eval("ArmyMDS") %>
+                                    <% = Resources.LocalizedText.EditMakeWatermarkMDS %> <%#: Eval("ArmyMDS") %>
                                 </asp:Panel>
                             </td>
                             <td style="width:30%">
@@ -38,7 +38,7 @@
                                     <ul>
                                         <asp:Repeater ID="rptAttributes" runat="server" DataSource='<%# ((MakeModel) Container.DataItem).AttributeList() %>'>
                                             <ItemTemplate>
-                                                <li><%# Container.DataItem %></li>
+                                                <li><%#: Container.DataItem %></li>
                                             </ItemTemplate>
                                         </asp:Repeater>
                                     </ul>

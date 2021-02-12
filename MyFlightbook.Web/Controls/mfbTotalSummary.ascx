@@ -16,10 +16,10 @@
                                      Target="_blank" ></asp:HyperLink>
                             </asp:View>
                             <asp:View ID="vwUnlinked" runat="server">
-                                <asp:Label ID="lblDescription" runat="server" Text='<%# Eval("Description") + ":" %>'></asp:Label>
+                                <asp:Label ID="lblDescription" runat="server" Text='<%#: Eval("Description") + ":" %>'></asp:Label>
                             </asp:View>
                         </asp:MultiView>
-                        <asp:Label ID="lblSubDesc" runat="server" Visible='<%# !String.IsNullOrEmpty((string) Eval("SubDescription")) %>' CssClass="fineprint"><br /><%# Eval("SubDescription") %></asp:Label>
+                        <asp:Label ID="lblSubDesc" runat="server" Visible='<%# !String.IsNullOrEmpty((string) Eval("SubDescription")) %>' CssClass="fineprint"><br /><%#: Eval("SubDescription") %></asp:Label>
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField ItemStyle-HorizontalAlign="Right" ItemStyle-VerticalAlign="Top">
@@ -54,11 +54,11 @@
                                                 Target="_blank" ></asp:HyperLink>
                                     </asp:View>
                                     <asp:View ID="vwUnlinked" runat="server">
-                                        <asp:Label ID="lblDescription" runat="server" Text='<%# Eval("Description") + ":" %>'></asp:Label>
+                                        <asp:Label ID="lblDescription" runat="server" Text='<%#: Eval("Description") + ":" %>'></asp:Label>
                                     </asp:View>
                                 </asp:MultiView>
                             </div>
-                            <div><asp:Label ID="lblSubDesc" runat="server" Visible='<%# !String.IsNullOrEmpty((string) Eval("SubDescription")) %>' CssClass="fineprint"><%# Eval("SubDescription") %></asp:Label></div>
+                            <div><asp:Label ID="lblSubDesc" runat="server" Visible='<%# !String.IsNullOrEmpty((string) Eval("SubDescription")) %>' CssClass="fineprint"><%#: Eval("SubDescription") %></asp:Label></div>
                         </div>
                     </ItemTemplate>
                 </asp:Repeater>

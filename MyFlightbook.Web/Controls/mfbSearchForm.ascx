@@ -374,7 +374,11 @@
                                 <asp:GridView ID="gvSavedQueries" BorderStyle="None" BorderWidth="0px" CellPadding="3" GridLines="None" ShowHeader="false" runat="server" AutoGenerateColumns="false" OnRowCommand="gvSavedQueries_RowCommand">
                                     <Columns>
                                         <asp:ButtonField ImageUrl="~/images/x.gif" ButtonType="Image" CommandName="_Delete" />
-                                        <asp:ButtonField ButtonType="Link" CommandName="_Load" DataTextField="QueryName" />
+                                        <asp:TemplateField>
+                                            <ItemTemplate>
+                                                <asp:LinkButton ID="lnkLoad" CommandName="_Load" Text='<%#: Eval("QueryName") %>' CommandArgument='<%# Container.DataItemIndex %>' runat="server" />
+                                            </ItemTemplate>
+                                         </asp:TemplateField>
                                     </Columns>
                                     <EmptyDataTemplate>
                                         <%# Resources.FlightQuery.SaveQueryNoSavedQueries %>

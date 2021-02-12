@@ -3,12 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2020 MyFlightbook LLC
+ * Copyright (c) 2012-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -82,13 +83,13 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
 
                     // need to collect and validate a password if the currently logged is NOT the person signing.
                     bool fNeedPassword = (CFIProfile == null || CFIProfile.UserName.CompareOrdinal(CurrentUser.UserName) != 0);
-                    lblCFIName.Text = CFIProfile == null ? string.Empty : CFIProfile.UserFullName;
+                    lblCFIName.Text = CFIProfile == null ? string.Empty : HttpUtility.HtmlEncode(CFIProfile.UserFullName);
                     pnlRowPassword.Visible = fNeedPassword;
                     valCorrectPassword.Enabled = valPassword.Enabled = fNeedPassword;
 
                     // Offer to copy the flight for the CFI
                     pnlCopyFlight.Visible = CFIProfile != null;
-                    ckCopyFlight.Text = String.Format(CultureInfo.CurrentCulture, Resources.SignOff.SignFlightCopy, CFIProfile == null ? String.Empty : CFIProfile.UserFullName);
+                    ckCopyFlight.Text = String.Format(CultureInfo.CurrentCulture, Resources.SignOff.SignFlightCopy, CFIProfile == null ? String.Empty : HttpUtility.HtmlEncode(CFIProfile.UserFullName));
                     valCertificateRequired.Enabled = valCFIExpiration.Enabled = valNameRequired.Enabled = valBadEmail.Enabled = valEmailRequired.Enabled = mfbScribbleSignature.Enabled = false;
                     break;
             }

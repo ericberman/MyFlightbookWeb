@@ -172,7 +172,7 @@
                             <ItemTemplate>
                                 <asp:Localize ID="locChangedBy" runat="server" Text="By:" 
                                     ></asp:Localize>
-                                <%# Eval("FullDisplayName") %>
+                                <%#: Eval("FullDisplayName") %>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:BoundField DataField="Comment"  />

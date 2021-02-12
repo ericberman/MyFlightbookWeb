@@ -16,8 +16,8 @@
                             <table>
                                 <tr style="vertical-align: text-top">
                                     <td colspan="4">
-                                        <div><span style="font-weight: bold; font-size:larger"><%# ((DateTime) Eval("Date")).ToShortDateString() %> <%# Eval("TailNumDisplay") %></span> (<%# Eval("CatClassDisplay") %>&nbsp;<%# Eval("ModelDisplay") %>)</div>
-                                        <div><span style="font-weight:bold;"><%# Eval("Route") %></span> <%# Eval("Comment") %></div>
+                                        <div><span style="font-weight: bold; font-size:larger"><%# ((DateTime) Eval("Date")).ToShortDateString() %> <%#: Eval("TailNumDisplay") %></span> (<%#: Eval("CatClassDisplay") %>&nbsp;<%#: Eval("ModelDisplay") %>)</div>
+                                        <div><span style="font-weight:bold;"><%#: Eval("Route") %></span> <%#: Eval("Comment") %></div>
                                 </tr>
                                 <tr style="vertical-align: text-top">
                                     <td>
@@ -93,7 +93,7 @@
                                     <td colspan="4">
                                         <asp:Repeater ID="rptProps" runat="server">
                                             <ItemTemplate>
-                                                <%# Eval("DisplayString") %>
+                                                <%#: Eval("DisplayString") %>
                                             </ItemTemplate>
                                             <SeparatorTemplate>
                                                 <br />
