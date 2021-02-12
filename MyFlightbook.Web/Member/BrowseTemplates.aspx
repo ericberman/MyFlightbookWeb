@@ -26,7 +26,7 @@
                                                 <span style="font-weight:bold; font-size: larger"><%#: Eval("Name") %></span>
                                                 <span><%# ((string) Eval("Description")).Linkify(true) %></span>
                                             </div>
-                                            <div class="fineprint" style="font-style:italic; color: #555555; margin-left: 2em"><%# String.Join(" ● ", (IEnumerable<string>) Eval("PropertyNames")) %></div>
+                                            <div class="fineprint" style="font-style:italic; color: #555555; margin-left: 2em"><%#: String.Join(" ● ", (IEnumerable<string>) Eval("PropertyNames")) %></div>
                                         </ItemTemplate>
                                     </asp:TemplateField>
                                     <asp:TemplateField ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Right">
@@ -36,7 +36,7 @@
                                                     <asp:Label ID="lblOwned" runat="server" Text="<%$ Resources:LogbookEntry, TemplateYours %>" Font-Bold="true" Font-Size="Larger"></asp:Label>
                                                 </asp:View>
                                                 <asp:View ID="vwUnOwned" runat="server">
-                                                    <ajaxToolkit:ConfirmButtonExtender ID="confirmOverwrite" runat="server" ConfirmText='<%# String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LogbookEntry.TemplateBrowseAddPublicOverwrite, Eval("Name")) %>'
+                                                    <ajaxToolkit:ConfirmButtonExtender ID="confirmOverwrite" runat="server" ConfirmText='<%#: String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LogbookEntry.TemplateBrowseAddPublicOverwrite, Eval("Name")) %>'
                                                         TargetControlID="lnkAdd" Enabled="false" />
                                                     <asp:LinkButton ID="lnkAdd" runat="server" Text="<%$ Resources:LogbookEntry, TemplateBrowseAddPublic %>" CommandName="_add" CommandArgument='<%# Eval("ID") %>'></asp:LinkButton>
                                                 </asp:View>

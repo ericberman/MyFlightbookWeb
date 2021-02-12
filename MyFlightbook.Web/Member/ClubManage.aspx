@@ -39,7 +39,7 @@
                                     </asp:TemplateField>
                                     <asp:TemplateField HeaderText="<%$ Resources:Club, LabelMemberName %>" HeaderStyle-HorizontalAlign="Left" ItemStyle-Font-Bold="true" ItemStyle-Font-Size="Larger">
                                         <ItemTemplate>
-                                            <%# Eval("UserFullName") %>
+                                            <%#: Eval("UserFullName") %>
                                         </ItemTemplate>
                                     </asp:TemplateField>
                                     <asp:TemplateField HeaderStyle-HorizontalAlign="Left">
@@ -50,7 +50,7 @@
                                     <asp:BoundField HeaderText="<%$ Resources:Club, LabelMemberJoinDate %>" DataField="JoinedDate" HeaderStyle-HorizontalAlign="Left" ReadOnly="True" DataFormatString="{0:d}" />
                                     <asp:TemplateField HeaderStyle-HorizontalAlign="Left">
                                         <ItemTemplate>
-                                            <%# Eval("DisplayRoleInClub") %> <%# Eval("ClubOffice") %>
+                                            <%#: Eval("DisplayRoleInClub") %> <%#: Eval("ClubOffice") %>
                                         </ItemTemplate>
                                         <HeaderTemplate>
                                             <%# Resources.Club.LabelMemberRole %>
@@ -132,17 +132,17 @@
                                                     <asp:HyperLink ID="lnkImage" runat="server" NavigateUrl='<%# Eval("SampleImageFull") %>' Target="_blank">
                                                         <asp:Image ID="imgSample" ImageUrl='<%# Eval("SampleImageThumbnail") %>' ImageAlign="Middle" runat="server" />
                                                     </asp:HyperLink>
-                                                    <div><%# Eval("SampleImageComment") %></div>
+                                                    <div><%#: Eval("SampleImageComment") %></div>
                                                 </asp:Panel>
                                             </td>
                                             <td>
-                                                <div style="font-weight: bold;"><%# Eval("DisplayTailnumber") %></div>
+                                                <div style="font-weight: bold;"><%#: Eval("DisplayTailnumber") %></div>
                                                 <asp:Literal ID="litDesc" Text='<%# Eval("ClubDescription") %>' runat="server"></asp:Literal></td>
                                         </tr>
                                     </table>
                                 </ItemTemplate>
                                 <EditItemTemplate>
-                                    <h3 style="font-weight: bold"><%# Eval("DisplayTailnumber") %></h3>
+                                    <h3 style="font-weight: bold"><%#: Eval("DisplayTailnumber") %></h3>
                                     <uc5:mfbHtmlEdit ID="txtDescription" Width="100%" Text='<%# Eval("ClubDescription") %>' runat="server" />
                                     <table>
                                         <tr>

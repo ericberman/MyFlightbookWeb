@@ -412,7 +412,7 @@
                     <ItemTemplate>
                         <asp:ImageButton ID="imgDelete" ImageUrl="~/images/x.gif" CausesValidation="False"
                             AlternateText="Delete this airport" ToolTip="Delete this airport" CommandName="_Delete"
-                            CommandArgument='<%# Bind("Code") %>' runat="server" 
+                            CommandArgument='<%#: Bind("Code") %>' runat="server" 
                             meta:resourceKey="imgDeleteResource2" />
                         <cc1:ConfirmButtonExtender ID="ConfirmButtonExtender1" runat="server" TargetControlID="imgDelete"
                             ConfirmOnFormSubmit="True" 
@@ -425,13 +425,13 @@
                     meta:resourceKey="TemplateFieldResource7">
                     <ItemTemplate>
                         <asp:HyperLink ID="lnkZoomCode" runat="server" 
-                            Text='<%# Bind("Code") %>' meta:resourcekey="lnkZoomCodeResource1" ></asp:HyperLink>
+                            Text='<%#: Bind("Code") %>' meta:resourcekey="lnkZoomCodeResource1" ></asp:HyperLink>
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="Name" SortExpression="FacilityName" 
                     meta:resourceKey="TemplateFieldResource8">
                     <ItemTemplate>
-                        <asp:Label ID="lblFacilityName" runat="server" Text='<%# Bind("Name") %>' 
+                        <asp:Label ID="lblFacilityName" runat="server" Text='<%#: Bind("Name") %>' 
                             meta:resourceKey="lblFacilityNameResource2"></asp:Label>
                     </ItemTemplate>
                 </asp:TemplateField>
@@ -439,7 +439,7 @@
                     meta:resourceKey="TemplateFieldResource9">
                     <ItemTemplate>
                         <asp:Label ID="lblFacilityType" runat="server" 
-                            Text='<%# Bind("FacilityType") %>' meta:resourceKey="lblFacilityTypeResource2"></asp:Label>
+                            Text='<%#: Bind("FacilityType") %>' meta:resourceKey="lblFacilityTypeResource2"></asp:Label>
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="UserName" SortExpression="UserName"  

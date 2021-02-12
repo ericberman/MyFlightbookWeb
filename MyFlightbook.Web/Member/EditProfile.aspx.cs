@@ -300,7 +300,7 @@ namespace MyFlightbook.MemberPages
             if (!Request.IsSecureConnection && !Request.IsLocal)
                 Response.Redirect(Request.Url.AbsoluteUri.Replace("http://", "https://"));
 
-            lblName.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.EditProfileHeader, m_pf.UserFullName);
+            lblName.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.EditProfileHeader, HttpUtility.HtmlEncode(m_pf.UserFullName));
 
             this.Master.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.TitleProfile, Branding.CurrentBrand.AppName);
 

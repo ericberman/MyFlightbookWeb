@@ -1,5 +1,4 @@
-﻿using MyFlightbook;
-using MyFlightbook.Printing;
+﻿using MyFlightbook.Printing;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -11,7 +10,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2020 MyFlightbook LLC
+ * Copyright (c) 2017-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -19,524 +18,528 @@ using System.Web.UI;
 /*
 TODO: Modify the print link in javascript on the client for performance?
  */
-public partial class Member_LogbookNew : System.Web.UI.Page
+namespace MyFlightbook.MemberPages
 {
-    #region Webservices
-    /// <summary>
-    /// Returns the high-watermark starting hobbs for the specified aircraft.
-    /// </summary>
-    /// <param name="idAircraft"></param>
-    /// <returns>0 if unknown.</returns>
-    [WebMethod(EnableSession = true)]
-    public static string HighWaterMarkHobbsForAircraft(int idAircraft)
+    public partial class LogbookNew : System.Web.UI.Page
     {
-        if (HttpContext.Current == null || HttpContext.Current.User == null || HttpContext.Current.User.Identity == null || !HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
-            throw new MyFlightbookException("You must be authenticated to make this call");
-
-        decimal val = 0.0M;
-        DBHelper dbh = new DBHelper(@"SELECT  MAX(f.hobbsEnd) AS highWater FROM (SELECT hobbsEnd FROM flights WHERE username = ?user AND idaircraft = ?id ORDER BY flights.date DESC LIMIT 10) f");
-        dbh.ReadRow((comm) =>
+        #region Webservices
+        /// <summary>
+        /// Returns the high-watermark starting hobbs for the specified aircraft.
+        /// </summary>
+        /// <param name="idAircraft"></param>
+        /// <returns>0 if unknown.</returns>
+        [WebMethod(EnableSession = true)]
+        public static string HighWaterMarkHobbsForAircraft(int idAircraft)
         {
-            comm.Parameters.AddWithValue("user", HttpContext.Current.User.Identity.Name);
-            comm.Parameters.AddWithValue("id", idAircraft);
-        },
-        (dr) =>
-        {
-            val = Convert.ToDecimal(util.ReadNullableField(dr, "highWater", 0.0), CultureInfo.InvariantCulture);
-        });
-        return val.ToString("0.0#", CultureInfo.CurrentCulture);
-    }
+            if (HttpContext.Current == null || HttpContext.Current.User == null || HttpContext.Current.User.Identity == null || !HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+                throw new MyFlightbookException("You must be authenticated to make this call");
 
-    /// <summary>
-    /// Returns the high-watermark starting hobbs for the specified aircraft.
-    /// </summary>
-    /// <param name="idAircraft"></param>
-    /// <returns>0 if unknown.</returns>
-    [WebMethod(EnableSession = true)]
-    public static string HighWaterMarkTachForAircraft(int idAircraft)
-    {
-        if (HttpContext.Current == null || HttpContext.Current.User == null || HttpContext.Current.User.Identity == null || !HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
-            throw new MyFlightbookException("You must be authenticated to make this call");
-
-        decimal val = 0.0M;
-        DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, @"SELECT MAX(tach.decvalue) AS highWater FROM
-(SELECT decvalue FROM flightproperties fp INNER JOIN flights f ON fp.idflight = f.idflight WHERE f.username = ?user AND f.idaircraft = ?id AND fp.idproptype = {0}
-ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.IDPropTachEnd));
-        dbh.ReadRow((comm) =>
-        {
-            comm.Parameters.AddWithValue("user", HttpContext.Current.User.Identity.Name);
-            comm.Parameters.AddWithValue("id", idAircraft);
-        },
-        (dr) =>
-        {
-            val = Convert.ToDecimal(util.ReadNullableField(dr, "highWater", 0.0), CultureInfo.InvariantCulture);
-        });
-        return val.ToString("0.0#", CultureInfo.CurrentCulture);
-    }
-
-    /// <summary>
-    /// Returns the current time formatted in UTC or specified time-zone
-    /// </summary>
-    /// <returns>Now in the specified locale, adjusted for the timezone.</returns>
-    [WebMethod(EnableSession = true)]
-    public static string NowInUTC()
-    {
-        // For now, always return true UTC
-        if (HttpContext.Current != null && HttpContext.Current.Request != null && HttpContext.Current.Request.UserLanguages != null && HttpContext.Current.Request.UserLanguages.Length > 0)
-            util.SetCulture(HttpContext.Current.Request.UserLanguages[0]);
-        if (HttpContext.Current.User == null || HttpContext.Current.User.Identity == null || !HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
-            throw new MyFlightbookException("You must be authenticated to make this call");
-
-        return TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, MyFlightbook.Profile.GetUser(HttpContext.Current.User.Identity.Name).PreferredTimeZone).UTCDateFormatString();
-    }
-
-    [WebMethod(EnableSession = true)]
-    public static string[] SuggestTraining(string prefixText, int count)
-    {
-        const string szCacheKey = "keyTrainingAutocomplete";
-
-        if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
-            throw new MyFlightbookException("Unauthenticated call to SuggestTraining");
-
-        if (String.IsNullOrEmpty(prefixText))
-            return Array.Empty<string>();
-
-        // Don't do anything if the cache is null - bad things afoot!
-        if (HttpRuntime.Cache == null)
-            return Array.Empty<string>();
-
-        List<string> lst = (List<string>)HttpRuntime.Cache[szCacheKey];
-        if (lst == null)
-        {
-            lst = new List<string>();
-            DBHelper dbh = new DBHelper("SELECT * FROM trainingitems");
-            dbh.ReadRows((comm) => { }, (dr) => { lst.Add(String.Format(CultureInfo.CurrentCulture, "[{0}]", dr["task"])); });
-            HttpRuntime.Cache[szCacheKey] = lst;
+            decimal val = 0.0M;
+            DBHelper dbh = new DBHelper(@"SELECT  MAX(f.hobbsEnd) AS highWater FROM (SELECT hobbsEnd FROM flights WHERE username = ?user AND idaircraft = ?id ORDER BY flights.date DESC LIMIT 10) f");
+            dbh.ReadRow((comm) =>
+            {
+                comm.Parameters.AddWithValue("user", HttpContext.Current.User.Identity.Name);
+                comm.Parameters.AddWithValue("id", idAircraft);
+            },
+            (dr) =>
+            {
+                val = Convert.ToDecimal(util.ReadNullableField(dr, "highWater", 0.0), CultureInfo.InvariantCulture);
+            });
+            return val.ToString("0.0#", CultureInfo.CurrentCulture);
         }
 
-        string[] rgszTerms = prefixText.ToUpper(CultureInfo.CurrentCulture).Split(new char[] { '-', '[' }, StringSplitOptions.RemoveEmptyEntries);
-        if (rgszTerms.Length == 0)
-            return Array.Empty<string>();
+        /// <summary>
+        /// Returns the high-watermark starting hobbs for the specified aircraft.
+        /// </summary>
+        /// <param name="idAircraft"></param>
+        /// <returns>0 if unknown.</returns>
+        [WebMethod(EnableSession = true)]
+        public static string HighWaterMarkTachForAircraft(int idAircraft)
+        {
+            if (HttpContext.Current == null || HttpContext.Current.User == null || HttpContext.Current.User.Identity == null || !HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+                throw new MyFlightbookException("You must be authenticated to make this call");
 
-        List<string> lstResult = lst.FindAll((sz) => {
-            foreach (string szTerm in rgszTerms)
-                if (!sz.ToUpper(CultureInfo.CurrentCulture).Contains(szTerm))
-                    return false;
-            return true;
+            decimal val = 0.0M;
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, @"SELECT MAX(tach.decvalue) AS highWater FROM
+(SELECT decvalue FROM flightproperties fp INNER JOIN flights f ON fp.idflight = f.idflight WHERE f.username = ?user AND f.idaircraft = ?id AND fp.idproptype = {0}
+ORDER BY f.date DESC LIMIT 10) tach", (int)CustomPropertyType.KnownProperties.IDPropTachEnd));
+            dbh.ReadRow((comm) =>
+            {
+                comm.Parameters.AddWithValue("user", HttpContext.Current.User.Identity.Name);
+                comm.Parameters.AddWithValue("id", idAircraft);
+            },
+            (dr) =>
+            {
+                val = Convert.ToDecimal(util.ReadNullableField(dr, "highWater", 0.0), CultureInfo.InvariantCulture);
+            });
+            return val.ToString("0.0#", CultureInfo.CurrentCulture);
+        }
+
+        /// <summary>
+        /// Returns the current time formatted in UTC or specified time-zone
+        /// </summary>
+        /// <returns>Now in the specified locale, adjusted for the timezone.</returns>
+        [WebMethod(EnableSession = true)]
+        public static string NowInUTC()
+        {
+            // For now, always return true UTC
+            if (HttpContext.Current != null && HttpContext.Current.Request != null && HttpContext.Current.Request.UserLanguages != null && HttpContext.Current.Request.UserLanguages.Length > 0)
+                util.SetCulture(HttpContext.Current.Request.UserLanguages[0]);
+            if (HttpContext.Current.User == null || HttpContext.Current.User.Identity == null || !HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+                throw new MyFlightbookException("You must be authenticated to make this call");
+
+            return TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, MyFlightbook.Profile.GetUser(HttpContext.Current.User.Identity.Name).PreferredTimeZone).UTCDateFormatString();
+        }
+
+        [WebMethod(EnableSession = true)]
+        public static string[] SuggestTraining(string prefixText, int count)
+        {
+            const string szCacheKey = "keyTrainingAutocomplete";
+
+            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+                throw new MyFlightbookException("Unauthenticated call to SuggestTraining");
+
+            if (String.IsNullOrEmpty(prefixText))
+                return Array.Empty<string>();
+
+            // Don't do anything if the cache is null - bad things afoot!
+            if (HttpRuntime.Cache == null)
+                return Array.Empty<string>();
+
+            List<string> lst = (List<string>)HttpRuntime.Cache[szCacheKey];
+            if (lst == null)
+            {
+                lst = new List<string>();
+                DBHelper dbh = new DBHelper("SELECT * FROM trainingitems");
+                dbh.ReadRows((comm) => { }, (dr) => { lst.Add(String.Format(CultureInfo.CurrentCulture, "[{0}]", dr["task"])); });
+                HttpRuntime.Cache[szCacheKey] = lst;
+            }
+
+            string[] rgszTerms = prefixText.ToUpper(CultureInfo.CurrentCulture).Split(new char[] { '-', '[' }, StringSplitOptions.RemoveEmptyEntries);
+            if (rgszTerms.Length == 0)
+                return Array.Empty<string>();
+
+            List<string> lstResult = lst.FindAll((sz) =>
+            {
+                foreach (string szTerm in rgszTerms)
+                    if (!sz.ToUpper(CultureInfo.CurrentCulture).Contains(szTerm))
+                        return false;
+                return true;
             });
 
-        if (lstResult.Count > count)
-            lstResult.RemoveRange(count, lstResult.Count - count);
+            if (lstResult.Count > count)
+                lstResult.RemoveRange(count, lstResult.Count - count);
 
-        return lstResult.ToArray();
-    }
-    #endregion
-
-    private const string szParamIDFlight = "idFlight";
-
-    public enum FlightsTab { None, Add, Search, Totals, Currency, Analysis, Printing, More }
-
-    private const string keySessLastNewFlight = "sessNewFlightID";
-
-    private const string keyVSRestriction = "vsCurrentRestriction";
-    protected FlightQuery Restriction 
-    {
-        get
-        {
-            if (ViewState[keyVSRestriction] == null)
-                ViewState[keyVSRestriction] = new FlightQuery(Page.User.Identity.Name);
-            return (FlightQuery)ViewState[keyVSRestriction];
+            return lstResult.ToArray();
         }
-        set
-        {
-            ViewState[keyVSRestriction] = value;
-        }
-    }
+        #endregion
 
-    private void InitPassedQuery(string szFQParam)
-    {
-        if (!String.IsNullOrEmpty(szFQParam))
+        private const string szParamIDFlight = "idFlight";
+
+        public enum FlightsTab { None, Add, Search, Totals, Currency, Analysis, Printing, More }
+
+        private const string keySessLastNewFlight = "sessNewFlightID";
+
+        private const string keyVSRestriction = "vsCurrentRestriction";
+        protected FlightQuery Restriction
         {
-            try
+            get
             {
-                Restriction = mfbSearchForm1.Restriction = FlightQuery.FromBase64CompressedJSON(szFQParam);
+                if (ViewState[keyVSRestriction] == null)
+                    ViewState[keyVSRestriction] = new FlightQuery(Page.User.Identity.Name);
+                return (FlightQuery)ViewState[keyVSRestriction];
             }
-            catch (Exception ex) when (ex is ArgumentNullException || ex is FormatException || ex is JsonSerializationException || ex is JsonException) { }
-        }
-        else
-            Restriction = mfbSearchForm1.Restriction = new FlightQuery(Page.User.Identity.Name);
-    }
-
-
-    private void InitDateParams(int year, int month, int week, int day)
-    {
-        if (year > 1900)
-        {
-            if (month >= 0 && month < 12 && year > 1900)
+            set
             {
-                DateTime dtStart = new DateTime(year, month + 1, day > 0 ? day : 1);
-                DateTime dtEnd = (day > 0) ? (week > 0 ? dtStart.AddDays(6) : dtStart) : dtStart.AddMonths(1).AddDays(-1);
-                Restriction.DateRange = FlightQuery.DateRanges.Custom;
-                Restriction.DateMin = dtStart;
-                Restriction.DateMax = dtEnd;
+                ViewState[keyVSRestriction] = value;
+            }
+        }
+
+        private void InitPassedQuery(string szFQParam)
+        {
+            if (!String.IsNullOrEmpty(szFQParam))
+            {
+                try
+                {
+                    Restriction = mfbSearchForm1.Restriction = FlightQuery.FromBase64CompressedJSON(szFQParam);
+                }
+                catch (Exception ex) when (ex is ArgumentNullException || ex is FormatException || ex is JsonSerializationException || ex is JsonException) { }
             }
             else
-            {
-                Restriction.DateRange = FlightQuery.DateRanges.Custom;
-                Restriction.DateMin = new DateTime(year, 1, 1);
-                Restriction.DateMax = new DateTime(year, 12, 31);
-            }
-        }
-    }
-
-    private void InitAircraftModelRestriction(string szReqTail, string szReqModel, string szReqICAO, string szcc)
-    {
-        if (!String.IsNullOrEmpty(szReqTail) || !String.IsNullOrEmpty(szReqModel) || !String.IsNullOrEmpty(szReqICAO))
-        {
-            UserAircraft ua = new UserAircraft(Restriction.UserName);
-            Collection<Aircraft> lstac = new Collection<Aircraft>();
-            HashSet<int> lstmm = new HashSet<int>();
-
-            foreach (Aircraft ac in ua.GetAircraftForUser())
-            {
-                if (ac.DisplayTailnumber.CompareCurrentCultureIgnoreCase(szReqTail) == 0)
-                    lstac.Add(ac);
-
-                MakeModel mm = MakeModel.GetModel(ac.ModelID);
-                if (!lstmm.Contains(mm.MakeModelID) &&
-                    ((!String.IsNullOrEmpty(szReqModel) && mm.Model.CompareCurrentCultureIgnoreCase(szReqModel) == 0) ||
-                    (!String.IsNullOrEmpty(szReqICAO) && mm.FamilyName.CompareCurrentCultureIgnoreCase(szReqICAO) == 0)))
-                    lstmm.Add(mm.MakeModelID);
-            }
-            if (lstac.Count > 0)
-            {
-                Restriction.AirportList.Clear();
-                Restriction.AddAircraft(lstac);
-            }
-            if (lstmm.Count > 0)
-            {
-                Restriction.MakeList.Clear();
-                Restriction.AddModels(lstmm);
-            }
-        }
-        if (!String.IsNullOrEmpty(szcc))
-        {
-            foreach (CategoryClass cc in CategoryClass.CategoryClasses())
-                if (cc.CatClass.CompareCurrentCultureIgnoreCase(szcc) == 0)
-                    Restriction.AddCatClass(cc);
-        }
-    }
-
-    protected void InitializeRestriction()
-    {
-        string szSearchParam = util.GetStringParam(Request, "s");
-        string szAirportParam = util.GetStringParam(Request, "ap");
-
-        InitPassedQuery(util.GetStringParam(Request, "fq"));
-
-        if (!String.IsNullOrEmpty(szSearchParam))
-            Restriction.GeneralText = szSearchParam;
-        if (!String.IsNullOrEmpty(szAirportParam))
-        {
-            Restriction.AirportList.Clear();
-            Restriction.AddAirports(MyFlightbook.Airports.AirportList.NormalizeAirportList(szAirportParam));
+                Restriction = mfbSearchForm1.Restriction = new FlightQuery(Page.User.Identity.Name);
         }
 
-        InitDateParams(util.GetIntParam(Request, "y", -1), util.GetIntParam(Request, "m", -1), util.GetIntParam(Request, "w", -1), util.GetIntParam(Request, "d", -1));
 
-        InitAircraftModelRestriction(util.GetStringParam(Request, "tn"), util.GetStringParam(Request, "mn"), util.GetStringParam(Request, "icao"), util.GetStringParam(Request, "cc"));
-
-        Refresh();
-    }
-
-    protected void Page_Load(object sender, EventArgs e)
-    {
-        Master.SelectedTab = tabID.tabLogbook;
-
-        mfbChartTotals1.HistogramManager = LogbookEntryDisplay.GetHistogramManager(mfbLogbook1.Data, User.Identity.Name);  // do this every time.
-
-        if (!IsPostBack)
+        private void InitDateParams(int year, int month, int week, int day)
         {
-            ModalPopupExtender1.OnCancelScript = String.Format(CultureInfo.InvariantCulture, "javascript:document.getElementById('{0}').style.display = 'none';", pnlWelcomeNewUser.ClientID);
-
-            if (Request.Cookies[MFBConstants.keyNewUser] != null && !String.IsNullOrEmpty(Request.Cookies[MFBConstants.keyNewUser].Value) || util.GetStringParam(Request, "sw").Length > 0 || Request.PathInfo.Contains("/sw"))
+            if (year > 1900)
             {
-                Response.Cookies[MFBConstants.keyNewUser].Expires = DateTime.Now.AddDays(-1);
-                ModalPopupExtender1.Show();
-            }
-
-            rblTotalsMode.SelectedValue = mfbTotalSummary1.DefaultGroupMode.ToString(CultureInfo.InvariantCulture);
-
-            // Handle a requested tab - turning of lazy load as needed
-            string szReqTab = util.GetStringParam(Request, "ft");
-            if (!String.IsNullOrEmpty(szReqTab))
-            {
-                if (Enum.TryParse<FlightsTab>(szReqTab, out FlightsTab ft))
+                if (month >= 0 && month < 12 && year > 1900)
                 {
-                    AccordionCtrl.SelectedIndex = (int)ft - 1;
-                    switch (ft)
-                    {
-                        case FlightsTab.Currency:
-                            apcCurrency_ControlClicked(apcCurrency, null);
-                            break;
-                        case FlightsTab.Totals:
-                            apcTotals_ControlClicked(apcTotals, null);
-                            break;
-                        case FlightsTab.Analysis:
-                            apcAnalysis_ControlClicked(apcAnalysis, null);
-                            break;
-                        default:
-                            break;
-                    }
+                    DateTime dtStart = new DateTime(year, month + 1, day > 0 ? day : 1);
+                    DateTime dtEnd = (day > 0) ? (week > 0 ? dtStart.AddDays(6) : dtStart) : dtStart.AddMonths(1).AddDays(-1);
+                    Restriction.DateRange = FlightQuery.DateRanges.Custom;
+                    Restriction.DateMin = dtStart;
+                    Restriction.DateMax = dtEnd;
+                }
+                else
+                {
+                    Restriction.DateRange = FlightQuery.DateRanges.Custom;
+                    Restriction.DateMin = new DateTime(year, 1, 1);
+                    Restriction.DateMax = new DateTime(year, 12, 31);
                 }
             }
-
-            int idFlight = util.GetIntParam(Request, szParamIDFlight, LogbookEntry.idFlightNew);
-
-            // Redirect to the non-querystring based page so that Ajax file upload works
-            if (idFlight != LogbookEntry.idFlightNew)
-            {
-                string szNew = Request.Url.PathAndQuery.Replace(".aspx", String.Format(CultureInfo.InvariantCulture, ".aspx/{0}", idFlight)).Replace(String.Format(CultureInfo.InvariantCulture, "{0}={1}", szParamIDFlight, idFlight), string.Empty).Replace("?&", "?");
-                Response.Redirect(szNew, true);
-                return;
-            }
-
-            if (Request.PathInfo.Length > 0 && Int32.TryParse(Request.PathInfo.Substring(1), out int id))
-                idFlight = id;
-
-            SetUpForFlight(idFlight);
-
-            InitializeRestriction();
-
-            // Expand the New Flight box if we're editing an existing flight
-            if (idFlight != LogbookEntry.idFlightNew || !String.IsNullOrEmpty(util.GetStringParam(Request, "src")))
-                AccordionCtrl.SelectedIndex = 0;
-
-            string szTitle = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, MyFlightbook.Profile.GetUser(User.Identity.Name).UserFullName);
-            lblUserName.Text = Master.Title = szTitle;
-
-            // See if we just entered a new flight and scroll to it as needed
-            if (Session[keySessLastNewFlight] != null)
-            {
-                mfbLogbook1.ScrollToFlight((int)Session[keySessLastNewFlight]);
-                Session[keySessLastNewFlight] = null;
-            }
-        }
-    }
-
-    private const string szVSFlightID = "vsFlightID";
-
-    protected int FlightID
-    {
-        get { return ViewState[szVSFlightID] == null ? LogbookEntry.idFlightNone : (int)ViewState[szVSFlightID]; }
-        set { ViewState[szVSFlightID] = value; }
-    }
-
-    protected bool IsNewFlight
-    {
-        get { return FlightID == LogbookEntry.idFlightNew; }
-    }
-
-    protected void SetUpForFlight(int idFlight)
-    {
-        FlightID = idFlight;
-        mfbEditFlight1.SetUpNewOrEdit(idFlight);
-        mfbEditFlight1.CanCancel = !IsNewFlight;
-        pnlAccordionMenuContainer.Visible = mfbLogbook1.Visible = pnlFilter.Visible = IsNewFlight;
-    }
-
-    protected void ResolvePrintLink()
-    {
-        lnkPrintView.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/PrintView.aspx?po={0}&fq={1}",
-            HttpUtility.UrlEncode(Convert.ToBase64String(JsonConvert.SerializeObject(PrintOptions1.Options, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore }).Compress())), 
-            HttpUtility.UrlEncode(Restriction.ToBase64CompressedJSONString()));
-    }
-
-    protected void Refresh()
-    {
-        bool fRestrictionIsDefault = Restriction.IsDefault;
-        mfbLogbook1.DetailsParam = fRestrictionIsDefault ? string.Empty : "fq=" + HttpUtility.UrlEncode(Restriction.ToBase64CompressedJSONString());
-        mfbLogbook1.User = Page.User.Identity.Name;
-        mfbLogbook1.Restriction = Restriction;
-        mfbLogbook1.RefreshData();
-        if (mfbChartTotals1.Visible)
-        {
-            mfbChartTotals1.HistogramManager = LogbookEntryDisplay.GetHistogramManager(mfbLogbook1.Data, Restriction.UserName);
-            mfbChartTotals1.Refresh();
-        }
-        if (mfbTotalSummary1.Visible)
-            mfbTotalSummary1.CustomRestriction = Restriction;
-        ResolvePrintLink();
-        pnlFilter.Visible = !fRestrictionIsDefault && IsNewFlight;
-        mfbQueryDescriptor1.DataSource = fRestrictionIsDefault ? null : Restriction;
-        apcFilter.LabelControl.Font.Bold = !fRestrictionIsDefault;
-        apcFilter.IsEnhanced = !fRestrictionIsDefault;
-
-        if (!IsNewFlight)
-        {
-            mfbLogbook1.GetNeighbors(FlightID, out int prevFlightID, out int nextFlightID);
-            mfbEditFlight1.SetPrevFlight(prevFlightID);
-            mfbEditFlight1.SetNextFlight(nextFlightID);
         }
 
-        mfbQueryDescriptor1.DataBind();
-    }
-
-    protected void UpdateQuery()
-    {
-        Restriction = mfbSearchForm1.Restriction;
-        Refresh();
-        AccordionCtrl.SelectedIndex = -1;
-
-        if (Int32.TryParse(hdnLastViewedPaneIndex.Value, out int idxLast))
+        private void InitAircraftModelRestriction(string szReqTail, string szReqModel, string szReqICAO, string szcc)
         {
-            if (idxLast == mfbAccordionProxyExtender1.IndexForProxyID(apcTotals.ID))
+            if (!String.IsNullOrEmpty(szReqTail) || !String.IsNullOrEmpty(szReqModel) || !String.IsNullOrEmpty(szReqICAO))
             {
-                apcTotals_ControlClicked(apcTotals, null);
-                AccordionCtrl.SelectedIndex = idxLast;
+                UserAircraft ua = new UserAircraft(Restriction.UserName);
+                Collection<Aircraft> lstac = new Collection<Aircraft>();
+                HashSet<int> lstmm = new HashSet<int>();
+
+                foreach (Aircraft ac in ua.GetAircraftForUser())
+                {
+                    if (ac.DisplayTailnumber.CompareCurrentCultureIgnoreCase(szReqTail) == 0)
+                        lstac.Add(ac);
+
+                    MakeModel mm = MakeModel.GetModel(ac.ModelID);
+                    if (!lstmm.Contains(mm.MakeModelID) &&
+                        ((!String.IsNullOrEmpty(szReqModel) && mm.Model.CompareCurrentCultureIgnoreCase(szReqModel) == 0) ||
+                        (!String.IsNullOrEmpty(szReqICAO) && mm.FamilyName.CompareCurrentCultureIgnoreCase(szReqICAO) == 0)))
+                        lstmm.Add(mm.MakeModelID);
+                }
+                if (lstac.Count > 0)
+                {
+                    Restriction.AirportList.Clear();
+                    Restriction.AddAircraft(lstac);
+                }
+                if (lstmm.Count > 0)
+                {
+                    Restriction.MakeList.Clear();
+                    Restriction.AddModels(lstmm);
+                }
             }
-            else if (idxLast == mfbAccordionProxyExtender1.IndexForProxyID(apcAnalysis.ID))
+            if (!String.IsNullOrEmpty(szcc))
             {
-                apcAnalysis_ControlClicked(apcAnalysis, null);
-                AccordionCtrl.SelectedIndex = idxLast;
+                foreach (CategoryClass cc in CategoryClass.CategoryClasses())
+                    if (cc.CatClass.CompareCurrentCultureIgnoreCase(szcc) == 0)
+                        Restriction.AddCatClass(cc);
             }
-            else if (idxLast == mfbAccordionProxyExtender1.IndexForProxyID(apcPrintView.ID))
-                AccordionCtrl.SelectedIndex = idxLast;
         }
-    }
 
-    protected void mfbQueryDescriptor1_QueryUpdated(object sender, FilterItemClickedEventArgs fic)
-    {
-        if (fic == null)
-            throw new ArgumentNullException(nameof(fic));
-        mfbSearchForm1.Restriction = Restriction.ClearRestriction(fic.FilterItem);
-        Refresh();
-    }
-
-    protected void mfbSearchForm1_QuerySubmitted(object sender, EventArgs e)
-    {
-        UpdateQuery();
-    }
-
-    protected void mfbSearchForm1_Reset(object sender, EventArgs e)
-    {
-        UpdateQuery();
-    }
-
-    /// <summary>
-    /// Returns the querystring minus Clone or Reverse or other switches that we don't want to preserve for context (Issue #458)
-    /// </summary>
-    /// <returns></returns>
-    private string SanitizedQuery
-    {
-        get { return Request.QueryStringWithoutParams(new string[] { "Clone", "Reverse", "Chk" }); }
-    }
-
-    protected void mfbEditFlight1_FlightUpdated(object sender, LogbookEventArgs e)
-    {
-        if (e == null)
-            throw new ArgumentNullException(nameof(e));
-
-        // if we had been editing a flight do a redirect so we have a clean URL
-        // OR if there are pending redirects, do them.
-        // Otherwise, just clean the page.
-        if (e.IDNextFlight != LogbookEntry.idFlightNone)
-            Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx/{0}{1}", e.IDNextFlight, SanitizedQuery), true);
-        else
+        protected void InitializeRestriction()
         {
-            // If this is a new flight, put its assigned ID into the session so that we can scroll to it.
-            if (IsNewFlight)
-                Session[keySessLastNewFlight] = e.FlightID;
+            string szSearchParam = util.GetStringParam(Request, "s");
+            string szAirportParam = util.GetStringParam(Request, "ap");
+
+            InitPassedQuery(util.GetStringParam(Request, "fq"));
+
+            if (!String.IsNullOrEmpty(szSearchParam))
+                Restriction.GeneralText = szSearchParam;
+            if (!String.IsNullOrEmpty(szAirportParam))
+            {
+                Restriction.AirportList.Clear();
+                Restriction.AddAirports(MyFlightbook.Airports.AirportList.NormalizeAirportList(szAirportParam));
+            }
+
+            InitDateParams(util.GetIntParam(Request, "y", -1), util.GetIntParam(Request, "m", -1), util.GetIntParam(Request, "w", -1), util.GetIntParam(Request, "d", -1));
+
+            InitAircraftModelRestriction(util.GetStringParam(Request, "tn"), util.GetStringParam(Request, "mn"), util.GetStringParam(Request, "icao"), util.GetStringParam(Request, "cc"));
+
+            Refresh();
+        }
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            Master.SelectedTab = tabID.tabLogbook;
+
+            mfbChartTotals1.HistogramManager = LogbookEntryDisplay.GetHistogramManager(mfbLogbook1.Data, User.Identity.Name);  // do this every time.
+
+            if (!IsPostBack)
+            {
+                ModalPopupExtender1.OnCancelScript = String.Format(CultureInfo.InvariantCulture, "javascript:document.getElementById('{0}').style.display = 'none';", pnlWelcomeNewUser.ClientID);
+
+                if (Request.Cookies[MFBConstants.keyNewUser] != null && !String.IsNullOrEmpty(Request.Cookies[MFBConstants.keyNewUser].Value) || util.GetStringParam(Request, "sw").Length > 0 || Request.PathInfo.Contains("/sw"))
+                {
+                    Response.Cookies[MFBConstants.keyNewUser].Expires = DateTime.Now.AddDays(-1);
+                    ModalPopupExtender1.Show();
+                }
+
+                rblTotalsMode.SelectedValue = mfbTotalSummary1.DefaultGroupMode.ToString(CultureInfo.InvariantCulture);
+
+                // Handle a requested tab - turning of lazy load as needed
+                string szReqTab = util.GetStringParam(Request, "ft");
+                if (!String.IsNullOrEmpty(szReqTab))
+                {
+                    if (Enum.TryParse<FlightsTab>(szReqTab, out FlightsTab ft))
+                    {
+                        AccordionCtrl.SelectedIndex = (int)ft - 1;
+                        switch (ft)
+                        {
+                            case FlightsTab.Currency:
+                                apcCurrency_ControlClicked(apcCurrency, null);
+                                break;
+                            case FlightsTab.Totals:
+                                apcTotals_ControlClicked(apcTotals, null);
+                                break;
+                            case FlightsTab.Analysis:
+                                apcAnalysis_ControlClicked(apcAnalysis, null);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+
+                int idFlight = util.GetIntParam(Request, szParamIDFlight, LogbookEntry.idFlightNew);
+
+                // Redirect to the non-querystring based page so that Ajax file upload works
+                if (idFlight != LogbookEntry.idFlightNew)
+                {
+                    string szNew = Request.Url.PathAndQuery.Replace(".aspx", String.Format(CultureInfo.InvariantCulture, ".aspx/{0}", idFlight)).Replace(String.Format(CultureInfo.InvariantCulture, "{0}={1}", szParamIDFlight, idFlight), string.Empty).Replace("?&", "?");
+                    Response.Redirect(szNew, true);
+                    return;
+                }
+
+                if (Request.PathInfo.Length > 0 && Int32.TryParse(Request.PathInfo.Substring(1), out int id))
+                    idFlight = id;
+
+                SetUpForFlight(idFlight);
+
+                InitializeRestriction();
+
+                // Expand the New Flight box if we're editing an existing flight
+                if (idFlight != LogbookEntry.idFlightNew || !String.IsNullOrEmpty(util.GetStringParam(Request, "src")))
+                    AccordionCtrl.SelectedIndex = 0;
+
+                string szTitle = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, MyFlightbook.Profile.GetUser(User.Identity.Name).UserFullName);
+                lblUserName.Text = Master.Title = HttpUtility.HtmlEncode(szTitle);
+
+                // See if we just entered a new flight and scroll to it as needed
+                if (Session[keySessLastNewFlight] != null)
+                {
+                    mfbLogbook1.ScrollToFlight((int)Session[keySessLastNewFlight]);
+                    Session[keySessLastNewFlight] = null;
+                }
+            }
+        }
+
+        private const string szVSFlightID = "vsFlightID";
+
+        protected int FlightID
+        {
+            get { return ViewState[szVSFlightID] == null ? LogbookEntry.idFlightNone : (int)ViewState[szVSFlightID]; }
+            set { ViewState[szVSFlightID] = value; }
+        }
+
+        protected bool IsNewFlight
+        {
+            get { return FlightID == LogbookEntry.idFlightNew; }
+        }
+
+        protected void SetUpForFlight(int idFlight)
+        {
+            FlightID = idFlight;
+            mfbEditFlight1.SetUpNewOrEdit(idFlight);
+            mfbEditFlight1.CanCancel = !IsNewFlight;
+            pnlAccordionMenuContainer.Visible = mfbLogbook1.Visible = pnlFilter.Visible = IsNewFlight;
+        }
+
+        protected void ResolvePrintLink()
+        {
+            lnkPrintView.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/PrintView.aspx?po={0}&fq={1}",
+                HttpUtility.UrlEncode(Convert.ToBase64String(JsonConvert.SerializeObject(PrintOptions1.Options, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore }).Compress())),
+                HttpUtility.UrlEncode(Restriction.ToBase64CompressedJSONString()));
+        }
+
+        protected void Refresh()
+        {
+            bool fRestrictionIsDefault = Restriction.IsDefault;
+            mfbLogbook1.DetailsParam = fRestrictionIsDefault ? string.Empty : "fq=" + HttpUtility.UrlEncode(Restriction.ToBase64CompressedJSONString());
+            mfbLogbook1.User = Page.User.Identity.Name;
+            mfbLogbook1.Restriction = Restriction;
+            mfbLogbook1.RefreshData();
+            if (mfbChartTotals1.Visible)
+            {
+                mfbChartTotals1.HistogramManager = LogbookEntryDisplay.GetHistogramManager(mfbLogbook1.Data, Restriction.UserName);
+                mfbChartTotals1.Refresh();
+            }
+            if (mfbTotalSummary1.Visible)
+                mfbTotalSummary1.CustomRestriction = Restriction;
+            ResolvePrintLink();
+            pnlFilter.Visible = !fRestrictionIsDefault && IsNewFlight;
+            mfbQueryDescriptor1.DataSource = fRestrictionIsDefault ? null : Restriction;
+            apcFilter.LabelControl.Font.Bold = !fRestrictionIsDefault;
+            apcFilter.IsEnhanced = !fRestrictionIsDefault;
+
+            if (!IsNewFlight)
+            {
+                mfbLogbook1.GetNeighbors(FlightID, out int prevFlightID, out int nextFlightID);
+                mfbEditFlight1.SetPrevFlight(prevFlightID);
+                mfbEditFlight1.SetNextFlight(nextFlightID);
+            }
+
+            mfbQueryDescriptor1.DataBind();
+        }
+
+        protected void UpdateQuery()
+        {
+            Restriction = mfbSearchForm1.Restriction;
+            Refresh();
+            AccordionCtrl.SelectedIndex = -1;
+
+            if (Int32.TryParse(hdnLastViewedPaneIndex.Value, out int idxLast))
+            {
+                if (idxLast == mfbAccordionProxyExtender1.IndexForProxyID(apcTotals.ID))
+                {
+                    apcTotals_ControlClicked(apcTotals, null);
+                    AccordionCtrl.SelectedIndex = idxLast;
+                }
+                else if (idxLast == mfbAccordionProxyExtender1.IndexForProxyID(apcAnalysis.ID))
+                {
+                    apcAnalysis_ControlClicked(apcAnalysis, null);
+                    AccordionCtrl.SelectedIndex = idxLast;
+                }
+                else if (idxLast == mfbAccordionProxyExtender1.IndexForProxyID(apcPrintView.ID))
+                    AccordionCtrl.SelectedIndex = idxLast;
+            }
+        }
+
+        protected void mfbQueryDescriptor1_QueryUpdated(object sender, FilterItemClickedEventArgs fic)
+        {
+            if (fic == null)
+                throw new ArgumentNullException(nameof(fic));
+            mfbSearchForm1.Restriction = Restriction.ClearRestriction(fic.FilterItem);
+            Refresh();
+        }
+
+        protected void mfbSearchForm1_QuerySubmitted(object sender, EventArgs e)
+        {
+            UpdateQuery();
+        }
+
+        protected void mfbSearchForm1_Reset(object sender, EventArgs e)
+        {
+            UpdateQuery();
+        }
+
+        /// <summary>
+        /// Returns the querystring minus Clone or Reverse or other switches that we don't want to preserve for context (Issue #458)
+        /// </summary>
+        /// <returns></returns>
+        private string SanitizedQuery
+        {
+            get { return Request.QueryStringWithoutParams(new string[] { "Clone", "Reverse", "Chk" }); }
+        }
+
+        protected void mfbEditFlight1_FlightUpdated(object sender, LogbookEventArgs e)
+        {
+            if (e == null)
+                throw new ArgumentNullException(nameof(e));
+
+            // if we had been editing a flight do a redirect so we have a clean URL
+            // OR if there are pending redirects, do them.
+            // Otherwise, just clean the page.
+            if (e.IDNextFlight != LogbookEntry.idFlightNone)
+                Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx/{0}{1}", e.IDNextFlight, SanitizedQuery), true);
+            else
+            {
+                // If this is a new flight, put its assigned ID into the session so that we can scroll to it.
+                if (IsNewFlight)
+                    Session[keySessLastNewFlight] = e.FlightID;
+                Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx{0}", SanitizedQuery), true);
+            }
+        }
+
+        protected void mfbEditFlight1_FlightEditCanceled(object sender, EventArgs e)
+        {
+            // Redirect back to eliminate the ID of the flight in the URL.
             Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx{0}", SanitizedQuery), true);
         }
-    }
 
-    protected void mfbEditFlight1_FlightEditCanceled(object sender, EventArgs e)
-    {
-        // Redirect back to eliminate the ID of the flight in the URL.
-        Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx{0}", SanitizedQuery), true);
-    }
-
-    protected void PrintOptions1_OptionsChanged(object sender, PrintingOptionsEventArgs e)
-    {
-        ResolvePrintLink();
-    }
-
-    protected void rblTotalsMode_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        if (sender == null)
-            throw new ArgumentNullException(nameof(sender));
-
-        if (bool.TryParse(rblTotalsMode.SelectedValue, out bool fGrouped))
+        protected void PrintOptions1_OptionsChanged(object sender, PrintingOptionsEventArgs e)
         {
-            mfbTotalSummary1.DefaultGroupMode = fGrouped;
-            mfbTotalSummary1.IsGrouped = fGrouped;
+            ResolvePrintLink();
         }
-    }
 
-    #region lazy loading of tab content
-    protected void TurnOffLazyLoad(object o)
-    {
-        if (o == null)
-            throw new ArgumentNullException(nameof(o));
-        Controls_mfbAccordionProxyControl apc = (Controls_mfbAccordionProxyControl)o;
-        apc.LazyLoad = false;
-        int idx = mfbAccordionProxyExtender1.IndexForProxyID(apc.ID);
-        mfbAccordionProxyExtender1.SetJavascriptForControl(apc, true, idx);
-        AccordionCtrl.SelectedIndex = idx;
-    }
-
-    protected void TurnOnLazyLoad(Controls_mfbAccordionProxyControl apc, Action act)
-    {
-        if (apc == null)
-            throw new ArgumentNullException(nameof(apc));
-        int idx = mfbAccordionProxyExtender1.IndexForProxyID(apc.ID);
-        if (idx == AccordionCtrl.SelectedIndex)
-            act?.Invoke();
-        else
+        protected void rblTotalsMode_SelectedIndexChanged(object sender, EventArgs e)
         {
-            apc.LazyLoad = true;
-            mfbAccordionProxyExtender1.SetJavascriptForControl(apc, idx == AccordionCtrl.SelectedIndex, idx);
+            if (sender == null)
+                throw new ArgumentNullException(nameof(sender));
+
+            if (bool.TryParse(rblTotalsMode.SelectedValue, out bool fGrouped))
+            {
+                mfbTotalSummary1.DefaultGroupMode = fGrouped;
+                mfbTotalSummary1.IsGrouped = fGrouped;
+            }
         }
-    }
 
-    protected int IndexForPane(AjaxControlToolkit.AccordionPane p)
-    {
-        for (int i = 0; i < AccordionCtrl.Panes.Count; i++)
-            if (AccordionCtrl.Panes[i] == p)
-                return i;
-        return -1;
-    }
+        #region lazy loading of tab content
+        protected void TurnOffLazyLoad(object o)
+        {
+            if (o == null)
+                throw new ArgumentNullException(nameof(o));
+            Controls_mfbAccordionProxyControl apc = (Controls_mfbAccordionProxyControl)o;
+            apc.LazyLoad = false;
+            int idx = mfbAccordionProxyExtender1.IndexForProxyID(apc.ID);
+            mfbAccordionProxyExtender1.SetJavascriptForControl(apc, true, idx);
+            AccordionCtrl.SelectedIndex = idx;
+        }
 
-    protected void apcTotals_ControlClicked(object sender, EventArgs e)
-    {
-        TurnOffLazyLoad(sender);
-        mfbTotalSummary1.Visible = true;
-        mfbTotalSummary1.CustomRestriction = Restriction;
-        hdnLastViewedPaneIndex.Value = mfbAccordionProxyExtender1.IndexForProxyID(apcTotals.ID).ToString(CultureInfo.InvariantCulture);
-    }
+        protected void TurnOnLazyLoad(Controls_mfbAccordionProxyControl apc, Action act)
+        {
+            if (apc == null)
+                throw new ArgumentNullException(nameof(apc));
+            int idx = mfbAccordionProxyExtender1.IndexForProxyID(apc.ID);
+            if (idx == AccordionCtrl.SelectedIndex)
+                act?.Invoke();
+            else
+            {
+                apc.LazyLoad = true;
+                mfbAccordionProxyExtender1.SetJavascriptForControl(apc, idx == AccordionCtrl.SelectedIndex, idx);
+            }
+        }
 
-    protected void apcAnalysis_ControlClicked(object sender, EventArgs e)
-    {
-        TurnOffLazyLoad(sender);
-        mfbChartTotals1.Visible = true;
-        mfbChartTotals1.Refresh();
-        hdnLastViewedPaneIndex.Value = mfbAccordionProxyExtender1.IndexForProxyID(apcAnalysis.ID).ToString(CultureInfo.InvariantCulture);
-    }
-    #endregion
+        protected int IndexForPane(AjaxControlToolkit.AccordionPane p)
+        {
+            for (int i = 0; i < AccordionCtrl.Panes.Count; i++)
+                if (AccordionCtrl.Panes[i] == p)
+                    return i;
+            return -1;
+        }
 
-    protected void apcCurrency_ControlClicked(object sender, EventArgs e)
-    {
-        TurnOffLazyLoad(sender);
-        mfbCurrency1.Visible = true;
-        mfbCurrency1.RefreshCurrencyTable();
-    }
+        protected void apcTotals_ControlClicked(object sender, EventArgs e)
+        {
+            TurnOffLazyLoad(sender);
+            mfbTotalSummary1.Visible = true;
+            mfbTotalSummary1.CustomRestriction = Restriction;
+            hdnLastViewedPaneIndex.Value = mfbAccordionProxyExtender1.IndexForProxyID(apcTotals.ID).ToString(CultureInfo.InvariantCulture);
+        }
 
-    protected void mfbLogbook1_ItemDeleted(object sender, LogbookEventArgs e)
-    {
-        // Turn on lazy load for any items that could be affected by the deletion, or else refresh them if already visible.
-        TurnOnLazyLoad(apcTotals, () => { mfbTotalSummary1.CustomRestriction = Restriction; });
-        TurnOnLazyLoad(apcCurrency, () => { mfbCurrency1.RefreshCurrencyTable(); });
-        TurnOnLazyLoad(apcAnalysis, () => { mfbChartTotals1.Refresh(); });
+        protected void apcAnalysis_ControlClicked(object sender, EventArgs e)
+        {
+            TurnOffLazyLoad(sender);
+            mfbChartTotals1.Visible = true;
+            mfbChartTotals1.Refresh();
+            hdnLastViewedPaneIndex.Value = mfbAccordionProxyExtender1.IndexForProxyID(apcAnalysis.ID).ToString(CultureInfo.InvariantCulture);
+        }
+        #endregion
+
+        protected void apcCurrency_ControlClicked(object sender, EventArgs e)
+        {
+            TurnOffLazyLoad(sender);
+            mfbCurrency1.Visible = true;
+            mfbCurrency1.RefreshCurrencyTable();
+        }
+
+        protected void mfbLogbook1_ItemDeleted(object sender, LogbookEventArgs e)
+        {
+            // Turn on lazy load for any items that could be affected by the deletion, or else refresh them if already visible.
+            TurnOnLazyLoad(apcTotals, () => { mfbTotalSummary1.CustomRestriction = Restriction; });
+            TurnOnLazyLoad(apcCurrency, () => { mfbCurrency1.RefreshCurrencyTable(); });
+            TurnOnLazyLoad(apcAnalysis, () => { mfbChartTotals1.Refresh(); });
+        }
     }
 }

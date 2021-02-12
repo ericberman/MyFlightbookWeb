@@ -58,18 +58,18 @@
                         <asp:BoundField HeaderText="Category/Class" DataField="CategoryClassDisplay" />
                         <asp:TemplateField HeaderText="Manufacturer">
                             <ItemTemplate>
-                                <asp:Label ID="lblMan" runat="server" Text='<%# MakeModel.GetModel((int) Eval("ModelID")).ManufacturerDisplay %>'></asp:Label>
+                                <asp:Label ID="lblMan" runat="server" Text='<%#: MakeModel.GetModel((int) Eval("ModelID")).ManufacturerDisplay %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:BoundField HeaderText="Model" DataField="ModelDescription" />
                         <asp:TemplateField HeaderText="Type designation">
                             <ItemTemplate>
-                                <asp:Label ID="lblModel" runat="server" Text='<%# MakeModel.GetModel((int) Eval("ModelID")).TypeName %>'></asp:Label>
+                                <asp:Label ID="lblModel" runat="server" Text='<%#: MakeModel.GetModel((int) Eval("ModelID")).TypeName %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Model full name">
                             <ItemTemplate>
-                                <asp:Label ID="lblFullName" runat="server" Text='<%# MakeModel.GetModel((int) Eval("ModelID")).ModelDisplayNameNoCatclass %>'></asp:Label>
+                                <asp:Label ID="lblFullName" runat="server" Text='<%#: MakeModel.GetModel((int) Eval("ModelID")).ModelDisplayNameNoCatclass %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceAnnual %>">
@@ -168,7 +168,7 @@
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="<%$ Resources:Currency, deadlinesHeaderDeadlines %>">
                             <ItemTemplate>
-                                <asp:Label ID="lblDeadlines" runat="server" Text='<%# MyFlightbook.Currency.DeadlineCurrency.CoalescedDeadlinesForAircraft(Page.User.Identity.Name, (int) Eval("AircraftID")) %>' />
+                                <asp:Label ID="lblDeadlines" runat="server" Text='<%#: MyFlightbook.Currency.DeadlineCurrency.CoalescedDeadlinesForAircraft(Page.User.Identity.Name, (int) Eval("AircraftID")) %>' />
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Frequently Used">

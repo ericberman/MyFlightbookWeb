@@ -2,29 +2,32 @@ using System;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2020 MyFlightbook LLC
+ * Copyright (c) 2015-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
-public partial class Member_MiniLogbook : System.Web.UI.Page
+namespace MyFlightbook.MemberPages
 {
-    protected void Page_Load(object sender, EventArgs e)
+    public partial class MiniLogbook : System.Web.UI.Page
     {
-
-        if (!IsPostBack)
+        protected void Page_Load(object sender, EventArgs e)
         {
-            this.Master.Title = lblUserName.Text = String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, MyFlightbook.Profile.GetUser(User.Identity.Name).PreferredGreeting);
 
-            mfbEditFlight1.SetUpNewOrEdit(-1);
+            if (!IsPostBack)
+            {
+                this.Master.Title = lblUserName.Text = String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, System.Web.HttpUtility.HtmlEncode(Profile.GetUser(User.Identity.Name).PreferredGreeting));
 
-            this.Master.SetMobile(true);
+                mfbEditFlight1.SetUpNewOrEdit(-1);
+
+                this.Master.SetMobile(true);
+            }
         }
-    }
 
-    protected void FlightUpdated(object sender, EventArgs e)
-    {
-        pnlSuccess.Visible = true;
-        mfbEditFlight1.SetUpNewOrEdit(-1); // and clear the form for the next one.
+        protected void FlightUpdated(object sender, EventArgs e)
+        {
+            pnlSuccess.Visible = true;
+            mfbEditFlight1.SetUpNewOrEdit(-1); // and clear the form for the next one.
+        }
     }
 }

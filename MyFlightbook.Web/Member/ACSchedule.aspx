@@ -22,7 +22,7 @@
             <p><asp:Label ID="lblTailNumber2" runat="server" Font-Bold="True" meta:resourcekey="lblTailNumber2Resource1"></asp:Label> - <asp:Localize ID="locNotMember" runat="server" Text="This aircraft belongs to the club(s) listed below, but you are not a member.  View details for the club to request membership." meta:resourcekey="locNotMemberResource1"></asp:Localize></p>
             <asp:Repeater ID="rptClubsForAircraft" runat="server">
                 <ItemTemplate>
-                    <h3><asp:HyperLink ID="lnkClub" NavigateUrl='<%# String.Format("~/Member/ClubDetails.aspx/{0}", Eval("ID")) %>' runat="server"><%# Eval("Name") %></asp:HyperLink></h3>
+                    <h3><asp:HyperLink ID="lnkClub" NavigateUrl='<%# String.Format("~/Member/ClubDetails.aspx/{0}", Eval("ID")) %>' runat="server"><%#: Eval("Name") %></asp:HyperLink></h3>
                 </ItemTemplate>
             </asp:Repeater>
         </asp:View>

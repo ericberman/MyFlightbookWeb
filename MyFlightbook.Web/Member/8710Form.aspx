@@ -274,7 +274,7 @@
                         <Columns>
                             <asp:TemplateField>
                                 <ItemTemplate>
-                                    <%# ModelDisplay(Container.DataItem) %>
+                                    <%#: ModelDisplay(Container.DataItem) %>
                                 </ItemTemplate>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Center"></ItemStyle>
                             </asp:TemplateField>

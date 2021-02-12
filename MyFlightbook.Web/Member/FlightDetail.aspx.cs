@@ -553,11 +553,11 @@ namespace MyFlightbook.MemberPages
                 apcChart.Visible = apcDownload.Visible = apcRaw.Visible = false;
 
             lblFlightDate.Text = led.Date.ToShortDateString();
-            lblFlightAircraft.Text = led.TailNumDisplay ?? string.Empty;
-            lblCatClass.Text = String.Format(CultureInfo.CurrentCulture, "({0})", led.CatClassDisplay);
+            lblFlightAircraft.Text = HttpUtility.HtmlEncode(led.TailNumDisplay) ?? string.Empty;
+            lblCatClass.Text = String.Format(CultureInfo.CurrentCulture, "({0})", HttpUtility.HtmlEncode(led.CatClassDisplay));
             lblCatClass.CssClass = led.IsOverridden ? "ExceptionData" : string.Empty;
             litDesc.Text = led.CommentWithReplacedApproaches;
-            lblRoute.Text = led.Route.ToUpper(CultureInfo.CurrentCulture);
+            lblRoute.Text = HttpUtility.HtmlEncode(led.Route.ToUpper(CultureInfo.CurrentCulture));
 
             Page.Title = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDetailsTitle, led.Date);
 

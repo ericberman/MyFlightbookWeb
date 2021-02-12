@@ -1,4 +1,4 @@
-<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="ResetPass.aspx.cs" Inherits="ResetPass" Title="MyFlightbook: Reset Password" culture="auto" meta:resourcekey="PageResource1" %>
+<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="ResetPass.aspx.cs" Inherits="MyFlightbook.LogonPages.ResetPass" Title="MyFlightbook: Reset Password" culture="auto" meta:resourcekey="PageResource1" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Src="~/Controls/TwoFactorAuthVerifyCode.ascx" TagPrefix="uc1" TagName="TwoFactorAuthVerifyCode" %>
 

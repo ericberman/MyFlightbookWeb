@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="oAuthAuthorize.aspx.cs" Inherits="Secure_oAuthAuthorize" culture="auto" meta:resourcekey="PageResource1" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="oAuthAuthorize.aspx.cs" Inherits="MyFlightbook.OAuth.OAuthAuthorizeUser" culture="auto" meta:resourcekey="PageResource1" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="cpPageTitle" Runat="Server">
     <asp:Label ID="lblAuthorize" runat="server" Text="Authorize application" meta:resourcekey="lblAuthorizeResource1"></asp:Label>
@@ -20,7 +20,7 @@
                     <ul>
                         <asp:Repeater ID="rptPermissions" runat="server">
                             <ItemTemplate>
-                                <li><%# Container.DataItem %></li>
+                                <li><%#: Container.DataItem %></li>
                             </ItemTemplate>
                         </asp:Repeater>
                     </ul>

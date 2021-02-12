@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Mail;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Windows.Controls;
@@ -55,8 +56,7 @@ public partial class Member_ClubDetails : System.Web.UI.Page
                     if (CurrentClub == null)
                         throw new MyFlightbookException(Resources.Club.errNoSuchClub);
 
-                    Master.Title = CurrentClub.Name;
-                    lblClubHeader.Text = CurrentClub.Name;
+                    Master.Title = lblClubHeader.Text = HttpUtility.HtmlEncode(CurrentClub.Name);
 
                     ClubMember cm = CurrentClub.GetMember(Page.User.Identity.Name);
 
@@ -238,7 +238,7 @@ public partial class Member_ClubDetails : System.Web.UI.Page
         if (e.CommandName.CompareCurrentCultureIgnoreCase("_sndMsg") == 0)
         {
             Profile pf = Profile.GetUser((string) e.CommandArgument);
-            lblSendPrompt.Text = System.Web.HttpUtility.HtmlEncode(String.Format(CultureInfo.CurrentCulture, Resources.Club.LabelContactMember, pf.UserFullName));
+            lblSendPrompt.Text = String.Format(CultureInfo.CurrentCulture, Resources.Club.LabelContactMember, HttpUtility.HtmlEncode(pf.UserFullName));
             hdnTargetUser.Value = pf.UserName;
             mpeSendMsg.Show();
         }

@@ -10,7 +10,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2011-2020 MyFlightbook LLC
+ * Copyright (c) 2011-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -72,7 +72,6 @@ public partial class Member_8710Form : System.Web.UI.Page
         mfbTotalsByTimePeriod.BindTotalsForUser(Page.User.Identity.Name, false, DateTime.Now.Day > 1, true, true, DateTime.Now.Day > 1 || DateTime.Now.Month > 1, mfbSearchForm1.Restriction);
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
     protected void RefreshFormData()
     {
 

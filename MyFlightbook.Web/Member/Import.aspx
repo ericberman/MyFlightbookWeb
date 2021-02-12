@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="Import.aspx.cs" Inherits="Member_Import" Title="Import Logbook" culture="auto" Async="true" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="Import.aspx.cs" Inherits="MyFlightbook.MemberPages.ImportFlights" Title="Import Logbook" culture="auto" Async="true" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register src="../Controls/mfbImportAircraft.ascx" tagname="mfbImportAircraft" tagprefix="uc1" %>
 <%@ Register Src="~/Controls/Expando.ascx" TagPrefix="uc1" TagName="Expando" %>
@@ -286,24 +286,24 @@
                                                 <asp:Image ID="imgNewOrUpdate" runat="server" ImageUrl='<%# String.IsNullOrEmpty((string) Eval("ErrorString")) ? (Convert.ToBoolean(Eval("IsNewFlight")) ? "~/images/add.png" : "~/images/update.png") : "~/images/circleslash.png" %>' 
                                                 ToolTip='<%# String.IsNullOrEmpty((string) Eval("ErrorString")) ? (Convert.ToBoolean(Eval("IsNewFlight")) ? Resources.LogbookEntry.ImportAddTooltip : Resources.LogbookEntry.ImportUpdateTooltip) : (string) Eval("ErrorString") %>'  />
                                                 <span style="font-weight:bold"><%# ((DateTime) Eval("Date")).ToShortDateString() %></span>
-                                                <%# Eval("Route") %>
+                                                <%#: Eval("Route") %>
                                             </div>
-                                            <div><%# Eval("Comment") %></div>
+                                            <div><%#: Eval("Comment") %></div>
                                             <div><asp:PlaceHolder ID="plcAdditional" runat="server"></asp:PlaceHolder></div>
                                             <asp:Panel ID="pnlDiffs" runat="server" Visible="False" style="background-color:#eeeeee; border:1px solid darkgray; margin:3px;">
                                                 <ul>
                                                     <asp:Repeater ID="rptDiffs" runat="server">
                                                         <ItemTemplate>
-                                                            <li><%# Container.DataItem.ToString() %></li>
+                                                            <li><%#: Container.DataItem.ToString() %></li>
                                                         </ItemTemplate>
                                                     </asp:Repeater>
                                                 </ul>
                                             </asp:Panel>
                                         </td>
                                         <td runat="server">
-                                            <div style="font-weight:bold"><%# Eval("TailNumDisplay") %></div>
-                                            <div><%# Eval("ModelDisplay") %></div>
-                                            <div><%# Eval("CatClassDisplay") %></div>
+                                            <div style="font-weight:bold"><%#: Eval("TailNumDisplay") %></div>
+                                            <div><%#: Eval("ModelDisplay") %></div>
+                                            <div><%#: Eval("CatClassDisplay") %></div>
                                         </td>
                                         <td runat="server"><%# Eval("Approaches").FormatInt() %></td>
                                         <td style="font-weight:bold" runat="server"><%# Eval("fHoldingProcedures").FormatBoolean() %></td>

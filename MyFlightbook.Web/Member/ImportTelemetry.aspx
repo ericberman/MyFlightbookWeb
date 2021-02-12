@@ -36,7 +36,7 @@
             <asp:TemplateField HeaderText="Matching Flight" HeaderStyle-HorizontalAlign="Left" >
                 <ItemTemplate>
                     <asp:Panel ID="pnlMatch" runat="server" Visible='<%# Eval("Success") %>'>
-                        <asp:HyperLink ID="lnkMatch" NavigateUrl='<%# Eval("MatchHREF") %>' Target="_blank" runat="server"><%# Eval("MatchedFlightDescription") %></asp:HyperLink>
+                        <asp:HyperLink ID="lnkMatch" NavigateUrl='<%# Eval("MatchHREF") %>' Target="_blank" runat="server"><%#: Eval("MatchedFlightDescription") %></asp:HyperLink>
                     </asp:Panel>
                 </ItemTemplate>
                 <ItemStyle VerticalAlign="Top" />

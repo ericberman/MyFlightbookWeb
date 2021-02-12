@@ -2,17 +2,20 @@ using System;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2020 MyFlightbook LLC
+ * Copyright (c) 2015-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
-public partial class Member_MiniTotals : System.Web.UI.Page
+namespace MyFlightbook.MemberPages
 {
-    protected void Page_Load(object sender, EventArgs e)
+    public partial class MiniTotals : System.Web.UI.Page
     {
-        this.Master.SetMobile(true);
-        if (!IsPostBack)
-            this.Master.Title = lblUserName.Text = String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, MyFlightbook.Profile.GetUser(User.Identity.Name).PreferredGreeting);
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            this.Master.SetMobile(true);
+            if (!IsPostBack)
+                this.Master.Title = lblUserName.Text = String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, System.Web.HttpUtility.HtmlEncode(Profile.GetUser(User.Identity.Name).PreferredGreeting));
+        }
     }
 }

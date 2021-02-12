@@ -31,10 +31,10 @@
                             <li>
                                 <asp:MultiView ID="mvAttribute" runat="server" ActiveViewIndex='<%# String.IsNullOrEmpty((string) Eval("Link")) ? 0 : 1 %>'>
                                     <asp:View ID="vwNoLink" runat="server">
-                                        <%# Eval("Value") %>
+                                        <%#: Eval("Value") %>
                                     </asp:View>
                                     <asp:View ID="vwLink" runat="server">
-                                        <asp:HyperLink ID="lnkAttrib" runat="server" Text='<%# Eval("Value") %>' NavigateUrl='<%# Eval("Link") %>'></asp:HyperLink>
+                                        <asp:HyperLink ID="lnkAttrib" runat="server" Text='<%#: Eval("Value") %>' NavigateUrl='<%# Eval("Link") %>'></asp:HyperLink>
                                     </asp:View>
                                 </asp:MultiView>
                             </li>
