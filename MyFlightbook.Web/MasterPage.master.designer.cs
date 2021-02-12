@@ -165,7 +165,7 @@ namespace MyFlightbook.Web
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_mfbHeader mfbHeader;
+        protected global::MyFlightbook.Controls.mfbHeader mfbHeader;
 
         /// <summary>
         /// pnlTitle control.

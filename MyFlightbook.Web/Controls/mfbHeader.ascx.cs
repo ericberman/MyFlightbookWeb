@@ -1,5 +1,4 @@
-﻿using MyFlightbook;
-using MyFlightbook.Schedule;
+﻿using MyFlightbook.Schedule;
 using System;
 using System.Globalization;
 using System.Web;
@@ -12,103 +11,106 @@ using System.Web.UI.HtmlControls;
  *
 *******************************************************/
 
-public partial class Controls_mfbHeader : System.Web.UI.UserControl
+namespace MyFlightbook.Controls
 {
-    public Boolean IsMobile {get; set;}
-
-    public tabID SelectedTab
+    public partial class mfbHeader : System.Web.UI.UserControl
     {
-        get { return XMLNav1.SelectedItem; }
-        set { XMLNav1.SelectedItem = value; }
-    }
+        public Boolean IsMobile { get; set; }
 
-    public TabList TabList
-    {
-        get { return XMLNav1.TabList; }
-    }
-
-    protected void Page_Load(object sender, EventArgs e)
-    {
-        HtmlLink lnk = new HtmlLink() { Href = VirtualPathUtility.ToAbsolute("~/Public/CSS/mfbheader.css") };
-        Page.Header.Controls.Add(lnk);
-        lnk.Attributes["type"] = "text/css";
-        lnk.Attributes["rel"] = "stylesheet";
-
-        if (!IsPostBack)
+        public tabID SelectedTab
         {
-            // fix up the appropriate app name
-            lnkDownload.Text = Branding.ReBrand(Resources.LocalizedText.HeaderDownload);
-            lnkDownloadIPhone.Text = Branding.ReBrand(Resources.LocalizedText.HeaderDownloadIOS);
-            lnkDownloadAndroid.Text = Branding.ReBrand(Resources.LocalizedText.HeaderDownloadAndroid);
-            lnkDownloadWindowsPhone.Text = Branding.ReBrand(Resources.LocalizedText.HeaderDownloadWP7);
-            lnkLogo.ImageUrl = Branding.CurrentBrand.LogoHRef;
-            pnlDonate.Visible = Page.User.Identity.IsAuthenticated;
-            lnkDonate.Text = Branding.ReBrand(Resources.LocalizedText.DonateSolicitation);
-
-            if (Request != null && Request.UserAgent != null)
-            {
-                string s = Request.UserAgent.ToUpperInvariant();
-
-                if (s.Contains("IPAD") || s.Contains("IPHONE"))
-                    mvXSell.SetActiveView(vwIOS);
-
-                if (s.Contains("DROID"))
-                    mvXSell.SetActiveView(vwDroid);
-
-                if (s.Contains("WINDOWS PHONE"))
-                    mvXSell.SetActiveView(vwW7Phone);
-            }
-
-            mvCrossSellOrEvents.SetActiveView(vwMobileCrossSell);
-
-            mvLoginStatus.SetActiveView(Page.User.Identity.IsAuthenticated ? vwSignedIn : vwNotSignedIn);
-
-            if (Page.User.Identity.IsAuthenticated)
-            {
-                Refresh();
-                // see if we need to show an upcoming event; we repurpose a known GUID for this.  
-                // If it's in the database AND in the future, we show it.
-                // Since header is loaded on every page load, cache it, using a dummy expired one if there was none.
-                ScheduledEvent se = (ScheduledEvent)Cache["upcomingWebinar"];
-                if (se == null)
-                {
-                    se = ScheduledEvent.AppointmentByID("00000000-fe32-5932-bef8-000000000001", TimeZoneInfo.Utc);
-                    if (se == null)
-                        se = new ScheduledEvent() { EndUtc = DateTime.Now.AddDays(-2) };
-                    Cache.Add("upcomingWebinar", se, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, 30, 0), System.Web.Caching.CacheItemPriority.Default, null);
-                }
-                if (se != null && DateTime.UtcNow.CompareTo(se.EndUtc) < 0)
-                {
-                    string[] rgLines = se.Body.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-                    litWebinar.Text = String.Format(CultureInfo.CurrentCulture, "Join \"{0}\" on {1}", (rgLines == null || rgLines.Length == 0) ? string.Empty : rgLines[0], se.EndUtc.ToShortDateString()).Linkify();
-                    mvCrossSellOrEvents.SetActiveView(vwUpcomingEvent);
-                    lblWebinarDetails.Text = se.Body.Linkify(true);
-                }
-            }
-            else
-                imgHdSht.Visible = false;
+            get { return XMLNav1.SelectedItem; }
+            set { XMLNav1.SelectedItem = value; }
         }
-    }
 
-    protected void btnSearch_Click(object sender, EventArgs e)
-    {
-        Response.Redirect("~/Member/LogbookNew.aspx?s=" + System.Web.HttpUtility.UrlEncode(mfbSearchbox.SearchText));
-    }
+        public TabList TabList
+        {
+            get { return XMLNav1.TabList; }
+        }
 
-    public void Refresh()
-    {
-        Profile pf = Profile.GetUser(Page.User.Identity.Name);
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            HtmlLink lnk = new HtmlLink() { Href = VirtualPathUtility.ToAbsolute("~/Public/CSS/mfbheader.css") };
+            Page.Header.Controls.Add(lnk);
+            lnk.Attributes["type"] = "text/css";
+            lnk.Attributes["rel"] = "stylesheet";
 
-        imgHdSht.Src = pf.HeadShotHRef;
+            if (!IsPostBack)
+            {
+                // fix up the appropriate app name
+                lnkDownload.Text = Branding.ReBrand(Resources.LocalizedText.HeaderDownload);
+                lnkDownloadIPhone.Text = Branding.ReBrand(Resources.LocalizedText.HeaderDownloadIOS);
+                lnkDownloadAndroid.Text = Branding.ReBrand(Resources.LocalizedText.HeaderDownloadAndroid);
+                lnkDownloadWindowsPhone.Text = Branding.ReBrand(Resources.LocalizedText.HeaderDownloadWP7);
+                lnkLogo.ImageUrl = Branding.CurrentBrand.LogoHRef;
+                pnlDonate.Visible = Page.User.Identity.IsAuthenticated;
+                lnkDonate.Text = Branding.ReBrand(Resources.LocalizedText.DonateSolicitation);
 
-        lblUser.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LoginStatusWelcome, pf.PreferredGreeting);
-        lblMemberSince.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MemberSinceShort, pf.CreationDate);
-        if (pf.LastLogon.HasValue())
-            lblLastLogin.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MemberLastLogonShort, pf.LastLogon);
-        else
-            lblLastLogin.Visible = false;
+                if (Request != null && Request.UserAgent != null)
+                {
+                    string s = Request.UserAgent.ToUpperInvariant();
 
-        lblLastActivity.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MemberLastActivityShort, pf.LastActivity);
-        itemLastActivity.Visible = pf.LastActivity.Date.CompareTo(pf.LastLogon.Date) != 0;
+                    if (s.Contains("IPAD") || s.Contains("IPHONE"))
+                        mvXSell.SetActiveView(vwIOS);
+
+                    if (s.Contains("DROID"))
+                        mvXSell.SetActiveView(vwDroid);
+
+                    if (s.Contains("WINDOWS PHONE"))
+                        mvXSell.SetActiveView(vwW7Phone);
+                }
+
+                mvCrossSellOrEvents.SetActiveView(vwMobileCrossSell);
+
+                mvLoginStatus.SetActiveView(Page.User.Identity.IsAuthenticated ? vwSignedIn : vwNotSignedIn);
+
+                if (Page.User.Identity.IsAuthenticated)
+                {
+                    Refresh();
+                    // see if we need to show an upcoming event; we repurpose a known GUID for this.  
+                    // If it's in the database AND in the future, we show it.
+                    // Since header is loaded on every page load, cache it, using a dummy expired one if there was none.
+                    ScheduledEvent se = (ScheduledEvent)Cache["upcomingWebinar"];
+                    if (se == null)
+                    {
+                        se = ScheduledEvent.AppointmentByID("00000000-fe32-5932-bef8-000000000001", TimeZoneInfo.Utc);
+                        if (se == null)
+                            se = new ScheduledEvent() { EndUtc = DateTime.Now.AddDays(-2) };
+                        Cache.Add("upcomingWebinar", se, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, 30, 0), System.Web.Caching.CacheItemPriority.Default, null);
+                    }
+                    if (se != null && DateTime.UtcNow.CompareTo(se.EndUtc) < 0)
+                    {
+                        string[] rgLines = se.Body.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                        litWebinar.Text = String.Format(CultureInfo.CurrentCulture, "Join \"{0}\" on {1}", (rgLines == null || rgLines.Length == 0) ? string.Empty : rgLines[0], se.EndUtc.ToShortDateString()).Linkify();
+                        mvCrossSellOrEvents.SetActiveView(vwUpcomingEvent);
+                        lblWebinarDetails.Text = se.Body.Linkify(true);
+                    }
+                }
+                else
+                    imgHdSht.Visible = false;
+            }
+        }
+
+        protected void btnSearch_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("~/Member/LogbookNew.aspx?s=" + System.Web.HttpUtility.UrlEncode(mfbSearchbox.SearchText));
+        }
+
+        public void Refresh()
+        {
+            Profile pf = Profile.GetUser(Page.User.Identity.Name);
+
+            imgHdSht.Src = pf.HeadShotHRef;
+
+            lblUser.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LoginStatusWelcome, HttpUtility.HtmlEncode(pf.PreferredGreeting));
+            lblMemberSince.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MemberSinceShort, pf.CreationDate);
+            if (pf.LastLogon.HasValue())
+                lblLastLogin.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MemberLastLogonShort, pf.LastLogon);
+            else
+                lblLastLogin.Visible = false;
+
+            lblLastActivity.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MemberLastActivityShort, pf.LastActivity);
+            itemLastActivity.Visible = pf.LastActivity.Date.CompareTo(pf.LastLogon.Date) != 0;
+        }
     }
 }

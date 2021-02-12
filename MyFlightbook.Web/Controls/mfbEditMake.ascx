@@ -297,17 +297,17 @@
                 </asp:TemplateField>
                 <asp:TemplateField meta:resourcekey="TemplateFieldResource2">
                     <ItemTemplate>
-                        <%# Eval("ManufacturerDisplay") %>
+                        <%#: Eval("ManufacturerDisplay") %>
                         <br />
-                        <%# Eval("CategoryClassDisplay") %>
+                        <%#: Eval("CategoryClassDisplay") %>
                     </ItemTemplate>
                     <ItemStyle VerticalAlign="Top" />
                 </asp:TemplateField>
                 <asp:TemplateField meta:resourcekey="TemplateFieldResource3">
                     <ItemTemplate>
-                        <%# Eval("Model") %>
-                        <%# (String.IsNullOrEmpty(Eval("ModelName").ToString())) ? "" : "\"" + Eval("ModelName") + "\"" %>
-                        <%# (String.IsNullOrEmpty(Eval("TypeName").ToString()) ? "" : "- " + Eval("TypeName")) %>
+                        <%#: Eval("Model") %>
+                        <%#: (String.IsNullOrEmpty(Eval("ModelName").ToString())) ? "" : "\"" + Eval("ModelName") + "\"" %>
+                        <%#: (String.IsNullOrEmpty(Eval("TypeName").ToString()) ? "" : "- " + Eval("TypeName")) %>
                     </ItemTemplate>
                 </asp:TemplateField>
             </Columns>
@@ -327,9 +327,9 @@
 <cc1:ModalPopupExtender ID="modalPopupDupes" runat="server" 
     PopupControlID="pnlDupesFound" TargetControlID="lblDummy"
     BackgroundCssClass="modalBackground"
-    CancelControlID="btnCancelDupe" OnCancelScript="getFlickerSolved();" DynamicServicePath="" BehaviorID="ctl00_modalPopupDupes">
+    CancelControlID="btnCancelDupe" OnCancelScript="getFlickerSolved();" BehaviorID="ctl00_modalPopupDupes">
 </cc1:ModalPopupExtender>
-<script language="javascript">
+<script type="text/javascript">
 // <![CDATA[  
 // These functions from http://www.aspdotnetcodes.com/ModalPopup_Postback.aspx
 var clientid;

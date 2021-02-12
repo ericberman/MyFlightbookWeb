@@ -484,10 +484,9 @@ public partial class Controls_mfbEditFlight : Controls_mfbEditFlightBase
             }
 
             int idAircraftOrigin = le.AircraftID;
-            if (Int32.TryParse(cmbAircraft.SelectedValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out int idAc)) // initialize the aircraft so that the landings auto-expands based on tailwheel 
-                le.AircraftID = idAc;
-            else
-                le.AircraftID = Aircraft.idAircraftUnknown;
+            le.AircraftID = Int32.TryParse(cmbAircraft.SelectedValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out int idAc)
+                ? idAc
+                : Aircraft.idAircraftUnknown;
 
             if (idAircraftOrigin != le.AircraftID)
                 SetTemplatesForAircraft(le.AircraftID);

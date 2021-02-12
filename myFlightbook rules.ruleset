@@ -262,7 +262,7 @@
     <Rule Id="IDE0028" Action="Info" />
     <Rule Id="IDE0041" Action="Info" />
     <Rule Id="IDE0045" Action="Info" />
-    <Rule Id="IDE0046" Action="Info" />
+    <Rule Id="IDE0046" Action="None" />
     <Rule Id="IDE0059" Action="Info" />
     <Rule Id="IDE0063" Action="Info" />
     <Rule Id="IDE0078" Action="Warning" />

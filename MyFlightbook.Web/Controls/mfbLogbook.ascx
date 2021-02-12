@@ -146,7 +146,7 @@
                             </asp:Panel>
                             <asp:Repeater ID="rptProps" runat="server" DataSource='<%# Eval("PropertiesWithReplacedApproaches") %>'>
                                 <ItemTemplate>
-                                    <div><%# Container.DataItem %></div>
+                                    <div><%#: Container.DataItem %></div>
                                 </ItemTemplate>
                             </asp:Repeater>
                             <asp:Panel ID="pnlSignature" CssClass="signatureBlock" runat="server" Visible='<%# ((LogbookEntry.SignatureState) Eval("CFISignatureState")) != LogbookEntry.SignatureState.None %>'>
@@ -184,12 +184,12 @@
                     <FooterTemplate>
                         <table style="width:100%">
                             <tr>
-                                <td style="width:70%"><%# Pilot.UserFullName %></td>
-                                <td><asp:Label ID="lblCertificate" runat="server" Text="<%# Pilot.LicenseDisplay %>"></asp:Label></td>
+                                <td style="width:70%"><%#: Pilot.UserFullName %></td>
+                                <td><asp:Label ID="lblCertificate" runat="server" Text="<%#: Pilot.LicenseDisplay %>"></asp:Label></td>
                             </tr>
                             <tr>
                                 <td><asp:Localize ID="locCertification" Text="<%$ Resources:LogbookEntry, LogbookCertification %>" runat="server"></asp:Localize></td>
-                                <td><asp:Label ID="lblCFICertificate" runat="server" Text="<%# Pilot.CFIDisplay %>"></asp:Label></td>
+                                <td><asp:Label ID="lblCFICertificate" runat="server" Text="<%#: Pilot.CFIDisplay %>"></asp:Label></td>
                             </tr>
                         </table>
                     </FooterTemplate>
@@ -200,17 +200,17 @@
                     <HeaderStyle CssClass="headerBase gvhCentered" />
                     <ItemTemplate>
                         <asp:HyperLink ID="lnkTail" NavigateUrl='<%# String.Format("~/Member/EditAircraft.aspx?id={0}", Eval("AircraftID")) %>' runat="server">
-                            <asp:Label ID="lblTail" runat="server" Text='<%# Eval("TailNumDisplay") %>'></asp:Label>
+                            <asp:Label ID="lblTail" runat="server" Text='<%#: Eval("TailNumDisplay") %>'></asp:Label>
                         </asp:HyperLink>
                         <cc1:HoverMenuExtender ID="hoverTail" TargetControlID="lblTail" PopupControlID="pnlTailImages" OffsetX="50" OffsetY="-60" runat="server"></cc1:HoverMenuExtender>
                         <asp:Panel ID="pnlTailImages" CssClass="hintPopup" runat="server">
                             <div style="text-align:center">
-                                <%# Eval("ModelDisplay") %> <%# Eval("CatClassDisplay") %> 
+                                <%#: Eval("ModelDisplay") %> <%#: Eval("CatClassDisplay") %> 
                             </div>
                             <asp:PlaceHolder ID="plcTail" runat="server"></asp:PlaceHolder>
                         </asp:Panel>
                         <div class="printonly">
-                            <div><%# Eval("ModelDisplay") %></div>
+                            <div><%#: Eval("ModelDisplay") %></div>
                             <div><asp:Label ID="lblInstanceTypeDesc" runat="server" Text=""></asp:Label></div>
                         </div>
                     </ItemTemplate>
@@ -221,7 +221,7 @@
                     <ItemTemplate>
                         <asp:MultiView ID="mvCatClass" runat="server" ActiveViewIndex='<%# Convert.ToBoolean(Eval("IsOverridden")) ? 1 : 0 %>'>
                             <asp:View ID="vwDefaultCatClass" runat="server">
-                                <%# Eval("CatClassDisplay") %>
+                                <%#: Eval("CatClassDisplay") %>
                             </asp:View>
                             <asp:View ID="vwOverriddenCatClass" runat="server">
                                 <asp:Label ID="lblCatClass" runat="server" Text='<%# Eval("CatClassDisplay") %>' CssClass="ExceptionData">
@@ -229,7 +229,7 @@
                                 <uc5:mfbTooltip ID="mfbTTCatClass" runat="server" BodyContent="<%$ Resources:LogbookEntry, LogbookAltCatClassTooltip %>" HoverControl="lblCatClass" />
                             </asp:View>
                         </asp:MultiView>
-                        <div class="printonly"><asp:Label ID="lblModelAttributes" runat="server" Text='<%# MakeModel.GetModel(Convert.ToInt32(Eval("ModelID"))).AttributeListSingleLine %>'></asp:Label></div>
+                        <div class="printonly"><asp:Label ID="lblModelAttributes" runat="server" Text='<%#: MakeModel.GetModel(Convert.ToInt32(Eval("ModelID"))).AttributeListSingleLine %>'></asp:Label></div>
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldApproaches %>" SortExpression="Approaches">

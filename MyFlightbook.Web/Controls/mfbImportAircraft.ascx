@@ -7,13 +7,13 @@
         <asp:TemplateField HeaderText="<%$ Resources:Aircraft, ImportHeaderSpecifiedAircraft %>" HeaderStyle-HorizontalAlign="Left" meta:resourcekey="TemplateFieldResource2">
             <ItemTemplate>
                 <asp:HyperLink ID="lnkFAA" Font-Bold="True" runat="server" Target="_blank"
-                    Text='<%# Eval("TailNumber") %>' meta:resourcekey="lnkFAAResource1"></asp:HyperLink>
+                    Text='<%#: Eval("TailNumber") %>' meta:resourcekey="lnkFAAResource1"></asp:HyperLink>
                 <asp:Label ID="lblGivenTail" runat="server" Font-Bold="True"
-                    Text='<%# Eval("TailNumber") %>' meta:resourcekey="lblGivenTailResource1"></asp:Label>
+                    Text='<%#: Eval("TailNumber") %>' meta:resourcekey="lblGivenTailResource1"></asp:Label>
                 <asp:Label ID="lblAircraftVersion" runat="server" Font-Bold="True" meta:resourcekey="lblAircraftVersionResource1"></asp:Label>
                 -
                 <asp:Label ID="lblGivenModel" runat="server"
-                    Text='<%# Eval("ModelGiven") %>' meta:resourcekey="lblGivenModelResource1"></asp:Label>
+                    Text='<%#: Eval("ModelGiven") %>' meta:resourcekey="lblGivenModelResource1"></asp:Label>
             </ItemTemplate>
             <HeaderStyle HorizontalAlign="Left"></HeaderStyle>
             <ItemStyle VerticalAlign="Top" />
@@ -27,9 +27,9 @@
                             <asp:Image ID="imgEdit" runat="server" ImageUrl="~/images/pencilsm.png" meta:resourcekey="imgSearchResource1" Visible="false" />
                         </td>
                         <td>
-                            <div><asp:Label ID="lblSelectedMake" Font-Bold="true" runat="server" Text='<%# Eval("SpecifiedModelDisplay") %>' meta:resourcekey="lblMakeResource1"></asp:Label></div>
+                            <div><asp:Label ID="lblSelectedMake" Font-Bold="true" runat="server" Text='<%#: Eval("SpecifiedModelDisplay") %>' meta:resourcekey="lblMakeResource1"></asp:Label></div>
                             <asp:Panel ID="pnlStaticMake" runat="server">
-                                (<asp:Label ID="lblType" Font-Size="Smaller" runat="server" Text='<%# Eval("InstanceTypeDescriptionDisplay") %>' meta:resourcekey="lblTypeResource1"></asp:Label>)
+                                (<asp:Label ID="lblType" Font-Size="Smaller" runat="server" Text='<%#: Eval("InstanceTypeDescriptionDisplay") %>' meta:resourcekey="lblTypeResource1"></asp:Label>)
                             </asp:Panel>
                             <asp:Panel ID="pnlEditMake" runat="server" Visible="false">
                                 <table>

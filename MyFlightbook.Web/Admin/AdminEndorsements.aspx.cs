@@ -41,7 +41,7 @@ namespace MyFlightbook.Web.Admin
                 throw new ArgumentNullException(nameof(e));
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
-                Controls_mfbEditEndorsement ee = (Controls_mfbEditEndorsement)e.Row.FindControl("mfbEditEndorsement1");
+                Instruction.mfbEditEndorsement ee = (Instruction.mfbEditEndorsement)e.Row.FindControl("mfbEditEndorsement1");
                 if (ee != null)
                 {
                     ee.EndorsementID = Convert.ToInt32(((DataRowView)e.Row.DataItem)["id"], CultureInfo.InvariantCulture);

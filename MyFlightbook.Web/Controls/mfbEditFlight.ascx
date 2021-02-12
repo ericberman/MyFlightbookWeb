@@ -334,7 +334,7 @@
                                 <ul>
                                     <asp:Repeater ID="rptIssues" runat="server" DataSource='<%# Eval("Issues") %>'>
                                         <ItemTemplate>
-                                            <li><%# Eval("IssueDescription") %></li>
+                                            <li><%#: Eval("IssueDescription") %></li>
                                         </ItemTemplate>
                                     </asp:Repeater>
                                 </ul>
@@ -395,7 +395,7 @@
         <ul>
             <asp:Repeater ID="rptDiffs" runat="server">
                 <ItemTemplate>
-                    <li><%# Container.DataItem.ToString() %></li>
+                    <li><%#: Container.DataItem.ToString() %></li>
                 </ItemTemplate>
             </asp:Repeater>
         </ul>
