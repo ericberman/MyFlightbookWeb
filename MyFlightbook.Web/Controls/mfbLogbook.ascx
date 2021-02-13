@@ -146,7 +146,7 @@
                             </asp:Panel>
                             <asp:Repeater ID="rptProps" runat="server" DataSource='<%# Eval("PropertiesWithReplacedApproaches") %>'>
                                 <ItemTemplate>
-                                    <div><%#: Container.DataItem %></div>
+                                    <div><%# Container.DataItem %></div>
                                 </ItemTemplate>
                             </asp:Repeater>
                             <asp:Panel ID="pnlSignature" CssClass="signatureBlock" runat="server" Visible='<%# ((LogbookEntry.SignatureState) Eval("CFISignatureState")) != LogbookEntry.SignatureState.None %>'>
