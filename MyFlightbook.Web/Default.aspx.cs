@@ -4,10 +4,11 @@ using MyFlightbook.Image;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2020 MyFlightbook LLC
+ * Copyright (c) 2007-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -57,7 +58,7 @@ public partial class Public_Home : System.Web.UI.Page
 
             if (User.Identity.IsAuthenticated)
             {
-                lblHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageWelcomeBack, MyFlightbook.Profile.GetUser(User.Identity.Name).PreferredGreeting);
+                lblHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageWelcomeBack, HttpUtility.HtmlEncode(Profile.GetUser(User.Identity.Name).PreferredGreeting));
                 pnlWelcome.Visible = false;
             }
             else

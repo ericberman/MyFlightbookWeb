@@ -119,14 +119,15 @@
                             <ul>
                                 <asp:Repeater ID="rptCallback" DataSource='<%# Eval("Callbacks") %>' runat="server">
                                         <ItemTemplate>
-                                            <li><%# Container.DataItem %></li>
+                                            <li><%#: Container.DataItem %></li>
                                         </ItemTemplate>
                                 </asp:Repeater>
                             </ul>
                         </ItemTemplate>
+                        <ItemStyle VerticalAlign="Top" />
                         <EditItemTemplate>
                             <div class="fineprint">Enter urls, using spaces or new lines to divide multiple ones.</div>
-                            <asp:TextBox ID="txtCallbacks" MaxLength="1023" runat="server" Text='<%# Bind("CallbacksAsString") %>' Rows="4" TextMode="MultiLine"></asp:TextBox>
+                            <asp:TextBox ID="txtCallbacks" MaxLength="1023" runat="server" Text='<%#: Bind("CallbacksAsString") %>' Rows="4" TextMode="MultiLine"></asp:TextBox>
                         </EditItemTemplate>
                     </asp:TemplateField>
                     <asp:BoundField HeaderText="Scopes (space separated)" DataField="Scope" ItemStyle-VerticalAlign="Top" />

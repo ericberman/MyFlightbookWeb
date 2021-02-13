@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2020 MyFlightbook LLC
+ * Copyright (c) 2015-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -42,7 +42,7 @@ public partial class Controls_mfbPublicFlightItem : System.Web.UI.UserControl
                 lnkFullAc.NavigateUrl = il.ImageArray[0].URLFullImage;
             }
 
-            lblModel.Text = value.ModelDisplay;
+            lblModel.Text = HttpUtility.HtmlEncode(value.ModelDisplay);
             lblCatClass.Text = value.CatClassDisplay;
 
             il = new ImageList(MFBImageInfo.ImageClass.Flight, value.FlightID.ToString(CultureInfo.InvariantCulture));

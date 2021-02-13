@@ -39,7 +39,7 @@
             <ul>
                 <asp:Repeater ID="rptAttributes" runat="server">
                     <ItemTemplate>
-                        <li><%# Container.DataItem %></li>
+                        <li><%#: Container.DataItem %></li>
                     </ItemTemplate>
                 </asp:Repeater>
             </ul>
@@ -51,7 +51,7 @@
                         <ItemStyle VerticalAlign="Top" />
                         <ItemTemplate>
                             <div>
-                                <asp:Label ID="lblTail" Font-Bold="true" runat="server" Text='<%# Eval("DisplayTailNumber") %>'></asp:Label>
+                                <asp:Label ID="lblTail" Font-Bold="true" runat="server" Text='<%#: Eval("DisplayTailNumber") %>'></asp:Label>
                             </div>
                         </ItemTemplate>
                     </asp:TemplateField>

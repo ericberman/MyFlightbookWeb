@@ -37,7 +37,7 @@
             <ul>
                 <asp:Repeater ID="rptExpiring" runat="server">
                     <ItemTemplate>
-                        <li><%# Eval("Attribute") %></li>
+                        <li><%#: Eval("Attribute") %></li>
                     </ItemTemplate>
                 </asp:Repeater>
             </ul>

@@ -31,7 +31,7 @@
                             </asp:HyperLink>
                         <asp:Literal ID="litVideoCloseTag" runat="server"></asp:Literal>
                     </div>
-                    <asp:Panel runat="server" ID="pnlStatic" style="max-width: 200px; text-align:center;"><asp:Label ID="lblComments" runat="server" Text='<%# Eval("Comment") %>'></asp:Label></asp:Panel>
+                    <asp:Panel runat="server" ID="pnlStatic" style="max-width: 200px; text-align:center;"><asp:Label ID="lblComments" runat="server" Text='<%#: Eval("Comment") %>'></asp:Label></asp:Panel>
                 </div>
             </ItemTemplate>
         </asp:Repeater>
