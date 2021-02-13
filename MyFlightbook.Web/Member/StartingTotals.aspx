@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="StartingTotals.aspx.cs" Inherits="Member_StartingTotals" culture="auto" meta:resourcekey="PageResource1" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="StartingTotals.aspx.cs" Inherits="MyFlightbook.MemberPages.StartingTotals" culture="auto" meta:resourcekey="PageResource1" %>
 <%@ Reference Control="~/Controls/mfbDecimalEdit.ascx" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
@@ -103,7 +103,7 @@
                         <Columns>
                             <asp:TemplateField meta:resourcekey="TemplateFieldResource1">
                                 <ItemTemplate>
-                                    <b><%# Eval("TailNumber") %></b> <%# Eval("ModelDescription")%> - <%# Eval("ModelCommonName")%> <%# Eval("InstanceTypeDescription")%>
+                                    <b><%#: Eval("TailNumber") %></b> <%#: Eval("ModelDescription")%> - <%#: Eval("ModelCommonName")%> <%#: Eval("InstanceTypeDescription")%>
                                 </ItemTemplate>
                             </asp:TemplateField>
                         </Columns>
@@ -121,7 +121,7 @@
                         Text="How would you like to enter your totals?" 
                         meta:resourcekey="lblGranularityResource1"></asp:Label> </p>
                 <table>
-                    <tr valign="top">
+                    <tr style="vertical-align:top">
                         <td><asp:RadioButton ID="rbSimple" runat="server" GroupName="rbMode" Checked="true" AutoPostBack="true"
                         Text="" meta:resourcekey="rbSimpleResource1" OnCheckedChanged="InitFlights" /> </td>
                         <td><asp:Label ID="lblSimple" Font-Bold="true" runat="server" Text="Simple" 
@@ -129,7 +129,7 @@
                         Text="Enter starting totals by category/class and, if appropriate, type.  This is the simplest to do, but is also the coarsest approximation of various categories of flying time." meta:resourcekey="lblSimpleDescResource1" 
                         ></asp:Label></td>
                     </tr>
-                    <tr valign="top">
+                    <tr style="vertical-align:top">
                         <td><asp:RadioButton ID="rbMedium" runat="server" GroupName="rbMode" AutoPostBack="true"
                         Text="" meta:resourcekey="rbMediumResource1" OnCheckedChanged="InitFlights"/> </td>
                         <td><asp:Label ID="lblMedium" Font-Bold="true" runat="server" Text="Medium" 
@@ -137,7 +137,7 @@
                         Text="Enter starting totals by category/class/type, but also by aircraft capabilities.  For example, you can break out retract or high-performance time.  This is more work than simple, but will provide a better approximation of your flying totals." meta:resourcekey="lblMediumDescResource1" 
                             ></asp:Label></td>
                     </tr>
-                    <tr valign="top">
+                    <tr style="vertical-align:top">
                         <td><asp:RadioButton ID="rbModels" runat="server" GroupName="rbMode" AutoPostBack="true"
                         Text="" meta:resourcekey="rbModelsResource1" OnCheckedChanged="InitFlights" /> </td>
                         <td><asp:Label ID="lblDetailed" Font-Bold="true" runat="server" Text="Detailed" 
@@ -169,13 +169,13 @@
                 <div style="float:left; padding:4px; border: 1px solid black;">
                     <h2><asp:Label ID="lblTotalsBefore" runat="server" 
                             Text="Totals BEFORE changes are made" meta:resourcekey="lblTotalsBeforeResource1"></asp:Label></h2>
-                    <uc2:mfbTotalSummary ID="mfbTotalsBefore" runat="server" />
+                    <uc2:mfbTotalSummary ID="mfbTotalsBefore" runat="server" IsGrouped="false" DefaultGroupMode="false" />
                 </div>
                 <div style="float:left">&nbsp;</div>
                 <div style="float:left; padding:4px;border: 1px solid black;">
                     <h2><asp:Label ID="Label1" runat="server" Text="Totals AFTER changes are made" 
                             meta:resourcekey="Label1Resource1"></asp:Label></h2>
-                    <uc2:mfbTotalSummary ID="mfbTotalsAfter" runat="server" />
+                    <uc2:mfbTotalSummary ID="mfbTotalsAfter" runat="server" IsGrouped="false" DefaultGroupMode="false" />
                 </div>
             </asp:WizardStep>
         </WizardSteps>

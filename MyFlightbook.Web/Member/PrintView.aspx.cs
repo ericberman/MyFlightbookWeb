@@ -1,5 +1,4 @@
-﻿using MyFlightbook;
-using MyFlightbook.Image;
+﻿using MyFlightbook.Image;
 using MyFlightbook.Instruction;
 using MyFlightbook.Printing;
 using Newtonsoft.Json;

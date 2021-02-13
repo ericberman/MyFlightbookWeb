@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net.Mail;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -23,7 +24,7 @@ namespace MyFlightbook.Instruction
             this.Master.SelectedTab = tabID.instSignFlights;
             if (!IsPostBack)
             {
-                lblName.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.TrainingHeader, MyFlightbook.Profile.GetUser(Page.User.Identity.Name).UserFullName);
+                lblName.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.TrainingHeader, HttpUtility.HtmlEncode(Profile.GetUser(Page.User.Identity.Name).UserFullName));
 
                 this.Master.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.TitleTraining, Branding.CurrentBrand.AppName);
 

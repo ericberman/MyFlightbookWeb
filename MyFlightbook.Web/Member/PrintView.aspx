@@ -201,13 +201,13 @@
                 <br /><br /><br />
                 <div style="text-transform:uppercase; font-weight:bold; font-size:xx-large">
                     <p>
-                        <%= CurrentUser.UserFullName %><br />
+                        <%= System.Web.HttpUtility.HtmlEncode(CurrentUser.UserFullName) %><br />
                         <asp:Label ID="lblCoverName" runat="server" Text="<%$ Resources:LocalizedText, PrintViewCoverSheetNameTemplate %>" />
                     </p>
                 </div>
-                <div style="white-space:pre-line"><% =CurrentUser.Address %></div>
-                <div><% = CurrentUserDOB %></div>
-                <div><%=Resources.LogbookEntry.PrintHeaderLicense %> <% =CurrentUser.License %></div>
+                <div style="white-space:pre-line"><% =System.Web.HttpUtility.HtmlEncode(CurrentUser.Address) %></div>
+                <div><% = System.Web.HttpUtility.HtmlEncode(CurrentUserDOB) %></div>
+                <div><%=Resources.LogbookEntry.PrintHeaderLicense %> <% =System.Web.HttpUtility.HtmlEncode(CurrentUser.License) %></div>
                 <div><asp:Image ID="imgLogo" runat="server" style="max-width: 300px;" /></div>
                 <p><asp:Label ID="lblCoverDate" runat="server" /></p>
             </div>

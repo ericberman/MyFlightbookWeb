@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="Training.aspx.cs" Inherits="Member_Training" culture="auto" meta:resourcekey="PageResource1" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="Training.aspx.cs" Inherits="MyFlightbook.Instruction.TrainingPage" culture="auto" meta:resourcekey="PageResource1" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register Src="../Controls/mfbTypeInDate.ascx" TagName="mfbTypeInDate" TagPrefix="uc2" %>
@@ -66,7 +66,7 @@
                             <asp:ImageButton ID="btnIgnore" CommandName="Ignore" ImageUrl="~/images/x.gif" AlternateText="<%$ Resources:SignOff, SignFlightIgnore %>"
                             ToolTip="<%$ Resources:SignOff, SignFlightIgnore %>" runat="server" />
                             &nbsp;
-                            <asp:Label ID="lblFlight" runat="server" Text='<%# Eval("DisplayString") %>' meta:resourcekey="lblFlightResource1"  
+                            <asp:Label ID="lblFlight" runat="server" Text='<%#: Eval("DisplayString") %>' meta:resourcekey="lblFlightResource1"  
                                 ></asp:Label>
                         </ItemTemplate>
                         <HeaderStyle HorizontalAlign="Left" />
@@ -312,8 +312,8 @@
     <asp:Repeater ID="rptEndorsementImages" runat="server">
         <ItemTemplate>
             <div>
-                <asp:Image style="max-width: 100%" ID="imgEndorsement" AlternateText='<%# Eval("Comment") %>' ImageUrl='<%# Eval("URLFullImage") %>' runat="server" meta:resourcekey="imgEndorsementResource1"  />
-                <p style="text-align:center"><%# Eval("Comment") %></p>
+                <asp:Image style="max-width: 100%" ID="imgEndorsement" AlternateText='<%#: Eval("Comment") %>' ImageUrl='<%# Eval("URLFullImage") %>' runat="server" meta:resourcekey="imgEndorsementResource1"  />
+                <p style="text-align:center"><%#: Eval("Comment") %></p>
             </div>
         </ItemTemplate>
     </asp:Repeater>

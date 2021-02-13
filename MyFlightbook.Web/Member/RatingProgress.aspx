@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="RatingProgress.aspx.cs" Inherits="Member_RatingProgress" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="RatingProgress.aspx.cs" Inherits="MyFlightbook.RatingsProgress.RatingProgressPage" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="cpPageTitle" Runat="Server">
     <asp:Label ID="lblTitle" runat="server" Text=""></asp:Label>
@@ -42,23 +42,23 @@
             <asp:TemplateField>
                 <ItemStyle CssClass="progressRow" />
                 <ItemTemplate>
-                    <div><asp:Label ID="lblFarFREF" Font-Bold="true" runat="server" Text='<%# Eval("FARRef") %>'></asp:Label> - <asp:Label ID="lblTitle" runat="server" Text='<%# Eval("Title") %>'></asp:Label></div>
+                    <div><asp:Label ID="lblFarFREF" Font-Bold="true" runat="server" Text='<%#: Eval("FARRef") %>'></asp:Label> - <asp:Label ID="lblTitle" runat="server" Text='<%# Eval("Title") %>'></asp:Label></div>
                     <asp:Panel ID="pnlNote" CssClass="fineprint" runat="server">
                         <asp:Label ID="lblNoteHeader" runat="server" Font-Bold="true" Text="<%$ Resources:MilestoneProgress, NoteHeader %>"></asp:Label>
-                        <asp:Label ID="lblNote" runat="server" Font-Italic="true" Text='<%# Eval("Note") %>'></asp:Label>
+                        <asp:Label ID="lblNote" runat="server" Font-Italic="true" Text='<%#: Eval("Note") %>'></asp:Label>
                     </asp:Panel>
                     <asp:MultiView ID="mvProgress" runat="server">
                         <asp:View ID="vwPercentage" runat="server">
                             <div class="progress">
                                 <div class="percent"><asp:Label ID="lblProgress" runat="server" Text='<%# Eval("ProgressDisplay") %>'></asp:Label></div>
-                                <div class="bar" ID="divPercent" runat="server">&nbsp;</div>
+                                <div class="bar" id="divPercent" runat="server">&nbsp;</div>
                             </div>
                         </asp:View>
                         <asp:View ID="vwAchievement" runat="server">
                             <asp:MultiView ID="mvAchievement" runat="server">
                                 <asp:View ID="vwAchieved" runat="server">
                                     <asp:Label ID="lblCompleted" runat="server" Text="<%$ Resources:MilestoneProgress, CompletedHeader %>" Font-Bold="true"></asp:Label>
-                                    <asp:HyperLink runat="server" ID="lnkFlight" Target="_blank" Text='<%# Eval("MatchingEventText") %>'></asp:HyperLink>
+                                    <asp:HyperLink runat="server" ID="lnkFlight" Target="_blank" Text='<%#: Eval("MatchingEventText") %>'></asp:HyperLink>
                                 </asp:View>
                                 <asp:View ID="vwNotAchieved" runat="server">
                                     <asp:Label ID="lblNotDone" Font-Bold="true" runat="server" Text="<%$ Resources:MilestoneProgress, NotMet %>"></asp:Label>
