@@ -161,7 +161,12 @@ namespace MyFlightbook
                         gvFlightLogs.Columns.RemoveAt(rgCols[i] + iCol);
                 }
 
+                // Ensure that we use adequate decimal settings for round-trip.
+                Profile pf = Profile.GetUser(User);
+                DecimalFormat df = pf.PreferenceExists(MFBConstants.keyDecimalSettings) ? pf.GetPreferenceForKey<DecimalFormat>(MFBConstants.keyDecimalSettings) : DecimalFormat.Adaptive;
+                Session[MFBConstants.keyDecimalSettings] = DecimalFormat.Adaptive;
                 gvFlightLogs.DataBind();
+                Session[MFBConstants.keyDecimalSettings] = df;
             }
         }
 
