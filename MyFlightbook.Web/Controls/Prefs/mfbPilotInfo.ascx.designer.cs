@@ -156,7 +156,7 @@ namespace MyFlightbook.Web.Controls.Prefs
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_mfbBasicMedManager BasicMedManager;
+        protected global::MyFlightbook.Web.Controls.Prefs.mfbBasicMedManager BasicMedManager;
 
         /// <summary>
         /// acpCertificates control.
