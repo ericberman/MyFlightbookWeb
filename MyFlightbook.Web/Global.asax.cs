@@ -5,7 +5,7 @@ using System.Web.UI;
 
 /******************************************************
     * 
-    * Copyright (c) 2015-2020 MyFlightbook LLC
+    * Copyright (c) 2015-2021 MyFlightbook LLC
     * Contact myflightbook-at-gmail.com for more information
     *
    *******************************************************/
@@ -82,7 +82,14 @@ namespace MyFlightbook.Web
 
         protected void Session_Start(object sender, EventArgs e)
         {
-            // Code that runs when a new session is started
+            // Make sure that the decimal setting is set correctly
+            // A bit of a hack, but it's the only way to ensure that this is passed everywhere it is needed appropriately.
+            if (!String.IsNullOrEmpty(Context?.User.Identity?.Name))
+            {
+                Profile pf = Profile.GetUser(Context.User.Identity.Name);
+                if (pf.PreferenceExists(MFBConstants.keyDecimalSettings))
+                    Session[MFBConstants.keyDecimalSettings] = pf.GetPreferenceForKey<DecimalFormat>(MFBConstants.keyDecimalSettings);
+            }
         }
 
         protected void Session_End(object sender, EventArgs e)

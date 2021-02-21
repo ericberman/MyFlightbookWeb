@@ -27,8 +27,6 @@ public partial class Member_8710Form : System.Web.UI.Page
 
     protected bool UseHHMM { get; set; }
 
-    protected bool Use2Digits { get; set; }
-
     protected void Page_Load(object sender, EventArgs e)
     {
         this.Master.SelectedTab = tabID.inst8710;
@@ -36,7 +34,6 @@ public partial class Member_8710Form : System.Web.UI.Page
 
         Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
         UseHHMM = pf.UsesHHMM;
-        Use2Digits = pf.Use2DigitTotals;
 
         if (!IsPostBack)
         {

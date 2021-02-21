@@ -9,7 +9,7 @@ using System.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2020 MyFlightbook LLC
+ * Copyright (c) 2007-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -264,7 +264,7 @@ namespace MyFlightbook.Currency
         /// </summary>
         /// <param name="fUseHHMM">Whether or not to use hhmm format, if it's a time</param>
         /// <returns>The formatted string in the current culture</returns>
-        public string ValueString(bool fUseHHMM, bool fUse2Digits)
+        public string ValueString(bool fUseHHMM)
         {
             switch (NumericType)
             {
@@ -273,7 +273,7 @@ namespace MyFlightbook.Currency
                 case TotalsItem.NumType.Decimal:
                     return Value.FormatDecimal(false);
                 case TotalsItem.NumType.Time:
-                    return Value.FormatDecimal(IsTime && fUseHHMM, false, fUse2Digits);
+                    return Value.FormatDecimal(IsTime && fUseHHMM, false);
                 case TotalsItem.NumType.Currency:
                     return String.Format(CultureInfo.CurrentCulture, "{0:C}", Value);
                 default:
@@ -813,7 +813,6 @@ namespace MyFlightbook.Currency
             }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         private void ComputeTotalsForModelFeature(MySqlCommand comm, string szTempTableName, Profile pf)
         {
             foreach (ModelFeatureTotal mft in rgModelFeatureTotals)
@@ -891,7 +890,6 @@ namespace MyFlightbook.Currency
         /// <summary>
         /// Binds to the user's totals so that the Totals property is valid.
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         public void DataBind()
         {
             if (Username.Length == 0 || Restriction == null)

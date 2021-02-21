@@ -106,6 +106,69 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Decimal, 1 digit after decimal.
+        /// </summary>
+        internal static string DecimalPref1Decimal {
+            get {
+                return ResourceManager.GetString("DecimalPref1Decimal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Decimal, 2 digits after decimal.
+        /// </summary>
+        internal static string DecimalPref2Decimal {
+            get {
+                return ResourceManager.GetString("DecimalPref2Decimal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Decimal, 1 or 2 digits after decimal.
+        /// </summary>
+        internal static string DecimalPrefAdaptive {
+            get {
+                return ResourceManager.GetString("DecimalPrefAdaptive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hours and minutes (HH:MM).
+        /// </summary>
+        internal static string DecimalPrefHHMM {
+            get {
+                return ResourceManager.GetString("DecimalPrefHHMM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Format for times:.
+        /// </summary>
+        internal static string DecimalPrefPrompt {
+            get {
+                return ResourceManager.GetString("DecimalPrefPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 70 Minutes displays as....
+        /// </summary>
+        internal static string DecimalPrefSample1 {
+            get {
+                return ResourceManager.GetString("DecimalPrefSample1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 72 Minutes displays as....
+        /// </summary>
+        internal static string DecimalPrefSample2 {
+            get {
+                return ResourceManager.GetString("DecimalPrefSample2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Prefer cryptocurrency?  MyFlightbook now accepts Bitcoin and Ethereum.
         /// </summary>
         internal static string DonateCrypto {

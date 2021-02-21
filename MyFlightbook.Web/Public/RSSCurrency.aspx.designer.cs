@@ -73,5 +73,5 @@ public partial class Public_RSSCurrency
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::Controls_mfbTotalSummary mfbTotalSummary;
+    protected global::MyFlightbook.Currency.mfbTotalSummary mfbTotalSummary;
 }

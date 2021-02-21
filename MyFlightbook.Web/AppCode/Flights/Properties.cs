@@ -14,7 +14,7 @@ using System.Web.Caching;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2020 MyFlightbook LLC
+ * Copyright (c) 2008-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -873,7 +873,7 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
                     case CFPPropertyType.cfpDateTime:
                         return DateValue.UTCFormattedStringOrEmpty(false);
                     case CFPPropertyType.cfpDecimal:
-                        return DecValue.ToString("#,##0.0#", CultureInfo.CurrentCulture);
+                        return DecValue.FormatDecimal(false);
                     case CFPPropertyType.cfpCurrency:
                         return DecValue.ToString("C", CultureInfo.CurrentCulture);
                     case CFPPropertyType.cfpInteger:
@@ -1031,10 +1031,9 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
             try
             {
 
-                if (dr["DateValue"] != null && dr["DateValue"].ToString().Length > 0)
-                    DateValue = DateTime.SpecifyKind(Convert.ToDateTime(dr["DateValue"], CultureInfo.InvariantCulture), DateTimeKind.Utc);
-                else
-                    DateValue = DateTime.MinValue;
+                DateValue = dr["DateValue"] != null && dr["DateValue"].ToString().Length > 0
+                    ? DateTime.SpecifyKind(Convert.ToDateTime(dr["DateValue"], CultureInfo.InvariantCulture), DateTimeKind.Utc)
+                    : DateTime.MinValue;
 
                 PropID = Convert.ToInt32(dr["idProp"], CultureInfo.InvariantCulture);
                 FlightID = Convert.ToInt32(dr["idFlight"], CultureInfo.InvariantCulture);
@@ -1235,10 +1234,7 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
                     char ch1st = szVal.ToUpperInvariant()[0];
                     if (ch1st == 'Y')
                         BoolValue = true;
-                    else if (ch1st == 'N')
-                        BoolValue = false;
-                    else
-                        BoolValue = Convert.ToBoolean(szVal, CultureInfo.InvariantCulture);
+                    else BoolValue = ch1st != 'N' && Convert.ToBoolean(szVal, CultureInfo.InvariantCulture);
                     break;
                 case CFPPropertyType.cfpInteger:
                     IntValue = Convert.ToInt32(szVal, CultureInfo.InvariantCulture);

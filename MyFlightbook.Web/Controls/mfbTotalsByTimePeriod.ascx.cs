@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2020 MyFlightbook LLC
+ * Copyright (c) 2020-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -18,8 +18,6 @@ namespace MyFlightbook.Web.Controls
     public partial class mfbTotalsByTimePeriod : System.Web.UI.UserControl
     {
         protected bool UseHHMM { get; set; }
-
-        protected bool Use2Digits { get; set; }
 
         protected bool Past7Days { get; set; }
 
@@ -85,11 +83,11 @@ namespace MyFlightbook.Web.Controls
             // Link the *value* here, not the description, since we will have multiple columns
             // Add the values div (panel) to the totals box
             if (ti.Query == null)
-                tc.Controls.Add(new Label() { Text = ti.ValueString(UseHHMM, Use2Digits) });
+                tc.Controls.Add(new Label() { Text = ti.ValueString(UseHHMM) });
             else
                 tc.Controls.Add(new HyperLink()
                 {
-                    Text = ti.ValueString(UseHHMM, Use2Digits),
+                    Text = ti.ValueString(UseHHMM),
                     NavigateUrl = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}",
                                                     Branding.CurrentBrand.HostName,
                                                     ResolveUrl("~/Member/LogbookNew.aspx?fq=" + HttpUtility.UrlEncode(ti.Query.ToBase64CompressedJSONString())))
@@ -110,7 +108,6 @@ namespace MyFlightbook.Web.Controls
 
             Profile pf = Profile.GetUser(szUser);
             UseHHMM = pf.UsesHHMM;
-            Use2Digits = pf.Use2DigitTotals;
 
             // Get All time totals.  This will also give us the entire space of totals items
             FlightQuery fq = fqSupplied == null ? new FlightQuery(szUser) : new FlightQuery(fqSupplied);

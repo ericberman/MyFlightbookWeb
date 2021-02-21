@@ -132,6 +132,27 @@
   <data name="CloudStorageOneDriveName" xml:space="preserve">
     <value>OneDrive</value>
   </data>
+  <data name="DecimalPref1Decimal" xml:space="preserve">
+    <value>Decimal, 1 digit after decimal</value>
+  </data>
+  <data name="DecimalPref2Decimal" xml:space="preserve">
+    <value>Decimal, 2 digits after decimal</value>
+  </data>
+  <data name="DecimalPrefAdaptive" xml:space="preserve">
+    <value>Decimal, 1 or 2 digits after decimal</value>
+  </data>
+  <data name="DecimalPrefHHMM" xml:space="preserve">
+    <value>Hours and minutes (HH:MM)</value>
+  </data>
+  <data name="DecimalPrefPrompt" xml:space="preserve">
+    <value>Format for times:</value>
+  </data>
+  <data name="DecimalPrefSample1" xml:space="preserve">
+    <value>70 Minutes displays as...</value>
+  </data>
+  <data name="DecimalPrefSample2" xml:space="preserve">
+    <value>72 Minutes displays as...</value>
+  </data>
   <data name="DonateCrypto" xml:space="preserve">
     <value>Prefer cryptocurrency?  MyFlightbook now accepts Bitcoin and Ethereum</value>
   </data>

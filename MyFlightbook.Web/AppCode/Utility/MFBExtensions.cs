@@ -728,13 +728,19 @@ namespace MyFlightbook
         /// <param name="o">The object</param>
         /// <param name="fIncludeZero">True to return an "0" for zero values.</param>
         /// <param name="fUseHHMM">True for hh:mm format</param>
-        /// <param name="f2Digits">True to pad out to 2 digits always</param>
         /// <returns></returns>
-        public static string FormatDecimal(this object o, bool fUseHHMM, bool fIncludeZero = false, bool f2Digits = false)
+        public static string FormatDecimal(this object o, bool fUseHHMM, bool fIncludeZero = false)
         {
             if (o == null || o == System.DBNull.Value) return string.Empty;
             Decimal d = Convert.ToDecimal(o, CultureInfo.CurrentCulture);
-            return (d == 0.0M && !fIncludeZero) ? string.Empty : (fUseHHMM ? d.ToHHMM() : d.ToString(f2Digits ? "#,##0.00" : "#,##0.0#", CultureInfo.CurrentCulture));
+
+            // See if this user has a decimal preference
+            // This is stored in the current session.  It's a bit of a hack because hhmm vs. decimal is deeply embedded throughout the system, and in many cases there's no way to pass down the context if it's an explicit property.
+            DecimalFormat df = DecimalFormat.Adaptive;  // default
+            if (HttpContext.Current?.Session?[MFBConstants.keyDecimalSettings] != null)
+                df = (DecimalFormat) HttpContext.Current.Session[MFBConstants.keyDecimalSettings];
+
+            return (d == 0.0M && !fIncludeZero) ? string.Empty : (fUseHHMM ? d.ToHHMM() : d.ToString(df == DecimalFormat.Adaptive ? "#,##0.0#" : (df == DecimalFormat.OneDecimal ? "#,##0.0" : "#,##0.00"), CultureInfo.CurrentCulture));
         }
 
         /// <summary>
@@ -958,6 +964,15 @@ namespace MyFlightbook
             response.End();
         }
         #endregion
+    }
+
+    /// <summary>
+    /// Preferences for displaying non-HHMM decimals
+    /// </summary>
+    public enum DecimalFormat { 
+        Adaptive,       // 3.1 displays as 3.1, 3.12 as 3.12
+        OneDecimal,     // 3.1 displays as 3.1, 3.12 as 3.1
+        TwoDecimal      // 3.1 displays as 3.10, 3.12 as 3.12
     }
 
     /// <summary>

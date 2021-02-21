@@ -28,7 +28,7 @@ public partial class login
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::Controls_mfbSignIn mfbSignIn1;
+    protected global::MyFlightbook.Web.Controls.mfbSignIn mfbSignIn1;
 
     /// <summary>
     /// Master property.

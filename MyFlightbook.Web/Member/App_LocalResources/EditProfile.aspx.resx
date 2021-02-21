@@ -477,12 +477,6 @@
   <data name="lblPrefsUpdatedResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="lblPrefTimesResource1.Text" xml:space="preserve">
-    <value>Format for times:</value>
-  </data>
-  <data name="lblPrefTimesResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="lblPropertyDescResource1.Text" xml:space="preserve">
     <value>Properties that you have used on previous flights are automatically shown for new flights.  To reduce clutter, though, you can choose to not display some by default.</value>
   </data>
@@ -504,12 +498,6 @@
   <data name="lblShowcurrencyResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="ListItemResource1.Text" xml:space="preserve">
-    <value>Use decimal</value>
-  </data>
-  <data name="ListItemResource1.Value" xml:space="preserve">
-    <value>1</value>
-  </data>
   <data name="ListItemResource10.Value" xml:space="preserve">
     <value>1</value>
   </data>
@@ -523,12 +511,6 @@
     <value>The UTC date at the time of departure</value>
   </data>
   <data name="ListItemResource19.Value" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="ListItemResource2.Text" xml:space="preserve">
-    <value>Use hours and minutes (HH:MM)</value>
-  </data>
-  <data name="ListItemResource2.Value" xml:space="preserve">
     <value>0</value>
   </data>
   <data name="ListItemResource23.Value" xml:space="preserve">
@@ -766,9 +748,6 @@
     <value />
   </data>
   <data name="rblDateEntryPreferencesResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="rblTimeEntryPreferenceResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="RegularExpressionValidator1Resource1.ErrorMessage" xml:space="preserve">

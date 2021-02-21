@@ -137,8 +137,15 @@ namespace MyFlightbook
             {
                 string szUser = HttpContext.Current.Request.Cookies[MFBConstants.keyOriginalID].Value;
                 MembershipUser mu = (szUser == null) ? null : Membership.GetUser(szUser);
-                if (mu != null && mu.UserName.Length > 0)
+                if (!String.IsNullOrEmpty(mu?.UserName))
+                {
                     FormsAuthentication.SetAuthCookie(HttpContext.Current.Request.Cookies[MFBConstants.keyOriginalID].Value, true);
+                    Profile pf = Profile.GetUser(mu.UserName);
+                    if (pf.PreferenceExists(MFBConstants.keyDecimalSettings))
+                        HttpContext.Current.Session[MFBConstants.keyDecimalSettings] = pf.GetPreferenceForKey<DecimalFormat>(MFBConstants.keyDecimalSettings);
+                    else
+                        HttpContext.Current.Session[MFBConstants.keyDecimalSettings] = null;
+                }
                 else
                     FormsAuthentication.SignOut();
                 HttpContext.Current.Response.Cookies[MFBConstants.keyOriginalID].Expires = DateTime.Now.AddDays(-1);
@@ -157,6 +164,12 @@ namespace MyFlightbook
             FormsAuthentication.SetAuthCookie(szTargetName, true);
             HttpContext.Current.Response.Cookies[MFBConstants.keyIsImpersonating].Value = true.ToString(CultureInfo.InvariantCulture);
             HttpContext.Current.Response.Cookies[MFBConstants.keyIsImpersonating].Expires = DateTime.Now.AddDays(30);
+
+            Profile pf = Profile.GetUser(szTargetName);
+            if (pf.PreferenceExists(MFBConstants.keyDecimalSettings))
+                HttpContext.Current.Session[MFBConstants.keyDecimalSettings] = pf.GetPreferenceForKey<DecimalFormat>(MFBConstants.keyDecimalSettings);
+            else
+                HttpContext.Current.Session[MFBConstants.keyDecimalSettings] = null;
         }
         #endregion
     }
@@ -306,15 +319,6 @@ namespace MyFlightbook
                         break;
                 }
             }
-        }
-
-        /// <summary>
-        /// Determines whether totals should be displayed padded to 2 decimal places (if not in hh:mm)
-        /// </summary>
-        public Boolean Use2DigitTotals
-        {
-            get { return hasFlag(CurrencyOptionFlags.flagShow2DigitTotals); }
-            set { setCurrencyFlag(CurrencyOptionFlags.flagShow2DigitTotals, value); }
         }
 
         /// <summary>

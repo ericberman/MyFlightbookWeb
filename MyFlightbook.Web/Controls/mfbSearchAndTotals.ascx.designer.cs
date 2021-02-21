@@ -37,7 +37,7 @@ public partial class Controls_mfbSearchAndTotals
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::Controls_mfbTotalSummary mfbTotalSummary1;
+    protected global::MyFlightbook.Currency.mfbTotalSummary mfbTotalSummary1;
 
     /// <summary>
     /// locHeader control.

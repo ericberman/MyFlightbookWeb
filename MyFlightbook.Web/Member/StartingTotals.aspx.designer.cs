@@ -408,7 +408,7 @@ namespace MyFlightbook.MemberPages
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_mfbTotalSummary mfbTotalsBefore;
+        protected global::MyFlightbook.Currency.mfbTotalSummary mfbTotalsBefore;
 
         /// <summary>
         /// Label1 control.
@@ -426,7 +426,7 @@ namespace MyFlightbook.MemberPages
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_mfbTotalSummary mfbTotalsAfter;
+        protected global::MyFlightbook.Currency.mfbTotalSummary mfbTotalsAfter;
 
         /// <summary>
         /// Master property.

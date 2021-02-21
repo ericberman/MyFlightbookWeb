@@ -7,7 +7,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2020 MyFlightbook LLC
+ * Copyright (c) 2008-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -311,7 +311,7 @@ namespace MyFlightbook.Histogram
             return String.Format(CultureInfo.InvariantCulture, "{0}?{1}", BaseHRef, string.Join("&", lst));
         }
 
-        public static string FormatForType(object o, HistogramValueTypes valueType, bool fUseHHMM = false, bool fUse2Digits = false, bool fIncludeZero = true)
+        public static string FormatForType(object o, HistogramValueTypes valueType, bool fUseHHMM = false, bool fIncludeZero = true)
         {
             if (o == null)
                 return string.Empty;
@@ -322,7 +322,7 @@ namespace MyFlightbook.Histogram
                     return String.Format(CultureInfo.CurrentCulture, "{0:C}", o);
                 case HistogramValueTypes.Decimal:
                 case HistogramValueTypes.Time:
-                    return o.FormatDecimal(fUseHHMM, fIncludeZero, fUse2Digits);
+                    return o.FormatDecimal(fUseHHMM, fIncludeZero);
                 case HistogramValueTypes.Integer:
                     return String.Format(CultureInfo.CurrentCulture, "{0:#,##0}", o);
                 default:

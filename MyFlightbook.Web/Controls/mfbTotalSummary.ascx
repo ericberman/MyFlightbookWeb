@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbTotalSummary.ascx.cs" Inherits="Controls_mfbTotalSummary" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbTotalSummary.ascx.cs" Inherits="MyFlightbook.Currency.mfbTotalSummary" %>
 <asp:MultiView ID="mvTotals" runat="server" ActiveViewIndex="0">
     <asp:View ID="vwFlat" runat="server">
         <asp:GridView ID="gvTotals" runat="server" AutoGenerateColumns="False" 
@@ -24,7 +24,7 @@
                 </asp:TemplateField>
                 <asp:TemplateField ItemStyle-HorizontalAlign="Right" ItemStyle-VerticalAlign="Top">
                     <ItemTemplate>
-                        <asp:Label ID="lblValue" runat="server" Text='<%# ((MyFlightbook.Currency.TotalsItem) Container.DataItem).ValueString(UseHHMM, Use2Digits) %>' />
+                        <asp:Label ID="lblValue" runat="server" Text='<%# ((MyFlightbook.Currency.TotalsItem) Container.DataItem).ValueString(UseHHMM) %>' />
                     </ItemTemplate>
                 </asp:TemplateField>
             </Columns>
@@ -41,7 +41,7 @@
                     <ItemTemplate>
                         <div class="totalsBox">
                             <div class="totalsValue">
-                                <%# ((MyFlightbook.Currency.TotalsItem) Container.DataItem).ValueString(UseHHMM, Use2Digits) %>
+                                <%# ((MyFlightbook.Currency.TotalsItem) Container.DataItem).ValueString(UseHHMM) %>
                             </div>
                             <div>
                                 <asp:MultiView ID="MultiView1" runat="server" ActiveViewIndex='<%# (LinkTotalsToQuery && Eval("Query") != null) ? 0 : 1 %>'>

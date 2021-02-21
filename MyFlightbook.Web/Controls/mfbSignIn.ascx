@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbSignIn.ascx.cs" Inherits="Controls_mfbSignIn" %>
+<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbSignIn.ascx.cs" Inherits="MyFlightbook.Web.Controls.mfbSignIn" %>
 <%@ Register Src="~/Controls/TwoFactorAuthVerifyCode.ascx" TagPrefix="uc1" TagName="TwoFactorAuthVerifyCode" %>
 
 <asp:Panel ID="pnlSignIn" runat="server">
@@ -8,7 +8,7 @@
             CreateUserUrl="~/Logon/newuser.aspx" DestinationPageUrl="~/Member/LogbookNew.aspx"
             LoginButtonText=""
             MembershipProvider="MySqlMembershipProvider" PasswordRecoveryText=""
-            PasswordRecoveryUrl="~/Logon/ResetPass.aspx" TitleText=""
+            PasswordRecoveryUrl="~/Logon/ResetPass.aspx" TitleText="" OnLoggedIn="ctlSignIn_LoggedIn"
             OnLoggingIn="OnLoggingIn">
             <TitleTextStyle Font-Bold="True" />
             <InstructionTextStyle Font-Italic="True" ForeColor="Black" />

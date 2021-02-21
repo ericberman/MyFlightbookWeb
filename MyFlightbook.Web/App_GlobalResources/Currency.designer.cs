@@ -364,15 +364,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Always Display 2 decimal places for totals (if not using HH:MM format).
-        /// </summary>
-        internal static string CurrencyTotalsDigits {
-            get {
-                return ResourceManager.GetString("CurrencyTotalsDigits", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Display:.
         /// </summary>
         internal static string CurrencyTotalsDisplayHeader {

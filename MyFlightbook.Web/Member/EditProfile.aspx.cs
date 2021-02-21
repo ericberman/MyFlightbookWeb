@@ -199,9 +199,19 @@ namespace MyFlightbook.MemberPages
             ckCanadianCurrency.Checked = m_pf.UseCanadianCurrencyRules;
             rblTotalsOptions.SelectedValue = m_pf.TotalsGroupingMode.ToString();
             ckIncludeModelFeatureTotals.Checked = !m_pf.SuppressModelFeatureTotals;
-            ck2Decimal.Checked = m_pf.Use2DigitTotals;
             rblCurrencyPref.SelectedIndex = (m_pf.UsesPerModelCurrency ? 1 : 0);
-            rblTimeEntryPreference.SelectedIndex = (m_pf.UsesHHMM ? 1 : 0);
+            if (m_pf.UsesHHMM)
+                rbDecimalHHMM.Checked = true;
+            else
+            {
+                DecimalFormat df = m_pf.PreferenceExists(MFBConstants.keyDecimalSettings) ? m_pf.GetPreferenceForKey<DecimalFormat>(MFBConstants.keyDecimalSettings) : DecimalFormat.Adaptive;
+                if (df == DecimalFormat.Adaptive)
+                    rbDecimalAdaptive.Checked = true;
+                else if (df == DecimalFormat.OneDecimal)
+                    rbDecimal1.Checked = true;
+                else
+                    rbDecimal2.Checked = true;
+            }
             rblDateEntryPreferences.SelectedIndex = (m_pf.UsesUTCDateOfFlight ? 1 : 0);
             prefTimeZone.SelectedTimeZone = m_pf.PreferredTimeZone;
             foreach (CurrencyExpiration.Expiration exp in Enum.GetValues(typeof(CurrencyExpiration.Expiration)))
@@ -560,7 +570,28 @@ namespace MyFlightbook.MemberPages
             m_pf.DisplayTimesByDefault = ckShowTimes.Checked;
             m_pf.TracksSecondInCommandTime = ckSIC.Checked;
             m_pf.IsInstructor = ckTrackCFITime.Checked;
-            m_pf.UsesHHMM = (rblTimeEntryPreference.SelectedIndex > 0);
+
+            if (m_pf.UsesHHMM = rbDecimalHHMM.Checked)
+            {
+                m_pf.SetPreferenceForKey(MFBConstants.keyDecimalSettings, null, true); 
+                Session[MFBConstants.keyDecimalSettings] = null;
+            }
+            else
+            {
+                // update the session as well.
+                DecimalFormat df = rbDecimalAdaptive.Checked ? DecimalFormat.Adaptive : (rbDecimal1.Checked ? DecimalFormat.OneDecimal : DecimalFormat.TwoDecimal);
+                if (df == DecimalFormat.Adaptive)
+                {
+                    m_pf.SetPreferenceForKey(MFBConstants.keyDecimalSettings, null, true);
+                    Session[MFBConstants.keyDecimalSettings] = null;
+                }
+                else
+                {
+                    m_pf.SetPreferenceForKey(MFBConstants.keyDecimalSettings, df);
+                    Session[MFBConstants.keyDecimalSettings] = df;  
+                }
+            }
+
             m_pf.UsesUTCDateOfFlight = (rblDateEntryPreferences.SelectedIndex > 0);
             m_pf.PreferredTimeZoneID = prefTimeZone.SelectedTimeZoneId;
 
@@ -594,7 +625,6 @@ namespace MyFlightbook.MemberPages
             m_pf.UsesPerModelCurrency = (rblCurrencyPref.SelectedIndex > 0);
             m_pf.TotalsGroupingMode = (TotalsGrouping)Enum.Parse(typeof(TotalsGrouping), rblTotalsOptions.SelectedValue);
             m_pf.SuppressModelFeatureTotals = !ckIncludeModelFeatureTotals.Checked;
-            m_pf.Use2DigitTotals = ck2Decimal.Checked;
             m_pf.CurrencyExpiration = (CurrencyExpiration.Expiration)Enum.Parse(typeof(CurrencyExpiration.Expiration), cmbExpiredCurrency.SelectedValue);
 
             try

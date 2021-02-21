@@ -398,14 +398,37 @@
                         </Header>
                         <Content>
                             <div class="prefSectionRow">
-                                <div><asp:Label ID="lblPrefTimes" runat="server" Font-Bold="True" Text="Format for times:" meta:resourcekey="lblPrefTimesResource1"></asp:Label></div>
-                                <asp:RadioButtonList ID="rblTimeEntryPreference" runat="server" 
-                                    ValidationGroup="valPrefs" meta:resourcekey="rblTimeEntryPreferenceResource1">
-                                    <asp:ListItem Text="Use decimal" Value="1"
-                                        meta:resourcekey="ListItemResource1"></asp:ListItem>
-                                    <asp:ListItem Text="Use hours and minutes (HH:MM)" 
-                                        Value="0" meta:resourcekey="ListItemResource2"></asp:ListItem>
-                                </asp:RadioButtonList>
+                                <table>
+                                    <tr>
+                                        <td colspan="2"><asp:Label ID="lblPrefTimes" runat="server" Font-Bold="True" Text="<%$ Resources:Preferences, DecimalPrefPrompt %>" /></td>
+                                        <td style="font-size:smaller; font-style:italic;">&nbsp;<asp:Localize ID="locSamp1" runat="server" Text="<%$ Resources:Preferences, DecimalPrefSample1 %>" /></td>
+                                        <td style="font-size:smaller; font-style:italic;">&nbsp;<asp:Localize ID="locSamp2" runat="server" Text="<%$ Resources:Preferences, DecimalPrefSample2 %>" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><asp:RadioButton ID="rbDecimalAdaptive" runat="server" GroupName="decimalPref" /></td>
+                                        <td><asp:Label ID="locAdapt" runat="server" Text="<%$ Resources:Preferences, DecimalPrefAdaptive %>" AssociatedControlID="rbDecimalAdaptive" /></td>
+                                        <td style="text-align:center"><% =(70.0M / 60.0M).ToString("#,##0.0#", System.Globalization.CultureInfo.CurrentCulture) %></td>
+                                        <td style="text-align:center;"><% =(72.0 / 60.0).ToString("#,##0.0#", System.Globalization.CultureInfo.CurrentCulture) %></td>
+                                    </tr>
+                                    <tr>
+                                        <td><asp:RadioButton ID="rbDecimal1" runat="server" GroupName="decimalPref" /></td>
+                                        <td><asp:Label ID="lbl1Dec" runat="server" Text="<%$ Resources:Preferences, DecimalPref1Decimal %>" AssociatedControlID="rbDecimal1" /></td>
+                                        <td style="text-align:center;"><% =(70.0M / 60.0M).ToString("#,##0.0", System.Globalization.CultureInfo.CurrentCulture) %></td>
+                                        <td style="text-align:center;"><% =(72.0 / 60.0).ToString("#,##0.0", System.Globalization.CultureInfo.CurrentCulture) %></td>
+                                    </tr>
+                                    <tr>
+                                        <td><asp:RadioButton ID="rbDecimal2" runat="server" GroupName="decimalPref" /></td>
+                                        <td><asp:Label ID="lbl2Dec" runat="server" Text="<%$ Resources:Preferences, DecimalPref2Decimal %>" AssociatedControlID="rbDecimal2" /></td>
+                                        <td style="text-align:center;"><% =(70.0M / 60.0M).ToString("#,##0.00", System.Globalization.CultureInfo.CurrentCulture) %></td>
+                                        <td style="text-align:center;"><% =(72.0 / 60.0).ToString("#,##0.00", System.Globalization.CultureInfo.CurrentCulture) %></td>
+                                    </tr>
+                                    <tr>
+                                        <td><asp:RadioButton ID="rbDecimalHHMM" runat="server" GroupName="decimalPref" /></td>
+                                        <td><asp:Label ID="lblHHMM" runat="server" Text="<%$ Resources:Preferences, DecimalPrefHHMM %>" AssociatedControlID="rbDecimalHHMM" /></td>
+                                        <td style="text-align:center;"><% =(70.0M / 60.0M).FormatDecimal(true) %></td>
+                                        <td style="text-align:center;"><% =(72.0 / 60.0).FormatDecimal(true) %></td>
+                                    </tr>
+                                </table>
                                 <div><asp:Label ID="lblPrefTimeZone" runat="server" Text="Preferred time zone:" Font-Bold="true" meta:resourcekey="lblPrefTimeZoneResource1"></asp:Label></div>
                                 <div>&nbsp;&nbsp;<asp:Label ID="lblPrefTimeZoneExplanation" CssClass="fineprint" runat="server" meta:resourcekey="lblPrefTimeZoneExplanationResource1" Text="Use this if you prefer to enter times in your local timezone; all times will be converted to and displayed as UTC"></asp:Label></div>
                                 <div>&nbsp;&nbsp;<uc1:TimeZone runat="server" ID="prefTimeZone" DefaultOffset="0" /></div>
@@ -538,7 +561,6 @@
                                     <asp:ListItem Text="<%$ Resources:Currency, CurrencyOptionsGroupModel %>" Value="Model" />
                                     <asp:ListItem Text="<%$ Resources:Currency, CurrencyOptionsGroupICAO %>" Value="Family" />
                                 </asp:RadioButtonList>
-                                <div><asp:CheckBox ID="ck2Decimal" runat="server" Text="<%$ Resources:Currency, CurrencyTotalsDigits %>" /></div>
                                 <div><asp:CheckBox ID="ckIncludeModelFeatureTotals" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsTotalsModelFeatures %>" /></div>
                                 <div><asp:Localize ID="locExpireCurrency" Text="<%$ Resources:Currency, CurrencyOptionsExpiredCurrency %>" runat="server" /> <asp:DropDownList ID="cmbExpiredCurrency" runat="server" /></div>
                                 <h3><%=Resources.Currency.CurrencyPrefsHeader %></h3>

@@ -154,7 +154,7 @@ public partial class ViewSharedLogbook
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::Controls_mfbTotalSummary mfbTotalSummary;
+    protected global::MyFlightbook.Currency.mfbTotalSummary mfbTotalSummary;
 
     /// <summary>
     /// acpPaneCurrency control.
@@ -190,7 +190,7 @@ public partial class ViewSharedLogbook
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::Controls_mfbChartTotals mfbChartTotals;
+    protected global::MyFlightbook.Charting.mfbChartTotals mfbChartTotals;
 
     /// <summary>
     /// acpPaneAchievements control.

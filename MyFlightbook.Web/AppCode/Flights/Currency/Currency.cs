@@ -9,7 +9,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2020 MyFlightbook LLC
+ * Copyright (c) 2007-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -48,7 +48,7 @@ namespace MyFlightbook.Currency
         flagSuppressModelFeatureTotals = 0x00020000,
         flagAllowNightTouchAndGo = 0x00040000,
         flagRequireDayLandingsDayCurrency = 0x00080000,
-        flagShow2DigitTotals = 0x00100000,
+        flagShow2DigitTotals = 0x00100000,	// DEPRECATED, do not use
         flagUseFAR125_2xxStatus = 0x00200000
     }
 

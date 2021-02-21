@@ -1284,13 +1284,94 @@ namespace MyFlightbook.MemberPages
         protected global::System.Web.UI.WebControls.Label lblPrefTimes;
 
         /// <summary>
-        /// rblTimeEntryPreference control.
+        /// locSamp1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList rblTimeEntryPreference;
+        protected global::System.Web.UI.WebControls.Localize locSamp1;
+
+        /// <summary>
+        /// locSamp2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locSamp2;
+
+        /// <summary>
+        /// rbDecimalAdaptive control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButton rbDecimalAdaptive;
+
+        /// <summary>
+        /// locAdapt control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label locAdapt;
+
+        /// <summary>
+        /// rbDecimal1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButton rbDecimal1;
+
+        /// <summary>
+        /// lbl1Dec control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lbl1Dec;
+
+        /// <summary>
+        /// rbDecimal2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButton rbDecimal2;
+
+        /// <summary>
+        /// lbl2Dec control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lbl2Dec;
+
+        /// <summary>
+        /// rbDecimalHHMM control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButton rbDecimalHHMM;
+
+        /// <summary>
+        /// lblHHMM control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblHHMM;
 
         /// <summary>
         /// lblPrefTimeZone control.
@@ -1579,15 +1660,6 @@ namespace MyFlightbook.MemberPages
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RadioButtonList rblTotalsOptions;
-
-        /// <summary>
-        /// ck2Decimal control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox ck2Decimal;
 
         /// <summary>
         /// ckIncludeModelFeatureTotals control.
