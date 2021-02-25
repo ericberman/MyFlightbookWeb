@@ -2276,6 +2276,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to night takeoff(s).
+        /// </summary>
+        internal static string NightTakeoffs {
+            get {
+                return ResourceManager.GetString("NightTakeoffs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Night Vision.
         /// </summary>
         internal static string NightVision {

@@ -1074,4 +1074,7 @@
   <data name="Part125291aTitle" xml:space="preserve">
     <value>125.291(a) - IPC</value>
   </data>
+  <data name="NightTakeoffs" xml:space="preserve">
+    <value>night takeoff(s)</value>
+  </data>
 </root>

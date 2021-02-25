@@ -3,7 +3,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2020 MyFlightbook LLC
+ * Copyright (c) 2007-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -93,19 +93,21 @@ namespace MyFlightbook.Currency
             m_szDiscrepancy = fcLoose.DiscrepancyString;
 
             // determine the correct discrepancy string to show
-            // if we've met the strict definition, we're fine - no discrepancy
-            if (fcStrict.CurrentState.IsCurrent())
+            // if we've EVER met the strict definition, then use that - indicates we've logged at least some takeoffs.
+            if (fcStrict.HasBeenCurrent)
             {
-                m_szDiscrepancy = string.Empty;
                 m_dtExpiration = fcStrict.ExpirationDate;
+                m_csCurrent = fcStrict.CurrentState;
+                m_szDiscrepancy = fcStrict.CurrentState == CurrencyState.NotCurrent ? 
+                    String.Format(CultureInfo.CurrentCulture, Resources.Currency.DiscrepancyTemplate, Math.Max(NightTakeoffCurrency.Discrepancy, fc6157b.Discrepancy), NightTakeoffCurrency.Discrepancy > fc6157b.Discrepancy ? Resources.Currency.NightTakeoffs : (fc6157b.Discrepancy > 1 ? Resources.Totals.Landings : Resources.Totals.Landing)) : 
+                    string.Empty;
             }
             // else if we met the loose definition but not strict - meaning takeoffs were not found; Give a reminder about required takeoffs
             else if (m_csCurrent.IsCurrent())
             {
-                if (NightTakeoffCurrency.Discrepancy >= NightTakeoffCurrency.RequiredEvents)
-                    m_szDiscrepancy = Resources.Currency.NightTakeoffReminder;
-                else
-                    m_szDiscrepancy = String.Format(CultureInfo.CurrentCulture, Resources.Currency.DiscrepancyTemplateNight, NightTakeoffCurrency.Discrepancy, (NightTakeoffCurrency.Discrepancy > 1) ? Resources.Currency.Takeoffs : Resources.Currency.Takeoff);
+                m_szDiscrepancy = NightTakeoffCurrency.Discrepancy >= NightTakeoffCurrency.RequiredEvents
+                    ? Resources.Currency.NightTakeoffReminder
+                    : String.Format(CultureInfo.CurrentCulture, Resources.Currency.DiscrepancyTemplateNight, NightTakeoffCurrency.Discrepancy, (NightTakeoffCurrency.Discrepancy > 1) ? Resources.Currency.Takeoffs : Resources.Currency.Takeoff);
             }
             // else we aren't current at all - use the full discrepancy template using 61.57(b).  DON'T CALL DISCREPANCY STRING because that causes an infinite recursion.
             else
