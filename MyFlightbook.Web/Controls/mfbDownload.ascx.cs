@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using System.Web;
 using System.Web.UI.WebControls;
 
 /******************************************************
@@ -164,9 +165,11 @@ namespace MyFlightbook
                 // Ensure that we use adequate decimal settings for round-trip.
                 Profile pf = Profile.GetUser(User);
                 DecimalFormat df = pf.PreferenceExists(MFBConstants.keyDecimalSettings) ? pf.GetPreferenceForKey<DecimalFormat>(MFBConstants.keyDecimalSettings) : DecimalFormat.Adaptive;
-                Session[MFBConstants.keyDecimalSettings] = DecimalFormat.Adaptive;
+                if (HttpContext.Current?.Session != null)
+                    HttpContext.Current.Session[MFBConstants.keyDecimalSettings] = DecimalFormat.Adaptive;
                 gvFlightLogs.DataBind();
-                Session[MFBConstants.keyDecimalSettings] = df;
+                if (HttpContext.Current?.Session != null)
+                    HttpContext.Current.Session[MFBConstants.keyDecimalSettings] = df;
             }
         }
 
