@@ -18,7 +18,7 @@ using System.Web.Services;
 
 /******************************************************
  * 
- * Copyright (c) 2018-2020 MyFlightbook LLC
+ * Copyright (c) 2018-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -148,6 +148,8 @@ namespace OAuthAuthorizationServer.Services
         AddAircraftForUser, AircraftForUser, MakesAndModels, UpdateMaintenanceForAircraftWithFlagsAndNotes, DeleteAircraftForUser,
         /* Flight Services */
         CommitFlightWithOptions, addFlight, FlightsWithQueryAndOffset, FlightPathForFlight, FlightPathForFlightGPX, PropertiesForFlight, AvailablePropertyTypesForUser, DeleteLogbookEntry, DeletePropertiesForFlight,
+        /* Flight Services (Pending) */
+        CreatePendingFlight, PendingFlightsForUser, UpdatePendingFlight, DeletePendingFlight, CommitPendingFlight,
         /* Currency */
         GetCurrencyForUser, currency,
         /* Totals */
@@ -196,6 +198,10 @@ namespace OAuthAuthorizationServer.Services
                 case OAuthServiceID.CommitFlightWithOptions:
                 case OAuthServiceID.DeletePropertiesForFlight:
                 case OAuthServiceID.DeleteLogbookEntry:
+                case OAuthServiceID.CreatePendingFlight:
+                case OAuthServiceID.UpdatePendingFlight:
+                case OAuthServiceID.DeletePendingFlight:
+                case OAuthServiceID.CommitPendingFlight:
                     return MFBOAuthScope.addflight;
                 case OAuthServiceID.MakesAndModels:
                 case OAuthServiceID.AircraftForUser:
@@ -205,6 +211,7 @@ namespace OAuthAuthorizationServer.Services
                 case OAuthServiceID.PropertiesForFlight:
                 case OAuthServiceID.FlightPathForFlight:
                 case OAuthServiceID.FlightPathForFlightGPX:
+                case OAuthServiceID.PendingFlightsForUser:
                     return MFBOAuthScope.readflight;
                 case OAuthServiceID.currency:
                 case OAuthServiceID.GetCurrencyForUser:
@@ -445,6 +452,21 @@ namespace OAuthAuthorizationServer.Services
                         break;
                     case OAuthServiceID.PropertiesForFlight:
                         WriteObject(s, mfbSvc.PropertiesForFlight(GeneratedAuthToken, GetRequiredParam<int>("idFlight")));
+                        break;
+                    case OAuthServiceID.CreatePendingFlight:
+                        WriteObject(s, mfbSvc.CreatePendingFlight(GeneratedAuthToken, GetRequiredParam<LogbookEntry>("le")));
+                        break;
+                    case OAuthServiceID.PendingFlightsForUser:
+                        WriteObject(s, mfbSvc.PendingFlightsForUser(GeneratedAuthToken));
+                        break;
+                    case OAuthServiceID.UpdatePendingFlight:
+                        WriteObject(s, mfbSvc.UpdatePendingFlight(GeneratedAuthToken, GetRequiredParam<PendingFlight>("pf")));
+                        break;
+                    case OAuthServiceID.DeletePendingFlight:
+                        WriteObject(s, mfbSvc.DeletePendingFlight(GeneratedAuthToken, GetRequiredParam("idpending")));
+                        break;
+                    case OAuthServiceID.CommitPendingFlight:
+                        WriteObject(s, mfbSvc.CommitPendingFlight(GeneratedAuthToken, GetRequiredParam<PendingFlight>("pf")));
                         break;
                     case OAuthServiceID.totals:
                     case OAuthServiceID.TotalsForUserWithQuery:

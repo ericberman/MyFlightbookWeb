@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2020 MyFlightbook LLC
+ * Copyright (c) 2019-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -21,9 +21,8 @@ namespace MyFlightbook
     {
         #region Properties
         /// <summary>
-        /// The ID of the flight in the PENDING table.  This can be 
+        /// The ID of the flight in the PENDING table.  Assigned on create.
         /// </summary>
-        [Newtonsoft.Json.JsonIgnore]
         public string PendingID { get; set; }
 
         // Null this out to avoid pointless JSON bloat

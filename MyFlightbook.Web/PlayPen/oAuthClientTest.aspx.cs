@@ -12,7 +12,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2020 MyFlightbook LLC
+ * Copyright (c) 2015-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -223,7 +223,13 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
                 sb.AppendFormat(CultureInfo.InvariantCulture, "&flight={0}&format={1}", HttpUtility.UrlEncode(txtFlightToAdd.Text), cmbFlightFormat.SelectedValue);
                 break;
             case OAuthServiceID.FlightsWithQueryAndOffset:
+            case OAuthServiceID.CreatePendingFlight:
+            case OAuthServiceID.UpdatePendingFlight:
+            case OAuthServiceID.CommitPendingFlight:
                 // These are post-only
+                break;
+            case OAuthServiceID.DeletePendingFlight:
+                sb.AppendFormat(CultureInfo.InvariantCulture, "&idpending={0}", txtPendingID.Text);
                 break;
             case OAuthServiceID.currency:
             case OAuthServiceID.FlightPathForFlight:
@@ -240,6 +246,7 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
             case OAuthServiceID.AvailablePropertyTypesForUser:
             case OAuthServiceID.MakesAndModels:
             case OAuthServiceID.GetNamedQueries:
+            case OAuthServiceID.PendingFlightsForUser:
                 // no parameters
                 break;
             case OAuthServiceID.totals:
@@ -269,14 +276,17 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
         {
             case OAuthServiceID.CommitFlightWithOptions:
             case OAuthServiceID.addFlight:
-                if (cmbFlightFormat.SelectedIndex == 0)
-                {
-                    postParams.Add("po", "{}");
-                    postParams.Add("le", txtFlightToAdd.Text);
-                }
-                else
-                    postParams.Add("flight", txtFlightToAdd.Text);
-                postParams.Add("format", cmbFlightFormat.SelectedValue);
+                AddFlightParams(postParams);
+                break;
+            case OAuthServiceID.CreatePendingFlight:
+                postParams.Add("le", txtFlightToAdd.Text);
+                break;
+            case OAuthServiceID.UpdatePendingFlight:
+            case OAuthServiceID.CommitPendingFlight:
+                postParams.Add("pf", txtFlightToAdd.Text);
+                break;
+            case OAuthServiceID.DeletePendingFlight:
+                postParams.Add("idpending", txtPendingID.Text);
                 break;
             case OAuthServiceID.totals:
                 postParams.Add("fq", txtFlightQuery.Text);
@@ -298,30 +308,48 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
                 postParams.Add("maxCount", decLimit.IntValue.ToString(CultureInfo.InvariantCulture));
                 break;
             case OAuthServiceID.UploadImage:
-                postParams.Add("txtComment", txtImgComment.Text);
-                decimal lat = decImgLat.Value;
-                decimal lon = decImgLon.Value;
-
-                if (lat != 0 || lon != 0)
-                {
-                    postParams.Add("txtLat", decImgLat.Value.ToString(CultureInfo.InvariantCulture));
-                    postParams.Add("txtLon", decImgLon.Value.ToString(CultureInfo.InvariantCulture));
-                }
-                if (!String.IsNullOrEmpty(txtImageParamName1.Text))
-                    postParams.Add(txtImageParamName1.Text, txtImageParam1.Text);
-                if (!String.IsNullOrEmpty(txtImageParamName2.Text))
-                    postParams.Add(txtImageParamName2.Text, txtImageParam2.Text);
-                if (!String.IsNullOrEmpty(txtImageParamName3.Text))
-                    postParams.Add(txtImageParamName3.Text, txtImageParam3.Text);
+                AddImageParams(postParams);
                 break;
             case OAuthServiceID.VisitedAirports:
             case OAuthServiceID.AircraftForUser:
             case OAuthServiceID.currency:
             case OAuthServiceID.AvailablePropertyTypesForUser:
             case OAuthServiceID.MakesAndModels:
+            case OAuthServiceID.PendingFlightsForUser:
                 // no parameters required here.
                 break;
         }
+    }
+
+    private void AddFlightParams(NameValueCollection postParams)
+    {
+        if (cmbFlightFormat.SelectedIndex == 0)
+        {
+            postParams.Add("po", "{}");
+            postParams.Add("le", txtFlightToAdd.Text);
+        }
+        else
+            postParams.Add("flight", txtFlightToAdd.Text);
+        postParams.Add("format", cmbFlightFormat.SelectedValue);
+    }
+
+    private void AddImageParams(NameValueCollection postParams)
+    {
+        postParams.Add("txtComment", txtImgComment.Text);
+        decimal lat = decImgLat.Value;
+        decimal lon = decImgLon.Value;
+
+        if (lat != 0 || lon != 0)
+        {
+            postParams.Add("txtLat", decImgLat.Value.ToString(CultureInfo.InvariantCulture));
+            postParams.Add("txtLon", decImgLon.Value.ToString(CultureInfo.InvariantCulture));
+        }
+        if (!String.IsNullOrEmpty(txtImageParamName1.Text))
+            postParams.Add(txtImageParamName1.Text, txtImageParam1.Text);
+        if (!String.IsNullOrEmpty(txtImageParamName2.Text))
+            postParams.Add(txtImageParamName2.Text, txtImageParam2.Text);
+        if (!String.IsNullOrEmpty(txtImageParamName3.Text))
+            postParams.Add(txtImageParamName3.Text, txtImageParam3.Text);
     }
 
     protected async Task PostForm(HttpContent form)
@@ -357,7 +385,6 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
         }
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
     protected async void btnPostResource_Click(object sender, EventArgs e)
     {
         ToSession();
@@ -417,6 +444,9 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
         {
             case OAuthServiceID.CommitFlightWithOptions:
             case OAuthServiceID.addFlight:
+            case OAuthServiceID.CreatePendingFlight:
+            case OAuthServiceID.UpdatePendingFlight:
+            case OAuthServiceID.CommitPendingFlight:
                 mvService.SetActiveView(vwAddFlight);
                 break;
             case OAuthServiceID.totals:
@@ -428,6 +458,7 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
             case OAuthServiceID.AircraftForUser:
             case OAuthServiceID.AvailablePropertyTypesForUser:
             case OAuthServiceID.MakesAndModels:
+            case OAuthServiceID.PendingFlightsForUser:
                 mvService.SetActiveView(vwNoParams);
                 break;
             case OAuthServiceID.FlightPathForFlight:
@@ -435,6 +466,9 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
             case OAuthServiceID.DeleteLogbookEntry:
             case OAuthServiceID.PropertiesForFlight:
                 mvService.SetActiveView(vwFlightID);
+                break;
+            case OAuthServiceID.DeletePendingFlight:
+                mvService.SetActiveView(vwPendingID);
                 break;
             case OAuthServiceID.AddAircraftForUser:
                 mvService.SetActiveView(vwAddAircraft);
