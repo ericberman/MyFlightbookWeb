@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2020 MyFlightbook LLC
+ * Copyright (c) 2019-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -21,9 +21,8 @@ namespace MyFlightbook
     {
         #region Properties
         /// <summary>
-        /// The ID of the flight in the PENDING table.  This can be 
+        /// The ID of the flight in the PENDING table.  Assigned on create.
         /// </summary>
-        [Newtonsoft.Json.JsonIgnore]
         public string PendingID { get; set; }
 
         // Null this out to avoid pointless JSON bloat
@@ -126,11 +125,17 @@ namespace MyFlightbook
             if (String.IsNullOrWhiteSpace(PendingID))
                 throw new InvalidOperationException("No unique ID specified for pending flight");
 
+            // Since we're setting the pendingID in its own column, no reason to put it in the JSON as well.
+            string szPending = PendingID;
+            PendingID = null;
+            string szJSON = JsonConvert.SerializeObject(this, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling=NullValueHandling.Ignore });
+            PendingID = szPending;
+
             DBHelper dbh = new DBHelper("REPLACE INTO pendingflights SET username=?user, id=?idflight, jsonflight=?json");
             dbh.DoNonQuery((comm) =>
             {
                 comm.Parameters.AddWithValue("user", User);
-                comm.Parameters.AddWithValue("json", JsonConvert.SerializeObject(this, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore }));
+                comm.Parameters.AddWithValue("json", szJSON);
                 comm.Parameters.AddWithValue("idflight", PendingID);
             });
         }

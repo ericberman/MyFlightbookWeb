@@ -814,13 +814,13 @@ public partial class Controls_mfbEditFlight
     protected global::System.Web.UI.HtmlControls.HtmlGenericControl divUpdateNext;
 
     /// <summary>
-    /// LocNext control.
+    /// lblSpc control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Label LocNext;
+    protected global::System.Web.UI.WebControls.Label lblSpc;
 
     /// <summary>
     /// lnkUpdateNext control.
@@ -832,6 +832,15 @@ public partial class Controls_mfbEditFlight
     protected global::System.Web.UI.WebControls.LinkButton lnkUpdateNext;
 
     /// <summary>
+    /// LocNext control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label LocNext;
+
+    /// <summary>
     /// divUpdatePrev control.
     /// </summary>
     /// <remarks>
@@ -841,13 +850,13 @@ public partial class Controls_mfbEditFlight
     protected global::System.Web.UI.HtmlControls.HtmlGenericControl divUpdatePrev;
 
     /// <summary>
-    /// LocPrev control.
+    /// lblSpc2 control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Label LocPrev;
+    protected global::System.Web.UI.WebControls.Label lblSpc2;
 
     /// <summary>
     /// lnkUpdatePrev control.
@@ -857,6 +866,33 @@ public partial class Controls_mfbEditFlight
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.LinkButton lnkUpdatePrev;
+
+    /// <summary>
+    /// divUpdatePending control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.HtmlControls.HtmlGenericControl divUpdatePending;
+
+    /// <summary>
+    /// lblSpc3 control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblSpc3;
+
+    /// <summary>
+    /// lnkUpdatePending control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.LinkButton lnkUpdatePending;
 
     /// <summary>
     /// popmenuPending control.

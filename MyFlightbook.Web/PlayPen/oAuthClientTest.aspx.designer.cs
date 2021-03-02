@@ -346,6 +346,24 @@ public partial class Public_oAuthClientTest
     protected global::Controls_mfbDecimalEdit decFlightID;
 
     /// <summary>
+    /// vwPendingID control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.View vwPendingID;
+
+    /// <summary>
+    /// txtPendingID control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.TextBox txtPendingID;
+
+    /// <summary>
     /// vwImage control.
     /// </summary>
     /// <remarks>

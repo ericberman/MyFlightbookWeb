@@ -195,7 +195,6 @@ namespace MyFlightbook
         }
     }
 
-// All of the public methods in this class technically can be marked static (CA1822), but that breaks it as a webservice.  So we will suppress that here for the entire class
     /// <summary>
     /// The main SOAP service for mobile use
     /// NOTE: iPhone sends HTML entities URL encoded, so we need to decode them on receipt.  Bleah.
@@ -408,20 +407,6 @@ namespace MyFlightbook
                 throw new ArgumentNullException(nameof(ac));
             UpdateMaintenanceForAircraftWithFlagsInternal(szAuthUserToken, ac);
         }
-
-        /*
-        /// <summary>
-        /// Updates maintenance for an aircraft, performing appropriate logging. Also udpates the aircraft's flags (exclude from list, etc.)
-        /// </summary>
-        /// <param name="szAuthUserToken">Authtoken of authorized user</param>
-        /// <param name="ac">The aircraft to update</param>
-        [WebMethod]
-        public void UpdateMaintenanceForAircraftWithFlags(string szAuthUserToken, Aircraft ac)
-        {
-            EventRecorder.WriteEvent(EventRecorder.MFBEventID.ObsoleteAPI, GetEncryptedUser(szAuthUserToken), "Obsolete API: UpdateMaintenanceForAircraftWithFlags");
-            UpdateMaintenanceForAircraftWithFlagsInternal(szAuthUserToken, ac, true);
-        }
-        */
 
         /// <summary>
         /// Synonym for UpdateMaintenanceForAircraftWithFlags, but also updates public/private notes
@@ -893,6 +878,118 @@ namespace MyFlightbook
             }
             return null;
         }
+
+        #region Pending Flights support
+        private static void ValidatePendingFlightForUser(string szUser, PendingFlight pf)
+        {
+            if (String.IsNullOrEmpty(szUser))
+                throw new UnauthorizedAccessException(Resources.WebService.errFlightNotYours);
+
+            // clean up user name in case an email address is passed in.
+            if (pf.User.Contains("@"))
+                pf.User = Membership.GetUserNameByEmail(pf.User);
+
+            if (pf.User.CompareCurrentCultureIgnoreCase(szUser) != 0)
+                throw new MyFlightbookException(Resources.WebService.errFlightNotYours);
+            PendingFlight pfOwned = PendingFlight.PendingFlightsForUser(szUser).FirstOrDefault(pf2 => pf2.PendingID.CompareOrdinal(pf.PendingID) == 0);
+            if (pfOwned == null)
+                throw new MyFlightbookException(Resources.WebService.errFlightNotYours);
+        }
+
+        [WebMethod]
+        public PendingFlight[] CreatePendingFlight(string szAuthUserToken, LogbookEntry le)
+        {
+            if (le == null)
+                throw new ArgumentNullException(nameof(le));
+            if (szAuthUserToken == null)
+                throw new ArgumentNullException(nameof(szAuthUserToken));
+            string szUser = GetEncryptedUser(szAuthUserToken);
+
+            if (String.IsNullOrEmpty(szUser))
+                throw new MyFlightbookException(Resources.WebService.errBadAuth);
+
+            // Create a pending flight, but update the user field...just to be safe.
+            new PendingFlight(le) { User = szUser }.Commit();
+
+            return PendingFlightsForUser(szAuthUserToken).ToArray();
+        }
+
+        [WebMethod]
+        public PendingFlight[] PendingFlightsForUser(string szAuthUserToken)
+        {
+            if (szAuthUserToken == null)
+                throw new ArgumentNullException(nameof(szAuthUserToken));
+            string szUser = GetEncryptedUser(szAuthUserToken);
+
+            if (String.IsNullOrEmpty(szUser))
+                throw new MyFlightbookException(Resources.WebService.errBadAuth);
+
+            return PendingFlight.PendingFlightsForUser(szUser).ToArray();
+        }
+
+        [WebMethod]
+        public PendingFlight[] UpdatePendingFlight(string szAuthUserToken, PendingFlight pf)
+        {
+            if (szAuthUserToken == null)
+                throw new ArgumentNullException(nameof(szAuthUserToken));
+            if (pf == null)
+                throw new ArgumentNullException(nameof(pf));
+            string szUser = GetEncryptedUser(szAuthUserToken);
+
+            if (String.IsNullOrEmpty(szUser))
+                throw new MyFlightbookException(Resources.WebService.errBadAuth);
+
+            // Verify that pending flight exists and is owned by this user
+            ValidatePendingFlightForUser(szUser, pf);
+
+            pf.Commit();
+
+            return PendingFlight.PendingFlightsForUser(szUser).ToArray();
+        }
+
+        [WebMethod]
+        public PendingFlight[] DeletePendingFlight(string szAuthUserToken, string idpending)
+        {
+            if (szAuthUserToken == null)
+                throw new ArgumentNullException(nameof(szAuthUserToken));
+            if (idpending == null)
+                throw new ArgumentNullException(nameof(idpending));
+            string szUser = GetEncryptedUser(szAuthUserToken);
+
+            if (String.IsNullOrEmpty(szUser))
+                throw new MyFlightbookException(Resources.WebService.errBadAuth);
+
+            PendingFlight pf = (PendingFlight.PendingFlightsForUser(szUser)).FirstOrDefault(pf2 => pf2.PendingID.CompareOrdinal(idpending) == 0);
+
+            if (pf == null || pf.User.CompareOrdinal(szUser) != 0)
+                throw new MyFlightbookException(Resources.WebService.errFlightNotYours);
+
+            pf.Delete();
+
+            return PendingFlight.PendingFlightsForUser(szUser).ToArray();
+        }
+
+        [WebMethod]
+        public PendingFlight[] CommitPendingFlight(string szAuthUserToken, PendingFlight pf)
+        {
+            if (szAuthUserToken == null)
+                throw new ArgumentNullException(nameof(szAuthUserToken));
+            if (pf == null)
+                throw new ArgumentNullException(nameof(pf));
+            string szUser = GetEncryptedUser(szAuthUserToken);
+
+            if (String.IsNullOrEmpty(szUser))
+                throw new MyFlightbookException(Resources.WebService.errBadAuth);
+
+            // Verify that pending flight exists and is owned by this user
+            ValidatePendingFlightForUser(szUser, pf);
+
+            if (pf.FCommit())
+                return PendingFlight.PendingFlightsForUser(szUser).ToArray();
+            else
+                throw new MyFlightbookException(pf.ErrorString);
+        }
+        #endregion
 
         /// <summary>
         /// Returns a list of the available custom property types.

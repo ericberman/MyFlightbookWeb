@@ -90,6 +90,11 @@
                         <asp:ListItem Value="AircraftForUser" Text="Aircraft for user"></asp:ListItem>
                         <asp:ListItem Value="MakesAndModels" Text="Makes / Models"></asp:ListItem>
                         <asp:ListItem Value="CommitFlightWithOptions" Text="Add flight (POST only)"></asp:ListItem>
+                        <asp:ListItem Value="CreatePendingFlight" Text="Add pending flight (POST only)"></asp:ListItem>
+                        <asp:ListItem Value="PendingFlightsForUser" Text="View pending flights"></asp:ListItem>
+                        <asp:ListItem Value="UpdatePendingFlight" Text="Update pending flight (POST only)"></asp:ListItem>
+                        <asp:ListItem Value="DeletePendingFlight" Text="Delete a pending flight"></asp:ListItem>
+                        <asp:ListItem Value="CommitPendingFlight" Text="Commit a pending flight to logbook (POST only)"></asp:ListItem>
                         <asp:ListItem Value="FlightsWithQueryAndOffset" Text="View flights (POST only)"></asp:ListItem>
                         <asp:ListItem Value="FlightPathForFlight" Text="Flight Path for flight"></asp:ListItem>
                         <asp:ListItem Value="FlightPathForFlightGPX" Text="Flight Path (GPX) for flight"></asp:ListItem>
@@ -180,6 +185,11 @@
                     <asp:View ID="vwFlightID" runat="server">
                         <div class="detailsSection">
                             Flight ID: <uc1:mfbDecimalEdit runat="server" ID="decFlightID" EditingMode="Integer" />
+                        </div>
+                    </asp:View>
+                    <asp:View ID="vwPendingID" runat="server">
+                        <div class="detailsSection">
+                            Pending Flight ID: <asp:TextBox ID="txtPendingID" runat="server"></asp:TextBox>
                         </div>
                     </asp:View>
                     <asp:View ID="vwImage" runat="server">

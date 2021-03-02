@@ -14,7 +14,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2020 MyFlightbook LLC
+ * Copyright (c) 2007-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -303,6 +303,10 @@ public partial class Controls_mfbEditFlight : Controls_mfbEditFlightBase
             throw new ArgumentNullException(nameof(pendingFlight));
         SetUpNewOrEdit(pendingFlight.FlightID);
         hdnPendingID.Value = pendingFlight.PendingID;
+        bool fShowUpdatePending = !String.IsNullOrWhiteSpace(pendingFlight.PendingID);
+        if (fShowUpdatePending)
+            popmenuCommitAndNavigate.Visible = true;    // so that setting the update pending below will stick
+        divUpdatePending.Visible = fShowUpdatePending; // allow update if this is an existing pending flight.
         popmenuPending.Visible = false;
         InitFormFromLogbookEntry(pendingFlight);
         // Change next/previous wording to match the fact that pending flights, kinda by definition, can't be updated.
@@ -747,7 +751,7 @@ public partial class Controls_mfbEditFlight : Controls_mfbEditFlightBase
             hdnNextID.Value = idFlight.ToString(CultureInfo.InvariantCulture);
         }
 
-        popmenuCommitAndNavigate.Visible = divUpdateNext.Visible || divUpdatePrev.Visible;
+        popmenuCommitAndNavigate.Visible = divUpdateNext.Visible || divUpdatePrev.Visible || divUpdatePending.Visible;
     }
 
     public void SetPrevFlight(int idFlight)
@@ -764,7 +768,7 @@ public partial class Controls_mfbEditFlight : Controls_mfbEditFlightBase
             hdnPrevID.Value = idFlight.ToString(CultureInfo.InvariantCulture);
         }
 
-        popmenuCommitAndNavigate.Visible = divUpdateNext.Visible || divUpdatePrev.Visible;
+        popmenuCommitAndNavigate.Visible = divUpdateNext.Visible || divUpdatePrev.Visible || divUpdatePending.Visible;
     }
 
     protected void lnkAddPending_Click(object sender, EventArgs e)
@@ -781,6 +785,11 @@ public partial class Controls_mfbEditFlight : Controls_mfbEditFlightBase
         // No need - by definition - to handle errors.
         le.Commit();
         FlightUpdated?.Invoke(sender, new LogbookEventArgs(le));
+    }
+
+    protected void lnkUpdatePending_Click(object sender, EventArgs e)
+    {
+        lnkAddPending_Click(sender, e);
     }
 
     protected void lnkAddAircraft_Click(object sender, EventArgs e)
