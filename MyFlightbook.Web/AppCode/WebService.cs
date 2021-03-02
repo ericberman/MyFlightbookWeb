@@ -882,7 +882,14 @@ namespace MyFlightbook
         #region Pending Flights support
         private static void ValidatePendingFlightForUser(string szUser, PendingFlight pf)
         {
-            if (String.IsNullOrEmpty(szUser) || pf.User.CompareCurrentCultureIgnoreCase(szUser) != 0)
+            if (String.IsNullOrEmpty(szUser))
+                throw new UnauthorizedAccessException(Resources.WebService.errFlightNotYours);
+
+            // clean up user name in case an email address is passed in.
+            if (pf.User.Contains("@"))
+                pf.User = Membership.GetUserNameByEmail(pf.User);
+
+            if (pf.User.CompareCurrentCultureIgnoreCase(szUser) != 0)
                 throw new MyFlightbookException(Resources.WebService.errFlightNotYours);
             PendingFlight pfOwned = PendingFlight.PendingFlightsForUser(szUser).FirstOrDefault(pf2 => pf2.PendingID.CompareOrdinal(pf.PendingID) == 0);
             if (pfOwned == null)
