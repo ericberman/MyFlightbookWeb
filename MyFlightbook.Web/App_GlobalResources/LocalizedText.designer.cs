@@ -2081,6 +2081,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Update Pending Flight.
+        /// </summary>
+        internal static string EditFlightUpdatePendingFlight {
+            get {
+                return ResourceManager.GetString("EditFlightUpdatePendingFlight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add Model.
         /// </summary>
         internal static string EditMakeAddMake {
