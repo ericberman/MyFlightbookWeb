@@ -125,6 +125,8 @@ namespace MyFlightbook
             if (String.IsNullOrWhiteSpace(PendingID))
                 throw new InvalidOperationException("No unique ID specified for pending flight");
 
+            FlightID = 0;   // don't set a flight ID
+
             // Since we're setting the pendingID in its own column, no reason to put it in the JSON as well.
             string szPending = PendingID;
             PendingID = null;
