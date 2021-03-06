@@ -150,6 +150,8 @@ namespace MyFlightbook
         /// <returns></returns>
         public override bool FCommit(bool fUpdateFlightData = false, bool fUpdateSignature = false)
         {
+            if (FlightID >= 0)
+                FlightID = LogbookEntry.idFlightNew;    // might have been 0 to go up/down the wire.
             bool fSuccess = base.FCommit(fUpdateFlightData, fUpdateSignature);
             if (fSuccess)
                 Delete();
