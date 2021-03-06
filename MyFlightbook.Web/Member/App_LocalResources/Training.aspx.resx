@@ -334,7 +334,7 @@
     <value>Your Instructors</value>
   </data>
   <data name="locRequestSigDescriptionResource1.Text" xml:space="preserve">
-    <value>Take a lesson, flight-review, or checkout and want the CFI to sign flights that you've already entered?</value>
+    <value>Take a lesson, flight-review, or checkout and want the instructor to sign flights that you've already entered?</value>
   </data>
   <data name="locRequestSignatureHeadingResource1.Text" xml:space="preserve">
     <value>Request Signatures</value>

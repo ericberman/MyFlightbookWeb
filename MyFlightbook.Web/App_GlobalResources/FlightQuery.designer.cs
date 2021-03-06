@@ -556,7 +556,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CFI time.
+        ///   Looks up a localized string similar to Instructor time.
         /// </summary>
         internal static string FlightFeatureCFI {
             get {
@@ -565,7 +565,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dual time.
+        ///   Looks up a localized string similar to Dual Received time.
         /// </summary>
         internal static string FlightFeatureDual {
             get {

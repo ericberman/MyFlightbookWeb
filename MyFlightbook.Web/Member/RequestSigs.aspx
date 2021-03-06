@@ -52,7 +52,7 @@
                     CssClass="error" Visible="false" meta:resourcekey="lblErrNoSelectionResource1"></asp:Label>
             </asp:WizardStep>
             <asp:WizardStep ID="wsPickInstructor" runat="server" 
-                Title="2. Pick The CFI" meta:resourcekey="wsPickInstructorResource1">
+                Title="2. Pick The Instructor" meta:resourcekey="wsPickInstructorResource1">
                 <table>
                     <tr>
                         <td><asp:Label ID="Label2" runat="server" 

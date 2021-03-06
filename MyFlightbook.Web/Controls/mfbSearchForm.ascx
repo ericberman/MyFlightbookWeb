@@ -295,13 +295,13 @@
                                     meta:resourcekey="ckNightResource1" />
                             </td>
                             <td>
-                                <asp:CheckBox ID="ckDual" runat="server" Text="Dual time" 
+                                <asp:CheckBox ID="ckDual" runat="server" Text="Dual rcvd. time" 
                                     meta:resourcekey="ckDualResource1" />
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <asp:CheckBox ID="ckCFI" runat="server" Text="CFI time" 
+                                <asp:CheckBox ID="ckCFI" runat="server" Text="Instructor time" 
                                     meta:resourcekey="ckCFIResource1" />
                             </td>
                             <td>

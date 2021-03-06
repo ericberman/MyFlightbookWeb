@@ -193,13 +193,13 @@
     <value>Cat/&lt;br /&gt;Class&lt;br /&gt;/Type</value>
   </data>
   <data name="FieldCFI" xml:space="preserve">
-    <value>CFI</value>
+    <value>As Instr.</value>
   </data>
   <data name="FieldComments" xml:space="preserve">
     <value>Comments</value>
   </data>
   <data name="FieldDual" xml:space="preserve">
-    <value>Dual</value>
+    <value>Dual Rcvd.</value>
   </data>
   <data name="FieldEngine" xml:space="preserve">
     <value>Engine</value>

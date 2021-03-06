@@ -136,7 +136,7 @@
     <value />
   </data>
   <data name="ckCFIResource1.Text" xml:space="preserve">
-    <value>CFI time</value>
+    <value>Instructor time</value>
   </data>
   <data name="ckCFIResource1.ToolTip" xml:space="preserve">
     <value />
@@ -154,7 +154,7 @@
     <value />
   </data>
   <data name="ckDualResource1.Text" xml:space="preserve">
-    <value>Dual time</value>
+    <value>Dual rcvd. time</value>
   </data>
   <data name="ckDualResource1.ToolTip" xml:space="preserve">
     <value />

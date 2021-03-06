@@ -1552,7 +1552,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If CFI is empty, set it equal to Total Time.
+        ///   Looks up a localized string similar to Instructor Time, if empty.
         /// </summary>
         internal static string optionRoleCFI {
             get {
@@ -1561,7 +1561,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Don&apos;t change anything about the flight.
+        ///   Looks up a localized string similar to Nothing.
         /// </summary>
         internal static string optionRoleNone {
             get {
@@ -1570,7 +1570,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If PIC is empty, set it equal to Total Time.
+        ///   Looks up a localized string similar to PIC Time, if empty.
         /// </summary>
         internal static string optionRolePIC {
             get {
@@ -1588,7 +1588,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Autofill:.
+        ///   Looks up a localized string similar to Autofill total time to....
         /// </summary>
         internal static string optionRolePrompt {
             get {
@@ -1597,7 +1597,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If SIC is empty, set it equal to Total Time.
+        ///   Looks up a localized string similar to SIC Time, if empty.
         /// </summary>
         internal static string optionRoleSIC {
             get {

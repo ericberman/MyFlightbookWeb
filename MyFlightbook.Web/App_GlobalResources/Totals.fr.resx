@@ -127,7 +127,7 @@
   </data>
   <data name="CFI" xml:space="preserve">
     <value>Instruction</value>
-    <comment>CFI total</comment>
+    <comment>Instructor total</comment>
   </data>
   <data name="Complex" xml:space="preserve">
     <value>Complexe</value>

@@ -65,8 +65,12 @@
                         <h2><asp:Label ID="lblOptionHeader" runat="server" /></h2>
                         <div><asp:CheckBox ID="ckShowInFavorites" OnCheckedChanged="ckShowInFavorites_CheckedChanged" AutoPostBack="true" Text="<%$ Resources:Aircraft, optionHideFromMainList %>" runat="server" /></div>
                         <hr />
-                        <h3><asp:Label ID="lblRolePrompt" runat="server" Font-Bold="true" Text="<%$ Resources:Aircraft, optionRolePrompt %>" /></h3>
+                        <div><asp:Label ID="lblRolePrompt" runat="server" Font-Bold="true" Text="<%$ Resources:Aircraft, optionRolePrompt %>" /></div>
                         <table>
+                            <tr style="vertical-align:top">
+                                <td><asp:RadioButton ID="rbRoleNone" runat="server" AutoPostBack="true"  GroupName="rblGroup" OnCheckedChanged="rbRoleNone_CheckedChanged" /></td>
+                                <td><asp:Label ID="lblNone" runat="server" Text="<%$ Resources:Aircraft, optionRoleNone %>" AssociatedControlID="rbRoleNone"></asp:Label></td>
+                            </tr>
                             <tr style="vertical-align:top">
                                 <td><asp:RadioButton ID="rbRoleCFI" runat="server" AutoPostBack="true" GroupName="rblGroup" OnCheckedChanged="rbRoleCFI_CheckedChanged" /></td>
                                 <td><asp:Label ID="lblCFI" runat="server" Text="<%$ Resources:Aircraft, optionRoleCFI %>" AssociatedControlID="rbRoleCFI"></asp:Label></td>
@@ -81,10 +85,6 @@
                             <tr style="vertical-align:top">
                                 <td><asp:RadioButton ID="rbRoleSIC" runat="server" AutoPostBack="true"  GroupName="rblGroup" OnCheckedChanged="rbRoleSIC_CheckedChanged" /></td>
                                 <td><asp:Label ID="lblSIC" runat="server" Text="<%$ Resources:Aircraft, optionRoleSIC %>" AssociatedControlID="rbRoleSIC"></asp:Label></td>
-                            </tr>
-                            <tr style="vertical-align:top">
-                                <td><asp:RadioButton ID="rbRoleNone" runat="server" AutoPostBack="true"  GroupName="rblGroup" OnCheckedChanged="rbRoleNone_CheckedChanged" /></td>
-                                <td><asp:Label ID="lblNone" runat="server" Text="<%$ Resources:Aircraft, optionRoleNone %>" AssociatedControlID="rbRoleNone"></asp:Label></td>
                             </tr>
                         </table>
                         <asp:Panel ID="pnlTemplates" runat="server">

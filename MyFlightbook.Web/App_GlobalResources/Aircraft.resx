@@ -286,22 +286,22 @@
     <value>Active (Show this aircraft for new flights)</value>
   </data>
   <data name="optionRoleCFI" xml:space="preserve">
-    <value>If CFI is empty, set it equal to Total Time</value>
+    <value>Instructor Time, if empty</value>
   </data>
   <data name="optionRoleNone" xml:space="preserve">
-    <value>Don't change anything about the flight</value>
+    <value>Nothing</value>
   </data>
   <data name="optionRolePIC" xml:space="preserve">
-    <value>If PIC is empty, set it equal to Total Time</value>
+    <value>PIC Time, if empty</value>
   </data>
   <data name="optionRolePICName" xml:space="preserve">
     <value>Add my name as PIC</value>
   </data>
   <data name="optionRolePrompt" xml:space="preserve">
-    <value>Autofill:</value>
+    <value>Autofill total time to...</value>
   </data>
   <data name="optionRoleSIC" xml:space="preserve">
-    <value>If SIC is empty, set it equal to Total Time</value>
+    <value>SIC Time, if empty</value>
   </data>
   <data name="locNotesPrompt" xml:space="preserve">
     <value>Aircraft Notes</value>

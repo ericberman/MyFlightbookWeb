@@ -199,7 +199,7 @@
         </div>
         <div class="itemtimeright">
             <div id="divDual" class="itemlabel"><asp:Label ID="Label20" runat="server" 
-                    Text="Dual" meta:resourcekey="Label20Resource1"></asp:Label>
+                    Text="Received" meta:resourcekey="Label20Resource1"></asp:Label>
             </div>
             <div class="itemdata">
                 <uc7:mfbDecimalEdit ID="decDual" Width="40px" TabIndex="16" runat="server" />
@@ -207,7 +207,7 @@
         </div>
         <div class="itemtimeleft">
             <div class="itemlabel"><asp:Label ID="Label21" runat="server" 
-                    Text="CFI (Instructor)" meta:resourcekey="Label21Resource1"></asp:Label>
+                    Text="Instructor" meta:resourcekey="Label21Resource1"></asp:Label>
             </div>
             <div class="itemdata">
                 <uc7:mfbDecimalEdit ID="decCFI" Width="40px" TabIndex="17" runat="server" />
@@ -215,7 +215,7 @@
         </div>
         <div class="itemtimeright">
             <div id="div1" class="itemlabel"><asp:Label ID="Label22" runat="server" 
-                    Text="SIC (Second in Command)" meta:resourcekey="Label22Resource1"></asp:Label>
+                    Text="SIC (2nd in Command)" meta:resourcekey="Label22Resource1"></asp:Label>
             </div>
             <div class="itemdata">
                 <uc7:mfbDecimalEdit ID="decSIC" Width="40px" TabIndex="18" runat="server" />

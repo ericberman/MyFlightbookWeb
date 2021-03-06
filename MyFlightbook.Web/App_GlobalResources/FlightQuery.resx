@@ -200,10 +200,10 @@
     <value>Approaches</value>
   </data>
   <data name="FlightFeatureCFI" xml:space="preserve">
-    <value>CFI time</value>
+    <value>Instructor time</value>
   </data>
   <data name="FlightFeatureDual" xml:space="preserve">
-    <value>Dual time</value>
+    <value>Dual Received time</value>
   </data>
   <data name="FlightFeatureFSLanding" xml:space="preserve">
     <value>Full-stop day landings</value>

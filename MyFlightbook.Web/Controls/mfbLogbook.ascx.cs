@@ -638,8 +638,8 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
         if (!HasBeenBound && !String.IsNullOrEmpty(User))
             BindData(Data);
 
-        gvFlightLogs.Columns[FindColumn(gvFlightLogs, "CFI")].Visible = Pilot.IsInstructor && !MiniMode;
-        gvFlightLogs.Columns[FindColumn(gvFlightLogs, "SIC")].Visible = Pilot.TracksSecondInCommandTime && !MiniMode;
+        gvFlightLogs.Columns[FindColumn(gvFlightLogs, Resources.LogbookEntry.FieldCFI)].Visible = Pilot.IsInstructor && !MiniMode;
+        gvFlightLogs.Columns[FindColumn(gvFlightLogs, Resources.LogbookEntry.FieldSIC)].Visible = Pilot.TracksSecondInCommandTime && !MiniMode;
     }
 
     protected void SortGridview(GridView gv, List<LogbookEntryDisplay> lst)

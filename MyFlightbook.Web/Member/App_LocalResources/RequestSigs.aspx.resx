@@ -211,7 +211,7 @@
     <value>3. Send the request</value>
   </data>
   <data name="wsPickInstructorResource1.Title" xml:space="preserve">
-    <value>2. Pick The CFI</value>
+    <value>2. Pick The Instructor</value>
   </data>
   <data name="wsSelectFlightsResource1.Title" xml:space="preserve">
     <value>1. Select Flights</value>

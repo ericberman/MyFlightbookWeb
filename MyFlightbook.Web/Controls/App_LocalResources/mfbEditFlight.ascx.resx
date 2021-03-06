@@ -238,19 +238,19 @@
     <value />
   </data>
   <data name="Label20Resource1.Text" xml:space="preserve">
-    <value>Dual</value>
+    <value>Dual Received</value>
   </data>
   <data name="Label20Resource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="Label21Resource1.Text" xml:space="preserve">
-    <value>CFI (Instructor)</value>
+    <value>Instructor</value>
   </data>
   <data name="Label21Resource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="Label22Resource1.Text" xml:space="preserve">
-    <value>SIC (Second in Command)</value>
+    <value>SIC (2nd in Command)</value>
   </data>
   <data name="Label22Resource1.ToolTip" xml:space="preserve">
     <value />
@@ -472,7 +472,7 @@
     <value />
   </data>
   <data name="lnkDualResource1.Text" xml:space="preserve">
-    <value>Dual</value>
+    <value>Dual Received</value>
   </data>
   <data name="lnkDualResource1.ToolTip" xml:space="preserve">
     <value />

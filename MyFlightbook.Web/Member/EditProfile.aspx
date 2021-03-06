@@ -444,7 +444,7 @@
                                 <table> <!-- table here is to match layout of radiobuttonlist above -->
                                     <tr>
                                         <td>
-                                            <asp:CheckBox ID="ckTrackCFITime" runat="server" Text="CFI Time" 
+                                            <asp:CheckBox ID="ckTrackCFITime" runat="server" Text="Instructor Time" 
                                                 ValidationGroup="valPrefs" meta:resourcekey="ckTrackCFITimeResource1" />
                                         </td>
                                     </tr>

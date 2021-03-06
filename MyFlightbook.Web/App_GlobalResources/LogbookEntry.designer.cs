@@ -646,7 +646,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CFI.
+        ///   Looks up a localized string similar to As Instr..
         /// </summary>
         internal static string FieldCFI {
             get {
@@ -673,7 +673,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dual.
+        ///   Looks up a localized string similar to Dual Rcvd..
         /// </summary>
         internal static string FieldDual {
             get {

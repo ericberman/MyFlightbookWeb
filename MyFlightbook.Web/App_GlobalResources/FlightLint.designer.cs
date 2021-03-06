@@ -934,7 +934,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Flight indicates cross-country time, but no PIC, SIC, CFI, or Dual was indicated.
+        ///   Looks up a localized string similar to Flight indicates cross-country time, but no PIC, SIC, Instructor/CFI, or Dual Received was indicated.
         /// </summary>
         internal static string warningXCTimeFoundButNoRole {
             get {

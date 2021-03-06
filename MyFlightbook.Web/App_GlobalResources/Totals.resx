@@ -126,7 +126,7 @@
     <comment>2 or more approaches.</comment>
   </data>
   <data name="CFI" xml:space="preserve">
-    <value>CFI</value>
+    <value>Instructor</value>
     <comment>CFI total</comment>
   </data>
   <data name="Complex" xml:space="preserve">
@@ -138,8 +138,8 @@
     <comment>Cross Country total</comment>
   </data>
   <data name="Dual" xml:space="preserve">
-    <value>Dual</value>
-    <comment>Dual total</comment>
+    <value>Dual Received</value>
+    <comment>Dual Received total</comment>
   </data>
   <data name="Ground" xml:space="preserve">
     <value>Ground Simulator</value>

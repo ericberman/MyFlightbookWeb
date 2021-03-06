@@ -79,7 +79,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CFI.
+        ///   Looks up a localized string similar to Instructor.
         /// </summary>
         internal static string CFI {
             get {
@@ -151,7 +151,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dual.
+        ///   Looks up a localized string similar to Dual Received.
         /// </summary>
         internal static string Dual {
             get {
