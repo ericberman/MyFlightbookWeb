@@ -5,7 +5,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2020 MyFlightbook LLC
+ * Copyright (c) 2013-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -76,8 +76,7 @@ namespace MyFlightbook.RatingsProgress
         const decimal ATPMinPIC = 250;
         const decimal ATPMinPICXC = 100;
         const decimal ATPMinPICNight = 25;
-        const decimal ATPMinNightTakeoffs = 20;
-        const decimal ATPMinNightLandings = 20;
+        const decimal ATPMinNightTOLandingsSubst = 20;
         const decimal ATPMaxIFRSimulator = 25;
         const decimal ATPMaxFlightEngineer = 500;
 
@@ -101,7 +100,7 @@ namespace MyFlightbook.RatingsProgress
             miMinPICXC = new MilestoneItem(Resources.MilestoneProgress.ATPXCPICTime, ResolvedFAR("(a)(5)(i)"), Resources.MilestoneProgress.ATPPICTimeNote, MilestoneItem.MilestoneType.Time, ATPMinPICXC);
             miMinPICNight = new MilestoneItem(Resources.MilestoneProgress.ATPNightPICTime, ResolvedFAR("(a)(5)(ii)"), Resources.MilestoneProgress.ATPPICTimeNote, MilestoneItem.MilestoneType.Time, ATPMinPICNight);
             miNightTO = new MilestoneItem(string.Empty, ResolvedFAR("(b)"), string.Empty, MilestoneItem.MilestoneType.Count, ATPMinNightTakeoffs);
-            miNightLanding = new MilestoneItem(string.Empty, ResolvedFAR("(b)"), string.Empty, MilestoneItem.MilestoneType.Count, ATPMinNightLandings);
+            miNightLanding = new MilestoneItem(string.Empty, ResolvedFAR("(b)"), string.Empty, MilestoneItem.MilestoneType.Count, ATPMinNightTOLandingsSubst);
         }
 
         public override void ExamineFlight(ExaminerFlightRow cfr)
@@ -160,7 +159,7 @@ namespace MyFlightbook.RatingsProgress
                 // For each night takeoff/landing AFTER 20 have been satisfied, can substitue for one hour of night flying UP TO 25 hours.
                 if (miNightTO.IsSatisfied && miNightLanding.IsSatisfied)
                     miMinNightTime.AddEvent(Math.Min(Math.Max(
-                                                        Math.Min(miNightTO.Progress, miNightLanding.Progress) - Math.Max(ATPMinNightLandings, ATPMinNightLandings),
+                                                        Math.Min(miNightTO.Progress, miNightLanding.Progress) - ATPMinNightTOLandingsSubst,
                                                         0),
                                                      25));
 
