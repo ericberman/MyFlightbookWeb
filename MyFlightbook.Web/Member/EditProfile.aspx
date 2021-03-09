@@ -24,6 +24,8 @@
 <%@ Register Src="~/Controls/TwoFactorAuthVerifyCode.ascx" TagPrefix="uc1" TagName="TwoFactorAuthVerifyCode" %>
 <%@ Register Src="~/Controls/Prefs/mfbFlightColoring.ascx" TagPrefix="uc1" TagName="mfbFlightColoring" %>
 <%@ Register Src="~/Controls/mfbTypeInDate.ascx" TagPrefix="uc1" TagName="mfbTypeInDate" %>
+<%@ Register Src="~/Controls/Prefs/mfbBigRedButtons.ascx" TagPrefix="uc1" TagName="mfbBigRedButtons" %>
+<%@ Register Src="~/Controls/Prefs/mfbPropertyBlocklist.ascx" TagPrefix="uc1" TagName="mfbPropertyBlocklist" %>
 
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
     <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
@@ -357,27 +359,7 @@
                             <asp:Localize ID="locHeadDeletion" runat="server" Text="<%$ Resources:Profile, ProfileDeleteHeader %>"></asp:Localize>
                         </Header>
                         <Content>
-                            <div><asp:Localize ID="locRedButtons" runat="server" Text="<%$ Resources:Profile, BigRedButtonsHeader %>"></asp:Localize></div>
-                            <asp:MultiView ID="mvBigRedButtons" runat="server">
-                                <asp:View ID="vwStaticRedButtons" runat="server">
-                                    <p><asp:Label ID="lBRB1" runat="server" Text="<%$ Resources:Profile, TFARequired %>"></asp:Label></p>
-                                    <p><asp:Label ID="lBRB2" runat="server" Text="<%$ Resources:Profile, TFAUseYourApp %>"></asp:Label></p>
-                                    <uc1:TwoFactorAuthVerifyCode runat="server" ID="tfaBRB" OnTFACodeFailed="tfaBRB_TFACodeFailed" OnTFACodeVerified="tfaBRB_TFACodeVerified" />
-                                    <div><asp:Label ID="lblBRB2faErr" runat="server" CssClass="error" EnableViewState="false" Text="<%$ Resources:Profile, TFACodeFailed %>" Visible="false"></asp:Label></div>
-                                </asp:View>
-                                <asp:View ID="vwRedButtons" runat="server">
-                                    <p><asp:Localize ID="locDeleteUnusedAircraft" runat="server" Text="<%$ Resources:Profile, ProfileBulkDeleteAircraftPrompt %>"></asp:Localize></p>
-                                    <div><asp:Button ID="btnDeleteUnusedAircraft" Font-Bold="true" ForeColor="Red" runat="server" Text="<%$ Resources:Profile, ProfileBulkDeleteAircraft %>" OnClick="btnDeleteUnusedAircraft_Click" /></div>
-                                    <p><asp:Localize ID="locDeleteFlights" runat="server" Text="<%$ Resources:Profile, ProfileBulkDeleteFlightsPrompt %>"></asp:Localize></p>
-                                    <div><asp:Button ID="btnDeleteFlights" Font-Bold="true" ForeColor="Red" runat="server" Text="<%$ Resources:Profile, ProfileBulkDeleteFlights %>" OnClick="btnDeleteFlights_Click" /></div>
-                                    <div><asp:Label ID="lblDeleteFlightsCompleted" runat="server" Text="<%$ Resources:Profile, ProfileDeleteFlightsCompleted %>" CssClass="success" Font-Bold="true" Visible="false" EnableViewState="false"></asp:Label></div>
-                                    <cc1:ConfirmButtonExtender ID="confirmDeleteFlights" ConfirmText="<%$ Resources:Profile, ProfileBulkDeleteConfirm %>" TargetControlID="btnDeleteFlights" runat="server" />
-                                    <p><asp:Localize ID="locCloseAccount" runat="server" Text="<%$ Resources:Profile, ProfileDeleteAccountPrompt %>"></asp:Localize></p>
-                                    <div><asp:Button ID="btnCloseAccount" Font-Bold="true" ForeColor="Red" runat="server" Text="<%$ Resources:Profile, ProfileDeleteAccount %>" OnClick="btnCloseAccount_Click" /></div>
-                                    <cc1:ConfirmButtonExtender ID="ConfirmButtonExtender1" ConfirmText="<%$ Resources:Profile, ProfileDeleteAccountConfirm %>" TargetControlID="btnCloseAccount" runat="server" />
-                                </asp:View>
-                            </asp:MultiView>
-                            <asp:Label ID="lblDeleteErr" runat="server" EnableViewState="false" CssClass="error"></asp:Label>
+                            <uc1:mfbBigRedButtons runat="server" id="mfbBigRedButtons" />
                         </Content>
                     </cc1:AccordionPane>
                 </Panes>
@@ -491,57 +473,9 @@
                         </Header>
                         <Content>
                             <div class="prefSectionRow">
-                                <h2><asp:Localize ID="locPropHeader" runat="server" Text="<%$ Resources:LogbookEntry, PropertiesHeader %>"></asp:Localize></h2>
-                                <p><asp:Localize ID="lblPropertyDesc" runat="server" Text="Properties that you have used on previous flights are automatically shown for new flights.  To reduce clutter, though, you can choose to not display some by default." meta:resourcekey="lblPropertyDescResource1"></asp:Localize></p>
-                                <p><asp:Localize ID="locInstructions" runat="server" Text="Drag and drop between the two lists below if using a mouse; if using touch, press-and-hold to move an item between lists." meta:resourcekey="locInstructionsResource1"></asp:Localize></p>
                                 <asp:UpdatePanel runat="server" ID="UpdatePanel1">
                                     <ContentTemplate>
-                                        <script>
-                                            var listDrop = new listDragger('<% =txtPropID.ClientID %>', '<% =btnAllowList.ClientID %>', '<% =btnBlockList.ClientID %>');
-                                        </script>
-                                        <div style="display:none">
-                                            <asp:TextBox ID="txtPropID" runat="server" EnableViewState="False" meta:resourcekey="txtPropIDResource1"></asp:TextBox>
-                                            <asp:Button ID="btnBlockList" runat="server" OnClick="btnBlockList_Click" />
-                                            <asp:Button ID="btnAllowList" runat="server" OnClick="btnAllowList_Click" />
-                                        </div>
-                                        <table>
-                                            <tr>
-                                                <td style="width:50%"><asp:Localize ID="locPrevUsed" runat="server" Text="Show these..." meta:resourcekey="locPrevUsedResource1"></asp:Localize></td>
-                                                <td style="width:50%"><asp:Localize ID="locBlockListed" runat="server" Text="...but not these" meta:resourcekey="locBlockListedResource1"></asp:Localize></td>
-                                            </tr>
-                                            <tr>
-                                                <td style="width:50%">
-                                                    <div id="divPropsToShow" ondrop="javascript:listDrop.leftListDrop(event)" ondragover="javascript:listDrop.allowDrop(event)" class="dragTarget">
-                                                        <asp:Repeater ID="rptUsedProps" runat="server">
-                                                            <ItemTemplate>
-                                                                <div draggable="true" id="cpt<%# Eval("PropTypeID") %>" class="draggableItem" ondragstart="javascript:listDrop.drag(event, <%# Eval("PropTypeID") %>)" >
-                                                                    <%# Eval("Title") %>
-                                                                    <script>
-                                                                        document.getElementById('cpt<%# Eval("PropTypeID") %>').addEventListener("touchstart", function () { listDrop.startLeftTouch('<%# Eval("PropTypeID") %>'); });
-                                                                        document.getElementById('cpt<%# Eval("PropTypeID") %>').addEventListener("touchend", function () { listDrop.resetTouch(); });
-                                                                    </script>
-                                                                </div>
-                                                            </ItemTemplate>
-                                                        </asp:Repeater>
-                                                    </div>
-                                                </td>
-                                                <td style="width:50%">
-                                                    <div id="divPropsToBlocklist" ondrop="javascript:listDrop.rightListDrop(event)" ondragover="javascript:listDrop.allowDrop(event)" class="dragTarget">
-                                                        <asp:Repeater ID="rptBlockList" runat="server">
-                                                            <ItemTemplate>
-                                                                <div draggable="true" id="cpt<%# Eval("PropTypeID") %>" class="draggableItem" ondragstart="javascript:listDrop.drag(event, <%# Eval("PropTypeID") %>)">
-                                                                    <%# Eval("Title") %>
-                                                                    <script>
-                                                                        document.getElementById('cpt<%# Eval("PropTypeID") %>').addEventListener("touchstart", function () { listDrop.startRightTouch('<%# Eval("PropTypeID") %>'); });
-                                                                        document.getElementById('cpt<%# Eval("PropTypeID") %>').addEventListener("touchend", function () { listDrop.resetTouch(); });
-                                                                    </script>
-                                                                </div>
-                                                            </ItemTemplate>
-                                                        </asp:Repeater>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        </table>
+                                        <uc1:mfbPropertyBlocklist runat="server" id="mfbPropertyBlocklist" />
                                         <uc1:mfbEditPropTemplate runat="server" ID="mfbEditPropTemplate" />
                                     </ContentTemplate>
                                 </asp:UpdatePanel>

@@ -167,13 +167,7 @@ namespace MyFlightbook.MemberPages
             dateDOB.Date = m_pf.DateOfBirth ?? DateTime.MinValue;
             accordianAccount.SelectedIndex = (sidebarTab == tabID.pftQA) ? 2 : (sidebarTab == tabID.pftPass ? 1 : 0);
 
-            if (m_pf.PreferenceExists(MFBConstants.keyTFASettings))
-            {
-                mvBigRedButtons.SetActiveView(vwStaticRedButtons);
-                tfaBRB.AuthCode = m_pf.GetPreferenceForKey(MFBConstants.keyTFASettings) as string;
-            }
-            else
-                mvBigRedButtons.SetActiveView(vwRedButtons);
+
 
             fuHdSht.Attributes["onchange"] = "javascript:hdshtUpdated();";
             SetHeadShot();
@@ -248,9 +242,6 @@ namespace MyFlightbook.MemberPages
         {
             // features
             InitFeaturePrefs();
-
-            // Property blocklist
-            UpdateBlocklist();
 
             // Social networking.
             InitSocialNetworking();
@@ -525,45 +516,6 @@ namespace MyFlightbook.MemberPages
         }
         #endregion
 
-        #region Account closure and bulk delete
-        protected void btnDeleteFlights_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                ProfileAdmin.DeleteFlightsForUser(Page.User.Identity.Name);
-                lblDeleteFlightsCompleted.Visible = true;
-            }
-            catch (MyFlightbookException ex) { lblDeleteErr.Text = ex.Message; }
-        }
-
-        protected void btnCloseAccount_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                ProfileAdmin.DeleteEntireUser(Page.User.Identity.Name);
-                Response.Redirect("~");
-            }
-            catch (MyFlightbookException ex) { lblDeleteErr.Text = ex.Message; }
-        }
-
-        protected void btnDeleteUnusedAircraft_Click(object sender, EventArgs e)
-        {
-            int i = ProfileAdmin.DeleteUnusedAircraftForUser(Page.User.Identity.Name);
-            lblDeleteErr.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileBulkDeleteAircraftDeleted, i);
-            lblDeleteErr.CssClass = "success";
-        }
-
-        protected void tfaBRB_TFACodeFailed(object sender, EventArgs e)
-        {
-            lblBRB2faErr.Visible = true;
-        }
-
-        protected void tfaBRB_TFACodeVerified(object sender, EventArgs e)
-        {
-            mvBigRedButtons.SetActiveView(vwRedButtons);
-        }
-        #endregion
-
         #region Preferences
         protected void btnUpdateLocalPrefs_Click(object sender, EventArgs e)
         {
@@ -639,57 +591,6 @@ namespace MyFlightbook.MemberPages
                 lblCurrencyPrefsUpdated.CssClass = "error";
             }
         }
-
-        #region Property Blocklist
-        protected void UpdateBlocklist(bool fForceDB = false)
-        {
-            rptUsedProps.DataSource = new List<CustomPropertyType>(CustomPropertyType.GetCustomPropertyTypes(Page.User.Identity.Name, fForceDB)).FindAll(cpt => cpt.IsFavorite);
-            rptUsedProps.DataBind();
-            List<CustomPropertyType> lstBlocklist = new List<CustomPropertyType>(CustomPropertyType.GetCustomPropertyTypes(m_pf.BlocklistedProperties));
-            lstBlocklist.Sort((cpt1, cpt2) => { return cpt1.SortKey.CompareCurrentCultureIgnoreCase(cpt2.SortKey); });
-            rptBlockList.DataSource = lstBlocklist;
-            rptBlockList.DataBind();
-        }
-
-        protected void btnAllowList_Click(object sender, EventArgs e)
-        {
-            if (!String.IsNullOrEmpty(txtPropID.Text) && !String.IsNullOrEmpty(txtPropID.Text.Trim()))
-            {
-                try
-                {
-                    int idPropType = Convert.ToInt32(txtPropID.Text, CultureInfo.InvariantCulture);
-                    m_pf.BlocklistedProperties.RemoveAll(id => id == idPropType);
-                    m_pf.FCommit();
-                    UpdateBlocklist(true);
-                }
-                catch
-                {
-                    throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "Error Parsing proptype '{0}' for allowlist in invariant culture.  Current culture is {1}.", txtPropID.Text, CultureInfo.CurrentCulture.DisplayName));
-                }
-            }
-        }
-
-        protected void btnBlockList_Click(object sender, EventArgs e)
-        {
-            if (!String.IsNullOrEmpty(txtPropID.Text) && !String.IsNullOrEmpty(txtPropID.Text.Trim()))
-            {
-                try
-                {
-                    int idPropType = Convert.ToInt32(txtPropID.Text, CultureInfo.InvariantCulture);
-                    if (!m_pf.BlocklistedProperties.Contains(idPropType))
-                    {
-                        m_pf.BlocklistedProperties.Add(idPropType);
-                        m_pf.FCommit();
-                        UpdateBlocklist(true);
-                    }
-                }
-                catch
-                {
-                    throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "Error Parsing proptype '{0}' for blocklist in invariant culture.  Current culture is {1}.", txtPropID.Text, CultureInfo.CurrentCulture.DisplayName));
-                }
-            }
-        }
-        #endregion
 
         #endregion // Preferences
 

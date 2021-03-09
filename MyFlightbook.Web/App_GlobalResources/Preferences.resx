@@ -297,4 +297,16 @@
   <data name="PilotInfoRatingsPrompt" xml:space="preserve">
     <value>These are your ratings, as determined from checkrides in your logbook. As such, the list may be incomplete.</value>
   </data>
+  <data name="PrefBlockListDesc" xml:space="preserve">
+    <value>Properties that you have used on previous flights are automatically shown for new flights.  To reduce clutter, though, you can choose to not display some by default.</value>
+  </data>
+  <data name="PrefBlockListHide" xml:space="preserve">
+    <value>...but not these</value>
+  </data>
+  <data name="PrefBlockListInstructions" xml:space="preserve">
+    <value>Drag and drop between the two lists below if using a mouse; if using touch, press-and-hold to move an item between lists.</value>
+  </data>
+  <data name="PrefBlockListShow" xml:space="preserve">
+    <value>Show these...</value>
+  </data>
 </root>

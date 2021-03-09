@@ -599,5 +599,41 @@ namespace Resources {
                 return ResourceManager.GetString("PilotInfoRatingsPrompt", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Properties that you have used on previous flights are automatically shown for new flights.  To reduce clutter, though, you can choose to not display some by default..
+        /// </summary>
+        internal static string PrefBlockListDesc {
+            get {
+                return ResourceManager.GetString("PrefBlockListDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ...but not these.
+        /// </summary>
+        internal static string PrefBlockListHide {
+            get {
+                return ResourceManager.GetString("PrefBlockListHide", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drag and drop between the two lists below if using a mouse; if using touch, press-and-hold to move an item between lists..
+        /// </summary>
+        internal static string PrefBlockListInstructions {
+            get {
+                return ResourceManager.GetString("PrefBlockListInstructions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show these....
+        /// </summary>
+        internal static string PrefBlockListShow {
+            get {
+                return ResourceManager.GetString("PrefBlockListShow", resourceCulture);
+            }
+        }
     }
 }

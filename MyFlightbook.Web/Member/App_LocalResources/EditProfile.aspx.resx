@@ -477,9 +477,6 @@
   <data name="lblPrefsUpdatedResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="lblPropertyDescResource1.Text" xml:space="preserve">
-    <value>Properties that you have used on previous flights are automatically shown for new flights.  To reduce clutter, though, you can choose to not display some by default.</value>
-  </data>
   <data name="lblQAChangeSuccessResource1.Text" xml:space="preserve">
     <value>Security question and answer successfully changed</value>
   </data>
@@ -600,9 +597,6 @@
   <data name="lnkSetUpTwitterResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="locBlockListedResource1.Text" xml:space="preserve">
-    <value>...but not these</value>
-  </data>
   <data name="locCurrentQuestionResource1.Text" xml:space="preserve">
     <value>Current question: </value>
   </data>
@@ -621,9 +615,6 @@
   <data name="locFlightTimesResource1.Text" xml:space="preserve">
     <value>Flight Entry</value>
   </data>
-  <data name="locInstructionsResource1.Text" xml:space="preserve">
-    <value>Drag and drop between the two lists below if using a mouse; if using touch, press-and-hold to move an item between lists.</value>
-  </data>
   <data name="locNewAnswerResource1.Text" xml:space="preserve">
     <value>New Security Answer</value>
   </data>
@@ -638,9 +629,6 @@
   </data>
   <data name="locPrefsheaderResource1.Text" xml:space="preserve">
     <value>Features and preferences</value>
-  </data>
-  <data name="locPrevUsedResource1.Text" xml:space="preserve">
-    <value>Show these...</value>
   </data>
   <data name="locPropertiesHeaderResource1.Text" xml:space="preserve">
     <value>Flight Properties and Templates</value>
@@ -841,12 +829,6 @@
     <value />
   </data>
   <data name="txtPassQAResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="txtPropIDResource1.Text" xml:space="preserve">
-    <value />
-  </data>
-  <data name="txtPropIDResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="valCurrentPasswordRequiredResource1.ErrorMessage" xml:space="preserve">
