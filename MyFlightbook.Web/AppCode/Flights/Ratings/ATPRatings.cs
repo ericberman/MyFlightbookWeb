@@ -99,7 +99,7 @@ namespace MyFlightbook.RatingsProgress
             miMinPIC = new MilestoneItem(Resources.MilestoneProgress.ATPPICTime, ResolvedFAR("(a)(5)"), Resources.MilestoneProgress.ATPPICTimeNote, MilestoneItem.MilestoneType.Time, ATPMinPIC);
             miMinPICXC = new MilestoneItem(Resources.MilestoneProgress.ATPXCPICTime, ResolvedFAR("(a)(5)(i)"), Resources.MilestoneProgress.ATPPICTimeNote, MilestoneItem.MilestoneType.Time, ATPMinPICXC);
             miMinPICNight = new MilestoneItem(Resources.MilestoneProgress.ATPNightPICTime, ResolvedFAR("(a)(5)(ii)"), Resources.MilestoneProgress.ATPPICTimeNote, MilestoneItem.MilestoneType.Time, ATPMinPICNight);
-            miNightTO = new MilestoneItem(string.Empty, ResolvedFAR("(b)"), string.Empty, MilestoneItem.MilestoneType.Count, ATPMinNightTakeoffs);
+            miNightTO = new MilestoneItem(string.Empty, ResolvedFAR("(b)"), string.Empty, MilestoneItem.MilestoneType.Count, ATPMinNightTOLandingsSubst);
             miNightLanding = new MilestoneItem(string.Empty, ResolvedFAR("(b)"), string.Empty, MilestoneItem.MilestoneType.Count, ATPMinNightTOLandingsSubst);
         }
 
