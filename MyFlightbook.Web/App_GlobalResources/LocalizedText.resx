@@ -1889,4 +1889,7 @@
   <data name="EditFlightUpdatePendingFlight" xml:space="preserve">
     <value>Update Pending Flight</value>
   </data>
+  <data name="ChartTotalsGroupMonthOfYear" xml:space="preserve">
+    <value>Month of Year</value>
+  </data>
 </root>

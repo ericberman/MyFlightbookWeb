@@ -573,6 +573,35 @@ namespace MyFlightbook.Histogram
         }
     }
 
+    public class MonthOfYearBucketManager : BucketManager
+    {
+        public MonthOfYearBucketManager() : base()
+        {
+            DisplayName = Resources.LocalizedText.ChartTotalsGroupMonthOfYear;
+            BucketSelectorName = "Date";
+        }
+
+        public override bool SupportsRunningTotals { get { return false; } }
+
+        protected override IDictionary<IComparable, Bucket> BucketsForData(IEnumerable<IHistogramable> items, IEnumerable<HistogramableValue> columns)
+        {
+            Dictionary<IComparable, Bucket> d = new Dictionary<IComparable, Bucket>();
+            int maxMonth = String.IsNullOrEmpty(DateTimeFormatInfo.CurrentInfo.GetMonthName(13)) ? 12 : 13;
+            for (int month = 1; month <= maxMonth; month++)
+                d[month] = new Bucket(month, DateTimeFormatInfo.CurrentInfo.GetMonthName(month), columns);
+            return d;
+        }
+
+        protected override IComparable KeyForValue(IComparable o)
+        {
+            if (o is int day)
+                return day;
+            else if (o is DateTime dt)
+                return (int)dt.Month;
+            return null;
+        }
+    }
+
     /// <summary>
     /// BucketManager for days (e.g., "May 5 2016") data
     /// </summary>

@@ -3573,6 +3573,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
             {
                 new YearlyBucketManager(szBaseHref),
                 new YearMonthBucketManager(szBaseHref),
+                new MonthOfYearBucketManager(),
                 new WeeklyBucketManager(szBaseHref),
                 new DailyBucketManager(szBaseHref),
                 new DayOfWeekBucketManager(),

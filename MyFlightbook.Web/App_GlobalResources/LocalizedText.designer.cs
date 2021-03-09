@@ -875,6 +875,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Month of Year.
+        /// </summary>
+        internal static string ChartTotalsGroupMonthOfYear {
+            get {
+                return ResourceManager.GetString("ChartTotalsGroupMonthOfYear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Group by:.
         /// </summary>
         internal static string ChartTotalsGroupPrompt {
