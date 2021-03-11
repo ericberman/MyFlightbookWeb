@@ -152,6 +152,7 @@ namespace MyFlightbook.RatingsProgress
                     cMetMilestones++;
             }
             lblOverallProgress.Text = String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.OverallProgressTemplate, cMetMilestones, cMilestones);
+            lblPrintHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.RatingProgressPrintHeaderTemplate, mp.Title, Profile.GetUser(TargetUser).UserFullName, DateTime.Now.Date.ToShortDateString());
         }
 
         protected void cmbMilestones_SelectedIndexChanged(object sender, EventArgs e)

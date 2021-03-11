@@ -2547,7 +2547,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Landings are assumed to have been at the listed airports.  The requirement for an operating control tower is NOT being enforced/checked here..
+        ///   Looks up a localized string similar to Landings are assumed to have been at the listed airports..
         /// </summary>
         internal static string NoteXCLandings {
             get {
@@ -2576,7 +2576,9 @@ namespace Resources {
         /// <summary>
         ///   Looks up a localized string similar to %APP_NAME% cannot determine with 100% reliability that a given milestone has been met; some inference is often required.  In addition, various substitutions or credits may be applicable based on information beyond what %APP_NAME% can determine, so your personal requirements may differ from what is listed here.
         ///&lt;br /&gt;
-        ///&lt;a href=&quot;http://www.ecfr.gov/cgi-bin/text-idx?c=ecfr&amp;sid=71744280eca6c8501c64b5216665c957&amp;rgn=div8&amp;view=text&amp;node=14:2.0.1.1.2.2.1.2&amp;idno=14&quot; target=&quot;_blank&quot;&gt;FAR 61.63&lt;/a&gt; may also render som [rest of string was truncated]&quot;;.
+        ///&lt;a href=&quot;https://www.law.cornell.edu/cfr/text/14/61.63&quot; target=&quot;_blank&quot;&gt;FAR 61.63&lt;/a&gt; may also render some or all of these milestones moot.
+        ///&lt;br /&gt;
+        ///YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURIN [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string OverallProgressDisclaimer {
             get {
@@ -3049,6 +3051,15 @@ namespace Resources {
         internal static string ratingPoweredParachute {
             get {
                 return ResourceManager.GetString("ratingPoweredParachute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Progress towards {0} for {1}, as of {2}.
+        /// </summary>
+        internal static string RatingProgressPrintHeaderTemplate {
+            get {
+                return ResourceManager.GetString("RatingProgressPrintHeaderTemplate", resourceCulture);
             }
         }
         

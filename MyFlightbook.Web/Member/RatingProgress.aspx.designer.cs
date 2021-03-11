@@ -51,6 +51,15 @@ namespace MyFlightbook.RatingsProgress
         protected global::System.Web.UI.WebControls.DropDownList cmbMilestones;
 
         /// <summary>
+        /// lblPrintHeader control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblPrintHeader;
+
+        /// <summary>
         /// pnlOverallProgress control.
         /// </summary>
         /// <remarks>

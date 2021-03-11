@@ -5,20 +5,25 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="cpTopForm" Runat="Server">
     <asp:Label ID="lblErr" runat="server" CssClass="error" EnableViewState="false" Text=""></asp:Label>
-    <p>
-        <asp:DropDownList ID="cmbMilestoneGroup" runat="server" 
-            AppendDataBoundItems="true" AutoPostBack="True" DataTextField="GroupName" DataValueField="GroupName" 
-            onselectedindexchanged="cmbMilestoneGroup_SelectedIndexChanged">
-            <asp:ListItem Selected="True" Value="" Text="<%$ Resources:MilestoneProgress, PromptRatingGroup %>"></asp:ListItem>
-        </asp:DropDownList>
-    </p>
-    <p>
-        <asp:DropDownList ID="cmbMilestones" runat="server" AutoPostBack="True" AppendDataBoundItems="true" 
-            DataTextField="Title" DataValueField="Title" 
-            onselectedindexchanged="cmbMilestones_SelectedIndexChanged">
-            <asp:ListItem Selected="True" Value="" Text="<%$ Resources:MilestoneProgress, PromptRatingItem %>"></asp:ListItem>
-        </asp:DropDownList>
-    </p>
+    <div class="noprint">
+        <p>
+            <asp:DropDownList ID="cmbMilestoneGroup" runat="server" 
+                AppendDataBoundItems="true" AutoPostBack="True" DataTextField="GroupName" DataValueField="GroupName" 
+                onselectedindexchanged="cmbMilestoneGroup_SelectedIndexChanged">
+                <asp:ListItem Selected="True" Value="" Text="<%$ Resources:MilestoneProgress, PromptRatingGroup %>"></asp:ListItem>
+            </asp:DropDownList>
+        </p>
+        <p>
+            <asp:DropDownList ID="cmbMilestones" runat="server" AutoPostBack="True" AppendDataBoundItems="true" 
+                DataTextField="Title" DataValueField="Title" 
+                onselectedindexchanged="cmbMilestones_SelectedIndexChanged">
+                <asp:ListItem Selected="True" Value="" Text="<%$ Resources:MilestoneProgress, PromptRatingItem %>"></asp:ListItem>
+            </asp:DropDownList>
+        </p>
+    </div>
+    <div class="printonly" style="text-align:center;">
+        <h2><asp:Label ID="lblPrintHeader" runat="server" /></h2>
+    </div>
     <asp:Panel ID="pnlOverallProgress" runat="server" Visible="false">
         <asp:Label Font-Bold="true" ID="lblOverallProgress" runat="server" Text=""></asp:Label><br />
         <asp:Label ID="lblNoteProgress" runat="server" Font-Bold="true" Text="<%$ Resources:LocalizedText, Note %>"></asp:Label>

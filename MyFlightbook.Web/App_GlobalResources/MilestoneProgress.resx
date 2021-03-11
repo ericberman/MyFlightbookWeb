@@ -330,7 +330,7 @@
   <data name="OverallProgressDisclaimer" xml:space="preserve">
     <value>%APP_NAME% cannot determine with 100% reliability that a given milestone has been met; some inference is often required.  In addition, various substitutions or credits may be applicable based on information beyond what %APP_NAME% can determine, so your personal requirements may differ from what is listed here.
 &lt;br /&gt;
-&lt;a href="http://www.ecfr.gov/cgi-bin/text-idx?c=ecfr&amp;sid=71744280eca6c8501c64b5216665c957&amp;rgn=div8&amp;view=text&amp;node=14:2.0.1.1.2.2.1.2&amp;idno=14" target="_blank"&gt;FAR 61.63&lt;/a&gt; may also render some or all of these milestones moot.
+&lt;a href="https://www.law.cornell.edu/cfr/text/14/61.63" target="_blank"&gt;FAR 61.63&lt;/a&gt; may also render some or all of these milestones moot.
 &lt;br /&gt;
 YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTICAL EXPERIENCE.</value>
   </data>
@@ -1542,5 +1542,9 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
   </data>
   <data name="CANightDualNote" xml:space="preserve">
     <value>Prior to earning your night rating, you cannot simultaneously apply night and instrument (IMC or hood) time, so any time that is clearly night and instrument here does not contribute to progress here.</value>
+  </data>
+  <data name="RatingProgressPrintHeaderTemplate" xml:space="preserve">
+    <value>Progress towards {0} for {1}, as of {2}</value>
+    <comment>{0} = the milestone, {1} is the user's name, {2} is the current date</comment>
   </data>
 </root>
