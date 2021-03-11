@@ -1,4 +1,4 @@
-<p>%APP_NAME% - logbook for pilots!</p>
+<p>%APP_NAME% - Free Logbook for Pilots!</p>
 <ul>
 	<li>Access your logbook from anywhere</li>
     <li>Ensure that you are current</li>
@@ -10,4 +10,5 @@
     <li>View your flights on a map</li>
 	<li>And much more...</li>
 </ul>
+<ul><li>Learn more about how %APP_NAME% compares to other logbooks</li></ul>
 <p>%APP_NAME% is free of charge</p>
