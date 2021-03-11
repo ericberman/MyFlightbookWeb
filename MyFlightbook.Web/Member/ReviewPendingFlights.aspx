@@ -40,7 +40,7 @@
                                 </asp:Panel>
                                 <asp:Repeater ID="rptProps" runat="server" DataSource='<%# CustomFlightProperty.PropDisplayAsList((IEnumerable<CustomFlightProperty>)Eval("CustomProperties"), Viewer.UsesHHMM, true, true) %>'>
                                     <ItemTemplate>
-                                        <div><%#: Container.DataItem %></div>
+                                        <div><%# Container.DataItem %></div>
                                     </ItemTemplate>
                                 </asp:Repeater>
                             </asp:Panel>
