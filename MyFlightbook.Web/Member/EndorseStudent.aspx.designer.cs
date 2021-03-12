@@ -172,7 +172,7 @@ public partial class Member_EndorseStudent
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::Controls_mfbEndorsementList mfbEndorsementList1;
+    protected global::MyFlightbook.Instruction.mfbEndorsementList mfbEndorsementList1;
 
     /// <summary>
     /// hdnLastTemplate control.

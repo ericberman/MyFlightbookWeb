@@ -358,6 +358,33 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sort by:.
+        /// </summary>
+        internal static string EndorsementSort {
+            get {
+                return ResourceManager.GetString("EndorsementSort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Date.
+        /// </summary>
+        internal static string EndorsementSortDate {
+            get {
+                return ResourceManager.GetString("EndorsementSortDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Title.
+        /// </summary>
+        internal static string EndorsementSortTitle {
+            get {
+                return ResourceManager.GetString("EndorsementSortTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Find Endorsements.
         /// </summary>
         internal static string EndorsementsSearchPrompt {

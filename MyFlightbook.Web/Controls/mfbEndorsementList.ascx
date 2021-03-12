@@ -1,12 +1,17 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbEndorsementList.ascx.cs" Inherits="Controls_mfbEndorsementList" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbEndorsementList.ascx.cs" Inherits="MyFlightbook.Instruction.mfbEndorsementList" %>
 <%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="asp" %>
 <%@ Register src="mfbEndorsement.ascx" tagname="mfbEndorsement" tagprefix="uc1" %>
 <div>
     <asp:HyperLink ID="lnkDisclaimer" Text="<%$ Resources:SignOff, DigitalEndorsementDisclaimer %>" Target="_blank" NavigateUrl="~/Public/FAQ.aspx?q=23#23" runat="server"></asp:HyperLink>
 </div>
-<asp:GridView ID="gvExistingEndorsements" OnRowDataBound="gvExistingEndorsements_RowDataBound" GridLines="None" runat="server" AutoGenerateColumns="false" ShowFooter="false" ShowHeader="false" OnRowCommand="gvExistingEndorsements_RowCommand">
+<asp:HiddenField ID="hdnCurSort" runat="server" Value="Date" />
+<asp:HiddenField ID="hdnCurSortDir" runat="server" Value="Descending" />
+<asp:GridView ID="gvExistingEndorsements" OnRowDataBound="gvExistingEndorsements_RowDataBound" GridLines="None" runat="server" AutoGenerateColumns="false" ShowFooter="false" ShowHeader="true" OnRowCommand="gvExistingEndorsements_RowCommand">
     <Columns>
         <asp:TemplateField>
+            <HeaderTemplate>
+                <asp:Label ID="lblSort" runat="server" Font-Bold="false" Text="<%$ Resources:SignOff, EndorsementSort %>" />&nbsp;&nbsp;&nbsp;<asp:LinkButton ID="lnkSortDate" runat="server" Text="<%$ Resources:SignOff, EndorsementSortDate %>" OnClick="lnkSortDate_Click" />&nbsp;&nbsp;&nbsp;<asp:LinkButton ID="lnkSortTitle" runat="server" Text="<%$ Resources:SignOff, EndorsementSortTitle %>" OnClick="lnkSortTitle_Click" />
+            </HeaderTemplate>
             <ItemTemplate>
                 <uc1:mfbEndorsement ID="mfbEndorsement1" runat="server" />
             </ItemTemplate>

@@ -449,4 +449,13 @@
   <data name="LogbookRevokeSignature" xml:space="preserve">
     <value>Remove Signature from this entry</value>
   </data>
+  <data name="EndorsementSort" xml:space="preserve">
+    <value>Sort by:</value>
+  </data>
+  <data name="EndorsementSortDate" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="EndorsementSortTitle" xml:space="preserve">
+    <value>Title</value>
+  </data>
 </root>

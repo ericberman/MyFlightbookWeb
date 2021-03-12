@@ -8,10 +8,11 @@ using System.Globalization;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2020 MyFlightbook LLC
+ * Copyright (c) 2010-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -40,6 +41,8 @@ namespace MyFlightbook.Instruction
         /// </summary>
         StudentPullAdHoc
     }
+
+    public enum EndorsementSortKey { Date, Title };
 
     /// <summary>
     /// Summary description for Endorsement
@@ -316,7 +319,7 @@ namespace MyFlightbook.Instruction
         /// <param name="szInstructor">The username of the instructor, or null/empty for all records for the student</param>
         /// <param name="szStudent">The username of the student, or null/empty for all records for the instructor</param>
         /// <returns>An array of Endorsement objects representing the associated users</returns>
-        public static IEnumerable<Endorsement> EndorsementsForUser(string szStudent, string szInstructor)
+        public static IEnumerable<Endorsement> EndorsementsForUser(string szStudent, string szInstructor, SortDirection sortDirection = SortDirection.Descending, EndorsementSortKey sortKey = EndorsementSortKey.Date)
         {
             Boolean fStudent = !String.IsNullOrEmpty(szStudent);
             Boolean fInstructor = !String.IsNullOrEmpty(szInstructor);
@@ -329,7 +332,11 @@ namespace MyFlightbook.Instruction
 
             string szRestrict = (fStudent ? szQStudent : "") + (fStudent && fInstructor ? " AND " : "") + (fInstructor ? szQInstructor : "");
             List<Endorsement> lst = new List<Endorsement>();
-            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "SELECT *, LENGTH(DigitizedSignature) AS FileSize FROM Endorsements WHERE {0}", szRestrict));
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "SELECT *, LENGTH(DigitizedSignature) AS FileSize FROM Endorsements WHERE {0} ORDER BY {1} {2}",
+                szRestrict,
+                sortKey == EndorsementSortKey.Date ? "Date" : "Title",
+                sortDirection == SortDirection.Descending ? "DESC" : "ASC"
+                ));
 
             if (!dbh.ReadRows(
                 (comm) =>

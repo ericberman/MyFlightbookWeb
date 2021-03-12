@@ -66,7 +66,7 @@ namespace MyFlightbook.Instruction
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_mfbEndorsementList mfbEndorsementList1;
+        protected global::MyFlightbook.Instruction.mfbEndorsementList mfbEndorsementList1;
 
         /// <summary>
         /// lnkAddEndorsement control.
