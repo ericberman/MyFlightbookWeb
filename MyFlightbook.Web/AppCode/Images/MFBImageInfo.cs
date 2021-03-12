@@ -402,8 +402,13 @@ namespace MyFlightbook.Image
         }
 
         #region IComparable
+        private string SortKey
+        {
+            get { return String.IsNullOrWhiteSpace(Comment) ? FullImageFile : Comment; }
+        }
+
         /// <summary>
-        /// Sorts MFBImageInfoBase objects.  Puts images before all other documents, subsorts by filename (== timestamp for images)
+        /// Sorts MFBImageInfoBase objects.  Puts images before all other documents, subsorts by comment or filename (== timestamp for images)
         /// </summary>
         /// <param name="o">Object being compared to.</param>
         /// <returns></returns>
@@ -415,7 +420,7 @@ namespace MyFlightbook.Image
             MFBImageInfoBase mfbii = obj as MFBImageInfoBase;
 
             if (this.ImageType == mfbii.ImageType)
-                return this.FullImageFile.CompareOrdinalIgnoreCase(mfbii.FullImageFile);
+                return this.SortKey.CompareOrdinalIgnoreCase(mfbii.SortKey);
             else
                 return this.ImageType == ImageFileType.JPEG ? -1 : 1;
         }

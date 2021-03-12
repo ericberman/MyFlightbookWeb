@@ -1,6 +1,4 @@
-﻿using MyFlightbook;
-using MyFlightbook.Instruction;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
