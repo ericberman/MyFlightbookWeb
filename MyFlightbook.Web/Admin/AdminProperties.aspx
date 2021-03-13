@@ -69,6 +69,7 @@
                         <asp:ListItem Text="Known property" Value="16777216"></asp:ListItem>
                         <asp:ListItem Text="No autocomplete" Value="33554432"></asp:ListItem>
                         <asp:ListItem Text="Convert to Caps" Value="67108864"></asp:ListItem>
+                        <asp:ListItem Text="Initial Caps" Value="268435456"></asp:ListItem>
                     </asp:CheckBoxList>
                 </td>
             </tr>

@@ -207,6 +207,7 @@ namespace MyFlightbook
             public const UInt32 cfpFlagNoAutoComplete = 0x02000000; // no autocomplete for this property
             public const UInt32 cfpFlagAllCaps = 0x04000000;    // convert any value for this property to all caps.
             public const UInt32 cfpFlagIsLanding = 0x08000000;
+            public const UInt32 cfpFlagInitialCaps = 0x10000000;    // Default to initial caps - useful for names.
         };
 
         private const string szAppCacheKey = "keyCustomPropertyTypes";
@@ -591,6 +592,7 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
             AppendIfFlagged(sb, cfp, CFPPropertyFlag.cfpFlagGliderGroundLaunch, "Glider GroundLaunch;");
             AppendIfFlagged(sb, cfp, CFPPropertyFlag.cfpFlagNoAutoComplete, "No autocomplete;");
             AppendIfFlagged(sb, cfp, CFPPropertyFlag.cfpFlagAllCaps, "All Caps;");
+            AppendIfFlagged(sb, cfp, CFPPropertyFlag.cfpFlagInitialCaps, "Initial Caps");
 
             string sz = sb.ToString();
 
@@ -1232,9 +1234,7 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
             {
                 case CFPPropertyType.cfpBoolean:
                     char ch1st = szVal.ToUpperInvariant()[0];
-                    if (ch1st == 'Y')
-                        BoolValue = true;
-                    else BoolValue = ch1st != 'N' && Convert.ToBoolean(szVal, CultureInfo.InvariantCulture);
+                    BoolValue = ch1st == 'Y' || ch1st != 'N' && Convert.ToBoolean(szVal, CultureInfo.InvariantCulture);
                     break;
                 case CFPPropertyType.cfpInteger:
                     IntValue = Convert.ToInt32(szVal, CultureInfo.InvariantCulture);
