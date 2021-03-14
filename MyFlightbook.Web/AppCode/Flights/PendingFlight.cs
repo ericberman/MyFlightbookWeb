@@ -90,6 +90,21 @@ namespace MyFlightbook
         }
 
         /// <summary>
+        /// See who has a lot of pending flights and thus might need a nudge to deal with them.
+        /// </summary>
+        /// <param name="threshold">Threshold for inclusion</param>
+        /// <returns>A dictionary with a set of usernames and the count of their pending flights</returns>
+        static public IDictionary<string, int> UsersWithLotsOfPendingFlights(int threshold)
+        {
+            Dictionary<string, int> d = new Dictionary<string, int>();
+            DBHelper dbh = new DBHelper("SELECT username, COUNT(id) AS num FROM pendingflights GROUP BY username HAVING num > ?thresh ORDER BY num DESC");
+            dbh.ReadRows(
+                (comm) => { comm.Parameters.AddWithValue("thresh", threshold); },
+                (dr) => { d[(string)dr["username"]] = Convert.ToInt32(dr["num"], System.Globalization.CultureInfo.InvariantCulture); });
+            return d;
+        }
+
+        /// <summary>
         /// Deletes the pending flight from the pending flights table
         /// </summary>
         /// <param name="id">The id of the flight to delete</param>

@@ -12,7 +12,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2020 MyFlightbook LLC
+ * Copyright (c) 2009-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -252,6 +252,19 @@ namespace MyFlightbook.Subscriptions
                 // We don't update the last-email sent on this because this email is asynchronous - i.e., not dependent on any other mail that was sent.
                 foreach (Profile pf in lstUsersToSend)
                     SendMailForUser(pf, String.Format(CultureInfo.CurrentCulture, Resources.Profile.EmailMonthlySubject, DateTime.Now.AddMonths(-1).ToString("MMMM", CultureInfo.InvariantCulture)), "monthly");
+            }
+
+            // Do a pending flights reminder - every week or so
+            if (DateTime.Now.DayOfYear % 7 == 6)
+            {
+                IDictionary<string, int> usersWithPendingFlights = PendingFlight.UsersWithLotsOfPendingFlights(20);
+                foreach (string szUser in usersWithPendingFlights.Keys)
+                {
+                    Profile pf = Profile.GetUser(szUser);
+                    util.NotifyUser(Branding.ReBrand(Resources.Profile.PendingFlightsReminderSubject),
+                        Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.Profile.PendingFlightsReminder, pf.UserFullName, usersWithPendingFlights[szUser])),
+                        new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, true);
+                }
             }
         }
 

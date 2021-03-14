@@ -385,6 +385,7 @@
     <Content Include="App_GlobalResources\Content.en\Email\GoogleDriveFailure.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\OneDriveFailure.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\PasswordChanged.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\PendingFlightsReminder.htm" />
     <Content Include="App_GlobalResources\Content.en\Email\ReauthFacebook.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\ResetPassEmail.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\ResourceBooked.txt" />

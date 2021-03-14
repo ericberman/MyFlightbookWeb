@@ -1267,7 +1267,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;p&gt;%APP_NAME% - logbook for pilots!&lt;/p&gt;
+        ///   Looks up a localized string similar to &lt;p&gt;%APP_NAME% - Free Logbook for Pilots!&lt;/p&gt;
         ///&lt;ul&gt;
         ///	&lt;li&gt;Access your logbook from anywhere&lt;/li&gt;
         ///    &lt;li&gt;Ensure that you are current&lt;/li&gt;
@@ -1279,7 +1279,7 @@ namespace Resources {
         ///    &lt;li&gt;View your flights on a map&lt;/li&gt;
         ///	&lt;li&gt;And much more...&lt;/li&gt;
         ///&lt;/ul&gt;
-        ///&lt;p&gt;%APP_NAME% is free of charge&lt;/p&gt;.
+        ///&lt;ul&gt;&lt;li&gt;Learn more about how %APP_NAME% compares to oth [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string NewAccountPromo {
             get {
@@ -1302,6 +1302,31 @@ namespace Resources {
         internal static string PasswordChangedSubject {
             get {
                 return ResourceManager.GetString("PasswordChangedSubject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;p&gt;Dear {0}:&lt;/p&gt;
+        ///
+        ///&lt;p&gt;You currently have &lt;span style=&quot;font-weight:bold&quot;&gt;{1:#,###}&lt;/span&gt; pending flights in your account on %APP_NAME%&lt;/p&gt;
+        ///
+        ///&lt;p&gt;These flights are not yet part of your logbook, and as such they do not contribute towards your totals or your currency.  They are likely flights that resulted from an import, but which need errors corrected or additional information before
+        ///    they can be added to your logbook.&lt;/p&gt;
+        ///
+        ///&lt;p&gt;You can &lt;a href=&quot;https://%APP_URL%%APP_ROOT%/Member/ReviewPendingFlights.as [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string PendingFlightsReminder {
+            get {
+                return ResourceManager.GetString("PendingFlightsReminder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have pending flights on %APP_NAME%.
+        /// </summary>
+        internal static string PendingFlightsReminderSubject {
+            get {
+                return ResourceManager.GetString("PendingFlightsReminderSubject", resourceCulture);
             }
         }
         
