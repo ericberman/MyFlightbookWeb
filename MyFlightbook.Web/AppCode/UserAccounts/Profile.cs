@@ -141,10 +141,9 @@ namespace MyFlightbook
                 {
                     FormsAuthentication.SetAuthCookie(HttpContext.Current.Request.Cookies[MFBConstants.keyOriginalID].Value, true);
                     Profile pf = Profile.GetUser(mu.UserName);
-                    if (pf.PreferenceExists(MFBConstants.keyDecimalSettings))
-                        HttpContext.Current.Session[MFBConstants.keyDecimalSettings] = pf.GetPreferenceForKey<DecimalFormat>(MFBConstants.keyDecimalSettings);
-                    else
-                        HttpContext.Current.Session[MFBConstants.keyDecimalSettings] = null;
+                    HttpContext.Current.Session[MFBConstants.keyDecimalSettings] = pf.PreferenceExists(MFBConstants.keyDecimalSettings)
+                        ? pf.GetPreferenceForKey<DecimalFormat>(MFBConstants.keyDecimalSettings)
+                        : (object)null;
                 }
                 else
                     FormsAuthentication.SignOut();
@@ -166,10 +165,9 @@ namespace MyFlightbook
             HttpContext.Current.Response.Cookies[MFBConstants.keyIsImpersonating].Expires = DateTime.Now.AddDays(30);
 
             Profile pf = Profile.GetUser(szTargetName);
-            if (pf.PreferenceExists(MFBConstants.keyDecimalSettings))
-                HttpContext.Current.Session[MFBConstants.keyDecimalSettings] = pf.GetPreferenceForKey<DecimalFormat>(MFBConstants.keyDecimalSettings);
-            else
-                HttpContext.Current.Session[MFBConstants.keyDecimalSettings] = null;
+            HttpContext.Current.Session[MFBConstants.keyDecimalSettings] = pf.PreferenceExists(MFBConstants.keyDecimalSettings)
+                ? pf.GetPreferenceForKey<DecimalFormat>(MFBConstants.keyDecimalSettings)
+                : (object)null;
         }
         #endregion
     }
@@ -247,11 +245,11 @@ namespace MyFlightbook
         /// <summary>
         /// Bitflag for which currencies the user does/does not want
         /// </summary>
-        public CurrencyOptionFlags CurrencyFlags { get; set; }
+        public UInt32 CurrencyFlags { get; set; }
 
         private void setCurrencyFlag(CurrencyOptionFlags cof, bool value)
         {
-            CurrencyFlags = (CurrencyOptionFlags)((value) ? (((uint)CurrencyFlags) | (uint)cof) : (((uint)CurrencyFlags) & ~(uint)cof));
+            CurrencyFlags = (UInt32)((value) ? (((uint)CurrencyFlags) | (uint)cof) : (((uint)CurrencyFlags) & ~(uint)cof));
         }
 
         private bool hasFlag(CurrencyOptionFlags cof)
@@ -403,7 +401,7 @@ namespace MyFlightbook
         /// <summary>
         /// Should we use Canadian currency rules?  See http://laws-lois.justice.gc.ca/eng/regulations/SOR-96-433/FullText.html#s-401.05 and https://www.tc.gc.ca/eng/civilaviation/publications/tp185-1-10-takefive-559.htm
         /// </summary>
-        public Boolean UseCanadianCurrencyRules
+        private Boolean UseCanadianCurrencyRules
         {
             get { return hasFlag(CurrencyOptionFlags.flagUseCanadianCurrencyRules); }
             set { setCurrencyFlag(CurrencyOptionFlags.flagUseCanadianCurrencyRules, value); }
@@ -412,10 +410,36 @@ namespace MyFlightbook
         /// <summary>
         /// Should we use LAPL currency rules?  See https://www.caa.co.uk/General-aviation/Pilot-licences/EASA-requirements/LAPL/LAPL-(A)-requirements/
         /// </summary>
-        public Boolean UsesLAPLCurrency
+        private Boolean UseLAPLCurrencyRules
         {
             get { return hasFlag(CurrencyOptionFlags.flagUseLAPLCurrency); }
             set { setCurrencyFlag(CurrencyOptionFlags.flagUseLAPLCurrency, value); }
+        }
+
+        /// <summary>
+        /// Should we use Australian currency rules?  See http://classic.austlii.edu.au/au/legis/cth/consol_reg/casr1998333/s61.870.html and http://www5.austlii.edu.au/au/legis/cth/consol_reg/casr1998333/s61.395.html
+        /// </summary>
+        private Boolean UseAustralianCurrencyRules
+        {
+            get { return hasFlag(CurrencyOptionFlags.flagUseAustralianCurrency); }
+            set { setCurrencyFlag(CurrencyOptionFlags.flagUseAustralianCurrency, value); }
+        }
+
+        /// <summary>
+        ///  Gets/sets the current jurisdiction for currency rules.  FAA is the default.
+        /// </summary>
+        public CurrencyJurisdiction CurrencyJurisdiction
+        {
+            get
+            {
+                return UseAustralianCurrencyRules ? CurrencyJurisdiction.Australia : (UseCanadianCurrencyRules ? CurrencyJurisdiction.Canada : (UseLAPLCurrencyRules ? CurrencyJurisdiction.EASA : CurrencyJurisdiction.FAA));
+            }
+            set
+            {
+                UseLAPLCurrencyRules = value == CurrencyJurisdiction.EASA;
+                UseCanadianCurrencyRules = value == CurrencyJurisdiction.Canada;
+                UseAustralianCurrencyRules = value == CurrencyJurisdiction.Australia;
+            }
         }
 
         /// <summary>
@@ -448,7 +472,7 @@ namespace MyFlightbook
             set
             {
                 uint newMask = (uint)value << 4;
-                CurrencyFlags = (CurrencyOptionFlags)(((uint)CurrencyFlags & ~(uint)CurrencyOptionFlags.flagCurrencyExpirationMask) | newMask);
+                CurrencyFlags = (UInt32)(((uint)CurrencyFlags & ~(uint)CurrencyOptionFlags.flagCurrencyExpirationMask) | newMask);
             }
         }
 
@@ -1018,7 +1042,7 @@ namespace MyFlightbook
                 License = util.ReadNullableField(dr, "License", string.Empty).ToString();
                 Certificate = util.ReadNullableField(dr, "CertificateNumber", "").ToString();
                 CertificateExpiration = Convert.ToDateTime(util.ReadNullableField(dr, "CFIExpiration", DateTime.MinValue), CultureInfo.InvariantCulture);
-                CurrencyFlags = (CurrencyOptionFlags)Convert.ToUInt32(dr["CurrencyFlags"], CultureInfo.InvariantCulture);
+                CurrencyFlags = (UInt32)Convert.ToUInt32(dr["CurrencyFlags"], CultureInfo.InvariantCulture);
                 SecurityQuestion = dr["PasswordQuestion"].ToString();
 
                 Subscriptions = (UInt32)Convert.ToInt32(dr["EmailSubscriptions"], CultureInfo.InvariantCulture);

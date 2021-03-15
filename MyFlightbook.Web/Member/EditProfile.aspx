@@ -496,8 +496,31 @@
                                     <asp:ListItem Text="<%$ Resources:Currency, CurrencyOptionsGroupICAO %>" Value="Family" />
                                 </asp:RadioButtonList>
                                 <div><asp:CheckBox ID="ckIncludeModelFeatureTotals" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsTotalsModelFeatures %>" /></div>
-                                <div><asp:Localize ID="locExpireCurrency" Text="<%$ Resources:Currency, CurrencyOptionsExpiredCurrency %>" runat="server" /> <asp:DropDownList ID="cmbExpiredCurrency" runat="server" /></div>
                                 <h3><%=Resources.Currency.CurrencyPrefsHeader %></h3>
+                                <div>
+                                    <asp:Label ID="lblJurisdictionHeader" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsJurisdiction %>" />
+                                    <table>
+                                        <tr>
+                                            <td><asp:RadioButton ID="rbFAARules" runat="server" GroupName="currJurisd" /></td>
+                                            <td><asp:Label ID="lblFAARules" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsUseFAA %>" AssociatedControlID="rbFAARules" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td><asp:RadioButton ID="rbCanadianRules" runat="server" GroupName="currJurisd" /></td>
+                                            <td><asp:Label ID="lblCanadaRules" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsUseCanada %>" AssociatedControlID="rbCanadianRules" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td><asp:RadioButton ID="rbEASARules" runat="server" GroupName="currJurisd" /></td>
+                                            <td><asp:Label ID="lblEASARules" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsUseEASA %>" AssociatedControlID="rbEASARules" />
+                                                <span class="fineprint"><asp:HyperLink ID="lnkCurrencyNotes2" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsNotesRef %>" Target="_blank" NavigateUrl="~/Public/CurrencyDisclaimer.aspx#instrument" /></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><asp:RadioButton ID="rbAustraliaRules" runat="server" GroupName="currJurisd" /></td>
+                                            <td><asp:Label ID="lblAustraliaRules" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsUseCASA %>" AssociatedControlID="rbAustraliaRules" /></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div><asp:Localize ID="locExpireCurrency" Text="<%$ Resources:Currency, CurrencyOptionsExpiredCurrency %>" runat="server" /> <asp:DropDownList ID="cmbExpiredCurrency" runat="server" /></div>
                                 <div><asp:CheckBox ID="ckUseArmyCurrency" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsArmyCurreny %>" /></div>
                                 <div><asp:CheckBox ID="ckUse117DutyTime" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsFAR117DutyTime %>" /></div>
                                 <div style="margin-left:2em;">
@@ -515,11 +538,6 @@
                                 <div><asp:CheckBox ID="ckUse61217Currency" runat="server" Text="<%$ Resources:Currency, Part61217Option %>" /></div>
                                 <div><asp:CheckBox ID="ckAllowNightTouchAndGo" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsNightTouchAndGo %>" /> <uc1:mfbTooltip runat="server" ID="ttNightTG" BodyContent="<%$ Resources:Currency, CurrencyOptionNoteNightTouchAndGo %>" /></div>
                                 <div><asp:CheckBox ID="ckDayLandingsForDayCurrency" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsDayLandings %>" /> <uc1:mfbTooltip runat="server" ID="ttDayLandings" BodyContent="<%$ Resources:Currency, CurrencyOptionNoteDayLandings %>" /></div>
-                                <div><asp:CheckBox ID="ckCanadianCurrency" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsUseCanada %>" /></div>
-                                <div>
-                                    <asp:CheckBox ID="ckLAPLCurrency" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsUseEASA %>" />
-                                    <span class="fineprint"><asp:HyperLink ID="lnkCurrencyNotes2" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsNotesRef %>" Target="_blank" NavigateUrl="~/Public/CurrencyDisclaimer.aspx#instrument"></asp:HyperLink></span>
-                                </div>
                                 <div>
                                     <asp:RadioButtonList ID="rblCurrencyPref" runat="server">
                                         <asp:ListItem Selected="True" Value="0" Text="<%$ Resources:Currency, CurrencyOptionsByCatClass %>" />

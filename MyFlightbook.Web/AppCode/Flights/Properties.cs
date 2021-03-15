@@ -208,6 +208,7 @@ namespace MyFlightbook
             public const UInt32 cfpFlagAllCaps = 0x04000000;    // convert any value for this property to all caps.
             public const UInt32 cfpFlagIsLanding = 0x08000000;
             public const UInt32 cfpFlagInitialCaps = 0x10000000;    // Default to initial caps - useful for names.
+            public const UInt32 cfpFlagPrecisionApproach = 0x20000000;
         };
 
         private const string szAppCacheKey = "keyCustomPropertyTypes";
@@ -303,6 +304,15 @@ namespace MyFlightbook
         public Boolean IsApproach
         {
             get { return ((Flags & CFPPropertyFlag.cfpFlagIsApproach) != CFPPropertyFlag.cfpFlagNone); }
+        }
+
+        /// <summary>
+        /// Is this property a precision approach of some kind?
+        /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
+        public Boolean IsPrecisionApproach
+        {
+            get { return ((Flags & CFPPropertyFlag.cfpFlagPrecisionApproach) != CFPPropertyFlag.cfpFlagNone); }
         }
 
         /// <summary>
@@ -570,6 +580,7 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
             AppendIfFlagged(sb, cfp, CFPPropertyFlag.cfpFlagGliderInstrumentManeuversPassengers, "Glider instrument maneuvers with passengers;");
             AppendIfFlagged(sb, cfp, CFPPropertyFlag.cfpFlagIPC, "IPC;");
             AppendIfFlagged(sb, cfp, CFPPropertyFlag.cfpFlagIsApproach, "Approach;");
+            AppendIfFlagged(sb, cfp, CFPPropertyFlag.cfpFlagPrecisionApproach, "Precision approach");
             AppendIfFlagged(sb, cfp, CFPPropertyFlag.cfpFlagIsLanding, "Landing;");
             AppendIfFlagged(sb, cfp, CFPPropertyFlag.cfpFlagNightTakeOff, "Night Takeoff;");
             AppendIfFlagged(sb, cfp, CFPPropertyFlag.cfpFlagNightVisionDepartureAndArrival, "Night vision departure/arrival;");

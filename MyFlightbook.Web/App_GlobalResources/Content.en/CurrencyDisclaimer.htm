@@ -54,13 +54,16 @@
         in the future, this requirement may change from a simple warning to a requirement for currency.
     </li>
     <li>
-        The FAA does requires that you perform "Holding Procedures and Tasks" (plural), but as far as I can tell never quite defines what constitutes a distinct "procedure" or "task" (singular).
+        The FAA does requires that you perform "Holding Procedures and Tasks" (plural), but as far as I can tell never quite defines what constitutes a discrete "procedure" or "task" (singular).
         Some people interpret this to mean multiple holds: i.e., if you enter a hold, do a few turns, and then exit, that would be a single hold, and thus you'd need to do this two or more times.
         Other people treat the entry, the timing of the legs, making adjustments for wind, and the exit as distinct tasks or procedures, so having a single instance of entering/completing a hold
         means you have executed holding procedures and tasks (plural) necessary to do so, and thus is sufficient to meet the requirement.  %APP_NAME% does not take a position on which definition is correct,
         but simply relies on you, the pilot, to indicate when you think you have met the rule.
     </li>
 </ul>
+<p>%APP_NAME% now supports <a href="http://classic.austlii.edu.au/au/legis/cth/consol_reg/casr1998333/s61.870.html" target="_blank">Australian rules</a> for instrument currency.  %APP_NAME% considers any precision approach to be 3D, and 
+    computes the # of 2D approaches in a given flight as (Total approaches) minus (precision approaches).  Also, Australian rules provide for azimuth operations and course deviation indicator operations.  Since these are often not explicitly logged, and are
+    implicit in conducting all but a few instrument operations or approach, these are ignored for purposes of reporting instrument currency.</p>
 <h2 id="nightcurrency">Night Currency</h2>
 <p>
     When computing night-time currency, %APP_NAME% only requires night-time full-stop landings.  FAR <a href="https://www.law.cornell.edu/cfr/text/14/61.57"

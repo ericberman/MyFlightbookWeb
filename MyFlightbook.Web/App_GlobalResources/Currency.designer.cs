@@ -97,6 +97,42 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Instrument, 2D approaches.
+        /// </summary>
+        internal static string CurrencyAustraliaIFR2D {
+            get {
+                return ResourceManager.GetString("CurrencyAustraliaIFR2D", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Instrument, 3D approaches.
+        /// </summary>
+        internal static string CurrencyAustraliaIFR3D {
+            get {
+                return ResourceManager.GetString("CurrencyAustraliaIFR3D", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Instrument,  IFR in {0}.
+        /// </summary>
+        internal static string CurrencyAustraliaIFRCategory {
+            get {
+                return ResourceManager.GetString("CurrencyAustraliaIFRCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Instrument,  General IFR.
+        /// </summary>
+        internal static string CurrencyAustraliaIFRGeneral {
+            get {
+                return ResourceManager.GetString("CurrencyAustraliaIFRGeneral", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;p&gt;
         ///    %APP_NAME% computes currency according to United States FAA rules (FAR &lt;a href=&quot;https://www.law.cornell.edu/cfr/text/14/61.57&quot;
         ///                                                                              target=&quot;_blank&quot;&gt;61.57&lt;/a&gt;
@@ -310,6 +346,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Compute basic currency using rules from:.
+        /// </summary>
+        internal static string CurrencyOptionsJurisdiction {
+            get {
+                return ResourceManager.GetString("CurrencyOptionsJurisdiction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Allow night touch-and-go landings for night currency.
         /// </summary>
         internal static string CurrencyOptionsNightTouchAndGo {
@@ -337,7 +382,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use Canadian currency rules.
+        ///   Looks up a localized string similar to Canada.
         /// </summary>
         internal static string CurrencyOptionsUseCanada {
             get {
@@ -346,11 +391,29 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use EASA/LAPL currency rules.
+        ///   Looks up a localized string similar to Australia.
+        /// </summary>
+        internal static string CurrencyOptionsUseCASA {
+            get {
+                return ResourceManager.GetString("CurrencyOptionsUseCASA", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Europe (EASA/LAPL).
         /// </summary>
         internal static string CurrencyOptionsUseEASA {
             get {
                 return ResourceManager.GetString("CurrencyOptionsUseEASA", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to United States (FAA).
+        /// </summary>
+        internal static string CurrencyOptionsUseFAA {
+            get {
+                return ResourceManager.GetString("CurrencyOptionsUseFAA", resourceCulture);
             }
         }
         

@@ -2,7 +2,6 @@ using MyFlightbook.CloudStorage;
 using MyFlightbook.Currency;
 using MyFlightbook.Image;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Web;
 using System.Web.UI;
@@ -187,10 +186,14 @@ namespace MyFlightbook.MemberPages
             ckUse13529xCurrency.Checked = m_pf.UsesFAR13529xCurrency;
             ckUse13526xCurrency.Checked = m_pf.UsesFAR13526xCurrency;
             ckUse61217Currency.Checked = m_pf.UsesFAR61217Currency;
-            ckLAPLCurrency.Checked = m_pf.UsesLAPLCurrency;
+
+            CurrencyJurisdiction cj = m_pf.CurrencyJurisdiction;
+            rbAustraliaRules.Checked = cj == CurrencyJurisdiction.Australia;
+            rbCanadianRules.Checked = cj == CurrencyJurisdiction.Canada;
+            rbEASARules.Checked = cj == CurrencyJurisdiction.EASA;
+            rbFAARules.Checked = cj == CurrencyJurisdiction.FAA;
             ckAllowNightTouchAndGo.Checked = m_pf.AllowNightTouchAndGoes;
             ckDayLandingsForDayCurrency.Checked = m_pf.OnlyDayLandingsForDayCurrency;
-            ckCanadianCurrency.Checked = m_pf.UseCanadianCurrencyRules;
             rblTotalsOptions.SelectedValue = m_pf.TotalsGroupingMode.ToString();
             ckIncludeModelFeatureTotals.Checked = !m_pf.SuppressModelFeatureTotals;
             rblCurrencyPref.SelectedIndex = (m_pf.UsesPerModelCurrency ? 1 : 0);
@@ -570,8 +573,14 @@ namespace MyFlightbook.MemberPages
             m_pf.UsesFAR13529xCurrency = ckUse13529xCurrency.Checked;
             m_pf.UsesFAR13526xCurrency = ckUse13526xCurrency.Checked;
             m_pf.UsesFAR61217Currency = ckUse61217Currency.Checked;
-            m_pf.UseCanadianCurrencyRules = ckCanadianCurrency.Checked;
-            m_pf.UsesLAPLCurrency = ckLAPLCurrency.Checked;
+            if (rbFAARules.Checked)
+                m_pf.CurrencyJurisdiction = CurrencyJurisdiction.FAA;
+            else if (rbCanadianRules.Checked)
+                m_pf.CurrencyJurisdiction = CurrencyJurisdiction.Canada;
+            else if (rbEASARules.Checked)
+                m_pf.CurrencyJurisdiction = CurrencyJurisdiction.EASA;
+            else if (rbAustraliaRules.Checked)
+                m_pf.CurrencyJurisdiction = CurrencyJurisdiction.Australia;
             m_pf.AllowNightTouchAndGoes = ckAllowNightTouchAndGo.Checked;
             m_pf.OnlyDayLandingsForDayCurrency = ckDayLandingsForDayCurrency.Checked;
             m_pf.UsesPerModelCurrency = (rblCurrencyPref.SelectedIndex > 0);

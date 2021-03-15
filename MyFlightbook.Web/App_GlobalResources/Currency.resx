@@ -1051,10 +1051,10 @@
     <value>Include subtotals for model features like complex, turbine, tailwheel, etc.</value>
   </data>
   <data name="CurrencyOptionsUseCanada" xml:space="preserve">
-    <value>Use Canadian currency rules</value>
+    <value>Canada</value>
   </data>
   <data name="CurrencyOptionsUseEASA" xml:space="preserve">
-    <value>Use EASA/LAPL currency rules</value>
+    <value>Europe (EASA/LAPL)</value>
   </data>
   <data name="CurrencyOptionNoteDayLandings" xml:space="preserve">
     <value>In some jurisdictions, day currency requires day landings.  Checking this option excludes night landings (full-stop or touch-and-go) from day (non-night) currency computations.</value>
@@ -1076,5 +1076,26 @@
   </data>
   <data name="NightTakeoffs" xml:space="preserve">
     <value>night takeoff(s)</value>
+  </data>
+  <data name="CurrencyAustraliaIFR2D" xml:space="preserve">
+    <value>Instrument, 2D approaches</value>
+  </data>
+  <data name="CurrencyAustraliaIFR3D" xml:space="preserve">
+    <value>Instrument, 3D approaches</value>
+  </data>
+  <data name="CurrencyAustraliaIFRCategory" xml:space="preserve">
+    <value>Instrument,  IFR in {0}</value>
+  </data>
+  <data name="CurrencyAustraliaIFRGeneral" xml:space="preserve">
+    <value>Instrument,  General IFR</value>
+  </data>
+  <data name="CurrencyOptionsJurisdiction" xml:space="preserve">
+    <value>Compute basic currency using rules from:</value>
+  </data>
+  <data name="CurrencyOptionsUseCASA" xml:space="preserve">
+    <value>Australia</value>
+  </data>
+  <data name="CurrencyOptionsUseFAA" xml:space="preserve">
+    <value>United States (FAA)</value>
   </data>
 </root>

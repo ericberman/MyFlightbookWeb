@@ -35,7 +35,7 @@ namespace MyFlightbook.Currency
         flagCurrencyExpirationBit2 = 0x0020,
         flagCurrencyExpirationBit3 = 0x0040,
         flagCurrencyExpirationMask = flagCurrencyExpirationBit1 | flagCurrencyExpirationBit2 | flagCurrencyExpirationBit3,
-        flagUseLooseIFRCurrency = 0x0080,
+        flagUseLooseIFRCurrency = 0x0080, // DEPRECATED, do not use
         flagShowTotalsPerModel = 0x0100,
         flagUseCanadianCurrencyRules = 0x0200,
         flagUseFAR135_29xStatus = 0x0400,
@@ -49,8 +49,11 @@ namespace MyFlightbook.Currency
         flagAllowNightTouchAndGo = 0x00040000,
         flagRequireDayLandingsDayCurrency = 0x00080000,
         flagShow2DigitTotals = 0x00100000,	// DEPRECATED, do not use
-        flagUseFAR125_2xxStatus = 0x00200000
+        flagUseFAR125_2xxStatus = 0x00200000,
+        flagUseAustralianCurrency = 0x00400000
     }
+
+    public enum CurrencyJurisdiction { FAA, Canada, EASA, Australia }
 
     /// <summary>
     /// Utility class for pruning expired currency items per use preference.
@@ -692,14 +695,32 @@ namespace MyFlightbook.Currency
 
         public ICurrencyExaminer PassengerCurrencyExaminer(CatClassContext catclasscontext, ExaminerFlightRow cfr)
         {
-            if (!dictFlightCurrency.ContainsKey(catclasscontext.Name))
+            string szStripeName = (pf.CurrencyJurisdiction == CurrencyJurisdiction.Australia) ? catclasscontext.Category : catclasscontext.Name;
+            if (!dictFlightCurrency.ContainsKey(szStripeName))
             {
-                string szName = String.Format(CultureInfo.InvariantCulture, "{0} - {1}", catclasscontext.Name, Resources.Currency.Passengers);
-                ICurrencyExaminer curr = pf.UseCanadianCurrencyRules ? new PassengerCurrencyCanada(szName, pf.OnlyDayLandingsForDayCurrency) : (pf.UsesLAPLCurrency ? EASAPPLPassengerCurrency.CurrencyForCatClass(cfr.idCatClassOverride, szName, pf.OnlyDayLandingsForDayCurrency) : new PassengerCurrency(szName, pf.OnlyDayLandingsForDayCurrency));
+                string szName = String.Format(CultureInfo.InvariantCulture, "{0} - {1}", szStripeName, Resources.Currency.Passengers);
+                ICurrencyExaminer curr;
+                switch (pf.CurrencyJurisdiction)
+                {
+                    case CurrencyJurisdiction.Australia:
+                        curr = new AustraliaPassengerCurrency(szName, pf.OnlyDayLandingsForDayCurrency);
+                        break;
+                    case CurrencyJurisdiction.Canada:
+                        curr = new PassengerCurrencyCanada(szName, pf.OnlyDayLandingsForDayCurrency);
+                        break;
+                    case CurrencyJurisdiction.EASA:
+                        curr = EASAPPLPassengerCurrency.CurrencyForCatClass(cfr.idCatClassOverride, szName, pf.OnlyDayLandingsForDayCurrency);
+                        break;
+                    case CurrencyJurisdiction.FAA:
+                        curr = new PassengerCurrency(szName, pf.OnlyDayLandingsForDayCurrency);
+                        break;
+                    default:
+                        throw new InvalidOperationException("Unknown jurisdiction for currency");
+                }
                 catclasscontext.AddContextToQuery(curr.Query, pf.UserName);
-                dictFlightCurrency.Add(catclasscontext.Name, curr);
+                dictFlightCurrency.Add(szStripeName, curr);
             }
-            return dictFlightCurrency[catclasscontext.Name];
+            return dictFlightCurrency[szStripeName];
         }
 
         public ICurrencyExaminer TailwheelCurrencyExaminer(CatClassContext catclasscontext)
@@ -716,11 +737,29 @@ namespace MyFlightbook.Currency
 
         public ICurrencyExaminer NightCurrencyExaminer(CatClassContext catclasscontext, ExaminerFlightRow cfr, bool fIsTypeRatedCategory)
         {
-            string szNightKey = catclasscontext.Name + "NIGHT";
+            string szStripeName = (pf.CurrencyJurisdiction == CurrencyJurisdiction.Australia) ? catclasscontext.Category : catclasscontext.Name;
+            string szNightKey = szStripeName + "NIGHT";
             if (!dictFlightCurrency.ContainsKey(szNightKey))
             {
-                string szName = String.Format(CultureInfo.InvariantCulture, "{0} - {1}", catclasscontext.Name, Resources.Currency.Night);
-                ICurrencyExaminer curr = pf.UseCanadianCurrencyRules ? new NightCurrencyCanada(szName) : (pf.UsesLAPLCurrency ? (ICurrencyExaminer) new EASAPPLNightPassengerCurrency(szName) : new NightCurrency(szName, fIsTypeRatedCategory ? cfr.szType : string.Empty, pf.AllowNightTouchAndGoes));
+                string szName = String.Format(CultureInfo.InvariantCulture, "{0} - {1}", szStripeName, Resources.Currency.Night);
+                ICurrencyExaminer curr;
+                switch (pf.CurrencyJurisdiction)
+                {
+                    case CurrencyJurisdiction.Australia:
+                        curr = new AustraliaNightPassengerCurrency(szName);
+                        break;
+                    case CurrencyJurisdiction.Canada:
+                        curr = new NightCurrencyCanada(szName);
+                        break;
+                    case CurrencyJurisdiction.EASA:
+                        curr = new EASAPPLNightPassengerCurrency(szName);
+                        break;
+                    case CurrencyJurisdiction.FAA:
+                        curr = new NightCurrency(szName, fIsTypeRatedCategory ? cfr.szType : string.Empty, pf.AllowNightTouchAndGoes);
+                        break;
+                    default:
+                        throw new InvalidOperationException("Unknown jurisdiction for currency");
+                }
                 catclasscontext.AddContextToQuery(curr.Query, pf.UserName);
                 dictFlightCurrency.Add(szNightKey, curr);
             }
@@ -750,12 +789,12 @@ namespace MyFlightbook.Currency
     internal class CatClassContext
     {
         #region properties
-        public string Name { get; set; }
-        public string ICAO { get; set; }
-        public CategoryClass CatClass { get; set; }
-        public string TypeName { get; set; }
+        public string Name { get; private set; }
+        public string ICAO { get; private set; }
+        public CategoryClass CatClass { get; private set; }
+        public string TypeName { get; private set; }
 
-        public string Category { get; set; }
+        public string Category { get; private set; }
         #endregion
 
         public CatClassContext(string szName, CategoryClass cc = null, string szType = null, string szcategory = null, string szICAO = null)
@@ -763,7 +802,7 @@ namespace MyFlightbook.Currency
             Name = szName;
             CatClass = cc;
             TypeName = szType;
-            Category = szcategory;
+            Category = szcategory ?? cc?.Category;
             ICAO = szICAO;
         }
 
@@ -971,11 +1010,11 @@ namespace MyFlightbook.Currency
                     ccc.SICProficiencyCurrencyExaminer(catclasscontext, cfr).ExamineFlight(cfr);
 
                 // Night, tailwheel, and basic passenger carrying
-                if ((cfr.cLandingsThisFlight > 0 || cfr.FlightProps.TotalCountForPredicate(cfp => cfp.PropertyType.IsNightTakeOff) > 0 || ccc.pf.UseCanadianCurrencyRules || fIsTypeRatedCategory) && (cfr.fIsCertifiedLanding || cfr.fIsFullMotion))
+                if ((cfr.cLandingsThisFlight > 0 || cfr.FlightProps.TotalCountForPredicate(cfp => cfp.PropertyType.IsNightTakeOff) > 0 || ccc.pf.CurrencyJurisdiction == CurrencyJurisdiction.Canada || fIsTypeRatedCategory) && (cfr.fIsCertifiedLanding || cfr.fIsFullMotion))
                 {
                     ccc.PassengerCurrencyExaminer(catclasscontext, cfr).ExamineFlight(cfr);
 
-                    if (CategoryClass.IsAirplane(cfr.idCatClassOverride) && cfr.fTailwheel && (cfr.cFullStopLandings + cfr.cFullStopNightLandings > 0))
+                    if (ccc.pf.CurrencyJurisdiction == CurrencyJurisdiction.FAA && CategoryClass.IsAirplane(cfr.idCatClassOverride) && cfr.fTailwheel && (cfr.cFullStopLandings + cfr.cFullStopNightLandings > 0))
                         ccc.TailwheelCurrencyExaminer(catclasscontext).ExamineFlight(cfr);
 
                     // for 61.57(e), we need to look at all flights, regardless of whether they have night flight, in computing currency
@@ -991,7 +1030,7 @@ namespace MyFlightbook.Currency
 
         private static void ExamineLAPLCurrency(ExaminerFlightRow cfr, ComputeCurrencyContext ccc, CatClassContext catClassContext)
         {
-            if (ccc.pf.UsesLAPLCurrency)
+            if (ccc.pf.CurrencyJurisdiction == CurrencyJurisdiction.EASA)
                 ccc.LAPLCurrencyExaminer(catClassContext, cfr)?.ExamineFlight(cfr);
         }
 
@@ -1134,36 +1173,44 @@ namespace MyFlightbook.Currency
 
         private static void ExamineFlightInContextIFR(ExaminerFlightRow cfr, ComputeCurrencyContext ccc)
         {
-            // IFR currency is more complex.
             if (!cfr.fIsGlider)
             {
-                // SFAR 73: currency in an R22 or R44 requires that all parts of 61.57 be done in an R22 or R44.
-                // see http://rgl.faa.gov/Regulatory_and_Guidance_Library/rgFAR.nsf/0/C039C8820E83B2F4862578940053960F?OpenDocument&Highlight=sfar%2073
-                // we handle this for regular currency by treating these as type-rated aircraft.
-                // But for instrument we need to do the same thing as above with type-rated: IFR events in an R22/R44 contribute to BOTH R22/R44 currency AND Helicopter currency,
-                // but IFR events in a helicopter do NOT contribute to R22/R44 IFR currency.
-                List<string> lstIFRCategories = new List<string>() { cfr.szCategory };
-
-                /*
-                 * Per discussion with Kersten Brändle <kersten.braendle@hotmail.com>, it appears that SFAR restriction doesn't apply to instrument, for two reasons:
-                 * a) the SFAR restriction (d) says 
-                 *      "No person may act as pilot in command of a Robinson model R-22 or R-44 helicopter carrying passengers unless the pilot in command
-                 *      has met the recency of flight experience requirements of Sec. 61.57",
-                 *    so it's about passenger carrying.  That will be the limiting factor, not instrument certification, and
-                 * b) apparantly R22/R44 are never IFR certified anyhow.
-                 *    
-                 * 
-                if (cfr.fIsR22)
-                    lstIFRCategories.Add(String.Format("{0} (R22)", cfr.szCategory));
-                if (cfr.fIsR44)
-                    lstIFRCategories.Add(String.Format("{0} (R44)", cfr.szCategory));
-                 * */
-
-                foreach (string szIFRCat in lstIFRCategories)
+                if (ccc.pf.CurrencyJurisdiction == CurrencyJurisdiction.Australia)
                 {
+                    // 4 separate currencies (see http://classic.austlii.edu.au/au/legis/cth/consol_reg/casr1998333/s61.870.html), all within 90 days:
+                    //  * 3 approaches in aircraft to be instrument current overall (not striped by category)
+                    //  * 1 approach in a particular category to be current in that category
+                    //  * 1 precision (3D) approach to be current for 3D approaches
+                    //  * 1 non-precision approach to be current for 2D approaches (I'm computing as total approaches minus precision approaches).
+                    if (!ccc.dictIFRCurrency.ContainsKey(Resources.Currency.CurrencyAustraliaIFRGeneral))
+                        ccc.dictIFRCurrency[Resources.Currency.CurrencyAustraliaIFRGeneral] = new AustraliaInstrumentIFRGeneral(ccc.pf.UserName);
+                    ccc.dictIFRCurrency[Resources.Currency.CurrencyAustraliaIFRGeneral].ExamineFlight(cfr);
+
+                    string szKey = String.Format(CultureInfo.CurrentCulture, Resources.Currency.CurrencyAustraliaIFRCategory, cfr.szCategory);
+                    if (!ccc.dictIFRCurrency.ContainsKey(szKey))
+                    {
+                        CurrencyExaminer curr = new AustraliaInstrumentIFRCategory(ccc.pf.UserName);
+                        ccc.dictIFRCurrency[szKey] = curr;
+                        new CatClassContext(szKey, null, null, cfr.szCategory).AddContextToQuery(curr.Query, ccc.pf.UserName);
+                    }
+                    ccc.dictIFRCurrency[szKey].ExamineFlight(cfr);
+
+                    szKey = Resources.Currency.CurrencyAustraliaIFR2D;
+                    if (!ccc.dictIFRCurrency.ContainsKey(szKey))
+                        ccc.dictIFRCurrency[szKey] = new AustraliaInstrumentIFR2D(ccc.pf.UserName);
+                    ccc.dictIFRCurrency[szKey].ExamineFlight(cfr);
+
+                    szKey = Resources.Currency.CurrencyAustraliaIFR3D;
+                    if (!ccc.dictIFRCurrency.ContainsKey(szKey))
+                        ccc.dictIFRCurrency[szKey] = new AustraliaInstrumentIFR3D(ccc.pf.UserName);
+                    ccc.dictIFRCurrency[szKey].ExamineFlight(cfr);
+                }
+                else
+                {
+                    string szIFRCat = cfr.szCategory;
                     if (!ccc.dictIFRCurrency.ContainsKey(szIFRCat))
                     {
-                        CurrencyExaminer curr = ccc.pf.UseCanadianCurrencyRules ? (CurrencyExaminer)new InstrumentCurrencyCanada() : (CurrencyExaminer)new InstrumentCurrency();
+                        CurrencyExaminer curr = ccc.pf.CurrencyJurisdiction == CurrencyJurisdiction.Canada ? (CurrencyExaminer)new InstrumentCurrencyCanada() : (CurrencyExaminer)new InstrumentCurrency();
                         ccc.dictIFRCurrency[szIFRCat] = curr;
                         new CatClassContext(szIFRCat, szcategory: szIFRCat).AddContextToQuery(curr.Query, ccc.pf.UserName);
                     }
@@ -1227,7 +1274,7 @@ namespace MyFlightbook.Currency
             if (dbh.LastError.Length > 0)
                 throw new MyFlightbookException("Exception computing currency: " + dbh.LastError);
 
-            if (ccc.pf.UsesLAPLCurrency && ccc.fHasIR)  // remove night currency reporting if you have an instrument rating
+            if (ccc.pf.CurrencyJurisdiction == CurrencyJurisdiction.EASA && ccc.fHasIR)  // remove night currency reporting if you have an instrument rating
             {
                 List<string> keys = new List<string>(ccc.dictFlightCurrency.Keys);
                 foreach (string szKey in keys)
