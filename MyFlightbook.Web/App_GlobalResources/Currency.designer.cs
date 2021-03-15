@@ -733,6 +733,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hour as instructor.
+        /// </summary>
+        internal static string CustomCurrencyEventCFIHour {
+            get {
+                return ResourceManager.GetString("CustomCurrencyEventCFIHour", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hours as instructor.
+        /// </summary>
+        internal static string CustomCurrencyEventCFIHours {
+            get {
+                return ResourceManager.GetString("CustomCurrencyEventCFIHours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to hour of dual.
         /// </summary>
         internal static string CustomCurrencyEventDualHour {

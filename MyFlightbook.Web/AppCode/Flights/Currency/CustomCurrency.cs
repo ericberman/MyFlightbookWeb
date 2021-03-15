@@ -8,7 +8,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2020 MyFlightbook LLC
+ * Copyright (c) 2007-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -230,6 +230,7 @@ namespace MyFlightbook.Currency
                         { CustomCurrency.CustomCurrencyEventType.NVFLIR, new string[] { Resources.Currency.CustomCurrencyEventNVSHour, Resources.Currency.CustomCurrencyEventNVSHours } },
                         { CustomCurrency.CustomCurrencyEventType.LandingsHighAltitude, new string[] { Resources.Currency.CustomCurrencyEventHighAltitudeLanding, Resources.Currency.CustomCurrencyEventHighAltitudeLandings } },
                         { CustomCurrency.CustomCurrencyEventType.HoursDual, new string[] { Resources.Currency.CustomCurrencyEventDualHour, Resources.Currency.CustomCurrencyEventDualHours } },
+                        { CustomCurrency.CustomCurrencyEventType.InstructionGiven, new string[] {Resources.Currency.CustomCurrencyEventCFIHour, Resources.Currency.CustomCurrencyEventCFIHours} },
                         { CustomCurrency.CustomCurrencyEventType.NightFlight, new string[] { Resources.Currency.CustomCurrencyEventNightHour, Resources.Currency.CustomCurrencyEventNightHours } },
                         { CustomCurrency.CustomCurrencyEventType.CAP5Checkride, new string[] { Resources.Currency.CustomCurrencyEventCap5Checkride, Resources.Currency.CustomCurrencyEventCap5Checkrides } },
                         { CustomCurrency.CustomCurrencyEventType.CAP91Checkride, new string[] { Resources.Currency.CustomCurrencyEventCap91Checkride, Resources.Currency.CustomCurrencyEventCap91Checkrides } },
@@ -387,7 +388,8 @@ namespace MyFlightbook.Currency
             FlightDutyTime = 33,
             TakeoffsAny = 34,
             SpecialAuthorizationApproach = 35,
-            EnhancedVisionApproach = 36
+            EnhancedVisionApproach = 36,
+            InstructionGiven = 37
         };
 
         public enum CurrencyRefType { Aircraft = 0, Models = 1, Properties = 2 };
@@ -970,6 +972,9 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                     case CustomCurrencyEventType.HoursDual:
                         fq.HasDual = true;
                         break;
+                    case CustomCurrencyEventType.InstructionGiven:
+                        fq.HasCFI = true;
+                        break;
                     case CustomCurrencyEventType.FlightReview:
                         fq.AddPropertyTypes(lstprops.FindAll(cpt => cpt.IsBFR));
                         break;
@@ -1143,6 +1148,9 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                     break;
                 case CustomCurrencyEventType.HoursDual:
                     AddRecentFlightEvents(cfr.dtFlight, cfr.Dual);
+                    break;
+                case CustomCurrencyEventType.InstructionGiven:
+                    AddRecentFlightEvents(cfr.dtFlight, cfr.CFI);
                     break;
                 case CustomCurrencyEventType.BaseCheck:
                     cfr.FlightProps.ForEachEvent((pfe) =>
