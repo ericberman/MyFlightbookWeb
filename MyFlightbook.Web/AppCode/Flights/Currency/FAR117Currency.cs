@@ -5,7 +5,7 @@ using System.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2020 MyFlightbook LLC
+ * Copyright (c) 2007-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -181,14 +181,10 @@ namespace MyFlightbook.Currency
         /// To figure out how much of the time (e.g., CFI time) could contribute to the 8-hour limit within 24 hours, we need to figure out the most conservative 
         /// start to the 24 hour period, as follows
         /// a) Call EffectiveDuty.This sets dtDutyStart, dtDutyEnd to either their specified values OR to the 24 hour midnight-to-midnight range.  This provides a starting point.  (Done in the constructor)
-        /// b) If a flight start or an engine start is specified, use the later of those(or the duty time), since it's only flight time that is limited.  
-        /// Since engine should precede flight, doing a "LaterDate" call should prefer flightstart over enginestart, which is what we want.If dutytime is later still, then this is a no-op.
-        /// c) If not flight/engine start is specified and a flight end is specified, subtract off the CFI time from that and use that as the start time, if it's later than what emerged from (b).
-        /// Don't do this, though, if we had start times.
-        /// d) Otherwise, use an engine time(if specified).  But don't do this if we had flight-end.
-        /// Regardless, pull the effective END of duty time in by the end-of-flight time, if specified, or the engine end, if specified.This limits the end time.
-        /// We've now got as late a start time as possible and as early an end-time as possible.  
-        /// Caller will Contribute MIN(netTime, duty-time window) towards the limit.
+        /// b) The flight time range goes from EARLIEST(Flight start, Engine start, or Block Out) to LATEST(Flight End, Engine End, Block End).  Call this TR.start to TR.end
+        /// c) If we can compute one of TR.start or TR.end, we can figure out the other end by adding (subtracting) net time.  i.e., if we know TR.start, then TR.end is TR.start + net time
+        /// d) The contributed "time since" is TR.end minus LATEST(FlightDutyStart, TR.start).  i.e., if TR starts after FlightDutyStart, then all of the net time counts.  
+        ///    Otherwise, only the amount that is after FlightDutyStart counts.
         /// </summary>
         /// <param name="dtStart">Start of the period</param>
         /// <param name="netTime">Max time that could be within the period</param>
@@ -199,22 +195,41 @@ namespace MyFlightbook.Currency
             if (cfr == null)
                 throw new ArgumentNullException(nameof(cfr));
 
-            DateTime dtDutyStart = FlightDutyStart;
-            DateTime dtDutyEnd = FlightDutyEnd;
+            DateTime dtStartFlight = DateTime.MaxValue;
+            DateTime dtEndFlight = DateTime.MinValue;
 
-            if (cfr.dtFlightStart.HasValue() || cfr.dtEngineStart.HasValue())
-                dtDutyStart = dtDutyStart.LaterDate(cfr.dtFlightStart).LaterDate(cfr.dtEngineStart);
-            else if (cfr.dtFlightEnd.HasValue())
-                dtDutyStart = dtDutyStart.LaterDate(cfr.dtFlightEnd.AddHours(-netTime));
-            else if (cfr.dtEngineEnd.HasValue())    // don't do engine if we have a flight end
-                dtDutyStart = dtDutyStart.LaterDate(cfr.dtEngineEnd.AddHours(-netTime));
+            DateTime blockOut = cfr.FlightProps.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDBlockOut) ? cfr.FlightProps[CustomPropertyType.KnownProperties.IDBlockOut].DateValue : DateTime.MaxValue;
+            DateTime blockIn = cfr.FlightProps.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDBlockIn) ? cfr.FlightProps[CustomPropertyType.KnownProperties.IDBlockIn].DateValue : DateTime.MinValue;
+
+            if (cfr.dtFlightStart.HasValue())
+                dtStartFlight = dtStartFlight.EarlierDate(cfr.dtFlightStart);
+            if (cfr.dtEngineStart.HasValue())
+                dtStartFlight = dtStartFlight.EarlierDate(cfr.dtEngineStart);
+            dtStartFlight = dtStartFlight.EarlierDate(blockOut);
+
+            if (dtStartFlight.CompareTo(DateTime.MaxValue) == 0) // none were found
+                dtStartFlight = DateTime.MinValue;
 
             if (cfr.dtFlightEnd.HasValue())
-                dtDutyEnd = dtDutyEnd.EarlierDate(cfr.dtFlightEnd);
-            else if (cfr.dtEngineEnd.HasValue())
-                dtDutyEnd = dtDutyEnd.EarlierDate(cfr.dtEngineEnd);
+                dtEndFlight = dtEndFlight.LaterDate(cfr.dtFlightEnd);
+            if (cfr.dtEngineEnd.HasValue())
+                dtEndFlight = dtEndFlight.LaterDate(cfr.dtEngineEnd);
+            dtEndFlight = dtEndFlight.LaterDate(blockIn);
 
-            return dtDutyEnd.Subtract(dtDutyStart.LaterDate(dtStart));
+            if (!dtEndFlight.HasValue() && !dtStartFlight.HasValue())
+            {
+                // Neither end found - conservatively set from (FlightDutyEnd - netTime) to FlightDutyEnd
+                dtEndFlight = FlightDutyEnd;
+                dtStartFlight = FlightDutyEnd.AddHours(-netTime);
+            }
+            if (dtEndFlight.HasValue())
+                // found an ending time but not a starting time - compute starting based on end
+                dtStartFlight = dtEndFlight.AddHours(-netTime);
+            else if (dtStartFlight.HasValue())
+                // found a start time, but no ending time - compute an end based on the start
+                dtEndFlight = dtStartFlight.AddHours(netTime);
+
+            return dtEndFlight.Subtract(dtStartFlight.LaterDate(dtStart));
         }
 
         /// <summary>

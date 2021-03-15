@@ -3,7 +3,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2020 MyFlightbook LLC
+ * Copyright (c) 2007-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -37,7 +37,7 @@ namespace MyFlightbook.Currency
 
             double netCFI = (double)cfr.CFI;
 
-            EffectiveDutyPeriod edp = new EffectiveDutyPeriod(cfr) { FlightDutyStart = DateTime.UtcNow.AddDays(-1), FlightDutyEnd = DateTime.UtcNow };
+            EffectiveDutyPeriod edp = new EffectiveDutyPeriod(cfr) { FlightDutyStart = dt24HoursAgo, FlightDutyEnd = DateTime.UtcNow };
 
             TimeSpan ts = edp.TimeSince(dt24HoursAgo, netCFI, cfr);
             if (ts.TotalHours > 0)
