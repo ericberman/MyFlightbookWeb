@@ -132,6 +132,24 @@ namespace MyFlightbook.Web.Controls.Prefs
         protected global::System.Web.UI.WebControls.Label lblNextMedical;
 
         /// <summary>
+        /// locMedicalNotes control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locMedicalNotes;
+
+        /// <summary>
+        /// txtMedicalNotes control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtMedicalNotes;
+
+        /// <summary>
         /// btnUpdateMedical control.
         /// </summary>
         /// <remarks>

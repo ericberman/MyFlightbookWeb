@@ -5,7 +5,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2020 MyFlightbook LLC
+ * Copyright (c) 2010-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -34,6 +34,7 @@ namespace MyFlightbook.Web.Controls.Prefs
             txtCertificate.Text = m_pf.Certificate;
             txtLicense.Text = m_pf.License;
             txtLicense.Attributes["dir"] = txtCertificate.Attributes["dir"] = "auto";
+            txtMedicalNotes.Text = m_pf.GetPreferenceForKey(MFBConstants.keyMedicalNotes) ?? string.Empty;
             mfbTypeInDateCFIExpiration.Date = m_pf.CertificateExpiration;
             mfbDateEnglishCheck.Date = m_pf.EnglishProficiencyExpiration;
             UpdateNextMedical(m_pf);
@@ -120,6 +121,7 @@ namespace MyFlightbook.Web.Controls.Prefs
             m_pf.LastMedical = dateMedical.Date;
             m_pf.MonthsToMedical = Convert.ToInt32(cmbMonthsMedical.SelectedValue, CultureInfo.InvariantCulture);
             m_pf.UsesICAOMedical = rblMedicalDurationType.SelectedIndex > 0;
+            m_pf.SetPreferenceForKey(MFBConstants.keyMedicalNotes, txtMedicalNotes.Text, String.IsNullOrWhiteSpace(txtMedicalNotes.Text));
 
             try
             {

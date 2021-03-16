@@ -556,6 +556,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Next Medical is Due: .
+        /// </summary>
+        internal static string PilotInfoMedicalNextDue {
+            get {
+                return ResourceManager.GetString("PilotInfoMedicalNextDue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notes.
+        /// </summary>
+        internal static string PilotInfoMedicalNotes {
+            get {
+                return ResourceManager.GetString("PilotInfoMedicalNotes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to (Unspecified).
         /// </summary>
         internal static string PilotInfoMedicalUnspecified {

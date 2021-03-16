@@ -41,16 +41,28 @@
                         <tr>
                             <td></td>
                             <td>
-                                <asp:RadioButtonList ID="rblMedicalDurationType" runat="server">
+                                <asp:RadioButtonList ID="rblMedicalDurationType" runat="server" RepeatDirection="Horizontal">
                                     <asp:ListItem Value="0" Text="<%$ Resources:Preferences, PilotInfoMedicalFAARules %>" Selected="True"></asp:ListItem>
                                     <asp:ListItem Value="1" Text="<%$ Resources:Preferences, PilotInfoMedicalICAORules %>"></asp:ListItem>
                                 </asp:RadioButtonList></td>
                         </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <asp:Panel ID="pnlNextMedical" runat="server" Visible="False">
+                                    <asp:Localize ID="locNextMedicalDuePrompt" runat="server" Text="<%$ Resources:Preferences, PilotInfoMedicalNextDue %>" />
+                                    <asp:Label ID="lblNextMedical" runat="server" Font-Bold="true" />
+                                </asp:Panel>
+                            </td>
+                        </tr>
+                        <tr style="vertical-align:top">
+                            <td>
+                                <asp:Localize ID="locMedicalNotes" runat="server" Text="<%$ Resources:Preferences, PilotInfoMedicalNotes %>" /></td>
+                            <td>
+                                <asp:TextBox ID="txtMedicalNotes" runat="server" TextMode="MultiLine" Rows="5" style="min-width: 300px" />
+                            </td>
+                        </tr>
                     </table>
-
-                    <asp:Panel ID="pnlNextMedical" runat="server" Visible="False"><br />
-                        <asp:Localize ID="locNextMedicalDuePrompt" runat="server" Text="<%$ Resources:Currency, NextMedical %>"></asp:Localize>
-                        <asp:Label ID="lblNextMedical" runat="server" Font-Bold="true"></asp:Label>.<br /><br /></asp:Panel>
                     <div>
                         <asp:Button ID="btnUpdateMedical" runat="server"  
                             Text="<%$ Resources:Profile, ProfilePilotInfoMedicalUpdate %>" ValidationGroup="valMedical" 

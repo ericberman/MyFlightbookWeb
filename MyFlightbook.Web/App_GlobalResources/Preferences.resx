@@ -282,6 +282,12 @@
   <data name="PilotInfoMedicalICAORules" xml:space="preserve">
     <value>Use ICAO rules (day for day)</value>
   </data>
+  <data name="PilotInfoMedicalNextDue" xml:space="preserve">
+    <value>Next Medical is Due: </value>
+  </data>
+  <data name="PilotInfoMedicalNotes" xml:space="preserve">
+    <value>Notes</value>
+  </data>
   <data name="PilotInfoMedicalUnspecified" xml:space="preserve">
     <value>(Unspecified)</value>
   </data>
