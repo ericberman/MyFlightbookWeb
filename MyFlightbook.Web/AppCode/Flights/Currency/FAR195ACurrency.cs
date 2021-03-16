@@ -37,9 +37,19 @@ namespace MyFlightbook.Currency
 
             double netCFI = (double)cfr.CFI;
 
-            EffectiveDutyPeriod edp = new EffectiveDutyPeriod(cfr) { FlightDutyStart = dt24HoursAgo, FlightDutyEnd = DateTime.UtcNow };
+            // look for explicit lesson end/lesson start times.
+            DateTime lessonStart = cfr.FlightProps.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropLessonStart) ? cfr.FlightProps[CustomPropertyType.KnownProperties.IDPropLessonStart].DateValue : DateTime.MinValue;
+            DateTime lessonEnd = cfr.FlightProps.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropLessonEnd) ? cfr.FlightProps[CustomPropertyType.KnownProperties.IDPropLessonEnd].DateValue : DateTime.MinValue;
 
-            TimeSpan ts = edp.TimeSince(dt24HoursAgo, netCFI, cfr);
+            TimeSpan ts;
+
+            if (lessonStart.HasValue() && lessonEnd.HasValue())
+                ts = lessonEnd.Subtract(lessonStart.LaterDate(dt24HoursAgo));
+            else
+            {
+                EffectiveDutyPeriod edp = new EffectiveDutyPeriod(cfr) { FlightDutyStart = dt24HoursAgo, FlightDutyEnd = DateTime.UtcNow };
+                ts = edp.TimeSince(dt24HoursAgo, netCFI, cfr);
+            }
             if (ts.TotalHours > 0)
                 totalInstruction += Math.Min(netCFI, ts.TotalHours);
         }
