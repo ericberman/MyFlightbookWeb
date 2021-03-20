@@ -8,7 +8,7 @@ using System.IO;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2020 MyFlightbook LLC
+ * Copyright (c) 2017-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -829,6 +829,7 @@ namespace MyFlightbook.ImportFlights
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightNumber, flight_flightNumber),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPilotFlyingTime, flight_pilotFlyingCapacity ? le.TotalFlightTime : 0),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropInstructorName, flight_selectedCrewInstructor),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropStudentName, flight_selectedCrewStudent),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived, flight_ground),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPassengerCount, flight_paxCount)
             });
