@@ -1,5 +1,8 @@
-﻿using System;
+﻿using MyFlightbook.Currency;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -12,9 +15,30 @@ using System.Web.UI.WebControls;
 
 namespace MyFlightbook.Web.Controls.Prefs
 {
-    public partial class mfbPilotInfo : System.Web.UI.UserControl
+    public partial class mfbPilotInfo : UserControl
     {
+        #region Properties
         protected Profile m_pf { get { return Profile.GetUser(Page.User.Identity.Name); } }
+
+        protected MedicalType SelectedMedicalType
+        {
+            get { return (MedicalType)Enum.Parse(typeof(MedicalType), cmbMedicalType.SelectedValue); }
+            set { cmbMedicalType.SelectedValue = value.ToString(); }
+        }
+
+        protected int MonthsToMedical
+        {
+            get { return Convert.ToInt32(cmbMonthsMedical.SelectedValue, CultureInfo.InvariantCulture); }
+            set { cmbMonthsMedical.SelectedValue = value.ToString(CultureInfo.InvariantCulture); }
+        }
+
+        protected bool UsesICAOMedical
+        {
+            get { return rblMedicalDurationType.SelectedIndex == 1; }
+            set { rblMedicalDurationType.SelectedIndex = value ? 1 : 0; }
+        }
+        #endregion
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -29,32 +53,38 @@ namespace MyFlightbook.Web.Controls.Prefs
         {
             dateMedical.Date = m_pf.LastMedical;
             dateMedical.TextControl.ValidationGroup = "valPilotInfo";
-            cmbMonthsMedical.SelectedValue = m_pf.MonthsToMedical.ToString(CultureInfo.CurrentCulture);
-            rblMedicalDurationType.SelectedIndex = m_pf.UsesICAOMedical ? 1 : 0;
+            MonthsToMedical = m_pf.MonthsToMedical;
+            MedicalType mt = new ProfileCurrency(m_pf).TypeOfMedical;
+            SelectedMedicalType = mt;
+            dateDOB.Date = m_pf.DateOfBirth ?? DateTime.MinValue;
+            UpdateForMedicalType(mt);
+            UsesICAOMedical = m_pf.UsesICAOMedical;
+            UpdateNextMedical();
             txtCertificate.Text = m_pf.Certificate;
             txtLicense.Text = m_pf.License;
             txtLicense.Attributes["dir"] = txtCertificate.Attributes["dir"] = "auto";
             txtMedicalNotes.Text = m_pf.GetPreferenceForKey(MFBConstants.keyMedicalNotes) ?? string.Empty;
             mfbTypeInDateCFIExpiration.Date = m_pf.CertificateExpiration;
             mfbDateEnglishCheck.Date = m_pf.EnglishProficiencyExpiration;
-            UpdateNextMedical(m_pf);
             BasicMedManager.RefreshBasicMedEvents();
 
             gvIPC.DataSource = ProfileEvent.GetIPCEvents(Page.User.Identity.Name);
             gvIPC.DataBind();
 
-            MyFlightbook.Achievements.UserRatings ur = new Achievements.UserRatings(m_pf.UserName);
+            Achievements.UserRatings ur = new Achievements.UserRatings(m_pf.UserName);
             gvRatings.DataSource = ur.Licenses;
             gvRatings.DataBind();
 
-            ProfileEvent[] rgpfeBFR = ProfileEvent.GetBFREvents(Page.User.Identity.Name, m_pf.LastBFREvent);
+            ProfileCurrency mc = new ProfileCurrency(m_pf);
+
+            ProfileEvent[] rgpfeBFR = ProfileEvent.GetBFREvents(Page.User.Identity.Name, mc.LastBFREvent);
 
             gvBFR.DataSource = rgpfeBFR;
             gvBFR.DataBind();
 
             if (rgpfeBFR.Length > 0) // we have at least one BFR event, so the last one should be the most recent.
             {
-                lblNextBFR.Text = Profile.NextBFR(rgpfeBFR[rgpfeBFR.Length - 1].Date).ToShortDateString();
+                lblNextBFR.Text = ProfileCurrency.NextBFR(rgpfeBFR[rgpfeBFR.Length - 1].Date).ToShortDateString();
                 pnlNextBFR.Visible = true;
             }
 
@@ -119,13 +149,18 @@ namespace MyFlightbook.Web.Controls.Prefs
                 return false;
 
             m_pf.LastMedical = dateMedical.Date;
-            m_pf.MonthsToMedical = Convert.ToInt32(cmbMonthsMedical.SelectedValue, CultureInfo.InvariantCulture);
-            m_pf.UsesICAOMedical = rblMedicalDurationType.SelectedIndex > 0;
-            m_pf.SetPreferenceForKey(MFBConstants.keyMedicalNotes, txtMedicalNotes.Text, String.IsNullOrWhiteSpace(txtMedicalNotes.Text));
+            m_pf.MonthsToMedical = MonthsToMedical;
+            m_pf.UsesICAOMedical = UsesICAOMedical;
 
             try
             {
+                // Type of medical, notes, and date of birth are all set synchronously.
+                ProfileCurrency _ = new ProfileCurrency(m_pf) { TypeOfMedical = (MedicalType)Enum.Parse(typeof(MedicalType), cmbMedicalType.SelectedValue) };
+                m_pf.SetPreferenceForKey(MFBConstants.keyMedicalNotes, txtMedicalNotes.Text, String.IsNullOrWhiteSpace(txtMedicalNotes.Text));
+                m_pf.DateOfBirth = dateDOB.Date;
+
                 m_pf.FCommit();
+                UpdateNextMedical();
             }
             catch (MyFlightbookException ex)
             {
@@ -136,6 +171,20 @@ namespace MyFlightbook.Web.Controls.Prefs
             }
 
             return true;
+        }
+
+        protected string CSSForItem(CurrencyState cs)
+        {
+            switch (cs)
+            {
+                case CurrencyState.GettingClose:
+                    return "currencynearlydue";
+                case CurrencyState.NotCurrent:
+                    return "currencyexpired";
+                case CurrencyState.OK:
+                    return "currencyok";
+            }
+            return string.Empty;
         }
 
         protected void btnUpdatePilotInfo_Click(object sender, EventArgs e)
@@ -151,16 +200,22 @@ namespace MyFlightbook.Web.Controls.Prefs
             if (FCommitMedicalInfo())
             {
                 lblMedicalInfo.Visible = true;
-                UpdateNextMedical(m_pf);
+                UpdateNextMedical();
             }
         }
 
-        private void UpdateNextMedical(Profile pf)
+        private void UpdateNextMedical()
         {
-            if (pf.LastMedical.CompareTo(DateTime.MinValue) != 0)
+            Page.Validate("valPilotInfo");
+            if (!Page.IsValid)
+                return;
+
+            IEnumerable<CurrencyStatusItem> rgcs = ProfileCurrency.MedicalStatus(dateMedical.Date, MonthsToMedical, SelectedMedicalType, dateDOB.Date, UsesICAOMedical);
+            if (rgcs.Any())
             {
-                lblNextMedical.Text = pf.NextMedical.ToShortDateString();
                 pnlNextMedical.Visible = true;
+                rptNextMedical.DataSource = rgcs;
+                rptNextMedical.DataBind();
             }
             else
                 pnlNextMedical.Visible = false;
@@ -170,7 +225,63 @@ namespace MyFlightbook.Web.Controls.Prefs
         {
             if (args == null)
                 throw new ArgumentNullException(nameof(args));
-            args.IsValid = (dateMedical.Date == DateTime.MinValue || cmbMonthsMedical.SelectedValue != "0");
+            args.IsValid = !dateMedical.Date.HasValue() || MonthsToMedical > 0;
+        }
+
+        protected void valDOBRequired_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            if (args == null)
+                throw new ArgumentNullException(nameof(args));
+            // all is good if we have no medical (by definition doesn't require DOB), non-FAA medical type, or if we have a DOB.
+            args.IsValid = (!dateMedical.Date.HasValue() || !ProfileCurrency.RequiresBirthdate(SelectedMedicalType) || dateDOB.Date.HasValue()); ;
+        }
+
+        protected void UpdateForMedicalType(MedicalType mt)
+        {
+            switch (mt)
+            {
+                case MedicalType.Other:
+                    valMonthsMedical.Enabled = true;
+                    cmbMonthsMedical.Visible = true;
+                    rblMedicalDurationType.Visible = true;
+                    rowDOB.Visible = false;
+                    valDOBRequired.Enabled = false;
+                    break;
+                case MedicalType.EASA:
+                    valMonthsMedical.Enabled = true;
+                    cmbMonthsMedical.Visible = false;
+                    cmbMonthsMedical.SelectedValue = "12";
+                    rblMedicalDurationType.Visible = false;
+                    rowDOB.Visible = false;
+                    valDOBRequired.Enabled = false;
+                    break;
+                case MedicalType.FAA1stClass:
+                case MedicalType.FAA2ndClass:
+                case MedicalType.FAA3rdClass:
+                    valMonthsMedical.Enabled = false;
+                    cmbMonthsMedical.Visible = false;
+                    rblMedicalDurationType.Visible = false;
+                    rowDOB.Visible = true;
+                    valDOBRequired.Enabled = true;
+                    break;
+            }
+        }
+
+        protected void cmbMedicalType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            MedicalType mt = SelectedMedicalType;
+            UpdateForMedicalType(mt);
+            UpdateNextMedical();
+        }
+
+        protected void rblMedicalDurationType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateNextMedical();
+        }
+
+        protected void cmbMonthsMedical_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateNextMedical();
         }
     }
 }

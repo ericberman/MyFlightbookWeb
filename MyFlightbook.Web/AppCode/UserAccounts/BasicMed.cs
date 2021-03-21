@@ -8,7 +8,7 @@ using System.IO;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2020 MyFlightbook LLC
+ * Copyright (c) 2009-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -69,7 +69,7 @@ namespace MyFlightbook.BasicmedTools
                 BasicMedEvent physicianVisit = lst.Find(bme => bme.EventType == BasicMedEvent.BasicMedEventType.PhysicianVisit);
 
                 // Handle cases where we can't find all three
-                if (Profile.GetUser(Username).NextMedical.CompareTo(LastMedicalCutoff) < 0 || medicalCourse == null || physicianVisit == null)
+                if (Profile.GetUser(Username).LastMedical.CompareTo(LastMedicalCutoff) < 0 || medicalCourse == null || physicianVisit == null)
                     return null;
 
                 DateTime expiration = medicalCourse.ExpirationDate.EarlierDate(physicianVisit.ExpirationDate);

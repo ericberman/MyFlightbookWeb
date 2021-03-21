@@ -6,75 +6,115 @@
     <Panes>
         <cc1:AccordionPane runat="server" ID="acpMedical" ContentCssClass="" HeaderCssClass="">
             <Header>
-                <asp:Localize ID="locHeaderMedical" runat="server" Text="<%$ Resources:Profile, ProfilePilotInfoMedical %>"></asp:Localize>
+                <asp:Localize ID="locHeaderMedical" runat="server" Text="<%$ Resources:Preferences, PilotInfoMedical %>"></asp:Localize>
             </Header>
             <Content>
                 <asp:Panel ID="pnlMedical" runat="server" DefaultButton="btnUpdateMedical">
-                    <table>
-                        <tr>
-                            <td><asp:Localize ID="locLastMedicalPrompt" runat="server" Text="<%$ Resources:Preferences, PilotInfoLastMedical %>" /></td>
-                            <td>
-                                <uc2:mfbTypeInDate ID="dateMedical" runat="server" DefaultType="None" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <asp:Localize ID="locMedicalDurationPrompt" runat="server"
-                                    Text="<%$ Resources:Preferences, PilotInfoMedicalDuration %>" /></td>
-                            <td>
-                                <asp:DropDownList ID="cmbMonthsMedical" runat="server"
-                                    ValidationGroup="valPilotInfo">
-                                    <asp:ListItem Selected="True" Value="0" Text="<%$ Resources:Preferences, PilotInfoMedicalUnspecified %>"></asp:ListItem>
-                                    <asp:ListItem Value="6" Text="<%$ Resources:Preferences, PilotInfoMedical6Months %>"></asp:ListItem>
-                                    <asp:ListItem Value="12" Text="<%$ Resources:Preferences, PilotInfoMedical12Months %>"></asp:ListItem>
-                                    <asp:ListItem Value="24" Text="<%$ Resources:Preferences, PilotInfoMedical24Months %>"></asp:ListItem>
-                                    <asp:ListItem Value="36" Text="<%$ Resources:Preferences, PilotInfoMedical36Months %>"></asp:ListItem>
-                                    <asp:ListItem Value="48" Text="<%$ Resources:Preferences, PilotInfoMedical48Months %>"></asp:ListItem>
-                                    <asp:ListItem Value="60" Text="<%$ Resources:Preferences, PilotInfoMedical60Months %>"></asp:ListItem>
-                                </asp:DropDownList>
-                                <asp:CustomValidator ID="CustomValidator1" runat="server"
-                                    ErrorMessage="<%$ Resources:Preferences, PilotInfoMedicalDurationRequired %>"
-                                    ControlToValidate="cmbMonthsMedical" CssClass="error"
-                                    OnServerValidate="DurationIsValid" ValidationGroup="valPilotInfo"></asp:CustomValidator>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>
-                                <asp:RadioButtonList ID="rblMedicalDurationType" runat="server" RepeatDirection="Horizontal">
-                                    <asp:ListItem Value="0" Text="<%$ Resources:Preferences, PilotInfoMedicalFAARules %>" Selected="True"></asp:ListItem>
-                                    <asp:ListItem Value="1" Text="<%$ Resources:Preferences, PilotInfoMedicalICAORules %>"></asp:ListItem>
-                                </asp:RadioButtonList></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>
-                                <asp:Panel ID="pnlNextMedical" runat="server" Visible="False">
-                                    <asp:Localize ID="locNextMedicalDuePrompt" runat="server" Text="<%$ Resources:Preferences, PilotInfoMedicalNextDue %>" />
-                                    <asp:Label ID="lblNextMedical" runat="server" Font-Bold="true" />
-                                </asp:Panel>
-                            </td>
-                        </tr>
-                        <tr style="vertical-align:top">
-                            <td>
-                                <asp:Localize ID="locMedicalNotes" runat="server" Text="<%$ Resources:Preferences, PilotInfoMedicalNotes %>" /></td>
-                            <td>
-                                <asp:TextBox ID="txtMedicalNotes" runat="server" TextMode="MultiLine" Rows="5" style="min-width: 300px" />
-                            </td>
-                        </tr>
-                    </table>
-                    <div>
-                        <asp:Button ID="btnUpdateMedical" runat="server"  
-                            Text="<%$ Resources:Profile, ProfilePilotInfoMedicalUpdate %>" ValidationGroup="valMedical" 
-                            onclick="btnUpdateMedical_Click" />
-                    </div>
-                    <div>
-                        <asp:Label ID="lblMedicalInfo" runat="server" CssClass="success" EnableViewState="False"
-                            Text="<%$ Resources:Profile, ProfilePilotInfoMedicalUpdated %>" Visible="False"></asp:Label>
-                    </div>
-                    <div>
-                        <uc1:mfbBasicMedManager runat="server" id="BasicMedManager" />
-                    </div>
+                    <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+                        <ContentTemplate>
+                            <table>
+                                <tr>
+                                    <td><asp:Localize ID="locLastMedicalPrompt" runat="server" Text="<%$ Resources:Preferences, PilotInfoLastMedical %>" /></td>
+                                    <td>
+                                        <uc2:mfbTypeInDate ID="dateMedical" runat="server" DefaultType="None" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <asp:Localize ID="locMedicalDurationPrompt" runat="server"
+                                            Text="<%$ Resources:Preferences, MedicalTypePrompt %>" /></td>
+                                    <td>
+                                        <asp:DropDownList ID="cmbMedicalType" runat="server" ValidationGroup="valPilotInfo" AutoPostBack="true" OnSelectedIndexChanged="cmbMedicalType_SelectedIndexChanged">
+                                            <asp:ListItem Selected="True" Text="<%$ Resources:Preferences, MedicalTypeOther %>" Value="Other" />
+                                            <asp:ListItem Text="<%$ Resources:Preferences, MedicalTypeFAA1stClass %>" Value="FAA1stClass" />
+                                            <asp:ListItem Text="<%$ Resources:Preferences, MedicalTypeFAA2ndClass %>" Value="FAA2ndClass" />
+                                            <asp:ListItem Text="<%$ Resources:Preferences, MedicalTypeFAA3rdClass %>" Value="FAA3rdClass" />
+                                            <asp:ListItem Text="<%$ Resources:Preferences, MedicalTypeEASA %>" Value="EASA" />
+                                        </asp:DropDownList>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <div>
+                                            <asp:DropDownList ID="cmbMonthsMedical" runat="server" AutoPostBack="true" OnSelectedIndexChanged="cmbMonthsMedical_SelectedIndexChanged"
+                                                ValidationGroup="valPilotInfo">
+                                                <asp:ListItem Selected="True" Value="0" Text="<%$ Resources:Preferences, PilotInfoMedicalUnspecified %>"></asp:ListItem>
+                                                <asp:ListItem Value="6" Text="<%$ Resources:Preferences, PilotInfoMedical6Months %>"></asp:ListItem>
+                                                <asp:ListItem Value="12" Text="<%$ Resources:Preferences, PilotInfoMedical12Months %>"></asp:ListItem>
+                                                <asp:ListItem Value="24" Text="<%$ Resources:Preferences, PilotInfoMedical24Months %>"></asp:ListItem>
+                                                <asp:ListItem Value="36" Text="<%$ Resources:Preferences, PilotInfoMedical36Months %>"></asp:ListItem>
+                                                <asp:ListItem Value="48" Text="<%$ Resources:Preferences, PilotInfoMedical48Months %>"></asp:ListItem>
+                                                <asp:ListItem Value="60" Text="<%$ Resources:Preferences, PilotInfoMedical60Months %>"></asp:ListItem>
+                                            </asp:DropDownList>
+                                            <asp:CustomValidator ID="valMonthsMedical" runat="server"
+                                                ErrorMessage="<%$ Resources:Preferences, PilotInfoMedicalDurationRequired %>"
+                                                ControlToValidate="cmbMonthsMedical" CssClass="error" Display="Dynamic"
+                                                OnServerValidate="DurationIsValid" ValidationGroup="valPilotInfo"></asp:CustomValidator>
+                                        </div>
+                                        <div>
+                                            <asp:RadioButtonList ID="rblMedicalDurationType" runat="server" RepeatDirection="Horizontal" AutoPostBack="true" OnSelectedIndexChanged="rblMedicalDurationType_SelectedIndexChanged">
+                                                <asp:ListItem Value="0" Text="<%$ Resources:Preferences, PilotInfoMedicalFAARules %>" Selected="True"></asp:ListItem>
+                                                <asp:ListItem Value="1" Text="<%$ Resources:Preferences, PilotInfoMedicalICAORules %>"></asp:ListItem>
+                                            </asp:RadioButtonList>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr runat="server" id="rowDOB">
+                                    <td>
+                                        <asp:Localize ID="locDOB" runat="server" Text="<%$ Resources:Profile, accountDateOfBirth %>" />
+                                    </td>
+                                    <td>
+                                        <uc2:mfbTypeInDate ID="dateDOB" runat="server" DefaultType="None" />
+                                        <asp:CustomValidator ID="valDOBRequired" runat="server"
+                                            ErrorMessage="<%$ Resources:Preferences, MedicalDOBRequired %>"
+                                            CssClass="error"
+                                            OnServerValidate="valDOBRequired_ServerValidate" ValidationGroup="valPilotInfo" />
+                                        <div><asp:Label ID="lblDOBNote" runat="server" CssClass="fineprint" 
+                                                    Text="<%$ Resources:Preferences, PIlotInfoMedicalDOBNote %>" /></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <asp:Panel ID="pnlNextMedical" runat="server" Visible="False">
+                                            <asp:Repeater ID="rptNextMedical" runat="server">
+                                                <ItemTemplate>
+                                                    <div><asp:Label ID="lblTitle" runat="server" Text='<%#: Eval("Attribute") %>' /> <asp:Label ID="lblStatus" runat="server" CssClass='<%# CSSForItem((MyFlightbook.Currency.CurrencyState) Eval("Status")) %>' Text='<%#: Eval("Value") %>' Font-Bold="true" /></div>
+                                                </ItemTemplate>
+                                            </asp:Repeater>
+                                        </asp:Panel>
+                                    </td>
+                                </tr>
+                                <tr style="vertical-align:top;">
+                                    <td>
+                                        <asp:Localize ID="locMedicalNotes" runat="server" Text="<%$ Resources:Preferences, PilotInfoMedicalNotes %>" />
+                                    </td>
+                                    <td>
+                                        <asp:TextBox ID="txtMedicalNotes" runat="server" TextMode="MultiLine" Rows="4" style="min-width: 300px" />
+                                        <div>
+                                            <asp:Label ID="lblNotesHint" runat="server" Text="<%$ Resources:Preferences, PilotInfoMedicalNotesDescription %>" CssClass="fineprint" />
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <asp:Button ID="btnUpdateMedical" runat="server"  
+                                            Text="<%$ Resources:Preferences, PilotInfoMedicalUpdate %>" ValidationGroup="valMedical" 
+                                            onclick="btnUpdateMedical_Click" />
+                                        <div>
+                                            <asp:Label ID="lblMedicalInfo" runat="server" CssClass="success" EnableViewState="False"
+                                                Text="<%$ Resources:Preferences, PilotInfoMedicalUpdated %>" Visible="False"></asp:Label>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div>
+                                <uc1:mfbBasicMedManager runat="server" id="BasicMedManager" />
+                            </div>
+                        </ContentTemplate>
+                    </asp:UpdatePanel>
                 </asp:Panel>
             </Content>
         </cc1:AccordionPane>

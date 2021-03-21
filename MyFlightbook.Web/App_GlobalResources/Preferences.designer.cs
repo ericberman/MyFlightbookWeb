@@ -313,6 +313,96 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to calendar months.
+        /// </summary>
+        internal static string MedicalDescriptionCalendarMonths {
+            get {
+                return ResourceManager.GetString("MedicalDescriptionCalendarMonths", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to months.
+        /// </summary>
+        internal static string MedicalDescriptionMonths {
+            get {
+                return ResourceManager.GetString("MedicalDescriptionMonths", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Duration {0} {1}.
+        /// </summary>
+        internal static string MedicalDescriptionOther {
+            get {
+                return ResourceManager.GetString("MedicalDescriptionOther", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Date of birth is required for FAA certificate in order to compute expiration. .
+        /// </summary>
+        internal static string MedicalDOBRequired {
+            get {
+                return ResourceManager.GetString("MedicalDOBRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to EASA.
+        /// </summary>
+        internal static string MedicalTypeEASA {
+            get {
+                return ResourceManager.GetString("MedicalTypeEASA", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FAA - 1st Class.
+        /// </summary>
+        internal static string MedicalTypeFAA1stClass {
+            get {
+                return ResourceManager.GetString("MedicalTypeFAA1stClass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FAA - 2nd Class.
+        /// </summary>
+        internal static string MedicalTypeFAA2ndClass {
+            get {
+                return ResourceManager.GetString("MedicalTypeFAA2ndClass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FAA - 3rd Class.
+        /// </summary>
+        internal static string MedicalTypeFAA3rdClass {
+            get {
+                return ResourceManager.GetString("MedicalTypeFAA3rdClass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Other.
+        /// </summary>
+        internal static string MedicalTypeOther {
+            get {
+                return ResourceManager.GetString("MedicalTypeOther", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type of medical certificate:.
+        /// </summary>
+        internal static string MedicalTypePrompt {
+            get {
+                return ResourceManager.GetString("MedicalTypePrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Your payment was canceled..
         /// </summary>
         internal static string PaymentCancelled {
@@ -466,6 +556,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Medical.
+        /// </summary>
+        internal static string PilotInfoMedical {
+            get {
+                return ResourceManager.GetString("PilotInfoMedical", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 12 Months.
         /// </summary>
         internal static string PilotInfoMedical12Months {
@@ -516,6 +615,15 @@ namespace Resources {
         internal static string PilotInfoMedical6Months {
             get {
                 return ResourceManager.GetString("PilotInfoMedical6Months", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose &quot;Other&quot; as your medical type and specify a duration if you do not wish to provide your date of birth..
+        /// </summary>
+        internal static string PIlotInfoMedicalDOBNote {
+            get {
+                return ResourceManager.GetString("PIlotInfoMedicalDOBNote", resourceCulture);
             }
         }
         
@@ -574,11 +682,38 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to E.g., name of the doctor, dates of past medicals, etc..
+        /// </summary>
+        internal static string PilotInfoMedicalNotesDescription {
+            get {
+                return ResourceManager.GetString("PilotInfoMedicalNotesDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to (Unspecified).
         /// </summary>
         internal static string PilotInfoMedicalUnspecified {
             get {
                 return ResourceManager.GetString("PilotInfoMedicalUnspecified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Medical.
+        /// </summary>
+        internal static string PilotInfoMedicalUpdate {
+            get {
+                return ResourceManager.GetString("PilotInfoMedicalUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Medical information successfully updated.
+        /// </summary>
+        internal static string PilotInfoMedicalUpdated {
+            get {
+                return ResourceManager.GetString("PilotInfoMedicalUpdated", resourceCulture);
             }
         }
         

@@ -51,6 +51,15 @@ namespace MyFlightbook.Web.Controls.Prefs
         protected global::System.Web.UI.WebControls.Panel pnlMedical;
 
         /// <summary>
+        /// UpdatePanel1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel UpdatePanel1;
+
+        /// <summary>
         /// locLastMedicalPrompt control.
         /// </summary>
         /// <remarks>
@@ -78,6 +87,15 @@ namespace MyFlightbook.Web.Controls.Prefs
         protected global::System.Web.UI.WebControls.Localize locMedicalDurationPrompt;
 
         /// <summary>
+        /// cmbMedicalType control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList cmbMedicalType;
+
+        /// <summary>
         /// cmbMonthsMedical control.
         /// </summary>
         /// <remarks>
@@ -87,13 +105,13 @@ namespace MyFlightbook.Web.Controls.Prefs
         protected global::System.Web.UI.WebControls.DropDownList cmbMonthsMedical;
 
         /// <summary>
-        /// CustomValidator1 control.
+        /// valMonthsMedical control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CustomValidator CustomValidator1;
+        protected global::System.Web.UI.WebControls.CustomValidator valMonthsMedical;
 
         /// <summary>
         /// rblMedicalDurationType control.
@@ -105,6 +123,51 @@ namespace MyFlightbook.Web.Controls.Prefs
         protected global::System.Web.UI.WebControls.RadioButtonList rblMedicalDurationType;
 
         /// <summary>
+        /// rowDOB control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow rowDOB;
+
+        /// <summary>
+        /// locDOB control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locDOB;
+
+        /// <summary>
+        /// dateDOB control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Controls_mfbTypeInDate dateDOB;
+
+        /// <summary>
+        /// valDOBRequired control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CustomValidator valDOBRequired;
+
+        /// <summary>
+        /// lblDOBNote control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblDOBNote;
+
+        /// <summary>
         /// pnlNextMedical control.
         /// </summary>
         /// <remarks>
@@ -114,22 +177,13 @@ namespace MyFlightbook.Web.Controls.Prefs
         protected global::System.Web.UI.WebControls.Panel pnlNextMedical;
 
         /// <summary>
-        /// locNextMedicalDuePrompt control.
+        /// rptNextMedical control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locNextMedicalDuePrompt;
-
-        /// <summary>
-        /// lblNextMedical control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblNextMedical;
+        protected global::System.Web.UI.WebControls.Repeater rptNextMedical;
 
         /// <summary>
         /// locMedicalNotes control.
@@ -148,6 +202,15 @@ namespace MyFlightbook.Web.Controls.Prefs
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtMedicalNotes;
+
+        /// <summary>
+        /// lblNotesHint control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblNotesHint;
 
         /// <summary>
         /// btnUpdateMedical control.

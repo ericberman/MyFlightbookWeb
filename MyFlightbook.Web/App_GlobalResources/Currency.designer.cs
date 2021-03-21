@@ -2321,11 +2321,56 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 1st Class Medical Privileges.
+        /// </summary>
+        internal static string NextMedical1stClass {
+            get {
+                return ResourceManager.GetString("NextMedical1stClass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Commercial or ATC Medical Privileges.
+        /// </summary>
+        internal static string NextMedical1stClassCommercial {
+            get {
+                return ResourceManager.GetString("NextMedical1stClassCommercial", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 2nd Class Medical Privileges.
+        /// </summary>
+        internal static string NextMedical2ndClass {
+            get {
+                return ResourceManager.GetString("NextMedical2ndClass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 3rd Class Medical Privileges.
+        /// </summary>
+        internal static string NextMedical3rdClassPrivs {
+            get {
+                return ResourceManager.GetString("NextMedical3rdClassPrivs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Medical (BASICMED ONLY).
         /// </summary>
         internal static string NextMedicalBasicMedOnly {
             get {
                 return ResourceManager.GetString("NextMedicalBasicMedOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot determine without birth date.
+        /// </summary>
+        internal static string NextMedicalRequiresBOD {
+            get {
+                return ResourceManager.GetString("NextMedicalRequiresBOD", resourceCulture);
             }
         }
         

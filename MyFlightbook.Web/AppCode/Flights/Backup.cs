@@ -1,5 +1,6 @@
 ﻿using MyFlightbook.BasicmedTools;
 using MyFlightbook.CloudStorage;
+using MyFlightbook.Currency;
 using MyFlightbook.Image;
 using MyFlightbook.Instruction;
 using MyFlightbook.Telemetry;
@@ -18,7 +19,7 @@ using System.Web.UI.HtmlControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2020 MyFlightbook LLC
+ * Copyright (c) 2008-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -81,9 +82,9 @@ namespace MyFlightbook
                 ["CFICertificate"] = String.IsNullOrEmpty(pf.CFIDisplay) ? string.Empty : pf.CFIDisplay,
                 ["Certificate"] = String.IsNullOrEmpty(pf.LicenseDisplay) ? string.Empty : pf.LicenseDisplay,
                 ["Last Medical"] = pf.LastMedical.HasValue() ? pf.LastMedical.YMDString() : string.Empty,
-                ["Medical Duration (months)"] = pf.LastMedical.HasValue() ? pf.MonthsToMedical.ToString(CultureInfo.InvariantCulture) : string.Empty,
+                ["Kind of Medical"] = pf.LastMedical.HasValue() ? new ProfileCurrency(pf).MedicalDescription : string.Empty,
                 ["English Proficiency"] = pf.EnglishProficiencyExpiration.HasValue() ? pf.EnglishProficiencyExpiration.YMDString() : string.Empty,
-                ["Flight Reviews"] = ProfileEvent.AsPublicList(ProfileEvent.GetBFREvents(pf.UserName, pf.LastBFREvent)),
+                ["Flight Reviews"] = ProfileEvent.AsPublicList(ProfileEvent.GetBFREvents(pf.UserName, new ProfileCurrency(pf).LastBFREvent)),
                 ["IPCs"] = ProfileEvent.AsPublicList(ProfileEvent.GetIPCEvents(pf.UserName)),
                 ["Ratings"] = new Achievements.UserRatings(pf.UserName).AsKeyValuePairs()
             };

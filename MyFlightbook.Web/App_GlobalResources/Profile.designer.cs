@@ -97,7 +97,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to (Optional, but required in some jurisdictions; Only used when printing your logbook).
+        ///   Looks up a localized string similar to (Optional, but required in some jurisdictions; Used when printing your logbook or computing FAA medical).
         /// </summary>
         internal static string accountDateOfBirthPromptNote {
             get {
@@ -385,7 +385,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You have held a valid medical at some point since July 15, 2006 (be sure to enter this, even if expired).
+        ///   Looks up a localized string similar to You have held a valid FAA medical at some point since July 15, 2006 (be sure to enter this, even if expired).  If you enter a date of a medical certificate it is assumed to meet this requirement..
         /// </summary>
         internal static string BasicMedDescriptionA {
             get {
@@ -1306,14 +1306,13 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;p&gt;Dear {0}:&lt;/p&gt;
+        ///   Looks up a localized string similar to &lt;div style=&quot;margin-left: auto; margin-right: auto; max-width: 600px&quot;&gt;
+        ///    &lt;p style=&quot;text-align:center;&quot;&gt;&lt;img src=&quot;https://%APP_URL%%APP_LOGO%&quot; alt=&quot;%APP_NAME% Logo&quot; /&gt;&lt;/p&gt;
+        ///    &lt;p&gt;Dear {0}:&lt;/p&gt;
+        ///    &lt;p&gt;You currently have &lt;span style=&quot;font-weight:bold&quot;&gt;{1:#,###}&lt;/span&gt; pending flights in your account on %APP_NAME%&lt;/p&gt;
         ///
-        ///&lt;p&gt;You currently have &lt;span style=&quot;font-weight:bold&quot;&gt;{1:#,###}&lt;/span&gt; pending flights in your account on %APP_NAME%&lt;/p&gt;
-        ///
-        ///&lt;p&gt;These flights are not yet part of your logbook, and as such they do not contribute towards your totals or your currency.  They are likely flights that resulted from an import, but which need errors corrected or additional information before
-        ///    they can be added to your logbook.&lt;/p&gt;
-        ///
-        ///&lt;p&gt;You can &lt;a href=&quot;https://%APP_URL%%APP_ROOT%/Member/ReviewPendingFlights.as [rest of string was truncated]&quot;;.
+        ///    &lt;p&gt;
+        ///        These flights are not yet part of your logbook, and as such they do not contribute towards your totals or your currency.  They are likely flights that resulted from an impo [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string PendingFlightsReminder {
             get {
@@ -1471,33 +1470,6 @@ namespace Resources {
         internal static string ProfilePilotInfoCertificatesUpdated {
             get {
                 return ResourceManager.GetString("ProfilePilotInfoCertificatesUpdated", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Medical.
-        /// </summary>
-        internal static string ProfilePilotInfoMedical {
-            get {
-                return ResourceManager.GetString("ProfilePilotInfoMedical", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Update Medical.
-        /// </summary>
-        internal static string ProfilePilotInfoMedicalUpdate {
-            get {
-                return ResourceManager.GetString("ProfilePilotInfoMedicalUpdate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Medical information successfully updated.
-        /// </summary>
-        internal static string ProfilePilotInfoMedicalUpdated {
-            get {
-                return ResourceManager.GetString("ProfilePilotInfoMedicalUpdated", resourceCulture);
             }
         }
         

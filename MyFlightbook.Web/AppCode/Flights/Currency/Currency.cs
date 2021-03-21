@@ -245,7 +245,7 @@ namespace MyFlightbook.Currency
             List<DeadlineCurrency> lstWithAircraft = deadlines.FindAll(dc => dc.HasAssociatedAircraft);
             lst.AddRange(MaintenanceLog.AircraftInspectionWarningsForUser(szUser, lstWithAircraft));
             lst.AddRange(DeadlineCurrency.CurrencyForDeadlines(lstNoAircraft));
-            lst.AddRange(Profile.GetUser(szUser).WarningsForUser());
+            lst.AddRange(new ProfileCurrency(Profile.GetUser(szUser)).CurrencyForUser());
             return lst;
         }
 

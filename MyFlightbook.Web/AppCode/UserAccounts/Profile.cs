@@ -564,7 +564,7 @@ namespace MyFlightbook
         /// <summary>
         /// Date of last BFR - DEPRECATED - DO NOT USE THIS 
         /// </summary>
-        protected DateTime LastBFRInternal { get; set; }
+        public DateTime LastBFRInternal { get; protected set; }
 
         /// <summary>
         /// Date of last medical
@@ -909,7 +909,6 @@ namespace MyFlightbook
             get { return GetPreferenceForKey<DateTime?>(prefDOB); }
             set { SetPreferenceForKey(prefDOB, value, value == null || !value.HasValue || !value.Value.HasValue()); }
         }
-
         #endregion
 
         /// <summary>
@@ -1280,175 +1279,6 @@ namespace MyFlightbook
                 (dr) => { l.Add(new Profile(dr)); });
             return l;
         }
-
-        #region BFR and Medical functions
-        /// <summary>
-        /// Returns a pseudo-event for the last BFR.
-        /// </summary>
-        public ProfileEvent LastBFREvent
-        {
-            get
-            {
-                if (LastBFRInternal.CompareTo(DateTime.MinValue) == 0)
-                    return null;
-                else
-                {
-                    // BFR's used to be stored in the profile.  If so, we'll convert it to a pseudo flight property here,
-                    // and attempt to de-dupe it later.
-                    ProfileEvent pf = new ProfileEvent() { Date = LastBFRInternal };
-                    pf.PropertyType.FormatString = Resources.Profile.BFRFromProfile;
-                    return pf;
-                }
-            }
-        }
-
-        /// <summary>
-        /// internal cache of BFR events; go easy on the database!
-        /// </summary>
-        private ProfileEvent[] BFREvents { get; set; }
-
-        /// <summary>
-        /// Same as BFREvents except that if BFREvents is null it hits the database first.
-        /// </summary>
-        private ProfileEvent[] CachedBFREvents()
-        {
-            if (BFREvents == null)
-                BFREvents = ProfileEvent.GetBFREvents(UserName, LastBFREvent);
-            return BFREvents;
-        }
-
-        /// <summary>
-        /// Last BFR Date (uses flight properties).
-        /// </summary>
-        public DateTime LastBFR()
-        {
-            ProfileEvent[] rgPfe = CachedBFREvents();
-
-            if (rgPfe.Length > 0)
-                return rgPfe[rgPfe.Length - 1].Date;
-            else
-                return DateTime.MinValue;
-        }
-
-        /// <summary>
-        /// Predicted date that next BFR is due
-        /// </summary>
-        /// <param name="bfrLast">Date of the last BFR</param>
-        /// <returns>Datetime representing the date of the next BFR, Datetime.minvalue for unknown</returns>
-        public static DateTime NextBFR(DateTime bfrLast)
-        {
-            return bfrLast.AddCalendarMonths(24);
-        }
-
-        /// <summary>
-        /// Predicted date that next medical is due
-        /// </summary>
-        /// <returns>Datetime representing the date of the next medical, datetime.minvalue for unknown.</returns>
-        public DateTime NextMedical
-        {
-            get
-            {
-                if (!LastMedical.HasValue() || MonthsToMedical == 0)
-                    return DateTime.MinValue;
-                else
-                    return UsesICAOMedical ? LastMedical.AddMonths(MonthsToMedical) : LastMedical.AddCalendarMonths(MonthsToMedical);
-            }
-        }
-        #endregion
-
-        #region Profile-based currency items (i.e., not related to flying - things like medical and flight reviews)
-        private static CurrencyStatusItem StatusForDate(DateTime dt, string szLabel, CurrencyStatusItem.CurrencyGroups rt)
-        {
-            if (dt.CompareTo(DateTime.MinValue) != 0)
-            {
-                TimeSpan ts = dt.Subtract(DateTime.Now);
-                int days = (int)Math.Ceiling(ts.TotalDays);
-                CurrencyState cs = (days < 0) ? CurrencyState.NotCurrent : ((ts.Days < 30) ? CurrencyState.GettingClose : CurrencyState.OK);
-                return new CurrencyStatusItem(szLabel, CurrencyExaminer.StatusDisplayForDate(dt), cs, (cs == CurrencyState.GettingClose) ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusClose, days) :
-                                                                                   (cs == CurrencyState.NotCurrent) ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusNotCurrent, -days) : string.Empty) { CurrencyGroup = rt };
-            }
-            else
-                return null;
-        }
-
-        public IEnumerable<CurrencyStatusItem> WarningsForUser()
-        {
-            List<CurrencyStatusItem> rgCS = new List<CurrencyStatusItem>();
-
-            CurrencyStatusItem csMedical = NextMedical.HasValue() ? StatusForDate(NextMedical, Resources.Currency.NextMedical, CurrencyStatusItem.CurrencyGroups.Medical) : null;
-            CurrencyStatusItem csBasicMed = new BasicMed(UserName).Status;
-
-            /* Scenarios for combining regular medical and basicmed.
-             * 
-             *   +--------------------+--------------------+--------------------+--------------------+
-             *   |\_____    Medical   |                    |                    |                    |
-             *   |      \______       |   Never Current    |     Expired        |      Valid         |
-             *   | BasicMed    \_____ |                    |                    |                    |
-             *   +--------------------+--------------------+--------------------+--------------------+
-             *   |  Never Current     |    Show Nothing    |   Show Expired     |    Show Valid      |
-             *   |                    |                    |     Medical        |     Medical        |
-             *   +--------------------+--------------------+--------------------+--------------------+
-             *   |      Expired       |        N/A         |   Show Expired     | Show Valid Medical |
-             *   |                    |                    | Medical, BasicMed  | Suppress BasicMed  |
-             *   +--------------------+--------------------+--------------------+--------------------+
-             *   |                    |                    |    Show Valid      |    Show Valid      |
-             *   |       Valid        |        N/A         |   BasicMed, note   |   Medical, show    |
-             *   |                    |                    |    BasicMed only   |   BasicMed too     |
-             *   +--------------------+--------------------+--------------------+--------------------+
-             * 
-             * 
-             * a) Medical has never been valid -> by definition, neither has basic med: NO STATUS
-             * b) Medical expired
-             *      1) BasicMed never valid -> show only expired medical
-             *      2) BasicMed expired -> show expired medical, expired basicmed (so you can tell which is easier to renew)
-             *      3) BasicMed is valid -> Show valid BasicMed, that you are ONLY basicmed
-             * c) Medical valid:
-             *      1) BasicMed never valid -> Show only valid medical
-             *      2) BasicMed expired -> show valid medical don't bother showing the expired basicmed since it's kinda pointless
-             *      3) BasicMed is still valid -> show both (hey, seeing green is good)
-            */
-
-            if (csMedical != null) // (a) above - i.e., left column of chart; nothing to add if never had valid medical
-            {
-                if (csBasicMed == null) // b.1 and c.1 above, i.e., top row of chart - Just show medical status
-                    rgCS.Add(csMedical);
-                else
-                {
-                    switch (csMedical.Status)
-                    {
-                        case CurrencyState.OK:
-                        case CurrencyState.GettingClose:
-                            // Medical valid - c.2 and c.3 above - show medical, show basic med if valid
-                            rgCS.Add(csMedical);
-                            if (csBasicMed.Status != CurrencyState.NotCurrent)
-                                rgCS.Add(csBasicMed);
-                            break;
-                        case CurrencyState.NotCurrent:
-                            // Medical is not current but basicmed has been - always show basicmed, show medical only if basicmed is also expired
-                            rgCS.Add(csBasicMed);
-                            if (csBasicMed.Status == CurrencyState.NotCurrent)
-                                rgCS.Add(csMedical);
-                            break;
-                    }
-                }
-            }
-
-            BFREvents = null; // clear the cache - but this will let the next three calls (LastBFR/LastBFRR22/LastBFRR44) hit the DB only once.
-            DateTime dtBfrLast = LastBFR();
-            if (dtBfrLast.HasValue())
-                rgCS.Add(StatusForDate(NextBFR(dtBfrLast), Resources.Currency.NextFlightReview, CurrencyStatusItem.CurrencyGroups.FlightReview));
-
-            BFREvents = null; // clear the cache again (memory).
-
-            if (CertificateExpiration.HasValue())
-                rgCS.Add(StatusForDate(CertificateExpiration, Resources.Currency.CertificateExpiration, CurrencyStatusItem.CurrencyGroups.Certificates));
-
-            if (EnglishProficiencyExpiration.HasValue())
-                rgCS.Add(StatusForDate(EnglishProficiencyExpiration, Resources.Currency.NextLanguageProficiency, CurrencyStatusItem.CurrencyGroups.Certificates));
-
-            return rgCS;
-        }
-        #endregion
 
         #region Basic Administrative Functions (stuff that doesn't require admin privileges)
         /// <summary>

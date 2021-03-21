@@ -14,7 +14,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2014-2020 MyFlightbook LLC
+ * Copyright (c) 2014-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1562,7 +1562,7 @@ GROUP BY idaircraft");
         public ClubInsuranceReportItem(Profile user) : this()
         {
             User = user ?? throw new ArgumentNullException(nameof(user));
-            PilotStatusItems = user.WarningsForUser();
+            PilotStatusItems = new ProfileCurrency(user).CurrencyForUser();
         }
         #endregion
 

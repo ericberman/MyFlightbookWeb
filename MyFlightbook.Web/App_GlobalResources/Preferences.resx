@@ -201,6 +201,37 @@
   <data name="FlightColoringSample" xml:space="preserve">
     <value>Sample (Click to change)</value>
   </data>
+  <data name="MedicalDescriptionCalendarMonths" xml:space="preserve">
+    <value>calendar months</value>
+  </data>
+  <data name="MedicalDescriptionMonths" xml:space="preserve">
+    <value>months</value>
+  </data>
+  <data name="MedicalDescriptionOther" xml:space="preserve">
+    <value>Duration {0} {1}</value>
+    <comment>{0} is the number of months, {1} is MedicalDescriptionMonths or MedicalDescriptionCalendarMonths</comment>
+  </data>
+  <data name="MedicalDOBRequired" xml:space="preserve">
+    <value>Date of birth is required for FAA certificate in order to compute expiration. </value>
+  </data>
+  <data name="MedicalTypeEASA" xml:space="preserve">
+    <value>EASA</value>
+  </data>
+  <data name="MedicalTypeFAA1stClass" xml:space="preserve">
+    <value>FAA - 1st Class</value>
+  </data>
+  <data name="MedicalTypeFAA2ndClass" xml:space="preserve">
+    <value>FAA - 2nd Class</value>
+  </data>
+  <data name="MedicalTypeFAA3rdClass" xml:space="preserve">
+    <value>FAA - 3rd Class</value>
+  </data>
+  <data name="MedicalTypeOther" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="MedicalTypePrompt" xml:space="preserve">
+    <value>Type of medical certificate:</value>
+  </data>
   <data name="PaymentCancelled" xml:space="preserve">
     <value>Your payment was canceled.</value>
   </data>
@@ -252,6 +283,9 @@
   <data name="PilotInfoLicenseFinePrint" xml:space="preserve">
     <value>(Only used when printing your logbook)</value>
   </data>
+  <data name="PilotInfoMedical" xml:space="preserve">
+    <value>Medical</value>
+  </data>
   <data name="PilotInfoMedical12Months" xml:space="preserve">
     <value>12 Months</value>
   </data>
@@ -269,6 +303,9 @@
   </data>
   <data name="PilotInfoMedical6Months" xml:space="preserve">
     <value>6 Months</value>
+  </data>
+  <data name="PIlotInfoMedicalDOBNote" xml:space="preserve">
+    <value>Choose "Other" as your medical type and specify a duration if you do not wish to provide your date of birth.</value>
   </data>
   <data name="PilotInfoMedicalDuration" xml:space="preserve">
     <value>Duration</value>
@@ -288,8 +325,17 @@
   <data name="PilotInfoMedicalNotes" xml:space="preserve">
     <value>Notes</value>
   </data>
+  <data name="PilotInfoMedicalNotesDescription" xml:space="preserve">
+    <value>E.g., name of the doctor, dates of past medicals, etc.</value>
+  </data>
   <data name="PilotInfoMedicalUnspecified" xml:space="preserve">
     <value>(Unspecified)</value>
+  </data>
+  <data name="PilotInfoMedicalUpdate" xml:space="preserve">
+    <value>Update Medical</value>
+  </data>
+  <data name="PilotInfoMedicalUpdated" xml:space="preserve">
+    <value>Medical information successfully updated</value>
   </data>
   <data name="PilotInfoNoBFRFound" xml:space="preserve">
     <value>(No flight reviews or checkrides found)</value>

@@ -1104,4 +1104,19 @@
   <data name="CustomCurrencyEventCFIHours" xml:space="preserve">
     <value>Hours as instructor</value>
   </data>
+  <data name="NextMedical1stClass" xml:space="preserve">
+    <value>1st Class Medical Privileges</value>
+  </data>
+  <data name="NextMedical1stClassCommercial" xml:space="preserve">
+    <value>Commercial or ATC Medical Privileges</value>
+  </data>
+  <data name="NextMedical2ndClass" xml:space="preserve">
+    <value>2nd Class Medical Privileges</value>
+  </data>
+  <data name="NextMedical3rdClassPrivs" xml:space="preserve">
+    <value>3rd Class Medical Privileges</value>
+  </data>
+  <data name="NextMedicalRequiresBOD" xml:space="preserve">
+    <value>Cannot determine without birth date</value>
+  </data>
 </root>
