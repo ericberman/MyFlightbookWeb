@@ -1,9 +1,8 @@
-﻿using System;
-using System.Globalization;
+﻿using MyFlightbook.BasicmedTools;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
-using System.Web;
-using MyFlightbook.BasicmedTools;
 
 /******************************************************
  * 
@@ -18,7 +17,7 @@ namespace MyFlightbook.Currency
     /// Type of medical
     /// </summary>
     [System.ComponentModel.DefaultValue(MedicalType.Other)]
-    public enum MedicalType { Other, FAA1stClass, FAA2ndClass, FAA3rdClass, EASA }
+    public enum MedicalType { Other, FAA1stClass, FAA2ndClass, FAA3rdClass, EASA1stClass, EASA2ndClass, EASALAPL }
 
     /// <summary>
     /// Encapsulates currencies that are based not on the flying that you do but on attributes of your profile - including medical/basicmed, flight reviews, and english-proficiency
@@ -46,8 +45,12 @@ namespace MyFlightbook.Currency
                 {
                     case MedicalType.Other:
                         return String.Format(CultureInfo.CurrentCulture, Resources.Preferences.MedicalDescriptionOther, CurrentUser.MonthsToMedical, CurrentUser.UsesICAOMedical ? Resources.Preferences.MedicalDescriptionMonths : Resources.Preferences.MedicalDescriptionCalendarMonths);
-                    case MedicalType.EASA:
-                        return Resources.Preferences.MedicalTypeEASA;
+                    case MedicalType.EASA1stClass:
+                        return Resources.Preferences.MedicalTypeEASA1stClass;
+                    case MedicalType.EASA2ndClass:
+                        return Resources.Preferences.MedicalTypeEASA2ndClass;
+                    case MedicalType.EASALAPL:
+                        return Resources.Preferences.MedicalTypeEASALAPL;
                     case MedicalType.FAA1stClass:
                         return Resources.Preferences.MedicalTypeFAA1stClass;
                     case MedicalType.FAA2ndClass:
@@ -61,7 +64,7 @@ namespace MyFlightbook.Currency
 
         public static bool RequiresBirthdate(MedicalType mt)
         {
-            return mt != MedicalType.Other && mt != MedicalType.EASA;
+            return mt != MedicalType.Other;
         }
         #endregion
 
@@ -160,6 +163,76 @@ namespace MyFlightbook.Currency
             }
         }
 
+        private static void AddEASA1stClassItems(List<CurrencyStatusItem> lst, DateTime lastMedical, bool fWas40AtExam, bool fWas60AtExam)
+        {
+            CurrencyStatusItem cs;
+            /*
+             * Class 1: (per MED.A.045 Validity, revalidation and renewal of medical certificates) - see https://www.easa.europa.eu/sites/default/files/dfu/Easy_Access_Rules_for_Medical_Requirements.pdf
+             *   Under 40 - 12 months (day-for-day)
+             *   Over 60 - 6 months (day-for-day)
+             *   Over 40 but under 60: 12 months for certificate overall, but atp commercial operations for only 6 months.
+            */
+            cs = StatusForDate(lastMedical.AddMonths(6), Resources.Currency.NextMedical, CurrencyStatusItem.CurrencyGroups.Medical);
+            if (fWas60AtExam)
+                lst.Add(cs);
+            else if (fWas40AtExam)
+            {
+                lst.Add(StatusForDate(lastMedical.AddMonths(6), Resources.Currency.NextMedicalEASA1stClassTransport, CurrencyStatusItem.CurrencyGroups.Medical));
+                lst.Add(StatusForDate(lastMedical.AddMonths(12), Resources.Currency.NextMedicalEASA1stClassOverall, CurrencyStatusItem.CurrencyGroups.Medical));
+            }
+            else
+                lst.Add(StatusForDate(lastMedical.AddMonths(12), Resources.Currency.NextMedicalEASA1stClassOverall, CurrencyStatusItem.CurrencyGroups.Medical));
+        }
+
+        private static void AddEASA2ndClassItems(List<CurrencyStatusItem> lst, DateTime lastMedical, bool fWas40AtExam, bool fWas50AtExam, DateTime dob)
+        {
+            /*
+             * Class 2: (per MED.A.045 Validity, revalidation and renewal of medical certificates) - see https://www.easa.europa.eu/sites/default/files/dfu/Easy_Access_Rules_for_Medical_Requirements.pdf
+             *  - Under 40: MIN(date + 60 months, 42nd birthday)
+             *  - Under 50: MIN(date + 24 months, 51st birthday)
+             *  - Otherwise, date + 12 months.
+             */
+            if (!fWas40AtExam)
+                lst.Add(StatusForDate(lastMedical.AddMonths(60).EarlierDate(dob.AddYears(42)), Resources.Currency.NextMedicalEASA2ndClass, CurrencyStatusItem.CurrencyGroups.Medical));
+            else if (!fWas50AtExam)
+                lst.Add(StatusForDate(lastMedical.AddMonths(24).EarlierDate(dob.AddYears(51)), Resources.Currency.NextMedicalEASA2ndClass, CurrencyStatusItem.CurrencyGroups.Medical));
+            else
+                lst.Add(StatusForDate(lastMedical.AddMonths(12), Resources.Currency.NextMedicalEASA2ndClass, CurrencyStatusItem.CurrencyGroups.Medical));
+        }
+
+        private static void AddEASALAPLItems(List<CurrencyStatusItem> lst, DateTime lastMedical, bool fWas40AtExam, DateTime dob)
+        {           
+            /*
+            * LAPL: (per MED.A.045 Validity, revalidation and renewal of medical certificates) - see https://www.easa.europa.eu/sites/default/files/dfu/Easy_Access_Rules_for_Medical_Requirements.pdf
+            *  - Under 40: MIN(date + 60 months, 42nd birthday)
+            *  - Otherwise, date + 24 months.
+            */
+            if (!fWas40AtExam)
+                lst.Add(StatusForDate(lastMedical.AddMonths(60).EarlierDate(dob.AddYears(42)), Resources.Currency.NextMedicalEASALAPL, CurrencyStatusItem.CurrencyGroups.Medical));
+            else
+                lst.Add(StatusForDate(lastMedical.AddMonths(24), Resources.Currency.NextMedicalEASALAPL, CurrencyStatusItem.CurrencyGroups.Medical));
+        }
+
+        private static void AddFAA1stClassItems(List<CurrencyStatusItem> lst, DateTime lastMedical, bool fWas40AtExam)
+        {
+            CurrencyStatusItem cs = StatusForDate(lastMedical.AddCalendarMonths(fWas40AtExam ? 6 : 12), Resources.Currency.NextMedical1stClass, CurrencyStatusItem.CurrencyGroups.Medical);
+            lst.Add(cs);
+            if (cs.Status == CurrencyState.NotCurrent)
+            {
+                if (fWas40AtExam)   // may still have some non-ATP commercial time left
+                    lst.Add(StatusForDate(lastMedical.AddCalendarMonths(12), Resources.Currency.NextMedical1stClassCommercial, CurrencyStatusItem.CurrencyGroups.Medical));
+                lst.Add(StatusForDate(lastMedical.AddCalendarMonths(fWas40AtExam ? 24 : 60), Resources.Currency.NextMedical3rdClassPrivs, CurrencyStatusItem.CurrencyGroups.Medical));
+            }
+        }
+
+        private static void AddFAA2ndClassItems(List<CurrencyStatusItem> lst, DateTime lastMedical, bool fWas40AtExam)
+        {
+            CurrencyStatusItem cs = StatusForDate(lastMedical.AddCalendarMonths(12), Resources.Currency.NextMedical2ndClass, CurrencyStatusItem.CurrencyGroups.Medical);
+            lst.Add(cs);
+            if (cs.Status == CurrencyState.NotCurrent)
+                lst.Add(StatusForDate(lastMedical.AddCalendarMonths(fWas40AtExam ? 24 : 60), Resources.Currency.NextMedical3rdClassPrivs, CurrencyStatusItem.CurrencyGroups.Medical));
+        }
+
         /// <summary>
         /// Returns an enumerable of medical status based on https://www.law.cornell.edu/cfr/text/14/61.23 for FAA medicals, or else expiration and type
         /// </summary>
@@ -174,9 +247,10 @@ namespace MyFlightbook.Currency
                 return new CurrencyStatusItem[] { new CurrencyStatusItem(Resources.Currency.NextMedical, Resources.Currency.NextMedicalRequiresBOD, CurrencyState.NotCurrent) { CurrencyGroup = CurrencyStatusItem.CurrencyGroups.Medical } };
             
             bool fWas40AtExam = dob != null && dob.Value.AddYears(40).CompareTo(lastMedical) < 0;
+            bool fWas60AtExam = dob != null && dob.Value.AddYears(60).CompareTo(lastMedical) < 0;
+            bool fWas50AtExam = dob != null && dob.Value.AddYears(50).CompareTo(lastMedical) < 0;
 
             List<CurrencyStatusItem> lst = new List<CurrencyStatusItem>();
-            CurrencyStatusItem cs;
 
             switch (mt)
             {
@@ -185,24 +259,20 @@ namespace MyFlightbook.Currency
                             lastMedical.AddMonths(monthsToMedical) :
                             lastMedical.AddCalendarMonths(monthsToMedical), Resources.Currency.NextMedical, CurrencyStatusItem.CurrencyGroups.Medical));
                     break;
-                case MedicalType.EASA:
-                    lst.Add(StatusForDate(lastMedical.AddMonths(12), Resources.Currency.NextMedical, CurrencyStatusItem.CurrencyGroups.Medical));
+                case MedicalType.EASA1stClass:
+                    AddEASA1stClassItems(lst, lastMedical, fWas40AtExam, fWas60AtExam);
+                    break;
+                case MedicalType.EASA2ndClass:
+                    AddEASA2ndClassItems(lst, lastMedical, fWas40AtExam, fWas50AtExam, dob.Value);
+                    break;
+                case MedicalType.EASALAPL:
+                    AddEASALAPLItems(lst, lastMedical, fWas40AtExam, dob.Value);
                     break;
                 case MedicalType.FAA1stClass:
-                    cs = StatusForDate(lastMedical.AddCalendarMonths(fWas40AtExam ? 6 : 12), Resources.Currency.NextMedical1stClass, CurrencyStatusItem.CurrencyGroups.Medical);
-                    lst.Add(cs);
-                    if (cs.Status == CurrencyState.NotCurrent)
-                    {
-                        if (fWas40AtExam)   // may still have some non-ATP commercial time left
-                            lst.Add(StatusForDate(lastMedical.AddCalendarMonths(12), Resources.Currency.NextMedical1stClassCommercial, CurrencyStatusItem.CurrencyGroups.Medical));
-                        lst.Add(StatusForDate(lastMedical.AddCalendarMonths(fWas40AtExam ? 24 : 60), Resources.Currency.NextMedical3rdClassPrivs, CurrencyStatusItem.CurrencyGroups.Medical));
-                    }
+                    AddFAA1stClassItems(lst, lastMedical, fWas40AtExam);
                     break;
                 case MedicalType.FAA2ndClass:
-                    cs = StatusForDate(lastMedical.AddCalendarMonths(12), Resources.Currency.NextMedical2ndClass, CurrencyStatusItem.CurrencyGroups.Medical);
-                    lst.Add(cs);
-                    if (cs.Status == CurrencyState.NotCurrent)
-                        lst.Add(StatusForDate(lastMedical.AddCalendarMonths(fWas40AtExam ? 24 : 60), Resources.Currency.NextMedical3rdClassPrivs, CurrencyStatusItem.CurrencyGroups.Medical));
+                    AddFAA2ndClassItems(lst, lastMedical, fWas40AtExam);
                     break;
                 case MedicalType.FAA3rdClass:
                     lst.Add(StatusForDate(lastMedical.AddCalendarMonths(fWas40AtExam ? 24 : 60), Resources.Currency.NextMedical, CurrencyStatusItem.CurrencyGroups.Medical));

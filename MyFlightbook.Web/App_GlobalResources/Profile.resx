@@ -666,10 +666,10 @@
     <value>Save Changes</value>
   </data>
   <data name="accountDateOfBirth" xml:space="preserve">
-    <value>Date of birth:</value>
+    <value>Date of birth</value>
   </data>
   <data name="accountDateOfBirthPromptNote" xml:space="preserve">
-    <value>(Optional, but required in some jurisdictions; Used when printing your logbook or computing FAA medical)</value>
+    <value>(Optional, but required in some jurisdictions; Used when printing or computing medical duration)</value>
   </data>
   <data name="dateOfBirthFormat" xml:space="preserve">
     <value>Date of birth: {0:d}</value>

@@ -69,6 +69,15 @@ namespace MyFlightbook.Web.Controls.Prefs
         protected global::System.Web.UI.WebControls.Localize locLastMedicalPrompt;
 
         /// <summary>
+        /// mfbEASATip control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Controls_mfbTooltip mfbEASATip;
+
+        /// <summary>
         /// dateMedical control.
         /// </summary>
         /// <remarks>
@@ -94,6 +103,24 @@ namespace MyFlightbook.Web.Controls.Prefs
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList cmbMedicalType;
+
+        /// <summary>
+        /// rowOtherMedical control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow rowOtherMedical;
+
+        /// <summary>
+        /// locMedDuration control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locMedDuration;
 
         /// <summary>
         /// cmbMonthsMedical control.

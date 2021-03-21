@@ -349,11 +349,38 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to EASA.
+        ///   Looks up a localized string similar to EASA rules around revalidation allow for the revalidation to occur within 45 days of the expiration of a previous medical but still extend from that previous expiration date.  Since %APP_NAME% does know know about any prior medical expiration, it is recommended that for a revalidation you put the expiration date of the previous medical certificate here and put the date of the actual exam, if desired, in the notes..
         /// </summary>
-        internal static string MedicalTypeEASA {
+        internal static string MedicalEASATip {
             get {
-                return ResourceManager.GetString("MedicalTypeEASA", resourceCulture);
+                return ResourceManager.GetString("MedicalEASATip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to EASA Class 1.
+        /// </summary>
+        internal static string MedicalTypeEASA1stClass {
+            get {
+                return ResourceManager.GetString("MedicalTypeEASA1stClass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to EASA Class 2.
+        /// </summary>
+        internal static string MedicalTypeEASA2ndClass {
+            get {
+                return ResourceManager.GetString("MedicalTypeEASA2ndClass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to EASA LAPL.
+        /// </summary>
+        internal static string MedicalTypeEASALAPL {
+            get {
+                return ResourceManager.GetString("MedicalTypeEASALAPL", resourceCulture);
             }
         }
         
@@ -394,7 +421,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Type of medical certificate:.
+        ///   Looks up a localized string similar to Type of medical certificate.
         /// </summary>
         internal static string MedicalTypePrompt {
             get {
@@ -646,7 +673,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use FAA rules (calendar months).
+        ///   Looks up a localized string similar to Use Calendar Months.
         /// </summary>
         internal static string PilotInfoMedicalFAARules {
             get {
@@ -655,7 +682,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use ICAO rules (day for day).
+        ///   Looks up a localized string similar to Use Months (day for day).
         /// </summary>
         internal static string PilotInfoMedicalICAORules {
             get {

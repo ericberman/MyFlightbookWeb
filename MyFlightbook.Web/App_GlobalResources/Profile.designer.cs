@@ -88,7 +88,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Date of birth:.
+        ///   Looks up a localized string similar to Date of birth.
         /// </summary>
         internal static string accountDateOfBirth {
             get {
@@ -97,7 +97,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to (Optional, but required in some jurisdictions; Used when printing your logbook or computing FAA medical).
+        ///   Looks up a localized string similar to (Optional, but required in some jurisdictions; Used when printing or computing medical duration).
         /// </summary>
         internal static string accountDateOfBirthPromptNote {
             get {

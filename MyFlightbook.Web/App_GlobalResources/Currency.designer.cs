@@ -2366,6 +2366,42 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Class 1 Medical.
+        /// </summary>
+        internal static string NextMedicalEASA1stClassOverall {
+            get {
+                return ResourceManager.GetString("NextMedicalEASA1stClassOverall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Commercial Transport Privileges.
+        /// </summary>
+        internal static string NextMedicalEASA1stClassTransport {
+            get {
+                return ResourceManager.GetString("NextMedicalEASA1stClassTransport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Class 2 Medical.
+        /// </summary>
+        internal static string NextMedicalEASA2ndClass {
+            get {
+                return ResourceManager.GetString("NextMedicalEASA2ndClass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to LAPL Medical.
+        /// </summary>
+        internal static string NextMedicalEASALAPL {
+            get {
+                return ResourceManager.GetString("NextMedicalEASALAPL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot determine without birth date.
         /// </summary>
         internal static string NextMedicalRequiresBOD {

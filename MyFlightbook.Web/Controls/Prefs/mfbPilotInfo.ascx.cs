@@ -51,6 +51,7 @@ namespace MyFlightbook.Web.Controls.Prefs
 
         public void InitPilotInfo()
         {
+            mfbEASATip.BodyContent = Branding.ReBrand(Resources.Preferences.MedicalEASATip);
             dateMedical.Date = m_pf.LastMedical;
             dateMedical.TextControl.ValidationGroup = "valPilotInfo";
             MonthsToMedical = m_pf.MonthsToMedical;
@@ -190,18 +191,13 @@ namespace MyFlightbook.Web.Controls.Prefs
         protected void btnUpdatePilotInfo_Click(object sender, EventArgs e)
         {
             if (FCommitPilotInfo())
-            {
                 lblPilotInfoUpdated.Visible = true;
-            }
         }
 
         protected void btnUpdateMedical_Click(object sender, EventArgs e)
         {
             if (FCommitMedicalInfo())
-            {
                 lblMedicalInfo.Visible = true;
-                UpdateNextMedical();
-            }
         }
 
         private void UpdateNextMedical()
@@ -232,39 +228,15 @@ namespace MyFlightbook.Web.Controls.Prefs
         {
             if (args == null)
                 throw new ArgumentNullException(nameof(args));
-            // all is good if we have no medical (by definition doesn't require DOB), non-FAA medical type, or if we have a DOB.
+            // all is good if we have no medical (by definition doesn't require DOB), a medical type that doesn't require a birthday, or if we have a DOB.
             args.IsValid = (!dateMedical.Date.HasValue() || !ProfileCurrency.RequiresBirthdate(SelectedMedicalType) || dateDOB.Date.HasValue()); ;
         }
 
         protected void UpdateForMedicalType(MedicalType mt)
         {
-            switch (mt)
-            {
-                case MedicalType.Other:
-                    valMonthsMedical.Enabled = true;
-                    cmbMonthsMedical.Visible = true;
-                    rblMedicalDurationType.Visible = true;
-                    rowDOB.Visible = false;
-                    valDOBRequired.Enabled = false;
-                    break;
-                case MedicalType.EASA:
-                    valMonthsMedical.Enabled = true;
-                    cmbMonthsMedical.Visible = false;
-                    cmbMonthsMedical.SelectedValue = "12";
-                    rblMedicalDurationType.Visible = false;
-                    rowDOB.Visible = false;
-                    valDOBRequired.Enabled = false;
-                    break;
-                case MedicalType.FAA1stClass:
-                case MedicalType.FAA2ndClass:
-                case MedicalType.FAA3rdClass:
-                    valMonthsMedical.Enabled = false;
-                    cmbMonthsMedical.Visible = false;
-                    rblMedicalDurationType.Visible = false;
-                    rowDOB.Visible = true;
-                    valDOBRequired.Enabled = true;
-                    break;
-            }
+            bool fNeedsDOB = ProfileCurrency.RequiresBirthdate(mt);
+            rowDOB.Visible = valDOBRequired.Enabled = fNeedsDOB;
+            rowOtherMedical.Visible = valMonthsMedical.Enabled = !fNeedsDOB;
         }
 
         protected void cmbMedicalType_SelectedIndexChanged(object sender, EventArgs e)

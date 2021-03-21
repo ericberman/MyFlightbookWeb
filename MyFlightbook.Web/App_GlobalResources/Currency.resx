@@ -1119,4 +1119,16 @@
   <data name="NextMedicalRequiresBOD" xml:space="preserve">
     <value>Cannot determine without birth date</value>
   </data>
+  <data name="NextMedicalEASA1stClassOverall" xml:space="preserve">
+    <value>Class 1 Medical</value>
+  </data>
+  <data name="NextMedicalEASA1stClassTransport" xml:space="preserve">
+    <value>Commercial Transport Privileges</value>
+  </data>
+  <data name="NextMedicalEASA2ndClass" xml:space="preserve">
+    <value>Class 2 Medical</value>
+  </data>
+  <data name="NextMedicalEASALAPL" xml:space="preserve">
+    <value>LAPL Medical</value>
+  </data>
 </root>

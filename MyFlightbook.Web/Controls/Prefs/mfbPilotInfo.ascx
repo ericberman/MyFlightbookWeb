@@ -2,6 +2,8 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register Src="~/Controls/mfbTypeInDate.ascx" TagName="mfbTypeInDate" TagPrefix="uc2" %>
 <%@ Register Src="~/Controls/mfbBasicMedManager.ascx" TagPrefix="uc1" TagName="mfbBasicMedManager" %>
+<%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc1" TagName="mfbTooltip" %>
+
 <cc1:Accordion ID="accordianPilotInfo" runat="server" HeaderCssClass="accordianHeader" HeaderSelectedCssClass="accordianHeaderSelected" ContentCssClass="accordianContent" TransitionDuration="250">
     <Panes>
         <cc1:AccordionPane runat="server" ID="acpMedical" ContentCssClass="" HeaderCssClass="">
@@ -14,10 +16,8 @@
                         <ContentTemplate>
                             <table>
                                 <tr>
-                                    <td><asp:Localize ID="locLastMedicalPrompt" runat="server" Text="<%$ Resources:Preferences, PilotInfoLastMedical %>" /></td>
-                                    <td>
-                                        <uc2:mfbTypeInDate ID="dateMedical" runat="server" DefaultType="None" />
-                                    </td>
+                                    <td><asp:Localize ID="locLastMedicalPrompt" runat="server" Text="<%$ Resources:Preferences, PilotInfoLastMedical %>" /><uc1:mfbTooltip runat="server" ID="mfbEASATip" /></td>
+                                    <td><uc2:mfbTypeInDate ID="dateMedical" runat="server" DefaultType="None" /></td>
                                 </tr>
                                 <tr>
                                     <td>
@@ -29,12 +29,14 @@
                                             <asp:ListItem Text="<%$ Resources:Preferences, MedicalTypeFAA1stClass %>" Value="FAA1stClass" />
                                             <asp:ListItem Text="<%$ Resources:Preferences, MedicalTypeFAA2ndClass %>" Value="FAA2ndClass" />
                                             <asp:ListItem Text="<%$ Resources:Preferences, MedicalTypeFAA3rdClass %>" Value="FAA3rdClass" />
-                                            <asp:ListItem Text="<%$ Resources:Preferences, MedicalTypeEASA %>" Value="EASA" />
+                                            <asp:ListItem Text="<%$ Resources:Preferences, MedicalTypeEASA1stClass %>" Value="EASA1stClass" />
+                                            <asp:ListItem Text="<%$ Resources:Preferences, MedicalTypeEASA2ndClass %>" Value="EASA2ndClass" />
+                                            <asp:ListItem Text="<%$ Resources:Preferences, MedicalTypeEASALAPL %>" Value="EASALAPL" />
                                         </asp:DropDownList>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td></td>
+                                <tr style="vertical-align:top" runat="server" id="rowOtherMedical">
+                                    <td><asp:Localize ID="locMedDuration" runat="server" Text="<%$ Resources:Preferences, PilotInfoMedicalDuration %>" /></td>
                                     <td>
                                         <div>
                                             <asp:DropDownList ID="cmbMonthsMedical" runat="server" AutoPostBack="true" OnSelectedIndexChanged="cmbMonthsMedical_SelectedIndexChanged"
@@ -61,7 +63,7 @@
                                     </td>
                                 </tr>
                                 <tr runat="server" id="rowDOB">
-                                    <td>
+                                    <td style="vertical-align:top">
                                         <asp:Localize ID="locDOB" runat="server" Text="<%$ Resources:Profile, accountDateOfBirth %>" />
                                     </td>
                                     <td>
