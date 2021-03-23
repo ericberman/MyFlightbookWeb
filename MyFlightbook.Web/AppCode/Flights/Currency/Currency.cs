@@ -717,7 +717,7 @@ namespace MyFlightbook.Currency
                     default:
                         throw new InvalidOperationException("Unknown jurisdiction for currency");
                 }
-                catclasscontext.AddContextToQuery(curr.Query, pf.UserName);
+                catclasscontext.AddContextToQuery(curr.Query, pf.UserName, pf.CurrencyJurisdiction != CurrencyJurisdiction.Australia);
                 dictFlightCurrency.Add(szStripeName, curr);
             }
             return dictFlightCurrency[szStripeName];
@@ -729,7 +729,7 @@ namespace MyFlightbook.Currency
             if (!dictFlightCurrency.ContainsKey(szKey))
             {
                 TailwheelCurrency fcTailwheel = new TailwheelCurrency(catclasscontext.Name + " - " + Resources.Currency.Tailwheel);
-                catclasscontext.AddContextToQuery(fcTailwheel.Query, pf.UserName);
+                catclasscontext.AddContextToQuery(fcTailwheel.Query, pf.UserName, true);
                 dictFlightCurrency.Add(szKey, fcTailwheel);
             }
             return dictFlightCurrency[szKey];
@@ -760,7 +760,7 @@ namespace MyFlightbook.Currency
                     default:
                         throw new InvalidOperationException("Unknown jurisdiction for currency");
                 }
-                catclasscontext.AddContextToQuery(curr.Query, pf.UserName);
+                catclasscontext.AddContextToQuery(curr.Query, pf.UserName, pf.CurrencyJurisdiction != CurrencyJurisdiction.Australia);
                 dictFlightCurrency.Add(szNightKey, curr);
             }
             return dictFlightCurrency[szNightKey];
@@ -806,7 +806,7 @@ namespace MyFlightbook.Currency
             ICAO = szICAO;
         }
 
-        public void AddContextToQuery(FlightQuery fq, string szUser)
+        public void AddContextToQuery(FlightQuery fq, string szUser, bool fIgnoreCategory = false)
         {
             if (fq == null)
                 return;
@@ -821,7 +821,7 @@ namespace MyFlightbook.Currency
                 fq.CatClasses.Add(CatClass);
             }
 
-            if (!String.IsNullOrWhiteSpace(Category))
+            if (!String.IsNullOrWhiteSpace(Category) && !fIgnoreCategory)
             {
                 foreach (CategoryClass cc in CategoryClass.CategoryClasses())
                     if (cc.Category.CompareCurrentCultureIgnoreCase(Category) == 0)
