@@ -79,6 +79,7 @@
                     <td><%# Eval("CFI").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                     <td><%# Eval("GroundSim").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                     <td>
+                        <div><%#: ((string[]) Eval("Airports")).Count() <= 2 ? string.Empty : String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.PrintFullRoute, Eval("Route")) %></div>
                         <div style="clear:left; white-space:pre-line;" dir="auto"><%# Eval("RedactedCommentWithReplacedApproaches") %></div>
                         <div><%# ((LogbookEntryDisplay) Container.DataItem).CrossCountry > 0 ? String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0}: {1}", Resources.LogbookEntry.PrintHeaderCrossCountry, ((LogbookEntryDisplay) Container.DataItem).CrossCountry.FormatDecimal(CurrentUser.UsesHHMM)) : string.Empty %></div>
                         <div style="white-space:pre-line;"><%#: Eval("CustPropertyDisplay") %></div>
