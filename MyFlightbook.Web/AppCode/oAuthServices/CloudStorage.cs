@@ -19,7 +19,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2020 MyFlightbook LLC
+ * Copyright (c) 2016-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -160,7 +160,7 @@ namespace MyFlightbook.CloudStorage
 
         protected GoogleOAuthBase(string szAppKeyKey, string szAppSecretKey, string szOAuth2AuthEndpoint, string szOAuth2TokenEndpoint, string[] scopes = null, string szUpgradeEndpoint = null, string szDisableEndpoint = null) : base(szAppKeyKey, szAppSecretKey, szOAuth2AuthEndpoint, szOAuth2TokenEndpoint, scopes, szUpgradeEndpoint, szDisableEndpoint) { }
 
-        public override AuthorizationState ConvertToken(HttpRequest Request)
+        public override IAuthorizationState ConvertToken(HttpRequest Request)
         {
             if (Request == null)
                 throw new ArgumentNullException(nameof(Request));
@@ -850,7 +850,8 @@ namespace MyFlightbook.CloudStorage
         private Profile profile { get; set; }
 
         public MFBDropbox(Profile pf = null)
-            : base("DropboxAccessID", "DropboxClientSecret", "https://www.dropbox.com/oauth2/authorize?token_access_type=offline", "https://api.dropboxapi.com/oauth2/token", null, "https://api.dropboxapi.com/2/auth/token/from_oauth1", "https://api.dropboxapi.com/2/auth/token/revoke")
+            : base("DropboxAccessID", "DropboxClientSecret", "https://www.dropbox.com/oauth2/authorize?token_access_type=offline", "https://api.dropboxapi.com/oauth2/token", 
+                  new string[] { "files.content.write", "files.content.read", "files.metadata.write", "files.metadata.read" }, "https://api.dropboxapi.com/2/auth/token/from_oauth1", "https://api.dropboxapi.com/2/auth/token/revoke")
         {
             profile = pf;
         }
@@ -969,12 +970,7 @@ namespace MyFlightbook.CloudStorage
 
                     AuthState = auth;
 
-                    if (await RefreshAccessToken().ConfigureAwait(false) && profile != null)
-                    {
-                        profile.DropboxAccessToken = JsonConvert.SerializeObject(AuthState);
-                        profile.FCommit();
-                    }
-
+                    await RefreshAccessToken().ConfigureAwait(false);
                     szToken = AuthState.AccessToken;
                 }
                 catch (JsonException) { }

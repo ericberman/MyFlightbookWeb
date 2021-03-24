@@ -10,7 +10,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2020 MyFlightbook LLC
+ * Copyright (c) 2010-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -82,7 +82,7 @@ namespace MyFlightbook.Web.Controls.Prefs
             }
             if (!String.IsNullOrEmpty(Request.Params[OneDrive.szParam1DriveAuth])) // redirect from OneDrive oAuth request.
             {
-                CurrentUser.OneDriveAccessToken = (DotNetOpenAuth.OAuth2.AuthorizationState)Session[OneDrive.TokenSessionKey];
+                CurrentUser.OneDriveAccessToken = (IAuthorizationState)Session[OneDrive.TokenSessionKey];
                 CurrentUser.FCommit();
 
                 Response.Redirect(String.Format(CultureInfo.InvariantCulture, "{0}?pane=backup", Request.Path));

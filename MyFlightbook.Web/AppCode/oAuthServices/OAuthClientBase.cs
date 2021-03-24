@@ -10,7 +10,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2020 MyFlightbook LLC
+ * Copyright (c) 2019-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -222,15 +222,13 @@ namespace MyFlightbook.OAuth
         /// </summary>
         /// <param name="Request">The http request</param>
         /// <returns>The granted access token</returns>
-        public virtual AuthorizationState ConvertToken(HttpRequest Request)
+        public virtual IAuthorizationState ConvertToken(HttpRequest Request)
         {
             WebServerClient consumer = new WebServerClient(Description(), AppKey, AppSecret)
             {
                 ClientCredentialApplicator = ClientCredentialApplicator.PostParameter(AppSecret)
             };
-            IAuthorizationState grantedAccess = consumer.ProcessUserAuthorization(new HttpRequestWrapper(Request));
-            // Kindof a hack below, but we convert from IAuthorizationState to AuthorizationState via JSON so that we have a concrete object that we can instantiate.
-            return JsonConvert.DeserializeObject<AuthorizationState>(JsonConvert.SerializeObject(grantedAccess));
+            return consumer.ProcessUserAuthorization(new HttpRequestWrapper(Request));
         }
     }
 }

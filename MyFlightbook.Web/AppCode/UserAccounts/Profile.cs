@@ -916,7 +916,7 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="sz">The JSON string</param>
         /// <returns>The authorization state, or null if sz is null</returns>
-        private static AuthorizationState AuthStateFromString(string sz)
+        private static IAuthorizationState AuthStateFromString(string sz)
         {
             if (String.IsNullOrEmpty(sz))
                 return null;
