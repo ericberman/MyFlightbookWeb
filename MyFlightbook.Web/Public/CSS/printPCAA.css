@@ -1,0 +1,138 @@
+﻿.pageTable {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font-size: 9pt;
+}
+
+.pageTable td {
+    padding: 5px;
+}
+
+tr.bordered {
+    page-break-inside: avoid;
+}
+
+    tr.bordered td, tr.bordered th {
+        padding: 3px;
+        page-break-inside: avoid;
+        border: 1px solid;
+    }
+
+.evenRow {
+    background-color: white;
+}
+
+.oddRow {
+    background-color: #E4B68F;
+}
+
+td.centered {
+    text-align: center;
+}
+
+tr.bordered td {
+    font-size: smaller;
+}
+
+tr.borderedBold th {
+    padding: 3px;
+    border: 1px solid;
+    page-break-inside: avoid;
+    font-weight: bold;
+    text-align: center;
+}
+
+tr.subtotal td {
+    padding: 2px;
+    border: 1px solid;
+    page-break-inside: avoid;
+    font-size: smaller;
+    font-weight: bold;
+}
+
+    tr.subtotal td.subtotalLabel {
+        border: none;
+    }
+
+.headerBig {
+    text-align: center;
+    font-weight: bold;
+    font-size: smaller;
+}
+
+.headerSmall {
+    text-align: center;
+    font-size: smaller;
+    font-weight: normal;
+}
+
+@media screen {
+    tr.bordered, tr.bordered th, tr.bordered td.nightCol, tr.bordered th.nightCol, td.nightCol, tr.subtotal td, tr.borderedBold th, .topThick, tr.bordered td, tr.bordered th, .pageTable, .thickRight, .thickLeft {
+        border-color: #D38749;
+    }
+
+    th {
+        color: #856134;
+    }
+
+    .oddRow {
+        background-color: #F7E9DD;
+    }
+
+    tr.bordered td, tr.bordered th {
+        border: 1px solid #D38749;
+    }
+
+    tr.bordered td.thickRight, tr.bordered th.thickRight {
+        border-left: 1px solid #D38749;
+        border-top: 1px solid #D38749;
+        border-bottom: 1px solid #D38749;
+        border-right: 2px solid #D38749;
+    }
+
+    .thickLeft {
+        border-left: 2px solid #D38749;
+    }
+
+    .thickRight {
+        border-right: 2px solid #D38749;
+    }
+
+    .topThick {
+        border-top: 2px solid #D38749;
+    }
+}
+
+@media print {
+    tr.bordered, tr.bordered th, tr.bordered td.nightCol, tr.bordered th.nightCol, td.nightCol, tr.subtotal td, tr.borderedBold th, .topThick, tr.bordered td, tr.bordered th, .pageTable, .thickRight, .thickLeft {
+        border-color: black;
+    }
+
+    th {
+        color:black;
+    }
+
+    .oddRow {
+        background-color: #F7F7F7;
+    }
+
+    tr.bordered td.thickRight, tr.bordered th.thickRight {
+        border-left: 1px solid black;
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+        border-right: 2px solid black;
+    }
+
+    .thickLeft {
+        border-left: 2px solid black;
+    }
+
+    .thickRight {
+        border-right: 2px solid black;
+    }
+
+    .topThick {
+        border-top: 2px solid black;
+    }
+}

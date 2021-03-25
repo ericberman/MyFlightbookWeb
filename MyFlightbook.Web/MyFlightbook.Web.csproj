@@ -416,6 +416,7 @@
     <Content Include="Controls\Prefs\mfbFlightColoring.ascx" />
     <Content Include="Controls\Prefs\mfbPropertyBlocklist.ascx" />
     <Content Include="Controls\PrintingLayouts\layoutCondensed.ascx" />
+    <Content Include="Controls\PrintingLayouts\LayoutPCAA.ascx" />
     <Content Include="Controls\TwoFactorAuth.ascx" />
     <Content Include="Controls\AccountQuestions.ascx" />
     <Content Include="Controls\adminStats.ascx" />
@@ -847,6 +848,7 @@
     <Content Include="Public\CSS\printGlider.css" />
     <Content Include="Public\CSS\printNative.css" />
     <Content Include="Public\CSS\printNZ.css" />
+    <Content Include="Public\CSS\printPCAA.css" />
     <Content Include="Public\CSS\printPortrait.css" />
     <Content Include="Public\CSS\printSACAA.css" />
     <Content Include="Public\CSS\printUSA.css" />
@@ -1324,6 +1326,13 @@
     </Compile>
     <Compile Include="Controls\PrintingLayouts\layoutCondensed.ascx.designer.cs">
       <DependentUpon>layoutCondensed.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PrintingLayouts\LayoutPCAA.ascx.cs">
+      <DependentUpon>LayoutPCAA.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\PrintingLayouts\LayoutPCAA.ascx.designer.cs">
+      <DependentUpon>LayoutPCAA.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\TwoFactorAuth.ascx.cs">
       <DependentUpon>TwoFactorAuth.ascx</DependentUpon>

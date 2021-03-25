@@ -636,6 +636,24 @@ namespace MyFlightbook.MemberPages
         protected global::MyFlightbook.Printing.Layouts.LayoutCondensed layoutCondensed;
 
         /// <summary>
+        /// vwPCAA control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.View vwPCAA;
+
+        /// <summary>
+        /// LayoutPCAA control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::MyFlightbook.Printing.Layouts.LayoutPCAA LayoutPCAA;
+
+        /// <summary>
         /// pnlEndorsements control.
         /// </summary>
         /// <remarks>

@@ -1334,4 +1334,34 @@ Proceed with import?</value>
   <data name="LogbookSearchSelected" xml:space="preserve">
     <value>Show only selected flights</value>
   </data>
+  <data name="PrintFormatPCAA" xml:space="preserve">
+    <value>PCAA</value>
+  </data>
+  <data name="PrintHeaderCrew" xml:space="preserve">
+    <value>Crew Names</value>
+  </data>
+  <data name="PrintHeaderFlightTimes" xml:space="preserve">
+    <value>Flight Times</value>
+  </data>
+  <data name="PrintHeaderOtherNames" xml:space="preserve">
+    <value>P2 / P3</value>
+  </data>
+  <data name="PrintHeaderP1" xml:space="preserve">
+    <value>P1</value>
+    <comment>P1 = PIC</comment>
+  </data>
+  <data name="PrintHeaderP2" xml:space="preserve">
+    <value>P2</value>
+    <comment>P2  = SIC</comment>
+  </data>
+  <data name="PrintHeaderP3" xml:space="preserve">
+    <value>P3</value>
+    <comment>P3 = Dual Received</comment>
+  </data>
+  <data name="PrintHeaderP1Only" xml:space="preserve">
+    <value>(P1 Only)</value>
+  </data>
+  <data name="PrintHeaderSignature" xml:space="preserve">
+    <value>Signature of PIC/Instructor/Examiner</value>
+  </data>
 </root>

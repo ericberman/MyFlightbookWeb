@@ -1998,6 +1998,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PCAA.
+        /// </summary>
+        internal static string PrintFormatPCAA {
+            get {
+                return ResourceManager.GetString("PrintFormatPCAA", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Portrait.
         /// </summary>
         internal static string PrintFormatPortrait {
@@ -2142,6 +2151,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Crew Names.
+        /// </summary>
+        internal static string PrintHeaderCrew {
+            get {
+                return ResourceManager.GetString("PrintHeaderCrew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cross-Country.
         /// </summary>
         internal static string PrintHeaderCrossCountry {
@@ -2192,6 +2210,15 @@ namespace Resources {
         internal static string PrintHeaderFlightDetails {
             get {
                 return ResourceManager.GetString("PrintHeaderFlightDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flight Times.
+        /// </summary>
+        internal static string PrintHeaderFlightTimes {
+            get {
+                return ResourceManager.GetString("PrintHeaderFlightTimes", resourceCulture);
             }
         }
         
@@ -2430,6 +2457,51 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to P2 / P3.
+        /// </summary>
+        internal static string PrintHeaderOtherNames {
+            get {
+                return ResourceManager.GetString("PrintHeaderOtherNames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to P1.
+        /// </summary>
+        internal static string PrintHeaderP1 {
+            get {
+                return ResourceManager.GetString("PrintHeaderP1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (P1 Only).
+        /// </summary>
+        internal static string PrintHeaderP1Only {
+            get {
+                return ResourceManager.GetString("PrintHeaderP1Only", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to P2.
+        /// </summary>
+        internal static string PrintHeaderP2 {
+            get {
+                return ResourceManager.GetString("PrintHeaderP2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to P3.
+        /// </summary>
+        internal static string PrintHeaderP3 {
+            get {
+                return ResourceManager.GetString("PrintHeaderP3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to PIC.
         /// </summary>
         internal static string PrintHeaderPIC2 {
@@ -2525,6 +2597,15 @@ namespace Resources {
         internal static string PrintHeaderSEL {
             get {
                 return ResourceManager.GetString("PrintHeaderSEL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Signature of PIC/Instructor/Examiner.
+        /// </summary>
+        internal static string PrintHeaderSignature {
+            get {
+                return ResourceManager.GetString("PrintHeaderSignature", resourceCulture);
             }
         }
         
