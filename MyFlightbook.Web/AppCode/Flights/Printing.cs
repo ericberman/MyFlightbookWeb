@@ -986,6 +986,26 @@ namespace MyFlightbook.Printing
         {
             return (i == 0) ? string.Empty : String.Format(CultureInfo.CurrentCulture, "{0}L", i);
         }
+
+        /// <summary>
+        /// Removes any properties from the property display of flights that are redundant with the rest of the print layout (as provided in rgProps)
+        /// </summary>
+        /// <param name="rgProps">The set of properties to be excluded</param>
+        /// <param name="rgle">The set of flights to modify</param>
+        protected void StripRedundantOrExcludedProperties(IEnumerable<int> rgProps, IEnumerable<LogbookEntryDisplay> rgle)
+        {
+            if (rgle == null)
+                return;
+
+            HashSet<int> hsRedundantProps = rgProps == null ? new HashSet<int>() : new HashSet<int>(rgProps);
+            hsRedundantProps.UnionWith(Options.ExcludedPropertyIDs);
+            foreach (LogbookEntryDisplay led in rgle)
+            {
+                List<CustomFlightProperty> lstProps = new List<CustomFlightProperty>(led.CustomProperties);
+                lstProps.RemoveAll(cfp => hsRedundantProps.Contains(cfp.PropTypeID) || (led.IsFSTD && cfp.PropTypeID == (int) CustomPropertyType.KnownProperties.IDPropSimRegistration));
+                led.CustPropertyDisplay = CustomFlightProperty.PropListDisplay(lstProps, CurrentUser.UsesHHMM, PropSeparator);
+            }
+        }
         #endregion
 
         #region Common utilities

@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="layoutCondensed.ascx.cs" Inherits="Controls_PrintingLayouts_layoutCondensed" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="layoutCondensed.ascx.cs" Inherits="MyFlightbook.Printing.Layouts.LayoutCondensed" %>
 <%@ Register Src="~/Controls/PrintingLayouts/pageFooter.ascx" TagPrefix="uc1" TagName="pageFooter" %>
 <%@ Register Src="~/Controls/PrintingLayouts/pageHeader.ascx" TagPrefix="uc1" TagName="pageHeader" %>
 <%@ Register Src="~/Controls/mfbSignature.ascx" TagPrefix="uc1" TagName="mfbSignature" %>

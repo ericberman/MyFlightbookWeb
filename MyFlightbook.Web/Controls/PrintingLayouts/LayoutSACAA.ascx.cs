@@ -1,6 +1,4 @@
-﻿using MyFlightbook;
-using MyFlightbook.Printing;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Web.UI.WebControls;
 
@@ -11,61 +9,57 @@ using System.Web.UI.WebControls;
  *
 *******************************************************/
 
-public partial class Controls_PrintingLayouts_LayoutSACAA : PrintLayoutBase
+namespace MyFlightbook.Printing.Layouts
 {
-    #region IPrintingTemplate
-    public override void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, PrintingOptions options, bool showFooter = true)
+    public partial class LayoutSACAA : PrintLayoutBase
     {
-        base.BindPages(lst, user, options, showFooter);
-
-        rptPages.DataSource = lst;
-        rptPages.DataBind();
-    }
-    #endregion
-
-    protected void Page_Load(object sender, EventArgs e) { }
-
-    protected void rptPages_ItemDataBound(object sender, RepeaterItemEventArgs e)
-    {
-        if (e == null)
-            throw new ArgumentNullException(nameof(e));
-
-        LogbookPrintedPage lep = (LogbookPrintedPage)e.Item.DataItem;
-
-        HashSet<int> hsRedundantProps = new HashSet<int>() { (int)CustomPropertyType.KnownProperties.IDPropNameOfPIC };
-        hsRedundantProps.UnionWith(Options.ExcludedPropertyIDs);
-        foreach (LogbookEntryDisplay led in lep.Flights)
+        #region IPrintingTemplate
+        public override void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, PrintingOptions options, bool showFooter = true)
         {
-            List<CustomFlightProperty> lstProps = new List<CustomFlightProperty>(led.CustomProperties);
-            lstProps.RemoveAll(cfp => hsRedundantProps.Contains(cfp.PropTypeID));
-            led.CustPropertyDisplay = CustomFlightProperty.PropListDisplay(lstProps, CurrentUser.UsesHHMM, PropSeparator);
+            base.BindPages(lst, user, options, showFooter);
+
+            rptPages.DataSource = lst;
+            rptPages.DataBind();
+        }
+        #endregion
+
+        protected void Page_Load(object sender, EventArgs e) { }
+
+        protected void rptPages_ItemDataBound(object sender, RepeaterItemEventArgs e)
+        {
+            if (e == null)
+                throw new ArgumentNullException(nameof(e));
+
+            LogbookPrintedPage lep = (LogbookPrintedPage)e.Item.DataItem;
+
+            StripRedundantOrExcludedProperties(new int[] { (int)CustomPropertyType.KnownProperties.IDPropNameOfPIC }, lep.Flights);
+
+            Repeater rpt = (Repeater)e.Item.FindControl("rptFlight");
+            rpt.DataSource = lep.Flights;
+            rpt.DataBind();
+
+            rpt = (Repeater)e.Item.FindControl("rptSubtotalCollections");
+            rpt.DataSource = lep.Subtotals;
+            rpt.DataBind();
         }
 
-        Repeater rpt = (Repeater)e.Item.FindControl("rptFlight");
-        rpt.DataSource = lep.Flights;
-        rpt.DataBind();
+        protected void rptSubtotalCollections_ItemDataBound(object sender, RepeaterItemEventArgs e)
+        {
+            if (e == null)
+                throw new ArgumentNullException(nameof(e));
 
-        rpt = (Repeater)e.Item.FindControl("rptSubtotalCollections");
-        rpt.DataSource = lep.Subtotals;
-        rpt.DataBind();
-    }
+            LogbookPrintedPageSubtotalsCollection sc = (LogbookPrintedPageSubtotalsCollection)e.Item.DataItem;
+            Repeater rpt = (Repeater)e.Item.FindControl("rptSubtotals");
+            rpt.DataSource = sc.Subtotals;
+            rpt.DataBind();
+        }
 
-    protected void rptSubtotalCollections_ItemDataBound(object sender, RepeaterItemEventArgs e)
-    {
-        if (e == null)
-            throw new ArgumentNullException(nameof(e));
-
-        LogbookPrintedPageSubtotalsCollection sc = (LogbookPrintedPageSubtotalsCollection)e.Item.DataItem;
-        Repeater rpt = (Repeater)e.Item.FindControl("rptSubtotals");
-        rpt.DataSource = sc.Subtotals;
-        rpt.DataBind();
-    }
-
-    protected void rptFlight_ItemDataBound(object sender, RepeaterItemEventArgs e)
-    {
-        if (e == null)
-            throw new ArgumentNullException(nameof(e));
-        Controls_mfbSignature sig = (Controls_mfbSignature)e.Item.FindControl("mfbSignature");
-        sig.Flight = (LogbookEntryDisplay)e.Item.DataItem;
+        protected void rptFlight_ItemDataBound(object sender, RepeaterItemEventArgs e)
+        {
+            if (e == null)
+                throw new ArgumentNullException(nameof(e));
+            Controls_mfbSignature sig = (Controls_mfbSignature)e.Item.FindControl("mfbSignature");
+            sig.Flight = (LogbookEntryDisplay)e.Item.DataItem;
+        }
     }
 }

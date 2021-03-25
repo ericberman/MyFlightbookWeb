@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="layoutCASA.ascx.cs" Inherits="Controls_PrintingLayouts_layoutCASA" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="layoutCASA.ascx.cs" Inherits="MyFlightbook.Printing.Layouts.LayoutCASA" %>
 <%@ Register Src="~/Controls/PrintingLayouts/pageFooter.ascx" TagPrefix="uc1" TagName="pageFooter" %>
 <%@ Register Src="~/Controls/PrintingLayouts/pageHeader.ascx" TagPrefix="uc1" TagName="pageHeader" %>
 <%@ Register Src="~/Controls/mfbSignature.ascx" TagPrefix="uc1" TagName="mfbSignature" %>
@@ -47,7 +47,7 @@
                     <td>
                         <div><%#: Eval("ModelDisplay") %></div>
                     </td>
-                    <td><%#: Eval("TailNumDisplay") %></td>
+                    <td><%#: Eval("TailNumOrSimDisplay") %></td>
                     <td><%#: Eval("PICName") %></td>
                     <td><%#: Eval("SICName") %> <%#: Eval("StudentName") %></td>
                     <td>

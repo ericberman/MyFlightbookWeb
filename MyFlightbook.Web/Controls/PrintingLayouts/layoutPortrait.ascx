@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="layoutPortrait.ascx.cs" Inherits="Controls_PrintingLayouts_layoutPortrait" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="layoutPortrait.ascx.cs" Inherits="MyFlightbook.Printing.Layouts.LayoutPortrait" %>
 <%@ Register Src="~/Controls/mfbLogbook.ascx" TagPrefix="uc1" TagName="mfbLogbook" %>
 <%@ Register Src="~/Controls/mfbImageList.ascx" TagPrefix="uc1" TagName="mfbImageList" %>
 <%@ Register Src="~/Controls/PrintingLayouts/pageHeader.ascx" TagPrefix="uc1" TagName="pageHeader" %>
@@ -47,7 +47,7 @@
                         <td class="row1"><asp:Label Font-Bold="true" EnableViewState="false" ID="lblStaticDate" runat="server" Text='<%# ((DateTime) Eval("Date")).ToShortDateString() %>'></asp:Label></td>
                         <td class="row1"><asp:Label ID="lblModel" runat="server" Text='<%#: Eval("ModelDisplay") %>'></asp:Label></td>
                         <td class="row1"><asp:Label ID="lblCatClass" runat="server" Text='<%#: Eval("CatClassDisplay") %>'></asp:Label></td>
-                        <td class="row1"><%#: Eval("TailNumDisplay") %></td>
+                        <td class="row1"><%#: Eval("TailNumOrSimDisplay") %></td>
                         <td class="numericColumn" runat="server" id="tdoptColumn1" visible="<%# ShowOptionalColumn(0) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(0) %></div></td>
                         <td class="numericColumn" runat="server" id="tdoptColumn2" visible="<%# ShowOptionalColumn(1) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(1) %></div></td>
                         <td class="numericColumn" runat="server" id="tdoptColumn3" visible="<%# ShowOptionalColumn(2) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(2) %></div></td>

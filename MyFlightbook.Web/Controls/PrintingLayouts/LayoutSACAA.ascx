@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="LayoutSACAA.ascx.cs" Inherits="Controls_PrintingLayouts_LayoutSACAA" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="LayoutSACAA.ascx.cs" Inherits="MyFlightbook.Printing.Layouts.LayoutSACAA" %>
 <%@ Register Src="~/Controls/PrintingLayouts/pageFooter.ascx" TagPrefix="uc1" TagName="pageFooter" %>
 <%@ Register Src="~/Controls/PrintingLayouts/pageHeader.ascx" TagPrefix="uc1" TagName="pageHeader" %>
 <%@ Register Src="~/Controls/mfbSignature.ascx" TagPrefix="uc1" TagName="mfbSignature" %>
@@ -73,7 +73,7 @@
                     <td><%# ((DateTime) Eval("Date")).ToShortDateString() %></td>
                     <td><%#: Eval("ModelDisplay") %></td>
                     <td><%#: Eval("CatClassDisplay") %></td>
-                    <td><%#: Eval("TailNumDisplay") %></td>
+                    <td><%#: Eval("TailNumOrSimDisplay") %></td>
                     <td><%#: Eval("PICName") %></td>
                     <td><%#: Eval("Route") %></td>
                     <td><%# Eval("IMC").FormatDecimal(CurrentUser.UsesHHMM) %></td>

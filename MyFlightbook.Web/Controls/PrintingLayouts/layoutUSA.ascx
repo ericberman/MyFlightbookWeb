@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="layoutUSA.ascx.cs" Inherits="Controls_PrintingLayouts_layoutUSA" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="layoutUSA.ascx.cs" Inherits="MyFlightbook.Printing.Layouts.LayoutUSA" %>
 <%@ Register Src="~/Controls/PrintingLayouts/pageHeader.ascx" TagPrefix="uc1" TagName="pageHeader" %>
 <%@ Register Src="~/Controls/PrintingLayouts/pageFooter.ascx" TagPrefix="uc1" TagName="pageFooter" %>
 <%@ Register Src="~/Controls/mfbSignature.ascx" TagPrefix="uc1" TagName="mfbSignature" %>
@@ -53,7 +53,7 @@
                 <tr class="bordered" <%# ColorForFlight(Container.DataItem) %>>
                     <td><%# ((DateTime) Eval("Date")).ToShortDateString() %></td>
                     <td><%#: Eval("ModelDisplay") %></td>
-                    <td><%#: Eval("TailNumDisplay") %></td>
+                    <td><%#: Eval("TailNumOrSimDisplay") %></td>
                     <td><%#: Eval("Departure") %></td>
                     <td><%#: Eval("Destination") %></td>
                     <td>

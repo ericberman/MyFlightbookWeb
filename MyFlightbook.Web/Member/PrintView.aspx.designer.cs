@@ -471,7 +471,7 @@ namespace MyFlightbook.MemberPages
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_PrintingLayouts_layoutNative layoutNative;
+        protected global::MyFlightbook.Printing.Layouts.LayoutNative layoutNative;
 
         /// <summary>
         /// vwPortrait control.
@@ -489,7 +489,7 @@ namespace MyFlightbook.MemberPages
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_PrintingLayouts_layoutPortrait layoutPortrait;
+        protected global::MyFlightbook.Printing.Layouts.LayoutPortrait layoutPortrait;
 
         /// <summary>
         /// vwEASA control.
@@ -507,7 +507,7 @@ namespace MyFlightbook.MemberPages
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_PrintingLayouts_layoutEASAFCL layoutEASAFCL;
+        protected global::MyFlightbook.Printing.Layouts.LayoutEASAFCL layoutEASAFCL;
 
         /// <summary>
         /// vwUSA control.
@@ -525,7 +525,7 @@ namespace MyFlightbook.MemberPages
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_PrintingLayouts_layoutUSA layoutUSA;
+        protected global::MyFlightbook.Printing.Layouts.LayoutUSA layoutUSA;
 
         /// <summary>
         /// vwCanada control.
@@ -543,7 +543,7 @@ namespace MyFlightbook.MemberPages
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_PrintingLayouts_layoutCanada layoutCanada;
+        protected global::MyFlightbook.Printing.Layouts.LayoutCanada layoutCanada;
 
         /// <summary>
         /// vwSACAA control.
@@ -561,7 +561,7 @@ namespace MyFlightbook.MemberPages
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_PrintingLayouts_LayoutSACAA LayoutSACAA;
+        protected global::MyFlightbook.Printing.Layouts.LayoutSACAA LayoutSACAA;
 
         /// <summary>
         /// vwCASA control.
@@ -579,7 +579,7 @@ namespace MyFlightbook.MemberPages
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_PrintingLayouts_layoutCASA layoutCASA;
+        protected global::MyFlightbook.Printing.Layouts.LayoutCASA layoutCASA;
 
         /// <summary>
         /// vwNZ control.
@@ -597,7 +597,7 @@ namespace MyFlightbook.MemberPages
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_PrintingLayouts_layoutNZ layoutNZ;
+        protected global::MyFlightbook.Printing.Layouts.LayoutNZ layoutNZ;
 
         /// <summary>
         /// vwGlider control.
@@ -615,7 +615,7 @@ namespace MyFlightbook.MemberPages
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_PrintingLayouts_layoutGlider layoutGlider;
+        protected global::MyFlightbook.Printing.Layouts.LayoutGlider layoutGlider;
 
         /// <summary>
         /// vwCondensed control.
@@ -633,7 +633,7 @@ namespace MyFlightbook.MemberPages
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_PrintingLayouts_layoutCondensed layoutCondensed;
+        protected global::MyFlightbook.Printing.Layouts.LayoutCondensed layoutCondensed;
 
         /// <summary>
         /// pnlEndorsements control.

@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="layoutNative.ascx.cs" Inherits="Controls_PrintingLayouts_layoutNative" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="layoutNative.ascx.cs" Inherits="MyFlightbook.Printing.Layouts.LayoutNative" %>
 <%@ Register Src="~/Controls/mfbLogbook.ascx" TagPrefix="uc1" TagName="mfbLogbook" %>
 <%@ Register Src="~/Controls/mfbImageList.ascx" TagPrefix="uc1" TagName="mfbImageList" %>
 <%@ Register Src="~/Controls/PrintingLayouts/pageHeader.ascx" TagPrefix="uc1" TagName="pageHeader" %>
@@ -57,7 +57,7 @@
                             </asp:Panel>
                         </td>
                         <td style="width: 3cm">
-                            <div style="font-weight:bold"><%#: Eval("TailNumDisplay") %></div>
+                            <div style="font-weight:bold"><%#: Eval("TailNumOrSimDisplay") %></div>
                             <div style="font-size:smaller"><%#: Eval("ModelDisplay") %> <%#: Eval("CatClassDisplay") %></div>
                         </td>
                         <td class="numericColumn" runat="server" id="tdoptColumn1" visible="<%# ShowOptionalColumn(0) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(0) %></div></td>

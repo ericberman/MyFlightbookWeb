@@ -2823,6 +2823,14 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
             get { return Math.Min(Nighttime, CrossCountry); }
         }
 
+        public string TailNumOrSimDisplay
+        {
+            get 
+            {
+                return IsFSTD && CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropSimRegistration) ? CustomProperties[CustomPropertyType.KnownProperties.IDPropSimRegistration].TextValue : base.TailNumDisplay;
+            }
+        }
+
         public decimal DayXC
         {
             get { return Math.Max(CrossCountry - NightXC, 0.0M); }

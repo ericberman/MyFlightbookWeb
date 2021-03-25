@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="layoutCanada.ascx.cs" Inherits="Controls_PrintingLayouts_layoutCanada" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="layoutCanada.ascx.cs" Inherits="MyFlightbook.Printing.Layouts.LayoutCanada" %>
 <%@ Register Src="~/Controls/mfbImageList.ascx" TagPrefix="uc1" TagName="mfbImageList" %>
 <%@ Register Src="~/Controls/PrintingLayouts/pageHeader.ascx" TagPrefix="uc1" TagName="pageHeader" %>
 <%@ Register Src="~/Controls/PrintingLayouts/pageFooter.ascx" TagPrefix="uc1" TagName="pageFooter" %>
@@ -67,7 +67,7 @@
                     <tr class="bordered <%# Container.ItemIndex % 2 == 0 ? "evenRow" : "oddRow" %> <%# Container.ItemIndex == 0 ? "topThick" : string.Empty %>" <%# ColorForFlight(Container.DataItem) %>>
                         <td class="centered" style="font-weight:bold; border-right: 2px solid black;"><%# ((DateTime) Eval("Date")).ToShortDateString() %></td>
                         <td class="centered"><div><%#: Eval("ModelDisplay") %> (<%#: Eval("CatClassDisplay") %>)</div></td>
-                        <td class="centered" style="border-right: 2px solid black;"><%#: Eval("TailNumDisplay") %></td>
+                        <td class="centered" style="border-right: 2px solid black;"><%#: Eval("TailNumOrSimDisplay") %></td>
                         <td class="centered"><%#: Eval("PICName") %></td>
                         <td class="centered" style="border-right: 2px solid black;"><%#: Eval("SICName") %> <%#: Eval("StudentName") %></td>
                         <td class="centered"><%#: Eval("Departure") %></td>

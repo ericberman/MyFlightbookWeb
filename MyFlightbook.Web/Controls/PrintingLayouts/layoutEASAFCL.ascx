@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="layoutEASAFCL.ascx.cs" Inherits="Controls_PrintingLayouts_layoutEASAFCL" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="layoutEASAFCL.ascx.cs" Inherits="MyFlightbook.Printing.Layouts.LayoutEASAFCL" %>
 <%@ Register Src="~/Controls/PrintingLayouts/pageFooter.ascx" TagPrefix="uc1" TagName="pageFooter" %>
 <%@ Register Src="~/Controls/PrintingLayouts/pageHeader.ascx" TagPrefix="uc1" TagName="pageHeader" %>
 <%@ Register Src="~/Controls/mfbSignature.ascx" TagPrefix="uc1" TagName="mfbSignature" %>
@@ -65,7 +65,7 @@
                     <td><%#: Eval("Destination") %></td>
                     <td><%# ((DateTime) Eval("ArrivalTime")).UTCFormattedStringOrEmpty(CurrentUser.UsesUTCDateOfFlight).Replace(" ", "<br />") %></td>
                     <td><%#: Eval("ModelDisplay") %></td>
-                    <td><%#: Eval("TailNumDisplay") %></td>
+                    <td><%#: Eval("TailNumOrSimDisplay") %></td>
                     <td><%#: Eval("CatClassDisplay") %></td>
                     <td><%# Eval("TotalFlightTime").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                     <td><%#: Eval("PICName") %></td>

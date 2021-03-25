@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="layoutNZ.ascx.cs" Inherits="Controls_PrintingLayouts_layoutNZ" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="layoutNZ.ascx.cs" Inherits="MyFlightbook.Printing.Layouts.LayoutNZ" %>
 <%@ Register Src="~/Controls/mfbImageList.ascx" TagPrefix="uc1" TagName="mfbImageList" %>
 <%@ Register Src="~/Controls/PrintingLayouts/pageHeader.ascx" TagPrefix="uc1" TagName="pageHeader" %>
 <%@ Register Src="~/Controls/PrintingLayouts/pageFooter.ascx" TagPrefix="uc1" TagName="pageFooter" %>
@@ -47,7 +47,7 @@
                     <tr class="bordered" <%# ColorForFlight(Container.DataItem) %>>
                         <td style="font-weight:bold"><%# ((DateTime) Eval("Date")).ToShortDateString() %></td>
                         <td><div><%#: Eval("ModelDisplay") %> (<%#: Eval("CatClassDisplay") %>)</div></td>
-                        <td><%#: Eval("TailNumDisplay") %></td>
+                        <td><%#: Eval("TailNumOrSimDisplay") %></td>
                         <td><%#: Eval("PICName") %></td>
                         <td><%#: Eval("SICName") %> <%#: Eval("StudentName") %></td>
                         <td>
