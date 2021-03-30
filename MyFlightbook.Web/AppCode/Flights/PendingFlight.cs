@@ -142,6 +142,8 @@ namespace MyFlightbook
 
             FlightID = 0;   // don't set a flight ID
 
+            // Make sure that the date-of-flight is indeed just a date
+            Date = DateTime.SpecifyKind(Date.Date, DateTimeKind.Unspecified);
             // Since we're setting the pendingID in its own column, no reason to put it in the JSON as well.
             string szPending = PendingID;
             PendingID = null;
