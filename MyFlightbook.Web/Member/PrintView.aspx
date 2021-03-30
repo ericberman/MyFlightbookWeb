@@ -209,7 +209,7 @@
                 </div>
                 <div style="white-space:pre-line"><% =System.Web.HttpUtility.HtmlEncode(CurrentUser.Address) %></div>
                 <div><% = System.Web.HttpUtility.HtmlEncode(CurrentUserDOB) %></div>
-                <div><%=Resources.LogbookEntry.PrintHeaderLicense %> <% =System.Web.HttpUtility.HtmlEncode(CurrentUser.License) %></div>
+                <div><%: CurrentUser.LicenseDisplay %></div>
                 <div><asp:Image ID="imgLogo" runat="server" style="max-width: 300px;" /></div>
                 <p><asp:Label ID="lblCoverDate" runat="server" /></p>
             </div>

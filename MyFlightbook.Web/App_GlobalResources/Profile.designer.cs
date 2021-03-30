@@ -1258,7 +1258,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to License: {0}.
+        ///   Looks up a localized string similar to Certificate: {0}.
         /// </summary>
         internal static string LicenseTemplate {
             get {

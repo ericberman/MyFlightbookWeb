@@ -336,7 +336,7 @@
     <value>CFI/CFII/GI Certificate: {0} (Expiration: {1})</value>
   </data>
   <data name="LicenseTemplate" xml:space="preserve">
-    <value>License: {0}</value>
+    <value>Certificate: {0}</value>
   </data>
   <data name="CFIExpirationUnknown" xml:space="preserve">
     <value>(unknown)</value>

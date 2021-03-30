@@ -577,9 +577,6 @@
   <data name="PrintHeaderLanding" xml:space="preserve">
     <value>Landings</value>
   </data>
-  <data name="PrintHeaderLicense" xml:space="preserve">
-    <value>Certificate:</value>
-  </data>
   <data name="PrintHeaderModel" xml:space="preserve">
     <value>Make, Model, Variant</value>
   </data>

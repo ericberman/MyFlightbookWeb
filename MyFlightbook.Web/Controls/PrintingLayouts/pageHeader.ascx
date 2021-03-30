@@ -7,7 +7,7 @@
         </td>
         <td style="width:33%; text-align:right;">
             <div><%#: CurrentUser.UserFullName %></div>
-            <div><%=Resources.LogbookEntry.PrintHeaderLicense %> <%#: CurrentUser.License %></div>
+            <div><%#: CurrentUser.LicenseDisplay %></div>
         </td>
     </tr>
 </table>

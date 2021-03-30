@@ -2421,15 +2421,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Certificate:.
-        /// </summary>
-        internal static string PrintHeaderLicense {
-            get {
-                return ResourceManager.GetString("PrintHeaderLicense", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Airplane MEL.
         /// </summary>
         internal static string PrintHeaderMEL {

@@ -80,7 +80,7 @@ namespace MyFlightbook
                 ["Email"] = String.IsNullOrEmpty(pf.Email) ? string.Empty : pf.Email,
                 ["Address"] = String.IsNullOrEmpty(pf.Address) ? string.Empty : pf.Address,
                 ["CFICertificate"] = String.IsNullOrEmpty(pf.CFIDisplay) ? string.Empty : pf.CFIDisplay,
-                ["Certificate"] = String.IsNullOrEmpty(pf.LicenseDisplay) ? string.Empty : pf.LicenseDisplay,
+                ["Certificate"] = pf.License ?? string.Empty,
                 ["Last Medical"] = pf.LastMedical.HasValue() ? pf.LastMedical.YMDString() : string.Empty,
                 ["Kind of Medical"] = pf.LastMedical.HasValue() ? new ProfileCurrency(pf).MedicalDescription : string.Empty,
                 ["English Proficiency"] = pf.EnglishProficiencyExpiration.HasValue() ? pf.EnglishProficiencyExpiration.YMDString() : string.Empty,
