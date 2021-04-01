@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2020 MyFlightbook LLC
+ * Copyright (c) 2008-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -86,7 +86,7 @@ namespace MyFlightbook.ImportFlights
         private readonly static string[] colDate = { "Date", "FLT_DATE", "Date Flown", "flight_date" };
         private readonly static string[] colTail = { "Tail Number", "Registration", "Tail", "Ident", "SERIAL_NUM", "ACFT", "Aircraft ID", "Reg", "AIRCRAFT REGISTRATION", "aircraft_registration", "tailNo", "aircraft_tail_number", "Tail #" };
         private readonly static string[] colAircraftID = { "Aircraft ID" };
-        private readonly static string[] colTotal = { "Total Flight Time", "Total Time", "TotalDuration", "Total Duration", "Flt Time", "Block", "HRS", "TIME FLOWN", "FltTime", "Total", "total_time", "totalFlightTime", "flight_time" };
+        private readonly static string[] colTotal = { "Total Flight Time", "Total Time", "TotalDuration", "Total Duration", "Flt Time", "Block", "HRS", "TIME FLOWN", "FltTime", "Total", "total_time", "totalFlightTime", "flight_time", "Duration" };
         private readonly static string[] colApproaches = { "Approaches", "NumApproaches", "Inst App (D/N)", "Inst App", "IAP", "APPROACHES & TYPE", "instrumentApproaches" };
         private readonly static string[] colHold = { "Hold", "Holds", "Holding", "Holding Patterns", "nbr_hold" };
         private readonly static string[] colLandings = { "Landings", "LAND_STD" };
