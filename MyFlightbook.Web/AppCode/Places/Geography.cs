@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2020 MyFlightbook LLC
+ * Copyright (c) 2015-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -356,13 +356,8 @@ namespace MyFlightbook.Geography
             if (!ll1.IsValid || !ll2.IsValid)
                 return double.NaN;
 
-            double rlat1 = Math.PI * (ll1.Latitude / 180.0);
-            double rlon1 = Math.PI * (ll1.Longitude / 180.0);
-            double rlat2 = Math.PI * (ll2.Latitude / 180.0);
-            double rlon2 = Math.PI * (ll2.Longitude / 180.0);
-
-            double d = Math.Acos(Math.Sin(rlat1) * Math.Sin(rlat2) + Math.Cos(rlat1) * Math.Cos(rlat2) * Math.Cos(rlon2 - rlon1)) * 3440.06479;
-            return double.IsNaN(d) ? 0 : d;
+            CoordinateSharp.Distance d2 = new CoordinateSharp.Distance(new CoordinateSharp.Coordinate(ll1.Latitude, ll1.Longitude), new CoordinateSharp.Coordinate(ll2.Latitude, ll2.Longitude), CoordinateSharp.Shape.Ellipsoid);
+            return double.IsNaN(d2.NauticalMiles) ? 0 : d2.NauticalMiles;
         }
 
         /// <summary>
@@ -514,8 +509,8 @@ namespace MyFlightbook.Geography
             if (rgCoord == null || rgCoord.Length < 2)
                 throw new MyFlightbookException("Error reading KML coordinate: need at least a latitude and a longitude, both were not provided");
 
-            if (double.TryParse(rgCoord[0], System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out double lon) &&
-                double.TryParse(rgCoord[1], System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out double lat))
+            if (double.TryParse(rgCoord[0], NumberStyles.Any, CultureInfo.InvariantCulture, out double lon) &&
+                double.TryParse(rgCoord[1], NumberStyles.Any, CultureInfo.InvariantCulture, out double lat))
             {
                 Latitude = lat;
                 Longitude = lon;
@@ -525,10 +520,9 @@ namespace MyFlightbook.Geography
 
             if (rgCoord.Length > 2)
             {
-                if (double.TryParse(rgCoord[2], System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out double alt))
-                    Altitude = alt;
-                else
-                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Error reading altitude '{0}'", rgCoord[2]));
+                Altitude = double.TryParse(rgCoord[2], NumberStyles.Any, CultureInfo.InvariantCulture, out double alt)
+                    ? alt
+                    : throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Error reading altitude '{0}'", rgCoord[2]));
             }
         }
         #endregion
