@@ -4,6 +4,8 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register src="../Controls/mfbTypeInDate.ascx" tagname="mfbTypeInDate" tagprefix="uc1" %>
 <%@ Register src="../Controls/mfbTotalSummary.ascx" tagname="mfbTotalSummary" tagprefix="uc2" %>
+<%@ Register Src="~/Controls/SponsoredAd.ascx" TagPrefix="uc1" TagName="SponsoredAd" %>
+
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
     <asp:Label ID="lblHeader" runat="server" Text="Starting Totals" 
                 meta:resourcekey="lblHeaderResource1"></asp:Label>
@@ -180,6 +182,21 @@
             </asp:WizardStep>
         </WizardSteps>
     </asp:Wizard>
+    <asp:Panel ID="pnlAcuLog" runat="server" style="vertical-align:middle; width: 450px; height:120px; margin-right: auto; margin-left: auto; padding: 5px; border: 1px solid gray; border-radius:5px; box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);">
+        <table>
+            <tr>
+                <td>
+                    <h3>
+                        <% =Branding.ReBrand(Resources.LogbookEntry.ImportAculogHeader) %>
+                    </h3>
+                    <% =Branding.ReBrand(Resources.LogbookEntry.ImportAculogPromo).Linkify() %>
+                </td>
+                <td>
+                    <uc1:SponsoredAd runat="server" ID="SponsoredAd" SponsoredAdID="2" Visible="true" />
+                </td>
+            </tr>
+        </table>
+    </asp:Panel>
 </asp:Content>
 <asp:Content ID="Content1" ContentPlaceHolderID="cpMain" Runat="Server">
 </asp:Content>
