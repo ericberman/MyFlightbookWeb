@@ -358,6 +358,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CASA Class 1.
+        /// </summary>
+        internal static string MedicalTypeCasaClass1 {
+            get {
+                return ResourceManager.GetString("MedicalTypeCasaClass1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CASA Class 2.
+        /// </summary>
+        internal static string MedicalTypeCasaClass2 {
+            get {
+                return ResourceManager.GetString("MedicalTypeCasaClass2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to EASA Class 1.
         /// </summary>
         internal static string MedicalTypeEASA1stClass {

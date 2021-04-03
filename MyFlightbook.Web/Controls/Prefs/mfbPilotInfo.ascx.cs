@@ -236,7 +236,8 @@ namespace MyFlightbook.Web.Controls.Prefs
         {
             bool fNeedsDOB = ProfileCurrency.RequiresBirthdate(mt);
             rowDOB.Visible = valDOBRequired.Enabled = fNeedsDOB;
-            rowOtherMedical.Visible = valMonthsMedical.Enabled = !fNeedsDOB;
+            rowOtherMedical.Visible = mt == MedicalType.Other;
+            valMonthsMedical.Enabled = !fNeedsDOB;
         }
 
         protected void cmbMedicalType_SelectedIndexChanged(object sender, EventArgs e)

@@ -17,7 +17,7 @@ namespace MyFlightbook.Currency
     /// Type of medical
     /// </summary>
     [System.ComponentModel.DefaultValue(MedicalType.Other)]
-    public enum MedicalType { Other, FAA1stClass, FAA2ndClass, FAA3rdClass, EASA1stClass, EASA2ndClass, EASALAPL }
+    public enum MedicalType { Other, FAA1stClass, FAA2ndClass, FAA3rdClass, EASA1stClass, EASA2ndClass, EASALAPL, CASAClass1, CASAClass2 }
 
     /// <summary>
     /// Encapsulates currencies that are based not on the flying that you do but on attributes of your profile - including medical/basicmed, flight reviews, and english-proficiency
@@ -57,6 +57,10 @@ namespace MyFlightbook.Currency
                         return Resources.Preferences.MedicalTypeFAA2ndClass;
                     case MedicalType.FAA3rdClass:
                         return Resources.Preferences.MedicalTypeFAA3rdClass;
+                    case MedicalType.CASAClass1:
+                        return Resources.Preferences.MedicalTypeCasaClass1;
+                    case MedicalType.CASAClass2:
+                        return Resources.Preferences.MedicalTypeCasaClass2;
                 }
                 return string.Empty;
             }
@@ -64,7 +68,7 @@ namespace MyFlightbook.Currency
 
         public static bool RequiresBirthdate(MedicalType mt)
         {
-            return mt != MedicalType.Other;
+            return mt != MedicalType.Other && mt != MedicalType.CASAClass1;
         }
         #endregion
 
@@ -148,19 +152,18 @@ namespace MyFlightbook.Currency
                 return null;
         }
 
-        /// <summary>
-        /// Predicted date that next medical is due
-        /// </summary>
-        /// <returns>Datetime representing the date of the next medical, null for unknown.</returns>
-        protected DateTime? NextMedical
+        private static void AddCASA1stClassItems(List<CurrencyStatusItem> lst, DateTime lastMedical)
         {
-            get
-            {
-                if (!CurrentUser.LastMedical.HasValue() || CurrentUser.MonthsToMedical == 0)
-                    return null;
-                else
-                    return CurrentUser.UsesICAOMedical ? CurrentUser.LastMedical.AddMonths(CurrentUser.MonthsToMedical) : CurrentUser.LastMedical.AddCalendarMonths(CurrentUser.MonthsToMedical);
-            }
+            // https://www.casa.gov.au/licences-and-certification/aviation-medicine/classes-medical-certificates
+            // Valid 1 year.
+            lst.Add(StatusForDate(lastMedical.AddYears(1), Resources.Currency.NextMedical, CurrencyStatusItem.CurrencyGroups.Medical));
+        }
+
+        private static void AddCASA2ndClassItems(List<CurrencyStatusItem> lst, DateTime lastMedical, bool fWas40AtExam)
+        {
+            // https://www.casa.gov.au/licences-and-certification/aviation-medicine/classes-medical-certificates
+            // Valid 2 years if you were 40, otherwise 4 years.
+            lst.Add(StatusForDate(lastMedical.AddYears(fWas40AtExam ? 2 : 4), Resources.Currency.NextMedical, CurrencyStatusItem.CurrencyGroups.Medical));
         }
 
         private static void AddEASA1stClassItems(List<CurrencyStatusItem> lst, DateTime lastMedical, bool fWas40AtExam, bool fWas60AtExam)
@@ -276,6 +279,12 @@ namespace MyFlightbook.Currency
                     break;
                 case MedicalType.FAA3rdClass:
                     lst.Add(StatusForDate(lastMedical.AddCalendarMonths(fWas40AtExam ? 24 : 60), Resources.Currency.NextMedical, CurrencyStatusItem.CurrencyGroups.Medical));
+                    break;
+                case MedicalType.CASAClass1:
+                    AddCASA1stClassItems(lst, lastMedical);
+                    break;
+                case MedicalType.CASAClass2:
+                    AddCASA2ndClassItems(lst, lastMedical, fWas40AtExam);
                     break;
             }
             return lst;

@@ -32,6 +32,8 @@
                                             <asp:ListItem Text="<%$ Resources:Preferences, MedicalTypeEASA1stClass %>" Value="EASA1stClass" />
                                             <asp:ListItem Text="<%$ Resources:Preferences, MedicalTypeEASA2ndClass %>" Value="EASA2ndClass" />
                                             <asp:ListItem Text="<%$ Resources:Preferences, MedicalTypeEASALAPL %>" Value="EASALAPL" />
+                                            <asp:ListItem Text="<%$ Resources:Preferences, MedicalTypeCasaClass1 %>" Value="CASAClass1" />
+                                            <asp:ListItem Text="<%$ Resources:Preferences, MedicalTypeCasaClass2 %>" Value="CASAClass2" />
                                         </asp:DropDownList>
                                     </td>
                                 </tr>

@@ -217,6 +217,12 @@
   <data name="MedicalEASATip" xml:space="preserve">
     <value>EASA rules around revalidation allow for the revalidation to occur within 45 days of the expiration of a previous medical but still extend from that previous expiration date.  Since %APP_NAME% does know know about any prior medical expiration, it is recommended that for a revalidation you put the expiration date of the previous medical certificate here and put the date of the actual exam, if desired, in the notes.</value>
   </data>
+  <data name="MedicalTypeCasaClass1" xml:space="preserve">
+    <value>CASA Class 1</value>
+  </data>
+  <data name="MedicalTypeCasaClass2" xml:space="preserve">
+    <value>CASA Class 2</value>
+  </data>
   <data name="MedicalTypeEASA1stClass" xml:space="preserve">
     <value>EASA Class 1</value>
   </data>
