@@ -13,7 +13,7 @@ namespace MyFlightbook.Currency
     /// <summary>
     /// NightCurrency class per 61.57
     /// </summary>
-    public class NightCurrency : FlightCurrency
+    public class NightCurrency : CompositeFlightCurrency
     {
         // 61.57(b) parameters and sub-currencies
         const int RequiredLandings = 3;
@@ -43,11 +43,6 @@ namespace MyFlightbook.Currency
 
         public string TypeDesignator { get; set; }
 
-        // Computing composite currency
-        private Boolean m_fCacheValid;
-        private CurrencyState m_csCurrent = CurrencyState.NotCurrent;
-        private DateTime m_dtExpiration = DateTime.MinValue;
-        private string m_szDiscrepancy = string.Empty;
         protected bool AllowTouchAndGo { get; set; }
 
         public NightCurrency(string szName, bool fAllowTouchAndGo) : base(RequiredLandings, TimeSpan, false, szName)
@@ -69,11 +64,8 @@ namespace MyFlightbook.Currency
             TypeDesignator = szType;
         }
 
-        private void RefreshCurrency()
+        protected override void ComputeComposite()
         {
-            if (m_fCacheValid)
-                return;
-
             // Compute both loose (ignores takeoffs) and strict (requires takeoffs) night currencies.
             // Discrepancy can't be counted on after AND/OR so we set that to the one we wish to expose
             FlightCurrency fc6157b = this;  // just for clarity that the "this" object does the basic 61.57(b) implementation.
@@ -88,85 +80,31 @@ namespace MyFlightbook.Currency
             FlightCurrency fcStrict = fc6157bStrict.OR(fc6157e4iStrict).OR(fc6157e4iiStrict);
 
             // Loose rules for purposes of determining state
-            m_csCurrent = fcLoose.CurrentState;
-            m_dtExpiration = fcLoose.ExpirationDate;
-            m_szDiscrepancy = fcLoose.DiscrepancyString;
+            CompositeCurrencyState = fcLoose.CurrentState;
+            CompositeExpiration = fcLoose.ExpirationDate;
+            CompositeDiscrepancy = fcLoose.DiscrepancyString;
 
             // determine the correct discrepancy string to show
             // if we've EVER met the strict definition, then use that - indicates we've logged at least some takeoffs.
             if (fcStrict.HasBeenCurrent)
             {
-                m_dtExpiration = fcStrict.ExpirationDate;
-                m_csCurrent = fcStrict.CurrentState;
-                m_szDiscrepancy = fcStrict.CurrentState == CurrencyState.NotCurrent ? 
+                CompositeExpiration = fcStrict.ExpirationDate;
+                CompositeCurrencyState = fcStrict.CurrentState;
+                CompositeDiscrepancy = fcStrict.CurrentState == CurrencyState.NotCurrent ? 
                     String.Format(CultureInfo.CurrentCulture, Resources.Currency.DiscrepancyTemplate, Math.Max(NightTakeoffCurrency.Discrepancy, fc6157b.Discrepancy), NightTakeoffCurrency.Discrepancy > fc6157b.Discrepancy ? Resources.Currency.NightTakeoffs : (fc6157b.Discrepancy > 1 ? Resources.Totals.Landings : Resources.Totals.Landing)) : 
                     string.Empty;
             }
             // else if we met the loose definition but not strict - meaning takeoffs were not found; Give a reminder about required takeoffs
-            else if (m_csCurrent.IsCurrent())
+            else if (CompositeCurrencyState.IsCurrent())
             {
-                m_szDiscrepancy = NightTakeoffCurrency.Discrepancy >= NightTakeoffCurrency.RequiredEvents
+                CompositeDiscrepancy = NightTakeoffCurrency.Discrepancy >= NightTakeoffCurrency.RequiredEvents
                     ? Resources.Currency.NightTakeoffReminder
                     : String.Format(CultureInfo.CurrentCulture, Resources.Currency.DiscrepancyTemplateNight, NightTakeoffCurrency.Discrepancy, (NightTakeoffCurrency.Discrepancy > 1) ? Resources.Currency.Takeoffs : Resources.Currency.Takeoff);
             }
             // else we aren't current at all - use the full discrepancy template using 61.57(b).  DON'T CALL DISCREPANCY STRING because that causes an infinite recursion.
             else
-                m_szDiscrepancy = String.Format(CultureInfo.CurrentCulture, Resources.Currency.DiscrepancyTemplate, this.Discrepancy, (this.Discrepancy > 1) ? Resources.Totals.Landings : Resources.Totals.Landing);
-
-            m_fCacheValid = true;
+                CompositeDiscrepancy = String.Format(CultureInfo.CurrentCulture, Resources.Currency.DiscrepancyTemplate, this.Discrepancy, (this.Discrepancy > 1) ? Resources.Totals.Landings : Resources.Totals.Landing);
         }
-
-        #region CurrencyExaminer Overrides
-        public override DateTime ExpirationDate { get { return m_dtExpiration; } }
-
-        /// <summary>
-        /// Get the discrepancy string; appends a warning if we're current but haven't found the required take-off events.
-        /// </summary>
-        /// <returns>The discrepancy string</returns>
-        public override string DiscrepancyString
-        {
-            get
-            {
-                RefreshCurrency();
-                return m_szDiscrepancy;
-            }
-        }
-
-        public override string StatusDisplay
-        {
-            get
-            {
-                RefreshCurrency();
-                return FlightCurrency.StatusDisplayForDate(m_dtExpiration);
-            }
-        }
-
-        /// <summary>
-        /// Retrieves the current IFR currency state.
-        /// </summary>
-        /// <returns></returns>
-        public override CurrencyState CurrentState
-        {
-            get
-            {
-                RefreshCurrency();
-                return m_csCurrent;
-            }
-        }
-
-        /// <summary>
-        /// Has this ever registered currency?
-        /// </summary>
-        /// <returns></returns>
-        public override Boolean HasBeenCurrent
-        {
-            get
-            {
-                RefreshCurrency();
-                return m_dtExpiration.HasValue();
-            }
-        }
-        #endregion
 
         public override void Finalize(decimal totalTime, decimal picTime)
         {

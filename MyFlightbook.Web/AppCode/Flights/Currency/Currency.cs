@@ -1971,6 +1971,8 @@ namespace MyFlightbook.Currency
         #region constructors
         protected CompositeFlightCurrency() : base() { }
 
+        protected CompositeFlightCurrency(Decimal cThreshold, int Period, Boolean fMonths, string szName) : base(cThreshold, Period, fMonths, szName) { }
+
         protected CompositeFlightCurrency(string szName) : base()
         {
             DisplayName = szName;

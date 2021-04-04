@@ -2,7 +2,7 @@
 
 /******************************************************
  * 
- * Copyright (c) 2007-2020 MyFlightbook LLC
+ * Copyright (c) 2007-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -120,7 +120,7 @@ namespace MyFlightbook.Currency
     /// <summary>
     /// Instrument Currency rules for Canada - see http://laws-lois.justice.gc.ca/eng/regulations/SOR-96-433/FullText.html#s-401.05
     /// </summary>
-    public class InstrumentCurrencyCanada : CurrencyExaminer
+    public class InstrumentCurrencyCanada : CompositeFlightCurrency
     {
         readonly FlightCurrency fc401_05_3_a = new FlightCurrency(1.0M, 12, true, "IPC or new rating");
         readonly FlightCurrency fc401_05_3_bTime = new FlightCurrency(6.0M, 6, true, "6 Hours of IFR time");
@@ -128,18 +128,13 @@ namespace MyFlightbook.Currency
         readonly FlightCurrency fc401_05_3_cTime = new FlightCurrency(6.0M, 6, true, "6 Hours of IFR time in a real aircraft");
         readonly FlightCurrency fc401_05_3_cApproaches = new FlightCurrency(6.0M, 6, true, "6 approaches in a real aircraft");
 
-        private Boolean m_fCacheValid;
-        private CurrencyState m_csCurrent = CurrencyState.NotCurrent;
-        private DateTime m_dtExpiration = DateTime.MinValue;
-        private string m_szDiscrepancy = string.Empty;
-
         public InstrumentCurrencyCanada() { }
 
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
                 throw new ArgumentNullException(nameof(cfr));
-            m_fCacheValid = false;
+            Invalidate();
 
             // 401.05(3)(a) - IPC or equivalent
             cfr.FlightProps.ForEachEvent((pfe) =>
@@ -164,56 +159,15 @@ namespace MyFlightbook.Currency
             }
         }
 
-        private void RefreshCurrency()
+        protected override void ComputeComposite()
         {
-            if (m_fCacheValid)
-                return;
-
             // 401.05(3)(a)-(c) say you have an IPC OR 6approaches+6hours OR 6approaches+6hours instructing.
             FlightCurrency fcIFRCanada = fc401_05_3_a.OR(fc401_05_3_bTime.AND(fc401_05_3_bApproaches)).OR(fc401_05_3_cTime.AND(fc401_05_3_cApproaches));
-            m_csCurrent = fcIFRCanada.CurrentState;
-            m_dtExpiration = fcIFRCanada.ExpirationDate;
-            if (m_csCurrent == CurrencyState.NotCurrent)
-                m_szDiscrepancy = Resources.Currency.IPCRequired;
+            CompositeCurrencyState = fcIFRCanada.CurrentState;
+            CompositeExpiration = fcIFRCanada.ExpirationDate;
+            if (CompositeCurrencyState== CurrencyState.NotCurrent)
+                CompositeDiscrepancy = Resources.Currency.IPCRequired;
 
-            m_fCacheValid = true;
-        }
-
-        public override bool HasBeenCurrent
-        {
-            get
-            {
-                RefreshCurrency();
-                return m_dtExpiration.HasValue();
-            }
-        }
-
-        public override DateTime ExpirationDate
-        {
-            get { return m_dtExpiration; }
-        }
-
-        public override string StatusDisplay
-        {
-            get
-            {
-                RefreshCurrency();
-                return CurrencyExaminer.StatusDisplayForDate(m_dtExpiration);
-            }
-        }
-
-        public override CurrencyState CurrentState
-        {
-            get { return m_csCurrent; }
-        }
-
-        public override string DiscrepancyString
-        {
-            get
-            {
-                RefreshCurrency();
-                return m_szDiscrepancy;
-            }
         }
     }
 }
