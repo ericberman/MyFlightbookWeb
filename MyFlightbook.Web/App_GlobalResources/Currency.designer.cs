@@ -1808,6 +1808,33 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sailplane (SFCL.160).
+        /// </summary>
+        internal static string EASASailplane {
+            get {
+                return ResourceManager.GetString("EASASailplane", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sailplane Flight Instructor (SFCL.360).
+        /// </summary>
+        internal static string EASASailplaneFI {
+            get {
+                return ResourceManager.GetString("EASASailplaneFI", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sailplane-TMG (SFCL.160).
+        /// </summary>
+        internal static string EASASailplaneTMG {
+            get {
+                return ResourceManager.GetString("EASASailplaneTMG", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Airplane (Single-Engine, Piston).
         /// </summary>
         internal static string EASASingleEngineAirplanePiston {
@@ -2105,6 +2132,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flight Instructor (FI): {0}.
+        /// </summary>
+        internal static string FlightInstructorTemplate {
+            get {
+                return ResourceManager.GetString("FlightInstructorTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Your flying status.
         /// </summary>
         internal static string FlyingStatus {
@@ -2186,6 +2222,33 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to hours as instructor.
+        /// </summary>
+        internal static string HoursAsInstructor {
+            get {
+                return ResourceManager.GetString("HoursAsInstructor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to hours (sailplane or TMG).
+        /// </summary>
+        internal static string HoursSailPlane {
+            get {
+                return ResourceManager.GetString("HoursSailPlane", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to hours (TMG).
+        /// </summary>
+        internal static string HoursTMG {
+            get {
+                return ResourceManager.GetString("HoursTMG", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to IFR.
         /// </summary>
         internal static string IFR {
@@ -2249,6 +2312,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to landing(s).
+        /// </summary>
+        internal static string Landings {
+            get {
+                return ResourceManager.GetString("Landings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to LAPL(A) - FCL.140.A.
         /// </summary>
         internal static string LAPLA {
@@ -2272,6 +2344,15 @@ namespace Resources {
         internal static string LAPLProficiencyCheckRequired {
             get {
                 return ResourceManager.GetString("LAPLProficiencyCheckRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to launch(es).
+        /// </summary>
+        internal static string Launches {
+            get {
+                return ResourceManager.GetString("Launches", resourceCulture);
             }
         }
         
@@ -2834,6 +2915,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Proficiency check required.
+        /// </summary>
+        internal static string ProficiencyCheckRequired {
+            get {
+                return ResourceManager.GetString("ProficiencyCheckRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Flying Currency for {0} as of {1}.
         /// </summary>
         internal static string RSSHeader {
@@ -2947,6 +3037,15 @@ namespace Resources {
         internal static string Takeoffs {
             get {
                 return ResourceManager.GetString("Takeoffs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to training flight(s).
+        /// </summary>
+        internal static string TrainingFlights {
+            get {
+                return ResourceManager.GetString("TrainingFlights", resourceCulture);
             }
         }
         

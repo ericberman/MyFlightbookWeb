@@ -1131,4 +1131,37 @@
   <data name="NextMedicalEASALAPL" xml:space="preserve">
     <value>LAPL Medical</value>
   </data>
+  <data name="EASASailplane" xml:space="preserve">
+    <value>Sailplane (SFCL.160)</value>
+  </data>
+  <data name="EASASailplaneFI" xml:space="preserve">
+    <value>Sailplane Flight Instructor (SFCL.360)</value>
+  </data>
+  <data name="EASASailplaneTMG" xml:space="preserve">
+    <value>Sailplane-TMG (SFCL.160)</value>
+  </data>
+  <data name="FlightInstructorTemplate" xml:space="preserve">
+    <value>Flight Instructor (FI): {0}</value>
+  </data>
+  <data name="HoursAsInstructor" xml:space="preserve">
+    <value>hours as instructor</value>
+  </data>
+  <data name="HoursSailPlane" xml:space="preserve">
+    <value>hours (sailplane or TMG)</value>
+  </data>
+  <data name="HoursTMG" xml:space="preserve">
+    <value>hours (TMG)</value>
+  </data>
+  <data name="Landings" xml:space="preserve">
+    <value>landing(s)</value>
+  </data>
+  <data name="Launches" xml:space="preserve">
+    <value>launch(es)</value>
+  </data>
+  <data name="ProficiencyCheckRequired" xml:space="preserve">
+    <value>Proficiency check required</value>
+  </data>
+  <data name="TrainingFlights" xml:space="preserve">
+    <value>training flight(s)</value>
+  </data>
 </root>

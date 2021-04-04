@@ -695,7 +695,8 @@ namespace MyFlightbook.Currency
 
         public ICurrencyExaminer PassengerCurrencyExaminer(CatClassContext catclasscontext, ExaminerFlightRow cfr)
         {
-            string szStripeName = (pf.CurrencyJurisdiction == CurrencyJurisdiction.Australia) ? catclasscontext.Category : catclasscontext.Name;
+            string szStripeName = (pf.CurrencyJurisdiction == CurrencyJurisdiction.Australia) ? catclasscontext.Category :  catclasscontext.Name;
+
             if (!dictFlightCurrency.ContainsKey(szStripeName))
             {
                 string szName = String.Format(CultureInfo.InvariantCulture, "{0} - {1}", szStripeName, Resources.Currency.Passengers);
@@ -780,6 +781,23 @@ namespace MyFlightbook.Currency
                 return dictFlightCurrency[szKey];
             }
             return null;
+        }
+
+        public ICurrencyExaminer EASAInstructorCurrency(CatClassContext catClassContext, ExaminerFlightRow cfr)
+        {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
+            string szKey = String.Format(CultureInfo.CurrentCulture, Resources.Currency.FlightInstructorTemplate, catClassContext.Name);
+            if (!dictFlightCurrency.ContainsKey(szKey))
+            {
+                ICurrencyExaminer fc = EASAPPLPassengerCurrency.InstructorCurrencyForCatClass(cfr.idCatClassOverride);
+                if (fc != null)
+                {
+                    catClassContext.AddContextToQuery(fc.Query, pf.UserName);
+                    dictFlightCurrency.Add(szKey, fc);
+                }
+            }
+            return (dictFlightCurrency.ContainsKey(szKey)) ? dictFlightCurrency[szKey] : null;
         }
     }
 
@@ -1031,7 +1049,10 @@ namespace MyFlightbook.Currency
         private static void ExamineLAPLCurrency(ExaminerFlightRow cfr, ComputeCurrencyContext ccc, CatClassContext catClassContext)
         {
             if (ccc.pf.CurrencyJurisdiction == CurrencyJurisdiction.EASA)
+            {
                 ccc.LAPLCurrencyExaminer(catClassContext, cfr)?.ExamineFlight(cfr);
+                ccc.EASAInstructorCurrency(catClassContext, cfr)?.ExamineFlight(cfr);
+            }
         }
 
         private static void ExamineFAR13529x(ExaminerFlightRow cfr, ComputeCurrencyContext ccc, CatClassContext catClassContext)
@@ -1332,6 +1353,10 @@ namespace MyFlightbook.Currency
 
                 // don't bother with ones where you've never been current, add the rest to our list of currency objects
                 AddIfCurrent(arcs, fc, dtCutoff, defaultGroup:CurrencyStatusItem.CurrencyGroups.FlightExperience);
+
+                // Add TMG currency, if appropriate
+                if (ccc.pf.CurrencyJurisdiction == CurrencyJurisdiction.EASA && fc is EASASPLCurrency easaSPL)
+                    AddIfCurrent(arcs, easaSPL.TMGCurrency, dtCutoff, defaultGroup:CurrencyStatusItem.CurrencyGroups.FlightExperience);
             }
         }
 
@@ -1353,7 +1378,9 @@ namespace MyFlightbook.Currency
             // Glider IFR currency is it's own thing too.  Because ASEL can enable glider IFR currency, we need to
             // only show IFR currency if you have ever also been current for landings in a glider.
             CurrencyExaminer fcGlider = ccc.dictFlightCurrency.ContainsKey(szCategoryGlider) ? (CurrencyExaminer)ccc.dictFlightCurrency[szCategoryGlider] : null;
-            if (fcGlider != null && fcGlider.HasBeenCurrent && ccc.gliderIFR.HasBeenCurrent && fcGlider.ExpirationDate.CompareTo(dtCutoff) > 0 && ccc.gliderIFR.ExpirationDate.CompareTo(dtCutoff) > 0)
+
+            // We only implement FAA 61.57 glider IFR currency.
+            if (ccc.pf.CurrencyJurisdiction == CurrencyJurisdiction.FAA && fcGlider != null && fcGlider.HasBeenCurrent && ccc.gliderIFR.HasBeenCurrent && fcGlider.ExpirationDate.CompareTo(dtCutoff) > 0 && ccc.gliderIFR.ExpirationDate.CompareTo(dtCutoff) > 0)
             {
                 string szPrivilege = ccc.gliderIFR.Privilege;
                 arcs.Add(new CurrencyStatusItem(Resources.Currency.IFRGlider + (szPrivilege.Length > 0 ? " - " + szPrivilege : string.Empty), ccc.gliderIFR.StatusDisplay, ccc.gliderIFR.CurrentState, ccc.gliderIFR.DiscrepancyString) { CurrencyGroup = CurrencyStatusItem.CurrencyGroups.FlightExperience });
@@ -1922,6 +1949,100 @@ namespace MyFlightbook.Currency
         public override string ToString()
         {
             return string.Format(CultureInfo.CurrentCulture, "{0}: {1}", DisplayName, StatusDisplay);
+        }
+        #endregion
+    }
+    
+    /// <summary>
+    /// A number of currencies are composites of other currencies.  This class encapsulates that.  They need only implement ComputeComposite
+    /// </summary>
+    public abstract class CompositeFlightCurrency : FlightCurrency
+    {
+        private Boolean m_fCacheValid;
+        protected CurrencyState CompositeCurrencyState { get; set; } = CurrencyState.NotCurrent;
+        protected DateTime CompositeExpiration { get; set; } = DateTime.MinValue;
+        protected string CompositeDiscrepancy { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Override this in derived class to do the internal refresh
+        /// </summary>
+        protected abstract void ComputeComposite();
+
+        #region constructors
+        protected CompositeFlightCurrency() : base() { }
+
+        protected CompositeFlightCurrency(string szName) : base()
+        {
+            DisplayName = szName;
+        }
+        #endregion
+
+        #region CurrencyExaminer Overrides
+        /// <summary>
+        /// Calls ComputeComposite, but only if it's needed.
+        /// </summary>
+        protected void RefreshCurrency()
+        {
+            if (!m_fCacheValid)
+                ComputeComposite();
+            m_fCacheValid = true;
+        }
+
+        protected void Invalidate()
+        {
+            m_fCacheValid = false;
+        }
+
+        public override DateTime ExpirationDate { get { return CompositeExpiration; } }
+
+        /// <summary>
+        /// Returns the requirements to get current again.  If you are not current, it always assumes you will do 66-HIT 
+        /// (6 in the last 6 months of holds, intercepting, and tracking and approaches), even though alternative methods may
+        /// be valid.
+        /// </summary>
+        /// <returns>The display string for what is needed to restore currency</returns>
+        public override string DiscrepancyString
+        {
+            get
+            {
+                RefreshCurrency();
+                return CompositeDiscrepancy;
+            }
+        }
+
+        public override string StatusDisplay
+        {
+            get
+            {
+                RefreshCurrency();
+                return FlightCurrency.StatusDisplayForDate(CompositeExpiration);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves the current IFR currency state.
+        /// </summary>
+        /// <returns></returns>
+        public override CurrencyState CurrentState
+        {
+            get
+            {
+                RefreshCurrency();
+                return CompositeCurrencyState;
+            }
+        }
+
+        /// <summary>
+        /// Has this ever registered currency?
+        /// </summary>
+        /// <returns></returns>
+        public override Boolean HasBeenCurrent
+        {
+            get
+            {
+                RefreshCurrency();
+                return CompositeExpiration.HasValue();
+            }
         }
         #endregion
     }

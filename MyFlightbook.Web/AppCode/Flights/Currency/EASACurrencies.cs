@@ -3,7 +3,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2020 MyFlightbook LLC
+ * Copyright (c) 2007-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -25,16 +25,22 @@ namespace MyFlightbook.Currency
                 // TODO: implement EASA balloon FCL.060
                 default:
                     return new PassengerCurrency(szName, fRequireDayLandings);
+                case CategoryClass.CatClassID.Glider:
+                    return new EASASPLCurrency(Resources.Currency.EASASailplane);
                 case CategoryClass.CatClassID.Airship:
                 case CategoryClass.CatClassID.AMEL:
                 case CategoryClass.CatClassID.AMES:
                 case CategoryClass.CatClassID.ASEL:
                 case CategoryClass.CatClassID.ASES:
-                case CategoryClass.CatClassID.Glider:
                 case CategoryClass.CatClassID.Helicopter:
                 case CategoryClass.CatClassID.PoweredLift:
                     return new PassengerCurrency(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, szName, Resources.Currency.PassengersEASA), fRequireDayLandings);
             }
+        }
+
+        public static FlightCurrency InstructorCurrencyForCatClass(CategoryClass.CatClassID ccid)
+        {
+            return (ccid == CategoryClass.CatClassID.Glider) ? new EASASPLInstructorCurrency(Resources.Currency.EASASailplaneFI) : null;
         }
     }
 
@@ -275,6 +281,202 @@ namespace MyFlightbook.Currency
             if (cfr == null)
                 throw new ArgumentNullException(nameof(cfr));
             return (cfr.fIsRealAircraft && cfr.idCatClassOverride == CategoryClass.CatClassID.Helicopter);
+        }
+    }
+    #endregion
+
+
+    #region Sailplane and TMG currencies
+    /// <summary>
+    /// Sailplane (SPL) currency - see https://www.easa.europa.eu/sites/default/files/dfu/Sailplane%20Rule%20Book.pdf, SFCL.160(a)
+    /// </summary>
+    public class EASASPLCurrency : CompositeFlightCurrency
+    {
+        protected FlightCurrency fcHours { get; set; } = new FlightCurrency(5, 2 * 365, false, string.Empty);
+        protected FlightCurrency fcLaunches { get; set; } = new FlightCurrency(15, 2 * 365, false, string.Empty);
+        protected FlightCurrency fcTrainingFlights { get; set; } = new FlightCurrency(2, 2 * 365, false, string.Empty);
+
+        protected FlightCurrency fcProficiency { get; set; } = new FlightCurrency(1, 2 * 365, false, string.Empty);
+
+        /// <summary>
+        /// TMG currency as well, as a subset of glider (sailplane) currency
+        /// </summary>
+        public EASATMGCurrency TMGCurrency { get; set; } = new EASATMGCurrency(Resources.Currency.EASASailplaneTMG);
+
+        public EASASPLCurrency(string szName) : base(szName)
+        {
+            Query = new FlightQuery() { DateRange = FlightQuery.DateRanges.Custom, DateMin = DateTime.Now.AddYears(-2) };
+            Query.AddCatClass(CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.Glider));
+        }
+
+        public override void ExamineFlight(ExaminerFlightRow cfr)
+        {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
+
+            TMGCurrency.ExamineFlight(cfr);
+
+            // remainder of This currency ONLY looks at glider flights, and excludes TMG
+            if (cfr.idCatClassOverride != CategoryClass.CatClassID.Glider || cfr.fMotorGlider || !cfr.fIsRealAircraft)
+                return;
+
+            fcHours.AddRecentFlightEvents(cfr.dtFlight, Math.Max(cfr.PIC, cfr.Dual));
+
+            // Each flight is at least one launch, if none are otherwise specified
+            int cLaunches = Math.Max(1, cfr.FlightProps.TotalCountForPredicate(cfp => cfp.PropertyType.IsGliderGroundLaunch));
+            fcLaunches.AddRecentFlightEvents(cfr.dtFlight, cLaunches);
+
+            if (cfr.Dual > 0)
+                fcTrainingFlights.AddRecentFlightEvents(cfr.dtFlight, 1);
+
+            bool fIsBFR = false;
+            cfr.FlightProps.ForEachEvent((cfp) => { fIsBFR = fIsBFR || cfp.PropertyType.IsBFR; });
+            if (fIsBFR)
+                fcProficiency.AddRecentFlightEvents(cfr.dtFlight, 1);
+        }
+
+        /// <summary>
+        /// Computes the overall currency
+        /// </summary>
+        protected override void ComputeComposite()
+        {
+            // Only bother doing any real computation if we've ever been fully current on things.
+            if (fcHours.HasBeenCurrent && fcLaunches.HasBeenCurrent && fcProficiency.HasBeenCurrent && fcTrainingFlights.HasBeenCurrent)
+            {
+                FlightCurrency fcAggregate = fcHours.AND(fcLaunches).AND(fcProficiency).AND(fcTrainingFlights);
+                CompositeCurrencyState = fcAggregate.CurrentState;
+                CompositeExpiration = fcAggregate.ExpirationDate;
+
+                // Set a discrepancy string in order that we find one
+                CompositeDiscrepancy = !fcHours.IsCurrent()
+                    ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.DiscrepancyTemplate, fcHours.Discrepancy, Resources.Currency.Hours)
+                    : !fcLaunches.IsCurrent()
+                    ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.DiscrepancyTemplate, fcLaunches.Discrepancy, Resources.Currency.Launches)
+                    : !fcTrainingFlights.IsCurrent()
+                    ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.DiscrepancyTemplate, fcTrainingFlights.Discrepancy, Resources.Currency.TrainingFlights)
+                    : !fcProficiency.IsCurrent() 
+                    ? Resources.Currency.ProficiencyCheckRequired
+                    : string.Empty;
+            }
+        }
+    }
+
+    /// <summary>
+    /// TMG (SPL/TMG) currency - see https://www.easa.europa.eu/sites/default/files/dfu/Sailplane%20Rule%20Book.pdf, SFCL.160(b)
+    /// </summary>
+    public class EASATMGCurrency : CompositeFlightCurrency
+    {
+        protected FlightCurrency fcHoursSPL { get; set; } = new FlightCurrency(12, 2 * 365, false, string.Empty);
+
+        protected FlightCurrency fcHoursTMG { get; set; } = new FlightCurrency(6, 2 * 365, false, string.Empty);
+        protected FlightCurrency fcLandings { get; set; } = new FlightCurrency(12, 2 * 365, false, string.Empty);
+        protected FlightCurrency fcTrainingFlights { get; set; } = new FlightCurrency(1, 2 * 365, false, string.Empty);
+
+        protected FlightCurrency fcProficiency { get; set; } = new FlightCurrency(1, 2 * 365, false, string.Empty);
+
+        public EASATMGCurrency(string szName) : base(szName)
+        {
+            Query = new FlightQuery() { DateRange = FlightQuery.DateRanges.Custom, DateMin = DateTime.Now.AddYears(-2), IsMotorglider = true };
+            Query.AddCatClass(CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.Glider));
+        }
+
+        public override void ExamineFlight(ExaminerFlightRow cfr)
+        {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
+
+            // This currency ONLY looks at glider flights, and excludes TMG
+            if (cfr.idCatClassOverride != CategoryClass.CatClassID.Glider || !cfr.fIsRealAircraft)
+                return;
+
+            fcHoursSPL.AddRecentFlightEvents(cfr.dtFlight, Math.Max(cfr.PIC, cfr.Dual));
+
+            if (!cfr.fMotorGlider)
+                return;
+
+            fcHoursTMG.AddRecentFlightEvents(cfr.dtFlight, Math.Max(cfr.PIC, cfr.Dual));
+
+            // Count landings - assume one takeoff per landing
+            fcLandings.AddRecentFlightEvents(cfr.dtFlight, cfr.cLandingsThisFlight);
+
+            if (cfr.Dual > 0 && cfr.Total >= 1)
+                fcTrainingFlights.AddRecentFlightEvents(cfr.dtFlight, 1);
+
+            bool fIsBFR = false;
+            cfr.FlightProps.ForEachEvent((cfp) => { fIsBFR = fIsBFR || cfp.PropertyType.IsBFR; });
+            if (fIsBFR)
+                fcProficiency.AddRecentFlightEvents(cfr.dtFlight, 1);
+        }
+
+        /// <summary>
+        /// Computes the overall currency
+        /// </summary>
+        protected override void ComputeComposite()
+        {
+            // Only bother doing any real computation if we've ever been fully current on things.
+            if (fcHoursSPL.HasBeenCurrent && fcHoursTMG.HasBeenCurrent && fcLandings.HasBeenCurrent && fcProficiency.HasBeenCurrent && fcTrainingFlights.HasBeenCurrent)
+            {
+                FlightCurrency fcAggregate = fcHoursSPL.AND(fcHoursTMG).AND(fcLandings).AND(fcProficiency).AND(fcTrainingFlights);
+                CompositeCurrencyState = fcAggregate.CurrentState;
+                CompositeExpiration = fcAggregate.ExpirationDate;
+
+                CompositeDiscrepancy = string.Empty;
+
+                // Set a discrepancy string in order that we find one
+                if (CompositeCurrencyState == CurrencyState.NotCurrent)
+                {
+                    CompositeDiscrepancy = !fcHoursSPL.IsCurrent()
+                        ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.DiscrepancyTemplate, fcHoursSPL.Discrepancy, Resources.Currency.HoursSailPlane)
+                        : !fcHoursTMG.IsCurrent()
+                        ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.DiscrepancyTemplate, fcHoursTMG.Discrepancy, Resources.Currency.HoursTMG)
+                        : !fcLandings.IsCurrent()
+                        ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.DiscrepancyTemplate, fcLandings.Discrepancy, Resources.Currency.Landings)
+                        : !fcTrainingFlights.IsCurrent()
+                        ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.DiscrepancyTemplate, fcTrainingFlights.Discrepancy, Resources.Currency.TrainingFlights)
+                        : Resources.Currency.ProficiencyCheckRequired;
+                }
+            }
+        }
+    }
+
+    public class EASASPLInstructorCurrency : CompositeFlightCurrency
+    {
+        protected FlightCurrency fcHours = new FlightCurrency(30, 365 * 3, false, string.Empty);
+        protected FlightCurrency fcLandings = new FlightCurrency(60, 365 * 3, false, string.Empty);
+
+        public EASASPLInstructorCurrency(string szName) : base(szName)
+        {
+            Query = new FlightQuery() { DateRange = FlightQuery.DateRanges.Custom, DateMin = DateTime.Now.Date.AddYears(-3), HasCFI = true, HasLandings = true, FlightCharacteristicsConjunction = GroupConjunction.Any };
+            Query.AddCatClass(CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.Glider));
+        }
+
+        public override void ExamineFlight(ExaminerFlightRow cfr)
+        {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
+
+            if (cfr.idCatClassOverride != CategoryClass.CatClassID.Glider || !cfr.fIsRealAircraft || cfr.CFI == 0.0M)
+                return;
+
+            fcHours.AddRecentFlightEvents(cfr.dtFlight, cfr.CFI);
+
+            fcLandings.AddRecentFlightEvents(cfr.dtFlight, Math.Max(cfr.cLandingsThisFlight, cfr.FlightProps.TotalCountForPredicate(cfp => cfp.PropertyType.IsGliderGroundLaunch)));
+        }
+
+        /// <summary>
+        /// Computes the overall currency
+        /// </summary>
+        protected override void ComputeComposite()
+        {
+            if (fcLandings.HasBeenCurrent || fcHours.HasBeenCurrent)
+            {
+                FlightCurrency fcAggregate = fcHours.OR(fcLandings);
+                CompositeCurrencyState = fcAggregate.CurrentState;
+                CompositeExpiration = fcAggregate.ExpirationDate;
+
+                // By definition, if we are not current then both are not current.  Arbitrarily pick hours as instructor as discrepancy
+                CompositeDiscrepancy = (CompositeCurrencyState == CurrencyState.NotCurrent) ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.DiscrepancyTemplate, fcHours.Discrepancy, Resources.Currency.HoursAsInstructor) : string.Empty;
+            }
         }
     }
     #endregion
