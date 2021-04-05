@@ -115,6 +115,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ignore.
+        /// </summary>
+        internal static string ignoreForFlight {
+            get {
+                return ResourceManager.GetString("ignoreForFlight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indicates that you have reviewed the flight and are OK with the identified issues.  The flight will no longer show issues again unless you modify it.  If you want to fix the issues, please edit the flight..
+        /// </summary>
+        internal static string ignoreForFlightTooltip {
+            get {
+                return ResourceManager.GetString("ignoreForFlightTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Airports/route-of-flight issues.
         /// </summary>
         internal static string LintCategoryAirports {

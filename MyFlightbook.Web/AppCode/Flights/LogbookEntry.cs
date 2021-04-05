@@ -1473,6 +1473,20 @@ namespace MyFlightbook
         }
 
         /// <summary>
+        /// Convenience tool to update JUST the route of flight to the current route - used by CheckFlights to add an ignore marker, which is stripped by FCommit, and since LogbookEntryDisplay doesn't support FCommit.
+        /// </summary>
+        public void CommitRoute()
+        {
+            DBHelper dbh = new DBHelper("UPDATE flights SET route=?route WHERE idFlight=?idFlight AND username=?username");
+            dbh.DoNonQuery((comm) =>
+            {
+                comm.Parameters.AddWithValue("route", Route);
+                comm.Parameters.AddWithValue("username", User);
+                comm.Parameters.AddWithValue("idflight", FlightID);
+            });
+        }
+
+        /// <summary>
         /// Commits this entry to the database.  This overwrites the existing entry if it was initially loaded from the DB, otherwise it is a new entry
         /// </summary>
         /// <param name="fUpdateFlightData">True if telemetry is to be updated</param>
@@ -1535,7 +1549,7 @@ namespace MyFlightbook
                     comm.Parameters.AddWithValue("PIC", this.PIC);
                     comm.Parameters.AddWithValue("totalFlightTime", this.TotalFlightTime);
                     comm.Parameters.AddWithValue("fHold", this.fHoldingProcedures);
-                    comm.Parameters.AddWithValue("Route", this.Route);
+                    comm.Parameters.AddWithValue("Route", this.Route.Trim());
                     comm.Parameters.AddWithValue("Comments", this.Comment);
                     comm.Parameters.AddWithValue("userName", this.User);
                     comm.Parameters.AddWithValue("fPublic", this.fIsPublic);

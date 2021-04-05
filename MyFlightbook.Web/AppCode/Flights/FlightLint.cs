@@ -74,6 +74,8 @@ namespace MyFlightbook.Lint
     /// </summary>
     public class FlightLint
     {
+        public const string IgnoreMarker = "\u2006";    // six-per-em space; a very thin space.  See https://en.wikipedia.org/wiki/Whitespace_character
+
         #region properties
         protected UserAircraft userAircraft { get; set; }
 
@@ -171,8 +173,8 @@ namespace MyFlightbook.Lint
                 if (!String.IsNullOrEmpty(le.ErrorString))
                     currentIssues.Add(new FlightIssue() { IssueDescription = le.ErrorString });
 
-                // ignore deadhead flights
-                if (le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropDeadhead))
+                // ignore deadhead flights or flights that have been explicitly ignored (indicated by IgnoreMarker at end of string)
+                if (le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropDeadhead) || le.Route.EndsWith(IgnoreMarker, StringComparison.CurrentCultureIgnoreCase))
                     continue;
 
                 currentAircraft = userAircraft.GetUserAircraftByID(le.AircraftID);

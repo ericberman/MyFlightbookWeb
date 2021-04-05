@@ -5,11 +5,10 @@ using System.Globalization;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Windows.Forms.VisualStyles;
 
 /******************************************************
  * 
- * Copyright (c) 2020 MyFlightbook LLC
+ * Copyright (c) 2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -99,6 +98,11 @@ namespace MyFlightbook.Web.Member
             }
 
             FlightQuery fq = new FlightQuery(Page.User.Identity.Name);
+            if (mfbDateLastCheck.Date.HasValue())
+            {
+                fq.DateRange = FlightQuery.DateRanges.Custom;
+                fq.DateMin = mfbDateLastCheck.Date;
+            }
             DBHelperCommandArgs dbhq = LogbookEntryBase.QueryCommand(fq, fAsc:true);
             IEnumerable<LogbookEntryBase> rgle = LogbookEntryDisplay.GetFlightsForQuery(dbhq, Page.User.Identity.Name, "Date", SortDirection.Ascending, false, false);
 
@@ -151,6 +155,22 @@ namespace MyFlightbook.Web.Member
                 mvCheckFlight.SetActiveView(vwEdit);
                 mfbEditFlight.SetUpNewOrEdit(idflight);
             }
+        }
+
+        protected void ckIgnore_CheckedChanged(object sender, EventArgs e)
+        {
+            if (sender == null)
+                throw new ArgumentNullException(nameof(sender));
+            if (!(sender is CheckBox ck))
+                throw new InvalidOperationException("Unknown sender where check box should be");
+
+            GridViewRow Row = (GridViewRow)ck.Parent.Parent;
+            LogbookEntryBase le = CheckedFlights.ElementAt(Row.RowIndex).Flight;
+            if (le.IsNewFlight) // should never happen.
+                return;
+
+            le.Route = String.Format(CultureInfo.CurrentCulture, "{0}{1}", le.Route.Trim(), ck.Checked ? FlightLint.IgnoreMarker : string.Empty);
+            le.CommitRoute();  // Save the change, but hold on to the flight in the list for now so that you can uncheck it.
         }
     }
 }

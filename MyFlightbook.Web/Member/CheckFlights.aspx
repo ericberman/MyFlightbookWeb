@@ -41,7 +41,7 @@
                 <p><asp:Button ID="btnCheckAll" runat="server" Text="<%$ Resources:FlightLint, CheckFlightsBegin %>" OnClick="btnCheckAll_Click" /> <asp:Label ID="lblSummary" runat="server"></asp:Label></p>
             </asp:Panel>
             <div><asp:Label ID="lblErr" runat="server" CssClass="error" EnableViewState="false" ></asp:Label></div>
-            <asp:GridView ID="gvFlights" runat="server" ShowHeader="false" GridLines="None" AutoGenerateColumns="false" Font-Size="8pt" Width="100%" CellPadding="3">
+            <asp:GridView ID="gvFlights" runat="server" ShowHeader="true" GridLines="None" AutoGenerateColumns="false" Font-Size="8pt" Width="100%" CellPadding="3">
                 <Columns>
                     <asp:TemplateField>
                         <ItemTemplate>
@@ -60,6 +60,14 @@
                             </ul>
                         </ItemTemplate>
                         <ItemStyle VerticalAlign="Top" />
+                    </asp:TemplateField>
+                    <asp:TemplateField>
+                        <HeaderTemplate>
+                            <asp:Literal ID="litIgnore" runat="server" Text="<%$ Resources:FlightLint, ignoreForFlight %>" /><span style="text-align:left; font-weight:normal"><uc1:mfbTooltip runat="server" ID="mfbTooltip" BodyContent="<%$ Resources:FlightLint, ignoreForFlightTooltip %>" /></span>
+                        </HeaderTemplate>
+                        <ItemTemplate>
+                            <asp:CheckBox ID="ckIgnore" runat="server" AutoPostBack="true" OnCheckedChanged="ckIgnore_CheckedChanged" />
+                        </ItemTemplate>
                     </asp:TemplateField>
                 </Columns>
                 <EmptyDataTemplate>
