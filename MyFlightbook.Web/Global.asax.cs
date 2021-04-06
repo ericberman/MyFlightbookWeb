@@ -20,6 +20,9 @@ namespace MyFlightbook.Web
             ShuntState.Init();
             ScriptManager.ScriptResourceMapping.AddDefinition("jquery", new ScriptResourceDefinition { Path = "https://code.jquery.com/jquery-1.10.1.min.js" });
             ValidationSettings.UnobtrusiveValidationMode = UnobtrusiveValidationMode.WebForms;
+
+            // CoordinateSharp can be very slow - pegging CPU - due to EagerLoading, which matters for celestial computations that we generally don't care about, so just set the default to NOT do eager load.
+            CoordinateSharp.GlobalSettings.Default_EagerLoad = new CoordinateSharp.EagerLoad(false);
         }
 
         protected void Application_End(object sender, EventArgs e)

@@ -7,7 +7,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2020 MyFlightbook LLC
+ * Copyright (c) 2008-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -271,6 +271,10 @@ namespace MyFlightbook.FlightStatistics
             Dictionary<string, AirportStats> dictVisited = new Dictionary<string, AirportStats>();
             new Thread(() =>
             {
+                Refresh30DayPublicFlights();
+                RefreshUserCounts();
+                RefreshAircraftAndModels();
+
                 // Get all of the airports recorded for the last 30 days
                 DBHelper dbh = new DBHelper(@"SELECT 
     f.route,
@@ -401,9 +405,6 @@ WHERE f.Date > ?dateMin AND f.Date < ?dateMax AND ac.InstanceType = 1");
             {
                 fs = new FlightStats();
 
-                fs.Refresh30DayPublicFlights();
-                fs.RefreshUserCounts();
-                fs.RefreshAircraftAndModels();
                 fs.RefreshSlowData();   // will happen asynchronously.
 
                 if (HttpRuntime.Cache != null)
