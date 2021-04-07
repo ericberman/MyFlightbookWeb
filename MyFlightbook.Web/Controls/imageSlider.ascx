@@ -10,9 +10,7 @@
                             <div><%#: Eval("Comment") %></div>
                         </asp:View>
                         <asp:View ID="vwImage" runat="server">
-                            <asp:HyperLink ID="lnkImage" runat="server" Target="_blank" NavigateUrl='<%# Eval("URLFullImage") %>'>
-                                <asp:Image ID="img" runat="server" AlternateText='<%#: Eval("Comment") %>' title='<%#: Eval("Comment") %>' ImageUrl='<%# Eval("URLFullImage") %>' />
-                            </asp:HyperLink>
+                            <img alt='<%#: Eval("Comment") %>' title='<%#: Eval("Comment") %>' src='<%# Eval("URLFullImage") %>' onmousedown="viewMFBImg(this.src); return false;" />
                         </asp:View>
                     </asp:MultiView>
                 </li>
