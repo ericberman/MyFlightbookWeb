@@ -783,37 +783,32 @@ namespace MyFlightbook.Geography
 
             // We need to derive an average speed.  But no need to compute - just assume constant speed.
             double distance = llStart.DistanceFrom(llEnd);
-            if (distance < 1.0) // don't compute path for distance < 1nm - just do endpoints and a high speed so we register a takeoff - probably pattern work.
-            {
-                lst.AddRange(new Position[]
-                {
-                    new Position(llStart, 0, dtStart, 150),
-                    new Position(llEnd, 0, dtEnd, 150)
-                });
-                lst.AddRange(rgPadding);
-                return lst;
-            }
 
-            double speed = ConversionFactors.MetersPerSecondPerKnot * (distance / ts.TotalHours);
+            // low distance (< 1nm) is probably pattern work - just pick a decent speed.  If you actually go somewhere, then derive a speed.
+            double speed = (distance < 1.0) ? 150 : ConversionFactors.MetersPerSecondPerKnot * (distance / ts.TotalHours);
 
             lst.Add(new Position(llStart, 0, dtStart, speed));
 
             for (long minute = 0; minute <= minutes; minute++)
             {
-                double f = ((double)minute) / minutes;
-                double a = Math.Sin((1.0 - f) * delta) / sin_delta;
-                double b = Math.Sin(f * delta) / sin_delta;
-                double x = a * Math.Cos(rlat1) * Math.Cos(rlon1) + b * Math.Cos(rlat2) * Math.Cos(rlon2);
-                double y = a * Math.Cos(rlat1) * Math.Sin(rlon1) + b * Math.Cos(rlat2) * Math.Sin(rlon2);
-                double z = a * Math.Sin(rlat1) + b * Math.Sin(rlat2);
+                if (distance < 1.0)
+                    lst.Add(new Position(llStart.Latitude, llStart.Longitude, dtStart.AddMinutes(minute)) { Speed = speed });
+                else
+                {
+                    double f = ((double)minute) / minutes;
+                    double a = Math.Sin((1.0 - f) * delta) / sin_delta;
+                    double b = Math.Sin(f * delta) / sin_delta;
+                    double x = a * Math.Cos(rlat1) * Math.Cos(rlon1) + b * Math.Cos(rlat2) * Math.Cos(rlon2);
+                    double y = a * Math.Cos(rlat1) * Math.Sin(rlon1) + b * Math.Cos(rlat2) * Math.Sin(rlon2);
+                    double z = a * Math.Sin(rlat1) + b * Math.Sin(rlat2);
 
-                double rlat = Math.Atan2(z, Math.Sqrt(x * x + y * y));
-                double rlon = Math.Atan2(y, x);
+                    double rlat = Math.Atan2(z, Math.Sqrt(x * x + y * y));
+                    double rlon = Math.Atan2(y, x);
 
-                double dlat = 180 * (rlat / Math.PI);
-                double dlon = 180 * (rlon / Math.PI);
-                Position p = new Position(dlat, dlon, dtStart.AddMinutes(minute)) { Speed = speed } ;
-                lst.Add(p);
+                    double dlat = 180 * (rlat / Math.PI);
+                    double dlon = 180 * (rlon / Math.PI);
+                    lst.Add(new Position(dlat, dlon, dtStart.AddMinutes(minute)) { Speed = speed });
+                }
             }
 
             lst.AddRange(rgPadding);
