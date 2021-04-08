@@ -119,26 +119,6 @@ namespace MyFlightbook.FlightStatistics
         /// </summary>
         public IEnumerable<string> ModelsUsed { get { return m_lstPopularModels; } }
 
-        /// <summary>
-        /// The route with the longest total distance from start to finish
-        /// </summary>
-        public string LongestRoute { get; set; }
-
-        /// <summary>
-        /// The route that went the furthest from start to finish
-        /// </summary>
-        public string FurthestRoute { get; set; }
-
-        /// <summary>
-        /// The distance of the longest route
-        /// </summary>
-        public double LongestRouteDistance { get; set; }
-
-        /// <summary>
-        /// The distance of the furthest route
-        /// </summary>
-        public double FurthestRouteDistance { get; set; }
-
         public int CountriesVisited { get; private set; }
 
         private readonly List<LogbookEntry> m_lstFlights = new List<LogbookEntry>();
@@ -157,18 +137,9 @@ namespace MyFlightbook.FlightStatistics
                 };
 
                 if (HasSlowInformation)
-                {
-                    const string szMapLinkTemplate = "~/Public/MapRoute2.aspx?Airports={0}";
                     lstStats.Add(new LinkedString(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsAirports, NumUsers, NumFlights, m_lstAirports.Count, CountriesVisited), VirtualPathUtility.ToAbsolute("~/Public/MyFlights.aspx")));
-                    lstStats.Add(new LinkedString(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsLongestRoute, LongestRouteDistance), 
-                        VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, szMapLinkTemplate, HttpUtility.UrlEncode(LongestRoute)))));
-                    lstStats.Add(new LinkedString(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsFurthestRoute, FurthestRouteDistance),
-                        VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, szMapLinkTemplate, HttpUtility.UrlEncode(FurthestRoute)))));
-                }
                 else
-                {
                     lstStats.Add(new LinkedString(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsUsersFlights, NumUsers, NumFlights), VirtualPathUtility.ToAbsolute("~/Public/MyFlights.aspx")));
-                }
                 return lstStats;
             }
         }
@@ -263,9 +234,6 @@ namespace MyFlightbook.FlightStatistics
         {
             m_lstAirports.Clear();
 
-            FurthestRouteDistance = LongestRouteDistance = 0;
-            FurthestRoute = LongestRoute = string.Empty;
-
             HashSet<string> hsAirportCodes = new HashSet<string>();
             HashSet<string> hsCountries = new HashSet<string>();
             Dictionary<string, AirportStats> dictVisited = new Dictionary<string, AirportStats>();
@@ -339,20 +307,6 @@ WHERE f.Date > ?dateMin AND f.Date < ?dateMax AND ac.InstanceType = 1");
                         foreach (airport ap in al.UniqueAirports)
                             if (dictVisited.ContainsKey(ap.GeoHashKey))
                                 dictVisited[ap.GeoHashKey].Visit(szUser, szFamily, szTail);
-
-                        double dRoute = al.DistanceForRoute();
-                        double dFurthest = al.MaxDistanceFromStartingAirport();
-
-                        if (dRoute > LongestRouteDistance && dRoute < 15000)
-                        {
-                            LongestRoute = szRoute;
-                            LongestRouteDistance = dRoute;
-                        }
-                        if (dFurthest > FurthestRouteDistance && dFurthest < 15000)
-                        {
-                            FurthestRoute = szRoute;
-                            FurthestRouteDistance = dFurthest;
-                        }
                     });
 
                 m_lstAirports.Clear();
