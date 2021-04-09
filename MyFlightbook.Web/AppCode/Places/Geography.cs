@@ -616,7 +616,7 @@ namespace MyFlightbook.Geography
 
             TimeSpan straddle = pEarliestAfterTime.Timestamp.Subtract(pLatestBeforeTime.Timestamp);
             if (straddle.TotalSeconds == 0) // exact hit, can return either one.
-                return pLatestBeforeTime;
+                return pLatestBeforeTime.ToLatLong();   // don't return a position object!!!
 
             double dLat = pEarliestAfterTime.Latitude - pLatestBeforeTime.Latitude;
             double dLon = pEarliestAfterTime.Longitude - pLatestBeforeTime.Longitude;
@@ -720,6 +720,15 @@ namespace MyFlightbook.Geography
                 HasSpeed ? String.Format(CultureInfo.InvariantCulture, " {0:F1}kts {1}", Speed, TypeOfSpeed.ToString()) : string.Empty,
                 HasAltitude ? String.Format(CultureInfo.InvariantCulture, " Alt:{0}", Altitude) : string.Empty,
                 Comment);
+        }
+
+        /// <summary>
+        /// Positions don't go down the wire to the mobile apps, so have a convenience method to force a true latlon
+        /// </summary>
+        /// <returns></returns>
+        public LatLong ToLatLong()
+        {
+            return new LatLong(this.Latitude, this.Longitude);
         }
 
         /// <summary>
