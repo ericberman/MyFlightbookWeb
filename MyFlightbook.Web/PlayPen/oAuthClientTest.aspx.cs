@@ -185,7 +185,7 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
 
             if (grantedAccess == null)
                 throw new MyFlightbook.MyFlightbookValidationException("Null access token returned - invalid authorization passed?");
-            lblToken.Text = grantedAccess.AccessToken;
+            lblToken.Text = Newtonsoft.Json.JsonConvert.SerializeObject(grantedAccess);
         }
         catch (MyFlightbook.MyFlightbookValidationException ex)
         {
