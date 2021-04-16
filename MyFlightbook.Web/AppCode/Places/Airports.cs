@@ -111,10 +111,7 @@ namespace MyFlightbook.Airports
 
         public void AddAlias(string szAlias)
         {
-            if (String.IsNullOrEmpty(Aliases))
-                Aliases = szAlias;
-            else
-                Aliases = String.Format(CultureInfo.CurrentCulture, "{0},{1}", Aliases, szAlias);
+            Aliases = String.IsNullOrEmpty(Aliases) ? szAlias : String.Format(CultureInfo.CurrentCulture, "{0},{1}", Aliases, szAlias);
         }
 
         /// <summary>
@@ -276,6 +273,11 @@ namespace MyFlightbook.Airports
                 (comm) => { },
                 (dr) =>
                 {
+                    // ignore anything not in a real aircraft.
+                    AircraftInstanceTypes instanceType = (AircraftInstanceTypes)Convert.ToInt32(dr["InstanceType"], CultureInfo.InvariantCulture);
+                    if (instanceType != AircraftInstanceTypes.RealAircraft)
+                        return;
+
                     DateTime dtFlight = Convert.ToDateTime(dr["date"], CultureInfo.InvariantCulture);
                     string szRoute = dr["route"].ToString();
                     int idFlight = Convert.ToInt32(dr["idflight"], CultureInfo.InvariantCulture);
@@ -285,6 +287,8 @@ namespace MyFlightbook.Airports
                     decimal SIC = Convert.ToDecimal(util.ReadNullableField(dr, "SIC", 0.0M), CultureInfo.InvariantCulture);
                     decimal CFI = Convert.ToDecimal(util.ReadNullableField(dr, "CFI", 0.0M), CultureInfo.InvariantCulture);
                     decimal Dual = Convert.ToDecimal(util.ReadNullableField(dr, "dualReceived", 0.0M), CultureInfo.InvariantCulture);
+
+                    // ignore any flight with no time logged.
                     if (total + PIC + SIC + CFI + Dual == 0)
                         return;
 
@@ -2080,16 +2084,11 @@ namespace MyFlightbook.Airports
                     }
                     if (aic.LatLong == null)
                     {
-                        aic.LatLong = new LatLong();
-                        if (double.TryParse(szLat, out double d))
-                            aic.LatLong.Latitude = d;
-                        else
-                            aic.LatLong.Latitude = new DMSAngle(szLat).Value;
-
-                        if (double.TryParse(szLon, out d))
-                            aic.LatLong.Longitude = d;
-                        else
-                            aic.LatLong.Longitude = new DMSAngle(szLon).Value;
+                        aic.LatLong = new LatLong
+                        {
+                            Latitude = double.TryParse(szLat, out double d) ? d : new DMSAngle(szLat).Value,
+                            Longitude = double.TryParse(szLon, out d) ? d : new DMSAngle(szLon).Value
+                        };
                     }
 
                     lst.Add(aic);
@@ -2795,10 +2794,7 @@ namespace MyFlightbook.Airports
                     dbh.ReadRow((comm) => { }, (dr) => { idFlight = Convert.ToInt32(dr["idflight"], CultureInfo.InvariantCulture); });
 
                     FlownSegment fs = new FlownSegment() { Segment = szKey, HasMatch = (idFlight != LogbookEntry.idFlightNone) };
-                    if (fs.HasMatch)
-                        fs.MatchingFlight = new LogbookEntry(idFlight, lto: LogbookEntry.LoadTelemetryOption.None);
-                    else
-                        fs.MatchingFlight = null;
+                    fs.MatchingFlight = fs.HasMatch ? new LogbookEntry(idFlight, lto: LogbookEntry.LoadTelemetryOption.None) : null;
 
                     FlownSegments.Add(szKey, fs);
 
@@ -2888,13 +2884,7 @@ namespace MyFlightbook.Airports
         public int BluffCount
         {
             get { return m_cBluffs; }
-            set
-            {
-                if (value > 0)
-                    m_cBluffs = value;
-                else
-                    throw new MyFlightbookException("Bluffs must be > 0");
-            }
+            set { m_cBluffs = value > 0 ? value : throw new MyFlightbookException("Bluffs must be > 0"); }
         }
 
         /// <summary>
