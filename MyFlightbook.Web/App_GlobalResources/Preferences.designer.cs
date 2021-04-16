@@ -340,7 +340,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Date of birth is required for FAA certificate in order to compute expiration. .
+        ///   Looks up a localized string similar to Date of birth is required for certificate in order to compute expiration. .
         /// </summary>
         internal static string MedicalDOBRequired {
             get {

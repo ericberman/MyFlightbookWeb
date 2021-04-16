@@ -322,7 +322,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to At least one flight involving a controlled assent to {0:#,###} feet above the launch site..
+        ///   Looks up a localized string similar to At least one flight involving a controlled ascent to {0:#,###} feet above the launch site..
         /// </summary>
         internal static string BalloonAscent {
             get {

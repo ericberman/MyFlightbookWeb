@@ -590,7 +590,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <value>3 hours of cross-country training in an airship</value>
   </data>
   <data name="BalloonAscent" xml:space="preserve">
-    <value>At least one flight involving a controlled assent to {0:#,###} feet above the launch site.</value>
+    <value>At least one flight involving a controlled ascent to {0:#,###} feet above the launch site.</value>
   </data>
   <data name="BalloonGasMinFlights" xml:space="preserve">
     <value>2 flights of at least 2 hours each in a gas balloon</value>
