@@ -258,6 +258,7 @@
     <asp:Button ID="btnGetResource" runat="server" Text="Get Resource (GET)" OnClick="btnGetResource_Click" />
     &nbsp;<asp:Button ID="btnPostResource" runat="server" Text="Get Resource (POST)" OnClick="btnPostResource_Click" />
     &nbsp;<asp:Button ID="btnClearState" runat="server" OnClick="btnClearState_Click" Text="Clear State" />
+    &nbsp;<asp:Button ID="btnRefreshToken" runat="server" Text="Refresh Token" OnClick="btnRefreshToken_Click" />
     <div><asp:Label ID="lblErr" EnableViewState="false" runat="server" CssClass="error"></asp:Label></div>
     <div style="padding:5px; background-color:lightgray; border:1px solid black; border-radius: 4px; margin: 5px;">
         <uc1:Expando runat="server" ID="Expando">

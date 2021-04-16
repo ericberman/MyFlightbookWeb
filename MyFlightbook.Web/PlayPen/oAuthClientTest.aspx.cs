@@ -1,4 +1,5 @@
 ﻿using DotNetOpenAuth.OAuth2;
+using Newtonsoft.Json;
 using OAuthAuthorizationServer.Services;
 using System;
 using System.Collections.Generic;
@@ -31,7 +32,7 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
         public string Scope { get; set; }
         public string State { get; set; }
         public string Authorization { get; set; }
-        public string Token { get; set; }
+        public IAuthorizationState AuthState { get; set; }
     }
 
     protected PageState CurrentPageState
@@ -65,7 +66,7 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
         txtScope.Text = ps.Scope;
         txtState.Text = ps.State;
         lblAuthorization.Text = ps.Authorization;
-        lblToken.Text = ps.Token;
+        lblToken.Text = JsonConvert.SerializeObject(ps.AuthState);
     }
 
     protected void ToSession()
@@ -81,7 +82,7 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
             Scope = txtScope.Text,
             State = txtState.Text,
             Authorization = lblAuthorization.Text,
-            Token = lblToken.Text
+            AuthState = JsonConvert.DeserializeObject<AuthorizationState>(lblToken.Text)
         };
         CurrentPageState = ps;
     }
@@ -185,7 +186,7 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
 
             if (grantedAccess == null)
                 throw new MyFlightbook.MyFlightbookValidationException("Null access token returned - invalid authorization passed?");
-            lblToken.Text = Newtonsoft.Json.JsonConvert.SerializeObject(grantedAccess);
+            lblToken.Text = JsonConvert.SerializeObject(grantedAccess);
         }
         catch (MyFlightbook.MyFlightbookValidationException ex)
         {
@@ -206,7 +207,7 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
             return String.Format(CultureInfo.InvariantCulture, "{0}/{1}?access_token={2}&json={3}{4}",
                 action == OAuthServiceID.UploadImage ? txtImgUploadURL.Text : txtResourceURL.Text,
                 action == OAuthServiceID.none ? txtCustomVerb.Text : (action == OAuthServiceID.UploadImage ? string.Empty : action.ToString()),
-                lblToken.Text,
+                CurrentPageState.AuthState.AccessToken,
                 ckJSON.Checked ? "1" : "0",
                 String.IsNullOrEmpty(txtCallBack.Text) ? string.Empty : "&callback=" + txtCallBack.Text);
         }
@@ -484,5 +485,11 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
                 mvService.SetActiveView(vwCustom);
                 break;
         }
+    }
+
+    protected void btnRefreshToken_Click(object sender, EventArgs e)
+    {
+        Client().RefreshAuthorization(CurrentPageState.AuthState);
+        lblToken.Text = JsonConvert.SerializeObject(CurrentPageState.AuthState);
     }
 }
