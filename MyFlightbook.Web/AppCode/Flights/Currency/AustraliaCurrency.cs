@@ -69,6 +69,14 @@ namespace MyFlightbook.Currency
                 NightTakeoffCurrency.AddRecentFlightEvents(cfr.dtFlight, cNightTakeoffs);
             }
         }
+
+        protected override void ComputeComposite()
+        {
+            FlightCurrency fcComposite = this.AND(NightTakeoffCurrency);
+            CompositeCurrencyState = fcComposite.CurrentState;
+            CompositeDiscrepancy = fcComposite.DiscrepancyString;
+            CompositeExpiration = fcComposite.ExpirationDate;
+        }
     }
 
     /// <summary>
