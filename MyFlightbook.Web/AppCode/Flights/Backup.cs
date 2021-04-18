@@ -331,9 +331,9 @@ namespace MyFlightbook
             if (IncludeImages)
             {
                 const string szQ = @"SELECT f.idflight, img.*
-            FROM Images img INNER JOIN flights f ON f.idflight=img.ImageKey
+            FROM Images img INNER JOIN flights f ON CAST(f.idflight AS CHAR(15) CHARACTER SET utf8mb4) COLLATE utf8mb4_unicode_ci=img.ImageKey
             WHERE f.username=?user AND img.VirtPathID=0
-            ORDER BY f.Date desc, f.idFlight desc";
+            ORDER BY f.Date DESC, f.idFlight DESC";
                 DBHelper dbhImages = new DBHelper(szQ);
                 dbhImages.ReadRows((comm) => { comm.Parameters.AddWithValue("user", szUser); },
                     (dr) =>
