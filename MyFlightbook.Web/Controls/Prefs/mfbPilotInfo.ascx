@@ -114,11 +114,11 @@
                                     </td>
                                 </tr>
                             </table>
-                            <div>
-                                <uc1:mfbBasicMedManager runat="server" id="BasicMedManager" />
-                            </div>
                         </ContentTemplate>
                     </asp:UpdatePanel>
+                    <div>
+                        <uc1:mfbBasicMedManager runat="server" id="BasicMedManager" />
+                    </div>
                 </asp:Panel>
             </Content>
         </cc1:AccordionPane>
