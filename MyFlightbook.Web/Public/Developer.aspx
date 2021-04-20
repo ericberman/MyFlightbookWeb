@@ -111,10 +111,16 @@
                         </ItemTemplate>
                         <ItemStyle VerticalAlign="Top" />
                     </asp:TemplateField>
-                    <asp:BoundField HeaderText="Client ID" DataField="ClientIdentifier" ReadOnly="true" ItemStyle-VerticalAlign="Top" />
-                    <asp:BoundField HeaderText="Client Secret" DataField="ClientSecret" ItemStyle-VerticalAlign="Top" />
-                    <asp:BoundField HeaderText="Client Name" DataField="ClientName" ItemStyle-VerticalAlign="Top" />
-                    <asp:TemplateField HeaderText="Callback URL(s)" ItemStyle-VerticalAlign="Top">
+                    <asp:TemplateField>
+                        <ItemTemplate>
+                            <asp:Label ID="Label1" runat="server" Text='<%# Eval("OwningUser") %>' Visible='<%# AdminMode %>' />
+                        </ItemTemplate>
+                        <ItemStyle VerticalAlign="Top" HorizontalAlign="Left" />
+                    </asp:TemplateField>
+                    <asp:BoundField HeaderText="Client ID" DataField="ClientIdentifier" ReadOnly="true" HeaderStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top" />
+                    <asp:BoundField HeaderText="Client Secret" DataField="ClientSecret" HeaderStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top" />
+                    <asp:BoundField HeaderText="Client Name" DataField="ClientName" HeaderStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top" />
+                    <asp:TemplateField HeaderText="Callback URL(s)" HeaderStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top">
                         <ItemTemplate>
                             <ul>
                                 <asp:Repeater ID="rptCallback" DataSource='<%# Eval("Callbacks") %>' runat="server">
@@ -130,7 +136,7 @@
                             <asp:TextBox ID="txtCallbacks" MaxLength="1023" runat="server" Text='<%#: Bind("CallbacksAsString") %>' Rows="4" TextMode="MultiLine"></asp:TextBox>
                         </EditItemTemplate>
                     </asp:TemplateField>
-                    <asp:BoundField HeaderText="Scopes (space separated)" DataField="Scope" ItemStyle-VerticalAlign="Top" />
+                    <asp:BoundField HeaderText="Scopes (space separated)" DataField="Scope" HeaderStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top" />
                     <asp:CommandField ButtonType="Link" ShowEditButton="true" ItemStyle-VerticalAlign="Top" />
                 </Columns>
             </asp:GridView>

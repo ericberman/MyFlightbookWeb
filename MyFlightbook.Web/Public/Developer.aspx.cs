@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2018-2020 MyFlightbook LLC
+ * Copyright (c) 2018-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -32,6 +32,13 @@ public partial class Public_Developer : System.Web.UI.Page
         set { ViewState[szVSClients] = value; }
     }
 
+    protected bool AdminMode { get; set; }
+
+    protected void Page_Init(object sender, EventArgs e)
+    {
+        AdminMode = Page.User.Identity.IsAuthenticated && (util.GetIntParam(Request, "a", 0) != 0 && MyFlightbook.Profile.GetUser(Page.User.Identity.Name).CanSupport);
+    }
+
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
@@ -46,7 +53,7 @@ public partial class Public_Developer : System.Web.UI.Page
                     if (scope != MFBOAuthScope.none)
                         cklScopes.Items.Add(new ListItem(MFBOauthServer.ScopeDescription(scope), scope.ToString()));
 
-                gvMyServices.DataSource = (util.GetIntParam(Request, "a", 0) != 0 && MyFlightbook.Profile.GetUser(Page.User.Identity.Name).CanSupport) ? MFBOauth2Client.GetAvailableClients() : OwnedClients;
+                gvMyServices.DataSource = AdminMode ? MFBOauth2Client.GetAvailableClients() : OwnedClients;
                 gvMyServices.DataBind();
             }
             else
