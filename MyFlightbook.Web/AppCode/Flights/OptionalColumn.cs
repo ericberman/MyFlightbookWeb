@@ -4,7 +4,7 @@ using System.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2020 MyFlightbook LLC
+ * Copyright (c) 2008-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -15,7 +15,7 @@ namespace MyFlightbook
     /// <summary>
     /// Specifies the kind of additional columns that can be displayed for printing.
     /// </summary>
-    public enum OptionalColumnType { None, Complex, Retract, Tailwheel, HighPerf, TAA, Turbine, Jet, TurboProp, ATD, FTD, FFS, ASEL, ASES, AMEL, AMES, Helicopter, Glider, CustomProp }
+    public enum OptionalColumnType { None, Complex, Retract, Tailwheel, HighPerf, TAA, Turbine, Jet, TurboProp, ATD, FTD, FFS, ASEL, ASES, AMEL, AMES, Helicopter, Glider, CustomProp, CrossCountry }
 
     public enum OptionalColumnValueType { Decimal, Integer, Time }
 
@@ -122,6 +122,8 @@ namespace MyFlightbook
                 case OptionalColumnType.FTD:
                 case OptionalColumnType.FFS:
                     return type.ToString();
+                case OptionalColumnType.CrossCountry:
+                    return Resources.LogbookEntry.PrintHeaderCrossCountry;
             }
             throw new ArgumentOutOfRangeException(nameof(type), "Unknown OptionalColumnType: " + type.ToString());
         }

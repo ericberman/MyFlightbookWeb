@@ -3463,6 +3463,8 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                         MakeModel m = MakeModel.GetModel(ModelID);
                         return OptionalColumnTotalIfCondition(m.PerformanceType == MakeModel.HighPerfType.HighPerf || (m.PerformanceType == MakeModel.HighPerfType.Is200HP && Date.CompareTo(Convert.ToDateTime(MakeModel.Date200hpHighPerformanceCutoverDate, CultureInfo.InvariantCulture)) < 0));
                     }
+                case OptionalColumnType.CrossCountry:
+                    return CrossCountry;
                 case OptionalColumnType.TAA:
                     {
                         bool fIsTAA = MakeModel.GetModel(ModelID).AvionicsTechnology == MakeModel.AvionicsTechnologyType.TAA;
