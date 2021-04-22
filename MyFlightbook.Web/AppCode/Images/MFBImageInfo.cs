@@ -1815,7 +1815,7 @@ namespace MyFlightbook.Image
                     szQ = "SELECT DISTINCT(ImageKey) AS idPic FROM images i LEFT JOIN users u ON i.imagekey=u.username WHERE i.VirtPathID=4 AND u.username IS NULL;";
                     break;
                 case ImageClass.Flight:
-                    szQ = "SELECT DISTINCT(ImageKey) AS idPic FROM images i LEFT JOIN flights f ON i.imagekey=f.idflight WHERE i.VirtPathID=0 AND f.idflight IS NULL";
+                    szQ = "SELECT DISTINCT(ImageKey) AS idPic FROM images i LEFT JOIN flights f ON CAST(f.idflight AS CHAR(15) CHARACTER SET utf8mb4) COLLATE utf8mb4_unicode_ci=i.imagekey WHERE i.VirtPathID=0 AND f.idflight IS NULL";
                     break;
                 case ImageClass.BasicMed:
                     szQ = "SELECT DISTINCT(ImageKey) AS idPic FROM images i LEFT JOIN basicmedevent bme ON i.imagekey=bme.idBasicMedEvent WHERE i.VirtPathID=3 AND bme.idBasicMedEvent IS NULL";

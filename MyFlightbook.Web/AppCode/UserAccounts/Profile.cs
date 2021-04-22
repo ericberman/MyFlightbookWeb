@@ -1562,7 +1562,7 @@ namespace MyFlightbook
             List<MFBImageInfo> lstMfbii = new List<MFBImageInfo>();
             dbh.CommandText = @"SELECT f.idflight, f.username, i.* 
                         FROM images i 
-                        LEFT JOIN flights f ON i.imagekey=f.idflight
+                        LEFT JOIN flights f ON CAST(f.idflight AS CHAR(15) CHARACTER SET utf8mb4) COLLATE utf8mb4_unicode_ci=i.imagekey
                         WHERE (i.VirtPathID=0 AND f.username=?uname)";
             dbh.ReadRows((comm) => { }, (dr) => { lstMfbii.Add(MFBImageInfo.ImageFromDBRow(dr)); });
             foreach (MFBImageInfo mfbii in lstMfbii)
