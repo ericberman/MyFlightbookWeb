@@ -243,7 +243,7 @@ namespace MyFlightbook.Airports
 
             rbGuesses.Items.Clear();
             for (int i = 0; i < m_AirportQuiz.CurrentQuestion.Answers.Count; i++)
-                rbGuesses.Items.Add(HttpUtility.HtmlEncode(m_AirportQuiz.CurrentQuestion.Answers[i].FullName));
+                rbGuesses.Items.Add(new System.Web.UI.WebControls.ListItem(HttpUtility.HtmlEncode(m_AirportQuiz.CurrentQuestion.Answers[i].FullName), m_AirportQuiz.CurrentQuestion.Answers[i].Code));
 
             ShowMap(m_AirportQuiz.CurrentQuestion.Answers[m_AirportQuiz.CurrentQuestion.CorrectAnswerIndex].Code);
 
