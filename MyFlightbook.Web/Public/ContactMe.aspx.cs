@@ -9,7 +9,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2020 MyFlightbook LLC
+ * Copyright (c) 2007-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -49,7 +49,7 @@ public partial class Public_ContactMe : System.Web.UI.Page
         {
             MailAddress ma = new MailAddress(txtEmail.Text, txtName.Text);
 
-            string szBody = txtComments.Text + "\r\n\r\nUser = " + (User.Identity.IsAuthenticated ? User.Identity.Name : "anonymous") + "\r\nSent: " + DateTime.Now.ToLongDateString();
+            string szBody = String.Format(CultureInfo.InvariantCulture, "{0}\r\n\r\nUser = {1}\r\n{2}\r\nSent: {3}", txtComments.Text, (User.Identity.IsAuthenticated ? User.Identity.Name : "anonymous"), txtEmail.Text, DateTime.Now.ToLongDateString());
             string szSubject = String.Format(CultureInfo.CurrentCulture, "{0} - {1}", Branding.CurrentBrand.AppName, txtSubject.Text);
             using (MailMessage msg = new MailMessage()
             {
