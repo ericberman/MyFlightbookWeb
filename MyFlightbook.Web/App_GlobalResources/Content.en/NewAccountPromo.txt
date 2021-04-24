@@ -10,5 +10,5 @@
     <li>View your flights on a map</li>
 	<li>And much more...</li>
 </ul>
-<ul><li>Learn more about how %APP_NAME% compares to other logbooks</li></ul>
+<p style="font-size: medium"><a href="http://%APP_URL%%APP_ROOT%/Public/FeatureChart.aspx">Learn more about how %APP_NAME% compares to other logbooks</a></p>
 <p>%APP_NAME% is free of charge</p>
