@@ -26,4 +26,4 @@ Follow MyFlightbook on Facebook at http://www.facebook.com/MyFlightbook or on Tw
 
 MyFlightbook LLC
 
-PLEASE DO NOT REPLY TO THIS EMAIL - IT IS UNMONITORED.  IF YOU WISH TO CONTACT US, PLEASE VISIT http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.
+To contact us, please visit http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.

@@ -7,4 +7,4 @@ The site administrators have been notified and will unlock it for you shortly.  
 Thank-you,
 The %APP_NAME% Team
 
-PLEASE DO NOT REPLY TO THIS EMAIL - IT IS UNMONITORED.  IF YOU WISH TO CONTACT US, PLEASE VISIT http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.
+To contact us, please visit http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.

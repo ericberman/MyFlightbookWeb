@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AccountDeletedBody" xml:space="preserve">
-    <value>Thank-you for using %APP_NAME%.  Per your request, your account has been closed and its associated data deleted.  This email contains a backup of your flights (if any) just prior to deletion, just in case.  It is, after all, your data.</value>
+    <value>Per your request, your account has been closed and its associated data deleted.  This email contains a backup of your flights (if any) just prior to deletion, just in case.  It is, after all, your data.</value>
   </data>
   <data name="AccountDeletedSubject" xml:space="preserve">
     <value>%APP_NAME% - Account Deleted</value>

@@ -8,4 +8,4 @@ We also STRONGLY recommend that you change this password after signing in.  You 
 
 Thank-you for using %APP_NAME%!
 
-(Please do not reply to this mail - the mailbox is not monitored).
+To contact us, please visit http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.

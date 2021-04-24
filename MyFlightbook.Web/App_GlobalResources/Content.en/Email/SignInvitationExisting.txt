@@ -4,4 +4,4 @@ Please visit <% SignPendingFlightsLink %> to view this request and sign their lo
 
 Thank-you
 
-Please do not reply to this message; this mailbox is not monitored.
+To contact us, please visit http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.

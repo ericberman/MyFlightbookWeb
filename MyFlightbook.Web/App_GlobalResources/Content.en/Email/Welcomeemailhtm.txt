@@ -44,6 +44,6 @@
 	<p>Sincerely,<br />The MyFlightbook Team
 	<br /><br />
     MyFlightbook LLC</p>
-	<p>PLEASE DO NOT REPLY TO THIS EMAIL - IT IS UNMONITORED.  IF YOU WISH TO CONTACT US, PLEASE VISIT <a href="http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx">HERE</a>.
+	<p>To contact us, please visit <a href="http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx">here</a>.
 </body>
 </html>

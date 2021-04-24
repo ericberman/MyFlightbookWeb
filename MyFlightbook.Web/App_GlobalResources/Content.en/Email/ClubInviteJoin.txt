@@ -4,4 +4,4 @@ If you know <% Requestor %> and/or are interested in joining, please confirm thi
 
 Thank-you
 
-Please do not reply to this message; this mailbox is not monitored.
+To contact us, please visit http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.

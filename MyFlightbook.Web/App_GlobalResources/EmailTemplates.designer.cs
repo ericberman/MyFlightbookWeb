@@ -61,7 +61,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Thank-you for using %APP_NAME%.  Per your request, your account has been closed and its associated data deleted.  This email contains a backup of your flights (if any) just prior to deletion, just in case.  It is, after all, your data..
+        ///   Looks up a localized string similar to Per your request, your account has been closed and its associated data deleted.  This email contains a backup of your flights (if any) just prior to deletion, just in case.  It is, after all, your data..
         /// </summary>
         internal static string AccountDeletedBody {
             get {
@@ -88,7 +88,7 @@ namespace Resources {
         ///Thank-you,
         ///The %APP_NAME% Team
         ///
-        ///PLEASE DO NOT REPLY TO THIS EMAIL - IT IS UNM [rest of string was truncated]&quot;;.
+        ///To contact us, please visit http://%APP_URL%% [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string AccountLocked {
             get {
@@ -166,7 +166,7 @@ namespace Resources {
         ///
         ///Thank-you for using %APP_NAME%!
         ///
-        ///(Please do not reply to this mail - the mailbox is not monitored)..
+        ///To contact us, please visit http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx..
         /// </summary>
         internal static string ChangePassEmail {
             get {
@@ -179,11 +179,11 @@ namespace Resources {
         ///
         ///We usually respond to requests within a few hours.  
         ///
-        ///However, I will be traveling with intermittant Internet access from June 19 - July 3, so it may be a few days before you get a response in that timeframe.  The FAQ on the site addresses many common questions; please give that a try.
+        ///However, I will be traveling with intermittant Internet access from June 25 - July 17, so it may be a few days before you get a response in that timeframe.  The FAQ on the site addresses many common questions; please give that a try.
         ///
         ///Thank-you very much.
         ///
-        ///PLEASE DO NOT REPLY TO THIS EMAIL - IT IS UNMONITORED.  IF YOU WISH TO CONTACT US, PLEASE VISIT http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx..
+        ///To contact us, please visit http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx..
         /// </summary>
         internal static string ContactMeResponse {
             get {
@@ -198,13 +198,12 @@ namespace Resources {
         ///
         ///Depending on the level at which you gave, you may have earned a gratuity; this has been activated on your behalf.
         ///
-        ///Please don&apos;t hesitate to contact us with any thoughts, questions, concerns, or ideas.  We love hearing from you!
+        ///Please don&apos;t hesitate to contact us with any thoughts, questions, concerns, or ideas at http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.  We love hearing from you!
         ///
         ///Thanks again,
         ///
         ///--The %APP_NAME% team
-        ///
-        ///PLEASE DO NOT REPLY TO THIS EMAIL - IT IS UNMONITORED.  IF YOU WISH TO CONTACT US, PLEASE [rest of string was truncated]&quot;;.
+        ///.
         /// </summary>
         internal static string DonationThankYou {
             get {
@@ -434,7 +433,7 @@ namespace Resources {
         ///
         ///Thank-you for using %APP_NAME%!
         ///
-        ///(Please do not reply to this mail - the mailbox is not monitored)..
+        ///To contact us, please visit http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx..
         /// </summary>
         internal static string PasswordChanged {
             get {
