@@ -2420,14 +2420,17 @@ namespace MyFlightbook.Airports
             if (sz == null)
                 return null;
 
-            m_htAirportsByCode.TryGetValue(sz, out airport ap);
-
-            // if this wasn't a forced navaid and the airport wasn't found, look to see if the navaid matched.
-            if (ap == null && !sz.StartsWith(airport.ForceNavaidPrefix, StringComparison.CurrentCultureIgnoreCase))
-                m_htAirportsByCode.TryGetValue(airport.ForceNavaidPrefix + sz, out ap);
-
-            // else try the USPrefix hack
-            if (ap == null && airport.IsUSAirport(sz))
+            // Direct hit - return it
+            if (m_htAirportsByCode.TryGetValue(sz, out airport ap))
+                return ap;
+            // If this *doesn't* have the forcenavaidprefix, see if the navaid is in the hash table and return that.
+            else if (!sz.StartsWith(airport.ForceNavaidPrefix, StringComparison.CurrentCultureIgnoreCase) && m_htAirportsByCode.TryGetValue(airport.ForceNavaidPrefix + sz, out ap))
+                return ap;
+            // issue #764: try to allow @(airport) in addition to forcing a navaid, but treat it as an airspace fix, not an airport.
+            else if (sz.StartsWith(airport.ForceNavaidPrefix, StringComparison.CurrentCultureIgnoreCase) && m_htAirportsByCode.TryGetValue(sz.Substring(airport.ForceNavaidPrefix.Length), out ap))
+                return new AdHocFix(ap.LatLong.ToAdhocFixString());
+            // else try the USPrefix hack - look for the code with the "K" prefix removed.
+            else if (airport.IsUSAirport(sz))
                 m_htAirportsByCode.TryGetValue(airport.USPrefixConvenienceAlias(sz), out ap);
 
             return ap;
