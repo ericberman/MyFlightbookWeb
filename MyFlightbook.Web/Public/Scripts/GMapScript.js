@@ -430,13 +430,13 @@ function MFBNewMapOptions(mfbMapOptions)
         mfbNewMap.defaultLong = mfbMapOptions.defaultLong;
     if (mfbMapOptions.defaultLat)
         mfbNewMap.defaultLat = mfbMapOptions.defaultLat;
-    if (mfbMapOptions.minLat)
+    if (mfbMapOptions.minLat !== null)
         mfbNewMap.minLat = mfbMapOptions.minLat;
-    if (mfbMapOptions.maxLat)
+    if (mfbMapOptions.maxLat !== null)
         mfbNewMap.maxLat = mfbMapOptions.maxLat;
-    if (mfbMapOptions.minLong)
+    if (mfbMapOptions.minLong !== null)
         mfbNewMap.minLong = mfbMapOptions.minLong;
-    if (mfbMapOptions.maxLong)
+    if (mfbMapOptions.maxLong !== null)
         mfbNewMap.maxLong = mfbMapOptions.maxLong;
     if (mfbMapOptions.pathArray)
         mfbNewMap.pathArray = mfbMapOptions.pathArray;

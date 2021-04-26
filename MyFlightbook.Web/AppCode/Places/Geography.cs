@@ -120,6 +120,12 @@ namespace MyFlightbook.Geography
             MatchCollection mc = r.Matches(sz);
             if (mc != null && mc.Count > 0 && mc[0].Groups.Count >= 2)
                 return new LatLong((new DMSAngle(mc[0].Groups[1].Value)).Value, (new DMSAngle(mc[0].Groups[2].Value)).Value);
+            else if (CoordinateSharp.MilitaryGridReferenceSystem.TryParse(sz, out CoordinateSharp.MilitaryGridReferenceSystem mgrs))
+            {
+                CoordinateSharp.Coordinate c = CoordinateSharp.MilitaryGridReferenceSystem.MGRStoLatLong(mgrs);
+                return new LatLong(c.Latitude.DecimalDegree, c.Longitude.DecimalDegree);
+            }
+
             return null;
         }
 
