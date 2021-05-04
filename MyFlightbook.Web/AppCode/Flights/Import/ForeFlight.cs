@@ -30,7 +30,8 @@ namespace MyFlightbook.ImportFlights
     public class ForeFlight : ExternalFormat
     {
         private readonly static Regex rLatLon = new Regex("(\\d{0,2}[.,]\\d*)\\D{0,2}°?([NS])/(\\d{0,3}[.,]\\d*)\\D{0,2}°?([EW])", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private readonly static Regex regApproach = new Regex("\\b(?<count>\\d{1,2});(?<desc>[-a-zA-Z/]{3,}?(?: \\(GPS\\))?(?:[- ][abcxyzABCXYZ])?)[; ](?:RWY[- ]?)?(?<rwy>[0-3]?\\d[LRC]?)(?:/[^;]*)?[ ;](?<airport>[a-zA-Z0-9]{3,4})[ ;]?(?<remark>.*)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
+        private readonly static Regex regApproach = new Regex("\\b(?<count>\\d{1,2});(?<desc>[-a-zA-Z() /]{3,}?)(?: *RWY[^;]*?)?;(?<rwy>[0-3]?\\d[LRC]?);(?<airport>[a-zA-Z0-9]{3,4});(?<remark>.*)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
+        private readonly static Regex regApproachCountOnly = new Regex("\\b(?<count>\\d{1,2});", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
         #region Properties
         public DateTime Date { get; set; }
@@ -157,11 +158,21 @@ namespace MyFlightbook.ImportFlights
                     try
                     {
                         MatchCollection mc = regApproach.Matches(szFixedApproach);
-                        foreach (Match m in mc)
+                        if (mc.Count == 0)
                         {
-                            ApproachDescription ad = new ApproachDescription(m);
-                            sbApproaches.Append(ad.ToCanonicalString() + Resources.LocalizedText.LocalizedSpace + m.Groups["remark"].Value.Replace(";", " ").Trim() + Resources.LocalizedText.LocalizedSpace);
-                            cApproaches += ad.Count;
+                            // handle the case of "2;;;;" (i.e., 2 approaches, no additional details
+                            mc = regApproachCountOnly.Matches(szFixedApproach);
+                            if (mc.Count == 1)
+                                cApproaches += Convert.ToInt32(mc[0].Groups["count"].Value, CultureInfo.CurrentCulture);
+                        }
+                        else
+                        {
+                            foreach (Match m in mc)
+                            {
+                                ApproachDescription ad = new ApproachDescription(m);
+                                sbApproaches.Append(ad.ToCanonicalString() + Resources.LocalizedText.LocalizedSpace + m.Groups["remark"].Value.Replace(";", " ").Trim() + Resources.LocalizedText.LocalizedSpace);
+                                cApproaches += ad.Count;
+                            }
                         }
                     }
                     catch (Exception ex) when (ex is FormatException) { }
