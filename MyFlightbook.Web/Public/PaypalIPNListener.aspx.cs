@@ -8,7 +8,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2020 MyFlightbook LLC
+ * Copyright (c) 2013-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -78,6 +78,7 @@ public partial class Public_PaypalIPNListener : System.Web.UI.Page
                         if (String.IsNullOrEmpty(szParentTxnID))
                             sbErr.AppendFormat(CultureInfo.CurrentCulture, "Refund with no parent transaction\r\n\r\n");
                         lst = Payment.RecordsWithID(szParentTxnID);
+                        cPayments = lst.Count();
                         if (cPayments > 1)
                             sbErr.AppendFormat(CultureInfo.CurrentCulture, "Multiple records found for parent transaction of refund\r\n\r\n");
                         else if (cPayments == 0)
