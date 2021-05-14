@@ -1,8 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbLogbook.ascx.cs" Inherits="Controls_mfbLogbook" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register Src="mfbImageList.ascx" TagName="mfbImageList" TagPrefix="uc1" %>
-<%@ Register src="mfbMiniFacebook.ascx" tagname="mfbMiniFacebook" tagprefix="uc2" %>
-<%@ Register src="mfbTweetThis.ascx" tagname="mfbTweetThis" tagprefix="uc4" %>
 <%@ Register src="mfbDecimalEdit.ascx" tagname="mfbDecimalEdit" tagprefix="uc6" %>
 <%@ Register src="popmenu.ascx" tagname="popmenu" tagprefix="uc7" %>
 <%@ Register src="mfbTooltip.ascx" tagname="mfbTooltip" tagprefix="uc5" %>

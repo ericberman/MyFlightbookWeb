@@ -5,7 +5,7 @@ using MyFlightbook.SocialMedia;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2015 MyFlightbook LLC
+ * Copyright (c) 2009-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -13,10 +13,6 @@ using MyFlightbook.SocialMedia;
 public partial class Controls_mfbTweetThis : System.Web.UI.UserControl
 {
     private LogbookEntry m_le;
-
-    protected void Page_Load(object sender, EventArgs e)
-    {
-    }
 
     public LogbookEntry FlightToTweet
     {
@@ -28,7 +24,7 @@ public partial class Controls_mfbTweetThis : System.Web.UI.UserControl
     {
         if (FlightToTweet != null)
         {
-            string szTwitterURL = String.Format(System.Globalization.CultureInfo.InvariantCulture, "http://www.twitter.com/home?status={0}", HttpUtility.UrlEncode(TwitterPoster.TweetContent(FlightToTweet, Request.Url.Host)));
+            string szTwitterURL = String.Format(System.Globalization.CultureInfo.InvariantCulture, "https://twitter.com/intent/tweet?text={0}", HttpUtility.UrlEncode(TwitterPoster.TweetContent(FlightToTweet, Request.Url.Host)));
 
             lnkTweetThis.Attributes["onclick"] = "javascript:window.open('" + szTwitterURL + "', 'TweetFlight', 'height=700,width=800,scrollbars=1,menubar=1,toolbar=1');";
             lnkTweetThis.Visible = FlightToTweet.CanPost;

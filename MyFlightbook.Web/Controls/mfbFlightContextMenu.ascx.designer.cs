@@ -163,7 +163,7 @@ public partial class Controls_mfbFlightContextMenu
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::Controls_mfbMiniFacebook mfbMiniFacebook;
+    protected global::MyFlightbook.SocialMedia.mfbMiniFacebook mfbMiniFacebook;
 
     /// <summary>
     /// mfbTweetThis control.

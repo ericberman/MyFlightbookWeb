@@ -64,7 +64,7 @@ public partial class Member_FBPost
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::Controls_mfbMiniFacebook mfbMiniFacebook;
+    protected global::MyFlightbook.SocialMedia.mfbMiniFacebook mfbMiniFacebook;
 
     /// <summary>
     /// pnlNotYours control.
