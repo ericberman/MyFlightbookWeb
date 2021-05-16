@@ -557,7 +557,7 @@ namespace MyFlightbook.ImportFlights
                 foreach (ImportColumn ic in m_cm.CustomPropertiesToImport)
                 {
                     string szVal = m_rgszRow[ic.m_iCol];
-                    if (szVal.Length > 0)
+                    if (!String.IsNullOrWhiteSpace(szVal))
                     {
                         try
                         {
