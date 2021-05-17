@@ -1,12 +1,9 @@
-﻿using MyFlightbook;
-using MyFlightbook.SocialMedia;
-using System;
-using System.Web;
+﻿using System;
 using System.Web.UI.HtmlControls;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2020 MyFlightbook LLC
+ * Copyright (c) 2009-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -16,8 +13,6 @@ namespace MyFlightbook.SocialMedia
     public partial class mfbMiniFacebook : System.Web.UI.UserControl
     {
         private LogbookEntry m_le;
-
-        const string szFBTemplate = "https://www.facebook.com/dialog/feed?app_id={0}&link={1}&name={2}&caption={3}&description={4}&redirect_uri={5}";
 
         /// <summary>
         /// Specifies the LogbookEntry to share on facebook.
@@ -97,27 +92,7 @@ namespace MyFlightbook.SocialMedia
         /// </summary>
         public Uri FBRedirURL
         {
-            get
-            {
-                if (FlightEntry != null)
-                {
-                    string szFlightURL = FlightEntry.SocialMediaItemUri(Request.Url.Host).ToString();
-
-                    string szURL = String.Format(System.Globalization.CultureInfo.InvariantCulture, szFBTemplate,
-                        MFBFacebook.FACEBOOK_API_KEY,
-                        HttpUtility.UrlEncode(szFlightURL),
-                        HttpUtility.UrlEncode(FlightEntry.Comment.Length > 0 ? FlightEntry.Comment : (FlightEntry.Route.Length > 0 ? FlightEntry.Route : Resources.LocalizedText.MiniFacebookViewFlight)),
-                        HttpUtility.UrlEncode(FlightEntry.Route),
-                        HttpUtility.UrlEncode(FlightEntry.Comment),
-                        HttpUtility.UrlEncode(szFlightURL));
-                    return new Uri(szURL);
-                }
-                return null;
-            }
-        }
-
-        protected void Page_Load(object sender, EventArgs e)
-        {
+            get { return FlightEntry == null ? null : new Uri(String.Format(System.Globalization.CultureInfo.InvariantCulture, "https://facebook.com/sharer.php?display=page&u={0}", System.Web.HttpUtility.UrlEncode(FlightEntry.SocialMediaItemUri(Branding.CurrentBrand.HostName).ToString()))); }
         }
     }
 }
