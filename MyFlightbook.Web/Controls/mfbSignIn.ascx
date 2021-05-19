@@ -79,9 +79,12 @@
                         </div>
                     </asp:View>
                     <asp:View ID="vwTFA" runat="server">
-                        <h3><asp:Localize ID="locTFA" runat="server" Text="<%$ Resources:Profile, TFAIsSetUp %>"></asp:Localize></h3>
-                        <uc1:TwoFactorAuthVerifyCode runat="server" ID="tfavc" OnTFACodeFailed="TwoFactorAuthVerifyCode_TFACodeFailed" OnTFACodeVerified="TwoFactorAuthVerifyCode_TFACodeVerified" />
-                        <div><asp:Label ID="lblCodeResult" runat="server" EnableViewState="false"></asp:Label></div>
+                        <div style="max-width:300px;">
+                            <h3><asp:Localize ID="locTFA" runat="server" Text="<%$ Resources:Profile, TFAIsSetUp %>"></asp:Localize></h3>
+                            <p><asp:Localize ID="Localize1" runat="server" Text="<%$ Resources:Profile, TFAUseYourApp %>" /></p>
+                            <uc1:TwoFactorAuthVerifyCode runat="server" ID="tfavc" OnTFACodeFailed="TwoFactorAuthVerifyCode_TFACodeFailed" OnTFACodeVerified="TwoFactorAuthVerifyCode_TFACodeVerified" />
+                            <div><asp:Label ID="lblCodeResult" runat="server" EnableViewState="false" /></div>
+                        </div>
                     </asp:View>
                 </asp:MultiView>
                 </div>
