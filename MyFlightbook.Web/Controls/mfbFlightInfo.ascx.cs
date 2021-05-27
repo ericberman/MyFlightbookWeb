@@ -8,12 +8,12 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2020 MyFlightbook LLC
+ * Copyright (c) 2015-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
-public partial class Controls_mfbFlightInfo : System.Web.UI.UserControl
+public partial class Controls_mfbFlightInfo : UserControl
 {
     private const string keyFlightData = "PendingFlightData";
 
@@ -32,21 +32,6 @@ public partial class Controls_mfbFlightInfo : System.Web.UI.UserControl
     }
 
     public event EventHandler<AutofillEventArgs> AutoFill;
-
-    public short InitialTabIndex
-    {
-        get { return decHobbsStart.TabIndex; }
-        set
-        {
-            short i = value;
-            decHobbsStart.TabIndex = i++;
-            decHobbsEnd.TabIndex = i++;
-            mfbEngineStart.TabIndex = i++;
-            mfbEngineEnd.TabIndex = i++;
-            mfbFlightStart.TabIndex = i++;
-            mfbFlightEnd.TabIndex = i;
-        }
-    }
 
     public decimal HobbsStart
     {
@@ -113,10 +98,7 @@ public partial class Controls_mfbFlightInfo : System.Web.UI.UserControl
         {
             lblEngine.Text = Resources.LogbookEntry.FieldEngineUTC.IndicateUTCOrCustomTimeZone(UserTimeZone);
             lblFlight.Text = Resources.LogbookEntry.FieldFlightUTC.IndicateUTCOrCustomTimeZone(UserTimeZone);
-            if (UserTimeZone.Id.CompareCurrentCultureIgnoreCase(TimeZoneInfo.Utc.Id) == 0)
-                lblEngine.ToolTip = lblFlight.ToolTip = string.Empty;
-            else
-                lblEngine.ToolTip = lblFlight.ToolTip = UserTimeZone.DisplayName;
+            lblEngine.ToolTip = lblFlight.ToolTip = (UserTimeZone.Id.CompareCurrentCultureIgnoreCase(TimeZoneInfo.Utc.Id) == 0) ? string.Empty : UserTimeZone.DisplayName;
         }
     }
 

@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2020 MyFlightbook LLC
+ * Copyright (c) 2008-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -18,12 +18,6 @@ public partial class Controls_mfbDateTime : System.Web.UI.UserControl
     public string Text
     {
         get { return txtDateTime.Text; }
-    }
-
-    public short TabIndex
-    {
-        get { return txtDateTime.TabIndex; }
-        set { txtDateTime.TabIndex = value; }
     }
 
     protected TimeZoneInfo DefaultTimeZone { get; set; }
@@ -81,10 +75,9 @@ public partial class Controls_mfbDateTime : System.Web.UI.UserControl
         }
         set 
         {
-            if (null == value || value.CompareTo(DateTime.MinValue) == 0)
-                txtDateTime.Text = "";
-            else
-                txtDateTime.Text = TimeZoneInfo.ConvertTimeFromUtc(value, DefaultTimeZone).UTCDateFormatString(); 
+            txtDateTime.Text = null == value || value.CompareTo(DateTime.MinValue) == 0
+                ? string.Empty
+                : TimeZoneInfo.ConvertTimeFromUtc(value, DefaultTimeZone).UTCDateFormatString();
         }
     }
     #endregion

@@ -5,7 +5,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2020 MyFlightbook LLC
+ * Copyright (c) 2007-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -26,10 +26,7 @@ public partial class Controls_mfbTypeInDate : System.Web.UI.UserControl
         set
         {
             m_date = value;
-            if (m_date == DateTime.MinValue)
-                txtDate.Text = string.Empty;
-            else
-                txtDate.Text = Request.IsMobileDeviceOrTablet() && !ForceAjax ? m_date.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture) : m_date.ToShortDateString();
+            txtDate.Text = (m_date == DateTime.MinValue) ? string.Empty : Request.IsMobileDeviceOrTablet() && !ForceAjax ? m_date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) : m_date.ToShortDateString();
         }
     }
 
@@ -91,12 +88,6 @@ public partial class Controls_mfbTypeInDate : System.Web.UI.UserControl
     public string ClientBoxID
     {
         get { return txtDate.ClientID; }
-    }
-
-    public short TabIndex
-    {
-        get { return txtDate.TabIndex; }
-        set { txtDate.TabIndex = value; }
     }
 
     public Unit Width

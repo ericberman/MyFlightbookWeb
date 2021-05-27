@@ -24,7 +24,7 @@
                 <div class="itemlabel"><asp:Label ID="Label7" runat="server" Text="Date of Flight" 
                         meta:resourcekey="Label7Resource1"></asp:Label></div>
                 <div class="itemdata">
-                    <uc1:mfbTypeInDate ID="mfbDate" runat="server" TabIndex="1" DefaultType="Today" Width="90%" />
+                    <uc1:mfbTypeInDate ID="mfbDate" runat="server" DefaultType="Today" Width="90%" />
                     <div>
                     <asp:CustomValidator ID="valDate" runat="server" ErrorMessage="Date of flight should be today or in the past." CssClass="error"
                         onservervalidate="valDate_ServerValidate" Display="Dynamic" 
@@ -39,7 +39,7 @@
                         meta:resourcekey="lnkAddAircraftResource1"></asp:LinkButton>
                 </div>
                 <div class="itemdata">
-                    <asp:DropDownList ID="cmbAircraft" runat="server" TabIndex="2" Width="90%" AutoPostBack="true" OnSelectedIndexChanged="cmbAircraft_SelectedIndexChanged" 
+                    <asp:DropDownList ID="cmbAircraft" runat="server" Width="90%" AutoPostBack="true" OnSelectedIndexChanged="cmbAircraft_SelectedIndexChanged" 
                         meta:resourcekey="cmbAircraftResource1">
                     </asp:DropDownList>
                     <script>
@@ -63,7 +63,7 @@
                 <asp:Panel ID="pnlAltCatClass" runat="server" CssClass="flightinfoitem" 
                     Height="0px" style="overflow:hidden; padding-bottom:4px;" 
                     meta:resourcekey="pnlAltCatClassResource1">
-                        <asp:DropDownList ID="cmbCatClasses" TabIndex="3" runat="server" AppendDataBoundItems="true"  DataValueField="IDCatClassAsInt" 
+                        <asp:DropDownList ID="cmbCatClasses" runat="server" AppendDataBoundItems="true"  DataValueField="IDCatClassAsInt" 
                             DataTextField="CatClass" EnableViewState="false" 
                             meta:resourcekey="cmbCatClassesResource1">
                             <asp:ListItem Selected="True" Value="0" Text="<%$ Resources:LocalizedText, EditFlightDefaultCatClass %>"></asp:ListItem>
@@ -83,7 +83,7 @@
                     <uc14:mfbTooltip ID="mfbTooltip2" runat="server" BodyContent="<%$ Resources:Airports, MapNavaidTip %>" />
                 </div>
                 <div class="itemdata">
-                    <asp:TextBox ID="txtRoute" runat="server" Font-Size="Small" TabIndex="4" 
+                    <asp:TextBox ID="txtRoute" runat="server" Font-Size="Small" 
                         Width="90%" meta:resourcekey="txtRouteResource1"></asp:TextBox>
                 </div>
             </div>
@@ -94,7 +94,7 @@
                 <div class="itemdata">
                     <div style="position:relative; display:inline-block">
                         <asp:TextBox ID="txtComments" runat="server" TextMode="MultiLine" dir="auto" Font-Names="Arial"
-                            Font-Size="Small" TabIndex="5" Rows="2" Width="90%" 
+                            Font-Size="Small" Rows="2" Width="90%" 
                             meta:resourcekey="txtCommentsResource1"></asp:TextBox>
                     </div>
                     <script type="text/javascript">
@@ -114,8 +114,8 @@
                 <uc14:mfbTooltip ID="mfbTooltip3" runat="server" BodyContent="<%$ Resources:LocalizedText, EditFlightApproachTooltip %>" />
             </div>
             <div class="itemdata">
-                <uc7:mfbDecimalEdit ID="intApproaches" EditingMode="Integer" Width="40px" TabIndex="6" runat="server" />&nbsp;<asp:CheckBox 
-                    ID="ckHold" runat="server" Text="Hold" TabIndex="7" 
+                <uc7:mfbDecimalEdit ID="intApproaches" EditingMode="Integer" Width="40px" runat="server" />&nbsp;<asp:CheckBox 
+                    ID="ckHold" runat="server" Text="Hold" 
                     meta:resourcekey="ckHoldResource1" />
                     
             </div>
@@ -125,7 +125,7 @@
                     Text="Total Landings" meta:resourcekey="Label12Resource1"></asp:Label> 
             </div>
             <div class="itemdata">
-                <uc7:mfbDecimalEdit ID="intLandings" EditingMode="Integer" Width="40px" TabIndex="8" runat="server" />
+                <uc7:mfbDecimalEdit ID="intLandings" EditingMode="Integer" Width="40px" runat="server" />
                 <asp:CustomValidator ID="valCheckFullStop" 
                     OnServerValidate="CheckFullStopCount" runat="server" ErrorMessage="Total landings must be greater than or equal to the number of full stop landings"
                     CssClass="error" Display="Dynamic" 
@@ -138,7 +138,7 @@
                     <asp:Label ID="Label13" runat="server" Text="Full Stop (Day):" meta:resourcekey="Label13Resource1"></asp:Label>
                 </div>
                 <div class="itemdata">
-                    <uc7:mfbDecimalEdit ID="intFullStopLandings" EditingMode="Integer" Width="40px" TabIndex="9" runat="server" />
+                    <uc7:mfbDecimalEdit ID="intFullStopLandings" EditingMode="Integer" Width="40px" runat="server" />
                 </div>
             </div>
         </div>
@@ -148,7 +148,7 @@
                     <asp:Label ID="Label14" runat="server" Text="Full Stop (Night):" meta:resourcekey="Label14Resource1"></asp:Label>
                 </div>
                 <div class="itemdata">
-                    <uc7:mfbDecimalEdit ID="intNightLandings" EditingMode="Integer" Width="40px" TabIndex="10" runat="server" />
+                    <uc7:mfbDecimalEdit ID="intNightLandings" EditingMode="Integer" Width="40px" runat="server" />
                 </div>
             </div>
         </div>
@@ -162,7 +162,7 @@
                     Text="Cross-Country" meta:resourcekey="Label15Resource1"></asp:Label>
             </div>
             <div class="itemdata">
-                <uc7:mfbDecimalEdit ID="decXC" Width="40px" TabIndex="11" runat="server" />
+                <uc7:mfbDecimalEdit ID="decXC" Width="40px" runat="server" />
             </div>
         </div>
         <div class="itemtimeright">
@@ -170,7 +170,7 @@
                     Text="Night" meta:resourcekey="Label16Resource1"></asp:Label>
             </div>
             <div class="itemdata">
-                <uc7:mfbDecimalEdit ID="decNight" Width="40px" TabIndex="12" runat="server" />
+                <uc7:mfbDecimalEdit ID="decNight" Width="40px" runat="server" />
             </div>
         </div>
         <div class="itemtimeleft">
@@ -178,7 +178,7 @@
                     Text="Simulated Instrument" meta:resourcekey="Label17Resource1"></asp:Label>
             </div>
             <div class="itemdata">
-                <uc7:mfbDecimalEdit ID="decSimulatedIFR" Width="40px" TabIndex="13" runat="server" />
+                <uc7:mfbDecimalEdit ID="decSimulatedIFR" Width="40px" runat="server" />
             </div>
         </div>
         <div class="itemtimeright">
@@ -186,7 +186,7 @@
                     Text="IMC" meta:resourcekey="Label18Resource1"></asp:Label>
             </div>
             <div class="itemdata">
-                <uc7:mfbDecimalEdit ID="decIMC"  Width="40px" TabIndex="14" runat="server" />
+                <uc7:mfbDecimalEdit ID="decIMC"  Width="40px" runat="server" />
             </div>
         </div>
         <div class="itemtimeleft">
@@ -194,7 +194,7 @@
                     Text="Ground Sim" meta:resourcekey="Label19Resource1"></asp:Label>
             </div>
             <div class="itemdata">
-                <uc7:mfbDecimalEdit ID="decGrndSim" Width="40px" TabIndex="15" runat="server" />
+                <uc7:mfbDecimalEdit ID="decGrndSim" Width="40px" runat="server" />
             </div>
         </div>
         <div class="itemtimeright">
@@ -202,7 +202,7 @@
                     Text="Received" meta:resourcekey="Label20Resource1"></asp:Label>
             </div>
             <div class="itemdata">
-                <uc7:mfbDecimalEdit ID="decDual" Width="40px" TabIndex="16" runat="server" />
+                <uc7:mfbDecimalEdit ID="decDual" Width="40px" runat="server" />
             </div>
         </div>
         <div class="itemtimeleft">
@@ -210,7 +210,7 @@
                     Text="Instructor" meta:resourcekey="Label21Resource1"></asp:Label>
             </div>
             <div class="itemdata">
-                <uc7:mfbDecimalEdit ID="decCFI" Width="40px" TabIndex="17" runat="server" />
+                <uc7:mfbDecimalEdit ID="decCFI" Width="40px" runat="server" />
             </div>
         </div>
         <div class="itemtimeright">
@@ -218,7 +218,7 @@
                     Text="SIC (2nd in Command)" meta:resourcekey="Label22Resource1"></asp:Label>
             </div>
             <div class="itemdata">
-                <uc7:mfbDecimalEdit ID="decSIC" Width="40px" TabIndex="18" runat="server" />
+                <uc7:mfbDecimalEdit ID="decSIC" Width="40px" runat="server" />
             </div>
         </div>
         <div class="itemtimeleft">
@@ -226,7 +226,7 @@
                     Text="PIC" meta:resourcekey="Label23Resource1"></asp:Label>
             </div>
             <div class="itemdata">
-                <uc7:mfbDecimalEdit ID="decPIC" Width="40px" TabIndex="19" runat="server" />
+                <uc7:mfbDecimalEdit ID="decPIC" Width="40px" runat="server" />
             </div>
         </div>
         <div class="itemtimeright">
@@ -234,7 +234,7 @@
                     Text="Total Time" meta:resourcekey="Label24Resource1"></asp:Label>
             </div>
             <div class="itemdata">
-                <uc7:mfbDecimalEdit ID="decTotal" Width="40px" TabIndex="20" runat="server" /> 
+                <uc7:mfbDecimalEdit ID="decTotal" Width="40px" runat="server" /> 
             </div>
         </div>
     </div>
@@ -258,7 +258,7 @@
         </div>
         <asp:Panel ID="pnlFlightDetails" runat="server" Height="0px" 
             style="overflow:hidden;" meta:resourcekey="pnlFlightDetailsResource1">
-            <uc4:mfbFlightInfo ID="mfbFlightInfo1" runat="server" OnAutoFill="AutoFill" InitialTabIndex="21" />
+            <uc4:mfbFlightInfo ID="mfbFlightInfo1" runat="server" OnAutoFill="AutoFill" />
         </asp:Panel>
         <cc1:CollapsiblePanelExtender ID="cpeFlightDetails" runat="server" 
             TargetControlID="pnlFlightDetails" CollapsedSize="0" ExpandControlID="FlightDetailsHeader"
@@ -290,7 +290,7 @@
         </div>
         <p>
             <span style="vertical-align:middle">
-                <asp:CheckBox ID="ckPublic" CssClass="itemlabel" runat="server" TabIndex="30" style="vertical-align:middle" 
+                <asp:CheckBox ID="ckPublic" CssClass="itemlabel" runat="server" style="vertical-align:middle" 
                     meta:resourcekey="ckPublicResource1" />&nbsp;
                 <asp:Label ID="Label4" AssociatedControlID="ckPublic" runat="server" 
                     CssClass="itemlabel" EnableViewState="False">
@@ -362,7 +362,7 @@
                 <td>
                     <asp:Button ID="btnCancel" runat="server" Text="<%$ Resources:LogbookEntry, EditFlightInlineCancel %>" OnClick="btnCancel_Click" Visible="false" />&nbsp;&nbsp;
                     <asp:Button ID="btnAddFlight" runat="server" Text="Add Flight" 
-                        OnClick="btnAddFlight_Click" TabIndex="31" 
+                        OnClick="btnAddFlight_Click" 
                         meta:resourcekey="btnAddFlightResource1"/>
                 </td>
                 <td>
