@@ -84,7 +84,7 @@ namespace MyFlightbook.ImportFlights
         */
         private readonly static string[] colFlightID = { "Flight ID" };
         private readonly static string[] colDate = { "Date", "FLT_DATE", "Date Flown", "flight_date" };
-        private readonly static string[] colTail = { "Tail Number", "Registration", "Tail", "Ident", "SERIAL_NUM", "ACFT", "Aircraft ID", "Reg", "AIRCRAFT REGISTRATION", "aircraft_registration", "tailNo", "aircraft_tail_number", "Tail #" };
+        private readonly static string[] colTail = { "Tail Number", "Registration", "Tail", "Ident", "SERIAL_NUM", "ACFT", "Aircraft ID", "Reg", "Reg.", "AIRCRAFT REGISTRATION", "aircraft_registration", "tailNo", "aircraft_tail_number", "Tail #" };
         private readonly static string[] colAircraftID = { "Aircraft ID" };
         private readonly static string[] colTotal = { "Total Flight Time", "Total Time", "TotalDuration", "Total Duration", "Flt Time", "Block", "HRS", "TIME FLOWN", "FltTime", "Total", "total_time", "totalFlightTime", "flight_time", "Duration" };
         private readonly static string[] colApproaches = { "Approaches", "NumApproaches", "Inst App (D/N)", "Inst App", "IAP", "APPROACHES & TYPE", "instrumentApproaches" };
@@ -94,12 +94,12 @@ namespace MyFlightbook.ImportFlights
         private readonly static string[] colFullStopLandings = { "FS Day Landings", "flight_dayLandings", "Day Ldg", "Day Ldgs", "Full-Stop Day Landings", "LANDINGS DAY", "Day Landings", "LandsDay", "landings_day", "ldgs_day", "dayLandings", "day_landings", "Ldg Day" };
         private readonly static string[] colCrossCountry = { "X-Country", "flight_crossCountry", "XCountry", "XC", "X CNTY", "X/Ctry", "X/C", "CROSS COUNTRY", "CrossCountry", "Cross Country Duration", "cross_country" };
         private readonly static string[] colNight = { "Night", "flight_night", "Night Duration", "nightTime" };
-        private readonly static string[] colIMC = { "IMC", "flight_actualInstrument", "Actual Inst", "INSTRUMENT", "Actual Instrument Duration", "Instr", "Inst", "Actual Instrument", "ifr", "actualInstrument", "actual_instrument" };
+        private readonly static string[] colIMC = { "IMC", "flight_actualInstrument", "Actual Inst", "INSTRUMENT", "Actual Instrument Duration", "Instr", "Instr.", "Inst", "Actual Instrument", "ifr", "actualInstrument", "actual_instrument" };
         private readonly static string[] colSimIFR = { "Simulated Instrument", "flight_simulatedInstrument", "Hood", "Sim Inst", "Simulated Instrument Duration", "simulated_instrument", "Simulated Instrument (Hood)" };
         private readonly static string[] colGroundSim = { "Ground Simulator", "flight_simulator", "Sim/FTD", "SIMULATOR", "Simulator Duration", "SimTime", "synthetic_training", "simulator_time" };
         private readonly static string[] colDual = { "Dual Received", "flight_dualReceived", "Dualreceived", "Dual Recd", "Dual", "Dual Received Duration", "dual_received", "Dual Received (Student)" };
         private readonly static string[] colCFI = { "CFI", "flight_dualGiven", "DualGiven", "Dual Given", "Dual Given Duration", "flight_instructor", "instructor", "as_instructor", "IP", "Instructor (PIC)" };
-        private readonly static string[] colSIC = { "SIC", "flight_sic", "SECOND IN COMMAND", "SIC Duration", "CoPlt", "co_pilot", "copilot", "Co-Pilot" };
+        private readonly static string[] colSIC = { "SIC", "flight_sic", "SECOND IN COMMAND", "SIC Duration", "CoPlt", "Co-Plt", "co_pilot", "copilot", "Co-Pilot" };
         private readonly static string[] colPIC = { "PIC", "flight_pic", "PILOT IN COMMAND", "PIC Duration", "pilot_in_command_time", "Pilot in CMD" };
         private readonly static string[] colRoute = { "Route", "flight_route", "Via", "ROUTE OF FLIGHT", "LOC_INTM" };
         private readonly static string[] colFrom = { "From", "flight_from", "Departure", "Origin", "LOC_FROM", "DepPlace", "departure_airport_name", "departure_airport", "departureAirport" };
@@ -125,7 +125,7 @@ namespace MyFlightbook.ImportFlights
         private readonly static Dictionary<string, string[]> PropNameAliases = new Dictionary<string, string[]>()
         {
             { "Solo Time", new string[] {"Solo Time", "flight_solo", "Solo", "Solo Duration"}},
-            { "Name of PIC", new string[] {"Name of PIC", "flight_selectedCrewPIC", "PIC/P1 Crew", "Captain", "PIC Name", "PICName", "name_of_pilot_in_command", "pic_name" }},
+            { "Name of PIC", new string[] {"Name of PIC", "flight_selectedCrewPIC", "PIC/P1 Crew", "Captain", "PIC Name", "PICName", "name_of_pilot_in_command", "pic_name", "Name PIC" }},
             { "Name of SIC", new string[] {"Name of SIC", "SIC/P2 Crew", "First Officer" }},
             { "Instructor Name", new string[] {"Instructor Name", "instructor_name" } },
             { "Takeoffs - Night", new string[] {"Takeoffs - Night", "flight_nightTakeoffs", "Night T/O", "Night Takeoffs", "TKoffsNight", "to_night", "T/O Night" }},
@@ -138,9 +138,9 @@ namespace MyFlightbook.ImportFlights
             {"Go-arounds", new string[] {"Go-arounds", "flight_goArounds"}},
             {"Duty Time End (UTC)", new string[] {"Duty Time End (UTC)", "flight_offDutyTime"}},
             {"Duty Time Start (UTC)", new string[] {"Duty Time Start (UTC)", "flight_onDutyTime"}},
-            {"Part 91 Flight", new string[] {"Part 91 Flight", "flight_faaPart91"}},
-            {"Part 121 Flight", new string[] {"Part 121 Flight", "flight_faaPart121"}},
-            {"Part 135 Flight", new string[] {"Part 135 Flight", "flight_faaPart135"}},
+            {"Part 91 Flight", new string[] {"Part 91 Flight", "flight_faaPart91", "PT91" }},
+            {"Part 121 Flight", new string[] {"Part 121 Flight", "flight_faaPart121", "PT121"}},
+            {"Part 135 Flight", new string[] {"Part 135 Flight", "flight_faaPart135", "PT135"}},
             {"Tachometer End", new string[] {"Tachometer End", "Tach In"}},
             {"Tachometer Start", new string[] {"Tachometer Start", "Tach Out"}},
             {"Flight Number", new string[] {"Flight Number", "Flight", "flightNo" } },

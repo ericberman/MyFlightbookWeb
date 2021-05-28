@@ -1074,6 +1074,7 @@
     <Compile Include="AppCode\Flights\Import\CrewLog.cs" />
     <Compile Include="AppCode\Flights\Import\CrewTrac.cs" />
     <Compile Include="AppCode\Flights\Import\CSVImporter.cs" />
+    <Compile Include="AppCode\Flights\Import\eCrew.cs" />
     <Compile Include="AppCode\Flights\Import\eLogSite.cs" />
     <Compile Include="AppCode\Flights\Import\ExternalFormat.cs" />
     <Compile Include="AppCode\Flights\Import\ForeFlight.cs" />

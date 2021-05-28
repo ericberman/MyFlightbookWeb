@@ -8,7 +8,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2020 MyFlightbook LLC
+ * Copyright (c) 2017-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -249,7 +249,7 @@ namespace MyFlightbook.ImportFlights
 
     public abstract class ExternalFormatImporter
     {
-        private readonly static ExternalFormatImporter[] rgFormatters = { new LogTenProImporter(), new ForeFlightImporter(), new eLogSiteImporter(), new MccPilotImporter(), new CrewTracImporter(), new RosterBusterImporter(), new CrewLog(), new TASCImporter(), new AASchedulerImporter() };
+        private readonly static ExternalFormatImporter[] rgFormatters = { new LogTenProImporter(), new ForeFlightImporter(), new eLogSiteImporter(), new MccPilotImporter(), new CrewTracImporter(), new RosterBusterImporter(), new CrewLog(), new TASCImporter(), new AASchedulerImporter(), new eCrew() };
 
         /// <summary>
         /// Initializes an enumerable of the external format from a datatable.
