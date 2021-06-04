@@ -922,6 +922,33 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Save failed - you are not editing the most up-to-date version of this aircraft.  Please reload this page and try again..
+        /// </summary>
+        internal static string errNotEditingMostRecentVersion {
+            get {
+                return ResourceManager.GetString("errNotEditingMostRecentVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You are not editing the most up-to-date version of this aircraft.  Please refresh your aircraft list and try again..
+        /// </summary>
+        internal static string errNotEditingMostRecentVersionWebService {
+            get {
+                return ResourceManager.GetString("errNotEditingMostRecentVersionWebService", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please upgrade to the latest version of this app in order to make edits to aircraft..
+        /// </summary>
+        internal static string errNotEditingMostRecentVersionWebServiceUpgrade {
+            get {
+                return ResourceManager.GetString("errNotEditingMostRecentVersionWebServiceUpgrade", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Any aircraft that is not a real aircraft must have a tailnumber that begins with &quot;SIM&quot;.  Real aircraft must NOT begin with SIM..
         /// </summary>
         internal static string errSimMustStartWithSim {

@@ -668,4 +668,13 @@
   <data name="editAircraftRemoveAfterMigrate" xml:space="preserve">
     <value>Remove this aircraft from my account after migration</value>
   </data>
+  <data name="errNotEditingMostRecentVersion" xml:space="preserve">
+    <value>Save failed - you are not editing the most up-to-date version of this aircraft.  Please reload this page and try again.</value>
+  </data>
+  <data name="errNotEditingMostRecentVersionWebService" xml:space="preserve">
+    <value>You are not editing the most up-to-date version of this aircraft.  Please refresh your aircraft list and try again.</value>
+  </data>
+  <data name="errNotEditingMostRecentVersionWebServiceUpgrade" xml:space="preserve">
+    <value>Please upgrade to the latest version of this app in order to make edits to aircraft.</value>
+  </data>
 </root>

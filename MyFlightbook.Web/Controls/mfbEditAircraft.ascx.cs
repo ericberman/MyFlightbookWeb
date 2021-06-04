@@ -220,7 +220,11 @@ namespace MyFlightbook.AircraftControls
         public int AircraftID
         {
             get { return m_ac.AircraftID; }
-            set { ViewState[szKeyVSAircraftInProgress] = m_ac = new Aircraft(value); }
+            set
+            {
+                ViewState[szKeyVSAircraftInProgress] = m_ac = new Aircraft(value);
+                hdnAcRev.Value = m_ac.Revision.ToString(CultureInfo.InvariantCulture);
+            }
         }
 
         private Aircraft m_ac = new Aircraft();
@@ -697,13 +701,26 @@ namespace MyFlightbook.AircraftControls
         #endregion
 
         #region Committing Changes
+        /// <summary>
+        /// Gets the aircraft to be saved, set to the correct version so that we can detect versioning issues.
+        /// </summary>
+        private Aircraft AircraftToEdit
+        {
+            get
+            {
+                Aircraft ac = (AircraftID == Aircraft.idAircraftUnknown) ? new Aircraft() : new Aircraft(AircraftID);  // if editing an existing airplane, init to the existing data (only modify what's in the UI)
+                ac.Revision = String.IsNullOrEmpty(hdnAcRev.Value) ? 0 : Convert.ToInt32(hdnAcRev.Value, CultureInfo.InvariantCulture); ;  // make sure, though, that we don't overwrite later revisions.
+                return ac;
+            }
+        }
+
         protected void SaveChanges()
         {
             lblError.Text = string.Empty;
             string szTailNew = txtTail.Text.ToUpper(CultureInfo.CurrentCulture);
             int AircraftIDOrig = AircraftID;
 
-            Aircraft ac = (AircraftID == Aircraft.idAircraftUnknown) ? new Aircraft() : new Aircraft(AircraftID);  // if editing an existing airplane, init to the existing data (only modify what's in the UI)
+            Aircraft ac = AircraftToEdit;
 
             // Rules for how we want to handle a tailnumber edit
             // a) New aircraft - no issue (Commit will match to an existing aircraft as needed)

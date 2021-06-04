@@ -286,6 +286,7 @@
     <div>&nbsp;</div>
     
     <div>
+        <asp:HiddenField ID="hdnAcRev" runat="server" />
         <asp:Button ID="btnAddAircraft" runat="server"
             OnClick="btnAddAircraft_Click"
             Text="<%$ Resources:Aircraft, editAircraftAddButton %>" ValidationGroup="EditAircraft" />

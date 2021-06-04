@@ -798,6 +798,15 @@ namespace MyFlightbook.AircraftControls
         protected global::Controls_mfbMaintainAircraft mfbMaintainAircraft;
 
         /// <summary>
+        /// hdnAcRev control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnAcRev;
+
+        /// <summary>
         /// btnAddAircraft control.
         /// </summary>
         /// <remarks>

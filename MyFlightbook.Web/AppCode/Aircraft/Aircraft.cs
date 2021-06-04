@@ -15,7 +15,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2020 MyFlightbook LLC
+ * Copyright (c) 2009-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -868,6 +868,11 @@ WHERE
             get { return Maintenance.Notes; }
             set { Maintenance.Notes = value ?? string.Empty; }
         }
+
+        /// <summary>
+        /// Revision number for this aircraft - for versioning.
+        /// </summary>
+        public int Revision { get; set; } = -1;
         #endregion
         #endregion
 
@@ -960,6 +965,8 @@ WHERE
             if (rgTemplateIDs != null)
                 foreach (int i in rgTemplateIDs)
                     DefaultTemplates.Add(i);
+
+            Revision = (int) util.ReadNullableField(dr, "Revision", 0);
         }
 
         /// <summary>
@@ -1027,8 +1034,21 @@ WHERE
             const string szCommitTemplate = @"{0} aircraft SET tailnumber = ?tailNumber, version=?version, idmodel = ?idModel, InstanceType = ?instanceType, 
                 LastAnnual = ?LastAnnual, LastVOR = ?LastVOR, LastAltimeter = ?LastAltimeter, LastTransponder = ?LastTransponder, LastPitotStatic=?LastPitotStatic,  
                 HasGlassUpgrade = ?HasGlass, GlassUpgradeDate=?glassUpgradeDate, HasTAAUpgrade=?IsTaa, PublicNotes=?PublicNotes, LastElt=?LastElt, Last100=?Last100, LastOil=?LastOil, LastEngine=?LastEngine, 
-                RegistrationDue=?RegistrationDue, IsLocked=?locked {1} ";
+                RegistrationDue=?RegistrationDue, IsLocked=?locked, Revision=?revision {1} ";
             string szQ = String.Format(CultureInfo.InvariantCulture, szCommitTemplate, IsNew ? "INSERT INTO" : "UPDATE", IsNew ? string.Empty : "WHERE idaircraft = ?idAircraft");
+
+
+            // If this is an update, get the current version and ensure it matches
+            if (IsNew)
+                Revision = -1;  // just to be safe - will become 0 below.
+            else
+            {
+                DBHelper dbhVer = new DBHelper("SELECT Revision FROM aircraft WHERE idaircraft=?idAircraft");
+                int currVer = -1;
+                dbhVer.ReadRow((comm) => { comm.Parameters.AddWithValue("idAircraft", AircraftID); }, (dr) => { currVer = (int)dr["Revision"]; });
+                if (currVer != Revision)
+                    throw new MyFlightbookException(Resources.Aircraft.errNotEditingMostRecentVersion);
+            }
 
             DBHelper dbh = new DBHelper();
             dbh.DoNonQuery(szQ,
@@ -1054,6 +1074,7 @@ WHERE
                     comm.Parameters.AddWithValue("RegistrationDue", RegistrationDue);
                     comm.Parameters.AddWithValue("PublicNotes", PublicNotes.LimitTo(4094));
                     comm.Parameters.AddWithValue("locked", IsLocked);
+                    comm.Parameters.AddWithValue("Revision", ++Revision);
 
                     if (!IsNew)
                         comm.Parameters.AddWithValue("idAircraft", AircraftID);
@@ -1957,10 +1978,9 @@ WHERE
             do
             {
                 string szNumber = (i == 0) ? string.Empty : i.ToString(CultureInfo.InvariantCulture);
-                if (szTailBase.Length + szNumber.Length > Aircraft.maxTailLength)
-                    szTail = szTailBase.Substring(0, Aircraft.maxTailLength - szNumber.Length) + szNumber;
-                else
-                    szTail = szTailBase + szNumber;
+                szTail = szTailBase.Length + szNumber.Length > Aircraft.maxTailLength
+                    ? szTailBase.Substring(0, Aircraft.maxTailLength - szNumber.Length) + szNumber
+                    : szTailBase + szNumber;
 
                 ac = new Aircraft(szTail);
                 i++;
