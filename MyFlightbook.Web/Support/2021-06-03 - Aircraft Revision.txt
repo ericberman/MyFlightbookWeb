@@ -1,0 +1,2 @@
+﻿ALTER TABLE `logbook`.`aircraft` 
+ADD COLUMN `Revision` INT(10) NOT NULL DEFAULT 0 COMMENT 'Sequential edit number for this aircraft, for versioning.' AFTER `isLocked`;
