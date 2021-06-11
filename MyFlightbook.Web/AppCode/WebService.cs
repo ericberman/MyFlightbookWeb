@@ -470,12 +470,12 @@ namespace MyFlightbook
             if (acExisting.AircraftID < 0)
                 throw new MyFlightbookException(Resources.WebService.errAircraftNotFound);
 
-            if (ac.Revision < 0)    // indicates an old app that isn't setting the Revision property
-            {
-                // TODO: for now, this is letting legacy apps modify.  After apps are updated, take this 
-                // throw new MyFlightbookException(Resources.Aircraft.errNotEditingMostRecentVersionWebServiceUpgrade);
-            }
-            else if (acExisting.Revision != ac.Revision)
+            // Revision < 0 indicates an old app that isn't setting the Revision property - disallow and tell people to upgrade
+            if (ac.Revision < 0)
+                throw new MyFlightbookException(Resources.Aircraft.errNotEditingMostRecentVersionWebServiceUpgrade);
+
+            // Otherwise, if we don't match the current revision, tell them they're out of date.
+            if (acExisting.Revision != ac.Revision)
                 throw new MyFlightbookException(Resources.Aircraft.errNotEditingMostRecentVersionWebService);
 
             if (fUpdateNotes)
