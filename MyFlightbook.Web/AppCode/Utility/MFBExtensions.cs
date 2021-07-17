@@ -142,6 +142,11 @@ namespace MyFlightbook
         {
             return dt.Subtract(dtUnixReferenceDate).TotalSeconds;
         }
+
+        public static DateTime StripSeconds(this DateTime dt)
+        {
+            return dt == null || !dt.HasValue() ? DateTime.MinValue : new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, 0, dt.Kind);
+        }
         #endregion
 
         #region String Extensions

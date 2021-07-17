@@ -1367,7 +1367,7 @@ GROUP BY fp.idPropType;";
             CustomFlightProperty cfpEnd = rgprops.FirstOrDefault(cfp => cfp.PropTypeID == propEnd);
 
             if (cfpStart != null && cfpEnd != null && cfpEnd.DateValue.CompareTo(cfpStart.DateValue) > 0)
-                d[propEnd] = String.Format(CultureInfo.CurrentCulture, szFormat, ((decimal)cfpEnd.DateValue.Subtract(cfpStart.DateValue).TotalHours).FormatDecimal(fUseHHMM, true));
+                d[propEnd] = String.Format(CultureInfo.CurrentCulture, szFormat, ((decimal)cfpEnd.DateValue.StripSeconds().Subtract(cfpStart.DateValue.StripSeconds()).TotalHours).FormatDecimal(fUseHHMM, true));
 
         }
 

@@ -2260,7 +2260,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                     case AutoFillOptions.AutoFillTotalOption.EngineTime:
                         if (EngineStart.HasValue() && EngineEnd.HasValue() && EngineStart.CompareTo(EngineEnd) < 0)
                         {
-                            TotalFlightTime = (decimal)EngineEnd.Subtract(EngineStart).TotalHours;
+                            TotalFlightTime = (decimal)EngineEnd.StripSeconds().Subtract(EngineStart.StripSeconds()).TotalHours;
                             break;
                         }
                         goto case AutoFillOptions.AutoFillTotalOption.FlightTime;
@@ -2268,7 +2268,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                     case AutoFillOptions.AutoFillTotalOption.FlightTime:
                         if (FlightStart.HasValue() && FlightEnd.HasValue() && FlightStart.CompareTo(FlightEnd) < 0)
                         {
-                            TotalFlightTime = (decimal)FlightEnd.Subtract(FlightStart).TotalHours;
+                            TotalFlightTime = (decimal)FlightEnd.StripSeconds().Subtract(FlightStart.StripSeconds()).TotalHours;
                             break;
                         }
                         goto case AutoFillOptions.AutoFillTotalOption.HobbsTime;
@@ -2287,7 +2287,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                             CustomFlightProperty cfpBlockIn = CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDBlockIn);
 
                             if (cfpBlockIn != null && cfpBlockOut != null && !cfpBlockIn.IsDefaultValue && !cfpBlockOut.IsDefaultValue && cfpBlockIn.DateValue.CompareTo(cfpBlockOut.DateValue) > 0)
-                                TotalFlightTime = (decimal)cfpBlockIn.DateValue.Subtract(cfpBlockOut.DateValue).TotalHours;
+                                TotalFlightTime = (decimal)cfpBlockIn.DateValue.StripSeconds().Subtract(cfpBlockOut.DateValue.StripSeconds()).TotalHours;
                         }
                         break;
                 }
