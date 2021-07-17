@@ -257,7 +257,7 @@ namespace MyFlightbook.Subscriptions
             // Do a pending flights reminder - every week or so
             if (DateTime.Now.DayOfYear % 7 == 6)
             {
-                IDictionary<string, int> usersWithPendingFlights = PendingFlight.UsersWithLotsOfPendingFlights(20);
+                IDictionary<string, int> usersWithPendingFlights = PendingFlight.UsersWithLotsOfPendingFlights(30);
                 foreach (string szUser in usersWithPendingFlights.Keys)
                 {
                     Profile pf = Profile.GetUser(szUser);
