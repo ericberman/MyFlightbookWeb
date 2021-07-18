@@ -468,60 +468,74 @@ namespace MyFlightbook.Subscriptions
             return true;
         }
 
+        private static readonly object lockObj = new object();
+
         private async Task<bool> BackupToCloud()
         {
             string szBackups = Path.Combine(Path.GetTempPath(), String.Format(CultureInfo.InvariantCulture, "{0}-CloudBackup.txt", DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
             string szBackupFailures = Path.Combine(Path.GetTempPath(), String.Format(CultureInfo.InvariantCulture, "{0}-CloudBackup-errors.txt", DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
-            using (StreamWriter swSuccess = new StreamWriter(szBackups, false, Encoding.UTF8))
-            using (StreamWriter swFailure = new StreamWriter(szBackupFailures, false, Encoding.UTF8))
+
+            if (File.Exists(szBackups))
+                File.Delete(szBackups);
+            if (File.Exists(szBackupFailures))
+                File.Delete(szBackupFailures);
+
+            List<EarnedGratuity> lstUsersWithCloudBackup = EarnedGratuity.GratuitiesForUser(string.Empty, Gratuity.GratuityTypes.CloudBackup);
+
+            if (!String.IsNullOrEmpty(UserRestriction))
+                lstUsersWithCloudBackup.RemoveAll(eg => eg.Username.CompareCurrentCultureIgnoreCase(UserRestriction) != 0);
+
+            foreach (EarnedGratuity eg in lstUsersWithCloudBackup)
             {
-                List<EarnedGratuity> lstUsersWithCloudBackup = EarnedGratuity.GratuitiesForUser(string.Empty, Gratuity.GratuityTypes.CloudBackup);
+                StringBuilder sb = new StringBuilder();
+                StringBuilder sbFailures = new StringBuilder();
 
-                if (!String.IsNullOrEmpty(UserRestriction))
-                    lstUsersWithCloudBackup.RemoveAll(eg => eg.Username.CompareCurrentCultureIgnoreCase(UserRestriction) != 0);
-
-                foreach (EarnedGratuity eg in lstUsersWithCloudBackup)
+                StorageID sid = StorageID.None;
+                if (eg.UserProfile != null && ((sid = eg.UserProfile.BestCloudStorage) != StorageID.None) && eg.CurrentStatus != EarnedGratuity.EarnedGratuityStatus.Expired)
                 {
-                    StringBuilder sb = new StringBuilder();
-                    StringBuilder sbFailures = new StringBuilder();
-
-                    StorageID sid = StorageID.None;
-                    if (eg.UserProfile != null && ((sid = eg.UserProfile.BestCloudStorage) != StorageID.None) && eg.CurrentStatus != EarnedGratuity.EarnedGratuityStatus.Expired)
+                    try
                     {
-                        try
-                        {
-                            Profile pf = eg.UserProfile;
-                            LogbookBackup lb = new LogbookBackup(pf);
+                        Profile pf = eg.UserProfile;
+                        LogbookBackup lb = new LogbookBackup(pf);
 
-                            switch (sid)
+                        switch (sid)
+                        {
+                            case StorageID.Dropbox:
+                                await BackupDropbox(lb, pf, sb, sbFailures).ConfigureAwait(false);
+                                break;
+                            case StorageID.OneDrive:
+                                await BackupOneDrive(lb, pf, sb, sbFailures).ConfigureAwait(false);
+                                break;
+                            case StorageID.GoogleDrive:
+                                await BackupGoogleDrive(lb, pf, sb, sbFailures).ConfigureAwait(false);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    catch (Exception ex) when (!(ex is OutOfMemoryException))
+                    {
+                        string szError = String.Format(CultureInfo.CurrentCulture, "eg user={0}{1}\r\n\r\n{2}\r\n\r\n{3}", eg == null ? "NULL eg!" : eg.Username, (eg != null && eg.UserProfile == null) ? " NULL PROFILE" : string.Empty, sbFailures.ToString(), sb.ToString());
+                        util.NotifyAdminException("ERROR running nightly backup", new MyFlightbookException(szError, ex));
+                    }
+                    finally
+                    {
+                        lock (lockObj)
+                        {
+                            using (StreamWriter swSuccess = new StreamWriter(szBackups, true, Encoding.UTF8))
+                            using (StreamWriter swFailure = new StreamWriter(szBackupFailures, true, Encoding.UTF8))
                             {
-                                case StorageID.Dropbox:
-                                    await BackupDropbox(lb, pf, sb, sbFailures).ConfigureAwait(false);
-                                    break;
-                                case StorageID.OneDrive:
-                                    await BackupOneDrive(lb, pf, sb, sbFailures).ConfigureAwait(false);
-                                    break;
-                                case StorageID.GoogleDrive:
-                                    await BackupGoogleDrive(lb, pf, sb, sbFailures).ConfigureAwait(false);
-                                    break;
-                                default:
-                                    break;
+                                // Regardless of what happens, write this to the file (in case something dies).
+                                string sz = sb.ToString();
+                                if (!String.IsNullOrWhiteSpace(sz))
+                                    swSuccess.WriteLine(sz.Trim());
+                                sz = sbFailures.ToString();
+                                if (!String.IsNullOrWhiteSpace(sz))
+                                    swFailure.WriteLine(sz.Trim());
+
+                                swSuccess.Flush();
+                                swFailure.Flush();
                             }
-                        }
-                        catch (Exception ex) when (!(ex is OutOfMemoryException))
-                        {
-                            string szError = String.Format(CultureInfo.CurrentCulture, "eg user={0}{1}\r\n\r\n{2}\r\n\r\n{3}", eg == null ? "NULL eg!" : eg.Username, (eg != null && eg.UserProfile == null) ? " NULL PROFILE" : string.Empty, sbFailures.ToString(), sb.ToString());
-                            util.NotifyAdminException("ERROR running nightly backup", new MyFlightbookException(szError, ex));
-                        }
-                        finally
-                        {
-                            // Regardless of what happens, write this to the file (in case something dies).
-                            string sz = sb.ToString();
-                            if (!String.IsNullOrWhiteSpace(sz))
-                                swSuccess.WriteLine(sz.Trim());
-                            sz = sbFailures.ToString();
-                            if (!String.IsNullOrWhiteSpace(sz))
-                                swFailure.WriteLine(sz.Trim());
                         }
                     }
                 }
