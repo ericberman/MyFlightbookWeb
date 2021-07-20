@@ -232,7 +232,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choose colors to highlight flights that match saved queries.  If a flight matches multiple queries, the color will reflect the first match that is found. .
+        ///   Looks up a localized string similar to Choose colors to highlight flights that match saved searches.  If a flight matches multiple saved searches, the color will reflect the first match that is found. .
         /// </summary>
         internal static string FlightColoringDescription {
             get {
@@ -241,7 +241,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Learn more about saving queries.
+        ///   Looks up a localized string similar to Learn more about saving searches.
         /// </summary>
         internal static string FlightColoringDescriptionLearnMore {
             get {
@@ -259,20 +259,11 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Color flights containing:.
+        ///   Looks up a localized string similar to Learn how to create a saved search.
         /// </summary>
-        internal static string FlightColoringKeywordHeader {
+        internal static string FlightColoringLearnMore {
             get {
-                return ResourceManager.GetString("FlightColoringKeywordHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Keyword.
-        /// </summary>
-        internal static string FlightColoringKeywordPrompt {
-            get {
-                return ResourceManager.GetString("FlightColoringKeywordPrompt", resourceCulture);
+                return ResourceManager.GetString("FlightColoringLearnMore", resourceCulture);
             }
         }
         
@@ -286,20 +277,11 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You have no saved queries.  Create one here based on a simple text search..
+        ///   Looks up a localized string similar to You have no saved searches.
         /// </summary>
         internal static string FlightColoringNoSaveQueries {
             get {
                 return ResourceManager.GetString("FlightColoringNoSaveQueries", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Add Query.
-        /// </summary>
-        internal static string FlightColoringQuickAddQuery {
-            get {
-                return ResourceManager.GetString("FlightColoringQuickAddQuery", resourceCulture);
             }
         }
         

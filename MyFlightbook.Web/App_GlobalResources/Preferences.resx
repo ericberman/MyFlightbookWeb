@@ -175,28 +175,22 @@
     <value>With color:</value>
   </data>
   <data name="FlightColoringDescription" xml:space="preserve">
-    <value>Choose colors to highlight flights that match saved queries.  If a flight matches multiple queries, the color will reflect the first match that is found. </value>
+    <value>Choose colors to highlight flights that match saved searches.  If a flight matches multiple saved searches, the color will reflect the first match that is found. </value>
   </data>
   <data name="FlightColoringDescriptionLearnMore" xml:space="preserve">
-    <value>Learn more about saving queries</value>
+    <value>Learn more about saving searches</value>
   </data>
   <data name="FlightColoringHeader" xml:space="preserve">
     <value>Flight Coloring</value>
   </data>
-  <data name="FlightColoringKeywordHeader" xml:space="preserve">
-    <value>Color flights containing:</value>
-  </data>
-  <data name="FlightColoringKeywordPrompt" xml:space="preserve">
-    <value>Keyword</value>
+  <data name="FlightColoringLearnMore" xml:space="preserve">
+    <value>Learn how to create a saved search</value>
   </data>
   <data name="FlightColoringNoColor" xml:space="preserve">
     <value>Remove color</value>
   </data>
   <data name="FlightColoringNoSaveQueries" xml:space="preserve">
-    <value>You have no saved queries.  Create one here based on a simple text search.</value>
-  </data>
-  <data name="FlightColoringQuickAddQuery" xml:space="preserve">
-    <value>Add Query</value>
+    <value>You have no saved searches</value>
   </data>
   <data name="FlightColoringSample" xml:space="preserve">
     <value>Sample (Click to change)</value>

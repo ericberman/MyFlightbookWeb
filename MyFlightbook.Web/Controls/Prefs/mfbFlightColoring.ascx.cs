@@ -17,7 +17,10 @@ namespace MyFlightbook.Web.Controls.Prefs
     {
         protected void UpdateQueryList()
         {
-            gvCanned.DataSource = CannedQuery.QueriesForUser(Page.User.Identity.Name); ;
+            IEnumerable<CannedQuery> rgcq = CannedQuery.QueriesForUser(Page.User.Identity.Name);
+            foreach (CannedQuery cq in rgcq)
+                cq.Refresh();
+            gvCanned.DataSource = rgcq;
             gvCanned.DataBind();
         }
 
@@ -82,20 +85,6 @@ namespace MyFlightbook.Web.Controls.Prefs
                     t.Text = cq.ColorString;
                     l.BackColor = FlightColor.TryParseColor(cq.ColorString);
                 }
-            }
-        }
-
-        protected void btnAddQuery_Click(object sender, EventArgs e)
-        {
-            if (sender == null)
-                throw new ArgumentNullException(nameof(sender));
-            TextBox t = (TextBox) ((Control)sender).NamingContainer.FindControl("txtKey1");
-            if (!String.IsNullOrEmpty(t?.Text))
-            {
-                FlightColor fc = new FlightColor() { KeyWord = t.Text, ColorString="FFF1D4" };
-                fc.AsQuery(Page.User.Identity.Name).Commit(false);
-                t.Text = string.Empty;
-                UpdateQueryList();
             }
         }
     }
