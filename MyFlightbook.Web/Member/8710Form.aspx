@@ -399,5 +399,7 @@
     </ajaxToolkit:Accordion>
 </asp:Content>
 <asp:Content ID="Content1" ContentPlaceHolderID="cpMain" runat="Server">
-    <uc6:mfbLogbook ID="MfbLogbook1" runat="server" />
+    <div class="noprint">
+        <uc6:mfbLogbook ID="MfbLogbook1" runat="server" />
+    </div>
 </asp:Content>
