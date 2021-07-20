@@ -412,6 +412,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to TAA (Technically Advanced Airplane).
+        /// </summary>
+        internal static string TAA {
+            get {
+                return ResourceManager.GetString("TAA", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Tailwheel.
         /// </summary>
         internal static string Tailwheel {

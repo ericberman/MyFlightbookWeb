@@ -354,4 +354,7 @@
   <data name="Flights" xml:space="preserve">
     <value>Flights</value>
   </data>
+  <data name="TAA" xml:space="preserve">
+    <value>TAA (Technically Advanced Airplane)</value>
+  </data>
 </root>
