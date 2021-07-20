@@ -6,13 +6,14 @@ using System.Linq;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2020 MyFlightbook LLC
+ * Copyright (c) 2009-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -39,7 +40,7 @@ namespace MyFlightbook.Web.Admin
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            Profile pf = MyFlightbook.Profile.GetUser(Page.User.Identity.Name);
+            Profile pf = Profile.GetUser(Page.User.Identity.Name);
             CheckAdmin(pf.CanDoSomeAdmin);
 
             tabID sidebarTab = tabID.admUsers;
@@ -462,6 +463,30 @@ namespace MyFlightbook.Web.Admin
         protected void btnFlushCache_Click(object sender, EventArgs e)
         {
             FlushCache();
+        }
+
+        protected void btnNightlyRun_Click(object sender, EventArgs e)
+        {
+            String szURL = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Request.Url.Host, VirtualPathUtility.ToAbsolute("~/public/TotalsAndcurrencyEmail.aspx"));
+            try
+            {
+                using (System.Net.WebClient wc = new System.Net.WebClient())
+                {
+                    byte[] rgdata = wc.DownloadData(szURL);
+                    string szContent = System.Text.UTF8Encoding.UTF8.GetString(rgdata);
+                    if (szContent.Contains("-- SuccessToken --"))
+                    {
+                        lblNightlyRunResult.Text = "Started";
+                        lblNightlyRunResult.CssClass = "success";
+                        btnNightlyRun.Enabled = false;
+                    }
+                }
+            }
+            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            {
+                lblNightlyRunResult.Text = ex.Message;
+                lblNightlyRunResult.CssClass = "error";
+            }
         }
         #endregion
     }

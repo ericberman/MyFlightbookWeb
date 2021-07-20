@@ -366,6 +366,24 @@ namespace MyFlightbook.Web.Admin
         protected global::System.Web.UI.WebControls.Button btnFlushCache;
 
         /// <summary>
+        /// btnNightlyRun control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnNightlyRun;
+
+        /// <summary>
+        /// lblNightlyRunResult control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblNightlyRunResult;
+
+        /// <summary>
         /// hdnActiveTab control.
         /// </summary>
         /// <remarks>
