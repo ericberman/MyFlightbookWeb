@@ -370,10 +370,43 @@
   <data name="PrefBlockListShow" xml:space="preserve">
     <value>Show these...</value>
   </data>
+  <data name="PrefSectFlightEntryDataToInclude" xml:space="preserve">
+    <value>Display the following in tables of your flights:</value>
+  </data>
+  <data name="PrefSectFlightEntryHeader" xml:space="preserve">
+    <value>Flight Entry and Display</value>
+  </data>
   <data name="PrefSectNewFlightCustomization" xml:space="preserve">
-    <value>Core times for new flights</value>
+    <value>Common times for new flights</value>
+  </data>
+  <data name="PrefSectNewFlightCustomizationTip" xml:space="preserve">
+    <value>You can control the order and the display of the time fields that are common to all new flights (PIC, Total, Night, etc.) when editing flights.</value>
   </data>
   <data name="PrefSectNewFlightCustReset" xml:space="preserve">
     <value>Reset to default</value>
+  </data>
+  <data name="PrefSectNewFlightShowCFI" xml:space="preserve">
+    <value>Instructor Time</value>
+  </data>
+  <data name="PrefSectNewFlightShowSIC" xml:space="preserve">
+    <value>Second in Command (SIC) time</value>
+  </data>
+  <data name="PrefSectNewFlightShowTimes" xml:space="preserve">
+    <value>Hobbs time, flight times, and engine times for flights</value>
+  </data>
+  <data name="PrefSectNewFlightTimeZone" xml:space="preserve">
+    <value>Preferred time zone</value>
+  </data>
+  <data name="PrefSectNewFlightTimeZoneLocal" xml:space="preserve">
+    <value>The local date at the point/time of departure</value>
+  </data>
+  <data name="PrefSectNewFlightTimeZonePrompt" xml:space="preserve">
+    <value>Interpret the date of flight as:</value>
+  </data>
+  <data name="PrefSectNewFlightTimeZoneTip" xml:space="preserve">
+    <value>Use this if you prefer to enter times in your local timezone; all times will be converted to and displayed as UTC</value>
+  </data>
+  <data name="PrefSectNewFlightTimeZoneUTC" xml:space="preserve">
+    <value>The UTC date at the time of departure</value>
   </data>
 </root>

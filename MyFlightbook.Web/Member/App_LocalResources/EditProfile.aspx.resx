@@ -135,9 +135,6 @@
   <data name="acpEmailResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="acpLocalPrefsResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="acpoAuthAppsResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
@@ -222,12 +219,6 @@
   <data name="btnUpdateEmailPrefsResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="btnUpdateLocalPrefsResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="btnUpdateLocalPrefsResource2.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="btnUpdatePassResource1.Text" xml:space="preserve">
     <value>Change Password</value>
   </data>
@@ -241,24 +232,6 @@
     <value />
   </data>
   <data name="cklEmailSubscriptionsResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="ckShowTimesResource1.Text" xml:space="preserve">
-    <value>Hobbs time, flight times, and engine times for flights</value>
-  </data>
-  <data name="ckShowTimesResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="ckSICResource1.Text" xml:space="preserve">
-    <value>Second in Command (SIC) time</value>
-  </data>
-  <data name="ckSICResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="ckTrackCFITimeResource1.Text" xml:space="preserve">
-    <value>Instructor Time</value>
-  </data>
-  <data name="ckTrackCFITimeResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="cmbDeadlineAircraftResource1.ToolTip" xml:space="preserve">
@@ -441,18 +414,6 @@
   <data name="lblEmailPrefsUpdatedResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="lblFieldsToShowResource2.Text" xml:space="preserve">
-    <value>Show the following for flights:</value>
-  </data>
-  <data name="lblFieldsToShowResource2.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lblLocalPrefsUpdatedResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lblLocalPrefsUpdatedResource2.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="lblNoRulesResource1.Text" xml:space="preserve">
     <value>You have not defined any currency rules.</value>
   </data>
@@ -463,12 +424,6 @@
     <value>Password successfully changed</value>
   </data>
   <data name="lblPassChangedResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lblPrefDatesResource1.Text" xml:space="preserve">
-    <value>Interpret the date of flight as:</value>
-  </data>
-  <data name="lblPrefDatesResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="lblPrefsUpdatedResource1.Text" xml:space="preserve">
@@ -497,18 +452,6 @@
   </data>
   <data name="ListItemResource10.Value" xml:space="preserve">
     <value>1</value>
-  </data>
-  <data name="ListItemResource18.Text" xml:space="preserve">
-    <value>The local date at the point/time of departure</value>
-  </data>
-  <data name="ListItemResource18.Value" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="ListItemResource19.Text" xml:space="preserve">
-    <value>The UTC date at the time of departure</value>
-  </data>
-  <data name="ListItemResource19.Value" xml:space="preserve">
-    <value>0</value>
   </data>
   <data name="ListItemResource23.Value" xml:space="preserve">
     <value>False</value>
@@ -608,12 +551,6 @@
   </data>
   <data name="locCustomCurrencyHeaderResource1.Text" xml:space="preserve">
     <value>Custom Currency Rules</value>
-  </data>
-  <data name="locFBIsAuthorizedResource1.Text" xml:space="preserve">
-    <value />
-  </data>
-  <data name="locFlightTimesResource1.Text" xml:space="preserve">
-    <value>Flight Entry</value>
   </data>
   <data name="locNewAnswerResource1.Text" xml:space="preserve">
     <value>New Security Answer</value>
@@ -735,9 +672,6 @@
   <data name="rblCloudBackupAppendDateResource3.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="rblDateEntryPreferencesResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="RegularExpressionValidator1Resource1.ErrorMessage" xml:space="preserve">
     <value>Please enter a valid email address</value>
   </data>
@@ -847,18 +781,6 @@
     <value />
   </data>
   <data name="valDeadlineNameResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lblPrefTimeZoneExplanationResource1.Text" xml:space="preserve">
-    <value>Use this if you prefer to enter times in your local timezone; all times will be converted to and displayed as UTC</value>
-  </data>
-  <data name="lblPrefTimeZoneExplanationResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lblPrefTimeZoneResource1.Text" xml:space="preserve">
-    <value>Preferred time zone:</value>
-  </data>
-  <data name="lblPrefTimeZoneResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
 </root>

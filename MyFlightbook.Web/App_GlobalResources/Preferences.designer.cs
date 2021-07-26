@@ -817,11 +817,38 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Core times for new flights.
+        ///   Looks up a localized string similar to Display the following in tables of your flights:.
+        /// </summary>
+        internal static string PrefSectFlightEntryDataToInclude {
+            get {
+                return ResourceManager.GetString("PrefSectFlightEntryDataToInclude", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flight Entry and Display.
+        /// </summary>
+        internal static string PrefSectFlightEntryHeader {
+            get {
+                return ResourceManager.GetString("PrefSectFlightEntryHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Common times for new flights.
         /// </summary>
         internal static string PrefSectNewFlightCustomization {
             get {
                 return ResourceManager.GetString("PrefSectNewFlightCustomization", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can control the order and the display of the time fields that are common to all new flights (PIC, Total, Night, etc.) when editing flights..
+        /// </summary>
+        internal static string PrefSectNewFlightCustomizationTip {
+            get {
+                return ResourceManager.GetString("PrefSectNewFlightCustomizationTip", resourceCulture);
             }
         }
         
@@ -831,6 +858,78 @@ namespace Resources {
         internal static string PrefSectNewFlightCustReset {
             get {
                 return ResourceManager.GetString("PrefSectNewFlightCustReset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Instructor Time.
+        /// </summary>
+        internal static string PrefSectNewFlightShowCFI {
+            get {
+                return ResourceManager.GetString("PrefSectNewFlightShowCFI", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Second in Command (SIC) time.
+        /// </summary>
+        internal static string PrefSectNewFlightShowSIC {
+            get {
+                return ResourceManager.GetString("PrefSectNewFlightShowSIC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hobbs time, flight times, and engine times for flights.
+        /// </summary>
+        internal static string PrefSectNewFlightShowTimes {
+            get {
+                return ResourceManager.GetString("PrefSectNewFlightShowTimes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preferred time zone.
+        /// </summary>
+        internal static string PrefSectNewFlightTimeZone {
+            get {
+                return ResourceManager.GetString("PrefSectNewFlightTimeZone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The local date at the point/time of departure.
+        /// </summary>
+        internal static string PrefSectNewFlightTimeZoneLocal {
+            get {
+                return ResourceManager.GetString("PrefSectNewFlightTimeZoneLocal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Interpret the date of flight as:.
+        /// </summary>
+        internal static string PrefSectNewFlightTimeZonePrompt {
+            get {
+                return ResourceManager.GetString("PrefSectNewFlightTimeZonePrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use this if you prefer to enter times in your local timezone; all times will be converted to and displayed as UTC.
+        /// </summary>
+        internal static string PrefSectNewFlightTimeZoneTip {
+            get {
+                return ResourceManager.GetString("PrefSectNewFlightTimeZoneTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The UTC date at the time of departure.
+        /// </summary>
+        internal static string PrefSectNewFlightTimeZoneUTC {
+            get {
+                return ResourceManager.GetString("PrefSectNewFlightTimeZoneUTC", resourceCulture);
             }
         }
     }
