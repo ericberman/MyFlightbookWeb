@@ -7,7 +7,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2020 MyFlightbook LLC
+ * Copyright (c) 2012-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -18,7 +18,7 @@ public partial class Public_StatsForMail : System.Web.UI.Page
     {
         if (!IsPostBack)
         {
-            cssRef.Href = "~/Public/Stylesheet.css?v=27".ToAbsoluteURL(Request.Url.Scheme, Branding.CurrentBrand.HostName, Request.Url.Port).ToString();
+            cssRef.Href = "~/Public/Stylesheet.css?v=28".ToAbsoluteURL(Request.Url.Scheme, Branding.CurrentBrand.HostName, Request.Url.Port).ToString();
             baseRef.Attributes["href"] = "~/Public/".ToAbsoluteURL(Request.Url.Scheme, Branding.CurrentBrand.HostName, Request.Url.Port).ToString();
             string szAuthKey = util.GetStringParam(Request, "k");
 

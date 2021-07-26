@@ -153,91 +153,91 @@
             </div>
         </div>
     </div>
-    <div class="timesblock">
+    <asp:Panel runat="server" ID="pnlTimeRoot" class="timesblock">
         <div class="header">
             <asp:Localize ID="locTimesHeader" runat="server" Text="<%$ Resources:LogbookEntry, HeaderTimes %>" />
         </div>
-        <div class="itemtimeleft">
+        <asp:Panel ID="pnlXC" runat="server" CssClass="itemtimeleft">
             <div id="divXC" class="itemlabel"><asp:Label ID="Label15" runat="server" 
-                    Text="Cross-Country" meta:resourcekey="Label15Resource1"></asp:Label>
+                    Text="<%$ Resources:LogbookEntry, FieldCrossCountry %>" />
             </div>
             <div class="itemdata">
                 <uc7:mfbDecimalEdit ID="decXC" Width="40px" runat="server" />
             </div>
-        </div>
-        <div class="itemtimeright">
+        </asp:Panel>
+        <asp:Panel ID="pnlNight" runat="server" CssClass="itemtimeright">
             <div id="divNight" class="itemlabel"><asp:Label ID="Label16" runat="server" 
-                    Text="Night" meta:resourcekey="Label16Resource1"></asp:Label>
+                    Text="<%$ Resources:LogbookEntry, FieldNight %>" />
             </div>
             <div class="itemdata">
                 <uc7:mfbDecimalEdit ID="decNight" Width="40px" runat="server" />
             </div>
-        </div>
-        <div class="itemtimeleft">
+        </asp:Panel>
+        <asp:Panel ID="pnlSimIFR" runat="server" CssClass="itemtimeleft">
             <div id="divSimIFR" class="itemlabel"><asp:Label ID="Label17" runat="server" 
-                    Text="Simulated Instrument" meta:resourcekey="Label17Resource1"></asp:Label>
+                    Text="<%$ Resources:LogbookEntry, FieldSimIMCFull %>" />
             </div>
             <div class="itemdata">
                 <uc7:mfbDecimalEdit ID="decSimulatedIFR" Width="40px" runat="server" />
             </div>
-        </div>
-        <div class="itemtimeright">
+        </asp:Panel>
+        <asp:Panel ID="pnlIMC" runat="server" CssClass="itemtimeright">
             <div id="divIMC" class="itemlabel"><asp:Label ID="Label18" runat="server" 
-                    Text="IMC" meta:resourcekey="Label18Resource1"></asp:Label>
+                    Text="<%$ Resources:LogbookEntry, FieldIMC %>" />
             </div>
             <div class="itemdata">
                 <uc7:mfbDecimalEdit ID="decIMC"  Width="40px" runat="server" />
             </div>
-        </div>
-        <div class="itemtimeleft">
+        </asp:Panel>
+        <asp:Panel ID="pnlGrndSim" runat="server" CssClass="itemtimeleft">
             <div id="divGroundSim" class="itemlabel"><asp:Label ID="Label19" runat="server" 
-                    Text="Ground Sim" meta:resourcekey="Label19Resource1"></asp:Label>
+                    Text="<%$ Resources:LogbookEntry, FieldGroundSimFull %>" />
             </div>
             <div class="itemdata">
                 <uc7:mfbDecimalEdit ID="decGrndSim" Width="40px" runat="server" />
             </div>
-        </div>
-        <div class="itemtimeright">
+        </asp:Panel>
+        <asp:Panel ID="pnlDual" runat="server" CssClass="itemtimeright">
             <div id="divDual" class="itemlabel"><asp:Label ID="Label20" runat="server" 
-                    Text="Received" meta:resourcekey="Label20Resource1"></asp:Label>
+                    Text="<%$ Resources:LogbookEntry, FieldDual %>" />
             </div>
             <div class="itemdata">
                 <uc7:mfbDecimalEdit ID="decDual" Width="40px" runat="server" />
             </div>
-        </div>
-        <div class="itemtimeleft">
+        </asp:Panel>
+        <asp:Panel ID="pnlCFI" runat="server" CssClass="itemtimeleft">
             <div class="itemlabel"><asp:Label ID="Label21" runat="server" 
-                    Text="Instructor" meta:resourcekey="Label21Resource1"></asp:Label>
+                    Text="<%$ Resources:LogbookEntry, FieldCFI %>" />
             </div>
             <div class="itemdata">
                 <uc7:mfbDecimalEdit ID="decCFI" Width="40px" runat="server" />
             </div>
-        </div>
-        <div class="itemtimeright">
+        </asp:Panel>
+        <asp:Panel ID="pnlSIC" runat="server" CssClass="itemtimeright">
             <div id="div1" class="itemlabel"><asp:Label ID="Label22" runat="server" 
-                    Text="SIC (2nd in Command)" meta:resourcekey="Label22Resource1"></asp:Label>
+                    Text="<%$ Resources:LogbookEntry, FieldSIC %>" />
             </div>
             <div class="itemdata">
                 <uc7:mfbDecimalEdit ID="decSIC" Width="40px" runat="server" />
             </div>
-        </div>
-        <div class="itemtimeleft">
+        </asp:Panel>
+        <asp:Panel ID="pnlPIC" runat="server" CssClass="itemtimeleft">
             <div id="divPIC" class="itemlabel"><asp:Label ID="Label23" runat="server" 
-                    Text="PIC" meta:resourcekey="Label23Resource1"></asp:Label>
+                    Text="<%$ Resources:LogbookEntry, FieldPIC %>" />
             </div>
             <div class="itemdata">
                 <uc7:mfbDecimalEdit ID="decPIC" Width="40px" runat="server" />
             </div>
-        </div>
-        <div class="itemtimeright">
+        </asp:Panel>
+        <asp:Panel ID="pnlTotal" runat="server" CssClass="itemtimeright">
             <div id="divTotal" class="itemlabel"><asp:Label ID="Label24" runat="server" 
-                    Text="Total Time" meta:resourcekey="Label24Resource1"></asp:Label>
+                    Text="<%$ Resources:LogbookEntry, FieldTotalFull %>" />
             </div>
             <div class="itemdata">
                 <uc7:mfbDecimalEdit ID="decTotal" Width="40px" runat="server" /> 
             </div>
-        </div>
-    </div>
+        </asp:Panel>
+    </asp:Panel>
     <div id="rowTimes7" class="fullblock">
         <asp:MultiView ID="mvPropEdit" runat="server" ActiveViewIndex="0">
             <asp:View ID="vwPropSet" runat="server">

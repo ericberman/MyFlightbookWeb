@@ -373,16 +373,15 @@
             </h2>
             <cc1:Accordion ID="accordianPrefs" runat="server" HeaderCssClass="accordianHeader" HeaderSelectedCssClass="accordianHeaderSelected" ContentCssClass="accordianContent" meta:resourcekey="accordianPrefsResource1" TransitionDuration="250">
                 <Panes>
-                    <cc1:AccordionPane runat="server" ID="acpLocalPrefs" ContentCssClass="" HeaderCssClass="" meta:resourcekey="acpLocalPrefsResource1">
+                    <cc1:AccordionPane runat="server" ID="acpLocalPrefs">
                         <Header>
-                            <asp:Localize ID="locFlightTimes" runat="server" Text="Flight Entry" 
-                                meta:resourcekey="locFlightTimesResource1"></asp:Localize>
+                            <asp:Localize ID="locFlightTimes" runat="server" Text="<%$ Resources:Preferences, PrefSectFlightEntryHeader %>" />
                         </Header>
                         <Content>
                             <div class="prefSectionRow">
                                 <table>
                                     <tr>
-                                        <td colspan="2"><asp:Label ID="lblPrefTimes" runat="server" Font-Bold="True" Text="<%$ Resources:Preferences, DecimalPrefPrompt %>" /></td>
+                                        <td colspan="2"><h3><asp:Label ID="lblPrefTimes" runat="server" Font-Bold="True" Text="<%$ Resources:Preferences, DecimalPrefPrompt %>" /></h3></td>
                                         <td style="font-size:smaller; font-style:italic;">&nbsp;<asp:Localize ID="locSamp1" runat="server" Text="<%$ Resources:Preferences, DecimalPrefSample1 %>" /></td>
                                         <td style="font-size:smaller; font-style:italic;">&nbsp;<asp:Localize ID="locSamp2" runat="server" Text="<%$ Resources:Preferences, DecimalPrefSample2 %>" /></td>
                                     </tr>
@@ -411,47 +410,151 @@
                                         <td style="text-align:center;"><% =(72.0 / 60.0).FormatDecimal(true) %></td>
                                     </tr>
                                 </table>
-                                <div><asp:Label ID="lblPrefTimeZone" runat="server" Text="Preferred time zone:" Font-Bold="true" meta:resourcekey="lblPrefTimeZoneResource1"></asp:Label></div>
-                                <div>&nbsp;&nbsp;<asp:Label ID="lblPrefTimeZoneExplanation" CssClass="fineprint" runat="server" meta:resourcekey="lblPrefTimeZoneExplanationResource1" Text="Use this if you prefer to enter times in your local timezone; all times will be converted to and displayed as UTC"></asp:Label></div>
+                                <h3><asp:Label ID="lblPrefTimeZone" runat="server" Text="<%$ Resources:Preferences, PrefSectNewFlightTimeZone %>" /></h3>
+                                <div>&nbsp;&nbsp;<asp:Label ID="lblPrefTimeZoneExplanation" CssClass="fineprint" runat="server" Text="<%$ Resources:Preferences, PrefSectNewFlightTimeZoneTip %>" /></div>
                                 <div>&nbsp;&nbsp;<uc1:TimeZone runat="server" ID="prefTimeZone" DefaultOffset="0" /></div>
-                                <div><asp:Label ID="lblPrefDates" runat="server" Font-Bold="True" Text="Interpret the date of flight as:" meta:resourcekey="lblPrefDatesResource1"></asp:Label></div>
+                                <h3><asp:Label ID="lblPrefDates" runat="server" Text="<%$ Resources:Preferences, PrefSectNewFlightTimeZonePrompt %>" /></h3>
                                 <asp:RadioButtonList ID="rblDateEntryPreferences" runat="server" 
                                     ValidationGroup="valPrefs" meta:resourcekey="rblDateEntryPreferencesResource1">
-                                    <asp:ListItem Text="The local date at the point/time of departure" Value="1" meta:resourcekey="ListItemResource18" 
-                                        ></asp:ListItem>
-                                    <asp:ListItem Text="The UTC date at the time of departure" 
-                                        Value="0" meta:resourcekey="ListItemResource19"></asp:ListItem>
+                                    <asp:ListItem Text="<%$ Resources:Preferences, PrefSectNewFlightTimeZoneLocal %>" Value="1" />
+                                    <asp:ListItem Text="<%$ Resources:Preferences, PrefSectNewFlightTimeZoneUTC %>" Value="0" />
                                 </asp:RadioButtonList>
-                                <div><asp:Label ID="lblFieldsToShow" runat="server" Font-Bold="True" Text="Show the following for flights:" meta:resourcekey="lblFieldsToShowResource2"></asp:Label></div>
+                                <h3><asp:Label ID="lblFieldsToShow" runat="server" Text="<%$ Resources:Preferences, PrefSectFlightEntryDataToInclude %>" /></h3>
                                 <table> <!-- table here is to match layout of radiobuttonlist above -->
                                     <tr>
                                         <td>
-                                            <asp:CheckBox ID="ckTrackCFITime" runat="server" Text="Instructor Time" 
-                                                ValidationGroup="valPrefs" meta:resourcekey="ckTrackCFITimeResource1" />
+                                            <asp:CheckBox ID="ckTrackCFITime" runat="server" Text="<%$ Resources:Preferences, PrefSectNewFlightShowCFI %>" ValidationGroup="valPrefs" />
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <asp:CheckBox ID="ckSIC" runat="server" Text="Second in Command (SIC) time" 
-                                                ValidationGroup="valPrefs" meta:resourcekey="ckSICResource1" />
+                                            <asp:CheckBox ID="ckSIC" runat="server" Text="<%$ Resources:Preferences, PrefSectNewFlightShowSIC %>" ValidationGroup="valPrefs" />
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <asp:CheckBox ID="ckShowTimes" runat="server" 
-                                                Text="Hobbs time, flight times, and engine times for flights" 
-                                                ValidationGroup="valPrefs" meta:resourcekey="ckShowTimesResource1" />
+                                            <asp:CheckBox ID="ckShowTimes" runat="server" Text="<%$ Resources:Preferences, PrefSectNewFlightShowTimes %>" ValidationGroup="valPrefs" />
                                         </td>
                                     </tr>
                                 </table>
                             </div>
+                            <script type="text/javascript">
+                                function startDrag(event, index) {
+                                    event.dataTransfer.setData("ID", event.target.id);
+                                    event.dataTransfer.setData("Index", index);
+                                }
+
+                                function reorder(event, index) {
+                                    var idx = parseInt(event.dataTransfer.getData("Index"));
+                                    var id = event.dataTransfer.getData("ID");
+                                    var ele = document.getElementById(id);
+                                    var divUnused = document.getElementById('<% =divUnusedFields.ClientID %>');
+                                    event.target.parentNode.insertBefore(ele, event.target);
+                                    if (event.target.parentNode === divUnused)
+                                        move(event, false);
+                                    else
+                                        updatePermuation(idx, index);
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                    return false;
+                                }
+
+                                function move(event, append) {
+                                    var idx = parseInt(event.dataTransfer.getData("Index"));
+                                    var id = event.dataTransfer.getData("ID");
+                                    var ele = document.getElementById(id);
+                                    var targ = document.getElementById(append ? '<% =divCoreFields.ClientID %>' : '<% =divUnusedFields.ClientID %>');
+                                    targ.insertBefore(ele, targ.firstElementChild);
+                                    var perms = getPermutations();
+
+                                    if (append && perms.indexOf(idx) < 0) {
+                                        perms.splice(0, 0, idx);
+                                        setPermutations(perms);
+                                    }
+                                    else {
+                                        perms = perms.filter(function (s) { return s != idx; });
+                                        setPermutations(perms);
+                                    }
+
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                    return false;
+                                }
+
+                                function allowDrop(event) {
+                                    event.preventDefault();
+                                }
+
+                                function getPermutations() {
+                                    var elePerms = document.getElementById('<% =hdnPermutation.ClientID %>');
+                                    return (elePerms.value === "") ? [] : JSON.parse(elePerms.value);
+                                }
+
+                                function setPermutations(perms) {
+                                    var elePerms = document.getElementById('<% =hdnPermutation.ClientID %>');
+                                    elePerms.value = JSON.stringify(perms);
+                                }
+
+                                function updatePermuation(insert, before) {
+                                    var perms = getPermutations();
+
+                                    // Remove "insert" if it's in the list
+                                    var permsFiltered = perms.filter(function (s) { return s != insert; });
+
+                                    if (before !== null) {
+                                        // Now add it before "before", if before is in the arrawy
+                                        var i = permsFiltered.indexOf(before);
+                                        permsFiltered.splice(i >= 0 ? i : 0, 0, insert);
+                                    }
+                                    setPermutations(permsFiltered);
+                                }
+
+                                function resetPermutations() {
+                                    setPermutations([]);
+                                    __doPostBack('<% =btnResetPermutations.ClientID %>', '');
+                                }
+                            </script>
+                            <h3><asp:Label ID="lblCustCore" runat="server" Text="<%$ Resources:Preferences, PrefSectNewFlightCustomization %>" /></h3>
+                            <p><asp:Label ID="lblCustCoreTip" runat="server" Text="<%$ Resources:Preferences, PrefSectNewFlightCustomizationTip %>" /></p>
+                            <div><asp:Label ID="lblcustInst" runat="server" Text="<%$ Resources:Preferences, PrefBlockListInstructions %>" /></div>
+                            <table style="margin-left: auto; margin-right: auto;">
+                                <tr>
+                                    <td><asp:Label ID="lblshowfields" runat="server" Text="<%$ Resources:Preferences, PrefBlockListShow %>" /></td>
+                                    <td><asp:Label ID="Label1" runat="server" Text="<%$ Resources:Preferences, PrefBlockListHide %>" /></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:50%">
+                                        <div ondragover="allowDrop(event)" ondrop="move(event, true)" class="dragTarget" runat="server" id="divCoreFields">
+                                            <asp:Label CssClass="draggableItem" ID="lblDragXC" runat="server" Text="<%$ Resources:LogbookEntry, FieldCrossCountry %>" draggable="true" ondragstart="startDrag(event, 0)" ondrop="reorder(event, 0)" ondragover="allowDrop(event)" />
+                                            <asp:Label CssClass="draggableItem" ID="lblDragNight" runat="server" Text="<%$ Resources:LogbookEntry, FieldNight %>" draggable="true" ondragstart="startDrag(event, 1)" ondrop="reorder(event, 1)" ondragover="allowDrop(event)" />
+                                            <asp:Label CssClass="draggableItem" ID="lblDragSimIMC" runat="server" Text="<%$ Resources:LogbookEntry, FieldSimIMCFull %>" draggable="true" ondragstart="startDrag(event, 2)" ondrop="reorder(event, 2)" ondragover="allowDrop(event)" />
+                                            <asp:Label CssClass="draggableItem" ID="lblDragIMC" runat="server" Text="<%$ Resources:LogbookEntry, FieldIMC %>" draggable="true" ondragstart="startDrag(event, 3)" ondrop="reorder(event, 3)" ondragover="allowDrop(event)" />
+                                            <asp:Label CssClass="draggableItem" ID="lblDragGrndSim" runat="server" Text="<%$ Resources:LogbookEntry, FieldGroundSimFull %>" draggable="true" ondragstart="startDrag(event, 4)" ondrop="reorder(event, 4)" ondragover="allowDrop(event)" />
+                                            <asp:Label CssClass="draggableItem" ID="lblDragDual" runat="server" Text="<%$ Resources:LogbookEntry, FieldDual %>" draggable="true" ondragstart="startDrag(event, 5)" ondrop="reorder(event, 5)" ondragover="allowDrop(event)" />
+                                            <asp:Label CssClass="draggableItem" ID="lblDragInst" runat="server" Text="<%$ Resources:LogbookEntry, FieldCFI %>" draggable="true" ondragstart="startDrag(event, 6)" ondrop="reorder(event, 6)" ondragover="allowDrop(event)" />
+                                            <asp:Label CssClass="draggableItem" ID="lblDragSIC" runat="server" Text="<%$ Resources:LogbookEntry, FieldSIC %>" draggable="true" ondragstart="startDrag(event, 7)" ondrop="reorder(event, 7)" ondragover="allowDrop(event)" />
+                                            <asp:Label CssClass="draggableItem" ID="lblDragPIC" runat="server" Text="<%$ Resources:LogbookEntry, FieldPIC %>" draggable="true" ondragstart="startDrag(event, 8)" ondrop="reorder(event, 8)" ondragover="allowDrop(event)" />
+                                            <asp:Label CssClass="draggableItem" ID="lblDragTotal" runat="server" Text="<%$ Resources:LogbookEntry, FieldTotalFull %>" draggable="true" ondragstart="startDrag(event, 9)" ondrop="reorder(event, 9)" ondragover="allowDrop(event)" />
+                                        </div>
+                                    </td>
+                                    <td style="width:50%">
+                                        <div ondragover="allowDrop(event)" ondrop="move(event, false)" class="dragTarget" runat="server" id="divUnusedFields">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <asp:Button ID="btnResetPermutations" runat="server" Text="<%$ Resources:Preferences, PrefSectNewFlightCustReset %>" OnClientClick="javascript:resetPermutations();" OnClick="btnResetPermutations_Click" />
+                                    </td>
+                                </tr>
+                            </table>
+                            <asp:HiddenField ID="hdnPermutation" runat="server" Value="0,1,2,3,4,5,6,7,8,9" />
                             <div class="prefSectionRow">
                                 <asp:Button ID="btnUpdateLocalPrefs" runat="server"  
                                     Text="<%$ Resources:LocalizedText, profileUpdatePreferences %>" 
-                                    ValidationGroup="valPrefs" onclick="btnUpdateLocalPrefs_Click" meta:resourcekey="btnUpdateLocalPrefsResource2" />
+                                    ValidationGroup="valPrefs" onclick="btnUpdateLocalPrefs_Click" />
                                 <br />
-                                <asp:Label ID="lblLocalPrefsUpdated" runat="server" CssClass="success" EnableViewState="False"
-                                    Text="<%$ Resources:LocalizedText, profilePreferencesUpdated %>" Visible="False" meta:resourcekey="lblLocalPrefsUpdatedResource2"></asp:Label>
+                                <asp:Label ID="lblLocalPrefsUpdated" runat="server" CssClass="success" EnableViewState="False" Text="<%$ Resources:LocalizedText, profilePreferencesUpdated %>" Visible="False" />
                             </div>
                         </Content>
                     </cc1:AccordionPane>
