@@ -1,10 +1,14 @@
 using MyFlightbook.CloudStorage;
 using MyFlightbook.Currency;
 using MyFlightbook.Image;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Web;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
 /******************************************************
@@ -65,6 +69,60 @@ namespace MyFlightbook.MemberPages
         {
             Page.ClientScript.RegisterClientScriptInclude("ListDrag", ResolveClientUrl("~/Public/Scripts/listdrag.js?v=5"));
             ClientScript.RegisterClientScriptInclude("copytoClip", ResolveClientUrl("~/public/Scripts/CopyClipboard.js"));
+        }
+
+        protected void SetPermutationsForUser(string json)
+        {
+            int[] rgPerms = (String.IsNullOrEmpty(json)) ? Array.Empty<int>() : JsonConvert.DeserializeObject<int[]>(json);
+
+            // check for default array - 10 items, in order.
+            bool fIsDefault = rgPerms.Length == 10; // hack - assuming it's 10.
+            int i = 0;
+            while (fIsDefault && i < rgPerms.Length && rgPerms[i] == i)
+                i++;
+
+            if (fIsDefault)
+                rgPerms = Array.Empty<int>();
+
+            m_pf.SetPreferenceForKey(MFBConstants.keyCoreFieldsPermutation, rgPerms, rgPerms == null || !rgPerms.Any());
+        }
+
+        private bool fHasSetUpFields = false;
+
+        protected void SetUpCoreFields(HiddenField hdn, HtmlGenericControl divCore, HtmlGenericControl divUnused)
+        {
+            if (divUnused == null)
+                throw new ArgumentNullException(nameof(divUnused));
+            if (divCore == null)
+                throw new ArgumentNullException(nameof(divCore));
+            if (hdn == null)
+                throw new ArgumentNullException(nameof(hdn));
+
+            if (fHasSetUpFields)
+                throw new InvalidOperationException("Setting up core fields a 2nd time");
+
+            fHasSetUpFields = true;
+
+            // set up permutations.  Initially from preference, but then store locally in the hdn field.
+            IEnumerable<int> rgPerms = IsPostBack ? JsonConvert.DeserializeObject<int[]>(hdn.Value) : m_pf.GetPreferenceForKey<IEnumerable<int>>(MFBConstants.keyCoreFieldsPermutation);
+            if (rgPerms != null && rgPerms.Any())
+            {
+                IEnumerable<Control> unused = divCore.PermuteChildren<Label>(rgPerms);
+                foreach (Control c in unused)
+                    divUnused.Controls.Add(c);
+
+                hdn.Value = JsonConvert.SerializeObject(rgPerms);
+            }
+            else
+            {
+                // No permutations set - specify the default one.
+                List<int> lst = new List<int>();
+                int i = 0;
+                foreach (Control c in divCore.Controls)
+                    if (c is Label)
+                        lst.Add(i++);
+                hdn.Value = JsonConvert.SerializeObject(lst);
+            }
         }
     }
 
@@ -338,6 +396,10 @@ namespace MyFlightbook.MemberPages
                         break;
                 }
             }
+
+            // reset permuted fields every time.
+            if (sidebarTab == tabID.pftPrefs)
+                SetUpCoreFields(hdnPermutation, divCoreFields, divUnusedFields);
         }
         #endregion
 
@@ -550,6 +612,8 @@ namespace MyFlightbook.MemberPages
             m_pf.UsesUTCDateOfFlight = (rblDateEntryPreferences.SelectedIndex > 0);
             m_pf.PreferredTimeZoneID = prefTimeZone.SelectedTimeZoneId;
 
+            SetPermutationsForUser(hdnPermutation.Value);
+
             try
             {
                 m_pf.FCommit();
@@ -561,6 +625,11 @@ namespace MyFlightbook.MemberPages
                 lblLocalPrefsUpdated.Text = ex.Message;
                 lblLocalPrefsUpdated.CssClass = "error";
             }
+        }
+
+        protected void btnResetPermutations_Click(object sender, EventArgs e)
+        {
+            SetPermutationsForUser(hdnPermutation.Value);
         }
 
         protected void btnUpdateCurrencyPrefs_Click(object sender, EventArgs e)
@@ -610,6 +679,5 @@ namespace MyFlightbook.MemberPages
             mvGPhotos.SetActiveView(vwGPhotosDisabled);
         }
         #endregion
-
     }
 }

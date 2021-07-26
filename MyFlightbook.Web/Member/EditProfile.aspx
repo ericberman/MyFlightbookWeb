@@ -445,6 +445,116 @@
                                     </tr>
                                 </table>
                             </div>
+                            <script type="text/javascript">
+                                function startDrag(event, index) {
+                                    event.dataTransfer.setData("ID", event.target.id);
+                                    event.dataTransfer.setData("Index", index);
+                                }
+
+                                function reorder(event, index) {
+                                    var idx = event.dataTransfer.getData("Index");
+                                    var id = event.dataTransfer.getData("ID");
+                                    var ele = document.getElementById(id);
+                                    var divUnused = document.getElementById('<% =divUnusedFields.ClientID %>');
+                                    event.target.parentNode.insertBefore(ele, event.target);
+                                    if (event.target.parentNode === divUnused)
+                                        move(event, false);
+                                    else
+                                        updatePermuation(idx, index);
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                    return false;
+                                }
+
+                                function move(event, append) {
+                                    var idx = event.dataTransfer.getData("Index");
+                                    var id = event.dataTransfer.getData("ID");
+                                    var ele = document.getElementById(id);
+                                    var targ = document.getElementById(append ? '<% =divCoreFields.ClientID %>' : '<% =divUnusedFields.ClientID %>');
+                                    targ.insertBefore(ele, targ.firstElementChild);
+                                    var perms = getPermutations();
+
+                                    if (append && perms.indexOf(idx.toString()) < 0) {
+                                        perms.splice(0, 0, idx);
+                                        setPermutations(perms);
+                                    }
+                                    else {
+                                        perms = perms.filter(function (s) { return s != idx; });
+                                        setPermutations(perms);
+                                    }
+
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                    return false;
+                                }
+
+                                function allowDrop(event) {
+                                    event.preventDefault();
+                                }
+
+                                function getPermutations() {
+                                    var elePerms = document.getElementById('<% =hdnPermutation.ClientID %>');
+                                    return (elePerms.value === "") ? [] : JSON.parse(elePerms.value);
+                                }
+
+                                function setPermutations(perms) {
+                                    var elePerms = document.getElementById('<% =hdnPermutation.ClientID %>');
+                                    elePerms.value = JSON.stringify(perms);
+                                }
+
+                                function updatePermuation(insert, before) {
+                                    var perms = getPermutations();
+
+                                    // Remove "insert" if it's in the list
+                                    var permsFiltered = perms.filter(function (s) { return s != insert; });
+
+                                    if (before !== null) {
+                                        // Now add it before "before", if before is in the arrawy
+                                        var i = permsFiltered.indexOf(before.toString());
+                                        permsFiltered.splice(i >= 0 ? i : 0, 0, insert);
+                                    }
+                                    setPermutations(permsFiltered);
+                                }
+
+                                function resetPermutations() {
+                                    setPermutations([]);
+                                    __doPostBack('<% =btnResetPermutations.ClientID %>', '');
+                                }
+                            </script>
+                            <h2><asp:Label ID="lblCustCore" runat="server" Text="<%$ Resources:Preferences, PrefSectNewFlightCustomization %>" /></h2>
+                            <div><asp:Label ID="lblcustInst" runat="server" Text="<%$ Resources:Preferences, PrefBlockListInstructions %>" /></div>
+                            <table style="margin-left: auto; margin-right: auto;">
+                                <tr>
+                                    <td><asp:Label ID="lblshowfields" runat="server" Text="<%$ Resources:Preferences, PrefBlockListShow %>" /></td>
+                                    <td><asp:Label ID="Label1" runat="server" Text="<%$ Resources:Preferences, PrefBlockListHide %>" /></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:50%">
+                                        <div ondragover="allowDrop(event)" ondrop="move(event, true)" class="dragTarget" runat="server" id="divCoreFields">
+                                            <asp:Label CssClass="draggableItem" ID="lblDragXC" runat="server" Text="<%$ Resources:LogbookEntry, FieldCrossCountry %>" draggable="true" ondragstart="startDrag(event, 0)" ondrop="reorder(event, 0)" ondragover="allowDrop(event)" />
+                                            <asp:Label CssClass="draggableItem" ID="lblDragNight" runat="server" Text="<%$ Resources:LogbookEntry, FieldNight %>" draggable="true" ondragstart="startDrag(event, 1)" ondrop="reorder(event, 1)" ondragover="allowDrop(event)" />
+                                            <asp:Label CssClass="draggableItem" ID="lblDragSimIMC" runat="server" Text="<%$ Resources:LogbookEntry, FieldSimIMCFull %>" draggable="true" ondragstart="startDrag(event, 2)" ondrop="reorder(event, 2)" ondragover="allowDrop(event)" />
+                                            <asp:Label CssClass="draggableItem" ID="lblDragIMC" runat="server" Text="<%$ Resources:LogbookEntry, FieldIMC %>" draggable="true" ondragstart="startDrag(event, 3)" ondrop="reorder(event, 3)" ondragover="allowDrop(event)" />
+                                            <asp:Label CssClass="draggableItem" ID="lblDragGrndSim" runat="server" Text="<%$ Resources:LogbookEntry, FieldGroundSimFull %>" draggable="true" ondragstart="startDrag(event, 4)" ondrop="reorder(event, 4)" ondragover="allowDrop(event)" />
+                                            <asp:Label CssClass="draggableItem" ID="lblDragDual" runat="server" Text="<%$ Resources:LogbookEntry, FieldDual %>" draggable="true" ondragstart="startDrag(event, 5)" ondrop="reorder(event, 5)" ondragover="allowDrop(event)" />
+                                            <asp:Label CssClass="draggableItem" ID="lblDragInst" runat="server" Text="<%$ Resources:LogbookEntry, FieldCFI %>" draggable="true" ondragstart="startDrag(event, 6)" ondrop="reorder(event, 6)" ondragover="allowDrop(event)" />
+                                            <asp:Label CssClass="draggableItem" ID="lblDragSIC" runat="server" Text="<%$ Resources:LogbookEntry, FieldSIC %>" draggable="true" ondragstart="startDrag(event, 7)" ondrop="reorder(event, 7)" ondragover="allowDrop(event)" />
+                                            <asp:Label CssClass="draggableItem" ID="lblDragPIC" runat="server" Text="<%$ Resources:LogbookEntry, FieldPIC %>" draggable="true" ondragstart="startDrag(event, 8)" ondrop="reorder(event, 8)" ondragover="allowDrop(event)" />
+                                            <asp:Label CssClass="draggableItem" ID="lblDragTotal" runat="server" Text="<%$ Resources:LogbookEntry, FieldTotalFull %>" draggable="true" ondragstart="startDrag(event, 9)" ondrop="reorder(event, 9)" ondragover="allowDrop(event)" />
+                                        </div>
+                                    </td>
+                                    <td style="width:50%">
+                                        <div ondragover="allowDrop(event)" ondrop="move(event, false)" class="dragTarget" runat="server" id="divUnusedFields">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <asp:Button ID="btnResetPermutations" runat="server" Text="<%$ Resources:Preferences, PrefSectNewFlightCustReset %>" OnClientClick="javascript:resetPermutations();" OnClick="btnResetPermutations_Click" />
+                                    </td>
+                                </tr>
+                            </table>
+                            <asp:HiddenField ID="hdnPermutation" runat="server" Value="0,1,2,3,4,5,6,7,8,9" />
                             <div class="prefSectionRow">
                                 <asp:Button ID="btnUpdateLocalPrefs" runat="server"  
                                     Text="<%$ Resources:LocalizedText, profileUpdatePreferences %>" 

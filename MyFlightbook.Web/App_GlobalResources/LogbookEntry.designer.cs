@@ -664,6 +664,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cross-Country.
+        /// </summary>
+        internal static string FieldCrossCountry {
+            get {
+                return ResourceManager.GetString("FieldCrossCountry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Day landings (Full-stop).
         /// </summary>
         internal static string FieldDayLandings {
@@ -912,6 +921,15 @@ namespace Resources {
         internal static string FieldTotal {
             get {
                 return ResourceManager.GetString("FieldTotal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total Time.
+        /// </summary>
+        internal static string FieldTotalFull {
+            get {
+                return ResourceManager.GetString("FieldTotalFull", resourceCulture);
             }
         }
         

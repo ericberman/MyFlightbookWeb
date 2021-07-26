@@ -815,5 +815,23 @@ namespace Resources {
                 return ResourceManager.GetString("PrefBlockListShow", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Core times for new flights.
+        /// </summary>
+        internal static string PrefSectNewFlightCustomization {
+            get {
+                return ResourceManager.GetString("PrefSectNewFlightCustomization", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset to default.
+        /// </summary>
+        internal static string PrefSectNewFlightCustReset {
+            get {
+                return ResourceManager.GetString("PrefSectNewFlightCustReset", resourceCulture);
+            }
+        }
     }
 }

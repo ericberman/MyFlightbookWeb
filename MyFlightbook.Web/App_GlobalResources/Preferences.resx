@@ -370,4 +370,10 @@
   <data name="PrefBlockListShow" xml:space="preserve">
     <value>Show these...</value>
   </data>
+  <data name="PrefSectNewFlightCustomization" xml:space="preserve">
+    <value>Core times for new flights</value>
+  </data>
+  <data name="PrefSectNewFlightCustReset" xml:space="preserve">
+    <value>Reset to default</value>
+  </data>
 </root>

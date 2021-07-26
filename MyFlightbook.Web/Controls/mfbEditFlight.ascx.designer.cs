@@ -292,6 +292,15 @@ public partial class Controls_mfbEditFlight
     protected global::Controls_mfbDecimalEdit intNightLandings;
 
     /// <summary>
+    /// pnlTimeRoot control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Panel pnlTimeRoot;
+
+    /// <summary>
     /// locTimesHeader control.
     /// </summary>
     /// <remarks>
@@ -299,6 +308,15 @@ public partial class Controls_mfbEditFlight
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.Localize locTimesHeader;
+
+    /// <summary>
+    /// pnlXC control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Panel pnlXC;
 
     /// <summary>
     /// Label15 control.
@@ -319,6 +337,15 @@ public partial class Controls_mfbEditFlight
     protected global::Controls_mfbDecimalEdit decXC;
 
     /// <summary>
+    /// pnlNight control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Panel pnlNight;
+
+    /// <summary>
     /// Label16 control.
     /// </summary>
     /// <remarks>
@@ -335,6 +362,15 @@ public partial class Controls_mfbEditFlight
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::Controls_mfbDecimalEdit decNight;
+
+    /// <summary>
+    /// pnlSimIFR control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Panel pnlSimIFR;
 
     /// <summary>
     /// Label17 control.
@@ -355,6 +391,15 @@ public partial class Controls_mfbEditFlight
     protected global::Controls_mfbDecimalEdit decSimulatedIFR;
 
     /// <summary>
+    /// pnlIMC control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Panel pnlIMC;
+
+    /// <summary>
     /// Label18 control.
     /// </summary>
     /// <remarks>
@@ -371,6 +416,15 @@ public partial class Controls_mfbEditFlight
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::Controls_mfbDecimalEdit decIMC;
+
+    /// <summary>
+    /// pnlGrndSim control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Panel pnlGrndSim;
 
     /// <summary>
     /// Label19 control.
@@ -391,6 +445,15 @@ public partial class Controls_mfbEditFlight
     protected global::Controls_mfbDecimalEdit decGrndSim;
 
     /// <summary>
+    /// pnlDual control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Panel pnlDual;
+
+    /// <summary>
     /// Label20 control.
     /// </summary>
     /// <remarks>
@@ -407,6 +470,15 @@ public partial class Controls_mfbEditFlight
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::Controls_mfbDecimalEdit decDual;
+
+    /// <summary>
+    /// pnlCFI control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Panel pnlCFI;
 
     /// <summary>
     /// Label21 control.
@@ -427,6 +499,15 @@ public partial class Controls_mfbEditFlight
     protected global::Controls_mfbDecimalEdit decCFI;
 
     /// <summary>
+    /// pnlSIC control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Panel pnlSIC;
+
+    /// <summary>
     /// Label22 control.
     /// </summary>
     /// <remarks>
@@ -445,6 +526,15 @@ public partial class Controls_mfbEditFlight
     protected global::Controls_mfbDecimalEdit decSIC;
 
     /// <summary>
+    /// pnlPIC control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Panel pnlPIC;
+
+    /// <summary>
     /// Label23 control.
     /// </summary>
     /// <remarks>
@@ -461,6 +551,15 @@ public partial class Controls_mfbEditFlight
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::Controls_mfbDecimalEdit decPIC;
+
+    /// <summary>
+    /// pnlTotal control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Panel pnlTotal;
 
     /// <summary>
     /// Label24 control.

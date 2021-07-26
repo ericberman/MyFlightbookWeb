@@ -125,6 +125,25 @@ public partial class Controls_mfbEditFlightBase : UserControl
     }
     #endregion
 
+    protected void SetUpPermutations(Control root)
+    {
+        if (root == null)
+            throw new ArgumentNullException(nameof(root));
+
+        // Apply any permutations to the core-field as customized
+        IEnumerable<int> rgFields = Profile.GetUser(Page.User.Identity.Name).GetPreferenceForKey<int[]>(MFBConstants.keyCoreFieldsPermutation);
+        if (rgFields != null && rgFields.Any())
+        {
+            IEnumerable<Control> unused = root.PermuteChildren<Panel>(rgFields);
+
+            foreach (Control c in unused)
+            {
+                c.Visible = false;
+                root.Controls.Add(c);
+            }
+        }
+    }
+
     protected void InitScript()
     {
         Page.ClientScript.RegisterClientScriptInclude("autoInsert", ResolveClientUrl("~/public/Scripts/autoinsert.js?v=3"));
@@ -319,6 +338,8 @@ public partial class Controls_mfbEditFlight : Controls_mfbEditFlightBase
     {
         cmbCatClasses.DataSource = CategoryClass.CategoryClasses();
         cmbCatClasses.DataBind();
+
+        SetUpPermutations(pnlTimeRoot);
     }
 
     protected void Page_Load(object sender, EventArgs e)
@@ -561,6 +582,17 @@ public partial class Controls_mfbEditFlight : Controls_mfbEditFlightBase
         txtRoute.Text = le.Route;
         txtComments.Text = le.Comment;
         ckPublic.Checked = le.fIsPublic;
+
+        pnlXC.Visible = pnlXC.Visible || le.CrossCountry > 0;
+        pnlNight.Visible = pnlNight.Visible || le.Nighttime > 0;
+        pnlSimIFR.Visible = pnlSimIFR.Visible || le.SimulatedIFR > 0;
+        pnlGrndSim.Visible = pnlGrndSim.Visible || le.GroundSim > 0;
+        pnlDual.Visible = pnlDual.Visible || le.Dual > 0;
+        pnlIMC.Visible = pnlIMC.Visible || le.IMC > 0;
+        pnlCFI.Visible = pnlCFI.Visible || le.CFI > 0;
+        pnlSIC.Visible = pnlSIC.Visible || le.SIC > 0;
+        pnlPIC.Visible = pnlPIC.Visible || le.PIC > 0;
+        pnlTotal.Visible = pnlTotal.Visible || le.TotalFlightTime > 0;
 
         mfbFlightInfo1.FlightID = le.FlightID;
         mfbFlightInfo1.HobbsStart = le.HobbsStart;

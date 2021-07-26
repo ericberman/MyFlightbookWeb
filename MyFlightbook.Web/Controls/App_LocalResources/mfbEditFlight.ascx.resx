@@ -153,18 +153,6 @@
   <data name="cmbCatClassesResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="Image2Resource1.AlternateText" xml:space="preserve">
-    <value>Twitter</value>
-  </data>
-  <data name="Image2Resource1.ToolTip" xml:space="preserve">
-    <value>Twitter</value>
-  </data>
-  <data name="Image5Resource1.AlternateText" xml:space="preserve">
-    <value>Facebook</value>
-  </data>
-  <data name="Image5Resource1.ToolTip" xml:space="preserve">
-    <value>Facebook</value>
-  </data>
   <data name="imgMFBPublicResource1.AlternateText" xml:space="preserve">
     <value>Share Flight Details</value>
   </data>
@@ -201,70 +189,10 @@
   <data name="Label14Resource1.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="Label15Resource1.Text" xml:space="preserve">
-    <value>Cross-Country</value>
-  </data>
-  <data name="Label15Resource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="Label16Resource1.Text" xml:space="preserve">
-    <value>Night</value>
-  </data>
-  <data name="Label16Resource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="Label17Resource1.Text" xml:space="preserve">
-    <value>Simulated Instrument</value>
-  </data>
-  <data name="Label17Resource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="Label18Resource1.Text" xml:space="preserve">
-    <value>IMC</value>
-  </data>
-  <data name="Label18Resource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="Label19Resource1.Text" xml:space="preserve">
-    <value>Ground Sim</value>
-  </data>
-  <data name="Label19Resource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="Label1Resource1.Text" xml:space="preserve">
     <value>Times and Telemetry</value>
   </data>
   <data name="Label1Resource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="Label20Resource1.Text" xml:space="preserve">
-    <value>Dual Received</value>
-  </data>
-  <data name="Label20Resource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="Label21Resource1.Text" xml:space="preserve">
-    <value>Instructor</value>
-  </data>
-  <data name="Label21Resource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="Label22Resource1.Text" xml:space="preserve">
-    <value>SIC (2nd in Command)</value>
-  </data>
-  <data name="Label22Resource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="Label23Resource1.Text" xml:space="preserve">
-    <value>PIC</value>
-  </data>
-  <data name="Label23Resource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="Label24Resource1.Text" xml:space="preserve">
-    <value>Total Time</value>
-  </data>
-  <data name="Label24Resource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="Label25Resource1.Text" xml:space="preserve">
@@ -493,18 +421,6 @@
     <value>PIC</value>
   </data>
   <data name="lnkPICResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lnkSetUpFacebookResource1.Text" xml:space="preserve">
-    <value>Set up to post selected flights to your account on Facebook</value>
-  </data>
-  <data name="lnkSetUpFacebookResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lnkSetUpTwitterResource1.Text" xml:space="preserve">
-    <value>Set up to tweet selected flights to your feed on Twitter</value>
-  </data>
-  <data name="lnkSetUpTwitterResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="lnkSICResource1.Text" xml:space="preserve">

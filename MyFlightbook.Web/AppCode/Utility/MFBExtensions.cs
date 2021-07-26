@@ -4,12 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.UI;
 
 /******************************************************
  * 
@@ -448,7 +450,7 @@ namespace MyFlightbook
         /// <returns></returns>
         public static System.Collections.Generic.IEnumerable<int> ToInts(this string sz)
         {
-            System.Collections.Generic.List<int> lst = new System.Collections.Generic.List<int>();
+            List<int> lst = new List<int>();
             if (String.IsNullOrEmpty(sz))
                 return lst;
 
@@ -967,6 +969,46 @@ namespace MyFlightbook
             response.BinaryWrite(System.Text.Encoding.UTF8.GetPreamble());
             response.Write(System.Text.Encoding.UTF8.GetString(rgb));
             response.End();
+        }
+        #endregion
+
+        #region Control Extensions
+        /// <summary>
+        /// Re-arranges the children of type T of the specified root control, per the permuations in perms.
+        /// </summary>
+        /// <param name="root">Root (parent) control</param>
+        /// <param name="perms">0-based permuatations.  E.g., "3,0,2,1" means to re-order {A B C D} to be {D A C B}</param>
+        /// <returns>An enumerable of unused controls.  An empty permutation list treats everything as used</returns>
+        public static IEnumerable<Control> PermuteChildren<T>(this Control root, IEnumerable<int> perms)
+        {
+            List<Control> lstRemainder = new List<Control>();
+
+            if (root == null)
+                throw new ArgumentNullException(nameof(root));
+
+            if (perms == null || !perms.Any())
+                return lstRemainder;
+
+            List<Control> lstChildren = new List<Control>();
+            foreach (Control c in root.Controls)
+            {
+                if (c is T)
+                    lstChildren.Add(c);
+            }
+            // Remove these from the root, leaving none in the parent
+            foreach (Control c in lstChildren)
+                root.Controls.Remove(c);
+
+            // Now add them back, in the specified order.  There may be leftovers.
+            foreach (int i in perms)
+                root.Controls.Add(lstChildren[i]);
+
+            // And return any unused remainders.
+            foreach (Control c in lstChildren)
+                if (!root.Controls.Contains(c))
+                    lstRemainder.Add(c);
+
+            return lstRemainder;
         }
         #endregion
     }

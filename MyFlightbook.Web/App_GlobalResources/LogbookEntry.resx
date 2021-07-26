@@ -1361,4 +1361,10 @@ Proceed with import?</value>
   <data name="PrintHeaderSignature" xml:space="preserve">
     <value>Signature of PIC/Instructor/Examiner</value>
   </data>
+  <data name="FieldCrossCountry" xml:space="preserve">
+    <value>Cross-Country</value>
+  </data>
+  <data name="FieldTotalFull" xml:space="preserve">
+    <value>Total Time</value>
+  </data>
 </root>

@@ -34,6 +34,7 @@ namespace MyFlightbook
         public const string keyTFASettings = "prefTFASettings"; // any 2-factor authentication settings.
         public const string keyDecimalSettings = "prefDecimalDisplay";  // adaptive, single, or double digit precision
         public const string keyMedicalNotes = "prefMedicalNotes";   // any notes on your medical
+        public const string keyCoreFieldsPermutation = "prefCoreFields";    // permutation of the core fields
     }
 
     public static class ShuntState
