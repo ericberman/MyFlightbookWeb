@@ -88,13 +88,13 @@
                                 <asp:Label ID="lblCountry" runat="server" Text='<%# Bind("Country") %>' />
                             </ItemTemplate>
                             <EditItemTemplate>
-                                <asp:TextBox ID="txtEditCountry" runat="server" Text='<%# Bind("Country") %>' />
+                                <asp:TextBox ID="txtAdm0" runat="server" Text='<%# Bind("Country") %>' AutoCompleteType="None" />
                                 <cc1:AutoCompleteExtender ID="aceEditCntry" runat="server"
                                     CompletionInterval="100" CompletionListCssClass="AutoExtender"
                                     CompletionListHighlightedItemCssClass="AutoExtenderHighlight"
                                     CompletionListItemCssClass="AutoExtenderList" DelimiterCharacters=""
                                     Enabled="True" MinimumPrefixLength="2" ServiceMethod="SuggestCountries"
-                                    ServicePath="~/Admin/AdminAirportGeocoder.aspx" TargetControlID="txtEditCountry" CompletionSetCount="20">
+                                    ServicePath="~/Admin/AdminAirportGeocoder.aspx" TargetControlID="txtAdm0" CompletionSetCount="20">
                                 </cc1:AutoCompleteExtender>
                             </EditItemTemplate>
                         </asp:TemplateField>
