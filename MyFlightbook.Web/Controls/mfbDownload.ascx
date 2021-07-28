@@ -218,6 +218,7 @@
         <asp:BoundField DataField="CFIComments" HeaderText="CFI Comment" />
         <asp:BoundField DataField="CFICertificate" HeaderText="CFI Certificate" />
         <asp:BoundField DataField="CFIName" HeaderText="CFI Name" />
+        <asp:BoundField DataField="CFIEmail" HeaderText="CFI Email" />
         <asp:TemplateField HeaderText="CFI Expiration">
             <ItemTemplate>
                 <asp:Label ID="Label19" runat="server" Text='<%# Eval("CFIExpiration").FormatOptionalInvariantDate() %>'></asp:Label>
