@@ -40,7 +40,7 @@ namespace MyFlightbook.Subscriptions
             // see if this is coming from the local machine - reject anything that isn't.
             string szIPThis = System.Net.Dns.GetHostAddresses(Request.Url.Host)[0].ToString();
             if (Request.UserHostAddress.CompareCurrentCultureIgnoreCase(szIPThis) != 0)
-                throw new UnauthorizedAccessException(String.Format(CultureInfo.CurrentCulture, "Attempt to view this page from other than local machine: {0}", szIPThis ?? "(no host IP)"));
+                throw new UnauthorizedAccessException(String.Format(CultureInfo.CurrentCulture, "Attempt to view this page from other than local machine: {0}", Request.UserHostAddress ?? "(no host IP)"));
 
             if (!IsPostBack)
             {
