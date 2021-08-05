@@ -213,6 +213,33 @@ namespace MyFlightbook.Web.Admin
         protected global::System.Web.UI.WebControls.GridView gvImagesToFix;
 
         /// <summary>
+        /// btnCleanPendingVideos control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnCleanPendingVideos;
+
+        /// <summary>
+        /// lblPVResults control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblPVResults;
+
+        /// <summary>
+        /// gvVideos control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvVideos;
+
+        /// <summary>
         /// Master property.
         /// </summary>
         /// <remarks>

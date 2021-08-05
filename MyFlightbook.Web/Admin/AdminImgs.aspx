@@ -112,4 +112,17 @@
             <p>(No problematic images found)</p>
         </EmptyDataTemplate>
     </asp:GridView>
+    <h2>Videos</h2>
+    <p>
+        <asp:Button ID="btnCleanPendingVideos" runat="server" Text="Process Incomplete Pending Videos" OnClick="btnCleanPendingVideos_Click" /> <asp:Label ID="lblPVResults" runat="server" />
+        <asp:GridView ID="gvVideos" runat="server" AutoGenerateColumns="false">
+            <Columns>
+                <asp:TemplateField>
+                    <ItemTemplate>
+                        <asp:HyperLink ID="lnkVideo" runat="server" Target="_blank" Text='<%# Container.DataItem.ToString() %>' NavigateUrl='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx/{0}?a=1", Container.DataItem) %>' />
+                    </ItemTemplate>
+                </asp:TemplateField>
+            </Columns>
+        </asp:GridView>
+    </p>
 </asp:Content>

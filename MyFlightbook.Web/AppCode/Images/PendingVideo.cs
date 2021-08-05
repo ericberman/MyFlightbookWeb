@@ -10,7 +10,7 @@ using System.Web.Hosting;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2020 MyFlightbook LLC
+ * Copyright (c) 2008-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -26,7 +26,7 @@ namespace MyFlightbook.Image
         /// <summary>
         /// The GUID that is the basis for the filename
         /// </summary>
-        public string GUID { get; set; }
+        public string GUID { get; private set; }
 
         /// <summary>
         /// The AWS-assigned jobID
