@@ -1403,6 +1403,9 @@ namespace MyFlightbook.Airports
                 if (Name.Length == 0)
                     throw new MyFlightbookException(Resources.Airports.errEmptyName);
 
+                if (LatLong.Latitude == 0 && LatLong.Longitude == 0)
+                    throw new MyFlightbookException(Resources.Airports.errEmptyLatLong);
+
                 if (!LatLong.IsValid)
                     throw new MyFlightbookException(LatLong.ValidationError);
 

@@ -286,6 +286,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please provide a latitude/longitude.
+        /// </summary>
+        internal static string errEmptyLatLong {
+            get {
+                return ResourceManager.GetString("errEmptyLatLong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Facility name is empty; please provide a name..
         /// </summary>
         internal static string errEmptyName {

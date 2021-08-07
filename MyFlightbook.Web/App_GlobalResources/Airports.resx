@@ -280,4 +280,7 @@
   <data name="errDupeAirportCreateAnyway" xml:space="preserve">
     <value>Create it anyway</value>
   </data>
+  <data name="errEmptyLatLong" xml:space="preserve">
+    <value>Please provide a latitude/longitude</value>
+  </data>
 </root>
