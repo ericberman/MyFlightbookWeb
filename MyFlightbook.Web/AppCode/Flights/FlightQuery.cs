@@ -1115,10 +1115,9 @@ namespace MyFlightbook
                 }
 
                 // Splice the type query into the models query as an OR - i.e., matches EITHER model OR typenames.
-                if (String.IsNullOrEmpty(szModelsTextQuery))
-                    szModelsTextQuery = szModelsTypeQuery;
-                else
-                    szModelsTextQuery = String.Format(CultureInfo.InvariantCulture, "({0}) OR {1}", szModelsTextQuery, szModelsTypeQuery);
+                szModelsTextQuery = String.IsNullOrEmpty(szModelsTextQuery)
+                    ? szModelsTypeQuery
+                    : String.Format(CultureInfo.InvariantCulture, "({0}) OR {1}", szModelsTextQuery, szModelsTypeQuery);
 
             }
 
