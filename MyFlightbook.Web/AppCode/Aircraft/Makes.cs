@@ -14,7 +14,7 @@ using MyFlightbook.Image;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2020 MyFlightbook LLC
+ * Copyright (c) 2009-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1005,7 +1005,7 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
             string szPreferred = "0";
             if (PreferModelNameMatch)
             {
-                string szModelMatch = String.Format(CultureInfo.InvariantCulture, "%{0}%", ConvertWildcards(FullText));
+                string szModelMatch = String.Format(CultureInfo.InvariantCulture, "%{0}%", FullText.EscapeMySQLWildcards().ConvertToMySQLWildcards());
                 szPreferred = "IF(model LIKE ?modelMatch, 1, 0)";
                 lstParams.Add(new MySqlParameter("modelMatch", szModelMatch));
             }
@@ -1060,16 +1060,6 @@ FROM models
         }
 
         /// <summary>
-        /// Converts "%" and "_" to "*" and "?"
-        /// </summary>
-        /// <param name="sz"></param>
-        /// <returns></returns>
-        private static string ConvertWildcards(string sz)
-        {
-            return sz.Replace("%", "\\%").Replace("_", "\\_").Replace("*", "%").Replace("?", "_");
-        }
-
-        /// <summary>
         /// Adds a query term
         /// </summary>
         /// <param name="szQ">The search text</param>
@@ -1083,7 +1073,7 @@ FROM models
                 return;
 
             lstTerms.Add(String.Format(CultureInfo.InvariantCulture, " ({0} LIKE ?{1}) ", szMatchField, szParamName));
-            lstParams.Add(new MySqlParameter(szParamName, String.Format(CultureInfo.InvariantCulture, "%{0}%", ConvertWildcards(szQ))));
+            lstParams.Add(new MySqlParameter(szParamName, String.Format(CultureInfo.InvariantCulture, "%{0}%", szQ.EscapeMySQLWildcards().ConvertToMySQLWildcards())));
         }
 
         private static string SortOrderFromSortModeAndDirection(ModelSortMode sortmode, ModelSortDirection sortDirection)

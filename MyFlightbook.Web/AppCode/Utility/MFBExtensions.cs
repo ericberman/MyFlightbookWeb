@@ -529,6 +529,32 @@ namespace MyFlightbook
         }
 
         /// <summary>
+        /// Escapes MySql wildcards (% and _).
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public static string EscapeMySQLWildcards(this string s)
+        {
+            if (s == null)
+                throw new ArgumentNullException(nameof(s));
+
+            return s.Replace("%", "\\%").Replace("_", "\\_");
+        }
+
+        /// <summary>
+        /// Convert filesystem-style wildcards (* and ?) to MySQL wildcards (% and _).
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public static string ConvertToMySQLWildcards(this string s)
+        {
+            if (s == null)
+                throw new ArgumentNullException(nameof(s));
+
+            return s.Replace("*", "%").Replace("?", "_");
+        }
+
+        /// <summary>
         /// Returns a string limited to a specific length
         /// </summary>
         /// <param name="sz">The string to limit</param>

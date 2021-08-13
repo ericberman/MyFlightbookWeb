@@ -852,7 +852,12 @@ namespace MyFlightbook
         protected static Regex rQuotedExpressions { get; } = new Regex("(?<negated>-?)\"(?<phrase>[^\"]*)\"", RegexOptions.Compiled);
         protected static Regex rSplitWords { get; } = new Regex("\\s");
         protected static Regex rMergeOR { get; } = new Regex("\\sOR\\s", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        protected static Regex rTrailing { get; } = new Regex("\\bTrailing:(?<quantity>\\d{1,3}?)(?<rangetype>D|CM|M|W?)\\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        protected static Regex rTrailing { get; } = new Regex("\\bTrailing:(?<quantity>\\d{1,3}?)(?<rangetype>D|CM|M|W)\\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        protected const string szPrefixLimitComments = "CMT";
+        protected const string szPrefixLimitRoute = "RTE";
+
+        protected static Regex rSpecific { get; } = new Regex(String.Format(CultureInfo.InvariantCulture, "\\b(?<field>{0}|{1})=(?<value>\\S*)", szPrefixLimitComments, szPrefixLimitRoute), RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private void UpdateGeneralText(StringBuilder sbQuery)
         {
@@ -940,16 +945,49 @@ namespace MyFlightbook
                     List<string> lstORClauses = new List<string>();
                     foreach (string phrase in phrases)
                     {
-                        string szPhrase = phrase;
+                        string szPhrase = phrase.EscapeMySQLWildcards().Trim();
                         bool fNegate = szPhrase.StartsWith("-", StringComparison.CurrentCulture);
                         if (fNegate)
                             szPhrase = szPhrase.Substring(1);
 
-                        if (szPhrase.Trim().Length == 0)
+                        if (String.IsNullOrWhiteSpace(szPhrase))
                             continue;
+
                         string szParam = "SearchWord" + (iWord++).ToString(CultureInfo.InvariantCulture);
-                        lstORClauses.Add(String.Format(CultureInfo.InvariantCulture, "{0} {1} LIKE ?{2}", szFreeText, fNegate ? "NOT " : string.Empty, szParam));
-                        AddParameter(szParam, String.Format(CultureInfo.InvariantCulture, "%{0}%", szPhrase.Trim()));
+
+                        // Issue #802 - Quick hack to direct a specific query to comment or route
+                        MatchCollection mcSpecific = rSpecific.Matches(szPhrase);
+                        if (mcSpecific.Count > 0)    // user is requesting a specific match on a specific field
+                        {
+                            Match m = mcSpecific[0];
+                            string szField = string.Empty;
+                            switch (m.Groups["field"].Value.ToUpperInvariant())
+                            {
+                                case szPrefixLimitComments:
+                                    szField = "Comments";
+                                    break;
+                                case szPrefixLimitRoute:
+                                    szField = "Route";
+                                    break;
+                                default:
+                                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Unknown prefix '{0}' matched rspecific", m.Groups["field"].Value));
+                            }
+
+                            // CMT= or RTE= means empty
+                            string szValue = m.Groups["value"].Value.Trim();
+                            if (String.IsNullOrEmpty(szValue))
+                                lstORClauses.Add(String.Format(CultureInfo.InvariantCulture, "{0} {1} '' ", szField, fNegate ? "<>" : "="));
+                            else
+                            {
+                                lstORClauses.Add(String.Format(CultureInfo.InvariantCulture, "{0} {1} LIKE ?{2}", szField, fNegate ? "NOT" : string.Empty, szParam));
+                                AddParameter(szParam, szValue.EscapeMySQLWildcards().ConvertToMySQLWildcards()); // must be a match on the full field, but can have * and ? as wildcards.
+                            }
+                        }
+                        else
+                        {
+                            lstORClauses.Add(String.Format(CultureInfo.InvariantCulture, "{0} {1} LIKE ?{2}", szFreeText, fNegate ? "NOT " : string.Empty, szParam));
+                            AddParameter(szParam, String.Format(CultureInfo.InvariantCulture, "%{0}%", szPhrase.ConvertToMySQLWildcards()));
+                        }
                     }
                     if (lstORClauses.Count > 0)
                         AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, "({0}) ", String.Join(" OR ", lstORClauses)));
@@ -1981,10 +2019,8 @@ namespace MyFlightbook
                         if (String.IsNullOrWhiteSpace(szPhrase))
                             continue;
 
-                        bool fContains = (szMatch.Contains(szPhrase));
-
                         // match the phrase if the phrase contains the search and not negated, or if negation and doesn't contain
-                        if (fNegate ^ fContains)
+                        if (fNegate ^ IsPhraseMatch(szPhrase, szMatch, le))
                         {
                             fMatchesPhrases = true;
                             break;
@@ -1998,6 +2034,36 @@ namespace MyFlightbook
             }
 
             return true;
+        }
+
+        private static bool IsPhraseMatch(string szPhrase, string szMatch, LogbookEntryBase le)
+        {
+            // Issue #802 - Quick hack to direct a specific query to comment or route
+            MatchCollection mcSpecific = rSpecific.Matches(szPhrase);
+            if (mcSpecific.Count > 0)    // user is requesting a specific match on a specific field
+            {
+                GroupCollection gc = mcSpecific[0].Groups;
+                string szValue = gc["value"].Value.Trim();
+                const string szSingleCharWildcard = "\b\b\b\b";
+                const string szMultiCharWildcard = "\v\v\v\v";
+                // Convert the wildcards to something unique, escape, the put the wildcards back
+                string rMatch = String.IsNullOrEmpty(szValue) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "^{0}$", Regex.Escape(szValue.Replace("?", szSingleCharWildcard).Replace("*", szMultiCharWildcard)).Replace(szSingleCharWildcard, ".").Replace(szMultiCharWildcard, ".*"));
+                string szTest;
+                switch (gc["field"].Value.ToUpperInvariant())
+                {
+                    case szPrefixLimitComments:
+                        szTest = le.Comment;
+                        break;
+                    case szPrefixLimitRoute:
+                        szTest = le.Route;
+                        break;
+                    default:
+                        throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Unknown prefix '{0}' matched rspecific", gc["field"].Value));
+                }
+                return Regex.IsMatch(szTest.Trim(), rMatch, RegexOptions.IgnoreCase);
+            }
+            else
+                return szMatch.Contains(szPhrase);
         }
 
         public bool MatchesFlight(LogbookEntryDisplay le)
