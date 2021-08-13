@@ -271,7 +271,7 @@
     <comment>{0} is the name of the property</comment>
   </data>
   <data name="8710ClassTotals" xml:space="preserve">
-    <value>ClassTotals</value>
+    <value>Class Totals</value>
   </data>
   <data name="8710Footnote1" xml:space="preserve">
     <value>To determine the amount of time where two fields are used, the minimum of the two fields is used.  For example, night PIC for a flight is the smaller of the amount of PIC or Night flying that is logged.</value>

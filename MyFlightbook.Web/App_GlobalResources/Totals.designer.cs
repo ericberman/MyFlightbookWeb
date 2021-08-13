@@ -547,7 +547,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ClassTotals.
+        ///   Looks up a localized string similar to Class Totals.
         /// </summary>
         internal static string _8710ClassTotals {
             get {
