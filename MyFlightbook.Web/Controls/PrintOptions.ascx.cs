@@ -236,10 +236,6 @@ namespace MyFlightbook.Printing
 
         protected void NotifyDelegate()
         {
-            pnlForceBreak.Visible = ckPullForwardTotals.Visible = cmbFlightsPerPage.SelectedIndex > 0;
-            if (cmbFlightsPerPage.SelectedIndex == 0)
-                rblForceBreak.SelectedValue = "0";
-
             OptionsChanged?.Invoke(this, new PrintingOptionsEventArgs(Options));
         }
 

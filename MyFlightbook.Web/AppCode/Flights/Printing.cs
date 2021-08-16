@@ -778,14 +778,14 @@ namespace MyFlightbook.Printing
             foreach (LogbookEntryDisplay led in lstIn)
             {
                 // force a page break if a new month is starting IF the option to do so has been set
-                if (po.FlightsPerPage > 0 && dtLastEntry != null && dtLastEntry.HasValue &&
+                if (dtLastEntry != null && dtLastEntry.HasValue &&
                     ((po.BreakAtMonthBoundary &&  (led.Date.Month != dtLastEntry.Value.Month || led.Date.Year != dtLastEntry.Value.Year)) ||
                     (po.BreakAtYearBoundary && led.Date.Year != dtLastEntry.Value.Year)))
                     flightIndexOnPage = po.FlightsPerPage;
 
                 dtLastEntry = led.Date;
                 led.SetOptionalColumns(po.OptionalColumns);
-                if ((po.FlightsPerPage > 0 && flightIndexOnPage >= po.FlightsPerPage) || currentPage == null)   // need to start a new page.
+                if (((po.FlightsPerPage > 0 && flightIndexOnPage >= po.FlightsPerPage) || flightIndexOnPage < 0) || currentPage == null)   // need to start a new page.
                 {
                     flightIndexOnPage = 0;  // reset
                     dictPageTotals = new Dictionary<string, LogbookEntryDisplay>();
@@ -818,7 +818,7 @@ namespace MyFlightbook.Printing
                 lstFlightsThisPage.Add(led);
 
                 // And add the flight to the page catclass totals and running catclass totals
-                if (po.FlightsPerPage > 0)
+                if (po.FlightsPerPage > 0 || po.BreakAtMonthBoundary || po.BreakAtYearBoundary)
                 {
                     if (!dictPageTotals.ContainsKey(szCatClassKey))
                         dictPageTotals[szCatClassKey] = new LogbookEntryDisplay(po.OptionalColumns) { RowType = LogbookEntryDisplay.LogbookRowType.PageTotal, CatClassDisplay = szCatClassKey };
