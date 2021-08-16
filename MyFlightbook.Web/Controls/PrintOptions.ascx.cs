@@ -89,12 +89,7 @@ namespace MyFlightbook.Printing
                 ckIncludeImages.Checked = m_options.IncludeImages;
                 ckIncludeSignatures.Checked = m_options.IncludeSignatures;
                 ckFlightColoring.Checked = m_options.UseFlightColoring;
-                if (m_options.BreakAtMonthBoundary)
-                    rblForceBreak.SelectedValue = "1";
-                else if (m_options.BreakAtYearBoundary)
-                    rblForceBreak.SelectedValue = "2";
-                else
-                    rblForceBreak.SelectedValue = "0";
+                rblForceBreak.SelectedValue = m_options.BreakAtMonthBoundary ? "1" : m_options.BreakAtYearBoundary ? "2" : "0";
                 cmbLayout.SelectedValue = m_options.Layout.ToString();
                 rblPropertySeparator.SelectedValue = m_options.PropertySeparator.ToString();
 

@@ -830,6 +830,18 @@ namespace MyFlightbook.Printing
             }
 
             // Assign page number, and index totals
+            AddPageNumbersIndexTotals(po, lstOut, pageNum);
+
+            return lstOut;
+        }
+
+        private static void AddPageNumbersIndexTotals(PrintingOptions po, IEnumerable<LogbookPrintedPage> lstOut, int pageNum)
+        {
+            if (po == null)
+                throw new ArgumentNullException(nameof(po));
+            if (lstOut == null)
+                throw new ArgumentNullException(nameof(lstOut));
+
             foreach (LogbookPrintedPage lpp in lstOut)
             {
                 // And add unstriped totals as needed
@@ -858,8 +870,6 @@ namespace MyFlightbook.Printing
                 if (!po.IncludePullForwardTotals)
                     lpp.TotalsPreviousPages.Clear();
             }
-
-            return lstOut;
         }
 
         private static void ConsolidateTotals(IDictionary<string, LogbookEntryDisplay> d, LogbookEntryDisplay.LogbookRowType rowType, Collection<OptionalColumn> optionalColumns)
