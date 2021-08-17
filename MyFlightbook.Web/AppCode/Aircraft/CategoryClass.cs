@@ -7,7 +7,7 @@ using MySql.Data.MySqlClient;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2016 MyFlightbook LLC
+ * Copyright (c) 2009-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -17,7 +17,7 @@ namespace MyFlightbook
     [Serializable]
     public class CategoryClass : IEquatable<CategoryClass>
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1027:MarkEnumsWithFlags"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1008:EnumsShouldHaveZeroValue")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1008:EnumsShouldHaveZeroValue")]
         public enum CatClassID
         {
             ASEL = 1,
@@ -209,6 +209,30 @@ namespace MyFlightbook
         public static Boolean IsManned(CatClassID cc)
         {
             return (cc != CatClassID.UnmannedAerialSystem);
+        }
+
+        public static bool HasICAO(CategoryClass.CatClassID ccid)
+        {
+            switch (ccid)
+            {
+                case CategoryClass.CatClassID.ASEL:
+                case CategoryClass.CatClassID.ASES:
+                case CategoryClass.CatClassID.AMEL:
+                case CategoryClass.CatClassID.AMES:
+                case CategoryClass.CatClassID.Helicopter:
+                case CategoryClass.CatClassID.Gyroplane:
+                case CategoryClass.CatClassID.Airship:
+                    return true;
+                case CategoryClass.CatClassID.GasBalloon:
+                case CategoryClass.CatClassID.HotAirBalloon:
+                case CategoryClass.CatClassID.Glider:
+                case CategoryClass.CatClassID.UnmannedAerialSystem:
+                case CategoryClass.CatClassID.WeightShiftControlLand:
+                case CategoryClass.CatClassID.WeightShiftControlSea:
+                    return false;
+                default:
+                    return true;
+            }
         }
         #endregion
 

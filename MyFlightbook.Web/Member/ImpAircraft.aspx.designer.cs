@@ -415,7 +415,7 @@ public partial class Member_ImpAircraft
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::Controls_mfbEditMake mfbEditMake1;
+    protected global::MyFlightbook.AircraftControls.mfbEditMake mfbEditMake1;
 
     /// <summary>
     /// lblSkipsErrors control.
