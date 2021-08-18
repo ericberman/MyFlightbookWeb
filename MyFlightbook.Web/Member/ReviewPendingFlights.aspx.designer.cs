@@ -91,7 +91,7 @@ public partial class Member_ReviewPendingFlights
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::Controls_mfbEditFlight mfbEditFlight;
+    protected global::MyFlightbook.Controls.FlightEditing.mfbEditFlight mfbEditFlight;
 
     /// <summary>
     /// Master property.

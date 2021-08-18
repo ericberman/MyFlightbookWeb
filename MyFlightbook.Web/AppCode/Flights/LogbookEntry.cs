@@ -1331,8 +1331,9 @@ namespace MyFlightbook
         /// Clones the current flight as a new flight
         /// </summary>
         /// <param name="le">The target logbookentry object.  A new one is allocated if this is null</param>
+        /// <param name="fReverse">Reverse the route?</param>
         /// <returns>A new LogbookEntry object that is the same as this one but which will not overwrite the old one.</returns>
-        public LogbookEntry Clone(LogbookEntry le = null)
+        public LogbookEntry Clone(LogbookEntry le = null, bool fReverse = false)
         {
             if (le == null)
                 le = new LogbookEntry();
@@ -1351,6 +1352,14 @@ namespace MyFlightbook
                 lstCFP.Add(cfpNew);
             }
             le.CustomProperties.SetItems(lstCFP);
+
+            if (fReverse)
+            {
+                string[] rgRoute = AirportList.NormalizeAirportList(le.Route);
+                Array.Reverse(rgRoute);
+                le.Route = String.Join(Resources.LocalizedText.LocalizedSpace, rgRoute);
+            }
+
             return le;
         }
 

@@ -66,7 +66,7 @@ namespace MyFlightbook.MemberPages
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_mfbEditFlight mfbEditFlight1;
+        protected global::MyFlightbook.Controls.FlightEditing.mfbEditFlight mfbEditFlight1;
 
         /// <summary>
         /// Master property.
