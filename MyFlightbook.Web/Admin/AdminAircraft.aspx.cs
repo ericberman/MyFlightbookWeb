@@ -358,7 +358,7 @@ namespace MyFlightbook.Web.Admin
             if (String.IsNullOrEmpty(txtTailToFind.Text))
                 return;
 
-            string szTailToMatch = Regex.Replace(txtTailToFind.Text, "[^a-zA-Z0-9#%]", string.Empty);
+            string szTailToMatch = Regex.Replace(txtTailToFind.Text, "[^a-zA-Z0-9#?]", "*").ConvertToMySQLWildcards();
 
             DBHelper dbh = new DBHelper("SELECT * FROM aircraft WHERE REPLACE(UPPER(tailnumber), '-', '') LIKE ?tailNum");
 

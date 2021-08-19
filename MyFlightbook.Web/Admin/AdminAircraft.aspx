@@ -157,7 +157,7 @@
                 </tr>
             </table>
             <asp:Panel ID="pnlFindAircraft" runat="server" DefaultButton="btnFindAircraftByTail">
-                Find aircraft by tail (use % as wildcard):
+                Find aircraft by tail (use * and ? as wildcards):
                             <asp:TextBox ID="txtTailToFind" runat="server"></asp:TextBox>
                 <asp:Button ID="btnFindAircraftByTail" runat="server"
                     OnClick="btnFindAircraftByTail_Click" Text="Find" />
@@ -456,7 +456,7 @@ WHERE
     OR modelTails.tailnumber IS NOT NULL
     OR REPLACE(RIGHT(ac.tailnumber, LENGTH(ac.tailnumber) - 1), '-', '') = REPLACE(RIGHT(m.model, LENGTH(m.model) - 1), '-', '')
     OR (LEFT(ac.tailnumber, 3) &lt;&gt; 'SIM' AND (LEFT(REPLACE(ac.tailnumber, '-', ''), 4) = LEFT(man.manufacturer, 4)))
-    OR (ac.instancetype=1 AND REPLACE(ac.tailnumber, '-', '') RLIKE 'SIM|FTD|ATD|FFS|REDB|FRAS|ELIT|CAE|ALSIM|FLIG|SAFE|PREC|TRUF|FMX|GROU|VARI|MISC|NONE|UNKN')
+    OR (ac.instancetype=1 AND REPLACE(ac.tailnumber, '-', '') RLIKE 'SIM|FTD|ATD|FFS|REDB|FRAS|ELIT|CAE|ALSIM|FLIG|SAFE|PREC|TRUF|FMX|GROU|VARI|MISC|NONE|UNKN|FAA')
 GROUP BY ac.idaircraft
 ORDER BY tailnumber ASC"></asp:SqlDataSource>
                 </asp:View>
