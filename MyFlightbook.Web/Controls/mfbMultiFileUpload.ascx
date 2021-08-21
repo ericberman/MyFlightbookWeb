@@ -1,10 +1,43 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbMultiFileUpload.ascx.cs" Inherits="Controls_mfbMultiFileUpload" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbMultiFileUpload.ascx.cs" Inherits="MyFlightbook.Controls.ImageControls.mfbMultiFileUpload" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <%@ Reference Control="~/Controls/mfbFileUpload.ascx" %>
 <%@ Register src="mfbImageList.ascx" tagname="mfbImageList" tagprefix="uc2" %>
+<%@ Register Src="~/Controls/mfbFileUpload.ascx" TagPrefix="uc2" TagName="mfbFileUpload" %>
+<script>
+    function ShowPanel(id, sender) {
+        document.getElementById(id).style.display = 'block';
+        sender.style.display = 'none';
+        return false;
+    }
+
+    addLoadEvent(function () {
+        document.onpaste = function (event) {
+            var items = (event.clipboardData || event.originalEvent.clipboardData).items;
+            var blob = null;
+            for (var i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf("image") === 0) {
+                    blob = items[i].getAsFile();
+                    if (blob !== null) {
+                        document.getElementById('<% =pnlclipboard.ClientID %>').style.display = 'block';
+                        var reader = new FileReader();
+                        reader.onload = function (event) {
+                            document.getElementById('<% =hImg.ClientID %>').value = event.target.result;
+                            __doPostBack('<% =bUpClp.ClientID %>', '');
+                        };
+                        reader.readAsDataURL(blob);
+                        return; // no need to keep cycling through items.
+                    }
+                }
+            }
+        }
+    });
+</script>
 <asp:MultiView ID="mvFileUpload" runat="server" ActiveViewIndex="0">
     <asp:View ID="vwLegacy" runat="server">
-        <asp:PlaceHolder ID="PlaceHolder1" runat="server"></asp:PlaceHolder>
+        <uc2:mfbFileUpload runat="server" ID="mfbFu1" />
+        <uc2:mfbFileUpload runat="server" ID="mfbFu2" ClientVisible="false" />
+        <uc2:mfbFileUpload runat="server" ID="mfbFu3" ClientVisible="false" />
+        <uc2:mfbFileUpload runat="server" ID="mfbFu4" ClientVisible="false" />
     </asp:View>
     <asp:View ID="vwAjaxUpload" runat="server">
         <asp:Image ID="myThrobber" ImageUrl="~/images/ajax-loader.gif" runat="server" style="display:None" />
@@ -20,12 +53,17 @@
                     __doPostBack('<% =btnForceRefresh.ClientID %>', ''); // Do post back only after all files have been uploaded
                 }
             </script>
-            <asp:Button ID="btnForceRefresh" runat="server" Text="(Refresh)" OnClick="btnForceRefresh_Click" style="display:none;" />
+            <asp:Button ID="btnForceRefresh" runat="server" OnClick="btnForceRefresh_Click" style="display:none;" />
         </asp:Panel>
         <asp:LinkButton ID="lnkBtnForceLegacy" runat="server" Text="<%$ Resources:LocalizedText, AjaxFileUploadDowngradePrompt %>" CssClass="fineprint" OnClick="lnkBtnForceLegacy_Click"></asp:LinkButton>
     </asp:View>
 </asp:MultiView>
 <span class="fineprint"><% =Resources.LocalizedText.ImageDisclaimer %></span>
+<asp:Panel runat="server" ID="pnlclipboard" style="display:none">
+    <asp:Button ID="bUpClp" runat="server" OnClick="btnForceRefresh_Click" style="display:none;" />
+    <asp:Image ID="iThrb" runat="server" ImageUrl="~/images/ajax-loader.gif" />
+    <asp:HiddenField ID="hImg" runat="server" EnableViewState="false" />
+</asp:Panel>
 <div>
     <div><asp:Label ID="lblGPhotoResult" runat="server" EnableViewState="false" /></div>
     <asp:Panel runat="server" ID="pnlGPResult" Visible="false" style="margin: 20px; border-radius: 8px; padding: 5px; background-color:lightgray; border: 1px solid darkgray;">

@@ -120,7 +120,7 @@ namespace MyFlightbook.Instruction
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_mfbMultiFileUpload mfbMultiFileUpload1;
+        protected global::MyFlightbook.Controls.ImageControls.mfbMultiFileUpload mfbMultiFileUpload1;
 
         /// <summary>
         /// btnUploadImages control.
@@ -426,7 +426,7 @@ namespace MyFlightbook.Instruction
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_mfbMultiFileUpload mfuOfflineEndorsements;
+        protected global::MyFlightbook.Controls.ImageControls.mfbMultiFileUpload mfuOfflineEndorsements;
 
         /// <summary>
         /// btnUploadOfflineImages control.

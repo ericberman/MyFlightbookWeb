@@ -19,7 +19,7 @@ public partial class Public_ImgDbg
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::Controls_mfbMultiFileUpload mfbMultiFileUpload1;
+    protected global::MyFlightbook.Controls.ImageControls.mfbMultiFileUpload mfbMultiFileUpload1;
 
     /// <summary>
     /// btnTest control.

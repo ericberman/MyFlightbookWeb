@@ -1,12 +1,12 @@
-﻿using System;
+﻿using ImageMagick;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
-using System.Collections.Generic;
-using ImageMagick;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2020 MyFlightbook LLC
+ * Copyright (c) 2010-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -22,7 +22,7 @@ public partial class Public_ImgDbg : System.Web.UI.Page
     {
         StringBuilder sb = new StringBuilder();
 
-        foreach (Controls_mfbFileUpload fu in mfbMultiFileUpload1.FileUploadControls)
+        foreach (MyFlightbook.Controls.ImageControls.mfbFileUpload fu in mfbMultiFileUpload1.FileUploadControls)
         {
             if (fu.HasFile)
             {

@@ -1,4 +1,5 @@
 ﻿using MyFlightbook.Image;
+using MyFlightbook.Controls.ImageControls;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -77,7 +78,7 @@ namespace MyFlightbook.Instruction
                         mfbEndorsementList1.RefreshEndorsements();
 
                         if (!Request.IsMobileDeviceOrTablet())
-                            mfbMultiFileUpload1.Mode = Controls_mfbMultiFileUpload.UploadMode.Ajax;
+                            mfbMultiFileUpload1.Mode = mfbMultiFileUpload.UploadMode.Ajax;
 
                         lnkPrintFriendly.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "{0}?naked=1&print=1", Request.Url.AbsolutePath);
                         if (util.GetIntParam(Request, "print", 0) != 0)
@@ -140,8 +141,8 @@ namespace MyFlightbook.Instruction
         protected override void OnLoadComplete(EventArgs e)
         {
             // show an upload control in case the user switched from ajax to legacy upload
-            btnUploadImages.Visible = (mfbMultiFileUpload1.Mode == Controls_mfbMultiFileUpload.UploadMode.Legacy);
-            btnUploadOfflineImages.Visible = (mfuOfflineEndorsements.Mode == Controls_mfbMultiFileUpload.UploadMode.Legacy);
+            btnUploadImages.Visible = (mfbMultiFileUpload1.Mode == mfbMultiFileUpload.UploadMode.Legacy);
+            btnUploadOfflineImages.Visible = (mfuOfflineEndorsements.Mode == mfbMultiFileUpload.UploadMode.Legacy);
             base.OnLoadComplete(e);
         }
 

@@ -714,7 +714,7 @@ namespace MyFlightbook.Controls.FlightEditing
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_mfbMultiFileUpload mfbMFUFlightImages;
+        protected global::MyFlightbook.Controls.ImageControls.mfbMultiFileUpload mfbMFUFlightImages;
 
         /// <summary>
         /// mfbFlightImages control.

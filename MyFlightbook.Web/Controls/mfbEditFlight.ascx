@@ -5,7 +5,6 @@
 <%@ Register src="mfbFlightInfo.ascx" tagname="mfbFlightInfo" tagprefix="uc4" %>
 <%@ Register src="mfbMultiFileUpload.ascx" tagname="mfbMultiFileUpload" tagprefix="uc5" %>
 <%@ Register src="mfbDecimalEdit.ascx" tagname="mfbDecimalEdit" tagprefix="uc7" %>
-<%@ Register src="mfbFileUpload.ascx" tagname="mfbFileUpload" tagprefix="uc9" %>
 <%@ Register src="mfbVideoEntry.ascx" tagname="mfbVideoEntry" tagprefix="uc12" %>
 <%@ Register src="mfbEditPropSet.ascx" tagname="mfbEditPropSet" tagprefix="uc13" %>
 <%@ Register src="mfbFlightProperties.ascx" tagname="mfbFlightProperties" tagprefix="uc10" %>

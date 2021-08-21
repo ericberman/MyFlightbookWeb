@@ -1,7 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbVideoEntry.ascx.cs" Inherits="Controls_mfbVideoEntry" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
-<%@ Register src="mfbMultiFileUpload.ascx" tagname="mfbMultiFileUpload" tagprefix="uc1" %>
-<%@ Register src="mfbFileUpload.ascx" tagname="mfbFileUpload" tagprefix="uc2" %>
 <asp:Panel ID="pnlVideoUpload" runat="server">
     <p>
         <asp:Label ID="lblVideos" runat="server" Text="<%$ Resources:LocalizedText, videoHeader %>"></asp:Label>&nbsp;

@@ -4,11 +4,12 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2020 MyFlightbook LLC
+ * Copyright (c) 2008-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -48,6 +49,31 @@ namespace MyFlightbook.Image
             FileID = FileName = fileName;
             ContentType = contentType ?? throw new ArgumentNullException(nameof(contentType));
             ContentLength = contentLength;
+        }
+
+        private static readonly Regex rDataUrl = new Regex("^data:((?<type>[\\w\\/]+))?;base64,(?<data>.+)$", RegexOptions.Compiled);
+
+        /// <summary>
+        /// Create an MFBPostedFile from a dataURL
+        /// </summary>
+        /// <param name="s"></param>
+        public MFBPostedFile(String s)
+        {
+            if (s == null)
+                throw new ArgumentNullException(nameof(s));
+
+            if (!rDataUrl.IsMatch(s))
+                throw new InvalidDataException("Attempt to initialize MFBPostedFile from a non-data URL");
+
+            GroupCollection gc = Regex.Match(s, @"^data:((?<type>[\w\/]+))?;base64,(?<data>.+)$").Groups;
+            ContentType = gc["type"].Value;
+
+            using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(gc["data"].Value)))
+            {
+                WriteStreamToTempFile(ms);
+                ContentLength = ms.Length;
+                FileName = TempFileName;
+            }
         }
 
         public static MFBPostedFile PostedFileFromURL(Uri uri, string szFilename, string szContentType)
@@ -115,7 +141,7 @@ namespace MyFlightbook.Image
         /// <summary>
         /// The length of the file
         /// </summary>
-        public int ContentLength { get; set; }
+        public long ContentLength { get; set; }
 
         /// <summary>
         /// The name of the temp file to which the data has been written, so that we're not holding a potentially huge file in memory.
@@ -199,7 +225,6 @@ namespace MyFlightbook.Image
         /// MUST BE DISPOSED BY CALLER
         /// </summary>
         /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public Stream GetInputStream()
         {
             return File.OpenRead(TempFileName);

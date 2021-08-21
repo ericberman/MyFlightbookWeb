@@ -1,4 +1,5 @@
 ﻿using MyFlightbook.BasicmedTools;
+using MyFlightbook.Controls.ImageControls;
 using System;
 using System.Globalization;
 using System.Linq;
@@ -105,7 +106,7 @@ namespace MyFlightbook.Web.Controls.Prefs
                 throw new ArgumentNullException(nameof(e));
 
             // We're only allowing image editing, at least for now.
-            Controls_mfbMultiFileUpload mfu = (Controls_mfbMultiFileUpload)gvBasicMedEvents.Rows[e.RowIndex].FindControl("mfuBasicMedImages");
+            mfbMultiFileUpload mfu = (mfbMultiFileUpload)gvBasicMedEvents.Rows[e.RowIndex].FindControl("mfuBasicMedImages");
             mfu.ProcessUploadedImages();
             gvBasicMedEvents.EditIndex = -1;
             RefreshBasicMedEvents();

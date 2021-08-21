@@ -75,7 +75,7 @@ namespace MyFlightbook.Web.Controls.Prefs
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_mfbMultiFileUpload mfuBasicMedImages;
+        protected global::MyFlightbook.Controls.ImageControls.mfbMultiFileUpload mfuBasicMedImages;
 
         /// <summary>
         /// btnAddBasicMedEvent control.
