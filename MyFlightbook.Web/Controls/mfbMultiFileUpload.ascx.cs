@@ -357,8 +357,6 @@ namespace MyFlightbook.Controls.ImageControls
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            Page.ClientScript.RegisterClientScriptInclude("uploadSupport", ResolveClientUrl("~/Public/Scripts/fileuploadsupport.js"));
-
             RefreshPreviewList();
 
             ProcessClipboardImage();

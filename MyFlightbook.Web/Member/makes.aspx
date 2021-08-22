@@ -3,16 +3,12 @@
 <%@ Register src="../Controls/mfbMakeListItem.ascx" tagname="mfbMakeListItem" tagprefix="uc2" %>
 <%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc2" TagName="mfbTooltip" %>
 <%@ Register Src="~/Controls/mfbSearchbox.ascx" TagPrefix="uc2" TagName="mfbSearchbox" %>
-
-
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
     <asp:Localize ID="locMakesHeader" runat="server" 
             Text="Aircraft Models" meta:resourcekey="locMakesHeaderResource1"></asp:Localize>
 </asp:Content>
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
-    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script src='<%= ResolveUrl("~/public/Scripts/endless-scroll.js") %>'></script>
-    <script src='<%= ResolveUrl("~/public/Scripts/jquery.json-2.4.min.js") %>'></script>
     <div style="float:right; margin: 5px; padding:5px; max-width: 200px; border: 1px solid black">
         <asp:Localize ID="locPageTop" runat="server" Text="Don&#39;t see the make/model of aircraft that you fly?" 
             meta:resourcekey="locPageTopResource1"></asp:Localize>
@@ -141,7 +137,7 @@
                     $.ajax(
                         {
                             type: "POST",
-                            data: $.toJSON(params),
+                            data: JSON.stringify(params),
                             url: "Makes.aspx/HtmlRowsForMakes",
                             dataType: "json",
                             contentType: "application/json",

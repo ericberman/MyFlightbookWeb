@@ -7,9 +7,7 @@
     <asp:Label ID="lblHeader" runat="server" Text=""></asp:Label>
 </asp:Content>
 <asp:Content ID="Content1" ContentPlaceHolderID="cpTopForm" runat="Server">
-    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script src='<%= ResolveUrl("~/public/Scripts/endless-scroll.js") %>'></script>
-    <script src='<%= ResolveUrl("~/public/Scripts/jquery.json-2.4.min.js") %>'></script>
     <asp:GridView ID="gvMyFlights" runat="server" OnRowDataBound="gvMyFlights_rowDataBound"
         GridLines="None" Visible="true" AutoGenerateColumns="false" CellPadding="5" EnableViewState="false"
         AllowPaging="false" AllowSorting="false" ShowFooter="false" ShowHeader="false" >
@@ -46,7 +44,7 @@
                 $.ajax(
                 {
                     type: "POST",
-                    data: $.toJSON(params),
+                    data: JSON.stringify(params),
                     url: "MyFlights.aspx/HtmlRowsForFlights",
                     dataType: "json",
                     contentType: "application/json",

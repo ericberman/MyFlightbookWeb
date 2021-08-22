@@ -52,7 +52,7 @@ public partial class Member_ACSchedule : System.Web.UI.Page
                         }
                     }
                 }
-                else if ((lstClubsForAircraft = Club.ClubsForAircraft(AircraftID)).Count() > 0)   // if the aircraft belongs to a club but you don't, show those clubs
+                else if ((lstClubsForAircraft = Club.ClubsForAircraft(AircraftID)).Any())   // if the aircraft belongs to a club but you don't, show those clubs
                 {
                     mvStatus.SetActiveView(vwNotMember);
                     rptClubsForAircraft.DataSource = lstClubsForAircraft;

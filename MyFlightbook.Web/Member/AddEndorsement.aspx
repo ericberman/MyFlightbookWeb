@@ -3,11 +3,7 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register Src="~/Controls/mfbEditEndorsement.ascx" TagPrefix="uc1" TagName="mfbEditEndorsement" %>
 <%@ Register Src="~/Controls/mfbSearchbox.ascx" TagPrefix="uc1" TagName="mfbSearchbox" %>
-
-
 <asp:Content ID="Content1" ContentPlaceHolderID="cpPageTitle" Runat="Server">
-    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <script src='<%= ResolveUrl("~/public/Scripts/jquery.json-2.4.min.js") %>'></script>
     <asp:Label ID="lblAddEndorsement" runat="server" Text="<%$ Resources:SignOff, EditEndorsementAddEndorsement %>"></asp:Label>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="cpTopForm" Runat="Server">

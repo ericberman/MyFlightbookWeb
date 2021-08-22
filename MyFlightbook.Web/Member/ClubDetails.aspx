@@ -10,16 +10,12 @@
 <%@ Register Src="~/Controls/mfbTypeInDate.ascx" TagPrefix="uc1" TagName="mfbTypeInDate" %>
 <%@ Register src="../Controls/ClubControls/SchedSummary.ascx" tagname="SchedSummary" tagprefix="uc7" %>
 <%@ Register src="../Controls/ClubControls/ClubAircraftSchedule.ascx" tagname="ClubAircraftSchedule" tagprefix="uc8" %>
-
 <%@ Register src="../Controls/Expando.ascx" tagname="Expando" tagprefix="uc9" %>
-
 <asp:Content ID="Content1" ContentPlaceHolderID="cpPageTitle" Runat="Server">
     <asp:Label ID="lblClubHeader" runat="server" Text=""></asp:Label>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="cpTopForm" Runat="Server">
-    <script src='<%= ResolveUrl("~/public/Scripts/daypilot-all.min.js?v=20200102") %>'></script>
-    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <script src='<%= ResolveUrl("~/public/Scripts/jquery.json-2.4.min.js") %>'></script>
+    <script src='<%= ResolveUrl("~/public/Scripts/daypilot-all.min.js?v=20210821") %>'></script>
     <script src='<%= ResolveUrl("~/public/Scripts/mfbcalendar.js?v=3") %>'></script>
     <p><asp:HyperLink ID="lnkViewAll" runat="server" NavigateUrl="~/Public/Clubs.aspx?noredir=1" Text="<%$ Resources:Club, LabelViewAllClubs %>"></asp:HyperLink></p>
     <asp:MultiView ID="mvPromoStatus" runat="server">

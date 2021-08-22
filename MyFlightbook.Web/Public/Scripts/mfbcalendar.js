@@ -88,7 +88,7 @@
         }
         params.resourceName = this.resourceID;
         params.clubID = this.clubID;
-        var d = $.toJSON(params);
+        var d = JSON.stringify(params);
 
         $.ajax(
             {
@@ -131,7 +131,7 @@
 
     this.JSONparamsFromEvent = function (e) {
         var p = new Object({ start: e.data.start, end: e.data.end, id: e.data.id, resource: e.data.resource, text: e.data.text, userdisplayname: e.data.userdisplayname, readonly: e.data.ReadOnly, clubID: this.clubID });
-        return $.toJSON(p);
+        return JSON.stringify(p);
     };
 
     this.dpCalendar.onTimeRangeSelected = function (args) {

@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2020 MyFlightbook LLC
+ * Copyright (c) 2016-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -51,8 +51,6 @@ public partial class Controls_mfbImportAircraft : System.Web.UI.UserControl
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        Page.ClientScript.RegisterClientScriptInclude("jquery1", ResolveClientUrl("https://code.jquery.com/jquery-1.10.1.min.js"));
-        Page.ClientScript.RegisterClientScriptInclude("jquery2", ResolveClientUrl("~/public/Scripts/jquery.json-2.4.min.js"));
         Page.ClientScript.RegisterClientScriptInclude("MFBAircraftImportScript", ResolveClientUrl("~/Public/Scripts/ImpAircraft.js?v=2"));
         if (IsPostBack)
         {

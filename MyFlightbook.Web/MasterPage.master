@@ -40,10 +40,13 @@
         }
     </script>
     <form id="form1" runat="server">
-        <asp:ScriptManager ID="ScriptManager1" runat="server">
+        <asp:ScriptManager ID="ScriptManager1" runat="server" >
             <Services>
                 <asp:ServiceReference Path="~/Public/WebService.asmx" />
             </Services>
+            <Scripts>
+                <asp:ScriptReference Name="jquery" Path="https://code.jquery.com/jquery-3.6.0.min.js" />
+            </Scripts>
         </asp:ScriptManager>
         <asp:Panel ID="pnlImpersonation" runat="server" BackColor="Beige" Width="100%" style="text-align:center" Visible="false">
             User 

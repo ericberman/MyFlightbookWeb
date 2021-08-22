@@ -5,8 +5,6 @@
 <%@ Register src="../Controls/mfbEditMake.ascx" tagname="mfbEditMake" tagprefix="uc5" %>
 <%@ Register src="../Controls/mfbImportAircraft.ascx" tagname="mfbImportAircraft" tagprefix="uc3" %>
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
-    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <script src='<%= ResolveUrl("~/public/Scripts/jquery.json-2.4.min.js") %>'></script>
     <asp:Localize ID="locHeader" runat="server" Text="Import Aircraft" meta:resourcekey="locHeaderResource1"></asp:Localize>
 </asp:Content>
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">

@@ -8,9 +8,7 @@
 <%@ Register src="../Controls/ClubControls/TimeZone.ascx" tagname="TimeZone" tagprefix="uc4" %>
 <%@ Register src="../Controls/popmenu.ascx" tagname="popmenu" tagprefix="uc5" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="cpTopForm" Runat="Server">
-    <script src='<%= ResolveUrl("~/public/Scripts/daypilot-all.min.js?v=20200102") %>'></script>
-    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <script src='<%= ResolveUrl("~/public/Scripts/jquery.json-2.4.min.js") %>'></script>
+    <script src='<%= ResolveUrl("~/public/Scripts/daypilot-all.min.js?v=20210821") %>'></script>
     <script src='<%= ResolveUrl("~/public/Scripts/mfbcalendar.js?v=3") %>'></script>
     <uc1:mfbEditAppt ID="mfbEditAppt1" runat="server" />
     <asp:MultiView ID="mvStatus" runat="server">

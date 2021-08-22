@@ -8,8 +8,6 @@
     <asp:Label ID="lblAchievementsHeader" runat="server" Text=""></asp:Label>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="cpTopForm" Runat="Server">
-    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <script src='<%= ResolveUrl("~/public/Scripts/jquery.json-2.4.min.js") %>'></script>
     <div><asp:LinkButton ID="lnkRecompute" runat="server" OnClick="lnkRecompute_Click" Text="<%$ Resources:Achievements, btnForceRefresh %>"></asp:LinkButton></div>
     <asp:MultiView ID="mvBadges" runat="server">
         <asp:View ID="vwNoBadges" runat="server">

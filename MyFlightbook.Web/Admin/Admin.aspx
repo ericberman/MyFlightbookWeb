@@ -6,8 +6,6 @@
     Admin Tools
 </asp:Content>
 <asp:Content ID="Content1" ContentPlaceHolderID="cpTopForm" runat="Server">
-    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <script src='<%= ResolveUrl("~/public/Scripts/jquery.json-2.4.min.js") %>'></script>
     <asp:MultiView ID="mvAdmin" runat="server" ActiveViewIndex="0">
         <asp:View ID="vwUsers" runat="server">
             <h2>User Management</h2>

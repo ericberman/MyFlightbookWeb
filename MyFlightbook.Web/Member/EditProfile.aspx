@@ -28,8 +28,6 @@
 <%@ Register Src="~/Controls/Prefs/mfbPropertyBlocklist.ascx" TagPrefix="uc1" TagName="mfbPropertyBlocklist" %>
 
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
-    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <script src='<%= ResolveUrl("~/public/Scripts/jquery.json-2.4.min.js") %>'></script>
     <asp:Label ID="lblName" runat="server" />
 </asp:Content>
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">

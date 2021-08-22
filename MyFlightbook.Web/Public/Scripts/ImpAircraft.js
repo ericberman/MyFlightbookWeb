@@ -14,7 +14,7 @@ function addExistingAircraft(d) {
     $.ajax(
     {
         type: "POST",
-        data: $.toJSON(params),
+        data: JSON.stringify(params),
         url: "ImpAircraftService.aspx/AddExistingAircraft",
         dataType: "json",
         contentType: "application/json",
@@ -46,7 +46,7 @@ function addNewAircraft(d) {
     $.ajax(
         {
             type: "POST",
-            data: $.toJSON(params),
+            data: JSON.stringify(params),
             url: "ImpAircraftService.aspx/AddNewAircraft",
             dataType: "json",
             contentType: "application/json",
@@ -91,7 +91,7 @@ function Validate(d) {
     $.ajax(
         {
             type: "POST",
-            data: $.toJSON(params),
+            data: JSON.stringify(params),
             url: "ImpAircraftService.aspx/ValidateAircraft",
             dataType: "json",
             contentType: "application/json",
