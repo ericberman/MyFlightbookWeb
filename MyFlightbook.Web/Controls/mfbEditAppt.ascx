@@ -2,10 +2,10 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <%@ Register src="mfbTypeInDate.ascx" tagname="mfbTypeInDate" tagprefix="uc3" %>
 <asp:ModalPopupExtender ID="ModalPopupExtender1" BehaviorID="mpeEditAppt" BackgroundCssClass="modalBackground" runat="server" TargetControlID="btnDummy" PopupControlID="pnlEditAppt"></asp:ModalPopupExtender>
-<asp:Panel ID="pnlEditAppt" DefaultButton="btnSaveAppt" style="display:none" runat="server" CssClass="modalpopup">
+<asp:Panel ID="pnlEditAppt" DefaultButton="btnSaveAppt" style="display:none; max-width:300px; width: 80%;" runat="server" CssClass="modalpopup">
     <div><asp:Localize ID="Localize3" runat="server" Text="<%$ Resources:Schedule, EventTitle %>"></asp:Localize></div>
     <div>
-        <asp:TextBox ID="txtApptTitle" runat="server" Width="90%"></asp:TextBox>
+        <asp:TextBox ID="txtApptTitle" runat="server" />
         <asp:TextBoxWatermarkExtender BehaviorID="watermarkTitle" ID="TextBoxWatermarkExtender1" TargetControlID="txtApptTitle" WatermarkCssClass="watermark" WatermarkText="<%$ Resources:Schedule, EventTitleWatermark %>" runat="server"></asp:TextBoxWatermarkExtender>
     </div>
     <div><asp:Localize ID="Localize1" runat="server" Text="<%$ Resources:Schedule, EventStart %>"></asp:Localize></div>
@@ -20,11 +20,9 @@
         <asp:DropDownList ID="cmbHourEnd" runat="server">
         </asp:DropDownList>
     </div>
-    <div style="text-align: center">
+    <div style="text-align: center; margin-top: 5px;">
         <asp:Button runat="server" Text="<%$ Resources:Schedule, EventCancel %>" ID="btnCancel" OnClientClick="javascript:hideEditor();return false;"></asp:Button>
-        &nbsp;
         <asp:Button runat="server" Text="<%$ Resources:Schedule, EventDelete %>" ID="btnDeleteAppt"></asp:Button>
-        &nbsp; 
         <asp:Button runat="server" Text="<%$ Resources:Schedule, EventSave %>" ID="btnSaveAppt"></asp:Button>
     </div>
     <asp:HiddenField runat="server" ID="hdnApptID"></asp:HiddenField>
