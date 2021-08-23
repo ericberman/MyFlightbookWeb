@@ -927,8 +927,6 @@
     <Content Include="Public\Scripts\endless-scroll.js" />
     <Content Include="Public\Scripts\GMapScript.js" />
     <Content Include="Public\Scripts\ImpAircraft.js" />
-    <Content Include="Public\Scripts\jquery.json-2.4.js" />
-    <Content Include="Public\Scripts\jquery.json-2.4.min.js" />
     <Content Include="Public\Scripts\listdrag.js" />
     <Content Include="Public\Scripts\mfbAccordionProxy.js" />
     <Content Include="Public\Scripts\mfbcalendar.js" />
