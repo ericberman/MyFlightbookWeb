@@ -413,45 +413,48 @@ namespace MyFlightbook
         /// <param name="RoleMask">The roles to whom this should go (if admin)</param>
         static private void NotifyUser(string szSubject, string szMessage, MailAddress maUser, bool fCcAdmins, bool fIsHTML, Brand brand, uint RoleMask)
         {
-            try
+            if (brand == null)
+                brand = Branding.CurrentBrand;
+
+            if (szMessage == null)
+                throw new ArgumentNullException(nameof(szMessage));
+
+            new System.Threading.Thread(() =>
             {
-                if (brand == null)
-                    brand = Branding.CurrentBrand;
-
-                if (szMessage == null)
-                    throw new ArgumentNullException(nameof(szMessage));
-
-                using (MailMessage msg = new MailMessage())
+                try
                 {
-                    msg.Subject = szSubject;
-                    msg.Body = Branding.ReBrand(szMessage, brand);
-                    msg.IsBodyHtml = fIsHTML || szMessage.Contains("<!DOCTYPE");
+                    using (MailMessage msg = new MailMessage())
+                    {
+                        msg.Subject = szSubject;
+                        msg.Body = Branding.ReBrand(szMessage, brand);
+                        msg.IsBodyHtml = fIsHTML || szMessage.Contains("<!DOCTYPE");
 
-                    msg.From = new MailAddress(brand.EmailAddress, brand.AppName);
+                        msg.From = new MailAddress(brand.EmailAddress, brand.AppName);
 
-                    if (maUser != null)
-                        msg.To.Add(maUser);
+                        if (maUser != null)
+                            msg.To.Add(maUser);
 
-                    if (fCcAdmins)
-                        AddAdminsToMessage(msg, (maUser == null), RoleMask);
+                        if (fCcAdmins)
+                            AddAdminsToMessage(msg, (maUser == null), RoleMask);
 
-                    SendMessage(msg);
+                        SendMessage(msg);
+                    }
                 }
-            }
-            catch (ArgumentNullException ex)
-            {
-                MyFlightbookException mfbEx = new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Null Argument in NotifyUser: {0}", ex.ParamName), ex);
-                MyFlightbookException.NotifyAdminException(mfbEx);
-            }
-            catch (InvalidOperationException ex)
-            {
-                MyFlightbookException mfbEx = new MyFlightbookException("Invalid Operation in NotifyUser", ex);
-                MyFlightbookException.NotifyAdminException(mfbEx);
-            }
-            catch (Exception ex) when (ex is SmtpException)
-            {
-                // Don't re-throw or do anything that would cause new mail to be sent because that could loop.  Just fail silently and eat this.
-            }
+                catch (ArgumentNullException ex)
+                {
+                    MyFlightbookException mfbEx = new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Null Argument in NotifyUser: {0}", ex.ParamName), ex);
+                    MyFlightbookException.NotifyAdminException(mfbEx);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    MyFlightbookException mfbEx = new MyFlightbookException("Invalid Operation in NotifyUser", ex);
+                    MyFlightbookException.NotifyAdminException(mfbEx);
+                }
+                catch (Exception ex) when (ex is SmtpException)
+                {
+                        // Don't re-throw or do anything that would cause new mail to be sent because that could loop.  Just fail silently and eat this.
+                }
+            }).Start();
         }
 
         /// <summary>
