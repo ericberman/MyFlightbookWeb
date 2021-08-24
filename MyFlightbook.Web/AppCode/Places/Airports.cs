@@ -865,7 +865,7 @@ namespace MyFlightbook.Airports
         // adhoc fixes can either be @LatLon (e.g., @47.348N103.23W) or @MGRS coordinate (e.g., @13UEP715168)
         private const string szRegAdHocFix = ForceNavaidPrefix + "\\d{1,2}(?:[\\.,]\\d*)?[NS]\\d{1,3}(?:[\\.,]\\d*)?[EW]\\b";  // Must have a digit on the left side of the decimal
         private const string szRegMGRS = ForceNavaidPrefix + "\\d{1,2}[^ABIOYZabioyz][A-Za-z]{2}([0-9][0-9])+\\b";
-        private readonly static string szRegexAirports = String.Format(CultureInfo.InvariantCulture, "((?:{0})|(?:{1})|(?:\\b@?[A-Z0-9]{{{2},{3}}}\\b))", szRegAdHocFix, szRegMGRS, Math.Min(airport.minNavaidCodeLength, airport.minAirportCodeLength), airport.maxCodeLength);
+        private readonly static string szRegexAirports = String.Format(CultureInfo.InvariantCulture, "((?:{0})|(?:{1})|(?:@[A-Z0-9]{{{2},{3}}}\\b)|(?:\\b[A-Z0-9]{{{2},{3}}}\\b))", szRegAdHocFix, szRegMGRS, Math.Min(airport.minNavaidCodeLength, airport.minAirportCodeLength), airport.maxCodeLength);
         private readonly static Regex regAdHocFix = new Regex(String.Format(CultureInfo.InvariantCulture, "((?:{0})|(?:{1}))", szRegAdHocFix, szRegMGRS), RegexOptions.Compiled);
         private readonly static Regex regAirport = new Regex(szRegexAirports, RegexOptions.Compiled);
 
