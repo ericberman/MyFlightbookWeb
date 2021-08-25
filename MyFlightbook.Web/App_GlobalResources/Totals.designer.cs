@@ -277,6 +277,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Multi-engine Helicopter.
+        /// </summary>
+        internal static string MEHelicopter {
+            get {
+                return ResourceManager.GetString("MEHelicopter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Night.
         /// </summary>
         internal static string Night {

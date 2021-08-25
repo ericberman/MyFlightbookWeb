@@ -397,7 +397,8 @@ namespace MyFlightbook.Currency
                                                             new ModelFeatureTotal(ModelFeatureTotal.FeatureTotalType.HighPerf, Resources.Totals.HighPerf, String.Format(CultureInfo.InvariantCulture, " (fHighPerf <> 0 OR (date < '{0}' AND f200HP <> 0))", MakeModel.Date200hpHighPerformanceCutoverDate)),
                                                             new ModelFeatureTotal(ModelFeatureTotal.FeatureTotalType.Tailwheel, Resources.Totals.Tailwheel, " fTailwheel <> 0 AND CatClassOverride <> 3 AND CatClassOverride <> 4 "), /* don't count sea time as tailwheel */
                                                             new ModelFeatureTotal(ModelFeatureTotal.FeatureTotalType.TAA, Resources.Totals.TAA, "IsTAA <> 0 AND CatClassOverride in (1, 2, 3, 4) "),    /* TAA is exclusive to AIRPLANES */
-                                                            new ModelFeatureTotal(ModelFeatureTotal.FeatureTotalType.Turbine, Resources.Totals.Turbine, " (fTurbine > 0 AND fTurbine < 4) ")};
+                                                            new ModelFeatureTotal(ModelFeatureTotal.FeatureTotalType.Turbine, Resources.Totals.Turbine, " (fTurbine > 0 AND fTurbine < 4) "),
+                                                            new ModelFeatureTotal(ModelFeatureTotal.FeatureTotalType.MEHelicopter, Resources.Totals.MEHelicopter, " (fMultiHelicopter <> 0) ") };
 
         /// <summary>
         /// Keeps track of subtotals for a given catclass.  (As opposed to a cat/class/type)
@@ -464,7 +465,7 @@ namespace MyFlightbook.Currency
         /// </summary>
         private class ModelFeatureTotal
         {
-            public enum FeatureTotalType { Complex, Retract, HighPerf, Tailwheel, Turbine, TAA };
+            public enum FeatureTotalType { Complex, Retract, HighPerf, Tailwheel, Turbine, TAA, MEHelicopter };
             private enum FeatureSubtotal { PIC, SIC, Total };
             public string Restriction { get; set; }
             public string Name { get; set; }
@@ -553,6 +554,9 @@ namespace MyFlightbook.Currency
                         break;
                     case FeatureTotalType.TAA:
                         fq.IsTechnicallyAdvanced = true;
+                        break;
+                    case FeatureTotalType.MEHelicopter:
+                        fq.IsMultiEngineHeli = true;
                         break;
                 }
                 return fq;

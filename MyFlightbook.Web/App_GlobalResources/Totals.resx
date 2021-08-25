@@ -357,4 +357,8 @@
   <data name="TAA" xml:space="preserve">
     <value>TAA (Technically Advanced Airplane)</value>
   </data>
+  <data name="MEHelicopter" xml:space="preserve">
+    <value>Multi-engine Helicopter</value>
+    <comment>Time in a multi-engine helicopter</comment>
+  </data>
 </root>
