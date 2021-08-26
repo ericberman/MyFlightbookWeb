@@ -247,9 +247,6 @@
   <data name="errNoUserSpecified" xml:space="preserve">
     <value>No user specified</value>
   </data>
-  <data name="SignInNewUserPrompt" xml:space="preserve">
-    <value>Don't have an account?</value>
-  </data>
   <data name="WelcomeTitleWithDescription" xml:space="preserve">
     <value>{0} - Free online logbook for pilots!</value>
     <comment>{0} is the app name</comment>
@@ -679,5 +676,8 @@
   </data>
   <data name="PendingFlightsReminderSubject" xml:space="preserve">
     <value>You have pending flights on %APP_NAME%</value>
+  </data>
+  <data name="SignInNewUserPrompt" xml:space="preserve">
+    <value>Don't have an account?</value>
   </data>
 </root>

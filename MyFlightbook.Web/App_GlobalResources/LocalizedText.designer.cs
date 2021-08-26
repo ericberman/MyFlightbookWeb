@@ -740,7 +740,7 @@ namespace Resources {
         ///
         ///Thank-you for using %APP_NAME%!
         ///
-        ///(Please do not reply to this mail - the mailbox is not monitored)..
+        ///To contact us, please visit http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx..
         /// </summary>
         internal static string ChangePassEmail {
             get {
@@ -4307,7 +4307,7 @@ namespace Resources {
         ///
         ///Thank-you for using %APP_NAME%!
         ///
-        ///(Please do not reply to this mail - the mailbox is not monitored)..
+        ///To contact us, please visit http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx..
         /// </summary>
         internal static string ResetPassEmail {
             get {
@@ -4768,7 +4768,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remember me next time..
+        ///   Looks up a localized string similar to Remember me.
         /// </summary>
         internal static string SignInRememberMe {
             get {

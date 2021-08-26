@@ -1279,7 +1279,7 @@ namespace Resources {
         ///    &lt;li&gt;View your flights on a map&lt;/li&gt;
         ///	&lt;li&gt;And much more...&lt;/li&gt;
         ///&lt;/ul&gt;
-        ///&lt;ul&gt;&lt;li&gt;Learn more about how %APP_NAME% compares to oth [rest of string was truncated]&quot;;.
+        ///&lt;p style=&quot;font-size: medium&quot;&gt;&lt;a href=&quot;http://%APP_URL%% [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string NewAccountPromo {
             get {

@@ -518,7 +518,7 @@
     <value>Please sign in</value>
   </data>
   <data name="SignInRememberMe" xml:space="preserve">
-    <value>Remember me next time.</value>
+    <value>Remember me</value>
   </data>
   <data name="SignInUserName" xml:space="preserve">
     <value>UserName:</value>
