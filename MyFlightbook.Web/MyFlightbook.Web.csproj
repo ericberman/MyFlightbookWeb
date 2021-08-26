@@ -818,11 +818,6 @@
     <Content Include="Public\AppleAppStore.svg" />
     <Content Include="Public\authredir.aspx" />
     <Content Include="Public\AWS-SNSListener.aspx" />
-    <Content Include="Public\bxslider\images\bx_loader.gif" />
-    <Content Include="Public\bxslider\images\controls.png" />
-    <Content Include="Public\bxslider\jquery.bxslider.min.css" />
-    <Content Include="Public\bxslider\jquery.bxslider.min.js" />
-    <Content Include="Public\bxslider\jquery.fitvids.js" />
     <Content Include="Public\CFISigs-2012-12.htm" />
     <Content Include="Public\CFISigs.aspx" />
     <Content Include="Public\CloudAhoyRedir.aspx" />
@@ -927,6 +922,7 @@
     <Content Include="Public\Scripts\endless-scroll.js" />
     <Content Include="Public\Scripts\GMapScript.js" />
     <Content Include="Public\Scripts\ImpAircraft.js" />
+    <Content Include="Public\Scripts\jquery.fitvids.js" />
     <Content Include="Public\Scripts\listdrag.js" />
     <Content Include="Public\Scripts\mfbAccordionProxy.js" />
     <Content Include="Public\Scripts\mfbcalendar.js" />
@@ -2957,8 +2953,6 @@
     <Content Include="PlayPen\Web.config" />
     <Content Include="Private\Web.Config" />
     <Content Include="Public\AndroidImages\MyFlightbook Android Feature Graphic.xcf" />
-    <Content Include="Public\bxslider\LICENSE.md" />
-    <Content Include="Public\bxslider\README.md" />
     <Content Include="Public\CSS\Web.config" />
     <Content Include="Public\Fonts\open-sans.bold.ttf" />
     <Content Include="Public\Fonts\open-sans.regular.ttf" />
