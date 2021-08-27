@@ -14,7 +14,7 @@
                 <th class="headerSmall" colspan="2">2</th>
                 <th class="headerSmall" colspan="2">3</th>
                 <th class="headerSmall" colspan="2">4</th>
-                <th class="headerSmall">5</th>
+                <th class="headerSmall" colspan='<%# ShowOptionalColumn(0) ? "2" : "1" %>'>5</th>
                 <th class="headerSmall">6</th>
                 <th class="headerSmall">7</th>
                 <th class="headerSmall" colspan="2">8</th>
@@ -29,6 +29,7 @@
                 <th colspan="2" class="headerBig"><% =Resources.LogbookEntry.PrintHeaderArrival %></th>
                 <th colspan="2" class="headerBig"><% =Resources.LogbookEntry.PrintHeaderAircraft %></th>
                 <th rowspan="2" class="headerBig"><%=Resources.LogbookEntry.PrintHeaderCategory %></th>
+                <th rowspan="2" runat="server" id="optColumn1" Visible="<%# ShowOptionalColumn(0) %>"><div class="custColumn"><%# OptionalColumnName(0) %></div></th>
                 <th rowspan="2" class="headerBig"><%=Resources.LogbookEntry.PrintHeaderTotalTime %></th>
                 <th rowspan="2" class="headerBig"><%=Resources.LogbookEntry.PrintHeaderPICName %></th>
                 <th colspan="2" class="headerBig"><%=Resources.LogbookEntry.PrintHeaderLanding %></th>
@@ -49,7 +50,7 @@
                 <th class="headerSmall"><%=Resources.LogbookEntry.PrintHeaderNight %></th>
                 <th class="headerSmall"><div><%=Resources.LogbookEntry.PrintHeaderIFR %></div><div style="text-align:center; font-size:smaller"><%=Resources.LogbookEntry.PrintHeaderIFRSubhead %></div></th>
                 <th class="headerSmall"><%=Resources.LogbookEntry.FieldPIC %></th>
-                <th class="headerSmall"><%=Resources.LogbookEntry.FieldSIC %></th>
+                <th class="headerSmall"><%=Resources.LogbookEntry.PrintHeaderCoPilot %></th>
                 <th class="headerSmall"><%=Resources.LogbookEntry.FieldDual %></th>
                 <th class="headerSmall"><%=Resources.LogbookEntry.FieldCFI %></th>
                 <th class="headerSmall"><%=Resources.LogbookEntry.PrintHeaderFSTDTime %></th>
@@ -67,10 +68,11 @@
                     <td><%#: Eval("ModelDisplay") %></td>
                     <td><%#: Eval("TailNumOrSimDisplay") %></td>
                     <td><%#: Eval("CatClassDisplay") %></td>
+                    <td class="numericColumn" runat="server" id="tdoptColumn1" visible="<%# ShowOptionalColumn(0) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(0) %></div></td>
                     <td><%# Eval("TotalFlightTime").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                     <td><%#: Eval("PICName") %></td>
-                    <td><%# Eval("NetDayLandings") %></td>
-                    <td><%# Eval("NetNightLandings") %></td>
+                    <td><%# Eval("NetDayLandings").FormatInt() %></td>
+                    <td><%# Eval("NetNightLandings").FormatInt() %></td>
                     <td><%# Eval("Nighttime").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                     <td><%# Eval("IFRTime").FormatDecimal(CurrentUser.UsesHHMM) %><div><%# Eval("InstrumentTimeDisplay") %></div></td>
                     <td><%# Eval("PIC").FormatDecimal(CurrentUser.UsesHHMM) %></td>
@@ -98,10 +100,11 @@
                             <%# (Container.ItemIndex != 0) ? "<tr class=\"subtotal\">" : string.Empty %>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).CatClassDisplay %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).FlightCount.ToString(System.Globalization.CultureInfo.CurrentCulture) %></td>
+                            <td runat="server" id="tdoptColumnTotal1" visible="<%# ShowOptionalColumn(0) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnTotalDisplayValue(0, CurrentUser.UsesHHMM) %></div></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).TotalFlightTime.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             <td></td>
-                            <td><%# ((LogbookEntryDisplay) Container.DataItem).NetDayLandings %></td>
-                            <td><%# ((LogbookEntryDisplay) Container.DataItem).NetNightLandings %></td>
+                            <td><%# ((LogbookEntryDisplay) Container.DataItem).NetDayLandings.FormatInt() %></td>
+                            <td><%# ((LogbookEntryDisplay) Container.DataItem).NetNightLandings.FormatInt() %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).Nighttime.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).IFRTimeTotal.FormatDecimal(CurrentUser.UsesHHMM) %> <%# ((LogbookEntryDisplay) Container.DataItem).InstrumentTimeDisplay %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).PIC.FormatDecimal(CurrentUser.UsesHHMM) %></td>

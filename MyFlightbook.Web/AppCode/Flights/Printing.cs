@@ -63,6 +63,12 @@ namespace MyFlightbook.Printing
         public abstract string CSSPath { get; }
 
         /// <summary>
+        /// Perform any necessary initialization that is specific to this layout.
+        /// </summary>
+        /// <param name="po">The requested printing options</param>
+        public virtual void Init(PrintingOptions po) {  }
+
+        /// <summary>
         /// Get the layout for the specified type
         /// </summary>
         /// <param name="plt">The type of layout</param>
@@ -187,6 +193,22 @@ namespace MyFlightbook.Printing
 
     public class PrintLayoutEASA : PrintLayout
     {
+        public override void Init(PrintingOptions po)
+        {
+            if (po == null)
+                throw new ArgumentNullException(nameof(po));
+
+            // Issue #810 - show multi-pilot time IF the user has ever used multi-pilot time.
+            // Even though we don't support optional columns for EASA layout, we use an optional column for this.
+            IEnumerable<CustomPropertyType> rgcpt = CustomPropertyType.GetCustomPropertyTypes(CurrentUser.UserName);
+            foreach (CustomPropertyType cpt in rgcpt)
+                if (cpt.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropMultiPilotTime && cpt.IsFavorite)
+                {
+                    po.OptionalColumns.Add(new OptionalColumn(cpt.PropTypeID));
+                    break;
+                }
+        }
+
         public override int RowHeight(LogbookEntryDisplay le)
         {
             if (le == null)
@@ -910,6 +932,7 @@ namespace MyFlightbook.Printing
                 throw new ArgumentNullException(nameof(lstFlights));
 
             PrintLayout pl = PrintLayout.LayoutForType(printingOptions.Layout, pf);
+            pl.Init(printingOptions);  // do any layout-specific initialization.
 
             // Exclude both excluded properties and properties that have been moved to their own columns
             HashSet<int> lstPropsToExclude = new HashSet<int>(printingOptions.ExcludedPropertyIDs);

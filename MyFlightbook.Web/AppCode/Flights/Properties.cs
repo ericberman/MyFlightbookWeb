@@ -162,6 +162,7 @@ namespace MyFlightbook
             IDPropNightRating = 623,
             IDPropSequence = 630,
             IDPropMilitaryAircraftCommander = 659,
+            IDPropMultiPilotTime = 664,
             IDPropXCMoreThan100nm = 665,
             IDPropLessonStart = 668,
             IDPropLessonEnd = 669,
