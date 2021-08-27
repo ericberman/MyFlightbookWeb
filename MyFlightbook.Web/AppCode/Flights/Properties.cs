@@ -1895,13 +1895,13 @@ ORDER BY f.Date Desc";
         }
 
         /// <summary>
-        /// Removes the specified known property, if present.
+        /// Removes the specified known property by proptype ID, if present.
         /// </summary>
-        /// <param name="id"></param>
-        public void RemoveItem(int id)
+        /// <param name="idPropType"></param>
+        public void RemoveItem(int idPropType)
         {
-            if (m_dictProps.ContainsKey(id))
-                m_dictProps.Remove(id);
+            if (m_dictProps.ContainsKey(idPropType))
+                m_dictProps.Remove(idPropType);
         }
         #endregion
     }

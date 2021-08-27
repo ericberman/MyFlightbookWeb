@@ -1070,14 +1070,14 @@ namespace MyFlightbook
                         CustomFlightProperty cfp = le.CustomProperties.FindEvent(c => c.PropID == id);
                         if (cfp != null)
                         {
-                            le.CustomProperties.RemoveItem(id);
+                            le.CustomProperties.RemoveItem(cfp.PropTypeID);
                             cfp.DeleteProperty();
                         }
                     }
                 }
                 if (le.CFISignatureState != LogbookEntry.SignatureState.None)
                     le.FCommit(); // forces a refresh of the signature state
-                Profile.GetUser(szUser).SetAchievementStatus(MyFlightbook.Achievements.Achievement.ComputeStatus.NeedsComputing);
+                Profile.GetUser(szUser).SetAchievementStatus(Achievements.Achievement.ComputeStatus.NeedsComputing);
             }
         }
 
