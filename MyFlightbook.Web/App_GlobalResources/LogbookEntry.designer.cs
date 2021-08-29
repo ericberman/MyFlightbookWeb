@@ -1557,7 +1557,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to All flight/engine times must be UTC for night computation to work..
+        ///   Looks up a localized string similar to All flight/engine/block times MUST be UTC for auto-fill computations to work; do not check this box if you are using local times..
         /// </summary>
         internal static string ImportWizardAutofillNote {
             get {
@@ -1566,7 +1566,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Try to autofill fields like night and cross-country, if not already provided..
+        ///   Looks up a localized string similar to Try to autofill fields like night, cross-country, landings, or total flight time, if not already provided..
         /// </summary>
         internal static string ImportWizardAutofillPrompt {
             get {

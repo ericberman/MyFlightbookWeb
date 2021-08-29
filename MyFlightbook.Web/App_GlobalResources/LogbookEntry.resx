@@ -1248,10 +1248,10 @@ Proceed with import?</value>
     <value>All flight aircraft were found in your account!  You can proceed to preview.</value>
   </data>
   <data name="ImportWizardAutofillNote" xml:space="preserve">
-    <value>All flight/engine times must be UTC for night computation to work.</value>
+    <value>All flight/engine/block times MUST be UTC for auto-fill computations to work; do not check this box if you are using local times.</value>
   </data>
   <data name="ImportWizardAutofillPrompt" xml:space="preserve">
-    <value>Try to autofill fields like night and cross-country, if not already provided.</value>
+    <value>Try to autofill fields like night, cross-country, landings, or total flight time, if not already provided.</value>
   </data>
   <data name="ImportWizardFinishButton" xml:space="preserve">
     <value>Import</value>
