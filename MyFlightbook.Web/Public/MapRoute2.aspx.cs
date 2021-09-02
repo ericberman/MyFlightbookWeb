@@ -11,7 +11,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2020 MyFlightbook LLC
+ * Copyright (c) 2007-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -73,7 +73,7 @@ public partial class MapRoute : System.Web.UI.Page
     private void SetAirportsInMap(IEnumerable<AirportList> lst)
     {
         MfbGoogleMapManager1.Map.Airports = lst ?? throw new ArgumentNullException(nameof(lst));
-        MfbGoogleMapManager1.Map.AutofillOnPanZoom = (!lst.Any());
+        MfbGoogleMapManager1.Map.Options.fAutofillPanZoom = (!lst.Any());
         lnkZoomOut.NavigateUrl = MfbGoogleMapManager1.ZoomToFitScript;
     }
 

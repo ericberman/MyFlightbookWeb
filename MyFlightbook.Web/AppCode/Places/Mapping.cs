@@ -2,6 +2,7 @@
 using MyFlightbook.Clubs;
 using MyFlightbook.Geography;
 using MyFlightbook.Image;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -31,83 +32,42 @@ namespace MyFlightbook.Mapping
     public class GoogleMap
     {
         #region properties
-        /// <summary>
-        /// Type of map - satellite, hybrid, etc.
-        /// </summary>
-        public GMap_MapType MapType { get; set; }
+        public MFBGoogleMapOptions Options { get; private set; } = new MFBGoogleMapOptions();
 
         /// <summary>
         /// Dynamic or static map?
         /// </summary>
-        public GMap_Mode MapMode { get; set; }
-
-        /// <summary>
-        /// True to show markers
-        /// </summary>
-        public Boolean ShowMarkers { get; set; }
-
-        /// <summary>
-        /// True to show the route (airport to airport) - i.e., connect-the-dots
-        /// </summary>
-        public Boolean ShowRoute { get; set; }
-
-        /// <summary>
-        /// Is the map visible?
-        /// </summary>
-        public Boolean MapVisible { get; set; }
+        public GMap_Mode MapMode { get; set; } = GMap_Mode.Dynamic;
 
         /// <summary>
         /// Path to display
         /// </summary>
-        public IEnumerable<LatLong> Path { get; set; }
-
-        /// <summary>
-        /// Zoom factor
-        /// </summary>
-        public GMap_ZoomLevels ZoomFactor { get; set; }
-
-        /// <summary>
-        /// Center of the map
-        /// </summary>
-        public LatLong MapCenter { get; set; }
+        public IEnumerable<LatLong> Path { get; set; } = Array.Empty<LatLong>();
 
         /// <summary>
         /// Javascript to call on click
         /// </summary>
-        public string ClickHandler { get; set; }
+        public string ClickHandler { get; set; } = string.Empty;
 
         /// <summary>
         /// An array of MFBImageInfo objects that are thumbnails to display on the map
         /// </summary>
-        public IEnumerable<MFBImageInfo> Images { get; set; }
+        public IEnumerable<MFBImageInfo> Images { get; set; } = Array.Empty<MFBImageInfo>();
 
         /// <summary>
         /// A list of clubs to display
         /// </summary>
-        public IEnumerable<Club> Clubs { get; set; }
+        public IEnumerable<Club> Clubs { get; set; } = Array.Empty<Club>();
 
         /// <summary>
         /// Name of a function to call when a club gets clicked.  The ID of the club is the parameter
         /// </summary>
-        public string ClubClickHandler { get; set; }
+        public string ClubClickHandler { get; set; } = string.Empty;
 
-        private List<AirportList> m_Airports;
         /// <summary>
         /// A list of AirportLists containing the airports to display.  If markers are on, the airports within an airportlist will be connected
         /// </summary>
-        public IEnumerable<AirportList> Airports
-        {
-            get
-            {
-                if (m_Airports == null)
-                    m_Airports = new List<AirportList>();
-                return m_Airports;
-            }
-            set
-            {
-                m_Airports = new List<AirportList>(value);
-            }
-        }
+        public IEnumerable<AirportList> Airports { get; set; } = new List<AirportList>();
 
         /// <summary>
         /// Helper to set a single airportlist rather than an enumerable of them
@@ -115,30 +75,13 @@ namespace MyFlightbook.Mapping
         /// <param name="al"></param>
         public void SetAirportList(AirportList al)
         {
-            m_Airports = new List<AirportList>() { al };
+            Airports = new List<AirportList>() { al };
         }
-
-        /// <summary>
-        /// Auto-fill airports on pan/zoom?
-        /// </summary>
-        public Boolean AutofillOnPanZoom { get; set; }
-
-        /// <summary>
-        /// Autofill should include heliports or not?
-        /// </summary>
-        public Boolean IncludeHeliportsAutofill { get; set; }
 
         /// <summary>
         /// Normally, the airportlist is normalized; set this to "true" to use the raw (including duplicate) list.
         /// </summary>
         public Boolean AllowDupeMarkers { get; set; }
-
-        /// <summary>
-        /// Name for the variable that holds the flight path array (array of lat/longs)
-        /// </summary>
-        public string PathVarName { get; set; }
-
-        private LatLongBox BoundingBox { get; set; }
         #endregion
 
         #region Static Map
@@ -158,7 +101,7 @@ namespace MyFlightbook.Mapping
             StringBuilder sb = new StringBuilder(String.Format(CultureInfo.InvariantCulture, "https://maps.googleapis.com/maps/api/staticmap?maptype=hybrid&key={0}&size={1}x{2}", HttpUtility.UrlEncode(szMapKey), width, height));
 
             bool fHasRoute = Airports != null && Airports.Any();
-            bool fHasPath = Path != null && Path.Any() && ShowRoute;
+            bool fHasPath = Path != null && Path.Any() && Options.fShowRoute;
 
             if (!String.IsNullOrEmpty(StaticMapAdditionalParams))
                 sb.AppendFormat(CultureInfo.InvariantCulture, "&{0}", StaticMapAdditionalParams);
@@ -181,10 +124,10 @@ namespace MyFlightbook.Mapping
                         }
                     }
 
-                    if (ShowMarkers)
+                    if (Options.fShowMarkers)
                         sb.Append("&markers=color:red|" + String.Join("|", lstMarkers));
                 }
-                if (ShowRoute)
+                if (Options.fShowRoute)
                 {
                     string szPath = string.Empty;
                     if (fHasPath)
@@ -205,31 +148,13 @@ namespace MyFlightbook.Mapping
                 }
             }
             else
-            {
-                sb.AppendFormat(CultureInfo.InvariantCulture, "&center={0:F8},{1:F8}&zoom={2}", MapCenter.Latitude, MapCenter.Longitude, (int)ZoomFactor);
-            }
+                sb.AppendFormat(CultureInfo.InvariantCulture, "&center={0:F8},{1:F8}&zoom={2}", Options.defaultLat, Options.defaultLong, Options.defaultZoom);
 
             return sb.ToString();
         }
         #endregion
 
-        #region Constructors
-        public GoogleMap()
-        {
-            MapType = GMap_MapType.G_HYBRID_MAP;
-            MapMode = GMap_Mode.Dynamic;
-            ShowMarkers = true;
-            ShowRoute = true;
-            MapVisible = true;
-            Path = Array.Empty<LatLong>();
-            ZoomFactor = GMap_ZoomLevels.US;
-            MapCenter = new LatLong(35.224762, -86.156354); // approximate center of US
-            ClickHandler = string.Empty;
-            PathVarName = "rgPath";
-        }
-        #endregion
-
-        private static string MapTypeToString(GMap_MapType mp)
+        internal static string MapTypeToString(GMap_MapType mp)
         {
             switch (mp)
             {
@@ -246,107 +171,6 @@ namespace MyFlightbook.Mapping
             }
         }
 
-        #region Helper routines for Javascript generation
-        private string ProcessAirports()
-        {
-            List<string> lstAllRoutes = new List<string>();
-            if (Airports != null)
-            {
-                int cItems = 0;
-
-                foreach (AirportList airportlist in Airports)
-                {
-                    airport[] rgap = AllowDupeMarkers ? airportlist.GetAirportList() : airportlist.GetNormalizedAirports();
-
-                    List<string> lstRoute = new List<string>();
-
-                    for (int i = 0; i < rgap.Length; i++)
-                    {
-                        // Google maps barfs on anything in the high/low latitudes.
-                        if (Math.Abs(rgap[i].LatLong.Latitude) > 88)
-                            continue;
-
-                        lstRoute.Add(String.Format(CultureInfo.InvariantCulture, "new MFBAirportMarker({0}, {1}, '{2}', '{3}', '{4}', {5})", rgap[i].LatLong.Latitude, rgap[i].LatLong.Longitude, rgap[i].NameWithGeoRegion.JavascriptEncode(), rgap[i].Code, rgap[i].FacilityType, ShowMarkers ? 1 : 0));
-
-                        if (BoundingBox == null)
-                            BoundingBox = new LatLongBox(rgap[i].LatLong);
-                        else
-                            BoundingBox.ExpandToInclude(rgap[i].LatLong);
-
-                        cItems++;
-                    }
-
-                    lstAllRoutes.Add(String.Format(CultureInfo.InvariantCulture, "[{0}]", String.Join(",\r\n", lstRoute.ToArray())));
-                }
-
-                if (cItems > 0 && (BoundingBox == null || BoundingBox.IsEmpty))
-                    ZoomFactor = GMap_ZoomLevels.Airport;
-            }
-
-            return String.Format(CultureInfo.InvariantCulture, "[{0}]", String.Join(",\r\n", lstAllRoutes.ToArray()));
-        }
-
-        private string ProcessImages()
-        {
-            StringBuilder szImages = new StringBuilder("[");
-            if (Images != null)
-            {
-                LatLong ll;
-                List<string> lstPhotoMarkers = new List<string>();
-                foreach (MFBImageInfo ii in Images)
-                {
-                    double ratio = MFBImageInfo.ResizeRatio(MFBImageInfo.ThumbnailHeight / 2, MFBImageInfo.ThumbnailWidth / 2, ii.HeightThumbnail, ii.WidthThumbnail);
-                    if ((ll = ii.Location) != null)
-                        lstPhotoMarkers.Add(String.Format(CultureInfo.InvariantCulture, "new MFBPhotoMarker('{0}', '{1}', {2}, {3}, '{4}', {5}, {6})", ii.URLThumbnail, ii.URLFullImage, ll.Latitude, ll.Longitude, HttpUtility.HtmlEncode(ii.Comment).JavascriptEncode(), (int)(ii.WidthThumbnail * ratio), (int)(ii.HeightThumbnail * ratio)));
-                }
-                szImages.Append(String.Join(", ", lstPhotoMarkers.ToArray()));
-            }
-            szImages.Append(']');
-
-            return szImages.ToString();
-        }
-
-        private string ProcessClubs()
-        {
-            StringBuilder szClubs = new StringBuilder("[");
-            if (Clubs != null)
-            {
-                List<string> lstClubs = new List<string>();
-                foreach (Club c in Clubs)
-                {
-                    if (c.HomeAirport != null && !String.IsNullOrEmpty(c.HomeAirport.Code))
-                    {
-                        lstClubs.Add(String.Format(CultureInfo.InvariantCulture, "new MFBClubMarker({0}, {1}, '{2}', {3}, '{4}')", c.HomeAirport.LatLong.Latitude, c.HomeAirport.LatLong.Longitude, c.Name.JavascriptEncode(), c.ID, ClubClickHandler));
-                        if (BoundingBox == null)
-                            BoundingBox = new LatLongBox(c.HomeAirport.LatLong);
-                        else
-                            BoundingBox.ExpandToInclude(c.HomeAirport.LatLong);
-                    }
-                }
-                szClubs.AppendFormat(CultureInfo.InvariantCulture, "{0}", String.Join(",\r\n", lstClubs.ToArray()));
-            }
-            szClubs.Append(']');
-            return szClubs.ToString();
-        }
-
-        private string ProcessPath()
-        {
-            StringBuilder sbPath = new StringBuilder();
-            if (Path != null && Path.Any())
-            {
-                if (BoundingBox == null)
-                    BoundingBox = new LatLongBox(Path.ElementAt(0));
-
-                foreach (LatLong ll in Path)
-                {
-                    BoundingBox.ExpandToInclude(ll);
-                    sbPath.AppendFormat(CultureInfo.InvariantCulture, "{0} nll({1}, {2})", (sbPath.Length > 0) ? ",\r\n" : "", ll.Latitude, ll.Longitude);
-                }
-            }
-            return sbPath.ToString();
-        }
-        #endregion
-
         /// <summary>
         /// Registers the script block that includes the data for the airports and the preferences for the map.
         /// <param name="mapID">The ID of the element on the page that holds the map</param>
@@ -354,63 +178,359 @@ namespace MyFlightbook.Mapping
         /// </summary>
         public string MapJScript(string mapID, string containerID)
         {
+            Options.id = mapID;
+            Options.divContainer = containerID;
 
-            // Initialize any airports
-            BoundingBox = null;
-
-            string szAirportMarkers = ProcessAirports();
-
-            string szImages = ProcessImages();
-
-            string szClubs = ProcessClubs();
-            bool fAutoZoom = BoundingBox != null && !BoundingBox.IsEmpty;
-
-            string szPath = ProcessPath();
-            if (!String.IsNullOrEmpty(szPath))
-                fAutoZoom = true;
+            // figure out any bounding box, adding airports, images, paths, and clubs.
+            Options.BoundingBox = null;
+            Options.SetAirports(Airports, AllowDupeMarkers);
+            Options.SetPath(Path);
+            Options.SetClubs(Clubs, ClubClickHandler);
+            Options.SetImages(Images);
+            Options.fAutoZoom = Options.BoundingBox != null && !Options.BoundingBox.IsEmpty;
+            if (Options.BoundingBox == null)
+                Options.BoundingBox = new LatLongBox(new LatLong(Options.defaultLat, Options.defaultLong));
 
             StringBuilder sbInitMap = new StringBuilder();
 
             // If there is a path, define a variable to hold it now.
+            // We do this as an array of 2-element latitude/longitude pairs; setPath already converted the path to MFBGMapLatLong objects
             if (Path != null && Path.Any())
-                sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "var {0} = [{1}];\r\n", PathVarName, szPath);
+                sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "var {0} = {1};\r\n", Options.PathVarName, JsonConvert.SerializeObject(MFBGMapLatLon.AsArrayOfArrays(Options.pathArray)));
+            else
+                sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "var {0} = null;\r\n", Options.PathVarName);
 
-            sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "var {0} = AddMap(MFBNewMapOptions({{", mapID);
-            sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "id: '{0}', ", mapID);
-            sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "rgAirports: {0}, ", szAirportMarkers);
-            sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "rgImages: {0}, ", szImages);
-            sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "rgClubs: {0}, ", szClubs);
-            sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "divContainer: '{0}', ", containerID);
-            sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "fZoom: {0}, ", 1);
-            sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "fAutofillPanZoom: {0}, ", AutofillOnPanZoom ? 1 : 0);
-            sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "fAutofillHeliports: {0}, ", IncludeHeliportsAutofill ? "true" : "false");
-            sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "fShowMap: {0}, ", MapVisible ? 1 : 0);
-            sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "fShowMarkers: {0}, ", ShowMarkers ? 1 : 0);
-            sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "fShowRoute: {0}, ", ShowRoute ? 1 : 0);
-            sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "fDisableUserManip: {0}, ", 0);
-            sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "defaultZoom: {0}, ", Convert.ToInt32(ZoomFactor, CultureInfo.InvariantCulture));
-            sbInitMap.Append(String.Format(CultureInfo.InvariantCulture, "defaultLat: {0}, defaultLong: {1}, ", MapCenter.Latitude, MapCenter.Longitude));
-            sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "MapType: {0}, ", MapTypeToString(MapType));
-            if (BoundingBox == null)
-                BoundingBox = new LatLongBox(new LatLong(MapCenter.Latitude, MapCenter.Longitude));
-
-            sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "minLat: {0}, ", BoundingBox.LatMin);
-            sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "maxLat: {0}, ", BoundingBox.LatMax);
-            sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "minLong: {0}, ", BoundingBox.LongMin);
-            sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "maxLong: {0}, ", BoundingBox.LongMax);
-
-            // pass in the variable that points to the path array (defined above).
-            if (Path != null && Path.Any())
-                sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "pathArray: {0}, ", PathVarName);
-
-            sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "fAutoZoom: {0}", fAutoZoom ? 1 : 0);
-            sbInitMap.Append("}));");
-            sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "MFBMapsOnPage.push({0});", mapID);
+            sbInitMap.AppendFormat(CultureInfo.InvariantCulture, @"var {0} = AddMap(new MFBNewMapOptions({1}, {2})); MFBMapsOnPage.push({0});", mapID, JsonConvert.SerializeObject(Options), Options.PathVarName);
 
             if (ClickHandler.Length > 0)
                 sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "\r\n{0}.addListenerFunction({1});\r\n", mapID, ClickHandler);
 
             return sbInitMap.ToString();
+        }
+    }
+
+    /// <summary>
+    /// Helper class to encapsulate the data for a google map object.
+    /// </summary>
+    public class MFBGoogleMapOptions
+    {
+        #region Properties
+        /// <summary>
+        /// ID for the map
+        /// </summary>
+        public string id { get; set; }
+
+        /// <summary>
+        /// Name of the element containing the map
+        /// </summary>
+        public string divContainer { get; set; }
+
+        /// <summary>
+        /// Auto-fill airports on pan/zoom?
+        /// </summary>
+        public bool fAutofillPanZoom { get; set; }
+
+        public bool fAutoZoom { get; set; }
+
+        /// <summary>
+        /// Autofill should include heliports or not?
+        /// </summary>
+        public bool fAutofillHeliports { get; set; }
+
+        /// <summary>
+        /// Is the map visible?
+        /// </summary>
+        public bool fShowMap { get; set; } = true;
+
+        /// <summary>
+        /// True to show the route (airport to airport) - i.e., connect-the-dots.
+        /// </summary>
+        public bool fShowRoute { get; set; } = true;
+
+        /// <summary>
+        /// True to show markers
+        /// </summary>
+        public bool fShowMarkers { get; set; } = true;
+
+        /// <summary>
+        /// Preferred zoom factor, as an integer
+        /// </summary>
+        public int defaultZoom
+        {
+            get { return (int)ZoomFactor; }
+            set { ZoomFactor = (GMap_ZoomLevels)value; }
+        }
+
+        /// <summary>
+        /// Zoom factor
+        /// </summary>
+        [JsonIgnore]
+        public GMap_ZoomLevels ZoomFactor { get ;set; } = GMap_ZoomLevels.US;
+
+        /// <summary>
+        /// Type of map - satellite, hybrid, etc.
+        /// </summary>
+        [JsonIgnore]
+        public GMap_MapType MapType
+        {
+            get { return (GMap_MapType)Enum.Parse(typeof(GMap_MapType), mapType); }
+            set { mapType = value.ToString(); }
+        }
+
+        public string mapType { get; set; } = GoogleMap.MapTypeToString(GMap_MapType.G_HYBRID_MAP);
+
+        public IEnumerable<IEnumerable<MFBAirportMarker>> rgAirports { get; private set; }
+
+        /// <summary>
+        /// Path to display
+        /// </summary>
+        [JsonIgnore]
+        public IEnumerable<MFBGMapLatLon> pathArray { get; private set; }
+
+        /// <summary>
+        /// Name for the variable that holds the flight path array (array of lat/longs)
+        /// </summary>
+        public string PathVarName { get; set; } = "rgPath";
+
+        public IEnumerable<MFBPhotoMarker> rgImages { get; private set; }
+
+        public IEnumerable<MFBClubMarker> rgClubs { get; private set; }
+
+        [JsonIgnore]
+        public LatLongBox BoundingBox { get; set; }
+
+        public double minLat
+        {
+            get { return BoundingBox.LatMin; }
+            set { BoundingBox.LatMin = value; }
+        }
+
+        public double maxLat
+        {
+            get { return BoundingBox.LatMax; }
+            set { BoundingBox.LatMax = value; }
+        }
+
+        public double minLong
+        {
+            get { return BoundingBox.LongMin; }
+            set { BoundingBox.LongMin = value; }
+        }
+
+
+        public double maxLong
+        {
+            get { return BoundingBox.LongMax; }
+            set { BoundingBox.LongMax = value; }
+        }
+
+        /// <summary>
+        /// Center latitude of map to use, as needed
+        /// </summary>
+        public double defaultLat { get; set; } = 35.224762; // approximate center of US
+
+        /// <summary>
+        /// Center latitude of map to use, as needed
+        /// </summary>
+        public double defaultLong { get; set; } = -86.156354; // approximate center of US
+
+        [JsonIgnore]
+        public LatLong MapCenter
+        {
+            get { return new LatLong(defaultLat, defaultLong); }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException(nameof(value));
+                defaultLat = value.Latitude;
+                defaultLong = value.Longitude;
+            }
+        }
+        #endregion
+
+        private void UpdateBoundingBox(MFBGMapLatLon gll)
+        {
+            if (BoundingBox == null)
+                BoundingBox = new LatLongBox(gll.latlong);
+            else
+                BoundingBox.ExpandToInclude(gll.latlong);
+        }
+
+        private void UpdateBoundingBox(IEnumerable<MFBGMapLatLon> rgll)
+        {
+            if (rgll == null)
+                return;
+            foreach (MFBGMapLatLon ll in rgll)
+                UpdateBoundingBox(ll);
+        }
+
+        public void SetAirports(IEnumerable<AirportList> rgal, bool AllowDupeMarkers)
+        {
+            if (rgal == null || !rgal.Any())
+                return;
+
+            int cItems = 0;
+            List<IEnumerable<MFBAirportMarker>> routes = new List<IEnumerable<MFBAirportMarker>>();
+            foreach (AirportList airportlist in rgal)
+            {
+                IEnumerable<MFBAirportMarker> segment = MFBAirportMarker.FromAirports(AllowDupeMarkers ? airportlist.GetAirportList() : airportlist.GetNormalizedAirports(), fShowMarkers);
+                UpdateBoundingBox(segment);
+                routes.Add(segment);
+                cItems += segment.Count();
+            }
+
+            if (cItems > 0 && (BoundingBox == null || BoundingBox.IsEmpty))
+                 ZoomFactor = GMap_ZoomLevels.Airport;
+
+            rgAirports = routes;
+        }
+
+        public void SetImages(IEnumerable<MFBImageInfo> rgmfbii)
+        {
+            if (rgmfbii == null)
+                return;
+
+            rgImages = MFBPhotoMarker.FromImages(rgmfbii);
+        }
+
+        public void SetClubs(IEnumerable<Club> clubs, string szClickHandler)
+        {
+            if (clubs == null)
+                return;
+
+            IEnumerable<MFBClubMarker> lst = MFBClubMarker.FromClubs(clubs, szClickHandler);
+            foreach (MFBClubMarker c in lst)
+                UpdateBoundingBox(c);
+
+            rgClubs = lst;
+        }
+
+        public void SetPath(IEnumerable<LatLong> rgll)
+        {
+            if (rgll == null)
+                return;
+
+            List<MFBGMapLatLon> lst = new List<MFBGMapLatLon>();
+            lst.AddRange(MFBGMapLatLon.FromLatlongs(rgll));
+            foreach (MFBGMapLatLon gll in lst)
+                UpdateBoundingBox(gll);
+            pathArray = lst;
+        }
+    }
+
+    [Serializable]
+    public class MFBGMapLatLon {
+        public double latitude { get; set; }
+        public double longitude { get; set; }
+
+        [JsonIgnore]
+        public LatLong latlong { 
+            get { return new LatLong(latitude, longitude); }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException(nameof(value));
+                latitude = value.Latitude;
+                longitude = value.Longitude;
+            }
+        }
+
+        public static IEnumerable<MFBGMapLatLon> FromLatlongs(IEnumerable<LatLong> rgll)
+        {
+            if (rgll == null || !rgll.Any())
+                return Array.Empty<MFBGMapLatLon>();
+
+            List<MFBGMapLatLon> lst = new List<MFBGMapLatLon>();
+            foreach (LatLong ll in rgll)
+                lst.Add(new MFBGMapLatLon() { latlong = ll });
+
+            return lst;
+        }
+
+        public static IEnumerable<double[]> AsArrayOfArrays(IEnumerable<MFBGMapLatLon> rg)
+        {
+            if (rg == null)
+                return null;
+            List<double[]> lst = new List<double[]>();
+            foreach (MFBGMapLatLon ll in rg)
+                lst.Add(new double[] { ll.latitude, ll.longitude });
+            return lst;
+
+        }
+    }
+
+    [Serializable]
+    public class MFBAirportMarker : MFBGMapLatLon
+    {
+        public string Name { get; set; }
+        public string Code { get; set; }
+        public string Type { get; set; }
+        public bool fShowMarker { get; set; }
+
+        public static IEnumerable<MFBAirportMarker> FromAirports(IEnumerable<airport> rgap, bool fShowMarkers)
+        {
+            if (rgap == null || !rgap.Any())
+                return Array.Empty<MFBAirportMarker>();
+
+            List<MFBAirportMarker> lst = new List<MFBAirportMarker>();
+            foreach (airport ap in rgap)
+            {
+                // Google maps barfs on anything in the high/low latitudes.
+                if (Math.Abs(ap.LatLong.Latitude) > 88)
+                    continue;
+                lst.Add(new MFBAirportMarker() { latitude = ap.LatLong.Latitude, longitude = ap.LatLong.Longitude, Name = ap.NameWithGeoRegion, Code = ap.Code, Type = ap.FacilityType, fShowMarker = fShowMarkers });
+            }
+            return lst;
+        }
+    }
+
+    [Serializable]
+    public class MFBPhotoMarker : MFBGMapLatLon
+    {
+        public string hrefThumb { get; set; }
+        public string hrefFull { get; set; }
+        public string comment { get; set; }
+        public int width { get; set; }
+        public int height { get; set; }
+
+        public static IEnumerable<MFBPhotoMarker> FromImages(IEnumerable<MFBImageInfo> rgmfbii)
+        {
+            if (rgmfbii == null || !rgmfbii.Any())
+                return Array.Empty<MFBPhotoMarker>();
+
+            LatLong ll;
+            List<MFBPhotoMarker> lst = new List<MFBPhotoMarker>();
+            foreach (MFBImageInfo ii in rgmfbii)
+            {
+                double ratio = MFBImageInfo.ResizeRatio(MFBImageInfo.ThumbnailHeight / 2, MFBImageInfo.ThumbnailWidth / 2, ii.HeightThumbnail, ii.WidthThumbnail);
+                if ((ll = ii.Location) != null)
+                    lst.Add(new MFBPhotoMarker() { hrefThumb = ii.URLThumbnail, hrefFull = ii.URLFullImage, latitude = ii.Location.Latitude, longitude = ii.Location.Longitude, comment = ii.Comment, height = (int)(ii.HeightThumbnail * ratio), width = (int)(ii.WidthThumbnail * ratio) });
+            }
+
+            return lst;
+        }
+    }
+
+    [Serializable]
+    public class MFBClubMarker : MFBGMapLatLon
+    {
+        public string name { get; set; }
+        public int clubID { get; set; }
+        public string onclickhandler { get; set; }
+
+        public static IEnumerable<MFBClubMarker> FromClubs(IEnumerable<Club> rgclubs, string szClickHandler)
+        {
+            if (rgclubs == null || !rgclubs.Any())
+                return Array.Empty<MFBClubMarker>();
+
+            List<MFBClubMarker> lst = new List<MFBClubMarker>();
+            foreach (Club c in rgclubs)
+            {
+                if (c.HomeAirport != null && !String.IsNullOrEmpty(c.HomeAirport.Code))
+                    lst.Add(new MFBClubMarker() { clubID = c.ID, latitude = c.HomeAirport.LatLong.Latitude, longitude = c.HomeAirport.LatLong.Longitude, name = c.Name, onclickhandler = szClickHandler });
+            }
+
+            return lst;
         }
     }
     #endregion

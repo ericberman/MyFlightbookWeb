@@ -86,10 +86,7 @@ namespace MyFlightbook.Airports
             get { return m_cQuestions; }
             set
             {
-                if (value > 0)
-                    m_cQuestions = value;
-                else
-                    throw new MyFlightbookException("There must be at least 1 question in the quiz");
+                m_cQuestions = value > 0 ? value : throw new MyFlightbookException("There must be at least 1 question in the quiz");
             }
         }
 
@@ -171,9 +168,9 @@ namespace MyFlightbook.Airports
         {
             // Create an airportlist object and initialize it with this airport string
             airport ap = new AirportList(szTLA).GetAirportList()[0];
-            MfbGoogleMap1.Map.MapCenter = ap.LatLong;
-            MfbGoogleMap1.Map.ZoomFactor = GMap_ZoomLevels.Airport;
-            MfbGoogleMap1.Map.MapType = GMap_MapType.G_SATELLITE_MAP;
+            MfbGoogleMap1.Map.Options.MapCenter = ap.LatLong;
+            MfbGoogleMap1.Map.Options.ZoomFactor = GMap_ZoomLevels.Airport;
+            MfbGoogleMap1.Map.Options.MapType = GMap_MapType.G_SATELLITE_MAP;
             MfbGoogleMap1.Map.StaticMapAdditionalParams = "style=feature:all|element:labels|visibility:off";
         }
 

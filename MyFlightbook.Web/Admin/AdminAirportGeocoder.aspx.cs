@@ -71,7 +71,7 @@ namespace MyFlightbook.Web.Admin
         {
             Profile pf = Profile.GetUser(Page.User.Identity.Name);
             CheckAdmin(pf.CanManageData);
-            mfbGoogleMapManager.Map.AutofillOnPanZoom = mfbGoogleMapManager.Map.IncludeHeliportsAutofill = true;
+            mfbGoogleMapManager.Map.Options.fAutofillPanZoom = mfbGoogleMapManager.Map.Options.fAutofillHeliports = true;
         }
 
         protected void RefreshPending()
@@ -94,7 +94,7 @@ namespace MyFlightbook.Web.Admin
             decStart.IntValue = (results < decMaxAirports.IntValue) ? 0 : last;
 
             mfbGoogleMapManager.Map.SetAirportList(new AirportList(lst));
-            mfbGoogleMapManager.Map.AutofillOnPanZoom = ckNoCountry.Checked;
+            mfbGoogleMapManager.Map.Options.fAutofillPanZoom = ckNoCountry.Checked;
 
             UnReferencedAirports = lst;
             RefreshPending();

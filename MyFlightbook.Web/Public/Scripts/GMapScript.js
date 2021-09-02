@@ -1,6 +1,6 @@
 ﻿/******************************************************
  * 
- * Copyright (c) 2015-2020 MyFlightbook LLC
+ * Copyright (c) 2015-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -15,10 +15,10 @@ function MFBAirportMarker(latitude, longitude, name, code, type, fShowMarker)
     this.fShowMarker = fShowMarker;
 }
 
-function MFBPhotoMarker(urlThumb, urlFull, latitude, longitude, szcomment, width, height) 
+function MFBPhotoMarker(hrefThumb, hrefFull, latitude, longitude, szcomment, width, height) 
 {
-    this.urlThumb = urlThumb;
-    this.urlFull = urlFull;
+    this.hrefThumb = hrefThumb;
+    this.hrefFull = hrefFull;
     this.latitude = latitude;
     this.longitude = longitude;
     this.comment = szcomment;
@@ -32,20 +32,17 @@ function MFBClubMarker(latitude, longitude, name, id, onclickhandler) {
     this.name = name;
     this.clubID = id;
     this.onclickhandler = onclickhandler;
-    this.getClickHandler = function (fname, cid) {
-        return function () {
-            window[fname](cid);
-        };
-    };
+
+    this.handleClick = function () {
+        eval(onclickhandler)(id);
+    }
 }
 
-function nll(lat, lng)
-{
+function nll(lat, lng) {
     return new google.maps.LatLng(lat,lng);
 }
 
-function MFBMarker()
-{
+function MFBMarker() {
     this.marker = null;
     this.bodyHTML = null;
     this.mfbMap = null;
@@ -119,13 +116,12 @@ function MFBMap()
     this.rgImages = new Array();
     this.rgClubs = new Array();
     this.zoom = 0;
-    this.fShowMap = 0;
-    this.fShowMarkers = 1;
-    this.fShowRoute = 1;
-    this.fDisableUserManip = 0;
-    this.defaultZoom = 1;
-    this.fAutoZoom = 0;
-    this.fAutofillPanZoom = 0;
+    this.fShowMap = false;
+    this.fShowMarkers = true;
+    this.fShowRoute = true;
+    this.defaultZoom = true;
+    this.fAutoZoom = false;
+    this.fAutofillPanZoom = true;
     this.defaultLat = 47.90634167;
     this.defaultLong = -122.2815639;
     this.minLat = this.defaultLat;
@@ -135,12 +131,12 @@ function MFBMap()
     this.center = new google.maps.LatLng(this.defaultLat, this.defaultLong);
     this.pathArray = null;
     this.infoWindow = null;
-    this.MapType = google.maps.MapTypeId.HYBRID;
+    this.mapType = google.maps.MapTypeId.HYBRID;
     this.clickPositionMarker = null;
     
     this.NewMap = function () {
         this.center = new google.maps.LatLng(this.defaultLat, this.defaultLong);
-        var options = { zoom: this.zoom, center: this.center, mapTypeId: this.MapType };
+        var options = { zoom: this.zoom, center: this.center, mapTypeId: this.mapType };
         this.gmap = new google.maps.Map(document.getElementById(this.divContainer), options);
         this.oms = new OverlappingMarkerSpiderfier(this.gmap, { markersWontMove: true, markersWontHide: true, keepSpiderfied: true, legWeight: 3 });
         this.oms.addListener('click', function (marker, _event) {
@@ -153,43 +149,29 @@ function MFBMap()
         this.oms.addListener('unspiderfy', function (_markers) {
         });
 
-        if (this.fDisableUserManip) {
-            options = {
-                draggable: false,
-                disableDoubleClickZoom: true,
-                mapTypecontrol: false,
-                scrollwheel: false,
-                navigationControl: false,
-                disableDefaultUI: true,
-                scaleControl: false
-            };
-            this.gmap.setOptions(options);
-        }
-        else {
-            options = { scrollwheel: true, disableDoubleClickZoom: false };
-            this.gmap.setOptions(options);
+        options = { scrollwheel: true, disableDoubleClickZoom: false };
+        this.gmap.setOptions(options);
 
-            var zoomControl = document.createElement('div');
-            zoomControl.index = 1;
+        var zoomControl = document.createElement('div');
+        zoomControl.index = 1;
 
-            // Set CSS for the control border.
-            var controlUI = document.createElement('div');
-            controlUI.style.width = "20px";
-            controlUI.style.height = "20px";
-            controlUI.style.padding = "3px";
-            controlUI.style.cursor = 'pointer';
-            zoomControl.appendChild(controlUI);
+        // Set CSS for the control border.
+        var controlUI = document.createElement('div');
+        controlUI.style.width = "20px";
+        controlUI.style.height = "20px";
+        controlUI.style.padding = "3px";
+        controlUI.style.cursor = 'pointer';
+        zoomControl.appendChild(controlUI);
 
-            var img = document.createElement('img');
-            img.src = "https://myflightbook.com/logbook/images/mapzoom.png";
-            controlUI.appendChild(img);
+        var img = document.createElement('img');
+        img.src = "https://myflightbook.com/logbook/images/mapzoom.png";
+        controlUI.appendChild(img);
 
-            var mapID = this.divContainer;
+        var mapID = this.divContainer;
 
-            controlUI.addEventListener('click', function () { toggleZoom(mapID); });
+        controlUI.addEventListener('click', function () { toggleZoom(mapID); });
 
-            this.gmap.controls[google.maps.ControlPosition.TOP_RIGHT].push(zoomControl);
-        }
+        this.gmap.controls[google.maps.ControlPosition.TOP_RIGHT].push(zoomControl);
 
         this.ShowOverlays();
         this.ZoomOut();
@@ -285,7 +267,6 @@ function MFBMap()
         this.rgMarkers.push(mfbmarker.marker);
 
         // instead of adding the listener to google.maps.event, add the clickhandler to the marker so that the spiderfier will work.
-        // google.maps.event.addListener(mfbmarker.marker, 'click', function () { displayInfoWindow(mfbmarker); });
         mfbmarker.marker.clickHandleOverride = function () { displayInfoWindow(mfbmarker); };
 
         return mfbmarker.marker;
@@ -329,12 +310,12 @@ function MFBMap()
     };
     
     this.createImageMarker = function (point, i, mapID) {
-        var szImg = "<a href=\"" + this.rgImages[i].urlFull + "\" target=\"_blank\"><img src=\"" + this.rgImages[i].urlThumb + "\"></a>";
+        var szImg = "<a href=\"" + this.rgImages[i].hrefFull + "\" target=\"_blank\"><img src=\"" + this.rgImages[i].hrefThumb + "\"></a>";
         var szZoom = "<a href=\"javascript:" + mapID + ".showImage(" + i + ")\">Zoom in</a>";
         var szDiv = "<div>" + szZoom + "<br />" + szImg + "<br /><p>" + this.rgImages[i].comment + "</p></div>";
         var szName = "Photograph";
         var img = this.rgImages[i];
-        var icon = { url: this.rgImages[i].urlThumb, scaledSize: new google.maps.Size(img.width, img.height), anchor: new google.maps.Point(img.width / 2, img.height / 2) };
+        var icon = { url: this.rgImages[i].hrefThumb, scaledSize: new google.maps.Size(img.width, img.height), anchor: new google.maps.Point(img.width / 2, img.height / 2) };
         return this.createMarker(point, szName, icon, szDiv);
     };
     
@@ -371,7 +352,7 @@ function MFBMap()
                     }
 
                     if (this.fShowRoute && !this.fAutofillPanZoom)
-                        var routeMap = new google.maps.Polyline({ path: points, strokeColor: "#0000FF", strokeOpacity: 0.5, strokeWeight: 5, map: this.gmap, geodesic: true });
+                        var _ = new google.maps.Polyline({ path: points, strokeColor: "#0000FF", strokeOpacity: 0.5, strokeWeight: 5, map: this.gmap, geodesic: true });
                 }
             }
         }
@@ -391,9 +372,8 @@ function MFBMap()
                 this.rgMarkers.push(mfbmarker.marker);
 
                 // Instead of adding the clickhandler to google.maps.event, add it to the spiderfier.
-                mfbmarker.marker.clickHandleOverride = c.getClickHandler(c.onclickhandler, c.clubID);
+                mfbmarker.marker.clickHandleOverride = c.handleClick;
                 this.oms.addMarker(mfbmarker.marker);
-                // google.maps.event.addListener(mfbmarker.marker, 'click', c.getClickHandler(c.onclickhandler, c.clubID));
             }
         }
 
@@ -405,23 +385,47 @@ function MFBMap()
         }
 
         if (this.pathArray)
-            var pathMap = new google.maps.Polyline({ path: this.pathArray, strokeColor: "#FF0000", strokeOpacity: 0.5, strokeWeight: 5, map: this.gmap });
+            var __ = new google.maps.Polyline({ path: this.pathArray, strokeColor: "#FF0000", strokeOpacity: 0.5, strokeWeight: 5, map: this.gmap });
     };
 }
 
-function MFBNewMapOptions(mfbMapOptions)
+function MFBNewMapOptions(mfbMapOptions, rgPath)
 {
     var mfbNewMap = new MFBMap();
     
     if (mfbMapOptions.divContainer)
         mfbNewMap.divContainer = mfbMapOptions.divContainer;
-    if (mfbMapOptions.rgAirports)
-        mfbNewMap.rgAirports = mfbMapOptions.rgAirports;
-    if (mfbMapOptions.rgImages)
-        mfbNewMap.rgImages = mfbMapOptions.rgImages;
-    if (mfbMapOptions.rgClubs)
-        mfbNewMap.rgClubs = mfbMapOptions.rgClubs;
-        mfbNewMap.zoom = mfbMapOptions.fZoom;
+    if (mfbMapOptions.rgAirports) {
+        mfbNewMap.rgAirports = [];
+        // this is an array of arrays
+        mfbMapOptions.rgAirports.forEach((rgap) => {
+            var arr = [];
+            rgap.forEach((ap) => {
+                arr.push(new MFBAirportMarker(ap.latitude, ap.longitude, ap.Name, ap.Code, ap.Type, ap.fShowMarker));
+            });
+            mfbNewMap.rgAirports.push(arr);
+        });
+    }
+    if (mfbMapOptions.rgImages) {
+        mfbNewMap.rgImages = [];
+        mfbMapOptions.rgImages.forEach((img) => {
+            mfbNewMap.rgImages.push(new MFBPhotoMarker(img.hrefThumb, img.hrefFull, img.latitude, img.longitude, img.comment, img.width, img.height));
+        });
+    }
+    if (mfbMapOptions.rgClubs) {
+        mfbNewMap.rgClubs = [];
+        mfbMapOptions.rgClubs.forEach((c) => {
+            mfbNewMap.rgClubs.push(new MFBClubMarker(c.latitude, c.longitude, c.name, c.clubID, c.onclickhandler));
+        });
+    }
+    // for size efficiency, patharray is an array of 2-element arrays, latitude followed by longitude - no point sending down data labels over the wire
+    // it's stored in an external array with the variable name passed down; this allows it to be used by other javascript as well.
+    if (rgPath) {
+        mfbNewMap.pathArray = [];
+        rgPath.forEach((ll, _) => {
+            mfbNewMap.pathArray.push(nll(ll[0], ll[1]));
+        });
+    }
     if (mfbMapOptions.defaultZoom)
         mfbNewMap.defaultZoom = mfbMapOptions.defaultZoom;
     if (mfbMapOptions.defaultLat)
@@ -438,17 +442,14 @@ function MFBNewMapOptions(mfbMapOptions)
         mfbNewMap.minLong = mfbMapOptions.minLong;
     if (mfbMapOptions.maxLong !== null)
         mfbNewMap.maxLong = mfbMapOptions.maxLong;
-    if (mfbMapOptions.pathArray)
-        mfbNewMap.pathArray = mfbMapOptions.pathArray;
-    if (mfbMapOptions.MapType)
-        mfbNewMap.MapType = mfbMapOptions.MapType;
+    if (mfbMapOptions.mapType)
+        mfbNewMap.mapType = eval(mfbMapOptions.mapType);
     if (mfbMapOptions.id)
         mfbNewMap.id = mfbMapOptions.id;
 
     mfbNewMap.fShowMap = mfbMapOptions.fShowMap;
     mfbNewMap.fShowMarkers = mfbMapOptions.fShowMarkers;
     mfbNewMap.fShowRoute = mfbMapOptions.fShowRoute;
-    mfbNewMap.fDisableUserManip = mfbMapOptions.fDisableUserManip;
     mfbNewMap.fAutoZoom = mfbMapOptions.fAutoZoom;
     mfbNewMap.fAutofillPanZoom = mfbMapOptions.fAutofillPanZoom;
     mfbNewMap.fAutofillHeliports = mfbMapOptions.fAutofillHeliports;
@@ -456,18 +457,14 @@ function MFBNewMapOptions(mfbMapOptions)
     return mfbNewMap;        
 }        
 
-function AddMap(mfbMapOptions) 
-{
-  if (mfbMapOptions.fShowMap) 
-    {
-    mfbMapOptions.NewMap();
-
-    return mfbMapOptions;
+function AddMap(mfbMapOptions) {
+    if (mfbMapOptions.fShowMap) {
+        mfbMapOptions.NewMap();
+        return mfbMapOptions;
     }
 }
 
-function unload()
-{
-GUnload();
+function unload() {
+    GUnload();
 }
     

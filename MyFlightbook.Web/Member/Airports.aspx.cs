@@ -11,7 +11,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2011-2020 MyFlightbook LLC
+ * Copyright (c) 2011-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -70,7 +70,7 @@ public partial class Member_Airports : System.Web.UI.Page
 
         bool fIncludeRoutes = util.GetIntParam(Request, "path", 0) != 0;
 
-        if (mfbGoogleMapManager1.Map.ShowRoute = fIncludeRoutes)
+        if (mfbGoogleMapManager1.Map.Options.fShowRoute = fIncludeRoutes)
         {
             List<AirportList> lst = new List<AirportList>();
 

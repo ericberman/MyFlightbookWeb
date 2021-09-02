@@ -75,7 +75,7 @@
     <script>
         function dropPin(p, s) {
             var gm = getMfbMap();
-            gm.oms.addMarker(gm.addEventMarker(p, s));
+            gm.oms.addMarker(gm.addEventMarker(nll(p[0], p[1]), s));
         }
     </script>
     <uc4:mfbAccordionProxyExtender runat="server" ID="mfbAccordionProxyExtender" AccordionControlID="AccordionCtrl" HeaderProxyIDs="apcFlight,apcAircraft,apcChart,apcRaw,apcDownload" />

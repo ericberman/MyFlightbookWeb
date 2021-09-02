@@ -74,7 +74,7 @@ namespace MyFlightbook.MemberPages
 
             mapMgr.Map.Airports = RoutesList(szRoute).Result;
             mapMgr.ShowMarkers = true;
-            mapMgr.Map.PathVarName = PathLatLongArrayID;
+            mapMgr.Map.Options.PathVarName = PathLatLongArrayID;
             mapMgr.Map.Path = DataForFlight.GetPath();
             bool result = DataForFlight.HasLatLongInfo && DataForFlight.Data.Rows.Count > 1;
             mapMgr.Mode = result ? MyFlightbook.Mapping.GMap_Mode.Dynamic : MyFlightbook.Mapping.GMap_Mode.Static;
