@@ -2,6 +2,7 @@
 using MyFlightbook.Airports;
 using MyFlightbook.Geography;
 using MyFlightbook.Mapping;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -199,7 +200,7 @@ public partial class Member_EditAirports : Page
         {
             HyperLink l = (HyperLink) e.Row.FindControl("lnkZoomCode");
             airport ap = (airport) e.Row.DataItem;
-            l.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:updateForAirport('{0}', '{1}', '{2}', {3}, {4});", ap.Code, ap.Name.Replace("'", "\\'").Replace("\"", "\\\""), ap.FacilityTypeCode, ap.LatLong.LatitudeString, ap.LatLong.LongitudeString);
+            l.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:updateForAirport({0});", JsonConvert.SerializeObject(ap, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore }));
         }
     }
 
@@ -393,19 +394,19 @@ public partial class Member_EditAirports : Page
             p.BackColor = System.Drawing.Color.LightGray;
             Label lblStatus = new Label();
             p.Controls.Add(lblStatus);
-            lblStatus.Text = String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Admin.ImportAirportStatusTemplate, ms.ToString());
+            lblStatus.Text = String.Format(CultureInfo.CurrentCulture, Resources.Admin.ImportAirportStatusTemplate, ms.ToString());
             lblStatus.ForeColor = System.Drawing.Color.Red;
             if (aicBase != null && ap.LatLong != null && aicBase.LatLong != null)
             {
                 Label lblDist = new Label();
                 p.Controls.Add(lblDist);
-                lblDist.Text = String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Admin.ImportAirportDistanceTemplate, aicBase.DistanceFromAirport(ap));
+                lblDist.Text = String.Format(CultureInfo.CurrentCulture, Resources.Admin.ImportAirportDistanceTemplate, aicBase.DistanceFromAirport(ap));
             }
         }
         HyperLink h = new HyperLink();
         p.Controls.Add(h);
         h.Text = ap.LatLong.ToDegMinSecString();
-        h.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:updateForAirport('{0}', '{1}', '{2}', {3}, {4});", ap.Code, ap.Name.JavascriptEncode(), ap.FacilityTypeCode, ap.LatLong.Latitude, ap.LatLong.Longitude);
+        h.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:updateForAirport({0});", JsonConvert.SerializeObject(ap, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore }));
         if (!String.IsNullOrEmpty(ap.UserName))
             p.Controls.Add(new LiteralControl(String.Format(CultureInfo.InvariantCulture, "{0}<br />", ap.UserName)));
     }
@@ -479,8 +480,8 @@ public partial class Member_EditAirports : Page
         CheckBox ckUseMap = (CheckBox)grow.FindControl("ckUseMap");
         if (ckUseMap.Checked)
         {
-            aic.LatLong.Latitude = Convert.ToDouble(txtLat.Text, System.Globalization.CultureInfo.InvariantCulture);
-            aic.LatLong.Longitude = Convert.ToDouble(txtLong.Text, System.Globalization.CultureInfo.InvariantCulture);
+            aic.LatLong.Latitude = Convert.ToDouble(txtLat.Text, CultureInfo.InvariantCulture);
+            aic.LatLong.Longitude = Convert.ToDouble(txtLong.Text, CultureInfo.InvariantCulture);
         }
 
         airport ap = null;
