@@ -21,8 +21,8 @@ public partial class Controls_MFBLogbookBase : UserControl
     const string szFQViewStateKeyPrefix = "FQ";
     const string szKeyLastSortExpr = "LastSort";
     const string szKeylastSortDir = "LastSortDir";
-    private MyFlightbook.Profile m_pfPilot;
-    private MyFlightbook.Profile m_pfUser;
+    private Profile m_pfPilot;
+    private Profile m_pfUser;
 
     #region Properties that DON'T Depend on controls on the page
     private string RestrictionVSKey { get { return szFQViewStateKeyPrefix + ID; } }
@@ -90,7 +90,7 @@ public partial class Controls_MFBLogbookBase : UserControl
         get
         {
             object o = ViewState[szKeylastSortDir + ID];
-            return (o == null) ? SortDirection.Descending : (SortDirection)o;
+            return (o == null) ? LogbookEntry.DefaultSortDir : (SortDirection)o;
         }
         set { ViewState[szKeylastSortDir + ID] = value; }
     }
@@ -243,7 +243,7 @@ public partial class Controls_MFBLogbookBase : UserControl
                 if (String.IsNullOrEmpty(this.User))
                     this.User = Page.User.Identity.Name;
 
-                MyFlightbook.Profile pfUser = MyFlightbook.Profile.GetUser(this.User);
+                Profile pfUser = MyFlightbook.Profile.GetUser(this.User);
 
                 lst = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntryDisplay.QueryCommand(Restriction), this.User, LastSortExpr, LastSortDir, Viewer.UsesHHMM, pfUser.UsesUTCDateOfFlight);
                 CachedData = lst;
@@ -553,7 +553,7 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
     public void RefreshData()
     {
         // Reset any cached paging/sorting
-        LastSortDir = SortDirection.Descending;
+        LastSortDir = LogbookEntry.DefaultSortDir;
         LastSortExpr = string.Empty;
         gvFlightLogs.PageIndex = 0;
 

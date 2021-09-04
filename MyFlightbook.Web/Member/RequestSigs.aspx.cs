@@ -59,7 +59,7 @@ namespace MyFlightbook.Instruction
             }
             if (lstFlights.Count == 0)
             {
-                lstFlights = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntryDisplay.QueryCommand(new FlightQuery(User.Identity.Name)), User.Identity.Name, "Date", SortDirection.Descending, false, false);
+                lstFlights =new List<LogbookEntryDisplay>(LogbookEntryDisplay.GetFlightsForQuery(LogbookEntryDisplay.QueryCommand(new FlightQuery(User.Identity.Name)), User.Identity.Name, "Date", SortDirection.Descending, false, false));
                 lstFlights.RemoveAll(le => !le.CanRequestSig);
             }
 

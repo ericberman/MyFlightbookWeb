@@ -30,7 +30,7 @@ namespace MyFlightbook.Playpen
 
         protected void RefreshFlightsList()
         {
-            List<LogbookEntryDisplay> lstFlights = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntryDisplay.QueryCommand(new FlightQuery(User.Identity.Name)), User.Identity.Name, "Date", SortDirection.Descending, false, false);
+            IList<LogbookEntryDisplay> lstFlights = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntryDisplay.QueryCommand(new FlightQuery(User.Identity.Name)), User.Identity.Name, "Date", SortDirection.Descending, false, false);
 
             rptSelectedFlights.DataSource = lstFlights;
             rptSelectedFlights.DataBind();
