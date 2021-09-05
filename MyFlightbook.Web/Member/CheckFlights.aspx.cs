@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Web;
+using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -15,8 +17,27 @@ using System.Web.UI.WebControls;
 
 namespace MyFlightbook.Web.Member
 {
-    public partial class CheckFlights : System.Web.UI.Page
+    public partial class CheckFlights : Page
     {
+        #region WebMethods
+        [WebMethod(EnableSession = true)]
+        public static void ToggleIgnore(int idFlight, bool fIgnore)
+        {
+
+            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+                throw new UnauthorizedAccessException();
+            LogbookEntryBase le = new LogbookEntry();
+            if (!le.FLoadFromDB(idFlight, HttpContext.Current.User.Identity.Name))
+                throw new UnauthorizedAccessException();
+
+            if (le.IsNewFlight) // should never happen.
+                throw new InvalidOperationException("Flight doesn't exist");
+
+            le.Route = String.Format(CultureInfo.CurrentCulture, "{0}{1}", le.Route.Trim(), fIgnore ? FlightLint.IgnoreMarker : string.Empty);
+            le.CommitRoute();  // Save the change, but hold on to the flight in the list for now so that you can uncheck it.
+        }
+        #endregion
+
         protected const string szCookieLastCheck = "cookieLastCheck";
 
         private const string szVsFlightIssues = "vsFlightIssues"; 
@@ -64,6 +85,7 @@ namespace MyFlightbook.Web.Member
                 val |= (ckSim.Checked ? (UInt32)LintOptions.SimIssues : 0);
                 val |= (ckTimes.Checked ? (UInt32)LintOptions.TimeIssues : 0);
                 val |= (ckXC.Checked ? (UInt32)LintOptions.XCIssues : 0);
+                val |= (ckIgnored.Checked ? (UInt32)LintOptions.IncludeIgnored : 0);
                 return val;
             }
         }
@@ -78,6 +100,7 @@ namespace MyFlightbook.Web.Member
             ckSim.Checked = (options & (UInt32)LintOptions.SimIssues) != 0;
             ckTimes.Checked = (options & (UInt32)LintOptions.TimeIssues) != 0;
             ckXC.Checked = (options & (UInt32)LintOptions.XCIssues) != 0;
+            ckIgnored.Checked = (options & (UInt32)LintOptions.IncludeIgnored) != 0;
         }
 
         protected void BindFlights(IEnumerable<FlightWithIssues> rgf, int cFlightsChecked)
@@ -157,20 +180,17 @@ namespace MyFlightbook.Web.Member
             }
         }
 
-        protected void ckIgnore_CheckedChanged(object sender, EventArgs e)
+        protected void gvFlights_RowDataBound(object sender, GridViewRowEventArgs e)
         {
-            if (sender == null)
-                throw new ArgumentNullException(nameof(sender));
-            if (!(sender is CheckBox ck))
-                throw new InvalidOperationException("Unknown sender where check box should be");
-
-            GridViewRow Row = (GridViewRow)ck.Parent.Parent;
-            LogbookEntryBase le = CheckedFlights.ElementAt(Row.RowIndex).Flight;
-            if (le.IsNewFlight) // should never happen.
-                return;
-
-            le.Route = String.Format(CultureInfo.CurrentCulture, "{0}{1}", le.Route.Trim(), ck.Checked ? FlightLint.IgnoreMarker : string.Empty);
-            le.CommitRoute();  // Save the change, but hold on to the flight in the list for now so that you can uncheck it.
+            if (e == null)
+                throw new ArgumentNullException(nameof(e));
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                FlightWithIssues le = CheckedFlights.ElementAt(e.Row.RowIndex);
+                CheckBox ck = (CheckBox)e.Row.FindControl("ckIgnore");
+                ck.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:toggleIgnore(this, {0});", le.Flight.FlightID);
+                ck.Checked = le.Flight.Route.EndsWith(FlightLint.IgnoreMarker, StringComparison.CurrentCultureIgnoreCase);
+            }
         }
     }
 }

@@ -205,6 +205,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to If you check the box to ignore issues for a flight, it won&apos;t show up here again.  Check this box to include such flights that you&apos;ve previously said to ignore..
+        /// </summary>
+        internal static string LintCategoryIgnoredTip {
+            get {
+                return ResourceManager.GetString("LintCategoryIgnoredTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Include previously ignored flights.
+        /// </summary>
+        internal static string LintCategoryIgoredFlights {
+            get {
+                return ResourceManager.GetString("LintCategoryIgoredFlights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Additional (uncategorized) issues.
         /// </summary>
         internal static string LintCategoryMisc {

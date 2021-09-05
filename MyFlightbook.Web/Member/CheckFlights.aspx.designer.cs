@@ -231,6 +231,24 @@ namespace MyFlightbook.Web.Member
         protected global::Controls_mfbTooltip mfbTooltip7;
 
         /// <summary>
+        /// ckIgnored control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox ckIgnored;
+
+        /// <summary>
+        /// mfbTooltip8 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Controls_mfbTooltip mfbTooltip8;
+
+        /// <summary>
         /// pnlCheckSinceDate control.
         /// </summary>
         /// <remarks>
