@@ -582,7 +582,7 @@ namespace MyFlightbook.CloudStorage
 
             try
             {
-                if (Enum.TryParse(result.error.code, true, out OneDriveErrorCodeMFB errCode))
+                if (Enum.TryParse((string) result.error.code, true, out OneDriveErrorCodeMFB errCode))
                 {
                     ErrorCode = errCode;
                     Message = MessageForCode(ErrorCode, result.error.message);
