@@ -458,4 +458,7 @@
   <data name="EndorsementSortTitle" xml:space="preserve">
     <value>Title</value>
   </data>
+  <data name="EndorsementValid" xml:space="preserve">
+    <value>This endorsement has been digitally authenticated, so no scribble signature is required.</value>
+  </data>
 </root>

@@ -403,6 +403,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This endorsement has been digitally authenticated, so no scribble signature is required..
+        /// </summary>
+        internal static string EndorsementValid {
+            get {
+                return ResourceManager.GetString("EndorsementValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You must indicate your acceptance to continue..
         /// </summary>
         internal static string errAcceptDisclaimer {
@@ -877,7 +886,7 @@ namespace Resources {
         ///
         ///Thank-you
         ///
-        ///Please do not reply to this message; this mailbox is not monitored..
+        ///To contact us, please visit http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx..
         /// </summary>
         internal static string RoleInvitation {
             get {
@@ -1000,7 +1009,7 @@ namespace Resources {
         ///
         ///Thank-you
         ///
-        ///Please do not reply to this message; this mailbox is not monitored..
+        ///To contact us, please visit http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx..
         /// </summary>
         internal static string SignInvitationExisting {
             get {
