@@ -341,6 +341,16 @@ namespace MyFlightbook
             get { return IsNewFlightID(FlightID); }
         }
 
+        /// <summary>
+        /// Returns true if the flight looks like it's strictly ground instruction
+        /// Useful for signing because ground instructors don't expire, so we can relax the requirement
+        /// for an expiration in those scenarios.
+        /// </summary>
+        public bool IsGroundOnly
+        {
+            get { return TotalFlightTime + PIC + SIC + Dual == 0 && CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived); }
+        }
+
         public static Boolean IsNewFlightID(int idFlight)
         {
             return idFlight == LogbookEntry.idFlightNew || idFlight == LogbookEntry.idFlightNone || idFlight < 0;
@@ -1223,7 +1233,7 @@ namespace MyFlightbook
             if (!CanSignThisFlight(szCFIUsername, out string szErr))
                 throw new MyFlightbookException(szErr);
 
-            if (!pfCFI.CanSignFlights(out szErr))
+            if (!pfCFI.CanSignFlights(out szErr, IsGroundOnly))
                 throw new MyFlightbookException(szErr);
 
             DigitizedSignature = null;

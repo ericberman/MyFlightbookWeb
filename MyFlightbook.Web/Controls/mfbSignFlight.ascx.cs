@@ -14,7 +14,7 @@ using System.Web.UI.WebControls;
  *
 *******************************************************/
 
-public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
+public partial class Controls_mfbSignFlight : UserControl
 {
     private LogbookEntry m_le;
     private const string szKeyVSIDFlight = "keyVSEntryToSign";
@@ -24,7 +24,7 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
 
     public event EventHandler Cancel;
     public event EventHandler SigningFinished;
-    private MyFlightbook.Profile m_pf;
+    private Profile m_pf;
 
     public enum SignMode { Authenticated, AdHoc };
 
@@ -71,7 +71,7 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
                     break;
                 case SignMode.Authenticated:
                     // Show the static fields and hide the editable ones.
-                    bool fValidCFIInfo = CFIProfile != null && CFIProfile.CanSignFlights(out string _);
+                    bool fValidCFIInfo = CFIProfile != null && CFIProfile.CanSignFlights(out string _, Flight.IsGroundOnly);
 
                     lblCFIDate.Visible = fValidCFIInfo;
                     lblCFICertificate.Visible = fValidCFIInfo;
@@ -239,6 +239,10 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
                     ckCopyFlight.Checked = copyFlight;
             }
         }
+        else
+        {
+            LogbookEntry _ = Flight;    // force the flight to load.
+        }
 
         UpdateDateState();
         dropDateCFIExpiration.DefaultDate = DateTime.MinValue;
@@ -325,7 +329,7 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
                     {
                         byte[] rgSig = mfbScribbleSignature.Base64Data();
                         if (rgSig != null)
-                            Flight.SignFlightAdHoc(txtCFIName.Text, txtCFIEmail.Text, txtCFICertificate.Text, dropDateCFIExpiration.Date, SigningComments, rgSig, ckSignSICEndorsement.Checked || ckATP.Checked);
+                            Flight.SignFlightAdHoc(txtCFIName.Text, txtCFIEmail.Text, txtCFICertificate.Text, dropDateCFIExpiration.Date, SigningComments, rgSig, ckSignSICEndorsement.Checked || ckATP.Checked || Flight.IsGroundOnly);
                         else
                             return;
                     }
@@ -333,7 +337,7 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
                 case SignMode.Authenticated:
                     string szError = String.Empty;
 
-                    bool needProfileRefresh = !CFIProfile.CanSignFlights(out szError);
+                    bool needProfileRefresh = !CFIProfile.CanSignFlights(out szError, Flight.IsGroundOnly);
                     if (needProfileRefresh)
                     {
                         CFIProfile.Certificate = txtCFICertificate.Text;
@@ -341,7 +345,7 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
                     }
 
                     // Do ANOTHER check to see if you can sign - setting these above may have fixed the problem.
-                    if (!CFIProfile.CanSignFlights(out szError))
+                    if (!CFIProfile.CanSignFlights(out szError, Flight.IsGroundOnly))
                     {
                         lblErr.Text = szError;
                         return;
@@ -394,7 +398,8 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
             throw new ArgumentNullException(nameof(args));
         if (SigningMode == SignMode.AdHoc)
         {
-            if (dropDateCFIExpiration.Date.AddDays(1).CompareTo(DateTime.Now) <= 0)
+            if ((!dropDateCFIExpiration.Date.HasValue() && !Flight.IsGroundOnly) ||
+                (dropDateCFIExpiration.Date.HasValue() && dropDateCFIExpiration.Date.AddDays(1).CompareTo(DateTime.Now) <= 0))
                 args.IsValid = false;
         }
     }
