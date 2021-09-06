@@ -5,8 +5,14 @@
             <table class="endorsement">
                 <tr id="rowExternalEndorsement" runat="server" visible='<%# (bool) Eval("IsExternalEndorsement") %>'><td colspan="2" style="font-weight:bold; background-color:darkgray; color:white">
                     <%= MyFlightbook.Branding.ReBrand(Resources.SignOff.ExternalEndorsementDisclaimer) %></td></tr>
-                <tr><td colspan="2" style="font-weight:bold"><%# Eval("FullTitleAndFar") %></td></tr>
-                <tr><td colspan="2"><hr /><%# Eval("EndorsementText") %><hr /></td></tr>
+                <tr>
+                    <td colspan="2">
+                        <div style="float:right; margin: 3px;"><asp:Image ID="Image1" AlternateText="<%$ Resources:SignOff, EndorsementValid %>" ToolTip="<%$ Resources:SignOff, EndorsementValid %>" runat="server" ImageUrl="~/images/sigok.png" visible='<%# !(bool)Eval("HasDigitizedSig") %>' /></div>
+                        <div style="font-weight:bold"><%# Eval("FullTitleAndFar") %></div>
+                        <hr />
+                        <%# Eval("EndorsementText") %><hr />
+                    </td>
+                </tr>
                 <tr><td><asp:Label Font-Bold="true" ID="Literal1" runat="server" Text="<%$ Resources:SignOff, EditEndorsementDatePrompt %>"></asp:Label></td><td><%# Convert.ToDateTime(Eval("Date")).ToShortDateString()  %></td></tr>
                 <tr id="rowCreationDate" runat="server" visible='<%# ((DateTime) Eval("CreationDate")).Date.CompareTo(((DateTime) Eval("Date")).Date) != 0 %>'><td><asp:Label Font-Bold="true" ID="Literal6" runat="server" Text="<%$ Resources:SignOff, EditEndorsementDateCreatedPrompt %>"></asp:Label></td><td>
                     <asp:Label ID="lblCreationDate" runat="server" Font-Bold='<%# ((DateTime) Eval("CreationDate")).Date.Subtract(((DateTime) Eval("Date"))).Days > 10 %>' Text='<%# Convert.ToDateTime(Eval("CreationDate")).ToShortDateString() %>' /> (UTC)</td></tr>
