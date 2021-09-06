@@ -1,6 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -461,6 +460,68 @@ namespace MyFlightbook.Currency
         }
 
         /// <summary>
+        /// Represents a row from the cat/class feature query 
+        /// </summary>
+        private class CatClassFeatureRow
+        {
+            #region properties
+            public string ModelDisplay { get; private set; }
+            public string CatClassDisplay { get; private set; }
+            public string FamilyDisplay { get; private set; }
+
+            public string RawFamily { get; private set; }
+
+            public string CatClass { get; private set; }
+            public string TypeName { get; private set; }
+
+            public CategoryClass.CatClassID CCID { get; private set; }
+
+            public int ModelID { get; private set; }
+
+            public decimal Total { get; private set; }
+
+            public int Landings { get; private set; }
+            public int Approaches { get; private set; }
+            public int FSDayLandings { get; private set; }
+            public int FSNightLandings { get; private set; }
+            #endregion
+
+            private CatClassFeatureRow(MySqlDataReader dr)
+            {
+                ModelDisplay = (string)dr["ModelDisplay"];
+                CatClassDisplay = (string)dr["CatClassDisplay"];
+                FamilyDisplay = (string)dr["FamilyDisplay"];
+                RawFamily = util.ReadNullableString(dr, "Family");
+
+                CatClass = dr["CatClass"].ToString();
+                ModelID = Convert.ToInt32(dr["idmodel"], CultureInfo.InvariantCulture);
+                TypeName = dr["typename"].ToString();
+                CCID = (CategoryClass.CatClassID)Convert.ToInt32(dr["idCatClass"], CultureInfo.InvariantCulture);
+                Total = (Decimal)util.ReadNullableField(dr, "Total", 0.0M);
+                Landings = Convert.ToInt32(util.ReadNullableField(dr, "cLandings", 0), CultureInfo.InvariantCulture);
+                Approaches = Convert.ToInt32(util.ReadNullableField(dr, "cApproaches", 0), CultureInfo.InvariantCulture);
+                FSDayLandings = Convert.ToInt32(util.ReadNullableField(dr, "cFullStopLandings", 0), CultureInfo.InvariantCulture);
+                FSNightLandings = Convert.ToInt32(util.ReadNullableField(dr, "cNightLandings", 0), CultureInfo.InvariantCulture);
+            }
+
+            public static IEnumerable<CatClassFeatureRow> ReadRows(MySqlCommand comm)
+            {
+                if (comm == null)
+                    throw new ArgumentNullException(nameof(comm));
+
+                List<CatClassFeatureRow> lst = new List<CatClassFeatureRow>();
+
+                using (MySqlDataReader dr = comm.ExecuteReader())
+                {
+                    while (dr.Read())
+                        lst.Add(new CatClassFeatureRow(dr));
+                }
+
+                return lst;
+            }
+        }
+
+        /// <summary>
         /// Totals for a model feature (e.g., retract, high performance, etc.)
         /// </summary>
         private class ModelFeatureTotal
@@ -673,62 +734,58 @@ namespace MyFlightbook.Currency
         private void ComputeTotalsByCatClass(MySqlCommand comm, Profile pf)
         {
             // first get the totals by catclass
-            Hashtable htCct = new Hashtable();
+            Dictionary<string, CatClassTotal> htCct = new Dictionary<string, CatClassTotal>();
+
             try
             {
-                using (MySqlDataReader dr = comm.ExecuteReader())
+                IEnumerable<CatClassFeatureRow> lstRawRows = CatClassFeatureRow.ReadRows(comm);
+
+                // Issue #811 - count models, looking for duplicates, to see if we need to distinguish them.
+                Dictionary<string, int> dModelCount = new Dictionary<string, int>();
+                foreach (CatClassFeatureRow ccfr in lstRawRows)
                 {
-                    while (dr.Read())
+                    string szTitle = pf.TotalsGroupingMode == TotalsGrouping.CatClass ? ccfr.CatClassDisplay : (pf.TotalsGroupingMode == TotalsGrouping.Model ? ccfr.ModelDisplay : ccfr.FamilyDisplay);
+                    dModelCount[szTitle] = dModelCount.ContainsKey(szTitle) ? dModelCount[szTitle] + 1 : 0;
+                }
+
+                // Now do a second pass, actually accumulating the totals
+                foreach (CatClassFeatureRow ccfr in lstRawRows)
+                {
+                    string szDesc = SubDescFromLandings(ccfr.Landings, ccfr.FSDayLandings, ccfr.FSNightLandings, ccfr.Approaches);
+
+                    // keep track of the subtotal.
+                    CatClassTotal cct = htCct.ContainsKey(ccfr.CatClass) ? htCct[ccfr.CatClass] : null;
+                    if (cct == null)
+                        htCct[ccfr.CatClass] = cct = new CatClassTotal(ccfr.CatClass, ccfr.CCID);
+                    cct.AddTotals(ccfr.Total, ccfr.Landings, ccfr.FSDayLandings, ccfr.FSNightLandings, ccfr.Approaches);
+
+                    FlightQuery fq = new FlightQuery(Restriction);
+                    string szTitle = string.Empty;
+                    TotalsGroup group = TotalsGroup.None;
+                    switch (pf.TotalsGroupingMode)
                     {
-                        string szModelDisplay = (string)dr["ModelDisplay"];
-                        string szCatClassDisplay = (string)dr["CatClassDisplay"];
-                        string szFamilyDisplay = (string)dr["FamilyDisplay"];
-
-                        string szCatClass = dr["CatClass"].ToString();
-                        int idModel = Convert.ToInt32(dr["idmodel"], CultureInfo.InvariantCulture);
-                        string szTypeName = dr["typename"].ToString();
-                        CategoryClass.CatClassID ccid = (CategoryClass.CatClassID)Convert.ToInt32(dr["idCatClass"], CultureInfo.InvariantCulture);
-                        Decimal decTotal = (Decimal)util.ReadNullableField(dr, "Total", 0.0M);
-                        Int32 cLandings = Convert.ToInt32(util.ReadNullableField(dr, "cLandings", 0), CultureInfo.InvariantCulture);
-                        Int32 cApproaches = Convert.ToInt32(util.ReadNullableField(dr, "cApproaches", 0), CultureInfo.InvariantCulture);
-                        Int32 cFSDayLandings = Convert.ToInt32(util.ReadNullableField(dr, "cFullStopLandings", 0), CultureInfo.InvariantCulture);
-                        Int32 cFSNightLandings = Convert.ToInt32(util.ReadNullableField(dr, "cNightLandings", 0), CultureInfo.InvariantCulture);
-
-                        string szDesc = SubDescFromLandings(cLandings, cFSDayLandings, cFSNightLandings, cApproaches);
-
-                        // keep track of the subtotal.
-                        CatClassTotal cct = (CatClassTotal)htCct[szCatClass];
-                        if (cct == null)
-                            htCct[szCatClass] = cct = new CatClassTotal(szCatClass, ccid);
-                        cct.AddTotals(decTotal, cLandings, cFSDayLandings, cFSNightLandings, cApproaches);
-
-                        FlightQuery fq = null;
-
-                        // don't link to a query for type-totals, since there's no clean query for that.  But if this is a clean catclass (e.g., "AMEL") it should match and we can query it.
-                        fq = new FlightQuery(Restriction);
-                        string szTitle = string.Empty;
-                        TotalsGroup group = TotalsGroup.None;
-                        switch (pf.TotalsGroupingMode)
-                        {
-                            case TotalsGrouping.CatClass:
-                                fq.AddCatClass(cct.CatClass, szTypeName);
-                                szTitle = szCatClassDisplay;
-                                group = TotalsGroup.CategoryClass;
-                                break;
-                            case TotalsGrouping.Model:
-                                fq.AddModelById(idModel);
-                                szTitle = szModelDisplay;
-                                group = TotalsGroup.Model;
-                                break;
-                            case TotalsGrouping.Family:
-                                fq.ModelName = ModelQuery.ICAOPrefix + szFamilyDisplay;
-                                szTitle = szFamilyDisplay;
-                                group = TotalsGroup.ICAO;
-                                break;
-                        }
-
-                        AddToList(new TotalsItem(szTitle, decTotal, szDesc) { Query = fq, Group = group });
+                        case TotalsGrouping.CatClass:
+                            fq.AddCatClass(cct.CatClass, ccfr.TypeName);
+                            szTitle = ccfr.CatClassDisplay;
+                            group = TotalsGroup.CategoryClass;
+                            break;
+                        case TotalsGrouping.Model:
+                            fq.AddModelById(ccfr.ModelID);
+                            szTitle = ccfr.ModelDisplay;
+                            group = TotalsGroup.Model;
+                            break;
+                        case TotalsGrouping.Family:
+                            fq.ModelName = String.IsNullOrWhiteSpace(ccfr.RawFamily) ? ccfr.ModelDisplay : ModelQuery.ICAOPrefix + ccfr.FamilyDisplay;
+                            fq.CatClasses.Add(CategoryClass.CategoryClassFromID(ccfr.CCID));    // redundant, but just to be safe...
+                            szTitle = ccfr.FamilyDisplay;
+                            group = TotalsGroup.ICAO;
+                            break;
                     }
+
+                    if (dModelCount.TryGetValue(szTitle, out int count) && count > 0)
+                        szTitle = String.Format(CultureInfo.CurrentCulture, "{0} - {1}", szTitle, ccfr.CatClassDisplay);
+
+                    AddToList(new TotalsItem(szTitle, ccfr.Total, szDesc) { Query = fq, Group = group });
                 }
             }
             catch (MySqlException ex)
@@ -736,14 +793,20 @@ namespace MyFlightbook.Currency
                 throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, "Exception in UserTotals Data Bind while reading data by catclass: {0}", comm.CommandText), ex, pf.UserName);
             }
 
+            AddSubtotals(pf, htCct.Values);
+        }
+
+        private void AddSubtotals(Profile pf, IEnumerable<CatClassTotal> rgcct)
+        {
             // Add in any catclass subtotals
-            foreach (CatClassTotal cct in htCct.Values)
+            foreach (CatClassTotal cct in rgcct)
             {
                 FlightQuery fq = new FlightQuery(Restriction);
                 fq.AddCatClass(cct.CatClass, string.Empty);
                 if (pf.TotalsGroupingMode != TotalsGrouping.CatClass || !cct.IsRedundant)
                 {
-                    if (pf.TotalsGroupingMode == TotalsGrouping.CatClass) {
+                    if (pf.TotalsGroupingMode == TotalsGrouping.CatClass)
+                    {
                         // If you have a mix of type-rated and non-type-rated aircraft, then the subtotal for non-typerated doesn't have a type specifier; it's just naked "AMEL", for example.
                         // So Find and fix up the query for that item
                         CategoryClass ccTarget = cct.CatClass;
@@ -956,7 +1019,6 @@ namespace MyFlightbook.Currency
                         throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, "Exception creating temporary table:\r\n{0}\r\n{1}\r\n{2}", ex.Message, szTempTableName, szInnerQuery), ex, pf.UserName);
                     }
 
-                    // Get totals by category class
                     int cTotalsSoFar = alTotals.Count;  // should always be 0, but safer this way
                     comm.CommandText = szQTotalsByCatClass;
                     ComputeTotalsByCatClass(comm, pf);
