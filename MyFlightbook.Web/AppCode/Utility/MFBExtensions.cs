@@ -517,18 +517,6 @@ namespace MyFlightbook
         }
 
         /// <summary>
-        /// Escape quotes in a string to be placed in javascript
-        /// </summary>
-        /// <param name="s">The input string</param>
-        /// <returns>The escaped string</returns>
-        public static string JavascriptEncode(this string s)
-        {
-            if (s == null)
-                throw new ArgumentNullException(nameof(s));
-            return s.Replace("'", "\\'").Replace("\"", "\\\"");
-        }
-
-        /// <summary>
         /// Escapes MySql wildcards (% and _).
         /// </summary>
         /// <param name="s"></param>

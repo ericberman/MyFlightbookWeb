@@ -3,6 +3,7 @@ using MyFlightbook.Geography;
 using MyFlightbook.Image;
 using MyFlightbook.Telemetry;
 using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -130,7 +131,7 @@ namespace MyFlightbook.Airports
         /// <summary>
         /// Internally cached ID of the flight where this airport was first encountered.
         /// </summary>
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         [System.Xml.Serialization.XmlIgnore]
         public int FlightIDOfFirstVisit { get; private set; }
         #endregion
@@ -681,6 +682,7 @@ namespace MyFlightbook.Airports
         /// <summary>
         /// User that created the airport; empty for built-in airports
         /// </summary>
+        [JsonIgnore]
         public string UserName { get; set; }
 
         /// <summary>
@@ -737,6 +739,7 @@ namespace MyFlightbook.Airports
         /// <summary>
         /// DEPRECATED The airport's latitude (string representation of a decimal number)
         /// </summary>
+        [JsonIgnore]
         public string Latitude
         {
             get { return this.LatLong.LatitudeString; }
@@ -746,6 +749,7 @@ namespace MyFlightbook.Airports
         /// <summary>
         /// DEPRECATED The airport's longitude (string representation of a decimal number)
         /// </summary>
+        [JsonIgnore]
         public string Longitude
         {
             get { return this.LatLong.LongitudeString; }
@@ -848,7 +852,7 @@ namespace MyFlightbook.Airports
         /// <summary>
         /// Hash code that rounds the location so that multiple airports of the same type at approximately the same location will merge.
         /// </summary>
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public string GeoHashKey
         {
             get { return String.Format(CultureInfo.InvariantCulture, "{0}La{1:F2}Lo{2:F2}", FacilityTypeCode, LatLong.Latitude, LatLong.Longitude); }

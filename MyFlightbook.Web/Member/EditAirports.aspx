@@ -481,14 +481,14 @@
             }
         }
         
-        function updateForAirport(code, name, type, lat, lon)
+        function updateForAirport(o)
         {
-            elLat.value = lat;
-            elLon.value = lon;
-            $find(elCodeWE).set_text(code);
-            $find(elNameWE).set_text(name);
-            elType.value = type;
-            clickAndZoom(new google.maps.LatLng(lat, lon));
+            elLat.value = o.LatLong.Latitude;
+            elLon.value = o.LatLong.Longitude;
+            $find(elCodeWE).set_text(o.Code);
+            $find(elNameWE).set_text(o.Name);
+            elType.value = o.FacilityTypeCode;
+            clickAndZoom(new google.maps.LatLng(o.LatLong.Latitude, o.LatLong.Longitude));
         }
         
         function clickForAirport(point)
