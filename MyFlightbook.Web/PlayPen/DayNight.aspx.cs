@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2020 MyFlightbook LLC
+ * Copyright (c) 2012-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -52,8 +52,8 @@ public partial class Public_DayNight : System.Web.UI.Page
         // lblSunRise.Text = String.Format(CultureInfo.CurrentCulture, Resources.Admin.SunriseSunsetTemplate, sst.Sunrise.ToLocalTime().ToLongTimeString(), sst.Sunrise.ToString("MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture));
         // lblSunSet.Text = String.Format(CultureInfo.CurrentCulture, Resources.Admin.SunriseSunsetTemplate, sst.Sunset.ToLocalTime().ToLongTimeString(), sst.Sunset.ToString("MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture));
         lblUTCDate.Text = dtUTC.ToLongDateString();
-        mfbGoogleMapManager1.Map.ZoomFactor = GMap_ZoomLevels.US;
-        mfbGoogleMapManager1.Map.MapCenter = new LatLong(lat, lon);
+        mfbGoogleMapManager1.Map.Options.ZoomFactor = GMap_ZoomLevels.US;
+        mfbGoogleMapManager1.Map.Options.MapCenter = new LatLong(lat, lon);
 
         // show 5-minute increments throughout the day
         for (int h = 0; h < 24; h++)

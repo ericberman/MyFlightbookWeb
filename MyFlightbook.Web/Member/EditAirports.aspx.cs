@@ -15,7 +15,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2020 MyFlightbook LLC
+ * Copyright (c) 2010-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -111,8 +111,8 @@ public partial class Member_EditAirports : Page
                 if (double.TryParse(txtLat.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double lat) &&
                     double.TryParse(txtLong.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double lon))
                 {
-                    MfbGoogleMapManager1.Map.MapCenter = new LatLong(lat, lon);
-                    MfbGoogleMapManager1.Map.ZoomFactor = GMap_ZoomLevels.AirportAndVicinity;
+                    MfbGoogleMapManager1.Map.Options.MapCenter = new LatLong(lat, lon);
+                    MfbGoogleMapManager1.Map.Options.ZoomFactor = GMap_ZoomLevels.AirportAndVicinity;
                 }
             }
         }

@@ -11,7 +11,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2020 MyFlightbook LLC
+ * Copyright (c) 2007-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -74,8 +74,8 @@ namespace MyFlightbook.PublicPages
             {
                 result = AirportList.ListsFromRoutes(le.Route);
                 MfbGoogleMap1.Map.Airports = result.Result;
-                MfbGoogleMap1.Map.ShowRoute = ckShowRoute.Checked;
-                MfbGoogleMap1.Map.AutofillOnPanZoom = (result.Result.Count == 0);
+                MfbGoogleMap1.Map.Options.fShowRoute = ckShowRoute.Checked;
+                MfbGoogleMap1.Map.Options.fAutofillPanZoom= (result.Result.Count == 0);
                 MfbGoogleMap1.Map.AllowDupeMarkers = false;
                 lnkZoomOut.NavigateUrl = MfbGoogleMap1.ZoomToFitScript;
                 lnkZoomOut.Visible = !result.MasterList.LatLongBox().IsEmpty;
