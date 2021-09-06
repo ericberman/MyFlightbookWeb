@@ -44,8 +44,7 @@
                     <div><asp:CheckBox ID="ckTimes" runat="server" Text="<%$ Resources:FlightLint, LintCategoryTimes %>" Checked="true" /><uc1:mfbtooltip runat="server" id="mfbTooltip5" BodyContent="<%$ Resources:FlightLint, LintCategoryTimesTip %>" /></div>
                     <div><asp:CheckBox ID="ckDateTime" runat="server" Text="<%$ Resources:FlightLint, LintCategoryDateTime %>" Checked="true" /><uc1:mfbtooltip runat="server" id="mfbTooltip6" BodyContent="<%$ Resources:FlightLint, LintCategoryDateTimeTip %>" /></div>
                     <div><asp:CheckBox ID="ckMisc" runat="server" Text="<%$ Resources:FlightLint, LintCategoryMisc %>" Checked="true" /><uc1:mfbtooltip runat="server" id="mfbTooltip7" BodyContent="<%$ Resources:FlightLint, LintCategoryMiscTip %>" /></div>
-                    <div><asp:CheckBox ID="ckIgnored" runat="server" Text="<%$ Resources:FlightLint, LintCategoryIgoredFlights %>" /><uc1:mfbtooltip runat="server" id="mfbTooltip8" BodyContent="<%$ Resources:FlightLint, LintCategoryIgnoredTip %>" /></div>
-                    <asp:Panel ID="pnlCheckSinceDate" runat="server">
+                    <asp:Panel ID="pnlCheckSinceDate" runat="server" style="margin-top: 10pt;">
                         <asp:Label ID="lblCheckSince" runat="server" Text="<%$ Resources:FlightLint, PromptOnlyCheckNewFlights %>"></asp:Label>
                         <uc1:mfbTypeInDate runat="server" ID="mfbDateLastCheck" />
                         <span runat="server" visible="false" id="spanLastCheck">
@@ -53,6 +52,7 @@
                             <asp:Label ID="lblLastCheck" runat="server" Text="<%$ Resources:FlightLint, PromptLastCheckDate %>"></asp:Label>
                             <asp:HiddenField ID="hdnLastDateCheck" runat="server" />
                         </span>
+                        <div><asp:CheckBox ID="ckIgnored" runat="server" Text="<%$ Resources:FlightLint, LintCategoryIgoredFlights %>" /><uc1:mfbtooltip runat="server" id="mfbTooltip8" BodyContent="<%$ Resources:FlightLint, LintCategoryIgnoredTip %>" /></div>
                     </asp:Panel>
                 </div>
                 <p><asp:Button ID="btnCheckAll" runat="server" Text="<%$ Resources:FlightLint, CheckFlightsBegin %>" OnClick="btnCheckAll_Click" /> <asp:Label ID="lblSummary" runat="server"></asp:Label></p>
