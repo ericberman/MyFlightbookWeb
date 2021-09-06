@@ -721,7 +721,7 @@ namespace MyFlightbook.CloudStorage
         {
             return new UriBuilder("https://api.onedrive.com")
             {
-                Query = String.Format(CultureInfo.InvariantCulture, "access_token={0}", AuthState.AccessToken),
+                Query = string.Empty,
                 Path = szPath
             };
         }
@@ -742,6 +742,7 @@ namespace MyFlightbook.CloudStorage
                 using (HttpClient httpClient = new HttpClient())
                 {
                     UriBuilder builder = BuilderForPath(String.Format(CultureInfo.InvariantCulture, "v1.0/drive/root:/{0}{1}:/createUploadSession", RootPath, szFilename));
+                    httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + AuthState.AccessToken);
 
                     try
                     {
@@ -799,6 +800,8 @@ namespace MyFlightbook.CloudStorage
 
                 using (HttpClient httpClient = new HttpClient())
                 {
+                    httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + AuthState.AccessToken);
+
                     try
                     {
                         UriBuilder builder = BuilderForPath(String.Format(CultureInfo.InvariantCulture, "v1.0/drive/root:/{0}{1}:/content", RootPath, szFilename));
