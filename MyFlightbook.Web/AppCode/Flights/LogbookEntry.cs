@@ -1086,13 +1086,12 @@ namespace MyFlightbook
         /// <returns>The updated signature state (which is reflected in the object)</returns>
         public SignatureState UpdateSignatureState()
         {
-            if (!String.IsNullOrEmpty(FlightHash) &&
+            CFISignatureState = !String.IsNullOrEmpty(FlightHash) &&
                 !String.IsNullOrEmpty(SignatureHash) &&
                 !String.IsNullOrEmpty(CFICertificate) &&
-                (!String.IsNullOrEmpty(CFIUsername) || !String.IsNullOrEmpty(CFIEmail)))
-                CFISignatureState = (IsValidSignature() && IsValidSigningDetails()) ? SignatureState.Valid : SignatureState.Invalid;
-            else
-                CFISignatureState = SignatureState.None;
+                (!String.IsNullOrEmpty(CFIUsername) || !String.IsNullOrEmpty(CFIEmail))
+                ? (IsValidSignature() && IsValidSigningDetails()) ? SignatureState.Valid : SignatureState.Invalid
+                : SignatureState.None;
             return CFISignatureState;
         }
 
@@ -2111,6 +2110,9 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
         }
         #endregion
 
+        public const string DefaultSortKey = "Date";
+        public const SortDirection DefaultSortDir = SortDirection.Descending;
+
         /// <summary>
         /// Gets the flights for a user (mostly used for webservice)
         /// </summary>
@@ -2124,7 +2126,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                 throw new ArgumentNullException(nameof(fq));
 
             List<LogbookEntry> lstLe = new List<LogbookEntry>();
-            DBHelper dbh = new DBHelper(LogbookEntry.QueryCommand(fq, offset, maxCount));
+            DBHelper dbh = new DBHelper(QueryCommand(fq, offset, maxCount));
             dbh.ReadRows(
                 (comm) =>
                 { },
@@ -3302,7 +3304,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
         /// <param name="fUseHHMM">Indicates whether to display times in decimal or hh:mm format</param>
         /// <param name="fUseUTCDate">Indicates whether to treat dates as UTC or as local dates</param>
         /// <returns>List of LogbookEntry objects</returns>
-        public static List<LogbookEntryDisplay> GetFlightsForQuery(DBHelperCommandArgs args, string szUser, string szSortExpr, SortDirection sd, bool fUseHHMM, bool fUseUTCDate)
+        public static IList<LogbookEntryDisplay> GetFlightsForQuery(DBHelperCommandArgs args, string szUser, string szSortExpr, SortDirection sd, bool fUseHHMM, bool fUseUTCDate)
         {
             DBHelper dbh = new DBHelper(args);
             args.Timeout = 120; // give it up to 120 seconds.
@@ -3326,7 +3328,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
         /// <param name="szSortExpr">The name of a property on which to sort. MUST IMPLEMENT ICOMPARABLE!</param>
         /// <param name="sd">Sort direction</param>
         /// <returns>The sorted list</returns>
-        public static List<LogbookEntryDisplay> SortLogbook(List<LogbookEntryDisplay> lst, string szSortExpr, SortDirection sd)
+        public static IList<LogbookEntryDisplay> SortLogbook(List<LogbookEntryDisplay> lst, string szSortExpr, SortDirection sd)
         {
             if (string.IsNullOrEmpty(szSortExpr))
                 return lst;
