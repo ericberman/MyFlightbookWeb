@@ -717,7 +717,7 @@ namespace MyFlightbook.CloudStorage
             }
         }
 
-        private UriBuilder BuilderForPath(string szPath)
+        private static UriBuilder BuilderForPath(string szPath)
         {
             return new UriBuilder("https://api.onedrive.com")
             {
