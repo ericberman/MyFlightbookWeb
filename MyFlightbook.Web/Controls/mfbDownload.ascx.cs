@@ -207,10 +207,11 @@ namespace MyFlightbook
 
                 // Splice in the custom property types.
                 foreach (CustomFlightProperty cfp in le.CustomProperties)
-                    e.Row.Cells[PropertyColumnMap[cfp.PropTypeID]].Text = System.Web.HttpUtility.HtmlEncode(cfp.ValueString);
+                    e.Row.Cells[PropertyColumnMap[cfp.PropTypeID]].Text = HttpUtility.HtmlEncode(cfp.ValueString);
 
                 // Add model attributes
                 MakeModel m = MakeModel.GetModel(AircraftForUser[le.AircraftID].ModelID);
+                Aircraft ac = AircraftForUser.ContainsKey(le.AircraftID) ? AircraftForUser[le.AircraftID] : null;
                 ((Label)e.Row.FindControl("lblComplex")).Text = m.IsComplex.FormatBooleanInt();
                 ((Label)e.Row.FindControl("lblCSP")).Text = m.IsConstantProp.FormatBooleanInt();
                 ((Label)e.Row.FindControl("lblFlaps")).Text = m.HasFlaps.FormatBooleanInt();
@@ -218,6 +219,8 @@ namespace MyFlightbook
                 ((Label)e.Row.FindControl("lblTailwheel")).Text = m.IsTailWheel.FormatBooleanInt();
                 ((Label)e.Row.FindControl("lblHP")).Text = m.IsHighPerf.FormatBooleanInt();
                 ((Label)e.Row.FindControl("lblTurbine")).Text = m.EngineType == MakeModel.TurbineLevel.Piston ? string.Empty : 1.FormatBooleanInt();
+                ((Label)e.Row.FindControl("lblTAA")).Text = (m.AvionicsTechnology == MakeModel.AvionicsTechnologyType.TAA ||
+                    (ac != null && (ac.AvionicsTechnologyUpgrade == MakeModel.AvionicsTechnologyType.TAA && (!ac.GlassUpgradeDate.HasValue || le.Date.CompareTo(ac.GlassUpgradeDate.Value) >= 0)))).FormatBooleanInt();
             }
         }
 

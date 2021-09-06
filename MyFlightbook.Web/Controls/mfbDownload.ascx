@@ -205,6 +205,11 @@
                 <asp:Label ID="lblTurbine" runat="server"></asp:Label>
             </ItemTemplate>
         </asp:TemplateField>
+        <asp:TemplateField HeaderText="TAA">
+            <ItemTemplate>
+                <asp:Label ID="lblTAA" runat="server"></asp:Label>
+            </ItemTemplate>
+        </asp:TemplateField>
         <asp:TemplateField HeaderText="Signature State">
             <ItemTemplate>
                 <asp:Label ID="Label17" runat="server" Text='<%# Eval("CFISignatureState").FormatSignatureState() %>'></asp:Label>
