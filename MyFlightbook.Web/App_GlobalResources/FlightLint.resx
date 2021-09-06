@@ -165,6 +165,12 @@
   <data name="LintCategoryIFRTip" xml:space="preserve">
     <value>Looks for common issues around logging instrument flight</value>
   </data>
+  <data name="LintCategoryIgnoredTip" xml:space="preserve">
+    <value>If you check the box to ignore issues for a flight, it won't show up here again.  Check this box to include such flights that you've previously said to ignore.</value>
+  </data>
+  <data name="LintCategoryIgoredFlights" xml:space="preserve">
+    <value>Include previously ignored flights</value>
+  </data>
   <data name="LintCategoryMisc" xml:space="preserve">
     <value>Additional (uncategorized) issues</value>
   </data>

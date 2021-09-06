@@ -4,12 +4,28 @@
 <%@ Register Src="~/Controls/mfbTypeInDate.ascx" TagPrefix="uc1" TagName="mfbTypeInDate" %>
 <%@ Register Src="~/Controls/mfbEditFlight.ascx" TagPrefix="uc1" TagName="mfbEditFlight" %>
 
-
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server"><asp:Localize ID="locHeader" runat="server" Text="<%$ Resources:FlightLint, TitleCheckFlights %>"></asp:Localize></asp:Content>
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
     <script>
         function onDateAutofill() {
             $find('<% =mfbDateLastCheck.WatermarkExtender.ClientID %>').set_text(document.getElementById('<% =hdnLastDateCheck.ClientID %>').value);
+        }
+
+        function toggleIgnore(sender, id) {
+            var params = new Object();
+            params.idFlight = id;
+            params.fIgnore = sender.checked;
+            var d = JSON.stringify(params);
+            $.ajax(
+                {
+                    url: '<% =ResolveUrl("~/Member/CheckFlights.aspx/ToggleIgnore") %>',
+                    type: "POST", data: d, dataType: "json", contentType: "application/json",
+                    error: function (xhr, status, error) {
+                        window.alert(xhr.responseJSON.Message);
+                    },
+                    complete: function (response) { },
+                    success: function (response) { }
+                });
         }
     </script>
     <h2><asp:Label ID="lblTitleCheckFlights" runat="server" Text="<%$ Resources:FlightLint, TitleCheckFlights %>"></asp:Label></h2>
@@ -28,6 +44,7 @@
                     <div><asp:CheckBox ID="ckTimes" runat="server" Text="<%$ Resources:FlightLint, LintCategoryTimes %>" Checked="true" /><uc1:mfbtooltip runat="server" id="mfbTooltip5" BodyContent="<%$ Resources:FlightLint, LintCategoryTimesTip %>" /></div>
                     <div><asp:CheckBox ID="ckDateTime" runat="server" Text="<%$ Resources:FlightLint, LintCategoryDateTime %>" Checked="true" /><uc1:mfbtooltip runat="server" id="mfbTooltip6" BodyContent="<%$ Resources:FlightLint, LintCategoryDateTimeTip %>" /></div>
                     <div><asp:CheckBox ID="ckMisc" runat="server" Text="<%$ Resources:FlightLint, LintCategoryMisc %>" Checked="true" /><uc1:mfbtooltip runat="server" id="mfbTooltip7" BodyContent="<%$ Resources:FlightLint, LintCategoryMiscTip %>" /></div>
+                    <div><asp:CheckBox ID="ckIgnored" runat="server" Text="<%$ Resources:FlightLint, LintCategoryIgoredFlights %>" /><uc1:mfbtooltip runat="server" id="mfbTooltip8" BodyContent="<%$ Resources:FlightLint, LintCategoryIgnoredTip %>" /></div>
                     <asp:Panel ID="pnlCheckSinceDate" runat="server">
                         <asp:Label ID="lblCheckSince" runat="server" Text="<%$ Resources:FlightLint, PromptOnlyCheckNewFlights %>"></asp:Label>
                         <uc1:mfbTypeInDate runat="server" ID="mfbDateLastCheck" />
@@ -41,7 +58,7 @@
                 <p><asp:Button ID="btnCheckAll" runat="server" Text="<%$ Resources:FlightLint, CheckFlightsBegin %>" OnClick="btnCheckAll_Click" /> <asp:Label ID="lblSummary" runat="server"></asp:Label></p>
             </asp:Panel>
             <div><asp:Label ID="lblErr" runat="server" CssClass="error" EnableViewState="false" ></asp:Label></div>
-            <asp:GridView ID="gvFlights" runat="server" ShowHeader="true" GridLines="None" AutoGenerateColumns="false" Font-Size="8pt" Width="100%" CellPadding="3">
+            <asp:GridView ID="gvFlights" runat="server" ShowHeader="true" GridLines="None" OnRowDataBound="gvFlights_RowDataBound" AutoGenerateColumns="false" Font-Size="8pt" Width="100%" CellPadding="3">
                 <Columns>
                     <asp:TemplateField>
                         <ItemTemplate>
@@ -66,7 +83,7 @@
                             <asp:Literal ID="litIgnore" runat="server" Text="<%$ Resources:FlightLint, ignoreForFlight %>" /><span style="text-align:left; font-weight:normal"><uc1:mfbTooltip runat="server" ID="mfbTooltip" BodyContent="<%$ Resources:FlightLint, ignoreForFlightTooltip %>" /></span>
                         </HeaderTemplate>
                         <ItemTemplate>
-                            <asp:CheckBox ID="ckIgnore" runat="server" AutoPostBack="true" OnCheckedChanged="ckIgnore_CheckedChanged" />
+                            <asp:CheckBox ID="ckIgnore" runat="server" />
                         </ItemTemplate>
                     </asp:TemplateField>
                 </Columns>

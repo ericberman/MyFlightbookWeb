@@ -28,7 +28,8 @@ namespace MyFlightbook.Lint
         PICSICDualMath = 0x0010,
         TimeIssues = 0x0020,
         DateTimeIssues = 0x0040,
-        MiscIssues = 0x8000
+        MiscIssues = 0x8000,
+        IncludeIgnored = 0x00010000
     }
 
     [Serializable]
@@ -108,7 +109,7 @@ namespace MyFlightbook.Lint
         {
             get
             {
-                UInt32 defOptions = 0xFFFFFFFF; // everything by default.
+                UInt32 defOptions = 0xFFFFFFFF & ~((UInt32)LintOptions.IncludeIgnored); // ALMOST everything by default.
 
                 if (CultureInfo.CurrentCulture.Name.ToUpperInvariant().Contains("-US"))
                     defOptions &= ~((UInt32)LintOptions.PICSICDualMath);
@@ -174,7 +175,7 @@ namespace MyFlightbook.Lint
                     currentIssues.Add(new FlightIssue() { IssueDescription = le.ErrorString });
 
                 // ignore deadhead flights or flights that have been explicitly ignored (indicated by IgnoreMarker at end of string)
-                if (le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropDeadhead) || le.Route.EndsWith(IgnoreMarker, StringComparison.CurrentCultureIgnoreCase))
+                if (le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropDeadhead) || ((options & (UInt32) LintOptions.IncludeIgnored) == 0 && le.Route.EndsWith(IgnoreMarker, StringComparison.CurrentCultureIgnoreCase)))
                     continue;
 
                 currentAircraft = userAircraft.GetUserAircraftByID(le.AircraftID);
