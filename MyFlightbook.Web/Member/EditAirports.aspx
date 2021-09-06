@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true"
-    Codebehind="EditAirports.aspx.cs" Inherits="Member_EditAirports" culture="auto" meta:resourcekey="PageResource2" %>
+    Codebehind="EditAirports.aspx.cs" Inherits="MyFlightbook.Mapping.EditAirports" culture="auto" meta:resourcekey="PageResource2" %>
 
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Src="../Controls/mfbGoogleMapManager.ascx" TagName="mfbGoogleMapManager"
