@@ -1437,10 +1437,9 @@ namespace MyFlightbook
         /// <summary>
         /// Determines if the named user is eligible to sign flights
         /// </summary>
-        /// <param name="szCFIUsername">The name of the potential signer</param>
         /// <param name="szError">The error that results</param>
         /// <returns>True if they can sign</returns>
-        public bool CanSignFlights(out string szError)
+        public bool CanSignFlights(out string szError, bool fIsGround)
         {
             szError = String.Empty;
             if (String.IsNullOrEmpty(Certificate))
@@ -1449,7 +1448,11 @@ namespace MyFlightbook
                 return false;
             }
 
-            if (CertificateExpiration.AddDays(1).CompareTo(DateTime.Now) < 0)
+            // Error to 
+            // (a) lack an expiration date UNLESS the flight is ground-only
+            // (b) have an expiration date in the past
+            if ((!CertificateExpiration.HasValue() && !fIsGround) || 
+                (CertificateExpiration.HasValue() && CertificateExpiration.AddDays(1).CompareTo(DateTime.Now) < 0))
             {
                 szError = Resources.SignOff.errSignExpiredCertificate;
                 return false;
