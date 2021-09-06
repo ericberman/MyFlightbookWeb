@@ -547,10 +547,10 @@ namespace MyFlightbook.CloudStorage
         public OneDriveError(OneDriveErrorCodeMFB errCode)
         {
             ErrorCode = errCode;
-            Message = MessageForCode(errCode);
+            Message = MessageForCode(errCode, string.Empty);
         }
 
-        protected static string MessageForCode(OneDriveErrorCodeMFB errCode)
+        protected static string MessageForCode(OneDriveErrorCodeMFB errCode, string szDefault)
         {
             switch (errCode)
             {
@@ -566,7 +566,7 @@ namespace MyFlightbook.CloudStorage
                 case OneDriveErrorCodeMFB.TooManyRedirects:
                     return Resources.LocalizedText.OneDriveCantReachService;
                 default:
-                    return errCode.ToString();
+                    return String.Format(CultureInfo.CurrentCulture, "{0} {1}", errCode.ToString(), String.IsNullOrEmpty(szDefault) ? string.Empty : String.Format(CultureInfo.CurrentCulture, "({0})", szDefault));
             }
         }
 
@@ -582,16 +582,15 @@ namespace MyFlightbook.CloudStorage
 
             try
             {
-                string szCode = result.error.code;
-                Message = result.error.message;
-
-                if (Enum.TryParse(szCode, true, out OneDriveErrorCodeMFB errCode))
+                if (Enum.TryParse((string) result.error.code, true, out OneDriveErrorCodeMFB errCode))
+                {
                     ErrorCode = errCode;
+                    Message = MessageForCode(ErrorCode, result.error.message);
+                }
+                else
+                    Message = String.Format(CultureInfo.CurrentCulture, "{0} (OneDrive returned: {1})", result.error.message, szJSon);
             }
             catch (Exception ex) when (ex is Microsoft.CSharp.RuntimeBinder.RuntimeBinderException) { }
-
-            Message = MessageForCode(ErrorCode);
-
         }
   
         public override string ToString()
@@ -722,7 +721,7 @@ namespace MyFlightbook.CloudStorage
         {
             return new UriBuilder("https://api.onedrive.com")
             {
-                Query = String.Format(CultureInfo.InvariantCulture, "access_token={0}", AuthState.AccessToken),
+                Query = string.Empty,
                 Path = szPath
             };
         }
@@ -743,6 +742,7 @@ namespace MyFlightbook.CloudStorage
                 using (HttpClient httpClient = new HttpClient())
                 {
                     UriBuilder builder = BuilderForPath(String.Format(CultureInfo.InvariantCulture, "v1.0/drive/root:/{0}{1}:/createUploadSession", RootPath, szFilename));
+                    httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + AuthState.AccessToken);
 
                     try
                     {
@@ -800,6 +800,8 @@ namespace MyFlightbook.CloudStorage
 
                 using (HttpClient httpClient = new HttpClient())
                 {
+                    httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + AuthState.AccessToken);
+
                     try
                     {
                         UriBuilder builder = BuilderForPath(String.Format(CultureInfo.InvariantCulture, "v1.0/drive/root:/{0}{1}:/content", RootPath, szFilename));
