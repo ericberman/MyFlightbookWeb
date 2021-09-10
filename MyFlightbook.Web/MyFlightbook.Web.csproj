@@ -1061,6 +1061,7 @@
     <Compile Include="AppCode\Flights\Currency\SFAR73Currency.cs" />
     <Compile Include="AppCode\Flights\Currency\SIC6155Currency.cs" />
     <Compile Include="AppCode\Flights\Currency\TailwheelCurrency.cs" />
+    <Compile Include="AppCode\Flights\Currency\UASCurrency.cs" />
     <Compile Include="AppCode\Flights\FlightLint.cs" />
     <Compile Include="AppCode\Flights\FlightQuery.cs" />
     <Compile Include="AppCode\Flights\FlightStats.cs" />
@@ -1102,7 +1103,6 @@
     <Compile Include="AppCode\Flights\SignOffs.cs" />
     <Compile Include="AppCode\Flights\StartingFlight.cs" />
     <Compile Include="AppCode\Flights\Totals.cs" />
-    <Compile Include="AppCode\Flights\UASCurrency.cs" />
     <Compile Include="AppCode\GlobalSuppressions.cs" />
     <Compile Include="AppCode\Images\AWSSupport.cs" />
     <Compile Include="AppCode\Images\ImageInfo\Constants.cs" />
