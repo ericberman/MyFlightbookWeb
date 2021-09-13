@@ -578,10 +578,9 @@ namespace MyFlightbook.CloudStorage
             if (String.IsNullOrEmpty(szJSon))
                 return;
 
-            dynamic result = JObject.Parse(szJSon);
-
             try
             {
+                dynamic result = JObject.Parse(szJSon);
                 if (Enum.TryParse((string) result.error.code, true, out OneDriveErrorCodeMFB errCode))
                 {
                     ErrorCode = errCode;
@@ -590,9 +589,16 @@ namespace MyFlightbook.CloudStorage
                 else
                     Message = String.Format(CultureInfo.CurrentCulture, "{0} (OneDrive returned: {1})", result.error.message, szJSon);
             }
-            catch (Exception ex) when (ex is Microsoft.CSharp.RuntimeBinder.RuntimeBinderException) { }
+            catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
+            {
+                Message = String.Format(CultureInfo.InvariantCulture, "Error in OneDrive response: {0}", szJSon);
+            }
+            catch (JsonReaderException)
+            {
+                Message = String.Format(CultureInfo.InvariantCulture, "Invalid response from OneDrive: {0}", szJSon);
+            }
         }
-  
+
         public override string ToString()
         {
             return String.Format(CultureInfo.CurrentCulture, "{0}: {1}", ErrorCode, Message);
