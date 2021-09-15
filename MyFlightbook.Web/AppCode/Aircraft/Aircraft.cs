@@ -2184,7 +2184,7 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
         /// </summary>
         /// <param name="szTail"></param>
         /// <returns></returns>
-        private static AircraftInstanceTypes PseudoSimTypeFromTail(string szTail)
+        public static AircraftInstanceTypes PseudoSimTypeFromTail(string szTail)
         {
             if (szTail == null)
                 throw new ArgumentNullException(nameof(szTail));

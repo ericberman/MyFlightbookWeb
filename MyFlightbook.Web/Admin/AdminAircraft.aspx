@@ -1,6 +1,7 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master" Title="Admin - Aircraft" CodeBehind="AdminAircraft.aspx.cs" Inherits="MyFlightbook.Web.Admin.AdminAircraft" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc1" TagName="mfbTooltip" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <asp:Content ID="Content2" ContentPlaceHolderID="cpPageTitle" runat="Server">
     Admin Tools - Aircraft
 </asp:Content>
@@ -51,6 +52,21 @@
                     success: function (response) { document.getElementById(sender).parentElement.parentElement.className = 'handled'; }
                 });
         }
+        function migrateSim(sender, idAircraft) {
+            var params = new Object();
+            params.idAircraft = idAircraft;
+            var d = JSON.stringify(params);
+            $.ajax(
+                {
+                    url: '<% =ResolveUrl("~/Admin/AdminAircraft.aspx/MigrateSim") %>',
+                    type: "POST", data: d, dataType: "json", contentType: "application/json",
+                    error: function (xhr, status, error) {
+                        window.alert(xhr.responseJSON.Message);
+                    },
+                    complete: function (response) { },
+                    success: function (response) { document.getElementById(sender).parentElement.parentElement.className = 'handled'; }
+                });
+        }
         function trimN0(sender, idAircraft) {
             var params = new Object();
             params.idAircraft = idAircraft;
@@ -64,6 +80,25 @@
                     },
                     complete: function (response) { },
                     success: function (response) { document.getElementById(sender).parentElement.parentElement.className = 'handled'; }
+                });
+        }
+        function viewFlights(idAircraft, tail) {
+            document.getElementById('<% =lblTail.ClientID %>').innerText = tail;
+            var params = new Object();
+            params.idAircraft = idAircraft;
+            var d = JSON.stringify(params);
+            $.ajax(
+                {
+                    url: '<% =ResolveUrl("~/Admin/AdminAircraft.aspx/ViewFlights") %>',
+                    type: "POST", data: d, dataType: "json", contentType: "application/json",
+                    error: function (xhr, status, error) {
+                        window.alert(xhr.responseJSON.Message);
+                    },
+                    complete: function (response) { },
+                    success: function (response) {
+                        document.getElementById('<% =pnlFlightContent.ClientID %>').innerHTML = response.d;
+                        $find("mpeSF").show();
+                    }
                 });
         }
     </script>
@@ -421,6 +456,11 @@ ORDER BY NormalTail ASC, numUsers DESC, idaircraft ASC"></asp:SqlDataSource>
                                     <asp:Label ID="lblModel" runat="server" Text='<%# Eval("model") %>'></asp:Label>
                                 </ItemTemplate>
                             </asp:TemplateField>
+                            <asp:TemplateField HeaderText="# Flights">
+                                <ItemTemplate>
+                                    <asp:HyperLink ID="lnkFlights" runat="server" Text='<%# Eval("numFlights") %>' />
+                                </ItemTemplate>
+                            </asp:TemplateField>
                             <asp:BoundField DataField="numFlights" HeaderText="numFlights" />
                             <asp:TemplateField>
                                 <ItemTemplate>
@@ -430,11 +470,19 @@ ORDER BY NormalTail ASC, numUsers DESC, idaircraft ASC"></asp:SqlDataSource>
                                         <asp:HyperLink ID="lnkConvertOandI" Visible="false" runat="server" Text="Convert O/I to 0/1" CssClass="admItem" />
                                         <asp:HyperLink ID="lnkN0ToN" Visible="false" runat="server" Text="N0 → N" CssClass="admItem" />
                                         <asp:HyperLink ID="lnkMigrateGeneric" runat="server" Text="Migrate Generic" CssClass="admItem" />
+                                        <asp:HyperLink ID="lnkMigrateSim" runat="server" Text="Migrate SIM" CssClass="admItem" />
                                     </div>
                                 </ItemTemplate>
                             </asp:TemplateField>
                         </Columns>
                     </asp:GridView>
+                    <asp:ModalPopupExtender ID="mpe1" BehaviorID="mpeSF" BackgroundCssClass="modalBackground" runat="server" PopupControlID="pnlFlights" TargetControlID="btnDummy" CancelControlID="btnDismiss" />
+                    <span style="display:none"><asp:Button ID="btnDummy" runat="server" /></span>
+                    <asp:Panel ID="pnlFlights" runat="server" style="display:none; max-width:300px; width: 80%;" CssClass="modalpopup" ScrollBars="Vertical" Height="200px">
+                        <h2><asp:Label ID="lblTail" runat="server" /></h2>
+                        <asp:Panel ID="pnlFlightContent" runat="server"></asp:Panel>
+                        <asp:Button ID="btnDismiss" runat="server" Text="Close" />
+                    </asp:Panel>
                     <asp:SqlDataSource ID="sqlPseudoGeneric" runat="server"
                         ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>"
                         ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>"
@@ -513,6 +561,11 @@ ORDER BY tailnumber ASC"></asp:SqlDataSource>
                     <Columns>
                         <asp:BoundField DataField="ID" HeaderText="ID" SortExpression="ID" ReadOnly="true" />
                         <asp:BoundField DataField="Prefix" HeaderText="Prefix" SortExpression="Prefix" />
+                        <asp:TemplateField HeaderText="Prefix" SortExpression="Prefix">
+                            <ItemTemplate>
+                                <asp:Label ID="lblPrefix" runat="server" Text='<%# Eval("Prefix") %>' />
+                            </ItemTemplate>
+                        </asp:TemplateField>
                         <asp:BoundField DataField="CountryName" HeaderText="Country Name" SortExpression="CountryName" />
                         <asp:BoundField DataField="Locale" HeaderText="Locale" SortExpression="Locale" ConvertEmptyStringToNull="false" />
                         <asp:BoundField DataField="RegistrationURLTemplate" />
@@ -521,8 +574,9 @@ ORDER BY tailnumber ASC"></asp:SqlDataSource>
                                 <%# ((CountryCodePrefix.RegistrationTemplateMode) Convert.ToUInt32(Eval("TemplateType"), System.Globalization.CultureInfo.InvariantCulture)).ToString() %>
                             </ItemTemplate>
                             <EditItemTemplate>
+                                <asp:HiddenField ID="hdnTempType" runat="server" Value='<%# Eval("TemplateType") %>' />
                                 <asp:RadioButtonList ID="rblTemplateType" runat="server">
-                                    <asp:ListItem Text="None" Value="0"></asp:ListItem>
+                                    <asp:ListItem Text="None" Value="0" Selected="<% Eval( %>"></asp:ListItem>
                                     <asp:ListItem Text="Whole Tailnumber" Value="1"></asp:ListItem>
                                     <asp:ListItem Text="Suffix Only (only what follows dash)" Value="2"></asp:ListItem>
                                     <asp:ListItem Text="Whole - with dash" Value="3"></asp:ListItem>
@@ -534,6 +588,7 @@ ORDER BY tailnumber ASC"></asp:SqlDataSource>
                                 <%# ((CountryCodePrefix.HyphenPreference) Convert.ToUInt32(Eval("HyphenPref"), System.Globalization.CultureInfo.InvariantCulture)).ToString() %>
                             </ItemTemplate>
                             <EditItemTemplate>
+                                <asp:HiddenField ID="hdnHyphPref" runat="server" Value='<%# Eval("hyphenpref") %>' />
                                 <asp:RadioButtonList ID="rblHyphenPref" runat="server">
                                     <asp:ListItem Text="None" Value="0"></asp:ListItem>
                                     <asp:ListItem Text="Hyphenate" Value="1"></asp:ListItem>

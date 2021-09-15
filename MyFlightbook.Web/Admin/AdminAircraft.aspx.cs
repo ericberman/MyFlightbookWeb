@@ -1,7 +1,6 @@
 ﻿using MyFlightbook.Image;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -12,7 +11,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2020 MyFlightbook LLC
+ * Copyright (c) 2009-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -98,6 +97,77 @@ namespace MyFlightbook.Web.Admin
 
             AircraftUtility.AdminMergeDupeAircraft(acGeneric, acOriginal);
         }
+
+        [WebMethod(EnableSession = true)]
+        public static void MigrateSim(int idAircraft)
+        {
+            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+                throw new MyFlightbookException("Unauthenticated call to MigrateSim");
+
+            Aircraft ac = new Aircraft(idAircraft);
+
+            if (String.IsNullOrWhiteSpace(ac.TailNumber) || ac.AircraftID <= 0)
+                throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "No aircraft with ID {0}", idAircraft));
+
+            if (AircraftUtility.MapToSim(ac) < 0)
+                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Unable to map aircraft {0}", ac.TailNumber));
+        }
+
+        [WebMethod(EnableSession = true)]
+        public static string ViewFlights(int idAircraft)
+        {
+            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+                throw new MyFlightbookException("Unauthenticated call to ViewFlights");
+
+            Aircraft ac = new Aircraft(idAircraft);
+
+            if (String.IsNullOrWhiteSpace(ac.TailNumber) || ac.AircraftID <= 0)
+                throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "No aircraft with ID {0}", idAircraft));
+
+            Table t = null;
+
+            return FormlessPage.RenderControlsToHTML(
+                (p) =>
+                    {
+                        t = new Table();
+                        p.Form.Controls.Add(t);
+
+                        DBHelper dbh = new DBHelper("SELECT *, IF(SignatureState = 0, '', 'Yes') AS sigState FROM flights f WHERE idAircraft=?id");
+                        TableRow tr = new TableRow() { VerticalAlign = VerticalAlign.Top };
+                        t.Rows.Add(tr);
+                        tr.Cells.Add(new TableCell() { Text = "Date" });
+                        tr.Cells.Add(new TableCell() { Text = "User" });
+                        tr.Cells.Add(new TableCell() { Text = "Grnd" });
+                        tr.Cells.Add(new TableCell() { Text = "Total" });
+                        tr.Cells.Add(new TableCell() { Text = "Signed?" });
+                        tr.Style["font-weight"] = "bold";
+
+                        dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("id", idAircraft); },
+                            (dr) =>
+                            {
+                                tr = new TableRow() { VerticalAlign = VerticalAlign.Top };
+                                t.Rows.Add(tr);
+                                TableCell tc = new TableCell();
+                                tr.Cells.Add(tc);
+                                tc.Controls.Add(new HyperLink()
+                                {
+                                    NavigateUrl = VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx/{0}?a=1", dr["idFlight"])),
+                                    Text = Convert.ToDateTime(dr["date"], CultureInfo.InvariantCulture).ToShortDateString(),
+                                    Target = "_blank"
+                                });
+
+                                tr.Cells.Add(new TableCell() { Text = (string)dr["username"] });
+                                tr.Cells.Add(new TableCell() { Text = String.Format(CultureInfo.CurrentCulture, "{0:F2}", dr["groundSim"]) });
+                                tr.Cells.Add(new TableCell() { Text = String.Format(CultureInfo.CurrentCulture, "{0:F2}", dr["totalFlightTime"]) });
+                                tr.Cells.Add(new TableCell() { Text = (string)dr["sigState"] });
+                            });
+                    },
+                (tw) =>
+                    {
+                        t.RenderControl(tw);
+                    });
+
+        }
         #endregion
 
         protected void Page_Load(object sender, EventArgs e)
@@ -135,17 +205,17 @@ namespace MyFlightbook.Web.Admin
         protected void btnRefreshAllSims_Click(object sender, EventArgs e)
         {
             mvAircraftIssues.SetActiveView(vwAllSims);
-            Aircraft[] rgac = (new UserAircraft(Page.User.Identity.Name)).GetAircraftForUser(UserAircraft.AircraftRestriction.AllSims, -1);
-            Array.Sort(rgac, (ac1, ac2) =>
+            List<Aircraft> lst = new List<Aircraft>((new UserAircraft(Page.User.Identity.Name)).GetAircraftForUser(UserAircraft.AircraftRestriction.AllSims, -1));
+            lst.Sort((ac1, ac2) =>
             {
                 if (ac1.ModelID == ac2.ModelID)
                     return ((int)ac1.InstanceType - (int)ac2.InstanceType);
                 else
                     return String.Compare(ac1.ModelDescription, ac2.ModelDescription, StringComparison.CurrentCultureIgnoreCase);
             });
-            gvSims.DataSource = rgac;
+            gvSims.DataSource = lst;
             gvSims.DataBind();
-            lblSimsFound.Text = String.Format(CultureInfo.CurrentCulture, Resources.Admin.SimsFoundTemplate, rgac.Length);
+            lblSimsFound.Text = String.Format(CultureInfo.CurrentCulture, Resources.Admin.SimsFoundTemplate, lst.Count);
         }
 
         protected void btnPseudoGeneric_Click(object sender, EventArgs e)
@@ -194,6 +264,13 @@ namespace MyFlightbook.Web.Admin
                 HyperLink hN0ToN = (HyperLink)e.Row.FindControl("lnkN0ToN");
                 hN0ToN.Visible = l.Text.StartsWith("N0", StringComparison.CurrentCultureIgnoreCase);
                 hN0ToN.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:trimN0('{0}', {1});", hN0ToN.ClientID, idAircraft);
+
+                HyperLink hMigSim = (HyperLink)e.Row.FindControl("lnkMigrateSim");
+                hMigSim.Visible = AircraftUtility.PseudoSimTypeFromTail(l.Text) != AircraftInstanceTypes.RealAircraft;
+                hMigSim.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:migrateSim('{0}', {1});", hMigSim.ClientID, idAircraft);
+
+                HyperLink hViewFlights = (HyperLink)e.Row.FindControl("lnkFlights");
+                hViewFlights.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:viewFlights({0}, '{1}');", idAircraft, l.Text);
             }
         }
 
@@ -461,15 +538,13 @@ GROUP BY ac.idaircraft";
             if ((e.Row.RowState & DataControlRowState.Edit) == DataControlRowState.Edit)
             {
                 RadioButtonList rbl = (RadioButtonList)e.Row.FindControl("rblTemplateType");
-                DataRowView drv = (DataRowView)e.Row.DataItem;
-                rbl.SelectedValue = drv["TemplateType"].ToString();
+                rbl.SelectedValue = ((HiddenField)e.Row.FindControl("hdnTempType")).Value;
                 rbl = (RadioButtonList)e.Row.FindControl("rblHyphenPref");
-                rbl.SelectedValue = drv["hyphenpref"].ToString();
+                rbl.SelectedValue = ((HiddenField)e.Row.FindControl("hdnHyphPref")).Value; ;
             }
             else if (e.Row.RowType == DataControlRowType.DataRow && (e.Row.RowState & DataControlRowState.Normal) == DataControlRowState.Normal)
             {
-                DataRowView drv = (DataRowView)e.Row.DataItem;
-                string szPrefix = drv["Prefix"].ToString();
+                string szPrefix = ((Label) e.Row.FindControl("lblPrefix")).Text;
                 if (szPrefix.CompareCurrentCultureIgnoreCase(hdnLastCountryEdited.Value) == 0)
                 {
                     Label l = (Label)e.Row.FindControl("lblHyphenResult");

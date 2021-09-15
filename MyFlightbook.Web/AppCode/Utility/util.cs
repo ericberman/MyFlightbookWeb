@@ -595,6 +595,51 @@ namespace MyFlightbook
         public override void VerifyRenderingInServerForm(Control control)
         {
         }
+
+        public static string RenderControlsToHTML(Action<FormlessPage> addControlsToPage, Action<HtmlTextWriter> renderToStream)
+        {
+            if (addControlsToPage == null)
+                throw new ArgumentNullException(nameof(addControlsToPage));
+            if (renderToStream == null)
+                throw new ArgumentNullException(nameof(renderToStream));
+
+            // We have no Page, so things like Page_Load don't get called.
+            // We fix this by faking a page and calling Server.Execute on it.  This sets up the form and - more importantly - causes Page_load to be called on loaded controls.
+            using (FormlessPage p = new FormlessPage())
+            {
+                p.Controls.Add(new System.Web.UI.HtmlControls.HtmlForm());
+                using (System.IO.StringWriter sw1 = new System.IO.StringWriter(CultureInfo.CurrentCulture))
+                    HttpContext.Current.Server.Execute(p, sw1, false);
+
+                // Add the controls to the page
+                addControlsToPage(p);
+
+                // Now, write it out.
+                StringBuilder sb = new StringBuilder();
+                System.IO.StringWriter sw = null;
+                try
+                {
+                    sw = new System.IO.StringWriter(sb, CultureInfo.CurrentCulture);
+                    using (HtmlTextWriter htmlTW = new HtmlTextWriter(sw))
+                    {
+                        sw = null;
+                        try
+                        {
+                            renderToStream(htmlTW);
+                            return sb.ToString();
+                        }
+                        catch (ArgumentException ex) when (ex is ArgumentOutOfRangeException) { } // don't write bogus or incomplete HTML
+                    }
+                }
+                finally
+                {
+                    if (sw != null)
+                        sw.Dispose();
+                }
+            }
+
+            return string.Empty;
+        }
     }
 
     /// <summary>
