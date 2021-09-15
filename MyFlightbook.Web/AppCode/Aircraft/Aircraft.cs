@@ -2178,6 +2178,94 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
             dbh.CommandText = "DELETE FROM aircraft WHERE idAircraft=?idAircraftOld";
             dbh.DoNonQuery();
         }
+
+        /// <summary>
+        /// Determines the likely tim type based on the name, in case it contains something that looks like a psuedo-sim.
+        /// </summary>
+        /// <param name="szTail"></param>
+        /// <returns></returns>
+        private static AircraftInstanceTypes PseudoSimTypeFromTail(string szTail)
+        {
+            if (szTail == null)
+                throw new ArgumentNullException(nameof(szTail));
+            szTail = szTail.ToUpper(CultureInfo.CurrentCulture).Replace("-", string.Empty);
+            if (szTail.Contains("ATD"))
+                return AircraftInstanceTypes.CertifiedATD;
+            else if (Regex.IsMatch(szTail, "(D-?SIM)|FFS"))
+                return AircraftInstanceTypes.CertifiedIFRAndLandingsSimulator;
+            else if (Regex.IsMatch(szTail, "FS|SIM|FTD|REDB|FRAS|ELIT|CAE|ALSIM|FLIG|SAFE|PREC|TRUF|FMX|MENT|FAA"))
+                return AircraftInstanceTypes.CertifiedIFRSimulator;
+            else
+                return AircraftInstanceTypes.RealAircraft;
+        }
+
+        /// <summary>
+        /// Determines if the specified aircraft could be a sim based on its name
+        /// </summary>
+        /// <param name="ac"></param>
+        /// <returns></returns>
+        public static bool CouldBeSim(Aircraft ac)
+        {
+            if (ac == null)
+                throw new ArgumentNullException(nameof(ac));
+            return ac.InstanceType == AircraftInstanceTypes.RealAircraft && PseudoSimTypeFromTail(ac.TailNumber) != AircraftInstanceTypes.RealAircraft;
+        }
+
+        /// <summary>
+        /// Maps the specified aircraft to an appropriate sim based on its name.
+        /// </summary>
+        /// <param name="acOriginal"></param>
+        /// <returns>The ID of the new (mapped) aircraft; this is idAircraftUnknown if no mapping occurs.</returns>
+        public static int MapToSim(Aircraft acOriginal)
+        {
+            if (acOriginal == null)
+                throw new ArgumentNullException(nameof(acOriginal));
+
+            if (!AircraftUtility.CouldBeSim(acOriginal))
+                return Aircraft.idAircraftUnknown;
+
+            // detect likely sim type
+            AircraftInstanceTypes ait = AircraftUtility.PseudoSimTypeFromTail(acOriginal.TailNumber);
+
+            // see if the specified sim exists
+            string szSimTail = Aircraft.SuggestSims(acOriginal.ModelID, ait)[0].TailNumber;
+            Aircraft acNew = new Aircraft(szSimTail);
+
+            if (acNew.IsNew)
+            {
+                acNew.TailNumber = szSimTail;
+                acNew.ModelID = acOriginal.ModelID;
+                acNew.InstanceType = ait;
+                acNew.Commit();
+            }
+
+            // Issue #830 - if this looks like FAA####, then we want to preserve that in the Simulator/device identifier field.
+            if (acOriginal.TailNumber.Replace("-", string.Empty).ToUpper(CultureInfo.CurrentCulture).Contains("FAA"))
+            {
+                // Get a list of the flights in this aircraft and add the sim
+                // don't modify signed flights or flights that already have a simulator/device identifier
+                List<int> lst = new List<int>();
+                DBHelper dbh = new DBHelper("SELECT DISTINCT(f.idFlight) FROM flights f LEFT JOIN flightproperties fp ON fp.idPropType=354 AND fp.idflight=f.idflight WHERE f.idAircraft=?id AND f.signatureState=0 AND fp.idprop IS NULL");  
+                dbh.ReadRows(
+                    (comm) => { comm.Parameters.AddWithValue("id", acOriginal.AircraftID); },
+                    (dr) => { lst.Add(Convert.ToInt32(dr["idFlight"], CultureInfo.InvariantCulture)); });
+
+                CustomFlightProperty cfp = new CustomFlightProperty(CustomPropertyType.GetCustomPropertyType((int)CustomPropertyType.KnownProperties.IDPropSimRegistration)) { TextValue = acOriginal.TailNumber };
+
+                foreach (int idFlight in lst)
+                {
+                    cfp.PropID = CustomFlightProperty.idCustomFlightPropertyNew;
+                    cfp.FlightID = idFlight;
+                    cfp.FCommit();
+                }
+            }
+
+            // set the original's instance type so that merge works.
+            acOriginal.InstanceType = ait;
+            AircraftUtility.AdminMergeDupeAircraft(acNew, acOriginal);
+
+            return acNew.AircraftID;
+        }
     }
 
     /// <summary>
