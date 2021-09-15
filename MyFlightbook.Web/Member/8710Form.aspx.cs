@@ -79,13 +79,13 @@ public partial class Member_8710Form : System.Web.UI.Page
         string szRestrict = fq.RestrictClause;
         string szQueryTemplate = ConfigurationManager.AppSettings["8710ForUserQuery"];
         string szHaving = String.IsNullOrEmpty(fq.HavingClause) ? string.Empty : "HAVING " + fq.HavingClause;
-        string szQueryClassTotals = String.Format(CultureInfo.InvariantCulture, szQueryTemplate, szRestrict, szHaving, "f.InstanceTypeID, f.CatClassID"); 
+        string szQueryClassTotals = String.Format(CultureInfo.InvariantCulture, szQueryTemplate, szRestrict, szHaving, "f.InstanceTypeID, f.CatClassID");
         string szQueryMain = String.Format(CultureInfo.InvariantCulture, szQueryTemplate, szRestrict, szHaving, "f.category");
 
         string szQueryRollup = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["RollupGridQuery"], szRestrict, szHaving);
 
 
-        DBHelperCommandArgs args = new DBHelperCommandArgs(szQueryClassTotals);
+        DBHelperCommandArgs args = new DBHelperCommandArgs(szQueryClassTotals) { Timeout = 120 };
 
         if (fq != null)
         {
