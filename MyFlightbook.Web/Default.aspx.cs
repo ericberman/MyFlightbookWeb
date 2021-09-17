@@ -94,7 +94,16 @@ public partial class Public_Home : System.Web.UI.Page
             if (le.FlightImages == null || le.FlightImages.Count == 0)
                 le.PopulateImages();
             if (le.FlightImages.Count > 0)
-                lstRecentImages.Add(le.FlightImages[0]);
+            {
+                foreach (MFBImageInfo mfbii in le.FlightImages)
+                {
+                    if (mfbii.ImageType == MFBImageInfoBase.ImageFileType.JPEG || mfbii.ImageType == MFBImageInfoBase.ImageFileType.S3VideoMP4)
+                    {
+                        lstRecentImages.Add(mfbii);
+                        break;
+                    }
+                }
+            }
             else
                 recentAircraft.Add(le.AircraftID);
 
