@@ -949,17 +949,6 @@
     <Content Include="Public\ViewSharedLogbook.aspx" />
     <Content Include="Public\ViewSig.aspx" />
     <Content Include="Public\WebService.asmx" />
-    <Content Include="Public\WP7Images\154x40_WPS_Download_cyan.png" />
-    <Content Include="Public\WP7Images\258x67_WPS_Download_cyan.png" />
-    <Content Include="Public\WP7Images\WindowsPhone_icon_badge_cyan120x120.png" />
-    <Content Include="Public\WP7Images\WindowsPhone_icon_badge_cyan40x40.png" />
-    <Content Include="Public\WP7Images\WP71.png" />
-    <Content Include="Public\WP7Images\WP72.png" />
-    <Content Include="Public\WP7Images\WP73.png" />
-    <Content Include="Public\WP7Images\WP74.png" />
-    <Content Include="Public\WP7Images\WP75.png" />
-    <Content Include="Public\WP7Images\WP76.png" />
-    <Content Include="Public\WP7Images\WP77.png" />
     <Content Include="Secure\login.aspx" />
     <Content Include="SecurityError.aspx" />
     <Content Include="Shunt.aspx" />
