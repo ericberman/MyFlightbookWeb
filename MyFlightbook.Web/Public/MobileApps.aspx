@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="MobileApps.aspx.cs" Inherits="Public_MobileApps" Culture="auto" meta:resourcekey="PageResource1" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="MobileApps.aspx.cs" Inherits="MyFlightbook.PublicPages.MobileApps" Culture="auto" meta:resourcekey="PageResource1" %>
 
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <asp:Content ID="Content2" ContentPlaceHolderID="cpPageTitle" runat="Server">
@@ -24,8 +24,6 @@
                         meta:resourcekey="ListItemResource2"></asp:ListItem>
                     <asp:ListItem Enabled="true" Text="Android" Value="2"
                         meta:resourcekey="ListItemResource3"></asp:ListItem>
-                    <asp:ListItem Enabled="true" Text="Windows Phone 7" Value="3"
-                        meta:resourcekey="ListItemResource4"></asp:ListItem>
                 </asp:DropDownList>
             </h2>
         </div>
@@ -127,45 +125,6 @@
                         Width="400px" />
                         <asp:Image ID="imgAndroid7" runat="server" 
                             ImageUrl="~/Public/AndroidImages/Android7.png" 
-                            AlternateText="<%$ Resources:LocalizedText, MobileAppSampleImageAltText %>" 
-                            ToolTip="<%$ Resources:LocalizedText, MobileAppSampleImageAltText %>" 
-                        Width="400px" />
-                </div>
-            </asp:View>
-            <asp:View ID="vwWinPhone" runat="server">
-                <p class="EntryBlock" style="text-align: center">
-                    <a target="_blank" href="http://windowsphone.com/s?appid=606179af-90e7-41b9-be1b-71607cdec86c" style="font-weight: bold">
-                        <asp:Localize ID="locGetWin7" Text="Download Windows Phone App from Windows Marketplace" runat="server" meta:resourcekey="locGetWin7Resource1"></asp:Localize>
-                        <br />
-                        <asp:Image runat="server" ID="imgWPhoneStore" ImageUrl="~/Public/WP7Images/154x40_WPS_Download_cyan.png" meta:resourcekey="imgWPhoneStoreResource1" />
-                    </a>
-                </p>
-                <div>
-                        <asp:Image ID="imgWP717" runat="server" ImageUrl="~/Public/WP7Images/WP71.png" 
-                            AlternateText="<%$ Resources:LocalizedText, MobileAppSampleImageAltText %>" 
-                            ToolTip="<%$ Resources:LocalizedText, MobileAppSampleImageAltText %>" 
-                        Width="400px" />
-                        <asp:Image ID="imgWP718" runat="server" ImageUrl="~/Public/WP7Images/WP72.png" 
-                            AlternateText="<%$ Resources:LocalizedText, MobileAppSampleImageAltText %>" 
-                            ToolTip="<%$ Resources:LocalizedText, MobileAppSampleImageAltText %>" 
-                        Width="400px" />
-                        <asp:Image ID="imgWP719" runat="server" ImageUrl="~/Public/WP7Images/WP73.png" 
-                            AlternateText="<%$ Resources:LocalizedText, MobileAppSampleImageAltText %>" 
-                            ToolTip="<%$ Resources:LocalizedText, MobileAppSampleImageAltText %>" 
-                        Width="400px" />
-                    <asp:Image ID="imgWP720" runat="server" ImageUrl="~/Public/WP7Images/WP74.png"
-                            AlternateText="<%$ Resources:LocalizedText, MobileAppSampleImageAltText %>" 
-                        ToolTip="<%$ Resources:LocalizedText, MobileAppSampleImageAltText %>"
-                        Width="400px" />
-                        <asp:Image ID="imgWP721" runat="server" ImageUrl="~/Public/WP7Images/WP75.png" 
-                            AlternateText="<%$ Resources:LocalizedText, MobileAppSampleImageAltText %>" 
-                            ToolTip="<%$ Resources:LocalizedText, MobileAppSampleImageAltText %>" 
-                        Width="400px" />
-                        <asp:Image ID="imgWP722" runat="server" ImageUrl="~/Public/WP7Images/WP76.png" 
-                            AlternateText="<%$ Resources:LocalizedText, MobileAppSampleImageAltText %>" 
-                            ToolTip="<%$ Resources:LocalizedText, MobileAppSampleImageAltText %>" 
-                        Width="400px" />
-                        <asp:Image ID="imgWP723" runat="server" ImageUrl="~/Public/WP7Images/WP77.png" 
                             AlternateText="<%$ Resources:LocalizedText, MobileAppSampleImageAltText %>" 
                             ToolTip="<%$ Resources:LocalizedText, MobileAppSampleImageAltText %>" 
                         Width="400px" />
