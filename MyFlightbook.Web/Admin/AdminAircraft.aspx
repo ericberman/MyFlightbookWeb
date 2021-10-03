@@ -101,6 +101,21 @@
                     }
                 });
         }
+        function addMissing(sender, username, idaircraft) {
+            var params = new Object();
+            params.username = username;
+            params.idAircraft = idaircraft;
+            var d = JSON.stringify(params);
+            $.ajax({
+                url: '<% =ResolveUrl("~/Admin/AdminAircraft.aspx/addMissing") %>',
+                    type: "POST", data: d, dataType: "json", contentType: "application/json",
+                    error: function (xhr, status, error) {
+                        window.alert(xhr.responseJSON.Message);
+                    },
+                complete: function (response) { },
+                success: function (response) { document.getElementById(sender).style.display = "none"; }
+            });
+        }
     </script>
     <style type="text/css">
         .adm .admItem {
@@ -164,6 +179,12 @@
                     <td>
                         <asp:Button ID="btnCleanUpMaintenance" runat="server" Width="100%" OnClick="btnCleanUpMaintenance_Click" Text="Clean up Maint." /></td>
                     <td>Remove maintainence for virtual aircraft (sims and generic).
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <asp:Button ID="btnAircraftMissingFromProfile" runat="server" Width="100%" OnClick="btnAircraftMissingFromProfile_Click" Text="Missing User Aircraft" /></td>
+                    <td>Finds any aircraft that are used in flights but aren't in that user's aircraft list.
                     </td>
                 </tr>
                 <tr style="vertical-align: top">
@@ -544,6 +565,37 @@ ORDER BY tailnumber ASC"></asp:SqlDataSource>
                             <asp:ButtonField CommandName="_MapModel" ButtonType="Link" Text="Map it" />
                         </Columns>
                     </asp:GridView>
+                </asp:View>
+                <asp:View ID="vwMissingAircraft" runat="server">
+                    <asp:GridView ID="gvMissingAircraft" runat="server" AutoGenerateColumns="false" OnRowDataBound="gvMissingAircraft_RowDataBound">
+                        <EmptyDataTemplate>
+                            <p>No missing aircraft!</p>
+                        </EmptyDataTemplate>
+                        <Columns>
+                            <asp:BoundField DataField="Username" HeaderText="User" />
+                            <asp:HyperLinkField DataTextField="idaircraft" HeaderText="AircraftID" Target="_blank" DataNavigateUrlFields="idaircraft" DataNavigateUrlFormatString="~/Member/EditAircraft.aspx?id={0}&a=1" />
+                            <asp:BoundField DataField="numFlights" HeaderText="# of flights" />
+                            <asp:TemplateField>
+                                <ItemTemplate>
+                                    <asp:HyperLink ID="lnkAddMissingAircraft" runat="server" Text="Fix it" />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                        </Columns>
+                    </asp:GridView>
+                    <asp:SqlDataSource ID="sqlDSMissingAicraft" runat="server" 
+                        ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>"
+                        ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>"
+                        SelectCommand="SELECT 
+    f.username, f.idaircraft, COUNT(f.idflight) AS numFlights
+FROM
+    flights f
+        LEFT JOIN
+    useraircraft ua ON f.idaircraft = ua.idaircraft
+        AND f.username = ua.username
+WHERE
+    ua.idaircraft IS NULL
+GROUP BY f.username , f.idaircraft" OnSelecting="sqlDSMissingAicraft_Selecting">
+                    </asp:SqlDataSource>
                 </asp:View>
             </asp:MultiView>
         </ContentTemplate>

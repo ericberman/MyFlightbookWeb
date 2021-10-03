@@ -1,8 +1,6 @@
-﻿using MyFlightbook.Image;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Services;
@@ -168,6 +166,24 @@ namespace MyFlightbook.Web.Admin
                     });
 
         }
+
+        [WebMethod(EnableSession = true)]
+        public static void addMissing(string username, int idAircraft)
+        {
+            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+                throw new MyFlightbookException("Unauthenticated call to addMissing");
+
+            if (String.IsNullOrEmpty(username))
+                throw new ArgumentNullException(nameof(username));
+
+            Aircraft ac = new Aircraft(idAircraft);
+
+            if (String.IsNullOrWhiteSpace(ac.TailNumber) || ac.AircraftID <= 0)
+                throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "No aircraft with ID {0}", idAircraft));
+
+            UserAircraft ua = new UserAircraft(username);
+            ua.FAddAircraftForUser(ac);
+        }
         #endregion
 
         protected void Page_Load(object sender, EventArgs e)
@@ -281,43 +297,17 @@ namespace MyFlightbook.Web.Admin
             gvOrphanedAircraft.DataBind();
         }
 
-        protected static void DeleteOrphanAircraft(int idAircraft)
-        {
-            Aircraft ac = new Aircraft(idAircraft);
-            ac.PopulateImages();
-            foreach (MFBImageInfo mfbii in ac.AircraftImages)
-                mfbii.DeleteImage();
-
-            ImageList il = new ImageList(MFBImageInfo.ImageClass.Aircraft, ac.AircraftID.ToString(CultureInfo.InvariantCulture));
-            DirectoryInfo di = new DirectoryInfo(System.Web.Hosting.HostingEnvironment.MapPath(il.VirtPath));
-            if (di.Exists)
-                di.Delete(true);
-
-            // Delete any tombstone that might point to *this*
-            DBHelper dbh = new DBHelper("DELETE FROM aircraftTombstones WHERE idMappedAircraft=?idAc");
-            dbh.DoNonQuery((comm) => { comm.Parameters.AddWithValue("idAc", ac.AircraftID); });
-        }
-
         protected void gvOrphanedAircraft_RowCommand(object sender, CommandEventArgs e)
         {
             if (e != null && e.CommandName.CompareCurrentCultureIgnoreCase("_Delete") == 0)
-            {
-                int idAircraft = Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture);
-                DeleteOrphanAircraft(idAircraft);
-                DBHelper dbh = new DBHelper("DELETE FROM Aircraft WHERE idAircraft=?idaircraft");
-                dbh.DoNonQuery((comm) => { comm.Parameters.AddWithValue("idaircraft", idAircraft); });
-            }
+                AircraftUtility.DeleteOrphanAircraft(Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture));
             btnOrphans_Click(sender, e);
         }
 
         protected void btnDeleteAllOrphans_Click(object sender, EventArgs e)
         {
             foreach (DataKey dk in gvOrphanedAircraft.DataKeys)
-            {
-                int idAircraft = Convert.ToInt32(dk.Value, CultureInfo.InvariantCulture);
-                DeleteOrphanAircraft(Convert.ToInt32(idAircraft, CultureInfo.InvariantCulture));
-                new DBHelper("DELETE FROM Aircraft WHERE idAircraft=?idaircraft").DoNonQuery((comm) => { comm.Parameters.AddWithValue("idaircraft", idAircraft); });
-            }
+                AircraftUtility.DeleteOrphanAircraft(Convert.ToInt32(dk.Value, CultureInfo.InvariantCulture));
 
             btnOrphans_Click(sender, e);
         }
@@ -475,6 +465,30 @@ GROUP BY ac.idaircraft";
 
                 // and then delete any maintenance records for this.
                 dbhDelMaintenance.DoNonQuery((comm) => { comm.Parameters.AddWithValue("idac", ac.AircraftID); });
+            }
+        }
+
+        protected void btnAircraftMissingFromProfile_Click(object sender, EventArgs e)
+        {
+            mvAircraftIssues.SetActiveView(vwMissingAircraft);
+            gvMissingAircraft.DataSourceID = sqlDSMissingAicraft.ID;
+            gvMissingAircraft.DataBind();
+        }
+
+        protected void sqlDSMissingAicraft_Selecting(object sender, SqlDataSourceSelectingEventArgs e)
+        {
+            if (e != null)
+                e.Command.CommandTimeout = 240; // can be slow!!!
+        }
+
+        protected void gvMissingAircraft_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e == null)
+                throw new ArgumentNullException(nameof(e));
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                HyperLink h = (HyperLink)e.Row.FindControl("lnkAddMissingAircraft");
+                h.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:addMissing(\'{0}\', \'{1}\', {2});", h.ClientID, DataBinder.Eval(e.Row.DataItem, "username"), DataBinder.Eval(e.Row.DataItem, "idaircraft"));
             }
         }
 

@@ -2266,6 +2266,31 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
 
             return acNew.AircraftID;
         }
+
+        /// <summary>
+        /// Deletes an aircraft that is completely unused.  DOES NOT DO THAT VERIFICATION for performance!!!
+        /// </summary>
+        /// <param name="idAircraft"></param>
+        public static void DeleteOrphanAircraft(int idAircraft)
+        {
+            Aircraft ac = new Aircraft(idAircraft);
+            ac.PopulateImages();
+            foreach (MFBImageInfo mfbii in ac.AircraftImages)
+                mfbii.DeleteImage();
+
+            ImageList il = new ImageList(MFBImageInfo.ImageClass.Aircraft, ac.AircraftID.ToString(CultureInfo.InvariantCulture));
+            DirectoryInfo di = new DirectoryInfo(System.Web.Hosting.HostingEnvironment.MapPath(il.VirtPath));
+            if (di.Exists)
+                di.Delete(true);
+
+            // Delete any tombstone that might point to *this*
+            DBHelper dbh = new DBHelper("DELETE FROM aircraftTombstones WHERE idMappedAircraft=?idAc");
+            dbh.DoNonQuery((comm) => { comm.Parameters.AddWithValue("idAc", ac.AircraftID); });
+
+            // Now delete this.
+            dbh.CommandText = "DELETE FROM Aircraft WHERE idAircraft=?idaircraft";
+            dbh.DoNonQuery((comm) => { comm.Parameters.AddWithValue("idaircraft", idAircraft); });
+        }
     }
 
     /// <summary>
