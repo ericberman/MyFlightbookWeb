@@ -6,7 +6,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2020 MyFlightbook LLC
+ * Copyright (c) 2013-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1325,6 +1325,9 @@ namespace MyFlightbook.RatingsProgress
             if (!CategoryClass.IsAirplane(cfr.idCatClassOverride))
                 return;
 
+            if (cfr.FlightProps.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropCheckridePPL))
+                HasSeenPPL = true;
+
             if (!HasSeenPPL && cfr.fIsCertifiedIFR)
                 miMinInstrument.AddTrainingEvent(Math.Min(cfr.Dual, cfr.IMC + cfr.IMCSim), MaxSim, !cfr.fIsRealAircraft);
 
@@ -1339,12 +1342,6 @@ namespace MyFlightbook.RatingsProgress
             // All of the remaining items MUST be post-PPL.  We are looking at flights in reverse-chronological order, so once we see the PPL in an airplane, we stop
             if (HasSeenPPL)
                 return;
-
-            if (cfr.FlightProps.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropCheckridePPL))
-            {
-                HasSeenPPL = true;
-                return;
-            }
 
             miMinDual.AddEvent(cfr.Dual);
             miMinNight.AddEvent(Math.Min(cfr.Dual, cfr.Night));
