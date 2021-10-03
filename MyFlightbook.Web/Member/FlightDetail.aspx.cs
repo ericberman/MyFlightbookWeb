@@ -292,12 +292,12 @@ namespace MyFlightbook.MemberPages
         #endregion
 
         #region Charting
-        protected static void UpdateChart(TelemetryDataTable tdt, Controls_GoogleChart gcData, FlightData fd, string PathLatLongArrayID, ListItem xAxis, ListItem yAxis1, ListItem yAxis2, decimal y1Scale, decimal y2Scale, out decimal max, out decimal min, out decimal max2, out decimal min2)
+        protected static void UpdateChart(TelemetryDataTable tdt, Controls_GoogleChart gcData, FlightData fd, string PathLatLongArrayID, ListItem xAxis, ListItem yAxis1, ListItem yAxis2, double y1Scale, double y2Scale, out double max, out double min, out double max2, out double min2)
         {
-            max = decimal.MinValue;
-            min = decimal.MaxValue;
-            max2 = decimal.MinValue;
-            min2 = decimal.MaxValue;
+            max = double.MinValue;
+            min = double.MaxValue;
+            max2 = double.MinValue;
+            min2 = double.MaxValue;
 
             if (tdt == null)
                 return;
@@ -336,7 +336,8 @@ namespace MyFlightbook.MemberPages
                     object o = dr[yAxis1.Value];
                     if (gcData.YDataType == GoogleColumnDataType.number)
                     {
-                        decimal d = Convert.ToDecimal(o, CultureInfo.InvariantCulture) * y1Scale;
+                        double d = Convert.ToDouble(o, CultureInfo.InvariantCulture);
+                        d = double.IsNaN(d) ? 0 : d * y1Scale;
                         max = Math.Max(max, d);
                         min = Math.Min(min, d);
                         o = d;
@@ -348,7 +349,8 @@ namespace MyFlightbook.MemberPages
                     object o = dr[yAxis2.Value];
                     if (gcData.Y2DataType == GoogleColumnDataType.number)
                     {
-                        decimal d = Convert.ToDecimal(o, CultureInfo.InvariantCulture) * y2Scale;
+                        double d = Convert.ToDouble(o, CultureInfo.InvariantCulture);
+                        d = double.IsNaN(d) ? 0 : d * y2Scale;
                         max2 = Math.Max(max2, d);
                         min2 = Math.Min(min2, d);
                         o = d;
@@ -753,12 +755,12 @@ namespace MyFlightbook.MemberPages
             if (tdt == null)
                 return;
 
-            if (!decimal.TryParse(rblConvert1.SelectedValue, NumberStyles.Float | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out decimal y1Scale))
-                y1Scale = 1.0M;
-            if (!decimal.TryParse(rblConvert2.SelectedValue, NumberStyles.Float | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out decimal y2Scale))
-                y1Scale = 1.0M;
+            if (!double.TryParse(rblConvert1.SelectedValue, NumberStyles.Float | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double y1Scale))
+                y1Scale = 1.0;
+            if (!double.TryParse(rblConvert2.SelectedValue, NumberStyles.Float | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double y2Scale))
+                y1Scale = 1.0;
 
-            UpdateChart(tdt, gcData, DataForFlight, PathLatLongArrayID, cmbXAxis.SelectedItem, cmbYAxis1.SelectedItem, cmbYAxis2.SelectedItem, y1Scale, y2Scale, out decimal max, out decimal min, out decimal max2, out decimal min2);
+            UpdateChart(tdt, gcData, DataForFlight, PathLatLongArrayID, cmbXAxis.SelectedItem, cmbYAxis1.SelectedItem, cmbYAxis2.SelectedItem, y1Scale, y2Scale, out double max, out double min, out double max2, out double min2);
 
             // Clear out the grid.
             gvData.DataSource = null;
@@ -768,10 +770,10 @@ namespace MyFlightbook.MemberPages
             int idx = mfbAccordionProxyExtender.IndexForProxyID(apcRaw.ID);
             mfbAccordionProxyExtender.SetJavascriptForControl(apcRaw, idx == AccordionCtrl.SelectedIndex, idx);
 
-            lblMaxY.Text = max > decimal.MinValue && !String.IsNullOrEmpty(gcData.YLabel) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ChartMaxX, gcData.YLabel, max) : string.Empty;
-            lblMinY.Text = min < decimal.MaxValue && !String.IsNullOrEmpty(gcData.YLabel) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ChartMinX, gcData.YLabel, min) : string.Empty;
-            lblMaxY2.Text = max2 > decimal.MinValue && !String.IsNullOrEmpty(gcData.Y2Label) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ChartMaxX, gcData.Y2Label, max2) : string.Empty;
-            lblMinY2.Text = min2 < decimal.MaxValue && !String.IsNullOrEmpty(gcData.Y2Label) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ChartMinX, gcData.Y2Label, min2) : string.Empty;
+            lblMaxY.Text = max > double.MinValue && !String.IsNullOrEmpty(gcData.YLabel) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ChartMaxX, gcData.YLabel, max) : string.Empty;
+            lblMinY.Text = min < double.MaxValue && !String.IsNullOrEmpty(gcData.YLabel) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ChartMinX, gcData.YLabel, min) : string.Empty;
+            lblMaxY2.Text = max2 > double.MinValue && !String.IsNullOrEmpty(gcData.Y2Label) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ChartMaxX, gcData.Y2Label, max2) : string.Empty;
+            lblMinY2.Text = min2 < double.MaxValue && !String.IsNullOrEmpty(gcData.Y2Label) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ChartMinX, gcData.Y2Label, min2) : string.Empty;
         }
 
         protected void RefreshChart()

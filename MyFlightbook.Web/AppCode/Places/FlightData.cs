@@ -18,7 +18,7 @@ using System.Xml;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2020 MyFlightbook LLC
+ * Copyright (c) 2010-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1131,10 +1131,7 @@ namespace MyFlightbook.Telemetry
                         {
                             if (!Enum.TryParse<DateTimeKind>(dr[KnownColumnNames.TIMEKIND].ToString(), out DateTimeKind kind))
                             {
-                                if (int.TryParse(dr[KnownColumnNames.TIMEKIND].ToString(), out int intKind))
-                                    kind = (DateTimeKind)intKind;
-                                else
-                                    kind = DateTimeKind.Unspecified;
+                                kind = int.TryParse(dr[KnownColumnNames.TIMEKIND].ToString(), out int intKind) ? (DateTimeKind)intKind : DateTimeKind.Unspecified;
                             }
                             if (kind != DateTimeKind.Unspecified)
                                 timestamp = DateTime.SpecifyKind(timestamp, kind);
@@ -1949,7 +1946,11 @@ namespace MyFlightbook.Telemetry
         public double Distance()
         {
             if (!CachedDistance.HasValue && HasPath)
+            {
+                if (String.IsNullOrEmpty(RawData))  // Issue #837 - rare, but can happen for example if you have invalid lat/lon values (sample in 837 have latitude values of 250 degrees.)
+                    return 0;
                 InitFromTelemetry();
+            }
 
             return CachedDistance ?? 0;
         }
@@ -2117,12 +2118,7 @@ namespace MyFlightbook.Telemetry
                 Date = ExtractDate(szData, out LatLong ll);
 
                 if (!Date.HasValue)
-                {
-                    if (dtFallback.HasValue)
-                        Date = dtFallback.Value;
-                    else
-                        throw new MyFlightbookException(Resources.FlightData.ImportErrNoDate);
-                }
+                    Date = dtFallback.HasValue ? (DateTime?)dtFallback.Value : throw new MyFlightbookException(Resources.FlightData.ImportErrNoDate);
 
                 FlightQuery fq = new FlightQuery(szUser) { DateRange = FlightQuery.DateRanges.Custom, DateMin = AdjustedDate, DateMax = AdjustedDate };
                 List<LogbookEntry> lstLe = new List<LogbookEntry>();
@@ -2166,10 +2162,9 @@ namespace MyFlightbook.Telemetry
                             (le.FlightStart.HasValue() && Math.Abs(le.FlightStart.Subtract(Date.Value).TotalMinutes) < maxTimeDiscrepancy)) :
                             new List<LogbookEntry>();
 
-                        if (lstMatchesByTime.Count == 1)
-                            leMatch = lstMatchesByTime[0];
-                        else
-                            throw new MyFlightbookException(Resources.FlightData.ImportErrMultiMatchMultiClose);
+                        leMatch = lstMatchesByTime.Count == 1
+                            ? lstMatchesByTime[0]
+                            : throw new MyFlightbookException(Resources.FlightData.ImportErrMultiMatchMultiClose);
                     }
                 }
 
