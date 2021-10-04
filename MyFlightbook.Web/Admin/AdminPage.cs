@@ -4,7 +4,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2020 MyFlightbook LLC
+ * Copyright (c) 2020-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -29,6 +29,7 @@ namespace MyFlightbook.Web.Admin
         {
             foreach (System.Collections.DictionaryEntry entry in HttpRuntime.Cache)
                 HttpRuntime.Cache.Remove((string)entry.Key);
+            GC.Collect();
         }
     }
 }

@@ -429,6 +429,8 @@ namespace MyFlightbook.Web.Admin
                 hdnSigOffset.Value = 0.ToString(CultureInfo.InvariantCulture);  // and reset the offset so you can press it again.
                 gvInvalidSignatures.DataSource = lstToFix;
                 gvInvalidSignatures.DataBind();
+                gvAutoFixed.DataSource = lstAutoFix;
+                gvAutoFixed.DataBind();
             }
         }
 

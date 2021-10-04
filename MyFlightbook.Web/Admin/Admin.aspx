@@ -176,6 +176,7 @@
                     </script>
                 </asp:View>
                 <asp:View ID="vwInvalidSigs" runat="server">
+                    <p>Flights with signatures to fix:</p>
                     <asp:GridView ID="gvInvalidSignatures" runat="server" AutoGenerateColumns="false" OnRowCommand="gvInvalidSignatures_RowCommand">
                         <Columns>
                             <asp:HyperLinkField DataNavigateUrlFields="FlightID" DataNavigateUrlFormatString="~/Member/LogbookNew.aspx/{0}?a=1" DataTextField="FlightID" DataTextFormatString="{0}" Target="_blank" />
@@ -192,6 +193,23 @@
                                 </ItemTemplate>
                             </asp:TemplateField>
                         </Columns>
+                        <EmptyDataTemplate>
+                            <p>No invalid signatures found!</p>
+                        </EmptyDataTemplate>
+                    </asp:GridView>
+                    <p>Auto-fixed flights:</p>
+                    <asp:GridView ID="gvAutoFixed" runat="server" AutoGenerateColumns="false">
+                        <Columns>
+                            <asp:HyperLinkField DataNavigateUrlFields="FlightID" DataNavigateUrlFormatString="~/Member/LogbookNew.aspx/{0}?a=1" DataTextField="FlightID" DataTextFormatString="{0}" Target="_blank" />
+                            <asp:TemplateField>
+                                <ItemTemplate>
+                                    <%# Eval("User") %> <%# ((DateTime) Eval("Date")).ToShortDateString() %>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                        </Columns>
+                        <EmptyDataTemplate>
+                            <p>No autofixed signatures found!</p>
+                        </EmptyDataTemplate>
                     </asp:GridView>
                 </asp:View>
             </asp:MultiView>
