@@ -411,7 +411,7 @@ public partial class Controls_mfbSearchForm : UserControl
 
         // Props to include are favorites OR it's in the query OR (Include ALL and in blacklist)
         // So remove anything that is NOT favorite AND NOT in the query AND NOT (include all and in blacklist)
-        al.RemoveAll(cpt => !cpt.IsFavorite && !m_fq.PropertyTypes.Contains(cpt) && !(fIncludeAll && hsBlackList.Contains(cpt.PropTypeID)));
+        al.RemoveAll(cpt => !cpt.IsFavorite && !(m_fq != null && m_fq.PropertyTypes.Contains(cpt)) && !(fIncludeAll && hsBlackList.Contains(cpt.PropTypeID)));
 
         lnkShowAllProps.Visible = !fIncludeAll && cAllProps > al.Count;
 
