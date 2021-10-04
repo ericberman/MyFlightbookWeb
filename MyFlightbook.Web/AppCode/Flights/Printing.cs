@@ -612,9 +612,6 @@ namespace MyFlightbook.Printing
                         }
                     }
 
-                    string szErr = string.Empty;
-                    p.ErrorDataReceived += (sender, e) => { szErr = e?.Data ?? string.Empty; };
-
                     p.StartInfo = new ProcessStartInfo(szWkTextApp, szArgs) { CreateNoWindow = true, WindowStyle = ProcessWindowStyle.Hidden, UseShellExecute = false, RedirectStandardError = false };
 
                     p.Start();
