@@ -635,6 +635,8 @@ namespace MyFlightbook.Printing
                         p.Kill();
                 }
             }
+
+            GC.Collect();   // We could have used a bunch of memory.
         }
     }
 
