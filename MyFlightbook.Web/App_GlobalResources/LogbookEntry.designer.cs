@@ -3078,6 +3078,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to (Show All).
+        /// </summary>
+        internal static string SearchAllProperties {
+            get {
+                return ResourceManager.GetString("SearchAllProperties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Send this flight.
         /// </summary>
         internal static string SendFlight {

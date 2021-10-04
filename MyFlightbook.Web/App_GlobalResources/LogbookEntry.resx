@@ -1367,4 +1367,7 @@ Proceed with import?</value>
   <data name="FieldTotalFull" xml:space="preserve">
     <value>Total Time</value>
   </data>
+  <data name="SearchAllProperties" xml:space="preserve">
+    <value>(Show All)</value>
+  </data>
 </root>

@@ -355,6 +355,7 @@
                             DataTextField="Title" runat="server" RepeatColumns="4" 
                             RepeatDirection="Horizontal" meta:resourcekey="cklCustomPropsResource1">
                         </asp:CheckBoxList>
+                        <div><asp:LinkButton ID="lnkShowAllProps" OnClick="lnkShowAllProps_Click" Visible="false" runat="server" Text="<%$ Resources:LogbookEntry, SearchAllProperties %>" /></div>
                     </asp:Panel>
                 </asp:Panel>
             </td>

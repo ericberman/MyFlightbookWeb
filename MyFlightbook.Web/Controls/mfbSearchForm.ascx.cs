@@ -15,7 +15,7 @@ using System.Web.UI.WebControls;
  *
 *******************************************************/
 
-public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
+public partial class Controls_mfbSearchForm : UserControl
 {
     private FlightQuery m_fq;
     private string m_szUser;
@@ -60,7 +60,7 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
     /// <summary>
     /// Event raised when the user submits.
     /// </summary>
-    public event System.EventHandler<FlightQueryEventArgs> QuerySubmitted;
+    public event EventHandler<FlightQueryEventArgs> QuerySubmitted;
 
     /// <summary>
     /// Event raised when user clears the query
@@ -401,6 +401,29 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
 
     private bool fHasBeenSetUp; // have we already been initialized for the user?
 
+    protected void SetUpPropertiesForUser(bool fIncludeAll)
+    {
+        CustomPropertyType[] rgCpt = CustomPropertyType.GetCustomPropertyTypes(Username);
+        List<CustomPropertyType> al = new List<CustomPropertyType>(rgCpt);
+        int cAllProps = al.Count;
+
+        HashSet<int> hsBlackList = fIncludeAll ? new HashSet<int>(Profile.GetUser(Username).BlocklistedProperties) : new HashSet<int>();
+
+        // Props to include are favorites OR it's in the query OR (Include ALL and in blacklist)
+        // So remove anything that is NOT favorite AND NOT in the query AND NOT (include all and in blacklist)
+        al.RemoveAll(cpt => !cpt.IsFavorite && !m_fq.PropertyTypes.Contains(cpt) && !(fIncludeAll && hsBlackList.Contains(cpt.PropTypeID)));
+
+        lnkShowAllProps.Visible = !fIncludeAll && cAllProps > al.Count;
+
+        if (al.Count == 0)
+            pnlCustomProps.Visible = false;
+        else
+        {
+            cklCustomProps.DataSource = al;
+            cklCustomProps.DataBind();
+        }
+    }
+
     protected void SetUpForUser()
     {
         if (fHasBeenSetUp)
@@ -431,17 +454,8 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
         cklCatClass.DataSource = CategoryClass.CategoryClasses();
         cklCatClass.DataBind();
 
-        CustomPropertyType[] rgCpt = CustomPropertyType.GetCustomPropertyTypes(Username);
-        List<CustomPropertyType> al = new List<CustomPropertyType>(rgCpt);
-        al.RemoveAll(cpt => !cpt.IsFavorite);
+        SetUpPropertiesForUser(false);
 
-        if (al.Count == 0)
-            pnlCustomProps.Visible = false;
-        else
-        {
-            cklCustomProps.DataSource = al;
-            cklCustomProps.DataBind();
-        }
         fHasBeenSetUp = true;
     }
 
@@ -593,25 +607,21 @@ function setDates(isCustom)
         m_fq.IsMotorglider = ckMotorGlider.Checked;
         m_fq.IsMultiEngineHeli = ckMultiEngineHeli.Checked;
 
-        if (rbEnginePiston.Checked)
-            m_fq.EngineType = FlightQuery.EngineTypeRestriction.Piston;
-        else if (rbEngineTurboprop.Checked)
-            m_fq.EngineType = FlightQuery.EngineTypeRestriction.Turboprop;
-        else if (rbEngineJet.Checked)
-            m_fq.EngineType = FlightQuery.EngineTypeRestriction.Jet;
-        else if (rbEngineTurbine.Checked)
-            m_fq.EngineType = FlightQuery.EngineTypeRestriction.AnyTurbine;
-        else if (rbEngineElectric.Checked)
-            m_fq.EngineType = FlightQuery.EngineTypeRestriction.Electric;
-        else
-            m_fq.EngineType = FlightQuery.EngineTypeRestriction.AllEngines;
+        m_fq.EngineType = rbEnginePiston.Checked
+            ? FlightQuery.EngineTypeRestriction.Piston
+            : rbEngineTurboprop.Checked
+            ? FlightQuery.EngineTypeRestriction.Turboprop
+            : rbEngineJet.Checked
+            ? FlightQuery.EngineTypeRestriction.Jet
+            : rbEngineTurbine.Checked
+            ? FlightQuery.EngineTypeRestriction.AnyTurbine
+            : rbEngineElectric.Checked ? FlightQuery.EngineTypeRestriction.Electric : FlightQuery.EngineTypeRestriction.AllEngines;
 
-        if (rbInstanceReal.Checked)
-            m_fq.AircraftInstanceTypes = FlightQuery.AircraftInstanceRestriction.RealOnly;
-        else if (rbInstanceTrainingDevices.Checked)
-            m_fq.AircraftInstanceTypes = FlightQuery.AircraftInstanceRestriction.TrainingOnly;
-        else
-            m_fq.AircraftInstanceTypes = FlightQuery.AircraftInstanceRestriction.AllAircraft;
+        m_fq.AircraftInstanceTypes = rbInstanceReal.Checked
+            ? FlightQuery.AircraftInstanceRestriction.RealOnly
+            : rbInstanceTrainingDevices.Checked
+            ? FlightQuery.AircraftInstanceRestriction.TrainingOnly
+            : FlightQuery.AircraftInstanceRestriction.AllAircraft;
     }
 
     /// <summary>
@@ -796,5 +806,13 @@ function setDates(isCustom)
     {
         foreach (ListItem li in cklCatClass.Items)
             li.Selected = ckAllCatClass.Checked;
+    }
+
+    protected void lnkShowAllProps_Click(object sender, EventArgs e)
+    {
+        m_fq = GetFlightQuery();
+        lnkShowAllProps.Visible = false;
+        SetUpPropertiesForUser(true);
+        CustomPropertiesToForm();
     }
 }
