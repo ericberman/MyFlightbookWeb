@@ -5,8 +5,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
-using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -22,6 +20,7 @@ namespace MyFlightbook.MemberPages
 {
     public partial class PrintViewBase : Page
     {
+        #region Properties
         protected Profile CurrentUser { get; set; }
 
         protected string CurrentUserDOB
@@ -41,30 +40,34 @@ namespace MyFlightbook.MemberPages
 
         protected PrintingOptions PrintOptions { get; set; }
 
+        private const string szSessKeyPDFError = "pdfRenderError";
+
+        protected string PDFError
+        {
+            get { return ((string)Session[szSessKeyPDFError]) ?? string.Empty; }
+            set { Session[szSessKeyPDFError] = value; }
+        }
+        #endregion
+
+
         protected override void Render(HtmlTextWriter writer)
         {
             if (OverrideRender)
             {
-                StringBuilder sbOut = new StringBuilder();
-
-                using (StringWriter swOut = new StringWriter(sbOut, CultureInfo.InvariantCulture))
-                {
-                    using (HtmlTextWriter htwOut = new HtmlTextWriter(swOut))
-                    {
-                        base.Render(htwOut);
-                    }
-                }
-
-                PDFRenderer.RenderFile(sbOut.ToString(),
+                PDFRenderer.RenderFile(
                     PageOptions,
-                    () => // onError
+                    (htwOut) => { base.Render(htwOut); },
+                    (szErr) => // onError
                     {
-                        util.NotifyAdminEvent("Error saving PDF", String.Format(CultureInfo.CurrentCulture, "User: {0}\r\nOptions:\r\n{1}\r\n\r\nQuery:{2}\r\n",
+                        util.NotifyAdminEvent("Error saving PDF", String.Format(CultureInfo.CurrentCulture, "{3}\r\nUser: {0}\r\nOptions:\r\n{1}\r\n\r\nQuery:{2}\r\n",
                             CurrentUser.UserName,
                             JsonConvert.SerializeObject(PageOptions),
-                            JsonConvert.SerializeObject(PrintOptions)), ProfileRoles.maskSiteAdminOnly);
+                            JsonConvert.SerializeObject(PrintOptions),
+                            szErr), ProfileRoles.maskSiteAdminOnly);
 
-                        Response.Redirect(Request.Url.PathAndQuery + (Request.Url.PathAndQuery.Contains("?") ? "&" : "?") + "pdfErr=1");
+                        // put the error into the session
+                        PDFError = szErr;
+                        Response.Redirect(Request.Url.PathAndQuery);
                     },
                     (szOutputPDF) => // onSuccess
                     {
@@ -141,8 +144,10 @@ namespace MyFlightbook.MemberPages
 
         private void HandlePDFErr()
         {
-            if (util.GetIntParam(Request, "pdfErr", 0) != 0)
-                lblErr.Text = Resources.LocalizedText.PDFGenerationFailed;
+            if (!String.IsNullOrEmpty(PDFError)) {
+                lblErr.Text = HttpUtility.HtmlEncode(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PDFGenerationFailed, PDFError));
+                PDFError = null;
+            }
         }
 
         private void InitializePrintOptions()

@@ -3,9 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.IO;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Web.UI;
 
 /******************************************************
  * 
@@ -555,7 +556,7 @@ namespace MyFlightbook.Printing
                 throw new ArgumentNullException(nameof(inputFile));
             if (outputFile == null)
                 throw new ArgumentNullException(nameof(outputFile));
-            return String.Format(CultureInfo.InvariantCulture, "--orientation {0} --print-media-type --disable-javascript --footer-font-size 8 {1} {2} {3} {4} {5} {6} {7} {8} {9} {10}",
+            return String.Format(CultureInfo.InvariantCulture, "--orientation {0} --print-media-type --disable-javascript --enable-local-file-access --quiet --footer-font-size 8 {1} {2} {3} {4} {5} {6} {7} {8} {9} {10}",
                 Orientation.ToString(),
                 PaperSize == PageSize.Custom ? String.Format(CultureInfo.InvariantCulture, "--page-height {0} --page-width {1}", PageHeight, PageWidth) : String.Format(CultureInfo.InvariantCulture, "-s {0}", PaperSize.ToString()),
                 TopMargin.HasValue ? String.Format(CultureInfo.InvariantCulture, "--margin-top {0}", TopMargin.Value) : string.Empty,
@@ -578,16 +579,16 @@ namespace MyFlightbook.Printing
         /// <summary>
         /// Renders the specified HTML to a PDF file on the disk.  FILE IS DELETED AT END OF THE CALL, SO DO WHAT YOU NEED IN THE ONSUCCESS CALL
         /// </summary>
-        /// <param name="szHTML">The HTML to render</param>
         /// <param name="pdfOptions">The options controlling the rendering</param>
+        /// <param name="render">Action to render the html to a writer</param>
         /// <param name="onError">Action (no parameters) called if things fail.  Unfortunately, we can't report useful errors</param>
         /// <param name="onSuccess">Action called on success; single parameter is the filename of the PDF</param>
-        static public void RenderFile(string szHTML, PDFOptions pdfOptions, Action onError, Action<string> onSuccess)
+        static public void RenderFile(PDFOptions pdfOptions, Action<HtmlTextWriter> render, Action<string> onError, Action<string> onSuccess)
         {
-            if (szHTML == null)
-                throw new ArgumentNullException(nameof(szHTML));
             if (pdfOptions == null)
                 throw new ArgumentNullException(nameof(pdfOptions));
+            if (render == null)
+                throw new ArgumentNullException(nameof(render));
 
             string szTempPath = Path.GetTempPath();
             string szFileRoot = Guid.NewGuid().ToString();
@@ -596,22 +597,32 @@ namespace MyFlightbook.Printing
 
             string szArgs = pdfOptions.WKHtmlToPDFArguments(szOutputHtm, szOutputPDF);
 
-            File.WriteAllText(szOutputHtm, szHTML);
-
             const string szWkTextApp = "c:\\program files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe";  // TODO: this needs to be in a config file
 
             using (Process p = new Process())
             {
                 try
                 {
-                    p.StartInfo = new ProcessStartInfo(szWkTextApp, szArgs) { UseShellExecute = true }; // for some reason, wkhtmltopdf runs better in shell exec than without.
+                    // Render the html directly into our temporary file.
+                    using (StreamWriter sw = File.CreateText(szOutputHtm))
+                    {
+                        using (HtmlTextWriter htw = new HtmlTextWriter(sw))
+                        {
+                            render(htw);
+                        }
+                    }
+
+                    string szErr = string.Empty;
+                    p.ErrorDataReceived += (sender, e) => { szErr = e?.Data ?? string.Empty; };
+
+                    p.StartInfo = new ProcessStartInfo(szWkTextApp, szArgs) { CreateNoWindow = true, WindowStyle = ProcessWindowStyle.Hidden, UseShellExecute = false, RedirectStandardError = false };
 
                     p.Start();
 
                     bool fResult = p.WaitForExit(120000);   // wait up to 2 minutes
 
                     if (!fResult || !File.Exists(szOutputPDF))
-                        onError?.Invoke();
+                        onError?.Invoke(Resources.LocalizedText.PDFGenerationFailed);
                     else
                         onSuccess?.Invoke(szOutputPDF);
                 }
