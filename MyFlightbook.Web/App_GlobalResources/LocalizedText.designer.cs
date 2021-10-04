@@ -3489,7 +3489,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to create PDF file..
+        ///   Looks up a localized string similar to Unable to create PDF file: {0}.
         /// </summary>
         internal static string PDFGenerationFailed {
             get {

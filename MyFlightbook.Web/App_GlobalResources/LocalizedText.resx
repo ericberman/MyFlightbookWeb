@@ -1179,7 +1179,8 @@
     <value>Page size:</value>
   </data>
   <data name="PDFGenerationFailed" xml:space="preserve">
-    <value>Unable to create PDF file.</value>
+    <value>Unable to create PDF file: {0}</value>
+    <comment>{0} is error message</comment>
   </data>
   <data name="PrintedFooterPageCount" xml:space="preserve">
     <value>Page {0:#,##0}</value>

@@ -612,14 +612,16 @@ namespace MyFlightbook.Printing
                         }
                     }
 
-                    p.StartInfo = new ProcessStartInfo(szWkTextApp, szArgs) { CreateNoWindow = true, WindowStyle = ProcessWindowStyle.Hidden, UseShellExecute = false, RedirectStandardError = false };
+                    p.StartInfo = new ProcessStartInfo(szWkTextApp, szArgs) { CreateNoWindow = true, WindowStyle = ProcessWindowStyle.Hidden, UseShellExecute = false, RedirectStandardError = true };
 
                     p.Start();
+
+                    string szErr = p.StandardError.ReadToEnd(); // read BEFORE waiting for exit to avoid deadlock - see https://www.generacodice.com/en/articolo/39973/ProcessStartInfo-hanging-on-%E2%80%9CWaitForExit%E2%80%9D-Whya=r
 
                     bool fResult = p.WaitForExit(120000);   // wait up to 2 minutes
 
                     if (!fResult || !File.Exists(szOutputPDF))
-                        onError?.Invoke(Resources.LocalizedText.PDFGenerationFailed);
+                        onError?.Invoke(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PDFGenerationFailed, szErr));
                     else
                         onSuccess?.Invoke(szOutputPDF);
                 }
