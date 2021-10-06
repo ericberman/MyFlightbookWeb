@@ -1370,4 +1370,10 @@ Proceed with import?</value>
   <data name="SearchAllProperties" xml:space="preserve">
     <value>(Show All)</value>
   </data>
+  <data name="PrintFormatUASCivi" xml:space="preserve">
+    <value>UAS/Drone</value>
+  </data>
+  <data name="PrintHeaderCombat" xml:space="preserve">
+    <value>Combat</value>
+  </data>
 </root>

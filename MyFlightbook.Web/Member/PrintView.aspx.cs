@@ -71,16 +71,20 @@ namespace MyFlightbook.MemberPages
                     },
                     (szOutputPDF) => // onSuccess
                     {
-                        Page.Response.Clear();
-                        Page.Response.ContentType = "application/pdf";
-                        Response.AddHeader("content-disposition", String.Format(CultureInfo.CurrentCulture, @"attachment;filename=""{0}.pdf""", CurrentUser.UserFullName));
-                        Response.WriteFile(szOutputPDF);
-                        Page.Response.Flush();
+                        try
+                        {
+                            Page.Response.Clear();
+                            Page.Response.ContentType = "application/pdf";
+                            Response.AddHeader("content-disposition", String.Format(CultureInfo.CurrentCulture, @"attachment;filename=""{0}.pdf""", CurrentUser.UserFullName));
+                            Response.WriteFile(szOutputPDF);
+                            Page.Response.Flush();
 
-                    // See http://stackoverflow.com/questions/20988445/how-to-avoid-response-end-thread-was-being-aborted-exception-during-the-exce for the reason for the next two lines.
-                    Page.Response.SuppressContent = true;  // Gets or sets a value indicating whether to send HTTP content to the client.
-                    HttpContext.Current.ApplicationInstance.CompleteRequest(); // Causes ASP.NET to bypass all events and filtering in the HTTP pipeline chain of execution and directly execute the EndRequest event.
-                });
+                            // See http://stackoverflow.com/questions/20988445/how-to-avoid-response-end-thread-was-being-aborted-exception-during-the-exce for the reason for the next two lines.
+                            Page.Response.SuppressContent = true;  // Gets or sets a value indicating whether to send HTTP content to the client.
+                            HttpContext.Current.ApplicationInstance.CompleteRequest(); // Causes ASP.NET to bypass all events and filtering in the HTTP pipeline chain of execution and directly execute the EndRequest event.
+                        }
+                        catch (HttpUnhandledException) { }  // sometimes the remote host has closed the connection - allow cleanup to proceed.
+                    });
             }
             else
                 base.Render(writer);

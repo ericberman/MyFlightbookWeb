@@ -2052,6 +2052,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to UAS/Drone.
+        /// </summary>
+        internal static string PrintFormatUASCivi {
+            get {
+                return ResourceManager.GetString("PrintFormatUASCivi", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to US Formats (similar to ASA, Jeppesen, etc.).
         /// </summary>
         internal static string PrintFormatUSA {
