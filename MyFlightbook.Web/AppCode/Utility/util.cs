@@ -440,20 +440,9 @@ namespace MyFlightbook
                         SendMessage(msg);
                     }
                 }
-                catch (ArgumentNullException ex)
-                {
-                    MyFlightbookException mfbEx = new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Null Argument in NotifyUser: {0}", ex.ParamName), ex);
-                    MyFlightbookException.NotifyAdminException(mfbEx);
-                }
-                catch (InvalidOperationException ex)
-                {
-                    MyFlightbookException mfbEx = new MyFlightbookException("Invalid Operation in NotifyUser", ex);
-                    MyFlightbookException.NotifyAdminException(mfbEx);
-                }
-                catch (Exception ex) when (ex is SmtpException)
-                {
-                        // Don't re-throw or do anything that would cause new mail to be sent because that could loop.  Just fail silently and eat this.
-                }
+                catch (ArgumentNullException) { }
+                catch (InvalidOperationException) { }
+                catch (Exception ex) when (ex is SmtpException) { }
             }).Start();
         }
 
@@ -485,41 +474,19 @@ namespace MyFlightbook
         /// Notify the site admin of an exception
         /// </summary>
         /// <param name="szInfo">Additional data</param>
-        /// <param name="myError">The exception</param>
-        static public void NotifyAdminException(string szInfo, Exception myError)
+        /// <param name="ex">The exception</param>
+        static public void NotifyAdminException(string szInfo, Exception ex)
         {
-            StringBuilder ErrorMessage = new StringBuilder(szInfo + "\r\n\r\n");
-            while (myError != null)
-            {
-                ErrorMessage.Append("Message\r\n" + myError.Message + "\r\n\r\n");
-                ErrorMessage.Append("Source\r\n" + myError.Source + "\r\n\r\n");
-                if (myError.TargetSite != null)
-                    ErrorMessage.Append("Target site\r\n" + myError.TargetSite.ToString() + "\r\n\r\n");
-                ErrorMessage.Append("Stack trace\r\n" + myError.StackTrace + "\r\n\r\n");
-                ErrorMessage.Append("Overall Data:\r\n" + myError.ToString() + "\r\n\r\n");
-                // Reduce viewstate spam if it's just a viewstate error.
-                if (myError.ToString().Contains("Failed to load viewstate"))
-                    return;
-                if (myError.Data != null && myError.Data.Keys != null)
-                {
-                    foreach (string key in myError.Data.Keys)
-                    {
-                        if (myError.Data[key] != null)
-                            ErrorMessage.AppendFormat(CultureInfo.CurrentCulture, "Data key {0}: {1}", key, myError.Data[key].ToString());
-                    }
-                }
+            if (ex == null)
+                return;
 
-                ErrorMessage.Append(String.Format(System.Globalization.CultureInfo.InvariantCulture, "Occured at: {0} (UTC)", DateTime.Now.ToUniversalTime().ToString("G", System.Globalization.CultureInfo.InvariantCulture)) + "\r\n\r\n");
-                ErrorMessage.Append("Moving to next exception down...\r\n\r\n");
+            string szErr = ex.PrettyPrint(szInfo);
 
-                // Assign the next InnerException
-                // to drill down to the lowest level exception
-                myError = myError.InnerException;
-            }
+            // Reduce viewstate spam if it's just a viewstate error.
+            if (szErr.Contains("Failed to load viewstate") || szErr.Contains("Invalid viewstate"))
+                return;
 
-            string szError = ErrorMessage.ToString();
-            if (!szError.Contains("Invalid viewstate"))
-                util.NotifyAdminEvent("Error on the myflightbook site" + (szError.Contains("Invalid viewstate") ? " (Viewstate)" : string.Empty), szError, ProfileRoles.maskSiteAdminOnly);
+            NotifyAdminEvent("Error on the myflightbook site", szErr, ProfileRoles.maskSiteAdminOnly);
         }
         #endregion
 

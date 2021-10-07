@@ -1025,6 +1025,46 @@ namespace MyFlightbook
             return lstRemainder;
         }
         #endregion
+
+        #region Exception Extensions
+        /// <summary>
+        /// Converts an exception into a detailed string, including any optional information and any inner exceptions.
+        /// </summary>
+        /// <param name="ex">The exception</param>
+        /// <param name="szInfo">Any optional information to add</param>
+        /// <returns>A string dump of the exception, including inner exceptions</returns>
+        static public string PrettyPrint(this Exception ex, string szInfo = null)
+        {
+            if (ex == null)
+                throw new ArgumentNullException(nameof(ex));
+
+            StringBuilder sb = new StringBuilder(szInfo == null ? string.Empty : szInfo + "\r\n\r\n");
+            while (ex != null)
+            {
+                sb.AppendFormat(CultureInfo.InvariantCulture, "Message: {0}\r\nSource: {1}\r\n", ex.Message, ex.Source);
+                if (ex.TargetSite != null)
+                    sb.Append("Target site\r\n" + ex.TargetSite.ToString() + "\r\n\r\n");
+                sb.AppendFormat(CultureInfo.InvariantCulture, "Stack trace:\r\n{0}OverallData:\r\n{1}\r\n\rn", ex.StackTrace, ex.ToString());
+                if (ex.Data != null && ex.Data.Keys != null)
+                {
+                    foreach (string key in ex.Data.Keys)
+                    {
+                        if (ex.Data[key] != null)
+                            sb.AppendFormat(CultureInfo.CurrentCulture, "Data key {0}: {1}\r\n\r\n", key, ex.Data[key].ToString());
+                    }
+                }
+
+                sb.Append(String.Format(CultureInfo.InvariantCulture, "Occured at: {0} (UTC)", DateTime.Now.ToUniversalTime().ToString("G", CultureInfo.InvariantCulture)) + "\r\n\r\n");
+                sb.Append("Moving to next exception down...\r\n\r\n");
+
+                // Assign the next InnerException
+                // to drill down to the lowest level exception
+                ex = ex.InnerException;
+            }
+
+            return sb.ToString();
+        }
+        #endregion
     }
 
     /// <summary>
