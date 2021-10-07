@@ -1044,7 +1044,7 @@ namespace MyFlightbook
                 sb.AppendFormat(CultureInfo.InvariantCulture, "Message: {0}\r\nSource: {1}\r\n", ex.Message, ex.Source);
                 if (ex.TargetSite != null)
                     sb.Append("Target site\r\n" + ex.TargetSite.ToString() + "\r\n\r\n");
-                sb.AppendFormat(CultureInfo.InvariantCulture, "Stack trace:\r\n{0}OverallData:\r\n{1}\r\n\rn", ex.StackTrace, ex.ToString());
+                sb.AppendFormat(CultureInfo.InvariantCulture, "Stack trace:\r\n{0}OverallData:\r\n{1}\r\n\r\n", ex.StackTrace, ex.ToString());
                 if (ex.Data != null && ex.Data.Keys != null)
                 {
                     foreach (string key in ex.Data.Keys)
