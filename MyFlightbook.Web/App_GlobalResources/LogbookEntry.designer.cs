@@ -2592,6 +2592,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Role.
+        /// </summary>
+        internal static string PrintHeaderRole {
+            get {
+                return ResourceManager.GetString("PrintHeaderRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Route.
         /// </summary>
         internal static string PrintHeaderRoute {

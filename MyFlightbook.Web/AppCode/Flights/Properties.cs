@@ -171,7 +171,8 @@ namespace MyFlightbook
             IDPropSpecialAuthorizationApproach = 695,
             IDProp125291IPC = 699,
             IDProp125287Competency = 700,
-            IDProp125287Knowledge = 701
+            IDProp125287Knowledge = 701,
+            IDPropRole = 718
         }
 
         internal static class CFPPropertyFlag

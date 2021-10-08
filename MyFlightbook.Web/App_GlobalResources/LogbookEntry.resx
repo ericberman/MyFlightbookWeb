@@ -1373,4 +1373,7 @@ Proceed with import?</value>
   <data name="PrintFormatUASCivi" xml:space="preserve">
     <value>UAS/Drone</value>
   </data>
+  <data name="PrintHeaderRole" xml:space="preserve">
+    <value>Role</value>
+  </data>
 </root>

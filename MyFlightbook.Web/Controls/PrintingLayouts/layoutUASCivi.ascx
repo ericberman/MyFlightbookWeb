@@ -13,6 +13,7 @@
                 <th class="headerSmall"><% =Resources.LogbookEntry.PrintHeaderModel %></th>
                 <th class="headerSmall" style="width:1.2cm"><% =Resources.LogbookEntry.PrintHeaderAircraft %></th>
                 <th class="headerBig"><% =Resources.LogbookEntry.PrintHeaderRoute %></th>
+                <th class="headerBig" runat="server" visible="<%# ShowRole %>"><% =Resources.LogbookEntry.PrintHeaderRole %></th>
                 <th class="headerBig"><%=Resources.LogbookEntry.PrintHeaderRemarks %></th>
                 <th class="headerSmall" runat="server" id="optcolumnHeader1" style="width:1cm" Visible="<%# OptionalColumn.ShowOptionalColumn(OptionalColumns, 0, OptionalColumn.OptionalColumnRestriction.None) %>"><div><%# OptionalColumn.OptionalColumnName(OptionalColumns, 0) %></div></th>
                 <th class="headerSmall" runat="server" id="optcolumnHeader2" style="width:1cm" Visible="<%# OptionalColumn.ShowOptionalColumn(OptionalColumns, 1, OptionalColumn.OptionalColumnRestriction.None) %>"><div><%# OptionalColumn.OptionalColumnName(OptionalColumns, 1) %></div></th>
@@ -34,6 +35,7 @@
                     <td><%#: Eval("ModelDisplay") %></td>
                     <td><%#: Eval("TailNumOrSimDisplay") %></td>
                     <td><%#: Eval("Route") %></td>
+                    <td runat="server" visible="<%# ShowRole %>"><%# ((LogbookEntryDisplay) Container.DataItem).CustomProperties.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropRole) %></td>
                     <td>
                         <div><%#: ((string[]) Eval("Airports")).Count() <= 2 ? string.Empty : String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.PrintFullRoute, Eval("Route")) %></div>
                         <div style="clear:left; white-space:pre-line;" dir="auto"><%# Eval("RedactedCommentWithReplacedApproaches") %></div>
@@ -57,7 +59,7 @@
         <asp:Repeater EnableViewState="false" ID="rptSubtotalCollections" runat="server" OnItemDataBound="rptSubtotalCollections_ItemDataBound">
             <ItemTemplate>
                 <tr class="subtotal">
-                    <td colspan="3" class="subtotalLabel" rowspan='<%# Eval("SubtotalCount") %>'></td>
+                    <td colspan="<%# ShowRole ? 4 : 3 %>" class="subtotalLabel" rowspan='<%# Eval("SubtotalCount") %>'></td>
                     <td rowspan='<%# Eval("SubtotalCount") %>'><%# Eval("GroupTitle") %></td>
                     <asp:Repeater ID="rptSubtotals" runat="server">
                         <ItemTemplate>

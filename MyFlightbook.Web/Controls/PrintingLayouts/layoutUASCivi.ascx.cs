@@ -13,10 +13,23 @@ namespace MyFlightbook.Printing.Layouts
 {
     public partial class layoutUASCivi : PrintLayoutBase
     {
+        protected bool ShowRole { get; set; }
+
         #region IPrintingTemplate
         public override void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, PrintingOptions options, bool showFooter = true)
         {
             base.BindPages(lst, user, options, showFooter);
+
+            if (lst == null)
+                throw new ArgumentNullException(nameof(lst));
+
+            ShowRole = false;
+            foreach (LogbookPrintedPage lpp in lst)
+            {
+                foreach (LogbookEntryBase le in lpp.Flights)
+                    if (le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropRole))
+                        ShowRole = true;
+            }
 
             rptPages.DataSource = lst;
             rptPages.DataBind();
@@ -34,7 +47,7 @@ namespace MyFlightbook.Printing.Layouts
                 throw new ArgumentNullException(nameof(e));
 
             LogbookPrintedPage lep = (LogbookPrintedPage)e.Item.DataItem;
-            StripRedundantOrExcludedProperties(null, lep.Flights);
+            StripRedundantOrExcludedProperties(new int[] { (int) CustomPropertyType.KnownProperties.IDPropRole }, lep.Flights);
 
             Repeater rpt = (Repeater)e.Item.FindControl("rptFlight");
             rpt.DataSource = lep.Flights;
