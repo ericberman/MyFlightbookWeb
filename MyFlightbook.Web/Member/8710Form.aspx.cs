@@ -226,10 +226,10 @@ public partial class Member_8710Form : System.Web.UI.Page
 
     protected static string ModelDisplay(object o)
     {
-        if (o == null || o == DBNull.Value || !(o is System.Data.Common.DbDataRecord dr) || dr["Family"] == DBNull.Value)
+        if (o == null || o == DBNull.Value || !(o is System.Data.Common.DbDataRecord dr) || dr["FamilyDisplay"] == DBNull.Value)
             return Resources.LogbookEntry.FieldTotal;
 
-        string szFamily = (string)dr["Family"];
+        string szFamily = (string)dr["FamilyDisplay"];
         return szFamily.StartsWith("(", StringComparison.CurrentCultureIgnoreCase) ? szFamily : (string)dr["ModelDisplay"];
     }
 
