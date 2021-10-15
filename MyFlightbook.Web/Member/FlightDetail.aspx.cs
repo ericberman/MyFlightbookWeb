@@ -25,6 +25,8 @@ namespace MyFlightbook.MemberPages
     /// </summary>
     public partial class FlightDetailBase : Page
     {
+        protected const double DataCropRange = 800.0;
+
         protected enum DownloadFormat { Original, CSV, KML, GPX };
 
         private enum DetailsTab { Flight, Aircraft, Chart, Data, Download }
@@ -42,6 +44,13 @@ namespace MyFlightbook.MemberPages
         protected string LinkForFlight(int idFlight)
         {
             return String.Format(CultureInfo.InvariantCulture, "~/Member/FlightDetail.aspx/{0}{1}", idFlight, Restriction == null || Restriction.IsDefault ? string.Empty : "?fq=" + HttpUtility.UrlEncode(Restriction.ToBase64CompressedJSONString()));
+        }
+
+        private Profile m_pfUser;
+
+        protected Profile Viewer
+        {
+            get { return m_pfUser ?? (m_pfUser = Profile.GetUser(Page.User.Identity.Name)); }
         }
         #endregion
 
@@ -105,6 +114,14 @@ namespace MyFlightbook.MemberPages
                 default:
                     return true;
             }
+        }
+
+        protected double TryParse(string sz, double defValue)
+        {
+            if (!double.TryParse(sz, NumberStyles.Float | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val))
+                val = defValue;
+
+            return val;
         }
         #endregion
 
@@ -292,6 +309,8 @@ namespace MyFlightbook.MemberPages
         #endregion
 
         #region Charting
+        protected int DataPointCount { get; set; }
+
         protected static void UpdateChart(TelemetryDataTable tdt, Controls_GoogleChart gcData, FlightData fd, string PathLatLongArrayID, ListItem xAxis, ListItem yAxis1, ListItem yAxis2, double y1Scale, double y2Scale, out double max, out double min, out double max2, out double min2)
         {
             max = double.MinValue;
@@ -359,6 +378,125 @@ namespace MyFlightbook.MemberPages
                 }
             }
             gcData.TickSpacing = 1; // Math.Max(1, m_fd.Data.Rows.Count / 20);
+        }
+
+        protected static void SetUpChart(DataTable data, DropDownList cmbXAxis, DropDownList cmbYAxis1, DropDownList cmbYAxis2)
+        {
+            if (data == null)
+                return;
+
+            if (cmbXAxis == null)
+                throw new ArgumentNullException(nameof(cmbXAxis));
+            if (cmbYAxis1 == null)
+                throw new ArgumentNullException(nameof(cmbYAxis1));
+            if (cmbYAxis2 == null)
+                throw new ArgumentNullException(nameof(cmbYAxis2));
+
+            // now set up the chart
+            cmbXAxis.Items.Clear();
+            cmbYAxis1.Items.Clear();
+            cmbYAxis2.Items.Clear();
+            cmbYAxis2.Items.Add(new ListItem(Resources.FlightData.GraphNoData, ""));
+            cmbYAxis2.SelectedIndex = 0;
+
+            foreach (DataColumn dc in data.Columns)
+            {
+                KnownColumn kc = KnownColumn.GetKnownColumn(dc.Caption);
+
+                if (kc.Type.CanGraph())
+                    cmbXAxis.Items.Add(new ListItem(kc.FriendlyName, kc.Column));
+                if (kc.Type == KnownColumnTypes.ctDec || kc.Type == KnownColumnTypes.ctFloat || kc.Type == KnownColumnTypes.ctInt)
+                {
+                    cmbYAxis1.Items.Add(new ListItem(kc.FriendlyName, kc.Column));
+                    cmbYAxis2.Items.Add(new ListItem(kc.FriendlyName, kc.Column));
+                }
+            }
+
+            // Select a date or time column for the X axis if possible; if not, select "SAMPLES"
+            if (cmbXAxis.Items.Count > 0)
+            {
+                if (data.Columns["DATE"] != null)
+                    cmbXAxis.SelectedValue = "DATE";
+                else if (data.Columns["TIME"] != null)
+                    cmbXAxis.SelectedValue = "TIME";
+                else if (data.Columns["SAMPLE"] != null)
+                    cmbXAxis.SelectedValue = "SAMPLE";
+                else
+                    cmbXAxis.SelectedIndex = 0;
+            }
+
+            // if there is something numeric for the Y axis, select it.  Otherwise, default to the first item.
+            if (cmbYAxis1.Items.Count > 0)
+                cmbYAxis1.SelectedIndex = 0;
+
+            foreach (ListItem li in cmbYAxis1.Items)
+            {
+                KnownColumn kc = KnownColumn.GetKnownColumn(li.Value);
+                if (kc.Type != KnownColumnTypes.ctDateTime && kc.Type != KnownColumnTypes.ctLatLong && kc.Column != "SAMPLE")
+                {
+                    cmbYAxis1.SelectedValue = kc.Column;
+                    break;
+                }
+            }
+        }
+
+        protected void ResetCrop(LogbookEntryBase le)
+        {
+            if (le == null)
+                throw new ArgumentNullException(nameof(le));
+            TelemetryReference tr = le.Telemetry;
+            tr.MetaData.DataEnd = tr.MetaData.DataStart = null;
+            using (FlightData fd = new FlightData())
+            {
+                fd.ParseFlightData(le);
+                tr.RecalcGoogleData(fd);
+            }
+            tr.Commit();
+            Response.Redirect(Request.RawUrl);
+        }
+
+        protected void CropInRange(LogbookEntryBase le, string clipMin, string clipMax)
+        {
+            if (le == null)
+                throw new ArgumentNullException(nameof(le));
+            int dataStart = (int)Math.Truncate((Convert.ToDouble(clipMin, CultureInfo.InvariantCulture) / DataCropRange) * Math.Max(DataPointCount - 1, 0));
+            int dataEnd = (int)Math.Truncate((Convert.ToDouble(clipMax, CultureInfo.InvariantCulture) / DataCropRange) * Math.Max(DataPointCount - 1, 0));
+
+            if (dataEnd <= dataStart)
+                dataEnd = dataStart + 1;
+
+            if ((dataStart == 0 && dataEnd == 0) || dataEnd >= DataPointCount)
+            {
+                ResetCrop(le);
+                return;
+            }
+            TelemetryReference tr = le.Telemetry;
+            tr.MetaData.DataStart = dataStart;
+            tr.MetaData.DataEnd = dataEnd;
+            using (FlightData fd = new FlightData())
+            {
+                fd.ParseFlightData(le);
+                tr.RecalcGoogleData(fd);
+            }
+            tr.Commit();
+            Response.Redirect(Request.RawUrl);
+        }
+
+        protected bool GetCropRange(LogbookEntryBase le, out int clipMin, out int clipMax)
+        {
+            if (le == null)
+                throw new ArgumentNullException(nameof(le));
+
+            clipMin = 0;
+            clipMax = 0;
+
+            if (le.Telemetry == null || !le.Telemetry.MetaData.HasData)
+                return false;
+            if (le.Telemetry.MetaData.DataStart.HasValue)
+                clipMin = le.Telemetry.MetaData.DataStart.Value;
+            if (le.Telemetry.MetaData.DataEnd.HasValue)
+                clipMax = le.Telemetry.MetaData.DataEnd.Value;
+            return true;
         }
         #endregion
 
@@ -428,7 +566,6 @@ namespace MyFlightbook.MemberPages
             return (Request.PathInfo.Length > 0 && Int32.TryParse(Request.PathInfo.Substring(1), NumberStyles.Integer, CultureInfo.InvariantCulture, out int idflight)) ? idflight : LogbookEntryCore.idFlightNone;
         }
         #endregion
-
     }
 
     public partial class FlightDetail : FlightDetailBase
@@ -436,12 +573,6 @@ namespace MyFlightbook.MemberPages
         const string PathLatLongArrayID = "rgll";
 
         #region properties
-        private Profile m_pfUser;
-
-        protected Profile Viewer
-        {
-            get { return m_pfUser ?? (m_pfUser = MyFlightbook.Profile.GetUser(Page.User.Identity.Name)); }
-        }
 
         protected string EditPath(int idFlight)
         {
@@ -489,7 +620,7 @@ namespace MyFlightbook.MemberPages
 
                 if (DataForFlight.NeedsComputing)
                 {
-                    if (!DataForFlight.ParseFlightData(led.FlightData) && (lblErr.Text = DataForFlight.ErrorString.Replace("\r\n", "<br />")).Length > 0)
+                    if (!DataForFlight.ParseFlightData(led) && (lblErr.Text = DataForFlight.ErrorString.Replace("\r\n", "<br />")).Length > 0)
                         pnlErrors.Visible = true;
                 }
                 return DataForFlight.Data;
@@ -625,6 +756,10 @@ namespace MyFlightbook.MemberPages
         {
             Master.SelectedTab = tabID.tabLogbook;
 
+            // Set the multi-drag handles to use the hidden controls
+            mhsClip.MultiHandleSliderTargets[0].ControlID = hdnClipMin.ClientID;
+            mhsClip.MultiHandleSliderTargets[1].ControlID = hdnClipMax.ClientID;
+
             using (DataForFlight = new FlightData())
             {
                 if (!IsPostBack)
@@ -642,7 +777,7 @@ namespace MyFlightbook.MemberPages
                             AccordionCtrl.SelectedIndex = iTab;
 
                         LogbookEntryDisplay led = CurrentFlight = LoadFlight(CurrentFlightID);
-                        SetUpChart(TelemetryData);
+                        SetUpChart(TelemetryData, cmbXAxis, cmbYAxis1, cmbYAxis2);
                         UpdateChart();
                         UpdateRestriction();
 
@@ -696,71 +831,22 @@ namespace MyFlightbook.MemberPages
         }
 
         #region chart management
-        protected void SetUpChart(DataTable data)
-        {
-            if (data == null)
-                return;
-
-            // now set up the chart
-            cmbXAxis.Items.Clear();
-            cmbYAxis1.Items.Clear();
-            cmbYAxis2.Items.Clear();
-            cmbYAxis2.Items.Add(new ListItem(Resources.FlightData.GraphNoData, ""));
-            cmbYAxis2.SelectedIndex = 0;
-
-            foreach (DataColumn dc in data.Columns)
-            {
-                KnownColumn kc = KnownColumn.GetKnownColumn(dc.Caption);
-
-                if (kc.Type.CanGraph())
-                    cmbXAxis.Items.Add(new ListItem(kc.FriendlyName, kc.Column));
-                if (kc.Type == KnownColumnTypes.ctDec || kc.Type == KnownColumnTypes.ctFloat || kc.Type == KnownColumnTypes.ctInt)
-                {
-                    cmbYAxis1.Items.Add(new ListItem(kc.FriendlyName, kc.Column));
-                    cmbYAxis2.Items.Add(new ListItem(kc.FriendlyName, kc.Column));
-                }
-            }
-
-            // Select a date or time column for the X axis if possible; if not, select "SAMPLES"
-            if (cmbXAxis.Items.Count > 0)
-            {
-                if (data.Columns["DATE"] != null)
-                    cmbXAxis.SelectedValue = "DATE";
-                else if (data.Columns["TIME"] != null)
-                    cmbXAxis.SelectedValue = "TIME";
-                else if (data.Columns["SAMPLE"] != null)
-                    cmbXAxis.SelectedValue = "SAMPLE";
-                else
-                    cmbXAxis.SelectedIndex = 0;
-            }
-
-            // if there is something numeric for the Y axis, select it.  Otherwise, default to the first item.
-            if (cmbYAxis1.Items.Count > 0)
-                cmbYAxis1.SelectedIndex = 0;
-
-            foreach (ListItem li in cmbYAxis1.Items)
-            {
-                KnownColumn kc = KnownColumn.GetKnownColumn(li.Value);
-                if (kc.Type != KnownColumnTypes.ctDateTime && kc.Type != KnownColumnTypes.ctLatLong && kc.Column != "SAMPLE")
-                {
-                    cmbYAxis1.SelectedValue = kc.Column;
-                    break;
-                }
-            }
-        }
-
         protected void UpdateChart()
         {
             TelemetryDataTable tdt = TelemetryData;
             if (tdt == null)
                 return;
 
-            if (!double.TryParse(rblConvert1.SelectedValue, NumberStyles.Float | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double y1Scale))
-                y1Scale = 1.0;
-            if (!double.TryParse(rblConvert2.SelectedValue, NumberStyles.Float | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double y2Scale))
-                y1Scale = 1.0;
+            double y1Scale = TryParse(rblConvert1.SelectedValue, 1.0);
+            double y2Scale = TryParse(rblConvert2.SelectedValue, 1.0);
 
             UpdateChart(tdt, gcData, DataForFlight, PathLatLongArrayID, cmbXAxis.SelectedItem, cmbYAxis1.SelectedItem, cmbYAxis2.SelectedItem, y1Scale, y2Scale, out double max, out double min, out double max2, out double min2);
+            DataPointCount = gcData.YVals.Count;
+
+            bool HasCrop = GetCropRange(CurrentFlight, out int _, out int _);
+            btnResetCrop.Visible = HasCrop;
+            pnlRange.Visible = mhsClip.Enabled = btnCrop.Visible = !HasCrop;
+            lblDefaultCropStatus.Text = HasCrop ? Resources.FlightData.TelemetryCropIsApplied : Resources.FlightData.TelemetryCropNoCrop;
 
             // Clear out the grid.
             gvData.DataSource = null;
@@ -774,6 +860,16 @@ namespace MyFlightbook.MemberPages
             lblMinY.Text = min < double.MaxValue && !String.IsNullOrEmpty(gcData.YLabel) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ChartMinX, gcData.YLabel, min) : string.Empty;
             lblMaxY2.Text = max2 > double.MinValue && !String.IsNullOrEmpty(gcData.Y2Label) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ChartMaxX, gcData.Y2Label, max2) : string.Empty;
             lblMinY2.Text = min2 < double.MaxValue && !String.IsNullOrEmpty(gcData.Y2Label) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ChartMinX, gcData.Y2Label, min2) : string.Empty;
+        }
+
+        protected void btnCrop_Click(object sender, EventArgs e)
+        {
+            CropInRange(CurrentFlight, hdnClipMin.Value, hdnClipMax.Value);
+        }
+
+        protected void btnResetCrop_Click(object sender, EventArgs e)
+        {
+            ResetCrop(CurrentFlight);
         }
 
         protected void RefreshChart()
@@ -824,7 +920,7 @@ namespace MyFlightbook.MemberPages
         {
             using (FlightData fd = new FlightData() { FlightID = CurrentFlightID })
             {
-                fd.ParseFlightData(CurrentFlight.FlightData);
+                fd.ParseFlightData(CurrentFlight);
                 DownloadData(CurrentFlight, fd, Convert.ToInt32(cmbAltUnits.SelectedValue, CultureInfo.InvariantCulture), Convert.ToInt32(cmbSpeedUnits.SelectedValue, CultureInfo.InvariantCulture), cmbFormat.SelectedIndex);
             }
         }
@@ -835,7 +931,7 @@ namespace MyFlightbook.MemberPages
             {
                 try
                 {
-                    fd.ParseFlightData(CurrentFlight.FlightData);
+                    fd.ParseFlightData(CurrentFlight);
                     pnlCloudAhoySuccess.Visible = await PushToCloudahoy(Page.User.Identity.Name, CurrentFlight, fd, Convert.ToInt32(cmbAltUnits.SelectedValue, CultureInfo.InvariantCulture), Convert.ToInt32(cmbSpeedUnits.SelectedValue, CultureInfo.InvariantCulture), !Branding.CurrentBrand.MatchesHost(Request.Url.Host)).ConfigureAwait(false);
                 }
                 catch (MyFlightbookException ex)
@@ -927,7 +1023,7 @@ namespace MyFlightbook.MemberPages
             if (e == null)
                 throw new ArgumentNullException(nameof(e));
 
-            LogbookEntryDisplay.FDeleteEntry(e.FlightID, Page.User.Identity.Name);
+            LogbookEntryBase.FDeleteEntry(e.FlightID, Page.User.Identity.Name);
             Response.Redirect(TargetPage);
         }
 

@@ -3,6 +3,7 @@ using MyFlightbook.CSV;
 using MyFlightbook.Geography;
 using MyFlightbook.SolarTools;
 using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -1298,13 +1299,14 @@ namespace MyFlightbook.Telemetry
         /// Parses the flight data into a data table.  NOT CACHED - caller should cache results if necessary
         /// </summary>
         /// <param name="flightData">The data to parse</param>
+        /// <param name="telemetryMetaData">Any metadata (can include data to trim)</param>
         /// <returns>True for success; if failure, see ErrorString</returns>
-        public Boolean ParseFlightData(string flightData)
+        public bool ParseFlightData(string flightData, TelemetryMetaData telemetryMetaData = null)
         {
-            System.Globalization.CultureInfo ciSave = System.Threading.Thread.CurrentThread.CurrentCulture;
+            CultureInfo ciSave = System.Threading.Thread.CurrentThread.CurrentCulture;
             System.Threading.Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 
-            Boolean fResult = false;
+            bool fResult = false;
 
             DataSourceType dst = DataSourceType.BestGuessTypeFromText(flightData);
             DataType = dst.Type;
@@ -1320,9 +1322,32 @@ namespace MyFlightbook.Telemetry
                 m_szError = tp.ErrorString;
             }
 
+            if (telemetryMetaData != null && telemetryMetaData.HasData)
+            {
+                // Trim from beginning, end.
+                if (telemetryMetaData.DataEnd.HasValue && telemetryMetaData.DataEnd.Value < m_dt.Rows.Count)
+                {
+                    for (int iRow = m_dt.Rows.Count - 1; iRow > telemetryMetaData.DataEnd.Value; iRow--)
+                        m_dt.Rows[iRow].Delete();
+                }
+                if (telemetryMetaData.DataStart.HasValue && telemetryMetaData.DataStart.Value > 0)
+                {
+                    for (int iRow = telemetryMetaData.DataStart.Value - 1; iRow >= 0; iRow--)
+                        m_dt.Rows[iRow].Delete();
+                }
+                m_dt.AcceptChanges();
+            }
+
             System.Threading.Thread.CurrentThread.CurrentCulture = ciSave;
 
             return fResult;
+        }
+
+        public bool ParseFlightData(LogbookEntryBase le)
+        {
+            if (le == null)
+                throw new ArgumentNullException(nameof(le));
+            return ParseFlightData(le.FlightData, le.Telemetry.MetaData);
         }
         #endregion
 
@@ -1601,11 +1626,12 @@ namespace MyFlightbook.Telemetry
             if (String.IsNullOrEmpty(le.FlightData) && opt.AutoSynthesizePath)
             {
                 le.FlightData = GenerateSyntheticPath(le);
+                le.Telemetry.MetaData.Clear();  // ensure no cropping.
                 fSyntheticPath = !String.IsNullOrEmpty(le.FlightData);
             }
 
             // first, parse the telemetry.
-            if (!String.IsNullOrEmpty(le.FlightData) && (ParseFlightData(le.FlightData) || opt.IgnoreErrors) && HasLatLongInfo && HasDateTime)
+            if (!String.IsNullOrEmpty(le.FlightData) && (ParseFlightData(le) || opt.IgnoreErrors) && HasLatLongInfo && HasDateTime)
             {
                 // clear out the stuff we may fill out
                 le.Landings = le.NightLandings = le.FullStopLandings = 0;
@@ -1671,6 +1697,35 @@ namespace MyFlightbook.Telemetry
         #endregion
     }
 
+    [Serializable]
+    public class TelemetryMetaData
+    {
+        #region Properties
+        /// <summary>
+        /// Index of the first sample to display
+        /// </summary>
+        public int? DataStart { get; set; }
+
+        /// <summary>
+        /// Index of the last sample to display
+        /// </summary>
+        public int? DataEnd { get; set; }
+
+        [JsonIgnore]
+        public bool HasData
+        {
+            get { return DataStart.HasValue || DataEnd.HasValue; }
+        }
+        #endregion
+
+        public TelemetryMetaData() { }
+
+        public void Clear()
+        {
+            DataStart = DataEnd = null;
+        }
+    }
+
     /// <summary>
     /// Summarizes telemetry for a flight
     /// </summary>
@@ -1682,7 +1737,14 @@ namespace MyFlightbook.Telemetry
         #region Object Creation
         public TelemetryReference()
         {
-            Init();
+            FlightID = null;
+            CachedDistance = null;
+            RawData = null;
+            MetaData = new TelemetryMetaData();
+            Compressed = 0;
+            Error = string.Empty;
+            TelemetryType = DataSourceType.FileType.Text;
+            GoogleData = null;
         }
 
         public TelemetryReference(MySqlDataReader dr)
@@ -1702,17 +1764,6 @@ namespace MyFlightbook.Telemetry
         #endregion
 
         #region Object Initialization
-        private void Init()
-        {
-            FlightID = (int?) null;
-            CachedDistance = (int?) null;
-            RawData = null;
-            Compressed = 0;
-            Error = string.Empty;
-            TelemetryType = DataSourceType.FileType.Text;
-            GoogleData = null;
-        }
-
         /// <summary>
         /// Initializes the google data/distance from the specified telemetry, or from the RawData property (if no telemetry is specified)
         /// </summary>
@@ -1727,13 +1778,21 @@ namespace MyFlightbook.Telemetry
 
             using (FlightData fd = new FlightData())
             {
-                if (!fd.ParseFlightData(szTelemetry))
+                MetaData.Clear();   // ensure no cropping, etc.
+                if (!fd.ParseFlightData(szTelemetry, MetaData))
                     Error = fd.ErrorString;
                 // cache the data as best as possible regardless of errors
-                GoogleData = new GoogleEncodedPath(fd.GetTrajectory());
                 TelemetryType = fd.DataType.Value;  // should always have a value.
-                CachedDistance = GoogleData.Distance;
+                RecalcGoogleData(fd);
             }
+        }
+
+        public void RecalcGoogleData(FlightData fd)
+        {
+            if (fd == null)
+                throw new ArgumentNullException(nameof(fd));
+            GoogleData = new GoogleEncodedPath(fd.GetTrajectory());
+            CachedDistance = GoogleData.Distance;
         }
 
         private void InitFromDataReader(IDataReader dr)
@@ -1757,6 +1816,11 @@ namespace MyFlightbook.Telemetry
             string szPath = dr["flightpath"].ToString();
             if (!string.IsNullOrEmpty(szPath))
                 GoogleData = new GoogleEncodedPath() { EncodedPath = szPath, Distance = CachedDistance ?? 0 };
+
+            o = dr["metadata"];
+            string szJSONMeta = (o is DBNull) ? string.Empty : (string) o;
+            if (!String.IsNullOrEmpty(szJSONMeta))
+                MetaData = JsonConvert.DeserializeObject<TelemetryMetaData>(szJSONMeta);
         }
         #endregion
 
@@ -1766,7 +1830,7 @@ namespace MyFlightbook.Telemetry
             if (GoogleData == null && !String.IsNullOrEmpty(RawData))
                 InitFromTelemetry();
 
-            string szQ = @"REPLACE INTO flighttelemetry SET idflight=?idf, distance=?d, flightpath=?path, telemetrytype=?tt";
+            string szQ = @"REPLACE INTO flighttelemetry SET idflight=?idf, distance=?d, flightpath=?path, telemetrytype=?tt, metadata=?md";
             DBHelper dbh = new DBHelper(szQ);
             if (!dbh.DoNonQuery((comm) =>
             {
@@ -1774,6 +1838,7 @@ namespace MyFlightbook.Telemetry
                 comm.Parameters.AddWithValue("d", CachedDistance.HasValue && !double.IsNaN(CachedDistance.Value) ? CachedDistance : null);
                 comm.Parameters.AddWithValue("path", GoogleData?.EncodedPath);
                 comm.Parameters.AddWithValue("tt", (int)TelemetryType);
+                comm.Parameters.AddWithValue("md", MetaData.HasData ? JsonConvert.SerializeObject(MetaData, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore }) : null);
             }))
                 throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, "Exception committing TelemetryReference: idFlight={0}, distance={1}, path={2}, type={3}, error={4}", FlightID, CachedDistance.HasValue ? CachedDistance.Value.ToString(CultureInfo.InvariantCulture) : "(none)", GoogleData == null ? "(none)" : "(path)", TelemetryType.ToString(), dbh.LastError));
 
@@ -1936,6 +2001,8 @@ namespace MyFlightbook.Telemetry
         {
             get { return HasRawPath || HasCompressedPath; }
         }
+
+        public TelemetryMetaData MetaData { get; private set; }
         #endregion
 
         #region Cacheable data calls

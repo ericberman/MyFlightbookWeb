@@ -635,7 +635,7 @@ namespace MyFlightbook.Airports
                             {
                                 try
                                 {
-                                    fd.ParseFlightData(le.Telemetry.RawData);
+                                    fd.ParseFlightData(le.Telemetry.RawData, le.Telemetry.MetaData);
                                     if (fd.HasLatLongInfo)
                                     {
                                         kw.AddPath(fd.GetTrajectory(), String.Format(CultureInfo.CurrentCulture, "{0:d} - {1}", le.Date, le.Comment), fd.SpeedFactor);

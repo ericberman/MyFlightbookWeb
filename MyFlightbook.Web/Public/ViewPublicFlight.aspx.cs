@@ -250,7 +250,7 @@ namespace MyFlightbook.PublicPages
 
             using (FlightData fd = new FlightData())
             {
-                fd.ParseFlightData(le.FlightData);
+                fd.ParseFlightData(le);
                 if (fd.HasLatLongInfo)
                 {
                     {

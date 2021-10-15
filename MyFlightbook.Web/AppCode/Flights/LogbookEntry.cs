@@ -2563,7 +2563,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
             {
                 using (FlightData fd = new FlightData())
                 {
-                    fd.ParseFlightData(FlightData);
+                    fd.ParseFlightData(this);
                     if (fd.HasLatLongInfo)
                         PathDistance = fd.ComputePathDistance();
                 }
@@ -2650,7 +2650,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                     {
                         ms = null;  // for CA2202
                         MemoryStream bs = sr.BaseStream as MemoryStream;
-                        if (fd.ParseFlightData(FlightData) && fd.HasLatLongInfo)
+                        if (fd.ParseFlightData(this) && fd.HasLatLongInfo)
                             fd.WriteGPXData(bs);
                         bs.Seek(0, SeekOrigin.Begin);
                         return sr.ReadToEnd();

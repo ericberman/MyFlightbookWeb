@@ -959,6 +959,7 @@
     <Content Include="Support\2020-12-01 - Training Items.txt" />
     <Content Include="Support\2020-12-05 - Club member role.txt" />
     <Content Include="Support\2021-06-03 - Aircraft Revision.txt" />
+    <Content Include="Support\2021-10-12 - Telemetry Attributes.txt" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>

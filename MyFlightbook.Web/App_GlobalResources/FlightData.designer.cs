@@ -545,6 +545,51 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Apply Crop.
+        /// </summary>
+        internal static string TelemetryCropCommit {
+            get {
+                return ResourceManager.GetString("TelemetryCropCommit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Telemetry has been cropped - reset to see it all and apply a new crop.
+        /// </summary>
+        internal static string TelemetryCropIsApplied {
+            get {
+                return ResourceManager.GetString("TelemetryCropIsApplied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All data is being displayed (none is cropped).
+        /// </summary>
+        internal static string TelemetryCropNoCrop {
+            get {
+                return ResourceManager.GetString("TelemetryCropNoCrop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Crop Data.
+        /// </summary>
+        internal static string TelemetryCropPrompt {
+            get {
+                return ResourceManager.GetString("TelemetryCropPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset Crop.
+        /// </summary>
+        internal static string TelemetryCropReset {
+            get {
+                return ResourceManager.GetString("TelemetryCropReset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Zoom In.
         /// </summary>
         internal static string ZoomIn {
