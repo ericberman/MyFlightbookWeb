@@ -282,4 +282,19 @@
   <data name="ConverstionMSToMph" xml:space="preserve">
     <value>Convert Meters/Second to Miles/Hour</value>
   </data>
+  <data name="TelemetryCropCommit" xml:space="preserve">
+    <value>Apply Crop</value>
+  </data>
+  <data name="TelemetryCropIsApplied" xml:space="preserve">
+    <value>Telemetry has been cropped - reset to see it all and apply a new crop</value>
+  </data>
+  <data name="TelemetryCropNoCrop" xml:space="preserve">
+    <value>All data is being displayed (none is cropped)</value>
+  </data>
+  <data name="TelemetryCropPrompt" xml:space="preserve">
+    <value>Crop Data</value>
+  </data>
+  <data name="TelemetryCropReset" xml:space="preserve">
+    <value>Reset Crop</value>
+  </data>
 </root>

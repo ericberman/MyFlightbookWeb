@@ -1,7 +1,6 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="FlightDetail.aspx.cs" Inherits="MyFlightbook.MemberPages.FlightDetail" culture="auto" meta:resourcekey="PageResource1" Async="true" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Reference Control="~/Controls/mfbLogbookSidebar.ascx" %>
-<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register Src="../Controls/mfbGoogleMapManager.ascx" TagName="mfbGoogleMapManager"
     TagPrefix="uc1" %>
 <%@ Register Src="../Controls/GoogleChart.ascx" TagName="GoogleChart" TagPrefix="uc2" %>
@@ -20,6 +19,8 @@
 <%@ Register Src="~/Controls/mfbFlightContextMenu.ascx" TagPrefix="uc1" TagName="mfbFlightContextMenu" %>
 <%@ Register Src="~/Controls/popmenu.ascx" TagPrefix="uc1" TagName="popmenu" %>
 <%@ Register Src="~/Controls/mfbSendFlight.ascx" TagPrefix="uc1" TagName="mfbSendFlight" %>
+<%@ Register Src="~/Controls/Expando.ascx" TagPrefix="uc1" TagName="Expando" %>
+
 
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
     <asp:Localize ID="locPageHeader" runat="server" Text="<%$ Resources:LogbookEntry, FlightDetailsHeader %>"></asp:Localize>
@@ -278,17 +279,66 @@
                                         OnSelectedIndexChanged="cmbXAxis_SelectedIndexChanged" meta:resourcekey="cmbXAxisResource1">
                                     </asp:DropDownList>
                                 </div>
+                                <uc1:Expando runat="server" ID="Expando">
+                                    <Header>
+                                        <h3 style="display:inline"><% =Resources.FlightData.TelemetryCropPrompt %></h3>
+                                    </Header>
+                                    <Body>
+                                        <div>
+                                            <ajaxToolkit:MultiHandleSliderExtender runat ="server" ID="mhsClip" OnClientDragEnd="endClipDrag" OnClientDragStart="startClipDrag" OnClientValueChanged="updateClip" TargetControlID="txtRange" Minimum="0" Maximum="800" Increment="1" RaiseChangeOnlyOnMouseUp="True" Length="800" EnableHandleAnimation="True" ShowHandleDragStyle="False" ShowHandleHoverStyle="False" ShowInnerRail="False">
+                                                <MultiHandleSliderTargets>
+                                                    <ajaxToolkit:MultiHandleSliderTarget Offset="0" />
+                                                    <ajaxToolkit:MultiHandleSliderTarget Offset="800" />
+                                                </MultiHandleSliderTargets>
+                                            </ajaxToolkit:MultiHandleSliderExtender>
+                                            <asp:Panel runat="server" ID="pnlRange" style="width:800px; margin-left:auto; margin-right:auto; display:block; height: 18pt">
+                                                <asp:TextBox ID="txtRange" runat="server" /> 
+                                            </asp:Panel>
+                                            <div style="margin-left:auto; margin-right:auto; margin-top: 4px; margin-bottom: 4px;">
+                                                <span id="dragStatus">
+                                                    <asp:Label ID="lblDefaultCropStatus" runat="server" Font-Size="Smaller" />
+                                                </span>
+                                                <asp:LinkButton ID="btnCrop" runat="server" Text="<%$ Resources:FlightData, TelemetryCropCommit %>" OnClick="btnCrop_Click" />
+                                                <asp:LinkButton ID="btnResetCrop" runat="server" Text="<%$ Resources:FlightData, TelemetryCropReset %>" OnClick="btnResetCrop_Click" />
+                                            </div>
+                                        </div>
+                                    </Body>
+                                </uc1:Expando>
                             </div>
                             <div style="text-align: center">
-                                <uc2:GoogleChart ID="gcData" SlantAngle="0" LegendType="bottom" Width="800" Height="500" runat="server" />
+                                <asp:HiddenField ID="hdnClipMin" runat="server" Value="0" />
+                                <asp:HiddenField ID="hdnClipMax" runat="server" Value="800" />
+                                <script type="text/javascript">
+
+                                    function minIndex(s) {
+                                        return Math.trunc((s._handleData[0].Value / 800) * <% =Math.Max(DataPointCount - 1, 0) %>);
+                                    }
+
+                                    function maxIndex(s) {
+                                        return Math.trunc((s._handleData[1].Value / 800) * <% =Math.Max(DataPointCount - 1, 0) %>);
+                                    }
+
+                                    function endClipDrag(s, e) {
+                                    }
+                                    function startClipDrag(s, e) {
+                                        updateClip(s, e);
+                                    }
+
+                                    function updateClip(s, e) {
+                                        var minidx = minIndex(s);
+                                        var maxidx = maxIndex(s);
+                                        $("#dragStatus")[0].innerText = datagcData.getFormattedValue(minidx, 0) + " - " + datagcData.getFormattedValue(maxidx, 0);
+                                    }
+                                </script>
+                                <div><uc2:GoogleChart ID="gcData" SlantAngle="0" LegendType="bottom" Width="800" Height="500" runat="server" /></div>
+                                <div>
+                                    <asp:Label ID="lblMinY" runat="server" meta:resourcekey="lblMinYResource1"></asp:Label>
+                                    <asp:Label ID="lblMaxY" runat="server" meta:resourcekey="lblMaxYResource1"></asp:Label>
+                                    <asp:Label ID="lblMinY2" runat="server" meta:resourcekey="lblMinY2Resource1"></asp:Label>
+                                    <asp:Label ID="lblMaxY2" runat="server" meta:resourcekey="lblMaxY2Resource1"></asp:Label>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div style="text-align:center;">
-                        <asp:Label ID="lblMinY" runat="server" meta:resourcekey="lblMinYResource1"></asp:Label>
-                        <asp:Label ID="lblMaxY" runat="server" meta:resourcekey="lblMaxYResource1"></asp:Label>
-                        <asp:Label ID="lblMinY2" runat="server" meta:resourcekey="lblMinY2Resource1"></asp:Label>
-                        <asp:Label ID="lblMaxY2" runat="server" meta:resourcekey="lblMaxY2Resource1"></asp:Label>
                     </div>
                 </Content>
             </ajaxToolkit:AccordionPane>
@@ -403,11 +453,11 @@
         <asp:Panel ID="pnlErrorDetail" runat="server"
             Style="height: 0px; overflow: hidden" meta:resourcekey="pnlErrorDetailResource1">
             <asp:Label ID="lblErr" runat="server" meta:resourcekey="lblErrResource1"></asp:Label>
-            <cc1:CollapsiblePanelExtender
+            <ajaxToolkit:CollapsiblePanelExtender
                 ID="CollapsiblePanelExtender1" runat="server" Collapsed="True" TargetControlID="pnlErrorDetail"
                 CollapseControlID="lblShowerrors" ExpandControlID="lblShowerrors"
                 CollapsedText="<%$ Resources:LocalizedText, ClickToShow %>" ExpandedText="<%$ Resources:LocalizedText, ClickToHide %>"
-                TextLabelID="lblShowerrors" BehaviorID="CollapsiblePanelExtender1"></cc1:CollapsiblePanelExtender>
+                TextLabelID="lblShowerrors" BehaviorID="CollapsiblePanelExtender1"></ajaxToolkit:CollapsiblePanelExtender>
         </asp:Panel>
     </asp:Panel>
     <asp:Panel runat="server" ID="pnlMap" Style="width: 80%; margin-left: 10%; margin-right: 10%;" meta:resourcekey="pnlMapResource1">
