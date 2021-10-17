@@ -84,6 +84,7 @@ namespace MyFlightbook.MemberPages
                             HttpContext.Current.ApplicationInstance.CompleteRequest(); // Causes ASP.NET to bypass all events and filtering in the HTTP pipeline chain of execution and directly execute the EndRequest event.
                         }
                         catch (HttpUnhandledException) { }  // sometimes the remote host has closed the connection - allow cleanup to proceed.
+                        catch (HttpException) { }
                     });
             }
             else
