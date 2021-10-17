@@ -544,7 +544,9 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
     public void RefreshNumFlights()
     {
         IEnumerable<LogbookEntryDisplay> flights = CachedData;  // should always be non-null, but...
-        lblNumFlights.Text = flights == null ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.NumberOfFlights, flights.Count());
+        int cFlights = flights == null ? 0 : flights.Count();
+        pnlHeader.Visible = cFlights > 0;
+        lblNumFlights.Text = cFlights == 1 ? Resources.LogbookEntry.NumberOfFlightsOne : String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.NumberOfFlights, cFlights);
     }
 
     /// <summary>

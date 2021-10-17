@@ -3354,15 +3354,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0:#,##0} flights.
-        /// </summary>
-        internal static string NumberOfFlights {
-            get {
-                return ResourceManager.GetString("NumberOfFlights", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Callback URL &quot;{0}&quot; is not allowed for this service..
         /// </summary>
         internal static string oAuthErrBadRedirectURL {

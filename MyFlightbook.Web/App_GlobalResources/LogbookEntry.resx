@@ -1376,4 +1376,11 @@ Proceed with import?</value>
   <data name="PrintHeaderRole" xml:space="preserve">
     <value>Role</value>
   </data>
+  <data name="NumberOfFlights" xml:space="preserve">
+    <value>{0:#,##0} flights</value>
+    <comment># of flights in a result set</comment>
+  </data>
+  <data name="NumberOfFlightsOne" xml:space="preserve">
+    <value>1 Flight</value>
+  </data>
 </root>

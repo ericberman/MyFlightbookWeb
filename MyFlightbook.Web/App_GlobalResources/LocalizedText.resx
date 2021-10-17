@@ -733,10 +733,6 @@
   <data name="ChartTotalsHeader" xml:space="preserve">
     <value>View:</value>
   </data>
-  <data name="NumberOfFlights" xml:space="preserve">
-    <value>{0:#,##0} flights</value>
-    <comment># of flights in a result set</comment>
-  </data>
   <data name="ChartRunningTotal" xml:space="preserve">
     <value>Running Total</value>
   </data>

@@ -1944,6 +1944,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0:#,##0} flights.
+        /// </summary>
+        internal static string NumberOfFlights {
+            get {
+                return ResourceManager.GetString("NumberOfFlights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 Flight.
+        /// </summary>
+        internal static string NumberOfFlightsOne {
+            get {
+                return ResourceManager.GetString("NumberOfFlightsOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ◄.
         /// </summary>
         internal static string PreviousFlight {
