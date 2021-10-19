@@ -379,7 +379,7 @@ namespace MyFlightbook.Printing
         /// <summary>
         /// Number of flights to print; less than or = 0 for continuous
         /// </summary>
-        public int FlightsPerPage { get; set; } = 15;
+        public int FlightsPerPage { get; set; } = 0;
 
         /// <summary>
         /// Include images when printing?
