@@ -80,7 +80,7 @@ namespace MyFlightbook.Controls.FlightEditing
             imgXFillTach.Visible = true;
 
             string szXFillScript = String.Format(CultureInfo.InvariantCulture, @"
-    addLoadEvent(function () {{
+    $(function () {{
         document.getElementById('{0}').style.display = (currentlySelectedAircraft) ? ""inline-block"" : ""none"";
     }});
 
@@ -116,8 +116,7 @@ namespace MyFlightbook.Controls.FlightEditing
             ResolveUrl("~/Member/LogbookNew.aspx/HighWaterMarkTachForAircraft"),
             mfbDecEdit.EditBoxWE.ClientID
         );
-
-            Page.ClientScript.RegisterClientScriptBlock(GetType(), "CrossFillHobbs", szXFillScript, true);
+            Page.ClientScript.RegisterStartupScript(GetType(), "CrossFillHobbs", szXFillScript, true);
         }
 
         protected void ToForm()

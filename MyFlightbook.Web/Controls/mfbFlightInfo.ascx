@@ -146,7 +146,7 @@
     <uc1:mfbTimeZone ID="mfbTimeZone1" runat="server" />
 </asp:Panel>
 <script>
-    addLoadEvent(function () {
+    $(function () {
         document.getElementById('<% =imgHighWater.ClientID %>').style.display = (currentlySelectedAircraft) ? "inline-block" : "none";
     });
 

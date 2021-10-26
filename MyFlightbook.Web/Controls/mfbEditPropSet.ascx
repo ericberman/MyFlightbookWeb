@@ -16,7 +16,7 @@
         }
     }
 
-    addLoadEvent(function () { CacheItems(document.getElementById("<% =cmbPropsToAdd.ClientID %>")); });
+    $(function () { CacheItems(document.getElementById("<% =cmbPropsToAdd.ClientID %>")); });
 </script>
         <asp:UpdatePanel ID="UpdatePanel1" runat="server">
             <Triggers>

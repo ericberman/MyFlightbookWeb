@@ -10,7 +10,7 @@
         return false;
     }
 
-    addLoadEvent(function () {
+    $(function () {
         document.onpaste = function (event) {
             var items = (event.clipboardData || event.originalEvent.clipboardData).items;
             var blob = null;
