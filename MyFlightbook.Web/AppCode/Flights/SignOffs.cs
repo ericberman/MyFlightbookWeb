@@ -556,7 +556,14 @@ namespace MyFlightbook.Instruction
         /// <param name="sz">The string</param>
         private void InitFromString(string sz)
         {
+            if (sz == null)
+                return;
+
             string[] rgParams = sz.Split(';');
+
+            if (rgParams.Length < 3)
+                throw new ArgumentException("Invalid request relationship request string: " + sz);
+
             Requestedrole = (RoleType)Convert.ToInt32(rgParams[0], CultureInfo.InvariantCulture);
             RequestingUser = rgParams[1];
             TargetUser = rgParams[2];
