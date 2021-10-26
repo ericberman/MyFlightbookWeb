@@ -144,11 +144,10 @@ namespace MyFlightbook.Controls.FlightEditing
                 case CFPPropertyType.cfpDecimal:
                     mvProp.SetActiveView(vwDecimal);    // need to do this before setting the cross-fill image to visible
                                                         // Set the cross-fill source before setting the editing mode.
-                    if (!fp.PropertyType.IsBasicDecimal)
-                        mfbDecEdit.CrossFillSourceClientID = CrossFillSourceClientID;
+                    mfbDecEdit.CrossFillSourceClientID = fp.PropertyType.IsBasicDecimal ? string.Empty : CrossFillSourceClientID;
                     if (fp.PropertyType.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTachStart)
                         SetUpCrossFillTach();
-                    mfbDecEdit.EditingMode = (!fp.PropertyType.IsBasicDecimal && MyFlightbook.Profile.GetUser(Page.User.Identity.Name).UsesHHMM ? Controls_mfbDecimalEdit.EditMode.HHMMFormat : Controls_mfbDecimalEdit.EditMode.Decimal);
+                    mfbDecEdit.EditingMode = (!fp.PropertyType.IsBasicDecimal && Profile.GetUser(Page.User.Identity.Name).UsesHHMM ? Controls_mfbDecimalEdit.EditMode.HHMMFormat : Controls_mfbDecimalEdit.EditMode.Decimal);
                     mfbDecEdit.Value = fp.DecValue;
                     break;
                 case CFPPropertyType.cfpCurrency:
