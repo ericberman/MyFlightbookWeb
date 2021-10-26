@@ -243,7 +243,7 @@ namespace MyFlightbook.Currency
         public static IEnumerable<CurrencyStatusItem> MedicalStatus(DateTime lastMedical, int monthsToMedical, MedicalType mt, DateTime? dob, bool fUsesICAOMedical)
         {
             // if no last medical, then this is easy: we know nothing.
-            if (!lastMedical.HasValue() || monthsToMedical == 0)
+            if (!lastMedical.HasValue())
                 return Array.Empty<CurrencyStatusItem>();
 
             if (RequiresBirthdate(mt) && (dob == null || !dob.HasValue))
@@ -258,9 +258,12 @@ namespace MyFlightbook.Currency
             switch (mt)
             {
                 case MedicalType.Other:
-                    lst.Add(StatusForDate(fUsesICAOMedical ?
-                            lastMedical.AddMonths(monthsToMedical) :
-                            lastMedical.AddCalendarMonths(monthsToMedical), Resources.Currency.NextMedical, CurrencyStatusItem.CurrencyGroups.Medical));
+                    if (monthsToMedical > 0)
+                    {
+                        lst.Add(StatusForDate(fUsesICAOMedical ?
+                                lastMedical.AddMonths(monthsToMedical) :
+                                lastMedical.AddCalendarMonths(monthsToMedical), Resources.Currency.NextMedical, CurrencyStatusItem.CurrencyGroups.Medical));
+                    }
                     break;
                 case MedicalType.EASA1stClass:
                     AddEASA1stClassItems(lst, lastMedical, fWas40AtExam, fWas60AtExam);
