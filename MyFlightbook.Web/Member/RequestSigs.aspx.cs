@@ -21,20 +21,19 @@ namespace MyFlightbook.Instruction
         protected void Page_Load(object sender, EventArgs e)
         {
             InitWizard(wzRequestSigs);
-            this.Master.SelectedTab = tabID.instSignFlights;
+            Master.SelectedTab = tabID.instSignFlights;
             if (!IsPostBack)
             {
                 lblName.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.TrainingHeader, HttpUtility.HtmlEncode(Profile.GetUser(Page.User.Identity.Name).UserFullName));
 
-                this.Master.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.TitleTraining, Branding.CurrentBrand.AppName);
-
-                RefreshFlightsList(util.GetStringParam(Request, "id").Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries));
-                SetUpInstructorList();
+                Master.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.TitleTraining, Branding.CurrentBrand.AppName);
+               
+                SetUpInstructorList(RefreshFlightsList(util.GetStringParam(Request, "id").Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)));
                 lblSignatureDisclaimer.Text = Branding.ReBrand(Resources.SignOff.SignedFlightDisclaimer);
             }
         }
 
-        protected void RefreshFlightsList(string[] rgFlightIds)
+        protected string RefreshFlightsList(string[] rgFlightIds)
         {
             if (rgFlightIds == null)
                 throw new ArgumentNullException(nameof(rgFlightIds));
@@ -70,13 +69,31 @@ namespace MyFlightbook.Instruction
             if (fPreSelected)
                 foreach (RepeaterItem ri in rptSelectedFlights.Items)
                     ((CheckBox)ri.FindControl("ckFlight")).Checked = true;
+
+            // See if there's an obvious best-guess instructor name and return that.
+            HashSet<string> hs = new HashSet<string>();
+            foreach (LogbookEntryBase le in lstFlights)
+                if (le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropInstructorName))
+                    hs.Add(le.CustomProperties[CustomPropertyType.KnownProperties.IDPropInstructorName].TextValue.ToUpper(CultureInfo.CurrentCulture));
+            hs.RemoveWhere(s => String.IsNullOrEmpty(s));   // SHOULD be a no-op.
+            return (hs.Count == 1) ? String.Join(string.Empty, hs) : string.Empty;
         }
 
-        protected void SetUpInstructorList()
+        protected void SetUpInstructorList(string szBestGuessInstructor)
         {
             CFIStudentMap sm = new CFIStudentMap(User.Identity.Name);
             cmbInstructors.DataSource = sm.Instructors;
             cmbInstructors.DataBind();
+
+            if (!String.IsNullOrEmpty(szBestGuessInstructor))
+            {
+                foreach (ListItem li in cmbInstructors.Items)
+                    if (li.Text.CompareCurrentCultureIgnoreCase(szBestGuessInstructor) == 0)
+                    {
+                        cmbInstructors.SelectedValue = li.Value;
+                        break;
+                    }
+            }
         }
 
         protected void cmbInstructors_SelectedIndexChanged(object sender, EventArgs e)
