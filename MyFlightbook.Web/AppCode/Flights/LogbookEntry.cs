@@ -2369,10 +2369,28 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                 }
             }
         }
+
+        private readonly static Regex rPPH = new Regex("#PPH:(?<rate>\\d+(?:[.,]\\d+)?)#", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
+
+        private void AutofillCostOfFlight()
+        {
+            Aircraft ac = new UserAircraft(User).GetUserAircraftByID(AircraftID);
+            MatchCollection mc = rPPH.Matches(ac.PrivateNotes);
+            if (mc.Count > 0 && decimal.TryParse(mc[0].Groups["rate"].Value, NumberStyles.Float, CultureInfo.CurrentCulture, out decimal rate))
+            {
+                // Find the best value of elapsed time to use.  Hobbs, else tach, else total
+                decimal time = (HobbsEnd > HobbsStart && HobbsStart > 0) ? HobbsEnd - HobbsStart :
+                    (CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropTachEnd) && CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropTachStart) ?
+                    CustomProperties[CustomPropertyType.KnownProperties.IDPropTachEnd].DecValue - CustomProperties[CustomPropertyType.KnownProperties.IDPropTachStart].DecValue : TotalFlightTime);
+                if (time > 0)
+                    CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightCost, rate * time));
+            }
+        }
         #endregion
 
         /// <summary>
         /// Performs final tasks after autofill.  Specifically does auto-cross country, closes off the last landing (if needed, and adds a night landing if it was at night)
+        /// Also fills in cost of flight with best guess, if appropriate.
         /// </summary>
         /// <param name="opt">The autofill options</param>
         public void AutoFillFinish(AutoFillOptions opt)
@@ -2384,6 +2402,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
             AutofillFinishXCTime(al, opt.CrossCountryThreshold);
             AutofillFinishAirports(al);
             AutofillFinishInstruction();
+            AutofillCostOfFlight();
         }
         #endregion
 

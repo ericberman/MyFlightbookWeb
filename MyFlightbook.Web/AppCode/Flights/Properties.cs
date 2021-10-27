@@ -133,6 +133,7 @@ namespace MyFlightbook
             IDPropXCMoreThan50nm = 380,
             IDPropNightTouchAndGo = 397,
             IDPropXCLessThan25nm = 405,
+            IDPropFlightCost = 415,
             IDProp135293Knowledge = 427,
             IDProp135293Competency = 428,
             IDProp135299FlightCheck = 429,
