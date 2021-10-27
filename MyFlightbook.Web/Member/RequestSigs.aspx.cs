@@ -91,6 +91,7 @@ namespace MyFlightbook.Instruction
                     if (li.Text.CompareCurrentCultureIgnoreCase(szBestGuessInstructor) == 0)
                     {
                         cmbInstructors.SelectedValue = li.Value;
+                        rowEmail.Visible = valBadEmail.Enabled = valEmailRequired.Enabled = false;
                         break;
                     }
             }
@@ -99,8 +100,7 @@ namespace MyFlightbook.Instruction
         protected void cmbInstructors_SelectedIndexChanged(object sender, EventArgs e)
         {
             bool fNeedsEmail = String.IsNullOrEmpty(cmbInstructors.SelectedValue);
-            rowEmail.Visible = fNeedsEmail;
-            valBadEmail.Enabled = valEmailRequired.Enabled = fNeedsEmail;
+            rowEmail.Visible = valBadEmail.Enabled = valEmailRequired.Enabled = fNeedsEmail;
         }
 
         protected IList<string> SelectedFlightIDs
