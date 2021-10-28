@@ -2375,8 +2375,11 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
         private void AutofillCostOfFlight()
         {
             Aircraft ac = new UserAircraft(User).GetUserAircraftByID(AircraftID);
+            if (ac == null || ac.PrivateNotes == null)
+                return;
+
             MatchCollection mc = rPPH.Matches(ac.PrivateNotes);
-            if (mc.Count > 0 && decimal.TryParse(mc[0].Groups["rate"].Value, NumberStyles.Float, CultureInfo.CurrentCulture, out decimal rate))
+            if (mc.Count > 0 && mc[0].Groups["rate"] != null && decimal.TryParse(mc[0].Groups["rate"].Value, NumberStyles.Float, CultureInfo.CurrentCulture, out decimal rate))
             {
                 // Find the best value of elapsed time to use.  Hobbs, else tach, else total
                 decimal time = (HobbsEnd > HobbsStart && HobbsStart > 0) ? HobbsEnd - HobbsStart :
