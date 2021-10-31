@@ -2273,28 +2273,13 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                 throw new ArgumentNullException(nameof(opt));
 
             // Compute total time based on autofill options
+            // Fall through based on what you find.  Hobbs Time has highest priority, then block, then engine, then flight time.
             if (TotalFlightTime == 0)
             {
                 switch (opt.AutoFillTotal)
                 {
                     case AutoFillOptions.AutoFillTotalOption.None:
                         break;
-                    case AutoFillOptions.AutoFillTotalOption.EngineTime:
-                        if (EngineStart.HasValue() && EngineEnd.HasValue() && EngineStart.CompareTo(EngineEnd) < 0)
-                        {
-                            TotalFlightTime = (decimal)EngineEnd.StripSeconds().Subtract(EngineStart.StripSeconds()).TotalHours;
-                            break;
-                        }
-                        goto case AutoFillOptions.AutoFillTotalOption.FlightTime;
-                    // else fall through and do flight time.
-                    case AutoFillOptions.AutoFillTotalOption.FlightTime:
-                        if (FlightStart.HasValue() && FlightEnd.HasValue() && FlightStart.CompareTo(FlightEnd) < 0)
-                        {
-                            TotalFlightTime = (decimal)FlightEnd.StripSeconds().Subtract(FlightStart.StripSeconds()).TotalHours;
-                            break;
-                        }
-                        goto case AutoFillOptions.AutoFillTotalOption.HobbsTime;
-                    // else fall through and do hobbs time.
                     case AutoFillOptions.AutoFillTotalOption.HobbsTime:
                         if (HobbsStart > 0 && HobbsEnd > HobbsStart)
                         {
@@ -2309,7 +2294,25 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                             CustomFlightProperty cfpBlockIn = CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDBlockIn);
 
                             if (cfpBlockIn != null && cfpBlockOut != null && !cfpBlockIn.IsDefaultValue && !cfpBlockOut.IsDefaultValue && cfpBlockIn.DateValue.CompareTo(cfpBlockOut.DateValue) > 0)
+                            {
                                 TotalFlightTime = (decimal)cfpBlockIn.DateValue.StripSeconds().Subtract(cfpBlockOut.DateValue.StripSeconds()).TotalHours;
+                                break;
+                            }
+                        }
+                        goto case AutoFillOptions.AutoFillTotalOption.EngineTime;
+                    case AutoFillOptions.AutoFillTotalOption.EngineTime:
+                        if (EngineStart.HasValue() && EngineEnd.HasValue() && EngineStart.CompareTo(EngineEnd) < 0)
+                        {
+                            TotalFlightTime = (decimal)EngineEnd.StripSeconds().Subtract(EngineStart.StripSeconds()).TotalHours;
+                            break;
+                        }
+                        goto case AutoFillOptions.AutoFillTotalOption.FlightTime;
+                    // else fall through and do flight time.
+                    case AutoFillOptions.AutoFillTotalOption.FlightTime:
+                        if (FlightStart.HasValue() && FlightEnd.HasValue() && FlightStart.CompareTo(FlightEnd) < 0)
+                        {
+                            TotalFlightTime = (decimal)FlightEnd.StripSeconds().Subtract(FlightStart.StripSeconds()).TotalHours;
+                            break;
                         }
                         break;
                 }

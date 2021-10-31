@@ -306,7 +306,7 @@ namespace MyFlightbook.Telemetry
         public AutoFillOptions()
         {
             TimeZoneOffset = 0;
-            AutoFillTotal = AutoFillTotalOption.EngineTime;
+            AutoFillTotal = AutoFillTotalOption.HobbsTime;
             AutoFillHobbs = AutoFillHobbsOption.EngineTime;
             Night = NightCritera.EndOfCivilTwilight;
             NightLanding = NightLandingCriteria.SunsetPlus60;
