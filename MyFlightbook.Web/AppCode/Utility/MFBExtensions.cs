@@ -149,6 +149,14 @@ namespace MyFlightbook
         {
             return dt == null || !dt.HasValue() ? DateTime.MinValue : new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, 0, dt.Kind);
         }
+
+        public static string FormattedNowInUtc(this DateTime dt, TimeZoneInfo tzi)
+        {
+            if (tzi == null)
+                throw new ArgumentNullException(nameof(tzi));
+
+            return TimeZoneInfo.ConvertTimeFromUtc(dt, tzi).UTCDateFormatString();
+        }
         #endregion
 
         #region String Extensions

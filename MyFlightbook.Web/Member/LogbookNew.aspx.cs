@@ -20,7 +20,7 @@ TODO: Modify the print link in javascript on the client for performance?
  */
 namespace MyFlightbook.MemberPages
 {
-    public partial class LogbookNew : System.Web.UI.Page
+    public partial class LogbookNew : Page
     {
         #region Webservices
         /// <summary>
@@ -34,18 +34,7 @@ namespace MyFlightbook.MemberPages
             if (HttpContext.Current == null || HttpContext.Current.User == null || HttpContext.Current.User.Identity == null || !HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
                 throw new MyFlightbookException("You must be authenticated to make this call");
 
-            decimal val = 0.0M;
-            DBHelper dbh = new DBHelper(@"SELECT  MAX(f.hobbsEnd) AS highWater FROM (SELECT hobbsEnd FROM flights WHERE username = ?user AND idaircraft = ?id ORDER BY flights.date DESC LIMIT 10) f");
-            dbh.ReadRow((comm) =>
-            {
-                comm.Parameters.AddWithValue("user", HttpContext.Current.User.Identity.Name);
-                comm.Parameters.AddWithValue("id", idAircraft);
-            },
-            (dr) =>
-            {
-                val = Convert.ToDecimal(util.ReadNullableField(dr, "highWater", 0.0), CultureInfo.InvariantCulture);
-            });
-            return val.ToString("0.0#", CultureInfo.CurrentCulture);
+            return AircraftUtility.HighWaterMarkHobbsForUserInAircraft(idAircraft, HttpContext.Current.User.Identity.Name);
         }
 
         /// <summary>
@@ -59,20 +48,7 @@ namespace MyFlightbook.MemberPages
             if (HttpContext.Current == null || HttpContext.Current.User == null || HttpContext.Current.User.Identity == null || !HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
                 throw new MyFlightbookException("You must be authenticated to make this call");
 
-            decimal val = 0.0M;
-            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, @"SELECT MAX(tach.decvalue) AS highWater FROM
-(SELECT decvalue FROM flightproperties fp INNER JOIN flights f ON fp.idflight = f.idflight WHERE f.username = ?user AND f.idaircraft = ?id AND fp.idproptype = {0}
-ORDER BY f.date DESC LIMIT 10) tach", (int)CustomPropertyType.KnownProperties.IDPropTachEnd));
-            dbh.ReadRow((comm) =>
-            {
-                comm.Parameters.AddWithValue("user", HttpContext.Current.User.Identity.Name);
-                comm.Parameters.AddWithValue("id", idAircraft);
-            },
-            (dr) =>
-            {
-                val = Convert.ToDecimal(util.ReadNullableField(dr, "highWater", 0.0), CultureInfo.InvariantCulture);
-            });
-            return val.ToString("0.0#", CultureInfo.CurrentCulture);
+            return AircraftUtility.HighWaterMarkTachForUserInAircraft(idAircraft, HttpContext.Current.User.Identity.Name);
         }
 
         /// <summary>
@@ -88,49 +64,16 @@ ORDER BY f.date DESC LIMIT 10) tach", (int)CustomPropertyType.KnownProperties.ID
             if (HttpContext.Current.User == null || HttpContext.Current.User.Identity == null || !HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
                 throw new MyFlightbookException("You must be authenticated to make this call");
 
-            return TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, MyFlightbook.Profile.GetUser(HttpContext.Current.User.Identity.Name).PreferredTimeZone).UTCDateFormatString();
+            return DateTime.UtcNow.FormattedNowInUtc(Profile.GetUser(HttpContext.Current.User.Identity.Name).PreferredTimeZone);
         }
 
         [WebMethod(EnableSession = true)]
         public static string[] SuggestTraining(string prefixText, int count)
         {
-            const string szCacheKey = "keyTrainingAutocomplete";
-
             if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
                 throw new MyFlightbookException("Unauthenticated call to SuggestTraining");
 
-            if (String.IsNullOrEmpty(prefixText))
-                return Array.Empty<string>();
-
-            // Don't do anything if the cache is null - bad things afoot!
-            if (HttpRuntime.Cache == null)
-                return Array.Empty<string>();
-
-            List<string> lst = (List<string>)HttpRuntime.Cache[szCacheKey];
-            if (lst == null)
-            {
-                lst = new List<string>();
-                DBHelper dbh = new DBHelper("SELECT * FROM trainingitems");
-                dbh.ReadRows((comm) => { }, (dr) => { lst.Add(String.Format(CultureInfo.CurrentCulture, "[{0}]", dr["task"])); });
-                HttpRuntime.Cache.Add(szCacheKey, lst, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(1, 0, 0, 0), System.Web.Caching.CacheItemPriority.BelowNormal, null);
-            }
-
-            string[] rgszTerms = prefixText.ToUpper(CultureInfo.CurrentCulture).Split(new char[] { '-', '[' }, StringSplitOptions.RemoveEmptyEntries);
-            if (rgszTerms.Length == 0)
-                return Array.Empty<string>();
-
-            List<string> lstResult = lst.FindAll((sz) =>
-            {
-                foreach (string szTerm in rgszTerms)
-                    if (!sz.ToUpper(CultureInfo.CurrentCulture).Contains(szTerm))
-                        return false;
-                return true;
-            });
-
-            if (lstResult.Count > count)
-                lstResult.RemoveRange(count, lstResult.Count - count);
-
-            return lstResult.ToArray();
+            return LogbookEntryDisplay.SuggestTraining(prefixText, count);
         }
         #endregion
 

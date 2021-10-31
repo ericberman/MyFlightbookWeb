@@ -2292,6 +2292,51 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
             dbh.CommandText = "DELETE FROM Aircraft WHERE idAircraft=?idaircraft";
             dbh.DoNonQuery((comm) => { comm.Parameters.AddWithValue("idaircraft", idAircraft); });
         }
+
+        public static string HighWaterMarkHobbsForUserInAircraft(int idAircraft, string szUser)
+        {
+            if (szUser == null)
+                throw new ArgumentNullException(nameof(szUser));
+            if (idAircraft <= 0)
+                return string.Empty;
+
+            decimal val = 0.0M;
+            DBHelper dbh = new DBHelper(@"SELECT  MAX(f.hobbsEnd) AS highWater FROM (SELECT hobbsEnd FROM flights WHERE username = ?user AND idaircraft = ?id ORDER BY flights.date DESC LIMIT 10) f");
+            dbh.ReadRow((comm) =>
+            {
+                comm.Parameters.AddWithValue("user", szUser);
+                comm.Parameters.AddWithValue("id", idAircraft);
+            },
+            (dr) =>
+            {
+                val = Convert.ToDecimal(util.ReadNullableField(dr, "highWater", 0.0), CultureInfo.InvariantCulture);
+            });
+            return val.ToString("0.0#", CultureInfo.CurrentCulture);
+        }
+
+        public static string HighWaterMarkTachForUserInAircraft(int idAircraft, string szUser)
+        {
+            if (szUser == null)
+                throw new ArgumentNullException(nameof(szUser));
+            if (idAircraft <= 0)
+                return string.Empty;
+
+            decimal val = 0.0M;
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, @"SELECT MAX(tach.decvalue) AS highWater FROM
+(SELECT decvalue FROM flightproperties fp INNER JOIN flights f ON fp.idflight = f.idflight WHERE f.username = ?user AND f.idaircraft = ?id AND fp.idproptype = {0}
+ORDER BY f.date DESC LIMIT 10) tach", (int)CustomPropertyType.KnownProperties.IDPropTachEnd));
+            dbh.ReadRow((comm) =>
+            {
+                comm.Parameters.AddWithValue("user", szUser);
+                comm.Parameters.AddWithValue("id", idAircraft);
+            },
+            (dr) =>
+            {
+                val = Convert.ToDecimal(util.ReadNullableField(dr, "highWater", 0.0), CultureInfo.InvariantCulture);
+            });
+            return val.ToString("0.0#", CultureInfo.CurrentCulture);
+
+        }
     }
 
     /// <summary>

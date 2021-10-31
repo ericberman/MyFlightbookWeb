@@ -3788,6 +3788,50 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
             }
         }
         #endregion
+    
+        /// <summary>
+        /// Helper function for autocompletion of training items in the Comments field
+        /// </summary>
+        /// <param name="prefixText"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public static string[] SuggestTraining(string prefixText, int count)
+        {
+            const string szCacheKey = "keyTrainingAutocomplete";
+
+            if (String.IsNullOrEmpty(prefixText))
+                return Array.Empty<string>();
+
+            // Don't do anything if the cache is null - bad things afoot!
+            if (System.Web.HttpRuntime.Cache == null)
+                return Array.Empty<string>();
+
+            List<string> lst = (List<string>)System.Web.HttpRuntime.Cache[szCacheKey];
+            if (lst == null)
+            {
+                lst = new List<string>();
+                DBHelper dbh = new DBHelper("SELECT * FROM trainingitems");
+                dbh.ReadRows((comm) => { }, (dr) => { lst.Add(String.Format(CultureInfo.CurrentCulture, "[{0}]", dr["task"])); });
+                System.Web.HttpRuntime.Cache.Add(szCacheKey, lst, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(1, 0, 0, 0), System.Web.Caching.CacheItemPriority.BelowNormal, null);
+            }
+
+            string[] rgszTerms = prefixText.ToUpper(CultureInfo.CurrentCulture).Split(new char[] { '-', '[' }, StringSplitOptions.RemoveEmptyEntries);
+            if (rgszTerms.Length == 0)
+                return Array.Empty<string>();
+
+            List<string> lstResult = lst.FindAll((sz) =>
+            {
+                foreach (string szTerm in rgszTerms)
+                    if (!sz.ToUpper(CultureInfo.CurrentCulture).Contains(szTerm))
+                        return false;
+                return true;
+            });
+
+            if (lstResult.Count > count)
+                lstResult.RemoveRange(count, lstResult.Count - count);
+
+            return lstResult.ToArray();
+        }
     }
 
     /// <summary>
