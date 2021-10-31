@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2020 MyFlightbook LLC
+ * Copyright (c) 2012-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -23,7 +23,8 @@ public partial class Public_FAQ : System.Web.UI.Page
         if (!IsPostBack)
         {
             SelectedFAQItem = util.GetIntParam(Request, "q", 0);
-            rptFAQGroup.DataSource = FAQGroup.CategorizedFAQs;
+            bool fBypassCache = util.GetIntParam(Request, "ut", 0) != 0;
+            rptFAQGroup.DataSource = fBypassCache ? FAQGroup.CategorizeFAQItems(FAQItem.AllFAQItems) : FAQGroup.CategorizedFAQs;
             rptFAQGroup.DataBind();
         }
     }

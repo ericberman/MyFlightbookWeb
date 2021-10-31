@@ -292,7 +292,7 @@ namespace MyFlightbook.Mapping
             RefreshMyAirports();
         }
 
-        protected string CacheKeyUserAirports
+        protected string SessionKeyUserAirports
         {
             get { return "AirportsForUser" + Page.User.Identity.Name; }
         }
@@ -306,8 +306,8 @@ namespace MyFlightbook.Mapping
         {
             Boolean fAdmin = IsAdmin;
 
-            if (!IsPostBack || ((m_rgAirportsForUser = (airport[])Cache[CacheKeyUserAirports]) == null))
-                Cache[CacheKeyUserAirports] = m_rgAirportsForUser = airport.AirportsForUser(Page.User.Identity.Name, fAdmin);
+            if (!IsPostBack || ((m_rgAirportsForUser = (airport[])Session[SessionKeyUserAirports]) == null))
+                Session[SessionKeyUserAirports] = m_rgAirportsForUser = airport.AirportsForUser(Page.User.Identity.Name, fAdmin);
 
             if (fAdmin)
                 this.Master.SelectedTab = tabID.admAirports;
@@ -354,7 +354,7 @@ namespace MyFlightbook.Mapping
                     {
                         if (ap.FDelete())
                         {
-                            Cache.Remove(CacheKeyUserAirports);
+                            Session.Remove(SessionKeyUserAirports);
                             RefreshMyAirports();
                         }
                         else
@@ -417,7 +417,7 @@ namespace MyFlightbook.Mapping
                 }
 
                 initForm();
-                Cache.Remove(CacheKeyUserAirports);
+                Session.Remove(SessionKeyUserAirports);
 
                 if (!fAdmin || ckShowAllUserAirports.Checked)
                     RefreshMyAirports();

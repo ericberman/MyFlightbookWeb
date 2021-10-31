@@ -1317,7 +1317,7 @@ namespace MyFlightbook.Image
             {
                 mfbii.InitFromFile();
                 if (HttpRuntime.Cache != null)
-                    HttpRuntime.Cache[mfbii.CacheKey] = mfbii;
+                    HttpRuntime.Cache.Add(mfbii.CacheKey, mfbii, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), System.Web.Caching.CacheItemPriority.Low, null);
                 return mfbii;
             }
         }

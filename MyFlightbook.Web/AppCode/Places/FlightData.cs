@@ -261,7 +261,7 @@ namespace MyFlightbook.Telemetry
                 IEnumerable<KnownColumn> lst = KnownColumn.GetKnownColumns();
                 foreach (KnownColumn kc in lst)
                     dict[kc.Column] = kc;
-                HttpRuntime.Cache[szKnownColumnsCacheKey] = dict;
+                HttpRuntime.Cache.Add(szKnownColumnsCacheKey, dict, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(1, 0, 0), System.Web.Caching.CacheItemPriority.Normal, null);
             }
 
             string szKey = sz == null ? string.Empty : sz.ToUpper(CultureInfo.CurrentCulture);

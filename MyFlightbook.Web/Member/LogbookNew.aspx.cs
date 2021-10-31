@@ -112,7 +112,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int)CustomPropertyType.KnownProperties.ID
                 lst = new List<string>();
                 DBHelper dbh = new DBHelper("SELECT * FROM trainingitems");
                 dbh.ReadRows((comm) => { }, (dr) => { lst.Add(String.Format(CultureInfo.CurrentCulture, "[{0}]", dr["task"])); });
-                HttpRuntime.Cache[szCacheKey] = lst;
+                HttpRuntime.Cache.Add(szCacheKey, lst, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(1, 0, 0, 0), System.Web.Caching.CacheItemPriority.BelowNormal, null);
             }
 
             string[] rgszTerms = prefixText.ToUpper(CultureInfo.CurrentCulture).Split(new char[] { '-', '[' }, StringSplitOptions.RemoveEmptyEntries);

@@ -9,7 +9,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2020 MyFlightbook LLC
+ * Copyright (c) 2007-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -41,7 +41,10 @@ public partial class XMLNav : System.Web.UI.UserControl
         {
             TabList t = (TabList) HttpRuntime.Cache[CacheKey];
             if (t == null)
-                HttpRuntime.Cache[CacheKey] = t = new TabList(XmlSrc);
+            {
+                t = new TabList(XmlSrc);
+                HttpRuntime.Cache.Add(CacheKey, t, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(2, 0, 0), System.Web.Caching.CacheItemPriority.Normal, null);
+            }
             return t;
         }
     }

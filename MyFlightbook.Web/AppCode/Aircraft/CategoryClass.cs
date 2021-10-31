@@ -280,7 +280,7 @@ namespace MyFlightbook
             rgCatClass = ar.ToArray();
 
             if (HttpRuntime.Cache != null)
-                HttpRuntime.Cache[szCacheKey] = rgCatClass;
+                HttpRuntime.Cache.Add(szCacheKey, rgCatClass, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(1, 0, 0), System.Web.Caching.CacheItemPriority.Normal, null);
             return rgCatClass;
         }
 

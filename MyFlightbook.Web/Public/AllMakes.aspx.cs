@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2020 MyFlightbook LLC
+ * Copyright (c) 2013-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -161,6 +161,10 @@ public partial class Public_AllMakes : Page
             mfbIl.AltText = "Image of " + ac.TailNumber;
 
             mfbIl.Visible = (mfbIl.Refresh() > 0); // only add image list if there are images.
+
+            // DON'T cache this locally - could possibly be leading to memory leaks if crawler hits us hard?
+            foreach (MyFlightbook.Image.MFBImageInfo mfbii in mfbIl.Images.ImageArray)
+                mfbii.UnCache();
         }
     }
 }

@@ -768,7 +768,7 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
 
             // cache it.
             if (String.IsNullOrEmpty(szUser))
-                HttpRuntime.Cache[szAppCacheKey] = rgcpt;
+                HttpRuntime.Cache.Add(szAppCacheKey, rgcpt, null, Cache.NoAbsoluteExpiration, new TimeSpan(2, 0, 0), CacheItemPriority.Normal, null);
             else
                 Profile.GetUser(szUser).AssociatedData[szAppCacheKey] = rgcpt;
 

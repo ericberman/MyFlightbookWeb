@@ -7,7 +7,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2020 MyFlightbook LLC
+ * Copyright (c) 2009-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -17,8 +17,6 @@ namespace MyFlightbook
     public class Manufacturer
     {
         public const int UnsavedID = -1;
-
-        private const string szCacheKey = "allManufacturers";
 
         #region Properties
         /// <summary>
@@ -158,16 +156,15 @@ namespace MyFlightbook
         /// Gets a list of all manufacturers from the database.  NOT CACHED
         /// </summary>
         /// <returns></returns>
-        public static IEnumerable<Manufacturer> AllManufacturers()
+        private static IEnumerable<Manufacturer> AllManufacturers()
         {
             DBHelper dbh = new DBHelper("SELECT * FROM Manufacturers ORDER BY manufacturer ASC");
             List<Manufacturer> lst = new List<Manufacturer>();
             dbh.ReadRows((comm) => { }, (dr) => { lst.Add(new Manufacturer(dr)); });
-            if (HttpRuntime.Cache != null)
-                HttpRuntime.Cache.Add(szCacheKey, lst, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(1, 0, 0), System.Web.Caching.CacheItemPriority.Low, null);
-            HttpRuntime.Cache[szCacheKey] = lst;
             return lst;
         }
+
+        private const string szCacheKey = "allManufacturers";
 
         /// <summary>
         /// Gets all manufacturers, cached.
@@ -175,10 +172,11 @@ namespace MyFlightbook
         /// <returns></returns>
         public static IEnumerable<Manufacturer> CachedManufacturers()
         {
-            object o;
-            if (HttpRuntime.Cache != null && (o = HttpRuntime.Cache[szCacheKey]) != null)
-                return (IEnumerable<Manufacturer>) o;
+            if (HttpRuntime.Cache != null && HttpRuntime.Cache[szCacheKey] != null)
+                return (IEnumerable<Manufacturer>)HttpRuntime.Cache[szCacheKey];
             IEnumerable<Manufacturer> lst = AllManufacturers();
+            if (HttpRuntime.Cache != null)
+                HttpRuntime.Cache.Add(szCacheKey, lst, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(1, 0, 0), System.Web.Caching.CacheItemPriority.Low, null);
             return lst;
         }
 

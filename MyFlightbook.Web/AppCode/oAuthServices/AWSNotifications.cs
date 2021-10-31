@@ -8,7 +8,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2020 MyFlightbook LLC
+ * Copyright (c) 2015-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
  * This file contains classes to handle Amazon notifications
@@ -106,7 +106,7 @@ namespace AWSNotifications
                     using (System.Net.WebClient MyWebClient = new System.Net.WebClient())
                         PEMFileBytes = MyWebClient.DownloadData(szCertPath);
 
-                    HttpRuntime.Cache[szCertPath] = PEMFileBytes;
+                    HttpRuntime.Cache.Add(szCertPath, PEMFileBytes, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(1, 0, 0, 0), System.Web.Caching.CacheItemPriority.Normal, null);
                 }
 
                 using (X509Certificate2 MyX509Certificate2 = new X509Certificate2(PEMFileBytes))
