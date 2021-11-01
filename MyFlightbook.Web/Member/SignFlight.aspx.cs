@@ -31,18 +31,18 @@ namespace MyFlightbook.MemberPages
                     Response.Redirect(hdnReturnURL.Value);
 
                 LogbookEntry le = new LogbookEntry();
-                le.FLoadFromDB(idFlight, string.Empty, LogbookEntry.LoadTelemetryOption.None, true);
-
-                if (!le.CanSignThisFlight(Page.User.Identity.Name, out string szError))
+                if (!le.FLoadFromDB(idFlight, string.Empty, LogbookEntry.LoadTelemetryOption.None, true))
+                    lblError.Text = Resources.SignOff.errInvalidFlight;
+                else if (!le.CanSignThisFlight(Page.User.Identity.Name, out string szError))
                     lblError.Text = szError;
                 else
                 {
                     pnlSign.Visible = true;
                     lblHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.SignOff.SignFlightHeader, System.Web.HttpUtility.HtmlEncode(MyFlightbook.Profile.GetUser(le.User).UserFullName));
-                    mfbSignFlight1.Flight = le;
 
                     mfbSignFlight1.ShowCancel = hdnReturnURL.Value.Length > 0;
                 }
+                mfbSignFlight1.Flight = le;
             }
 
             mfbSignFlight1.CFIProfile = MyFlightbook.Profile.GetUser(Page.User.Identity.Name);

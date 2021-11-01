@@ -511,6 +511,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The requested flight does not exist.  Perhaps it has been deleted?.
+        /// </summary>
+        internal static string errInvalidFlight {
+            get {
+                return ResourceManager.GetString("errInvalidFlight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid request.
         /// </summary>
         internal static string errInvalidRequest {

@@ -461,4 +461,7 @@
   <data name="EndorsementValid" xml:space="preserve">
     <value>This endorsement has been digitally authenticated, so no scribble signature is required.</value>
   </data>
+  <data name="errInvalidFlight" xml:space="preserve">
+    <value>The requested flight does not exist.  Perhaps it has been deleted?</value>
+  </data>
 </root>
