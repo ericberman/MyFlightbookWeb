@@ -265,20 +265,13 @@ namespace MyFlightbook.ImportFlights
 
         public override bool CanParse(byte[] rgb)
         {
-            MemoryStream ms = new MemoryStream(rgb);
-            try
+            using (MemoryStream ms = new MemoryStream(rgb))
             {
                 using (StreamReader sr = new StreamReader(ms))
                 {
-                    ms = null;
                     string sz = sr.ReadLine();
-                    return sz.StartsWith("ForeFlight", StringComparison.CurrentCultureIgnoreCase);
+                    return sz != null && sz.StartsWith("ForeFlight", StringComparison.CurrentCultureIgnoreCase);
                 }
-            }
-            finally
-            {
-                if (ms != null)
-                    ms.Dispose();
             }
         }
 
