@@ -3,6 +3,8 @@ using MyFlightbook.Currency;
 using MyFlightbook.Geography;
 using MyFlightbook.Image;
 using MyFlightbook.Templates;
+using Serilog;
+using Serilog.Sinks.File;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -109,6 +111,8 @@ namespace MyFlightbook
         public enum MFBEventID { None, AuthUser = 1, GetAircraft, FlightsByDate, CommitFlightDEPRECATED, CreateAircraft, CreateUser, CreateUserAttemptDEPRECATED, CreateUserError, ExpiredToken, ObsoleteAPI };
         public enum MFBCountID { WSFlight, ImportedFlight };
 
+        public static readonly ILogger wslogger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.File(System.IO.Path.GetTempPath() + "logs/MyFlightbook.log", rollingInterval: RollingInterval.Day, encoding: System.Text.Encoding.UTF8).CreateLogger();
+
         public static void WriteEvent(MFBEventID eventID, string szUser, string szDescription)
         {
             DBHelper dbh = new DBHelper();
@@ -209,6 +213,7 @@ namespace MyFlightbook
         private const long TicksPerSecond = (1000 * 10000);
 
         private static string[] rgszAuthorizedService;
+
         private static string[] AuthorizedServices
         {
             get
@@ -263,10 +268,14 @@ namespace MyFlightbook
                 if (elapsedTicksDays > 14)
                     EventRecorder.WriteEvent(EventRecorder.MFBEventID.ExpiredToken, rgsz[0], String.Format(CultureInfo.InvariantCulture, "Expired token for user (2-week expiration): {0} days", elapsedTicksDays.ToString(CultureInfo.InvariantCulture)));
 
+                EventRecorder.wslogger.Information("Web Service: GetEncryptedUser success: {user}", rgsz[0]);
                 return rgsz[0];
             }
             else
+            {
+                EventRecorder.wslogger.Information("Web Service: GetEncryptedUser failed for token {token}", szAuthUserToken);
                 return string.Empty;
+            }
         }
 
         public MFBWebService() { }
@@ -280,6 +289,7 @@ namespace MyFlightbook
         public Aircraft[] AircraftForUser(string szAuthUserToken)
         {
             string szUser = GetEncryptedUser(szAuthUserToken);
+            EventRecorder.wslogger.Information("Web Service: Aircraft for User: {user}", szUser);
             if (szUser.Length > 0)
             {
                 // EventRecorder.WriteEvent(EventRecorder.MFBEventID.GetAircraft, szUser, "Aircraft for user");
@@ -324,6 +334,7 @@ namespace MyFlightbook
                 throw new MyFlightbookException(Resources.WebService.errBadAuth);
 
             string szUser = GetEncryptedUser(szAuthUserToken);
+            EventRecorder.wslogger.Information("Web Service: AddAircraftForUser {tail}, model {model} for User: {user}", szTail, idModel, szUser);
 
             if (szUser.Length == 0)
                 throw new MyFlightbookException(Resources.WebService.errBadAuth);
@@ -436,6 +447,8 @@ namespace MyFlightbook
 
             string szUser = GetEncryptedUser(szAuthUserToken);
 
+            EventRecorder.wslogger.Information("Web Service: UpdateMaintenanceForAircraftWithFlagsInternal aircraft: {tail} for User: {user}", ac.TailNumber, szUser);
+
             if (szUser.Length == 0)
                 throw new MyFlightbookException(Resources.WebService.errBadAuth);
 
@@ -505,6 +518,7 @@ namespace MyFlightbook
         public Aircraft[] DeleteAircraftForUser(string szAuthUserToken, int idAircraft)
         {
             string szUser = GetEncryptedUser(szAuthUserToken);
+            EventRecorder.wslogger.Information("Web Service: DeleteAircraftForUser aircraft: {id} for User: {user}", idAircraft, szUser);
             UserAircraft ua = new UserAircraft(szUser);
             ua.FDeleteAircraftforUser(idAircraft);
             return AircraftForUser(szAuthUserToken);
@@ -519,6 +533,7 @@ namespace MyFlightbook
         {
             if (ShuntState.IsShunted)
                 throw new MyFlightbookException(ShuntState.ShuntMessage);
+            EventRecorder.wslogger.Information("MakesAndModels - anonymous method");
             return SimpleMakeModel.GetAllMakeModels();
         }
 
@@ -541,7 +556,7 @@ namespace MyFlightbook
         public CurrencyStatusItem[] GetCurrencyForUser(string szAuthToken)
         {
             string szUser = GetEncryptedUser(szAuthToken);
-
+            EventRecorder.wslogger.Information("GetCurrencyForUser - user {user}", szUser);
             SetCultureForRequest();
 
             if (szUser.Length > 0)
@@ -563,6 +578,7 @@ namespace MyFlightbook
             if (szUser.Length == 0)
                 return null;
 
+            EventRecorder.wslogger.Information("TotalsForUser - user {user}", szUser);
             SetCultureForRequest();
 
             FlightQuery fq = new FlightQuery(szUser)
@@ -591,6 +607,8 @@ namespace MyFlightbook
             SetCultureForRequest();
             if (fq == null)
                 fq = new FlightQuery(szUser);
+            EventRecorder.wslogger.Information("TotalsForUserWithQuery - user {user}", szUser);
+
             util.UnescapeObject(fq);    // fix for HTML encoding issues.
             fq.UserName = szUser; // just to be safe
             UserTotals ut = new UserTotals(szUser, fq, true);
@@ -609,7 +627,7 @@ namespace MyFlightbook
             string szUser = GetEncryptedUser(szAuthToken);
             if (szUser.Length == 0)
                 return null;
-
+            EventRecorder.wslogger.Information("VisitedAirports - user {user}", szUser);
             return VisitedAirport.VisitedAirportsForUser(szUser);
         }
 
@@ -625,7 +643,7 @@ namespace MyFlightbook
                 throw new MyFlightbookException("FlightsWithQuery - no valid username specified");
 
             util.UnescapeObject(fq);    // fix for iPhone HTML encoding issues.
-
+            EventRecorder.wslogger.Information("FlightsWithQuery - user {user}, offset {offset}, maxCount {maxCount}", fq.UserName, offset, maxCount);
             return LogbookEntry.GetFlightsForUser(fq, offset, maxCount).ToArray();
         }
 
@@ -683,6 +701,7 @@ namespace MyFlightbook
                 throw new MyFlightbookException(Resources.WebService.errInvalidFlight);
             if (szUser.Length == 0)
                 throw new MyFlightbookException(Resources.WebService.errBadAuth);
+            EventRecorder.wslogger.Information("DeleteLogbookEntry - user {user}, idFlight {idFlight}", szUser, idFlight);
             LogbookEntry le = new LogbookEntry();
             if (le.FLoadFromDB(idFlight, szUser))
             {
@@ -795,6 +814,8 @@ namespace MyFlightbook
 
             string szUser = GetEncryptedUser(szAuthUserToken);
 
+            EventRecorder.wslogger.Information("CommitFlightWithOptions - user {user}", szUser);
+
             PrepareFlightForSubmission(le, szUser);
 
             bool fSuccess = false;
@@ -861,6 +882,7 @@ namespace MyFlightbook
             LatLong[] rgResult = null;
             if (szUser.Length > 0)
             {
+                EventRecorder.wslogger.Information("FlightPathForFlight - user {user}", szUser);
                 LogbookEntry le = new LogbookEntry();
                 if (le.FLoadFromDB(idFlight, szUser, LogbookEntry.LoadTelemetryOption.MetadataOrDB) && le.Telemetry.HasPath)
                     return le.Telemetry.Path().ToArray<LatLong>();
@@ -880,6 +902,7 @@ namespace MyFlightbook
             string szUser = GetEncryptedUser(szAuthUserToken);
             if (szUser.Length > 0)
             {
+                EventRecorder.wslogger.Information("FlightPathForFlightGPX - user {user}", szUser);
                 LogbookEntry le = new LogbookEntry();
                 if (le.FLoadFromDB(idFlight, szUser, LogbookEntry.LoadTelemetryOption.LoadAll) && le.Telemetry.HasPath)
                     return le.TelemetryAsGPX();
@@ -899,6 +922,7 @@ namespace MyFlightbook
 
             if (pf.User.CompareCurrentCultureIgnoreCase(szUser) != 0)
                 throw new MyFlightbookException(Resources.WebService.errFlightNotYours);
+
             PendingFlight pfOwned = PendingFlight.PendingFlightsForUser(szUser).FirstOrDefault(pf2 => pf2.PendingID.CompareOrdinal(pf.PendingID) == 0);
             if (pfOwned == null)
                 throw new MyFlightbookException(Resources.WebService.errFlightNotYours);
@@ -916,6 +940,7 @@ namespace MyFlightbook
             if (String.IsNullOrEmpty(szUser))
                 throw new MyFlightbookException(Resources.WebService.errBadAuth);
 
+            EventRecorder.wslogger.Information("CreatePendingFlight - user {user}", szUser);
             // Create a pending flight, but update the user field...just to be safe.
             new PendingFlight(le) { User = szUser }.Commit();
 
@@ -932,6 +957,7 @@ namespace MyFlightbook
             if (String.IsNullOrEmpty(szUser))
                 throw new MyFlightbookException(Resources.WebService.errBadAuth);
 
+            EventRecorder.wslogger.Information("PendingFlightsForUser - user {user}", szUser);
             return PendingFlight.PendingFlightsForUser(szUser).ToArray();
         }
 
@@ -950,6 +976,7 @@ namespace MyFlightbook
             // Verify that pending flight exists and is owned by this user
             ValidatePendingFlightForUser(szUser, pf);
 
+            EventRecorder.wslogger.Information("UpdatePendingFlight - user {user}", szUser);
             pf.Commit();
 
             return PendingFlight.PendingFlightsForUser(szUser).ToArray();
@@ -972,6 +999,7 @@ namespace MyFlightbook
             if (pf == null || pf.User.CompareOrdinal(szUser) != 0)
                 throw new MyFlightbookException(Resources.WebService.errFlightNotYours);
 
+            EventRecorder.wslogger.Information("DeletePendingFlight - user {user}", szUser);
             pf.Delete();
 
             return PendingFlight.PendingFlightsForUser(szUser).ToArray();
@@ -992,6 +1020,7 @@ namespace MyFlightbook
             // Verify that pending flight exists and is owned by this user
             ValidatePendingFlightForUser(szUser, pf);
 
+            EventRecorder.wslogger.Information("CommitPendingFlight - user {user}", szUser);
             if (pf.FCommit())
                 return PendingFlight.PendingFlightsForUser(szUser).ToArray();
             else
@@ -1008,6 +1037,7 @@ namespace MyFlightbook
         {
             if (ShuntState.IsShunted)
                 throw new MyFlightbookException(ShuntState.ShuntMessage);
+            EventRecorder.wslogger.Information("AvailableProepertyTypes - anonymous (why do we still have this???)");
             return CustomPropertyType.GetCustomPropertyTypes("");
         }
 
@@ -1015,6 +1045,7 @@ namespace MyFlightbook
         public CustomPropertyType[] AvailablePropertyTypesForUser(string szAuthUserToken)
         {
             string szUser = GetEncryptedUser(szAuthUserToken);
+            EventRecorder.wslogger.Information("AvailablePropertyTypesForUser - user {user}", szUser);
             return CustomPropertyType.GetCustomPropertyTypes(szUser);
         }
 
@@ -1022,6 +1053,7 @@ namespace MyFlightbook
         public TemplatePropTypeBundle PropertiesAndTemplatesForUser(string szAuthUserToken)
         {
             string szUser = GetEncryptedUser(szAuthUserToken);
+            EventRecorder.wslogger.Information("PropertiesAndTemplatesForUser - user {user}", szUser);
             return new TemplatePropTypeBundle(szUser);
         }
 
@@ -1037,6 +1069,7 @@ namespace MyFlightbook
             string szUser = GetEncryptedUser(szAuthUserToken);
             if (szUser.Length > 0)
             {
+                EventRecorder.wslogger.Information("PropertiesForFlight - user {user}", szUser);
                 LogbookEntry le = new LogbookEntry();
                 if (le.FLoadFromDB(idFlight, szUser))
                     return le.CustomProperties.ToArray();
@@ -1059,6 +1092,7 @@ namespace MyFlightbook
             string szUser = GetEncryptedUser(szAuthUserToken);
             if (szUser.Length > 0)
             {
+                EventRecorder.wslogger.Information("DeletePropertiesforFlight - user {user}, idFlight {idFlight}", szUser, idFlight);
                 LogbookEntry le = new LogbookEntry();
                 // FLoadFromDB will load custom properties but will
                 // also verify for us that the user owns the flight, and hence the properties.
@@ -1110,6 +1144,8 @@ namespace MyFlightbook
             mfbii.FixImageType();
 
             ImageAuthorization.ValidateAuth(mfbii, szUser);
+
+            EventRecorder.wslogger.Information("DeleteImage - user {user}, thumb={thumb}", szUser, mfbii.URLThumbnail);
             mfbii.DeleteImage();
         }
 
@@ -1127,6 +1163,7 @@ namespace MyFlightbook
 
             ImageAuthorization.ValidateAuth(mfbii, szUser);
 
+            EventRecorder.wslogger.Information("UpdateImageAnnotation - user {user}, thumb={thumb}", szUser, mfbii.URLThumbnail);
             if (mfbii.ThumbnailFile.Length > 0 && mfbii.VirtualPath.Length > 0)
                 mfbii.UpdateAnnotation(mfbii.Comment);
         }
@@ -1240,7 +1277,9 @@ namespace MyFlightbook
         public AuthResult AuthTokenForUserNew(string szAppToken, string szUser, string szPass, string sz2FactorAuth = null)
         {
             string szAuth = AuthTokenForUser(szAppToken, szUser, szPass, out string szEmulator);
-            return AuthResult.ProcessResult(szAuth, GetEncryptedUser(szAuth), sz2FactorAuth, szEmulator);         
+            AuthResult result = AuthResult.ProcessResult(szAuth, GetEncryptedUser(szAuth), sz2FactorAuth, szEmulator);
+            EventRecorder.wslogger.Information("AuthTokenForUserNew - user {user}, szApptoken={appToken}, emulator={emulator}", szUser, szAppToken, szEmulator ?? "(no emulation)");
+            return result;
         }
 
         [WebMethod]
@@ -1257,6 +1296,7 @@ namespace MyFlightbook
             if (szTokenNew == null)
                 return null;
 
+            EventRecorder.wslogger.Information("RefreshAuthToken - user {user}", szUser);
             return (GetEncryptedUser(szTokenNew).CompareOrdinal(szUserOld) == 0) ? szTokenNew : null;
         }
 
@@ -1285,6 +1325,8 @@ namespace MyFlightbook
 
             // create a username from the email address
             string szUser = UserEntity.UserNameForEmail(szEmail);
+
+            EventRecorder.wslogger.Information("New user to create (may fail): source: {appToken}, email {email}, user {user}", szEmail, szAppToken, szUser);
 
             szFirst = szFirst ?? string.Empty;
             szLast = szLast ?? string.Empty;
