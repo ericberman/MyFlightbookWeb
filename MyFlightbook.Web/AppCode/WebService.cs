@@ -279,7 +279,6 @@ namespace MyFlightbook
                 if (elapsedTicksDays > 14)
                     EventRecorder.WriteEvent(EventRecorder.MFBEventID.ExpiredToken, rgsz[0], String.Format(CultureInfo.InvariantCulture, "Expired token for user (2-week expiration): {0} days", elapsedTicksDays.ToString(CultureInfo.InvariantCulture)));
 
-                EventRecorder.LogCall("Web Service: GetEncryptedUser success: {user}");
                 return rgsz[0];
             }
             else
