@@ -42,7 +42,7 @@ namespace MyFlightbook.Web.Controls.Prefs
                 dCq[cq.QueryName] = cq;
             foreach (GridViewRow gvr in gvCanned.Rows)
             {
-                CannedQuery cq = dCq[((HiddenField)gvr.FindControl("hdnKey")).Value];    // shouldn't ever fail.
+                CannedQuery cq = dCq[System.Web.HttpUtility.HtmlDecode(((HiddenField)gvr.FindControl("hdnKey")).Value)];    // shouldn't ever fail.
                 cq.ColorString = ((TextBox) gvr.FindControl("txtQSamp")).Text;
                 if (String.IsNullOrWhiteSpace(cq.ColorString))
                     cq.ColorString = null;  // remove it entirely.
