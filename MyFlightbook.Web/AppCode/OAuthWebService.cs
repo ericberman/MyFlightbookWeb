@@ -528,10 +528,10 @@ namespace OAuthAuthorizationServer.Services
 
             string szErr = "OK";
 
+            string szUser = string.Empty;
+            string szAuth = Request.Form["txtAuthToken"];
             try
             {
-                string szUser = string.Empty;
-                string szAuth = Request.Form["txtAuthToken"];
                 if (String.IsNullOrEmpty(szAuth))
                 {
                     // check for an oAuth token
@@ -562,6 +562,8 @@ namespace OAuthAuthorizationServer.Services
             {
                 szErr = ex.Message;
             }
+
+            EventRecorder.LogCall("Image Upload to {page}, user {user},  filename={filename}, contentType={contenttype}, size={size}, status={status}", Request.Path, szUser, imgPicture.PostedFile.FileName, imgPicture.PostedFile.ContentType, imgPicture.PostedFile.ContentLength, szErr);
 
             Response.Clear();
             Response.ContentType = "text/plain; charset=utf-8";
