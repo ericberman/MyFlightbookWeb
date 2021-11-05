@@ -7,11 +7,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MyFlightbook.MemberPages
+namespace MyFlightbook.ImportFlights
 {
 
 
-    public partial class ImportFlights
+    public partial class ImportPage
     {
 
         /// <summary>

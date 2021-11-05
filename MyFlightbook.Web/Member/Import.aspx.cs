@@ -1,5 +1,3 @@
-using MyFlightbook;
-using MyFlightbook.ImportFlights;
 using MyFlightbook.OAuth.CloudAhoy;
 using System;
 using System.Collections.Generic;
@@ -15,9 +13,9 @@ using System.Web.UI.WebControls;
  *
 *******************************************************/
 
-namespace MyFlightbook.MemberPages
+namespace MyFlightbook.ImportFlights
 {
-    public partial class ImportFlights : MyFlightbook.Web.WizardPage.MFBWizardPage
+    public partial class ImportPage : Web.WizardPage.MFBWizardPage
     {
         protected bool UseHHMM { get; set; }
         private const string szKeyVSCSVImporter = "viewStateKeyCSVImporter";
@@ -237,12 +235,17 @@ namespace MyFlightbook.MemberPages
                 return;
             }
 
+            int cOriginalSize = rgb.Length;
+
             pnlConverted.Visible = pnlAudit.Visible = false;
 
             ExternalFormatConvertResults results = ExternalFormatConvertResults.ConvertToCSV(rgb);
             lblAudit.Text = results.AuditResult;
             hdnAuditState.Value = results.ResultString;
             CurrentCSVSource = results.GetConvertedBytes();
+
+            int cConvertedSize = CurrentCSVSource.Length;
+
             IsPendingOnly = IsPendingOnly || results.IsPendingOnly; // results can change between first preview and import, so if it's true anywhere along the way, preserve that.
 
             if (!String.IsNullOrEmpty(results.ConvertedName))
@@ -281,6 +284,9 @@ namespace MyFlightbook.MemberPages
             rptPreview.DataSource = csvimporter.FlightsToImport;
             rptPreview.DataBind();
             mvPreview.SetActiveView(csvimporter.FlightsToImport.Count > 0 ? vwPreview : vwNoResults);
+
+            if (wzImportFlights.ActiveStep == wsMissingAircraft)
+                EventRecorder.LogCall("Import Preview - User: {user}, Upload size {cbin}, converted size {cbconvert}, flights found: {flightcount}", User.Identity.Name, cOriginalSize, cConvertedSize, csvimporter.FlightsToImport.Count);
 
             mvMissingAircraft.SetActiveView(vwNoMissingAircraft); // default state.
 

@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="Import.aspx.cs" Inherits="MyFlightbook.MemberPages.ImportFlights" Title="Import Logbook" culture="auto" Async="true" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="Import.aspx.cs" Inherits="MyFlightbook.ImportFlights.ImportPage" Title="Import Logbook" culture="auto" Async="true" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register src="../Controls/mfbImportAircraft.ascx" tagname="mfbImportAircraft" tagprefix="uc1" %>
 <%@ Register Src="~/Controls/Expando.ascx" TagPrefix="uc1" TagName="Expando" %>
