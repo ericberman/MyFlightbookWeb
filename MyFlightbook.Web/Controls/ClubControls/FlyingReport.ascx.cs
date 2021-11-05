@@ -1,6 +1,4 @@
-﻿using MyFlightbook;
-using MyFlightbook.Airports;
-using MyFlightbook.Clubs;
+﻿using MyFlightbook.Airports;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,91 +9,94 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2020 MyFlightbook LLC
+ * Copyright (c) 2019-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
-public partial class Controls_ClubControls_FlyingReport : System.Web.UI.UserControl, IReportable
+
+namespace MyFlightbook.Clubs.ClubControls
 {
-    #region Formatting Helpers
-    protected static string FullName(string szFirst, string szLast, string szEmail)
+    public partial class FlyingReport : UserControl, IReportable
     {
-        Profile pf = new Profile()
+        #region Formatting Helpers
+        protected static string FullName(string szFirst, string szLast, string szEmail)
         {
-            FirstName = szFirst,
-            LastName = szLast,
-            Email = szEmail
-        };
-        return pf.UserFullName;
-    }
-
-    protected static string MonthForDate(DateTime dt)
-    {
-        return String.Format(CultureInfo.InvariantCulture, "{0}-{1} ({2})", dt.Year, dt.Month.ToString("00", CultureInfo.InvariantCulture), dt.ToString("MMM", CultureInfo.CurrentCulture));
-    }
-
-    protected static string FormattedUTCDate(object o)
-    {
-        if (o == null)
-            return string.Empty;
-        if (o is DateTime time)
-            return time.UTCFormattedStringOrEmpty(false);
-        return string.Empty;
-    }
-    #endregion
-
-    public string CSVData
-    {
-        get { return gvFlyingReport.CSVFromData(); }
-    }
-
-    protected void SetParams(int ClubID, DateTime dateStart, DateTime dateEnd, string szUser, int idAircraft)
-    {
-        sqlDSReports.SelectParameters.Clear();
-        sqlDSReports.SelectParameters.Add(new Parameter("idclub", DbType.Int32, ClubID.ToString(CultureInfo.InvariantCulture)));
-        sqlDSReports.SelectParameters.Add(new Parameter("startDate", DbType.Date, dateStart.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
-        sqlDSReports.SelectParameters.Add(new Parameter("endDate", DbType.Date, dateEnd.Date.HasValue() ? dateEnd.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) : DateTime.UtcNow.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
-        if (!String.IsNullOrEmpty(szUser))
-            sqlDSReports.SelectParameters.Add(new Parameter("user", DbType.String, szUser));
-        if (idAircraft > 0)
-            sqlDSReports.SelectParameters.Add(new Parameter("aircraftid", DbType.Int32, idAircraft.ToString(CultureInfo.InvariantCulture)));
-    }
-
-    public void WriteKMLToStream(Stream s, int ClubID, DateTime dateStart, DateTime dateEnd, string szUser, int idAircraft)
-    {
-        if (s == null)
-            throw new ArgumentNullException(nameof(s));
-
-        RefreshReportQuery(ClubID, dateStart, dateEnd, szUser, idAircraft);
-
-        // Get the flight IDs that contribute to the report
-        List<int> lstIds = new List<int>();
-        using (DataView dv = (DataView)sqlDSReports.Select(DataSourceSelectArguments.Empty))
-        {
-            foreach (DataRowView dr in dv)
-                lstIds.Add(Convert.ToInt32(dr["idflight"], CultureInfo.InvariantCulture));
+            Profile pf = new Profile()
+            {
+                FirstName = szFirst,
+                LastName = szLast,
+                Email = szEmail
+            };
+            return pf.UserFullName;
         }
 
-
-        if (lstIds.Count == 0)
+        protected static string MonthForDate(DateTime dt)
         {
-            using (MyFlightbook.Telemetry.KMLWriter kw = new MyFlightbook.Telemetry.KMLWriter(s))
+            return String.Format(CultureInfo.InvariantCulture, "{0}-{1} ({2})", dt.Year, dt.Month.ToString("00", CultureInfo.InvariantCulture), dt.ToString("MMM", CultureInfo.CurrentCulture));
+        }
+
+        protected static string FormattedUTCDate(object o)
+        {
+            if (o == null)
+                return string.Empty;
+            if (o is DateTime time)
+                return time.UTCFormattedStringOrEmpty(false);
+            return string.Empty;
+        }
+        #endregion
+
+        public void ToStream(Stream s)
+        {
+            gvFlyingReport.ToCSV(s);
+        }
+
+        protected void SetParams(int ClubID, DateTime dateStart, DateTime dateEnd, string szUser, int idAircraft)
+        {
+            sqlDSReports.SelectParameters.Clear();
+            sqlDSReports.SelectParameters.Add(new Parameter("idclub", DbType.Int32, ClubID.ToString(CultureInfo.InvariantCulture)));
+            sqlDSReports.SelectParameters.Add(new Parameter("startDate", DbType.Date, dateStart.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
+            sqlDSReports.SelectParameters.Add(new Parameter("endDate", DbType.Date, dateEnd.Date.HasValue() ? dateEnd.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) : DateTime.UtcNow.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
+            if (!String.IsNullOrEmpty(szUser))
+                sqlDSReports.SelectParameters.Add(new Parameter("user", DbType.String, szUser));
+            if (idAircraft > 0)
+                sqlDSReports.SelectParameters.Add(new Parameter("aircraftid", DbType.Int32, idAircraft.ToString(CultureInfo.InvariantCulture)));
+        }
+
+        public void WriteKMLToStream(Stream s, int ClubID, DateTime dateStart, DateTime dateEnd, string szUser, int idAircraft)
+        {
+            if (s == null)
+                throw new ArgumentNullException(nameof(s));
+
+            RefreshReportQuery(ClubID, dateStart, dateEnd, szUser, idAircraft);
+
+            // Get the flight IDs that contribute to the report
+            List<int> lstIds = new List<int>();
+            using (DataView dv = (DataView)sqlDSReports.Select(DataSourceSelectArguments.Empty))
             {
-                kw.BeginKML();
-                kw.EndKML();
+                foreach (DataRowView dr in dv)
+                    lstIds.Add(Convert.ToInt32(dr["idflight"], CultureInfo.InvariantCulture));
+            }
+
+
+            if (lstIds.Count == 0)
+            {
+                using (MyFlightbook.Telemetry.KMLWriter kw = new MyFlightbook.Telemetry.KMLWriter(s))
+                {
+                    kw.BeginKML();
+                    kw.EndKML();
+                }
+            }
+            else
+            {
+                VisitedAirport.AllFlightsAsKML(new FlightQuery(), s, out string szErr, lstIds);
+                if (!String.IsNullOrEmpty(szErr))
+                    throw new MyFlightbookException("Error writing KML to stream: " + szErr);
             }
         }
-        else
-        {
-            VisitedAirport.AllFlightsAsKML(new FlightQuery(), s, out string szErr, lstIds);
-            if (!String.IsNullOrEmpty(szErr))
-                throw new MyFlightbookException("Error writing KML to stream: " + szErr);
-        }
-    }
 
-    private void RefreshReportQuery(int ClubID, DateTime dateStart, DateTime dateEnd, string szUser, int idAircraft)
-    {
-        const string szQTemplate = @"SELECT f.idflight, f.date AS Date, f.TotalFlightTime AS 'Total Time', f.Route, f.HobbsStart AS 'Hobbs Start', f.HobbsEnd AS 'Hobbs End', u.username AS 'Username', u.Firstname, u.LastName, u.Email, ac.Tailnumber AS 'Aircraft',  
+        private void RefreshReportQuery(int ClubID, DateTime dateStart, DateTime dateEnd, string szUser, int idAircraft)
+        {
+            const string szQTemplate = @"SELECT f.idflight, f.date AS Date, f.TotalFlightTime AS 'Total Time', f.Route, f.HobbsStart AS 'Hobbs Start', f.HobbsEnd AS 'Hobbs End', u.username AS 'Username', u.Firstname, u.LastName, u.Email, ac.Tailnumber AS 'Aircraft',  
 fp.decValue AS 'Tach Start', fp2.decValue AS 'Tach End',
 f.dtFlightStart AS 'Flight Start', f.dtFlightEnd AS 'Flight End', 
 f.dtEngineStart AS 'Engine Start', f.dtEngineEnd AS 'Engine End',
@@ -125,25 +126,26 @@ f.date >= GREATEST(?startDate, cm.joindate, c.creationDate) AND
 f.date <= ?endDate {0} {1}
 ORDER BY f.DATE ASC";
 
-        sqlDSReports.SelectCommand = String.Format(CultureInfo.InvariantCulture, szQTemplate, String.IsNullOrEmpty(szUser) ? string.Empty : " AND cm.username=?user ", idAircraft <= 0 ? string.Empty : " AND ca.idaircraft=?aircraftid");
+            sqlDSReports.SelectCommand = String.Format(CultureInfo.InvariantCulture, szQTemplate, String.IsNullOrEmpty(szUser) ? string.Empty : " AND cm.username=?user ", idAircraft <= 0 ? string.Empty : " AND ca.idaircraft=?aircraftid");
 
-        SetParams(ClubID, dateStart, dateEnd, szUser, idAircraft);
-    }
+            SetParams(ClubID, dateStart, dateEnd, szUser, idAircraft);
+        }
 
-    public void Refresh(int ClubID, DateTime dateStart, DateTime dateEnd, string szUser = null, int idAircraft = Aircraft.idAircraftUnknown)
-    {
-        RefreshReportQuery(ClubID, dateStart, dateEnd, szUser, idAircraft);
-        gvFlyingReport.DataSourceID = sqlDSReports.ID;
-        gvFlyingReport.DataBind();
-    }
+        public void Refresh(int ClubID, DateTime dateStart, DateTime dateEnd, string szUser = null, int idAircraft = Aircraft.idAircraftUnknown)
+        {
+            RefreshReportQuery(ClubID, dateStart, dateEnd, szUser, idAircraft);
+            gvFlyingReport.DataSourceID = sqlDSReports.ID;
+            gvFlyingReport.DataBind();
+        }
 
-    public void Refresh(int clubID)
-    {
-        Refresh(clubID, new DateTime(DateTime.Now.AddMonths(-1).Year, DateTime.Now.AddMonths(-1).Month, 1), DateTime.Now);
-    }
+        public void Refresh(int clubID)
+        {
+            Refresh(clubID, new DateTime(DateTime.Now.AddMonths(-1).Year, DateTime.Now.AddMonths(-1).Month, 1), DateTime.Now);
+        }
 
-    protected void Page_Load(object sender, EventArgs e)
-    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
 
+        }
     }
 }

@@ -363,22 +363,6 @@ namespace MyFlightbook.CloudStorage
         }
         #endregion
 
-        /// <summary>
-        /// Put's a file as an array of bytes
-        /// </summary>
-        /// <param name="szFileName">The file name to use</param>
-        /// <param name="rgData">The array of bytes</param>
-        /// <param name="szMimeType">The mime type for the data</param>
-        /// <returns>True for success</returns>
-        /// <exception cref="MyFlightbookException"></exception>
-        public async Task<GoogleDriveResultDictionary> PutFile(string szFileName, byte[] rgData, string szMimeType)
-        {
-            using (MemoryStream ms = new MemoryStream(rgData))
-            {
-                return await PutFile(ms, szFileName, szMimeType).ConfigureAwait(false);
-            }
-        }
-
         private static void ThrowGDriveError(Exception ex)
         {
             if (ex == null)
@@ -393,7 +377,23 @@ namespace MyFlightbook.CloudStorage
         }
 
         /// <summary>
-        /// Put's a file as a stream using the REST API documented at https://developers.google.com/drive/v3/web/manage-uploads#multipart
+        /// Puts a file as an array of bytes
+        /// </summary>
+        /// <param name="szFileName">The file name to use</param>
+        /// <param name="rgData">The array of bytes</param>
+        /// <param name="szMimeType">The mime type for the data</param>
+        /// <returns>True for success</returns>
+        /// <exception cref="MyFlightbookException"></exception>
+        public async Task<GoogleDriveResultDictionary> PutFile(string szFileName, byte[] rgData, string szMimeType)
+        {
+            using (MemoryStream ms = new MemoryStream(rgData))
+            {
+                return await PutFile(szFileName, ms, szMimeType).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Puts a file as a stream using the REST API documented at https://developers.google.com/drive/v3/web/manage-uploads#multipart
         /// </summary>
         /// <param name="szFileName">The file name to use</param>
         /// <param name="ms">The stream of the data</param>
@@ -401,7 +401,7 @@ namespace MyFlightbook.CloudStorage
         /// <returns>True for success</returns>
         /// <exception cref="MyFlightbookException"></exception>
         /// <exception cref="System.Net.Http.HttpRequestException"></exception>
-        public async Task<GoogleDriveResultDictionary> PutFile(Stream ms, string szFileName, string szMimeType)
+        public async Task<GoogleDriveResultDictionary> PutFile(string szFileName, Stream ms, string szMimeType)
         {
             if (ms == null)
                 throw new ArgumentNullException(nameof(ms));
@@ -933,7 +933,7 @@ namespace MyFlightbook.CloudStorage
         }
 
         /// <summary>
-        /// Put's a file as an array of bytes
+        /// Puts a file as an array of bytes
         /// </summary>
         /// <param name="szDropboxAccessToken">The oAuth 2.0 access token</param>
         /// <param name="szFileName">The file name to use</param>
@@ -943,18 +943,18 @@ namespace MyFlightbook.CloudStorage
         {
             using (MemoryStream ms = new MemoryStream(rgData))
             {
-                return await PutFile(ms, szFileName).ConfigureAwait(false);
+                return await PutFile(szFileName, ms).ConfigureAwait(false);
             }
         }
 
         /// <summary>
-        /// Put's a file as a stream
+        /// Puts a file as a stream
         /// </summary>
         /// <param name="szDropboxAccessToken">The oAuth 2.0 access token</param>
         /// <param name="szFileName">The file name to use</param>
         /// <param name="ms">The stream of the data</param>
         /// <returns>FileMetadata with the result</returns>
-        public async Task<Dropbox.Api.Files.FileMetadata> PutFile(Stream ms, string szFileName)
+        public async Task<Dropbox.Api.Files.FileMetadata> PutFile(string szFileName, Stream ms)
         {
             if (ms == null)
                 throw new ArgumentNullException(nameof(ms));

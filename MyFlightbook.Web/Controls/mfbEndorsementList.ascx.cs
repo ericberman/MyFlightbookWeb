@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -164,9 +163,7 @@ namespace MyFlightbook.Instruction
             string szFilename = String.Format(CultureInfo.CurrentCulture, "{0}-{1}-{2}", Branding.CurrentBrand.AppName, Resources.SignOff.DownloadEndorsementsFilename, String.IsNullOrEmpty(Student) ? Resources.SignOff.DownloadEndorsementsAllStudents : MyFlightbook.Profile.GetUser(Student).UserFullName);
             string szDisposition = String.Format(CultureInfo.InvariantCulture, "attachment;filename={0}.csv", Regex.Replace(szFilename, "[^0-9a-zA-Z-]", ""));
             Response.AddHeader("Content-Disposition", szDisposition);
-            UTF8Encoding enc = new UTF8Encoding(true);    // to include the BOM
-            Response.Write(Encoding.UTF8.GetString(enc.GetPreamble()));   // UTF-8 BOM
-            Response.Write(gvDownload.CSVFromData());
+            gvDownload.ToCSV(Response.OutputStream);
             Response.End();
         }
 

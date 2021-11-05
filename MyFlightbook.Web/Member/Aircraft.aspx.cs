@@ -145,8 +145,7 @@ namespace MyFlightbook.MemberPages
             string szFilename = String.Format(CultureInfo.InvariantCulture, "Aircraft-{0}-{1}-{2}", Branding.CurrentBrand.AppName, MyFlightbook.Profile.GetUser(Page.User.Identity.Name).UserFullName, DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)).Replace(" ", "-");
             string szDisposition = String.Format(CultureInfo.InvariantCulture, "attachment;filename={0}.csv", System.Text.RegularExpressions.Regex.Replace(szFilename, "[^0-9a-zA-Z-]", ""));
             Response.AddHeader("Content-Disposition", szDisposition);
-            Response.Write('\uFEFF');   // UTF-8 BOM.
-            Response.Write(gvAircraftToDownload.CSVFromData());
+            gvAircraftToDownload.ToCSV(Response.OutputStream);
             Response.End();
         }
 

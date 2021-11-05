@@ -50,8 +50,7 @@ public partial class Member_Download : System.Web.UI.Page
         // Give it a name that is the brand name, user's name, and date.  Convert spaces to dashes, and then strip out ANYTHING that is not alphanumeric or a dash.
         string szDisposition = String.Format(CultureInfo.InvariantCulture, "attachment;filename={0}", CSVFileName);
         Response.AddHeader("Content-Disposition", szDisposition);
-        Response.Write('\uFEFF');   // UTF-8 BOM.
-        Response.Write(mfbDownload1.CSVData());
+        mfbDownload1.ToStream(Response.OutputStream);
         Response.End();
     }
 
@@ -70,7 +69,7 @@ public partial class Member_Download : System.Web.UI.Page
         Response.End();
     }
 
-    private void WriteInsurenceZip(Action<String, Stream> dispatch)
+    private void WriteInsuranceZip(Action<String, Stream> dispatch)
     {
         if (dispatch == null)
             throw new ArgumentNullException(nameof(dispatch));
@@ -85,19 +84,21 @@ public partial class Member_Download : System.Web.UI.Page
             LogbookBackup lb = new LogbookBackup(pf) { IncludeImages = false };
             lb.WriteZipOfImagesToStream(fs, Branding.CurrentBrand, (zip) =>
             {
-                    // Add the flights
-                    ZipArchiveEntry zae = zip.CreateEntry(CSVFileName);
-                using (StreamWriter sw = new StreamWriter(zae.Open()))
+                // Add the flights
+                ZipArchiveEntry zae = zip.CreateEntry(CSVFileName);
+                using (Stream s = zae.Open())
                 {
-                    sw.Write('\uFEFF');   // UTF-8 BOM.
-                        sw.Write(mfbDownload1.CSVData());
+                    mfbDownload1.ToStream(s);
                 }
 
                 // And add the user's information, in JSON format.
                 zae = zip.CreateEntry("PilotInfo.JSON");
-                using (StreamWriter sw = new StreamWriter(zae.Open()))
+                using (Stream s = zae.Open())
                 {
-                    sw.Write(LogbookBackup.PilotInfoAsJSon(pf));
+                    using (StreamWriter sw = new StreamWriter(s))
+                    {
+                        sw.Write(LogbookBackup.PilotInfoAsJSon(pf));
+                    }
                 }
             });
             dispatch(szFile, fs);
@@ -109,7 +110,7 @@ public partial class Member_Download : System.Web.UI.Page
         Response.Clear();
         Response.ContentType = "application/octet-stream";
 
-        WriteInsurenceZip((szFile, fs) =>
+        WriteInsuranceZip((szFile, fs) =>
         {
             Response.AddHeader("Content-Disposition", String.Format(CultureInfo.InvariantCulture, "attachment;filename={0}.zip", szFile));
             fs.Seek(0, SeekOrigin.Begin);
@@ -123,7 +124,7 @@ public partial class Member_Download : System.Web.UI.Page
     {
         const string szSkywatchEndpoint = "https://user.skywatch.ai/aviation/analyze_logs";
 
-        WriteInsurenceZip((szFile, fs) =>
+        WriteInsuranceZip((szFile, fs) =>
         {
             List<IDisposable> objectsToDispose = new List<IDisposable>();
 
@@ -240,7 +241,7 @@ public partial class Member_Download : System.Web.UI.Page
 
     protected async void lnkSaveGoogleDrive_Click(object sender, EventArgs e)
     {
-        MyFlightbook.Profile pf = MyFlightbook.Profile.GetUser(Page.User.Identity.Name);
+        Profile pf = Profile.GetUser(Page.User.Identity.Name);
         LogbookBackup lb = new LogbookBackup(pf);
 
         if (pf.GoogleDriveAccessToken == null || String.IsNullOrEmpty(pf.GoogleDriveAccessToken.RefreshToken))

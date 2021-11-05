@@ -14,6 +14,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
@@ -1550,9 +1551,10 @@ namespace MyFlightbook
                     msg.Body = Branding.ReBrand(dl == DeleteLevel.EntireUser ? Resources.EmailTemplates.AccountDeletedBody : Resources.EmailTemplates.FlightsDeletedBody) + "\r\n\r\n" + Branding.ReBrand(Resources.EmailTemplates.ThankYouCloser);
                     util.AddAdminsToMessage(msg, false, ProfileRoles.maskCanSupport);
                     LogbookBackup lb = new LogbookBackup(pf);
-                    using (System.IO.MemoryStream ms = new System.IO.MemoryStream(lb.LogbookDataForBackup()))
+                    using (FileStream fs = new FileStream(Path.GetTempFileName(), FileMode.Open, FileAccess.ReadWrite, FileShare.None, Int16.MaxValue, FileOptions.DeleteOnClose))
                     {
-                        msg.Attachments.Add(new Attachment(ms, lb.BackupFilename(brand)));
+                        lb.LogbookDataForBackup(fs);
+                        msg.Attachments.Add(new Attachment(fs, lb.BackupFilename(brand)));
                         util.SendMessage(msg);
                     }
                 }

@@ -144,10 +144,7 @@ public partial class Member_Airports : System.Web.UI.Page
             LastSortDirection = 1;
             LastSortExpression = e.SortExpression;
         }
-        else if (LastSortDirection != 1)
-            LastSortDirection = 1;
-        else
-            LastSortDirection = -1;
+        else LastSortDirection = LastSortDirection != 1 ? 1 : -1;
 
         int Direction = LastSortDirection;
 
@@ -246,10 +243,10 @@ public partial class Member_Airports : System.Web.UI.Page
         string szFilename = String.Format(CultureInfo.InvariantCulture, "Airports-{0}-{1}-{2}", Branding.CurrentBrand.AppName, MyFlightbook.Profile.GetUser(Page.User.Identity.Name).UserFullName, DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)).Replace(" ", "-");
         string szDisposition = String.Format(CultureInfo.InvariantCulture, "attachment;filename={0}.csv", System.Text.RegularExpressions.Regex.Replace(szFilename, "[^0-9a-zA-Z-]", ""));
         Response.AddHeader("Content-Disposition", szDisposition);
-        Response.Write('\uFEFF');   // UTF-8 BOM.
         gvAirportsDownload.DataSource = CurrentVisitedAirports;
         gvAirportsDownload.DataBind();
-        Response.Write(String.Format(CultureInfo.CurrentCulture, "{0}\r\n\r\n\" *{1}\"", gvAirportsDownload.CSVFromData(), Branding.ReBrand(Resources.Airports.airportCountryDisclaimer)));
+        gvAirportsDownload.ToCSV(Response.OutputStream);
+        Response.Write(String.Format(CultureInfo.CurrentCulture, "\r\n\r\n\" *{0}\"", Branding.ReBrand(Resources.Airports.airportCountryDisclaimer)));
         Response.End();
     }
 }

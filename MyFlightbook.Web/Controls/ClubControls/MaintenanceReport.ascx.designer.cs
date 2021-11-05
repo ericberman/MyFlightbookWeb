@@ -7,17 +7,20 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-
-
-public partial class Controls_ClubControls_MaintenanceReport
+namespace MyFlightbook.Clubs.ClubControls
 {
 
-    /// <summary>
-    /// gvMaintenance control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.GridView gvMaintenance;
+
+    public partial class MaintenanceReport
+    {
+
+        /// <summary>
+        /// gvMaintenance control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvMaintenance;
+    }
 }

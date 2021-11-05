@@ -237,8 +237,7 @@ namespace MyFlightbook.Charting
             string szFilename = String.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}-{3}", Branding.CurrentBrand.AppName, Resources.LocalizedText.DownloadFlyingStatsFilename, Profile.GetUser(Page.User.Identity.Name).UserFullName, DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)).Replace(" ", "-");
             string szDisposition = String.Format(CultureInfo.InvariantCulture, "attachment;filename={0}.csv", System.Text.RegularExpressions.Regex.Replace(szFilename, "[^0-9a-zA-Z-]", ""));
             Response.AddHeader("Content-Disposition", szDisposition);
-            Response.Write('\uFEFF');   // UTF-8 BOM.
-            Response.Write(gvRawData.CSVFromData());
+            gvRawData.ToCSV(Response.OutputStream);
             Response.End();
         }
 

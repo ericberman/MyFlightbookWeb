@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 using System.Web;
 using System.Web.UI.WebControls;
 
@@ -182,11 +181,6 @@ namespace MyFlightbook
             }
         }
 
-        public string CSVData()
-        {
-            return gvFlightLogs.CSVFromData();
-        }
-
         public void gvFlightLogs_RowDataBound(Object sender, GridViewRowEventArgs e)
         {
             if (e == null)
@@ -224,38 +218,23 @@ namespace MyFlightbook
             }
         }
 
-        protected string CSVInUSCulture()
-        {
-            // ALWAYS download in US conventions
-            CultureInfo ciSave = System.Threading.Thread.CurrentThread.CurrentCulture;
-            System.Threading.Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-            UpdateData();
-
-            StringBuilder sbCSV = new StringBuilder();
-            sbCSV.Append('\uFEFF'); // UTF-8 BOM
-            sbCSV.Append(CSVData());
-            System.Threading.Thread.CurrentThread.CurrentCulture = ciSave;
-
-            return sbCSV.ToString();
-        }
-
-        public byte[] RawData(string szUser)
+        public void ToStream(string szUser, System.IO.Stream s)
         {
             if (String.IsNullOrEmpty(szUser))
-                return Array.Empty<byte>();
+                return;
             else
             {
+                if (s == null)
+                    throw new ArgumentNullException(nameof(s));
                 User = szUser;
                 UpdateData();
-                UTF8Encoding enc = new UTF8Encoding(true);    // to include the BOM
-                byte[] preamble = enc.GetPreamble();
-                string body = CSVData();
-                byte[] allBytes = new byte[preamble.Length + enc.GetByteCount(body)];
-                for (int i = 0; i < preamble.Length; i++)
-                    allBytes[i] = preamble[i];
-                enc.GetBytes(body, 0, body.Length, allBytes, preamble.Length);
-                return allBytes;
+                ToStream(s);
             }
+        }
+
+        public void ToStream(System.IO.Stream s)
+        {
+            gvFlightLogs.ToCSV(s);
         }
     }
 }

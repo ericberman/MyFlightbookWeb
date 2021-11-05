@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Globalization;
+using System.IO;
 using System.Net.Mail;
 using System.Reflection;
 using System.Text;
@@ -248,15 +249,18 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="gv">The databound gridview</param>
         /// <returns>A CSV string representing the data</returns>
-        public static string CSVFromData(this GridView gv)
+        public static void ToCSV(this GridView gv, Stream s)
         {
             if (gv == null)
                 throw new ArgumentNullException(nameof(gv));
+            if (s == null)
+                throw new ArgumentNullException(nameof(s));
+
             using (DataTable dt = new DataTable())
             {
                 dt.Locale = CultureInfo.CurrentCulture;
                 if (gv.Rows.Count == 0 || gv.HeaderRow == null || gv.HeaderRow.Cells == null || gv.HeaderRow.Cells.Count == 0)
-                    return string.Empty;
+                    return;
 
                 // add the header columns from the gridview
                 foreach (TableCell tc in gv.HeaderRow.Cells)
@@ -297,10 +301,13 @@ namespace MyFlightbook
                 }
 
                 if (dt != null)
-                    return CsvWriter.WriteToString(dt, true, true);
+                {
+                    using (StreamWriter sw = new StreamWriter(s, Encoding.UTF8, 1024, true /* leave the stream open */))
+                    {
+                        CsvWriter.WriteToStream(sw, dt, true, true);
+                    }
+                }
             }
-
-            return string.Empty;
         }
 
         /// <summary>
@@ -586,7 +593,7 @@ namespace MyFlightbook
                 System.IO.StringWriter sw = null;
                 try
                 {
-                    sw = new System.IO.StringWriter(sb, CultureInfo.CurrentCulture);
+                    sw = new StringWriter(sb, CultureInfo.CurrentCulture);
                     using (HtmlTextWriter htmlTW = new HtmlTextWriter(sw))
                     {
                         sw = null;
@@ -618,6 +625,6 @@ namespace MyFlightbook
         /// Refresh however you need to refresh for the given user.
         /// </summary>
         /// <param name="szUser"></param>
-        byte[] RawData(string szUser);
+        void ToStream(string szUser, Stream s);
     }
 }

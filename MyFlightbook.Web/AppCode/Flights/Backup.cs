@@ -433,13 +433,16 @@ namespace MyFlightbook
             }
         }
 
-        public byte[] LogbookDataForBackup()
+        public void LogbookDataForBackup(Stream s)
         {
+            if (s == null)
+                throw new ArgumentNullException(nameof(s));
+
             using (Page p = new FormlessPage())
             {
                 p.Controls.Add(new HtmlForm());
                 IDownloadableAsData ifr = (IDownloadableAsData)p.LoadControl("~/Controls/mfbDownload.ascx");
-                return ifr.RawData(User.UserName);
+                ifr.ToStream(User.UserName, s);
             }
         }
 
@@ -486,7 +489,7 @@ namespace MyFlightbook
             using (FileStream fs = new FileStream(Path.GetTempFileName(), FileMode.Open, FileAccess.ReadWrite, FileShare.None, Int16.MaxValue, FileOptions.DeleteOnClose))
             {
                 WriteZipOfImagesToStream(fs, activeBrand);
-                Dropbox.Api.Files.FileMetadata result = await new MFBDropbox(User).PutFile(fs, BackupImagesFilename(activeBrand)).ConfigureAwait(true);
+                Dropbox.Api.Files.FileMetadata result = await new MFBDropbox(User).PutFile(BackupImagesFilename(activeBrand), fs).ConfigureAwait(true);
                 return result;
             }
         }
@@ -508,7 +511,12 @@ namespace MyFlightbook
             if (activeBrand == null)
                 activeBrand = Branding.CurrentBrand;
 
-            return await new MFBDropbox(User).PutFile(BackupFilename(activeBrand), LogbookDataForBackup()).ConfigureAwait(true);
+            using (FileStream fs = new FileStream(Path.GetTempFileName(), FileMode.Open, FileAccess.ReadWrite, FileShare.None, Int16.MaxValue, FileOptions.DeleteOnClose))
+            {
+                LogbookDataForBackup(fs);
+                Dropbox.Api.Files.FileMetadata result = await new MFBDropbox(User).PutFile(BackupFilename(activeBrand), fs).ConfigureAwait(true);
+                return result;
+            }
         }
         #endregion
 
@@ -534,7 +542,8 @@ namespace MyFlightbook
             using (FileStream fs = new FileStream(Path.GetTempFileName(), FileMode.Open, FileAccess.ReadWrite, FileShare.None, Int16.MaxValue, FileOptions.DeleteOnClose))
             {
                 WriteZipOfImagesToStream(fs, activeBrand);
-                return await od.PutFileDirect(BackupImagesFilename(activeBrand), fs, "application/zip").ConfigureAwait(true);
+                bool result = await od.PutFileDirect(BackupImagesFilename(activeBrand), fs, "application/zip").ConfigureAwait(true);
+                return result;
             }
         }
 
@@ -557,7 +566,11 @@ namespace MyFlightbook
             if (od == null)
                 od = new OneDrive(User);
 
-            return await od.PutFileDirect(BackupFilename(activeBrand), LogbookDataForBackup(), "text/csv").ConfigureAwait(true);
+            using (FileStream fs = new FileStream(Path.GetTempFileName(), FileMode.Open, FileAccess.ReadWrite, FileShare.None, Int16.MaxValue, FileOptions.DeleteOnClose))
+            {
+                    LogbookDataForBackup(fs);
+                    return await od.PutFileDirect(BackupFilename(activeBrand), fs, "text/csv").ConfigureAwait(true);
+            }
         }
         #endregion
 
@@ -583,7 +596,8 @@ namespace MyFlightbook
             using (FileStream fs = new FileStream(Path.GetTempFileName(), FileMode.Open, FileAccess.ReadWrite, FileShare.None, Int16.MaxValue, FileOptions.DeleteOnClose))
             {
                 WriteZipOfImagesToStream(fs, activeBrand);
-                return await gd.PutFile(fs, BackupImagesFilename(activeBrand, true), "application/zip").ConfigureAwait(true);
+                GoogleDriveResultDictionary result = await gd.PutFile(BackupImagesFilename(activeBrand, true), fs, "application/zip").ConfigureAwait(true);
+                return result;
             }
         }
 
@@ -606,7 +620,11 @@ namespace MyFlightbook
             if (activeBrand == null)
                 activeBrand = Branding.CurrentBrand;
 
-            return await gd.PutFile(BackupFilename(activeBrand), LogbookDataForBackup(), "text/csv").ConfigureAwait(true);
+            using (FileStream fs = new FileStream(Path.GetTempFileName(), FileMode.Open, FileAccess.ReadWrite, FileShare.None, Int16.MaxValue, FileOptions.DeleteOnClose))
+            {
+                LogbookDataForBackup(fs);
+                return await gd.PutFile(BackupFilename(activeBrand), fs, "text/csv").ConfigureAwait(true);
+            }
         }
         #endregion
         #endregion

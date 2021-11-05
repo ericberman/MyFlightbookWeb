@@ -188,8 +188,7 @@ namespace MyFlightbook.Instruction
             string szFilename = String.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}", Branding.CurrentBrand.AppName, MyFlightbook.Profile.GetUser(hdnStudent.Value).UserFullName, DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)).Replace(" ", "-");
             string szDisposition = String.Format(CultureInfo.InvariantCulture, "attachment;filename={0}.csv", Regex.Replace(szFilename, "[^0-9a-zA-Z-]", ""));
             Response.AddHeader("Content-Disposition", szDisposition);
-            Response.Write('\uFEFF');   // UTF-8 BOM.
-            Response.Write(mfbDownload1.CSVData());
+            mfbDownload1.ToStream(Response.OutputStream);
             Response.End();
         }
     }

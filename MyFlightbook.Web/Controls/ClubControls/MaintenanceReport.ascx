@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="MaintenanceReport.ascx.cs" Inherits="Controls_ClubControls_MaintenanceReport" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="MaintenanceReport.ascx.cs" Inherits="MyFlightbook.Clubs.ClubControls.MaintenanceReport" %>
 <asp:GridView ID="gvMaintenance" AutoGenerateColumns="false" ShowFooter="false" CellPadding="4" GridLines="None" runat="server">
     <Columns>
         <asp:BoundField DataField="DisplayTailnumber" ItemStyle-Font-Bold="true" HeaderText="<%$ Resources:Aircraft, AircraftHeader %>" ItemStyle-VerticalAlign="Top" HeaderStyle-CssClass="PaddedCell" ItemStyle-CssClass="PaddedCell" />
