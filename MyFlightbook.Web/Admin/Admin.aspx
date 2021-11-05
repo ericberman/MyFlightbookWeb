@@ -215,6 +215,7 @@
             </asp:MultiView>
             <h2>Cache management</h2>
             <p><asp:Button ID="btnFlushCache" runat="server" Text="Flush Cache" OnClick="btnFlushCache_Click" /> <span class="fineprint">Removes all entries from the cache; will make things slow, but useful for picking up DB changes or debugging</span></p>
+            <div><asp:Label ID="lblCacheFlushResults" runat="server" EnableViewState="false" /></div>
             <h2>Nightly Run</h2>
             <p><asp:Button ID="btnNightlyRun" runat="server" Text="Kick Off Nightly Run" OnClick="btnNightlyRun_Click" /> <span class="fineprint">BE CAREFUL! This can spam users.  Only click once, and only if it DIDN'T run last night.</span></p>
             <div><asp:Label ID="lblNightlyRunResult" runat="server"></asp:Label></div>

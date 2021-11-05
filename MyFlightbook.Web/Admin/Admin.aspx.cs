@@ -464,7 +464,7 @@ namespace MyFlightbook.Web.Admin
 
         protected void btnFlushCache_Click(object sender, EventArgs e)
         {
-            FlushCache();
+            lblCacheFlushResults.Text = String.Format(CultureInfo.CurrentCulture, "Cache flushed, {0:#,##0} items removed.", FlushCache());
         }
 
         protected void btnNightlyRun_Click(object sender, EventArgs e)

@@ -25,11 +25,16 @@ namespace MyFlightbook.Web.Admin
         /// <summary>
         /// Removes everything from the runtime cache.
         /// </summary>
-        protected static void FlushCache()
+        protected static int FlushCache()
         {
+            int items = 0;
             foreach (System.Collections.DictionaryEntry entry in HttpRuntime.Cache)
+            {
                 HttpRuntime.Cache.Remove((string)entry.Key);
+                items++;
+            }
             GC.Collect();
+            return items;
         }
     }
 }
