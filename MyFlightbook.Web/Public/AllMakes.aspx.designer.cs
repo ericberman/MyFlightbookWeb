@@ -112,6 +112,15 @@ public partial class Public_AllMakes
     protected global::System.Web.UI.WebControls.View vwAircraft;
 
     /// <summary>
+    /// lblAttributesHeader control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblAttributesHeader;
+
+    /// <summary>
     /// rptAttributes control.
     /// </summary>
     /// <remarks>
@@ -119,6 +128,15 @@ public partial class Public_AllMakes
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.Repeater rptAttributes;
+
+    /// <summary>
+    /// lblSampleAircraftHeader control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblSampleAircraftHeader;
 
     /// <summary>
     /// gvAircraft control.

@@ -1,7 +1,6 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="AllMakes.aspx.cs" Inherits="Public_AllMakes" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register src="../Controls/mfbMakeListItem.ascx" tagname="mfbMakeListItem" tagprefix="uc1" %>
-<%@ Register src="../Controls/mfbImageList.ascx" tagname="mfbImageList" tagprefix="uc2" %>
 <%@ Register Src="~/Controls/mfbImageList.ascx" TagPrefix="uc1" TagName="mfbImageList" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="cpPageTitle" Runat="Server">
@@ -36,6 +35,7 @@
             </asp:GridView>
         </asp:View>
         <asp:View ID="vwAircraft" runat="server">
+            <h3><asp:Label ID="lblAttributesHeader" runat="server" /></h3>
             <ul>
                 <asp:Repeater ID="rptAttributes" runat="server">
                     <ItemTemplate>
@@ -43,6 +43,7 @@
                     </ItemTemplate>
                 </asp:Repeater>
             </ul>
+            <h3><asp:Label ID="lblSampleAircraftHeader" runat="server" /></h3>
             <asp:GridView ID="gvAircraft" runat="server" AutoGenerateColumns="False" EnableViewState="false"
                 OnRowDataBound="AddPictures" GridLines="None"
                 HeaderStyle-HorizontalAlign="left" CellSpacing="0" CellPadding="5">
@@ -59,7 +60,15 @@
                         <ItemStyle VerticalAlign="Top" />
                         <ItemTemplate>
                             <div>
-                                <uc1:mfbImageList runat="server" ID="mfbAircraftImages" ImageClass="Aircraft" MaxImage="3" Columns="3" CanEdit="false" />
+                                <asp:Repeater ID="rptImages" runat="server">
+                                    <ItemTemplate>
+                                        <div style="display:inline-block">
+                                            <asp:HyperLink ID="lnk" runat="server" NavigateUrl='<%# Eval("URLFullImage") %>'>
+                                                <asp:Image ID="img" runat="server" ImageUrl='<%# Eval("URLThumbnail") %>' />
+                                            </asp:HyperLink>
+                                        </div>
+                                    </ItemTemplate>
+                                </asp:Repeater>
                             </div>
                         </ItemTemplate>
                     </asp:TemplateField>

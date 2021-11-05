@@ -1,4 +1,5 @@
 ﻿using MyFlightbook;
+using MyFlightbook.Image;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -77,6 +78,8 @@ public partial class Public_AllMakes : Page
         rptAttributes.DataSource = m.AttributeList();
         rptAttributes.DataBind();
         lblModel.Text = System.Web.HttpUtility.HtmlEncode(m.DisplayName);
+        lblAttributesHeader.Text = String.Format(CultureInfo.CurrentCulture, "Attributes of {0}:", m.DisplayName);
+        lblSampleAircraftHeader.Text = String.Format(CultureInfo.CurrentCulture, "Sample aircraft for {0}", m.DisplayName);
 
         List<Aircraft> lst = new List<Aircraft>();
         // UserAircraft.GetAircraftForUser is pretty heavyweight, especially for models witha  lot of aircraft like C-152.
@@ -156,14 +159,17 @@ public partial class Public_AllMakes : Page
         {
             Aircraft ac = (Aircraft)e.Row.DataItem;
 
-            Controls_mfbImageList mfbIl = (Controls_mfbImageList) e.Row.FindControl("mfbAircraftImages");
-            mfbIl.Key = ac.AircraftID.ToString(CultureInfo.InvariantCulture);
-            mfbIl.AltText = "Image of " + ac.TailNumber;
+            ImageList il = new ImageList(MFBImageInfoBase.ImageClass.Aircraft, ac.AircraftID.ToString(CultureInfo.InvariantCulture));
+            il.Refresh(false, null, false);
+            List<MFBImageInfo> lst = new List<MFBImageInfo>(il.ImageArray);
+            if (lst.Count > 3)
+                lst.RemoveRange(3, lst.Count - 3);
 
-            mfbIl.Visible = (mfbIl.Refresh() > 0); // only add image list if there are images.
-
+            Repeater r = (Repeater)e.Row.FindControl("rptImages");
+            r.DataSource = lst;
+            r.DataBind();
             // DON'T cache this locally - could possibly be leading to memory leaks if crawler hits us hard?
-            foreach (MyFlightbook.Image.MFBImageInfo mfbii in mfbIl.Images.ImageArray)
+            foreach (MFBImageInfo mfbii in il.ImageArray)
                 mfbii.UnCache();
         }
     }
