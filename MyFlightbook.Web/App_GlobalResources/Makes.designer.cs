@@ -133,6 +133,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to If a type rating is required to fly this, please add it here.
+        /// </summary>
+        internal static string editMakeTypeRatingPrompt {
+            get {
+                return ResourceManager.GetString("editMakeTypeRatingPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit this model.
         /// </summary>
         internal static string editModelPrompt {
@@ -174,6 +183,15 @@ namespace Resources {
         internal static string errSinglePilotButNotTypeRated {
             get {
                 return ResourceManager.GetString("errSinglePilotButNotTypeRated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is not a yes/no field.  If a type rating is required to fly aircraft of this model, please enter it here.  You can use the provided link to find FAA-specified type designators, or look up other similar models to find the correct type rating requirement to use..
+        /// </summary>
+        internal static string errYesNotValidType {
+            get {
+                return ResourceManager.GetString("errYesNotValidType", resourceCulture);
             }
         }
         
@@ -381,6 +399,15 @@ namespace Resources {
         internal static string newMakeHeader {
             get {
                 return ResourceManager.GetString("newMakeHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Look up type ratings.
+        /// </summary>
+        internal static string promptLookUpTypes {
+            get {
+                return ResourceManager.GetString("promptLookUpTypes", resourceCulture);
             }
         }
         

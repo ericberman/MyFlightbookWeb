@@ -98,19 +98,16 @@
     </div>
     <div class="vfSection">
         <div class="vfPrompt">
-            <asp:Label ID="lblType" runat="server" 
-                Text="Is a type rating required?" 
-                meta:resourcekey="lblTypeResource1" ></asp:Label>
-            <div class="vfSubDesc"><asp:HyperLink ID="lnkTypeRatings" runat="server" NavigateUrl="http://registry.faa.gov/TypeRatings/" Text="Look up Type Ratings" meta:resourceKey="lnkTypeRatingsResource1"></asp:HyperLink></div>
+            <asp:Label ID="lblType" runat="server" Text="<%$ Resources:Makes, editMakeTypeRatingPrompt %>"  />
+            <div class="vfSubDesc"><asp:HyperLink ID="lnkTypeRatings" runat="server" NavigateUrl="http://registry.faa.gov/TypeRatings/" Text="<%$ Resources:Makes, promptLookUpTypes %>" /></div>
         </div>
         <div class="vfValue">
-            <asp:TextBox ID="txtType" runat="server" ValidationGroup="EditMake"
-                meta:resourcekey="txtTypeResource1"></asp:TextBox>
+            <asp:TextBox ID="txtType" runat="server" ValidationGroup="EditMake" />
             <cc1:TextBoxWatermarkExtender
                 ID="TextBoxWatermarkExtender3" runat="server" 
                 WatermarkCssClass="watermark" WatermarkText="<%$ Resources:LocalizedText, EditMakeWatermarkTypeName %>" 
-                TargetControlID="txtType" BehaviorID="ctl00_TextBoxWatermarkExtender3">
-            </cc1:TextBoxWatermarkExtender>
+                TargetControlID="txtType" BehaviorID="ctl00_TextBoxWatermarkExtender3" />
+            <div style="max-width: 200px;"><asp:CustomValidator ID="valType" runat="server" CssClass="error" Display="Dynamic" ErrorMessage="<%$ Resources:Makes, errYesNotValidType %>" OnServerValidate="valType_ServerValidate" ValidationGroup="EditMake" /></div>
         </div>
         <div class="vfDescription">
             <div><asp:Label ID="lblTypeDesc1" runat="server" Font-Bold="True" meta:resourceKey="lblTypeDesc1Resource1" Text="Leave this blank unless the aircraft requires a type-rating (typically jet or over 12,500lbs). "></asp:Label></div>

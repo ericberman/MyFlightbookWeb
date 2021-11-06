@@ -251,4 +251,13 @@
   <data name="searchTipQuick" xml:space="preserve">
     <value>Type a model to quickly find it</value>
   </data>
+  <data name="editMakeTypeRatingPrompt" xml:space="preserve">
+    <value>If a type rating is required to fly this, please add it here</value>
+  </data>
+  <data name="errYesNotValidType" xml:space="preserve">
+    <value>This is not a yes/no field.  If a type rating is required to fly aircraft of this model, please enter it here.  You can use the provided link to find FAA-specified type designators, or look up other similar models to find the correct type rating requirement to use.</value>
+  </data>
+  <data name="promptLookUpTypes" xml:space="preserve">
+    <value>Look up type ratings</value>
+  </data>
 </root>

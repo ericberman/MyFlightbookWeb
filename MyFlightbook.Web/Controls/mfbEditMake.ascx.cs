@@ -1,5 +1,4 @@
-﻿using MyFlightbook;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -388,6 +387,16 @@ namespace MyFlightbook.AircraftControls
         protected void cmbCatClass_SelectedIndexChanged(object sender, EventArgs e)
         {
             MakeFromForm();
+        }
+
+        protected void valType_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            if (args == null)
+                throw new ArgumentNullException(nameof(args));
+            if (txtType.Text.CompareCurrentCultureIgnoreCase("no") == 0)    // ignore "No" - that's just no type rating, so set the type to empty string.
+                txtType.Text = string.Empty;
+            if (txtType.Text.CompareCurrentCultureIgnoreCase("yes") == 0)
+                args.IsValid = false;
         }
     }
 }

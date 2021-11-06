@@ -396,12 +396,6 @@
   <data name="lblTypeDescExampleResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="lblTypeResource1.Text" xml:space="preserve">
-    <value>Is a type rating required?</value>
-  </data>
-  <data name="lblTypeResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="ListItemResource1.Text" xml:space="preserve">
     <value>(Please select)</value>
   </data>
@@ -460,12 +454,6 @@
     <value>Look up</value>
   </data>
   <data name="lnkICAOResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lnkTypeRatingsResource1.Text" xml:space="preserve">
-    <value>Look up Type Ratings</value>
-  </data>
-  <data name="lnkTypeRatingsResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="Panel2Resource1.GroupingText" xml:space="preserve">
@@ -589,12 +577,6 @@
     <value />
   </data>
   <data name="txtNameResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="txtTypeResource1.Text" xml:space="preserve">
-    <value />
-  </data>
-  <data name="txtTypeResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
 </root>
