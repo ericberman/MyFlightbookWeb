@@ -1,5 +1,9 @@
-﻿body {
-}
+﻿/******************************************************
+ * 
+ * Copyright (c) 2021 MyFlightbook LLC
+ * Contact myflightbook-at-gmail.com for more information
+ *
+*******************************************************/
 
 table.pageTable {
     border-spacing: 0px;
@@ -27,6 +31,10 @@ tr.spacer {
     height: 1px;
     width: 100%;
     background-color: darkgray;
+}
+
+tr.spacer td, tr.spacerMargin td {
+    padding: 0px;
 }
 
 tr.spacerMargin {

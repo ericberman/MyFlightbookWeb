@@ -140,7 +140,7 @@ namespace MyFlightbook.Printing
             return Math.Max(1 + imgHeight + sigHeight + times, (le.RedactedComment.Length + le.CustPropertyDisplay.Length) / 100);
         }
 
-        public override string CSSPath { get { return "~/Public/CSS/printNative.css?v=2"; } }
+        public override string CSSPath { get { return "~/Public/CSS/printNative.css?v=3"; } }
     }
 
     public class PrintLayoutPortrait : PrintLayout
@@ -174,7 +174,7 @@ namespace MyFlightbook.Printing
             return Math.Max(1 + imgHeight + sigHeight + times, (le.RedactedComment.Length + le.CustPropertyDisplay.Length) / 100);
         }
 
-        public override string CSSPath { get { return "~/Public/CSS/printPortrait.css?v=2"; } }
+        public override string CSSPath { get { return "~/Public/CSS/printPortrait.css?v=3"; } }
     }
 
     public class PrintLayoutGlider : PrintLayout
@@ -191,7 +191,7 @@ namespace MyFlightbook.Printing
             return Math.Max(1, (le.RedactedComment.Length + le.CustPropertyDisplay.Length) / 100);
         }
 
-        public override string CSSPath { get { return "~/Public/CSS/printGlider.css?v=2"; } }
+        public override string CSSPath { get { return "~/Public/CSS/printGlider.css?v=3"; } }
     }
 
     public class PrintLayoutEASA : PrintLayout
@@ -224,7 +224,7 @@ namespace MyFlightbook.Printing
 
         public override bool SupportsOptionalColumns { get { return false; } }
 
-        public override string CSSPath { get { return "~/Public/CSS/printEASA.css?v=2"; } }
+        public override string CSSPath { get { return "~/Public/CSS/printEASA.css?v=3"; } }
     }
 
     public class PrintLayoutCASA : PrintLayout
@@ -241,7 +241,7 @@ namespace MyFlightbook.Printing
 
         public override bool SupportsOptionalColumns { get { return true; } }
 
-        public override string CSSPath { get { return "~/Public/CSS/printCASA.css?v=2"; } }
+        public override string CSSPath { get { return "~/Public/CSS/printCASA.css?v=3"; } }
     }
 
     public class PrintLayoutSACAA : PrintLayout
@@ -258,7 +258,7 @@ namespace MyFlightbook.Printing
 
         public override bool SupportsOptionalColumns { get { return false; } }
 
-        public override string CSSPath { get { return "~/Public/CSS/printSACAA.css?v=2"; } }
+        public override string CSSPath { get { return "~/Public/CSS/printSACAA.css?v=3"; } }
     }
 
     public class PrintLayoutNZ : PrintLayout
@@ -275,7 +275,7 @@ namespace MyFlightbook.Printing
 
         public override bool SupportsOptionalColumns { get { return true; } }
 
-        public override string CSSPath { get { return "~/Public/CSS/printNZ.css?v=2"; } }
+        public override string CSSPath { get { return "~/Public/CSS/printNZ.css?v=3"; } }
     }
 
     public class PrintLayoutCanada : PrintLayout
@@ -292,7 +292,7 @@ namespace MyFlightbook.Printing
 
         public override bool SupportsOptionalColumns { get { return true; } }
 
-        public override string CSSPath { get { return "~/Public/CSS/printCanada.css?v=2"; } }
+        public override string CSSPath { get { return "~/Public/CSS/printCanada.css?v=3"; } }
     }
 
     public class PrintLayoutUSA : PrintLayout
@@ -311,7 +311,7 @@ namespace MyFlightbook.Printing
             return Math.Max(1, (linesOfText + routeLine + 1) / 2);
         }
 
-        public override string CSSPath { get { return "~/Public/CSS/printUSA.css?v=2"; } }
+        public override string CSSPath { get { return "~/Public/CSS/printUSA.css?v=3"; } }
     }
 
     public class PrintLayoutCondensed : PrintLayout
@@ -322,7 +322,7 @@ namespace MyFlightbook.Printing
 
         public override int RowHeight(LogbookEntryDisplay le) { return 1; }
 
-        public override string CSSPath { get { return "~/Public/CSS/printCondensed.css?v=2"; } }
+        public override string CSSPath { get { return "~/Public/CSS/printCondensed.css?v=3"; } }
     }
 
     public class PrintLayoutPCAA : PrintLayout
@@ -339,7 +339,7 @@ namespace MyFlightbook.Printing
 
         public override bool SupportsOptionalColumns { get { return true; } }
 
-        public override string CSSPath { get { return "~/Public/CSS/printPCAA.css?v=2"; } }
+        public override string CSSPath { get { return "~/Public/CSS/printPCAA.css?v=3"; } }
     }
 
     public class PrintLayoutUASCivi : PrintLayout
@@ -358,7 +358,7 @@ namespace MyFlightbook.Printing
             return Math.Max(1, (linesOfText + routeLine + 1) / 2);
         }
 
-        public override string CSSPath { get { return "~/Public/CSS/printUAS-civi.css?v=1"; } }
+        public override string CSSPath { get { return "~/Public/CSS/printUAS-civi.css?v=2"; } }
     }
     #endregion
 
@@ -374,6 +374,8 @@ namespace MyFlightbook.Printing
         public enum PropertySeparatorType { Space, Comma, Semicolon, Newline }
 
         public enum ModelDisplayMode { Full, Short, ICAO }
+
+        public enum FontSize { Small, Normal, Large }
 
         #region properties
         /// <summary>
@@ -461,9 +463,62 @@ namespace MyFlightbook.Printing
         }
 
         public Collection<OptionalColumn> OptionalColumns { get; private set; } = new Collection<OptionalColumn>();
+
+        /// <summary>
+        /// Default font size
+        /// </summary>
+        [System.ComponentModel.DefaultValue(FontSize.Normal)]
+        public FontSize Size { get; set; } = FontSize.Normal;
+
+        /// <summary>
+        /// Which sections to print.
+        /// </summary>
+        public PrintingSections Sections { get; set; } = new PrintingSections();
+
+        /// <summary>
+        /// For PDF download, what settings to offer.
+        /// </summary>
+        public PDFOptions PDFSettings { get; set; } = new PDFOptions();
         #endregion
 
         public PrintingOptions() { }
+    }
+
+    /// <summary>
+    /// Class to encapsulate what sections to include in the printout
+    /// </summary>
+    [Serializable]
+    public class PrintingSections
+    {
+        public enum EndorsementsLevel { None, DigitalOnly, DigitalAndPhotos }
+
+        #region Properties
+        /// <summary>
+        /// True to include a cover page
+        /// </summary>
+        [System.ComponentModel.DefaultValue(true)]
+        public bool IncludeCoverPage { get; set; } = true;
+
+        /// <summary>
+        /// True to include totals
+        /// </summary>
+        [System.ComponentModel.DefaultValue(true)]
+        public bool IncludeTotals { get; set; } = true;
+
+        /// <summary>
+        /// True to include flights
+        /// </summary>
+        [System.ComponentModel.DefaultValue(true)]
+        public bool IncludeFlights { get; set; } = true;
+
+        /// <summary>
+        /// Whether to include digital images.
+        /// </summary>
+        [System.ComponentModel.DefaultValue(EndorsementsLevel.DigitalAndPhotos)]
+        public EndorsementsLevel Endorsements { get; set; } = EndorsementsLevel.DigitalAndPhotos;
+        #endregion
+
+        public PrintingSections() { }
     }
 
     /// <summary>
@@ -479,12 +534,14 @@ namespace MyFlightbook.Printing
         /// <summary>
         /// Orientation in which to print
         /// </summary>
-        public PageOrientation Orientation { get; set; }
+        [System.ComponentModel.DefaultValue(PageOrientation.Landscape)]
+        public PageOrientation Orientation { get; set; } = PageOrientation.Landscape;
 
         /// <summary>
         /// Size of paper on which to print
         /// </summary>
-        public PageSize PaperSize { get; set; }
+        [System.ComponentModel.DefaultValue(PageSize.Letter)]
+        public PageSize PaperSize { get; set; } = PageSize.Letter;
 
         /// <summary>
         /// If PageSize is custom, height of page in mm
@@ -506,12 +563,14 @@ namespace MyFlightbook.Printing
         /// <summary>
         /// Text to display in lower left corner of each page
         /// </summary>
-        public string FooterLeft { get; set; }
+        [System.ComponentModel.DefaultValue("")]
+        public string FooterLeft { get; set; } = string.Empty;
 
         /// <summary>
         /// Text to display in lower right corner of each page
         /// </summary>
-        public string FooterRight { get; set; }
+        [System.ComponentModel.DefaultValue("")]
+        public string FooterRight { get; set; } = string.Empty;
 
         /// <summary>
         /// Uri for footer.  OVERRIDES FOOTER LEFT / FOOTER RIGHT
@@ -558,12 +617,7 @@ namespace MyFlightbook.Printing
 
         #endregion
 
-        public PDFOptions()
-        {
-            Orientation = PageOrientation.Landscape;
-            PaperSize = PageSize.Letter;
-            FooterLeft = FooterRight = string.Empty;
-        }
+        public PDFOptions() { }
 
         /// <summary>
         /// Generates the arguments string to pass to WKHtmlToPDF

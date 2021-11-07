@@ -80,6 +80,8 @@ namespace MyFlightbook.Printing
 
                 m_options.DisplayMode = (PrintingOptions.ModelDisplayMode)rblModelDisplay.SelectedIndex;
 
+                m_options.Size = rbLargeFont.Checked ? PrintingOptions.FontSize.Large : rbSmallFont.Checked ? PrintingOptions.FontSize.Small : PrintingOptions.FontSize.Normal;
+
                 return m_options;
             }
             set
@@ -115,6 +117,19 @@ namespace MyFlightbook.Printing
                 ckSeparateCategoryClass.Checked = m_options.StripeSubtotalsByCategoryClass;
 
                 rblModelDisplay.SelectedIndex = (int)value.DisplayMode;
+
+                switch (value.Size)
+                {
+                    case PrintingOptions.FontSize.Small:
+                        rbSmallFont.Checked = true;
+                        break;
+                    case PrintingOptions.FontSize.Normal:
+                        rbMediumFont.Checked = true;
+                        break;
+                    case PrintingOptions.FontSize.Large:
+                        rbLargeFont.Checked = true;
+                        break;
+                }
 
                 AdjustForLayoutCapabilities(m_options);
             }
@@ -313,6 +328,11 @@ namespace MyFlightbook.Printing
         }
 
         protected void rblForceBreak_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            NotifyDelegate();
+        }
+
+        protected void rbFont_CheckedChanged(object sender, EventArgs e)
         {
             NotifyDelegate();
         }

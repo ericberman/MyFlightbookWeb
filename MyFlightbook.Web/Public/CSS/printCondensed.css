@@ -1,13 +1,9 @@
-﻿.pageTable {
-    width: 100%;
-    border-collapse: collapse;
-    border-spacing: 0;
-    font-size: 9pt;
-}
-
-.pageTable td {
-    padding: 5px;
-}
+﻿/******************************************************
+ * 
+ * Copyright (c) 2021 MyFlightbook LLC
+ * Contact myflightbook-at-gmail.com for more information
+ *
+*******************************************************/
 
 .clipped {
     white-space: nowrap;

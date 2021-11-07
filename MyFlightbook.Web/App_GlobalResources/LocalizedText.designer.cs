@@ -3813,6 +3813,33 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Larger.
+        /// </summary>
+        internal static string PrintFontSizeLarge {
+            get {
+                return ResourceManager.GetString("PrintFontSizeLarge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Normal.
+        /// </summary>
+        internal static string PrintFontSizeNormal {
+            get {
+                return ResourceManager.GetString("PrintFontSizeNormal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Smaller.
+        /// </summary>
+        internal static string PrintFontSizeSmaller {
+            get {
+                return ResourceManager.GetString("PrintFontSizeSmaller", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Full route: {0}.
         /// </summary>
         internal static string PrintFullRoute {
@@ -4099,6 +4126,15 @@ namespace Resources {
         internal static string PrintViewOptions {
             get {
                 return ResourceManager.GetString("PrintViewOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save a link to this page with these settings.
+        /// </summary>
+        internal static string PrintViewPermaLink {
+            get {
+                return ResourceManager.GetString("PrintViewPermaLink", resourceCulture);
             }
         }
         

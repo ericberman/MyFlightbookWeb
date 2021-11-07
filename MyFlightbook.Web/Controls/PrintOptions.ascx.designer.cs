@@ -78,6 +78,33 @@ namespace MyFlightbook.Printing
         protected global::Controls_mfbTooltip ttFlightCol;
 
         /// <summary>
+        /// rbSmallFont control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButton rbSmallFont;
+
+        /// <summary>
+        /// rbMediumFont control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButton rbMediumFont;
+
+        /// <summary>
+        /// rbLargeFont control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButton rbLargeFont;
+
+        /// <summary>
         /// pnlFlightsPerPage control.
         /// </summary>
         /// <remarks>
