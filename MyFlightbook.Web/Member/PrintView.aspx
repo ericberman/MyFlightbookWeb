@@ -27,8 +27,14 @@
 </asp:Content>
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
     <div class="noprint">
-        <div style="float:left; margin-right: 10px; font-weight:bold"><asp:Image ID="ib" ImageAlign="AbsMiddle" ImageUrl="~/images/back.png" runat="server" /><asp:HyperLink ID="lnkReturnToFlights" style="vertical-align:middle;" runat="server" Text="<%$ Resources:LocalizedText, PrintViewReturnLogbook %>"></asp:HyperLink></div>
-        <p><asp:Label ID="lblDescription" runat="server" Text="<%$ Resources:LocalizedText, PrintViewDescription %>" ></asp:Label></p>
+        <div style="float:left; margin-right: 10px; font-weight:bold"><asp:Image ID="ib" ImageAlign="AbsMiddle" ImageUrl="~/images/back.png" runat="server" /></div>
+        <div><asp:HyperLink ID="lnkReturnToFlights" style="vertical-align:middle;" runat="server" Text="<%$ Resources:LocalizedText, PrintViewReturnLogbook %>" /></div>
+        <p>
+            <asp:Label ID="lblDescription" runat="server" Text="<%$ Resources:LocalizedText, PrintViewDescription %>" />
+            <asp:HyperLink ID="lnkPermalink" runat="server">
+                <asp:Image ID="imgPermalink" runat="server" ImageUrl="~/images/Link.png" ToolTip="<%$ Resources:LocalizedText, PrintViewPermaLink %>" />
+            </asp:HyperLink>
+        </p>
         <ajaxToolkit:TabContainer ID="TabContainer1" runat="server" CssClass="mfbDefault" ActiveTabIndex="0" >
             <ajaxToolkit:TabPanel ID="tpOptions" runat="server" HeaderText="<%$ Resources:LocalizedText, PrintViewTabOptions %>" >
                 <ContentTemplate>

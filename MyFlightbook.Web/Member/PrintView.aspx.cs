@@ -36,8 +36,6 @@ namespace MyFlightbook.MemberPages
 
         protected bool SuppressFooter { get; set; }
 
-        protected PDFOptions PageOptions { get; set; }
-
         protected PrintingOptions PrintOptions { get; set; }
 
         private const string szSessKeyPDFError = "pdfRenderError";
@@ -49,21 +47,52 @@ namespace MyFlightbook.MemberPages
         }
         #endregion
 
+        #region Linking Utilities
+        protected string PermaLink(PrintingOptions po, FlightQuery fq)
+        {
+            if (fq == null)
+                throw new ArgumentNullException(nameof(fq));
+            string szStudent = util.GetStringParam(Request, "u");
+            return String.Format(CultureInfo.InvariantCulture, "{0}://{1}{2}",
+                Request.Url.Scheme,
+                Request.Url.Host,
+                VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/PrintView.aspx?po={0}&fq={1}{2}",
+                HttpUtility.UrlEncode(Convert.ToBase64String(JsonConvert.SerializeObject(po, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore }).Compress())),
+                HttpUtility.UrlEncode(fq.ToBase64CompressedJSONString()),
+                String.IsNullOrEmpty(szStudent) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "&u={0}", szStudent))
+                ));
+        }
+
+        protected string ReturnLink(FlightQuery fq)
+        {
+            if (fq == null)
+                throw new ArgumentNullException(nameof(fq));
+            return String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?fq={0}", HttpUtility.UrlEncode(fq.ToBase64CompressedJSONString()));
+        }
+        #endregion
+
+        protected void InitPrintingOptionsFromCompressedJSON(string sz)
+        {
+            PrintOptions = String.IsNullOrEmpty(sz)
+                ? new PrintingOptions()
+                : JsonConvert.DeserializeObject<PrintingOptions>(Convert.FromBase64String(sz).Uncompress());
+        }
+
 
         protected override void Render(HtmlTextWriter writer)
         {
             if (OverrideRender)
             {
                 PDFRenderer.RenderFile(
-                    PageOptions,
+                    PrintOptions.PDFSettings,
                     (htwOut) => { base.Render(htwOut); },
                     (szErr) => // onError
                     {
-                        util.NotifyAdminEvent("Error saving PDF", String.Format(CultureInfo.CurrentCulture, "{3}\r\nUser: {0}\r\nOptions:\r\n{1}\r\n\r\nQuery:{2}\r\n",
+                        util.NotifyAdminEvent("Error saving PDF", String.Format(CultureInfo.CurrentCulture, "{0}\r\nUser: {1}\r\nOptions:\r\n{2}\r\n",
+                            szErr,
                             CurrentUser.UserName,
-                            JsonConvert.SerializeObject(PageOptions),
-                            JsonConvert.SerializeObject(PrintOptions),
-                            szErr), ProfileRoles.maskSiteAdminOnly);
+                            JsonConvert.SerializeObject(PrintOptions)
+                            ), ProfileRoles.maskSiteAdminOnly);
 
                         // put the error into the session
                         PDFError = szErr;
@@ -155,16 +184,72 @@ namespace MyFlightbook.MemberPages
             }
         }
 
+        private PDFOptions pdfOptions
+        {
+            get
+            {
+                return new PDFOptions()
+                {
+                    PaperSize = (PDFOptions.PageSize)Enum.Parse(typeof(PDFOptions.PageSize), cmbPageSize.SelectedValue),
+                    PageHeight = decCustHeight.IntValue,
+                    PageWidth = decCustWidth.IntValue,
+                    Orientation = rbLandscape.Checked ? PDFOptions.PageOrientation.Landscape : PDFOptions.PageOrientation.Portrait,
+                    FooterUri = VirtualPathUtility.ToAbsolute("~/Public/PrintFooter.aspx/" + PDFOptions.PathEncodeOptions(ckIncludeCoverSheet.Checked, ckPrintTotalPages.Checked)).ToAbsoluteURL(Request),
+                    LeftMargin = decLeftMargin.IntValue,
+                    RightMargin = decRightMargin.IntValue,
+                    TopMargin = decTopMargin.IntValue,
+                    BottomMargin = decBottomMargin.IntValue
+                };
+            }
+            set
+            {
+                cmbPageSize.SelectedValue = value.PaperSize.ToString();
+                decCustHeight.IntValue = value.PageHeight;
+                decCustWidth.IntValue = value.PageWidth;
+                rbLandscape.Checked = value.Orientation == PDFOptions.PageOrientation.Landscape;
+                rbPortrait.Checked = value.Orientation == PDFOptions.PageOrientation.Portrait;
+                decLeftMargin.IntValue = value.LeftMargin ?? decLeftMargin.DefaultValueInt;
+                decRightMargin.IntValue = value.RightMargin ?? decRightMargin.DefaultValueInt;
+                decTopMargin.IntValue = value.TopMargin ?? decTopMargin.DefaultValueInt;
+                decBottomMargin.IntValue = value.BottomMargin ?? decBottomMargin.DefaultValueInt;
+            }
+        }
+
+        private PrintingSections printingSections
+        {
+            get
+            {
+                return new PrintingSections()
+                {
+                    Endorsements = ckEndorsements.Checked ? (ckIncludeEndorsementImages.Checked ? PrintingSections.EndorsementsLevel.DigitalAndPhotos : PrintingSections.EndorsementsLevel.DigitalOnly) : PrintingSections.EndorsementsLevel.None,
+                    IncludeFlights = ckFlights.Checked,
+                    IncludeCoverPage = ckIncludeCoverSheet.Checked,
+                    IncludeTotals = ckTotals.Checked
+                };
+            }
+            set
+            {
+                ckEndorsements.Checked = value.Endorsements != PrintingSections.EndorsementsLevel.None;
+                ckIncludeEndorsementImages.Checked = value.Endorsements == PrintingSections.EndorsementsLevel.DigitalAndPhotos;
+                ckFlights.Checked = value.IncludeFlights;
+                ckIncludeCoverSheet.Checked = value.IncludeCoverPage;
+                ckTotals.Checked = value.IncludeTotals;
+            }
+        }
+
+
         private void InitializePrintOptions()
         {
-            string szOptionsParam = util.GetStringParam(Request, "po");
-            if (!String.IsNullOrEmpty(szOptionsParam))
-                PrintOptions1.Options = JsonConvert.DeserializeObject<PrintingOptions>(Convert.FromBase64String(szOptionsParam).Uncompress());
+            InitPrintingOptionsFromCompressedJSON(util.GetStringParam(Request, "po"));
+            PrintingOptions po = PrintOptions;
+            PrintOptions1.Options = po;
+            pdfOptions = po.PDFSettings;
+            printingSections = po.Sections;
         }
 
         private void InitializeTitleAndQueryDescriptor()
         {
-            Master.Title = lblUserName.Text = String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, CurrentUser.UserFullName);
+            Master.Title = lblUserName.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, CurrentUser.UserFullName);
             mfbQueryDescriptor.DataSource = mfbTotalSummary1.CustomRestriction = mfbSearchForm1.Restriction;
             mfbQueryDescriptor.DataBind();
             mfbTotalSummary1.DataBind();
@@ -174,13 +259,11 @@ namespace MyFlightbook.MemberPages
         {
             // Set up endorsements
             mfbEndorsementList.Student = CurrentUser.UserName;
-            int cEndorsements = mfbEndorsementList.RefreshEndorsements();
+            mfbEndorsementList.RefreshEndorsements();
             ImageList il = new ImageList(MFBImageInfo.ImageClass.Endorsement, CurrentUser.UserName);
             il.Refresh(fIncludeDocs: false, fIncludeVids: false);
-            cEndorsements += il.ImageArray.Count;
             rptImages.DataSource = il.ImageArray;
             rptImages.DataBind();
-            ckEndorsements.Checked = ckIncludeEndorsementImages.Checked = pnlEndorsements.Visible = (cEndorsements > 0);
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -245,7 +328,7 @@ namespace MyFlightbook.MemberPages
             RefreshLogbookData();
             mfbTotalSummary1.DataBind();
             mvSearch.SetActiveView(vwDescriptor);
-            lnkReturnToFlights.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?fq={0}", HttpUtility.UrlEncode(mfbSearchForm1.Restriction.ToBase64CompressedJSONString()));
+            lnkReturnToFlights.NavigateUrl = ReturnLink(mfbSearchForm1.Restriction);
         }
 
         protected void RefreshLogbookData()
@@ -254,8 +337,27 @@ namespace MyFlightbook.MemberPages
             pnlResults.Visible = true;
             lblCoverDate.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrintViewCoverSheetDateTemplate, DateTime.Now);
 
+            PrintingOptions po = PrintOptions1.Options;
+
+            // Set any global font appropriately.
+            pnlResults.Style["font-size"] = po.Size == PrintingOptions.FontSize.Normal ? "9pt" : String.Format(CultureInfo.InvariantCulture, po.Size == PrintingOptions.FontSize.Small ? "7pt" : "11pt");
+
+            // Make sure that any PDF and section information is up-to-date, and that the PrintOptions property is set up correctly
+            po.Sections = printingSections;
+            po.PDFSettings = pdfOptions;
+            PrintOptions = po;
+
+            // Make sure copy link is up-to-date
+            lnkPermalink.NavigateUrl = PermaLink(po, mfbSearchForm1.Restriction);
+
+            mvLayouts.Visible = po.Sections.IncludeFlights;
+            pnlEndorsements.Visible = po.Sections.Endorsements != PrintingSections.EndorsementsLevel.None;
+            rptImages.Visible = po.Sections.Endorsements == PrintingSections.EndorsementsLevel.DigitalAndPhotos;
+            pnlTotals.Visible = po.Sections.IncludeTotals;
+            pnlCover.Visible = po.Sections.IncludeCoverPage;
+
             IList<LogbookEntryDisplay> lstFlights = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntry.QueryCommand(mfbSearchForm1.Restriction, fAsc: true), CurrentUser.UserName, string.Empty, SortDirection.Ascending, CurrentUser.UsesHHMM, CurrentUser.UsesUTCDateOfFlight);
-            PrintLayout pl = LogbookPrintedPage.LayoutLogbook(CurrentUser, lstFlights, ActiveTemplate, PrintOptions1.Options, SuppressFooter);
+            PrintLayout pl = LogbookPrintedPage.LayoutLogbook(CurrentUser, lstFlights, ActiveTemplate, po, SuppressFooter);
             Master.PrintingCSS = pl.CSSPath.ToAbsoluteURL(Request).ToString();
         }
 
@@ -280,33 +382,12 @@ namespace MyFlightbook.MemberPages
             {
                 SuppressFooter = true;
                 OverrideRender = true;
-                PageOptions = new PDFOptions()
-                {
-                    PaperSize = (PDFOptions.PageSize)Enum.Parse(typeof(PDFOptions.PageSize), cmbPageSize.SelectedValue),
-                    PageHeight = decCustHeight.IntValue,
-                    PageWidth = decCustWidth.IntValue,
-                    Orientation = rbLandscape.Checked ? PDFOptions.PageOrientation.Landscape : PDFOptions.PageOrientation.Portrait,
-                    FooterUri = VirtualPathUtility.ToAbsolute("~/Public/PrintFooter.aspx/" + PDFOptions.PathEncodeOptions(ckIncludeCoverSheet.Checked, ckPrintTotalPages.Checked)).ToAbsoluteURL(Request),
-                    LeftMargin = decLeftMargin.IntValue,
-                    RightMargin = decRightMargin.IntValue,
-                    TopMargin = decTopMargin.IntValue,
-                    BottomMargin = decBottomMargin.IntValue
-                };
-                PrintOptions = PrintOptions1.Options;
             }
             RefreshLogbookData();
         }
 
         protected void IncludeParametersChanged(object sender, EventArgs e)
         {
-            mvLayouts.Visible = ckFlights.Checked;
-            pnlEndorsements.Visible = ckEndorsements.Checked;
-            if (!ckEndorsements.Checked)
-                ckIncludeEndorsementImages.Checked = false;
-
-            rptImages.Visible = ckIncludeEndorsementImages.Checked;
-            pnlTotals.Visible = ckTotals.Checked;
-            pnlCover.Visible = ckIncludeCoverSheet.Checked;
             RefreshLogbookData();
         }
 

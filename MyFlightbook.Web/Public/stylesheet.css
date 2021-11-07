@@ -1,6 +1,6 @@
 ﻿/******************************************************
  * 
- * Copyright (c) 2007-2020 MyFlightbook LLC
+ * Copyright (c) 2007-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -58,10 +58,8 @@ BODY, body {
     padding-bottom: 5px;
 }
 
-TABLE, table
-{
+TABLE, table {
     font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    font-size: 9pt;
 }
 
 H1
@@ -562,11 +560,9 @@ td.totalsByTimeCell:nth-child(even), td.totalsDateRange:nth-child(even) {
     font-weight: bold;
 }
 
-.modalBackground
-{
+.modalBackground {
     background-color: Gray;
     opacity: 0.7;
-    filter: alpha(opacity=70);
 }
 
 .modalpopup {
@@ -1569,6 +1565,17 @@ table.featureTable {
     margin: 0px;
     }
    .endorsement {background-color: #EEEEEE;}
+}
+
+/* All print layouts are contained within pageTable */
+.pageTable {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.pageTable td {
+    padding: 2pt;
 }
 
 @media screen {

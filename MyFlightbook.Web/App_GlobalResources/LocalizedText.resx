@@ -1889,4 +1889,16 @@
   <data name="ChartTotalsGroupMonthOfYear" xml:space="preserve">
     <value>Month of Year</value>
   </data>
+  <data name="PrintFontSizeLarge" xml:space="preserve">
+    <value>Larger</value>
+  </data>
+  <data name="PrintFontSizeNormal" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="PrintFontSizeSmaller" xml:space="preserve">
+    <value>Smaller</value>
+  </data>
+  <data name="PrintViewPermaLink" xml:space="preserve">
+    <value>Save a link to this page with these settings</value>
+  </data>
 </root>

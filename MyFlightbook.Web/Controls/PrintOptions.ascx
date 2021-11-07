@@ -23,7 +23,13 @@
         <asp:CheckBox ID="ckIncludeImages" runat="server" Text="<%$ Resources:LocalizedText, PrintViewIncludeImages %>" AutoPostBack="True" OnCheckedChanged="ckIncludeImages_CheckedChanged" />
     </asp:Panel>
     <div><asp:CheckBox ID="ckIncludeSignatures" runat="server" Text="<%$ Resources:LocalizedText, PrintViewIncludeSignatures %>" Checked="true" AutoPostBack="true" OnCheckedChanged="ckIncludeSignatures_CheckedChanged" /></div>
-    <div><asp:CheckBox ID="ckFlightColoring" runat="server" Text="<%$ Resources:LocalizedText, PrintViewFlightColoring %>" AutoPostBack="true" OnCheckedChanged="ckFlightColoring_CheckedChanged" /><uc1:mfbTooltip runat="server" ID="ttFlightCol" BodyContent="<%$ Resources:LocalizedText, PrintViewFlightColoringTip %>" />
+    <div>
+        <asp:CheckBox ID="ckFlightColoring" runat="server" Text="<%$ Resources:LocalizedText, PrintViewFlightColoring %>" AutoPostBack="true" OnCheckedChanged="ckFlightColoring_CheckedChanged" /><uc1:mfbTooltip runat="server" ID="ttFlightCol" BodyContent="<%$ Resources:LocalizedText, PrintViewFlightColoringTip %>" />
+    </div>
+    <div>
+        <asp:RadioButton ID="rbSmallFont" runat="server" Text="<%$ Resources:LocalizedText, PrintFontSizeSmaller %>" Font-Size="7pt" GroupName="rbFontSize" AutoPostBack="true" OnCheckedChanged="rbFont_CheckedChanged" />
+        <asp:RadioButton ID="rbMediumFont" runat="server" Text="<%$ Resources:LocalizedText, PrintFontSizeNormal %>" GroupName="rbFontSize" AutoPostBack="true" OnCheckedChanged="rbFont_CheckedChanged" />
+        <asp:RadioButton ID="rbLargeFont" runat="server" Text="<%$ Resources:LocalizedText, PrintFontSizeLarge %>" Font-Size="11pt" GroupName="rbFontSize" AutoPostBack="true" OnCheckedChanged="rbFont_CheckedChanged" />
     </div>
 </div>
 <asp:Panel ID="pnlFlightsPerPage" runat="server">

@@ -66,7 +66,7 @@ namespace MyFlightbook.Instruction
                         if (!String.IsNullOrEmpty(hdnStudent.Value))
                             UpdateForUser(hdnStudent.Value);
 
-                        mfbSearchForm.Username = printOptions.UserName = student.UserName;
+                        mfbSearchForm.Username = student.UserName;
                         ResolvePrintLink();
                     }
                 }
@@ -166,13 +166,25 @@ namespace MyFlightbook.Instruction
 
         protected void ResolvePrintLink()
         {
+            if (!ckEndorsements.Checked)
+                ckIncludeEndorsementImages.Checked = false;
+            PrintingOptions po = new PrintingOptions()
+            {
+                Sections = new PrintingSections()
+                {
+                    Endorsements = ckEndorsements.Checked ? (ckIncludeEndorsementImages.Checked ? PrintingSections.EndorsementsLevel.DigitalAndPhotos : PrintingSections.EndorsementsLevel.DigitalOnly) : PrintingSections.EndorsementsLevel.None,
+                    IncludeCoverPage = ckIncludeCoverSheet.Checked,
+                    IncludeFlights = true,
+                    IncludeTotals = ckTotals.Checked
+                }
+            };
             lnkPrintView.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/PrintView.aspx?po={0}&fq={1}&u={2}",
-                HttpUtility.UrlEncode(Convert.ToBase64String(JsonConvert.SerializeObject(printOptions.Options, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore }).Compress())),
+                HttpUtility.UrlEncode(Convert.ToBase64String(JsonConvert.SerializeObject(po, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore }).Compress())),
                 HttpUtility.UrlEncode(Restriction.ToBase64CompressedJSONString()),
                 hdnStudent.Value);
         }
 
-        protected void printOptions_OptionsChanged(object sender, PrintingOptionsEventArgs e)
+        protected void IncludeParametersChanged(object sender, EventArgs e)
         {
             ResolvePrintLink();
         }
