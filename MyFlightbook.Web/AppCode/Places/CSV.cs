@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2020 MyFlightbook LLC
+ * Copyright (c) 2010-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -51,14 +51,10 @@ namespace MyFlightbook.Telemetry
             string szTwoLineHeader = String.Format(CultureInfo.InvariantCulture, "{0}\r\n{1}", mc[0].Groups["header1"].Value, mc[0].Groups["header2"].Value);
 
             string szMergedHeader;
-            MemoryStream ms = null;
-            try
+            using (MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(szTwoLineHeader)))
             {
-                ms = new MemoryStream(Encoding.UTF8.GetBytes(szTwoLineHeader));
                 using (CSVReader csvr = new CSVReader(ms))
                 {
-                    ms = null;
-
                     string[] rgHeader1 = csvr.GetCSVLine();
 
                     if (rgHeader1 == null)
@@ -75,11 +71,6 @@ namespace MyFlightbook.Telemetry
 
                     szMergedHeader = String.Join(",", rgMerged);
                 }
-            }
-            finally
-            {
-                if (ms != null)
-                    ms.Dispose();
             }
 
             // Rename key fields:
@@ -111,13 +102,10 @@ namespace MyFlightbook.Telemetry
                 return FixedGarminData(flightData);
 
             StringBuilder sbNew = new StringBuilder();
-            MemoryStream ms = null;
-            try
+            using (MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(flightData)))
             {
-                ms = new MemoryStream(Encoding.UTF8.GetBytes(flightData));
                 using (CSVReader csvr = new CSVReader(ms))
                 {
-                    ms = null;  // for CA2202
                     string[] rgszHeader = csvr.GetCSVLine();
                     sbNew.AppendFormat(CultureInfo.InvariantCulture, "{0}\r\n", String.Join(",", rgszHeader));
                     string[] rgszRow = null;
@@ -140,11 +128,6 @@ namespace MyFlightbook.Telemetry
                             );
                     }
                 }
-            }
-            finally
-            {
-                if (ms != null)
-                    ms.Dispose();
             }
 
             return sbNew.ToString();
@@ -329,13 +312,10 @@ namespace MyFlightbook.Telemetry
 
             string flightData = FixedFlightData(szData);
 
-            MemoryStream ms = null;
-            try
+            using (MemoryStream ms  = new MemoryStream(Encoding.UTF8.GetBytes(flightData)))
             {
-                ms = new MemoryStream(Encoding.UTF8.GetBytes(flightData));
                 using (CSVReader csvr = new CSVReader(ms))
                 {
-                    ms = null;
                     try
                     {
                         string[] rgszHeader = null;
@@ -403,7 +383,7 @@ namespace MyFlightbook.Telemetry
                         sbErr.Append(String.Format(CultureInfo.CurrentCulture, Resources.FlightData.errGeneric, ex.Message));
                         fResult = false;
                     }
-                    catch (System.Data.DuplicateNameException ex)
+                    catch (DuplicateNameException ex)
                     {
                         sbErr.Append(String.Format(CultureInfo.CurrentCulture, Resources.FlightData.errGeneric, ex.Message));
                         fResult = false;
@@ -412,11 +392,6 @@ namespace MyFlightbook.Telemetry
                     {
                     }
                 }
-            }
-            finally
-            {
-                if (ms != null)
-                    ms.Dispose();
             }
 
             ErrorString = sbErr.ToString();

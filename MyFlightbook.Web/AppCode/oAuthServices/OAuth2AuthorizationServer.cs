@@ -14,7 +14,7 @@ using System.Security.Cryptography;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2020 MyFlightbook LLC
+ * Copyright (c) 2016-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  * 
  * Much of the code in this file came from DotNetOpenAuth.
@@ -144,7 +144,6 @@ namespace OAuthAuthorizationServer.Code
         /// Reads all available authorized clients from the database.  NOT CACHED.
         /// </summary>
         /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public static IEnumerable<MFBOauth2Client> GetAvailableClients()
         {
             List<MFBOauth2Client> lst = new List<MFBOauth2Client>();
@@ -681,7 +680,6 @@ namespace OAuthAuthorizationServer.Code
 #endif
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public static RSACryptoServiceProvider CreateRSA()
         {
             var rsa = new RSACryptoServiceProvider();

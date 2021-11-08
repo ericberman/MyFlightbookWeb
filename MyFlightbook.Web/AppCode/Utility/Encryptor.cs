@@ -6,7 +6,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2020 MyFlightbook LLC
+ * Copyright (c) 2008-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -105,24 +105,17 @@ namespace MyFlightbook.Encryptors
                         //Creates a symmetric Rijndael decryptor object.
                         ICryptoTransform Decryptor = RijndaelCipher.CreateDecryptor(SecretKey.GetBytes(32), SecretKey.GetBytes(16));
 
-                        MemoryStream memoryStream = null;
-                        try {
-                            memoryStream = new MemoryStream(EncryptedData);
+                        using (MemoryStream memoryStream = new MemoryStream(EncryptedData))
+                        {
                             //Defines the cryptographics stream for decryption.THe stream contains decrpted data
                             using (CryptoStream cryptoStream = new CryptoStream(memoryStream, Decryptor, CryptoStreamMode.Read))
                             {
-                                memoryStream = null;
                                 byte[] PlainText = new byte[EncryptedData.Length];
                                 int DecryptedCount = cryptoStream.Read(PlainText, 0, PlainText.Length);
 
                                 //Converting to string
                                 DecryptedData = Encoding.Unicode.GetString(PlainText, 0, DecryptedCount);
                             }
-                        }
-                        finally
-                        {
-                            if (memoryStream != null)
-                                memoryStream.Dispose();
                         }
                     }
                 }
@@ -156,26 +149,19 @@ namespace MyFlightbook.Encryptors
 
                     //Creates a symmetric encryptor object. 
                     ICryptoTransform Encryptor = RijndaelCipher.CreateEncryptor(SecretKey.GetBytes(32), SecretKey.GetBytes(16));
-                    MemoryStream memoryStream = null;
-                    MemoryStream result = null;
-                    try {
-                        result = memoryStream = new MemoryStream();
+                    using (MemoryStream memoryStream = new MemoryStream())
+                    { 
                         //Defines a stream that links data streams to cryptographic transformations
                         using (CryptoStream cryptoStream = new CryptoStream(memoryStream, Encryptor, CryptoStreamMode.Write))
                         {
-                            memoryStream = null;    // CA2202
                             cryptoStream.Write(PlainText, 0, PlainText.Length);
                             //Writes the final state and clears the buffer
                             cryptoStream.FlushFinalBlock();
-                            byte[] CipherBytes = result.ToArray();
+                            byte[] CipherBytes = memoryStream.ToArray();
                             EncryptedData = Convert.ToBase64String(CipherBytes);
                         }
                     }
-                    finally
-                    {
-                        if (memoryStream != null)
-                            memoryStream.Dispose();
-                    }
+
                     return EncryptedData;
                 }
             }

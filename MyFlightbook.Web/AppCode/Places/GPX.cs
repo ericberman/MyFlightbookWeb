@@ -127,107 +127,104 @@ namespace MyFlightbook.Telemetry
             Boolean fResult = true;
 
             byte[] bytes = Encoding.UTF8.GetBytes(szData);
-            MemoryStream stream = null;
-            try
+            using (MemoryStream stream = new MemoryStream(bytes))
             {
-                stream = new MemoryStream(bytes);
-                using (StreamReader sr = new StreamReader(stream))
+                try
                 {
-                    stream = null;
-                    XDocument xml = XDocument.Load(sr);
-
-                    GPXPathRoot root = FindRoot(xml);
-
-                    if (root == null)
-                        return false;
-
-                    if (root.elements != null)
+                    using (StreamReader sr = new StreamReader(stream))
                     {
-                        int iRow = 0;
-                        bool fHasAlt = false;
-                        bool fHasDate = false;
-                        bool fHasLatLon = false;
-                        bool fHasSpeed = false;
+                        XDocument xml = XDocument.Load(sr);
 
-                        List<Position> lst = new List<Position>();
+                        GPXPathRoot root = FindRoot(xml);
 
-                        foreach (XElement e in root.elements)
+                        if (root == null)
+                            return false;
+
+                        if (root.elements != null)
                         {
-                            foreach (XElement coord in e.Descendants(root.xnamespace + "trkpt"))
+                            int iRow = 0;
+                            bool fHasAlt = false;
+                            bool fHasDate = false;
+                            bool fHasLatLon = false;
+                            bool fHasSpeed = false;
+
+                            List<Position> lst = new List<Position>();
+
+                            foreach (XElement e in root.elements)
                             {
-                                XAttribute xLat = null;
-                                XAttribute xLon = null;
-                                XElement xAlt = null;
-                                XElement xTime = null;
-                                XElement xSpeed = null;
-                                XElement xBadElfSpeed = null;
-
-                                xLat = coord.Attribute("lat");
-                                xLon = coord.Attribute("lon");
-                                xAlt = coord.Descendants(root.xnamespace + "ele").FirstOrDefault();
-                                xTime = coord.Descendants(root.xnamespace + "time").FirstOrDefault();
-                                xSpeed = SpeedElement(coord, root);
-
-                                fHasAlt = (xAlt != null);
-                                fHasDate = (xTime != null);
-                                fHasSpeed = (xSpeed != null || xBadElfSpeed != null);
-                                fHasLatLon = (xLat != null && xLon != null);
-
-                                if (!fHasAlt && !fHasDate && !fHasSpeed && !fHasLatLon)
-                                    throw new MyFlightbookException(Resources.FlightData.errGPXNoPath);
-
-                                if (fHasLatLon)
+                                foreach (XElement coord in e.Descendants(root.xnamespace + "trkpt"))
                                 {
-                                    try
-                                    {
-                                        Position samp = new Position(Convert.ToDouble(xLat.Value, System.Globalization.CultureInfo.InvariantCulture), Convert.ToDouble(xLon.Value, System.Globalization.CultureInfo.InvariantCulture));
-                                        if (fHasAlt)
-                                            samp.Altitude = (Int32)Convert.ToDouble(xAlt.Value, System.Globalization.CultureInfo.InvariantCulture);
-                                        if (fHasDate)
-                                            samp.Timestamp = xTime.Value.ParseUTCDate();
-                                        if (fHasSpeed)
-                                            samp.Speed = Convert.ToDouble(xSpeed.Value, System.Globalization.CultureInfo.InvariantCulture);
-                                        lst.Add(samp);
-                                    }
-                                    catch (Exception ex) when (ex is FormatException)
-                                    {
-                                        fResult = false;
-                                        sbErr.AppendFormat(CultureInfo.CurrentCulture, Resources.FlightData.errGPXBadRow, iRow);
-                                        sbErr.Append("\r\n");
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        MyFlightbookException.NotifyAdminException(new MyFlightbookException("Unknown error in ParseFlightDataGPX", ex));
-                                        throw;
-                                    }
-                                }
-                                iRow++;
-                            }
-                        }
+                                    XAttribute xLat = null;
+                                    XAttribute xLon = null;
+                                    XElement xAlt = null;
+                                    XElement xTime = null;
+                                    XElement xSpeed = null;
+                                    XElement xBadElfSpeed = null;
 
-                        // Derive speed and put it into a data table
-                        if (!fHasSpeed)
-                            Position.DeriveSpeed(lst);
-                        ToDataTable(lst);
+                                    xLat = coord.Attribute("lat");
+                                    xLon = coord.Attribute("lon");
+                                    xAlt = coord.Descendants(root.xnamespace + "ele").FirstOrDefault();
+                                    xTime = coord.Descendants(root.xnamespace + "time").FirstOrDefault();
+                                    xSpeed = SpeedElement(coord, root);
+
+                                    fHasAlt = (xAlt != null);
+                                    fHasDate = (xTime != null);
+                                    fHasSpeed = (xSpeed != null || xBadElfSpeed != null);
+                                    fHasLatLon = (xLat != null && xLon != null);
+
+                                    if (!fHasAlt && !fHasDate && !fHasSpeed && !fHasLatLon)
+                                        throw new MyFlightbookException(Resources.FlightData.errGPXNoPath);
+
+                                    if (fHasLatLon)
+                                    {
+                                        try
+                                        {
+                                            Position samp = new Position(Convert.ToDouble(xLat.Value, System.Globalization.CultureInfo.InvariantCulture), Convert.ToDouble(xLon.Value, System.Globalization.CultureInfo.InvariantCulture));
+                                            if (fHasAlt)
+                                                samp.Altitude = (Int32)Convert.ToDouble(xAlt.Value, System.Globalization.CultureInfo.InvariantCulture);
+                                            if (fHasDate)
+                                                samp.Timestamp = xTime.Value.ParseUTCDate();
+                                            if (fHasSpeed)
+                                                samp.Speed = Convert.ToDouble(xSpeed.Value, System.Globalization.CultureInfo.InvariantCulture);
+                                            lst.Add(samp);
+                                        }
+                                        catch (Exception ex) when (ex is FormatException)
+                                        {
+                                            fResult = false;
+                                            sbErr.AppendFormat(CultureInfo.CurrentCulture, Resources.FlightData.errGPXBadRow, iRow);
+                                            sbErr.Append("\r\n");
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            MyFlightbookException.NotifyAdminException(new MyFlightbookException("Unknown error in ParseFlightDataGPX", ex));
+                                            throw;
+                                        }
+                                    }
+                                    iRow++;
+                                }
+                            }
+
+                            // Derive speed and put it into a data table
+                            if (!fHasSpeed)
+                                Position.DeriveSpeed(lst);
+                            ToDataTable(lst);
+                        }
+                        else
+                            throw new MyFlightbookException(Resources.FlightData.errGPXNoPath);
                     }
-                    else
-                        throw new MyFlightbookException(Resources.FlightData.errGPXNoPath);
+                }
+                catch (System.Xml.XmlException ex)
+                {
+                    sbErr.Append(Resources.FlightData.errGeneric + ex.Message);
+                    fResult = false;
+                }
+                catch (MyFlightbookException ex)
+                {
+                    sbErr.Append(Resources.FlightData.errGeneric + ex.Message);
+                    fResult = false;
                 }
             }
-            catch (System.Xml.XmlException ex)
-            {
-                sbErr.Append(Resources.FlightData.errGeneric + ex.Message);
-                fResult = false;
-            }
-            catch (MyFlightbookException ex)
-            {
-                sbErr.Append(Resources.FlightData.errGeneric + ex.Message);
-                fResult = false;
-            }
-            finally
-            {
-                stream?.Dispose();
-            }
+
             ErrorString = sbErr.ToString();
 
             return fResult;

@@ -11,7 +11,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2020 MyFlightbook LLC
+ * Copyright (c) 2013-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -866,10 +866,7 @@ ORDER BY dateEarned ASC ";
                     return Convert.ToBoolean(o, CultureInfo.InvariantCulture);
             }
             List<EarnedGratuity> lst = EarnedGratuity.GratuitiesForUser(szUser, gt);
-            if (lst.Count == 0)
-                f = false;
-            else
-                f = lst[0].ExpirationDate.CompareTo(DateTime.Now) > 0;
+            f = lst.Count != 0 && lst[0].ExpirationDate.CompareTo(DateTime.Now) > 0;
             if (sess != null)
                 sess[szSessionKey] = f.ToString(CultureInfo.InvariantCulture);
             return f;
@@ -1238,15 +1235,15 @@ ORDER BY dateEarned ASC ";
 
             foreach (YearlyPayments yp in rgyp)
             {
-                tr = new TableRow();
-                t.Rows.Add(tr);
-                tr.Cells.AddRange(NewRow());
-                tr.Cells[0].Text = yp.Year.ToString(CultureInfo.CurrentCulture);
-                tr.Cells[0].Font.Bold = true;
+                TableRow tr2 = new TableRow();
+                t.Rows.Add(tr2);
+                tr2.Cells.AddRange(NewRow());
+                tr2.Cells[0].Text = yp.Year.ToString(CultureInfo.CurrentCulture);
+                tr2.Cells[0].Font.Bold = true;
                 for (int i = 1; i < 13; i++)
-                    yp.MonthlyPayments[i - 1].AddToContainer(tr.Cells[i]);
-                yp.AnnualPayment.AddToContainer(tr.Cells[13]);
-                tr.Cells[13].Font.Bold = true;
+                    yp.MonthlyPayments[i - 1].AddToContainer(tr2.Cells[i]);
+                yp.AnnualPayment.AddToContainer(tr2.Cells[13]);
+                tr2.Cells[13].Font.Bold = true;
             }
         }
     }

@@ -3151,6 +3151,8 @@
     <Analyzer Include="..\packages\AWSSDK.ElasticTranscoder.3.7.0.91\analyzers\dotnet\cs\AWSSDK.ElasticTranscoder.CodeAnalysis.dll" />
     <Analyzer Include="..\packages\AWSSDK.S3.3.7.3.24\analyzers\dotnet\cs\AWSSDK.S3.CodeAnalysis.dll" />
     <Analyzer Include="..\packages\AWSSDK.SimpleNotificationService.3.7.2.62\analyzers\dotnet\cs\AWSSDK.SimpleNotificationService.CodeAnalysis.dll" />
+    <Analyzer Include="..\packages\IDisposableAnalyzers.3.4.15\analyzers\dotnet\cs\Gu.Roslyn.Extensions.dll" />
+    <Analyzer Include="..\packages\IDisposableAnalyzers.3.4.15\analyzers\dotnet\cs\IDisposableAnalyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.3\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.3\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.CSharp.CodeStyle.3.11.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CodeStyle.dll" />

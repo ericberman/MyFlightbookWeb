@@ -211,6 +211,8 @@ namespace JouniHeikniemi.Tools.Text
             return -1;
         }
 
+        ~CSVReader() {  }
+
         /// <summary>
         /// Disposes the CSVReader. The underlying stream is closed.
         /// </summary>

@@ -381,23 +381,14 @@ namespace MyFlightbook
 
             using (var msi = new MemoryStream(bytes))
             {
-                MemoryStream mso = null;
-                MemoryStream result = null;
-                try
+                using (MemoryStream mso = new MemoryStream())
                 {
-                    result = mso = new MemoryStream();
                     using (var gs = new System.IO.Compression.GZipStream(mso, System.IO.Compression.CompressionMode.Compress, true))
                     {
-                        mso = null; // CA2202
                         msi.CopyTo(gs);
                     }
 
-                    return result.ToArray();
-                }
-                finally
-                {
-                    if (mso != null)
-                        mso.Dispose();
+                    return mso.ToArray();
                 }
             }
         }
@@ -411,22 +402,13 @@ namespace MyFlightbook
         {
             using (var mso = new MemoryStream())
             {
-                MemoryStream msi = null;
-                try
+                using (MemoryStream msi = new MemoryStream(bytes))
                 {
-                    msi = new MemoryStream(bytes);
                     using (var gs = new System.IO.Compression.GZipStream(msi, System.IO.Compression.CompressionMode.Decompress, true))
                     {
-                        msi = null;
                         gs.CopyTo(mso);
                     }
                 }
-                finally
-                {
-                    if (msi != null)
-                        msi.Dispose();
-                }
-
                 return Encoding.UTF8.GetString(mso.ToArray());
             }
         }

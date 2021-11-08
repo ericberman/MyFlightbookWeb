@@ -854,14 +854,11 @@ namespace MyFlightbook.ImportFlights
 
         public override bool CanParse(byte[] rgb)
         {
-            MemoryStream ms = new MemoryStream(rgb);
-
-            // Read the first non-empty row and see if it has LogTenPro headers
-            try
+            using (MemoryStream ms = new MemoryStream(rgb))
             {
+                // Read the first non-empty row and see if it has LogTenPro headers
                 using (CSVReader reader = new CSVReader(ms))
                 {
-                    ms = null;
                     try
                     {
                         string[] rgszHeader = reader.GetCSVLine(true);
@@ -876,11 +873,6 @@ namespace MyFlightbook.ImportFlights
                     }
                     catch (Exception ex) when (ex is CSVReaderInvalidCSVException) { }
                 }
-            }
-            finally
-            {
-                if (ms != null)
-                    ms.Dispose();
             }
             return false;
         }

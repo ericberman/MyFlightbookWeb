@@ -198,7 +198,7 @@ namespace MyFlightbook.Instruction
         }
         #endregion
 
-        protected TextBox NewTextBox(Control parent, string id, string szDefault, Boolean fMultiline, Boolean fRequired, string szName)
+        protected void NewTextBox(Control parent, string id, string szDefault, Boolean fMultiline, Boolean fRequired, string szName)
         {
             if (parent == null)
                 throw new ArgumentNullException(nameof(parent));
@@ -217,8 +217,6 @@ namespace MyFlightbook.Instruction
             // no validations for preview mode
             if (fRequired && !PreviewMode)
                 plcValidations.Controls.Add(new RequiredFieldValidator() { ID = "val" + id, ControlToValidate = tb.ID, ErrorMessage = String.Format(CultureInfo.CurrentCulture, Resources.SignOff.EditEndorsementRequiredField, szName), CssClass = "error", Display = ValidatorDisplay.Dynamic });
-
-            return tb;
         }
 
         protected void UpdateFormForTemplate(int id, bool fResetTitle, string defaultText = null)
@@ -269,7 +267,7 @@ namespace MyFlightbook.Instruction
                         }
                         break;
                     case "{FreeForm}":
-                        NewTextBox(plcTemplateForm, idNewControl, "", true, true, "Free-form text").Text = defaultText ?? string.Empty;
+                        NewTextBox(plcTemplateForm, idNewControl, defaultText ?? string.Empty, true, true, "Free-form text");
                         break;
                     case "{Student}":
                         NewTextBox(plcTemplateForm, idNewControl, TargetUser == null ? Resources.SignOff.EditEndorsementStudentNamePrompt : TargetUser.UserFullName, false, true, Resources.SignOff.EditEndorsementStudentNamePrompt);

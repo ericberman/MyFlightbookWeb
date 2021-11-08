@@ -235,18 +235,13 @@ namespace MyFlightbook.MemberPages
             trHeader.Font.Bold = true;
             // table header
             // Description...
-            TableCell tc = new TableCell();
-            trHeader.Cells.Add(tc);
+            trHeader.Cells.Add(new TableCell());
 
             // ...Then the editable cells
             foreach (StartingFlightColumn sfc in Enum.GetValues(typeof(StartingFlightColumn)))
-            {
-                tc = new TableCell();
-                trHeader.Cells.Add(tc);
-                tc.Text = ColumnTitleFromColumn(sfc);
-            }
+                trHeader.Cells.Add(new TableCell() { Text = ColumnTitleFromColumn(sfc) });
 
-            bool fHHMM = MyFlightbook.Profile.GetUser(Page.User.Identity.Name).UsesHHMM;
+            bool fHHMM = Profile.GetUser(Page.User.Identity.Name).UsesHHMM;
 
             // Now the individual rows.
             int iRow = 0;
@@ -254,7 +249,7 @@ namespace MyFlightbook.MemberPages
             {
                 TableRow tr = new TableRow();
                 tblStartingFlights.Rows.Add(tr);
-                tc = new TableCell();
+                TableCell tc = new TableCell();
                 tr.Cells.Add(tc);
 
                 switch (CurrentMode)
@@ -276,12 +271,11 @@ namespace MyFlightbook.MemberPages
                 int iCol = 0;
                 foreach (StartingFlightColumn sfc in Enum.GetValues(typeof(StartingFlightColumn)))
                 {
-                    tc = new TableCell();
-                    tr.Cells.Add(tc);
-                    tc.ID = IDForCell(iRow, iCol) + sfc.ToString();
+                    TableCell tc2 = new TableCell() { ID = IDForCell(iRow, iCol) + sfc.ToString() };
+                    tr.Cells.Add(tc2);
                     Controls_mfbDecimalEdit dc = (Controls_mfbDecimalEdit)LoadControl("~/Controls/mfbDecimalEdit.ascx");
                     dc.ID = IDForCell(iRow, iCol);
-                    tc.Controls.Add(dc);
+                    tc2.Controls.Add(dc);
                     dc.EditingMode = fHHMM ? Controls_mfbDecimalEdit.EditMode.HHMMFormat : Controls_mfbDecimalEdit.EditMode.Decimal;
                     iCol++;
                 }

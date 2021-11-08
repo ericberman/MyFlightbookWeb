@@ -147,32 +147,33 @@ namespace MyFlightbook.Image
             {
                 try
                 {
-                    GetObjectResponse gor = s3.GetObject(new GetObjectRequest() { BucketName = Bucket, Key = srcFile });
-                    if (gor != null && gor.ResponseStream != null)
+                    using (GetObjectResponse gor = s3.GetObject(new GetObjectRequest() { BucketName = Bucket, Key = srcFile }))
                     {
-                        using (gor.ResponseStream)
+                        if (gor != null && gor.ResponseStream != null)
                         {
-                            using (System.Drawing.Image image = MFBImageInfo.DrawingCompatibleImageFromStream(gor.ResponseStream))
+                            using (gor.ResponseStream)
                             {
-                                Info inf = MFBImageInfo.InfoFromImage(image);
-
-                                // save the thumbnail locally.
-                                using (inf.Image)
+                                using (System.Drawing.Image image = MFBImageInfo.DrawingCompatibleImageFromStream(gor.ResponseStream))
                                 {
-
-                                    inf.ImageDescription = Comment;
-
-                                    Bitmap bmp = MFBImageInfo.BitmapFromImage(inf.Image, MFBImageInfo.ThumbnailHeight, MFBImageInfo.ThumbnailWidth);
-                                    ThumbWidth = bmp.Width;
-                                    ThumbHeight = bmp.Height;
-
-                                    using (bmp)
+                                    Info inf = MFBImageInfo.InfoFromImage(image);
+                                    // save the thumbnail locally.
+                                    using (inf.Image)
                                     {
-                                        // get all properties of the original image and copy them to the new image.  This should include the annotation (above)
-                                        foreach (PropertyItem pi in inf.Image.PropertyItems)
-                                            bmp.SetPropertyItem(pi);
 
-                                        bmp.Save(szPhysicalPath, ImageFormat.Jpeg);
+                                        inf.ImageDescription = Comment;
+
+                                        Bitmap bmp = MFBImageInfo.BitmapFromImage(inf.Image, MFBImageInfo.ThumbnailHeight, MFBImageInfo.ThumbnailWidth);
+                                        ThumbWidth = bmp.Width;
+                                        ThumbHeight = bmp.Height;
+
+                                        using (bmp)
+                                        {
+                                            // get all properties of the original image and copy them to the new image.  This should include the annotation (above)
+                                            foreach (PropertyItem pi in inf.Image.PropertyItems)
+                                                bmp.SetPropertyItem(pi);
+
+                                            bmp.Save(szPhysicalPath, ImageFormat.Jpeg);
+                                        }
                                     }
                                 }
                             }

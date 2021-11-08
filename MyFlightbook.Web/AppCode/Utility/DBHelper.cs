@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2020 MyFlightbook LLC
+ * Copyright (c) 2008-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -126,26 +126,17 @@ namespace MyFlightbook
 
         #region Command initialization
         /// <summary>
-        /// In case a MySQLCommand object needs to be created outside of DBHelper, the connection for it is here.
-        /// </summary>
-        private static MySqlConnection GetConnection
-        {
-            get { return new MySqlConnection((string)ConfigurationManager.ConnectionStrings["logbookConnectionString"].ConnectionString); }
-        }
-
-        /// <summary>
         /// Returns a command object for the query string, to which parameters can be attached.  The connection is initialized.
         /// </summary>
         /// <param name="args">The specification of the query string and any pre-initialized parameters</param>
         /// <returns>A usable MySqlCommand object</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         public static void InitCommandObject(MySqlCommand comm, DBHelperCommandArgs args)
         {
             if (comm == null)
                 throw new ArgumentNullException(nameof(comm));
             if (args == null)
                 throw new ArgumentNullException(nameof(args));
-            comm.Connection = DBHelper.GetConnection;
+            comm.Connection = new MySqlConnection(ConfigurationManager.ConnectionStrings["logbookConnectionString"].ConnectionString);
             comm.CommandText = args.QueryString;
             comm.Parameters.AddRange(args.Parameters.ToArray());
             if (args.Timeout > 0)

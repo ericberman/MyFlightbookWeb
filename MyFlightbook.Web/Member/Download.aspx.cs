@@ -12,7 +12,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2020 MyFlightbook LLC
+ * Copyright (c) 2010-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -143,16 +143,18 @@ public partial class Member_Download : System.Web.UI.Page
                         objectsToDispose.Add(sc);
                         formData.Add(sc, "Email");
 
-                        sc = new StringContent("(Multiple)");
-                        objectsToDispose.Add(sc);
-                        formData.Add(sc, "AircraftModel");
+                        StringContent sc2 = new StringContent("(Multiple)");
+                        objectsToDispose.Add(sc2);
+                        formData.Add(sc2, "AircraftModel");
 
-                        sc = new StringContent("(Unspecified)"); 
-                        objectsToDispose.Add(sc);
-                        formData.Add(sc, "NNumber");
+                        StringContent sc3 = new StringContent("(Unspecified)");
+                        objectsToDispose.Add(sc3);
+                        formData.Add(sc3, "NNumber");
 
-                        HttpResponseMessage response = client.PostAsync(new Uri(szSkywatchEndpoint), formData).Result;
-                        response.EnsureSuccessStatusCode();
+                        using (HttpResponseMessage response = client.PostAsync(new Uri(szSkywatchEndpoint), formData).Result)
+                        {
+                            response.EnsureSuccessStatusCode();
+                        }
 
                         // If we're here, we were successful.
                         lblInsErr.Text = Resources.LocalizedText.InsurancePostSuccessful;

@@ -8,7 +8,7 @@ using MyFlightbook.Encryptors;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2020 MyFlightbook LLC
+ * Copyright (c) 2007-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -44,14 +44,11 @@ public partial class Public_RSSCurrency : System.Web.UI.Page
         if (szUser.Length > 0)
         {
             StringBuilder sb = new StringBuilder();
-            StringWriter sw = null;
-            try
+            using (StringWriter sw = new StringWriter(sb, System.Globalization.CultureInfo.CurrentCulture))
             {
-                sw = new StringWriter(sb, System.Globalization.CultureInfo.CurrentCulture);
                 {
                     using (HtmlTextWriter htmlTW = new HtmlTextWriter(sw))
                     {
-                        sw = null;  // CA2202
                         if (IsTotals)
                         {
                             mfbTotalSummary.Username = szUser;
@@ -67,11 +64,7 @@ public partial class Public_RSSCurrency : System.Web.UI.Page
                     }
                 }
             }
-            finally
-            {
-                if (sw != null)
-                    sw.Dispose();
-            }
+
             szDescription = sb.ToString();
 
             if (!String.IsNullOrEmpty(Request.QueryString["HTML"]))

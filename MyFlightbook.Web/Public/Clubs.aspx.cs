@@ -52,20 +52,12 @@ public partial class Public_Clubs : System.Web.UI.Page
                 p.Form.Controls.Add(vc);
 
                 // Now, write it out.
-                StringWriter sw = null;
-                try
-                {
-                    sw = new StringWriter(sb, CultureInfo.InvariantCulture);
+                using (StringWriter sw = new StringWriter(sb, CultureInfo.InvariantCulture))
+                { 
                     using (HtmlTextWriter htmlTW = new HtmlTextWriter(sw))
                     {
-                        sw = null;
                         vc.RenderControl(htmlTW);
                     }
-                }
-                finally
-                {
-                    if (sw != null)
-                        sw.Dispose();
                 }
             }
         }

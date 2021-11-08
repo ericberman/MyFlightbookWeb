@@ -582,7 +582,7 @@ namespace MyFlightbook
             using (FormlessPage p = new FormlessPage())
             {
                 p.Controls.Add(new System.Web.UI.HtmlControls.HtmlForm());
-                using (System.IO.StringWriter sw1 = new System.IO.StringWriter(CultureInfo.CurrentCulture))
+                using (StringWriter sw1 = new StringWriter(CultureInfo.CurrentCulture))
                     HttpContext.Current.Server.Execute(p, sw1, false);
 
                 // Add the controls to the page
@@ -590,13 +590,10 @@ namespace MyFlightbook
 
                 // Now, write it out.
                 StringBuilder sb = new StringBuilder();
-                System.IO.StringWriter sw = null;
-                try
+                using (StringWriter sw = new StringWriter(sb, CultureInfo.CurrentCulture))
                 {
-                    sw = new StringWriter(sb, CultureInfo.CurrentCulture);
                     using (HtmlTextWriter htmlTW = new HtmlTextWriter(sw))
                     {
-                        sw = null;
                         try
                         {
                             renderToStream(htmlTW);
@@ -604,11 +601,6 @@ namespace MyFlightbook
                         }
                         catch (ArgumentException ex) when (ex is ArgumentOutOfRangeException) { } // don't write bogus or incomplete HTML
                     }
-                }
-                finally
-                {
-                    if (sw != null)
-                        sw.Dispose();
                 }
             }
 

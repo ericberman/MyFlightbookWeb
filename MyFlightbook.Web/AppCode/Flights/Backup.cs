@@ -282,12 +282,18 @@ namespace MyFlightbook
                 using (Page p = new FormlessPage())
                 {
                     p.Controls.Add(new HtmlForm());
-                    IEndorsementListUpdate el = (IEndorsementListUpdate)p.LoadControl("~/Controls/mfbEndorsement.ascx");
-                    foreach (Endorsement en in rgEndorsements)
+
+	                using (StringWriter sw1 = new StringWriter(CultureInfo.CurrentCulture))
+	                    HttpContext.Current.Server.Execute(p, sw1, false);
+
+                    using (Control c = p.LoadControl("~/Controls/mfbEndorsement.ascx"))
                     {
-                        el.SetEndorsement(en);
-                        try { ((UserControl)el).RenderControl(tw); }
-                        catch (Exception ex) when (!(ex is OutOfMemoryException)) { }  // don't write bogus or incomplete HTML
+                        foreach (Endorsement en in rgEndorsements)
+                        {
+                            ((IEndorsementListUpdate) c).SetEndorsement(en);
+                            try { c.RenderControl(tw); }
+                            catch (Exception ex) when (!(ex is OutOfMemoryException)) { }  // don't write bogus or incomplete HTML
+                        }
                     }
                 }
             }
@@ -441,8 +447,10 @@ namespace MyFlightbook
             using (Page p = new FormlessPage())
             {
                 p.Controls.Add(new HtmlForm());
-                IDownloadableAsData ifr = (IDownloadableAsData)p.LoadControl("~/Controls/mfbDownload.ascx");
-                ifr.ToStream(User.UserName, s);
+                using (Control c = p.LoadControl("~/Controls/mfbDownload.ascx"))
+                {
+                    ((IDownloadableAsData) c).ToStream(User.UserName, s);
+                }
             }
         }
 

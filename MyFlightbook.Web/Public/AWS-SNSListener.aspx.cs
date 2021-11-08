@@ -8,7 +8,7 @@ using System.Net;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2020 MyFlightbook LLC
+ * Copyright (c) 2015-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -84,22 +84,21 @@ public partial class Public_AWS_SNSListener : System.Web.UI.Page
         hr.Headers.Add("x-amz-sns-message-id: yyy");
         Request.ContentType = "text/plain; charset=UTF-8";
 
-        Stream RequestStream = null;
+        byte[] rgBytes = System.Text.Encoding.UTF8.GetBytes(szContent);
+        hr.ContentLength = rgBytes.Length;
+        hr.Timeout = 10000;
 
-        try
+        using (Stream RequestStream = hr.GetRequestStream())
         {
-            byte[] rgBytes = System.Text.Encoding.UTF8.GetBytes(szContent);
-            hr.ContentLength = rgBytes.Length;
-            hr.Timeout = 10000;
-            RequestStream = hr.GetRequestStream();
-            RequestStream.Write(rgBytes, 0, rgBytes.Length);
-            _ = hr.GetResponse();
-        }
-        catch (Exception ex) when (ex is WebException || ex is InvalidOperationException || ex is NotSupportedException) { }
-        finally
-        {
-            if (RequestStream != null)
-                RequestStream.Close();
+            try
+            {
+                RequestStream.Write(rgBytes, 0, rgBytes.Length);
+                using (WebResponse wr = hr.GetResponse())
+                {
+                    // nothing to do here.
+                }
+            }
+            catch (Exception ex) when (ex is WebException || ex is InvalidOperationException || ex is NotSupportedException) { }
         }
     }
 

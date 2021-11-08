@@ -122,49 +122,48 @@ namespace MyFlightbook.Web.Admin
             if (String.IsNullOrWhiteSpace(ac.TailNumber) || ac.AircraftID <= 0)
                 throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "No aircraft with ID {0}", idAircraft));
 
-            Table t = null;
+            using (Table t = new Table())
+            {
+                return FormlessPage.RenderControlsToHTML(
+                    (p) =>
+                        {
+                            p.Form.Controls.Add(t);
 
-            return FormlessPage.RenderControlsToHTML(
-                (p) =>
-                    {
-                        t = new Table();
-                        p.Form.Controls.Add(t);
+                            DBHelper dbh = new DBHelper("SELECT *, IF(SignatureState = 0, '', 'Yes') AS sigState FROM flights f WHERE idAircraft=?id");
+                            TableRow tr = new TableRow() { VerticalAlign = VerticalAlign.Top };
+                            t.Rows.Add(tr);
+                            tr.Cells.Add(new TableCell() { Text = "Date" });
+                            tr.Cells.Add(new TableCell() { Text = "User" });
+                            tr.Cells.Add(new TableCell() { Text = "Grnd" });
+                            tr.Cells.Add(new TableCell() { Text = "Total" });
+                            tr.Cells.Add(new TableCell() { Text = "Signed?" });
+                            tr.Style["font-weight"] = "bold";
 
-                        DBHelper dbh = new DBHelper("SELECT *, IF(SignatureState = 0, '', 'Yes') AS sigState FROM flights f WHERE idAircraft=?id");
-                        TableRow tr = new TableRow() { VerticalAlign = VerticalAlign.Top };
-                        t.Rows.Add(tr);
-                        tr.Cells.Add(new TableCell() { Text = "Date" });
-                        tr.Cells.Add(new TableCell() { Text = "User" });
-                        tr.Cells.Add(new TableCell() { Text = "Grnd" });
-                        tr.Cells.Add(new TableCell() { Text = "Total" });
-                        tr.Cells.Add(new TableCell() { Text = "Signed?" });
-                        tr.Style["font-weight"] = "bold";
-
-                        dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("id", idAircraft); },
-                            (dr) =>
-                            {
-                                tr = new TableRow() { VerticalAlign = VerticalAlign.Top };
-                                t.Rows.Add(tr);
-                                TableCell tc = new TableCell();
-                                tr.Cells.Add(tc);
-                                tc.Controls.Add(new HyperLink()
+                            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("id", idAircraft); },
+                                (dr) =>
                                 {
-                                    NavigateUrl = VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx/{0}?a=1", dr["idFlight"])),
-                                    Text = Convert.ToDateTime(dr["date"], CultureInfo.InvariantCulture).ToShortDateString(),
-                                    Target = "_blank"
+                                    TableRow tr2 = new TableRow() { VerticalAlign = VerticalAlign.Top };
+                                    t.Rows.Add(tr2);
+                                    TableCell tc = new TableCell();
+                                    tr2.Cells.Add(tc);
+                                    tc.Controls.Add(new HyperLink()
+                                    {
+                                        NavigateUrl = VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx/{0}?a=1", dr["idFlight"])),
+                                        Text = Convert.ToDateTime(dr["date"], CultureInfo.InvariantCulture).ToShortDateString(),
+                                        Target = "_blank"
+                                    });
+
+                                    tr2.Cells.Add(new TableCell() { Text = (string)dr["username"] });
+                                    tr2.Cells.Add(new TableCell() { Text = String.Format(CultureInfo.CurrentCulture, "{0:F2}", dr["groundSim"]) });
+                                    tr2.Cells.Add(new TableCell() { Text = String.Format(CultureInfo.CurrentCulture, "{0:F2}", dr["totalFlightTime"]) });
+                                    tr2.Cells.Add(new TableCell() { Text = (string)dr["sigState"] });
                                 });
-
-                                tr.Cells.Add(new TableCell() { Text = (string)dr["username"] });
-                                tr.Cells.Add(new TableCell() { Text = String.Format(CultureInfo.CurrentCulture, "{0:F2}", dr["groundSim"]) });
-                                tr.Cells.Add(new TableCell() { Text = String.Format(CultureInfo.CurrentCulture, "{0:F2}", dr["totalFlightTime"]) });
-                                tr.Cells.Add(new TableCell() { Text = (string)dr["sigState"] });
-                            });
-                    },
-                (tw) =>
-                    {
-                        t.RenderControl(tw);
-                    });
-
+                        },
+                    (tw) =>
+                        {
+                            t.RenderControl(tw);
+                        });
+            }
         }
 
         [WebMethod(EnableSession = true)]

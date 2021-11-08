@@ -14,7 +14,7 @@ using System.Xml.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2020 MyFlightbook LLC
+ * Copyright (c) 2010-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -394,36 +394,29 @@ namespace MyFlightbook.Telemetry
 
             byte[] bytes = Encoding.UTF8.GetBytes(szData);
             KMLElements k = null;
-            MemoryStream stream = null;
-            try
+            using (MemoryStream stream = new MemoryStream(bytes))
             {
-                stream = new MemoryStream(bytes);
-                using (StreamReader sr = new StreamReader(stream))
+                try
                 {
-                    stream = null;
-                    k = new KMLElements(XDocument.Load(sr));
+                    using (StreamReader sr = new StreamReader(stream))
+                    {
+                        k = new KMLElements(XDocument.Load(sr));
 
-                    if (k.ele22 != null)
-                        fResult = ParseKMLv2(k);
-                    else if (k.ele != null || k.eleArray != null)
-                        fResult = ParseKMLv1(k);
-                    else
-                        throw new MyFlightbookException(Resources.FlightData.errNoKMLTrack);
+                        fResult = k.ele22 != null
+                            ? ParseKMLv2(k)
+                            : k.ele != null || k.eleArray != null ? ParseKMLv1(k) : throw new MyFlightbookException(Resources.FlightData.errNoKMLTrack);
+                    }
                 }
-            }
-            catch (XmlException ex)
-            {
-                ErrorString = String.Format(CultureInfo.CurrentCulture, Resources.FlightData.errGeneric, ex.Message);
-                fResult = false;
-            }
-            catch (MyFlightbookException ex)
-            {
-                k.sbErr.Append(String.Format(CultureInfo.CurrentCulture, Resources.FlightData.errGeneric, ex.Message));
-                fResult = false;
-            }
-            finally
-            {
-                stream?.Dispose();
+                catch (XmlException ex)
+                {
+                    ErrorString = String.Format(CultureInfo.CurrentCulture, Resources.FlightData.errGeneric, ex.Message);
+                    fResult = false;
+                }
+                catch (MyFlightbookException ex)
+                {
+                    k.sbErr.Append(String.Format(CultureInfo.CurrentCulture, Resources.FlightData.errGeneric, ex.Message));
+                    fResult = false;
+                }
             }
 
             ErrorString = (k == null) ? string.Empty : k.sbErr.ToString();

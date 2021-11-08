@@ -938,25 +938,18 @@ namespace MyFlightbook.Clubs
                 using (System.Web.UI.Page p = new FormlessPage())
                 {
                     p.Controls.Add(new System.Web.UI.HtmlControls.HtmlForm());
-                    IReportable ifr = (IReportable)p.LoadControl(controlName);
-                    if (ifr == null)
-                        throw new MyFlightbookException("Invalid control: " + controlName);
-                    StringWriter sw = null;
-                    ifr.Refresh(cm.ClubID);
-                    try
+                    using (System.Web.UI.Control c = p.LoadControl(controlName))
                     {
-                        sw = new StringWriter(sb, CultureInfo.InvariantCulture);
-                        using (System.Web.UI.HtmlTextWriter htmlTW = new System.Web.UI.HtmlTextWriter(sw))
+                        if (!(c is IReportable ifr))
+                            throw new MyFlightbookException("Invalid control: " + controlName);
+                        ifr.Refresh(cm.ClubID);
+                        using (StringWriter sw = new StringWriter(sb, CultureInfo.InvariantCulture))
                         {
-                            sw = null;
-                            System.Web.UI.Control c = ifr as System.Web.UI.Control;
-                            c.RenderControl(htmlTW);
+                            using (System.Web.UI.HtmlTextWriter htmlTW = new System.Web.UI.HtmlTextWriter(sw))
+                            {
+                                c.RenderControl(htmlTW);
+                            }
                         }
-                    }
-                    finally
-                    {
-                        if (sw != null)
-                            sw.Dispose();
                     }
                 }
 

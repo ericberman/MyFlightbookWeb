@@ -182,27 +182,29 @@ namespace MyFlightbook.CloudStorage
                 s.Write(rgbData, 0, rgbData.Length);
             }
 
-            WebResponse response = hr.GetResponse();
-            using (StreamReader sr = new StreamReader(response.GetResponseStream()))
+            using (WebResponse response = hr.GetResponse())
             {
-                string result = sr.ReadToEnd();
-
-                // JSonConvert can't deserialize space-delimited scopes into a hashset, so we need to do that manually.  Uggh.
-                Dictionary<string, string> d = JsonConvert.DeserializeObject<Dictionary<string, string>>(result);
-
-                AuthorizationState authstate = new AuthorizationState(d.ContainsKey("scope") ? OAuthUtilities.SplitScopes(d["scope"]) : null)
+                using (StreamReader sr = new StreamReader(response.GetResponseStream()))
                 {
-                    AccessToken = d.ContainsKey("access_token") ? d["access_token"] : string.Empty,
-                    AccessTokenIssueDateUtc = DateTime.UtcNow
-                };
-                if (d.ContainsKey("expires_in"))
-                {
-                    if (int.TryParse(d["expires_in"], NumberStyles.Integer, CultureInfo.InvariantCulture, out int exp))
-                        authstate.AccessTokenExpirationUtc = DateTime.UtcNow.AddSeconds(exp);
+                    string result = sr.ReadToEnd();
+
+                    // JSonConvert can't deserialize space-delimited scopes into a hashset, so we need to do that manually.  Uggh.
+                    Dictionary<string, string> d = JsonConvert.DeserializeObject<Dictionary<string, string>>(result);
+
+                    AuthorizationState authstate = new AuthorizationState(d.ContainsKey("scope") ? OAuthUtilities.SplitScopes(d["scope"]) : null)
+                    {
+                        AccessToken = d.ContainsKey("access_token") ? d["access_token"] : string.Empty,
+                        AccessTokenIssueDateUtc = DateTime.UtcNow
+                    };
+                    if (d.ContainsKey("expires_in"))
+                    {
+                        if (int.TryParse(d["expires_in"], NumberStyles.Integer, CultureInfo.InvariantCulture, out int exp))
+                            authstate.AccessTokenExpirationUtc = DateTime.UtcNow.AddSeconds(exp);
+                    }
+                    authstate.RefreshToken = d.ContainsKey("refresh_token") ? d["refresh_token"] : string.Empty;
+
+                    return authstate;
                 }
-                authstate.RefreshToken = d.ContainsKey("refresh_token") ? d["refresh_token"] : string.Empty;
-
-                return authstate;
             }
         }
     }
@@ -236,8 +238,6 @@ namespace MyFlightbook.CloudStorage
 
         protected async Task<string> CreateFolder(string szFolderName)
         {
-            HttpResponseMessage response = null;
-
             string szResult = string.Empty;
 
             using (HttpClient httpClient = new HttpClient())
@@ -256,38 +256,34 @@ namespace MyFlightbook.CloudStorage
                         metadata.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                         form.Add(metadata);
 
-                        try
+                        using (HttpResponseMessage response = await httpClient.PostAsync(new Uri(szURLUploadEndpoint), form).ConfigureAwait(false))
                         {
-                            response = await httpClient.PostAsync(new Uri(szURLUploadEndpoint), form).ConfigureAwait(false);
-                            szResult = response.Content.ReadAsStringAsync().Result;
-                            response.EnsureSuccessStatusCode();
-                            if (!String.IsNullOrEmpty(szResult))
+                            try
                             {
-                                GoogleDriveFileMetadata gfm = JsonConvert.DeserializeObject<GoogleDriveFileMetadata>(szResult);
-                                if (gfm != null)
-                                    return gfm.id;
+                                szResult = response.Content.ReadAsStringAsync().Result;
+                                response.EnsureSuccessStatusCode();
+                                if (!String.IsNullOrEmpty(szResult))
+                                {
+                                    GoogleDriveFileMetadata gfm = JsonConvert.DeserializeObject<GoogleDriveFileMetadata>(szResult);
+                                    if (gfm != null)
+                                        return gfm.id;
+                                }
                             }
-                        }
-                        catch (System.Net.Http.HttpRequestException ex)
-                        {
-                            if (response == null)
-                                throw new MyFlightbookException("Unknown error in GoogleDrive.CreateFolder", ex);
-                            else
-                                throw new MyFlightbookException(response.ReasonPhrase + " " + szResult);
-                        }
-                        finally
-                        {
-                            if (response != null)
-                                response.Dispose();
+                            catch (HttpRequestException ex)
+                            {
+                                if (response == null)
+                                    throw new MyFlightbookException("Unknown error in GoogleDrive.CreateFolder", ex);
+                                else
+                                    throw new MyFlightbookException(response.ReasonPhrase + " " + szResult);
+                            }
                         }
                     }
                 }
-
                 return string.Empty;
             }
         }
 
-        #region Finding files and folders on GoogleDrive
+#region Finding files and folders on GoogleDrive
         /// <summary>
         /// Returns the URL-based query for Google drive to look for a folder with the specified name
         /// </summary>
@@ -319,33 +315,28 @@ namespace MyFlightbook.CloudStorage
             // See if the folder exists
             Uri uri = new Uri(String.Format(CultureInfo.InvariantCulture, szURLViewFilesEndpointTemplate, szQuery, AuthState.AccessToken));
 
-            HttpResponseMessage response = null;
-
             using (HttpClient httpClient = new HttpClient())
             {
-                try
+                using (HttpResponseMessage response = await httpClient.GetAsync(uri).ConfigureAwait(false))
                 {
-                    response = await httpClient.GetAsync(uri).ConfigureAwait(false);
-                    response.EnsureSuccessStatusCode();
-                    string szResult = response.Content.ReadAsStringAsync().Result;
-                    if (!String.IsNullOrEmpty(szResult))
+                    try
                     {
-                        GoogleFileList gfl = JsonConvert.DeserializeObject<GoogleFileList>(szResult);
-                        if (gfl != null && gfl.files.Count > 0)
-                            return gfl.files[0].id;
+                        response.EnsureSuccessStatusCode();
+                        string szResult = response.Content.ReadAsStringAsync().Result;
+                        if (!String.IsNullOrEmpty(szResult))
+                        {
+                            GoogleFileList gfl = JsonConvert.DeserializeObject<GoogleFileList>(szResult);
+                            if (gfl != null && gfl.files.Count > 0)
+                                return gfl.files[0].id;
+                        }
                     }
-                }
-                catch (System.Net.Http.HttpRequestException ex)
-                {
-                    if (response == null)
-                        throw new MyFlightbookException("Unknown error in GoogleDrive.GetFolderID", ex);
-                    else
-                        throw new MyFlightbookException(response.ReasonPhrase);
-                }
-                finally
-                {
-                    if (response != null)
-                        response.Dispose();
+                    catch (HttpRequestException ex)
+                    {
+                        if (response == null)
+                            throw new MyFlightbookException("Unknown error in GoogleDrive.GetFolderID", ex);
+                        else
+                            throw new MyFlightbookException(response.ReasonPhrase);
+                    }
                 }
             }
 
@@ -412,7 +403,7 @@ namespace MyFlightbook.CloudStorage
                 {
                     profile.GoogleDriveAccessToken = AuthState;
                     profile.FCommit();
-                }    
+                }
             }
             catch (DotNetOpenAuth.Messaging.ProtocolException ex)
             {
@@ -459,7 +450,6 @@ namespace MyFlightbook.CloudStorage
         private static async Task<GoogleDriveResultDictionary> SendForm(HttpClient httpClient, Stream ms, Dictionary<string, object> dictMeta, string szMimeType, string idExisting)
         {
             string szResult = string.Empty;
-            HttpResponseMessage response = null;
 
             // Create the form.  The form itself needs the authtoken header
             using (MultipartContent form = new MultipartContent("related"))
@@ -477,32 +467,29 @@ namespace MyFlightbook.CloudStorage
                         body.Headers.ContentType = new MediaTypeHeaderValue(szMimeType);
                         form.Add(body);
 
-                        try
-                        {
-                            response = (String.IsNullOrEmpty(idExisting)) ?
+                        using (HttpResponseMessage response = String.IsNullOrEmpty(idExisting) ?
                                 await httpClient.PostAsync(new Uri(szURLUploadEndpoint), form).ConfigureAwait(false) :
-                                await httpClient.PatchAsync(new Uri(String.Format(CultureInfo.InvariantCulture, szURLUpdateEndpointTemplate, idExisting)), form, false).ConfigureAwait(false);
-                            szResult = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            response.EnsureSuccessStatusCode();
-                            return (String.IsNullOrEmpty(szResult)) ? null : JsonConvert.DeserializeObject<GoogleDriveResultDictionary>(szResult);
-                        }
-                        catch (HttpRequestException ex)
+                                await httpClient.PatchAsync(new Uri(String.Format(CultureInfo.InvariantCulture, szURLUpdateEndpointTemplate, idExisting)), form, false).ConfigureAwait(false))
                         {
-                            if (response == null)
-                                throw new MyFlightbookException("Unknown error in GoogleDrive.PutFile", ex);
+                            try
+                            {
+                                szResult = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                                response.EnsureSuccessStatusCode();
+                                return (String.IsNullOrEmpty(szResult)) ? null : JsonConvert.DeserializeObject<GoogleDriveResultDictionary>(szResult);
+                            }
+                            catch (HttpRequestException ex)
+                            {
+                                if (response == null)
+                                    throw new MyFlightbookException("Unknown error in GoogleDrive.PutFile", ex);
 
-                            Dictionary<string, GoogleDriveError> d = String.IsNullOrEmpty(szResult) ? null : JsonConvert.DeserializeObject<Dictionary<string, GoogleDriveError>>(szResult);
-                            GoogleDriveError gde = (d == null || !d.ContainsKey("error")) ? null : d["error"];
+                                Dictionary<string, GoogleDriveError> d = String.IsNullOrEmpty(szResult) ? null : JsonConvert.DeserializeObject<Dictionary<string, GoogleDriveError>>(szResult);
+                                GoogleDriveError gde = (d == null || !d.ContainsKey("error")) ? null : d["error"];
 
-                            if (gde != null && gde.code == 403 && gde.errors != null && gde.errors.Count > 0 && gde.errors[0].reason != null && gde.errors[0].reason.CompareCurrentCultureIgnoreCase("storageQuotaExceeded") == 0)
-                                throw new MyFlightbookException(Resources.LocalizedText.GoogleDriveOutOfSpace);
-                            else
-                                throw new MyFlightbookException(response.ReasonPhrase + " " + (szResult ?? string.Empty));
-                        }
-                        finally
-                        {
-                            if (response != null)
-                                response.Dispose();
+                                if (gde != null && gde.code == 403 && gde.errors != null && gde.errors.Count > 0 && gde.errors[0].reason != null && gde.errors[0].reason.CompareCurrentCultureIgnoreCase("storageQuotaExceeded") == 0)
+                                    throw new MyFlightbookException(Resources.LocalizedText.GoogleDriveOutOfSpace);
+                                else
+                                    throw new MyFlightbookException(response.ReasonPhrase + " " + (szResult ?? string.Empty));
+                            }
                         }
                     }
                 }
@@ -735,7 +722,6 @@ namespace MyFlightbook.CloudStorage
         internal async Task<OneDriveSession> GetResumableSession(string szFilename)
         {
             string szResult = string.Empty;
-            HttpResponseMessage response = null;
 
             Dictionary<string, string> d = new Dictionary<string, string>()
                     {
@@ -750,26 +736,22 @@ namespace MyFlightbook.CloudStorage
                     UriBuilder builder = BuilderForPath(String.Format(CultureInfo.InvariantCulture, "v1.0/drive/root:/{0}{1}:/createUploadSession", RootPath, szFilename));
                     httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + AuthState.AccessToken);
 
-                    try
+                    using (HttpResponseMessage response = await httpClient.PostAsync(builder.Uri, sc).ConfigureAwait(false))
                     {
-                        response = await httpClient.PostAsync(builder.Uri, sc).ConfigureAwait(false);
-                        szResult = response.Content.ReadAsStringAsync().Result;
-                        response.EnsureSuccessStatusCode();
-                        // Deserialize (below) should never return null because EnsureSuccessStatusCode should throw an exception if there's an issue, but this suppresses a warning about uninstantiated OneDriveSession
-                        return JsonConvert.DeserializeObject<OneDriveSession>(szResult) ?? new OneDriveSession();   
-                    }
-                    catch (HttpRequestException ex)
-                    {
-                        if (response == null)
-                            throw new MyFlightbookException("Unknown error in OneDrive.PutFileDirect", ex);
-                        else
-                            throw new OneDriveMFBException(new OneDriveError(szResult));
-                    }
-                    finally
-                    {
-                        if (response != null)
-                            response.Dispose();
-                        response = null;
+                        try
+                        {
+                            szResult = response.Content.ReadAsStringAsync().Result;
+                            response.EnsureSuccessStatusCode();
+                            // Deserialize (below) should never return null because EnsureSuccessStatusCode should throw an exception if there's an issue, but this suppresses a warning about uninstantiated OneDriveSession
+                            return JsonConvert.DeserializeObject<OneDriveSession>(szResult) ?? new OneDriveSession();
+                        }
+                        catch (HttpRequestException ex)
+                        {
+                            if (response == null)
+                                throw new MyFlightbookException("Unknown error in OneDrive.PutFileDirect", ex);
+                            else
+                                throw new OneDriveMFBException(new OneDriveError(szResult));
+                        }
                     }
                 }
             }
@@ -794,7 +776,6 @@ namespace MyFlightbook.CloudStorage
             }
 
             string szResult = string.Empty;
-            HttpResponseMessage response = null;
 
             // See if we need to do a resumable session
             OneDriveSession session = (ms.Length > MinFileSizeResumable) ? await GetResumableSession(szFilename).ConfigureAwait(false) : null;
@@ -808,30 +789,28 @@ namespace MyFlightbook.CloudStorage
                 {
                     httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + AuthState.AccessToken);
 
-                    try
+                    UriBuilder builder = BuilderForPath(String.Format(CultureInfo.InvariantCulture, "v1.0/drive/root:/{0}{1}:/content", RootPath, szFilename));
+                    if (session != null)
                     {
-                        UriBuilder builder = BuilderForPath(String.Format(CultureInfo.InvariantCulture, "v1.0/drive/root:/{0}{1}:/content", RootPath, szFilename));
-                        if (session != null)
+                        body.Headers.ContentLength = ms.Length;
+                        body.Headers.ContentRange = new ContentRangeHeaderValue(0, ms.Length - 1, ms.Length) { Unit = "bytes" };
+                    }
+
+                    using (HttpResponseMessage response = await httpClient.PutAsync(session == null ? builder.Uri : session.UploadUri, body).ConfigureAwait(false))
+                    {
+                        try
                         {
-                            body.Headers.ContentLength = ms.Length;
-                            body.Headers.ContentRange = new ContentRangeHeaderValue(0, ms.Length - 1, ms.Length) { Unit = "bytes" };
+                            szResult = response.Content.ReadAsStringAsync().Result;
+                            response.EnsureSuccessStatusCode();
+                            return !String.IsNullOrEmpty(szResult);
                         }
-                        response = await httpClient.PutAsync(session == null ? builder.Uri : session.UploadUri, body).ConfigureAwait(false);
-                        szResult = response.Content.ReadAsStringAsync().Result;
-                        response.EnsureSuccessStatusCode();
-                        return !String.IsNullOrEmpty(szResult);
-                    }
-                    catch (HttpRequestException ex)
-                    {
-                        if (response == null)
-                            throw new MyFlightbookException("Unknown error in OneDrive.PutFileDirect", ex);
-                        else
-                            throw new OneDriveMFBException(new OneDriveError(szResult));
-                    }
-                    finally
-                    {
-                        if (response != null)
-                            response.Dispose();
+                        catch (HttpRequestException ex)
+                        {
+                            if (response == null)
+                                throw new MyFlightbookException("Unknown error in OneDrive.PutFileDirect", ex);
+                            else
+                                throw new OneDriveMFBException(new OneDriveError(szResult));
+                        }
                     }
                 }
             }
@@ -1170,18 +1149,18 @@ namespace MyFlightbook.CloudStorage
         public async Task<string> GetImagesForDate(DateTime dt, bool fIncludeVideos, string nextPageToken)
         {
             string szResult = string.Empty;
+            try
+            {
+                if (await RefreshAccessToken().ConfigureAwait(false) && profile != null)
+                    profile.SetPreferenceForKey(GooglePhoto.PrefKeyAuthToken, JsonConvert.SerializeObject(AuthState));
+            }
+            catch (DotNetOpenAuth.Messaging.ProtocolException)
+            {
+                return string.Empty;
+            }
+
             using (HttpClient httpClient = new HttpClient())
             {
-                try
-                {
-                    if (await RefreshAccessToken().ConfigureAwait(false) && profile != null)
-                        profile.SetPreferenceForKey(GooglePhoto.PrefKeyAuthToken, JsonConvert.SerializeObject(AuthState));
-                }
-                catch (DotNetOpenAuth.Messaging.ProtocolException) 
-                {
-                    return string.Empty;
-                }
-
                 httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + AuthState.AccessToken);
                 httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
                 httpClient.DefaultRequestHeaders.Referrer = new Uri(String.Format(CultureInfo.InvariantCulture, "https://{0}", Branding.CurrentBrand.HostName));
@@ -1192,31 +1171,27 @@ namespace MyFlightbook.CloudStorage
 
                 string imgReqJSON = JsonConvert.SerializeObject(googleImageRequest);
 
-                HttpResponseMessage response = null;
                 using (StringContent sc = new StringContent(imgReqJSON, System.Text.Encoding.UTF8))
                 {
                     sc.Headers.ContentType = new MediaTypeHeaderValue("application/json") { CharSet = "UTF-8" };
-                    try
+                    using (HttpResponseMessage response = await httpClient.PostAsync(new Uri(String.Format(CultureInfo.InvariantCulture, "https://photoslibrary.googleapis.com/v1/mediaItems:search?key={0}", MyFlightbook.SocialMedia.GooglePlusConstants.MapsKey)), sc).ConfigureAwait(false))
                     {
-                        response = await httpClient.PostAsync(new Uri(String.Format(CultureInfo.InvariantCulture, "https://photoslibrary.googleapis.com/v1/mediaItems:search?key={0}", MyFlightbook.SocialMedia.GooglePlusConstants.MapsKey)), sc).ConfigureAwait(false);
-                        szResult = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                        response.EnsureSuccessStatusCode();
-                        return szResult;
-                    }
-                    catch (HttpRequestException ex)
-                    {
-                        if (response == null)
-                            throw new MyFlightbookException("Unknown error in GetImagesForDate", ex);
+                        try
+                        {
+                            szResult = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            response.EnsureSuccessStatusCode();
+                            return szResult;
+                        }
+                        catch (HttpRequestException ex)
+                        {
+                            if (response == null)
+                                throw new MyFlightbookException("Unknown error in GetImagesForDate", ex);
 
-                        Dictionary<string, GoogleDriveError> d = String.IsNullOrEmpty(szResult) ? null : JsonConvert.DeserializeObject<Dictionary<string, GoogleDriveError>>(szResult);
-                        GoogleDriveError gde = (d == null || !d.ContainsKey("error")) ? null : d["error"];
+                            Dictionary<string, GoogleDriveError> d = String.IsNullOrEmpty(szResult) ? null : JsonConvert.DeserializeObject<Dictionary<string, GoogleDriveError>>(szResult);
+                            GoogleDriveError gde = (d == null || !d.ContainsKey("error")) ? null : d["error"];
 
-                        throw new MyFlightbookException(response.ReasonPhrase + " " + (szResult ?? string.Empty));
-                    }
-                    finally
-                    {
-                        if (response != null)
-                            response.Dispose();
+                            throw new MyFlightbookException(response.ReasonPhrase + " " + (szResult ?? string.Empty));
+                        }
                     }
                 }
             }

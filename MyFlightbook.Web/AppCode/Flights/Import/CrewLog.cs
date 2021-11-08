@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2020 MyFlightbook LLC
+ * Copyright (c) 2019-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -167,15 +167,10 @@ namespace MyFlightbook.ImportFlights
 
         public override byte[] PreProcess(byte[] rgb)
         {
-            MemoryStream ms = null;
-
-            try
+            using (MemoryStream ms = new MemoryStream(rgb))
             {
-                ms = new MemoryStream(rgb);
                 using (CSVReader reader = new CSVReader(ms))
                 {
-                    ms = null;  // for CA2202
-
                     using (DataTable dt = new DataTable())
                     {
                         dt.Locale = CultureInfo.CurrentCulture;
@@ -222,11 +217,6 @@ namespace MyFlightbook.ImportFlights
                         return Encoding.UTF8.GetBytes(CsvWriter.WriteToString(dt, true, true));
                     }
                 }
-            }
-            finally
-            {
-                if (ms != null)
-                    ms.Dispose();
             }
         }
 

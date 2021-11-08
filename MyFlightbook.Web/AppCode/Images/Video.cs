@@ -9,7 +9,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2020 MyFlightbook LLC
+ * Copyright (c) 2013-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -256,14 +256,15 @@ namespace MyFlightbook.Image
                         WebRequest request = WebRequest.Create(new Uri(String.Format(CultureInfo.InvariantCulture, "http://vimeo.com/api/oembed.json?url={0}", HttpUtility.UrlEncode(VideoReference))));
                         try
                         {
-                            WebResponse response = request.GetResponse();
+                            using (WebResponse response = request.GetResponse())
+                            {
+                                string szJSON = string.Empty;
+                                using (StreamReader reader = new StreamReader(response.GetResponseStream(), System.Text.Encoding.Default))
+                                    szJSON = reader.ReadToEnd();
 
-                            string szJSON = string.Empty;
-                            using (StreamReader reader = new StreamReader(response.GetResponseStream(), System.Text.Encoding.Default))
-                                szJSON = reader.ReadToEnd();
-
-                            VimeoEmbedResponse ver = szJSON.DeserialiseFromJSON<VimeoEmbedResponse>();
-                            return ver.HTML;
+                                VimeoEmbedResponse ver = szJSON.DeserialiseFromJSON<VimeoEmbedResponse>();
+                                return ver.HTML;
+                            }
                         }
                         catch (Exception ex) when (ex is WebException)
                         {

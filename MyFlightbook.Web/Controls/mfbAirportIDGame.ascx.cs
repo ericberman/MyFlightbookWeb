@@ -22,9 +22,6 @@ namespace MyFlightbook.Airports
         private int m_cQuestions = 10;
         private int m_BluffCount = 3;
 
-        private Control m_IntroContainer;
-        private Control m_OuttroContainer;
-
         [TemplateContainer(typeof(QuizIntroTemplate)), PersistenceMode(PersistenceMode.InnerDefaultProperty), TemplateInstance(TemplateInstance.Single)]
         public ITemplate QuizIntro { get; set; }
 
@@ -35,17 +32,17 @@ namespace MyFlightbook.Airports
         {
             if (QuizIntro != null)
             {
-                m_IntroContainer = new QuizIntroTemplate();
-                QuizIntro.InstantiateIn(m_IntroContainer);
                 vwBegin.Controls.Clear();
-                vwBegin.Controls.Add(m_IntroContainer);
+                Control c = new QuizIntroTemplate();
+                vwBegin.Controls.Add(c);
+                QuizIntro.InstantiateIn(c);
             }
             if (QuizSummary != null)
             {
-                m_OuttroContainer = new QuizSummaryTemplate(this);
-                QuizSummary.InstantiateIn(m_OuttroContainer);
                 vwResult.Controls.Clear();
-                vwResult.Controls.Add(m_OuttroContainer);
+                Control c = new QuizSummaryTemplate(this);
+                vwResult.Controls.Add(c);
+                QuizSummary.InstantiateIn(c);
             }
 
             base.CreateChildControls();
@@ -263,14 +260,11 @@ namespace MyFlightbook.Airports
 
             QuizFinished?.Invoke(this, new EventArgs());
 
-            if (score == 100)
-                lblSnark.Text = Resources.LocalizedText.AirportGameSnarkPerfect;
-            else if (score >= 70)
-                lblSnark.Text = Resources.LocalizedText.AirportGameSnark75;
-            else if (score >= 50)
-                lblSnark.Text = Resources.LocalizedText.AirportGameSnark50;
-            else
-                lblSnark.Text = Resources.LocalizedText.AirportGameSnarkPoor;
+            lblSnark.Text = score == 100
+                ? Resources.LocalizedText.AirportGameSnarkPerfect
+                : score >= 70
+                ? Resources.LocalizedText.AirportGameSnark75
+                : score >= 50 ? Resources.LocalizedText.AirportGameSnark50 : Resources.LocalizedText.AirportGameSnarkPoor;
 
             DataBind(); // needed to make results available to a quiz summary template.
 

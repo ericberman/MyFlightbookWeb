@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2020 MyFlightbook LLC
+ * Copyright (c) 2019-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -91,13 +91,10 @@ namespace MyFlightbook.ImportFlights
 
             DateTime dt = DateTime.Now;
             string szLine;
-            MemoryStream ms = null;
-            try
+            using (MemoryStream ms = new MemoryStream(rgb))
             {
-                ms = new MemoryStream(rgb);
                 using (StreamReader sr = new StreamReader(ms))
                 {
-                    ms = null; // for CA2202
                     while ((szLine = sr.ReadLine()) != null)
                     {
                         MatchCollection mc = regDateAnchor.Matches(szLine);
@@ -140,11 +137,6 @@ namespace MyFlightbook.ImportFlights
                         }
                     }
                 }
-            }
-            finally
-            {
-                if (ms != null)
-                    ms.Dispose();
             }
 
             return Encoding.UTF8.GetBytes(CSVFromDataTable(null));

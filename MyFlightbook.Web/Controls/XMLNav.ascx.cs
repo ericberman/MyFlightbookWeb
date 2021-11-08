@@ -55,9 +55,8 @@ public partial class XMLNav : System.Web.UI.UserControl
     #endregion
 
     private ProfileRoles.UserRoles m_userRole;
-    private HtmlTextWriter m_tw;
 
-    void WriteTabs(IEnumerable<TabItem> lst, int level = 0)
+    private void WriteTabs(IEnumerable<TabItem> lst, HtmlTextWriter m_tw, int level = 0)
     {
         // Issue #392:
         // Hack for Android touch devices: since there's no hover on a touch device, you have to tap it.
@@ -101,7 +100,7 @@ public partial class XMLNav : System.Web.UI.UserControl
             if (this.MenuStyle == HoverStyle.HoverPop && ti.Children != null && ti.Children.Any() && !fHideChildren)
             {
                 m_tw.RenderBeginTag(HtmlTextWriterTag.Ul);
-                WriteTabs(ti.Children, level + 1);
+                WriteTabs(ti.Children, m_tw, level + 1);
                 m_tw.RenderEndTag();    // ul tag.
             }
 
@@ -111,14 +110,16 @@ public partial class XMLNav : System.Web.UI.UserControl
 
     void Page_Load(Object sender, EventArgs e)
     {
-        m_userRole = MyFlightbook.Profile.GetUser(Page.User.Identity.Name).Role;
+        m_userRole = Profile.GetUser(Page.User.Identity.Name).Role;
 
         NeedsAndroidHack = (Request != null && Request.UserAgent != null && Request.UserAgent.ToUpper(CultureInfo.CurrentCulture).Contains("ANDROID"));
 
-        using (StringWriter sw = new StringWriter(System.Globalization.CultureInfo.CurrentCulture))
+        using (StringWriter sw = new StringWriter(CultureInfo.CurrentCulture))
         {
-            m_tw = new HtmlTextWriter(sw);
-            WriteTabs(TabList.Tabs);
+            using (HtmlTextWriter tw = new HtmlTextWriter(sw))
+            {
+                WriteTabs(TabList.Tabs, tw);
+            }
             LiteralControl lt = new LiteralControl(sw.ToString());
             plcMenuBar.Controls.Add(lt);
         }

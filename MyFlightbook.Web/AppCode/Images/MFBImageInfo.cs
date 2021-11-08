@@ -1406,31 +1406,29 @@ namespace MyFlightbook.Image
                 throw new ArgumentNullException(nameof(s));
 
             szTemp = null;
-            MagickImage image = null;
             try
             {
                 return System.Drawing.Image.FromStream(s);
             }
             catch (Exception ex) when (ex is ArgumentException)
             {
-                szTemp = Path.GetTempFileName();
-                try
+                using (MagickImage image = new MagickImage(s))
                 {
-                    image = new MagickImage(s);
-                    image.Write(szTemp, MagickFormat.Jpg);
+                    try
+                    {
+                        szTemp = Path.GetTempFileName();
+                        image.Write(szTemp, MagickFormat.Jpg);
 
-                    return System.Drawing.Image.FromFile(szTemp);
-                }
-                catch (Exception ex2) when (ex2 is MagickException)
-                {
-                    return null;
+                        System.Drawing.Image img = System.Drawing.Image.FromFile(szTemp);
+                        return img;
+                    }
+                    catch (Exception ex2) when (ex2 is MagickException)
+                    {
+                        return null;
+                    }
                 }
             }
-            finally
-            {
-                if (image != null)
-                    image.Dispose();
-            }
+
         }
 
         /// <summary>

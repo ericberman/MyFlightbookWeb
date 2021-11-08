@@ -336,14 +336,11 @@ namespace MyFlightbook.ImportFlights
             if (rgb == null)
                 throw new ArgumentNullException(nameof(rgb));
             base.PreProcess(rgb);
-            MemoryStream ms = new MemoryStream(rgb);
-            try
+            using (MemoryStream ms = new MemoryStream(rgb))
             {
                 dictAircraft.Clear();
                 using (CSVReader reader = new CSVReader(ms))
                 {
-                    ms = null;  // for CA2202
-
                     ReadAircraftTable(reader);
 
                     string[] rgRow = null;
@@ -400,11 +397,6 @@ namespace MyFlightbook.ImportFlights
                         }
                     }
                 }
-            }
-            finally
-            {
-                if (ms != null)
-                    ms.Dispose();
             }
             return rgb;
         }

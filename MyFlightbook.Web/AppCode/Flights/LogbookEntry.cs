@@ -2667,24 +2667,16 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
 
             using (FlightData fd = new FlightData())
             {
-                MemoryStream ms = null;
-                try
+                using (MemoryStream ms = new MemoryStream())
                 {
-                    ms = new MemoryStream();
                     using (StreamReader sr = new StreamReader(ms))
                     {
-                        ms = null;  // for CA2202
                         MemoryStream bs = sr.BaseStream as MemoryStream;
                         if (fd.ParseFlightData(this) && fd.HasLatLongInfo)
                             fd.WriteGPXData(bs);
                         bs.Seek(0, SeekOrigin.Begin);
                         return sr.ReadToEnd();
                     }
-                }
-                finally
-                {
-                    if (ms != null)
-                        ms.Dispose();
                 }
             }
         }
