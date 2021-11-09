@@ -355,37 +355,34 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
 
     protected async Task PostForm(HttpContent form)
     {
-        string szError = string.Empty;
-
-        using (HttpClient httpClient = new HttpClient())
-        {
-            using (HttpResponseMessage response = await httpClient.PostAsync(new Uri(ResourcePath), form).ConfigureAwait(true))
+        string error = (string) await MyFlightbook.SharedHttpClient.GetResponseForAuthenticatedUri(new Uri(ResourcePath), null, form, (response) => {
+            string szError = string.Empty;
+            try
             {
-                try
-                {
-                    if (!response.IsSuccessStatusCode)
-                        szError = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
-                    response.EnsureSuccessStatusCode();
+                if (!response.IsSuccessStatusCode)
+                    szError = response.Content.ReadAsStringAsync().Result;
+                response.EnsureSuccessStatusCode();
 
-                    Page.Response.Clear();
-                    Response.ContentType = ckJSON.Checked ? (String.IsNullOrEmpty(txtCallBack.Text) ? "application/json; charset=utf-8" : "application/javascript; charset=utf-8") : "text/xml; charset=utf-8";
-                    await response.Content.CopyToAsync(Page.Response.OutputStream).ConfigureAwait(true);
-                    Page.Response.Flush();
+                Page.Response.Clear();
+                Response.ContentType = ckJSON.Checked ? (String.IsNullOrEmpty(txtCallBack.Text) ? "application/json; charset=utf-8" : "application/javascript; charset=utf-8") : "text/xml; charset=utf-8";
+                response.Content.CopyToAsync(Page.Response.OutputStream).Wait();
+                Page.Response.Flush();
 
-                    // See http://stackoverflow.com/questions/20988445/how-to-avoid-response-end-thread-was-being-aborted-exception-during-the-exce for the reason for the next two lines.
-                    Page.Response.SuppressContent = true;  // Gets or sets a value indicating whether to send HTTP content to the client.
-                    HttpContext.Current.ApplicationInstance.CompleteRequest(); // Causes ASP.NET to bypass all events and filtering in the HTTP pipeline chain of execution and directly execute the EndRequest event.
-                }
-                catch (System.Threading.ThreadAbortException ex)
-                {
-                    lblErr.Text = ex.Message;
-                }
-                catch (Exception ex) when (ex is HttpUnhandledException || ex is HttpException || ex is HttpRequestException || ex is System.Net.WebException)
-                {
-                    lblErr.Text = String.Format(CultureInfo.InvariantCulture, "{0} --> {1}", ex.Message, szError);
-                }
+                return szError;
             }
-        }
+            catch (System.Threading.ThreadAbortException ex)
+            {
+                return ex.Message;
+            }
+            catch (Exception ex) when (ex is HttpUnhandledException || ex is HttpException || ex is HttpRequestException || ex is System.Net.WebException)
+            {
+                return String.Format(CultureInfo.InvariantCulture, "{0} --> {1}", ex.Message, szError);
+            }
+        });
+        lblErr.Text = error;
+        // See http://stackoverflow.com/questions/20988445/how-to-avoid-response-end-thread-was-being-aborted-exception-during-the-exce for the reason for the next two lines.
+        Page.Response.SuppressContent = true;  // Gets or sets a value indicating whether to send HTTP content to the client.
+        HttpContext.Current.ApplicationInstance.CompleteRequest(); // Causes ASP.NET to bypass all events and filtering in the HTTP pipeline chain of execution and directly execute the EndRequest event.
     }
 
     protected async void btnPostResource_Click(object sender, EventArgs e)

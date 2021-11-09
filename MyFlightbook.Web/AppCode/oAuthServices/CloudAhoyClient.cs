@@ -1,5 +1,4 @@
 ﻿using DotNetOpenAuth.OAuth2;
-using System.IO;
 using HtmlAgilityPack;
 using MyFlightbook.ImportFlights.CloudAhoy;
 using MyFlightbook.Telemetry;
@@ -8,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -16,7 +16,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2020 MyFlightbook LLC
+ * Copyright (c) 2019-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -101,8 +101,6 @@ namespace MyFlightbook.OAuth.CloudAhoy
             if (le == null)
                 throw new ArgumentNullException(nameof(le));
 
-            HttpResponseMessage response = null;
-
             using (MultipartFormDataContent form = new MultipartFormDataContent())
             {
                 using (StringContent sc = new StringContent(JsonConvert.SerializeObject(new CloudAhoyPostFileMetaData(le))))
@@ -113,25 +111,20 @@ namespace MyFlightbook.OAuth.CloudAhoy
                     {
                         form.Add(streamContent, "IMPORT", "data.gpx");
 
-                        string szResult = string.Empty;
-
-                        using (HttpClient httpClient = new HttpClient())
+                        string szResult = (string) await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri(FlightsEndpoint), AuthState.AccessToken, form, (response) =>
                         {
-                            httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + AuthState.AccessToken);
-
+                            string result = string.Empty;
                             try
                             {
-                                using (response = await httpClient.PostAsync(new Uri(FlightsEndpoint), form).ConfigureAwait(false))
-                                {
-                                    szResult = response.Content.ReadAsStringAsync().Result;
-                                    response.EnsureSuccessStatusCode();
-                                }
+                                result = response.Content.ReadAsStringAsync().Result;
+                                response.EnsureSuccessStatusCode();
+                                return result;
                             }
                             catch (HttpRequestException ex)
                             {
-                                throw new MyFlightbookException(ex.Message + " " + response.ReasonPhrase + " " + TextFromHTML(szResult), ex);
+                                throw new MyFlightbookException(ex.Message + " " + response.ReasonPhrase + " " + TextFromHTML(result), ex);
                             }
-                        }
+                        });
                     }
                 }
             }
@@ -149,8 +142,6 @@ namespace MyFlightbook.OAuth.CloudAhoy
         /// <returns></returns>
         public async Task<CloudAhoyFlightCollection> GetFlights(string szUserName, DateTime? dtStart, DateTime? dtEnd)
         {
-            HttpResponseMessage response = null;
-
             if (dtStart.HasValue && dtEnd.HasValue && dtEnd.Value.CompareTo(dtStart.Value) <= 0)
                 throw new MyFlightbookValidationException("Invalid date range");
 
@@ -166,44 +157,44 @@ namespace MyFlightbook.OAuth.CloudAhoy
 
             CloudAhoyFlightCollection lstResult = new CloudAhoyFlightCollection();
 
-            using (HttpClient httpClient = new HttpClient())
+            for (int iPage = 1; iPage < 20; iPage++)
             {
-                httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + AuthState.AccessToken);
+                nvc["page"] = iPage.ToString(CultureInfo.InvariantCulture);
 
-                try
+                builder.Query = nvc.ToString();
+
+                bool fHasMore = false;
+                IEnumerable<CloudAhoyFlight> flights = (IEnumerable<CloudAhoyFlight>)
+                await SharedHttpClient.GetResponseForAuthenticatedUri(builder.Uri, AuthState.AccessToken, HttpMethod.Get, (response) =>
                 {
-                    for (int iPage = 1; iPage < 20; iPage++)
+                    try
                     {
-                        nvc["page"] = iPage.ToString(CultureInfo.InvariantCulture);
+                        fHasMore = false;
+                        if (response.Headers.TryGetValues("ca-has-more", out IEnumerable<string> values))
+                            fHasMore = Convert.ToBoolean(values.First(), CultureInfo.InvariantCulture);
 
-                        builder.Query = nvc.ToString();
+                        szResult = response.Content.ReadAsStringAsync().Result;
+                        response.EnsureSuccessStatusCode();
+                        CloudAhoyFlight[] rgFlights = JsonConvert.DeserializeObject<CloudAhoyFlight[]>(szResult, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore });
+                        if (szUserName != null)
+                            foreach (CloudAhoyFlight caf in rgFlights)
+                                caf.UserName = szUserName;
 
-                        using (response = await httpClient.GetAsync(builder.Uri).ConfigureAwait(false))
-                        {
-                            bool fHasMore = false;
-                            if (response.Headers.TryGetValues("ca-has-more", out IEnumerable<string> values))
-                                fHasMore = Convert.ToBoolean(values.First(), CultureInfo.InvariantCulture);
-
-                            szResult = response.Content.ReadAsStringAsync().Result;
-                            response.EnsureSuccessStatusCode();
-                            CloudAhoyFlight[] rgFlights = JsonConvert.DeserializeObject<CloudAhoyFlight[]>(szResult, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore });
-                            if (szUserName != null)
-                                foreach (CloudAhoyFlight caf in rgFlights)
-                                    caf.UserName = szUserName;
-
-                            lstResult.AddRange(rgFlights);
-
-                            if (!fHasMore)
-                                break;  // don't go infnite loop!
-                        }
+                        return rgFlights;
                     }
-                    return lstResult;
-                }
-                catch (HttpRequestException)
-                {
-                    throw new MyFlightbookException(response.ReasonPhrase + " " + TextFromHTML(szResult));
-                }
+                    catch (HttpRequestException)
+                    {
+                        throw new MyFlightbookException(response.ReasonPhrase + " " + TextFromHTML(szResult));
+                    }
+                });
+
+                lstResult.AddRange(flights);
+
+                if (!fHasMore)
+                    break;  // don't go infnite loop!
             }
+
+            return lstResult;
         }
 
         /// <summary>
@@ -220,7 +211,7 @@ namespace MyFlightbook.OAuth.CloudAhoy
             CloudAhoyClient client = new CloudAhoyClient(fSandbox) { AuthState = pf.CloudAhoyToken };
             try
             {
-                IEnumerable<CloudAhoyFlight> rgcaf = await client.GetFlights(szUsername, dtStart, dtEnd).ConfigureAwait(false);
+                IEnumerable<CloudAhoyFlight> rgcaf = await client.GetFlights(szUsername, dtStart, dtEnd);
                 foreach (CloudAhoyFlight caf in rgcaf)
                 {
                     if (caf.ToLogbookEntry() is PendingFlight pendingflight)
@@ -245,29 +236,14 @@ namespace MyFlightbook.OAuth.CloudAhoy
 
             Profile pf = Profile.GetUser(szUsername);
             CloudAhoyClient client = new CloudAhoyClient(fSandbox) { AuthState = pf.CloudAhoyToken };
-            MemoryStream ms = null;
-            try
+            bool fUseRawData = (flight.Telemetry.TelemetryType == DataSourceType.FileType.GPX || flight.Telemetry.TelemetryType == DataSourceType.FileType.KML);
+            using (MemoryStream ms = fUseRawData ? new MemoryStream(Encoding.UTF8.GetBytes(flight.Telemetry.RawData)) : new MemoryStream())
             {
-                switch (flight.Telemetry.TelemetryType)
-                {
-                    default:
-                        ms = new MemoryStream();
-                        fd.WriteGPXData(ms);
-                        break;
-                    case DataSourceType.FileType.GPX:
-                    case DataSourceType.FileType.KML:
-                        ms = new MemoryStream(Encoding.UTF8.GetBytes(flight.Telemetry.RawData));
-                        break;
-                }
+                if (!fUseRawData)
+                    fd.WriteGPXData(ms);
 
                 ms.Seek(0, SeekOrigin.Begin);
-                await client.PutStream(ms, flight).ConfigureAwait(false);
-                return true;
-            }
-            finally
-            {
-                if (ms != null)
-                    ms.Dispose();
+                return await client.PutStream(ms, flight);
             }
         }
     }
