@@ -151,29 +151,28 @@ namespace MyFlightbook.Image
                     {
                         if (gor != null && gor.ResponseStream != null)
                         {
+#pragma warning disable IDISP007 // Don't dispose injected
+                            // Amazon documents EXPLICITLY say we should wrap in a using block.  See https://docs.aws.amazon.com/sdkfornet1/latest/apidocs/html/P_Amazon_S3_Model_S3Response_ResponseStream.htm
                             using (gor.ResponseStream)
+#pragma warning restore IDISP007 // Don't dispose injected.
                             {
                                 using (System.Drawing.Image image = MFBImageInfo.DrawingCompatibleImageFromStream(gor.ResponseStream))
                                 {
                                     Info inf = MFBImageInfo.InfoFromImage(image);
                                     // save the thumbnail locally.
-                                    using (inf.Image)
+                                    inf.ImageDescription = Comment;
+
+                                    Bitmap bmp = MFBImageInfo.BitmapFromImage(inf.Image, MFBImageInfo.ThumbnailHeight, MFBImageInfo.ThumbnailWidth);
+                                    ThumbWidth = bmp.Width;
+                                    ThumbHeight = bmp.Height;
+
+                                    using (bmp)
                                     {
+                                        // get all properties of the original image and copy them to the new image.  This should include the annotation (above)
+                                        foreach (PropertyItem pi in inf.Image.PropertyItems)
+                                            bmp.SetPropertyItem(pi);
 
-                                        inf.ImageDescription = Comment;
-
-                                        Bitmap bmp = MFBImageInfo.BitmapFromImage(inf.Image, MFBImageInfo.ThumbnailHeight, MFBImageInfo.ThumbnailWidth);
-                                        ThumbWidth = bmp.Width;
-                                        ThumbHeight = bmp.Height;
-
-                                        using (bmp)
-                                        {
-                                            // get all properties of the original image and copy them to the new image.  This should include the annotation (above)
-                                            foreach (PropertyItem pi in inf.Image.PropertyItems)
-                                                bmp.SetPropertyItem(pi);
-
-                                            bmp.Save(szPhysicalPath, ImageFormat.Jpeg);
-                                        }
+                                        bmp.Save(szPhysicalPath, ImageFormat.Jpeg);
                                     }
                                 }
                             }

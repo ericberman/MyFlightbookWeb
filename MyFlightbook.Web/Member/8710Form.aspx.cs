@@ -127,7 +127,7 @@ public partial class Member_8710Form : System.Web.UI.Page
         using (MySqlCommand comm = new MySqlCommand())
         {
             DBHelper.InitCommandObject(comm, args);
-            using (comm.Connection)
+            using (comm.Connection = new MySqlConnection(DBHelper.ConnectionString))
             {
                 MySqlDataReader dr = null;
                 try
@@ -152,11 +152,6 @@ public partial class Member_8710Form : System.Web.UI.Page
                 catch (Exception ex)
                 {
                     throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Error getting 8710 data for user {0}: {1}", Page.User.Identity.Name, ex.Message), ex, Page.User.Identity.Name);
-                }
-                finally
-                {
-                    if (comm.Connection != null && comm.Connection.State != ConnectionState.Closed)
-                        comm.Connection.Close();
                 }
             }
         }

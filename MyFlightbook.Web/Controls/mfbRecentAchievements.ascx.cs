@@ -87,14 +87,15 @@ public partial class Controls_mfbRecentAchievements : System.Web.UI.UserControl
         table.Rows.Add(trMonth);
         trMonth.Cells.Add(new TableCell() { ColumnSpan = 7, Text = dt.ToString("MMMM - yyyy", CultureInfo.CurrentCulture), CssClass = "monthHeader" });
 
-        TableRow trWeek = new TableRow();
-        table.Rows.Add(trWeek);
+        table.Rows.Add(new TableRow());
+
+        int iWeek = table.Rows.Count - 1;
 
         int iDayOfWeek = 0;
         // Add each of the prior-month days
         while (dtDay.Day > 1)
         {
-            AddDayCell(trWeek, dtDay, 0, "adjacentDay");
+            AddDayCell(table.Rows[iWeek], dtDay, 0, "adjacentDay");
             dtDay = dtDay.AddDays(1);
             iDayOfWeek++;
         }
@@ -105,7 +106,7 @@ public partial class Controls_mfbRecentAchievements : System.Web.UI.UserControl
             while (iDayOfWeek++ < 7 && dtDay.CompareTo(dtNextMonth) < 0)
             {
                 int cFlights = ra.FlightCountOnDate(dtDay);
-                AddDayCell(trWeek, dtDay, cFlights, "includedDay");
+                AddDayCell(table.Rows[iWeek], dtDay, cFlights, "includedDay");
                 dtDay = dtDay.AddDays(1);
             }
 
@@ -115,15 +116,15 @@ public partial class Controls_mfbRecentAchievements : System.Web.UI.UserControl
             if (iDayOfWeek >= 7)
             {
                 iDayOfWeek = 0;
-                trWeek = new TableRow();
-                table.Rows.Add(trWeek);
+                table.Rows.Add(new TableRow());
+                iWeek = table.Rows.Count - 1;
             }
         }
 
         // Now add each of the days of the next month to round things out.
-        while (trWeek.Cells.Count < 7)
+        while (table.Rows[iWeek].Cells.Count < 7)
         {
-            AddDayCell(trWeek, dtDay, 0, "adjacentDay");
+            AddDayCell(table.Rows[table.Rows.Count - 1], dtDay, 0, "adjacentDay");
             dtDay = dtDay.AddDays(1);
         }
     }

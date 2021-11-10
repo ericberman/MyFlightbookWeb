@@ -63,8 +63,8 @@ namespace MyFlightbook.ImportFlights
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            TableRow tr = new TableRow();
-            tblAdditionalProps.Rows.Add(tr);
+            tblAdditionalProps.Rows.Add(new TableRow());
+            int iCurRow = tblAdditionalProps.Rows.Count - 1;
             CustomPropertyType[] rgCpt = CustomPropertyType.GetCustomPropertyTypes(string.Empty);
             int cRows = (rgCpt.Length + cColumnsOfProps - 1) / cColumnsOfProps;
             for (int iRow = 0; iRow < cRows; iRow++)
@@ -73,20 +73,20 @@ namespace MyFlightbook.ImportFlights
                 {
                     int iProp = (iCol * cRows) + iRow;
                     if (iProp < rgCpt.Length)
-                        AddProp(rgCpt[iProp], tr);
+                        AddProp(rgCpt[iProp], tblAdditionalProps.Rows[iCurRow]);
                     else
                     {
                         // add blank cells to pad out the row.
-                        tr.Cells.Add(new TableCell());
+                        tblAdditionalProps.Rows[iCurRow].Cells.Add(new TableCell());
                     }
                 }
-                tr = new TableRow();
-                tblAdditionalProps.Rows.Add(tr);
-                tr.Style["vertical-align"] = "top";
+                tblAdditionalProps.Rows.Add(new TableRow());
+                iCurRow = tblAdditionalProps.Rows.Count - 1;
+                tblAdditionalProps.Rows[iCurRow].Style["vertical-align"] = "top";
             }
 
-            if (tr.Cells.Count == 0)
-                tblAdditionalProps.Rows.Remove(tr);
+            if (tblAdditionalProps.Rows[iCurRow].Cells.Count == 0)
+                tblAdditionalProps.Rows.RemoveAt(iCurRow);
 
             Master.SelectedTab = tabID.tabLogbook;
             Title = lblImportHeader.Text = String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LogbookEntry.importTableHeader, Branding.CurrentBrand.AppName);

@@ -969,88 +969,86 @@ namespace MyFlightbook.Currency
             // get the base command with all of the relevant parameters
             using (MySqlCommand comm = new MySqlCommand())
             {
-                DBHelper.InitCommandObject(comm, LogbookEntry.QueryCommand(Restriction));
-
-                string szInnerQuery = comm.CommandText; // this got set above; cache it away for a moment or two
-
-                string szTempTableName = "flightsForUserWithQuery";
-
-                Profile pf = Profile.GetUser(Username);
-
-                string szGroupField = string.Empty;
-                switch (pf.TotalsGroupingMode)
+                using (comm.Connection = new MySqlConnection(DBHelper.ConnectionString))
                 {
-                    case TotalsGrouping.CatClass:
-                        szGroupField = "CatClassDisplay";
-                        break;
-                    case TotalsGrouping.Model:
-                        szGroupField = "CatClassDisplay, ModelDisplay";
-                        break;
-                    case TotalsGrouping.Family:
-                        szGroupField = "CatClassDisplay, FamilyDisplay";
-                        break;
-                }
+                    DBHelper.InitCommandObject(comm, LogbookEntryBase.QueryCommand(Restriction));
 
-                // All three queries below use the innerquery above to find the matching flights; they then find totals from that subset of flights.
-                string szQTotalTimes = pf.DisplayTimesByDefault ? ConfigurationManager.AppSettings["TotalTimesSubQuery"] : string.Empty;
-                string szQTotalsByCatClass = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["TotalsQuery"], szQTotalTimes, szTempTableName, szGroupField);
-                string szQTotals = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["TotalsQuery"], szQTotalTimes, szTempTableName, "username"); // Note: this username is the "Group By" field, not a restriction.
-                string szQCustomPropTotals = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["TotalsCustomProperties"], szTempTableName);
+                    string szInnerQuery = comm.CommandText; // this got set above; cache it away for a moment or two
 
-                alTotals.Clear();
+                    string szTempTableName = "flightsForUserWithQuery";
 
-                try
-                {
-                    // Set up temporary table:
-                    comm.Connection.Open();
-                    comm.Parameters.AddWithValue("lang", System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName);
+                    Profile pf = Profile.GetUser(Username);
 
-                    // Create the temp table
-                    comm.CommandText = String.Format(CultureInfo.InvariantCulture, "DROP TEMPORARY TABLE IF EXISTS {0}", szTempTableName);
-                    comm.ExecuteScalar();
+                    string szGroupField = string.Empty;
+                    switch (pf.TotalsGroupingMode)
+                    {
+                        case TotalsGrouping.CatClass:
+                            szGroupField = "CatClassDisplay";
+                            break;
+                        case TotalsGrouping.Model:
+                            szGroupField = "CatClassDisplay, ModelDisplay";
+                            break;
+                        case TotalsGrouping.Family:
+                            szGroupField = "CatClassDisplay, FamilyDisplay";
+                            break;
+                    }
+
+                    // All three queries below use the innerquery above to find the matching flights; they then find totals from that subset of flights.
+                    string szQTotalTimes = pf.DisplayTimesByDefault ? ConfigurationManager.AppSettings["TotalTimesSubQuery"] : string.Empty;
+                    string szQTotalsByCatClass = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["TotalsQuery"], szQTotalTimes, szTempTableName, szGroupField);
+                    string szQTotals = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["TotalsQuery"], szQTotalTimes, szTempTableName, "username"); // Note: this username is the "Group By" field, not a restriction.
+                    string szQCustomPropTotals = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["TotalsCustomProperties"], szTempTableName);
+
+                    alTotals.Clear();
 
                     try
                     {
-                        comm.CommandText = String.Format(CultureInfo.InvariantCulture, "CREATE TEMPORARY TABLE {0} AS {1}", szTempTableName, szInnerQuery);
+                        // Set up temporary table:
+                        comm.Connection.Open();
+                        comm.Parameters.AddWithValue("lang", System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName);
+
+                        // Create the temp table
+                        comm.CommandText = String.Format(CultureInfo.InvariantCulture, "DROP TEMPORARY TABLE IF EXISTS {0}", szTempTableName);
+                        comm.ExecuteScalar();
+
+                        try
+                        {
+                            comm.CommandText = String.Format(CultureInfo.InvariantCulture, "CREATE TEMPORARY TABLE {0} AS {1}", szTempTableName, szInnerQuery);
+                            comm.ExecuteScalar();
+                        }
+                        catch (MySqlException ex)
+                        {
+                            throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, "Exception creating temporary table:\r\n{0}\r\n{1}\r\n{2}", ex.Message, szTempTableName, szInnerQuery), ex, pf.UserName);
+                        }
+
+                        int cTotalsSoFar = alTotals.Count;  // should always be 0, but safer this way
+                        comm.CommandText = szQTotalsByCatClass;
+                        ComputeTotalsByCatClass(comm, pf);
+                        bool fShowOverallSubtotals = ((alTotals.Count - cTotalsSoFar) > 1);  // if we had multiple totals from above, then we want to show overall subtotals of approaches/landings.
+
+                        // Sort what we have so far.
+                        alTotals.Sort();
+
+                        // now get the custom property totals
+                        comm.CommandText = szQCustomPropTotals;
+                        ComputeTotalsForCustomProperties(comm, pf);
+
+                        // Get model-based time (retract, complex, etc.)
+                        if (!pf.SuppressModelFeatureTotals)
+                            ComputeTotalsForModelFeature(comm, szTempTableName, pf);
+
+                        // Now get full totals
+                        comm.CommandText = szQTotals;
+                        ComputeTotalsOverall(comm, pf, fShowOverallSubtotals);
+
+                        // Drop the temp table
+                        comm.CommandText = String.Format(CultureInfo.InvariantCulture, "DROP TEMPORARY TABLE {0};", szTempTableName);
                         comm.ExecuteScalar();
                     }
                     catch (MySqlException ex)
                     {
-                        throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, "Exception creating temporary table:\r\n{0}\r\n{1}\r\n{2}", ex.Message, szTempTableName, szInnerQuery), ex, pf.UserName);
+                        throw new MyFlightbookException("Exception in UserTotals DataBind - setup", ex, pf.UserName);
                     }
-
-                    int cTotalsSoFar = alTotals.Count;  // should always be 0, but safer this way
-                    comm.CommandText = szQTotalsByCatClass;
-                    ComputeTotalsByCatClass(comm, pf);
-                    bool fShowOverallSubtotals = ((alTotals.Count - cTotalsSoFar) > 1);  // if we had multiple totals from above, then we want to show overall subtotals of approaches/landings.
-
-                    // Sort what we have so far.
-                    alTotals.Sort();
-
-                    // now get the custom property totals
-                    comm.CommandText = szQCustomPropTotals;
-                    ComputeTotalsForCustomProperties(comm, pf);
-
-                    // Get model-based time (retract, complex, etc.)
-                    if (!pf.SuppressModelFeatureTotals)
-                        ComputeTotalsForModelFeature(comm, szTempTableName, pf);
-
-                    // Now get full totals
-                    comm.CommandText = szQTotals;
-                    ComputeTotalsOverall(comm, pf, fShowOverallSubtotals);
-
-                    // Drop the temp table
-                    comm.CommandText = String.Format(CultureInfo.InvariantCulture, "DROP TEMPORARY TABLE {0};", szTempTableName);
-                    comm.ExecuteScalar();
-                }
-                catch (MySqlException ex)
-                {
-                    throw new MyFlightbookException("Exception in UserTotals DataBind - setup", ex, pf.UserName);
-                }
-                finally
-                {
-                    if (comm.Connection != null && comm.Connection.State != ConnectionState.Closed)
-                        comm.Connection.Close();
                 }
             }
         }

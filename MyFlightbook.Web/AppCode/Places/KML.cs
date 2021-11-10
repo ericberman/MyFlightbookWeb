@@ -35,8 +35,6 @@ namespace MyFlightbook.Telemetry
             {
                 if (disposing)
                 {
-                    if (ms != null)
-                        ms.Dispose();
                     if (kml != null)
                         kml.Dispose();
 

@@ -125,8 +125,10 @@ namespace MyFlightbook
         public enum ReadRowMode { AllRows, SingleRow };
 
         #region Command initialization
+        public static string ConnectionString { get { return ConfigurationManager.ConnectionStrings["logbookConnectionString"].ConnectionString; } }
         /// <summary>
-        /// Returns a command object for the query string, to which parameters can be attached.  The connection is initialized.
+        /// Returns a command object for the query string, to which parameters can be attached.
+        /// THE CONNECTION IS NOT INITIALIZED - IT IS UP TO THE CALLER TO using(MySqlConnection = new ....) { } IT!!!
         /// </summary>
         /// <param name="args">The specification of the query string and any pre-initialized parameters</param>
         /// <returns>A usable MySqlCommand object</returns>
@@ -136,7 +138,6 @@ namespace MyFlightbook
                 throw new ArgumentNullException(nameof(comm));
             if (args == null)
                 throw new ArgumentNullException(nameof(args));
-            comm.Connection = new MySqlConnection(ConfigurationManager.ConnectionStrings["logbookConnectionString"].ConnectionString);
             comm.CommandText = args.QueryString;
             comm.Parameters.AddRange(args.Parameters.ToArray());
             if (args.Timeout > 0)
@@ -163,45 +164,44 @@ namespace MyFlightbook
             bool fResult = true;
             using (MySqlCommand comm = new MySqlCommand())
             {
-                DBHelper.InitCommandObject(comm, args);
-                LastError = string.Empty;
+                InitCommandObject(comm, args);
 
-                initCommand?.Invoke(comm);
-                try
+                using (comm.Connection = new MySqlConnection(ConnectionString))
                 {
-                    comm.Connection.Open();
-                    using (MySqlDataReader dr = comm.ExecuteReader())
+                    LastError = string.Empty;
+
+                    initCommand?.Invoke(comm);
+                    try
                     {
-                        if (dr.HasRows)
+                        comm.Connection.Open();
+                        using (MySqlDataReader dr = comm.ExecuteReader())
                         {
-                            while (dr.Read())
+                            if (dr.HasRows)
                             {
-                                readRow(dr);
-                                if (rowMode == ReadRowMode.SingleRow)
-                                    break;
+                                while (dr.Read())
+                                {
+                                    readRow(dr);
+                                    if (rowMode == ReadRowMode.SingleRow)
+                                        break;
+                                }
                             }
                         }
                     }
-                }
-                catch (MySqlException ex)
-                {
-                    throw new MyFlightbookException("MySQL error thrown in ReadRows; Query = " + CommandText ?? string.Empty, ex, string.Empty);
-                }
-                catch (MyFlightbookException ex)
-                {
-                    LastError = ex.Message;
-                    fResult = false;
-                }
-                catch (Exception ex)
-                {
-                    MyFlightbookException exNew = new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Uncaught exception in ReadRows:\r\n:{0}", comm.CommandText), ex);
-                    MyFlightbookException.NotifyAdminException(exNew);
-                    throw exNew;
-                }
-                finally
-                {
-                    if (comm.Connection != null && comm.Connection.State != ConnectionState.Closed)
-                        comm.Connection.Close();
+                    catch (MySqlException ex)
+                    {
+                        throw new MyFlightbookException("MySQL error thrown in ReadRows; Query = " + CommandText ?? string.Empty, ex, string.Empty);
+                    }
+                    catch (MyFlightbookException ex)
+                    {
+                        LastError = ex.Message;
+                        fResult = false;
+                    }
+                    catch (Exception ex)
+                    {
+                        MyFlightbookException exNew = new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Uncaught exception in ReadRows:\r\n:{0}", comm.CommandText), ex);
+                        MyFlightbookException.NotifyAdminException(exNew);
+                        throw exNew;
+                    }
                 }
             }
             return fResult;
@@ -257,28 +257,26 @@ namespace MyFlightbook
             bool fResult = true;
             using (MySqlCommand comm = new MySqlCommand())
             {
-                DBHelper.InitCommandObject(comm, args);
+                InitCommandObject(comm, args);
 
                 initCommand?.Invoke(comm);
 
-                LastError = string.Empty;
-                try
+                using (comm.Connection = new MySqlConnection(ConnectionString))
                 {
-                    comm.Connection.Open();
-                    AffectedRowCount = comm.ExecuteNonQuery();
-                    comm.CommandText = "SELECT Last_Insert_Id()";
-                    LastInsertedRowId = Convert.ToInt32(comm.ExecuteScalar(), CultureInfo.InvariantCulture);
-                }
-                catch (MySqlException ex)
-                {
-                    LastError = ex.Message;
-                    fResult = false;
-                    throw new MyFlightbookException("Exception DoNonQuery:\r\nCode = " + ex.ErrorCode.ToString(CultureInfo.InvariantCulture) + "\r\n" + ex.Message + "\r\n" + comm.CommandText, ex);
-                }
-                finally
-                {
-                    if (comm.Connection != null && comm.Connection.State != ConnectionState.Closed)
-                        comm.Connection.Close();
+                    LastError = string.Empty;
+                    try
+                    {
+                        comm.Connection.Open();
+                        AffectedRowCount = comm.ExecuteNonQuery();
+                        comm.CommandText = "SELECT Last_Insert_Id()";
+                        LastInsertedRowId = Convert.ToInt32(comm.ExecuteScalar(), CultureInfo.InvariantCulture);
+                    }
+                    catch (MySqlException ex)
+                    {
+                        LastError = ex.Message;
+                        fResult = false;
+                        throw new MyFlightbookException("Exception DoNonQuery:\r\nCode = " + ex.ErrorCode.ToString(CultureInfo.InvariantCulture) + "\r\n" + ex.Message + "\r\n" + comm.CommandText, ex);
+                    }
                 }
             }
             return fResult;
