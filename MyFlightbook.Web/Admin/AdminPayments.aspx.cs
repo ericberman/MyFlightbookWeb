@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2020 MyFlightbook LLC
+ * Copyright (c) 2009-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -157,9 +157,7 @@ namespace MyFlightbook.Web.Admin
                     tc.Text = HttpUtility.HtmlEncode(szKey);
                     tc.Style["font-weight"] = "bold";
 
-                    tc = new TableCell();
-                    tr.Cells.Add(tc);
-                    tc.Text = HttpUtility.HtmlEncode(nvc[szKey]);
+                    tr.Cells.Add(new TableCell() { Text = HttpUtility.HtmlEncode(nvc[szKey]) });
                 }
             }
         }
