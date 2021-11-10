@@ -61,7 +61,7 @@
         </tr>
         <tr>
             <td>
-                <asp:HyperLink ID="lnkBasicMedImages" NavigateUrl="~/Admin/AdminImages.aspx?r=Endorsement" Target="_blank" runat="server">Review BasicMed</asp:HyperLink>
+                <asp:HyperLink ID="lnkBasicMedImages" NavigateUrl="~/Admin/AdminImages.aspx?r=BasicMed" Target="_blank" runat="server">Review BasicMed</asp:HyperLink>
             </td>
             <td>
                 <asp:Button ID="btnSyncBasicMed" runat="server" 
