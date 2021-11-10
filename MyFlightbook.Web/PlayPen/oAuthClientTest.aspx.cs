@@ -488,6 +488,7 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
 
     protected void btnRefreshToken_Click(object sender, EventArgs e)
     {
+        ToSession();
         Client().RefreshAuthorization(CurrentPageState.AuthState);
         lblToken.Text = JsonConvert.SerializeObject(CurrentPageState.AuthState);
     }
