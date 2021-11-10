@@ -370,6 +370,12 @@ namespace MyFlightbook.Instruction
         /// </summary>
         /// <param name="e">The endorsement</param>
         void SetEndorsement(Endorsement e);
+
+        /// <summary>
+        /// In case we don't have a context (e.g., nightly backup), render the control to a textwriter.
+        /// </summary>
+        /// <param name="tw"></param>
+        void RenderHTML(Endorsement e, System.Web.UI.HtmlTextWriter tw);
     }
 
     public class EndorsementType

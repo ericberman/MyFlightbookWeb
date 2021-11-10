@@ -283,15 +283,11 @@ namespace MyFlightbook
                 {
                     p.Controls.Add(new HtmlForm());
 
-	                using (StringWriter sw1 = new StringWriter(CultureInfo.CurrentCulture))
-	                    HttpContext.Current.Server.Execute(p, sw1, false);
-
                     using (Control c = p.LoadControl("~/Controls/mfbEndorsement.ascx"))
                     {
                         foreach (Endorsement en in rgEndorsements)
                         {
-                            ((IEndorsementListUpdate) c).SetEndorsement(en);
-                            try { c.RenderControl(tw); }
+                            try { ((IEndorsementListUpdate)c).RenderHTML(en, tw); }
                             catch (Exception ex) when (!(ex is OutOfMemoryException)) { }  // don't write bogus or incomplete HTML
                         }
                     }
