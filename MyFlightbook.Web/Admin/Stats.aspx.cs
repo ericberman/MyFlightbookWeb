@@ -8,7 +8,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2020 MyFlightbook LLC
+ * Copyright (c) 2015-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -112,6 +112,7 @@ ORDER BY creationbucket ASC";
             };
 
             DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, szFormatFlightsPerUser, String.IsNullOrEmpty(cmbNewUserAge.SelectedValue) ? string.Empty : "WHERE u.creationdate > ?creationDate"));
+            dbh.CommandArgs.Timeout = 300;
             dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("creationDate", String.IsNullOrEmpty(cmbNewUserAge.SelectedValue) ? DateTime.MinValue : DateTime.Now.AddMonths(-Convert.ToInt32(cmbNewUserAge.SelectedValue, CultureInfo.InvariantCulture))); },
                 (dr) =>
                 {
