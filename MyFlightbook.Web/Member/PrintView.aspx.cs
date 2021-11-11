@@ -148,7 +148,8 @@ namespace MyFlightbook.MemberPages
         {
             get
             {
-                foreach (Control c in mvLayouts.GetActiveView().Controls)
+                View v = mvLayouts.Views[mvLayouts.ActiveViewIndex];
+                foreach (Control c in v.Controls)
                 {
                     if (c is IPrintingTemplate pt)
                         return pt;

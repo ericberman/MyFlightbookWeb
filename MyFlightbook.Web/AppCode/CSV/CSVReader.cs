@@ -222,7 +222,7 @@ namespace JouniHeikniemi.Tools.Text
             if (reader != null) 
                 reader.Dispose();
             else if (stream != null)
-                stream.Dispose(); // In case we failed before the reader was constructed
+                stream.Close(); // In case we failed before the reader was constructed.  Stream should be disposed by owner, but we can at least make sure it is closed.
             GC.SuppressFinalize(this);
         }
     }

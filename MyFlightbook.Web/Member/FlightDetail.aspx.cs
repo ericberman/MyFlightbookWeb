@@ -32,8 +32,6 @@ namespace MyFlightbook.MemberPages
         private enum DetailsTab { Flight, Aircraft, Chart, Data, Download }
 
         #region some properties that don't rely on page controls
-        protected FlightData DataForFlight { get; set; }
-
         private const string szKeyVSRestriction = "viewstateRestrictionKey";
         protected FlightQuery Restriction
         {
@@ -52,6 +50,16 @@ namespace MyFlightbook.MemberPages
         {
             get { return m_pfUser ?? (m_pfUser = Profile.GetUser(Page.User.Identity.Name)); }
         }
+
+        /// <summary>
+        /// Distance to display for the flight
+        /// </summary>
+        protected string DistanceDisplay { get; set; }
+
+        /// <summary>
+        /// Indicates that the parsed flight data has lat/lon information.
+        /// </summary>
+        protected bool HasLatLong { get; set; }
         #endregion
 
         #region Mapping
@@ -73,20 +81,23 @@ namespace MyFlightbook.MemberPages
         /// <param name="mapMgr"></param>
         /// <param name="szRoute"></param>
         /// <param name="PathLatLongArrayID"></param>
+        /// <param name="fd">The flight data containing the map.</param>
         /// <returns>True if the data has latlong info and more than one row of data (i.e., is dynamic and can be downloaded</returns>
-        protected bool SetUpMapManager(Controls_mfbGoogleMapMgr mapMgr, string szRoute, string PathLatLongArrayID)
+        protected bool SetUpMapManager(FlightData fd, Controls_mfbGoogleMapMgr mapMgr, string szRoute, string PathLatLongArrayID)
         {
             if (mapMgr == null)
                 throw new ArgumentNullException(nameof(mapMgr));
             if (szRoute == null)
                 throw new ArgumentNullException(szRoute);
+            if (fd == null)
+                throw new ArgumentNullException(nameof(fd));
 
             mapMgr.Map.Airports = RoutesList(szRoute).Result;
             mapMgr.ShowMarkers = true;
             mapMgr.Map.Options.PathVarName = PathLatLongArrayID;
-            mapMgr.Map.Path = DataForFlight.GetPath();
-            bool result = DataForFlight.HasLatLongInfo && DataForFlight.Data.Rows.Count > 1;
-            mapMgr.Mode = result ? MyFlightbook.Mapping.GMap_Mode.Dynamic : MyFlightbook.Mapping.GMap_Mode.Static;
+            mapMgr.Map.Path = fd.GetPath();
+            bool result = fd.HasLatLongInfo && fd.Data.Rows.Count > 1;
+            mapMgr.Mode = result ? Mapping.GMap_Mode.Dynamic : Mapping.GMap_Mode.Static;
             return result;
         }
         #endregion
@@ -191,24 +202,24 @@ namespace MyFlightbook.MemberPages
         #endregion
 
         #region RawData Row Binding
-        protected static void BindRawDataRow(FlightData fd, int iRow, Control cPin, Control cZoom)
+        protected void BindRawDataRow(DataRowView drv, int iRow, Control cPin, Control cZoom)
         {
-            if (fd == null)
-                throw new ArgumentNullException(nameof(fd));
+            if (drv == null)
+                throw new ArgumentNullException(nameof(drv));
             if (!(cPin is System.Web.UI.WebControls.Image i))
                 throw new ArgumentNullException(nameof(cPin));
             if (!(cZoom is HyperLink h))
                 throw new ArgumentNullException(nameof(cZoom));
 
-            if (fd.HasLatLongInfo)
+            if (HasLatLong)
             {
-                DataRow drow = fd.Data.Rows[iRow];
+                DataRow drow = drv.Row;
 
                 List<string> lstDesc = new List<string>();
 
                 double lat = 0.0, lon = 0.0;
 
-                foreach (DataColumn dc in fd.Data.Columns)
+                foreach (DataColumn dc in drow.Table.Columns)
                 {
                     bool fLat = (dc.ColumnName.CompareOrdinalIgnoreCase(KnownColumnNames.LAT) == 0);
                     bool fLon = (dc.ColumnName.CompareOrdinalIgnoreCase(KnownColumnNames.LON) == 0);
@@ -311,18 +322,17 @@ namespace MyFlightbook.MemberPages
         #region Charting
         protected int DataPointCount { get; set; }
 
-        protected static void UpdateChart(TelemetryDataTable tdt, Controls_GoogleChart gcData, FlightData fd, string PathLatLongArrayID, ListItem xAxis, ListItem yAxis1, ListItem yAxis2, double y1Scale, double y2Scale, out double max, out double min, out double max2, out double min2)
+        protected static void UpdateChart(TelemetryDataTable tdt, Controls_GoogleChart gcData, bool HasLatLongInfo, string PathLatLongArrayID, ListItem xAxis, ListItem yAxis1, ListItem yAxis2, double y1Scale, double y2Scale, out double max, out double min, out double max2, out double min2)
         {
             max = double.MinValue;
             min = double.MaxValue;
             max2 = double.MinValue;
             min2 = double.MaxValue;
 
-            if (tdt == null)
-                return;
-
             if (gcData == null)
                 throw new ArgumentNullException(nameof(gcData));
+            if (tdt == null)
+                return;
 
             if (yAxis1 == null || yAxis2 == null || xAxis == null)
             {
@@ -340,10 +350,7 @@ namespace MyFlightbook.MemberPages
             gcData.YDataType = GoogleChart.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(yAxis1.Value).Type);
             gcData.Y2DataType = GoogleChart.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(yAxis2.Value).Type);
 
-            if (fd == null)
-                throw new ArgumentNullException(nameof(fd));
-
-            if (fd.HasLatLongInfo)
+            if (HasLatLongInfo)
                 gcData.ClickHandlerJS = String.Format(CultureInfo.InvariantCulture, "dropPin({0}[selectedItem.row], xvalue + ': ' + ((selectedItem.column == 1) ? '{1}' : '{2}') + ' = ' + value);", PathLatLongArrayID, yAxis1, yAxis2);
 
             foreach (DataRow dr in tdt.Rows)
@@ -380,17 +387,16 @@ namespace MyFlightbook.MemberPages
             gcData.TickSpacing = 1; // Math.Max(1, m_fd.Data.Rows.Count / 20);
         }
 
-        protected static void SetUpChart(DataTable data, DropDownList cmbXAxis, DropDownList cmbYAxis1, DropDownList cmbYAxis2)
+        protected static void SetUpChart(TelemetryDataTable data, DropDownList cmbXAxis, DropDownList cmbYAxis1, DropDownList cmbYAxis2)
         {
-            if (data == null)
-                return;
-
             if (cmbXAxis == null)
                 throw new ArgumentNullException(nameof(cmbXAxis));
             if (cmbYAxis1 == null)
                 throw new ArgumentNullException(nameof(cmbYAxis1));
             if (cmbYAxis2 == null)
                 throw new ArgumentNullException(nameof(cmbYAxis2));
+            if (data == null)
+                return;
 
             // now set up the chart
             cmbXAxis.Items.Clear();
@@ -596,7 +602,7 @@ namespace MyFlightbook.MemberPages
         }
 
         /// <summary>
-        /// Returns the current flight.  Cached in the session object, initialized from the database on a cache miss.
+        /// Returns the current flight.
         /// </summary>
         protected LogbookEntryDisplay CurrentFlight
         {
@@ -610,21 +616,22 @@ namespace MyFlightbook.MemberPages
         }
 
         /// <summary>
-        /// Returns the current flight data.  Cached in the session object, initialized from the database on a cache miss.
+        /// Returns the current flight data.
         /// </summary>
-        protected TelemetryDataTable TelemetryData
+        protected TelemetryDataTable DataTableForFlightData(FlightData fd)
         {
-            get
-            {
-                LogbookEntryDisplay led = CurrentFlight;
+            if (fd == null)
+                return null;
 
-                if (DataForFlight.NeedsComputing)
-                {
-                    if (!DataForFlight.ParseFlightData(led) && (lblErr.Text = DataForFlight.ErrorString.Replace("\r\n", "<br />")).Length > 0)
-                        pnlErrors.Visible = true;
-                }
-                return DataForFlight.Data;
+            LogbookEntryDisplay led = CurrentFlight;
+
+            if (fd.NeedsComputing)
+            {
+                if (!fd.ParseFlightData(led) && (lblErr.Text = fd.ErrorString.Replace("\r\n", "<br />")).Length > 0)
+                    pnlErrors.Visible = true;
             }
+            HasLatLong = fd.HasLatLongInfo; // remember this status for when we don't have the flight data object directly.
+            return fd.Data;
         }
         #endregion
 
@@ -732,10 +739,10 @@ namespace MyFlightbook.MemberPages
             return false;
         }
 
-        protected void SetUpMaps()
+        protected void SetUpMaps(FlightData fd)
         {
             // Set up any maps.
-            cmbFormat.Items[(int)DownloadFormat.KML].Enabled = cmbFormat.Items[(int)DownloadFormat.GPX].Enabled = pnlMapControls.Visible = SetUpMapManager(mfbGoogleMapManager1, CurrentFlight.Route, PathLatLongArrayID);
+            cmbFormat.Items[(int)DownloadFormat.KML].Enabled = cmbFormat.Items[(int)DownloadFormat.GPX].Enabled = pnlMapControls.Visible = SetUpMapManager(fd, mfbGoogleMapManager1, CurrentFlight.Route, PathLatLongArrayID);
             lnkZoomToFit.NavigateUrl = mfbGoogleMapManager1.ZoomToFitScript;
         }
 
@@ -760,8 +767,9 @@ namespace MyFlightbook.MemberPages
             mhsClip.MultiHandleSliderTargets[0].ControlID = hdnClipMin.ClientID;
             mhsClip.MultiHandleSliderTargets[1].ControlID = hdnClipMax.ClientID;
 
-            using (DataForFlight = new FlightData())
+            using (FlightData fd = new FlightData())
             {
+                
                 if (!IsPostBack)
                 {
                     try
@@ -777,8 +785,8 @@ namespace MyFlightbook.MemberPages
                             AccordionCtrl.SelectedIndex = iTab;
 
                         LogbookEntryDisplay led = CurrentFlight = LoadFlight(CurrentFlightID);
-                        SetUpChart(TelemetryData, cmbXAxis, cmbYAxis1, cmbYAxis2);
-                        UpdateChart();
+                        SetUpChart(DataTableForFlightData(fd), cmbXAxis, cmbYAxis1, cmbYAxis2);
+                        UpdateChart(fd);
                         UpdateRestriction();
 
                         SetUpDownload(led);
@@ -803,44 +811,43 @@ namespace MyFlightbook.MemberPages
                 }
                 else
                 {
-                    DataForFlight.Data = TelemetryData;
-                    UpdateChart();
+                    UpdateChart(fd);
                 }
 
                 if (Restriction != null && !Restriction.IsDefault)
                     mfbFlightContextMenu.EditTargetFormatString = mfbFlightContextMenu.EditTargetFormatString + "?fq=" + HttpUtility.UrlEncode(Restriction.ToBase64CompressedJSONString());
                 mfbFlightContextMenu.Flight = CurrentFlight;
 
-                cmbAltUnits.SelectedValue = ((int)DataForFlight.AltitudeUnits).ToString(CultureInfo.InvariantCulture);
-                cmbSpeedUnits.SelectedValue = ((int)DataForFlight.SpeedUnits).ToString(CultureInfo.InvariantCulture);
-                if (!DataForFlight.HasDateTime)
+                cmbAltUnits.SelectedValue = ((int)fd.AltitudeUnits).ToString(CultureInfo.InvariantCulture);
+                cmbSpeedUnits.SelectedValue = ((int)fd.SpeedUnits).ToString(CultureInfo.InvariantCulture);
+                if (!fd.HasDateTime)
                     lnkSendCloudAhoy.Visible = false;
 
-                SetUpMaps();
+                SetUpMaps(fd);
 
                 if (!IsPostBack)
                 {
+                    DistanceDisplay = CurrentFlight.GetPathDistanceDescription(fd.ComputePathDistance());
                     // Bind details - this will bind everything else.
                     fmvLE.DataSource = new LogbookEntryDisplay[] { CurrentFlight };
                     fmvLE.DataBind();
                 }
             }
-
-            // DataForFlight is disposed - set it to null!!
-            DataForFlight = null;
         }
 
         #region chart management
-        protected void UpdateChart()
+        protected void UpdateChart(FlightData fd)
         {
-            TelemetryDataTable tdt = TelemetryData;
+            if (fd == null)
+                return;
+            TelemetryDataTable tdt = DataTableForFlightData(fd);
             if (tdt == null)
                 return;
 
             double y1Scale = TryParse(rblConvert1.SelectedValue, 1.0);
             double y2Scale = TryParse(rblConvert2.SelectedValue, 1.0);
 
-            UpdateChart(tdt, gcData, DataForFlight, PathLatLongArrayID, cmbXAxis.SelectedItem, cmbYAxis1.SelectedItem, cmbYAxis2.SelectedItem, y1Scale, y2Scale, out double max, out double min, out double max2, out double min2);
+            UpdateChart(tdt, gcData, fd.HasLatLongInfo, PathLatLongArrayID, cmbXAxis.SelectedItem, cmbYAxis1.SelectedItem, cmbYAxis2.SelectedItem, y1Scale, y2Scale, out double max, out double min, out double max2, out double min2);
             DataPointCount = gcData.YVals.Count;
 
             bool HasCrop = GetCropRange(CurrentFlight, out int _, out int _);
@@ -876,12 +883,8 @@ namespace MyFlightbook.MemberPages
         {
             using (FlightData fd = new FlightData())
             {
-                if (DataForFlight == null)
-                    DataForFlight = fd;
-                DataForFlight.Data = TelemetryData;
-                UpdateChart();
+                UpdateChart(fd);
             }
-            DataForFlight = null;
         }
         protected void cmbYAxis1_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -947,19 +950,19 @@ namespace MyFlightbook.MemberPages
             if (e == null)
                 throw new ArgumentNullException(nameof(e));
             if (e.Row.RowType == DataControlRowType.DataRow)
-                BindRawDataRow(DataForFlight, e.Row.DataItemIndex, e.Row.FindControl("imgPin"), e.Row.FindControl("lnkZoom"));
+                BindRawDataRow((DataRowView) e.Row.DataItem, e.Row.DataItemIndex, e.Row.FindControl("imgPin"), e.Row.FindControl("lnkZoom"));
         }
 
         protected void apcRaw_ControlClicked(object sender, EventArgs e)
         {
-            using (DataForFlight = new FlightData())
+            using (FlightData fd = new FlightData())
             {
                 apcRaw.LazyLoad = false;
                 int idx = mfbAccordionProxyExtender.IndexForProxyID(apcRaw.ID);
                 mfbAccordionProxyExtender.SetJavascriptForControl(apcRaw, true, idx);
                 AccordionCtrl.SelectedIndex = idx;
 
-                TelemetryDataTable tdt = TelemetryData;
+                TelemetryDataTable tdt = DataTableForFlightData(fd);
 
                 // see if we need to hide the "Position" column
                 bool fHasPositionColumn = false;
@@ -974,7 +977,6 @@ namespace MyFlightbook.MemberPages
                 gvData.DataSource = tdt;
                 gvData.DataBind();
             }
-            DataForFlight = null;
         }
         #endregion
 
@@ -998,6 +1000,8 @@ namespace MyFlightbook.MemberPages
             BindSignature(fv.FindControl("mfbSignature"), le);
 
             BindBadges(Viewer, le.FlightID, fv.FindControl("rptBadges"));
+
+            ((Label)fv.FindControl("lblDistanceForFlight")).Text = DistanceDisplay;
         }
 
         protected void fmvAircraft_DataBound(object sender, EventArgs e)

@@ -161,7 +161,7 @@
                             <asp:Panel ID="pnlRoute" runat="server" Visible="<%# RoutesList(CurrentFlight.Route).MasterList.GetNormalizedAirports().Length > 0 %>" CssClass="detailsSection" meta:resourcekey="pnlRouteResource1">
                                 <h3><%# Eval("Route").ToString().ToUpper() %></h3>
                                 <uc5:mfbAirportServices runat="server" ID="mfbAirportServices1" ShowZoom="true" ShowInfo="true" ShowMetar="true" />
-                                <p><%# ((LogbookEntryDisplay) Container.DataItem).GetPathDistanceDescription(DataForFlight.ComputePathDistance()) %></p>
+                                <p><asp:Label ID="lblDistanceForFlight" runat="server" /></p>
                                 <asp:Panel ID="pnlMetars" runat="server">
                                     <asp:UpdatePanel ID="updp1" runat="server">
                                         <ContentTemplate>

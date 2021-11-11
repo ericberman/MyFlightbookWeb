@@ -1026,13 +1026,6 @@ namespace MyFlightbook.Telemetry
         public TelemetryDataTable Data
         {
             get { return m_dt; }
-            set
-            {
-                // Datatable is IDisposable, so dispose it before setting the new value.
-                if (m_dt != null)
-                    m_dt.Dispose();
-                m_dt = value;
-            }
         }
 
         /// <summary>

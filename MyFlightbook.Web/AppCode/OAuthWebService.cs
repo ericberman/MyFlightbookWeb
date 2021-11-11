@@ -563,7 +563,7 @@ namespace OAuthAuthorizationServer.Services
                 szErr = ex.Message;
             }
 
-            EventRecorder.LogCall("Image Upload to {page}, user {user},  filename={filename}, contentType={contenttype}, size={size}, status={status}", Request.Path, szUser, imgPicture.PostedFile.FileName, imgPicture.PostedFile.ContentType, imgPicture.PostedFile.ContentLength, szErr);
+            EventRecorder.LogCall("Image Upload to {page}, user {user},  filename={filename}, contentType={contenttype}, size={size}, status={status}", Request.Path, szUser, imgPicture.PostedFile?.FileName ?? "(no file name)", imgPicture.PostedFile?.ContentType ?? "(no content type)", imgPicture.PostedFile.ContentLength, szErr);
 
             Response.Clear();
             Response.ContentType = "text/plain; charset=utf-8";

@@ -15,7 +15,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2020 MyFlightbook LLC
+ * Copyright (c) 2008-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -212,7 +212,7 @@ namespace MyFlightbook.Image
                     using (IAmazonS3 s3 = AWSConfiguration.S3Client())
                     {
                         PutObjectResponse s3r = null;
-                        using (por.InputStream)
+                        using (por.InputStream = new FileStream(mfbii.PhysicalPathFull, FileMode.Open, FileAccess.Read))
                         {
                             s3r = s3.PutObject(por);
                         }
@@ -278,7 +278,6 @@ namespace MyFlightbook.Image
                     BucketName = AWSConfiguration.CurrentS3Bucket,
                     ContentType = mfbii.ImageType == MFBImageInfo.ImageFileType.JPEG ? ContentTypeJPEG : ContentTypePDF,
                     AutoCloseStream = true,
-                    InputStream = new FileStream(mfbii.PhysicalPathFull, FileMode.Open, FileAccess.Read),
                     Key = mfbii.S3Key,
                     CannedACL = S3CannedACL.PublicRead,
                     StorageClass = S3StorageClass.Standard // vs. reduced
@@ -324,7 +323,6 @@ namespace MyFlightbook.Image
                     BucketName = szBucket,
                     ContentType = szContentType,
                     AutoCloseStream = true,
-                    InputStream = new FileStream(szFileName, FileMode.Open, FileAccess.Read),
                     Key = szBaseFile + FileExtensions.VidInProgress,
                     CannedACL = S3CannedACL.PublicRead,
                     StorageClass = S3StorageClass.Standard // vs. reduced
@@ -334,7 +332,7 @@ namespace MyFlightbook.Image
                 {
                     try
                     {
-                        using (por.InputStream)
+                        using (por.InputStream = new FileStream(szFileName, FileMode.Open, FileAccess.Read))
                         {
                             using (IAmazonS3 s3 = AWSConfiguration.S3Client())
                                 s3.PutObject(por);
