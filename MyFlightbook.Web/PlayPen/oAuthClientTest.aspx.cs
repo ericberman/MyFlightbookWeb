@@ -51,6 +51,11 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
         set { Session["oAuthClientPageState"] = value; }
     }
 
+    protected void SetTokenDisplay(IAuthorizationState state)
+    {
+        lblToken.Text = state == null ? string.Empty : JsonConvert.SerializeObject(state, Formatting.Indented);
+    }
+
     protected void FromSession()
     {
         PageState ps = CurrentPageState;
@@ -66,7 +71,7 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
         txtScope.Text = ps.Scope;
         txtState.Text = ps.State;
         lblAuthorization.Text = ps.Authorization;
-        lblToken.Text = JsonConvert.SerializeObject(ps.AuthState);
+        SetTokenDisplay(ps.AuthState);
     }
 
     protected void ToSession()
@@ -107,7 +112,7 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
             if (Request["state"] != null)
                 txtState.Text = HttpUtility.HtmlEncode((string) Request["state"]);
             if (Request["access_token"] != null)
-                lblToken.Text = HttpUtility.HtmlEncode((string) Request["access_token"]);
+                SetTokenDisplay(JsonConvert.DeserializeObject<IAuthorizationState>((string) Request["access_token"]));
 
             Uri uriBase = new Uri(String.Format(CultureInfo.InvariantCulture, "https://{0}", Request.Url.Host));
             txtAuthURL.Text = HttpUtility.HtmlEncode(new Uri(uriBase, VirtualPathUtility.ToAbsolute("~/member/oAuthAuthorize.aspx")).ToString());
@@ -186,7 +191,7 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
 
             if (grantedAccess == null)
                 throw new MyFlightbook.MyFlightbookValidationException("Null access token returned - invalid authorization passed?");
-            lblToken.Text = JsonConvert.SerializeObject(grantedAccess);
+            SetTokenDisplay(grantedAccess);
         }
         catch (MyFlightbook.MyFlightbookValidationException ex)
         {
@@ -490,6 +495,6 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
     {
         ToSession();
         Client().RefreshAuthorization(CurrentPageState.AuthState);
-        lblToken.Text = JsonConvert.SerializeObject(CurrentPageState.AuthState);
+        SetTokenDisplay(CurrentPageState.AuthState);
     }
 }

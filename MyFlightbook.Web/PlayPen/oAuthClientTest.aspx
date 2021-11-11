@@ -279,7 +279,7 @@
             </tr>
             <tr style="vertical-align:top;">
                 <td>Token result:</td>
-                <td><asp:Label ID="lblToken" runat="server" Text=""></asp:Label></td>
+                <td><asp:Label ID="lblToken" runat="server" style="white-space:pre" /></td>
             </tr>
         </table>
     </div>
