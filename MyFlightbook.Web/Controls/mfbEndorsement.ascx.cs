@@ -14,7 +14,11 @@ using System.Web.UI;
 
 public partial class Controls_mfbEndorsement : System.Web.UI.UserControl, IEndorsementListUpdate
 {
-    protected Endorsement endorsement { get; set; }
+    const string szVSEndorsement = "endorsement";
+    protected Endorsement endorsement { 
+        get { return (Endorsement)ViewState[szVSEndorsement]; }
+        set { ViewState[szVSEndorsement] = value; }
+    }
 
     /// <summary>
     /// We render explicitly so that writing to a ZIP - which may have neither page context nor HttpContext.Current - can work.

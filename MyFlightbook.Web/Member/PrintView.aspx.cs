@@ -389,6 +389,8 @@ namespace MyFlightbook.MemberPages
 
         protected void IncludeParametersChanged(object sender, EventArgs e)
         {
+            if (!ckEndorsements.Checked)
+                ckIncludeEndorsementImages.Checked = false;
             RefreshLogbookData();
         }
 
