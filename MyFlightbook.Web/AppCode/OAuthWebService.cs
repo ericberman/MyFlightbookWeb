@@ -557,13 +557,13 @@ namespace OAuthAuthorizationServer.Services
                 // Upload the image, and then perform a pseudo idempotency check on it.
                 MFBImageInfo mfbii = UploadForUser(szUser, pf, Request.Form["txtComment"] ?? string.Empty);
                 mfbii.IdempotencyCheck();
+
+                EventRecorder.LogCall("Image Upload to {page}, user {user},  filename={filename}, contentType={contenttype}, size={size}, status={status}", Request.Path, szUser, imgPicture.PostedFile?.FileName ?? "(no file name)", imgPicture.PostedFile?.ContentType ?? "(no content type)", imgPicture.PostedFile.ContentLength, szErr);
             }
             catch (MyFlightbookException ex)
             {
                 szErr = ex.Message;
             }
-
-            EventRecorder.LogCall("Image Upload to {page}, user {user},  filename={filename}, contentType={contenttype}, size={size}, status={status}", Request.Path, szUser, imgPicture.PostedFile?.FileName ?? "(no file name)", imgPicture.PostedFile?.ContentType ?? "(no content type)", imgPicture.PostedFile.ContentLength, szErr);
 
             Response.Clear();
             Response.ContentType = "text/plain; charset=utf-8";

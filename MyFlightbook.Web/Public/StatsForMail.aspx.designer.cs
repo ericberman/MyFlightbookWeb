@@ -55,7 +55,7 @@ public partial class Public_StatsForMail
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::Controls_adminStats adminStats1;
+    protected global::MyFlightbook.Web.Admin.adminStats adminStats1;
 
     /// <summary>
     /// lblErr control.

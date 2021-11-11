@@ -1,5 +1,4 @@
-﻿using MyFlightbook;
-using MyFlightbook.Histogram;
+﻿using MyFlightbook.Histogram;
 using System;
 using System.Collections.Generic;
 using System.Data;

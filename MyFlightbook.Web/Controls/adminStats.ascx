@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="adminStats.ascx.cs" Inherits="Controls_adminStats" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="adminStats.ascx.cs" Inherits="MyFlightbook.Web.Admin.adminStats" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
     <%@ Register src="GoogleChart.ascx" tagname="GoogleChart" tagprefix="uc1" %>
     <h1>Site Stats</h1>
