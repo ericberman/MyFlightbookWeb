@@ -1038,18 +1038,26 @@ WHERE
                 RegistrationDue=?RegistrationDue, IsLocked=?locked, Revision=?revision {1} ";
             string szQ = String.Format(CultureInfo.InvariantCulture, szCommitTemplate, IsNew ? "INSERT INTO" : "UPDATE", IsNew ? string.Empty : "WHERE idaircraft = ?idAircraft");
 
-
+            string oldPublicNotes = string.Empty;
             // If this is an update, get the current version and ensure it matches
             if (IsNew)
                 Revision = -1;  // just to be safe - will become 0 below.
             else
             {
-                DBHelper dbhVer = new DBHelper("SELECT Revision FROM aircraft WHERE idaircraft=?idAircraft");
+                DBHelper dbhVer = new DBHelper("SELECT Revision, PublicNotes FROM aircraft WHERE idaircraft=?idAircraft");
                 int currVer = -1;
-                dbhVer.ReadRow((comm) => { comm.Parameters.AddWithValue("idAircraft", AircraftID); }, (dr) => { currVer = (int)dr["Revision"]; });
+                dbhVer.ReadRow((comm) => { comm.Parameters.AddWithValue("idAircraft", AircraftID); }, (dr) =>
+                {
+                    currVer = (int)dr["Revision"];
+                    oldPublicNotes = (string)dr["PublicNotes"];
+                });
                 if (currVer != Revision)
                     throw new MyFlightbookException(Resources.Aircraft.errNotEditingMostRecentVersion);
             }
+
+            // Issue #855 - log changes to shared notes in case of abuse.
+            if (!IsNew && oldPublicNotes.CompareCurrentCultureIgnoreCase(PublicNotes) != 0)
+                EventRecorder.LogCall("Public notes updated for aircraft {tail} (ID {aircraftID}, Revision {revision}).  old: {old}, new: {new}", TailNumber, AircraftID, Revision, oldPublicNotes, PublicNotes);
 
             DBHelper dbh = new DBHelper();
             dbh.DoNonQuery(szQ,
@@ -1221,6 +1229,10 @@ WHERE
                     NotifyIfModelChanged(acThis, szUser);
                 }
             }
+
+            // Issue #855
+            if (!IsNew)
+                EventRecorder.LogCall("Aircraft updated: {tail} (ID {aircraftID}, Revision {revision}) - user is {user}", TailNumber, AircraftID, Revision, String.IsNullOrEmpty(szUser) ? "(unknown/unspecified/admin)" : szUser);
 
             // If we're here, it's time to save the changes
             CommitToDB();

@@ -511,7 +511,7 @@ namespace MyFlightbook
             if (!ac.IsAnonymous)
             {
                 acExisting.UpdateMaintenanceForUser(ac.Maintenance, szUser);
-                acExisting.Commit();
+                acExisting.Commit(szUser);
             }
 
             if (fUpdateFlags)
