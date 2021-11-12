@@ -92,7 +92,7 @@ namespace MyFlightbook.OAuth
             if (m_pendingRequest == null)
                 throw new HttpException((int)HttpStatusCode.BadRequest, Resources.LocalizedText.oAuthErrMissingRequest);
 
-            MFBOauthClientAuth ca = new MFBOauthClientAuth { Scope = OAuthUtilities.JoinScopes(m_pendingRequest.Scope), ClientId = m_pendingRequest.ClientIdentifier, UserId = Page.User.Identity.Name, ExpirationDateUtc = DateTime.UtcNow.AddDays(14) };
+            MFBOauthClientAuth ca = new MFBOauthClientAuth { Scope = OAuthUtilities.JoinScopes(m_pendingRequest.Scope), ClientId = m_pendingRequest.ClientIdentifier, UserId = Page.User.Identity.Name, ExpirationDateUtc = DateTime.UtcNow.AddYears(1) };
             if (ca.fCommit())
             {
                 EndUserAuthorizationSuccessResponseBase resp = authorizationServer.PrepareApproveAuthorizationRequest(m_pendingRequest, Page.User.Identity.Name);
