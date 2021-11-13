@@ -1049,7 +1049,7 @@ WHERE
                 dbhVer.ReadRow((comm) => { comm.Parameters.AddWithValue("idAircraft", AircraftID); }, (dr) =>
                 {
                     currVer = (int)dr["Revision"];
-                    oldPublicNotes = (string)dr["PublicNotes"];
+                    oldPublicNotes = util.ReadNullableString(dr, "PublicNotes");
                 });
                 if (currVer != Revision)
                     throw new MyFlightbookException(Resources.Aircraft.errNotEditingMostRecentVersion);
