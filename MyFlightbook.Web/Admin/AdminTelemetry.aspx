@@ -58,7 +58,7 @@
             <asp:BoundField DataField="Uncompressed" DataFormatString="{0:#,###}" HeaderText="Uncompressed size" ItemStyle-HorizontalAlign="Right" />
             <asp:BoundField DataField="Compressed" DataFormatString="{0:#,###}" HeaderText="Compressed size" ItemStyle-HorizontalAlign="Right"/>
             <asp:BoundField DataField="GoogleDataSize" DataFormatString="{0:#,###}" HeaderText="Google size" ItemStyle-HorizontalAlign="Right"/>
-            <asp:BoundField DataField="CachedDistance" DataFormatString="{0:#,###.0nm}" HeaderText="Distance" ItemStyle-HorizontalAlign="Right"/>
+            <asp:BoundField DataField="CachedDistance" DataFormatString="{0:#,###.0NM}" HeaderText="Distance" ItemStyle-HorizontalAlign="Right"/>
             <asp:TemplateField>
                 <ItemTemplate>
                     <%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:#.0}%", 100.0 * Convert.ToInt32(Eval("Compressed")) / Convert.ToInt32(Eval("Uncompressed"))) %> / 

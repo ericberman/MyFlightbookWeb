@@ -399,22 +399,22 @@
     <value>More cross-country time recorded than total time.</value>
   </data>
   <data name="warningXCDistanceLessThan25ButFlewMore" xml:space="preserve">
-    <value>Flight indicates cross-country flight of less than 25nm, but route was longer than that from departure airport</value>
+    <value>Flight indicates cross-country flight of less than 25NM, but route was longer than that from departure airport</value>
   </data>
   <data name="warningXCDistanceLessThan50ButFlewMore" xml:space="preserve">
-    <value>Flight indicates cross-country flight of less than 50nm, but route was longer than that from departure airport</value>
+    <value>Flight indicates cross-country flight of less than 50NM, but route was longer than that from departure airport</value>
   </data>
   <data name="warningXCDistanceMoreThan100ButFlewLess" xml:space="preserve">
-    <value>Flight indicates cross-country flight of more than 100nm, but route from departure airport was less than that</value>
+    <value>Flight indicates cross-country flight of more than 100NM, but route from departure airport was less than that</value>
   </data>
   <data name="warningXCDistanceMoreThan50ButFlewLess" xml:space="preserve">
-    <value>Flight indicates cross-country flight of more than 50nm, but route from departure airport was less than that</value>
+    <value>Flight indicates cross-country flight of more than 50NM, but route from departure airport was less than that</value>
   </data>
   <data name="warningXCInconsistentDistances" xml:space="preserve">
     <value>Flight includes properties indicating inconsistent or redundant distances of cross-country time for a flight.</value>
   </data>
   <data name="warningXCMissingXC" xml:space="preserve">
-    <value>Flight indicates travel of more than {0}nm from starting airport, but no cross-country time was logged.  Shorting yourself?</value>
+    <value>Flight indicates travel of more than {0}NM from starting airport, but no cross-country time was logged.  Shorting yourself?</value>
   </data>
   <data name="warningXCNotWholeFlightXC" xml:space="preserve">
     <value>Some, but not all of the flight is listed as cross-country</value>

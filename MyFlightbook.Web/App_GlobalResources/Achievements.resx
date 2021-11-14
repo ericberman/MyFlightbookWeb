@@ -322,7 +322,7 @@
     <value>{0:#,##0} days out of {1:#,##0} ({2:#0.0}% of days in period)</value>
   </data>
   <data name="RecentAchievementsFurthestFlight" xml:space="preserve">
-    <value>{0:#,##0.0}nm on {1:d}</value>
+    <value>{0:#,##0.0}NM on {1:d}</value>
   </data>
   <data name="RecentAchievementsLongestFlight" xml:space="preserve">
     <value>{0:#,##0.0} hours on {1:d}</value>

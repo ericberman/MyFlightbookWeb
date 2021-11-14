@@ -1836,10 +1836,10 @@
     <value>Use "!" as a prefix or suffix to indicate departure/arrival. !ABC matches flights that depart from ABC (i.e., ABC is the first airport in the route of flight), and ABC! matches flights that arrive at ABC (i.e., ABC is the last airport in the route of flight).</value>
   </data>
   <data name="DefaultPageRecentStatsFurthestRoute" xml:space="preserve">
-    <value>Someone logged a flight that went {0:#,##0.0}nm from the starting point!</value>
+    <value>Someone logged a flight that went {0:#,##0.0}NM from the starting point!</value>
   </data>
   <data name="DefaultPageRecentStatsLongestRoute" xml:space="preserve">
-    <value>Someone logged a flight that was {0:#,##0.0}nm long!</value>
+    <value>Someone logged a flight that was {0:#,##0.0}NM long!</value>
   </data>
   <data name="DefaultPageRecentStatsHeader" xml:space="preserve">
     <value>In the last {0} days on %APP_NAME%:</value>

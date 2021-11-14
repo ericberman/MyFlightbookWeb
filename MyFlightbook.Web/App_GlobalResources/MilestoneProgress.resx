@@ -148,10 +148,10 @@
     <value>{0} hours of flight training (dual)</value>
   </data>
   <data name="MinXCDistance" xml:space="preserve">
-    <value>One solo cross-country flight of {1}nm total distance and a leg that is at least {2}nm, with three takeoffs and landings to a full-stop in {0}</value>
+    <value>One solo cross-country flight of {1}NM total distance and a leg that is at least {2}NM, with three takeoffs and landings to a full-stop in {0}</value>
   </data>
   <data name="MinXCNight" xml:space="preserve">
-    <value>One night-time cross-country training flight of over {1}nm distance in {0}</value>
+    <value>One night-time cross-country training flight of over {1}NM distance in {0}</value>
   </data>
   <data name="MinXCSolo" xml:space="preserve">
     <value>{1} hours of solo cross-country time in {0}</value>
@@ -247,16 +247,16 @@
     <value>{0} hours of solo time in {1}</value>
   </data>
   <data name="CommPICSoloXCCategory" xml:space="preserve">
-    <value>A solo cross-country flight in {0} of not less than 300nm total distance, with 3 landings, at least one of which is 250nm away from the departure point (straight line).</value>
+    <value>A solo cross-country flight in {0} of not less than 300NM total distance, with 3 landings, at least one of which is 250NM away from the departure point (straight line).</value>
   </data>
   <data name="CommSoloXCHelicopter" xml:space="preserve">
-    <value>A cross-country flight in a helicopter with landings at 3 points, with one segment at least 50 nm from the original point of departure.</value>
+    <value>A cross-country flight in a helicopter with landings at 3 points, with one segment at least 50 NM from the original point of departure.</value>
   </data>
   <data name="CommXCCategory" xml:space="preserve">
-    <value>A 2-hour cross-country training flight in {0} in daytime conditions with total distance (straight line) over {1}nm from the point of departure.</value>
+    <value>A 2-hour cross-country training flight in {0} in daytime conditions with total distance (straight line) over {1}NM from the point of departure.</value>
   </data>
   <data name="CommXCCategoryNight" xml:space="preserve">
-    <value>A 2-hour night cross-country training flight in {0} with total distance (straight line) over {1}nm from point of departure.</value>
+    <value>A 2-hour night cross-country training flight in {0} with total distance (straight line) over {1}NM from point of departure.</value>
   </data>
   <data name="CompletedHeader" xml:space="preserve">
     <value>Completed: </value>
@@ -292,13 +292,13 @@
     <value>40 Hours of actual or simulated instrument time</value>
   </data>
   <data name="MinInstrumentXC" xml:space="preserve">
-    <value>A cross-country flight in {0} of at least {1}nm with at least 3 approaches.</value>
+    <value>A cross-country flight in {0} of at least {1}NM with at least 3 approaches.</value>
   </data>
   <data name="MinSoloInType" xml:space="preserve">
     <value>10 hours of solo time in {0}</value>
   </data>
   <data name="MinXCDistanceHelicopter" xml:space="preserve">
-    <value>One solo cross-country flight in {0} of {1}nm total distance and landings at least {2}nm apart, with three landings</value>
+    <value>One solo cross-country flight in {0} of {1}NM total distance and landings at least {2}NM apart, with three landings</value>
   </data>
   <data name="MinXCNight50nm" xml:space="preserve">
     <value>One night-time cross-country flight of over 50nm distance in {0}</value>
@@ -401,7 +401,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <value>15 hours of flight training</value>
   </data>
   <data name="RecreationalMinXC" xml:space="preserve">
-    <value>2 hours of training en-route to an airport at least 25nm away, including at least 3 take-offs and landings at the 2nd airport.</value>
+    <value>2 hours of training en-route to an airport at least 25NM away, including at least 3 take-offs and landings at the 2nd airport.</value>
   </data>
   <data name="RecreationalMinXCNote" xml:space="preserve">
     <value>Only landings are counted here; takeoffs are assumed, and one landing at the home airport is assumed, so 4 landings must be found.  If 4 or more landings are found, it is assumed that at least 3 of these were at the far airport.</value>
@@ -503,7 +503,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <value>At least 5 hours of solo flight training in {0}</value>
   </data>
   <data name="Part141SoloXC" xml:space="preserve">
-    <value>One solo 100nm cross-country flight with one segment over 50nm and landings at 3 points in {0}</value>
+    <value>One solo 100NM cross-country flight with one segment over 50NM and landings at 3 points in {0}</value>
   </data>
   <data name="Part141TestPrep" xml:space="preserve">
     <value>3 hours in prep for the practical test within 60 days preceding the date of the test in {0}</value>
@@ -584,7 +584,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <value>25 hours of flight training in an airship</value>
   </data>
   <data name="AirshipXCNightFlight" xml:space="preserve">
-    <value>1 night cross-country flight of at least 25nm distance in an airship</value>
+    <value>1 night cross-country flight of at least 25NM distance in an airship</value>
   </data>
   <data name="AirshipXCTraining" xml:space="preserve">
     <value>3 hours of cross-country training in an airship</value>
@@ -655,7 +655,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <value>{0} hours of supervised solo</value>
   </data>
   <data name="JARPPLMinSoloLongXC" xml:space="preserve">
-    <value>1 solo cross-country flight of at least {0}nm, including 2 full-stop landings at 2 airports other than the point of departure</value>
+    <value>1 solo cross-country flight of at least {0}NM, including 2 full-stop landings at 2 airports other than the point of departure</value>
   </data>
   <data name="JARPPLMinSoloNote" xml:space="preserve">
     <value>("Supervised solo" includes solo time or Duties of PIC time with an authorized instructor on board)</value>
@@ -775,7 +775,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <value>{0} hours of instrument time ({1})</value>
   </data>
   <data name="CASRCommLongCrossCountry" xml:space="preserve">
-    <value>1 cross-country flight as PIC ({0}) that is at least {1}nm and includes {2} at at least 2 other airports or landing areas</value>
+    <value>1 cross-country flight as PIC ({0}) that is at least {1}NM and includes {2} at at least 2 other airports or landing areas</value>
   </data>
   <data name="CASRCommPIC" xml:space="preserve">
     <value>{0} hours of flight time as PIC ({1})</value>
@@ -809,7 +809,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <comment>{1} is the category (e.g., "in an aeroplane")</comment>
   </data>
   <data name="CASRPPLSoloLongCrossCountry" xml:space="preserve">
-    <value>1 solo cross-country flight ({0}) that is at least {1}nm and includes {2} at at least 2 other airports or landing areas</value>
+    <value>1 solo cross-country flight ({0}) that is at least {1}NM and includes {2} at at least 2 other airports or landing areas</value>
   </data>
   <data name="TitleCASRCommAirplaneNoTraining" xml:space="preserve">
     <value>CASR - Commercial Pilot, Aeroplane, Integrated Training NOT Completed</value>
@@ -884,7 +884,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <value>For simplicity, this is assuming one takeoff per landing and a flight in the pattern.</value>
   </data>
   <data name="SportSoloXCFlight" xml:space="preserve">
-    <value>Solo cross-country flight in a {0} of at least {1}nm that includes 2 full-stop landings and a straight line distance over 25nm</value>
+    <value>Solo cross-country flight in a {0} of at least {1}NM that includes 2 full-stop landings and a straight line distance over 25NM</value>
   </data>
   <data name="SportTestPrepTime" xml:space="preserve">
     <value>2 hours of flight training within the 2 calendar months prior to the test</value>
@@ -899,7 +899,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <value>FAR 61.313(a) - Sport Pilot, Airplane Single Engine Land</value>
   </data>
   <data name="Comm141DayXCFlight" xml:space="preserve">
-    <value>One cross-country flight in daytime conditions that is at least {0}hrs and goes at least {1}nm from the point of departure</value>
+    <value>One cross-country flight in daytime conditions that is at least {0}hrs and goes at least {1}NM from the point of departure</value>
   </data>
   <data name="Comm141InstrumentTrainingNote" xml:space="preserve">
     <value>For an airplane rating, a view-limiting device is required, so this is looking for simulated instrument conditions; unusual attitudes, partial panel operations, attitude instrument flying, etc., are all assumed</value>
@@ -917,7 +917,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <value>{0} hours of flight training from a CFI</value>
   </data>
   <data name="Comm141NightXCFlight" xml:space="preserve">
-    <value>One cross-country flight in nighttime conditions that is at least {0}hrs and goes at least {1}nm from the point of departure</value>
+    <value>One cross-country flight in nighttime conditions that is at least {0}hrs and goes at least {1}NM from the point of departure</value>
   </data>
   <data name="Comm141SoloNight" xml:space="preserve">
     <value>{0} hours of solo (or duties-of-PIC with an authorized instructor on board) flight in night VFR conditions</value>
@@ -932,10 +932,10 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <value>{0} hours of solo time (or duties-of-PIC with an authorized instructor on board) in {1}</value>
   </data>
   <data name="Comm141SoloXCFlight" xml:space="preserve">
-    <value>One solo (or duties-of-PIC with an authorized instructor on board) cross country flight with at least 3 landings and a segment with a straight-line distance of at least {0}nm</value>
+    <value>One solo (or duties-of-PIC with an authorized instructor on board) cross country flight with at least 3 landings and a segment with a straight-line distance of at least {0}NM</value>
   </data>
   <data name="Comm141SoloXCHawaiiNote" xml:space="preserve">
-    <value>In Hawaii, a cross-country segment of 150nm satisfies this</value>
+    <value>In Hawaii, a cross-country segment of 150NM satisfies this</value>
   </data>
   <data name="Comm141TestPrep" xml:space="preserve">
     <value>{0} hours of test prep in {1} within {2} days preceding the test</value>
@@ -1055,7 +1055,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <value>{0} hours of solo cross-country flight time</value>
   </data>
   <data name="EASALAPLAirplaneMinSoloXCMinDist" xml:space="preserve">
-    <value>1 solo cross-country flight of at least {0} nm with a full-stop landing at a different airport</value>
+    <value>1 solo cross-country flight of at least {0} NM with a full-stop landing at a different airport</value>
   </data>
   <data name="EASALAPLAirplaneOrTMG" xml:space="preserve">
     <value>airplanes or TMGs</value>
@@ -1097,7 +1097,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <value>15 hours in sailplanes</value>
   </data>
   <data name="EASALAPLSailplaneXC" xml:space="preserve">
-    <value>1 solo cross-country flight of at least 27nm or 1 dual cross-country flight of at least 55nm</value>
+    <value>1 solo cross-country flight of at least 27NM or 1 dual cross-country flight of at least 55NM</value>
   </data>
   <data name="ATPTotalTimeSubstitutionNote" xml:space="preserve">
     <value>Per 61.159(c), SIC time and some Flight Engineer Time can contribute towards this; and per 61.159(a)(6) up to 100hrs of FTD/FFS time can also contribute.  %APP_NAME% assumes that the conditions for doing so have been met.</value>
@@ -1133,7 +1133,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <value>{0} hours of cross-country dual flight time</value>
   </data>
   <data name="JARPPLMinDualNightLongXC" xml:space="preserve">
-    <value>1 dual cross-country flight at night of at least {0}nm</value>
+    <value>1 dual cross-country flight at night of at least {0}NM</value>
   </data>
   <data name="TitleCANightAirplane" xml:space="preserve">
     <value>Canada - Night Airplane</value>
@@ -1175,7 +1175,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <value>{0} hours of dual instruction in {1}</value>
   </data>
   <data name="SADualXC" xml:space="preserve">
-    <value>A dual night cross-country flight of at least {0}nm with 2 landings (full-stop if in an aeroplane) away from base</value>
+    <value>A dual night cross-country flight of at least {0}NM with 2 landings (full-stop if in an aeroplane) away from base</value>
   </data>
   <data name="SANightInstrument" xml:space="preserve">
     <value>10 hours of instrument instruction</value>
@@ -1193,7 +1193,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <value>{0} hours of solo time</value>
   </data>
   <data name="SASoloLongXC" xml:space="preserve">
-    <value>A solo cross-country flight of at least {0}nm, including full-stop landings at 2 aerodromes.  For aeroplanes, a leg of at least 50nm from base is also required</value>
+    <value>A solo cross-country flight of at least {0}NM, including full-stop landings at 2 aerodromes.  For aeroplanes, a leg of at least 50NM from base is also required</value>
   </data>
   <data name="SASoloXC" xml:space="preserve">
     <value>{0} hours of solo cross-country time</value>
@@ -1505,7 +1505,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <value>The regs require an emphasis on "the improvement of general flying skills"; this is assumed.</value>
   </data>
   <data name="CommCanadaSoloXC" xml:space="preserve">
-    <value>Solo cross-country flight at least 300nm away from the point of departure, with at least 3 landings (since PPL)</value>
+    <value>Solo cross-country flight at least 300NM away from the point of departure, with at least 3 landings (since PPL)</value>
   </data>
   <data name="InstrumentCanadaGeneralDisclaimer" xml:space="preserve">
     <value>Note that 421.46(2)(b) also has requirements regarding the rating of your instructor; %APP_NAME% cannot determine this and thus does not measure it.</value>
@@ -1514,7 +1514,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <value>5 hours of instrument training in {0}</value>
   </data>
   <data name="MinInstrumentXCCanada" xml:space="preserve">
-    <value>A cross-country flight of at least {0}nm with at least 2 approaches at 2 locations</value>
+    <value>A cross-country flight of at least {0}NM with at least 2 approaches at 2 locations</value>
   </data>
   <data name="MinInstrumentXCCanadaNote" xml:space="preserve">
     <value>Assumes all approaches were done to minimums</value>

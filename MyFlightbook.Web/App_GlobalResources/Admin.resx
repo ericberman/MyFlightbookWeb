@@ -127,7 +127,7 @@
     <value>Showing rows {0}-{1} of {2}</value>
   </data>
   <data name="ImportAirportDistanceTemplate" xml:space="preserve">
-    <value>"Distance: {0:f1}nm&lt;br /&gt;"</value>
+    <value>"Distance: {0:f1}NM&lt;br /&gt;"</value>
   </data>
   <data name="ImportAirportStatusTemplate" xml:space="preserve">
     <value>"Status: {0}&lt;br /&gt;"</value>

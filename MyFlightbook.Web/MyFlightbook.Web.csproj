@@ -2988,6 +2988,7 @@
     <Content Include="App_GlobalResources\Admin.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>
       <LastGenOutput>Admin.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="App_GlobalResources\Aircraft.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>
@@ -3145,6 +3146,7 @@
     <Content Include="App_GlobalResources\FlightLint.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>
       <LastGenOutput>FlightLint.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
   <ItemGroup>
