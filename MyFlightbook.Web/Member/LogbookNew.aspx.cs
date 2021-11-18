@@ -15,9 +15,6 @@ using System.Web.UI;
  *
 *******************************************************/
 
-/*
-TODO: Modify the print link in javascript on the client for performance?
- */
 namespace MyFlightbook.MemberPages
 {
     public partial class LogbookNew : Page

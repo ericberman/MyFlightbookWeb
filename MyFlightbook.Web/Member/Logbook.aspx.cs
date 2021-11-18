@@ -1,7 +1,4 @@
-using MyFlightbook;
 using System;
-using System.Globalization;
-using System.Web;
 
 /******************************************************
  * 
@@ -10,69 +7,15 @@ using System.Web;
  *
 *******************************************************/
 
-public partial class _Default : System.Web.UI.Page
+namespace MyFlightbook.MemberPages
 {
-
-    private const string szParamIDFlight = "idFlight";
-    private const string szParamSearch = "s";
-
-    protected void Page_Load(object sender, EventArgs e)
+    public partial class OldLogbookPage : System.Web.UI.Page
     {
-        // wire up the logbook to the current user
-        MfbLogbook1.User = User.Identity.Name;
-
-        this.Master.SelectedTab = tabID.lbtAddNew;
-        this.Master.SuppressTopNavPrint = true;
-        string szTitle = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, MyFlightbook.Profile.GetUser(User.Identity.Name).UserFullName);
-
-        ModalPopupExtender1.OnCancelScript = String.Format(CultureInfo.InvariantCulture, "javascript:document.getElementById('{0}').style.display = 'none';", pnlWelcomeNewUser.ClientID);
-
-        if (Request.Cookies[MFBConstants.keyNewUser] != null && !String.IsNullOrEmpty(Request.Cookies[MFBConstants.keyNewUser].Value) || util.GetStringParam(Request, "sw").Length > 0 || Request.PathInfo.Contains("/sw"))
+        protected void Page_Load(object sender, EventArgs e)
         {
-            Response.Cookies[MFBConstants.keyNewUser].Expires = DateTime.Now.AddDays(-1);
-            ModalPopupExtender1.Show();
+            // This page is obsolete - just redirect
+            if (!IsPostBack)
+                Response.Redirect("~/Member/LogbookNew.aspx");
         }
-
-        if (!IsPostBack)
-        {
-            string szSearch = util.GetStringParam(Request, szParamSearch);
-            if (szSearch.Length > 0)
-            {
-                Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/FindFlights.aspx?s={0}", HttpUtility.UrlEncode(szSearch)), true);
-                return;
-            }
-
-            int idFlight = util.GetIntParam(Request, szParamIDFlight, LogbookEntry.idFlightNew);
-
-            // Redirect to the non-querystring based page so that Ajax file upload works
-            if (idFlight != LogbookEntry.idFlightNew)
-            {
-                string szNew = Request.Url.PathAndQuery.Replace(".aspx", String.Format(CultureInfo.InvariantCulture, ".aspx/{0}", idFlight)).Replace(String.Format(CultureInfo.InvariantCulture, "{0}={1}", szParamIDFlight, idFlight), string.Empty).Replace("?&", "?");
-                Response.Redirect(szNew, true);
-                return;
-            }
-
-            if (Request.PathInfo.Length > 0)
-            {
-                try { idFlight = Convert.ToInt32(Request.PathInfo.Substring(1), CultureInfo.InvariantCulture); }
-                catch (FormatException) { }
-            }
-
-            SetUpNewOrEdit(idFlight);
-
-            lblUserName.Text = Master.Title = szTitle;
-        }
-    }
-
-    protected void FlightUpdated(object sender, EventArgs e)
-    {
-        Response.Redirect("~/Member/LogbookNew.aspx", true);
-    }
-
-    protected void SetUpNewOrEdit(int idFlight)
-    {
-        mfbEF1.SetUpNewOrEdit(idFlight);
-
-        MfbLogbook1.Visible = (idFlight == LogbookEntry.idFlightNew);  // hide the list of flights if editing an existing flight - avoids confusion.
     }
 }

@@ -3125,7 +3125,6 @@
     <Content Include="Member\App_LocalResources\EditProfile.aspx.resx" />
     <Content Include="Member\App_LocalResources\FlightDetail.aspx.resx" />
     <Content Include="Member\App_LocalResources\ImpAircraft.aspx.resx" />
-    <Content Include="Member\App_LocalResources\Logbook.aspx.resx" />
     <Content Include="Member\App_LocalResources\makes.aspx.resx">
       <SubType>Designer</SubType>
     </Content>
