@@ -1,12 +1,11 @@
+using MyFlightbook;
 using System;
 using System.Globalization;
 using System.Web;
-using MyFlightbook;
-using MyFlightbook.SocialMedia;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2020 MyFlightbook LLC
+ * Copyright (c) 2007-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -67,15 +66,7 @@ public partial class _Default : System.Web.UI.Page
 
     protected void FlightUpdated(object sender, EventArgs e)
     {
-        // if we had been editing a flight do a redirect so we have a clean URL
-        // OR if there are pending redirects, do them.
-        // Otherwise, just clean the page.
-        if (Request[szParamIDFlight] != null || SocialNetworkAuthorization.RedirectList.Count > 0)
-            Response.Redirect(SocialNetworkAuthorization.PopRedirect(Master.IsMobileSession() ? SocialNetworkAuthorization.DefaultRedirPageMini : "~/Member/LogbookNew.aspx"));
-        else
-        {
-            Response.Redirect("~/Member/Logbook.aspx", true);
-        }
+        Response.Redirect("~/Member/LogbookNew.aspx", true);
     }
 
     protected void SetUpNewOrEdit(int idFlight)
