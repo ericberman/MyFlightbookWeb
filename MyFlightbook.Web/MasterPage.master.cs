@@ -244,11 +244,8 @@ namespace MyFlightbook.Web
                 }
             }
 
-            if (IsIOSORAndroid) // set in Page INIT
-            {
-                metaFormat.Visible = true;
-                metaViewport.Visible = !SuppressMobileViewport;
-            }
+            metaFormat.Visible = IsIOSORAndroid;
+            metaViewport.Visible = !SuppressMobileViewport;
 
             imgImgToView.Attributes["onload"] = "javascript:showMFBImg()";
         }
