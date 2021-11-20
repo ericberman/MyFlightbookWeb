@@ -681,4 +681,10 @@
     <value>You may be able to find more information about this aircraft at {0}.</value>
     <comment>{0} is a hyperlink to a website such as the FAA</comment>
   </data>
+  <data name="EditPopularAircraftFAQLink" xml:space="preserve">
+    <value>Learn more about editing aircraft</value>
+  </data>
+  <data name="EditPopularAircraftPrompt" xml:space="preserve">
+    <value>Before changing the model of the aircraft, please make sure that you have read the "Learn More" notes.  The site administrators will review any changes you make.</value>
+  </data>
 </root>

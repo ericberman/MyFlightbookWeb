@@ -143,9 +143,7 @@
                                         ValidationGroup="EditAircraft"></asp:CustomValidator>
                                     <span style="display: none">
                                         <asp:LinkButton ID="lnkPopulateAircraft" runat="server" OnClick="lnkPopulateAircraft_Click"></asp:LinkButton></span>
-                                    <asp:HyperLink ID="lnkAdminFAALookup" runat="server" EnableViewState="false"
-                                        Target="_blank"
-                                        Text="<%$ Resources:Aircraft, editAircraftRegistrationPrompt %>" Visible="False"></asp:HyperLink>
+                                    <asp:HyperLink ID="lnkAdminFAALookup" runat="server" Target="_blank" Text="<%$ Resources:Aircraft, editAircraftRegistrationPrompt %>" Visible="False" />
                                     <asp:Image ID="imgAutofillProgress" Style="display: none" runat="server" ImageUrl="~/images/ajax-loader-transparent-ball.gif" />
                                 </td>
                             </tr>

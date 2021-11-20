@@ -126,6 +126,7 @@ namespace MyFlightbook.AircraftControls
             Stats = new AircraftStats(Page.User.Identity.Name, ac.AircraftID);
             // Add overall stats
             lst.Add(new LinkedString(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.EditAircraftUserStats, Stats.Users, Stats.Flights)));
+
             // And add personal stats
             lst.Add(Stats.UserStatsDisplay);
 
@@ -548,6 +549,10 @@ namespace MyFlightbook.AircraftControls
             {
                 lstAttrib.Add(new LinkedString(rbTrainingDevice.Checked ? rblTrainingDevices.SelectedItem.Text : (rbRealRegistered.Checked ? lblRealRegistered.Text : lblAnonymous.Text)));
                 lstAttrib.AddRange(StatsForUser(m_ac));
+
+                // Issue #860 - if the aircraft is "popular", get extra confirmation.  I'll define "popular" here (arbitrarily) as > 10 users OR > 100 flights
+                if (Stats.Users > 10 || Stats.Flights > 10)
+                    SelectMake1.ConfirmationText = String.Format(CultureInfo.CurrentCulture, "{0} {1}", String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.EditAircraftUserStats, Stats.Users, Stats.Flights), Resources.Aircraft.EditPopularAircraftPrompt);
             }
             SelectMake1.AircraftAttributes = lstAttrib;
             SelectMake1.SelectedModelID = m_ac.ModelID;
@@ -572,12 +577,9 @@ namespace MyFlightbook.AircraftControls
             // Editing automatically enabled IF new aircraft OR real, registered, unlocked, single user.
             // Editing offered (with confirmation) if real, registered, (unlocked or admin), multiple-user
             // Otherwise, no editing
-            if (fIsNew || (fCanEdit && IsOnlyUserOfAircraft))
-                SelectMake1.EditMode = Controls_AircraftControls_SelectMake.MakeEditMode.Edit;
-            else if (fCanEdit && !fIsLocked)
-                SelectMake1.EditMode = Controls_AircraftControls_SelectMake.MakeEditMode.EditWithConfirm;
-            else
-                SelectMake1.EditMode = Controls_AircraftControls_SelectMake.MakeEditMode.Locked;
+            SelectMake1.EditMode = fIsNew || (fCanEdit && IsOnlyUserOfAircraft)
+                ? SelectMake.MakeEditMode.Edit
+                : fCanEdit && !fIsLocked ? SelectMake.MakeEditMode.EditWithConfirm : SelectMake.MakeEditMode.Locked;
 
             mfbDateOfGlassUpgrade.Date = m_ac.GlassUpgradeDate ?? DateTime.MinValue;
             pnlGlassUpgradeDate.Visible = !rbAvionicsNone.Checked;
@@ -677,10 +679,9 @@ namespace MyFlightbook.AircraftControls
                 }
                 else
                 {
-                    if (cc.IsSim || cc.IsAnonymous)   // reset tail if switching from sim or anonymous
-                        m_ac.TailNumber = cmbCountryCode.SelectedItem.Value;
-                    else
-                        m_ac.TailNumber = CountryCodePrefix.SetCountryCodeForTail(new CountryCodePrefix(cmbCountryCode.SelectedItem.Text, cmbCountryCode.SelectedValue), txtTail.Text);
+                    m_ac.TailNumber = cc.IsSim || cc.IsAnonymous
+                        ? cmbCountryCode.SelectedItem.Value
+                        : CountryCodePrefix.SetCountryCodeForTail(new CountryCodePrefix(cmbCountryCode.SelectedItem.Text, cmbCountryCode.SelectedValue), txtTail.Text);
                     lblReadTail.Text = txtTail.Text = HttpUtility.HtmlEncode(m_ac.TailNumber);
                 }
 

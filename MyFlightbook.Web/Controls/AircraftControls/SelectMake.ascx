@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="SelectMake.ascx.cs" Inherits="Controls_AircraftControls_SelectMake" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="SelectMake.ascx.cs" Inherits="MyFlightbook.AircraftControls.SelectMake" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 
 <asp:MultiView ID="mvModel" runat="server" ActiveViewIndex="0">
@@ -64,10 +64,14 @@
     <asp:View ID="vwReadOnly" runat="server">
         <div style="vertical-align:middle">
             <asp:MultiView ID="mvModelDisplay" runat="server" ActiveViewIndex="0">
-                <asp:View ID="vwStaticModel" runat="server"><asp:Label ID="lblMakeModel"  Font-Size="Larger" Font-Bold="true" runat="server"></asp:Label></asp:View>
-                <asp:View ID="vwLinkedModel" runat="server"><asp:HyperLink ID="lnkMakeModel" runat="server" Font-Size="Larger" Font-Bold="true"></asp:HyperLink></asp:View>
+                <asp:View ID="vwStaticModel" runat="server"><asp:Label ID="lblMakeModel"  Font-Size="Larger" Font-Bold="true" runat="server" /></asp:View>
+                <asp:View ID="vwLinkedModel" runat="server"><asp:HyperLink ID="lnkMakeModel" runat="server" Font-Size="Larger" Font-Bold="true" /></asp:View>
             </asp:MultiView>
             <asp:ImageButton ID="imgEditAircraftModel" ToolTip="<%$ Resources:Aircraft, editAircraftModelPrompt %>" ImageUrl="~/images/pencilsm.png" runat="server" OnClick="btnChangeModelTweak_Click" />
+            <div>
+                <asp:HyperLink ID="lnkFAQ" runat="server" NavigateUrl="~/Public/FAQ.aspx?q=68#68" Text="<%$ Resources:Aircraft, EditPopularAircraftFAQLink %>" />
+                <cc1:ConfirmButtonExtender ID="cbeEdit" runat="server" Enabled="false" TargetControlID="imgEditAircraftModel" />
+            </div>
         </div>
     </asp:View>
 </asp:MultiView>

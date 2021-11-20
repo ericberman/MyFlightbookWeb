@@ -760,6 +760,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///    Looks up a localized string similar to Learn more about editing aircraft.
+        /// </summary>
+        internal static string EditPopularAircraftFAQLink {
+            get {
+                return ResourceManager.GetString("EditPopularAircraftFAQLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Before changing the model of the aircraft, please make sure that you have read the &quot;Learn More&quot; notes.  The site administrators will review any changes you make..
+        /// </summary>
+        internal static string EditPopularAircraftPrompt {
+            get {
+                return ResourceManager.GetString("EditPopularAircraftPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///    Looks up a localized string similar to This aircraft is used in some of your flights and cannot be removed..
         /// </summary>
         internal static string errAircraftInUse {
