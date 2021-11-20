@@ -156,7 +156,7 @@
                 <asp:CheckBox ID="ckComplex" runat="server" Text="Complex" 
                     meta:resourcekey="ckComplexResource1" /><br />
                 <div style="margin-left:20px">
-                    <asp:CheckBox ID="ckConstantProp" runat="server" Text="Constant Speed Prop" 
+                    <asp:CheckBox ID="ckConstantProp" runat="server" Text="Controllable Pitch Prop" 
                     meta:resourcekey="ckConstantPropResource1" /><br />
                     <asp:CheckBox ID="ckCowlFlaps" runat="server" Text="Flaps" 
                     meta:resourcekey="ckCowlFlapsResource1" /><br />

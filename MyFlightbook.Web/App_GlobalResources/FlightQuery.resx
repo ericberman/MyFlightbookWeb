@@ -121,7 +121,7 @@
     <value>Complex</value>
   </data>
   <data name="AircraftFeatureConstantSpeedProp" xml:space="preserve">
-    <value>Constant speed props</value>
+    <value>Controllable pitch prop</value>
   </data>
   <data name="AircraftFeatureFlaps" xml:space="preserve">
     <value>Flaps</value>

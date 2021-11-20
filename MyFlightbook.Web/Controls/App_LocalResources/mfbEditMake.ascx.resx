@@ -166,7 +166,7 @@
     <value />
   </data>
   <data name="ckConstantPropResource1.Text" xml:space="preserve">
-    <value>Constant Speed Prop</value>
+    <value>Controllable Pitch Prop</value>
   </data>
   <data name="ckConstantPropResource1.ToolTip" xml:space="preserve">
     <value />

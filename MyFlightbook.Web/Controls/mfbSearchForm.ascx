@@ -146,7 +146,7 @@
                                    <asp:CheckBox ID="ckRetract" runat="server" Text="Retractable gear" 
                                        meta:resourcekey="ckRetractResource1" /></div>
                         <div>&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <asp:CheckBox ID="ckProp" runat="server" Text="Constant speed prop" 
+                                    <asp:CheckBox ID="ckProp" runat="server" Text="Controllable pitch prop" 
                                        meta:resourceKey="ckPropResource2" /></div>
                         <div>&nbsp;&nbsp;&nbsp;&nbsp;
                                    <asp:CheckBox ID="ckCowl" runat="server" Text="Flaps" 

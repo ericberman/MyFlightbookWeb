@@ -175,7 +175,7 @@
                 <asp:Label ID="lblComplex" runat="server"></asp:Label>
             </ItemTemplate>
         </asp:TemplateField>
-        <asp:TemplateField HeaderText="Constant-speed prop">
+        <asp:TemplateField HeaderText="Controllable pitch prop">
             <ItemTemplate>
                 <asp:Label ID="lblCSP" runat="server"></asp:Label>
             </ItemTemplate>

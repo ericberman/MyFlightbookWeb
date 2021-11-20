@@ -140,7 +140,7 @@
     <value>Complex</value>
   </data>
   <data name="IsConstantProp" xml:space="preserve">
-    <value>Constant Speed Prop</value>
+    <value>Controllable Pitch Prop</value>
   </data>
   <data name="IsHighPerf" xml:space="preserve">
     <value>High Performance</value>
