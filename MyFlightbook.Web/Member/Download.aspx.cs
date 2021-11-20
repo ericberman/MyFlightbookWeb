@@ -1,12 +1,7 @@
 ﻿using MyFlightbook.CloudStorage;
-using MyFlightbook.SponsoredAds;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.IO.Compression;
-using System.Net.Http;
-using System.Text.RegularExpressions;
 using System.Web.UI;
 
 /******************************************************
@@ -69,114 +64,6 @@ namespace MyFlightbook.MemberPages
             }
             Response.End();
         }
-
-        private void WriteInsuranceZip(Action<String, Stream> dispatch)
-        {
-            if (dispatch == null)
-                throw new ArgumentNullException(nameof(dispatch));
-
-            Profile pf = Profile.GetUser(Page.User.Identity.Name);
-            mfbDownload1.User = pf.UserName;
-            mfbDownload1.UpdateData();
-
-            string szFile = Regex.Replace(Branding.ReBrand(String.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}", Branding.CurrentBrand.AppName, pf.UserFullName, Resources.LocalizedText.InsuranceBackupName)).Replace(" ", "-"), "[^0-9a-zA-Z-]", string.Empty);
-            using (FileStream fs = new FileStream(Path.GetTempFileName(), FileMode.Open, FileAccess.ReadWrite, FileShare.None, Int16.MaxValue, FileOptions.DeleteOnClose))
-            {
-                LogbookBackup lb = new LogbookBackup(pf) { IncludeImages = false };
-                lb.WriteZipOfImagesToStream(fs, Branding.CurrentBrand, (zip) =>
-                {
-                // Add the flights
-                ZipArchiveEntry zae = zip.CreateEntry(CSVFileName);
-                    using (Stream s = zae.Open())
-                    {
-                        mfbDownload1.ToStream(s);
-                    }
-
-                // And add the user's information, in JSON format.
-                zae = zip.CreateEntry("PilotInfo.JSON");
-                    using (Stream s = zae.Open())
-                    {
-                        using (StreamWriter sw = new StreamWriter(s))
-                        {
-                            sw.Write(LogbookBackup.PilotInfoAsJSon(pf));
-                        }
-                    }
-                });
-                dispatch(szFile, fs);
-            }
-        }
-
-        protected void lnkDownloadInsurance_Click(object sender, EventArgs e)
-        {
-            Response.Clear();
-            Response.ContentType = "application/octet-stream";
-
-            WriteInsuranceZip((szFile, fs) =>
-            {
-                Response.AddHeader("Content-Disposition", String.Format(CultureInfo.InvariantCulture, "attachment;filename={0}.zip", szFile));
-                fs.Seek(0, SeekOrigin.Begin);
-                fs.CopyTo(Response.OutputStream);
-            });
-            Response.End();
-        }
-
-
-        protected void lnkPostInsurance_Click(object sender, EventArgs e)
-        {
-            const string szSkywatchEndpoint = "https://user.skywatch.ai/aviation/analyze_logs";
-
-            WriteInsuranceZip((szFile, fs) =>
-            {
-                List<IDisposable> objectsToDispose = new List<IDisposable>();
-
-                try
-                {
-                    using (HttpClient client = new HttpClient())
-                    {
-                        using (MultipartFormDataContent formData = new MultipartFormDataContent())
-                        {
-                            fs.Seek(0, SeekOrigin.Begin);
-                            StreamContent strc = new StreamContent(fs);
-                            objectsToDispose.Add(strc);
-                            formData.Add(strc, "Files", szFile + ".zip");
-
-                            StringContent sc = new StringContent(Profile.GetUser(Page.User.Identity.Name).Email);
-                            objectsToDispose.Add(sc);
-                            formData.Add(sc, "Email");
-
-                            StringContent sc2 = new StringContent("(Multiple)");
-                            objectsToDispose.Add(sc2);
-                            formData.Add(sc2, "AircraftModel");
-
-                            StringContent sc3 = new StringContent("(Unspecified)");
-                            objectsToDispose.Add(sc3);
-                            formData.Add(sc3, "NNumber");
-
-                            using (HttpResponseMessage response = client.PostAsync(new Uri(szSkywatchEndpoint), formData).Result)
-                            {
-                                response.EnsureSuccessStatusCode();
-                            }
-
-                        // If we're here, we were successful.
-                        lblInsErr.Text = Resources.LocalizedText.InsurancePostSuccessful;
-                            lblInsErr.CssClass = "success";
-
-                            SponsoredAd.GetAd(4)?.AddClick();  // Skywatch is 4.  We're treating POST as a click, and click-through as an impression.
-                    }
-                    }
-                }
-                catch (HttpRequestException ex)
-                {
-                    lblInsErr.Text = String.Format(CultureInfo.CurrentCulture, "{0}: {1}", Resources.LocalizedText.InsurancePostFailed, ex.Message);
-                }
-                finally
-                {
-                    foreach (IDisposable disposable in objectsToDispose)
-                        disposable.Dispose();
-                }
-            });
-        }
-
 
         protected void ShowDropboxError(string message)
         {
