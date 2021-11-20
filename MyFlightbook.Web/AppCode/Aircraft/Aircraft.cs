@@ -1487,13 +1487,16 @@ WHERE
             string szMakeMatch = mmMatch.DisplayName + mmMatch.ICAODisplay;
             string szMakeThis = mmThis.DisplayName + mmThis.ICAODisplay;
 
+            string szRegLink = Aircraft.LinkForTailnumberRegistry(acMatch.TailNumber);
+            string szReg = String.IsNullOrWhiteSpace(szRegLink) ? string.Empty : "\r\n" + String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.RegistrationLinkForAircraft, szRegLink) + "\r\n";
+
             // Admin events can merge duplicate models, so detect that
             if (String.Compare(szMakeMatch, szMakeThis, StringComparison.CurrentCultureIgnoreCase) == 0)
                 return;
 
             util.NotifyAdminEvent(szSubject, String.Format(CultureInfo.CurrentCulture, "User: {0}\r\n\r\n{1}\r\n\r\nMessage that was sent to other users:\r\n\r\n{2}", Profile.GetUser(szUser).DetailedName,
                 String.Format(CultureInfo.InvariantCulture,"http://{0}{1}?id={2}&a=1", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/Member/EditAircraft.aspx"), AircraftID),
-                String.Format(CultureInfo.CurrentCulture,szNotificationTemplate, "(username)", this.TailNumber, szMakeMatch, szMakeThis)), ProfileRoles.maskCanManageData);
+                String.Format(CultureInfo.CurrentCulture,szNotificationTemplate, "(username)", this.TailNumber, szMakeMatch, szMakeThis, szReg)), ProfileRoles.maskCanManageData);
 
             // If we're here, then there are other users - need to notify all of them of the change.
             if (!String.IsNullOrEmpty(szUser))
@@ -1505,7 +1508,7 @@ WHERE
                         continue;
 
                     Profile pf = Profile.GetUser(szName);
-                    util.NotifyUser(szSubject, String.Format(CultureInfo.CurrentCulture,szNotificationTemplate, pf.UserFullName, this.TailNumber, szMakeMatch, szMakeThis), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, false);
+                    util.NotifyUser(szSubject, String.Format(CultureInfo.CurrentCulture,szNotificationTemplate, pf.UserFullName, this.TailNumber, szMakeMatch, szMakeThis, szReg), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, false);
                 }
             }
         }

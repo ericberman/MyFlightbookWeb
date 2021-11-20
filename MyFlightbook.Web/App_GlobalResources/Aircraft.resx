@@ -677,4 +677,8 @@
   <data name="errNotEditingMostRecentVersionWebServiceUpgrade" xml:space="preserve">
     <value>Please upgrade to the latest version of this app in order to make edits to aircraft.</value>
   </data>
+  <data name="RegistrationLinkForAircraft" xml:space="preserve">
+    <value>You may be able to find more information about this aircraft at {0}.</value>
+    <comment>{0} is a hyperlink to a website such as the FAA</comment>
+  </data>
 </root>
