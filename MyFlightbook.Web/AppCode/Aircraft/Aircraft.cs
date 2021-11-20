@@ -2308,12 +2308,12 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
             dbh.DoNonQuery((comm) => { comm.Parameters.AddWithValue("idaircraft", idAircraft); });
         }
 
-        public static string HighWaterMarkHobbsForUserInAircraft(int idAircraft, string szUser)
+        public static decimal HighWaterMarkHobbsForUserInAircraft(int idAircraft, string szUser)
         {
             if (szUser == null)
                 throw new ArgumentNullException(nameof(szUser));
             if (idAircraft <= 0)
-                return string.Empty;
+                return 0.0M;
 
             decimal val = 0.0M;
             DBHelper dbh = new DBHelper(@"SELECT  MAX(f.hobbsEnd) AS highWater FROM (SELECT hobbsEnd FROM flights WHERE username = ?user AND idaircraft = ?id ORDER BY flights.date DESC LIMIT 10) f");
@@ -2326,15 +2326,15 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
             {
                 val = Convert.ToDecimal(util.ReadNullableField(dr, "highWater", 0.0), CultureInfo.InvariantCulture);
             });
-            return val.ToString("0.0#", CultureInfo.CurrentCulture);
+            return val;
         }
 
-        public static string HighWaterMarkTachForUserInAircraft(int idAircraft, string szUser)
+        public static decimal HighWaterMarkTachForUserInAircraft(int idAircraft, string szUser)
         {
             if (szUser == null)
                 throw new ArgumentNullException(nameof(szUser));
             if (idAircraft <= 0)
-                return string.Empty;
+                return 0.0M;
 
             decimal val = 0.0M;
             DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, @"SELECT MAX(tach.decvalue) AS highWater FROM
@@ -2349,7 +2349,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int)CustomPropertyType.KnownProperties.ID
             {
                 val = Convert.ToDecimal(util.ReadNullableField(dr, "highWater", 0.0), CultureInfo.InvariantCulture);
             });
-            return val.ToString("0.0#", CultureInfo.CurrentCulture);
+            return val;
 
         }
     }

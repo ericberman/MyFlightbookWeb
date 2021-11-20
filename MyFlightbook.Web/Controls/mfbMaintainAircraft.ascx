@@ -1,5 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbMaintainAircraft.ascx.cs" 
-    Inherits="Controls_mfbMaintainAircraft" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbMaintainAircraft.ascx.cs" Inherits="MyFlightbook.AircraftControls.mfbMaintainAircraft" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register Src="mfbDecimalEdit.ascx" TagName="mfbDecimalEdit" TagPrefix="uc3" %>
 <%@ Register Src="mfbTypeInDate.ascx" TagName="mfbTypeInDate" TagPrefix="uc4" %>
@@ -8,6 +7,27 @@
 <%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc1" TagName="mfbTooltip" %>
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $.ajax
+
+
+                var params = new Object();
+                params.idAircraft = <% =AircraftID %>;
+                var d = JSON.stringify(params);
+                $.ajax(
+                    {
+                        url: '<% =ResolveUrl("~/Member/EditAircraft.aspx/GetHighWaterMarks") %>',
+                        type: "POST", data: d, dataType: "json", contentType: "application/json",
+                        error: function (xhr, status, error) {
+                            window.alert(xhr.responseJSON.Message);
+                        },
+                        complete: function (response) { },
+                        success: function (response) { $(<% =pnlHighWater.ClientID %>)[0].innerText = response.d; }
+                    });
+            });
+        </script>
+        <asp:Panel ID="pnlHighWater" runat="server" />
         <table>
             <tr class="header">
                 <td>

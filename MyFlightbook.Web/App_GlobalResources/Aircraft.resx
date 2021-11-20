@@ -687,4 +687,13 @@
   <data name="EditPopularAircraftPrompt" xml:space="preserve">
     <value>Before changing the model of the aircraft, please make sure that you have read the "Learn More" notes.  The site administrators will review any changes you make.</value>
   </data>
+  <data name="HighWaterMarkHobbsOnly" xml:space="preserve">
+    <value>The highest hobbs value you've recorded is {0:0.0#}</value>
+  </data>
+  <data name="HighWaterMarkTachAndHobbs" xml:space="preserve">
+    <value>The highest tach and hobbs values you've recorded are {0:0.0#} and {1:0.0#}, respectively</value>
+  </data>
+  <data name="HighWaterMarkTachOnly" xml:space="preserve">
+    <value>The highest tach value you've recorded is {0:0.0#}</value>
+  </data>
 </root>

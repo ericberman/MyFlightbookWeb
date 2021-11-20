@@ -985,6 +985,33 @@ namespace Resources {
         }
         
         /// <summary>
+        ///    Looks up a localized string similar to The highest hobbs value you&apos;ve recorded is {0:0.0#}.
+        /// </summary>
+        internal static string HighWaterMarkHobbsOnly {
+            get {
+                return ResourceManager.GetString("HighWaterMarkHobbsOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to The highest tach and hobbs values you&apos;ve recorded are {0:0.0#} and {1:0.0#}, respectively.
+        /// </summary>
+        internal static string HighWaterMarkTachAndHobbs {
+            get {
+                return ResourceManager.GetString("HighWaterMarkTachAndHobbs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to The highest tach value you&apos;ve recorded is {0:0.0#}.
+        /// </summary>
+        internal static string HighWaterMarkTachOnly {
+            get {
+                return ResourceManager.GetString("HighWaterMarkTachOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///    Looks up a localized string similar to Create aircraft.
         /// </summary>
         internal static string ImportAddNewAircraft {

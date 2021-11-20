@@ -795,7 +795,7 @@ namespace MyFlightbook.AircraftControls
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_mfbMaintainAircraft mfbMaintainAircraft;
+        protected global::MyFlightbook.AircraftControls.mfbMaintainAircraft mfbMaintainAircraft;
 
         /// <summary>
         /// hdnAcRev control.
