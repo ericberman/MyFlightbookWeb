@@ -1123,6 +1123,9 @@
     <Compile Include="AppCode\oAuthServices\SocialMedia.cs" />
     <Compile Include="AppCode\OAuthWebService.cs" />
     <Compile Include="AppCode\Places\Airbly.cs" />
+    <Compile Include="AppCode\Places\AirportImport.cs" />
+    <Compile Include="AppCode\Places\AirportList.cs" />
+    <Compile Include="AppCode\Places\AirportQuiz.cs" />
     <Compile Include="AppCode\Places\Airports.cs" />
     <Compile Include="AppCode\Places\CSV.cs" />
     <Compile Include="AppCode\Places\FlightData.cs" />
@@ -1131,8 +1134,11 @@
     <Compile Include="AppCode\Places\IGC.cs" />
     <Compile Include="AppCode\Places\KML.cs" />
     <Compile Include="AppCode\Places\Mapping.cs" />
+    <Compile Include="AppCode\Places\NavaidTypes.cs" />
     <Compile Include="AppCode\Places\NMEA.cs" />
     <Compile Include="AppCode\Places\Solar.cs" />
+    <Compile Include="AppCode\Places\TravelingSalesman.cs" />
+    <Compile Include="AppCode\Places\VisitedAirport.cs" />
     <Compile Include="AppCode\Places\Weather\ADDS.cs" />
     <Compile Include="AppCode\Places\Weather\ADDS_METAR.cs" />
     <Compile Include="AppCode\UserAccounts\BasicMed.cs" />
