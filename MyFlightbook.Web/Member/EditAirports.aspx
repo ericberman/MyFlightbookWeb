@@ -167,75 +167,153 @@
                 ID="ckShowAllUserAirports" runat="server" 
                 Text="Continue to show all user airports (off for performance)" />
         </p>
-        <table>
-            <tr>
-                <td>
-                    <asp:FileUpload ID="fileUploadAirportList" runat="server" />
-                    <asp:Button ValidationGroup="importAirports" ID="btnImport" runat="server" Text="Import" OnClick="btnImport_Click" />
-                    <asp:Button ValidationGroup="importAirports" ID="btnBulkImport" runat="server" Text="Bulk Import (no interactive)" OnClick="btnBulkImport_Click" />
-                    <uc2:mfbTooltip ID="mfbTooltip2" runat="server" BodyContent="MUST be: FAA/IATA/ICAO for airportID, Name, Type, SourceUserName, Latitude, Longitude, Preferred.  SourceUserName and Preferred are optional.  OR OldCode/CurrentCode (bulk only) to backfill old codes.  Country and Admin1 are optional." />
-                    <cc1:ConfirmButtonExtender runat="server" ID="confirmBulkImport" TargetControlID="btnBulkImport" ConfirmText="THIS WILL BULK IMPORT WITH NO UNDO!" />
-                    <asp:Label ID="lblBulkImportResults" runat="server" Text="" EnableViewState="false"></asp:Label>
-                </td>
-                <td>
-                    <asp:UpdateProgress ID="UpdateProgress1" AssociatedUpdatePanelID="updAddAirports" runat="server">            
-                        <ProgressTemplate>
-                            <asp:Image ID="imgProgress" ImageUrl="~/images/ajax-loader.gif" runat="server" />
-                        </ProgressTemplate>
-                    </asp:UpdateProgress>
-                </td>
-            </tr>
-        </table>
+        <div>
+            <asp:FileUpload ID="fileUploadAirportList" runat="server" />
+            <asp:Button ValidationGroup="importAirports" ID="btnImport" runat="server" Text="Import" OnClick="btnImport_Click" />
+            <asp:Button ValidationGroup="importAirports" ID="btnBulkImport" runat="server" Text="Bulk Import (no interactive)" OnClick="btnBulkImport_Click" />
+            <uc2:mfbTooltip ID="mfbTooltip2" runat="server" BodyContent="MUST be: FAA/IATA/ICAO for airportID, Name, Type, SourceUserName, Latitude, Longitude, Preferred.  SourceUserName and Preferred are optional.  OR OldCode/CurrentCode (bulk only) to backfill old codes.  Country and Admin1 are optional." />
+            <cc1:ConfirmButtonExtender runat="server" ID="confirmBulkImport" TargetControlID="btnBulkImport" ConfirmText="THIS WILL BULK IMPORT WITH NO UNDO!" />
+            <asp:Label ID="lblBulkImportResults" runat="server" Text="" EnableViewState="false"></asp:Label>
+        </div>
         <p><asp:Label ID="lblUploadErr" runat="server" Text="" EnableViewState="false" CssClass="error"></asp:Label></p>
         <asp:Panel ID="pnlImportResults" runat="server" ScrollBars="Auto" Height="400px" Width="100%" Visible="false">
-            <asp:UpdatePanel runat="server" ID="updAddAirports">
-                <ContentTemplate>
-                    <asp:GridView ID="gvImportResults" runat="server" AutoGenerateColumns="false" OnRowDataBound="gvImportResults_RowDataBound" OnRowCommand="gvImportResults_RowCommand">
-                        <Columns>
-                            <asp:TemplateField HeaderText="To Import">
-                                <ItemTemplate>
-                                    <asp:Label ID="lblProposed" runat="server" Text=""></asp:Label>
-                                    <asp:PlaceHolder ID="plcAirportProposed" runat="server"></asp:PlaceHolder>
-                                    <div>
-                                        <asp:Button ID="btnAddFAA" runat="server" Text="Add FAA" CommandArgument="FAA" CommandName="AddAirport" />
-                                        <asp:Button ID="btnAddIATA" runat="server" Text="Add IATA" CommandArgument="IATA" CommandName="AddAirport"  />
-                                        <asp:Button ID="btnAddICAO" runat="server" Text="Add ICAO" CommandArgument="ICAO" CommandName="AddAirport" />
-                                    </div>
-                                    <asp:CheckBox ID="ckUseMap" Text="Use map location" runat="server" />
-                                </ItemTemplate>
-                                <ItemStyle Height="90px" />
-                            </asp:TemplateField>
-                            <asp:TemplateField HeaderText="FAA">
-                                <ItemTemplate>
-                                    <asp:PlaceHolder ID="plcFAAMatch" runat="server"></asp:PlaceHolder>
-                                    <asp:Button ID="btnFixLocationFAA" runat="server" Text="Update location" CommandArgument="FAA" CommandName="FixLocation" />
-                                    <asp:Button ID="btnFixTypeFAA" runat="server" Text="Update Type" CommandArgument="FAA" CommandName="FixType" />
-                                    <asp:Button ID="btnOverwriteFAA" runat="server" Text="Overwrite" CommandArgument="FAA" CommandName="Overwrite" />
-                                </ItemTemplate>
-                            </asp:TemplateField>
-                            <asp:TemplateField HeaderText="ICAO">
-                                <ItemTemplate>
-                                    <asp:PlaceHolder ID="plcICAOMatch" runat="server"></asp:PlaceHolder>
-                                    <asp:Button ID="btnFixLocationICAO" runat="server" Text="Update location" CommandArgument="ICAO" CommandName="FixLocation" />
-                                    <asp:Button ID="btnFixTypeICAO" runat="server" Text="Update Type" CommandArgument="ICAO" CommandName="FixType" />
-                                    <asp:Button ID="btnOverwriteICAO" runat="server" Text="Overwrite" CommandArgument="ICAO" CommandName="Overwrite" />
-                                </ItemTemplate>
-                            </asp:TemplateField>
-                            <asp:TemplateField HeaderText="IATA">
-                                <ItemTemplate>
-                                    <asp:PlaceHolder ID="plcIATAMatch" runat="server"></asp:PlaceHolder>
-                                    <asp:Button ID="btnFixLocationIATA" runat="server" Text="Update location" CommandArgument="IATA" CommandName="FixLocation" />
-                                    <asp:Button ID="btnFixTypeIATA" runat="server" Text="Update Type" CommandArgument="IATA" CommandName="FixType" />
-                                    <asp:Button ID="btnOverwriteIATA" runat="server" Text="Overwrite" CommandArgument="IATA" CommandName="Overwrite" />
-                                </ItemTemplate>
-                            </asp:TemplateField>
-                        </Columns>
-                        <EmptyDataTemplate>
-                            <p>No candidates yet.</p>
-                        </EmptyDataTemplate>
-                    </asp:GridView>
-                </ContentTemplate>
-            </asp:UpdatePanel>
+            <style>
+                div.notOK {
+                    background-color: lightgray;
+                }
+
+                tr.Handled, tr.Handled div.notOK {
+                    background-color: lightgreen;
+                }
+            </style>
+            <script type="text/javascript">
+                function doImport(sender, aic, context, source, command) {
+
+                    // See if the "use map" checkbox is checked
+                    // If so, update to those locations.
+                    if ($("#" + context["useMapCheckID"])[0].checked) {
+                        aic.LatLong.Latitude = parseFloat($("#" + context["lat"])[0].value);
+                        aic.LatLong.Longitude = parseFloat($("#" + context["lon"])[0].value);
+                    }
+
+                    var params = new Object();
+                    params.aic = aic;
+                    params.source = source;
+                    params.szCommand = command;
+                    var d = JSON.stringify(params);
+
+                    $.ajax(
+                        {
+                            url: '<% =ResolveUrl("~/Admin/AdminAirportGeocoder.aspx/AirportImportCommand") %>',
+                            type: "POST", data: d, dataType: "json", contentType: "application/json",
+                            error: function (xhr, status, error) {
+                                window.alert(xhr.responseJSON.Message);
+                            },
+                            complete: function (response) { },
+                            success: function (response) {
+                                // Sender should be a button within a div within a td within a tr.
+                                sender.parentElement.parentElement.parentElement.className = 'Handled';
+                            }
+                        });
+                    return false;
+                }
+
+                function addFAA(sender, aic, context) {
+                    return doImport(sender, aic, context, "FAA", "AddAirport");
+                }
+
+                function addIATA(sender, aic, context) {
+                    return doImport(sender, aic, context, "IATA", "AddAirport");
+                }
+                function addICAO(sender, aic, context) {
+                    return doImport(sender, aic, context, "ICAO", "AddAirport");
+                }
+
+                function useFAALoc(sender, aic, context) {
+                    return doImport(sender, aic, context, "FAA", "FixLocation");
+                }
+                function useFAAType(sender, aic, context) {
+                    return doImport(sender, aic, context, "FAA", "FixType");
+                }
+                function useFAAData(sender, aic, context) {
+                    return doImport(sender, aic, context, "FAA", "Overwrite");
+                }
+
+                function useICAOLoc(sender, aic, context) {
+                    return doImport(sender, aic, context, "ICAO", "FixLocation");
+                }
+
+                function useICAOType(sender, aic, context) {
+                    return doImport(sender, aic, context, "ICAO", "FixType");
+                }
+
+                function useICAOData(sender, aic, context) {
+                    return doImport(sender, aic, context, "ICAO", "Overwrite");
+                }
+
+                function useIATALoc(sender, aic, context) {
+                    return doImport(sender, aic, context, "IATA", "FixLocation");
+                }
+
+                function useIATAType(sender, aic, context) {
+                    return doImport(sender, aic, context, "IATA", "FixType");
+                }
+
+                function useIATAData(sender, aic, context) {
+                    return doImport(sender, aic, context, "IATA", "Overwrite");
+                }
+            </script>
+            <asp:GridView ID="gvImportResults" runat="server" AutoGenerateColumns="false" OnRowDataBound="gvImportResults_RowDataBound">
+                <Columns>
+                    <asp:TemplateField HeaderText="To Import">
+                        <ItemTemplate>
+                            <asp:Literal ID="litRowContext" runat="server" />
+                            <asp:Label ID="lblProposed" runat="server" Text=""></asp:Label>
+                            <asp:PlaceHolder ID="plcAirportProposed" runat="server"></asp:PlaceHolder>
+                            <div>
+                                <asp:Button ID="btnAddFAA" runat="server" Text="Add FAA" OnClientClick='<%# AjaxCallForIndex(Container.DataItemIndex, "addFAA") %>' />
+                                <asp:Button ID="btnAddIATA" runat="server" Text="Add IATA" OnClientClick='<%# AjaxCallForIndex(Container.DataItemIndex, "addIATA") %>' />
+                                <asp:Button ID="btnAddICAO" runat="server" Text="Add ICAO" OnClientClick='<%# AjaxCallForIndex(Container.DataItemIndex, "addICAO") %>' />
+                            </div>
+                            <asp:CheckBox ID="ckUseMap" Text="Use map location" runat="server" />
+                        </ItemTemplate>
+                        <ItemStyle Height="90px" />
+                    </asp:TemplateField>
+                    <asp:TemplateField HeaderText="FAA">
+                        <ItemTemplate>
+                            <asp:PlaceHolder ID="plcFAAMatch" runat="server"></asp:PlaceHolder>
+                            <div>
+                                <asp:Button ID="btnFixLocationFAA" runat="server" Text="Update location" OnClientClick='<%# AjaxCallForIndex(Container.DataItemIndex, "useFAALoc") %>' />
+                                <asp:Button ID="btnFixTypeFAA" runat="server" Text="Update Type" OnClientClick='<%# AjaxCallForIndex(Container.DataItemIndex, "useFAAType") %>' />
+                                <asp:Button ID="btnOverwriteFAA" runat="server" Text="Overwrite" OnClientClick='<%# AjaxCallForIndex(Container.DataItemIndex, "useFAAData") %>' />
+                            </div>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:TemplateField HeaderText="ICAO">
+                        <ItemTemplate>
+                            <asp:PlaceHolder ID="plcICAOMatch" runat="server"></asp:PlaceHolder>
+                            <div>
+                                <asp:Button ID="btnFixLocationICAO" runat="server" Text="Update location" OnClientClick='<%# AjaxCallForIndex(Container.DataItemIndex, "useICAOLoc") %>' />
+                                <asp:Button ID="btnFixTypeICAO" runat="server" Text="Update Type" OnClientClick='<%# AjaxCallForIndex(Container.DataItemIndex, "useICAOType") %>' />
+                                <asp:Button ID="btnOverwriteICAO" runat="server" Text="Overwrite" OnClientClick='<%# AjaxCallForIndex(Container.DataItemIndex, "useICAOData") %>' />
+                            </div>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:TemplateField HeaderText="IATA">
+                        <ItemTemplate>
+                            <asp:PlaceHolder ID="plcIATAMatch" runat="server"></asp:PlaceHolder>
+                            <div>
+                                <asp:Button ID="btnFixLocationIATA" runat="server" Text="Update location" OnClientClick='<%# AjaxCallForIndex(Container.DataItemIndex, "useIATALoc") %>' />
+                                <asp:Button ID="btnFixTypeIATA" runat="server" Text="Update Type" OnClientClick='<%# AjaxCallForIndex(Container.DataItemIndex, "useIATAType") %>' />
+                                <asp:Button ID="btnOverwriteIATA" runat="server" Text="Overwrite" OnClientClick='<%# AjaxCallForIndex(Container.DataItemIndex, "useIATAData") %>' />
+                            </div>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                </Columns>
+                <EmptyDataTemplate>
+                    <p>No candidates yet.</p>
+                </EmptyDataTemplate>
+            </asp:GridView>
         </asp:Panel>
         <script>
             function deleteDupeUserAirport(user, codeDelete, codeMap, type, sender) {
@@ -247,7 +325,7 @@
                 var d = JSON.stringify(params);
                 $.ajax(
                     {
-                        url: '<% =ResolveUrl("~/Member/EditAirports.aspx/DeleteDupeUserAirport") %>',
+                        url: '<% =ResolveUrl("~/Admin/AdminAirportGeocoder.aspx/DeleteDupeUserAirport") %>',
                         type: "POST", data: d, dataType: "json", contentType: "application/json",
                         error: function (xhr, status, error) {
                             window.alert(xhr.responseJSON.Message);
@@ -264,7 +342,7 @@
                 var d = JSON.stringify(params);
                 $.ajax(
                     {
-                        url: '<% =ResolveUrl("~/Member/EditAirports.aspx/SetPreferred") %>',
+                        url: '<% =ResolveUrl("~/Admin/AdminAirportGeocoder.aspx/SetPreferred") %>',
                         type: "POST", data: d, dataType: "json", contentType: "application/json",
                         error: function (xhr, status, error) {
                             window.alert(xhr.responseJSON.Message);
@@ -280,7 +358,7 @@
                 var d = JSON.stringify(params);
                 $.ajax(
                     {
-                        url: '<% =ResolveUrl("~/Member/EditAirports.aspx/MakeNative") %>',
+                        url: '<% =ResolveUrl("~/Admin/AdminAirportGeocoder.aspx/MakeNative") %>',
                         type: "POST", data: d, dataType: "json", contentType: "application/json",
                         error: function (xhr, status, error) {
                             window.alert(xhr.responseJSON.Message);
@@ -297,7 +375,7 @@
                 var d = JSON.stringify(params);
                 $.ajax(
                     {
-                        url: '<% =ResolveUrl("~/Member/EditAirports.aspx/MergeWith") %>',
+                        url: '<% =ResolveUrl("~/Admin/AdminAirportGeocoder.aspx/MergeWith") %>',
                         type: "POST", data: d, dataType: "json", contentType: "application/json",
                         error: function (xhr, status, error) {
                             window.alert(xhr.responseJSON.Message);

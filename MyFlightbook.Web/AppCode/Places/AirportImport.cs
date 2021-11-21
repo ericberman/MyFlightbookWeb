@@ -1,11 +1,14 @@
 ﻿using JouniHeikniemi.Tools.Text;
 using MyFlightbook.Geography;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web.UI;
+using System.Web.UI.WebControls;
 
 /******************************************************
  * 
@@ -17,6 +20,9 @@ using System.Text.RegularExpressions;
 
 namespace MyFlightbook.Airports
 {
+    public enum AirportImportSource { FAA, ICAO, IATA }
+    public enum AirportImportRowCommand { FixLocation, FixType, AddAirport, Overwrite };
+
     internal class ImportAirportContext
     {
         public int iColFAA { get; set; } = -1;
@@ -282,6 +288,42 @@ namespace MyFlightbook.Airports
 
                 return lst;
             }
+        }
+
+        public static void PopulateAirport(Control plc, airport ap, MatchStatus ms, airport aicBase)
+        {
+            if (ap == null)
+                return;
+
+            if (plc == null)
+                throw new ArgumentNullException(nameof(plc));
+
+            Panel p = new Panel();
+            plc.Controls.Add(p);
+            Label lbl = new Label();
+            p.Controls.Add(lbl);
+            lbl.Text = ap.ToString();
+            p.Controls.Add(new LiteralControl("<br />"));
+            if (!StatusIsOK(ms))
+            {
+                p.CssClass = "notOK";
+                Label lblStatus = new Label();
+                p.Controls.Add(lblStatus);
+                lblStatus.Text = String.Format(CultureInfo.CurrentCulture, Resources.Admin.ImportAirportStatusTemplate, ms.ToString());
+                lblStatus.ForeColor = System.Drawing.Color.Red;
+                if (aicBase != null && ap.LatLong != null && aicBase.LatLong != null)
+                {
+                    Label lblDist = new Label();
+                    p.Controls.Add(lblDist);
+                    lblDist.Text = String.Format(CultureInfo.CurrentCulture, Resources.Admin.ImportAirportDistanceTemplate, aicBase.DistanceFromAirport(ap));
+                }
+            }
+            HyperLink h = new HyperLink();
+            p.Controls.Add(h);
+            h.Text = ap.LatLong.ToDegMinSecString();
+            h.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:updateForAirport({0});", JsonConvert.SerializeObject(ap, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore }));
+            if (!String.IsNullOrEmpty(ap.UserName))
+                p.Controls.Add(new LiteralControl(String.Format(CultureInfo.InvariantCulture, "{0}<br />", ap.UserName)));
         }
     }
 }

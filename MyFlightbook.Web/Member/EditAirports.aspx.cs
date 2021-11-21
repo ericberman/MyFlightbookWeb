@@ -6,9 +6,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Web;
-using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -21,47 +19,9 @@ using System.Web.UI.WebControls;
 
 namespace MyFlightbook.Mapping
 {
-    public partial class EditAirportBase : Page
+    public partial class EditAirports : Page
     {
         #region Admin/Import utilities
-        protected enum AirportImportRowCommand { FixLocation, FixType, AddAirport, Overwrite };
-
-        protected static void PopulateAirport(Control plc, airport ap, airportImportCandidate.MatchStatus ms, airport aicBase)
-        {
-            if (ap == null)
-                return;
-
-            if (plc == null)
-                throw new ArgumentNullException(nameof(plc));
-
-            Panel p = new Panel();
-            plc.Controls.Add(p);
-            Label lbl = new Label();
-            p.Controls.Add(lbl);
-            lbl.Text = ap.ToString();
-            p.Controls.Add(new LiteralControl("<br />"));
-            if (!airportImportCandidate.StatusIsOK(ms))
-            {
-                p.BackColor = System.Drawing.Color.LightGray;
-                Label lblStatus = new Label();
-                p.Controls.Add(lblStatus);
-                lblStatus.Text = String.Format(CultureInfo.CurrentCulture, Resources.Admin.ImportAirportStatusTemplate, ms.ToString());
-                lblStatus.ForeColor = System.Drawing.Color.Red;
-                if (aicBase != null && ap.LatLong != null && aicBase.LatLong != null)
-                {
-                    Label lblDist = new Label();
-                    p.Controls.Add(lblDist);
-                    lblDist.Text = String.Format(CultureInfo.CurrentCulture, Resources.Admin.ImportAirportDistanceTemplate, aicBase.DistanceFromAirport(ap));
-                }
-            }
-            HyperLink h = new HyperLink();
-            p.Controls.Add(h);
-            h.Text = ap.LatLong.ToDegMinSecString();
-            h.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:updateForAirport({0});", JsonConvert.SerializeObject(ap, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore }));
-            if (!String.IsNullOrEmpty(ap.UserName))
-                p.Controls.Add(new LiteralControl(String.Format(CultureInfo.InvariantCulture, "{0}<br />", ap.UserName)));
-        }
-
         private const double maxDistanceToFix = 50.0;
 
         private static void SetUpAddButtons(Control row, airportImportCandidate aic, bool fAllowBlast)
@@ -71,9 +31,9 @@ namespace MyFlightbook.Mapping
             if (aic == null)
                 throw new ArgumentNullException(nameof(aic));
 
-            ((Button)row.FindControl("btnAddFAA")).Visible = !String.IsNullOrEmpty(aic.FAA) && (fAllowBlast || aic.FAAMatch == null);
-            ((Button)row.FindControl("btnAddIATA")).Visible = !String.IsNullOrEmpty(aic.IATA) && (fAllowBlast || aic.IATAMatch == null);
-            ((Button)row.FindControl("btnAddICAO")).Visible = !String.IsNullOrEmpty(aic.ICAO) && (fAllowBlast || aic.ICAOMatch == null);
+            row.FindControl("btnAddFAA").Visible = !String.IsNullOrEmpty(aic.FAA) && (fAllowBlast || aic.FAAMatch == null);
+            row.FindControl("btnAddIATA").Visible = !String.IsNullOrEmpty(aic.IATA) && (fAllowBlast || aic.IATAMatch == null);
+            row.FindControl("btnAddICAO").Visible = !String.IsNullOrEmpty(aic.ICAO) && (fAllowBlast || aic.ICAOMatch == null);
         }
 
         private static void SetUpLocationButtons(Control row, airportImportCandidate aic)
@@ -84,9 +44,9 @@ namespace MyFlightbook.Mapping
                 throw new ArgumentNullException(nameof(aic));
 
             // don't offer to fix distances over maxDistanceToFix, to avoid accidentally stomping on airports somewhere else in the world.
-            ((Button)row.FindControl("btnFixLocationFAA")).Visible = (aic.FAAMatch != null && aic.MatchStatusFAA == airportImportCandidate.MatchStatus.InDBWrongLocation && aic.DistanceFromAirport(aic.FAAMatch) < maxDistanceToFix);
-            ((Button)row.FindControl("btnFixLocationIATA")).Visible = (aic.IATAMatch != null && aic.MatchStatusIATA == airportImportCandidate.MatchStatus.InDBWrongLocation && aic.DistanceFromAirport(aic.IATAMatch) < maxDistanceToFix);
-            ((Button)row.FindControl("btnFixLocationICAO")).Visible = (aic.ICAOMatch != null && aic.MatchStatusICAO == airportImportCandidate.MatchStatus.InDBWrongLocation && aic.DistanceFromAirport(aic.ICAOMatch) < maxDistanceToFix);
+            row.FindControl("btnFixLocationFAA").Visible = (aic.FAAMatch != null && aic.MatchStatusFAA == airportImportCandidate.MatchStatus.InDBWrongLocation && aic.DistanceFromAirport(aic.FAAMatch) < maxDistanceToFix);
+            row.FindControl("btnFixLocationIATA").Visible = (aic.IATAMatch != null && aic.MatchStatusIATA == airportImportCandidate.MatchStatus.InDBWrongLocation && aic.DistanceFromAirport(aic.IATAMatch) < maxDistanceToFix);
+            row.FindControl("btnFixLocationICAO").Visible = (aic.ICAOMatch != null && aic.MatchStatusICAO == airportImportCandidate.MatchStatus.InDBWrongLocation && aic.DistanceFromAirport(aic.ICAOMatch) < maxDistanceToFix);
         }
 
         private static void SetUpFixButtons(Control row, airportImportCandidate aic)
@@ -97,14 +57,14 @@ namespace MyFlightbook.Mapping
                 throw new ArgumentNullException(nameof(aic));
 
             // And don't offer to fix type if that's not the error
-            ((Button)row.FindControl("btnFixTypeFAA")).Visible = (aic.FAAMatch != null && aic.MatchStatusFAA == airportImportCandidate.MatchStatus.WrongType && aic.DistanceFromAirport(aic.FAAMatch) < maxDistanceToFix);
-            ((Button)row.FindControl("btnFixTypeIATA")).Visible = (aic.IATAMatch != null && aic.MatchStatusIATA == airportImportCandidate.MatchStatus.WrongType && aic.DistanceFromAirport(aic.IATAMatch) < maxDistanceToFix);
-            ((Button)row.FindControl("btnFixTypeICAO")).Visible = (aic.ICAOMatch != null && aic.MatchStatusICAO == airportImportCandidate.MatchStatus.WrongType && aic.DistanceFromAirport(aic.ICAOMatch) < maxDistanceToFix);
+            row.FindControl("btnFixTypeFAA").Visible = (aic.FAAMatch != null && aic.MatchStatusFAA == airportImportCandidate.MatchStatus.WrongType && aic.DistanceFromAirport(aic.FAAMatch) < maxDistanceToFix);
+            row.FindControl("btnFixTypeIATA").Visible = (aic.IATAMatch != null && aic.MatchStatusIATA == airportImportCandidate.MatchStatus.WrongType && aic.DistanceFromAirport(aic.IATAMatch) < maxDistanceToFix);
+            row.FindControl("btnFixTypeICAO").Visible = (aic.ICAOMatch != null && aic.MatchStatusICAO == airportImportCandidate.MatchStatus.WrongType && aic.DistanceFromAirport(aic.ICAOMatch) < maxDistanceToFix);
 
             // And don't offer to fix type if that's not the error
-            ((Button)row.FindControl("btnOverwriteFAA")).Visible = aic.FAAMatch != null && (aic.MatchStatusFAA == airportImportCandidate.MatchStatus.WrongType || aic.DistanceFromAirport(aic.FAAMatch) >= maxDistanceToFix);
-            ((Button)row.FindControl("btnOverwriteIATA")).Visible = aic.IATAMatch != null && (aic.MatchStatusIATA == airportImportCandidate.MatchStatus.WrongType || aic.DistanceFromAirport(aic.IATAMatch) >= maxDistanceToFix);
-            ((Button)row.FindControl("btnOverwriteICAO")).Visible = aic.ICAOMatch != null && (aic.MatchStatusICAO == airportImportCandidate.MatchStatus.WrongType || aic.DistanceFromAirport(aic.ICAOMatch) >= maxDistanceToFix);
+            row.FindControl("btnOverwriteFAA").Visible = aic.FAAMatch != null && (aic.MatchStatusFAA == airportImportCandidate.MatchStatus.WrongType || aic.DistanceFromAirport(aic.FAAMatch) >= maxDistanceToFix);
+            row.FindControl("btnOverwriteIATA").Visible = aic.IATAMatch != null && (aic.MatchStatusIATA == airportImportCandidate.MatchStatus.WrongType || aic.DistanceFromAirport(aic.IATAMatch) >= maxDistanceToFix);
+            row.FindControl("btnOverwriteICAO").Visible = aic.ICAOMatch != null && (aic.MatchStatusICAO == airportImportCandidate.MatchStatus.WrongType || aic.DistanceFromAirport(aic.ICAOMatch) >= maxDistanceToFix);
         }
 
         protected static void SetUpImportButtons(Control row, airportImportCandidate aic, bool fAllowBlast)
@@ -158,82 +118,6 @@ namespace MyFlightbook.Mapping
                 e.Command.CommandTimeout = 600; // give up to 10 minutes - this can be slow.
         }
         #endregion
-    }
-
-    public partial class EditAirports : EditAirportBase
-    {
-        #region Webservices
-        private static void CheckAdmin()
-        {
-            if (HttpContext.Current == null || HttpContext.Current.User == null || HttpContext.Current.User.Identity == null || !HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
-                throw new UnauthorizedAccessException("You must be authenticated to make this call");
-
-            Profile pf = Profile.GetUser(HttpContext.Current.User.Identity.Name);
-            if (!pf.CanManageData)
-                throw new UnauthorizedAccessException("You must be an admin to make this call");
-        }
-
-        /// <summary>
-        /// Deletes a user airport that matches a built-in airport
-        /// </summary>
-        /// <returns>0 if unknown.</returns>
-        [WebMethod(EnableSession = true)]
-        public static void DeleteDupeUserAirport(string idDelete, string idMap, string szUser, string szType)
-        {
-            CheckAdmin();
-            AdminAirport.DeleteUserAirport(idDelete, idMap, szUser, szType);
-        }
-
-        /// <summary>
-        /// Sets the preferred flag for an airport
-        /// </summary>
-        [WebMethod(EnableSession = true)]
-        public static void SetPreferred(string szCode, string szType, bool fPreferred)
-        {
-            CheckAdmin();
-
-            AdminAirport ap = AdminAirport.AirportWithCodeAndType(szCode, szType);
-            if (ap == null)
-                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Airport {0} (type {1}) not found", szCode, szType));
-
-            ap.SetPreferred(fPreferred);
-        }
-
-        /// <summary>
-        /// Makes a user-defined airport native (i.e., eliminates the source username; accepted as a "true" airport)
-        /// </summary>
-        [WebMethod(EnableSession = true)]
-        public static void MakeNative(string szCode, string szType)
-        {
-            CheckAdmin();
-
-            AdminAirport ap = AdminAirport.AirportWithCodeAndType(szCode, szType);
-            if (ap == null)
-                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Airport {0} (type {1}) not found", szCode, szType));
-
-            ap.MakeNative();
-        }
-
-        /// <summary>
-        /// Copies the latitude/longitude from the source airport to the target airport.
-        /// </summary>
-        [WebMethod(EnableSession = true)]
-        public static void MergeWith(string szCodeTarget, string szTypeTarget, string szCodeSource)
-        {
-            CheckAdmin();
-
-            AdminAirport apTarget = AdminAirport.AirportWithCodeAndType(szCodeTarget, szTypeTarget);
-            if (apTarget == null)
-                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Target Airport {0} (type {1}) not found", szCodeTarget, szTypeTarget));
-
-            AdminAirport apSource = AdminAirport.AirportWithCodeAndType(szCodeSource, szTypeTarget);
-            if (apSource == null)
-                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Source Airport {0} (type {1}) not found", szCodeSource, szTypeTarget));
-
-            apTarget.MergeFrom(apSource);
-        }
-        #endregion
-
 
         private IEnumerable<airport> m_rgAirportsForUser;
 
@@ -258,15 +142,7 @@ namespace MyFlightbook.Mapping
             }
 
             if (IsAdmin)
-            {
-                Master.Page.Header.Controls.Add(new LiteralControl(@"<style>
-.sidebarRight
-{
-    width: 1200px;
-}
-</style>"));
                 ScriptManager.GetCurrent(this).AsyncPostBackTimeout = 1500;  // use a long timeout
-            }
 
             util.SetValidationGroup(pnlEdit, "EditAirport");
 
@@ -501,6 +377,23 @@ namespace MyFlightbook.Mapping
             }
         }
 
+        #region per-row variables for import
+        protected string ImportVarNameForIndex(int index)
+        {
+            return String.Format(CultureInfo.InvariantCulture, "aic{0}", index);
+        }
+
+        protected string ContextVarNameForIndex(int index)
+        {
+            return String.Format(CultureInfo.InvariantCulture, "impctxt{0}", index);
+        }
+
+        protected string AjaxCallForIndex(int index, string fName)
+        {
+            return String.Format(CultureInfo.InvariantCulture, "return {0}(this, {1}, {2});", fName, ImportVarNameForIndex(index), ContextVarNameForIndex(index));
+        }
+        #endregion
+
         protected void gvImportResults_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             if (e == null)
@@ -509,7 +402,16 @@ namespace MyFlightbook.Mapping
             {
                 airportImportCandidate aic = (airportImportCandidate)e.Row.DataItem;
 
-                Label lblProposed = ((Label)e.Row.FindControl("lblProposed"));
+                Dictionary<string, string> dContext = new Dictionary<string, string>() {
+                    { "useMapCheckID" , e.Row.FindControl("ckUseMap").ClientID },
+                    { "lat" , txtLat.ClientID },
+                    { "lon", txtLong.ClientID }
+                };
+                
+                Literal litRowContext = (Literal)e.Row.FindControl("litRowContext");
+                litRowContext.Text = String.Format(CultureInfo.InvariantCulture, @"<script type=""text/javascript""> var {0} = {1}; var {2} = {3}; </script>", ImportVarNameForIndex(e.Row.DataItemIndex), JsonConvert.SerializeObject(aic), ContextVarNameForIndex(e.Row.DataItemIndex), JsonConvert.SerializeObject(dContext));
+
+                Label lblProposed = (Label)e.Row.FindControl("lblProposed");
                 StringBuilder sb = new StringBuilder();
                 if (!String.IsNullOrEmpty(aic.FAA))
                     sb.AppendFormat(CultureInfo.InvariantCulture, "FAA: {0}<br />", aic.FAA);
@@ -519,88 +421,16 @@ namespace MyFlightbook.Mapping
                     sb.AppendFormat(CultureInfo.InvariantCulture, "ICAO: {0}<br />", aic.ICAO);
                 lblProposed.Text = sb.ToString();
 
-                PopulateAirport(e.Row.FindControl("plcFAAMatch"), aic.FAAMatch, aic.MatchStatusFAA, aic);
-                PopulateAirport(e.Row.FindControl("plcIATAMatch"), aic.IATAMatch, aic.MatchStatusIATA, aic);
-                PopulateAirport(e.Row.FindControl("plcICAOMatch"), aic.ICAOMatch, aic.MatchStatusICAO, aic);
-                PopulateAirport(e.Row.FindControl("plcAirportProposed"), aic, airportImportCandidate.MatchStatus.NotApplicable, null);
+                airportImportCandidate.PopulateAirport(e.Row.FindControl("plcFAAMatch"), aic.FAAMatch, aic.MatchStatusFAA, aic);
+                airportImportCandidate.PopulateAirport(e.Row.FindControl("plcIATAMatch"), aic.IATAMatch, aic.MatchStatusIATA, aic);
+                airportImportCandidate.PopulateAirport(e.Row.FindControl("plcICAOMatch"), aic.ICAOMatch, aic.MatchStatusICAO, aic);
+                airportImportCandidate.PopulateAirport(e.Row.FindControl("plcAirportProposed"), aic, airportImportCandidate.MatchStatus.NotApplicable, null);
 
                 SetUpImportButtons(e.Row, aic, util.GetIntParam(Request, "blast", 0) != 0);
 
                 if (aic.IsOK)
                     e.Row.BackColor = System.Drawing.Color.LightGreen;
             }
-        }
-
-        protected void gvImportResults_RowCommand(object sender, GridViewCommandEventArgs e)
-        {
-            if (e == null)
-                throw new ArgumentNullException(nameof(e));
-            GridViewRow grow = (GridViewRow)((WebControl)e.CommandSource).NamingContainer;
-            int iRow = grow.RowIndex;
-
-            airportImportCandidate aic = ImportedAirportCandidates[iRow];
-
-            AirportImportRowCommand airc = (AirportImportRowCommand)Enum.Parse(typeof(AirportImportRowCommand), e.CommandName);
-
-            CheckBox ckUseMap = (CheckBox)grow.FindControl("ckUseMap");
-            if (ckUseMap.Checked)
-            {
-                aic.LatLong.Latitude = Convert.ToDouble(txtLat.Text, CultureInfo.InvariantCulture);
-                aic.LatLong.Longitude = Convert.ToDouble(txtLong.Text, CultureInfo.InvariantCulture);
-            }
-
-            airport ap = null;
-            switch (e.CommandArgument.ToString())
-            {
-                case "FAA":
-                    ap = aic.FAAMatch;
-                    break;
-                case "ICAO":
-                    ap = aic.ICAOMatch;
-                    break;
-                case "IATA":
-                    ap = aic.IATAMatch;
-                    break;
-            }
-
-            switch (airc)
-            {
-                case AirportImportRowCommand.FixLocation:
-                    ap.LatLong = aic.LatLong;
-                    ap.FCommit(true, false);
-                    if (!String.IsNullOrWhiteSpace(aic.Country))
-                        ap.SetLocale(aic.Country, aic.Admin1);
-                    break;
-                case AirportImportRowCommand.FixType:
-                    ap.FDelete(true);   // delete the existing one before we update - otherwise REPLACE INTO will not succeed (because we are changing the REPLACE INTO primary key, which includes Type)
-                    ap.FacilityTypeCode = aic.FacilityTypeCode;
-                    ap.FCommit(true, true); // force this to be treated as a new airport
-                    break;
-                case AirportImportRowCommand.Overwrite:
-                case AirportImportRowCommand.AddAirport:
-                    if (airc == AirportImportRowCommand.Overwrite)
-                        ap.FDelete(true);   // delete the existing airport
-
-                    switch (e.CommandArgument.ToString())
-                    {
-                        case "FAA":
-                            aic.Code = aic.FAA;
-                            break;
-                        case "ICAO":
-                            aic.Code = aic.ICAO;
-                            break;
-                        case "IATA":
-                            aic.Code = aic.IATA;
-                            break;
-                    }
-                    aic.Code = Regex.Replace(aic.Code, "[^a-zA-Z0-9]", string.Empty);
-                    aic.FCommit(true, true);
-                    if (!String.IsNullOrWhiteSpace(aic.Country))
-                        aic.SetLocale(aic.Country, aic.Admin1);
-                    break;
-            }
-
-            UpdateImportData();
         }
 
         protected void UpdateImportData()
