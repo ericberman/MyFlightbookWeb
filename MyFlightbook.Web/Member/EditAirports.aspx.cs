@@ -147,23 +147,7 @@ namespace MyFlightbook.Mapping
             util.SetValidationGroup(pnlEdit, "EditAirport");
 
             MfbGoogleMapManager1.Map.ClickHandler = "function (point) {clickForAirport(point.latLng);}";
-            MfbGoogleMapManager1.Map.SetAirportList(new AirportList(""));
-
-            StringBuilder sbInitVars = new StringBuilder();
-            sbInitVars.AppendFormat(CultureInfo.InvariantCulture, "var elCode = document.getElementById('{0}');\r\n", txtCode.ClientID);
-            sbInitVars.AppendFormat(CultureInfo.InvariantCulture, "var elName = document.getElementById('{0}');\r\n", txtName.ClientID);
-            sbInitVars.AppendFormat(CultureInfo.InvariantCulture, "var elNameWE = '{0}';\r\n", wmeName.ClientID);
-            sbInitVars.AppendFormat(CultureInfo.InvariantCulture, "var elCodeWE = '{0}';\r\n", wmeCode.ClientID);
-            sbInitVars.AppendFormat(CultureInfo.InvariantCulture, "var elType = document.getElementById('{0}');\r\n", cmbType.ClientID);
-            sbInitVars.AppendFormat(CultureInfo.InvariantCulture, "var elLat = document.getElementById('{0}');\r\n", txtLat.ClientID);
-            sbInitVars.AppendFormat(CultureInfo.InvariantCulture, "var elLon = document.getElementById('{0}');\r\n", txtLong.ClientID);
-            sbInitVars.Append("$(document).ready(function() {centerToText();})\r\n");
-
-            Page.ClientScript.RegisterStartupScript(GetType(), "CenterLatLong", sbInitVars.ToString(), true);
-
-            txtLat.Attributes["onChange"] = "javascript:centerToText();";
-            txtLong.Attributes["onChange"] = "javascript:centerToText();";
-            cmbType.Attributes["onChange"] = "javascript:centerToText();";
+            MfbGoogleMapManager1.Map.SetAirportList(new AirportList(String.Empty));
 
             RefreshMyAirports();
         }

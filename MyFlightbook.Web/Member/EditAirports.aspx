@@ -71,9 +71,7 @@
                                 </td>
                                 <td>
                                     <asp:DropDownList ID="cmbType" runat="server" DataSourceID="SqlDataSourceNavaidTypes"
-                                        DataTextField="FriendlyName" DataValueField="Code" 
-                                        meta:resourceKey="cmbTypeResource2">
-                                    </asp:DropDownList>
+                                        DataTextField="FriendlyName" DataValueField="Code" onchange="javascript:centerToText();" />
                                     <asp:SqlDataSource ID="SqlDataSourceNavaidtypes" runat="server" ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>"
                                         ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" SelectCommand="SELECT * FROM NavAidTypes">
                                     </asp:SqlDataSource>
@@ -85,7 +83,7 @@
                                         meta:resourceKey="locLatitudeResource2"></asp:Localize>
                                 </td>
                                 <td>
-                                    <asp:TextBox ID="txtLat" runat="server" meta:resourceKey="txtLatResource2"></asp:TextBox>
+                                    <asp:TextBox ID="txtLat" runat="server" onchange="javascript:centerToText();" />
                                     <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" ControlToValidate="txtLat"
                                         Display="Dynamic" 
                                         ErrorMessage="<br />Type in a latitude or click on the map to set" 
@@ -105,7 +103,7 @@
                                         meta:resourceKey="locLongitudeResource2"></asp:Localize>
                                 </td>
                                 <td>
-                                    <asp:TextBox ID="txtLong" runat="server" meta:resourceKey="txtLongResource2"></asp:TextBox>
+                                    <asp:TextBox ID="txtLong" runat="server" onchange="javascript:centerToText();" />
                                     <asp:RequiredFieldValidator ID="RequiredFieldValidator4" runat="server" ControlToValidate="txtLong"
                                         Display="Dynamic" 
                                         ErrorMessage="<br />Type in a longitude or click on the map to set" 
@@ -594,6 +592,15 @@
         function getFlickerSolved() {
             document.getElementById('<%=pnlDupeAirport.ClientID%>').style.display = 'none';
         }
+
+        var elCode = document.getElementById('<% =txtCode.ClientID %>');
+        var elName = document.getElementById('<% =txtName.ClientID %>');
+        var elNameWE = '<% =wmeName.ClientID %>';
+        var elCodeWE = '<% =wmeCode.ClientID %>';
+        var elType = document.getElementById('<% = cmbType.ClientID %>');
+        var elLat = document.getElementById('<% = txtLat.ClientID %>');
+        var elLon = document.getElementById('<% = txtLong.ClientID %>');
+        $(document).ready(function () {centerToText(); });
     </script>
 
 <asp:Panel ID="pnlDupeAirport" runat="server" CssClass="modalpopup" DefaultButton="btnAddAnyway">
