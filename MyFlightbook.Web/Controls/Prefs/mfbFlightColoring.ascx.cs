@@ -15,12 +15,19 @@ namespace MyFlightbook.Web.Controls.Prefs
 {
     public partial class mfbFlightColoring : UserControl
     {
+        const string szVSQueries = "vsCannedQueries";
+        private IEnumerable<CannedQuery> Queries
+        {
+            get { return (IEnumerable<CannedQuery>)ViewState[szVSQueries]; }
+            set { ViewState[szVSQueries] = value; }
+        }
+
         protected void UpdateQueryList()
         {
-            IEnumerable<CannedQuery> rgcq = CannedQuery.QueriesForUser(Page.User.Identity.Name);
-            foreach (CannedQuery cq in rgcq)
+            Queries = CannedQuery.QueriesForUser(Page.User.Identity.Name);
+            foreach (CannedQuery cq in Queries)
                 cq.Refresh();
-            gvCanned.DataSource = rgcq;
+            gvCanned.DataSource = Queries;
             gvCanned.DataBind();
         }
 
@@ -36,13 +43,9 @@ namespace MyFlightbook.Web.Controls.Prefs
 
         protected void btnUpdateColors_Click(object sender, EventArgs e)
         {
-
-            Dictionary<string, CannedQuery> dCq = new Dictionary<string, CannedQuery>();
-            foreach (CannedQuery cq in CannedQuery.QueriesForUser(Page.User.Identity.Name))
-                dCq[cq.QueryName] = cq;
             foreach (GridViewRow gvr in gvCanned.Rows)
             {
-                CannedQuery cq = dCq[System.Web.HttpUtility.HtmlDecode(((HiddenField)gvr.FindControl("hdnKey")).Value)];    // shouldn't ever fail.
+                CannedQuery cq = Queries.ElementAt(gvr.RowIndex);
                 cq.ColorString = ((TextBox) gvr.FindControl("txtQSamp")).Text;
                 if (String.IsNullOrWhiteSpace(cq.ColorString))
                     cq.ColorString = null;  // remove it entirely.
