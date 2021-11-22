@@ -37,7 +37,7 @@
                 <asp:Localize ID="locAccountHeader" runat="server" Text="<%$ Resources:Profile, accountHeader %>"></asp:Localize>
             </h2>
             <p><asp:Label ID="lblMemberSince" runat="server"></asp:Label></p>
-            <cc1:Accordion ID="accordianAccount" runat="server" HeaderCssClass="accordianHeader" HeaderSelectedCssClass="accordianHeaderSelected" ContentCssClass="accordianContent" TransitionDuration="250">
+            <cc1:Accordion ID="accordianAccount" runat="server" HeaderCssClass="accordianHeader" HeaderSelectedCssClass="accordianHeaderSelected" ContentCssClass="accordianContent" TransitionDuration="250"  SelectedIndex="-1" RequireOpenedPane="false">
                 <Panes>
                     <cc1:AccordionPane runat="server" ID="acpName">
                         <Header>
@@ -369,7 +369,7 @@
                     Text="Features and preferences" 
                     meta:resourcekey="locPrefsheaderResource1"></asp:Localize>
             </h2>
-            <cc1:Accordion ID="accordianPrefs" runat="server" HeaderCssClass="accordianHeader" HeaderSelectedCssClass="accordianHeaderSelected" ContentCssClass="accordianContent" meta:resourcekey="accordianPrefsResource1" TransitionDuration="250">
+            <cc1:Accordion ID="accordianPrefs" runat="server" HeaderCssClass="accordianHeader" HeaderSelectedCssClass="accordianHeaderSelected" ContentCssClass="accordianContent" meta:resourcekey="accordianPrefsResource1" TransitionDuration="250" SelectedIndex="-1" RequireOpenedPane="false">
                 <Panes>
                     <cc1:AccordionPane runat="server" ID="acpLocalPrefs">
                         <Header>
