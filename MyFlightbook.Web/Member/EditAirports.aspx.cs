@@ -236,6 +236,9 @@ namespace MyFlightbook.Mapping
 
         protected void AddAirport(bool forceAdd)
         {
+            Page.Validate("EditAirport");
+            if (!Page.IsValid)
+                return;
             bool fValidLatLon = double.TryParse(txtLat.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double lat);
             fValidLatLon = double.TryParse(txtLong.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double lon) && fValidLatLon;
             if (!fValidLatLon)

@@ -154,11 +154,11 @@
     <value>Airport '{0}' was created by another user; you cannot edit it.</value>
   </data>
   <data name="wmAirportCode" xml:space="preserve">
-    <value>Code for Airport</value>
+    <value>Identifier/Code</value>
     <comment>Watermark for airport identifier (e.g., LHR for London Heathrow)</comment>
   </data>
   <data name="wmFriendlyName" xml:space="preserve">
-    <value>Name for Airport</value>
+    <value>Name</value>
     <comment>Watermark for Friendly name for an airport (e.g., "London Heathrow" vs. "LHR")</comment>
   </data>
   <data name="airportGameTitle" xml:space="preserve">
@@ -282,5 +282,53 @@
   </data>
   <data name="errEmptyLatLong" xml:space="preserve">
     <value>Please provide a latitude/longitude</value>
+  </data>
+  <data name="airportNameShort" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="EditAirportAddFacility" xml:space="preserve">
+    <value>Create</value>
+  </data>
+  <data name="EditAirportFacilityType" xml:space="preserve">
+    <value>Facility Type</value>
+  </data>
+  <data name="EditAirportMapTip" xml:space="preserve">
+    <value>Click on the map to fill in the latitude/longitude</value>
+  </data>
+  <data name="EditAirportSampleCode" xml:space="preserve">
+    <value>e.g., "KABC"</value>
+  </data>
+  <data name="EditAirportSampleName" xml:space="preserve">
+    <value>e.g., "Anytown Municipal Airport"</value>
+  </data>
+  <data name="EditAirportsCodePrompt" xml:space="preserve">
+    <value>Code</value>
+  </data>
+  <data name="EditAirportsDeleteAirport" xml:space="preserve">
+    <value>Delete this airport</value>
+  </data>
+  <data name="EditAirportsDescription" xml:space="preserve">
+    <value>Missing a local airport that you love? That's probably because we compile our data from a variety of public (and free!) sources, but these are not exhaustive. You can help keep the dataset complete by adding your own below.</value>
+  </data>
+  <data name="EditAirportsMyAirportsHeader" xml:space="preserve">
+    <value>Airports or navaids you have created are shown below. To edit an airport or navaid you have created, simply recreate it, re-using the facility code.</value>
+  </data>
+  <data name="EditAirportTipHeader" xml:space="preserve">
+    <value>Tip</value>
+  </data>
+  <data name="errInvalidCodeLength" xml:space="preserve">
+    <value>Code must be 2-5 characters in length (3-6 for airports)</value>
+  </data>
+  <data name="errLatitudeMissing" xml:space="preserve">
+    <value>Please provide a latitude, either by typing or clicking on the map</value>
+  </data>
+  <data name="errLongitudeMissing" xml:space="preserve">
+    <value>Please provide a longitude either by typing or clicking on the map</value>
+  </data>
+  <data name="errMissingCode" xml:space="preserve">
+    <value>You must supply a valid code between 2-6 characters long</value>
+  </data>
+  <data name="errMissingFacilityName" xml:space="preserve">
+    <value>Please provide a name for the facility</value>
   </data>
 </root>

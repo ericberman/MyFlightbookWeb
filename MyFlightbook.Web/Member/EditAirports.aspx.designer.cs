@@ -15,13 +15,13 @@ namespace MyFlightbook.Mapping
     {
 
         /// <summary>
-        /// locEditAirportsHeader control.
+        /// lblHeader control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal locEditAirportsHeader;
+        protected global::System.Web.UI.WebControls.Label lblHeader;
 
         /// <summary>
         /// locEditAirportsDesc control.
@@ -51,15 +51,6 @@ namespace MyFlightbook.Mapping
         protected global::System.Web.UI.WebControls.Label lblCodePrompt;
 
         /// <summary>
-        /// lblcodePromptExample control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblcodePromptExample;
-
-        /// <summary>
         /// txtCode control.
         /// </summary>
         /// <remarks>
@@ -87,22 +78,31 @@ namespace MyFlightbook.Mapping
         protected global::AjaxControlToolkit.TextBoxWatermarkExtender wmeCode;
 
         /// <summary>
-        /// RequiredFieldValidator1 control.
+        /// valReqCode control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator1;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator valReqCode;
 
         /// <summary>
-        /// RegularExpressionValidator1 control.
+        /// valRegCode control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RegularExpressionValidator RegularExpressionValidator1;
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator valRegCode;
+
+        /// <summary>
+        /// lblcodePromptExample control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblcodePromptExample;
 
         /// <summary>
         /// locNamePrompt control.
@@ -114,15 +114,6 @@ namespace MyFlightbook.Mapping
         protected global::System.Web.UI.WebControls.Localize locNamePrompt;
 
         /// <summary>
-        /// lblNameExample control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblNameExample;
-
-        /// <summary>
         /// txtName control.
         /// </summary>
         /// <remarks>
@@ -132,13 +123,13 @@ namespace MyFlightbook.Mapping
         protected global::System.Web.UI.WebControls.TextBox txtName;
 
         /// <summary>
-        /// RequiredFieldValidator2 control.
+        /// valReqName control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator2;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator valReqName;
 
         /// <summary>
         /// wmeName control.
@@ -148,6 +139,15 @@ namespace MyFlightbook.Mapping
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::AjaxControlToolkit.TextBoxWatermarkExtender wmeName;
+
+        /// <summary>
+        /// lblNameExample control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblNameExample;
 
         /// <summary>
         /// locType control.
@@ -195,13 +195,13 @@ namespace MyFlightbook.Mapping
         protected global::System.Web.UI.WebControls.TextBox txtLat;
 
         /// <summary>
-        /// RequiredFieldValidator3 control.
+        /// valReqLat control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator3;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator valReqLat;
 
         /// <summary>
         /// FilteredTextBoxExtender2 control.
@@ -213,13 +213,13 @@ namespace MyFlightbook.Mapping
         protected global::AjaxControlToolkit.FilteredTextBoxExtender FilteredTextBoxExtender2;
 
         /// <summary>
-        /// RegularExpressionValidatorLat control.
+        /// valRegLat control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RegularExpressionValidator RegularExpressionValidatorLat;
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator valRegLat;
 
         /// <summary>
         /// locLongitude control.
@@ -240,13 +240,13 @@ namespace MyFlightbook.Mapping
         protected global::System.Web.UI.WebControls.TextBox txtLong;
 
         /// <summary>
-        /// RequiredFieldValidator4 control.
+        /// valReqLon control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator4;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator valReqLon;
 
         /// <summary>
         /// FilteredTextBoxExtender1 control.
@@ -258,13 +258,31 @@ namespace MyFlightbook.Mapping
         protected global::AjaxControlToolkit.FilteredTextBoxExtender FilteredTextBoxExtender1;
 
         /// <summary>
-        /// RegularExpressionValidatorLong control.
+        /// valRegLon control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RegularExpressionValidator RegularExpressionValidatorLong;
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator valRegLon;
+
+        /// <summary>
+        /// lblTipHeader control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblTipHeader;
+
+        /// <summary>
+        /// lblClickToSetLatLon control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblClickToSetLatLon;
 
         /// <summary>
         /// rowAdmin control.
@@ -301,24 +319,6 @@ namespace MyFlightbook.Mapping
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblErr;
-
-        /// <summary>
-        /// lblTipHeader control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblTipHeader;
-
-        /// <summary>
-        /// lblClickToSetLatLon control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblClickToSetLatLon;
 
         /// <summary>
         /// MfbGoogleMapManager1 control.

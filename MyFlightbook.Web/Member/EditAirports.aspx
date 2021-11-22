@@ -1,162 +1,133 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true"
-    Codebehind="EditAirports.aspx.cs" Inherits="MyFlightbook.Mapping.EditAirports" culture="auto" meta:resourcekey="PageResource2" %>
-
+    Codebehind="EditAirports.aspx.cs" Inherits="MyFlightbook.Mapping.EditAirports" culture="auto" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
-<%@ Register Src="../Controls/mfbGoogleMapManager.ascx" TagName="mfbGoogleMapManager"
-    TagPrefix="uc1" %>
+<%@ Register Src="../Controls/mfbGoogleMapManager.ascx" TagName="mfbGoogleMapManager" TagPrefix="uc1" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register src="../Controls/mfbTooltip.ascx" tagname="mfbTooltip" tagprefix="uc2" %>
-<asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server"><asp:Literal ID="locEditAirportsHeader" runat="server" 
-            Text="Edit Airports and NavAids" 
-            meta:resourcekey="locEditAirportsHeaderResource2"></asp:Literal>
+<asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
+    <asp:Label ID="lblHeader" runat="server" Text="<%$ Resources:Airports, EditAirportsTitle %>" />
 </asp:Content>
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
-    <p><asp:Localize ID="locEditAirportsDesc" runat="server" Text="Missing a local airport that you love? That's probably because we compile
-        our data from a variety of public (and free!) sources, but these are not exhaustive.
-        You can help keep the dataset complete by adding your own below." meta:resourcekey="locEditAirportsDescResource2"></asp:Localize>
-    </p>
-        <table style="width: 100%">
-            <tr>
-                <td style="vertical-align: top">
-                    <asp:Panel ID="pnlEdit" runat="server" DefaultButton="btnAdd" 
-                        meta:resourcekey="pnlEditResource2">
-                        <table style="width:200px">
-                            <tr style="vertical-align: top">
-                                <td>
-                                    <asp:Label ID="lblCodePrompt" runat="server" Text="Code:" 
-                                        meta:resourceKey="lblCodePromptResource2"></asp:Label>
-                                    <br />
-                                    <asp:Label ID="lblcodePromptExample" CssClass="fineprint" runat="server" 
-                                        Text="e.g., &quot;KABC&quot;" meta:resourceKey="lblcodePromptExampleResource2"></asp:Label>
-                                </td>
-                                <td>
-                                    <asp:TextBox ID="txtCode" runat="server" meta:resourceKey="txtCodeResource2"></asp:TextBox>
-                                    <cc1:FilteredTextBoxExtender ID="txtCode_FilteredTextBoxExtender" FilterType="Numbers, UppercaseLetters, LowercaseLetters"
-                                        runat="server" TargetControlID="txtCode" Enabled="True">
-                                    </cc1:FilteredTextBoxExtender>
-                                    <cc1:TextBoxWatermarkExtender ID="wmeCode" WatermarkText="<%$ Resources:Airports, wmAirportCode %>" 
-                                        runat="server" Enabled="True" TargetControlID="txtCode" WatermarkCssClass="watermark">
-                                    </cc1:TextBoxWatermarkExtender>
-                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ErrorMessage="You must supply a valid code between 2-6 characters long"
-                                        ControlToValidate="txtCode" Display="Dynamic" 
-                                        meta:resourceKey="RequiredFieldValidator1Resource2"></asp:RequiredFieldValidator>
-                                    <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" ErrorMessage="RegularExpressionValidator"
-                                        ControlToValidate="txtCode" Display="Dynamic" Text="Code must be 2-5 characters in length (3-6 for airports)"
-                                        ValidationExpression="[a-zA-Z0-9]{2,6}" 
-                                        meta:resourceKey="RegularExpressionValidator1Resource2"></asp:RegularExpressionValidator>
-                                </td>
-                            </tr>
-                            <tr style="vertical-align: top">
-                                <td>
-                                    <asp:Localize ID="locNamePrompt" runat="server" Text="Name:" 
-                                        meta:resourceKey="locNamePromptResource2"></asp:Localize>
-                                    <br />
-                                    <asp:Label ID="lblNameExample" CssClass="fineprint" runat="server" 
-                                        Text="e.g., &quot;My Airport&quot;" meta:resourceKey="lblNameExampleResource2"></asp:Label>
-                                </td>
-                                <td>
-                                    <asp:TextBox ID="txtName" runat="server" meta:resourceKey="txtNameResource2"></asp:TextBox>
-                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="txtName"
-                                        ErrorMessage="Please provide a name for the facility" Display="Dynamic" 
-                                        meta:resourceKey="RequiredFieldValidator2Resource2"></asp:RequiredFieldValidator>
-                                    <cc1:TextBoxWatermarkExtender ID="wmeName" WatermarkText="<%$ Resources:Airports, wmFriendlyname %>" 
-                                        runat="server" Enabled="True" TargetControlID="txtName" WatermarkCssClass="watermark">
-                                    </cc1:TextBoxWatermarkExtender>
-                                </td>
-                            </tr>
-                            <tr style="vertical-align: top">
-                                <td>
-                                    <asp:Localize ID="locType" runat="server" Text="Type:" 
-                                        meta:resourceKey="locTypeResource2"></asp:Localize>
-                                </td>
-                                <td>
-                                    <asp:DropDownList ID="cmbType" runat="server" DataSourceID="SqlDataSourceNavaidTypes"
-                                        DataTextField="FriendlyName" DataValueField="Code" onchange="javascript:centerToText();" />
-                                    <asp:SqlDataSource ID="SqlDataSourceNavaidtypes" runat="server" ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>"
-                                        ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" SelectCommand="SELECT * FROM NavAidTypes">
-                                    </asp:SqlDataSource>
-                                </td>
-                            </tr>
-                            <tr style="vertical-align: top">
-                                <td>
-                                    <asp:Localize ID="locLatitude" runat="server" Text="Latitude:" 
-                                        meta:resourceKey="locLatitudeResource2"></asp:Localize>
-                                </td>
-                                <td>
-                                    <asp:TextBox ID="txtLat" runat="server" onchange="javascript:centerToText();" />
-                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" ControlToValidate="txtLat"
-                                        Display="Dynamic" 
-                                        ErrorMessage="<br />Type in a latitude or click on the map to set" 
-                                        meta:resourceKey="RequiredFieldValidator3Resource2"></asp:RequiredFieldValidator>
+    <div><asp:Localize ID="locEditAirportsDesc" runat="server" Text="<%$ Resources:Airports, EditAirportsDescription %>" />
+    </div>
+    <table style="width:100%">
+        <tr>
+            <td style="max-width:300px; vertical-align: top;">
+                <asp:Panel ID="pnlEdit" runat="server" DefaultButton="btnAdd">
+                    <table>
+                        <tr style="vertical-align: top">
+                            <td>
+                                <asp:Label ID="lblCodePrompt" runat="server" Text="<%$ Resources:Airports, EditAirportsCodePrompt %>" />
+                            </td>
+                            <td>
+                                <asp:TextBox ID="txtCode" runat="server" />
+                                <cc1:FilteredTextBoxExtender ID="txtCode_FilteredTextBoxExtender" FilterType="Numbers, UppercaseLetters, LowercaseLetters"
+                                    runat="server" TargetControlID="txtCode" Enabled="True">
+                                </cc1:FilteredTextBoxExtender>
+                                <cc1:TextBoxWatermarkExtender ID="wmeCode" WatermarkText="<%$ Resources:Airports, wmAirportCode %>" 
+                                    runat="server" Enabled="True" TargetControlID="txtCode" WatermarkCssClass="watermark" />
+                                <asp:RequiredFieldValidator ID="valReqCode" runat="server" ErrorMessage="<%$ Resources:Airports, errMissingCode %>" EnableClientScript="true"
+                                    ControlToValidate="txtCode" Display="Dynamic" CssClass="error" />
+                                <asp:RegularExpressionValidator ID="valRegCode" runat="server" ErrorMessage="<%$ Resources:Airports, errInvalidCodeLength %>" EnableClientScript="true"
+                                    ControlToValidate="txtCode" Display="Dynamic" ValidationExpression="[a-zA-Z0-9]{2,6}" CssClass="error" />
+                                <br />
+                                <asp:Label ID="lblcodePromptExample" CssClass="fineprint" runat="server"  Text="<%$ Resources:Airports, EditAirportSampleCode %>" />
+                            </td>
+                        </tr>
+                        <tr style="vertical-align: top">
+                            <td>
+                                <asp:Localize ID="locNamePrompt" runat="server" Text="<%$ Resources:Airports, airportNameShort %>" />
+                            </td>
+                            <td>
+                                <asp:TextBox ID="txtName" runat="server" />
+                                <asp:RequiredFieldValidator ID="valReqName" runat="server" ControlToValidate="txtName" EnableClientScript="true" 
+                                    ErrorMessage="<%$ Resources:Airports, errMissingFacilityName %>" Display="Dynamic" CssClass="error" />
+                                <cc1:TextBoxWatermarkExtender ID="wmeName" WatermarkText="<%$ Resources:Airports, wmFriendlyname %>" 
+                                    runat="server" Enabled="True" TargetControlID="txtName" WatermarkCssClass="watermark">
+                                </cc1:TextBoxWatermarkExtender>
+                                <br />
+                                <asp:Label ID="lblNameExample" CssClass="fineprint" runat="server" Text="<%$ Resources:Airports, EditAirportSampleName %>" />
+                            </td>
+                        </tr>
+                        <tr style="vertical-align: top">
+                            <td>
+                                <asp:Localize ID="locType" runat="server" Text="<%$ Resources:Airports, EditAirportFacilityType %>" />
+                            </td>
+                            <td>
+                                <asp:DropDownList ID="cmbType" runat="server" DataSourceID="SqlDataSourceNavaidTypes"  
+                                    DataTextField="FriendlyName" DataValueField="Code" onchange="javascript:centerToText();" />
+                                <asp:SqlDataSource ID="SqlDataSourceNavaidtypes" runat="server" ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>"
+                                    ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" SelectCommand="SELECT * FROM NavAidTypes">
+                                </asp:SqlDataSource>
+                            </td>
+                        </tr>
+                        <tr style="vertical-align: top">
+                            <td>
+                                <asp:Localize ID="locLatitude" runat="server" Text="<%$ Resources:Airports, airportLatitude %>" />
+                            </td>
+                            <td>
+                                <asp:TextBox ID="txtLat" runat="server" onchange="javascript:centerToText();"   />
+                                <div>
+                                    <asp:RequiredFieldValidator ID="valReqLat" runat="server" ControlToValidate="txtLat" EnableClientScript="true"  
+                                        Display="Dynamic" ErrorMessage="<%$ Resources:Airports, errLatitudeMissing %>" CssClass="error" />
                                     <cc1:FilteredTextBoxExtender ID="FilteredTextBoxExtender2" ValidChars="-.0123456789"
                                         runat="server" TargetControlID="txtLat" Enabled="True">
                                     </cc1:FilteredTextBoxExtender>
-                                    <asp:RegularExpressionValidator ID="RegularExpressionValidatorLat" runat="server"
-                                        Display="Dynamic" ControlToValidate="txtLat" ErrorMessage="<br />Please type a valid latitude or click on the map"
-                                        ValidationExpression="-?\d{0,2}(.\d*)?" 
-                                        meta:resourceKey="RegularExpressionValidatorLatResource2"></asp:RegularExpressionValidator>
-                                </td>
-                            </tr>
-                            <tr style="vertical-align: top">
-                                <td>
-                                    <asp:Localize ID="locLongitude" runat="server" Text="Longitude:" 
-                                        meta:resourceKey="locLongitudeResource2"></asp:Localize>
-                                </td>
-                                <td>
-                                    <asp:TextBox ID="txtLong" runat="server" onchange="javascript:centerToText();" />
-                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator4" runat="server" ControlToValidate="txtLong"
-                                        Display="Dynamic" 
-                                        ErrorMessage="<br />Type in a longitude or click on the map to set" 
-                                        meta:resourceKey="RequiredFieldValidator4Resource2"></asp:RequiredFieldValidator>
+                                    <asp:RegularExpressionValidator ID="valRegLat" runat="server" EnableClientScript="true" CssClass="error"  
+                                        Display="Dynamic" ControlToValidate="txtLat" ErrorMessage="<%$ Resources:Airports, errInvalidLatitude %>"
+                                        ValidationExpression="-?\d{0,2}(.\d*)?" />
+                                </div>
+                            </td>
+                        </tr>
+                        <tr style="vertical-align: top">
+                            <td>
+                                <asp:Localize ID="locLongitude" runat="server" Text="<%$ Resources:Airports, airportLongitude %>" />
+                            </td>
+                            <td>
+                                <div>
+                                    <asp:TextBox ID="txtLong" runat="server" onchange="javascript:centerToText();"   />
+                                    <asp:RequiredFieldValidator ID="valReqLon" runat="server" ControlToValidate="txtLong" EnableClientScript="true"
+                                        Display="Dynamic"  ErrorMessage="<%$ Resources:Airports, errLongitudeMissing %>" CssClass="error" />
                                     <cc1:FilteredTextBoxExtender ID="FilteredTextBoxExtender1" ValidChars="-.0123456789"
                                         runat="server" TargetControlID="txtLong" Enabled="True">
                                     </cc1:FilteredTextBoxExtender>
-                                    <asp:RegularExpressionValidator ID="RegularExpressionValidatorLong" runat="server"
-                                        Display="Dynamic" ControlToValidate="txtLong" ErrorMessage="<br />Please type a valid latitude or click on the map"
-                                        ValidationExpression="-?\d{0,3}(.\d*)?" 
-                                        meta:resourceKey="RegularExpressionValidatorLongResource2"></asp:RegularExpressionValidator>
-                                </td>
-                            </tr>
-                            <tr runat="server" id="rowAdmin">
-                                <td>&nbsp;</td>
-                                <td><asp:CheckBox ID="ckAsAdmin" runat="server" Text="Add as admin" /></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    &nbsp;
-                                </td>
-                                <td>
-                                    <asp:Button ID="btnAdd" runat="server" Text="Create" OnClick="btnAdd_Click" 
-                                        meta:resourceKey="btnAddResource2" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    &nbsp;
-                                </td>
-                                <td>
-                                    <asp:Label ID="lblErr" runat="server" ForeColor="Red" 
-                                        meta:resourceKey="lblErrResource2"></asp:Label>
-                                </td>
-                            </tr>
-                        </table>
-                        <p>
-                            <asp:Label ID="lblTipHeader" runat="server" Text="Tip" Font-Bold="True" 
-                                meta:resourceKey="lblTipHeaderResource2"></asp:Label>&nbsp;
-                            <asp:Label ID="lblClickToSetLatLon" runat="server" 
-                                Text="Click on the map to fill in the latitude/longitude" 
-                                meta:resourceKey="lblClickToSetLatLonResource2"></asp:Label>
-                        </p>
-                    </asp:Panel>
-                </td>
-                <td  style="vertical-align: top; width: 90%">
-                    <div style="margin-left: 20px; margin-right:10px;">
-                        <uc1:mfbGoogleMapManager ID="MfbGoogleMapManager1" runat="server" AllowResize="false" Height="400px"
-                            Width="100%" />
-                    </div>
-                </td>
-            </tr>
-        </table>
+                                    <asp:RegularExpressionValidator ID="valRegLon" runat="server" EnableClientScript="true" CssClass="error"
+                                        Display="Dynamic" ControlToValidate="txtLong" ErrorMessage="<%$ Resources:Airports, errInvalidLongitude %>"
+                                        ValidationExpression="-?\d{0,3}(.\d*)?" />
+                                </div>
+                                <div>
+                                    <asp:Label ID="lblTipHeader" runat="server" Text="<%$ Resources:Airports, EditAirportTipHeader %>" Font-Bold="True" />&nbsp;
+                                    <asp:Label ID="lblClickToSetLatLon" runat="server" Text="<%$ Resources:Airports, EditAirportMapTip %>" />
+                                </div>
+                            </td>
+                        </tr>
+                        <tr runat="server" id="rowAdmin">
+                            <td></td>
+                            <td><asp:CheckBox ID="ckAsAdmin" runat="server" Text="Add as admin" /></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <asp:Button ID="btnAdd" runat="server" Text="<%$ Resources:Airports, EditAirportAddFacility %>" CausesValidation="true" OnClick="btnAdd_Click" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                            </td>
+                            <td>
+                                <asp:Label ID="lblErr" runat="server" CssClass="error" EnableViewState="false" />
+                            </td>
+                        </tr>
+                    </table>
+                </asp:Panel>
+            </td>
+            <td style="vertical-align: top; width: 90%">
+                <div style="margin-left: 10px; margin-right:10px;">
+                    <uc1:mfbGoogleMapManager ID="MfbGoogleMapManager1" runat="server" AllowResize="false" Height="400px" />
+                </div>
+            </td>
+        </tr>
+    </table>
     <asp:Panel ID="pnlAdminImport" Visible="false" runat="server">
         <p>
             <asp:Label ID="Label1" runat="server" Text="Spreadsheet of airports:"></asp:Label>
@@ -473,21 +444,18 @@
     </asp:Panel>
 </asp:Content>
 <asp:Content ID="Content1" ContentPlaceHolderID="cpMain" runat="Server">
-    <asp:Panel ID="pnlMyAirports" runat="server" Width="100%" 
-        meta:resourcekey="pnlMyAirportsResource2">
-        <p><asp:Localize ID="locYourAirportsHeader" runat="server" Text="Airports or navaids you have created are shown below. To edit an airport or navaid you have created, simply recreate it, re-using the facility code." meta:resourceKey="locYourAirportsHeaderResource2"></asp:Localize></p>
+    <asp:Panel ID="pnlMyAirports" runat="server" Width="100%">
+        <p><asp:Localize ID="locYourAirportsHeader" runat="server" Text="<%$ Resources:Airports, EditAirportsMyAirportsHeader %>" /></p>
         <asp:GridView ID="gvMyAirports" EnableViewState="False" CellSpacing="5" CellPadding="5"
             runat="server" AutoGenerateColumns="False" GridLines="None"
             OnRowCommand="gvMyAirports_RowCommand" 
-            OnRowDataBound="gvMyAirports_RowDataBound" 
-            meta:resourceKey="gvMyAirportsResource2">
+            OnRowDataBound="gvMyAirports_RowDataBound">
             <Columns>
-                <asp:TemplateField meta:resourceKey="TemplateFieldResource6">
+                <asp:TemplateField HeaderText="<%$ Resources:Airports, EditAirportFacilityType %>">
                     <ItemTemplate>
                         <asp:ImageButton ID="imgDelete" ImageUrl="~/images/x.gif" CausesValidation="False"
-                            AlternateText="Delete this airport" ToolTip="Delete this airport" CommandName="_Delete"
-                            CommandArgument='<%#: Bind("Code") %>' runat="server" 
-                            meta:resourceKey="imgDeleteResource2" />
+                            AlternateText="<%$ Resources:Airports, EditAirportsDeleteAirport %>" ToolTip="<%$ Resources:Airports, EditAirportsDeleteAirport %>" CommandName="_Delete"
+                            CommandArgument='<%#: Bind("Code") %>' runat="server"  />
                         <cc1:ConfirmButtonExtender ID="ConfirmButtonExtender1" runat="server" TargetControlID="imgDelete"
                             ConfirmOnFormSubmit="True" 
                             ConfirmText="Are you sure you want to delete this airport/navaid?  This action cannot be undone!" 
@@ -495,32 +463,24 @@
                         </cc1:ConfirmButtonExtender>
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:TemplateField HeaderText="Code" SortExpression="AirportID" 
-                    meta:resourceKey="TemplateFieldResource7">
+                <asp:TemplateField HeaderText="<%$ Resources:Airports, EditAirportsCodePrompt %>" SortExpression="AirportID">
                     <ItemTemplate>
-                        <asp:HyperLink ID="lnkZoomCode" runat="server" 
-                            Text='<%#: Bind("Code") %>' meta:resourcekey="lnkZoomCodeResource1" ></asp:HyperLink>
+                        <asp:HyperLink ID="lnkZoomCode" runat="server" Text='<%#: Bind("Code") %>' />
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:TemplateField HeaderText="Name" SortExpression="FacilityName" 
-                    meta:resourceKey="TemplateFieldResource8">
+                <asp:TemplateField HeaderText="<%$ Resources:Airports, airportName %>" SortExpression="FacilityName">
                     <ItemTemplate>
-                        <asp:Label ID="lblFacilityName" runat="server" Text='<%#: Bind("Name") %>' 
-                            meta:resourceKey="lblFacilityNameResource2"></asp:Label>
+                        <asp:Label ID="lblFacilityName" runat="server" Text='<%#: Bind("Name") %>' />
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:TemplateField HeaderText="Type of Facility" SortExpression="FriendlyName" 
-                    meta:resourceKey="TemplateFieldResource9">
+                <asp:TemplateField HeaderText="<%$ Resources:Airports, EditAirportFacilityType %>" SortExpression="FriendlyName">
                     <ItemTemplate>
-                        <asp:Label ID="lblFacilityType" runat="server" 
-                            Text='<%#: Bind("FacilityType") %>' meta:resourceKey="lblFacilityTypeResource2"></asp:Label>
+                        <asp:Label ID="lblFacilityType" runat="server" Text='<%#: Bind("FacilityType") %>' />
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:TemplateField HeaderText="UserName" SortExpression="UserName"  
-                    Visible="False" meta:resourceKey="TemplateFieldResource10">
+                <asp:TemplateField HeaderText="UserName" SortExpression="UserName" Visible="False">
                     <ItemTemplate>
-                        <asp:Label ID="lblUsername" runat="server" Text='<%# Bind("Username") %>' 
-                            meta:resourceKey="lblUsernameResource2"></asp:Label>
+                        <asp:Label ID="lblUsername" runat="server" Text='<%# Bind("Username") %>' />
                     </ItemTemplate>
                 </asp:TemplateField>
             </Columns>
