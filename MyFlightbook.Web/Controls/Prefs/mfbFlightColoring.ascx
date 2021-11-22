@@ -16,7 +16,7 @@
             </asp:TemplateField>
             <asp:TemplateField>
                 <ItemTemplate>
-                    <asp:HiddenField ID="hdnKey" runat="server" Value='<%#: Eval("QueryName") %>' />
+                    <asp:HiddenField ID="hdnKey" runat="server" Value='<%# Eval("QueryName") %>' />
                     <div><asp:Label ID="lblQSamp" runat="server" style="padding: 3px" Text="<%$ Resources:Preferences, FlightColoringSample %>" /><asp:TextBox ID="txtQsamp" runat="server" style="visibility:hidden; width: 4px;" /></div>
                     <cc1:ColorPickerExtender ID="cpeQ" runat="server" TargetControlID="txtQsamp" PopupButtonID="lblQSamp" SampleControlID="lblQSamp" PaletteStyle="Continuous" />
                 </ItemTemplate>
