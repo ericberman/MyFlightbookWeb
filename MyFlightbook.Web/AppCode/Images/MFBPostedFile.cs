@@ -113,7 +113,9 @@ namespace MyFlightbook.Image
             // We can't make MFBPostedFile be disposable because we hold it indefinitely in the session
             // But we're not holding anything open either. 
             // So on object deletion, clean up any temp files.
+#pragma warning disable IDISP023 // Don't use reference types in finalizer context.
             CleanUp();
+#pragma warning restore IDISP023 // Don't use reference types in finalizer context.
         }
 
         private void WriteStreamToTempFile(Stream s)
