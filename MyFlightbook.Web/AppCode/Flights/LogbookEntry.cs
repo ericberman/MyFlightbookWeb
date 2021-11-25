@@ -2409,7 +2409,12 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
             AutofillFinishAirports(al);
             AutofillFinishInstruction();
             AutofillCostOfFlight();
-            AutofillForAircraft(new UserAircraft(User).GetUserAircraftByID(AircraftID));
+            if (AircraftID > 0)
+            {
+                Aircraft ac = new UserAircraft(User).GetUserAircraftByID(AircraftID);
+                if (ac != null)
+                    AutofillForAircraft(ac);
+            }
         }
         #endregion
 
