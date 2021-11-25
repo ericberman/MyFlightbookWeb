@@ -358,8 +358,22 @@ order by cc.idcatclass ASC, man.manufacturer asc, m.model asc, m.typename asc;"
                     (will be deleted) <asp:Button ID="btnPreview" runat="server" OnClick="btnPreview_Click" Text="Preview"
                         ValidationGroup="PreviewDupes" />
                     <asp:CustomValidator ID="CustomValidator1" runat="server" ValidationGroup="PreviewDupes"
-                        ErrorMessage="These don't appear to be duplicates" OnServerValidate="CustomValidator1_ServerValidate"></asp:CustomValidator></p><asp:Label ID="lblPreview" runat="server" Text=""></asp:Label><asp:Panel ID="pnlPreview" runat="server" Visible="false">
-                    <asp:GridView ID="gvAirplanesToRemap" runat="server" DataSourceID="sqlAirplanesToReMap">
+                        ErrorMessage="These don't appear to be duplicates" OnServerValidate="CustomValidator1_ServerValidate"></asp:CustomValidator></p>
+                    <div><asp:Label ID="lblPreview" runat="server" style="white-space:pre-line" /></div>
+                <asp:Panel ID="pnlPreview" runat="server" Visible="false">
+                    <asp:GridView ID="gvAirplanesToRemap" runat="server" AutoGenerateColumns="false">
+                        <Columns>
+                            <asp:BoundField DataField="AircraftID" HeaderText="Aircraft ID" />
+                            <asp:BoundField DataField="ModelID" HeaderText="Model ID" />
+                            <asp:BoundField DataField="TailNumber" HeaderText="Tail Number" />
+                            <asp:BoundField DataField="DisplayTailnumberWithModel" HeaderText="(Full Tail)" />
+                            <asp:TemplateField HeaderText="InstanceType">
+                                <ItemTemplate>
+                                    <%# AircraftInstance.ShortNameForInstanceType((AircraftInstanceTypes) Eval("InstanceTypeID")) %>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:BoundField DataField="Version" HeaderText="Version" />
+                        </Columns>
                     </asp:GridView>
                     <asp:Button ID="btnDeleteDupeMake" runat="server" Text="Delete Duplicate Make" OnClick="btnDeleteDupeMake_Click"
                         ValidationGroup="PreviewDupes" />
@@ -367,13 +381,6 @@ order by cc.idcatclass ASC, man.manufacturer asc, m.model asc, m.typename asc;"
                 </asp:Panel>
             </div>
             <div>&nbsp;</div>
-            <asp:SqlDataSource ID="sqlAirplanesToReMap" DataSourceMode="DataReader" runat="server"
-                ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>" ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>"
-                SelectCommand="SELECT * FROM aircraft WHERE idmodel=?idModel">
-                <SelectParameters>
-                    <asp:ControlParameter ControlID="cmbModelToDelete" PropertyName="SelectedValue" Name="idModel" />
-                </SelectParameters>
-            </asp:SqlDataSource>
             <asp:GridView ID="gvDupeModels" DataSourceID="SqlDataSourceDupeModels" runat="server" EnableModelValidation="True" AutoGenerateColumns="false">
                 <Columns>
                     <asp:HyperLinkField DataNavigateUrlFields="idmodel" DataNavigateUrlFormatString="~/Member/EditMake.aspx?id={0}" DataTextField="idmodel" DataTextFormatString="{0}" Target="_blank" />

@@ -1,4 +1,5 @@
-﻿using MySql.Data.MySqlClient;
+﻿using MyFlightbook.Image;
+using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
@@ -10,7 +11,6 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
-using MyFlightbook.Image;
 
 /******************************************************
  * 
@@ -890,6 +890,70 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
                 IEnumerable<string> col = AttributeList();
                 return !col.Any() ? string.Empty : String.Format(CultureInfo.CurrentCulture, "({0})", String.Join(", ", col));
             }
+        }
+
+        /// <summary>
+        /// Admin function to merge two duplicate models
+        /// </summary>
+        /// <param name="idModelToDelete">The id of the model that is redundant</param>
+        /// <param name="idModelToMergeInto">The id of the model into which the redundant model should be merged</param>
+        /// <returns>Audit of the operations that occor</returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="MyFlightbookException"></exception>
+        public static IEnumerable<string> AdminMergeDuplicateModels(int idModelToDelete, int idModelToMergeInto)
+        {
+            if (idModelToDelete < 0)
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, "Invalid model to delete: {0}", idModelToDelete));
+            if (idModelToDelete < 0)
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, "Invalid model to merge into: {0}", idModelToMergeInto));
+
+            List<string> lst = new List<string>() { "Audit of changes made" };
+
+            // Before we migrate old aircraft, see if there are generics.
+            Aircraft acGenericSource = new Aircraft(Aircraft.AnonymousTailnumberForModel(idModelToDelete));
+            Aircraft acGenericTarget = new Aircraft(Aircraft.AnonymousTailnumberForModel(idModelToMergeInto));
+
+            if (acGenericSource.AircraftID != Aircraft.idAircraftUnknown)
+            {
+                // if the generic for the target doesn't exist, then no problem - just rename it and remap it!
+                if (acGenericTarget.AircraftID == Aircraft.idAircraftUnknown)
+                {
+                    acGenericSource.ModelID = idModelToMergeInto;
+                    acGenericSource.TailNumber = Aircraft.AnonymousTailnumberForModel(idModelToMergeInto);
+                    acGenericSource.Commit();
+                }
+                else
+                {
+                    // if the generic for the target also exists, need to merge the aircraft (creating a tombstone).
+                    AircraftUtility.AdminMergeDupeAircraft(acGenericTarget, acGenericSource);
+                }
+            }
+
+            IEnumerable<Aircraft> rgac = new UserAircraft(null).GetAircraftForUser(UserAircraft.AircraftRestriction.AllMakeModel, idModelToDelete);
+
+            foreach (Aircraft ac in rgac)
+            {
+                ac.ModelID = idModelToMergeInto;
+                ac.Commit();
+                lst.Add(String.Format(CultureInfo.CurrentCulture, "Updated aircraft {0} to model {1}", ac.AircraftID, idModelToMergeInto));
+            }
+
+            // Update any custom currency references to the old model
+            DBHelper dbhCCR = new DBHelper("UPDATE CustCurrencyRef SET value=?newID WHERE value=?oldID AND type=?modelsType");
+            dbhCCR.DoNonQuery((comm) =>
+            {
+                comm.Parameters.AddWithValue("newID", idModelToMergeInto);
+                comm.Parameters.AddWithValue("oldID", idModelToDelete);
+                comm.Parameters.AddWithValue("modelsType", (int)Currency.CustomCurrency.CurrencyRefType.Models);
+            });
+
+            // Then delete the old model
+            string szQ = "DELETE FROM models WHERE idmodel=?idOldModel";
+            DBHelper dbhDelete = new DBHelper(szQ);
+            if (!dbhDelete.DoNonQuery((comm) => { comm.Parameters.AddWithValue("idOldModel", idModelToDelete); }))
+                throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, "Error deleting model {0}: {1}", idModelToDelete, dbhDelete.LastError));
+            lst.Add(String.Format(CultureInfo.CurrentCulture, "Deleted model {0}", idModelToDelete));
+            return lst;
         }
     }
     
