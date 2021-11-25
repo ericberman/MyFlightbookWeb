@@ -829,6 +829,7 @@ namespace MyFlightbook.MemberPages
                 {
                     DistanceDisplay = CurrentFlight.GetPathDistanceDescription(fd.ComputePathDistance());
                     // Bind details - this will bind everything else.
+                    CurrentFlight.UseHHMM = Viewer.UsesHHMM;    // make sure we capture hhmm correctly.
                     fmvLE.DataSource = new LogbookEntryDisplay[] { CurrentFlight };
                     fmvLE.DataBind();
                 }
