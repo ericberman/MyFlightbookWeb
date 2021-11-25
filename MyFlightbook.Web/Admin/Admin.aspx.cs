@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Net.Mail;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Security;
-using System.Web.SessionState;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -118,73 +114,21 @@ namespace MyFlightbook.Web.Admin
             if (!Page.IsValid)
                 return;
 
-            StringBuilder sb = new StringBuilder();
-
-            sb.Append(String.Format(CultureInfo.CurrentCulture, "Model {0} will be deleted<br />", System.Web.HttpUtility.HtmlEncode(cmbModelToDelete.SelectedItem.Text)));
-            sb.Append(String.Format(CultureInfo.CurrentCulture, "The following airplanes will be mapped from model {0} to {1}<br />", System.Web.HttpUtility.HtmlEncode(cmbModelToDelete.SelectedItem.Text), System.Web.HttpUtility.HtmlEncode(cmbModelToMergeInto.SelectedItem.Text)));
+            int idModelToDelete = Convert.ToInt32(cmbModelToDelete.SelectedValue, CultureInfo.InvariantCulture);
+            lblPreview.Text = HttpUtility.HtmlEncode(String.Format(CultureInfo.CurrentCulture, "Model {0} will be deleted\r\nThe following airplanes will be mapped from model {1} to {2}", idModelToDelete, cmbModelToDelete.SelectedValue, idModelToDelete));
 
             pnlPreview.Visible = true;
 
+            gvAirplanesToRemap.DataSource = new UserAircraft(null).GetAircraftForUser(UserAircraft.AircraftRestriction.AllMakeModel, idModelToDelete);
             gvAirplanesToRemap.DataBind();
-            lblPreview.Text = sb.ToString();
         }
 
         protected void btnDeleteDupeMake_Click(object sender, EventArgs e)
         {
-            StringBuilder sbAudit = new StringBuilder("<br /><br /><b>Audit of changes made:</b><br />");
             int idModelToDelete = Convert.ToInt32(cmbModelToDelete.SelectedValue, CultureInfo.InvariantCulture);
             int idModelToMergeInto = Convert.ToInt32(cmbModelToMergeInto.SelectedValue, CultureInfo.InvariantCulture);
 
-            // Before we migrate old aircraft, see if there are generics.
-            Aircraft acGenericSource = new Aircraft(Aircraft.AnonymousTailnumberForModel(idModelToDelete));
-            Aircraft acGenericTarget = new Aircraft(Aircraft.AnonymousTailnumberForModel(idModelToMergeInto));
-
-            if (acGenericSource.AircraftID != Aircraft.idAircraftUnknown)
-            {
-                // if the generic for the target doesn't exist, then no problem - just rename it and remap it!
-                if (acGenericTarget.AircraftID == Aircraft.idAircraftUnknown)
-                {
-                    acGenericSource.ModelID = idModelToMergeInto;
-                    acGenericSource.TailNumber = Aircraft.AnonymousTailnumberForModel(idModelToMergeInto);
-                    acGenericSource.Commit();
-                }
-                else
-                {
-                    // if the generic for the target also exists, need to merge the aircraft (creating a tombstone).
-                    AircraftUtility.AdminMergeDupeAircraft(acGenericTarget, acGenericSource);
-                }
-            }
-
-            using (IDataReader idr = (IDataReader)sqlAirplanesToReMap.Select(DataSourceSelectArguments.Empty))
-            {
-                // migrate the aircraft on the old model to the new model
-                while (idr.Read())
-                {
-                    string szIdAircraft = idr["idaircraft"].ToString();
-                    Aircraft ac = new Aircraft(Convert.ToInt32(szIdAircraft, CultureInfo.InvariantCulture)) { ModelID = idModelToMergeInto };
-                    ac.Commit();
-                    sbAudit.Append(String.Format(CultureInfo.CurrentCulture, "Updated aircraft {0} to model {1}<br />", System.Web.HttpUtility.HtmlEncode(szIdAircraft), idModelToMergeInto));
-                }
-            }
-
-            // Update any custom currency references to the old model
-            DBHelper dbhCCR = new DBHelper("UPDATE CustCurrencyRef SET value=?newID WHERE value=?oldID AND type=?modelsType");
-            dbhCCR.DoNonQuery((comm) =>
-            {
-                comm.Parameters.AddWithValue("newID", idModelToMergeInto);
-                comm.Parameters.AddWithValue("oldID", idModelToDelete);
-                comm.Parameters.AddWithValue("modelsType", (int)MyFlightbook.Currency.CustomCurrency.CurrencyRefType.Models);
-            });
-
-            // Then delete the old model
-            string szQ = String.Format(CultureInfo.InvariantCulture, "DELETE FROM models WHERE idmodel={0}", idModelToDelete);
-            DBHelper dbh = new DBHelper(szQ);
-            if (!dbh.DoNonQuery())
-                throw new MyFlightbookException("Error deleting model: " + szQ + "\r\n" + dbh.LastError);
-            sbAudit.Append(System.Web.HttpUtility.HtmlEncode(szQ) + "<br />");
-#pragma warning disable CA3002 // Review code for XSS vulnerabilities - dangerous bits already encoded above.
-            lblPreview.Text = sbAudit.ToString();
-#pragma warning restore CA3002 // Review code for XSS vulnerabilities
+            lblPreview.Text = String.Join("\r\n", MakeModel.AdminMergeDuplicateModels(idModelToDelete, idModelToMergeInto));
 
             RefreshDupeModels();
             gvOrphanMakes.DataBind();
