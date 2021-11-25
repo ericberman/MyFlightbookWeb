@@ -2,6 +2,8 @@
     Codebehind="Admin.aspx.cs" Inherits="MyFlightbook.Web.Admin.Member_Admin" Title="Administer MyFlightbook" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Src="../Controls/mfbImpersonate.ascx" TagName="mfbImpersonate" TagPrefix="uc1" %>
+<%@ Register Src="~/Controls/Expando.ascx" TagPrefix="uc1" TagName="Expando" %>
+
 <asp:Content ID="Content2" ContentPlaceHolderID="cpPageTitle" runat="Server">
     Admin Tools
 </asp:Content>
@@ -214,6 +216,13 @@
                 </asp:View>
             </asp:MultiView>
             <h2>Cache management</h2>
+            <div><asp:Label ID="lblMemStats" runat="server" /></div>
+            <uc1:expando runat="server" id="Expando">
+                <Header>Object Summary</Header>
+                <Body>
+                    <asp:GridView ID="gvCacheData" runat="server" />
+                </Body>
+            </uc1:expando>
             <p><asp:Button ID="btnFlushCache" runat="server" Text="Flush Cache" OnClick="btnFlushCache_Click" /> <span class="fineprint">Removes all entries from the cache; will make things slow, but useful for picking up DB changes or debugging</span></p>
             <div><asp:Label ID="lblCacheFlushResults" runat="server" EnableViewState="false" /></div>
             <h2>Nightly Run</h2>

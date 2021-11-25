@@ -1,13 +1,16 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Net.Mail;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Security;
+using System.Web.SessionState;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -70,6 +73,7 @@ namespace MyFlightbook.Web.Admin
                     case tabID.admMisc:
                         mvAdmin.SetActiveView(vwMisc);
                         mvMain.SetActiveView(vwMainMisc);
+                        DisplayMemStats();
                         break;
                     case tabID.admModels:
                         mvAdmin.SetActiveView(vwModels);
@@ -352,6 +356,22 @@ namespace MyFlightbook.Web.Admin
         #endregion
 
         #region Misc
+        protected void DisplayMemStats()
+        {
+            Dictionary<string, int> d = new Dictionary<string, int>();
+            foreach (System.Collections.DictionaryEntry entry in HttpRuntime.Cache)
+            {
+                string szClass = entry.Value.GetType().ToString();
+                if (d.ContainsKey(szClass))
+                    d[szClass]++;
+                else
+                    d[szClass] = 1;
+            }
+            gvCacheData.DataSource = d;
+            gvCacheData.DataBind();
+            lblMemStats.Text = String.Format(CultureInfo.CurrentCulture, "Cache has {0:#,##0} items", Cache.Count);
+        }
+
         protected async void btnRefreshInvalidSigs_Click(object sender, EventArgs e)
         {
             await Task.Run(() => { UpdateInvalidSigs(); }).ConfigureAwait(true);
