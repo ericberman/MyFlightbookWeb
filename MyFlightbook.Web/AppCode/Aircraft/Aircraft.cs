@@ -729,24 +729,6 @@ WHERE
         /// <returns>The ID of the most recently used aircraft</returns>
         #endregion
 
-        static public int LastTail
-        {
-            get
-            {
-                try
-                {
-                    if (HttpContext.Current.Session[MFBConstants.keyLastTail] != null)
-                        return Convert.ToInt32(HttpContext.Current.Session[MFBConstants.keyLastTail], CultureInfo.InvariantCulture);
-                    if (HttpContext.Current.Request.Cookies[MFBConstants.keyLastTail] != null && HttpContext.Current.Request.Cookies[MFBConstants.keyLastTail].Value != null)
-                        return Convert.ToInt32(HttpContext.Current.Request.Cookies[MFBConstants.keyLastTail].Value, CultureInfo.InvariantCulture);
-                }
-                catch (Exception ex) when (ex is FormatException)
-                {
-                }
-                return 0;
-            }
-        }
-
         /// <summary>
         /// The error from the most recent validation
         /// </summary>
@@ -2064,16 +2046,36 @@ WHERE
     /// </summary>
     public static class AircraftUtility
     {
-        /// <summary>
-        /// Save the ID of the last tail in a cookie
-        /// </summary>
-        /// <param name="szValue">The ID of the most recently used aircraft</param>
-        static public void SaveLastTail(int ID)
+        private const string keyLastTail = "LastTail"; // the id of the aircraft for the most recently entered flight.
+
+        static public int LastTail
         {
-            // Save the aircraft ID in a cookie
-            HttpContext.Current.Response.Cookies[MFBConstants.keyLastTail].Value = ID.ToString(CultureInfo.InvariantCulture);
-            HttpContext.Current.Response.Cookies[MFBConstants.keyLastTail].Expires = DateTime.Now.AddYears(5);
-            HttpContext.Current.Session[MFBConstants.keyLastTail] = ID.ToString(CultureInfo.InvariantCulture);
+            get
+            {
+                try
+                {
+                    if (HttpContext.Current.Request.Cookies[keyLastTail] != null && HttpContext.Current.Request.Cookies[keyLastTail].Value != null)
+                        return Convert.ToInt32(HttpContext.Current.Request.Cookies[keyLastTail].Value, CultureInfo.InvariantCulture);
+                }
+                catch (Exception ex) when (ex is FormatException)
+                {
+                }
+                return Aircraft.idAircraftUnknown;
+            }
+
+            set
+            {
+                if (HttpContext.Current != null && HttpContext.Current.Response != null && HttpContext.Current.Response.Cookies != null)
+                {
+                    if (value <= 0)
+                        HttpContext.Current.Response.Cookies.Remove(keyLastTail);
+                    else
+                    {
+                        HttpContext.Current.Response.Cookies[keyLastTail].Value = value.ToString(CultureInfo.InvariantCulture);
+                        HttpContext.Current.Response.Cookies[keyLastTail].Expires = DateTime.Now.AddYears(5);
+                    }
+                }
+            }
         }
 
         private const string RegexValidTail = "^[a-zA-Z0-9]+-?[a-zA-Z0-9]+-?[a-zA-Z0-9]+$";

@@ -121,7 +121,7 @@ namespace MyFlightbook.Web.Member
 
         protected void AircraftUpdated(object sender, EventArgs e)
         {
-            AircraftUtility.SaveLastTail(MfbEditAircraft1.AircraftID);
+            AircraftUtility.LastTail = MfbEditAircraft1.AircraftID;
             Response.Redirect(!String.IsNullOrEmpty(hdnReturnURL.Value) ? hdnReturnURL.Value : "Aircraft.aspx");
         }
 

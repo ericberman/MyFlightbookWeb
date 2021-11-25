@@ -492,8 +492,8 @@ namespace MyFlightbook.Controls.FlightEditing
                 mfbVideoEntry1.Videos.Clear();
 
                 // set the aircraft to the ID of the most recently used flight, if known.
-                int idLastAircraft = Aircraft.LastTail;
-                if (idLastAircraft != 0 && UseLastTail)
+                int idLastAircraft = AircraftUtility.LastTail;
+                if (idLastAircraft > 0 && UseLastTail)
                 {
                     try { cmbAircraft.SelectedValue = idLastAircraft.ToString(CultureInfo.InvariantCulture); }
                     catch (Exception ex) when (ex is ArgumentOutOfRangeException) { }
@@ -706,7 +706,7 @@ namespace MyFlightbook.Controls.FlightEditing
                 {
                     if (le.FCommit(le.HasFlightData))
                     {
-                        AircraftUtility.SaveLastTail(le.AircraftID);
+                        AircraftUtility.LastTail = le.AircraftID;
 
                         ProcessImages(le.FlightID);
 

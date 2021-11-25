@@ -28,7 +28,6 @@ namespace MyFlightbook
     {
         public const string keyLite = "Lite";   // Show a lightweight version of the site?
         public const string keyClassic = "Classic"; // persistant cookie - show a full version of the site even on mobile devices?
-        public const string keyLastTail = "LastTail"; // the id of the aircraft for the most recently entered flight.
         public const string keyIsImpersonating = "IsImpersonating";
         public const string keyOriginalID = "OriginalID";
         public const string keyNewUser = "IsNewUser";
