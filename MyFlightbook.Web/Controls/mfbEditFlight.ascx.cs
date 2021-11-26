@@ -428,7 +428,7 @@ namespace MyFlightbook.Controls.FlightEditing
         protected void SetUpAircraftForUser(string username, int idFlightAircraft, bool fShowAll)
         {
             UserAircraft ua = new UserAircraft(username);
-            Aircraft[] rgac = ua.GetAircraftForUser();
+            IEnumerable<Aircraft> rgac = ua.GetAircraftForUser();
             cmbAircraft.Items.Clear();
             if (rgac != null)
             {
@@ -443,7 +443,7 @@ namespace MyFlightbook.Controls.FlightEditing
                 }
 
                 // add an additional "Show all..." if some aircraft were suppressed, unless ALL aircraft were suppressed
-                if (cmbAircraft.Items.Count < rgac.Length && cmbAircraft.Items.Count > 0)
+                if (cmbAircraft.Items.Count < rgac.Count() && cmbAircraft.Items.Count > 0)
                 {
                     ListItem li = new ListItem(Resources.Aircraft.PromptShowAllAircraft, szValShowAllAircraft);
                     li.Attributes["style"] = "font-style:italic;";
@@ -614,8 +614,7 @@ namespace MyFlightbook.Controls.FlightEditing
 
         protected void SetTemplatesForAircraft(int idAircraft)
         {
-            UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
-            Aircraft ac = ua.GetUserAircraftByID(idAircraft);
+            Aircraft ac = new UserAircraft(Page.User.Identity.Name)[idAircraft];
             if (ac != null)
                 SetTemplatesForAircraft(ac, mfbEditPropSet1, FlightUser ?? Page.User.Identity.Name, FlightUser != null && FlightUser.CompareCurrentCultureIgnoreCase(Page.User.Identity.Name) != 0);
         }

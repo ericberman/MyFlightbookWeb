@@ -598,12 +598,7 @@ namespace MyFlightbook.Currency
                 CurrencyState cs;
 
                 if (CurrencyTimespanType.IsAligned())
-                {
-                    if (NumEvents >= RequiredEvents)
-                        cs = CurrencyState.OK;
-                    else
-                        cs = CurrencyState.NotCurrent;
-                }
+                    cs = NumEvents >= RequiredEvents ? CurrencyState.OK : CurrencyState.NotCurrent;
                 else if (EventType.IsDutyTimeEvent())
                 {
                     double ratio = (double) (NumEvents / RequiredEvents);
@@ -871,8 +866,12 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                 foreach (int idmodel in ModelsRestriction)
                     fq.AddModelById(idmodel);
 
-                UserAircraft ua = new UserAircraft(UserName);
-                Array.ForEach<Aircraft>(ua.GetAircraftForUser(), (ac) => { if (AircraftRestriction.Contains(ac.AircraftID)) fq.AircraftList.Add(ac); });
+                IEnumerable<Aircraft> rgac = new UserAircraft(UserName).GetAircraftForUser();
+                foreach (Aircraft ac in rgac)
+                {
+                    if (AircraftRestriction.Contains(ac.AircraftID)) 
+                        fq.AircraftList.Add(ac);
+                }
 
                 if (!String.IsNullOrEmpty(AirportRestriction))
                     fq.AddAirports(Airports.AirportList.NormalizeAirportList(AirportRestriction));

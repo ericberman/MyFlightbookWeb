@@ -304,7 +304,7 @@ namespace MyFlightbook
             {
                 // EventRecorder.WriteEvent(EventRecorder.MFBEventID.GetAircraft, szUser, "Aircraft for user");
                 UserAircraft ua = new UserAircraft(szUser);
-                Aircraft[] rgAc = ua.GetAircraftForUser();
+                IEnumerable<Aircraft> rgAc = ua.GetAircraftForUser();
                 if (rgAc == null)
                     rgAc = Array.Empty<Aircraft>(); // return an empty array rather than null
                 else
@@ -322,7 +322,7 @@ namespace MyFlightbook
                         if (ac.IsAnonymous)
                             ac.TailNumber = ac.HackDisplayTailnumber;
                     }
-                return rgAc;
+                return rgAc.ToArray();
             }
             else
                 return null;
@@ -781,7 +781,7 @@ namespace MyFlightbook
                 throw new MyFlightbookException(Resources.WebService.errAircraftNotFound);
 
             // Do any autofill now - this will also allow the idempotency check to work.
-            le.AutofillForAircraft(ua.GetUserAircraftByID(le.AircraftID));
+            le.AutofillForAircraft(ua[le.AircraftID]);
 
             // fix up any dates
             le.EngineStart = le.EngineStart.NormalizeDate();

@@ -1,10 +1,9 @@
-﻿using MyFlightbook;
-using MyFlightbook.StartingFlights;
+﻿using MyFlightbook.StartingFlights;
 using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Web.UI;
 using System.Web;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 
 /******************************************************
@@ -174,10 +173,11 @@ namespace MyFlightbook.MemberPages
                 this.Master.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, MyFlightbook.Profile.GetUser(User.Identity.Name).UserFullName);
                 mfbTypeInDate1.Date = DateTime.Now.AddYears(-1);
                 InitFlights(rbSimple, e);
-                Aircraft[] rgac = (new UserAircraft(User.Identity.Name)).GetAircraftForUser();
-                gvAircraft.DataSource = rgac;
+
+                UserAircraft ua = new UserAircraft(User.Identity.Name);
+                gvAircraft.DataSource = ua.GetAircraftForUser();
                 gvAircraft.DataBind();
-                if (rgac.Length == 0)
+                if (ua.Count == 0)
                     cpeExistingAircraft.Collapsed = false;
 
                 locWhyStartingFlights.Text = Branding.ReBrand(Resources.LocalizedText.WhyStartingFlights);

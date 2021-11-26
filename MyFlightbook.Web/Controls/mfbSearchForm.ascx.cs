@@ -433,14 +433,14 @@ public partial class Controls_mfbSearchForm : UserControl
             Username = Page.User.Identity.Name;
 
         UserAircraft ua = new UserAircraft(Username);
-        Aircraft[] rgac = ua.GetAircraftForUser();
-        Aircraft[] rgacActive = Array.FindAll(rgac, aircraft => !aircraft.HideFromSelection);
+        IEnumerable<Aircraft> rgac = ua.GetAircraftForUser();
+        IEnumerable<Aircraft> rgacActive = ua.FindMatching(aircraft => !aircraft.HideFromSelection);
 
         // Hide inactive aircraft unless 
         // (a) all aircraft are active, or 
         // (b) the current query references inactive aircraft
         // (c) pnlshowAllAircraft is invisible (indicating that it has been clicked)
-        bool fShowAll = !pnlShowAllAircraft.Visible || rgacActive.Length == rgac.Length || Restriction.AircraftList.FirstOrDefault(ac => ac.HideFromSelection) != null;
+        bool fShowAll = !pnlShowAllAircraft.Visible || rgacActive.Count() == rgac.Count() || Restriction.AircraftList.FirstOrDefault(ac => ac.HideFromSelection) != null;
         if (fShowAll)
             pnlShowAllAircraft.Visible = false;
         cklAircraft.DataSource = fShowAll ? rgac : rgacActive;
@@ -561,14 +561,13 @@ function setDates(isCustom)
         if (cklAircraft.SelectedIndex >= 0)
         {
             UserAircraft ua = new UserAircraft(Username);
-            Aircraft[] rgAircraft = ua.GetAircraftForUser();
 
             m_fq.AircraftList.Clear();
             foreach (ListItem li in cklAircraft.Items)
                 if (li.Selected)
                 {
                     // ac can be null if it's been deleted between the form being populated and this method being called.  Ignore it in that case.
-                    Aircraft acQuery = Array.Find(rgAircraft, ac => ac.AircraftID == Convert.ToInt32(li.Value, CultureInfo.InvariantCulture));
+                    Aircraft acQuery = ua[Convert.ToInt32(li.Value, CultureInfo.InvariantCulture)];
                     if (acQuery != null)
                         m_fq.AircraftList.Add(acQuery);
                 }

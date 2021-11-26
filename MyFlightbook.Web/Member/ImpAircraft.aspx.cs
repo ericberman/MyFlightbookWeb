@@ -1,6 +1,7 @@
 ﻿using MyFlightbook;
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -9,7 +10,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2020 MyFlightbook LLC
+ * Copyright (c) 2015-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -78,7 +79,7 @@ public partial class Member_ImpAircraft : MyFlightbook.Web.WizardPage.MFBWizardP
             if (wzImportAircraft.ActiveStep.ID == stepUnmatched.ID)
             {
                 Collection<AircraftImportMatchRow> lstUnMatched = Matches.AllUnmatched;
-                Aircraft[] rgac = new UserAircraft(Page.User.Identity.Name).GetAircraftForUser();
+                IEnumerable<Aircraft> rgac = new UserAircraft(Page.User.Identity.Name).GetAircraftForUser();
 
                 foreach (AircraftImportMatchRow mr in lstUnMatched)
                 {

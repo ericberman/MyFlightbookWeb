@@ -7,7 +7,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2020 MyFlightbook LLC
+ * Copyright (c) 2019-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -300,7 +300,7 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
             {
                 le.User = UserName;
                 UserAircraft ua = new UserAircraft(UserName);
-                Aircraft ac = ua.GetUserAircraftByTail(le.TailNumDisplay);
+                Aircraft ac = ua[le.TailNumDisplay];
                 if (ac != null)
                     le.AircraftID = ac.AircraftID;
             }

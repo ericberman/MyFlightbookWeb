@@ -1,14 +1,13 @@
 ﻿using MyFlightbook.Currency;
 using Newtonsoft.Json;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2020 MyFlightbook LLC
+ * Copyright (c) 2009-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -29,9 +28,12 @@ namespace MyFlightbook
 
         private const string szCacheKey = "userAircraftKey";
 
-        private Aircraft[] CachedAircraft
+        /// <summary>
+        /// Internally, we can assume this is a list.
+        /// </summary>
+        private List<Aircraft> CachedAircraft
         {
-            get { return String.IsNullOrEmpty(User) ? null : (Aircraft[]) Profile.GetUser(User).CachedObject(szCacheKey); }
+            get { return String.IsNullOrEmpty(User) ? null : (List<Aircraft>) Profile.GetUser(User).CachedObject(szCacheKey); }
             set
             {
                 if (!String.IsNullOrEmpty(User))
@@ -52,15 +54,15 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="restriction">which set of aircraft to get?</param>
         /// <param name="idModel">The model id to restrict on (only applies for AllmakeModel)</param>
-        /// <returns>An array of aircraft</returns>
-        public Aircraft[] GetAircraftForUser(AircraftRestriction restriction, int idModel = -1)
+        /// <returns>A LIST of aircraft</returns>
+        private List<Aircraft> GetAircraftForUserInternal(AircraftRestriction restriction, int idModel = -1)
         {
             // If no authenticated user, return immediately - don't hit the database!
             // Should never happen.
             if (String.IsNullOrEmpty(User) && restriction == AircraftRestriction.UserAircraft)
-                return Array.Empty<Aircraft>();
+                return new List<Aircraft>();
 
-            Aircraft[] rgAircraft = CachedAircraft;
+            List<Aircraft> rgAircraft = CachedAircraft;
 
             if (rgAircraft != null && restriction == AircraftRestriction.UserAircraft) // don't cache in admin mode
                 return rgAircraft;
@@ -92,7 +94,7 @@ namespace MyFlightbook
             }
 
             string szQ = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"], szFlags, szDefaultImage, szPrivateNotes, szTemplates, szRestrict);
-            ArrayList alAircraft = new ArrayList();
+            List<Aircraft> lst = new List<Aircraft>();
 
             DBHelper dbh = new DBHelper(szQ);
             if (!dbh.ReadRows(
@@ -101,20 +103,29 @@ namespace MyFlightbook
                     comm.Parameters.AddWithValue("UserName", User);
                     comm.Parameters.AddWithValue("idModel", idModel);
                 },
-                (dr) => { alAircraft.Add(new Aircraft(dr)); }))
+                (dr) => { lst.Add(new Aircraft(dr)); }))
                 throw new MyFlightbookException("Error getting aircraft for user: " + szQ + "\r\n" + dbh.LastError);
 
-            rgAircraft = (Aircraft[])alAircraft.ToArray(typeof(Aircraft));
-
             if (restriction == AircraftRestriction.UserAircraft)
-                CachedAircraft = rgAircraft;
+                CachedAircraft = lst;
 
-            return rgAircraft;
+            return lst;
         }
 
-        public Aircraft[] GetAircraftForUser()
+        /// <summary>
+        /// Returns a list of the aircraft available for the user
+        /// </summary>
+        /// <param name="restriction">which set of aircraft to get?</param>
+        /// <param name="idModel">The model id to restrict on (only applies for AllmakeModel)</param>
+        /// <returns>An enumerable of aircraft</returns>
+        public IEnumerable<Aircraft> GetAircraftForUser(AircraftRestriction restriction, int idModel = -1)
         {
-            return GetAircraftForUser(AircraftRestriction.UserAircraft);
+            return GetAircraftForUserInternal(restriction, idModel);
+        }
+
+        public IEnumerable<Aircraft> GetAircraftForUser()
+        {
+            return GetAircraftForUserInternal(AircraftRestriction.UserAircraft);
         }
 
         /// <summary>
@@ -124,11 +135,18 @@ namespace MyFlightbook
         /// <returns>The matching aircraft, if any</returns>
         public Aircraft GetUserAircraftByID(int id)
         {
-            Aircraft[] rgac = GetAircraftForUser();
-            foreach (Aircraft ac in rgac)
-                if (ac.AircraftID == id)
-                    return ac;
-            return null;
+            List<Aircraft> rgac = GetAircraftForUserInternal(AircraftRestriction.UserAircraft);
+            return rgac.Find(ac => ac.AircraftID == id);
+        }
+
+        /// <summary>
+        /// Returns a specified aircraft in the user's list (by ID)
+        /// </summary>
+        /// <param name="id">The ID of the aircraft</param>
+        /// <returns>The matching aircraft, if any</returns>
+        public Aircraft this[int id]
+        {
+            get { return GetUserAircraftByID(id); }
         }
 
         /// <summary>
@@ -136,17 +154,36 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="szTail"></param>
         /// <returns>The first matching aircraft.  Might not be the right one if you have clones in your account...</returns>
-        public Aircraft GetUserAircraftByTail(string szTail)
+        public Aircraft this[string szTail]
         {
-            if (String.IsNullOrWhiteSpace(szTail))
-                return null;
+            get
+            {
+                if (String.IsNullOrWhiteSpace(szTail))
+                    return null;
 
-            szTail = Aircraft.NormalizeTail(szTail).Trim().ToUpperInvariant();
-            Aircraft[] rgac = GetAircraftForUser();
-            foreach (Aircraft ac in rgac)
-                if (ac.TailNumber.CompareCurrentCultureIgnoreCase(szTail) == 0)
-                    return ac;
-            return null;
+                szTail = Aircraft.NormalizeTail(szTail).Trim().ToUpperInvariant();
+                List<Aircraft> rgac = GetAircraftForUserInternal(AircraftRestriction.UserAircraft);
+                return rgac.Find(ac => ac.NormalizedTail.CompareCurrentCultureIgnoreCase(szTail) == 0);
+            }
+        }
+
+
+        /// <summary>
+        /// The number of aircraft.
+        /// </summary>
+        public int Count
+        {
+            get { return GetAircraftForUserInternal(AircraftRestriction.UserAircraft).Count; }
+        }
+
+        public IEnumerable<Aircraft> FindMatching(Predicate<Aircraft> pred)
+        {
+            return GetAircraftForUserInternal(AircraftRestriction.UserAircraft).FindAll(pred);
+        }
+
+        public Aircraft Find(Predicate<Aircraft> pred)
+        {
+            return GetAircraftForUserInternal(AircraftRestriction.UserAircraft).Find(pred);
         }
 
         /// <summary>
@@ -169,7 +206,7 @@ namespace MyFlightbook
         /// <returns>True if they already know about it</returns>
         public Boolean CheckAircraftForUser(Aircraft ac)
         {
-            Aircraft[] rgac = GetAircraftForUser();
+            IEnumerable<Aircraft> rgac = GetAircraftForUser();
 
             if (rgac != null && ac != null)
             {
@@ -237,7 +274,7 @@ namespace MyFlightbook
                     lstAc.Add(acNew);
                 if (!lstAc.Exists(ac => ac.AircraftID == acOld.AircraftID))
                     lstAc.Add(acOld);
-                CachedAircraft = lstAc.ToArray();   // we'll nullify the cache below.
+                CachedAircraft = lstAc;   // we'll nullify the cache below.
                 
                 LogbookEntry.UpdateFlightAircraftForUser(this.User, acOld.AircraftID, acNew.AircraftID);
 
@@ -282,7 +319,7 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="AircraftID">The ID of the aircraft to delete</param>
         /// <returns>The updated list of aircraft for the user.</returns>
-        public Aircraft[] FDeleteAircraftforUser(int AircraftID)
+        public IEnumerable<Aircraft> FDeleteAircraftforUser(int AircraftID)
         {
             if (String.IsNullOrEmpty(User))
                 throw new MyFlightbookException("No user specified for Deleteaircraft");

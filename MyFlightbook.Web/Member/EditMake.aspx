@@ -1,4 +1,4 @@
-<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master" Codebehind="EditMake.aspx.cs" Inherits="EditMake" Title="MyFlightbook: Edit aircraft makes and models" %>
+<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master" Codebehind="EditMake.aspx.cs" Inherits="MyFlightbook.MemberPages.EditMake" Title="MyFlightbook: Edit aircraft makes and models" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register src="../Controls/mfbEditMake.ascx" tagname="mfbEditMake" tagprefix="uc1" %>
 <%@ Register src="../Controls/mfbATDFTD.ascx" tagname="mfbATDFTD" tagprefix="uc2" %>

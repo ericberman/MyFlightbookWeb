@@ -374,7 +374,7 @@ namespace MyFlightbook.AircraftControls
 
             m_ac.DefaultImage = e.Image.ThumbnailFile;
             UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
-            Aircraft acToUpdate = ua.GetUserAircraftByID(m_ac.AircraftID);
+            Aircraft acToUpdate = ua[m_ac.AircraftID];
             if (acToUpdate != null)
             {
                 acToUpdate.DefaultImage = m_ac.DefaultImage;
@@ -469,8 +469,7 @@ namespace MyFlightbook.AircraftControls
                 txtPrivateNotes.Text = string.Empty;
             else
             {
-                UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
-                Aircraft acExisting = ua.GetUserAircraftByID(AircraftID);
+                Aircraft acExisting = new UserAircraft(Page.User.Identity.Name)[AircraftID];
                 if (acExisting != null)
                 {
                     txtPrivateNotes.Text = acExisting.PrivateNotes;
@@ -569,7 +568,7 @@ namespace MyFlightbook.AircraftControls
 
             SetUpSchedules(m_ac, rptSchedules, rowClubSchedules, (string sz) => { mfbEditAppt1.DefaultTitle = sz; });
 
-            bool fIsKnown = AdminMode || (!fIsNew && (new UserAircraft(Page.User.Identity.Name)).GetUserAircraftByID(m_ac.AircraftID) != null);
+            bool fIsKnown = AdminMode || (!fIsNew && new UserAircraft(Page.User.Identity.Name)[m_ac.AircraftID] != null);
 
             btnAddAircraft.Text = fIsKnown ? Resources.LocalizedText.EditAircraftUpdateAircraft : Resources.LocalizedText.EditAircraftAddAircraft;
 
@@ -735,7 +734,7 @@ namespace MyFlightbook.AircraftControls
             UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
 
             // check if this isn't already in our aircraft list
-            int addToUserCount = (!fIsNew && fChangedModel && !AdminMode && ua.GetUserAircraftByID(m_ac.AircraftID) == null) ? 1 : 0;
+            int addToUserCount = (!fIsNew && fChangedModel && !AdminMode && ua[m_ac.AircraftID] == null) ? 1 : 0;
 
             bool fOtherUsers = !fIsNew && (fChangedTail || fChangedModel) && (new AircraftStats(Page.User.Identity.Name, m_ac.AircraftID)).Users + addToUserCount > 1;   // no need to compute user stats if new, or if tail and model are both unchanged
             bool fMigrateUser = (!fIsNew && fChangedTail && fOtherUsers);
@@ -767,8 +766,7 @@ namespace MyFlightbook.AircraftControls
             // Preserve any flags
             if (!ac.IsNew)
             {
-                Aircraft[] rgac = ua.GetAircraftForUser();
-                Aircraft acExisting = Array.Find(rgac, a => a.AircraftID == AircraftID);
+                Aircraft acExisting = ua[AircraftID];
                 if (acExisting != null)
                     ac.CopyFlags(acExisting);
             }

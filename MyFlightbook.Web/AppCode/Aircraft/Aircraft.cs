@@ -1895,9 +1895,7 @@ WHERE
         public static Collection<Aircraft> GetSims(int idmodel, Boolean fAllSims, AircraftInstanceTypes instanceType)
         {
             // get ALL of the aircraft.
-            Aircraft[] rgua = (new UserAircraft(string.Empty)).GetAircraftForUser(UserAircraft.AircraftRestriction.AllSims, idmodel);
-
-            List<Aircraft> lstAc = new List<Aircraft>(rgua);
+            List<Aircraft> lstAc = new List<Aircraft>((new UserAircraft(string.Empty)).GetAircraftForUser(UserAircraft.AircraftRestriction.AllSims, idmodel));
 
             lstAc.RemoveAll(ac => (idmodel != MakeModel.UnknownModel && ac.ModelID != idmodel) ||
                                   (!fAllSims && ac.InstanceType != instanceType) ||
@@ -2578,15 +2576,14 @@ ORDER BY f.date DESC LIMIT 10) tach", (int)CustomPropertyType.KnownProperties.ID
             if (lstMatches == null)
                 throw new ArgumentNullException(nameof(lstMatches));
 
-            UserAircraft ua = new UserAircraft(szUser);
-            Aircraft[] rgac = ua.GetAircraftForUser();
+            List<Aircraft> rgac = new List<Aircraft>(new UserAircraft(szUser).GetAircraftForUser());
             foreach (AircraftImportMatchRow mr in lstMatches)
             {
                 if (mr.State == MatchState.UnMatched)
                 {
                     string szNormal = rNormalize.Replace(mr.TailNumber, string.Empty);
-                    if (Array.Exists<Aircraft>(rgac, ac => String.Compare(rNormalize.Replace(ac.TailNumber, string.Empty), szNormal, StringComparison.CurrentCultureIgnoreCase) == 0))
-                        mr.State = AircraftImportMatchRow.MatchState.JustAdded;
+                    if (rgac.Exists(ac => String.Compare(rNormalize.Replace(ac.TailNumber, string.Empty), szNormal, StringComparison.CurrentCultureIgnoreCase) == 0))
+                        mr.State = MatchState.JustAdded;
                 }
             }
         }
