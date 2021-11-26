@@ -277,6 +277,51 @@ namespace Resources {
         }
         
         /// <summary>
+        ///    Looks up a localized string similar to Block: {0}.
+        /// </summary>
+        internal static string ElapsedBlockSummary {
+            get {
+                return ResourceManager.GetString("ElapsedBlockSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Duty: {0}.
+        /// </summary>
+        internal static string ElapsedDutySummary {
+            get {
+                return ResourceManager.GetString("ElapsedDutySummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Flight Duty: {0}.
+        /// </summary>
+        internal static string ElapsedFlightDutySummary {
+            get {
+                return ResourceManager.GetString("ElapsedFlightDutySummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Tach: {0}.
+        /// </summary>
+        internal static string ElapsedTachSummary {
+            get {
+                return ResourceManager.GetString("ElapsedTachSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to {0} to {1} ({2}).
+        /// </summary>
+        internal static string ElapsedTime {
+            get {
+                return ResourceManager.GetString("ElapsedTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///    Looks up a localized string similar to There are no flights in this logbook.
         /// </summary>
         internal static string EmptyLogbook {
@@ -3766,33 +3811,6 @@ namespace Resources {
         internal static string TemplateYours {
             get {
                 return ResourceManager.GetString("TemplateYours", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///    Looks up a localized string similar to (Total Block Time: {0}).
-        /// </summary>
-        internal static string TotalBlockTime {
-            get {
-                return ResourceManager.GetString("TotalBlockTime", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///    Looks up a localized string similar to (Total Duty Time: {0}).
-        /// </summary>
-        internal static string TotalDutyTime {
-            get {
-                return ResourceManager.GetString("TotalDutyTime", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///    Looks up a localized string similar to (Total Tach Time: {0:#,##0.0#}).
-        /// </summary>
-        internal static string TotalTachTime {
-            get {
-                return ResourceManager.GetString("TotalTachTime", resourceCulture);
             }
         }
     }

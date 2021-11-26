@@ -1370,7 +1370,12 @@ GROUP BY fp.idPropType;";
             CustomFlightProperty cfpEnd = rgprops.FirstOrDefault(cfp => cfp.PropTypeID == propEnd);
 
             if (cfpStart != null && cfpEnd != null && cfpEnd.DateValue.CompareTo(cfpStart.DateValue) > 0)
-                d[propEnd] = String.Format(CultureInfo.CurrentCulture, szFormat, ((decimal)cfpEnd.DateValue.StripSeconds().Subtract(cfpStart.DateValue.StripSeconds()).TotalHours).FormatDecimal(fUseHHMM, true));
+            {
+                // we have a complete period.  Coalesce them into a single summary line.
+                d[propStart] = String.Empty;
+                string szElapsed = ((decimal)cfpEnd.DateValue.StripSeconds().Subtract(cfpStart.DateValue.StripSeconds()).TotalHours).FormatDecimal(fUseHHMM);
+                d[propEnd] = String.Format(CultureInfo.CurrentCulture, szFormat, String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.ElapsedTime, cfpStart.ValueString, cfpEnd.ValueString, szElapsed));
+            }
 
         }
 
@@ -1382,11 +1387,19 @@ GROUP BY fp.idPropType;";
             CustomFlightProperty cfpTachStart = rgprops.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTachStart);
             CustomFlightProperty cfpTachEnd = rgprops.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTachEnd);
             if (cfpTachStart != null && cfpTachEnd != null && cfpTachEnd.DecValue - cfpTachStart.DecValue > 0)
-                d[(int)CustomPropertyType.KnownProperties.IDPropTachEnd] = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.TotalTachTime, cfpTachEnd.DecValue - cfpTachStart.DecValue);
+            {
+                // We have a complete tach.  Coalesce them into a single summary line.
+                d[(int)CustomPropertyType.KnownProperties.IDPropTachStart] = String.Empty;
+                d[(int)CustomPropertyType.KnownProperties.IDPropTachEnd] = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.ElapsedTachSummary, 
+                    String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.ElapsedTime, 
+                    cfpTachStart.ValueString,
+                    cfpTachEnd.ValueString,
+                    (cfpTachEnd.DecValue - cfpTachStart.DecValue).FormatDecimal(false)));
+            }
 
-            AddTotalElapsedTime(d, rgprops, (int)CustomPropertyType.KnownProperties.IDPropFlightDutyTimeStart, (int)CustomPropertyType.KnownProperties.IDPropFlightDutyTimeEnd, Resources.LogbookEntry.TotalDutyTime, fUseHHMM);
-            AddTotalElapsedTime(d, rgprops, (int)CustomPropertyType.KnownProperties.IDPropDutyStart, (int)CustomPropertyType.KnownProperties.IDPropDutyEnd, Resources.LogbookEntry.TotalDutyTime, fUseHHMM);
-            AddTotalElapsedTime(d, rgprops, (int)CustomPropertyType.KnownProperties.IDBlockOut, (int)CustomPropertyType.KnownProperties.IDBlockIn, Resources.LogbookEntry.TotalBlockTime, fUseHHMM);
+            AddTotalElapsedTime(d, rgprops, (int)CustomPropertyType.KnownProperties.IDPropFlightDutyTimeStart, (int)CustomPropertyType.KnownProperties.IDPropFlightDutyTimeEnd, Resources.LogbookEntry.ElapsedFlightDutySummary, fUseHHMM);
+            AddTotalElapsedTime(d, rgprops, (int)CustomPropertyType.KnownProperties.IDPropDutyStart, (int)CustomPropertyType.KnownProperties.IDPropDutyEnd, Resources.LogbookEntry.ElapsedDutySummary, fUseHHMM);;
+            AddTotalElapsedTime(d, rgprops, (int)CustomPropertyType.KnownProperties.IDBlockOut, (int)CustomPropertyType.KnownProperties.IDBlockIn, Resources.LogbookEntry.ElapsedBlockSummary, fUseHHMM);
 
             return d;
         }
@@ -1422,7 +1435,10 @@ GROUP BY fp.idPropType;";
             Dictionary<int, string> d = ComputeTotals(rgprops, fUseHHMM);
             foreach (CustomFlightProperty cfp in rgprops)
             {
-                string sz = (fUseHHMM ? cfp.DisplayStringHHMM : cfp.DisplayString) + (d.ContainsKey(cfp.PropTypeID) ? Resources.LocalizedText.LocalizedSpace + d[cfp.PropTypeID] : string.Empty);
+                // if this has been coalesced into the dictionary, use that; otherwise, use the display string.
+                string sz = d.ContainsKey(cfp.PropTypeID) ? d[cfp.PropTypeID] : (fUseHHMM ? cfp.DisplayStringHHMM : cfp.DisplayString);
+                if (String.IsNullOrEmpty(sz))
+                    continue;
                 if (fLinkify)
                     sz = sz.Linkify();
                 if (fReplaceApproaches)

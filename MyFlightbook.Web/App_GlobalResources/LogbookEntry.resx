@@ -522,14 +522,14 @@
   <data name="SubtotalComment" xml:space="preserve">
     <value>Totals this page:</value>
   </data>
-  <data name="TotalBlockTime" xml:space="preserve">
-    <value>(Total Block Time: {0})</value>
+  <data name="ElapsedBlockSummary" xml:space="preserve">
+    <value>Block: {0}</value>
   </data>
-  <data name="TotalDutyTime" xml:space="preserve">
-    <value>(Total Duty Time: {0})</value>
+  <data name="ElapsedDutySummary" xml:space="preserve">
+    <value>Duty: {0}</value>
   </data>
-  <data name="TotalTachTime" xml:space="preserve">
-    <value>(Total Tach Time: {0:#,##0.0#})</value>
+  <data name="ElapsedTachSummary" xml:space="preserve">
+    <value>Tach: {0}</value>
   </data>
   <data name="SendFlightBody" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>content.en\email\sendflightbody.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
@@ -1382,5 +1382,12 @@ Proceed with import?</value>
   </data>
   <data name="NumberOfFlightsOne" xml:space="preserve">
     <value>1 Flight</value>
+  </data>
+  <data name="ElapsedFlightDutySummary" xml:space="preserve">
+    <value>Flight Duty: {0}</value>
+  </data>
+  <data name="ElapsedTime" xml:space="preserve">
+    <value>{0} to {1} ({2})</value>
+    <comment>E.g., "23.5 - 24.2 (0.7)" or "18:12 - 19:02 (0:50)"</comment>
   </data>
 </root>
