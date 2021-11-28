@@ -1972,7 +1972,7 @@ namespace MyFlightbook
             }
 
             // Convert " OR " pattern with "|" so that it survives string split at word boundaries; we'll separate them later
-            string szMerged = rMergeOR.Replace(szGeneral.Trim().ToUpper(CultureInfo.CurrentCulture), "|"); ;
+            string szMerged = rMergeOR.Replace(szGeneral.Trim().ToUpper(CultureInfo.CurrentCulture), "|");
             if (String.IsNullOrWhiteSpace(szMerged)) // we could have removed Trailing:## from the search string and now be left with nothing.
                 return true;
 
@@ -2007,7 +2007,7 @@ namespace MyFlightbook
                     bool fMatchesPhrases = false;
 
                     // Treat as the "AND" of a set of OR clauses.  Of course, if only one clause it's just an AND...
-                    // But the gist is that any clause failse, we fail.
+                    // But the gist is that any clause fails, we fail.
                     foreach (string phrase in phrases)
                     {
                         string szPhrase = phrase;
@@ -2038,16 +2038,17 @@ namespace MyFlightbook
 
         private static bool IsPhraseMatch(string szPhrase, string szMatch, LogbookEntryBase le)
         {
+            if (String.IsNullOrEmpty(szMatch))
+                return false;
+
             // Issue #802 - Quick hack to direct a specific query to comment or route
             MatchCollection mcSpecific = rSpecific.Matches(szPhrase);
             if (mcSpecific.Count > 0)    // user is requesting a specific match on a specific field
             {
                 GroupCollection gc = mcSpecific[0].Groups;
                 string szValue = gc["value"].Value.Trim();
-                const string szSingleCharWildcard = "\b\b\b\b";
-                const string szMultiCharWildcard = "\v\v\v\v";
                 // Convert the wildcards to something unique, escape, the put the wildcards back
-                string rMatch = String.IsNullOrEmpty(szValue) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "^{0}$", Regex.Escape(szValue.Replace("?", szSingleCharWildcard).Replace("*", szMultiCharWildcard)).Replace(szSingleCharWildcard, ".").Replace(szMultiCharWildcard, ".*"));
+                string rMatch = String.IsNullOrEmpty(szValue) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "^{0}$", szValue.ConvertToRegexWildcards());
                 string szTest;
                 switch (gc["field"].Value.ToUpperInvariant())
                 {
@@ -2063,7 +2064,7 @@ namespace MyFlightbook
                 return Regex.IsMatch(szTest.Trim(), rMatch, RegexOptions.IgnoreCase);
             }
             else
-                return szMatch.Contains(szPhrase);
+                return Regex.IsMatch(szMatch.Trim(), szPhrase.ConvertToRegexWildcards(), RegexOptions.IgnoreCase);
         }
 
         public bool MatchesFlight(LogbookEntryDisplay le)

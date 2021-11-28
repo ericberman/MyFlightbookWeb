@@ -533,6 +533,25 @@ namespace MyFlightbook
         }
 
         /// <summary>
+        /// Converts a string containing "?" and "*" into a regex with . and .*, respectively, escaping everything else
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns>A safe regex to use that includes wildcards</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static string ConvertToRegexWildcards(this string s)
+        {
+            if (s == null)
+                throw new ArgumentNullException(nameof(s));
+
+            const string szSingleCharWildcard = "\b\b\b\b";
+            const string szMultiCharWildcard = "\v\v\v\v";
+
+            return Regex.Escape(s.Replace("?", szSingleCharWildcard).Replace("*", szMultiCharWildcard))
+                .Replace(szSingleCharWildcard, ".").
+                Replace(szMultiCharWildcard, ".*");
+        }
+
+        /// <summary>
         /// Returns a string limited to a specific length
         /// </summary>
         /// <param name="sz">The string to limit</param>
