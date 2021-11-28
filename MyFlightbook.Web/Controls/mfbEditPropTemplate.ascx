@@ -3,9 +3,9 @@
 <%@ Register Src="~/Controls/Expando.ascx" TagPrefix="uc1" TagName="Expando" %>
 <%@ Register Src="~/Controls/popmenu.ascx" TagPrefix="uc1" TagName="popmenu" %>
 
-<h2><asp:Localize ID="locTemplateHeader" runat="server" Text="<%$ Resources:LogbookEntry, TemplateHeader %>"></asp:Localize></h2>
-<p><asp:Localize ID="locTemplateDescription1" runat="server"></asp:Localize></p>
-<p><asp:Localize ID="locTemplateDescription2" runat="server"></asp:Localize></p>
+<h2><asp:Localize ID="locTemplateHeader" runat="server" Text="<%$ Resources:LogbookEntry, TemplateHeader %>" /></h2>
+<p><asp:Localize ID="locTemplateDescription1" runat="server" /> <asp:HyperLink ID="lnkLearnMore" Font-Bold="true" Target="_blank" runat="server" Text="<%$ Resources:LogbookEntry, TemplatesLearnMore %>" NavigateUrl="https://myflightbookblog.blogspot.com/2019/06/flight-templates.html" /></p>
+<p><asp:Localize ID="locTemplateDescription2" runat="server" /></p>
 <p>
     <asp:HyperLink ID="lnkBrowseTemplates" runat="server" NavigateUrl="~/Member/BrowseTemplates.aspx" Font-Bold="true" Text="<%$ Resources:LogbookEntry, TemplateBrowseTemplates %>"></asp:HyperLink>
     <asp:Localize ID="OrAdd" runat="server" Text="<%$ Resources:LocalizedText, ORSeparator %>"></asp:Localize>

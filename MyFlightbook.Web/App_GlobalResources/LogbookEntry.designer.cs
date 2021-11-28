@@ -3464,7 +3464,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Browse available templates.
+        ///    Looks up a localized string similar to Select from available templates.
         /// </summary>
         internal static string TemplateBrowseTemplates {
             get {
@@ -3473,7 +3473,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Browse Templates.
+        ///    Looks up a localized string similar to Select Templates.
         /// </summary>
         internal static string TemplateBrowseTemplatesheader {
             get {
@@ -3491,7 +3491,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Click to create a new template.
+        ///    Looks up a localized string similar to Create a new template.
         /// </summary>
         internal static string TemplateClickToCreate {
             get {
@@ -3784,6 +3784,15 @@ namespace Resources {
         internal static string TemplateSimBasicDesc {
             get {
                 return ResourceManager.GetString("TemplateSimBasicDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Learn more.
+        /// </summary>
+        internal static string TemplatesLearnMore {
+            get {
+                return ResourceManager.GetString("TemplatesLearnMore", resourceCulture);
             }
         }
         

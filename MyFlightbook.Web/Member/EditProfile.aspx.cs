@@ -68,7 +68,7 @@ namespace MyFlightbook.MemberPages
         protected void SetUpPageScript()
         {
             Page.ClientScript.RegisterClientScriptInclude("ListDrag", ResolveClientUrl("~/Public/Scripts/listdrag.js?v=5"));
-            ClientScript.RegisterClientScriptInclude("copytoClip", ResolveClientUrl("~/public/Scripts/CopyClipboard.js"));
+            Page.ClientScript.RegisterClientScriptInclude("copytoClip", ResolveClientUrl("~/public/Scripts/CopyClipboard.js"));
         }
 
         protected void SetPermutationsForUser(string json)

@@ -1017,7 +1017,7 @@ Proceed with import?</value>
     <value>Category for template</value>
   </data>
   <data name="TemplateClickToCreate" xml:space="preserve">
-    <value>Click to create a new template</value>
+    <value>Create a new template</value>
   </data>
   <data name="TemplateCreate" xml:space="preserve">
     <value>Save Template</value>
@@ -1101,7 +1101,7 @@ Proceed with import?</value>
     <value>If you have a template that you find useful and could be useful for others, please consider sharing it with the community!</value>
   </data>
   <data name="TemplateBrowseTemplatesheader" xml:space="preserve">
-    <value>Browse Templates</value>
+    <value>Select Templates</value>
   </data>
   <data name="TemplateConsumed" xml:space="preserve">
     <value>Template added to your account</value>
@@ -1113,7 +1113,7 @@ Proceed with import?</value>
     <value> - OR - </value>
   </data>
   <data name="TemplateBrowseTemplates" xml:space="preserve">
-    <value>Browse available templates</value>
+    <value>Select from available templates</value>
   </data>
   <data name="TemplateAnonymousBasic" xml:space="preserve">
     <value>Anonymous Aircraft (Basic)</value>
@@ -1389,5 +1389,8 @@ Proceed with import?</value>
   <data name="ElapsedTime" xml:space="preserve">
     <value>{0} to {1} ({2})</value>
     <comment>E.g., "23.5 - 24.2 (0.7)" or "18:12 - 19:02 (0:50)"</comment>
+  </data>
+  <data name="TemplatesLearnMore" xml:space="preserve">
+    <value>Learn more</value>
   </data>
 </root>
