@@ -2,7 +2,7 @@
 
 /******************************************************
  * 
- * Copyright (c) 2011-2020 MyFlightbook LLC
+ * Copyright (c) 2011-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -136,7 +136,7 @@ namespace MyFlightbook.SolarTools
             // (c) time is before sunrise - figure out the previous sunset and compare to that
             IsNight = IsFAACivilNight;
             IsFAANight = false;
-            IsWithinNightOffset = false;
+            IsWithinNightOffset = false; 
             if (Sunrise.CompareTo(dt) <= 0 && Sunset.CompareTo(dt) >= 0)
             {
                 // between sunrise and sunset - it's daytime no matter how you slice it; use default values (set above)
@@ -291,7 +291,7 @@ namespace MyFlightbook.SolarTools
         }
 
         /// <summary>
-        /// Solar angle - reverse engineered from http://www.usc.edu/dept-00/dept/architecture/mbs/tools/thermal/sun_calc.html
+        /// Solar angle - reverse engineered from spreadsheet at https://gml.noaa.gov/grad/solcalc/calcdetails.html?fbclid=IwAR0IEN0SAcRafcmzUN33QsnucSAtJvqNwgBs9XlMrstZUmG8nOv3sw6-eX4
         /// </summary>
         /// <param name="lat">The Latitude, in degrees</param>
         /// <param name="lon">The Longitude, in degrees</param>
@@ -300,23 +300,21 @@ namespace MyFlightbook.SolarTools
         /// <returns>Angle of the sun, in degrees</returns>
         static public double calcSolarAngle(double lat, double lon, double JD, double minutes)
         {
-            double t = calcTimeJulianCent(JD);
-            double decl = degToRad(calcSunDeclination(t));
+            double julianCentury = calcTimeJulianCent(JD + minutes / 1440.0);
+
+            double sunDeclinationRad = degToRad(calcSunDeclination(julianCentury));
             double latRad = degToRad(lat);
-            double altitudeAngle = 0.0;
 
-            double solarMinutesAfterMidnight = minutes + (4 * lon);
-            double hourAngle = (solarMinutesAfterMidnight - 12 * 60) / 4 * -1;
+            double eqOfTime = calcEquationOfTime(julianCentury);
 
-            try
-            {
-                altitudeAngle = Math.Asin(
-                            (Math.Cos(latRad) * Math.Cos(decl) * Math.Cos(degToRad(hourAngle)) +
-                            (Math.Sin(latRad) * Math.Sin(decl))));
-            }
-            catch (Exception ex) when (ex is OverflowException) { }
-
-            return radToDeg(altitudeAngle);
+            double trueSolarTimeMin =  (minutes + eqOfTime + 4 *lon) % 1440;
+            double hourAngleDeg = trueSolarTimeMin / 4 < 0 ? trueSolarTimeMin / 4 + 180 : trueSolarTimeMin / 4 - 180;
+            double zenith = radToDeg(Math.Acos(Math.Sin(latRad) * Math.Sin(sunDeclinationRad) + Math.Cos(latRad) * Math.Cos(sunDeclinationRad) * Math.Cos(degToRad(hourAngleDeg))));
+            double solarElevation = 90 - zenith;
+            double atmRefractionDeg = solarElevation > 85 ? 0 :
+                (solarElevation > 5 ? 58.1 / Math.Tan(degToRad(solarElevation)) - 0.07 / Math.Pow(Math.Tan(degToRad(solarElevation)), 3) + 0.000086 / Math.Pow(Math.Tan(degToRad(solarElevation)), 5) :
+                solarElevation > -0.575 ? 1735 + solarElevation * (-518.2 + solarElevation * (103.4 + solarElevation * (-12.79 + solarElevation * 0.711))) : -20.772 / Math.Tan(degToRad(solarElevation))) / 3600;
+            return solarElevation + atmRefractionDeg;
         }
 
         /// <summary>

@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true"
-    Codebehind="DayNight.aspx.cs" Inherits="Public_DayNight" %>
+    Codebehind="DayNight.aspx.cs" Inherits="MyFlightbook.Playpen.DayNight" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Src="../Controls/mfbGoogleMapManager.ascx" TagName="mfbGoogleMapManager"
     TagPrefix="uc1" %>
