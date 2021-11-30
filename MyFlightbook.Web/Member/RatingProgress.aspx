@@ -33,11 +33,10 @@
         </asp:Panel>
     </asp:Panel>
     <asp:GridView ID="gvMilestoneProgress" runat="server" ShowHeader="false" ShowFooter="false" 
-        onrowdatabound="gvMilestoneProgress_RowDataBound" CellPadding="3" CellSpacing="3" 
+        onrowdatabound="gvMilestoneProgress_RowDataBound" CellPadding="3" CellSpacing="3" RowStyle-CssClass="progressRow" AlternatingRowStyle-CssClass="progressRow"
         AutoGenerateColumns="False" GridLines="None">
         <Columns>
             <asp:TemplateField>
-                <ItemStyle VerticalAlign="Top" />
                 <ItemTemplate>
                     <div class="checkedBox">
                         <asp:Label ID="lblDone" Text="✔" runat="server" Visible='<%# Eval("IsSatisfied") %>'></asp:Label>
@@ -45,7 +44,6 @@
                 </ItemTemplate>
             </asp:TemplateField>
             <asp:TemplateField>
-                <ItemStyle CssClass="progressRow" />
                 <ItemTemplate>
                     <div><asp:Label ID="lblFarFREF" Font-Bold="true" runat="server" Text='<%#: Eval("FARRef") %>'></asp:Label> - <asp:Label ID="lblTitle" runat="server" Text='<%# Eval("Title") %>'></asp:Label></div>
                     <asp:Panel ID="pnlNote" CssClass="fineprint" runat="server">

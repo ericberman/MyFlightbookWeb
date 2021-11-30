@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true"
-    Codebehind="8710Form.aspx.cs" Inherits="Member_8710Form" culture="auto" %>
+    Codebehind="8710Form.aspx.cs" Inherits="MyFlightbook.MemberPages.FAA8710Form" culture="auto" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Src="../Controls/mfbLogbook.ascx" TagName="mfbLogbook" TagPrefix="uc6" %>
 <%@ Register src="../Controls/mfbSearchAndTotals.ascx" tagname="mfbSearchAndTotals" tagprefix="uc1" %>
@@ -13,7 +13,7 @@
 </asp:Content>
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
     <uc1:mfbAccordionProxyExtender runat="server" AccordionControlID="accReports" id="mfbAccordionProxyExtender" HeaderProxyIDs="apcFilter,apc8710,apcModelRollup,apcTimeRollup" />
-    <asp:Panel ID="pnlAcc" runat="server" CssClass="accordionMenuContainer">
+    <asp:Panel ID="pnlAcc" runat="server" CssClass="accordionMenuContainer noprint">
         <uc1:mfbAccordionProxyControl runat="server" id="apcFilter" LabelText="<%$ Resources:LocalizedText, LogTabFilter %>" />
         <uc1:mfbAccordionProxyControl runat="server" id="apc8710" LabelText="<%$ Resources:Totals, CommonReports8710 %>"/>
         <uc1:mfbAccordionProxyControl runat="server" id="apcModelRollup" LabelText="<%$ Resources:Totals, CommonReportsAirline %>"/>

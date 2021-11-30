@@ -1008,11 +1008,11 @@ table.dataDescription thead tr td
     display:inline-block;
 }
 
-.progressRow 
-{
+.progressRow {
     vertical-align: top;
     padding-top: 5px;
     padding-bottom: 5px;
+    page-break-inside: avoid;
 }
 
 .bar 
