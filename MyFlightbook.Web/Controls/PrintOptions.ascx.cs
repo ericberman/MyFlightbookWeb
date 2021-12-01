@@ -113,7 +113,7 @@ namespace MyFlightbook.Printing
                 }
 
                 ckPullForwardTotals.Checked = value.IncludePullForwardTotals;
-                rblForceBreak.Visible = ckPullForwardTotals.Visible = m_options.FlightsPerPage > 0;
+                pnlForceBreak.Visible = ckPullForwardTotals.Visible = m_options.FlightsPerPage > 0;
                 ckSeparateCategoryClass.Checked = m_options.StripeSubtotalsByCategoryClass;
 
                 rblModelDisplay.SelectedIndex = (int)value.DisplayMode;
@@ -261,6 +261,7 @@ namespace MyFlightbook.Printing
 
         protected void cmbFlightsPerPage_SelectedIndexChanged(object sender, EventArgs e)
         {
+            pnlForceBreak.Visible = ckPullForwardTotals.Visible = Convert.ToInt32(cmbFlightsPerPage.SelectedValue, CultureInfo.InvariantCulture) > 0;
             NotifyDelegate();
         }
 
