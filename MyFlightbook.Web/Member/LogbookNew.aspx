@@ -75,54 +75,86 @@
             </ajaxToolkit:AccordionPane>
             <ajaxToolkit:AccordionPane ID="acpPrint" runat="server">
                 <Content>
-                    <asp:UpdatePanel ID="updPrint" runat="server">
-                        <ContentTemplate>
-                            <div style="margin-left: auto; margin-right:auto; text-align:center">
-                                <div style="padding:5px; margin-left: auto; margin-right:auto; text-align:left; width: 50%">
-                                    <h3><%=Resources.LocalizedText.PrintViewTabFilter %></h3>
-                                    <table>
-                                        <tr>
-                                            <td>
-                                                <asp:CheckBox ID="ckIncludeCoverSheet" runat="server" Checked="true" AutoPostBack="true"  OnCheckedChanged="IncludeParametersChanged" />
-                                            </td>
-                                            <td>
-                                                <asp:Label ID="lblCoverSheet" runat="server" Text="<%$ Resources:LocalizedText, PrintViewIncludeCoverSheet %>" AssociatedControlID="ckIncludeCoverSheet"></asp:Label>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <asp:CheckBox ID="ckTotals" runat="server" Checked="true" AutoPostBack="true" OnCheckedChanged="IncludeParametersChanged" />
-                                            </td>
-                                            <td>
-                                                <asp:Label ID="lblIncludeTotals" AssociatedControlID="ckTotals" runat="server" Text="<%$ Resources:LocalizedText, PrintViewIncludeTotals %>"></asp:Label>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <asp:CheckBox ID="ckEndorsements" runat="server" Checked="true" AutoPostBack="true" OnCheckedChanged="IncludeParametersChanged" />
-                                            </td>
-                                            <td>
-                                                <asp:Label ID="lblIncludeEndorsements" AssociatedControlID="ckEndorsements" runat="server" Text="<%$ Resources:LocalizedText, PrintViewIncludeEndorsements %>"></asp:Label>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td>
-                                                <div style="float: left">
-                                                    <asp:CheckBox ID="ckIncludeEndorsementImages" runat="server" Checked="true" AutoPostBack="true" OnCheckedChanged="IncludeParametersChanged" /></div>
-                                                <div style="float:left">
-                                                    <asp:Label ID="lblIncludeWhat" AssociatedControlID="ckIncludeEndorsementImages" runat="server" Text="<%$ Resources:LocalizedText, PrintViewIncludeJPEGEndorsements %>"></asp:Label>
-                                                    <div class="fineprint"><% =Resources.LocalizedText.PrintViewNoEmbeddedPDFsNote %></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>
-                                <asp:HyperLink ID="lnkPrintView" runat="server" Target="_blank">
-                                    <asp:Image ID="imgOpenPrintView" ImageUrl="~/images/rightarrow.png" ImageAlign="Middle" runat="server" />&nbsp;<%=Resources.LocalizedText.OpenPrintView %></asp:HyperLink>
-                            </div>
-                        </ContentTemplate>
-                    </asp:UpdatePanel>
+                    <script type="text/javascript">
+                        function updPrint() {
+                            var ckEndorsements = $('#<% =ckEndorsements.ClientID %>')[0];
+                            var ckIncludeImgs = $('#<% =ckIncludeEndorsementImages.ClientID %>')[0];
+                            if (!ckEndorsements.checked)
+                                ckIncludeImgs.checked = false;
+                            ckIncludeImgs.disabled = !ckEndorsements.checked;
+                            var sects = new Object();
+                            sects["Endorsements"] = ckEndorsements.checked ? (ckIncludeImgs.checked ? "DigitalAndPhotos" : "DigitalOnly") : "None";
+                            sects["IncludeCoverPage"] = $('#<% = ckIncludeCoverSheet.ClientID %>')[0].checked;
+                            sects["IncludeFlights"] = true;
+                            sects["IncludeTotals"] = $('#<% =ckTotals.ClientID %>')[0].checked;
+
+                            var lnkPreview = $('#<% =lnkPrintView.ClientID %>')[0];
+
+                            var params = new Object();
+                            params.szExisting = lnkPreview.href;
+                            params.ps = sects;
+
+                            var d = JSON.stringify(params);
+
+                            $.ajax(
+                                {
+                                    url: '<% =ResolveUrl("~/Member/LogbookNew.aspx/PrintLink") %>',
+                                    type: "POST", data: d, dataType: "json", contentType: "application/json",
+                                    error: function (xhr, status, error) {
+                                        window.alert(xhr.responseJSON.Message);
+                                    },
+                                    complete: function (response) { },
+                                    success: function (response) {
+                                        lnkPreview.href = response.d
+                                    }
+                                });
+                            return false;
+                        }
+                    </script>
+                    <div style="margin-left: auto; margin-right:auto; text-align:center">
+                        <div style="padding:5px; margin-left: auto; margin-right:auto; text-align:left; width: 50%">
+                            <h3><%=Resources.LocalizedText.PrintViewTabFilter %></h3>
+                            <table>
+                                <tr>
+                                    <td>
+                                        <asp:CheckBox ID="ckIncludeCoverSheet" runat="server" Checked="true" onclick="updPrint();" />
+                                    </td>
+                                    <td>
+                                        <asp:Label ID="lblCoverSheet" runat="server" Text="<%$ Resources:LocalizedText, PrintViewIncludeCoverSheet %>" AssociatedControlID="ckIncludeCoverSheet" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <asp:CheckBox ID="ckTotals" runat="server" Checked="true" onclick="updPrint();" />
+                                    </td>
+                                    <td>
+                                        <asp:Label ID="lblIncludeTotals" AssociatedControlID="ckTotals" runat="server" Text="<%$ Resources:LocalizedText, PrintViewIncludeTotals %>" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <asp:CheckBox ID="ckEndorsements" runat="server" Checked="true" onclick="updPrint();" />
+                                    </td>
+                                    <td>
+                                        <asp:Label ID="lblIncludeEndorsements" AssociatedControlID="ckEndorsements" runat="server" Text="<%$ Resources:LocalizedText, PrintViewIncludeEndorsements %>" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <div style="float: left">
+                                            <asp:CheckBox ID="ckIncludeEndorsementImages" runat="server" Checked="true" onclick="updPrint();" /></div>
+                                        <div style="float:left">
+                                            <asp:Label ID="lblIncludeWhat" AssociatedControlID="ckIncludeEndorsementImages" runat="server" Text="<%$ Resources:LocalizedText, PrintViewIncludeJPEGEndorsements %>"></asp:Label>
+                                            <div class="fineprint"><% =Resources.LocalizedText.PrintViewNoEmbeddedPDFsNote %></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <asp:HyperLink ID="lnkPrintView" runat="server" Target="_blank">
+                            <asp:Image ID="imgOpenPrintView" ImageUrl="~/images/rightarrow.png" ImageAlign="Middle" runat="server" />&nbsp;<%=Resources.LocalizedText.OpenPrintView %></asp:HyperLink>
+                    </div>
                 </Content>
             </ajaxToolkit:AccordionPane>
             <ajaxToolkit:AccordionPane ID="acpMore" runat="server">

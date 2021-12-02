@@ -72,6 +72,25 @@ namespace MyFlightbook.MemberPages
 
             return LogbookEntryDisplay.SuggestTraining(prefixText, count);
         }
+
+
+        [WebMethod(EnableSession = true)]
+        public static string PrintLink(string szExisting, PrintingSections ps)
+        {
+            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+                throw new MyFlightbookException("Unauthenticated call to PrintLink");
+
+            // check for invalid data
+            if (szExisting == null || ps == null)
+                return szExisting;
+
+            PrintingOptions po = new PrintingOptions() { Sections = ps };
+            UriBuilder ub = new UriBuilder(new Uri(szExisting));
+            var nvc = HttpUtility.ParseQueryString(ub.Query);
+            nvc["po"] = Convert.ToBase64String(JsonConvert.SerializeObject(po, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore }).Compress());
+            ub.Query = nvc.ToString();
+            return ub.ToString();
+        }
         #endregion
 
         private const string szParamIDFlight = "idFlight";
@@ -409,11 +428,6 @@ namespace MyFlightbook.MemberPages
         {
             // Redirect back to eliminate the ID of the flight in the URL.
             Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx{0}", SanitizedQuery), true);
-        }
-
-        protected void IncludeParametersChanged(object sender, EventArgs e)
-        {
-            ResolvePrintLink();
         }
 
         protected void rblTotalsMode_SelectedIndexChanged(object sender, EventArgs e)
