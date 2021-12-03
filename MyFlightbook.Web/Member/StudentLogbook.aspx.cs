@@ -1,5 +1,4 @@
 ﻿using MyFlightbook.Printing;
-using Newtonsoft.Json;
 using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -51,17 +50,17 @@ namespace MyFlightbook.Instruction
                     else
                     {
                         // If we're here, we are authorized
-                        lblHeader.Text = String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.SignOff.ViewStudentLogbookHeader, HttpUtility.HtmlEncode(student.UserFullName));
+                        lblHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.SignOff.ViewStudentLogbookHeader, HttpUtility.HtmlEncode(student.UserFullName));
                         hdnStudent.Value = student.UserName;
                         Restriction = new FlightQuery(student.UserName);
 
                         if (mfbLogbook1.CanResignValidFlights = student.CanAddLogbook)
                         {
                             mfbEditFlight.FlightUser = student.UserName;
-                            mfbEditFlight.SetUpNewOrEdit(LogbookEntry.idFlightNew);
+                            mfbEditFlight.SetUpNewOrEdit(LogbookEntryBase.idFlightNew);
                         }
                         else
-                            apcNewFlight.Visible = false;
+                            apcNewFlight.Container.Style["display"] = "none";
 
                         if (!String.IsNullOrEmpty(hdnStudent.Value))
                             UpdateForUser(hdnStudent.Value);
@@ -159,7 +158,7 @@ namespace MyFlightbook.Instruction
 
         protected void mfbEditFlight_FlightUpdated(object sender, LogbookEventArgs e)
         {
-            mfbEditFlight.SetUpNewOrEdit(LogbookEntry.idFlightNew);
+            mfbEditFlight.SetUpNewOrEdit(LogbookEntryBase.idFlightNew);
             AccordionCtrl.SelectedIndex = -1;
             mfbLogbook1.RefreshData();
         }
@@ -168,7 +167,8 @@ namespace MyFlightbook.Instruction
         {
             if (!ckEndorsements.Checked)
                 ckIncludeEndorsementImages.Checked = false;
-            PrintingOptions po = new PrintingOptions()
+
+            lnkPrintView.NavigateUrl = PrintingOptions.PermaLink(Restriction, new PrintingOptions()
             {
                 Sections = new PrintingSections()
                 {
@@ -177,16 +177,10 @@ namespace MyFlightbook.Instruction
                     IncludeFlights = true,
                     IncludeTotals = ckTotals.Checked
                 }
-            };
-            lnkPrintView.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/PrintView.aspx?po={0}&fq={1}&u={2}",
-                HttpUtility.UrlEncode(Convert.ToBase64String(JsonConvert.SerializeObject(po, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore }).Compress())),
-                HttpUtility.UrlEncode(Restriction.ToBase64CompressedJSONString()),
-                hdnStudent.Value);
-        }
-
-        protected void IncludeParametersChanged(object sender, EventArgs e)
-        {
-            ResolvePrintLink();
+            }, Request.Url.Host, Request.Url.Scheme, (nvc) =>
+            {
+                nvc["u"] = hdnStudent.Value;
+            }).ToString();
         }
 
         protected void lnkDownloadCSV_Click(object sender, EventArgs e)
@@ -197,7 +191,7 @@ namespace MyFlightbook.Instruction
             Response.Clear();
             Response.ContentType = "text/csv";
             // Give it a name that is the brand name, user's name, and date.  Convert spaces to dashes, and then strip out ANYTHING that is not alphanumeric or a dash.
-            string szFilename = String.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}", Branding.CurrentBrand.AppName, MyFlightbook.Profile.GetUser(hdnStudent.Value).UserFullName, DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)).Replace(" ", "-");
+            string szFilename = String.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}", Branding.CurrentBrand.AppName, Profile.GetUser(hdnStudent.Value).UserFullName, DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)).Replace(" ", "-");
             string szDisposition = String.Format(CultureInfo.InvariantCulture, "attachment;filename={0}.csv", Regex.Replace(szFilename, "[^0-9a-zA-Z-]", ""));
             Response.AddHeader("Content-Disposition", szDisposition);
             mfbDownload1.ToStream(Response.OutputStream);

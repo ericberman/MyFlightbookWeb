@@ -84,12 +84,7 @@ namespace MyFlightbook.MemberPages
             if (szExisting == null || ps == null)
                 return szExisting;
 
-            PrintingOptions po = new PrintingOptions() { Sections = ps };
-            UriBuilder ub = new UriBuilder(new Uri(szExisting));
-            var nvc = HttpUtility.ParseQueryString(ub.Query);
-            nvc["po"] = Convert.ToBase64String(JsonConvert.SerializeObject(po, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore }).Compress());
-            ub.Query = nvc.ToString();
-            return ub.ToString();
+            return PrintingOptions.UpdatedPermaLink(szExisting, new PrintingOptions() { Sections = ps }).ToString();
         }
         #endregion
 
@@ -320,9 +315,7 @@ namespace MyFlightbook.MemberPages
                     IncludeTotals = ckTotals.Checked
                 }
             };
-            lnkPrintView.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/PrintView.aspx?po={0}&fq={1}",
-                HttpUtility.UrlEncode(Convert.ToBase64String(JsonConvert.SerializeObject(po, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore }).Compress())),
-                HttpUtility.UrlEncode(Restriction.ToBase64CompressedJSONString()));
+            lnkPrintView.NavigateUrl = PrintingOptions.PermaLink(Restriction, po, Request.Url.Host, Request.Url.Scheme).ToString();
         }
 
         protected void Refresh()

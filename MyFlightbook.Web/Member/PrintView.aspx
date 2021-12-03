@@ -267,8 +267,8 @@
             </asp:Repeater>
         </asp:Panel>
         <asp:Panel ID="pnlTotals" runat="server">
-            <h2><asp:Label ID="lblTotalsHeader" runat="server" Text="<%$ Resources:LocalizedText, PrintViewTotalsHeader %>" ></asp:Label></h2>
-            <uc2:mfbTotalSummary ID="mfbTotalSummary1" runat="server" />
+            <h2><asp:Label ID="lblTotalsHeader" runat="server" Text="<%$ Resources:LocalizedText, PrintViewTotalsHeader %>" /></h2>
+            <uc2:mfbTotalSummary ID="mfbTotalSummary1" runat="server" LinkTotalsToQuery="false" />
         </asp:Panel>
     </asp:Panel>
 </asp:Content>

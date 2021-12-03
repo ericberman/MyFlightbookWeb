@@ -53,14 +53,11 @@ namespace MyFlightbook.MemberPages
             if (fq == null)
                 throw new ArgumentNullException(nameof(fq));
             string szStudent = util.GetStringParam(Request, "u");
-            return String.Format(CultureInfo.InvariantCulture, "{0}://{1}{2}",
-                Request.Url.Scheme,
-                Request.Url.Host,
-                VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/PrintView.aspx?po={0}&fq={1}{2}",
-                HttpUtility.UrlEncode(Convert.ToBase64String(JsonConvert.SerializeObject(po, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore }).Compress())),
-                HttpUtility.UrlEncode(fq.ToBase64CompressedJSONString()),
-                String.IsNullOrEmpty(szStudent) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "&u={0}", szStudent))
-                ));
+            return PrintingOptions.PermaLink(fq, po, Request.Url.Host, Request.Url.Scheme, (nvc) =>
+            {
+                if (!String.IsNullOrEmpty(szStudent))
+                    nvc["u"] = szStudent;
+            }).ToString();
         }
 
         protected string ReturnLink(FlightQuery fq)
