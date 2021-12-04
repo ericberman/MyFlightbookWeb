@@ -494,7 +494,6 @@
     <Content Include="Controls\mfbImpersonate.ascx" />
     <Content Include="Controls\mfbImportAircraft.ascx" />
     <Content Include="Controls\mfbLogbook.ascx" />
-    <Content Include="Controls\mfbLogbookSidebar.ascx" />
     <Content Include="Controls\mfbMaintainAircraft.ascx" />
     <Content Include="Controls\mfbMakeListItem.ascx" />
     <Content Include="Controls\mfbMiniFacebook.ascx" />
@@ -1806,13 +1805,6 @@
     </Compile>
     <Compile Include="Controls\mfbLogbook.ascx.designer.cs">
       <DependentUpon>mfbLogbook.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\mfbLogbookSidebar.ascx.cs">
-      <DependentUpon>mfbLogbookSidebar.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbLogbookSidebar.ascx.designer.cs">
-      <DependentUpon>mfbLogbookSidebar.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\mfbMaintainAircraft.ascx.cs">
       <DependentUpon>mfbMaintainAircraft.ascx</DependentUpon>

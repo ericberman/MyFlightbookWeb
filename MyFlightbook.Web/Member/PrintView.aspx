@@ -5,7 +5,6 @@
 <%@ Register src="../Controls/mfbSearchForm.ascx" tagname="mfbSearchForm" tagprefix="uc3" %>
 <%@ Register src="../Controls/PrintOptions.ascx" tagname="PrintOptions" tagprefix="uc5" %>
 <%@ Register Src="~/Controls/mfbQueryDescriptor.ascx" TagPrefix="uc2" TagName="mfbQueryDescriptor" %>
-<%@ Register src="../Controls/mfbLogbookSidebar.ascx" tagname="mfbLogbookSidebar" tagprefix="uc1" %>
 <%@ Register Src="~/Controls/PrintingLayouts/layoutEASAFCL.ascx" TagPrefix="uc1" TagName="layoutEASAFCL" %>
 <%@ Register Src="~/Controls/PrintingLayouts/layoutUSA.ascx" TagPrefix="uc1" TagName="layoutUSA" %>
 <%@ Register Src="~/Controls/PrintingLayouts/layoutNative.ascx" TagPrefix="uc1" TagName="layoutNative" %>

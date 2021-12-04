@@ -1,6 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="FlightDetail.aspx.cs" Inherits="MyFlightbook.MemberPages.FlightDetail" culture="auto" meta:resourcekey="PageResource1" Async="true" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
-<%@ Reference Control="~/Controls/mfbLogbookSidebar.ascx" %>
 <%@ Register Src="../Controls/mfbGoogleMapManager.ascx" TagName="mfbGoogleMapManager"
     TagPrefix="uc1" %>
 <%@ Register Src="../Controls/GoogleChart.ascx" TagName="GoogleChart" TagPrefix="uc2" %>

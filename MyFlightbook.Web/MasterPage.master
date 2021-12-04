@@ -2,7 +2,6 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <%@ Register Src="Controls/mfbFooter.ascx" TagName="mfbFooter" TagPrefix="uc1" %>
 <%@ Register src="Controls/mfbHeader.ascx" tagname="mfbHeader" tagprefix="uc2" %>
-<%@ Register src="Controls/mfbLogbookSidebar.ascx" tagname="mfbLogbookSidebar" tagprefix="uc3" %>
 <%@ Register src="Controls/GoogleAnalytics.ascx" tagname="GoogleAnalytics" tagprefix="uc4" %>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
