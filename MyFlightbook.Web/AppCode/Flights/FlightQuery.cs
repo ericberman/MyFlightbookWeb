@@ -1056,7 +1056,7 @@ namespace MyFlightbook
                     bool fIsArrival = szCode.EndsWith(SearchFullStopAnchor, StringComparison.CurrentCultureIgnoreCase);
                     string szNormalAirport = szCode.Replace(SearchFullStopAnchor, string.Empty);    // remove any anchor
                     // Make the leading "K" optional
-                    if (szNormalAirport.StartsWith(Airports.airport.USAirportPrefix, StringComparison.CurrentCultureIgnoreCase))
+                    if (szNormalAirport.StartsWith(Airports.airport.USAirportPrefix, StringComparison.CurrentCultureIgnoreCase) && szNormalAirport.Length == 4) // k-hack only applies for 4 characters or longer
                         szNormalAirport = String.Format(CultureInfo.InvariantCulture, "({0})?{1}", Airports.airport.USAirportPrefix, szNormalAirport.Substring(Airports.airport.USAirportPrefix.Length));
                     string szParamValue = String.Format(CultureInfo.InvariantCulture, "{0}{1}{2}", fIsDepart ? "^" : string.Empty, szNormalAirport, fIsArrival ? "$" : string.Empty);
                     AddParameter(szParam, szParamValue);
