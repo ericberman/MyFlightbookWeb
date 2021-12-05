@@ -6,7 +6,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2020 MyFlightbook LLC
+ * Copyright (c) 2013-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -50,7 +50,7 @@ namespace MyFlightbook.RatingsProgress
         protected MilestoneItem miMinTime { get; set; }
         protected MilestoneItem miMinInstruction { get; set; }
         protected MilestoneItem miXCFlight { get; set; }
-        protected MilestoneItem miTestPrep { get; set; }
+        protected MilestoneItemDecayable miTestPrep { get; set; }
         protected MilestoneItem miMinSolo { get; set; }
 
         protected CategoryClass.CatClassID CatClassID { get; set; }
@@ -72,7 +72,7 @@ namespace MyFlightbook.RatingsProgress
             miXCFlight = new MilestoneItem(Resources.MilestoneProgress.RecreationalMinXC, ResolvedFAR("(a)(1)(i)"), Resources.MilestoneProgress.RecreationalMinXCNote, MilestoneItem.MilestoneType.Time, 2.0M);
 
             // 61.99(a)(1)(ii) - 3 hours of flight training within preceding 2 months.
-            miTestPrep = new MilestoneItem(Resources.MilestoneProgress.RecreationTestPrep, ResolvedFAR("(a)(1)(ii)"), Branding.ReBrand(Resources.MilestoneProgress.NoteTestPrep), MilestoneItem.MilestoneType.Time, 3.0M);
+            miTestPrep = new MilestoneItemDecayable(Resources.MilestoneProgress.RecreationTestPrep, ResolvedFAR("(a)(1)(ii)"), Branding.ReBrand(Resources.MilestoneProgress.NoteTestPrep), MilestoneItem.MilestoneType.Time, 3.0M, 2);
 
             // 61.99(a)(2) - 3 hours of solo time
             miMinSolo = new MilestoneItem(Resources.MilestoneProgress.RecreationalMinSolo, ResolvedFAR("(a)(2)"), Resources.MilestoneProgress.NoteSoloTime, MilestoneItem.MilestoneType.Time, 3.0M);
@@ -106,8 +106,7 @@ namespace MyFlightbook.RatingsProgress
             if (cfr.idCatClassOverride == CatClassID)
             {
                 // 61.99(a)(2)
-                if (DateTime.Now.AddCalendarMonths(-2).CompareTo(cfr.dtFlight) <= 0)
-                    miTestPrep.AddEvent(cfr.Dual);
+                miTestPrep.AddDecayableEvent(cfr.dtFlight, cfr.Dual, DateTime.Now.AddCalendarMonths(-2).CompareTo(cfr.dtFlight) <= 0);
 
                 // 61.99(b)
                 decimal soloTime = 0.0M;

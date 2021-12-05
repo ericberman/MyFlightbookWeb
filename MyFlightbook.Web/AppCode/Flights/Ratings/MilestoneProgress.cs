@@ -8,7 +8,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2020 MyFlightbook LLC
+ * Copyright (c) 2013-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -82,6 +82,8 @@ namespace MyFlightbook.RatingsProgress
             get { return String.Format(CultureInfo.CurrentCulture, "{0:#,##0}%", Percentage); }
         }
 
+        public virtual string ExpirationNote { get { return string.Empty; } }
+
         /// <summary>
         /// The type of milestone this represents
         /// </summary>
@@ -151,11 +153,7 @@ namespace MyFlightbook.RatingsProgress
         }
         #endregion
 
-        /// <summary>
-        /// Adds progress towards a rating.
-        /// </summary>
-        /// <param name="x"></param>
-        public void AddEvent(decimal x)
+        public virtual void AddEvent(decimal x)
         {
             Progress += x;
         }
@@ -166,7 +164,7 @@ namespace MyFlightbook.RatingsProgress
         /// <param name="x">The progress to add</param>
         /// <param name="limit">The "do not exceed" amount that is allowed</param>
         /// <param name="fIsTrainingDevice">True if this is in a training device rather than a real aircraft</param>
-        public void AddTrainingEvent(decimal x, decimal limit, bool fIsTrainingDevice)
+        public virtual void AddTrainingEvent(decimal x, decimal limit, bool fIsTrainingDevice)
         {
             if (fIsTrainingDevice && TrainingDeviceContribution + x > limit)
                 x = Math.Max(limit - TrainingDeviceContribution, 0.0M);
@@ -180,7 +178,7 @@ namespace MyFlightbook.RatingsProgress
             return String.Format(CultureInfo.CurrentCulture, "({0}) {1} ({2} {3} {4}", FARRef, Title, Progress, Threshold, Type.ToString());
         }
 
-        public void MatchFlightEvent(ExaminerFlightRow cfr)
+        public virtual void MatchFlightEvent(ExaminerFlightRow cfr)
         {
             if (Type == MilestoneType.AchieveOnce && !IsSatisfied)
             {
@@ -189,6 +187,60 @@ namespace MyFlightbook.RatingsProgress
                 AddEvent(1);
                 MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MatchingXCFlightTemplate, cfr.dtFlight.ToShortDateString(), cfr.Route);
                 MatchingEventID = cfr.flightID;
+            }
+        }
+    }
+
+    /// <summary>
+    /// MilestoneItem that includes decayable status.  Typically this is test prep before practical test.
+    /// </summary>
+    [Serializable]
+    public class MilestoneItemDecayable : MilestoneItem
+    {
+        protected FlightCurrency DecayingCurrency { get; set; } = new FlightCurrency(3, 2, true, string.Empty);
+
+        public MilestoneItemDecayable() : base() { }
+
+        public MilestoneItemDecayable(string title, string farref, string note, MilestoneType type, decimal threshold, int timespan, bool fCalendar = true) : base(title, farref, note, type, threshold)
+        {
+            DecayingCurrency = new FlightCurrency(threshold, timespan, fCalendar, string.Empty);
+        }
+
+        /// <summary>
+        /// Adds a decayable event as of the specified date
+        /// </summary>
+        /// <param name="dt">The date of the event</param>
+        /// <param name="x">Quantity of the event</param>
+        /// <param name="fCountTowardsRating">True if it counts towards the rating (e.g., an old training event counts towards decayable currency but NOT towards ability to take a practical test)</param>
+        public void AddDecayableEvent(DateTime dt, decimal x, bool fCountTowardsRating)
+        {
+            if (fCountTowardsRating)
+                base.AddEvent(x);
+            if (x > 0)
+                DecayingCurrency.AddRecentFlightEvents(dt, x);
+        }
+
+        public override void AddEvent(decimal x)
+        {
+            throw new InvalidOperationException("Don't call AddEvent on a decayable; use AddDecayableEvent instead");
+        }
+
+        public override void AddTrainingEvent(decimal x, decimal limit, bool fIsTrainingDevice)
+        {
+            throw new InvalidOperationException("Don't call AddTrainingEvent on a decayable; use AddDecayableEvent instead");
+        }
+
+        public override void MatchFlightEvent(ExaminerFlightRow cfr)
+        {
+            throw new InvalidOperationException("Don't call MatchFlightEvent on a decayable; use AddDecayableEvent instead");
+        }
+
+        public override string ExpirationNote
+        {
+            get
+            {
+                return DecayingCurrency == null || !DecayingCurrency.HasBeenCurrent ? string.Empty : string.Format(CultureInfo.CurrentCulture,
+                    DecayingCurrency.CurrentState == CurrencyState.NotCurrent ? Resources.Currency.FormatExpired : Resources.Currency.FormatCurrent, DecayingCurrency.ExpirationDate.ToShortDateString());
             }
         }
     }

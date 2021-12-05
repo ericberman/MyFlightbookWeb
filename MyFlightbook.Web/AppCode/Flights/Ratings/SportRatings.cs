@@ -6,7 +6,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2020 MyFlightbook LLC
+ * Copyright (c) 2013-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -51,7 +51,7 @@ namespace MyFlightbook.RatingsProgress
         protected MilestoneItem miMinTime { get; set; }
         protected MilestoneItem miMinInstruction { get; set; }
         protected MilestoneItem miMinSolo { get; set; }
-        protected MilestoneItem miTestPrep { get; set; }
+        protected MilestoneItemDecayable miTestPrep { get; set; }
 
         protected CategoryClass.CatClassID CatClassID { get; set; }
         protected string CategoryName { get; set; }
@@ -81,7 +81,7 @@ namespace MyFlightbook.RatingsProgress
             miMinCrossCountry = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.SportMinXC, CategoryName), ResolvedFAR("(1)(i)"), string.Empty, MilestoneItem.MilestoneType.Time, 2.0M);
             miMinLandings = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.SportMinLandings, CategoryName), ResolvedFAR("(1)(ii)"), Resources.MilestoneProgress.SportPilotLandingNote, MilestoneItem.MilestoneType.Count, 10);
             miSoloXCFlight = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.SportSoloXCFlight, CategoryName, MinXCDistance), ResolvedFAR("(1)(iii)"), string.Empty, MilestoneItem.MilestoneType.AchieveOnce, 1);
-            miTestPrep = new MilestoneItem(Resources.MilestoneProgress.SportTestPrepTime, ResolvedFAR("(1)(iv)"), Branding.ReBrand(Resources.MilestoneProgress.NoteTestPrep), MilestoneItem.MilestoneType.Time, 2.0M);
+            miTestPrep = new MilestoneItemDecayable(Resources.MilestoneProgress.SportTestPrepTime, ResolvedFAR("(1)(iv)"), Branding.ReBrand(Resources.MilestoneProgress.NoteTestPrep), MilestoneItem.MilestoneType.Time, 2.0M, 2);
         }
 
         public override void ExamineFlight(ExaminerFlightRow cfr)
@@ -120,8 +120,7 @@ namespace MyFlightbook.RatingsProgress
                 }
             }
 
-            if (DateTime.Now.AddCalendarMonths(-2).CompareTo(cfr.dtFlight) <= 0)
-                miTestPrep.AddEvent(cfr.Dual);
+            miTestPrep.AddDecayableEvent(cfr.dtFlight, cfr.Dual, DateTime.Now.AddCalendarMonths(-2).CompareTo(cfr.dtFlight) <= 0);
         }
 
         public override Collection<MilestoneItem> Milestones
@@ -215,7 +214,7 @@ namespace MyFlightbook.RatingsProgress
             miMinSolo = new MilestoneItem(Resources.MilestoneProgress.SportMinSoloGlider, szFar, string.Empty, MilestoneItem.MilestoneType.Time, 2);
 
             miMinSoloFlights = new MilestoneItem(Resources.MilestoneProgress.SportMinSoloLandings, ResolvedFAR("(1)(i)"), Resources.MilestoneProgress.SportMinLandingsNote, MilestoneItem.MilestoneType.Count, 5);
-            miTestPrep = new MilestoneItem(Resources.MilestoneProgress.SportMinTraining, ResolvedFAR("(1)(ii)"), Resources.MilestoneProgress.NoteTestPrep, MilestoneItem.MilestoneType.Count, 3);
+            miTestPrep = new MilestoneItemDecayable(Resources.MilestoneProgress.SportMinTraining, ResolvedFAR("(1)(ii)"), Resources.MilestoneProgress.NoteTestPrep, MilestoneItem.MilestoneType.Count, 3, 2);
         }
 
         public override void ExamineFlight(ExaminerFlightRow cfr)
@@ -249,8 +248,7 @@ namespace MyFlightbook.RatingsProgress
             if (cfr.Dual > 0)
             {
                 miMinTrainingFlights.AddEvent(Math.Max(1, cfr.cLandingsThisFlight));
-                if (DateTime.Now.AddCalendarMonths(-2).CompareTo(cfr.dtFlight) <= 0)
-                    miTestPrep.AddEvent(cfr.Dual);
+                miTestPrep.AddDecayableEvent(cfr.dtFlight, cfr.Dual, DateTime.Now.AddCalendarMonths(-2).CompareTo(cfr.dtFlight) <= 0);
             }
 
             decimal soloTime = 0.0M;

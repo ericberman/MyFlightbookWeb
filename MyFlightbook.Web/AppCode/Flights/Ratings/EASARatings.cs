@@ -6,7 +6,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2020 MyFlightbook LLC
+ * Copyright (c) 2013-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -356,10 +356,7 @@ namespace MyFlightbook.RatingsProgress
 
         public override Collection<MilestoneItem> Milestones
         {
-            get
-            {
-                return new Collection<MilestoneItem>(new MilestoneItem[] { miMinTime, miMinDualInClass, miMinSolo, miMinSoloXC, miMinSoloXCMinDist });
-            }
+            get { return new Collection<MilestoneItem>() { miMinTime, miMinDualInClass, miMinSolo, miMinSoloXC, miMinSoloXCMinDist }; }
         }
     }
 
@@ -513,10 +510,7 @@ namespace MyFlightbook.RatingsProgress
 
         public override Collection<MilestoneItem> Milestones
         {
-            get
-            {
-                return new Collection<MilestoneItem>(new MilestoneItem[] { miTotal, miDual, miSolo, miLandings, miCrossCountry });
-            }
+            get { return new Collection<MilestoneItem>() { miTotal, miDual, miSolo, miLandings, miCrossCountry }; }
         }
     }
     #endregion

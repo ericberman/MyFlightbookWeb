@@ -6,7 +6,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2020 MyFlightbook LLC
+ * Copyright (c) 2013-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -52,7 +52,7 @@ namespace MyFlightbook.RatingsProgress
         protected MilestoneItem miMinXCTime { get; set; }
         protected MilestoneItem miMinTimeInCategory { get; set; }
         protected MilestoneItem miMinIMCTime { get; set; }
-        protected MilestoneItem miMinIMCTestPrep { get; set; }
+        protected MilestoneItemDecayable miMinIMCTestPrep { get; set; }
         protected MilestoneItem miIMCXC { get; set; }
 
         protected MilestoneItem miInstrumentTraining { get; set; }
@@ -111,7 +111,7 @@ namespace MyFlightbook.RatingsProgress
             miInstrumentTraining = new MilestoneItem(Resources.MilestoneProgress.MinInstrumentTraining, ResolvedFAR("(2)"), Branding.ReBrand(Resources.MilestoneProgress.MinInstrumentTrainingNote), MilestoneItem.MilestoneType.Time, 15.0M);
 
             // 61.65(def)(2)(i) - recent test prep
-            miMinIMCTestPrep = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MinInstrumentTestPrep, szAircraftCategory), ResolvedFAR("(2)(i)"), Branding.ReBrand(Resources.MilestoneProgress.NoteTestPrep), MilestoneItem.MilestoneType.Time, 3.0M);
+            miMinIMCTestPrep = new MilestoneItemDecayable(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MinInstrumentTestPrep, szAircraftCategory), ResolvedFAR("(2)(i)"), Branding.ReBrand(Resources.MilestoneProgress.NoteTestPrep), MilestoneItem.MilestoneType.Time, 3.0M, 2);
 
             // 61.65(def)(2)(ii) - cross-country
             miIMCXC = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MinInstrumentXC, szAircraftCategory, MinXCDistance), ResolvedFAR("(2)(ii)"), Branding.ReBrand(Resources.MilestoneProgress.NoteInstrumentXC), MilestoneItem.MilestoneType.AchieveOnce, 1.0M);
@@ -157,8 +157,7 @@ namespace MyFlightbook.RatingsProgress
             // 61.65(def)(2)(i) - recent test prep
             if (IsInMatchingCategory)
             {
-                if (DateTime.Now.AddCalendarMonths(-2).CompareTo(cfr.dtFlight) <= 0)
-                    miMinIMCTestPrep.AddEvent(instTrainingTime);
+                miMinIMCTestPrep.AddDecayableEvent(cfr.dtFlight, instTrainingTime, DateTime.Now.AddCalendarMonths(-2).CompareTo(cfr.dtFlight) <= 0);
 
                 if (cfr.cApproaches >= 3 && IMCXCTime > 0.0M)
                 {

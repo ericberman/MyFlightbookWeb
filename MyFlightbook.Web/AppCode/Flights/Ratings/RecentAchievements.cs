@@ -9,7 +9,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2018-2020 MyFlightbook LLC
+ * Copyright (c) 2018-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -348,10 +348,9 @@ namespace MyFlightbook.RatingsProgress
                 FirstDayOfCurrentStreak = LastDayOfCurrentStreak = dtFlight;
 
             // Extend the current streak if this flight is either on the first date or on a day before the first date; if it isn't one of those, then end the current streak
-            if (dtFlight.CompareTo(FirstDayOfCurrentStreak.Value.Date) == 0 || dtFlight.CompareTo(FirstDayOfCurrentStreak.Value.AddDays(-1).Date) == 0)
-                FirstDayOfCurrentStreak = dtFlight;
-            else
-                FirstDayOfCurrentStreak = LastDayOfCurrentStreak = dtFlight;
+            FirstDayOfCurrentStreak = dtFlight.CompareTo(FirstDayOfCurrentStreak.Value.Date) == 0 || dtFlight.CompareTo(FirstDayOfCurrentStreak.Value.AddDays(-1).Date) == 0
+                ? (DateTime?)dtFlight
+                : (LastDayOfCurrentStreak = dtFlight);
 
             int cDaysCurrentStreak = CurrentFlyingDayStreak;
 
@@ -362,10 +361,7 @@ namespace MyFlightbook.RatingsProgress
             }
                   
             // Distinct flights on dates
-            if (FlightDates.ContainsKey(szDateKey))
-                FlightDates[szDateKey] = FlightDates[szDateKey] + 1;
-            else
-                FlightDates[szDateKey] = 1;
+            FlightDates[szDateKey] = FlightDates.ContainsKey(szDateKey) ? FlightDates[szDateKey] + 1 : 1;
 
             if (FlightDates[szDateKey] > MaxFlightsPerDay)
             {
@@ -376,10 +372,7 @@ namespace MyFlightbook.RatingsProgress
                 miMostFlightsInDay.Query = new FlightQuery(Username) { DateRange = FlightQuery.DateRanges.Custom, DateMin = cfr.dtFlight, DateMax = cfr.dtFlight };
             }
 
-            if (FlightLandings.ContainsKey(szDateKey))
-                FlightLandings[szDateKey] = FlightLandings[szDateKey] + cfr.cLandingsThisFlight;
-            else
-                FlightLandings[szDateKey] = cfr.cLandingsThisFlight;
+            FlightLandings[szDateKey] = FlightLandings.ContainsKey(szDateKey) ? FlightLandings[szDateKey] + cfr.cLandingsThisFlight : cfr.cLandingsThisFlight;
 
             if (FlightLandings[szDateKey] > MaxLandingsPerDay)
             {

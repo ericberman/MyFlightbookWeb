@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2020 MyFlightbook LLC
+ * Copyright (c) 2013-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -106,9 +106,7 @@ namespace MyFlightbook.RatingsProgress
         public override Collection<MilestoneItem> Milestones
         {
             get
-            {
-                return new Collection<MilestoneItem>(new MilestoneItem[] { miMinTimeAsPilot, miMinXCTime, miMinXCNightTime });
-            }
+            { return new Collection<MilestoneItem>() { miMinTimeAsPilot, miMinXCTime, miMinXCNightTime }; }
         }
     }
 
@@ -166,10 +164,7 @@ namespace MyFlightbook.RatingsProgress
 
         public override Collection<MilestoneItem> Milestones
         {
-            get
-            {
-                return new Collection<MilestoneItem>(new MilestoneItem[] { miMinTimeAsPilot, miMinXCTime, miMinNightTime, miMinIFRTime, miMinIFRAircraftTime });
-            }
+            get { return new Collection<MilestoneItem>() { miMinTimeAsPilot, miMinXCTime, miMinNightTime, miMinIFRTime, miMinIFRAircraftTime }; }
         }
     }
     #endregion
