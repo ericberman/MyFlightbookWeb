@@ -10,7 +10,6 @@
     <asp:MultiView ID="mvProp" runat="server">
         <asp:View ID="vwDecimal" runat="server">
             <uc2:mfbDecimalEdit ID="mfbDecEdit" Width="50px" runat="server" />
-            <asp:Image ID="imgXFillTach" runat="server" Visible="false" ImageUrl="~/images/cross-fill.png" ToolTip="<%$ Resources:LogbookEntry, TachCrossfillTip %>" AlternateText="<%$ Resources:LogbookEntry, TachCrossfillTip %>" />
         </asp:View>
         <asp:View ID="vwDateTime" runat="server"><uc1:mfbDateTime ID="mfbDateTime" runat="server" /></asp:View>
         <asp:View ID="vwDate" runat="server"><uc4:mfbTypeInDate ID="mfbTypeInDate" runat="server" DefaultType="None" /></asp:View>

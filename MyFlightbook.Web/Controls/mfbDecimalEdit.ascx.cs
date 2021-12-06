@@ -30,7 +30,7 @@ public partial class Controls_mfbDecimalEdit : System.Web.UI.UserControl
     /// <summary>
     /// The default decimal value (0.0 if unspecified)
     /// </summary>
-    public Decimal DefaultValueDecimal
+    public decimal DefaultValueDecimal
     {
         get { return m_defValueDec; }
         set { m_defValueDec = value; }
@@ -46,10 +46,35 @@ public partial class Controls_mfbDecimalEdit : System.Web.UI.UserControl
         get { return txtDecimal_TextBoxWatermarkExtender; }
     }
 
+    public string CrossFillTip
+    {
+        get { return imgXFill.ToolTip; }
+        set { imgXFill.ToolTip = imgXFill.AlternateText = value; }
+    }
+
     /// <summary>
-    /// To enable corss-fill, provide the clientID of the source edit box.
+    /// To enable cross-fill, provide a javascript snippet
     /// </summary>
-    public string CrossFillSourceClientID { get; set; }
+    public string CrossFillScript
+    {
+        get
+        {
+            return imgXFill.Attributes["onclick"];
+        }
+        set
+        {
+            if (String.IsNullOrWhiteSpace(value))
+            {
+                imgXFill.Visible = false;
+                imgXFill.Attributes["onclick"] = String.Empty;
+            }
+            else
+            {
+                imgXFill.Visible = true;
+                imgXFill.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:setXFillValue('{0}', {1});", EditBoxWE.ClientID, value);
+            }
+        }
+    }
 
     private readonly System.Text.RegularExpressions.Regex regexIOSSafariHack = new System.Text.RegularExpressions.Regex("(ipad|iphone)", System.Text.RegularExpressions.RegexOptions.Compiled | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 
@@ -127,12 +152,6 @@ public partial class Controls_mfbDecimalEdit : System.Web.UI.UserControl
                     break;
             }
 
-            if (!String.IsNullOrEmpty(CrossFillSourceClientID))
-            {
-                imgXFill.Visible = true;
-                imgXFill.Attributes["onclick"] = String.Format(System.Globalization.CultureInfo.InvariantCulture, "javascript:$find('{0}').set_text(document.getElementById('{1}').value);", EditBoxWE.ClientID, CrossFillSourceClientID);
-            }
-
             ViewState[keyViewStateEditMode] = m_EditMode = value;
         }
     }
@@ -194,7 +213,7 @@ public partial class Controls_mfbDecimalEdit : System.Web.UI.UserControl
                 // return empty string if we equal the default value
                 // Otherwise, return at least one significant digit to the right of the decimal point, but
                 // no more if there is only one significant digit.
-                System.Globalization.CultureInfo ci = (m_EditMode == EditMode.Integer || !IsIOSSafari) ? CultureInfo.CurrentCulture : CultureInfo.InvariantCulture;
+                CultureInfo ci = (m_EditMode == EditMode.Integer || !IsIOSSafari) ? CultureInfo.CurrentCulture : CultureInfo.InvariantCulture;
                 txtDecimal.Text = (value == DefaultValueDecimal) ? string.Empty : value.ToString(m_EditMode == EditMode.Currency ? "C" : "#.0##", ci);
             }
             else
@@ -219,11 +238,11 @@ public partial class Controls_mfbDecimalEdit : System.Web.UI.UserControl
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        // Make sure cross-fill script is loaded
+        Page.ClientScript.RegisterClientScriptInclude(GetType(), "xfillscript", ResolveClientUrl("~/Public/Scripts/xfill.js?v=1"));
+
         object em = ViewState[keyViewStateEditMode];
 
-        if (em != null)
-            EditingMode = (EditMode)em;
-        else
-            EditingMode = m_EditMode; // force the watermark/filter to update appropriately.
+        EditingMode = (em != null) ? (EditMode)em : m_EditMode; // force the watermark/filter to update appropriately.
     }
 }

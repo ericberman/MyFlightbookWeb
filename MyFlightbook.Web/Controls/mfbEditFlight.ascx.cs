@@ -476,8 +476,8 @@ namespace MyFlightbook.Controls.FlightEditing
                 decNight.EditingMode = decPIC.EditingMode = decSIC.EditingMode = decSimulatedIFR.EditingMode =
                 decTotal.EditingMode = decXC.EditingMode = em;
 
-            mfbEditPropSet1.CrossFillSourceClientID = decCFI.CrossFillSourceClientID = decDual.CrossFillSourceClientID = decGrndSim.CrossFillSourceClientID = decIMC.CrossFillSourceClientID =
-                decNight.CrossFillSourceClientID = decPIC.CrossFillSourceClientID = decSIC.CrossFillSourceClientID = decSimulatedIFR.CrossFillSourceClientID = decXC.CrossFillSourceClientID = decTotal.EditBox.ClientID;
+            mfbEditPropSet1.CrossFillDefaultScript = decCFI.CrossFillScript = decDual.CrossFillScript = decGrndSim.CrossFillScript = decIMC.CrossFillScript =
+                decNight.CrossFillScript = decPIC.CrossFillScript = decSIC.CrossFillScript = decSimulatedIFR.CrossFillScript = decXC.CrossFillScript = String.Format(CultureInfo.InvariantCulture, "getTotalFillFunc(\"{0}\")", decTotal.EditBox.ClientID);
 
             mfbMFUFlightImages.AllowGoogleImport = pf.PreferenceExists(GooglePhoto.PrefKeyAuthToken);
         }

@@ -937,6 +937,7 @@
     <Content Include="Public\Scripts\oms.min.js" />
     <Content Include="Public\Scripts\Signature.js" />
     <Content Include="Public\Scripts\todataurl-png.js" />
+    <Content Include="Public\Scripts\xfill.js" />
     <Content Include="Public\SignEntry.aspx" />
     <Content Include="Public\StatsForMail.aspx" />
     <Content Include="Public\stylesheet.css" />

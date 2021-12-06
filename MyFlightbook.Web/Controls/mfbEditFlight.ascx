@@ -161,7 +161,7 @@
                     Text="<%$ Resources:LogbookEntry, FieldCrossCountry %>" />
             </div>
             <div class="itemdata">
-                <uc7:mfbDecimalEdit ID="decXC" Width="40px" runat="server" />
+                <uc7:mfbDecimalEdit ID="decXC" Width="40px" runat="server" CrossFillTip="<%$ Resources:LocalizedText, CrossfillPrompt %>" />
             </div>
         </asp:Panel>
         <asp:Panel ID="pnlNight" runat="server" CssClass="itemtimeright">
@@ -169,7 +169,7 @@
                     Text="<%$ Resources:LogbookEntry, FieldNight %>" />
             </div>
             <div class="itemdata">
-                <uc7:mfbDecimalEdit ID="decNight" Width="40px" runat="server" />
+                <uc7:mfbDecimalEdit ID="decNight" Width="40px" runat="server" CrossFillTip="<%$ Resources:LocalizedText, CrossfillPrompt %>" />
             </div>
         </asp:Panel>
         <asp:Panel ID="pnlSimIFR" runat="server" CssClass="itemtimeleft">
@@ -177,7 +177,7 @@
                     Text="<%$ Resources:LogbookEntry, FieldSimIMCFull %>" />
             </div>
             <div class="itemdata">
-                <uc7:mfbDecimalEdit ID="decSimulatedIFR" Width="40px" runat="server" />
+                <uc7:mfbDecimalEdit ID="decSimulatedIFR" Width="40px" runat="server" CrossFillTip="<%$ Resources:LocalizedText, CrossfillPrompt %>" />
             </div>
         </asp:Panel>
         <asp:Panel ID="pnlIMC" runat="server" CssClass="itemtimeright">
@@ -185,7 +185,7 @@
                     Text="<%$ Resources:LogbookEntry, FieldIMC %>" />
             </div>
             <div class="itemdata">
-                <uc7:mfbDecimalEdit ID="decIMC"  Width="40px" runat="server" />
+                <uc7:mfbDecimalEdit ID="decIMC"  Width="40px" runat="server" CrossFillTip="<%$ Resources:LocalizedText, CrossfillPrompt %>" />
             </div>
         </asp:Panel>
         <asp:Panel ID="pnlGrndSim" runat="server" CssClass="itemtimeleft">
@@ -193,7 +193,7 @@
                     Text="<%$ Resources:LogbookEntry, FieldGroundSimFull %>" />
             </div>
             <div class="itemdata">
-                <uc7:mfbDecimalEdit ID="decGrndSim" Width="40px" runat="server" />
+                <uc7:mfbDecimalEdit ID="decGrndSim" Width="40px" runat="server" CrossFillTip="<%$ Resources:LocalizedText, CrossfillPrompt %>" />
             </div>
         </asp:Panel>
         <asp:Panel ID="pnlDual" runat="server" CssClass="itemtimeright">
@@ -201,7 +201,7 @@
                     Text="<%$ Resources:LogbookEntry, FieldDual %>" />
             </div>
             <div class="itemdata">
-                <uc7:mfbDecimalEdit ID="decDual" Width="40px" runat="server" />
+                <uc7:mfbDecimalEdit ID="decDual" Width="40px" runat="server" CrossFillTip="<%$ Resources:LocalizedText, CrossfillPrompt %>" />
             </div>
         </asp:Panel>
         <asp:Panel ID="pnlCFI" runat="server" CssClass="itemtimeleft">
@@ -209,7 +209,7 @@
                     Text="<%$ Resources:LogbookEntry, FieldCFI %>" />
             </div>
             <div class="itemdata">
-                <uc7:mfbDecimalEdit ID="decCFI" Width="40px" runat="server" />
+                <uc7:mfbDecimalEdit ID="decCFI" Width="40px" runat="server" CrossFillTip="<%$ Resources:LocalizedText, CrossfillPrompt %>" />
             </div>
         </asp:Panel>
         <asp:Panel ID="pnlSIC" runat="server" CssClass="itemtimeright">
@@ -217,7 +217,7 @@
                     Text="<%$ Resources:LogbookEntry, FieldSIC %>" />
             </div>
             <div class="itemdata">
-                <uc7:mfbDecimalEdit ID="decSIC" Width="40px" runat="server" />
+                <uc7:mfbDecimalEdit ID="decSIC" Width="40px" runat="server" CrossFillTip="<%$ Resources:LocalizedText, CrossfillPrompt %>" />
             </div>
         </asp:Panel>
         <asp:Panel ID="pnlPIC" runat="server" CssClass="itemtimeleft">
@@ -225,7 +225,7 @@
                     Text="<%$ Resources:LogbookEntry, FieldPIC %>" />
             </div>
             <div class="itemdata">
-                <uc7:mfbDecimalEdit ID="decPIC" Width="40px" runat="server" />
+                <uc7:mfbDecimalEdit ID="decPIC" Width="40px" runat="server" CrossFillTip="<%$ Resources:LocalizedText, CrossfillPrompt %>" />
             </div>
         </asp:Panel>
         <asp:Panel ID="pnlTotal" runat="server" CssClass="itemtimeright">

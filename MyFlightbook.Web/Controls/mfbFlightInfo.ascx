@@ -22,8 +22,7 @@
                     <asp:Label ID="lblHobbsStart" CssClass="itemlabel" runat="server" Text="<%$ Resources:LogbookEntry, ShortStart %>"></asp:Label>
                 </td>
                 <td>
-                    <uc3:mfbDecimalEdit ID="decHobbsStart" runat="server" Width="70" />
-                    <asp:Image ID="imgHighWater" onclick="javascript:onHobbsAutofill();" runat="server" ImageUrl="~/images/cross-fill.png" ToolTip="<%$ Resources:LogbookEntry, HobbsCrossfillTip %>" AlternateText="<%$ Resources:LogbookEntry, HobbsCrossfillTip %>" />
+                    <uc3:mfbDecimalEdit ID="decHobbsStart" runat="server" Width="70" CrossFillTip="<%$ Resources:LogbookEntry, HobbsCrossfillTip  %>" />
                 </td>
             </tr>
             <tr>
@@ -145,36 +144,3 @@
     <asp:HiddenField ID="hdnFlightID" Value="-1" runat="server" />
     <uc1:mfbTimeZone ID="mfbTimeZone1" runat="server" />
 </asp:Panel>
-<script>
-    $(function () {
-        document.getElementById('<% =imgHighWater.ClientID %>').style.display = (currentlySelectedAircraft) ? "inline-block" : "none";
-    });
-
-    function onHobbsAutofill() {
-        if (!currentlySelectedAircraft)
-            return;
-
-        var id = currentlySelectedAircraft();
-
-        if (id === null || id === '')
-            return;
-
-        var params = new Object();
-        params.idAircraft = id;
-        var d = JSON.stringify(params);
-        $.ajax(
-        {
-            url: '<% =ResolveUrl("~/Member/LogbookNew.aspx/HighWaterMarkHobbsForAircraft") %>',
-            type: "POST", data: d, dataType: "json", contentType: "application/json",
-            error: function (xhr, status, error) {
-                window.alert(xhr.responseJSON.Message);
-                if (onError !== null)
-                    onError();
-            },
-            complete: function (response) { },
-            success: function (response) {
-                $find('<% =decHobbsStart.EditBoxWE.ClientID %>').set_text(response.d);
-            }
-        });
-    }
-</script>

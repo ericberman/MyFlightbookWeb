@@ -1,4 +1,11 @@
-﻿function mfbAccordionProxy(settings)
+﻿/******************************************************
+ *
+ * Copyright (c) 2015-2021 MyFlightbook LLC
+ * Contact myflightbook-at-gmail.com for more information
+ *
+*******************************************************/
+
+function mfbAccordionProxy(settings)
 {
     this.settings = settings;
 

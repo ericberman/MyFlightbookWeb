@@ -198,9 +198,9 @@ namespace MyFlightbook.Controls.FlightEditing
 
         const string keyViewStateXFill = "vsXF";
         /// <summary>
-        /// The ClientID of the source control for cross-filling.
+        /// The script to run by default for time controls.
         /// </summary>
-        public string CrossFillSourceClientID
+        public string CrossFillDefaultScript
         {
             get { return (string)ViewState[keyViewStateXFill]; }
             set { ViewState[keyViewStateXFill] = value; }
@@ -270,7 +270,7 @@ namespace MyFlightbook.Controls.FlightEditing
             mfbEditProp ep = (mfbEditProp)LoadControl("~/Controls/mfbEditProp.ascx");
             // Add it to the placeholder so that the client ID works, then set the client ID before setting the property so that it picks up cross-fill
             plcHolderProps.Controls.Add(ep);
-            ep.CrossFillSourceClientID = CrossFillSourceClientID;
+            ep.CrossFillTotalScript = CrossFillDefaultScript;
             ep.ID = IDForPropType(cfp.PropertyType);
             ep.Username = Username;
             ep.FlightProperty = cfp;

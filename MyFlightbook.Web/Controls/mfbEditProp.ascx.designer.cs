@@ -60,15 +60,6 @@ namespace MyFlightbook.Controls.FlightEditing
         protected global::Controls_mfbDecimalEdit mfbDecEdit;
 
         /// <summary>
-        /// imgXFillTach control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Image imgXFillTach;
-
-        /// <summary>
         /// vwDateTime control.
         /// </summary>
         /// <remarks>

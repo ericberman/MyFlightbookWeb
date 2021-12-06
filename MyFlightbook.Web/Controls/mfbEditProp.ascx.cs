@@ -38,12 +38,11 @@ namespace MyFlightbook.Controls.FlightEditing
         /// <summary>
         /// The ClientID of the source control for cross-filling.
         /// </summary>
-        public string CrossFillSourceClientID { get; set; }
+        public string CrossFillTotalScript { get; set; }
         #endregion
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            imgXFillTach.Attributes["onclick"] = "javascript:onTachAutofill();";
         }
 
         protected void FromForm()
@@ -75,55 +74,11 @@ namespace MyFlightbook.Controls.FlightEditing
             }
         }
 
-        protected void SetUpCrossFillTach()
-        {
-            imgXFillTach.Visible = true;
-
-            string szXFillScript = String.Format(CultureInfo.InvariantCulture, @"
-    $(function () {{
-        document.getElementById('{0}').style.display = (currentlySelectedAircraft) ? ""inline-block"" : ""none"";
-    }});
-
-    function onTachAutofill()
-    {{
-        if (!currentlySelectedAircraft)
-            return;
-
-        var id = currentlySelectedAircraft();
-
-        if (id === null || id === '')
-            return;
-
-        var params = new Object();
-        params.idAircraft = id;
-        var d = JSON.stringify(params);
-        $.ajax(
-        {{
-            url: '{1}',
-            type: ""POST"", data: d, dataType: ""json"", contentType: ""application/json"",
-            error: function(xhr, status, error) {{
-                window.alert(xhr.responseJSON.Message);
-                if (onError !== null)
-                    onError();
-            }},
-            complete: function(response) {{ }},
-            success: function(response) {{
-                $find('{2}').set_text(response.d);
-            }}
-        }});
-    }}",
-            imgXFillTach.ClientID,
-            ResolveUrl("~/Member/LogbookNew.aspx/HighWaterMarkTachForAircraft"),
-            mfbDecEdit.EditBoxWE.ClientID
-        );
-            Page.ClientScript.RegisterStartupScript(GetType(), "CrossFillHobbs", szXFillScript, true);
-        }
-
         protected void ToForm()
         {
             CustomFlightProperty fp = m_fp;
 
-            TimeZoneInfo tz = MyFlightbook.Profile.GetUser(Page.User.Identity.Name).PreferredTimeZone;
+            TimeZoneInfo tz = Profile.GetUser(Page.User.Identity.Name).PreferredTimeZone;
             lblPropName.Text = (fp.PropertyType.Type == CFPPropertyType.cfpDateTime) ? fp.PropertyType.Title.IndicateUTCOrCustomTimeZone(tz) : fp.PropertyType.Title;
             lblPropName.ToolTip = (fp.PropertyType.Type == CFPPropertyType.cfpDateTime && tz.Id.CompareCurrentCultureIgnoreCase(TimeZoneInfo.Utc.Id) != 0) ? tz.DisplayName : string.Empty;
             mfbTooltip.Visible = !String.IsNullOrEmpty(mfbTooltip.BodyContent = fp.PropertyType.Type == CFPPropertyType.cfpDateTime ? fp.PropertyType.Description.Replace("(UTC)", tz.DisplayName) : fp.PropertyType.Description);
@@ -144,9 +99,12 @@ namespace MyFlightbook.Controls.FlightEditing
                 case CFPPropertyType.cfpDecimal:
                     mvProp.SetActiveView(vwDecimal);    // need to do this before setting the cross-fill image to visible
                                                         // Set the cross-fill source before setting the editing mode.
-                    mfbDecEdit.CrossFillSourceClientID = fp.PropertyType.IsBasicDecimal ? string.Empty : CrossFillSourceClientID;
+                    mfbDecEdit.CrossFillScript = fp.PropertyType.IsBasicDecimal ? string.Empty : CrossFillTotalScript;
                     if (fp.PropertyType.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTachStart)
-                        SetUpCrossFillTach();
+                    {
+                        mfbDecEdit.CrossFillTip = Resources.LogbookEntry.TachCrossfillTip;
+                        mfbDecEdit.CrossFillScript = "getTachFill(currentlySelectedAircraft)";
+                    }
                     mfbDecEdit.EditingMode = (!fp.PropertyType.IsBasicDecimal && Profile.GetUser(Page.User.Identity.Name).UsesHHMM ? Controls_mfbDecimalEdit.EditMode.HHMMFormat : Controls_mfbDecimalEdit.EditMode.Decimal);
                     mfbDecEdit.Value = fp.DecValue;
                     break;

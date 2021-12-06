@@ -101,6 +101,8 @@ namespace MyFlightbook.Controls.FlightEditing
                 lblFlight.Text = Resources.LogbookEntry.FieldFlightUTC.IndicateUTCOrCustomTimeZone(UserTimeZone);
                 lblEngine.ToolTip = lblFlight.ToolTip = (UserTimeZone.Id.CompareCurrentCultureIgnoreCase(TimeZoneInfo.Utc.Id) == 0) ? string.Empty : UserTimeZone.DisplayName;
             }
+
+            decHobbsStart.CrossFillScript = "getHobbsFill(currentlySelectedAircraft)";
         }
 
         public string Telemetry

@@ -1,4 +1,10 @@
-﻿function mfbCalendar(rootPath, resourceID, clubID, displayMode, divCalContainer, newApptFunc, editApptFunc, getEditedApptFunc) {
+﻿/******************************************************
+ *
+ * Copyright (c) 2015-2021 MyFlightbook LLC
+ * Contact myflightbook-at-gmail.com for more information
+ *
+*******************************************************/
+function mfbCalendar(rootPath, resourceID, clubID, displayMode, divCalContainer, newApptFunc, editApptFunc, getEditedApptFunc) {
     this.rootPath = rootPath;
     this.resourceID = resourceID;
     this.clubID = clubID;
