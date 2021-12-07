@@ -3094,6 +3094,7 @@
     <Content Include="App_GlobalResources\WebService.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>
       <LastGenOutput>WebService.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
   <ItemGroup>

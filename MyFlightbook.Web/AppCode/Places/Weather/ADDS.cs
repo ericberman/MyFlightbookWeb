@@ -8,7 +8,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2020 MyFlightbook LLC
+ * Copyright (c) 2017-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -365,7 +365,7 @@ namespace MyFlightbook.Weather.ADDS
         }
         #endregion
 
-        public static response METARsForAirports(string airports)
+        private static response METARsForAirports(string airports)
         {
             if (string.IsNullOrEmpty(airports))
                 return null;

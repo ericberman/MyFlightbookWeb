@@ -137,6 +137,7 @@ namespace MyFlightbook
             IDProp135293Knowledge = 427,
             IDProp135293Competency = 428,
             IDProp135299FlightCheck = 429,
+            IDPropTaxiTime = 464,
             IDPropScheduledDeparture = 502,     // Not flagged as a known property
             IDPropScheduledArrival = 503,       // Not flagged as a known property
             IDPropHighAltitudeLandings = 504,
@@ -153,6 +154,7 @@ namespace MyFlightbook
             IDPropAdditionalCrew = 558,
             IDPropAircraftRegistration = 559,
             IDPropPilotMonitoring = 560,
+            IDPropMetar = 561,
             IDPropMonitoredDayLandings = 562,
             IDPropMonitoredNightLandings = 563,
             IDPropMonitoredNightTakeoffs = 565,

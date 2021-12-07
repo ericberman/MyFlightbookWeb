@@ -1510,7 +1510,7 @@ namespace MyFlightbook
         {
             string[] rgResultDefault = Array.Empty<string>();
 
-            if (String.IsNullOrEmpty(contextKey) || prefixText == null)
+            if (String.IsNullOrEmpty(contextKey) || String.IsNullOrWhiteSpace(prefixText))
                 return rgResultDefault;
 
             string[] rgsz = contextKey.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
@@ -1520,21 +1520,47 @@ namespace MyFlightbook
             if (!Int32.TryParse(rgsz[1], out int idPropType))
                 return rgResultDefault;
 
-            Dictionary<int, string[]> d = CustomFlightProperty.PreviouslyUsedTextValuesForUser(rgsz[0]);
+            // Handle METAR autofill a bit different from other properties: fetch raw metar.
+            if (idPropType == (int)CustomPropertyType.KnownProperties.IDPropMetar)
+            {
+                string[] rgAirports = prefixText.Split(new char[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+                if (rgAirports == null || rgAirports.Length == 0)
+                    return rgResultDefault;
 
-            string[] results = (d.ContainsKey(idPropType)) ? d[idPropType] : null;
-            if (results == null)
-                return Array.Empty<string>();
+                string szLastWord = rgAirports[rgAirports.Length - 1];
+                if (szLastWord.Length != 4)
+                    return rgResultDefault;
 
-            List<string> lst = new List<string>(results);
+                // trim the last word out of the prefix
+                prefixText = prefixText.Trim();
+                prefixText = prefixText.Substring(0, prefixText.Length - szLastWord.Length);
 
-            string szSearch = prefixText.ToUpperInvariant();
+                IEnumerable<Weather.ADDS.METAR> metars = Weather.ADDS.ADDSService.LatestMETARSForAirports(szLastWord);
+                List<string> lst = new List<string>();
 
-            lst = lst.FindAll(sz => sz.ToUpperInvariant().StartsWith(szSearch, StringComparison.InvariantCulture));
-            if (lst.Count > count && count >= 1)
-                lst.RemoveRange(count - 1, lst.Count - count);
+                foreach (Weather.ADDS.METAR m in metars)
+                    lst.Add(String.Format(CultureInfo.CurrentCulture, "{0} {1}", prefixText, m.raw_text).Trim());
 
-            return lst.ToArray();
+                return lst.ToArray();
+            }
+            else
+            {
+                Dictionary<int, string[]> d = CustomFlightProperty.PreviouslyUsedTextValuesForUser(rgsz[0]);
+
+                string[] results = (d.ContainsKey(idPropType)) ? d[idPropType] : null;
+                if (results == null)
+                    return Array.Empty<string>();
+
+                List<string> lst = new List<string>(results);
+
+                string szSearch = prefixText.ToUpperInvariant();
+
+                lst = lst.FindAll(sz => sz.ToUpperInvariant().StartsWith(szSearch, StringComparison.InvariantCulture));
+                if (lst.Count > count && count >= 1)
+                    lst.RemoveRange(count - 1, lst.Count - count);
+
+                return lst.ToArray();
+            }
         }
         #endregion
 

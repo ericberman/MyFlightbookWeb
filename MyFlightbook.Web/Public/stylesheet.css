@@ -390,6 +390,7 @@ td.totalsByTimeCell:nth-child(even), td.totalsDateRange:nth-child(even) {
 /* Autocomplete AJAX.  Insert Training uses "autoInsertxxx */
 .AutoExtender, .autoInsertItems {
     font-weight: normal;
+    font-size: smaller;
     border: solid 1px #006699;
     line-height: 20px;
     list-style-type: none;

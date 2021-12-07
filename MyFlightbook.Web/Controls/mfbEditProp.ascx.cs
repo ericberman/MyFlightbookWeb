@@ -125,10 +125,10 @@ namespace MyFlightbook.Controls.FlightEditing
                     txtString.Text = fp.TextValue;
                     mvProp.SetActiveView(vwText);
                     // Autocomplete uses the target user's previous values.
-                    autocompleteStringProp.ContextKey = String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0};{1}", Username ?? Page.User.Identity.Name, fp.PropTypeID.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                    autocompleteStringProp.ContextKey = String.Format(CultureInfo.InvariantCulture, "{0};{1}", Username ?? Page.User.Identity.Name, fp.PropTypeID.ToString(CultureInfo.InvariantCulture));
                     break;
                 default:
-                    throw new MyFlightbookException(String.Format(System.Globalization.CultureInfo.InvariantCulture, "Unknown property type: {0}", fp.PropertyType.Type));
+                    throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, "Unknown property type: {0}", fp.PropertyType.Type));
             }
         }
     }
