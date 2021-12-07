@@ -234,6 +234,11 @@
             </div>
             <div class="itemdata">
                 <uc7:mfbDecimalEdit ID="decTotal" Width="40px" runat="server" /> 
+                <script type="text/javascript">
+                    $(function () {
+                        addXFillMap('total', '<% =decTotal.EditBox.ClientID %>')
+                    });
+                </script>
             </div>
         </asp:Panel>
     </asp:Panel>

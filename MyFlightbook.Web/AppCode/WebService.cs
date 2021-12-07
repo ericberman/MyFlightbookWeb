@@ -1535,10 +1535,8 @@ namespace MyFlightbook
                 prefixText = prefixText.Trim();
                 prefixText = prefixText.Substring(0, prefixText.Length - szLastWord.Length);
 
-                IEnumerable<Weather.ADDS.METAR> metars = Weather.ADDS.ADDSService.LatestMETARSForAirports(szLastWord);
                 List<string> lst = new List<string>();
-
-                foreach (Weather.ADDS.METAR m in metars)
+                foreach (Weather.ADDS.METAR m in Weather.ADDS.ADDSService.LatestMETARSForAirports(szLastWord, false))
                     lst.Add(String.Format(CultureInfo.CurrentCulture, "{0} {1}", prefixText, m.raw_text).Trim());
 
                 return lst.ToArray();

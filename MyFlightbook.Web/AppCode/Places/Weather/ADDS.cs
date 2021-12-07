@@ -337,7 +337,7 @@ namespace MyFlightbook.Weather.ADDS
     /// </summary>
     public static class ADDSService
     {
-        private const string szRecentTemplate = @"http://aviationweather.gov/adds/dataserver_current/httpparam?dataSource=metars&format=xml&requestType=retrieve&hoursBeforeNow=3&mostRecent=false&stationString={0}";
+        private const string szRecentTemplate = @"http://aviationweather.gov/adds/dataserver_current/httpparam?dataSource=metars&format=xml&requestType=retrieve&hoursBeforeNow={0}&mostRecent=false&stationString={1}";
 
         #region Getting requests
         private static response GetRequest(string szU)
@@ -365,18 +365,24 @@ namespace MyFlightbook.Weather.ADDS
         }
         #endregion
 
-        private static response METARsForAirports(string airports)
+        private static response METARsForAirports(string airports, int hourLookback)
         {
             if (string.IsNullOrEmpty(airports))
                 return null;
 
             string fixedCodes = String.Join(",", airport.SplitCodes(airports));
-            return GetRequest(String.Format(CultureInfo.InvariantCulture, szRecentTemplate, fixedCodes));
+            return GetRequest(String.Format(CultureInfo.InvariantCulture, szRecentTemplate, hourLookback, fixedCodes));
         }
 
-        public static IEnumerable<METAR> LatestMETARSForAirports(string airports)
+        /// <summary>
+        /// Returns the latest METAR for a set of airports, returning the latest per airport (default), or all metars per airport
+        /// </summary>
+        /// <param name="airports">The list of airports</param>
+        /// <param name="f1PerStation">Whether to only show the latest for each airport.</param>
+        /// <returns></returns>
+        public static IEnumerable<METAR> LatestMETARSForAirports(string airports, bool f1PerStation = true)
         {
-            response r = METARsForAirports(airports);
+            response r = METARsForAirports(airports, f1PerStation ? 3 : 24);
 
             List<METAR> lst = new List<METAR>();
 
@@ -393,7 +399,8 @@ namespace MyFlightbook.Weather.ADDS
                     if (m.station_id.CompareCurrentCultureIgnoreCase(szStation) != 0)
                     {
                         lst.Add(m);
-                        szStation = m.station_id;
+                        if (f1PerStation)   // if only one per station, indicate that we've already got a METAR for this station so that we skip to the next one.
+                            szStation = m.station_id;
                     }
                 }
             }

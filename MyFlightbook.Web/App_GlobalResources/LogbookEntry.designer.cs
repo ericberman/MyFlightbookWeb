@@ -3347,6 +3347,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///    Looks up a localized string similar to Sets taxi time equal to Total Time minus elapsed flight time (flight start to flight end).
+        /// </summary>
+        internal static string TaxiCrossFillTip {
+            get {
+                return ResourceManager.GetString("TaxiCrossFillTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///    Looks up a localized string similar to Replace.
         /// </summary>
         internal static string TelemetryAttachNew {

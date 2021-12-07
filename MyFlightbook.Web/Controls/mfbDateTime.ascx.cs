@@ -2,7 +2,6 @@
 using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Web.UI.WebControls;
 
 /******************************************************
@@ -18,6 +17,11 @@ public partial class Controls_mfbDateTime : System.Web.UI.UserControl
     public string Text
     {
         get { return txtDateTime.Text; }
+    }
+
+    public TextBox EditBox
+    {
+        get { return txtDateTime; }
     }
 
     protected TimeZoneInfo DefaultTimeZone { get; set; }
@@ -94,7 +98,7 @@ public partial class Controls_mfbDateTime : System.Web.UI.UserControl
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        TextBoxWatermarkExtender1.WatermarkText = Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern + " HH:mm";
+        TextBoxWatermarkExtender1.WatermarkText = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern + " HH:mm";
         Page.ClientScript.RegisterClientScriptBlock(GetType(), "FillNow", String.Format(CultureInfo.InvariantCulture, @"
         function setNowUTCWithOffset(wme) {{
             var params = new Object();

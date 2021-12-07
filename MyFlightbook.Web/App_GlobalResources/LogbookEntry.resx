@@ -1393,4 +1393,7 @@ Proceed with import?</value>
   <data name="TemplatesLearnMore" xml:space="preserve">
     <value>Learn more</value>
   </data>
+  <data name="TaxiCrossFillTip" xml:space="preserve">
+    <value>Sets taxi time equal to Total Time minus elapsed flight time (flight start to flight end)</value>
+  </data>
 </root>

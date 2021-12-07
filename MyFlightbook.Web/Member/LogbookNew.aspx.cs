@@ -86,6 +86,24 @@ namespace MyFlightbook.MemberPages
 
             return PrintingOptions.UpdatedPermaLink(szExisting, new PrintingOptions() { Sections = ps }).ToString();
         }
+
+        [WebMethod(EnableSession = true)]
+        public static string TaxiTime(string fsStart, string fsEnd, string szTotal)
+        {
+            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+                throw new MyFlightbookException("Unauthenticated call to PrintLink");
+
+            bool fUseHHMM = Profile.GetUser(HttpContext.Current.User.Identity.Name).UsesHHMM;
+
+            DateTime dtFStart = fsStart.SafeParseDate(DateTime.MinValue);
+            DateTime dtFEnd = fsEnd.SafeParseDate(DateTime.MinValue);
+            double totalTime = fUseHHMM ? (double)szTotal.DecimalFromHHMM() : double.Parse(szTotal, NumberStyles.Any, CultureInfo.CurrentCulture);
+
+            double elapsedFlight = (dtFEnd.HasValue() && dtFStart.HasValue() && dtFEnd.CompareTo(dtFStart) > 0) ? dtFEnd.Subtract(dtFStart).TotalHours : 0;
+
+            double taxi = totalTime - elapsedFlight;
+            return (taxi > 0) ? (fUseHHMM ? ((decimal)taxi).ToHHMM() : taxi.ToString(CultureInfo.CurrentCulture)) : String.Empty;
+        }
         #endregion
 
         private const string szParamIDFlight = "idFlight";

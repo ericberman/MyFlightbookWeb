@@ -105,6 +105,11 @@ namespace MyFlightbook.Controls.FlightEditing
                         mfbDecEdit.CrossFillTip = Resources.LogbookEntry.TachCrossfillTip;
                         mfbDecEdit.CrossFillScript = "getTachFill(currentlySelectedAircraft)";
                     }
+                    else if (fp.PropertyType.PropTypeID == (int) CustomPropertyType.KnownProperties.IDPropTaxiTime)
+                    {
+                        mfbDecEdit.CrossFillTip = Resources.LogbookEntry.TaxiCrossFillTip;
+                        mfbDecEdit.CrossFillScript = "getTaxiFill()";
+                    }
                     mfbDecEdit.EditingMode = (!fp.PropertyType.IsBasicDecimal && Profile.GetUser(Page.User.Identity.Name).UsesHHMM ? Controls_mfbDecimalEdit.EditMode.HHMMFormat : Controls_mfbDecimalEdit.EditMode.Decimal);
                     mfbDecEdit.Value = fp.DecValue;
                     break;

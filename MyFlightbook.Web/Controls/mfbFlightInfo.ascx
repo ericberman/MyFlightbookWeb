@@ -84,6 +84,12 @@
                 </td>
             </tr>
         </table>
+        <script type="text/javascript">
+            $(function () {
+                addXFillMap('fStart', '<% = mfbFlightStart.EditBox.ClientID %>');
+                addXFillMap('fEnd', '<% =mfbFlightEnd.EditBox.ClientID %>');
+            });
+        </script>
     </asp:Panel>
     <div style="clear:both;"></div>
     <asp:Panel ID="pnlFlightData" runat="server" CssClass="flightinfoitem">
