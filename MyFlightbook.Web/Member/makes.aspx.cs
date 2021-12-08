@@ -37,6 +37,8 @@ namespace MyFlightbook.MemberPages
         {
             List<string> lst = new List<string>();
 
+            System.Threading.Thread.CurrentThread.CurrentCulture = util.SessionCulture ?? CultureInfo.CurrentCulture;
+
             // We have no Page, so things like Page_Load don't get called.
             // We fix this by faking a page and calling Server.Execute on it.  This sets up the form and - more importantly - causes Page_load to be called on loaded controls.
             using (Page p = new FormlessPage())
