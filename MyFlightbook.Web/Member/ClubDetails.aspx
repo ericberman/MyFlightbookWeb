@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="ClubDetails.aspx.cs" Inherits="Member_ClubDetails" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="ClubDetails.aspx.cs" Inherits="MyFlightbook.Clubs.ClubDetails" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <%@ Register src="../Controls/ClubControls/ViewClub.ascx" tagname="ViewClub" tagprefix="uc1" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
@@ -151,6 +151,8 @@
                                             cc.dpCalendar.update();
                                             cc.refreshEvents();
                                         }
+
+                                        updateAvailability(<% =CurrentClub.ID %>, cc.dpCalendar.viewType == "days" ? cc.dpCalendar.startDate : cc.dpCalendar.visibleStart(), cc.dpCalendar.viewType == "days" ? 1 : 7)
                                     }
 
                                     function InitClubNav(cal) {
@@ -169,6 +171,37 @@
                                     <% =Resources.Club.TimeZoneCurrentTime %>
                                     <asp:Label ID="lblCurTime" runat="server" Text=""></asp:Label>
                                 </p>
+                                <asp:Panel ID="pnlAvailMap" runat="server" ScrollBars="Auto" Width="100%" />
+                                <script type="text/javascript">
+                                    function updateAvailability(idClub, dt, days) {
+                                        if ($("#cpTopForm_pnlAvailMap")[0].style.display == "none")
+                                            return;
+                                        var params = new Object();
+                                        params.dtStart = dt;
+                                        params.clubID = idClub;
+                                        params.limitAircraft = -1;
+                                        params.cDays = days;
+                                        $.ajax(
+                                            {
+                                                type: "POST",
+                                                data: JSON.stringify(params),
+                                                url: "<% =ResolveUrl("~/Member/Schedule.aspx") %>/AvailabilityMap",
+                                                dataType: "json",
+                                                contentType: "application/json",
+                                                error: function (xhr, status, error) {
+                                                    window.alert(xhr.responseJSON.Message);
+                                                },
+                                                complete: function (response) { },
+                                                success: function (response) {
+                                                    $("#<% =pnlAvailMap.ClientID %>")[0].innerHTML = response.d;
+                                                }
+                                            });
+                                    }
+
+                                    $(function () {
+                                        updateAvailability(<% =CurrentClub.ID %>, clubCalendars[0].dpCalendar.visibleStart(), clubCalendars[0].displayMode == "Week" ? 7 : 1);
+                                    })
+                                </script>
                                 <div style="padding:3px; display:inline-block; width: 220px; vertical-align:top;">
                                     <div style="margin: auto">
                                         <asp:Panel ID="pnlCalendarNav" runat="server"></asp:Panel>

@@ -1119,6 +1119,64 @@ table.dataDescription thead tr td
     border-bottom: none;
 }
 
+table.tblAvailablityMap {
+    font-size: smaller;
+    border-spacing: 0;
+    border-collapse: collapse;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 5px;
+}
+
+table.tblAvailablityMap th {
+    font-size: 7pt;
+    font-weight: normal;
+}
+
+table.tblAvailablityMap th.dateHeader {
+    font-weight:bold;
+}
+
+table.tblAvailablityMap th.timeHeader {
+    text-align: left;
+    border: 1px solid #CCCCCC;
+}
+
+.avmResource {
+    font-weight: bold;
+}
+
+.avmAvail {
+    background-color: unset;
+    border-top: 1px solid #CCCCCC;
+    border-bottom: 1px solid #CCCCCC;
+    border-left: 1px solid #CCCCCC;
+    margin-bottom: 1px;
+    margin-top: 1px;
+    width: 15px !important;
+}
+
+.avmBusy {
+    background-color: #888888;
+    border-top: 1px solid #CCCCCC;
+    border-bottom: 1px solid #CCCCCC;
+    margin-bottom: 1px;
+    margin-top: 1px;
+    width: 15px !important;
+}
+
+.avmSubHour {
+    border-left: 1px solid #E6E6E6;
+}
+
+.avmSubHour:last-child, .avmBusy:last-child {
+    border-right: 1px solid #CCCCCC;
+}
+
+.avmBusy:nth-child(2) {
+    border-left: 1px solid #CCCCCC;
+}
+
 /* Drag & drop */
 .draggableItem {
     padding-left: 4px;

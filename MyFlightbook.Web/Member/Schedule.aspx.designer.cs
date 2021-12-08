@@ -11,7 +11,7 @@ namespace MyFlightbook.Clubs
 {
 
 
-    public partial class Member_Schedule
+    public partial class ScheduleWebServices
     {
     }
 }

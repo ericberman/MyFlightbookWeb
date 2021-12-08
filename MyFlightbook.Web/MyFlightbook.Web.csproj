@@ -3064,6 +3064,7 @@
     <Content Include="App_GlobalResources\Schedule.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>
       <LastGenOutput>Schedule.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="App_GlobalResources\SignOff.fr.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>

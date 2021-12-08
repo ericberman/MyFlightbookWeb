@@ -8,7 +8,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2020 MyFlightbook LLC
+ * Copyright (c) 2015-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -575,12 +575,74 @@ namespace MyFlightbook.Schedule
                 }, tz);
         }
 
+        public static List<ScheduledEvent> AppointmentsInTimeRange(DateTime dtStartUtc, DateTime dtEndUtc, int idclub, TimeZoneInfo tz)
+        {
+            return AppointmentsForQuery(String.Format(CultureInfo.InvariantCulture, "SELECT se.* FROM scheduledevents se INNER JOIN clubs c ON se.idclub=c.idclub WHERE se.idclub=?clubid AND start < ?endRange AND end > ?startRange AND start >= c.creationDate"),
+                (comm) =>
+                {
+                    comm.Parameters.AddWithValue("startRange", dtStartUtc);
+                    comm.Parameters.AddWithValue("endRange", dtEndUtc);
+                    comm.Parameters.AddWithValue("clubid", idclub);
+                }, tz);
+        }
+
         public static ScheduledEvent AppointmentByID(string id, TimeZoneInfo tz)
         {
             List<ScheduledEvent> lst = AppointmentsForQuery("SELECT * FROM scheduledevents WHERE idEvent=?id", (comm) => { comm.Parameters.AddWithValue("id", id); }, tz);
             return (lst.Count > 0) ? lst[0] : null;
         }
         #endregion
+        #endregion
+
+        #region AvailabilityMap
+        public static IDictionary<int, bool[]> ComputeAvailabilityMap(DateTime dtStart, int clubID, out Club club, int limitAircraft = Aircraft.idAircraftUnknown, int cDays = 1, int minuteInterval = 15)
+        {
+            if (cDays < 1 || cDays > 7)
+                throw new InvalidOperationException("Can only do 1 to 7 days of availability");
+
+            if (minuteInterval <= 0)
+                throw new InvalidOperationException("Invalid minute interval");
+
+            double IntervalsPerHour = 60.0 / minuteInterval;
+            int IntervalsPerDay = (int) (24 * IntervalsPerHour);
+
+            if (IntervalsPerDay != (24 * IntervalsPerHour))
+                throw new InvalidOperationException("Minute interval must align on 24-hour boundaries");
+
+            int totalIntervals = IntervalsPerDay * cDays;
+
+            Dictionary<int, bool[]> d = new Dictionary<int, bool[]>();
+
+            club = Club.ClubWithID(clubID);
+
+            foreach (Aircraft ac in club.MemberAircraft)
+                if (limitAircraft == Aircraft.idAircraftUnknown || ac.AircraftID == limitAircraft)
+                    d[ac.AircraftID] = new bool[totalIntervals];
+
+            DateTime dtStartLocal = new DateTime(dtStart.Year, dtStart.Month, dtStart.Day, 0, 0, 0, DateTimeKind.Unspecified);
+            TimeZoneInfo tzi = club.TimeZone;
+            DateTime dtStartUtc = ToUTC(dtStartLocal, tzi);
+
+            // we need to request the appointments in UTC, even though we will display them in local time.
+            List<ScheduledEvent> lst = AppointmentsInTimeRange(dtStartUtc, dtStartUtc.AddDays(cDays), clubID, tzi);
+
+            foreach (ScheduledEvent e in lst)
+            {
+                if (!int.TryParse(e.ResourceID, out int idAircraft))
+                    continue;
+
+                // Block off any scheduled time that's in our window, rounding up and down as appropriate
+                bool[] rg = d[idAircraft];
+
+                int startingInterval = (int)Math.Floor(e.LocalStart.Subtract(dtStartLocal).TotalHours * IntervalsPerHour);
+                int endingInterval = (int)Math.Ceiling(e.LocalEnd.Subtract(dtStartLocal).TotalHours * IntervalsPerHour);
+
+                for (int interval = Math.Max(0, startingInterval); interval < endingInterval && interval < rg.Length; interval++)
+                    rg[interval] = true;
+            }
+
+            return d;
+        }
         #endregion
 
         public override string ToString()

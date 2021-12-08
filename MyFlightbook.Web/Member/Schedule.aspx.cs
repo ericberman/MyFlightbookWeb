@@ -1,10 +1,17 @@
 ﻿using MyFlightbook.Schedule;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
 using System.Web.Services;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
 
 /******************************************************
  * 
@@ -15,7 +22,7 @@ using System.Web.Services;
 
 namespace MyFlightbook.Clubs
 {
-    public partial class Member_Schedule : System.Web.UI.Page
+    public partial class ScheduleWebServices : Page
     {
         protected enum PrivilegeLevel { ReadWrite, ReadOnly }
 
@@ -169,6 +176,104 @@ namespace MyFlightbook.Clubs
                 return ex.Message;
             }
             return string.Empty;
+        }
+
+        [WebMethod(EnableSession = true)]
+        public static string AvailabilityMap(DateTime dtStart, int clubID, int limitAircraft = Aircraft.idAircraftUnknown, int cDays = 1)
+        {
+            if (!IsValidCaller(clubID, PrivilegeLevel.ReadOnly))
+                return null;
+
+            int minutes = cDays == 1 ? 15 : cDays == 2 ? 60 : 180;
+            int intervalsPerDay = (24 * 60) / minutes;
+            int cellsPerHeader = (minutes < 60) ? (60 / minutes) : Math.Max(intervalsPerDay / 2, 1);
+            int totalIntervals = cDays * intervalsPerDay;
+            IDictionary<int, bool[]> d = ScheduledEvent.ComputeAvailabilityMap(dtStart, clubID, out Club club, limitAircraft = Aircraft.idAircraftUnknown, cDays, minutes);
+            DateTime dtStartLocal = new DateTime(dtStart.Year, dtStart.Month, dtStart.Day, 0, 0, 0, DateTimeKind.Local);
+
+            CultureInfo ciCurrent = util.SessionCulture ?? CultureInfo.CurrentCulture;
+
+            // We have no Page, so things like Page_Load don't get called.
+            // We fix this by faking a page and calling Server.Execute on it.  This sets up the form and - more importantly - causes Page_load to be called on loaded controls.
+            using (Page p = new FormlessPage())
+            {
+                p.Controls.Add(new HtmlForm());
+                using (StringWriter sw1 = new StringWriter(ciCurrent))
+                    HttpContext.Current.Server.Execute(p, sw1, false);
+
+                // Build the map, one day at a time in 15-minute increments.
+
+                // Our map is created - iterate through it now.
+                Table t = new Table() { CssClass = "tblAvailablityMap" };
+                p.Form.Controls.Add(t);
+
+                // Header row
+                // Date first
+                TableHeaderRow thrDate = new TableHeaderRow();
+                t.Rows.Add(thrDate);
+                thrDate.Cells.Add(new TableHeaderCell());  // upper left corner is blank cell
+                // Add days
+                for (int i = 0; i < cDays; i++)
+                {
+                    DateTime dt = dtStartLocal.AddDays(i);
+                    thrDate.Cells.Add(new TableHeaderCell() { Text = dt.ToString("d", ciCurrent), ColumnSpan = intervalsPerDay, CssClass = "dateHeader" });
+                }
+
+                // Now times
+                TableHeaderRow thrTimes = new TableHeaderRow();
+                t.Rows.Add(thrTimes);
+                thrTimes.Cells.Add(new TableHeaderCell());  // upper left corner is blank cell
+
+                // We want the time minus any minutes, but keep it localized.
+                string szTimeFormat = Regex.Replace(ciCurrent.DateTimeFormat.ShortTimePattern, ":m+", string.Empty);
+
+                for (int iHeaderCol = 0; iHeaderCol < totalIntervals; iHeaderCol += cellsPerHeader)
+                {
+                    DateTime dt = dtStartLocal.AddMinutes(iHeaderCol * minutes);
+                    thrTimes.Cells.Add(new TableHeaderCell()
+                    {
+                        Text = (dt.Minute == 0) ? dt.ToString(szTimeFormat, ciCurrent) : String.Empty,
+                        ColumnSpan = cellsPerHeader,
+                        VerticalAlign = VerticalAlign.Bottom,
+                        CssClass = "timeHeader"
+                    });
+                }
+
+                // Sort the aircraft by tail
+                List<Aircraft> lstAc = new List<Aircraft>(club.MemberAircraft);
+                lstAc.Sort((ac1, ac2) => { return String.Compare(ac1.DisplayTailnumber, ac2.DisplayTailnumber, true, ciCurrent); });
+                foreach (Aircraft aircraft in lstAc)
+                {
+                    if (!d.ContainsKey(aircraft.AircraftID))    // sanity check - but should not happen
+                        continue;
+
+                    TableRow trAircraft = new TableRow();
+                    t.Rows.Add(trAircraft);
+                    trAircraft.Cells.Add(new TableCell() { Text = aircraft.DisplayTailnumber, CssClass = "avmResource" });
+
+                    for (int i = 0; i < d[aircraft.AircraftID].Length; i++)
+                    {
+                        bool b = d[aircraft.AircraftID][i];
+                        trAircraft.Cells.Add(new TableCell() { CssClass = b ? "avmBusy" : (i % cellsPerHeader == 0) ? "avmAvail" : "avmAvail avmSubHour" });
+                    }
+                }
+
+                // Now, write it out.
+                StringBuilder sb = new StringBuilder();
+                using (StringWriter sw = new StringWriter(sb, ciCurrent))
+                {
+                    using (HtmlTextWriter htmlTW = new HtmlTextWriter(sw))
+                    {
+                        try
+                        {
+                            t.RenderControl(htmlTW);
+                            return sb.ToString();
+                        }
+                        catch (ArgumentException ex) when (ex is ArgumentOutOfRangeException) { } // don't write bogus or incomplete HTML
+                    }
+                }
+            }
+            return String.Empty;
         }
 
         protected void Page_Load(object sender, EventArgs e)

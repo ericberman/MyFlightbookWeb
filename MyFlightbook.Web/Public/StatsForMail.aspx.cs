@@ -18,7 +18,7 @@ public partial class Public_StatsForMail : System.Web.UI.Page
     {
         if (!IsPostBack)
         {
-            cssRef.Href = "~/Public/Stylesheet.css?v=30".ToAbsoluteURL(Request.Url.Scheme, Branding.CurrentBrand.HostName, Request.Url.Port).ToString();
+            cssRef.Href = "~/Public/Stylesheet.css?v=31".ToAbsoluteURL(Request.Url.Scheme, Branding.CurrentBrand.HostName, Request.Url.Port).ToString();
             baseRef.Attributes["href"] = "~/Public/".ToAbsoluteURL(Request.Url.Scheme, Branding.CurrentBrand.HostName, Request.Url.Port).ToString();
             string szAuthKey = util.GetStringParam(Request, "k");
 

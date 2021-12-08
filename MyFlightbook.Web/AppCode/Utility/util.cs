@@ -189,6 +189,8 @@ namespace MyFlightbook
     /// </summary>
     public static class util
     {
+        private const string sessCultureKey = "currCulture";
+
         /// <summary>
         /// Set the culture for the duration of the request.
         /// </summary>
@@ -202,7 +204,7 @@ namespace MyFlightbook
 
                 try
                 {
-                    System.Globalization.CultureInfo ciRequested = new System.Globalization.CultureInfo(szCulture);
+                    CultureInfo ciRequested = new CultureInfo(szCulture);
                     // Some locale's like Slovak have multi-character date separators, and this kills masked edit extender.
                     // hack workaround is to just use the first character of the date separator.
                     if (ciRequested.DateTimeFormat.DateSeparator.Length > 1)
@@ -221,7 +223,20 @@ namespace MyFlightbook
                     }
                     catch (Exception ex2) when (ex2 is CultureNotFoundException || ex2 is ArgumentNullException) { }
                 }
+
+                // Culture isn't passed up to Ajax calls, so store it in the session in case any ajax call needs it
+                if (HttpContext.Current != null && HttpContext.Current.Session != null)
+                    HttpContext.Current.Session[sessCultureKey] = System.Threading.Thread.CurrentThread.CurrentCulture;
             }
+        }
+
+        /// <summary>
+        /// Return the culture that is squirreled away in the session.  Generally unnecessary as CultureInfo.CurrentCulture works, but in Ajax calls, that doesn't get passed up.
+        /// CAN RETURN NULL - in which case go ahead and use CultureInfo.CurrentCulture
+        /// </summary>
+        public static CultureInfo SessionCulture
+        {
+            get { return HttpContext.Current != null && HttpContext.Current.Session != null ? (CultureInfo)HttpContext.Current.Session[sessCultureKey] : null; }
         }
 
         /// <summary>
