@@ -482,7 +482,6 @@ ORDER BY NormalTail ASC, numUsers DESC, idaircraft ASC"></asp:SqlDataSource>
                                     <asp:HyperLink ID="lnkFlights" runat="server" Text='<%# Eval("numFlights") %>' />
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:BoundField DataField="numFlights" HeaderText="numFlights" />
                             <asp:TemplateField>
                                 <ItemTemplate>
                                     <div class="adm">
