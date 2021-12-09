@@ -1707,7 +1707,7 @@ WHERE
             this.LastTransponder = this.LastTransponder.LaterDate(ac.LastTransponder);
             this.LastVOR = this.LastVOR.LaterDate(ac.LastVOR);
 
-            this.Commit();
+            this.CommitToDB();  // don't call commit, which can muck with user aircraft or map to a clone.
 
             // Migrate any maintenance updates
             new DBHelper().DoNonQuery("UPDATE maintenancelog SET idAircraft=?idaircraftNew WHERE idAircraft=?idaircraftOld",
@@ -1725,27 +1725,31 @@ WHERE
                     comm.Parameters.AddWithValue("idaircraftOld", ac.AircraftID);
                 });
 
-            // Migrate any images
-            ImageList ilSrc = new ImageList(MFBImageInfo.ImageClass.Aircraft, ac.AircraftID.ToString(CultureInfo.InvariantCulture));
-            ilSrc.Refresh();
+            // Migrate any images - but ignore any errors; we don't want to fail a transaction
+            try
+            {
+                ImageList ilSrc = new ImageList(MFBImageInfo.ImageClass.Aircraft, ac.AircraftID.ToString(CultureInfo.InvariantCulture));
+                ilSrc.Refresh();
 
-            foreach (MFBImageInfo mfbii in ilSrc.ImageArray)
-                mfbii.MoveImage(this.AircraftID.ToString(CultureInfo.InvariantCulture));
+                foreach (MFBImageInfo mfbii in ilSrc.ImageArray)
+                    mfbii.MoveImage(this.AircraftID.ToString(CultureInfo.InvariantCulture));
 
-            this.PopulateImages();
+                this.PopulateImages();
+            }
+            catch (Exception ex) when (!(ex is OutOfMemoryException)) { }
         }
         #endregion
 
-        #region Maintenance management
-        /// <summary>
-        /// Write an entry to the maintenance log for the current airplane if something has changed
-        /// </summary>
-        /// <param name="sz1">The old value</param>
-        /// <param name="sz2">The new value</param>
-        /// <param name="szMessage">The message to log if something has changed</param>
-        /// <param name="szComment">Any additional comments provided by the user</param>
-        /// <returns>A log entry if there is a change to record</returns>
-        private MaintenanceLog LogIfChanged(object o1, object o2, string szMessage, string szComment, string szUser)
+            #region Maintenance management
+            /// <summary>
+            /// Write an entry to the maintenance log for the current airplane if something has changed
+            /// </summary>
+            /// <param name="sz1">The old value</param>
+            /// <param name="sz2">The new value</param>
+            /// <param name="szMessage">The message to log if something has changed</param>
+            /// <param name="szComment">Any additional comments provided by the user</param>
+            /// <returns>A log entry if there is a change to record</returns>
+            private MaintenanceLog LogIfChanged(object o1, object o2, string szMessage, string szComment, string szUser)
         {
             string szNew;
             Boolean fDelete;
