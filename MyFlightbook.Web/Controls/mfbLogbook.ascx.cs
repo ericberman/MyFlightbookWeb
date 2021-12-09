@@ -1036,9 +1036,16 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
             LogbookEntry le = new LogbookEntry();
             if (le.FLoadFromDB(idFlight, User))
             {
-                le.RevokeSignature(Page.User.Identity.Name);
-                FlushCache();
-                BindData(Data);
+                try
+                {
+                    le.RevokeSignature(Page.User.Identity.Name);
+                    FlushCache();
+                    BindData(Data);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    ((Label) ((Control)e.CommandSource).NamingContainer.FindControl("lblErr")).Text = ex.Message;
+                }
             }
         }
     }

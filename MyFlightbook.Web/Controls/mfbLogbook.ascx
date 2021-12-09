@@ -178,6 +178,7 @@
                         <asp:Panel ID="pnlFlightImages" runat="server" CssClass='<%# ShowImagesInline ? string.Empty : "hintPopup" %>'>
                             <uc1:mfbImageList ID="mfbilFlights" runat="server" Columns="2" CanEdit="false" ImageClass="Flight" IncludeDocs="true" MaxImage="-1" />
                         </asp:Panel>
+                        <div><asp:Label ID="lblErr" runat="server" CssClass="error" EnableViewState="false" Text='<%# Eval("ErrorString") %>' /></div>
                     </ItemTemplate>
                     <FooterTemplate>
                         <table style="width:100%">
