@@ -38,7 +38,7 @@ function getXFillElement(key) {
     return _xfillElementMap[key];
 }
 
-function getTachFill(currentlySelectedAircraft) {
+function getTachFill(currentlySelectedAircraft, baseUrl) {
     return function (onResult) {
         if (!currentlySelectedAircraft)
             return;
@@ -53,7 +53,7 @@ function getTachFill(currentlySelectedAircraft) {
         var d = JSON.stringify(params);
         $.ajax(
             {
-                url: 'LogbookNew.aspx/HighWaterMarkTachForAircraft',
+                url: baseUrl + '/HighWaterMarkTachForAircraft',
                 type: "POST", data: d, dataType: "json", contentType: "application/json",
                 error: function (xhr, status, error) {
                     window.alert(xhr.responseJSON.Message);
@@ -68,7 +68,7 @@ function getTachFill(currentlySelectedAircraft) {
     }
 }
 
-function getHobbsFill(currentlySelectedAircraft) {
+function getHobbsFill(currentlySelectedAircraft, baseUrl) {
     return function (onResult) {
         if (!currentlySelectedAircraft)
             return;
@@ -83,7 +83,7 @@ function getHobbsFill(currentlySelectedAircraft) {
         var d = JSON.stringify(params);
         $.ajax(
             {
-                url: 'LogbookNew.aspx/HighWaterMarkHobbsForAircraft',
+                url: baseUrl + '/HighWaterMarkHobbsForAircraft',
                 type: "POST", data: d, dataType: "json", contentType: "application/json",
                 error: function (xhr, status, error) {
                     window.alert(xhr.responseJSON.Message);
@@ -98,7 +98,7 @@ function getHobbsFill(currentlySelectedAircraft) {
     }
 }
 
-function getTaxiFill() {
+function getTaxiFill(baseUrl) {
     return function (onResult) {
         if (!currentlySelectedAircraft)
             return;
@@ -115,7 +115,7 @@ function getTaxiFill() {
         var d = JSON.stringify(params);
         $.ajax(
             {
-                url: 'LogbookNew.aspx/TaxiTime',
+                url: baseUrl + '/TaxiTime',
                 type: "POST", data: d, dataType: "json", contentType: "application/json",
                 error: function (xhr, status, error) {
                     window.alert(xhr.responseJSON.Message);

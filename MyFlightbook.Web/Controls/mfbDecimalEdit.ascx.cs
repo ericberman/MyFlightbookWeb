@@ -239,7 +239,7 @@ public partial class Controls_mfbDecimalEdit : System.Web.UI.UserControl
     protected void Page_Load(object sender, EventArgs e)
     {
         // Make sure cross-fill script is loaded
-        Page.ClientScript.RegisterClientScriptInclude(GetType(), "xfillscript", ResolveClientUrl("~/Public/Scripts/xfill.js?v=1"));
+        Page.ClientScript.RegisterClientScriptInclude(GetType(), "xfillscript", ResolveClientUrl("~/Public/Scripts/xfill.js?v=2"));
 
         object em = ViewState[keyViewStateEditMode];
 

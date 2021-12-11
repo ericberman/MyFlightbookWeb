@@ -103,12 +103,12 @@ namespace MyFlightbook.Controls.FlightEditing
                     if (fp.PropertyType.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTachStart)
                     {
                         mfbDecEdit.CrossFillTip = Resources.LogbookEntry.TachCrossfillTip;
-                        mfbDecEdit.CrossFillScript = "getTachFill(currentlySelectedAircraft)";
+                        mfbDecEdit.CrossFillScript = String.Format(CultureInfo.InvariantCulture, "getTachFill(currentlySelectedAircraft, '{0}')", ResolveClientUrl("~/Member/LogbookNew.aspx"));
                     }
                     else if (fp.PropertyType.PropTypeID == (int) CustomPropertyType.KnownProperties.IDPropTaxiTime)
                     {
                         mfbDecEdit.CrossFillTip = Resources.LogbookEntry.TaxiCrossFillTip;
-                        mfbDecEdit.CrossFillScript = "getTaxiFill()";
+                        mfbDecEdit.CrossFillScript = String.Format(CultureInfo.InvariantCulture, "getTaxiFill('{0}')", ResolveClientUrl("~/Member/LogbookNew.aspx"));
                     }
                     mfbDecEdit.EditingMode = (!fp.PropertyType.IsBasicDecimal && Profile.GetUser(Page.User.Identity.Name).UsesHHMM ? Controls_mfbDecimalEdit.EditMode.HHMMFormat : Controls_mfbDecimalEdit.EditMode.Decimal);
                     mfbDecEdit.Value = fp.DecValue;
