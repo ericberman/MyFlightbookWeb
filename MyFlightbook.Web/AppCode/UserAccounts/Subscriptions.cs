@@ -498,6 +498,8 @@ namespace MyFlightbook.Subscriptions
                         Profile pf = eg.UserProfile;
                         LogbookBackup lb = new LogbookBackup(pf);
 
+                        EventRecorder.LogCall("Nightly run: backing up to {storage} for user {user}", sid.ToString(), eg.Username);
+
                         switch (sid)
                         {
                             case StorageID.Dropbox:
@@ -562,20 +564,31 @@ namespace MyFlightbook.Subscriptions
         /// </summary>
         public async void NightlyRun()
         {
-            if (ActiveBrand == null)
-                ActiveBrand = Branding.CurrentBrand;
-            if (TasksToRun == SelectedTasks.All || TasksToRun == SelectedTasks.EmailOnly)
-                SendNightlyEmails();
+            EventRecorder.LogCall("Starting nightly run");
+            try
+            {
+                if (ActiveBrand == null)
+                    ActiveBrand = Branding.CurrentBrand;
+                if (TasksToRun == SelectedTasks.All || TasksToRun == SelectedTasks.EmailOnly)
+                    SendNightlyEmails();
 
-            // Do any Cloud Storage updates
-            if (TasksToRun == SelectedTasks.All || TasksToRun == SelectedTasks.CloudStorageOnly)
-                await BackupToCloud().ConfigureAwait(false);    // we have no httpcontext.current, so no need to save
+                // Do any Cloud Storage updates
+                if (TasksToRun == SelectedTasks.All || TasksToRun == SelectedTasks.CloudStorageOnly)
+                    await BackupToCloud().ConfigureAwait(false);    // we have no httpcontext.current, so no need to save
 
-            // Send out any notices of pending gratuity expirations
-            EarnedGratuity.SendRemindersOfExpiringGratuities(UserRestriction);
+                // Send out any notices of pending gratuity expirations
+                EarnedGratuity.SendRemindersOfExpiringGratuities(UserRestriction);
 
-            if (DateTime.Now.Day == 1)
-                Clubs.Club.SendMonthlyClubReports();
+                if (DateTime.Now.Day == 1)
+                    Clubs.Club.SendMonthlyClubReports();
+            }
+            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            {
+                EventRecorder.LogCall("Nightly run had exception: {msg}, {stacktrace} ", ex.Message, ex.StackTrace);
+            }
+
+            EventRecorder.LogCall("Ended nightly run");
+
         }
 
         /// <summary>
