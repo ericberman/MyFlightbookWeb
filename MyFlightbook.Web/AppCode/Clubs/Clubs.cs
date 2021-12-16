@@ -33,11 +33,12 @@ namespace MyFlightbook.Clubs
         private const UInt32 policyMaskDeleteNotification = 0x00000018;
         private const int policyMaskDeleteShift = 3; // shift above 3 bits to get the policy mask for deletion
         private const UInt32 policyMaskDoubleBooking = 0x00000060;  // who can double-book resources?
-        private const int policyMaskDoubleBookShift = 5;             // shift above 5 bits to get the policy mask for double booking
+        private const int policyMaskDoubleBookShift = 5;             // shift above 5 bits to the right to get the policy mask for double booking
         private const UInt32 policyMaskAddModifyNotification = 0x00000180;
-        private const int policyMaskAddModifyNotificationShift = 7; // Shift above 7 bits to get the policy mask for add/modify notification
+        private const int policyMaskAddModifyNotificationShift = 7; // Shift above 7 bits to the right to get the policy mask for add/modify notification
         private const UInt32 policyFlagShowHeadshots = 0x00000200;
         private const UInt32 policyFlagShowMobileNumber = 0x00000400;
+        private const UInt32 policyFlagOnlyAdminsEdit = 0x00000800;
 
         /// <summary>
         /// Returns database bitmask to use to check for suppression of photo sharing, mobile sharing, or both.
@@ -53,6 +54,8 @@ namespace MyFlightbook.Clubs
         public enum DeleteNoficiationPolicy { None = 0x00, Admins = 0x01, WholeClub = 0x02 }
         public enum AddModifyNotificationPolicy { None = 0x00, Admins = 0x01, WholeClub = 0x02 }
         public enum DoubleBookPolicy { None = 0x00, Admins=0x01, WholeClub = 0x02 }
+
+        public enum EditPolicy { AllMembers, OwnersAndAdmins, AdminsOnly }
 
         public const int TrialPeriod = 31;  // 30 days, with some buffer.
 
@@ -311,12 +314,34 @@ namespace MyFlightbook.Clubs
         protected UInt32 Policy { get; set; }
 
         /// <summary>
-        /// True if all members can edit all appointments
+        /// True if all members can edit all appointments - this shouldn't be used directly, use EditingPolicy instead
         /// </summary>
-        public bool RestrictEditingToOwnersAndAdmins
+        private bool RestrictEditingToOwnersAndAdmins
         {
             get { return (Policy & policyFlagRestrictApptEditing) == policyFlagRestrictApptEditing; }
             set { Policy = value ? (Policy | policyFlagRestrictApptEditing) : (Policy & ~policyFlagRestrictApptEditing); }
+        }
+
+        /// <summary>
+        /// True if only admins can make ANY edits.  (I.e., members can't even edit their own) - this shouldn't be used directly, use EditingPolicy instead
+        /// </summary>
+        private bool OnlyAdminsCanEdit
+        {
+            get { return (Policy & policyFlagOnlyAdminsEdit) == policyFlagOnlyAdminsEdit; }
+            set { Policy = value ? (Policy | policyFlagOnlyAdminsEdit) : (Policy & ~policyFlagOnlyAdminsEdit); }
+        }
+
+        /// <summary>
+        /// What editing policy is used by this club?
+        /// </summary>
+        public EditPolicy EditingPolicy
+        {
+            get { return OnlyAdminsCanEdit ? EditPolicy.AdminsOnly : RestrictEditingToOwnersAndAdmins ? EditPolicy.OwnersAndAdmins : EditPolicy.AllMembers; }
+            set
+            {
+                OnlyAdminsCanEdit = value == EditPolicy.AdminsOnly;
+                RestrictEditingToOwnersAndAdmins = value == EditPolicy.OwnersAndAdmins;
+            }
         }
 
         /// <summary>

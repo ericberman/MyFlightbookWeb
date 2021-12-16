@@ -480,9 +480,6 @@ Sender Email: {1}</value>
   <data name="errNoUpcomingEvents" xml:space="preserve">
     <value>(No upcoming scheduled events)</value>
   </data>
-  <data name="LabelPolicyOpenEdit" xml:space="preserve">
-    <value>Restrict editing of schedule to admins and the owner/creator of the scheduled item.</value>
-  </data>
   <data name="LabelPolicy" xml:space="preserve">
     <value>Policy</value>
   </data>
@@ -751,5 +748,17 @@ Sender Email: {1}</value>
   </data>
   <data name="LebelContactAllMembers" xml:space="preserve">
     <value>Send a message to the club</value>
+  </data>
+  <data name="LabelPolicyEditing" xml:space="preserve">
+    <value>Who can create/modify/delete items on the schedule:</value>
+  </data>
+  <data name="LabelPolicyEditingAdminAndOwner" xml:space="preserve">
+    <value>Admins or the owner/creator of the schedule item</value>
+  </data>
+  <data name="LabelPolicyEditingAdminOnly" xml:space="preserve">
+    <value>Admins only (all schedule changes must go through an admin)</value>
+  </data>
+  <data name="LabelPolicyEditingEveryone" xml:space="preserve">
+    <value>Any club member (i.e., honor system)</value>
   </data>
 </root>

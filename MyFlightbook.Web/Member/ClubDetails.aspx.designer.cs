@@ -282,7 +282,7 @@ namespace MyFlightbook.Clubs
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_ClubControls_ViewClub ViewClub1;
+        protected global::MyFlightbook.Clubs.ClubControls.ViewClub ViewClub1;
 
         /// <summary>
         /// pnlLeaveGroup control.

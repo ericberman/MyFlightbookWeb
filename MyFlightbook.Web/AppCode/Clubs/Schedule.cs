@@ -380,14 +380,24 @@ namespace MyFlightbook.Schedule
         /// <returns>True if the user is the owner of the appointment or a member of the club</returns>
         public bool CanEdit(string szUser, Club c = null)
         {
-            // owner/creator of the object can always edit it
-            if (String.Compare(szUser, OwningUser, StringComparison.Ordinal) == 0)
-                return true;
-
-            // else fall through to the club
             if (c == null)
                 c = Club.ClubWithID(ClubID);
-            return c.RestrictEditingToOwnersAndAdmins ? c.HasAdmin(szUser) : c.HasMember(szUser);
+
+            bool fIsAdmin = c.HasAdmin(szUser);
+            bool fIsOwner = String.Compare(szUser, OwningUser, StringComparison.Ordinal) == 0;
+
+            // If restricted to admins, then, well, you gotta be an admin
+            switch (c.EditingPolicy)
+            {
+                case Club.EditPolicy.AdminsOnly:
+                    return fIsAdmin;
+                case Club.EditPolicy.OwnersAndAdmins:
+                    return fIsAdmin || fIsOwner;
+                case Club.EditPolicy.AllMembers:
+                    return c.HasMember(szUser);
+                default:
+                    throw new InvalidOperationException("Unknown editing policy: " + c.EditingPolicy.ToString());
+            }
         }
 
         /// <summary>

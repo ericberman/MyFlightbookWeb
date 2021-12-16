@@ -1,31 +1,33 @@
-﻿using MyFlightbook;
-using MyFlightbook.Clubs;
+﻿using MyFlightbook.Clubs.ClubControls;
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2018 MyFlightbook LLC
+ * Copyright (c) 2015-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
-public partial class Public_AllClubs : System.Web.UI.Page
+namespace MyFlightbook.Clubs
 {
-    protected void Page_Load(object sender, EventArgs e)
+    public partial class AllClubs : Page
     {
-        bool fAdmin = Page.User.Identity.IsAuthenticated && util.GetIntParam(Request, "a", 0) != 0 && MyFlightbook.Profile.GetUser(Page.User.Identity.Name).CanManageData;
-        gvClubs.DataSource = Club.AllClubs(fAdmin);
-        gvClubs.DataBind();
-    }
-
-    protected void gvClubs_RowDataBound(object sender, GridViewRowEventArgs e)
-    {
-        if (e != null && e.Row.RowType == DataControlRowType.DataRow)
+        protected void Page_Load(object sender, EventArgs e)
         {
-            Controls_ClubControls_ViewClub vc = (Controls_ClubControls_ViewClub)e.Row.FindControl("viewClub1");
-            vc.ActiveClub = (Club)e.Row.DataItem;
+            bool fAdmin = Page.User.Identity.IsAuthenticated && util.GetIntParam(Request, "a", 0) != 0 && MyFlightbook.Profile.GetUser(Page.User.Identity.Name).CanManageData;
+            gvClubs.DataSource = Club.AllClubs(fAdmin);
+            gvClubs.DataBind();
+        }
+
+        protected void gvClubs_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e != null && e.Row.RowType == DataControlRowType.DataRow)
+            {
+                ViewClub vc = (ViewClub)e.Row.FindControl("viewClub1");
+                vc.ActiveClub = (Club)e.Row.DataItem;
+            }
         }
     }
 }

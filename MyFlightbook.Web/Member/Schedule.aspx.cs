@@ -69,6 +69,11 @@ namespace MyFlightbook.Clubs
                     if (clubID == Club.ClubIDNew)
                         throw new MyFlightbookException("Attempt to schedule with a non-existant club");
 
+                    Club c = Club.ClubWithID(clubID);
+
+                    if (c.EditingPolicy == Club.EditPolicy.AdminsOnly && !c.HasAdmin(HttpContext.Current.User.Identity.Name))
+                        throw new MyFlightbookException(Resources.Schedule.ErrUnauthorizedEdit);
+
                     TimeZoneInfo tzi = Club.ClubWithID(clubID).TimeZone;
 
                     // timezoneOffset is UTC time minus local time, so in Seattle it is 420 or 480 (depending on time of year)
@@ -76,7 +81,7 @@ namespace MyFlightbook.Clubs
                     if (!se.FCommit())
                         throw new MyFlightbookException(se.LastError);
 
-                    Club.ClubWithID(se.ClubID).NotifyAdd(se, HttpContext.Current.User.Identity.Name);
+                    c.NotifyAdd(se, HttpContext.Current.User.Identity.Name);
                 }
             }
             catch (MyFlightbookException ex)

@@ -42,22 +42,31 @@ namespace MyFlightbook.Clubs
         protected global::System.Web.UI.WebControls.HyperLink lnkReturnToClub;
 
         /// <summary>
-        /// tabManage control.
+        /// accClub control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::AjaxControlToolkit.TabContainer tabManage;
+        protected global::AjaxControlToolkit.Accordion accClub;
 
         /// <summary>
-        /// tabpanelMembers control.
+        /// acpMembers control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::AjaxControlToolkit.TabPanel tabpanelMembers;
+        protected global::AjaxControlToolkit.AccordionPane acpMembers;
+
+        /// <summary>
+        /// locMembers control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locMembers;
 
         /// <summary>
         /// updMembers control.
@@ -177,13 +186,22 @@ namespace MyFlightbook.Clubs
         protected global::System.Web.UI.WebControls.Label lblAddMemberSuccess;
 
         /// <summary>
-        /// tabpanelAircraft control.
+        /// acpAircraft control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::AjaxControlToolkit.TabPanel tabpanelAircraft;
+        protected global::AjaxControlToolkit.AccordionPane acpAircraft;
+
+        /// <summary>
+        /// locAircraft control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locAircraft;
 
         /// <summary>
         /// pnlManageAircraft control.
@@ -267,13 +285,22 @@ namespace MyFlightbook.Clubs
         protected global::System.Web.UI.WebControls.Label lblManageAircraftError;
 
         /// <summary>
-        /// tabpanelClubDetails control.
+        /// acpDetails control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::AjaxControlToolkit.TabPanel tabpanelClubDetails;
+        protected global::AjaxControlToolkit.AccordionPane acpDetails;
+
+        /// <summary>
+        /// locDetails control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locDetails;
 
         /// <summary>
         /// vcEdit control.
@@ -282,16 +309,25 @@ namespace MyFlightbook.Clubs
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_ClubControls_ViewClub vcEdit;
+        protected global::MyFlightbook.Clubs.ClubControls.ViewClub vcEdit;
 
         /// <summary>
-        /// tabpanelClubReports control.
+        /// acpReports control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::AjaxControlToolkit.TabPanel tabpanelClubReports;
+        protected global::AjaxControlToolkit.AccordionPane acpReports;
+
+        /// <summary>
+        /// locReports control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locReports;
 
         /// <summary>
         /// litReportsPrompt control.
@@ -552,7 +588,7 @@ namespace MyFlightbook.Clubs
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_ClubControls_ViewClub ViewClub1;
+        protected global::MyFlightbook.Clubs.ClubControls.ViewClub ViewClub1;
 
         /// <summary>
         /// Master property.

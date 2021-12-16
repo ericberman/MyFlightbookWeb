@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="ViewClub.ascx.cs" Inherits="Controls_ClubControls_ViewClub" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="ViewClub.ascx.cs" Inherits="MyFlightbook.Clubs.ClubControls.ViewClub" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <%@ Register src="~/Controls/mfbGoogleMapManager.ascx" tagname="mfbGoogleMapManager" tagprefix="uc1" %>
 <%@ Register src="../mfbHtmlEdit.ascx" tagname="mfbHtmlEdit" tagprefix="uc2" %>
@@ -90,8 +90,19 @@
                     <h2><asp:Localize ID="locPolicy" Text="<%$ Resources:Club, LabelPolicy %>" runat="server"></asp:Localize></h2>
                     <table>
                         <tr>
-                            <td><asp:CheckBox ID="ckPolicyRestrictEditing" runat="server" Checked='<%# Bind("RestrictEditingToOwnersAndAdmins") %>' /></td>
-                            <td><asp:Label AssociatedControlID="ckPolicyRestrictEditing" ID="locPolicyOpenEdit" Text="<%$ Resources:Club, LabelPolicyOpenEdit %>" runat="server"></asp:Label></td>
+                            <td colspan="2">
+                                <asp:Localize ID="locEditingPolicy" runat="server" Text="<%$ Resources:Club, LabelPolicyEditing %>" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <asp:RadioButtonList ID="rblEditingPolicy" runat="server" SelectedValue='<%# Bind("EditingPolicy") %>' >
+                                    <asp:ListItem Text="<%$ Resources:Club, LabelPolicyEditingEveryone %>" Value="AllMembers" />
+                                    <asp:ListItem Text="<%$ Resources:Club, LabelPolicyEditingAdminAndOwner %>" Value="OwnersAndAdmins" />
+                                    <asp:ListItem Text="<%$ Resources:Club, LabelPolicyEditingAdminOnly %>" Value="AdminsOnly" />
+                                </asp:RadioButtonList>
+                            </td>
                         </tr>
                         <tr>
                             <td><asp:CheckBox ID="ckPolicyNamePrefix" runat="server" Checked='<%# Bind("PrependsScheduleWithOwnerName") %>' /></td>

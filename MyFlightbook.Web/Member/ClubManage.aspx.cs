@@ -84,24 +84,17 @@ namespace MyFlightbook.Clubs
             catch (MyFlightbookException ex)
             {
                 lblErr.Text = ex.Message;
-                lnkReturnToClub.Visible = tabManage.Visible = false;
+                lnkReturnToClub.Visible = accClub.Visible = false;
             }
-        }
-
-        protected void StopManaging()
-        {
-            tabManage.ActiveTabIndex = 0;
         }
 
         protected void vcEdit_ClubChanged(object sender, EventArgs e)
         {
             CurrentClub = vcEdit.ActiveClub;
-            StopManaging();
         }
         protected void vcEdit_ClubChangeCanceled(object sender, EventArgs e)
         {
             vcEdit.ActiveClub = CurrentClub;
-            StopManaging();
         }
 
         protected void btnDeleteClub_Click(object sender, EventArgs e)
