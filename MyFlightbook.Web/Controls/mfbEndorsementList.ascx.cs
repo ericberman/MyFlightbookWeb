@@ -19,13 +19,18 @@ namespace MyFlightbook.Instruction
     {
         public event EventHandler<EndorsementEventArgs> CopyEndorsement;
 
+        #region Properties
+        private const string szVSKeyStudent = "vsKeyStudent";
+        private const string szVSKeyInstructor = "vsKeyInstructor";
+        private const string szVSExcludeInstructor = "vsKeyExcludeInstructor";
+
         /// <summary>
         /// The name of the student to restrict on
         /// </summary>
         public string Student
         {
-            get { return hdnStudent.Value; }
-            set { hdnStudent.Value = value; }
+            get { return (string) ViewState[szVSKeyStudent]; }
+            set { ViewState[szVSKeyStudent] = value; }
         }
 
         /// <summary>
@@ -33,13 +38,22 @@ namespace MyFlightbook.Instruction
         /// </summary>
         public string Instructor
         {
-            get { return hdnInstructor.Value; }
-            set { hdnInstructor.Value = value; }
+            get { return (string)ViewState[szVSKeyInstructor]; }
+            set { ViewState[szVSKeyInstructor] = value; }
+        }
+
+        /// <summary>
+        /// True to exclude the specified instructor name when instructor is otherwise null (i.e., getting ALL student endorsements).  This allows retrieval of the "other" endorsements.
+        /// </summary>
+        public string ExcludeInstructor
+        {
+            get { return (string) ViewState[szVSExcludeInstructor]; }
+            set { ViewState[szVSExcludeInstructor] = value;}
         }
 
         protected bool CanDelete(Endorsement e)
         {
-            return (e != null && e.StudentName.CompareCurrentCultureIgnoreCase(Page.User.Identity.Name) == 0);
+            return (e != null && ShowDelete && e.StudentName.CompareCurrentCultureIgnoreCase(Page.User.Identity.Name) == 0);
         }
 
         protected bool CanCopy(Endorsement e)
@@ -59,9 +73,23 @@ namespace MyFlightbook.Instruction
             set { hdnCurSort.Value = value.ToString(); }
         }
 
+        public bool ShowSort
+        {
+            get { return gvExistingEndorsements.ShowHeader; }
+            set { gvExistingEndorsements.ShowHeader = value; }
+        }
+
+        public bool ShowDelete { get; set; } = true;
+        #endregion
+
+        /// <summary>
+        /// Refreshes (databinds) the list of endorsements
+        /// </summary>
+        /// <returns># of endorsements bound</returns>
         public int RefreshEndorsements()
         {
-            IEnumerable <Endorsement> rg = Endorsement.EndorsementsForUser(Student, Instructor, CurSortDirection, CurSortKey);
+            IEnumerable<Endorsement> rg = Endorsement.RemoveEndorsementsByInstructor(Endorsement.EndorsementsForUser(Student, Instructor, CurSortDirection, CurSortKey), ExcludeInstructor);
+
             gvExistingEndorsements.DataSource = rg;
             gvExistingEndorsements.DataBind();
 
@@ -76,6 +104,8 @@ namespace MyFlightbook.Instruction
                 lbSortTitle.CssClass = String.Format(CultureInfo.InvariantCulture, "headerBase{0}", CurSortKey == EndorsementSortKey.Title ? (CurSortDirection == SortDirection.Ascending ? " headerSortAsc" : " headerSortDesc") : string.Empty);
             }
 
+            lnkDownload.Visible = !String.IsNullOrEmpty(Instructor) && cItems > 0;
+            
             return cItems;
         }
 
@@ -83,7 +113,7 @@ namespace MyFlightbook.Instruction
         {
             if (!IsPostBack)
             {
-                lnkDownload.Visible = !String.IsNullOrEmpty(Instructor);
+                lnkDownload.Visible = !String.IsNullOrEmpty(Instructor) && gvExistingEndorsements.DataSource != null && gvExistingEndorsements.Rows.Count > 0;
             }
         }
         protected void gvExistingEndorsements_RowDataBound(object sender, GridViewRowEventArgs e)

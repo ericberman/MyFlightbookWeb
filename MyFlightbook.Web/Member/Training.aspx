@@ -22,6 +22,9 @@
                 <asp:Localize ID="locEndorsementsPrompt" runat="server" 
                      Text="Your Endorsements" meta:resourcekey="locEndorsementsPromptResource1"></asp:Localize>
             </h2>
+            <p>
+                <asp:HyperLink ID="lnkDisclaimer" Text="<%$ Resources:SignOff, DigitalEndorsementDisclaimer %>" Target="_blank" NavigateUrl="~/Public/FAQ.aspx?q=23#23" runat="server"></asp:HyperLink>
+            </p>
             <uc6:mfbEndorsementList ID="mfbEndorsementList1" runat="server" />
             <p><asp:HyperLink ID="lnkAddEndorsement" runat="server" Text="Add an endorsement..." NavigateUrl="~/Member/AddEndorsement.aspx" meta:resourcekey="lnkAddEndorsementResource1"></asp:HyperLink></p>
             <div class="noprint">

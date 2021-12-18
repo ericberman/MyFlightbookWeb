@@ -1,16 +1,18 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbEndorsementList.ascx.cs" Inherits="MyFlightbook.Instruction.mfbEndorsementList" %>
 <%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="asp" %>
 <%@ Register src="mfbEndorsement.ascx" tagname="mfbEndorsement" tagprefix="uc1" %>
-<div>
-    <asp:HyperLink ID="lnkDisclaimer" Text="<%$ Resources:SignOff, DigitalEndorsementDisclaimer %>" Target="_blank" NavigateUrl="~/Public/FAQ.aspx?q=23#23" runat="server"></asp:HyperLink>
-</div>
 <asp:HiddenField ID="hdnCurSort" runat="server" Value="Date" />
 <asp:HiddenField ID="hdnCurSortDir" runat="server" Value="Descending" />
+<asp:LinkButton ID="lnkDownload" runat="server" style="vertical-align:middle" OnClick="lnkDownload_Click">
+    <asp:Image ID="imgDownloadCSV" ImageUrl="~/images/download.png" runat="server" style="padding-right: 5px; vertical-align:middle" />
+    <asp:Image ID="imgCSVIcon" ImageAlign="Middle" runat="server" ImageUrl="~/images/csvicon_sm.png" style="padding-right: 5px; vertical-align:middle;" />
+    <asp:Label ID="lblDownload" runat="server" Text="<%$ Resources:Signoff, DownloadCSVEndorsements %>" />
+</asp:LinkButton>
 <asp:GridView ID="gvExistingEndorsements" OnRowDataBound="gvExistingEndorsements_RowDataBound" GridLines="None" runat="server" AutoGenerateColumns="false" ShowFooter="false" ShowHeader="true" OnRowCommand="gvExistingEndorsements_RowCommand">
     <Columns>
         <asp:TemplateField>
             <HeaderTemplate>
-                <asp:Label ID="lblSort" runat="server" Font-Bold="false" Text="<%$ Resources:SignOff, EndorsementSort %>" />&nbsp;&nbsp;&nbsp;<asp:LinkButton ID="lnkSortDate" runat="server" Text="<%$ Resources:SignOff, EndorsementSortDate %>" OnClick="lnkSortDate_Click" />&nbsp;&nbsp;&nbsp;<asp:LinkButton ID="lnkSortTitle" runat="server" Text="<%$ Resources:SignOff, EndorsementSortTitle %>" OnClick="lnkSortTitle_Click" />
+                <asp:Label ID="lblSort" runat="server" Font-Bold="false" Text="<%$ Resources:SignOff, EndorsementSort %>" />&nbsp;&nbsp;&nbsp;<asp:LinkButton ID="lnkSortDate" CausesValidation="false" runat="server" Text="<%$ Resources:SignOff, EndorsementSortDate %>" OnClick="lnkSortDate_Click" />&nbsp;&nbsp;&nbsp;<asp:LinkButton ID="lnkSortTitle" runat="server" CausesValidation="false" Text="<%$ Resources:SignOff, EndorsementSortTitle %>" OnClick="lnkSortTitle_Click" />
             </HeaderTemplate>
             <ItemTemplate>
                 <uc1:mfbEndorsement ID="mfbEndorsement1" runat="server" />
@@ -41,9 +43,6 @@
         <asp:Label ID="lblNoEndorsements" runat="server" Text="<%$ Resources:Signoff, NoExistingEndorsements %>"></asp:Label>
     </EmptyDataTemplate>
 </asp:GridView>
-<asp:HiddenField ID="hdnStudent" runat="server" />
-<asp:HiddenField ID="hdnInstructor" runat="server" />
-<asp:LinkButton ID="lnkDownload" runat="server" Text="<%$ Resources:Signoff, DownloadCSVEndorsements %>" OnClick="lnkDownload_Click"></asp:LinkButton>
 <asp:GridView ID="gvDownload" runat="server" AutoGenerateColumns="false">
     <Columns>
         <asp:BoundField DataField="Date" HeaderText="<%$ Resources:Signoff, EditEndorsementDatePrompt %>" DataFormatString="{0:d}" />

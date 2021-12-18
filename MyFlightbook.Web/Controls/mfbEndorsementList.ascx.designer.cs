@@ -15,15 +15,6 @@ namespace MyFlightbook.Instruction
     {
 
         /// <summary>
-        /// lnkDisclaimer control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink lnkDisclaimer;
-
-        /// <summary>
         /// hdnCurSort control.
         /// </summary>
         /// <remarks>
@@ -42,33 +33,6 @@ namespace MyFlightbook.Instruction
         protected global::System.Web.UI.WebControls.HiddenField hdnCurSortDir;
 
         /// <summary>
-        /// gvExistingEndorsements control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvExistingEndorsements;
-
-        /// <summary>
-        /// hdnStudent control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hdnStudent;
-
-        /// <summary>
-        /// hdnInstructor control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hdnInstructor;
-
-        /// <summary>
         /// lnkDownload control.
         /// </summary>
         /// <remarks>
@@ -76,6 +40,42 @@ namespace MyFlightbook.Instruction
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton lnkDownload;
+
+        /// <summary>
+        /// imgDownloadCSV control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Image imgDownloadCSV;
+
+        /// <summary>
+        /// imgCSVIcon control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Image imgCSVIcon;
+
+        /// <summary>
+        /// lblDownload control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblDownload;
+
+        /// <summary>
+        /// gvExistingEndorsements control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvExistingEndorsements;
 
         /// <summary>
         /// gvDownload control.

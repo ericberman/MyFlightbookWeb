@@ -258,7 +258,7 @@
             </asp:View>
         </asp:MultiView>
         <asp:Panel ID="pnlEndorsements" runat="server" style="page-break-after:always;">
-            <uc1:mfbEndorsementList runat="server" ID="mfbEndorsementList" />
+            <uc1:mfbEndorsementList runat="server" ID="mfbEndorsementList" ShowSort="false" ShowDelete="false" />
             <asp:Repeater ID="rptImages" runat="server">
                 <ItemTemplate>
                     <div style="margin-bottom: 5px; page-break-inside:avoid;"><asp:Image ID="imgEndorsement" runat="server" style="max-width:100%" ImageUrl='<%# Eval("URLFullImage") %>' /></div>

@@ -351,6 +351,21 @@ namespace MyFlightbook.Instruction
             return lst;
         }
 
+        /// <summary>
+        /// Removes all endorsements issued by the specified instructor from an enumerable of endorsements.  Useful for when viewing all student endorsements to see yours (as an instructor), followed by others.
+        /// </summary>
+        /// <param name="rgIn">The enumerable of endorsements</param>
+        /// <param name="szInstructor">The instructor to strip</param>
+        /// <returns></returns>
+        public static IEnumerable<Endorsement> RemoveEndorsementsByInstructor(IEnumerable<Endorsement> rgIn, string szInstructor)
+        {
+            if (String.IsNullOrEmpty(szInstructor) || rgIn == null)
+                return rgIn;
+            List<Endorsement> lst = new List<Endorsement>(rgIn);
+            lst.RemoveAll(e => e.InstructorName.CompareCurrentCultureIgnoreCase(szInstructor) == 0);
+            return lst;
+        }
+
         public static Endorsement EndorsementWithID(int id)
         {
             DBHelper dbh = new DBHelper("SELECT *, LENGTH(DigitizedSignature) AS FileSize FROM Endorsements WHERE id=?idEndorsement");

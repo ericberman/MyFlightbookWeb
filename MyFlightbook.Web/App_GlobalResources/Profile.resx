@@ -227,7 +227,7 @@
     <comment>Shown when there is an error.</comment>
   </data>
   <data name="EndorsementsExistingEndorsementHeader" xml:space="preserve">
-    <value>Existing endorsements for {0}:</value>
+    <value>Endorsements you've given to {0}:</value>
   </data>
   <data name="EndorsementsHeader" xml:space="preserve">
     <value>Endorsements for {0}</value>
@@ -679,5 +679,8 @@
   </data>
   <data name="SignInNewUserPrompt" xml:space="preserve">
     <value>Don't have an account?</value>
+  </data>
+  <data name="EndorsementsNotOwnedEndorsementHeader" xml:space="preserve">
+    <value>Other (not from you) endorsements for {0}:</value>
   </data>
 </root>

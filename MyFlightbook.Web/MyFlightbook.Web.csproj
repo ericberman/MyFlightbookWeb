@@ -3073,6 +3073,7 @@
     <Content Include="App_GlobalResources\SignOff.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>
       <LastGenOutput>SignOff.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="App_GlobalResources\Tabs.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>
