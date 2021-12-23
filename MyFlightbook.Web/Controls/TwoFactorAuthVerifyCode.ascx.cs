@@ -4,14 +4,14 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2020 MyFlightbook LLC
+ * Copyright (c) 2020-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
 namespace MyFlightbook.Web.Controls
 {
-    public partial class TwoFactorAuthVerifyCode : System.Web.UI.UserControl
+    public partial class TwoFactorAuthVerifyCode : UserControl
     {
         public event EventHandler<EventArgs> TFACodeVerified;
         public event EventHandler<EventArgs> TFACodeFailed;
@@ -63,6 +63,7 @@ namespace MyFlightbook.Web.Controls
                 System.Threading.Thread.Sleep(1000); // pause for a second to thwart dictionary attacks.
                 TFACodeFailed?.Invoke(this, new EventArgs());
             }
+            txtCode.Text = string.Empty;    // clear it regardless.
         }
     }
 }

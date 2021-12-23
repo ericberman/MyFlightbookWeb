@@ -4,14 +4,14 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2020 MyFlightbook LLC
+ * Copyright (c) 2016-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
 namespace MyFlightbook.Web.Controls
 {
-    public partial class TwoFActorAuth : System.Web.UI.UserControl
+    public partial class TwoFActorAuth : UserControl
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -23,7 +23,7 @@ namespace MyFlightbook.Web.Controls
             }
         }
 
-        public Boolean GenerateTwoFactorAuthentication()
+        public bool GenerateTwoFactorAuthentication()
         {
             Guid guid = Guid.NewGuid();
             String uniqueUserKey = guid.ToString().Replace("-", string.Empty).Substring(0, 10);
@@ -73,6 +73,8 @@ namespace MyFlightbook.Web.Controls
             Profile pf = Profile.GetUser(Page.User.Identity.Name);
             pf.SetPreferenceForKey(MFBConstants.keyTFASettings, TwoFactorAuthVerifyCode.AuthCode);
             mvTFAState.SetActiveView(vwTFAActive);
+
+            tfaVerifyDisable.AuthCode = TwoFactorAuthVerifyCode.AuthCode;   // Issue #870 - set the authcode in the "disable 2fa" control so that we can disable in same viewstate
         }
     }
 }
