@@ -159,7 +159,7 @@ namespace MyFlightbook.RatingsProgress
             {
                 miMinIMCTestPrep.AddDecayableEvent(cfr.dtFlight, instTrainingTime, DateTime.Now.AddCalendarMonths(-2).CompareTo(cfr.dtFlight) <= 0);
 
-                if (cfr.cApproaches >= 3 && IMCXCTime > 0.0M)
+                if (cfr.cApproaches >= 3 && IMCXCTime > 0.0M && instTrainingTime > 0)
                 {
                     AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route);
                     if (al.DistanceForRoute() >= MinXCDistance)
