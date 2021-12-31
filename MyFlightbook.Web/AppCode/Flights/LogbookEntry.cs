@@ -3025,7 +3025,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
 
                 if (FlightStart.HasValue() && FlightEnd.HasValue())
                 {
-                    TimeSpan dtFlight = FlightEnd.Subtract(FlightStart);
+                    TimeSpan dtFlight = FlightEnd.StripSeconds().Subtract(FlightStart.StripSeconds());
                     return String.Format(CultureInfo.CurrentCulture, "{3}: {0} {4} {1} ({2})", FlightStart.UTCFormattedStringOrEmpty(UseUTCDates), FlightEnd.UTCFormattedStringOrEmpty(UseUTCDates), dtFlight.TotalHours.FormatDecimal(UseHHMM), Resources.LogbookEntry.FieldFlightTime, Resources.LogbookEntry.RangeSeparator);
                 }
                 else if (FlightStart.HasValue())

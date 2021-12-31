@@ -1396,4 +1396,10 @@ Proceed with import?</value>
   <data name="TaxiCrossFillTip" xml:space="preserve">
     <value>Sets taxi time equal to Total Time minus elapsed flight time (flight start to flight end)</value>
   </data>
+  <data name="ElapsedLessonSummary" xml:space="preserve">
+    <value>Lesson: {0}</value>
+  </data>
+  <data name="ElapsedScheduleSummary" xml:space="preserve">
+    <value>Scheduled: {0}</value>
+  </data>
 </root>

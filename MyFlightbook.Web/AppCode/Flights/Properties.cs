@@ -1399,9 +1399,12 @@ GROUP BY fp.idPropType;";
                     (cfpTachEnd.DecValue - cfpTachStart.DecValue).FormatDecimal(false)));
             }
 
+            // Coalesce the (currently 5) pairs of start/stop-time UTC properties: Duty, Flight Duty, Block, Lesson, and Schedule
             AddTotalElapsedTime(d, rgprops, (int)CustomPropertyType.KnownProperties.IDPropFlightDutyTimeStart, (int)CustomPropertyType.KnownProperties.IDPropFlightDutyTimeEnd, Resources.LogbookEntry.ElapsedFlightDutySummary, fUseHHMM);
             AddTotalElapsedTime(d, rgprops, (int)CustomPropertyType.KnownProperties.IDPropDutyStart, (int)CustomPropertyType.KnownProperties.IDPropDutyEnd, Resources.LogbookEntry.ElapsedDutySummary, fUseHHMM);;
             AddTotalElapsedTime(d, rgprops, (int)CustomPropertyType.KnownProperties.IDBlockOut, (int)CustomPropertyType.KnownProperties.IDBlockIn, Resources.LogbookEntry.ElapsedBlockSummary, fUseHHMM);
+            AddTotalElapsedTime(d, rgprops, (int)CustomPropertyType.KnownProperties.IDPropLessonStart, (int)CustomPropertyType.KnownProperties.IDPropLessonEnd, Resources.LogbookEntry.ElapsedLessonSummary, fUseHHMM);
+            AddTotalElapsedTime(d, rgprops, (int)CustomPropertyType.KnownProperties.IDPropScheduledDeparture, (int)CustomPropertyType.KnownProperties.IDPropScheduledArrival, Resources.LogbookEntry.ElapsedScheduleSummary, fUseHHMM);
 
             return d;
         }

@@ -304,6 +304,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///    Looks up a localized string similar to Lesson: {0}.
+        /// </summary>
+        internal static string ElapsedLessonSummary {
+            get {
+                return ResourceManager.GetString("ElapsedLessonSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Scheduled: {0}.
+        /// </summary>
+        internal static string ElapsedScheduleSummary {
+            get {
+                return ResourceManager.GetString("ElapsedScheduleSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///    Looks up a localized string similar to Tach: {0}.
         /// </summary>
         internal static string ElapsedTachSummary {
