@@ -502,7 +502,7 @@
     <value>Last Pitot/Static</value>
   </data>
   <data name="MaintenancePitotStaticDue" xml:space="preserve">
-    <value>Next Pitot/Statis</value>
+    <value>Next Pitot/Static</value>
   </data>
   <data name="MaintenanceRegistration" xml:space="preserve">
     <value>Registration Due</value>

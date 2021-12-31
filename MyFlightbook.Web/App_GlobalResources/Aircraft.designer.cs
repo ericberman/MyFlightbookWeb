@@ -1507,7 +1507,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Next Pitot/Statis.
+        ///    Looks up a localized string similar to Next Pitot/Static.
         /// </summary>
         internal static string MaintenancePitotStaticDue {
             get {
