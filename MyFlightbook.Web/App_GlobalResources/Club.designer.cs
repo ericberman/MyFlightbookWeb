@@ -1533,6 +1533,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///    Looks up a localized string similar to Instruction?.
+        /// </summary>
+        internal static string ReportHeaderInstruction {
+            get {
+                return ResourceManager.GetString("ReportHeaderInstruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///    Looks up a localized string similar to Insurance Report.
         /// </summary>
         internal static string ReportHeaderInsurance {

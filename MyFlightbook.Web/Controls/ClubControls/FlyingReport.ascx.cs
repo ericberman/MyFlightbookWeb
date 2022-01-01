@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2021 MyFlightbook LLC
+ * Copyright (c) 2019-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -107,7 +107,8 @@ fp2.decValue - fp.decValue AS 'Total Tach',
 fp3.decValue AS 'Oil Added',
 fp4.decValue AS 'Fuel Added',
 fp5.decValue AS 'Fuel Cost',
-fp6.decValue AS 'Oil Level'
+fp6.decValue AS 'Oil Level',
+IF(f.dualReceived > 0 OR f.cfi > 0, 'Yes', '') AS IsInstruction
 FROM flights f 
 INNER JOIN clubmembers cm ON f.username = cm.username
 INNER JOIN users u ON u.username=cm.username

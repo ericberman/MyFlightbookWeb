@@ -761,4 +761,7 @@ Sender Email: {1}</value>
   <data name="LabelPolicyEditingEveryone" xml:space="preserve">
     <value>Any club member (i.e., honor system)</value>
   </data>
+  <data name="ReportHeaderInstruction" xml:space="preserve">
+    <value>Instruction?</value>
+  </data>
 </root>
