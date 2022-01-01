@@ -3,11 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using System.Threading.Tasks;
 using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2021 MyFlightbook LLC
+ * Copyright (c) 2015-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -16,42 +17,16 @@ namespace MyFlightbook.Web.Admin
 {
     public partial class Member_Stats : AdminPage
     {
-        const string szFormatFlightsPerUser = @"SELECT 
-    COUNT(f2.usercount) AS numusers, f2.numflights
-FROM
-    (SELECT 
-        u.username AS usercount,
-            FLOOR((COUNT(f.idflight) + 99) / 100) * 100 AS numflights
-    FROM
-        users u
-    LEFT JOIN flights f ON u.username = f.username
-    {0}
-    GROUP BY u.username
-    ORDER BY numflights ASC) f2
-GROUP BY f2.numflights
-ORDER BY f2.numflights ASC;";
-
-        const string szFlightByMonth = @"SELECT 
-    COUNT(*) AS numflights,
-    DATE_FORMAT(f.date, '%Y-%m-01') AS creationbucket
-FROM
-    flights f
-GROUP BY creationbucket
-ORDER BY creationbucket ASC";
-
-        protected void Page_Load(object sender, EventArgs e)
+        protected async void Page_Load(object sender, EventArgs e)
         {
             Master.SelectedTab = tabID.admStats;
             CheckAdmin(Profile.GetUser(Page.User.Identity.Name).CanReport);
 
             if (!IsPostBack)
             {
-                // User activity - pretty fast query
-                UpdateUserActivity();
-
-                UpdateFlightsByDate();
-
-                UpdateFlightsPerUser();
+                await Task.WhenAll(Task.Run(() => { UpdateUserActivity(); }),
+                    Task.Run(() => { UpdateFlightsByDate(); }),
+                    Task.Run(() => { UpdateFlightsPerUser(); }));
             }
         }
 
@@ -72,7 +47,14 @@ ORDER BY creationbucket ASC";
 
             List<SimpleDateHistogrammable> lstFlightsByDate = new List<SimpleDateHistogrammable>();
 
-            DBHelper dbh = new DBHelper(szFlightByMonth);
+            DBHelper dbh = new DBHelper(@"SELECT 
+    COUNT(*) AS numflights,
+    DATE_FORMAT(f.date, '%Y-%m-01') AS creationbucket
+FROM
+    flights f
+GROUP BY creationbucket
+ORDER BY creationbucket ASC");
+            dbh.CommandArgs.Timeout = 300;
             dbh.ReadRows((comm) => { }, (dr) => { lstFlightsByDate.Add(new SimpleDateHistogrammable() { Date = Convert.ToDateTime(dr["creationbucket"], CultureInfo.InvariantCulture), Count = Convert.ToInt32(dr["numflights"], CultureInfo.InvariantCulture) }); });
 
             HistogramManager hmFlightsByDate = new HistogramManager()
@@ -110,7 +92,20 @@ ORDER BY creationbucket ASC";
                 Values = new HistogramableValue[] { new HistogramableValue("Range", "Flights", HistogramValueTypes.Integer) }
             };
 
-            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, szFormatFlightsPerUser, String.IsNullOrEmpty(cmbNewUserAge.SelectedValue) ? string.Empty : "WHERE u.creationdate > ?creationDate"));
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, @"SELECT 
+    COUNT(f2.usercount) AS numusers, f2.numflights
+FROM
+    (SELECT 
+        u.username AS usercount,
+            FLOOR((COUNT(f.idflight) + 99) / 100) * 100 AS numflights
+    FROM
+        users u
+    LEFT JOIN flights f ON u.username = f.username
+    {0}
+    GROUP BY u.username
+    ORDER BY numflights ASC) f2
+GROUP BY f2.numflights
+ORDER BY f2.numflights ASC;", String.IsNullOrEmpty(cmbNewUserAge.SelectedValue) ? string.Empty : "WHERE u.creationdate > ?creationDate"));
             dbh.CommandArgs.Timeout = 300;
             dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("creationDate", String.IsNullOrEmpty(cmbNewUserAge.SelectedValue) ? DateTime.MinValue : DateTime.Now.AddMonths(-Convert.ToInt32(cmbNewUserAge.SelectedValue, CultureInfo.InvariantCulture))); },
                 (dr) =>
