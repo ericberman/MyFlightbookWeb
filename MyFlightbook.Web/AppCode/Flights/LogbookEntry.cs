@@ -2364,8 +2364,8 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                     TimeSpan tsGroundTraining = cfpLessonEnd.DateValue.Subtract(cfpLessonStart.DateValue);
 
                     // Pull out any flight or engine time, whichever is greater.
-                    TimeSpan tsEngine = (EngineEnd.HasValue() && EngineStart.HasValue()) ? EngineEnd.Subtract(EngineStart) : TimeSpan.MinValue;
-                    TimeSpan tsFlight = (FlightEnd.HasValue() && FlightStart.HasValue()) ? FlightEnd.Subtract(FlightStart) : TimeSpan.MinValue;
+                    TimeSpan tsEngine = (EngineEnd.HasValue() && EngineStart.HasValue()) ? EngineEnd.Subtract(EngineStart) : new TimeSpan(0, 0, 0);
+                    TimeSpan tsFlight = (FlightEnd.HasValue() && FlightStart.HasValue()) ? FlightEnd.Subtract(FlightStart) : new TimeSpan(0, 0, 0);
                     tsGroundTraining = tsGroundTraining.Subtract(tsEngine.CompareTo(tsFlight) > 0 ? tsEngine : tsFlight);
 
                     CustomProperties.Add(CustomFlightProperty.PropertyWithValue(idTargetID, (decimal)tsGroundTraining.TotalHours));
