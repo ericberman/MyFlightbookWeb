@@ -3,12 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
+using System.Threading.Tasks;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2011-2021 MyFlightbook LLC
+ * Copyright (c) 2011-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -27,7 +28,9 @@ namespace MyFlightbook.MemberPages
 
         protected bool UseHHMM { get; set; }
 
-        protected void Page_Load(object sender, EventArgs e)
+        protected bool HasRefreshedTimePeriod { get; set; }
+
+        protected async void Page_Load(object sender, EventArgs e)
         {
             this.Master.SelectedTab = tabID.inst8710;
             Master.SuppressMobileViewport = true;
@@ -38,7 +41,7 @@ namespace MyFlightbook.MemberPages
             if (!IsPostBack)
             {
                 lblUserName.Text = Master.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText._8710FormForUserHeader, pf.UserFullName);
-                RefreshFormData();
+                await RefreshFormData().ConfigureAwait(false);
                 MfbLogbook1.Visible = !this.Master.IsMobileSession();
                 Master.ShowSponsoredAd = false;
 
@@ -57,9 +60,11 @@ namespace MyFlightbook.MemberPages
                         break;
                 }
             }
+            else
 
-            // rollup by time has no viewstate so must be refreshed by time
-            RefreshTimePeriodRollup();
+            // rollup by time has no viewstate so must be refreshed on each page load.  BUT...was done in RefreshFormData so may not need to be done here
+            if (!HasRefreshedTimePeriod)
+                RefreshTimePeriodRollup();
         }
 
         private Dictionary<string, List<ClassTotal>> ClassTotals { get; set; }
@@ -67,9 +72,76 @@ namespace MyFlightbook.MemberPages
         protected void RefreshTimePeriodRollup()
         {
             mfbTotalsByTimePeriod.BindTotalsForUser(Page.User.Identity.Name, false, DateTime.Now.Day > 1, true, true, DateTime.Now.Day > 1 || DateTime.Now.Month > 1, mfbSearchForm1.Restriction);
+            HasRefreshedTimePeriod = true;
         }
 
-        protected void RefreshFormData()
+        protected void refreshClassTotals(DBHelperCommandArgs args)
+        {
+            ClassTotals = new Dictionary<string, List<ClassTotal>>();
+            DBHelper dbh = new DBHelper(args);
+            dbh.ReadRows((c) => { }, (d) =>
+            {
+                string szCategory = (string)d["Category"];
+                string szClass = (string)d["Class"];
+                string szCatClass = (string)d["CatClass"];
+                if (!String.IsNullOrEmpty(szCategory) && !String.IsNullOrEmpty(szClass) && !String.IsNullOrEmpty(szCatClass))
+                {
+                    if (!ClassTotals.ContainsKey(szCategory))
+                        ClassTotals[szCategory] = new List<ClassTotal>();
+                    List<ClassTotal> lst = ClassTotals[szCategory];
+                    ClassTotal ct = new ClassTotal()
+                    {
+                        ClassName = szCatClass,
+                        Total = Convert.ToDecimal(d["TotalTime"], CultureInfo.InvariantCulture),
+                        PIC = Convert.ToDecimal(d["PIC"], CultureInfo.InvariantCulture),
+                        SIC = Convert.ToDecimal(d["SIC"], CultureInfo.InvariantCulture)
+                    };
+                    lst.Add(ct);
+                }
+            });
+        }
+
+        protected void refreshMainQuery(DBHelperCommandArgs args, string szQueryMain)
+        {
+            using (MySqlCommand comm = new MySqlCommand())
+            {
+                DBHelper.InitCommandObject(comm, args);
+                using (comm.Connection = new MySqlConnection(DBHelper.ConnectionString))
+                {
+                    MySqlDataReader dr = null;
+                    comm.CommandText = szQueryMain;
+                    comm.Connection.Open();
+                    using (dr = comm.ExecuteReader())
+                    {
+                        gv8710.DataSource = dr;
+                        gv8710.DataBind();
+                    }
+                }
+            }
+        }
+
+        protected void refreshClassRollup(DBHelperCommandArgs args, string szQueryRollup)
+        {
+            using (MySqlCommand comm = new MySqlCommand())
+            {
+                DBHelper.InitCommandObject(comm, args);
+                using (comm.Connection = new MySqlConnection(DBHelper.ConnectionString))
+                {
+                    MySqlDataReader dr = null;
+                    comm.CommandText = szQueryRollup;
+                    comm.Connection.Open();
+                    using (dr = comm.ExecuteReader())
+                    {
+                        gvRollup.DataSource = dr;
+                        gvRollup.DataBind();
+                        if (gvRollup.Rows.Count > 0)
+                            gvRollup.Rows[gvRollup.Rows.Count - 1].Font.Bold = true;
+                    }
+                }
+            }
+        }
+
+        protected async Task<bool> RefreshFormData()
         {
 
             FlightQuery fq = mfbSearchForm1.Restriction;
@@ -93,97 +165,60 @@ namespace MyFlightbook.MemberPages
                     args.Parameters.Add(p);
             }
 
-            // get the class totals
+            // Class totals are used first - so fill them out before any async pieces
+            refreshClassTotals(args);
+            
+            // get the various reports.  This can be a bit slow, so do all of the queries in parallel asynchronously.
             try
             {
-                ClassTotals = new Dictionary<string, List<ClassTotal>>();
-                DBHelper dbh = new DBHelper(args);
-                dbh.ReadRows((c) => { }, (d) =>
-                {
-                    string szCategory = (string)d["Category"];
-                    string szClass = (string)d["Class"];
-                    string szCatClass = (string)d["CatClass"];
-                    if (!String.IsNullOrEmpty(szCategory) && !String.IsNullOrEmpty(szClass) && !String.IsNullOrEmpty(szCatClass))
+                await Task.WhenAll(
+                    Task.Run(() => { refreshMainQuery(args, szQueryMain); }),
+                    Task.Run(() => { refreshClassRollup(args, szQueryRollup); }),
+                    Task.Run(() =>
                     {
-                        if (!ClassTotals.ContainsKey(szCategory))
-                            ClassTotals[szCategory] = new List<ClassTotal>();
-                        List<ClassTotal> lst = ClassTotals[szCategory];
-                        ClassTotal ct = new ClassTotal()
+                        UpdateDescription();
+                        if (!this.Master.IsMobileSession())
                         {
-                            ClassName = szCatClass,
-                            Total = Convert.ToDecimal(d["TotalTime"], CultureInfo.InvariantCulture),
-                            PIC = Convert.ToDecimal(d["PIC"], CultureInfo.InvariantCulture),
-                            SIC = Convert.ToDecimal(d["SIC"], CultureInfo.InvariantCulture)
-                        };
-                        lst.Add(ct);
-                    }
-                });
+                            MfbLogbook1.Restriction = fq;
+                            MfbLogbook1.RefreshData();
+                        }
+                    }),
+                    Task.Run(() => { RefreshTimePeriodRollup(); })
+                    ).ConfigureAwait(false);
             }
             catch (MySqlException ex)
             {
                 throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Error getting 8710 data for user {0}: {1}", Page.User.Identity.Name, ex.Message), ex, Page.User.Identity.Name);
             }
 
-            using (MySqlCommand comm = new MySqlCommand())
-            {
-                DBHelper.InitCommandObject(comm, args);
-                using (comm.Connection = new MySqlConnection(DBHelper.ConnectionString))
-                {
-                    MySqlDataReader dr = null;
-                    try
-                    {
-                        comm.CommandText = szQueryMain;
-                        comm.Connection.Open();
-                        using (dr = comm.ExecuteReader())
-                        {
-                            gv8710.DataSource = dr;
-                            gv8710.DataBind();
-                        }
-
-                        comm.CommandText = szQueryRollup;
-                        using (dr = comm.ExecuteReader())
-                        {
-                            gvRollup.DataSource = dr;
-                            gvRollup.DataBind();
-                            if (gvRollup.Rows.Count > 0)
-                                gvRollup.Rows[gvRollup.Rows.Count - 1].Font.Bold = true;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Error getting 8710 data for user {0}: {1}", Page.User.Identity.Name, ex.Message), ex, Page.User.Identity.Name);
-                    }
-                }
-            }
-
-            UpdateDescription();
-            if (!this.Master.IsMobileSession())
-            {
-                MfbLogbook1.Restriction = fq;
-                MfbLogbook1.RefreshData();
-            }
+            return true;
         }
 
-        public void ClearForm(object sender, FlightQueryEventArgs fqe)
+        public async void ClearForm(object sender, FlightQueryEventArgs fqe)
         {
             if (fqe == null)
                 throw new ArgumentNullException(nameof(fqe));
             mfbSearchForm1.Restriction = fqe.Query;
             UpdateDescription();
-            ShowResults(sender, fqe);
+            await ShowResults(sender, fqe).ConfigureAwait(false);
         }
 
-        protected void ShowResults(object sender, FlightQueryEventArgs fqe)
+        protected async void OnQuerySubmitted(object sender, FlightQueryEventArgs fqe)
+        {
+            await ShowResults(sender, fqe).ConfigureAwait(false);
+        }
+
+        protected async Task<bool> ShowResults(object sender, FlightQueryEventArgs fqe)
         {
             if (fqe == null)
                 throw new ArgumentNullException(nameof(fqe));
             mfbSearchForm1.Restriction = fqe.Query;
             UpdateDescription();
-            RefreshFormData();
-            RefreshTimePeriodRollup();
+            await RefreshFormData().ConfigureAwait(false);
 
             if (Int32.TryParse(hdnLastViewedPaneIndex.Value, out int idxLast))
                 accReports.SelectedIndex = idxLast;
+            return true;
         }
 
         protected void UpdateDescription()
@@ -196,12 +231,12 @@ namespace MyFlightbook.MemberPages
             apcFilter.IsEnhanced = !fRestrictionIsDefault;
         }
 
-        protected void mfbQueryDescriptor1_QueryUpdated(object sender, FilterItemClickedEventArgs fic)
+        protected async void mfbQueryDescriptor1_QueryUpdated(object sender, FilterItemClickedEventArgs fic)
         {
             if (fic == null)
                 throw new ArgumentNullException(nameof(fic));
             mfbSearchForm1.Restriction = mfbSearchForm1.Restriction.ClearRestriction(fic.FilterItem);   // need to set the restriction in order to persist it (since it updates the view)
-            ShowResults(sender, new FlightQueryEventArgs(mfbSearchForm1.Restriction));
+            await ShowResults(sender, new FlightQueryEventArgs(mfbSearchForm1.Restriction)).ConfigureAwait(false);
         }
 
         protected void gv8710_RowDataBound(object sender, GridViewRowEventArgs e)

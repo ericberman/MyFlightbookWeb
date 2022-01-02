@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true"
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Async="true"
     Codebehind="8710Form.aspx.cs" Inherits="MyFlightbook.MemberPages.FAA8710Form" culture="auto" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Src="../Controls/mfbLogbook.ascx" TagName="mfbLogbook" TagPrefix="uc6" %>
@@ -35,7 +35,7 @@
             <ajaxToolkit:AccordionPane ID="acpFilter" runat="server">
                 <Content>
                     <div style="margin-left:auto; margin-right:auto;">
-                        <uc2:mfbSearchForm ID="mfbSearchForm1" InitialCollapseState="True" runat="server" OnQuerySubmitted="ShowResults" OnReset="ClearForm" />
+                        <uc2:mfbSearchForm ID="mfbSearchForm1" InitialCollapseState="True" runat="server" OnQuerySubmitted="OnQuerySubmitted" OnReset="ClearForm" />
                     </div>
                 </Content>
             </ajaxToolkit:AccordionPane>
