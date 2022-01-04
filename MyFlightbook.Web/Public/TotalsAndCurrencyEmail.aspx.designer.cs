@@ -192,7 +192,7 @@ namespace MyFlightbook.Subscriptions
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::MyFlightbook.Web.Controls.mfbTotalsByTimePeriod mfbTotalsByTimePeriod;
+        protected global::MyFlightbook.Currency.mfbTotalsByTimePeriod mfbTotalsByTimePeriod;
 
         /// <summary>
         /// lblRecentAchievementsTitle control.

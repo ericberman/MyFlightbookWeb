@@ -64,15 +64,14 @@ namespace MyFlightbook.MemberPages
 
             // rollup by time has no viewstate so must be refreshed on each page load.  BUT...was done in RefreshFormData so may not need to be done here
             if (!HasRefreshedTimePeriod)
-                RefreshTimePeriodRollup();
+                await RefreshTimePeriodRollup();
         }
 
         private Dictionary<string, List<ClassTotal>> ClassTotals { get; set; }
 
-        protected void RefreshTimePeriodRollup()
+        protected async Task<bool> RefreshTimePeriodRollup()
         {
-            mfbTotalsByTimePeriod.BindTotalsForUser(Page.User.Identity.Name, false, DateTime.Now.Day > 1, true, true, DateTime.Now.Day > 1 || DateTime.Now.Month > 1, mfbSearchForm1.Restriction);
-            HasRefreshedTimePeriod = true;
+            return HasRefreshedTimePeriod = await mfbTotalsByTimePeriod.BindTotalsForUser(Page.User.Identity.Name, false, DateTime.Now.Day > 1, true, true, DateTime.Now.Day > 1 || DateTime.Now.Month > 1, mfbSearchForm1.Restriction);
         }
 
         protected void refreshClassTotals(DBHelperCommandArgs args)
@@ -183,7 +182,7 @@ namespace MyFlightbook.MemberPages
                             MfbLogbook1.RefreshData();
                         }
                     }),
-                    Task.Run(() => { RefreshTimePeriodRollup(); })
+                    RefreshTimePeriodRollup()   // already awaitable, no need to put it into an task.run statement.
                     ).ConfigureAwait(false);
             }
             catch (MySqlException ex)

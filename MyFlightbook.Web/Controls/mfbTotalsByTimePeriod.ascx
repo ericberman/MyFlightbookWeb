@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="mfbTotalsByTimePeriod.ascx.cs" Inherits="MyFlightbook.Web.Controls.mfbTotalsByTimePeriod" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="mfbTotalsByTimePeriod.ascx.cs" Inherits="MyFlightbook.Currency.mfbTotalsByTimePeriod" %>
 <asp:MultiView ID="mvTotals" runat="server">
     <asp:View ID="vwNoTotals" runat="server">
         <p><asp:Localize ID="locNoTotals" runat="server" Text="<%$ Resources:Totals, NoTotals %>"></asp:Localize></p>

@@ -1,19 +1,19 @@
-﻿using MyFlightbook.Currency;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2020-2021 MyFlightbook LLC
+ * Copyright (c) 2020-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
-namespace MyFlightbook.Web.Controls
+namespace MyFlightbook.Currency
 {
     public partial class mfbTotalsByTimePeriod : System.Web.UI.UserControl
     {
@@ -37,9 +37,9 @@ namespace MyFlightbook.Web.Controls
 
         }
 
-        private static Dictionary<string, TotalsItem> TotalsForQuery(FlightQuery fq, bool fBind)
+        private static Dictionary<string, TotalsItem> TotalsForQuery(FlightQuery fq, bool fBind, Dictionary<string, TotalsItem> d)
         {
-            Dictionary<string, TotalsItem> d = new Dictionary<string, TotalsItem>();
+            d = d ?? new Dictionary<string, TotalsItem>();
 
             if (fBind)
             {
@@ -101,7 +101,7 @@ namespace MyFlightbook.Web.Controls
             return ti.Value;    // Indicate if we actually had a non-zero value.  A row of all empty cells or zero cells should be deleted.
         }
 
-        public void BindTotalsForUser(string szUser, bool fLast7Days, bool fMonthToDate, bool fPreviousMonth, bool fPreviousYear, bool fYearToDate, FlightQuery fqSupplied = null)
+        public async Task<bool> BindTotalsForUser(string szUser, bool fLast7Days, bool fMonthToDate, bool fPreviousMonth, bool fPreviousYear, bool fYearToDate, FlightQuery fqSupplied = null)
         {
             if (String.IsNullOrEmpty(szUser))
                 throw new ArgumentNullException(nameof(szUser));
@@ -112,28 +112,29 @@ namespace MyFlightbook.Web.Controls
             // Get All time totals.  This will also give us the entire space of totals items
             FlightQuery fq = fqSupplied == null ? new FlightQuery(szUser) : new FlightQuery(fqSupplied);
             UserTotals ut = new UserTotals(szUser, fq, false);
-            ut.DataBind();
-
-            IEnumerable<TotalsItemCollection> allTotals = TotalsItemCollection.AsGroups(ut.Totals);
 
             // if the supplied query has a date range, then don't do any of the subsequent queries; the date range overrides.
             bool fSuppliedQueryHasDates = fqSupplied != null && fqSupplied.DateRange != FlightQuery.DateRanges.AllTime;
             if (fSuppliedQueryHasDates)
                 fLast7Days = fMonthToDate = fPreviousMonth = fPreviousYear = fYearToDate = false;
 
-            // Get grouped totals for each of the requested time periods.
-            fq.DateRange = FlightQuery.DateRanges.ThisMonth;
-            Dictionary<string, TotalsItem> dMonthToDate = TotalsForQuery(fq, fMonthToDate);
-            fq.DateRange = FlightQuery.DateRanges.PrevMonth;
-            Dictionary<string, TotalsItem> dPrevMonth = TotalsForQuery(fq, fPreviousMonth);
-            fq.DateRange = FlightQuery.DateRanges.YTD;
-            Dictionary<string, TotalsItem> dYTD = TotalsForQuery(fq, fYearToDate);
-            fq.DateRange = FlightQuery.DateRanges.PrevYear;
-            Dictionary<string, TotalsItem> dPrevYear = TotalsForQuery(fq, fPreviousYear);
-            fq.DateRange = FlightQuery.DateRanges.Custom;
-            fq.DateMin = DateTime.Now.Date.AddDays(-7);
-            fq.DateMax = DateTime.Now.Date.AddDays(1);
-            Dictionary<string, TotalsItem> dLast7 = TotalsForQuery(fq, fLast7Days);
+            Dictionary<string, TotalsItem> dMonthToDate = new Dictionary<string, TotalsItem>();
+            Dictionary<string, TotalsItem> dPrevMonth = new Dictionary<string, TotalsItem>();
+            Dictionary<string, TotalsItem> dYTD = new Dictionary<string, TotalsItem>();
+            Dictionary<string, TotalsItem> dPrevYear = new Dictionary<string, TotalsItem>();
+            Dictionary<string, TotalsItem> dLast7 = new Dictionary<string, TotalsItem>();
+
+            // Get all of the results asynchronously
+            await Task.WhenAll(
+                Task.Run(() => { ut.DataBind(); }),
+                Task.Run(() => { TotalsForQuery(new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.ThisMonth }, fMonthToDate, dMonthToDate); }),
+                Task.Run(() => { TotalsForQuery(new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.PrevMonth }, fPreviousMonth, dPrevMonth); }),
+                Task.Run(() => { TotalsForQuery(new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.YTD }, fYearToDate, dYTD); }),
+                Task.Run(() => { TotalsForQuery(new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.PrevYear }, fPreviousYear, dPrevYear); }),
+                Task.Run(() => { TotalsForQuery(new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.Custom, DateMin = DateTime.Now.Date.AddDays(-7), DateMax = DateTime.Now.Date.AddDays(1) }, fLast7Days, dLast7); })
+                );
+
+            IEnumerable <TotalsItemCollection> allTotals = TotalsItemCollection.AsGroups(ut.Totals);
 
             tblTotals.Controls.Clear();
 
@@ -193,6 +194,8 @@ namespace MyFlightbook.Web.Controls
                         tblTotals.Rows.Remove(tr);
                 }
             }
+
+            return true;
         }
     }
 }

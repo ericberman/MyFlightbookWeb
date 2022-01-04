@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" Codebehind="TotalsAndCurrencyEmail.aspx.cs" Inherits="MyFlightbook.Subscriptions.TotalsAndCurrencyEmail" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" Codebehind="TotalsAndCurrencyEmail.aspx.cs" Async="true" Inherits="MyFlightbook.Subscriptions.TotalsAndCurrencyEmail" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <%@ Register src="../Controls/adminStats.ascx" tagname="adminStats" tagprefix="uc1" %>
 <%@ Register src="../Controls/mfbTotalSummary.ascx" tagname="mfbTotalSummary" tagprefix="uc2" %>
