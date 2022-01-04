@@ -1277,16 +1277,16 @@
     <value>{0} - Training</value>
   </data>
   <data name="GliderAeroTows" xml:space="preserve">
-    <value>AeroTows:&amp;nbsp;{0}</value>
+    <value>AeroTows:&amp;nbsp;{0:#,##0}</value>
   </data>
   <data name="GliderGroundLaunches" xml:space="preserve">
-    <value>Ground&amp;nbsp;Launches:&amp;nbsp;{0}</value>
+    <value>Ground&amp;nbsp;Launches:&amp;nbsp;{0:#,##0}</value>
   </data>
   <data name="GliderSelfLaunches" xml:space="preserve">
-    <value>Self&amp;nbsp;Launches:&amp;nbsp;{0}</value>
+    <value>Self&amp;nbsp;Launches:&amp;nbsp;{0:#,##0}</value>
   </data>
   <data name="_8710NumberFlights" xml:space="preserve">
-    <value>Flights:&amp;nbsp;{0}</value>
+    <value>Flights:&amp;nbsp;{0:#,##0}</value>
   </data>
   <data name="ChartMaxX" xml:space="preserve">
     <value>● Maximum {0}: {1:#,##0.0}</value>

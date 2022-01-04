@@ -2,13 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data;
 using System.Globalization;
 using System.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2021 MyFlightbook LLC
+ * Copyright (c) 2007-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1051,6 +1050,291 @@ namespace MyFlightbook.Currency
                     }
                 }
             }
+        }
+    }
+
+    public class Form8710Row
+    {
+        protected Form8710Row(MySqlDataReader dr)
+        {
+            if (dr == null)
+                throw new ArgumentNullException(nameof(dr));
+
+            Category = util.ReadNullableString(dr, "Category");
+            TotalTime = Convert.ToDecimal(util.ReadNullableField(dr, "TotalTime", 0.0M), CultureInfo.InvariantCulture);
+            InstructionReceived = Convert.ToDecimal(util.ReadNullableField(dr, "InstructionReceived", 0.0M), CultureInfo.InvariantCulture);
+            SoloTime = Convert.ToDecimal(util.ReadNullableField(dr, "SoloTime", 0.0M), CultureInfo.InvariantCulture);
+            PIC = Convert.ToDecimal(util.ReadNullableField(dr, "PIC", 0.0M), CultureInfo.InvariantCulture);
+            SIC = Convert.ToDecimal(util.ReadNullableField(dr, "SIC", 0.0M), CultureInfo.InvariantCulture);
+            CrossCountryDual = Convert.ToDecimal(util.ReadNullableField(dr, "CrossCountryDual", 0.0M), CultureInfo.InvariantCulture);
+            CrossCountrySolo = Convert.ToDecimal(util.ReadNullableField(dr, "CrossCountrySolo", 0.0M), CultureInfo.InvariantCulture);
+            CrossCountryPIC = Convert.ToDecimal(util.ReadNullableField(dr, "CrossCountryPIC", 0.0M), CultureInfo.InvariantCulture);
+            CrosscountrySIC = Convert.ToDecimal(util.ReadNullableField(dr, "CrosscountrySIC", 0.0M), CultureInfo.InvariantCulture);
+            InstrumentTime = Convert.ToDecimal(util.ReadNullableField(dr, "InstrumentTime", 0.0M), CultureInfo.InvariantCulture);
+            NightDual = Convert.ToDecimal(util.ReadNullableField(dr, "NightDual", 0.0M), CultureInfo.InvariantCulture);
+            NightTakeoffs = Convert.ToInt32(util.ReadNullableField(dr, "NightTakeoffs", 0.0M), CultureInfo.InvariantCulture);
+            NightLandings = Convert.ToInt32(util.ReadNullableField(dr, "NightLandings", 0.0M), CultureInfo.InvariantCulture);
+            NightPIC = Convert.ToDecimal(util.ReadNullableField(dr, "NightPIC", 0.0M), CultureInfo.InvariantCulture);
+            NightSIC = Convert.ToDecimal(util.ReadNullableField(dr, "NightSIC", 0.0M), CultureInfo.InvariantCulture);
+            NightPICTakeoffs = Convert.ToInt32(util.ReadNullableField(dr, "NightPICTakeoffs", 0.0M), CultureInfo.InvariantCulture);
+            NightPICLandings = Convert.ToInt32(util.ReadNullableField(dr, "NightPICLandings", 0.0M), CultureInfo.InvariantCulture);
+            NightSICTakeoffs = Convert.ToInt32(util.ReadNullableField(dr, "NightSICTakeoffs", 0.0M), CultureInfo.InvariantCulture);
+            NightSICLandings = Convert.ToInt32(util.ReadNullableField(dr, "NightSICLandings", 0.0M), CultureInfo.InvariantCulture);
+            NumberOfFlights = Convert.ToInt32(util.ReadNullableField(dr, "NumberOfFlights", 0.0M), CultureInfo.InvariantCulture);
+            AeroTows = Convert.ToInt32(util.ReadNullableField(dr, "AeroTows", 0.0M), CultureInfo.InvariantCulture);
+            WinchedLaunches = Convert.ToInt32(util.ReadNullableField(dr, "WinchedLaunches", 0.0M), CultureInfo.InvariantCulture);
+            SelfLaunches = Convert.ToInt32(util.ReadNullableField(dr, "SelfLaunches", 0.0M), CultureInfo.InvariantCulture);
+        }
+
+        #region properties
+        public string Category { get; private set; }
+        public decimal TotalTime { get; private set; }
+        public decimal InstructionReceived { get; private set; }
+
+        public decimal SoloTime { get; private set; }
+
+        public decimal PIC { get; private set; }
+
+        public decimal SIC { get; private set; }
+
+        public decimal CrossCountryDual { get; private set; }
+
+        public decimal CrossCountrySolo { get; private set; }
+
+        public decimal CrossCountryPIC { get; private set; }
+
+        public decimal CrosscountrySIC { get; private set; }
+
+        public decimal InstrumentTime { get; private set; }
+
+        public decimal NightDual { get; private set; }
+
+        public int NightTakeoffs { get; private set; }
+
+        public int NightLandings { get; private set; }
+
+        public decimal NightPIC { get; private set; }
+
+        public decimal NightSIC { get; private set; }
+
+        public int NightPICTakeoffs { get; private set; }
+
+        public int NightPICLandings { get; private set; }
+
+        public int NightSICTakeoffs { get; private set; }
+
+        public int NightSICLandings { get; private set; }
+
+        public int NumberOfFlights { get; private set; }
+
+        public int AeroTows { get; private set; }
+
+        public int WinchedLaunches { get; private set; }
+
+        public int SelfLaunches { get; private set; }
+        #endregion
+
+        /// <summary>
+        /// Returns the rows of an 8710 form
+        /// </summary>
+        /// <param name="fq">FlightQuery</param>
+        /// <param name="args">Optional arguments, if the flightquery has already been refreshed.  Otherwise, this will call refresh</param>
+        /// <returns>An enumerable of 8710 rows</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static IEnumerable<Form8710Row> Form8710ForQuery(FlightQuery fq, DBHelperCommandArgs args)
+        {
+            List<Form8710Row> lst = new List<Form8710Row>();
+
+            if (fq == null)
+                throw new ArgumentNullException(nameof(fq));
+
+            if (args == null)
+            {
+                fq.Refresh();
+                args = new DBHelperCommandArgs() { Timeout = 120 };
+                args.AddFrom(fq.QueryParameters());
+            }
+
+            DBHelper.ExecuteWithArgs(args, 
+                String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["8710ForUserQuery"], fq.RestrictClause, String.IsNullOrEmpty(fq.HavingClause) ? string.Empty : "HAVING " + fq.HavingClause, "f.category"), 
+                (dr) =>
+                {
+                    if (dr.HasRows)
+                    {
+                        while (dr.Read())
+                            lst.Add(new Form8710Row(dr));
+                    }
+                });
+
+            return lst;            
+        }
+    }
+
+    public class Form8710ClassTotal
+    {
+        #region Properties
+        public string ClassName { get; private set; }
+        public decimal Total { get; private set; }
+        public decimal PIC { get; private set; }
+        public decimal SIC { get; private set; }
+        #endregion
+
+        /// <summary>
+        /// Computes class totals for a query (required for the "Class Totals" section of the 8710 form)
+        /// </summary>
+        /// <param name="fq">FlightQuery</param>
+        /// <param name="args">Optional arguments, if the flightquery has already been refreshed.  Otherwise, this will call refresh</param>
+        /// <returns>A dictionary of the class totals within a given query, keyed off of the relevant class</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static IDictionary<string, IList<Form8710ClassTotal>> ClassTotalsForQuery(FlightQuery fq, DBHelperCommandArgs args)
+        {
+            Dictionary<string, IList<Form8710ClassTotal>> d = new Dictionary<string, IList<Form8710ClassTotal>>();
+
+            if (fq == null)
+                throw new ArgumentNullException(nameof(fq));
+
+            if (args == null)
+            {
+                fq.Refresh();
+                args = new DBHelperCommandArgs() { Timeout = 120 };
+                args.AddFrom(fq.QueryParameters());
+            }
+
+            DBHelper.ExecuteWithArgs(args,
+                String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["8710ForUserQuery"], fq.RestrictClause, String.IsNullOrEmpty(fq.HavingClause) ? string.Empty : "HAVING " + fq.HavingClause, "f.InstanceTypeID, f.CatClassID"),
+                (dr) =>
+                {
+                    if (dr.HasRows)
+                    {
+                        while (dr.Read())
+                        {
+                            string szCategory = (string)dr["Category"];
+                            string szClass = (string)dr["Class"];
+                            string szCatClass = (string)dr["CatClass"];
+                            if (!String.IsNullOrEmpty(szCategory) && !String.IsNullOrEmpty(szClass) && !String.IsNullOrEmpty(szCatClass))
+                            {
+                                if (!d.ContainsKey(szCategory))
+                                    d[szCategory] = new List<Form8710ClassTotal>();
+                                IList<Form8710ClassTotal> lst = d[szCategory];
+                                Form8710ClassTotal ct = new Form8710ClassTotal()
+                                {
+                                    ClassName = szCatClass,
+                                    Total = Convert.ToDecimal(dr["TotalTime"], CultureInfo.InvariantCulture),
+                                    PIC = Convert.ToDecimal(dr["PIC"], CultureInfo.InvariantCulture),
+                                    SIC = Convert.ToDecimal(dr["SIC"], CultureInfo.InvariantCulture)
+                                };
+                                lst.Add(ct);
+                            }
+                        }
+                    }
+                });
+
+            return d;
+        }
+    }
+
+    public class ModelRollupRow
+    {
+        protected ModelRollupRow(MySqlDataReader dr)
+        {
+            if (dr == null)
+                throw new ArgumentNullException(nameof(dr));
+
+            if (dr["FamilyDisplay"] == DBNull.Value)
+                ModelDisplay = Resources.LogbookEntry.FieldTotal;
+            else
+            {
+                string szFamily = (string)dr["FamilyDisplay"];
+                ModelDisplay = szFamily.StartsWith("(", StringComparison.CurrentCultureIgnoreCase) ? szFamily : util.ReadNullableString(dr, "ModelDisplay");
+            }
+
+            DualReceived = Convert.ToDecimal(util.ReadNullableField(dr, "DualReceived", 0.0M), CultureInfo.InvariantCulture);
+            flightengineer = Convert.ToDecimal(util.ReadNullableField(dr, "FlightEngineer", 0.0M), CultureInfo.InvariantCulture);
+            MilTime = Convert.ToDecimal(util.ReadNullableField(dr, "MilTime", 0.0M), CultureInfo.InvariantCulture);
+            CFI = Convert.ToDecimal(util.ReadNullableField(dr, "CFI", 0.0M), CultureInfo.InvariantCulture);
+            Night = Convert.ToDecimal(util.ReadNullableField(dr, "Night", 0.0M), CultureInfo.InvariantCulture);
+            IMC = Convert.ToDecimal(util.ReadNullableField(dr, "IMC", 0.0M), CultureInfo.InvariantCulture);
+            SimIMC = Convert.ToDecimal(util.ReadNullableField(dr, "SimIMC", 0.0M), CultureInfo.InvariantCulture);
+            XC = Convert.ToDecimal(util.ReadNullableField(dr, "XC", 0.0M), CultureInfo.InvariantCulture);
+            Landings = Convert.ToInt32(util.ReadNullableField(dr, "Landings", 0.0M), CultureInfo.InvariantCulture);
+            approaches = Convert.ToInt32(util.ReadNullableField(dr, "approaches", 0.0M), CultureInfo.InvariantCulture);
+            _6MonthApproaches = Convert.ToInt32(util.ReadNullableField(dr, "_6MonthApproaches", 0.0M), CultureInfo.InvariantCulture);
+            _12MonthApproaches = Convert.ToInt32(util.ReadNullableField(dr, "_12MonthApproaches", 0.0M), CultureInfo.InvariantCulture);
+            PIC = Convert.ToDecimal(util.ReadNullableField(dr, "PIC", 0.0M), CultureInfo.InvariantCulture);
+            SIC = Convert.ToDecimal(util.ReadNullableField(dr, "SIC", 0.0M), CultureInfo.InvariantCulture);
+            TurboPropPIC = Convert.ToDecimal(util.ReadNullableField(dr, "TurboPropPIC", 0.0M), CultureInfo.InvariantCulture);
+            TurboPropSIC = Convert.ToDecimal(util.ReadNullableField(dr, "TurboPropSIC", 0.0M), CultureInfo.InvariantCulture);
+            JetPIC = Convert.ToDecimal(util.ReadNullableField(dr, "JetPIC", 0.0M), CultureInfo.InvariantCulture);
+            JetSIC = Convert.ToDecimal(util.ReadNullableField(dr, "JetSIC", 0.0M), CultureInfo.InvariantCulture);
+            MultiPIC = Convert.ToDecimal(util.ReadNullableField(dr, "MultiPIC", 0.0M), CultureInfo.InvariantCulture);
+            MultiSIC = Convert.ToDecimal(util.ReadNullableField(dr, "MultiSIC", 0.0M), CultureInfo.InvariantCulture);
+            Total = Convert.ToDecimal(util.ReadNullableField(dr, "Total", 0.0M), CultureInfo.InvariantCulture);
+            _12MonthTotal = Convert.ToDecimal(util.ReadNullableField(dr, "_12MonthTotal", 0.0M), CultureInfo.InvariantCulture);
+            _24MonthTotal = Convert.ToDecimal(util.ReadNullableField(dr, "_24MonthTotal", 0.0M), CultureInfo.InvariantCulture);
+            LastFlight = Convert.ToDateTime(util.ReadNullableField(dr, "LastFlight", DateTime.MinValue), CultureInfo.InvariantCulture);
+        }
+
+        #region properties
+        public string ModelDisplay { get; private set; }
+        public decimal DualReceived { get; private set; }
+        public decimal flightengineer { get; private set; }
+        public decimal MilTime { get; private set; }
+        public decimal CFI { get; private set; }
+        public decimal Night { get; private set; }
+        public decimal IMC { get; private set; }
+        public decimal SimIMC { get; private set; }
+        public decimal XC { get; private set; }
+        public int Landings { get; private set; }
+        public int approaches { get; private set; }
+        public int _6MonthApproaches { get; private set; }
+        public int _12MonthApproaches { get; private set; }
+        public decimal PIC { get; private set; }
+        public decimal SIC { get; private set; }
+        public decimal TurboPropPIC { get; private set; }
+        public decimal TurboPropSIC { get; private set; }
+        public decimal JetPIC { get; private set; }
+        public decimal JetSIC { get; private set; }
+        public decimal MultiPIC { get; private set; }
+        public decimal MultiSIC { get; private set; }
+        public decimal Total { get; private set; }
+        public decimal _12MonthTotal { get; private set; }
+        public decimal _24MonthTotal { get; private set; }
+        public DateTime LastFlight { get; private set; }
+        #endregion
+
+        /// <summary>
+        /// Computes the RollupByModel report.
+        /// </summary>
+        /// <param name="fq">FlightQuery</param>
+        /// <param name="args">Optional arguments, if the flightquery has already been refreshed.  Otherwise, this will call refresh</param>
+        /// <returns>An enumerable of rows for the Rollup By Model report</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static IEnumerable<ModelRollupRow> ModelRollupForQuery(FlightQuery fq, DBHelperCommandArgs args)
+        {
+            if (fq == null)
+                throw new ArgumentNullException(nameof(fq));
+
+            if (args == null)
+            {
+                fq.Refresh();
+                args = new DBHelperCommandArgs() { Timeout = 120 };
+                args.AddFrom(fq.QueryParameters());
+            }
+
+            List<ModelRollupRow> lst = new List<ModelRollupRow>();
+
+            DBHelper.ExecuteWithArgs(args,
+                String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["RollupGridQuery"], fq.RestrictClause, String.IsNullOrEmpty(fq.HavingClause) ? string.Empty : "HAVING " + fq.HavingClause),
+                (dr) =>
+                {
+                    if (dr.HasRows)
+                    {
+                        while (dr.Read())
+                            lst.Add(new ModelRollupRow(dr));
+                    }
+                });
+
+            return lst;
         }
     }
 }

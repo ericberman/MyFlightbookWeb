@@ -3,14 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
-using System.Data;
 using System.Globalization;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2021 MyFlightbook LLC
+ * Copyright (c) 2008-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -43,6 +41,20 @@ namespace MyFlightbook
         public void AddWithValue(string paramname, object o)
         {
             Parameters.Add(new MySqlParameter(paramname, o));
+        }
+
+        /// <summary>
+        /// Copies the parameters from an enumerable into in bulk.
+        /// </summary>
+        /// <param name="rgIn">Enumerable of aprameters</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public void AddFrom(IEnumerable<MySqlParameter> rgIn)
+        {
+            if (rgIn == null)
+                throw new ArgumentNullException(nameof(rgIn));
+
+            foreach (MySqlParameter param in rgIn)
+                Parameters.Add(param);
         }
         #endregion
 
@@ -146,6 +158,36 @@ namespace MyFlightbook
         #endregion
 
         #region Reading data
+        /// <summary>
+        /// Where you want to re-use an args object, this can be an easier method than using a new DBHelper
+        /// </summary>
+        /// <param name="args"></param>
+        /// <param name="szQ"></param>
+        /// <param name="onRead"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static void ExecuteWithArgs(DBHelperCommandArgs args, string szQ, Action<MySqlDataReader> onRead)
+        {
+            if (args == null)
+                throw new ArgumentNullException(nameof(args));
+            if (szQ == null)
+                throw new ArgumentNullException(nameof(szQ));
+            using (MySqlCommand comm = new MySqlCommand())
+            {
+                InitCommandObject(comm, args);
+                using (comm.Connection = new MySqlConnection(ConnectionString))
+                {
+                    MySqlDataReader dr = null;
+                    comm.CommandText = szQ;
+                    comm.Connection.Open();
+
+                    using (dr = comm.ExecuteReader())
+                    {
+                        onRead?.Invoke(dr);
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// Executes a query
         /// </summary>

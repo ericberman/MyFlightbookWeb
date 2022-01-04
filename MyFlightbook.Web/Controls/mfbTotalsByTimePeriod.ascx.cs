@@ -124,7 +124,7 @@ namespace MyFlightbook.Currency
             Dictionary<string, TotalsItem> dPrevYear = new Dictionary<string, TotalsItem>();
             Dictionary<string, TotalsItem> dLast7 = new Dictionary<string, TotalsItem>();
 
-            // Get all of the results asynchronously
+            // Get all of the results asynchronously, but block until they're all done.
             Task.WaitAll(
                 Task.Run(() => { ut.DataBind(); }),
                 Task.Run(() => { TotalsForQuery(new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.ThisMonth }, fMonthToDate, dMonthToDate); }),

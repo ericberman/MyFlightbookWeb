@@ -2429,7 +2429,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to AeroTows:&amp;nbsp;{0}.
+        ///    Looks up a localized string similar to AeroTows:&amp;nbsp;{0:#,##0}.
         /// </summary>
         internal static string GliderAeroTows {
             get {
@@ -2438,7 +2438,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Ground&amp;nbsp;Launches:&amp;nbsp;{0}.
+        ///    Looks up a localized string similar to Ground&amp;nbsp;Launches:&amp;nbsp;{0:#,##0}.
         /// </summary>
         internal static string GliderGroundLaunches {
             get {
@@ -2447,7 +2447,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Self&amp;nbsp;Launches:&amp;nbsp;{0}.
+        ///    Looks up a localized string similar to Self&amp;nbsp;Launches:&amp;nbsp;{0:#,##0}.
         /// </summary>
         internal static string GliderSelfLaunches {
             get {
@@ -5373,7 +5373,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Flights:&amp;nbsp;{0}.
+        ///    Looks up a localized string similar to Flights:&amp;nbsp;{0:#,##0}.
         /// </summary>
         internal static string _8710NumberFlights {
             get {

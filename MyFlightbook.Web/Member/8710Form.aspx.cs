@@ -1,7 +1,7 @@
-﻿using MySql.Data.MySqlClient;
+﻿using MyFlightbook.Currency;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Globalization;
 using System.Threading.Tasks;
 using System.Web.UI;
@@ -18,14 +18,6 @@ namespace MyFlightbook.MemberPages
 {
     public partial class FAA8710Form : Page
     {
-        protected class ClassTotal
-        {
-            public string ClassName { get; set; }
-            public decimal Total { get; set; }
-            public decimal PIC { get; set; }
-            public decimal SIC { get; set; }
-        }
-
         protected bool UseHHMM { get; set; }
 
         protected bool HasRefreshedTimePeriod { get; set; }
@@ -67,7 +59,7 @@ namespace MyFlightbook.MemberPages
                 RefreshTimePeriodRollup();
         }
 
-        private Dictionary<string, List<ClassTotal>> ClassTotals { get; set; }
+        private IDictionary<string, IList<Form8710ClassTotal>> ClassTotals { get; set; }
 
         protected void RefreshTimePeriodRollup()
         {
@@ -75,119 +67,49 @@ namespace MyFlightbook.MemberPages
             HasRefreshedTimePeriod = true;
         }
 
-        protected void refreshClassTotals(DBHelperCommandArgs args)
-        {
-            ClassTotals = new Dictionary<string, List<ClassTotal>>();
-            DBHelper dbh = new DBHelper(args);
-            dbh.ReadRows((c) => { }, (d) =>
-            {
-                string szCategory = (string)d["Category"];
-                string szClass = (string)d["Class"];
-                string szCatClass = (string)d["CatClass"];
-                if (!String.IsNullOrEmpty(szCategory) && !String.IsNullOrEmpty(szClass) && !String.IsNullOrEmpty(szCatClass))
-                {
-                    if (!ClassTotals.ContainsKey(szCategory))
-                        ClassTotals[szCategory] = new List<ClassTotal>();
-                    List<ClassTotal> lst = ClassTotals[szCategory];
-                    ClassTotal ct = new ClassTotal()
-                    {
-                        ClassName = szCatClass,
-                        Total = Convert.ToDecimal(d["TotalTime"], CultureInfo.InvariantCulture),
-                        PIC = Convert.ToDecimal(d["PIC"], CultureInfo.InvariantCulture),
-                        SIC = Convert.ToDecimal(d["SIC"], CultureInfo.InvariantCulture)
-                    };
-                    lst.Add(ct);
-                }
-            });
-        }
-
-        protected void refreshMainQuery(DBHelperCommandArgs args, string szQueryMain)
-        {
-            using (MySqlCommand comm = new MySqlCommand())
-            {
-                DBHelper.InitCommandObject(comm, args);
-                using (comm.Connection = new MySqlConnection(DBHelper.ConnectionString))
-                {
-                    MySqlDataReader dr = null;
-                    comm.CommandText = szQueryMain;
-                    comm.Connection.Open();
-                    using (dr = comm.ExecuteReader())
-                    {
-                        gv8710.DataSource = dr;
-                        gv8710.DataBind();
-                    }
-                }
-            }
-        }
-
-        protected void refreshClassRollup(DBHelperCommandArgs args, string szQueryRollup)
-        {
-            using (MySqlCommand comm = new MySqlCommand())
-            {
-                DBHelper.InitCommandObject(comm, args);
-                using (comm.Connection = new MySqlConnection(DBHelper.ConnectionString))
-                {
-                    MySqlDataReader dr = null;
-                    comm.CommandText = szQueryRollup;
-                    comm.Connection.Open();
-                    using (dr = comm.ExecuteReader())
-                    {
-                        gvRollup.DataSource = dr;
-                        gvRollup.DataBind();
-                        if (gvRollup.Rows.Count > 0)
-                            gvRollup.Rows[gvRollup.Rows.Count - 1].Font.Bold = true;
-                    }
-                }
-            }
-        }
-
         protected void RefreshFormData()
         {
 
             FlightQuery fq = mfbSearchForm1.Restriction;
+            MfbLogbook1.Restriction = new FlightQuery(fq);  // before we muck with the query below, copy it here.
 
             fq.Refresh();
+            DBHelperCommandArgs args = new DBHelperCommandArgs() { Timeout = 120 };
+            args.AddFrom(fq.QueryParameters());
 
-            string szRestrict = fq.RestrictClause;
-            string szQueryTemplate = ConfigurationManager.AppSettings["8710ForUserQuery"];
-            string szHaving = String.IsNullOrEmpty(fq.HavingClause) ? string.Empty : "HAVING " + fq.HavingClause;
-            string szQueryClassTotals = String.Format(CultureInfo.InvariantCulture, szQueryTemplate, szRestrict, szHaving, "f.InstanceTypeID, f.CatClassID");
-            string szQueryMain = String.Format(CultureInfo.InvariantCulture, szQueryTemplate, szRestrict, szHaving, "f.category");
-
-            string szQueryRollup = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["RollupGridQuery"], szRestrict, szHaving);
             UpdateDescription();
 
+            IEnumerable<Form8710Row> lst8710 = null;
+            IEnumerable<ModelRollupRow> lstModels = null;
 
-            DBHelperCommandArgs args = new DBHelperCommandArgs(szQueryClassTotals) { Timeout = 120 };
-
-            if (fq != null)
-            {
-                foreach (MySqlParameter p in fq.QueryParameters())
-                    args.Parameters.Add(p);
-                MfbLogbook1.Restriction = new FlightQuery(fq);
-            }
-
-            // Class totals are used first - so fill them out before any async pieces
-            refreshClassTotals(args);
-            
             // get the various reports.  This can be a bit slow, so do all of the queries in parallel asynchronously.
             try
             {
                 Task.WaitAll(
-                    Task.Run(() => { refreshMainQuery(args, szQueryMain); }),
-                    Task.Run(() => { refreshClassRollup(args, szQueryRollup); }),
+                    Task.Run(() => { ClassTotals = Form8710ClassTotal.ClassTotalsForQuery(fq, args); }),
+                    Task.Run(() => { lst8710 = Form8710Row.Form8710ForQuery(fq, args); }),
+                    Task.Run(() => { lstModels = ModelRollupRow.ModelRollupForQuery(fq, args); }),
+                    Task.Run(() => { RefreshTimePeriodRollup(); }),
                     Task.Run(() =>
                     {
-                        if (!this.Master.IsMobileSession())
+                        if (!Master.IsMobileSession())
                             MfbLogbook1.RefreshData();
-                    }),
-                    Task.Run(() => { RefreshTimePeriodRollup(); })
-                    );
+                    })
+                );
             }
             catch (MySqlException ex)
             {
                 throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Error getting 8710 data for user {0}: {1}", Page.User.Identity.Name, ex.Message), ex, Page.User.Identity.Name);
             }
+
+            // Do the databinding itself AFTER the async queries, since databinding may not be thread safe.
+            gvRollup.DataSource = lstModels;
+            gvRollup.DataBind();
+            if (gvRollup.Rows.Count > 0)
+                gvRollup.Rows[gvRollup.Rows.Count - 1].Font.Bold = true;
+
+            gv8710.DataSource = lst8710;
+            gv8710.DataBind();
         }
 
         public void ClearForm(object sender, FlightQueryEventArgs fqe)
@@ -248,15 +170,6 @@ namespace MyFlightbook.MemberPages
                 }
 
             }
-        }
-
-        protected static string ModelDisplay(object o)
-        {
-            if (o == null || o == DBNull.Value || !(o is System.Data.Common.DbDataRecord dr) || dr["FamilyDisplay"] == DBNull.Value)
-                return Resources.LogbookEntry.FieldTotal;
-
-            string szFamily = (string)dr["FamilyDisplay"];
-            return szFamily.StartsWith("(", StringComparison.CurrentCultureIgnoreCase) ? szFamily : (string)dr["ModelDisplay"];
         }
 
         protected static string FormatMultiDecimal(bool fUseHHMM, string separator, params object[] values)
