@@ -30,18 +30,18 @@ namespace MyFlightbook.MemberPages
 
         protected bool HasRefreshedTimePeriod { get; set; }
 
-        protected async void Page_Load(object sender, EventArgs e)
+        protected void Page_Load(object sender, EventArgs e)
         {
             this.Master.SelectedTab = tabID.inst8710;
             Master.SuppressMobileViewport = true;
 
-            Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+            Profile pf = Profile.GetUser(User.Identity.Name);
             UseHHMM = pf.UsesHHMM;
 
             if (!IsPostBack)
             {
                 lblUserName.Text = Master.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText._8710FormForUserHeader, pf.UserFullName);
-                await RefreshFormData().ConfigureAwait(false);
+                RefreshFormData();
                 MfbLogbook1.Visible = !this.Master.IsMobileSession();
                 Master.ShowSponsoredAd = false;
 
@@ -64,14 +64,15 @@ namespace MyFlightbook.MemberPages
 
             // rollup by time has no viewstate so must be refreshed on each page load.  BUT...was done in RefreshFormData so may not need to be done here
             if (!HasRefreshedTimePeriod)
-                await RefreshTimePeriodRollup();
+                RefreshTimePeriodRollup();
         }
 
         private Dictionary<string, List<ClassTotal>> ClassTotals { get; set; }
 
-        protected async Task<bool> RefreshTimePeriodRollup()
+        protected void RefreshTimePeriodRollup()
         {
-            return HasRefreshedTimePeriod = await mfbTotalsByTimePeriod.BindTotalsForUser(Page.User.Identity.Name, false, DateTime.Now.Day > 1, true, true, DateTime.Now.Day > 1 || DateTime.Now.Month > 1, mfbSearchForm1.Restriction);
+            mfbTotalsByTimePeriod.BindTotalsForUser(Page.User.Identity.Name, false, DateTime.Now.Day > 1, true, true, DateTime.Now.Day > 1 || DateTime.Now.Month > 1, mfbSearchForm1.Restriction);
+            HasRefreshedTimePeriod = true;
         }
 
         protected void refreshClassTotals(DBHelperCommandArgs args)
@@ -140,7 +141,7 @@ namespace MyFlightbook.MemberPages
             }
         }
 
-        protected async Task<bool> RefreshFormData()
+        protected void RefreshFormData()
         {
 
             FlightQuery fq = mfbSearchForm1.Restriction;
@@ -154,6 +155,7 @@ namespace MyFlightbook.MemberPages
             string szQueryMain = String.Format(CultureInfo.InvariantCulture, szQueryTemplate, szRestrict, szHaving, "f.category");
 
             string szQueryRollup = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["RollupGridQuery"], szRestrict, szHaving);
+            UpdateDescription();
 
 
             DBHelperCommandArgs args = new DBHelperCommandArgs(szQueryClassTotals) { Timeout = 120 };
@@ -162,6 +164,7 @@ namespace MyFlightbook.MemberPages
             {
                 foreach (MySqlParameter p in fq.QueryParameters())
                     args.Parameters.Add(p);
+                MfbLogbook1.Restriction = new FlightQuery(fq);
             }
 
             // Class totals are used first - so fill them out before any async pieces
@@ -170,54 +173,47 @@ namespace MyFlightbook.MemberPages
             // get the various reports.  This can be a bit slow, so do all of the queries in parallel asynchronously.
             try
             {
-                await Task.WhenAll(
+                Task.WaitAll(
                     Task.Run(() => { refreshMainQuery(args, szQueryMain); }),
                     Task.Run(() => { refreshClassRollup(args, szQueryRollup); }),
                     Task.Run(() =>
                     {
-                        UpdateDescription();
                         if (!this.Master.IsMobileSession())
-                        {
-                            MfbLogbook1.Restriction = fq;
                             MfbLogbook1.RefreshData();
-                        }
                     }),
-                    RefreshTimePeriodRollup()   // already awaitable, no need to put it into an task.run statement.
-                    ).ConfigureAwait(false);
+                    Task.Run(() => { RefreshTimePeriodRollup(); })
+                    );
             }
             catch (MySqlException ex)
             {
                 throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Error getting 8710 data for user {0}: {1}", Page.User.Identity.Name, ex.Message), ex, Page.User.Identity.Name);
             }
-
-            return true;
         }
 
-        public async void ClearForm(object sender, FlightQueryEventArgs fqe)
+        public void ClearForm(object sender, FlightQueryEventArgs fqe)
         {
             if (fqe == null)
                 throw new ArgumentNullException(nameof(fqe));
             mfbSearchForm1.Restriction = fqe.Query;
             UpdateDescription();
-            await ShowResults(sender, fqe).ConfigureAwait(false);
+            ShowResults(sender, fqe);
         }
 
-        protected async void OnQuerySubmitted(object sender, FlightQueryEventArgs fqe)
+        protected void OnQuerySubmitted(object sender, FlightQueryEventArgs fqe)
         {
-            await ShowResults(sender, fqe).ConfigureAwait(false);
+            ShowResults(sender, fqe);
         }
 
-        protected async Task<bool> ShowResults(object sender, FlightQueryEventArgs fqe)
+        protected void ShowResults(object sender, FlightQueryEventArgs fqe)
         {
             if (fqe == null)
                 throw new ArgumentNullException(nameof(fqe));
             mfbSearchForm1.Restriction = fqe.Query;
             UpdateDescription();
-            await RefreshFormData().ConfigureAwait(false);
+            RefreshFormData();
 
             if (Int32.TryParse(hdnLastViewedPaneIndex.Value, out int idxLast))
                 accReports.SelectedIndex = idxLast;
-            return true;
         }
 
         protected void UpdateDescription()
@@ -230,12 +226,12 @@ namespace MyFlightbook.MemberPages
             apcFilter.IsEnhanced = !fRestrictionIsDefault;
         }
 
-        protected async void mfbQueryDescriptor1_QueryUpdated(object sender, FilterItemClickedEventArgs fic)
+        protected void mfbQueryDescriptor1_QueryUpdated(object sender, FilterItemClickedEventArgs fic)
         {
             if (fic == null)
                 throw new ArgumentNullException(nameof(fic));
             mfbSearchForm1.Restriction = mfbSearchForm1.Restriction.ClearRestriction(fic.FilterItem);   // need to set the restriction in order to persist it (since it updates the view)
-            await ShowResults(sender, new FlightQueryEventArgs(mfbSearchForm1.Restriction)).ConfigureAwait(false);
+            ShowResults(sender, new FlightQueryEventArgs(mfbSearchForm1.Restriction));
         }
 
         protected void gv8710_RowDataBound(object sender, GridViewRowEventArgs e)

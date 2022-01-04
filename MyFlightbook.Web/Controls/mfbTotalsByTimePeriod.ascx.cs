@@ -101,7 +101,7 @@ namespace MyFlightbook.Currency
             return ti.Value;    // Indicate if we actually had a non-zero value.  A row of all empty cells or zero cells should be deleted.
         }
 
-        public async Task<bool> BindTotalsForUser(string szUser, bool fLast7Days, bool fMonthToDate, bool fPreviousMonth, bool fPreviousYear, bool fYearToDate, FlightQuery fqSupplied = null)
+        public void BindTotalsForUser(string szUser, bool fLast7Days, bool fMonthToDate, bool fPreviousMonth, bool fPreviousYear, bool fYearToDate, FlightQuery fqSupplied = null)
         {
             if (String.IsNullOrEmpty(szUser))
                 throw new ArgumentNullException(nameof(szUser));
@@ -110,11 +110,11 @@ namespace MyFlightbook.Currency
             UseHHMM = pf.UsesHHMM;
 
             // Get All time totals.  This will also give us the entire space of totals items
-            FlightQuery fq = fqSupplied == null ? new FlightQuery(szUser) : new FlightQuery(fqSupplied);
+            FlightQuery fq = (fqSupplied == null) ? new FlightQuery(szUser) : new FlightQuery(fqSupplied);
             UserTotals ut = new UserTotals(szUser, fq, false);
 
             // if the supplied query has a date range, then don't do any of the subsequent queries; the date range overrides.
-            bool fSuppliedQueryHasDates = fqSupplied != null && fqSupplied.DateRange != FlightQuery.DateRanges.AllTime;
+            bool fSuppliedQueryHasDates = fq.DateRange != FlightQuery.DateRanges.AllTime;
             if (fSuppliedQueryHasDates)
                 fLast7Days = fMonthToDate = fPreviousMonth = fPreviousYear = fYearToDate = false;
 
@@ -125,7 +125,7 @@ namespace MyFlightbook.Currency
             Dictionary<string, TotalsItem> dLast7 = new Dictionary<string, TotalsItem>();
 
             // Get all of the results asynchronously
-            await Task.WhenAll(
+            Task.WaitAll(
                 Task.Run(() => { ut.DataBind(); }),
                 Task.Run(() => { TotalsForQuery(new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.ThisMonth }, fMonthToDate, dMonthToDate); }),
                 Task.Run(() => { TotalsForQuery(new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.PrevMonth }, fPreviousMonth, dPrevMonth); }),
@@ -194,8 +194,6 @@ namespace MyFlightbook.Currency
                         tblTotals.Rows.Remove(tr);
                 }
             }
-
-            return true;
         }
     }
 }
