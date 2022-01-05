@@ -19,7 +19,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2021 MyFlightbook LLC
+ * Copyright (c) 2016-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -583,7 +583,7 @@ namespace MyFlightbook.CloudStorage
                 if (Enum.TryParse((string) result.error.code, true, out OneDriveErrorCodeMFB errCode))
                 {
                     ErrorCode = errCode;
-                    Message = MessageForCode(ErrorCode, result.error.message);
+                    Message = MessageForCode(ErrorCode, (string) result.error.message);
                 }
                 else
                     Message = String.Format(CultureInfo.CurrentCulture, "{0} (OneDrive returned: {1})", result.error.message, szJSon);
