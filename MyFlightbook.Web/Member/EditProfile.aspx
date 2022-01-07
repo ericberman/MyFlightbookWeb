@@ -222,12 +222,8 @@
                                                         ErrorMessage="<%$ Resources:Profile, errEmailRequired %>" ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"
                                                         CssClass="error" SetFocusOnError="True" Display="Dynamic" />
                                                     <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server"  ValidationGroup="valAltEmail"
-                                                    ControlToValidate="txtEmail" CssClass="error" Display="Dynamic" 
+                                                    ControlToValidate="txtAltEmail" CssClass="error" Display="Dynamic" 
                                                     ErrorMessage="<%$ Resources:Profile, errEmailMissing %>" />
-                                                    <asp:CustomValidator ID="CustomValidator1" runat="server" 
-                                                        ErrorMessage="<%$ Resources:Profile, errEmailInUse2 %>" ValidationGroup="valNameEmail"
-                                                        ControlToValidate="txtAltEmail" CssClass="error" Display="Dynamic" 
-                                                        OnServerValidate="VerifyEmailAvailable" />
                                                     <div><asp:Label ID="lblAltEmailSent" runat="server" Visible="False" Text="<%$ Resources:Profile, accountVerifyEmailSent %>" EnableViewState="false" /></div>
                                                     <asp:Panel ID="pnlExistingAlternateEmails" runat="server" Visible="false">
                                                         <asp:GridView ID="gvAlternateEmails" runat="server" GridLines="None" ShowHeader="false" ShowFooter="false" AutoGenerateColumns="false" OnRowCommand="gvAlternateEmails_RowCommand">

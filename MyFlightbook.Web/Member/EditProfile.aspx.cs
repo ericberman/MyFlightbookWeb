@@ -123,6 +123,23 @@ namespace MyFlightbook.MemberPages
                 hdn.Value = JsonConvert.SerializeObject(lst);
             }
         }
+
+        protected void VerifyEmail(string szEmail)
+        {
+            m_pf.SendVerificationEmail(szEmail, "~/Member/EditProfile.aspx/pftAccount".ToAbsoluteURL(Request).ToString() + "?ve={0}");
+        }
+
+        protected void AddCurrencyExpirations(DropDownList cmb)
+        {
+            if (cmb == null)
+                throw new ArgumentNullException(nameof(cmb));
+
+            foreach (CurrencyExpiration.Expiration exp in Enum.GetValues(typeof(CurrencyExpiration.Expiration)))
+            {
+                ListItem li = new ListItem(CurrencyExpiration.ExpirationLabel(exp), exp.ToString()) { Selected = m_pf.CurrencyExpiration == exp };
+                cmb.Items.Add(li);
+            }
+        }
     }
 
     public partial class Member_EditProfile : Member_EditProfileBase
@@ -138,7 +155,7 @@ namespace MyFlightbook.MemberPages
                 case tabID.pftPass:
                 case tabID.pftQA:
                     mvProfile.SetActiveView(vwAccount);
-                    this.Master.SelectedTab = tabID.pftAccount;
+                    Master.SelectedTab = tabID.pftAccount;
                     break;
                 case tabID.pftPrefs:
                     mvProfile.SetActiveView(vwPrefs);
@@ -168,13 +185,13 @@ namespace MyFlightbook.MemberPages
             string[] rgPrefPath = szPrefPath.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
             string szPref = util.GetStringParam(Request, "pref");
 
-            if (rgPrefPath.Length > 0 && !String.IsNullOrEmpty(rgPrefPath[0]) && Enum.TryParse<tabID>(rgPrefPath[0], out tabID tid))
+            if (rgPrefPath.Length > 0 && !String.IsNullOrEmpty(rgPrefPath[0]) && Enum.TryParse(rgPrefPath[0], out tabID tid))
                 sidebarTab = tid;
 
             if (sidebarTab == tabID.tabUnknown && !String.IsNullOrEmpty(szPref))
             {
                 // Backwards compatibility - redirect if using the szPref method 
-                if (Enum.TryParse<tabID>(szPref, out tabID tid2))
+                if (Enum.TryParse(szPref, out tabID tid2))
                 {
                     sidebarTab = tid2;
 
@@ -287,11 +304,7 @@ namespace MyFlightbook.MemberPages
             }
             rblDateEntryPreferences.SelectedIndex = (m_pf.UsesUTCDateOfFlight ? 1 : 0);
             prefTimeZone.SelectedTimeZone = m_pf.PreferredTimeZone;
-            foreach (CurrencyExpiration.Expiration exp in Enum.GetValues(typeof(CurrencyExpiration.Expiration)))
-            {
-                ListItem li = new ListItem(CurrencyExpiration.ExpirationLabel(exp), exp.ToString()) { Selected = m_pf.CurrencyExpiration == exp };
-                cmbExpiredCurrency.Items.Add(li);
-            }
+            AddCurrencyExpirations(cmbExpiredCurrency);
         }
 
         private void InitSocialNetworking()
@@ -377,9 +390,6 @@ namespace MyFlightbook.MemberPages
         {
             m_pf = Profile.GetUser(User.Identity.Name);
 
-            if (!Request.IsSecureConnection && !Request.IsLocal)
-                Response.Redirect(Request.Url.AbsoluteUri.Replace("http://", "https://"));
-
             lblName.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.EditProfileHeader, HttpUtility.HtmlEncode(m_pf.UserFullName));
 
             this.Master.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.TitleProfile, Branding.CurrentBrand.AppName);
@@ -457,9 +467,9 @@ namespace MyFlightbook.MemberPages
         {
             if (args == null)
                 throw new ArgumentNullException(nameof(args));
-            Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name, true);
+            Profile pf = Profile.GetUser(User.Identity.Name, true);
             args.IsValid = true;
-            if (String.Compare(txtEmail.Text, pf.Email, StringComparison.OrdinalIgnoreCase) != 0)
+            if (txtEmail.Text.CompareOrdinalIgnoreCase(pf.Email) != 0)
             {
                 // see if it's available
                 pf.Email = txtEmail.Text;
@@ -472,7 +482,7 @@ namespace MyFlightbook.MemberPages
             if (!IsValid)
                 return;
 
-            m_pf.SendVerificationEmail(txtEmail.Text, "~/Member/EditProfile.aspx/pftAccount".ToAbsoluteURL(Request).ToString() + "?ve={0}");
+            VerifyEmail(txtEmail.Text);
             lblVerificationSent.Visible = true;
         }
 
@@ -481,7 +491,7 @@ namespace MyFlightbook.MemberPages
             Validate("valAltEmail");
             if (IsValid)
             {
-                m_pf.SendVerificationEmail(txtAltEmail.Text, "~/Member/EditProfile.aspx/pftAccount".ToAbsoluteURL(Request).ToString() + "?ve={0}");
+                VerifyEmail(txtAltEmail.Text);
                 lblAltEmailSent.Visible = true;
             }
         }
