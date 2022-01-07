@@ -46,9 +46,20 @@
                             <asp:MultiView ID="mvNameEmail" runat="server" ActiveViewIndex="0">
                                 <asp:View ID="vwStaticNameEmail" runat="server">
                                     <div><asp:Label Font-Bold="true" ID="lblFullName" runat="server"></asp:Label></div>
-                                    <div><asp:Label ID="lblStaticEmail" runat="server"></asp:Label></div>
+                                    <div><asp:Label ID="lblStaticEmail" runat="server" /> <asp:Label ID="lblPrimaryVerified" ToolTip="<%$ Resources:Profile, accountVerifyEmailValid %>" runat="server" Text="✔" ForeColor="Green" /></div>
                                     <div style="white-space:pre-wrap"><asp:Label ID="lblAddress" runat="server"></asp:Label></div>
+                                    <asp:Panel ID="pnlAlternateEmails" runat="server" Visible="false">
+                                        <p><asp:Label ID="lblAlternateEmails" runat="server" Text="<%$ Resources:Profile, accountEmailAliasesHeader %>" /><uc1:mfbTooltip runat="server" ID="mfbTooltip1" BodyContent="<%$ Resources:Profile, accountEmailAliasWhy %>" /></p>
+                                        <ul>
+                                            <asp:Repeater ID="rptAlternateEmailsRO" runat="server">
+                                                <ItemTemplate>
+                                                    <li><%# Container.DataItem %></li>
+                                                </ItemTemplate>
+                                            </asp:Repeater>
+                                        </ul>
+                                    </asp:Panel>
                                     <div><asp:Button ID="btnEditNameEmail" runat="server" Text="<%$ Resources:Profile, ChangeNameEmail %>" OnClick="btnEditNameEmail_Click" /></div>
+                                    <div><asp:Label ID="lblVerifyResult" runat="server" EnableViewState="false" /></div>
                                 </asp:View>
                                 <asp:View ID="vwVerifyTFAEmail" runat="server">
                                     <p><asp:Label ID="lblChangeEmailTFA" runat="server" Text="<%$ Resources:Profile, TFARequired %>"></asp:Label></p>
@@ -66,6 +77,9 @@
                                                 <td>
                                                     <asp:TextBox runat="server" ID="txtEmail" TextMode="Email"
                                                         AutoCompleteType="Email" ValidationGroup="valNameEmail" />
+                                                    <asp:Label ID="lblVerifyPrimaryEmail" runat="server">
+                                                        <asp:LinkButton ID="lnkVerifyEmail" runat="server" Text="<%$ Resources:Profile, accountVerifyEmailPrompt %>" OnClick="lnkVerifyEmail_Click" /><uc1:mfbTooltip runat="server" ID="mfbTooltip" BodyContent="<%$ Resources:Profile, accountVerifyWhy %>" /> 
+                                                    </asp:Label>
                                                     <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" 
                                                         ControlToValidate="txtEmail" ValidationGroup="valNameEmail"
                                                         ErrorMessage="<%$ Resources:Profile, errEmailRequired %>" ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"
@@ -77,6 +91,7 @@
                                                         ErrorMessage="<%$ Resources:Profile, errEmailInUse2 %>" ValidationGroup="valNameEmail"
                                                         ControlToValidate="txtEmail" CssClass="error" Display="Dynamic" 
                                                         OnServerValidate="VerifyEmailAvailable" />
+                                                    <div><asp:Label ID="lblVerificationSent" runat="server" Visible="False" Text="<%$ Resources:Profile, accountVerifyEmailSent %>" EnableViewState="false" /></div>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -180,6 +195,9 @@
                                                 </td>
                                             </tr>
                                             <tr>
+                                                <td colspan="2">&nbsp;</td>
+                                            </tr>
+                                            <tr>
                                                 <td>
                                                     &nbsp;</td>
                                                 <td>
@@ -188,6 +206,53 @@
                                                     <br />
                                                     <asp:Label ID="lblNameUpdated" runat="server" CssClass="success" EnableViewState="False"
                                                         Text="<%$ Resources:Profile, accountPersonalInfoSuccess %>" Visible="False" />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2">&nbsp;<br />&nbsp;</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="vertical-align:top;"><% = Resources.Profile.accountEmailAddAlias %><uc1:mfbTooltip runat="server" ID="mfbTooltip3" BodyContent="<%$ Resources:Profile, accountEmailAliasWhy %>" />
+                                                </td>
+                                                <td style="vertical-align:top;">
+                                                    <asp:TextBox runat="server" ID="txtAltEmail" TextMode="Email" ValidationGroup="valAltEmail" AutoCompleteType="Email" />
+                                                    <asp:Button ID="lnkAddAltEmail" runat="server" Text="<%$ Resources:Profile, accountVerifyEmailPrompt %>" OnClick="lnkAddAltEmail_Click" ValidationGroup="valAltEmail" />
+                                                    <asp:RegularExpressionValidator ID="reAltEmail" runat="server" 
+                                                        ControlToValidate="txtAltEmail" ValidationGroup="valAltEmail"
+                                                        ErrorMessage="<%$ Resources:Profile, errEmailRequired %>" ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"
+                                                        CssClass="error" SetFocusOnError="True" Display="Dynamic" />
+                                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server"  ValidationGroup="valAltEmail"
+                                                    ControlToValidate="txtEmail" CssClass="error" Display="Dynamic" 
+                                                    ErrorMessage="<%$ Resources:Profile, errEmailMissing %>" />
+                                                    <asp:CustomValidator ID="CustomValidator1" runat="server" 
+                                                        ErrorMessage="<%$ Resources:Profile, errEmailInUse2 %>" ValidationGroup="valNameEmail"
+                                                        ControlToValidate="txtAltEmail" CssClass="error" Display="Dynamic" 
+                                                        OnServerValidate="VerifyEmailAvailable" />
+                                                    <div><asp:Label ID="lblAltEmailSent" runat="server" Visible="False" Text="<%$ Resources:Profile, accountVerifyEmailSent %>" EnableViewState="false" /></div>
+                                                    <asp:Panel ID="pnlExistingAlternateEmails" runat="server" Visible="false">
+                                                        <asp:GridView ID="gvAlternateEmails" runat="server" GridLines="None" ShowHeader="false" ShowFooter="false" AutoGenerateColumns="false" OnRowCommand="gvAlternateEmails_RowCommand">
+                                                            <Columns>
+                                                                <asp:TemplateField>
+                                                                    <ItemTemplate>
+                                                                        <asp:ImageButton ID="imgDelete" runat="server" 
+                                                                            AlternateText="<%$ Resources:Profile, accountEmailAliasDelete %>" CommandArgument='<%# Container.DataItem %>' 
+                                                                            CommandName="_Delete" ImageUrl="~/images/x.gif" 
+                                                                            ToolTip="<%$ Resources:Currency, CustomCurrencyDeleteTooltip %>" />
+                                                                        <cc1:ConfirmButtonExtender ID="cbeDelete" runat="server" 
+                                                                            ConfirmOnFormSubmit="True" 
+                                                                            ConfirmText="<%$ Resources:Profile, accountEmailAliasDeleteConfirm %>" 
+                                                                            TargetControlID="imgDelete" />
+                                                                    </ItemTemplate>
+                                                                    <ItemStyle VerticalAlign="Top" />
+                                                                </asp:TemplateField>
+                                                                <asp:TemplateField>
+                                                                    <ItemTemplate>
+                                                                        <%# Container.DataItem %> <asp:Label ID="lblPrimaryVerified" ToolTip="<%$ Resources:Profile, accountVerifyEmailValid %>" runat="server" Text="✔" ForeColor="Green" />
+                                                                    </ItemTemplate>
+                                                                </asp:TemplateField>
+                                                            </Columns>
+                                                        </asp:GridView>
+                                                    </asp:Panel>
                                                 </td>
                                             </tr>
                                         </table>
@@ -521,7 +586,7 @@
                                 </tr>
                                 <tr>
                                     <td style="width:50%">
-                                        <div ondragover="allowDrop(event)" ondrop="move(event, true)" class="dragTarget" runat="server" id="divCoreFields">
+                                        <asp:Panel runat="server" ID="divCoreFields" ondragover="allowDrop(event)" ondrop="move(event, true)" CssClass="dragTarget">
                                             <asp:Label CssClass="draggableItem" ID="lblDragXC" runat="server" Text="<%$ Resources:LogbookEntry, FieldCrossCountry %>" draggable="true" ondragstart="startDrag(event, 0)" ondrop="reorder(event, 0)" ondragover="allowDrop(event)" />
                                             <asp:Label CssClass="draggableItem" ID="lblDragNight" runat="server" Text="<%$ Resources:LogbookEntry, FieldNight %>" draggable="true" ondragstart="startDrag(event, 1)" ondrop="reorder(event, 1)" ondragover="allowDrop(event)" />
                                             <asp:Label CssClass="draggableItem" ID="lblDragSimIMC" runat="server" Text="<%$ Resources:LogbookEntry, FieldSimIMCFull %>" draggable="true" ondragstart="startDrag(event, 2)" ondrop="reorder(event, 2)" ondragover="allowDrop(event)" />
@@ -532,11 +597,10 @@
                                             <asp:Label CssClass="draggableItem" ID="lblDragSIC" runat="server" Text="<%$ Resources:LogbookEntry, FieldSIC %>" draggable="true" ondragstart="startDrag(event, 7)" ondrop="reorder(event, 7)" ondragover="allowDrop(event)" />
                                             <asp:Label CssClass="draggableItem" ID="lblDragPIC" runat="server" Text="<%$ Resources:LogbookEntry, FieldPIC %>" draggable="true" ondragstart="startDrag(event, 8)" ondrop="reorder(event, 8)" ondragover="allowDrop(event)" />
                                             <asp:Label CssClass="draggableItem" ID="lblDragTotal" runat="server" Text="<%$ Resources:LogbookEntry, FieldTotalFull %>" draggable="true" ondragstart="startDrag(event, 9)" ondrop="reorder(event, 9)" ondragover="allowDrop(event)" />
-                                        </div>
+                                        </asp:Panel>
                                     </td>
                                     <td style="width:50%">
-                                        <div ondragover="allowDrop(event)" ondrop="move(event, false)" class="dragTarget" runat="server" id="divUnusedFields">
-                                        </div>
+                                        <asp:Panel ondragover="allowDrop(event)" ondrop="move(event, false)" class="dragTarget" runat="server" id="divUnusedFields" />
                                     </td>
                                 </tr>
                                 <tr>

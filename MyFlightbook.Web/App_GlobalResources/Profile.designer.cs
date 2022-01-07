@@ -70,6 +70,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///    Looks up a localized string similar to You can only sign in or do a password reset using your account&apos;s main email address.  However, additional verified addresses may be used for sharing flights, requests to sign flights, or requests to set up a student/instructor relationship..
+        /// </summary>
+        internal static string accountAlternativeAddressDescription {
+            get {
+                return ResourceManager.GetString("accountAlternativeAddressDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Verified address(es) are below..
+        /// </summary>
+        internal static string accountAlternativeVerifiedAddresses {
+            get {
+                return ResourceManager.GetString("accountAlternativeVerifiedAddresses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///    Looks up a localized string similar to Mobile Number:.
         /// </summary>
         internal static string accountCellPhone {
@@ -102,6 +120,51 @@ namespace Resources {
         internal static string accountDateOfBirthPromptNote {
             get {
                 return ResourceManager.GetString("accountDateOfBirthPromptNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Add an alternate email.
+        /// </summary>
+        internal static string accountEmailAddAlias {
+            get {
+                return ResourceManager.GetString("accountEmailAddAlias", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Delete this alternative email (alias).
+        /// </summary>
+        internal static string accountEmailAliasDelete {
+            get {
+                return ResourceManager.GetString("accountEmailAliasDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Are you sure you want to delete this email alias?  This cannot be undone..
+        /// </summary>
+        internal static string accountEmailAliasDeleteConfirm {
+            get {
+                return ResourceManager.GetString("accountEmailAliasDeleteConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Alternate emails.
+        /// </summary>
+        internal static string accountEmailAliasesHeader {
+            get {
+                return ResourceManager.GetString("accountEmailAliasesHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Pilots may reach out to other pilots to sign flights, share flights, request club membership, or set up a student/instructor relationship.  These messages are encrypted to be usable only by the recipient.  Adding an alternate email allows them to send to you at a secondary email address (e.g., if you have a business and a personal email), yet still allows you to handle the request in your account.  You CANNOT SIGN IN using any of these addresses..
+        /// </summary>
+        internal static string accountEmailAliasWhy {
+            get {
+                return ResourceManager.GetString("accountEmailAliasWhy", resourceCulture);
             }
         }
         
@@ -205,7 +268,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to What informal/short name do you prefer?.
+        ///    Looks up a localized string similar to Preferred informal/short name.
         /// </summary>
         internal static string accountPreferredGreetingPrompt {
             get {
@@ -237,6 +300,78 @@ namespace Resources {
         internal static string AccountUnlockedSubject {
             get {
                 return ResourceManager.GetString("AccountUnlockedSubject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to That link has expired, please use a new one..
+        /// </summary>
+        internal static string accountVerifyEmailExpired {
+            get {
+                return ResourceManager.GetString("accountVerifyEmailExpired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Verify email address.
+        /// </summary>
+        internal static string accountVerifyEmailPrompt {
+            get {
+                return ResourceManager.GetString("accountVerifyEmailPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Message sent.  Please check your inbox..
+        /// </summary>
+        internal static string accountVerifyEmailSent {
+            get {
+                return ResourceManager.GetString("accountVerifyEmailSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to This email has been verified.
+        /// </summary>
+        internal static string accountVerifyEmailValid {
+            get {
+                return ResourceManager.GetString("accountVerifyEmailValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Something is wrong with the link you clicked.  Please try verification again..
+        /// </summary>
+        internal static string accountVerifyInvalid {
+            get {
+                return ResourceManager.GetString("accountVerifyInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Please verify your email on %APP_NAME%.
+        /// </summary>
+        internal static string accountVerifySubject {
+            get {
+                return ResourceManager.GetString("accountVerifySubject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Email {0} has been validated.  Thank-you..
+        /// </summary>
+        internal static string accountVerifyValidated {
+            get {
+                return ResourceManager.GetString("accountVerifyValidated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to To verify your address, an email with a unique link will be sent to you.  By clicking on the link, you demonstrate your ability to receive messages at that address.  Verification is optional, but can help ensure that you can do things like password resets.
+        /// </summary>
+        internal static string accountVerifyWhy {
+            get {
+                return ResourceManager.GetString("accountVerifyWhy", resourceCulture);
             }
         }
         
@@ -1713,6 +1848,23 @@ namespace Resources {
         internal static string UnsubscribeSuccessful {
             get {
                 return ResourceManager.GetString("UnsubscribeSuccessful", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to  &lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;
+        ///&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+        ///&lt;head&gt;
+        ///    &lt;title&gt;Verify Email on %APP_NAME%&lt;/title&gt;
+        ///    &lt;link href=&quot;http://%APP_URL%%APP_ROOT%/Public/StyleSheet.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;
+        ///&lt;/head&gt;
+        ///&lt;body style=&quot;font-family: Arial; font-size: 9pt; margin-left: auto; margin-right: auto; min-width: 300px;&quot;&gt;
+        ///    &lt;p&gt;
+        ///        &lt;img alt=&quot;%APP_NAME% Logo&quot; src=&quot;https://%APP_URL%%A [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string VerifyEmail {
+            get {
+                return ResourceManager.GetString("VerifyEmail", resourceCulture);
             }
         }
         

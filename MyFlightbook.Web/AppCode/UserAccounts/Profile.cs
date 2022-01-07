@@ -24,7 +24,7 @@ using System.Web.Security;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2021 MyFlightbook LLC
+ * Copyright (c) 2009-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1472,6 +1472,102 @@ namespace MyFlightbook
             SharedDataEncryptor enc = new SharedDataEncryptor(MFBConstants.keyEncryptMyFlights);
             return new Uri(String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?uid={2}", szHost, VirtualPathUtility.ToAbsolute("~/public/myflights.aspx"), HttpUtility.UrlEncode(enc.Encrypt(this.UserName))));
         }
+
+        #region verified Email
+        private const string prefVerifiedEmails = "verifiedEmails";
+
+        private HashSet<string> verifiedEmailsAsSet { get { return GetPreferenceForKey<HashSet<string>>(prefVerifiedEmails) ?? new HashSet<string>(); } }
+
+        public IEnumerable<string> AlternateEmailsForUser()
+        {
+            HashSet<string> hs = verifiedEmailsAsSet;
+            hs.Remove(Email);   // don't include the primary email address
+            return hs;
+        }
+
+        public void AddVerifiedEmail(string szEmail)
+        {
+            if (String.IsNullOrWhiteSpace(szEmail))
+                throw new ArgumentNullException(nameof(szEmail));
+
+            HashSet<string> hs = verifiedEmailsAsSet; 
+            hs.Add(szEmail);
+            SetPreferenceForKey(prefVerifiedEmails, hs, hs.Count == 0);
+        }
+
+        public void DeleteVerifiedEmail(string szEmail)
+        {
+            if (szEmail == null)
+                throw new ArgumentNullException(nameof(szEmail));
+
+            HashSet<string> hs = verifiedEmailsAsSet;
+            hs.Remove(szEmail);
+            SetPreferenceForKey(prefVerifiedEmails, hs, hs.Count == 0);
+        }
+
+        public bool IsVerifiedEmail(string szEmail)
+        {
+            return !String.IsNullOrWhiteSpace(szEmail) && verifiedEmailsAsSet.Contains(szEmail);
+        }
+
+        public void SendVerificationEmail(string szEmail, string szTargetFormatString)
+        {
+            if (String.IsNullOrEmpty(szEmail))
+                throw new ArgumentNullException(nameof(szEmail));
+
+            PeerRequestEncryptor enc = new PeerRequestEncryptor();
+            string encLink = String.Format(CultureInfo.InvariantCulture, szTargetFormatString, HttpUtility.UrlEncode(enc.Encrypt(String.Format(CultureInfo.InvariantCulture, "{0} {1} {2}", DateTime.Now.Ticks, UserName, szEmail))));
+
+            using (MailMessage msg = new MailMessage())
+            {
+                Brand brand = Branding.CurrentBrand;
+                msg.From = new MailAddress(brand.EmailAddress, brand.AppName);
+                msg.To.Add(new MailAddress(szEmail, UserFullName));
+                msg.Subject = Branding.ReBrand(Resources.Profile.accountVerifySubject);
+                msg.Body = Branding.ReBrand(Resources.Profile.VerifyEmail.Replace("<% email %>", szEmail).Replace("<% confirmaddress %>", encLink));
+                msg.IsBodyHtml = true;
+
+                util.SendMessage(msg);
+            }
+        }
+
+        public bool VerifyEmail(string encodedResponse, out string szEmail, out string szError)
+        {
+            if (String.IsNullOrEmpty(encodedResponse))
+                throw new ArgumentNullException(nameof(encodedResponse));
+
+            PeerRequestEncryptor enc = new PeerRequestEncryptor();
+            string szDecoded = enc.Decrypt(encodedResponse);
+            szError = szEmail = string.Empty;
+
+            if (String.IsNullOrEmpty(szDecoded))
+            {
+                szError = Resources.Profile.accountVerifyInvalid;
+                return false;
+            }
+
+            string[] rgParts = szDecoded.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            if (rgParts.Length != 3 ||
+                rgParts[1].CompareTo(UserName) != 0 ||
+                !Int64.TryParse(rgParts[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out long ticks)) 
+            {
+                szError = Resources.Profile.accountVerifyInvalid;
+                return false;
+            }
+
+            // Give up to 1 hour to verify.
+            Int64 elapsedTicks = DateTime.Now.Ticks - ticks;
+
+            if (elapsedTicks < 0 || (elapsedTicks / (3600.0 * 1000 * 10000)) > 1.0)
+            {
+                szError = Resources.Profile.accountVerifyEmailExpired;
+                return false;
+            }
+
+            szEmail = rgParts[2];
+            return true;
+        }
+        #endregion
     }
 
     public class ProfileAdmin : Profile

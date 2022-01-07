@@ -12,7 +12,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2021 MyFlightbook LLC
+ * Copyright (c) 2010-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -901,7 +901,7 @@ namespace MyFlightbook.Instruction
             if (cmr == null)
                 throw new ArgumentNullException(nameof(cmr));
             Profile pf = Profile.GetUser(User);
-            if (String.Compare(cmr.TargetUser, pf.Email, StringComparison.OrdinalIgnoreCase) != 0)
+            if (cmr.TargetUser.CompareOrdinalIgnoreCase(pf.Email) != 0 && !pf.IsVerifiedEmail(cmr.TargetUser))
                 throw new MyFlightbookValidationException(Resources.SignOff.errWrongAddress);
 
             Profile pfRequestor = Profile.GetUser(cmr.RequestingUser);

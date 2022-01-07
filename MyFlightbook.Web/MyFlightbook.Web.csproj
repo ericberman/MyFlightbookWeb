@@ -405,6 +405,7 @@
     <Content Include="App_GlobalResources\Content.en\Email\SendFlightBody.htm" />
     <Content Include="App_GlobalResources\Content.en\Email\SignInvitationExisting.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\TelemetryTooLarge.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\VerifyEmail.htm" />
     <Content Include="App_GlobalResources\Content.en\Email\Welcomeemail.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\Welcomeemailhtm.txt" />
     <Content Include="App_GlobalResources\Content.en\About.htm" />

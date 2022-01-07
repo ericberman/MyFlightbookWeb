@@ -123,6 +123,15 @@ namespace MyFlightbook.MemberPages
         protected global::System.Web.UI.WebControls.Label lblStaticEmail;
 
         /// <summary>
+        /// lblPrimaryVerified control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblPrimaryVerified;
+
+        /// <summary>
         /// lblAddress control.
         /// </summary>
         /// <remarks>
@@ -132,6 +141,42 @@ namespace MyFlightbook.MemberPages
         protected global::System.Web.UI.WebControls.Label lblAddress;
 
         /// <summary>
+        /// pnlAlternateEmails control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlAlternateEmails;
+
+        /// <summary>
+        /// lblAlternateEmails control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblAlternateEmails;
+
+        /// <summary>
+        /// mfbTooltip1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Controls_mfbTooltip mfbTooltip1;
+
+        /// <summary>
+        /// rptAlternateEmailsRO control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptAlternateEmailsRO;
+
+        /// <summary>
         /// btnEditNameEmail control.
         /// </summary>
         /// <remarks>
@@ -139,6 +184,15 @@ namespace MyFlightbook.MemberPages
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnEditNameEmail;
+
+        /// <summary>
+        /// lblVerifyResult control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblVerifyResult;
 
         /// <summary>
         /// vwVerifyTFAEmail control.
@@ -222,6 +276,33 @@ namespace MyFlightbook.MemberPages
         protected global::System.Web.UI.WebControls.TextBox txtEmail;
 
         /// <summary>
+        /// lblVerifyPrimaryEmail control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblVerifyPrimaryEmail;
+
+        /// <summary>
+        /// lnkVerifyEmail control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lnkVerifyEmail;
+
+        /// <summary>
+        /// mfbTooltip control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Controls_mfbTooltip mfbTooltip;
+
+        /// <summary>
         /// RegularExpressionValidator1 control.
         /// </summary>
         /// <remarks>
@@ -247,6 +328,15 @@ namespace MyFlightbook.MemberPages
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CustomValidator ValidateEmailOK;
+
+        /// <summary>
+        /// lblVerificationSent control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblVerificationSent;
 
         /// <summary>
         /// locRetypeEmailPrompt control.
@@ -508,6 +598,87 @@ namespace MyFlightbook.MemberPages
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblNameUpdated;
+
+        /// <summary>
+        /// mfbTooltip3 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Controls_mfbTooltip mfbTooltip3;
+
+        /// <summary>
+        /// txtAltEmail control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtAltEmail;
+
+        /// <summary>
+        /// lnkAddAltEmail control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button lnkAddAltEmail;
+
+        /// <summary>
+        /// reAltEmail control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator reAltEmail;
+
+        /// <summary>
+        /// RequiredFieldValidator3 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator3;
+
+        /// <summary>
+        /// CustomValidator1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CustomValidator CustomValidator1;
+
+        /// <summary>
+        /// lblAltEmailSent control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblAltEmailSent;
+
+        /// <summary>
+        /// pnlExistingAlternateEmails control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlExistingAlternateEmails;
+
+        /// <summary>
+        /// gvAlternateEmails control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvAlternateEmails;
 
         /// <summary>
         /// acpPassword control.
@@ -1353,7 +1524,7 @@ namespace MyFlightbook.MemberPages
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divCoreFields;
+        protected global::System.Web.UI.WebControls.Panel divCoreFields;
 
         /// <summary>
         /// lblDragXC control.
@@ -1452,7 +1623,7 @@ namespace MyFlightbook.MemberPages
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divUnusedFields;
+        protected global::System.Web.UI.WebControls.Panel divUnusedFields;
 
         /// <summary>
         /// btnResetPermutations control.

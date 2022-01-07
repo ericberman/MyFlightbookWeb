@@ -8,12 +8,11 @@ using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
-using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2021 MyFlightbook LLC
+ * Copyright (c) 2010-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -89,7 +88,7 @@ namespace MyFlightbook.MemberPages
 
         private bool fHasSetUpFields = false;
 
-        protected void SetUpCoreFields(HiddenField hdn, HtmlGenericControl divCore, HtmlGenericControl divUnused)
+        protected void SetUpCoreFields(HiddenField hdn, Control divCore, Control divUnused)
         {
             if (divUnused == null)
                 throw new ArgumentNullException(nameof(divUnused));
@@ -224,7 +223,26 @@ namespace MyFlightbook.MemberPages
             dateDOB.Date = m_pf.DateOfBirth ?? DateTime.MinValue;
             accordianAccount.SelectedIndex = (sidebarTab == tabID.pftQA) ? 2 : (sidebarTab == tabID.pftPass ? 1 : 0);
 
-
+            string szEmailVerify = util.GetStringParam(Request, "ve");
+            if (!String.IsNullOrEmpty(szEmailVerify))
+            {
+                if (m_pf.VerifyEmail(szEmailVerify, out string verifiedEmail, out string szerr))
+                {
+                    m_pf.AddVerifiedEmail(verifiedEmail);
+                    lblVerifyResult.Text = HttpUtility.HtmlEncode(String.Format(CultureInfo.CurrentCulture, Resources.Profile.accountVerifyValidated, verifiedEmail));
+                    lblVerifyResult.CssClass = "success";
+                }
+                else
+                {
+                    lblVerifyResult.Text = szerr;
+                    lblVerifyResult.CssClass = "error";
+                }
+            }
+            lblVerifyPrimaryEmail.Visible = !(lblPrimaryVerified.Visible = m_pf.IsVerifiedEmail(m_pf.Email));
+            rptAlternateEmailsRO.DataSource = gvAlternateEmails.DataSource = m_pf.AlternateEmailsForUser();
+            rptAlternateEmailsRO.DataBind();
+            gvAlternateEmails.DataBind();
+            pnlAlternateEmails.Visible = pnlExistingAlternateEmails.Visible = rptAlternateEmailsRO.Items.Count > 0;
 
             fuHdSht.Attributes["onchange"] = "javascript:hdshtUpdated();";
             SetHeadShot();
@@ -446,6 +464,38 @@ namespace MyFlightbook.MemberPages
                 // see if it's available
                 pf.Email = txtEmail.Text;
                 args.IsValid = pf.IsValid();
+            }
+        }
+
+        protected void lnkVerifyEmail_Click(object sender, EventArgs e)
+        {
+            if (!IsValid)
+                return;
+
+            m_pf.SendVerificationEmail(txtEmail.Text, "~/Member/EditProfile.aspx/pftAccount".ToAbsoluteURL(Request).ToString() + "?ve={0}");
+            lblVerificationSent.Visible = true;
+        }
+
+        protected void lnkAddAltEmail_Click(object sender, EventArgs e)
+        {
+            Validate("valAltEmail");
+            if (IsValid)
+            {
+                m_pf.SendVerificationEmail(txtAltEmail.Text, "~/Member/EditProfile.aspx/pftAccount".ToAbsoluteURL(Request).ToString() + "?ve={0}");
+                lblAltEmailSent.Visible = true;
+            }
+        }
+
+        protected void gvAlternateEmails_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            if (e == null)
+                throw new ArgumentNullException(nameof(e));
+
+            if (e.CommandName.CompareCurrentCultureIgnoreCase("_Delete") == 0)
+            {
+                m_pf.DeleteVerifiedEmail((string) e.CommandArgument);
+                gvAlternateEmails.DataSource = m_pf.AlternateEmailsForUser();
+                gvAlternateEmails.DataBind();
             }
         }
 

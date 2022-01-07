@@ -19,7 +19,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2021 MyFlightbook LLC
+ * Copyright (c) 2008-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1122,7 +1122,7 @@ namespace MyFlightbook
 
             // Otherwise, look for evidence that the user has requested us to sign it - look in the email or username field for an outstanding request.
             Profile pfCFI = Profile.GetUser(szCFIUsername);
-            if (String.Compare(pfCFI.UserName, this.CFIUsername, StringComparison.OrdinalIgnoreCase) == 0 || String.Compare(pfCFI.Email, this.CFIEmail, StringComparison.OrdinalIgnoreCase) == 0)
+            if (pfCFI.UserName.CompareOrdinalIgnoreCase(CFIUsername) == 0 || pfCFI.Email.CompareOrdinalIgnoreCase(CFIEmail) == 0 || pfCFI.IsVerifiedEmail(CFIEmail))
                 return true;
 
             // Otherwise, we're simply not authorized
@@ -1260,7 +1260,14 @@ namespace MyFlightbook
         public static List<LogbookEntry> PendingSignaturesForStudent(Profile pfCFI, Profile pfStudent)
         {
             const string szAnyPending = "((f.CFIUsername IS NOT NULL AND f.CFIUserName <> '') OR (f.CFIEmail IS NOT NULL AND f.CFIEmail <> ''))";
-            const string szJustForCFI = "(f.CFIUsername=?user OR f.CFIEmail=?email)";
+            const string szJustForCFITemplate = "(f.CFIUsername=?user OR f.CFIEmail=?email {0})";
+
+            List<string> lstAlternateEmails = pfCFI == null ? new List<string>() : new List<string>(pfCFI.AlternateEmailsForUser());
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < lstAlternateEmails.Count; i++)
+                sb.AppendFormat(CultureInfo.InvariantCulture, " OR f.CFIEmail=?altEmail{0} ", i);
+            string szJustForCFI = String.Format(CultureInfo.InvariantCulture, szJustForCFITemplate, sb.ToString());
+
             DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "SELECT f.Date, f.idFlight, f.Comments, f.Route, f.CFIUsername, f.CFIEmail FROM Flights f WHERE f.username=?student AND {0} AND f.SignatureState=0 ORDER BY f.Date DESC", pfCFI == null ? szAnyPending : szJustForCFI));
             List<LogbookEntry> lstFlightsToSign = new List<LogbookEntry>();
             dbh.ReadRows(
@@ -1272,6 +1279,9 @@ namespace MyFlightbook
                     {
                         comm.Parameters.AddWithValue("email", pfCFI.Email);
                         comm.Parameters.AddWithValue("user", pfCFI.UserName);
+                        int i = 0;
+                        foreach (string szAlternateEmail in lstAlternateEmails)
+                            comm.Parameters.AddWithValue(String.Format(CultureInfo.InvariantCulture, "altEmail{0}", i++), szAlternateEmail);
                     }
                 },
                 (dr) =>
