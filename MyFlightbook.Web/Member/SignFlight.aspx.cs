@@ -4,14 +4,14 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2021 MyFlightbook LLC
+ * Copyright (c) 2015-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
-namespace MyFlightbook.MemberPages
+namespace MyFlightbook.Instruction
 {
-    public partial class SignFlight : Page
+    public partial class SignFlightMember : Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -19,7 +19,7 @@ namespace MyFlightbook.MemberPages
 
             if (!IsPostBack)
             {
-                int idFlight = util.GetIntParam(Request, "idFlight", LogbookEntry.idFlightNew);
+                int idFlight = util.GetIntParam(Request, "idFlight", LogbookEntryCore.idFlightNew);
                 hdnFlightID.Value = idFlight.ToString(CultureInfo.InvariantCulture);
 
                 // Remember the return URL, but only if it is relative (for security)
@@ -27,11 +27,11 @@ namespace MyFlightbook.MemberPages
                 if (Uri.IsWellFormedUriString(szReturnURL, UriKind.Relative))
                     hdnReturnURL.Value = szReturnURL;
 
-                if (idFlight == LogbookEntry.idFlightNew)
+                if (idFlight == LogbookEntryCore.idFlightNew)
                     Response.Redirect(hdnReturnURL.Value);
 
                 LogbookEntry le = new LogbookEntry();
-                if (!le.FLoadFromDB(idFlight, string.Empty, LogbookEntry.LoadTelemetryOption.None, true))
+                if (!le.FLoadFromDB(idFlight, string.Empty, LogbookEntryCore.LoadTelemetryOption.None, true))
                     lblError.Text = Resources.SignOff.errInvalidFlight;
                 else if (!le.CanSignThisFlight(Page.User.Identity.Name, out string szError))
                     lblError.Text = szError;
@@ -45,7 +45,7 @@ namespace MyFlightbook.MemberPages
                 mfbSignFlight1.Flight = le;
             }
 
-            mfbSignFlight1.CFIProfile = MyFlightbook.Profile.GetUser(Page.User.Identity.Name);
+            mfbSignFlight1.CFIProfile = Profile.GetUser(Page.User.Identity.Name);
         }
 
         protected void GoBack(object sender, EventArgs e)

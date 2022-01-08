@@ -7,11 +7,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MyFlightbook.MemberPages
+namespace MyFlightbook.Instruction
 {
 
 
-    public partial class SignFlight
+    public partial class SignFlightMember
     {
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace MyFlightbook.MemberPages
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_mfbSignFlight mfbSignFlight1;
+        protected global::MyFlightbook.Instruction.mfbSignFlight mfbSignFlight1;
 
         /// <summary>
         /// hdnReturnURL control.

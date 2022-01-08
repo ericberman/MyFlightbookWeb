@@ -1438,9 +1438,10 @@ namespace MyFlightbook
         /// <summary>
         /// Determines if the named user is eligible to sign flights
         /// </summary>
+        /// <param name="fGroundOnlyOrATP">True if we can allow a missing expiration</param>
         /// <param name="szError">The error that results</param>
         /// <returns>True if they can sign</returns>
-        public bool CanSignFlights(out string szError, bool fIsGround)
+        public bool CanSignFlights(out string szError, bool fGroundOnlyOrATP)
         {
             szError = String.Empty;
             if (String.IsNullOrEmpty(Certificate))
@@ -1450,9 +1451,9 @@ namespace MyFlightbook
             }
 
             // Error to 
-            // (a) lack an expiration date UNLESS the flight is ground-only
+            // (a) lack an expiration date UNLESS the flight is ground-only OR ATP signing
             // (b) have an expiration date in the past
-            if ((!CertificateExpiration.HasValue() && !fIsGround) || 
+            if ((!CertificateExpiration.HasValue() && !fGroundOnlyOrATP) || 
                 (CertificateExpiration.HasValue() && CertificateExpiration.AddDays(1).CompareTo(DateTime.Now) < 0))
             {
                 szError = Resources.SignOff.errSignExpiredCertificate;
