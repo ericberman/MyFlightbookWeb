@@ -5,13 +5,13 @@
 <%@ Register src="mfbEditFlight.ascx" tagname="mfbEditFlight" tagprefix="uc4" %>
 <%@ Register Src="~/Controls/mfbTypeInDate.ascx" TagPrefix="uc2" TagName="mfbTypeInDate" %>
 <%@ Register Src="~/Controls/mfbScribbleSignature.ascx" TagPrefix="uc1" TagName="mfbScribbleSignature" %>
-<asp:Panel ID="pnlMain" runat="server" meta:resourcekey="pnlMainResource1">
-    <p><asp:Label ID="lblNote" Font-Bold="true" runat="server" Text="<%$ Resources:LocalizedText, Note %>"></asp:Label> 
-        <asp:Label ID="lblSignatureDisclaimer" runat="server" CssClass="fineprint" Text=""></asp:Label></p>
+<asp:Panel ID="pnlMain" runat="server">
+    <p><asp:Label ID="lblNote" Font-Bold="true" runat="server" Text="<%$ Resources:LocalizedText, Note %>" /> 
+        <asp:Label ID="lblSignatureDisclaimer" runat="server" CssClass="fineprint" Text="" /></p>
         <asp:MultiView ID="mvFlightToSign" ActiveViewIndex="0" runat="server">
             <asp:View ID="vwEntrySummary" runat="server">
                 <div class="signFlightFlightToSign">
-                    <asp:FormView ID="fvEntryToSign" runat="server" EnableModelValidation="True" meta:resourcekey="fvEntryToSignResource1" OnDataBound="fvEntryToSign_OnDataBound">
+                    <asp:FormView ID="fvEntryToSign" runat="server" EnableModelValidation="True" OnDataBound="fvEntryToSign_OnDataBound">
                         <ItemTemplate>
                             <table>
                                 <tr style="vertical-align: text-top">
@@ -21,71 +21,71 @@
                                 </tr>
                                 <tr style="vertical-align: text-top">
                                     <td>
-                                        <asp:Label ID="lblLandingPrompt" runat="server" Font-Bold="True" meta:resourcekey="lblLandingPromptResource1" Text="<%$ Resources:LogbookEntry, FieldLanding %>"></asp:Label>
+                                        <asp:Label ID="lblLandingPrompt" runat="server" Font-Bold="True" Text="<%$ Resources:LogbookEntry, FieldLanding %>" />
                                     </td>
                                     <td><%# Eval("Landings").FormatInt() %></td>
                                     <td>
-                                        <asp:Label ID="lblNightLandingsPrompt" runat="server" Font-Bold="True" meta:resourcekey="lblNightLandingsPromptResource1" Text="<%$ Resources:LogbookEntry, FieldNightLandings %>"></asp:Label>
+                                        <asp:Label ID="lblNightLandingsPrompt" runat="server" Font-Bold="True" Text="<%$ Resources:LogbookEntry, FieldNightLandings %>" />
                                     </td>
                                     <td><%# Eval("NightLandings").FormatInt() %></td>
                                 </tr>
                                 <tr style="vertical-align: text-top">
                                     <td>
-                                        <asp:Label ID="lblApproachesPrompt" runat="server" Font-Bold="True" meta:resourcekey="lblApproachesPromptResource1" Text="<%$ Resources:LogbookEntry, FieldApproaches %>"></asp:Label>
+                                        <asp:Label ID="lblApproachesPrompt" runat="server" Font-Bold="True" Text="<%$ Resources:LogbookEntry, FieldApproaches %>" />
                                     </td>
                                     <td><%# Eval("Approaches").FormatInt() %></td>
                                     <td>
-                                        <asp:Label ID="lblHoldPrompt" runat="server" Font-Bold="True" meta:resourcekey="lblHoldPromptResource1" Text="<%$ Resources:LogbookEntry, FieldHold %>"></asp:Label>
+                                        <asp:Label ID="lblHoldPrompt" runat="server" Font-Bold="True" Text="<%$ Resources:LogbookEntry, FieldHold %>" />
                                     </td>
                                     <td><%# Eval("fHoldingProcedures").FormatBoolean() %></td>
                                 </tr>
                                 <tr style="vertical-align: text-top">
                                     <td>
-                                        <asp:Label ID="Label7" runat="server" Font-Bold="True" meta:resourcekey="Label7Resource1" Text="<%$ Resources:LogbookEntry, FieldXCountry %>"></asp:Label>
+                                        <asp:Label ID="Label7" runat="server" Font-Bold="True" Text="<%$ Resources:LogbookEntry, FieldXCountry %>" />
                                     </td>
                                     <td><%# Eval("CrossCountry").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                     <td>
-                                        <asp:Label ID="Label9" runat="server" Font-Bold="True" meta:resourcekey="Label9Resource1" Text="<%$ Resources:LogbookEntry, FieldNight %>"></asp:Label>
+                                        <asp:Label ID="Label9" runat="server" Font-Bold="True" Text="<%$ Resources:LogbookEntry, FieldNight %>" />
                                     </td>
                                     <td><%# Eval("Nighttime").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 </tr>
                                 <tr style="vertical-align: text-top">
                                     <td>
-                                        <asp:Label ID="Label11" runat="server" Font-Bold="True" meta:resourcekey="Label11Resource1" Text="<%$ Resources:LogbookEntry, FieldSimIMCFull %>"></asp:Label>
+                                        <asp:Label ID="Label11" runat="server" Font-Bold="True" Text="<%$ Resources:LogbookEntry, FieldSimIMCFull %>" />
                                     </td>
                                     <td><%# Eval("SimulatedIFR").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                     <td>
-                                        <asp:Label ID="Label13" runat="server" Font-Bold="True" meta:resourcekey="Label13Resource1" Text="<%$ Resources:LogbookEntry, FieldIMC %>"></asp:Label>
+                                        <asp:Label ID="Label13" runat="server" Font-Bold="True" Text="<%$ Resources:LogbookEntry, FieldIMC %>" />
                                     </td>
                                     <td><%# Eval("IMC").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 </tr>
                                 <tr style="vertical-align: text-top">
                                     <td>
-                                        <asp:Label ID="Label1" runat="server" Font-Bold="True" meta:resourcekey="Label1Resource1" Text="<%$ Resources:LogbookEntry, FieldGroundSimFull %>"></asp:Label>
+                                        <asp:Label ID="Label1" runat="server" Font-Bold="True" Text="<%$ Resources:LogbookEntry, FieldGroundSimFull %>" />
                                     </td>
                                     <td><%# Eval("GroundSim").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                     <td>
-                                        <asp:Label ID="Label4" runat="server" Font-Bold="True" meta:resourcekey="Label4Resource1" Text="<%$ Resources:LogbookEntry, FieldDual %>"></asp:Label>
+                                        <asp:Label ID="Label4" runat="server" Font-Bold="True" Text="<%$ Resources:LogbookEntry, FieldDual %>" />
                                     </td>
                                     <td><%# Eval("Dual").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 </tr>
                                 <tr style="vertical-align: text-top">
                                     <td>
-                                        <asp:Label ID="Label6" runat="server" Font-Bold="True" meta:resourcekey="Label6Resource1" Text="<%$ Resources:LogbookEntry, FieldCFI %>"></asp:Label>
+                                        <asp:Label ID="Label6" runat="server" Font-Bold="True" Text="<%$ Resources:LogbookEntry, FieldCFI %>" />
                                     </td>
                                     <td><%# Eval("CFI").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                     <td>
-                                        <asp:Label ID="Label16" runat="server" Font-Bold="True" meta:resourcekey="Label16Resource1" Text="<%$ Resources:LogbookEntry, FieldSIC %>"></asp:Label>
+                                        <asp:Label ID="Label16" runat="server" Font-Bold="True" Text="<%$ Resources:LogbookEntry, FieldSIC %>" />
                                     </td>
                                     <td><%# Eval("SIC").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 </tr>
                                 <tr style="vertical-align: text-top">
                                     <td>
-                                        <asp:Label ID="Label18" runat="server" Font-Bold="True" meta:resourcekey="Label18Resource1" Text="<%$ Resources:LogbookEntry, FieldPIC %>"></asp:Label>
+                                        <asp:Label ID="Label18" runat="server" Font-Bold="True" Text="<%$ Resources:LogbookEntry, FieldPIC %>" />
                                     </td>
                                     <td><%# Eval("PIC").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                     <td>
-                                        <asp:Label ID="Label20" runat="server" Font-Bold="True" meta:resourcekey="Label20Resource1" Text="<%$ Resources:LogbookEntry, FieldTotal %>"></asp:Label>
+                                        <asp:Label ID="Label20" runat="server" Font-Bold="True" Text="<%$ Resources:LogbookEntry, FieldTotal %>" />
                                     </td>
                                     <td><%# Eval("TotalFlightTime").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 </tr>
@@ -119,52 +119,42 @@
                 </div>
                 <div class="signFlightSignatureBlock">
                     <h2><asp:Image ID="imgSig" runat="server" ImageUrl="~/images/sigok.png" ImageAlign="AbsMiddle" /> <% =Resources.SignOff.SignFlightAffirmation %> <asp:Label ID="lblCFIName" runat="server" Text=""></asp:Label></h2>
-                    <asp:Panel ID="rowEmail" runat="server" meta:resourcekey="rowEmailResource1">
+                    <asp:Panel ID="rowEmail" runat="server">
                         <div><asp:Label ID="lblInstructorNamePrompt" runat="server" Font-Bold="True" 
-                                Text="<%$ Resources:SignOff, EditEndorsementInstructorPrompt %>" 
-                                meta:resourcekey="lblInstructorNamePromptResource1"></asp:Label></div>
+                                Text="<%$ Resources:SignOff, EditEndorsementInstructorPrompt %>" /></div>
                         <div>
-                            <asp:TextBox ID="txtCFIName" runat="server" Width="280px" 
-                                meta:resourcekey="txtCFINameResource1"></asp:TextBox>
+                            <asp:TextBox ID="txtCFIName" runat="server" Width="280px" />
                             <div>
                             <asp:RequiredFieldValidator ID="valNameRequired" runat="server" ControlToValidate="txtCFIName"
-                                    ErrorMessage="You must provide your name to sign a flight." 
-                                    Display="Dynamic" ToolTip="Name is required." CssClass="error" 
-                                meta:resourcekey="RequiredFieldValidator1Resource1"></asp:RequiredFieldValidator>
+                                    ErrorMessage="<%$ Resources:SignOff, errProvideNameToSign %>" 
+                                    Display="Dynamic" ToolTip="<%$ Resources:SignOff, errNameRequired %>" CssClass="error" />
                             </div>
                         </div>
                         <div><asp:Label ID="lblCFIEmailPrompt" runat="server" 
-                                Text="<%$ Resources:Signoff, CFIEmail %>" Font-Bold="True" 
-                                meta:resourcekey="lblCFIEmailPromptResource1"></asp:Label></div>
+                                Text="<%$ Resources:Signoff, CFIEmail %>" Font-Bold="True" /></div>
                         <div>
-                            <asp:TextBox ID="txtCFIEmail" TextMode="Email" runat="server" Width="280px" meta:resourcekey="txtCFIEmailResource1"></asp:TextBox>
+                            <asp:TextBox ID="txtCFIEmail" TextMode="Email" runat="server" Width="280px" />
                             <div>
                             <asp:RequiredFieldValidator ID="valEmailRequired" runat="server" ControlToValidate="txtCFIEmail"
-                                ErrorMessage="You must provide a valid e-mail address to sign a flight." 
-                                Display="Dynamic" ToolTip="E-mail is required." CssClass="error" 
-                                meta:resourcekey="EmailRequiredResource1"></asp:RequiredFieldValidator>
+                                ErrorMessage="<%$ Resources:SignOff, errEmailMissing %>" 
+                                Display="Dynamic" ToolTip="<%$ Resources:SignOff, errEmailMissing %>" CssClass="error" />
                             <asp:RegularExpressionValidator ID="valBadEmail" runat="server" ControlToValidate="txtCFIEmail"
                                 Display="Dynamic" ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"
-                                ErrorMessage="Please enter a valid e-mail address." CssClass="error" 
-                                meta:resourcekey="EmailRegExpResource1"></asp:RegularExpressionValidator>
+                                ErrorMessage="<%$ Resources:SignOff, errInvalidEmail %>" CssClass="error" />
                             </div>
                         </div>
                     </asp:Panel>
                     <div>
                         <asp:Label ID="lblCFICertificatePrompt" runat="server" 
-                            Text="<%$ Resources:SignOff, EditEndorsementCFIPrompt %>" 
-                            Font-Bold="True" meta:resourcekey="lblCFICertificatePromptResource1"></asp:Label>
-                            <asp:Label ID="lblCFICertificate" runat="server" 
-                            meta:resourcekey="lblCFICertificateResource1"></asp:Label>
+                            Text="<%$ Resources:SignOff, EditEndorsementCFIPrompt %>" Font-Bold="True" />
+                            <asp:Label ID="lblCFICertificate" runat="server" />
                     </div>
                     <div>
-                        <asp:TextBox ID="txtCFICertificate" runat="server" Visible="False" 
-                            Width="280px" meta:resourcekey="txtCFICertificateResource1"></asp:TextBox>
+                        <asp:TextBox ID="txtCFICertificate" runat="server" Visible="False" Width="280px" />
                         <div>
                         <asp:RequiredFieldValidator ID="valCertificateRequired" runat="server" ControlToValidate="txtCFICertificate"
-                                ErrorMessage="You must provide a valid CFI certificate." 
-                                Display="Dynamic" ToolTip="Certificate is required." CssClass="error" 
-                            meta:resourcekey="RequiredFieldValidator2Resource1"></asp:RequiredFieldValidator>
+                                ErrorMessage="<%$ Resources:SignOff, errMissingCertificate %>" 
+                                Display="Dynamic" ToolTip="<%$ Resources:SignOff, errMissingCertificate %>" CssClass="error" />
                         </div>
                     </div>
                     <asp:UpdatePanel ID="updPanelComments" runat="server">
@@ -172,52 +162,44 @@
                             <div>
                                 <asp:Label ID="lblCFIDatePrompt" runat="server" 
                                     Text="<%$ Resources:SignOff, EditEndorsementExpirationPrompt %>" 
-                                    Font-Bold="True" meta:resourcekey="lblCFIDatePromptResource1">
-                                </asp:Label>
+                                    Font-Bold="True" />
                                 <asp:CheckBox ID="ckATP" runat="server" Text="<%$ Resources:Signoff, SignFlightATP %>" AutoPostBack="true" OnCheckedChanged="ckATP_CheckedChanged" />
-                                <asp:Label ID="lblCFIDate" runat="server" 
-                                    meta:resourcekey="lblCFIDateResource1"></asp:Label>
+                                <asp:Label ID="lblCFIDate" runat="server" />
                             </div>
                             <div>
                                 <uc2:mfbTypeInDate runat="server" ID="dropDateCFIExpiration" Visible="false" Width="280px" DefaultType="Today" />
                                 <div>
                                 <asp:CustomValidator ID="valCFIExpiration" runat="server" 
-                                    ErrorMessage="To sign, your CFI certificate must not be expired." 
+                                    ErrorMessage="<%$ Resources:SignOff, errCertificateExpired %>" 
                                     CssClass="error" Display="Dynamic" 
-                                    onservervalidate="valCFIExpiration_ServerValidate" 
-                                    meta:resourcekey="valCFIExpirationResource1"></asp:CustomValidator>
+                                    onservervalidate="valCFIExpiration_ServerValidate" />
                                 </div>
                             </div>
-                            <asp:Panel ID="pnlRowPassword" runat="server" Visible="False"
-                                meta:resourcekey="pnlRowPasswordResource1">
+                            <asp:Panel ID="pnlRowPassword" runat="server" Visible="False">
                                 <div>
                                     <asp:Label ID="lblPassPrompt" runat="server" Text="<%$ Resources:SignOff, SignReEnterPassword %>" 
-                                        Font-Bold="True" meta:resourcekey="lblPassPromptResource2"></asp:Label></div>
+                                        Font-Bold="True" />
+                                </div>
                                 <div>
-                                    <asp:TextBox ID="txtPassConfirm" runat="server" TextMode="Password" Width="280px"   
-                                        meta:resourcekey="txtPassConfirmResource1"></asp:TextBox><br />
+                                    <asp:TextBox ID="txtPassConfirm" runat="server" TextMode="Password" Width="280px" /><br />
                                     <asp:RequiredFieldValidator ID="valPassword" runat="server" 
-                                        ErrorMessage="The instructor must provide a password to sign this flight." Enabled="False"
-                                        ControlToValidate="txtPassConfirm" CssClass="error" 
-                                        meta:resourcekey="valPasswordResource1" Display="Dynamic"></asp:RequiredFieldValidator>
+                                        ErrorMessage="<%$ Resources:SignOff, errPasswordRequiredForSigning %>" Enabled="False"
+                                        ControlToValidate="txtPassConfirm" CssClass="error" Display="Dynamic" />
                                     <asp:CustomValidator Enabled="False"
                                         ID="valCorrectPassword" runat="server" CssClass="error" 
-                                        ErrorMessage="Please enter the correct password for this account" 
-                                        onservervalidate="valCorrectPassword_ServerValidate" Display="Dynamic" 
-                                        meta:resourcekey="valCorrectPasswordResource1"></asp:CustomValidator>
+                                        ErrorMessage="<%$ Resources:SignOff, errIncorrectPasswordForSigning %>" 
+                                        onservervalidate="valCorrectPassword_ServerValidate" Display="Dynamic" />
                                 </div>
                             </asp:Panel>
                             <div>
                                 <asp:Label ID="lblCFICommentsPrompt" runat="server" 
-                                    Text="<%$ Resources:Signoff, CFIComments %>" Font-Bold="True" 
-                                    meta:resourcekey="lblCFICommentsPromptResource1"></asp:Label>
+                                    Text="<%$ Resources:Signoff, CFIComments %>" Font-Bold="True" />
                             </div>
-                            <div><asp:CheckBox ID="ckSignSICEndorsement" runat="server" Text="Use SIC Endorsement from AC 135-43" Visible="false" AutoPostBack="true" meta:resourcekey="ckSignSICEndorsementResource1" OnCheckedChanged="ckSignSICEndorsement_CheckedChanged" /></div>
+                            <div><asp:CheckBox ID="ckSignSICEndorsement" runat="server" Text="<%$ Resources:SignOff, PromptUseAC13543ForSIC %>" Visible="false" AutoPostBack="true" OnCheckedChanged="ckSignSICEndorsement_CheckedChanged" /></div>
                             <div>
                                 <asp:MultiView ID="mvComments" runat="server" ActiveViewIndex="0">
                                     <asp:View ID="vwEdit" runat="server">
-                                        <asp:TextBox ID="txtComments" runat="server" Rows="3" Width="280px" 
-                                            TextMode="MultiLine" meta:resourcekey="txtCommentsResource1"></asp:TextBox>
+                                        <asp:TextBox ID="txtComments" runat="server" Rows="3" Width="280px" TextMode="MultiLine" />
                                     </asp:View>
                                     <asp:View ID="vwTemplate" runat="server">
                                         <asp:Label ID="lblSICTemplate" runat="server" Width="280px" BorderColor="Gray" BorderStyle="Solid" BorderWidth="1px" style="padding: 4px"></asp:Label>
@@ -226,26 +208,22 @@
                             </div>
                         </ContentTemplate>
                     </asp:UpdatePanel>
-                    <asp:Panel ID="rowSignature" Visible="False" runat="server" 
-                        meta:resourcekey="rowSignatureResource1">
-                        <div><asp:Label ID="lblSignaturePrompt" runat="server" Text="Signature" 
-                                Font-Bold="True" meta:resourcekey="lblSignaturePromptResource1"></asp:Label></div>
+                    <asp:Panel ID="rowSignature" Visible="False" runat="server">
+                        <div><asp:Label ID="lblSignaturePrompt" runat="server" Text="<%$ Resources:SignOff, PromptSignature %>" Font-Bold="True" /></div>
                         <uc1:mfbScribbleSignature runat="server" id="mfbScribbleSignature" />
                     </asp:Panel>
                     <asp:Panel ID="pnlCopyFlight" runat="server">
                         <asp:CheckBox ID="ckCopyFlight" runat="server" />
                     </asp:Panel>
-                    <asp:Label ID="lblErr" runat="server" CssClass="error" EnableViewState="False" 
-                        meta:resourcekey="lblErrResource1"></asp:Label>
+                    <asp:Label ID="lblErr" runat="server" CssClass="error" EnableViewState="False" />
                 </div>
                 <div style="text-align:center">
                     <asp:Button ID="btnCancel" runat="server" 
                         Text="<%$ Resources:SignOff, CancelSignFlight %>" Visible="False" 
-                        onclick="btnCancel_Click" meta:resourcekey="btnCancelResource1" />
+                        onclick="btnCancel_Click" />
                     &nbsp;&nbsp;
                     <asp:Button ID="btnSign" runat="server" 
-                        Text="<%$ Resources:SignOff, SignFlight %>" onclick="btnSign_Click" 
-                        meta:resourcekey="btnSignResource1" />
+                        Text="<%$ Resources:SignOff, SignFlight %>" onclick="btnSign_Click" />
                 </div>
             </asp:View>
             <asp:View ID="vwEntryEdit" runat="server">

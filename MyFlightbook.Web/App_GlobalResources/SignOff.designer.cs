@@ -466,11 +466,29 @@ namespace Resources {
         }
         
         /// <summary>
+        ///    Looks up a localized string similar to To sign, your CFI certificate must not be expired..
+        /// </summary>
+        internal static string errCertificateExpired {
+            get {
+                return ResourceManager.GetString("errCertificateExpired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///    Looks up a localized string similar to Error committing endorsement: .
         /// </summary>
         internal static string errCommitFailed {
             get {
                 return ResourceManager.GetString("errCommitFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to You must provide a valid e-mail address to sign a flight..
+        /// </summary>
+        internal static string errEmailMissing {
+            get {
+                return ResourceManager.GetString("errEmailMissing", resourceCulture);
             }
         }
         
@@ -495,6 +513,15 @@ namespace Resources {
         /// <summary>
         ///    Looks up a localized string similar to Please enter the correct password for this account.
         /// </summary>
+        internal static string errIncorrectPasswordForSigning {
+            get {
+                return ResourceManager.GetString("errIncorrectPasswordForSigning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Please enter the correct password for this account.
+        /// </summary>
         internal static string errInstructorBadPassword {
             get {
                 return ResourceManager.GetString("errInstructorBadPassword", resourceCulture);
@@ -507,6 +534,15 @@ namespace Resources {
         internal static string errInstructorPasswordRequiredToEndorse {
             get {
                 return ResourceManager.GetString("errInstructorPasswordRequiredToEndorse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Please enter a valid e-mail address..
+        /// </summary>
+        internal static string errInvalidEmail {
+            get {
+                return ResourceManager.GetString("errInvalidEmail", resourceCulture);
             }
         }
         
@@ -525,6 +561,24 @@ namespace Resources {
         internal static string errInvalidRequest {
             get {
                 return ResourceManager.GetString("errInvalidRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to You must provide a valid CFI certificate..
+        /// </summary>
+        internal static string errMissingCertificate {
+            get {
+                return ResourceManager.GetString("errMissingCertificate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Name is required.
+        /// </summary>
+        internal static string errNameRequired {
+            get {
+                return ResourceManager.GetString("errNameRequired", resourceCulture);
             }
         }
         
@@ -615,6 +669,24 @@ namespace Resources {
         internal static string errNoTitle {
             get {
                 return ResourceManager.GetString("errNoTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to The instructor must provide a password to sign this flight..
+        /// </summary>
+        internal static string errPasswordRequiredForSigning {
+            get {
+                return ResourceManager.GetString("errPasswordRequiredForSigning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to You must provide your name to sign a flight..
+        /// </summary>
+        internal static string errProvideNameToSign {
+            get {
+                return ResourceManager.GetString("errProvideNameToSign", resourceCulture);
             }
         }
         
@@ -853,6 +925,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///    Looks up a localized string similar to Signature.
+        /// </summary>
+        internal static string PromptSignature {
+            get {
+                return ResourceManager.GetString("PromptSignature", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Use SIC Endorsement from AC 135-43.
+        /// </summary>
+        internal static string PromptUseAC13543ForSIC {
+            get {
+                return ResourceManager.GetString("PromptUseAC13543ForSIC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///    Looks up a localized string similar to Request a signature.
         /// </summary>
         internal static string RequestSignature {
@@ -967,7 +1057,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to I hold an ATP certificate.
+        ///    Looks up a localized string similar to Sign as ATP (61.167(2)).
         /// </summary>
         internal static string SignFlightATP {
             get {

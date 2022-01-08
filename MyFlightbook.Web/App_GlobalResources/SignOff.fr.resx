@@ -356,4 +356,34 @@
     <value>Signé le {0} par {1} (Certificat #{2})</value>
     <comment>e.g. "Signed on {date} by {CFI Name} (Certificate #1234)"</comment>
   </data>
+  <data name="errCertificateExpired" xml:space="preserve">
+    <value>Pour signer, votre qualification d'instructeur doit être en cours de validité.</value>
+  </data>
+  <data name="errEmailMissing" xml:space="preserve">
+    <value>Vous devez saisir une adresse mail valide pour signer un vol.</value>
+  </data>
+  <data name="errIncorrectPasswordForSigning" xml:space="preserve">
+    <value>Please enter the correct password for this account</value>
+  </data>
+  <data name="errInvalidEmail" xml:space="preserve">
+    <value>Merci de saisir une adresse mail valide.</value>
+  </data>
+  <data name="errMissingCertificate" xml:space="preserve">
+    <value>Vous devez saisir une qualification d'instructeur en cours de validité.</value>
+  </data>
+  <data name="errNameRequired" xml:space="preserve">
+    <value>Le nom est obligatoire.</value>
+  </data>
+  <data name="errPasswordRequiredForSigning" xml:space="preserve">
+    <value>The instructor must provide a password to sign this flight.</value>
+  </data>
+  <data name="errProvideNameToSign" xml:space="preserve">
+    <value>Vous devez saisir votre nom pour signer un vol.</value>
+  </data>
+  <data name="PromptSignature" xml:space="preserve">
+    <value>Signature</value>
+  </data>
+  <data name="PromptUseAC13543ForSIC" xml:space="preserve">
+    <value>Utiliser l’approbation SIC de la CA 135-43</value>
+  </data>
 </root>

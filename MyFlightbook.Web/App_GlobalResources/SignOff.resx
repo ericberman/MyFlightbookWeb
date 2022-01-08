@@ -441,7 +441,7 @@
     <value>Request signatures</value>
   </data>
   <data name="SignFlightATP" xml:space="preserve">
-    <value>I hold an ATP certificate</value>
+    <value>Sign as ATP (61.167(2))</value>
   </data>
   <data name="CopyEndorsement" xml:space="preserve">
     <value>Create a new endorsement starting from the text of this one</value>
@@ -463,5 +463,35 @@
   </data>
   <data name="errInvalidFlight" xml:space="preserve">
     <value>The requested flight does not exist.  Perhaps it has been deleted?</value>
+  </data>
+  <data name="errCertificateExpired" xml:space="preserve">
+    <value>To sign, your CFI certificate must not be expired.</value>
+  </data>
+  <data name="errEmailMissing" xml:space="preserve">
+    <value>You must provide a valid e-mail address to sign a flight.</value>
+  </data>
+  <data name="errIncorrectPasswordForSigning" xml:space="preserve">
+    <value>Please enter the correct password for this account</value>
+  </data>
+  <data name="errInvalidEmail" xml:space="preserve">
+    <value>Please enter a valid e-mail address.</value>
+  </data>
+  <data name="errMissingCertificate" xml:space="preserve">
+    <value>You must provide a valid CFI certificate.</value>
+  </data>
+  <data name="errNameRequired" xml:space="preserve">
+    <value>Name is required</value>
+  </data>
+  <data name="errPasswordRequiredForSigning" xml:space="preserve">
+    <value>The instructor must provide a password to sign this flight.</value>
+  </data>
+  <data name="errProvideNameToSign" xml:space="preserve">
+    <value>You must provide your name to sign a flight.</value>
+  </data>
+  <data name="PromptSignature" xml:space="preserve">
+    <value>Signature</value>
+  </data>
+  <data name="PromptUseAC13543ForSIC" xml:space="preserve">
+    <value>Use SIC Endorsement from AC 135-43</value>
   </data>
 </root>

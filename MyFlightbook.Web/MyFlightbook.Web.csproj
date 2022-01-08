@@ -3109,10 +3109,6 @@
     <Content Include="Controls\App_LocalResources\mfbFooter.ascx.resx" />
     <Content Include="Controls\App_LocalResources\mfbImportAircraft.ascx.resx" />
     <Content Include="Controls\App_LocalResources\mfbSearchForm.ascx.resx" />
-    <Content Include="Controls\App_LocalResources\mfbSignFlight.ascx.fr.resx" />
-    <Content Include="Controls\App_LocalResources\mfbSignFlight.ascx.resx">
-      <SubType>Designer</SubType>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Logon\App_LocalResources\newuser.aspx.resx" />
