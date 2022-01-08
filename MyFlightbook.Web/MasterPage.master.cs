@@ -7,7 +7,7 @@ using System.Web.UI.HtmlControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2021 MyFlightbook LLC
+ * Copyright (c) 2007-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -194,6 +194,9 @@ namespace MyFlightbook.Web
                 // if "m=no" is passed in, override mobile detection and force classic view
                 if (util.GetStringParam(Request, "m") == "no")
                     SetMobile(false);
+
+                if (Request.Url.GetLeftPart(UriPartial.Path).Contains("/wp-includes"))
+                    throw new InvalidOperationException("Why are you probing me for wordpress, you jerks?");
 
                 bool fResetCookieAccept = util.GetIntParam(Request, "declinecookie", 0) != 0;
                 bool fCookiesAccepted = Request.Cookies[MFBConstants.keyCookiePrivacy] != null || (Page.User.Identity.IsAuthenticated && Profile.GetUser(Page.User.Identity.Name).GetPreferenceForKey<bool>(MFBConstants.keyCookiePrivacy));
