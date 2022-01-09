@@ -15,7 +15,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2021 MyFlightbook LLC
+ * Copyright (c) 2008-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -542,7 +542,7 @@ namespace MyFlightbook.Image
             string szPathFull = mfbii.PhysicalPathFull;
             if (mfbii.IsLocal)
             {
-                if (mfbii.ImageType == MFBImageInfo.ImageFileType.JPEG)
+                if (mfbii.ImageType == MFBImageInfoBase.ImageFileType.JPEG)
                     mfbii.Update(); // write the meta-data to both thumbnail & full file
 
                 FileInfo fi = new FileInfo(szPathFull);

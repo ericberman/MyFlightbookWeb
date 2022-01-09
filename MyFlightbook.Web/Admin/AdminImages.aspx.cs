@@ -10,7 +10,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2020 MyFlightbook LLC
+ * Copyright (c) 2015-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -25,42 +25,7 @@ namespace MyFlightbook.Web.Admin
         protected string m_szLinkTemplate { get; set; } = string.Empty;
 
         #region Properties
-        protected MFBImageInfo.ImageClass CurrentSource { get; set; }
-
-        /// <summary>
-        /// A dictionary of images to admin.
-        /// </summary>
-        Dictionary<string, MFBImageCollection> ImageDictionary
-        {
-            get
-            {
-                if (ViewState[szVSDBKey] != null)
-                    return (Dictionary<string, MFBImageCollection>)ViewState[szVSDBKey];
-                else
-                {
-                    Dictionary<string, MFBImageCollection> dict = MFBImageInfo.FromDB(CurrentSource);
-                    ViewState[szVSDBKey] = dict;
-                    return dict;
-                }
-            }
-        }
-
-        /// <summary>
-        /// A sorted list of the image keys, sorted numerically (if flight/aircraft), otherwise alphabetically.
-        /// </summary>
-        List<string> SortedKeys
-        {
-            get
-            {
-                List<string> lstKeys = ImageDictionary.Keys.ToList<string>();
-                if (CurrentSource == MFBImageInfo.ImageClass.Aircraft || CurrentSource == MFBImageInfo.ImageClass.Flight)
-                    lstKeys.Sort((sz1, sz2) => { return Convert.ToInt32(sz2, CultureInfo.InvariantCulture) - Convert.ToInt32(sz1, CultureInfo.InvariantCulture); });
-                else
-                    lstKeys.Sort();
-
-                return lstKeys;
-            }
-        }
+        protected MFBImageInfoBase.ImageClass CurrentSource { get; set; }
 
         protected int TotalImageRows
         {
@@ -176,21 +141,21 @@ namespace MyFlightbook.Web.Admin
 
             switch (CurrentSource)
             {
-                case MFBImageInfo.ImageClass.Flight:
+                case MFBImageInfoBase.ImageClass.Flight:
                     m_szLinkTemplate = "~/member/logbookNew.aspx/{0}?a=1";
                     break;
-                case MFBImageInfo.ImageClass.Aircraft:
+                case MFBImageInfoBase.ImageClass.Aircraft:
                     m_szLinkTemplate = "~/member/EditAircraft.aspx?a=1&id={0}";
                     break;
-                case MFBImageInfo.ImageClass.Endorsement:
-                case MFBImageInfo.ImageClass.OfflineEndorsement:
+                case MFBImageInfoBase.ImageClass.Endorsement:
+                case MFBImageInfoBase.ImageClass.OfflineEndorsement:
                     fNumericKeySort = false;
                     break;
-                case MFBImageInfo.ImageClass.BasicMed:
+                case MFBImageInfoBase.ImageClass.BasicMed:
                     break;
             }
 
-            szBase = MFBImageInfo.BasePathFromClass(CurrentSource);
+            szBase = MFBImageInfoBase.BasePathFromClass(CurrentSource);
 
             bool fIsSync = (util.GetIntParam(Request, "sync", 0) != 0);
             bool fIsS3Orphan = (util.GetIntParam(Request, "dels3orphan", 0) != 0);
@@ -221,21 +186,7 @@ namespace MyFlightbook.Web.Admin
                                 continue;
                             }
 
-                            DirKey dk = new DirKey
-                            {
-                                Key = di.Name
-                            };
-                            if (fNumericKeySort)
-                            {
-                                if (Int32.TryParse(dk.Key, out int num))
-                                    dk.SortID = num;
-                                else
-                                    dk.SortID = i;
-                            }
-                            else
-                                dk.SortID = i;
-
-                            i++;
+                            DirKey dk = new DirKey { Key = di.Name, SortID = fNumericKeySort && int.TryParse(di.Name, out int num) ? num : i };
 
                             lstDk.Add(dk);
                         }
@@ -509,26 +460,34 @@ namespace MyFlightbook.Web.Admin
         #region Image Migration to S3
         protected void btnMigrateImages_Click(object sender, EventArgs e)
         {
-            Int32 cBytesDone = 0;
-            Int32 cFilesDone = 0;
+            int cBytesDone = 0;
+            int cFilesDone = 0;
 
-            if (!Int32.TryParse(txtLimitMB.Text, out int cMBytesLimit))
+            if (!int.TryParse(txtLimitMB.Text, out int cMBytesLimit))
                 cMBytesLimit = 100;
 
-            Int32 cBytesLimit = cMBytesLimit * 1024 * 1024;
+            int cBytesLimit = cMBytesLimit * 1024 * 1024;
 
-            if (!Int32.TryParse(txtLimitFiles.Text, out int cFilesLimit))
+            if (!int.TryParse(txtLimitFiles.Text, out int cFilesLimit))
                 cFilesLimit = 100;
 
-            Dictionary<string, MFBImageCollection> images = ImageDictionary;
-            foreach (string szKey in SortedKeys)
+            Dictionary<string, MFBImageCollection> images = MFBImageInfo.FromDB(CurrentSource, true);
+
+            List<string> lstKeys = images.Keys.ToList();
+            if (CurrentSource == MFBImageInfoBase.ImageClass.Aircraft || CurrentSource == MFBImageInfoBase.ImageClass.Flight)
+                lstKeys.Sort((sz1, sz2) => { return Convert.ToInt32(sz2, CultureInfo.InvariantCulture) - Convert.ToInt32(sz1, CultureInfo.InvariantCulture); });
+            else
+                lstKeys.Sort();
+
+            // ImageDict
+            foreach (string szKey in lstKeys)
             {
                 if (cBytesDone > cBytesLimit || cFilesDone >= cFilesLimit)
                     break;
                 AWSImageManagerAdmin im = new AWSImageManagerAdmin();
                 foreach (MFBImageInfo mfbii in images[szKey])
                 {
-                    Int32 cBytes = im.ADMINMigrateToS3(mfbii);
+                    int cBytes = im.ADMINMigrateToS3(mfbii);
                     if (cBytes >= 0)  // migration occured
                     {
                         cBytesDone += cBytes;

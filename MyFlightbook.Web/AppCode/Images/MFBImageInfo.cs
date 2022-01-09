@@ -20,7 +20,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2021 MyFlightbook LLC
+ * Copyright (c) 2008-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1098,7 +1098,7 @@ namespace MyFlightbook.Image
         /// <param name="ic">The image class</param>
         /// <param name="lstKeys">The sorted list of keys</param>
         /// <returns>Matching results.  Index by key, each key returns a list of images</returns>
-        static public Dictionary<string, MFBImageCollection> FromDB(MFBImageInfo.ImageClass ic, int offset, int count, out List<string> lstKeys)
+        static public Dictionary<string, MFBImageCollection> FromDB(MFBImageInfoBase.ImageClass ic, int offset, int count, out List<string> lstKeys)
         {
             if (offset < 0 || count <= 0)
             {
@@ -1154,10 +1154,11 @@ namespace MyFlightbook.Image
         /// Returns a dictionary of image lists from the DB matching the specified class; dictioanry key = image key.  This returns ALL images in the class
         /// </summary>
         /// <param name="ic">The image class</param>
+        /// <param name="fLocalOnly">True to restrict to local images.</param>
         /// <returns>Matching results.  Index by key, each key returns a list of images</returns>
-        static public Dictionary<string, MFBImageCollection> FromDB(MFBImageInfo.ImageClass ic)
+        static public Dictionary<string, MFBImageCollection> FromDB(ImageClass ic, bool fLocalOnly = false)
         {
-            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "SELECT * FROM images WHERE virtPathID={0}", (int)ic));
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "SELECT * FROM images WHERE virtPathID={0} {1}", (int)ic, fLocalOnly ? "AND IsLocal <> 0" : string.Empty));
 
             Dictionary<string, MFBImageCollection> dictResults = new Dictionary<string, MFBImageCollection>();
 
@@ -1715,7 +1716,7 @@ namespace MyFlightbook.Image
                 return;
 
             // Trust image/ content type over filename; otherwise, use filename.
-            if ((this.ImageType = ImageTypeFromFile(myFile)) == ImageFileType.Unknown)
+            if ((ImageType = ImageTypeFromFile(myFile)) == ImageFileType.Unknown)
                 return;
 
             Comment = szComment.LimitTo(254);
@@ -1725,7 +1726,7 @@ namespace MyFlightbook.Image
             if (!di.Exists)
                 di.Create();
 
-            switch (this.ImageType)
+            switch (ImageType)
             {
                 case ImageFileType.S3VideoMP4:
                     InitFileS3Mp4(myFile);
