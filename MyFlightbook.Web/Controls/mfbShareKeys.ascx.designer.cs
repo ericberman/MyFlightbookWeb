@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MyFlightbook.Web.Controls
+namespace MyFlightbook.Web.Sharing
 {
 
 

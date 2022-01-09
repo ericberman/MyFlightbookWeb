@@ -7,14 +7,14 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2020 MyFlightbook LLC
+ * Copyright (c) 2020-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
-namespace MyFlightbook.Web.Controls
+namespace MyFlightbook.Web.Sharing
 {
-    public partial class mfbShareKeys : System.Web.UI.UserControl
+    public partial class mfbShareKeys : UserControl
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -91,7 +91,7 @@ namespace MyFlightbook.Web.Controls
             ShareKey sk = ShareKey.ShareKeyWithID(e.Keys[0].ToString());
             if (sk == null)
                 throw new InvalidOperationException("Unknown key: " + e.Keys[0].ToString());
-            sk.Name = e.NewValues["Name"].ToString();
+            sk.Name = (string) e.NewValues["Name"] ?? String.Empty;
             sk.CanViewCurrency = (bool)e.NewValues["CanViewCurrency"];
             sk.CanViewTotals = (bool)e.NewValues["CanViewTotals"];
             sk.CanViewFlights = (bool)e.NewValues["CanViewFlights"];

@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="mfbShareKeys.ascx.cs" Inherits="MyFlightbook.Web.Controls.mfbShareKeys" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="mfbShareKeys.ascx.cs" Inherits="MyFlightbook.Web.Sharing.mfbShareKeys" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <div>
     <asp:TextBox ID="txtShareLinkName" runat="server"></asp:TextBox>

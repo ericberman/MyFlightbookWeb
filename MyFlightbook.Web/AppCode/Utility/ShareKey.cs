@@ -5,7 +5,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2020 MyFlightbook LLC
+ * Copyright (c) 2020-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -139,10 +139,7 @@ namespace MyFlightbook.Web.Sharing
             Name = util.ReadNullableString(dr, "name");
             privFlags = Convert.ToUInt32(dr["privileges"], CultureInfo.InvariantCulture);
             object o = dr["lastaccess"];
-            if (o == null || o == System.DBNull.Value || o.ToString().Length == 0)
-                LastAccess = null;
-            else
-                LastAccess = Convert.ToDateTime(o, CultureInfo.InvariantCulture);
+            LastAccess = o == null || o == DBNull.Value || o.ToString().Length == 0 ? null : (DateTime?)Convert.ToDateTime(o, CultureInfo.InvariantCulture);
         }
         #endregion
 
