@@ -8,7 +8,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2021 MyFlightbook LLC
+ * Copyright (c) 2007-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1053,20 +1053,14 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
             if (!String.IsNullOrWhiteSpace(TextRestriction))
             {
                 string szUpper = TextRestriction.ToUpper(CultureInfo.CurrentCulture);
-                bool fFound = false;
                 if (cfr.Comments.ToUpper(CultureInfo.CurrentCulture).Contains(szUpper))
-                    fFound = true;
-                if (!fFound)
-                {
-                    foreach (CustomFlightProperty cfp in cfr.FlightProps)
-                        if (cfp.PropertyType.Type == CFPPropertyType.cfpString && cfp.TextValue.ToUpper(CultureInfo.CurrentCulture).Contains(szUpper))
-                        {
-                            fFound = true;
-                            break;
-                        }
-                }
-                if (!fFound)
-                    return false;
+                    return true;
+                if (cfr.PrivateAircraftNotes.ToUpper(CultureInfo.CurrentCulture).Contains(szUpper))
+                    return true;
+                foreach (CustomFlightProperty cfp in cfr.FlightProps)
+                    if (cfp.PropertyType.Type == CFPPropertyType.cfpString && cfp.TextValue.ToUpper(CultureInfo.CurrentCulture).Contains(szUpper))
+                        return true;
+                return false;
             }
             if (!String.IsNullOrWhiteSpace(AirportRestriction))
             {

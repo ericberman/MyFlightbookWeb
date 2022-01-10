@@ -9,7 +9,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2021 MyFlightbook LLC
+ * Copyright (c) 2007-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -477,6 +477,8 @@ namespace MyFlightbook.Currency
         public DateTime dtFlightStart { get; set; }
         public DateTime dtFlightEnd { get; set; }
 
+        public string PrivateAircraftNotes { get; set; }
+
         private readonly static DateTime s_Aug2018Cutover = new DateTime(2018, 8, 27);
         private readonly static DateTime s_Nov2018Cutover = new DateTime(2018, 11, 26);
 
@@ -544,6 +546,7 @@ namespace MyFlightbook.Currency
             fIsSingleEngine = (String.Compare(szCatClassBase, "ASEL", StringComparison.OrdinalIgnoreCase) == 0 || String.Compare(szCatClassBase, "ASES", StringComparison.OrdinalIgnoreCase) == 0) && fIsCertifiedIFR && fIsCertifiedLanding;
             fIsR22 = Convert.ToBoolean(dr["IsR22"], CultureInfo.InvariantCulture);
             fIsR44 = Convert.ToBoolean(dr["IsR44"], CultureInfo.InvariantCulture);
+            PrivateAircraftNotes = util.ReadNullableString(dr, "PrivateNotes");
             dtEngineStart = DateTime.SpecifyKind(Convert.ToDateTime(util.ReadNullableField(dr, "dtEngineStart", DateTime.MinValue), CultureInfo.InvariantCulture), DateTimeKind.Utc);
             dtEngineEnd = DateTime.SpecifyKind(Convert.ToDateTime(util.ReadNullableField(dr, "dtEngineEnd", DateTime.MinValue), CultureInfo.InvariantCulture), DateTimeKind.Utc);
             dtFlightStart = DateTime.SpecifyKind(Convert.ToDateTime(util.ReadNullableField(dr, "dtFlightStart", DateTime.MinValue), CultureInfo.InvariantCulture), DateTimeKind.Utc);
