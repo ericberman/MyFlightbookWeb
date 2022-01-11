@@ -11,7 +11,6 @@ namespace JouniHeikniemi.Tools.Text
     public sealed class CSVReader : IDisposable
     {
         #region Private variables
-        private readonly Stream stream;
         private readonly StreamReader reader;
         private bool fNoReadahead;  // suppresses read-ahead (for multi-line).
         private const string KnownCSVSeparators = ", ; \t"; // space separates them
@@ -74,7 +73,8 @@ namespace JouniHeikniemi.Tools.Text
         /// <param name="enc">The encoding used.</param>
         public CSVReader(Stream s, Encoding enc)
         {
-            this.stream = s ?? throw new ArgumentNullException(nameof(s));
+            if (s == null)
+                throw new ArgumentNullException(nameof(s));
             if (!s.CanRead)
             {
                 throw new CSVReaderException("Could not read the given CSV stream!");
@@ -221,8 +221,6 @@ namespace JouniHeikniemi.Tools.Text
             // Closing the reader closes the underlying stream, too
             if (reader != null) 
                 reader.Dispose();
-            else if (stream != null)
-                stream.Close(); // In case we failed before the reader was constructed.  Stream should be disposed by owner, but we can at least make sure it is closed.
             GC.SuppressFinalize(this);
         }
     }

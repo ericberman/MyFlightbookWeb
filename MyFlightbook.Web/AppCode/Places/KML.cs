@@ -14,7 +14,7 @@ using System.Xml.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2021 MyFlightbook LLC
+ * Copyright (c) 2010-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -23,7 +23,6 @@ namespace MyFlightbook.Telemetry
 {
     public class KMLWriter : IDisposable
     {
-        Stream ms;
         XmlWriter kml;
 
         #region IDisposable Implementation
@@ -38,7 +37,6 @@ namespace MyFlightbook.Telemetry
                     if (kml != null)
                         kml.Dispose();
 
-                    ms = null;
                     kml = null;
                 }
 
@@ -60,14 +58,13 @@ namespace MyFlightbook.Telemetry
 
         public KMLWriter(Stream outputStream)
         {
-            ms = outputStream;
             XmlWriterSettings xmlWriterSettings = new XmlWriterSettings()
             {
                 Encoding = new UTF8Encoding(false),
                 ConformanceLevel = ConformanceLevel.Document,
                 Indent = true
             };
-            kml = XmlWriter.Create(ms, xmlWriterSettings);
+            kml = XmlWriter.Create(outputStream, xmlWriterSettings);
         }
 
         public void BeginKML()
