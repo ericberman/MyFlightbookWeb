@@ -24,7 +24,7 @@ namespace MyFlightbook.Currency
     /// <summary>
     /// Bitflags for various currency options which can be selected by the user.
     /// </summary>
-    [FlagsAttribute]
+    [Flags]
     public enum CurrencyOptionFlags
     {
         flagPerModelCurrency = 0x0001,
@@ -1448,18 +1448,14 @@ namespace MyFlightbook.Currency
             foreach (CustomCurrency cc in ccc.rgCustomCurrency)
             {
                 cc.Finalize(ccc.totalTime, ccc.picTime);
-                if (cc.HasBeenCurrent && (!cc.ExpirationDate.HasValue() || cc.ExpirationDate.CompareTo(dtCutoff) > 0))
-                    arcs.Add(new CurrencyStatusItem(cc.DisplayName, cc.StatusDisplay, cc.CurrentState, cc.DiscrepancyString) { Query = cc.Query, CurrencyGroup = CurrencyStatusItem.CurrencyGroups.CustomCurrency });
+                AddIfCurrent(arcs, cc, dtCutoff, new CurrencyStatusItem(cc.DisplayName, cc.StatusDisplay, cc.CurrentState, cc.DiscrepancyString) { Query = cc.Query, CurrencyGroup = CurrencyStatusItem.CurrencyGroups.CustomCurrency });
             }
         }
 
         private static void AddSFAR73Currencies(IList<CurrencyStatusItem> arcs, ComputeCurrencyContext ccc, DateTime dtCutoff)
         {
             foreach (FlightCurrency fc in ccc.sFAR73Currencies)
-            {
-                if (fc.HasBeenCurrent & (fc.ExpirationDate.HasValue() || fc.ExpirationDate.CompareTo(dtCutoff) > 0))
-                    arcs.Add(new CurrencyStatusItem(fc.DisplayName, fc.StatusDisplay, fc.CurrentState, fc.DiscrepancyString) { CurrencyGroup = CurrencyStatusItem.CurrencyGroups.FlightReview });
-            }
+                AddIfCurrent(arcs, fc, dtCutoff, new CurrencyStatusItem(fc.DisplayName, fc.StatusDisplay, fc.CurrentState, fc.DiscrepancyString) { CurrencyGroup = CurrencyStatusItem.CurrencyGroups.FlightReview });
         }
 
         private static void AddIfCurrent(IList<CurrencyStatusItem> lst, ICurrencyExaminer fc, DateTime dtCutoff, CurrencyStatusItem csi = null, CurrencyStatusItem.CurrencyGroups defaultGroup = CurrencyStatusItem.CurrencyGroups.None)
