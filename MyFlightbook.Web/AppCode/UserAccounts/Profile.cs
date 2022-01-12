@@ -1482,7 +1482,7 @@ namespace MyFlightbook
         public IEnumerable<string> AlternateEmailsForUser()
         {
             HashSet<string> hs = verifiedEmailsAsSet;
-            hs.Remove(Email);   // don't include the primary email address
+            hs.RemoveWhere(sz => sz.CompareOrdinalIgnoreCase(Email) == 0);
             return hs;
         }
 
@@ -1502,13 +1502,13 @@ namespace MyFlightbook
                 throw new ArgumentNullException(nameof(szEmail));
 
             HashSet<string> hs = verifiedEmailsAsSet;
-            hs.Remove(szEmail);
+            hs.RemoveWhere(sz => sz.CompareOrdinalIgnoreCase(szEmail) == 0);
             SetPreferenceForKey(prefVerifiedEmails, hs, hs.Count == 0);
         }
 
         public bool IsVerifiedEmail(string szEmail)
         {
-            return !String.IsNullOrWhiteSpace(szEmail) && verifiedEmailsAsSet.Contains(szEmail);
+            return !String.IsNullOrWhiteSpace(szEmail) && verifiedEmailsAsSet.FirstOrDefault(sz => sz.CompareOrdinalIgnoreCase(szEmail) == 0) != null;
         }
 
         public void SendVerificationEmail(string szEmail, string szTargetFormatString)
