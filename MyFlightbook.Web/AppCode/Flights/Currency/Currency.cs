@@ -1448,7 +1448,8 @@ namespace MyFlightbook.Currency
             foreach (CustomCurrency cc in ccc.rgCustomCurrency)
             {
                 cc.Finalize(ccc.totalTime, ccc.picTime);
-                AddIfCurrent(arcs, cc, dtCutoff, new CurrencyStatusItem(cc.DisplayName, cc.StatusDisplay, cc.CurrentState, cc.DiscrepancyString) { Query = cc.Query, CurrencyGroup = CurrencyStatusItem.CurrencyGroups.CustomCurrency });
+                if (cc.HasBeenCurrent && (!cc.ExpirationDate.HasValue() || cc.ExpirationDate.CompareTo(dtCutoff) > 0)) 
+                    arcs.Add(new CurrencyStatusItem(cc.DisplayName, cc.StatusDisplay, cc.CurrentState, cc.DiscrepancyString) { Query = cc.Query, CurrencyGroup = CurrencyStatusItem.CurrencyGroups.CustomCurrency });
             }
         }
 
