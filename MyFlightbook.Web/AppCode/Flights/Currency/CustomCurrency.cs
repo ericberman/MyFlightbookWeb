@@ -576,6 +576,7 @@ namespace MyFlightbook.Currency
                 return (DutyPeriodExaminer)AdditionalState[szStateKeyDutyPeriodExaminer];
             }
         }
+
         #endregion
 
         static public IEnumerable<CustomCurrency> CustomCurrenciesForUser(string szUser)
@@ -1055,11 +1056,12 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                 string szUpper = TextRestriction.ToUpper(CultureInfo.CurrentCulture);
                 if (cfr.Comments.ToUpper(CultureInfo.CurrentCulture).Contains(szUpper))
                     return true;
-                if (cfr.PrivateAircraftNotes.ToUpper(CultureInfo.CurrentCulture).Contains(szUpper))
-                    return true;
                 foreach (CustomFlightProperty cfp in cfr.FlightProps)
                     if (cfp.PropertyType.Type == CFPPropertyType.cfpString && cfp.TextValue.ToUpper(CultureInfo.CurrentCulture).Contains(szUpper))
                         return true;
+                Aircraft ac = new UserAircraft(UserName).GetUserAircraftByID(cfr.idAircraft);
+                if (ac != null && ac.PrivateNotes.ToUpper(CultureInfo.CurrentCulture).Contains(szUpper))
+                    return true;
                 return false;
             }
             if (!String.IsNullOrWhiteSpace(AirportRestriction))
