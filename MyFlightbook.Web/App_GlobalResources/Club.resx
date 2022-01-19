@@ -355,7 +355,7 @@ Sender Email: {1}</value>
     <value>Delete this club</value>
   </data>
   <data name="WatermarkInviteMember" xml:space="preserve">
-    <value>E-mail adress</value>
+    <value>E-mail address</value>
   </data>
   <data name="CreateClubRestriction" xml:space="preserve">
     <value>Membership in clubs is available to any %APP_NAME% user at no charge.  Creation of clubs is a premium feature available for pilots who have contributed {0:C} or more to support %APP_NAME%.</value>
@@ -763,5 +763,11 @@ Sender Email: {1}</value>
   </data>
   <data name="ReportHeaderInstruction" xml:space="preserve">
     <value>Instruction?</value>
+  </data>
+  <data name="ReportHeaderFuelRemaining" xml:space="preserve">
+    <value>Fuel Remaining</value>
+  </data>
+  <data name="ReportHeaderOilAdded2ndEngine" xml:space="preserve">
+    <value>Oil Added (Eng #2)</value>
   </data>
 </root>

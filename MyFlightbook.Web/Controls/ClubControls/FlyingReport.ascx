@@ -61,8 +61,10 @@ ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" >
             </asp:TemplateField>
             <asp:BoundField DataField="Total Engine" HeaderText="<%$ Resources:Club, ReportHeaderTotalEngine %>" DataFormatString="{0:0.0#}" HeaderStyle-CssClass="PaddedCell" ItemStyle-CssClass="PaddedCell" />
             <asp:BoundField DataField="Oil Added" HeaderText="<%$ Resources:Club, ReportHeaderOilAdded %>" DataFormatString="{0:0.0#}" HeaderStyle-CssClass="PaddedCell" ItemStyle-CssClass="PaddedCell" />
+            <asp:BoundField DataField="Oil Added 2nd" HeaderText="<%$ Resources:Club, ReportHeaderOilAdded2ndEngine %>" DataFormatString="{0:0.0#}" HeaderStyle-CssClass="PaddedCell" ItemStyle-CssClass="PaddedCell" />
             <asp:BoundField DataField="Oil Level" HeaderText="<%$ Resources:Club, ReportHeaderOilLevel %>" DataFormatString="{0:0.0#}" HeaderStyle-CssClass="PaddedCell" ItemStyle-CssClass="PaddedCell" />
             <asp:BoundField DataField="Fuel Added" HeaderText="<%$ Resources:Club, ReportHeaderFuelAdded %>" DataFormatString="{0:0.0#}" HeaderStyle-CssClass="PaddedCell" ItemStyle-CssClass="PaddedCell" />
+            <asp:BoundField DataField="Fuel Remaining" HeaderText="<%$ Resources:Club, ReportHeaderFuelRemaining %>" DataFormatString="{0:0.0#}" HeaderStyle-CssClass="PaddedCell" ItemStyle-CssClass="PaddedCell" />
             <asp:BoundField DataField="Fuel Cost" HeaderText="<%$ Resources:Club, ReportHeaderFuelCost %>" DataFormatString="{0:C}" HeaderStyle-CssClass="PaddedCell" ItemStyle-CssClass="PaddedCell" />
         </Columns>
         <EmptyDataTemplate>

@@ -1515,6 +1515,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///    Looks up a localized string similar to Fuel Remaining.
+        /// </summary>
+        internal static string ReportHeaderFuelRemaining {
+            get {
+                return ResourceManager.GetString("ReportHeaderFuelRemaining", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///    Looks up a localized string similar to Hobbs End.
         /// </summary>
         internal static string ReportHeaderHobbsEnd {
@@ -1646,6 +1655,15 @@ namespace Resources {
         internal static string ReportHeaderOilAdded {
             get {
                 return ResourceManager.GetString("ReportHeaderOilAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Oil Added (Eng #2).
+        /// </summary>
+        internal static string ReportHeaderOilAdded2ndEngine {
+            get {
+                return ResourceManager.GetString("ReportHeaderOilAdded2ndEngine", resourceCulture);
             }
         }
         
@@ -2010,7 +2028,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to E-mail adress.
+        ///    Looks up a localized string similar to E-mail address.
         /// </summary>
         internal static string WatermarkInviteMember {
             get {

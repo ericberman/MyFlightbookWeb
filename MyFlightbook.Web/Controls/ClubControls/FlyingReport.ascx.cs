@@ -108,6 +108,8 @@ fp3.decValue AS 'Oil Added',
 fp4.decValue AS 'Fuel Added',
 fp5.decValue AS 'Fuel Cost',
 fp6.decValue AS 'Oil Level',
+fp7.decValue AS 'Oil Added 2nd',
+fp8.decValue AS 'Fuel Remaining',
 IF(f.dualReceived > 0 OR f.cfi > 0, 'Yes', '') AS IsInstruction
 FROM flights f 
 INNER JOIN clubmembers cm ON f.username = cm.username
@@ -121,6 +123,8 @@ LEFT JOIN flightproperties fp3 on (fp3.idflight=f.idflight AND fp3.idproptype=36
 LEFT JOIN flightproperties fp4 on (fp4.idflight=f.idflight AND fp4.idproptype=94)
 LEFT JOIN flightproperties fp5 on (fp5.idflight=f.idflight AND fp5.idproptype=159)
 LEFT JOIN flightproperties fp6 on (fp6.idflight=f.idflight AND fp6.idproptype=650)
+LEFT JOIN flightproperties fp7 on (fp7.idflight=f.idflight AND fp7.idproptype=418)
+LEFT JOIN flightproperties fp8 on (fp8.idflight=f.idflight AND fp8.idproptype=72)
 WHERE
 c.idClub = ?idClub AND
 f.date >= GREATEST(?startDate, cm.joindate, c.creationDate) AND
