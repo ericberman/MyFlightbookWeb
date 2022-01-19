@@ -196,7 +196,7 @@ namespace MyFlightbook.Web
                     SetMobile(false);
 
                 if (Request.Url.GetLeftPart(UriPartial.Path).Contains("/wp-includes"))
-                    throw new InvalidOperationException("Why are you probing me for wordpress, you jerks?");
+                    throw new System.Web.HttpException(404, "Why are you probing me for wordpress, you jerks?");
 
                 bool fResetCookieAccept = util.GetIntParam(Request, "declinecookie", 0) != 0;
                 bool fCookiesAccepted = Request.Cookies[MFBConstants.keyCookiePrivacy] != null || (Page.User.Identity.IsAuthenticated && Profile.GetUser(Page.User.Identity.Name).GetPreferenceForKey<bool>(MFBConstants.keyCookiePrivacy));
