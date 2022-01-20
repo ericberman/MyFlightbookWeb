@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Services;
 using System.Web.UI;
@@ -9,7 +10,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2021 MyFlightbook LLC
+ * Copyright (c) 2009-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -289,11 +290,20 @@ namespace MyFlightbook.Web.Admin
             }
         }
 
-        protected void btnOrphans_Click(object sender, EventArgs e)
+        protected async Task<bool> RefreshOrphans()
         {
-            mvAircraftIssues.SetActiveView(vwOrphans);
-            gvOrphanedAircraft.DataSourceID = sqlOrphanedAircraft.ID;
-            gvOrphanedAircraft.DataBind();
+            await Task.Run(() =>
+            {
+                mvAircraftIssues.SetActiveView(vwOrphans);
+                gvOrphanedAircraft.DataSourceID = sqlOrphanedAircraft.ID;
+                gvOrphanedAircraft.DataBind();
+            });
+            return true;
+        }
+
+        protected async void btnOrphans_Click(object sender, EventArgs e)
+        {
+            await RefreshOrphans();
         }
 
         protected void gvOrphanedAircraft_RowCommand(object sender, CommandEventArgs e)
@@ -303,12 +313,14 @@ namespace MyFlightbook.Web.Admin
             btnOrphans_Click(sender, e);
         }
 
-        protected void btnDeleteAllOrphans_Click(object sender, EventArgs e)
+        protected async void btnDeleteAllOrphans_Click(object sender, EventArgs e)
         {
-            foreach (DataKey dk in gvOrphanedAircraft.DataKeys)
-                AircraftUtility.DeleteOrphanAircraft(Convert.ToInt32(dk.Value, CultureInfo.InvariantCulture));
-
-            btnOrphans_Click(sender, e);
+            await Task.Run(() =>
+            {
+                foreach (DataKey dk in gvOrphanedAircraft.DataKeys)
+                    AircraftUtility.DeleteOrphanAircraft(Convert.ToInt32(dk.Value, CultureInfo.InvariantCulture));
+            });
+            await RefreshOrphans();
         }
 
         protected void gvDupeAircraft_RowCommand(object sender, CommandEventArgs e)

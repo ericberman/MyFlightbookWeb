@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master" Title="Admin - Aircraft" CodeBehind="AdminAircraft.aspx.cs" Inherits="MyFlightbook.Web.Admin.AdminAircraft" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master" Async="true" Title="Admin - Aircraft" CodeBehind="AdminAircraft.aspx.cs" Inherits="MyFlightbook.Web.Admin.AdminAircraft" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc1" TagName="mfbTooltip" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
