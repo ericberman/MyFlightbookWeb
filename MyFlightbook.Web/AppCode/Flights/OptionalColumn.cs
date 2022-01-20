@@ -4,7 +4,7 @@ using System.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2021 MyFlightbook LLC
+ * Copyright (c) 2008-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -236,6 +236,30 @@ namespace MyFlightbook
             }
 
             return true;
+        }
+
+        public CategoryClass.CatClassID AssociatedCategoryClass
+        {
+            get
+            {
+                switch (ColumnType)
+                {
+                    case OptionalColumnType.AMEL:
+                        return CategoryClass.CatClassID.AMEL;
+                    case OptionalColumnType.AMES:
+                        return CategoryClass.CatClassID.AMES;
+                    case OptionalColumnType.ASEL:
+                        return CategoryClass.CatClassID.ASEL;
+                    case OptionalColumnType.ASES:
+                        return CategoryClass.CatClassID.ASES;
+                    case OptionalColumnType.Glider:
+                        return CategoryClass.CatClassID.Glider;
+                    case OptionalColumnType.Helicopter:
+                        return CategoryClass.CatClassID.Helicopter;
+                    default:
+                        throw new InvalidOperationException("Optional column type does not correspond to a category class");
+                }
+            }
         }
     }
 }

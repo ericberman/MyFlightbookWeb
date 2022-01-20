@@ -101,7 +101,14 @@
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).Approaches.ToString(System.Globalization.CultureInfo.CurrentCulture) %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).NetDayLandings %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).NetNightLandings %></td>
-                            <td colspan="<% = 3 + OptionalColumn.CatClassColumnCount(OptionalColumns) %>"><%# ((LogbookEntryDisplay) Container.DataItem).TotalFlightTime.FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                            <!-- <td colspan="<% = 3 + OptionalColumn.CatClassColumnCount(OptionalColumns) %>"><%# ((LogbookEntryDisplay) Container.DataItem).TotalFlightTime.FormatDecimal(CurrentUser.UsesHHMM) %></td> -->
+                            <td><%# ((LogbookEntryDisplay) Container.DataItem).TotalForCategoryClass(CategoryClass.CatClassID.ASEL).FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                            <td><%# ((LogbookEntryDisplay) Container.DataItem).TotalForCategoryClass(CategoryClass.CatClassID.AMEL).FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                            <td runat="server" id="tdOptColumnCatClass1" visible="<%# OptionalColumn.ShowOptionalColumn(OptionalColumns, 0, OptionalColumn.OptionalColumnRestriction.CatClassOnly) %>"><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnCatClassTotal(0).FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                            <td runat="server" id="tdOptColumnCatClass2" visible="<%# OptionalColumn.ShowOptionalColumn(OptionalColumns, 1, OptionalColumn.OptionalColumnRestriction.CatClassOnly) %>"><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnCatClassTotal(1).FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                            <td runat="server" id="tdOptColumnCatClass3" visible="<%# OptionalColumn.ShowOptionalColumn(OptionalColumns, 2, OptionalColumn.OptionalColumnRestriction.CatClassOnly) %>"><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnCatClassTotal(2).FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                            <td runat="server" id="tdOptColumnCatClass4" visible="<%# OptionalColumn.ShowOptionalColumn(OptionalColumns, 3, OptionalColumn.OptionalColumnRestriction.CatClassOnly) %>"><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnCatClassTotal(3).FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                            <td><%# ((LogbookEntryDisplay) Container.DataItem).TotalExceptForCategoryClasses(EnumeratedCategoryClasses).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).Nighttime.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).IMC.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).SimulatedIFR.FormatDecimal(CurrentUser.UsesHHMM) %></td>

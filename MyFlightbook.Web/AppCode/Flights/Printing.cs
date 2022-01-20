@@ -12,7 +12,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2021 MyFlightbook LLC
+ * Copyright (c) 2008-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -972,9 +972,11 @@ namespace MyFlightbook.Printing
                     foreach (string szKeySrc in dictRunningTotals.Keys)
                     {
                         LogbookEntryDisplay ledRunningNew = JsonConvert.DeserializeObject<LogbookEntryDisplay>(JsonConvert.SerializeObject(dictRunningTotals[szKeySrc]));
+                        ledRunningNew.InitializeCatClassTotalsFrom(dictRunningTotals[szKeySrc]);    // the catclass totals are NOT exposed (not serialized), so initialize them.
                         ledRunningNew.RowType = LogbookEntryDisplay.LogbookRowType.PreviousTotal;
                         dictPreviousTotals[szKeySrc] = ledRunningNew;
                         ledRunningNew = JsonConvert.DeserializeObject<LogbookEntryDisplay>(JsonConvert.SerializeObject(dictRunningTotals[szKeySrc]));
+                        ledRunningNew.InitializeCatClassTotalsFrom(dictRunningTotals[szKeySrc]);
                         ledRunningNew.RowType = LogbookEntryDisplay.LogbookRowType.RunningTotal;
                         dictNewRunningTotals[szKeySrc] = ledRunningNew;
                     }

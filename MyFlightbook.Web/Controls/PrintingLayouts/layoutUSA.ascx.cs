@@ -1,12 +1,10 @@
-﻿using MyFlightbook;
-using MyFlightbook.Printing;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2021 MyFlightbook LLC
+ * Copyright (c) 2016-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -16,6 +14,25 @@ namespace MyFlightbook.Printing.Layouts
     public partial class LayoutUSA : PrintLayoutBase
     {
         #region IPrintingTemplate
+        private HashSet<int> m_CategoryClasses = null;
+
+        protected IEnumerable<int> EnumeratedCategoryClasses
+        {
+            get
+            {
+                if (m_CategoryClasses == null)
+                {
+                    m_CategoryClasses = new HashSet<int>() { (int)CategoryClass.CatClassID.ASEL, (int)CategoryClass.CatClassID.AMEL };
+                    if (Options != null && Options.OptionalColumns != null)
+                    {
+                        foreach (OptionalColumn column in Options.OptionalColumns)
+                            m_CategoryClasses.Add((int)column.AssociatedCategoryClass);
+                    }
+                }
+                return m_CategoryClasses;
+            }
+        }
+
         public override void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, PrintingOptions options, bool showFooter = true)
         {
             base.BindPages(lst, user, options, showFooter);

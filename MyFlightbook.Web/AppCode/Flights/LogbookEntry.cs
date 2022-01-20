@@ -3400,6 +3400,98 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
             XCNightSICTotal = XCNightSICTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, Math.Min(le.CrossCountry, le.SIC)) : led.XCNightSICTotal);
         }
 
+        #region support for USA print layout or other potential layouts with vertical category/class columns.
+        private Dictionary<int, decimal> dictCatClassTotals = null;
+
+        /// <summary>
+        /// Initializes the dictionary of cat/class totals from another object (useful for running totals).
+        /// </summary>
+        /// <param name="led"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public void InitializeCatClassTotalsFrom(LogbookEntryDisplay led)
+        {
+            if (led == null)
+                throw new ArgumentNullException(nameof(led));
+
+            dictCatClassTotals = new Dictionary<int, decimal>(led.dictCatClassTotals);
+        }
+
+        private void AddCatClassTotal(LogbookEntryDisplay led)
+        {
+            if (led == null)
+                throw new ArgumentNullException(nameof(led));
+
+            if (dictCatClassTotals == null)
+                dictCatClassTotals = new Dictionary<int, decimal>();
+            dictCatClassTotals[led.EffectiveCatClass] = dictCatClassTotals.ContainsKey(led.EffectiveCatClass)
+                ? dictCatClassTotals[led.EffectiveCatClass].AddMinutes(led.TotalFlightTime)
+                : led.TotalFlightTime;
+        }
+
+        private void AddCatClassTotalsFrom(LogbookEntryDisplay led)
+        {
+            if (led == null)
+                throw new ArgumentNullException(nameof(led));
+
+            if (led.dictCatClassTotals == null)
+                return;
+
+            if (dictCatClassTotals == null)
+                dictCatClassTotals = new Dictionary<int, decimal>();
+
+            foreach (int idcatclass in led.dictCatClassTotals.Keys)
+                dictCatClassTotals[idcatclass] = dictCatClassTotals.ContainsKey(idcatclass)
+                    ? dictCatClassTotals[idcatclass].AddMinutes(led.dictCatClassTotals[idcatclass])
+                    : led.dictCatClassTotals[idcatclass];
+        }
+
+        /// <summary>
+        /// Gets the total for the specified category/classes (as integers).  Useful for totalling "other"
+        /// </summary>
+        /// <param name="rgCats">An enumerable of category classes</param>
+        /// <returns></returns>
+        private decimal TotalForCategoryClasses(IEnumerable<int> rgCats)
+        {
+            if (rgCats == null || !rgCats.Any() || dictCatClassTotals == null)
+                return 0;
+            decimal total = 0;
+            foreach (int idcatclass in rgCats)
+                if (dictCatClassTotals.ContainsKey(idcatclass))
+                    total += dictCatClassTotals[idcatclass];
+            return total;
+        }
+
+        /// <summary>
+        /// Gets the total for a single specific category/class.
+        /// </summary>
+        /// <param name="ccid"></param>
+        /// <returns></returns>
+        public decimal TotalForCategoryClass(CategoryClass.CatClassID ccid)
+        {
+            return dictCatClassTotals != null && dictCatClassTotals.ContainsKey((int) ccid) ? dictCatClassTotals[(int) ccid] : 0;
+        }
+
+        /// <summary>
+        /// Returns the totals for all BUT the specified category/classes (as ints). 
+        /// </summary>
+        /// <param name="rgCats"></param>
+        /// <returns></returns>
+        public decimal TotalExceptForCategoryClasses(IEnumerable<int> rgCats)
+        {
+            return TotalFlightTime.AddMinutes(- TotalForCategoryClasses(rgCats));
+        }
+
+        public decimal OptionalColumnCatClassTotal(int columnIndex)
+        {
+            if (OptionalColumns == null || columnIndex < 0 || columnIndex >= OptionalColumns.Count || dictCatClassTotals == null)
+                return 0;
+
+            OptionalColumn column = OptionalColumns[columnIndex];
+            int idCatClass = (int)column.AssociatedCategoryClass;
+            return dictCatClassTotals.ContainsKey(idCatClass) ? dictCatClassTotals[idCatClass] : 0;
+        }
+        #endregion
+
         public override void AddFrom(LogbookEntry le)
         {
             if (le == null)
@@ -3425,6 +3517,8 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                     LandingsTotal += led.Landings;
                     DayTakeoffTotal += led.DayTakeoffs;
                     NightTakeoffTotal += led.NightTakeoffs;
+
+                    AddCatClassTotal(led);
                 }
                 else
                 {
@@ -3443,6 +3537,8 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                     LandingsTotal += led.LandingsTotal;
                     DayTakeoffTotal += led.DayTakeoffTotal;
                     NightTakeoffTotal += led.NightTakeoffTotal;
+
+                    AddCatClassTotalsFrom(led);
                 }
 
                 if (OptionalColumns != null)
