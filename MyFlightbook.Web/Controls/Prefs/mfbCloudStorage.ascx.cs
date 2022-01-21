@@ -10,14 +10,14 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2021 MyFlightbook LLC
+ * Copyright (c) 2010-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
 namespace MyFlightbook.Web.Controls.Prefs
 {
-    public partial class mfbCloudStorage : System.Web.UI.UserControl
+    public partial class mfbCloudStorage : UserControl
     {
         protected Profile CurrentUser { get { return Profile.GetUser(Page.User.Identity.Name); } }
         protected void Page_Load(object sender, EventArgs e)
@@ -84,6 +84,7 @@ namespace MyFlightbook.Web.Controls.Prefs
             {
                 CurrentUser.OneDriveAccessToken = (IAuthorizationState)Session[OneDrive.TokenSessionKey];
                 CurrentUser.FCommit();
+                Session[OneDrive.TokenSessionKey] = null;
 
                 Response.Redirect(String.Format(CultureInfo.InvariantCulture, "{0}?pane=backup", Request.Path));
             }

@@ -13,7 +13,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2021 MyFlightbook LLC
+ * Copyright (c) 2007-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -153,11 +153,7 @@ namespace MyFlightbook.Controls.FlightEditing
 
     public partial class mfbEditFlight : mfbEditFlightBase
     {
-
-        private List<int> m_rgTailwheelAircraft = new List<int>();
-
         const string keyLastEntryDate = "LastEntryDate";
-        const string keyTailwheelList = "TailwheelListForUser";
         const string keySessionInProgress = "InProgressFlight";
         const string keyVSFlightUser = "VSFlightUser";
         const string szValGroupEdit = "vgEditFlight";
@@ -232,12 +228,12 @@ namespace MyFlightbook.Controls.FlightEditing
             InitBasicControls();
 
             // Initialize our logbook entry from the db or make it a new entry
-            bool fAdminMode = (CurrentUser.CanSupport && (util.GetStringParam(Request, "a").Length > 0));
+            bool fAdminMode = CurrentUser.CanSupport && (util.GetStringParam(Request, "a").Length > 0);
             IsAdmin = fForceLoad || fAdminMode;
 
             FlightID = idFlight;
 
-            if (!le.FLoadFromDB(FlightID, Page.User.Identity.Name, LogbookEntry.LoadTelemetryOption.LoadAll, IsAdmin))
+            if (!le.FLoadFromDB(FlightID, Page.User.Identity.Name, LogbookEntryCore.LoadTelemetryOption.LoadAll, IsAdmin))
             {
                 // if this isn't found, try again with a new flight (but tell the user of the error)
                 lblError.Text = le.ErrorString;
@@ -257,23 +253,23 @@ namespace MyFlightbook.Controls.FlightEditing
             }
 
             // Enable Admin Signature fix-up
-            if (!le.IsNewFlight && le.CFISignatureState != LogbookEntryBase.SignatureState.None)
+            if (!le.IsNewFlight && le.CFISignatureState != LogbookEntryCore.SignatureState.None)
             {
                 lblSigSavedHash.Text = le.DecryptedFlightHash;
                 lblSigCurrentHash.Text = le.DecryptedCurrentHash;
 
-                if (le.CFISignatureState == LogbookEntry.SignatureState.Invalid)
+                if (le.CFISignatureState == LogbookEntryCore.SignatureState.Invalid)
                 {
                     pnlSigEdits.Visible = true;
-                    LogbookEntry leNew = LogbookEntry.LogbookEntryFromHash(lblSigCurrentHash.Text);
-                    LogbookEntry leSaved = LogbookEntry.LogbookEntryFromHash(lblSigSavedHash.Text);
+                    LogbookEntry leNew = LogbookEntryBase.LogbookEntryFromHash(lblSigCurrentHash.Text);
+                    LogbookEntry leSaved = LogbookEntryBase.LogbookEntryFromHash(lblSigSavedHash.Text);
                     rptDiffs.DataSource = leSaved.CompareTo(leNew, CurrentUser.UsesHHMM);
                     rptDiffs.DataBind();
                 }
 
                 if (fAdminMode)
                 {
-                    LogbookEntry.SignatureSanityCheckState sscs = le.AdminSignatureSanityCheckState;
+                    LogbookEntryBase.SignatureSanityCheckState sscs = le.AdminSignatureSanityCheckState;
                     pnlAdminFixSignature.Visible = true;
                     lblSigSavedState.Text = le.CFISignatureState.ToString();
                     lblSigSanityCheck.Text = sscs.ToString();
@@ -281,7 +277,7 @@ namespace MyFlightbook.Controls.FlightEditing
             }
 
             // If the user has entered another flight this session, default to that date rather than today
-            if (Session[keyLastEntryDate] != null && FlightID == LogbookEntry.idFlightNew)
+            if (Session[keyLastEntryDate] != null && FlightID == LogbookEntryCore.idFlightNew)
                 le.Date = (DateTime)Session[keyLastEntryDate];
 
             // see if we have a pending in-progress flight
@@ -438,8 +434,6 @@ namespace MyFlightbook.Controls.FlightEditing
                         continue;
 
                     cmbAircraft.Items.Add(new ListItem(ac.DisplayTailnumberWithModel, ac.AircraftID.ToString(CultureInfo.InvariantCulture)) { Selected = ac.AircraftID == idFlightAircraft });
-                    if (ac.IsTailwheel)
-                        m_rgTailwheelAircraft.Add(ac.AircraftID);
                 }
 
                 // add an additional "Show all..." if some aircraft were suppressed, unless ALL aircraft were suppressed
@@ -452,7 +446,6 @@ namespace MyFlightbook.Controls.FlightEditing
             }
 
             util.SetValidationGroup(this, szValGroupEdit);
-            Session[keyTailwheelList] = m_rgTailwheelAircraft;
         }
 
         /// <summary>
@@ -460,11 +453,8 @@ namespace MyFlightbook.Controls.FlightEditing
         /// </summary>
         protected void InitBasicControls()
         {
-            if (Session[keyTailwheelList] != null && cmbAircraft.Items.Count > 0) // we've already initialized...
-            {
-                m_rgTailwheelAircraft = (List<int>)Session[keyTailwheelList];
+            if (cmbAircraft.Items.Count > 0) // we've already initialized...
                 return;
-            }
 
             if (Request.IsMobileDevice())
                 cmbAircraft.Width = txtRoute.Width = txtComments.Width = Unit.Pixel(130);
@@ -709,13 +699,13 @@ namespace MyFlightbook.Controls.FlightEditing
 
                         ProcessImages(le.FlightID);
 
-                        if (FlightID == LogbookEntry.idFlightNew) // new flight - save the date
+                        if (FlightID == LogbookEntryCore.idFlightNew) // new flight - save the date
                             Session[keyLastEntryDate] = le.Date;
 
                         idResult = le.FlightID; // this must be >= 0 if the commit succeeded
 
                         // Badge computation may be wrong
-                        MyFlightbook.Profile.GetUser(le.User).SetAchievementStatus(MyFlightbook.Achievements.Achievement.ComputeStatus.NeedsComputing);
+                        Profile.GetUser(le.User).SetAchievementStatus(Achievements.Achievement.ComputeStatus.NeedsComputing);
                     }
                     else
                     {
@@ -816,8 +806,7 @@ namespace MyFlightbook.Controls.FlightEditing
 
         protected void lnkAddAircraft_Click(object sender, EventArgs e)
         {
-            LogbookEntry le = InitLogbookEntryFromForm();
-            Session[keySessionInProgress] = le;
+            Session[keySessionInProgress] = InitLogbookEntryFromForm();
             Response.Redirect("~/Member/EditAircraft.aspx?id=-1&Ret=" + HttpUtility.UrlEncode(Request.Url.PathAndQuery));
         }
 

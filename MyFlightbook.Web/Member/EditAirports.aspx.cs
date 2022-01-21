@@ -12,7 +12,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2021 MyFlightbook LLC
+ * Copyright (c) 2010-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -151,12 +151,7 @@ namespace MyFlightbook.Mapping
 
             RefreshMyAirports();
         }
-
-        protected string SessionKeyUserAirports
-        {
-            get { return "AirportsForUser" + Page.User.Identity.Name; }
-        }
-
+                
         protected bool IsAdmin
         {
             get { return util.GetStringParam(Request, "a").Length > 0 && Page.User.Identity.IsAuthenticated && (Profile.GetUser(Page.User.Identity.Name).CanManageData); }
@@ -164,13 +159,12 @@ namespace MyFlightbook.Mapping
 
         protected void RefreshMyAirports()
         {
-            Boolean fAdmin = IsAdmin;
+            bool fAdmin = IsAdmin;
 
-            if (!IsPostBack || ((m_rgAirportsForUser = (airport[])Session[SessionKeyUserAirports]) == null))
-                Session[SessionKeyUserAirports] = m_rgAirportsForUser = airport.AirportsForUser(Page.User.Identity.Name, fAdmin);
+            m_rgAirportsForUser = airport.AirportsForUser(Page.User.Identity.Name, fAdmin);
 
             if (fAdmin)
-                this.Master.SelectedTab = tabID.admAirports;
+                Master.SelectedTab = tabID.admAirports;
 
             // show the last column (username) if admin mode
             gvMyAirports.Columns[gvMyAirports.Columns.Count - 1].Visible = fAdmin;
@@ -213,14 +207,9 @@ namespace MyFlightbook.Mapping
                     if (String.Compare(ap.Code, e.CommandArgument.ToString(), StringComparison.OrdinalIgnoreCase) == 0)
                     {
                         if (ap.FDelete())
-                        {
-                            Session.Remove(SessionKeyUserAirports);
                             RefreshMyAirports();
-                        }
                         else
-                        {
                             lblErr.Text = ap.ErrorText;
-                        }
                     }
             }
         }
@@ -280,7 +269,6 @@ namespace MyFlightbook.Mapping
                 }
 
                 initForm();
-                Session.Remove(SessionKeyUserAirports);
 
                 if (!fAdmin || ckShowAllUserAirports.Checked)
                     RefreshMyAirports();
