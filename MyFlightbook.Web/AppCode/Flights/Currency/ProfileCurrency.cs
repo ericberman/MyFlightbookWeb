@@ -6,7 +6,7 @@ using System.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2021 MyFlightbook LLC
+ * Copyright (c) 2021-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -16,8 +16,8 @@ namespace MyFlightbook.Currency
     /// <summary>
     /// Type of medical
     /// </summary>
-    [System.ComponentModel.DefaultValue(MedicalType.Other)]
-    public enum MedicalType { Other, FAA1stClass, FAA2ndClass, FAA3rdClass, EASA1stClass, EASA2ndClass, EASALAPL, CASAClass1, CASAClass2 }
+    [System.ComponentModel.DefaultValue(Other)]
+    public enum MedicalType { Other, FAA1stClass, FAA2ndClass, FAA3rdClass, EASA1stClass, EASA2ndClass, EASALAPL, CASAClass1, CASAClass2, CanadaPPL, CanadaGlider, CanadaCommercial }
 
     /// <summary>
     /// Encapsulates currencies that are based not on the flying that you do but on attributes of your profile - including medical/basicmed, flight reviews, and english-proficiency
@@ -61,6 +61,12 @@ namespace MyFlightbook.Currency
                         return Resources.Preferences.MedicalTypeCasaClass1;
                     case MedicalType.CASAClass2:
                         return Resources.Preferences.MedicalTypeCasaClass2;
+                    case MedicalType.CanadaCommercial:
+                        return Resources.Preferences.MedicalTypeCanadaCommercial;
+                    case MedicalType.CanadaPPL:
+                        return Resources.Preferences.MedicalTypeCanadaPPL;
+                    case MedicalType.CanadaGlider:
+                        return Resources.Preferences.MedicalTypeCanadaGlider;
                 }
                 return string.Empty;
             }
@@ -236,6 +242,26 @@ namespace MyFlightbook.Currency
                 lst.Add(StatusForDate(lastMedical.AddCalendarMonths(fWas40AtExam ? 24 : 60), Resources.Currency.NextMedical3rdClassPrivs, CurrencyStatusItem.CurrencyGroups.Medical));
         }
 
+        private static void AddCanadaCommercialItems(List<CurrencyStatusItem> lst, DateTime lastMedical, bool fWas40AtExam, bool fWas60AtExam)
+        {
+            // Canadian rules: https://laws-lois.justice.gc.ca/eng/regulations/sor-96-433/page-36.html#h-991075 and https://tc.canada.ca/sites/default/files/2021-09/AIM-2021-2_LRA-E.pdf
+            // 12 months for commercial/ATP, unless (a) over 60, or (b) single-pilot and over 40
+            lst.Add(StatusForDate(lastMedical.AddCalendarMonths(fWas60AtExam ? 6 : 12), Resources.Currency.NextMedicalCanadaCommercial, CurrencyStatusItem.CurrencyGroups.Medical));
+            if (fWas40AtExam && !fWas60AtExam)
+                lst.Add(StatusForDate(lastMedical.AddCalendarMonths(6), Resources.Currency.NextMedicalCanadaSinglePilot, CurrencyStatusItem.CurrencyGroups.Medical));
+            lst.Add(StatusForDate(lastMedical.AddCalendarMonths(fWas40AtExam ? 24 : 60), Resources.Currency.NextMedicalCanadaPPL, CurrencyStatusItem.CurrencyGroups.Medical));
+        }
+
+        private static void AddOtherMedicalItems(List<CurrencyStatusItem> lst, DateTime lastMedical, int monthsToMedical, bool fUsesICAOMedical)
+        {
+            if (monthsToMedical > 0)
+            {
+                lst.Add(StatusForDate(fUsesICAOMedical ?
+                        lastMedical.AddMonths(monthsToMedical) :
+                        lastMedical.AddCalendarMonths(monthsToMedical), Resources.Currency.NextMedical, CurrencyStatusItem.CurrencyGroups.Medical));
+            }
+        }
+
         /// <summary>
         /// Returns an enumerable of medical status based on https://www.law.cornell.edu/cfr/text/14/61.23 for FAA medicals, or else expiration and type
         /// </summary>
@@ -258,12 +284,7 @@ namespace MyFlightbook.Currency
             switch (mt)
             {
                 case MedicalType.Other:
-                    if (monthsToMedical > 0)
-                    {
-                        lst.Add(StatusForDate(fUsesICAOMedical ?
-                                lastMedical.AddMonths(monthsToMedical) :
-                                lastMedical.AddCalendarMonths(monthsToMedical), Resources.Currency.NextMedical, CurrencyStatusItem.CurrencyGroups.Medical));
-                    }
+                    AddOtherMedicalItems(lst, lastMedical, monthsToMedical, fUsesICAOMedical);
                     break;
                 case MedicalType.EASA1stClass:
                     AddEASA1stClassItems(lst, lastMedical, fWas40AtExam, fWas60AtExam);
@@ -288,6 +309,19 @@ namespace MyFlightbook.Currency
                     break;
                 case MedicalType.CASAClass2:
                     AddCASA2ndClassItems(lst, lastMedical, fWas40AtExam);
+                    break;
+                case MedicalType.CanadaPPL:
+                    // Canadian rules: https://laws-lois.justice.gc.ca/eng/regulations/sor-96-433/page-36.html#h-991075 and https://tc.canada.ca/sites/default/files/2021-09/AIM-2021-2_LRA-E.pdf
+                    // Under 40 years of age: 60 month, Over 40 years of age: 24 month
+                    lst.Add(StatusForDate(lastMedical.AddCalendarMonths(fWas40AtExam ? 24 : 60), Resources.Currency.NextMedicalCanadaPPL, CurrencyStatusItem.CurrencyGroups.Medical));
+                    break;
+                case MedicalType.CanadaGlider:
+                    // Canadian rules: https://laws-lois.justice.gc.ca/eng/regulations/sor-96-433/page-36.html#h-991075 and https://tc.canada.ca/sites/default/files/2021-09/AIM-2021-2_LRA-E.pdf
+                    // Glider or ultralight - 60 months
+                    lst.Add(StatusForDate(lastMedical.AddCalendarMonths(60), Resources.Currency.NextMedicalCanadaGlider, CurrencyStatusItem.CurrencyGroups.Medical));
+                    break;
+                case MedicalType.CanadaCommercial:
+                    AddCanadaCommercialItems(lst, lastMedical, fWas40AtExam, fWas60AtExam);
                     break;
             }
             return lst;

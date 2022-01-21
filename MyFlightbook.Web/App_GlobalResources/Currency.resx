@@ -1164,4 +1164,16 @@
   <data name="TrainingFlights" xml:space="preserve">
     <value>training flight(s)</value>
   </data>
+  <data name="NextMedicalCanadaCommercial" xml:space="preserve">
+    <value>Commercial/ATP Medical</value>
+  </data>
+  <data name="NextMedicalCanadaGlider" xml:space="preserve">
+    <value>Glider/Ultralight Medical</value>
+  </data>
+  <data name="NextMedicalCanadaPPL" xml:space="preserve">
+    <value>PPL Medical</value>
+  </data>
+  <data name="NextMedicalCanadaSinglePilot" xml:space="preserve">
+    <value>Commercial/ATP (Single Pilot) Medical</value>
+  </data>
 </root>
