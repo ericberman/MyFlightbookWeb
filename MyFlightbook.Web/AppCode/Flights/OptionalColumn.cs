@@ -238,6 +238,7 @@ namespace MyFlightbook
             return true;
         }
 
+        [Newtonsoft.Json.JsonIgnore]
         public CategoryClass.CatClassID AssociatedCategoryClass
         {
             get
@@ -257,7 +258,7 @@ namespace MyFlightbook
                     case OptionalColumnType.Helicopter:
                         return CategoryClass.CatClassID.Helicopter;
                     default:
-                        throw new InvalidOperationException("Optional column type does not correspond to a category class");
+                        return CategoryClass.CatClassID.ASEL;
                 }
             }
         }
