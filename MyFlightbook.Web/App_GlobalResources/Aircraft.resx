@@ -696,4 +696,22 @@
   <data name="HighWaterMarkTachOnly" xml:space="preserve">
     <value>The highest tach value you've recorded is {0:0.0#}</value>
   </data>
+  <data name="ImportAircraftAdded" xml:space="preserve">
+    <value>Aircraft Added</value>
+  </data>
+  <data name="ImportAircraftAdding" xml:space="preserve">
+    <value>Working...</value>
+  </data>
+  <data name="ImportAlreadyInProfile" xml:space="preserve">
+    <value>This aircraft is in your account</value>
+  </data>
+  <data name="ImportKind" xml:space="preserve">
+    <value>Aircraft is a:</value>
+  </data>
+  <data name="ImportModel" xml:space="preserve">
+    <value>Model:</value>
+  </data>
+  <data name="ImportNoAircraftFound" xml:space="preserve">
+    <value>(No aircraft found to import)</value>
+  </data>
 </root>

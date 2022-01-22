@@ -15,7 +15,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2021 MyFlightbook LLC
+ * Copyright (c) 2009-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -2997,7 +2997,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int)CustomPropertyType.KnownProperties.ID
             if (mr == null)
                 throw new ArgumentNullException(nameof(mr));
             mr.State = ms;
-            mr.BestMatchAircraft.InstanceTypeDescription = m_rgAircraftInstances[mr.BestMatchAircraft.InstanceTypeID - 1].DisplayName;
+            mr.BestMatchAircraft.InstanceTypeDescription = mr.BestMatchAircraft.InstanceTypeID == (int) AircraftInstanceTypes.RealAircraft ? String.Empty : m_rgAircraftInstances[mr.BestMatchAircraft.InstanceTypeID - 1].DisplayName;
             mr.SpecifiedModel = mr.SuggestedModel = MakeModel.GetModel(mr.BestMatchAircraft.ModelID);
         }
 

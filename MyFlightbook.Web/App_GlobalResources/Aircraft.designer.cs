@@ -1021,6 +1021,33 @@ namespace Resources {
         }
         
         /// <summary>
+        ///    Looks up a localized string similar to Aircraft Added.
+        /// </summary>
+        internal static string ImportAircraftAdded {
+            get {
+                return ResourceManager.GetString("ImportAircraftAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Working....
+        /// </summary>
+        internal static string ImportAircraftAdding {
+            get {
+                return ResourceManager.GetString("ImportAircraftAdding", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to This aircraft is in your account.
+        /// </summary>
+        internal static string ImportAlreadyInProfile {
+            get {
+                return ResourceManager.GetString("ImportAlreadyInProfile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///    Looks up a localized string similar to (Alternate Version).
         /// </summary>
         internal static string ImportAlternateVersion {
@@ -1053,6 +1080,33 @@ namespace Resources {
         internal static string ImportHeaderSpecifiedAircraft {
             get {
                 return ResourceManager.GetString("ImportHeaderSpecifiedAircraft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Aircraft is a:.
+        /// </summary>
+        internal static string ImportKind {
+            get {
+                return ResourceManager.GetString("ImportKind", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Model:.
+        /// </summary>
+        internal static string ImportModel {
+            get {
+                return ResourceManager.GetString("ImportModel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to (No aircraft found to import).
+        /// </summary>
+        internal static string ImportNoAircraftFound {
+            get {
+                return ResourceManager.GetString("ImportNoAircraftFound", resourceCulture);
             }
         }
         
