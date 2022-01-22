@@ -195,7 +195,7 @@
                 <asp:Repeater ID="rptAircraftGroups" runat="server" OnItemDataBound="rptAircraftGroups_ItemDataBound">
                     <ItemTemplate>
                         <h2><asp:Label ID="lblGroupNames" runat="server" Text='<%# Eval("GroupTitle") %>'></asp:Label></h2>
-                        <uc1:AircraftList runat="server" ID="AircraftList" OnAircraftDeleted="AircraftList_AircraftDeleted" OnFavoriteChanged="AircraftList_FavoriteChanged" OnAircraftPrefChanged="AircraftList_AircraftPrefChanged" OnMigrateAircraft="AircraftList_MigrateAircraft" />
+                        <uc1:AircraftList runat="server" ID="AircraftList" OnAircraftDeleted="AircraftList_AircraftDeleted" OnAircraftPrefChanged="AircraftList_AircraftPrefChanged" OnMigrateAircraft="AircraftList_MigrateAircraft" />
                     </ItemTemplate>
                 </asp:Repeater>
             </div>

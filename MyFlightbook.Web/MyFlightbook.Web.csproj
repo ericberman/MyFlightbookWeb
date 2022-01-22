@@ -921,6 +921,7 @@
     <Content Include="Public\Privacy.aspx" />
     <Content Include="Public\PropertyTable.aspx" />
     <Content Include="Public\RSSCurrency.aspx" />
+    <Content Include="Public\Scripts\aircraftcontext.js" />
     <Content Include="Public\Scripts\autoinsert.js" />
     <Content Include="Public\Scripts\CopyClipboard.js" />
     <Content Include="Public\Scripts\daypilot-all.min.js" />

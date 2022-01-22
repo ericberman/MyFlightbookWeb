@@ -7,17 +7,20 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-
-
-public partial class Controls_AircraftControls_AircraftList
+namespace MyFlightbook.AircraftControls
 {
 
-    /// <summary>
-    /// gvAircraft control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.GridView gvAircraft;
+
+    public partial class AircraftList
+    {
+
+        /// <summary>
+        /// gvAircraft control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvAircraft;
+    }
 }

@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Web;
+using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2021 MyFlightbook LLC
+ * Copyright (c) 2007-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -15,6 +17,56 @@ namespace MyFlightbook.MemberPages
 {
     public partial class MyAircraft : Page
     {
+        #region Webservices
+        /// <summary>
+        /// Toggles the active state of a given aircraft.
+        /// </summary>
+        /// <param name="idAircraft">The ID of the aircraft to update</param>
+        /// <param name="fIsActive">Active or inactive</param>
+        [WebMethod(EnableSession = true)]
+        public static void SetActive(int idAircraft, bool fIsActive)
+        {
+            if (HttpContext.Current == null || HttpContext.Current.User == null || HttpContext.Current.User.Identity == null || !HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+                throw new MyFlightbookException("You must be authenticated to make this call");
+
+            UserAircraft ua = new UserAircraft(HttpContext.Current.User.Identity.Name);
+            Aircraft ac = new Aircraft(idAircraft);
+            if (ac.AircraftID == Aircraft.idAircraftUnknown)
+                throw new MyFlightbookException("Invalid aircraft ID");
+            if (!ua.CheckAircraftForUser(ac))
+                throw new MyFlightbookException("This is not your aircraft");
+
+            ac.HideFromSelection = !fIsActive;
+            ua.FAddAircraftForUser(ac);
+        }
+
+        /// <summary>
+        /// Sets the role for flights in the given aircraft
+        /// </summary>
+        /// <param name="idAircraft">The ID of the aircraft to update</param>
+        /// <param name="fAddPICName">True to copy the pic name when autofilling PIC</param>
+        /// <param name="Role">The role to assign</param>
+        [WebMethod(EnableSession = true)]
+        public static void SetRole(int idAircraft, string Role, bool fAddPICName)
+        {
+            if (HttpContext.Current == null || HttpContext.Current.User == null || HttpContext.Current.User.Identity == null || !HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+                throw new MyFlightbookException("You must be authenticated to make this call");
+
+            UserAircraft ua = new UserAircraft(HttpContext.Current.User.Identity.Name);
+            Aircraft ac = new Aircraft(idAircraft);
+            if (ac.AircraftID == Aircraft.idAircraftUnknown)
+                throw new MyFlightbookException("Invalid aircraft ID");
+            if (!ua.CheckAircraftForUser(ac))
+                throw new MyFlightbookException("This is not your aircraft");
+
+            if (!Enum.TryParse(Role, true, out Aircraft.PilotRole role))
+                throw new MyFlightbookException("Invalid role - " + Role);
+            ac.RoleForPilot = role;
+            ac.CopyPICNameWithCrossfill = role == Aircraft.PilotRole.PIC && fAddPICName;
+            ua.FAddAircraftForUser(ac);
+        }
+        #endregion
+
         private int idModel = -1;
 
         protected bool IsAdminMode { get; set; }
@@ -98,7 +150,7 @@ namespace MyFlightbook.MemberPages
         {
             if (e == null)
                 throw new ArgumentNullException(nameof(e));
-            Controls_AircraftControls_AircraftList aircraftList = (Controls_AircraftControls_AircraftList)e.Item.FindControl("AircraftList");
+            AircraftControls.AircraftList aircraftList = (AircraftControls.AircraftList)e.Item.FindControl("AircraftList");
             aircraftList.IsAdminMode = IsAdminMode;
             aircraftList.AircraftSource = ((AircraftGroup)e.Item.DataItem).MatchingAircraft;
         }
@@ -106,11 +158,6 @@ namespace MyFlightbook.MemberPages
         protected void AircraftList_AircraftDeleted(object sender, CommandEventArgs e)
         {
             RefreshAircraftList();
-            Refresh(true);
-        }
-
-        protected void AircraftList_FavoriteChanged(object sender, EventArgs e)
-        {
             Refresh(true);
         }
 

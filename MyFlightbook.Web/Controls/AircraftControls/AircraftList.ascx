@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="AircraftList.ascx.cs" Inherits="Controls_AircraftControls_AircraftList" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="AircraftList.ascx.cs" Inherits="MyFlightbook.AircraftControls.AircraftList" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register Src="../mfbImageList.ascx" TagName="mfbImageList" TagPrefix="uc1" %>
 <%@ Register src="../popmenu.ascx" tagname="popmenu" tagprefix="uc2" %>
@@ -7,7 +7,7 @@
 
 <asp:GridView ID="gvAircraft" runat="server" AutoGenerateColumns="False" EnableViewState="false"
     AllowSorting="True" OnRowCommand="gvAircraft_RowCommand" ShowFooter="false" ShowHeader="false"
-    OnRowDataBound="AddPictures" GridLines="None" Width="100%" 
+    OnRowDataBound="gvAircraft_OnRowDataBound" GridLines="None" Width="100%" 
     HeaderStyle-HorizontalAlign="left" CellSpacing="5" CellPadding="5">
     <Columns>
         <asp:TemplateField>
@@ -63,28 +63,28 @@
                 <uc2:popmenu ID="popmenu1" runat="server" Visible='<%# !IsAdminMode %>' >
                     <MenuContent>
                         <h2><asp:Label ID="lblOptionHeader" runat="server" /></h2>
-                        <div><asp:CheckBox ID="ckShowInFavorites" OnCheckedChanged="ckShowInFavorites_CheckedChanged" AutoPostBack="true" Text="<%$ Resources:Aircraft, optionHideFromMainList %>" runat="server" /></div>
+                        <div><asp:CheckBox ID="ckShowInFavorites" Text="<%$ Resources:Aircraft, optionHideFromMainList %>" runat="server" /></div>
                         <hr />
                         <div><asp:Label ID="lblRolePrompt" runat="server" Font-Bold="true" Text="<%$ Resources:Aircraft, optionRolePrompt %>" /></div>
                         <table>
                             <tr style="vertical-align:top">
-                                <td><asp:RadioButton ID="rbRoleNone" runat="server" AutoPostBack="true"  GroupName="rblGroup" OnCheckedChanged="rbRoleNone_CheckedChanged" /></td>
-                                <td><asp:Label ID="lblNone" runat="server" Text="<%$ Resources:Aircraft, optionRoleNone %>" AssociatedControlID="rbRoleNone"></asp:Label></td>
+                                <td><asp:RadioButton ID="rbRoleNone" runat="server" GroupName="rblGroup" /></td>
+                                <td><asp:Label ID="lblNone" runat="server" Text="<%$ Resources:Aircraft, optionRoleNone %>" AssociatedControlID="rbRoleNone" /></td>
                             </tr>
                             <tr style="vertical-align:top">
-                                <td><asp:RadioButton ID="rbRoleCFI" runat="server" AutoPostBack="true" GroupName="rblGroup" OnCheckedChanged="rbRoleCFI_CheckedChanged" /></td>
-                                <td><asp:Label ID="lblCFI" runat="server" Text="<%$ Resources:Aircraft, optionRoleCFI %>" AssociatedControlID="rbRoleCFI"></asp:Label></td>
+                                <td><asp:RadioButton ID="rbRoleCFI" runat="server" GroupName="rblGroup" /></td>
+                                <td><asp:Label ID="lblCFI" runat="server" Text="<%$ Resources:Aircraft, optionRoleCFI %>" AssociatedControlID="rbRoleCFI" /></td>
                             </tr>
                             <tr style="vertical-align:top">
-                                <td><asp:RadioButton ID="rbRolePIC" runat="server" AutoPostBack="true"  GroupName="rblGroup" OnCheckedChanged="rbRolePIC_CheckedChanged" /></td>
+                                <td><asp:RadioButton ID="rbRolePIC" runat="server" GroupName="rblGroup" /></td>
                                 <td>
-                                    <div><asp:Label ID="lblPIC" runat="server" Text="<%$ Resources:Aircraft, optionRolePIC %>" AssociatedControlID="rbRolePIC"></asp:Label></div>
-                                    <div><asp:CheckBox ID="ckAddNameAsPIC" runat="server" AutoPostBack="true" Text="<%$ Resources:Aircraft, optionRolePICName %>" OnCheckedChanged="ckAddNameAsPIC_CheckedChanged" /></div>
+                                    <div><asp:Label ID="lblPIC" runat="server" Text="<%$ Resources:Aircraft, optionRolePIC %>" AssociatedControlID="rbRolePIC" /></div>
+                                    <div><asp:CheckBox ID="ckAddNameAsPIC" runat="server" Text="<%$ Resources:Aircraft, optionRolePICName %>" /></div>
                                 </td>
                             </tr>
                             <tr style="vertical-align:top">
-                                <td><asp:RadioButton ID="rbRoleSIC" runat="server" AutoPostBack="true"  GroupName="rblGroup" OnCheckedChanged="rbRoleSIC_CheckedChanged" /></td>
-                                <td><asp:Label ID="lblSIC" runat="server" Text="<%$ Resources:Aircraft, optionRoleSIC %>" AssociatedControlID="rbRoleSIC"></asp:Label></td>
+                                <td><asp:RadioButton ID="rbRoleSIC" runat="server" GroupName="rblGroup" /></td>
+                                <td><asp:Label ID="lblSIC" runat="server" Text="<%$ Resources:Aircraft, optionRoleSIC %>" AssociatedControlID="rbRoleSIC" /></td>
                             </tr>
                         </table>
                         <asp:Panel ID="pnlTemplates" runat="server">

@@ -1,268 +1,234 @@
-﻿using MyFlightbook;
-using MyFlightbook.Templates;
+﻿using MyFlightbook.Templates;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2018-2020 MyFlightbook LLC
+ * Copyright (c) 2018-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
-public partial class Controls_AircraftControls_AircraftList : System.Web.UI.UserControl
+namespace MyFlightbook.AircraftControls
 {
-    #region properties
-    public bool IsAdminMode { get; set; }
-
-    public IEnumerable<Aircraft> AircraftSource
+    public partial class AircraftList : UserControl
     {
-        get { return (IEnumerable<Aircraft>) gvAircraft.DataSource; }
-        set
+        #region properties
+        public bool IsAdminMode { get; set; }
+
+        public IEnumerable<Aircraft> AircraftSource
         {
-            gvAircraft.DataSource = value;
-            gvAircraft.DataBind();
-            gvAircraft.Columns[0].Visible = !IsAdminMode;
-        }
-    }
-
-    public event EventHandler<CommandEventArgs> AircraftDeleted;
-
-    public event EventHandler<EventArgs> FavoriteChanged;
-
-    public event EventHandler<EventArgs> AircraftPrefChanged;
-
-    public event EventHandler<AircraftEventArgs> MigrateAircraft;
-
-    public bool EnableAircraftViewState
-    {
-        get { return gvAircraft.EnableViewState; }
-        set { gvAircraft.EnableViewState = value; }
-    }
-    #endregion
-
-    protected void Page_Load(object sender, EventArgs e) {  }
-
-    public void AddPictures(Object sender, GridViewRowEventArgs e)
-    {
-        if (e != null && e.Row.RowType == DataControlRowType.DataRow)
-        {
-            Aircraft ac = (Aircraft)e.Row.DataItem;
-
-            // Refresh the images
-            if (!IsAdminMode)
-                ((Controls_mfbHoverImageList)e.Row.FindControl("mfbHoverThumb")).Refresh();
-
-            // Show aircraft capabilities too.
-            Controls_popmenu popup = (Controls_popmenu)e.Row.FindControl("popmenu1");
-            switch (ac.RoleForPilot)
+            get { return (IEnumerable<Aircraft>)gvAircraft.DataSource; }
+            set
             {
-                case Aircraft.PilotRole.None:
-                    ((RadioButton)popup.FindControl("rbRoleNone")).Checked = true;
-                    break;
-                case Aircraft.PilotRole.CFI:
-                    ((RadioButton)popup.FindControl("rbRoleCFI")).Checked = true;
-                    break;
-                case Aircraft.PilotRole.SIC:
-                    ((RadioButton)popup.FindControl("rbRoleSIC")).Checked = true;
-                    break;
-                case Aircraft.PilotRole.PIC:
-                    ((RadioButton)popup.FindControl("rbRolePIC")).Checked = true;
-                    break;
+                gvAircraft.DataSource = value;
+                gvAircraft.DataBind();
+                gvAircraft.Columns[0].Visible = !IsAdminMode;
             }
-            ((CheckBox)popup.FindControl("ckShowInFavorites")).Checked = !ac.HideFromSelection;
-            ((CheckBox)popup.FindControl("ckAddNameAsPIC")).Checked = ac.CopyPICNameWithCrossfill;
+        }
 
-            ((Label)popup.FindControl("lblOptionHeader")).Text = String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.optionHeader, ac.DisplayTailnumber);
+        public event EventHandler<CommandEventArgs> AircraftDeleted;
 
-            if (!IsAdminMode)
+        public event EventHandler<EventArgs> AircraftPrefChanged;
+
+        public event EventHandler<AircraftEventArgs> MigrateAircraft;
+
+        public bool EnableAircraftViewState
+        {
+            get { return gvAircraft.EnableViewState; }
+            set { gvAircraft.EnableViewState = value; }
+        }
+        #endregion
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            Page.ClientScript.RegisterClientScriptInclude(GetType(), "AircraftContext", ResolveClientUrl("~/public/Scripts/aircraftcontext.js"));
+        }
+
+        public void gvAircraft_OnRowDataBound(Object sender, GridViewRowEventArgs e)
+        {
+            if (e != null && e.Row.RowType == DataControlRowType.DataRow)
             {
-                List<LinkedString> lst = new List<LinkedString>();
+                Aircraft ac = (Aircraft)e.Row.DataItem;
 
-                if (ac.Stats != null)
-                    lst.Add(ac.Stats.UserStatsDisplay);
-                MakeModel mm = MakeModel.GetModel(ac.ModelID);
-                if (mm != null)
+                // Refresh the images
+                if (!IsAdminMode)
+                    ((Controls_mfbHoverImageList)e.Row.FindControl("mfbHoverThumb")).Refresh();
+
+                // Show aircraft capabilities too.
+                Control popup = e.Row.FindControl("popmenu1");
+                RadioButton rbRoleNone = (RadioButton)popup.FindControl("rbRoleNone");
+                RadioButton rbRoleCFI = (RadioButton)popup.FindControl("rbRoleCFI");
+                RadioButton rbRoleSIC = (RadioButton)popup.FindControl("rbRoleSIC");
+                RadioButton rbRolePIC = (RadioButton)popup.FindControl("rbRolePIC");
+
+                switch (ac.RoleForPilot)
                 {
-                    if (!String.IsNullOrEmpty(mm.FamilyName))
-                        lst.Add(new LinkedString(ModelQuery.ICAOPrefix + mm.FamilyName));
-
-                    foreach (string sz in mm.AttributeList(ac.AvionicsTechnologyUpgrade, ac.GlassUpgradeDate))
-                        lst.Add(new LinkedString(sz));
+                    case Aircraft.PilotRole.None:
+                        rbRoleNone.Checked = true;
+                        break;
+                    case Aircraft.PilotRole.CFI:
+                        rbRoleCFI.Checked = true;
+                        break;
+                    case Aircraft.PilotRole.SIC:
+                        rbRoleSIC.Checked = true;
+                        break;
+                    case Aircraft.PilotRole.PIC:
+                        rbRolePIC.Checked = true;
+                        break;
                 }
 
-                Repeater rpt = (Repeater)e.Row.FindControl("rptAttributes");
-                rpt.DataSource = lst;
-                rpt.DataBind();
-            }
+                CheckBox ckIsFavorite = (CheckBox)popup.FindControl("ckShowInFavorites");
+                ckIsFavorite.Checked = !ac.HideFromSelection;
+                ckIsFavorite.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:toggleFavorite({0},this.checked,'{1}');", ac.AircraftID, ResolveClientUrl("~/Member/Aircraft.aspx/SetActive"));
+                CheckBox ckAddName = (CheckBox)popup.FindControl("ckAddNameAsPIC");
+                ckAddName.Checked = ac.CopyPICNameWithCrossfill;
+                ckAddName.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:document.getElementById(\"{0}\").click();", rbRolePIC.ClientID);  // clicking the "Add Name" checkbox should effectively click the PIC checkbox.
 
-            Controls_mfbSelectTemplates selectTemplates = (Controls_mfbSelectTemplates)popup.FindControl("mfbSelectTemplates");
-            foreach (int i in ac.DefaultTemplates)
-                selectTemplates.AddTemplate(i);
+                rbRoleNone.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:setRole({0},\"{1}\",false,document.getElementById(\"{2}\"),\"{3}\");", ac.AircraftID, Aircraft.PilotRole.None.ToString(), ckAddName.ClientID, ResolveClientUrl("~/Member/Aircraft.aspx/SetRole"));
+                rbRoleCFI.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:setRole({0},\"{1}\",false,document.getElementById(\"{2}\"),\"{3}\");", ac.AircraftID, Aircraft.PilotRole.CFI.ToString(), ckAddName.ClientID, ResolveClientUrl("~/Member/Aircraft.aspx/SetRole"));
+                rbRoleSIC.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:setRole({0},\"{1}\",false,document.getElementById(\"{2}\"),\"{3}\");", ac.AircraftID, Aircraft.PilotRole.SIC.ToString(), ckAddName.ClientID, ResolveClientUrl("~/Member/Aircraft.aspx/SetRole"));
+                rbRolePIC.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:setRole({0},\"{1}\",document.getElementById(\"{2}\").checked, document.getElementById(\"{3}\"),\"{4}\");", ac.AircraftID, Aircraft.PilotRole.PIC.ToString(), ckAddName.ClientID, ckAddName.ClientID, ResolveClientUrl("~/Member/Aircraft.aspx/SetRole"));
 
-            selectTemplates.Refresh();
+                ((Label)popup.FindControl("lblOptionHeader")).Text = String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.optionHeader, ac.DisplayTailnumber);
 
-            if (IsAdminMode)
-            {
-                HyperLink lnkRegistration = (HyperLink)e.Row.FindControl("lnkRegistration");
-                string szURL = ac.LinkForTailnumberRegistry();
-                lnkRegistration.Visible = szURL.Length > 0;
-                lnkRegistration.NavigateUrl = szURL;
+                if (!IsAdminMode)
+                {
+                    List<LinkedString> lst = new List<LinkedString>();
+
+                    if (ac.Stats != null)
+                        lst.Add(ac.Stats.UserStatsDisplay);
+                    MakeModel mm = MakeModel.GetModel(ac.ModelID);
+                    if (mm != null)
+                    {
+                        if (!String.IsNullOrEmpty(mm.FamilyName))
+                            lst.Add(new LinkedString(ModelQuery.ICAOPrefix + mm.FamilyName));
+
+                        foreach (string sz in mm.AttributeList(ac.AvionicsTechnologyUpgrade, ac.GlassUpgradeDate))
+                            lst.Add(new LinkedString(sz));
+                    }
+
+                    Repeater rpt = (Repeater)e.Row.FindControl("rptAttributes");
+                    rpt.DataSource = lst;
+                    rpt.DataBind();
+                }
+
+                Controls_mfbSelectTemplates selectTemplates = (Controls_mfbSelectTemplates)popup.FindControl("mfbSelectTemplates");
+                foreach (int i in ac.DefaultTemplates)
+                    selectTemplates.AddTemplate(i);
+
+                selectTemplates.Refresh();
+
+                if (IsAdminMode)
+                {
+                    HyperLink lnkRegistration = (HyperLink)e.Row.FindControl("lnkRegistration");
+                    string szURL = ac.LinkForTailnumberRegistry();
+                    lnkRegistration.Visible = szURL.Length > 0;
+                    lnkRegistration.NavigateUrl = szURL;
+                }
             }
         }
-    }
 
-    protected void gvAircraft_RowCommand(Object sender, CommandEventArgs e)
-    {
-        if (e == null)
-            throw new ArgumentNullException(nameof(e));
-
-        int idAircraft = Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture);
-        if (String.Compare(e.CommandName, "_Delete", StringComparison.OrdinalIgnoreCase) == 0)
+        protected void gvAircraft_RowCommand(Object sender, CommandEventArgs e)
         {
-            Aircraft ac = new Aircraft(idAircraft);
+            if (e == null)
+                throw new ArgumentNullException(nameof(e));
 
-            UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
-            try
+            int idAircraft = Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture);
+            if (String.Compare(e.CommandName, "_Delete", StringComparison.OrdinalIgnoreCase) == 0)
             {
-                ua.FDeleteAircraftforUser(ac.AircraftID);
-                AircraftDeleted?.Invoke(sender, e);
-            }
-            catch (MyFlightbookException ex)
-            {
-                if (sender is GridView gvSource)
+                Aircraft ac = new Aircraft(idAircraft);
+
+                UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
+                try
                 {
-                    IList<Aircraft> src = (IList<Aircraft>)gvSource.DataSource;
-                    for (int iRow = 0; iRow < src.Count; iRow++)
+                    ua.FDeleteAircraftforUser(ac.AircraftID);
+                    AircraftDeleted?.Invoke(sender, e);
+                }
+                catch (MyFlightbookException ex)
+                {
+                    if (sender is GridView gvSource)
                     {
-                        if (src[iRow].AircraftID == ac.AircraftID)
+                        IList<Aircraft> src = (IList<Aircraft>)gvSource.DataSource;
+                        for (int iRow = 0; iRow < src.Count; iRow++)
                         {
-                            GridViewRow gvr = gvSource.Rows[iRow];
-                            Label l = (Label)gvr.FindControl("lblAircraftErr");
-                            l.Text = HttpUtility.HtmlEncode(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MyAircraftDeleteError, ac.TailNumber, ex.Message));
-                            l.Visible = true;
-                            break;
+                            if (src[iRow].AircraftID == ac.AircraftID)
+                            {
+                                GridViewRow gvr = gvSource.Rows[iRow];
+                                Label l = (Label)gvr.FindControl("lblAircraftErr");
+                                l.Text = HttpUtility.HtmlEncode(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MyAircraftDeleteError, ac.TailNumber, ex.Message));
+                                l.Visible = true;
+                                break;
+                            }
                         }
                     }
                 }
             }
         }
-    }
 
-    protected static Aircraft RowFromControl(Control c)
-    {
-        if (c == null)
-            throw new ArgumentNullException(nameof(c));
-        while (c != null && c.NamingContainer != null && !typeof(GridViewRow).IsAssignableFrom(c.NamingContainer.GetType()))
-            c = c.NamingContainer;
-        GridViewRow grow = (GridViewRow)c.NamingContainer;
-        GridView gv = (GridView)grow.NamingContainer;
+        protected static Aircraft AircraftFromControl(Control c)
+        {
+            if (c == null)
+                throw new ArgumentNullException(nameof(c));
+            while (c != null && c.NamingContainer != null && !typeof(GridViewRow).IsAssignableFrom(c.NamingContainer.GetType()))
+                c = c.NamingContainer;
+            GridViewRow grow = (GridViewRow)c.NamingContainer;
+            GridView gv = (GridView)grow.NamingContainer;
         if (grow.RowIndex >= 0 && grow.RowIndex < gv.Rows.Count)
             return ((IList<Aircraft>)gv.DataSource)[grow.RowIndex];
         return null;
-    }
+        }
 
-    protected void SelectRole(Control sender, Aircraft.PilotRole role)
-    {
-        Aircraft ac = RowFromControl(sender);
-        ac.RoleForPilot = role;
-        UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
-        ua.FAddAircraftForUser(ac);
-        AircraftPrefChanged?.Invoke(this, new EventArgs());
-    }
+        protected void mfbSelectTemplates_TemplatesReady(object sender, EventArgs e)
+        {
+            if (sender == null)
+                throw new ArgumentNullException(nameof(sender));
 
-    protected void rbRoleCFI_CheckedChanged(object sender, EventArgs e)
-    {
-        SelectRole((Control) sender, Aircraft.PilotRole.CFI);
-    }
+            Controls_mfbSelectTemplates selectTemplates = sender as Controls_mfbSelectTemplates;
+            if (!selectTemplates.GroupedTemplates.Any())
+                selectTemplates.NamingContainer.FindControl("pnlTemplates").Visible = false;
+        }
 
-    protected void rbRolePIC_CheckedChanged(object sender, EventArgs e)
-    {
-        SelectRole((Control)sender, Aircraft.PilotRole.PIC);
-    }
+        protected void mfbSelectTemplates_TemplateSelected(object sender, PropertyTemplateEventArgs e)
+        {
+            if (sender == null)
+                throw new ArgumentNullException(nameof(sender));
+            if (e == null)
+                throw new ArgumentNullException(nameof(e));
 
-    protected void rbRoleSIC_CheckedChanged(object sender, EventArgs e)
-    {
-        SelectRole((Control)sender, Aircraft.PilotRole.SIC);
-    }
+            Aircraft ac = AircraftFromControl(sender as Control);
+            ac.DefaultTemplates.Add(e.TemplateID);
+            UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
+            ua.FAddAircraftForUser(ac);
+            AircraftPrefChanged?.Invoke(this, e);
+        }
 
-    protected void rbRoleNone_CheckedChanged(object sender, EventArgs e)
-    {
-        SelectRole((Control)sender, Aircraft.PilotRole.None);
-    }
+        protected void mfbSelectTemplates_TemplateUnselected(object sender, PropertyTemplateEventArgs e)
+        {
+            if (sender == null)
+                throw new ArgumentNullException(nameof(sender));
+            if (e == null)
+                throw new ArgumentNullException(nameof(e));
 
-    protected void ckShowInFavorites_CheckedChanged(object sender, EventArgs e)
-    {
-        CheckBox ck = (CheckBox)sender;
-        Aircraft ac = RowFromControl(ck);
-        ac.HideFromSelection = !ck.Checked;
-        UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
-        ua.FAddAircraftForUser(ac);
-        FavoriteChanged?.Invoke(this, e);
-    }
+            Aircraft ac = AircraftFromControl(sender as Control);
+            ac.DefaultTemplates.Remove(e.TemplateID);
+            UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
+            ua.FAddAircraftForUser(ac);
+            AircraftPrefChanged?.Invoke(this, e);
+        }
 
-    protected void ckAddNameAsPIC_CheckedChanged(object sender, EventArgs e)
-    {
-        if (sender == null)
-            throw new ArgumentNullException(nameof(sender));
-        CheckBox ck = (CheckBox)sender;
-        Aircraft ac = RowFromControl(ck);
-        ac.CopyPICNameWithCrossfill = ck.Checked;
-        UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
-        ua.FAddAircraftForUser(ac);
-        AircraftPrefChanged?.Invoke(this, e);
-    }
+        protected void lnkMigrate_Click(object sender, EventArgs e)
+        {
+            if (e == null)
+                throw new ArgumentNullException(nameof(e));
 
-    protected void mfbSelectTemplates_TemplatesReady(object sender, EventArgs e)
-    {
-        if (sender == null)
-            throw new ArgumentNullException(nameof(sender));
-
-        Controls_mfbSelectTemplates selectTemplates = sender as Controls_mfbSelectTemplates;
-        // Hide the pop menu if only automatic templates are available
-        if (!selectTemplates.GroupedTemplates.Any())
-            selectTemplates.NamingContainer.FindControl("pnlTemplates").Visible = false;
-    }
-
-    protected void mfbSelectTemplates_TemplateSelected(object sender, PropertyTemplateEventArgs e)
-    {
-        if (sender == null)
-            throw new ArgumentNullException(nameof(sender));
-        if (e == null)
-            throw new ArgumentNullException(nameof(e));
-
-        Aircraft ac = RowFromControl(sender as Control);
-        ac.DefaultTemplates.Add(e.TemplateID);
-        UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
-        ua.FAddAircraftForUser(ac);
-        AircraftPrefChanged?.Invoke(this, e);
-    }
-
-    protected void mfbSelectTemplates_TemplateUnselected(object sender, PropertyTemplateEventArgs e)
-    {
-        if (sender == null)
-            throw new ArgumentNullException(nameof(sender));
-        if (e == null)
-            throw new ArgumentNullException(nameof(e));
-
-        Aircraft ac = RowFromControl(sender as Control);
-        ac.DefaultTemplates.Remove(e.TemplateID);
-        UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
-        ua.FAddAircraftForUser(ac);
-        AircraftPrefChanged?.Invoke(this, e);
-    }
-
-    protected void lnkMigrate_Click(object sender, EventArgs e)
-    {
-        if (e == null)
-            throw new ArgumentNullException(nameof(e));
-
-        Aircraft ac = RowFromControl((Control) sender);
-        MigrateAircraft?.Invoke(this, new AircraftEventArgs(ac));
+            Aircraft ac = AircraftFromControl((Control)sender);
+            MigrateAircraft?.Invoke(this, new AircraftEventArgs(ac));
+        }
     }
 }

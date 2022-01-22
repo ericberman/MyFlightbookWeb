@@ -156,7 +156,7 @@ namespace MyFlightbook.MemberPages
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_AircraftControls_AircraftList AircraftList1;
+        protected global::MyFlightbook.AircraftControls.AircraftList AircraftList1;
 
         /// <summary>
         /// Master property.
