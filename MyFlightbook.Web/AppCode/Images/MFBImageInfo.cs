@@ -1671,8 +1671,19 @@ namespace MyFlightbook.Image
 
         private void InitFilePDF(MFBPostedFile myFile)
         {
-            // just save the file as-is; we virtualize the thumbanil.
+            // just save the file as-is; we virtualize the thumbnail.
             string szBase = Regex.Replace(Path.GetFileNameWithoutExtension(myFile.FileName), @"[^a-zA-Z0-9]", string.Empty);
+
+            // Modify szBase until we have something unique - issue #886
+            int i = 0;
+            string szNew;
+            do
+            {
+                szNew = szBase + (i == 0 ? string.Empty : i.ToString(CultureInfo.InvariantCulture));
+                i++;
+            } while (Directory.GetFiles(HostingEnvironment.MapPath(VirtualPath), szNew + "*.*").Length != 0);
+            szBase = szNew;
+
             if (String.IsNullOrWhiteSpace(szBase))
                 szBase = DateTime.Now.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture);
             
