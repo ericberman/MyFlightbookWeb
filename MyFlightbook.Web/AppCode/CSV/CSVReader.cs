@@ -12,6 +12,7 @@ namespace JouniHeikniemi.Tools.Text
     {
         #region Private variables
         private readonly StreamReader reader;
+        private bool disposed; // to detect redundant calls
         private bool fNoReadahead;  // suppresses read-ahead (for multi-line).
         private const string KnownCSVSeparators = ", ; \t"; // space separates them
         private const string QuoteAsString = "\"";
@@ -211,17 +212,19 @@ namespace JouniHeikniemi.Tools.Text
             return -1;
         }
 
-        ~CSVReader() {  }
-
         /// <summary>
         /// Disposes the CSVReader. The underlying stream is closed.
         /// </summary>
         public void Dispose()
         {
-            // Closing the reader closes the underlying stream, too
-            if (reader != null) 
-                reader.Dispose();
-            GC.SuppressFinalize(this);
+            if (!disposed)
+            {
+                // Closing the reader closes the underlying stream, too
+                if (reader != null)
+                    reader.Dispose();
+
+                disposed = true;
+            }
         }
     }
 
