@@ -5,7 +5,7 @@ using System.Web.UI;
 
 /******************************************************
     * 
-    * Copyright (c) 2015-2021 MyFlightbook LLC
+    * Copyright (c) 2015-2022 MyFlightbook LLC
     * Contact myflightbook-at-gmail.com for more information
     *
    *******************************************************/
@@ -78,6 +78,7 @@ namespace MyFlightbook.Web
                 string szKey = Context.User.Identity.Name + "-LastPage";
                 if (Session[szKey] != null)
                     ErrorMessage.Append(String.Format(System.Globalization.CultureInfo.InvariantCulture, "Last page requested by user = {0}\r\n", Session[szKey].ToString()));
+                Session[szKey] = null;  // clear it out
             }
 
             util.NotifyAdminException(ErrorMessage.ToString(), myError);

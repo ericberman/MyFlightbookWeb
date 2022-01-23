@@ -4,7 +4,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2021 MyFlightbook LLC
+ * Copyright (c) 2008-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -34,7 +34,7 @@ namespace MyFlightbook.Image
         /// <summary>
         /// The key by which to access this object in the session
         /// </summary>
-        public string SessionKey { get; set; }
+        private string SessionKey { get; set; }
 
         public override string URLThumbnail
         {

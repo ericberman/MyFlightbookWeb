@@ -5,13 +5,12 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Net;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2021 MyFlightbook LLC
+ * Copyright (c) 2013-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -856,30 +855,25 @@ ORDER BY dateEarned ASC ";
         /// <returns>True if they have spent (net of refunds) the required amount within the required window</returns>
         public static bool UserQualifies(string szUser, Gratuity.GratuityTypes gt)
         {
-            Boolean f;
+            Profile pf = Profile.GetUser(szUser);
             string szSessionKey = SessionKeyForUser(szUser, gt);
-            System.Web.SessionState.HttpSessionState sess = (HttpContext.Current?.Session);
-            if (sess != null)
-            {
-                object o = sess[szSessionKey];
-                if (o != null)
-                    return Convert.ToBoolean(o, CultureInfo.InvariantCulture);
-            }
-            List<EarnedGratuity> lst = EarnedGratuity.GratuitiesForUser(szUser, gt);
-            f = lst.Count != 0 && lst[0].ExpirationDate.CompareTo(DateTime.Now) > 0;
-            if (sess != null)
-                sess[szSessionKey] = f.ToString(CultureInfo.InvariantCulture);
-            return f;
+            if (pf.AssociatedData.ContainsKey(szSessionKey))
+                return (bool) pf.AssociatedData[szSessionKey];
+
+            List<EarnedGratuity> lst = GratuitiesForUser(szUser, gt);
+            return (bool) (pf.AssociatedData[szSessionKey] = lst.Count != 0 && lst[0].ExpirationDate.CompareTo(DateTime.Now) > 0);
         }
 
         private static void ResetSessionForGratuities(string szUser)
         {
-            System.Web.SessionState.HttpSessionState sess = (HttpContext.Current?.Session);
-            if (sess == null)
-                return;
+            Profile pf = Profile.GetUser(szUser);
 
-            foreach (Gratuity.GratuityTypes gt in (Gratuity.GratuityTypes[]) Enum.GetValues(typeof(Gratuity.GratuityTypes)))
-                sess.Remove(SessionKeyForUser(szUser, gt));
+            foreach (Gratuity.GratuityTypes gt in (Gratuity.GratuityTypes[])Enum.GetValues(typeof(Gratuity.GratuityTypes)))
+            {
+                string szSessionKey = SessionKeyForUser(szUser, gt);
+                if (pf.AssociatedData.ContainsKey(szSessionKey))
+                    pf.AssociatedData.Remove(szSessionKey);
+            }
         }
 
         /// <summary>
