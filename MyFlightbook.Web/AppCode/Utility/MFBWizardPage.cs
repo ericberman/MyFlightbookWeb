@@ -3,7 +3,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2020 MyFlightbook LLC
+ * Copyright (c) 2008-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -63,11 +63,17 @@ namespace MyFlightbook.Web.WizardPage
 
         protected Wizard StyledWizard { get; set; }
 
+        protected void Page_Unload(object sender, EventArgs e)
+        {
+            if (StyledWizard != null)
+                StyledWizard.PreRender -= mfbwizard_PreRender;
+        }
+
         protected void InitWizard(Wizard wz)
         {
             StyledWizard = wz ?? throw new ArgumentNullException(nameof(wz));
 
-            wz.PreRender += new EventHandler(mfbwizard_PreRender);
+            wz.PreRender += mfbwizard_PreRender;
         }
     }
 }
