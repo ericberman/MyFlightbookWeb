@@ -111,7 +111,7 @@ namespace MyFlightbook.Currency
 
             // Get All time totals.  This will also give us the entire space of totals items
             FlightQuery fq = (fqSupplied == null) ? new FlightQuery(szUser) : new FlightQuery(fqSupplied);
-            UserTotals ut = new UserTotals(szUser, fq, false);
+            UserTotals ut = new UserTotals(szUser, new FlightQuery(fq), false);
 
             // if the supplied query has a date range, then don't do any of the subsequent queries; the date range overrides.
             bool fSuppliedQueryHasDates = fq.DateRange != FlightQuery.DateRanges.AllTime;
