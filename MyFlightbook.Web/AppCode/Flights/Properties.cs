@@ -14,7 +14,7 @@ using System.Web.Caching;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2021 MyFlightbook LLC
+ * Copyright (c) 2008-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -647,11 +647,11 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
         {
             get
             {
-                Cache appcache = HttpRuntime.Cache;
-                Dictionary<int, CustomPropertyType> d = (Dictionary<int, CustomPropertyType>)appcache[szAppCacheDictKey];
+                Dictionary<int, CustomPropertyType> d = (Dictionary<int, CustomPropertyType>)HttpRuntime.Cache[szAppCacheDictKey];
                 if (d == null || d.Count == 0)  // Issue #464
                 {
-                    appcache[szAppCacheDictKey] = d = new Dictionary<int, CustomPropertyType>();
+                    d = new Dictionary<int, CustomPropertyType>();
+                    HttpRuntime.Cache.Add(szAppCacheDictKey, d, null, Cache.NoAbsoluteExpiration, TimeSpan.FromMinutes(20), CacheItemPriority.Normal, null);
                     var rgProps = GetCustomPropertyTypes();
                     foreach (CustomPropertyType cpt in rgProps)
                         d[cpt.PropTypeID] = cpt;

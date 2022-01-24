@@ -14,7 +14,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2021 MyFlightbook LLC
+ * Copyright (c) 2009-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -597,7 +597,7 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
                 MakeModelID = dbh.LastInsertedRowId;
 
             if (MakeModelID != -1)
-                HttpRuntime.Cache[CacheKey(this.MakeModelID)] = this;
+                HttpRuntime.Cache.Add(CacheKey(MakeModelID), this, null, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromMinutes(60), System.Web.Caching.CacheItemPriority.Normal, null);
         }
 
         private void InitFromDataReader(MySqlDataReader dr)
