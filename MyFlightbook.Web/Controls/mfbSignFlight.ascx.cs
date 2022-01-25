@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -139,7 +138,7 @@ namespace MyFlightbook.Instruction
                 {
                     string szCFIUser = (string)ViewState[szKeyCFIUserName];
                     if (!String.IsNullOrEmpty(szCFIUser))
-                        m_pfCFI = MyFlightbook.Profile.GetUser(szCFIUser);
+                        m_pfCFI = Profile.GetUser(szCFIUser);
                 }
                 return m_pfCFI;
             }
@@ -182,7 +181,7 @@ namespace MyFlightbook.Instruction
                 {
                     int idFlight = (int)ViewState[szKeyVSIDFlight];
                     string szUser = (string)ViewState[szKeyVSIDStudent];
-                    if (idFlight > 0 && idFlight != LogbookEntry.idFlightNew)
+                    if (idFlight > 0 && idFlight != LogbookEntryCore.idFlightNew)
                     {
                         m_le = new LogbookEntry();
                         m_le.FLoadFromDB(idFlight, szUser);
@@ -217,7 +216,7 @@ namespace MyFlightbook.Instruction
             get
             {
                 return Resources.SignOff.AC135_43SICSignoffTemplate
-                            .Replace("[SIC]", MyFlightbook.Profile.GetUser(m_le.User).UserFullName)
+                            .Replace("[SIC]", Profile.GetUser(m_le.User).UserFullName)
                             .Replace("[Route]", String.IsNullOrWhiteSpace(m_le.Route) ? Resources.SignOff.AC135_43NoRoute : m_le.Route)
                             .Replace("[Date]", m_le.Date.ToShortDateString());
             }
@@ -288,60 +287,6 @@ namespace MyFlightbook.Instruction
             r.DataBind();
         }
 
-        protected void CopyToInstructor(LogbookEntry le)
-        {
-            if (le == null)
-                throw new ArgumentNullException(nameof(le));
-            // Now make it look like the CFI's: their username, swap DUAL for CFI time, ensure that PIC time is present.
-            le.FlightID = LogbookEntry.idFlightNew;
-            string szStudentName = MyFlightbook.Profile.GetUser(le.User).UserFullName;
-            List<CustomFlightProperty> lstProps = new List<CustomFlightProperty>(le.CustomProperties);
-            lstProps.ForEach(cfp => cfp.FlightID = le.FlightID);
-
-            // Add the student's name as a property
-            lstProps.RemoveAll(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropStudentName);
-            lstProps.Add(new CustomFlightProperty(new CustomPropertyType(CustomPropertyType.KnownProperties.IDPropStudentName)) { FlightID = le.FlightID, TextValue = szStudentName });
-
-            le.Comment = String.IsNullOrEmpty(le.Comment) ? SigningComments : String.Format(CultureInfo.CurrentCulture, Resources.SignOff.StudentNameTemplate, le.Comment, SigningComments);
-            le.User = CFIProfile.UserName;  // Swap username, of course, but do so AFTER adjusting the comment above (where we had the user's name)
-            le.PIC = le.CFI = Flight.Dual;  // Assume you were PIC for the time you were giving instruction.
-            le.Dual = le.SimulatedIFR = 0.0M;
-
-            // Swap flight review properties, if given to the student.
-            if (le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropFlightReview) || le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropBFR))
-            {
-                lstProps.Add(new CustomFlightProperty(new CustomPropertyType(CustomPropertyType.KnownProperties.IDPropFlightReviewGiven)) { FlightID = le.FlightID, TextValue = szStudentName });
-                lstProps.RemoveAll(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropFlightReview || cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropBFR);
-            }
-
-            // Swap ground instruction given/ground-instruction received
-            CustomFlightProperty cfpGIReceived = lstProps.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived);
-            if (cfpGIReceived != null)
-            {
-                CustomFlightProperty cfpGIGiven = lstProps.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven);
-                if (cfpGIGiven == null)
-                    cfpGIGiven = new CustomFlightProperty(new CustomPropertyType(CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven));
-                cfpGIGiven.DecValue = cfpGIReceived.DecValue;
-                cfpGIGiven.FlightID = le.FlightID;
-                cfpGIReceived.DeleteProperty();
-                lstProps.Remove(cfpGIReceived);
-                lstProps.Add(cfpGIGiven);
-            }
-            le.CustomProperties.SetItems(lstProps);
-
-            // Add this aircraft to the user's profile if needed
-            UserAircraft ua = new UserAircraft(CFIProfile.UserName);
-            Aircraft ac = new Aircraft(le.AircraftID);
-            if (!ua.CheckAircraftForUser(ac))
-                ua.FAddAircraftForUser(ac);
-
-            bool result = le.FCommit(true);
-            if (!result || le.LastError != LogbookEntry.ErrorCode.None)
-                util.NotifyAdminEvent("Error copying flight to instructor's logbook",
-                    String.Format(CultureInfo.CurrentCulture, "Flight: {0}, CFI: {1}, Student: {2}, ErrorCode: {3}, Error: {4}", le.ToString(), le.User, szStudentName, le.LastError, le.ErrorString),
-                    ProfileRoles.maskSiteAdminOnly);
-        }
-
         protected void btnSign_Click(object sender, EventArgs e)
         {
             if (!Page.IsValid)
@@ -393,7 +338,7 @@ namespace MyFlightbook.Instruction
                             // Issue #593 Load any telemetry, if necessary
                             LogbookEntry le = new LogbookEntry(Flight.FlightID, Flight.User, LogbookEntryCore.LoadTelemetryOption.LoadAll);
                             Flight.FlightData = le.FlightData;
-                            CopyToInstructor(Flight.Clone());
+                            Flight.CopyToInstructor(CFIProfile.UserName, SigningComments);
                         }
 
                         Response.Cookies[szKeyCookieCopy].Value = ckCopyFlight.Checked.ToString(CultureInfo.InvariantCulture);

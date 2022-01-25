@@ -27,7 +27,7 @@ using System.Web.UI.WebControls;
 namespace MyFlightbook
 {
     /// <summary>
-    /// Represents a logbook entry, including validation.  Supports retrieval from the database, updates, and entry of new rows
+    /// Base class for a logbook entry, including validation.
     /// </summary>
     [Serializable]
     public abstract class LogbookEntryCore
@@ -722,10 +722,12 @@ namespace MyFlightbook
         protected LogbookEntryCore() { }
     }
 
+    /// <summary>
+    /// Intermediate class for a logbook entry.  Includes database access, retrieval of flights, telemetry, and signing. 
+    /// </summary>
     [Serializable]
     public abstract class LogbookEntryBase : LogbookEntryCore
     {
-        #region SignedFlight Properties
         #region Signature properties
         /// <summary>
         /// The hash of the flight that was signed.  This must equal the newly computed hash of the flight in order for the signature to be valid.
@@ -790,10 +792,7 @@ namespace MyFlightbook
         public bool HasDigitizedSig { get; set; }
         #endregion
 
-        #endregion
-
         #region SignedFlights
-
         public void LoadDigitalSig()
         {
             DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "SELECT DigitizedSignature, LENGTH(DigitizedSignature) AS FileSize, CFIUsername FROM flights WHERE idFlight={0}", FlightID));
@@ -1249,6 +1248,68 @@ namespace MyFlightbook
             SignatureHash = ComputeSignatureHash();
             if (!FCommit(false, true))
                 throw new MyFlightbookValidationException(ErrorString);
+        }
+
+        public void CopyToInstructor(string szCFI, string szSigningComments)
+        {
+            if (szCFI == null)
+                throw new ArgumentNullException(nameof(szCFI));
+            if (szSigningComments == null)
+                szSigningComments = string.Empty;
+
+            LogbookEntry le = Clone();
+
+            // Now make it look like the CFI's: their username, swap DUAL for CFI time, ensure that PIC time is present.
+            le.FlightID = idFlightNew;
+            string szStudentName = Profile.GetUser(le.User).UserFullName;
+            List<CustomFlightProperty> lstProps = new List<CustomFlightProperty>(le.CustomProperties);
+            lstProps.ForEach(cfp => cfp.FlightID = le.FlightID);
+
+            // Add this aircraft to the CFI's profile if needed
+            UserAircraft ua = new UserAircraft(szCFI);
+            Aircraft ac = new Aircraft(le.AircraftID);
+            if (!ua.CheckAircraftForUser(ac))
+                ua.FAddAircraftForUser(ac);
+
+            // Add the student's name as a property
+            lstProps.RemoveAll(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropStudentName);
+            lstProps.Add(new CustomFlightProperty(new CustomPropertyType(CustomPropertyType.KnownProperties.IDPropStudentName)) { FlightID = le.FlightID, TextValue = szStudentName });
+
+            le.Comment = String.IsNullOrEmpty(le.Comment) ? szSigningComments : String.Format(CultureInfo.CurrentCulture, Resources.SignOff.StudentNameTemplate, le.Comment, szSigningComments);
+            le.User = szCFI;  // Swap username, of course, but do so AFTER adjusting the comment above (where we had the user's name)
+            le.PIC = le.CFI = Dual;  // Assume you were CFI and PIC for the time you were giving instruction...
+            //... but if it's a sim, then set total and PIC to 0.
+            if (ac.InstanceType != AircraftInstanceTypes.RealAircraft)
+                le.TotalFlightTime = le.PIC = 0;
+            le.Dual = le.SimulatedIFR = 0.0M;
+
+            // Swap flight review properties, if given to the student.
+            if (le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropFlightReview) || le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropBFR))
+            {
+                lstProps.Add(new CustomFlightProperty(new CustomPropertyType(CustomPropertyType.KnownProperties.IDPropFlightReviewGiven)) { FlightID = le.FlightID, TextValue = szStudentName });
+                lstProps.RemoveAll(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropFlightReview || cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropBFR);
+            }
+
+            // Swap ground instruction given/ground-instruction received
+            CustomFlightProperty cfpGIReceived = lstProps.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived);
+            if (cfpGIReceived != null)
+            {
+                CustomFlightProperty cfpGIGiven = lstProps.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven);
+                if (cfpGIGiven == null)
+                    cfpGIGiven = new CustomFlightProperty(new CustomPropertyType(CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven));
+                cfpGIGiven.DecValue = cfpGIReceived.DecValue;
+                cfpGIGiven.FlightID = le.FlightID;
+                cfpGIReceived.DeleteProperty();
+                lstProps.Remove(cfpGIReceived);
+                lstProps.Add(cfpGIGiven);
+            }
+            le.CustomProperties.SetItems(lstProps);
+
+            bool result = le.FCommit(true);
+            if (!result || le.LastError != ErrorCode.None)
+                util.NotifyAdminEvent("Error copying flight to instructor's logbook",
+                    String.Format(CultureInfo.CurrentCulture, "Flight: {0}, CFI: {1}, Student: {2}, ErrorCode: {3}, Error: {4}", le.ToString(), le.User, szStudentName, le.LastError, le.ErrorString),
+                    ProfileRoles.maskSiteAdminOnly);
         }
 
         #region PendingSignatures
@@ -1995,6 +2056,9 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
         #endregion
     }
 
+    /// <summary>
+    /// Main Logbook entry class, first level that is concrete. 
+    /// </summary>
     [Serializable]
     public class LogbookEntry : LogbookEntryBase, IPostable
     {
