@@ -6,7 +6,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2021 MyFlightbook LLC
+ * Copyright (c) 2013-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -57,12 +57,18 @@ namespace MyFlightbook.RatingsProgress
 
         protected MilestoneItem miInstrumentTraining { get; set; }
 
-        // Per 61.57(h), can count 20 or 30 hours of FTD time, and per 61.57(i) can count 10 or 20 hours of ATD time
+        // Per 61.65(h), can count 20 or 30 (part 142) hours of FTD time, and per 61.65(i) can count 10 or 20 hours of ATD time
         // We use the smaller amount in both cases because we can't tell if it's performed under part 142 (for 61.57(h)) 
         // nor can we distinguish a BATD from an AATD (for 61.57(i)).
         // These limits seem additive, though (can do both FTD and ATD), and since AddTrainingEvent can only accomodate
         // one limited, we have to manually do the FTD limit here.
+        // BUT...per 61.65(j), ATD+FTD time can - at MOST - equal 20 (30, for part 142) hours.  So 10+10 or 5+15 is OK, but 5+20 is not.
         private const int MaxFTDTime = 20;
+
+        private const int MaxSimTime = 20;
+
+        protected decimal SimTimeRemaining = MaxSimTime;
+
         protected int MaxATDTime { get; set; } = 10;
 
         private decimal FTDTimeRemaining { get; set; }
@@ -126,18 +132,23 @@ namespace MyFlightbook.RatingsProgress
 
             decimal IMCTime = cfr.IMC + cfr.IMCSim;
 
+            decimal imcTimeInSim = Math.Min(IMCTime, SimTimeRemaining);
+
             if (cfr.fIsFTD)
             {
-                decimal FTDTimeToApply = Math.Min(IMCTime, FTDTimeRemaining);
+                decimal FTDTimeToApply = Math.Min(imcTimeInSim, FTDTimeRemaining);
                 miMinIMCTime.AddEvent(FTDTimeToApply);
                 FTDTimeRemaining -= FTDTimeToApply;
             }
             else if (cfr.fIsATD)
-                miMinIMCTime.AddTrainingEvent(IMCTime, MaxATDTime, true);
+                miMinIMCTime.AddTrainingEvent(imcTimeInSim, MaxATDTime, true);
 
             // Everything past this point only applies to real aircraft
             if (!cfr.fIsRealAircraft)
+            {
+                SimTimeRemaining = Math.Max(0, SimTimeRemaining - imcTimeInSim);
                 return;
+            }
 
             bool IsInMatchingCategory = CatClassMatchesRatingSought(cfr.idCatClassOverride);
             decimal XCPICTime = Math.Min(cfr.PIC, cfr.XC);
