@@ -6,7 +6,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2021 MyFlightbook LLC
+ * Copyright (c) 2016-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -208,8 +208,12 @@ namespace MyFlightbook.Printing
                 new ListItem(OptionalColumn.TitleForType(OptionalColumnType.AMEL), OptionalColumnType.AMEL.ToString()),
                 new ListItem(OptionalColumn.TitleForType(OptionalColumnType.ASES), OptionalColumnType.ASES.ToString()),
                 new ListItem(OptionalColumn.TitleForType(OptionalColumnType.AMES), OptionalColumnType.AMES.ToString()),
-                new ListItem(OptionalColumn.TitleForType(OptionalColumnType.Helicopter), OptionalColumnType.Helicopter.ToString()),
                 new ListItem(OptionalColumn.TitleForType(OptionalColumnType.Glider), OptionalColumnType.Glider.ToString()),
+                new ListItem(OptionalColumn.TitleForType(OptionalColumnType.Helicopter), OptionalColumnType.Helicopter.ToString()),
+                new ListItem(OptionalColumn.TitleForType(OptionalColumnType.Gyroplane), OptionalColumnType.Gyroplane.ToString()),
+                new ListItem(OptionalColumn.TitleForType(OptionalColumnType.HotAirBalloon), OptionalColumnType.HotAirBalloon.ToString()),
+                new ListItem(OptionalColumn.TitleForType(OptionalColumnType.GasBalloon), OptionalColumnType.GasBalloon.ToString()),
+                new ListItem(OptionalColumn.TitleForType(OptionalColumnType.UAS), OptionalColumnType.UAS.ToString()),
             };
             if (rgcptUserOptionalColumns.Count > 0)
                 lstOptionalColumnDropdowns.Add(new ListItem(Resources.LocalizedText.DropDownListSeparator, string.Empty));

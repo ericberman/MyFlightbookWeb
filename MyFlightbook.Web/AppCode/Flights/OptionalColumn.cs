@@ -15,7 +15,7 @@ namespace MyFlightbook
     /// <summary>
     /// Specifies the kind of additional columns that can be displayed for printing.
     /// </summary>
-    public enum OptionalColumnType { None, Complex, Retract, Tailwheel, HighPerf, TAA, Turbine, Jet, TurboProp, ATD, FTD, FFS, ASEL, ASES, AMEL, AMES, Helicopter, Glider, CustomProp, CrossCountry }
+    public enum OptionalColumnType { None, Complex, Retract, Tailwheel, HighPerf, TAA, Turbine, Jet, TurboProp, ATD, FTD, FFS, ASEL, ASES, AMEL, AMES, Helicopter, Glider, CustomProp, CrossCountry, Gyroplane, HotAirBalloon, GasBalloon, UAS }
 
     public enum OptionalColumnValueType { Decimal, Integer, Time }
 
@@ -118,6 +118,14 @@ namespace MyFlightbook
                     return CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.Glider).CatClass;
                 case OptionalColumnType.Helicopter:
                     return CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.Helicopter).CatClass;
+                case OptionalColumnType.Gyroplane:
+                    return CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.Gyroplane).CatClass;
+                case OptionalColumnType.HotAirBalloon:
+                    return CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.HotAirBalloon).CatClass;
+                case OptionalColumnType.GasBalloon:
+                    return CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.GasBalloon).CatClass;
+                case OptionalColumnType.UAS:
+                    return CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.UnmannedAerialSystem).CatClass;
                 case OptionalColumnType.ATD:
                 case OptionalColumnType.FTD:
                 case OptionalColumnType.FFS:
@@ -142,6 +150,10 @@ namespace MyFlightbook
                     case OptionalColumnType.ASES:
                     case OptionalColumnType.Glider:
                     case OptionalColumnType.Helicopter:
+                    case OptionalColumnType.Gyroplane:
+                    case OptionalColumnType.HotAirBalloon:
+                    case OptionalColumnType.GasBalloon:
+                    case OptionalColumnType.UAS:
                         return true;
                 }
             }
@@ -228,8 +240,24 @@ namespace MyFlightbook
                         if (oc.ColumnType == OptionalColumnType.Helicopter)
                             return false;
                         break;
+                    case CategoryClass.CatClassID.Gyroplane:
+                        if (oc.ColumnType == OptionalColumnType.Gyroplane)
+                            return false;
+                        break;
                     case CategoryClass.CatClassID.Glider:
                         if (oc.ColumnType == OptionalColumnType.Glider)
+                            return false;
+                        break;
+                    case CategoryClass.CatClassID.HotAirBalloon:
+                        if (oc.ColumnType == OptionalColumnType.HotAirBalloon)
+                            return false;
+                        break;
+                    case CategoryClass.CatClassID.GasBalloon:
+                        if (oc.ColumnType == OptionalColumnType.GasBalloon)
+                            return false;
+                        break;
+                    case CategoryClass.CatClassID.UnmannedAerialSystem:
+                        if (oc.ColumnType == OptionalColumnType.UAS)
                             return false;
                         break;
                 }
@@ -257,6 +285,14 @@ namespace MyFlightbook
                         return CategoryClass.CatClassID.Glider;
                     case OptionalColumnType.Helicopter:
                         return CategoryClass.CatClassID.Helicopter;
+                    case OptionalColumnType.Gyroplane:
+                        return CategoryClass.CatClassID.Gyroplane;
+                    case OptionalColumnType.HotAirBalloon:
+                        return CategoryClass.CatClassID.HotAirBalloon;
+                    case OptionalColumnType.GasBalloon:
+                        return CategoryClass.CatClassID.GasBalloon;
+                    case OptionalColumnType.UAS:
+                        return CategoryClass.CatClassID.UnmannedAerialSystem;
                     default:
                         return CategoryClass.CatClassID.ASEL;
                 }

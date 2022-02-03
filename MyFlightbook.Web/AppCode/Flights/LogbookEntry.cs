@@ -3713,6 +3713,14 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                     return OptionalColumnTotalIfCondition(EffectiveCatClass == (int)CategoryClass.CatClassID.Glider);
                 case OptionalColumnType.Helicopter:
                     return OptionalColumnTotalIfCondition(EffectiveCatClass == (int)CategoryClass.CatClassID.Helicopter);
+                case OptionalColumnType.Gyroplane:
+                    return OptionalColumnTotalIfCondition(EffectiveCatClass == (int)CategoryClass.CatClassID.Gyroplane);
+                case OptionalColumnType.HotAirBalloon:
+                    return OptionalColumnTotalIfCondition(EffectiveCatClass == (int)CategoryClass.CatClassID.HotAirBalloon);
+                case OptionalColumnType.GasBalloon:
+                    return OptionalColumnTotalIfCondition(EffectiveCatClass == (int)CategoryClass.CatClassID.GasBalloon);
+                case OptionalColumnType.UAS:
+                    return OptionalColumnTotalIfCondition(EffectiveCatClass == (int)CategoryClass.CatClassID.UnmannedAerialSystem);
                 case OptionalColumnType.ATD:
                     return OptionalColumnGroundSimIfType(AircraftInstanceTypes.CertifiedATD);
                 case OptionalColumnType.FTD:
