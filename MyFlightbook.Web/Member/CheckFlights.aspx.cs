@@ -10,7 +10,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2021 MyFlightbook LLC
+ * Copyright (c) 2021-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -33,10 +33,18 @@ namespace MyFlightbook.Web.Member
             if (le.IsNewFlight) // should never happen.
                 throw new InvalidOperationException("Flight doesn't exist");
 
-            le.Route = String.Format(CultureInfo.CurrentCulture, "{0}{1}", le.Route.Trim(), fIgnore ? FlightLint.IgnoreMarker : string.Empty);
+            SetIgnoreFlagForFlight(le, fIgnore);
             le.CommitRoute();  // Save the change, but hold on to the flight in the list for now so that you can uncheck it.
         }
         #endregion
+
+        protected static void SetIgnoreFlagForFlight(LogbookEntryCore le, bool fIgnore)
+        {
+            if (le == null)
+                throw new ArgumentNullException(nameof(le));
+
+            le.Route = String.Format(CultureInfo.CurrentCulture, "{0}{1}", le.Route.Trim(), fIgnore ? FlightLint.IgnoreMarker : string.Empty);
+        }
 
         protected const string szCookieLastCheck = "cookieLastCheck";
 
@@ -68,6 +76,23 @@ namespace MyFlightbook.Web.Member
                         lblLastCheck.Text = String.Format(CultureInfo.CurrentCulture, Resources.FlightLint.PromptLastCheckDate, dtLastCheck);
                         hdnLastDateCheck.Value = dtLastCheck.ToString("d", CultureInfo.CurrentCulture);
                     }
+                }
+            } else
+            {
+                // fix issue #906 - need to preserve ignore status
+                if (!String.IsNullOrEmpty(hdnChanged.Value))
+                {
+                    Dictionary<int, bool> d = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<int, bool>>(hdnChanged.Value);
+                    if (d.Any())
+                    {
+                        foreach (FlightWithIssues f in CheckedFlights)
+                        {
+                            // set the ignore value appropriately, but no need to commit - we're synching our cached objects with already-committed changes.
+                            if (d.ContainsKey(f.Flight.FlightID))
+                                SetIgnoreFlagForFlight(f.Flight, d[f.Flight.FlightID]);
+                        }
+                    }
+                    hdnChanged.Value = string.Empty;
                 }
             }
         }
@@ -143,6 +168,9 @@ namespace MyFlightbook.Web.Member
         protected void mfbEditFlight_FlightEditCanceled(object sender, EventArgs e)
         {
             mvCheckFlight.SetActiveView(vwIssues);
+
+            // fix issue #906 - need to preserve ignore status
+            BindFlights(CheckedFlights, -1);    
         }
 
         protected void mfbEditFlight_FlightUpdated(object sender, LogbookEventArgs e)

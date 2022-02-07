@@ -24,7 +24,12 @@
                         window.alert(xhr.responseJSON.Message);
                     },
                     complete: function (response) { },
-                    success: function (response) { }
+                    success: function (response) {
+                        var h = document.getElementById('<% =hdnChanged.ClientID %>');
+                        var d = (h.value == '') ? {} : JSON.parse(h.value);
+                        d[id] = sender.checked;
+                        h.value = JSON.stringify(d);
+                    }
                 });
         }
     </script>
@@ -35,6 +40,7 @@
             <p><asp:Label ID="lblCheckFlightsCategories" runat="server"></asp:Label></p>
             <asp:Panel ID="pnlMainForm" runat="server" DefaultButton="btnCheckAll">
                 <div style="margin-left: 3em;">
+                    <asp:HiddenField ID="hdnChanged" runat="server" />
                     <div><asp:CheckBox ID="ckAll" runat="server" AutoPostBack="true" OnCheckedChanged="ckAll_CheckedChanged" Text="<%$ Resources:LocalizedText, SelectAll %>" /></div>
                     <div><asp:CheckBox ID="ckSim" runat="server" Text="<%$ Resources:FlightLint, LintCategorySim %>" Checked="true" /><uc1:mfbtooltip runat="server" id="mfbTooltip" BodyContent="<%$ Resources:FlightLint, LintCategorySimTip %>" /></div>
                     <div><asp:CheckBox ID="ckIFR" runat="server" Text="<%$ Resources:FlightLint, LintCategoryIFR %>" Checked="true" /><uc1:mfbtooltip runat="server" id="mfbTooltip1" BodyContent="<%$ Resources:FlightLint, LintCategoryIFRTip %>" /></div>
