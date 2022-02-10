@@ -2142,6 +2142,42 @@ namespace Resources {
         }
         
         /// <summary>
+        ///    Looks up a localized string similar to 50 hours of cross-country PIC time.
+        /// </summary>
+        internal static string MinEASAIRXCPICTime {
+            get {
+                return ResourceManager.GetString("MinEASAIRXCPICTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to 20 hours of cross-country PIC time in airplanes.
+        /// </summary>
+        internal static string MinEASAIRXCPICTimeAirplanes {
+            get {
+                return ResourceManager.GetString("MinEASAIRXCPICTimeAirplanes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to 10 hours of training in an airplane by reference to instruments.
+        /// </summary>
+        internal static string MinIFRTrainingByRef {
+            get {
+                return ResourceManager.GetString("MinIFRTrainingByRef", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to 15 Hours of Training in Instrument Flying.
+        /// </summary>
+        internal static string MinIFRTrainingUK {
+            get {
+                return ResourceManager.GetString("MinIFRTrainingUK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///    Looks up a localized string similar to 10 Hours of cross-country flight as PIC in {0}.
         /// </summary>
         internal static string MinInstrumentPICInCategory {
@@ -2349,6 +2385,42 @@ namespace Resources {
         }
         
         /// <summary>
+        ///    Looks up a localized string similar to 10 hours as PIC in aeroplanes.
+        /// </summary>
+        internal static string MinUKPICTime {
+            get {
+                return ResourceManager.GetString("MinUKPICTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to 5 hours as PIC in aeroplanes in cross-country flight.
+        /// </summary>
+        internal static string MinUKPICXCTime {
+            get {
+                return ResourceManager.GetString("MinUKPICXCTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to 25 hours in aeroplanes.
+        /// </summary>
+        internal static string MinUKTotalTimeTraining {
+            get {
+                return ResourceManager.GetString("MinUKTotalTimeTraining", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to This is required to be after issuance of a PPL certificate; %APP_NAME% cannot determine reliably when you earned this, so may OVERSTATE your time here.
+        /// </summary>
+        internal static string MinUKTotalTimeTrainingNote {
+            get {
+                return ResourceManager.GetString("MinUKTotalTimeTrainingNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///    Looks up a localized string similar to One solo cross-country flight of {1}NM total distance and a leg that is at least {2}NM, with three takeoffs and landings to a full-stop in {0}.
         /// </summary>
         internal static string MinXCDistance {
@@ -2376,7 +2448,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to One night-time cross-country flight of over 50NM distance in {0}.
+        ///    Looks up a localized string similar to One night-time cross-country flight of over 50nm distance in {0}.
         /// </summary>
         internal static string MinXCNight50nm {
             get {
@@ -2498,6 +2570,15 @@ namespace Resources {
         internal static string NoteLSATime {
             get {
                 return ResourceManager.GetString("NoteLSATime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to %APP_NAME% assumes that any dual instruction received on a flight that contains any actual or simulated IMC counts to is counted towards this.  Also, any certified simulator is credited towards the 5 hour allowance, which may be more than you are entitled to..
+        /// </summary>
+        internal static string NoteMinIFRTrainingUK {
+            get {
+                return ResourceManager.GetString("NoteMinIFRTrainingUK", resourceCulture);
             }
         }
         
@@ -4198,6 +4279,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///    Looks up a localized string similar to EASA IR (Airplane).
+        /// </summary>
+        internal static string TitleEASAFCLIRAirplane {
+            get {
+                return ResourceManager.GetString("TitleEASAFCLIRAirplane", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///    Looks up a localized string similar to EASA - PPL(H): Helicopter Private Pilot.
         /// </summary>
         internal static string TitleEASAHelicopterPPL {
@@ -4320,6 +4410,15 @@ namespace Resources {
         internal static string TitleSportWeightShiftControlSea {
             get {
                 return ResourceManager.GetString("TitleSportWeightShiftControlSea", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to UK IR(R) - Restricted Instrument.
+        /// </summary>
+        internal static string TitleUKIRRestricted {
+            get {
+                return ResourceManager.GetString("TitleUKIRRestricted", resourceCulture);
             }
         }
         

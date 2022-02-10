@@ -8,7 +8,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2021 MyFlightbook LLC
+ * Copyright (c) 2013-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -302,6 +302,8 @@ namespace MyFlightbook.RatingsProgress
         InstrumentAirplane,
         InstrumentHelicopter,
         InstrumentPoweredLift,
+        InstrumentEASAIRAirplane,
+        InstrumentUKIRRestricted,
 
         // Recreational Pilot - 61.99
         RecreationalPilot,
@@ -469,6 +471,8 @@ namespace MyFlightbook.RatingsProgress
                 case RatingType.PPLEASANightHelicopter:
                     return (ccid == CategoryClass.CatClassID.Helicopter || ccid == CategoryClass.CatClassID.Gyroplane);
                 case RatingType.InstrumentAirplane:
+                case RatingType.InstrumentEASAIRAirplane:
+                case RatingType.InstrumentUKIRRestricted:
                 case RatingType.SAPPLAirplane:
                 case RatingType.SAPPLNightAirplane:
                 case RatingType.CAPPLAirplaneLand:

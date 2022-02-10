@@ -1547,4 +1547,37 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <value>Progress towards {0} for {1}, as of {2}</value>
     <comment>{0} = the milestone, {1} is the user's name, {2} is the current date</comment>
   </data>
+  <data name="MinEASAIRXCPICTime" xml:space="preserve">
+    <value>50 hours of cross-country PIC time</value>
+  </data>
+  <data name="MinEASAIRXCPICTimeAirplanes" xml:space="preserve">
+    <value>20 hours of cross-country PIC time in airplanes</value>
+  </data>
+  <data name="MinIFRTrainingByRef" xml:space="preserve">
+    <value>10 hours of training in an airplane by reference to instruments</value>
+  </data>
+  <data name="MinIFRTrainingUK" xml:space="preserve">
+    <value>15 Hours of Training in Instrument Flying</value>
+  </data>
+  <data name="NoteMinIFRTrainingUK" xml:space="preserve">
+    <value>%APP_NAME% assumes that any dual instruction received on a flight that contains any actual or simulated IMC counts to is counted towards this.  Also, any certified simulator is credited towards the 5 hour allowance, which may be more than you are entitled to.</value>
+  </data>
+  <data name="TitleEASAFCLIRAirplane" xml:space="preserve">
+    <value>EASA IR (Airplane)</value>
+  </data>
+  <data name="TitleUKIRRestricted" xml:space="preserve">
+    <value>UK IR(R) - Restricted Instrument</value>
+  </data>
+  <data name="MinUKPICTime" xml:space="preserve">
+    <value>10 hours as PIC in aeroplanes</value>
+  </data>
+  <data name="MinUKPICXCTime" xml:space="preserve">
+    <value>5 hours as PIC in aeroplanes in cross-country flight</value>
+  </data>
+  <data name="MinUKTotalTimeTraining" xml:space="preserve">
+    <value>25 hours in aeroplanes</value>
+  </data>
+  <data name="MinUKTotalTimeTrainingNote" xml:space="preserve">
+    <value>This is required to be after issuance of a PPL certificate; %APP_NAME% cannot determine reliably when you earned this, so may OVERSTATE your time here</value>
+  </data>
 </root>

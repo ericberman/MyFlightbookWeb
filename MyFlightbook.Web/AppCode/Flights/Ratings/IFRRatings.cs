@@ -36,7 +36,9 @@ namespace MyFlightbook.RatingsProgress
                     new IFR141CAirplane(),
                     new IFR141CHelicopter(),
                     new IFRCanadaAirplane(),
-                    new IFRCanadaHelicopter()
+                    new IFRCanadaHelicopter(),
+                    new IFRFCL610Airplane(),
+                    new IFRUKIRRestricted()
                 };
             }
         }
@@ -393,5 +395,99 @@ namespace MyFlightbook.RatingsProgress
         }
     }
     #endregion
+    #endregion
+
+    #region EASA/UK IR ratings
+    /// <summary>
+    /// Implements FCL.610 - EASA's IR rating for airplanes.  See https://www.easa.europa.eu/sites/default/files/dfu/Part-FCL.pdf
+    /// </summary>
+    public class IFRFCL610Airplane : MilestoneProgress
+    {
+        protected MilestoneItem miMinXCPICTime { get; set; }
+        protected MilestoneItem miMinXCPICTimeInCategory { get; set; }
+
+        public override Collection<MilestoneItem> Milestones => new Collection<MilestoneItem>() { miMinXCPICTime, miMinXCPICTimeInCategory };
+
+        public IFRFCL610Airplane()
+        {
+            Title = Resources.MilestoneProgress.TitleEASAFCLIRAirplane;
+            BaseFAR = "FCL.610 IR(b)";
+            RatingSought = RatingType.InstrumentEASAIRAirplane;
+
+            miMinXCPICTime = new MilestoneItem(Resources.MilestoneProgress.MinEASAIRXCPICTime, BaseFAR, string.Empty, MilestoneItem.MilestoneType.Time, 50);
+            miMinXCPICTimeInCategory = new MilestoneItem(Resources.MilestoneProgress.MinEASAIRXCPICTimeAirplanes, BaseFAR, string.Empty, MilestoneItem.MilestoneType.Time, 20);
+        }
+
+        public override void ExamineFlight(ExaminerFlightRow cfr)
+        {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
+
+            if (!cfr.fIsRealAircraft)
+                return;
+
+            bool fIsAirplane = CategoryClass.IsAirplane(cfr.idCatClassOverride);
+            if (fIsAirplane || cfr.idCatClassOverride == CategoryClass.CatClassID.Helicopter || cfr.idCatClassOverride == CategoryClass.CatClassID.Airship)
+            {
+                decimal PICXC = Math.Min(cfr.PIC, cfr.XC);
+                miMinXCPICTime.AddEvent(PICXC);
+                if (fIsAirplane)
+                    miMinXCPICTimeInCategory.AddEvent(PICXC);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Implements UK IR(R) (restricted) rating - see https://publicapps.caa.co.uk/docs/33/CAP804April2015REFONLY.pdf
+    /// </summary>
+    public class IFRUKIRRestricted : MilestoneProgress
+    {
+        protected MilestoneItem miTotalTime { get; set; }
+        protected MilestoneItem miPICTime { get; set; }
+        protected MilestoneItem miPICXCTime { get; set; }
+        protected MilestoneItem miTraining { get; set; }
+        protected MilestoneItem miInstTraining { get; set; }
+
+        public IFRUKIRRestricted()
+        {
+            Title = Resources.MilestoneProgress.TitleUKIRRestricted;
+            BaseFAR = "CAP 804 Part I E 3.1";
+            RatingSought = RatingType.InstrumentUKIRRestricted;
+
+            miTotalTime = new MilestoneItem(Resources.MilestoneProgress.MinUKTotalTimeTraining, "(a)(i)", Branding.ReBrand(Resources.MilestoneProgress.MinUKTotalTimeTrainingNote), MilestoneItem.MilestoneType.Time, 25);
+            miPICTime = new MilestoneItem(Resources.MilestoneProgress.MinUKPICTime, "(a)(ii)", string.Empty, MilestoneItem.MilestoneType.Time, 10);
+            miPICXCTime = new MilestoneItem(Resources.MilestoneProgress.MinUKPICXCTime, "(a)(ii)", string.Empty, MilestoneItem.MilestoneType.Time, 10);
+            miTraining = new MilestoneItem(Resources.MilestoneProgress.MinIFRTrainingUK, "(b)", Branding.ReBrand(Resources.MilestoneProgress.NoteMinIFRTrainingUK), MilestoneItem.MilestoneType.Time, 15);
+            miInstTraining = new MilestoneItem(Resources.MilestoneProgress.MinIFRTrainingByRef, "(b)", string.Empty, MilestoneItem.MilestoneType.Time, 10);
+        }
+
+        public override Collection<MilestoneItem> Milestones => new Collection<MilestoneItem>() { miTotalTime, miPICTime, miPICXCTime, miTraining, miInstTraining };
+
+        public override void ExamineFlight(ExaminerFlightRow cfr)
+        {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
+
+            if (!CatClassMatchesRatingSought(cfr.idCatClassOverride))
+                return;
+
+            miTotalTime.AddEvent(cfr.Total);
+            miPICTime.AddEvent(cfr.PIC);
+            miPICXCTime.AddEvent(Math.Min(cfr.PIC, cfr.XC));
+
+            decimal instTime = cfr.IMC + cfr.IMCSim;
+            decimal instInstruction = Math.Min(cfr.Dual, instTime);
+
+            if (instTime == 0 || !cfr.fIsCertifiedIFR)
+                return;
+
+            miTraining.AddTrainingEvent(cfr.Dual, 5, !cfr.fIsRealAircraft);
+
+            if (cfr.fIsRealAircraft)
+                miInstTraining.AddEvent(instInstruction);
+            if (!cfr.fIsRealAircraft)
+                return;
+        }
+    }
     #endregion
 }
