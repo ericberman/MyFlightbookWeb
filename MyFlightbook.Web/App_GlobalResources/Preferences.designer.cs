@@ -349,7 +349,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Canada - PPL (Glider, Ultrarlight).
+        ///    Looks up a localized string similar to Canada - PPL (Glider, Ultralight).
         /// </summary>
         internal static string MedicalTypeCanadaGlider {
             get {
