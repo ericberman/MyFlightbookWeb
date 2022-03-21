@@ -597,7 +597,10 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
                 MakeModelID = dbh.LastInsertedRowId;
 
             if (MakeModelID != -1)
+            {
+                HttpRuntime.Cache.Remove(CacheKey(MakeModelID));    // remove, then replace.
                 HttpRuntime.Cache.Add(CacheKey(MakeModelID), this, null, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromMinutes(60), System.Web.Caching.CacheItemPriority.Normal, null);
+            }
         }
 
         private void InitFromDataReader(MySqlDataReader dr)
