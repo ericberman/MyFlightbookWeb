@@ -10,7 +10,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2021 MyFlightbook LLC
+ * Copyright (c) 2019-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -101,6 +101,9 @@ namespace MyFlightbook.OAuth
             _oA2UpgradeEndpoint = szUpgradeEndpoint;
             _oA2DisableTokenEndpoint = szDisableEndpoint;
             Scopes = scopes;
+
+            // Do everything with at least Tls1.2
+            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
         }
 
         private AuthorizationServerDescription Description()
