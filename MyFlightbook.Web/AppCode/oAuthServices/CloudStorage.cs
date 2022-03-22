@@ -222,17 +222,13 @@ namespace MyFlightbook.CloudStorage
         private string RootFolderID { get; set; }
         private Profile profile { get; set; }
 
-        public GoogleDrive(Profile pf, string szRootPath = "")
+        public GoogleDrive(Profile pf = null, string szRootPath = "")
             : base("GoogleDriveAccessID", "GoogleDriveClientSecret", "https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent", "https://www.googleapis.com/oauth2/v4/token", new string[] { "https://www.googleapis.com/auth/drive.appdata", "https://www.googleapis.com/auth/drive.file" })
         {
             AuthParam = szParamGDriveAuth;
-            RootPath = String.IsNullOrEmpty(szRootPath) ? Branding.CurrentBrand.AppName : szRootPath;
+            RootPath = String.Format(CultureInfo.CurrentCulture, "{0} {1}", String.IsNullOrEmpty(szRootPath) ? Branding.CurrentBrand.AppName : szRootPath, DateTime.Now.ToString("yyyy-MM-MMMM", CultureInfo.CurrentCulture));
             RootFolderID = string.Empty;
             profile = pf;
-        }
-
-        public GoogleDrive(Profile pf = null) : this(pf, Branding.CurrentBrand.AppName)
-        {
             AuthState = pf?.GoogleDriveAccessToken;
         }
 
@@ -251,28 +247,28 @@ namespace MyFlightbook.CloudStorage
                     form.Add(metadata);
 
                     return (string)await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri(szURLUploadEndpoint), AuthState.AccessToken, form, (response) =>
-                   {
-                       string szResult = string.Empty;
-                       try
-                       {
-                           szResult = response.Content.ReadAsStringAsync().Result;
-                           response.EnsureSuccessStatusCode();
-                           if (!String.IsNullOrEmpty(szResult))
-                           {
-                               GoogleDriveFileMetadata gfm = JsonConvert.DeserializeObject<GoogleDriveFileMetadata>(szResult);
-                               if (gfm != null)
-                                   return gfm.id;
-                           }
-                           return szResult;
-                       }
-                       catch (HttpRequestException ex)
-                       {
-                           if (response == null)
-                               throw new MyFlightbookException("Unknown error in GoogleDrive.CreateFolder", ex);
-                           else
-                               throw new MyFlightbookException(response.ReasonPhrase + " " + szResult);
-                       }
-                   });
+                    {
+                        string szResult = string.Empty;
+                        try
+                        {
+                            szResult = response.Content.ReadAsStringAsync().Result;
+                            response.EnsureSuccessStatusCode();
+                            if (!String.IsNullOrEmpty(szResult))
+                            {
+                                GoogleDriveFileMetadata gfm = JsonConvert.DeserializeObject<GoogleDriveFileMetadata>(szResult);
+                                if (gfm != null)
+                                    return gfm.id;
+                            }
+                            return szResult;
+                        }
+                        catch (HttpRequestException ex)
+                        {
+                            if (response == null)
+                                throw new MyFlightbookException("Unknown error in GoogleDrive.CreateFolder", ex);
+                            else
+                                throw new MyFlightbookException(response.ReasonPhrase + " " + szResult);
+                        }
+                    });
                 }
             }
         }
@@ -285,7 +281,7 @@ namespace MyFlightbook.CloudStorage
         /// <returns>The ID of the resulting object (if found)</returns>
         protected static string FolderQuery(string szFolderName)
         {
-            return String.Format(System.Globalization.CultureInfo.InvariantCulture, "name%3D'{0}'+and+mimeType%3D'application%2Fvnd.google-apps.folder'", szFolderName);
+            return String.Format(CultureInfo.InvariantCulture, "name%3D'{0}'+and+mimeType%3D'application%2Fvnd.google-apps.folder'", szFolderName);
         }
 
         /// <summary>
@@ -296,7 +292,7 @@ namespace MyFlightbook.CloudStorage
         /// <returns>The ID of the resulting object (if found)</returns>
         protected static string FileQuery(string szFileName, string szParent)
         {
-            return String.Format(System.Globalization.CultureInfo.InvariantCulture, "name%3D'{0}'+and+'{1}'+in+parents+and+trashed%3Dfalse", szFileName, szParent);
+            return String.Format(CultureInfo.InvariantCulture, "name%3D'{0}'+and+'{1}'+in+parents+and+trashed%3Dfalse", szFileName, szParent);
         }
 
         /// <summary>
@@ -392,7 +388,7 @@ namespace MyFlightbook.CloudStorage
             {
                 RootFolderID = await IDForFolder(RootPath).ConfigureAwait(false);
                 if (String.IsNullOrEmpty(RootFolderID))
-                    RootFolderID = await CreateFolder(Branding.CurrentBrand.AppName).ConfigureAwait(false);
+                    RootFolderID = await CreateFolder(RootPath).ConfigureAwait(false);
             }
 
             // CSV loses its extension when uploaded because we map it to a google spreadsheet.  So if it's CSV AND we are patching an existing file, drop the extension so that we ov
@@ -685,15 +681,11 @@ namespace MyFlightbook.CloudStorage
 
         private Profile profile { get; set; }
 
-        public OneDrive(Profile pf, string szRootPath = "") 
+        public OneDrive(Profile pf = null) 
             : base("OneDriveAccessID", "OneDriveClientSecret", "https://login.live.com/oauth20_authorize.srf", "https://login.live.com/oauth20_token.srf", new string[] { "onedrive.appfolder", "wl.basic", "onedrive.readwrite", "wl.offline_access" })
         {
-            RootPath = szRootPath;
+            RootPath = String.Format(CultureInfo.CurrentCulture, "{0}/{1}/", Branding.CurrentBrand.AppName, DateTime.Now.ToString("yyyy/MM-MMMM", CultureInfo.CurrentCulture)); ;
             profile = pf;
-        }
-
-        public OneDrive(Profile pf = null) : this(pf, Branding.CurrentBrand.AppName + "/")
-        {
             AuthState = pf?.OneDriveAccessToken;
         }
 
@@ -844,6 +836,7 @@ namespace MyFlightbook.CloudStorage
                   new string[] { "files.content.write", "files.content.read", "files.metadata.write", "files.metadata.read" }, "https://api.dropboxapi.com/2/auth/token/from_oauth1", "https://api.dropboxapi.com/2/auth/token/revoke")
         {
             profile = pf;
+            RootPath = DateTime.Now.ToString("/yyyy/MM-MMMM/", CultureInfo.CurrentCulture);
         }
 
         /// <summary>
@@ -876,7 +869,7 @@ namespace MyFlightbook.CloudStorage
 
                     using (MemoryStream stream = new MemoryStream(rgbOAuth1Token))
                     {
-                        System.Runtime.Serialization.DataContractSerializer serializer = new System.Runtime.Serialization.DataContractSerializer(typeof(Dictionary<string, string>));
+                        DataContractSerializer serializer = new DataContractSerializer(typeof(Dictionary<string, string>));
                         Object o = serializer.ReadObject(stream);
                         if (o.GetType().Equals(typeof(Dictionary<string, string>)))
                         {
@@ -969,7 +962,7 @@ namespace MyFlightbook.CloudStorage
 
             using (DropboxClient dbx = new DropboxClient(szToken))
             {
-                Dropbox.Api.Files.FileMetadata updated = await dbx.Files.UploadAsync("/" + szFileName, Dropbox.Api.Files.WriteMode.Overwrite.Instance, body: ms).ConfigureAwait(false);
+                Dropbox.Api.Files.FileMetadata updated = await dbx.Files.UploadAsync(RootPath + szFileName, Dropbox.Api.Files.WriteMode.Overwrite.Instance, body: ms).ConfigureAwait(false);
                 return updated;
             }
         }
