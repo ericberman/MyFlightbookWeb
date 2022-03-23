@@ -191,15 +191,21 @@
                                         onservervalidate="valCorrectPassword_ServerValidate" Display="Dynamic" />
                                 </div>
                             </asp:Panel>
-                            <div>
+                            <div style="width:280px">
                                 <asp:Label ID="lblCFICommentsPrompt" runat="server" 
                                     Text="<%$ Resources:Signoff, CFIComments %>" Font-Bold="True" />
+                                <span class="fineprint" style="float:right" id="lblCharCount">0/250</span>
                             </div>
                             <div><asp:CheckBox ID="ckSignSICEndorsement" runat="server" Text="<%$ Resources:SignOff, PromptUseAC13543ForSIC %>" Visible="false" AutoPostBack="true" OnCheckedChanged="ckSignSICEndorsement_CheckedChanged" /></div>
                             <div>
                                 <asp:MultiView ID="mvComments" runat="server" ActiveViewIndex="0">
                                     <asp:View ID="vwEdit" runat="server">
-                                        <asp:TextBox ID="txtComments" runat="server" Rows="3" Width="280px" TextMode="MultiLine" />
+                                        <asp:TextBox ID="txtComments" runat="server" Rows="3" Width="280px" TextMode="MultiLine" oninput="updateCount(this)" />
+                                        <script type="text/javascript">
+                                            function updateCount(sender) {
+                                                document.getElementById("lblCharCount").innerText = sender.value.length + "/250";
+                                            }
+                                        </script>
                                     </asp:View>
                                     <asp:View ID="vwTemplate" runat="server">
                                         <asp:Label ID="lblSICTemplate" runat="server" Width="280px" BorderColor="Gray" BorderStyle="Solid" BorderWidth="1px" style="padding: 4px"></asp:Label>

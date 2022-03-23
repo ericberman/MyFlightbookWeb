@@ -269,6 +269,7 @@ namespace MyFlightbook.Instruction
                 LogbookEntry _ = Flight;    // force the flight to load.
             }
 
+            txtComments.Attributes["maxlength"] = "250";
             UpdateDateState();
             dropDateCFIExpiration.DefaultDate = DateTime.MinValue;
         }
