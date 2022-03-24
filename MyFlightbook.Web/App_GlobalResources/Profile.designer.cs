@@ -457,6 +457,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///    Looks up a localized string similar to Your password has changed since this authorization was issued.  Please sign in again with the new password..
+        /// </summary>
+        internal static string AuthTokenExpiredPassword {
+            get {
+                return ResourceManager.GetString("AuthTokenExpiredPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///    Looks up a localized string similar to Add BasicMed event.
         /// </summary>
         internal static string BasicMedAddEvent {

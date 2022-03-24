@@ -279,7 +279,15 @@ namespace MyFlightbook
                 if (elapsedTicksDays > 14)
                     EventRecorder.WriteEvent(EventRecorder.MFBEventID.ExpiredToken, rgsz[0], String.Format(CultureInfo.InvariantCulture, "Expired token for user (2-week expiration): {0} days", elapsedTicksDays.ToString(CultureInfo.InvariantCulture)));
 
-                return rgsz[0];
+                string szUser = rgsz[0];
+                /* HOLD OFF UNTIL WE CONVERT TO ALL UTC
+                // Issue #920: force new sign-in if authtoken was issued prior to last password change.
+                // Validate the user and if this was issued before the last password change, don't allow it.
+                Profile pf = Profile.GetUser(szUser);
+                if (pf.LastPasswordChange.Ticks > ticks)
+                    throw new MyFlightbookException(Resources.Profile.AuthTokenExpiredPassword);
+                */
+                return szUser;
             }
             else
             {
@@ -1298,9 +1306,17 @@ namespace MyFlightbook
             if (szPreviousToken == null)
                 throw new ArgumentNullException(nameof(szPreviousToken));
 
-            string szUserOld = GetEncryptedUser(szPreviousToken);
-            if (szUserOld == null)
+            string szUserOld;
+            try
+            {
+                szUserOld = GetEncryptedUser(szPreviousToken);
+                if (szUserOld == null)
+                    return null;
+            } catch (MyFlightbookException)
+            {
+                // Most likely exception is that the password was changed but refresh is using old password.
                 return null;
+            }
 
             string szTokenNew = AuthTokenForUser(szAppToken, szUser, szPass);
             if (szTokenNew == null)

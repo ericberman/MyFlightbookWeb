@@ -286,7 +286,7 @@ namespace Andri.Web
                         " WHERE Username = ?Username AND ApplicationName = ?ApplicationName", conn))
                 {
                     cmd.Parameters.Add("?Password", MySqlDbType.VarChar, 255).Value = EncodePassword(newPassword);
-                    cmd.Parameters.Add("?LastPasswordChangedDate", MySqlDbType.DateTime).Value = DateTime.Now;
+                    cmd.Parameters.Add("?LastPasswordChangedDate", MySqlDbType.DateTime).Value = DateTime.UtcNow;
                     cmd.Parameters.Add("?Username", MySqlDbType.VarChar, 255).Value = username;
                     cmd.Parameters.Add("?ApplicationName", MySqlDbType.VarChar, 255).Value = pApplicationName;
 
@@ -418,7 +418,7 @@ namespace Andri.Web
 
             if (u == null)
             {
-                DateTime createDate = DateTime.Now;
+                DateTime createDate = DateTime.UtcNow;
 
                 if (providerUserKey == null)
                 {
@@ -638,8 +638,8 @@ namespace Andri.Web
         public override int GetNumberOfUsersOnline()
         {
 
-            TimeSpan onlineSpan = new TimeSpan(0, System.Web.Security.Membership.UserIsOnlineTimeWindow, 0);
-            DateTime compareTime = DateTime.Now.Subtract(onlineSpan);
+            TimeSpan onlineSpan = new TimeSpan(0, Membership.UserIsOnlineTimeWindow, 0);
+            DateTime compareTime = DateTime.UtcNow.Subtract(onlineSpan);
 
             using (MySqlConnection conn = new MySqlConnection(connectionString))
             {
@@ -798,7 +798,7 @@ namespace Andri.Web
                                               "SET LastActivityDate = ?LastActivityDate " +
                                               "WHERE Username = ?Username AND ApplicationName = ?ApplicationName", conn))
                                     {
-                                        updateCmd.Parameters.Add("?LastActivityDate", MySqlDbType.VarChar).Value = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss", CultureInfo.InvariantCulture);
+                                        updateCmd.Parameters.Add("?LastActivityDate", MySqlDbType.VarChar).Value = DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss", CultureInfo.InvariantCulture);
                                         updateCmd.Parameters.Add("?Username", MySqlDbType.VarChar, 255).Value = username;
                                         updateCmd.Parameters.Add("?ApplicationName", MySqlDbType.VarChar, 255).Value = pApplicationName;
 
@@ -863,7 +863,7 @@ namespace Andri.Web
                                               "SET LastActivityDate = ?LastActivityDate " +
                                               "WHERE PKID = ?PKID", conn))
                                     {
-                                        updateCmd.Parameters.Add("?LastActivityDate", MySqlDbType.VarChar).Value = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss", CultureInfo.InvariantCulture);
+                                        updateCmd.Parameters.Add("?LastActivityDate", MySqlDbType.VarChar).Value = DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss", CultureInfo.InvariantCulture);
                                         updateCmd.Parameters.Add("?PKID", MySqlDbType.VarChar).Value = providerUserKey;
 
                                         updateCmd.ExecuteNonQuery();
@@ -908,11 +908,11 @@ namespace Andri.Web
             string comment = reader.IsDBNull(4)                    ? "" : reader.GetString(4);
             bool isApproved = !reader.IsDBNull(5) && reader.GetBoolean(5);
             bool isLockedOut = !reader.IsDBNull(6) && reader.GetBoolean(6);
-            DateTime creationDate = reader.IsDBNull(7)             ? DateTime.Now : reader.GetDateTime(7);
-            DateTime lastLoginDate = reader.IsDBNull(8)            ? DateTime.Now : reader.GetDateTime(8);
-            DateTime lastActivityDate = reader.IsDBNull(9)         ? DateTime.Now : reader.GetDateTime(9);
-            DateTime lastPasswordChangedDate = reader.IsDBNull(10) ? DateTime.Now : reader.GetDateTime(10);
-            DateTime lastLockedOutDate = reader.IsDBNull(11)       ? DateTime.Now : reader.GetDateTime(11);
+            DateTime creationDate = reader.IsDBNull(7)             ? DateTime.UtcNow : reader.GetDateTime(7);
+            DateTime lastLoginDate = reader.IsDBNull(8)            ? DateTime.UtcNow : reader.GetDateTime(8);
+            DateTime lastActivityDate = reader.IsDBNull(9)         ? DateTime.UtcNow : reader.GetDateTime(9);
+            DateTime lastPasswordChangedDate = reader.IsDBNull(10) ? DateTime.UtcNow : reader.GetDateTime(10);
+            DateTime lastLockedOutDate = reader.IsDBNull(11)       ? DateTime.UtcNow : reader.GetDateTime(11);
 
             MembershipUser u = new MembershipUser(this.Name,
                                                   username,
@@ -945,7 +945,7 @@ namespace Andri.Web
                                                 " WHERE Username = ?Username AND ApplicationName = ?ApplicationName", conn))
                 {
 
-                    cmd.Parameters.Add("?LastLockedOutDate", MySqlDbType.DateTime).Value = DateTime.Now;
+                    cmd.Parameters.Add("?LastLockedOutDate", MySqlDbType.DateTime).Value = DateTime.UtcNow;
                     cmd.Parameters.Add("?Username", MySqlDbType.VarChar, 255).Value = userName;
                     cmd.Parameters.Add("?ApplicationName", MySqlDbType.VarChar, 255).Value = pApplicationName;
 
@@ -1105,7 +1105,7 @@ namespace Andri.Web
                             " WHERE Username = ?Username AND ApplicationName = ?ApplicationName AND IsLockedOut = 0", conn))
                         {
                             updateCmd.Parameters.Add("?Password", MySqlDbType.VarChar, 255).Value = EncodePassword(newPassword);
-                            updateCmd.Parameters.Add("?LastPasswordChangedDate", MySqlDbType.DateTime).Value = DateTime.Now;
+                            updateCmd.Parameters.Add("?LastPasswordChangedDate", MySqlDbType.DateTime).Value = DateTime.UtcNow;
                             updateCmd.Parameters.Add("?Username", MySqlDbType.VarChar, 255).Value = username;
                             updateCmd.Parameters.Add("?ApplicationName", MySqlDbType.VarChar, 255).Value = pApplicationName;
 
@@ -1233,8 +1233,8 @@ namespace Andri.Web
                                 using (MySqlCommand updateCmd = new MySqlCommand("UPDATE `" + tableName + "` SET LastLoginDate = ?LastLoginDate, LastActivityDate = ?LastActivityDate" +
                                                                         " WHERE Username = ?Username AND ApplicationName = ?ApplicationName", conn))
                                 {
-                                    updateCmd.Parameters.Add("?LastLoginDate", MySqlDbType.DateTime).Value = DateTime.Now;
-                                    updateCmd.Parameters.Add("?LastActivityDate", MySqlDbType.DateTime).Value = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss", CultureInfo.InvariantCulture);
+                                    updateCmd.Parameters.Add("?LastLoginDate", MySqlDbType.DateTime).Value = DateTime.UtcNow;
+                                    updateCmd.Parameters.Add("?LastActivityDate", MySqlDbType.DateTime).Value = DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss", CultureInfo.InvariantCulture);
                                     updateCmd.Parameters.Add("?Username", MySqlDbType.VarChar, 255).Value = username;
                                     updateCmd.Parameters.Add("?ApplicationName", MySqlDbType.VarChar, 255).Value = pApplicationName;
 
@@ -1318,7 +1318,7 @@ namespace Andri.Web
 
                         DateTime windowEnd = windowStart.AddMinutes(PasswordAttemptWindow);
 
-                        if (failureCount == 0 || DateTime.Now > windowEnd)
+                        if (failureCount == 0 || DateTime.UtcNow > windowEnd)
                         {
                             // First password failure or outside of PasswordAttemptWindow. 
                             // Start a new password failure count from 1 and a new window starting now.
@@ -1338,7 +1338,7 @@ namespace Andri.Web
                             cmd.Parameters.Clear();
 
                             cmd.Parameters.Add("?Count", MySqlDbType.Int32).Value = 1;
-                            cmd.Parameters.Add("?WindowStart", MySqlDbType.DateTime).Value = DateTime.Now;
+                            cmd.Parameters.Add("?WindowStart", MySqlDbType.DateTime).Value = DateTime.UtcNow;
                             cmd.Parameters.Add("?Username", MySqlDbType.VarChar, 255).Value = username;
                             cmd.Parameters.Add("?ApplicationName", MySqlDbType.VarChar, 255).Value = pApplicationName;
 
@@ -1359,7 +1359,7 @@ namespace Andri.Web
                                 cmd.Parameters.Clear();
 
                                 cmd.Parameters.Add("?IsLockedOut", MySqlDbType.Bit).Value = true;
-                                cmd.Parameters.Add("?LastLockedOutDate", MySqlDbType.DateTime).Value = DateTime.Now;
+                                cmd.Parameters.Add("?LastLockedOutDate", MySqlDbType.DateTime).Value = DateTime.UtcNow;
                                 cmd.Parameters.Add("?Username", MySqlDbType.VarChar, 255).Value = username;
                                 cmd.Parameters.Add("?ApplicationName", MySqlDbType.VarChar, 255).Value = pApplicationName;
 
