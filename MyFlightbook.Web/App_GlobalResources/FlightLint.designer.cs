@@ -799,6 +799,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///    Looks up a localized string similar to Solo time is indicated, but less PIC time than solo time is recorded.  If not you, who was PIC?.
+        /// </summary>
+        internal static string warningSoloTimeExceedsPICTime {
+            get {
+                return ResourceManager.GetString("warningSoloTimeExceedsPICTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Solo time is indicated on the flight alongside incompatible amounts of SIC, Dual Received, or Instructor Time.  If you were solo, how could that be true?.
+        /// </summary>
+        internal static string warningSoloTimeWithNonSoloTime {
+            get {
+                return ResourceManager.GetString("warningSoloTimeWithNonSoloTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///    Looks up a localized string similar to Tachometer end is less than tachometer start.
         /// </summary>
         internal static string warningTachEndBeforeTachStart {

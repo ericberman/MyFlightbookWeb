@@ -7,7 +7,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2020-2021 MyFlightbook LLC
+ * Copyright (c) 2020-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -369,6 +369,14 @@ namespace MyFlightbook.Lint
             AddConditionalIssue(le.CFI.ToMinutes() > totalMinutes, LintOptions.TimeIssues, Resources.FlightLint.warningTimesCFIGreaterThanTotal);
             AddConditionalIssue(le.SIC.ToMinutes() > totalMinutes, LintOptions.TimeIssues, Resources.FlightLint.warningTimesSICGreaterThanTotal);
             AddConditionalIssue(le.PIC.ToMinutes() > totalMinutes, LintOptions.TimeIssues, Resources.FlightLint.warningTimesPICGreaterThanTotal);
+
+            CustomFlightProperty cfpSolo = le.CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropSolo);
+            if (cfpSolo != null)
+            {
+                int soloMinutes = cfpSolo.DecValue.ToMinutes();
+                AddConditionalIssue(soloMinutes > le.PIC.ToMinutes(), LintOptions.TimeIssues, Resources.FlightLint.warningSoloTimeExceedsPICTime);
+                AddConditionalIssue(soloMinutes > totalMinutes - le.SIC.ToMinutes() - le.CFI.ToMinutes() - le.Dual.ToMinutes(), LintOptions.TimeIssues, Resources.FlightLint.warningSoloTimeWithNonSoloTime);
+            }
 
             foreach (CustomFlightProperty cfp in le.CustomProperties)
             {

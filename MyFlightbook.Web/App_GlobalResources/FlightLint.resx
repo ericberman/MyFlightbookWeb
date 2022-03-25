@@ -365,6 +365,12 @@
   <data name="warningSIMTotalInSim" xml:space="preserve">
     <value>Total time logged in a training device - check that this is OK to do!</value>
   </data>
+  <data name="warningSoloTimeExceedsPICTime" xml:space="preserve">
+    <value>Solo time is indicated, but less PIC time than solo time is recorded.  If not you, who was PIC?</value>
+  </data>
+  <data name="warningSoloTimeWithNonSoloTime" xml:space="preserve">
+    <value>Solo time is indicated on the flight alongside incompatible amounts of SIC, Dual Received, or Instructor Time.  If you were solo, how could that be true?</value>
+  </data>
   <data name="warningTachEndBeforeTachStart" xml:space="preserve">
     <value>Tachometer end is less than tachometer start</value>
   </data>
