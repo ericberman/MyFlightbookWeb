@@ -42,6 +42,9 @@
                                         <span style="font-style:italic;" runat="server" visible='<%# !String.IsNullOrEmpty((string) Eval("Route")) %>'><%#: Eval("Route") %></span>
                                         <span runat="server" visible='<%# !String.IsNullOrEmpty((string) Eval("Comment")) %>'><%#: Eval("Comment") %></span>
                                     </td>
+                                    <td>
+                                        <%#: ((LogbookEntryCore) Container.DataItem).CustomProperties.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropInstructorName) %>
+                                    </td>
                                 </tr>
                             </ItemTemplate>
                         </asp:Repeater>
