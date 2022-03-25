@@ -7,7 +7,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2020 MyFlightbook LLC
+ * Copyright (c) 2013-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -230,6 +230,7 @@ namespace MyFlightbook.RatingsProgress
             BaseFAR = szBaseFAR;
             RatingSought = ratingSought;
             Title = szTitle;
+            FARLink = "https://www.law.cornell.edu/cfr/text/14/61.109";
 
             // 61.109(ab) - Base
             miMinTime = new MilestoneItem(Resources.MilestoneProgress.MinTime, ResolvedFAR(String.Empty), String.Empty, MilestoneItem.MilestoneType.Time, 40.0M);
@@ -548,6 +549,7 @@ namespace MyFlightbook.RatingsProgress
             MinXCSoloDistance = 150;
             MinXCSoloSegment = 50;
             BaseFAR = "61.109(f)";
+            FARLink = "https://www.law.cornell.edu/cfr/text/14/61.109";
             Title = Resources.MilestoneProgress.Title61109F;
             RatingSought = RatingType.PPLGlider;
 
@@ -899,6 +901,7 @@ namespace MyFlightbook.RatingsProgress
         protected Part141Base(RatingType rt, string szTitle, string szAircraftCategory, string szTrainingBase, string szSoloBase, double xcDistance = 100.0)
         {
             BaseFAR = "14 CFR Part 141 Appendix B ";
+            FARLink = "https://www.law.cornell.edu/cfr/text/14/appendix-B_to_part_141";
             RatingSought = rt;
             Title = szTitle;
             XCDistance = xcDistance;
@@ -1128,11 +1131,12 @@ namespace MyFlightbook.RatingsProgress
         protected const decimal CALongXCDistanceAirplane = 150;
         protected const decimal CALongXCDistanceHelicopter = 100;
 
-        protected CAPrivatePilot(string szBaseFAR, string szTitle, RatingType rt, decimal XCDistance)
+        protected CAPrivatePilot(string szBaseFAR, string szTitle, RatingType rt, decimal XCDistance, string farLink)
         {
             Title = szTitle;
             BaseFAR = szBaseFAR;
             RatingSought = rt;
+            FARLink = farLink;
 
             miTotal = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CAPPLMinTime, CATotalTime), ResolvedFAR("(a)"), Branding.ReBrand(Resources.MilestoneProgress.JARPPLMinTimeNote), MilestoneItem.MilestoneType.Time, CATotalTime);
             miDual = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.JARPPLMinDual, CADual), ResolvedFAR("(b)(i)"), string.Empty, MilestoneItem.MilestoneType.Time, CADual);
@@ -1245,6 +1249,7 @@ namespace MyFlightbook.RatingsProgress
             BaseFAR = szBaseFAR;
             Title = szTitle;
             RatingSought = rt;
+            FARLink = "https://tc.canada.ca/en/corporate-services/acts-regulations/list-regulations/canadian-aviation-regulations-sor-96-433/standards/standard-421-flight-crew-permits-licences-ratings-canadian-aviation-regulations-cars#421_42";
 
             miTotal = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CANightTotalTime, CATotalTime, szCategory), ResolvedFAR("(a)"), string.Empty, MilestoneItem.MilestoneType.Time, CATotalTime);
             miNightTime = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.JARPPLNight, CANightTime), ResolvedFAR("(a)(i)"), Resources.MilestoneProgress.CANightDualNote, MilestoneItem.MilestoneType.Time, CANightTime);
@@ -1330,7 +1335,7 @@ namespace MyFlightbook.RatingsProgress
         protected MilestoneItem miDualInClass { get; set; }
         protected MilestoneItem miSoloLandings { get; set; }
 
-        protected CAPPLAirplane(string szClassBase, string szClass, string szTitle, RatingType rt, decimal minTimeInClass, decimal minDualInClass) : base("421.26(4)", szTitle, rt, CALongXCDistanceAirplane)
+        protected CAPPLAirplane(string szClassBase, string szClass, string szTitle, RatingType rt, decimal minTimeInClass, decimal minDualInClass) : base("421.26(4)", szTitle, rt, CALongXCDistanceAirplane, "https://tc.canada.ca/en/corporate-services/acts-regulations/list-regulations/canadian-aviation-regulations-sor-96-433/standards/standard-421-flight-crew-permits-licences-ratings-canadian-aviation-regulations-cars#421_26")
         {
             miTimeInClass = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CAPPLTimeInClass, minTimeInClass, szClass), szClassBase + "(i)", string.Empty, MilestoneItem.MilestoneType.Time, minTimeInClass);
             miDualInClass = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CAPPLDualInClass, minDualInClass, szClass), szClassBase + "(i)(A)", string.Empty, MilestoneItem.MilestoneType.Time, minDualInClass);
@@ -1400,10 +1405,7 @@ namespace MyFlightbook.RatingsProgress
     [Serializable]
     public class CAPPLHelicopter : CAPrivatePilot
     {
-        public CAPPLHelicopter() : base("421.27(4)", Resources.MilestoneProgress.TitleCAPPLHelicopter, RatingType.CAPPLHelicopter, CALongXCDistanceHelicopter)
-        {
-
-        }
+        public CAPPLHelicopter() : base("421.27(4)", Resources.MilestoneProgress.TitleCAPPLHelicopter, RatingType.CAPPLHelicopter, CALongXCDistanceHelicopter, "https://tc.canada.ca/en/corporate-services/acts-regulations/list-regulations/canadian-aviation-regulations-sor-96-433/standards/standard-421-flight-crew-permits-licences-ratings-canadian-aviation-regulations-cars#421_27") {  }
     }
 
     [Serializable]
@@ -1456,6 +1458,7 @@ namespace MyFlightbook.RatingsProgress
             Title = szTitle;
             BaseFAR = szBaseFAR;
             RatingSought = rt;
+            FARLink = "https://www.gov.za/sites/default/files/gcis_document/201409/35398rg9769gen425c.pdf";
         }
 
         public override void ExamineFlight(ExaminerFlightRow cfr)
@@ -1542,6 +1545,7 @@ namespace MyFlightbook.RatingsProgress
             RatingSought = rt;
             Title = szTitle;
             BaseFAR = "61.10.1(2)";
+            FARLink = "https://www.gov.za/sites/default/files/gcis_document/201409/35398rg9769gen425c.pdf";
             nightXCDistance = minNightXCDistance;
 
             miInstrumentDual = new MilestoneItem(Resources.MilestoneProgress.SANightInstrument, ResolvedFAR("(b)"), Resources.MilestoneProgress.SANightInstrumentNote, MilestoneItem.MilestoneType.Time, 10);

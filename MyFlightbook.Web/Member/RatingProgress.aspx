@@ -45,10 +45,10 @@
             </asp:TemplateField>
             <asp:TemplateField>
                 <ItemTemplate>
-                    <div><asp:Label ID="lblFarFREF" Font-Bold="true" runat="server" Text='<%#: Eval("FARRef") %>'></asp:Label> - <asp:Label ID="lblTitle" runat="server" Text='<%# Eval("Title") %>' /> <asp:Label ID="lblExpiration" runat="server" Font-Bold="true" Text='<%#: Eval("ExpirationNote") %>' /></div>
+                    <div><span style="font-weight:bold"><%# ((string) Eval("FARRef")).Linkify(false) %></span> - <%# ((string) Eval("Title")).Linkify(true) %> <asp:Label ID="lblExpiration" runat="server" Font-Bold="true" Text='<%#: Eval("ExpirationNote") %>' /></div>
                     <asp:Panel ID="pnlNote" CssClass="fineprint" runat="server">
-                        <asp:Label ID="lblNoteHeader" runat="server" Font-Bold="true" Text="<%$ Resources:MilestoneProgress, NoteHeader %>"></asp:Label>
-                        <asp:Label ID="lblNote" runat="server" Font-Italic="true" Text='<%#: Eval("Note") %>'></asp:Label>
+                        <asp:Label ID="lblNoteHeader" runat="server" Font-Bold="true" Text="<%$ Resources:MilestoneProgress, NoteHeader %>" />
+                        <span style="font-style:italic"><%# ((string) Eval("Note")).Linkify(true) %></span>
                     </asp:Panel>
                     <asp:MultiView ID="mvProgress" runat="server">
                         <asp:View ID="vwPercentage" runat="server">

@@ -7,7 +7,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2020 MyFlightbook LLC
+ * Copyright (c) 2013-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -57,6 +57,7 @@ namespace MyFlightbook.RatingsProgress
             BaseFAR = szBaseFAR;
             RatingSought = rt;
             CategoryRestriction = szCategoryName;
+            FARLink = "https://www.legislation.gov.au/Details/F2015C00762/Html/Volume_2";
         }
 
         /// <summary>
@@ -283,7 +284,10 @@ namespace MyFlightbook.RatingsProgress
         protected int reqIFRTime { get; set; }
         protected int reqIFRTimeInCategory { get; set; }
 
-        protected CASRCommercialBase(string szBaseFAR, string szTitle, RatingType rt, string szCategoryName) : base(szBaseFAR, szTitle, rt, szCategoryName) { }
+        protected CASRCommercialBase(string szBaseFAR, string szTitle, RatingType rt, string szCategoryName) : base(szBaseFAR, szTitle, rt, szCategoryName)
+        {
+            FARLink = "https://www.legislation.gov.au/Details/F2015C00762/Html/Volume_2";
+        }
 
         protected override void SetUpMilestones()
         {

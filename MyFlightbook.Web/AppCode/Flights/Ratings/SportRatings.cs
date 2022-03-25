@@ -6,7 +6,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2021 MyFlightbook LLC
+ * Copyright (c) 2013-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -56,7 +56,11 @@ namespace MyFlightbook.RatingsProgress
         protected CategoryClass.CatClassID CatClassID { get; set; }
         protected string CategoryName { get; set; }
 
-        protected SportPilotBase() : base() { }
+        protected SportPilotBase() : base()
+        {
+            FARLink = "https://www.law.cornell.edu/cfr/text/14/61.313";
+
+        }
     }
 
     #region Concrete Sport Pilot Classes

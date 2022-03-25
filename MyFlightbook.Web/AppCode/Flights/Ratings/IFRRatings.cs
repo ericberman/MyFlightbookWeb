@@ -83,10 +83,11 @@ namespace MyFlightbook.RatingsProgress
         /// <param name="szTitle">Title</param>
         /// <param name="szBaseFAR">Base FAR</param>
         /// <param name="ratingSought">Specific rating being sought</param>
-        protected virtual void Init(string szTitle, string szBaseFAR, RatingType ratingSought)
+        protected virtual void Init(string szTitle, string szBaseFAR, RatingType ratingSought, string farLink)
         {
             Title = szTitle;
             BaseFAR = szBaseFAR;
+            FARLink = farLink;
             RatingSought = ratingSought;
 
             FTDTimeRemaining = MaxFTDTime;
@@ -198,7 +199,7 @@ namespace MyFlightbook.RatingsProgress
     [Serializable]
     public class IFR6165D : IFR6165Base
     {
-        public IFR6165D() { Init(Resources.MilestoneProgress.Title6165D, "61.65(d)", RatingType.InstrumentAirplane); }
+        public IFR6165D() { Init(Resources.MilestoneProgress.Title6165D, "61.65(d)", RatingType.InstrumentAirplane, "https://www.law.cornell.edu/cfr/text/14/61.65"); }
     }
 
     /// <summary>
@@ -207,7 +208,7 @@ namespace MyFlightbook.RatingsProgress
     [Serializable]
     public class IFR6165E : IFR6165Base
     {
-        public IFR6165E() { MinXCDistance = 100; Init(Resources.MilestoneProgress.Title6165E, "61.65(e)", RatingType.InstrumentHelicopter); }
+        public IFR6165E() { MinXCDistance = 100; Init(Resources.MilestoneProgress.Title6165E, "61.65(e)", RatingType.InstrumentHelicopter, "https://www.law.cornell.edu/cfr/text/14/61.65"); }
     }
 
     /// <summary>
@@ -216,7 +217,7 @@ namespace MyFlightbook.RatingsProgress
     [Serializable]
     public class IFR6165F : IFR6165Base
     {
-        public IFR6165F() { Init(Resources.MilestoneProgress.Title6165F, "61.65(f)", RatingType.InstrumentPoweredLift); }
+        public IFR6165F() { Init(Resources.MilestoneProgress.Title6165F, "61.65(f)", RatingType.InstrumentPoweredLift, "https://www.law.cornell.edu/cfr/text/14/61.65"); }
     }
 
     [Serializable]
@@ -227,12 +228,12 @@ namespace MyFlightbook.RatingsProgress
 
         protected MilestoneItem miIFRTrainingInCategory { get; set; }
 
-        protected override void Init(string szTitle, string szBaseFAR, RatingType ratingSought)
+        protected override void Init(string szTitle, string szBaseFAR, RatingType ratingSought, string farLink)
         {
             MaxATDTime = 20;    // can do 20 hours of FTD OR ATD time.
             MinXCDistance = 100;
 
-            base.Init(szTitle, szBaseFAR, ratingSought);
+            base.Init(szTitle, szBaseFAR, ratingSought, farLink);
 
             miXCPIC = new MilestoneItem(Resources.MilestoneProgress.MinInstrumentPICXC, ResolvedFAR("i"), Resources.MilestoneProgress.NoteCanadaIRXC, MilestoneItem.MilestoneType.Time, 50.0M);
             miXCDualXC = new MilestoneItem(String.Format(CultureInfo.InvariantCulture, Resources.MilestoneProgress.MinInstrumentXCCanada, MinXCDistance), ResolvedFAR("(ii)(D)"), Resources.MilestoneProgress.MinInstrumentXCCanadaNote, MilestoneItem.MilestoneType.AchieveOnce, 1.0M);
@@ -299,7 +300,7 @@ namespace MyFlightbook.RatingsProgress
     {
         public IFRCanadaAirplane() : base()
         {
-            Init(Resources.MilestoneProgress.Title42146Airplane, "421.46(2)(b)", RatingType.InstrumentAirplane);
+            Init(Resources.MilestoneProgress.Title42146Airplane, "421.46(2)(b)", RatingType.InstrumentAirplane, "https://tc.canada.ca/en/corporate-services/acts-regulations/list-regulations/canadian-aviation-regulations-sor-96-433/standards/standard-421-flight-crew-permits-licences-ratings-canadian-aviation-regulations-cars#421_46");
         }
     }
 
@@ -312,7 +313,7 @@ namespace MyFlightbook.RatingsProgress
     {
         public IFRCanadaHelicopter() : base()
         {
-            Init(Resources.MilestoneProgress.Title42146Helicopter, "421.46(2)(b)", RatingType.InstrumentHelicopter);
+            Init(Resources.MilestoneProgress.Title42146Helicopter, "421.46(2)(b)", RatingType.InstrumentHelicopter, "https://tc.canada.ca/en/corporate-services/acts-regulations/list-regulations/canadian-aviation-regulations-sor-96-433/standards/standard-421-flight-crew-permits-licences-ratings-canadian-aviation-regulations-cars#421_46");
         }
     }
 
@@ -330,7 +331,7 @@ namespace MyFlightbook.RatingsProgress
         protected IFR141Base(string szTitle, string szBaseFAR, RatingType ratingSought, int minXCDistance = 250)
         {
             MinXCDistance = minXCDistance;
-            Init(szTitle, szBaseFAR, ratingSought);
+            Init(szTitle, szBaseFAR, ratingSought, "https://www.law.cornell.edu/cfr/text/14/appendix-C_to_part_141");
 
             miIMCAircraftTime = new MilestoneItem(Resources.MilestoneProgress.MinInstrumentTime141, ResolvedFAR("(a)(1)"), Resources.MilestoneProgress.Note141InstrumentReducedHours, MilestoneItem.MilestoneType.Time, totalIMCTime);
             miIMCFSTime = new MilestoneItem(Resources.MilestoneProgress.MinInstrumentTime141, ResolvedFAR("(b)(1)"), Resources.MilestoneProgress.Note141InstrumentReducedHours, MilestoneItem.MilestoneType.Time, maxIMCFSTime);
@@ -413,9 +414,10 @@ namespace MyFlightbook.RatingsProgress
             Title = Resources.MilestoneProgress.TitleEASAFCLIRAirplane;
             BaseFAR = "FCL.610 IR(b)";
             RatingSought = RatingType.InstrumentEASAIRAirplane;
+            FARLink = MilestoneProgress.EASA_PART_FCL_LINK;
 
-            miMinXCPICTime = new MilestoneItem(Resources.MilestoneProgress.MinEASAIRXCPICTime, BaseFAR, string.Empty, MilestoneItem.MilestoneType.Time, 50);
-            miMinXCPICTimeInCategory = new MilestoneItem(Resources.MilestoneProgress.MinEASAIRXCPICTimeAirplanes, BaseFAR, string.Empty, MilestoneItem.MilestoneType.Time, 20);
+            miMinXCPICTime = new MilestoneItem(Resources.MilestoneProgress.MinEASAIRXCPICTime, ResolvedFAR(string.Empty), string.Empty, MilestoneItem.MilestoneType.Time, 50);
+            miMinXCPICTimeInCategory = new MilestoneItem(Resources.MilestoneProgress.MinEASAIRXCPICTimeAirplanes, ResolvedFAR(string.Empty), string.Empty, MilestoneItem.MilestoneType.Time, 20);
         }
 
         public override void ExamineFlight(ExaminerFlightRow cfr)
@@ -452,13 +454,14 @@ namespace MyFlightbook.RatingsProgress
         {
             Title = Resources.MilestoneProgress.TitleUKIRRestricted;
             BaseFAR = "CAP 804 Part I E 3.1";
+            FARLink = "https://publicapps.caa.co.uk/docs/33/CAP804April2015REFONLY.pdf";
             RatingSought = RatingType.InstrumentUKIRRestricted;
 
-            miTotalTime = new MilestoneItem(Resources.MilestoneProgress.MinUKTotalTimeTraining, "(a)(i)", Branding.ReBrand(Resources.MilestoneProgress.MinUKTotalTimeTrainingNote), MilestoneItem.MilestoneType.Time, 25);
-            miPICTime = new MilestoneItem(Resources.MilestoneProgress.MinUKPICTime, "(a)(ii)", string.Empty, MilestoneItem.MilestoneType.Time, 10);
-            miPICXCTime = new MilestoneItem(Resources.MilestoneProgress.MinUKPICXCTime, "(a)(ii)", string.Empty, MilestoneItem.MilestoneType.Time, 10);
-            miTraining = new MilestoneItem(Resources.MilestoneProgress.MinIFRTrainingUK, "(b)", Branding.ReBrand(Resources.MilestoneProgress.NoteMinIFRTrainingUK), MilestoneItem.MilestoneType.Time, 15);
-            miInstTraining = new MilestoneItem(Resources.MilestoneProgress.MinIFRTrainingByRef, "(b)", string.Empty, MilestoneItem.MilestoneType.Time, 10);
+            miTotalTime = new MilestoneItem(Resources.MilestoneProgress.MinUKTotalTimeTraining, ResolvedFAR("(a)(i)"), Branding.ReBrand(Resources.MilestoneProgress.MinUKTotalTimeTrainingNote), MilestoneItem.MilestoneType.Time, 25);
+            miPICTime = new MilestoneItem(Resources.MilestoneProgress.MinUKPICTime, ResolvedFAR("(a)(ii)"), string.Empty, MilestoneItem.MilestoneType.Time, 10);
+            miPICXCTime = new MilestoneItem(Resources.MilestoneProgress.MinUKPICXCTime, ResolvedFAR("(a)(ii)"), string.Empty, MilestoneItem.MilestoneType.Time, 10);
+            miTraining = new MilestoneItem(Resources.MilestoneProgress.MinIFRTrainingUK, ResolvedFAR("(b)"), Branding.ReBrand(Resources.MilestoneProgress.NoteMinIFRTrainingUK), MilestoneItem.MilestoneType.Time, 15);
+            miInstTraining = new MilestoneItem(Resources.MilestoneProgress.MinIFRTrainingByRef, ResolvedFAR("(b)"), string.Empty, MilestoneItem.MilestoneType.Time, 10);
         }
 
         public override Collection<MilestoneItem> Milestones => new Collection<MilestoneItem>() { miTotalTime, miPICTime, miPICXCTime, miTraining, miInstTraining };

@@ -6,7 +6,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2021 MyFlightbook LLC
+ * Copyright (c) 2013-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -62,6 +62,7 @@ namespace MyFlightbook.RatingsProgress
             Title = szTitle;
             BaseFAR = szBaseFAR;
             RatingSought = rt;
+            FARLink = MilestoneProgress.EASA_PART_FCL_LINK;
 
             string szExperience = ResolvedFAR(szExperienceSection);
             string szTraining = ResolvedFAR(szTrainingSection);
@@ -148,6 +149,7 @@ namespace MyFlightbook.RatingsProgress
         {
             Title = szTitle;
             RatingSought = rt;
+            FARLink = MilestoneProgress.EASA_PART_FCL_LINK;
             string szNightTraining = ResolvedFAR("FCL.810(a)");
 
             miNightTime = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.JARPPLNight, JAANightTime), szNightTraining, string.Empty, MilestoneItem.MilestoneType.Time, JAANightTime);
@@ -302,6 +304,7 @@ namespace MyFlightbook.RatingsProgress
             RatingSought = rt;
             BaseFAR = szBaseFar;
             Title = szTitle;
+            FARLink = MilestoneProgress.EASA_PART_FCL_LINK;
         }
 
         public abstract bool MatchesSoloOrTotalDual(ExaminerFlightRow cfr);

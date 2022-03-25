@@ -378,6 +378,9 @@ namespace MyFlightbook.RatingsProgress
     [Serializable]
     public abstract class MilestoneProgress : IFlightExaminer
     {
+        public const string EASA_PART_FCL_LINK = "https://www.easa.europa.eu/sites/default/files/dfu/Part-FCL.pdf";
+        public const string FAA_COMM_61129_LINK = "https://www.law.cornell.edu/cfr/text/14/61.129";
+
         #region properties
         /// <summary>
         /// The user for whom this is being computed
@@ -429,11 +432,18 @@ namespace MyFlightbook.RatingsProgress
         /// </summary>
         protected string BaseFAR { get; set; }
 
+        /// <summary>
+        /// A URL for a link to view the regulation.
+        /// </summary>
+        public string FARLink { get; set; }
+
         protected RatingType RatingSought { get; set; }
 
         protected string ResolvedFAR(string sz)
         {
-            return String.Format(CultureInfo.CurrentCulture, "{0}{1}", BaseFAR, sz);
+            return String.IsNullOrEmpty(FARLink) ?
+                String.Format(CultureInfo.CurrentCulture, "{0}{1}", BaseFAR, sz) :
+                String.Format(CultureInfo.CurrentCulture, "[{0}{1}]({2})", BaseFAR, sz, FARLink);
         }
 
         /// <summary>

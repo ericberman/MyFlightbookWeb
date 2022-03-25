@@ -5,7 +5,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2021 MyFlightbook LLC
+ * Copyright (c) 2013-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -85,6 +85,7 @@ namespace MyFlightbook.RatingsProgress
             Title = title;
             requiredCatClassID = ccid;
             BaseFAR = "61.159";
+            FARLink = "https://www.law.cornell.edu/cfr/text/14/61.159";
             RatingSought = RatingType.ATPAirplane;
             ATPTotalTime = minTime;
             ATPMinXC = minXCTime;
@@ -209,16 +210,19 @@ namespace MyFlightbook.RatingsProgress
 
         protected ATPRestrictedBase(string title, CategoryClass.CatClassID ccid, string szBaseFAR, decimal minTime, decimal minXCTime) : base(title, ccid, minTime, minXCTime, fCanCreditSICAndFlightEngineer: true)
         {
-            miTotal.FARRef = szBaseFAR;
+            BaseFAR = "61.160";
+            FARLink = "https://www.law.cornell.edu/cfr/text/14/61.160";
+            miTotal.FARRef = ResolvedFAR(szBaseFAR);
             miMinXCTime.Note = Resources.MilestoneProgress.ATPMinXCTimeNoteRestricted;
             RatingSought = RatingType.ATPAirplaneRestricted;
         }
 
         protected void updateXCTime(string szFARRef)
         {
+            // set up for subsequent links.
             miMinXCTime.Threshold = minXCReduced;
             miMinXCTime.Title = Resources.MilestoneProgress.ATPMinXCTimeRestricted;
-            miMinXCTime.FARRef = szFARRef;
+            miMinXCTime.FARRef = ResolvedFAR(szFARRef);
         }
 
         public override Collection<MilestoneItem> Milestones
@@ -226,7 +230,7 @@ namespace MyFlightbook.RatingsProgress
             get
             {
                 if (miTotal.Progress > 1500 && miMinXCTime.Threshold > minXCReduced)
-                    updateXCTime("61.160(f)");
+                    updateXCTime("(f)");
 
                 return base.Milestones;
             }
@@ -237,10 +241,10 @@ namespace MyFlightbook.RatingsProgress
     public class ATPRestrictedAirplaneAMELMilitary : ATPRestrictedBase
     {
         public ATPRestrictedAirplaneAMELMilitary()
-            : base(Resources.MilestoneProgress.Title61160FormerMilitary, CategoryClass.CatClassID.AMEL, "61.160(a)", 750, minXCReduced)
+            : base(Resources.MilestoneProgress.Title61160FormerMilitary, CategoryClass.CatClassID.AMEL, "(a)", 750, minXCReduced)
         {
             miTotal.Note = Branding.ReBrand(Resources.MilestoneProgress.ATPRestrictedMilitaryNote);
-            updateXCTime("61.160(e)");
+            updateXCTime("(e)");
         }
     }
 
@@ -248,10 +252,10 @@ namespace MyFlightbook.RatingsProgress
     public class ATPRestrictedAirplaneAMELBachelor : ATPRestrictedBase
     {
         public ATPRestrictedAirplaneAMELBachelor()
-            : base(Resources.MilestoneProgress.Title61160BachelorsDegree, CategoryClass.CatClassID.AMEL, "61.160(b)", 1000, minXCReduced)
+            : base(Resources.MilestoneProgress.Title61160BachelorsDegree, CategoryClass.CatClassID.AMEL, "(b)", 1000, minXCReduced)
         {
             miTotal.Note = Branding.ReBrand(Resources.MilestoneProgress.ATPRestrictedEducationNote);
-            updateXCTime("61.160(e)");
+            updateXCTime("(e)");
         }
     }
 
@@ -259,10 +263,10 @@ namespace MyFlightbook.RatingsProgress
     public class ATPRestrictedAirplaneAMELAssociate : ATPRestrictedBase
     {
         public ATPRestrictedAirplaneAMELAssociate()
-            : base(Resources.MilestoneProgress.Title61160AssociatesDegree, CategoryClass.CatClassID.AMEL, "61.160(c)", 1250, minXCReduced)
+            : base(Resources.MilestoneProgress.Title61160AssociatesDegree, CategoryClass.CatClassID.AMEL, "(c)", 1250, minXCReduced)
         {
             miTotal.Note = Branding.ReBrand(Resources.MilestoneProgress.ATPRestrictedEducationNote);
-            updateXCTime("61.160(e)");
+            updateXCTime("(e)");
         }
     }
 
@@ -270,7 +274,7 @@ namespace MyFlightbook.RatingsProgress
     public class ATPRestrictedAirplaneAMELPartial : ATPRestrictedBase
     {
         public ATPRestrictedAirplaneAMELPartial()
-            : base(Resources.MilestoneProgress.Title61160PartialDegree, CategoryClass.CatClassID.AMEL, "61.160(d)", 1250, 500)
+            : base(Resources.MilestoneProgress.Title61160PartialDegree, CategoryClass.CatClassID.AMEL, "(d)", 1250, 500)
         {
             miTotal.Note = Branding.ReBrand(Resources.MilestoneProgress.ATPRestrictedEducationNote);
         }
@@ -280,9 +284,9 @@ namespace MyFlightbook.RatingsProgress
     public class ATPRestrictedAirplaneASEL160F : ATPRestrictedBase
     {
         public ATPRestrictedAirplaneASEL160F()
-            : base(Resources.MilestoneProgress.Title61160FASEL, CategoryClass.CatClassID.ASEL, "61.160(f)", 1500, minXCReduced)
+            : base(Resources.MilestoneProgress.Title61160FASEL, CategoryClass.CatClassID.ASEL, "(f)", 1500, minXCReduced)
         {
-            updateXCTime("61.160(f)");
+            updateXCTime("(f)");
         }
     }
 
@@ -290,9 +294,9 @@ namespace MyFlightbook.RatingsProgress
     public class ATPRestrictedAirplaneASES160F : ATPRestrictedBase
     {
         public ATPRestrictedAirplaneASES160F()
-            : base(Resources.MilestoneProgress.Title61160FASES, CategoryClass.CatClassID.ASES, "61.160(f)", 1500, minXCReduced)
+            : base(Resources.MilestoneProgress.Title61160FASES, CategoryClass.CatClassID.ASES, "(f)", 1500, minXCReduced)
         {
-            updateXCTime("61.160(f)");
+            updateXCTime("(f)");
         }
     }
 
@@ -300,9 +304,9 @@ namespace MyFlightbook.RatingsProgress
     public class ATPRestrictedAirplaneAMEL160F : ATPRestrictedBase
     {
         public ATPRestrictedAirplaneAMEL160F()
-            : base(Resources.MilestoneProgress.Title61160FAMEL, CategoryClass.CatClassID.AMEL, "61.160(f)", 1500, minXCReduced)
+            : base(Resources.MilestoneProgress.Title61160FAMEL, CategoryClass.CatClassID.AMEL, "(f)", 1500, minXCReduced)
         {
-            updateXCTime("61.160(f)");
+            updateXCTime("(f)");
         }
     }
 
@@ -310,9 +314,9 @@ namespace MyFlightbook.RatingsProgress
     public class ATPRestrictedAirplaneAMES160F : ATPRestrictedBase
     {
         public ATPRestrictedAirplaneAMES160F()
-            : base(Resources.MilestoneProgress.Title61160FAMES, CategoryClass.CatClassID.AMES, "61.160(f)", 1500, minXCReduced)
+            : base(Resources.MilestoneProgress.Title61160FAMES, CategoryClass.CatClassID.AMES, "(f)", 1500, minXCReduced)
         {
-            updateXCTime("61.160(f)");
+            updateXCTime("(f)");
         }
     }
 
@@ -343,6 +347,7 @@ namespace MyFlightbook.RatingsProgress
         {
             Title = Resources.MilestoneProgress.Title61161;
             BaseFAR = "61.161";
+            FARLink = "https://www.law.cornell.edu/cfr/text/14/61.161";
             RatingSought = RatingType.ATPHelicopter;
 
             miTotal = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.ATPMinTime, ATPTotalTime), ResolvedFAR("(a)"), string.Empty, MilestoneItem.MilestoneType.Time, ATPTotalTime);
@@ -434,6 +439,7 @@ namespace MyFlightbook.RatingsProgress
         {
             Title = Resources.MilestoneProgress.Title61163;
             BaseFAR = "61.163";
+            FARLink = "https://www.law.cornell.edu/cfr/text/14/61.163";
             RatingSought = RatingType.ATPPoweredLift;
 
             miTotal = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.ATPMinTime, ATPTotalTime), ResolvedFAR("(a)"), string.Empty, MilestoneItem.MilestoneType.Time, ATPTotalTime);
@@ -549,12 +555,13 @@ namespace MyFlightbook.RatingsProgress
             miInstrumentAltCategory = new MilestoneItem(string.Empty, string.Empty, string.Empty, MilestoneItem.MilestoneType.Time, 0.0M);
         }
 
-        protected ATPCanadaBase(string title, string category, string altcategory, string basefar, RatingType ratingtype)
+        protected ATPCanadaBase(string title, string category, string altcategory, string basefar, RatingType ratingtype, string farLink)
         {
             Title = title;
             Category = category;
             AltCategory = altcategory;
             BaseFAR = basefar;
+            FARLink = farLink;
             RatingSought = ratingtype;
         }
 
@@ -619,7 +626,8 @@ namespace MyFlightbook.RatingsProgress
             CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.ASEL).Category,
             CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.Helicopter).Category,            
             "421.34(4)",
-            RatingType.ATPAirplane)
+            RatingType.ATPAirplane,
+            "https://tc.canada.ca/en/corporate-services/acts-regulations/list-regulations/canadian-aviation-regulations-sor-96-433/standards/standard-421-flight-crew-permits-licences-ratings-canadian-aviation-regulations-cars#421_34")
         {
             MinHours = 1500;
             MinInCategory = 900;
@@ -666,7 +674,8 @@ namespace MyFlightbook.RatingsProgress
             CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.Helicopter).Category, 
             CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.ASEL).Category,
             "421.35(4)", 
-            RatingType.ATPHelicopter)
+            RatingType.ATPHelicopter, 
+            "https://tc.canada.ca/en/corporate-services/acts-regulations/list-regulations/canadian-aviation-regulations-sor-96-433/standards/standard-421-flight-crew-permits-licences-ratings-canadian-aviation-regulations-cars#421_35")
         {
             MinHours = 1000;
             MinInCategory = 600;

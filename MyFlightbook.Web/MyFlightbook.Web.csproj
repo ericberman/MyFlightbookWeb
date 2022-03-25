@@ -3049,6 +3049,7 @@
     <Content Include="App_GlobalResources\MilestoneProgress.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>
       <LastGenOutput>MilestoneProgress.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="App_GlobalResources\oAuth.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>

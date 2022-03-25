@@ -61,7 +61,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 5 hours performing the duties of PIC with an instructor..
+        ///    Looks up a localized string similar to *5* hours performing the *duties of PIC* with an instructor..
         /// </summary>
         internal static string AirshipDPIC {
             get {
@@ -70,7 +70,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 25 hours of flight training in an airship.
+        ///    Looks up a localized string similar to *25* hours of flight *training* in an *airship*.
         /// </summary>
         internal static string AirshipMinTraining {
             get {
@@ -79,7 +79,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 1 night cross-country flight of at least 25NM distance in an airship.
+        ///    Looks up a localized string similar to 1 *night cross-country* flight of at least *25NM* distance in *an airship*.
         /// </summary>
         internal static string AirshipXCNightFlight {
             get {
@@ -88,7 +88,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 3 hours of cross-country training in an airship.
+        ///    Looks up a localized string similar to *3* hours of *cross-country training* in an *airship*.
         /// </summary>
         internal static string AirshipXCTraining {
             get {
@@ -106,7 +106,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Per 61.159(b), if you&apos;ve done at least 20 night takeoffs and night full-stop landings, then each such takeoff+landing after that can substitute for an hour of required night flight, up to 25 hours..
+        ///    Looks up a localized string similar to Per [61.159(b)](https://www.law.cornell.edu/cfr/text/14/61.159), if you&apos;ve done at least 20 night takeoffs and night full-stop landings, then each such takeoff+landing after that can substitute for an hour of required night flight, up to 25 hours..
         /// </summary>
         internal static string ATPAirplaneNightLandingsNote {
             get {
@@ -124,7 +124,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 50 hours of instrument flight in helicopters.
+        ///    Looks up a localized string similar to *50* hours of *instrument* flight in *helicopters*.
         /// </summary>
         internal static string ATPHelicopterInstrumentTime {
             get {
@@ -133,7 +133,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 25 hours of instrument flight as PIC in helicopters.
+        ///    Looks up a localized string similar to *25* hours of *instrument* flight as *PIC* in *helicopters*.
         /// </summary>
         internal static string ATPHelicopterPICInstrumentTime {
             get {
@@ -142,7 +142,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 75 hours of Instrument Time.
+        ///    Looks up a localized string similar to *75* hours of *instrument* time.
         /// </summary>
         internal static string ATPInstrumentTime {
             get {
@@ -151,7 +151,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 75 hours as PIC in a helicopter.
+        ///    Looks up a localized string similar to *75* hours as *PIC* in *helicopters*.
         /// </summary>
         internal static string ATPMinHeliPICTime {
             get {
@@ -160,7 +160,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 200 hours of flight in helicopters.
+        ///    Looks up a localized string similar to *200* hours of flight in *helicopters*.
         /// </summary>
         internal static string ATPMinHeliTime {
             get {
@@ -169,7 +169,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 100 hours of night flight time.
+        ///    Looks up a localized string similar to *100* hours of *night* flight time.
         /// </summary>
         internal static string ATPMinNightTime {
             get {
@@ -178,7 +178,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 250 hours as PIC in a powered-lift.
+        ///    Looks up a localized string similar to *250* hours as *PIC* in a *powered-lift*.
         /// </summary>
         internal static string ATPMinPLPIC {
             get {
@@ -187,7 +187,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 25 hours of PIC night flight in a powered-lift.
+        ///    Looks up a localized string similar to *25* hours of *PIC night* flight in a *powered-lift*.
         /// </summary>
         internal static string ATPMinPLPICNight {
             get {
@@ -196,7 +196,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 100 hours of PIC cross-country time in a powered-lift.
+        ///    Looks up a localized string similar to *100* hours of *PIC cross-country* time in a *powered-lift*.
         /// </summary>
         internal static string ATPMinPLPICXC {
             get {
@@ -205,7 +205,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0:#,##0} hours of total time.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of total time.
         /// </summary>
         internal static string ATPMinTime {
             get {
@@ -214,7 +214,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 500 hours of cross-country flight time.
+        ///    Looks up a localized string similar to *500* hours of *cross-country* flight time.
         /// </summary>
         internal static string ATPMinXCTime {
             get {
@@ -223,7 +223,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Per FAR 61.160(e) and (f), the cross-country limit here is 200 hours if you have 1500 total hours or are applying under 61.160(a), (b), or (c).
+        ///    Looks up a localized string similar to Per FAR [61.160(e) and (f)](https://www.law.cornell.edu/cfr/text/14/61.160), the cross-country limit here is 200 hours if you have 1500 total hours or are applying under 61.160(a), (b), or (c).
         /// </summary>
         internal static string ATPMinXCTimeNoteRestricted {
             get {
@@ -232,7 +232,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 200 hours of cross-country flight time.
+        ///    Looks up a localized string similar to *200* hours of *cross-country* flight time.
         /// </summary>
         internal static string ATPMinXCTimeRestricted {
             get {
@@ -241,7 +241,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 15 hours of night flight time in helicopters.
+        ///    Looks up a localized string similar to *15* hours of *night* flight time in *helicopters*.
         /// </summary>
         internal static string ATPNightHelicopterTime {
             get {
@@ -250,7 +250,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 25 hours of night PIC flight time.
+        ///    Looks up a localized string similar to *25* hours of *night PIC* flight time in *airplanes*.
         /// </summary>
         internal static string ATPNightPICTime {
             get {
@@ -259,7 +259,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 250 hours of PIC time.
+        ///    Looks up a localized string similar to *250* hours of *PIC* time in *airplanes*.
         /// </summary>
         internal static string ATPPICTime {
             get {
@@ -277,7 +277,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 61.160 describes a variety of conditions regarding your education and ratings that you must have met which %APP_NAME% cannot verify.  It is your responsibility to ensure that you have met these requirements..
+        ///    Looks up a localized string similar to [61.160](https://www.law.cornell.edu/cfr/text/14/61.160) describes a variety of conditions regarding your education and ratings that you must have met which %APP_NAME% cannot verify.  It is your responsibility to ensure that you have met these requirements..
         /// </summary>
         internal static string ATPRestrictedEducationNote {
             get {
@@ -295,7 +295,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of flight time in an {1} airplane.
+        ///    Looks up a localized string similar to *{0}* hours of flight time in an *{1} airplane*.
         /// </summary>
         internal static string ATPTimeInClass {
             get {
@@ -304,7 +304,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Per 61.159(c), SIC time and some Flight Engineer Time can contribute towards this; and per 61.159(a)(6) up to 100hrs of FTD/FFS time can also contribute.  %APP_NAME% assumes that the conditions for doing so have been met..
+        ///    Looks up a localized string similar to Per [61.159(c)](https://www.law.cornell.edu/cfr/text/14/61.159), SIC time and some Flight Engineer Time can contribute towards this; and per 61.159(a)(6) up to 100hrs of FTD/FFS time can also contribute.  %APP_NAME% assumes that the conditions for doing so have been met..
         /// </summary>
         internal static string ATPTotalTimeSubstitutionNote {
             get {
@@ -313,7 +313,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 100 hours of cross-country PIC time.
+        ///    Looks up a localized string similar to *100* hours of *cross-country PIC* time in *airplanes*.
         /// </summary>
         internal static string ATPXCPICTime {
             get {
@@ -322,7 +322,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to At least one flight involving a controlled ascent to {0:#,###} feet above the launch site..
+        ///    Looks up a localized string similar to At least one flight involving a controlled *ascent to {0:#,###}ft* above the launch site.
         /// </summary>
         internal static string BalloonAscent {
             get {
@@ -331,7 +331,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 2 flights of at least 2 hours each in a gas balloon.
+        ///    Looks up a localized string similar to *2* flights of at least *2* hours each in a *gas balloon*.
         /// </summary>
         internal static string BalloonGasMinFlights {
             get {
@@ -340,7 +340,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to One 2-hour flight performing the duties of Pilot-in-Command in a gas balloon.
+        ///    Looks up a localized string similar to One *2-hour* flight performing the *duties of Pilot-in-Command* in a *gas balloon*.
         /// </summary>
         internal static string BalloonGasMinFlightsDPIC {
             get {
@@ -349,7 +349,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to One 2-hour training flight in a gas balloon within 2 calendar months preceding the test in a gas balloon.
+        ///    Looks up a localized string similar to One *2-hour training* flight in a *gas balloon* within *2 calendar months* preceding the test.
         /// </summary>
         internal static string BalloonGasMinFlightTestPrep {
             get {
@@ -358,7 +358,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Two training flights of 1 hour each within 2 calendar months preceding the test in a hot-air balloon.
+        ///    Looks up a localized string similar to *Two training* flights of *1 hour* each within *2 calendar months* preceding the test in a *hot-air balloon*.
         /// </summary>
         internal static string BalloonHotAirMinFlightTestPrep {
             get {
@@ -367,7 +367,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to One solo flight in a hot-air balloon.
+        ///    Looks up a localized string similar to One *solo* flight in a *hot-air balloon*.
         /// </summary>
         internal static string BalloonHotAirSolo {
             get {
@@ -376,7 +376,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 6 training flights with an instructor in a ballooon.
+        ///    Looks up a localized string similar to *6 training* flights with an *instructor* in a *ballooon*.
         /// </summary>
         internal static string BalloonMinFlights {
             get {
@@ -385,7 +385,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 10 hours of flight training.
+        ///    Looks up a localized string similar to *10* hours of flight *training*.
         /// </summary>
         internal static string BalloonMinTraining {
             get {
@@ -403,7 +403,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} additional hours of cross-country time as PIC.
+        ///    Looks up a localized string similar to *{0:#,##0}* additional hours of *cross-country* time as PIC.
         /// </summary>
         internal static string CAATPExtraXC {
             get {
@@ -430,7 +430,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of instrument flight.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *instrument* flight.
         /// </summary>
         internal static string CAATPInstrument {
             get {
@@ -439,7 +439,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Up to {0} hours of time in {1} can apply towards this.
+        ///    Looks up a localized string similar to Up to {0:#,##0} hours of time in {1} can apply towards this.
         /// </summary>
         internal static string CAATPInstrumentNote {
             get {
@@ -448,7 +448,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of night as PIC or co-pilot.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of night as PIC or co-pilot.
         /// </summary>
         internal static string CAATPNight {
             get {
@@ -457,7 +457,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of night as PIC or co-pilot in {1}.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *night as PIC or co-pilot* in *{1}*.
         /// </summary>
         internal static string CAATPNightCategory {
             get {
@@ -466,7 +466,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours as PIC in {1}.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours as *PIC* in *{1}*.
         /// </summary>
         internal static string CAATPPIC {
             get {
@@ -475,7 +475,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Up to {0} hours of PICUS time may be applied here; if both PICUS and PIC are logged on a flight, they are assumed to be simultaneous..
+        ///    Looks up a localized string similar to Up to {0:#,##0} hours of PICUS time may be applied here; if both PICUS and PIC are logged on a flight, they are assumed to be simultaneous..
         /// </summary>
         internal static string CAATPPICUSNote {
             get {
@@ -484,7 +484,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of cross-country PIC in {1}.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *cross-country PIC* in *{1}*.
         /// </summary>
         internal static string CAATPPICXC {
             get {
@@ -493,7 +493,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of night cross-country PIC in {1}.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *night cross-country PIC* in *{1}*.
         /// </summary>
         internal static string CAATPPICXCNight {
             get {
@@ -502,7 +502,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of flight time.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of flight time.
         /// </summary>
         internal static string CAATPTotalTime {
             get {
@@ -511,7 +511,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of flight time in {1}.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of flight time in *{1}*.
         /// </summary>
         internal static string CAATPTotalTimeInCategory {
             get {
@@ -520,7 +520,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of cross-country time in {1}.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *cross-country* time in *{1}*.
         /// </summary>
         internal static string CAATPXC {
             get {
@@ -538,7 +538,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of dual instrument flying.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *dual instrument* flying.
         /// </summary>
         internal static string CANightInstrument {
             get {
@@ -556,7 +556,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of solo night flight.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *solo night* flight.
         /// </summary>
         internal static string CANightSolo {
             get {
@@ -565,7 +565,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours in {1}.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours in *{1}*.
         /// </summary>
         internal static string CANightTotalTime {
             get {
@@ -592,7 +592,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of dual instruction in {1}.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *dual instruction* in *{1}*.
         /// </summary>
         internal static string CAPPLDualInClass {
             get {
@@ -610,7 +610,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of flight training.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *flight training*.
         /// </summary>
         internal static string CAPPLMinTime {
             get {
@@ -619,7 +619,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of cross-country dual flight time.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *cross-country dual* flight time.
         /// </summary>
         internal static string CAPPLMinXC {
             get {
@@ -628,7 +628,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of solo time.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *solo* time.
         /// </summary>
         internal static string CAPPLSolo {
             get {
@@ -637,7 +637,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 5 takeoffs and landings as the sole occupant of {0}.
+        ///    Looks up a localized string similar to *5* takeoffs and landings as the *sole occupant* of *{0}*.
         /// </summary>
         internal static string CAPPLSoloLandingsInClass {
             get {
@@ -655,7 +655,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of training in {1}.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of training in *{1}*.
         /// </summary>
         internal static string CAPPLTimeInClass {
             get {
@@ -664,7 +664,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of aeronautical experience.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of aeronautical experience.
         /// </summary>
         internal static string CASRAeronauticalExperience {
             get {
@@ -700,7 +700,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of instrument time.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *instrument* time.
         /// </summary>
         internal static string CASRCommIFR {
             get {
@@ -709,7 +709,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of instrument time ({1}).
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *instrument* time (*{1}*).
         /// </summary>
         internal static string CASRCommIFRInCategory {
             get {
@@ -718,7 +718,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 1 cross-country flight as PIC ({0}) that is at least {1}NM and includes {2} at at least 2 other airports or landing areas.
+        ///    Looks up a localized string similar to 1 *cross-country* flight as *PIC* (*{0}*) that is at least *{1}NM* and includes *{2}* at at least *2* other airports or landing areas.
         /// </summary>
         internal static string CASRCommLongCrossCountry {
             get {
@@ -727,7 +727,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of flight time as PIC ({1}).
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of flight time as *PIC* (*{1}*).
         /// </summary>
         internal static string CASRCommPIC {
             get {
@@ -736,7 +736,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of cross-country time as PIC ({1}).
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *cross-country* time as *PIC* (*{1}*).
         /// </summary>
         internal static string CASRCommPICXC {
             get {
@@ -763,7 +763,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of dual instrument time.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *dual instrument* time.
         /// </summary>
         internal static string CASRPPLDualIFR {
             get {
@@ -772,7 +772,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 1 hour of dual instrument time ({0}).
+        ///    Looks up a localized string similar to 1 hour of *dual instrument* time (*{0}*).
         /// </summary>
         internal static string CASRPPLDualIFRInCategory {
             get {
@@ -781,7 +781,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of solo time ({1}).
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *solo* time (*{1}*).
         /// </summary>
         internal static string CASRPPLMinSoloTimeInCategory {
             get {
@@ -790,7 +790,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of solo cross-country flight time ({1}).
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *solo cross-country* flight time (*{1}*).
         /// </summary>
         internal static string CASRPPLMinSoloXCTimeInCategory {
             get {
@@ -799,7 +799,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of flight time as a pilot.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of flight time as a pilot.
         /// </summary>
         internal static string CASRPPLMinTime {
             get {
@@ -808,7 +808,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of flight time as a pilot ({1}).
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of flight time as a pilot (*{1}*).
         /// </summary>
         internal static string CASRPPLMinTimeInCategory {
             get {
@@ -817,7 +817,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 1 solo cross-country flight ({0}) that is at least {1}NM and includes {2} at at least 2 other airports or landing areas.
+        ///    Looks up a localized string similar to 1 *solo cross-country* flight (*{0}*) that is at least *{1}NM* and includes *{2}* at at least *2* other airports or landing areas.
         /// </summary>
         internal static string CASRPPLSoloLongCrossCountry {
             get {
@@ -826,7 +826,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 100 hours as PIC in a powered aircraft.
+        ///    Looks up a localized string similar to *100* hours as *PIC* in a *powered aircraft*.
         /// </summary>
         internal static string CFISASELPICPowered {
             get {
@@ -835,7 +835,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 50 hours of flight time in a single-engine airplane.
+        ///    Looks up a localized string similar to *50* hours of flight time in a *single-engine airplane*.
         /// </summary>
         internal static string CFISASELTotalSEL {
             get {
@@ -844,7 +844,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 150 hours of flight time as a pilot.
+        ///    Looks up a localized string similar to *150* hours of flight time as a pilot.
         /// </summary>
         internal static string CFISASELTotalTime {
             get {
@@ -853,7 +853,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 25 hours of cross-country flight time..
+        ///    Looks up a localized string similar to *25* hours of *cross-country* flight time..
         /// </summary>
         internal static string CFISASELXC {
             get {
@@ -862,7 +862,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 10 hours of cross-country flight time in a single-engine airplane.
+        ///    Looks up a localized string similar to *10* hours of *cross-country* flight time in a *single-engine airplane*.
         /// </summary>
         internal static string CFISASELXCSEL {
             get {
@@ -871,7 +871,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of PIC time in {1}.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *PIC* time in *{1}*.
         /// </summary>
         internal static string CFITimeInCategoryClass {
             get {
@@ -880,7 +880,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to One cross-country flight in daytime conditions that is at least {0}hrs and goes at least {1}NM from the point of departure.
+        ///    Looks up a localized string similar to One *cross-country* flight in *daytime* conditions that is at least *{0}hrs* and goes at least *{1}NM* from the point of departure.
         /// </summary>
         internal static string Comm141DayXCFlight {
             get {
@@ -898,7 +898,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of training in {1} that is complex or turbine-powered.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *training* in *{1}* that is *complex or turbine-powered*.
         /// </summary>
         internal static string Comm141MinComplexOrTurbine {
             get {
@@ -907,7 +907,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of instrument training.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *instrument training*.
         /// </summary>
         internal static string Comm141MinInstrumentTraining {
             get {
@@ -916,7 +916,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of instrument training in {1}.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *instrument training* in *{1}*.
         /// </summary>
         internal static string Comm141MinInstrumentTrainingInCatClass {
             get {
@@ -925,7 +925,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of flight training from a CFI.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of flight *training* from a CFI.
         /// </summary>
         internal static string Comm141MinTime {
             get {
@@ -934,7 +934,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of flight training.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of flight *training*.
         /// </summary>
         internal static string Comm141MinTimeOverall {
             get {
@@ -943,7 +943,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to One cross-country flight in nighttime conditions that is at least {0}hrs and goes at least {1}NM from the point of departure.
+        ///    Looks up a localized string similar to One *cross-country* flight in *nighttime* conditions that is at least *{0:#,##0}hrs* and goes at least *{1}NM* from the point of departure.
         /// </summary>
         internal static string Comm141NightXCFlight {
             get {
@@ -961,7 +961,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of solo (or duties-of-PIC with an authorized instructor on board) flight in night VFR conditions.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *solo* (or duties-of-PIC with an authorized instructor on board) flight in *night VFR* conditions.
         /// </summary>
         internal static string Comm141SoloNight {
             get {
@@ -970,7 +970,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} solo landings at night (VFR conditions).
+        ///    Looks up a localized string similar to *{0:#,##0} solo landings at night* (VFR conditions).
         /// </summary>
         internal static string Comm141SoloNightLandings {
             get {
@@ -979,7 +979,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} solo takeoffs at night (VFR conditions).
+        ///    Looks up a localized string similar to *{0:#,##0} solo takeoffs at night* (VFR conditions).
         /// </summary>
         internal static string Comm141SoloNightTakeoffs {
             get {
@@ -988,7 +988,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of solo time (or duties-of-PIC with an authorized instructor on board) in {1}.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *solo* time (or duties-of-PIC with an authorized instructor on board) in *{1}*.
         /// </summary>
         internal static string Comm141SoloTime {
             get {
@@ -997,7 +997,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to One solo (or duties-of-PIC with an authorized instructor on board) cross country flight with at least 3 landings and a segment with a straight-line distance of at least {0}NM.
+        ///    Looks up a localized string similar to One *solo* (or duties-of-PIC with an authorized instructor on board) *cross country* flight with at least *3* landings and a segment with a straight-line distance of at least *{0}NM*.
         /// </summary>
         internal static string Comm141SoloXCFlight {
             get {
@@ -1015,7 +1015,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of test prep in {1} within {2} days preceding the test.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of test prep in *{1}* within *{2} days* preceding the test.
         /// </summary>
         internal static string Comm141TestPrep {
             get {
@@ -1042,7 +1042,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to One flight involving a controlled ascent to {0:#,###}ft above the launch site.
+        ///    Looks up a localized string similar to One flight involving a controlled ascent to *{0:#,###}ft* above the launch site.
         /// </summary>
         internal static string CommBalloonAscent {
             get {
@@ -1051,7 +1051,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 2 flights performing duties of PIC in a gas balloon.
+        ///    Looks up a localized string similar to *2* flights performing *duties of PIC* in a *gas balloon*.
         /// </summary>
         internal static string CommBalloonDPIC {
             get {
@@ -1060,7 +1060,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Two training flights of 2 hour each within 2 calendar months preceding the test in a gas balloon..
+        ///    Looks up a localized string similar to *Two training* flights of *2* hours each within *2 calendar months* preceding the test *in a gas balloon*.
         /// </summary>
         internal static string CommBalloonGasTestPrep {
             get {
@@ -1069,7 +1069,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Two training flights of 1 hour each within 2 calendar months preceding the test in a hot air balloon..
+        ///    Looks up a localized string similar to *Two training* flights of *1 hour* each within *2* calendar months preceding the test in a *hot air balloon*.
         /// </summary>
         internal static string CommBalloonHotAirTestPrep {
             get {
@@ -1078,7 +1078,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 10 flights in balloons.
+        ///    Looks up a localized string similar to *10* flights in *balloons*.
         /// </summary>
         internal static string CommBalloonMinFlights {
             get {
@@ -1087,7 +1087,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Two flights in balloons as PIC.
+        ///    Looks up a localized string similar to *Two* flights in *balloons* as *PIC*.
         /// </summary>
         internal static string CommBalloonMinPIC {
             get {
@@ -1096,7 +1096,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 20 hours in balloons.
+        ///    Looks up a localized string similar to *20* hours in *balloons*.
         /// </summary>
         internal static string CommBalloonMinTime {
             get {
@@ -1105,7 +1105,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Two solo flights in a hot air balloon.
+        ///    Looks up a localized string similar to *Two solo* flights in a *hot air balloon*.
         /// </summary>
         internal static string CommBalloonSolo {
             get {
@@ -1114,7 +1114,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 10 training flights in balloons.
+        ///    Looks up a localized string similar to *10 training* flights in *balloons*.
         /// </summary>
         internal static string CommBalloonTrainingFlights {
             get {
@@ -1123,7 +1123,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 10 hours of flight training in balloons.
+        ///    Looks up a localized string similar to *10* hours of flight *training* in *balloons*.
         /// </summary>
         internal static string CommBalloonTrainingTime {
             get {
@@ -1132,7 +1132,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 35 hours of dual instruction in aeroplanes (since PPL).
+        ///    Looks up a localized string similar to *35* hours of *dual* instruction in *aeroplanes* (since PPL).
         /// </summary>
         internal static string CommCanadaMinDual {
             get {
@@ -1141,7 +1141,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 200 hours in aeroplanes.
+        ///    Looks up a localized string similar to *200* hours in *aeroplanes*.
         /// </summary>
         internal static string CommCanadaMinHours {
             get {
@@ -1150,7 +1150,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 20 hours of instrument instruction in aeroplanes (since PPL).
+        ///    Looks up a localized string similar to *20* hours of *instrument instruction* in *aeroplanes* (since PPL).
         /// </summary>
         internal static string CommCanadaMinIFRDual {
             get {
@@ -1168,7 +1168,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 5 hours of night dual instruction in aeroplanes (since PPL).
+        ///    Looks up a localized string similar to *5* hours of *night dual instruction* in *aeroplanes* (since PPL).
         /// </summary>
         internal static string CommCanadaMinNightDual {
             get {
@@ -1177,7 +1177,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 2 hours of night-cross-country instruction in aeroplanes (since PPL).
+        ///    Looks up a localized string similar to *2* hours of *night-cross-country instruction* in *aeroplanes* (since PPL).
         /// </summary>
         internal static string CommCanadaMinNightDualXC {
             get {
@@ -1186,7 +1186,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 100 hours PIC time in aeroplanes.
+        ///    Looks up a localized string similar to *100* hours *PIC* time in *aeroplanes*.
         /// </summary>
         internal static string CommCanadaMinPIC {
             get {
@@ -1195,7 +1195,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 20 hours of cross-country PIC time in aeroplanes.
+        ///    Looks up a localized string similar to *20* hours of *cross-country PIC* time in *aeroplanes*.
         /// </summary>
         internal static string CommCanadaMinPICXC {
             get {
@@ -1204,7 +1204,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 30 hours of solo flight time (since PPL).
+        ///    Looks up a localized string similar to *30* hours of *solo* flight time (since PPL).
         /// </summary>
         internal static string CommCanadaMinSolo {
             get {
@@ -1213,7 +1213,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 5 hours of cross-country instruction in aeroplanes (since PPL).
+        ///    Looks up a localized string similar to *5* hours of *cross-country instruction* in aeroplanes (since PPL).
         /// </summary>
         internal static string CommCanadaMinXCDual {
             get {
@@ -1222,7 +1222,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 5 hours solo time at night (since PPL).
+        ///    Looks up a localized string similar to *5* hours *solo* time at *night* (since PPL).
         /// </summary>
         internal static string CommCanadaSoloNight {
             get {
@@ -1231,7 +1231,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 10 solo landings at night (since PPL, circuits are assumed).
+        ///    Looks up a localized string similar to *10 solo landings* at *night* (since PPL, circuits are assumed).
         /// </summary>
         internal static string CommCanadaSoloNightLandings {
             get {
@@ -1240,7 +1240,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 10 solo takeoffs at night (since PPL) (circuits are assumed).
+        ///    Looks up a localized string similar to *10 solo takeoffs* at *night* (since PPL) (circuits are assumed).
         /// </summary>
         internal static string CommCanadaSoloNightTakeoffs {
             get {
@@ -1258,7 +1258,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Solo cross-country flight at least 300NM away from the point of departure, with at least 3 landings (since PPL).
+        ///    Looks up a localized string similar to *Solo cross-country* flight at least *300NM* away from the point of departure, with at least *3* landings (since PPL).
         /// </summary>
         internal static string CommCanadaSoloXC {
             get {
@@ -1276,7 +1276,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} flights as PIC in a glider.
+        ///    Looks up a localized string similar to *{0}* flights as *PIC* in a *glider*.
         /// </summary>
         internal static string CommGliderFlightsPIC {
             get {
@@ -1285,7 +1285,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 25 hours of glider time.
+        ///    Looks up a localized string similar to *25* hours of *glider* time.
         /// </summary>
         internal static string CommGliderGliderTime {
             get {
@@ -1294,7 +1294,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 200 hours of flight time in heavier-than-air aircraft.
+        ///    Looks up a localized string similar to *200* hours of flight time in *heavier-than-air* aircraft.
         /// </summary>
         internal static string CommGliderHeavierThanAir {
             get {
@@ -1303,7 +1303,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} solo flights in a glider.
+        ///    Looks up a localized string similar to *{0} solo* flights in a *glider*.
         /// </summary>
         internal static string CommGliderSoloFlights {
             get {
@@ -1312,7 +1312,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 2 hours of solo flight (glider is assumed).
+        ///    Looks up a localized string similar to *2* hours of *solo* flight (glider is assumed).
         /// </summary>
         internal static string CommGliderSoloTime {
             get {
@@ -1321,7 +1321,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 3 training flights in a glider within 2 calendar months preceding the test.
+        ///    Looks up a localized string similar to *3 training* flights in a *glider* within *2* calendar months preceding the test.
         /// </summary>
         internal static string CommGliderTestPrep {
             get {
@@ -1330,7 +1330,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 10 training flights in a glider.
+        ///    Looks up a localized string similar to *10 training* flights in a *glider*.
         /// </summary>
         internal static string CommGliderTrainingFlights {
             get {
@@ -1339,7 +1339,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 3 hours of flight training in a glider.
+        ///    Looks up a localized string similar to *3* hours of flight *training* in a *glider*.
         /// </summary>
         internal static string CommGliderTrainingTime {
             get {
@@ -1348,7 +1348,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 10 night training landings to full stop in a gyroplane.
+        ///    Looks up a localized string similar to *10 night training landings* to full stop in a *gyroplane*.
         /// </summary>
         internal static string CommGyroplaneNightLandings {
             get {
@@ -1357,7 +1357,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 10 night training takeoffs in a gyroplane.
+        ///    Looks up a localized string similar to *10 night training takeoffs* in a *gyroplane*.
         /// </summary>
         internal static string CommGyroplaneNightTakeoffs {
             get {
@@ -1366,7 +1366,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 2 hours of night training in a gyroplane.
+        ///    Looks up a localized string similar to *2* hours of *night training* in a *gyroplane*.
         /// </summary>
         internal static string CommGyroplaneNightTraining {
             get {
@@ -1375,7 +1375,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 10 hours of training in a complex (or turbine, or TAA) multi-engine airplane.
+        ///    Looks up a localized string similar to *10* hours of *training* in a *complex* (or turbine, or TAA) *multi-engine airplane*.
         /// </summary>
         internal static string CommMinComplexAMEL {
             get {
@@ -1384,7 +1384,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 10 hours of training in a multi-engine seaplane with flaps and a controllable pitch propeller (or turbine, or TAA)..
+        ///    Looks up a localized string similar to *10* hours of *training* in a *multi-engine seaplane* with flaps and a controllable pitch propeller (or turbine, or TAA)..
         /// </summary>
         internal static string CommMinComplexAMES {
             get {
@@ -1393,7 +1393,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 10 hours of training in a complex (or turbine, or TAA) airplane.
+        ///    Looks up a localized string similar to *10* hours of *training* in a *complex* (or turbine, or TAA) airplane.
         /// </summary>
         internal static string CommMinComplexASEL {
             get {
@@ -1402,7 +1402,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 10 hours of training in a single-engine seaplane with flaps and a controllable pitch propeller (or turbine, or TAA)..
+        ///    Looks up a localized string similar to *10* hours of *training* in a *single-engine seaplane* with flaps and a controllable pitch propeller (or turbine, or TAA)..
         /// </summary>
         internal static string CommMinComplexASES {
             get {
@@ -1411,7 +1411,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 5 hours solo in night VFR conditions in {0}.
+        ///    Looks up a localized string similar to *5* hours *solo* in *night* VFR conditions in *{0}*.
         /// </summary>
         internal static string CommMinNightFlight {
             get {
@@ -1420,7 +1420,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 10 solo landings at night in {0} (flight in the traffic pattern and a control tower are assumed).
+        ///    Looks up a localized string similar to *10 solo* landings at *night* in *{0}* (flight in the traffic pattern and a control tower are assumed).
         /// </summary>
         internal static string CommMinNightLandings {
             get {
@@ -1429,7 +1429,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 10 solo takeoffs at night in {0}.
+        ///    Looks up a localized string similar to *10 solo* takeoffs at *night* in *{0}*.
         /// </summary>
         internal static string CommMinNightTakeoffs {
             get {
@@ -1438,7 +1438,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours PIC time.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours *PIC* time.
         /// </summary>
         internal static string CommMinPIC {
             get {
@@ -1447,7 +1447,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours as PIC in {1}.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours as *PIC* in *{1}*.
         /// </summary>
         internal static string CommMinPICInCategory {
             get {
@@ -1456,7 +1456,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours PIC in cross-country Flight.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours *PIC* in *cross-country* flight.
         /// </summary>
         internal static string CommMinPICXC {
             get {
@@ -1465,7 +1465,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours PIC in cross-country flight in {1}.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours *PIC* in *cross-country* flight in *{1}*.
         /// </summary>
         internal static string CommMinPICXCInCategory {
             get {
@@ -1474,7 +1474,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours in {1}.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours in *{1}*.
         /// </summary>
         internal static string CommMinPoweredInCategory {
             get {
@@ -1483,7 +1483,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours in powered aircraft.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours in *powered aircraft*.
         /// </summary>
         internal static string CommMinPoweredTime {
             get {
@@ -1492,7 +1492,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of simulated IFR training.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *simulated IFR training*.
         /// </summary>
         internal static string CommMinSimIMC {
             get {
@@ -1501,7 +1501,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of simulated IFR training in {1}.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *simulated IFR training* in *{1}*.
         /// </summary>
         internal static string CommMinSimIMCInCategory {
             get {
@@ -1510,7 +1510,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of flight time as a pilot..
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of flight time as a pilot..
         /// </summary>
         internal static string CommMinTime {
             get {
@@ -1519,7 +1519,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of flight training.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *flight training*.
         /// </summary>
         internal static string CommMinTraining {
             get {
@@ -1528,7 +1528,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of solo time in {1}.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *solo* time in *{1}*.
         /// </summary>
         internal static string CommPICSoloCategory {
             get {
@@ -1537,7 +1537,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to A solo cross-country flight in {0} of not less than 300NM total distance, with 3 landings, at least one of which is 250NM away from the departure point (straight line)..
+        ///    Looks up a localized string similar to A *solo cross-country* flight in *{0}* of not less than *300NM* total distance, with *3 landings*, at least one of which is *250NM* away from the departure point (straight line)..
         /// </summary>
         internal static string CommPICSoloXCCategory {
             get {
@@ -1555,7 +1555,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to A cross-country flight in a helicopter with landings at 3 points, with one segment at least 50 NM from the original point of departure..
+        ///    Looks up a localized string similar to A *cross-country flight* in a *helicopter* with landings at *3* points, with one segment at least *50NM* from the original point of departure..
         /// </summary>
         internal static string CommSoloXCHelicopter {
             get {
@@ -1564,7 +1564,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to A 2-hour cross-country training flight in {0} in daytime conditions with total distance (straight line) over {1}NM from the point of departure..
+        ///    Looks up a localized string similar to A *2-hour cross-country training* flight in *{0}* in *daytime* conditions with total distance (straight line) over *{1}NM* from the point of departure..
         /// </summary>
         internal static string CommXCCategory {
             get {
@@ -1573,7 +1573,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to A 2-hour night cross-country training flight in {0} with total distance (straight line) over {1}NM from point of departure..
+        ///    Looks up a localized string similar to A *2-hour night cross-country training* flight in *{0}* with total distance (straight line) over *{1}NM* from point of departure..
         /// </summary>
         internal static string CommXCCategoryNight {
             get {
@@ -1591,7 +1591,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours CFI time in {1}.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours *CFI* time in *{1}*.
         /// </summary>
         internal static string DPECFICategory {
             get {
@@ -1600,7 +1600,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours CFI time in {1}.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours CFI time in *{1}*.
         /// </summary>
         internal static string DPECFIClass {
             get {
@@ -1618,7 +1618,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours PIC time in complex airplanes.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours *PIC* time in *complex* airplanes.
         /// </summary>
         internal static string DPEComplex {
             get {
@@ -1627,7 +1627,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} flights in past 12 months in {1}.
+        ///    Looks up a localized string similar to *{0:#,##0}* flights in past *12 months* in *{1}*.
         /// </summary>
         internal static string DPEFlightsPastYear {
             get {
@@ -1636,7 +1636,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} PIC hours of instrument flight (actual or simulated).
+        ///    Looks up a localized string similar to *{0:#,##0} PIC hours* of *instrument* flight (actual or simulated).
         /// </summary>
         internal static string DPEInstrument {
             get {
@@ -1645,7 +1645,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of instrument instruction.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *instrument instruction*.
         /// </summary>
         internal static string DPEInstrumentInstruction {
             get {
@@ -1663,7 +1663,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of instrument instruction in {1}.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of instrument instruction in *{1}*.
         /// </summary>
         internal static string DPEInstrumentInstructionInCategory {
             get {
@@ -1681,7 +1681,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours PIC time in {1}.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours *PIC* time in *{1}*.
         /// </summary>
         internal static string DPEPICCategory {
             get {
@@ -1690,7 +1690,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours PIC time in {1}.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours *PIC* time in *{1}*.
         /// </summary>
         internal static string DPEPICClass {
             get {
@@ -1699,7 +1699,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours night PIC Time.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours *night PIC* Time.
         /// </summary>
         internal static string DPEPICNight {
             get {
@@ -1708,7 +1708,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of PIC time.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *PIC* time.
         /// </summary>
         internal static string DPEPICTime {
             get {
@@ -1717,7 +1717,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours PIC time in past 12 months in {1}.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours *PIC* time in past *12 months* in *{1}*.
         /// </summary>
         internal static string DPEPICTimePastYear {
             get {
@@ -1771,7 +1771,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours in {1}.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours in *{1}*.
         /// </summary>
         internal static string EASALAPLAirplaneMinDual {
             get {
@@ -1780,7 +1780,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of flight instruction in {1}.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *flight instruction* in *{1}*.
         /// </summary>
         internal static string EASALAPLAirplaneMinDualInClass {
             get {
@@ -1789,7 +1789,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of supervised solo time.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *supervised solo* time.
         /// </summary>
         internal static string EASALAPLAirplaneMinSolo {
             get {
@@ -1798,7 +1798,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of solo cross-country flight time.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *solo cross-country* flight time.
         /// </summary>
         internal static string EASALAPLAirplaneMinSoloXC {
             get {
@@ -1807,7 +1807,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 1 solo cross-country flight of at least {0} NM with a full-stop landing at a different airport.
+        ///    Looks up a localized string similar to 1 *solo cross-country* flight of at least *{0}NM* with a *full-stop landing* at a different airport.
         /// </summary>
         internal static string EASALAPLAirplaneMinSoloXCMinDist {
             get {
@@ -1825,7 +1825,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 10 hours of dual flight instruction in a sailplane.
+        ///    Looks up a localized string similar to *10* hours of *dual flight instruction* in a *sailplane*.
         /// </summary>
         internal static string EASALAPLSailplaneDual {
             get {
@@ -1834,7 +1834,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 45 launches and landings..
+        ///    Looks up a localized string similar to *45* launches and landings..
         /// </summary>
         internal static string EASALAPLSailplaneLaunchesAndLandings {
             get {
@@ -1861,7 +1861,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 2 hours of supervised solo flight time (solo or Duties of PIC with an instructor on board).
+        ///    Looks up a localized string similar to *2* hours of *supervised solo* flight time (solo or Duties of PIC with an instructor on board).
         /// </summary>
         internal static string EASALAPLSailplaneSolo {
             get {
@@ -1888,7 +1888,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 15 hours in sailplanes.
+        ///    Looks up a localized string similar to *15* hours in *sailplanes*.
         /// </summary>
         internal static string EASALAPLSailplaneTotal {
             get {
@@ -1897,7 +1897,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 1 solo cross-country flight of at least 27NM or 1 dual cross-country flight of at least 55NM.
+        ///    Looks up a localized string similar to *1 solo cross-country* flight of at least *27NM* or *1* *dual cross-country* flight of at least *55NM*.
         /// </summary>
         internal static string EASALAPLSailplaneXC {
             get {
@@ -1924,7 +1924,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 20 flights in a glider.
+        ///    Looks up a localized string similar to *20* flights in a *glider*.
         /// </summary>
         internal static string GliderMinFlights {
             get {
@@ -1933,7 +1933,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of flight time in a glider.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of flight time in a *glider*.
         /// </summary>
         internal static string GliderMinFlightTime {
             get {
@@ -1942,7 +1942,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 2 hours of solo flight time in a glider.
+        ///    Looks up a localized string similar to *2* hours of *solo* flight time in a *glider*.
         /// </summary>
         internal static string GliderMinSoloTime {
             get {
@@ -1951,7 +1951,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 3 training flights with an instructor in a glider within 2 calendar months prior to test..
+        ///    Looks up a localized string similar to *3 training* flights with an *instructor* in a *glider* within *2* calendar months prior to test..
         /// </summary>
         internal static string GliderMinTestPrep {
             get {
@@ -1960,7 +1960,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 10 solo flights in a glider.
+        ///    Looks up a localized string similar to *10 solo* flights in a *glider*.
         /// </summary>
         internal static string GliderSoloFlights {
             get {
@@ -1969,7 +1969,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 10 solo landings in a glider.
+        ///    Looks up a localized string similar to *10 solo landings* in a *glider*.
         /// </summary>
         internal static string GliderSoloLandings {
             get {
@@ -1998,7 +1998,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of dual instruction.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *dual* instruction.
         /// </summary>
         internal static string JARPPLMinDual {
             get {
@@ -2007,7 +2007,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours instrument dual instruction time.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours *instrument dual instruction* time.
         /// </summary>
         internal static string JARPPLMinDualInstrument {
             get {
@@ -2016,7 +2016,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 1 dual cross-country flight at night of at least {0}NM.
+        ///    Looks up a localized string similar to 1 *dual cross-country* flight at night of at least *{0}NM*.
         /// </summary>
         internal static string JARPPLMinDualNightLongXC {
             get {
@@ -2025,7 +2025,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of supervised solo.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *supervised solo*.
         /// </summary>
         internal static string JARPPLMinSolo {
             get {
@@ -2034,7 +2034,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 1 solo cross-country flight of at least {0}NM, including 2 full-stop landings at 2 airports other than the point of departure.
+        ///    Looks up a localized string similar to 1 *solo cross-country* flight of at least *{0}NM*, including *2 full-stop landings* at *2 airports* other than the point of departure.
         /// </summary>
         internal static string JARPPLMinSoloLongXC {
             get {
@@ -2052,7 +2052,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of solo cross-country flight time.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *solo cross-country* flight time.
         /// </summary>
         internal static string JARPPLMinSoloXC {
             get {
@@ -2061,7 +2061,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} Hours of flight time.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of flight time.
         /// </summary>
         internal static string JARPPLMinTime {
             get {
@@ -2079,7 +2079,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of night flight in airplanes.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *night* flight in *airplanes*.
         /// </summary>
         internal static string JARPPLNight {
             get {
@@ -2088,7 +2088,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of night dual.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *night dual* instruction.
         /// </summary>
         internal static string JARPPLNightDual {
             get {
@@ -2097,7 +2097,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hour(s) of night cross-country navigation.
+        ///    Looks up a localized string similar to *{0:#,##0}* hour(s) of *night cross-country* navigation.
         /// </summary>
         internal static string JARPPLNightDualXC {
             get {
@@ -2106,7 +2106,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} solo night full-stop landings.
+        ///    Looks up a localized string similar to *{0:#,##0} solo night full-stop* landings.
         /// </summary>
         internal static string JARPPLNightSoloLandings {
             get {
@@ -2115,7 +2115,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} solo night takeoffs.
+        ///    Looks up a localized string similar to *{0:#,##0} solo night* takeoffs.
         /// </summary>
         internal static string JARPPLNightSoloTakeoffs {
             get {
@@ -2133,7 +2133,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 3 hours of cross-country training in {0}.
+        ///    Looks up a localized string similar to *3* hours of *cross-country training* in *{0}*.
         /// </summary>
         internal static string MinDualXC {
             get {
@@ -2142,7 +2142,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 50 hours of cross-country PIC time.
+        ///    Looks up a localized string similar to *50* hours of *cross-country PIC* time.
         /// </summary>
         internal static string MinEASAIRXCPICTime {
             get {
@@ -2151,7 +2151,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 20 hours of cross-country PIC time in airplanes.
+        ///    Looks up a localized string similar to *20 hours* of *cross-country PIC* time in *airplanes*.
         /// </summary>
         internal static string MinEASAIRXCPICTimeAirplanes {
             get {
@@ -2160,7 +2160,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 10 hours of training in an airplane by reference to instruments.
+        ///    Looks up a localized string similar to *10* hours of *training* in an *airplane* by reference to *instruments*.
         /// </summary>
         internal static string MinIFRTrainingByRef {
             get {
@@ -2169,7 +2169,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 15 Hours of Training in Instrument Flying.
+        ///    Looks up a localized string similar to *15* hours of *training* in *instrument flying*.
         /// </summary>
         internal static string MinIFRTrainingUK {
             get {
@@ -2178,7 +2178,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 10 Hours of cross-country flight as PIC in {0}.
+        ///    Looks up a localized string similar to *10* Hours of *cross-country* flight as *PIC* in *{0}*.
         /// </summary>
         internal static string MinInstrumentPICInCategory {
             get {
@@ -2187,7 +2187,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 50 Hours of cross-country flight as PIC.
+        ///    Looks up a localized string similar to *50* Hours of *cross-country* flight as *PIC*.
         /// </summary>
         internal static string MinInstrumentPICXC {
             get {
@@ -2196,7 +2196,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 3 hours of instrument flight training in {0} within 2 calendar months prior to test..
+        ///    Looks up a localized string similar to *3* hours of *instrument* flight *training* in *{0}* within *2* calendar months prior to test..
         /// </summary>
         internal static string MinInstrumentTestPrep {
             get {
@@ -2205,7 +2205,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 40 Hours of actual or simulated instrument time.
+        ///    Looks up a localized string similar to *40* hours of *actual or simulated instrument* time.
         /// </summary>
         internal static string MinInstrumentTime {
             get {
@@ -2214,7 +2214,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 35 Hours of actual or simulated instrument time.
+        ///    Looks up a localized string similar to *35* Hours of *actual or simulated instrument* time.
         /// </summary>
         internal static string MinInstrumentTime141 {
             get {
@@ -2223,7 +2223,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 15 hours of instrument training from an authorized instructor (CFII).
+        ///    Looks up a localized string similar to *15* hours of *instrument training* from an authorized instructor (CFII).
         /// </summary>
         internal static string MinInstrumentTraining {
             get {
@@ -2232,7 +2232,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 5 hours of instrument training in {0}.
+        ///    Looks up a localized string similar to *5* hours of *instrument training* in *{0}*.
         /// </summary>
         internal static string MinInstrumentTrainingInCategoryCanada {
             get {
@@ -2250,7 +2250,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to A cross-country flight in {0} of at least {1}NM with at least 3 approaches..
+        ///    Looks up a localized string similar to A *cross-country* flight in *{0}* of at least *{1}NM* with at least *3* approaches..
         /// </summary>
         internal static string MinInstrumentXC {
             get {
@@ -2259,7 +2259,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to A cross-country flight of at least {0}NM with at least 2 approaches at 2 locations.
+        ///    Looks up a localized string similar to A *cross-country* flight of at least *{0}NM* with at least *2 approaches* at *2 locations*.
         /// </summary>
         internal static string MinInstrumentXCCanada {
             get {
@@ -2277,7 +2277,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 3 full-stop solo landings at a towered airport.
+        ///    Looks up a localized string similar to *3 full-stop solo landings* at a *towered* airport.
         /// </summary>
         internal static string MinLandingsFSToweredAirport {
             get {
@@ -2286,7 +2286,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 3 landings at a towered airport.
+        ///    Looks up a localized string similar to *3 landings* at a *towered* airport.
         /// </summary>
         internal static string MinLandingsToweredAirport {
             get {
@@ -2295,7 +2295,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} night landings (training) to a full stop in {1}.
+        ///    Looks up a localized string similar to *{0}* *night landings (training)* to a *full stop* in *{1}*.
         /// </summary>
         internal static string MinNightFSLandings {
             get {
@@ -2304,7 +2304,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} night takeoffs (training) in {1}.
+        ///    Looks up a localized string similar to *{0}* *night takeoffs (training)* in *{1}*.
         /// </summary>
         internal static string MinNightTakeoffs {
             get {
@@ -2313,7 +2313,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 3 hours of night flight training in {0}.
+        ///    Looks up a localized string similar to *3* hours of *night flight training* in *{0}*.
         /// </summary>
         internal static string MinNightTime {
             get {
@@ -2322,7 +2322,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 3 hours of flight training by reference to instruments in {0}.
+        ///    Looks up a localized string similar to *3* hours of *flight training* by *reference to instruments* in *{0}*.
         /// </summary>
         internal static string MinSimulatedIMC {
             get {
@@ -2331,7 +2331,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 10 hours of solo time.
+        ///    Looks up a localized string similar to *10* hours of *solo* time.
         /// </summary>
         internal static string MinSolo {
             get {
@@ -2340,7 +2340,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 10 hours of solo time in {0}.
+        ///    Looks up a localized string similar to *10* hours of *solo* time in *{0}*.
         /// </summary>
         internal static string MinSoloInType {
             get {
@@ -2349,7 +2349,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 3 solo takeoffs at a towered airport.
+        ///    Looks up a localized string similar to *3 solo takeoffs* at a *towered* airport.
         /// </summary>
         internal static string MinTakeoffsToweredAirport {
             get {
@@ -2358,7 +2358,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 3 hours of flight training in {0} within 2 calendar months prior to exam.
+        ///    Looks up a localized string similar to *3* hours of *flight training* in *{0}* within *2 calendar months* prior to exam.
         /// </summary>
         internal static string MinTestPrep {
             get {
@@ -2367,7 +2367,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 40 hours of flight time.
+        ///    Looks up a localized string similar to *40* hours of flight time.
         /// </summary>
         internal static string MinTime {
             get {
@@ -2376,7 +2376,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of flight training (dual).
+        ///    Looks up a localized string similar to *{0}* hours of *flight training* (dual).
         /// </summary>
         internal static string MinTraining {
             get {
@@ -2385,7 +2385,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 10 hours as PIC in aeroplanes.
+        ///    Looks up a localized string similar to *10* hours as *PIC* in *aeroplanes*.
         /// </summary>
         internal static string MinUKPICTime {
             get {
@@ -2394,7 +2394,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 5 hours as PIC in aeroplanes in cross-country flight.
+        ///    Looks up a localized string similar to *5* hours as *PIC* in *aeroplanes* in *cross-country* flight.
         /// </summary>
         internal static string MinUKPICXCTime {
             get {
@@ -2403,7 +2403,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 25 hours in aeroplanes.
+        ///    Looks up a localized string similar to *25* hours in *aeroplanes*.
         /// </summary>
         internal static string MinUKTotalTimeTraining {
             get {
@@ -2421,7 +2421,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to One solo cross-country flight of {1}NM total distance and a leg that is at least {2}NM, with three takeoffs and landings to a full-stop in {0}.
+        ///    Looks up a localized string similar to One *solo cross-country* flight of *{1}NM* total distance and a leg that is at least *{2}NM*, with *three takeoffs and landings to a full-stop* in *{0}*.
         /// </summary>
         internal static string MinXCDistance {
             get {
@@ -2430,7 +2430,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to One solo cross-country flight in {0} of {1}NM total distance and landings at least {2}NM apart, with three landings.
+        ///    Looks up a localized string similar to One *solo cross-country* flight in *{0}* of *{1}NM* total distance and landings at least *{2}NM* apart, with *three landings*.
         /// </summary>
         internal static string MinXCDistanceHelicopter {
             get {
@@ -2439,7 +2439,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to One night-time cross-country training flight of over {1}NM distance in {0}.
+        ///    Looks up a localized string similar to One *night-time cross-country training* flight of over *{1}NM* distance in *{0}*.
         /// </summary>
         internal static string MinXCNight {
             get {
@@ -2448,7 +2448,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to One night-time cross-country flight of over 50nm distance in {0}.
+        ///    Looks up a localized string similar to One *night-time cross-country* flight of over *50nm* distance in *{0}*.
         /// </summary>
         internal static string MinXCNight50nm {
             get {
@@ -2457,7 +2457,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {1} hours of solo cross-country time in {0}.
+        ///    Looks up a localized string similar to *{1}* hours of *solo cross-country* time in *{0}*.
         /// </summary>
         internal static string MinXCSolo {
             get {
@@ -2484,7 +2484,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to FAR 61.129(i) provides mechanisms by which time in a simulator or FTD may count towards requirements in 61.129, based on various conditions.  %APP_NAME% does NOT include time in a training device towards your goal, so you may have met it even if %APP_NAME% says otherwise..
+        ///    Looks up a localized string similar to FAR [61.129(i)](https://www.law.cornell.edu/cfr/text/14/61.129) provides mechanisms by which time in a simulator or FTD may count towards requirements in 61.129, based on various conditions.  %APP_NAME% does NOT include time in a training device towards your goal, so you may have met it even if %APP_NAME% says otherwise..
         /// </summary>
         internal static string Note61129TrainingDevice {
             get {
@@ -2547,7 +2547,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 61.65(h) and 61.65(i) allow simulators/FTDs/ATDs to contribute towards this as well, but subject to conditions that cannot easily be determined; %APP_NAME% applies up to the lower limits specified (20 hours for FTDs, 10 for ATDs); you may be able to apply more..
+        ///    Looks up a localized string similar to [61.65(h) and 61.65(i)](https://www.law.cornell.edu/cfr/text/14/61.65) allow simulators/FTDs/ATDs to contribute towards this as well, but subject to conditions that cannot easily be determined; %APP_NAME% applies up to the lower limits specified (20 hours for FTDs, 10 for ATDs); you may be able to apply more..
         /// </summary>
         internal static string NoteInstrumentTime {
             get {
@@ -2583,7 +2583,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to See FAR 61.110 for possible exceptions that may apply to you.  Night landings are assumed to have involved flight in the traffic pattern..
+        ///    Looks up a localized string similar to See [FAR 61.110](https://www.law.cornell.edu/cfr/text/14/61.110) for possible exceptions that may apply to you.  Night landings are assumed to have involved flight in the traffic pattern..
         /// </summary>
         internal static string NoteNightRequirements {
             get {
@@ -2637,7 +2637,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 61.65(g) allows fewer hours than this if you are applying for a combined private pilot/instrument rating certificate..
+        ///    Looks up a localized string similar to [61.65(g)](https://www.law.cornell.edu/cfr/text/14/61.65) allows fewer hours than this if you are applying for a combined private pilot/instrument rating certificate..
         /// </summary>
         internal static string NoteXCTime {
             get {
@@ -2695,7 +2695,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 100 hours of night flight time.
+        ///    Looks up a localized string similar to *100* hours of *night* flight time.
         /// </summary>
         internal static string Part135PICIFRNightTime {
             get {
@@ -2704,7 +2704,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 75 hours of actual or simulated instrument time.
+        ///    Looks up a localized string similar to *75* hours of *actual or simulated instrument* time.
         /// </summary>
         internal static string Part135PICIFRTime {
             get {
@@ -2713,7 +2713,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 50 hours of actual or simulated instrument time in flight.
+        ///    Looks up a localized string similar to *50* hours of *actual or simulated instrument* time *in flight*.
         /// </summary>
         internal static string Part135PICIFRTimeInFlight {
             get {
@@ -2722,7 +2722,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of total time as a pilot.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of total time as a pilot.
         /// </summary>
         internal static string Part135PICMinTime {
             get {
@@ -2731,7 +2731,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 25 hours of night cross-country time.
+        ///    Looks up a localized string similar to *25* hours of *night cross-country* time.
         /// </summary>
         internal static string Part135PICNightXCMinTime {
             get {
@@ -2740,7 +2740,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of cross-country time.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *cross-country* time.
         /// </summary>
         internal static string Part135PICXCMinTime {
             get {
@@ -2767,7 +2767,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 3 hours of training in basic instrument maneuvers in {0}.
+        ///    Looks up a localized string similar to *3* hours of *training* in basic instrument maneuvers in *{0}*.
         /// </summary>
         internal static string Part141InstrumentTraining {
             get {
@@ -2776,7 +2776,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to At least 20 hours of dual instruction.
+        ///    Looks up a localized string similar to At least *20* hours of *dual instruction*.
         /// </summary>
         internal static string Part141MinInstruction {
             get {
@@ -2785,7 +2785,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to At least {0} hours of flight training time.
+        ///    Looks up a localized string similar to At least *{0:#,##0}* hours of flight *training* time.
         /// </summary>
         internal static string Part141MinTime {
             get {
@@ -2803,7 +2803,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 10 Night landings (training) in {0}.
+        ///    Looks up a localized string similar to *10 Night landings* (training) in *{0}*.
         /// </summary>
         internal static string Part141NightLandings {
             get {
@@ -2812,7 +2812,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 10 Night takeoffs (training) in {0}.
+        ///    Looks up a localized string similar to *10 Night takeoffs* (training) in *{0}*.
         /// </summary>
         internal static string Part141NightTakeoffs {
             get {
@@ -2821,7 +2821,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 3 hours of night flight in {0}.
+        ///    Looks up a localized string similar to *3* hours of *night* flight in *{0}*.
         /// </summary>
         internal static string Part141NightTraining {
             get {
@@ -2830,7 +2830,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 1 Night cross-country flight in {0} of more than {1}NM distance.
+        ///    Looks up a localized string similar to 1 *Night cross-country* flight in *{0}* of more than *{1}NM* distance.
         /// </summary>
         internal static string Part141NightXC {
             get {
@@ -2839,7 +2839,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 5 hours of solo flight time in {0}.
+        ///    Looks up a localized string similar to *5* hours of *solo* flight time in *{0}*.
         /// </summary>
         internal static string Part141SoloFlight {
             get {
@@ -2848,7 +2848,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 3 solo landings to a full-stop at an airport with an operating control tower in {0}.
+        ///    Looks up a localized string similar to *3 solo* landings to a *full-stop* at an airport with an *operating control tower* in *{0}*.
         /// </summary>
         internal static string Part141SoloLandings {
             get {
@@ -2857,7 +2857,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 3 solo takeoffs at an airport with an operating control tower in {0}.
+        ///    Looks up a localized string similar to *3 solo* takeoffs at an airport with an *operating control tower* in *{0}*.
         /// </summary>
         internal static string Part141SoloTakeoffs {
             get {
@@ -2866,7 +2866,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to At least 5 hours of solo flight training in {0}.
+        ///    Looks up a localized string similar to At least *5* hours of *solo* flight training in {0}.
         /// </summary>
         internal static string Part141SoloTraining {
             get {
@@ -2875,7 +2875,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to One solo 100NM cross-country flight with one segment over 50NM and landings at 3 points in {0}.
+        ///    Looks up a localized string similar to One *solo 100NM cross-country* flight with one segment over *50NM* and *landings at 3 points* in *{0}*.
         /// </summary>
         internal static string Part141SoloXC {
             get {
@@ -2884,7 +2884,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 3 hours in prep for the practical test within 60 days preceding the date of the test in {0}.
+        ///    Looks up a localized string similar to *3* hours in prep for the practical test within *60 days* preceding the date of the test in *{0}*.
         /// </summary>
         internal static string Part141TestPrep {
             get {
@@ -2893,7 +2893,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 3 hours of cross-country flight training in {0}.
+        ///    Looks up a localized string similar to *3* hours of *cross-country* flight *training* in *{0}*.
         /// </summary>
         internal static string Part141XC {
             get {
@@ -3163,7 +3163,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 3 hours of solo flying in the aircraft in the category/class for the rating being sought..
+        ///    Looks up a localized string similar to *3* hours of *solo* flying in the aircraft *in the category/class* for the rating being sought..
         /// </summary>
         internal static string RecreationalMinSolo {
             get {
@@ -3172,7 +3172,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 30 hours of flight time.
+        ///    Looks up a localized string similar to *30* hours of flight time.
         /// </summary>
         internal static string RecreationalMinTime {
             get {
@@ -3181,7 +3181,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 15 hours of flight training.
+        ///    Looks up a localized string similar to *15* hours of flight *training*.
         /// </summary>
         internal static string RecreationalMinTraining {
             get {
@@ -3190,7 +3190,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 2 hours of training en-route to an airport at least 25NM away, including at least 3 take-offs and landings at the 2nd airport..
+        ///    Looks up a localized string similar to *2* hours of *training* en-route to an airport at least *25NM* away, including at least *3 take-offs and landings* at the 2nd airport..
         /// </summary>
         internal static string RecreationalMinXC {
             get {
@@ -3208,7 +3208,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 3 hours of flight training within 2 calendar months prior to test..
+        ///    Looks up a localized string similar to *3* hours of flight *training* within *2* calendar months prior to test..
         /// </summary>
         internal static string RecreationTestPrep {
             get {
@@ -3217,7 +3217,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of dual instruction in {1}.
+        ///    Looks up a localized string similar to *{0}* hours of *dual instruction* in *{1}*.
         /// </summary>
         internal static string SADual {
             get {
@@ -3226,7 +3226,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to A dual night cross-country flight of at least {0}NM with 2 landings (full-stop if in an aeroplane) away from base.
+        ///    Looks up a localized string similar to A *dual night cross-country* flight of at least *{0}NM* with *2* landings (full-stop if in an aeroplane) away from base.
         /// </summary>
         internal static string SADualXC {
             get {
@@ -3235,7 +3235,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 10 hours of instrument instruction.
+        ///    Looks up a localized string similar to *10* hours of *instrument instruction*.
         /// </summary>
         internal static string SANightInstrument {
             get {
@@ -3253,7 +3253,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 5 night dual landings.
+        ///    Looks up a localized string similar to *5* night dual landings.
         /// </summary>
         internal static string SANightLandings {
             get {
@@ -3262,7 +3262,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 5 night dual takeoffs.
+        ///    Looks up a localized string similar to *5* night dual takeoffs.
         /// </summary>
         internal static string SANightTakeoffs {
             get {
@@ -3271,7 +3271,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of solo time.
+        ///    Looks up a localized string similar to *{0}* hours of *solo* time.
         /// </summary>
         internal static string SASolo {
             get {
@@ -3280,7 +3280,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to A solo cross-country flight of at least {0}NM, including full-stop landings at 2 aerodromes.  For aeroplanes, a leg of at least 50NM from base is also required.
+        ///    Looks up a localized string similar to A *solo cross-country* flight of at least *{0}NM*, including *full-stop* landings at *2* aerodromes.  For aeroplanes, a leg of at least 50NM from base is also required.
         /// </summary>
         internal static string SASoloLongXC {
             get {
@@ -3289,7 +3289,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of solo cross-country time.
+        ///    Looks up a localized string similar to *{0}* hours of *solo cross-country* time.
         /// </summary>
         internal static string SASoloXC {
             get {
@@ -3298,7 +3298,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of total time in {1}.
+        ///    Looks up a localized string similar to *{0}* hours of total time in *{1}*.
         /// </summary>
         internal static string SATotalTime {
             get {
@@ -3334,7 +3334,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 10 training flights in a glider (5 if you already have 20 hours in heavier-than-air aircraft).
+        ///    Looks up a localized string similar to *10* training flights in a *glider* (5 if you already have 20 hours in heavier-than-air aircraft).
         /// </summary>
         internal static string SportMinFlightsGlider {
             get {
@@ -3343,7 +3343,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of flight training in a {1}.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of flight *training* in a *{1}*.
         /// </summary>
         internal static string SportMinInstruction {
             get {
@@ -3352,7 +3352,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 10 takeoffs &amp; landings in a {0}.  Landings must be full-stop for airplane rating).
+        ///    Looks up a localized string similar to *10* takeoffs &amp; landings in a *{0}*.  (Landings must be full-stop for airplane rating).
         /// </summary>
         internal static string SportMinLandings {
             get {
@@ -3370,7 +3370,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of solo time in a {1}.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of *solo* time in a *{1}*.
         /// </summary>
         internal static string SportMinSolo {
             get {
@@ -3379,7 +3379,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 2 hours of solo flight in a glider (1 if you already have 20 hours in heavier-than-air aircraft).
+        ///    Looks up a localized string similar to *2* hours of *solo* flight in a *glider* (1 if you already have 20 hours in heavier-than-air aircraft).
         /// </summary>
         internal static string SportMinSoloGlider {
             get {
@@ -3388,7 +3388,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 5 solo launches/landings (3 if you already have 20 hours in heavier-than-air aircraft).
+        ///    Looks up a localized string similar to *5 solo launches/landings* (3 if you already have 20 hours in heavier-than-air aircraft).
         /// </summary>
         internal static string SportMinSoloLandings {
             get {
@@ -3397,7 +3397,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} hours of flight time.
+        ///    Looks up a localized string similar to *{0:#,##0}* hours of flight time.
         /// </summary>
         internal static string SportMinTime {
             get {
@@ -3406,7 +3406,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 10 hours of flight time in a glider (3 if you already have 20 hours in heavier-than-air aircraft).
+        ///    Looks up a localized string similar to *10* hours of flight time in a *glider* (3 if you already have 20 hours in heavier-than-air aircraft).
         /// </summary>
         internal static string SportMinTimeGlider {
             get {
@@ -3415,7 +3415,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to At least 3 training flights within the 2 calendar months prior to the test.
+        ///    Looks up a localized string similar to At least *3 training flights* within the *2* calendar months prior to the test.
         /// </summary>
         internal static string SportMinTraining {
             get {
@@ -3424,7 +3424,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 2 hours of cross-country training in a {0}.
+        ///    Looks up a localized string similar to *2* hours of *cross-country training* in a *{0}*.
         /// </summary>
         internal static string SportMinXC {
             get {
@@ -3442,7 +3442,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Solo cross-country flight in a {0} of at least {1}NM that includes 2 full-stop landings and a straight line distance over 25NM.
+        ///    Looks up a localized string similar to *Solo cross-country* flight in a *{0}* of at least *{1}NM* that includes *2 full-stop landings* and a straight line distance over *25NM*.
         /// </summary>
         internal static string SportSoloXCFlight {
             get {
@@ -3451,7 +3451,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to 2 hours of flight training within the 2 calendar months prior to the test.
+        ///    Looks up a localized string similar to *2* hours of flight *training* within the *2* calendar months prior to the test.
         /// </summary>
         internal static string SportTestPrepTime {
             get {

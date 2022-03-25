@@ -6,7 +6,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2021 MyFlightbook LLC
+ * Copyright (c) 2013-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -167,6 +167,7 @@ namespace MyFlightbook.RatingsProgress
         protected bool AllowTAAForComplex { get; set; }
 
         protected Comm61129Base() {
+            FARLink = FAA_COMM_61129_LINK;
             GeneralDisclaimer = Branding.ReBrand(Resources.MilestoneProgress.CommGeneralDisclaimer);
             AllowTAAForComplex = DateTime.Now.CompareTo(ExaminerFlightRow.Aug2018Cutover) > 0;
         }
@@ -667,6 +668,7 @@ namespace MyFlightbook.RatingsProgress
         public Comm61129Glider() : base()
         {
             Title = Resources.MilestoneProgress.Title61129F;
+            FARLink = FAA_COMM_61129_LINK;
             BaseFAR = "61.129(f)";
             RatingSought = RatingType.CommercialGlider;
 
@@ -810,16 +812,17 @@ namespace MyFlightbook.RatingsProgress
             Title = szTitle;
             BaseFAR = szBaseFAR;
             RatingSought = ratingSought;
+            FARLink = FAA_COMM_61129_LINK;
 
             miBalloonTime = new MilestoneItem(Resources.MilestoneProgress.CommBalloonMinTime, ResolvedFAR("(1)"), string.Empty, MilestoneItem.MilestoneType.Time, _minHoursTotalInBalloons);
             miBalloonFlights = new MilestoneItem(Resources.MilestoneProgress.CommBalloonMinFlights, ResolvedFAR("(2)"), string.Empty, MilestoneItem.MilestoneType.Count, _minFlightsInBalloons);
             miBalloonPIC = new MilestoneItem(Resources.MilestoneProgress.CommBalloonMinPIC, ResolvedFAR("(3)"), string.Empty, MilestoneItem.MilestoneType.Time, _minFlightsAsPIC);
             miBalloonTrainingFlights = new MilestoneItem(Resources.MilestoneProgress.CommBalloonTrainingFlights, ResolvedFAR("(4)"), string.Empty, MilestoneItem.MilestoneType.Count, _minFlightTrainingFlights);
             miBalloonTrainingTime = new MilestoneItem(Resources.MilestoneProgress.CommBalloonTrainingTime, ResolvedFAR("(4)"), string.Empty, MilestoneItem.MilestoneType.Time, _minFlightTrainingTime);
-            miTestPrep = new MilestoneItemDecayable(_szTestPrep, String.Format(CultureInfo.CurrentCulture, "{0}(A)", ResolvedFAR(_szFARBase)), Branding.ReBrand(Resources.MilestoneProgress.NoteTestPrep), MilestoneItem.MilestoneType.Count, _minFlightTrainingFlights, 2);
-            miGasDPIC = new MilestoneItem(Resources.MilestoneProgress.CommBalloonDPIC, String.Format(CultureInfo.CurrentCulture, "{0}(B)", ResolvedFAR(_szFARBase)), string.Empty, MilestoneItem.MilestoneType.Count, _minFlightDPIC);
-            miHASolo = new MilestoneItem(Resources.MilestoneProgress.CommBalloonSolo, String.Format(CultureInfo.CurrentCulture, "{0}(B)", ResolvedFAR(_szFARBase)), string.Empty, MilestoneItem.MilestoneType.Count, _minFlightHASolo);
-            miControlledAscent = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CommBalloonAscent, MinAscentHeight), String.Format(CultureInfo.CurrentCulture, "{0}(C)", ResolvedFAR(_szFARBase)), string.Empty, MilestoneItem.MilestoneType.AchieveOnce, 1);
+            miTestPrep = new MilestoneItemDecayable(_szTestPrep, ResolvedFAR(_szFARBase + "(A)"), Branding.ReBrand(Resources.MilestoneProgress.NoteTestPrep), MilestoneItem.MilestoneType.Count, _minFlightTrainingFlights, 2);
+            miGasDPIC = new MilestoneItem(Resources.MilestoneProgress.CommBalloonDPIC, ResolvedFAR(_szFARBase + "(B)"), string.Empty, MilestoneItem.MilestoneType.Count, _minFlightDPIC);
+            miHASolo = new MilestoneItem(Resources.MilestoneProgress.CommBalloonSolo, ResolvedFAR(_szFARBase + "(B)"), string.Empty, MilestoneItem.MilestoneType.Count, _minFlightHASolo);
+            miControlledAscent = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CommBalloonAscent, MinAscentHeight), ResolvedFAR(_szFARBase + "(C)"), string.Empty, MilestoneItem.MilestoneType.AchieveOnce, 1);
         }
 
         public override Collection<MilestoneItem> Milestones
@@ -1013,6 +1016,7 @@ namespace MyFlightbook.RatingsProgress
 
         protected Comm141Base()
         {
+            FARLink = "https://www.law.cornell.edu/cfr/text/14/appendix-D_to_part_141";
             AllowTAAForComplex = DateTime.Now.CompareTo(ExaminerFlightRow.Aug2018Cutover) > 0;
         }
 
@@ -1041,12 +1045,14 @@ namespace MyFlightbook.RatingsProgress
         protected void Init(string szBaseFAR, string szTitle, RatingType ratingSought, string szCatClass, string szSoloFar, int OverallTime, string szOverallSubsection)
         {
             Title = szTitle;
-            BaseFAR = szBaseFAR;
+            FARLink = "https://www.law.cornell.edu/cfr/text/14/appendix-D_to_part_141";
             RatingSought = ratingSought;
             string szBaseSoloFAR = "Part 141 Appendix D, 5" + szSoloFar;
 
+            BaseFAR = string.Empty;
             miOverallTraining = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.Comm141MinTimeOverall, OverallTime),
-                "Part 141 Appendix D, 4(a)" + szOverallSubsection, Resources.MilestoneProgress.Comm141OverallTimeNote, MilestoneItem.MilestoneType.Time, OverallTime);
+                ResolvedFAR("Part 141 Appendix D, 4(a)" + szOverallSubsection), Resources.MilestoneProgress.Comm141OverallTimeNote, MilestoneItem.MilestoneType.Time, OverallTime);
+            BaseFAR = szBaseFAR;
             miTotalTraining = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.Comm141MinTime, _minTotalTraining),
                 ResolvedFAR(string.Empty), Resources.MilestoneProgress.Comm141TrainingNote, MilestoneItem.MilestoneType.Time, _minTotalTraining);
             miInstrumentTraining = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.Comm141MinInstrumentTraining, _minInstrumentTraining),
@@ -1061,16 +1067,20 @@ namespace MyFlightbook.RatingsProgress
             miTestPrep = new MilestoneItemDecayable(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.Comm141TestPrep, _minTestPrep, szCatClass, _minDaysTestPrep),
                 ResolvedFAR("(v)"), Branding.ReBrand(Resources.MilestoneProgress.Comm141TestPrepNote), MilestoneItem.MilestoneType.Time, _minTestPrep, (int) _minDaysTestPrep, false);
 
+
+            BaseFAR = szBaseSoloFAR;
             miSoloTime = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.Comm141SoloTime, _minSoloInCatClass, szCatClass),
-                szBaseSoloFAR, string.Empty, MilestoneItem.MilestoneType.Time, _minSoloInCatClass);
+                ResolvedFAR(string.Empty), string.Empty, MilestoneItem.MilestoneType.Time, _minSoloInCatClass);
             miSoloXCFlight = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.Comm141SoloXCFlight, _minSoloXCDistance),
-                szBaseSoloFAR + "(1) or (2)", Resources.MilestoneProgress.Comm141SoloXCHawaiiNote, MilestoneItem.MilestoneType.AchieveOnce, 1);
+                ResolvedFAR("(1) or (2)"), Resources.MilestoneProgress.Comm141SoloXCHawaiiNote, MilestoneItem.MilestoneType.AchieveOnce, 1);
             miSoloNight = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.Comm141SoloNight, _minSoloNightHours),
-                szBaseSoloFAR + "(3)", string.Empty, MilestoneItem.MilestoneType.Time, _minSoloNightHours);
+                ResolvedFAR("(3)"), string.Empty, MilestoneItem.MilestoneType.Time, _minSoloNightHours);
             miSoloNightTakeoffs = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.Comm141SoloNightTakeoffs, _minSoloNightTakeoffs),
-                szBaseSoloFAR + "(3)", Branding.ReBrand(Resources.MilestoneProgress.Part141ControltowerWarning), MilestoneItem.MilestoneType.Count, _minSoloNightTakeoffs);
+                ResolvedFAR("(3)"), Branding.ReBrand(Resources.MilestoneProgress.Part141ControltowerWarning), MilestoneItem.MilestoneType.Count, _minSoloNightTakeoffs);
             miSoloNightLandings = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.Comm141SoloNightLandings, _minSoloNightLandings),
-                szBaseSoloFAR + "(3)", Branding.ReBrand(Resources.MilestoneProgress.Part141ControltowerWarning), MilestoneItem.MilestoneType.Count, _minSoloNightLandings);
+                ResolvedFAR("(3)"), Branding.ReBrand(Resources.MilestoneProgress.Part141ControltowerWarning), MilestoneItem.MilestoneType.Count, _minSoloNightLandings);
+            
+            BaseFAR = szBaseFAR;
         }
 
         private bool IsComplexForRating(ExaminerFlightRow cfr)
@@ -1242,9 +1252,10 @@ namespace MyFlightbook.RatingsProgress
             miDayXCFlight.FARRef = ResolvedFAR("(ii)");
             miNightXCFlight.FARRef = ResolvedFAR("(iii)");
             miTestPrep.FARRef = ResolvedFAR("(iv)");
-            miSoloXCFlight.FARRef = "Part 141 Appendix D, 5(c)(1)";
+            BaseFAR = "Part 141 Appendix D, 5(c)";
+            miSoloXCFlight.FARRef = ResolvedFAR("(1)");
             miSoloXCFlight.Note = string.Empty;
-            miSoloNight.FARRef = miSoloNightLandings.FARRef = miSoloNightTakeoffs.FARRef = "Part 141 Appendix D, 5(c)(2)";
+            miSoloNight.FARRef = miSoloNightLandings.FARRef = miSoloNightTakeoffs.FARRef = ResolvedFAR("(2)");
         }
 
         public override Collection<MilestoneItem> Milestones
@@ -1289,6 +1300,7 @@ namespace MyFlightbook.RatingsProgress
         public CommCanadaAirplane() : base()
         {
             BaseFAR = "421.30(4)(a)";
+            FARLink = "https://tc.canada.ca/en/corporate-services/acts-regulations/list-regulations/canadian-aviation-regulations-sor-96-433/standards/standard-421-flight-crew-permits-licences-ratings-canadian-aviation-regulations-cars#421_30";
             RatingSought = RatingType.CommercialCanadaAeroplane;
             Title = Resources.MilestoneProgress.Title42130Aeroplane;
 

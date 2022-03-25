@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2021 MyFlightbook LLC
+ * Copyright (c) 2013-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -80,6 +80,7 @@ namespace MyFlightbook.RatingsProgress
         {
             RatingSought = RatingType.Part135PIC;
             BaseFAR = "135.243(b)(2)";
+            FARLink = "https://www.law.cornell.edu/cfr/text/14/135.243";
             string szFAR = ResolvedFAR(string.Empty);
             Title = Resources.MilestoneProgress.Title135243PIC;
             GeneralDisclaimer = Branding.ReBrand(Resources.MilestoneProgress.Part135PICDisclaimer);
@@ -132,6 +133,7 @@ namespace MyFlightbook.RatingsProgress
         {
             RatingSought = RatingType.Part135PICIFR;
             BaseFAR = "135.243(c)(2)";
+            FARLink = "https://www.law.cornell.edu/cfr/text/14/135.243";
             string szFAR = ResolvedFAR(string.Empty);
             Title = Resources.MilestoneProgress.Title135243PICIFR;
             GeneralDisclaimer = Branding.ReBrand(Resources.MilestoneProgress.Part135PICDisclaimer);

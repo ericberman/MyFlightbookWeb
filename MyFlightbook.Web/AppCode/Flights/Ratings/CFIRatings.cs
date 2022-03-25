@@ -5,7 +5,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2020 MyFlightbook LLC
+ * Copyright (c) 2020-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -56,6 +56,7 @@ namespace MyFlightbook.RatingsProgress
             requiredCatClassID = ccid;
             BaseFAR = "61.183";
             RatingSought = rt;
+            FARLink = "https://www.law.cornell.edu/cfr/text/14/61.183";
 
             miPIC = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CFITimeInCategoryClass, CFIMinTime, CategoryClass.CategoryClassFromID(ccid).CatClass), ResolvedFAR("(j)"), string.Empty, MilestoneItem.MilestoneType.Time, CFIMinTime);
         }
@@ -130,6 +131,7 @@ namespace MyFlightbook.RatingsProgress
         {
             Title = Resources.MilestoneProgress.Title61411CFISportSEL;
             BaseFAR = "61.411";
+            FARLink = "https://www.law.cornell.edu/cfr/text/14/61.411";
 
             miTotal = new MilestoneItem(Resources.MilestoneProgress.CFISASELTotalTime, ResolvedFAR("(a)(1)"), string.Empty, MilestoneItem.MilestoneType.Time, 150);
             miPICPowered = new MilestoneItem(Resources.MilestoneProgress.CFISASELPICPowered, ResolvedFAR("(a)(1)(i)"), string.Empty, MilestoneItem.MilestoneType.Time, 100);

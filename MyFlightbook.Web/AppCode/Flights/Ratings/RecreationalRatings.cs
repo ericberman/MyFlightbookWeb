@@ -6,7 +6,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2021 MyFlightbook LLC
+ * Copyright (c) 2013-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -60,10 +60,11 @@ namespace MyFlightbook.RatingsProgress
             CategoryClass cc = CategoryClass.CategoryClassFromID(CatClassID = ccid);
             Title = String.Format(CultureInfo.CurrentCulture, "{0} - {1}", Resources.MilestoneProgress.Title6199, cc.CatClass);
             BaseFAR = "61.99";
+            FARLink = "https://www.law.cornell.edu/cfr/text/14/61.99";
             RatingSought = RatingType.RecreationalPilot;
 
             // 61.99 overall
-            miMinTime = new MilestoneItem(Resources.MilestoneProgress.RecreationalMinTime, BaseFAR, string.Empty, MilestoneItem.MilestoneType.Time, 30.0M);
+            miMinTime = new MilestoneItem(Resources.MilestoneProgress.RecreationalMinTime, ResolvedFAR(string.Empty), string.Empty, MilestoneItem.MilestoneType.Time, 30.0M);
 
             // 61.99(a) - 15 hours of dual
             miMinInstruction = new MilestoneItem(Resources.MilestoneProgress.RecreationalMinTraining, ResolvedFAR("(a)"), String.Empty, MilestoneItem.MilestoneType.Time, 15.0M);
@@ -130,7 +131,7 @@ namespace MyFlightbook.RatingsProgress
         }
     }
 
-    #region Concreate recreational pilot ratings
+    #region Concrete recreational pilot ratings
     [Serializable]
     public class RP6199ASEL : RP6199Base
     {
