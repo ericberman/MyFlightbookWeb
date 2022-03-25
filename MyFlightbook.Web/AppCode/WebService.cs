@@ -280,13 +280,12 @@ namespace MyFlightbook
                     EventRecorder.WriteEvent(EventRecorder.MFBEventID.ExpiredToken, rgsz[0], String.Format(CultureInfo.InvariantCulture, "Expired token for user (2-week expiration): {0} days", elapsedTicksDays.ToString(CultureInfo.InvariantCulture)));
 
                 string szUser = rgsz[0];
-                /* HOLD OFF UNTIL WE CONVERT TO ALL UTC
+
                 // Issue #920: force new sign-in if authtoken was issued prior to last password change.
                 // Validate the user and if this was issued before the last password change, don't allow it.
                 Profile pf = Profile.GetUser(szUser);
                 if (pf.LastPasswordChange.Ticks > ticks)
                     throw new MyFlightbookException(Resources.Profile.AuthTokenExpiredPassword);
-                */
                 return szUser;
             }
             else
@@ -1202,7 +1201,7 @@ namespace MyFlightbook
         {
             if (szUser == null)
                 throw new ArgumentNullException(nameof(szUser));
-            return new Encryptors.WebServiceEncryptor().Encrypt(szUser + ";" + DateTime.Now.Ticks.ToString(CultureInfo.InvariantCulture));
+            return new Encryptors.WebServiceEncryptor().Encrypt(szUser + ";" + DateTime.UtcNow.Ticks.ToString(CultureInfo.InvariantCulture));
         }
 
         public static string AuthTokenFromOAuthToken(DotNetOpenAuth.OAuth2.ChannelElements.AuthorizationDataBag token)

@@ -1363,6 +1363,9 @@ namespace MyFlightbook
                 if (!Membership.Provider.ChangePassword(UserName, szOld, szNew))
                     throw new MyFlightbookException(Resources.Profile.errChangePasswordFailed);
 
+                // Invalidate our cache
+                HttpRuntime.Cache.Remove(GetCacheKey(UserName));
+
                 util.NotifyUser(String.Format(CultureInfo.CurrentCulture, Resources.Profile.PasswordChangedSubject, Branding.CurrentBrand.AppName),
                     Branding.ReBrand(Resources.EmailTemplates.PasswordChanged), new MailAddress(Email, UserFullName), false, false);
             }
