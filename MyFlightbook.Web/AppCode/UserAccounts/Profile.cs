@@ -1268,6 +1268,18 @@ namespace MyFlightbook
             }
             return pf;
         }
+
+        /// <summary>
+        /// Uncaches the specified user, forcing a database reload next time.
+        /// </summary>
+        /// <param name="szUserName"></param>
+        public static void UncacheUser(string szUserName)
+        {
+            if (szUserName == null)
+                return;
+
+            HttpRuntime.Cache.Remove(GetCacheKey(szUserName));
+        }
         #endregion
 
         public static IEnumerable<Profile> UsersWithSubscriptions(UInt32 subscriptionMask, DateTime dtMin)
@@ -1364,7 +1376,7 @@ namespace MyFlightbook
                     throw new MyFlightbookException(Resources.Profile.errChangePasswordFailed);
 
                 // Invalidate our cache
-                HttpRuntime.Cache.Remove(GetCacheKey(UserName));
+                UncacheUser(UserName);
 
                 util.NotifyUser(String.Format(CultureInfo.CurrentCulture, Resources.Profile.PasswordChangedSubject, Branding.CurrentBrand.AppName),
                     Branding.ReBrand(Resources.EmailTemplates.PasswordChanged), new MailAddress(Email, UserFullName), false, false);
@@ -2127,6 +2139,7 @@ namespace MyFlightbook
                 comm.Parameters.AddWithValue("st", (int)Status);
                 comm.Parameters.AddWithValue("guid", ID);
             });
+            Profile.UncacheUser(UserName);
         }
     }
 
