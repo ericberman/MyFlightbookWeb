@@ -57,7 +57,7 @@ namespace MyFlightbook.Web.Admin
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_mfbImpersonate mfbImpersonate1;
+        protected global::MyFlightbook.Web.Admin.mfbImpersonate mfbImpersonate1;
 
         /// <summary>
         /// sqlDSDupeUsers control.

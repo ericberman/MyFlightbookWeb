@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbImpersonate.ascx.cs" Inherits="Controls_mfbImpersonate" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbImpersonate.ascx.cs" Inherits="MyFlightbook.Web.Admin.mfbImpersonate" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register Src="~/Controls/popmenu.ascx" TagPrefix="uc1" TagName="popmenu" %>
 
