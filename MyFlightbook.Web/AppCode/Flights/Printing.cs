@@ -142,7 +142,7 @@ namespace MyFlightbook.Printing
             return Math.Max(1 + imgHeight + sigHeight + times, (le.RedactedComment.Length + le.CustPropertyDisplay.Length) / 100);
         }
 
-        public override string CSSPath { get { return "~/Public/CSS/printNative.css?v=3"; } }
+        public override string CSSPath { get { return "~/Public/CSS/printNative.css?v=4"; } }
     }
 
     public class PrintLayoutPortrait : PrintLayout

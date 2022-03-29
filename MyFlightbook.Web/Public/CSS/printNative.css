@@ -48,18 +48,18 @@ thead.header th > div {
     font-size: smaller;
 }
 
-thead.header th > div.custColumn {
-    -webkit-transform: rotate(0);
-    -moz-transform: rotate(0);
-    -o-transform: rotate(0);
-    -ms-transform: rotate(0);
-    transform: rotate(0);
-    width: 1.0cm;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    font-size: smaller;
-    white-space:normal;
-}
+    thead.header th > div.custColumn {
+        -webkit-transform: rotate(315deg);
+        -moz-transform: rotate(315deg);
+        -o-transform: rotate(315deg);
+        -ms-transform: rotate(315deg);
+        transform: rotate(315deg);
+        width: 1.0cm;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: x-small;
+        white-space: normal;
+    }
 
 .header {
     font-weight:bold;
