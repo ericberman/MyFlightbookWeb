@@ -1400,7 +1400,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <value>*15* hours of *instrument training* from an authorized instructor (CFII)</value>
   </data>
   <data name="MinInstrumentTrainingNote" xml:space="preserve">
-    <value>Any dual with IMC or Simulated IMC contributes to this, but %APP_NAME% cannot determine what rating your instructor held, so this may OVERSTATE your progress.  Also, 61.65(h) and (i) are ambiguous whether training device time contributes to this, so %APP_NAME% is conservative and only allows time in an aircraft towards this requirement.  You may be able to apply more time than shown here.</value>
+    <value>Any dual with IMC or Simulated IMC contributes to this, but %APP_NAME% cannot determine what rating your instructor held, so this may OVERSTATE your progress.  Also, 61.65(h) and (i) are ambiguous whether ATD/FTD/FFS time contributes to this, so %APP_NAME% is conservative and only allows time in a real aircraft towards this requirement.  You may be able to apply more time than shown here.</value>
   </data>
   <data name="CommGyroplaneNightLandings" xml:space="preserve">
     <value>*10 night training landings* to full stop in a *gyroplane*</value>

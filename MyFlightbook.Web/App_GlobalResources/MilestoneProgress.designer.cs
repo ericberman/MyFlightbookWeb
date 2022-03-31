@@ -2241,7 +2241,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Any dual with IMC or Simulated IMC contributes to this, but %APP_NAME% cannot determine what rating your instructor held, so this may OVERSTATE your progress.  Also, 61.65(h) and (i) are ambiguous whether training device time contributes to this, so %APP_NAME% is conservative and only allows time in an aircraft towards this requirement.  You may be able to apply more time than shown here..
+        ///    Looks up a localized string similar to Any dual with IMC or Simulated IMC contributes to this, but %APP_NAME% cannot determine what rating your instructor held, so this may OVERSTATE your progress.  Also, 61.65(h) and (i) are ambiguous whether ATD/FTD/FFS time contributes to this, so %APP_NAME% is conservative and only allows time in a real aircraft towards this requirement.  You may be able to apply more time than shown here..
         /// </summary>
         internal static string MinInstrumentTrainingNote {
             get {
