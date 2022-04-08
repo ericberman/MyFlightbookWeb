@@ -1,5 +1,4 @@
-﻿using MyFlightbook;
-using MyFlightbook.Image;
+﻿using MyFlightbook.Image;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2021 MyFlightbook LLC
+ * Copyright (c) 2013-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -80,7 +79,7 @@ namespace MyFlightbook.PublicPages
 
             rptAttributes.DataSource = m.AttributeList();
             rptAttributes.DataBind();
-            lblModel.Text = System.Web.HttpUtility.HtmlEncode(m.DisplayName);
+            lblModel.Text = HttpUtility.HtmlEncode(m.DisplayName);
             lblAttributesHeader.Text = String.Format(CultureInfo.CurrentCulture, "Attributes of {0}:", HttpUtility.HtmlEncode(m.DisplayName));
             lblSampleAircraftHeader.Text = String.Format(CultureInfo.CurrentCulture, "Sample aircraft for {0}", HttpUtility.HtmlEncode(m.DisplayName));
 
@@ -111,10 +110,10 @@ namespace MyFlightbook.PublicPages
             if (!IsPostBack)
             {
                 Response.Cache.SetExpires(DateTime.Now.AddSeconds(1209600));
-                Response.Cache.SetCacheability(System.Web.HttpCacheability.Public);
+                Response.Cache.SetCacheability(HttpCacheability.Public);
                 Response.Cache.SetValidUntilExpires(true);
 
-                this.Master.Title = String.Format(CultureInfo.CurrentCulture, Resources.Makes.AllMakesTitle, Branding.CurrentBrand.AppName);
+                Master.Title = String.Format(CultureInfo.CurrentCulture, Resources.Makes.AllMakesTitle, Branding.CurrentBrand.AppName);
                 string[] rgIds = Request.PathInfo.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
                 int clevels = rgIds.Length;
                 if (clevels >= mvLevelToShow.Views.Count)
@@ -172,7 +171,7 @@ namespace MyFlightbook.PublicPages
                 r.DataSource = lst;
                 r.DataBind();
                 // DON'T cache this locally - could possibly be leading to memory leaks if crawler hits us hard?
-                foreach (MFBImageInfo mfbii in il.ImageArray)
+                foreach (MFBImageInfo mfbii in lst)
                     mfbii.UnCache();
             }
         }
