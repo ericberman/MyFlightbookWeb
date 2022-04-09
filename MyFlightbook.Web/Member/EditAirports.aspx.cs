@@ -262,9 +262,15 @@ namespace MyFlightbook.Mapping
                 {
                     // needs review
                     StringBuilder sb = new StringBuilder();
+                    StringBuilder sbViewLink = new StringBuilder();
+                    sbViewLink.AppendFormat(CultureInfo.InvariantCulture, "https://{0}{1}?Airports={2}", Branding.CurrentBrand.HostName, ResolveUrl("~/Public/MapRoute2.aspx"), ap.Code); 
                     sb.AppendFormat(CultureInfo.CurrentCulture, "User: {0}, Airport: {1} ({2}) {3} {4}\r\n\r\nCould match:\r\n", ap.UserName, ap.Code, ap.FacilityTypeCode, ap.Name, ap.LatLong.ToDegMinSecString());
                     foreach (airport a in lstDupes)
+                    {
                         sb.AppendFormat(CultureInfo.CurrentCulture, "{0} - ({1}) {2} {3}\r\n", a.Code, a.FacilityTypeCode, a.Name, a.LatLong.ToDegMinSecString());
+                        sbViewLink.AppendFormat(CultureInfo.InvariantCulture, "+{0}", a.Code);
+                    }
+                    sb.AppendFormat(CultureInfo.InvariantCulture, "\r\n\r\n{0}\r\n", sbViewLink.ToString());
                     util.NotifyAdminEvent("New airport created - needs review", sb.ToString(), ProfileRoles.maskCanManageData);
                 }
 
