@@ -44,7 +44,7 @@ namespace MyFlightbook.Subscriptions
 
             if (!IsPostBack)
             {
-                cssRef.Href = "~/Public/Stylesheet.css?v=31".ToAbsoluteURL(Request.Url.Scheme, Branding.CurrentBrand.HostName, Request.Url.Port).ToString();
+                cssRef.Href = "~/Public/Stylesheet.css?v=32".ToAbsoluteURL(Request.Url.Scheme, Branding.CurrentBrand.HostName, Request.Url.Port).ToString();
                 baseRef.Attributes["href"] = "~/Public/".ToAbsoluteURL(Request.Url.Scheme, Branding.CurrentBrand.HostName, Request.Url.Port).ToString();
 
                 string szAuthKey = util.GetStringParam(Request, "k");
