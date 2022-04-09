@@ -684,7 +684,7 @@ namespace MyFlightbook.CloudStorage
         public OneDrive(Profile pf = null) 
             : base("OneDriveAccessID", "OneDriveClientSecret", "https://login.live.com/oauth20_authorize.srf", "https://login.live.com/oauth20_token.srf", new string[] { "onedrive.appfolder", "wl.basic", "onedrive.readwrite", "wl.offline_access" })
         {
-            RootPath = String.Format(CultureInfo.CurrentCulture, "{0}/{1}/", Branding.CurrentBrand.AppName, DateTime.Now.ToString("yyyy/MM-MMMM", CultureInfo.CurrentCulture)); ;
+            RootPath = String.Format(CultureInfo.InvariantCulture, "{0}/{1}/{2}/", Branding.CurrentBrand.AppName, DateTime.Now.ToString("yyyy", CultureInfo.CurrentCulture), DateTime.Now.ToString("MM-MMMM", CultureInfo.CurrentCulture)); ;
             profile = pf;
             AuthState = pf?.OneDriveAccessToken;
         }
@@ -836,7 +836,7 @@ namespace MyFlightbook.CloudStorage
                   new string[] { "files.content.write", "files.content.read", "files.metadata.write", "files.metadata.read" }, "https://api.dropboxapi.com/2/auth/token/from_oauth1", "https://api.dropboxapi.com/2/auth/token/revoke")
         {
             profile = pf;
-            RootPath = DateTime.Now.ToString("/yyyy/MM-MMMM/", CultureInfo.CurrentCulture);
+            RootPath = String.Format(CultureInfo.InvariantCulture, "/{0}/{1}/", DateTime.Now.ToString("yyyy", CultureInfo.CurrentCulture), DateTime.Now.ToString("MM-MMMM", CultureInfo.CurrentCulture));
         }
 
         /// <summary>
