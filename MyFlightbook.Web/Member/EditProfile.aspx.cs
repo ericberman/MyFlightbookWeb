@@ -75,12 +75,13 @@ namespace MyFlightbook.MemberPages
             int[] rgPerms = (String.IsNullOrEmpty(json)) ? Array.Empty<int>() : JsonConvert.DeserializeObject<int[]>(json);
 
             // check for default array - 10 items, in order.
-            bool fIsDefault = rgPerms.Length == 10; // hack - assuming it's 10.
+            const int defSize = 10;  // hack - assuming it's 10.
+            bool fIsDefault = rgPerms.Length == defSize;
             int i = 0;
             while (fIsDefault && i < rgPerms.Length && rgPerms[i] == i)
                 i++;
 
-            if (fIsDefault)
+            if (fIsDefault && i == defSize)
                 rgPerms = Array.Empty<int>();
 
             m_pf.SetPreferenceForKey(MFBConstants.keyCoreFieldsPermutation, rgPerms, rgPerms == null || !rgPerms.Any());
@@ -103,7 +104,7 @@ namespace MyFlightbook.MemberPages
             fHasSetUpFields = true;
 
             // set up permutations.  Initially from preference, but then store locally in the hdn field.
-            IEnumerable<int> rgPerms = IsPostBack ? JsonConvert.DeserializeObject<int[]>(hdn.Value) : m_pf.GetPreferenceForKey<IEnumerable<int>>(MFBConstants.keyCoreFieldsPermutation);
+            IEnumerable<int> rgPerms = (IsPostBack && !String.IsNullOrWhiteSpace(hdn.Value) && hdn.Value.StartsWith("[", StringComparison.InvariantCulture)) ? JsonConvert.DeserializeObject<int[]>(hdn.Value) : m_pf.GetPreferenceForKey<IEnumerable<int>>(MFBConstants.keyCoreFieldsPermutation);
             if (rgPerms != null && rgPerms.Any())
             {
                 IEnumerable<Control> unused = divCore.PermuteChildren<Label>(rgPerms);
@@ -669,7 +670,7 @@ namespace MyFlightbook.MemberPages
                 }
             }
 
-            m_pf.UsesUTCDateOfFlight = (rblDateEntryPreferences.SelectedIndex > 0);
+            m_pf.UsesUTCDateOfFlight = rblDateEntryPreferences.SelectedIndex > 0;
             m_pf.PreferredTimeZoneID = prefTimeZone.SelectedTimeZoneId;
 
             SetPermutationsForUser(hdnPermutation.Value);
