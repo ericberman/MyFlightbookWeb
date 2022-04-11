@@ -1662,11 +1662,12 @@ namespace MyFlightbook
                     msg.Subject = Branding.ReBrand(dl == DeleteLevel.EntireUser ? Resources.EmailTemplates.AccountDeletedSubject : Resources.EmailTemplates.FlightsDeletedSubject);
                     msg.Body = Branding.ReBrand(dl == DeleteLevel.EntireUser ? Resources.EmailTemplates.AccountDeletedBody : Resources.EmailTemplates.FlightsDeletedBody) + "\r\n\r\n" + Branding.ReBrand(Resources.EmailTemplates.ThankYouCloser);
                     util.AddAdminsToMessage(msg, false, ProfileRoles.maskCanSupport);
-                    LogbookBackup lb = new LogbookBackup(pf);
-                    using (FileStream fs = new FileStream(Path.GetTempFileName(), FileMode.Open, FileAccess.ReadWrite, FileShare.None, Int16.MaxValue, FileOptions.DeleteOnClose))
+                    LogbookBackup lb = new LogbookBackup(pf) { IncludeImages = false };
+                    using (FileStream fs = new FileStream(Path.GetTempFileName(), FileMode.Open, FileAccess.ReadWrite, FileShare.Read, Int16.MaxValue, FileOptions.DeleteOnClose))
                     {
                         lb.LogbookDataForBackup(fs);
-                        msg.Attachments.Add(new Attachment(fs, lb.BackupFilename(brand)));
+                        fs.Seek(0, SeekOrigin.Begin);
+                        msg.Attachments.Add(new Attachment(fs, lb.BackupFilename(brand), "text/csv"));
                         util.SendMessage(msg);
                     }
                 }
