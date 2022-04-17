@@ -3040,7 +3040,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int)CustomPropertyType.KnownProperties.ID
                     mr.SetMatchingModels(MakeModel.MatchingMakes(makes, mr.NormalizedModelGiven));
                     if (mr.MatchingModels.Count > 0)
                     {
-                        if ((mr.BestMatchAircraft = lstUserAircraft.Find(ac => (mr.MatchingModels.FirstOrDefault(mm => mm.MakeModelID == ac.ModelID) != null))) != null)
+                        if ((mr.BestMatchAircraft = lstUserAircraft.Find(ac => ac.InstanceType != AircraftInstanceTypes.RealAircraft && (mr.MatchingModels.FirstOrDefault(mm => mm.MakeModelID == ac.ModelID) != null))) != null)
                         {
                             SetModelMatch(mr, AircraftImportMatchRow.MatchState.MatchedInProfile);
                             continue;
