@@ -14,7 +14,7 @@ using System.Security.Cryptography;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2021 MyFlightbook LLC
+ * Copyright (c) 2016-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  * 
  * Much of the code in this file came from DotNetOpenAuth.
@@ -259,6 +259,30 @@ namespace OAuthAuthorizationServer.Code
         public string Scope { get; set; }
         public ClientType ClientType { get; set; }
         public string OwningUser { get; set; }
+
+        private Uri AuthLinkForCallback(string szCallback)
+        {
+            if (szCallback == null)
+                throw new ArgumentNullException(nameof(szCallback));
+            return String.Format(CultureInfo.InvariantCulture, "~/member/oAuthAuthorize.aspx?client_id={0}&redirect_uri={1}&scope={2}&response_type=code",
+                        System.Web.HttpUtility.UrlEncode(ClientIdentifier),
+                        System.Web.HttpUtility.UrlEncode(szCallback),
+                        System.Web.HttpUtility.UrlEncode(Scope)).ToAbsoluteURL(System.Web.HttpContext.Current.Request);
+        }
+
+        public IDictionary<string, Uri> AuthLinks
+        {
+            get
+            {
+                IDictionary<string, Uri> links = new Dictionary<string, Uri>();
+                if (Callbacks != null)
+                {
+                    foreach (string sz in Callbacks)
+                        links[sz] = AuthLinkForCallback(sz);
+                }
+                return links;
+            }
+        }
         #endregion
 
         #region IConsumerDescription Members

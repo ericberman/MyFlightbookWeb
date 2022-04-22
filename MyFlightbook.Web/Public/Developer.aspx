@@ -123,9 +123,9 @@
                     <asp:TemplateField HeaderText="Callback URL(s)" HeaderStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top">
                         <ItemTemplate>
                             <ul>
-                                <asp:Repeater ID="rptCallback" DataSource='<%# Eval("Callbacks") %>' runat="server">
+                                <asp:Repeater ID="rptCallback" DataSource='<%# Eval("AuthLinks") %>' runat="server">
                                         <ItemTemplate>
-                                            <li><%#: Container.DataItem %></li>
+                                            <li><a href="<%# Eval("Value") %>">Try it!</a> <%#: Eval("Key") %></li>
                                         </ItemTemplate>
                                 </asp:Repeater>
                             </ul>
