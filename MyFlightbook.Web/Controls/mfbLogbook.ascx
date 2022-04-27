@@ -231,7 +231,7 @@
                         <div class="printonly"><asp:Label ID="lblModelAttributes" runat="server" Text='<%#: MakeModel.GetModel(Convert.ToInt32(Eval("ModelID"))).AttributeListSingleLine %>'></asp:Label></div>
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldApproaches %>" SortExpression="Approaches">
+                <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, PrintHeaderApproaches %>" SortExpression="Approaches">
                     <ItemStyle CssClass="gvcCentered" />
                     <HeaderStyle CssClass="headerBase gvhCentered" />
                     <ItemTemplate>
@@ -245,9 +245,9 @@
                         <%# Eval("fHoldingProcedures").FormatBoolean() %>
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldLanding %>" SortExpression="Landings">
+                <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, PrintHeaderLandingsShort %>" SortExpression="Landings">
                     <HeaderTemplate>
-                        <asp:LinkButton ID="lnkLandings" runat="server" CommandName="Sort" CommandArgument="Landings" Text="<%$ Resources:LogbookEntry, FieldLanding %>"></asp:LinkButton>
+                        <asp:LinkButton ID="lnkLandings" runat="server" CommandName="Sort" CommandArgument="Landings" Text="<%$ Resources:LogbookEntry, PrintHeaderLandingsShort %>"></asp:LinkButton>
                         <uc5:mfbTooltip ID="mfbTooltip1" TipCss="hint noprint" TipStyle="font-weight:normal" runat="server" BodyContent="<%$ Resources:LogbookEntry, LogbookLandingKey %>" />
                     </HeaderTemplate>
                     <HeaderStyle CssClass="headerBase gvhCentered" />
