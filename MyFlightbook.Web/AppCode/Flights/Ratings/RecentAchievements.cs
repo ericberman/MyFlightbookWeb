@@ -41,6 +41,100 @@ namespace MyFlightbook.RatingsProgress
         }
     }
 
+    public class FastestTimeToTotal
+    {
+        #region Properties
+        /// <summary>
+        /// If present, the start of the fastest period to a total
+        /// </summary>
+        public DateTime? StartDate { get; set; }
+
+        /// <summary>
+        /// If present, the end of the fastest period to a total
+        /// </summary>
+        public DateTime? EndDate { get; set; }
+
+        /// <summary>
+        /// The threshold we are seeking
+        /// </summary>
+        public decimal Threshold { get; private set; }
+
+        /// <summary>
+        /// Returns the shortest timespan that we've seen.
+        /// </summary>
+        public TimeSpan ShortestSpan
+        {
+            get { return (StartDate.HasValue && EndDate.HasValue) ? EndDate.Value.Subtract(StartDate.Value) : TimeSpan.MaxValue; }
+        }
+
+        private decimal currentTotal { get; set; } = 0;
+
+        private readonly Queue<ExaminerFlightRow> queue = new Queue<ExaminerFlightRow>();
+
+        public bool IsMet { get { return ShortestSpan.CompareTo(TimeSpan.MaxValue) < 0; } }
+        #endregion
+
+        public override string ToString()
+        {
+            return IsMet ? String.Format(CultureInfo.CurrentCulture, Resources.Achievements.FastestHrsBase, Threshold) :
+                String.Format(CultureInfo.CurrentCulture, Resources.Achievements.FastestHrsNotAchieved, Threshold);
+        }
+
+        public RecentAchievementMilestone ToMilestone(string Username)
+        {
+            RecentAchievementMilestone ra = new RecentAchievementMilestone(ToString(), MilestoneItem.MilestoneType.AchieveOnce, (int)Threshold);
+
+            if (IsMet)
+            {
+                if (StartDate != null && EndDate != null)
+                {
+                    ra.Query = new FlightQuery(Username) { DateRange = FlightQuery.DateRanges.Custom, DateMin = StartDate.Value, DateMax = EndDate.Value };
+                    ra.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.Achievements.FastestHrs, Threshold, ShortestSpan.TotalDays, StartDate.Value, EndDate.Value);
+                }
+                ra.AddEvent(1);
+            }
+            return ra;
+        }
+
+        public FastestTimeToTotal(int threshold)
+        {
+            Threshold = threshold;
+            StartDate = EndDate = null;
+        }
+
+        /// <summary>
+        /// Assumes we're going in 
+        /// </summary>
+        /// <param name="le"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public void ExamineFlight(ExaminerFlightRow cfr)
+        {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
+
+            queue.Enqueue(cfr); // queue it up
+            currentTotal += cfr.Total;
+
+            // We've crossed the threshold - update the start/end dates, if needed, and then dequeue until we are back under the threshold
+            if (currentTotal > Threshold)
+            {
+                do
+                {
+                    // cfr has the oldest date
+                    DateTime dtStart = cfr.dtFlight;
+                    ExaminerFlightRow efr = queue.Dequeue();
+                    currentTotal -= efr.Total;  // take it out of the current total.
+                    DateTime dtEnd = efr.dtFlight;
+                    if (dtEnd.Subtract(dtStart).CompareTo(ShortestSpan) < 0)
+                    {
+                        StartDate = dtStart;
+                        EndDate = dtEnd;
+                    }
+                } while (currentTotal > Threshold);
+            }
+        }
+    }
+
     /// <summary>
     /// Pseudo-milestone progress class for "cool achievements you've done in the past x period of time."
     /// </summary>
@@ -91,6 +185,9 @@ namespace MyFlightbook.RatingsProgress
         protected Dictionary<string, HashSet<string>> GeoRegions { get; private set; }
 
         protected int MostAirportsFlightCount { get; set; }
+
+        protected FastestTimeToTotal fs100 { get; set; } = new FastestTimeToTotal(100);
+        protected FastestTimeToTotal fs1000 { get; set; } = new FastestTimeToTotal(1000);
 
         #region MilestoneItems
         /// <summary>
@@ -277,7 +374,9 @@ namespace MyFlightbook.RatingsProgress
                     miCountries,
                     miAdmin1,
                     miAircraft,
-                    miModels
+                    miModels,
+                    fs100.ToMilestone(Username),
+                    fs1000.ToMilestone(Username)
                 };
 
                 l.RemoveAll(mi => !mi.IsSatisfied);
@@ -418,6 +517,9 @@ namespace MyFlightbook.RatingsProgress
                 miMostAirportsFlight.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementsAirportsOnFlight, cAirportsThisFlight, dtFlight.ToShortDateString());
                 miMostAirportsFlight.Query = new FlightQuery(Username) { DateRange = FlightQuery.DateRanges.Custom, DateMax = dtFlight, DateMin = dtFlight };
             }
+
+            fs100.ExamineFlight(cfr);
+            fs1000.ExamineFlight(cfr);
         }
     }
 }

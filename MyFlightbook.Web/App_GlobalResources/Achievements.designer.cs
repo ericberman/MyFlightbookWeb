@@ -187,6 +187,33 @@ namespace Resources {
         }
         
         /// <summary>
+        ///    Looks up a localized string similar to {1:#,##0} days {2:d} to {3:d}.
+        /// </summary>
+        internal static string FastestHrs {
+            get {
+                return ResourceManager.GetString("FastestHrs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Fastest accumulation of {0:#,##0} hours: .
+        /// </summary>
+        internal static string FastestHrsBase {
+            get {
+                return ResourceManager.GetString("FastestHrsBase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to (not achieved).
+        /// </summary>
+        internal static string FastestHrsNotAchieved {
+            get {
+                return ResourceManager.GetString("FastestHrsNotAchieved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///    Looks up a localized string similar to Congratulations - here are badges for your achievements!.
         /// </summary>
         internal static string HeaderText {

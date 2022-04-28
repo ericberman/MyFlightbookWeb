@@ -429,4 +429,13 @@
   <data name="RecentAchievementsCountriesVisited" xml:space="preserve">
     <value>Countries Visited:</value>
   </data>
+  <data name="FastestHrs" xml:space="preserve">
+    <value>{1:#,##0} days {2:d} to {3:d}</value>
+  </data>
+  <data name="FastestHrsBase" xml:space="preserve">
+    <value>Fastest accumulation of {0:#,##0} hours: </value>
+  </data>
+  <data name="FastestHrsNotAchieved" xml:space="preserve">
+    <value>(not achieved)</value>
+  </data>
 </root>
