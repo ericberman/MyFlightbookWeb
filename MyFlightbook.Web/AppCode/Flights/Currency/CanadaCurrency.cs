@@ -2,7 +2,7 @@
 
 /******************************************************
  * 
- * Copyright (c) 2007-2021 MyFlightbook LLC
+ * Copyright (c) 2007-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -118,15 +118,16 @@ namespace MyFlightbook.Currency
     }
 
     /// <summary>
-    /// Instrument Currency rules for Canada - see http://laws-lois.justice.gc.ca/eng/regulations/SOR-96-433/FullText.html#s-401.05
+    /// Instrument Currency rules for Canada - see https://laws-lois.justice.gc.ca/eng/regulations/SOR-96-433/FullText.html#s-401.05
     /// </summary>
     public class InstrumentCurrencyCanada : CompositeFlightCurrency
     {
-        readonly FlightCurrency fc401_05_3_a = new FlightCurrency(1.0M, 12, true, "IPC or new rating");
-        readonly FlightCurrency fc401_05_3_bTime = new FlightCurrency(6.0M, 6, true, "6 Hours of IFR time");
-        readonly FlightCurrency fc401_05_3_bApproaches = new FlightCurrency(6.0M, 6, true, "6 approaches");
-        readonly FlightCurrency fc401_05_3_cTime = new FlightCurrency(6.0M, 6, true, "6 Hours of IFR time in a real aircraft");
-        readonly FlightCurrency fc401_05_3_cApproaches = new FlightCurrency(6.0M, 6, true, "6 approaches in a real aircraft");
+        readonly FlightCurrency fc401_05_1a = new FlightCurrency(1.0M, 60, true, "PIC or Co-pilot in 5 years");
+        readonly FlightCurrency fc401_05_1b = new FlightCurrency(1.0M, 12, true, "Flight Review within 12 months");
+        readonly FlightCurrency fc401_05_3_a_c_24month = new FlightCurrency(1.0M, 24, true, "IPC or new rating within 24 months");
+        readonly FlightCurrency fc401_05_3_a_c_12month = new FlightCurrency(1.0M, 12, true, "IPC or new rating within 12 months");
+        readonly FlightCurrency fc401_05_3_1_aTime = new FlightCurrency(6.0M, 6, true, "6 Hours of IFR time");
+        readonly FlightCurrency fc401_05_3_1_bApproaches = new FlightCurrency(6.0M, 6, true, "6 approaches");
 
         public InstrumentCurrencyCanada() { }
 
@@ -136,37 +137,52 @@ namespace MyFlightbook.Currency
                 throw new ArgumentNullException(nameof(cfr));
             Invalidate();
 
+            // must be a real aircraft or certified IFR
+            if (!cfr.fIsCertifiedIFR)
+                return;
+
             // 401.05(3)(a) - IPC or equivalent
             cfr.FlightProps.ForEachEvent((pfe) =>
             {
                 // add any IPC or IPC equivalents
                 if (pfe.PropertyType.IsIPC)
-                    fc401_05_3_a.AddRecentFlightEvents(cfr.dtFlight, 1.0M);
+                {
+                    fc401_05_3_a_c_24month.AddRecentFlightEvents(cfr.dtFlight, 1.0M);
+                    fc401_05_3_a_c_12month.AddRecentFlightEvents(cfr.dtFlight, 1.0M);
+                }
+                if (pfe.PropertyType.IsBFR)
+                    fc401_05_1b.AddRecentFlightEvents(cfr.dtFlight, 1.0M);
             });
 
-            decimal IFRTime = cfr.IMC + cfr.IMCSim;
-            decimal IFRCFITime = Math.Min(IFRTime, cfr.CFI);
-
-            // 401.05(3)(b) - flight in a real aircraft or sim
-            fc401_05_3_bTime.AddRecentFlightEvents(cfr.dtFlight, Math.Max(0, IFRTime - IFRCFITime));
-            fc401_05_3_bApproaches.AddRecentFlightEvents(cfr.dtFlight, cfr.cApproaches);
-
-            // 401.05(3)(c) - IFR instruction in a real aircraft
             if (cfr.fIsRealAircraft)
             {
-                fc401_05_3_cTime.AddRecentFlightEvents(cfr.dtFlight, IFRCFITime);
-                fc401_05_3_cApproaches.AddRecentFlightEvents(cfr.dtFlight, cfr.CFI > 0 ? cfr.cApproaches : 0);
+                // 401.05(1) - Acted as PIC or SIC within the previous 5 years
+                fc401_05_1a.AddRecentFlightEvents(cfr.dtFlight, cfr.PIC + cfr.SIC);
             }
+
+            // 401.05(3.1)(a) Instrument time
+            fc401_05_3_1_aTime.AddRecentFlightEvents(cfr.dtFlight, cfr.IMC + cfr.IMCSim);
+
+            // 401.05(3.1)(b) - 6 approaches (can be in a sim)
+            fc401_05_3_1_bApproaches.AddRecentFlightEvents(cfr.dtFlight, cfr.cApproaches);
         }
 
         protected override void ComputeComposite()
         {
-            // 401.05(3)(a)-(c) say you have an IPC OR 6approaches+6hours OR 6approaches+6hours instructing.
-            FlightCurrency fcIFRCanada = fc401_05_3_a.OR(fc401_05_3_bTime.AND(fc401_05_3_bApproaches)).OR(fc401_05_3_cTime.AND(fc401_05_3_cApproaches));
+            /*
+             * MUST meet:
+             *  - 401.05(1)(a) OR 401.05(1)(b) AND
+             *  - 401.05(3) (24 month IPC) AND
+             *  - 6 hours and 6 approaches IF the review is more than 12 months old
+             *  
+             *  To do the latter two, we do this as (12 month IPC) OR (24 month IPC AND 6+6)
+             */
+            FlightCurrency fcIFRCanada = (fc401_05_3_a_c_12month.OR(fc401_05_3_a_c_24month.AND(fc401_05_3_1_aTime).AND(fc401_05_3_1_bApproaches))).AND(fc401_05_1a.OR(fc401_05_1b));
             CompositeCurrencyState = fcIFRCanada.CurrentState;
             CompositeExpiration = fcIFRCanada.ExpirationDate;
-            if (CompositeCurrencyState== CurrencyState.NotCurrent)
-                CompositeDiscrepancy = Resources.Currency.IPCRequired;
+
+            // If the IPC is controlling, then display that an IPC is required.
+            CompositeDiscrepancy = fc401_05_3_a_c_24month.IsCurrent() ? string.Empty : Resources.Currency.IPCRequired;
 
         }
     }
