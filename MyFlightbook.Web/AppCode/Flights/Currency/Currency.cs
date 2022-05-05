@@ -1327,8 +1327,11 @@ namespace MyFlightbook.Currency
             AddFAR117Currencies(arcs, ccc);
 
             // FAR 195(a)
-            AddIfCurrent(arcs, ccc.fcFAR195, DateTime.MinValue);
-            AddIfCurrent(arcs, ccc.fc61217, DateTime.MinValue, new CurrencyStatusItem(ccc.fc61217.DisplayName, ccc.fc61217.StatusDisplay, ccc.fc61217.CurrentState, string.Empty));
+            if (ccc.pf.CurrencyJurisdiction == CurrencyJurisdiction.FAA)
+            {
+                AddIfCurrent(arcs, ccc.fcFAR195, DateTime.MinValue);
+                AddIfCurrent(arcs, ccc.fc61217, DateTime.MinValue, new CurrencyStatusItem(ccc.fc61217.DisplayName, ccc.fc61217.StatusDisplay, ccc.fc61217.CurrentState, string.Empty));
+            }
 
             // UAS's
             ccc.fcUAS.Finalize(ccc.totalTime, ccc.picTime);
