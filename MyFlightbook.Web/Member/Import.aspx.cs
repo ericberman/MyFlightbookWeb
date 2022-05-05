@@ -1,4 +1,6 @@
+using DotNetOpenAuth.OAuth2;
 using MyFlightbook.OAuth.CloudAhoy;
+using MyFlightbook.OAuth.Leon;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -74,11 +76,14 @@ namespace MyFlightbook.ImportFlights
             InitWizard(wzImportFlights);
 
             Title = Resources.LogbookEntry.ImportFlightsPageTitle;
-            Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+            Profile pf = Profile.GetUser(User.Identity.Name);
             UseHHMM = pf.UsesHHMM;
 
             if (!IsPostBack)
+            {
                 pnlCloudAhoy.Visible = pf.CloudAhoyToken != null && pf.CloudAhoyToken.AccessToken != null;
+                pnlLeon.Visible = pf.PreferenceExists(LeonClient.TokenPrefKey);
+            }
         }
 
         protected static void AddTextRow(Control parent, string sz, string szClass = "")
@@ -444,6 +449,39 @@ namespace MyFlightbook.ImportFlights
             {
                 lblCloudAhoyErr.Text = HttpUtility.HtmlEncode(szResult);
                 popupCloudAhoy.Show();
+            }
+        }
+
+        protected async void btnImportLeonFlights_Click(object sender, EventArgs e)
+        {
+            Profile pf = Profile.GetUser(Page.User.Identity.Name);
+            IAuthorizationState authstate = pf.GetPreferenceForKey<AuthorizationState>(LeonClient.TokenPrefKey);
+
+            LeonClient c = new LeonClient(authstate, LeonClient.UseSandbox(Request.Url.Host));
+            bool fNeedsRefresh = !c.CheckAccessToken();
+            DateTime? from = null;
+            DateTime? to = null;
+
+            if (dtLeonFrom.Date.HasValue())
+                from = dtLeonFrom.Date;
+            if (dtLeonTo.Date.HasValue())
+                to = dtLeonTo.Date;
+
+            try
+            {
+                await c.ImportFlights(Page.User.Identity.Name, from, to);
+                if (fNeedsRefresh)
+                    pf.SetPreferenceForKey(LeonClient.TokenPrefKey, c.AuthState, c.AuthState == null);
+
+                // If we are here, then any flights were imported - redirect to review them.
+                // Avoid a "Thread was being aborted" (ThreadAbortException).
+                Response.Redirect("~/Member/ReviewPendingFlights.aspx", false);
+                Context.ApplicationInstance.CompleteRequest();
+            }
+            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            {
+                lblLeonErr.Text = HttpUtility.HtmlEncode(ex.Message);
+                popupLeon.Show();
             }
         }
     }

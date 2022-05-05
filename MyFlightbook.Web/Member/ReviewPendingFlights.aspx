@@ -32,7 +32,7 @@
                                         <%# LogbookEntryDisplay.FormatEngineTime((DateTime) Eval("EngineStart"), (DateTime) Eval("EngineEnd"), Viewer.UsesUTCDateOfFlight, Viewer.UsesHHMM) %>
                                     </div>
                                     <div>
-                                        <%# LogbookEntryDisplay.FormatEngineTime((DateTime) Eval("FlightStart"), (DateTime) Eval("FlightEnd"), Viewer.UsesUTCDateOfFlight, Viewer.UsesHHMM) %>
+                                        <%# LogbookEntryDisplay.FormatFlightTime((DateTime) Eval("FlightStart"), (DateTime) Eval("FlightEnd"), Viewer.UsesUTCDateOfFlight, Viewer.UsesHHMM) %>
                                     </div>
                                     <div>
                                         <%# LogbookEntryDisplay.FormatHobbs((decimal) Eval("HobbsStart"), (decimal) Eval("HobbsEnd")) %>

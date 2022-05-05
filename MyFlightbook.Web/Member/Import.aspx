@@ -154,6 +154,11 @@
     <asp:Panel ID="pnl3rdPartyServices" runat="server" style="margin-left:auto; margin-right:auto; text-align:center; margin-top: 15px">
         <br /><br />
         <hr />
+        <asp:Panel ID="pnlLeon" runat="server" Visible="false" style="margin: 10px; padding: 5px; border: 1px solid gray; height:120px; border-radius:5px; box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75); text-align:center; display:inline-block; vertical-align:middle">
+            <div><asp:Label ID="lblLeonImportHeader" runat="server" Text="<%$ Resources:LogbookEntry, LeonImportHeader %>" /></div>
+            <div><p><asp:LinkButton ID="lnkImportLeon" runat="server" Font-Bold="true" Text="<%$ Resources:LogbookEntry, LeonImportFlights %>" /></p></div>
+        </asp:Panel>
+        <ajaxToolkit:ModalPopupExtender ID="popupLeon" runat="server" BehaviorID="mpeLeon" BackgroundCssClass="modalBackground" TargetControlID="lnkImportLeon" PopupControlID="pnlModalLeon"></ajaxToolkit:ModalPopupExtender>
         <asp:Panel ID="pnlCloudAhoy" runat="server" Visible="false" style="margin: 10px; padding: 5px; border: 1px solid gray; height:120px; border-radius:5px; box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75); text-align:center; display:inline-block; vertical-align:middle">
             <div><asp:Image ID="imgCloudAhoy" runat="server" ImageUrl="~/images/CloudAhoyTrans.png" AlternateText="CloudAhoy" ToolTip="CloudAhoy" /></div>
             <div><p><asp:LinkButton ID="lnkImportCloudAhoy" runat="server" Font-Bold="true" Text="<%$ Resources:LogbookEntry, ImportCloudAhoyImport %>" /></p></div>
@@ -163,6 +168,8 @@
             function hideEditor() {
                 document.getElementById('<% =pnlModalCloudAhoy.ClientID %>').style.display = 'none';
                 $find("mpeCloudAhoy").hide();
+                document.getElementById('<% =pnlModalLeon.ClientID %>').style.display = 'none';
+                $find("mpeLeon").hide();
             }
 
             /* Handle escape to dismiss */
@@ -177,6 +184,38 @@
                     hideEditor();
             }
         </script>
+        <asp:Panel ID="pnlModalLeon" runat="server" DefaultButton="btnImportLeonFlights" style="display:none" CssClass="modalpopup">
+            <h2><asp:Label ID="Label2" runat="server" Text="<%$ Resources:LogbookEntry, LeonImportHeader %>" /></h2>
+            <div><asp:Label ID="lblLeonDesc" runat="server" Text="<%$ Resources:LogbookEntry, LeonImportFlightsDescription %>" /></div>
+
+            <table>
+                <tr style="vertical-align:top">
+                    <td>
+                        <asp:Label ID="lblLeonFrom" runat="server" Text="<%$ Resources:LogbookEntry, LeonImportFrom %>" />
+                        <asp:Label ID="lblOptionalStartLeon" runat="server" Text="<%$ Resources:LogbookEntry, ImportCloudAhoyOptional %>" CssClass="fineprint" />
+                    </td>
+                    <td>
+                        <uc1:mfbTypeInDate runat="server" ID="dtLeonFrom" />
+                    </td>
+                </tr>
+                <tr style="vertical-align:top">
+                    <td>
+                        <asp:Label ID="lblLeonTo" runat="server" Text="<%$ Resources:LogbookEntry, LeonImportTo %>" />
+                        <asp:Label ID="lblOptionalEndLeon" runat="server" Text="<%$ Resources:LogbookEntry, ImportCloudAhoyOptional %>" CssClass="fineprint" />
+                    </td>
+                    <td>
+                        <uc1:mfbTypeInDate runat="server" ID="dtLeonTo" />
+                    </td>
+                </tr>
+            </table>
+            <div style="text-align:center">
+                <asp:Button ID="btnImportLeonFlights" runat="server" Text="<%$ Resources:LogbookEntry, LeonImportNow %>" OnClick="btnImportLeonFlights_Click" />
+                <asp:Button ID="btnCancelLeon" runat="server" Text="<%$ Resources:LocalizedText, Cancel %>" OnClientClick="javascript:hideEditor();return false;" />
+            </div>
+            <div>
+                <asp:Label ID="lblLeonErr" EnableViewState="false" runat="server" CssClass="error"  />
+            </div>
+        </asp:Panel>
         <asp:Panel ID="pnlModalCloudAhoy" runat="server" DefaultButton="btnImportCloudAhoy" style="display:none" CssClass="modalpopup">
             <asp:Label ID="lblCloudAhoyPromptDates" runat="server" Font-Bold="true" Text="<%$ Resources:LogbookEntry, ImportCloudAhoyDatePrompt %>" />
             <table>

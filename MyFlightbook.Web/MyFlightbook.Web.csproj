@@ -911,6 +911,7 @@
     <Content Include="Public\myflightbooknewstaging.png" />
     <Content Include="Public\MyFlights.aspx" />
     <Content Include="Public\oAuthToken.aspx" />
+    <Content Include="Public\LeonRedir.aspx" />
     <Content Include="Public\OneDriveRedir.aspx" />
     <Content Include="Public\OpenSource\Database model.pdf" />
     <Content Include="Public\OpenSource\Database model.svg" />
@@ -1072,6 +1073,7 @@
     <Compile Include="AppCode\Flights\Import\eLogSite.cs" />
     <Compile Include="AppCode\Flights\Import\ExternalFormat.cs" />
     <Compile Include="AppCode\Flights\Import\ForeFlight.cs" />
+    <Compile Include="AppCode\Flights\Import\Leon.cs" />
     <Compile Include="AppCode\Flights\Import\LogTenPro.cs" />
     <Compile Include="AppCode\Flights\Import\MccPilot.cs" />
     <Compile Include="AppCode\Flights\Import\RosterBuster.cs" />
@@ -1117,6 +1119,7 @@
     <Compile Include="AppCode\oAuthServices\AWSNotifications.cs" />
     <Compile Include="AppCode\oAuthServices\CloudAhoyClient.cs" />
     <Compile Include="AppCode\oAuthServices\CloudStorage.cs" />
+    <Compile Include="AppCode\oAuthServices\LeonClient.cs" />
     <Compile Include="AppCode\oAuthServices\OAuth2AuthorizationServer.cs" />
     <Compile Include="AppCode\oAuthServices\OAuthClientBase.cs" />
     <Compile Include="AppCode\oAuthServices\SocialMedia.cs" />
@@ -2789,6 +2792,13 @@
     </Compile>
     <Compile Include="Public\oAuthToken.aspx.designer.cs">
       <DependentUpon>oAuthToken.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\LeonRedir.aspx.cs">
+      <DependentUpon>LeonRedir.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\LeonRedir.aspx.designer.cs">
+      <DependentUpon>LeonRedir.aspx</DependentUpon>
     </Compile>
     <Compile Include="Public\OneDriveRedir.aspx.cs">
       <DependentUpon>OneDriveRedir.aspx</DependentUpon>
