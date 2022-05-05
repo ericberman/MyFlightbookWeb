@@ -1755,6 +1755,114 @@ namespace Resources {
         }
         
         /// <summary>
+        ///    Looks up a localized string similar to Authorize %APP_NAME% to access your data on Leon.
+        /// </summary>
+        internal static string LeonAuthorize {
+            get {
+                return ResourceManager.GetString("LeonAuthorize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to You have given permission for %APP_NAME% to import flights from your Leon account.
+        /// </summary>
+        internal static string LeonAuthorizedHeader {
+            get {
+                return ResourceManager.GetString("LeonAuthorizedHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Revoke permission for %APP_NAME% to access your data on Leon.
+        /// </summary>
+        internal static string LeonDeauthorize {
+            get {
+                return ResourceManager.GetString("LeonDeauthorize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Import flights now.
+        /// </summary>
+        internal static string LeonGoToImport {
+            get {
+                return ResourceManager.GetString("LeonGoToImport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Import Flights from LEON.
+        /// </summary>
+        internal static string LeonImportFlights {
+            get {
+                return ResourceManager.GetString("LeonImportFlights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Import flights from Leon.  Your flights will be added to Pending Flights, where you can review/edit them before adding them to your logbook.
+        /// </summary>
+        internal static string LeonImportFlightsDescription {
+            get {
+                return ResourceManager.GetString("LeonImportFlightsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to From:.
+        /// </summary>
+        internal static string LeonImportFrom {
+            get {
+                return ResourceManager.GetString("LeonImportFrom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Import from LEON.
+        /// </summary>
+        internal static string LeonImportHeader {
+            get {
+                return ResourceManager.GetString("LeonImportHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Import.
+        /// </summary>
+        internal static string LeonImportNow {
+            get {
+                return ResourceManager.GetString("LeonImportNow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to To:.
+        /// </summary>
+        internal static string LeonImportTo {
+            get {
+                return ResourceManager.GetString("LeonImportTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to You must be signed in to view this page.  Please sign in..
+        /// </summary>
+        internal static string LeonMustBeSignedIn {
+            get {
+                return ResourceManager.GetString("LeonMustBeSignedIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to You have not authorized %APP_NAME% to access your Leon account..
+        /// </summary>
+        internal static string LeonUnauthorized {
+            get {
+                return ResourceManager.GetString("LeonUnauthorized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///    Looks up a localized string similar to This flight was recorded with a DIFFERENT category/class than usual for the airplane.  This could be appropriate, for example, if the plane on floats part-time, or is amphibian..
         /// </summary>
         internal static string LogbookAltCatClassTooltip {

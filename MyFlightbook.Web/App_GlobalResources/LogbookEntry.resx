@@ -1402,4 +1402,40 @@ Proceed with import?</value>
   <data name="ElapsedScheduleSummary" xml:space="preserve">
     <value>Scheduled: {0}</value>
   </data>
+  <data name="LeonAuthorize" xml:space="preserve">
+    <value>Authorize %APP_NAME% to access your data on Leon</value>
+  </data>
+  <data name="LeonAuthorizedHeader" xml:space="preserve">
+    <value>You have given permission for %APP_NAME% to import flights from your Leon account</value>
+  </data>
+  <data name="LeonDeauthorize" xml:space="preserve">
+    <value>Revoke permission for %APP_NAME% to access your data on Leon</value>
+  </data>
+  <data name="LeonGoToImport" xml:space="preserve">
+    <value>Import flights now</value>
+  </data>
+  <data name="LeonImportFlights" xml:space="preserve">
+    <value>Import Flights from LEON</value>
+  </data>
+  <data name="LeonImportFlightsDescription" xml:space="preserve">
+    <value>Import flights from Leon.  Your flights will be added to Pending Flights, where you can review/edit them before adding them to your logbook</value>
+  </data>
+  <data name="LeonImportFrom" xml:space="preserve">
+    <value>From:</value>
+  </data>
+  <data name="LeonImportHeader" xml:space="preserve">
+    <value>Import from LEON</value>
+  </data>
+  <data name="LeonImportNow" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="LeonImportTo" xml:space="preserve">
+    <value>To:</value>
+  </data>
+  <data name="LeonMustBeSignedIn" xml:space="preserve">
+    <value>You must be signed in to view this page.  Please sign in.</value>
+  </data>
+  <data name="LeonUnauthorized" xml:space="preserve">
+    <value>You have not authorized %APP_NAME% to access your Leon account.</value>
+  </data>
 </root>
