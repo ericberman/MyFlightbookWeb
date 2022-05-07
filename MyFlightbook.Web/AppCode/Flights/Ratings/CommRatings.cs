@@ -301,6 +301,8 @@ namespace MyFlightbook.RatingsProgress
             {
                 switch (RatingSought)
                 {
+                    case RatingType.CommercialGyroplane:
+                        return distFromStart >= 50.0;
                     case RatingType.CommercialHelicopter:
                         return al.MaxSegmentForRoute() > 50.0 && distFromStart >= 50.0;
                     case RatingType.CommercialAMEL:
@@ -605,7 +607,7 @@ namespace MyFlightbook.RatingsProgress
             miMinXCCategory.FARRef = ResolvedFAR("(3)(ii)");
             miMinXCCategoryNight.FARRef = ResolvedFAR("(3)(iii)");
             miMinTestPrep.FARRef = ResolvedFAR("(3)(iv)");
-            miMinSoloXC.Title = miMinSoloSubXC.Title = Resources.MilestoneProgress.CommSoloXCHelicopter;
+            miMinSoloXC.Title = miMinSoloSubXC.Title = Resources.MilestoneProgress.CommSoloXCGyroplane;
 
             miNightTrainingTime = new MilestoneItem(Resources.MilestoneProgress.CommGyroplaneNightTraining, ResolvedFAR("(3)(iii)"), string.Empty, MilestoneItem.MilestoneType.Time, 2.0M);
             miNightTrainingTakeoffs = new MilestoneItem(Resources.MilestoneProgress.CommGyroplaneNightTakeoffs, ResolvedFAR("(3)(iii)"), string.Empty, MilestoneItem.MilestoneType.Count, 10);

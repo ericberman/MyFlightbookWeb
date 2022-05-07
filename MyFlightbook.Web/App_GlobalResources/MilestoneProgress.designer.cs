@@ -1555,6 +1555,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///    Looks up a localized string similar to A *cross-country flight* in a *gyroplane* with landings at *3* points, with one segment at least *50NM* from the original point of departure..
+        /// </summary>
+        internal static string CommSoloXCGyroplane {
+            get {
+                return ResourceManager.GetString("CommSoloXCGyroplane", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///    Looks up a localized string similar to A *cross-country flight* in a *helicopter* with landings at *3* points, with one segment at least *50NM* from the original point of departure..
         /// </summary>
         internal static string CommSoloXCHelicopter {

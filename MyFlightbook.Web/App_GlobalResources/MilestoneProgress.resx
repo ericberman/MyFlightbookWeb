@@ -1580,4 +1580,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
   <data name="MinUKTotalTimeTrainingNote" xml:space="preserve">
     <value>This is required to be after issuance of a PPL certificate; %APP_NAME% cannot determine reliably when you earned this, so may OVERSTATE your time here</value>
   </data>
+  <data name="CommSoloXCGyroplane" xml:space="preserve">
+    <value>A *cross-country flight* in a *gyroplane* with landings at *3* points, with one segment at least *50NM* from the original point of departure.</value>
+  </data>
 </root>
