@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2020 MyFlightbook LLC
+ * Copyright (c) 2007-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -13,7 +13,7 @@ namespace MyFlightbook.Currency
     /// <summary>
     /// Determines your status w.r.t. SIC privileges for 61.55(b).
     /// As far as I can tell reading this, you need (within last 12 months):
-    ///  (a) 1 takeoff/full-stop landing in an aircraft of this type (can be in an FFS)
+    ///  (a) 3 takeoffs/full-stop landings in an aircraft of this type (can be in an FFS)
     ///  (b) A bunch of training which I'll detect by property
     ///  (c) If you're over by 1 month, you lose that month.  E.g., if you're due in October and renew in Nov, you're good until next October.
     /// Only applies to type-rated aircraft that are NOT single-pilot certified
@@ -25,9 +25,9 @@ namespace MyFlightbook.Currency
 
         private readonly string typeName;
 
-        private readonly FlightCurrency fcTakeoffs = new FlightCurrency(1, 12, true, "61.55 takeoffs");
+        private readonly FlightCurrency fcTakeoffs = new FlightCurrency(3, 12, true, "61.55 takeoffs");
 
-        private readonly FlightCurrency fcFSLandings = new FlightCurrency(1, 12, true, "61.55 landings");
+        private readonly FlightCurrency fcFSLandings = new FlightCurrency(3, 12, true, "61.55 landings");
 
         private bool fHasSICTime;
 
