@@ -1415,7 +1415,7 @@ Proceed with import?</value>
     <value>Import flights now</value>
   </data>
   <data name="LeonImportFlights" xml:space="preserve">
-    <value>Import Flights from LEON</value>
+    <value>Import Flights from your Leon account</value>
   </data>
   <data name="LeonImportFlightsDescription" xml:space="preserve">
     <value>Your flights will be added to Pending Flights, where you can review/edit them before adding them to your logbook</value>
@@ -1424,7 +1424,7 @@ Proceed with import?</value>
     <value>From:</value>
   </data>
   <data name="LeonImportHeader" xml:space="preserve">
-    <value>Import from LEON</value>
+    <value>Import from your Leon account</value>
   </data>
   <data name="LeonImportNow" xml:space="preserve">
     <value>Import</value>
@@ -1437,5 +1437,14 @@ Proceed with import?</value>
   </data>
   <data name="LeonUnauthorized" xml:space="preserve">
     <value>You have not authorized %APP_NAME% to access your Leon account.</value>
+  </data>
+  <data name="LeonInvalidSubDomain" xml:space="preserve">
+    <value>Subdomain can only be numbers and letters separated by periods, and must not end with a period.</value>
+  </data>
+  <data name="LeonSubDomainPrompt" xml:space="preserve">
+    <value>Please enter the subdomain (prefix) for leon.aero that you use.  E.g., if you sign in using atc.leon.aero, please enter "atc"</value>
+  </data>
+  <data name="LeonSubDomainRequired" xml:space="preserve">
+    <value>You must specify the subdomain used by your employer.</value>
   </data>
 </root>

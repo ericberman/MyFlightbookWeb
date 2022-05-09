@@ -157,7 +157,7 @@
         <asp:Panel ID="pnlLeon" runat="server" Visible="false" style="margin: 10px; padding: 5px; border: 1px solid gray; height:120px; border-radius:5px; box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75); text-align:center; display:inline-block; vertical-align:middle">
             <div style="float:left; width:100px">
                 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	                     viewBox="0 0 294.504 385.501" style="enable-background:new 0 0 294.504 385.501;"
+	                     viewBox="0 0 294.504 385.501"
 	                     xml:space="preserve">
                     <g>
 	                    <path style="fill:#2F4D83;" d="M76.324,170.969c0,0,19.173,1.787,20.313-30.934c1.121-34.02-14.609-35.263-23.492-35.263

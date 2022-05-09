@@ -23,12 +23,15 @@ namespace MyFlightbook.OAuth.Leon
 {
     public class LeonClient : OAuthClientBase
     {
-        private const string leonDevHost = "man.daily.leon.aero";
-        private const string leonLiveHost = "man.leon.aero";
+        private const string leonDevHost = "daily.leon.aero";
+        private const string leonLiveHost = "leon.aero";
         public const string TokenPrefKey = "LeonPrefKey";
+        public const string SubDomainPrefKey = "LeonSubDomainPrefKey";
         private string FlightsEndpoint { get; set; }
 
         private string RefreshEndpoint { get; set; }
+
+        private string SubDomain { get; set; } = "man"; // default subdomain
 
         public static bool UseSandbox(string host)
         {
@@ -37,17 +40,18 @@ namespace MyFlightbook.OAuth.Leon
             return !Branding.CurrentBrand.MatchesHost(host);
         }
 
-        public LeonClient(bool fUseSandbox = false) : base("LeonClientID",
+        public LeonClient(string subDomain, bool fUseSandbox = false) : base("LeonClientID",
             "LeonClientSecret",
-            String.Format(CultureInfo.InvariantCulture, "https://{0}/oauth2/code/authorize/", fUseSandbox ? leonDevHost : leonLiveHost),
-            String.Format(CultureInfo.InvariantCulture, "https://{0}/oauth2/code/token/", fUseSandbox ? leonDevHost : leonLiveHost),
+            String.Format(CultureInfo.InvariantCulture, "https://{0}.{1}/oauth2/code/authorize/", subDomain, fUseSandbox ? leonDevHost : leonLiveHost),
+            String.Format(CultureInfo.InvariantCulture, "https://{0}.{1}/oauth2/code/token/", subDomain, fUseSandbox ? leonDevHost : leonLiveHost),
             new string[] { /* "GRAPHQL_FLIGHT", "GRAPHQL_FLIGHT_EDIT", "GRAPHQL_FLIGHT_PERMITS_EDIT", "GRAPHQL_FLIGHT_WATCH_EDIT", "GRAPHQL_FLIGHT_WATCH", "GRAPHQL_SCHEDULE_ORDER_SEE", "GRAPHQL_RESERVATION_SEE" */ "LOGBOOK" })
         {
-            FlightsEndpoint = String.Format(CultureInfo.InvariantCulture, "https://{0}/api/graphql/", fUseSandbox ? leonDevHost : leonLiveHost);
-            RefreshEndpoint = String.Format(CultureInfo.InvariantCulture, "https://{0}/access_token/refresh/", fUseSandbox ? leonDevHost : leonLiveHost);
+            SubDomain = subDomain;
+            FlightsEndpoint = String.Format(CultureInfo.InvariantCulture, "https://{0}.{1}/api/graphql/", SubDomain, fUseSandbox ? leonDevHost : leonLiveHost);
+            RefreshEndpoint = String.Format(CultureInfo.InvariantCulture, "https://{0}.{1}/access_token/refresh/", SubDomain, fUseSandbox ? leonDevHost : leonLiveHost);
         }
 
-        public LeonClient(IAuthorizationState authstate, bool fUseSandbox = false) : this(fUseSandbox)
+        public LeonClient(IAuthorizationState authstate, string subDomain, bool fUseSandbox = false) : this(subDomain, fUseSandbox)
         {
             AuthState = authstate;
         }

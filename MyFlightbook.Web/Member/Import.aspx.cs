@@ -456,8 +456,9 @@ namespace MyFlightbook.ImportFlights
         {
             Profile pf = Profile.GetUser(Page.User.Identity.Name);
             IAuthorizationState authstate = pf.GetPreferenceForKey<AuthorizationState>(LeonClient.TokenPrefKey);
+            string leonSubDomain = pf.GetPreferenceForKey<string>(LeonClient.SubDomainPrefKey);
 
-            LeonClient c = new LeonClient(authstate, LeonClient.UseSandbox(Request.Url.Host));
+            LeonClient c = new LeonClient(authstate, leonSubDomain, LeonClient.UseSandbox(Request.Url.Host));
             bool fNeedsRefresh = !c.CheckAccessToken();
             DateTime? from = null;
             DateTime? to = null;

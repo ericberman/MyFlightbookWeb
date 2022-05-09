@@ -8,8 +8,7 @@
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
     <div style="float:left; margin-right: 40px; width: 100px;">
         <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	                viewBox="0 0 294.504 385.501" style="enable-background:new 0 0 294.504 385.501;"
-	                xml:space="preserve">
+	                viewBox="0 0 294.504 385.501" xml:space="preserve">
             <g>
 	            <path style="fill:#2F4D83;" d="M76.324,170.969c0,0,19.173,1.787,20.313-30.934c1.121-34.02-14.609-35.263-23.492-35.263
 		            c-8.882-0.123-19.206,7.746-20.825,35.772C54.105,172.108,76.324,170.969,76.324,170.969z"/>
@@ -88,7 +87,11 @@
 			</asp:View>
 			<asp:View ID="vwNoAuthToken" runat="server">
 				<p><asp:Label ID="lblNoAuthToken" runat="server" /></p>
+				<p><asp:Label ID="lblSubdomainPrompt" runat="server" Text="<%$ Resources:LogbookEntry, LeonSubDomainPrompt %>" /></p>
+				<div>https://<asp:TextBox ID="txtSubDomain" runat="server" Width="50px" />.leon.aero</div>
 				<div><asp:LinkButton ID="lnkAuthorize" runat="server" OnClick="lnkAuthorize_Click" /></div>
+				<div><asp:RequiredFieldValidator ID="reqSubDomain" runat="server" ErrorMessage="<%$ Resources:LogbookEntry, LeonSubDomainRequired %>" CssClass="error" ControlToValidate="txtSubDomain" Display="Dynamic" /> </div>
+				<div><asp:RegularExpressionValidator ID="regSubDomain" runat="server" ErrorMessage="<%$ Resources:LogbookEntry, LeonInvalidSubDomain %>" CssClass="error" ControlToValidate="txtSubDomain" Display="Dynamic"  ValidationExpression="[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*" /></div>
 			</asp:View>
 			<asp:View ID="vwAuthorized" runat="server">
 				<div><asp:Label ID="lblAuthedHeader" runat="server" /></div>

@@ -1791,7 +1791,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Import Flights from LEON.
+        ///    Looks up a localized string similar to Import Flights from your Leon account.
         /// </summary>
         internal static string LeonImportFlights {
             get {
@@ -1818,7 +1818,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Import from LEON.
+        ///    Looks up a localized string similar to Import from your Leon account.
         /// </summary>
         internal static string LeonImportHeader {
             get {
@@ -1845,11 +1845,38 @@ namespace Resources {
         }
         
         /// <summary>
+        ///    Looks up a localized string similar to Subdomain can only be numbers and letters separated by periods, and must not end with a period..
+        /// </summary>
+        internal static string LeonInvalidSubDomain {
+            get {
+                return ResourceManager.GetString("LeonInvalidSubDomain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///    Looks up a localized string similar to You must be signed in to view this page.  Please sign in..
         /// </summary>
         internal static string LeonMustBeSignedIn {
             get {
                 return ResourceManager.GetString("LeonMustBeSignedIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Please enter the subdomain (prefix) for leon.aero that you use.  E.g., if you sign in using atc.leon.aero, please enter &quot;atc&quot;.
+        /// </summary>
+        internal static string LeonSubDomainPrompt {
+            get {
+                return ResourceManager.GetString("LeonSubDomainPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to You must specify the subdomain used by your employer..
+        /// </summary>
+        internal static string LeonSubDomainRequired {
+            get {
+                return ResourceManager.GetString("LeonSubDomainRequired", resourceCulture);
             }
         }
         

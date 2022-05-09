@@ -69,6 +69,24 @@ namespace MyFlightbook.OAuth.Leon
         protected global::System.Web.UI.WebControls.Label lblNoAuthToken;
 
         /// <summary>
+        /// lblSubdomainPrompt control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblSubdomainPrompt;
+
+        /// <summary>
+        /// txtSubDomain control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtSubDomain;
+
+        /// <summary>
         /// lnkAuthorize control.
         /// </summary>
         /// <remarks>
@@ -76,6 +94,24 @@ namespace MyFlightbook.OAuth.Leon
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton lnkAuthorize;
+
+        /// <summary>
+        /// reqSubDomain control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator reqSubDomain;
+
+        /// <summary>
+        /// regSubDomain control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator regSubDomain;
 
         /// <summary>
         /// vwAuthorized control.
