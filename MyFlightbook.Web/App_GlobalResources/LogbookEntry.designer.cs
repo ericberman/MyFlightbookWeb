@@ -1800,7 +1800,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Import flights from Leon.  Your flights will be added to Pending Flights, where you can review/edit them before adding them to your logbook.
+        ///    Looks up a localized string similar to Your flights will be added to Pending Flights, where you can review/edit them before adding them to your logbook.
         /// </summary>
         internal static string LeonImportFlightsDescription {
             get {

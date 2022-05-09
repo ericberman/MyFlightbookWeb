@@ -1418,7 +1418,7 @@ Proceed with import?</value>
     <value>Import Flights from LEON</value>
   </data>
   <data name="LeonImportFlightsDescription" xml:space="preserve">
-    <value>Import flights from Leon.  Your flights will be added to Pending Flights, where you can review/edit them before adding them to your logbook</value>
+    <value>Your flights will be added to Pending Flights, where you can review/edit them before adding them to your logbook</value>
   </data>
   <data name="LeonImportFrom" xml:space="preserve">
     <value>From:</value>
