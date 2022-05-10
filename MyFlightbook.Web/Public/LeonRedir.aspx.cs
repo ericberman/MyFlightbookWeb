@@ -28,21 +28,24 @@ namespace MyFlightbook.OAuth.Leon
             lnkAuthorize.Text = Branding.ReBrand(Resources.LogbookEntry.LeonAuthorize);
             lblAuthedHeader.Text = Branding.ReBrand(Resources.LogbookEntry.LeonAuthorizedHeader);
 
+            if (!IsPostBack)
+                txtSubDomain.Text = HttpUtility.HtmlEncode(util.GetStringParam(Request, "subdomain"));
+
             if (User.Identity.IsAuthenticated)
             {
                 Profile pf = Profile.GetUser(User.Identity.Name);
                 AuthState = pf.GetPreferenceForKey<AuthorizationState>(LeonClient.TokenPrefKey);
                 string szSubDomain = pf.GetPreferenceForKey<string>(LeonClient.SubDomainPrefKey);
-
-                if (!String.IsNullOrEmpty(Request["code"]) && !String.IsNullOrWhiteSpace(szSubDomain))
-                {
+                if (!String.IsNullOrEmpty(szSubDomain) && String.IsNullOrEmpty(txtSubDomain.Text))
                     txtSubDomain.Text = szSubDomain;
-                    AuthState = new LeonClient(szSubDomain, LeonClient.UseSandbox(Request.Url.Host)).ConvertToken(Request);
+
+                if (!String.IsNullOrEmpty(Request["code"]) && !String.IsNullOrWhiteSpace(txtSubDomain.Text))
+                {
+                    AuthState = new LeonClient(txtSubDomain.Text, LeonClient.UseSandbox(Request.Url.Host)).ConvertToken(Request);
                     pf.SetPreferenceForKey(LeonClient.TokenPrefKey, AuthState, AuthState == null);
                     Response.Redirect(Request.Url.AbsolutePath);
                 }
-                else 
-                    txtSubDomain.Text = HttpUtility.HtmlEncode(util.GetStringParam(Request, "subdomain"));
+                    
 
                 if (AuthState == null)
                     mvLeonState.SetActiveView(vwNoAuthToken);
