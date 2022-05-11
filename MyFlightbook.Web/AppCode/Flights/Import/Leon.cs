@@ -79,22 +79,22 @@ namespace MyFlightbook.ImportFlights.Leon
         public string FlightNumber { get; set; } = string.Empty;
 
         [JsonProperty("dutyStartTime")]
-        public DateTime DutyStartTime { get; set; } = DateTime.MinValue;
+        public DateTime? DutyStartTime { get; set; }
 
         [JsonProperty("dutyEndTime")]
-        public DateTime DutyEndTime { get; set; } = DateTime.MinValue;
+        public DateTime? DutyEndTime { get; set; }
 
         [JsonProperty("actualDepartureTime")]
-        public DateTime ActualDepartureTime { get; set; } = DateTime.MinValue;
+        public DateTime? ActualDepartureTime { get; set; }
 
         [JsonProperty("actualArrivalTime")]
-        public DateTime ActualArrivalTime { get; set; } = DateTime.MinValue;
+        public DateTime? ActualArrivalTime { get; set; }
 
         [JsonProperty("takeoffTime")]
-        public DateTime TakeoffTime { get; set; } = DateTime.MinValue;
+        public DateTime? TakeoffTime { get; set; }
 
         [JsonProperty("landingTime")]
-        public DateTime LandingTime { get; set; } = DateTime.MinValue;
+        public DateTime? LandingTime { get; set; }
 
         [JsonProperty("departureAirportCode")]
         public LeonAirportCode DepartureAirportCode { get; set; }
@@ -179,8 +179,8 @@ namespace MyFlightbook.ImportFlights.Leon
             {
                 Date = FlightDate, 
                 Route = JoinStrings(new string[] { DepartureAirportCode.MostDescriptive, DestinationAirportCode.MostDescriptive }),
-                FlightStart = TakeoffTime,
-                FlightEnd = LandingTime,
+                FlightStart = TakeoffTime ?? DateTime.MinValue,
+                FlightEnd = LandingTime ?? DateTime.MinValue,
                 TailNumDisplay = AircraftRegistration ?? String.Empty,
                 ModelDisplay = AircraftType ?? String.Empty,
                 TotalFlightTime = totalFlightTime == null ? 0 : totalFlightTime.SafeParseDecimal(),
@@ -199,16 +199,16 @@ namespace MyFlightbook.ImportFlights.Leon
             List<CustomFlightProperty> lst = new List<CustomFlightProperty>()
             {
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightNumber, FlightNumber),
-                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropDutyStart, DutyStartTime, true),
-                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropDutyEnd, DutyEndTime, true),
-                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDBlockOut, ActualDepartureTime, true),
-                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDBlockIn, ActualArrivalTime, true),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropDutyStart, DutyStartTime ?? DateTime.MinValue, true),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropDutyEnd, DutyEndTime ?? DateTime.MinValue, true),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDBlockOut, ActualDepartureTime ?? DateTime.MinValue, true),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDBlockIn, ActualArrivalTime ?? DateTime.MinValue, true),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNameOfPIC, Pic == null || String.IsNullOrEmpty(Pic.Surname) ? Commander : Pic.Surname),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNameOfSIC, Sic == null || Sic.Surname == null ? string.Empty : Sic.Surname),
-                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropMultiPilotTime, MultiPilotFlightTime.DecimalFromHHMM()),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropMultiPilotTime, MultiPilotFlightTime == null ? 0 : MultiPilotFlightTime.SafeParseDecimal()),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropSolo, SoloFlightTime == null ? 0 : SoloFlightTime.DecimalFromHHMM()),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNightTakeoff, NightTakeoffCount),
-                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropApproachName, JoinStrings(ApproachTypeList))
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropApproachName, ApproachTypeList == null ? string.Empty : JoinStrings(ApproachTypeList))
             };
             
             pf.CustomProperties.SetItems(lst);
