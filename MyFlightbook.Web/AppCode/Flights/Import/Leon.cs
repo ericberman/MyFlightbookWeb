@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using MyFlightbook.Telemetry;
+using Newtonsoft.Json;
 using System;
 using System.Globalization;
 using System.Collections.Generic;
@@ -208,6 +209,17 @@ namespace MyFlightbook.ImportFlights.Leon
             return Aircraft.idAircraftUnknown;
         }
 
+        private static void AutoComplete(LogbookEntry le)
+        {
+            // Issue #939: autofill cross-country/night, when possible.
+            AutoFillOptions afo = AutoFillOptions.DefaultOptionsForUser(le.User);
+            if (afo != null && le.CrossCountry == 0.0M && le.Nighttime == 0.0M)
+            {
+                using (FlightData fd = new FlightData())
+                    fd.AutoFill(le, afo);
+            }
+        }
+
         public override LogbookEntry ToLogbookEntry()
         {
             // Always return pending flights
@@ -250,7 +262,9 @@ namespace MyFlightbook.ImportFlights.Leon
             pf.AircraftID = BestGuessAircraftID(Username, pf.TailNumDisplay);
 
             pf.CustomProperties.SetItems(lst);
-            
+
+            AutoComplete(pf);
+
             return pf;
         }
 

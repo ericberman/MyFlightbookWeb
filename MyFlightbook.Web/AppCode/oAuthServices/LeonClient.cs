@@ -122,8 +122,7 @@ namespace MyFlightbook.OAuth.Leon
                     {
                         szResult = response.Content.ReadAsStringAsync().Result;
                         response.EnsureSuccessStatusCode();
-                        LeonFlightRoot root = JsonConvert.DeserializeObject<LeonFlightRoot>(szResult);
-                        IEnumerable<LeonFlightEntry> flights = root.Data.LoggedUser.Logbook;
+                        IEnumerable<LeonFlightEntry> flights = LeonFlightEntry.FromLeonRootJSON(szResult);
                         // set the username for each of these.
                         foreach (LeonFlightEntry entry in flights)
                             entry.Username = szUserName;
