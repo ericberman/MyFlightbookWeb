@@ -7,7 +7,6 @@ using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 /******************************************************
  * 
@@ -868,8 +867,8 @@ namespace MyFlightbook.ImportFlights
             #endregion
 
             #region public properties
-            private readonly Dictionary<string, Aircraft> _dictAircraft;
-            public Dictionary<string, Aircraft> AircraftForUser
+            private readonly IDictionary<string, Aircraft> _dictAircraft;
+            public IDictionary<string, Aircraft> AircraftForUser
             {
                 get { return _dictAircraft; }
             }
@@ -901,39 +900,6 @@ namespace MyFlightbook.ImportFlights
                         return (int)o;
                 }
                 return -1;
-            }
-
-            private static Dictionary<string, Aircraft> DictAircraftForUser(string szUser)
-            {
-                Dictionary<string, Aircraft> dictReturn = new Dictionary<string, Aircraft>();
-
-                UserAircraft ua = new UserAircraft(szUser);
-                IEnumerable<Aircraft> rgac = ua.GetAircraftForUser();
-
-                Regex rAlias = new Regex("#ALT(?<altname>[a-zA-Z0-9-]+)#", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-                if (rgac != null)
-                {
-                    foreach (Aircraft ac in rgac)
-                    {
-                        // Issue #163: bias towards active over inactive.
-                        // We add the aircraft to the dictionary if it's (a) not there, or (b) there but the existing one is inactive.
-                        // I.e., if the existing aircraft in the dictionary is present and active, then we don't overwrite it.
-                        string szKey = Aircraft.NormalizeTail(ac.TailNumber);
-                        if (!dictReturn.ContainsKey(szKey) || dictReturn[szKey].HideFromSelection)
-                            dictReturn[szKey] = ac;
-
-                        // To support broken systems like crewtrac, which don't use standard naming, allow for "#ALTxxx#" in the private notes
-                        // as a way to map.  E.g., Virgin America uses simple 3-digit aircraft IDs like "483" for N483VA.  
-                        // This hack allows a private note of "#ALT483#" in N483VA to allow "483" to map to N483VA.
-                        // Use with care. :)
-                        MatchCollection mcAliases = rAlias.Matches(ac.PrivateNotes ?? string.Empty);
-                        foreach (Match m in mcAliases)
-                            dictReturn[m.Groups["altname"].Value] = ac;
-                    }
-                }
-
-                return dictReturn;
             }
 
             public AircraftImportParseContext AircraftToImport { get; set; }
@@ -1003,7 +969,7 @@ namespace MyFlightbook.ImportFlights
             public ImportContext(string[] rgszHeader, string szUser)
             {
                 User = szUser;
-                _dictAircraft = DictAircraftForUser(szUser);
+                _dictAircraft = new UserAircraft(szUser).DictAircraftForUser();
                 AircraftToImport = new AircraftImportParseContext();
 
                 OrphanedPropsByFlightID = new Dictionary<int, List<CustomFlightProperty>>();

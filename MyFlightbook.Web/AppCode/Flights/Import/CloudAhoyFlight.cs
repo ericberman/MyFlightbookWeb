@@ -7,7 +7,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2021 MyFlightbook LLC
+ * Copyright (c) 2019-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -212,7 +212,7 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
 
             foreach (CloudAhoyManeuverDescriptor md in maneuvers)
             {
-                if (Enum.TryParse<CloudAhoyManeuvers>(md.code, out CloudAhoyManeuvers maneuver))
+                if (Enum.TryParse(md.code, out CloudAhoyManeuvers maneuver))
                 {
                     switch (maneuver)
                     {
@@ -291,19 +291,22 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
 
             le.Comment = String.Join(" ", lstText);
 
-            le.CustomProperties.SetItems(DictProps.Values);
-
             if (!string.IsNullOrEmpty(flightId))
                 le.PendingID = flightId;
 
             if (!String.IsNullOrEmpty(UserName))
             {
                 le.User = UserName;
-                UserAircraft ua = new UserAircraft(UserName);
-                Aircraft ac = ua[le.TailNumDisplay];
+                Aircraft ac = BestGuessAircraftID(UserName, le.TailNumDisplay);
                 if (ac != null)
+                {
                     le.AircraftID = ac.AircraftID;
+                    if (ac.IsAnonymous)
+                        DictProps[CustomPropertyType.KnownProperties.IDPropAircraftRegistration] = CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropAircraftRegistration, le.TailNumDisplay);
+                }
             }
+
+            le.CustomProperties.SetItems(DictProps.Values);
 
             return le;
         }

@@ -8,7 +8,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2021 MyFlightbook LLC
+ * Copyright (c) 2017-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -102,6 +102,22 @@ namespace MyFlightbook.ImportFlights
         public abstract LogbookEntry ToLogbookEntry();
 
         #region Utility functions
+
+        /// <summary>
+        /// Get the most likely match for a specified tail
+        /// </summary>
+        /// <param name="szUser">User whose aircraft are being searched</param>
+        /// <param name="szTail">Tail number as key</param>
+        /// <returns>ID of likely aircraft, else idAircraftUnknown if no likely match</returns>
+        public static Aircraft BestGuessAircraftID(string szUser, string szTail)
+        {
+            if (String.IsNullOrWhiteSpace(szUser) || String.IsNullOrWhiteSpace(szTail))
+                return null;
+            UserAircraft ua = new UserAircraft(szUser);
+            szTail = Aircraft.NormalizeTail(szTail);
+            IDictionary<string, Aircraft> d = ua.DictAircraftForUser();
+            return ua[szTail] ?? (d.ContainsKey(szTail) ? d[szTail] : null);
+        }
 
         #region String merging
         /// <summary>

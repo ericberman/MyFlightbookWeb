@@ -4,10 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2021 MyFlightbook LLC
+ * Copyright (c) 2009-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -27,6 +28,7 @@ namespace MyFlightbook
         }
 
         private const string szCacheKey = "userAircraftKey";
+        private const string szCachedDictionary = "userAircraftDictionaryKey";
 
         /// <summary>
         /// Internally, we can assume this is a list.
@@ -44,7 +46,11 @@ namespace MyFlightbook
         public void InvalidateCache()
         {
             if (!String.IsNullOrEmpty(User))
-                Profile.GetUser(User).AssociatedData.Remove(szCacheKey);
+            {
+                Profile pf = Profile.GetUser(User);
+                pf.AssociatedData.Remove(szCacheKey);
+                pf.AssociatedData.Remove(szCachedDictionary);
+            }
         }
 
         public enum AircraftRestriction { UserAircraft, AllMakeModel, AllAircraft, AllSims };
@@ -184,6 +190,62 @@ namespace MyFlightbook
         public Aircraft Find(Predicate<Aircraft> pred)
         {
             return GetAircraftForUserInternal(AircraftRestriction.UserAircraft).Find(pred);
+        }
+
+        private readonly static Regex rAlias = new Regex("#ALT(?<altname>[a-zA-Z0-9-]+)#", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        /// <summary>
+        /// Returns a string-indexable dictionary of tails 
+        /// </summary>
+        /// <returns></returns>
+        public IDictionary<string, Aircraft> DictAircraftForUser()
+        {
+            Profile pf = Profile.GetUser(User);
+            if (pf.AssociatedData.ContainsKey(szCachedDictionary))
+                return (IDictionary<string, Aircraft>) pf.AssociatedData[szCachedDictionary];
+
+            Dictionary<string, Aircraft> dictReturn = new Dictionary<string, Aircraft>();
+
+            IEnumerable<Aircraft> rgac = GetAircraftForUser();
+
+            if (rgac != null)
+            {
+                foreach (Aircraft ac in rgac)
+                {
+                    // Issue #163: bias towards active over inactive.
+                    // We add the aircraft to the dictionary if it's (a) not there, or (b) there but the existing one is inactive.
+                    // I.e., if the existing aircraft in the dictionary is present and active, then we don't overwrite it.
+                    string szKey = Aircraft.NormalizeTail(ac.TailNumber);
+                    if (!dictReturn.ContainsKey(szKey) || dictReturn[szKey].HideFromSelection)
+                        dictReturn[szKey] = ac;
+
+                    // To support broken systems like crewtrac, which don't use standard naming, allow for "#ALTxxx#" in the private notes
+                    // as a way to map.  E.g., Virgin America uses simple 3-digit aircraft IDs like "483" for N483VA.  
+                    // This hack allows a private note of "#ALT483#" in N483VA to allow "483" to map to N483VA.
+                    // Use with care. :)
+                    MatchCollection mcAliases = rAlias.Matches(ac.PrivateNotes ?? string.Empty);
+                    foreach (Match m in mcAliases)
+                        dictReturn[m.Groups["altname"].Value] = ac;
+                }
+            }
+
+            // One more hack for helping find the right aircraft:
+            // For anonymous aircraft, it's useful to include those aircraft registrations; we can then use that to detect otherwise missing aircraft and map them to this one
+            DBHelper dbh = new DBHelper("select fp.StringValue AS 'tail', f.idaircraft from flightproperties fp inner join flights f on fp.idflight=f.idflight where f.username=?user and fp.idproptype=559 group by fp.StringValue");
+            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("user", User); }, (dr) =>
+            {
+                string szTail = Aircraft.NormalizeTail((string)dr["tail"]);
+                if (!String.IsNullOrWhiteSpace(szTail) && !dictReturn.ContainsKey(szTail) && int.TryParse(dr["idaircraft"].ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int aircraftID))
+                {
+                    Aircraft ac = this[aircraftID];
+                    if (ac != null && !String.IsNullOrEmpty(szTail))
+                            dictReturn[szTail] = ac;
+                }
+            });
+
+            pf.AssociatedData[szCachedDictionary] = dictReturn;
+
+            return dictReturn;
         }
 
         /// <summary>

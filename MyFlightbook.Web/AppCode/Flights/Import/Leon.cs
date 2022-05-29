@@ -173,42 +173,6 @@ namespace MyFlightbook.ImportFlights.Leon
         public string[] ApproachTypeList { get; set; } = Array.Empty<string>();
         #endregion
 
-        // TODO: should this go up into ExternalFormat so that CloudAhoy and others can use it?
-        private static int BestGuessAircraftID(string Username, string TailNumDisplay)
-        {
-            if (!String.IsNullOrEmpty(Username))
-            {
-                UserAircraft ua = new UserAircraft(Username);
-                Aircraft ac = ua[TailNumDisplay];
-                if (ac == null)
-                {
-                    const string cacheKey = "ImportAircraftMatching";
-                    Profile p = Profile.GetUser(Username);
-
-                    Dictionary<string, int> d = (Dictionary<string, int>)p.CachedObject(cacheKey);
-                    if (d == null)
-                    {
-                        d = new Dictionary<string, int>();
-                        p.CachedObject(cacheKey);
-                        DBHelper dbh = new DBHelper("select fp.StringValue AS 'tail', f.idaircraft from flightproperties fp inner join flights f on fp.idflight=f.idflight where f.username=?user and fp.idproptype=559 group by fp.StringValue");
-                        dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("user", Username); }, (dr) =>
-                        {
-                            string szTail = (string)dr["tail"];
-                            if (!String.IsNullOrEmpty(szTail))
-                                d[szTail] = Convert.ToInt32(dr["idaircraft"], CultureInfo.InvariantCulture);
-                        });
-                    }
-
-                    if (d.TryGetValue(TailNumDisplay, out int idAircaft))
-                        return idAircaft;
-                }
-                else
-                    return ac.AircraftID;
-            }
-
-            return Aircraft.idAircraftUnknown;
-        }
-
         private static void AutoComplete(LogbookEntry le)
         {
             // Issue #939: autofill cross-country/night, when possible.
@@ -244,6 +208,8 @@ namespace MyFlightbook.ImportFlights.Leon
                 User = Username
             };
 
+            Aircraft ac = BestGuessAircraftID(Username, pf.TailNumDisplay);
+
             List<CustomFlightProperty> lst = new List<CustomFlightProperty>()
             {
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightNumber, FlightNumber),
@@ -259,7 +225,12 @@ namespace MyFlightbook.ImportFlights.Leon
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropApproachName, ApproachTypeList == null ? string.Empty : JoinStrings(ApproachTypeList))
             };
 
-            pf.AircraftID = BestGuessAircraftID(Username, pf.TailNumDisplay);
+            if (ac != null)
+            {
+                pf.AircraftID = ac.AircraftID;
+                if (ac.IsAnonymous)
+                    lst.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropAircraftRegistration, pf.TailNumDisplay));
+            }
 
             pf.CustomProperties.SetItems(lst);
 
