@@ -37,12 +37,12 @@
             onservervalidate="valModelSelected_ServerValidate" 
             ValidationGroup="adminclone" Display="Dynamic"></asp:CustomValidator>
             <asp:Label ID="lblErr" CssClass="error" runat="server" Text="" EnableViewState="false"></asp:Label>
-        <asp:SqlDataSource ID="sqlDSFlightsPerUser" runat="server" 
+        <asp:SqlDataSource ID="sqlDSFlightsPerUser" runat="server" OnSelecting="sqlDSFlightsPerUser_Selecting" 
             ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>" 
             ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" SelectCommand="SELECT u.email AS 'Email Address', u.username AS User, u.FirstName, u.LastName, count(f.idflight) AS 'Number of Flights'
 FROM Useraircraft ua
    INNER JOIN users u ON ua.username=u.username
-   LEFT JOIN flights f ON (f.username=ua.username AND f.idaircraft=?idaircraft)
+   LEFT JOIN flights f ON (f.username=ua.username AND f.idaircraft=ua.idaircraft)
 WHERE ua.idaircraft=?idaircraft
 GROUP BY ua.username">
         </asp:SqlDataSource>

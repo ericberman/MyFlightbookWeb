@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2021 MyFlightbook LLC
+ * Copyright (c) 2015-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -91,7 +91,11 @@ namespace MyFlightbook.Web.Member
                 {
                     sqlDSFlightsPerUser.SelectParameters.Add(new Parameter("idaircraft", TypeCode.Int32, id.ToString(CultureInfo.InvariantCulture)));
                     gvFlightsPerUser.DataSource = sqlDSFlightsPerUser;
-                    gvFlightsPerUser.DataBind();
+                    try
+                    {
+                        gvFlightsPerUser.DataBind();
+                    }
+                    catch (MySql.Data.MySqlClient.MySqlException) { }
 
                     List<Aircraft> lst = Aircraft.AircraftMatchingTail(new Aircraft(id).TailNumber);
                     if (lst.Count > 1)
@@ -185,5 +189,11 @@ namespace MyFlightbook.Web.Member
                 Response.Redirect(Request.Url.PathAndQuery.Replace(String.Format(CultureInfo.InvariantCulture, "id={0}", acOriginal.AircraftID), String.Format(CultureInfo.InvariantCulture, "id={0}", idNew)));
         }
         #endregion
+
+        protected void sqlDSFlightsPerUser_Selecting(object sender, SqlDataSourceSelectingEventArgs e)
+        {
+            if (e != null)
+                e.Command.CommandTimeout = 60; // set a long timeout
+        }
     }
 }
