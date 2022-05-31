@@ -1719,7 +1719,7 @@ namespace MyFlightbook
 
         private static readonly Regex rLocal = new Regex("^([a-zA-Z0-9]{3,4})([^a-zA-Z0-9]+\\1)?$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        private bool IsAirportMatch(LogbookEntryCore le)
+        public bool IsAirportMatch(LogbookEntryCore le)
         {
             if (String.IsNullOrWhiteSpace(le.Route) && (Distance != FlightDistance.AllFlights || AirportList.Any()))
                 return false;

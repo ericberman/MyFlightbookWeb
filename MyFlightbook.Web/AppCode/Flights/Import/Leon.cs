@@ -177,10 +177,19 @@ namespace MyFlightbook.ImportFlights.Leon
         {
             // Issue #939: autofill cross-country/night, when possible.
             AutoFillOptions afo = AutoFillOptions.DefaultOptionsForUser(le.User);
-            if (afo != null && le.CrossCountry == 0.0M && le.Nighttime == 0.0M)
+            if (afo != null && le.CrossCountry == 0.0M)
             {
-                using (FlightData fd = new FlightData())
-                    fd.AutoFill(le, afo);
+                if (le.Nighttime == 0.0M)
+                {
+                    using (FlightData fd = new FlightData())
+                        fd.AutoFill(le, afo);
+                }
+                else  // just do xc time based on part 121 xc
+                {
+                    CannedQuery fq = new CannedQuery() { Distance = FlightQuery.FlightDistance.NonLocalOnly };
+                    if (fq.IsAirportMatch(le))
+                        le.CrossCountry = le.TotalFlightTime;
+                }
             }
         }
 
@@ -196,7 +205,6 @@ namespace MyFlightbook.ImportFlights.Leon
                 TailNumDisplay = AircraftRegistration ?? String.Empty,
                 ModelDisplay = AircraftType ?? String.Empty,
                 TotalFlightTime = totalFlightTime == null ? 0 : totalFlightTime.SafeParseDecimal(),
-                IMC =  IfrTime == null ? 0 : IfrTime.SafeParseDecimal(),
                 Nighttime = NightFlightTime == null ? 0 : NightFlightTime.SafeParseDecimal(),
                 PIC =  PicTime == null ? 0 : PicTime.SafeParseDecimal(),
                 SIC = SicTime == null ? 0 : SicTime.SafeParseDecimal(),
@@ -222,6 +230,7 @@ namespace MyFlightbook.ImportFlights.Leon
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropMultiPilotTime, MultiPilotFlightTime == null ? 0 : MultiPilotFlightTime.SafeParseDecimal()),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropSolo, SoloFlightTime == null ? 0 : SoloFlightTime.DecimalFromHHMM()),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNightTakeoff, NightTakeoffCount),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropIFRTime, IfrTime == null ? 0 : IfrTime.SafeParseDecimal()),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropApproachName, ApproachTypeList == null ? string.Empty : JoinStrings(ApproachTypeList))
             };
 
