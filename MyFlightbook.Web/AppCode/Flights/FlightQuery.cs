@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2021 MyFlightbook LLC
+ * Copyright (c) 2009-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1721,6 +1721,8 @@ namespace MyFlightbook
 
         public bool IsAirportMatch(LogbookEntryCore le)
         {
+            if (le == null)
+                throw new ArgumentNullException(nameof(le));
             if (String.IsNullOrWhiteSpace(le.Route) && (Distance != FlightDistance.AllFlights || AirportList.Any()))
                 return false;
 
