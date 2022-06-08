@@ -964,6 +964,7 @@
     <Content Include="Support\2020-12-05 - Club member role.txt" />
     <Content Include="Support\2021-06-03 - Aircraft Revision.txt" />
     <Content Include="Support\2021-10-12 - Telemetry Attributes.txt" />
+    <Content Include="Support\2022-06-08 - remove gplus.txt" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
