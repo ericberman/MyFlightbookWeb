@@ -8,7 +8,7 @@ using System.IO;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2021 MyFlightbook LLC
+ * Copyright (c) 2017-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -345,6 +345,9 @@ namespace MyFlightbook.ImportFlights
 
         [JsonProperty("flight_dayLandings")]
         public int flight_dayLandings { get; set; }
+
+        [JsonProperty("flight_totalApproaches")]
+        public int flight_totalApproaches { get; set; }
 
         [JsonProperty("flight_dayTakeoffs")]
         public int flight_dayTakeoffs { get; set; }
@@ -786,6 +789,7 @@ namespace MyFlightbook.ImportFlights
                 Dual = flight_dualReceived,
                 CFI = flight_dualGiven,
                 GroundSim = flight_simulator,
+                Approaches = flight_totalApproaches,
                 Landings = flight_dayLandings + flight_nightLandings,
                 FullStopLandings = Math.Max(flight_fullStops - flight_nightLandings, 0),
                 NightLandings = flight_nightLandings,
@@ -807,8 +811,8 @@ namespace MyFlightbook.ImportFlights
                 FlightData = flight_track
             };
 
-        // Add in known properties
-        le.CustomProperties.SetItems(new CustomFlightProperty[] {
+            // Add in known properties
+            le.CustomProperties.SetItems(new CustomFlightProperty[] {
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNameOfPIC, flight_selectedCrewPIC),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNameOfSIC, flight_selectedCrewSIC),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropTachStart, flight_tachStart),
@@ -831,6 +835,9 @@ namespace MyFlightbook.ImportFlights
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropInstructorName, flight_selectedCrewInstructor),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropStudentName, flight_selectedCrewStudent),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived, flight_ground),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropMultiPilotTime, flight_multiPilot),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDBlockOut, flight_actualDepartureTime, true),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDBlockIn, flight_actualDepartureTime, true),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPassengerCount, flight_paxCount)
             });
 
