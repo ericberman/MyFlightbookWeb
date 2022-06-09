@@ -10,7 +10,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2021 MyFlightbook LLC
+ * Copyright (c) 2017-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -141,12 +141,12 @@ namespace MyFlightbook.MemberPages
             {
                 try
                 {
-                    Restriction = mfbSearchForm1.Restriction = FlightQuery.FromBase64CompressedJSON(szFQParam);
+                    Restriction = FlightQuery.FromBase64CompressedJSON(szFQParam);
                 }
                 catch (Exception ex) when (ex is ArgumentNullException || ex is FormatException || ex is JsonSerializationException || ex is JsonException) { }
             }
             else
-                Restriction = mfbSearchForm1.Restriction = new FlightQuery(Page.User.Identity.Name);
+                Restriction = new FlightQuery(Page.User.Identity.Name);
         }
 
 
@@ -227,6 +227,8 @@ namespace MyFlightbook.MemberPages
             InitDateParams(util.GetIntParam(Request, "y", -1), util.GetIntParam(Request, "m", -1), util.GetIntParam(Request, "w", -1), util.GetIntParam(Request, "d", -1));
 
             InitAircraftModelRestriction(util.GetStringParam(Request, "tn"), util.GetStringParam(Request, "mn"), util.GetStringParam(Request, "icao"), util.GetStringParam(Request, "cc"));
+
+            mfbSearchForm1.Restriction = Restriction;
 
             Refresh();
         }
