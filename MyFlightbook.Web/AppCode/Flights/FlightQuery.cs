@@ -999,7 +999,7 @@ namespace MyFlightbook
 
         private void UpdateAircraft(StringBuilder sbQuery)
         {
-            if (AircraftList.Count > 0)
+            if (AircraftList.Any())
             {
                 List<string> lstIds = new List<string>();
                 List<string> lstDescriptors = new List<string>();
@@ -1009,6 +1009,10 @@ namespace MyFlightbook
                     lstIds.Add(ac.AircraftID.ToString(CultureInfo.InvariantCulture));
                     lstDescriptors.Add(ac.DisplayTailnumber);
                 }
+
+                // issue #908 - not sure how this happens, but it has happened.
+                if (!lstIds.Any())
+                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Aircraft list in FlightQuery has {0} item(s), id list has {1}.", AircraftList.Count, lstIds.Count));
 
                 AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, "flights.idaircraft IN ({0}) ", String.Join(", ", lstIds)));
                 Filters.Add(new QueryFilterItem(Resources.FlightQuery.ContainsAircraft, String.Join(", ", lstDescriptors), "AircraftList"));

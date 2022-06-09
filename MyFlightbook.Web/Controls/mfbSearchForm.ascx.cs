@@ -10,7 +10,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2021 MyFlightbook LLC
+ * Copyright (c) 2008-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -693,10 +693,7 @@ function setDates(isCustom)
         if (String.IsNullOrEmpty(Username))
             Username = Page.User.Identity.Name;
 
-        m_fq = new CannedQuery(Username) { DateRange = FlightQuery.DateRanges.AllTime, QueryName = txtQueryName.Text };
-
-        // General text
-        m_fq.GeneralText = txtRestrict.Text;
+        m_fq = new CannedQuery(Username) { DateRange = FlightQuery.DateRanges.AllTime, QueryName = txtQueryName.Text, GeneralText = txtRestrict.Text };
 
         // Airports:
         if (txtAirports.Text.Length > 0)
