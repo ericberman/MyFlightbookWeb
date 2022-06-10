@@ -1063,6 +1063,7 @@
     <Compile Include="AppCode\Flights\Import\eCrew.cs" />
     <Compile Include="AppCode\Flights\Import\eLogSite.cs" />
     <Compile Include="AppCode\Flights\Import\ExternalFormat.cs" />
+    <Compile Include="AppCode\Flights\Import\FFDO.cs" />
     <Compile Include="AppCode\Flights\Import\ForeFlight.cs" />
     <Compile Include="AppCode\Flights\Import\Leon.cs" />
     <Compile Include="AppCode\Flights\Import\LogTenPro.cs" />
