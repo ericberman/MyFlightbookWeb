@@ -268,12 +268,6 @@ namespace MyFlightbook.ImportFlights
         private readonly static ExternalFormatImporter[] rgFormatters = { new LogTenProImporter(), new ForeFlightImporter(), new eLogSiteImporter(), new MccPilotImporter(), new CrewTracImporter(), new RosterBusterImporter(), new CrewLog(), new TASCImporter(), new AASchedulerImporter(), new eCrew(), new FFDOImporter() };
 
         /// <summary>
-        /// Initializes an enumerable of the external format from a datatable.
-        /// </summary>
-        /// <param name="dt"></param>
-        public abstract IEnumerable<ExternalFormat> FromDataTable(DataTable dt);
-
-        /// <summary>
         /// Creates a converted CSV file from the data table.
         /// </summary>
         /// <param name="dt"></param>

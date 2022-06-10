@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2018-2021 MyFlightbook LLC
+ * Copyright (c) 2018-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -183,18 +183,6 @@ namespace MyFlightbook.ImportFlights
                 }
                 return CsvWriter.WriteToString(dtDst, true, true);
             }
-        }
-
-        public override IEnumerable<ExternalFormat> FromDataTable(DataTable dt)
-        {
-            if (dt == null)
-                throw new ArgumentNullException(nameof(dt));
-
-            NormalizeColumnNames(dt);
-            List<eLogSite> lst = new List<eLogSite>();
-            foreach (DataRow dr in dt.Rows)
-                lst.Add(new eLogSite(dr));
-            return lst;
         }
     }
 }

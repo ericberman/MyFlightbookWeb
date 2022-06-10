@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2021 MyFlightbook LLC
+ * Copyright (c) 2017-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -416,16 +416,6 @@ namespace MyFlightbook.ImportFlights
                 }
                 return CsvWriter.WriteToString(dtDst, true, true);
             }
-        }
-
-        public override IEnumerable<ExternalFormat> FromDataTable(DataTable dt)
-        {
-            if (dt == null)
-                throw new ArgumentNullException(nameof(dt));
-            List<ForeFlight> lst = new List<ForeFlight>();
-            foreach (DataRow dr in dt.Rows)
-                lst.Add(new ForeFlight(dr, dictAircraft));
-            return lst;
         }
     }
 }

@@ -849,16 +849,6 @@ namespace MyFlightbook.ImportFlights
     {
         public override string Name { get { return "LogTen Pro"; } }
 
-        public override IEnumerable<ExternalFormat> FromDataTable(DataTable dt)
-        {
-            if (dt == null)
-                throw new ArgumentNullException(nameof(dt));
-            List<LogTenPro> lst = new List<LogTenPro>();
-            foreach (DataRow dr in dt.Rows)
-                lst.Add(new LogTenPro(dr));
-            return lst;
-        }
-
         public override bool CanParse(byte[] rgb)
         {
             using (MemoryStream ms = new MemoryStream(rgb))

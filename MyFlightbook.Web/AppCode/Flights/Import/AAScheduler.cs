@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2020 MyFlightbook LLC
+ * Copyright (c) 2020-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -171,9 +171,5 @@ namespace MyFlightbook.ImportFlights
 
         public override bool IsPendingOnly => true;
 
-        public override IEnumerable<ExternalFormat> FromDataTable(DataTable dt)
-        {
-            throw new NotImplementedException();
-        }
     }
-    }
+}

@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2021 MyFlightbook LLC
+ * Copyright (c) 2019-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -384,16 +384,6 @@ namespace MyFlightbook.ImportFlights
 
             // We should now have something approximating a CSV.  Write it out
             return WriteRowsToCSV(lstRows);
-        }
-
-        public override IEnumerable<ExternalFormat> FromDataTable(DataTable dt)
-        {
-            if (dt == null)
-                throw new ArgumentNullException(nameof(dt));
-            List<eCrewFlight> lst = new List<eCrewFlight>();
-            foreach (DataRow dr in dt.Rows)
-                lst.Add(new eCrewFlight(dr));
-            return lst;
         }
     }
 }

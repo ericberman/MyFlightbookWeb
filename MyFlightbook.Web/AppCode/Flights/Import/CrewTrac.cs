@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2018-2020 MyFlightbook LLC
+ * Copyright (c) 2018-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -219,11 +219,6 @@ namespace MyFlightbook.ImportFlights
                     CSVImporter.WriteEntryToDataTable(ct.ToLogbookEntry(), dtDst);
                 return CsvWriter.WriteToString(dtDst, true, true);
             }
-        }
-
-        public override IEnumerable<ExternalFormat> FromDataTable(DataTable dt)
-        {
-            throw new NotImplementedException();
         }
     }
 }

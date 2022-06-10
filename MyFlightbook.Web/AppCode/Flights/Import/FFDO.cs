@@ -156,10 +156,5 @@ namespace MyFlightbook.ImportFlights
                 return CsvWriter.WriteToString(dtDst, true, true);
             }
         }
-
-        public override IEnumerable<ExternalFormat> FromDataTable(DataTable dt)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
