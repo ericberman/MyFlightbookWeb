@@ -469,6 +469,9 @@ namespace MyFlightbook.Controls.FlightEditing
             mfbEditPropSet1.CrossFillDefaultScript = decCFI.CrossFillScript = decDual.CrossFillScript = decGrndSim.CrossFillScript = decIMC.CrossFillScript =
                 decNight.CrossFillScript = decPIC.CrossFillScript = decSIC.CrossFillScript = decSimulatedIFR.CrossFillScript = decXC.CrossFillScript = String.Format(CultureInfo.InvariantCulture, "getTotalFillFunc(\"{0}\")", decTotal.EditBox.ClientID);
 
+            mfbEditPropSet1.CrossFillLandingScript = intFullStopLandings.CrossFillScript = intNightLandings.CrossFillScript = String.Format(CultureInfo.InvariantCulture, "getTotalFillFunc(\"{0}\")", intLandings.EditBox.ClientID);
+            mfbEditPropSet1.CrossFillApproachScript = String.Format(CultureInfo.InvariantCulture, "getTotalFillFunc(\"{0}\")", intApproaches.EditBox.ClientID);
+
             mfbMFUFlightImages.AllowGoogleImport = pf.PreferenceExists(GooglePhoto.PrefKeyAuthToken);
         }
 

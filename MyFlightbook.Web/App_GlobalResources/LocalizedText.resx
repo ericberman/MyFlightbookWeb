@@ -1892,4 +1892,10 @@
   <data name="PrintViewPermaLink" xml:space="preserve">
     <value>Save a link to this page with these settings</value>
   </data>
+  <data name="CrossfillPromptApproaches" xml:space="preserve">
+    <value>Cross-fill to this field from the total approaches field</value>
+  </data>
+  <data name="CrossfillPromptLandings" xml:space="preserve">
+    <value>Cross-fill to this field from the total landings field</value>
+  </data>
 </root>

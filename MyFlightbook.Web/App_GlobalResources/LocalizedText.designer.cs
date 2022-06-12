@@ -1415,6 +1415,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cross-fill to this field from the total approaches field.
+        /// </summary>
+        internal static string CrossfillPromptApproaches {
+            get {
+                return ResourceManager.GetString("CrossfillPromptApproaches", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cross-fill to this field from the total landings field.
+        /// </summary>
+        internal static string CrossfillPromptLandings {
+            get {
+                return ResourceManager.GetString("CrossfillPromptLandings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Custom TZ.
         /// </summary>
         internal static string CustomTimeZone {

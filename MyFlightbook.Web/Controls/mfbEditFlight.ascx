@@ -137,7 +137,7 @@
                     <asp:Label ID="Label13" runat="server" Text="Full Stop (Day):" meta:resourcekey="Label13Resource1"></asp:Label>
                 </div>
                 <div class="itemdata">
-                    <uc7:mfbDecimalEdit ID="intFullStopLandings" EditingMode="Integer" Width="40px" runat="server" />
+                    <uc7:mfbDecimalEdit ID="intFullStopLandings" EditingMode="Integer" Width="40px" runat="server" CrossFillTip="<%$ Resources:LocalizedText, CrossfillPromptLandings %>" />
                 </div>
             </div>
         </div>
@@ -147,7 +147,7 @@
                     <asp:Label ID="Label14" runat="server" Text="Full Stop (Night):" meta:resourcekey="Label14Resource1"></asp:Label>
                 </div>
                 <div class="itemdata">
-                    <uc7:mfbDecimalEdit ID="intNightLandings" EditingMode="Integer" Width="40px" runat="server" />
+                    <uc7:mfbDecimalEdit ID="intNightLandings" EditingMode="Integer" Width="40px" runat="server" CrossFillTip="<%$ Resources:LocalizedText, CrossfillPromptLandings %>" />
                 </div>
             </div>
         </div>

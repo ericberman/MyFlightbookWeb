@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2021 MyFlightbook LLC
+ * Copyright (c) 2013-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -197,6 +197,9 @@ namespace MyFlightbook.Controls.FlightEditing
         }
 
         const string keyViewStateXFill = "vsXF";
+        const string keyViewStateXFillLanding = "vsXFL";
+        const string keyViewStateXFillApproach = "vsXFA";
+
         /// <summary>
         /// The script to run by default for time controls.
         /// </summary>
@@ -204,6 +207,18 @@ namespace MyFlightbook.Controls.FlightEditing
         {
             get { return (string)ViewState[keyViewStateXFill]; }
             set { ViewState[keyViewStateXFill] = value; }
+        }
+
+        public string CrossFillLandingScript
+        {
+            get { return (string)ViewState[keyViewStateXFillLanding]; }
+            set { ViewState[keyViewStateXFillLanding] = value; }
+        }
+
+        public string CrossFillApproachScript
+        {
+            get { return (string)ViewState[keyViewStateXFillApproach]; }
+            set { ViewState[keyViewStateXFillApproach] = value; }
         }
         #endregion
 
@@ -270,7 +285,7 @@ namespace MyFlightbook.Controls.FlightEditing
             mfbEditProp ep = (mfbEditProp)LoadControl("~/Controls/mfbEditProp.ascx");
             // Add it to the placeholder so that the client ID works, then set the client ID before setting the property so that it picks up cross-fill
             plcHolderProps.Controls.Add(ep);
-            ep.CrossFillTotalScript = CrossFillDefaultScript;
+            ep.CrossFillTotalScript = (cfp.PropertyType.IsLanding) ? CrossFillLandingScript : (cfp.PropertyType.IsApproach ? CrossFillApproachScript : CrossFillDefaultScript);
             ep.ID = IDForPropType(cfp.PropertyType);
             ep.Username = Username;
             ep.FlightProperty = cfp;

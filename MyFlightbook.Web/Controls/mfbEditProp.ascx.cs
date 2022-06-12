@@ -4,7 +4,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2021 MyFlightbook LLC
+ * Copyright (c) 2013-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -92,13 +92,15 @@ namespace MyFlightbook.Controls.FlightEditing
                     }
                     break;
                 case CFPPropertyType.cfpInteger:
+                    mfbDecEdit.CrossFillScript = (fp.PropertyType.IsLanding || fp.PropertyType.IsApproach) ? CrossFillTotalScript : string.Empty;
+                    mfbDecEdit.CrossFillTip = fp.PropertyType.IsLanding ? Resources.LocalizedText.CrossfillPromptLandings : (fp.PropertyType.IsApproach ? Resources.LocalizedText.CrossfillPromptApproaches : string.Empty);
                     mfbDecEdit.IntValue = fp.IntValue;
                     mfbDecEdit.EditingMode = Controls_mfbDecimalEdit.EditMode.Integer;
                     mvProp.SetActiveView(vwDecimal);
                     break;
                 case CFPPropertyType.cfpDecimal:
                     mvProp.SetActiveView(vwDecimal);    // need to do this before setting the cross-fill image to visible
-                                                        // Set the cross-fill source before setting the editing mode.
+                    // Set the cross-fill source before setting the editing mode.
                     mfbDecEdit.CrossFillScript = fp.PropertyType.IsBasicDecimal ? string.Empty : CrossFillTotalScript;
                     if (fp.PropertyType.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTachStart)
                     {
