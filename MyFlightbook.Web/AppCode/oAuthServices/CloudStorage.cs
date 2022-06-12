@@ -64,6 +64,24 @@ namespace MyFlightbook.CloudStorage
                     return string.Empty;
             }
         }
+
+        private const string szKeyPrefFlat = "UsesFlatCloudStorageFileHierarchy";
+
+        /// <summary>
+        /// The current user
+        /// </summary>
+        protected Profile CurrentUser { get; set; }
+
+        public static bool UserUsesFlatHierarchy(Profile pf)
+        {
+            return pf != null && pf.PreferenceExists(szKeyPrefFlat) && (bool) pf.GetPreferenceForKey(szKeyPrefFlat);
+        }
+
+        public static void SetUsesFlatHierarchy(Profile pf, bool value)
+        {
+            if (pf != null)
+                pf.SetPreferenceForKey(szKeyPrefFlat, value, value == false);
+        }
     }
 
     #region Google Drive
@@ -220,15 +238,14 @@ namespace MyFlightbook.CloudStorage
         private const string szURLUpdateEndpointTemplate = "https://www.googleapis.com/upload/drive/v3/files/{0}?uploadType=multipart";
         private const string szURLViewFilesEndpointTemplate = "https://www.googleapis.com/drive/v3/files?q={0}&access_token={1}";
         private string RootFolderID { get; set; }
-        private Profile profile { get; set; }
 
-        public GoogleDrive(Profile pf = null, string szRootPath = "")
+        public GoogleDrive(Profile pf = null)
             : base("GoogleDriveAccessID", "GoogleDriveClientSecret", "https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent", "https://www.googleapis.com/oauth2/v4/token", new string[] { "https://www.googleapis.com/auth/drive.appdata", "https://www.googleapis.com/auth/drive.file" })
         {
             AuthParam = szParamGDriveAuth;
-            RootPath = String.Format(CultureInfo.CurrentCulture, "{0} {1}", String.IsNullOrEmpty(szRootPath) ? Branding.CurrentBrand.AppName : szRootPath, DateTime.Now.ToString("yyyy-MM-MMMM", CultureInfo.CurrentCulture));
+            RootPath = String.Format(CultureInfo.CurrentCulture, "{0} {1}", Branding.CurrentBrand.AppName, UserUsesFlatHierarchy(pf) ? String.Empty : DateTime.Now.ToString("yyyy-MM-MMMM", CultureInfo.CurrentCulture)).Trim();
             RootFolderID = string.Empty;
-            profile = pf;
+            CurrentUser = pf;
             AuthState = pf?.GoogleDriveAccessToken;
         }
 
@@ -369,10 +386,10 @@ namespace MyFlightbook.CloudStorage
 
             try
             {
-                if (await RefreshAccessToken().ConfigureAwait(false) && profile != null)
+                if (await RefreshAccessToken().ConfigureAwait(false) && CurrentUser != null)
                 {
-                    profile.GoogleDriveAccessToken = AuthState;
-                    profile.FCommit();
+                    CurrentUser.GoogleDriveAccessToken = AuthState;
+                    CurrentUser.FCommit();
                 }
             }
             catch (DotNetOpenAuth.Messaging.ProtocolException ex)
@@ -679,13 +696,11 @@ namespace MyFlightbook.CloudStorage
         public const string szParam1DriveAuth = "1dOAuth";
         private const int MinFileSizeResumable = 4000000;   // files that are 4MB+ require a resumable upload.
 
-        private Profile profile { get; set; }
-
         public OneDrive(Profile pf = null) 
             : base("OneDriveAccessID", "OneDriveClientSecret", "https://login.live.com/oauth20_authorize.srf", "https://login.live.com/oauth20_token.srf", new string[] { "onedrive.appfolder", "wl.basic", "onedrive.readwrite", "wl.offline_access" })
         {
-            RootPath = String.Format(CultureInfo.InvariantCulture, "{0}/{1}/{2}/", Branding.CurrentBrand.AppName, DateTime.Now.ToString("yyyy", CultureInfo.CurrentCulture), DateTime.Now.ToString("MM-MMMM", CultureInfo.CurrentCulture)); ;
-            profile = pf;
+            RootPath = UserUsesFlatHierarchy(pf) ? Branding.CurrentBrand.AppName + "/" : String.Format(CultureInfo.InvariantCulture, "{0}/{1}/{2}/", Branding.CurrentBrand.AppName, DateTime.Now.ToString("yyyy", CultureInfo.CurrentCulture), DateTime.Now.ToString("MM-MMMM", CultureInfo.CurrentCulture));
+            CurrentUser = pf;
             AuthState = pf?.OneDriveAccessToken;
         }
 
@@ -764,10 +779,10 @@ namespace MyFlightbook.CloudStorage
             ms.Seek(0, SeekOrigin.Begin);
             try
             {
-                if (await RefreshAccessToken().ConfigureAwait(false) && profile != null)
+                if (await RefreshAccessToken().ConfigureAwait(false) && CurrentUser != null)
                 {
-                    profile.OneDriveAccessToken = AuthState;
-                    profile.FCommit();
+                    CurrentUser.OneDriveAccessToken = AuthState;
+                    CurrentUser.FCommit();
                 }
             }
             catch (DotNetOpenAuth.Messaging.ProtocolException ex)
@@ -829,14 +844,13 @@ namespace MyFlightbook.CloudStorage
     {
         public enum TokenStatus { None, oAuth1, oAuth2 }
         public const string szParamDropboxAuth = "dbOAuth";
-        private Profile profile { get; set; }
 
         public MFBDropbox(Profile pf = null)
             : base("DropboxAccessID", "DropboxClientSecret", "https://www.dropbox.com/oauth2/authorize?token_access_type=offline", "https://api.dropboxapi.com/oauth2/token", 
                   new string[] { "files.content.write", "files.content.read", "files.metadata.write", "files.metadata.read" }, "https://api.dropboxapi.com/2/auth/token/from_oauth1", "https://api.dropboxapi.com/2/auth/token/revoke")
         {
-            profile = pf;
-            RootPath = String.Format(CultureInfo.InvariantCulture, "/{0}/{1}/", DateTime.Now.ToString("yyyy", CultureInfo.CurrentCulture), DateTime.Now.ToString("MM-MMMM", CultureInfo.CurrentCulture));
+            CurrentUser = pf;
+            RootPath = UserUsesFlatHierarchy(pf) ? "/" : String.Format(CultureInfo.InvariantCulture, "/{0}/{1}/", DateTime.Now.ToString("yyyy", CultureInfo.CurrentCulture), DateTime.Now.ToString("MM-MMMM", CultureInfo.CurrentCulture));
         }
 
         /// <summary>
@@ -850,7 +864,7 @@ namespace MyFlightbook.CloudStorage
         {
             TokenStatus result = TokenStatus.None;
 
-            if (profile == null || String.IsNullOrEmpty(profile.DropboxAccessToken))
+            if (CurrentUser == null || String.IsNullOrEmpty(CurrentUser.DropboxAccessToken))
                 return result;
 
             try
@@ -858,7 +872,7 @@ namespace MyFlightbook.CloudStorage
                 string dbAppKey = AppKey;
                 string dbSecret = AppSecret;
 
-                byte[] rgbOAuth1Token = Convert.FromBase64String(profile.DropboxAccessToken);
+                byte[] rgbOAuth1Token = Convert.FromBase64String(CurrentUser.DropboxAccessToken);
                 string xmlOAuth1Token = System.Text.Encoding.Default.GetString(rgbOAuth1Token);
                 // if we get here, it is probably an oAuth1 token
 
@@ -885,10 +899,10 @@ namespace MyFlightbook.CloudStorage
                         using (DropboxAppClient client = new DropboxAppClient(dbAppKey, dbSecret))
                         {
                             var tokenFromOAuth1Result = await client.Auth.TokenFromOauth1Async(szRawToken, szRawSecret).ConfigureAwait(false);
-                            profile.DropboxAccessToken = tokenFromOAuth1Result.Oauth2Token;
+                            CurrentUser.DropboxAccessToken = tokenFromOAuth1Result.Oauth2Token;
                         }
 
-                        profile.FCommit();
+                        CurrentUser.FCommit();
 
                         result = TokenStatus.oAuth1;
                     }
@@ -933,15 +947,15 @@ namespace MyFlightbook.CloudStorage
         {
             if (ms == null)
                 throw new ArgumentNullException(nameof(ms));
-            if (profile == null)
+            if (CurrentUser == null)
                 throw new MyFlightbookValidationException("Can't put file without a user profile object");
-            if (String.IsNullOrWhiteSpace(profile.DropboxAccessToken))
-                throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "User {0} doesn't have a dropbox access token", profile.UserName));
+            if (String.IsNullOrWhiteSpace(CurrentUser.DropboxAccessToken))
+                throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "User {0} doesn't have a dropbox access token", CurrentUser.UserName));
 
             ms.Seek(0, SeekOrigin.Begin);   // write out the whole stream.  UploadAsync appears to pick up from the current location, which is the end-of-file after writing to a ZIP.
 
             // The token as provided might be a legacy long-lived one, which we use directly, or a newer JSON authstate, which includes a refresh token.  Start by assuming legacy.
-            string szToken = profile.DropboxAccessToken;
+            string szToken = CurrentUser.DropboxAccessToken;
 
             // if JSonConvert succeeds, then we can read the full authstate, including refreshtoken and expiration date.
             if (szToken.StartsWith("{", StringComparison.OrdinalIgnoreCase))
@@ -1123,12 +1137,11 @@ namespace MyFlightbook.CloudStorage
     {
         public const string szParamGPhotoAuth = "gPhotoOAuth";
         public const string PrefKeyAuthToken = "googlePhotoAuthToken";
-        private Profile profile { get; set; }
 
         public GooglePhoto(Profile pf = null) : base("GoogleDriveAccessID", "GoogleDriveClientSecret", "https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent", "https://www.googleapis.com/oauth2/v4/token", new string[] { "https://www.googleapis.com/auth/photoslibrary.readonly" })
         {
             AuthParam = szParamGPhotoAuth;
-            profile = pf;
+            CurrentUser = pf;
             if (pf != null)
             {
                 string szAuthJSon = pf?.GetPreferenceForKey<string>(GooglePhoto.PrefKeyAuthToken);
@@ -1147,8 +1160,8 @@ namespace MyFlightbook.CloudStorage
             string szResult = string.Empty;
             try
             {
-                if (await RefreshAccessToken().ConfigureAwait(false) && profile != null)
-                    profile.SetPreferenceForKey(GooglePhoto.PrefKeyAuthToken, JsonConvert.SerializeObject(AuthState));
+                if (await RefreshAccessToken().ConfigureAwait(false) && CurrentUser != null)
+                    CurrentUser.SetPreferenceForKey(GooglePhoto.PrefKeyAuthToken, JsonConvert.SerializeObject(AuthState));
             }
             catch (DotNetOpenAuth.Messaging.ProtocolException)
             {

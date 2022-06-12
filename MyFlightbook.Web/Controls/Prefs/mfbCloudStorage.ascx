@@ -66,12 +66,13 @@
     </table>
 </div>
 <asp:RadioButtonList ID="rblCloudBackupAppendDate" runat="server" AutoPostBack="true" OnSelectedIndexChanged="rblCloudBackupAppendDate_SelectedIndexChanged">
-    <asp:ListItem Selected="True" Value="False" Text="<%$ Resources:LocalizedText, CloudStorageAppendDate %>"></asp:ListItem>
-    <asp:ListItem Value="True" Text="<%$ Resources:LocalizedText, CloudStorageOverwrite %>"></asp:ListItem>
+    <asp:ListItem Selected="True" Value="False" Text="<%$ Resources:Preferences, CloudStorageAppendDate %>"></asp:ListItem>
+    <asp:ListItem Value="True" Text="<%$ Resources:Preferences, CloudStorageOverwrite %>"></asp:ListItem>
 </asp:RadioButtonList>
+<asp:CheckBox ID="ckGroupByMonth" runat="server" Text="<%$ Resources:Preferences, CloudStorageGroupByMonth %>" AutoPostBack="true" OnCheckedChanged="ckGroupByMonth_CheckedChanged" />
 <asp:Panel ID="pnlDefaultCloud" Visible="False" runat="server">
     <hr />
-    <asp:Label ID="lblPickDefault" runat="server" Text="<%$ Resources:LocalizedText, CloudStoragePickDefault %>" />
+    <asp:Label ID="lblPickDefault" runat="server" Text="<%$ Resources:Preferences, CloudStoragePickDefault %>" />
     <asp:DropDownList ID="cmbDefaultCloud" AutoPostBack="True" OnSelectedIndexChanged="cmbDefaultCloud_SelectedIndexChanged" runat="server">
     </asp:DropDownList>
 </asp:Panel>

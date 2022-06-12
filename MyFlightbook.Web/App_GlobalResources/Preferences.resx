@@ -120,17 +120,29 @@
   <data name="CloudAhoyName" xml:space="preserve">
     <value>CloudAhoy</value>
   </data>
+  <data name="CloudStorageAppendDate" xml:space="preserve">
+    <value>Append date to filename (backups on different days are to different files)</value>
+  </data>
   <data name="CloudStorageDropboxName" xml:space="preserve">
     <value>Dropbox</value>
   </data>
   <data name="CloudStorageGoogleDriveName" xml:space="preserve">
     <value>GoogleDrive</value>
   </data>
+  <data name="CloudStorageGroupByMonth" xml:space="preserve">
+    <value>Group backups in separate folders by month</value>
+  </data>
   <data name="CloudStorageHeader" xml:space="preserve">
     <value>Cloud Backup</value>
   </data>
   <data name="CloudStorageOneDriveName" xml:space="preserve">
     <value>OneDrive</value>
+  </data>
+  <data name="CloudStorageOverwrite" xml:space="preserve">
+    <value>Use a common filename (each backup overwrites any prior backup)</value>
+  </data>
+  <data name="CloudStoragePickDefault" xml:space="preserve">
+    <value>Default cloud provider: </value>
   </data>
   <data name="DecimalPref1Decimal" xml:space="preserve">
     <value>Decimal, 1 digit after decimal</value>

@@ -49,6 +49,8 @@ namespace MyFlightbook.Web.Controls.Prefs
             locOneDriveIsAuthed.Text = Branding.ReBrand(Resources.Profile.OneDriveIsAuthed);
 
             rblCloudBackupAppendDate.SelectedValue = CurrentUser.OverwriteCloudBackup.ToString(CultureInfo.InvariantCulture);
+
+            ckGroupByMonth.Checked = !CloudStorageBase.UserUsesFlatHierarchy(CurrentUser);
         }
 
         public void HandleOAuthRedirect()
@@ -140,6 +142,11 @@ namespace MyFlightbook.Web.Controls.Prefs
         {
             CurrentUser.OverwriteCloudBackup = Convert.ToBoolean(rblCloudBackupAppendDate.SelectedValue, CultureInfo.InvariantCulture);
             CurrentUser.FCommit();
+        }
+
+        protected void ckGroupByMonth_CheckedChanged(object sender, EventArgs e)
+        {
+            CloudStorageBase.SetUsesFlatHierarchy(CurrentUser, !ckGroupByMonth.Checked);
         }
     }
 }

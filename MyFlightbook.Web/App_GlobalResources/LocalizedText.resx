@@ -1060,9 +1060,6 @@
   <data name="CloudStorageOneDrive" xml:space="preserve">
     <value>OneDrive</value>
   </data>
-  <data name="CloudStoragePickDefault" xml:space="preserve">
-    <value>Default cloud provider: </value>
-  </data>
   <data name="WelcomeEnterAircraft" xml:space="preserve">
     <value>Enter the aircraft you fly into your account</value>
   </data>
@@ -1368,12 +1365,6 @@
   </data>
   <data name="AutofillOptionsIncludeHeliportsTip" xml:space="preserve">
     <value>Indicates whether to include heliports when a takeoff or landing is detected, or only airports/seaports.</value>
-  </data>
-  <data name="CloudStorageAppendDate" xml:space="preserve">
-    <value>Append date to filename (backups on different days are to different files)</value>
-  </data>
-  <data name="CloudStorageOverwrite" xml:space="preserve">
-    <value>Use a common filename (each backup overwrites any prior backup)</value>
   </data>
   <data name="WelcomeSetStartingTotals" xml:space="preserve">
     <value>Set Starting Totals</value>

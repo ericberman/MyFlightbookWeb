@@ -240,6 +240,15 @@ namespace MyFlightbook.Web.Controls.Prefs
         protected global::System.Web.UI.WebControls.RadioButtonList rblCloudBackupAppendDate;
 
         /// <summary>
+        /// ckGroupByMonth control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox ckGroupByMonth;
+
+        /// <summary>
         /// pnlDefaultCloud control.
         /// </summary>
         /// <remarks>
