@@ -504,6 +504,8 @@ namespace MyFlightbook.Controls.FlightEditing
                 mfbFlightImages.Key = le.FlightID.ToString(CultureInfo.InvariantCulture);
                 mfbFlightImages.Refresh();
 
+                ccConfirmCommit.Enabled = le.CFISignatureState == LogbookEntryCore.SignatureState.Valid;
+
                 // Set up videos too.
                 mfbVideoEntry1.Videos.Clear();
                 foreach (VideoRef vr in le.Videos)

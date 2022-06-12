@@ -368,6 +368,7 @@
                     <asp:Button ID="btnAddFlight" runat="server" Text="Add Flight" 
                         OnClick="btnAddFlight_Click" 
                         meta:resourcekey="btnAddFlightResource1"/>
+                    <cc1:ConfirmButtonExtender ID="ccConfirmCommit" runat="server" TargetControlID="btnAddFlight" ConfirmText="<%$ Resources:LogbookEntry, ConfirmModifySignedFlight %>" Enabled="false" />
                 </td>
                 <td>
                     <uc1:popmenu runat="server" ID="popmenuCommitAndNavigate" Visible="false">

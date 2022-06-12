@@ -897,6 +897,15 @@ namespace MyFlightbook.Controls.FlightEditing
         protected global::System.Web.UI.WebControls.Button btnAddFlight;
 
         /// <summary>
+        /// ccConfirmCommit control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.ConfirmButtonExtender ccConfirmCommit;
+
+        /// <summary>
         /// popmenuCommitAndNavigate control.
         /// </summary>
         /// <remarks>

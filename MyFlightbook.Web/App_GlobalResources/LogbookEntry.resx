@@ -1447,4 +1447,7 @@ Proceed with import?</value>
   <data name="LeonSubDomainRequired" xml:space="preserve">
     <value>You must specify the subdomain used by your employer.</value>
   </data>
+  <data name="ConfirmModifySignedFlight" xml:space="preserve">
+    <value>You are modifying a flight that has been signed; doing so may invalidate the signature.  Are you sure you want to continue?</value>
+  </data>
 </root>
