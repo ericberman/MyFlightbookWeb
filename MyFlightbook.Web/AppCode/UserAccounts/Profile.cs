@@ -991,6 +991,20 @@ namespace MyFlightbook
         }
 
         /// <summary>
+        /// Retrieves the specified non-nullable integer (or boolean)
+        /// </summary>
+        /// <param name="szKey"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public T GetPreferenceForKey<T>(string szKey, T defObj)
+        {
+            if (string.IsNullOrWhiteSpace(szKey))
+                throw new ArgumentNullException(nameof(szKey));
+
+            return PersistedPrefsDictionary.TryGetValue(szKey, out object o) ? (T) o : defObj;        
+        }
+
+        /// <summary>
         /// Faster alternative to retrive the specified object (or default, if not found), but the return type is "dynamic", so you have to know what you're doing with the result.
         /// </summary>
         /// <param name="szKey"></param>

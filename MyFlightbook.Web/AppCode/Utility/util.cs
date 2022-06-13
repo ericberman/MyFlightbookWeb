@@ -17,7 +17,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2021 MyFlightbook LLC
+ * Copyright (c) 2008-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -37,6 +37,8 @@ namespace MyFlightbook
         public const string keyDecimalSettings = "prefDecimalDisplay";  // adaptive, single, or double digit precision
         public const string keyMedicalNotes = "prefMedicalNotes";   // any notes on your medical
         public const string keyCoreFieldsPermutation = "prefCoreFields";    // permutation of the core fields
+        public const string keyWindowAircraftMaintenance = "prefMaintenanceWindow"; // default window for showing/hiding aircraft maintenance
+        public const int DefaultMaintenanceWindow = 90;
     }
 
     public static class ShuntState

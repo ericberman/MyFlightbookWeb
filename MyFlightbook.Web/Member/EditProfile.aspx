@@ -704,6 +704,16 @@
                                         <asp:ListItem Value="1" Text="<%$ Resources:Currency, CurrencyOptionsByModel %>" />
                                     </asp:RadioButtonList>
                                 </div>
+                                <div>
+                                    <asp:Localize ID="Localize1" Text="<%$ Resources:Currency, CurrencyOptionsAircraftMaintenance %>" runat="server" />
+                                    <asp:DropDownList ID="cmbAircraftMaintWindow" runat="server">
+                                        <asp:ListItem Text="<%$ Resources:Currency, CurrencyOptionsAircraftMaintenanceAlways %>" Value="-1" />
+                                        <asp:ListItem Text="<%$ Resources:Currency, CurrencyOptionsAircraftMaintenance180Days %>" Value="180" />
+                                        <asp:ListItem Text="<%$ Resources:Currency, CurrencyOptionsAircraftMaintenance120Days %>" Value="120" />
+                                        <asp:ListItem Text="<%$ Resources:Currency, CurrencyOptionsAircraftMaintenance90Days %>" Value="90" Selected="True" />
+                                        <asp:ListItem Text="<%$ Resources:Currency, CurrencyOptionsAircraftMaintenance30Days %>" Value="30" />
+                                    </asp:DropDownList> 
+                                </div>
                             </div>
                             <div class="prefSectionRow">
                                 <asp:Button ID="btnUpdateCurrencyPrefs" runat="server"  

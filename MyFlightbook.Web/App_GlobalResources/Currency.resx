@@ -1176,4 +1176,22 @@
   <data name="NextMedicalCanadaSinglePilot" xml:space="preserve">
     <value>Commercial/ATP (Single Pilot) Medical</value>
   </data>
+  <data name="CurrencyOptionsAircraftMaintenance" xml:space="preserve">
+    <value>Show upcoming maintenance due dates for aircraft</value>
+  </data>
+  <data name="CurrencyOptionsAircraftMaintenance120Days" xml:space="preserve">
+    <value>Within 120 days of being due</value>
+  </data>
+  <data name="CurrencyOptionsAircraftMaintenance180Days" xml:space="preserve">
+    <value>Within 180 days of being due</value>
+  </data>
+  <data name="CurrencyOptionsAircraftMaintenance30Days" xml:space="preserve">
+    <value>Within 30 days of being due</value>
+  </data>
+  <data name="CurrencyOptionsAircraftMaintenance90Days" xml:space="preserve">
+    <value>Within 90 days of being due</value>
+  </data>
+  <data name="CurrencyOptionsAircraftMaintenanceAlways" xml:space="preserve">
+    <value>Always</value>
+  </data>
 </root>

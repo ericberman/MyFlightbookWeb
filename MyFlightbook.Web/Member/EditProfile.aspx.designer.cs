@@ -2004,6 +2004,24 @@ namespace MyFlightbook.MemberPages
         protected global::System.Web.UI.WebControls.RadioButtonList rblCurrencyPref;
 
         /// <summary>
+        /// Localize1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize Localize1;
+
+        /// <summary>
+        /// cmbAircraftMaintWindow control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList cmbAircraftMaintWindow;
+
+        /// <summary>
         /// btnUpdateCurrencyPrefs control.
         /// </summary>
         /// <remarks>
