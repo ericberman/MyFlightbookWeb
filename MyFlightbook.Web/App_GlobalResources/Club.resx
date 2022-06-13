@@ -770,4 +770,25 @@ Sender Email: {1}</value>
   <data name="ReportHeaderOilAdded2ndEngine" xml:space="preserve">
     <value>Oil Added (Eng #2)</value>
   </data>
+  <data name="DownloadClubScheduleBadDateRange" xml:space="preserve">
+    <value>Invalid date range to download</value>
+  </data>
+  <data name="DownloadClubScheduleFileName" xml:space="preserve">
+    <value>Schedule-for</value>
+  </data>
+  <data name="DownloadClubScheduleFrom" xml:space="preserve">
+    <value>Start date:</value>
+  </data>
+  <data name="DownloadClubScheduleHeader" xml:space="preserve">
+    <value>Download schedule for </value>
+  </data>
+  <data name="DownloadClubScheduleNow" xml:space="preserve">
+    <value>Download</value>
+  </data>
+  <data name="DownloadClubSchedulePrompt" xml:space="preserve">
+    <value>Download club schedule</value>
+  </data>
+  <data name="DownloadClubScheduleTo" xml:space="preserve">
+    <value>End date:</value>
+  </data>
 </root>

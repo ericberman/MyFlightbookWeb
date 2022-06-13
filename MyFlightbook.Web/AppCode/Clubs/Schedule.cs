@@ -8,7 +8,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2021 MyFlightbook LLC
+ * Copyright (c) 2015-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -240,6 +240,14 @@ namespace MyFlightbook.Schedule
         /// Resource aircraft, if aircraft.  NOT CACHED, NOT PERSISTED, NULL BY DEFAULT
         /// </summary>
         public Aircraft ResourceAircraft { get; set; }
+
+        /// <summary>
+        /// Display string for the resource aircraft, if resource aircraft is populated.
+        /// </summary>
+        public string AircraftDisplay
+        {
+            get { return ResourceAircraft == null ? string.Empty : ResourceAircraft.DisplayTailnumber; }
+        }
 
         /// <summary>
         /// Resource user, if user (e.g., instructor, as opposed to the owner).  NOT CACHED, NOT PERSISTED, NULL BY DEFAULT

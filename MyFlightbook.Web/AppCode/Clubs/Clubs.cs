@@ -14,7 +14,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2014-2021 MyFlightbook LLC
+ * Copyright (c) 2014-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -904,17 +904,26 @@ namespace MyFlightbook.Clubs
         #region Upcoming Appointments
         public enum SummaryMode { Club, Aircraft, User }
 
+        public void MapAircraftAndUsers(IEnumerable<ScheduledEvent> lst)
+        {
+            if (lst == null)
+                return;
+
+            foreach (ScheduledEvent se in lst)
+            {
+                if (int.TryParse(se.ResourceID, out int idAircraft))
+                    se.ResourceAircraft = MemberAircraft.FirstOrDefault(ca => ca.AircraftID == idAircraft);
+                se.OwnerProfile = Members.FirstOrDefault(cm => String.Compare(cm.UserName, se.OwningUser, StringComparison.Ordinal) == 0);
+            }
+        }
+
         public IEnumerable<ScheduledEvent> GetUpcomingEvents(int limit, string resource=null, string owner=null)
         {
             List<ScheduledEvent> lst = ScheduledEvent.UpcomingAppointments(ID, TimeZone, limit, resource, owner);
 
             // Fix up the aircraft, owner names
-            lst.ForEach((se) =>
-                {
-                    if (int.TryParse(se.ResourceID, out int idAircraft))
-                        se.ResourceAircraft = MemberAircraft.FirstOrDefault(ca => ca.AircraftID == idAircraft);
-                    se.OwnerProfile = Members.FirstOrDefault(cm => String.Compare(cm.UserName, se.OwningUser, StringComparison.Ordinal) == 0);
-                });
+            MapAircraftAndUsers(lst);
+
             return lst;
         }
         #endregion

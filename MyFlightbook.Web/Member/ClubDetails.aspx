@@ -11,6 +11,8 @@
 <%@ Register src="../Controls/ClubControls/SchedSummary.ascx" tagname="SchedSummary" tagprefix="uc7" %>
 <%@ Register src="../Controls/ClubControls/ClubAircraftSchedule.ascx" tagname="ClubAircraftSchedule" tagprefix="uc8" %>
 <%@ Register src="../Controls/Expando.ascx" tagname="Expando" tagprefix="uc9" %>
+<%@ Register Src="~/Controls/Expando.ascx" TagPrefix="uc1" TagName="Expando" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="cpPageTitle" Runat="Server">
     <asp:Label ID="lblClubHeader" runat="server" Text=""></asp:Label>
 </asp:Content>
@@ -164,7 +166,49 @@
                                         }
                                     }
                                 </script>
-                                <h2><asp:Label ID="lblSchedules" runat="server" Text="<%$ Resources:Club, LabelAircraftSchedules %>"></asp:Label></h2>
+                                <div>
+                                    <h2 style="display:inline"><asp:Label ID="lblSchedules" runat="server" Text="<%$ Resources:Club, LabelAircraftSchedules %>" /></h2>
+                                    <asp:Label ID="lblDownloadCSV" runat="server" style="vertical-align:middle; float:right;">
+                                        <asp:Image ID="imgDownloadCSV" ImageUrl="~/images/download.png" runat="server" style="padding-right: 5px; vertical-align:middle" />
+                                        <asp:Image ID="imgCSVIcon" ImageAlign="Middle" runat="server" ImageUrl="~/images/csvicon_sm.png" style="padding-right: 5px; vertical-align:middle;" />
+                                        <span style="vertical-align:middle"><asp:Localize ID="locDownloadSchedule" runat="server" Text="<%$ Resources:Club, DownloadClubSchedulePrompt %>" /></span>
+                                    </asp:Label>
+                                </div>
+                                <asp:CollapsiblePanelExtender ID="cpeDownload" runat="server" ExpandControlID="lblDownloadCSV" CollapseControlID="lblDownloadCSV" Collapsed="true" TargetControlID="pnlDownload" EnableViewState="false" />
+                                <asp:Panel ID="pnlDownload" DefaultButton="btnDownloadSchedule" runat="server" Height="0px" CssClass="EntryBlock" style="overflow:hidden; max-width:350px; margin-left: auto; margin-right: auto;">
+                                    <h3><% =Resources.Club.DownloadClubScheduleHeader %> <span style="font-weight:bold"><% = CurrentClub == null ? String.Empty : CurrentClub.Name %></span></h3>
+                                    <table>
+                                        <tr style="vertical-align:top;">
+                                            <td><asp:Label ID="lblDownloadFrom" runat="server" Text="<%$ Resources:Club, DownloadClubScheduleFrom %>" /></td>
+                                            <td><uc1:mfbTypeInDate runat="server" ID="dateDownloadFrom" /></td>
+                                        </tr>
+                                        <tr style="vertical-align:top;">
+                                            <td><asp:Label ID="lblDownloadTo" runat="server" Text="<%$ Resources:Club, DownloadClubScheduleTo %>" /></td>
+                                            <td><uc1:mfbTypeInDate runat="server" ID="dateDownloadTo" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td><asp:Button ID="btnDownloadSchedule" runat="server" Text="<%$ Resources:Club, DownloadClubScheduleNow %>" OnClick="btnDownloadSchedule_Click" /></td>
+                                        </tr>
+                                    </table>
+                                    <div><asp:Label ID="lblDownloadErr" runat="server" CssClass="error" EnableViewState="false" /></div>
+                                </asp:Panel>
+                                <asp:GridView ID="gvScheduleDownload" Visible="false" AutoGenerateColumns="false" runat="server" EnableViewState="false">
+                                    <Columns>
+                                        <asp:BoundField DataField="LocalStart" DataFormatString="{0:s}" HeaderText="Start Date+Time (Local)" />
+                                        <asp:BoundField DataField="LocalEnd" DataFormatString="{0:s}" HeaderText="End Date+Time (Local)" />
+                                        <asp:BoundField DataField="StartUtc" DataFormatString="{0:s}" HeaderText="Start Date+Time (Utc)" />
+                                        <asp:BoundField DataField="EndUtc" DataFormatString="{0:s}" HeaderText="End Date+Time (Utc)" />
+                                        <asp:BoundField DataField="LocalStart" DataFormatString="{0:d}" HeaderText="Start Date (Local)" />
+                                        <asp:BoundField DataField="LocalEnd" DataFormatString="{0:d}" HeaderText="End Date (Local)" />
+                                        <asp:BoundField DataField="LocalStart" DataFormatString="{0:t}" HeaderText="Start Time (Local)" />
+                                        <asp:BoundField DataField="LocalEnd" DataFormatString="{0:t}" HeaderText="End Time (Local)" />
+                                        <asp:BoundField DataField="DurationDisplay" HeaderText="Duration" />
+                                        <asp:BoundField DataField="AircraftDisplay" HeaderText="Aircraft" />
+                                        <asp:BoundField DataField="OwnerName" HeaderText="Club Member" />
+                                        <asp:BoundField DataField="Body" HeaderText="Description" />
+                                    </Columns>
+                                </asp:GridView>
                                 <p>
                                     <asp:Label ID="lblNoteTZ" Font-Bold="true" runat="server" Text="<%$ Resources:LocalizedText, Note %>"></asp:Label>
                                     <asp:Label ID="lblTZDisclaimer" Text="" runat="server"></asp:Label>

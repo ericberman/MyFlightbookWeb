@@ -12,7 +12,7 @@ using System.Windows.Controls;
 
 /******************************************************
  * 
- * Copyright (c) 2014-2021 MyFlightbook LLC
+ * Copyright (c) 2014-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -42,6 +42,33 @@ namespace MyFlightbook.Clubs
             }
         }
 
+        protected void InitStatusDisplay()
+        {
+            switch (CurrentClub.Status)
+            {
+                case Club.ClubStatus.Promotional:
+                    mvPromoStatus.SetActiveView(vwPromotional);
+                    string szTemplate = (Page.User.Identity.Name.CompareOrdinal(Page.User.Identity.Name) == 0) ? Resources.Club.clubStatusTrialOwner : Resources.Club.clubStatusTrial;
+                    lblPromo.Text = String.Format(CultureInfo.CurrentCulture, Branding.ReBrand(szTemplate), CurrentClub.ExpirationDate.Value.ToShortDateString());
+                    break;
+                case Club.ClubStatus.Expired:
+                case Club.ClubStatus.Inactive:
+                    mvPromoStatus.SetActiveView(vwInactive);
+                    lblInactive.Text = Branding.ReBrand(CurrentClub.Status == Club.ClubStatus.Inactive ? Resources.Club.errClubInactive : Resources.Club.errClubPromoExpired);
+                    break;
+                default:
+                    mvPromoStatus.Visible = false;
+                    break;
+            }
+        }
+
+        protected void InitDownload()
+        {
+            // set up for download.
+            dateDownloadFrom.Date = DateTime.Now.Date;
+            dateDownloadTo.Date = DateTime.Now.Date.AddMonths(12);
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             Master.SelectedTab = tabID.actMyClubs;
@@ -64,7 +91,7 @@ namespace MyFlightbook.Clubs
                         lblCurTime.Text = String.Format(CultureInfo.InvariantCulture, Resources.LocalizedText.LocalizedJoinWithSpace, dtClub.ToShortDateString(), dtClub.ToShortTimeString());
                         lblTZDisclaimer.Text = String.Format(CultureInfo.CurrentCulture, Resources.Club.TimeZoneDisclaimer, CurrentClub.TimeZone.StandardName);
 
-                        bool fIsAdmin = util.GetIntParam(Request, "a", 0) != 0 && (MyFlightbook.Profile.GetUser(Page.User.Identity.Name)).CanManageData;
+                        bool fIsAdmin = util.GetIntParam(Request, "a", 0) != 0 && Profile.GetUser(Page.User.Identity.Name).CanManageData;
                         if (fIsAdmin && cm == null)
                             cm = new ClubMember(CurrentClub.ID, Page.User.Identity.Name, ClubMember.ClubMemberRole.Admin);
                         bool fIsManager = fIsAdmin || (cm != null && cm.IsManager);
@@ -80,28 +107,13 @@ namespace MyFlightbook.Clubs
 
                         pnlLeaveGroup.Visible = (cm != null && !cm.IsManager);
 
-                        switch (CurrentClub.Status)
-                        {
-                            case Club.ClubStatus.Promotional:
-                                mvPromoStatus.SetActiveView(vwPromotional);
-                                string szTemplate = (Page.User.Identity.Name.CompareOrdinal(Page.User.Identity.Name) == 0) ? Resources.Club.clubStatusTrialOwner : Resources.Club.clubStatusTrial;
-                                lblPromo.Text = String.Format(CultureInfo.CurrentCulture, Branding.ReBrand(szTemplate), CurrentClub.ExpirationDate.Value.ToShortDateString());
-                                break;
-                            case Club.ClubStatus.Expired:
-                            case Club.ClubStatus.Inactive:
-                                mvPromoStatus.SetActiveView(vwInactive);
-                                lblInactive.Text = Branding.ReBrand(CurrentClub.Status == Club.ClubStatus.Inactive ? Resources.Club.errClubInactive : Resources.Club.errClubPromoExpired);
-                                break;
-                            default:
-                                mvPromoStatus.Visible = false;
-                                break;
-                        }
+                        InitStatusDisplay();
 
                         // Initialize from the cookie, if possible.
                         rbScheduleMode.SelectedValue = SchedulePreferences.DefaultScheduleMode.ToString();
 
                         if (CurrentClub.PrependsScheduleWithOwnerName)
-                            mfbEditAppt1.DefaultTitle = MyFlightbook.Profile.GetUser(Page.User.Identity.Name).UserFullName;
+                            mfbEditAppt1.DefaultTitle = Profile.GetUser(Page.User.Identity.Name).UserFullName;
 
                         RefreshAircraft();
 
@@ -113,6 +125,8 @@ namespace MyFlightbook.Clubs
                             if (CurrentClub.HideMobileNumbers)
                                 gvMembers.Columns[gvMembers.Columns.Count - 1].Visible = false;
                         }
+
+                        InitDownload();
                     }
                     catch (MyFlightbookException ex)
                     {
@@ -267,6 +281,28 @@ namespace MyFlightbook.Clubs
             }
             hdnTargetUser.Value = txtContactSubject.Text = txtMsg.Text = string.Empty;
             mpeSendMsg.Hide();
+        }
+
+        protected void btnDownloadSchedule_Click(object sender, EventArgs e)
+        {
+            if (dateDownloadTo.Date.Subtract(dateDownloadFrom.Date).TotalDays < 1)
+                lblDownloadErr.Text = Resources.Club.DownloadClubScheduleBadDateRange;
+            else
+            {
+                IEnumerable<ScheduledEvent> rgevents = ScheduledEvent.AppointmentsInTimeRange(dateDownloadFrom.Date, dateDownloadTo.Date, CurrentClub.ID, CurrentClub.TimeZone);
+                CurrentClub.MapAircraftAndUsers(rgevents);  // fix up aircraft, usernames
+                gvScheduleDownload.DataSource = rgevents;
+                gvScheduleDownload.DataBind();
+
+                Response.Clear();
+                Response.ContentType = "text/csv";
+                // Give it a name that is the brand name, user's name, and date.  Convert spaces to dashes, and then strip out ANYTHING that is not alphanumeric or a dash.
+                string szFilename = String.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}", Branding.CurrentBrand.AppName, Resources.Club.DownloadClubScheduleFileName, CurrentClub.Name.Replace(" ", "-"));
+                string szDisposition = String.Format(CultureInfo.InvariantCulture, "attachment;filename={0}.csv", System.Text.RegularExpressions.Regex.Replace(szFilename, "[^0-9a-zA-Z-]", ""));
+                Response.AddHeader("Content-Disposition", szDisposition);
+                gvScheduleDownload.ToCSV(Response.OutputStream);
+                Response.End();
+            }
         }
     } 
 }
