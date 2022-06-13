@@ -65,8 +65,6 @@ namespace MyFlightbook.CloudStorage
             }
         }
 
-        private const string szKeyPrefFlat = "UsesFlatCloudStorageFileHierarchy";
-
         /// <summary>
         /// The current user
         /// </summary>
@@ -74,13 +72,13 @@ namespace MyFlightbook.CloudStorage
 
         public static bool UserUsesFlatHierarchy(Profile pf)
         {
-            return pf != null && pf.PreferenceExists(szKeyPrefFlat) && (bool) pf.GetPreferenceForKey(szKeyPrefFlat);
+            return pf != null && pf.GetPreferenceForKey(MFBConstants.keyPrefFlatHierarchy, false);
         }
 
         public static void SetUsesFlatHierarchy(Profile pf, bool value)
         {
             if (pf != null)
-                pf.SetPreferenceForKey(szKeyPrefFlat, value, value == false);
+                pf.SetPreferenceForKey(MFBConstants.keyPrefFlatHierarchy, value, value == false);
         }
     }
 
@@ -1144,7 +1142,7 @@ namespace MyFlightbook.CloudStorage
             CurrentUser = pf;
             if (pf != null)
             {
-                string szAuthJSon = pf?.GetPreferenceForKey<string>(GooglePhoto.PrefKeyAuthToken);
+                string szAuthJSon = pf?.GetPreferenceForKey<string>(PrefKeyAuthToken, null);
                 if (!String.IsNullOrWhiteSpace(szAuthJSon))
                     AuthState = JsonConvert.DeserializeObject<AuthorizationState>(szAuthJSon);
             }

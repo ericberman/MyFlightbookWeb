@@ -39,6 +39,7 @@ namespace MyFlightbook
         public const string keyCoreFieldsPermutation = "prefCoreFields";    // permutation of the core fields
         public const string keyWindowAircraftMaintenance = "prefMaintenanceWindow"; // default window for showing/hiding aircraft maintenance
         public const int DefaultMaintenanceWindow = 90;
+        public const string keyPrefFlatHierarchy = "UsesFlatCloudStorageFileHierarchy";    // indicates that cloud storage should be done in a flat hierarchy rather than by month.
     }
 
     public static class ShuntState
