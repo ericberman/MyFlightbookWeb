@@ -1001,7 +1001,10 @@ namespace MyFlightbook
             if (string.IsNullOrWhiteSpace(szKey))
                 throw new ArgumentNullException(nameof(szKey));
 
-            return PersistedPrefsDictionary.TryGetValue(szKey, out object o) ? (T) o : defObj;        
+            if (PersistedPrefsDictionary.TryGetValue(szKey, out object o))
+                return (T)o;
+            else
+                return defObj;        
         }
 
         /// <summary>

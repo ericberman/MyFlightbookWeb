@@ -306,7 +306,7 @@ namespace MyFlightbook.MemberPages
             rblDateEntryPreferences.SelectedIndex = (m_pf.UsesUTCDateOfFlight ? 1 : 0);
             prefTimeZone.SelectedTimeZone = m_pf.PreferredTimeZone;
             AddCurrencyExpirations(cmbExpiredCurrency);
-            cmbAircraftMaintWindow.SelectedValue = m_pf.GetPreferenceForKey(MFBConstants.keyWindowAircraftMaintenance, MFBConstants.DefaultMaintenanceWindow).ToString(CultureInfo.InvariantCulture);
+            cmbAircraftMaintWindow.SelectedValue = m_pf.GetPreferenceForKey<long>(MFBConstants.keyWindowAircraftMaintenance, MFBConstants.DefaultMaintenanceWindow).ToString(CultureInfo.InvariantCulture);
         }
 
         private void InitSocialNetworking()
