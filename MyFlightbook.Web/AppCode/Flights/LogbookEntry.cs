@@ -3776,7 +3776,42 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
         #endregion
         #endregion
 
+        private enum HistogramFieldNames
+        {
+            TotalFlightTime, PIC, SIC, CFI, Approaches,Landings, FSDayLandings, FSNightLandings, Dual, Night, SimulatedIMC, IMC, InstrumentTime, XC, GroundSim, Flights, FlightDays
+        }
+
         #region IHistogramable support
+        /// <summary>
+        /// Returns a set of things other than properties that can be summed, including display names
+        /// </summary>
+        public static IEnumerable<HistogramableValue> HistogramableValues
+        {
+            get
+            {
+                return new List<HistogramableValue>()
+                {
+                    new HistogramableValue(HistogramFieldNames.TotalFlightTime.ToString(), Resources.LocalizedText.ChartTotalsTotalFlyingTime, HistogramValueTypes.Time),
+                    new HistogramableValue(HistogramFieldNames.PIC.ToString(), Resources.LocalizedText.ChartTotalsTotalPIC, HistogramValueTypes.Time),
+                    new HistogramableValue(HistogramFieldNames.SIC.ToString(), Resources.LocalizedText.ChartTotalsTotalSIC, HistogramValueTypes.Time),
+                    new HistogramableValue(HistogramFieldNames.CFI.ToString(), Resources.LocalizedText.ChartTotalsTotalCFI, HistogramValueTypes.Time),
+                    new HistogramableValue(HistogramFieldNames.Approaches.ToString(), Resources.LocalizedText.ChartTotalsTotalApproaches, HistogramValueTypes.Integer),
+                    new HistogramableValue(HistogramFieldNames.Landings.ToString(), Resources.LocalizedText.ChartTotalsTotalLandings, HistogramValueTypes.Integer),
+                    new HistogramableValue(HistogramFieldNames.FSDayLandings.ToString(), Resources.LocalizedText.ChartTotalsFSDayLandings, HistogramValueTypes.Integer),
+                    new HistogramableValue(HistogramFieldNames.FSNightLandings.ToString(), Resources.LocalizedText.ChartTotalsFSNightLandings, HistogramValueTypes.Integer),
+                    new HistogramableValue(HistogramFieldNames.Dual.ToString(), Resources.LocalizedText.ChartTotalsTotalDual, HistogramValueTypes.Time),
+                    new HistogramableValue(HistogramFieldNames.Night.ToString(), Resources.LocalizedText.ChartTotalsTotalNight, HistogramValueTypes.Time),
+                    new HistogramableValue(HistogramFieldNames.SimulatedIMC.ToString(), Resources.LocalizedText.ChartTotalsTotalSimIMC, HistogramValueTypes.Time),
+                    new HistogramableValue(HistogramFieldNames.IMC.ToString(), Resources.LocalizedText.ChartTotalsTotalIMC, HistogramValueTypes.Time),
+                    new HistogramableValue(HistogramFieldNames.InstrumentTime.ToString(), Resources.LocalizedText.ChartTotalsTotalnstrument, HistogramValueTypes.Time),
+                    new HistogramableValue(HistogramFieldNames.XC.ToString(), Resources.LocalizedText.ChartTotalsXC, HistogramValueTypes.Time),
+                    new HistogramableValue(HistogramFieldNames.GroundSim.ToString(), Resources.LocalizedText.ChartTotalsGroundSim, HistogramValueTypes.Time),
+                    new HistogramableValue(HistogramFieldNames.Flights.ToString(), Resources.LocalizedText.ChartTotalsTotalFlights, HistogramValueTypes.Integer),
+                    new HistogramableValue(HistogramFieldNames.FlightDays.ToString(), Resources.LocalizedText.ChartTotalsTotalFlightDays, HistogramValueTypes.Integer)
+                };
+            }
+        }
+
         /// <summary>
         /// Returns a histogrammanager suitable for logbookentry objects
         /// </summary>
@@ -3792,23 +3827,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
 
             Profile pf = Profile.GetUser(szUser);
 
-            List<HistogramableValue> lstValues = new List<HistogramableValue>()
-            {
-                    new HistogramableValue("TotalFlightTime", Resources.LocalizedText.ChartTotalsTotalFlyingTime, HistogramValueTypes.Time),
-                    new HistogramableValue("PIC", Resources.LocalizedText.ChartTotalsTotalPIC, HistogramValueTypes.Time),
-                    new HistogramableValue("SIC", Resources.LocalizedText.ChartTotalsTotalSIC, HistogramValueTypes.Time),
-                    new HistogramableValue("CFI", Resources.LocalizedText.ChartTotalsTotalCFI, HistogramValueTypes.Time),
-                    new HistogramableValue("Approaches", Resources.LocalizedText.ChartTotalsTotalApproaches, HistogramValueTypes.Integer),
-                    new HistogramableValue("Landings", Resources.LocalizedText.ChartTotalsTotalLandings, HistogramValueTypes.Integer),
-                    new HistogramableValue("Dual", Resources.LocalizedText.ChartTotalsTotalDual, HistogramValueTypes.Time),
-                    new HistogramableValue("Night", Resources.LocalizedText.ChartTotalsTotalNight, HistogramValueTypes.Time),
-                    new HistogramableValue("SimulatedIMC", Resources.LocalizedText.ChartTotalsTotalSimIMC, HistogramValueTypes.Time),
-                    new HistogramableValue("IMC", Resources.LocalizedText.ChartTotalsTotalIMC, HistogramValueTypes.Time),
-                    new HistogramableValue("XC", Resources.LocalizedText.ChartTotalsXC, HistogramValueTypes.Time),
-                    new HistogramableValue("GroundSim", Resources.LocalizedText.ChartTotalsGroundSim, HistogramValueTypes.Time),
-                    new HistogramableValue("Flights", Resources.LocalizedText.ChartTotalsTotalFlights, HistogramValueTypes.Integer),
-                    new HistogramableValue("FlightDays", Resources.LocalizedText.ChartTotalsTotalFlightDays, HistogramValueTypes.Integer)
-            };
+            List<HistogramableValue> lstValues = new List<HistogramableValue>(HistogramableValues);
 
             if (!pf.TracksSecondInCommandTime)
                 lstValues.RemoveAll(hv => hv.DataField.CompareOrdinal("SIC") == 0);
@@ -3901,7 +3920,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
 
         private double TryReturnPropType(string value, double defaultValue)
         {
-            if (Int32.TryParse(value, out int idPropType))
+            if (int.TryParse(value, out int idPropType))
             {
                 CustomFlightProperty cfp = CustomProperties.GetEventWithTypeID(idPropType);
                 return (cfp == null) ? 0.0 : (cfp.PropertyType.Type == CFPPropertyType.cfpInteger ? cfp.IntValue : (double)cfp.DecValue);
@@ -3917,51 +3936,70 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
             if (value == null)
                 throw new ArgumentNullException(nameof(value));
 
-            switch (value)
+            // see if it parses to a property; if that fails, check for a HistogramFieldName
+            double retVal = TryReturnPropType(value, -1);
+            if (retVal >= 0)
+                return retVal;
+            else
             {
-                case "TotalFlightTime":
-                default:
-                    return TryReturnPropType(value, (double)TotalFlightTime);
-                case "Approaches":
-                    return Approaches;
-                case "Landings":
-                    return Landings;
-                case "Dual":
-                    return (double)Dual;
-                case "Night":
-                    return (double)Nighttime;
-                case "SimulatedIMC":
-                    return (double)SimulatedIFR;
-                case "IMC":
-                    return (double)IMC;
-                case "PIC":
-                    return (double)PIC;
-                case "SIC":
-                    return (double)SIC;
-                case "CFI":
-                    return (double)CFI;
-                case "XC":
-                    return (double)CrossCountry;
-                case "GroundSim":
-                    return (double)GroundSim;
-                case "Flights":
-                    return 1;
-                case "FlightDays":
+                if (Enum.TryParse(value, out HistogramFieldNames field))
+                {
+                    switch (field)
                     {
-                        const string FlightDaysContextKey = "hgFlightDays";
-                        HashSet<DateTime> hs;
-                        if (context.ContainsKey(FlightDaysContextKey))
-                            hs = (HashSet<DateTime>)context[FlightDaysContextKey];
-                        else
-                            context[FlightDaysContextKey] = hs = new HashSet<DateTime>();
-                        if (hs.Contains(Date))
-                            return 0;
-                        else
-                        {
-                            hs.Add(Date);
+                        default:
+                            throw new MyFlightbookValidationException("Unknown histogram field: " + field.ToString());
+                        case HistogramFieldNames.TotalFlightTime:
+                            return (double)TotalFlightTime;
+                        case HistogramFieldNames.Approaches:
+                            return Approaches;
+                        case HistogramFieldNames.Landings:
+                            return Landings;
+                        case HistogramFieldNames.FSDayLandings:
+                            return FullStopLandings;
+                        case HistogramFieldNames.FSNightLandings:
+                            return NightLandings;
+                        case HistogramFieldNames.Dual:
+                            return (double)Dual;
+                        case HistogramFieldNames.Night:
+                            return (double)Nighttime;
+                        case HistogramFieldNames.SimulatedIMC:
+                            return (double)SimulatedIFR;
+                        case HistogramFieldNames.IMC:
+                            return (double)IMC;
+                        case HistogramFieldNames.InstrumentTime:
+                            return (double)(SimulatedIFR + IMC);
+                        case HistogramFieldNames.PIC:
+                            return (double)PIC;
+                        case HistogramFieldNames.SIC:
+                            return (double)SIC;
+                        case HistogramFieldNames.CFI:
+                            return (double)CFI;
+                        case HistogramFieldNames.XC:
+                            return (double)CrossCountry;
+                        case HistogramFieldNames.GroundSim:
+                            return (double)GroundSim;
+                        case HistogramFieldNames.Flights:
                             return 1;
-                        }
+                        case HistogramFieldNames.FlightDays:
+                            {
+                                const string FlightDaysContextKey = "hgFlightDays";
+                                HashSet<DateTime> hs;
+                                if (context.ContainsKey(FlightDaysContextKey))
+                                    hs = (HashSet<DateTime>)context[FlightDaysContextKey];
+                                else
+                                    context[FlightDaysContextKey] = hs = new HashSet<DateTime>();
+                                if (hs.Contains(Date))
+                                    return 0;
+                                else
+                                {
+                                    hs.Add(Date);
+                                    return 1;
+                                }
+                            }
                     }
+                }
+                else
+                    throw new MyFlightbookValidationException("Unknown requested histogram value " + value);
             }
         }
         #endregion
