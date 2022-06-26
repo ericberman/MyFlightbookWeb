@@ -641,9 +641,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <value>Landings at a towered airport are assumed to be full-stop if full-stop is required and if enough full-stop landings are recorded in the flight</value>
   </data>
   <data name="JARPPLHelicopterDisclaimer" xml:space="preserve">
-    <value>ADDITIONAL NOTES:
-&lt;ul&gt;&lt;li&gt;The regulations require that the experience below be all done in a single type of helicopter; %APP_NAME% is not enforcing this. Please ensure that you have met these requirements in a single type of helicopter. &lt;/li&gt;
-&lt;li&gt;The night qualification requirements cannot be deterministically computed and thus are omitted here.&lt;/li&gt;&lt;/ul&gt;</value>
+    <value>ADDITIONAL NOTES: The regulations require that the experience below be all done in a single type of helicopter; %APP_NAME% is not enforcing this. Please ensure that you have met these requirements in a single type of helicopter. The night qualification requirements cannot be deterministically computed and thus are omitted here.</value>
   </data>
   <data name="JARPPLMinDual" xml:space="preserve">
     <value>*{0:#,##0}* hours of *dual* instruction</value>
@@ -691,7 +689,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <value>EASA - PPL(H): Helicopter Private Pilot</value>
   </data>
   <data name="Part141MultiEngineSoloDisclaimer" xml:space="preserve">
-    <value>ADDITIONAL NOTES:&lt;ul&gt;&lt;li&gt;Part 141 for multi-engine aircraft requires "performing the duties of a pilot in command while under the supervision of a certificated flight instructor" rather than solo.  You can specify this for a flight by indicating Duties of PIC ("DPIC") time and that the flight had an Instructor On Board (in additional properties).&lt;/li&gt;&lt;li&gt;DPIC is distinct from dual received, so any dual time logged on such a flight that overlaps with DPIC time is not counted.&lt;/li&gt;&lt;/ul&gt;</value>
+    <value>ADDITIONAL NOTES: Part 141 for multi-engine aircraft requires "performing the duties of a pilot in command while under the supervision of a certificated flight instructor" rather than solo.  You can specify this for a flight by indicating Duties of PIC ("DPIC") time and that the flight had an Instructor On Board (in additional properties). DPIC is distinct from dual received, so any dual time logged on such a flight that overlaps with DPIC time is not counted.</value>
   </data>
   <data name="Title141PPLGyroplane" xml:space="preserve">
     <value>Part 141 - Private Pilot, Gyroplane</value>
@@ -1582,5 +1580,102 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
   </data>
   <data name="CommSoloXCGyroplane" xml:space="preserve">
     <value>A *cross-country flight* in a *gyroplane* with landings at *3* points, with one segment at least *50NM* from the original point of departure.</value>
+  </data>
+  <data name="CustomProgressAddNewRating" xml:space="preserve">
+    <value>Add a new rating</value>
+  </data>
+  <data name="CustomProgressCreate" xml:space="preserve">
+    <value>Create/edit custom ratings</value>
+  </data>
+  <data name="CustomProgressGenDisclaimerPrompt" xml:space="preserve">
+    <value>Longer Description or notes</value>
+  </data>
+  <data name="CustomProgressItemTemplate" xml:space="preserve">
+    <value>*{0}* - {1}: *{3}* exceeds *{2}* {4}</value>
+    <comment>0=FAR/regulation, 1=Title, 2 = threshold, 3 = field to sum, {4} is optional query</comment>
+  </data>
+  <data name="CustomProgressNoItemsFound" xml:space="preserve">
+    <value>(No milestones found)</value>
+  </data>
+  <data name="CustomProgressNoneFound" xml:space="preserve">
+    <value>(No ratings found)</value>
+  </data>
+  <data name="CustomProgressSection" xml:space="preserve">
+    <value>Custom Ratings/Progress</value>
+  </data>
+  <data name="CustomProgressTitlePrompt" xml:space="preserve">
+    <value>Title for this rating</value>
+  </data>
+  <data name="CustomProgressTitleRequired" xml:space="preserve">
+    <value>Title is required</value>
+  </data>
+  <data name="ErrCustomProgressQueryNotFound" xml:space="preserve">
+    <value>Saved search "{0}" not found - cannot compute progress against rating.</value>
+  </data>
+  <data name="CustomProgressDelete" xml:space="preserve">
+    <value>Delete this rating</value>
+  </data>
+  <data name="CustomProgressDeleteConfirm" xml:space="preserve">
+    <value>Are you sure you want to delete this rating?  This cannot be undone!</value>
+  </data>
+  <data name="CustomProgressDeleteMilestone" xml:space="preserve">
+    <value>Delete this milestone</value>
+  </data>
+  <data name="CustomProgressDeleteMilestoneConfirm" xml:space="preserve">
+    <value>Are you sure you want to delete this milestone?  This cannot be undone!</value>
+  </data>
+  <data name="CustomProgressExistingMilestones" xml:space="preserve">
+    <value>Existing Milestones</value>
+  </data>
+  <data name="CustomProgressItemNewMilestoneNote" xml:space="preserve">
+    <value>Note:</value>
+  </data>
+  <data name="CustomProgressItemNewMilestoneNoteTip" xml:space="preserve">
+    <value>Add any text here that you want to display along with progress for the milestone, such as assumptions made or alternatives that may be allowed</value>
+  </data>
+  <data name="CustomProgressItemTemplateQueryApplied" xml:space="preserve">
+    <value>for flights matching saved search *{0}*</value>
+  </data>
+  <data name="CustomProgressMilestonesForCustomRating" xml:space="preserve">
+    <value>Add/Edit Milestones for "{0}"</value>
+  </data>
+  <data name="CustomProgressNewMilestoneAdd" xml:space="preserve">
+    <value>Add new milestone/criteria</value>
+  </data>
+  <data name="CustomProgressNewMilestoneAllFlightsQuery" xml:space="preserve">
+    <value>(All Flights)</value>
+  </data>
+  <data name="CustomProgressNewMilestoneEditMilestones" xml:space="preserve">
+    <value>Add/Edit Milestones</value>
+  </data>
+  <data name="CustomProgressNewMilestoneFARRef" xml:space="preserve">
+    <value>Reference:</value>
+  </data>
+  <data name="CustomProgressNewMilestoneFARRefNote" xml:space="preserve">
+    <value>Name and section/subsection for the regulation, or a simple number for sorting</value>
+  </data>
+  <data name="CustomProgressNewMilestoneFARRefRequired" xml:space="preserve">
+    <value>A reference must be provided.  You can use a simple number for sorting.</value>
+  </data>
+  <data name="CustomProgressNewMilestoneQuery" xml:space="preserve">
+    <value>For flights matching:</value>
+  </data>
+  <data name="CustomProgressNewMilestoneThreshold" xml:space="preserve">
+    <value>Is at least:</value>
+  </data>
+  <data name="CustomProgressNewMilestoneThresholdRequired" xml:space="preserve">
+    <value>A threshold greater than 0 is required</value>
+  </data>
+  <data name="CustomProgressNewMilestoneTitle" xml:space="preserve">
+    <value>Description:</value>
+  </data>
+  <data name="CustomProgressNewMilestoneTitleRequired" xml:space="preserve">
+    <value>A title is required</value>
+  </data>
+  <data name="CustomProgressNewMilestoneTitleTip" xml:space="preserve">
+    <value>Hint: surround words with asterisks (*) to make them bold.</value>
+  </data>
+  <data name="CustomProgressNewMilestoneValue" xml:space="preserve">
+    <value>Sum of: </value>
   </data>
 </root>

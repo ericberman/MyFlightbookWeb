@@ -1,5 +1,8 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="RatingProgress.aspx.cs" Inherits="MyFlightbook.RatingsProgress.RatingProgressPage" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
+<%@ Register Src="~/Controls/Expando.ascx" TagPrefix="uc1" TagName="Expando" %>
+<%@ Register Src="~/Controls/mfbDecimalEdit.ascx" TagPrefix="uc1" TagName="mfbDecimalEdit" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="cpPageTitle" Runat="Server">
     <asp:Label ID="lblTitle" runat="server" Text=""></asp:Label>
 </asp:Content>
@@ -21,6 +24,130 @@
             </asp:DropDownList>
         </p>
     </div>
+    <asp:Panel ID="pnlAddEdit" runat="server" CssClass="noprint" Visible="false" style="background-color:lightgray; border: 1px solid black; border-radius:5px; padding:5px; margin: 3px;">
+        <uc1:Expando runat="server" ID="expandoEditRatings">
+            <Header>
+                <asp:Label ID="lblAddEdit" runat="server" Text="<%$ Resources:MilestoneProgress, CustomProgressCreate %>" />
+            </Header>
+            <Body>
+                <h2><asp:Label ID="lblAddNewRating" runat="server" Text="<%$ Resources:MilestoneProgress, CustomProgressAddNewRating %>" /></h2>
+                <asp:Panel ID="pnlAddRating" runat="server" DefaultButton="btnAddNew">
+                    <asp:TextBox ID="txtNewTitle" runat="server" ValidationGroup="vgAddRating" />
+                    <ajaxToolkit:TextBoxWatermarkExtender ID="weTitle" runat="server" TargetControlID="txtNewTitle" WatermarkCssClass="watermark" WatermarkText="<%$ Resources:MilestoneProgress, CustomProgressTitlePrompt %>" />
+                    <asp:TextBox ID="txtNewDisclaimer" runat="server" ValidationGroup="vgAddRating" />
+                    <ajaxToolkit:TextBoxWatermarkExtender ID="weDisclaimer" runat="server" TargetControlID="txtNewDisclaimer" WatermarkCssClass="watermark" WatermarkText="<%$ Resources:MilestoneProgress, CustomProgressGenDisclaimerPrompt %>" />
+                    <asp:Button ID="btnAddNew" runat="server" Text="<%$ Resources:MilestoneProgress, CustomProgressAddNewRating %>" OnClick="btnAddNew_Click" ValidationGroup="vgAddRating" />
+                    <div><asp:RequiredFieldValidator ID="reqNewTitle" runat="server" ControlToValidate="txtNewTitle" CssClass="error" ErrorMessage="<%$ Resources:MilestoneProgress, CustomProgressTitleRequired %>" Display="Dynamic" ValidationGroup="vgAddRating" /></div>
+                </asp:Panel>
+                <asp:GridView ID="gvCustomRatings" runat="server" AutoGenerateColumns="false" GridLines="None" AutoGenerateEditButton="true" ShowHeader="false" CellPadding="5" OnRowUpdating="gvCustomRatings_RowUpdating"
+                    OnRowEditing="gvCustomRatings_RowEditing" OnRowCancelingEdit="gvCustomRatings_RowCancelingEdit" OnRowCommand="gvCustomRatings_RowCommand">
+                    <Columns>
+                        <asp:BoundField DataField="Title" HtmlEncode="true" />
+                        <asp:BoundField DataField="GeneralDisclaimer" HtmlEncode="true" />
+                        <asp:ButtonField Text="<%$ Resources:MilestoneProgress, CustomProgressNewMilestoneEditMilestones %>" ButtonType="Link" CommandName="_EditMilestones" />
+                        <asp:TemplateField>
+                            <ItemTemplate>
+                                <asp:ImageButton ID="imgDelete" runat="server" 
+                                    AlternateText="<%$ Resources:MilestoneProgress, CustomProgressDelete %>" CommandArgument='<%# Bind("Title") %>' 
+                                    CommandName="_DeleteRating" ImageUrl="~/images/x.gif" 
+                                    ToolTip="<%$ Resources:MilestoneProgress, CustomProgressDelete %>" />
+                                <ajaxToolkit:ConfirmButtonExtender ID="cbeDelete" runat="server" 
+                                    ConfirmOnFormSubmit="True" 
+                                    ConfirmText="<%$ Resources:MilestoneProgress, CustomProgressDeleteConfirm %>" 
+                                    TargetControlID="imgDelete">
+                                </ajaxToolkit:ConfirmButtonExtender>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                    </Columns>
+                    <EmptyDataTemplate>
+                        <asp:Label ID="lblNoRatings" runat="server" Text="<%$ Resources:MilestoneProgress, CustomProgressNoneFound %>" />
+                    </EmptyDataTemplate>
+                </asp:GridView>
+                <asp:Panel ID="pnlAddMilestones" runat="server" CssClass="modalpopup" DefaultButton="btnAddMilestone">
+                    <asp:HiddenField ID="hdnCpeIndex" runat="server" />
+                    <h2><asp:Label ID="lblEditMilestonesForProgress" runat="server" /></h2>
+                    <asp:ImageButton ID="imgClose" runat="server" style="position: absolute; top: 15px; right: 15px; z-index: 3" ImageUrl="~/images/closeimg.png" />
+                    <table>
+                        <tr>
+                            <td><asp:Label ID="lblFarRefPrmopt" runat="server" Text="<%$ Resources:MilestoneProgress, CustomProgressNewMilestoneFARRef %>" /></td>
+                            <td>
+                                <asp:TextBox ID="txtMiFARRef" runat="server" ValidationGroup="vgMilestone" />
+                                <div><asp:RequiredFieldValidator ID="reqMilestoneFAR" runat="server" ValidationGroup="vgMilestone" ControlToValidate="txtMiFARRef" Display="Dynamic" ErrorMessage="<%$ Resources:MilestoneProgress, CustomProgressNewMilestoneFARRefRequired %>" CssClass="error" /></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><asp:Label ID="lblFarRefNote" CssClass="fineprint" runat="server" Text="<%$ Resources:MilestoneProgress, CustomProgressNewMilestoneFARRefNote %>" /><br />&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td><asp:Label ID="lblTitlePrompt" runat="server" Text="<%$ Resources:MilestoneProgress, CustomProgressNewMilestoneTitle %>" /></td>
+                            <td>
+                                <asp:TextBox ID="txtMiTitle" runat="server" ValidationGroup="vgMilestone" />
+                                <div><asp:RequiredFieldValidator ID="reqMilestoneTitle" ValidationGroup="vgMilestone" ControlToValidate="txtMiTitle" runat="server" Display="Dynamic" ErrorMessage="<%$ Resources:MilestoneProgress, CustomProgressNewMilestoneTitleRequired %>" CssClass="error" /></div>
+                            </td>
+                        </tr>
+                        <tr><td colspan="2"><asp:Label ID="lblTitleTip" CssClass="fineprint" runat="server" Text="<%$ Resources:MilestoneProgress, CustomProgressNewMilestoneTitleTip %>" /><br />&nbsp;</td></tr>
+                        <tr>
+                            <td><asp:Label ID="lblMiNote" runat="server" Text="<%$ Resources:MilestoneProgress, CustomProgressItemNewMilestoneNote %>" /></td>
+                            <td><asp:TextBox ID="txtMiNote" runat="server" /></td>
+                        </tr>
+                        <tr><td colspan="2"><asp:Label ID="lblNoteTip" CssClass="fineprint" runat="server" Text="<%$ Resources:MilestoneProgress, CustomProgressItemNewMilestoneNoteTip %>" /><br />&nbsp;</td></tr>
+                        <tr>
+                            <td><asp:Label ID="lblFieldToSumPrompt" runat="server" Text="<%$ Resources:MilestoneProgress, CustomProgressNewMilestoneValue %>" /></td>
+                            <td><asp:DropDownList ID="cmbFields" runat="server" DataTextField="DataName" DataValueField="DataField" /></td>
+                        </tr>
+                        <tr>
+                            <td><asp:Label ID="lblThreshold" runat="server" Text="<%$ Resources:MilestoneProgress, CustomProgressNewMilestoneThreshold %>" /></td>
+                            <td>
+                                <uc1:mfbDecimalEdit runat="server" ID="decThreshold" />
+                                <div><asp:Label ID="lblErrThreshold" runat="server" EnableViewState="false" CssClass="error" Visible="false" Text="<%$ Resources:MilestoneProgress, CustomProgressNewMilestoneThresholdRequired %>" /></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><asp:Label ID="lblQuery" runat="server" Text="<%$ Resources:MilestoneProgress, CustomProgressNewMilestoneQuery %>" /></td>
+                            <td>
+                                <asp:DropDownList ID="cmbQueries" runat="server" AppendDataBoundItems="true" DataTextField="QueryName" DataValueField="QueryName">
+                                    <asp:ListItem Enabled="true" Text="<%$ Resources:MilestoneProgress, CustomProgressNewMilestoneAllFlightsQuery %>" Value="" />
+                                </asp:DropDownList>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><asp:Button ID="btnAddMilestone" runat="server" Text="<%$ Resources:MilestoneProgress, CustomProgressNewMilestoneAdd %>" ValidationGroup="vgMilestone" OnClick="btnAddMilestone_Click" /></td>
+                        </tr>
+                    </table>
+                    <hr />
+                    <h3><asp:Label ID="lblExistingMilestones" runat="server" Text="<%$ Resources:MilestoneProgress, CustomProgressExistingMilestones %>" /></h3>
+                    <asp:GridView ID="gvCustomRatingItems" OnRowCommand="gvCustomRatings_RowCommand" runat="server" AutoGenerateColumns="false" GridLines="None" ShowHeader="false" ShowFooter="false">
+                        <Columns>
+                            <asp:TemplateField>
+                                <ItemTemplate>
+                                    <%# Container.DataItem.ToString().Linkify(true) %>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField>
+                                <ItemTemplate>
+                                    <asp:ImageButton ID="imgDelete" runat="server" 
+                                        AlternateText="<%$ Resources:MilestoneProgress, CustomProgressDeleteMilestone %>" CommandArgument='<%# Container.DataItemIndex %>'
+                                        CommandName="_DeleteMilestone" ImageUrl="~/images/x.gif" 
+                                        ToolTip="<%$ Resources:MilestoneProgress, CustomProgressDeleteMilestone %>" />
+                                    <ajaxToolkit:ConfirmButtonExtender ID="cbeDelete" runat="server" 
+                                        ConfirmOnFormSubmit="True" 
+                                        ConfirmText="<%$ Resources:MilestoneProgress, CustomProgressDeleteMilestone %>" 
+                                        TargetControlID="imgDelete">
+                                    </ajaxToolkit:ConfirmButtonExtender>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                        </Columns>
+                        <EmptyDataTemplate>
+                            <asp:Label ID="lblNoMilestones" runat="server" Font-Italic="true" Text="<%$ Resources:MilestoneProgress, CustomProgressNoItemsFound %>" />
+                        </EmptyDataTemplate>
+                    </asp:GridView>
+                </asp:Panel>
+                <asp:Label ID="lblDummy" runat="server" style="display:none" />
+                <ajaxToolkit:ModalPopupExtender ID="mpeEditMilestones" TargetControlID="lblDummy" runat="server" PopupControlID="pnlAddMilestones" BackgroundCssClass="modalBackground" CancelControlID="imgClose" OkControlID="imgClose" />
+            </Body>
+        </uc1:Expando>
+    </asp:Panel>
     <div class="printonly" style="text-align:center;">
         <h2><asp:Label ID="lblPrintHeader" runat="server" /></h2>
     </div>

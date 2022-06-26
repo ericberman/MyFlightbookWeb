@@ -3813,6 +3813,29 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
         }
 
         /// <summary>
+        /// maps a customproperty type to a histogramable value.  Only summable property types are returned.
+        /// </summary>
+        /// <param name="cpt"></param>
+        /// <returns></returns>
+        public static HistogramableValue HistogramableValueForPropertyType(CustomPropertyType cpt)
+        {
+            if (cpt == null)
+                return null;
+
+            switch (cpt.Type)
+            {
+                case CFPPropertyType.cfpCurrency:
+                    return new HistogramableValue(cpt.PropTypeID.ToString(CultureInfo.InvariantCulture), cpt.Title, HistogramValueTypes.Currency);
+                case CFPPropertyType.cfpDecimal:
+                    return (cpt.IsNoSum) ? null : new HistogramableValue(cpt.PropTypeID.ToString(CultureInfo.InvariantCulture), cpt.Title, cpt.IsBasicDecimal ? HistogramValueTypes.Decimal : HistogramValueTypes.Time);
+                case CFPPropertyType.cfpInteger:
+                    return new HistogramableValue(cpt.PropTypeID.ToString(CultureInfo.InvariantCulture), cpt.Title, cpt.IsBasicDecimal ? HistogramValueTypes.Decimal : HistogramValueTypes.Integer);
+                default:
+                    return null;
+            }
+        }
+
+        /// <summary>
         /// Returns a histogrammanager suitable for logbookentry objects
         /// </summary>
         /// <param name="source"></param>
@@ -3856,29 +3879,12 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                 if (!cpt.IsFavorite || pf.BlocklistedProperties.Contains(cpt.PropTypeID))
                     continue;
 
-                switch (cpt.Type)
-                {
-                    case CFPPropertyType.cfpCurrency:
-                        lstValues.Add(new HistogramableValue(cpt.PropTypeID.ToString(CultureInfo.InvariantCulture), cpt.Title, HistogramValueTypes.Currency));
-                        break;
-                    case CFPPropertyType.cfpDecimal:
-                        if (!cpt.IsNoSum)
-                            lstValues.Add(new HistogramableValue(cpt.PropTypeID.ToString(CultureInfo.InvariantCulture), cpt.Title, cpt.IsBasicDecimal ? HistogramValueTypes.Decimal : HistogramValueTypes.Time));
-                        break;
-                    case CFPPropertyType.cfpInteger:
-                        lstValues.Add(new HistogramableValue(cpt.PropTypeID.ToString(CultureInfo.InvariantCulture), cpt.Title, cpt.IsBasicDecimal ? HistogramValueTypes.Decimal : HistogramValueTypes.Integer));
-                        break;
-                    // these types can't be summed
-                    case CFPPropertyType.cfpBoolean:
-                    case CFPPropertyType.cfpDate:
-                    case CFPPropertyType.cfpDateTime:
-                        break;
-
+                HistogramableValue hv = HistogramableValueForPropertyType(cpt);
+                if (hv != null)
+                    lstValues.Add(hv);
+                else if (cpt.Type == CFPPropertyType.cfpString)
                     // Strings can't be summed, but they can serve for grouping.  We do simple text-contains searches.
-                    case CFPPropertyType.cfpString:
-                        lstStrings.Add(new StringBucketManager(cpt.PropTypeID.ToString(CultureInfo.InvariantCulture), cpt.Title, string.Empty));
-                        break;
-                }
+                    lstStrings.Add(new StringBucketManager(cpt.PropTypeID.ToString(CultureInfo.InvariantCulture), cpt.Title, string.Empty));
             }
 
             HistogramManager hm = new HistogramManager()

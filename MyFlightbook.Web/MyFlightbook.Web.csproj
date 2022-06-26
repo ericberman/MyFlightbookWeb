@@ -1083,6 +1083,7 @@
     <Compile Include="AppCode\Flights\Ratings\CFIRatings.cs" />
     <Compile Include="AppCode\Flights\Ratings\Checkrides.cs" />
     <Compile Include="AppCode\Flights\Ratings\CommRatings.cs" />
+    <Compile Include="AppCode\Flights\Ratings\CustomRatings.cs" />
     <Compile Include="AppCode\Flights\Ratings\DPE.cs" />
     <Compile Include="AppCode\Flights\Ratings\EASARatings.cs" />
     <Compile Include="AppCode\Flights\Ratings\IFRRatings.cs" />
