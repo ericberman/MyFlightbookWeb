@@ -839,6 +839,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Full-stop day landings.
+        /// </summary>
+        internal static string ChartTotalsFSDayLandings {
+            get {
+                return ResourceManager.GetString("ChartTotalsFSDayLandings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Full-stop night landings.
+        /// </summary>
+        internal static string ChartTotalsFSNightLandings {
+            get {
+                return ResourceManager.GetString("ChartTotalsFSNightLandings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ground Sim..
         /// </summary>
         internal static string ChartTotalsGroundSim {
@@ -1069,6 +1087,15 @@ namespace Resources {
         internal static string ChartTotalsTotalNight {
             get {
                 return ResourceManager.GetString("ChartTotalsTotalNight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Instrument time (simulated + actual).
+        /// </summary>
+        internal static string ChartTotalsTotalnstrument {
+            get {
+                return ResourceManager.GetString("ChartTotalsTotalnstrument", resourceCulture);
             }
         }
         

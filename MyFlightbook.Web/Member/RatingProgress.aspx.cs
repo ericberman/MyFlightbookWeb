@@ -1,4 +1,5 @@
 ﻿using MyFlightbook.Instruction;
+using MyFlightbook.Histogram;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,7 +11,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2021 MyFlightbook LLC
+ * Copyright (c) 2013-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -31,8 +32,29 @@ namespace MyFlightbook.RatingsProgress
             {
                 IEnumerable<MilestoneGroup> lstMilestones = (IEnumerable<MilestoneGroup>)ViewState[szVSMilestones];
                 if (lstMilestones == null)
-                    ViewState[szVSMilestones] = lstMilestones = MilestoneProgress.AvailableProgressItems();
+                    ViewState[szVSMilestones] = lstMilestones = MilestoneProgress.AvailableProgressItems(TargetUser);
                 return lstMilestones;
+            }
+            set
+            {
+                ViewState[szVSMilestones] = value;
+            }
+        }
+
+        protected IEnumerable<HistogramableValue> HistogramableValues
+        {
+            get
+            {
+                // build a map of all histogrammable values for naming
+                List<HistogramableValue> lst = new List<HistogramableValue>(LogbookEntryDisplay.HistogramableValues);
+
+                foreach (CustomPropertyType cpt in CustomPropertyType.GetCustomPropertyTypes(Page.User.Identity.Name))
+                {
+                    HistogramableValue hv = LogbookEntryDisplay.HistogramableValueForPropertyType(cpt);
+                    if (hv != null)
+                        lst.Add(hv);
+                }
+                return lst;
             }
         }
 
@@ -54,7 +76,7 @@ namespace MyFlightbook.RatingsProgress
                         // a) Support person (a=1 and current user is support)
                         // b) Instructor
                         // Check for admin
-                        if (util.GetStringParam(Request, "a").Length > 0 && MyFlightbook.Profile.GetUser(Page.User.Identity.Name).CanSupport)
+                        if (util.GetStringParam(Request, "a").Length > 0 && Profile.GetUser(Page.User.Identity.Name).CanSupport)
                             szUser = szTargetUser;
                         else
                         {
@@ -83,7 +105,7 @@ namespace MyFlightbook.RatingsProgress
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            this.Master.SelectedTab = tabID.instProgressTowardsMilestones;
+            Master.SelectedTab = tabID.instProgressTowardsMilestones;
 
             if (!IsPostBack)
             {
@@ -109,6 +131,8 @@ namespace MyFlightbook.RatingsProgress
                         ClearCookie();
                     }
                 }
+
+                RefreshCustomRatings();
             }
 
         }
@@ -136,7 +160,7 @@ namespace MyFlightbook.RatingsProgress
             if (!mp.HasData)
                 mp.Username = TargetUser;
 
-            lblRatingOverallDisclaimer.Text = mp.GeneralDisclaimer;
+            lblRatingOverallDisclaimer.Text = mp.GeneralDisclaimer.Linkify();
             pnlRatingDisclaimer.Visible = !String.IsNullOrEmpty(lblRatingOverallDisclaimer.Text);
 
             gvMilestoneProgress.DataSource = mp.ComputedMilestones;
@@ -207,7 +231,189 @@ namespace MyFlightbook.RatingsProgress
                 cmbMilestones.DataBind();
             }
 
+            // Only show the "Add/Edit" ratings box if custom ratings is selected AND viewing your own milestones
+            pnlAddEdit.Visible = mgSel is CustomRatingsGroup && Page.User.Identity.Name.CompareCurrentCultureIgnoreCase(TargetUser) == 0;
+
             Refresh();
         }
+
+        #region Custom Ratings
+        protected void RefreshCustomRatings()
+        {
+            gvCustomRatings.DataSource = CustomRatingProgress.CustomRatingsForUser(TargetUser);
+            gvCustomRatings.DataBind();
+        }
+
+        protected void UpdateMilestones()
+        {
+            MilestoneGroup mgeCustom = null;
+            foreach (MilestoneGroup mg in Milestones)
+            {
+                if (mg is CustomRatingsGroup)
+                {
+                    mgeCustom = mg as CustomRatingsGroup;
+                    break;
+                }
+            }
+
+            if (mgeCustom != null)
+            {
+                Milestones = MilestoneProgress.AvailableProgressItems(TargetUser);
+                // Refresh the milestones to reflect the current milestone or group of milestones.
+                cmbMilestoneGroup_SelectedIndexChanged(cmbMilestoneGroup, new EventArgs());
+            }
+        }
+
+        protected void btnAddNew_Click(object sender, EventArgs e)
+        {
+            Validate("vgAddRating");
+            if (!Page.IsValid)
+                return; // let the validation do its thing?
+
+            CustomRatingProgress crp = new CustomRatingProgress() { Title = txtNewTitle.Text, FARLink = string.Empty, GeneralDisclaimer = txtNewDisclaimer.Text, Username=Page.User.Identity.Name };
+
+            List<CustomRatingProgress> lst = new List<CustomRatingProgress>(CustomRatingProgress.CustomRatingsForUser(Page.User.Identity.Name)) { crp };
+            CustomRatingProgress.CommitRatingsForUser(Page.User.Identity.Name, lst);
+
+            txtNewDisclaimer.Text = txtNewDisclaimer.Text = string.Empty;
+
+            RefreshCustomRatings();
+
+            UpdateMilestones();
+        }
+
+        protected void gvCustomRatings_RowEditing(object sender, GridViewEditEventArgs e)
+        {
+            if (e == null)
+                throw new ArgumentNullException(nameof(e));
+            gvCustomRatings.EditIndex = e.NewEditIndex;
+            RefreshCustomRatings();
+        }
+
+        protected void gvCustomRatings_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
+        {
+            gvCustomRatings.EditIndex = -1;
+            RefreshCustomRatings();
+        }
+
+        protected void gvCustomRatings_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            if (e == null)
+                throw new ArgumentNullException(nameof(e));
+            if (sender == null)
+                throw new ArgumentNullException(nameof(e));
+            GridView gv = sender as GridView;
+            List<CustomRatingProgress> lst = new List<CustomRatingProgress>(CustomRatingProgress.CustomRatingsForUser(Page.User.Identity.Name));
+            if (e.CommandName.CompareCurrentCultureIgnoreCase("_DeleteRating") == 0)
+            {
+                lst.RemoveAll(crp => crp.Title.CompareCurrentCulture((string) e.CommandArgument) == 0);
+                gvCustomRatings.EditIndex = -1;
+                CustomRatingProgress.CommitRatingsForUser(Page.User.Identity.Name, lst);
+                RefreshCustomRatings();
+
+                UpdateMilestones();
+            }
+            else if (e.CommandName.CompareCurrentCultureIgnoreCase("_DeleteMilestone") == 0)
+            {
+                CustomRatingProgress crp = lst[Convert.ToInt32(hdnCpeIndex.Value, CultureInfo.InvariantCulture)];
+                crp.RemoveMilestoneAt(Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture));
+                mpeEditMilestones.Show();   // keep the dialog open
+                CustomRatingProgress.CommitRatingsForUser(Page.User.Identity.Name, lst);
+                gv.DataSource = crp.ProgressItems;
+                gv.DataBind();
+                UpdateMilestones();
+            }
+            else if (e.CommandName.CompareCurrentCultureIgnoreCase("_EditMilestones") == 0)
+            {
+                int row = Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture);
+                CustomRatingProgress crp = lst[row];
+                hdnCpeIndex.Value = row.ToString(CultureInfo.InvariantCulture);
+
+                if (cmbFields.Items.Count == 0)
+                {
+                    // initialize the editing drop-downs, if needed
+                    cmbFields.DataSource = HistogramableValues;
+                    cmbFields.DataBind();
+                    cmbQueries.DataSource = CannedQuery.QueriesForUser(User.Identity.Name);
+                    cmbQueries.DataBind();
+                }
+
+                lblEditMilestonesForProgress.Text = String.Format(CultureInfo.InvariantCulture, Resources.MilestoneProgress.CustomProgressMilestonesForCustomRating, HttpUtility.HtmlEncode(crp.Title));
+                gvCustomRatingItems.DataSource = crp.ProgressItems;
+                gvCustomRatingItems.DataBind();
+                mpeEditMilestones.Show();
+            }
+            else if (e.CommandName.CompareCurrentCultureIgnoreCase("Update") == 0)
+            {
+                // Find the existing item
+                CustomRatingProgress crp = lst[gv.EditIndex];
+                if (crp != null)
+                {
+                    string szNewTitle = ((TextBox)gv.Rows[0].Cells[1].Controls[0]).Text;
+                    if (String.IsNullOrWhiteSpace(szNewTitle))
+                        return;
+                    crp.Title = szNewTitle;
+                    crp.GeneralDisclaimer = ((TextBox)gv.Rows[0].Cells[2].Controls[0]).Text;
+                }
+                CustomRatingProgress.CommitRatingsForUser(Page.User.Identity.Name, lst);
+                gvCustomRatings.EditIndex = -1;
+
+                RefreshCustomRatings();
+                UpdateMilestones();
+            }
+        }
+
+        protected void btnAddMilestone_Click(object sender, EventArgs e)
+        {
+            if (e == null)
+                throw new ArgumentNullException(nameof(e));
+            if (sender == null)
+                throw new ArgumentNullException(nameof(e));
+
+            mpeEditMilestones.Show();   // keep this visible
+
+            int rowIndex = Convert.ToInt32(hdnCpeIndex.Value, CultureInfo.InvariantCulture);
+
+            Validate("vgMilestone");
+            if (!Page.IsValid)
+                return;
+
+            // Additional validations
+            if (decThreshold.Value <= 0)
+            {
+                lblErrThreshold.Visible = true;
+                return;
+            }
+
+            List<CustomRatingProgress> lst = new List<CustomRatingProgress>(CustomRatingProgress.CustomRatingsForUser(Page.User.Identity.Name));
+            CustomRatingProgress crp = lst[rowIndex];
+
+            crp.AddMilestoneItem(new CustomRatingProgressItem()
+            {
+                Title = txtMiTitle.Text,
+                FARRef = txtMiFARRef.Text,
+                Note = txtMiNote.Text,
+                Threshold = decThreshold.Value,
+                QueryName = cmbQueries.SelectedValue,
+                FieldName = cmbFields.SelectedValue,
+                FieldFriendlyName = cmbFields.SelectedItem.Text
+            });
+            CustomRatingProgress.CommitRatingsForUser(Page.User.Identity.Name, lst);
+
+            gvCustomRatingItems.DataSource = crp.ProgressItems;
+            gvCustomRatingItems.DataBind();
+            UpdateMilestones();
+
+            // Set up for the next one.
+            cmbQueries.SelectedValue = txtMiFARRef.Text = txtMiTitle.Text = txtMiNote.Text = string.Empty;
+            cmbFields.SelectedIndex = 0;
+            decThreshold.Value = 0;
+        }
+
+        protected void gvCustomRatings_RowUpdating(object sender, GridViewUpdateEventArgs e)
+        {
+
+        }
+        #endregion
     }
 }

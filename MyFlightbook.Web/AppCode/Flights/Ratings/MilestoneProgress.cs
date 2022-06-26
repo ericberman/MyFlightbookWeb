@@ -1,6 +1,7 @@
 ﻿using MyFlightbook.Airports;
 using MyFlightbook.Currency;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -39,11 +40,13 @@ namespace MyFlightbook.RatingsProgress
         /// <summary>
         /// The progress made so far
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public decimal Progress { get; set; }
 
         /// <summary>
         /// Progress achieved in a display format
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public string ProgressDisplay
         {
             get
@@ -69,6 +72,7 @@ namespace MyFlightbook.RatingsProgress
         /// <summary>
         /// Percentage achieved
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public decimal Percentage
         {
             get { return Threshold == 0.0M ? 0.0M : (Progress / Threshold) * 100.0M; }
@@ -77,31 +81,37 @@ namespace MyFlightbook.RatingsProgress
         /// <summary>
         /// Percentage complete in a display format
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public string DisplayPercent
         {
             get { return String.Format(CultureInfo.CurrentCulture, "{0:#,##0}%", Percentage); }
         }
 
+        [Newtonsoft.Json.JsonIgnore]
         public virtual string ExpirationNote { get { return string.Empty; } }
 
         /// <summary>
         /// The type of milestone this represents
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore] 
         public MilestoneType Type { get; set; }
 
         /// <summary>
         /// For "AchieveOnce" milestones, contains a description of the match
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore] 
         public string MatchingEventText { get; set; }
 
         /// <summary>
         /// For "AchieveOnce" milestones, links to the matching flight.
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public int MatchingEventID { get; set; }
 
         /// <summary>
         /// Display title
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public string DisplayTitle
         {
             get { return String.IsNullOrEmpty(FARRef) ? Title : String.Format(CultureInfo.CurrentCulture, "{0} - {1} {2}", FARRef, Title, MatchingEventText).Trim(); }
@@ -110,6 +120,7 @@ namespace MyFlightbook.RatingsProgress
         /// <summary>
         /// Has this been satisfied?
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public bool IsSatisfied
         {
             get { return (this.Type == MilestoneType.AchieveOnce) ? Progress > 0 : Progress >= Threshold; }
@@ -118,6 +129,7 @@ namespace MyFlightbook.RatingsProgress
         /// <summary>
         /// If time in a training device may be substituted up to a point, this defines how much has been contributed so far.
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore] 
         public decimal TrainingDeviceContribution { get; set; }
         #endregion
 
@@ -385,6 +397,7 @@ namespace MyFlightbook.RatingsProgress
         /// <summary>
         /// The user for whom this is being computed
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public string Username { get; set; }
 
         /// <summary>
@@ -400,21 +413,25 @@ namespace MyFlightbook.RatingsProgress
         /// <summary>
         /// Master airportlist for all of your routes
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         protected AirportList AirportListOfRoutes { get; set; }
 
         /// <summary>
         /// Cached list of milestones - internal only.
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         private Collection<MilestoneItem> CachedMilestones { get; set; }
 
         /// <summary>
         /// Has this been computed?
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public bool HasData { get { return CachedMilestones != null && CachedMilestones.Count > 0; } }
 
         /// <summary>
         /// Retrieves the milestones; forces a refresh if needed, thereafter are cached
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public Collection<MilestoneItem> ComputedMilestones
         {
             get
@@ -435,6 +452,7 @@ namespace MyFlightbook.RatingsProgress
         /// <summary>
         /// A URL for a link to view the regulation.
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public string FARLink { get; set; }
 
         protected RatingType RatingSought { get; set; }
@@ -536,9 +554,9 @@ namespace MyFlightbook.RatingsProgress
         /// Returns a set of milestone groups that represent ratings progress that can be tracked.
         /// </summary>
         /// <returns></returns>
-        public static IEnumerable<MilestoneGroup> AvailableProgressItems()
+        public static IEnumerable<MilestoneGroup> AvailableProgressItems(string szUser)
         {
-            return new MilestoneGroup[] {
+            List<MilestoneGroup> lst = new List<MilestoneGroup>() {
                 new PrivatePilotMilestones(),   // PPL Ratings
                 new InstrumentMilestones(),     // IFR Ratings.
                 new RecreationalMilestones(),   // Recreational Pilot ratings
@@ -548,15 +566,17 @@ namespace MyFlightbook.RatingsProgress
                 new ATPMilestones(),            // ATP Ratings
                 new Part135Milestones(),        // Part 135 Ratings
                 new DPEMilestones(),            // DPEMilestones
-                new CFIMilestones()             // CFI Milestones
+                new CFIMilestones(),            // CFI Milestones
+                new CustomRatingsGroup(szUser)  // Custom milestones
             };
+            return lst;
         }
 
         /// <summary>
         /// Computes the progress against this milestone
         /// </summary>
         /// <returns>A list of MilestoneItem objects</returns>
-        public Collection<MilestoneItem> Refresh()
+        virtual public Collection<MilestoneItem> Refresh()
         {
             if (String.IsNullOrEmpty(Username))
                 throw new MyFlightbookException("Cannot compute milestones on an empty user!");

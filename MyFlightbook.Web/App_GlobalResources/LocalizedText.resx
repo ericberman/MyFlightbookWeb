@@ -1898,4 +1898,13 @@
   <data name="CrossfillPromptLandings" xml:space="preserve">
     <value>Cross-fill to this field from the total landings field</value>
   </data>
+  <data name="ChartTotalsFSDayLandings" xml:space="preserve">
+    <value>Full-stop day landings</value>
+  </data>
+  <data name="ChartTotalsFSNightLandings" xml:space="preserve">
+    <value>Full-stop night landings</value>
+  </data>
+  <data name="ChartTotalsTotalnstrument" xml:space="preserve">
+    <value>Instrument time (simulated + actual)</value>
+  </data>
 </root>
