@@ -140,14 +140,18 @@ namespace MyFlightbook.ImportFlights
     {
         public override string Name { get { return "CrewLog"; } }
 
+        // looking for column PF followed by PNF, then columns AIT,SIT,NITE,DT,NT,DL, and the string "(Crewlog".  
+        // Can actually be multiple commas separating those headers!
+        private static readonly Regex rCrew = new Regex("PF,+PNF,.*AIT,+SIT,+NITE,+DT,+NT,+DL,", RegexOptions.Multiline | RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
         public override bool CanParse(byte[] rgb)
         {
             if (rgb == null || rgb.Length == 0)
                 return false;
 
-            string sz = Encoding.UTF8.GetString(rgb);
+            string sz = Encoding.UTF8.GetString(rgb).ToUpper(CultureInfo.CurrentCulture);
 
-            return sz.Contains("PIC,PF,PNF") && sz.Contains("AIT,SIT,NITE,DT,NT,DL") && sz.Contains("(CREWLOG");
+            return sz.Contains("CREWLOG") && rCrew.IsMatch(sz);
         }
 
         private static bool IsEmptyCell(string sz)
