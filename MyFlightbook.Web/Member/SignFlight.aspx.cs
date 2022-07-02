@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.Globalization;
+using System.Web;
 using System.Web.UI;
 
 /******************************************************
@@ -46,11 +48,24 @@ namespace MyFlightbook.Instruction
             }
 
             mfbSignFlight1.CFIProfile = Profile.GetUser(Page.User.Identity.Name);
+            mfbSignFlight1.PrepSignAndNext();   // show Sign this and next, in case there are other flights to sign.
         }
 
-        protected void GoBack(object sender, EventArgs e)
+        protected void GoBack(object sender, LogbookEventArgs e)
         {
-            Response.Redirect(hdnReturnURL.Value.Length > 0 ? hdnReturnURL.Value : "~/Default.aspx");
+            if (e == null)
+                throw new ArgumentNullException(nameof(e));
+
+            if (e.IDNextFlight == LogbookEntryCore.idFlightNone)
+                Response.Redirect(hdnReturnURL.Value.Length > 0 ? hdnReturnURL.Value : "~/Default.aspx");
+            else
+            {
+                UriBuilder builder = new UriBuilder(Request.Url);
+                NameValueCollection nvc = HttpUtility.ParseQueryString(Request.Url.Query);
+                nvc["idFlight"] = e.IDNextFlight.ToString(CultureInfo.InvariantCulture);
+                builder.Query = nvc.ToString();
+                Response.Redirect(builder.Uri.ToString());
+            }
         }
     }
 }

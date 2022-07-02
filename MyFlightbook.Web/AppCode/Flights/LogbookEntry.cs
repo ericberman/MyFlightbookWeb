@@ -1319,7 +1319,7 @@ namespace MyFlightbook
         /// <param name="pfCFI">The CFI object. Pass null for ALL pending signatures fo the student.</param>
         /// <param name="szStudentUserName">The student's username</param>
         /// <returns>A list of SPARSELY FILLED LogbookEntries.  Date, ID, Comments, and Route are all that is filled in.</returns>
-        public static List<LogbookEntry> PendingSignaturesForStudent(Profile pfCFI, Profile pfStudent)
+        public static IEnumerable<LogbookEntry> PendingSignaturesForStudent(Profile pfCFI, Profile pfStudent)
         {
             const string szAnyPending = "((f.CFIUsername IS NOT NULL AND f.CFIUserName <> '') OR (f.CFIEmail IS NOT NULL AND f.CFIEmail <> ''))";
             const string szJustForCFITemplate = "(f.CFIUsername=?user OR f.CFIEmail=?email {0})";

@@ -230,6 +230,8 @@
                     &nbsp;&nbsp;
                     <asp:Button ID="btnSign" runat="server" 
                         Text="<%$ Resources:SignOff, SignFlight %>" onclick="btnSign_Click" />
+                    <asp:Button ID="btnSignAndNext" runat="server" 
+                        Text="<%$ Resources:SignOff, SignFlightAndNext %>" onclick="btnSignAndNext_Click" Visible="false" />
                 </div>
             </asp:View>
             <asp:View ID="vwEntryEdit" runat="server">

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -47,8 +48,8 @@ namespace MyFlightbook.Instruction
         private const string szKeyCFIUserName = "keyVSCFIUserName";
         private const string szKeyCookieCopy = "cookieCopy";
 
-        public event EventHandler Cancel;
-        public event EventHandler SigningFinished;
+        public event EventHandler<LogbookEventArgs> Cancel;
+        public event EventHandler<LogbookEventArgs> SigningFinished;
         private Profile m_pf;
 
         public enum SignMode { Authenticated, AdHoc };
@@ -288,10 +289,10 @@ namespace MyFlightbook.Instruction
             r.DataBind();
         }
 
-        protected void btnSign_Click(object sender, EventArgs e)
+        protected bool SignFlight()
         {
             if (!Page.IsValid)
-                return;
+                return false;
 
             try
             {
@@ -305,7 +306,7 @@ namespace MyFlightbook.Instruction
                             if (rgSig != null)
                                 Flight.SignFlightAdHoc(txtCFIName.Text, txtCFIEmail.Text, txtCFICertificate.Text, dropDateCFIExpiration.Date, SigningComments, rgSig, ckSignSICEndorsement.Checked || fIsGroundOrATP);
                             else
-                                return;
+                                return false;
                         }
                         break;
                     case SignMode.Authenticated:
@@ -322,7 +323,7 @@ namespace MyFlightbook.Instruction
                         if (!CFIProfile.CanSignFlights(out szError, fIsGroundOrATP))
                         {
                             lblErr.Text = szError;
-                            return;
+                            return false;
                         }
 
                         // If we are here, then we were successful - update the profile if it needed it
@@ -350,20 +351,51 @@ namespace MyFlightbook.Instruction
             catch (MyFlightbookException ex)
             {
                 lblErr.Text = ex.Message;
-                return;
+                return false;
             }
             catch (MyFlightbookValidationException ex)
             {
                 lblErr.Text = ex.Message;
-                return;
+                return false;
             }
 
-            SigningFinished?.Invoke(sender, e);
+            return true;
+        }
+
+        protected void btnSign_Click(object sender, EventArgs e)
+        {
+            if (SignFlight())
+                SigningFinished?.Invoke(this, new LogbookEventArgs(m_le.FlightID));
+        }
+
+        protected void btnSignAndNext_Click(object sender, EventArgs e)
+        {
+            if (SignFlight())
+            {
+                List<LogbookEntryBase> lst = new List<LogbookEntryBase>(LogbookEntryBase.PendingSignaturesForStudent(CFIProfile, Profile.GetUser(m_le.User)));
+                lst.RemoveAll(leb => leb.FlightID == m_le.FlightID);
+                SigningFinished?.Invoke(this, new LogbookEventArgs(m_le.FlightID, lst.Any() ? lst[0].FlightID : LogbookEntryCore.idFlightNone));
+            }
+        }
+
+        /// <summary>
+        /// Displays a "Sign and review next" button if:
+        /// a) the instructor is specified
+        /// b) the specified instructor is the signed-in user.
+        /// c) the flight to sign is specified
+        /// d) there are multiple flights pending signature for that user
+        /// </summary>
+        public void PrepSignAndNext()
+        {
+            btnSignAndNext.Visible = CFIProfile != null && 
+                CFIProfile.UserName.CompareCurrentCultureIgnoreCase(Page.User.Identity.Name) == 0 && 
+                m_le != null &&
+                LogbookEntryBase.PendingSignaturesForStudent(CFIProfile, Profile.GetUser(m_le.User)).Count() > 1;
         }
 
         protected void btnCancel_Click(object sender, EventArgs e)
         {
-            Cancel?.Invoke(sender, e);
+            Cancel?.Invoke(sender, new LogbookEventArgs(LogbookEntryCore.idFlightNone));
         }
 
         protected void valCFIExpiration_ServerValidate(object source, ServerValidateEventArgs args)

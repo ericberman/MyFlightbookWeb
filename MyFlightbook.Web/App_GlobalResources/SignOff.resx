@@ -494,4 +494,7 @@
   <data name="PromptUseAC13543ForSIC" xml:space="preserve">
     <value>Use SIC Endorsement from AC 135-43</value>
   </data>
+  <data name="SignFlightAndNext" xml:space="preserve">
+    <value>Sign Flight and View Next</value>
+  </data>
 </root>
