@@ -901,10 +901,6 @@
     <Content Include="Public\mfblogonew-large.png" />
     <Content Include="Public\mfblogonew.png" />
     <Content Include="Public\MobileApps.aspx" />
-    <Content Include="Public\myflightbook.gif" />
-    <Content Include="Public\myflightbook.png" />
-    <Content Include="Public\myflightbooknew.png" />
-    <Content Include="Public\myflightbooknew100x33.png" />
     <Content Include="Public\myflightbooknewstaging.png" />
     <Content Include="Public\MyFlights.aspx" />
     <Content Include="Public\oAuthToken.aspx" />

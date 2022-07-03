@@ -150,6 +150,15 @@ namespace MyFlightbook.Instruction
         protected global::Controls_mfbImageList mfbIlEndorsements;
 
         /// <summary>
+        /// rptEndorsementImages control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptEndorsementImages;
+
+        /// <summary>
         /// vwSignFlights control.
         /// </summary>
         /// <remarks>
@@ -553,15 +562,6 @@ namespace MyFlightbook.Instruction
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblAddInstructorSuccess;
-
-        /// <summary>
-        /// rptEndorsementImages control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptEndorsementImages;
 
         /// <summary>
         /// Master property.

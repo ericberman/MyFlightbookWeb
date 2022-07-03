@@ -331,6 +331,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Record an endorsement given to a student off-line.
+        /// </summary>
+        internal static string EndorseAddOfflineHeader {
+            get {
+                return ResourceManager.GetString("EndorseAddOfflineHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fill in the template:.
         /// </summary>
         internal static string EndorsementEditTemplate {
@@ -354,6 +363,24 @@ namespace Resources {
         internal static string EndorsementPickTemplate {
             get {
                 return ResourceManager.GetString("EndorsementPickTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add an endorsement....
+        /// </summary>
+        internal static string EndorsementsAddEndorsement {
+            get {
+                return ResourceManager.GetString("EndorsementsAddEndorsement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Images of physical (paper) endorsements.
+        /// </summary>
+        internal static string EndorsementScannedImagesHeader {
+            get {
+                return ResourceManager.GetString("EndorsementScannedImagesHeader", resourceCulture);
             }
         }
         
@@ -385,11 +412,56 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Printer Friendly View.
+        /// </summary>
+        internal static string EndorsementsPrintView {
+            get {
+                return ResourceManager.GetString("EndorsementsPrintView", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can scan your paper logbook endorsements and upload them here so that you always have access to them..
+        /// </summary>
+        internal static string EndorsementsScannedImagesDescription {
+            get {
+                return ResourceManager.GetString("EndorsementsScannedImagesDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Find Endorsements.
         /// </summary>
         internal static string EndorsementsSearchPrompt {
             get {
                 return ResourceManager.GetString("EndorsementsSearchPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View/Add Endorsements.
+        /// </summary>
+        internal static string EndorsementsViewAdd {
+            get {
+                return ResourceManager.GetString("EndorsementsViewAdd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View all endorsements.
+        /// </summary>
+        internal static string EndorsementsViewAll {
+            get {
+                return ResourceManager.GetString("EndorsementsViewAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your Endorsements.
+        /// </summary>
+        internal static string EndorsementsYourEndorsements {
+            get {
+                return ResourceManager.GetString("EndorsementsYourEndorsements", resourceCulture);
             }
         }
         
@@ -970,6 +1042,78 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Take a lesson, flight-review, or checkout and want the instructor to sign flights that you&apos;ve already entered?.
+        /// </summary>
+        internal static string RequestSignaturesPrompt {
+            get {
+                return ResourceManager.GetString("RequestSignaturesPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This e-mail address will NOT be stored or used for any other purpose..
+        /// </summary>
+        internal static string RoleAddEmailDisclaimer {
+            get {
+                return ResourceManager.GetString("RoleAddEmailDisclaimer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Instructor.
+        /// </summary>
+        internal static string RoleAddInstructor {
+            get {
+                return ResourceManager.GetString("RoleAddInstructor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you would like to track endorsements from your instructor, enter their email address below. They will confirm that they know you..
+        /// </summary>
+        internal static string RoleAddInstructorPrompt {
+            get {
+                return ResourceManager.GetString("RoleAddInstructorPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Student.
+        /// </summary>
+        internal static string RoleAddStudent {
+            get {
+                return ResourceManager.GetString("RoleAddStudent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you have a student and would like to track the endorsements you give to them, enter the student&apos;s email address below. They will confirm that they know you..
+        /// </summary>
+        internal static string RoleAddStudentPrompt {
+            get {
+                return ResourceManager.GetString("RoleAddStudentPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can add flights to my logbook.
+        /// </summary>
+        internal static string RoleAllowAddFlights {
+            get {
+                return ResourceManager.GetString("RoleAllowAddFlights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can view my logbook.
+        /// </summary>
+        internal static string RoleAllowLogbook {
+            get {
+                return ResourceManager.GetString("RoleAllowLogbook", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to instructor.
         /// </summary>
         internal static string RoleInstructor {
@@ -994,11 +1138,47 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You have no instructors..
+        /// </summary>
+        internal static string RoleNoInstructors {
+            get {
+                return ResourceManager.GetString("RoleNoInstructors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have no students..
+        /// </summary>
+        internal static string RoleNoStudents {
+            get {
+                return ResourceManager.GetString("RoleNoStudents", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to student.
         /// </summary>
         internal static string RoleStudent {
             get {
                 return ResourceManager.GetString("RoleStudent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your Instructors.
+        /// </summary>
+        internal static string RoleYourInstructors {
+            get {
+                return ResourceManager.GetString("RoleYourInstructors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your Students.
+        /// </summary>
+        internal static string RoleYourStudents {
+            get {
+                return ResourceManager.GetString("RoleYourStudents", resourceCulture);
             }
         }
         
@@ -1102,6 +1282,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flights Awaiting Signature.
+        /// </summary>
+        internal static string SignFlightsToBeSignedHeader {
+            get {
+                return ResourceManager.GetString("SignFlightsToBeSignedHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The flight has been successfully signed.
         /// </summary>
         internal static string SigningSuccess {
@@ -1149,6 +1338,15 @@ namespace Resources {
         internal static string StudentNameTemplate {
             get {
                 return ResourceManager.GetString("StudentNameTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View logbook.
+        /// </summary>
+        internal static string ViewStudentLogbook {
+            get {
+                return ResourceManager.GetString("ViewStudentLogbook", resourceCulture);
             }
         }
         

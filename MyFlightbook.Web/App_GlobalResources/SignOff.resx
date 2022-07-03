@@ -497,4 +497,70 @@
   <data name="SignFlightAndNext" xml:space="preserve">
     <value>Sign Flight and View Next</value>
   </data>
+  <data name="EndorseAddOfflineHeader" xml:space="preserve">
+    <value>Record an endorsement given to a student off-line</value>
+  </data>
+  <data name="EndorsementsAddEndorsement" xml:space="preserve">
+    <value>Add an endorsement...</value>
+  </data>
+  <data name="EndorsementScannedImagesHeader" xml:space="preserve">
+    <value>Images of physical (paper) endorsements</value>
+  </data>
+  <data name="EndorsementsPrintView" xml:space="preserve">
+    <value>Printer Friendly View</value>
+  </data>
+  <data name="EndorsementsScannedImagesDescription" xml:space="preserve">
+    <value>You can scan your paper logbook endorsements and upload them here so that you always have access to them.</value>
+  </data>
+  <data name="EndorsementsViewAdd" xml:space="preserve">
+    <value>View/Add Endorsements</value>
+  </data>
+  <data name="EndorsementsViewAll" xml:space="preserve">
+    <value>View all endorsements</value>
+  </data>
+  <data name="EndorsementsYourEndorsements" xml:space="preserve">
+    <value>Your Endorsements</value>
+  </data>
+  <data name="RequestSignaturesPrompt" xml:space="preserve">
+    <value>Take a lesson, flight-review, or checkout and want the instructor to sign flights that you've already entered?</value>
+  </data>
+  <data name="RoleAddEmailDisclaimer" xml:space="preserve">
+    <value>This e-mail address will NOT be stored or used for any other purpose.</value>
+  </data>
+  <data name="RoleAddInstructor" xml:space="preserve">
+    <value>Add Instructor</value>
+  </data>
+  <data name="RoleAddInstructorPrompt" xml:space="preserve">
+    <value>If you would like to track endorsements from your instructor, enter their email address below. They will confirm that they know you.</value>
+  </data>
+  <data name="RoleAddStudent" xml:space="preserve">
+    <value>Add Student</value>
+  </data>
+  <data name="RoleAddStudentPrompt" xml:space="preserve">
+    <value>If you have a student and would like to track the endorsements you give to them, enter the student's email address below. They will confirm that they know you.</value>
+  </data>
+  <data name="RoleAllowAddFlights" xml:space="preserve">
+    <value>Can add flights to my logbook</value>
+  </data>
+  <data name="RoleAllowLogbook" xml:space="preserve">
+    <value>Can view my logbook</value>
+  </data>
+  <data name="RoleNoInstructors" xml:space="preserve">
+    <value>You have no instructors.</value>
+  </data>
+  <data name="RoleNoStudents" xml:space="preserve">
+    <value>You have no students.</value>
+  </data>
+  <data name="RoleYourInstructors" xml:space="preserve">
+    <value>Your Instructors</value>
+  </data>
+  <data name="RoleYourStudents" xml:space="preserve">
+    <value>Your Students</value>
+  </data>
+  <data name="SignFlightsToBeSignedHeader" xml:space="preserve">
+    <value>Flights Awaiting Signature</value>
+  </data>
+  <data name="ViewStudentLogbook" xml:space="preserve">
+    <value>View logbook</value>
+  </data>
 </root>
