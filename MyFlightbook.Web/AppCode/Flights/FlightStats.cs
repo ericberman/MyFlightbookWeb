@@ -7,7 +7,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2021 MyFlightbook LLC
+ * Copyright (c) 2008-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -178,7 +178,8 @@ namespace MyFlightbook.FlightStatistics
                   0 AS HasDigitizedSignature,
                   0 AS distance,
                   '' AS flightpath,
-                  0 AS telemetrytype
+                  0 AS telemetrytype,
+                  '' AS metadata
                 FROM flights f 
                   INNER JOIN Aircraft ac ON f.idaircraft=ac.idaircraft 
                   INNER JOIN models m ON ac.idmodel=m.idmodel 
