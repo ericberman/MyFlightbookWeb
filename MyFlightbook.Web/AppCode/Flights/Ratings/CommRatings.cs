@@ -821,7 +821,7 @@ namespace MyFlightbook.RatingsProgress
             miBalloonPIC = new MilestoneItem(Resources.MilestoneProgress.CommBalloonMinPIC, ResolvedFAR("(3)"), string.Empty, MilestoneItem.MilestoneType.Time, _minFlightsAsPIC);
             miBalloonTrainingFlights = new MilestoneItem(Resources.MilestoneProgress.CommBalloonTrainingFlights, ResolvedFAR("(4)"), string.Empty, MilestoneItem.MilestoneType.Count, _minFlightTrainingFlights);
             miBalloonTrainingTime = new MilestoneItem(Resources.MilestoneProgress.CommBalloonTrainingTime, ResolvedFAR("(4)"), string.Empty, MilestoneItem.MilestoneType.Time, _minFlightTrainingTime);
-            miTestPrep = new MilestoneItemDecayable(_szTestPrep, ResolvedFAR(_szFARBase + "(A)"), Branding.ReBrand(Resources.MilestoneProgress.NoteTestPrep), MilestoneItem.MilestoneType.Count, _minFlightTrainingFlights, 2);
+            miTestPrep = new MilestoneItemDecayable(_szTestPrep, ResolvedFAR(_szFARBase + "(A)"), Branding.ReBrand(Resources.MilestoneProgress.NoteTestPrep), MilestoneItem.MilestoneType.Count, 2, 2);
             miGasDPIC = new MilestoneItem(Resources.MilestoneProgress.CommBalloonDPIC, ResolvedFAR(_szFARBase + "(B)"), string.Empty, MilestoneItem.MilestoneType.Count, _minFlightDPIC);
             miHASolo = new MilestoneItem(Resources.MilestoneProgress.CommBalloonSolo, ResolvedFAR(_szFARBase + "(B)"), string.Empty, MilestoneItem.MilestoneType.Count, _minFlightHASolo);
             miControlledAscent = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CommBalloonAscent, MinAscentHeight), ResolvedFAR(_szFARBase + "(C)"), string.Empty, MilestoneItem.MilestoneType.AchieveOnce, 1);
