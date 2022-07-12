@@ -19,7 +19,7 @@ namespace Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option or rebuild the Visual Studio project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Web.Application.StronglyTypedResourceProxyBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Web.Application.StronglyTypedResourceProxyBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class EmailTemplates {
@@ -79,7 +79,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your account on %APP_NAME% has been locked due to too many failed attempts to sign in or to reset the password.
+        ///   Looks up a localized string similar to  Your account on %APP_NAME% has been locked due to too many failed attempts to sign in or to reset the password.
         ///
         ///Until it is unlocked, you will be unable to sign in or reset your password, even if you use the correct existing password.
         ///
@@ -97,7 +97,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your account on %APP_NAME% was locked due to too many failed sign-in or failed password attempts in a short period of time.
+        ///   Looks up a localized string similar to  Your account on %APP_NAME% was locked due to too many failed sign-in or failed password attempts in a short period of time.
         ///
         ///Once locked, you cannot sign in, even with the correct password.
         ///
@@ -112,7 +112,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear {0}
+        ///   Looks up a localized string similar to  Dear {0}
         ///
         ///You have the aircraft &quot;{1}&quot; in your account on %APP_NAME%.
         ///
@@ -212,7 +212,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear {0}:
+        ///   Looks up a localized string similar to  Dear {0}:
         ///
         ///Thank-you very much for your previous donation to %APP_NAME%.  Your support is very greatly appreciated, and helps to keep the service free!
         ///
@@ -231,7 +231,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear {0}:
+        ///   Looks up a localized string similar to  Dear {0}:
         ///
         ///Thank-you very much for your previous donation to %APP_NAME%.  Your support is very greatly appreciated, and helps to keep the service free!
         ///
@@ -279,7 +279,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear {0}
+        ///   Looks up a localized string similar to  Dear {0}
         ///
         ///You recently saved a flight on %APP_NAME% with a request to post it to your account on Facebook.
         ///
@@ -296,7 +296,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear {0}
+        ///   Looks up a localized string similar to  Dear {0}
         ///
         ///You recently saved a flight on %APP_NAME% with a request to tweet it to your feed on Twitter.
         ///
@@ -313,7 +313,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear {0}:
+        ///   Looks up a localized string similar to  Dear {0}:
         ///
         ///Thank-you very much for your previous donation to %APP_NAME%.  Your support is very greatly appreciated, and helps to keep the service free!
         ///
@@ -332,7 +332,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear {0}:
+        ///   Looks up a localized string similar to  Dear {0}:
         ///
         ///Thank-you very much for your previous donation to %APP_NAME%.  Your support is very greatly appreciated, and helps to keep the service free!
         ///
@@ -442,7 +442,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear {0}
+        ///   Looks up a localized string similar to  Dear {0}
         ///
         ///You recently saved a flight on %APP_NAME% with a request to post it to your account on Facebook.
         ///
@@ -491,7 +491,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Welcome to %APP_NAME%, an online pilot&apos;s logbook.
+        ///   Looks up a localized string similar to  Welcome to %APP_NAME%, an online pilot&apos;s logbook.
         ///
         ///%APP_NAME% keeps your logbook in the cloud, so you have access to it from anywhere and any device.  (It&apos;s your data, so you always have the ability to download it from the %APP_NAME% website.)
         ///
@@ -509,7 +509,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;
+        ///   Looks up a localized string similar to  &lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;
         ///&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot; &gt;
         ///&lt;head&gt;
         ///    &lt;title&gt;Welcome to %APP_NAME%&lt;/title&gt;
