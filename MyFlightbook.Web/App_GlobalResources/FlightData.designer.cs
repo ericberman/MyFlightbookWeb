@@ -19,7 +19,7 @@ namespace Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option or rebuild the Visual Studio project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Web.Application.StronglyTypedResourceProxyBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Web.Application.StronglyTypedResourceProxyBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class FlightData {
@@ -367,7 +367,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;p&gt;You can attach fairly arbitrary data for your flight.  With newer glass cockpits collecting a variety of telemetry data, this is a great way to analyze your flight.&lt;/p&gt;
+        ///   Looks up a localized string similar to  &lt;p&gt;You can attach fairly arbitrary data for your flight.  With newer glass cockpits collecting a variety of telemetry data, this is a great way to analyze your flight.&lt;/p&gt;
         ///    &lt;p&gt;
         ///        %APP_NAME% can understand many popular GPS-track formats, including:
         ///    &lt;/p&gt;
