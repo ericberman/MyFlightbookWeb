@@ -818,7 +818,7 @@ namespace MyFlightbook.RatingsProgress
 
             miBalloonTime = new MilestoneItem(Resources.MilestoneProgress.CommBalloonMinTime, ResolvedFAR("(1)"), string.Empty, MilestoneItem.MilestoneType.Time, _minHoursTotalInBalloons);
             miBalloonFlights = new MilestoneItem(Resources.MilestoneProgress.CommBalloonMinFlights, ResolvedFAR("(2)"), string.Empty, MilestoneItem.MilestoneType.Count, _minFlightsInBalloons);
-            miBalloonPIC = new MilestoneItem(Resources.MilestoneProgress.CommBalloonMinPIC, ResolvedFAR("(3)"), string.Empty, MilestoneItem.MilestoneType.Time, _minFlightsAsPIC);
+            miBalloonPIC = new MilestoneItem(Resources.MilestoneProgress.CommBalloonMinPIC, ResolvedFAR("(3)"), string.Empty, MilestoneItem.MilestoneType.Count, _minFlightsAsPIC);
             miBalloonTrainingFlights = new MilestoneItem(Resources.MilestoneProgress.CommBalloonTrainingFlights, ResolvedFAR("(4)"), string.Empty, MilestoneItem.MilestoneType.Count, _minFlightTrainingFlights);
             miBalloonTrainingTime = new MilestoneItem(Resources.MilestoneProgress.CommBalloonTrainingTime, ResolvedFAR("(4)"), string.Empty, MilestoneItem.MilestoneType.Time, _minFlightTrainingTime);
             miTestPrep = new MilestoneItemDecayable(_szTestPrep, ResolvedFAR(_szFARBase + "(A)"), Branding.ReBrand(Resources.MilestoneProgress.NoteTestPrep), MilestoneItem.MilestoneType.Count, 2, 2);
@@ -844,7 +844,8 @@ namespace MyFlightbook.RatingsProgress
 
             miBalloonTime.AddEvent(cfr.Total);
             miBalloonFlights.AddEvent(1);
-            miBalloonPIC.AddEvent(cfr.PIC);
+            if (cfr.PIC > 0)
+                miBalloonPIC.AddEvent(1);
             if (cfr.Dual > 0)
             {
                 miBalloonTrainingFlights.AddEvent(1);
