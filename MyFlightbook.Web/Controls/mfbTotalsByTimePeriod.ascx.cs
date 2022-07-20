@@ -101,7 +101,7 @@ namespace MyFlightbook.Currency
             return ti.Value;    // Indicate if we actually had a non-zero value.  A row of all empty cells or zero cells should be deleted.
         }
 
-        public void BindTotalsForUser(string szUser, bool fLast7Days, bool fMonthToDate, bool fPreviousMonth, bool fPreviousYear, bool fYearToDate, FlightQuery fqSupplied = null)
+        public void BindTotalsForUser(string szUser, bool fLast7Days, bool fMonthToDate, bool fPreviousMonth, bool fPreviousYear, bool fYearToDate, bool fTrailing12, FlightQuery fqSupplied = null)
         {
             if (String.IsNullOrEmpty(szUser))
                 throw new ArgumentNullException(nameof(szUser));
@@ -116,11 +116,12 @@ namespace MyFlightbook.Currency
             // if the supplied query has a date range, then don't do any of the subsequent queries; the date range overrides.
             bool fSuppliedQueryHasDates = fq.DateRange != FlightQuery.DateRanges.AllTime;
             if (fSuppliedQueryHasDates)
-                fLast7Days = fMonthToDate = fPreviousMonth = fPreviousYear = fYearToDate = false;
+                fLast7Days = fMonthToDate = fPreviousMonth = fPreviousYear = fYearToDate = fTrailing12 = false;
 
             Dictionary<string, TotalsItem> dMonthToDate = new Dictionary<string, TotalsItem>();
             Dictionary<string, TotalsItem> dPrevMonth = new Dictionary<string, TotalsItem>();
             Dictionary<string, TotalsItem> dYTD = new Dictionary<string, TotalsItem>();
+            Dictionary<string, TotalsItem> dTrailing12 = new Dictionary<string, TotalsItem>();
             Dictionary<string, TotalsItem> dPrevYear = new Dictionary<string, TotalsItem>();
             Dictionary<string, TotalsItem> dLast7 = new Dictionary<string, TotalsItem>();
 
@@ -130,6 +131,7 @@ namespace MyFlightbook.Currency
                 Task.Run(() => { TotalsForQuery(new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.ThisMonth }, fMonthToDate, dMonthToDate); }),
                 Task.Run(() => { TotalsForQuery(new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.PrevMonth }, fPreviousMonth, dPrevMonth); }),
                 Task.Run(() => { TotalsForQuery(new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.YTD }, fYearToDate, dYTD); }),
+                Task.Run(() => { TotalsForQuery(new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.Trailing12Months }, fTrailing12, dTrailing12); }),
                 Task.Run(() => { TotalsForQuery(new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.PrevYear }, fPreviousYear, dPrevYear); }),
                 Task.Run(() => { TotalsForQuery(new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.Custom, DateMin = DateTime.Now.Date.AddDays(-7), DateMax = DateTime.Now.Date.AddDays(1) }, fLast7Days, dLast7); })
                 );
@@ -145,6 +147,8 @@ namespace MyFlightbook.Currency
             if (fMonthToDate &= dMonthToDate.Any())
                 ColumnCount++;
             if (fPreviousMonth &= dPrevMonth.Any())
+                ColumnCount++;
+            if (fTrailing12 &= dTrailing12.Any())
                 ColumnCount++;
             if (fPreviousYear &= dPrevYear.Any())
                 ColumnCount++;
@@ -172,6 +176,7 @@ namespace MyFlightbook.Currency
                 AddTextCellToRow(trHeader, Resources.FlightQuery.DatesThisMonth, fMonthToDate, cssDateRange);
                 AddTextCellToRow(trHeader, szPreviousMonth, fPreviousMonth, cssDateRange);
                 AddTextCellToRow(trHeader, Resources.FlightQuery.DatesYearToDate, fYearToDate, cssDateRange);
+                AddTextCellToRow(trHeader, Resources.FlightQuery.DatesPrev12Month, fTrailing12, cssDateRange);
                 AddTextCellToRow(trHeader, szPreviousYear, fPreviousYear, cssDateRange);
 
                 foreach (TotalsItem ti in tic.Items)
@@ -187,6 +192,7 @@ namespace MyFlightbook.Currency
                     AddCellForTotalsItem(tr, dMonthToDate.ContainsKey(ti.Description) ? dMonthToDate[ti.Description] : null, fMonthToDate) +
                     AddCellForTotalsItem(tr, dPrevMonth.ContainsKey(ti.Description) ? dPrevMonth[ti.Description] : null, fPreviousMonth) +
                     AddCellForTotalsItem(tr, dYTD.ContainsKey(ti.Description) ? dYTD[ti.Description] : null, fYearToDate) +
+                    AddCellForTotalsItem(tr, dTrailing12.ContainsKey(ti.Description) ? dTrailing12[ti.Description] : null, fTrailing12) +
                     AddCellForTotalsItem(tr, dPrevYear.ContainsKey(ti.Description) ? dPrevYear[ti.Description] : null, fPreviousYear);
 
                     // Remove rows of empty data

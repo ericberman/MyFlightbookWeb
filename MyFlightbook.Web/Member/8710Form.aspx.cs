@@ -63,7 +63,8 @@ namespace MyFlightbook.MemberPages
 
         protected void RefreshTimePeriodRollup()
         {
-            mfbTotalsByTimePeriod.BindTotalsForUser(Page.User.Identity.Name, false, DateTime.Now.Day > 1, true, true, DateTime.Now.Day > 1 || DateTime.Now.Month > 1, mfbSearchForm1.Restriction);
+            bool fNewYearsDay = DateTime.Now.Day == 1 && DateTime.Now.Month == 1;
+            mfbTotalsByTimePeriod.BindTotalsForUser(Page.User.Identity.Name, false, DateTime.Now.Day > 1, true, true, !fNewYearsDay, !fNewYearsDay, mfbSearchForm1.Restriction);
             HasRefreshedTimePeriod = true;
         }
 
