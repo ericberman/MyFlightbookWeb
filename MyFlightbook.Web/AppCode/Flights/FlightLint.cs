@@ -369,6 +369,7 @@ namespace MyFlightbook.Lint
             AddConditionalIssue(le.CFI.ToMinutes() > totalMinutes, LintOptions.TimeIssues, Resources.FlightLint.warningTimesCFIGreaterThanTotal);
             AddConditionalIssue(le.SIC.ToMinutes() > totalMinutes, LintOptions.TimeIssues, Resources.FlightLint.warningTimesSICGreaterThanTotal);
             AddConditionalIssue(le.PIC.ToMinutes() > totalMinutes, LintOptions.TimeIssues, Resources.FlightLint.warningTimesPICGreaterThanTotal);
+            AddConditionalIssue(le.PIC.ToMinutes() + le.SIC.ToMinutes() + le.CFI.ToMinutes() + le.Dual.ToMinutes() == 0 && totalMinutes > 0, LintOptions.TimeIssues, Resources.FlightLint.warningTotalTimeButNoOtherTime);
 
             CustomFlightProperty cfpSolo = le.CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropSolo);
             if (cfpSolo != null)

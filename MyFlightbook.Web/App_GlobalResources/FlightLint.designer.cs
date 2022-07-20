@@ -916,6 +916,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flight indicates total time, but no PIC, SIC, Instructor, or Dual time noted.  If you were just a passenger or deadheading, leave the total time blank (zero); otherwise any time you log will accrue to your total time..
+        /// </summary>
+        internal static string warningTotalTimeButNoOtherTime {
+            get {
+                return ResourceManager.GetString("warningTotalTimeButNoOtherTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Flight indicates cross-country flight of less than 25NM, but route was longer than that from departure airport.
         /// </summary>
         internal static string warningXCDistanceLessThan25ButFlewMore {

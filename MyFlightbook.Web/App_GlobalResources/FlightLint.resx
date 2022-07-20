@@ -404,6 +404,9 @@
   <data name="warningTimesXCGreaterThanTotal" xml:space="preserve">
     <value>More cross-country time recorded than total time.</value>
   </data>
+  <data name="warningTotalTimeButNoOtherTime" xml:space="preserve">
+    <value>Flight indicates total time, but no PIC, SIC, Instructor, or Dual time noted.  If you were just a passenger or deadheading, leave the total time blank (zero); otherwise any time you log will accrue to your total time.</value>
+  </data>
   <data name="warningXCDistanceLessThan25ButFlewMore" xml:space="preserve">
     <value>Flight indicates cross-country flight of less than 25NM, but route was longer than that from departure airport</value>
   </data>
