@@ -62,9 +62,6 @@
                                 <asp:View runat="server" ID="vwDroid">
                                     <asp:HyperLink ID="lnkDownloadAndroid" NavigateUrl="~/Public/MobileApps.aspx?p=2" runat="server" Text=""></asp:HyperLink>.
                                 </asp:View>
-                                <asp:View runat="server" ID="vwW7Phone">
-                                    <asp:HyperLink ID="lnkDownloadWindowsPhone" NavigateUrl="~/Public/MobileApps.aspx?p=3" runat="server" Text=""></asp:HyperLink>.
-                                </asp:View>
                             </asp:MultiView>
                         </div>
                     </asp:View>

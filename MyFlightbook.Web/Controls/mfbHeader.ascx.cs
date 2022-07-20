@@ -41,7 +41,6 @@ namespace MyFlightbook.Controls
                 lnkDownload.Text = Branding.ReBrand(Resources.LocalizedText.HeaderDownload);
                 lnkDownloadIPhone.Text = Branding.ReBrand(Resources.LocalizedText.HeaderDownloadIOS);
                 lnkDownloadAndroid.Text = Branding.ReBrand(Resources.LocalizedText.HeaderDownloadAndroid);
-                lnkDownloadWindowsPhone.Text = Branding.ReBrand(Resources.LocalizedText.HeaderDownloadWP7);
                 lnkLogo.ImageUrl = Branding.CurrentBrand.LogoHRef;
                 pnlDonate.Visible = Page.User.Identity.IsAuthenticated;
                 lnkDonate.Text = Branding.ReBrand(Resources.LocalizedText.DonateSolicitation);
@@ -55,9 +54,6 @@ namespace MyFlightbook.Controls
 
                     if (s.Contains("DROID"))
                         mvXSell.SetActiveView(vwDroid);
-
-                    if (s.Contains("WINDOWS PHONE"))
-                        mvXSell.SetActiveView(vwW7Phone);
                 }
 
                 mvCrossSellOrEvents.SetActiveView(vwMobileCrossSell);
