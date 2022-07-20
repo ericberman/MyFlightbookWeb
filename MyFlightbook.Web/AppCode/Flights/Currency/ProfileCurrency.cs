@@ -126,10 +126,7 @@ namespace MyFlightbook.Currency
         {
             ProfileEvent[] rgPfe = CachedBFREvents();
 
-            if (rgPfe.Length > 0)
-                return rgPfe[rgPfe.Length - 1].Date;
-            else
-                return DateTime.MinValue;
+            return rgPfe.Any() ? rgPfe[0].Date : DateTime.MinValue;
         }
 
         /// <summary>

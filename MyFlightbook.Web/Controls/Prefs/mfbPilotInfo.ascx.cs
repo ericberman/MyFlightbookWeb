@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2021 MyFlightbook LLC
+ * Copyright (c) 2010-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -83,9 +83,9 @@ namespace MyFlightbook.Web.Controls.Prefs
             gvBFR.DataSource = rgpfeBFR;
             gvBFR.DataBind();
 
-            if (rgpfeBFR.Length > 0) // we have at least one BFR event, so the last one should be the most recent.
+            if (rgpfeBFR.Any()) // we have at least one BFR event, so the first one should be the most recent.
             {
-                lblNextBFR.Text = ProfileCurrency.NextBFR(rgpfeBFR[rgpfeBFR.Length - 1].Date).ToShortDateString();
+                lblNextBFR.Text = ProfileCurrency.NextBFR(rgpfeBFR[0].Date).ToShortDateString();
                 pnlNextBFR.Visible = true;
             }
 

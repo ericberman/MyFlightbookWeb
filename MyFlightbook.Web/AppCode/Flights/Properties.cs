@@ -1568,7 +1568,8 @@ ORDER BY f.Date Desc";
             if (pfeInsert != null)
                 ar.Add(pfeInsert);
 
-            ar.Sort();
+            ar.Sort();      // will sort ascending
+            ar.Reverse();   // Issue #963: make it descending to match IPC, put most recent on top.
 
             return ar.ToArray();
         }
