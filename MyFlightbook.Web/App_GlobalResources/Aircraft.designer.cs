@@ -1678,7 +1678,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Instructor Time, if empty.
+        ///   Looks up a localized string similar to Instructor Time (and PIC), if empty.
         /// </summary>
         internal static string optionRoleCFI {
             get {
@@ -1714,7 +1714,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Autofill total time to....
+        ///   Looks up a localized string similar to Cross-fill total time to....
         /// </summary>
         internal static string optionRolePrompt {
             get {

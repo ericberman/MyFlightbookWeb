@@ -286,7 +286,7 @@
     <value>Active (Show this aircraft for new flights)</value>
   </data>
   <data name="optionRoleCFI" xml:space="preserve">
-    <value>Instructor Time, if empty</value>
+    <value>Instructor Time (and PIC), if empty</value>
   </data>
   <data name="optionRoleNone" xml:space="preserve">
     <value>Nothing</value>
@@ -298,7 +298,7 @@
     <value>Add my name as PIC</value>
   </data>
   <data name="optionRolePrompt" xml:space="preserve">
-    <value>Autofill total time to...</value>
+    <value>Cross-fill total time to...</value>
   </data>
   <data name="optionRoleSIC" xml:space="preserve">
     <value>SIC Time, if empty</value>
