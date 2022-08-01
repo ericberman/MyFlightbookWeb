@@ -344,7 +344,10 @@ namespace MyFlightbook.Lint
 
         private void CheckPICSICDualIssues(LogbookEntryBase le)
         {
-            AddConditionalIssue(le.PIC.ToMinutes() + le.SIC.ToMinutes() + le.Dual.ToMinutes() - le.TotalFlightTime.ToMinutes() != 0, LintOptions.PICSICDualMath, Resources.FlightLint.warningPICSICDualBroken);
+            int basetime = le.PIC.ToMinutes() + le.SIC.ToMinutes() + le.Dual.ToMinutes();
+            int picus = le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropPICUS).ToMinutes();
+            int totalMinutes = le.TotalFlightTime.ToMinutes();
+            AddConditionalIssue(basetime != totalMinutes && basetime + picus != totalMinutes, LintOptions.PICSICDualMath, Resources.FlightLint.warningPICSICDualBroken);
         }
 
         private readonly static HashSet<int> hsExcludedTimeProps = new HashSet<int>() {
@@ -369,7 +372,8 @@ namespace MyFlightbook.Lint
             AddConditionalIssue(le.CFI.ToMinutes() > totalMinutes, LintOptions.TimeIssues, Resources.FlightLint.warningTimesCFIGreaterThanTotal);
             AddConditionalIssue(le.SIC.ToMinutes() > totalMinutes, LintOptions.TimeIssues, Resources.FlightLint.warningTimesSICGreaterThanTotal);
             AddConditionalIssue(le.PIC.ToMinutes() > totalMinutes, LintOptions.TimeIssues, Resources.FlightLint.warningTimesPICGreaterThanTotal);
-            AddConditionalIssue(le.PIC.ToMinutes() + le.SIC.ToMinutes() + le.CFI.ToMinutes() + le.Dual.ToMinutes() == 0 && totalMinutes > 0, LintOptions.TimeIssues, Resources.FlightLint.warningTotalTimeButNoOtherTime);
+            int picus = le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropPICUS).ToMinutes();
+            AddConditionalIssue(totalMinutes > 0 && le.PIC.ToMinutes() + le.SIC.ToMinutes() + le.CFI.ToMinutes() + le.Dual.ToMinutes() + picus == 0, LintOptions.TimeIssues, Resources.FlightLint.warningTotalTimeButNoOtherTime);
 
             CustomFlightProperty cfpSolo = le.CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropSolo);
             if (cfpSolo != null)
