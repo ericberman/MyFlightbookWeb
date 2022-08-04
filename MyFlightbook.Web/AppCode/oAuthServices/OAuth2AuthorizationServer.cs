@@ -539,7 +539,7 @@ namespace OAuthAuthorizationServer.Code
             // of access tokens that are used over standard HTTP.
             // But this is just the lifetime of the access token.  The client can still renew it using their refresh token until
             // the authorization itself expires.
-            var accessToken = new AuthorizationServerAccessToken() { Lifetime = TimeSpan.FromDays(14) };
+            var accessToken = new AuthorizationServerAccessToken() { Lifetime = TimeSpan.FromDays(14), ResourceServerEncryptionKey = CreateRSA(), AccessTokenSigningKey = CreateRSA() };
 
             // Also take into account the remaining life of the authorization and artificially shorten the access token's lifetime
             // to account for that if necessary.
@@ -549,12 +549,12 @@ namespace OAuthAuthorizationServer.Code
             // If this authorization server needs to mint access tokens for more than one resource server,
             // we'd look at the request message passed to us and decide which public key to return.
             // accessToken.ResourceServerEncryptionKey = new RSACryptoServiceProvider();
-            accessToken.ResourceServerEncryptionKey = CreateRSA();
+            // accessToken.ResourceServerEncryptionKey = CreateRSA();
             // string szPubKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC32W+vIY9eZYY13Z0TqONE5LG3BHH6x4EWgb/LSEV674eFRw/AOvxphM7FjvoS4auZ1Yom4G6oFjDCR917gttma2b+7IuEhV5XdHM3lbH0dSrglASKtM6uHR0qjW0FPQR6rCKMHC1xSytAudI46nr/OkpcPM8KeXgJYvp+BYE0E6gjbwydcrgULCtcC0A3mZABixshjSaxzxUWCxA9RC7hSKPp9JptEcHcrJddaWzVORZHW+lUiNcFqXsm1K4CxoXE/KHenaz7d9GtA2vAvk1miueA6tsH1UOmZUY9rNVTKLoig5kKtYePSaa9/CZTEFYnhPkQtHZNZDoiN/e327ld ericbe@myflightbook.com";
             // accessToken.ResourceServerEncryptionKey.ImportCspBlob(System.Text.Encoding.ASCII.GetBytes(szPubKey));
             // accessToken.ResourceServerEncryptionKey.ImportParameters(ResourceServerEncryptionPublicKey);
 
-            accessToken.AccessTokenSigningKey = CreateRSA();
+            // accessToken.AccessTokenSigningKey = CreateRSA();
 
             var result = new AccessTokenResult(accessToken);
             return result;
