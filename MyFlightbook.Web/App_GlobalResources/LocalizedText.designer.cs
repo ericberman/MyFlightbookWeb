@@ -2447,6 +2447,87 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Blog.
+        /// </summary>
+        internal static string footerBlog {
+            get {
+                return ResourceManager.GetString("footerBlog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View Full Site.
+        /// </summary>
+        internal static string footerClassicView {
+            get {
+                return ResourceManager.GetString("footerClassicView", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contact Us.
+        /// </summary>
+        internal static string footerContact {
+            get {
+                return ResourceManager.GetString("footerContact", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Developers.
+        /// </summary>
+        internal static string footerDevelopers {
+            get {
+                return ResourceManager.GetString("footerDevelopers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FAQ.
+        /// </summary>
+        internal static string footerFAQ {
+            get {
+                return ResourceManager.GetString("footerFAQ", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mobile Access.
+        /// </summary>
+        internal static string footerMobileAccess {
+            get {
+                return ResourceManager.GetString("footerMobileAccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Privacy Policy.
+        /// </summary>
+        internal static string footerPrivacy {
+            get {
+                return ResourceManager.GetString("footerPrivacy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Terms of Use.
+        /// </summary>
+        internal static string footerTerms {
+            get {
+                return ResourceManager.GetString("footerTerms", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Videos.
+        /// </summary>
+        internal static string footerVideos {
+            get {
+                return ResourceManager.GetString("footerVideos", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to AeroTows:&amp;nbsp;{0:#,##0}.
         /// </summary>
         internal static string GliderAeroTows {

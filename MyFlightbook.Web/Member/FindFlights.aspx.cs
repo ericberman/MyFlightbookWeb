@@ -3,7 +3,7 @@ using System;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2020 MyFlightbook LLC
+ * Copyright (c) 2009-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -57,7 +57,7 @@ public partial class Member_FindFlights : System.Web.UI.Page
                 SearchResults(szSearch);
         }
 
-        if (this.Master.IsMobileSession())
+        if (Request.IsMobileSession())
             MfbLogbook1.MiniMode = true;
     }
 

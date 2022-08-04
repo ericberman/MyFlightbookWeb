@@ -552,7 +552,6 @@
     <Content Include="Controls\PrintingLayouts\pageFooter.ascx" />
     <Content Include="Controls\PrintingLayouts\pageHeader.ascx" />
     <Content Include="Controls\PrintOptions.ascx" />
-    <Content Include="Controls\RSSCurrency.ascx" />
     <Content Include="Controls\SponsoredAd.ascx" />
     <Content Include="Controls\TwoFactorAuthVerifyCode.ascx" />
     <Content Include="Controls\XMLNav.ascx" />
@@ -2116,13 +2115,6 @@
     <Compile Include="Controls\PrintOptions.ascx.designer.cs">
       <DependentUpon>PrintOptions.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Controls\RSSCurrency.ascx.cs">
-      <DependentUpon>RSSCurrency.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\RSSCurrency.ascx.designer.cs">
-      <DependentUpon>RSSCurrency.ascx</DependentUpon>
-    </Compile>
     <Compile Include="Controls\SponsoredAd.ascx.cs">
       <DependentUpon>SponsoredAd.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3125,7 +3117,6 @@
     <Content Include="Controls\App_LocalResources\mfbEditFlight.ascx.resx" />
     <Content Include="Controls\App_LocalResources\mfbEditMake.ascx.resx" />
     <Content Include="Controls\App_LocalResources\mfbFlightProperties.ascx.resx" />
-    <Content Include="Controls\App_LocalResources\mfbFooter.ascx.resx" />
     <Content Include="Controls\App_LocalResources\mfbSearchForm.ascx.resx" />
   </ItemGroup>
   <ItemGroup>

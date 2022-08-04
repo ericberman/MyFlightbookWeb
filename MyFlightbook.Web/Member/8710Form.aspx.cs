@@ -34,7 +34,7 @@ namespace MyFlightbook.MemberPages
             {
                 lblUserName.Text = Master.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText._8710FormForUserHeader, pf.UserFullName);
                 RefreshFormData();
-                MfbLogbook1.Visible = !this.Master.IsMobileSession();
+                MfbLogbook1.Visible = !Request.IsMobileSession();
                 Master.ShowSponsoredAd = false;
 
                 string szPath = (Request.PathInfo.Length > 0 && Request.PathInfo.StartsWith("/", StringComparison.OrdinalIgnoreCase)) ? Request.PathInfo.Substring(1) : string.Empty;
@@ -93,7 +93,7 @@ namespace MyFlightbook.MemberPages
                     Task.Run(() => { RefreshTimePeriodRollup(); }),
                     Task.Run(() =>
                     {
-                        if (!Master.IsMobileSession())
+                        if (!Request.IsMobileSession())
                             MfbLogbook1.RefreshData();
                     })
                 );

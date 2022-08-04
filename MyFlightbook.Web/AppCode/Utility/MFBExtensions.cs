@@ -15,7 +15,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2021 MyFlightbook LLC
+ * Copyright (c) 2008-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -890,7 +890,7 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="r">The HTTPRequest object</param>
         /// <returns>True if it's known</returns>
-        public static Boolean IsMobileDevice(this HttpRequest r)
+        public static bool IsMobileDevice(this HttpRequest r)
         {
             if (r == null || r.UserAgent == null)
                 return false;
@@ -907,6 +907,22 @@ namespace MyFlightbook
               s.Contains("PARLM") ||
               s.Contains("PORTABLE"));
         }
+
+        /// <summary>
+        /// Determines if this is a mobile session.  Pays attention to cookies and session state
+        /// </summary>
+        /// <param name="r">The HTTPRequest object</param>
+        /// <returns>True if we should be treating this as a mobile session</returns>
+        public static bool IsMobileSession(this HttpRequest r)
+        {
+            if (r == null) 
+                return false;
+
+            var sess = HttpContext.Current?.Session;
+            return (r.IsMobileDevice() && (r.Cookies[MFBConstants.keyClassic] == null || r.Cookies[MFBConstants.keyClassic].Value != "yes")) ||
+                   (sess != null && sess[MFBConstants.keyLite] != null && sess[MFBConstants.keyLite].ToString() == bool.TrueString);
+        }
+
 
         /// <summary>
         /// IsMobileDevice OR iPad OR Android

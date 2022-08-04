@@ -11,7 +11,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2021 MyFlightbook LLC
+ * Copyright (c) 2007-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -141,7 +141,7 @@ namespace MyFlightbook.PublicPages
 
         private void SetImages(LogbookEntryCore le)
         {
-            if (this.Master.IsMobileSession())
+            if (Request.IsMobileSession())
                 mfbIlAirplane.Columns = mfbIlFlight.Columns = 1;
 
             mfbIlFlight.Key = hdnID.Value;

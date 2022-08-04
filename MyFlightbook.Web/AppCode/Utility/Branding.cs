@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2020 MyFlightbook LLC
+ * Copyright (c) 2012-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -151,6 +152,59 @@ namespace MyFlightbook
                 return _knownBrands;
             }
         }
+
+        public enum FooterLinkKey
+        {
+            About, Privacy, Terms, Developers, Contact, FAQ, Videos, Blog, Mobile, Classic, Facebook, Twitter, RSS
+        }
+
+        /// <summary>
+        /// Returns the set of footer links that are appropriate for this brand
+        /// </summary>
+        /// <param name="szUser"></param>
+        /// <returns></returns>
+        public IDictionary<FooterLinkKey, BrandLink> FooterLinks()
+        {
+            // only one brand link in mobile layout
+            if (HttpContext.Current != null && HttpContext.Current.Request.IsMobileSession())
+                return new Dictionary<FooterLinkKey, BrandLink>()
+                {
+                    { FooterLinkKey.Classic, new BrandLink() { Name = Resources.LocalizedText.footerClassicView, LinkRef = "~/Default.aspx?m=no" } },
+                };
+
+            Dictionary<FooterLinkKey, BrandLink> d = new Dictionary<FooterLinkKey, BrandLink>()
+            {
+                { FooterLinkKey.About, new BrandLink() { Name = Branding.ReBrand(Resources.LocalizedText.AboutTitle), LinkRef = "~/Public/About.aspx"} },
+                { FooterLinkKey.Privacy, new BrandLink() { Name = Resources.LocalizedText.footerPrivacy, LinkRef = "~/Public/Privacy.aspx"} },
+                { FooterLinkKey.Terms, new BrandLink() {Name = Resources.LocalizedText.footerTerms, LinkRef = "~/Public/TandC.aspx" } },
+                { FooterLinkKey.Developers, new BrandLink() {Name = Resources.LocalizedText.footerDevelopers, LinkRef = "~/Public/Developer.aspx" } },
+                { FooterLinkKey.Contact, new BrandLink() {Name = Resources.LocalizedText.footerContact, LinkRef = "~/Public/ContactMe.aspx" } },
+                { FooterLinkKey.FAQ, new BrandLink() {Name = Resources.LocalizedText.footerFAQ, LinkRef = "~/Public/FAQ.aspx" } },
+                { FooterLinkKey.Videos, new BrandLink() {Name = Resources.LocalizedText.footerVideos, OpenInNewPage=true, LinkRef = VideoRef } },
+                { FooterLinkKey.Blog , new BrandLink() { Name=Resources.LocalizedText.footerBlog, OpenInNewPage = true, LinkRef = BlogAddress } },
+                { FooterLinkKey.Mobile, new BrandLink() {Name = Resources.LocalizedText.footerMobileAccess, LinkRef = "~/DefaultMini.aspx" } },
+                { FooterLinkKey.Facebook, new BrandLink() {Name = Branding.ReBrand(Resources.LocalizedText.FollowOnFacebook), OpenInNewPage = true, LinkRef = FacebookFeed, ImageRef = "~/images/f_logo_20.png" } },
+                { FooterLinkKey.Twitter, new BrandLink() { Name = Branding.ReBrand(Resources.LocalizedText.FollowOnTwitter), OpenInNewPage = true, LinkRef = TwitterFeed, ImageRef = "~/images/twitter_round_20.png" } }
+            };
+
+            string szUser = HttpContext.Current?.User?.Identity?.Name;
+
+            // only offer RSS feed on a secure, authenticated connection.
+            if (!String.IsNullOrWhiteSpace(szUser) && HttpContext.Current != null && HttpContext.Current.Request != null && HttpContext.Current.Request.IsAuthenticated && HttpContext.Current.Request.IsSecureConnection)
+            {
+                Encryptors.SharedDataEncryptor ec = new Encryptors.SharedDataEncryptor("mfb");
+                string szEncrypted = ec.Encrypt(szUser);
+                BrandLink l = new BrandLink()
+                {
+                    ImageRef = "~/images/xml.gif",
+                    Name = Resources.LocalizedText.RSSTitle,
+                    LinkRef = String.Format(System.Globalization.CultureInfo.InvariantCulture, "https://{0}{1}?uid={2}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/Public/RSSCurrency.aspx"), HttpUtility.UrlEncode(szEncrypted))
+                };
+                d[FooterLinkKey.RSS] = l;
+            }
+
+            return d;
+        }
     }
 
     public static class Branding
@@ -248,5 +302,40 @@ namespace MyFlightbook
         {
             return new Uri(String.Format(System.Globalization.CultureInfo.InvariantCulture, "http://{0}/{1}public/ViewPublicFlight.aspx/{2}", CurrentBrand.HostName, CurrentBrand.Root, idFlight));
         }
+    }
+
+    /// <summary>
+    /// Represents a link for the header or footer
+    /// </summary>
+    public class BrandLink
+    {
+        #region Properties
+        /// <summary>
+        /// Optional image to place in the link
+        /// </summary>
+        public string ImageRef { get; set; }
+
+        /// <summary>
+        /// Display name for the link
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Destination for the link
+        /// </summary>
+        public string LinkRef { get; set; }
+
+        /// <summary>
+        /// True to add target=_blank
+        /// </summary>
+        public bool OpenInNewPage { get; set; }
+
+        /// <summary>
+        /// Determines if there is content for this.
+        /// </summary>
+        public bool IsVisible { get { return !String.IsNullOrEmpty(LinkRef) && !String.IsNullOrEmpty(Name); } }
+        #endregion
+
+        public BrandLink() { }
     }
 }

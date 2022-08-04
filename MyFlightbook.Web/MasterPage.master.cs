@@ -149,13 +149,7 @@ namespace MyFlightbook.Web
                 Request.Cookies[MFBConstants.keyClassic].Value = "yes";
                 Session[MFBConstants.keyLite] = null; // and hence there should be no need for a session variable.
             }
-            mfbHeader.IsMobile = MfbFooter.IsMobile = fMobile;
-        }
-
-        public Boolean IsMobileSession()
-        {
-            return ((Request.IsMobileDevice() && (Request.Cookies[MFBConstants.keyClassic] == null || Request.Cookies[MFBConstants.keyClassic].Value != "yes")) ||
-                    (Session[MFBConstants.keyLite] != null && Session[MFBConstants.keyLite].ToString() == Boolean.TrueString));
+            mfbHeader.IsMobile = fMobile;
         }
 
         protected void Page_Init(object sender, EventArgs e)
@@ -211,7 +205,7 @@ namespace MyFlightbook.Web
 
                 lnkAppleIcon.Href = ResolveUrl("~/images/apple-touch-icon.png");
                 cssMain.Href = "~/Public/stylesheet.css?v=32".ToAbsoluteURL(Request).ToString();    // to enable forced reload
-                cssMobile.Visible = mfbHeader.IsMobile = MfbFooter.IsMobile = IsMobileSession();
+                cssMobile.Visible = mfbHeader.IsMobile = Request.IsMobileSession();
                 cssMobile.Href = ResolveUrl("~/Public/CSS/MobileSheet.css?v=8");
                 string szStyle = Branding.CurrentBrand.StyleSheet;
                 if (szStyle.Length > 0)

@@ -8,7 +8,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2021 MyFlightbook LLC
+ * Copyright (c) 2007-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -74,7 +74,7 @@ public partial class Public_Home : System.Web.UI.Page
         }
 
         // redirect to a mobile view if this is from a mobile device UNLESS cookies suggest to do otherwise.
-        if (this.Master.IsMobileSession())
+        if (Request.IsMobileSession())
         {
             if ((Request.Cookies[MFBConstants.keyClassic] == null || String.Compare(Request.Cookies[MFBConstants.keyClassic].Value, "yes", StringComparison.OrdinalIgnoreCase) != 0))
                 Response.Redirect("DefaultMini.aspx");

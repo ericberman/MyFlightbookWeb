@@ -1,6 +1,5 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Inherits="Public_Home" Title="" Codebehind="Default.aspx.cs" %>
 <%@ Register Src="Controls/mfbCurrency.ascx" TagName="mfbCurrency" TagPrefix="uc3" %>
-<%@ Register Src="Controls/RSSCurrency.ascx" TagName="RSSCurrency" TagPrefix="uc2" %>
 <%@ Register Src="Controls/mfbImageList.ascx" TagName="mfbImageList" TagPrefix="uc1" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register src="Controls/mfbEditFlight.ascx" tagname="mfbEditFlight" tagprefix="uc4" %>

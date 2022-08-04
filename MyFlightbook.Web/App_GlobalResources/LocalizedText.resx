@@ -1907,4 +1907,31 @@
   <data name="ChartTotalsTotalnstrument" xml:space="preserve">
     <value>Instrument time (simulated + actual)</value>
   </data>
+  <data name="footerBlog" xml:space="preserve">
+    <value>Blog</value>
+  </data>
+  <data name="footerClassicView" xml:space="preserve">
+    <value>View Full Site</value>
+  </data>
+  <data name="footerContact" xml:space="preserve">
+    <value>Contact Us</value>
+  </data>
+  <data name="footerDevelopers" xml:space="preserve">
+    <value>Developers</value>
+  </data>
+  <data name="footerFAQ" xml:space="preserve">
+    <value>FAQ</value>
+  </data>
+  <data name="footerMobileAccess" xml:space="preserve">
+    <value>Mobile Access</value>
+  </data>
+  <data name="footerPrivacy" xml:space="preserve">
+    <value>Privacy Policy</value>
+  </data>
+  <data name="footerTerms" xml:space="preserve">
+    <value>Terms of Use</value>
+  </data>
+  <data name="footerVideos" xml:space="preserve">
+    <value>Videos</value>
+  </data>
 </root>

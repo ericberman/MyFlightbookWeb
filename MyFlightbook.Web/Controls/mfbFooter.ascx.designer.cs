@@ -13,13 +13,22 @@ public partial class Controls_mfbFooter
 {
 
     /// <summary>
-    /// pnlClassic control.
+    /// mvClassicMobile control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Panel pnlClassic;
+    protected global::System.Web.UI.WebControls.MultiView mvClassicMobile;
+
+    /// <summary>
+    /// vwClassic control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.View vwClassic;
 
     /// <summary>
     /// lnkAbout control.
@@ -40,13 +49,13 @@ public partial class Controls_mfbFooter
     protected global::System.Web.UI.WebControls.HyperLink lnkPrivacy;
 
     /// <summary>
-    /// HyperLink1 control.
+    /// lnkTerms control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.HyperLink HyperLink1;
+    protected global::System.Web.UI.WebControls.HyperLink lnkTerms;
 
     /// <summary>
     /// lnkDevelopers control.
@@ -74,15 +83,6 @@ public partial class Controls_mfbFooter
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.HyperLink lnkFAQ;
-
-    /// <summary>
-    /// cellVideos control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.HtmlControls.HtmlGenericControl cellVideos;
 
     /// <summary>
     /// lnkVideos control.
@@ -121,15 +121,6 @@ public partial class Controls_mfbFooter
     protected global::System.Web.UI.HtmlControls.HtmlGenericControl divSSLSeal;
 
     /// <summary>
-    /// cellFacebook control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.HtmlControls.HtmlGenericControl cellFacebook;
-
-    /// <summary>
     /// lnkFacebook control.
     /// </summary>
     /// <remarks>
@@ -137,33 +128,6 @@ public partial class Controls_mfbFooter
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.HyperLink lnkFacebook;
-
-    /// <summary>
-    /// imgFacebook control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Image imgFacebook;
-
-    /// <summary>
-    /// lblFollowFacebook control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Label lblFollowFacebook;
-
-    /// <summary>
-    /// cellTwitter control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.HtmlControls.HtmlGenericControl cellTwitter;
 
     /// <summary>
     /// lnkTwitter control.
@@ -175,49 +139,22 @@ public partial class Controls_mfbFooter
     protected global::System.Web.UI.WebControls.HyperLink lnkTwitter;
 
     /// <summary>
-    /// imgTwitter control.
+    /// lnkRSS control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Image imgTwitter;
+    protected global::System.Web.UI.WebControls.HyperLink lnkRSS;
 
     /// <summary>
-    /// lblFollowTwitter control.
+    /// vwMobile control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Label lblFollowTwitter;
-
-    /// <summary>
-    /// RSSCurrency1 control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::Controls_RSSCurrency RSSCurrency1;
-
-    /// <summary>
-    /// pnlMobile control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Panel pnlMobile;
-
-    /// <summary>
-    /// lblViewOptions control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Label lblViewOptions;
+    protected global::System.Web.UI.WebControls.View vwMobile;
 
     /// <summary>
     /// lnkViewClassic control.
@@ -227,13 +164,4 @@ public partial class Controls_mfbFooter
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.HyperLink lnkViewClassic;
-
-    /// <summary>
-    /// lblCopyright control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Label lblCopyright;
 }
