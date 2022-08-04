@@ -3,7 +3,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2021 MyFlightbook LLC
+ * Copyright (c) 2007-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -26,7 +26,7 @@ namespace MyFlightbook.Currency
                 default:
                     return new PassengerCurrency(szName, fRequireDayLandings);
                 case CategoryClass.CatClassID.Glider:
-                    return new EASASPLCurrency(Resources.Currency.EASASailplane);
+                    return new EASASPLCurrency(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, szName, Resources.Currency.EASASailplane).Trim());
                 case CategoryClass.CatClassID.Airship:
                 case CategoryClass.CatClassID.AMEL:
                 case CategoryClass.CatClassID.AMES:
@@ -34,7 +34,7 @@ namespace MyFlightbook.Currency
                 case CategoryClass.CatClassID.ASES:
                 case CategoryClass.CatClassID.Helicopter:
                 case CategoryClass.CatClassID.PoweredLift:
-                    return new PassengerCurrency(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, szName, Resources.Currency.PassengersEASA), fRequireDayLandings);
+                    return new PassengerCurrency(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, szName, Resources.Currency.PassengersEASA).Trim(), fRequireDayLandings);
             }
         }
 
