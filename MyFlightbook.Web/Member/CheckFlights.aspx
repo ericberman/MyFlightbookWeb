@@ -8,7 +8,7 @@
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
     <script>
         function onDateAutofill() {
-            $find('<% =mfbDateLastCheck.WatermarkExtender.ClientID %>').set_text(document.getElementById('<% =hdnLastDateCheck.ClientID %>').value);
+            document.getElementById('<% =mfbDateLastCheck.TextControl.ClientID %>').value = document.getElementById('<% =hdnLastDateCheck.ClientID %>').value;
         }
 
         function toggleIgnore(sender, id) {

@@ -12,10 +12,7 @@
             </td>
             <td>
                 <asp:TextBox ID="txtRuleName" runat="server" CausesValidation="True"
-                    ValidationGroup="vgAddCurrencyRule"></asp:TextBox>
-                <cc1:TextBoxWatermarkExtender ID="txtRuleName_TextBoxWatermarkExtender"
-                    runat="server" TargetControlID="txtRuleName"
-                    WatermarkCssClass="watermark" WatermarkText="<%$ Resources:Currency, CustomCurrencyWatermarkName %>"></cc1:TextBoxWatermarkExtender>
+                    ValidationGroup="vgAddCurrencyRule" placeholder="<%$ Resources:Currency, CustomCurrencyWatermarkName %>" />
                 <asp:RequiredFieldValidator ID="valCCName" runat="server"
                     ControlToValidate="txtRuleName" CssClass="error" Display="Dynamic"
                     ErrorMessage="<%$ Resources:Currency, CustomCurrencyErrNeedName %>"
@@ -62,10 +59,7 @@
                     Text="<%$ Resources:Currency, CustomCurrencyPrecedingPrompt %>"></asp:Localize>
             </td>
             <td>
-                <asp:TextBox ID="txtTimeFrame" Width="50px" runat="server"></asp:TextBox>
-                <cc1:TextBoxWatermarkExtender ID="txtTimeFrame_TextBoxWatermarkExtender"
-                    runat="server" TargetControlID="txtTimeFrame"
-                    WatermarkCssClass="watermark" WatermarkText="0"></cc1:TextBoxWatermarkExtender>
+                <asp:TextBox ID="txtTimeFrame" Width="50px" runat="server" placeholder="0" TextMode="Number" />
                 <cc1:FilteredTextBoxExtender ID="txtTimeFrame_FilteredTextBoxExtender"
                     runat="server" FilterType="Numbers"
                     TargetControlID="txtTimeFrame"></cc1:FilteredTextBoxExtender>

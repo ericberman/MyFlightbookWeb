@@ -32,9 +32,7 @@
     <h2><asp:Label ID="Label2" runat="server" Text="<%$ Resources:Club, LabelFindClubs %>"></asp:Label></h2>
     <asp:Panel ID="pnlFindClubs" runat="server" DefaultButton="btnFindClubs">
         <div><% =Resources.Club.LabelFindAllTip %></div>
-        <asp:TextBox ID="txtHomeAirport" ValidationGroup="valFindClubs" runat="server" Width="200px"></asp:TextBox>
-        <asp:TextBoxWatermarkExtender ID="TextBox1_TextBoxWatermarkExtender" runat="server" TargetControlID="txtHomeAirport" WatermarkCssClass="watermark" WatermarkText="<%$ Resources:Club, WatermarkFindClubs %>">
-        </asp:TextBoxWatermarkExtender>
+        <asp:TextBox ID="txtHomeAirport" ValidationGroup="valFindClubs" runat="server" Width="200px" placeholder="<%$ Resources:Club, WatermarkFindClubs %>" />
         <asp:Button ID="btnFindClubs" runat="server" Text="<%$ Resources:Club, ButtonFindClubs %>" ValidationGroup="valFindClubs"  OnClick="btnFindClubs_Click" />
         <asp:RequiredFieldValidator ID="RequiredFieldValidator1" ValidationGroup="valFindClubs"  runat="server" ErrorMessage="<%$ Resources:Club, errNoHomeAirport %>" ControlToValidate="txtHomeAirport" CssClass="error" Enabled="false" Display="Dynamic"></asp:RequiredFieldValidator>
         <div><asp:Label ID="lblErr" CssClass="error" EnableViewState="false" runat="server" Text=""></asp:Label></div>

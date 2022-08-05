@@ -13,7 +13,7 @@
     <p><asp:Label ID="lblPrompt" runat="server" 
             Text="Can't remember an airport's code?  Search for it below" 
             meta:resourcekey="lblPromptResource1"></asp:Label></p>
-    <uc1:mfbSearchbox runat="server" ID="mfbSearchbox" OnSearchClicked="btnFind_Click" Hint=" " />
+    <uc1:mfbSearchbox runat="server" ID="mfbSearchbox" OnSearchClicked="btnFind_Click" Hint="<%$ Resources:Airports, wmAirportCode %>" />
     <asp:HyperLink ID="lnkZoomOut" runat="server"
         Visible="False" Text="Zoom to fit all" 
         meta:resourcekey="lnkZoomOutResource1"></asp:HyperLink>

@@ -14,11 +14,7 @@
             <asp:PlaceHolder ID="plcPrompt" runat="server"></asp:PlaceHolder>
             <div style="border: 1px solid darkgray; border-radius: 14px; height: 24px; display: inline-block; vertical-align: middle; text-align:left; padding-left: 8px; padding-right:3px; ">
                 <asp:Image ID="Image1" runat="server" ImageUrl="~/images/Search.png" ImageAlign="AbsMiddle" Height="20px" />
-                <asp:TextBox ID="txtFilter" runat="server" Width="240px" Font-Size="8pt" BorderStyle="None" style="vertical-align:middle; margin-right: 2px;"></asp:TextBox>
-                <cc1:TextBoxWatermarkExtender
-                    ID="TextBoxWatermarkExtender1" runat="server" TargetControlID="txtFilter" EnableViewState="false"
-                    WatermarkText="<%$ Resources:Makes, searchTipQuick %>" WatermarkCssClass="watermark">
-                </cc1:TextBoxWatermarkExtender>
+                <asp:TextBox ID="txtFilter" runat="server" Width="240px" Font-Size="8pt" BorderStyle="None" style="vertical-align:middle; margin-right: 2px;" CssClass="noselect" placeholder="<%$ Resources:Makes, searchTipQuick %>" />
             </div>
             <span style="display: none">
                 <asp:LinkButton ID="lnkPopulateModel" runat="server" OnClick="lnkPopulateModel_Click" />

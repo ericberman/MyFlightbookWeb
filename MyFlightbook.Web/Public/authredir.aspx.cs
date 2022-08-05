@@ -73,6 +73,8 @@ namespace MyFlightbook.PublicPages
                     return "~/Member/EditProfile.aspx/pftPrefs";
                 case "ACCOUNT":
                     return "~/Member/EditProfile.aspx/pftAccount";
+                case "BIGREDBUTTONS":
+                    return "~/Member/EditProfile.aspx/pftBigRedButtons";
                 default:
                     return string.Empty;
             }

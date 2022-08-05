@@ -9,8 +9,7 @@
         <asp:UpdatePanel ID="UpdatePanel1" runat="server">
             <ContentTemplate>
                 <h2>Migration between database and files</h2>
-                <asp:TextBox ID="txtMaxFiles" runat="server" TextMode="Number" Text="50"></asp:TextBox> <asp:CheckBox ID="ckLimitUsername" runat="server" Text="Restrict to user (below)" /><br />
-                <cc1:TextBoxWatermarkExtender ID="txtMaxFiles_TextBoxWatermarkExtender" runat="server" BehaviorID="txtMaxFiles_TextBoxWatermarkExtender" TargetControlID="txtMaxFiles" WatermarkCssClass="watermark" WatermarkText="(Limit)" />
+                <asp:TextBox ID="txtMaxFiles" runat="server" TextMode="Number" Text="50" placeholder="(Limit)" /> <asp:CheckBox ID="ckLimitUsername" runat="server" Text="Restrict to user (below)" /><br />
                 <asp:Button ID="btnMigrateFromDB" runat="server" Text="Migrate from DATABASE to FILES" OnClick="btnMigrateFromDB_Click" /> <asp:Button ID="btnMigrateFromFiles" runat="server" Text="Migrate from FILES to DATABASE" OnClick="btnMigrateFromFiles_Click" />
                 <asp:Label ID="lblMigrateStatus" runat="server" Text="" EnableViewState="false"></asp:Label>
                 <br />
@@ -34,8 +33,7 @@
     </asp:Panel>
     <h2>View telemetry for user</h2>
     <asp:Panel ID="pnlUser" runat="server" DefaultButton="btnRefresh">
-        <asp:TextBox ID="txtUser" runat="server"></asp:TextBox>
-        <cc1:TextBoxWatermarkExtender ID="txtUser_TextBoxWatermarkExtender" runat="server" BehaviorID="txtUser_TextBoxWatermarkExtender" TargetControlID="txtUser" WatermarkCssClass="watermark" WatermarkText="(Username)" />
+        <asp:TextBox ID="txtUser" runat="server" placeholder="(Username)" />
         <asp:Button ID="btnRefresh" runat="server" Text="Refresh" OnClick="btnRefresh_Click" />    <asp:Label ID="lblErr" CssClass="error" EnableViewState="false" runat="server" Text=""></asp:Label>
     </asp:Panel>
     <asp:Panel ID="pnlMaps" Visible="false" runat="server" Width="400px" style="margin-top: 30px; margin-bottom: 30px">

@@ -40,15 +40,6 @@ public partial class Controls_mfbCustCurrency
     protected global::System.Web.UI.WebControls.TextBox txtRuleName;
 
     /// <summary>
-    /// txtRuleName_TextBoxWatermarkExtender control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::AjaxControlToolkit.TextBoxWatermarkExtender txtRuleName_TextBoxWatermarkExtender;
-
-    /// <summary>
     /// valCCName control.
     /// </summary>
     /// <remarks>
@@ -146,15 +137,6 @@ public partial class Controls_mfbCustCurrency
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.TextBox txtTimeFrame;
-
-    /// <summary>
-    /// txtTimeFrame_TextBoxWatermarkExtender control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::AjaxControlToolkit.TextBoxWatermarkExtender txtTimeFrame_TextBoxWatermarkExtender;
 
     /// <summary>
     /// txtTimeFrame_FilteredTextBoxExtender control.

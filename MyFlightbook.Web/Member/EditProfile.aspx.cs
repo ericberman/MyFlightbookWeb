@@ -155,6 +155,8 @@ namespace MyFlightbook.MemberPages
                 case tabID.pftName:
                 case tabID.pftPass:
                 case tabID.pftQA:
+                case tabID.pft2fa:
+                case tabID.pftBigRedButtons:
                     mvProfile.SetActiveView(vwAccount);
                     Master.SelectedTab = tabID.pftAccount;
                     break;
@@ -224,7 +226,7 @@ namespace MyFlightbook.MemberPages
             txtFirst.Attributes["oninput"] = "javascript:updateGreeting(this);";
             txtLast.Text = m_pf.LastName;
             lblStaticEmail.Text = HttpUtility.HtmlEncode(txtEmail2.Text = txtEmail.Text = m_pf.Email);
-            wmeGreeting.WatermarkText = String.IsNullOrEmpty(m_pf.FirstName) ? Resources.Profile.accountPreferredGreetingWatermark : m_pf.FirstName;
+            txtPreferredGreeting.SetPlaceholder(String.IsNullOrEmpty(m_pf.FirstName) ? Resources.Profile.accountPreferredGreetingWatermark : m_pf.FirstName);
             string szPreferredGreeting = m_pf.PreferredGreeting.Trim();
             if (szPreferredGreeting.CompareCurrentCultureIgnoreCase(m_pf.UserFirstName.Trim()) == 0)
             {
@@ -239,7 +241,24 @@ namespace MyFlightbook.MemberPages
             lblQuestion.Text = HttpUtility.HtmlEncode(m_pf.SecurityQuestion);
             lblAddress.Text = HttpUtility.HtmlEncode(txtAddress.Text = m_pf.Address);
             dateDOB.Date = m_pf.DateOfBirth ?? DateTime.MinValue;
-            accordianAccount.SelectedIndex = (sidebarTab == tabID.pftQA) ? 2 : (sidebarTab == tabID.pftPass ? 1 : 0);
+            switch (sidebarTab)
+            {
+                default:
+                    accordianAccount.SelectedIndex = 0;
+                    break;
+                case tabID.pftPass:
+                    accordianAccount.SelectedIndex = 1;
+                    break;
+                case tabID.pftQA:
+                    accordianAccount.SelectedIndex = 2;
+                    break;
+                case tabID.pft2fa:
+                    accordianAccount.SelectedIndex = 3;
+                    break;
+                case tabID.pftBigRedButtons:
+                    accordianAccount.SelectedIndex = 4;
+                    break;
+            }
 
             string szEmailVerify = util.GetStringParam(Request, "ve");
             if (!String.IsNullOrEmpty(szEmailVerify))
@@ -410,6 +429,8 @@ namespace MyFlightbook.MemberPages
                     case tabID.pftName:
                     case tabID.pftPass:
                     case tabID.pftQA:
+                    case tabID.pft2fa:
+                    case tabID.pftBigRedButtons:
                         InitAccount(sidebarTab);
                         break;
 

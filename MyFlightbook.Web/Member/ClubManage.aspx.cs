@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2021 MyFlightbook LLC
+ * Copyright (c) 2017-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -195,8 +195,8 @@ namespace MyFlightbook.Clubs
                 e.Row.FindControl("pnlHighTach").Visible = ca.HighestRecordedTach > 0;
                 lnkHobbs.Text = String.Format(CultureInfo.CurrentCulture, Resources.Club.ClubAircraftHighestHobbs, ca.HighestRecordedHobbs);
                 lnkTach.Text = String.Format(CultureInfo.CurrentCulture, Resources.Club.ClubAircraftHighestTach, ca.HighestRecordedTach);
-                ((System.Web.UI.WebControls.Image)e.Row.FindControl("imgXFillHobbs")).Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:$find('{0}').set_text('{1}');", decHighWater.EditBoxWE.ClientID, ca.HighestRecordedHobbs.ToString(CultureInfo.CurrentCulture));
-                ((System.Web.UI.WebControls.Image)e.Row.FindControl("imgXFillTach")).Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:$find('{0}').set_text('{1}');", decHighWater.EditBoxWE.ClientID, ca.HighestRecordedTach.ToString(CultureInfo.CurrentCulture));
+                ((System.Web.UI.WebControls.Image)e.Row.FindControl("imgXFillHobbs")).Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:document.getElementById('{0}').value = '{1}';", decHighWater.EditBox.ClientID, ca.HighestRecordedHobbs.ToString(CultureInfo.CurrentCulture));
+                ((System.Web.UI.WebControls.Image)e.Row.FindControl("imgXFillTach")).Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:document.getElementById('{0}').value = '{1}';", decHighWater.EditBox.ClientID, ca.HighestRecordedTach.ToString(CultureInfo.CurrentCulture));
             }
         }
 

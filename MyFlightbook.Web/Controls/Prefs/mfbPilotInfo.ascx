@@ -161,8 +161,7 @@
                         <asp:Localize ID="locLicenseHeader" runat="server" Text="<%$ Resources:Preferences, PilotInfoCertificatePrompt %>" />
                     </h3>
                     <div>
-                        <asp:TextBox ID="txtLicense" runat="server" ValidationGroup="valPilotInfo"></asp:TextBox>
-                        <cc1:TextBoxWatermarkExtender ID="wmeLicense" WatermarkCssClass="watermark" WatermarkText="<%$ Resources:Preferences, PilotInfoCertificateWatermark %>" TargetControlID="txtLicense" runat="server" BehaviorID="wmeLicense" />
+                        <asp:TextBox ID="txtLicense" runat="server" ValidationGroup="valPilotInfo" placeholder="<%$ Resources:Preferences, PilotInfoCertificateWatermark %>" />
                         <br />
                         <asp:Label ID="lblLicenseFineprint" runat="server" CssClass="fineprint" 
                             Text="<%$ Resources:Preferences, PilotInfoLicenseFinePrint %>"></asp:Label>
@@ -171,8 +170,7 @@
                         <asp:Localize ID="locCertPrompt" runat="server" Text="<%$ Resources:Preferences, PilotInfoInstructorCertificatePrompt %>" />
                     </h3>
                     <div>
-                        <asp:TextBox ID="txtCertificate" runat="server" ValidationGroup="valPilotInfo" /> &nbsp;
-                        <cc1:TextBoxWatermarkExtender ID="wmeCertificate" WatermarkCssClass="watermark" WatermarkText="<%$ Resources:Preferences, PilotInfoCertificateCFIWatermark %>" TargetControlID="txtCertificate" runat="server" BehaviorID="wmeCertificate" />
+                        <asp:TextBox ID="txtCertificate" runat="server" ValidationGroup="valPilotInfo" placeholder="<%$ Resources:Preferences, PilotInfoCertificateCFIWatermark %>" /> &nbsp;
                         <asp:Localize ID="locExpiration" runat="server" Text="<%$ Resources:Preferences, PilotInfoCFIExpiration %>" />
                         <uc2:mfbTypeInDate ID="mfbTypeInDateCFIExpiration" runat="server" DefaultType="None" />
                         <br />

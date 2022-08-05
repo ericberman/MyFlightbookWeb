@@ -1,7 +1,7 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="mfbShareKeys.ascx.cs" Inherits="MyFlightbook.Web.Sharing.mfbShareKeys" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <div>
-    <asp:TextBox ID="txtShareLinkName" runat="server"></asp:TextBox>
+    <asp:TextBox ID="txtShareLinkName" runat="server" placeholder="<%$ Resources:LocalizedText, ShareKeyNamePrompt %>" />
     <asp:CheckBox ID="ckShareLinkFlights" runat="server" Checked="true" Text="<%$ Resources:LocalizedText, ShareKeyPermissionViewFlights %>" />
     <asp:CheckBox ID="ckShareLinkTotals" runat="server" Checked="true" Text="<%$ Resources:LocalizedText, ShareKeyPermissionViewTotals %>" />
     <asp:CheckBox ID="ckShareLinkCurrency" runat="server" Checked="true" Text="<%$ Resources:LocalizedText, ShareKeyPermissionViewCurrency %>" />
@@ -12,7 +12,6 @@
 <div>
     <asp:Label ID="lblShareLinkNameHintBody" runat="server" CssClass="fineprint" Text="Suggestion: use the name of the recipient"></asp:Label>
 </div>
-<cc1:TextBoxWatermarkExtender ID="weShareLink" TargetControlID="txtShareLinkName" runat="server" WatermarkText="<%$ Resources:LocalizedText, ShareKeyNamePrompt %>" WatermarkCssClass="watermark" />
 <div>
     <asp:Label ID="lblShareKeyErr" runat="server" CssClass="error" EnableViewState="false"></asp:Label>
 </div>

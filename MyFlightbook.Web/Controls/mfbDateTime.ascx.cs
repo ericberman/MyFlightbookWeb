@@ -6,7 +6,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2021 MyFlightbook LLC
+ * Copyright (c) 2008-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -98,7 +98,7 @@ public partial class Controls_mfbDateTime : System.Web.UI.UserControl
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        TextBoxWatermarkExtender1.WatermarkText = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern + " HH:mm";
+        txtDateTime.SetPlaceholder(CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern + " HH:mm");
         Page.ClientScript.RegisterClientScriptBlock(GetType(), "FillNow", String.Format(CultureInfo.InvariantCulture, @"
         function setNowUTCWithOffset(wme) {{
             var params = new Object();
@@ -109,7 +109,7 @@ public partial class Controls_mfbDateTime : System.Web.UI.UserControl
                 type: ""POST"", data: d, dataType: ""json"", contentType: ""application/json"",
                 error: function(xhr, status, error) {{ }},
                 complete: function(response) {{ }},
-                success: function(response) {{ $find(wme).set_text(response.d); }}
+                success: function(response) {{ document.getElementById(wme).value = response.d; }}
             }});
         }}", ResolveClientUrl("~/Member/LogbookNew.aspx/NowInUTC")), true);
     }

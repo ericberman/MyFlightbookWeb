@@ -49,6 +49,8 @@ namespace MyFlightbook
         pftName,
         pftPass,
         pftQA,
+        pft2fa,
+        pftBigRedButtons,
 
         // Instruction tabs
         instEndorsements = 250,

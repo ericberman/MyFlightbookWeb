@@ -41,11 +41,6 @@ public partial class Controls_mfbDecimalEdit : System.Web.UI.UserControl
         get { return txtDecimal; }
     }
 
-    public AjaxControlToolkit.TextBoxWatermarkExtender EditBoxWE
-    {
-        get { return txtDecimal_TextBoxWatermarkExtender; }
-    }
-
     public string CrossFillTip
     {
         get { return imgXFill.ToolTip; }
@@ -71,7 +66,7 @@ public partial class Controls_mfbDecimalEdit : System.Web.UI.UserControl
             else
             {
                 imgXFill.Visible = true;
-                imgXFill.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:setXFillValue('{0}', {1});", EditBoxWE.ClientID, value);
+                imgXFill.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:setXFillValue('{0}', {1});", txtDecimal.ClientID, value);
             }
         }
     }
@@ -108,7 +103,7 @@ public partial class Controls_mfbDecimalEdit : System.Web.UI.UserControl
                             txtDecimal.Attributes.Remove("step");
                         }
                         string szDecChar = System.Threading.Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator;
-                        txtDecimal_TextBoxWatermarkExtender.WatermarkText = ((value == EditMode.Currency) ? WaterMarkCurrency : WaterMarkDecimal).Replace(".", szDecChar);
+                        txtDecimal.SetPlaceholder((value == EditMode.Currency ? WaterMarkCurrency : WaterMarkDecimal).Replace(".", szDecChar));
                         FilteredTextBoxExtender.FilterType = AjaxControlToolkit.FilterTypes.Custom;
 
                         if (IsIOSSafari)
@@ -123,7 +118,7 @@ public partial class Controls_mfbDecimalEdit : System.Web.UI.UserControl
                     string szTimeSep = System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.TimeSeparator;
 
                     txtDecimal.TextMode = TextBoxMode.SingleLine;
-                    txtDecimal_TextBoxWatermarkExtender.WatermarkText = String.Format(CultureInfo.InvariantCulture, "hh{0}mm", szTimeSep);
+                    txtDecimal.SetPlaceholder(String.Format(CultureInfo.InvariantCulture, "hh{0}mm", szTimeSep));
                     FilteredTextBoxExtender.FilterType = AjaxControlToolkit.FilterTypes.Custom;
                     FilteredTextBoxExtender.ValidChars = "0123456789" + szTimeSep;
                     FilteredTextBoxExtender.Enabled = true;
@@ -145,7 +140,7 @@ public partial class Controls_mfbDecimalEdit : System.Web.UI.UserControl
                         txtDecimal.TextMode = TextBoxMode.SingleLine;
                         txtDecimal.Attributes.Remove("step");
                     }
-                    txtDecimal_TextBoxWatermarkExtender.WatermarkText = WaterMarkInteger;
+                    txtDecimal.SetPlaceholder(WaterMarkInteger);
                     FilteredTextBoxExtender.FilterType = AjaxControlToolkit.FilterTypes.Numbers;
 
                     valNumber.ValidationExpression = regInteger;
@@ -239,7 +234,7 @@ public partial class Controls_mfbDecimalEdit : System.Web.UI.UserControl
     protected void Page_Load(object sender, EventArgs e)
     {
         // Make sure cross-fill script is loaded
-        Page.ClientScript.RegisterClientScriptInclude(GetType(), "xfillscript", ResolveClientUrl("~/Public/Scripts/xfill.js?v=2"));
+        Page.ClientScript.RegisterClientScriptInclude(GetType(), "xfillscript", ResolveClientUrl("~/Public/Scripts/xfill.js?v=3"));
 
         object em = ViewState[keyViewStateEditMode];
 

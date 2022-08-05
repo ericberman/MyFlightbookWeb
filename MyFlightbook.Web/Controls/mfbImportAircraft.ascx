@@ -37,11 +37,7 @@
                                         <td><asp:Label ID="lblModel" runat="server" Text="<%$ Resources:Aircraft, ImportModel %>" /></td>
                                         <td>
                                             <asp:panel ID="pnlSearchModels" runat="server" style="z-index: 100">
-                                                <asp:TextBox ID="txtSearch" runat="server" Width="250px" Font-Size="8pt" />
-                                                <ajaxToolkit:TextBoxWatermarkExtender
-                                                    ID="TextBoxWatermarkExtender1" runat="server" TargetControlID="txtSearch" EnableViewState="False"
-                                                    WatermarkText="Find a model" WatermarkCssClass="watermark">
-                                                </ajaxToolkit:TextBoxWatermarkExtender>
+                                                <asp:TextBox ID="txtSearch" runat="server" Width="250px" Font-Size="8pt" placeholder="<%$ Resources:Makes, searchTip %>" />
                                             </asp:panel>
                                             <ajaxToolkit:AutoCompleteExtender ID="autocompleteModel" runat="server"
                                                 CompletionInterval="100" CompletionListCssClass="AutoExtender"

@@ -1,11 +1,8 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbDecimalEdit.ascx.cs" Inherits="Controls_mfbDecimalEdit" %>
 <%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="cc1" %>
-<asp:TextBox ID="txtDecimal" runat="server" TextMode="Number"></asp:TextBox>
+<asp:TextBox ID="txtDecimal" runat="server" TextMode="Number" placeholder="0.0" />
 <asp:Image ID="imgXFill" ImageUrl="~/images/cross-fill.png" runat="server" Visible="false" ToolTip="<%$ Resources:LocalizedText, CrossfillPrompt %>"
      AlternateText="<%$ Resources:LocalizedText, CrossfillPrompt %>" />
-<cc1:TextBoxWatermarkExtender ID="txtDecimal_TextBoxWatermarkExtender" WatermarkText="0.0" EnableViewState="false" 
-    runat="server" Enabled="True" TargetControlID="txtDecimal" WatermarkCssClass="watermark">
-</cc1:TextBoxWatermarkExtender>
 <cc1:FilteredTextBoxExtender ID="FilteredTextBoxExtender" runat="server" FilterType="Custom" EnableViewState="false" 
     TargetControlID="txtDecimal" ValidChars="0123456789.">
 </cc1:FilteredTextBoxExtender>        

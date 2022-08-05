@@ -20,12 +20,10 @@
                                 <asp:Label ID="lblCodePrompt" runat="server" Text="<%$ Resources:Airports, EditAirportsCodePrompt %>" />
                             </td>
                             <td>
-                                <asp:TextBox ID="txtCode" runat="server" />
+                                <asp:TextBox ID="txtCode" runat="server" placeholder="<%$ Resources:Airports, wmAirportCode %>" />
                                 <cc1:FilteredTextBoxExtender ID="txtCode_FilteredTextBoxExtender" FilterType="Numbers, UppercaseLetters, LowercaseLetters"
                                     runat="server" TargetControlID="txtCode" Enabled="True">
                                 </cc1:FilteredTextBoxExtender>
-                                <cc1:TextBoxWatermarkExtender ID="wmeCode" WatermarkText="<%$ Resources:Airports, wmAirportCode %>" 
-                                    runat="server" Enabled="True" TargetControlID="txtCode" WatermarkCssClass="watermark" />
                                 <asp:RequiredFieldValidator ID="valReqCode" runat="server" ErrorMessage="<%$ Resources:Airports, errMissingCode %>" EnableClientScript="true"
                                     ControlToValidate="txtCode" Display="Dynamic" CssClass="error" />
                                 <asp:RegularExpressionValidator ID="valRegCode" runat="server" ErrorMessage="<%$ Resources:Airports, errInvalidCodeLength %>" EnableClientScript="true"
@@ -39,12 +37,9 @@
                                 <asp:Localize ID="locNamePrompt" runat="server" Text="<%$ Resources:Airports, airportNameShort %>" />
                             </td>
                             <td>
-                                <asp:TextBox ID="txtName" runat="server" />
+                                <asp:TextBox ID="txtName" runat="server" placeholder="<%$ Resources:Airports, wmFriendlyname %>" />
                                 <asp:RequiredFieldValidator ID="valReqName" runat="server" ControlToValidate="txtName" EnableClientScript="true" 
                                     ErrorMessage="<%$ Resources:Airports, errMissingFacilityName %>" Display="Dynamic" CssClass="error" />
-                                <cc1:TextBoxWatermarkExtender ID="wmeName" WatermarkText="<%$ Resources:Airports, wmFriendlyname %>" 
-                                    runat="server" Enabled="True" TargetControlID="txtName" WatermarkCssClass="watermark">
-                                </cc1:TextBoxWatermarkExtender>
                                 <br />
                                 <asp:Label ID="lblNameExample" CssClass="fineprint" runat="server" Text="<%$ Resources:Airports, EditAirportSampleName %>" />
                             </td>
@@ -521,8 +516,8 @@
         {
             elLat.value = o.LatLong.Latitude;
             elLon.value = o.LatLong.Longitude;
-            $find(elCodeWE).set_text(o.Code);
-            $find(elNameWE).set_text(o.Name);
+            elCode.value = o.Code;
+            elName.value = o.Name;
             elType.value = o.FacilityTypeCode;
             clickAndZoom(new google.maps.LatLng(o.LatLong.Latitude, o.LatLong.Longitude));
         }
@@ -555,8 +550,6 @@
 
         var elCode = document.getElementById('<% =txtCode.ClientID %>');
         var elName = document.getElementById('<% =txtName.ClientID %>');
-        var elNameWE = '<% =wmeName.ClientID %>';
-        var elCodeWE = '<% =wmeCode.ClientID %>';
         var elType = document.getElementById('<% = cmbType.ClientID %>');
         var elLat = document.getElementById('<% = txtLat.ClientID %>');
         var elLon = document.getElementById('<% = txtLong.ClientID %>');

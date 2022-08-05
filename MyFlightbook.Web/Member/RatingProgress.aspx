@@ -32,10 +32,8 @@
             <Body>
                 <h2><asp:Label ID="lblAddNewRating" runat="server" Text="<%$ Resources:MilestoneProgress, CustomProgressAddNewRating %>" /></h2>
                 <asp:Panel ID="pnlAddRating" runat="server" DefaultButton="btnAddNew">
-                    <asp:TextBox ID="txtNewTitle" runat="server" ValidationGroup="vgAddRating" />
-                    <ajaxToolkit:TextBoxWatermarkExtender ID="weTitle" runat="server" TargetControlID="txtNewTitle" WatermarkCssClass="watermark" WatermarkText="<%$ Resources:MilestoneProgress, CustomProgressTitlePrompt %>" />
-                    <asp:TextBox ID="txtNewDisclaimer" runat="server" ValidationGroup="vgAddRating" />
-                    <ajaxToolkit:TextBoxWatermarkExtender ID="weDisclaimer" runat="server" TargetControlID="txtNewDisclaimer" WatermarkCssClass="watermark" WatermarkText="<%$ Resources:MilestoneProgress, CustomProgressGenDisclaimerPrompt %>" />
+                    <asp:TextBox ID="txtNewTitle" runat="server" ValidationGroup="vgAddRating" placeholder="<%$ Resources:MilestoneProgress, CustomProgressTitlePrompt %>" />
+                    <asp:TextBox ID="txtNewDisclaimer" runat="server" ValidationGroup="vgAddRating" placeholder="<%$ Resources:MilestoneProgress, CustomProgressGenDisclaimerPrompt %>" />
                     <asp:Button ID="btnAddNew" runat="server" Text="<%$ Resources:MilestoneProgress, CustomProgressAddNewRating %>" OnClick="btnAddNew_Click" ValidationGroup="vgAddRating" />
                     <div><asp:RequiredFieldValidator ID="reqNewTitle" runat="server" ControlToValidate="txtNewTitle" CssClass="error" ErrorMessage="<%$ Resources:MilestoneProgress, CustomProgressTitleRequired %>" Display="Dynamic" ValidationGroup="vgAddRating" /></div>
                 </asp:Panel>

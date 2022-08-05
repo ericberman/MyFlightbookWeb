@@ -141,15 +141,6 @@ namespace MyFlightbook.Clubs
         protected global::System.Web.UI.WebControls.TextBox txtMemberEmail;
 
         /// <summary>
-        /// txtMemberEmail_TextBoxWatermarkExtender control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TextBoxWatermarkExtender txtMemberEmail_TextBoxWatermarkExtender;
-
-        /// <summary>
         /// btnAddMember control.
         /// </summary>
         /// <remarks>

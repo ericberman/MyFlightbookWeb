@@ -34,8 +34,7 @@
                 <tr>
                     <td><asp:Label ID="lblNamePrompt" runat="server" Text="<%$ Resources:LogbookEntry, TemplateNamePrompt %>"></asp:Label></td>
                     <td colspan="2">
-                        <asp:TextBox ID="txtTemplateName" runat="server" Width="100%"></asp:TextBox>
-                        <ajaxToolkit:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender1" TargetControlID="txtTemplateName" WatermarkCssClass="watermark" WatermarkText="<%$ Resources:LogbookEntry, TemplateNameWatermark %>" runat="server" />
+                        <asp:TextBox ID="txtTemplateName" runat="server" Width="100%" placeholder="<%$ Resources:LogbookEntry, TemplateNameWatermark %>" />
                         <asp:RequiredFieldValidator ID="reqTemplateName" ValidationGroup="vgPropTemplate" runat="server" ErrorMessage="<%$ Resources:LogbookEntry, errTemplateNoName %>" ControlToValidate="txtTemplateName" CssClass="error" Display="Dynamic"></asp:RequiredFieldValidator>
                     </td>
                 </tr>

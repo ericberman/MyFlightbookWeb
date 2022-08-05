@@ -87,15 +87,6 @@ namespace MyFlightbook.Web.Sharing
         protected global::System.Web.UI.WebControls.Label lblShareLinkNameHintBody;
 
         /// <summary>
-        /// weShareLink control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TextBoxWatermarkExtender weShareLink;
-
-        /// <summary>
         /// lblShareKeyErr control.
         /// </summary>
         /// <remarks>

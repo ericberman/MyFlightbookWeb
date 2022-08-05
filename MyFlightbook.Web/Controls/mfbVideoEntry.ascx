@@ -13,12 +13,8 @@
     TextLabelID="lblShowHideVideo" Enabled="True"></cc1:CollapsiblePanelExtender>
 <asp:Panel ID="pnlNewVideo" runat="server" DefaultButton="btnAdd" Height="0px" style="overflow:hidden">
         <p><asp:Label ID="lblOverview" runat="server" CssClass="fineprint" Text="<%$ Resources:LocalizedText, videoOverview %>"></asp:Label></p>
-        <asp:TextBox ID="txtVideoToEmbed" runat="server" Width="450px"></asp:TextBox>
-        <cc1:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender1" runat="server" TargetControlID="txtVideoToEmbed" WatermarkText="<%$ Resources:LocalizedText, videoPrompt %>" WatermarkCssClass="watermark"></cc1:TextBoxWatermarkExtender>
-        <br />
-        <asp:TextBox ID="txtComment" Width="450px" runat="server"></asp:TextBox>
-        <cc1:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender2" runat="server" TargetControlID="txtComment" WatermarkText="<%$ Resources:LocalizedText, videoCommentPrompt %>" WatermarkCssClass="watermark"></cc1:TextBoxWatermarkExtender>
-        <br />
+        <div><asp:TextBox ID="txtVideoToEmbed" runat="server" Width="450px" placeholder="<%$ Resources:LocalizedText, videoPrompt %>" /></div>
+        <div><asp:TextBox ID="txtComment" Width="450px" runat="server" placeholder="<%$ Resources:LocalizedText, videoCommentPrompt %>" /></div>
         <asp:Button ID="btnAdd" CausesValidation="true" runat="server" Text="<%$Resources:LocalizedText, videoAdd %>" OnClick="btnAdd_Click" /><br />
         <asp:Label ID="lblDisclaimer" CssClass="fineprint" runat="server" Text="<%$ Resources:LocalizedText, videoDisclaimer %>"></asp:Label>
         <asp:Panel ID="pnlError" Visible="false" EnableViewState="false" runat="server">

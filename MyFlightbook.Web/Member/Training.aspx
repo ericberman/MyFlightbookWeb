@@ -155,8 +155,7 @@
                 <asp:Label ID="lblEmailDisclaimer" runat="server" Text="<%$ Resources:SignOff, RoleAddEmailDisclaimer %>" />
                 </p>
                 <asp:Panel ID="pnlCertificate" runat="server">
-                        <asp:TextBox ID="txtCertificate" runat="server" ValidationGroup="valPilotInfo" /> &nbsp;
-                        <cc1:TextBoxWatermarkExtender ID="wmeCertificate" WatermarkCssClass="watermark" WatermarkText="<%$ Resources:Preferences, PilotInfoCertificateCFIWatermark %>" TargetControlID="txtCertificate" runat="server" BehaviorID="wmeCertificate" />
+                        <asp:TextBox ID="txtCertificate" runat="server" ValidationGroup="valPilotInfo" placeholder="<%$ Resources:Preferences, PilotInfoCertificateCFIWatermark %>" /> &nbsp;
                         <asp:Localize ID="locExpiration" runat="server" Text="<%$ Resources:Preferences, PilotInfoCFIExpiration %>" />
                         <uc2:mfbTypeInDate ID="mfbTypeInDateCFIExpiration" runat="server" DefaultType="None" />
                 </asp:Panel>

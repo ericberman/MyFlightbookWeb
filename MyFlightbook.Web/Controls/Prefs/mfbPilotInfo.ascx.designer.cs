@@ -339,15 +339,6 @@ namespace MyFlightbook.Web.Controls.Prefs
         protected global::System.Web.UI.WebControls.TextBox txtLicense;
 
         /// <summary>
-        /// wmeLicense control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TextBoxWatermarkExtender wmeLicense;
-
-        /// <summary>
         /// lblLicenseFineprint control.
         /// </summary>
         /// <remarks>
@@ -373,15 +364,6 @@ namespace MyFlightbook.Web.Controls.Prefs
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtCertificate;
-
-        /// <summary>
-        /// wmeCertificate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TextBoxWatermarkExtender wmeCertificate;
 
         /// <summary>
         /// locExpiration control.

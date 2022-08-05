@@ -136,8 +136,7 @@
                                                         <asp:Localize ID="locPrefGreetingNote" runat="server" Text="<%$ Resources:Profile, accountPreferredGreetingNote %>" /></span>
                                                 </td>
                                                 <td>
-                                                    <asp:TextBox ID="txtPreferredGreeting" ValidationGroup="valNameEmail" AutoCompleteType="DisplayName" runat="server"></asp:TextBox>
-                                                    <cc1:TextBoxWatermarkExtender ID="wmeGreeting" TargetControlID="txtPreferredGreeting" WatermarkCssClass="watermark" BehaviorID="wmeGreet" runat="server" />
+                                                    <asp:TextBox ID="txtPreferredGreeting" ValidationGroup="valNameEmail" AutoCompleteType="DisplayName" runat="server" />
                                                 </td>
                                             </tr>
                                             <tr><td>&nbsp;</td><td>&nbsp;</td></tr>

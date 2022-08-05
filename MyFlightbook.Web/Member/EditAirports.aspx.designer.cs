@@ -69,15 +69,6 @@ namespace MyFlightbook.Mapping
         protected global::AjaxControlToolkit.FilteredTextBoxExtender txtCode_FilteredTextBoxExtender;
 
         /// <summary>
-        /// wmeCode control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TextBoxWatermarkExtender wmeCode;
-
-        /// <summary>
         /// valReqCode control.
         /// </summary>
         /// <remarks>
@@ -130,15 +121,6 @@ namespace MyFlightbook.Mapping
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator valReqName;
-
-        /// <summary>
-        /// wmeName control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TextBoxWatermarkExtender wmeName;
 
         /// <summary>
         /// lblNameExample control.

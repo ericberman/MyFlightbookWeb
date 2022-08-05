@@ -101,9 +101,7 @@
                                         Text="<%$ Resources:Club, LabelEmailDisclaimer %>"></asp:Label>
                                     <br />
                                     <br />
-                                    <asp:TextBox ID="txtMemberEmail" runat="server" Width="300px" ValidationGroup="vgAddMember" AutoCompleteType="Email"></asp:TextBox>
-                                    <asp:TextBoxWatermarkExtender ID="txtMemberEmail_TextBoxWatermarkExtender" WatermarkText="<%$ Resources:Club, WatermarkInviteMember %>" WatermarkCssClass="watermark" runat="server" TargetControlID="txtMemberEmail" BehaviorID="_content_txtMemberEmail_TextBoxWatermarkExtender">
-                                    </asp:TextBoxWatermarkExtender>
+                                    <asp:TextBox ID="txtMemberEmail" runat="server" Width="300px" ValidationGroup="vgAddMember" AutoCompleteType="Email" placeholder="<%$ Resources:Club, WatermarkInviteMember %>" />
                                     &nbsp;&nbsp;&nbsp; <asp:Button ID="btnAddMember" runat="server" Text="<%$ Resources:Club, ButtonInviteMember %>" ValidationGroup="vgAddMember" onclick="btnAddMember_Click"  />
                                     <asp:RequiredFieldValidator ID="RequiredFieldValidator3" 
                                         ControlToValidate="txtMemberEmail" runat="server" 

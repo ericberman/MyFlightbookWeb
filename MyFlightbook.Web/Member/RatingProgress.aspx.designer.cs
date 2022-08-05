@@ -105,15 +105,6 @@ namespace MyFlightbook.RatingsProgress
         protected global::System.Web.UI.WebControls.TextBox txtNewTitle;
 
         /// <summary>
-        /// weTitle control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TextBoxWatermarkExtender weTitle;
-
-        /// <summary>
         /// txtNewDisclaimer control.
         /// </summary>
         /// <remarks>
@@ -121,15 +112,6 @@ namespace MyFlightbook.RatingsProgress
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtNewDisclaimer;
-
-        /// <summary>
-        /// weDisclaimer control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TextBoxWatermarkExtender weDisclaimer;
 
         /// <summary>
         /// btnAddNew control.

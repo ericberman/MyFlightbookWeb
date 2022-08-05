@@ -1,9 +1,10 @@
-﻿using System;
+﻿using MyFlightbook;
+using System;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2018-2020 MyFlightbook LLC
+ * Copyright (c) 2018-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -19,8 +20,8 @@ public partial class Controls_mfbSearchbox : System.Web.UI.UserControl
 
     public string Hint
     {
-        get { return TextBoxWatermarkExtender1.WatermarkText; }
-        set { TextBoxWatermarkExtender1.WatermarkText = value; }
+        get { return txtSearch.GetPlaceholder(); }
+        set { txtSearch.SetPlaceholder(value); }
     }
 
     /// <summary>

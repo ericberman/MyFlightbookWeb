@@ -87,15 +87,6 @@ namespace MyFlightbook.AircraftControls
         protected global::AjaxControlToolkit.AutoCompleteExtender txtModel_AutoCompleteExtender;
 
         /// <summary>
-        /// TextBoxWatermarkExtender1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TextBoxWatermarkExtender TextBoxWatermarkExtender1;
-
-        /// <summary>
         /// RequiredFieldValidator1 control.
         /// </summary>
         /// <remarks>
@@ -159,15 +150,6 @@ namespace MyFlightbook.AircraftControls
         protected global::System.Web.UI.WebControls.TextBox txtFamilyName;
 
         /// <summary>
-        /// TextBoxWatermarkExtender5 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TextBoxWatermarkExtender TextBoxWatermarkExtender5;
-
-        /// <summary>
         /// filteredICAO control.
         /// </summary>
         /// <remarks>
@@ -213,15 +195,6 @@ namespace MyFlightbook.AircraftControls
         protected global::System.Web.UI.WebControls.TextBox txtName;
 
         /// <summary>
-        /// TextBoxWatermarkExtender2 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TextBoxWatermarkExtender TextBoxWatermarkExtender2;
-
-        /// <summary>
         /// lblModelName1 control.
         /// </summary>
         /// <remarks>
@@ -265,15 +238,6 @@ namespace MyFlightbook.AircraftControls
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtType;
-
-        /// <summary>
-        /// TextBoxWatermarkExtender3 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TextBoxWatermarkExtender TextBoxWatermarkExtender3;
 
         /// <summary>
         /// valType control.
@@ -337,15 +301,6 @@ namespace MyFlightbook.AircraftControls
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtArmyMDS;
-
-        /// <summary>
-        /// TextBoxWatermarkExtender4 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TextBoxWatermarkExtender TextBoxWatermarkExtender4;
 
         /// <summary>
         /// lblMDS1 control.

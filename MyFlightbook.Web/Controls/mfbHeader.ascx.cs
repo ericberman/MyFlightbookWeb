@@ -6,7 +6,7 @@ using System.Web.UI.HtmlControls;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2020 MyFlightbook LLC
+ * Copyright (c) 2009-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -30,11 +30,6 @@ namespace MyFlightbook.Controls
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            HtmlLink lnk = new HtmlLink() { Href = VirtualPathUtility.ToAbsolute("~/Public/CSS/mfbheader.css") };
-            Page.Header.Controls.Add(lnk);
-            lnk.Attributes["type"] = "text/css";
-            lnk.Attributes["rel"] = "stylesheet";
-
             if (!IsPostBack)
             {
                 // fix up the appropriate app name

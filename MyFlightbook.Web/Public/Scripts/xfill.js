@@ -1,6 +1,6 @@
 ﻿/******************************************************
  *
- * Copyright (c) 2021 MyFlightbook LLC
+ * Copyright (c) 2021-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -19,7 +19,7 @@
 function setXFillValue(target, fillfunc) {
     fillfunc((result) => {
         if (result)
-            $find(target).set_text(result);
+            document.getElementById(target).value = result;
     });
 };
 

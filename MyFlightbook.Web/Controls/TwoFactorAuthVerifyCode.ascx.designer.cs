@@ -42,15 +42,6 @@ namespace MyFlightbook.Web.Controls
         protected global::System.Web.UI.WebControls.Button btnVerifyCode;
 
         /// <summary>
-        /// wmeCode control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TextBoxWatermarkExtender wmeCode;
-
-        /// <summary>
         /// reDigitsReq control.
         /// </summary>
         /// <remarks>

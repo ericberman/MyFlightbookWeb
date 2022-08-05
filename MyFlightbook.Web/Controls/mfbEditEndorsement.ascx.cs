@@ -164,45 +164,11 @@ namespace MyFlightbook.Instruction
             }
         }
 
-        #region hack subclasses
-        /// <summary>
-        /// Hack: We get a CA2000 ("Dispose objects before losing scope") code analysis error if we do ANYTHING (such as setting an ID) to a control between creation of the object and AddControl.
-        /// But we can't set the ID as part of the creation processes for TextBoxWatermarkExtender, which means we can crash on adding it due to duplicate control ID's (since the default
-        /// TextBoxWatermarkExtender has a null ID, and null is already used for the placeholder).  SO...instead we'll create a subclass that takes the ID (and what the heck, other paramters too)
-        /// in the constructor, and we can add that directly.
-        /// </summary>
-        protected class EndorsementWatermark : TextBoxWatermarkExtender
-        {
-            public EndorsementWatermark(string id, string target, string wmText)
-                : base()
-            {
-                ID = id;
-                TargetControlID = target;
-                WatermarkText = wmText;
-
-                WatermarkCssClass = "watermark";
-            }
-        }
-
-        protected class EndorsementTextBox : TextBox
-        {
-            public EndorsementTextBox(string id, string txt) : base()
-            {
-                ID = id;
-                Text = txt;
-
-                BorderStyle = BorderStyle.Solid;
-                BorderWidth = Unit.Pixel(1);
-                BorderColor = System.Drawing.Color.Black;
-            }
-        }
-        #endregion
-
         protected void NewTextBox(Control parent, string id, string szDefault, Boolean fMultiline, Boolean fRequired, string szName)
         {
             if (parent == null)
                 throw new ArgumentNullException(nameof(parent));
-            TextBox tb = new EndorsementTextBox(id, szDefault);
+            TextBox tb = new TextBox() { ID = id, Text = szDefault };
             parent.Controls.Add(tb);
 
             if (fMultiline)
@@ -212,7 +178,7 @@ namespace MyFlightbook.Instruction
                 tb.TextMode = TextBoxMode.MultiLine;
             }
             else
-                parent.Controls.Add(new EndorsementWatermark("wm" + id, tb.ID, szName)); // Watermark is for single-line only.
+                tb.SetPlaceholder(szName);
 
             // no validations for preview mode
             if (fRequired && !PreviewMode)

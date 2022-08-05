@@ -31,8 +31,7 @@
         </div>
         <div class="vfValue">
             <asp:TextBox ID="txtModel" runat="server" ValidationGroup="EditMake" 
-                AutoCompleteType="Disabled" autocomplete="off" 
-                meta:resourcekey="txtModelResource1"></asp:TextBox>
+                AutoCompleteType="Disabled" autocomplete="off" placeholder="<%$ Resources:LocalizedText, EditMakeWatermarkModelName %>" />
             <cc1:AutoCompleteExtender ID="txtModel_AutoCompleteExtender" runat="server" 
                 DelimiterCharacters="" TargetControlID="txtModel"
                 ServiceMethod="SuggestModels" CompletionInterval="100"  
@@ -40,10 +39,6 @@
                 CompletionListCssClass="AutoExtender" CompletionListItemCssClass="AutoExtenderList" 
                 CompletionListHighlightedItemCssClass="AutoExtenderHighlight" BehaviorID="ctl00_txtModel_AutoCompleteExtender" >
             </cc1:AutoCompleteExtender>
-            <cc1:TextBoxWatermarkExtender
-                ID="TextBoxWatermarkExtender1" runat="server" 
-                WatermarkCssClass="watermark" WatermarkText="<%$ Resources:LocalizedText, EditMakeWatermarkModelName %>" TargetControlID="txtModel" BehaviorID="ctl00_TextBoxWatermarkExtender1">
-            </cc1:TextBoxWatermarkExtender>
             <asp:RequiredFieldValidator ID="RequiredFieldValidator1" 
                 ValidationGroup="EditMake" runat="server" 
                 ErrorMessage="Please enter a model name" ControlToValidate="txtModel" 
@@ -61,12 +56,7 @@
             <div class="vfSubDesc"><asp:HyperLink NavigateUrl="https://www.icao.int/publications/DOC8643/Pages/Search.aspx" Target="_blank" ID="lnkICAO" runat="server" Text="Look up" meta:resourcekey="lnkICAOResource1"></asp:HyperLink></div>
         </div>
         <div class="vfValue">
-            <asp:TextBox ID="txtFamilyName" runat="server" MaxLength="4" meta:resourcekey="txtFamilyNameResource1"></asp:TextBox>
-            <cc1:TextBoxWatermarkExtender
-                ID="TextBoxWatermarkExtender5" runat="server" 
-                WatermarkCssClass="watermark" WatermarkText="<%$ Resources:LocalizedText, EditMakeWatermarkFamily %>" 
-                TargetControlID="txtFamilyName" BehaviorID="ctl00_TextBoxWatermarkExtender5">
-            </cc1:TextBoxWatermarkExtender>
+            <asp:TextBox ID="txtFamilyName" runat="server" MaxLength="4" placeholder="<%$ Resources:LocalizedText, EditMakeWatermarkFamily %>" />
             <cc1:FilteredTextBoxExtender runat="server" ID="filteredICAO" FilterType="Numbers, UppercaseLetters, LowercaseLetters" TargetControlID="txtFamilyName" BehaviorID="ctl00_filteredICAO" />
         </div>
         <div class="vfDescription">
@@ -82,13 +72,7 @@
                 meta:resourcekey="lblModelNameResource1" ></asp:Label>
         </div>
         <div class="vfValue">
-            <asp:TextBox ID="txtName" runat="server" ValidationGroup="EditMake" 
-                meta:resourcekey="txtNameResource1"></asp:TextBox>
-            <cc1:TextBoxWatermarkExtender
-                ID="TextBoxWatermarkExtender2" runat="server" 
-                WatermarkCssClass="watermark" WatermarkText="<%$ Resources:LocalizedText, EditMakeWatermarkCommonName %>" 
-                TargetControlID="txtName" BehaviorID="ctl00_TextBoxWatermarkExtender2">
-            </cc1:TextBoxWatermarkExtender>
+            <asp:TextBox ID="txtName" runat="server" ValidationGroup="EditMake" placeholder="<%$ Resources:LocalizedText, EditMakeWatermarkCommonName %>" />
         </div>
         <div class="vfDescription">
             <div class="vfSubDesc"><% =Resources.LocalizedText.OptionalData %></div>
@@ -102,11 +86,7 @@
             <div class="vfSubDesc"><asp:HyperLink ID="lnkTypeRatings" runat="server" NavigateUrl="http://registry.faa.gov/TypeRatings/" Text="<%$ Resources:Makes, promptLookUpTypes %>" /></div>
         </div>
         <div class="vfValue">
-            <asp:TextBox ID="txtType" runat="server" ValidationGroup="EditMake" />
-            <cc1:TextBoxWatermarkExtender
-                ID="TextBoxWatermarkExtender3" runat="server" 
-                WatermarkCssClass="watermark" WatermarkText="<%$ Resources:LocalizedText, EditMakeWatermarkTypeName %>" 
-                TargetControlID="txtType" BehaviorID="ctl00_TextBoxWatermarkExtender3" />
+            <asp:TextBox ID="txtType" runat="server" ValidationGroup="EditMake" placeholder="<%$ Resources:LocalizedText, EditMakeWatermarkTypeName %>" />
             <div style="max-width: 200px;"><asp:CustomValidator ID="valType" runat="server" CssClass="error" Display="Dynamic" ErrorMessage="<%$ Resources:Makes, errYesNotValidType %>" OnServerValidate="valType_ServerValidate" ValidationGroup="EditMake" /></div>
         </div>
         <div class="vfDescription">
@@ -122,12 +102,7 @@
             <asp:Label ID="lblMDS" runat="server" Text="Mission/Design/Series:" Font-Bold="True" meta:resourcekey="lblMDSResource1"></asp:Label>
         </div>
         <div class="vfValue">
-            <asp:TextBox ID="txtArmyMDS" runat="server" meta:resourcekey="txtArmyMDSResource1"></asp:TextBox>
-            <cc1:TextBoxWatermarkExtender
-                ID="TextBoxWatermarkExtender4" runat="server" 
-                WatermarkCssClass="watermark" WatermarkText="<%$ Resources:LocalizedText, EditMakeWatermarkMDS %>" 
-                TargetControlID="txtArmyMDS" BehaviorID="ctl00_TextBoxWatermarkExtender4">
-            </cc1:TextBoxWatermarkExtender>
+            <asp:TextBox ID="txtArmyMDS" runat="server" placeholder="<%$ Resources:LocalizedText, EditMakeWatermarkMDS %>" />
         </div>
         <div class="vfDescription">
             <div class="vfSubDesc"><% =Resources.LocalizedText.OptionalData %></div>

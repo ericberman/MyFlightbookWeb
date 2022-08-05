@@ -33,15 +33,6 @@ namespace MyFlightbook.Instruction
         protected global::System.Web.UI.WebControls.TextBox txtTitle;
 
         /// <summary>
-        /// wmeCustomTitle control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TextBoxWatermarkExtender wmeCustomTitle;
-
-        /// <summary>
         /// valTitleRequired control.
         /// </summary>
         /// <remarks>
@@ -166,15 +157,6 @@ namespace MyFlightbook.Instruction
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtOfflineStudent;
-
-        /// <summary>
-        /// TextBox1_TextBoxWatermarkExtender control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TextBoxWatermarkExtender TextBox1_TextBoxWatermarkExtender;
 
         /// <summary>
         /// rowPassword control.

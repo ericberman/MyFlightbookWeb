@@ -4,10 +4,7 @@
 <asp:ModalPopupExtender ID="ModalPopupExtender1" BehaviorID="mpeEditAppt" BackgroundCssClass="modalBackground" runat="server" TargetControlID="btnDummy" PopupControlID="pnlEditAppt"></asp:ModalPopupExtender>
 <asp:Panel ID="pnlEditAppt" DefaultButton="btnSaveAppt" style="display:none; max-width:300px; width: 80%;" runat="server" CssClass="modalpopup">
     <div><asp:Localize ID="Localize3" runat="server" Text="<%$ Resources:Schedule, EventTitle %>"></asp:Localize></div>
-    <div>
-        <asp:TextBox ID="txtApptTitle" runat="server" />
-        <asp:TextBoxWatermarkExtender BehaviorID="watermarkTitle" ID="TextBoxWatermarkExtender1" TargetControlID="txtApptTitle" WatermarkCssClass="watermark" WatermarkText="<%$ Resources:Schedule, EventTitleWatermark %>" runat="server"></asp:TextBoxWatermarkExtender>
-    </div>
+    <div><asp:TextBox ID="txtApptTitle" runat="server" placeholder="<%$ Resources:Schedule, EventTitleWatermark %>" /></div>
     <div><asp:Localize ID="Localize1" runat="server" Text="<%$ Resources:Schedule, EventStart %>"></asp:Localize></div>
     <div>
         <uc3:mfbTypeInDate ID="dateStart" Width="80px" runat="server" ForceAjax="true" />
@@ -62,7 +59,7 @@
             return new DayPilot.Event({
                 id: document.getElementById('<% =hdnApptID.ClientID %>').value,
                 start: getStartDate(), end: getEndDate(), resource: document.getElementById('<% =hdnResource.ClientID %>').value,
-                text: $find('watermarkTitle').get_text()
+                text: document.getElementById("<% =txtApptTitle.ClientID %>").value
             });
         }
 
@@ -88,7 +85,7 @@
             setStartDate(e.data.start);
             setEndDate(e.data.end);
             document.getElementById('<% =hdnResource.ClientID %>').value = e.data.resource;
-            $find('watermarkTitle').set_text(e.data.text);
+            document.getElementById('<% =txtApptTitle.ClientID %>').value = e.data.text;
             document.getElementById('<% =btnSaveAppt.ClientID %>').onclick = function (args) {
                 if (typeof args === 'undefined')
                     args = $.event.fix(window.event);

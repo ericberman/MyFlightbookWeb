@@ -285,15 +285,6 @@ namespace MyFlightbook.Instruction
         protected global::System.Web.UI.WebControls.TextBox txtCertificate;
 
         /// <summary>
-        /// wmeCertificate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TextBoxWatermarkExtender wmeCertificate;
-
-        /// <summary>
         /// locExpiration control.
         /// </summary>
         /// <remarks>

@@ -114,15 +114,6 @@ namespace MyFlightbook.Clubs
         protected global::System.Web.UI.WebControls.TextBox txtHomeAirport;
 
         /// <summary>
-        /// TextBox1_TextBoxWatermarkExtender control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TextBoxWatermarkExtender TextBox1_TextBoxWatermarkExtender;
-
-        /// <summary>
         /// btnFindClubs control.
         /// </summary>
         /// <remarks>

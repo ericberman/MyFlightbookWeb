@@ -1049,6 +1049,34 @@ namespace MyFlightbook
 
             return lstRemainder;
         }
+
+        #region Textbox input extensions
+        /// <summary>
+        /// Sets the watermark for the textbox
+        /// </summary>
+        /// <param name="textBox"></param>
+        /// <param name="text"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static void SetPlaceholder(this System.Web.UI.WebControls.TextBox textBox, string text)
+        {
+            if (textBox == null)
+                throw new ArgumentNullException(nameof(textBox));
+            textBox.Attributes["placeholder"] = text;
+        }
+
+        /// <summary>
+        /// Retrieves the watermark for the textbox
+        /// </summary>
+        /// <param name="textBox"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static string GetPlaceholder(this System.Web.UI.WebControls.TextBox textBox)
+        {
+            if (textBox == null)
+                throw new ArgumentNullException(nameof(textBox));
+            return textBox.Attributes["placeholder"];
+        }
+        #endregion
         #endregion
 
         #region Exception Extensions

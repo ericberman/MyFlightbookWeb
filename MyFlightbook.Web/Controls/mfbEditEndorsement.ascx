@@ -7,8 +7,7 @@
     <table style="width: 100%">
         <tr>
             <td colspan="2">
-                <asp:TextBox ID="txtTitle" runat="server" Width="100%"></asp:TextBox>
-                <asp:TextBoxWatermarkExtender ID="wmeCustomTitle" WatermarkCssClass="watermark" WatermarkText="<%$ Resources:Signoff, EndorsementTitleWatermark %>" TargetControlID="txtTitle" runat="server" />
+                <asp:TextBox ID="txtTitle" runat="server" Width="100%" placeholder="<%$ Resources:Signoff, EndorsementTitleWatermark %>" />
                 <div><asp:RequiredFieldValidator ID="valTitleRequired" runat="server" Display="Dynamic" EnableClientScript="true" ErrorMessage="<%$ Resources:Signoff, errTitleRequired %>" ControlToValidate="txtTitle" CssClass="error"></asp:RequiredFieldValidator></div>
             </td>
         </tr>
@@ -48,8 +47,7 @@
                         <asp:Label ID="lblStudent" runat="server"></asp:Label>
                     </asp:View>
                     <asp:View ID="vwStudentOffline" runat="server">
-                        <asp:TextBox ID="txtOfflineStudent" runat="server"></asp:TextBox>
-                        <asp:TextBoxWatermarkExtender ID="TextBox1_TextBoxWatermarkExtender" runat="server" Enabled="True" WatermarkCssClass="watermark" WatermarkText="<%$ Resources:SignOff, EditEndorsementStudentNamePrompt %>" TargetControlID="txtOfflineStudent"></asp:TextBoxWatermarkExtender>
+                        <asp:TextBox ID="txtOfflineStudent" runat="server" placeholder="<%$ Resources:SignOff, EditEndorsementStudentNamePrompt %>" />
                     </asp:View>
                 </asp:MultiView>
             </td>
