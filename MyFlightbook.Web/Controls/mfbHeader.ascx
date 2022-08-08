@@ -1,6 +1,4 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbHeader.ascx.cs" Inherits="MyFlightbook.Controls.mfbHeader" %>
-<%@ Register Src="XMLNav.ascx" TagName="XMLNav" TagPrefix="uc2" %>
-<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register Src="~/Controls/mfbSearchbox.ascx" TagPrefix="uc2" TagName="mfbSearchbox" %>
 <%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="asp" %>
 <div class="noprint">
@@ -75,12 +73,14 @@
                             </div>
                             <div style="text-align:center"><asp:Button ID="btnDismiss" runat="server" Text="Close" /></div>
                         </asp:Panel>
-                        <cc1:ModalPopupExtender ID="mpeEvent" BackgroundCssClass="modalBackground" CancelControlID="btnDismiss" TargetControlID="pnlWebinar" PopupControlID="pnlWebinarDetails" runat="server"></cc1:ModalPopupExtender>
+                        <asp:ModalPopupExtender ID="mpeEvent" BackgroundCssClass="modalBackground" CancelControlID="btnDismiss" TargetControlID="pnlWebinar" PopupControlID="pnlWebinarDetails" runat="server"></asp:ModalPopupExtender>
                     </asp:View>
                 </asp:MultiView>
 
                 <div id="headerMenuContainer">
-                    <uc2:XMLNav ID="XMLNav1" runat="server" XmlSrc="~/NavLinks.xml" SelectedItem="tabHome" MenuStyle="HoverPop" />
+                    <ul id="menu-bar">
+                        <asp:PlaceHolder ID="plcMenuBar" runat="server" />
+                    </ul>
                 </div>
             </div>
         </div>

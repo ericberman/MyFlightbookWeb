@@ -43,7 +43,7 @@
             <asp:Label ID="lblImpersonated" runat="server" Text=""></asp:Label> 
             <asp:Button ID="btnStopImpersonating" runat="server" Text="Stop" onclick="btnStopImpersonating_Click" />
         </asp:Panel>    
-        <uc2:mfbHeader ID="mfbHeader" runat="server" />
+        <uc2:mfbHeader ID="mfbHeader" runat="server" XmlSrc="~/NavLinks.xml" />
         <asp:Panel ID="pnlTitle" runat="server" CssClass="noprint centeredBody">
             <h1><asp:ContentPlaceHolder ID="cpPageTitle" runat="server"></asp:ContentPlaceHolder></h1>
         </asp:Panel>

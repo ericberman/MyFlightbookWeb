@@ -2,6 +2,7 @@
 using System;
 using System.Globalization;
 using System.Web;
+using System.Web.UI;
 using System.Web.UI.HtmlControls;
 
 /******************************************************
@@ -13,20 +14,24 @@ using System.Web.UI.HtmlControls;
 
 namespace MyFlightbook.Controls
 {
-    public partial class mfbHeader : System.Web.UI.UserControl
+    public partial class mfbHeader : UserControl
     {
-        public Boolean IsMobile { get; set; }
+        public bool IsMobile { get; set; }
 
-        public tabID SelectedTab
-        {
-            get { return XMLNav1.SelectedItem; }
-            set { XMLNav1.SelectedItem = value; }
-        }
+        /// <summary>
+        /// Filename for the xml source for the tabs.
+        /// </summary>
+        public String XmlSrc { get; set; } = "~/NavLinks.xml";
 
         public TabList TabList
         {
-            get { return XMLNav1.TabList; }
+            get { return TabList.CurrentTabList(XmlSrc); }
         }
+
+        /// <summary>
+        /// Which tab is selected?
+        /// </summary>
+        public tabID SelectedTab { get; set; } = tabID.tabHome;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -80,11 +85,13 @@ namespace MyFlightbook.Controls
                 else
                     imgHdSht.Visible = false;
             }
+
+            plcMenuBar.Controls.Add(new LiteralControl(TabList.WriteTabsHtml(Request != null && Request.UserAgent != null && Request.UserAgent.ToUpper(CultureInfo.CurrentCulture).Contains("ANDROID"), Profile.GetUser(Page.User.Identity.Name).Role, SelectedTab)));
         }
 
         protected void btnSearch_Click(object sender, EventArgs e)
         {
-            Response.Redirect("~/Member/LogbookNew.aspx?s=" + System.Web.HttpUtility.UrlEncode(mfbSearchbox.SearchText));
+            Response.Redirect("~/Member/LogbookNew.aspx?s=" + HttpUtility.UrlEncode(mfbSearchbox.SearchText));
         }
 
         public void Refresh()

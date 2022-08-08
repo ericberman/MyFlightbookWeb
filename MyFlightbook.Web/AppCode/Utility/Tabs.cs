@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
 using System.Xml.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2020 MyFlightbook LLC
+ * Copyright (c) 2008-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -320,7 +324,25 @@ namespace MyFlightbook
     /// </summary>
     public class TabList
     {
+        #region Properties
         public IEnumerable<TabItem> Tabs { get; set; }
+
+        public static TabList CurrentTabList(string szFileName)
+        {
+            if (szFileName == null)
+                throw new ArgumentNullException(nameof(szFileName));
+
+            string szCacheKey = "cachedTabList" + szFileName;
+
+            TabList t = (TabList)HttpRuntime.Cache[szCacheKey];
+            if (t == null)
+            {
+                t = new TabList(szFileName);
+                HttpRuntime.Cache.Add(szCacheKey, t, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(2, 0, 0), System.Web.Caching.CacheItemPriority.Normal, null);
+            }
+            return t;
+        }
+        #endregion
 
         public TabList()
         {
@@ -403,28 +425,65 @@ namespace MyFlightbook
 
             return tiResult;
         }
-    }
 
-    /// <summary>
-    /// When a tab is going to be bound, this is called to give an opportunity to modify the tab or cancel the binding (e.g., for staged rollout in an A|B test or to allow use of alternative UI's side-by-side
-    /// </summary>
-    public class TabBoundEventArgs : EventArgs
-    {
-        public TabItem Item { get; set; }
-
-        public bool Cancel { get; set; }
-
-        public bool SuppressChildren { get; set; }
-
-        public TabBoundEventArgs() : base()
+        public void WriteTabs(IEnumerable<TabItem> lst, HtmlTextWriter tw, bool fNeedsAndroidHack, ProfileRoles.UserRoles userRole, tabID selectedItem, int level = 0)
         {
-            Item = null;
-            SuppressChildren = Cancel = false;
+            if (tw == null)
+                throw new ArgumentNullException(nameof(tw));
+            if (lst == null)
+                throw new ArgumentNullException(nameof(lst));
+
+            // Issue #392:
+            // Hack for Android touch devices: since there's no hover on a touch device, you have to tap it.
+            // On iOS, the first tap is the "hover" and a 2nd tap is the actual click.
+            // But on Android, the first tap does both, which makes selecting from a menu hard.
+            // So an android, we'll set the top-level menu URL to "#" and have it return false in on-click to prevent a navigation.
+            bool fAndroidHack = level == 0 && fNeedsAndroidHack;
+
+            foreach (TabItem ti in lst)
+            {
+                if (String.IsNullOrEmpty(ti.Text))
+                    continue;
+
+                if (ti.Roles.Count > 0 && !ti.Roles.Contains(userRole))
+                    continue;
+
+                bool fHideChildren = false;
+
+                if (ti.ID == selectedItem)
+                    tw.AddAttribute(HtmlTextWriterAttribute.Class, "current");
+                tw.RenderBeginTag(HtmlTextWriterTag.Li);
+
+                if (fAndroidHack)
+                    tw.AddAttribute(HtmlTextWriterAttribute.Onclick, "return false;");
+                tw.AddAttribute(HtmlTextWriterAttribute.Href, fAndroidHack ? "#" : VirtualPathUtility.ToAbsolute(ti.Link));
+                tw.AddAttribute(HtmlTextWriterAttribute.Id, "tabID" + ti.ID.ToString());
+                tw.AddAttribute(HtmlTextWriterAttribute.Class, "topTab");
+                tw.RenderBeginTag(HtmlTextWriterTag.A);
+                tw.InnerWriter.Write(ti.Text);
+                tw.RenderEndTag(); // Anchor tag
+
+                if (ti.Children != null && ti.Children.Any() && !fHideChildren)
+                {
+                    tw.RenderBeginTag(HtmlTextWriterTag.Ul);
+                    WriteTabs(ti.Children, tw, fNeedsAndroidHack, userRole, selectedItem, level + 1);
+                    tw.RenderEndTag();    // ul tag.
+                }
+
+                tw.RenderEndTag();    // li tag
+            }
         }
 
-        public TabBoundEventArgs(TabItem ti) : this()
+        public string WriteTabsHtml(bool fNeedsAndroidHack, ProfileRoles.UserRoles userRole, tabID selectedItem, int level = 0)
         {
-            Item = ti;
+            using (StringWriter sw = new StringWriter(CultureInfo.CurrentCulture))
+            {
+                using (HtmlTextWriter tw = new HtmlTextWriter(sw))
+                {
+                    WriteTabs(Tabs, tw, fNeedsAndroidHack, userRole, selectedItem, level);
+                }
+                return sw.ToString();
+            }
         }
     }
 }

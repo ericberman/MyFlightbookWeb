@@ -554,7 +554,6 @@
     <Content Include="Controls\PrintOptions.ascx" />
     <Content Include="Controls\SponsoredAd.ascx" />
     <Content Include="Controls\TwoFactorAuthVerifyCode.ascx" />
-    <Content Include="Controls\XMLNav.ascx" />
     <Content Include="Default.aspx" />
     <Content Include="DefaultMini.aspx" />
     <Content Include="Global.asax" />
@@ -2127,13 +2126,6 @@
     </Compile>
     <Compile Include="Controls\TwoFactorAuthVerifyCode.ascx.designer.cs">
       <DependentUpon>TwoFactorAuthVerifyCode.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\XMLNav.ascx.cs">
-      <DependentUpon>XMLNav.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\XMLNav.ascx.designer.cs">
-      <DependentUpon>XMLNav.ascx</DependentUpon>
     </Compile>
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
