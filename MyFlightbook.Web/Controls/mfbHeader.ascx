@@ -51,7 +51,7 @@
                             <asp:Image ID="imgSmartphone" ImageUrl="~/images/Smartphone.png" runat="server" style="vertical-align:middle" GenerateEmptyAlternateText="true" />
                             <asp:MultiView ID="mvXSell" runat="server" ActiveViewIndex="0">
                                 <asp:View runat="server" ID="vwGeneric">
-                                    <asp:HyperLink ID="lnkDownload" NavigateUrl="~/Public/MobileApps.aspx" runat="server"></asp:HyperLink>,
+                                    <asp:HyperLink ID="lnkDownload" NavigateUrl="~/Public/MobileApps.aspx" runat="server"></asp:HyperLink>
                                     <asp:Localize ID="Localize5" Text="<%$ Resources:LocalizedText, HeaderDownloadIsFree %>" runat="server"></asp:Localize> 
                                 </asp:View>
                                 <asp:View runat="server" ID="vwIOS">

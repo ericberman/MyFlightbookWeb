@@ -103,7 +103,7 @@ H4
     margin-right: auto;
 }
 
-input[type=text],input[type=password], input[type=number],input[type=email], input[type=text], textarea {
+input[type=text],input[type=password], input[type=number],input[type=email], textarea {
     border-radius: 5px;
     border: 1px solid #a0a0a0;
     padding: 2px;
@@ -1340,6 +1340,9 @@ table.tblAvailablityMap th.timeHeader {
     background-color: white;
     border: 1px solid gray;
     border-radius: 5px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
     font-size: 22pt;
     font-weight: bold;
     color: darkgrey;

@@ -16,8 +16,6 @@ namespace MyFlightbook.Controls
 {
     public partial class mfbHeader : UserControl
     {
-        public bool IsMobile { get; set; }
-
         /// <summary>
         /// Filename for the xml source for the tabs.
         /// </summary>
