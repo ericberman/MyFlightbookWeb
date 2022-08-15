@@ -73,29 +73,75 @@
             </div>
         </div>
         <div id="headerMiddleContainer">
-            <div id="headerMobileCrossSell">
-                <img src='@VirtualPathUtility.ToAbsolute("~/images/Smartphone.png")' style="vertical-align:middle" />
-                @{
-                    if (Request != null && Request.UserAgent != null)
-                    {
-                        string s = Request.UserAgent.ToUpperInvariant();
+            @{
+                if (String.IsNullOrEmpty(ViewBag.WebinarText))
+                {
+                    <div id="headerMobileCrossSell">
+                        <img src='@VirtualPathUtility.ToAbsolute("~/images/Smartphone.png")' style="vertical-align:middle" />
+                        @{
+                            if (Request != null && Request.UserAgent != null)
+                            {
+                                string s = Request.UserAgent.ToUpperInvariant();
 
-                        if (s.Contains("IPAD") || s.Contains("IPHONE"))
-                        {
-                            <a href='@VirtualPathUtility.ToAbsolute("~/Public/MobileApps.aspx?p=0")'>@Branding.ReBrand(Resources.LocalizedText.HeaderDownloadIOS)</a>
+                                if (s.Contains("IPAD") || s.Contains("IPHONE"))
+                                {
+                                    <a href='@VirtualPathUtility.ToAbsolute("~/Public/MobileApps.aspx?p=0")'>@Branding.ReBrand(Resources.LocalizedText.HeaderDownloadIOS)</a>
+                                }
+                                else if (s.Contains("DROID"))
+                                {
+                                    <a href='@VirtualPathUtility.ToAbsolute("~/Public/MobileApps.aspx?p=2")'>@Branding.ReBrand(Resources.LocalizedText.HeaderDownloadAndroid)</a>
+                                }
+                                else
+                                {
+                                    <a href='@VirtualPathUtility.ToAbsolute("~/Public/MobileApps.aspx")'>@Branding.ReBrand(Resources.LocalizedText.HeaderDownload)</a>
+                                    @Html.Raw(Resources.LocalizedText.HeaderDownloadIsFree)
+                                }
+                            }
                         }
-                        else if (s.Contains("DROID"))
-                        {
-                            <a href='@VirtualPathUtility.ToAbsolute("~/Public/MobileApps.aspx?p=2")'>@Branding.ReBrand(Resources.LocalizedText.HeaderDownloadAndroid)</a>
-                        }
-                        else
-                        {
-                            <a href='@VirtualPathUtility.ToAbsolute("~/Public/MobileApps.aspx")'>@Branding.ReBrand(Resources.LocalizedText.HeaderDownload)</a>
-                            @Html.Raw(Resources.LocalizedText.HeaderDownloadIsFree)
-                        }
-                    }
+                    </div>
                 }
-            </div>
+                else
+                {
+                    <style>
+                        .pop-Overlay {
+                            display: none;
+                        }
+
+                        .pop-Content {
+                            display: none;
+                        }
+
+                        .pop-Overlay.active {
+                            display: block;
+                        }
+
+                        .pop-Content.active {
+                            display: block;
+                        }
+                    </style>
+                    <div style="height: 32px; text-align:center; padding: 5px; margin-top: 4px; margin-bottom: 4px; background-color:#E8E8E8; border-radius: 5px;">
+                        <span class="displayPop" style="vertical-align:middle">@Html.Raw(ViewBag.WebinarText)</span>
+                    </div>
+                    <div class="pop-Overlay">
+                        <div class="modalpopup pop-Content" style="max-width: 480px; white-space:pre-wrap; margin-left: auto; margin-right: auto; position: absolute; top: 30px; z-index: 5;">
+                            <div style="text-align:left">@Html.Raw(ViewBag.WebinarDetails);</div>
+                            <div style="text-align:center"><button class="closePop" />Close</div>
+                        </div>
+                    </div>
+
+                    <script type="text/javascript">
+                        //appends an "active" class to .popup and .popup-content when the "Open" button is clicked
+                        $(".displayPop").on("click", function () {
+                            $(".pop-Overlay, .pop-Content").addClass("active");
+                        });
+
+                        //removes the "active" class to .popup and .popup-content when the "Close" button is clicked
+                        $(".closePop, .pop-Content").on("click", function () {
+                            $(".pop-Overlay, .pop-Content").removeClass("active");
+                        });
+                    </script>
+                }
+            }
             <div id="headerMenuContainer">
                 <ul id="menu-bar">
                     @Html.Raw(ViewBag.TabHTML)

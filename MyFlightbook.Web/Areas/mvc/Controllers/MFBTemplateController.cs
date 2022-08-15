@@ -1,4 +1,5 @@
 ﻿using MyFlightbook;
+using MyFlightbook.Schedule;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -123,6 +124,25 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 pf.Role, selectedTab);
 
             AddProfileToViewBag(pf);
+
+            // see if we need to show an upcoming event; we repurpose a known GUID for this.  
+            // If it's in the database AND in the future, we show it.
+            // Since header is loaded on every page load, cache it, using a dummy expired one if there was none.
+            ScheduledEvent se = (ScheduledEvent)System.Web.HttpContext.Current.Cache["upcomingWebinar"];
+            if (se == null)
+            {
+                se = ScheduledEvent.AppointmentByID("00000000-fe32-5932-bef8-000000000001", TimeZoneInfo.Utc);
+                if (se == null)
+                    se = new ScheduledEvent() { EndUtc = DateTime.Now.AddDays(-2) };
+                System.Web.HttpContext.Current.Cache.Add("upcomingWebinar", se, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, 30, 0), System.Web.Caching.CacheItemPriority.Default, null);
+            }
+            if (se != null && DateTime.UtcNow.CompareTo(se.EndUtc) < 0)
+            {
+                string[] rgLines = se.Body.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                ViewBag.WebinarText = String.Format(CultureInfo.CurrentCulture, "Join \"{0}\" on {1}", (rgLines == null || rgLines.Length == 0) ? string.Empty : rgLines[0], se.EndUtc.ToShortDateString()).Linkify();
+                ViewBag.WebinarDetails = se.Body.Linkify(true);
+            }
+
             return PartialView("_header");
         }
 
