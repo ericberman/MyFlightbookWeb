@@ -1,0 +1,7 @@
+﻿@using MyFlightbook
+<div class="footerContainer">
+    <a href="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Classic].LinkRef">@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Classic].Name</a>
+    <div>@String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.CopyrightDisplay, DateTime.Now.Year)</div>
+</div>
+
+

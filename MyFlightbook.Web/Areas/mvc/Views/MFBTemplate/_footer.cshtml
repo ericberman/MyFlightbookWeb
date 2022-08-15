@@ -1,0 +1,64 @@
+﻿@using MyFlightbook
+<div class="footerContainer">
+    <hr />
+    <div class="footerItem">
+        <ul>
+            <li><a href="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.About].LinkRef">@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.About].Name</a></li>
+            <li><a href="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Privacy].LinkRef">@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Privacy].Name</a></li>
+            <li><a href="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Terms].LinkRef">@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Terms].Name</a></li>
+            <li><a href="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Developers].LinkRef">@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Developers].Name</a></li>
+        </ul>
+    </div>
+    <div class="footerItem">
+        <ul>
+            <li><a href="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Contact].LinkRef">@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Contact].Name</a></li>
+            <li><a href="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.FAQ].LinkRef">@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.FAQ].Name</a></li>
+            @{
+                if (ViewBag.FooterLinks.ContainsKey(MyFlightbook.Brand.FooterLinkKey.Videos) && ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Videos].IsVisible)
+                {
+                        <li><a href="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Videos].LinkRef">@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Videos].Name</a></li>
+                }
+                if (ViewBag.FooterLinks.ContainsKey(MyFlightbook.Brand.FooterLinkKey.Blog) && ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Blog].IsVisible)
+                {
+                        <li><a href="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Blog].LinkRef">@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Blog].Name</a></li>
+                }
+            }
+        </ul>
+    </div>
+    <div class="footerItem">
+        <ul><li><a href="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Mobile].LinkRef">@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Mobile].Name</a></li></ul>
+        <div style="margin-top:3px; margin-bottom:6px;" id="divSSLSeal" runat="server" visible="<%# Request.IsSecureConnection %>">
+            <span id="siteseal">
+                <script async src="https://seal.godaddy.com/getSeal?sealID=MbSEyzG679EfYseNolHmMeTjb9SSTum9qZBBZbXTqqb8vBPbEJNZtpY0EX4b"></script>
+            </span>
+        </div>
+    </div>
+    <div class="footerItem">
+        <ul>
+            @{
+                if (ViewBag.FooterLinks.ContainsKey(MyFlightbook.Brand.FooterLinkKey.Facebook) && ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Facebook].IsVisible)
+                {
+                    <li style="padding: 2px;">
+                        <img src="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Facebook].ImageRef" style="vertical-align: middle; margin-right: .5em;" />
+                        <a href="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Facebook].LinkRef">@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Facebook].Name</a>
+                    </li>
+                }
+                if (ViewBag.FooterLinks.ContainsKey(MyFlightbook.Brand.FooterLinkKey.Twitter) && ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Twitter].IsVisible)
+                {
+                    <li style="padding: 2px;">
+                        <img src="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Twitter].ImageRef" style="vertical-align: middle; margin-right: .5em;" />
+                        <a href="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Twitter].LinkRef">@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Twitter].Name</a>
+                    </li>
+                }
+                if (ViewBag.FooterLinks.ContainsKey(MyFlightbook.Brand.FooterLinkKey.RSS) && ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.RSS].IsVisible)
+                {
+                    <li style="padding: 2px;">
+                        <img src="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.RSS].ImageRef" style="vertical-align: middle; margin-right: .5em;" />
+                        <a href="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.RSS].LinkRef">@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.RSS].Name</a>
+                    </li>
+                }
+            }
+        </ul>
+    </div>
+    <div>@String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.CopyrightDisplay, DateTime.Now.Year)</div>
+</div>

@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        @{ Html.RenderAction("RenderHead", "MFBTemplate", new ViewDataDictionary() { { "Title", ViewBag.Title } }); }
+    </head>
+    <body>
+        @{ Html.RenderAction("RenderImpersonation", "MFBTemplate"); }
+        @{ Html.RenderAction("RenderHeader", "MFBTemplate"); }
+        <div class="noprint centeredBody">
+            <h1>@ViewBag.Title</h1>
+        </div>
+        <div class="topForm">
+            <div class="sidebarRight">
+                @RenderBody()
+            </div>
+        </div>
+        <hr />
+        <script type="text/javascript">
+            function acceptCookies() {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("AcceptCookies", "MFBTemplate")',
+                    data: JSON.stringify(new Object()),
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (response) {
+                        document.cookie = response.cookie;
+                        $('#privacyFooter').hide();
+                    },
+                    error: function () { }
+                });
+                return false;
+            }
+
+            function viewMFBImg(src) {
+                var img = document.getElementById('imgImgToView');
+                img.src = src;
+                showMFBImg();
+            }
+
+            function showMFBImg() {
+                var maxFactor = 0.95;
+                var img = document.getElementById('imgImgToView');
+                var xRatio = img.naturalWidth / window.innerWidth;
+                var yRatio = img.naturalHeight / window.innerHeight;
+                var maxRatio = (xRatio > yRatio) ? xRatio : yRatio;
+                if (maxRatio > maxFactor) {
+                    img.width = maxFactor * (img.naturalWidth / maxRatio);
+                    img.height = maxFactor * (img.naturalHeight / maxRatio);
+                }
+                else {
+                    img.width = img.naturalWidth;
+                    img.height = img.naturalHeight;
+                }
+                var container = document.getElementById("divViewImg");
+                container.style.width = img.width + "px";
+                container.style.height = img.height + "px";
+                document.getElementById("divModalImgHolder").style.display = "block";
+            }
+
+            function dismissImg() {
+                document.getElementById('divModalImgHolder').style.display = 'none';
+            }
+
+            function dismissImgViaEsc(e) {
+                if (e && e.keyCode == Sys.UI.Key.esc) {
+                }
+            }
+
+            function pageLoad(sender, args) {
+                if (!args.get_isPartialLoad()) {
+                    $addHandler(document, "keydown", dismissImgViaEsc);
+                }
+            }
+        </script>
+        <div class="imgShowFullBackground" style="display:none;" id="divModalImgHolder">
+            <div id="divViewImg" class="imgShowFull">
+                <img onclick="dismissImg();" class="imgDismissBtn" src="@VirtualPathUtility.ToAbsolute("~/images/closeimg.png")" />
+                <img id="imgImgToView" />
+            </div>
+        </div>
+        <footer>
+            @{ Html.RenderAction("RenderFooter", "MFBTemplate"); }
+        </footer>
+        @{ Html.RenderAction("RenderPrivacyLink", "MFBTemplate"); }
+    </body>
+</html>

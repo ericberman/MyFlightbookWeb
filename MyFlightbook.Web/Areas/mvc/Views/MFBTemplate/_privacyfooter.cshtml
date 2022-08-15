@@ -1,0 +1,5 @@
+﻿<div id="privacyFooter">
+    @Resources.LocalizedText.CookieNotice
+    <input type="button" onclick="acceptCookies()" value="@Resources.LocalizedText.CookieNoticeAccept" />
+    <a href="@VirtualPathUtility.ToAbsolute("~/Public/Privacy.aspx")">@String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.PrivacyPolicyHeader, Branding.CurrentBrand.AppName)</a>
+</div>

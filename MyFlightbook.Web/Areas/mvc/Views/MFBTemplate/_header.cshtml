@@ -1,0 +1,106 @@
+﻿<div class="noprint" style="width: 100%">
+    <div id="headerBar" style="width: 100%">
+        <div id="headerLogo">
+            <a href='@VirtualPathUtility.ToAbsolute("~/Default.aspx")'>
+                <img src="@VirtualPathUtility.ToAbsolute(Branding.CurrentBrand.LogoHRef)" />
+            </a>
+        </div>
+        <div id="headerProfile">
+            <div id="headerSearchAndSign">
+                <div id="headerSearchBox">
+                    <div style="padding-top:3px;">
+                        <div class="searchBox" id="searchBox">
+                            @using (Html.BeginForm("Search", "MFBTemplate", FormMethod.Post))
+                            {
+                                <img src=@VirtualPathUtility.ToAbsolute("~/images/Search.png") class="searchBoxIcon" alt="" tooltip="" />
+                                <input type="text" class="searchBoxTextBox noselect" name="searchText" placeholder="@Resources.LocalizedText.SearchBoxWatermark" />
+                                <input type="submit" value="submit" id="_searchBtn" style="display:none;" />
+                            }
+                            <script type="text/javascript">
+                                $(function () {
+                                    $('searchBox').keydown(function (e) {
+                                        if (e.keyCode == 13) {
+                                            $("_searchBtn").focus().click();
+                                            return false;
+                                        }
+                                    });
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+                <div id="headerLoginStatus">
+                    @{
+                        if (User.Identity.IsAuthenticated)
+                        {
+                            <img runat="server" id="imgHdSht" class="headerHeadSht" src="@ViewBag.HeadShot" />
+                            <div class="popMenuContent popMenuHidden" id="loginPop">
+                                <div style="padding:4px; text-align:center;">
+                                    <div>@ViewBag.MemberDate</div>
+                                    <div>@ViewBag.LastLogin</div>
+                                    <div>@ViewBag.LastActivity</div>
+                                    <script type="text/javascript">
+                                        function signOut() {
+                                            document.getElementById("signOut").click();
+                                        }
+                                    </script>
+                                    @using (Html.BeginForm("SignOut", "MFBTemplate", FormMethod.Post))
+                                    {
+                                        <div id="signOutRow"><a href="javascript:signOut();">@Resources.LocalizedText.LoginStatusSignOut</a></div>
+                                        <input type="submit" style="display:none;" id="signOut" />
+                                    }
+                                </div>
+                            </div>
+                        }
+                    }
+                    <div id="headerWelcome">
+                        @{
+                            if (User.Identity.IsAuthenticated)
+                            {
+                                <div style="padding: 2px; margin-top: 2px; width: 180px"><span style="vertical-align:middle">@ViewBag.Greeting</span></div>
+                                <div style="padding:2px; font-weight: bold;"><a href="@VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftDonate")">@Branding.ReBrand(Resources.LocalizedText.DonateSolicitation)</a></div>
+                            }
+                            else
+                            {
+                                <div>
+                                    <a href="@VirtualPathUtility.ToAbsolute("~/secure/login.aspx")">@Resources.LocalizedText.LoginStatusSignIn</a> |
+                                    <a href="@VirtualPathUtility.ToAbsolute("~/Logon/newuser.aspx")">@Resources.LocalizedText.LoginStatusCreateAccount</a>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="headerMiddleContainer">
+            <div id="headerMobileCrossSell">
+                <img src='@VirtualPathUtility.ToAbsolute("~/images/Smartphone.png")' style="vertical-align:middle" />
+                @{
+                    if (Request != null && Request.UserAgent != null)
+                    {
+                        string s = Request.UserAgent.ToUpperInvariant();
+
+                        if (s.Contains("IPAD") || s.Contains("IPHONE"))
+                        {
+                            <a href='@VirtualPathUtility.ToAbsolute("~/Public/MobileApps.aspx?p=0")'>@Branding.ReBrand(Resources.LocalizedText.HeaderDownloadIOS)</a>
+                        }
+                        else if (s.Contains("DROID"))
+                        {
+                            <a href='@VirtualPathUtility.ToAbsolute("~/Public/MobileApps.aspx?p=2")'>@Branding.ReBrand(Resources.LocalizedText.HeaderDownloadAndroid)</a>
+                        }
+                        else
+                        {
+                            <a href='@VirtualPathUtility.ToAbsolute("~/Public/MobileApps.aspx")'>@Branding.ReBrand(Resources.LocalizedText.HeaderDownload)</a>
+                            @Html.Raw(Resources.LocalizedText.HeaderDownloadIsFree)
+                        }
+                    }
+                }
+            </div>
+            <div id="headerMenuContainer">
+                <ul id="menu-bar">
+                    @Html.Raw(ViewBag.TabHTML)
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

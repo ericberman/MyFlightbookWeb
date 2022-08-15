@@ -1042,6 +1042,27 @@ table.dataDescription thead tr td
     padding-right: 3px;
 }
 
+.imgShowFull {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+.imgShowFullBackground {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    z-index: 10001;
+    width: 100%;
+    height: 100%;
+}
+
+.imgDismissBtn {
+    position: absolute;
+    margin: 15px, 15px, 15px, 15px;
+}
+
 /* Preferences */
 .prefSectionRow
 {
@@ -1381,6 +1402,48 @@ table.tblAvailablityMap th.timeHeader {
 .popMenuAccess {
 }
 
+#imgHdSht:hover + .popMenuHidden, .popMenuHidden:hover {
+    display: block;
+}
+
+.popMenuHidden {
+    padding: 3px;
+    position: absolute;
+    line-height: 16pt;
+    display: none;
+    z-index: 100;
+    width: 180px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+.searchBox {
+    border: 1px solid darkgray;
+    border-radius: 14px;
+    height: 24px;
+    display: table-cell;
+    vertical-align: middle;
+    text-align: left;
+    padding-left: 8px;
+    padding-right: 3px;
+}
+
+.searchBoxIcon {
+    vertical-align: middle;
+    height: 20px;
+}
+
+.searchBoxTextBox {
+    width: 120px;
+    font-size: 8pt;
+    border: none !important;
+    vertical-align: middle;
+    outline: none !important;
+}
+
+.searchBoxTextBox:focus {
+    border: none;
+}
+
 /* Tabs*/
 .mfbDefault.ajax__tab_xp .ajax__tab_header {
     font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
@@ -1390,6 +1453,25 @@ table.tblAvailablityMap th.timeHeader {
 .mfbDefault .ajax__tab_panel, .mfbDefault .ajax__tab_body, .mfbDefault .ajax__scroll_none {
     font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     font-size: 9pt;
+}
+
+#privacyFooterContainer {
+}
+
+/* Privacy footer */
+#privacyFooter {
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-bottom: 2px;
+    border: 1px solid black;
+    border-radius: 3px;
+    background-color: #eeeeee;
+    padding: 4px;
+    position: fixed;
+}
+
+@media screen {
+    #privacyFooter { bottom: 0px; }
 }
 
 /* Signature radio button items */
