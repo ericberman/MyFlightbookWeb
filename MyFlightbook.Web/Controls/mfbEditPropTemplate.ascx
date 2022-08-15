@@ -48,13 +48,16 @@
                 </tr>
                 <tr>
                     <td></td>
-                    <td>
-                        <div style="display:inline-block"><uc1:mfbSearchbox runat="server"   ID="searchProps" EnableViewState="false" Hint="<%$ Resources:LogbookEntry, TemplateFindPropertiesWatermark %>" OnSearchClicked="searchProps_SearchClicked" /></div>
-                    </td>
-                    <td><asp:Localize ID="locIncluded" runat="server" Text="<%$ Resources:LogbookEntry, TemplatePropertiesPrompt %>"></asp:Localize></td>
+                    <td><% =Resources.LogbookEntry.TemplatePropertiesPromptSource %></td>
+                    <td><% =Resources.LogbookEntry.TemplatePropertiesPromptTarget %></td>
                 </tr>
                 <tr>
-                    <td></td>
+                    <td style="vertical-align:top;">
+                        <asp:Localize ID="locIncluded" runat="server" Text="<%$ Resources:LogbookEntry, TemplatePropertiesPrompt %>" />
+                        <div class="fineprint"><% =Resources.LogbookEntry.TemplatePropertiesPromptHint %></div>
+                        <div><uc1:mfbSearchbox runat="server" ID="searchProps" EnableViewState="false" Hint="<%$ Resources:LogbookEntry, TemplateFindPropertiesWatermark %>" OnSearchClicked="searchProps_SearchClicked" /></div>
+                        <div><asp:Label ID="lblFilteredLabel" runat="server" CssClass="fineprint" EnableViewState="false" /></div>
+                    </td>
                     <td>
                          <div id="divAvailableProps" runat="server" ondragover="javascript:lstDropTemplate.allowDrop(event)" class="dragTarget">
                             <asp:Repeater ID="rptAvailableProps" runat="server">
@@ -89,7 +92,7 @@
                 </tr>
                 <tr>
                     <td></td>
-                    <td><asp:Label ID="lblFilteredLabel" runat="server" CssClass="fineprint" EnableViewState="false"></asp:Label></td>
+                    <td></td>
                     <td><div>
                         <asp:Button runat="server" Text="<%$ Resources:LocalizedText, Cancel %>" ValidationGroup="vgPropTemplate" Visible="false" ID="btnCancelEditTemplate" OnClick="btnCancelEditTemplate_Click" /> 
                         <asp:Button runat="server" Text="<%$ Resources:LogbookEntry, TemplateCreate %>" ValidationGroup="vgPropTemplate" ID="btnSaveTemplate" OnClick="btnSaveTemplate_Click" /> 

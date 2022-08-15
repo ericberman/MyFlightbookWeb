@@ -3923,11 +3923,38 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Drag/drop from the list of available properties (on the left) into this list.
+        ///   Looks up a localized string similar to Properties to include.
         /// </summary>
         internal static string TemplatePropertiesPrompt {
             get {
                 return ResourceManager.GetString("TemplatePropertiesPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drag from one list to the other. .
+        /// </summary>
+        internal static string TemplatePropertiesPromptHint {
+            get {
+                return ResourceManager.GetString("TemplatePropertiesPromptHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Available Properties.
+        /// </summary>
+        internal static string TemplatePropertiesPromptSource {
+            get {
+                return ResourceManager.GetString("TemplatePropertiesPromptSource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Properties in the template.
+        /// </summary>
+        internal static string TemplatePropertiesPromptTarget {
+            get {
+                return ResourceManager.GetString("TemplatePropertiesPromptTarget", resourceCulture);
             }
         }
         

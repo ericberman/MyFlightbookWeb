@@ -186,6 +186,15 @@ namespace MyFlightbook.Templates.Controls
         protected global::System.Web.UI.WebControls.DropDownList cmbCategories;
 
         /// <summary>
+        /// locIncluded control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locIncluded;
+
+        /// <summary>
         /// searchProps control.
         /// </summary>
         /// <remarks>
@@ -195,13 +204,13 @@ namespace MyFlightbook.Templates.Controls
         protected global::Controls_mfbSearchbox searchProps;
 
         /// <summary>
-        /// locIncluded control.
+        /// lblFilteredLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locIncluded;
+        protected global::System.Web.UI.WebControls.Label lblFilteredLabel;
 
         /// <summary>
         /// divAvailableProps control.
@@ -238,15 +247,6 @@ namespace MyFlightbook.Templates.Controls
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Repeater rptTemplateProps;
-
-        /// <summary>
-        /// lblFilteredLabel control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblFilteredLabel;
 
         /// <summary>
         /// btnCancelEditTemplate control.

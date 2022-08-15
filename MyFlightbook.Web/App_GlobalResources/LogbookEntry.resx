@@ -1083,7 +1083,7 @@ Proceed with import?</value>
     <value>You have no templates in your account</value>
   </data>
   <data name="TemplatePropertiesPrompt" xml:space="preserve">
-    <value>Drag/drop from the list of available properties (on the left) into this list</value>
+    <value>Properties to include</value>
   </data>
   <data name="TemplateShare" xml:space="preserve">
     <value>Share with others</value>
@@ -1449,5 +1449,14 @@ Proceed with import?</value>
   </data>
   <data name="ConfirmModifySignedFlight" xml:space="preserve">
     <value>You are modifying a flight that has been signed; doing so may invalidate the signature.  Are you sure you want to continue?</value>
+  </data>
+  <data name="TemplatePropertiesPromptSource" xml:space="preserve">
+    <value>Available Properties</value>
+  </data>
+  <data name="TemplatePropertiesPromptTarget" xml:space="preserve">
+    <value>Properties in the template</value>
+  </data>
+  <data name="TemplatePropertiesPromptHint" xml:space="preserve">
+    <value>Drag from one list to the other. </value>
   </data>
 </root>
