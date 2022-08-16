@@ -11,6 +11,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Web.Caching;
 
 /******************************************************
  * 
@@ -645,6 +646,32 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
                 throw new MyFlightbookException("Error loading matching makes: " + dbh.LastError);
 
             return new Collection<MakeModel>(lst);
+        }
+
+        private const string szCacheKeyModels = "keyAllModelsByManufacturer";
+
+        public static IDictionary<int, List<MakeModel>> ModelsByManufacturer(bool fIncludeGeneric = false)
+        {
+            Dictionary<int, List<MakeModel>> d = (Dictionary<int, List<MakeModel>>)HttpRuntime.Cache[szCacheKeyModels];
+            if (d == null)
+            {
+                d = new Dictionary<int, List<MakeModel>>();
+                Collection<MakeModel> allModels = MatchingMakes();
+
+                foreach (MakeModel m in allModels)
+                {
+                    // skip any sim/generic-only types
+                    if (!fIncludeGeneric && m.AllowedTypes != AllowedAircraftTypes.Any)
+                        continue;
+
+                    if (!d.ContainsKey(m.ManufacturerID))
+                        d[m.ManufacturerID] = new List<MakeModel>();
+                    d[m.ManufacturerID].Add(m);
+                }
+
+                HttpRuntime.Cache.Add(szCacheKeyModels, d, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 30, 0), CacheItemPriority.BelowNormal, null);
+            }
+            return d;
         }
 
         private string m_szSearchNormal;

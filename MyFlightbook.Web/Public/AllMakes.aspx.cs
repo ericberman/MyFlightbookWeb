@@ -18,34 +18,6 @@ namespace MyFlightbook.PublicPages
 {
     public partial class AllMakes : Page
     {
-        private const string szCacheKeyModels = "keyAllModelsByManufacturer";
-        private IDictionary<int, List<MakeModel>> ModelsByManufacturer
-        {
-            get
-            {
-                Dictionary<int, List<MakeModel>> d = (Dictionary<int, List<MakeModel>>)Cache[szCacheKeyModels];
-                if (d == null)
-                {
-                    d = new Dictionary<int, List<MakeModel>>();
-                    Collection<MakeModel> allModels = MakeModel.MatchingMakes();
-
-                    foreach (MakeModel m in allModels)
-                    {
-                        // skip any sim/generic-only types
-                        if (m.AllowedTypes != AllowedAircraftTypes.Any)
-                            continue;
-
-                        if (!d.ContainsKey(m.ManufacturerID))
-                            d[m.ManufacturerID] = new List<MakeModel>();
-                        d[m.ManufacturerID].Add(m);
-                    }
-
-                    Cache.Add(szCacheKeyModels, d, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, 30, 0), System.Web.Caching.CacheItemPriority.BelowNormal, null);
-                }
-                return d;
-            }
-        }
-
         private void ShowBasePage()
         {
             List<Manufacturer> lst = new List<Manufacturer>(Manufacturer.CachedManufacturers());
@@ -58,9 +30,9 @@ namespace MyFlightbook.PublicPages
         {
             // specific manufacturer - show their models
             // No images, just for performance
-            if (ModelsByManufacturer.ContainsKey(idMan))
+            if (MakeModel.ModelsByManufacturer().ContainsKey(idMan))
             {
-                gvMakes.DataSource = ModelsByManufacturer[idMan];
+                gvMakes.DataSource = MakeModel.ModelsByManufacturer()[idMan];
                 gvMakes.DataBind();
             }
             else
@@ -69,10 +41,10 @@ namespace MyFlightbook.PublicPages
 
         private void ShowAircraftForModel(int idMan, int idModel)
         {
-            if (!ModelsByManufacturer.ContainsKey(idMan))
+            if (!MakeModel.ModelsByManufacturer().ContainsKey(idMan))
                 throw new HttpException(404, "Not found");
 
-            MakeModel m = ModelsByManufacturer[idMan].Find(mm => mm.MakeModelID == idModel);
+            MakeModel m = MakeModel.ModelsByManufacturer()[idMan].Find(mm => mm.MakeModelID == idModel);
 
             if (m == null)
                 throw new HttpException(404, "Not found");

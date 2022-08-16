@@ -1,0 +1,8 @@
+﻿
+@{
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+@foreach (Manufacturer man in ViewBag.Manufacturers)
+{
+    <div><a href="@String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}/{1}", Request.Url.AbsolutePath, man.ManufacturerID)">@man.ManufacturerName</a></div>
+}

@@ -25,6 +25,11 @@ namespace MyFlightbook.Web.Areas.mvc
             if (context == null)
                 throw new ArgumentNullException(nameof(context));
             context.MapRoute(
+                "mvc_allmakes",
+                "mvc/AllMakes/{idman}/{idmodel}",
+                new { controller = "AllMakes", action = "Index", idman = "0", idmodel = "0"}
+                );
+            context.MapRoute(
                 "mvc_default",
                 "mvc/{controller}/{action}/{id}",
                 new { action = "Index", id = UrlParameter.Optional }

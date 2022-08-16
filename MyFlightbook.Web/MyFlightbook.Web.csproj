@@ -1338,6 +1338,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>WebService.resx</DependentUpon>
     </Compile>
+    <Compile Include="Areas\mvc\Controllers\AllMakesController.cs" />
     <Compile Include="Areas\mvc\Controllers\MFBTemplateController.cs" />
     <Compile Include="Areas\mvc\Controllers\MVCTestController.cs" />
     <Compile Include="Areas\mvc\mvcAreaRegistration.cs" />
@@ -3000,6 +3001,9 @@
     <Content Include="Areas\mvc\Views\MFBTemplate\_privacyfooter.cshtml" />
     <Content Include="Areas\mvc\Views\MFBTemplate\_templatehead.cshtml" />
     <Content Include="Areas\mvc\Views\MFBTemplate\_impersonation.cshtml" />
+    <Content Include="Areas\mvc\Views\AllMakes\manufacturerlist.cshtml" />
+    <Content Include="Areas\mvc\Views\AllMakes\modellist.cshtml" />
+    <Content Include="Areas\mvc\Views\AllMakes\aircraftlist.cshtml" />
     <None Include="packages.config" />
     <None Include="SecuritySwitch-v4.xsd">
       <SubType>Designer</SubType>

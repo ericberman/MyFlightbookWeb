@@ -1,0 +1,38 @@
+﻿
+@{
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+@using MyFlightbook.Image;
+@using System.Globalization;
+<h3>@String.Format(CultureInfo.CurrentCulture, "Attributes of {0}:", ViewBag.MakeModel.DisplayName)</h3>
+<ul>
+    @foreach (string s in ViewBag.MakeModel.AttributeList())
+    {
+        <li>@s</li>
+    }
+</ul>
+<h3>@String.Format(CultureInfo.CurrentCulture, "Sample aircraft for {0}", ViewBag.MakeModel.DisplayName)</h3>
+<table style="border-collapse: collapse; border-spacing: 0px; border: none;">
+    @foreach (Aircraft ac in ViewBag.Aircraft)
+    {
+        ImageList il = new ImageList(MFBImageInfoBase.ImageClass.Aircraft, ac.AircraftID.ToString(CultureInfo.InvariantCulture));
+        il.Refresh(false, null, false);
+        List<MFBImageInfo> lst = new List<MFBImageInfo>(il.ImageArray);
+        if (lst.Count > 3)
+        {
+            lst.RemoveRange(3, lst.Count - 3);
+        }
+
+        <tr style="vertical-align: top">
+            <td style="font-weight:bold; padding: 5px;">@ac.DisplayTailnumber</td>
+            <td>
+                @foreach (MFBImageInfo mfbii in lst)
+                {
+                <div style="display:inline-block"><a href="@mfbii.URLFullImage"><img src="@mfbii.URLThumbnail" /></a></div>
+                    // DON'T cache this locally - could possibly be leading to memory leaks if crawler hits us hard?
+                    mfbii.UnCache();
+                }
+            </td>
+        </tr>
+    }
+</table>

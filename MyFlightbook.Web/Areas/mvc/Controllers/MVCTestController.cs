@@ -22,7 +22,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             ViewBag.WelcomeMessage = (User.Identity.IsAuthenticated) ?
                 String.Format(CultureInfo.CurrentCulture, "Hello {0}!", MyFlightbook.Profile.GetUser(User.Identity.Name).UserFullName) :
-                "Hi, Loser.  Why aren't you signed in?";
+                "Hi.  Why aren't you signed in?";
             ViewBag.Title = "Sample MVC Page";
             return View();
         }

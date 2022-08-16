@@ -1,0 +1,31 @@
+﻿
+@{
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+@using System.Globalization;
+
+<table style="border-collapse: collapse; border-spacing: 0px; border: none; width: 100%;">
+    @foreach (MakeModel m in ViewBag.Models)
+    {
+        <tr style="vertical-align: top; margin-bottom: 5px;">
+            <td>@m.ManufacturerDisplay</td>
+            <td>
+                <div><a style="font-weight:bold; font-size: larger;" href="@String.Format(CultureInfo.InvariantCulture, "{0}/{1}", Request.Url.AbsolutePath, m.MakeModelID)">@m.ModelDisplayNameNoCatclass</a></div>
+                <div>@(String.IsNullOrEmpty(m.FamilyName) ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, ModelQuery.ICAOPrefix, m.FamilyName))</div>
+                <div>@(String.IsNullOrEmpty(m.ArmyMDS) ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, Resources.LocalizedText.EditMakeWatermarkMDS, m.ArmyMDS))</div>
+            </td>
+            <td>@m.CategoryClassDisplay</td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <ul>
+                    @foreach (string s in m.AttributeList())
+                    {
+                        <li>@s</li>
+                    }
+                </ul>
+                <hr />
+            </td>
+        </tr>
+    }
+</table>
