@@ -28,9 +28,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         // GET: mvc/AllMakes
         public ActionResult Index(int idman, int idmodel)
         {
-            ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.Makes.AllMakesTitle, Branding.CurrentBrand.AppName);
             // Different experience when signed in and when not signed in.
-            if (User.Identity.IsAuthenticated)
+            if (User.Identity.IsAuthenticated && idman == 0)
             {
                 Response.Redirect(VirtualPathUtility.ToAbsolute("~/Member/Makes.aspx"), true);
                 return null;
@@ -41,6 +40,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             // No manufacturer specified - show all manufacturers 
             if (idman <= 0)
             {
+                ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.Makes.AllManufacturersTitle, Branding.CurrentBrand.AppName);
                 List<Manufacturer> lst = new List<Manufacturer>(Manufacturer.CachedManufacturers());
                 lst.RemoveAll(man => man.AllowedTypes != AllowedAircraftTypes.Any);
                 ViewBag.Manufacturers = lst;
@@ -52,7 +52,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (!MakeModel.ModelsByManufacturer().ContainsKey(idman))
                     throw new HttpException(404, "Not found");
 
-                ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.Makes.AllMakesTitle, Branding.CurrentBrand.AppName);
+                Manufacturer man = Manufacturer.CachedManufacturers().FirstOrDefault((m) => m.ManufacturerID == idman);
+                ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.Makes.AllMakesTitle, Branding.CurrentBrand.AppName, man.ManufacturerName);
                 SetCaching();
                 ViewBag.Models = MakeModel.ModelsByManufacturer()[idman];
                 return View("modellist");
@@ -62,7 +63,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 // if we're here, we have both a manufacturer and a model, so show all of the aircraft
                 MakeModel m = MakeModel.GetModel(idmodel);
                 ViewBag.MakeModel = m;
-                ViewBag.Title = String.Format(CultureInfo.CurrentCulture, "Sample aircraft for {0}", m.DisplayName);
+                ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.Makes.AllAircraftForModel, Branding.CurrentBrand.AppName, m.DisplayName);
 
                 List<Aircraft> lst = new List<Aircraft>();
                 // UserAircraft.GetAircraftForUser is pretty heavyweight, especially for models witha  lot of aircraft like C-152.

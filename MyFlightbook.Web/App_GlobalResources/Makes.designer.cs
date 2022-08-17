@@ -61,11 +61,29 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} - All Makes.
+        ///   Looks up a localized string similar to All aircraft on {0} that are {1}.
+        /// </summary>
+        internal static string AllAircraftForModel {
+            get {
+                return ResourceManager.GetString("AllAircraftForModel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} - All Models made by {1}.
         /// </summary>
         internal static string AllMakesTitle {
             get {
                 return ResourceManager.GetString("AllMakesTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All Manufacturers on {0}.
+        /// </summary>
+        internal static string AllManufacturersTitle {
+            get {
+                return ResourceManager.GetString("AllManufacturersTitle", resourceCulture);
             }
         }
         

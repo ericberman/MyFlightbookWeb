@@ -180,8 +180,8 @@
     <value>High Performance Until Aug 1997</value>
   </data>
   <data name="AllMakesTitle" xml:space="preserve">
-    <value>{0} - All Makes</value>
-    <comment>{0} is the brand.</comment>
+    <value>{0} - All Models made by {1}</value>
+    <comment>{0} is the brand</comment>
   </data>
   <data name="IsMultiHelicopter" xml:space="preserve">
     <value>Multi-engine Helicopter</value>
@@ -259,5 +259,13 @@
   </data>
   <data name="promptLookUpTypes" xml:space="preserve">
     <value>Look up type ratings</value>
+  </data>
+  <data name="AllAircraftForModel" xml:space="preserve">
+    <value>All aircraft on {0} that are {1}</value>
+    <comment>{0} is the brand, {1} is the model</comment>
+  </data>
+  <data name="AllManufacturersTitle" xml:space="preserve">
+    <value>All Manufacturers on {0}</value>
+    <comment>{0} is the brand</comment>
   </data>
 </root>

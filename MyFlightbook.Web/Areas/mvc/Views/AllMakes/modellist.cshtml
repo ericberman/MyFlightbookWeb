@@ -8,13 +8,13 @@
     @foreach (MakeModel m in ViewBag.Models)
     {
         <tr style="vertical-align: top; margin-bottom: 5px;">
-            <td>@m.ManufacturerDisplay</td>
-            <td>
+            <td style="width: 30%">@m.ManufacturerDisplay</td>
+            <td style="width: 40%">
                 <div><a style="font-weight:bold; font-size: larger;" href="@String.Format(CultureInfo.InvariantCulture, "{0}/{1}", Request.Url.AbsolutePath, m.MakeModelID)">@m.ModelDisplayNameNoCatclass</a></div>
                 <div>@(String.IsNullOrEmpty(m.FamilyName) ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, ModelQuery.ICAOPrefix, m.FamilyName))</div>
                 <div>@(String.IsNullOrEmpty(m.ArmyMDS) ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, Resources.LocalizedText.EditMakeWatermarkMDS, m.ArmyMDS))</div>
             </td>
-            <td>@m.CategoryClassDisplay</td>
+            <td style="width: 30%">@m.CategoryClassDisplay</td>
         </tr>
         <tr>
             <td colspan="3">
