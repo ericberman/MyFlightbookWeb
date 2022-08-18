@@ -1,7 +1,6 @@
-using MyFlightbook;
 using System;
-using System.Web.UI;
 using System.Collections.Generic;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 
 /******************************************************
@@ -11,36 +10,36 @@ using System.Web.UI.WebControls;
  *
 *******************************************************/
 
-public partial class Controls_mfbFooter : UserControl
-{   
-    protected IDictionary<Brand.FooterLinkKey, BrandLink> Links { get; set; }
-
-    private void BindLink(Brand.FooterLinkKey k, HyperLink l)
+namespace MyFlightbook.Controls
+{
+    public partial class mfbFooter : UserControl
     {
-        if (!Links.TryGetValue(k, out BrandLink bl) || !bl.IsVisible)
-        {
-            l.Visible = false;
-        }
-        else
-        {
-            l.NavigateUrl = bl.LinkRef;
-            if (bl.OpenInNewPage)
-                l.Target = "_blank";
+        protected IDictionary<Brand.FooterLinkKey, BrandLink> Links { get; set; }
 
-            if (!String.IsNullOrEmpty(bl.ImageRef))
+        private void BindLink(Brand.FooterLinkKey k, HyperLink l)
+        {
+            if (!Links.TryGetValue(k, out BrandLink bl) || !bl.IsVisible)
             {
-                Image img = new Image() { ImageUrl = bl.ImageRef, AlternateText = bl.Name, ToolTip = bl.Name };
-                l.Controls.Add(img);
-                img.Style["vertical-align"] = "middle";
-                img.Style["margin-right"] = ".5em";
+                l.Visible = false;
             }
-            l.Controls.Add(new Label() { Text = bl.Name });
-        }
-    }
+            else
+            {
+                l.NavigateUrl = bl.LinkRef;
+                if (bl.OpenInNewPage)
+                    l.Target = "_blank";
 
-    protected void Page_Load(object sender, EventArgs e)
-    {
-        if (!IsPostBack)
+                if (!String.IsNullOrEmpty(bl.ImageRef))
+                {
+                    System.Web.UI.WebControls.Image img = new System.Web.UI.WebControls.Image() { ImageUrl = bl.ImageRef, AlternateText = bl.Name, ToolTip = bl.Name };
+                    l.Controls.Add(img);
+                    img.Style["vertical-align"] = "middle";
+                    img.Style["margin-right"] = ".5em";
+                }
+                l.Controls.Add(new Label() { Text = bl.Name });
+            }
+        }
+
+        protected void Page_Load(object sender, EventArgs e)
         {
             mvClassicMobile.SetActiveView(Request.IsMobileSession() ? vwMobile : vwClassic);
 

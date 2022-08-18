@@ -237,7 +237,7 @@ namespace MyFlightbook.Web
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_mfbFooter MfbFooter;
+        protected global::MyFlightbook.Controls.mfbFooter MfbFooter;
 
         /// <summary>
         /// updCook control.

@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbFooter.ascx.cs" Inherits="Controls_mfbFooter" %>
+<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbFooter.ascx.cs" Inherits="MyFlightbook.Controls.mfbFooter" %>
 <div class="footerContainer">
     <asp:MultiView ID="mvClassicMobile" runat="server">
         <asp:View ID="vwClassic" runat="server">
