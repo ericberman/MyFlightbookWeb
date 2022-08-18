@@ -26,5 +26,15 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.Title = "Sample MVC Page";
             return View();
         }
+
+        [Authorize]
+        public ActionResult Index2()
+        {
+            ViewBag.WelcomeMessage = (User.Identity.IsAuthenticated) ?
+                String.Format(CultureInfo.CurrentCulture, "Hello {0}! - if you're here, you are authenticated!", MyFlightbook.Profile.GetUser(User.Identity.Name).UserFullName) :
+                "Hi.  Why aren't you signed in?  You shouldn't be able to see this!!!";
+            ViewBag.Title = "Sample AUTHORIZED MVC Page";
+            return View("Index");
+        }
     }
 }

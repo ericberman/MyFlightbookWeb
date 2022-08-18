@@ -22,7 +22,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             Response.Cache.SetExpires(DateTime.Now.AddDays(14));
             Response.Cache.SetCacheability(HttpCacheability.Public);
-            Response.Cache.SetValidUntilExpires(true);
         }
 
         // GET: mvc/AllMakes
@@ -34,8 +33,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 Response.Redirect(VirtualPathUtility.ToAbsolute("~/Member/Makes.aspx"), true);
                 return null;
             }
-
-            SetCaching();
 
             // No manufacturer specified - show all manufacturers 
             if (idman <= 0)
@@ -49,6 +46,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             }
             else if (idmodel <= 0)  // no model specified - show all models by this manufacturer
             {
+                SetCaching();
+
                 if (!MakeModel.ModelsByManufacturer().ContainsKey(idman))
                     throw new HttpException(404, "Not found");
 
@@ -60,6 +59,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             }
             else
             {
+                SetCaching();
+
                 // if we're here, we have both a manufacturer and a model, so show all of the aircraft
                 MakeModel m = MakeModel.GetModel(idmodel);
                 ViewBag.MakeModel = m;

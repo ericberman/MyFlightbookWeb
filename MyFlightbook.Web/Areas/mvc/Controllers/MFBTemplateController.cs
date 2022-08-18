@@ -30,6 +30,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return (s == null || !s.StartsWith("~")) ? s : VirtualPathUtility.ToAbsolute(s);
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public ActionResult Search(string searchText)
         {
@@ -37,6 +38,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return null;
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public ActionResult SignOut()
         {
@@ -51,8 +53,11 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             if (User.Identity.IsAuthenticated)
                 MyFlightbook.Profile.GetUser(User.Identity.Name).SetPreferenceForKey(MFBConstants.keyCookiePrivacy, true);
 
+            HttpCookie cookie = new HttpCookie("cookie") { Value = true.ToString(), Expires = DateTime.UtcNow.AddYears(5) };
+            Response.Cookies.Add(cookie);
+
             // Return the cookie to save in the calling browser
-            return Json(new { cookie = String.Format(CultureInfo.InvariantCulture, "{0}=true; expires={1}", MFBConstants.keyCookiePrivacy, DateTime.UtcNow.AddYears(5).ToString("ddd, dd MMM yyyy HH':'mm':'ss 'GMT'", CultureInfo.InvariantCulture)) });
+            return Json(new { cookie = String.Format(CultureInfo.InvariantCulture, "{0}=true; expires={1}; path=/", MFBConstants.keyCookiePrivacy, cookie.Expires.ToString("ddd, dd MMM yyyy HH':'mm':'ss 'UTC'", CultureInfo.InvariantCulture)) });
         }
 
         private void AddProfileToViewBag(Profile pf)
@@ -76,7 +81,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     pf.SetPreferenceForKey(MFBConstants.keyCookiePrivacy, false, true);
             }
 
-            bool fHasCookie = Request.Cookies[MFBConstants.keyCookiePrivacy] != null && Request.Cookies[MFBConstants.keyCookiePrivacy].Expires.CompareTo(DateTime.UtcNow) > 0 && Request.Cookies[MFBConstants.keyCookiePrivacy].Value == true.ToString();
+            bool fHasCookie = Request.Cookies[MFBConstants.keyCookiePrivacy] != null && Request.Cookies[MFBConstants.keyCookiePrivacy].Value.CompareOrdinalIgnoreCase(true.ToString()) == 0;
 
             // Need a cookie if you've neither accepted them in a cookie nor in your profile.
             bool fNeedsCookieOK = fDeclineCookies || (!fHasCookie && (pf == null || !pf.GetPreferenceForKey<bool>(MFBConstants.keyCookiePrivacy, false)));
@@ -108,6 +113,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return PartialView("_impersonation");
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public ActionResult StopImpersonation()
         {
