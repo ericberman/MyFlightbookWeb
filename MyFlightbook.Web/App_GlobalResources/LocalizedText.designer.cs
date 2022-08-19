@@ -5100,15 +5100,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to By creating an account, you agree to these conditions..
-        /// </summary>
-        internal static string TermsAndConditionsAgree {
-            get {
-                return ResourceManager.GetString("TermsAndConditionsAgree", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Terms and Conditions.
         /// </summary>
         internal static string TermsAndConditionsHeader {

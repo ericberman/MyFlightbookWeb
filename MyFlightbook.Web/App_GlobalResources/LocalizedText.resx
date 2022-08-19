@@ -529,9 +529,6 @@
   <data name="SignInValEmailRequired" xml:space="preserve">
     <value>&lt;br /&gt;E-mail address is required.</value>
   </data>
-  <data name="TermsAndConditionsAgree" xml:space="preserve">
-    <value>By creating an account, you agree to these conditions.</value>
-  </data>
   <data name="TermsAndConditionsHeader" xml:space="preserve">
     <value>Terms and Conditions</value>
   </data>

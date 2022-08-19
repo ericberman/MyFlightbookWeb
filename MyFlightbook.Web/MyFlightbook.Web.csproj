@@ -560,7 +560,6 @@
     <Content Include="Controls\mfbSignIn.ascx" />
     <Content Include="Controls\mfbSimpleTotals.ascx" />
     <Content Include="Controls\mfbSubscriptionManager.ascx" />
-    <Content Include="Controls\mfbTandC.ascx" />
     <Content Include="Controls\mfbTimeZone.ascx" />
     <Content Include="Controls\mfbTooltip.ascx" />
     <Content Include="Controls\mfbTotalSummary.ascx" />
@@ -1992,13 +1991,6 @@
     </Compile>
     <Compile Include="Controls\mfbSubscriptionManager.ascx.designer.cs">
       <DependentUpon>mfbSubscriptionManager.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\mfbTandC.ascx.cs">
-      <DependentUpon>mfbTandC.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbTandC.ascx.designer.cs">
-      <DependentUpon>mfbTandC.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\mfbTimeZone.ascx.cs">
       <DependentUpon>mfbTimeZone.ascx</DependentUpon>

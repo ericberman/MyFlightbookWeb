@@ -1,7 +1,6 @@
 <%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="newuser.aspx.cs" Inherits="newuser" Title="Create Account" culture="auto" meta:resourcekey="PageResource1" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
-<%@ Register src="../Controls/mfbTandC.ascx" tagname="mfbTandC" tagprefix="uc1" %>
 <%@ Register src="../Controls/AccountQuestions.ascx" tagname="AccountQuestions" tagprefix="uc2" %>
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
     <asp:Localize ID="locCreateAccountPageHeader" runat="server" 
@@ -22,7 +21,7 @@
                     meta:resourcekey="CreateUserWizardStep1Resource1">
                     <ContentTemplate>
                         <h2><% =Resources.LocalizedText.TermsAndConditionsHeader %></h2>
-                        <uc1:mfbTandC ID="mfbTandC1" runat="server"  />
+                        <% =MyFlightbook.Branding.ReBrand(Resources.LocalizedText.TermsAndConditions) %>
                         <asp:Panel ID="pnlStep1" runat="server" DefaultButton="CreateUser" 
                             meta:resourcekey="pnlStep1Resource1">
                             <table border="0">
