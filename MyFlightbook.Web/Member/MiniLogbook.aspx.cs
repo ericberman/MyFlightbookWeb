@@ -2,7 +2,7 @@ using System;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2021 MyFlightbook LLC
+ * Copyright (c) 2015-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -20,7 +20,7 @@ namespace MyFlightbook.MemberPages
 
                 mfbEditFlight1.SetUpNewOrEdit(-1);
 
-                this.Master.SetMobile(true);
+                util.SetMobile(true);
             }
         }
 

@@ -37,9 +37,7 @@ public partial class Public_Home : System.Web.UI.Page
 
         string s = util.GetStringParam(Request, "m");
         if (s.Length > 0)
-        {
-            this.Master.SetMobile((string.Compare(s, "no", StringComparison.OrdinalIgnoreCase) != 0));
-        }
+            util.SetMobile(string.Compare(s, "no", StringComparison.OrdinalIgnoreCase) != 0);
 
         FlightStats fs = FlightStats.GetFlightStats();
 

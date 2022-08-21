@@ -1340,6 +1340,7 @@
     <Compile Include="Areas\mvc\Controllers\AllMakesController.cs" />
     <Compile Include="Areas\mvc\Controllers\MFBTemplateController.cs" />
     <Compile Include="Areas\mvc\Controllers\MVCTestController.cs" />
+    <Compile Include="Areas\mvc\Controllers\PubController.cs" />
     <Compile Include="Areas\mvc\mvcAreaRegistration.cs" />
     <Compile Include="Controls\Prefs\mfbBigRedButtons.ascx.cs">
       <DependentUpon>mfbBigRedButtons.ascx</DependentUpon>
@@ -2996,6 +2997,7 @@
     <Content Include="Areas\mvc\Views\AllMakes\manufacturerlist.cshtml" />
     <Content Include="Areas\mvc\Views\AllMakes\modellist.cshtml" />
     <Content Include="Areas\mvc\Views\AllMakes\aircraftlist.cshtml" />
+    <Content Include="Areas\mvc\Views\Pub\_localizedContent.cshtml" />
     <None Include="packages.config" />
     <None Include="SecuritySwitch-v4.xsd">
       <SubType>Designer</SubType>

@@ -131,26 +131,6 @@ namespace MyFlightbook.Web
             m.Content = szContent;
         }
 
-        /// <summary>
-        /// Switches to/from mobile state (overriding default detection) by setting the appropriate session variables.
-        /// </summary>
-        /// <param name="fMobile">True for the mobile state</param>
-        public void SetMobile(Boolean fMobile)
-        {
-            if (fMobile)
-            {
-                Response.Cookies[MFBConstants.keyClassic].Value = null; // let autodetect do its thing next time...
-                Request.Cookies[MFBConstants.keyClassic].Value = null;
-                Session[MFBConstants.keyLite] = Boolean.TrueString; // ...but keep it lite for the session
-            }
-            else
-            {
-                Response.Cookies[MFBConstants.keyClassic].Value = "yes"; // override autodetect
-                Request.Cookies[MFBConstants.keyClassic].Value = "yes";
-                Session[MFBConstants.keyLite] = null; // and hence there should be no need for a session variable.
-            }
-        }
-
         protected void Page_Init(object sender, EventArgs e)
         {
             int idBrand = util.GetIntParam(Request, "bid", -1);
@@ -186,7 +166,7 @@ namespace MyFlightbook.Web
 
                 // if "m=no" is passed in, override mobile detection and force classic view
                 if (util.GetStringParam(Request, "m") == "no")
-                    SetMobile(false);
+                    util.SetMobile(false);
 
                 if (Request.Url.GetLeftPart(UriPartial.Path).Contains("/wp-includes"))
                     throw new System.Web.HttpException(404, "Why are you probing me for wordpress, you jerks?");

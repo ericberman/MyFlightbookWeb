@@ -243,6 +243,26 @@ namespace MyFlightbook
         }
 
         /// <summary>
+        /// Switches to/from mobile state (overriding default detection) by setting the appropriate session variables.
+        /// </summary>
+        /// <param name="fMobile">True for the mobile state</param>
+        public static void SetMobile(Boolean fMobile)
+        {
+            if (fMobile)
+            {
+                HttpContext.Current.Response.Cookies[MFBConstants.keyClassic].Value = null; // let autodetect do its thing next time...
+                HttpContext.Current.Request.Cookies[MFBConstants.keyClassic].Value = null;
+                HttpContext.Current.Session[MFBConstants.keyLite] = Boolean.TrueString; // ...but keep it lite for the session
+            }
+            else
+            {
+                HttpContext.Current.Response.Cookies[MFBConstants.keyClassic].Value = "yes"; // override autodetect
+                HttpContext.Current.Request.Cookies[MFBConstants.keyClassic].Value = "yes";
+                HttpContext.Current.Session[MFBConstants.keyLite] = null; // and hence there should be no need for a session variable.
+            }
+        }
+
+        /// <summary>
         /// Deep copy one object to another using reflection
         /// </summary>
         /// <param name="objSrc">The source object</param>
@@ -328,6 +348,20 @@ namespace MyFlightbook
         }
 
         /// <summary>
+        /// HttpRequestBase variant of GetStringParam
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="szKey"></param>
+        /// <returns></returns>
+        static public string GetStringParam(HttpRequestBase req, string szKey)
+        {
+            if (req == null || req[szKey] == null)
+                return string.Empty;
+            else
+                return req[szKey];
+        }
+
+        /// <summary>
         /// Returns an integer parameter, even if none was passed
         /// </summary>
         /// <param name="req">The httprequest object</param>
@@ -335,6 +369,25 @@ namespace MyFlightbook
         /// <param name="defaultValue">The default value if the parameter is null</param>
         /// <returns>The value that was passed or else the default value</returns>
         static public int GetIntParam(HttpRequest req, string szKey, int defaultValue)
+        {
+            if (req == null || req[szKey] == null)
+                return defaultValue;
+            else
+            {
+                if (int.TryParse(req[szKey], NumberStyles.Integer, CultureInfo.InvariantCulture, out int i))
+                    return i;
+
+                return defaultValue;
+            }
+        }
+                
+        /// <summary>
+        /// HttpRequestBase variant of GetIntParam
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="szKey"></param>
+        /// <returns></returns>
+        static public int GetIntParam(HttpRequestBase req, string szKey, int defaultValue)
         {
             if (req == null || req[szKey] == null)
                 return defaultValue;

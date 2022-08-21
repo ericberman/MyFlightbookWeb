@@ -25,6 +25,13 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             set { Session[szKeyIsNightSession] = value; }
         }
 
+        private const string szKeyIsNakedSession = "IsNakedSession";
+        protected bool IsNaked
+        {
+            get { return (Session[szKeyIsNakedSession] != null && (Boolean)Session[szKeyIsNakedSession] == true); }
+            set { Session[szKeyIsNakedSession] = value; }
+        }
+
         protected string FixLink(string s)
         {
             return (s == null || !s.StartsWith("~")) ? s : VirtualPathUtility.ToAbsolute(s);
@@ -72,6 +79,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [ChildActionOnly]
         public ActionResult RenderPrivacyLink()
         {
+            if (IsNaked)
+                return Content(string.Empty);
+
             Profile pf = User.Identity.IsAuthenticated ? MyFlightbook.Profile.GetUser(User.Identity.Name) : null;
             bool fDeclineCookies = int.TryParse(Request?["declinecookie"] ?? "0", NumberStyles.Integer, CultureInfo.InvariantCulture, out int declinecookies) && declinecookies != 0;
             if (fDeclineCookies)
@@ -92,6 +102,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [ChildActionOnly]
         public ActionResult RenderFooter()
         {
+            if (IsNaked)
+                return Content(string.Empty);
+
             IDictionary<Brand.FooterLinkKey, BrandLink> d;
             ViewBag.FooterLinks = d = Branding.CurrentBrand.FooterLinks();
 
@@ -125,6 +138,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [ChildActionOnly]
         public ActionResult RenderHeader(tabID selectedTab = tabID.tabHome)
         {
+            if (IsNaked)
+                return Content(string.Empty);
+
             Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
             ViewBag.TabHTML = TabList.CurrentTabList("~/NavLinks.xml").WriteTabsHtml(Request != null && Request.UserAgent != null && Request.UserAgent.ToUpper(CultureInfo.CurrentCulture).Contains("ANDROID"),
                 pf.Role, selectedTab);
@@ -155,6 +171,40 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [ChildActionOnly]
         public ActionResult RenderHead(string Title)
         {
+            int idBrand = util.GetIntParam(Request, "bid", -1);
+            if (idBrand >= 0 && idBrand < Enum.GetNames(typeof(BrandID)).Length)
+                Branding.CurrentBrandID = (BrandID)idBrand;
+
+            // set the right locale for the requester.
+            if (Request != null && Request.UserLanguages != null && Request.UserLanguages.Length > 0)
+                util.SetCulture(Request.UserLanguages[0]);
+
+            // Handle parameters here.
+            if (ShuntState.IsShunted && String.IsNullOrEmpty(Request["noshunt"]))
+            {
+                Response.Redirect(VirtualPathUtility.ToAbsolute("~/Shunt.aspx"));
+                Response.End();
+                return null;
+            }
+            // if "m=no" is passed in, override mobile detection and force classic view
+            if (util.GetStringParam(Request, "m") == "no")
+                util.SetMobile(false);
+
+            if (Request.Url.GetLeftPart(UriPartial.Path).Contains("/wp-includes"))
+                throw new HttpException(404, "Why are you probing me for wordpress, you jerks?");
+
+            if (User.Identity.IsAuthenticated)
+                Session[User.Identity.Name + "-LastPage"] = String.Format(CultureInfo.InvariantCulture, "{0}:{1}{2}", Request.IsSecureConnection ? "https" : "http", Request.Url.Host, Request.Url.PathAndQuery);
+            else
+                ProfileRoles.StopImpersonating();
+
+            int naked = util.GetIntParam(Request, "naked", 0);
+            if (naked == -1) // kill naked
+                Session["IsNaked"] = IsNaked = false;
+            else
+                IsNaked = naked > 0 || IsNaked || (Session["IsNaked"] != null && ((bool)Session["IsNaked"]) == true);
+
+            // Now do all of the main header stuff.
             ViewBag.Title = Title;
 
             string szUserAgent = Request.UserAgent.ToUpperInvariant();
@@ -167,7 +217,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             else if (nightRequest.CompareCurrentCultureIgnoreCase("no") == 0)
                 IsNight = false;
             ViewBag.NightCSS = IsNight ? VirtualPathUtility.ToAbsolute("~/Public/CSS/NightMode.css?v=563nh4h") : string.Empty;
-            ViewBag.BrandCSS = String.IsNullOrEmpty(Branding.CurrentBrand.StyleSheet) ? String.Empty : VirtualPathUtility.ToAbsolute(Branding.CurrentBrand.StyleSheet);
+            ViewBag.BrandCSS = String.IsNullOrEmpty(Branding.CurrentBrand.StyleSheet) ? String.Empty : VirtualPathUtility.ToAbsolute(Branding.CurrentBrand.StyleSheet) + "?v=1";
             ViewBag.MobileCSS = System.Web.HttpContext.Current.Request.IsMobileSession() ? VirtualPathUtility.ToAbsolute("~/Public/CSS/MobileSheet.css?v=8") : string.Empty;
             
             return PartialView("_templatehead");
