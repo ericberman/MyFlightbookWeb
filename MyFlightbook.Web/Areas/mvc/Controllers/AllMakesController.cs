@@ -64,6 +64,10 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 // if we're here, we have both a manufacturer and a model, so show all of the aircraft
                 MakeModel m = MakeModel.GetModel(idmodel);
                 ViewBag.MakeModel = m;
+
+                if (m == null)
+                    throw new HttpException(404, "Not found");
+
                 ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.Makes.AllAircraftForModel, Branding.CurrentBrand.AppName, m.DisplayName);
 
                 List<Aircraft> lst = new List<Aircraft>();
