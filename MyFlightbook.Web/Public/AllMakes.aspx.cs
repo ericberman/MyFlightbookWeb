@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -20,6 +21,7 @@ namespace MyFlightbook.PublicPages
     {
         private void ShowBasePage()
         {
+            Master.Title = String.Format(CultureInfo.CurrentCulture, Resources.Makes.AllManufacturersTitle, Branding.CurrentBrand.AppName);
             List<Manufacturer> lst = new List<Manufacturer>(Manufacturer.CachedManufacturers());
             lst.RemoveAll(man => man.AllowedTypes != AllowedAircraftTypes.Any);
             gvManufacturers.DataSource = lst;
@@ -32,6 +34,9 @@ namespace MyFlightbook.PublicPages
             // No images, just for performance
             if (MakeModel.ModelsByManufacturer().ContainsKey(idMan))
             {
+                Manufacturer man = Manufacturer.CachedManufacturers().FirstOrDefault((m) => m.ManufacturerID == idMan);
+                Master.Title = String.Format(CultureInfo.CurrentCulture, Resources.Makes.AllMakesTitle, Branding.CurrentBrand.AppName, man.ManufacturerName);
+
                 gvMakes.DataSource = MakeModel.ModelsByManufacturer()[idMan];
                 gvMakes.DataBind();
             }
@@ -45,6 +50,7 @@ namespace MyFlightbook.PublicPages
                 throw new HttpException(404, "Not found");
 
             MakeModel m = MakeModel.ModelsByManufacturer()[idMan].Find(mm => mm.MakeModelID == idModel);
+            Master.Title = String.Format(CultureInfo.CurrentCulture, Resources.Makes.AllAircraftForModel, Branding.CurrentBrand.AppName, m.DisplayName);
 
             if (m == null)
                 throw new HttpException(404, "Not found");
@@ -85,7 +91,6 @@ namespace MyFlightbook.PublicPages
                 Response.Cache.SetCacheability(HttpCacheability.Public);
                 Response.Cache.SetValidUntilExpires(true);
 
-                Master.Title = String.Format(CultureInfo.CurrentCulture, Resources.Makes.AllMakesTitle, Branding.CurrentBrand.AppName);
                 string[] rgIds = Request.PathInfo.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
                 int clevels = rgIds.Length;
                 if (clevels >= mvLevelToShow.Views.Count)
