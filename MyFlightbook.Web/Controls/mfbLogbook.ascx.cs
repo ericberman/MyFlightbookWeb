@@ -640,6 +640,10 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
         if (!HasBeenBound && !String.IsNullOrEmpty(User))
             BindData(Data);
 
+        // Issue #972: gridview databind performance BLOWS once we get over a few hundred rows, so disable update panel if more than, say, 500 rows
+        if (Data.Count() > 500)
+            updLogbook.Triggers.Add(new PostBackTrigger() { ControlID = rblShowAll.ID });
+
         gvFlightLogs.Columns[FindColumn(gvFlightLogs, Resources.LogbookEntry.FieldCFI)].Visible = Pilot.IsInstructor && !MiniMode;
         gvFlightLogs.Columns[FindColumn(gvFlightLogs, Resources.LogbookEntry.FieldSIC)].Visible = Pilot.TracksSecondInCommandTime && !MiniMode;
     }

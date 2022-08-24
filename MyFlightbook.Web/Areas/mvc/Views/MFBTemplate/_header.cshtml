@@ -34,7 +34,7 @@
                     @{
                         if (User.Identity.IsAuthenticated)
                         {
-                            <img runat="server" id="imgHdSht" class="headerHeadSht" src="@ViewBag.HeadShot" />
+                            <img id="imgHdSht" class="headerHeadSht popTrigger" src="@ViewBag.HeadShot" />
                             <div class="popMenuContent popMenuHidden" id="loginPop">
                                 <div style="padding:4px; text-align:center;">
                                     <div>@ViewBag.MemberDate</div>

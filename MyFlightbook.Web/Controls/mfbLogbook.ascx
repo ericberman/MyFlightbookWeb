@@ -15,7 +15,7 @@
         <asp:Panel ID="pnlAddress" runat="server"><asp:Label ID="lblAddress" runat="server" Text="" style="white-space: pre-wrap"></asp:Label></asp:Panel>
     </div>
 </div>
-<asp:UpdatePanel ID="UpdatePanel1" runat="server">
+<asp:UpdatePanel ID="updLogbook" runat="server">
     <ContentTemplate>
         <asp:HiddenField ID="hdnSelectedItems" runat="server" />
         <script>
@@ -30,50 +30,47 @@
             }
         </script>
         <asp:Panel ID="pnlHeader" runat="server">
-            <table>
-                <tr>
-                    <td><asp:Label ID="lblNumFlights" runat="server"></asp:Label></td>
-                    <td class="noprint">
-                        <uc7:popmenu ID="popmenuHeader" runat="server">
-                            <MenuContent>
-                                <div>
-                                    <asp:RadioButton ID="rblShowInPages" runat="server" AutoPostBack="true" OnCheckedChanged="lnkShowInPages_Click" Text="<%$ Resources:LogbookEntry, LogbookShowInPages %>" GroupName="rblPagingGroup" />
-                                    <asp:HyperLink ID="lnkSetFlightsPerPage" NavigateUrl="#" Text="<%$ Resources:LogbookEntry, LogbookFlightsPerPagePrompt %>" runat="server"></asp:HyperLink>
-                                </div>
-                                <div><asp:RadioButton ID="rblShowAll" runat="server" AutoPostBack="true" OnCheckedChanged="lnkShowAll_Click" CausesValidation="false" Text="<%$ Resources:LogbookEntry, LogbookShowAll %>" GroupName="rblPagingGroup" /></div>
-                                <div><asp:CheckBox ID="ckCompactView" runat="server" Text="<%$ Resources:LogbookEntry, LogbookCompactView %>" CausesValidation="false" AutoPostBack="true" OnCheckedChanged="ckCompactView_CheckedChanged" /></div>
-                                <div><asp:CheckBox ID="ckIncludeImages" runat="server" Text="<%$ Resources:LogbookEntry, LogbookIncludeImages %>" CausesValidation="false" AutoPostBack="true" OnCheckedChanged="ckIncludeImages_CheckedChanged" /></div>
-                                <cc1:ModalPopupExtender ID="mpeSetFlightsPerPage" runat="server" TargetControlID="lnkSetFlightsPerPage"
-                                    PopupControlID="pnlFlightsPerPage" BackgroundCssClass="modalBackground" 
-                                    CancelControlID="btnSetPageSizeCancel" >
-                                </cc1:ModalPopupExtender>
-                                <div><asp:CheckBox ID="ckSelectFlights" runat="server" Text="<%$ Resources:LogbookEntry, LogbookSelectFlights %>" AutoPostBack="true" OnCheckedChanged="ckSelectFlights_CheckedChanged" CausesValidation="false" /></div>
-                                <div runat="server" id="divMulti" visible="false">
-                                    <div runat="server" visible='<%# IsInSelectMode %>'>
-                                        <asp:LinkButton ID="lnkDeleteFlights" OnClick="lnkDeleteFlights_Click" runat="server">
-                                            <asp:Image ID="imgDelete" style="padding-right: 10px" ImageUrl="~/images/x.gif" AlternateText="<%$ Resources:LogbookEntry, LogbookDeleteMultipleTooltip %>" ToolTip="<%$ Resources:LogbookEntry, LogbookDeleteMultipleTooltip %>" runat="server" />
-                                            <asp:Label ID="lblDelMulti" runat="server" Text="<%$ Resources:LogbookEntry, LogbookDeleteMultipleTooltip %>"></asp:Label>
-                                        </asp:LinkButton>
-                                        <ajaxToolkit:ConfirmButtonExtender ID="ConfirmButtonExtender1" runat="server" TargetControlID="lnkDeleteFlights" ConfirmOnFormSubmit="True" ConfirmText="<%$ Resources:LogbookEntry, LogbookConfirmDeleteFlights %>">
-                                        </ajaxToolkit:ConfirmButtonExtender>
-                                    </div>
-                                    <div runat="server" visible='<%# IsInSelectMode %>'>
-                                        <asp:LinkButton ID="lnkReqSigs" runat="server" OnClick="lnkReqSigs_Click">
-                                            <asp:Image ID="imgSignature" runat="server" style="padding-right: 4px" ImageUrl="~/images/signaturesm.png" AlternateText="<%$ Resources:SignOff, RequestSignatures %>" />
-                                            <asp:Label ID="lblRequestSignature" runat="server" Text="<%$ Resources:SignOff, RequestSignatures %>"></asp:Label>
-                                        </asp:LinkButton>
-                                    </div>
-                                    <div runat="server" visible='<%# IsInSelectMode %>'>
-                                        <asp:LinkButton ID="lnkRestrictSelected" runat="server" OnClick="lnkRestrictSelected_Click">
-                                            <asp:Image ID="imgSrch" runat="server" style="padding-right: 4px; height:20px; width:20px;" ImageUrl="~/images/search.png" AlternateText="<%$ Resources:LogbookEntry, LogbookSearchSelected %>" />
-                                            <asp:Label ID="lblSearchSelected" runat="server" Text="<%$ Resources:LogbookEntry, LogbookSearchSelected %>"></asp:Label>
-                                        </asp:LinkButton>
-                                    </div>
-                                </div>
-                            </MenuContent>
-                        </uc7:popmenu>
-                    </td>
-                </tr>
+            <div class="noprint">
+                <div>
+                    <asp:Image ID="imgPop" AlternateText="<%$ Resources:LocalizedText, PopMenuAltText %>" ImageUrl="~/images/MenuChevron.png" runat="server" CssClass="popTrigger" style="vertical-align: bottom;"/>
+                    <div class="popMenuContent popMenuHidden">
+                        <div>
+                            <asp:RadioButton ID="rblShowInPages" runat="server" AutoPostBack="true" OnCheckedChanged="lnkShowInPages_Click" Text="<%$ Resources:LogbookEntry, LogbookShowInPages %>" GroupName="rblPagingGroup" />
+                            <asp:HyperLink ID="lnkSetFlightsPerPage" NavigateUrl="#" Text="<%$ Resources:LogbookEntry, LogbookFlightsPerPagePrompt %>" runat="server"></asp:HyperLink>
+                        </div>
+                        <div><asp:RadioButton ID="rblShowAll" runat="server" AutoPostBack="true" OnCheckedChanged="lnkShowAll_Click" CausesValidation="false" Text="<%$ Resources:LogbookEntry, LogbookShowAll %>" GroupName="rblPagingGroup" /></div>
+                        <div><asp:CheckBox ID="ckCompactView" runat="server" Text="<%$ Resources:LogbookEntry, LogbookCompactView %>" CausesValidation="false" AutoPostBack="true" OnCheckedChanged="ckCompactView_CheckedChanged" /></div>
+                        <div><asp:CheckBox ID="ckIncludeImages" runat="server" Text="<%$ Resources:LogbookEntry, LogbookIncludeImages %>" CausesValidation="false" AutoPostBack="true" OnCheckedChanged="ckIncludeImages_CheckedChanged" /></div>
+                        <cc1:ModalPopupExtender ID="mpeSetFlightsPerPage" runat="server" TargetControlID="lnkSetFlightsPerPage"
+                            PopupControlID="pnlFlightsPerPage" BackgroundCssClass="modalBackground" 
+                            CancelControlID="btnSetPageSizeCancel" >
+                        </cc1:ModalPopupExtender>
+                        <div><asp:CheckBox ID="ckSelectFlights" runat="server" Text="<%$ Resources:LogbookEntry, LogbookSelectFlights %>" AutoPostBack="true" OnCheckedChanged="ckSelectFlights_CheckedChanged" CausesValidation="false" /></div>
+                        <div runat="server" id="divMulti" visible="false">
+                            <div runat="server" visible='<%# IsInSelectMode %>'>
+                                <asp:LinkButton ID="lnkDeleteFlights" OnClick="lnkDeleteFlights_Click" runat="server">
+                                    <asp:Image ID="imgDelete" style="padding-right: 10px" ImageUrl="~/images/x.gif" AlternateText="<%$ Resources:LogbookEntry, LogbookDeleteMultipleTooltip %>" ToolTip="<%$ Resources:LogbookEntry, LogbookDeleteMultipleTooltip %>" runat="server" />
+                                    <asp:Label ID="lblDelMulti" runat="server" Text="<%$ Resources:LogbookEntry, LogbookDeleteMultipleTooltip %>"></asp:Label>
+                                </asp:LinkButton>
+                                <ajaxToolkit:ConfirmButtonExtender ID="ConfirmButtonExtender1" runat="server" TargetControlID="lnkDeleteFlights" ConfirmOnFormSubmit="True" ConfirmText="<%$ Resources:LogbookEntry, LogbookConfirmDeleteFlights %>">
+                                </ajaxToolkit:ConfirmButtonExtender>
+                            </div>
+                            <div runat="server" visible='<%# IsInSelectMode %>'>
+                                <asp:LinkButton ID="lnkReqSigs" runat="server" OnClick="lnkReqSigs_Click">
+                                    <asp:Image ID="imgSignature" runat="server" style="padding-right: 4px" ImageUrl="~/images/signaturesm.png" AlternateText="<%$ Resources:SignOff, RequestSignatures %>" />
+                                    <asp:Label ID="lblRequestSignature" runat="server" Text="<%$ Resources:SignOff, RequestSignatures %>"></asp:Label>
+                                </asp:LinkButton>
+                            </div>
+                            <div runat="server" visible='<%# IsInSelectMode %>'>
+                                <asp:LinkButton ID="lnkRestrictSelected" runat="server" OnClick="lnkRestrictSelected_Click">
+                                    <asp:Image ID="imgSrch" runat="server" style="padding-right: 4px; height:20px; width:20px;" ImageUrl="~/images/search.png" AlternateText="<%$ Resources:LogbookEntry, LogbookSearchSelected %>" />
+                                    <asp:Label ID="lblSearchSelected" runat="server" Text="<%$ Resources:LogbookEntry, LogbookSearchSelected %>"></asp:Label>
+                                </asp:LinkButton>
+                            </div>
+                        </div>
+                    </div>
+                    <asp:Label ID="lblNumFlights" runat="server" />
+                </div>
             </table>
         </asp:Panel>
         <asp:Panel ID="pnlFlightsPerPage" style="display:none" runat="server" CssClass="modalpopup" DefaultButton="btnSetPageSize">
@@ -85,7 +82,7 @@
                 <asp:Button ID="btnSetPageSize" runat="server" Text="<%$ Resources:LocalizedText, OK %>" OnClick="btnSetPageSize_Click" />&nbsp;&nbsp;
                 <asp:Button ID="btnSetPageSizeCancel" runat="server" Text="<%$ Resources:LocalizedText, Cancel %>" /></div>
         </asp:Panel>
-        <asp:UpdateProgress ID="UpdateProgress1" runat="server" AssociatedUpdatePanelID="UpdatePanel1">
+        <asp:UpdateProgress ID="UpdateProgress1" runat="server" AssociatedUpdatePanelID="updLogbook">
             <ProgressTemplate>
                 <asp:Image ID="imgProgress" ImageUrl="~/images/ajax-loader.gif" runat="server" />
             </ProgressTemplate>

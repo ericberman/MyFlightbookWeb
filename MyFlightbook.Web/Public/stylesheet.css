@@ -1402,7 +1402,11 @@ table.tblAvailablityMap th.timeHeader {
 .popMenuAccess {
 }
 
-#imgHdSht:hover + .popMenuHidden, .popMenuHidden:hover {
+.popTrigger:hover, .popTrigger > .popMenuHiden:hover {
+    background-color: #CCCCCC;
+}
+
+.popTrigger:hover + .popMenuHidden, .popMenuHidden:hover {
     display: block;
 }
 
@@ -1413,7 +1417,7 @@ table.tblAvailablityMap th.timeHeader {
     display: none;
     z-index: 100;
     width: 180px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
 }
 
 .searchBox {
