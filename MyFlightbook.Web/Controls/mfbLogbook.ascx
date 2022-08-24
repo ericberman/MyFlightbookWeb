@@ -71,7 +71,7 @@
                     </div>
                     <asp:Label ID="lblNumFlights" runat="server" />
                 </div>
-            </table>
+            </div>
         </asp:Panel>
         <asp:Panel ID="pnlFlightsPerPage" style="display:none" runat="server" CssClass="modalpopup" DefaultButton="btnSetPageSize">
             <div style="text-align: center">
