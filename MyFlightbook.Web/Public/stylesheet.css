@@ -1402,7 +1402,7 @@ table.tblAvailablityMap th.timeHeader {
 .popMenuAccess {
 }
 
-.popTrigger:hover, .popTrigger > .popMenuHiden:hover {
+.popTrigger:hover {
     background-color: #CCCCCC;
 }
 
@@ -1416,8 +1416,9 @@ table.tblAvailablityMap th.timeHeader {
     line-height: 16pt;
     display: none;
     z-index: 100;
-    width: 180px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
+    min-width: 180px;
+    max-width: 300px;
+    box-shadow: rgb(119 136 153) 5px 5px 5px;
 }
 
 .searchBox {

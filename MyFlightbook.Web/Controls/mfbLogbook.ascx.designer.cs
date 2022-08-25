@@ -67,6 +67,15 @@ public partial class Controls_mfbLogbook
     protected global::System.Web.UI.WebControls.Panel pnlHeader;
 
     /// <summary>
+    /// lblNumFlights control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblNumFlights;
+
+    /// <summary>
     /// imgPop control.
     /// </summary>
     /// <remarks>
@@ -236,15 +245,6 @@ public partial class Controls_mfbLogbook
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.Label lblSearchSelected;
-
-    /// <summary>
-    /// lblNumFlights control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Label lblNumFlights;
 
     /// <summary>
     /// pnlFlightsPerPage control.
