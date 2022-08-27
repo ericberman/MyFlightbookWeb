@@ -40,7 +40,6 @@ namespace MyFlightbook.Controls
                 lnkDownloadIPhone.Text = Branding.ReBrand(Resources.LocalizedText.HeaderDownloadIOS);
                 lnkDownloadAndroid.Text = Branding.ReBrand(Resources.LocalizedText.HeaderDownloadAndroid);
                 lnkLogo.ImageUrl = Branding.CurrentBrand.LogoHRef;
-                pnlDonate.Visible = Page.User.Identity.IsAuthenticated;
                 lnkDonate.Text = Branding.ReBrand(Resources.LocalizedText.DonateSolicitation);
 
                 if (Request != null && Request.UserAgent != null)
@@ -57,6 +56,7 @@ namespace MyFlightbook.Controls
                 mvCrossSellOrEvents.SetActiveView(vwMobileCrossSell);
 
                 mvLoginStatus.SetActiveView(Page.User.Identity.IsAuthenticated ? vwSignedIn : vwNotSignedIn);
+                mvWelcome.SetActiveView(Page.User.Identity.IsAuthenticated ? vwWelcomeAuth : vwWelcomeNotAuth);
 
                 if (Page.User.Identity.IsAuthenticated)
                 {
@@ -80,8 +80,6 @@ namespace MyFlightbook.Controls
                         lblWebinarDetails.Text = se.Body.Linkify(true);
                     }
                 }
-                else
-                    imgHdSht.Visible = false;
             }
 
             plcMenuBar.Controls.Add(new LiteralControl(TabList.WriteTabsHtml(Request != null && Request.UserAgent != null && Request.UserAgent.ToUpper(CultureInfo.CurrentCulture).Contains("ANDROID"), Profile.GetUser(Page.User.Identity.Name).Role, SelectedTab)));

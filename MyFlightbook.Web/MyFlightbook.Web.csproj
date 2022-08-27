@@ -881,6 +881,7 @@
     <Content Include="Public\ContactMe.aspx" />
     <Content Include="Public\CrashReport.aspx" />
     <Content Include="Public\CSS\ChecklistBase.css" />
+    <Content Include="Public\CSS\jqueryuimods.css" />
     <Content Include="Public\CSS\mfbheader.css" />
     <Content Include="Public\CSS\MobileSheet.css" />
     <Content Include="Public\CSS\NightMode.css" />
@@ -967,6 +968,7 @@
     <Content Include="Public\Scripts\GMapScript.js" />
     <Content Include="Public\Scripts\ImpAircraft.js" />
     <Content Include="Public\Scripts\jquery.fitvids.js" />
+    <Content Include="Public\Scripts\jqueryutil.js" />
     <Content Include="Public\Scripts\listdrag.js" />
     <Content Include="Public\Scripts\mfbAccordionProxy.js" />
     <Content Include="Public\Scripts\mfbcalendar.js" />

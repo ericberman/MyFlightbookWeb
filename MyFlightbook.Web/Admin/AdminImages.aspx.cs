@@ -219,7 +219,7 @@ namespace MyFlightbook.Web.Admin
         protected void DeleteS3Orphans()
         {
             Response.Clear();
-            Response.Write(String.Format(CultureInfo.InvariantCulture, "<html><head><link href=\"{0}\" rel=\"stylesheet\" type=\"text/css\" /></head><body><p>", VirtualPathUtility.ToAbsolute("~/Public/stylesheet.css")));
+            Response.Write(String.Format(CultureInfo.InvariantCulture, "<html><head><link href=\"{0}\" rel=\"stylesheet\" type=\"text/css\" /></head><body><p>", VirtualPathUtility.ToAbsolute(MFBConstants.BaseStylesheet)));
 
             // Get a list of all of the images in the DB for this category:
             UpdateProgress(1, 0, String.Format(CultureInfo.CurrentCulture, "Getting images for {0} from S3", CurrentSource.ToString()));
@@ -249,7 +249,7 @@ namespace MyFlightbook.Web.Admin
                 throw new ArgumentNullException(nameof(lstDk));
 
             Response.Clear();
-            Response.Write(String.Format(CultureInfo.InvariantCulture, "<html><head><link href=\"{0}\" rel=\"stylesheet\" type=\"text/css\" /></head><body><p>", VirtualPathUtility.ToAbsolute("~/Public/stylesheet.css")));
+            Response.Write(String.Format(CultureInfo.InvariantCulture, "<html><head><link href=\"{0}\" rel=\"stylesheet\" type=\"text/css\" /></head><body><p>", VirtualPathUtility.ToAbsolute(MFBConstants.BaseStylesheet)));
 
             DateTime dtStart = DateTime.Now;
             int cNewImages = 0;

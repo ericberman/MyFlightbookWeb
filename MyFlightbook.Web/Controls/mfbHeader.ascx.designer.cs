@@ -42,15 +42,6 @@ namespace MyFlightbook.Controls
         protected global::Controls_mfbSearchbox mfbSearchbox;
 
         /// <summary>
-        /// imgHdSht control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlImage imgHdSht;
-
-        /// <summary>
         /// mvLoginStatus control.
         /// </summary>
         /// <remarks>
@@ -69,31 +60,13 @@ namespace MyFlightbook.Controls
         protected global::System.Web.UI.WebControls.View vwSignedIn;
 
         /// <summary>
-        /// pnlUser control.
+        /// imgHdSht control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlUser;
-
-        /// <summary>
-        /// lblUser control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblUser;
-
-        /// <summary>
-        /// pnlMenuContent control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlMenuContent;
+        protected global::System.Web.UI.HtmlControls.HtmlImage imgHdSht;
 
         /// <summary>
         /// lblMemberSince control.
@@ -141,24 +114,6 @@ namespace MyFlightbook.Controls
         protected global::System.Web.UI.WebControls.LoginStatus LoginStatus2;
 
         /// <summary>
-        /// DropShadowExtender1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.DropShadowExtender DropShadowExtender1;
-
-        /// <summary>
-        /// hme control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.HoverMenuExtender hme;
-
-        /// <summary>
         /// vwNotSignedIn control.
         /// </summary>
         /// <remarks>
@@ -166,6 +121,51 @@ namespace MyFlightbook.Controls
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.View vwNotSignedIn;
+
+        /// <summary>
+        /// mvWelcome control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.MultiView mvWelcome;
+
+        /// <summary>
+        /// vwWelcomeAuth control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.View vwWelcomeAuth;
+
+        /// <summary>
+        /// lblUser control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblUser;
+
+        /// <summary>
+        /// lnkDonate control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink lnkDonate;
+
+        /// <summary>
+        /// vwWelcomeNotAuth control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.View vwWelcomeNotAuth;
 
         /// <summary>
         /// LoginStatus1 control.
@@ -177,15 +177,6 @@ namespace MyFlightbook.Controls
         protected global::System.Web.UI.WebControls.LoginStatus LoginStatus1;
 
         /// <summary>
-        /// lblCreateAccount control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblCreateAccount;
-
-        /// <summary>
         /// lnkCreateAccount control.
         /// </summary>
         /// <remarks>
@@ -193,24 +184,6 @@ namespace MyFlightbook.Controls
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink lnkCreateAccount;
-
-        /// <summary>
-        /// pnlDonate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlDonate;
-
-        /// <summary>
-        /// lnkDonate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink lnkDonate;
 
         /// <summary>
         /// mvCrossSellOrEvents control.

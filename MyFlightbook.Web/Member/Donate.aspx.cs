@@ -17,7 +17,7 @@ public partial class Member_Donate : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        lnkStyleRef.Href = ResolveUrl("~/Public/Stylesheet.css");
+        lnkStyleRef.Href = ResolveUrl(MFBConstants.BaseStylesheet);
         cssBranded.Href = Page.ResolveUrl(Branding.CurrentBrand.StyleSheet);
     }
 }

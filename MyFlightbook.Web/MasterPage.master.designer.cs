@@ -51,6 +51,15 @@ namespace MyFlightbook.Web
         protected global::System.Web.UI.HtmlControls.HtmlLink lnkAppleIcon;
 
         /// <summary>
+        /// jqueryUIModsCSS control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlLink jqueryUIModsCSS;
+
+        /// <summary>
         /// cssMain control.
         /// </summary>
         /// <remarks>
@@ -283,50 +292,5 @@ namespace MyFlightbook.Web
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::AjaxControlToolkit.AlwaysVisibleControlExtender avceCookies;
-
-        /// <summary>
-        /// pnlViewImg control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlViewImg;
-
-        /// <summary>
-        /// btnClose control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.ImageButton btnClose;
-
-        /// <summary>
-        /// imgImgToView control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Image imgImgToView;
-
-        /// <summary>
-        /// btnDummy control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnDummy;
-
-        /// <summary>
-        /// mpeImg control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.ModalPopupExtender mpeImg;
     }
 }

@@ -16,6 +16,8 @@
     <link rel="shortcut icon" href="/favicon.ico?v2" />
     <link rel="icon" href="/favicon.ico?v2" /> 
     <link href="apple-icon-goes-here" runat="server" id="lnkAppleIcon" rel="apple-touch-icon" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css" />
+    <link rel="stylesheet" type="text/css" runat="server" id="jqueryUIModsCSS" />
     <link href="mainstylgoeshere" runat="server" id="cssMain" rel="stylesheet" type="text/css" />
     <link href="~/public/CSS/mfbheader.css" runat="server" id="cssHeader" rel="stylesheet" type="text/css" />
     <link rel="Stylesheet" type="text/css" runat="server" id="cssNight" visible="false" href="~/Public/CSS/NightMode.css?v=563nh4h" />
@@ -31,10 +33,11 @@
             </Services>
             <Scripts>
                 <asp:ScriptReference Name="jquery" Path="https://code.jquery.com/jquery-3.6.0.min.js" />
+                <asp:ScriptReference Name="jquery" Path="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js" />
+                <asp:ScriptReference Name="jquery" Path="~/Public/Scripts/jqueryutil.js" />
             </Scripts>
         </asp:ScriptManager>
 
-        
         <script src='<% =ResolveClientUrl("~/Public/Scripts/jquery.fitvids.js") %>' type="text/javascript"></script>
         <script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js" type="text/javascript"></script>
         <asp:Panel ID="pnlImpersonation" runat="server" BackColor="Beige" Width="100%" style="text-align:center" Visible="false">
@@ -66,46 +69,13 @@
                 <asp:AlwaysVisibleControlExtender runat="server" ID="avceCookies" TargetControlID="pnlCookies" HorizontalSide="Center" VerticalSide="Bottom" VerticalOffset="5" />
             </ContentTemplate>
         </asp:UpdatePanel>
-        <asp:Panel ID="pnlViewImg" runat="server" style="display:none;">
-            <asp:ImageButton ID="btnClose" runat="server" style="position: absolute; top: 15px; right: 15px; z-index: 3" ImageUrl="~/images/closeimg.png" />
-            <asp:Image ID="imgImgToView" runat="server" />
-        </asp:Panel>
-        <asp:Button ID="btnDummy" runat="server" style="display:none;" />
-        <asp:ModalPopupExtender ID="mpeImg" BackgroundCssClass="modalBackground" TargetControlID="btnDummy" BehaviorID="mpeVwImg" runat="server" PopupControlID="pnlViewImg" CancelControlID="btnClose"></asp:ModalPopupExtender>
+        <div id="divViewImg" style="display:none; overflow: hidden;" class="modalpopup">
+            <button type="button" class="imgDismissBtn" id="imgDismissBtn"><img src='<% =VirtualPathUtility.ToAbsolute("~/images/closeimg.png") %>' /></button>
+            <img id="imgImgToView" />
+        </div>
         <script>
             function viewMFBImg(src) {
-                var img = document.getElementById('<% =imgImgToView.ClientID %>');
-                img.src = src;
-            }
-
-            function showMFBImg() {
-                var maxFactor = 0.95;
-                var img = document.getElementById('<% =imgImgToView.ClientID %>');
-                var xRatio = img.naturalWidth / window.innerWidth;
-                var yRatio = img.naturalHeight / window.innerHeight;
-                var maxRatio = (xRatio > yRatio) ? xRatio : yRatio;
-                if (maxRatio > maxFactor) {
-                    img.width = maxFactor * (img.naturalWidth / maxRatio);
-                    img.height = maxFactor * (img.naturalHeight / maxRatio);
-                }
-                else {
-                    img.width = img.naturalWidth;
-                    img.height = img.naturalHeight;
-                }
-                $find("mpeVwImg").show();
-            }
-
-            function dismissImg(e) {
-                if (e && e.keyCode == Sys.UI.Key.esc) {
-                    document.getElementById('<% =pnlViewImg.ClientID %>').style.display = 'none';
-                    $find("mpeVwImg").hide();
-                }
-            }
-
-            function pageLoad(sender, args) {
-                if (!args.get_isPartialLoad()) {
-                    $addHandler(document, "keydown", dismissImg);
-                }
+                setImg(src, "imgImgToView", "divViewImg", "imgDismissBtn");
             }
         </script>
     </form>

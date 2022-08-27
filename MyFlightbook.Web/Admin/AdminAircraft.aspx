@@ -83,7 +83,6 @@
                 });
         }
         function viewFlights(idAircraft, tail) {
-            document.getElementById('<% =lblTail.ClientID %>').innerText = tail;
             var params = new Object();
             params.idAircraft = idAircraft;
             var d = JSON.stringify(params);
@@ -96,8 +95,10 @@
                     },
                     complete: function (response) { },
                     success: function (response) {
-                        document.getElementById('<% =pnlFlightContent.ClientID %>').innerHTML = response.d;
-                        $find("mpeSF").show();
+                        var div = $("#pnlFlightContent");
+                        div.html(response.d);
+                        div.dialog({ autoOpen: false, closeOnEscape: true, height: 400, width: 350, modal: true, title: "Flights for aircraft " + tail });
+                        div.dialog("open");
                     }
                 });
         }
@@ -496,13 +497,7 @@ ORDER BY NormalTail ASC, numUsers DESC, idaircraft ASC"></asp:SqlDataSource>
                             </asp:TemplateField>
                         </Columns>
                     </asp:GridView>
-                    <asp:ModalPopupExtender ID="mpe1" BehaviorID="mpeSF" BackgroundCssClass="modalBackground" runat="server" PopupControlID="pnlFlights" TargetControlID="btnDummy" CancelControlID="btnDismiss" />
-                    <span style="display:none"><asp:Button ID="btnDummy" runat="server" /></span>
-                    <asp:Panel ID="pnlFlights" runat="server" style="display:none; max-width:300px; width: 80%;" CssClass="modalpopup" ScrollBars="Vertical" Height="200px">
-                        <h2><asp:Label ID="lblTail" runat="server" /></h2>
-                        <asp:Panel ID="pnlFlightContent" runat="server"></asp:Panel>
-                        <asp:Button ID="btnDismiss" runat="server" Text="Close" />
-                    </asp:Panel>
+                    <div id="pnlFlightContent" style="display:none;" />
                     <asp:SqlDataSource ID="sqlPseudoGeneric" runat="server"
                         ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>"
                         ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>"

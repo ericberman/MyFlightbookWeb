@@ -1,6 +1,6 @@
 ﻿/******************************************************
  * 
- * Copyright (c) 2007-2021 MyFlightbook LLC
+ * Copyright (c) 2007-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1060,7 +1060,18 @@ table.dataDescription thead tr td
 
 .imgDismissBtn {
     position: absolute;
-    margin: 15px, 15px, 15px, 15px;
+    margin: 15px, 15px, auto, auto;
+    top: 15px;
+    right: 15px;
+    z-index: 3;
+    border: none;
+    outline: none;
+    background: none;
+}
+
+.imgDismissBtn:focus {
+    outline:none;
+    border:none;
 }
 
 /* Preferences */
@@ -1397,6 +1408,7 @@ table.tblAvailablityMap th.timeHeader {
     background-color: white;
     border: 1px solid black;
     padding: 3px;
+    box-shadow: rgb(119 136 153) 5px 5px 5px;
 }
 
 .popMenuAccess {
@@ -1418,7 +1430,6 @@ table.tblAvailablityMap th.timeHeader {
     z-index: 100;
     min-width: 180px;
     max-width: 300px;
-    box-shadow: rgb(119 136 153) 5px 5px 5px;
 }
 
 .searchBox {

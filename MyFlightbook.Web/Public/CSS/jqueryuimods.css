@@ -1,0 +1,12 @@
+﻿/******************************************************
+ * 
+ * Copyright (c) 2022 MyFlightbook LLC
+ * Contact myflightbook-at-gmail.com for more information
+ *
+*******************************************************/
+
+/* Make jqueryUI theme's mesh better with MyFlightbook */
+.ui-widget-overlay {
+    background-color: Gray;
+    opacity: 0.7;
+}

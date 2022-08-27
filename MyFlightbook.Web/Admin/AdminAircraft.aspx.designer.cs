@@ -366,60 +366,6 @@ namespace MyFlightbook.Web.Admin
         protected global::System.Web.UI.WebControls.GridView gvPseudoGeneric;
 
         /// <summary>
-        /// mpe1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.ModalPopupExtender mpe1;
-
-        /// <summary>
-        /// btnDummy control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnDummy;
-
-        /// <summary>
-        /// pnlFlights control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlFlights;
-
-        /// <summary>
-        /// lblTail control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblTail;
-
-        /// <summary>
-        /// pnlFlightContent control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlFlightContent;
-
-        /// <summary>
-        /// btnDismiss control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnDismiss;
-
-        /// <summary>
         /// sqlPseudoGeneric control.
         /// </summary>
         /// <remarks>
