@@ -8,12 +8,12 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2020 MyFlightbook LLC
+ * Copyright (c) 2007-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
-public partial class Controls_mfbEditableImage : System.Web.UI.UserControl
+public partial class Controls_mfbEditableImage : UserControl
 {
     private MFBImageInfo mfbii;
     private string m_szAltTextDefault = "";
@@ -21,8 +21,8 @@ public partial class Controls_mfbEditableImage : System.Web.UI.UserControl
 
     public enum GeoLinkType { None, ZoomOnLocalMap, ZoomOnGoogleMaps };
 
-    public event System.EventHandler<MFBImageInfoEventArgs> ImageDeleted;
-    public event System.EventHandler<MFBImageInfoEventArgs> ImageMadeDefault;
+    public event EventHandler<MFBImageInfoEventArgs> ImageDeleted;
+    public event EventHandler<MFBImageInfoEventArgs> ImageMadeDefault;
 
     /// <summary>
     /// Gets/sets the image which can be edited.
@@ -97,13 +97,15 @@ public partial class Controls_mfbEditableImage : System.Web.UI.UserControl
         img.ImageUrl = mfbii.URLThumbnail;
         img.Width = (mfbii.WidthThumbnail == 0) ? Unit.Empty : mfbii.WidthThumbnail;
         img.Height = (mfbii.HeightThumbnail == 0) ? Unit.Empty : mfbii.HeightThumbnail;
-        img.AlternateText = (AltText.Length == 0) ? mfbii.Comment : AltText;
-        img.Attributes["title"] = (AltText.Length == 0) ? mfbii.Comment : AltText; // for firefox compat
+        string szTitle = String.IsNullOrEmpty(AltText) ? mfbii.Comment : AltText;
+        img.AlternateText = szTitle;
         img.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, mfbii.ImageType == MFBImageInfoBase.ImageFileType.PDF || mfbii.ImageType == MFBImageInfoBase.ImageFileType.S3PDF ? "javascript:window.location = '{0}';" : "javascript:viewMFBImg('{0}');", ResolveClientUrl(mfbii.URLFullImage));
+        if (!String.IsNullOrEmpty(szTitle))
+            img.Attributes["title"] = szTitle; // for firefox compat
         txtComments.Text = mfbii.Comment;
         lblComments.Text = mfbii.Comment.EscapeHTML();
 
-        if (mfbii.ImageType == MFBImageInfo.ImageFileType.S3VideoMP4 && !(mfbii is MFBPendingImage))
+        if (mfbii.ImageType == MFBImageInfoBase.ImageFileType.S3VideoMP4 && !(mfbii is MFBPendingImage))
         {
             litVideoOpenTag.Text = String.Format(CultureInfo.InvariantCulture, "<video width=\"320\" height=\"240\" controls><source src=\"{0}\"  type=\"video/mp4\">", mfbii.ResolveFullImage());
             litVideoCloseTag.Text = "</video>";

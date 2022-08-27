@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Globalization;
 using System.Web.UI.WebControls;
+using MyFlightbook;
 using MyFlightbook.Image;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2020 MyFlightbook LLC
+ * Copyright (c) 2007-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -100,12 +101,13 @@ public partial class Controls_mfbHoverImageList : System.Web.UI.UserControl
             }
 
             if (mfbil.Images.ImageArray.Count == 0)
-                lnkViewFullImage.NavigateUrl = ImageListDefaultLink;
+                imgThumb.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:window.location='{0}';", ImageListDefaultLink.ToAbsoluteURL(Request));
             else if (mfbil.Images.ImageArray.Count > 0)
             {
-                imgThumb.ImageUrl = mfbil.Images.ImageArray[0].URLThumbnail;
+                MFBImageInfo mfbii = mfbil.Images.ImageArray[0];
+                imgThumb.ImageUrl = mfbii.URLThumbnail;
                 imgThumb.AlternateText = imgThumb.ToolTip = string.Empty;
-                lnkViewFullImage.NavigateUrl = mfbil.Images.ImageArray[0].URLFullImage;
+                imgThumb.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, mfbii.ImageType == MFBImageInfoBase.ImageFileType.PDF || mfbii.ImageType == MFBImageInfoBase.ImageFileType.S3PDF ? "javascript:window.location = '{0}';" : "javascript:viewMFBImg('{0}');", ResolveClientUrl(mfbii.URLFullImage));
             }
             hmImages.Enabled = mfbil.Images.ImageArray.Count > 1;    // popup only if one or more images found
         }
