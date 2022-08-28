@@ -109,14 +109,11 @@
                     </div>
                     <div id="webinarPop" style="display: none;">
                         <div style="text-align: left; white-space: pre-line;">@Html.Raw(ViewBag.WebinarDetails)</div>
-                        <div style="text-align:center"><button class="closePop" onclick="javascript:hideWebinar();" />Close</div>
+                        <div style="text-align:center"><button class="closePop" onclick="javascript:dismissDlg('#webinarPop');" />Close</div>
                     </div>
                     <script type="text/javascript">
                         function showWebinar() {
                             $("#webinarPop").dialog({ autoOpen: true, closeOnEscape: true, width: 400, modal: true });
-                        }
-                        function hideWebinar() {
-                            $("#webinarPop").dialog("close");
                         }
                     </script>
                 }

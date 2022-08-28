@@ -70,14 +70,11 @@
                             <div style="text-align:left">
                                 <asp:Label ID="lblWebinarDetails" style="white-space:pre-line" runat="server" />
                             </div>
-                            <div style="text-align:center"><asp:Button ID="btnDismiss" runat="server" Text="Close" OnClientClick="hideWebinar()" /></div>
+                            <div style="text-align:center"><asp:Button ID="btnDismiss" runat="server" Text="Close" OnClientClick="javascript:dismissDlg('#webinarPop')" /></div>
                         </div>
                         <script type="text/javascript">
                             function showWebinar() {
                                 $("#webinarPop").dialog({ autoOpen: true, closeOnEscape: true, width: 400, modal: true });
-                            }
-                            function hideWebinar() {
-                                $("#webinarPop").dialog("close");
                             }
                         </script>
                     </asp:View>

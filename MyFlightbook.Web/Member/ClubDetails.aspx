@@ -48,7 +48,7 @@
                     </tr>
                     <tr>
                         <td colspan="2" style="text-align:center">
-                            <asp:Button ID="btnCancel" runat="server" Text="<%$ Resources:LocalizedText, Cancel %>" OnClientClick="hideContact();" />&nbsp;&nbsp;<asp:Button ID="btnSendMessage" runat="server" Text="<%$ Resources:Club, LabelContactClub %>" OnClientClick="javascript:contactClubSend()" />
+                            <asp:Button ID="btnCancel" runat="server" Text="<%$ Resources:LocalizedText, Cancel %>" OnClientClick="dismissDlg('#divContactClub');" />&nbsp;&nbsp;<asp:Button ID="btnSendMessage" runat="server" Text="<%$ Resources:Club, LabelContactClub %>" OnClientClick="javascript:contactClubSend()" />
                         </td>
                     </tr>
                 </table>
@@ -306,10 +306,6 @@
                 });
         }
 
-        function hideContact() {
-            $("#divContactClub").dialog("close");
-        }
-
         function sendMsgClick(targetUser, szTitle) {
             $("#" + '<% =hdnTargetUser.ClientID %>').val(targetUser);
             var div = $("#divSendMsg");
@@ -332,13 +328,9 @@
                     },
                     complete: function (response) { },
                     success: function (response) {
-                        $("#divSendMsg").dialog("close");
+                        dismissDlg("#divSendMsg");
                     }
                 });
-        }
-
-        function hideSend() {
-            $("#divSendMsg").dialog("close");
         }
     </script>
     <div id="divSendMsg" style="max-width: 350px; display:none;">
@@ -349,7 +341,7 @@
         <div><asp:TextBox ID="txtMsg" runat="server" TextMode="MultiLine" Rows="4" Width="100%" /></div>
         <div style="text-align:center">
             <asp:Button ID="btnSendMsg" OnClientClick="javascript:sendMsgToUser();" runat="server" Text="<%$ Resources:LogbookEntry, SendFlightButton %>" /> 
-            <asp:Button ID="btnCancelSend" runat="server" OnClientClick="hideSend();" Text="<%$ Resources:LogbookEntry, SendFlightCancel %>" />
+            <asp:Button ID="btnCancelSend" runat="server" OnClientClick="dismissDlg('#divSendMsg');" Text="<%$ Resources:LogbookEntry, SendFlightCancel %>" />
         </div>
     </div>
 </asp:Content>

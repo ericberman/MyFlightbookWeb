@@ -47,3 +47,7 @@ function viewImg(img, idDivViewImg) {
 function dismissImg(idDivViewImg) {
     $("#" + idDivViewImg).dialog("close");
 }
+
+function dismissDlg(idDlg) {
+    $(idDlg).dialog("close");
+}
