@@ -64,15 +64,22 @@
                     </asp:View>
                     <asp:View ID="vwUpcomingEvent" runat="server">
                         <asp:Panel ID="pnlWebinar" runat="server" style="height: 32px; text-align:center; padding: 5px; margin-top: 4px; margin-bottom: 4px; background-color:#E8E8E8; border-radius: 5px;">
-                            <span style="vertical-align:middle"><asp:Literal ID="litWebinar" runat="server"></asp:Literal> <asp:HyperLink ID="lnkDetails" runat="server">Details</asp:HyperLink></span>
+                            <span onclick="showWebinar();" style="vertical-align:middle"><asp:Literal ID="litWebinar" runat="server"></asp:Literal></span>
                         </asp:Panel>
-                        <asp:Panel ID="pnlWebinarDetails" runat="server" CssClass="modalpopup" style="display:none;" DefaultButton="btnDismiss">
+                        <div id="webinarPop" style="display:none;">
                             <div style="text-align:left">
-                                <asp:Label ID="lblWebinarDetails" style="white-space:pre-line" runat="server"></asp:Label>
+                                <asp:Label ID="lblWebinarDetails" style="white-space:pre-line" runat="server" />
                             </div>
-                            <div style="text-align:center"><asp:Button ID="btnDismiss" runat="server" Text="Close" /></div>
-                        </asp:Panel>
-                        <asp:ModalPopupExtender ID="mpeEvent" BackgroundCssClass="modalBackground" CancelControlID="btnDismiss" TargetControlID="pnlWebinar" PopupControlID="pnlWebinarDetails" runat="server"></asp:ModalPopupExtender>
+                            <div style="text-align:center"><asp:Button ID="btnDismiss" runat="server" Text="Close" OnClientClick="hideWebinar()" /></div>
+                        </div>
+                        <script type="text/javascript">
+                            function showWebinar() {
+                                $("#webinarPop").dialog({ autoOpen: true, closeOnEscape: true, width: 400, modal: true });
+                            }
+                            function hideWebinar() {
+                                $("#webinarPop").dialog("close");
+                            }
+                        </script>
                     </asp:View>
                 </asp:MultiView>
 

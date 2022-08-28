@@ -13,22 +13,13 @@ public partial class Controls_mfbEditAppt
 {
 
     /// <summary>
-    /// ModalPopupExtender1 control.
+    /// divAppt control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::AjaxControlToolkit.ModalPopupExtender ModalPopupExtender1;
-
-    /// <summary>
-    /// pnlEditAppt control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Panel pnlEditAppt;
+    protected global::System.Web.UI.HtmlControls.HtmlGenericControl divAppt;
 
     /// <summary>
     /// Localize3 control.
@@ -155,13 +146,4 @@ public partial class Controls_mfbEditAppt
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.HiddenField hdnDefaultTitle;
-
-    /// <summary>
-    /// btnDummy control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Button btnDummy;
 }

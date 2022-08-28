@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net.Mail;
 using System.Web;
+using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Windows.Controls;
@@ -21,6 +22,35 @@ namespace MyFlightbook.Clubs
 {
     public partial class ClubDetails : System.Web.UI.Page
     {
+        #region WebServices
+        /// <summary>
+        /// Web service to send a message to a club user 
+        /// <paramref name="szTarget">Name of the target user</paramref>
+        /// <paramref name="szSubject">Subject</paramref>
+        /// <paramref name="szText">Body of the message</paramref>
+        /// </summary>
+        [WebMethod(EnableSession = true)]
+        public static void SendMsgToClubUser(string szTarget, string szSubject, string szText)
+        {
+            if (!HttpContext.Current.User.Identity.IsAuthenticated)
+                throw new UnauthorizedAccessException();
+
+            Club.ContactMember(HttpContext.Current.User.Identity.Name, szTarget, szSubject, szText);
+        }
+
+        /// <summary>
+        /// Web service to contact the club if you are a guest
+        /// </summary>
+        [WebMethod(EnableSession = true)]
+        public static void ContactClub(int idClub, string szMessage, bool fRequestMembership)
+        {
+            if (!HttpContext.Current.User.Identity.IsAuthenticated)
+                throw new UnauthorizedAccessException();
+
+            Club.ContactClubAdmins(HttpContext.Current.User.Identity.Name, idClub, szMessage, fRequestMembership);
+        }
+        #endregion
+
         /// <summary>
         /// The current club being viewed.  Actually delegates to the ViewClub control, since this saves it in its viewstate.
         /// </summary>
@@ -139,40 +169,6 @@ namespace MyFlightbook.Clubs
             }
         }
 
-        #region Guest
-        protected void btnSendMessage_Click(object sender, EventArgs e)
-        {
-            if (!Page.IsValid)
-            {
-                mpuGuestContact.Show();
-                return;
-            }
-
-            Profile pf = MyFlightbook.Profile.GetUser(Page.User.Identity.Name);
-            IEnumerable<ClubMember> lst = ClubMember.AdminsForClub(CurrentClub.ID);
-            using (MailMessage msg = new MailMessage())
-            {
-                MailAddress maFrom = new MailAddress(pf.Email, pf.UserFullName);
-                msg.From = new MailAddress(Branding.CurrentBrand.EmailAddress, String.Format(CultureInfo.CurrentCulture, Resources.SignOff.EmailSenderAddress, Branding.CurrentBrand.AppName, pf.UserFullName));
-                msg.ReplyToList.Add(maFrom);
-                foreach (ClubMember cm in lst)
-                    msg.To.Add(new MailAddress(cm.Email, cm.UserFullName));
-                msg.Subject = String.Format(CultureInfo.CurrentCulture, Branding.ReBrand(Resources.Club.ContactSubjectTemplate), CurrentClub.Name);
-                msg.Body = txtContact.Text + "\r\n\r\n" + String.Format(CultureInfo.CurrentCulture, Resources.Club.MessageSenderTemplate, pf.UserFullName, pf.Email);
-                msg.IsBodyHtml = false;
-                util.SendMessage(msg);
-            }
-            if (ckRequestMembership.Checked)
-                foreach (ClubMember admin in lst)
-                    new CFIStudentMapRequest(Page.User.Identity.Name, admin.Email, CFIStudentMapRequest.RoleType.RoleRequestJoinClub, CurrentClub).Send();
-
-            mpuGuestContact.Hide();
-            txtContact.Text = string.Empty;
-            ckRequestMembership.Checked = false;
-            lblMessageStatus.Visible = true;
-        }
-        #endregion
-
         protected void lnkLeaveGroup_Click(object sender, EventArgs e)
         {
             // Find the current user in the club members.
@@ -245,42 +241,6 @@ namespace MyFlightbook.Clubs
         protected void ckSummaryScope_CheckedChanged(object sender, EventArgs e)
         {
             RefreshSummary();
-        }
-
-        protected void gvMembers_RowCommand(object sender, GridViewCommandEventArgs e)
-        {
-            if (e == null)
-                throw new ArgumentNullException(nameof(e));
-
-            if (e.CommandName.CompareCurrentCultureIgnoreCase("_sndMsg") == 0)
-            {
-                Profile pf = Profile.GetUser((string)e.CommandArgument);
-                lblSendPrompt.Text = String.Format(CultureInfo.CurrentCulture, Resources.Club.LabelContactMember, HttpUtility.HtmlEncode(pf.UserFullName));
-                hdnTargetUser.Value = pf.UserName;
-                mpeSendMsg.Show();
-            }
-        }
-
-        protected void btnSendMsg_Click(object sender, EventArgs e)
-        {
-            if (!String.IsNullOrWhiteSpace(txtContactSubject.Text + txtMsg.Text))
-            {
-                Profile pf = Profile.GetUser(hdnTargetUser.Value);
-                Profile pfSender = Profile.GetUser(User.Identity.Name);
-                using (MailMessage msg = new MailMessage())
-                {
-                    MailAddress maFrom = new MailAddress(pf.Email, pf.UserFullName);
-                    msg.To.Add(new MailAddress(pf.Email, pf.UserFullName));
-                    msg.From = new MailAddress(Branding.CurrentBrand.EmailAddress, String.Format(CultureInfo.CurrentCulture, Resources.SignOff.EmailSenderAddress, Branding.CurrentBrand.AppName, pf.UserFullName));
-                    msg.ReplyToList.Add(new MailAddress(pfSender.Email, pfSender.UserFullName));
-                    msg.Subject = txtContactSubject.Text;
-                    msg.Body = txtMsg.Text;
-                    msg.IsBodyHtml = false;
-                    util.SendMessage(msg);
-                }
-            }
-            hdnTargetUser.Value = txtContactSubject.Text = txtMsg.Text = string.Empty;
-            mpeSendMsg.Hide();
         }
 
         protected void btnDownloadSchedule_Click(object sender, EventArgs e)

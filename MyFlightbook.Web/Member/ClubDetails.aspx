@@ -31,46 +31,29 @@
     <asp:MultiView ID="mvTop" runat="server">
         <asp:View ID="vwTopGuest" runat="server">
             <div class="callout">
-                <p><asp:Localize ID="lblNotMember" runat="server" Text="<%$ Resources:Club, LabelNotAMember %>"></asp:Localize></p>
-                <p><asp:Localize ID="locSendMessage" Text="<%$ Resources:Club, LabelSendMessage %>" runat="server"></asp:Localize> <asp:HyperLink ID="lnkSendMessage" style="cursor:pointer;" Text="<%$ Resources:Club, LinkSendMessage %>" runat="server"></asp:HyperLink></p>
-            </div>
-            <asp:Panel ID="pnlContact" DefaultButton="btnSendMessage" runat="server" CssClass="modalpopup" style="display:none; width: 450px;">
-                <p><asp:Localize ID="locSendPrompt" runat="server" Text="<%$ Resources:Club, LabelMessagePrompt %>"></asp:Localize></p>
+                <p><asp:Localize ID="lblNotMember" runat="server" Text="<%$ Resources:Club, LabelNotAMember %>" /></p>
                 <p>
-                    <asp:TextBox ID="txtContact"  runat="server" TextMode="MultiLine" Rows="5" Width="400px" style="margin-left:auto; margin-right:auto;" ValidationGroup="clubContact"></asp:TextBox>
+                    <asp:Localize ID="locSendMessage" Text="<%$ Resources:Club, LabelSendMessage %>" runat="server" />
+                    <a href="javascript:contactClubClick();"><% =Resources.Club.LinkSendMessage %></a>
                 </p>
+            </div>
+            <div id="divContactClub" style="display:none; width: 450px;">
                 <p>
-                    <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ValidationGroup="clubContact" ControlToValidate="txtContact" CssClass="error" Display="Dynamic" ErrorMessage="<%$ Resources:Club, errNoContactMessageBody %>"></asp:RequiredFieldValidator>
+                    <textarea id="txtContactClub" rows="5" cols="20" style="width:400px; margin-left:auto; margin-right:auto;"></textarea>
                 </p>
                 <table>
                     <tr style="vertical-align:top;">
-                        <td><asp:CheckBox ID="ckRequestMembership" Text="" runat="server" /></td>
-                        <td><asp:Label ID="lblCkRequest" runat="server" Text="<%$ Resources:Club, LabelRequestMembership %>" AssociatedControlID="ckRequestMembership"></asp:Label></td>
+                        <td><input type="checkbox" id="ckRequestMembership" /></td>
+                        <td><label for="ckRequestMembership"><% =Resources.Club.LabelRequestMembership %></label></td>
                     </tr>
                     <tr>
                         <td colspan="2" style="text-align:center">
-                            <asp:Button ID="btnCancel" runat="server" Text="<%$ Resources:LocalizedText, Cancel %>" />&nbsp;&nbsp;<asp:Button ID="btnSendMessage" ValidationGroup="clubContact" runat="server" Text="<%$ Resources:Club, LabelContactClub %>" OnClick="btnSendMessage_Click" />
+                            <asp:Button ID="btnCancel" runat="server" Text="<%$ Resources:LocalizedText, Cancel %>" OnClientClick="hideContact();" />&nbsp;&nbsp;<asp:Button ID="btnSendMessage" runat="server" Text="<%$ Resources:Club, LabelContactClub %>" OnClientClick="javascript:contactClubSend()" />
                         </td>
                     </tr>
                 </table>
-            </asp:Panel>
-            <asp:ModalPopupExtender ID="mpuGuestContact" runat="server" BackgroundCssClass="modalBackground" CancelControlID="btnCancel" PopupControlID="pnlContact" BehaviorID="mpuGuestContact" TargetControlID="lnkSendMessage"></asp:ModalPopupExtender>
-            <p><asp:Label ID="lblMessageStatus" runat="server" CssClass="success" Text="<%$ Resources:Club, StatusMessageSent %>" EnableViewState="false" Visible="false"></asp:Label></p>
-            <script>
-                        /* Handle escape to dismiss */
-                        function pageLoad(sender, args) {
-                            if (!args.get_isPartialLoad()) {
-                                $addHandler(document, "keydown", onKeyDown);
-                            }
-                        }
-
-                        function onKeyDown(e) {
-                            if (e && e.keyCode == Sys.UI.Key.esc) {
-                                $find("mpuGuestContact").hide();
-                                $find("mpeSendMsg").hide();
-                            }
-                        }
-            </script>
+            </div>
+            <p><asp:Label ID="lblMessageStatus" runat="server" CssClass="success" Text="<%$ Resources:Club, StatusMessageSent %>" EnableViewState="false" style="display:none;" /></p>
         </asp:View>
         <asp:View ID="vwTopMember" runat="server"></asp:View>
         <asp:View ID="vwTopAdmin" runat="server">
@@ -97,7 +80,7 @@
                     <asp:Localize ID="locClubMembers" runat="server" Text="<%$ Resources:Club, TabClubMembers %>" ></asp:Localize>
                 </Header>
                 <Content>
-                    <asp:GridView ID="gvMembers" DataKeyNames="UserName" OnRowCommand="gvMembers_RowCommand" runat="server" AutoGenerateColumns="False" GridLines="None" Width="100%" CellPadding="3">
+                    <asp:GridView ID="gvMembers" DataKeyNames="UserName" runat="server" AutoGenerateColumns="False" GridLines="None" Width="100%" CellPadding="3">
                         <RowStyle CssClass="clubMemberRow" />
                         <AlternatingRowStyle CssClass="clubMemberAlternateRow" />
                         <Columns>
@@ -127,7 +110,9 @@
                             <asp:BoundField DataField="MobilePhone" HeaderText="<%$ Resources:Club, ClubStatusContact %>" HeaderStyle-HorizontalAlign="Left" ReadOnly="true" />
                             <asp:TemplateField>
                                 <ItemTemplate>
-                                    <asp:ImageButton ID="imgSndMsg" runat="server" ImageUrl="~/images/sendflight.png" CommandArgument='<%# Eval("UserName") %>' CommandName="_sndMsg" AlternateText="<%$ Resources:Club, LinkSendMessage %>" ToolTip="<%$ Resources:Club, LinkSendMessage %>" />
+                                    <img src="<%# "~/images/sendflight.png".ToAbsoluteURL(Page.Request) %>"
+                                        onclick='javascript:sendMsgClick("<%# Eval("UserName") %>", "<%# System.Web.HttpUtility.JavaScriptStringEncode(String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Club.LabelContactMember, Eval("UserFullName"))) %>");'
+                                        alt="<%# Resources.Club.LinkSendMessage %>" />
                                 </ItemTemplate>
                             </asp:TemplateField>
                         </Columns>
@@ -291,22 +276,81 @@
             </asp:AccordionPane>
         </Panes>
     </asp:Accordion>
-    <asp:Panel ID="pnlSendMsg" runat="server" style="max-width: 350px; display:none;" CssClass="modalpopup" >
-        <h2><asp:Label ID="lblSendPrompt" runat="server" Text="<%$ Resources:Club, LabelContactMember %>" /></h2>
+    <script type="text/javascript">
+        function contactClubClick() {
+            var div = $("#divContactClub");
+            div.dialog({ autoOpen: false, closeOnEscape: true, modal: true, width: 450, title: '<%=Resources.Club.LabelMessagePrompt %>' });
+            div.dialog("open");
+        }
+
+        function contactClubSend() {
+            var params = new Object();
+            params.idClub = <% =CurrentClub.ID %>;
+            params.szMessage = $("#txtContactClub").val();
+            params.fRequestMembership = $("#ckRequestMembership")[0].checked;
+            var d = JSON.stringify(params);
+            $.ajax(
+                {
+                    url: '<% =ResolveUrl("~/Member/ClubDetails.aspx/ContactClub") %>',
+                    type: "POST", data: d, dataType: "json", contentType: "application/json",
+                    error: function (xhr, status, error) {
+                        window.alert(xhr.responseJSON.Message);
+                    },
+                    complete: function (response) { },
+                    success: function (response) {
+                        hideContact();
+                        $("#txtContactClub").val("");
+                        $("#ckRequestMembership")[0].checked = false;
+                        $("#" + "<%=lblMessageStatus.ClientID %>").show();
+                    }
+                });
+        }
+
+        function hideContact() {
+            $("#divContactClub").dialog("close");
+        }
+
+        function sendMsgClick(targetUser, szTitle) {
+            $("#" + '<% =hdnTargetUser.ClientID %>').val(targetUser);
+            var div = $("#divSendMsg");
+            div.dialog({ autoOpen: false, closeOnEscape: true, modal: true, title: szTitle });
+            div.dialog("open");
+        }
+
+        function sendMsgToUser() {
+            var params = new Object();
+            params.szTarget = $("#" + '<% =hdnTargetUser.ClientID %>').val();
+            params.szSubject = $("#" + '<% =txtContactSubject.ClientID %>').val();
+            params.szText = $("#" + '<% =txtMsg.ClientID %>').val();
+            var d = JSON.stringify(params);
+            $.ajax(
+                {
+                    url: '<% =ResolveUrl("~/Member/ClubDetails.aspx/SendMsgToClubUser") %>',
+                    type: "POST", data: d, dataType: "json", contentType: "application/json",
+                    error: function (xhr, status, error) {
+                        window.alert(xhr.responseJSON.Message);
+                    },
+                    complete: function (response) { },
+                    success: function (response) {
+                        $("#divSendMsg").dialog("close");
+                    }
+                });
+        }
+
+        function hideSend() {
+            $("#divSendMsg").dialog("close");
+        }
+    </script>
+    <div id="divSendMsg" style="max-width: 350px; display:none;">
         <p class="fineprint"><asp:Label ID="lblDisclaimer" runat="server" Text="<%$ Resources:Club, LabelContactMemberDisclaimer %>" /></p>
         <asp:HiddenField ID="hdnTargetUser" runat="server" />
         <div><asp:Label ID="lblSubject" runat="server" Text="<%$ Resources:LocalizedText, ContactUsSubject %>" /></div>
         <div><asp:TextBox ID="txtContactSubject" runat="server" Width="100%" /></div>
         <div><asp:TextBox ID="txtMsg" runat="server" TextMode="MultiLine" Rows="4" Width="100%" /></div>
         <div style="text-align:center">
-            <asp:Button ID="btnSendMsg" OnClick="btnSendMsg_Click" runat="server" Text="<%$ Resources:LogbookEntry, SendFlightButton %>" /> <asp:Button ID="btnCancelSend" runat="server" Text="<%$ Resources:LogbookEntry, SendFlightCancel %>" />
+            <asp:Button ID="btnSendMsg" OnClientClick="javascript:sendMsgToUser();" runat="server" Text="<%$ Resources:LogbookEntry, SendFlightButton %>" /> 
+            <asp:Button ID="btnCancelSend" runat="server" OnClientClick="hideSend();" Text="<%$ Resources:LogbookEntry, SendFlightCancel %>" />
         </div>
-    </asp:Panel>
-    <asp:HiddenField ID="hdn" runat="server" />
-    <ajaxToolkit:ModalPopupExtender ID="mpeSendMsg" runat="server" 
-    PopupControlID="pnlSendMsg" TargetControlID="hdn"
-    BackgroundCssClass="modalBackground"
-    CancelControlID="btnCancelSend" Enabled="true">
-    </ajaxToolkit:ModalPopupExtender>
+    </div>
 </asp:Content>
 

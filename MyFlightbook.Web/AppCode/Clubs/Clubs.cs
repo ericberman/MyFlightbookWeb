@@ -1,5 +1,6 @@
 ﻿using MyFlightbook.Airports;
 using MyFlightbook.Currency;
+using MyFlightbook.Instruction;
 using MyFlightbook.Schedule;
 using MySql.Data.MySqlClient;
 using System;
@@ -898,6 +899,75 @@ namespace MyFlightbook.Clubs
 
                 lst.ForEach((pf) => { util.NotifyUser(szSubject, szBody, new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, false); });
             }
+        }
+
+        /// <summary>
+        /// Contact a member of the club (from another member)
+        /// </summary>
+        /// <param name="szSender">Username of sender</param>
+        /// <param name="szTarget">Username of target</param>
+        /// <param name="szSubject">Subject of message - must not be empty</param>
+        /// <param name="szText">Body of message - must not be empty</param>
+        /// <exception cref="InvalidOperationException"></exception>
+        public static void ContactMember(string szSender, string szTarget, string szSubject, string szText)
+        {
+            if (String.IsNullOrEmpty(szSubject) || String.IsNullOrEmpty(szText))
+                throw new InvalidOperationException(Resources.Club.errNoMessageToSend);
+
+            if (String.IsNullOrEmpty(szTarget))
+                throw new InvalidOperationException("No known user " + szTarget + " (should not happen)");
+
+            Profile pf = Profile.GetUser(szTarget);
+            Profile pfSender = Profile.GetUser(szSender);
+            using (MailMessage msg = new MailMessage())
+            {
+                MailAddress maFrom = new MailAddress(pf.Email, pf.UserFullName);
+                msg.To.Add(new MailAddress(pf.Email, pf.UserFullName));
+                msg.From = new MailAddress(Branding.CurrentBrand.EmailAddress, String.Format(CultureInfo.CurrentCulture, Resources.SignOff.EmailSenderAddress, Branding.CurrentBrand.AppName, pf.UserFullName));
+                msg.ReplyToList.Add(new MailAddress(pfSender.Email, pfSender.UserFullName));
+                msg.Subject = szSubject;
+                msg.Body = szText;
+                msg.IsBodyHtml = false;
+                util.SendMessage(msg);
+            }
+        }
+
+        /// <summary>
+        /// Contact club admins as a guest
+        /// </summary>
+        /// <param name="szUser">Username of sender</param>
+        /// <param name="idClub">ID of club</param>
+        /// <param name="szMessage">Message to send</param>
+        /// <param name="fAlsoRequestJoin">If true, also generates formal request emails.</param>
+        public static void ContactClubAdmins(string szUser, int idClub, string szMessage, bool fAlsoRequestJoin)
+        {
+            if (string.IsNullOrEmpty(szUser))
+                throw new UnauthorizedAccessException("You must be signed in");
+
+            Profile pf = Profile.GetUser(szUser);
+            Club c = ClubWithID(idClub);
+            if (c == null)
+                throw new InvalidOperationException("No such club with ID " + idClub.ToString(CultureInfo.InvariantCulture));
+
+            if (String.IsNullOrWhiteSpace(szMessage))
+                throw new InvalidOperationException(Resources.Club.errNoContactMessageBody);
+
+            IEnumerable<ClubMember> lst = ClubMember.AdminsForClub(c.ID);
+            using (MailMessage msg = new MailMessage())
+            {
+                MailAddress maFrom = new MailAddress(pf.Email, pf.UserFullName);
+                msg.From = new MailAddress(Branding.CurrentBrand.EmailAddress, String.Format(CultureInfo.CurrentCulture, Resources.SignOff.EmailSenderAddress, Branding.CurrentBrand.AppName, pf.UserFullName));
+                msg.ReplyToList.Add(maFrom);
+                foreach (ClubMember cm in lst)
+                    msg.To.Add(new MailAddress(cm.Email, cm.UserFullName));
+                msg.Subject = String.Format(CultureInfo.CurrentCulture, Branding.ReBrand(Resources.Club.ContactSubjectTemplate), c.Name);
+                msg.Body = szMessage + "\r\n\r\n" + String.Format(CultureInfo.CurrentCulture, Resources.Club.MessageSenderTemplate, pf.UserFullName, pf.Email);
+                msg.IsBodyHtml = false;
+                util.SendMessage(msg);
+            }
+            if (fAlsoRequestJoin)
+                foreach (ClubMember admin in lst)
+                    new CFIStudentMapRequest(pf.UserName, admin.Email, CFIStudentMapRequest.RoleType.RoleRequestJoinClub, c).Send();
         }
         #endregion
 

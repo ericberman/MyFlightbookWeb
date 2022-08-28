@@ -695,6 +695,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please provide a subject and body for the message.
+        /// </summary>
+        internal static string errNoMessageToSend {
+            get {
+                return ResourceManager.GetString("errNoMessageToSend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Requested club doesn&apos;t exist..
         /// </summary>
         internal static string errNoSuchClub {
@@ -2051,6 +2060,15 @@ namespace Resources {
         internal static string TimeZoneDisclaimer {
             get {
                 return ResourceManager.GetString("TimeZoneDisclaimer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add/Edit Item.
+        /// </summary>
+        internal static string TitleEditScheduledEvent {
+            get {
+                return ResourceManager.GetString("TitleEditScheduledEvent", resourceCulture);
             }
         }
         

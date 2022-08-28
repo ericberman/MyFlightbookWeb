@@ -312,24 +312,6 @@ namespace MyFlightbook.Controls
         protected global::System.Web.UI.WebControls.Literal litWebinar;
 
         /// <summary>
-        /// lnkDetails control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink lnkDetails;
-
-        /// <summary>
-        /// pnlWebinarDetails control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlWebinarDetails;
-
-        /// <summary>
         /// lblWebinarDetails control.
         /// </summary>
         /// <remarks>
@@ -346,15 +328,6 @@ namespace MyFlightbook.Controls
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnDismiss;
-
-        /// <summary>
-        /// mpeEvent control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.ModalPopupExtender mpeEvent;
 
         /// <summary>
         /// plcMenuBar control.

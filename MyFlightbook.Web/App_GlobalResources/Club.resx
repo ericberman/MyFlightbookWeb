@@ -791,4 +791,10 @@ Sender Email: {1}</value>
   <data name="DownloadClubScheduleTo" xml:space="preserve">
     <value>End date:</value>
   </data>
+  <data name="errNoMessageToSend" xml:space="preserve">
+    <value>Please provide a subject and body for the message</value>
+  </data>
+  <data name="TitleEditScheduledEvent" xml:space="preserve">
+    <value>Add/Edit Item</value>
+  </data>
 </root>
