@@ -3147,7 +3147,6 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Controls\App_LocalResources\mfbEditFlight.ascx.resx" />
-    <Content Include="Controls\App_LocalResources\mfbEditMake.ascx.resx" />
     <Content Include="Controls\App_LocalResources\mfbFlightProperties.ascx.resx" />
     <Content Include="Controls\App_LocalResources\mfbSearchForm.ascx.resx" />
   </ItemGroup>
