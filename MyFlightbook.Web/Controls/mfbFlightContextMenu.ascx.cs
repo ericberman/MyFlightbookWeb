@@ -5,92 +5,92 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2020 MyFlightbook LLC
+ * Copyright (c) 2019-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
-public partial class Controls_mfbFlightContextMenu : UserControl
+namespace MyFlightbook.Controls
 {
-    #region events
-    public event EventHandler<LogbookEventArgs> SendFlight;
-    public event EventHandler<LogbookEventArgs> DeleteFlight;
-    
-    #endregion
-
-    #region properties
-    protected int FlightID
+    public partial class mfbFlightContextMenu : UserControl
     {
-        get { return String.IsNullOrEmpty(hdnID.Value) ? LogbookEntry.idFlightNew : Convert.ToInt32(hdnID.Value, CultureInfo.InvariantCulture); }
-        set { hdnID.Value = value.ToString(CultureInfo.InvariantCulture); }
-    }
+        #region events
+        public event EventHandler<LogbookEventArgs> DeleteFlight;
+        #endregion
 
-    public bool CanDelete
-    {
-        get { return lnkDelete.Visible; }
-        set { lnkDelete.Visible = value; }
-    }
-
-    public bool CanSend
-    {
-        get { return lnkSendFlight.Visible; }
-        set { lnkSendFlight.Visible = value; }
-    }
-
-    public bool CanEdit
-    {
-        get { return lnkEditThisFlight.Visible; }
-        set { lnkEditThisFlight.Visible = value; }
-    }
-
-    public string EditTargetFormatString { get; set; }
-
-    public string SignTargetFormatString { get; set; }
-
-    private LogbookEntryDisplay m_le;
-    public LogbookEntryDisplay Flight
-    {
-        get { return m_le; }
-        set
+        #region properties
+        protected int FlightID
         {
-            m_le = value;
-            if (value != null)
-            {
-                FlightID = value.FlightID;
-                mfbMiniFacebook.FlightEntry = value;
-                mfbTweetThis.FlightToTweet = value;
-                lnkRequestSignature.Visible = value.CanRequestSig;
-
-                // fix the ID of the delete button to prevent replay attacks
-                string szDelID = String.Format(CultureInfo.InvariantCulture, "lnkDel{0}", value.FlightID);
-                ConfirmButtonExtender1.TargetControlID = lnkDelete.ID = szDelID;
-                ConfirmButtonExtender1.ConfirmText = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.LogbookConfirmDelete, "\n\n", m_le.ToShortString());
-
-                string szEdit = String.Format(CultureInfo.InvariantCulture, EditTargetFormatString, value.FlightID);
-                lnkEditThisFlight.NavigateUrl = szEdit;
-                string szJoin = szEdit.Contains("?") ? "&" : "?";
-                lnkCheck.NavigateUrl = szEdit + szJoin + "Chk=1";
-                lnkClone.NavigateUrl = szEdit + szJoin + "Clone=1";
-                lnkReverse.NavigateUrl = szEdit + szJoin + "Clone=1&Reverse=1";
-                lnkRequestSignature.NavigateUrl = String.Format(CultureInfo.InvariantCulture, SignTargetFormatString, value.FlightID);
+            get { return String.IsNullOrEmpty(hdnID.Value) ? LogbookEntryBase.idFlightNew : Convert.ToInt32(hdnID.Value, CultureInfo.InvariantCulture); }
+            set 
+            { 
+                hdnID.Value = value.ToString(CultureInfo.InvariantCulture);
+                lnkSendFlight.OnClientClick = String.Format(CultureInfo.InvariantCulture, "javascript:sendFlight({0}); return false;", value);
             }
         }
-    }
-    #endregion
 
-    protected void Page_Load(object sender, EventArgs e)
-    {
-        // Always do full postback on deletion
-        ScriptManager.GetCurrent(Page).RegisterPostBackControl(lnkDelete);
-    }
+        public bool CanDelete
+        {
+            get { return lnkDelete.Visible; }
+            set { lnkDelete.Visible = value; }
+        }
 
-    protected void lnkSendFlight_Click(object sender, EventArgs e)
-    {
-        SendFlight?.Invoke(this, new LogbookEventArgs(FlightID));
-    }
+        public bool CanSend
+        {
+            get { return lnkSendFlight.Visible; }
+            set { lnkSendFlight.Visible = value; }
+        }
 
-    protected void lnkDelete_Click(object sender, EventArgs e)
-    {
-        DeleteFlight?.Invoke(this, new LogbookEventArgs(FlightID));
+        public bool CanEdit
+        {
+            get { return lnkEditThisFlight.Visible; }
+            set { lnkEditThisFlight.Visible = value; }
+        }
+
+        public string EditTargetFormatString { get; set; }
+
+        public string SignTargetFormatString { get; set; }
+
+        private LogbookEntryDisplay m_le;
+        public LogbookEntryDisplay Flight
+        {
+            get { return m_le; }
+            set
+            {
+                m_le = value;
+                if (value != null)
+                {
+                    FlightID = value.FlightID;
+                    mfbMiniFacebook.FlightEntry = value;
+                    mfbTweetThis.FlightToTweet = value;
+                    lnkRequestSignature.Visible = value.CanRequestSig;
+
+                    // fix the ID of the delete button to prevent replay attacks
+                    string szDelID = String.Format(CultureInfo.InvariantCulture, "lnkDel{0}", value.FlightID);
+                    ConfirmButtonExtender1.TargetControlID = lnkDelete.ID = szDelID;
+                    ConfirmButtonExtender1.ConfirmText = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.LogbookConfirmDelete, "\n\n", m_le.ToShortString());
+
+                    string szEdit = String.Format(CultureInfo.InvariantCulture, EditTargetFormatString, value.FlightID);
+                    lnkEditThisFlight.NavigateUrl = szEdit;
+                    string szJoin = szEdit.Contains("?") ? "&" : "?";
+                    lnkCheck.NavigateUrl = szEdit + szJoin + "Chk=1";
+                    lnkClone.NavigateUrl = szEdit + szJoin + "Clone=1";
+                    lnkReverse.NavigateUrl = szEdit + szJoin + "Clone=1&Reverse=1";
+                    lnkRequestSignature.NavigateUrl = String.Format(CultureInfo.InvariantCulture, SignTargetFormatString, value.FlightID);
+                }
+            }
+        }
+        #endregion
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            // Always do full postback on deletion
+            ScriptManager.GetCurrent(Page).RegisterPostBackControl(lnkDelete);
+        }
+
+        protected void lnkDelete_Click(object sender, EventArgs e)
+        {
+            DeleteFlight?.Invoke(this, new LogbookEventArgs(FlightID));
+        }
     }
 }

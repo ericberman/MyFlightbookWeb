@@ -795,6 +795,7 @@
     <Content Include="Admin\AdminTelemetry.aspx" />
     <Content Include="Member\Aircraft.aspx" />
     <Content Include="Member\Airports.aspx" />
+    <Content Include="Member\Ajax.asmx" />
     <Content Include="Member\BrowseTemplates.aspx" />
     <Content Include="Member\CheckFlights.aspx" />
     <Content Include="Member\ClubDetails.aspx" />
@@ -2263,6 +2264,10 @@
     </Compile>
     <Compile Include="Member\Airports.aspx.designer.cs">
       <DependentUpon>Airports.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\Ajax.asmx.cs">
+      <DependentUpon>Ajax.asmx</DependentUpon>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Member\BrowseTemplates.aspx.cs">
       <DependentUpon>BrowseTemplates.aspx</DependentUpon>

@@ -48,7 +48,7 @@
                     </tr>
                     <tr>
                         <td colspan="2" style="text-align:center">
-                            <asp:Button ID="btnCancel" runat="server" Text="<%$ Resources:LocalizedText, Cancel %>" OnClientClick="dismissDlg('#divContactClub');" />&nbsp;&nbsp;<asp:Button ID="btnSendMessage" runat="server" Text="<%$ Resources:Club, LabelContactClub %>" OnClientClick="javascript:contactClubSend()" />
+                            <asp:Button ID="btnCancel" runat="server" Text="<%$ Resources:LocalizedText, Cancel %>" OnClientClick="dismissDlg('#divContactClub'); return false;" />&nbsp;&nbsp;<asp:Button ID="btnSendMessage" runat="server" Text="<%$ Resources:Club, LabelContactClub %>" OnClientClick="javascript:contactClubSend(); return false;" />
                         </td>
                     </tr>
                 </table>
@@ -340,8 +340,8 @@
         <div><asp:TextBox ID="txtContactSubject" runat="server" Width="100%" /></div>
         <div><asp:TextBox ID="txtMsg" runat="server" TextMode="MultiLine" Rows="4" Width="100%" /></div>
         <div style="text-align:center">
-            <asp:Button ID="btnSendMsg" OnClientClick="javascript:sendMsgToUser();" runat="server" Text="<%$ Resources:LogbookEntry, SendFlightButton %>" /> 
-            <asp:Button ID="btnCancelSend" runat="server" OnClientClick="dismissDlg('#divSendMsg');" Text="<%$ Resources:LogbookEntry, SendFlightCancel %>" />
+            <asp:Button ID="btnSendMsg" OnClientClick="javascript:sendMsgToUser(); return false;" runat="server" Text="<%$ Resources:LogbookEntry, SendFlightButton %>" /> 
+            <asp:Button ID="btnCancelSend" runat="server" OnClientClick="dismissDlg('#divSendMsg'); return false;" Text="<%$ Resources:LogbookEntry, SendFlightCancel %>" />
         </div>
     </div>
 </asp:Content>

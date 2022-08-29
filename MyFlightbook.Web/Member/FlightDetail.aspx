@@ -92,7 +92,6 @@
                         EditTargetFormatString="~/Member/LogbookNew.aspx/{0}"
                         SignTargetFormatString="~/Member/RequestSigs.aspx?id={0}"
                         OnDeleteFlight="mfbFlightContextMenu_DeleteFlight" 
-                        OnSendFlight="mfbFlightContextMenu_SendFlight"
                         />
                 </div>
             </MenuContent>

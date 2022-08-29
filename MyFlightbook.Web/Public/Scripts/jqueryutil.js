@@ -51,3 +51,7 @@ function dismissImg(idDivViewImg) {
 function dismissDlg(idDlg) {
     $(idDlg).dialog("close");
 }
+
+function convertFdUpJsonDate(fdUpDate) {
+    return new Date(parseInt(fdUpDate.replace("/Date(", "").replace(")/", "")));
+}

@@ -13,7 +13,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2021 MyFlightbook LLC
+ * Copyright (c) 2017-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1030,14 +1030,6 @@ namespace MyFlightbook.MemberPages
 
             LogbookEntryBase.FDeleteEntry(e.FlightID, Page.User.Identity.Name);
             Response.Redirect(TargetPage);
-        }
-
-        protected void mfbFlightContextMenu_SendFlight(object sender, LogbookEventArgs e)
-        {
-            if (e == null)
-                throw new ArgumentNullException(nameof(e));
-
-            mfbSendFlight.SendFlight(e.FlightID);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbFlightContextMenu.ascx.cs" Inherits="Controls_mfbFlightContextMenu" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbFlightContextMenu.ascx.cs" Inherits="MyFlightbook.Controls.mfbFlightContextMenu" %>
 <%@ Register Src="~/Controls/mfbTweetThis.ascx" TagPrefix="uc1" TagName="mfbTweetThis" %>
 <%@ Register Src="~/Controls/mfbMiniFacebook.ascx" TagPrefix="uc1" TagName="mfbMiniFacebook" %>
 <div style="line-height: 26px;">
@@ -36,7 +36,7 @@
 <div style="line-height: 26px"><uc1:mfbMiniFacebook ID="mfbMiniFacebook" runat="server" /></div>
 <div style="line-height: 26px"><uc1:mfbTweetThis ID="mfbTweetThis" runat="server" /></div>
 <div style="line-height: 26px">
-    <asp:LinkButton ID="lnkSendFlight" runat="server" OnClick="lnkSendFlight_Click">
+    <asp:LinkButton ID="lnkSendFlight" runat="server">
         <asp:Image ID="imgSendFlight" style="padding-right:4px" ImageUrl="~/images/sendflight.png" runat="server" AlternateText="<%$ Resources:LogbookEntry, SendFlight %>" />
         <asp:Label ID="lblSendFlight" runat="server" Text="<%$ Resources:LogbookEntry, SendFlight %>"></asp:Label>
     </asp:LinkButton>

@@ -705,7 +705,7 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
     private void SetUpContextMenuForRow(LogbookEntryDisplay le, GridViewRow row)
     {
         // Wire up the drop-menu.  We have to do this here because it is an iNamingContainer and can't access the gridviewrow
-        Controls_mfbFlightContextMenu cm = (Controls_mfbFlightContextMenu)row.FindControl("popmenu1").FindControl("mfbfcm");
+        MyFlightbook.Controls.mfbFlightContextMenu cm = (MyFlightbook.Controls.mfbFlightContextMenu)row.FindControl("popmenu1").FindControl("mfbfcm");
 
         string szEditContext = EditContextParams(gvFlightLogs.PageIndex);
 
@@ -1017,14 +1017,6 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
             throw new ArgumentNullException(nameof(e));
 
         DeleteFlight(e.FlightID);
-    }
-
-    protected void mfbFlightContextMenu_SendFlight(object sender, LogbookEventArgs e)
-    {
-        if (e == null)
-            throw new ArgumentNullException(nameof(e));
-
-        mfbSendFlight.SendFlight(e.FlightID);
     }
     #endregion
 

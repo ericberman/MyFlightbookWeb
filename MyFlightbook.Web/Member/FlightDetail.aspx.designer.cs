@@ -309,7 +309,7 @@ namespace MyFlightbook.MemberPages
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_mfbFlightContextMenu mfbFlightContextMenu;
+        protected global::MyFlightbook.Controls.mfbFlightContextMenu mfbFlightContextMenu;
 
         /// <summary>
         /// mfbSendFlight control.
@@ -318,7 +318,7 @@ namespace MyFlightbook.MemberPages
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_mfbSendFlight mfbSendFlight;
+        protected global::MyFlightbook.Controls.mfbSendFlight mfbSendFlight;
 
         /// <summary>
         /// AccordionCtrl control.

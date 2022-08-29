@@ -316,7 +316,7 @@ public partial class Controls_mfbLogbook
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::Controls_mfbSendFlight mfbSendFlight;
+    protected global::MyFlightbook.Controls.mfbSendFlight mfbSendFlight;
 
     /// <summary>
     /// mfbilAircraft control.
