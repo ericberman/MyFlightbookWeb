@@ -142,6 +142,141 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add.
+        /// </summary>
+        internal static string editMakeAddMake {
+            get {
+                return ResourceManager.GetString("editMakeAddMake", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add a new manufacturer.
+        /// </summary>
+        internal static string editMakeAddmanufacturer {
+            get {
+                return ResourceManager.GetString("editMakeAddmanufacturer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add a new manufacturer.
+        /// </summary>
+        internal static string editMakeAddManufacturerPrompt {
+            get {
+                return ResourceManager.GetString("editMakeAddManufacturerPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Category/Class:.
+        /// </summary>
+        internal static string editMakeCategoryClass {
+            get {
+                return ResourceManager.GetString("editMakeCategoryClass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This model is certified for single-pilot operations.
+        /// </summary>
+        internal static string editMakeCertifiedSingle {
+            get {
+                return ResourceManager.GetString("editMakeCertifiedSingle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Complex.
+        /// </summary>
+        internal static string editMakeComplex {
+            get {
+                return ResourceManager.GetString("editMakeComplex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controllable Pitch Prop.
+        /// </summary>
+        internal static string editMakeCSP {
+            get {
+                return ResourceManager.GetString("editMakeCSP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Engine Type:.
+        /// </summary>
+        internal static string editMakeEngineType {
+            get {
+                return ResourceManager.GetString("editMakeEngineType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Electric.
+        /// </summary>
+        internal static string editMakeEngineTypeElectric {
+            get {
+                return ResourceManager.GetString("editMakeEngineTypeElectric", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Jet.
+        /// </summary>
+        internal static string editMakeEngineTypeJet {
+            get {
+                return ResourceManager.GetString("editMakeEngineTypeJet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Piston.
+        /// </summary>
+        internal static string editMakeEngineTypePiston {
+            get {
+                return ResourceManager.GetString("editMakeEngineTypePiston", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Turbine (Unspecified).
+        /// </summary>
+        internal static string editMakeEngineTypeTurbine {
+            get {
+                return ResourceManager.GetString("editMakeEngineTypeTurbine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Turboprop.
+        /// </summary>
+        internal static string editMakeEngineTypeTurboProp {
+            get {
+                return ResourceManager.GetString("editMakeEngineTypeTurboProp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Features:.
+        /// </summary>
+        internal static string editMakeFeatures {
+            get {
+                return ResourceManager.GetString("editMakeFeatures", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flaps.
+        /// </summary>
+        internal static string editMakeFlaps {
+            get {
+                return ResourceManager.GetString("editMakeFlaps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit Make: {0}.
         /// </summary>
         internal static string editMakeHeader {
@@ -151,11 +286,317 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to High-Performance.
+        /// </summary>
+        internal static string editMakeHighPerf {
+            get {
+                return ResourceManager.GetString("editMakeHighPerf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ..but only until 1997.
+        /// </summary>
+        internal static string editMakeHighPerf1997 {
+            get {
+                return ResourceManager.GetString("editMakeHighPerf1997", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to On Aug 4, 1997, the FAA definition of high-performance changed from an aircraft with more than 200hp to being an aircraft with an engine of more than 200hp.  So a multi-engine aircraft such as a Piper Seneca, with two engines of 200hp each (for 400hp total), went from being high-performance to not high performance as of that date.&lt;/p&gt;&lt;p&gt;Checking this option will cause flights prior to that date in this model to be treated as high-performance, but not flights after that date..
+        /// </summary>
+        internal static string editMakeHighPerf1997Note {
+            get {
+                return ResourceManager.GetString("editMakeHighPerf1997Note", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FAA/ICAO ID:.
+        /// </summary>
+        internal static string editMakeICAOCode {
+            get {
+                return ResourceManager.GetString("editMakeICAOCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Look up.
+        /// </summary>
+        internal static string editMakeICAOCodeLookup {
+            get {
+                return ResourceManager.GetString("editMakeICAOCodeLookup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The FAA or ICAO designator or the base model..
+        /// </summary>
+        internal static string editMakeICAOCodeNote {
+            get {
+                return ResourceManager.GetString("editMakeICAOCodeNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to E.g., a C-172 N and a C-172 S are both &quot;C172&quot;.
+        /// </summary>
+        internal static string editMakeICAOCodeNote2 {
+            get {
+                return ResourceManager.GetString("editMakeICAOCodeNote2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manufacturer:.
+        /// </summary>
+        internal static string editMakeManufacturerPrompt {
+            get {
+                return ResourceManager.GetString("editMakeManufacturerPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Marketing Name:.
+        /// </summary>
+        internal static string editMakeMarketingName {
+            get {
+                return ResourceManager.GetString("editMakeMarketingName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An informal or market name for an aircraft..
+        /// </summary>
+        internal static string editMakeMarketingName1 {
+            get {
+                return ResourceManager.GetString("editMakeMarketingName1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to E.g., &amp;quot;Skyhawk&amp;quot; for a C-172, but blank for a Boeing 737.
+        /// </summary>
+        internal static string editMakeMarketingName2 {
+            get {
+                return ResourceManager.GetString("editMakeMarketingName2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mission/Design/Series:.
+        /// </summary>
+        internal static string editMakeMDS {
+            get {
+                return ResourceManager.GetString("editMakeMDS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All aircraft with a common MDS will contribute to AR 95-1 currency for that group.
+        /// </summary>
+        internal static string editMakeMDSNote1 {
+            get {
+                return ResourceManager.GetString("editMakeMDSNote1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you type an MDS identifier here, all aircraft with that MDS will contribute to AR 95-1 for that identifier..
+        /// </summary>
+        internal static string editMakeMDSNote2 {
+            get {
+                return ResourceManager.GetString("editMakeMDSNote2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Model ID:.
+        /// </summary>
+        internal static string editMakeModelID {
+            get {
+                return ResourceManager.GetString("editMakeModelID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The model identifier.  Be as specific as possible..
+        /// </summary>
+        internal static string editMakeModelNote {
+            get {
+                return ResourceManager.GetString("editMakeModelNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to E.g., &quot;B737-700&quot; or &quot;C-172 S&quot; (rather than &quot;B737&quot; or &quot;C-172&quot;).
+        /// </summary>
+        internal static string editMakeModelNote2 {
+            get {
+                return ResourceManager.GetString("editMakeModelNote2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multi-engine.
+        /// </summary>
+        internal static string editMakeMultiHeli {
+            get {
+                return ResourceManager.GetString("editMakeMultiHeli", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Possible match!.
+        /// </summary>
+        internal static string editMakePossibleMatch {
+            get {
+                return ResourceManager.GetString("editMakePossibleMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to None of these match - Create it!.
+        /// </summary>
+        internal static string editMakePossibleMatchNoneMatch {
+            get {
+                return ResourceManager.GetString("editMakePossibleMatchNoneMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The make/model you are creating looks like it could be one of the following.  Please re-use one of these if it is a match (you may need to scroll):.
+        /// </summary>
+        internal static string editMakePossibleMatchPrompt {
+            get {
+                return ResourceManager.GetString("editMakePossibleMatchPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use this.
+        /// </summary>
+        internal static string editMakePossibleMatchUseThis {
+            get {
+                return ResourceManager.GetString("editMakePossibleMatchUseThis", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Retractable Landing Gear.
+        /// </summary>
+        internal static string editMakeRetract {
+            get {
+                return ResourceManager.GetString("editMakeRetract", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Please select).
+        /// </summary>
+        internal static string editMakeSelectMake {
+            get {
+                return ResourceManager.GetString("editMakeSelectMake", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No Restrictions.
+        /// </summary>
+        internal static string editMakeSimAny {
+            get {
+                return ResourceManager.GetString("editMakeSimAny", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ADMIN Sim/Anon Restrictions.
+        /// </summary>
+        internal static string editMakeSimOnly {
+            get {
+                return ResourceManager.GetString("editMakeSimOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All Aircraft of this make MUST NOT be real aircraft (i.e., sim only).
+        /// </summary>
+        internal static string editMakeSimSimOnly {
+            get {
+                return ResourceManager.GetString("editMakeSimSimOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can be sim or anonymous, but not real..
+        /// </summary>
+        internal static string editMakeSimSimOrGeneric {
+            get {
+                return ResourceManager.GetString("editMakeSimSimOrGeneric", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tailwheel.
+        /// </summary>
+        internal static string editMakeTailwheel {
+            get {
+                return ResourceManager.GetString("editMakeTailwheel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Motor Glider/Touring Motor Glider (TMG).
+        /// </summary>
+        internal static string editMakeTMG {
+            get {
+                return ResourceManager.GetString("editMakeTMG", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Leave this blank unless the aircraft requires a type-rating (typically jet or over 12,500lbs)..
+        /// </summary>
+        internal static string editMakeTypeDesc1 {
+            get {
+                return ResourceManager.GetString("editMakeTypeDesc1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to E.g., &amp;quot;B737&amp;quot; for a Boeing 737, blank for a C-172..
+        /// </summary>
+        internal static string editMakeTypeDesc2 {
+            get {
+                return ResourceManager.GetString("editMakeTypeDesc2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Models that share a common type rating should use a common value here..
+        /// </summary>
+        internal static string editMakeTypeDesc3 {
+            get {
+                return ResourceManager.GetString("editMakeTypeDesc3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to If a type rating is required to fly this, please add it here.
         /// </summary>
         internal static string editMakeTypeRatingPrompt {
             get {
                 return ResourceManager.GetString("editMakeTypeRatingPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a model name.
+        /// </summary>
+        internal static string editMakeValModelNameRequired {
+            get {
+                return ResourceManager.GetString("editMakeValModelNameRequired", resourceCulture);
             }
         }
         
