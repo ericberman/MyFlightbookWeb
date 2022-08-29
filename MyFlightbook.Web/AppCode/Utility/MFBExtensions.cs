@@ -171,7 +171,10 @@ namespace MyFlightbook
         {
             if (s == null)
                 throw new ArgumentNullException(nameof(s));
-            string[] rgSz = s.Split(new string[] { System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.TimeSeparator }, StringSplitOptions.None);
+            // Issue #974: Norway and some other countries no longer use ":" as the standard time separator, but pilots typically still do.
+            // E.g., 72 minutes is 1.12, not 1:12
+            // So we'll *emit* ".", but consume "." AND ":".  E.g., we'll display 1.12, but parse 1.12 AND 1:12.  
+            string[] rgSz = s.Split(new string[] { System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.TimeSeparator, ":" }, StringSplitOptions.None);
             if (rgSz.Length == 0 || rgSz.Length > 2)
                 return defVal;
 
