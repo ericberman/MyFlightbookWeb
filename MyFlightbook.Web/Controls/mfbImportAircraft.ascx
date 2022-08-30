@@ -89,13 +89,8 @@
             Text="<%$ Resources:Aircraft, ImportNoAircraftFound %>" />
     </EmptyDataTemplate>
 </asp:GridView>
-<asp:Panel ID="pnlAddingAircraft" runat="server" CssClass="modalpopup" style="display:none; width: 230px; text-align:center; padding: 20px;">
+<asp:Panel ID="pnlAddingAircraft" runat="server" style="display:none; width: 230px; text-align:center; padding: 20px;">
     <h3><asp:Label ID="lblAddingAircraft" runat="server" Text="<%$ Resources:Aircraft, ImportAircraftAdding %>" /></h3>
     <div><asp:Image ID="imgProgress" runat="server" ImageUrl="~/images/ajax-loader.gif" /></div>
 </asp:Panel>
-<asp:Label ID="lblPopupPlaceholder" runat="server" />
-<ajaxToolkit:ModalPopupExtender ID="popupAddingInProgress" runat="server"
-    PopupControlID="pnlAddingAircraft" TargetControlID="lblPopupPlaceholder"
-    BackgroundCssClass="modalBackground" 
-    BehaviorID="mpeAddAircraftProgress" />
 

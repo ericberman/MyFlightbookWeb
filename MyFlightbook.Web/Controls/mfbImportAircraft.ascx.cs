@@ -9,12 +9,12 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2021 MyFlightbook LLC
+ * Copyright (c) 2016-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
-public partial class Controls_mfbImportAircraft : System.Web.UI.UserControl
+public partial class Controls_mfbImportAircraft : UserControl
 {
     #region Properties
     private const string szvsMatchRowsKey = "vsMatchRowsKey";
@@ -51,7 +51,7 @@ public partial class Controls_mfbImportAircraft : System.Web.UI.UserControl
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        Page.ClientScript.RegisterClientScriptInclude("MFBAircraftImportScript", ResolveClientUrl("~/Public/Scripts/ImpAircraft.js?v=2"));
+        Page.ClientScript.RegisterClientScriptInclude("MFBAircraftImportScript", ResolveClientUrl("~/Public/Scripts/ImpAircraft.js?v=3"));
         if (IsPostBack)
         {
             // fix up the state of any aircraft that might have been added asynchronously (i.e., via web service call, in which case the viewstate is out of date)
@@ -117,7 +117,7 @@ public partial class Controls_mfbImportAircraft : System.Web.UI.UserControl
                 { "lblAllGood", lblAllGood.ClientID },  // ID of the label for displaying success
                 { "mdlID", hdnModel.ClientID },         // ID of the hidden control with the selected model ID
                 { "cmbInstance", cmbInst.ClientID },    // ID of the drop-down with the instance type specified
-                { "progressID", popupAddingInProgress.BehaviorID }, // ID of the progress behavior ID
+                { "progressID", "#" + pnlAddingAircraft.ClientID }, // ID of the progress behavior ID
                 { "btnAdd", btnAddThis.ClientID },      // ID of the "Add this" button
                 { "pnlStaticMake", pnlStaticMake.ClientID },    // ID of the static view of the model/instance type to import
                 { "pnlEditMake", pnlEditMake.ClientID },    // ID of the edit view to import

@@ -1,6 +1,6 @@
 ﻿/******************************************************
  * 
- * Copyright (c) 2016-2019 MyFlightbook LLC
+ * Copyright (c) 2016-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -10,7 +10,7 @@ function addExistingAircraft(d) {
     var params = new Object();
     params.aircraftID = mr.BestMatchAircraft.AircraftID;
     var idPopup = d["progressID"];
-    $find(idPopup).show();
+    showProgress(idPopup);
     $.ajax(
     {
         type: "POST",
@@ -18,20 +18,15 @@ function addExistingAircraft(d) {
         url: "ImpAircraftService.aspx/AddExistingAircraft",
         dataType: "json",
         contentType: "application/json",
-        error: function (xhr, status, error) {
-            $find(idPopup).hide();
-            window.alert(xhr.responseJSON.Message);
-        },
-        complete: function (response) {
-            $find(idPopup).hide();
-        },
+        error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
+        complete: function (response) { $(idPopup).dialog("close"); },
         success: function (response) {
-            $find(idPopup).hide();
             document.getElementById(d["btnAdd"]).style.display = 'none';
             document.getElementById(d["lblAllGood"]).style.display = 'block';
         }
     });
 }
+
 function addNewAircraft(d) {
     var mr = d["matchRow"];
     var params = new Object();
@@ -42,7 +37,7 @@ function addNewAircraft(d) {
     params.szModelGiven = document.getElementById(d["lblGivenModel"]).innerText;
     params.szJsonMapping = document.getElementById(d["idMap"]).value;
     var idPopup = d["progressID"];
-    $find(idPopup).show();
+    showProgress(idPopup);
     $.ajax(
         {
             type: "POST",
@@ -50,15 +45,9 @@ function addNewAircraft(d) {
             url: "ImpAircraftService.aspx/AddNewAircraft",
             dataType: "json",
             contentType: "application/json",
-            error: function (xhr, status, error) {
-                $find(idPopup).hide();
-                window.alert(xhr.responseJSON.Message);
-            },
-            complete: function (response) {
-                $find(idPopup).hide();
-            },
+            error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
+            complete: function (response) { $(idPopup).dialog("close"); },
             success: function (response) {
-                $find(idPopup).hide();
                 document.getElementById(d["btnAdd"]).style.display = 'none';
                 document.getElementById(d["lblAllGood"]).style.display = 'block';
 
@@ -86,7 +75,7 @@ function Validate(d) {
     params.instanceType = ddlInst.options[ddlInst.selectedIndex].value;
 
     var idPopup = d["progressID"];
-    $find(idPopup).show();
+    showProgress(idPopup);
 
     $.ajax(
         {
@@ -95,15 +84,9 @@ function Validate(d) {
             url: "ImpAircraftService.aspx/ValidateAircraft",
             dataType: "json",
             contentType: "application/json",
-            error: function (xhr, status, error) {
-                $find(idPopup).hide();
-                window.alert(xhr.responseJSON.Message);
-            },
-            complete: function (response) {
-                $find(idPopup).hide();
-            },
+            error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
+            complete: function (response) { $(idPopup).dialog("close"); },
             success: function (response) {
-                $find(idPopup).hide();
                 var err = response.d;
                 if (err === "") {
                     document.getElementById(d["btnAdd"]).style.display = 'block';
@@ -149,4 +132,9 @@ function updateInstanceDesc(idInst, idDesc, idContext) {
     lblDesc.innerText = ddl.options[ddl.selectedIndex].innerText;
 
     Validate(JSON.parse(document.getElementById(idContext).value));
+}
+
+function showProgress(id) {
+    $(id).dialog({ autoOpen: true, closeOnEscape: true, width: 300, modal: true });
+    $(".ui-dialog-titlebar").hide();    // hide the title bar
 }
