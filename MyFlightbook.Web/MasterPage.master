@@ -34,7 +34,7 @@
             <Scripts>
                 <asp:ScriptReference Name="jquery" Path="https://code.jquery.com/jquery-3.6.0.min.js" />
                 <asp:ScriptReference Name="jquery" Path="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js" />
-                <asp:ScriptReference Name="jquery" Path="~/Public/Scripts/jqueryutil.js" />
+                <asp:ScriptReference Name="jquery" Path="~/Public/Scripts/jqueryutil.js?v=1" />
             </Scripts>
         </asp:ScriptManager>
 

@@ -16,7 +16,14 @@
                 <asp:ListItem Selected="True" Value="-1" Text="<%$ Resources:Makes, editMakeSelectMake %>"  />
             </asp:DropDownList>
             <asp:RangeValidator ID="RangeValidator1" runat="server" ControlToValidate="cmbManufacturer" CssClass="error" Display="Dynamic" ErrorMessage="Please select a manufacturer from the list.  You can add one if needed." MaximumValue="1000000" MinimumValue="0" Type="Integer" ValidationGroup="EditMake" />
-            <asp:HyperLink ID="lblAddNewManufacturer" runat="server" NavigateUrl="#" Text="<%$ Resources:Makes, editMakeAddmanufacturer %>" ValidationGroup="EditMake" />
+            <a href="javascript:showModalById('<% =pnlNewMan.ClientID %>','<%= Resources.Makes.editMakeAddManufacturerPrompt %>', 400);"><% =Resources.Makes.editMakeAddmanufacturer %></a>
+            <asp:Panel runat="server" ID="pnlNewMan" style="display:none" DefaultButton="btnManOK">
+                <div>
+                    <asp:TextBox ID="txtManufacturer" runat="server" autofocus />
+                    <asp:Button ID="btnManOK" runat="server" Text="<%$ Resources:LocalizedText, OK %>" onclick="btnManOK_Click" CausesValidation="False" />
+                </div>
+                <div class="fineprint"><br /><%=Resources.Makes.addManufacturerTip %></div>
+            </asp:Panel>
         </div>
     </div>
     <div class="vfSection">
@@ -170,22 +177,7 @@
             OnClick="btnAddMake_Click" ValidationGroup="EditMake"  /></div>
 </asp:Panel>
 <asp:HiddenField ID="hdnID" runat="server" />
-<asp:Panel ID="pnlManufacturer" runat="server" CssClass="modalpopup" DefaultButton="btnManOK">
-    <div style="text-align:center">
-        <div><asp:Label ID="lblAddManufacturer" runat="server" Text="<%$ Resources:Makes, editMakeAddManufacturerPrompt %>" /></div>
-        <div><asp:TextBox ID="txtManufacturer" runat="server" /></div>
-        <div style="margin-top: 5px;">
-            <asp:Button ID="btnManOK" runat="server" Text="<%$ Resources:LocalizedText, OK %>" onclick="btnManOK_Click" CausesValidation="False" />&nbsp;&nbsp;
-            <asp:Button ID="btnManCancel" runat="server" Text="<%$ Resources:LocalizedText, Cancel %>" CausesValidation="False" />
-        </div>
-    </div>
-</asp:Panel>
-<cc1:ModalPopupExtender ID="ModalPopupExtender1" runat="server" TargetControlID="lblAddNewManufacturer"
-    PopupControlID="pnlManufacturer" BackgroundCssClass="modalBackground" 
-    CancelControlID="btnManCancel" OnCancelScript="getFlickerSolved();"
-    BehaviorID="ctl00_ModalPopupExtender1">
-</cc1:ModalPopupExtender>
-<asp:Panel ID="pnlDupesFound" runat="server" Width="480px" CssClass="modalpopup" style="display:none">
+<asp:Panel ID="pnlDupesFound" runat="server" style="display:none" Visible="false">
     <h2>
         <asp:Label ID="lblPossibleMatchHeader" runat="server" Text="<%$ Resources:Makes, editMakePossibleMatch %>" /></h2>
     <p>
@@ -226,29 +218,16 @@
     <div style="text-align:center">
         <asp:Button ID="btnCancelDupe" runat="server" Text="<%$ Resources:LocalizedText, Cancel %>" />&nbsp;&nbsp;<asp:Button ID="btnIReallyMeanIt" runat="server" Text="<%$ Resources:Makes, editMakePossibleMatchNoneMatch %>" onclick="btnIReallyMeanIt_Click" />
     </div>
-</asp:Panel>           
-<asp:Label ID="lblDummy" runat="server" Text="Required for popup" style="display:none" />
-<cc1:ModalPopupExtender ID="modalPopupDupes" runat="server" 
-    PopupControlID="pnlDupesFound" TargetControlID="lblDummy"
-    BackgroundCssClass="modalBackground"
-    CancelControlID="btnCancelDupe" OnCancelScript="getFlickerSolved();" BehaviorID="ctl00_modalPopupDupes">
-</cc1:ModalPopupExtender>
+</asp:Panel>  
 <script type="text/javascript">
 // <![CDATA[  
 // These functions from http://www.aspdotnetcodes.com/ModalPopup_Postback.aspx
 var clientid;
-function fnSetFocus(txtClientId)
-{
-	clientid=txtClientId;
-	setTimeout("fnFocus()",1000);
-    
-}
 
-function fnFocus()
-{
-    eval("document.getElementById('"+clientid+"').focus()");
-}
-
+$(function () {
+    if (document.getElementById('<% =pnlDupesFound.ClientID %>'))
+            showModalById('<%=pnlDupesFound.ClientID %>', '<%=Resources.Makes.editMakePossibleMatch %>', 640);
+    });
 
 function fnClickOK(sender, e) { 
 __doPostBack(sender,e); 
@@ -299,11 +278,6 @@ function HighPerfClicked() {
 function LegacyHighPerfClicked() {
     if (document.getElementById("<% =ckLegacyHighPerf.ClientID %>").checked)
         document.getElementById("<% =ckHighPerf.ClientID %>").checked = true;
-}
-
-function getFlickerSolved() {
-    document.getElementById('<%=pnlDupesFound.ClientID%>').style.display = 'none';
-    document.getElementById('<%=pnlManufacturer.ClientID%>').style.display = 'none';
 }
 
 function showSinglePilotCertification() {

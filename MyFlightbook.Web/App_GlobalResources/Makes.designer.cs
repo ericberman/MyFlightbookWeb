@@ -61,6 +61,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tip: please do NOT make up manufacturer names.  You can use the built-in manufacturer &quot;Generic&quot; if you need to capture time across multiple or unknown models..
+        /// </summary>
+        internal static string addManufacturerTip {
+            get {
+                return ResourceManager.GetString("addManufacturerTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All aircraft on {0} that are {1}.
         /// </summary>
         internal static string AllAircraftForModel {

@@ -5,7 +5,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2021 MyFlightbook LLC
+ * Copyright (c) 2009-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -27,7 +27,7 @@ namespace MyFlightbook.AircraftControls
             get
             {
                 if (ckHighPerf.Checked)
-                    return (ckLegacyHighPerf.Checked ? MakeModel.HighPerfType.Is200HP : MakeModel.HighPerfType.HighPerf);
+                    return ckLegacyHighPerf.Checked ? MakeModel.HighPerfType.Is200HP : MakeModel.HighPerfType.HighPerf;
                 else
                     return MakeModel.HighPerfType.NotHighPerf;
             }
@@ -80,6 +80,13 @@ namespace MyFlightbook.AircraftControls
             // Set up the manufacturer list every time, since it's large and consumes viewstate
             cmbManufacturer.SelectedIndex = -1;
             cmbManufacturer.SelectedValue = null;
+            if (cmbManufacturer.Items.Count > 0)
+            {
+                // Save the "(please select)" item
+                ListItem lSelect = cmbManufacturer.Items[0];
+                cmbManufacturer.Items.Clear();
+                cmbManufacturer.Items.Add(lSelect);
+            }
             cmbManufacturer.DataSource = Manufacturer.CachedManufacturers();
             cmbManufacturer.DataBind();
             if (defVal != null)
@@ -107,16 +114,13 @@ namespace MyFlightbook.AircraftControls
                 li.Attributes.Add("onclick", tl.IsTurbine() ? "javascript:showSinglePilotCertification()" : "javascript:hideSinglePilotCertification()");
             }
 
-            lblAddNewManufacturer.Attributes.Add("onclick", "fnSetFocus('" + txtManufacturer.ClientID + "');");
             btnManOK.OnClientClick = String.Format(CultureInfo.InvariantCulture, "fnClickOK('{0}', '{1}')", btnManOK.UniqueID, "");
-            pnlManufacturer.Style["display"] = "none";
-            pnlDupesFound.Style["display"] = "none";
 
             if (!IsPostBack)
             {
                 cmbCatClass.DataSource = CategoryClass.CategoryClasses();
                 cmbCatClass.DataBind();
-                divIsSimOnly.Visible = ((MyFlightbook.Profile.GetUser(Page.User.Identity.Name)).CanManageData);
+                divIsSimOnly.Visible = Profile.GetUser(Page.User.Identity.Name).CanManageData;
                 InitFormForMake();
             }
         }
@@ -157,7 +161,7 @@ namespace MyFlightbook.AircraftControls
             pnlSinglePilotOps.Style["display"] = Model.EngineType.IsTurbine() ? "block" : "none";
             UpdateRowsForCatClass(Model.CategoryClassID);
 
-            rowArmyCurrency.Visible = MyFlightbook.Profile.GetUser(Page.User.Identity.Name).UsesArmyCurrency;
+            rowArmyCurrency.Visible = Profile.GetUser(Page.User.Identity.Name).UsesArmyCurrency;
             txtArmyMDS.Text = Model.ArmyMDS;
         }
 
@@ -256,7 +260,7 @@ namespace MyFlightbook.AircraftControls
                 {
                     gvDupes.DataSource = rgmmDupes;
                     gvDupes.DataBind();
-                    modalPopupDupes.Show();
+                    pnlDupesFound.Visible = true;
                     return;
                 }
             }
@@ -278,12 +282,12 @@ namespace MyFlightbook.AircraftControls
                 string szLinkEditModel = String.Format(CultureInfo.InvariantCulture, "{0}?id={1}", "~/Member/EditMake.aspx".ToAbsoluteURL(Request), Model.MakeModelID);
                 string szNewDesc = Model.ToString();
                 if (fIsNew)
-                    util.NotifyAdminEvent("New Model created", String.Format(CultureInfo.InvariantCulture, "User: {0}\r\n\r\n{1}\r\n{2}", MyFlightbook.Profile.GetUser(Page.User.Identity.Name).DetailedName, szNewDesc, szLinkEditModel), ProfileRoles.maskCanManageData);
+                    util.NotifyAdminEvent("New Model created", String.Format(CultureInfo.InvariantCulture, "User: {0}\r\n\r\n{1}\r\n{2}", Profile.GetUser(Page.User.Identity.Name).DetailedName, szNewDesc, szLinkEditModel), ProfileRoles.maskCanManageData);
                 else
                 {
                     if (String.Compare(szNewDesc, szOriginalDesc, StringComparison.Ordinal) != 0)
                         util.NotifyAdminEvent("Model updated", String.Format(CultureInfo.InvariantCulture, "User: {0}\r\n\r\nWas:\r\n{1}\r\n\r\nIs Now: \r\n{2}\r\n \r\nID: {3}, {4}",
-                            MyFlightbook.Profile.GetUser(Page.User.Identity.Name).DetailedName,
+                            Profile.GetUser(Page.User.Identity.Name).DetailedName,
                             szOriginalDesc,
                             szNewDesc,
                             Model.MakeModelID, szLinkEditModel), ProfileRoles.maskCanManageData);
@@ -302,8 +306,7 @@ namespace MyFlightbook.AircraftControls
 
         protected void ClearDupes()
         {
-            modalPopupDupes.Hide();
-            pnlDupesFound.Style["display"] = "none";
+            pnlDupesFound.Visible = false;
             gvDupes.DataSource = Array.Empty<MakeModel>();
             gvDupes.DataBind();
         }
@@ -369,8 +372,7 @@ namespace MyFlightbook.AircraftControls
                 }
             }
 
-            txtManufacturer.Text = "";
-            ModalPopupExtender1.Hide();
+            txtManufacturer.Text = string.Empty;
         }
 
         protected void ManufacturerChanged(object sender, EventArgs e)

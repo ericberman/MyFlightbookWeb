@@ -415,4 +415,7 @@
   <data name="editMakeValModelNameRequired" xml:space="preserve">
     <value>Please enter a model name</value>
   </data>
+  <data name="addManufacturerTip" xml:space="preserve">
+    <value>Tip: please do NOT make up manufacturer names.  You can use the built-in manufacturer "Generic" if you need to capture time across multiple or unknown models.</value>
+  </data>
 </root>
