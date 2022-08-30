@@ -549,11 +549,20 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
 
         /// <summary>
         /// Saves the make/model to the DB, creating it if necessary
+        /// <paramref name="szChangingUser">User making the change</paramref>
+        /// <paramref name="szOriginalDesc">Description of the original version; empty for new</paramref>
         /// </summary>
-        public void Commit()
+        public void Commit(string szChangingUser, string szOriginalDesc)
         {
             if (!FIsValid())
                 throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.Makes.errSaveMakeFailed, ErrorString));
+
+            if (szChangingUser == null)
+                throw new UnauthorizedAccessException("MUST be authenticated to change a model");
+            if (szOriginalDesc == null && !IsNew)
+                throw new InvalidOperationException("Model updates MUST provide an original description");
+
+            bool fWasNew = IsNew;   // need this for below, since IsNew will change state after commit
 
             // Inherit the allowed aircraft types from the manufacturer if this is new or if it otherwise is unrestricted.
             if (IsNew || AllowedTypes == AllowedAircraftTypes.Any)
@@ -563,7 +572,7 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
                         "fcomplex = ?IsComplex, fHighPerf = ?IsHighPerf, f200HP=?Is200hp, fTailwheel = ?IsTailWheel, fTurbine=?engineType, fGlassOnly=?IsGlassOnly, fTAA=?IsTaa, fRetract=?IsRetract, fCowlFlaps=?HasFlaps, " +
                         "fConstantProp=?IsConstantProp, ArmyMissionDesignSeries=?armyMDS, fSimOnly=?simOnly, fMotorGlider=?motorglider, fMultiHelicopter=?multiHeli, fCertifiedSinglePilot=?singlePilot {1}",
                         IsNew ? "INSERT INTO" : "UPDATE",
-                        IsNew ? String.Empty : String.Format(CultureInfo.InvariantCulture, "WHERE idModel = {0}", MakeModelID)
+                        IsNew ? string.Empty : String.Format(CultureInfo.InvariantCulture, "WHERE idModel = {0}", MakeModelID)
                         );
 
             DBHelper dbh = new DBHelper(szQ);
@@ -601,6 +610,21 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
             {
                 HttpRuntime.Cache.Remove(CacheKey(MakeModelID));    // remove, then replace.
                 HttpRuntime.Cache.Add(CacheKey(MakeModelID), this, null, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromMinutes(60), System.Web.Caching.CacheItemPriority.Normal, null);
+            }
+
+            // use fIsNew because Model.IsNew may have been true and not now.
+            string szLinkEditModel = String.Format(CultureInfo.InvariantCulture, "{0}?id={1}", "~/Member/EditMake.aspx".ToAbsoluteURL(HttpContext.Current.Request), MakeModelID);
+            string szNewDesc = this.ToString();
+            if (fWasNew)
+                util.NotifyAdminEvent("New Model created", String.Format(CultureInfo.InvariantCulture, "User: {0}\r\n\r\n{1}\r\n{2}", Profile.GetUser(szChangingUser).DetailedName, szNewDesc, szLinkEditModel), ProfileRoles.maskCanManageData);
+            else
+            {
+                if (String.Compare(szNewDesc, szOriginalDesc, StringComparison.Ordinal) != 0)
+                    util.NotifyAdminEvent("Model updated", String.Format(CultureInfo.InvariantCulture, "User: {0}\r\n\r\nWas:\r\n{1}\r\n\r\nIs Now: \r\n{2}\r\n \r\nID: {3}, {4}",
+                        Profile.GetUser(szChangingUser).DetailedName,
+                        szOriginalDesc,
+                        szNewDesc,
+                        MakeModelID, szLinkEditModel), ProfileRoles.maskCanManageData);
             }
         }
 

@@ -73,7 +73,7 @@ namespace MyFlightbook.AircraftControls
             }
         }
 
-        public event System.EventHandler MakeUpdated;
+        public event EventHandler MakeUpdated;
 
         protected void RepopulateManufacturerDropdown(string defVal = null)
         {
@@ -194,7 +194,7 @@ namespace MyFlightbook.AircraftControls
         protected MakeModel MakeFromForm()
         {
             CategoryClass.CatClassID ccId = (CategoryClass.CatClassID)Enum.Parse(typeof(CategoryClass.CatClassID), cmbCatClass.SelectedValue, true);
-            Boolean fSea = CategoryClass.IsSeaClass(ccId);
+            bool fSea = CategoryClass.IsSeaClass(ccId);
 
             if (ckComplex.Checked)
             {
@@ -271,27 +271,7 @@ namespace MyFlightbook.AircraftControls
 
             try
             {
-                string szOriginalDesc = string.Empty;
-                bool fIsNew = Model.IsNew;
-                if (!fIsNew)
-                    szOriginalDesc = new MakeModel(MakeID).ToString();
-
-                Model.Commit();
-
-                // use fIsNew because Model.IsNew may have been true and not now.
-                string szLinkEditModel = String.Format(CultureInfo.InvariantCulture, "{0}?id={1}", "~/Member/EditMake.aspx".ToAbsoluteURL(Request), Model.MakeModelID);
-                string szNewDesc = Model.ToString();
-                if (fIsNew)
-                    util.NotifyAdminEvent("New Model created", String.Format(CultureInfo.InvariantCulture, "User: {0}\r\n\r\n{1}\r\n{2}", Profile.GetUser(Page.User.Identity.Name).DetailedName, szNewDesc, szLinkEditModel), ProfileRoles.maskCanManageData);
-                else
-                {
-                    if (String.Compare(szNewDesc, szOriginalDesc, StringComparison.Ordinal) != 0)
-                        util.NotifyAdminEvent("Model updated", String.Format(CultureInfo.InvariantCulture, "User: {0}\r\n\r\nWas:\r\n{1}\r\n\r\nIs Now: \r\n{2}\r\n \r\nID: {3}, {4}",
-                            Profile.GetUser(Page.User.Identity.Name).DetailedName,
-                            szOriginalDesc,
-                            szNewDesc,
-                            Model.MakeModelID, szLinkEditModel), ProfileRoles.maskCanManageData);
-                }
+                Model.Commit(Page.User.Identity.Name, Model.IsNew ? string.Empty : new MakeModel(MakeID).ToString());
 
                 MakeID = Model.MakeModelID;
 
