@@ -447,69 +447,6 @@ namespace MyFlightbook.ImportFlights
         protected global::System.Web.UI.WebControls.Panel pnl3rdPartyServices;
 
         /// <summary>
-        /// pnlLeon control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlLeon;
-
-        /// <summary>
-        /// lnkImportLeon control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton lnkImportLeon;
-
-        /// <summary>
-        /// popupLeon control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.ModalPopupExtender popupLeon;
-
-        /// <summary>
-        /// pnlCloudAhoy control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlCloudAhoy;
-
-        /// <summary>
-        /// imgCloudAhoy control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Image imgCloudAhoy;
-
-        /// <summary>
-        /// lnkImportCloudAhoy control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton lnkImportCloudAhoy;
-
-        /// <summary>
-        /// popupCloudAhoy control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.ModalPopupExtender popupCloudAhoy;
-
-        /// <summary>
         /// pnlModalLeon control.
         /// </summary>
         /// <remarks>
@@ -517,15 +454,6 @@ namespace MyFlightbook.ImportFlights
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel pnlModalLeon;
-
-        /// <summary>
-        /// Label2 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label2;
 
         /// <summary>
         /// lblLeonDesc control.
@@ -600,15 +528,6 @@ namespace MyFlightbook.ImportFlights
         protected global::System.Web.UI.WebControls.Button btnImportLeonFlights;
 
         /// <summary>
-        /// btnCancelLeon control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnCancelLeon;
-
-        /// <summary>
         /// lblLeonErr control.
         /// </summary>
         /// <remarks>
@@ -616,6 +535,15 @@ namespace MyFlightbook.ImportFlights
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblLeonErr;
+
+        /// <summary>
+        /// pnlLeon control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlLeon;
 
         /// <summary>
         /// pnlModalCloudAhoy control.
@@ -708,13 +636,22 @@ namespace MyFlightbook.ImportFlights
         protected global::System.Web.UI.WebControls.Button btnImportCloudAhoy;
 
         /// <summary>
-        /// btnCancel control.
+        /// pnlCloudAhoy control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnCancel;
+        protected global::System.Web.UI.WebControls.Panel pnlCloudAhoy;
+
+        /// <summary>
+        /// imgCloudAhoy control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Image imgCloudAhoy;
 
         /// <summary>
         /// pnlAcuLog control.

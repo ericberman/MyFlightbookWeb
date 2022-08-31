@@ -448,7 +448,6 @@ namespace MyFlightbook.ImportFlights
             else
             {
                 lblCloudAhoyErr.Text = HttpUtility.HtmlEncode(szResult);
-                popupCloudAhoy.Show();
             }
         }
 
@@ -482,7 +481,6 @@ namespace MyFlightbook.ImportFlights
             catch (Exception ex) when (!(ex is OutOfMemoryException))
             {
                 lblLeonErr.Text = HttpUtility.HtmlEncode(ex.Message);
-                popupLeon.Show();
             }
         }
     }

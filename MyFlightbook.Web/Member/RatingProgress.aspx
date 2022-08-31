@@ -61,10 +61,9 @@
                         <asp:Label ID="lblNoRatings" runat="server" Text="<%$ Resources:MilestoneProgress, CustomProgressNoneFound %>" />
                     </EmptyDataTemplate>
                 </asp:GridView>
-                <asp:Panel ID="pnlAddMilestones" runat="server" CssClass="modalpopup" DefaultButton="btnAddMilestone">
+                <asp:Panel ID="pnlAddMilestones" runat="server" DefaultButton="btnAddMilestone" style="display:none;" Visible="false">
                     <asp:HiddenField ID="hdnCpeIndex" runat="server" />
-                    <h2><asp:Label ID="lblEditMilestonesForProgress" runat="server" /></h2>
-                    <asp:ImageButton ID="imgClose" runat="server" style="position: absolute; top: 15px; right: 15px; z-index: 3" ImageUrl="~/images/closeimg.png" />
+                    <asp:Label ID="lblEditMilestonesForProgress" runat="server" style="display:none;" />
                     <table>
                         <tr>
                             <td><asp:Label ID="lblFarRefPrmopt" runat="server" Text="<%$ Resources:MilestoneProgress, CustomProgressNewMilestoneFARRef %>" /></td>
@@ -141,8 +140,17 @@
                         </EmptyDataTemplate>
                     </asp:GridView>
                 </asp:Panel>
-                <asp:Label ID="lblDummy" runat="server" style="display:none" />
-                <ajaxToolkit:ModalPopupExtender ID="mpeEditMilestones" TargetControlID="lblDummy" runat="server" PopupControlID="pnlAddMilestones" BackgroundCssClass="modalBackground" CancelControlID="imgClose" OkControlID="imgClose" />
+                <script type="text/javascript">
+                    function showCustom() {
+                        showModalById('<% =pnlAddMilestones.ClientID %>', $("#" + '<%=lblEditMilestonesForProgress.ClientID %>')[0].innerText, 550);
+                        document.getElementById('<% =txtMiFARRef.ClientID %>').focus();
+                    }
+
+                    $(function () {
+                        if (document.getElementById('<% =pnlAddMilestones.ClientID %>'))
+                            showCustom();
+                    })
+                </script>
             </Body>
         </uc1:Expando>
     </asp:Panel>

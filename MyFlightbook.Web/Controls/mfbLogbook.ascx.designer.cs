@@ -94,15 +94,6 @@ public partial class Controls_mfbLogbook
     protected global::System.Web.UI.WebControls.RadioButton rblShowInPages;
 
     /// <summary>
-    /// lnkSetFlightsPerPage control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.HyperLink lnkSetFlightsPerPage;
-
-    /// <summary>
     /// rblShowAll control.
     /// </summary>
     /// <remarks>
@@ -128,15 +119,6 @@ public partial class Controls_mfbLogbook
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.CheckBox ckIncludeImages;
-
-    /// <summary>
-    /// mpeSetFlightsPerPage control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::AjaxControlToolkit.ModalPopupExtender mpeSetFlightsPerPage;
 
     /// <summary>
     /// ckSelectFlights control.
@@ -281,15 +263,6 @@ public partial class Controls_mfbLogbook
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.Button btnSetPageSize;
-
-    /// <summary>
-    /// btnSetPageSizeCancel control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Button btnSetPageSizeCancel;
 
     /// <summary>
     /// UpdateProgress1 control.

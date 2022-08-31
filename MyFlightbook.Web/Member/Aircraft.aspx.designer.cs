@@ -222,15 +222,6 @@ namespace MyFlightbook.MemberPages
         protected global::System.Web.UI.WebControls.Button btnMigrate;
 
         /// <summary>
-        /// btnMigrateCancel control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnMigrateCancel;
-
-        /// <summary>
         /// hdnMigSrc control.
         /// </summary>
         /// <remarks>
@@ -247,24 +238,6 @@ namespace MyFlightbook.MemberPages
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::AjaxControlToolkit.ConfirmButtonExtender cbeMig;
-
-        /// <summary>
-        /// lblUnused control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblUnused;
-
-        /// <summary>
-        /// mpeMigrate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.ModalPopupExtender mpeMigrate;
 
         /// <summary>
         /// Master property.

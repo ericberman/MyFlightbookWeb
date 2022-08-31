@@ -252,7 +252,7 @@ namespace MyFlightbook.Mapping
             {
                 gvUserDupes.DataSource = lstDupes;
                 gvUserDupes.DataBind();
-                mpeDupeAirport.Show();
+                pnlDupeAirport.Visible = true;  // cause jQueryUI to show the dialog.
                 return;
             }
 
@@ -293,6 +293,7 @@ namespace MyFlightbook.Mapping
 
         protected void btnAddAnyway_Click(object sender, EventArgs e)
         {
+            pnlDupeAirport.Visible = false;
             AddAirport(true);
         }
 

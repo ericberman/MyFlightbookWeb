@@ -107,6 +107,7 @@ namespace MyFlightbook.RatingsProgress
         {
             Master.SelectedTab = tabID.instProgressTowardsMilestones;
 
+            pnlAddMilestones.Visible = false;   //always false - unless we explicitly force it to re-open.
             if (!IsPostBack)
             {
                 Master.ShowSponsoredAd = false;
@@ -134,7 +135,6 @@ namespace MyFlightbook.RatingsProgress
 
                 RefreshCustomRatings();
             }
-
         }
 
         protected void Refresh()
@@ -317,7 +317,7 @@ namespace MyFlightbook.RatingsProgress
             {
                 CustomRatingProgress crp = lst[Convert.ToInt32(hdnCpeIndex.Value, CultureInfo.InvariantCulture)];
                 crp.RemoveMilestoneAt(Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture));
-                mpeEditMilestones.Show();   // keep the dialog open
+                pnlAddMilestones.Visible = true;   // keep the dialog open
                 CustomRatingProgress.CommitRatingsForUser(Page.User.Identity.Name, lst);
                 gv.DataSource = crp.ProgressItems;
                 gv.DataBind();
@@ -341,7 +341,7 @@ namespace MyFlightbook.RatingsProgress
                 lblEditMilestonesForProgress.Text = String.Format(CultureInfo.InvariantCulture, Resources.MilestoneProgress.CustomProgressMilestonesForCustomRating, HttpUtility.HtmlEncode(crp.Title));
                 gvCustomRatingItems.DataSource = crp.ProgressItems;
                 gvCustomRatingItems.DataBind();
-                mpeEditMilestones.Show();
+                pnlAddMilestones.Visible = true;   // keep the dialog open
             }
             else if (e.CommandName.CompareCurrentCultureIgnoreCase("Update") == 0)
             {
@@ -370,7 +370,7 @@ namespace MyFlightbook.RatingsProgress
             if (sender == null)
                 throw new ArgumentNullException(nameof(e));
 
-            mpeEditMilestones.Show();   // keep this visible
+            pnlAddMilestones.Visible = true;   // show the modal dialog open
 
             int rowIndex = Convert.ToInt32(hdnCpeIndex.Value, CultureInfo.InvariantCulture);
 

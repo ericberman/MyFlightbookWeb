@@ -456,15 +456,6 @@ namespace MyFlightbook.MemberPages
         protected global::Controls_mfbLogbook mfbLogbook1;
 
         /// <summary>
-        /// btnPopWelcome control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnPopWelcome;
-
-        /// <summary>
         /// pnlWelcomeNewUser control.
         /// </summary>
         /// <remarks>
@@ -472,15 +463,6 @@ namespace MyFlightbook.MemberPages
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel pnlWelcomeNewUser;
-
-        /// <summary>
-        /// locWelcomeHeader control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locWelcomeHeader;
 
         /// <summary>
         /// imgLogbook control.
@@ -553,15 +535,6 @@ namespace MyFlightbook.MemberPages
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnClose;
-
-        /// <summary>
-        /// ModalPopupExtender1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.ModalPopupExtender ModalPopupExtender1;
 
         /// <summary>
         /// Master property.

@@ -168,15 +168,6 @@ namespace MyFlightbook.RatingsProgress
         protected global::System.Web.UI.WebControls.Label lblEditMilestonesForProgress;
 
         /// <summary>
-        /// imgClose control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.ImageButton imgClose;
-
-        /// <summary>
         /// lblFarRefPrmopt control.
         /// </summary>
         /// <remarks>
@@ -364,24 +355,6 @@ namespace MyFlightbook.RatingsProgress
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView gvCustomRatingItems;
-
-        /// <summary>
-        /// lblDummy control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblDummy;
-
-        /// <summary>
-        /// mpeEditMilestones control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.ModalPopupExtender mpeEditMilestones;
 
         /// <summary>
         /// lblPrintHeader control.

@@ -204,14 +204,18 @@ namespace MyFlightbook.MemberPages
                 UserAircraft ua = new UserAircraft(User.Identity.Name);
                 Aircraft acSrc = ua.GetUserAircraftByID(idSrc);
                 Aircraft acTarg = ua.GetUserAircraftByID(idTarget);
-                if (acSrc != null && acTarg != null && Aircraft.AdminMigrateFlights(User.Identity.Name, acSrc, acTarg) > 0 && ckDelAfterMigr.Checked)
+                if (acSrc != null && acTarg != null)
                 {
-                    ua.FDeleteAircraftforUser(acSrc.AircraftID);
-                    RefreshAircraftList();
-                    Refresh(true);
-                }
+                    Aircraft.AdminMigrateFlights(User.Identity.Name, acSrc, acTarg);
+                    if (ckDelAfterMigr.Checked)
+                    {
+                        ua.FDeleteAircraftforUser(acSrc.AircraftID);
+                        RefreshAircraftList();
+                        Refresh(true);
+                    }
+                } 
             }
-            mpeMigrate.Hide();
+            pnlMigrate.Visible = false;
         }
 
         protected void AircraftList_MigrateAircraft(object sender, AircraftEventArgs e)
@@ -230,7 +234,7 @@ namespace MyFlightbook.MemberPages
             cmbMigr.Items.Clear();
             cmbMigr.DataSource = lst;
             cmbMigr.DataBind();
-            mpeMigrate.Show();
+            pnlMigrate.Visible = true;  // jquery will show this in a dialog
         }
     }
 }

@@ -199,25 +199,28 @@
                     </ItemTemplate>
                 </asp:Repeater>
             </div>
-            <asp:Panel ID="pnlMigrate" runat="server" CssClass="modalpopup" DefaultButton="btnMigrate" style="display:none;">
-            <div style="max-width: 450px">
-                <div><asp:Label ID="lblMigrate" runat="server" /></div>
-                <div style="margin-left:auto; margin-right: auto;">
-                    <div><asp:DropDownList ID="cmbMigr" runat="server" DataTextField="DisplayTailnumber" DataValueField="AircraftID" /></div>
-                    <div><asp:CheckBox ID="ckDelAfterMigr" runat="server" Text="<%$ Resources:Aircraft, editAircraftRemoveAfterMigrate %>" /></div>
+            <asp:Panel ID="pnlMigrate" runat="server"  DefaultButton="btnMigrate" style="display:none;" Visible="false">
+                <div style="max-width: 450px">
+                    <div><asp:Label ID="lblMigrate" runat="server" /></div>
+                    <div style="margin-left:auto; margin-right: auto;">
+                        <div><asp:DropDownList ID="cmbMigr" runat="server" DataTextField="DisplayTailnumber" DataValueField="AircraftID" /></div>
+                        <div><asp:CheckBox ID="ckDelAfterMigr" runat="server" Text="<%$ Resources:Aircraft, editAircraftRemoveAfterMigrate %>" /></div>
+                    </div>
+                    <div style="margin-top: 5px; text-align:center;">
+                        <asp:Button ID="btnMigrate" runat="server" Text="<%$ Resources:Aircraft, editAircraftMigrateReplace %>" OnClick="btnMigrate_Click" />&nbsp;&nbsp;
+                    </div>
+                    <asp:HiddenField ID="hdnMigSrc" runat="server" />
+                    <cc1:ConfirmButtonExtender ID="cbeMig" TargetControlID="btnMigrate" ConfirmText="<%$ Resources:Aircraft, editAircraftMigrateConfirm %>" runat="server" />
                 </div>
-                <div style="margin-top: 5px; text-align:center;">
-                    <asp:Button ID="btnMigrate" runat="server" Text="<%$ Resources:Aircraft, editAircraftMigrateReplace %>" OnClick="btnMigrate_Click" />&nbsp;&nbsp;
-                    <asp:Button ID="btnMigrateCancel" runat="server" Text="<%$ Resources:LocalizedText, Cancel %>"  />
-                </div>
-                <asp:HiddenField ID="hdnMigSrc" runat="server" />
-                <cc1:ConfirmButtonExtender ID="cbeMig" TargetControlID="btnMigrate" ConfirmText="<%$ Resources:Aircraft, editAircraftMigrateConfirm %>" runat="server" />
-            </div>
             </asp:Panel>
-            <asp:Label ID="lblUnused" runat="server" style="display:none;" />
-            <cc1:ModalPopupExtender ID="mpeMigrate" runat="server" TargetControlID="lblUnused"
-                PopupControlID="pnlMigrate" BackgroundCssClass="modalBackground" 
-                CancelControlID="btnMigrateCancel" />
+            <script language="javascript" type="text/javascript">
+                function pageLoad() {
+                    $(function () {
+                        if (document.getElementById('<%=pnlMigrate.ClientID %>'))
+                            showModalById('<%=pnlMigrate.ClientID %>', '<% =Resources.Aircraft.editAircraftMigrate %>', 450);
+                    });
+                }
+            </script>
         </ContentTemplate>
     </asp:UpdatePanel>
 </asp:Content>

@@ -38,15 +38,11 @@
                         <div class="popMenuContent popMenuHidden">
                             <div>
                                 <asp:RadioButton ID="rblShowInPages" runat="server" AutoPostBack="true" OnCheckedChanged="lnkShowInPages_Click" Text="<%$ Resources:LogbookEntry, LogbookShowInPages %>" GroupName="rblPagingGroup" />
-                                <asp:HyperLink ID="lnkSetFlightsPerPage" NavigateUrl="#" Text="<%$ Resources:LogbookEntry, LogbookFlightsPerPagePrompt %>" runat="server"></asp:HyperLink>
+                                <a href="javascript:showModalById('<% =pnlFlightsPerPage.ClientID %>', '<% =Resources.LogbookEntry.LogbookFlightsPerPagePrompt %>');"><%=Resources.LogbookEntry.LogbookFlightsPerPagePrompt %></a>
                             </div>
                             <div><asp:RadioButton ID="rblShowAll" runat="server" AutoPostBack="true" OnCheckedChanged="lnkShowAll_Click" CausesValidation="false" Text="<%$ Resources:LogbookEntry, LogbookShowAll %>" GroupName="rblPagingGroup" /></div>
                             <div><asp:CheckBox ID="ckCompactView" runat="server" Text="<%$ Resources:LogbookEntry, LogbookCompactView %>" CausesValidation="false" AutoPostBack="true" OnCheckedChanged="ckCompactView_CheckedChanged" /></div>
                             <div><asp:CheckBox ID="ckIncludeImages" runat="server" Text="<%$ Resources:LogbookEntry, LogbookIncludeImages %>" CausesValidation="false" AutoPostBack="true" OnCheckedChanged="ckIncludeImages_CheckedChanged" /></div>
-                            <cc1:ModalPopupExtender ID="mpeSetFlightsPerPage" runat="server" TargetControlID="lnkSetFlightsPerPage"
-                                PopupControlID="pnlFlightsPerPage" BackgroundCssClass="modalBackground" 
-                                CancelControlID="btnSetPageSizeCancel" >
-                            </cc1:ModalPopupExtender>
                             <div><asp:CheckBox ID="ckSelectFlights" runat="server" Text="<%$ Resources:LogbookEntry, LogbookSelectFlights %>" AutoPostBack="true" OnCheckedChanged="ckSelectFlights_CheckedChanged" CausesValidation="false" /></div>
                             <div runat="server" id="divMulti" visible="false">
                                 <div runat="server" visible='<%# IsInSelectMode %>'>
@@ -75,14 +71,10 @@
                 </div>
             </div>
         </asp:Panel>
-        <asp:Panel ID="pnlFlightsPerPage" style="display:none" runat="server" CssClass="modalpopup" DefaultButton="btnSetPageSize">
-            <div style="text-align: center">
-                <asp:Label ID="lblFlightsPerPage" runat="server" Text="<%$ Resources:LogbookEntry, LogbookFlightsPerPage %>"></asp:Label>
-                <uc1:mfbDecimalEdit runat="server" ID="decPageSize" Width="2em" EditingMode="Integer" />
-            </div>
-            <div style="margin-top: 5px; text-align:center">
-                <asp:Button ID="btnSetPageSize" runat="server" Text="<%$ Resources:LocalizedText, OK %>" OnClick="btnSetPageSize_Click" />&nbsp;&nbsp;
-                <asp:Button ID="btnSetPageSizeCancel" runat="server" Text="<%$ Resources:LocalizedText, Cancel %>" /></div>
+        <asp:Panel ID="pnlFlightsPerPage" style="display:none" runat="server" DefaultButton="btnSetPageSize">
+            <asp:Label ID="lblFlightsPerPage" runat="server" Text="<%$ Resources:LogbookEntry, LogbookFlightsPerPage %>"></asp:Label>
+            <uc1:mfbDecimalEdit runat="server" ID="decPageSize" Width="2em" EditingMode="Integer" />
+            <asp:Button ID="btnSetPageSize" runat="server" Text="<%$ Resources:LocalizedText, OK %>" OnClick="btnSetPageSize_Click" />
         </asp:Panel>
         <asp:UpdateProgress ID="UpdateProgress1" runat="server" AssociatedUpdatePanelID="updLogbook">
             <ProgressTemplate>

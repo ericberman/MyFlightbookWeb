@@ -224,10 +224,7 @@
 <asp:Content ID="Content3" ContentPlaceHolderID="cpMain" Runat="Server">
     <uc1:mfbLogbook ID="mfbLogbook1" runat="server" OnItemDeleted="mfbLogbook1_ItemDeleted" DetailsPageUrlFormatString="~/Member/FlightDetail.aspx/{0}"
          EditPageUrlFormatString="~/Member/LogbookNew.aspx/{0}" AnalysisPageUrlFormatString="~/Member/FlightDetail.aspx/{0}?tabID=Chart" SendPageTarget="~/Member/LogbookNew.aspx" />
-    <asp:Button ID="btnPopWelcome" runat="server" Text="" style="display:none" />
-    <asp:Panel ID="pnlWelcomeNewUser" runat="server" CssClass="modalpopup" style="display:none;">
-        <h2><asp:Localize ID="locWelcomeHeader" runat="server" Text="<%$ Resources:LocalizedText, WelcomeHeader %>"></asp:Localize>
-        </h2>
+    <asp:Panel ID="pnlWelcomeNewUser" runat="server" style="display:none;">
         <p><%=Resources.LocalizedText.WelcomeThanks %></p>
         <p><%=Resources.LocalizedText.WelcomeNextSteps %></p>
         <table style="border-spacing: 10px;">
@@ -242,32 +239,36 @@
                 <td>
                     <asp:Image ID="imgAircraft" runat="server" ImageUrl="~/Public/tabimages/AircraftTab.png" Width="24" AlternateText="<%$ Resources:LocalizedText, WelcomeEnterAircraft %>" />
                 </td>
-                <td><asp:HyperLink ID="lnkAddAircraft" NavigateUrl="~/Member/Aircraft.aspx" runat="server" Text="<%$ Resources:LocalizedText, WelcomeEnterAircraft %>"></asp:HyperLink><br />
+                <td><asp:HyperLink ID="lnkAddAircraft" NavigateUrl="~/Member/Aircraft.aspx" runat="server" Text="<%$ Resources:LocalizedText, WelcomeEnterAircraft %>" /><br />
                 <% =Resources.LocalizedText.ORSeparator %></td>
             </tr>
             <tr>
                 <td>
                     <asp:Image ID="imgImport2" runat="server" ImageUrl="~/images/import.png" AlternateText="<%$ Resources:LocalizedText, WelcomeImportFlights %>"  />
                 </td>
-                <td><asp:HyperLink ID="lnkImportWelcome" NavigateUrl="~/Member/Import.aspx" runat="server" 
-                    Text="<%$ Resources:LocalizedText, WelcomeImportFlights %>"></asp:HyperLink><br />
+                <td><asp:HyperLink ID="lnkImportWelcome" NavigateUrl="~/Member/Import.aspx" runat="server" Text="<%$ Resources:LocalizedText, WelcomeImportFlights %>" /><br />
                 <% =Resources.LocalizedText.ORSeparator %></td>
             </tr>
             <tr>
                 <td>
                     <asp:Image ID="imgStartingTotals2" runat="server" ImageUrl="~/images/startingtotals.png" AlternateText="<%$ Resources:LocalizedText, WelcomeSetStartingTotals %>" />
                 </td>
-                <td><asp:HyperLink ID="lnkSetStartingTotals" runat="server" Text="<%$ Resources:LocalizedText, WelcomeSetStartingTotals %>" NavigateUrl="~/Member/StartingTotals.aspx"></asp:HyperLink></td>
+                <td><asp:HyperLink ID="lnkSetStartingTotals" runat="server" Text="<%$ Resources:LocalizedText, WelcomeSetStartingTotals %>" NavigateUrl="~/Member/StartingTotals.aspx" /></td>
             </tr>
         </table>
 
         <div style="text-align:center">
-        <asp:Button ID="btnClose" runat="server" Text="<%$ Resources:LocalizedText, Close %>" /></div>
+        <asp:Button ID="btnClose" runat="server" Text="<%$ Resources:LocalizedText, Close %>" OnClientClick="return closeWelcome();" /></div>
     </asp:Panel>
-    <ajaxToolkit:ModalPopupExtender PopupControlID="pnlWelcomeNewUser" 
-        BackgroundCssClass="modalBackground" ID="ModalPopupExtender1" runat="server" 
-        TargetControlID="btnPopWelcome" 
-    CancelControlID="btnClose" Enabled="True">
-    </ajaxToolkit:ModalPopupExtender>
+    <script type="text/javascript">
+        function closeWelcome() {
+            dismissDlg("#" + "<%=pnlWelcomeNewUser.ClientID %>");
+            return false;
+        }
+        $(function () {
+            if (document.getElementById('<%=pnlWelcomeNewUser.ClientID %>'))
+                showModalById('<%=pnlWelcomeNewUser.ClientID %>', '<%=Resources.LocalizedText.WelcomeHeader %>', '320');
+        })
+    </script>
 </asp:Content>
 

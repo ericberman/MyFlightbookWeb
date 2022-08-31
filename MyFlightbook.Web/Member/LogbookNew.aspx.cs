@@ -239,14 +239,13 @@ namespace MyFlightbook.MemberPages
 
             mfbChartTotals1.HistogramManager = LogbookEntryDisplay.GetHistogramManager(mfbLogbook1.Data, User.Identity.Name);  // do this every time.
 
+            pnlWelcomeNewUser.Visible = false;
             if (!IsPostBack)
             {
-                ModalPopupExtender1.OnCancelScript = String.Format(CultureInfo.InvariantCulture, "javascript:document.getElementById('{0}').style.display = 'none';", pnlWelcomeNewUser.ClientID);
-
                 if (Request.Cookies[MFBConstants.keyNewUser] != null && !String.IsNullOrEmpty(Request.Cookies[MFBConstants.keyNewUser].Value) || util.GetStringParam(Request, "sw").Length > 0 || Request.PathInfo.Contains("/sw"))
                 {
                     Response.Cookies[MFBConstants.keyNewUser].Expires = DateTime.Now.AddDays(-1);
-                    ModalPopupExtender1.Show();
+                    pnlWelcomeNewUser.Visible = true;
                 }
 
                 rblTotalsMode.SelectedValue = mfbTotalSummary1.DefaultGroupMode.ToString(CultureInfo.InvariantCulture);

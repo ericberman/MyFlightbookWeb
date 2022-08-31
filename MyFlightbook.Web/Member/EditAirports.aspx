@@ -531,22 +531,6 @@
                 getMfbMap().clickMarker(point, elName.value, elType.value, "<a href=\"javascript:zoomForAirport();\">Zoom in</a>");
             }
         }
-//]]>
-        /* Handle escape to dismiss */
-        function pageLoad(sender, args) {
-            if (!args.get_isPartialLoad()) {
-                $addHandler(document, "keydown", onKeyDown);
-            }
-        }
-
-        function onKeyDown(e) {
-            if (e && e.keyCode == Sys.UI.Key.esc)
-                $find("mpeDupeAirport").hide();
-        }
-
-        function getFlickerSolved() {
-            document.getElementById('<%=pnlDupeAirport.ClientID%>').style.display = 'none';
-        }
 
         var elCode = document.getElementById('<% =txtCode.ClientID %>');
         var elName = document.getElementById('<% =txtName.ClientID %>');
@@ -554,10 +538,11 @@
         var elLat = document.getElementById('<% = txtLat.ClientID %>');
         var elLon = document.getElementById('<% = txtLong.ClientID %>');
         $(document).ready(function () {centerToText(); });
+//]]>
     </script>
 
-<asp:Panel ID="pnlDupeAirport" runat="server" CssClass="modalpopup" DefaultButton="btnAddAnyway">
-    <div style="text-align:center; max-width: 450px">
+<asp:Panel ID="pnlDupeAirport" runat="server" Visible="false" style="display:none;">
+    <div>
         <div><asp:Label ID="lblDupe" runat="server" Text="<%$ Resources:Airports, errDupeAirport %>" /></div>
         <div style="margin-left:auto; margin-right: auto;">
             <asp:GridView ID="gvUserDupes" runat="server" CellPadding="3" AutoGenerateColumns="false" GridLines="None">
@@ -568,15 +553,13 @@
                 </Columns>
             </asp:GridView>
         </div>
-        <div style="margin-top: 5px;">
-            <asp:Button ID="btnAddAnyway" runat="server" Text="<%$ Resources:Airports, errDupeAirportCreateAnyway %>" OnClick="btnAddAnyway_Click" />&nbsp;&nbsp;
-            <asp:Button ID="btnAirportCancel" runat="server" Text="<%$ Resources:LocalizedText, Cancel %>"  />
-        </div>
+        <div style="text-align:center"><asp:Button ID="btnAddAnyway" runat="server" Text="<%$ Resources:Airports, errDupeAirportCreateAnyway %>" OnClick="btnAddAnyway_Click" /></div>
     </div>
 </asp:Panel>
-<asp:Label ID="lblUnused" runat="server" style="display:none;" />
-<cc1:ModalPopupExtender ID="mpeDupeAirport" runat="server" TargetControlID="lblUnused"
-    PopupControlID="pnlDupeAirport" BackgroundCssClass="modalBackground" 
-    CancelControlID="btnAirportCancel" OnCancelScript="getFlickerSolved();" />
-
+<script type="text/javascript">
+    $(function () {
+        if (document.getElementById('<% =pnlDupeAirport.ClientID %>'))
+            showModalById('<% =pnlDupeAirport.ClientID %>', '', 450);
+    })
+</script>
 </asp:Content>
