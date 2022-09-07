@@ -17,7 +17,7 @@ namespace MyFlightbook
     /// </summary>
     public enum BrandID
     {
-        brandMyFlightbook, brandMyFlightbookStaging
+        brandMyFlightbook, brandMyFlightbookStaging, brandNone
     };
 
     public class Brand
@@ -146,6 +146,17 @@ namespace MyFlightbook
                             EmailAddress = "noreply@mg.myflightbook.com",
                             AWSBucket = "mfb-staging",
                             AWSETSPipelineConfigKey = "ETSPipelineIDStaging"
+                        },
+                        new Brand(BrandID.brandNone)
+                        {
+                            AppName = string.Empty,
+                            HostName = "myflightbook.com",
+                            Root = "/logbook",
+                            LogoHRef = string.Empty,
+                            StyleSheet = string.Empty,
+                            EmailAddress = "noreply@mg.myflightbook.com",
+                            AWSBucket = "mfbimages",
+                            AWSETSPipelineConfigKey = "ETSPipelineID"
                         }
                     };
                 }
@@ -282,7 +293,7 @@ namespace MyFlightbook
                 Replace("%SHORT_DATE%", System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern).
                 Replace("%DATE_TIME%", DateTime.UtcNow.UTCDateFormatString()).
                 Replace("%APP_URL%", brand.HostName).
-                Replace("%APP_LOGO%", VirtualPathUtility.ToAbsolute(brand.LogoHRef)).
+                Replace("%APP_LOGO%", String.IsNullOrWhiteSpace(brand.LogoHRef) ? string.Empty : VirtualPathUtility.ToAbsolute(brand.LogoHRef)).
                 Replace("%APP_ROOT%", brand.Root);
 
             return szNew;
