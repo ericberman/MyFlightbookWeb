@@ -14,6 +14,10 @@
         document.onpaste = function (event) {
             var items = (event.clipboardData || event.originalEvent.clipboardData).items;
             var blob = null;
+            var inputs = ['input', 'textarea'];
+            var activeElement = document.activeElement;
+            if (activeElement && inputs.indexOf(activeElement.tagName.toLowerCase()) !== -1 && items[0].type.indexOf("text") === 0)
+                return;   // let default behavior work.
             for (var i = 0; i < items.length; i++) {
                 if (items[i].type.indexOf("image") === 0) {
                     blob = items[i].getAsFile();
