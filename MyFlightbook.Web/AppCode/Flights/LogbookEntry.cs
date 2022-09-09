@@ -2467,6 +2467,23 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                     CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightCost, rate * time));
             }
         }
+
+        /// <summary>
+        /// Compute fuel consumed and burn rate, if we know starting/ending fuel (Issue #979)
+        /// </summary>
+        private void AutofillFuel()
+        {
+            decimal fuelAtStart = CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropFuelAtStart);
+            decimal fuelAtLanding = CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropFuelAtLanding);
+            decimal fuelConsumed = fuelAtStart - fuelAtLanding;
+            if (fuelConsumed > 0)
+            {
+                if (TotalFlightTime > 0 && CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropFuelBurnRate) == 0)
+                    CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFuelBurnRate, fuelConsumed / TotalFlightTime));
+                if (CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropFuelConsumed) == 0)
+                    CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFuelConsumed, fuelConsumed));
+            }
+        }
         #endregion
 
         /// <summary>
@@ -2484,6 +2501,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
             AutofillFinishAirports(al);
             AutofillFinishInstruction();
             AutofillCostOfFlight();
+            AutofillFuel();
             if (AircraftID > 0)
             {
                 Aircraft ac = new UserAircraft(User).GetUserAircraftByID(AircraftID);

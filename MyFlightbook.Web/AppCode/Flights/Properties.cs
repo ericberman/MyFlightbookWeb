@@ -60,6 +60,8 @@ namespace MyFlightbook
             IDPropNVFLIRTime = 68,
             IDPropFrontSeatTime = 69,
             IDPropBackSeatTime = 70,
+            IDPropFuelConsumed = 71,
+            IDPropFuelAtLanding = 72,
             IDPropNightTakeoff = 73,
             IDPropWaterTakeoffs = 74,           // Not flagged as a known property - used for LogTenPro import
             IDPropSolo = 77,                    // Not flagged as a known property (flagged as solo)
@@ -131,6 +133,7 @@ namespace MyFlightbook
             IDPropTakeoffToweredNight = 358,
             IDPropTakeoffUntoweredNight = 449,
             IDPropXCMoreThan50nm = 380,
+            IDPropFuelBurnRate = 381,
             IDPropNightTouchAndGo = 397,
             IDPropXCLessThan25nm = 405,
             IDPropFlightCost = 415,
@@ -162,6 +165,7 @@ namespace MyFlightbook
             IDPropAdditionalFlightRemarks = 607, // Not flagged as a known property
             IDPropDutyStart = 608,
             IDPropDutyEnd = 609,
+            IDPropFuelAtStart = 622,
             IDPropNightRating = 623,
             IDPropSequence = 630,
             IDPropMilitaryAircraftCommander = 659,
