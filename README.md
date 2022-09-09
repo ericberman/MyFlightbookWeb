@@ -84,7 +84,7 @@ and the application should be called "logbook" and point to the /logbook branch.
  * WebAccessEncryptorKey - key to encrypt/decrypt authorizations on the web service
 
  ### Additional items
-* Install [WKHtmlToPdf](http://wkhtmltopdf.org/) to create PDFs. Download link is [here](http://download.gna.org/wkhtmltopdf/0.12/0.12.4/wkhtmltox-0.12.4_mingw-w64-cross-win64.exe)
+* Install [WKHtmlToPdf](http://wkhtmltopdf.org/) to create PDFs. Download link is [here](https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox-0.12.6-1.msvc2015-win64.exe)
 
 ### Live Site Only
 These are tasks to do ONLY on the live site; there should be no need to set them up on a development environment:
