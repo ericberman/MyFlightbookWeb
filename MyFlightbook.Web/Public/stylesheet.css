@@ -1727,6 +1727,21 @@ table.featureTable {
    .endorsement {background-color: #EEEEEE;}
 }
 
+.printHeaderLeft {
+    white-space: pre-wrap;
+    width: 33%;
+}
+
+.printHeaderCenter {
+    width: 34%;
+    text-align: center;
+}
+
+.printHeaderRight {
+    width: 33%;
+    text-align: right;
+}
+
 /* All print layouts are contained within pageTable */
 .pageTable {
     width: 100%;

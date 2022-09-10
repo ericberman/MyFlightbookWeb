@@ -690,6 +690,24 @@ namespace MyFlightbook.MemberPages
         protected global::MyFlightbook.Printing.Layouts.layoutUASCivi layoutUASCivi;
 
         /// <summary>
+        /// vw2Page control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.View vw2Page;
+
+        /// <summary>
+        /// layout2Page control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::MyFlightbook.Printing.Layouts.layout2Page layout2Page;
+
+        /// <summary>
         /// pnlEndorsements control.
         /// </summary>
         /// <remarks>

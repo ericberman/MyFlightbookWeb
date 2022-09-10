@@ -2178,6 +2178,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Facing Pages (Fold in middle).
+        /// </summary>
+        internal static string PrintFormat2Page {
+            get {
+                return ResourceManager.GetString("PrintFormat2Page", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Canada.
         /// </summary>
         internal static string PrintFormatCanada {

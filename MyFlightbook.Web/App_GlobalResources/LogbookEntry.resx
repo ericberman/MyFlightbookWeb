@@ -1459,4 +1459,7 @@ Proceed with import?</value>
   <data name="TemplatePropertiesPromptHint" xml:space="preserve">
     <value>Drag from one list to the other. </value>
   </data>
+  <data name="PrintFormat2Page" xml:space="preserve">
+    <value>Facing Pages (Fold in middle)</value>
+  </data>
 </root>

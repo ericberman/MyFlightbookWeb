@@ -20,6 +20,8 @@
 <%@ Register Src="~/Controls/PrintingLayouts/layoutCondensed.ascx" TagPrefix="uc1" TagName="layoutCondensed" %>
 <%@ Register Src="~/Controls/PrintingLayouts/LayoutPCAA.ascx" TagPrefix="uc1" TagName="LayoutPCAA" %>
 <%@ Register Src="~/Controls/PrintingLayouts/layoutUASCivi.ascx" TagPrefix="uc1" TagName="layoutUASCivi" %>
+<%@ Register Src="~/Controls/PrintingLayouts/layout2Page.ascx" TagPrefix="uc1" TagName="layout2Page" %>
+
 
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
     <asp:Label ID="lblUserName" runat="server" ></asp:Label>
@@ -255,6 +257,9 @@
             </asp:View>
             <asp:View ID="vwUASCivi" runat="server">
                 <uc1:layoutUASCivi runat="server" id="layoutUASCivi" />
+            </asp:View>
+            <asp:View ID="vw2Page" runat="server">
+                <uc1:layout2Page runat="server" id="layout2Page" />
             </asp:View>
         </asp:MultiView>
         <asp:Panel ID="pnlEndorsements" runat="server" style="page-break-after:always;">

@@ -470,6 +470,7 @@
     <Content Include="Controls\Prefs\mfbBigRedButtons.ascx" />
     <Content Include="Controls\Prefs\mfbFlightColoring.ascx" />
     <Content Include="Controls\Prefs\mfbPropertyBlocklist.ascx" />
+    <Content Include="Controls\PrintingLayouts\layout2Page.ascx" />
     <Content Include="Controls\PrintingLayouts\layoutCondensed.ascx" />
     <Content Include="Controls\PrintingLayouts\LayoutPCAA.ascx" />
     <Content Include="Controls\PrintingLayouts\layoutUASCivi.ascx" />
@@ -886,6 +887,7 @@
     <Content Include="Public\CSS\mfbheader.css" />
     <Content Include="Public\CSS\MobileSheet.css" />
     <Content Include="Public\CSS\NightMode.css" />
+    <Content Include="Public\CSS\print2Page.css" />
     <Content Include="Public\CSS\printCanada.css" />
     <Content Include="Public\CSS\printCASA.css" />
     <Content Include="Public\CSS\printCondensed.css" />
@@ -1365,6 +1367,13 @@
     </Compile>
     <Compile Include="Controls\Prefs\mfbPropertyBlocklist.ascx.designer.cs">
       <DependentUpon>mfbPropertyBlocklist.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PrintingLayouts\layout2Page.ascx.cs">
+      <DependentUpon>layout2Page.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\PrintingLayouts\layout2Page.ascx.designer.cs">
+      <DependentUpon>layout2Page.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\PrintingLayouts\layoutCondensed.ascx.cs">
       <DependentUpon>layoutCondensed.ascx</DependentUpon>

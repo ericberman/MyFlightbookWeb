@@ -39,7 +39,7 @@ namespace MyFlightbook.Printing
         IList<LogbookEntryDisplay> CondenseFlights(IEnumerable<LogbookEntryDisplay> lstIn);
     }
 
-    public enum PrintLayoutType { Native, Portrait, EASA, USA, Canada, SACAA, CASA, NZ, Glider, Condensed, PCAA, UASCivi }
+    public enum PrintLayoutType { Native, Portrait, EASA, USA, Canada, SACAA, CASA, NZ, Glider, Condensed, PCAA, UASCivi, TwoPage }
 
     #region Printing Layout implementations
     public abstract class PrintLayout
@@ -104,6 +104,8 @@ namespace MyFlightbook.Printing
                     return new PrintLayoutPCAA() { CurrentUser = pf };
                 case PrintLayoutType.UASCivi:
                     return new PrintLayoutUASCivi() { CurrentUser = pf };
+                case PrintLayoutType.TwoPage:
+                    return new PrintLayout2Page() { CurrentUser = pf };
                 default:
                     throw new ArgumentOutOfRangeException(nameof(plt));
             }
@@ -361,6 +363,25 @@ namespace MyFlightbook.Printing
         }
 
         public override string CSSPath { get { return "~/Public/CSS/printUAS-civi.css?v=2"; } }
+    }
+
+    public class PrintLayout2Page : PrintLayout
+    {
+        public override bool SupportsImages { get { return true; } }
+
+        public override bool SupportsOptionalColumns { get { return true; } }
+
+        public override int RowHeight(LogbookEntryDisplay le)
+        {
+            if (le == null)
+                throw new ArgumentNullException(nameof(le));
+            // Very rough computation: look at customproperties + comments, shoot for ~120chars/line
+            int linesOfText = (int)Math.Ceiling(le.RedactedComment.Length / 120.0) + (int)Math.Ceiling(le.CustPropertyDisplay.Length / 120.0);
+            int routeLine = le.Airports.Count() > 2 ? 1 : 0;
+            return Math.Max(1, (linesOfText + routeLine + 1) / 2);
+        }
+
+        public override string CSSPath { get { return "~/Public/CSS/print2Page.css?v=1"; } }
     }
     #endregion
 
