@@ -780,9 +780,19 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
                 divDate.Visible = false;
                 break;
             case LogbookEntryDisplay.LogbookRowType.Subtotal:
-                row.CssClass = (le.IsPageBreak) ? "subtotalRowPageBreak" : "subtotalRow";
+                row.CssClass = le.IsPageBreak ? "subtotalRowPageBreak" : "subtotalRow";
                 divDate.Visible = false;
                 break;
+        }
+    }
+
+    private void SetSigForRow(LogbookEntryDisplay le, GridViewRow row)
+    {
+        if (le.CFISignatureState == LogbookEntryCore.SignatureState.Invalid) 
+        {
+            Repeater rptDiffs = (Repeater)row.FindControl("rptDiffs");
+            rptDiffs.DataSource = le.DiffsSinceSigned(Viewer.UsesHHMM);
+            rptDiffs.DataBind();
         }
     }
     #endregion
@@ -808,6 +818,7 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
             SetUpSelectionForRow(le, e.Row);
             SetUpImagesForRow(le, e.Row);
             SetStyleForRow(le, e.Row);
+            SetSigForRow(le, e.Row);
 
             if (colorQueryMap == null)
                 colorQueryMap = FlightColor.QueriesToColor(Pilot.UserName);

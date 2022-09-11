@@ -158,7 +158,14 @@
                                                     <div><%#: Eval("SignatureCommentLine") %></div>
                                                 </asp:Label>
                                                 <asp:Panel ID="pnlInvalidSig" runat="server" Visible='<%# !(bool) Eval("HasValidSig") %>'>
-                                                    <asp:Label ID="lblSigInvalid" runat="server" Font-Bold="true" CssClass="signatureInvalid" Text="<%$ Resources:SignOff, FlightSignatureInvalid %>"></asp:Label>
+                                                    <asp:Label ID="lblSigInvalid" runat="server" Font-Bold="true" CssClass="signatureInvalid" Text="<%$ Resources:SignOff, FlightSignatureInvalid %>" />
+                                                    <ul>
+                                                        <asp:Repeater ID="rptDiffs" runat="server">
+                                                            <ItemTemplate>
+                                                                <li><%#: Container.DataItem.ToString() %></li>
+                                                            </ItemTemplate>
+                                                        </asp:Repeater>
+                                                    </ul>
                                                 </asp:Panel>
                                             </td>
                                         </tr>

@@ -2297,6 +2297,23 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
 
             return lst;
         }
+
+        /// <summary>
+        /// Gets the edits applied to this flight since it was signed (which caused invalidation).
+        /// </summary>
+        /// <param name="fUseHHMM">Format as HHMM or not</param>
+        /// <returns></returns>
+        public IEnumerable<PropertyDelta> DiffsSinceSigned(bool fUseHHMM)
+        {
+            if (CFISignatureState == SignatureState.Invalid)
+            {
+                LogbookEntry leNew = LogbookEntryBase.LogbookEntryFromHash(DecryptedCurrentHash);
+                LogbookEntry leSaved = LogbookEntryBase.LogbookEntryFromHash(DecryptedFlightHash);
+                return leSaved.CompareTo(leNew, fUseHHMM);
+            }
+            else
+                return Array.Empty<PropertyDelta>();
+        }
         #endregion
 
         #region Auto-fill utility functions
