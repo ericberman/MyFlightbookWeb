@@ -7,7 +7,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2021 MyFlightbook LLC
+ * Copyright (c) 2008-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -120,6 +120,16 @@ namespace MyFlightbook.Histogram
         public IDictionary<string, double> Values { get; private set; }
 
         /// <summary>
+        /// The ordinal ranks (1 = most) for this bucket
+        /// </summary>
+        public IDictionary<string, int> Ranks { get; private set; }
+
+        /// <summary>
+        /// The percentage of total for this bucket
+        /// </summary>
+        public IDictionary<string, double> PercentOfTotal { get; private set; }
+
+        /// <summary>
         /// Does this bucket have running totals?
         /// </summary>
         public bool HasRunningTotals { get; set; }
@@ -149,6 +159,8 @@ namespace MyFlightbook.Histogram
             DisplayName = szName;
             OrdinalValue = ordinalValue;
             Values = new Dictionary<string, double>();
+            PercentOfTotal = new Dictionary<string, double>();
+            Ranks = new Dictionary<string, int>();
             RunningTotals = new Dictionary<string, double>();
             if (columns != null)
                 InitColumns(columns);
@@ -193,6 +205,8 @@ namespace MyFlightbook.Histogram
                 hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(DisplayName);
                 hashCode = hashCode * -1521134295 + EqualityComparer<IComparable>.Default.GetHashCode(OrdinalValue);
                 hashCode = hashCode * -1521134295 + Values.GetHashCode();
+                hashCode = hashCode * -1521134295 + PercentOfTotal.GetHashCode();
+                hashCode = hashCode * -1521134295 + Ranks.GetHashCode();
                 return hashCode;
             }
         }
@@ -398,8 +412,14 @@ namespace MyFlightbook.Histogram
             return dt;
         }
 
+        internal class RankedValue 
+        {
+            public int index { get; set; }
+            public double value { get; set; }
+        }
+
         /// <summary>
-        /// Scans the source data, building a set of buckets.  Makes two or three passes: once to determine the buckets, once to fill them, and optionally once to set running totals
+        /// Scans the source data, building a set of buckets.  Makes multiple: once to determine the buckets, once to fill them, once to determine rank and percent of total, and optionally once to set running totals
         /// </summary>
         /// <param name="hm">The histogram manager controlling this.</param>
         /// <returns>The resulting histogram buckets, which are also persisted in the "Buckets" property</returns>
@@ -422,6 +442,30 @@ namespace MyFlightbook.Histogram
             {
                 foreach (HistogramableValue hv in hm.Values)
                     dict[KeyForValue(h.BucketSelector(BucketSelectorName))].Values[hv.DataField] += (hv.DataType == HistogramValueTypes.Time) ? Math.Round(h.HistogramValue(hv.DataField, hm.Context) * 60.0) / 60.0 : h.HistogramValue(hv.DataField, hm.Context);
+            }
+
+            // compute percent of total and rank for each datafield
+            foreach (HistogramableValue hv in hm.Values)
+            {
+                double total = 0;
+                List<RankedValue> ranks = new List<RankedValue>();
+
+                // Get the total for percent of total and store these in order for rank
+                for (int i = 0; i < lst.Count; i++) 
+                {
+                    double val = lst[i].Values[hv.DataField];
+                    total += val;
+                    ranks.Add(new RankedValue() { index = i, value = val });
+                }
+
+                // Now assign a percent of total
+                foreach (Bucket b in lst)
+                    b.PercentOfTotal[hv.DataField] = (total > 0) ? (100 * b.Values[hv.DataField]) / total : 0;
+
+                // Finally, figure out rank.
+                ranks.Sort((a, b) => { return b.value.CompareTo(a.value); });
+                for (int i = 0; i < ranks.Count; i++)
+                    lst[ranks[i].index].Ranks[hv.DataField] = i + 1;
             }
 
             if (SupportsRunningTotals)

@@ -1931,4 +1931,7 @@
   <data name="footerVideos" xml:space="preserve">
     <value>Videos</value>
   </data>
+  <data name="ChartTotalsRankAndPercentOfTotals" xml:space="preserve">
+    <value>({0:#,##0} of {1:#,##0}, {2:#,##0.0}% of total)</value>
+  </data>
 </root>

@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="GoogleChart.ascx.cs" Inherits="Controls_GoogleChart" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="GoogleChart.ascx.cs" Inherits="MyFlightbook.Charting.Controls_GoogleChart" %>
 <asp:Panel ID="pnlChart" runat="server" style="display: inline-block; margin: 0 auto !important;">
 </asp:Panel>
 <script>
@@ -9,12 +9,15 @@
         data<%=ID %> = data;
         data.addColumn('<%=XDataTypeString %>', '<%=XLabel %>');
         data.addColumn('<%=YDataTypeString %>', '<%=YLabel %>');
-        <% if (HasY2) { %>
+        <% if (Tooltips.Any()) { %>
+        data.addColumn({ type: 'string', role: 'tooltip', 'p': { 'html': true } });
+        <% } 
+        if (HasY2) { %>
         data.addColumn('<%=Y2DataTypeString %>', '<% =Y2Label %>');
         <% }
         if (ShowAverage) { %> 
         data.addColumn('<% =AverageDataTypeString %>', '<% =AverageLabel %>');
-        <% }%>
+        <% } %>
 
         data.addRows([
             <%= Data %>
@@ -38,7 +41,11 @@
           lineWidth: 1,
           pointSize: 2, 
           bar: {groupWidth:'95%'},
-          legend: {position: '<% =LegendType %>' },
+          legend: { position: '<% =LegendType %>' },
+          <% if(Tooltips.Any()) { %>
+                tooltip: { isHtml: true },
+          <% } %>
+
           <% if (HasY2) { %>
             vAxes: [{title: '<%= YLabel %>' }, {title: '<%= Y2Label %>'}],
             series: { 0: { targetAxisIndex: 0 }, 1: { targetAxisIndex: 1, type: '<%=Chart2TypeString %>' }, 2: { targetAxisIndex: 0, type: 'line' } },
@@ -46,6 +53,7 @@
             vAxis: { title: '<%=YLabel %>' },
             series: { 1: {type: 'line' }},
           <% } %>
+          
           hAxis: {title: '<%=XLabel %>', 
             titleTextStyle: { color: 'black', fontName: 'Arial', fontSize: 10},
             slantedTextAngle: <%=SlantAngle %>, 

@@ -39,7 +39,7 @@ namespace MyFlightbook.Web.Admin
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_GoogleChart gcUserActivity;
+        protected global::MyFlightbook.Charting.Controls_GoogleChart gcUserActivity;
 
         /// <summary>
         /// cmbNewUserAge control.
@@ -57,7 +57,7 @@ namespace MyFlightbook.Web.Admin
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_GoogleChart gcFlightsPerUser;
+        protected global::MyFlightbook.Charting.Controls_GoogleChart gcFlightsPerUser;
 
         /// <summary>
         /// lblShowFlightsPerUser control.
@@ -102,7 +102,7 @@ namespace MyFlightbook.Web.Admin
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_GoogleChart gcFlightsOnSite;
+        protected global::MyFlightbook.Charting.Controls_GoogleChart gcFlightsOnSite;
 
         /// <summary>
         /// lblShowFlightsData control.

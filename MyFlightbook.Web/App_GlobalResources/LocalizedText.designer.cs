@@ -1010,6 +1010,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ({0:#,##0} of {1:#,##0}, {2:#,##0.0}% of total).
+        /// </summary>
+        internal static string ChartTotalsRankAndPercentOfTotals {
+            get {
+                return ResourceManager.GetString("ChartTotalsRankAndPercentOfTotals", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Instrument Approaches.
         /// </summary>
         internal static string ChartTotalsTotalApproaches {

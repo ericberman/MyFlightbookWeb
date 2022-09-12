@@ -264,7 +264,7 @@ namespace MyFlightbook.Web.Admin
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_GoogleChart gcNewUsers;
+        protected global::MyFlightbook.Charting.Controls_GoogleChart gcNewUsers;
 
         /// <summary>
         /// CollapsiblePanelExtender1 control.

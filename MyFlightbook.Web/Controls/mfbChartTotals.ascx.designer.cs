@@ -120,7 +120,7 @@ namespace MyFlightbook.Charting
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_GoogleChart gcTrends;
+        protected global::MyFlightbook.Charting.Controls_GoogleChart gcTrends;
 
         /// <summary>
         /// Literal2 control.

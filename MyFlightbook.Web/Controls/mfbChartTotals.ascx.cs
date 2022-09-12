@@ -104,6 +104,8 @@ namespace MyFlightbook.Charting
             int count = 0;
             double average = 0;
 
+            bool fHHMM = Profile.GetUser(Page.User.Identity.Name).UsesHHMM;
+
             gcTrends.Clear();
             foreach (Bucket b in buckets)
             {
@@ -117,6 +119,14 @@ namespace MyFlightbook.Charting
 
                 if (b.HasRunningTotals)
                     gcTrends.Y2Vals.Add(b.RunningTotals[hv.DataField]);
+
+                string RankAndPercent = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ChartTotalsRankAndPercentOfTotals, b.Ranks[hv.DataField], buckets.Count(), b.PercentOfTotal[hv.DataField]);
+                // Add a tooltip for the item.
+                gcTrends.Tooltips.Add(String.Format(CultureInfo.CurrentCulture, "<div class='ttip'><div class='dataVal'>{0}</div><div>{1}: <span class='dataVal'>{2}</span></div><div>{3}</div></div>",
+                    HttpUtility.HtmlEncode(b.DisplayName),
+                    HttpUtility.HtmlEncode(hv.DataName),
+                    HttpUtility.HtmlEncode(BucketManager.FormatForType(b.Values[hv.DataField], hv.DataType, fHHMM)),
+                    HttpUtility.HtmlEncode(RankAndPercent)));
             }
 
             if (gcTrends.ShowAverage = (ckIncludeAverage.Checked && count > 0))
