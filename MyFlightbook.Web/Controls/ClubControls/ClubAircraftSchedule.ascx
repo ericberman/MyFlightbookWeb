@@ -6,8 +6,8 @@
             ResourceID='<%# Eval("AircraftID") %>' ClubID='<%# Eval("ClubID") %>' runat="server">
             <ResourceTemplate>
                 <asp:Panel ID="pnlSampleImage" Visible='<%# Eval("HasSampleImage") %>' Width="200px" runat="server" style="text-align:center;">
-                    <asp:Image ID="imgSample" ImageUrl='<%# Eval("SampleImageThumbnail") %>' 
-                        onclick='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "javascript:viewMFBImg(\"{0}\");", System.Web.VirtualPathUtility.ToAbsolute(Eval("SampleImageFull").ToString())) %>' 
+                    <asp:Image ID="imgSample" ImageUrl='<%# ((bool) Eval("HasSampleImage")) ? Eval("SampleImageThumbnail") : string.Empty %>' 
+                        onclick='<%# ((bool) Eval("HasSampleImage")) ? String.Format(System.Globalization.CultureInfo.InvariantCulture, "javascript:viewMFBImg(\"{0}\");", System.Web.VirtualPathUtility.ToAbsolute(Eval("SampleImageFull").ToString())) : string.Empty %>' 
                         ImageAlign="Middle" runat="server" />
                     <div><%#: Eval("SampleImageComment") %></div>
                     <br />
