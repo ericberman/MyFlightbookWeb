@@ -5,7 +5,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2021 MyFlightbook LLC
+ * Copyright (c) 2015-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -30,7 +30,7 @@ namespace MyFlightbook.Image
                 throw new MyFlightbookException(Resources.WebService.errBadTailNumber);
 
             // Check if authorized for videos
-            if (MFBImageInfo.ImageTypeFromFile(pf) == MFBImageInfo.ImageFileType.S3VideoMP4 && !EarnedGratuity.UserQualifies(szUser, Gratuity.GratuityTypes.Videos))
+            if (MFBImageInfo.ImageTypeFromFile(pf) == MFBImageInfoBase.ImageFileType.S3VideoMP4 && !EarnedGratuity.UserQualifies(szUser, Gratuity.GratuityTypes.Videos))
                 throw new MyFlightbookException(Branding.ReBrand(Resources.LocalizedText.errNotAuthorizedVideos));
 
             UserAircraft ua = new UserAircraft(szUser);
@@ -56,8 +56,7 @@ namespace MyFlightbook.Image
             if (ac == null || !ua.CheckAircraftForUser(ac))
                 throw new MyFlightbookException(Resources.WebService.errNotYourAirplane);
 
-            mfbImageAircraft.Key = ac.AircraftID.ToString(System.Globalization.CultureInfo.InvariantCulture);
-            return new MFBImageInfo(MFBImageInfoBase.ImageClass.Aircraft, mfbImageAircraft.Key, pf, szComment, null);
+            return new MFBImageInfo(MFBImageInfoBase.ImageClass.Aircraft, ac.AircraftID.ToString(System.Globalization.CultureInfo.InvariantCulture), pf, szComment, null);
         }
     }
 }

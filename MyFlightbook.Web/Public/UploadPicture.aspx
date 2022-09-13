@@ -1,6 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" Codebehind="UploadPicture.aspx.cs" Inherits="Public_UploadPicture" %>
-
-<%@ Register src="../Controls/mfbImageList.ascx" tagname="mfbImageList" tagprefix="uc1" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" Codebehind="UploadPicture.aspx.cs" Inherits="MyFlightbook.Image.UploadPicture" %>
 
     <form id="form1" runat="server" visible="false">
     <div>
@@ -11,5 +9,4 @@
         <asp:TextBox ID="txtLon" runat="server"></asp:TextBox>
         <input id="imgPicture" name="imgPicture" runat="server" type="file" />
     </div>
-    <uc1:mfbImageList ID="mfbImageFlight" runat="server" ImageClass="Flight" />
     </form>

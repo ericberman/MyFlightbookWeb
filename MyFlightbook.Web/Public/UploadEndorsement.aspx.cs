@@ -1,19 +1,20 @@
-﻿using MyFlightbook.Image;
-using OAuthAuthorizationServer.Services;
+﻿using OAuthAuthorizationServer.Services;
 using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2018 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
-public partial class Public_UploadEndorsement : UploadImagePage
+namespace MyFlightbook.Image
 {
-    protected override MFBImageInfo UploadForUser(string szUser, HttpPostedFile pf, string szComment)
+    public partial class UploadEndorsement : UploadImagePage
     {
-        mfbImageEndorsement.Key = szUser;
-        return new MFBImageInfo(MFBImageInfo.ImageClass.Endorsement, mfbImageEndorsement.Key, pf, szComment, null);
+        protected override MFBImageInfo UploadForUser(string szUser, HttpPostedFile pf, string szComment)
+        {
+            return new MFBImageInfo(MFBImageInfoBase.ImageClass.Endorsement, szUser, pf, szComment, null);
+        }
     }
 }
