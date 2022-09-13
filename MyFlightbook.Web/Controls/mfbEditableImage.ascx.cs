@@ -23,6 +23,7 @@ public partial class Controls_mfbEditableImage : UserControl
 
     public event EventHandler<MFBImageInfoEventArgs> ImageDeleted;
     public event EventHandler<MFBImageInfoEventArgs> ImageMadeDefault;
+    public event EventHandler<MFBImageInfoEventArgs> ImageModified;
 
     /// <summary>
     /// Gets/sets the image which can be edited.
@@ -159,17 +160,14 @@ function EditComment(idStatic, idEdit) {
     /// <summary>
     /// Updates the comments on the file to match the text box.
     /// </summary>
-    protected void UpdateComments()
-    {
-        mfbii.UpdateAnnotation(HttpUtility.HtmlDecode(txtComments.Text));
-
-        lblComments.Text = mfbii.Comment.EscapeHTML();
-    }
-
     protected void btnUpdateComments_Click(object sender, EventArgs e)
     {
         if (txtComments.Text != mfbii.Comment)
-            UpdateComments();
+        {
+            mfbii.UpdateAnnotation(HttpUtility.HtmlDecode(txtComments.Text));
+            lblComments.Text = mfbii.Comment.EscapeHTML();
+            ImageModified?.Invoke(sender, new MFBImageInfoEventArgs(mfbii));
+        }
     }
 
     #region Events

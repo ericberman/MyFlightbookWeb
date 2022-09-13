@@ -1,7 +1,6 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="AdminImages.aspx.cs" ValidateRequest="false" Inherits="MyFlightbook.Web.Admin.Member_AdminImages" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register src="../Controls/mfbImageList.ascx" tagname="mfbImageList" tagprefix="uc1" %>
-<%@ Register src="../Controls/mfbEditableImage.ascx" tagname="mfbEditableImage" tagprefix="uc2" %>
 <asp:Content ID="Content3" ContentPlaceHolderID="cpPageTitle" Runat="Server">
 Review Images
 </asp:Content>

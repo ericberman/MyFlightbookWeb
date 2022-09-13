@@ -10,7 +10,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2020 MyFlightbook LLC
+ * Copyright (c) 2007-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -225,5 +225,10 @@ public partial class Controls_mfbImageList : System.Web.UI.UserControl
     {
         if (e != null && MakeDefault != null)
             MakeDefault(this, e);
+    }
+
+    protected void mfbEI_ImageModified(object sender, MFBImageInfoEventArgs e)
+    {
+        Refresh(true);
     }
 }

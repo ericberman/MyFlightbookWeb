@@ -7,7 +7,6 @@
 <%@ Register src="../Controls/mfbAirportServices.ascx" tagname="mfbAirportServices" tagprefix="uc5" %>
 <%@ Register Src="../Controls/fbComment.ascx" TagName="fbComment" TagPrefix="uc6" %>
 <%@ Register src="../Controls/mfbVideoEntry.ascx" tagname="mfbVideoEntry" tagprefix="uc7" %>
-<%@ Register Src="~/Controls/mfbEditableImage.ascx" TagName="mfbEditableImage" TagPrefix="uc8" %>
 <%@ Register Src="~/Controls/mfbMiniFacebook.ascx" TagPrefix="uc1" TagName="mfbMiniFacebook" %>
 <%@ Register Src="~/Controls/imageSlider.ascx" TagPrefix="uc1" TagName="imageSlider" %>
 <%@ Register Src="~/Controls/popmenu.ascx" TagPrefix="uc1" TagName="popmenu" %>
