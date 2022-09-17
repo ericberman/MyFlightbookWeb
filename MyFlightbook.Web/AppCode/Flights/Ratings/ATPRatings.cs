@@ -111,7 +111,7 @@ namespace MyFlightbook.RatingsProgress
             bool fIsAirplane = CategoryClass.IsAirplane(cfr.idCatClassOverride);
             bool fIsIFRSim = (fIsAirplane && cfr.fIsFTD);
 
-            if (fIsAirplane || cfr.fIsRealAircraft)
+            if (fIsIFRSim || cfr.fIsRealAircraft)
                 miMinInstrumentTime.AddTrainingEvent(cfr.IMC + cfr.IMCSim, ATPMaxIFRSimulator, fIsIFRSim);
 
             if (fIsAirplane && cfr.idCatClassOverride == requiredCatClassID)
@@ -370,18 +370,15 @@ namespace MyFlightbook.RatingsProgress
             bool fIsHelicopter = (cfr.idCatClassOverride == CategoryClass.CatClassID.Helicopter);
             bool fIsRotorcraft = (fIsHelicopter || cfr.idCatClassOverride == CategoryClass.CatClassID.Gyroplane);
             bool fIsIFRSim = (fIsRotorcraft && cfr.fIsFTD);
-            bool fIsTotalSim = (fIsRotorcraft && cfr.fIsFTD && cfr.fIsCertifiedLanding);
 
-            if (fIsRotorcraft || cfr.fIsRealAircraft)
-            {
-                miTotal.AddTrainingEvent(cfr.Total, ATPMaxSimulator, fIsTotalSim);
+            if (fIsIFRSim || cfr.fIsRealAircraft)
                 miMinInstrumentTime.AddTrainingEvent(cfr.IMC + cfr.IMCSim, ATPMaxSimulator, fIsIFRSim);
-            }
 
             // Everything else MUST be done in a real aircraft
             if (!cfr.fIsRealAircraft)
                 return;
 
+            miTotal.AddEvent(cfr.Total);
             miMinXCTime.AddEvent(cfr.XC);
             miMinNightTime.AddEvent(cfr.Night);
 
