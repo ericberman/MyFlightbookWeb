@@ -1,0 +1,19 @@
+﻿
+@{
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <img style="float:left; max-width: 2cm; max-height: 2cm; margin-right: 3em; margin-bottom: 1em" src="@VirtualPathUtility.ToAbsolute("~/images/rb_logo.png")" />
+
+    <p>@Branding.ReBrand(Resources.LogbookEntry.RosterBusterNotAuthed)</p>
+    <p style="font-weight: bold; font-size: large"><a href="@ViewBag.AuthUri">@Branding.ReBrand(Resources.LogbookEntry.RosterBusterAuthorize)</a></p>
+    <div class="error">@ViewBag.AuthError</div>
+</div>
+<br />
+<br />
+<div style="margin-left: auto; margin-right: auto; text-align: center; max-width: 175px;">
+    <div>@Resources.Preferences.ScheduleServiceRBDownloadPrompt</div>
+    <div><img src="@ViewBag.QRCode" style="width: 150px" /></div>
+    <div><a target="_blank" href="ViewBag.RBDownload">@ViewBag.RBDownload</a></div>
+</div>

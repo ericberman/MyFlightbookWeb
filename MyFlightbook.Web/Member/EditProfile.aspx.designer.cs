@@ -2382,6 +2382,42 @@ namespace MyFlightbook.MemberPages
         protected global::MyFlightbook.Web.Controls.Prefs.mfbCloudAhoy mfbCloudAhoy;
 
         /// <summary>
+        /// acpSchedulers control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.AccordionPane acpSchedulers;
+
+        /// <summary>
+        /// locSchedulers control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locSchedulers;
+
+        /// <summary>
+        /// lnkSetUpLeon control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink lnkSetUpLeon;
+
+        /// <summary>
+        /// lnkSetUpRB control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink lnkSetUpRB;
+
+        /// <summary>
         /// acpoAuthApps control.
         /// </summary>
         /// <remarks>

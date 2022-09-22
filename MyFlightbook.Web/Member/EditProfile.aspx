@@ -829,6 +829,31 @@
                             <uc1:mfbCloudAhoy runat="server" id="mfbCloudAhoy" />
                         </Content>
                     </cc1:AccordionPane>
+                    <cc1:AccordionPane ID="acpSchedulers" runat="server" Visible="false" ContentCssClass="" HeaderCssClass="">
+                        <Header>
+                            <asp:Localize ID="locSchedulers" runat="server" Text="<%$ Resources:Preferences, ScheduleServiceHeader %>" />
+                        </Header>
+                        <Content>
+                            <table style="border-spacing: 10px; border-collapse: separate;">
+                                <tr>
+                                    <td style="width:100px;"><img src='<% =VirtualPathUtility.ToAbsolute("~/images/LeonLogo.svg") %>' /></td>
+                                    <td style="vertical-align:top">
+                                        <h2><%=Resources.Preferences.ScheduleServiceLeonName %></h2>
+                                        <p><%=Resources.Preferences.ScheduleServiceLeonDesc %></p>
+                                        <asp:HyperLink ID="lnkSetUpLeon" runat="server" NavigateUrl="~/Public/LeonRedir.aspx"><% =Branding.ReBrand(Resources.Preferences.ScheduleServiceLeonManage) %></asp:HyperLink>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width:100px;"><img style="width:100px" src='<% =VirtualPathUtility.ToAbsolute("~/images/rb_logo.png") %>' /></td>
+                                    <td style="vertical-align:top;">
+                                        <h2><%=Resources.Preferences.ScheduleServiceRBName %></h2>
+                                        <p><%=Resources.Preferences.ScheduleServiceRBDesc %></p>
+                                        <asp:HyperLink ID="lnkSetUpRB" runat="server" NavigateUrl="~/mvc/rbredirect"><% =Branding.ReBrand(Resources.Preferences.ScheduleServiceRBManage) %></asp:HyperLink>
+                                    </td>
+                                </tr>
+                            </table>
+                        </Content>
+                    </cc1:AccordionPane>
                     <cc1:AccordionPane ID="acpoAuthApps" runat="server" Visible="False" ContentCssClass="" HeaderCssClass="" meta:resourcekey="acpoAuthAppsResource1">
                         <Header>
                             <asp:Localize ID="locPrefOAuthApps" Text="Authorized Applications" runat="server" meta:resourcekey="locPrefOAuthAppsResource1"></asp:Localize>

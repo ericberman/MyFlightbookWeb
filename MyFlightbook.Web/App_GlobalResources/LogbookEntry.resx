@@ -1462,4 +1462,37 @@ Proceed with import?</value>
   <data name="PrintFormat2Page" xml:space="preserve">
     <value>Facing Pages (Fold in middle)</value>
   </data>
+  <data name="RosterBusterAuthed" xml:space="preserve">
+    <value>You have given %APP_NAME% permission to access your data on RosterBuster.</value>
+  </data>
+  <data name="RosterBusterAuthorize" xml:space="preserve">
+    <value>Authorize %APP_NAME% to access RosterBuster</value>
+  </data>
+  <data name="RosterBusterDeAuth" xml:space="preserve">
+    <value>Remove permission for %APP_NAME% to access RosterBuster</value>
+  </data>
+  <data name="RosterBusterHeader" xml:space="preserve">
+    <value>RosterBuster</value>
+  </data>
+  <data name="RosterBusterNotAuthed" xml:space="preserve">
+    <value>You have not given %APP_NAME% permission to access your data on RosterBuster</value>
+  </data>
+  <data name="RosterBusterTokenFailed" xml:space="preserve">
+    <value>Authorization failed: {0}</value>
+  </data>
+  <data name="RosterBusterImportFlightsDescription" xml:space="preserve">
+    <value>Your flights will be added to Pending Flights, where you can review/edit them before adding them to your logbook</value>
+  </data>
+  <data name="RosterBusterImportHeader" xml:space="preserve">
+    <value>Import from RosterBuster</value>
+  </data>
+  <data name="RosterBusterFromDate" xml:space="preserve">
+    <value>From (UTC date):</value>
+  </data>
+  <data name="RosterBusterImportNow" xml:space="preserve">
+    <value>Import flights now</value>
+  </data>
+  <data name="RosterBusterToDate" xml:space="preserve">
+    <value>To (UTC date):</value>
+  </data>
 </root>

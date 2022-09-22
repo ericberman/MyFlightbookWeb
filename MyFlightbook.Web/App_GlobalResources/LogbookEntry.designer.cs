@@ -3321,6 +3321,105 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You have given %APP_NAME% permission to access your data on RosterBuster..
+        /// </summary>
+        internal static string RosterBusterAuthed {
+            get {
+                return ResourceManager.GetString("RosterBusterAuthed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Authorize %APP_NAME% to access RosterBuster.
+        /// </summary>
+        internal static string RosterBusterAuthorize {
+            get {
+                return ResourceManager.GetString("RosterBusterAuthorize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove permission for %APP_NAME% to access RosterBuster.
+        /// </summary>
+        internal static string RosterBusterDeAuth {
+            get {
+                return ResourceManager.GetString("RosterBusterDeAuth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to From (UTC date):.
+        /// </summary>
+        internal static string RosterBusterFromDate {
+            get {
+                return ResourceManager.GetString("RosterBusterFromDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to RosterBuster.
+        /// </summary>
+        internal static string RosterBusterHeader {
+            get {
+                return ResourceManager.GetString("RosterBusterHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your flights will be added to Pending Flights, where you can review/edit them before adding them to your logbook.
+        /// </summary>
+        internal static string RosterBusterImportFlightsDescription {
+            get {
+                return ResourceManager.GetString("RosterBusterImportFlightsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import from RosterBuster.
+        /// </summary>
+        internal static string RosterBusterImportHeader {
+            get {
+                return ResourceManager.GetString("RosterBusterImportHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import flights now.
+        /// </summary>
+        internal static string RosterBusterImportNow {
+            get {
+                return ResourceManager.GetString("RosterBusterImportNow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have not given %APP_NAME% permission to access your data on RosterBuster.
+        /// </summary>
+        internal static string RosterBusterNotAuthed {
+            get {
+                return ResourceManager.GetString("RosterBusterNotAuthed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To (UTC date):.
+        /// </summary>
+        internal static string RosterBusterToDate {
+            get {
+                return ResourceManager.GetString("RosterBusterToDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Authorization failed: {0}.
+        /// </summary>
+        internal static string RosterBusterTokenFailed {
+            get {
+                return ResourceManager.GetString("RosterBusterTokenFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Running Totals:.
         /// </summary>
         internal static string RunningTotalComment {
