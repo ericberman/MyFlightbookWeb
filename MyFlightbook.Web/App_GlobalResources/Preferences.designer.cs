@@ -995,5 +995,77 @@ namespace Resources {
                 return ResourceManager.GetString("PrefSectNewFlightTimeZoneUTC", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Airline Scheduling Systems.
+        /// </summary>
+        internal static string ScheduleServiceHeader {
+            get {
+                return ResourceManager.GetString("ScheduleServiceHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If your airline uses Leon for its scheduling, you can import scheduled flights directly into your Pending Flights.
+        /// </summary>
+        internal static string ScheduleServiceLeonDesc {
+            get {
+                return ResourceManager.GetString("ScheduleServiceLeonDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configure %APP_NAME% for Leon.
+        /// </summary>
+        internal static string ScheduleServiceLeonManage {
+            get {
+                return ResourceManager.GetString("ScheduleServiceLeonManage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Leon.
+        /// </summary>
+        internal static string ScheduleServiceLeonName {
+            get {
+                return ResourceManager.GetString("ScheduleServiceLeonName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to RosterBuster provides access to your airline&apos;s Roster on your iOS, Mac, or Android device..
+        /// </summary>
+        internal static string ScheduleServiceRBDesc {
+            get {
+                return ResourceManager.GetString("ScheduleServiceRBDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Need to download RosterBuster?  Scan the QR code below.
+        /// </summary>
+        internal static string ScheduleServiceRBDownloadPrompt {
+            get {
+                return ResourceManager.GetString("ScheduleServiceRBDownloadPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configure %APP_NAME% for RosterBuster and download the app.
+        /// </summary>
+        internal static string ScheduleServiceRBManage {
+            get {
+                return ResourceManager.GetString("ScheduleServiceRBManage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to RosterBuster.
+        /// </summary>
+        internal static string ScheduleServiceRBName {
+            get {
+                return ResourceManager.GetString("ScheduleServiceRBName", resourceCulture);
+            }
+        }
     }
 }

@@ -1,9 +1,11 @@
 using DotNetOpenAuth.OAuth2;
 using MyFlightbook.OAuth.CloudAhoy;
 using MyFlightbook.OAuth.Leon;
+using MyFlightbook.OAuth.RosterBuster;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -83,6 +85,7 @@ namespace MyFlightbook.ImportFlights
             {
                 pnlCloudAhoy.Visible = pf.CloudAhoyToken != null && pf.CloudAhoyToken.AccessToken != null;
                 pnlLeon.Visible = pf.PreferenceExists(LeonClient.TokenPrefKey);
+                pnlRosterBuster.Visible = pf.PreferenceExists(RosterBusterClient.TokenPrefKey);
             }
         }
 
@@ -481,6 +484,42 @@ namespace MyFlightbook.ImportFlights
             catch (Exception ex) when (!(ex is OutOfMemoryException))
             {
                 lblLeonErr.Text = HttpUtility.HtmlEncode(ex.Message);
+            }
+        }
+
+        protected async void btnImportRosterBuster_Click(object sender, EventArgs e)
+        {
+            Profile pf = Profile.GetUser(Page.User.Identity.Name);
+            IAuthorizationState authstate = pf.GetPreferenceForKey<AuthorizationState>(RosterBusterClient.TokenPrefKey);
+
+            RosterBusterClient rbc = new RosterBusterClient(authstate, Request.Url.Host);
+
+            if (!rbc.CheckAccessToken())
+            {
+                IAuthorizationState newAuth = await rbc.RefreshToken();
+                pf.SetPreferenceForKey(RosterBusterClient.TokenPrefKey, newAuth);
+            }
+
+            DateTime? from = null;
+            DateTime? to = null;
+
+            if (rbFromDate.Date.HasValue())
+                from = rbFromDate.Date;
+            if (rbToDate.Date.HasValue())
+                to = rbToDate.Date;
+
+            try
+            {
+                bool fResult = await rbc.GetFlights(Page.User.Identity.Name, from, to);
+                // If we are here, then any flights were imported - redirect to review them.
+                // Avoid a "Thread was being aborted" (ThreadAbortException).
+                Response.Redirect("~/Member/ReviewPendingFlights.aspx", false);
+                Context.ApplicationInstance.CompleteRequest();
+                
+            }
+            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            {
+                lblRosterBusterErrror.Text = HttpUtility.HtmlEncode(ex.Message + (ex.InnerException == null ? string.Empty : ex.InnerException.Message));
             }
         }
     }

@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -232,6 +234,20 @@ namespace MyFlightbook.OAuth
                 ClientCredentialApplicator = ClientCredentialApplicator.PostParameter(AppSecret)
             };
             return consumer.ProcessUserAuthorization(new HttpRequestWrapper(Request));
+        }
+
+        /// <summary>
+        /// Generate a code challenge for PKCE (Proof Key for Code Exchange)
+        /// </summary>
+        /// <param name="codeVerifier"></param>
+        /// <returns></returns>
+        protected static string GenerateCodeChallenge(string codeVerifier)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                var hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(codeVerifier));
+                return Convert.ToBase64String(hash).TrimEnd(new char[] { '=' }).Replace('+', '-').Replace('/', '_');
+            }
         }
     }
 }

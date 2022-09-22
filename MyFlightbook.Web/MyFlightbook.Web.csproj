@@ -597,6 +597,8 @@
     <Content Include="images\back.png" />
     <Content Include="images\flightimportsample.png" />
     <Content Include="images\globe.png" />
+    <Content Include="images\LeonLogo.svg" />
+    <Content Include="images\rb_logo.png" />
     <Content Include="images\SponsoredAds\SkyWatch_Logo_New2020.png" />
     <Content Include="images\SponsoredAds\Aculog1800x1200.png" />
     <Content Include="images\SponsoredAds\Aculog208x60.png" />
@@ -1159,6 +1161,7 @@
     <Compile Include="AppCode\oAuthServices\LeonClient.cs" />
     <Compile Include="AppCode\oAuthServices\OAuth2AuthorizationServer.cs" />
     <Compile Include="AppCode\oAuthServices\OAuthClientBase.cs" />
+    <Compile Include="AppCode\oAuthServices\RosterBusterClient.cs" />
     <Compile Include="AppCode\oAuthServices\SocialMedia.cs" />
     <Compile Include="AppCode\OAuthWebService.cs" />
     <Compile Include="AppCode\Places\Airbly.cs" />
@@ -1346,6 +1349,7 @@
     <Compile Include="Areas\mvc\Controllers\MFBTemplateController.cs" />
     <Compile Include="Areas\mvc\Controllers\MVCTestController.cs" />
     <Compile Include="Areas\mvc\Controllers\PubController.cs" />
+    <Compile Include="Areas\mvc\Controllers\rbredirectController.cs" />
     <Compile Include="Areas\mvc\mvcAreaRegistration.cs" />
     <Compile Include="Controls\Prefs\mfbBigRedButtons.ascx.cs">
       <DependentUpon>mfbBigRedButtons.ascx</DependentUpon>
@@ -3014,6 +3018,8 @@
     <Content Include="Areas\mvc\Views\AllMakes\modellist.cshtml" />
     <Content Include="Areas\mvc\Views\AllMakes\aircraftlist.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\_localizedContent.cshtml" />
+    <Content Include="Areas\mvc\Views\rbredirect\rbNotAuthorized.cshtml" />
+    <Content Include="Areas\mvc\Views\rbredirect\rbAuthorized.cshtml" />
     <None Include="packages.config" />
     <None Include="SecuritySwitch-v4.xsd">
       <SubType>Designer</SubType>
