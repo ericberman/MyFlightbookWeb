@@ -16,13 +16,11 @@
                         <asp:MultiView ID="mvLoginStatus" runat="server">
                             <asp:View ID="vwSignedIn" runat="server">
                                 <img runat="server" id="imgHdSht" class="headerHeadSht popTrigger" src="~/Public/tabimages/ProfileTab.png" />
-                                <div class="popMenuContent popMenuHidden" id="loginPop">
-                                    <div style="padding:4px; text-align:center;">
-                                        <div><asp:Label ID="lblMemberSince" runat="server" /></div>
-                                        <div><asp:Label ID="lblLastLogin" runat="server" /></div>
-                                        <div runat="server" id="itemLastActivity"><asp:Label ID="lblLastActivity" runat="server" /></div>
-                                        <div id="signOutRow"><asp:LoginStatus ID="LoginStatus2" runat="server" LogoutPageUrl="~/secure/login.aspx" Width="100%" LoginText="<%$ Resources:LocalizedText, LoginStatusSignIn %>" LogoutText="<%$ Resources:LocalizedText, LoginStatusSignOut %>" LogoutAction="RedirectToLoginPage" /></div>
-                                    </div>
+                                <div class="popMenuContent popMenuHidden" id="headerLoginPop">
+                                    <div><asp:Label ID="lblMemberSince" runat="server" /></div>
+                                    <div><asp:Label ID="lblLastLogin" runat="server" /></div>
+                                    <div runat="server" id="itemLastActivity"><asp:Label ID="lblLastActivity" runat="server" /></div>
+                                    <div id="signOutRow"><asp:LoginStatus ID="LoginStatus2" runat="server" LogoutPageUrl="~/secure/login.aspx" Width="100%" LoginText="<%$ Resources:LocalizedText, LoginStatusSignIn %>" LogoutText="<%$ Resources:LocalizedText, LoginStatusSignOut %>" LogoutAction="RedirectToLoginPage" /></div>
                                 </div>
                             </asp:View>
                             <asp:View ID="vwNotSignedIn" runat="server">

@@ -13,15 +13,6 @@ public partial class Controls_popmenu
 {
 
     /// <summary>
-    /// imgPop control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Image imgPop;
-
-    /// <summary>
     /// pnlMenuContent control.
     /// </summary>
     /// <remarks>
@@ -38,13 +29,4 @@ public partial class Controls_popmenu
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.PlaceHolder plcMenuContent;
-
-    /// <summary>
-    /// hme control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::AjaxControlToolkit.HoverMenuExtender hme;
 }

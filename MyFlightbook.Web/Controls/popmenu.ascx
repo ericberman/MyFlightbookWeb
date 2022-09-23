@@ -1,8 +1,8 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="popmenu.ascx.cs" Inherits="Controls_popmenu" %>
 <%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="asp" %>
-<asp:Image ID="imgPop" AlternateText="<%$ Resources:LocalizedText, PopMenuAltText %>" ImageUrl="~/images/MenuChevron.png" runat="server" CssClass="popMenuAccess" />
-<asp:Panel ID="pnlMenuContent" runat="server" CssClass="popMenuContent" style="display:none;">
-    <asp:PlaceHolder ID="plcMenuContent" runat="server"></asp:PlaceHolder>
-</asp:Panel>
-<asp:HoverMenuExtender ID="hme" HoverCssClass="hoverPopMenu" runat="server" TargetControlID="imgPop" PopupControlID="pnlMenuContent" PopupPosition="Bottom"></asp:HoverMenuExtender>
-<% =SafariHackScript %>
+<div class="popContainer">
+    <img src="<%=VirtualPathUtility.ToAbsolute("~/images/MenuChevron.png") %>" class="popTrigger" />
+    <asp:Panel ID="pnlMenuContent" runat="server" CssClass="popMenuContent popMenuHidden" style="margin-top: -5px; margin-left: 0px">
+        <asp:PlaceHolder ID="plcMenuContent" runat="server"></asp:PlaceHolder>
+    </asp:Panel>
+</div>

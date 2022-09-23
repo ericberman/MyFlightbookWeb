@@ -1399,9 +1399,8 @@ table.tblAvailablityMap th.timeHeader {
 }
 
 /* Pop-up hover menus */
-.hoverPopMenu {
-    background-color: #CCCCCC;
-    border-radius: 5px;
+.popContainer {
+    display: inline-block;
 }
 
 .popMenuContent {
@@ -1414,8 +1413,9 @@ table.tblAvailablityMap th.timeHeader {
 .popMenuAccess {
 }
 
-.popTrigger:hover {
+.popTrigger:hover, .popContainer:hover .popTrigger {
     background-color: #CCCCCC;
+    border-radius: 5px;
 }
 
 .popTrigger:hover + .popMenuHidden, .popMenuHidden:hover {
@@ -1425,11 +1425,8 @@ table.tblAvailablityMap th.timeHeader {
 .popMenuHidden {
     padding: 3px;
     position: absolute;
-    line-height: 16pt;
     display: none;
     z-index: 100;
-    min-width: 180px;
-    max-width: 300px;
 }
 
 .searchBox {

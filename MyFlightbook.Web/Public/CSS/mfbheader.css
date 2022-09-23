@@ -58,7 +58,7 @@
     margin-top: 3pt;
 }
 
-.headerHeadSht, #headerLoginStatus .hoverPopMenu {
+.headerHeadSht, img.headerHeadSht:hover, img.headerHeadSht {
     display: inline-block;
     width: 40px;
     height: 40px;
@@ -66,12 +66,15 @@
     border-radius: 50%;
 }
 
-#headerWelcome {
-    display: inline-block;
+#headerLoginPop {
+    padding: 4px;
+    text-align: center;
+    line-height: 16pt;
+    min-width: 180px;
 }
 
-#headerProfile .hoverPopMenu {
-    background-color: #CCCCCC;
+#headerWelcome {
+    display: inline-block;
 }
 
 #signOutRow:hover {

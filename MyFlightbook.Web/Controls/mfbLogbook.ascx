@@ -33,7 +33,7 @@
             <div class="noprint">
                 <div>
                     <asp:Label ID="lblNumFlights" runat="server" />
-                    <div style="display: inline-block">
+                    <div style="display: inline-block" class="popContainer">
                         <asp:Image ID="imgPop" AlternateText="<%$ Resources:LocalizedText, PopMenuAltText %>" ImageUrl="~/images/MenuChevron.png" runat="server" CssClass="popTrigger" style="vertical-align: bottom; border-radius: 5px;"/>
                         <div class="popMenuContent popMenuHidden">
                             <div>

@@ -35,26 +35,24 @@
                         if (User.Identity.IsAuthenticated)
                         {
                             <img id="imgHdSht" class="headerHeadSht popTrigger" src="@ViewBag.HeadShot" />
-                            <div class="popMenuContent popMenuHidden" id="loginPop">
-                                <div style="padding:4px; text-align:center;">
-                                    <div>@ViewBag.MemberDate</div>
-                                    <div>@ViewBag.LastLogin</div>
-                                    <div>@ViewBag.LastActivity</div>
-                                    <script type="text/javascript">
-                                        function signOut() {
-                                            document.getElementById("signOut").click();
-                                        }
-                                    </script>
-                                    @using (Html.BeginForm("SignOut", "MFBTemplate", FormMethod.Post))
-                                    {
-                                        @Html.AntiForgeryToken();
-                                        <div id="signOutRow"><a href="javascript:signOut();">@Resources.LocalizedText.LoginStatusSignOut</a></div>
-                                        <input type="submit" style="display:none;" id="signOut" />
+                            <div class="popMenuContent popMenuHidden" id="headerLoginPop">
+                                <div>@ViewBag.MemberDate</div>
+                                <div>@ViewBag.LastLogin</div>
+                                <div>@ViewBag.LastActivity</div>
+                                <script type="text/javascript">
+                                    function signOut() {
+                                        document.getElementById("signOut").click();
                                     }
-                                </div>
+                                </script>
+                                @using (Html.BeginForm("SignOut", "MFBTemplate", FormMethod.Post))
+                                {
+                                    @Html.AntiForgeryToken();
+                                    <div id="signOutRow"><a href="javascript:signOut();">@Resources.LocalizedText.LoginStatusSignOut</a></div>
+                                    <input type="submit" style="display:none;" id="signOut" />
+                                }
                             </div>
+                            }
                         }
-                    }
                     <div id="headerWelcome">
                         @{
                             if (User.Identity.IsAuthenticated)
