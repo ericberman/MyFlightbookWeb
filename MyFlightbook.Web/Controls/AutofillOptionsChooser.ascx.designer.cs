@@ -49,31 +49,13 @@ public partial class AutofillOptionsChooser
     protected global::System.Web.UI.WebControls.Label lblIncludeHeliports;
 
     /// <summary>
-    /// lblIncludeHeliportsTip control.
+    /// ttHeliports control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Label lblIncludeHeliportsTip;
-
-    /// <summary>
-    /// hmeHoverHeliports control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::AjaxControlToolkit.HoverMenuExtender hmeHoverHeliports;
-
-    /// <summary>
-    /// pnlIncludeHeliportsTip control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Panel pnlIncludeHeliportsTip;
+    protected global::Controls_mfbTooltip ttHeliports;
 
     /// <summary>
     /// ckEstimateNight control.
@@ -94,31 +76,13 @@ public partial class AutofillOptionsChooser
     protected global::System.Web.UI.WebControls.Label lblEstimateNight;
 
     /// <summary>
-    /// lblEstimateNightTip control.
+    /// ttNight control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Label lblEstimateNightTip;
-
-    /// <summary>
-    /// hmeHoverEstimateNight control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::AjaxControlToolkit.HoverMenuExtender hmeHoverEstimateNight;
-
-    /// <summary>
-    /// pnlEstimateNightTip control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Panel pnlEstimateNightTip;
+    protected global::Controls_mfbTooltip ttNight;
 
     /// <summary>
     /// ckRoundNearest10th control.

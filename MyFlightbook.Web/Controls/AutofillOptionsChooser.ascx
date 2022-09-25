@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="AutofillOptionsChooser.ascx.cs" Inherits="AutofillOptionsChooser" %>
-<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
+<%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc1" TagName="mfbTooltip" %>
+
 <div>
     <div style="float:left; padding:3px">
         <table>
@@ -14,11 +15,13 @@
                 <td>
                     <div>
                         <asp:Label ID="lblIncludeHeliports" runat="server" Text="<%$ Resources:LocalizedText, AutofillOptionIncludeHeliports %>" AssociatedControlID="ckIncludeHeliports"></asp:Label>
-                        <asp:Label ID="lblIncludeHeliportsTip" runat="server" Text="[?]" CssClass="hint"></asp:Label>
-                        <cc1:HoverMenuExtender ID="hmeHoverHeliports" runat="server" OffsetX="-180" OffsetY="10" TargetControlID="lblIncludeHeliportsTip" PopupControlID="pnlIncludeHeliportsTip"></cc1:HoverMenuExtender>
-                        <asp:Panel ID="pnlIncludeHeliportsTip" runat="server" style="max-width:250px; min-width:140px" CssClass="hintPopup">
-                            <%=Resources.LocalizedText.AutofillOptionsIncludeHeliportsTip %>
-                        </asp:Panel>
+                        <uc1:mfbTooltip runat="server" ID="ttHeliports">
+                            <TooltipBody>
+                                <div style="max-width:250px; min-width:140px">
+                                    <%= Resources.LocalizedText.AutofillOptionsIncludeHeliportsTip %>
+                                </div>
+                            </TooltipBody>
+                        </uc1:mfbTooltip>
                     </div>
                 </td>
             </tr>
@@ -27,11 +30,13 @@
                 <td>
                     <div>
                         <asp:Label ID="lblEstimateNight" runat="server" Text="<%$ Resources:LocalizedText, AutofillOptionEstimateNight %>" AssociatedControlID="ckEstimateNight"></asp:Label>
-                        <asp:Label ID="lblEstimateNightTip" runat="server" Text="[?]" CssClass="hint"></asp:Label>
-                        <cc1:HoverMenuExtender ID="hmeHoverEstimateNight" runat="server" OffsetX="-180" OffsetY="10" TargetControlID="lblEstimateNightTip" PopupControlID="pnlEstimateNightTip"></cc1:HoverMenuExtender>
-                        <asp:Panel ID="pnlEstimateNightTip" runat="server" style="max-width:250px; min-width:140px" CssClass="hintPopup">
-                            <%=Resources.LocalizedText.AutofillOptionEstimateNightTip %>
-                        </asp:Panel>
+                        <uc1:mfbTooltip runat="server" ID="ttNight">
+                            <TooltipBody>
+                                <div style="max-width:250px; min-width:140px">
+                                    <%= Resources.LocalizedText.AutofillOptionEstimateNightTip %>
+                                </div>
+                            </TooltipBody>
+                        </uc1:mfbTooltip>
                     </div>
                 </td>
             </tr>
