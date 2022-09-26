@@ -251,6 +251,9 @@ namespace MyFlightbook.OAuth.RosterBuster
                     // set the username for each of these.
                     foreach (RosterBusterEntry entry in flights)
                     {
+                        if (!entry.IsFlight)
+                            continue;
+
                         if (entry.ToLogbookEntry() is PendingFlight pf)
                         {
                             pf.User = szUser;
