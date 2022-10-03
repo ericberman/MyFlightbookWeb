@@ -6,6 +6,7 @@ using MyFlightbook.Instruction;
 using MyFlightbook.SocialMedia;
 using MyFlightbook.Telemetry;
 using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -1577,6 +1578,72 @@ namespace MyFlightbook
             });
         }
 
+        private static readonly Regex rVORCheck = new Regex("\\bVORCHK[^a-zA-Z0-9]*(\\S+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        private void AddVORCheck()
+        {
+            // Issue #985: look for VOR update
+            MatchCollection mc = rVORCheck.Matches(Comment);
+            if (mc != null && mc.Count == 1)
+            {
+                Aircraft ac = new Aircraft(AircraftID);
+                if (ac.InstanceType == AircraftInstanceTypes.RealAircraft && Date.Date.CompareTo(ac.LastVOR.Date) > 0)
+                {
+                    // Copy the Maintenance record, then update the VOR on that.
+                    MaintenanceRecord mr = new MaintenanceRecord(ac.Maintenance)
+                    {
+                        LastVOR = Date,
+                        Notes = mc[0].Groups[1].Value
+                    };
+                    ac.UpdateMaintenanceForUser(mr, User);
+                    ac.CommitForUser(User);
+                }
+            }
+        }
+
+        private void CommitProperties()
+        {
+            // save the custom properties.
+            foreach (CustomFlightProperty cfp in CustomProperties)
+            {
+                cfp.FlightID = FlightID;
+                cfp.FCommit();
+
+                // If you add a property that you haven't used before, flush the local cache of properties.
+                if (!cfp.PropertyType.IsFavorite)
+                    CustomPropertyType.FlushUserCache(this.User);
+            }
+        }
+
+        private void CommitTelemetry()
+        {
+            Telemetry.FlightID = FlightID;  // just in case it had been a new flight.
+            Telemetry.Delete(); // we saved the data above, so simply delete it now; we can recreate it later.  This will be a no-op if there is no current data.  Keep things as fast as possible.
+
+            if (!String.IsNullOrEmpty(this.FlightData))
+                new System.Threading.Thread(() =>
+                {
+                    System.Threading.Thread.Sleep(1000);
+                    try
+                    {
+                        this.MoveTelemetryFromFlightEntry();
+                    }
+                    catch (Exception ex) when (!(ex is OutOfMemoryException))
+                    {
+                        util.NotifyAdminException(String.Format(CultureInfo.CurrentCulture, "Exception moving telemetry for flight {0}", FlightID), ex);
+                    }
+                }).Start();
+        }
+
+        private void CommitVideos()
+        {
+            foreach (VideoRef vid in Videos)
+            {
+                vid.FlightID = FlightID;
+                vid.Commit();
+            }
+        }
+
         /// <summary>
         /// Commits this entry to the database.  This overwrites the existing entry if it was initially loaded from the DB, otherwise it is a new entry
         /// </summary>
@@ -1608,6 +1675,8 @@ namespace MyFlightbook
                 fHold=?fHold, Route=?Route, Comments=?Comments, username=?userName, fPublic=?fPublic, hobbsStart=?hobbsStart, hobbsEnd=?hobbsEnd, 
                 dtFlightStart=?dtFlightStart, dtFlightEnd=?dtFlightEnd, dtEngineStart=?dtEngineStart, dtEngineEnd=?dtEngineEnd, cfi=?cfi, SIC=?SIC
                 {0} {1} ";
+
+            bool fWasNewFlight = IsNewFlight;
 
             string szSet = String.Format(CultureInfo.InvariantCulture, szSetTemplate, (fUpdateSignature ? szSetSig : szRefreshSig), (fUpdateFlightData ? szSetTelemetry : string.Empty));
 
@@ -1695,44 +1764,17 @@ namespace MyFlightbook
 
             FlightID = (FlightID >= 0) ? FlightID : dbh.LastInsertedRowId; // set the flight ID to the previous ID or else the newly inserted one
 
-            // save the custom properties.
-            foreach (CustomFlightProperty cfp in CustomProperties)
-            {
-                cfp.FlightID = FlightID;
-                cfp.FCommit();
-
-                // If you add a property that you haven't used before, flush the local cache of properties.
-                if (!cfp.PropertyType.IsFavorite)
-                    CustomPropertyType.FlushUserCache(this.User);
-            }
+            CommitProperties();
 
             // Update the telemetry record, if any
             if (fUpdateFlightData)
-            {
-                Telemetry.FlightID = FlightID;  // just in case it had been a new flight.
-                Telemetry.Delete(); // we saved the data above, so simply delete it now; we can recreate it later.  This will be a no-op if there is no current data.  Keep things as fast as possible.
-
-                if (!String.IsNullOrEmpty(this.FlightData))
-                    new System.Threading.Thread(() => 
-                    { 
-                        System.Threading.Thread.Sleep(1000);
-                        try
-                        {
-                            this.MoveTelemetryFromFlightEntry();
-                        }
-                        catch (Exception ex) when (!(ex is OutOfMemoryException))
-                        {
-                            util.NotifyAdminException(String.Format(CultureInfo.CurrentCulture, "Exception moving telemetry for flight {0}", FlightID), ex);
-                        }
-                    }).Start();
-            }
+                CommitTelemetry();
 
             // Save any videos
-            foreach (VideoRef vid in Videos)
-            {
-                vid.FlightID = FlightID; 
-                vid.Commit();
-            }
+            CommitVideos();
+
+            if (fWasNewFlight)
+                AddVORCheck();
 
             FlightStatistics.FlightStats.RefreshForFlight(this);
 

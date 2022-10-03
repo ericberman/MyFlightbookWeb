@@ -1,5 +1,6 @@
 ﻿using MyFlightbook.Currency;
 using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -135,6 +136,16 @@ namespace MyFlightbook
         #endregion
 
         public MaintenanceRecord() { }
+
+        /// <summary>
+        /// Create a copy of an existing MaintenanceRecord so that diffs can be computed.
+        /// </summary>
+        /// <param name="mr"></param>
+        public MaintenanceRecord(MaintenanceRecord mr) : this()
+        {
+            if (mr != null)
+                JsonConvert.PopulateObject(JsonConvert.SerializeObject(mr), this);
+        }
     }
 
     /// <summary>
