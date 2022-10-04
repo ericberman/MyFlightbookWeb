@@ -182,22 +182,19 @@
             </Header>
             <Body>
                 <asp:GridView ID="gvMaintLog" runat="server" Width="100%"
+                    RowStyle-CssClass="logbookRow" AlternatingRowStyle-CssClass="logbookAlternateRow"
                     AutoGenerateColumns="False" GridLines="None" OnPageIndexChanging="gvMaintLog_PageIndexChanging"
                     CellPadding="5" ShowHeader="False" >
                     <RowStyle BorderStyle="None" />
                     <Columns>
-                        <asp:BoundField DataField="ChangeDate" DataFormatString="{0:d}"  />
-                        <asp:BoundField DataField="Description"  />
+                        <asp:BoundField DataField="ChangeDate" DataFormatString="{0:d}" ControlStyle-Font-Size="Larger" />
                         <asp:TemplateField >
                             <ItemTemplate>
-                                <asp:Localize ID="locChangedBy" runat="server" Text="By:" 
-                                    ></asp:Localize>
-                                <%#: Eval("FullDisplayName") %>
+                                <div><span style="font-weight:bold"><%#: Eval("FullDisplayName") %></span> <%#: Eval("Description") %></div>                                    
+                                <div><%#: Eval("Comment") %></div>
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:BoundField DataField="Comment"  />
                     </Columns>
-                    <AlternatingRowStyle BackColor="#E0E0E0" BorderStyle="None" />
                     <EmptyDataTemplate>
                         <asp:Label ID="lblNoHistory" runat="server" Text="(No changes)" ></asp:Label>
                     </EmptyDataTemplate>
