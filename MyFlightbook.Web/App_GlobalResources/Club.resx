@@ -800,4 +800,7 @@ Sender Email: {1}</value>
   <data name="ReportHeaderFlightRules" xml:space="preserve">
     <value>Flight Rules</value>
   </data>
+  <data name="ReportHeaderPaxCount" xml:space="preserve">
+    <value># Pax</value>
+  </data>
 </root>

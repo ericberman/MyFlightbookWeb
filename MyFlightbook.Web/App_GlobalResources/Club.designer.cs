@@ -1758,6 +1758,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to # Pax.
+        /// </summary>
+        internal static string ReportHeaderPaxCount {
+            get {
+                return ResourceManager.GetString("ReportHeaderPaxCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pilot Name.
         /// </summary>
         internal static string ReportHeaderPilotName {
