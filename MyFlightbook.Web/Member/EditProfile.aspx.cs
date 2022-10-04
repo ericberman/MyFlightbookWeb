@@ -325,7 +325,7 @@ namespace MyFlightbook.MemberPages
             rblDateEntryPreferences.SelectedIndex = (m_pf.UsesUTCDateOfFlight ? 1 : 0);
             prefTimeZone.SelectedTimeZone = m_pf.PreferredTimeZone;
             AddCurrencyExpirations(cmbExpiredCurrency);
-            cmbAircraftMaintWindow.SelectedValue = m_pf.GetPreferenceForKey(MFBConstants.keyWindowAircraftMaintenance).ToString(CultureInfo.InvariantCulture);
+            cmbAircraftMaintWindow.SelectedValue = m_pf.GetPreferenceForKey(MFBConstants.keyWindowAircraftMaintenance, MFBConstants.DefaultMaintenanceWindow).ToString(CultureInfo.InvariantCulture);
         }
 
         private void InitSocialNetworking()
@@ -746,7 +746,7 @@ namespace MyFlightbook.MemberPages
                 m_pf.FCommit();
                 lblCurrencyPrefsUpdated.Visible = true;
                 int maintWindow = Convert.ToInt32(cmbAircraftMaintWindow.SelectedValue, CultureInfo.InvariantCulture);
-                m_pf.SetPreferenceForKey(MFBConstants.keyWindowAircraftMaintenance, maintWindow, maintWindow == MFBConstants.DefaultMaintenanceWindow || maintWindow < 0);
+                m_pf.SetPreferenceForKey(MFBConstants.keyWindowAircraftMaintenance, maintWindow, maintWindow == MFBConstants.DefaultMaintenanceWindow);
             }
             catch (MyFlightbookException ex)
             {

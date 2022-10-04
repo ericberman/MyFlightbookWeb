@@ -1007,6 +1007,18 @@ namespace MyFlightbook
                 return defObj;        
         }
 
+        
+        /// <summary>
+        /// Retrieves the specified integer value. We do this because a cast of a boxed value doesn't work - e.g., if it's an Int64 that's been boxed, you have to do (int) (Int64) o; (int) o doesn't work.
+        /// </summary>
+        /// <param name="szKey"></param>
+        /// <param name="defValue"></param>
+        /// <returns></returns>
+        public int GetPreferenceForKey(string szKey, int defValue)
+        {
+            return (PreferenceExists(szKey)) ? Convert.ToInt32(PersistedPrefsDictionary[szKey], CultureInfo.InvariantCulture) : defValue;
+        }
+
         /// <summary>
         /// Faster alternative to retrive the specified object (or default, if not found), but the return type is "dynamic", so you have to know what you're doing with the result.
         /// </summary>
