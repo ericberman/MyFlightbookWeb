@@ -797,4 +797,7 @@ Sender Email: {1}</value>
   <data name="TitleEditScheduledEvent" xml:space="preserve">
     <value>Add/Edit Item</value>
   </data>
+  <data name="ReportHeaderFlightRules" xml:space="preserve">
+    <value>Flight Rules</value>
+  </data>
 </root>

@@ -1551,6 +1551,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flight Rules.
+        /// </summary>
+        internal static string ReportHeaderFlightRules {
+            get {
+                return ResourceManager.GetString("ReportHeaderFlightRules", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Flight Start.
         /// </summary>
         internal static string ReportHeaderFlightStart {

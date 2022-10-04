@@ -253,7 +253,11 @@
                             <tr>
                                 <td colspan="5">
                                     <asp:Button ID="btnUpdate" OnClick="btnUpdate_Click" runat="server" Text="<%$ Resources:Club, ReportUpdate %>" />
-                                    <asp:Button ID="btnDownload" OnClick="btnDownload_Click" runat="server" Text="<%$ Resources:Club, ReportDownload %>" Visible="false" />
+                                    <asp:LinkButton ID="btnDownload" runat="server" OnClick="btnDownload_Click" Visible="false">
+                                        <asp:Image ID="imgDownloadFlying" ImageUrl="~/images/download.png" runat="server" ImageAlign="Middle" style="padding-right: 5px;" />
+                                        <asp:Image ID="imgCSV1" ImageAlign="Middle" runat="server" ImageUrl="~/images/csvicon_med.png" style="padding-right: 5px;" />
+                                        <asp:Localize ID="locDownloadCSV" runat="server" Text="<%$ Resources:Club, ReportDownload %>" />
+                                    </asp:LinkButton>
                                 </td>
                             </tr>
                         </table>
@@ -264,7 +268,11 @@
                     <h3><% =Resources.Club.ReportHeaderMaintenance %></h3>
                     <div>
                         <asp:Button ID="btnUpdateMaintenance" runat="server" Text="<%$ Resources:Club, ReportUpdate %>" OnClick="btnUpdateMaintenance_Click" />
-                        <asp:Button ID="btnDownloadMaintenance" runat="server" Text="<%$ Resources:Club, ReportDownload %>" Visible="false" OnClick="btnDownloadMaintenance_Click" />
+                        <asp:LinkButton ID="btnDownloadMaintenance" runat="server" OnClick="btnDownloadMaintenance_Click" Visible="false">
+                            <asp:Image ID="imgDownloadMaint" ImageUrl="~/images/download.png" runat="server" ImageAlign="Middle" style="padding-right: 5px;" />
+                            <asp:Image ID="imgCSV2" ImageAlign="Middle" runat="server" ImageUrl="~/images/csvicon_med.png" style="padding-right: 5px;" />
+                            <asp:Localize ID="locDownloadMaint" runat="server" Text="<%$ Resources:Club, ReportDownload %>" />
+                        </asp:LinkButton>
                     </div>
                     <asp:Panel ID="pnlMaintenanceReport" runat="server" ScrollBars="Auto" >
                         <uc1:MaintenanceReport runat="server" ID="MaintenanceReport" />

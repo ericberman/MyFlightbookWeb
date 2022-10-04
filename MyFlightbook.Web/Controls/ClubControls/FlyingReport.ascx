@@ -22,6 +22,7 @@ ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" >
                 </ItemTemplate>
             </asp:TemplateField>
             <asp:BoundField DataField="IsInstruction" HeaderText="<%$ Resources:Club, ReportHeaderInstruction %>" HeaderStyle-CssClass="PaddedCell" ItemStyle-CssClass="PaddedCell" />
+            <asp:BoundField DataField="FlightRules" HeaderText="<%$ Resources:Club, ReportHeaderFlightRules %>" HeaderStyle-CssClass="PaddedCell" ItemStyle-CssClass="PaddedCell" /> 
             <asp:BoundField DataField="Route" HeaderText="<%$ Resources:Club, ReportHeaderRoute %>" HeaderStyle-CssClass="PaddedCell" ItemStyle-CssClass="PaddedCell" />
             <asp:BoundField DataField="Total Time" HeaderText="<%$ Resources:Club, ReportHeaderTotalTime %>" DataFormatString="{0:0.0#}" HeaderStyle-CssClass="PaddedCell" ItemStyle-CssClass="PaddedCell" />
             <asp:BoundField DataField="Hobbs Start" HeaderText="<%$ Resources:Club, ReportHeaderHobbsStart %>" HeaderStyle-CssClass="PaddedCell" ItemStyle-CssClass="PaddedCell" />
