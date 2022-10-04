@@ -305,7 +305,7 @@ WHERE useraircraft.userName = ?UserName AND (flags & 0x0008) = 0";
 
             if (rgar != null)
             {
-                int maxWindow = (int) Profile.GetUser(szUser).GetPreferenceForKey<Int64>(MFBConstants.keyWindowAircraftMaintenance, MFBConstants.DefaultMaintenanceWindow);
+                int maxWindow = (int) Profile.GetUser(szUser).GetPreferenceForKey(MFBConstants.keyWindowAircraftMaintenance);
                 foreach (Aircraft ar in rgar)
                 {
                     MaintenanceRecord mr = ar.Maintenance;
