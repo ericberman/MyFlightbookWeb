@@ -3339,6 +3339,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to If you leave dates empty, then all flights before the &quot;to&quot; date or after the &quot;from&quot; date (if specified) will be imported..
+        /// </summary>
+        internal static string RosterBusterDatesNote {
+            get {
+                return ResourceManager.GetString("RosterBusterDatesNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove permission for %APP_NAME% to access RosterBuster.
         /// </summary>
         internal static string RosterBusterDeAuth {
@@ -3398,6 +3407,15 @@ namespace Resources {
         internal static string RosterBusterNotAuthed {
             get {
                 return ResourceManager.GetString("RosterBusterNotAuthed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your authentication on Rosterbuster has expired, been revoked, or otherwise failed.  Please re-authorize %APP_NAME% to access your RosterBuster account..
+        /// </summary>
+        internal static string RosterBusterRefreshFailed {
+            get {
+                return ResourceManager.GetString("RosterBusterRefreshFailed", resourceCulture);
             }
         }
         

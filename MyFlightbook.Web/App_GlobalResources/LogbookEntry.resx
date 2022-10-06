@@ -1495,4 +1495,10 @@ Proceed with import?</value>
   <data name="RosterBusterToDate" xml:space="preserve">
     <value>To (UTC date):</value>
   </data>
+  <data name="RosterBusterDatesNote" xml:space="preserve">
+    <value>If you leave dates empty, then all flights before the "to" date or after the "from" date (if specified) will be imported.</value>
+  </data>
+  <data name="RosterBusterRefreshFailed" xml:space="preserve">
+    <value>Your authentication on Rosterbuster has expired, been revoked, or otherwise failed.  Please re-authorize %APP_NAME% to access your RosterBuster account.</value>
+  </data>
 </root>

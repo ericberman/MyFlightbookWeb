@@ -141,7 +141,7 @@ namespace MyFlightbook.OAuth.RosterBuster
 
             PendingFlight pf = new PendingFlight()
             {
-                TailNumDisplay = flight.tailnumber ?? flightstats.tailNumber ?? string.Empty,
+                TailNumDisplay = String.IsNullOrEmpty(flightstats.tailNumber) ? (String.IsNullOrEmpty(flight.tailnumber) ? String.Empty : flight.tailnumber) : flightstats.tailNumber,
                 Route = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, 
                     String.IsNullOrEmpty(departure.ICAO) ? departure.IATA : departure.ICAO, 
                     String.IsNullOrEmpty(arrival.ICAO) ? arrival.IATA : arrival.ICAO).Trim(),
@@ -159,7 +159,7 @@ namespace MyFlightbook.OAuth.RosterBuster
             if (cfpBlockOut != null && cfpBlockIn != null && flightstats.blockMinutes == 0)
                 pf.TotalFlightTime = (decimal) Math.Max(blockIn.Value.Subtract(blockOut.Value).TotalHours, 0);
 
-            string flightnum = !String.IsNullOrEmpty(flight.number) ? flight.number : flightstats.flightnumber ?? String.Empty;
+            string flightnum = !String.IsNullOrEmpty(flightstats.flightnumber) ? flightstats.flightnumber : flight.number ?? String.Empty;
             if (!String.IsNullOrEmpty(flightnum))
                 flightnum = (airline.IATA ?? string.Empty) + flightnum;
 
@@ -191,10 +191,12 @@ namespace MyFlightbook.OAuth.RosterBuster
         private const string rbAPIDev = "devapi.rosterbuster.com";
         private const string rbAPILive = "api.rosterbuster.com";
         private const string localConfigKey = "rbClientID";
+        private const string localConfigKeyDev = "rbClientIDDev";
         public const string szCachedPrefStateKey = "rbRequestState";
         private const string szCachedCodeVerifier = "rbCodeVerifier";
         public const string TokenPrefKey = "rosterBusterAuth";
         public const string RBDownloadLink = "https://k5745.app.goo.gl/WoQcV";
+        public const string rbLastToDateKey = "rbLastToDate";
 
         private static bool UseSandbox(string host)
         {
@@ -268,6 +270,9 @@ namespace MyFlightbook.OAuth.RosterBuster
                             pf.Commit();
                         }
                     }
+
+                    // if we're here, we were able to successfully retrieve flights, so remember the latest retrieved value.
+                    Profile.GetUser(szUser).SetPreferenceForKey(rbLastToDateKey, dtEnd, !dtEnd.HasValue);
                     return true;
                 }
                 catch (HttpRequestException ex)
@@ -470,7 +475,7 @@ namespace MyFlightbook.OAuth.RosterBuster
             }
         }
 
-        public RosterBusterClient(string host) : base(localConfigKey, localConfigKey,
+        public RosterBusterClient(string host) : base(UseSandbox(host) ? localConfigKeyDev : localConfigKey, UseSandbox(host) ? localConfigKeyDev : localConfigKey,
             String.Format(CultureInfo.InvariantCulture, "https://{0}/thirdparty/login", UseSandbox(host) ? rbDevHost : rbLiveHost),
             String.Format(CultureInfo.InvariantCulture, "https://{0}/rb/v1/thirdparty/token", UseSandbox(host) ? rbDevAuthHost : rbLiveAuthHost),
             Array.Empty<string>())

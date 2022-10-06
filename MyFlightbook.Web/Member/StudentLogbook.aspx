@@ -118,29 +118,22 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>
+                                    <td style="vertical-align:top;">
                                         <asp:CheckBox ID="ckEndorsements" runat="server" Checked="true" onclick="updPrint();" />
                                     </td>
                                     <td>
-                                        <asp:Label ID="lblIncludeEndorsements" AssociatedControlID="ckEndorsements" runat="server" Text="<%$ Resources:LocalizedText, PrintViewIncludeEndorsements %>" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td>
-                                        <div style="float: left">
-                                            <asp:CheckBox ID="ckIncludeEndorsementImages" runat="server" Checked="true" onclick="updPrint();" /></div>
-                                        <div style="float:left">
+                                        <div>
+                                            <asp:Label ID="lblIncludeEndorsements" AssociatedControlID="ckEndorsements" runat="server" Text="<%$ Resources:LocalizedText, PrintViewIncludeEndorsements %>" />
+                                            <asp:CheckBox ID="ckIncludeEndorsementImages" runat="server" Checked="true" onclick="updPrint();" />
                                             <asp:Label ID="lblIncludeWhat" AssociatedControlID="ckIncludeEndorsementImages" runat="server" Text="<%$ Resources:LocalizedText, PrintViewIncludeJPEGEndorsements %>" />
-                                            <div class="fineprint"><% =Resources.LocalizedText.PrintViewNoEmbeddedPDFsNote %></div>
                                         </div>
-                                    </td>
+                                        <div class="fineprint"><% =Resources.LocalizedText.PrintViewNoEmbeddedPDFsNote %></div>
                                 </tr>
                             </table>
-                        </div>
-                        <div>
-                            <asp:HyperLink ID="lnkPrintView" runat="server" Target="_blank">
-                                <asp:Image ID="imgOpenPrintView" ImageUrl="~/images/rightarrow.png" ImageAlign="Middle" runat="server" />&nbsp;<%=Resources.LocalizedText.OpenPrintView %></asp:HyperLink>
+                            <ul class="nextStep">
+                                <li><asp:HyperLink ID="lnkPrintView" runat="server" Target="_blank" Text="<%$ Resources:LocalizedText, OpenPrintView %>" /></li>
+                            </ul>
+
                         </div>
                         <div>
                             <asp:LinkButton ID="lnkDownloadCSV" runat="server" OnClick="lnkDownloadCSV_Click" style="vertical-align:middle">

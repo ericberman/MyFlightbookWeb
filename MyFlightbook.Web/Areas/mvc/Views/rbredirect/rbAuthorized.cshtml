@@ -3,11 +3,12 @@
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
 }
 
-<div>
-    <img style="float:left; max-width: 2cm; max-height: 2cm; margin-right: 3em; margin-bottom: 1em" src="@VirtualPathUtility.ToAbsolute("~/images/rb_logo.png")" /> 
+<img style="max-width: 2cm; max-height: 2cm; vertical-align:top; margin-right: 3em; margin-bottom: 1em" src="@VirtualPathUtility.ToAbsolute("~/images/rb_logo.png")" />
+<div style="display:inline-block;">
     <p>@Branding.ReBrand(Resources.LogbookEntry.RosterBusterAuthed)</p>
-    <ul>
+    <ul class="nextStep">
         <li><a href="@VirtualPathUtility.ToAbsolute("~/Member/Import.aspx")">@Resources.LogbookEntry.RosterBusterImportNow</a></li>
+        <li><a href="javascript:showModalById('downloadRB', '@Resources.Preferences.ScheduleServiceRBDownloadPrompt', 350);">@Resources.Preferences.ScheduleServiceRBDownloadPrompt</a></li>
         @using (Html.BeginForm("DeAuth", "rbredirect", FormMethod.Post, new Dictionary<string, object> { { "id", "DeAuth" } }))
         {
             @Html.AntiForgeryToken();
@@ -15,10 +16,7 @@
         }
     </ul>
 </div>
-<br />
-<br />
-<div style="margin-left: auto; margin-right: auto; text-align: center; max-width: 175px;">
-    <div>@Resources.Preferences.ScheduleServiceRBDownloadPrompt</div>
-    <div><img src="@ViewBag.QRCode" style="width: 150px" /></div>
-    <div><a target="_blank" href="ViewBag.RBDownload">@ViewBag.RBDownload</a></div>
+<div id="downloadRB" style="display:none;">
+    <div>@Resources.Preferences.ScheduleServiceRBScanQRCode</div>
+    <div style="text-align: center"><img src="@ViewBag.QRCode" style="width: 150px; height: 150px;" /></div>
 </div>

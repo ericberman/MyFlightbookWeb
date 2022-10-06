@@ -429,11 +429,10 @@
                                 </div>
                                 <div><asp:Label ID="lblCloudAhoyErr" runat="server" CssClass="error" EnableViewState="false"></asp:Label></div>
                                 <asp:Panel ID="pnlCloudAhoySuccess" runat="server" EnableViewState="false" Visible="false">
-                                    <asp:Label ID="lblSendCloudAhoySuccess" runat="server" Text="<%$ Resources:LogbookEntry, SendToCloudAhoySuccess %>" CssClass="success"></asp:Label>
-                                    <asp:HyperLink ID="lnkViewOnCloudAhoy" runat="server" NavigateUrl="https://www.cloudahoy.com/flights" Target="_blank">
-                                        <asp:Label ID="lblViewOnCloudAhoy" runat="server" Text="<%$ Resources:LogbookEntry, SendToCloudAhoyView %>"></asp:Label>
-                                        <asp:Image ID="imgViewOnCloudAhoy" runat="server" ImageURL="~/images/rightarrow.png" />
-                                    </asp:HyperLink>
+                                    <asp:Label ID="lblSendCloudAhoySuccess" runat="server" Text="<%$ Resources:LogbookEntry, SendToCloudAhoySuccess %>" CssClass="success" />
+                                    <ul class="nextStep">
+                                        <li><asp:HyperLink ID="lnkViewOnCloudAhoy" runat="server" NavigateUrl="https://www.cloudahoy.com/flights" Target="_blank" Text="<%$ Resources:LogbookEntry, SendToCloudAhoyView %>" /></li>
+                                    </ul>
                                 </asp:Panel>
                             </td>
                         </tr>

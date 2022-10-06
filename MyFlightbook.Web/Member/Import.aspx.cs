@@ -85,7 +85,13 @@ namespace MyFlightbook.ImportFlights
             {
                 pnlCloudAhoy.Visible = pf.CloudAhoyToken != null && pf.CloudAhoyToken.AccessToken != null;
                 pnlLeon.Visible = pf.PreferenceExists(LeonClient.TokenPrefKey);
-                pnlRosterBuster.Visible = pf.PreferenceExists(RosterBusterClient.TokenPrefKey);
+                if (pnlRosterBuster.Visible = pf.PreferenceExists(RosterBusterClient.TokenPrefKey))
+                {
+                    // if appropriate, initialize the "From" date to the previously used "To" date.
+                    DateTime? dt = pf.GetPreferenceForKey<DateTime?>(RosterBusterClient.rbLastToDateKey, null);
+                    if (dt.HasValue)
+                        rbFromDate.Date = dt.Value;
+                }
             }
         }
 
@@ -496,8 +502,17 @@ namespace MyFlightbook.ImportFlights
 
             if (!rbc.CheckAccessToken())
             {
-                IAuthorizationState newAuth = await rbc.RefreshToken();
-                pf.SetPreferenceForKey(RosterBusterClient.TokenPrefKey, newAuth);
+                try
+                {
+                    IAuthorizationState newAuth = await rbc.RefreshToken();
+                    pf.SetPreferenceForKey(RosterBusterClient.TokenPrefKey, newAuth);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    lblRosterBusterErrror.Text = Branding.ReBrand(Resources.LogbookEntry.RosterBusterRefreshFailed);
+                    pf.SetPreferenceForKey(RosterBusterClient.TokenPrefKey, null, true);
+                    return;
+                }
             }
 
             DateTime? from = null;

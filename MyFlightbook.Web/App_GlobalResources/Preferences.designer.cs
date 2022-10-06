@@ -1042,7 +1042,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Need to download RosterBuster?  Scan the QR code below.
+        ///   Looks up a localized string similar to Download the RosterBuster app.
         /// </summary>
         internal static string ScheduleServiceRBDownloadPrompt {
             get {
@@ -1065,6 +1065,15 @@ namespace Resources {
         internal static string ScheduleServiceRBName {
             get {
                 return ResourceManager.GetString("ScheduleServiceRBName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan the QR code below to download the RosterBuster app to your iOS or Android device.
+        /// </summary>
+        internal static string ScheduleServiceRBScanQRCode {
+            get {
+                return ResourceManager.GetString("ScheduleServiceRBScanQRCode", resourceCulture);
             }
         }
     }

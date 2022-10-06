@@ -60,15 +60,6 @@ namespace MyFlightbook.ImportFlights
         protected global::System.Web.UI.WebControls.LinkButton lnkDefaultTemplate;
 
         /// <summary>
-        /// imgColumns control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Image imgColumns;
-
-        /// <summary>
         /// lnkImportTable control.
         /// </summary>
         /// <remarks>
@@ -78,15 +69,6 @@ namespace MyFlightbook.ImportFlights
         protected global::System.Web.UI.WebControls.HyperLink lnkImportTable;
 
         /// <summary>
-        /// imgTips control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Image imgTips;
-
-        /// <summary>
         /// lnkFAQTips control.
         /// </summary>
         /// <remarks>
@@ -94,15 +76,6 @@ namespace MyFlightbook.ImportFlights
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink lnkFAQTips;
-
-        /// <summary>
-        /// imgTips2 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Image imgTips2;
 
         /// <summary>
         /// lnkBlogTips control.
@@ -816,24 +789,6 @@ namespace MyFlightbook.ImportFlights
         protected global::System.Web.UI.WebControls.HyperLink lnkDone;
 
         /// <summary>
-        /// imgViewFlights control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Image imgViewFlights;
-
-        /// <summary>
-        /// lblViewFlights control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblViewFlights;
-
-        /// <summary>
         /// lnkPending control.
         /// </summary>
         /// <remarks>
@@ -841,24 +796,6 @@ namespace MyFlightbook.ImportFlights
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink lnkPending;
-
-        /// <summary>
-        /// imgViewPending control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Image imgViewPending;
-
-        /// <summary>
-        /// lblViewPending control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblViewPending;
 
         /// <summary>
         /// mvContent control.

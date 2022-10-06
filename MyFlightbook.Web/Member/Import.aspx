@@ -32,16 +32,16 @@
                     <div>
                         <% =Branding.ReBrand(Resources.LogbookEntry.ImportOverview).Replace("%SAMPLEREF%", "~/images/flightimportsample.png".ToAbsoluteURL(Request).ToString()) %>
                     </div>
-                    <table>
-                        <tr><td style="text-align:center;"><asp:Image ID="imgCSV" runat="server" ImageUrl="~/images/csvicon_sm.png" /></td><td><asp:LinkButton ID="lnkDefaultTemplate" runat="server" Font-Bold="True" 
+                    <ul class="nextStep">
+                        <li><asp:Image ID="imgCSV" runat="server" ImageUrl="~/images/csvicon_sm.png" style="vertical-align:middle" /> <asp:LinkButton ID="lnkDefaultTemplate" runat="server" Font-Bold="True" 
                                 OnClick="lnkDefaultTemplate_Click"
-                                Text="<%$ Resources:LogbookEntry, ImportStartingTemplate %>" /></td></tr>
-                        <tr><td style="text-align:center;"><asp:Image ID="imgColumns" runat="server" ImageUrl="~/images/rightarrow.png" /></td><td><asp:HyperLink ID="lnkImportTable" runat="server" Font-Bold="True" 
+                                Text="<%$ Resources:LogbookEntry, ImportStartingTemplate %>" /></li>
+                        <li><asp:HyperLink ID="lnkImportTable" runat="server" Font-Bold="True" 
                                 NavigateUrl="~/Public/ImportTable.aspx" Target="_blank" 
-                                Text="<%$ Resources:LogbookEntry, ImportColumnDescriptions %>" /></td></tr>
-                        <tr><td style="text-align:center;"><asp:Image ID="imgTips" runat="server" ImageUrl="~/images/rightarrow.png" /></td><td><asp:HyperLink ID="lnkFAQTips" Font-Bold="true" runat="server" NavigateUrl="~/Public/FAQ.aspx?q=44#44" Text="<%$ Resources:LogbookEntry, ImportFAQTipsLink %>" /></td></tr>
-                        <tr><td style="text-align:center;"><asp:Image ID="imgTips2" runat="server"  ImageUrl="~/images/rightarrow.png" /></td><td><asp:HyperLink ID="lnkBlogTips" Font-Bold="true" runat="server" Text="<%$ Resources:LogbookEntry, ImportBlogLink %>" NavigateUrl="https://myflightbookblog.blogspot.com/2020/05/importing-in-depth.html" /></td></tr>
-                    </table>
+                                Text="<%$ Resources:LogbookEntry, ImportColumnDescriptions %>" /></li>
+                        <li><asp:HyperLink ID="lnkFAQTips" Font-Bold="true" runat="server" NavigateUrl="~/Public/FAQ.aspx?q=44#44" Text="<%$ Resources:LogbookEntry, ImportFAQTipsLink %>" /></li>
+                        <li><asp:HyperLink ID="lnkBlogTips" Font-Bold="true" runat="server" Text="<%$ Resources:LogbookEntry, ImportBlogLink %>" NavigateUrl="https://myflightbookblog.blogspot.com/2020/05/importing-in-depth.html" /></li>
+                    </ul>
                 </div>
             </asp:WizardStep>
             <asp:WizardStep ID="wsUpload" runat="server" Title="<%$ Resources:LogbookEntry, ImportWizardStep2 %>">
@@ -227,6 +227,7 @@
                     </td>
                 </tr>
             </table>
+            <div class="fineprint"><% =Resources.LogbookEntry.RosterBusterDatesNote %></div>
             <div style="text-align:center">
                 <asp:Button ID="btnImportRosterBuster" runat="server" Text="<%$ Resources:LogbookEntry, LeonImportNow %>" OnClick="btnImportRosterBuster_Click" />
             </div>
@@ -330,16 +331,10 @@
                 </ItemTemplate>
             </asp:Repeater>
         </ul>
-        <p>
-            <asp:HyperLink ID="lnkDone" runat="server" NavigateUrl="~/Member/LogbookNew.aspx">
-                <asp:Image ID="imgViewFlights" ImageUrl="~/images/rightarrow.png" ImageAlign="Middle" runat="server" />&nbsp;
-                <asp:Label ID="lblViewFlights" runat="server" Text="<%$ Resources:LogbookEntry, ImportViewImportedFlights %>"></asp:Label>
-            </asp:HyperLink></p>
-        <p>
-            <asp:HyperLink ID="lnkPending" runat="server" NavigateUrl="~/Member/ReviewPendingFlights.aspx" Visible="false" >
-                <asp:Image ID="imgViewPending" ImageUrl="~/images/rightarrow.png" ImageAlign="Middle" runat="server" />&nbsp;
-                <asp:Label ID="lblViewPending" runat="server" Text="<%$ Resources:LogbookEntry, ImportViewImportedFlightsPending %>"></asp:Label>
-            </asp:HyperLink></p>
+        <ul class="nextStep">
+            <li><asp:HyperLink ID="lnkDone" runat="server" NavigateUrl="~/Member/LogbookNew.aspx" Text="<%$ Resources:LogbookEntry, ImportViewImportedFlights %>" /></li>
+            <li><asp:HyperLink ID="lnkPending" runat="server" NavigateUrl="~/Member/ReviewPendingFlights.aspx" Visible="false" Text="<%$ Resources:LogbookEntry, ImportViewImportedFlightsPending %>" /></li>
+        </ul>
     </asp:Panel>
     <br /><br />
 </asp:Content>

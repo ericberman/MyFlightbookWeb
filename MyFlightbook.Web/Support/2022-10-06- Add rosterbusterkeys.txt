@@ -1,0 +1,2 @@
+﻿insert into localconfig set keyname='rbClientID', keyvalue='';
+insert into localconfig set keyname='rbClientIDDev', keyvalue='';

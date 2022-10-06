@@ -889,6 +889,16 @@ a img
     font-size: 14px;
 }
 
+/* next steps bullet */
+ul.nextStep li {
+    
+    background: url('../images/rightarrow.png') no-repeat left center; 
+    padding: 5px 5px 5px 30px;
+    list-style: none;
+    margin: 0;
+    vertical-align: middle;
+}
+
 /* Footer */
 .footerContainer {
     text-align: center;

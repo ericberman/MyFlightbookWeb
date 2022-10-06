@@ -446,12 +446,15 @@
     <value>RosterBuster provides access to your airline's Roster on your iOS, Mac, or Android device.</value>
   </data>
   <data name="ScheduleServiceRBDownloadPrompt" xml:space="preserve">
-    <value>Need to download RosterBuster?  Scan the QR code below</value>
+    <value>Download the RosterBuster app</value>
   </data>
   <data name="ScheduleServiceRBManage" xml:space="preserve">
     <value>Configure %APP_NAME% for RosterBuster and download the app</value>
   </data>
   <data name="ScheduleServiceRBName" xml:space="preserve">
     <value>RosterBuster</value>
+  </data>
+  <data name="ScheduleServiceRBScanQRCode" xml:space="preserve">
+    <value>Scan the QR code below to download the RosterBuster app to your iOS or Android device</value>
   </data>
 </root>
