@@ -119,11 +119,11 @@ namespace MyFlightbook.OAuth.RosterBuster
         public string type { get; set; }
         public bool active { get; set; }
         public bool allday { get; set; }
-        public RosterBusterFlightDetails flight { get; set; }
-        public RosterBusterAirline airline { get; set; }
-        public RosterBusterAircraft aircraft { get; set; }
-        public RosterBusterEndpoint departure { get; set; }
-        public RosterBusterEndpoint arrival { get; set; }
+        public RosterBusterFlightDetails flight { get; set; } = new RosterBusterFlightDetails();
+        public RosterBusterAirline airline { get; set; } = new RosterBusterAirline();
+        public RosterBusterAircraft aircraft { get; set; } = new RosterBusterAircraft();
+        public RosterBusterEndpoint departure { get; set; } = new RosterBusterEndpoint();
+        public RosterBusterEndpoint arrival { get; set; } = new RosterBusterEndpoint();
 
         public RosterBusterFlightStats flightstats { get; set; }
 
@@ -145,7 +145,7 @@ namespace MyFlightbook.OAuth.RosterBuster
                 Route = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, 
                     String.IsNullOrEmpty(departure.ICAO) ? departure.IATA : departure.ICAO, 
                     String.IsNullOrEmpty(arrival.ICAO) ? arrival.IATA : arrival.ICAO).Trim(),
-                Date = departure.Time ?? (flightstats.date ?? DateTime.MinValue),
+                Date = (flightstats.publishedDepartureLocal ?? departure.Time ?? (flightstats.date ?? DateTime.MinValue)).Date,
                 FlightEnd = flightstats.actualRunwayArrival ?? DateTime.MinValue,
                 TotalFlightTime = totalFlight
             };
