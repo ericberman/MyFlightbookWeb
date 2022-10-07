@@ -1587,7 +1587,7 @@ namespace MyFlightbook
             if (mc != null && mc.Count == 1)
             {
                 Aircraft ac = new Aircraft(AircraftID);
-                if (ac.InstanceType == AircraftInstanceTypes.RealAircraft && Date.Date.CompareTo(ac.LastVOR.Date) > 0)
+                if (ac.InstanceType == AircraftInstanceTypes.RealAircraft && !ac.IsAnonymous && Date.Date.CompareTo(ac.LastVOR.Date) > 0)
                 {
                     // Copy the Maintenance record, then update the VOR on that.
                     MaintenanceRecord mr = new MaintenanceRecord(ac.Maintenance)
