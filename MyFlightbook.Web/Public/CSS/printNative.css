@@ -7,6 +7,7 @@
 
 tr.bordered {
     page-break-inside:avoid;
+    vertical-align: top;
 }
 
 tr.bordered td {
@@ -34,32 +35,22 @@ tr.subtotal td.noborder {
 
 thead.header th {
     height: 40px;
-    white-space: nowrap;
+    text-align: center;
+    font-weight: normal;
+    text-overflow: ellipsis;
+    white-space: normal;
+    font-size: x-small;
+    vertical-align: bottom;
+    overflow:hidden;
 }
 
 thead.header th > div {
-    -webkit-transform: rotate(315deg);
-    -moz-transform: rotate(315deg);
-    -o-transform: rotate(315deg);
-    -ms-transform: rotate(315deg);
-    transform: rotate(315deg);
-    width: .6cm;
-    text-overflow:ellipsis;
-    font-size: smaller;
+    width: .6cm !important;
 }
 
-    thead.header th > div.custColumn {
-        -webkit-transform: rotate(315deg);
-        -moz-transform: rotate(315deg);
-        -o-transform: rotate(315deg);
-        -ms-transform: rotate(315deg);
-        transform: rotate(315deg);
-        width: 1.0cm;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        font-size: x-small;
-        white-space: normal;
-    }
+thead.header th > div.custColumn {
+    width: 1.0cm !important;
+}
 
 .header {
     font-weight:bold;
