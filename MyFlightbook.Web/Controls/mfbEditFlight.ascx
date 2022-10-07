@@ -401,7 +401,7 @@
         <ul>
             <asp:Repeater ID="rptDiffs" runat="server">
                 <ItemTemplate>
-                    <li><%#: Container.DataItem.ToString() %></li>
+                    <li style="white-space:pre-wrap"><%#: Container.DataItem.ToString() %></li>
                 </ItemTemplate>
             </asp:Repeater>
         </ul>
