@@ -700,11 +700,7 @@
     <Content Include="images\google-drive-logo-lockup.png" />
     <Content Include="images\google-play-badge.png" />
     <Content Include="images\import.png" />
-    <Content Include="images\InternetExplorer32x32.png" />
-    <Content Include="images\InternetExplorer48x48.png" />
-    <Content Include="images\InternetExplorer64x64.png" />
     <Content Include="images\kmlicon_med.png" />
-    <Content Include="images\Landscape.png" />
     <Content Include="images\landscapeprint.png" />
     <Content Include="images\Link.png" />
     <Content Include="images\mapmarker.png" />
