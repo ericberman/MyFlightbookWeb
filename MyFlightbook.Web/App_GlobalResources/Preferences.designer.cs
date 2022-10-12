@@ -1033,7 +1033,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to RosterBuster provides access to your airline&apos;s Roster on your iOS, Mac, or Android device..
+        ///   Looks up a localized string similar to RosterBuster makes it easy to view your airline&apos;s roster on the go! Join and connect with over 400,000 airline crew professionals worldwide..
         /// </summary>
         internal static string ScheduleServiceRBDesc {
             get {

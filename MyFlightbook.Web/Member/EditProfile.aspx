@@ -829,7 +829,7 @@
                             <uc1:mfbCloudAhoy runat="server" id="mfbCloudAhoy" />
                         </Content>
                     </cc1:AccordionPane>
-                    <cc1:AccordionPane ID="acpSchedulers" runat="server" Visible="false" ContentCssClass="" HeaderCssClass="">
+                    <cc1:AccordionPane ID="acpSchedulers" runat="server" ContentCssClass="" HeaderCssClass="">
                         <Header>
                             <asp:Localize ID="locSchedulers" runat="server" Text="<%$ Resources:Preferences, ScheduleServiceHeader %>" />
                         </Header>

@@ -364,7 +364,6 @@ namespace MyFlightbook.MemberPages
             mfbCloudStorage.HandleOAuthRedirect();
 
             acpoAuthApps.Visible = oAuthAuthorizationManager.Refresh();
-            acpSchedulers.Visible = util.GetIntParam(Request, "ss", 0) != 0;
 
             string szPane = Request["pane"];
             if (!String.IsNullOrEmpty(szPane))
