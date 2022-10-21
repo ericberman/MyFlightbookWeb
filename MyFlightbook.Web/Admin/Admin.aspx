@@ -125,7 +125,7 @@
         </asp:View>
         <asp:View ID="vwMisc" runat="server">
             <h2>Fix duplicate properties on flights</h2><asp:SqlDataSource ID="sqlDSDupeProps" runat="server" 
-                ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>" 
+                ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>" OnSelecting="sql_SelectingLongTimeout" 
                 ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" SelectCommand="select fp.idflight, fp.idproptype, count(fp.idProp) AS numProps, cast(group_concat(fp.idprop) as char) AS PropIDs
     from flightproperties fp
     group by fp.idflight, fp.idproptype
@@ -143,7 +143,7 @@
                         SortExpression="PropIDs" />
                 </Columns>
                 <EmptyDataTemplate>
-                    <p class="success">No duplicate properties found.</p></EmptyDataTemplate></asp:GridView><h2>Empty properties</h2><asp:SqlDataSource ID="sqlDSEmptyProps" runat="server"
+                    <p class="success">No duplicate properties found.</p></EmptyDataTemplate></asp:GridView><h2>Empty properties</h2><asp:SqlDataSource ID="sqlDSEmptyProps" runat="server" OnSelecting="sql_SelectingLongTimeout"
             ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>" 
             ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>"
             SelectCommand="SELECT * FROM flightproperties WHERE intvalue = 0 AND decvalue = 0.0 AND (datevalue IS NULL OR YEAR(datevalue) &lt; 10) AND (stringvalue = '' OR stringvalue IS NULL);" >
@@ -181,7 +181,11 @@
                     <p>Flights with signatures to fix:</p>
                     <asp:GridView ID="gvInvalidSignatures" runat="server" AutoGenerateColumns="false" OnRowCommand="gvInvalidSignatures_RowCommand">
                         <Columns>
-                            <asp:HyperLinkField DataNavigateUrlFields="FlightID" DataNavigateUrlFormatString="~/Member/LogbookNew.aspx/{0}?a=1" DataTextField="FlightID" DataTextFormatString="{0}" Target="_blank" />
+                            <asp:TemplateField>
+                                <ItemTemplate>
+                                    <a href='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "https://{0}/logbook/member/LogbookNew.aspx/{1}?a=1", Branding.CurrentBrand.HostName, Eval("FlightID")) %>' target="_blank"><%# Eval("FlightID").ToString() %></a>
+                                </ItemTemplate>
+                            </asp:TemplateField>
                             <asp:TemplateField>
                                 <ItemTemplate>
                                     <%# Eval("User") %><br />
@@ -202,7 +206,11 @@
                     <p>Auto-fixed flights:</p>
                     <asp:GridView ID="gvAutoFixed" runat="server" AutoGenerateColumns="false">
                         <Columns>
-                            <asp:HyperLinkField DataNavigateUrlFields="FlightID" DataNavigateUrlFormatString="~/Member/LogbookNew.aspx/{0}?a=1" DataTextField="FlightID" DataTextFormatString="{0}" Target="_blank" />
+                            <asp:TemplateField>
+                                <ItemTemplate>
+                                    <a href='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "https://{0}/logbook/member/LogbookNew.aspx/{1}?a=1", Branding.CurrentBrand.HostName, Eval("FlightID")) %>' target="_blank"><%# Eval("FlightID").ToString() %></a>
+                                </ItemTemplate>
+                            </asp:TemplateField>
                             <asp:TemplateField>
                                 <ItemTemplate>
                                     <%# Eval("User") %> <%# ((DateTime) Eval("Date")).ToShortDateString() %>

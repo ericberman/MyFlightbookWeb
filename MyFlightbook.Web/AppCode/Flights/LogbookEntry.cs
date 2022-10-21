@@ -7,6 +7,7 @@ using MyFlightbook.SocialMedia;
 using MyFlightbook.Telemetry;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
+using NodaTime;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -967,6 +968,53 @@ namespace MyFlightbook
             });
 
             return String.IsNullOrEmpty(dbh.LastError);
+        }
+
+        /// <summary>
+        /// Admin utility to find signed flights where the valid/invalid state may have gotten out of whack (e.g., sometimes aircraft mapping can invalidate a perfectly valid signed flight)
+        /// </summary>
+        /// <param name="offset">The starting point for flights.  Add the return result from the previous call to get the offset for the next call</param>
+        /// <param name="lstToFix">An IList of flights to review</param>
+        /// <param name="lstAutoFix">An IList of flights that are autofixed.</param>
+        /// <returns>The number of new signed flights that were examined.  If 0, stop calling!</returns>
+        /// <exception cref="InvalidOperationException">If offset < 0</exception>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static int AdminGetProblemSignedFlights(int offset, IList<LogbookEntryBase> lstToFix, IList<LogbookEntryBase> lstAutoFix)
+        {
+            if (offset < 0)
+                throw new InvalidOperationException("starting index is < 0");
+            if (lstToFix == null)
+                throw new ArgumentNullException(nameof(lstToFix));
+            if (lstAutoFix == null)
+                throw new ArgumentNullException(nameof(lstAutoFix));
+
+            List<int> lstSigned = new List<int>();
+
+            const int chunkSize = 250;
+
+            DBHelper dbh = new DBHelper("SELECT idFlight FROM Flights WHERE signatureState<>0 LIMIT ?lim, ?chunk");
+            dbh.CommandArgs.Timeout = 300;  // up to 300 seconds.
+            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("lim", offset); comm.Parameters.AddWithValue("chunk", chunkSize); },
+                (dr) => { lstSigned.Add(Convert.ToInt32(dr["idFlight"], CultureInfo.InvariantCulture)); });
+
+            lstSigned.ForEach((idFlight) =>
+            {
+                LogbookEntry le = new LogbookEntry();
+                le.FLoadFromDB(idFlight, string.Empty, LoadTelemetryOption.None, true);
+                if (le.AdminSignatureSanityCheckState != SignatureSanityCheckState.OK)
+                {
+                    // see if we can auto-fix these.  Auto-fixed = decrypted hash matches case insenstive and trimmed.
+                    if (le.DecryptedCurrentHash.Trim().CompareCurrentCultureIgnoreCase(le.DecryptedFlightHash.Trim()) == 0)
+                    {
+                        lstAutoFix.Add(le);
+                        le.AdminSignatureSanityFix(true);
+                    }
+                    else
+                        lstToFix.Add(le);
+                }
+            });
+
+            return lstSigned.Count;
         }
 
         /// <summary>

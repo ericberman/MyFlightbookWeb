@@ -12,7 +12,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2021 MyFlightbook LLC
+ * Copyright (c) 2009-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -324,64 +324,39 @@ namespace MyFlightbook.Web.Admin
         private const string szVSAutoFixed = "autoFixed";
         private const string szVSFlightsToFix = "InvalidSigs";
 
-        private List<LogbookEntry> lstToFix
+        private List<LogbookEntryBase> lstToFix
         {
             get
             {
                 if (ViewState[szVSFlightsToFix] == null)
-                    ViewState[szVSFlightsToFix] = new List<LogbookEntry>();
-                return (List<LogbookEntry>)ViewState[szVSFlightsToFix];
+                    ViewState[szVSFlightsToFix] = new List<LogbookEntryBase>();
+                return (List<LogbookEntryBase>)ViewState[szVSFlightsToFix];
             }
             set { ViewState[szVSFlightsToFix] = value; }
         }
 
-        private List<LogbookEntry> lstAutoFix
+        private List<LogbookEntryBase> lstAutoFix
         {
             get
             {
                 if (ViewState[szVSAutoFixed] == null)
-                    ViewState[szVSAutoFixed] = new List<LogbookEntry>();
-                return (List<LogbookEntry>)ViewState[szVSAutoFixed];
+                    ViewState[szVSAutoFixed] = new List<LogbookEntryBase>();
+                return (List<LogbookEntryBase>)ViewState[szVSAutoFixed];
             }
             set { ViewState[szVSAutoFixed] = value; }
         }
 
         protected void UpdateInvalidSigs()
         {
-            List<int> lstSigned = new List<int>();
-
             // Pick up where we left off.
             int offset = Convert.ToInt32(hdnSigOffset.Value, CultureInfo.InvariantCulture);
 
-            const int chunkSize = 250;
-
-            DBHelper dbh = new DBHelper("SELECT idFlight FROM Flights WHERE signatureState<>0 LIMIT ?lim, ?chunk");
-            dbh.CommandArgs.Timeout = 300;  // up to 300 seconds.
-            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("lim", offset); comm.Parameters.AddWithValue("chunk", chunkSize); },
-                (dr) => { lstSigned.Add(Convert.ToInt32(dr["idFlight"], CultureInfo.InvariantCulture)); });
-
-            lstSigned.ForEach((idFlight) =>
-                {
-                    LogbookEntry le = new LogbookEntry();
-                    le.FLoadFromDB(idFlight, string.Empty, LogbookEntry.LoadTelemetryOption.None, true);
-                    if (le.AdminSignatureSanityCheckState != LogbookEntry.SignatureSanityCheckState.OK)
-                    {
-                        // see if we can auto-fix these.  Auto-fixed = decrypted hash matches case insenstive and trimmed.
-                        if (le.DecryptedCurrentHash.Trim().CompareCurrentCultureIgnoreCase(le.DecryptedFlightHash.Trim()) == 0)
-                        {
-                            lstAutoFix.Add(le);
-                            le.AdminSignatureSanityFix(true);
-                        }
-                        else
-                            lstToFix.Add(le);
-                    }
-                });
-
-            offset += lstSigned.Count;
+            int additionalFlights = LogbookEntryBase.AdminGetProblemSignedFlights(offset, lstToFix, lstAutoFix);
+            offset += additionalFlights;
 
             lblSigResults.Text = String.Format(CultureInfo.CurrentCulture, "Found {0} signed flights, {1} appear to have problems, {2} were autofixed (capitalization or leading/trailing whitespace)", offset, lstToFix.Count, lstAutoFix.Count);
 
-            if (lstSigned.Any())
+            if (additionalFlights > 0)
             {
                 // we have more to go, so show the progress view that auto-clicks for the next chunk.
                 mvCheckSigs.SetActiveView(vwSigProgress);
@@ -402,14 +377,14 @@ namespace MyFlightbook.Web.Admin
         {
             if (e == null)
                 throw new ArgumentNullException(nameof(e));
-            int idFlight = e.CommandArgument.ToString().SafeParseInt(LogbookEntry.idFlightNone);
-            if (idFlight != LogbookEntry.idFlightNone)
+            int idFlight = e.CommandArgument.ToString().SafeParseInt(LogbookEntryCore.idFlightNone);
+            if (idFlight != LogbookEntryCore.idFlightNone)
             {
-                LogbookEntry le = new LogbookEntry();
-                le.FLoadFromDB(idFlight, string.Empty, LogbookEntry.LoadTelemetryOption.None, true);
+                LogbookEntryBase le = new LogbookEntry();
+                le.FLoadFromDB(idFlight, string.Empty, LogbookEntryCore.LoadTelemetryOption.None, true);
                 if (le.AdminSignatureSanityFix(e.CommandName.CompareOrdinalIgnoreCase("ForceValidity") == 0))
                 {
-                    List<LogbookEntry> lst = lstToFix;
+                    List<LogbookEntryBase> lst = lstToFix;
                     lst.RemoveAll(l => l.FlightID == idFlight);
                     gvInvalidSignatures.DataSource = lstToFix = lst;
                     gvInvalidSignatures.DataBind();
@@ -425,6 +400,12 @@ namespace MyFlightbook.Web.Admin
             gvDupeProps.DataBind();
         }
 
+        protected void sql_SelectingLongTimeout(object sender, SqlDataSourceSelectingEventArgs e)
+        {
+            if (e == null)
+                throw new ArgumentNullException(nameof(e));
+            e.Command.CommandTimeout = 300;
+        }
 
         protected void btnFlushCache_Click(object sender, EventArgs e)
         {
@@ -433,13 +414,13 @@ namespace MyFlightbook.Web.Admin
 
         protected void btnNightlyRun_Click(object sender, EventArgs e)
         {
-            String szURL = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Request.Url.Host, VirtualPathUtility.ToAbsolute("~/public/TotalsAndcurrencyEmail.aspx"));
+            string szURL = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Request.Url.Host, VirtualPathUtility.ToAbsolute("~/public/TotalsAndcurrencyEmail.aspx"));
             try
             {
                 using (System.Net.WebClient wc = new System.Net.WebClient())
                 {
                     byte[] rgdata = wc.DownloadData(szURL);
-                    string szContent = System.Text.UTF8Encoding.UTF8.GetString(rgdata);
+                    string szContent = Encoding.UTF8.GetString(rgdata);
                     if (szContent.Contains("-- SuccessToken --"))
                     {
                         lblNightlyRunResult.Text = "Started";
