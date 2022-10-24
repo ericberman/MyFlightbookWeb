@@ -49,7 +49,21 @@ public partial class Controls_mfbEditableImage : UserControl
     public bool CanDelete
     {
         get { return lnkDelete.Visible; }
-        set { divDel.Visible = lnkDelete.Visible = value; }
+        set
+        { 
+            divDel.Visible = lnkDelete.Visible = value;
+            cbeDelete.Enabled = !String.IsNullOrEmpty(cbeDelete.ConfirmText);
+        }
+    }
+
+    public string ConfirmText
+    {
+        get { return cbeDelete.ConfirmText; }
+        set
+        { 
+            cbeDelete.ConfirmText = value;
+            cbeDelete.Enabled = !String.IsNullOrEmpty(value);
+        }
     }
 
     /// <summary>

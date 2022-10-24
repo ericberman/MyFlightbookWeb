@@ -558,6 +558,8 @@ namespace MyFlightbook.AircraftControls
 
             AvionicsUpgrade = m_ac.AvionicsTechnologyUpgrade;
 
+            if (!IsOnlyUserOfAircraft)
+                mfbIl.ConfirmDeletePrompt = Resources.Aircraft.errDeleteImageConfirm;
             mfbIl.Key = txtTail.Text = lblReadTail.Text = m_ac.TailNumber;
 
             SetUpNotes();

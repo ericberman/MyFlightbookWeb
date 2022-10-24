@@ -714,4 +714,14 @@
   <data name="ImportNoAircraftFound" xml:space="preserve">
     <value>(No aircraft found to import)</value>
   </data>
+  <data name="errDeleteImageConfirm" xml:space="preserve">
+    <value>This aircraft is shared amongst multiple pilots.  Please do not delete an image unless it is truly inappropriate.
+
+If you are trying to make an image the default, please click the star next to it.
+
+Do you still want to delete?</value>
+  </data>
+  <data name="errDontDeleteImageAnonymous" xml:space="preserve">
+    <value>Aircraft - particularly anonymous - are shared amongst pilots.  You can use the website to delete an image if it is truly inappropriate.  If you want to choose an image as your default, please see the FAQ.</value>
+  </data>
 </root>

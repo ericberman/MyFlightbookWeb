@@ -796,6 +796,28 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This aircraft is shared amongst multiple pilots.  Please do not delete an image unless it is truly inappropriate.
+        ///
+        ///If you are trying to make an image the default, please click the star next to it.
+        ///
+        ///Do you still want to delete?.
+        /// </summary>
+        internal static string errDeleteImageConfirm {
+            get {
+                return ResourceManager.GetString("errDeleteImageConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Aircraft - particularly anonymous - are shared amongst pilots.  You can use the website to delete an image if it is truly inappropriate.  If you want to choose an image as your default, please see the FAQ..
+        /// </summary>
+        internal static string errDontDeleteImageAnonymous {
+            get {
+                return ResourceManager.GetString("errDontDeleteImageAnonymous", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Nothing was found in the file!.
         /// </summary>
         internal static string errImportEmptyFile {

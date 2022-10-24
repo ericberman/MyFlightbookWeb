@@ -51,6 +51,12 @@ public partial class Controls_mfbImageList : System.Web.UI.UserControl
         set { hdnCanEdit.Value = value.ToString(CultureInfo.InvariantCulture); }
     }
 
+    public string ConfirmDeletePrompt
+    {
+        get { return hdnConfirmDeleteText.Value; }
+        set { hdnConfirmDeleteText.Value = value; }
+    }
+
     public bool CanMakeDefault
     {
         get { return Convert.ToBoolean(hdnMakeDefault.Value, CultureInfo.InvariantCulture); }

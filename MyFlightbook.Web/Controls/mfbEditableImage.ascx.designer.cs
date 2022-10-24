@@ -67,6 +67,15 @@ public partial class Controls_mfbEditableImage
     protected global::System.Web.UI.WebControls.ImageButton lnkDelete;
 
     /// <summary>
+    /// cbeDelete control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::AjaxControlToolkit.ConfirmButtonExtender cbeDelete;
+
+    /// <summary>
     /// divZoom control.
     /// </summary>
     /// <remarks>

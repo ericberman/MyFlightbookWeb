@@ -13,6 +13,7 @@
                             AltText="<%# AltText %>"
                             CanEdit="<%# CanEditImage((MyFlightbook.Image.MFBImageInfo) Container.DataItem) %>"
                             CanDelete="<%# CanEdit %>"
+                            ConfirmText="<%# ConfirmDeletePrompt %>"
                             CanMakeDefault="<%# CanMakeDefault %>"
                             IsDefault='<%# DefaultImage != null && DefaultImage.CompareOrdinalIgnoreCase((string) Eval("ThumbnailFile")) == 0 %>'
                             OnImageDeleted="HandleDeleteClick"
@@ -32,5 +33,6 @@
         <asp:HiddenField ID="hdnAltText" Value="" Visible="false" runat="server" />
         <asp:HiddenField ID="hdnMakeDefault" Value="false" Visible="false" runat="server" />
         <asp:HiddenField ID="hdnDefaultImage" Value="" Visible="false" runat="server" />
+        <asp:HiddenField ID="hdnConfirmDeleteText" Value="" Visible="false" runat="server" />
     </ContentTemplate>
 </asp:UpdatePanel>
