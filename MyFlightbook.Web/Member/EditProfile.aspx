@@ -494,6 +494,9 @@
                                         </td>
                                     </tr>
                                 </table>
+                                <h3><% =Resources.Preferences.PrefSectFlightMisc %></h3>
+                                <div><asp:CheckBox ID="ckPreserveOriginal" runat="server" Text="<%$ Resources:Preferences, PrefSaveOriginalFlight %>" /><uc1:mfbTooltip runat="server" ID="ttTrackChanges" BodyContent="<%$ Resources:Preferences, PrefSaveOriginalFlightDesc %>" />
+                                </div>
                             </div>
                             <script type="text/javascript">
                                 function startDrag(event, index) {

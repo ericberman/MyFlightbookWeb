@@ -326,6 +326,7 @@ namespace MyFlightbook.MemberPages
             prefTimeZone.SelectedTimeZone = m_pf.PreferredTimeZone;
             AddCurrencyExpirations(cmbExpiredCurrency);
             cmbAircraftMaintWindow.SelectedValue = m_pf.GetPreferenceForKey(MFBConstants.keyWindowAircraftMaintenance, MFBConstants.DefaultMaintenanceWindow).ToString(CultureInfo.InvariantCulture);
+            ckPreserveOriginal.Checked = m_pf.PreferenceExists(MFBConstants.keyTrackOriginal);
         }
 
         private void InitSocialNetworking()
@@ -691,6 +692,8 @@ namespace MyFlightbook.MemberPages
                     Session[MFBConstants.keyDecimalSettings] = df;  
                 }
             }
+
+            m_pf.SetPreferenceForKey(MFBConstants.keyTrackOriginal, ckPreserveOriginal.Checked, !ckPreserveOriginal.Checked);
 
             m_pf.UsesUTCDateOfFlight = rblDateEntryPreferences.SelectedIndex > 0;
             m_pf.PreferredTimeZoneID = prefTimeZone.SelectedTimeZoneId;

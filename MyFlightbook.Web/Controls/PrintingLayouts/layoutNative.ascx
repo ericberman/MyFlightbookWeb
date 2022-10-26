@@ -35,7 +35,7 @@
                     <tr class="bordered" <%# ColorForFlight(Container.DataItem) %>>
                         <td colspan="2">
                             <div>
-                                <asp:Label Font-Bold="true" EnableViewState="false" ID="lblStaticDate" runat="server" Text='<%# ((DateTime) Eval("Date")).ToShortDateString() %>' Font-Size="Larger"></asp:Label>
+                                <%# ChangeMarkerForFlight(Container.DataItem) %><asp:Label Font-Bold="true" EnableViewState="false" ID="lblStaticDate" runat="server" Text='<%# ((DateTime) Eval("Date")).ToShortDateString() %>' Font-Size="Larger"></asp:Label>
                                 <span style="font-weight:bold"><%#: Eval("Route") %></span>
                                 <span runat="server" id="divComments" style="white-space:pre-line;" dir="auto"><%# Eval("RedactedCommentWithReplacedApproaches") %></span>
                             </div>

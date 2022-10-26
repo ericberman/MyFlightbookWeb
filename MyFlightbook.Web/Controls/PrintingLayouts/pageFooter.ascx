@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="pageFooter.ascx.cs" Inherits="Controls_PrintingLayouts_pageFooter" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="pageFooter.ascx.cs" Inherits="MyFlightbook.Printing.pageFooter" %>
 <div>&nbsp;</div>
 <table style="width:100%">
     <tr>
@@ -13,4 +13,4 @@
         </td>
     </tr>
 </table>
-<div style="page-break-after:always">&nbsp;</div>
+<div style="page-break-after:always"><asp:Label ID="lblShowModified" runat="server" Text="<%$ Resources:LogbookEntry, FlightModifiedFooter %>" />&nbsp;</div>

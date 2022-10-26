@@ -4,12 +4,12 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2020-2021 MyFlightbook LLC
+ * Copyright (c) 2020-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
-namespace MyFlightbook.Web.PublicPages
+namespace MyFlightbook.Printing
 {
     public partial class PrintFooter : System.Web.UI.Page
     {
@@ -30,6 +30,7 @@ namespace MyFlightbook.Web.PublicPages
             }
 
             lblPage.Text = fHasTotal ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrintedFooterPageCountWithTotals, page, pageCount) : String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrintedFooterPageCount, page);
+            lblShowModified.Visible = PDFOptions.ShowChangeTrack(szOptions);
             tblFooter.Visible = page > 0; // don't show the footer on the cover page.
         }
     }

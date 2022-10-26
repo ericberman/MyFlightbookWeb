@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="PrintFooter.aspx.cs" Inherits="MyFlightbook.Web.PublicPages.PrintFooter" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="PrintFooter.aspx.cs" Inherits="MyFlightbook.Printing.PrintFooter" %>
 
 <!DOCTYPE html>
   <html>
@@ -29,9 +29,12 @@
       <body style="border:0; margin: 0;" onload="subst()">
   <table style="width: 100%" runat="server" id="tblFooter">
     <tr>
-      <td class="section"><% =Resources.LogbookEntry.LogbookCertification %></td>
-      <td style="text-align:right">
-          <asp:Label ID="lblPage" runat="server"></asp:Label>
+      <td class="section">
+          <div><% =Resources.LogbookEntry.LogbookCertification %></div>
+          <div><asp:Label ID="lblShowModified" runat="server" Text="<%$ Resources:LogbookEntry, FlightModifiedFooter %>" /></div>
+      </td>
+      <td style="text-align:right; vertical-align: top;">
+          <asp:Label ID="lblPage" runat="server" />
       </td>
     </tr>
   </table>

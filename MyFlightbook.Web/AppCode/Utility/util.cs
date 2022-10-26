@@ -38,6 +38,7 @@ namespace MyFlightbook
         public const string keyMedicalNotes = "prefMedicalNotes";   // any notes on your medical
         public const string keyCoreFieldsPermutation = "prefCoreFields";    // permutation of the core fields
         public const string keyWindowAircraftMaintenance = "prefMaintenanceWindow"; // default window for showing/hiding aircraft maintenance
+        public const string keyTrackOriginal = "prefTrackOriginal";  // true if the user tracks the original version of a flight.
         public const int DefaultMaintenanceWindow = 90;
         public const string keyPrefFlatHierarchy = "UsesFlatCloudStorageFileHierarchy";    // indicates that cloud storage should be done in a flat hierarchy rather than by month.
         private const int StyleSheetVer = 38;

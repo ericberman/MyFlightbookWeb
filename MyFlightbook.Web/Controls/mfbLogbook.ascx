@@ -162,7 +162,7 @@
                                                     <ul>
                                                         <asp:Repeater ID="rptDiffs" runat="server">
                                                             <ItemTemplate>
-                                                                <li><%#: Container.DataItem.ToString() %></li>
+                                                                <li style="white-space:pre-wrap"><%#: Container.DataItem.ToString() %></li>
                                                             </ItemTemplate>
                                                         </asp:Repeater>
                                                     </ul>
@@ -171,6 +171,16 @@
                                         </tr>
                                     </table>
                                 </div>
+                            </asp:Panel>
+                            <asp:Panel ID="pnlUnsignedMods" runat="server" CssClass="signatureBlock" Visible="false">
+                                <div><% =Resources.LogbookEntry.FlightModified %></div>
+                                <ul>
+                                    <asp:Repeater ID="rptMods" runat="server">
+                                        <ItemTemplate>
+                                            <li style="white-space:pre-wrap"><%#: Container.DataItem.ToString() %></li>
+                                        </ItemTemplate>
+                                    </asp:Repeater>
+                                </ul>
                             </asp:Panel>
                         </asp:Panel>
                         <asp:Panel ID="pnlFlightImages" runat="server" CssClass='<%# ShowImagesInline ? string.Empty : "hintPopup" %>'>

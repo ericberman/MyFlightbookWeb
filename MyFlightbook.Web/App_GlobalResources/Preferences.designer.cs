@@ -880,6 +880,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Track differences from when a flight is originally saved.
+        /// </summary>
+        internal static string PrefSaveOriginalFlight {
+            get {
+                return ResourceManager.GetString("PrefSaveOriginalFlight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Using this option allows you to view the edits that have been made to a flight entry since it was first saved.  See the FAQ for more information..
+        /// </summary>
+        internal static string PrefSaveOriginalFlightDesc {
+            get {
+                return ResourceManager.GetString("PrefSaveOriginalFlightDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Display the following in tables of your flights:.
         /// </summary>
         internal static string PrefSectFlightEntryDataToInclude {
@@ -894,6 +912,15 @@ namespace Resources {
         internal static string PrefSectFlightEntryHeader {
             get {
                 return ResourceManager.GetString("PrefSectFlightEntryHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Miscellaneous.
+        /// </summary>
+        internal static string PrefSectFlightMisc {
+            get {
+                return ResourceManager.GetString("PrefSectFlightMisc", resourceCulture);
             }
         }
         

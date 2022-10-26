@@ -60,7 +60,7 @@
             <ItemTemplate>
                 <tr class="bordered" <%# ColorForFlight(Container.DataItem) %>>
                     <td><%# Eval("Index") %></td>
-                    <td><%# ((DateTime) Eval("Date")).ToShortDateString() %></td>
+                    <td><%# ChangeMarkerForFlight(Container.DataItem) %><%# ((DateTime) Eval("Date")).ToShortDateString() %></td>
                     <td><%#: Eval("Departure") %></td>
                     <td><%# ((DateTime) Eval("DepartureTime")).UTCFormattedStringOrEmpty(CurrentUser.UsesUTCDateOfFlight).Replace(" ", "<br />") %></td>
                     <td><%#: Eval("Destination") %></td>

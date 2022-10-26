@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MyFlightbook.Web.PublicPages
+namespace MyFlightbook.Printing
 {
 
 
@@ -22,6 +22,15 @@ namespace MyFlightbook.Web.PublicPages
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTable tblFooter;
+
+        /// <summary>
+        /// lblShowModified control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblShowModified;
 
         /// <summary>
         /// lblPage control.

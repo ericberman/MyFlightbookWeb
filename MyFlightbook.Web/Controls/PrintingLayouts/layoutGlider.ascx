@@ -43,7 +43,7 @@
             <ItemTemplate>
                 <tr class="bordered" <%# ColorForFlight(Container.DataItem) %>>
                     <td><%# Eval("Index") %></td>
-                    <td><%# ((DateTime) Eval("Date")).ToShortDateString() %></td>
+                    <td><%# ChangeMarkerForFlight(Container.DataItem) %><%# ((DateTime) Eval("Date")).ToShortDateString() %></td>
                     <td><%#: Eval("ModelDisplay") %></td>
                     <td><%#: Eval("TailNumOrSimDisplay") %></td>
                     <td><%#: Eval("Route") %></td>

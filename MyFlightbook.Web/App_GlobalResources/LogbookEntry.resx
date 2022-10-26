@@ -1501,4 +1501,13 @@ Proceed with import?</value>
   <data name="RosterBusterRefreshFailed" xml:space="preserve">
     <value>Your authentication on Rosterbuster has expired, been revoked, or otherwise failed.  Please re-authorize %APP_NAME% to access your RosterBuster account.</value>
   </data>
+  <data name="FlightModified" xml:space="preserve">
+    <value>This flight has been modified since originally saved.</value>
+  </data>
+  <data name="FlightModifiedFooter" xml:space="preserve">
+    <value>*An asterisk (*) next to the date indicates that the entry has been modified since it was originally saved</value>
+  </data>
+  <data name="FlightModifiedMarker" xml:space="preserve">
+    <value>*</value>
+  </data>
 </root>

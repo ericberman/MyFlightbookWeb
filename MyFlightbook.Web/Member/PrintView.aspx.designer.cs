@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MyFlightbook.MemberPages
+namespace MyFlightbook.Printing
 {
 
 

@@ -252,18 +252,15 @@ namespace MyFlightbook.Controls.FlightEditing
                     throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, "attempt by {0} to edit non-owned flight (owned by {1}) by non-instructor!", Page.User.Identity.Name, le.User));
             }
 
-            // Enable Admin Signature fix-up
-            if (!le.IsNewFlight && le.CFISignatureState != LogbookEntryCore.SignatureState.None)
+            // Enable Admin Signature fix-up and viewing of deltas
+            if (!le.IsNewFlight && le.HasFlightHash)
             {
-                lblSigSavedHash.Text = le.DecryptedFlightHash;
-                lblSigCurrentHash.Text = le.DecryptedCurrentHash;
-
-                if (le.CFISignatureState == LogbookEntryCore.SignatureState.Invalid)
+                // Show any edits since the flight was signed or originally saved.
+                IEnumerable<PropertyDelta> changes = le.DiffsSinceSigned(CurrentUser.UsesHHMM);
+                if (changes.Any())
                 {
                     pnlSigEdits.Visible = true;
-                    LogbookEntry leNew = LogbookEntryBase.LogbookEntryFromHash(lblSigCurrentHash.Text);
-                    LogbookEntry leSaved = LogbookEntryBase.LogbookEntryFromHash(lblSigSavedHash.Text);
-                    rptDiffs.DataSource = leSaved.CompareTo(leNew, CurrentUser.UsesHHMM);
+                    rptDiffs.DataSource = changes;
                     rptDiffs.DataBind();
                 }
 
@@ -273,6 +270,8 @@ namespace MyFlightbook.Controls.FlightEditing
                     pnlAdminFixSignature.Visible = true;
                     lblSigSavedState.Text = le.CFISignatureState.ToString();
                     lblSigSanityCheck.Text = sscs.ToString();
+                    lblSigSavedHash.Text = le.DecryptedFlightHash;
+                    lblSigCurrentHash.Text = le.DecryptedCurrentHash;
                 }
             }
 

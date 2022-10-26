@@ -45,7 +45,7 @@
             <asp:Repeater ID="rptFlight" runat="server" OnItemDataBound="rptFlight_ItemDataBound">
                 <ItemTemplate>
                     <tr class="bordered" <%# ColorForFlight(Container.DataItem) %>>
-                        <td style="font-weight:bold"><%# ((DateTime) Eval("Date")).ToShortDateString() %></td>
+                        <td style="font-weight:bold"><%# ChangeMarkerForFlight(Container.DataItem) %><%# ((DateTime) Eval("Date")).ToShortDateString() %></td>
                         <td><div><%#: Eval("ModelDisplay") %> (<%#: Eval("CatClassDisplay") %>)</div></td>
                         <td><%#: Eval("TailNumOrSimDisplay") %></td>
                         <td><%#: Eval("PICName") %></td>

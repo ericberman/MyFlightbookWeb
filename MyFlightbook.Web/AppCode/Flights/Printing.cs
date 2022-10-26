@@ -675,33 +675,38 @@ namespace MyFlightbook.Printing
         #region Options encoded to pass to the footer
         private const UInt32 flagCoverPage = 0x00000001;
         private const UInt32 flagTotalPages = 0x00000002;
+        private const UInt32 flagShowTracking = 0x00000004;
 
-        public static string PathEncodeOptions(bool fCover, bool fTotal)
+        public static string PathEncodeOptions(bool fCover, bool fTotal, bool fTrackChanges)
         {
-            UInt32 flags = ((fCover ? 0xffffffff : 0) & flagCoverPage) | ((fTotal ? 0xffffffff : 0) & flagTotalPages);
+            UInt32 flags = ((fCover ? 0xffffffff : 0) & flagCoverPage) | ((fTotal ? 0xffffffff : 0) & flagTotalPages) | ((fTrackChanges ? 0xffffffff : 0) & flagShowTracking);
             return flags.ToString(CultureInfo.InvariantCulture);
+        }
+
+        private static bool FlagFromString(string sz, UInt32 flag)
+        {
+            if (sz == null)
+                throw new ArgumentNullException(nameof(sz));
+
+            if (UInt32.TryParse(sz, NumberStyles.Integer, CultureInfo.InvariantCulture, out UInt32 flags))
+                return (flags & flag) != 0;
+            else
+                return false;
         }
 
         public static bool CoverFromEncodedOptions(string sz)
         {
-            if (sz == null)
-                throw new ArgumentNullException(nameof(sz));
-
-            if (UInt32.TryParse(sz, NumberStyles.Integer, CultureInfo.InvariantCulture, out UInt32 flags))
-                return (flags & flagCoverPage) != 0;
-            else
-                return false;
+            return FlagFromString(sz, flagCoverPage);
         }
 
         public static bool TotalPagesFromEncodedOptions(string sz)
         {
-            if (sz == null)
-                throw new ArgumentNullException(nameof(sz));
+            return FlagFromString(sz, flagTotalPages);
+        }
 
-            if (UInt32.TryParse(sz, NumberStyles.Integer, CultureInfo.InvariantCulture, out UInt32 flags))
-                return (flags & flagTotalPages) != 0;
-            else
-                return false;
+        public static bool ShowChangeTrack(string sz)
+        {
+            return FlagFromString(sz, flagShowTracking);
         }
 
         #endregion
@@ -1179,6 +1184,14 @@ namespace MyFlightbook.Printing
 
         protected bool ShowFooter { get; private set; }
 
+        private bool ShowTrackChanges { get; set; }
+
+        protected string ChangeMarkerForFlight(object o)
+        {
+            LogbookEntryBase l;
+            return (!ShowTrackChanges || (l = (o as LogbookEntryBase)) == null || !l.IsModifiedFromOriginal) ? string.Empty : Resources.LogbookEntry.FlightModifiedMarker;
+        }
+
         public bool IncludeImages { get; private set; }
 
         protected IEnumerable<CannedQuery> QueriesToColor { get; private set; }
@@ -1236,9 +1249,7 @@ namespace MyFlightbook.Printing
                 led.CustPropertyDisplay = CustomFlightProperty.PropListDisplay(lstProps, CurrentUser.UsesHHMM, PropSeparator);
             }
         }
-        #endregion
 
-        #region Common utilities
         /// <summary>
         /// Return the direct-style flight coloring for a logbookentrydisplay
         /// </summary>
@@ -1275,7 +1286,7 @@ namespace MyFlightbook.Printing
             IncludeImages = options.IncludeImages;
             Options = options;
             PropSeparator = options.PropertySeparatorText;
-
+            ShowTrackChanges = CurrentUser.PreferenceExists(MFBConstants.keyTrackOriginal);
         }
         #endregion
     }

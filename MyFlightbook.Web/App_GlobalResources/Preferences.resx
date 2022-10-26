@@ -391,11 +391,20 @@
   <data name="PrefBlockListShow" xml:space="preserve">
     <value>Show these...</value>
   </data>
+  <data name="PrefSaveOriginalFlight" xml:space="preserve">
+    <value>Track differences from when a flight is originally saved</value>
+  </data>
+  <data name="PrefSaveOriginalFlightDesc" xml:space="preserve">
+    <value>Using this option allows you to view the edits that have been made to a flight entry since it was first saved.  See the FAQ for more information.</value>
+  </data>
   <data name="PrefSectFlightEntryDataToInclude" xml:space="preserve">
     <value>Display the following in tables of your flights:</value>
   </data>
   <data name="PrefSectFlightEntryHeader" xml:space="preserve">
     <value>Flight Entry and Display</value>
+  </data>
+  <data name="PrefSectFlightMisc" xml:space="preserve">
+    <value>Miscellaneous</value>
   </data>
   <data name="PrefSectNewFlightCustomization" xml:space="preserve">
     <value>Common times for new flights</value>

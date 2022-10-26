@@ -8,15 +8,18 @@ using System.Globalization;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using static Dropbox.Api.TeamLog.ActorLogInfo;
+using static System.Net.Mime.MediaTypeNames;
+using System.Windows.Documents;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2021 MyFlightbook LLC
+ * Copyright (c) 2013-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
-namespace MyFlightbook.MemberPages
+namespace MyFlightbook.Printing
 {
     public partial class PrintViewBase : Page
     {
@@ -192,7 +195,7 @@ namespace MyFlightbook.MemberPages
                     PageHeight = decCustHeight.IntValue,
                     PageWidth = decCustWidth.IntValue,
                     Orientation = rbLandscape.Checked ? PDFOptions.PageOrientation.Landscape : PDFOptions.PageOrientation.Portrait,
-                    FooterUri = VirtualPathUtility.ToAbsolute("~/Public/PrintFooter.aspx/" + PDFOptions.PathEncodeOptions(ckIncludeCoverSheet.Checked, ckPrintTotalPages.Checked)).ToAbsoluteURL(Request),
+                    FooterUri = VirtualPathUtility.ToAbsolute("~/Public/PrintFooter.aspx/" + PDFOptions.PathEncodeOptions(ckIncludeCoverSheet.Checked, ckPrintTotalPages.Checked, CurrentUser.PreferenceExists(MFBConstants.keyTrackOriginal))).ToAbsoluteURL(Request),
                     LeftMargin = decLeftMargin.IntValue,
                     RightMargin = decRightMargin.IntValue,
                     TopMargin = decTopMargin.IntValue,
@@ -273,7 +276,6 @@ namespace MyFlightbook.MemberPages
             lblErr.Text = szError;
 
             CurrentUser = Profile.GetUser(szUser);
-
             mfbSearchForm1.Username = mfbTotalSummary1.Username = PrintOptions1.UserName = CurrentUser.UserName;
 
             pnlResults.Visible = false; // since we aren't saving viewstate, bind to nothing  (e.g., in case we're editing a flight query)

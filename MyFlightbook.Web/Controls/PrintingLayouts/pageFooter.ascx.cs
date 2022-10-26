@@ -3,52 +3,69 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using MyFlightbook;
 
-public partial class Controls_PrintingLayouts_pageFooter : System.Web.UI.UserControl
+/******************************************************
+ * 
+ * Copyright (c) 2020-2022 MyFlightbook LLC
+ * Contact myflightbook-at-gmail.com for more information
+ *
+*******************************************************/
+
+
+namespace MyFlightbook.Printing
 {
-    #region Properties
-    public string UserName { get; set; }
-
-    public int PageNum { get; set; }
-
-    public int TotalPages { get; set; }
-
-    public bool ShowFooter
+    public partial class pageFooter : UserControl
     {
-        get { return pnlPageCount.Visible; }
-        set { pnlPageCount.Visible = lblCertification.Visible = value; }
-    }
+        #region Properties
+        private string m_userName = string.Empty;
 
-    private Profile m_user;
-    protected Profile CurrentUser
-    {
-        get
+        public string UserName
         {
-            if (m_user == null)
-                m_user = MyFlightbook.Profile.GetUser(UserName);
-            return m_user;
+            get { return m_userName; }
+            set
+            {
+                m_userName = value;
+                CurrentUser = Profile.GetUser(value);
+                lblShowModified.Visible = ShowFooter && CurrentUser.PreferenceExists(MFBConstants.keyTrackOriginal);
+            }
         }
-    }
 
-    [TemplateContainer(typeof(NotesTemplate)), PersistenceMode(PersistenceMode.InnerDefaultProperty), TemplateInstance(TemplateInstance.Single)]
-    public ITemplate LayoutNotes { get; set; }
-    #endregion
+        public int PageNum { get; set; }
 
-    protected override void OnInit(EventArgs e)
-    {
-        if (LayoutNotes != null)
-            LayoutNotes.InstantiateIn(plcMiddle);
-        base.OnInit(e);
-    }
+        public int TotalPages { get; set; }
 
-    protected void Page_Load(object sender, EventArgs e)
-    {
-
-    }
-
-    protected class NotesTemplate : Control, INamingContainer
-    {
-        public NotesTemplate()
+        public bool ShowFooter
         {
+            get { return pnlPageCount.Visible; }
+            set
+            {
+                pnlPageCount.Visible = lblCertification.Visible = value;
+                lblShowModified.Visible = value && CurrentUser != null && CurrentUser.PreferenceExists(MFBConstants.keyTrackOriginal);
+            }
+        }
+
+        protected Profile CurrentUser { get; set; }
+
+        [TemplateContainer(typeof(NotesTemplate)), PersistenceMode(PersistenceMode.InnerDefaultProperty), TemplateInstance(TemplateInstance.Single)]
+        public ITemplate LayoutNotes { get; set; }
+        #endregion
+
+        protected override void OnInit(EventArgs e)
+        {
+            if (LayoutNotes != null)
+                LayoutNotes.InstantiateIn(plcMiddle);
+            base.OnInit(e);
+        }
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        protected class NotesTemplate : Control, INamingContainer
+        {
+            public NotesTemplate()
+            {
+            }
         }
     }
 }

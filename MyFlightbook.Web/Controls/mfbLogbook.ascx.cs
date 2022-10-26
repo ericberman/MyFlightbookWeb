@@ -176,6 +176,8 @@ public partial class Controls_MFBLogbookBase : UserControl
 
     public bool IsReadOnly { get; set; }
 
+    protected bool ShowModifiedFlights { get; set; }
+
     #region Data
     protected bool CacheFlushed { get; set; }
 
@@ -244,6 +246,7 @@ public partial class Controls_MFBLogbookBase : UserControl
                     this.User = Page.User.Identity.Name;
 
                 Profile pfUser = MyFlightbook.Profile.GetUser(this.User);
+                ShowModifiedFlights = pfUser.PreferenceExists(MFBConstants.keyTrackOriginal);
 
                 lst = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntryDisplay.QueryCommand(Restriction), this.User, LastSortExpr, LastSortDir, Viewer.UsesHHMM, pfUser.UsesUTCDateOfFlight);
                 CachedData = lst;
@@ -788,11 +791,27 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
 
     private void SetSigForRow(LogbookEntryDisplay le, GridViewRow row)
     {
-        if (le.CFISignatureState == LogbookEntryCore.SignatureState.Invalid) 
+        switch (le.CFISignatureState)
         {
-            Repeater rptDiffs = (Repeater)row.FindControl("rptDiffs");
-            rptDiffs.DataSource = le.DiffsSinceSigned(Viewer.UsesHHMM);
-            rptDiffs.DataBind();
+            case LogbookEntryCore.SignatureState.Invalid:
+                {
+                    Repeater rptDiffs = (Repeater)row.FindControl("rptDiffs");
+                    rptDiffs.DataSource = le.DiffsSinceSigned(Viewer.UsesHHMM);
+                    rptDiffs.DataBind();
+                }
+                break;
+            case LogbookEntryCore.SignatureState.None:
+                if (ShowModifiedFlights && le.HasFlightHash)
+                {
+                    Repeater rptMods = (Repeater)row.FindControl("rptMods");
+                    IEnumerable<object> lst = le.DiffsSinceSigned(Viewer.UsesHHMM);
+                    rptMods.DataSource = lst;
+                    rptMods.DataBind();
+                    row.FindControl("pnlUnsignedMods").Visible = lst.Any();
+                }
+                break;
+            default:
+                break;
         }
     }
     #endregion

@@ -18,6 +18,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web.UI.WebControls;
+using System.Xml.Serialization;
 
 /******************************************************
  * 
@@ -735,6 +736,24 @@ namespace MyFlightbook
         /// The hash of the flight that was signed.  This must equal the newly computed hash of the flight in order for the signature to be valid.
         /// </summary>
         private string FlightHash { get; set; }
+
+        /// <summary>
+        /// Quick check to see if the flight has a hash (if we're tracking modifications vs. the original)
+        /// </summary>
+        [XmlIgnore]
+        [JsonIgnore]
+        public bool HasFlightHash { get { return !String.IsNullOrEmpty(FlightHash); } }
+
+        /// <summary>
+        /// Determine if the flight has been modified from its original form - can be slow, so use with discretion.
+        /// Note that for purposes of tracking to the original flight, the flight hash has "ID-1" at the start, which needs to be replaced with the current ID.
+        /// </summary>
+        [XmlIgnore]
+        [JsonIgnore]
+        public bool IsModifiedFromOriginal 
+        {
+            get { return HasFlightHash && DecryptedFlightHash.CompareCurrentCulture(DecryptedCurrentHash) != 0; } 
+        }
 
         /// <summary>
         /// The hash of the flight signature details.
@@ -1715,7 +1734,7 @@ namespace MyFlightbook
 
             // How to refresh the signature state.  If setting the signature, blast it in (above)
             // Otherwise, check to see if the current hash is different than the existing one.
-            const string szRefreshSig = ", SignatureState=IF((flightHash='' OR flightHash IS NULL), ?sigstateNone, IF(flightHash=?newflighthash, ?sigstateValid, ?sigstateInvalid)) ";
+            const string szRefreshSig = ", SignatureState=IF((SignatureState = 0 OR flightHash='' OR flightHash IS NULL), ?sigstateNone, IF(flightHash=?newflighthash, ?sigstateValid, ?sigstateInvalid)) ";
 
             const string szSetTemplate = @"SET date = ?Date, idAircraft = ?idAircraft, idCatClassOverride=?idCatClassOverride, cInstrumentApproaches=?cInstrumentApproaches, cLandings=?cLandings, 
                 cFullStopLandings=?cFullStopLandings, cNightLandings=?cNightLandings, crosscountry=?crosscountry, night=?night, IMC=?IMC, 
@@ -1821,8 +1840,22 @@ namespace MyFlightbook
             // Save any videos
             CommitVideos();
 
-            if (fWasNewFlight)
+            if (fWasNewFlight) 
+            {
                 AddVORCheck();
+                // issue #995 - save the flight hash on (a) new flights, (b) where user has requested it, but (c) allow it to be overwritten when signing a flight.
+                // We do this as a separate call so that the flight ID is set correctly and so that the sigstate isn't set to valid
+                if (!fUpdateSignature && Profile.GetUser(User).PreferenceExists(MFBConstants.keyTrackOriginal))
+                {
+                    dbh.CommandText = "UPDATE flights SET FlightHash=?newflightHash WHERE idflight=?idflight";
+                    dbh.DoNonQuery((comm) =>
+                    {
+                        comm.Parameters.Clear();
+                        comm.Parameters.AddWithValue("newflightHash", ComputeFlightHash());
+                        comm.Parameters.AddWithValue("idflight", FlightID);
+                    });
+                }
+            }
 
             FlightStatistics.FlightStats.RefreshForFlight(this);
 
@@ -2395,7 +2428,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
         /// <returns></returns>
         public IEnumerable<PropertyDelta> DiffsSinceSigned(bool fUseHHMM)
         {
-            if (CFISignatureState == SignatureState.Invalid)
+            if (HasFlightHash && CFISignatureState != SignatureState.Valid)
             {
                 LogbookEntry leNew = LogbookEntryBase.LogbookEntryFromHash(DecryptedCurrentHash);
                 LogbookEntry leSaved = LogbookEntryBase.LogbookEntryFromHash(DecryptedFlightHash);

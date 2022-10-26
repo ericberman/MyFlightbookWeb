@@ -1123,6 +1123,33 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This flight has been modified since originally saved..
+        /// </summary>
+        internal static string FlightModified {
+            get {
+                return ResourceManager.GetString("FlightModified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to *An asterisk (*) next to the date indicates that the entry has been modified since it was originally saved.
+        /// </summary>
+        internal static string FlightModifiedFooter {
+            get {
+                return ResourceManager.GetString("FlightModifiedFooter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to *.
+        /// </summary>
+        internal static string FlightModifiedMarker {
+            get {
+                return ResourceManager.GetString("FlightModifiedMarker", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Landings and Approaches.
         /// </summary>
         internal static string HeaderApproachesLandings {
