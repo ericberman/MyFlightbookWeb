@@ -1,5 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="pageHeader.ascx.cs" Inherits="Controls_PrintingLayouts_pageHeader" %>
-<table style="width:100%">
+<table style="width:100%; page-break-before:always;">
     <tr>
         <td class="printHeaderLeft"><asp:Label ID="lblAddress" runat="server"><%#: CurrentUser.Address %></asp:Label></td>
         <td class="printHeaderCenter" colspan="7">

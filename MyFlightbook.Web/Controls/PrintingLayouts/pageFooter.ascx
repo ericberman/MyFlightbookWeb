@@ -13,4 +13,4 @@
         </td>
     </tr>
 </table>
-<div style="page-break-after:always"><asp:Label ID="lblShowModified" runat="server" Text="<%$ Resources:LogbookEntry, FlightModifiedFooter %>" />&nbsp;</div>
+<div><asp:Label ID="lblShowModified" runat="server" Text="<%$ Resources:LogbookEntry, FlightModifiedFooter %>" />&nbsp;</div>

@@ -262,7 +262,7 @@
                 <uc1:layout2Page runat="server" id="layout2Page" />
             </asp:View>
         </asp:MultiView>
-        <asp:Panel ID="pnlEndorsements" runat="server" style="page-break-after:always;">
+        <asp:Panel ID="pnlEndorsements" runat="server" style="page-break-before:always;">
             <uc1:mfbEndorsementList runat="server" ID="mfbEndorsementList" ShowSort="false" ShowDelete="false" />
             <asp:Repeater ID="rptImages" runat="server">
                 <ItemTemplate>
@@ -270,7 +270,7 @@
                 </ItemTemplate>
             </asp:Repeater>
         </asp:Panel>
-        <asp:Panel ID="pnlTotals" runat="server">
+        <asp:Panel ID="pnlTotals" runat="server" style="page-break-before:always;">
             <h2><asp:Label ID="lblTotalsHeader" runat="server" Text="<%$ Resources:LocalizedText, PrintViewTotalsHeader %>" /></h2>
             <uc2:mfbTotalSummary ID="mfbTotalSummary1" runat="server" LinkTotalsToQuery="false" />
         </asp:Panel>
