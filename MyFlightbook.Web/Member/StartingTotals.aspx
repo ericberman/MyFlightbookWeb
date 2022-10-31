@@ -182,21 +182,21 @@
             </asp:WizardStep>
         </WizardSteps>
     </asp:Wizard>
-    <asp:Panel ID="pnlAcuLog" runat="server" style="vertical-align:middle; width: 450px; height:120px; margin-right: auto; margin-left: auto; padding: 5px; border: 1px solid gray; border-radius:5px; box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);">
-        <table>
-            <tr>
-                <td>
-                    <h3>
-                        <% =Branding.ReBrand(Resources.LogbookEntry.ImportAculogHeader) %>
-                    </h3>
-                    <% =Branding.ReBrand(Resources.LogbookEntry.ImportAculogPromo).Linkify() %>
-                </td>
-                <td>
-                    <uc1:SponsoredAd runat="server" ID="SponsoredAd" SponsoredAdID="2" Visible="true" />
-                </td>
-            </tr>
-        </table>
-    </asp:Panel>
+    <div style="margin-left:auto; margin-right:auto; max-width: 500px;">
+        <asp:Panel ID="pnlAcuLog" runat="server"  CssClass="calloutSmall calloutSponsor shadowed" style="text-align:left;">
+            <table>
+                <tr>
+                    <td style="max-width:200px;">
+                        <h3><% =Branding.ReBrand(Resources.LogbookEntry.ImportAculogHeader) %></h3>
+                        <% =Branding.ReBrand(Resources.LogbookEntry.ImportAculogPromo).Linkify() %>
+                    </td>
+                    <td>
+                        <uc1:SponsoredAd runat="server" ID="SponsoredAd" SponsoredAdID="2" Visible="true" />
+                    </td>
+                </tr>
+            </table>
+        </asp:Panel>
+    </div>
 </asp:Content>
 <asp:Content ID="Content1" ContentPlaceHolderID="cpMain" Runat="Server">
 </asp:Content>

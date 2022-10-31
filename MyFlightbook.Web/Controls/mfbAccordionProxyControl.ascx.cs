@@ -1,9 +1,10 @@
-﻿using System;
+﻿using MyFlightbook;
+using System;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2020 MyFlightbook LLC
+ * Copyright (c) 2016-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -24,8 +25,10 @@ public partial class Controls_mfbAccordionProxyControl : System.Web.UI.UserContr
         get { return !string.IsNullOrEmpty(hdnIsEnhanced.Value); }
         set
         {
+            const string enhancedCSS = "accordionEnhanced";
+
             hdnIsEnhanced.Value = value ? value.ToString(System.Globalization.CultureInfo.InvariantCulture) : string.Empty;
-            Container.Attributes["style"] = value ? "border: 1px solid black; -webkit-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75); -moz-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75); box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);" : string.Empty;
+            Container.CssClass = Container.CssClass.ReplaceCSSClasses(new string[] { enhancedCSS }, value ? enhancedCSS : string.Empty, true);
         }
     }
 

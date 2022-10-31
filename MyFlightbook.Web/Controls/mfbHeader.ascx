@@ -61,8 +61,8 @@
                         </div>
                     </asp:View>
                     <asp:View ID="vwUpcomingEvent" runat="server">
-                        <asp:Panel ID="pnlWebinar" runat="server" style="height: 32px; text-align:center; padding: 5px; margin-top: 4px; margin-bottom: 4px; background-color:#E8E8E8; border-radius: 5px;">
-                            <span onclick="showWebinar();" style="vertical-align:middle"><asp:Literal ID="litWebinar" runat="server"></asp:Literal></span>
+                        <asp:Panel ID="pnlWebinar" runat="server" class="calloutSmall calloutBackground shadowed" style="height: 32px; line-height:32px; text-align:center;">
+                            <span onclick="showWebinar();" style="display:inline-block; vertical-align:middle"><asp:Literal ID="litWebinar" runat="server"></asp:Literal></span>
                         </asp:Panel>
                         <div id="webinarPop" style="display:none;">
                             <div style="text-align:left">

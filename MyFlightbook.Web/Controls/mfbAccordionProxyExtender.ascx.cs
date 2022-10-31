@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MyFlightbook;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Web.UI;
@@ -6,7 +7,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2020 MyFlightbook LLC
+ * Copyright (c) 2016-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -137,7 +138,7 @@ public partial class Controls_mfbAccordionProxyExtender : System.Web.UI.UserCont
         string szCSS = isSelected ? OpenCSSClass : CloseCSSClass;
 
         WebControl wc = apc == null ? (WebControl)c : apc.Container;
-        wc.CssClass = szCSS;
+        wc.CssClass = wc.CssClass.ReplaceCSSClasses(new string[] { OpenCSSClass, CloseCSSClass }, szCSS, false);
         wc.Attributes["onclick"] = (apc != null && apc.LazyLoad) ? szPostbackScript : szClickScript;
     }
 
@@ -160,7 +161,7 @@ public partial class Controls_mfbAccordionProxyExtender : System.Web.UI.UserCont
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        Page.ClientScript.RegisterClientScriptInclude("accordionExtender", ResolveClientUrl("~/public/Scripts/mfbAccordionProxy.js?v=1"));
+        Page.ClientScript.RegisterClientScriptInclude("accordionExtender", ResolveClientUrl("~/public/Scripts/mfbAccordionProxy.js?v=2"));
     }
 
     protected void Page_PreRender(object sender, EventArgs e)

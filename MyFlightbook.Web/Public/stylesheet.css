@@ -126,6 +126,28 @@ input[type=text],input[type=password], input[type=number],input[type=email], tex
     background-color: white;
 }
 
+.calloutSponsor {
+    height: 120px;
+    vertical-align: middle;
+    text-align: center;
+    display: inline-block;
+}
+
+.calloutSmall {
+    margin: 5px 10px 5px 10px;
+    padding: 5px;
+    border: 1px solid gray;
+    border-radius: 5px;
+}
+
+.calloutBackground {
+    background-color: #EEEEEE
+}
+
+.shadowed {
+    box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.75);
+}
+
 .hint
 {
     vertical-align:super; 
@@ -142,8 +164,6 @@ input[type=text],input[type=password], input[type=number],input[type=email], tex
     max-width: 50%;
     display: none;
     background-color: #e7e7e7;
-    -webkit-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
-    -moz-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
     box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
 }
 
@@ -397,9 +417,7 @@ td.totalsByTimeCell:nth-child(even), td.totalsDateRange:nth-child(even) {
     background-color: #e7e7e7;
     border-radius: 5px;
     padding: 3px;
-    -webkit-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
-    -moz-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
-    box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
+    box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.75);
 }
 
 .autoInsertItems {
@@ -544,9 +562,12 @@ td.totalsByTimeCell:nth-child(even), td.totalsDateRange:nth-child(even) {
     margin-bottom: 2px;
     background-color: #EEEEEE;
     border: 1px solid gray;
-    -webkit-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
-    -moz-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
-    box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
+    box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.75);
+}
+
+.accordionEnhanced {
+    border: 1px solid black;
+    box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.75);
 }
 
 /* aircraft and flight pictures popup */
@@ -571,9 +592,7 @@ td.totalsByTimeCell:nth-child(even), td.totalsDateRange:nth-child(even) {
     min-width: 300px;
     padding: 15px;
     border: 1px solid gray;
-    -webkit-box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75);
-    -moz-box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75);
-    box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75);
+    box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.75);
     border-radius: 5px;
 }
 
@@ -606,16 +625,18 @@ td.totalsByTimeCell:nth-child(even), td.totalsDateRange:nth-child(even) {
     width: 600px;
 }
 
-.endorsement
-{
+.endorsementEdit {
+    padding: 5px;
+    max-width: 480px;
+}
+
+.endorsement {
     width: 600px;
     background-color: #CCCCCC;
     border: 1px solid black;
     border-radius: 5px;
-    -webkit-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
-    -moz-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
-    box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
-    page-break-inside:avoid;
+    box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.75);
+    page-break-inside: avoid;
 }
 
 /* Watermark */
@@ -1125,11 +1146,10 @@ table.dataDescription thead tr td
     width: 100%;
 }
 
-.clubDetailsRight
-{
-    vertical-align:top;
+.clubDetailsRight {
+    vertical-align: top;
     float: right;
-    line-break:auto;
+    line-break: auto;
     padding: 4px;
     margin-left: 8px;
     margin-bottom: 4px;
@@ -1138,7 +1158,7 @@ table.dataDescription thead tr td
     border: 1px solid black;
     background-color: white;
     border-radius: 6px;
-    box-shadow: 6px 6px 5px #888888;
+    box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.75);
 }
 
 .clubCFI {
@@ -1228,9 +1248,7 @@ table.tblAvailablityMap th.timeHeader {
     margin: 4px;
     white-space: nowrap;
     vertical-align: middle;
-    -webkit-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
-    -moz-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
-    box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
+    box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.75);
     border-left: 20px solid gray;
     border-right: 1px solid gray;
     border-top: 1px solid gray;
@@ -1265,6 +1283,18 @@ table.tblAvailablityMap th.timeHeader {
 }
 
 /* Flight details view */
+.detailsHeaderBar {
+    padding: 5px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    text-align: center;
+    background-color: #eeeeee;
+    border: 1px solid darkgray;
+    border-radius: 6px;
+}
+
 .detailsSection {
     padding: 5px;
     margin-left: auto;
@@ -1282,6 +1312,18 @@ table.tblAvailablityMap th.timeHeader {
     margin-right: auto;
     min-width: 200px;
     max-width: 350px;
+}
+
+#signIn.welcomeHeader {
+    display: inline-block;
+    padding: 5px;
+    margin-left: 10px;
+    background-color: #eeeeee;
+    border: 1px solid darkgray;
+    border-radius: 6px;
+    box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.75);
+    vertical-align: top;
+    max-width: 300px;
 }
 
 #homePagePromo.welcomeHeader {
@@ -1417,7 +1459,7 @@ table.tblAvailablityMap th.timeHeader {
     background-color: white;
     border: 1px solid black;
     padding: 3px;
-    box-shadow: rgb(119 136 153) 5px 5px 5px;
+    box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.75);
 }
 
 .popMenuAccess {
@@ -1507,7 +1549,7 @@ table.tblAvailablityMap th.timeHeader {
 .signFlightFlightToSign > table {
     background-color: #DDDDDD;
     border-radius: 5px;
-    box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
+    box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.75);
     border: 1px solid black;
     margin-left:auto;
     margin-right:auto;

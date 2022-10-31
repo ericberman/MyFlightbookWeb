@@ -627,12 +627,6 @@
   <data name="pnlErrorsResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="pnlFlightDescResource1.GroupingText" xml:space="preserve">
-    <value />
-  </data>
-  <data name="pnlFlightDescResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="pnlMapResource1.GroupingText" xml:space="preserve">
     <value />
   </data>

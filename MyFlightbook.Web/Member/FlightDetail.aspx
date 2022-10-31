@@ -41,7 +41,7 @@
         <asp:HyperLink ID="lnkKey" NavigateUrl="~/Public/FlightDataKey.aspx"
             runat="server" Target="_blank" Text="<%$ Resources:LogbookEntry, FlightDetailsLearnAboutTelemetry %>" meta:resourcekey="lnkKeyResource1"></asp:HyperLink>
     </p>
-    <asp:Panel runat="server" ID="pnlFlightDesc" Style="padding: 5px; margin-left: auto; margin-right: auto; margin-top: 5px; margin-bottom: 15px; text-align: center; background-color: #eeeeee; border: 1px solid darkgray; border-radius: 6px; box-shadow: 6px 6px 5px #888888;" meta:resourcekey="pnlFlightDescResource1">
+    <asp:Panel runat="server" ID="pnlFlightDesc" CssClass="detailsHeaderBar shadowed">
         <asp:HiddenField ID="hdnNextID" runat="server" />
         <asp:HiddenField ID="hdnPrevID" runat="server" />
         <table style="width:100%">
@@ -66,8 +66,6 @@
                 <td><asp:LinkButton ID="lnkNextFlight" runat="server" Font-Names="Arial" Text="<%$ Resources:LogbookEntry, NextFlight %>" Font-Size="20pt" OnClick="lnkNextFlight_Click" meta:resourcekey="lnkNextFlightResource1"></asp:LinkButton></td>
             </tr>
         </table>
-        <div>
-        </div>
     </asp:Panel>
     <div>
         <asp:Label ID="lblPageErr" runat="server" CssClass="error" EnableViewState="False" meta:resourcekey="lblPageErrResource1"></asp:Label></div>

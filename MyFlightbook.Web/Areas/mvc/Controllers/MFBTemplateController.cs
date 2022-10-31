@@ -216,7 +216,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 IsNight = true;
             else if (nightRequest.CompareCurrentCultureIgnoreCase("no") == 0)
                 IsNight = false;
-            ViewBag.NightCSS = IsNight ? VirtualPathUtility.ToAbsolute("~/Public/CSS/NightMode.css?v=563nh4h") : string.Empty;
+            ViewBag.NightCSS = IsNight ? MFBConstants.BaseNightStylesheet : string.Empty;
             ViewBag.BrandCSS = String.IsNullOrEmpty(Branding.CurrentBrand.StyleSheet) ? String.Empty : VirtualPathUtility.ToAbsolute(Branding.CurrentBrand.StyleSheet) + "?v=1";
             ViewBag.MobileCSS = System.Web.HttpContext.Current.Request.IsMobileSession() ? VirtualPathUtility.ToAbsolute("~/Public/CSS/MobileSheet.css?v=8") : string.Empty;
             

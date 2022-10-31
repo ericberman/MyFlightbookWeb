@@ -211,6 +211,7 @@ namespace MyFlightbook.Web
                 else if (nightRequest.CompareCurrentCultureIgnoreCase("no") == 0)
                     IsNight = false;
                 cssNight.Visible = IsNight;
+                cssNight.Href = MFBConstants.BaseNightStylesheet;
 
                 bool fIsImpersonating = ProfileRoles.IsImpersonating(Page.User.Identity.Name);
                 pnlImpersonation.Visible = fIsImpersonating;

@@ -1,6 +1,6 @@
 ﻿/******************************************************
  *
- * Copyright (c) 2015-2021 MyFlightbook LLC
+ * Copyright (c) 2015-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -16,7 +16,9 @@ function mfbAccordionProxy(settings)
         for (var i = 0; i < settings.HeaderProxyClientIDs.length; i++) {
             var pid = settings.HeaderProxyClientIDs[i];
             var fOpen = i === idxSelected;
-            $get(pid).className = fOpen ? settings.OpenCSSClass : settings.CloseCSSClass;
+            var proxy = $get(pid);
+            var cssName = proxy.className.replace(settings.OpenCSSClass, "").replace(settings.CloseCSSClass, "").trim();
+            $get(pid).className = (fOpen ? settings.OpenCSSClass : settings.CloseCSSClass) + " " + cssName;
         }
 
         if (typeof onAccordionPaneShown !== 'undefined')

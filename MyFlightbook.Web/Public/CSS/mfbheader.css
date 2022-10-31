@@ -150,9 +150,7 @@
     left: 0;
     border: none;
     font-weight: normal;
-    -webkit-box-shadow: 2px 2px 3px #222222;
-    -moz-box-shadow: 2px 2px 3px #222222;
-    box-shadow: 2px 2px 3px #222222;
+    box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.75);
 }
 
 #menu-bar li:hover > ul {

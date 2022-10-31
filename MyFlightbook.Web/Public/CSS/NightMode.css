@@ -25,7 +25,7 @@ p, div, h2, h3, topTab, a.topTab, a.topTab:visited, #menu-bar .topTab, #menu-bar
     background-color: transparent;
 }
 
-.endorsement, callout, .accordianHeader {
+.endorsement, callout, .accordianHeader, .calloutBackground {
     background-color: #686868;
 }
 

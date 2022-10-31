@@ -19,8 +19,8 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css" />
     <link rel="stylesheet" type="text/css" runat="server" id="jqueryUIModsCSS" />
     <link href="mainstylgoeshere" runat="server" id="cssMain" rel="stylesheet" type="text/css" />
-    <link href="~/public/CSS/mfbheader.css?v=2" runat="server" id="cssHeader" rel="stylesheet" type="text/css" />
-    <link rel="Stylesheet" type="text/css" runat="server" id="cssNight" visible="false" href="~/Public/CSS/NightMode.css?v=563nh4h" />
+    <link href="~/public/CSS/mfbheader.css?v=3" runat="server" id="cssHeader" rel="stylesheet" type="text/css" />
+    <link rel="Stylesheet" type="text/css" runat="server" id="cssNight" visible="false" />
     <link href="brandedstylegoeshere" rel="Stylesheet" type="text/css" runat="server" id="cssBranded" visible="false" />
     <link href="mobilestylegoeshere" rel="stylesheet" type="text/css" runat="server" id="cssMobile" visible="false" />
     <link rel="Stylesheet" type="text/css" runat="server" id="cssPrinting" visible="false" />

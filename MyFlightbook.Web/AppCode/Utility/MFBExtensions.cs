@@ -623,6 +623,37 @@ namespace MyFlightbook
                 throw new ArgumentNullException(nameof(szLabel));
             return (tz == null || tz.Id.CompareCurrentCultureIgnoreCase(TimeZoneInfo.Utc.Id) == 0) ? szLabel : szLabel.Replace("UTC", Resources.LocalizedText.CustomTimeZone);
         }
+
+        /// <summary>
+        /// Adds the specified CSS string to a list of CSS strings, optionally replacing existing ones
+        /// </summary>
+        /// <param name="sz"></param>
+        /// <param name="rgReplace">Classes to replace, if present (these are all removed)</param>
+        /// <param name="szNew">The new CSS class</param>
+        /// <param name="fAppend">If true, appends the class, otherwise pre-pends it.</param>
+        /// <returns></returns>
+        public static string ReplaceCSSClasses(this string sz, IEnumerable<string> rgReplace, string szNew, bool fAppend)
+        {
+            if (String.IsNullOrEmpty(sz))
+                return szNew;
+
+            List<string> lst = new List<string>(sz.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
+            if (rgReplace != null)
+            {
+                foreach (string szReplace in rgReplace)
+                    lst.Remove(szReplace);
+            }
+
+            if (szNew != null)
+            {
+                if (fAppend)
+                    lst.Add(szNew);
+                else
+                    lst.Insert(0, szNew);
+            }
+
+            return String.Join(" ", lst);
+        }
         #endregion
 
         #region Decimal Extensions

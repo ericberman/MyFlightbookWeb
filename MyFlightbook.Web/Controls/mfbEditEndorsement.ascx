@@ -3,7 +3,7 @@
 <%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="asp" %>
 <%@ Register Src="~/Controls/mfbTypeInDate.ascx" TagPrefix="uc2" TagName="mfbTypeInDate" %>
 <%@ Register Src="~/Controls/mfbScribbleSignature.ascx" TagPrefix="uc1" TagName="mfbScribbleSignature" %>
-<asp:Panel ID="pnlEditEndorsement" runat="server" style="padding:5px; max-width: 480px; border: 1px solid black; background-color:#cccccc;" DefaultButton="btnAddEndorsement" >
+<asp:Panel ID="pnlEditEndorsement" runat="server" CssClass="endorsement endorsementEdit"  DefaultButton="btnAddEndorsement" >
     <table style="width: 100%">
         <tr>
             <td colspan="2">

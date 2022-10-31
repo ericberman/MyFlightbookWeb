@@ -192,7 +192,7 @@
             <br />
             <br />
         </asp:Panel>
-        <asp:Panel ID="pnlLeon" runat="server" Visible="false" style="margin: 10px; padding: 5px; border: 1px solid gray; height:120px; border-radius:5px; box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75); text-align:center; display:inline-block; vertical-align:middle">
+        <asp:Panel ID="pnlLeon" runat="server" CssClass="calloutSmall calloutSponsor shadowed" Visible="false">
             <img style="float:left; width:100px" src='<%=VirtualPathUtility.ToAbsolute("~/images/LeonLogo.svg") %>' />
             <script type="text/javascript">
                 function showLeon() {
@@ -244,7 +244,7 @@
             <br />
             <br />
         </asp:Panel>
-        <asp:Panel ID="pnlRosterBuster" runat="server" Visible="false" style="margin: 10px; padding: 5px; border: 1px solid gray; height:120px; min-width: 200px; border-radius:5px; box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75); text-align:center; display:inline-block; vertical-align:middle">
+        <asp:Panel ID="pnlRosterBuster" runat="server" Visible="false" CssClass="calloutSmall calloutSponsor shadowed">
             <div style="float:left; width:100px;">
                 <asp:Image ID="imgRBLogo" runat="server" ImageUrl="~/images/rb_logo.png" style="float:left; max-width: 2cm; max-height: 2cm; margin-right: 3em; margin-bottom: 1em; vertical-align:middle;" />
             </div>
@@ -292,7 +292,7 @@
             <br />
             <br />
         </asp:Panel>
-        <asp:Panel ID="pnlCloudAhoy" runat="server" Visible="false" style="margin: 10px; padding: 5px; border: 1px solid gray; height:120px; border-radius:5px; box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75); text-align:center; display:inline-block; vertical-align:middle">
+        <asp:Panel ID="pnlCloudAhoy" runat="server" Visible="false" CssClass="calloutSmall calloutSponsor shadowed">
             <div><asp:Image ID="imgCloudAhoy" runat="server" ImageUrl="~/images/CloudAhoyTrans.png" AlternateText="CloudAhoy" ToolTip="CloudAhoy" /></div>
             <div><p><a style="font-weight:bold;" href="javascript:showCloudAhoy();"><%=Resources.LogbookEntry.ImportCloudAhoyImport %></a></p></div>
             <script type="text/javascript">
@@ -306,7 +306,7 @@
             </script>
 
         </asp:Panel>
-        <asp:Panel ID="pnlAcuLog" runat="server" style="text-align:center; vertical-align:middle; display:inline-block; height:120px; margin: 10px; padding: 5px; border: 1px solid gray; border-radius:5px; box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);">
+        <asp:Panel ID="pnlAcuLog" runat="server" CssClass="calloutSmall calloutSponsor shadowed">
             <table style="text-align:left;">
                 <tr>
                     <td style="max-width:200px;">
