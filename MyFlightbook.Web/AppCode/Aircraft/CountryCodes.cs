@@ -6,7 +6,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2020 MyFlightbook LLC
+ * Copyright (c) 2009-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -249,10 +249,10 @@ namespace MyFlightbook
             StringBuilder szQ = new StringBuilder(String.Format(CultureInfo.InvariantCulture, @"UPDATE aircraft 
                 SET 
                     tailnumber = CONCAT(?hyphenatedPrefix,
-                        SUBSTRING(REPLACE(tailnumber, '-', ''),
+                        SUBSTRING(tailnormal,
                         LENGTH(?NormalizedPrefix) + 1))
                 WHERE
-                    REPLACE(tailnumber, '-', '') LIKE ?NormalizedPrefixWildcard 
+                    tailnormal LIKE ?NormalizedPrefixWildcard 
                         AND (length(tailnumber) < {0}) ", Aircraft.maxTailLength - ((HyphenPref == HyphenPreference.Hyphenate) ? 1 : 0)));
 
             List<MySqlParameter> lstParams = new List<MySqlParameter>() {
@@ -266,7 +266,7 @@ namespace MyFlightbook
             {
                 string szParamName = String.Format(CultureInfo.InvariantCulture, "child{0}", i++);
                 string szParamVal = ccp.NormalizedPrefix + "%";
-                szQ.AppendFormat(CultureInfo.InvariantCulture, " AND REPLACE(tailnumber, '-', '') NOT LIKE ?{0} ", szParamName);
+                szQ.AppendFormat(CultureInfo.InvariantCulture, " AND tailnormal NOT LIKE ?{0} ", szParamName);
                 lstParams.Add(new MySqlParameter(szParamName, szParamVal));
             }
 

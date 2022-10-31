@@ -267,8 +267,7 @@
                     <asp:SqlDataSource ID="sqlDupeAircraft" runat="server"
                         ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>"
                         ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" SelectCommand="SELECT 
-    ac.TailNumber,
-    UPPER(Replace(ac.tailnumber, '-', '')) AS NormalTail, 
+    ac.TailNumber
     ac.idaircraft,
     ac.idmodel,
     ac.version,
@@ -279,10 +278,10 @@
 FROM Aircraft ac
     INNER JOIN models ON ac.idmodel=models.idmodel 
     INNER JOIN manufacturers ON manufacturers.idManufacturer=models.idmanufacturer 
-WHERE UPPER(Replace(ac.tailnumber, '-', '')) IN 
+WHERE UPPER(ac.tailnormal) IN 
     (SELECT NormalizedTail FROM 
-        (SELECT UPPER(REPLACE(ac.tailnumber, '-', '')) AS NormalizedTail,
-             CONCAT(UPPER(REPLACE(ac.tailnumber, '-', '')), ',', Version) AS TailMatch,
+        (SELECT UPPER(ac.tailnormal) AS NormalizedTail,
+             CONCAT(UPPER(ac.tailnormal), ',', Version) AS TailMatch,
              COUNT(idAircraft) AS cAircraft 
          FROM Aircraft ac 
          GROUP BY TailMatch 
@@ -328,7 +327,6 @@ ORDER BY NormalTail ASC, numUsers DESC, idaircraft ASC"></asp:SqlDataSource>
                         ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>"
                         ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" SelectCommand="SELECT 
       ac.TailNumber, 
-      UPPER(Replace(ac.tailnumber, '-', '')) AS NormalTail, 
       ac.idaircraft,
       ac.idmodel,
       CONCAT(manufacturers.manufacturer, ' ', models.model, ' ' , models.typename, ' ', models.modelname) AS 'ModelCommonName',
@@ -507,7 +505,7 @@ INNER JOIN models m ON ac.idmodel=m.idmodel
 INNER JOIN manufacturers man ON m.idmanufacturer=man.idmanufacturer 
 LEFT JOIN (select idaircraft, tailnumber, m.idmodel, model, modelname 
            from aircraft ac inner join models m
-           ON m.idmodel=ac.idmodel AND LEFT(REPLACE(ac.tailnumber, '-', ''), 4)=LEFT(REPLACE(m.model, '-',''), 4)) modelTails 
+           ON m.idmodel=ac.idmodel AND LEFT(ac.tailnormal, 4)=LEFT(REPLACE(m.model, '-',''), 4)) modelTails 
        ON ac.idaircraft=modelTails.idaircraft
 LEFT JOIN Flights f ON f.idaircraft=ac.idaircraft
 WHERE
@@ -515,9 +513,9 @@ WHERE
     OR ac.tailnumber RLIKE '^N.*[ioIO]'
     OR ac.tailnumber RLIKE '^N-?0'
     OR modelTails.tailnumber IS NOT NULL
-    OR REPLACE(RIGHT(ac.tailnumber, LENGTH(ac.tailnumber) - 1), '-', '') = REPLACE(RIGHT(m.model, LENGTH(m.model) - 1), '-', '')
-    OR (LEFT(ac.tailnumber, 3) &lt;&gt; 'SIM' AND (LEFT(REPLACE(ac.tailnumber, '-', ''), 4) = LEFT(man.manufacturer, 4)))
-    OR (ac.instancetype=1 AND REPLACE(ac.tailnumber, '-', '') RLIKE 'SIM|FTD|ATD|FFS|REDB|ANON|FRAS|ELIT|CAE|ALSIM|FLIG|SAFE|PREC|TRUF|FMX|GROU|VARI|MISC|NONE|UNKN|OTHE|FAA|MENTO|TAIL')
+    OR RIGHT(ac.tailnormal, LENGTH(ac.tailnumber) - 1) = REPLACE(RIGHT(m.model, LENGTH(m.model) - 1), '-', '')
+    OR (LEFT(ac.tailnumber, 3) &lt;&gt; 'SIM' AND (LEFT(ac.tailnormal, 4) = LEFT(man.manufacturer, 4)))
+    OR (ac.instancetype=1 AND ac.tailnormal RLIKE 'SIM|FTD|ATD|FFS|REDB|ANON|FRAS|ELIT|CAE|ALSIM|FLIG|SAFE|PREC|TRUF|FMX|GROU|VARI|MISC|NONE|UNKN|OTHE|FAA|MENTO|TAIL')
 GROUP BY ac.idaircraft
 ORDER BY tailnumber ASC"></asp:SqlDataSource>
                 </asp:View>

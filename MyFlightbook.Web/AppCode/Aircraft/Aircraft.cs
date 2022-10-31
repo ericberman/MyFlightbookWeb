@@ -914,6 +914,7 @@ WHERE
 
             AircraftID = Convert.ToInt32(dr["idaircraft"], CultureInfo.InvariantCulture);
             TailNumber = dr["TailNumber"].ToString();
+            TailNormal = dr["TailNormal"].ToString();
             Version = Convert.ToInt16(dr["version"], CultureInfo.InvariantCulture);
             ModelID = Convert.ToInt32(dr["idModel"], CultureInfo.InvariantCulture);
             InstanceTypeID = Convert.ToInt32(dr["InstanceType"], CultureInfo.InvariantCulture);
@@ -998,7 +999,8 @@ WHERE
                 maxCount = 10;
 
             szPrefix = Regex.Replace(szPrefix, "[^a-zA-Z0-9]", string.Empty) + "%";
-            DBHelperCommandArgs dba = new DBHelperCommandArgs(String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"], 0, "''", "''", "''", " WHERE REPLACE(aircraft.TailNumber, '-', '') LIKE ?prefix") + String.Format(CultureInfo.InvariantCulture, " LIMIT {0}", maxCount));
+            // Issue #1000: speed up autocomplete; doing query on tailnumber
+            DBHelperCommandArgs dba = new DBHelperCommandArgs(String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"], 0, "''", "''", "''", " WHERE aircraft.tailNormal LIKE ?prefix") + String.Format(CultureInfo.InvariantCulture, " LIMIT {0}", maxCount));
             new DBHelper(dba).ReadRows(
                 (comm) => { comm.Parameters.AddWithValue("prefix", szPrefix); },
                 (dr) => { lst.Add(new Aircraft(dr)); }
@@ -1017,7 +1019,7 @@ WHERE
             const string szCommitTemplate = @"{0} aircraft SET tailnumber = ?tailNumber, version=?version, idmodel = ?idModel, InstanceType = ?instanceType, 
                 LastAnnual = ?LastAnnual, LastVOR = ?LastVOR, LastAltimeter = ?LastAltimeter, LastTransponder = ?LastTransponder, LastPitotStatic=?LastPitotStatic,  
                 HasGlassUpgrade = ?HasGlass, GlassUpgradeDate=?glassUpgradeDate, HasTAAUpgrade=?IsTaa, PublicNotes=?PublicNotes, LastElt=?LastElt, Last100=?Last100, LastOil=?LastOil, LastEngine=?LastEngine, 
-                RegistrationDue=?RegistrationDue, IsLocked=?locked, Revision=?revision {1} ";
+                RegistrationDue=?RegistrationDue, IsLocked=?locked, Revision=?revision, TailNormal=?tailNormal {1}";
             string szQ = String.Format(CultureInfo.InvariantCulture, szCommitTemplate, IsNew ? "INSERT INTO" : "UPDATE", IsNew ? string.Empty : "WHERE idaircraft = ?idAircraft");
 
             string oldPublicNotes = string.Empty;
@@ -1046,6 +1048,7 @@ WHERE
                 (comm) =>
                 {
                     comm.Parameters.AddWithValue("tailnumber", TailNumber);
+                    comm.Parameters.AddWithValue("tailNormal", rNormalChars.Replace(TailNumber, string.Empty));
                     comm.Parameters.AddWithValue("idmodel", ModelID);
                     comm.Parameters.AddWithValue("InstanceType", InstanceTypeID);
                     comm.Parameters.AddWithValue("HasGlass", IsGlass);
@@ -1839,7 +1842,7 @@ WHERE
         /// </summary>
         private static string AircraftByTailQuery
         {
-            get { return String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"], 0, "''", "''", "''", "WHERE REPLACE(UPPER(tailnumber), '-', '')=?tailNum"); }
+            get { return String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"], 0, "''", "''", "''", "WHERE UPPER(tailnormal)=?tailNum"); }
         }
 
         /// <summary>
@@ -1850,7 +1853,7 @@ WHERE
         /// <returns>The list of matching tailnumbers</returns>
         public static List<Aircraft> AircraftByTailListQuery(IEnumerable<string> lstTails)
         {
-            string szQ = String.Format(CultureInfo.InvariantCulture,ConfigurationManager.AppSettings["AircraftForUserCore"], 0, "''", "''", "''", String.Format(CultureInfo.InvariantCulture,"WHERE REPLACE(UPPER(tailnumber), '-', '') IN ('{0}')", String.Join("', '", lstTails)));
+            string szQ = String.Format(CultureInfo.InvariantCulture,ConfigurationManager.AppSettings["AircraftForUserCore"], 0, "''", "''", "''", String.Format(CultureInfo.InvariantCulture,"WHERE UPPER(tailnormal) IN ('{0}')", String.Join("', '", lstTails)));
 
             List<Aircraft> lst = new List<Aircraft>();
 
@@ -1944,6 +1947,17 @@ WHERE
         public string NormalizedTail
         {
             get { return NormalizeTail(TailNumber, CountryCodePrefix.BestMatchCountryCode(TailNumber)); }
+        }
+
+
+        /// <summary>
+        /// The normalized tail for searching - from the database.  Can be empty (but shouldn't be), has no hyphens or non-alpha chars
+        /// </summary>
+        private string TailNormal { get; set; }
+
+        public string SearchTail
+        {
+            get { return String.IsNullOrEmpty(TailNormal) ? rNormalChars.Replace(TailNumber, string.Empty) : TailNormal; }
         }
 
         /// <summary>
@@ -2110,7 +2124,7 @@ OR (aircraft.instancetype = 1 AND aircraft.tailnumber LIKE '{3}%')
 OR (aircraft.instancetype <> 1 AND aircraft.tailnumber NOT LIKE '{3}%')
 OR (models.fSimOnly = 1 AND aircraft.instancetype={4})
 OR (models.fSimOnly = 2 AND aircraft.InstanceType={4} AND aircraft.tailnumber NOT LIKE '{2}%')
-OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
+OR (aircraft.tailnormal IN ('{5}'))";
 
             string szQInvalid = String.Format(CultureInfo.InvariantCulture, szQInvalidAircraftRestriction,
                 Aircraft.maxTailLength,

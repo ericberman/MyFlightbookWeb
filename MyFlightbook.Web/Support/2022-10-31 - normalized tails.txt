@@ -1,0 +1,5 @@
+﻿ALTER TABLE `logbook`.`aircraft` 
+ADD COLUMN `tailNormal` VARCHAR(30) NULL COMMENT 'Normalized tail (no hyphens) - suitable for searching' AFTER `tailnumber`,
+ADD INDEX `Tail2` (`tailNormal` ASC) VISIBLE;
+
+update aircraft set tailnormal=replace(tailnumber, '-', '') where (tailnormal='' or tailnormal is null) and idaircraft > 0
