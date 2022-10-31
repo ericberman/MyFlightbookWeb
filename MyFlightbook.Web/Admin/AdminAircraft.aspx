@@ -435,7 +435,7 @@ ORDER BY NormalTail ASC, numUsers DESC, idaircraft ASC"></asp:SqlDataSource>
                             </p>
                         </EmptyDataTemplate>
                     </asp:GridView>
-                    <asp:SqlDataSource ID="sqlOrphanedAircraft" runat="server"
+                    <asp:SqlDataSource ID="sqlOrphanedAircraft" runat="server" OnSelecting="sqlDSMissingAicraft_Selecting"
                         ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>"
                         ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" SelectCommand="SELECT ac.*, m.* 
                                         FROM aircraft ac 
@@ -498,7 +498,7 @@ ORDER BY NormalTail ASC, numUsers DESC, idaircraft ASC"></asp:SqlDataSource>
                         </Columns>
                     </asp:GridView>
                     <div id="pnlFlightContent" style="display:none;" />
-                    <asp:SqlDataSource ID="sqlPseudoGeneric" runat="server"
+                    <asp:SqlDataSource ID="sqlPseudoGeneric" runat="server" OnSelecting="sqlDSMissingAicraft_Selecting"
                         ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>"
                         ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>"
                         SelectCommand="SELECT ac.tailnumber, ac.idaircraft, m.model, m.idmodel, man.manufacturer, count(f.idflight) AS numFlights

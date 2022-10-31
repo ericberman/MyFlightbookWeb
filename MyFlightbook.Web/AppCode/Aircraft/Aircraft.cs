@@ -1242,6 +1242,7 @@ WHERE
         #endregion
 
         #region Validation
+
         /// <summary>
         /// Tests the aircraft for validity prior to commitment
         /// KEEP IN SYNC WITH AdminAllInvalidAircraft()
@@ -1258,7 +1259,7 @@ WHERE
                 return false;
             }
 
-            if (TailNumber.Length <= 2)
+            if (TailNumber.Length <= 2 && !AircraftUtility.rValidTail.IsMatch(TailNumber))
             {
                 ErrorString = String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.errInvalidTailShort, TailNumber);
                 return false;
@@ -2080,9 +2081,10 @@ WHERE
             }
         }
 
-        private const string RegexValidTail = "^[a-zA-Z0-9]+-?[a-zA-Z0-9]+-?[a-zA-Z0-9]+$";
+        // Per https://www.faa.gov/licenses_certificates/aircraft_certification/aircraft_registry/forming_nnumber, N1-N99 are allowed but reserved by FAA.  Explicitly allow these.
+        private const string RegexValidTail = "^([a-zA-Z0-9]+-?[a-zA-Z0-9]+-?[a-zA-Z0-9]+)|(N[1-9]\\d?)$";
         public static readonly Regex rValidTail = new Regex(RegexValidTail, RegexOptions.IgnoreCase | RegexOptions.Compiled);
-        public static readonly Regex rValidNNumber = new Regex("^N[^inoINO0][^ioIO]+$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        public static readonly Regex rValidNNumber = new Regex("^(N[^inoINO0][^ioIO]+)|(N[1-9]\\d?)$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         /// <summary>
         /// Admin utility to quickly find all invalid aircraft (since examining them one at a time is painfully slow and pounds the database)
@@ -2101,7 +2103,7 @@ WHERE
 
             const string szQInvalidAircraftRestriction = @"WHERE
 (aircraft.idmodel < 0 OR models.idmodel IS NULL)
-OR (aircraft.tailnumber = '') OR (LENGTH(aircraft.tailnumber) <= 2) OR (LENGTH(aircraft.tailnumber) > {0})
+OR (aircraft.tailnumber = '') OR (LENGTH(aircraft.tailnumber) > {0})
 OR (aircraft.tailnumber LIKE '{2}%' AND aircraft.tailnumber <> CONCAT('{2}', LPAD(aircraft.idmodel, 6, '0')))
 OR (aircraft.tailnumber NOT LIKE '{2}%' AND aircraft.tailnumber NOT RLIKE '{1}')
 OR (aircraft.instancetype = 1 AND aircraft.tailnumber LIKE '{3}%')
