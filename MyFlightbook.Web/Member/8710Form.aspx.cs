@@ -141,6 +141,8 @@ namespace MyFlightbook.MemberPages
 
         protected void OnQuerySubmitted(object sender, FlightQueryEventArgs fqe)
         {
+            if (fqe == null)
+                throw new ArgumentNullException(nameof(fqe));
             Rollup = RollupForQuery(fqe.Query);
             ShowResults(sender, fqe);
         }
