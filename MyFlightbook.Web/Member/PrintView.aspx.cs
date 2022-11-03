@@ -11,6 +11,8 @@ using System.Web.UI.WebControls;
 using static Dropbox.Api.TeamLog.ActorLogInfo;
 using static System.Net.Mime.MediaTypeNames;
 using System.Windows.Documents;
+using static Dropbox.Api.FileProperties.TemplateOwnerType;
+using MyFlightbook.Currency;
 
 /******************************************************
  * 
@@ -118,6 +120,21 @@ namespace MyFlightbook.Printing
             }
             else
                 base.Render(writer);
+        }
+
+        private const string szVSRollup = "vsRollup";
+
+        protected TimeRollup RollupForQuery(FlightQuery fq)
+        {
+            TimeRollup tr = new TimeRollup(CurrentUser.UserName, fq) { IncludeTrailing12 = true, IncludeTrailing24 = true };
+            tr.Bind();
+            return tr;
+        }
+
+        public TimeRollup TotalsRollup
+        {
+            get { return (TimeRollup)ViewState[szVSRollup]; }
+            set { ViewState[szVSRollup] = value; }
         }
 
         protected string GetUserName(out string szError)
@@ -251,9 +268,13 @@ namespace MyFlightbook.Printing
         private void InitializeTitleAndQueryDescriptor()
         {
             Master.Title = lblUserName.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, CurrentUser.UserFullName);
-            mfbQueryDescriptor.DataSource = mfbTotalSummary1.CustomRestriction = mfbSearchForm1.Restriction;
+            FlightQuery fq = mfbSearchForm1.Restriction;
+            fq.Refresh();
+            mfbQueryDescriptor.DataSource = fq;
             mfbQueryDescriptor.DataBind();
-            mfbTotalSummary1.DataBind();
+            // Initialize the totals rollup
+            mfbTotalsByTime.Rollup = TotalsRollup = RollupForQuery(fq);
+            mfbTotalsByTime.RefreshTable(false);
         }
 
         private void InitializeEndorsements()
@@ -276,7 +297,8 @@ namespace MyFlightbook.Printing
             lblErr.Text = szError;
 
             CurrentUser = Profile.GetUser(szUser);
-            mfbSearchForm1.Username = mfbTotalSummary1.Username = PrintOptions1.UserName = CurrentUser.UserName;
+            mfbSearchForm1.Username = PrintOptions1.UserName = CurrentUser.UserName;
+            lblTotalsHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrintViewTotalsHeader, DateTime.Now.Date);
 
             pnlResults.Visible = false; // since we aren't saving viewstate, bind to nothing  (e.g., in case we're editing a flight query)
 
@@ -303,6 +325,11 @@ namespace MyFlightbook.Printing
 
                 imgLogo.ImageUrl = Branding.CurrentBrand.LogoHRef;
             }
+            else
+            {
+                mfbTotalsByTime.Rollup = TotalsRollup;  // should ALWAYS pick up from the viewstate
+                mfbTotalsByTime.RefreshTable(false);    
+            }
 
             rowCustomPage.Style["display"] = (PDFOptions.PageSize)Enum.Parse(typeof(PDFOptions.PageSize), cmbPageSize.SelectedValue) == PDFOptions.PageSize.Custom ? "block" : "none";
         }
@@ -323,10 +350,13 @@ namespace MyFlightbook.Printing
 
         protected void FilterResults(object sender, FlightQueryEventArgs e)
         {
-            mfbQueryDescriptor.DataSource = mfbTotalSummary1.CustomRestriction = mfbSearchForm1.Restriction;
+            FlightQuery fq = mfbSearchForm1.Restriction;
+            mfbQueryDescriptor.DataSource = fq;
             mfbQueryDescriptor.DataBind();
             RefreshLogbookData();
-            mfbTotalSummary1.DataBind();
+            TotalsRollup = null;    // clear the old rollup
+            mfbTotalsByTime.Rollup = TotalsRollup = RollupForQuery(fq);
+            mfbTotalsByTime.RefreshTable(false);
             mvSearch.SetActiveView(vwDescriptor);
             lnkReturnToFlights.NavigateUrl = ReturnLink(mfbSearchForm1.Restriction);
         }

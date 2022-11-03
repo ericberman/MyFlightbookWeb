@@ -412,6 +412,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Past 24 months.
+        /// </summary>
+        internal static string DatesPrev24Month {
+            get {
+                return ResourceManager.GetString("DatesPrev24Month", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Past 30 days.
         /// </summary>
         internal static string DatesPrev30Days {

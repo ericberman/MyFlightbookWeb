@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Web;
 using System.Web.UI.WebControls;
 
@@ -19,39 +17,11 @@ namespace MyFlightbook.Currency
     {
         protected bool UseHHMM { get; set; }
 
-        protected bool Past7Days { get; set; }
-
-        protected bool MonthToDate { get; set; }
-
-        protected bool PreviousMonth { get; set; }
-
-        protected bool PreviousYear { get; set; }
-
-        protected bool YearToDate { get; set; }
-
-        protected int ColumnCount { get; set; }
-
+        public TimeRollup Rollup { get; set; }
 
         protected void Page_Load(object sender, EventArgs e)
         {
 
-        }
-
-        private static Dictionary<string, TotalsItem> TotalsForQuery(FlightQuery fq, bool fBind, Dictionary<string, TotalsItem> d)
-        {
-            d = d ?? new Dictionary<string, TotalsItem>();
-
-            if (fBind)
-            {
-                UserTotals ut = new UserTotals(fq.UserName, fq, false);
-                ut.DataBind();
-
-                foreach (TotalsItem ti in ut.Totals)
-                    if (ti.Value > 0)
-                        d[ti.Description] = ti;
-            }
-
-            return d;
         }
 
         private static void AddTextCellToRow(TableRow tr, string szContent, bool fInclude = true, string cssClass = null)
@@ -66,7 +36,7 @@ namespace MyFlightbook.Currency
             }
         }
 
-        private decimal AddCellForTotalsItem(TableRow tr, TotalsItem ti, bool fInclude)
+        private decimal AddCellForTotalsItem(TableRow tr, TotalsItem ti, bool fInclude, bool linkQuery)
         {
             if (!fInclude)
                 return 0.0M;
@@ -82,7 +52,7 @@ namespace MyFlightbook.Currency
             // Otherwise, add the cell to the table, following the design in mfbTotalSummary
             // Link the *value* here, not the description, since we will have multiple columns
             // Add the values div (panel) to the totals box
-            if (ti.Query == null)
+            if (ti.Query == null || !linkQuery)
                 tc.Controls.Add(new Label() { Text = ti.ValueString(UseHHMM) });
             else
                 tc.Controls.Add(new HyperLink()
@@ -101,66 +71,77 @@ namespace MyFlightbook.Currency
             return ti.Value;    // Indicate if we actually had a non-zero value.  A row of all empty cells or zero cells should be deleted.
         }
 
-        public void BindTotalsForUser(string szUser, bool fLast7Days, bool fMonthToDate, bool fPreviousMonth, bool fPreviousYear, bool fYearToDate, bool fTrailing12, FlightQuery fqSupplied = null)
+        /// <summary>
+        /// Binds the totals with the specified columns for the user AND refreshes the table.
+        /// </summary>
+        /// <param name="szUser">User for whome totals should be computed</param>
+        /// <param name="fLast7Days">True to include trailing 7 days</param>
+        /// <param name="fMonthToDate">True to include month to date</param>
+        /// <param name="fPreviousMonth">True to include previous month</param>
+        /// <param name="fPreviousYear">True to include previous year</param>
+        /// <param name="fYearToDate">True to include year to date</param>
+        /// <param name="fTrailing12">True to include trailing 12</param>
+        /// <param name="fqSupplied">Optional flightquery to start from</param>
+        /// <param name="fLinkQuery">True to linkify totals for the query</param>
+        /// <returns>TimeRollup that you can cache</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public TimeRollup BindTotalsForUser(string szUser, bool fLast7Days, bool fMonthToDate, bool fPreviousMonth, bool fPreviousYear, bool fYearToDate, bool fTrailing12, FlightQuery fqSupplied = null, bool fLinkQuery = true)
         {
             if (String.IsNullOrEmpty(szUser))
                 throw new ArgumentNullException(nameof(szUser));
 
-            Profile pf = Profile.GetUser(szUser);
-            UseHHMM = pf.UsesHHMM;
+            Rollup = new TimeRollup(szUser, fqSupplied) { 
+                IncludeLast7Days = fLast7Days, 
+                IncludeMonthToDate = fMonthToDate, 
+                IncludePreviousMonth = fPreviousMonth, 
+                IncludePreviousYear = fPreviousYear,
+                IncludeYearToDate = fYearToDate, 
+                IncludeTrailing12 = fTrailing12, 
+                };
+            Rollup.Bind();
 
-            // Get All time totals.  This will also give us the entire space of totals items
-            FlightQuery fq = (fqSupplied == null) ? new FlightQuery(szUser) : new FlightQuery(fqSupplied);
-            UserTotals ut = new UserTotals(szUser, new FlightQuery(fq), false);
+            RefreshTable(fLinkQuery);
 
-            // if the supplied query has a date range, then don't do any of the subsequent queries; the date range overrides.
-            bool fSuppliedQueryHasDates = fq.DateRange != FlightQuery.DateRanges.AllTime;
-            if (fSuppliedQueryHasDates)
-                fLast7Days = fMonthToDate = fPreviousMonth = fPreviousYear = fYearToDate = fTrailing12 = false;
+            return Rollup;
+        }
 
-            Dictionary<string, TotalsItem> dMonthToDate = new Dictionary<string, TotalsItem>();
-            Dictionary<string, TotalsItem> dPrevMonth = new Dictionary<string, TotalsItem>();
-            Dictionary<string, TotalsItem> dYTD = new Dictionary<string, TotalsItem>();
-            Dictionary<string, TotalsItem> dTrailing12 = new Dictionary<string, TotalsItem>();
-            Dictionary<string, TotalsItem> dPrevYear = new Dictionary<string, TotalsItem>();
-            Dictionary<string, TotalsItem> dLast7 = new Dictionary<string, TotalsItem>();
-
-            // Get all of the results asynchronously, but block until they're all done.
-            Task.WaitAll(
-                Task.Run(() => { ut.DataBind(); }),
-                Task.Run(() => { TotalsForQuery(new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.ThisMonth }, fMonthToDate, dMonthToDate); }),
-                Task.Run(() => { TotalsForQuery(new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.PrevMonth }, fPreviousMonth, dPrevMonth); }),
-                Task.Run(() => { TotalsForQuery(new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.YTD }, fYearToDate, dYTD); }),
-                Task.Run(() => { TotalsForQuery(new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.Trailing12Months }, fTrailing12, dTrailing12); }),
-                Task.Run(() => { TotalsForQuery(new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.PrevYear }, fPreviousYear, dPrevYear); }),
-                Task.Run(() => { TotalsForQuery(new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.Custom, DateMin = DateTime.Now.Date.AddDays(-7), DateMax = DateTime.Now.Date.AddDays(1) }, fLast7Days, dLast7); })
-                );
-
-            IEnumerable <TotalsItemCollection> allTotals = TotalsItemCollection.AsGroups(ut.Totals);
-
+        /// <summary>
+        /// Reconstructs the table for the specified rollup.
+        /// </summary>
+        /// <param name="rollup"></param>
+        public void RefreshTable(bool fLinkQuery)
+        {
             tblTotals.Controls.Clear();
 
+            if (Rollup == null)
+                return;
+
+            Profile pf = Profile.GetUser(Rollup.User);
+            UseHHMM = pf.UsesHHMM;
+
             // Determine which columns we'll show
-            ColumnCount = 2;   // All time is always shown, as are its labels (in adjacent table column)
-            if (fLast7Days &= dLast7.Any())
+            int ColumnCount = 2;   // All time is always shown, as are its labels (in adjacent table column)
+            if (Rollup.IncludeLast7Days &= Rollup.Last7.Any())
                 ColumnCount++;
-            if (fMonthToDate &= dMonthToDate.Any())
+            if (Rollup.IncludeMonthToDate &= Rollup.MonthToDate.Any())
                 ColumnCount++;
-            if (fPreviousMonth &= dPrevMonth.Any())
+            if (Rollup.IncludePreviousMonth &= Rollup.PrevMonth.Any())
                 ColumnCount++;
-            if (fTrailing12 &= dTrailing12.Any())
+            if (Rollup.IncludeTrailing12 &= Rollup.Trailing12.Any())
                 ColumnCount++;
-            if (fPreviousYear &= dPrevYear.Any())
+            if (Rollup.IncludeTrailing24 &= Rollup.Trailing24.Any())
                 ColumnCount++;
-            if (fYearToDate &= dYTD.Any())
+            if (Rollup.IncludePreviousYear &= Rollup.PrevYear.Any())
+                ColumnCount++;
+            if (Rollup.IncludeYearToDate &= Rollup.YTD.Any())
                 ColumnCount++;
 
-            mvTotals.SetActiveView(allTotals.Any() ? vwTotals : vwNoTotals);
+            mvTotals.SetActiveView(Rollup.allTotals.Any() ? vwTotals : vwNoTotals);
 
             string szPreviousMonth = DateTime.Now.AddCalendarMonths(-1).ToString("MMM yyyy", CultureInfo.CurrentCulture);
             string szPreviousYear = (DateTime.Now.Year - 1).ToString(CultureInfo.CurrentCulture);
 
-            foreach (TotalsItemCollection tic in allTotals)
+            foreach (TotalsItemCollection tic in Rollup.allTotals)
             {
                 TableRow trGroup = new TableRow() { CssClass = "totalsGroupHeaderRow" };
                 tblTotals.Rows.Add(trGroup);
@@ -171,13 +152,14 @@ namespace MyFlightbook.Currency
                 tblTotals.Rows.Add(trHeader);
                 const string cssDateRange = "totalsDateRange";
                 AddTextCellToRow(trHeader, string.Empty, true); // no header above the total description itself.
-                AddTextCellToRow(trHeader, fSuppliedQueryHasDates ? string.Empty : Resources.FlightQuery.DatesAll, true, cssDateRange);
-                AddTextCellToRow(trHeader, Resources.Profile.EmailWeeklyTotalsLabel, fLast7Days, cssDateRange);
-                AddTextCellToRow(trHeader, Resources.FlightQuery.DatesThisMonth, fMonthToDate, cssDateRange);
-                AddTextCellToRow(trHeader, szPreviousMonth, fPreviousMonth, cssDateRange);
-                AddTextCellToRow(trHeader, Resources.FlightQuery.DatesYearToDate, fYearToDate, cssDateRange);
-                AddTextCellToRow(trHeader, Resources.FlightQuery.DatesPrev12Month, fTrailing12, cssDateRange);
-                AddTextCellToRow(trHeader, szPreviousYear, fPreviousYear, cssDateRange);
+                AddTextCellToRow(trHeader, Rollup.SuppliedQueryHasDates ? string.Empty : Resources.FlightQuery.DatesAll, true, cssDateRange);
+                AddTextCellToRow(trHeader, Resources.Profile.EmailWeeklyTotalsLabel, Rollup.IncludeLast7Days, cssDateRange);
+                AddTextCellToRow(trHeader, Resources.FlightQuery.DatesThisMonth, Rollup.IncludeMonthToDate, cssDateRange);
+                AddTextCellToRow(trHeader, szPreviousMonth, Rollup.IncludePreviousMonth, cssDateRange);
+                AddTextCellToRow(trHeader, Resources.FlightQuery.DatesYearToDate, Rollup.IncludeYearToDate, cssDateRange);
+                AddTextCellToRow(trHeader, Resources.FlightQuery.DatesPrev12Month, Rollup.IncludeTrailing12, cssDateRange);
+                AddTextCellToRow(trHeader, Resources.FlightQuery.DatesPrev24Month, Rollup.IncludeTrailing24, cssDateRange);
+                AddTextCellToRow(trHeader, szPreviousYear, Rollup.IncludePreviousYear, cssDateRange);
 
                 foreach (TotalsItem ti in tic.Items)
                 {
@@ -187,13 +169,14 @@ namespace MyFlightbook.Currency
                     // Add the description
                     tr.Cells.Add(new TableCell() { Text = ti.Description });
 
-                    decimal rowTotal = AddCellForTotalsItem(tr, ti, true) +
-                    AddCellForTotalsItem(tr, dLast7.ContainsKey(ti.Description) ? dLast7[ti.Description] : null, fLast7Days) +
-                    AddCellForTotalsItem(tr, dMonthToDate.ContainsKey(ti.Description) ? dMonthToDate[ti.Description] : null, fMonthToDate) +
-                    AddCellForTotalsItem(tr, dPrevMonth.ContainsKey(ti.Description) ? dPrevMonth[ti.Description] : null, fPreviousMonth) +
-                    AddCellForTotalsItem(tr, dYTD.ContainsKey(ti.Description) ? dYTD[ti.Description] : null, fYearToDate) +
-                    AddCellForTotalsItem(tr, dTrailing12.ContainsKey(ti.Description) ? dTrailing12[ti.Description] : null, fTrailing12) +
-                    AddCellForTotalsItem(tr, dPrevYear.ContainsKey(ti.Description) ? dPrevYear[ti.Description] : null, fPreviousYear);
+                    decimal rowTotal = AddCellForTotalsItem(tr, ti, true, fLinkQuery) +
+                    AddCellForTotalsItem(tr, Rollup.Last7.ContainsKey(ti.Description) ? Rollup.Last7[ti.Description] : null, Rollup.IncludeLast7Days, fLinkQuery) +
+                    AddCellForTotalsItem(tr, Rollup.MonthToDate.ContainsKey(ti.Description) ? Rollup.MonthToDate[ti.Description] : null, Rollup.IncludeMonthToDate, fLinkQuery) +
+                    AddCellForTotalsItem(tr, Rollup.PrevMonth.ContainsKey(ti.Description) ? Rollup.PrevMonth[ti.Description] : null, Rollup.IncludePreviousMonth, fLinkQuery) +
+                    AddCellForTotalsItem(tr, Rollup.YTD.ContainsKey(ti.Description) ? Rollup.YTD[ti.Description] : null, Rollup.IncludeYearToDate, fLinkQuery) +
+                    AddCellForTotalsItem(tr, Rollup.Trailing12.ContainsKey(ti.Description) ? Rollup.Trailing12[ti.Description] : null, Rollup.IncludeTrailing12, fLinkQuery) +
+                    AddCellForTotalsItem(tr, Rollup.Trailing24.ContainsKey(ti.Description) ? Rollup.Trailing24[ti.Description] : null, Rollup.IncludeTrailing24, fLinkQuery) +
+                    AddCellForTotalsItem(tr, Rollup.PrevYear.ContainsKey(ti.Description) ? Rollup.PrevYear[ti.Description] : null, Rollup.IncludePreviousYear, fLinkQuery);
 
                     // Remove rows of empty data
                     if (rowTotal == 0)

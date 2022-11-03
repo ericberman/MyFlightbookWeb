@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 
 /******************************************************
  * 
@@ -43,6 +44,7 @@ namespace MyFlightbook.Currency
         }
     }
 
+    [Serializable]
     public class TotalsItem : IComparable, IEquatable<TotalsItem>
     {
         /// <summary>
@@ -282,6 +284,7 @@ namespace MyFlightbook.Currency
 
     public enum TotalsGrouping { CatClass, Model, Family }
 
+    [Serializable]
     public class TotalsItemCollection : IComparable, IEquatable<TotalsItemCollection>
     {
         #region Properties
@@ -1335,6 +1338,95 @@ namespace MyFlightbook.Currency
                 });
 
             return lst;
+        }
+    }
+
+    /// <summary>
+    /// Encapsulates a rollup by time - a whole bunch of totals that are subsets of a master query.  Best to compute once and cache the result.
+    /// </summary>
+    [Serializable]
+    public class TimeRollup
+    {
+        #region properties
+        public IDictionary<string, TotalsItem> MonthToDate { get; private set; } = new Dictionary<string, TotalsItem>();
+        public IDictionary<string, TotalsItem> PrevMonth { get; private set; } = new Dictionary<string, TotalsItem>();
+        public IDictionary<string, TotalsItem> YTD { get; private set; } = new Dictionary<string, TotalsItem>();
+        public IDictionary<string, TotalsItem> Trailing12 { get; private set; } = new Dictionary<string, TotalsItem>();
+        public IDictionary<string, TotalsItem> Trailing24 { get; private set; } = new Dictionary<string, TotalsItem>();
+        public IDictionary<string, TotalsItem> PrevYear { get; private set; } = new Dictionary<string, TotalsItem>();
+        public IDictionary<string, TotalsItem> Last7 { get; private set; } = new Dictionary<string, TotalsItem>();
+
+        // which ones to compute
+        public bool IncludeLast7Days { get; set; } 
+        public bool IncludeMonthToDate { get; set; }
+        public bool IncludePreviousMonth { get; set; }
+        public bool IncludePreviousYear { get; set; }
+        public bool IncludeYearToDate { get; set; }
+        public bool IncludeTrailing12 { get; set; }
+        public bool IncludeTrailing24 {get; set;}
+
+        public IEnumerable<TotalsItemCollection> allTotals { get; private set; }
+
+        public string User { get; private set; } = String.Empty;
+
+        public FlightQuery Query { get; set; }
+
+        public bool SuppliedQueryHasDates { get; private set; }        
+        #endregion
+
+        public TimeRollup() { }
+
+        public TimeRollup(string szUser, FlightQuery fq) : this()
+        {
+            User = szUser;
+            Query = fq;
+        }
+
+
+        private static IDictionary<string, TotalsItem> TotalsForQuery(FlightQuery fq, bool fBind, IDictionary<string, TotalsItem> d)
+        {
+            d = d ?? new Dictionary<string, TotalsItem>();
+
+            if (fBind)
+            {
+                UserTotals ut = new UserTotals(fq.UserName, fq, false);
+                ut.DataBind();
+
+                foreach (TotalsItem ti in ut.Totals)
+                    if (ti.Value > 0)
+                        d[ti.Description] = ti;
+            }
+
+            return d;
+        }
+
+        public void Bind()
+        {
+            if (String.IsNullOrEmpty(User))
+                throw new ArgumentNullException(nameof(User));
+
+            // Get All time totals.  This will also give us the entire space of totals items
+            FlightQuery fq = (Query == null) ? new FlightQuery(User) : new FlightQuery(Query);
+            UserTotals ut = new UserTotals(User, new FlightQuery(fq), false);
+
+            // if the supplied query has a date range, then don't do any of the subsequent queries; the date range overrides.
+            SuppliedQueryHasDates = fq.DateRange != FlightQuery.DateRanges.AllTime;
+            if (SuppliedQueryHasDates)
+                IncludeLast7Days = IncludeMonthToDate = IncludePreviousMonth = IncludePreviousYear = IncludeYearToDate = IncludeTrailing12 = IncludeTrailing24 = false;
+
+            // Get all of the results asynchronously, but block until they're all done.
+            Task.WaitAll(
+                Task.Run(() => { ut.DataBind(); }),
+                Task.Run(() => { TotalsForQuery(new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.ThisMonth }, IncludeMonthToDate, MonthToDate); }),
+                Task.Run(() => { TotalsForQuery(new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.PrevMonth }, IncludePreviousMonth, PrevMonth); }),
+                Task.Run(() => { TotalsForQuery(new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.YTD }, IncludeYearToDate, YTD); }),
+                Task.Run(() => { TotalsForQuery(new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.Trailing12Months }, IncludeTrailing12, Trailing12); }),
+                Task.Run(() => { TotalsForQuery(new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.Custom, DateMin = DateTime.Now.Date.AddMonths(-24), DateMax = DateTime.Now.Date.AddDays(1) }, IncludeTrailing24, Trailing24); }),
+                Task.Run(() => { TotalsForQuery(new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.PrevYear }, IncludePreviousYear, PrevYear); }),
+                Task.Run(() => { TotalsForQuery(new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.Custom, DateMin = DateTime.Now.Date.AddDays(-7), DateMax = DateTime.Now.Date.AddDays(1) }, IncludeLast7Days, Last7); })
+                );
+
+            allTotals = TotalsItemCollection.AsGroups(ut.Totals);
         }
     }
 }

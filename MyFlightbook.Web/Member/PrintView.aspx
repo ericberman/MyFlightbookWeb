@@ -21,6 +21,8 @@
 <%@ Register Src="~/Controls/PrintingLayouts/LayoutPCAA.ascx" TagPrefix="uc1" TagName="LayoutPCAA" %>
 <%@ Register Src="~/Controls/PrintingLayouts/layoutUASCivi.ascx" TagPrefix="uc1" TagName="layoutUASCivi" %>
 <%@ Register Src="~/Controls/PrintingLayouts/layout2Page.ascx" TagPrefix="uc1" TagName="layout2Page" %>
+<%@ Register Src="~/Controls/mfbTotalsByTimePeriod.ascx" TagPrefix="uc1" TagName="mfbTotalsByTimePeriod" %>
+
 
 
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
@@ -271,8 +273,8 @@
             </asp:Repeater>
         </asp:Panel>
         <asp:Panel ID="pnlTotals" runat="server" style="page-break-before:always;">
-            <h2><asp:Label ID="lblTotalsHeader" runat="server" Text="<%$ Resources:LocalizedText, PrintViewTotalsHeader %>" /></h2>
-            <uc2:mfbTotalSummary ID="mfbTotalSummary1" runat="server" LinkTotalsToQuery="false" />
+            <h2><asp:Label ID="lblTotalsHeader" runat="server" /></h2>
+            <uc1:mfbTotalsByTimePeriod runat="server" ID="mfbTotalsByTime" />
         </asp:Panel>
     </asp:Panel>
 </asp:Content>

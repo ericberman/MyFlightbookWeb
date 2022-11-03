@@ -4373,7 +4373,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Totals for selected flights.
+        ///   Looks up a localized string similar to Totals for selected flights as of {0:d}.
         /// </summary>
         internal static string PrintViewTotalsHeader {
             get {

@@ -821,7 +821,8 @@
     <value>Flights matching the following criteria:</value>
   </data>
   <data name="PrintViewTotalsHeader" xml:space="preserve">
-    <value>Totals for selected flights</value>
+    <value>Totals for selected flights as of {0:d}</value>
+    <comment>{0:d} is the short date in regional format - e.g., "Totals for selected flights as of 8/10/2011"</comment>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>

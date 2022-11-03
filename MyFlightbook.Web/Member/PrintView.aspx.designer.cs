@@ -753,13 +753,13 @@ namespace MyFlightbook.Printing
         protected global::System.Web.UI.WebControls.Label lblTotalsHeader;
 
         /// <summary>
-        /// mfbTotalSummary1 control.
+        /// mfbTotalsByTime control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::MyFlightbook.Currency.mfbTotalSummary mfbTotalSummary1;
+        protected global::MyFlightbook.Currency.mfbTotalsByTimePeriod mfbTotalsByTime;
 
         /// <summary>
         /// Master property.

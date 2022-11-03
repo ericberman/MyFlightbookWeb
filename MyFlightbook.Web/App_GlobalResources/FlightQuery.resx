@@ -349,4 +349,7 @@
   <data name="EnumeratedFlights" xml:space="preserve">
     <value>Explicitly selected flights</value>
   </data>
+  <data name="DatesPrev24Month" xml:space="preserve">
+    <value>Past 24 months</value>
+  </data>
 </root>
