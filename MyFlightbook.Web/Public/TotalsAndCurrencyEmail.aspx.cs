@@ -136,7 +136,9 @@ namespace MyFlightbook.Subscriptions
                 lnkQuickUnsubscribe.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "http://{0}{1}?u={2}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/Public/Unsubscribe.aspx"), HttpUtility.UrlEncode(new UserAccessEncryptor().Encrypt(Username)));
 
                 bool fAnnual = (DateTime.Now.Month == 1 && DateTime.Now.Day == 1);  // if it's January 1, show prior year; else show YTD
-                mfbTotalsByTimePeriod.BindTotalsForUser(Username, !fMonthlySummary, !fMonthlySummary, true, true, !fAnnual, !fAnnual);
+                TimeRollup tr = new TimeRollup(Username, null) { IncludeLast7Days = !fMonthlySummary, IncludeMonthToDate = !fMonthlySummary, IncludePreviousMonth = true, IncludePreviousYear = true, IncludeYearToDate = !fAnnual, IncludeTrailing12 = !fAnnual };
+                tr.Bind();
+                mfbTotalsByTimePeriod.RefreshTable(tr, true);
 
                 if (fAnnual)
                     mfbRecentAchievements.Refresh(Username, new DateTime(DateTime.Now.Year - 1, 1, 1), new DateTime(DateTime.Now.Year - 1, 12, 31), true);

@@ -18,9 +18,32 @@ namespace MyFlightbook.MemberPages
 {
     public partial class FAA8710Form : Page
     {
+        #region properties
         protected bool UseHHMM { get; set; }
 
-        protected bool HasRefreshedTimePeriod { get; set; }
+        private const string szkeyvsTimeRollup = "vsTimeRollup";
+
+        protected TimeRollup Rollup
+        {
+            get { return (TimeRollup)ViewState[szkeyvsTimeRollup]; }
+            set { ViewState[szkeyvsTimeRollup] = value; }
+        }
+        #endregion
+
+        protected TimeRollup RollupForQuery(FlightQuery fq)
+        {
+            bool fNewYearsDay = DateTime.Now.Day == 1 && DateTime.Now.Month == 1;
+            TimeRollup tr = new TimeRollup(Page.User.Identity.Name, fq)
+            {
+                IncludeMonthToDate = DateTime.Now.Day > 1,
+                IncludePreviousMonth = true,
+                IncludePreviousYear = true,
+                IncludeTrailing12 = !fNewYearsDay,
+                IncludeYearToDate = !fNewYearsDay
+            };
+            tr.Bind();
+            return tr;
+        }
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -33,6 +56,7 @@ namespace MyFlightbook.MemberPages
             if (!IsPostBack)
             {
                 lblUserName.Text = Master.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText._8710FormForUserHeader, pf.UserFullName);
+                Rollup = RollupForQuery(mfbSearchForm1.Restriction);    // Initialize the rollup, doing this query once.
                 RefreshFormData();
                 MfbLogbook1.Visible = !Request.IsMobileSession();
                 Master.ShowSponsoredAd = false;
@@ -53,20 +77,11 @@ namespace MyFlightbook.MemberPages
                 }
             }
             else
-
-            // rollup by time has no viewstate so must be refreshed on each page load.  BUT...was done in RefreshFormData so may not need to be done here
-            if (!HasRefreshedTimePeriod)
-                RefreshTimePeriodRollup();
+                // rollup by time has no viewstate so must be refreshed on each page load.
+                mfbTotalsByTimePeriod.RefreshTable(Rollup, true); // should never be null - should be set in IsPostback and thereafter be in viewstate
         }
 
         private IDictionary<string, IList<Form8710ClassTotal>> ClassTotals { get; set; }
-
-        protected void RefreshTimePeriodRollup()
-        {
-            bool fNewYearsDay = DateTime.Now.Day == 1 && DateTime.Now.Month == 1;
-            mfbTotalsByTimePeriod.BindTotalsForUser(Page.User.Identity.Name, false, DateTime.Now.Day > 1, true, true, !fNewYearsDay, !fNewYearsDay, mfbSearchForm1.Restriction);
-            HasRefreshedTimePeriod = true;
-        }
 
         protected void RefreshFormData()
         {
@@ -90,7 +105,6 @@ namespace MyFlightbook.MemberPages
                     Task.Run(() => { ClassTotals = Form8710ClassTotal.ClassTotalsForQuery(fq, args); }),
                     Task.Run(() => { lst8710 = Form8710Row.Form8710ForQuery(fq, args); }),
                     Task.Run(() => { lstModels = ModelRollupRow.ModelRollupForQuery(fq, args); }),
-                    Task.Run(() => { RefreshTimePeriodRollup(); }),
                     Task.Run(() =>
                     {
                         if (!Request.IsMobileSession())
@@ -111,6 +125,8 @@ namespace MyFlightbook.MemberPages
 
             gv8710.DataSource = lst8710;
             gv8710.DataBind();
+
+            mfbTotalsByTimePeriod.RefreshTable(Rollup, true);
         }
 
         public void ClearForm(object sender, FlightQueryEventArgs fqe)
@@ -118,12 +134,14 @@ namespace MyFlightbook.MemberPages
             if (fqe == null)
                 throw new ArgumentNullException(nameof(fqe));
             mfbSearchForm1.Restriction = fqe.Query;
+            Rollup = RollupForQuery(fqe.Query);
             UpdateDescription();
             ShowResults(sender, fqe);
         }
 
         protected void OnQuerySubmitted(object sender, FlightQueryEventArgs fqe)
         {
+            Rollup = RollupForQuery(fqe.Query);
             ShowResults(sender, fqe);
         }
 
@@ -154,6 +172,7 @@ namespace MyFlightbook.MemberPages
             if (fic == null)
                 throw new ArgumentNullException(nameof(fic));
             mfbSearchForm1.Restriction = mfbSearchForm1.Restriction.ClearRestriction(fic.FilterItem);   // need to set the restriction in order to persist it (since it updates the view)
+            Rollup = RollupForQuery(mfbSearchForm1.Restriction);
             ShowResults(sender, new FlightQueryEventArgs(mfbSearchForm1.Restriction));
         }
 

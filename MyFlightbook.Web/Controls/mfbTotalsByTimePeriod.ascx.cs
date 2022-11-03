@@ -17,8 +17,6 @@ namespace MyFlightbook.Currency
     {
         protected bool UseHHMM { get; set; }
 
-        public TimeRollup Rollup { get; set; }
-
         protected void Page_Load(object sender, EventArgs e)
         {
 
@@ -49,15 +47,17 @@ namespace MyFlightbook.Currency
             if (ti == null)
                 return 0.0M;
 
+            string szText = HttpUtility.HtmlEncode(ti.ValueString(UseHHMM));
+
             // Otherwise, add the cell to the table, following the design in mfbTotalSummary
             // Link the *value* here, not the description, since we will have multiple columns
             // Add the values div (panel) to the totals box
             if (ti.Query == null || !linkQuery)
-                tc.Controls.Add(new Label() { Text = ti.ValueString(UseHHMM) });
+                tc.Controls.Add(new Label() { Text = szText });
             else
                 tc.Controls.Add(new HyperLink()
                 {
-                    Text = ti.ValueString(UseHHMM),
+                    Text = szText,
                     NavigateUrl = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}",
                                                     Branding.CurrentBrand.HostName,
                                                     ResolveUrl("~/Member/LogbookNew.aspx?fq=" + HttpUtility.UrlEncode(ti.Query.ToBase64CompressedJSONString())))
@@ -65,53 +65,21 @@ namespace MyFlightbook.Currency
 
             Panel p = new Panel();
             tc.Controls.Add(p);
-            Label l = new Label() { CssClass = "fineprint", Text = ti.SubDescription };
+            Label l = new Label() { CssClass = "fineprint", Text = HttpUtility.HtmlEncode(ti.SubDescription) };
             p.Controls.Add(l);
 
             return ti.Value;    // Indicate if we actually had a non-zero value.  A row of all empty cells or zero cells should be deleted.
         }
 
         /// <summary>
-        /// Binds the totals with the specified columns for the user AND refreshes the table.
-        /// </summary>
-        /// <param name="szUser">User for whome totals should be computed</param>
-        /// <param name="fLast7Days">True to include trailing 7 days</param>
-        /// <param name="fMonthToDate">True to include month to date</param>
-        /// <param name="fPreviousMonth">True to include previous month</param>
-        /// <param name="fPreviousYear">True to include previous year</param>
-        /// <param name="fYearToDate">True to include year to date</param>
-        /// <param name="fTrailing12">True to include trailing 12</param>
-        /// <param name="fqSupplied">Optional flightquery to start from</param>
-        /// <param name="fLinkQuery">True to linkify totals for the query</param>
-        /// <returns>TimeRollup that you can cache</returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        public TimeRollup BindTotalsForUser(string szUser, bool fLast7Days, bool fMonthToDate, bool fPreviousMonth, bool fPreviousYear, bool fYearToDate, bool fTrailing12, FlightQuery fqSupplied = null, bool fLinkQuery = true)
-        {
-            if (String.IsNullOrEmpty(szUser))
-                throw new ArgumentNullException(nameof(szUser));
-
-            Rollup = new TimeRollup(szUser, fqSupplied) { 
-                IncludeLast7Days = fLast7Days, 
-                IncludeMonthToDate = fMonthToDate, 
-                IncludePreviousMonth = fPreviousMonth, 
-                IncludePreviousYear = fPreviousYear,
-                IncludeYearToDate = fYearToDate, 
-                IncludeTrailing12 = fTrailing12, 
-                };
-            Rollup.Bind();
-
-            RefreshTable(fLinkQuery);
-
-            return Rollup;
-        }
-
-        /// <summary>
-        /// Reconstructs the table for the specified rollup.
+        /// Reconstructs the table for the built-in rollup.
         /// </summary>
         /// <param name="rollup"></param>
-        public void RefreshTable(bool fLinkQuery)
+        public void RefreshTable(TimeRollup r, bool fLinkQuery)
         {
             tblTotals.Controls.Clear();
+
+            TimeRollup Rollup = r;
 
             if (Rollup == null)
                 return;
@@ -145,7 +113,7 @@ namespace MyFlightbook.Currency
             {
                 TableRow trGroup = new TableRow() { CssClass = "totalsGroupHeaderRow" };
                 tblTotals.Rows.Add(trGroup);
-                TableCell tcGroup = new TableCell() { ColumnSpan = ColumnCount, Text = tic.GroupName };
+                TableCell tcGroup = new TableCell() { ColumnSpan = ColumnCount, Text = HttpUtility.HtmlEncode(tic.GroupName) };
                 trGroup.Cells.Add(tcGroup);
 
                 TableRow trHeader = new TableRow();
@@ -167,7 +135,7 @@ namespace MyFlightbook.Currency
                     tblTotals.Rows.Add(tr);
 
                     // Add the description
-                    tr.Cells.Add(new TableCell() { Text = ti.Description });
+                    tr.Cells.Add(new TableCell() { Text = HttpUtility.HtmlEncode(ti.Description) });
 
                     decimal rowTotal = AddCellForTotalsItem(tr, ti, true, fLinkQuery) +
                     AddCellForTotalsItem(tr, Rollup.Last7.ContainsKey(ti.Description) ? Rollup.Last7[ti.Description] : null, Rollup.IncludeLast7Days, fLinkQuery) +

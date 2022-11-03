@@ -1414,16 +1414,25 @@ namespace MyFlightbook.Currency
             if (SuppliedQueryHasDates)
                 IncludeLast7Days = IncludeMonthToDate = IncludePreviousMonth = IncludePreviousYear = IncludeYearToDate = IncludeTrailing12 = IncludeTrailing24 = false;
 
+            // set up the queries synchronously; there may be a race condition there.
+            FlightQuery fqThisMonth = new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.ThisMonth };
+            FlightQuery fqPrevMonth = new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.PrevMonth };
+            FlightQuery fqYTD = new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.YTD };
+            FlightQuery fqTrailing12 = new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.Trailing12Months };
+            FlightQuery fqTrailing24 = new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.Custom, DateMin = DateTime.Now.Date.AddMonths(-24), DateMax = DateTime.Now.Date.AddDays(1) };
+            FlightQuery fqPrevYear = new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.PrevYear };
+            FlightQuery fqTrailing7 = new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.Custom, DateMin = DateTime.Now.Date.AddDays(-7), DateMax = DateTime.Now.Date.AddDays(1) };
+
             // Get all of the results asynchronously, but block until they're all done.
             Task.WaitAll(
                 Task.Run(() => { ut.DataBind(); }),
-                Task.Run(() => { TotalsForQuery(new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.ThisMonth }, IncludeMonthToDate, MonthToDate); }),
-                Task.Run(() => { TotalsForQuery(new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.PrevMonth }, IncludePreviousMonth, PrevMonth); }),
-                Task.Run(() => { TotalsForQuery(new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.YTD }, IncludeYearToDate, YTD); }),
-                Task.Run(() => { TotalsForQuery(new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.Trailing12Months }, IncludeTrailing12, Trailing12); }),
-                Task.Run(() => { TotalsForQuery(new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.Custom, DateMin = DateTime.Now.Date.AddMonths(-24), DateMax = DateTime.Now.Date.AddDays(1) }, IncludeTrailing24, Trailing24); }),
-                Task.Run(() => { TotalsForQuery(new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.PrevYear }, IncludePreviousYear, PrevYear); }),
-                Task.Run(() => { TotalsForQuery(new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.Custom, DateMin = DateTime.Now.Date.AddDays(-7), DateMax = DateTime.Now.Date.AddDays(1) }, IncludeLast7Days, Last7); })
+                Task.Run(() => { TotalsForQuery(fqThisMonth, IncludeMonthToDate, MonthToDate); }),
+                Task.Run(() => { TotalsForQuery(fqPrevMonth, IncludePreviousMonth, PrevMonth); }),
+                Task.Run(() => { TotalsForQuery(fqYTD, IncludeYearToDate, YTD); }),
+                Task.Run(() => { TotalsForQuery(fqTrailing12, IncludeTrailing12, Trailing12); }),
+                Task.Run(() => { TotalsForQuery(fqTrailing24, IncludeTrailing24, Trailing24); }),
+                Task.Run(() => { TotalsForQuery(fqPrevYear, IncludePreviousYear, PrevYear); }),
+                Task.Run(() => { TotalsForQuery(fqTrailing7, IncludeLast7Days, Last7); })
                 );
 
             allTotals = TotalsItemCollection.AsGroups(ut.Totals);
