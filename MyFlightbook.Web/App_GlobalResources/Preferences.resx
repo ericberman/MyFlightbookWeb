@@ -239,13 +239,13 @@
     <value>CASA Class 2</value>
   </data>
   <data name="MedicalTypeEASA1stClass" xml:space="preserve">
-    <value>EASA Class 1</value>
+    <value>EASA/UK Class 1</value>
   </data>
   <data name="MedicalTypeEASA2ndClass" xml:space="preserve">
-    <value>EASA Class 2</value>
+    <value>EASA/UK Class 2</value>
   </data>
   <data name="MedicalTypeEASALAPL" xml:space="preserve">
-    <value>EASA LAPL</value>
+    <value>EASA/UK LAPL</value>
   </data>
   <data name="MedicalTypeFAA1stClass" xml:space="preserve">
     <value>FAA - 1st Class</value>

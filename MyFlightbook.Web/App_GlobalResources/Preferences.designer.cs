@@ -421,7 +421,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to EASA Class 1.
+        ///   Looks up a localized string similar to EASA/UK Class 1.
         /// </summary>
         internal static string MedicalTypeEASA1stClass {
             get {
@@ -430,7 +430,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to EASA Class 2.
+        ///   Looks up a localized string similar to EASA/UK Class 2.
         /// </summary>
         internal static string MedicalTypeEASA2ndClass {
             get {
@@ -439,7 +439,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to EASA LAPL.
+        ///   Looks up a localized string similar to EASA/UK LAPL.
         /// </summary>
         internal static string MedicalTypeEASALAPL {
             get {
