@@ -323,51 +323,6 @@ namespace MyFlightbook.Web.Admin
             await RefreshOrphans();
         }
 
-        protected void gvDupeAircraft_RowCommand(object sender, CommandEventArgs e)
-        {
-            if (e == null)
-                throw new ArgumentNullException(nameof(e));
-            int rowClicked = Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture);
-            GridViewRow gvr = gvDupeAircraft.Rows[rowClicked];
-            string szTail = gvr.Cells[0].Text;
-            List<Aircraft> lstDupes = Aircraft.AircraftMatchingTail(szTail);
-
-            // Sort by instance type, then model ID.  We'll be grouping by these two.
-            lstDupes.Sort((ac1, ac2) => { return (ac1.InstanceTypeID == ac2.InstanceTypeID) ? ac1.ModelID - ac2.ModelID : ac1.InstanceTypeID - ac2.InstanceTypeID; });
-
-            // Now go through the list.  If adjacent aircraft are the same, merge them.
-            // TODO: This actually has a bug where if we have 3 aircraft to merge, it does the 1st two then exits the loop.
-            for (int i = 0; i < lstDupes.Count - 1; i++)
-            {
-                Aircraft acThis = lstDupes[i];
-                Aircraft acNext = lstDupes[i + 1];
-
-                if (acThis.InstanceTypeID == acNext.InstanceTypeID && acThis.ModelID == acNext.ModelID)
-                {
-                    AircraftUtility.AdminMergeDupeAircraft(acThis, acNext);
-                    lstDupes.RemoveAt(i + 1);
-                }
-                if (acThis.Version != i)
-                {
-                    acThis.Version = i;
-                    acThis.Commit();
-                }
-                if (acNext.Version != i + 1)
-                {
-                    acNext.Version = i + 1;
-                    acNext.Commit();
-                }
-            }
-
-            // Now hide each row that matched - just for speed; much quicker than rebinding the data
-            string szNormalTail = Aircraft.NormalizeTail(szTail);
-            foreach (GridViewRow gvrow in gvDupeAircraft.Rows)
-            {
-                if (String.Compare(Aircraft.NormalizeTail(gvrow.Cells[0].Text), szNormalTail, StringComparison.OrdinalIgnoreCase) == 0)
-                    gvrow.Visible = false;
-            }
-        }
-
         protected void gvSims_RowCommand(object sender, CommandEventArgs e)
         {
             if (e == null)

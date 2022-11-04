@@ -234,11 +234,10 @@
                     <p>
                         Potential duplicate aircraft:
                     </p>
-                    <asp:GridView ID="gvDupeAircraft" runat="server" AutoGenerateColumns="False"
-                        OnRowCommand="gvDupeAircraft_RowCommand">
+                    <asp:GridView ID="gvDupeAircraft" runat="server" AutoGenerateColumns="False" AutoGenerateEditButton="true" DataKeyNames="idaircraft">
                         <Columns>
-                            <asp:BoundField DataField="TailNumber" HeaderText="Tail Number" />
-                            <asp:BoundField DataField="NormalTail" HeaderText="Normalized Tail" />
+                            <asp:BoundField DataField="TailNumber" HeaderText="Tail Number" ReadOnly="true" />
+                            <asp:BoundField DataField="TailNormal" HeaderText="Normalized Tail" ReadOnly="true" />
                             <asp:HyperLinkField DataNavigateUrlFields="idaircraft"
                                 DataNavigateUrlFormatString="~/Member/EditAircraft.aspx?id={0}&amp;a=1"
                                 DataTextField="idaircraft" HeaderText="Aircraft ID" Target="_blank" />
@@ -246,17 +245,10 @@
                                 DataNavigateUrlFormatString="~/Member/EditMake.aspx?id={0}&amp;a=1"
                                 DataTextField="idmodel" HeaderText="Model ID" Target="_blank" />
                             <asp:BoundField DataField="version" HeaderText="Version" />
-                            <asp:BoundField DataField="ModelCommonName" HeaderText="Model Name" />
-                            <asp:BoundField DataField="instancetype" HeaderText="Instance Type" />
-                            <asp:BoundField DataField="numFlights" HeaderText="# of Flights" />
-                            <asp:BoundField DataField="numUsers" HeaderText="# of Users" />
-                            <asp:ButtonField CommandName="ResolveAircraft" Text="Consolidate" />
-                            <asp:TemplateField>
-                                <ItemTemplate>
-                                    <asp:Label ID="lblError" runat="server" CssClass="error"
-                                        EnableViewState="false"></asp:Label>
-                                </ItemTemplate>
-                            </asp:TemplateField>
+                            <asp:BoundField DataField="ModelCommonName" HeaderText="Model Name" ReadOnly="true" />
+                            <asp:BoundField DataField="instancetype" HeaderText="Instance Type" ReadOnly="true" />
+                            <asp:BoundField DataField="numFlights" HeaderText="# of Flights" ReadOnly="true" />
+                            <asp:BoundField DataField="numUsers" HeaderText="# of Users" ReadOnly="true" />
                         </Columns>
                         <EmptyDataTemplate>
                             <p class="success">
@@ -267,9 +259,10 @@
                     <asp:SqlDataSource ID="sqlDupeAircraft" runat="server"
                         ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>"
                         ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" SelectCommand="SELECT 
-    ac.TailNumber
+    ac.TailNumber,
     ac.idaircraft,
     ac.idmodel,
+    ac.tailnormal,
     ac.version,
     CONCAT(manufacturers.manufacturer, ' ', models.model, ' ' , models.typename, ' ', models.modelname) AS 'ModelCommonName',
     ac.instancetype,
@@ -286,7 +279,14 @@ WHERE UPPER(ac.tailnormal) IN
          FROM Aircraft ac 
          GROUP BY TailMatch 
          HAVING cAircraft &gt; 1) AS Dupes)
-ORDER BY NormalTail ASC, numUsers DESC, idaircraft ASC"></asp:SqlDataSource>
+ORDER BY tailnormal ASC, version, numUsers DESC, idaircraft ASC"
+
+                        UpdateCommand="UPDATE aircraft SET version=?Version WHERE idaircraft=?idaircraft">
+                        <UpdateParameters>
+                            <asp:Parameter Name="Version" Direction="InputOutput" Type="Int32" />
+                            <asp:Parameter Name="idaircraft" Direction="Input" Type="Int32" />
+                        </UpdateParameters>
+                    </asp:SqlDataSource>
                 </asp:View>
                 <asp:View ID="vwDupeSims" runat="server">
                     <p>
