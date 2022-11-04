@@ -124,10 +124,10 @@ namespace MyFlightbook.Clubs
                         bool fIsAdmin = util.GetIntParam(Request, "a", 0) != 0 && Profile.GetUser(Page.User.Identity.Name).CanManageData;
                         if (fIsAdmin && cm == null)
                             cm = new ClubMember(CurrentClub.ID, Page.User.Identity.Name, ClubMember.ClubMemberRole.Admin);
-                        bool fIsManager = fIsAdmin || (cm != null && cm.IsManager);
                         lnkManageClub.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/ClubManage.aspx/{0}", CurrentClub.ID);
                         mvMain.SetActiveView(cm == null ? vwMainGuest : vwSchedules);
-                        mvTop.SetActiveView(cm == null ? vwTopGuest : (fIsManager ? vwTopAdmin : vwTopMember));
+                        pnlGuest.Visible = cm == null;
+                        pnlManage.Visible = fIsAdmin || (cm != null && cm.IsManager);
 
                         if (cm == null)
                         {

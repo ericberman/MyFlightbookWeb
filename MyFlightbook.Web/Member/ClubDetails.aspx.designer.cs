@@ -24,15 +24,6 @@ namespace MyFlightbook.Clubs
         protected global::System.Web.UI.WebControls.Label lblClubHeader;
 
         /// <summary>
-        /// lnkViewAll control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink lnkViewAll;
-
-        /// <summary>
         /// mvPromoStatus control.
         /// </summary>
         /// <remarks>
@@ -78,22 +69,13 @@ namespace MyFlightbook.Clubs
         protected global::System.Web.UI.WebControls.Label lblInactive;
 
         /// <summary>
-        /// mvTop control.
+        /// pnlGuest control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.MultiView mvTop;
-
-        /// <summary>
-        /// vwTopGuest control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.View vwTopGuest;
+        protected global::System.Web.UI.WebControls.Panel pnlGuest;
 
         /// <summary>
         /// lblNotMember control.
@@ -141,33 +123,6 @@ namespace MyFlightbook.Clubs
         protected global::System.Web.UI.WebControls.Label lblMessageStatus;
 
         /// <summary>
-        /// vwTopMember control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.View vwTopMember;
-
-        /// <summary>
-        /// vwTopAdmin control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.View vwTopAdmin;
-
-        /// <summary>
-        /// lnkManageClub control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink lnkManageClub;
-
-        /// <summary>
         /// lblErr control.
         /// </summary>
         /// <remarks>
@@ -204,6 +159,24 @@ namespace MyFlightbook.Clubs
         protected global::System.Web.UI.WebControls.Localize locClubInfo;
 
         /// <summary>
+        /// pnlManage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlManage;
+
+        /// <summary>
+        /// lnkManageClub control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink lnkManageClub;
+
+        /// <summary>
         /// ViewClub1 control.
         /// </summary>
         /// <remarks>
@@ -238,6 +211,15 @@ namespace MyFlightbook.Clubs
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::AjaxControlToolkit.ConfirmButtonExtender confirmLeave;
+
+        /// <summary>
+        /// lnkViewAll control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink lnkViewAll;
 
         /// <summary>
         /// acpMembers control.

@@ -19,7 +19,6 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="cpTopForm" Runat="Server">
     <script src='<%= ResolveUrl("~/public/Scripts/daypilot-all.min.js?v=20210821") %>'></script>
     <script src='<%= ResolveUrl("~/public/Scripts/mfbcalendar.js?v=3") %>'></script>
-    <p><asp:HyperLink ID="lnkViewAll" runat="server" NavigateUrl="~/Public/Clubs.aspx?noredir=1" Text="<%$ Resources:Club, LabelViewAllClubs %>"></asp:HyperLink></p>
     <asp:MultiView ID="mvPromoStatus" runat="server">
         <asp:View ID="vwPromotional" runat="server">
             <p><asp:Label Font-Bold="true" ID="lblPromo" runat="server"></asp:Label></p>
@@ -28,51 +27,49 @@
             <p class="error"><asp:Label ID="lblInactive" runat="server"></asp:Label></p>
         </asp:View>
     </asp:MultiView>
-    <asp:MultiView ID="mvTop" runat="server">
-        <asp:View ID="vwTopGuest" runat="server">
-            <div class="callout">
-                <p><asp:Localize ID="lblNotMember" runat="server" Text="<%$ Resources:Club, LabelNotAMember %>" /></p>
-                <p>
-                    <asp:Localize ID="locSendMessage" Text="<%$ Resources:Club, LabelSendMessage %>" runat="server" />
-                    <a href="javascript:contactClubClick();"><% =Resources.Club.LinkSendMessage %></a>
-                </p>
-            </div>
-            <div id="divContactClub" style="display:none; width: 450px;">
-                <p>
-                    <textarea id="txtContactClub" rows="5" cols="20" style="width:400px; margin-left:auto; margin-right:auto;"></textarea>
-                </p>
-                <table>
-                    <tr style="vertical-align:top;">
-                        <td><input type="checkbox" id="ckRequestMembership" /></td>
-                        <td><label for="ckRequestMembership"><% =Resources.Club.LabelRequestMembership %></label></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" style="text-align:center">
-                            <asp:Button ID="btnCancel" runat="server" Text="<%$ Resources:LocalizedText, Cancel %>" OnClientClick="dismissDlg('#divContactClub'); return false;" />&nbsp;&nbsp;<asp:Button ID="btnSendMessage" runat="server" Text="<%$ Resources:Club, LabelContactClub %>" OnClientClick="javascript:contactClubSend(); return false;" />
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <p><asp:Label ID="lblMessageStatus" runat="server" CssClass="success" Text="<%$ Resources:Club, StatusMessageSent %>" EnableViewState="false" style="display:none;" /></p>
-        </asp:View>
-        <asp:View ID="vwTopMember" runat="server"></asp:View>
-        <asp:View ID="vwTopAdmin" runat="server">
-            <p class="callout"><% =Resources.Club.LabelManageClub %> <asp:HyperLink ID="lnkManageClub" runat="server" Text="<%$ Resources:Club, LabelManageNow %>"></asp:HyperLink></p>
-        </asp:View>
-    </asp:MultiView>
+    <asp:Panel runat="server" ID="pnlGuest">
+        <div class="calloutSmall calloutBackground shadowed">
+            <p><asp:Localize ID="lblNotMember" runat="server" Text="<%$ Resources:Club, LabelNotAMember %>" /></p>
+            <p>
+                <asp:Localize ID="locSendMessage" Text="<%$ Resources:Club, LabelSendMessage %>" runat="server" />
+                <a href="javascript:contactClubClick();"><% =Resources.Club.LinkSendMessage %></a>
+            </p>
+        </div>
+        <div id="divContactClub" style="display:none; width: 450px;">
+            <p>
+                <textarea id="txtContactClub" rows="5" cols="20" style="width:400px; margin-left:auto; margin-right:auto;"></textarea>
+            </p>
+            <table>
+                <tr style="vertical-align:top;">
+                    <td><input type="checkbox" id="ckRequestMembership" /></td>
+                    <td><label for="ckRequestMembership"><% =Resources.Club.LabelRequestMembership %></label></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align:center">
+                        <asp:Button ID="btnCancel" runat="server" Text="<%$ Resources:LocalizedText, Cancel %>" OnClientClick="dismissDlg('#divContactClub'); return false;" />&nbsp;&nbsp;<asp:Button ID="btnSendMessage" runat="server" Text="<%$ Resources:Club, LabelContactClub %>" OnClientClick="javascript:contactClubSend(); return false;" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <p><asp:Label ID="lblMessageStatus" runat="server" CssClass="success" Text="<%$ Resources:Club, StatusMessageSent %>" EnableViewState="false" style="display:none;" /></p>
+    </asp:Panel>
     <asp:Label ID="lblErr" runat="server" CssClass="error" EnableViewState="False"></asp:Label>
-    <asp:Accordion ID="accClub" runat="server" HeaderCssClass="accordianHeader" HeaderSelectedCssClass="accordianHeaderSelected" ContentCssClass="accordianContent" TransitionDuration="250" SelectedIndex="2">
+    <asp:Accordion ID="accClub" runat="server" HeaderCssClass="accordianHeader" HeaderSelectedCssClass="accordianHeaderSelected" ContentCssClass="accordianContent" TransitionDuration="250" SelectedIndex="2" RequireOpenedPane="false">
         <Panes>
             <asp:AccordionPane ID="acpDetails" runat="server">
                 <Header>
-                    <asp:Localize ID="locClubInfo" runat="server" Text="<%$ Resources:Club, TabClubInfo %>" ></asp:Localize>
+                    <asp:Localize ID="locClubInfo" runat="server" Text="<%$ Resources:Club, TabClubInfo %>"  />
                 </Header>
                 <Content>
+                    <asp:Panel class="calloutSmall calloutBackground shadowed" ID="pnlManage" runat="server" style="text-align:center; font-weight:bold;">
+                        <p><% =Resources.Club.LabelManageClub %> <asp:HyperLink ID="lnkManageClub" runat="server" Text="<%$ Resources:Club, LabelManageNow %>" /></p>
+                    </asp:Panel>
                     <uc1:ViewClub ID="ViewClub1" runat="server" LinkToDetails="false" />
                     <asp:Panel ID="pnlLeaveGroup" runat="server" Visible="false">
                         <asp:LinkButton ID="lnkLeaveGroup" Text="<%$ Resources:Club, ButtonLeaveClub %>" runat="server" OnClick="lnkLeaveGroup_Click"></asp:LinkButton>
                         <asp:ConfirmButtonExtender ID="confirmLeave" runat="server" TargetControlID="lnkLeaveGroup" ConfirmText="<%$ Resources:Club, errConfirmLeaveClub %>"></asp:ConfirmButtonExtender>
                     </asp:Panel>
+                    <p><asp:HyperLink ID="lnkViewAll" runat="server" NavigateUrl="~/Public/Clubs.aspx?noredir=1" Text="<%$ Resources:Club, LabelViewAllClubs %>" /></p>
                 </Content>
             </asp:AccordionPane>
             <asp:AccordionPane ID="acpMembers" runat="server">
