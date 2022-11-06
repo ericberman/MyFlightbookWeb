@@ -509,9 +509,9 @@ LEFT JOIN (select idaircraft, tailnumber, m.idmodel, model, modelname
        ON ac.idaircraft=modelTails.idaircraft
 LEFT JOIN Flights f ON f.idaircraft=ac.idaircraft
 WHERE
-	ac.tailnumber RLIKE '^N-?[ABD-FH-KM-QT-WYZ][-0-9A-Z]+' 
-    OR ac.tailnumber RLIKE '^N.*[ioIO]'
-    OR ac.tailnumber RLIKE '^N-?0'
+	(ac.tailnormal RLIKE '^N[ABD-FH-KM-QT-WYZ][-0-9A-Z]+' AND ac.tailnormal NOT RLIKE '^NZ[0-9]{2,4}$')
+    OR ac.tailnormal RLIKE '^N.*[ioIO]'
+    OR ac.tailnormal LIKE 'N0%'
     OR modelTails.tailnumber IS NOT NULL
     OR RIGHT(ac.tailnormal, LENGTH(ac.tailnumber) - 1) = REPLACE(RIGHT(m.model, LENGTH(m.model) - 1), '-', '')
     OR (LEFT(ac.tailnumber, 3) &lt;&gt; 'SIM' AND (LEFT(ac.tailnormal, 4) = LEFT(man.manufacturer, 4)))
