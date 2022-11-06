@@ -24,13 +24,13 @@ namespace MyFlightbook.Clubs
         protected global::System.Web.UI.WebControls.Label lblClubHeader;
 
         /// <summary>
-        /// lblManageheader control.
+        /// ib control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblManageheader;
+        protected global::System.Web.UI.WebControls.Image ib;
 
         /// <summary>
         /// lnkReturnToClub control.
@@ -40,6 +40,24 @@ namespace MyFlightbook.Clubs
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink lnkReturnToClub;
+
+        /// <summary>
+        /// lblManageheader control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblManageheader;
+
+        /// <summary>
+        /// ViewClub1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::MyFlightbook.Clubs.ClubControls.ViewClub ViewClub1;
 
         /// <summary>
         /// accClub control.
@@ -625,15 +643,6 @@ namespace MyFlightbook.Clubs
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblErr;
-
-        /// <summary>
-        /// ViewClub1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::MyFlightbook.Clubs.ClubControls.ViewClub ViewClub1;
 
         /// <summary>
         /// Master property.

@@ -19,9 +19,9 @@
     <asp:Label ID="lblClubHeader" runat="server" Text=""></asp:Label>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="cpTopForm" Runat="Server">
+    <asp:Image ID="ib" ImageAlign="AbsMiddle" ImageUrl="~/images/back.png" runat="server" /><asp:HyperLink ID="lnkReturnToClub" runat="server" Text="<%$ Resources:Club, LabelReturnToClub %>" />
     <h2><asp:Label ID="lblManageheader" runat="server"></asp:Label></h2>
-    <asp:HyperLink ID="lnkReturnToClub" runat="server" Text="<%$ Resources:Club, LabelReturnToClub %>"></asp:HyperLink>
-
+    <uc1:ViewClub ID="ViewClub1" runat="server" LinkToDetails="false" />
     <asp:Accordion ID="accClub" runat="server" HeaderCssClass="accordianHeader" HeaderSelectedCssClass="accordianHeaderSelected" ContentCssClass="accordianContent" TransitionDuration="250" SelectedIndex="-1" RequireOpenedPane="false">
         <Panes>
             <asp:AccordionPane ID="acpMembers" runat="server">
@@ -301,7 +301,6 @@
         </Panes>
     </asp:Accordion>
     <asp:Label ID="lblErr" runat="server" CssClass="error" EnableViewState="False"></asp:Label>
-    <uc1:ViewClub ID="ViewClub1" runat="server" LinkToDetails="false" />
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="cpMain" Runat="Server">
 </asp:Content>
