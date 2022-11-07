@@ -179,7 +179,7 @@
                 <tr>
                     <td>
                         <asp:Button ID="btnCleanUpMaintenance" runat="server" Width="100%" OnClick="btnCleanUpMaintenance_Click" Text="Clean up Maint." /></td>
-                    <td>Remove maintainence for virtual aircraft (sims and generic).
+                    <td>Remove maintainence for virtual aircraft (sims and generic). <asp:Label ID="lblMaintenanceResult" runat="server" EnableViewState="false" />
                     </td>
                 </tr>
                 <tr>

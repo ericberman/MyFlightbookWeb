@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
@@ -393,7 +394,7 @@ namespace MyFlightbook.Web.Admin
 
             string szTailToMatch = Regex.Replace(txtTailToFind.Text, "[^a-zA-Z0-9#?]", "*").ConvertToMySQLWildcards();
 
-            DBHelper dbh = new DBHelper("SELECT * FROM aircraft WHERE UPPER(tailnormal) LIKE ?tailNum");
+            DBHelper dbh = new DBHelper("SELECT * FROM aircraft WHERE tailnormal LIKE ?tailNum");
 
             List<Aircraft> lstAc = new List<Aircraft>();
             dbh.ReadRows(
@@ -414,24 +415,30 @@ FROM aircraft ac
 INNER JOIN maintenancelog ml ON ac.idaircraft=ml.idaircraft
 WHERE (ac.tailnumber LIKE 'SIM%' OR ac.tailnumber LIKE '#%' OR ac.InstanceType <> 1) AND ml.idAircraft IS NOT NULL
 GROUP BY ac.idaircraft";
+            const string szSQLDeleteVirtualMaintenanceDates = @"UPDATE aircraft
+SET lastannual=null, lastPitotStatic=null, lastVOR=null, lastAltimeter=null, lasttransponder=null, registrationdue=null, glassupgradedate=null
+WHERE (tailnumber LIKE 'SIM%' OR tailnumber LIKE '#%' OR InstanceType <> 1) ";
 
             List<int> lst = new List<int>();
             DBHelper dbh = new DBHelper(szSQLMaintainedVirtualAircraft);
             dbh.ReadRows((comm) => { }, (dr) => { lst.Add(Convert.ToInt32(dr["idaircraft"], CultureInfo.InvariantCulture)); });
-            if (lst.Count == 0)
-                return;
-            IEnumerable<Aircraft> rgac = Aircraft.AircraftFromIDs(lst);
-            DBHelper dbhDelMaintenance = new DBHelper("DELETE FROM maintenancelog WHERE idAircraft=?idac");
-            foreach (Aircraft ac in rgac)
-            {
-                // clean up the maintenance
-                ac.Last100 = ac.LastNewEngine = ac.LastOilChange = 0.0M;
-                ac.LastAltimeter = ac.LastAnnual = ac.LastELT = ac.LastStatic = ac.LastTransponder = ac.LastVOR = ac.RegistrationDue = DateTime.MinValue;
-                ac.Commit();
+            if (lst.Any()) {
+                IEnumerable<Aircraft> rgac = Aircraft.AircraftFromIDs(lst);
+                DBHelper dbhDelMaintenance = new DBHelper("DELETE FROM maintenancelog WHERE idAircraft=?idac");
+                foreach (Aircraft ac in rgac)
+                {
+                    // clean up the maintenance
+                    ac.Last100 = ac.LastNewEngine = ac.LastOilChange = 0.0M;
+                    ac.LastAltimeter = ac.LastAnnual = ac.LastELT = ac.LastStatic = ac.LastTransponder = ac.LastVOR = ac.RegistrationDue = DateTime.MinValue;
+                    ac.Commit();
 
-                // and then delete any maintenance records for this.
-                dbhDelMaintenance.DoNonQuery((comm) => { comm.Parameters.AddWithValue("idac", ac.AircraftID); });
+                    // and then delete any maintenance records for this.
+                    dbhDelMaintenance.DoNonQuery((comm) => { comm.Parameters.AddWithValue("idac", ac.AircraftID); });
+                }
             }
+            dbh.CommandText = szSQLDeleteVirtualMaintenanceDates;
+            dbh.DoNonQuery();
+            lblMaintenanceResult.Text = String.Format(CultureInfo.CurrentCulture, "Maintenance cleaned up, {0} maintenance logs cleaned, all virtual aircraft had dates nullified", lst.Count);
         }
 
         protected void btnAircraftMissingFromProfile_Click(object sender, EventArgs e)

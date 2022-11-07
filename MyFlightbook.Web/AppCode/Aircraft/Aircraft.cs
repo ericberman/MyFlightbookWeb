@@ -1052,20 +1052,20 @@ WHERE
                     comm.Parameters.AddWithValue("idmodel", ModelID);
                     comm.Parameters.AddWithValue("InstanceType", InstanceTypeID);
                     comm.Parameters.AddWithValue("HasGlass", IsGlass);
-                    comm.Parameters.AddWithValue("glassUpgradeDate", GlassUpgradeDate ?? (DateTime?)null);
+                    comm.Parameters.AddWithValue("glassUpgradeDate", GlassUpgradeDate);
                     comm.Parameters.AddWithValue("IsTaa", IsTAA);
                     comm.Parameters.AddWithValue("version", Version);
 
-                    comm.Parameters.AddWithValue("LastAnnual", LastAnnual);
-                    comm.Parameters.AddWithValue("LastVOR", LastVOR);
-                    comm.Parameters.AddWithValue("LastAltimeter", LastAltimeter);
-                    comm.Parameters.AddWithValue("LastTransponder", LastTransponder);
-                    comm.Parameters.AddWithValue("LastPitotStatic", LastStatic);
-                    comm.Parameters.AddWithValue("LastElt", LastELT);
+                    comm.Parameters.AddWithValue("LastAnnual", LastAnnual.AsNulluble());
+                    comm.Parameters.AddWithValue("LastVOR", LastVOR.AsNulluble());
+                    comm.Parameters.AddWithValue("LastAltimeter", LastAltimeter.AsNulluble());
+                    comm.Parameters.AddWithValue("LastTransponder", LastTransponder.AsNulluble());
+                    comm.Parameters.AddWithValue("LastPitotStatic", LastStatic.AsNulluble());
+                    comm.Parameters.AddWithValue("LastElt", LastELT.AsNulluble());
                     comm.Parameters.AddWithValue("Last100", Last100);
                     comm.Parameters.AddWithValue("LastOil", LastOilChange);
                     comm.Parameters.AddWithValue("LastEngine", LastNewEngine);
-                    comm.Parameters.AddWithValue("RegistrationDue", RegistrationDue);
+                    comm.Parameters.AddWithValue("RegistrationDue", RegistrationDue.AsNulluble());
                     comm.Parameters.AddWithValue("PublicNotes", PublicNotes.LimitTo(4094));
                     comm.Parameters.AddWithValue("locked", IsLocked);
                     comm.Parameters.AddWithValue("Revision", ++Revision);

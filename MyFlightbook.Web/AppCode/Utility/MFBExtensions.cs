@@ -39,6 +39,16 @@ namespace MyFlightbook
         }
 
         /// <summary>
+        /// Treats a datetime as nullable, converting it to a DateTime?.  If HasValue is true, has the date, else is null
+        /// </summary>
+        /// <param name="dt"></param>
+        /// <returns>the datetime, or null</returns>
+        public static DateTime? AsNulluble(this DateTime dt)
+        {
+            return dt.HasValue() ? dt : (DateTime?)null;
+        }
+
+        /// <summary>
         /// Returns the format string for UTC date in the current locale's format
         /// </summary>
         /// <param name="dt">The date</param>
