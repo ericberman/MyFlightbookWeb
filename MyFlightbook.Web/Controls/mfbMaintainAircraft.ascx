@@ -17,7 +17,7 @@
                 var d = JSON.stringify(params);
                 $.ajax(
                     {
-                        url: '<% =ResolveUrl("~/Member/EditAircraft.aspx/GetHighWaterMarks") %>',
+                        url: '<% =ResolveUrl("~/Member/Ajax.asmx/GetHighWaterMarks") %>',
                         type: "POST", data: d, dataType: "json", contentType: "application/json",
                         error: function (xhr, status, error) {
                             window.alert(xhr.responseJSON.Message);

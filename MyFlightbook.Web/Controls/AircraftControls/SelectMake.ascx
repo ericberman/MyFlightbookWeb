@@ -27,7 +27,7 @@
                 CompletionListItemCssClass="AutoExtenderList" DelimiterCharacters=""
                 OnClientItemSelected="ModelSelected"
                 Enabled="True" MinimumPrefixLength="2" ServiceMethod="SuggestFullModels"
-                ServicePath="~/Member/EditAircraft.aspx" TargetControlID="txtFilter" CompletionSetCount="20">
+                ServicePath="~/Member/Ajax.asmx" TargetControlID="txtFilter" CompletionSetCount="20">
             </cc1:AutoCompleteExtender>
         </div>
          

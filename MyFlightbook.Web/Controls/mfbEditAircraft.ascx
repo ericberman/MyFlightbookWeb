@@ -116,7 +116,7 @@
                                         CompletionListItemCssClass="AutoExtenderList" DelimiterCharacters=""
                                         OnClientItemSelected="AircraftSelected"
                                         Enabled="True" MinimumPrefixLength="2" ServiceMethod="SuggestAircraft"
-                                        ServicePath="~/Member/EditAircraft.aspx" TargetControlID="txtTail">
+                                        ServicePath="~/Member/Ajax.asmx" TargetControlID="txtTail">
                                     </cc1:AutoCompleteExtender>
                                     <asp:HiddenField ID="hdnSelectedAircraftID" runat="server" />
                                     <cc1:FilteredTextBoxExtender ID="FilteredTextBoxExtender1" runat="server"

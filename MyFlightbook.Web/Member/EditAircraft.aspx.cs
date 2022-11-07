@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -17,54 +16,6 @@ namespace MyFlightbook.Web.Member
     public partial class EditAircraft : Page
     {
         #region webservices
-        [System.Web.Services.WebMethod]
-        [System.Web.Script.Services.ScriptMethod]
-        public static string[] SuggestFullModels(string prefixText, int count)
-        {
-            if (String.IsNullOrEmpty(prefixText))
-                return Array.Empty<string>();
-
-            ModelQuery modelQuery = new ModelQuery() { FullText = prefixText.Replace("-", "*"), PreferModelNameMatch = true, Skip = 0, Limit = count };
-            List<string> lst = new List<string>();
-            foreach (MakeModel mm in MakeModel.MatchingMakes(modelQuery))
-                lst.Add(AjaxControlToolkit.AutoCompleteExtender.CreateAutoCompleteItem(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithDash, mm.ManufacturerDisplay, mm.ModelDisplayName), mm.MakeModelID.ToString(CultureInfo.InvariantCulture)));
-
-            return lst.ToArray();
-        }
-
-        [System.Web.Services.WebMethod]
-        [System.Web.Script.Services.ScriptMethod]
-        public static string[] SuggestAircraft(string prefixText, int count)
-        {
-            if (String.IsNullOrEmpty(prefixText))
-                return Array.Empty<string>();
-            IEnumerable<Aircraft> lstAircraft = Aircraft.AircraftWithPrefix(prefixText, count);
-            List<string> lst = new List<string>();
-            foreach (Aircraft ac in lstAircraft)
-                lst.Add(AjaxControlToolkit.AutoCompleteExtender.CreateAutoCompleteItem(String.Format(CultureInfo.CurrentCulture, "{0} - {1}", ac.TailNumber, ac.ModelDescription), ac.AircraftID.ToString(CultureInfo.InvariantCulture)));
-            return lst.ToArray();
-        }
-
-        [System.Web.Services.WebMethod]
-        [System.Web.Script.Services.ScriptMethod]
-        public static string GetHighWaterMarks(int idAircraft)
-        {
-            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
-                throw new MyFlightbookException("Unauthenticated call to GetHighWaterMarks");
-
-            if (idAircraft <= 0)
-                return String.Empty;
-
-            decimal hwHobbs = AircraftUtility.HighWaterMarkHobbsForUserInAircraft(idAircraft, HttpContext.Current.User.Identity.Name);
-            decimal hwTach = AircraftUtility.HighWaterMarkTachForUserInAircraft(idAircraft, HttpContext.Current.User.Identity.Name);
-
-            if (hwTach == 0)
-                return hwHobbs == 0 ? String.Empty : String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.HighWaterMarkHobbsOnly, hwHobbs);
-            else if (hwHobbs == 0)
-                return String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.HighWaterMarkTachOnly, hwTach);
-            else
-                return String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.HighWaterMarkTachAndHobbs, hwTach, hwHobbs);
-        }
         #endregion
 
         protected bool AdminMode

@@ -34,6 +34,7 @@ namespace MyFlightbook.Web.Member
                 throw new UnauthorizedAccessException();
         }
 
+        #region Flight Methods
         /// <summary>
         /// Gets a flight by id for the current user.
         /// </summary>
@@ -91,5 +92,76 @@ namespace MyFlightbook.Web.Member
                 util.SendMessage(msg);
             }
         }
+        #endregion
+
+        #region Aircraft Methods
+        /// <summary>
+        /// Autocompletion for modelnames
+        /// </summary>
+        /// <param name="prefixText"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        [WebMethod(EnableSession = true)]
+        public string[] SuggestFullModels(string prefixText, int count)
+        {
+            CheckAuth();
+            if (String.IsNullOrEmpty(prefixText))
+                return Array.Empty<string>();
+
+            ModelQuery modelQuery = new ModelQuery() { FullText = prefixText.Replace("-", "*"), PreferModelNameMatch = true, Skip = 0, Limit = count };
+            List<string> lst = new List<string>();
+            foreach (MakeModel mm in MakeModel.MatchingMakes(modelQuery))
+                lst.Add(AjaxControlToolkit.AutoCompleteExtender.CreateAutoCompleteItem(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithDash, mm.ManufacturerDisplay, mm.ModelDisplayName), mm.MakeModelID.ToString(CultureInfo.InvariantCulture)));
+
+            return lst.ToArray();
+        }
+
+        /// <summary>
+        /// Autocompletion for aircraft tails
+        /// </summary>
+        /// <param name="prefixText"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        [WebMethod(EnableSession = true)]
+        public string[] SuggestAircraft(string prefixText, int count)
+        {
+            CheckAuth();
+            if (String.IsNullOrEmpty(prefixText))
+                return Array.Empty<string>();
+            IEnumerable<Aircraft> lstAircraft = Aircraft.AircraftWithPrefix(prefixText, count);
+            List<string> lst = new List<string>();
+            foreach (Aircraft ac in lstAircraft)
+                lst.Add(AjaxControlToolkit.AutoCompleteExtender.CreateAutoCompleteItem(String.Format(CultureInfo.CurrentCulture, "{0} - {1}", ac.TailNumber, ac.ModelDescription), ac.AircraftID.ToString(CultureInfo.InvariantCulture)));
+            return lst.ToArray();
+        }
+
+        /// <summary>
+        /// Return the high-water mark for an aircraft's tach or hobbs
+        /// </summary>
+        /// <param name="idAircraft"></param>
+        /// <returns></returns>
+        /// <exception cref="MyFlightbookException"></exception>
+        [WebMethod(EnableSession = true)]
+        public string GetHighWaterMarks(int idAircraft)
+        {
+            CheckAuth();
+            if (String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+                throw new MyFlightbookException("Unauthenticated call to GetHighWaterMarks");
+
+            if (idAircraft <= 0)
+                return String.Empty;
+
+            decimal hwHobbs = AircraftUtility.HighWaterMarkHobbsForUserInAircraft(idAircraft, HttpContext.Current.User.Identity.Name);
+            decimal hwTach = AircraftUtility.HighWaterMarkTachForUserInAircraft(idAircraft, HttpContext.Current.User.Identity.Name);
+
+            if (hwTach == 0)
+                return hwHobbs == 0 ? String.Empty : String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.HighWaterMarkHobbsOnly, hwHobbs);
+            else if (hwHobbs == 0)
+                return String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.HighWaterMarkTachOnly, hwTach);
+            else
+                return String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.HighWaterMarkTachAndHobbs, hwTach, hwHobbs);
+        }
+
+        #endregion
     }
 }
