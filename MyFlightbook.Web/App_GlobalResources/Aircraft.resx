@@ -313,7 +313,7 @@
     <value>Private Notes</value>
   </data>
   <data name="locPublicNotesPrompt" xml:space="preserve">
-    <value>Any notes you put here will be shared among all pilots who fly this aircraft.  This is a great place to describe STC'd modifications, maintenance notes, panel upgrades, notes about aircraft quirks, etc.</value>
+    <value>Any notes you put here will be shared among all pilots who fly this aircraft.  This is a great place to describe STC'd modifications, squawks, upgrades, about aircraft quirks, etc.</value>
   </data>
   <data name="locPublicNotesTab" xml:space="preserve">
     <value>Public Notes</value>
@@ -630,7 +630,7 @@
     <value>Notes:</value>
   </data>
   <data name="MaintenanceNotesWatermark" xml:space="preserve">
-    <value>E.g., location/method/error of VOR check or any other notes.</value>
+    <value>E.g., location/method/error of VOR check or any other notes.  You can also record squawks or squawk resolutions here.</value>
   </data>
   <data name="MaintenanceOilPrompt" xml:space="preserve">
     <value>Oil Change (Hours):</value>

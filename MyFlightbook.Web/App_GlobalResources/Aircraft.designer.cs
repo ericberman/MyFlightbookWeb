@@ -1313,7 +1313,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Any notes you put here will be shared among all pilots who fly this aircraft.  This is a great place to describe STC&apos;d modifications, maintenance notes, panel upgrades, notes about aircraft quirks, etc..
+        ///   Looks up a localized string similar to Any notes you put here will be shared among all pilots who fly this aircraft.  This is a great place to describe STC&apos;d modifications, squawks, upgrades, about aircraft quirks, etc..
         /// </summary>
         internal static string locPublicNotesPrompt {
             get {
@@ -1511,7 +1511,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to E.g., location/method/error of VOR check or any other notes..
+        ///   Looks up a localized string similar to E.g., location/method/error of VOR check or any other notes.  You can also record squawks or squawk resolutions here..
         /// </summary>
         internal static string MaintenanceNotesWatermark {
             get {
