@@ -46,7 +46,11 @@ tr.subtotal td.subtotalLabel {
 
 .rotated {
     transform: rotate(-90deg);
-    display:block;
-    font-size: x-small;
+    -webkit-transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    display: block;
+    font-size: 75%;
     font-weight: normal;
 }
