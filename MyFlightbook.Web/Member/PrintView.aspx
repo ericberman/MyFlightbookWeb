@@ -5,24 +5,10 @@
 <%@ Register src="../Controls/mfbSearchForm.ascx" tagname="mfbSearchForm" tagprefix="uc3" %>
 <%@ Register src="../Controls/PrintOptions.ascx" tagname="PrintOptions" tagprefix="uc5" %>
 <%@ Register Src="~/Controls/mfbQueryDescriptor.ascx" TagPrefix="uc2" TagName="mfbQueryDescriptor" %>
-<%@ Register Src="~/Controls/PrintingLayouts/layoutEASAFCL.ascx" TagPrefix="uc1" TagName="layoutEASAFCL" %>
-<%@ Register Src="~/Controls/PrintingLayouts/layoutUSA.ascx" TagPrefix="uc1" TagName="layoutUSA" %>
-<%@ Register Src="~/Controls/PrintingLayouts/layoutNative.ascx" TagPrefix="uc1" TagName="layoutNative" %>
 <%@ Register Src="~/Controls/mfbEndorsementList.ascx" TagPrefix="uc1" TagName="mfbEndorsementList" %>
-<%@ Register Src="~/Controls/PrintingLayouts/LayoutSACAA.ascx" TagPrefix="uc1" TagName="LayoutSACAA" %>
-<%@ Register Src="~/Controls/PrintingLayouts/layoutGlider.ascx" TagPrefix="uc1" TagName="layoutGlider" %>
-<%@ Register Src="~/Controls/PrintingLayouts/layoutNZ.ascx" TagPrefix="uc1" TagName="layoutNZ" %>
 <%@ Register Src="~/Controls/mfbDecimalEdit.ascx" TagPrefix="uc1" TagName="mfbDecimalEdit" %>
-<%@ Register Src="~/Controls/PrintingLayouts/layoutPortrait.ascx" TagPrefix="uc1" TagName="layoutPortrait" %>
-<%@ Register Src="~/Controls/PrintingLayouts/layoutCanada.ascx" TagPrefix="uc1" TagName="layoutCanada" %>
-<%@ Register Src="~/Controls/PrintingLayouts/layoutCASA.ascx" TagPrefix="uc1" TagName="layoutCASA" %>
 <%@ Register Src="~/Controls/SponsoredAd.ascx" TagPrefix="uc1" TagName="SponsoredAd" %>
-<%@ Register Src="~/Controls/PrintingLayouts/layoutCondensed.ascx" TagPrefix="uc1" TagName="layoutCondensed" %>
-<%@ Register Src="~/Controls/PrintingLayouts/LayoutPCAA.ascx" TagPrefix="uc1" TagName="LayoutPCAA" %>
-<%@ Register Src="~/Controls/PrintingLayouts/layoutUASCivi.ascx" TagPrefix="uc1" TagName="layoutUASCivi" %>
-<%@ Register Src="~/Controls/PrintingLayouts/layout2Page.ascx" TagPrefix="uc1" TagName="layout2Page" %>
 <%@ Register Src="~/Controls/mfbTotalsByTimePeriod.ascx" TagPrefix="uc1" TagName="mfbTotalsByTimePeriod" %>
-<%@ Register Src="~/Controls/PrintingLayouts/layoutNavy.ascx" TagPrefix="uc1" TagName="layoutNavy" %>
 
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
     <asp:Label ID="lblUserName" runat="server" ></asp:Label>
@@ -222,50 +208,9 @@
                 <p><asp:Label ID="lblCoverDate" runat="server" /></p>
             </div>
         </asp:Panel>
-        <asp:MultiView ID="mvLayouts" runat="server" ActiveViewIndex="0">
-            <asp:View ID="vwNative" runat="server">
-                <uc1:layoutNative runat="server" ID="layoutNative" />
-            </asp:View>
-            <asp:View ID="vwPortrait" runat="server">
-                <uc1:layoutPortrait runat="server" id="layoutPortrait" />
-            </asp:View>
-            <asp:View ID="vwEASA" runat="server">
-                <uc1:layoutEASAFCL runat="server" id="layoutEASAFCL" />
-            </asp:View>
-            <asp:View ID="vwUSA" runat="server">
-                <uc1:layoutUSA runat="server" ID="layoutUSA" />
-            </asp:View>
-            <asp:View ID="vwCanada" runat="server">
-                <uc1:layoutCanada runat="server" id="layoutCanada" />
-            </asp:View>
-            <asp:View ID="vwSACAA" runat="server">
-                <uc1:LayoutSACAA runat="server" ID="LayoutSACAA" />
-            </asp:View>
-            <asp:View ID="vwCASA" runat="server">
-                <uc1:layoutCASA runat="server" ID="layoutCASA" />
-            </asp:View>
-            <asp:View ID="vwNZ" runat="server">
-                <uc1:layoutNZ runat="server" ID="layoutNZ" />
-            </asp:View>
-            <asp:View ID="vwGlider" runat="server">
-                <uc1:layoutGlider runat="server" id="layoutGlider" />
-            </asp:View>
-            <asp:View ID="vwCondensed" runat="server">
-                <uc1:layoutCondensed runat="server" id="layoutCondensed" />
-            </asp:View>
-            <asp:View ID="vwPCAA" runat="server">
-                <uc1:LayoutPCAA runat="server" id="LayoutPCAA" />
-            </asp:View>
-            <asp:View ID="vwUASCivi" runat="server">
-                <uc1:layoutUASCivi runat="server" id="layoutUASCivi" />
-            </asp:View>
-            <asp:View ID="vw2Page" runat="server">
-                <uc1:layout2Page runat="server" id="layout2Page" />
-            </asp:View>
-            <asp:View ID="vwNavy" runat="server">
-                <uc1:layoutNavy runat="server" id="layoutNavy" />
-            </asp:View>
-        </asp:MultiView>
+        <div>
+            <asp:PlaceHolder ID="plcLayout" runat="server" EnableViewState="false"></asp:PlaceHolder>
+        </div>
         <asp:Panel ID="pnlEndorsements" runat="server" style="page-break-before:always;">
             <uc1:mfbEndorsementList runat="server" ID="mfbEndorsementList" ShowSort="false" ShowDelete="false" />
             <asp:Repeater ID="rptImages" runat="server">

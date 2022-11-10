@@ -160,22 +160,6 @@ namespace MyFlightbook.Printing
 
     public partial class PrintView : PrintViewBase
     {
-        #region properties
-        protected IPrintingTemplate ActiveTemplate
-        {
-            get
-            {
-                View v = mvLayouts.Views[mvLayouts.ActiveViewIndex];
-                foreach (Control c in v.Controls)
-                {
-                    if (c is IPrintingTemplate pt)
-                        return pt;
-                }
-                return null;
-            }
-        }
-        #endregion
-
         private void InitializeRestriction()
         {
             string szFQParam = util.GetStringParam(Request, "fq");
@@ -360,7 +344,6 @@ namespace MyFlightbook.Printing
 
         protected void RefreshLogbookData()
         {
-            mvLayouts.ActiveViewIndex = (int)PrintOptions1.Options.Layout;
             pnlResults.Visible = true;
             lblCoverDate.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrintViewCoverSheetDateTemplate, DateTime.Now);
 
@@ -377,15 +360,21 @@ namespace MyFlightbook.Printing
             // Make sure copy link is up-to-date
             lnkPermalink.NavigateUrl = PermaLink(po, mfbSearchForm1.Restriction);
 
-            mvLayouts.Visible = po.Sections.IncludeFlights;
+            plcLayout.Visible = po.Sections.IncludeFlights;
             pnlEndorsements.Visible = po.Sections.Endorsements != PrintingSections.EndorsementsLevel.None;
             rptImages.Visible = po.Sections.Endorsements == PrintingSections.EndorsementsLevel.DigitalAndPhotos;
             pnlTotals.Visible = po.Sections.IncludeTotals;
             pnlCover.Visible = po.Sections.IncludeCoverPage;
 
-            IList<LogbookEntryDisplay> lstFlights = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntry.QueryCommand(mfbSearchForm1.Restriction, fAsc: true), CurrentUser.UserName, string.Empty, SortDirection.Ascending, CurrentUser.UsesHHMM, CurrentUser.UsesUTCDateOfFlight);
-            PrintLayout pl = LogbookPrintedPage.LayoutLogbook(CurrentUser, lstFlights, ActiveTemplate, po, SuppressFooter);
-            Master.PrintingCSS = pl.CSSPath.ToAbsoluteURL(Request).ToString();
+            if (po.Sections.IncludeFlights)
+            {
+                plcLayout.Controls.Clear();
+                plcLayout.Controls.Add(LoadControl(PrintLayout.LayoutForType(PrintOptions1.Options.Layout).ControlPath));
+                IPrintingTemplate pt = plcLayout.Controls[0] as IPrintingTemplate;
+                IList<LogbookEntryDisplay> lstFlights = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntry.QueryCommand(mfbSearchForm1.Restriction, fAsc: true), CurrentUser.UserName, string.Empty, SortDirection.Ascending, CurrentUser.UsesHHMM, CurrentUser.UsesUTCDateOfFlight);
+                PrintLayout pl = LogbookPrintedPage.LayoutLogbook(CurrentUser, lstFlights, pt, po, SuppressFooter);
+                Master.PrintingCSS = pl.CSSPath.ToAbsoluteURL(Request).ToString();
+            }
         }
 
         protected void PrintOptions1_OptionsChanged(object sender, PrintingOptionsEventArgs e)
