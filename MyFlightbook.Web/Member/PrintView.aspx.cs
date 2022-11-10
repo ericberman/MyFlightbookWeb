@@ -1,6 +1,6 @@
-﻿using MyFlightbook.Image;
+﻿using MyFlightbook.Currency;
+using MyFlightbook.Image;
 using MyFlightbook.Instruction;
-using MyFlightbook.Printing;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -8,11 +8,6 @@ using System.Globalization;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using static Dropbox.Api.TeamLog.ActorLogInfo;
-using static System.Net.Mime.MediaTypeNames;
-using System.Windows.Documents;
-using static Dropbox.Api.FileProperties.TemplateOwnerType;
-using MyFlightbook.Currency;
 
 /******************************************************
  * 
