@@ -1258,11 +1258,19 @@ namespace MyFlightbook.Printing
         /// <param name="rgle">The set of flights to modify</param>
         protected void StripRedundantOrExcludedProperties(IEnumerable<int> rgProps, IEnumerable<LogbookEntryDisplay> rgle)
         {
-            if (rgle == null)
+            if (rgle == null || !rgle.Any())
                 return;
 
             HashSet<int> hsRedundantProps = rgProps == null ? new HashSet<int>() : new HashSet<int>(rgProps);
             hsRedundantProps.UnionWith(Options.ExcludedPropertyIDs);
+
+            // Issue #1011: also exclude properties that have their own columns
+            foreach (OptionalColumn oc in Options.OptionalColumns)
+            {
+                if (oc.ColumnType == OptionalColumnType.CustomProp && oc.IDPropType > 0 && !hsRedundantProps.Contains(oc.IDPropType))
+                    hsRedundantProps.Add(oc.IDPropType);
+            }
+
             foreach (LogbookEntryDisplay led in rgle)
             {
                 List<CustomFlightProperty> lstProps = new List<CustomFlightProperty>(led.CustomProperties);
