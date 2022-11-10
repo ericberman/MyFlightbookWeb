@@ -708,6 +708,24 @@ namespace MyFlightbook.Printing
         protected global::MyFlightbook.Printing.Layouts.layout2Page layout2Page;
 
         /// <summary>
+        /// vwNavy control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.View vwNavy;
+
+        /// <summary>
+        /// layoutNavy control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::MyFlightbook.Printing.Layouts.LayoutNavy layoutNavy;
+
+        /// <summary>
         /// pnlEndorsements control.
         /// </summary>
         /// <remarks>

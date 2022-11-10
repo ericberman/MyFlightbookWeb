@@ -471,6 +471,7 @@
     <Content Include="Controls\PrintingLayouts\layoutCondensed.ascx" />
     <Content Include="Controls\PrintingLayouts\LayoutPCAA.ascx" />
     <Content Include="Controls\PrintingLayouts\layoutUASCivi.ascx" />
+    <Content Include="Controls\PrintingLayouts\layoutNavy.ascx" />
     <Content Include="Controls\TwoFactorAuth.ascx" />
     <Content Include="Controls\AccountQuestions.ascx" />
     <Content Include="Controls\adminStats.ascx" />
@@ -868,6 +869,7 @@
     <Content Include="Public\CSS\printPortrait.css" />
     <Content Include="Public\CSS\printSACAA.css" />
     <Content Include="Public\CSS\printUAS-civi.css" />
+    <Content Include="Public\CSS\printNavy.css" />
     <Content Include="Public\CSS\printUSA.css" />
     <Content Include="Public\CSS\staging.css" />
     <Content Include="Public\CurrencyDisclaimer.aspx" />
@@ -1366,6 +1368,13 @@
     </Compile>
     <Compile Include="Controls\PrintingLayouts\layoutUASCivi.ascx.designer.cs">
       <DependentUpon>layoutUASCivi.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PrintingLayouts\layoutNavy.ascx.cs">
+      <DependentUpon>layoutNavy.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\PrintingLayouts\layoutNavy.ascx.designer.cs">
+      <DependentUpon>layoutNavy.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\TwoFactorAuth.ascx.cs">
       <DependentUpon>TwoFactorAuth.ascx</DependentUpon>

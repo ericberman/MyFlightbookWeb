@@ -3099,6 +3099,32 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
         }
         #endregion
 
+        #region Naval Properties
+        public decimal SpecialCrewTime { get { return CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropMilitarySpecialCrew); } }
+        public int CarrierArrests { get { return CustomProperties.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropCarrierArrestedLanding); } }
+        public int CarrierBolts { get { return CustomProperties.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropBolterLanding); } }
+        public int CarrierTandG { get { return CustomProperties.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropCarrierTouchAndGo); } }
+        public int Catapults { get { return CustomProperties.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropCatapult); } }
+        public int FCLP { get { return CustomProperties.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropFCLP); } }
+
+        public decimal MilitaryFirstPilotTime { get { return CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropMilitaryFirstPilot); } }
+
+        /// <summary>
+        /// Record AC commander time whether it is logged as Military PIC, Military AC Commander, or PIC
+        /// </summary>
+        public decimal MilitaryACCommanderTime { get {
+                return CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropMilitaryPIC) +
+                    CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropMilitaryAircraftCommander) +
+                    PIC;
+            } }
+
+        /// <summary>
+        /// Record copilot time whether it is logged as SIC, Co-pilot, or Military Co-pilot time.
+        /// </summary>
+        public decimal CoPilotTime { get { return CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropCoPilotTime) + CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropMilitaryCoPilottime); } }
+
+        #endregion
+
         /// <summary>
         /// For totals rows, indicates the # of flights
         /// </summary>
@@ -3173,6 +3199,17 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
         public int LandingsTotal { get; set; }
 
         public int NightTouchAndGoLandings { get; set; }
+
+        // Military/Carrier counts
+        public decimal SpecialCrewTimeTotal { get; set; }
+        public int CarrierArrestsTotal { get; set; }
+        public int CarrierBoltsTotal { get; set; }
+        public int CarrierTandGTotal { get; set; }
+        public int CatapultsTotal { get; set; }
+        public int FCLPTotal { get; set; }
+        public decimal FirstPilotTotal { get; set; }
+        public decimal CommanderTotal { get; set; }
+        public decimal CoPilotTotal { get; set; }
 
         /// <summary>
         /// EASA specific property to segregate day/night
@@ -3740,6 +3777,16 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                     DayTakeoffTotal += led.DayTakeoffs;
                     NightTakeoffTotal += led.NightTakeoffs;
 
+                    FCLPTotal += led.FCLP;
+                    SpecialCrewTimeTotal += led.SpecialCrewTime;
+                    CarrierArrestsTotal += led.CarrierArrests;
+                    CarrierBoltsTotal += led.CarrierBolts;
+                    CarrierTandGTotal += led.CarrierTandG;
+                    CatapultsTotal += led.Catapults;
+                    FirstPilotTotal += led.MilitaryFirstPilotTime;
+                    CoPilotTotal += led.CoPilotTime;
+                    CommanderTotal += led.MilitaryACCommanderTime;
+
                     AddCatClassTotal(led);
                 }
                 else
@@ -3759,6 +3806,16 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                     LandingsTotal += led.LandingsTotal;
                     DayTakeoffTotal += led.DayTakeoffTotal;
                     NightTakeoffTotal += led.NightTakeoffTotal;
+
+                    FCLPTotal += led.FCLPTotal;
+                    SpecialCrewTimeTotal += led.SpecialCrewTimeTotal;
+                    CarrierArrestsTotal += led.CarrierArrestsTotal;
+                    CarrierBoltsTotal += led.CarrierBoltsTotal;
+                    CarrierTandGTotal += led.CarrierTandGTotal;
+                    CatapultsTotal += led.CatapultsTotal;
+                    FirstPilotTotal += led.FirstPilotTotal;
+                    CoPilotTotal += led.CoPilotTotal;
+                    CommanderTotal += led.CommanderTotal;
 
                     AddCatClassTotalsFrom(led);
                 }

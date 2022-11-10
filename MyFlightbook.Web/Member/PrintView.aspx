@@ -22,8 +22,7 @@
 <%@ Register Src="~/Controls/PrintingLayouts/layoutUASCivi.ascx" TagPrefix="uc1" TagName="layoutUASCivi" %>
 <%@ Register Src="~/Controls/PrintingLayouts/layout2Page.ascx" TagPrefix="uc1" TagName="layout2Page" %>
 <%@ Register Src="~/Controls/mfbTotalsByTimePeriod.ascx" TagPrefix="uc1" TagName="mfbTotalsByTimePeriod" %>
-
-
+<%@ Register Src="~/Controls/PrintingLayouts/layoutNavy.ascx" TagPrefix="uc1" TagName="layoutNavy" %>
 
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
     <asp:Label ID="lblUserName" runat="server" ></asp:Label>
@@ -262,6 +261,9 @@
             </asp:View>
             <asp:View ID="vw2Page" runat="server">
                 <uc1:layout2Page runat="server" id="layout2Page" />
+            </asp:View>
+            <asp:View ID="vwNavy" runat="server">
+                <uc1:layoutNavy runat="server" id="layoutNavy" />
             </asp:View>
         </asp:MultiView>
         <asp:Panel ID="pnlEndorsements" runat="server" style="page-break-before:always;">

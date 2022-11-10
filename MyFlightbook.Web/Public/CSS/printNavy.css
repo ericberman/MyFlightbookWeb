@@ -1,0 +1,52 @@
+﻿/******************************************************
+ * 
+ * Copyright (c) 2022 MyFlightbook LLC
+ * Contact myflightbook-at-gmail.com for more information
+ *
+*******************************************************/
+
+.pageTable td {
+    font-size: smaller;
+}
+tr.bordered td, tr.bordered th {
+    padding: 3px;
+    border: 1px solid black;
+}
+
+tr.bordered, th.bordered {
+    page-break-inside:avoid;
+}
+
+tr.subtotal td {
+    padding: 2px;
+    border: 1px solid gray;
+    page-break-inside:avoid;
+    font-weight:bold;
+    font-size:smaller;
+}
+
+tr.subtotal td.subtotalLabel {
+    border: none;
+}
+
+@media screen {
+    tr.bordered, tr.bordered th { color: navy; background-color:#cae0f3; }
+}
+
+.headerBig {
+    text-align:center;
+    font-weight:bold;
+    text-transform: uppercase;
+}
+.headerSmall {
+    text-align:center;
+    font-size:smaller;
+    text-transform: uppercase;
+}
+
+.rotated {
+    transform: rotate(-90deg);
+    display:block;
+    font-size: x-small;
+    font-weight: normal;
+}

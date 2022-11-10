@@ -1510,4 +1510,43 @@ Proceed with import?</value>
   <data name="FlightModifiedMarker" xml:space="preserve">
     <value>*</value>
   </data>
+  <data name="PrintFormatNavy" xml:space="preserve">
+    <value>Military/Naval Aviator</value>
+  </data>
+  <data name="PrintHeaderCarrier" xml:space="preserve">
+    <value>Carrier</value>
+  </data>
+  <data name="PrintHeaderCarrierArrest" xml:space="preserve">
+    <value>Arr</value>
+  </data>
+  <data name="PrintHeaderCarrierBolt" xml:space="preserve">
+    <value>BOL</value>
+  </data>
+  <data name="PrintHeaderCarrierTouchAndGo" xml:space="preserve">
+    <value>T&amp;G</value>
+  </data>
+  <data name="PrintHeaderCatapult" xml:space="preserve">
+    <value>Catapult</value>
+  </data>
+  <data name="PrintHeaderCommander" xml:space="preserve">
+    <value>AC Cmdr</value>
+  </data>
+  <data name="PrintHeaderFCLP" xml:space="preserve">
+    <value>FCLP</value>
+  </data>
+  <data name="PrintHeaderFirstPIlot" xml:space="preserve">
+    <value>First Pilot</value>
+  </data>
+  <data name="PrintHeaderKindOfFlight" xml:space="preserve">
+    <value>Kind of Flight Code</value>
+  </data>
+  <data name="PrintHeaderPilotTime" xml:space="preserve">
+    <value>PIlotTime</value>
+  </data>
+  <data name="PrintHeaderSerialNumber" xml:space="preserve">
+    <value>Serial Number (Tail)</value>
+  </data>
+  <data name="PrintHeaderSpecialCrew" xml:space="preserve">
+    <value>Special Crew Time</value>
+  </data>
 </root>
