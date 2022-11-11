@@ -198,6 +198,7 @@
                         <uc1:AircraftList runat="server" ID="AircraftList" OnAircraftDeleted="AircraftList_AircraftDeleted" OnAircraftPrefChanged="AircraftList_AircraftPrefChanged" OnMigrateAircraft="AircraftList_MigrateAircraft" />
                     </ItemTemplate>
                 </asp:Repeater>
+                <div style="text-align:center; font-weight:bold; width:100%"><asp:Label ID="lblNoAircraft" runat="server" Text="<%$ Resources:LocalizedText, MyAircraftNoAircraft %>" /></div> 
             </div>
             <asp:Panel ID="pnlMigrate" runat="server"  DefaultButton="btnMigrate" style="display:none;" Visible="false">
                 <div style="max-width: 450px">

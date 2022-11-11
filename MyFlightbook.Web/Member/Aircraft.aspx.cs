@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Web;
 using System.Web.Services;
 using System.Web.UI;
@@ -137,6 +138,7 @@ namespace MyFlightbook.MemberPages
             if (GroupingMode == AircraftGroup.GroupMode.Recency)
                 PopulateStats();
 
+            lblNoAircraft.Visible = !SourceAircraft.Any();
             rptAircraftGroups.DataSource = AircraftGroup.AssignToGroups(SourceAircraft, IsAdminMode ? AircraftGroup.GroupMode.All : GroupingMode);
             rptAircraftGroups.DataBind();
         }
