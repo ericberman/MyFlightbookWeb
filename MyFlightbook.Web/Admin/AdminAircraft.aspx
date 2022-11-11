@@ -82,6 +82,20 @@
                     success: function (response) { document.getElementById(sender).parentElement.parentElement.className = 'handled'; }
                 });
         }
+        function ignorePseudoGeneric(sender, idaircraft) {
+            var params = new Object();
+            params.idAircraft = idaircraft;
+            var d = JSON.stringify(params);
+            $.ajax({
+                url: '<% =ResolveUrl("~/Admin/AdminAircraft.aspx/IgnorePseudo") %>',
+                type: "POST", data: d, dataType: "json", contentType: "application/json",
+                error: function (xhr, status, error) {
+                    window.alert(xhr.responseJSON.Message);
+                },
+                complete: function (response) { },
+                success: function (response) { document.getElementById(sender).parentElement.parentElement.className = 'handled'; }
+            });
+        }
         function viewFlights(idAircraft, tail) {
             var params = new Object();
             params.idAircraft = idAircraft;
@@ -109,10 +123,10 @@
             var d = JSON.stringify(params);
             $.ajax({
                 url: '<% =ResolveUrl("~/Admin/AdminAircraft.aspx/addMissing") %>',
-                    type: "POST", data: d, dataType: "json", contentType: "application/json",
-                    error: function (xhr, status, error) {
-                        window.alert(xhr.responseJSON.Message);
-                    },
+                type: "POST", data: d, dataType: "json", contentType: "application/json",
+                error: function (xhr, status, error) {
+                    window.alert(xhr.responseJSON.Message);
+                },
                 complete: function (response) { },
                 success: function (response) { document.getElementById(sender).style.display = "none"; }
             });
@@ -490,6 +504,7 @@ ORDER BY tailnormal ASC, version, numUsers DESC, idaircraft ASC"
                                         <asp:HyperLink ID="lnkN0ToN" Visible="false" runat="server" Text="N0 → N" CssClass="admItem" />
                                         <asp:HyperLink ID="lnkMigrateGeneric" runat="server" Text="Migrate Generic" CssClass="admItem" />
                                         <asp:HyperLink ID="lnkMigrateSim" runat="server" Text="Migrate SIM" CssClass="admItem" />
+                                        <asp:HyperLink ID="lnkIgnore" runat="server" Text="Ignore" CssClass="admItem" />
                                     </div>
                                 </ItemTemplate>
                             </asp:TemplateField>
@@ -509,13 +524,14 @@ LEFT JOIN (select idaircraft, tailnumber, m.idmodel, model, modelname
        ON ac.idaircraft=modelTails.idaircraft
 LEFT JOIN Flights f ON f.idaircraft=ac.idaircraft
 WHERE
-	(ac.tailnormal RLIKE '^N[ABD-FH-KM-QT-WYZ][-0-9A-Z]+' AND ac.tailnormal NOT RLIKE '^NZ[0-9]{2,4}$')
+	((ac.tailnormal RLIKE '^N[ABD-FH-KM-QT-WYZ][-0-9A-Z]+' AND ac.tailnormal NOT RLIKE '^NZ[0-9]{2,4}$')
     OR ac.tailnormal RLIKE '^N.*[ioIO]'
     OR ac.tailnormal LIKE 'N0%'
     OR modelTails.tailnumber IS NOT NULL
     OR RIGHT(ac.tailnormal, LENGTH(ac.tailnumber) - 1) = REPLACE(RIGHT(m.model, LENGTH(m.model) - 1), '-', '')
     OR (LEFT(ac.tailnumber, 3) &lt;&gt; 'SIM' AND (LEFT(ac.tailnormal, 4) = LEFT(man.manufacturer, 4)))
-    OR (ac.instancetype=1 AND ac.tailnormal RLIKE 'SIM|FTD|ATD|FFS|REDB|ANON|FRAS|ELIT|CAE|ALSIM|FLIG|SAFE|PREC|TRUF|FMX|GROU|VARI|MISC|NONE|UNKN|OTHE|FAA|MENTO|TAIL')
+    OR (ac.instancetype=1 AND ac.tailnormal RLIKE 'SIM|FTD|ATD|FFS|REDB|ANON|FRAS|ELIT|CAE|ALSIM|FLIG|SAFE|PREC|TRUF|FMX|GROU|VARI|MISC|NONE|UNKN|OTHE|FAA|MENTO|TAIL')) 
+    AND ac.publicnotes NOT LIKE '% '
 GROUP BY ac.idaircraft
 ORDER BY tailnumber ASC"></asp:SqlDataSource>
                 </asp:View>

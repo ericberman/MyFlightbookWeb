@@ -24,7 +24,7 @@ namespace MyFlightbook.Web.Admin
         [WebMethod(EnableSession = true)]
         public static void ConvertOandI(int idAircraft)
         {
-            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name) || !Profile.GetUser(HttpContext.Current.User.Identity.Name).CanManageData)
                 throw new MyFlightbookException("Unauthenticated call to ConvertOandI");
 
             Aircraft ac = new Aircraft(idAircraft);
@@ -38,7 +38,7 @@ namespace MyFlightbook.Web.Admin
         [WebMethod(EnableSession = true)]
         public static void TrimLeadingN(int idAircraft)
         {
-            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name) || !Profile.GetUser(HttpContext.Current.User.Identity.Name).CanManageData)
                 throw new MyFlightbookException("Unauthenticated call to TrimLeadingN");
 
             Aircraft ac = new Aircraft(idAircraft);
@@ -55,7 +55,7 @@ namespace MyFlightbook.Web.Admin
         [WebMethod(EnableSession = true)]
         public static void TrimN0(int idAircraft)
         {
-            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name) || !Profile.GetUser(HttpContext.Current.User.Identity.Name).CanManageData)
                 throw new MyFlightbookException("Unauthenticated call to TrimN0");
 
             Aircraft ac = new Aircraft(idAircraft);
@@ -74,7 +74,7 @@ namespace MyFlightbook.Web.Admin
         [WebMethod(EnableSession = true)]
         public static void MigrateGeneric(int idAircraft)
         {
-            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name) || !Profile.GetUser(HttpContext.Current.User.Identity.Name).CanManageData)
                 throw new MyFlightbookException("Unauthenticated call to MigrateGeneric");
 
             Aircraft ac = new Aircraft(idAircraft);
@@ -101,7 +101,7 @@ namespace MyFlightbook.Web.Admin
         [WebMethod(EnableSession = true)]
         public static void MigrateSim(int idAircraft)
         {
-            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name) || !Profile.GetUser(HttpContext.Current.User.Identity.Name).CanManageData)
                 throw new MyFlightbookException("Unauthenticated call to MigrateSim");
 
             Aircraft ac = new Aircraft(idAircraft);
@@ -171,7 +171,7 @@ namespace MyFlightbook.Web.Admin
         [WebMethod(EnableSession = true)]
         public static void addMissing(string username, int idAircraft)
         {
-            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name) || !Profile.GetUser(username).CanManageData)
                 throw new MyFlightbookException("Unauthenticated call to addMissing");
 
             if (String.IsNullOrEmpty(username))
@@ -184,6 +184,22 @@ namespace MyFlightbook.Web.Admin
 
             UserAircraft ua = new UserAircraft(username);
             ua.FAddAircraftForUser(ac);
+        }
+
+        [WebMethod(EnableSession = true)]
+        public static void IgnorePseudo(int idAircraft)
+        {
+            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name) || !Profile.GetUser(HttpContext.Current.User.Identity.Name).CanManageData)
+                throw new MyFlightbookException("Unauthenticated call to IgnorePseudo");
+
+            Aircraft ac = new Aircraft(idAircraft);
+            ac.PublicNotes += '\u2006'; // same marker as in flightlint - a very thin piece of whitespace
+            DBHelper dbh = new DBHelper("UPDATE aircraft SET publicnotes=?notes WHERE idaircraft=?id");
+            dbh.DoNonQuery((comm) =>
+            {
+                comm.Parameters.AddWithValue("notes", ac.PublicNotes);
+                comm.Parameters.AddWithValue("id", idAircraft);
+            });
         }
         #endregion
 
@@ -288,6 +304,9 @@ namespace MyFlightbook.Web.Admin
 
                 HyperLink hViewFlights = (HyperLink)e.Row.FindControl("lnkFlights");
                 hViewFlights.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:viewFlights({0}, '{1}');", idAircraft, l.Text);
+
+                HyperLink hIgnore = (HyperLink)e.Row.FindControl("lnkIgnore");
+                hIgnore.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:ignorePseudoGeneric('{0}', '{1}');", hIgnore.ClientID, idAircraft);
             }
         }
 
