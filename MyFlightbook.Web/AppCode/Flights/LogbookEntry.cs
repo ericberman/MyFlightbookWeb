@@ -3113,15 +3113,18 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
         /// Record AC commander time whether it is logged as Military PIC, Military AC Commander, or PIC
         /// </summary>
         public decimal MilitaryACCommanderTime { get {
-                return CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropMilitaryPIC) +
-                    CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropMilitaryAircraftCommander) +
-                    PIC;
+                return Math.Max(Math.Max(CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropMilitaryPIC),
+                    CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropMilitaryAircraftCommander)),
+                    PIC);
             } }
 
         /// <summary>
         /// Record copilot time whether it is logged as SIC, Co-pilot, or Military Co-pilot time.
         /// </summary>
-        public decimal CoPilotTime { get { return CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropCoPilotTime) + CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropMilitaryCoPilottime); } }
+        public decimal CoPilotTime { get { return
+                    Math.Max(Math.Max(CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropCoPilotTime),
+                    CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropMilitaryCoPilottime)),
+                    SIC); } }
 
         #endregion
 
