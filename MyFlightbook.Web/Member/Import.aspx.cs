@@ -369,7 +369,7 @@ namespace MyFlightbook.ImportFlights
                         {
                             PendingFlight pf = new PendingFlight(le) { User = User.Identity.Name };
                             pf.Commit();
-                            lnkPending.Visible = true;
+                            reviewPending.Visible = true;
                             if (!IsPendingOnly)
                                 AddTextRow(plcProgress, String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.ImportRowAddedPending, le.ToString(), le.ErrorString), "error");
                             cFlightsWithErrors++;

@@ -333,7 +333,7 @@
         </ul>
         <ul class="nextStep">
             <li><asp:HyperLink ID="lnkDone" runat="server" NavigateUrl="~/Member/LogbookNew.aspx" Text="<%$ Resources:LogbookEntry, ImportViewImportedFlights %>" /></li>
-            <li><asp:HyperLink ID="lnkPending" runat="server" NavigateUrl="~/Member/ReviewPendingFlights.aspx" Visible="false" Text="<%$ Resources:LogbookEntry, ImportViewImportedFlightsPending %>" /></li>
+            <li runat="server" visible="false" id="reviewPending"><asp:HyperLink ID="lnkPending" runat="server" NavigateUrl="~/Member/ReviewPendingFlights.aspx" Text="<%$ Resources:LogbookEntry, ImportViewImportedFlightsPending %>" /></li>
         </ul>
     </asp:Panel>
     <br /><br />
