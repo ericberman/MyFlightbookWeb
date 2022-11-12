@@ -87,15 +87,6 @@ namespace MyFlightbook.MemberPages
         protected global::System.Web.UI.WebControls.Label lblImport;
 
         /// <summary>
-        /// pnlDownload control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlDownload;
-
-        /// <summary>
         /// lnkDownloadCSV control.
         /// </summary>
         /// <remarks>
@@ -123,15 +114,6 @@ namespace MyFlightbook.MemberPages
         protected global::System.Web.UI.WebControls.Localize locDownloadCSV;
 
         /// <summary>
-        /// pnlGrouping control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlGrouping;
-
-        /// <summary>
         /// cmbAircraftGrouping control.
         /// </summary>
         /// <remarks>
@@ -139,6 +121,15 @@ namespace MyFlightbook.MemberPages
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList cmbAircraftGrouping;
+
+        /// <summary>
+        /// lblNumAircraft control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblNumAircraft;
 
         /// <summary>
         /// UpdatePanel1 control.
@@ -175,15 +166,6 @@ namespace MyFlightbook.MemberPages
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Repeater rptAircraftGroups;
-
-        /// <summary>
-        /// lblNoAircraft control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblNoAircraft;
 
         /// <summary>
         /// pnlMigrate control.

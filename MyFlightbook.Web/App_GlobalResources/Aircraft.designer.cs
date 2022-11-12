@@ -1682,6 +1682,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You have {0:#,##0} aircraft in your account..
+        /// </summary>
+        internal static string MyAircraftAircraftCount {
+            get {
+                return ResourceManager.GetString("MyAircraftAircraftCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ({0:#,##0} aircraft).
+        /// </summary>
+        internal static string MyAircraftAircraftGroupCount {
+            get {
+                return ResourceManager.GetString("MyAircraftAircraftGroupCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Options for {0}:.
         /// </summary>
         internal static string optionHeader {

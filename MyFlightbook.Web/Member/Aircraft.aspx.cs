@@ -103,7 +103,7 @@ namespace MyFlightbook.MemberPages
                     ua.InvalidateCache();
             }
             lblAdminMode.Visible = IsAdminMode;
-            pnlDownload.Visible = !IsAdminMode;
+            lnkDownloadCSV.Visible = !IsAdminMode;
 
             RefreshAircraftList();
 
@@ -138,7 +138,7 @@ namespace MyFlightbook.MemberPages
             if (GroupingMode == AircraftGroup.GroupMode.Recency)
                 PopulateStats();
 
-            lblNoAircraft.Visible = !SourceAircraft.Any();
+            lblNumAircraft.Text = SourceAircraft.Any() ? String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.MyAircraftAircraftCount, SourceAircraft.Count()) : Resources.LocalizedText.MyAircraftNoAircraft;
             rptAircraftGroups.DataSource = AircraftGroup.AssignToGroups(SourceAircraft, IsAdminMode ? AircraftGroup.GroupMode.All : GroupingMode);
             rptAircraftGroups.DataBind();
         }

@@ -724,4 +724,10 @@ Do you still want to delete?</value>
   <data name="errDontDeleteImageAnonymous" xml:space="preserve">
     <value>Aircraft - particularly anonymous - are shared amongst pilots.  You can use the website to delete an image if it is truly inappropriate.  If you want to choose an image as your default, please see the FAQ.</value>
   </data>
+  <data name="MyAircraftAircraftCount" xml:space="preserve">
+    <value>You have {0:#,##0} aircraft in your account.</value>
+  </data>
+  <data name="MyAircraftAircraftGroupCount" xml:space="preserve">
+    <value>({0:#,##0} aircraft)</value>
+  </data>
 </root>
