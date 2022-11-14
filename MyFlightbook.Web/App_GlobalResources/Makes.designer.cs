@@ -250,7 +250,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Turbine (Unspecified).
+        ///   Looks up a localized string similar to Turbine (Other).
         /// </summary>
         internal static string editMakeEngineTypeTurbine {
             get {
@@ -817,6 +817,159 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create a new model.
+        /// </summary>
+        internal static string makesAddModel {
+            get {
+                return ResourceManager.GetString("makesAddModel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Advanced Search.
+        /// </summary>
+        internal static string makesAdvancedSearch {
+            get {
+                return ResourceManager.GetString("makesAdvancedSearch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Category/Class.
+        /// </summary>
+        internal static string makesAdvCatClass {
+            get {
+                return ResourceManager.GetString("makesAdvCatClass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manufacturer.
+        /// </summary>
+        internal static string makesAdvManufacturer {
+            get {
+                return ResourceManager.GetString("makesAdvManufacturer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Model ID.
+        /// </summary>
+        internal static string makesAdvModel {
+            get {
+                return ResourceManager.GetString("makesAdvModel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Model Name.
+        /// </summary>
+        internal static string makesAdvModelName {
+            get {
+                return ResourceManager.GetString("makesAdvModelName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (e.g., &quot;Skyhawk&quot;).
+        /// </summary>
+        internal static string makesAdvModelNameSample {
+            get {
+                return ResourceManager.GetString("makesAdvModelNameSample", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (e.g., &quot;C-172&quot;).
+        /// </summary>
+        internal static string makesAdvModelSample {
+            get {
+                return ResourceManager.GetString("makesAdvModelSample", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type designator.
+        /// </summary>
+        internal static string makesAdvModelType {
+            get {
+                return ResourceManager.GetString("makesAdvModelType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Aircraft Models.
+        /// </summary>
+        internal static string makesHeader {
+            get {
+                return ResourceManager.GetString("makesHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No matching models found.
+        /// </summary>
+        internal static string makesNoResults {
+            get {
+                return ResourceManager.GetString("makesNoResults", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are currently {0:#,##0} models in the system; use the search functionality to browse them..
+        /// </summary>
+        internal static string makesPrompt {
+            get {
+                return ResourceManager.GetString("makesPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search.
+        /// </summary>
+        internal static string makesSearchMakes {
+            get {
+                return ResourceManager.GetString("makesSearchMakes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Simple Search.
+        /// </summary>
+        internal static string makesSimpleSearch {
+            get {
+                return ResourceManager.GetString("makesSimpleSearch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Category/Class.
+        /// </summary>
+        internal static string makesSortCatClass {
+            get {
+                return ResourceManager.GetString("makesSortCatClass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manufacturer.
+        /// </summary>
+        internal static string makesSortManufacturer {
+            get {
+                return ResourceManager.GetString("makesSortManufacturer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Model.
+        /// </summary>
+        internal static string makesSortModel {
+            get {
+                return ResourceManager.GetString("makesSortModel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You have {0} aircraft of this model.
         /// </summary>
         internal static string MakeStatsAircraftCount {
@@ -858,6 +1011,15 @@ namespace Resources {
         internal static string makeStatsTotals {
             get {
                 return ResourceManager.GetString("makeStatsTotals", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Aircraft Makes and Models.
+        /// </summary>
+        internal static string makesTitle {
+            get {
+                return ResourceManager.GetString("makesTitle", resourceCulture);
             }
         }
         

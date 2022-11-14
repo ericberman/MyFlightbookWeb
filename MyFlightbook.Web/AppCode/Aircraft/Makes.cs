@@ -672,6 +672,24 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
             return new Collection<MakeModel>(lst);
         }
 
+        /// <summary>
+        /// Returns the number of models in the system.
+        /// </summary>
+        /// <returns></returns>
+        public static int ModelCount()
+        {
+            const string szCacheKeyModelCount = "modelCountKey";
+            object o = HttpRuntime.Cache[szCacheKeyModelCount];
+            int cModels = (o == null) ? 0 : (int) o;
+            if (cModels == 0)
+            {
+                DBHelper dbh = new DBHelper("SELECT count(*) AS numModels FROM models");
+                dbh.ReadRow((comm) => { }, (dr) => { cModels = Convert.ToInt32(dr["numModels"], CultureInfo.InvariantCulture); });
+                HttpRuntime.Cache[szCacheKeyModelCount] = cModels;
+            }
+            return cModels;
+        }
+
         private const string szCacheKeyModels = "keyAllModelsByManufacturer";
 
         public static IDictionary<int, List<MakeModel>> ModelsByManufacturer(bool fIncludeGeneric = false)

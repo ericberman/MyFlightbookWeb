@@ -24,33 +24,6 @@ namespace MyFlightbook.MemberPages
         protected global::System.Web.UI.WebControls.Localize locMakesHeader;
 
         /// <summary>
-        /// locPageTop control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locPageTop;
-
-        /// <summary>
-        /// btnAddNew control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton btnAddNew;
-
-        /// <summary>
-        /// lblSearchPrompt control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblSearchPrompt;
-
-        /// <summary>
         /// mvSearchForm control.
         /// </summary>
         /// <remarks>
@@ -240,6 +213,24 @@ namespace MyFlightbook.MemberPages
         protected global::System.Web.UI.WebControls.LinkButton lnkSimpleSearch;
 
         /// <summary>
+        /// imgAdd control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Image imgAdd;
+
+        /// <summary>
+        /// btnAddNew control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnAddNew;
+
+        /// <summary>
         /// hdnQueryJSON control.
         /// </summary>
         /// <remarks>
@@ -294,13 +285,13 @@ namespace MyFlightbook.MemberPages
         protected global::System.Web.UI.WebControls.GridView gvMakes;
 
         /// <summary>
-        /// lblError control.
+        /// lblSearchPrompt control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblError;
+        protected global::System.Web.UI.WebControls.Label lblSearchPrompt;
 
         /// <summary>
         /// Master property.

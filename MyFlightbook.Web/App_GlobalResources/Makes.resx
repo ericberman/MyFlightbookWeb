@@ -302,7 +302,7 @@
     <value>Piston</value>
   </data>
   <data name="editMakeEngineTypeTurbine" xml:space="preserve">
-    <value>Turbine (Unspecified)</value>
+    <value>Turbine (Other)</value>
   </data>
   <data name="editMakeEngineTypeTurboProp" xml:space="preserve">
     <value>Turboprop</value>
@@ -417,5 +417,59 @@
   </data>
   <data name="addManufacturerTip" xml:space="preserve">
     <value>Tip: please do NOT make up manufacturer names.  You can use the built-in manufacturer "Generic" if you need to capture time across multiple or unknown models.</value>
+  </data>
+  <data name="makesAddModel" xml:space="preserve">
+    <value>Create a new model</value>
+  </data>
+  <data name="makesAdvancedSearch" xml:space="preserve">
+    <value>Advanced Search</value>
+  </data>
+  <data name="makesAdvCatClass" xml:space="preserve">
+    <value>Category/Class</value>
+  </data>
+  <data name="makesAdvManufacturer" xml:space="preserve">
+    <value>Manufacturer</value>
+  </data>
+  <data name="makesAdvModel" xml:space="preserve">
+    <value>Model ID</value>
+  </data>
+  <data name="makesAdvModelName" xml:space="preserve">
+    <value>Model Name</value>
+  </data>
+  <data name="makesAdvModelNameSample" xml:space="preserve">
+    <value>(e.g., "Skyhawk")</value>
+  </data>
+  <data name="makesAdvModelSample" xml:space="preserve">
+    <value>(e.g., "C-172")</value>
+  </data>
+  <data name="makesAdvModelType" xml:space="preserve">
+    <value>Type designator</value>
+  </data>
+  <data name="makesHeader" xml:space="preserve">
+    <value>Aircraft Models</value>
+  </data>
+  <data name="makesSearchMakes" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="makesSimpleSearch" xml:space="preserve">
+    <value>Simple Search</value>
+  </data>
+  <data name="makesSortCatClass" xml:space="preserve">
+    <value>Category/Class</value>
+  </data>
+  <data name="makesSortManufacturer" xml:space="preserve">
+    <value>Manufacturer</value>
+  </data>
+  <data name="makesSortModel" xml:space="preserve">
+    <value>Model</value>
+  </data>
+  <data name="makesTitle" xml:space="preserve">
+    <value>Aircraft Makes and Models</value>
+  </data>
+  <data name="makesNoResults" xml:space="preserve">
+    <value>No matching models found</value>
+  </data>
+  <data name="makesPrompt" xml:space="preserve">
+    <value>There are currently {0:#,##0} models in the system; use the search functionality to browse them.</value>
   </data>
 </root>

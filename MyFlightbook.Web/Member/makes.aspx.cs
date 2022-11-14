@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Services;
@@ -12,7 +13,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2021 MyFlightbook LLC
+ * Copyright (c) 2007-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -94,17 +95,20 @@ namespace MyFlightbook.MemberPages
                 string szQuery = util.GetStringParam(Request, "q");
                 if (!String.IsNullOrEmpty(szQuery))
                 {
+                    lblSearchPrompt.Visible = false;
                     string szJSon = Convert.FromBase64String(szQuery).Uncompress();
                     ActiveQuery = JsonConvert.DeserializeObject<ModelQuery>(szJSon, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate });
                     QueryToForm(ActiveQuery);
                     UpdateFilter();
                 }
+                else
+                    lblSearchPrompt.Text = String.Format(CultureInfo.CurrentCulture, Resources.Makes.makesPrompt, MakeModel.ModelCount());
 
                 UpdateSortHeaders(ActiveQuery.SortMode);
             }
 
             this.Master.SelectedTab = tabID.actMakes;
-            this.Title = (string)GetLocalResourceObject("PageResource2.Title");
+            this.Title = Resources.Makes.makesTitle;
         }
 
         protected void QueryToForm(ModelQuery mq)
@@ -140,8 +144,10 @@ namespace MyFlightbook.MemberPages
             ModelQuery mq = ActiveQuery = QueryFromForm(ActiveQuery);
 
             tblHeaderRow.Visible = true;
-            gvMakes.DataSource = MakeModel.MatchingMakes(mq);
+            IEnumerable<MakeModel> mm = MakeModel.MatchingMakes(mq);
+            gvMakes.DataSource = mm;
             gvMakes.DataBind();
+            tblHeaderRow.Visible = mm.Any();
         }
 
         protected void FilterTextChanged(object sender, System.EventArgs e)

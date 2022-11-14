@@ -3150,9 +3150,6 @@
     <Content Include="Member\App_LocalResources\EditProfile.aspx.resx" />
     <Content Include="Member\App_LocalResources\FlightDetail.aspx.resx" />
     <Content Include="Member\App_LocalResources\ImpAircraft.aspx.resx" />
-    <Content Include="Member\App_LocalResources\makes.aspx.resx">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="Member\App_LocalResources\MiniLogbook.aspx.resx" />
     <Content Include="Member\App_LocalResources\oAuthAuthorize.aspx.resx" />
     <Content Include="Member\App_LocalResources\RequestSigs.aspx.resx" />

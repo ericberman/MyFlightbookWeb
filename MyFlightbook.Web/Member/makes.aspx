@@ -1,84 +1,90 @@
-<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master" Title="Aircraft Makes and Models" Codebehind="makes.aspx.cs" Inherits="MyFlightbook.MemberPages.makes" culture="auto" meta:resourcekey="PageResource2" %>
+<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master" Codebehind="makes.aspx.cs" Inherits="MyFlightbook.MemberPages.makes" culture="auto" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register src="../Controls/mfbMakeListItem.ascx" tagname="mfbMakeListItem" tagprefix="uc2" %>
 <%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc2" TagName="mfbTooltip" %>
 <%@ Register Src="~/Controls/mfbSearchbox.ascx" TagPrefix="uc2" TagName="mfbSearchbox" %>
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
-    <asp:Localize ID="locMakesHeader" runat="server" 
-            Text="Aircraft Models" meta:resourcekey="locMakesHeaderResource1"></asp:Localize>
+    <asp:Localize ID="locMakesHeader" runat="server" Text="<%$ Resources:Makes, makesHeader %>" />
 </asp:Content>
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
     <script src='<%= ResolveUrl("~/public/Scripts/endless-scroll.js") %>'></script>
-    <div style="float:right; margin: 5px; padding:5px; max-width: 200px; border: 1px solid black">
-        <asp:Localize ID="locPageTop" runat="server" Text="Don&#39;t see the make/model of aircraft that you fly?" 
-            meta:resourcekey="locPageTopResource1"></asp:Localize>
-        <div><asp:LinkButton ID="btnAddNew" runat="server" Text="Create a new model" Font-Bold="true"
-            onclick="btnAddNew_Click" meta:resourcekey="btnAddNewResource1" /></div>
+    <div class="calloutSmall shadowed" style="vertical-align:middle; width: 90%; display:flex; margin-right: auto; margin-left: auto; margin-bottom: 5pt;" >
+        <div style="flex:auto;" >
+            <div style="display:inline-block">
+                    <asp:MultiView ID="mvSearchForm" runat="server" ActiveViewIndex="0">
+                        <asp:View ID="vwSimpleSearch" runat="server">
+                            <div style="vertical-align:top; height: 40px;">
+                                <div style="display:inline-block; vertical-align:middle;"><uc2:mfbSearchbox runat="server" ID="mfbSearchbox" Hint="<%$ Resources:Makes, SearchTip %>" OnSearchClicked="FilterTextChanged" /></div>
+                                <asp:LinkButton ID="lnkAdvanced" runat="server" Text="<%$ Resources:Makes, makesAdvancedSearch %>" OnClick="lnkAdvanced_Click" style="vertical-align:middle;" />
+                            </div>
+                            <div class="fineprint"><% =Resources.Makes.searchWildcardTip %></div>
+                        </asp:View>
+                        <asp:View ID="vwAdvancedSearch" runat="server">
+                            <asp:Panel ID="pnlSearch" runat="server" DefaultButton="btnSearch">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <asp:Localize ID="locManufacturer" runat="server" Text="<%$ Resources:Makes, makesAdvManufacturer %>" />
+                                        </td>
+                                        <td>
+                                            <asp:TextBox ID="txtManufacturer" runat="server" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <asp:Localize ID="locModel" runat="server" Text="<%$ Resources:Makes, makesAdvModel %>" /><br />
+                                            <span class="fineprint"><asp:Localize ID="locModelIDExample" Text="<%$ Resources:Makes, makesAdvModelSample %>" runat="server" /></span>
+                                        </td>
+                                        <td>
+                                            <asp:TextBox ID="txtModel" runat="server" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <asp:Localize ID="locModelName" runat="server" Text="<%$ Resources:Makes, makesAdvModelName %>"/><br />
+                                            <span class="fineprint"><asp:Localize ID="locModelNameExample" Text="<%$ Resources:Makes, makesAdvModelNameSample %>" runat="server" /></span>
+                                        </td>
+                                        <td>
+                                            <asp:TextBox ID="txtModelName" runat="server" /> <uc2:mfbTooltip runat="server" ID="mfbTooltip" BodyContent="<%$ Resources:Makes, searchICAOTip %>" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <asp:Localize ID="locType" runat="server" Text="<%$ Resources:Makes, makesAdvModelType %>" />
+                                        </td>
+                                        <td>
+                                            <asp:TextBox ID="txtTypeName" runat="server" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <asp:Localize ID="locCatClass" runat="server" Text="<%$ Resources:Makes, makesAdvCatClass %>" />
+                                        </td>
+                                        <td>
+                                            <asp:TextBox ID="txtCatClass" runat="server" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td><asp:Button ID="btnSearch" runat="server" Text="<%$ Resources:Makes, makesSearchMakes %>" OnClick="FilterTextChanged" />
+                                        </td>
+                                    </tr>
+                                </table>
+                                <asp:LinkButton ID="lnkSimpleSearch" runat="server" Text="<%$ Resources:Makes, makesSimpleSearch %>" OnClick="lnkSimpleSearch_Click" />
+                            </asp:Panel>
+                        </asp:View>
+                    </asp:MultiView>
+            </div>
+        </div>
+        <div style="flex:auto; text-align: right;" >
+            <div style="display: inline-block">
+                <asp:Image ID="imgAdd" runat="server" ImageUrl="~/images/add.png" style="margin-right: 15px; margin-left: 0px; vertical-align:middle;" />
+                <asp:LinkButton ID="btnAddNew" runat="server" Text="<%$ Resources:Makes, makesAddModel %>" Font-Bold="true" onclick="btnAddNew_Click"  />
+            </div>
+        </div>
     </div>
-    <h2><asp:Label ID="lblSearchPrompt" runat="server" Text="Find models of aircraft"></asp:Label></h2>
-    <asp:MultiView ID="mvSearchForm" runat="server" ActiveViewIndex="0">
-        <asp:View ID="vwSimpleSearch" runat="server">
-            <uc2:mfbSearchbox runat="server" ID="mfbSearchbox" Hint="<%$ Resources:Makes, SearchTip %>" OnSearchClicked="FilterTextChanged" />
-            <div><asp:LinkButton ID="lnkAdvanced" runat="server" Text="Advanced Search" OnClick="lnkAdvanced_Click" meta:resourcekey="lnkAdvancedResource1"></asp:LinkButton></div>
-        </asp:View>
-        <asp:View ID="vwAdvancedSearch" runat="server">
-            <asp:Panel ID="pnlSearch" runat="server" DefaultButton="btnSearch" meta:resourcekey="pnlSearchResource2">
-                <table>
-                    <tr>
-                        <td>
-                            <asp:Localize ID="locManufacturer" runat="server" Text="Manufacturer:" meta:resourcekey="locManufacturerResource1"></asp:Localize>
-                        </td>
-                        <td>
-                            <asp:TextBox ID="txtManufacturer" runat="server" meta:resourcekey="txtManufacturerResource1"></asp:TextBox>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <asp:Localize ID="locModel" runat="server" Text="Model ID:" meta:resourcekey="locModelResource1"></asp:Localize><br />
-                            <span class="fineprint"><asp:Localize ID="locModelIDExample" Text='(e.g., "C-172")' runat="server" meta:resourcekey="locModelIDExampleResource1"></asp:Localize></span>
-                        </td>
-                        <td>
-                            <asp:TextBox ID="txtModel" runat="server" meta:resourcekey="txtModelResource1"></asp:TextBox>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <asp:Localize ID="locModelName" runat="server" Text="Model Name:" meta:resourcekey="locModelNameResource1"></asp:Localize><br />
-                            <span class="fineprint"><asp:Localize ID="locModelNameExample" Text='(e.g., "Skyhawk")' runat="server" meta:resourcekey="locModelNameExampleResource1"></asp:Localize></span>
-                        </td>
-                        <td>
-                            <asp:TextBox ID="txtModelName" runat="server" meta:resourcekey="txtModelNameResource1"></asp:TextBox> <uc2:mfbTooltip runat="server" ID="mfbTooltip" BodyContent="<%$ Resources:Makes, searchICAOTip %>" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <asp:Localize ID="locType" runat="server" Text="Type designator:" meta:resourcekey="locTypeResource1"></asp:Localize>
-                        </td>
-                        <td>
-                            <asp:TextBox ID="txtTypeName" runat="server" meta:resourcekey="txtTypeNameResource1"></asp:TextBox>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <asp:Localize ID="locCatClass" runat="server" Text="Category/Class:" meta:resourcekey="locCatClassResource1"></asp:Localize>
-                        </td>
-                        <td>
-                            <asp:TextBox ID="txtCatClass" runat="server" meta:resourcekey="txtCatClassResource1"></asp:TextBox>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td><asp:Button ID="btnSearch" runat="server" Text="Search" OnClick="FilterTextChanged" meta:resourcekey="btnSearchResource1" />
-                        </td>
-                    </tr>
-                </table>
-                <asp:LinkButton ID="lnkSimpleSearch" runat="server" Text="Simple Search" OnClick="lnkSimpleSearch_Click" meta:resourcekey="lnkSimpleSearchResource1"></asp:LinkButton>
-            </asp:Panel>
-        </asp:View>
-    </asp:MultiView>
-    <p><% =Resources.Makes.searchWildcardTip %></p>
     <asp:HiddenField runat="server" ID="hdnQueryJSON" />
-    <div style="width:800px">
+    <div style="width:100%; max-width: 800px; margin-left: auto; margin-right: auto;">
         <table style="width:100%" runat="server" id="tblHeaderRow" visible="false">
             <tr>
                 <td style="width:160px;"></td>
@@ -86,18 +92,13 @@
                     <table style="width:100%">
                         <tr>
                             <td style="width:30%;">
-                                <asp:LinkButton ID="lnkSortManufacturer" runat="server" Text="Manufacturer" 
-                                    meta:resourcekey="lnkSortManufacturerResource1" 
-                                    onclick="lnkSortManufacturer_Click"></asp:LinkButton>&nbsp;&nbsp;&nbsp;
+                                <asp:LinkButton ID="lnkSortManufacturer" runat="server" Text="<%$ Resources:Makes, makesSortManufacturer %>" onclick="lnkSortManufacturer_Click" />
                             </td>
                             <td style="width:40%;">
-                                <asp:LinkButton ID="lnkSortModel" runat="server" Text="Model"
-                                    meta:resourcekey="lnkSortModelResource1" onclick="lnkSortModel_Click"></asp:LinkButton>&nbsp;&nbsp;&nbsp;
+                                <asp:LinkButton ID="lnkSortModel" runat="server" Text="<%$ Resources:Makes, makesSortModel %>" onclick="lnkSortModel_Click" />
                             </td>
                             <td style="width:30%;">
-                                <asp:LinkButton ID="lnkSortCatclass" runat="server" Text="Category/Class" 
-                                    meta:resourcekey="lnkSortCatclassResource1" 
-                                    onclick="lnkSortCatclass_Click"></asp:LinkButton>
+                                <asp:LinkButton ID="lnkSortCatclass" runat="server" Text="<%$ Resources:Makes, makesSortCatClass %>" onclick="lnkSortCatclass_Click" />
                             </td>
                         </tr>
                     </table>
@@ -105,18 +106,20 @@
             </tr>
         </table>    
         <asp:GridView ID="gvMakes" GridLines="None" CellPadding="10" runat="server" EnableViewState="False"
-        AutoGenerateColumns="False" OnRowDataBound="MakesRowDataBound" 
-            ShowHeader="False"
-            Width="100%" meta:resourcekey="gvMakesResource1">
+        AutoGenerateColumns="False" OnRowDataBound="MakesRowDataBound" ShowHeader="False" Width="100%">
             <Columns>
-                <asp:TemplateField meta:resourcekey="TemplateFieldResource1">
+                <asp:TemplateField>
                     <ItemTemplate>
                         <uc2:mfbMakeListItem ID="mfbMakeListItem1" runat="server" />
                     </ItemTemplate>
                     <ItemStyle VerticalAlign="Top" />
                 </asp:TemplateField>
             </Columns>
+            <EmptyDataTemplate>
+                <div style="text-align: center"><%# Resources.Makes.makesNoResults %></div>
+            </EmptyDataTemplate>
         </asp:GridView>
+        <div style="text-align: center;"><asp:Label ID="lblSearchPrompt" runat="server" /></div>
     </div>
     <script>
         var params = new Object();
@@ -160,8 +163,6 @@
             });
         });
     </script>
-    <asp:Label ID="lblError" runat="server" CssClass="error" 
-        meta:resourcekey="lblErrorResource1"></asp:Label><br />
 </asp:Content>
 <asp:content id="Content1" contentplaceholderid="cpMain" runat="Server">
 </asp:content>
