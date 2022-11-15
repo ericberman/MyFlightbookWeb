@@ -233,7 +233,7 @@
     <value>Hobbs</value>
   </data>
   <data name="TotalGroupCapabilities" xml:space="preserve">
-    <value>Caractéristiques par avion</value>
+    <value>Caractéristiques par aéronef</value>
   </data>
   <data name="TotalGroupCoreFields" xml:space="preserve">
     <value>Journal de bord standard</value>
@@ -248,7 +248,7 @@
     <value>Durée totale par code OACI</value>
   </data>
   <data name="TotalGroupModel" xml:space="preserve">
-    <value>Temps total par modèle d'avion</value>
+    <value>Temps total par modèle d'aéronef</value>
   </data>
   <data name="TotalGroupTotal" xml:space="preserve">
     <value>Temps total de vol</value>
