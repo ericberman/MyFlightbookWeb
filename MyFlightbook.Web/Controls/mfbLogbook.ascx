@@ -231,9 +231,8 @@
                                 <%#: Eval("CatClassDisplay") %>
                             </asp:View>
                             <asp:View ID="vwOverriddenCatClass" runat="server">
-                                <asp:Label ID="lblCatClass" runat="server" Text='<%# Eval("CatClassDisplay") %>' CssClass="ExceptionData">
-                                </asp:Label>
-                                <uc5:mfbTooltip ID="mfbTTCatClass" runat="server" BodyContent="<%$ Resources:LogbookEntry, LogbookAltCatClassTooltip %>" HoverControl="lblCatClass" />
+                                <asp:Label ID="lblCatClass" runat="server" Text='<%# Eval("CatClassDisplay") %>' CssClass="ExceptionData" />
+                                <uc5:mfbTooltip ID="mfbTTCatClass" runat="server" BodyContent="<%$ Resources:LogbookEntry, LogbookAltCatClassTooltip %>" HoverControlID="lblCatClass" />
                             </asp:View>
                         </asp:MultiView>
                         <div class="printonly"><asp:Label ID="lblModelAttributes" runat="server" Text='<%#: MakeModel.GetModel(Convert.ToInt32(Eval("ModelID"))).AttributeListSingleLine %>'></asp:Label></div>

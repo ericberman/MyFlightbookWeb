@@ -22,15 +22,6 @@ public partial class Controls_mfbTooltip
     protected global::System.Web.UI.WebControls.Label lblTip;
 
     /// <summary>
-    /// hmeHover control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::AjaxControlToolkit.HoverMenuExtender hmeHover;
-
-    /// <summary>
     /// pnlTip control.
     /// </summary>
     /// <remarks>

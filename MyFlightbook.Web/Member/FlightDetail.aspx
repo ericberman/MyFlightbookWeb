@@ -56,7 +56,7 @@
                         <span style="white-space:pre-line" runat="server" dir="auto"><asp:Literal ID="litDesc" runat="server"></asp:Literal></span>
                     </p>
                     <div style="text-align:left">
-                        <uc1:mfbTooltip ID="mfbTTCatClass" runat="server" BodyContent="<%$ Resources:LogbookEntry, LogbookAltCatClassTooltip %>" HoverControl="lblCatClass" />
+                        <uc1:mfbTooltip ID="mfbTTCatClass" runat="server" BodyContent="<%$ Resources:LogbookEntry, LogbookAltCatClassTooltip %>" HoverControlID="lblCatClass" />
                     </div>
                     <asp:Panel ID="pnlFilter" runat="server" Visible="false" >
                         <div style="display:inline-block;"><%=Resources.LocalizedText.ResultsFiltered %></div>

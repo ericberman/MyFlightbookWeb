@@ -696,6 +696,7 @@ namespace MyFlightbook.MemberPages
             lblFlightAircraft.Text = HttpUtility.HtmlEncode(led.TailNumDisplay) ?? string.Empty;
             lblCatClass.Text = String.Format(CultureInfo.CurrentCulture, "({0})", HttpUtility.HtmlEncode(led.CatClassDisplay));
             lblCatClass.CssClass = led.IsOverridden ? "ExceptionData" : string.Empty;
+            mfbTTCatClass.Visible = led.IsOverridden;
             litDesc.Text = led.CommentWithReplacedApproaches;
             lblRoute.Text = HttpUtility.HtmlEncode(led.Route.ToUpper(CultureInfo.CurrentCulture));
 

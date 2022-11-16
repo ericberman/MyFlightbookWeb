@@ -4,7 +4,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2019 MyFlightbook LLC
+ * Copyright (c) 2015-2021 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 ************************************************/
@@ -40,14 +40,6 @@ public partial class Controls_mfbTooltip : System.Web.UI.UserControl
     public string BodySource { get; set; }
 
     /// <summary>
-    /// A placeholder control, if more customized content is desired.
-    /// </summary>
-    public PlaceHolder BodyPlaceholder
-    {
-        get { return plcCustom; }
-    }
-
-    /// <summary>
     /// The text over which to hover for the tooltip ("[?]" by default)
     /// </summary>
     public string HoverText
@@ -56,22 +48,23 @@ public partial class Controls_mfbTooltip : System.Web.UI.UserControl
         set { lblTip.Text = value; }
     }
 
-    public string HoverControl
-    {
-        get { return hmeHover.TargetControlID; }
-        set
+    private string m_hoverControlID = string.Empty;
+    /// <summary>
+    /// Sets the the hover control by ASP.NET ID, but returns it in JQueriable format.
+    /// </summary>
+    public string HoverControlID 
+    { 
+        get { return m_hoverControlID; } 
+        set 
         {
-            if (String.IsNullOrEmpty(value))
-            {
-                hmeHover.TargetControlID = lblTip.ID;
-                lblTip.Visible = true;
-            }
-            else
-            {
-                hmeHover.TargetControlID = value;
-                lblTip.Visible = false;
-            }
+            m_hoverControlID = value;
+            lblTip.Visible = String.IsNullOrEmpty(value);
         }
+    }
+
+    public string HoverControlSelector
+    {
+        get { return "#" + (String.IsNullOrEmpty(HoverControlID) ? lblTip.ClientID : this.NamingContainer.FindControl(HoverControlID).ClientID); }
     }
 
     [TemplateContainer(typeof(TooltipContentTemplate)), PersistenceMode(PersistenceMode.InnerDefaultProperty), TemplateInstance(TemplateInstance.Single)]
