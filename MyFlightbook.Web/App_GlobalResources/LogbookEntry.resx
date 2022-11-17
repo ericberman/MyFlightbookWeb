@@ -1549,4 +1549,73 @@ Proceed with import?</value>
   <data name="PrintHeaderSpecialCrew" xml:space="preserve">
     <value>Special Crew Time</value>
   </data>
+  <data name="flightDetailsAltUnitFeet" xml:space="preserve">
+    <value>Feet</value>
+  </data>
+  <data name="flightDetailsAltUnitMeters" xml:space="preserve">
+    <value>Meters</value>
+  </data>
+  <data name="flightDetailsAltUnitsPrompt" xml:space="preserve">
+    <value>Altitude in original data is:</value>
+  </data>
+  <data name="flightDetailsClearMarkers" xml:space="preserve">
+    <value>Clear added markers</value>
+  </data>
+  <data name="flightDetailsDataToChart" xml:space="preserve">
+    <value>Data to chart:</value>
+  </data>
+  <data name="flightDetailsDataToChart2" xml:space="preserve">
+    <value>2nd data to chart:</value>
+  </data>
+  <data name="flightDetailsDownloadAsPrompt" xml:space="preserve">
+    <value>Download this data as:</value>
+  </data>
+  <data name="flightDetailsDownloadButton" xml:space="preserve">
+    <value>Download</value>
+  </data>
+  <data name="flightDetailsDownloadCSV" xml:space="preserve">
+    <value>Text (CSV / Spreadsheet)</value>
+  </data>
+  <data name="flightDetailsDownloadGPX" xml:space="preserve">
+    <value>GPX</value>
+  </data>
+  <data name="flightDetailsDownloadKML" xml:space="preserve">
+    <value>KML (Google Earth)</value>
+  </data>
+  <data name="flightDetailsDownloadOriginal" xml:space="preserve">
+    <value>Original Format</value>
+  </data>
+  <data name="flightDetailsErrorsFound" xml:space="preserve">
+    <value>Errors were found in loading flight data</value>
+  </data>
+  <data name="flightDetailsPositionHeader" xml:space="preserve">
+    <value>Position</value>
+  </data>
+  <data name="flightDetailsReturnToLogbook" xml:space="preserve">
+    <value>Return to logbook</value>
+  </data>
+  <data name="flightDetailsSpeedUnitFPS" xml:space="preserve">
+    <value>Feet/Second</value>
+  </data>
+  <data name="flightDetailsSpeedUnitKmH" xml:space="preserve">
+    <value>Km/Hour</value>
+  </data>
+  <data name="flightDetailsSpeedUnitKts" xml:space="preserve">
+    <value>Knots</value>
+  </data>
+  <data name="flightDetailsSpeedUnitMPH" xml:space="preserve">
+    <value>Miles/Hour</value>
+  </data>
+  <data name="flightDetailsSpeedUnitMPS" xml:space="preserve">
+    <value>Meters/Second</value>
+  </data>
+  <data name="flightDetailsSpeedUnitsPrompt" xml:space="preserve">
+    <value>Speed in original data is:</value>
+  </data>
+  <data name="flightDetailsXAxis" xml:space="preserve">
+    <value>X-axis:</value>
+  </data>
+  <data name="flightDetailsZoomToFit" xml:space="preserve">
+    <value>Zoom to fit all flight data</value>
+  </data>
 </root>

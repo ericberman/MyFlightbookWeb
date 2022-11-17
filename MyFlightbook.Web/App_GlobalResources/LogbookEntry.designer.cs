@@ -1024,11 +1024,128 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Feet.
+        /// </summary>
+        internal static string flightDetailsAltUnitFeet {
+            get {
+                return ResourceManager.GetString("flightDetailsAltUnitFeet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Meters.
+        /// </summary>
+        internal static string flightDetailsAltUnitMeters {
+            get {
+                return ResourceManager.GetString("flightDetailsAltUnitMeters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Altitude in original data is:.
+        /// </summary>
+        internal static string flightDetailsAltUnitsPrompt {
+            get {
+                return ResourceManager.GetString("flightDetailsAltUnitsPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear added markers.
+        /// </summary>
+        internal static string flightDetailsClearMarkers {
+            get {
+                return ResourceManager.GetString("flightDetailsClearMarkers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data to chart:.
+        /// </summary>
+        internal static string flightDetailsDataToChart {
+            get {
+                return ResourceManager.GetString("flightDetailsDataToChart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 2nd data to chart:.
+        /// </summary>
+        internal static string flightDetailsDataToChart2 {
+            get {
+                return ResourceManager.GetString("flightDetailsDataToChart2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to View details for your flight, including telemetry (if present)..
         /// </summary>
         internal static string FlightDetailsDesc {
             get {
                 return ResourceManager.GetString("FlightDetailsDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download this data as:.
+        /// </summary>
+        internal static string flightDetailsDownloadAsPrompt {
+            get {
+                return ResourceManager.GetString("flightDetailsDownloadAsPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download.
+        /// </summary>
+        internal static string flightDetailsDownloadButton {
+            get {
+                return ResourceManager.GetString("flightDetailsDownloadButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Text (CSV / Spreadsheet).
+        /// </summary>
+        internal static string flightDetailsDownloadCSV {
+            get {
+                return ResourceManager.GetString("flightDetailsDownloadCSV", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GPX.
+        /// </summary>
+        internal static string flightDetailsDownloadGPX {
+            get {
+                return ResourceManager.GetString("flightDetailsDownloadGPX", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to KML (Google Earth).
+        /// </summary>
+        internal static string flightDetailsDownloadKML {
+            get {
+                return ResourceManager.GetString("flightDetailsDownloadKML", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Original Format.
+        /// </summary>
+        internal static string flightDetailsDownloadOriginal {
+            get {
+                return ResourceManager.GetString("flightDetailsDownloadOriginal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Errors were found in loading flight data.
+        /// </summary>
+        internal static string flightDetailsErrorsFound {
+            get {
+                return ResourceManager.GetString("flightDetailsErrorsFound", resourceCulture);
             }
         }
         
@@ -1051,11 +1168,101 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Position.
+        /// </summary>
+        internal static string flightDetailsPositionHeader {
+            get {
+                return ResourceManager.GetString("flightDetailsPositionHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Return to logbook.
+        /// </summary>
+        internal static string flightDetailsReturnToLogbook {
+            get {
+                return ResourceManager.GetString("flightDetailsReturnToLogbook", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Feet/Second.
+        /// </summary>
+        internal static string flightDetailsSpeedUnitFPS {
+            get {
+                return ResourceManager.GetString("flightDetailsSpeedUnitFPS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Km/Hour.
+        /// </summary>
+        internal static string flightDetailsSpeedUnitKmH {
+            get {
+                return ResourceManager.GetString("flightDetailsSpeedUnitKmH", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Knots.
+        /// </summary>
+        internal static string flightDetailsSpeedUnitKts {
+            get {
+                return ResourceManager.GetString("flightDetailsSpeedUnitKts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Miles/Hour.
+        /// </summary>
+        internal static string flightDetailsSpeedUnitMPH {
+            get {
+                return ResourceManager.GetString("flightDetailsSpeedUnitMPH", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Meters/Second.
+        /// </summary>
+        internal static string flightDetailsSpeedUnitMPS {
+            get {
+                return ResourceManager.GetString("flightDetailsSpeedUnitMPS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Speed in original data is:.
+        /// </summary>
+        internal static string flightDetailsSpeedUnitsPrompt {
+            get {
+                return ResourceManager.GetString("flightDetailsSpeedUnitsPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Details for Flight on {0:d}.
         /// </summary>
         internal static string FlightDetailsTitle {
             get {
                 return ResourceManager.GetString("FlightDetailsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to X-axis:.
+        /// </summary>
+        internal static string flightDetailsXAxis {
+            get {
+                return ResourceManager.GetString("flightDetailsXAxis", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zoom to fit all flight data.
+        /// </summary>
+        internal static string flightDetailsZoomToFit {
+            get {
+                return ResourceManager.GetString("flightDetailsZoomToFit", resourceCulture);
             }
         }
         
