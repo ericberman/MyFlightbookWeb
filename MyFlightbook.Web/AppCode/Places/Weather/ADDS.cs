@@ -8,7 +8,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2021 MyFlightbook LLC
+ * Copyright (c) 2017-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -370,7 +370,15 @@ namespace MyFlightbook.Weather.ADDS
             if (string.IsNullOrEmpty(airports))
                 return null;
 
-            string fixedCodes = String.Join(",", airport.SplitCodes(airports));
+            // Issue #1020 - remove anything that isn't an actual air/sea/heliport
+            HashSet<string> hs = new HashSet<string>();
+            foreach (string szap in airport.SplitCodes(airports.ToUpper(CultureInfo.CurrentCulture))) 
+            {
+                if (!szap.StartsWith(airport.ForceNavaidPrefix, StringComparison.CurrentCultureIgnoreCase))
+                    hs.Add(szap);
+            }
+
+            string fixedCodes = String.Join(",", hs);
             return GetRequest(String.Format(CultureInfo.InvariantCulture, szRecentTemplate, hourLookback, fixedCodes));
         }
 
