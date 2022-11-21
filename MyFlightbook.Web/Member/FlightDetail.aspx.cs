@@ -3,6 +3,7 @@ using MyFlightbook.Charting;
 using MyFlightbook.Geography;
 using MyFlightbook.Image;
 using MyFlightbook.Telemetry;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -340,22 +341,22 @@ namespace MyFlightbook.MemberPages
                 return;
             }
 
-            gcData.XLabel = xAxis.Text;
-            gcData.YLabel = yAxis1.Text;
-            gcData.Y2Label = yAxis2.Text;
+            gcData.ChartData.XLabel = xAxis.Text;
+            gcData.ChartData.YLabel = yAxis1.Text;
+            gcData.ChartData.Y2Label = yAxis2.Text;
 
-            gcData.Clear();
+            gcData.ChartData.Clear();
 
-            gcData.XDataType = GoogleChart.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(xAxis.Value).Type);
-            gcData.YDataType = GoogleChart.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(yAxis1.Value).Type);
-            gcData.Y2DataType = GoogleChart.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(yAxis2.Value).Type);
+            gcData.XDataType = GoogleChartData.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(xAxis.Value).Type);
+            gcData.YDataType = GoogleChartData.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(yAxis1.Value).Type);
+            gcData.Y2DataType = GoogleChartData.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(yAxis2.Value).Type);
 
             if (HasLatLongInfo)
-                gcData.ClickHandlerJS = String.Format(CultureInfo.InvariantCulture, "dropPin({0}[selectedItem.row], xvalue + ': ' + ((selectedItem.column == 1) ? '{1}' : '{2}') + ' = ' + value);", PathLatLongArrayID, yAxis1, yAxis2);
+                gcData.ChartData.ClickHandlerJS = String.Format(CultureInfo.InvariantCulture, "function(row, column, xvalue, value) {{ dropPin({0}[row], xvalue + ': ' + ((column == 1) ? '{1}' : '{2}') + ' = ' + value); }}", PathLatLongArrayID, yAxis1, yAxis2);
 
             foreach (DataRow dr in tdt.Rows)
             {
-                gcData.XVals.Add(dr[xAxis.Value]);
+                gcData.ChartData.XVals.Add(dr[xAxis.Value]);
 
                 if (!String.IsNullOrEmpty(yAxis1.Value))
                 {
@@ -368,7 +369,7 @@ namespace MyFlightbook.MemberPages
                         min = Math.Min(min, d);
                         o = d;
                     }
-                    gcData.YVals.Add(o);
+                    gcData.ChartData.YVals.Add(o);
                 }
                 if (yAxis2.Value.Length > 0 && yAxis2 != yAxis1)
                 {
@@ -381,10 +382,10 @@ namespace MyFlightbook.MemberPages
                         min2 = Math.Min(min2, d);
                         o = d;
                     }
-                    gcData.Y2Vals.Add(o);
+                    gcData.ChartData.Y2Vals.Add(o);
                 }
             }
-            gcData.TickSpacing = 1; // Math.Max(1, m_fd.Data.Rows.Count / 20);
+            gcData.ChartData.TickSpacing = 1; // Math.Max(1, m_fd.Data.Rows.Count / 20);
         }
 
         protected static void SetUpChart(TelemetryDataTable data, DropDownList cmbXAxis, DropDownList cmbYAxis1, DropDownList cmbYAxis2)
@@ -850,7 +851,7 @@ namespace MyFlightbook.MemberPages
             double y2Scale = TryParse(rblConvert2.SelectedValue, 1.0);
 
             UpdateChart(tdt, gcData, fd.HasLatLongInfo, PathLatLongArrayID, cmbXAxis.SelectedItem, cmbYAxis1.SelectedItem, cmbYAxis2.SelectedItem, y1Scale, y2Scale, out double max, out double min, out double max2, out double min2);
-            DataPointCount = gcData.YVals.Count;
+            DataPointCount = gcData.ChartData.YVals.Count;
 
             bool HasCrop = GetCropRange(CurrentFlight, out int _, out int _);
             btnResetCrop.Visible = HasCrop;
@@ -867,8 +868,8 @@ namespace MyFlightbook.MemberPages
 
             lblMaxY.Text = max > double.MinValue && !String.IsNullOrEmpty(gcData.YLabel) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ChartMaxX, gcData.YLabel, max) : string.Empty;
             lblMinY.Text = min < double.MaxValue && !String.IsNullOrEmpty(gcData.YLabel) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ChartMinX, gcData.YLabel, min) : string.Empty;
-            lblMaxY2.Text = max2 > double.MinValue && !String.IsNullOrEmpty(gcData.Y2Label) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ChartMaxX, gcData.Y2Label, max2) : string.Empty;
-            lblMinY2.Text = min2 < double.MaxValue && !String.IsNullOrEmpty(gcData.Y2Label) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ChartMinX, gcData.Y2Label, min2) : string.Empty;
+            lblMaxY2.Text = max2 > double.MinValue && !String.IsNullOrEmpty(gcData.ChartData.Y2Label) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ChartMaxX, gcData.ChartData.Y2Label, max2) : string.Empty;
+            lblMinY2.Text = min2 < double.MaxValue && !String.IsNullOrEmpty(gcData.ChartData.Y2Label) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ChartMinX, gcData.ChartData.Y2Label, min2) : string.Empty;
         }
 
         protected void btnCrop_Click(object sender, EventArgs e)

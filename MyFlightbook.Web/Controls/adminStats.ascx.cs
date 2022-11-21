@@ -49,9 +49,9 @@ namespace MyFlightbook.Web.Admin
 
                 foreach (UserStats us in lst)
                 {
-                    gcNewUsers.XVals.Add(us.DisplayPeriod);
-                    gcNewUsers.YVals.Add(us.NewUsers);
-                    gcNewUsers.Y2Vals.Add(us.RunningTotal);
+                    gcNewUsers.ChartData.XVals.Add(us.DisplayPeriod);
+                    gcNewUsers.ChartData.YVals.Add(us.NewUsers);
+                    gcNewUsers.ChartData.Y2Vals.Add(us.RunningTotal);
                 }
             }
         }

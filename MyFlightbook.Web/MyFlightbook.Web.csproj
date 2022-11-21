@@ -939,6 +939,7 @@
     <Content Include="Public\Scripts\daypilot-all.min.js" />
     <Content Include="Public\Scripts\DropDownFilter.js" />
     <Content Include="Public\Scripts\endless-scroll.js" />
+    <Content Include="Public\Scripts\gchart.js" />
     <Content Include="Public\Scripts\GMapScript.js" />
     <Content Include="Public\Scripts\ImpAircraft.js" />
     <Content Include="Public\Scripts\jquery.fitvids.js" />

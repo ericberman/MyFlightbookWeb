@@ -567,7 +567,7 @@ namespace MyFlightbook.Histogram
 
         public override string ChartJScript
         {
-            get { return String.IsNullOrEmpty(BaseHRef) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "window.open('{0}?y=' + xvalue.getFullYear()  + '&m=' + xvalue.getMonth() + '&d=' + xvalue.getDate(), '_blank').focus()", VirtualPathUtility.ToAbsolute(BaseHRef)); }
+            get { return String.IsNullOrEmpty(BaseHRef) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "function(row, column, xvalue, value) {{ window.open('{0}?y=' + xvalue.getFullYear()  + '&m=' + xvalue.getMonth() + '&d=' + xvalue.getDate(), '_blank').focus(); }}", VirtualPathUtility.ToAbsolute(BaseHRef)); }
         }
 
         public override IDictionary<string, string> ParametersForBucket(Bucket b)
@@ -701,7 +701,7 @@ namespace MyFlightbook.Histogram
 
         public override string ChartJScript
         {
-            get { return String.IsNullOrEmpty(BaseHRef) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "window.open('{0}?y=' + xvalue.getFullYear()  + '&m=' + xvalue.getMonth() + '&d=' + xvalue.getDate() + '&w=1', '_blank').focus()", VirtualPathUtility.ToAbsolute(BaseHRef)); }
+            get { return String.IsNullOrEmpty(BaseHRef) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "function(row, column, xvalue, value) {{ window.open('{0}?y=' + xvalue.getFullYear()  + '&m=' + xvalue.getMonth() + '&d=' + xvalue.getDate() + '&w=1', '_blank').focus(); }}", VirtualPathUtility.ToAbsolute(BaseHRef)); }
         }
 
         public override IDictionary<string, string> ParametersForBucket(Bucket b)
@@ -813,7 +813,7 @@ namespace MyFlightbook.Histogram
 
         public override string ChartJScript
         {
-            get { return String.IsNullOrEmpty(BaseHRef) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "window.open('{0}?y=' + xvalue.getFullYear()  + '&m=' + xvalue.getMonth(), '_blank').focus()", VirtualPathUtility.ToAbsolute(BaseHRef)); }
+            get { return String.IsNullOrEmpty(BaseHRef) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "function(row, column, xvalue, value) {{ window.open('{0}?y=' + xvalue.getFullYear()  + '&m=' + xvalue.getMonth(), '_blank').focus(); }}", VirtualPathUtility.ToAbsolute(BaseHRef)); }
         }
 
         public override IDictionary<string, string> ParametersForBucket(Bucket b)
@@ -901,7 +901,7 @@ namespace MyFlightbook.Histogram
 
         public override string ChartJScript
         {
-            get { return String.IsNullOrEmpty(BaseHRef) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "window.open('{0}?y=' + xvalue.getFullYear(), '_blank').focus()", VirtualPathUtility.ToAbsolute(BaseHRef)); }
+            get { return String.IsNullOrEmpty(BaseHRef) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "function(row, column, xvalue, value) {{ window.open('{0}?y=' + xvalue.getFullYear(), '_blank').focus(); }}", VirtualPathUtility.ToAbsolute(BaseHRef)); }
         }
 
         public override IDictionary<string, string> ParametersForBucket(Bucket b)
@@ -1028,7 +1028,7 @@ namespace MyFlightbook.Histogram
 
         public override string ChartJScript
         {
-            get { return String.IsNullOrEmpty(BaseHRef) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "window.open('{0}?{1}=' + xvalue, '_blank').focus()", VirtualPathUtility.ToAbsolute(BaseHRef), SearchParam); }
+            get { return String.IsNullOrEmpty(BaseHRef) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "function(row, column, xvalue, value) {{ window.open('{0}?{1}=' + xvalue, '_blank').focus(); }}", VirtualPathUtility.ToAbsolute(BaseHRef), SearchParam); }
         }
 
         public override IDictionary<string, string> ParametersForBucket(Bucket b)

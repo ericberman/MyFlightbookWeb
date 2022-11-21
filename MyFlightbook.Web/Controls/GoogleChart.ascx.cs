@@ -1,4 +1,7 @@
-﻿using System;
+﻿using MyFlightbook.Weather.ADDS;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -17,233 +20,137 @@ namespace MyFlightbook.Charting
     public partial class Controls_GoogleChart : UserControl
     {
         #region properties
-        #region private vars to back initialized properties
-        private int m_Width = 800;
-        private int m_Height = 400;
-        private int m_tickSpacing = 1;
-        private List<object> m_XVals;
-        private List<object> m_YVals;
-        private List<object> m_Y2Vals;
-        private List<string> m_toolTips;
-        private GoogleColumnDataType m_XDataType = GoogleColumnDataType.@string;
-        private GoogleColumnDataType m_YDataType = GoogleColumnDataType.number;
-        private GoogleColumnDataType m_Y2DataType = GoogleColumnDataType.number;
-        #endregion
-
-        #region ViewState keys
-        private const string szVSKeyXVals = "XValArrayVS";
-        private const string szVSKeyYVals = "YValArrayVS";
-        private const string szVSKeyY2Vals = "Y2ValArrayVS";
-        private const string szVSKeyTooltips = "YValToolTips";
-        private const string szVSTickSpacing = "tickspacingVS";
-        #endregion
-
-        public IList<object> XVals
+        private const string szVSGCData = "vsGoogleChartData";
+        /// <summary>
+        /// The data and its options for the chart to render.
+        /// </summary>
+        public GoogleChartData ChartData
         {
             get
             {
-                if (m_XVals == null)
-                    m_XVals = (List<object>)ViewState[szVSKeyXVals];
-                if (m_XVals == null)
-                    ViewState[szVSKeyXVals] = m_XVals = new List<object>();
-                return m_XVals;
+                GoogleChartData gcd = (GoogleChartData)ViewState[szVSGCData];
+                if (gcd == null)
+                    ViewState[szVSGCData] = gcd = new GoogleChartData();
+                return gcd;
             }
-        }
-
-        public IList<object> YVals
-        {
-            get
+            set
             {
-                if (m_YVals == null)
-                    m_YVals = (List<object>)ViewState[szVSKeyYVals];
-                if (m_YVals == null)
-                    ViewState[szVSKeyYVals] = m_YVals = new List<object>();
-                return m_YVals;
+                ViewState[szVSGCData] = value;
             }
         }
 
-        public IList<object> Y2Vals
+        protected string ChartDataSerialized
         {
-            get
-            {
-                if (m_Y2Vals == null)
-                    m_Y2Vals = (List<object>)ViewState[szVSKeyY2Vals];
-                if (m_Y2Vals == null)
-                    ViewState[szVSKeyY2Vals] = m_Y2Vals = new List<object>();
-                return m_Y2Vals;
-            }
+            get {
+                ChartData.ContainerID = pnlChart.ClientID;
+                return JsonConvert.SerializeObject(ChartData, new JsonConverter[] { new JavaScriptDateTimeConverter() }); }
         }
 
-        public IList<string> Tooltips
+        #region Helper properties for in-line values
+        public GoogleChartType ChartType
         {
-            get
-            {
-                if (m_toolTips == null)
-                    m_toolTips = (List<string>)ViewState[szVSKeyTooltips];
-                if (m_toolTips == null)
-                    ViewState[szVSKeyTooltips] = m_toolTips = new List<string>();
-                return m_toolTips;
-            }
+            get { return ChartData.ChartType; }
+            set { ChartData.ChartType = value; }
         }
 
-        public bool ShowAverage { get; set; }
-
-        public double AverageValue { get; set; }
-
-        public int Width
+        public GoogleSeriesType Chart2Type
         {
-            get { return m_Width; }
-            set { m_Width = value; }
+            get { return ChartData.Chart2Type; }
+            set { ChartData.Chart2Type = value; }
         }
 
-        public int Height
+        public string Title
         {
-            get { return m_Height; }
-            set { m_Height = value; pnlChart.Height = Unit.Pixel(value); }
+            get { return ChartData.Title; }
+            set { ChartData.Title = value; }
         }
 
-        public GoogleChartType ChartType { get; set; }
-        public GoogleSeriesType Chart2Type { get; set; }
-        public GoogleLegendType LegendType { get; set; }
         public GoogleColumnDataType XDataType
         {
-            get { return m_XDataType; }
-            set { m_XDataType = value; }
+            get { return ChartData.XDataType; }
+            set { ChartData.XDataType = value; }
         }
-
-        public bool UseMonthYearDate { get; set; }
-
         public GoogleColumnDataType YDataType
         {
-            get { return m_YDataType; }
-            set { m_YDataType = value; }
+            get { return ChartData.YDataType; }
+            set { ChartData.YDataType = value; }
         }
 
         public GoogleColumnDataType Y2DataType
         {
-            get { return m_Y2DataType; }
-            set { m_Y2DataType = value; }
+            get { return ChartData.Y2DataType; }
+            set { ChartData.Y2DataType = value; }
         }
 
-        public string XLabel { get; set; }
-        public string YLabel { get; set; }
-        public string Y2Label { get; set; }
-        public string AverageFormatString { get; set; }
+        public int Height
+        {
+            get { return (int)ChartData.Height; }
+            set
+            {
+                ChartData.Height = (uint)value;
+                pnlChart.Height = Unit.Pixel(value);
+            }
+        }
 
-        protected string AverageLabel { get { return String.Format(CultureInfo.CurrentCulture, AverageFormatString, AverageValue); } }
-        public string Title { get; set; }
+        public int Width
+        {
+            get { return (int) ChartData.Width; }
+            set { ChartData.Width = (uint) value; }
+        }
 
-        /// <summary>
-        /// Javascript to execute on a click
-        /// 4 variables are set for context for this
-        /// a) selectedItem.row: the index of the item that was clicked
-        /// b) selectedItem.column: the column of the index that was clicked (0 = x values, 1 = y values, 2 = y2 values)
-        /// c) value: the y-value of the item that was clicked
-        /// d) xvalue: the x-value of the item that was clicked
-        /// </summary>
-        public string ClickHandlerJS { get; set; }
+        public string XLabel
+        {
+            get { return ChartData.XLabel; }
+            set { ChartData.XLabel = value; }
+        }
 
-        /// <summary>
-        /// Slant angle for ticks on the horizontal axis
-        /// </summary>
-        public int SlantAngle { get; set; }
+        public string YLabel
+        {
+            get { return ChartData.YLabel; }
+            set { ChartData.YLabel = value; }
+        }
+
+        public string Y2Label
+        {
+            get { return ChartData.Y2Label; }
+            set { ChartData.Y2Label = value; }
+        }
+        public GoogleLegendType LegendType
+        {
+            get { return ChartData.LegendType; }
+            set { ChartData.LegendType = value; }
+        }
+
+        public bool UseMonthYearDate
+        {
+            get { return ChartData.UseMonthYearDate; }
+            set { ChartData.UseMonthYearDate = value; }
+        }
+
+        public int SlantAngle
+        {
+            get { return ChartData.SlantAngle; }
+            set{ ChartData.SlantAngle = value; }
+        }
 
         public int TickSpacing
         {
-            get
-            {
-                if (ViewState[szVSTickSpacing] != null)
-                    m_tickSpacing = (int)ViewState[szVSTickSpacing];
-                return m_tickSpacing;
-            }
-            set
-            {
-                if (value <= 0)
-                    throw new MyFlightbookException("Invalid Tickspacing for google chart");
-                ViewState[szVSTickSpacing] = m_tickSpacing = value;
-            }
+            get { return (int) ChartData.TickSpacing; }
+            set { ChartData.TickSpacing = (uint) value; }
         }
 
-        protected bool HasY2
+        public string AverageFormatString
         {
-            get { return Y2Vals.Count > 0; }
+            get { return ChartData.AverageFormatString; }
+            set { ChartData.AverageFormatString = value; }
         }
-
-        protected string Data
-        {
-            get
-            {
-                List<string> lst = new List<string>();
-                bool fCustomTooltips = Tooltips.Any();
-                for (int i = 0; i < XVals.Count; i++)
-                    lst.Add(String.Format(CultureInfo.InvariantCulture, "[{0}, {1}{2}{3}{4}]",
-                        GoogleChart.FormatObjectForTypeJS(XVals[i], XDataType),
-                        YVals[i],
-                        fCustomTooltips ? String.Format(CultureInfo.InvariantCulture, ", \"{0}\"", Tooltips[i]) : String.Empty,
-                        (i < Y2Vals.Count) ? String.Format(CultureInfo.InvariantCulture, ", {0}", Y2Vals[i]) : string.Empty,
-                        ShowAverage ? String.Format(CultureInfo.InvariantCulture, ", {0}", AverageValue) : string.Empty));
-
-                return String.Join(", ", lst.ToArray());
-            }
-        }
-
-        protected string ChartTypeString
-        {
-            get { return ChartType.ToString(); }
-        }
-
-        protected string Chart2TypeString
-        {
-            get { return Chart2Type.ToString(); }
-        }
-
-        protected string UseSlantedTextString
-        {
-            get { return (SlantAngle > 0) ? "true" : "false"; }
-        }
-
-        protected string XDataTypeString
-        {
-            get { return XDataType.ToString(); }
-        }
-
-        protected string YDataTypeString
-        {
-            get { return YDataType.ToString(); }
-        }
-
-        protected string Y2DataTypeString
-        {
-            get { return Y2DataType.ToString(); }
-        }
-
-        protected static string AverageDataTypeString
-        {
-            get { return GoogleColumnDataType.number.ToString(); }
-        }
-
-        protected string XDataFormat
-        {
-            get { return GoogleChart.FormatStringForType(XDataType, UseMonthYearDate, XDatePattern); }
-        }
-
-        /// <summary>
-        /// Format pattern for the X axis, if it is a date and UseMonthYearDate isn't set.
-        /// </summary>
-        public string XDatePattern { get; set; }
         #endregion
-
-        public void Clear()
-        {
-            Y2Vals.Clear();
-            YVals.Clear();
-            XVals.Clear();
-            Tooltips.Clear();
-        }
+        #endregion
 
         protected void Page_Load(object sender, EventArgs e)
         {
             Page.ClientScript.RegisterClientScriptInclude("GoogleJScript", "https://www.google.com/jsapi");
+            Page.ClientScript.RegisterClientScriptInclude("gchart", ResolveClientUrl("~/public/Scripts/gchart.js?v=1"));
             Page.ClientScript.RegisterClientScriptBlock(this.GetType(), "LoadGJScriptPackage", @"
 google.load('visualization', '1.1', {packages:['corechart']});
 var chartsToDraw = [];
@@ -251,7 +158,7 @@ var chartsToDraw = [];
   function drawCharts()
   {
     for (var i = 0; i < chartsToDraw.length; i++)
-        chartsToDraw[i]();
+        drawGChart(chartsToDraw[i]);
   }", true);
         }
     }

@@ -10,7 +10,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2021 MyFlightbook LLC
+ * Copyright (c) 2009-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -106,11 +106,11 @@ namespace MyFlightbook.Charting
 
             bool fHHMM = Profile.GetUser(Page.User.Identity.Name).UsesHHMM;
 
-            gcTrends.Clear();
+            gcTrends.ChartData.Clear();
             foreach (Bucket b in buckets)
             {
-                gcTrends.XVals.Add(gcTrends.XDataType == GoogleColumnDataType.@string ? b.DisplayName : b.OrdinalValue);
-                gcTrends.YVals.Add(b.Values[hv.DataField]);
+                gcTrends.ChartData.XVals.Add(gcTrends.XDataType == GoogleColumnDataType.@string ? b.DisplayName : b.OrdinalValue);
+                gcTrends.ChartData.YVals.Add(b.Values[hv.DataField]);
                 if (!b.ExcludeFromAverage)
                 {
                     average += b.Values[hv.DataField];
@@ -118,19 +118,19 @@ namespace MyFlightbook.Charting
                 }
 
                 if (b.HasRunningTotals)
-                    gcTrends.Y2Vals.Add(b.RunningTotals[hv.DataField]);
+                    gcTrends.ChartData.Y2Vals.Add(b.RunningTotals[hv.DataField]);
 
                 string RankAndPercent = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ChartTotalsRankAndPercentOfTotals, b.Ranks[hv.DataField], buckets.Count(), b.PercentOfTotal[hv.DataField]);
                 // Add a tooltip for the item.
-                gcTrends.Tooltips.Add(String.Format(CultureInfo.CurrentCulture, "<div class='ttip'><div class='dataVal'>{0}</div><div>{1}: <span class='dataVal'>{2}</span></div><div>{3}</div></div>",
+                gcTrends.ChartData.Tooltips.Add(String.Format(CultureInfo.CurrentCulture, "<div class='ttip'><div class='dataVal'>{0}</div><div>{1}: <span class='dataVal'>{2}</span></div><div>{3}</div></div>",
                     HttpUtility.HtmlEncode(b.DisplayName),
                     HttpUtility.HtmlEncode(hv.DataName),
                     HttpUtility.HtmlEncode(BucketManager.FormatForType(b.Values[hv.DataField], hv.DataType, fHHMM)),
                     HttpUtility.HtmlEncode(RankAndPercent)));
             }
 
-            if (gcTrends.ShowAverage = (ckIncludeAverage.Checked && count > 0))
-                gcTrends.AverageValue = average / count;
+            if (gcTrends.ChartData.ShowAverage = (ckIncludeAverage.Checked && count > 0))
+                gcTrends.ChartData.AverageValue = average / count;
 
             string szLabel = "{0}";
             {
@@ -148,10 +148,10 @@ namespace MyFlightbook.Charting
                         break;
                 }
             }
-            gcTrends.YLabel = String.Format(CultureInfo.CurrentCulture, szLabel, hv.DataName);
-            gcTrends.Y2Label = Resources.LocalizedText.ChartRunningTotal;
+            gcTrends.ChartData.YLabel = String.Format(CultureInfo.CurrentCulture, szLabel, hv.DataName);
+            gcTrends.ChartData.Y2Label = Resources.LocalizedText.ChartRunningTotal;
 
-            gcTrends.ClickHandlerJS = BucketManager.ChartJScript;
+            gcTrends.ChartData.ClickHandlerJS = BucketManager.ChartJScript;
 
             pnlChart.Visible = true;
         }
@@ -187,12 +187,12 @@ namespace MyFlightbook.Charting
 
             if (bm is DateBucketManager datebm)
             {
-                gcTrends.XDatePattern = datebm.DateFormat;
-                gcTrends.XDataType = GoogleColumnDataType.date;
+                gcTrends.ChartData.XDatePattern = datebm.DateFormat;
+                gcTrends.ChartData.XDataType = GoogleColumnDataType.date;
             }
             else
             {
-                gcTrends.XDatePattern = "{0}";
+                gcTrends.ChartData.XDatePattern = "{0}";
                 gcTrends.XDataType = GoogleColumnDataType.@string;
             }
 

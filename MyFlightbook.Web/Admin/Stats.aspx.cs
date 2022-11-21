@@ -33,11 +33,11 @@ namespace MyFlightbook.Web.Admin
         protected void UpdateUserActivity()
         {
             DataView dv = (DataView)sqlUserActivity.Select(DataSourceSelectArguments.Empty);
-            gcUserActivity.Clear();
+            gcUserActivity.ChartData.Clear();
             foreach (DataRowView dr in dv)
             {
-                gcUserActivity.XVals.Add(new DateTime(Convert.ToInt32(dr["ActivityYear"], CultureInfo.InvariantCulture), Convert.ToInt32(dr["ActivityMonth"], CultureInfo.InvariantCulture), 1));
-                gcUserActivity.YVals.Add(Convert.ToInt32(dr["UsersWithSessions"], CultureInfo.InvariantCulture));
+                gcUserActivity.ChartData.XVals.Add(new DateTime(Convert.ToInt32(dr["ActivityYear"], CultureInfo.InvariantCulture), Convert.ToInt32(dr["ActivityMonth"], CultureInfo.InvariantCulture), 1));
+                gcUserActivity.ChartData.YVals.Add(Convert.ToInt32(dr["UsersWithSessions"], CultureInfo.InvariantCulture));
             }
         }
 
@@ -68,12 +68,12 @@ ORDER BY creationbucket ASC");
 
             using (DataTable dt = bmFlights.ToDataTable(hmFlightsByDate))
             {
-                gcFlightsOnSite.Clear();
+                gcFlightsOnSite.ChartData.Clear();
                 foreach (DataRow dr in dt.Rows)
                 {
-                    gcFlightsOnSite.XVals.Add((string)dr["DisplayName"]);
-                    gcFlightsOnSite.YVals.Add((int)Convert.ToDouble(dr["Flights"], CultureInfo.InvariantCulture));
-                    gcFlightsOnSite.Y2Vals.Add((int)Convert.ToDouble(dr["Flights Running Total"], CultureInfo.InvariantCulture));
+                    gcFlightsOnSite.ChartData.XVals.Add((string)dr["DisplayName"]);
+                    gcFlightsOnSite.ChartData.YVals.Add((int)Convert.ToDouble(dr["Flights"], CultureInfo.InvariantCulture));
+                    gcFlightsOnSite.ChartData.Y2Vals.Add((int)Convert.ToDouble(dr["Flights Running Total"], CultureInfo.InvariantCulture));
                 }
                 // gcFlightsOnSite.TickSpacing = Math.Max(1, gcFlightsOnSite.XVals.Count / 15);
                 gvFlightsData.DataSource = dt;
@@ -113,17 +113,17 @@ ORDER BY f2.numflights ASC;", String.IsNullOrEmpty(cmbNewUserAge.SelectedValue) 
                     lstFlightsPerUser.Add(new SimpleCountHistogrammable() { Count = Convert.ToInt32(dr["numusers"], CultureInfo.InvariantCulture), Range = Convert.ToInt32(dr["numflights"], CultureInfo.InvariantCulture) });
                 });
 
-            gcFlightsPerUser.TickSpacing = (lstFlightsPerUser.Count < 20) ? 1 : (lstFlightsPerUser.Count < 100 ? 5 : 10);
+            gcFlightsPerUser.ChartData.TickSpacing = (uint)((lstFlightsPerUser.Count < 20) ? 1 : (lstFlightsPerUser.Count < 100 ? 5 : 10));
 
             bmFlightsPerUser.ScanData(hmFlightsPerUser);
 
             using (DataTable dt = bmFlightsPerUser.ToDataTable(hmFlightsPerUser))
             {
-                gcFlightsPerUser.Clear();
+                gcFlightsPerUser.ChartData.Clear();
                 foreach (DataRow dr in dt.Rows)
                 {
-                    gcFlightsPerUser.XVals.Add((string)dr["DisplayName"]);
-                    gcFlightsPerUser.YVals.Add((int)Convert.ToDouble(dr["Flights"], CultureInfo.InvariantCulture));
+                    gcFlightsPerUser.ChartData.XVals.Add((string)dr["DisplayName"]);
+                    gcFlightsPerUser.ChartData.YVals.Add((int)Convert.ToDouble(dr["Flights"], CultureInfo.InvariantCulture));
                 }
 
                 gvFlightPerUser.DataSource = dt;

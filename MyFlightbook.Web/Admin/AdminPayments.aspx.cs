@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2021 MyFlightbook LLC
+ * Copyright (c) 2009-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -86,8 +86,8 @@ namespace MyFlightbook.Web.Admin
                 // OK, we should have our running average.
                 if (dt.CompareTo(dtMin30) >= 0)
                 {
-                    gchRunning30.XVals.Add(dt);
-                    gchRunning30.YVals.Add(running30);
+                    gchRunning30.ChartData.XVals.Add(dt);
+                    gchRunning30.ChartData.YVals.Add(running30);
                 }
             }
         }
