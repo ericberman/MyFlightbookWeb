@@ -3,7 +3,6 @@ using MyFlightbook.Charting;
 using MyFlightbook.Geography;
 using MyFlightbook.Image;
 using MyFlightbook.Telemetry;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Data;
