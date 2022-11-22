@@ -465,6 +465,7 @@ namespace MyFlightbook.Currency
             m_szModelNames = dr["ModelsDisplay"].ToString();
             m_szCatClass = dr["CatClassDisplay"].ToString();
             m_szPropertyNames = dr["PropertyDisplay"].ToString();
+            IsActive = Convert.ToInt32(dr["isinactive"], CultureInfo.InvariantCulture) == 0;
         }
         #endregion
         
@@ -562,6 +563,11 @@ namespace MyFlightbook.Currency
         /// Local state dictionary for additional data as needed.
         /// </summary>
         protected Dictionary<string, object> AdditionalState { get; } = new Dictionary<string, object>();
+
+        /// <summary>
+        /// Is the currency active for use?
+        /// </summary>
+        public bool IsActive { get; set; } = true;
         #endregion
 
         #region specific required state objects
@@ -579,7 +585,14 @@ namespace MyFlightbook.Currency
 
         #endregion
 
-        static public IEnumerable<CustomCurrency> CustomCurrenciesForUser(string szUser)
+        /// <summary>
+        /// Retrieves custom currencies for the specified user
+        /// </summary>
+        /// <param name="szUser">User name</param>
+        /// <param name="fActiveOnly">If true, only returns active properties</param>
+        /// <returns></returns>
+        /// <exception cref="MyFlightbookException"></exception>
+        static public IEnumerable<CustomCurrency> CustomCurrenciesForUser(string szUser, bool fActiveOnly = false)
         {
             List<CustomCurrency> lst = new List<CustomCurrency>();
             DBHelper dbh = new DBHelper(ConfigurationManager.AppSettings["CustomCurrencyForUserQuery"]);
@@ -587,6 +600,9 @@ namespace MyFlightbook.Currency
                 (comm) => { comm.Parameters.AddWithValue("uname", szUser); },
                 (dr) => { lst.Add(new CustomCurrency(dr)); }))
                 throw new MyFlightbookException("Exception in CustomCurrenciesForUser - setup: " + dbh.LastError);
+
+            if (fActiveOnly)
+                lst.RemoveAll(cc => !cc.IsActive);
 
             return lst;
         }
@@ -695,7 +711,7 @@ namespace MyFlightbook.Currency
 
             string szSet = @"SET 
 username=?uname, name=?name, minEvents=?minEvents, limitType=?limit, timespan=?timespan, timespantype=?timespanType, eventType=?eventType, 
-categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestriction, airportRestriction=?airportRestriction, textRestriction=?textRestriction";
+categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestriction, airportRestriction=?airportRestriction, textRestriction=?textRestriction, isinactive=?inactive";
 
             string szQ = String.Format(CultureInfo.InvariantCulture, "REPLACE INTO customcurrency {0}{1}", szSet, fIsNew ? string.Empty : ", idCurrency=?id");
 
@@ -715,6 +731,7 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                     comm.Parameters.AddWithValue("catClassrestriction", (int)CatClassRestriction);
                     comm.Parameters.AddWithValue("airportRestriction", AirportRestriction.LimitTo(45));
                     comm.Parameters.AddWithValue("textRestriction", TextRestriction.LimitTo(254));
+                    comm.Parameters.AddWithValue("inactive", !IsActive);
                 });
 
             string szErr = (dbh.LastError.Length > 0) ? szErr = "Error saving customcurrency: " + szQ + "\r\n" + dbh.LastError : "";

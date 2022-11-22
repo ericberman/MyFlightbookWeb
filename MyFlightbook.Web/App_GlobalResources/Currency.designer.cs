@@ -1363,6 +1363,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Active.
+        /// </summary>
+        internal static string CustomCurrencyIsActive {
+            get {
+                return ResourceManager.GetString("CustomCurrencyIsActive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to At most.
         /// </summary>
         internal static string CustomCurrencyMaxEventsPrompt {

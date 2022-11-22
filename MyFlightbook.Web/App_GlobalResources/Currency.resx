@@ -1194,4 +1194,7 @@
   <data name="CurrencyOptionsAircraftMaintenanceAlways" xml:space="preserve">
     <value>Always</value>
   </data>
+  <data name="CustomCurrencyIsActive" xml:space="preserve">
+    <value>Active</value>
+  </data>
 </root>

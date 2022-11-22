@@ -676,7 +676,7 @@ namespace MyFlightbook.Currency
             fUses61217 = pf.UsesFAR61217Currency;
 
             // Get any customcurrency objects for the user
-            rgCustomCurrency = CustomCurrency.CustomCurrenciesForUser(szUser);
+            rgCustomCurrency = CustomCurrency.CustomCurrenciesForUser(szUser, true);
 
             fcFAR117 = new FAR117Currency(pf.UsesFAR117DutyTimeAllFlights, pf.UsesHHMM);
             fcFAR195 = new FAR195ACurrency(pf.UsesHHMM);

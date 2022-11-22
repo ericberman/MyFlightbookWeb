@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbCustomCurrencyList.ascx.cs" Inherits="Controls_mfbCustomCurrencyList" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbCustomCurrencyList.ascx.cs" Inherits="MyFlightbook.Currency.mfbCustomCurrencyList" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register Src="~/Controls/mfbCustCurrency.ascx" TagPrefix="uc1" TagName="mfbCustCurrency" %>
 
@@ -42,14 +42,21 @@
             </ItemTemplate>
             <ItemStyle VerticalAlign="Top" />
         </asp:TemplateField>
+        <asp:TemplateField>
+            <ItemTemplate>
+                <asp:CheckBox ID="ckActive" runat="server" AutoPostBack="true" Checked='<%# Eval("IsActive") %>' OnCheckedChanged="ckActive_CheckedChanged" />
+                <asp:Label ID="lblActive" runat="server" AssociatedControlID="ckActive" Text="<%$ Resources:Currency, CustomCurrencyIsActive %>" style="vertical-align: top;" />
+            </ItemTemplate>
+            <ItemStyle VerticalAlign="Top" />
+        </asp:TemplateField>
         <asp:CommandField ButtonType="Link" ShowEditButton="True" EditImageUrl="~/images/pencilsm.png">
-        <ItemStyle VerticalAlign="Top" />
+            <ItemStyle VerticalAlign="Top" />
         </asp:CommandField>
     </Columns>
     <EmptyDataTemplate>
         <ul>
             <li>
-                <asp:Label ID="lblNoRules" runat="server" Font-Italic="True" Text="<%$ Resources:Currency, CustomCurrencyNoneDefined %>"></asp:Label>
+                <asp:Label ID="lblNoRules" runat="server" Font-Italic="True" Text="<%$ Resources:Currency, CustomCurrencyNoneDefined %>" />
             </li>
         </ul>
     </EmptyDataTemplate>

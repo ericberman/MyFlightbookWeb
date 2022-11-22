@@ -7,44 +7,47 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-
-
-public partial class Controls_mfbCustomCurrencyList
+namespace MyFlightbook.Currency
 {
 
-    /// <summary>
-    /// pnlAddCustomCurrency control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Panel pnlAddCustomCurrency;
 
-    /// <summary>
-    /// mfbCustCurrency control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::Controls_mfbCustCurrency mfbCustCurrency;
+    public partial class mfbCustomCurrencyList
+    {
 
-    /// <summary>
-    /// pnlAddCustomCurrency_CollapsiblePanelExtender control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::AjaxControlToolkit.CollapsiblePanelExtender pnlAddCustomCurrency_CollapsiblePanelExtender;
+        /// <summary>
+        /// pnlAddCustomCurrency control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlAddCustomCurrency;
 
-    /// <summary>
-    /// gvCustomCurrency control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.GridView gvCustomCurrency;
+        /// <summary>
+        /// mfbCustCurrency control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Controls_mfbCustCurrency mfbCustCurrency;
+
+        /// <summary>
+        /// pnlAddCustomCurrency_CollapsiblePanelExtender control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.CollapsiblePanelExtender pnlAddCustomCurrency_CollapsiblePanelExtender;
+
+        /// <summary>
+        /// gvCustomCurrency control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvCustomCurrency;
+    }
 }
