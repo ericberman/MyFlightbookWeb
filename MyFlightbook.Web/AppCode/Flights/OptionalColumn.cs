@@ -79,7 +79,7 @@ namespace MyFlightbook
                 default:
                     throw new ArgumentOutOfRangeException(nameof(idPropType));
             }
-            Title = cpt.Title;
+            Title = cpt.ShortTitle;
         }
         #endregion
 

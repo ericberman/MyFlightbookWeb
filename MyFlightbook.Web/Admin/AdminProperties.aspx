@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master" Title="Admin - Properties" CodeBehind="AdminProperties.aspx.cs" Inherits="MyFlightbook.Web.Admin.AdminProperties" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master" Title="Admin - Properties" CodeBehind="AdminProperties.aspx.cs" MaintainScrollPositionOnPostback="true" Inherits="MyFlightbook.Web.Admin.AdminProperties" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <asp:Content ID="Content2" ContentPlaceHolderID="cpPageTitle" runat="Server">
     Admin Tools - Properties
@@ -81,9 +81,10 @@
 <asp:Content ID="Content3" ContentPlaceHolderID="cpMain" runat="Server">
     <asp:SqlDataSource ID="sqlCustomProps" runat="server" ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>"
         ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" SelectCommand="SELECT * FROM custompropertytypes ORDER BY idPropType DESC"
-        UpdateCommand="UPDATE custompropertytypes SET Title=?Title, SortKey=IF(?SortKey IS NULL, '', ?SortKey), FormatString=?FormatString, Description=?Description, Type=?Type, Flags=?Flags WHERE idPropType=?idPropType">
+        UpdateCommand="UPDATE custompropertytypes SET Title=?Title, ShortTitle=?ShortTitle, SortKey=IF(?SortKey IS NULL, '', ?SortKey), FormatString=?FormatString, Description=?Description, Type=?Type, Flags=?Flags WHERE idPropType=?idPropType">
         <UpdateParameters>
             <asp:Parameter Name="Title" Direction="Input" Type="String" />
+            <asp:Parameter Name="ShortTitle" Direction="Input" Type="String" />
             <asp:Parameter Name="FormatString" Direction="Input" Type="String" />
             <asp:Parameter Name="Type" Direction="Input" Type="Int32" />
             <asp:Parameter Name="Flags" Direction="Input" Type="Int32" />
@@ -92,7 +93,8 @@
             <asp:Parameter Name="SortKey" Direction="Input" Type="String" ConvertEmptyStringToNull="false" />
         </UpdateParameters>
     </asp:SqlDataSource>
-    <h2>Existing Props</h2><asp:UpdatePanel ID="UpdatePanel1" runat="server">
+    <h2>Existing Props</h2>
+    <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>
             <asp:GridView ID="gvCustomProps" runat="server" AllowSorting="True" DataSourceID="sqlCustomProps"
                 AutoGenerateEditButton="True" AutoGenerateColumns="false" OnRowUpdated="CustPropsRowEdited" 
@@ -100,6 +102,7 @@
                 <Columns>
                     <asp:BoundField DataField="idPropType" HeaderText="PropertyTypeID" />
                     <asp:BoundField DataField="Title" HeaderText="Title" />
+                    <asp:BoundField DataField="ShortTitle" HeaderText="ShortTitle" />
                     <asp:BoundField DataField="SortKey" HeaderText="SortKey" />
                     <asp:BoundField DataField="FormatString" HeaderText="Format String" />
                     <asp:BoundField DataField="Description" HeaderText="Description" />

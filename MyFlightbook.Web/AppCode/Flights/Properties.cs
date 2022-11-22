@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Caching;
+using System.Xml.Serialization;
 
 /******************************************************
  * 
@@ -232,6 +233,7 @@ namespace MyFlightbook
 
         private const string szAppCacheKey = "keyCustomPropertyTypes";
         private const string szAppCacheDictKey = "keyDictCustomPropertyTypes";
+        private string m_shortTitle = null;
 
         #region properties.
         /// <summary>
@@ -243,6 +245,13 @@ namespace MyFlightbook
         /// Title for the property
         /// </summary>
         public string Title { get; set; }
+
+        /// <summary>
+        /// Short title for the property - useful for print headers.
+        /// </summary>
+        [JsonIgnore]
+        [XmlIgnore]
+        public string ShortTitle { get { return m_shortTitle ?? Title; } }
 
         /// <summary>
         /// Title in sorting order.  Enables things like Block Out or Tach Start to sort before Block In or Tach End.
@@ -554,6 +563,7 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
             Title = dr["LocTitle"].ToString();
             FormatString = dr["LocFormatString"].ToString();
             Type = (CFPPropertyType)Convert.ToInt32(dr["Type"], CultureInfo.InvariantCulture);
+            m_shortTitle = (string) util.ReadNullableField(dr, "ShortTitle", null);
             SortKey = Convert.ToString(dr["SortKey"], CultureInfo.CurrentCulture);
             if (String.IsNullOrEmpty(SortKey))
                 SortKey = Title;
