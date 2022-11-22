@@ -253,10 +253,10 @@ namespace MyFlightbook.Charting
                 case GoogleColumnDataType.boolean:
                     return ((bool)o);
                 case GoogleColumnDataType.number:
-                    return (decimal)o;
+                    return Convert.ToDouble(o, CultureInfo.InvariantCulture);
                 default:
                 case GoogleColumnDataType.@string:
-                    return (string)o;
+                    return o.ToString();
             }
         }
 
