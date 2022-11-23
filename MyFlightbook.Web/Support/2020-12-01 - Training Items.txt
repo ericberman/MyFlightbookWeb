@@ -1,4 +1,0 @@
-﻿CREATE TABLE `logbook`.`trainingitems` (
-  `task` VARCHAR(255) NOT NULL,
-  PRIMARY KEY (`task`))
-COMMENT = 'Contains a set of training tasks for autocompletion.';

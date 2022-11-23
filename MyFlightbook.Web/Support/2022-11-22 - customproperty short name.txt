@@ -1,2 +1,0 @@
-﻿ALTER TABLE `logbook`.`custompropertytypes` 
-ADD COLUMN `ShortTitle` VARCHAR(30) NULL COMMENT 'A short title useful as a column header - limited to 30 characters.' AFTER `Title`;

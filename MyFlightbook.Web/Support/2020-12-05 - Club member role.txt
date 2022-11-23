@@ -1,2 +1,0 @@
-﻿ALTER TABLE `logbook`.`clubmembers` 
-ADD COLUMN `cluboffice` VARCHAR(255) NULL COMMENT 'Member\'s role in the club (distinct from admin role like owner/treasurer/maintenance officer) - e.g., chief pilot, mechanic, president, etc.' AFTER `joindate`;

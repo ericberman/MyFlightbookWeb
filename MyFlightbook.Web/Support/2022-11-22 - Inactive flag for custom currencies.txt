@@ -1,2 +1,0 @@
-﻿ALTER TABLE `logbook`.`customcurrency` 
-ADD COLUMN `isinactive` INT(1) NOT NULL DEFAULT 0 COMMENT 'Indicates that the currency is inactive.' AFTER `textRestriction`;

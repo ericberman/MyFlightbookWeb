@@ -1,2 +1,0 @@
-﻿ALTER TABLE `logbook`.`flighttelemetry` 
-ADD COLUMN `metadata` JSON NULL COMMENT 'Any additional attributes like clip regions, pins, etc.' AFTER `telemetrytype`;

@@ -1,6 +1,0 @@
-﻿ALTER TABLE `logbook`.`users` 
-DROP COLUMN `FacebookAccessToken`,
-DROP COLUMN `TwitterAccessSecret`,
-DROP COLUMN `TwitterAccessToken`,
-DROP COLUMN `icloudaccesstoken`,
-ADD COLUMN `HeadShot` BLOB NULL DEFAULT NULL COMMENT 'JPEG headshot for the user.' AFTER `timezone`;
