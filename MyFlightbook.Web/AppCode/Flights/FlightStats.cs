@@ -362,8 +362,7 @@ WHERE f.Date > ?dateMin AND f.Date < ?dateMax AND ac.InstanceType = 1");
 
                 fs.RefreshSlowData();   // will happen asynchronously.
 
-                if (HttpRuntime.Cache != null)
-                    HttpRuntime.Cache.Add(szCacheKeyRecentStats, fs, null, DateTime.Now.AddMinutes(60), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);
+                HttpRuntime.Cache?.Add(szCacheKeyRecentStats, fs, null, DateTime.Now.AddMinutes(60), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);
             }
             return fs;
         }

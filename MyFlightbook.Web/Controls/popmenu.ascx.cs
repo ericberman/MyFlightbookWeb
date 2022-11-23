@@ -36,8 +36,7 @@ public partial class Controls_popmenu : UserControl, INamingContainer
 
     protected override void OnInit(EventArgs e)
     {
-        if (MenuContent != null)
-            MenuContent.InstantiateIn(plcMenuContent);
+        MenuContent?.InstantiateIn(plcMenuContent);
         base.OnInit(e);
     }
 }

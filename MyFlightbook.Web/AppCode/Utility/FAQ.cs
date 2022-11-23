@@ -58,8 +58,7 @@ namespace MyFlightbook
 
         public static void FlushFAQCache()
         {
-            if (HttpRuntime.Cache != null)
-                HttpRuntime.Cache.Remove(szFAQCacheKey);
+            HttpRuntime.Cache?.Remove(szFAQCacheKey);
         }
 
         #region constructors

@@ -418,8 +418,7 @@ namespace MyFlightbook.Instruction
                 CFIProfile == null ||
                 !System.Web.Security.Membership.ValidateUser(CFIProfile.UserName, txtPassConfirm.Text))
                 args.IsValid = false;
-            else if (Flight != null)
-                Flight.SetPendingSignature(CFIProfile.UserName);    // successfully authenticated - now set up to expect the signature.
+            else Flight?.SetPendingSignature(CFIProfile.UserName);    // successfully authenticated - now set up to expect the signature.
         }
 
         protected void lnkEditFlightToSign_Click(object sender, EventArgs e)

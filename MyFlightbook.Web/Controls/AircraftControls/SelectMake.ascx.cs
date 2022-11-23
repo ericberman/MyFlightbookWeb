@@ -6,7 +6,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2021 MyFlightbook LLC
+ * Copyright (c) 2009-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -152,8 +152,7 @@ namespace MyFlightbook.AircraftControls
 
         protected override void OnInit(EventArgs e)
         {
-            if (Prompt != null)
-                Prompt.InstantiateIn(plcPrompt);
+            Prompt?.InstantiateIn(plcPrompt);
             base.OnInit(e);
         }
 

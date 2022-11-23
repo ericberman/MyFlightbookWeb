@@ -4,12 +4,12 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2021 MyFlightbook LLC
+ * Copyright (c) 2015-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 ************************************************/
 
-public partial class Controls_mfbTooltip : System.Web.UI.UserControl
+public partial class Controls_mfbTooltip : UserControl
 {
     #region Properties
     /// <summary>
@@ -79,8 +79,7 @@ public partial class Controls_mfbTooltip : System.Web.UI.UserControl
 
     protected override void OnInit(EventArgs e)
     {
-        if (TooltipBody != null)
-            TooltipBody.InstantiateIn(plcCustom);
+        TooltipBody?.InstantiateIn(plcCustom);
         base.OnInit(e);
     }
 

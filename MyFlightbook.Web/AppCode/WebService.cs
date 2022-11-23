@@ -839,8 +839,7 @@ namespace MyFlightbook
                 throw new ArgumentNullException(nameof(le));
             if (szAuthUserToken == null)
                 throw new ArgumentNullException(nameof(szAuthUserToken));
-            if (po != null)
-                po.ToString();  // avoid warning about unused po
+            po?.ToString();  // avoid warning about unused po
 
             string szUser = GetEncryptedUser(szAuthUserToken);
 

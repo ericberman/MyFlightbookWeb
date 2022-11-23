@@ -669,8 +669,7 @@ namespace MyFlightbook.Image
             }
             finally
             {
-                if (inf != null)
-                    inf.Image.Dispose();
+                inf?.Image.Dispose();
             }
         }
 
@@ -743,8 +742,7 @@ namespace MyFlightbook.Image
 
         public void UnCache()
         {
-            if (HttpRuntime.Cache != null)
-                HttpRuntime.Cache.Remove(CacheKey);
+            HttpRuntime.Cache?.Remove(CacheKey);
         }
 
         /// <summary>
@@ -1317,8 +1315,7 @@ namespace MyFlightbook.Image
             else
             {
                 mfbii.InitFromFile();
-                if (HttpRuntime.Cache != null)
-                    HttpRuntime.Cache.Add(mfbii.CacheKey, mfbii, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), System.Web.Caching.CacheItemPriority.Low, null);
+                HttpRuntime.Cache?.Add(mfbii.CacheKey, mfbii, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), System.Web.Caching.CacheItemPriority.Low, null);
                 return mfbii;
             }
         }
@@ -1644,8 +1641,7 @@ namespace MyFlightbook.Image
                         }
 
                         // if we got here, everything is hunky-dory.  Cache it!
-                        if (HttpRuntime.Cache != null)
-                            HttpRuntime.Cache.Add(CacheKey, this, null, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromMinutes(20), System.Web.Caching.CacheItemPriority.Normal, null);
+                        HttpRuntime.Cache?.Add(CacheKey, this, null, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromMinutes(20), System.Web.Caching.CacheItemPriority.Normal, null);
 
                         // Save it in the DB - we do this BEFORE moving to S3 to avoid a race condition
                         // that could arise when MoveImageToS3 attempts to update the record to show that it is no longer local.

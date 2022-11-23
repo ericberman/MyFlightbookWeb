@@ -7,7 +7,7 @@ using MySql.Data.MySqlClient;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2021 MyFlightbook LLC
+ * Copyright (c) 2009-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -279,8 +279,7 @@ namespace MyFlightbook
 
             rgCatClass = ar.ToArray();
 
-            if (HttpRuntime.Cache != null)
-                HttpRuntime.Cache.Add(szCacheKey, rgCatClass, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(1, 0, 0), System.Web.Caching.CacheItemPriority.Normal, null);
+            HttpRuntime.Cache?.Add(szCacheKey, rgCatClass, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(1, 0, 0), System.Web.Caching.CacheItemPriority.Normal, null);
             return rgCatClass;
         }
 

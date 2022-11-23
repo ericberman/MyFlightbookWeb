@@ -19,7 +19,7 @@ using System.Xml;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2021 MyFlightbook LLC
+ * Copyright (c) 2010-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -915,10 +915,7 @@ namespace MyFlightbook.Telemetry
             if (!disposed)
             {
                 if (disposing)
-                {
-                    if (m_dt != null)
-                        m_dt.Dispose();
-                }
+                    m_dt?.Dispose();
                 m_dt = null;
 
                 disposed = true;

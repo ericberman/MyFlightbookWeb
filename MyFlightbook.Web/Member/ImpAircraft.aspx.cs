@@ -10,7 +10,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2021 MyFlightbook LLC
+ * Copyright (c) 2015-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -145,8 +145,7 @@ public partial class Member_ImpAircraft : MyFlightbook.Web.WizardPage.MFBWizardP
         { 
             lblUploadErr.Text = ex.Message;
             fResult = false;
-            if (aipc != null)
-                aipc.CleanUpBestMatchAircraft();
+            aipc?.CleanUpBestMatchAircraft();
         }
 
         return fResult;

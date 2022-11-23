@@ -77,8 +77,7 @@ namespace MyFlightbook.CloudStorage
 
         public static void SetUsesFlatHierarchy(Profile pf, bool value)
         {
-            if (pf != null)
-                pf.SetPreferenceForKey(MFBConstants.keyPrefFlatHierarchy, value, value == false);
+            pf?.SetPreferenceForKey(MFBConstants.keyPrefFlatHierarchy, value, value == false);
         }
     }
 

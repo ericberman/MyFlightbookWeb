@@ -7,7 +7,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2021 MyFlightbook LLC
+ * Copyright (c) 2009-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -175,15 +175,13 @@ namespace MyFlightbook
             if (HttpRuntime.Cache != null && HttpRuntime.Cache[szCacheKey] != null)
                 return (IEnumerable<Manufacturer>)HttpRuntime.Cache[szCacheKey];
             IEnumerable<Manufacturer> lst = AllManufacturers();
-            if (HttpRuntime.Cache != null)
-                HttpRuntime.Cache.Add(szCacheKey, lst, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(1, 0, 0), System.Web.Caching.CacheItemPriority.Low, null);
+            HttpRuntime.Cache?.Add(szCacheKey, lst, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(1, 0, 0), System.Web.Caching.CacheItemPriority.Low, null);
             return lst;
         }
 
         public static void FlushCache()
         {
-            if (HttpRuntime.Cache != null)
-                HttpRuntime.Cache.Remove(szCacheKey);
+            HttpRuntime.Cache?.Remove(szCacheKey);
         }
 
         public Boolean FIsValid()

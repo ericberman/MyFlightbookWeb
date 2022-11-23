@@ -220,8 +220,7 @@ namespace JouniHeikniemi.Tools.Text
             if (!disposed)
             {
                 // Closing the reader closes the underlying stream, too
-                if (reader != null)
-                    reader.Dispose();
+                reader?.Dispose();
 
                 disposed = true;
             }

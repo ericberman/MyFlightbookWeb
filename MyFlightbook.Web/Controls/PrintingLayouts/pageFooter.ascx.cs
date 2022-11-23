@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Web.UI;
-using System.Web.UI.WebControls;
-using MyFlightbook;
 
 /******************************************************
  * 
@@ -51,8 +49,7 @@ namespace MyFlightbook.Printing
 
         protected override void OnInit(EventArgs e)
         {
-            if (LayoutNotes != null)
-                LayoutNotes.InstantiateIn(plcMiddle);
+            LayoutNotes?.InstantiateIn(plcMiddle);
             base.OnInit(e);
         }
 

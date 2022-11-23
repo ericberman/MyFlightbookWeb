@@ -1,18 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015 MyFlightbook LLC
+ * Copyright (c) 2015-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
-public partial class Controls_Expando : System.Web.UI.UserControl, INamingContainer
+public partial class Controls_Expando : UserControl, INamingContainer
 {
     [TemplateContainer(typeof(ExpandoHeaderTemplate)), PersistenceMode(PersistenceMode.InnerDefaultProperty), TemplateInstance(TemplateInstance.Single)]
     public ITemplate Header { get; set; }
@@ -53,10 +50,8 @@ public partial class Controls_Expando : System.Web.UI.UserControl, INamingContai
 
     protected override void OnInit(EventArgs e)
     {
-        if (Header != null)
-            Header.InstantiateIn(plcExpandoHeader);
-        if (Body != null)
-            Body.InstantiateIn(plcExpandoBody);
+        Header?.InstantiateIn(plcExpandoHeader);
+        Body?.InstantiateIn(plcExpandoBody);
         base.OnInit(e);
     }
 

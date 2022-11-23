@@ -168,8 +168,7 @@ namespace MyFlightbook
                 throw new MyFlightbookException("Error getting instance types:\r\n" + dbh.LastError);
 
             AircraftInstance[] result = al.ToArray();
-            if (HttpRuntime.Cache != null)
-                HttpRuntime.Cache.Add(szCacheKey, result, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(1, 0, 0), System.Web.Caching.CacheItemPriority.Normal, null);
+            HttpRuntime.Cache?.Add(szCacheKey, result, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(1, 0, 0), System.Web.Caching.CacheItemPriority.Normal, null);
 
             return result;
         }

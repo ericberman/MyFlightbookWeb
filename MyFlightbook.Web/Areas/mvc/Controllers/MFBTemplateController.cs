@@ -1,5 +1,4 @@
-﻿using MyFlightbook;
-using MyFlightbook.Schedule;
+﻿using MyFlightbook.Schedule;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -87,8 +86,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             if (fDeclineCookies)
             {
                 Response.Cookies[MFBConstants.keyCookiePrivacy].Expires = DateTime.UtcNow.AddDays(-5);
-                if (pf != null)
-                    pf.SetPreferenceForKey(MFBConstants.keyCookiePrivacy, false, true);
+                pf?.SetPreferenceForKey(MFBConstants.keyCookiePrivacy, false, true);
             }
 
             bool fHasCookie = Request.Cookies[MFBConstants.keyCookiePrivacy] != null && Request.Cookies[MFBConstants.keyCookiePrivacy].Value.CompareOrdinalIgnoreCase(true.ToString()) == 0;
