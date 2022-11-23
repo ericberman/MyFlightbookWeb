@@ -1197,4 +1197,43 @@
   <data name="CustomCurrencyIsActive" xml:space="preserve">
     <value>Active</value>
   </data>
+  <data name="DeadlineAddDeadline" xml:space="preserve">
+    <value>Add Deadline</value>
+  </data>
+  <data name="DeadlineAssociatedAircraft" xml:space="preserve">
+    <value>Associated Aircraft:</value>
+  </data>
+  <data name="DeadlineAssociatedAircraftOptional" xml:space="preserve">
+    <value>(Optional)</value>
+  </data>
+  <data name="DeadlineCalendarMonths" xml:space="preserve">
+    <value>Calendar Months</value>
+  </data>
+  <data name="DeadlineDays" xml:space="preserve">
+    <value>Days</value>
+  </data>
+  <data name="DeadlineDueDate" xml:space="preserve">
+    <value>Deadline is due:</value>
+  </data>
+  <data name="DeadlineExtendDeadline" xml:space="preserve">
+    <value>Extend the deadline by:</value>
+  </data>
+  <data name="DeadlineExtendManually" xml:space="preserve">
+    <value>Manually update or delete the deadline</value>
+  </data>
+  <data name="DeadlineHours" xml:space="preserve">
+    <value>Hours</value>
+  </data>
+  <data name="DeadlineHoursTip" xml:space="preserve">
+    <value>(Typically tach or hobbs)</value>
+  </data>
+  <data name="DeadlineName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="DeadlineRegen" xml:space="preserve">
+    <value>Regeneration</value>
+  </data>
+  <data name="DeadlineRegenAction" xml:space="preserve">
+    <value>When the deadline has passed and you've done whatever is required:</value>
+  </data>
 </root>

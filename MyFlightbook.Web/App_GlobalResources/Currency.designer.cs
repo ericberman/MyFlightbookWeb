@@ -1606,6 +1606,42 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add Deadline.
+        /// </summary>
+        internal static string DeadlineAddDeadline {
+            get {
+                return ResourceManager.GetString("DeadlineAddDeadline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Associated Aircraft:.
+        /// </summary>
+        internal static string DeadlineAssociatedAircraft {
+            get {
+                return ResourceManager.GetString("DeadlineAssociatedAircraft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Optional).
+        /// </summary>
+        internal static string DeadlineAssociatedAircraftOptional {
+            get {
+                return ResourceManager.GetString("DeadlineAssociatedAircraftOptional", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Calendar Months.
+        /// </summary>
+        internal static string DeadlineCalendarMonths {
+            get {
+                return ResourceManager.GetString("DeadlineCalendarMonths", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} - Due date updated from {1:d} to {2:d}.
         /// </summary>
         internal static string DeadlineChangedDate {
@@ -1629,6 +1665,15 @@ namespace Resources {
         internal static string DeadlineCreated {
             get {
                 return ResourceManager.GetString("DeadlineCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Days.
+        /// </summary>
+        internal static string DeadlineDays {
+            get {
+                return ResourceManager.GetString("DeadlineDays", resourceCulture);
             }
         }
         
@@ -1700,6 +1745,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Deadline is due:.
+        /// </summary>
+        internal static string DeadlineDueDate {
+            get {
+                return ResourceManager.GetString("DeadlineDueDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Due: {0:d}.
         /// </summary>
         internal static string deadlineDueTemplateDate {
@@ -1714,6 +1768,69 @@ namespace Resources {
         internal static string deadlineDueTemplateHours {
             get {
                 return ResourceManager.GetString("deadlineDueTemplateHours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extend the deadline by:.
+        /// </summary>
+        internal static string DeadlineExtendDeadline {
+            get {
+                return ResourceManager.GetString("DeadlineExtendDeadline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manually update or delete the deadline.
+        /// </summary>
+        internal static string DeadlineExtendManually {
+            get {
+                return ResourceManager.GetString("DeadlineExtendManually", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hours.
+        /// </summary>
+        internal static string DeadlineHours {
+            get {
+                return ResourceManager.GetString("DeadlineHours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Typically tach or hobbs).
+        /// </summary>
+        internal static string DeadlineHoursTip {
+            get {
+                return ResourceManager.GetString("DeadlineHoursTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        internal static string DeadlineName {
+            get {
+                return ResourceManager.GetString("DeadlineName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Regeneration.
+        /// </summary>
+        internal static string DeadlineRegen {
+            get {
+                return ResourceManager.GetString("DeadlineRegen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When the deadline has passed and you&apos;ve done whatever is required:.
+        /// </summary>
+        internal static string DeadlineRegenAction {
+            get {
+                return ResourceManager.GetString("DeadlineRegenAction", resourceCulture);
             }
         }
         
