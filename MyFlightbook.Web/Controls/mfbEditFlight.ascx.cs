@@ -290,7 +290,8 @@ namespace MyFlightbook.Controls.FlightEditing
             le = CloneOrReverse(le);
 
             // If this is a shared flight, initialize from that.
-            InitFromSharedFlight(le);
+            if (FlightID == LogbookEntryCore.idFlightNew)
+                InitFromSharedFlight(le);
 
             InitializeHobbs(le);
 
