@@ -290,7 +290,7 @@ namespace MyFlightbook.Controls.FlightEditing
             le = CloneOrReverse(le);
 
             // If this is a shared flight, initialize from that.
-            le = SharedFlight(le);
+            InitFromSharedFlight(le);
 
             InitializeHobbs(le);
 
@@ -375,12 +375,21 @@ namespace MyFlightbook.Controls.FlightEditing
         /// </summary>
         /// <param name="le">The logbook entry to start</param>
         /// <returns>The updated logbook entry</returns>
-        private LogbookEntry SharedFlight(LogbookEntry le)
+        private void InitFromSharedFlight(LogbookEntry le)
         {
             string szSharedFlightKey = util.GetStringParam(Request, "src");
             if (!String.IsNullOrEmpty(szSharedFlightKey))
             {
-                le = new LogbookEntry(szSharedFlightKey) { User = Page.User.Identity.Name };
+                LogbookEntry leSrc = LogbookEntry.FromShareKey(szSharedFlightKey, Page.User.Identity.Name);
+
+                if (leSrc.FlightID == LogbookEntryCore.idFlightNone || !String.IsNullOrEmpty(leSrc.ErrorString))
+                    return;
+
+                leSrc.Clone(le);
+
+                // clear out any role like PIC/SIC that likely doesn't carry over to the target pilot.
+                le.CFI = le.Dual = le.PIC = le.SIC = 0.0M;
+
                 UseLastTail = le.AircraftID == Aircraft.idAircraftUnknown;   // use the aircraft from this, if it's not an unknown aircraft (e.g., if the flight actually exists in the db)
 
                 if (le.AircraftID != Aircraft.idAircraftUnknown)
@@ -392,8 +401,6 @@ namespace MyFlightbook.Controls.FlightEditing
                         ua.FAddAircraftForUser(ac);
                 }
             }
-
-            return le;
         }
 
         /// <summary>

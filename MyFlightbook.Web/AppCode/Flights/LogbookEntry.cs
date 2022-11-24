@@ -1492,11 +1492,11 @@ namespace MyFlightbook
 
             // CustomProperties need to be copied separately; the copyobject above copies by reference below the top object
             List<CustomFlightProperty> lstCFP = new List<CustomFlightProperty>();
-            foreach (CustomFlightProperty cfp in this.CustomProperties)
+            foreach (CustomFlightProperty cfp in CustomProperties)
             {
                 CustomFlightProperty cfpNew = new CustomFlightProperty(cfp.PropertyType);
                 util.CopyObject(cfp, cfpNew);
-                cfpNew.FlightID = LogbookEntry.idFlightNew;
+                cfpNew.FlightID = idFlightNew;
                 cfpNew.PropID = CustomFlightProperty.idCustomFlightPropertyNew;
                 lstCFP.Add(cfpNew);
             }
@@ -2265,34 +2265,36 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
         }
 
         /// <summary>
-        /// Creates a new flight initialized from another user's flight, as created using EncodeShareKey
+        /// Creates a new flight initialized from another user's flight
         /// </summary>
-        /// <param name="szKey">The key - MUST be from EncodeShareKey</param>
-        /// <param name="szTargetUser">The target user.  MUST MATCH the target user passed to EncodeShareKeyForUser</param>
+        /// <param name="szKey">The key - MUST be from a share link</param>
+        /// <param name="szTargetUser">The target user. </param>
         /// <returns>A new LogbookEntry object - Check the ErrorString for any potential errors.</returns>
-        public LogbookEntry(string szKey) : this()
+        public static LogbookEntry FromShareKey(string szKey, string szTargetUser)
         {
+            if (String.IsNullOrEmpty(szKey))
+                throw new ArgumentNullException(nameof(szKey));
+            if (String.IsNullOrEmpty(szTargetUser))
+                throw new ArgumentNullException(nameof(szTargetUser));
+
             string sz = new UserAccessEncryptor().Decrypt(szKey);
             string[] rgSz = sz.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            LogbookEntry leSrc = null;
             try
             {
                 if (rgSz.Length == 2)
                 {
-                    LogbookEntry leSrc = new LogbookEntry(Convert.ToInt32(rgSz[0], CultureInfo.InvariantCulture), rgSz[1], LoadTelemetryOption.LoadAll);
+                    leSrc = new LogbookEntry(Convert.ToInt32(rgSz[0], CultureInfo.InvariantCulture), rgSz[1], LoadTelemetryOption.LoadAll);
                     if (!String.IsNullOrEmpty(leSrc.ErrorString))
                         throw new MyFlightbookException(leSrc.ErrorString);
-
-                    leSrc.Clone(this);
-
-                    // clear out any role like PIC/SIC that likely doesn't carry over to the target pilot.
-                    CFI = Dual = PIC = SIC = 0.0M;
                 }
             }
             catch (MyFlightbookException ex)
             {
-                LastError = ErrorCode.Unknown;
-                ErrorString = ex.Message;
+                leSrc.LastError = ErrorCode.Unknown;
+                leSrc.ErrorString = ex.Message;
             }
+            return leSrc ?? new LogbookEntry();
         }
 
         /// <summary>
