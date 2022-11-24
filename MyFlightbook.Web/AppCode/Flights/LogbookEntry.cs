@@ -2284,7 +2284,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
             {
                 if (rgSz.Length == 2)
                 {
-                    leSrc = new LogbookEntry(Convert.ToInt32(rgSz[0], CultureInfo.InvariantCulture), rgSz[1], LoadTelemetryOption.LoadAll);
+                    leSrc = new LogbookEntry(Convert.ToInt32(rgSz[0], CultureInfo.InvariantCulture), rgSz[1], LoadTelemetryOption.LoadAll) { User = szTargetUser };
                     if (!String.IsNullOrEmpty(leSrc.ErrorString))
                         throw new MyFlightbookException(leSrc.ErrorString);
                 }
