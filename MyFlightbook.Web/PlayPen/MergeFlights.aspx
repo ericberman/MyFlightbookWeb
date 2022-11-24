@@ -45,10 +45,10 @@
                                     </td>
                                     <td style="padding: 5px">
                                         <div style="font-weight:bold"><%# ((DateTime) Eval("Date")).ToShortDateString() %></div>
-                                        <div><%# Eval("TailNumDisplay") %></div>
+                                        <div><%#: Eval("TailNumDisplay") %></div>
                                     </td>
                                     <td style="padding: 5px">
-                                        <div><span style="font-style:italic"><%# Eval("Route") %></span> <%# Eval("Comment") %></div>
+                                        <div><span style="font-style:italic"><%#: Eval("Route") %></span> <%#: Eval("Comment") %></div>
                                     </td>
                                 </tr>
                             </ItemTemplate>

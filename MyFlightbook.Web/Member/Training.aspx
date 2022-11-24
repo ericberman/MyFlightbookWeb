@@ -63,7 +63,7 @@
                     </asp:TemplateField>
                     <asp:TemplateField>
                         <ItemTemplate>
-                            (<%# Eval("CFIName") %>)
+                            (<%#: Eval("CFIName") %>)
                         </ItemTemplate>
                         <ItemStyle Font-Italic="true" />
                     </asp:TemplateField>

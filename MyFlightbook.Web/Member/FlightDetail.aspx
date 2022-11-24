@@ -154,7 +154,7 @@
                                 <uc1:mfbSignature runat="server" ID="mfbSignature" />
                             </asp:Panel>
                             <asp:Panel ID="pnlRoute" runat="server" Visible="<%# RoutesList(CurrentFlight.Route).MasterList.GetNormalizedAirports().Length > 0 %>" CssClass="detailsSection">
-                                <h3><%# Eval("Route").ToString().ToUpper() %></h3>
+                                <h3><%#: Eval("Route").ToString().ToUpper() %></h3>
                                 <uc5:mfbAirportServices runat="server" ID="mfbAirportServices1" ShowZoom="true" ShowInfo="true" ShowMetar="true" />
                                 <p><asp:Label ID="lblDistanceForFlight" runat="server" /></p>
                                 <asp:Panel ID="pnlMetars" runat="server">
@@ -194,7 +194,7 @@
                                         <asp:Panel ID="pnlAircraftID" runat="server">
                                             <div>
                                                 <asp:HyperLink ID="lnkEditAircraft" Font-Size="Larger" Font-Bold="True" runat="server" NavigateUrl='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}", Eval("AircraftID")) %>' Text='<%# Eval("DisplayTailNumber") %>' />
-                                                - <%# Eval("ModelDescription")%> - <%# Eval("ModelCommonName")%> (<%# Eval("CategoryClassDisplay") %>)
+                                                - <%#: Eval("ModelDescription")%> - <%#: Eval("ModelCommonName")%> (<%# Eval("CategoryClassDisplay") %>)
                                             </div>
                                             <div><%# Eval("InstanceTypeDescription")%></div>
                                         </asp:Panel>

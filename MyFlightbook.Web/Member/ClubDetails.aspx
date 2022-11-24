@@ -88,7 +88,7 @@
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="<%$ Resources:Club, LabelMemberName %>" HeaderStyle-HorizontalAlign="Left" ItemStyle-Font-Bold="true" ItemStyle-Font-Size="Larger">
                                 <ItemTemplate>
-                                    <%# Eval("UserFullName") %>
+                                    <%#: Eval("UserFullName") %>
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField>
@@ -98,7 +98,7 @@
                             </asp:TemplateField>
                             <asp:TemplateField HeaderStyle-HorizontalAlign="Left">
                                 <ItemTemplate>
-                                    <%# Eval("DisplayRoleInClub") %> <%# Eval("ClubOffice") %>
+                                    <%#: Eval("DisplayRoleInClub") %> <%#: Eval("ClubOffice") %>
                                 </ItemTemplate>
                                 <HeaderTemplate>
                                     <%# Resources.Club.LabelMemberRole %>
