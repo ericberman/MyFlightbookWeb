@@ -1277,7 +1277,7 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
                     BoolValue = ch1st == 'Y' || ch1st != 'N' && Convert.ToBoolean(szVal, CultureInfo.InvariantCulture);
                     break;
                 case CFPPropertyType.cfpInteger:
-                    IntValue = Convert.ToInt32(szVal, CultureInfo.InvariantCulture);
+                    IntValue = Convert.ToInt32(szVal.SafeParseDecimal(), CultureInfo.InvariantCulture);
                     break;
                 case CFPPropertyType.cfpCurrency:
                 case CFPPropertyType.cfpDecimal:

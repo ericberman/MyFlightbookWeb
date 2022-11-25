@@ -7,6 +7,7 @@ using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 /******************************************************
  * 
@@ -105,8 +106,8 @@ namespace MyFlightbook.ImportFlights
         private readonly static string[] colTo = { "To", "flight_to", "Arrival", "Dest", "Destination", "LOC_TO", "ArrPlace", "arrival_airport_name", "arrival_airport", "arrivalAirport", "Route of Flight To", "ADES" };
         private readonly static string[] colComment = { "Comments", "Remarks", "remarks_and_endorsements", "Comment", "Remark" };
         private readonly static string[] colCatClassOverride = { "Alternate Cat/Class", "Cat/Class Override", "CatClassOverride" };
-        private readonly static string[] colEngineStart = { "Engine Start", "Depart", "Time Out" };
-        private readonly static string[] colEngineEnd = { "Engine End", "Arrive", "Time In" };
+        private readonly static string[] colEngineStart = { "Engine Start", "Depart" };
+        private readonly static string[] colEngineEnd = { "Engine End", "Arrive" };
         private readonly static string[] colFlightStart = { "Flight Start", "FLT_BEGIN", "Time Off", "departure_time", "Flight Departure" };
         private readonly static string[] colFlightEnd = { "Flight End", "FLT_END", "Time On", "arrival_time", "Flight Arrival" };
         private readonly static string[] colHobbsStart = { "Hobbs Start", "Hobbs Out" };
@@ -123,14 +124,14 @@ namespace MyFlightbook.ImportFlights
         /// </summary>
         private readonly static Dictionary<string, string[]> PropNameAliases = new Dictionary<string, string[]>()
         {
-            { "Solo Time", new string[] {"Solo Time", "flight_solo", "Solo", "Solo Duration"}},
+            { "Solo Time", new string[] {"Solo Time", "flight_solo", "Solo", "1"}},
             { "Name of PIC", new string[] {"Name of PIC", "flight_selectedCrewPIC", "PIC/P1 Crew", "Captain", "PIC Name", "PICName", "name_of_pilot_in_command", "pic_name", "Name PIC", "Crew Captain", "COM" }},
             { "Name of SIC", new string[] {"Name of SIC", "SIC/P2 Crew", "First Officer" }},
             { "Instructor Name", new string[] {"Instructor Name", "instructor_name" } },
             { "Takeoffs - Night", new string[] {"Takeoffs - Night", "flight_nightTakeoffs", "Night T/O", "Night Takeoffs", "TKoffsNight", "to_night", "T/O Night", "Night T-O" }},
             { "Landings - Water", new string[] {"Landings - Water", "flight_waterLandings"}},
             { "Takeoffs - Water", new string[] {"Takeoffs - Water", "flight_waterTakeoffs"}},
-            { "Takeoffs (any)", new string[] {"Takeoffs (any)", "to_day", "T/O Day", "Day T-O" } },
+            { "Takeoffs (any)", new string[] {"Takeoffs (any)", "to_day", "T/O Day", "Day T-O", "Day Takeoffs" } },
             { "Night Vision Time (Goggles)", new string[] { "Night Vision Time (Goggles)", "NVG" } },
             {"Night Vision - Landing", new string[] {"Night Vision - Landing", "flight_nightVisionGoggleLandings"}},
             {"Night Vision - Takeoff", new string[] {"Night Vision - Takeoff", "flight_nightVisionGoggleTakeoffs"}},
@@ -143,8 +144,13 @@ namespace MyFlightbook.ImportFlights
             {"Tachometer End", new string[] {"Tachometer End", "Tach In"}},
             {"Tachometer Start", new string[] {"Tachometer Start", "Tach Out"}},
             {"Flight Number", new string[] {"Flight Number", "Flight", "flightNo", "Flight No." } },
-            {"Block Out Time", new string[] {"Block Out Time", "Block Out", "Off Block", "DepTime", "Departure Time", "off_block", "block_start", "departureTime", "Block Off", "Off" } },
-            {"Block In Time", new string[] {"Block In Time", "Block In", "On Block", "ArrTime", "Arrival Time", "on_block", "block_end", "arrivalTime", "Block On", "On" } },
+            {"Block Out Time", new string[] {"Block Out Time", "Block Out", "Off Block", "DepTime", "Departure Time", "off_block", "block_start", "departureTime", "Block Off", "Off", "Time Out" } },
+            {"Block In Time", new string[] {"Block In Time", "Block In", "On Block", "ArrTime", "Arrival Time", "on_block", "block_end", "arrivalTime", "Block On", "On", "Time In" } },
+            {"Scheduled Departure Time", new string[] { "Scheduled Departure Time", "ETD" } },
+            {"Scheduled Arrival Time", new string[] { "Scheduled Arrival Time", "ETA" } },
+            {"Ground Instruction Received", new string[] { "Ground Instruction Received", "Ground Instruction Duration" } },
+            {"Fuel Remaining At Landing", new string[] { "Fuel Remaining At Landing", "Fuel Remaining" } },
+            {"Maximum Altitude", new string[] { "Maximum Altitude", "Max Altitude" } },
             {"Flight Attendant Name(s)", new string[] { "Flight Attendant Name(s)", "Flight Attendant" } },
             {"Military Pilot Primary Time", new string[] {"Military Pilot Primary Time", "PRI", "Primary" } },
             {"Military Pilot Secondary Time", new string[] {"Military Pilot Secondary Time", "SEC", "Secondary" } },
@@ -506,9 +512,26 @@ namespace MyFlightbook.ImportFlights
             #endregion
 
             #region FlightFromRow helpers
+            private static readonly Regex regGarminApproaches = new Regex("\\((?<count>\\d+)\\)$", RegexOptions.Compiled);
+            private static readonly Regex regForeFlightApproaches = new Regex("^(?<count>\\d+)", RegexOptions.Compiled);
             private void InitFlightFromRowMainFields(LogbookEntry le)
             {
-                le.Approaches = GetMappedInt(m_cm.iColApproaches);
+                // Handle approaches where approach might be a string and properly mapped to approach name(s) property
+                string szApproaches = GetMappedString(m_cm.iColApproaches);
+                int parsedApproaches = 0;
+                le.Approaches = String.IsNullOrEmpty(szApproaches) ? 0 :
+                        (int.TryParse(szApproaches, NumberStyles.Integer, CultureInfo.CurrentCulture, out parsedApproaches) ? parsedApproaches : 
+                        (regForeFlightApproaches.IsMatch(szApproaches) ? Convert.ToInt32(regForeFlightApproaches.Matches(szApproaches)[0].Groups["count"].Value, CultureInfo.CurrentCulture) : 
+                        (regGarminApproaches.IsMatch(szApproaches) ? Convert.ToInt32(regGarminApproaches.Matches(szApproaches)[0].Groups["count"].Value, CultureInfo.CurrentCulture) : 0)));
+
+                // If we pulled the approach count out from the approaches above, then add the full string to the approach Name(s) property
+                if (parsedApproaches != le.Approaches && !String.IsNullOrEmpty(szApproaches))
+                {
+                    CustomFlightProperty cfpApproachDesc = le.CustomProperties.GetEventWithTypeIDOrNew(CustomPropertyType.KnownProperties.IDPropApproachName);
+                    cfpApproachDesc.TextValue = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, cfpApproachDesc.TextValue, szApproaches).Trim();
+                    le.CustomProperties.Add(cfpApproachDesc);
+                }
+
                 le.fHoldingProcedures = GetMappedBoolean(m_cm.iColHold);
                 le.Landings = GetMappedInt(m_cm.iColLandings);
                 le.NightLandings = GetMappedInt(m_cm.iColNightLandings);
@@ -552,7 +575,7 @@ namespace MyFlightbook.ImportFlights
 
             private void InitFlightFromRowProperties(LogbookEntry le, out string szTail)
             {
-                List<CustomFlightProperty> lstCustPropsForFlight = new List<CustomFlightProperty>();
+                List<CustomFlightProperty> lstCustPropsForFlight = new List<CustomFlightProperty>(le.CustomProperties);
                 foreach (ImportColumn ic in m_cm.CustomPropertiesToImport)
                 {
                     string szVal = m_rgszRow[ic.m_iCol];
