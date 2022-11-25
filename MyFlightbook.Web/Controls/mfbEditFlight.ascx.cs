@@ -884,7 +884,8 @@ namespace MyFlightbook.Controls.FlightEditing
             }
             else
             {
-                InitFormFromLogbookEntry(InitLogbookEntryFromForm());
+                if (int.TryParse(cmbAircraft.SelectedValue, out int idAircraft))
+                    SetTemplatesForAircraft(idAircraft);
                 LastAircraftID = cmbAircraft.SelectedValue; // save for next time
             }
         }
