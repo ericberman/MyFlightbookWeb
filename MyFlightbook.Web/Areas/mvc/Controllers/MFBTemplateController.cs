@@ -159,7 +159,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             if (se != null && DateTime.UtcNow.CompareTo(se.EndUtc) < 0)
             {
                 string[] rgLines = se.Body.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-                ViewBag.WebinarText = String.Format(CultureInfo.CurrentCulture, "Join \"{0}\" on {1}", (rgLines == null || rgLines.Length == 0) ? string.Empty : rgLines[0], se.EndUtc.ToShortDateString()).Linkify();
+                ViewBag.WebinarText = String.Format(CultureInfo.CurrentCulture, "Join \"{0}\" on {1}", (rgLines == null || rgLines.Length == 0) ? string.Empty : rgLines[0], se.LocalStart.ToShortDateString()).Linkify();
                 ViewBag.WebinarDetails = se.Body.Linkify(true);
             }
 
