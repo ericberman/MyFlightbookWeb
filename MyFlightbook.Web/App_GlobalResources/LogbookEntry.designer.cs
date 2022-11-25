@@ -3393,6 +3393,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add Property.
+        /// </summary>
+        internal static string PropertyAdd {
+            get {
+                return ResourceManager.GetString("PropertyAdd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to . - - - {0} - - -.
         /// </summary>
         internal static string PropertyGroupSeparator {
