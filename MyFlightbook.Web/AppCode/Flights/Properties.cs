@@ -73,7 +73,6 @@ namespace MyFlightbook
             IDPropTachStart = 95,
             IDPropTachEnd = 96,
             IDPropXCLessThan50nm = 100,
-            IDPropMilitaryCoPilot = 110,
             IDPropInstrumentExaminer = 107,
             IDPropMilitaryCoPilottime = 110,
             IDPropHoistOperations = 118,
