@@ -1618,6 +1618,78 @@ Proceed with import?</value>
   <data name="flightDetailsZoomToFit" xml:space="preserve">
     <value>Zoom to fit all flight data</value>
   </data>
+  <data name="EditFlightAddAircraft" xml:space="preserve">
+    <value>(Add...)</value>
+  </data>
+  <data name="EditFlightAddFlight" xml:space="preserve">
+    <value>Add Flight</value>
+  </data>
+  <data name="EditFlightAddFlightNext" xml:space="preserve">
+    <value>Add and Review Next</value>
+  </data>
+  <data name="EditFlightAddFlightPrev" xml:space="preserve">
+    <value>Add and Review Previous</value>
+  </data>
+  <data name="EditFlightAddPending" xml:space="preserve">
+    <value>Add Pending</value>
+  </data>
+  <data name="EditFlightAltCatclassTooltip" xml:space="preserve">
+    <value>Useful for amphibian aircraft or aircraft that are part-time on floats and part-time on wheels.  For a flight that begins on water and lands on wheels (or vice-versa), record two separate flights.</value>
+  </data>
+  <data name="EditFlightApproachTooltip" xml:space="preserve">
+    <value>You can specify approach types with additional properties, below.</value>
+  </data>
+  <data name="EditFlightCrossfillTooltip" xml:space="preserve">
+    <value>Click to copy total time into other fields for this entry.</value>
+  </data>
+  <data name="EditFlightDefaultCatClass" xml:space="preserve">
+    <value>(Default for selected aircraft)</value>
+  </data>
+  <data name="EditFlightShareDetails" xml:space="preserve">
+    <value>Share Flight Details</value>
+  </data>
+  <data name="EditFlightShareDetailsPrompt" xml:space="preserve">
+    <value>Allow others to view details of this flight</value>
+  </data>
+  <data name="EditFlightUpdateFlight" xml:space="preserve">
+    <value>Update Flight</value>
+  </data>
+  <data name="EditFlightUpdateFlightNext" xml:space="preserve">
+    <value>Update and Edit Next</value>
+  </data>
+  <data name="EditFlightUpdateFlightPrev" xml:space="preserve">
+    <value>Update and Edit Previous</value>
+  </data>
+  <data name="EditFlightUpdatePendingFlight" xml:space="preserve">
+    <value>Update Pending Flight</value>
+  </data>
+  <data name="errAircraftRequired" xml:space="preserve">
+    <value>Please select an aircraft, or click "Add" to add a new one</value>
+  </data>
+  <data name="errFutureDate" xml:space="preserve">
+    <value>Date of flight should be today or in the past.</value>
+  </data>
+  <data name="FieldDateOfFlight" xml:space="preserve">
+    <value>Date of Flight</value>
+  </data>
+  <data name="FieldFSDayLandings" xml:space="preserve">
+    <value>Full Stop (Day)</value>
+  </data>
+  <data name="FieldFSNightLandings" xml:space="preserve">
+    <value>Full Stop (Night)</value>
+  </data>
+  <data name="FieldTotalLandings" xml:space="preserve">
+    <value>Total Landings</value>
+  </data>
+  <data name="HeaderGeneral" xml:space="preserve">
+    <value>General Flight Info</value>
+  </data>
+  <data name="HeaderSharing" xml:space="preserve">
+    <value>Sharing</value>
+  </data>
+  <data name="HeaderTimesAndTelemetry" xml:space="preserve">
+    <value>Times and Telemetry</value>
+  </data>
   <data name="PropertyAdd" xml:space="preserve">
     <value>Add Property</value>
   </data>

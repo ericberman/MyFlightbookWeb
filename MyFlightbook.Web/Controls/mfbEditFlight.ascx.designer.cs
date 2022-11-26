@@ -24,24 +24,6 @@ namespace MyFlightbook.Controls.FlightEditing
         protected global::System.Web.UI.WebControls.Panel pnlContainer;
 
         /// <summary>
-        /// lblSectionGeneralInfo control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblSectionGeneralInfo;
-
-        /// <summary>
-        /// Label7 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label7;
-
-        /// <summary>
         /// mfbDate control.
         /// </summary>
         /// <remarks>
@@ -58,15 +40,6 @@ namespace MyFlightbook.Controls.FlightEditing
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CustomValidator valDate;
-
-        /// <summary>
-        /// Label8 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label8;
 
         /// <summary>
         /// lnkAddAircraft control.
@@ -141,15 +114,6 @@ namespace MyFlightbook.Controls.FlightEditing
         protected global::AjaxControlToolkit.CollapsiblePanelExtender cpeAltCatClass;
 
         /// <summary>
-        /// Label9 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label9;
-
-        /// <summary>
         /// mfbTooltip2 control.
         /// </summary>
         /// <remarks>
@@ -168,15 +132,6 @@ namespace MyFlightbook.Controls.FlightEditing
         protected global::System.Web.UI.WebControls.TextBox txtRoute;
 
         /// <summary>
-        /// Label10 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label10;
-
-        /// <summary>
         /// txtComments control.
         /// </summary>
         /// <remarks>
@@ -184,24 +139,6 @@ namespace MyFlightbook.Controls.FlightEditing
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtComments;
-
-        /// <summary>
-        /// locLandingsHeader control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locLandingsHeader;
-
-        /// <summary>
-        /// Label11 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label11;
 
         /// <summary>
         /// mfbTooltip3 control.
@@ -231,15 +168,6 @@ namespace MyFlightbook.Controls.FlightEditing
         protected global::System.Web.UI.WebControls.CheckBox ckHold;
 
         /// <summary>
-        /// Label12 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label12;
-
-        /// <summary>
         /// intLandings control.
         /// </summary>
         /// <remarks>
@@ -258,15 +186,6 @@ namespace MyFlightbook.Controls.FlightEditing
         protected global::System.Web.UI.WebControls.CustomValidator valCheckFullStop;
 
         /// <summary>
-        /// Label13 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label13;
-
-        /// <summary>
         /// intFullStopLandings control.
         /// </summary>
         /// <remarks>
@@ -274,15 +193,6 @@ namespace MyFlightbook.Controls.FlightEditing
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::Controls_mfbDecimalEdit intFullStopLandings;
-
-        /// <summary>
-        /// Label14 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label14;
 
         /// <summary>
         /// intNightLandings control.
@@ -303,13 +213,13 @@ namespace MyFlightbook.Controls.FlightEditing
         protected global::System.Web.UI.WebControls.Panel pnlTimeRoot;
 
         /// <summary>
-        /// locTimesHeader control.
+        /// lblHeaders control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locTimesHeader;
+        protected global::System.Web.UI.WebControls.Label lblHeaders;
 
         /// <summary>
         /// pnlXC control.
@@ -321,13 +231,13 @@ namespace MyFlightbook.Controls.FlightEditing
         protected global::System.Web.UI.WebControls.Panel pnlXC;
 
         /// <summary>
-        /// Label15 control.
+        /// lblxc control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label15;
+        protected global::System.Web.UI.WebControls.Label lblxc;
 
         /// <summary>
         /// decXC control.
@@ -348,13 +258,13 @@ namespace MyFlightbook.Controls.FlightEditing
         protected global::System.Web.UI.WebControls.Panel pnlNight;
 
         /// <summary>
-        /// Label16 control.
+        /// lblNight control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label16;
+        protected global::System.Web.UI.WebControls.Label lblNight;
 
         /// <summary>
         /// decNight control.
@@ -375,13 +285,13 @@ namespace MyFlightbook.Controls.FlightEditing
         protected global::System.Web.UI.WebControls.Panel pnlSimIFR;
 
         /// <summary>
-        /// Label17 control.
+        /// lblSimIMC control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label17;
+        protected global::System.Web.UI.WebControls.Label lblSimIMC;
 
         /// <summary>
         /// decSimulatedIFR control.
@@ -402,13 +312,13 @@ namespace MyFlightbook.Controls.FlightEditing
         protected global::System.Web.UI.WebControls.Panel pnlIMC;
 
         /// <summary>
-        /// Label18 control.
+        /// lblIMC control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label18;
+        protected global::System.Web.UI.WebControls.Label lblIMC;
 
         /// <summary>
         /// decIMC control.
@@ -429,13 +339,13 @@ namespace MyFlightbook.Controls.FlightEditing
         protected global::System.Web.UI.WebControls.Panel pnlGrndSim;
 
         /// <summary>
-        /// Label19 control.
+        /// lblGrnd control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label19;
+        protected global::System.Web.UI.WebControls.Label lblGrnd;
 
         /// <summary>
         /// decGrndSim control.
@@ -456,13 +366,13 @@ namespace MyFlightbook.Controls.FlightEditing
         protected global::System.Web.UI.WebControls.Panel pnlDual;
 
         /// <summary>
-        /// Label20 control.
+        /// lblDual control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label20;
+        protected global::System.Web.UI.WebControls.Label lblDual;
 
         /// <summary>
         /// decDual control.
@@ -483,13 +393,13 @@ namespace MyFlightbook.Controls.FlightEditing
         protected global::System.Web.UI.WebControls.Panel pnlCFI;
 
         /// <summary>
-        /// Label21 control.
+        /// lblCFI control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label21;
+        protected global::System.Web.UI.WebControls.Label lblCFI;
 
         /// <summary>
         /// decCFI control.
@@ -510,13 +420,13 @@ namespace MyFlightbook.Controls.FlightEditing
         protected global::System.Web.UI.WebControls.Panel pnlSIC;
 
         /// <summary>
-        /// Label22 control.
+        /// lblSIC control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label22;
+        protected global::System.Web.UI.WebControls.Label lblSIC;
 
         /// <summary>
         /// decSIC control.
@@ -537,13 +447,13 @@ namespace MyFlightbook.Controls.FlightEditing
         protected global::System.Web.UI.WebControls.Panel pnlPIC;
 
         /// <summary>
-        /// Label23 control.
+        /// lblPIC control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label23;
+        protected global::System.Web.UI.WebControls.Label lblPIC;
 
         /// <summary>
         /// decPIC control.
@@ -564,13 +474,13 @@ namespace MyFlightbook.Controls.FlightEditing
         protected global::System.Web.UI.WebControls.Panel pnlTotal;
 
         /// <summary>
-        /// Label24 control.
+        /// lblTotal control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label24;
+        protected global::System.Web.UI.WebControls.Label lblTotal;
 
         /// <summary>
         /// decTotal control.
@@ -643,15 +553,6 @@ namespace MyFlightbook.Controls.FlightEditing
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl FlightDetailsHeader;
-
-        /// <summary>
-        /// Label1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label1;
 
         /// <summary>
         /// lblExpandCollapse control.
@@ -742,15 +643,6 @@ namespace MyFlightbook.Controls.FlightEditing
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel pnlPublic;
-
-        /// <summary>
-        /// lblSharingPrompt control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblSharingPrompt;
 
         /// <summary>
         /// ckPublic control.

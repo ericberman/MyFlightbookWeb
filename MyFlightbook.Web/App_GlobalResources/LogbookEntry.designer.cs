@@ -268,6 +268,87 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to (Add...).
+        /// </summary>
+        internal static string EditFlightAddAircraft {
+            get {
+                return ResourceManager.GetString("EditFlightAddAircraft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Flight.
+        /// </summary>
+        internal static string EditFlightAddFlight {
+            get {
+                return ResourceManager.GetString("EditFlightAddFlight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add and Review Next.
+        /// </summary>
+        internal static string EditFlightAddFlightNext {
+            get {
+                return ResourceManager.GetString("EditFlightAddFlightNext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add and Review Previous.
+        /// </summary>
+        internal static string EditFlightAddFlightPrev {
+            get {
+                return ResourceManager.GetString("EditFlightAddFlightPrev", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Pending.
+        /// </summary>
+        internal static string EditFlightAddPending {
+            get {
+                return ResourceManager.GetString("EditFlightAddPending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Useful for amphibian aircraft or aircraft that are part-time on floats and part-time on wheels.  For a flight that begins on water and lands on wheels (or vice-versa), record two separate flights..
+        /// </summary>
+        internal static string EditFlightAltCatclassTooltip {
+            get {
+                return ResourceManager.GetString("EditFlightAltCatclassTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can specify approach types with additional properties, below..
+        /// </summary>
+        internal static string EditFlightApproachTooltip {
+            get {
+                return ResourceManager.GetString("EditFlightApproachTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click to copy total time into other fields for this entry..
+        /// </summary>
+        internal static string EditFlightCrossfillTooltip {
+            get {
+                return ResourceManager.GetString("EditFlightCrossfillTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Default for selected aircraft).
+        /// </summary>
+        internal static string EditFlightDefaultCatClass {
+            get {
+                return ResourceManager.GetString("EditFlightDefaultCatClass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         internal static string EditFlightInlineCancel {
@@ -282,6 +363,60 @@ namespace Resources {
         internal static string EditFlightInlinePrompt {
             get {
                 return ResourceManager.GetString("EditFlightInlinePrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share Flight Details.
+        /// </summary>
+        internal static string EditFlightShareDetails {
+            get {
+                return ResourceManager.GetString("EditFlightShareDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow others to view details of this flight.
+        /// </summary>
+        internal static string EditFlightShareDetailsPrompt {
+            get {
+                return ResourceManager.GetString("EditFlightShareDetailsPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Flight.
+        /// </summary>
+        internal static string EditFlightUpdateFlight {
+            get {
+                return ResourceManager.GetString("EditFlightUpdateFlight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update and Edit Next.
+        /// </summary>
+        internal static string EditFlightUpdateFlightNext {
+            get {
+                return ResourceManager.GetString("EditFlightUpdateFlightNext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update and Edit Previous.
+        /// </summary>
+        internal static string EditFlightUpdateFlightPrev {
+            get {
+                return ResourceManager.GetString("EditFlightUpdateFlightPrev", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Pending Flight.
+        /// </summary>
+        internal static string EditFlightUpdatePendingFlight {
+            get {
+                return ResourceManager.GetString("EditFlightUpdatePendingFlight", resourceCulture);
             }
         }
         
@@ -358,6 +493,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please select an aircraft, or click &quot;Add&quot; to add a new one.
+        /// </summary>
+        internal static string errAircraftRequired {
+            get {
+                return ResourceManager.GetString("errAircraftRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot have more precision + non-precision approaches than total approaches..
         /// </summary>
         internal static string errApproachesFewerThanSpecificApproaches {
@@ -390,6 +534,15 @@ namespace Resources {
         internal static string errCommentsTooLong {
             get {
                 return ResourceManager.GetString("errCommentsTooLong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Date of flight should be today or in the past..
+        /// </summary>
+        internal static string errFutureDate {
+            get {
+                return ResourceManager.GetString("errFutureDate", resourceCulture);
             }
         }
         
@@ -745,6 +898,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Date of Flight.
+        /// </summary>
+        internal static string FieldDateOfFlight {
+            get {
+                return ResourceManager.GetString("FieldDateOfFlight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Day landings (Full-stop).
         /// </summary>
         internal static string FieldDayLandings {
@@ -840,6 +1002,24 @@ namespace Resources {
         internal static string FieldFlightUTC {
             get {
                 return ResourceManager.GetString("FieldFlightUTC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Full Stop (Day).
+        /// </summary>
+        internal static string FieldFSDayLandings {
+            get {
+                return ResourceManager.GetString("FieldFSDayLandings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Full Stop (Night).
+        /// </summary>
+        internal static string FieldFSNightLandings {
+            get {
+                return ResourceManager.GetString("FieldFSNightLandings", resourceCulture);
             }
         }
         
@@ -1002,6 +1182,15 @@ namespace Resources {
         internal static string FieldTotalFull {
             get {
                 return ResourceManager.GetString("FieldTotalFull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total Landings.
+        /// </summary>
+        internal static string FieldTotalLandings {
+            get {
+                return ResourceManager.GetString("FieldTotalLandings", resourceCulture);
             }
         }
         
@@ -1366,6 +1555,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to General Flight Info.
+        /// </summary>
+        internal static string HeaderGeneral {
+            get {
+                return ResourceManager.GetString("HeaderGeneral", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Images for this flight.
         /// </summary>
         internal static string HeaderImagesForFlight {
@@ -1384,11 +1582,29 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sharing.
+        /// </summary>
+        internal static string HeaderSharing {
+            get {
+                return ResourceManager.GetString("HeaderSharing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Times.
         /// </summary>
         internal static string HeaderTimes {
             get {
                 return ResourceManager.GetString("HeaderTimes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Times and Telemetry.
+        /// </summary>
+        internal static string HeaderTimesAndTelemetry {
+            get {
+                return ResourceManager.GetString("HeaderTimesAndTelemetry", resourceCulture);
             }
         }
         

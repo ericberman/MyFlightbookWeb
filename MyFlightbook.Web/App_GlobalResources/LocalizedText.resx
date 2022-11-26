@@ -335,15 +335,6 @@
   <data name="ValidationNameRequired" xml:space="preserve">
     <value>Please tell us your name</value>
   </data>
-  <data name="EditFlightAddFlight" xml:space="preserve">
-    <value>Add Flight</value>
-  </data>
-  <data name="EditFlightDefaultCatClass" xml:space="preserve">
-    <value>(Default for selected aircraft)</value>
-  </data>
-  <data name="EditFlightUpdateFlight" xml:space="preserve">
-    <value>Update Flight</value>
-  </data>
   <data name="ClickToHide" xml:space="preserve">
     <value>(Click to Hide)</value>
   </data>
@@ -935,15 +926,6 @@
   <data name="oAuthErrNotSecure" xml:space="preserve">
     <value>Authorization requests MUST be on a secure channel</value>
   </data>
-  <data name="EditFlightAltCatclassTooltip" xml:space="preserve">
-    <value>Useful for amphibian aircraft or aircraft that are part-time on floats and part-time on wheels.  For a flight that begins on water and lands on wheels (or vice-versa), record two separate flights.</value>
-  </data>
-  <data name="EditFlightApproachTooltip" xml:space="preserve">
-    <value>You can specify approach types with additional properties, below.</value>
-  </data>
-  <data name="EditFlightCrossfillTooltip" xml:space="preserve">
-    <value>Click to copy total time into other fields for this entry.</value>
-  </data>
   <data name="LocalizedJoinWithSpace" xml:space="preserve">
     <value>{0} {1}</value>
     <comment>Join two strings with a space (avoid warning about non localized literal)</comment>
@@ -1494,18 +1476,6 @@
   <data name="AutofillOptionRound10th" xml:space="preserve">
     <value>Use nearest 10th/hour</value>
   </data>
-  <data name="EditFlightAddFlightNext" xml:space="preserve">
-    <value>Add and Review Next</value>
-  </data>
-  <data name="EditFlightAddFlightPrev" xml:space="preserve">
-    <value>Add and Review Previous</value>
-  </data>
-  <data name="EditFlightUpdateFlightNext" xml:space="preserve">
-    <value>Update and Edit Next</value>
-  </data>
-  <data name="EditFlightUpdateFlightPrev" xml:space="preserve">
-    <value>Update and Edit Previous</value>
-  </data>
   <data name="PrintViewIncludeSignatures" xml:space="preserve">
     <value>Include Signatures</value>
   </data>
@@ -1871,9 +1841,6 @@
   </data>
   <data name="PrintViewBreakYear" xml:space="preserve">
     <value>Start of new year</value>
-  </data>
-  <data name="EditFlightUpdatePendingFlight" xml:space="preserve">
-    <value>Update Pending Flight</value>
   </data>
   <data name="ChartTotalsGroupMonthOfYear" xml:space="preserve">
     <value>Month of Year</value>

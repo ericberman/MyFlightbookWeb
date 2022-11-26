@@ -325,8 +325,8 @@ namespace MyFlightbook.Controls.FlightEditing
             popmenuPending.Visible = false;
             InitFormFromLogbookEntry(pendingFlight);
             // Change next/previous wording to match the fact that pending flights, kinda by definition, can't be updated.
-            lnkUpdateNext.Text = Resources.LocalizedText.EditFlightAddFlightNext;
-            lnkUpdatePrev.Text = Resources.LocalizedText.EditFlightAddFlightPrev;
+            lnkUpdateNext.Text = Resources.LogbookEntry.EditFlightAddFlightNext;
+            lnkUpdatePrev.Text = Resources.LogbookEntry.EditFlightAddFlightPrev;
         }
 
         // Save on some view state by loading this up on each page load.
@@ -487,7 +487,7 @@ namespace MyFlightbook.Controls.FlightEditing
             // if the specified id was found AND it belongs to the current user, we can edit it; else, just set up for "new"
             if (le.IsNewFlight)
             {
-                btnAddFlight.Text = Resources.LocalizedText.EditFlightAddFlight;
+                btnAddFlight.Text = Resources.LogbookEntry.EditFlightAddFlight;
                 mfbFlightImages.Visible = false;
                 mfbVideoEntry1.Videos.Clear();
 
@@ -509,7 +509,7 @@ namespace MyFlightbook.Controls.FlightEditing
             }
             else
             {
-                btnAddFlight.Text = Resources.LocalizedText.EditFlightUpdateFlight;
+                btnAddFlight.Text = Resources.LogbookEntry.EditFlightUpdateFlight;
                 mfbFlightImages.Visible = true;
                 mfbFlightImages.Key = le.FlightID.ToString(CultureInfo.InvariantCulture);
                 mfbFlightImages.Refresh();
