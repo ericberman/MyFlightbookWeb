@@ -88,6 +88,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Any Engine.
+        /// </summary>
+        internal static string AircraftFeatureEngineAny {
+            get {
+                return ResourceManager.GetString("AircraftFeatureEngineAny", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Flaps.
         /// </summary>
         internal static string AircraftFeatureFlaps {
@@ -169,11 +178,29 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All Aircraft.
+        /// </summary>
+        internal static string AircraftFeatureSimOrReal {
+            get {
+                return ResourceManager.GetString("AircraftFeatureSimOrReal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Technically Advanced Aircraft (TAA).
         /// </summary>
         internal static string AircraftFeatureTAA {
             get {
                 return ResourceManager.GetString("AircraftFeatureTAA", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TAA.
+        /// </summary>
+        internal static string AircraftFeatureTAAShort {
+            get {
+                return ResourceManager.GetString("AircraftFeatureTAAShort", resourceCulture);
             }
         }
         
@@ -187,7 +214,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Training Device (Simulator, FTD, ATD).
+        ///   Looks up a localized string similar to Training Device (FTD/ATD/Sim).
         /// </summary>
         internal static string AircraftFeatureTrainingDevice {
             get {
@@ -304,7 +331,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Make/model.
+        ///   Looks up a localized string similar to Model.
         /// </summary>
         internal static string ContainsMakeModel {
             get {
@@ -313,7 +340,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Make/model contains.
+        ///   Looks up a localized string similar to Model name contains.
         /// </summary>
         internal static string ContainsMakeModelText {
             get {
@@ -322,7 +349,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to OR make/model contains.
+        ///   Looks up a localized string similar to OR model name contains.
         /// </summary>
         internal static string ContainsMakeModelTextOR {
             get {
@@ -403,7 +430,16 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Past 12 months.
+        ///   Looks up a localized string similar to From:.
+        /// </summary>
+        internal static string DatesFrom {
+            get {
+                return ResourceManager.GetString("DatesFrom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trailing 12 months.
         /// </summary>
         internal static string DatesPrev12Month {
             get {
@@ -412,7 +448,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Past 24 months.
+        ///   Looks up a localized string similar to Trailing 24 months.
         /// </summary>
         internal static string DatesPrev24Month {
             get {
@@ -421,7 +457,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Past 30 days.
+        ///   Looks up a localized string similar to Trailing 30 days.
         /// </summary>
         internal static string DatesPrev30Days {
             get {
@@ -430,7 +466,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Past 6 months.
+        ///   Looks up a localized string similar to Trailing 6 months.
         /// </summary>
         internal static string DatesPrev6Month {
             get {
@@ -439,7 +475,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Past 90 days.
+        ///   Looks up a localized string similar to Trailing 90 days.
         /// </summary>
         internal static string DatesPrev90Days {
             get {
@@ -471,6 +507,15 @@ namespace Resources {
         internal static string DatesThisMonth {
             get {
                 return ResourceManager.GetString("DatesThisMonth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To:.
+        /// </summary>
+        internal static string DatesTo {
+            get {
+                return ResourceManager.GetString("DatesTo", resourceCulture);
             }
         }
         
@@ -520,20 +565,20 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show All Aircraft.
+        /// </summary>
+        internal static string FlightAircraftShowAll {
+            get {
+                return ResourceManager.GetString("FlightAircraftShowAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Flight has characteristics ({0}).
         /// </summary>
         internal static string FlightCharacteristics {
             get {
                 return ResourceManager.GetString("FlightCharacteristics", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Holding procedures.
-        /// </summary>
-        internal static string FlightFeatureaHolds {
-            get {
-                return ResourceManager.GetString("FlightFeatureaHolds", resourceCulture);
             }
         }
         
@@ -556,7 +601,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Approaches.
+        ///   Looks up a localized string similar to Instrument Approaches.
         /// </summary>
         internal static string FlightFeatureApproaches {
             get {
@@ -592,7 +637,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Full-stop nighttime landings.
+        ///   Looks up a localized string similar to Full-stop night landings.
         /// </summary>
         internal static string FlightFeatureFSNightLanding {
             get {
@@ -601,7 +646,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ground simulator time.
+        ///   Looks up a localized string similar to Ground sim time.
         /// </summary>
         internal static string FlightFeatureGroundsim {
             get {
@@ -628,11 +673,29 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Holding procedures.
+        /// </summary>
+        internal static string FlightFeatureHolds {
+            get {
+                return ResourceManager.GetString("FlightFeatureHolds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Actual IMC time.
         /// </summary>
         internal static string FlightFeatureIMC {
             get {
                 return ResourceManager.GetString("FlightFeatureIMC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IMC OR Simulated Instr..
+        /// </summary>
+        internal static string FlightFeatureIMCOrSimIMC {
+            get {
+                return ResourceManager.GetString("FlightFeatureIMCOrSimIMC", resourceCulture);
             }
         }
         
@@ -682,6 +745,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Instructor signature.
+        /// </summary>
+        internal static string FlightFeatureSignedShort {
+            get {
+                return ResourceManager.GetString("FlightFeatureSignedShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Simulated IMC time.
         /// </summary>
         internal static string FlightFeatureSimIMC {
@@ -691,7 +763,16 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Total Time.
+        ///   Looks up a localized string similar to Telemetry.
+        /// </summary>
+        internal static string FlightFeatureTelemetryShort {
+            get {
+                return ResourceManager.GetString("FlightFeatureTelemetryShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total time.
         /// </summary>
         internal static string FlightFeatureTotalTime {
             get {
@@ -718,6 +799,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All Flights.
+        /// </summary>
+        internal static string FlightRangeAll {
+            get {
+                return ResourceManager.GetString("FlightRangeAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Local flights only.
         /// </summary>
         internal static string FlightRangeLocal {
@@ -732,6 +822,78 @@ namespace Resources {
         internal static string FlightRangeNonLocal {
             get {
                 return ResourceManager.GetString("FlightRangeNonLocal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Non-local (basic 61.1 XC) flights only.
+        /// </summary>
+        internal static string FlightRangeNonLocalLong {
+            get {
+                return ResourceManager.GetString("FlightRangeNonLocalLong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flight is in one of these aircraft.
+        /// </summary>
+        internal static string HeaderAircraft {
+            get {
+                return ResourceManager.GetString("HeaderAircraft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flight aircraft has these characteristics.
+        /// </summary>
+        internal static string HeaderAircraftFeature {
+            get {
+                return ResourceManager.GetString("HeaderAircraftFeature", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flight visits any of these airports.
+        /// </summary>
+        internal static string HeaderAirports {
+            get {
+                return ResourceManager.GetString("HeaderAirports", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flight is in one of these categories/classes.
+        /// </summary>
+        internal static string HeaderCategoryClass {
+            get {
+                return ResourceManager.GetString("HeaderCategoryClass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Date of Flight.
+        /// </summary>
+        internal static string HeaderDates {
+            get {
+                return ResourceManager.GetString("HeaderDates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flight has the following characteristics.
+        /// </summary>
+        internal static string HeaderFlightCharacteristics {
+            get {
+                return ResourceManager.GetString("HeaderFlightCharacteristics", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flight is in one of these models.
+        /// </summary>
+        internal static string HeaderModels {
+            get {
+                return ResourceManager.GetString("HeaderModels", resourceCulture);
             }
         }
         
@@ -759,6 +921,42 @@ namespace Resources {
         internal static string SaveQueryPrompt {
             get {
                 return ResourceManager.GetString("SaveQueryPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find Matching Flights.
+        /// </summary>
+        internal static string SearchFindNow {
+            get {
+                return ResourceManager.GetString("SearchFindNow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset.
+        /// </summary>
+        internal static string SearchReset {
+            get {
+                return ResourceManager.GetString("SearchReset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use &quot;!&quot; as a prefix or suffix to indicate departure/arrival. E.g.: &lt;ul&gt;&lt;li&gt;&lt;span style=&quot;font-weight:bold&quot;&gt;!ABC&lt;/span&gt; matches flights that depart from ABC (i.e., ABC is the first airport in the route of flight)&lt;/li&gt;&lt;li&gt;&lt;span style=&quot;font-weight:bold&quot;&gt;ABC!&lt;/span&gt; matches flights that arrive at ABC (i.e., ABC is the last airport in the route of flight)&lt;/li&gt;&lt;/ul&gt;.
+        /// </summary>
+        internal static string SearchTipsAirportToolTip {
+            get {
+                return ResourceManager.GetString("SearchTipsAirportToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Searching Tips.
+        /// </summary>
+        internal static string SearchTipsToolTip {
+            get {
+                return ResourceManager.GetString("SearchTipsToolTip", resourceCulture);
             }
         }
     }

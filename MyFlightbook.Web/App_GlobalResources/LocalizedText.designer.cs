@@ -4487,24 +4487,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use &quot;!&quot; as a prefix or suffix to indicate departure/arrival. !ABC matches flights that depart from ABC (i.e., ABC is the first airport in the route of flight), and ABC! matches flights that arrive at ABC (i.e., ABC is the last airport in the route of flight)..
-        /// </summary>
-        internal static string SearchTipsAirportToolTip {
-            get {
-                return ResourceManager.GetString("SearchTipsAirportToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to See the FAQ for search tips.
-        /// </summary>
-        internal static string SearchTipsToolTip {
-            get {
-                return ResourceManager.GetString("SearchTipsToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to (Select All).
         /// </summary>
         internal static string SelectAll {

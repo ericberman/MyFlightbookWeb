@@ -1026,6 +1026,7 @@ namespace MyFlightbook
                 case FlightDistance.AllFlights:
                     break;
                 case FlightDistance.LocalOnly:
+                    // BUGBUG - this query works great on MySql 5.7 but breaks on 8.0.  Looks like the "Left(route, 4)" is being treated as unescaped parenthesis.
                     AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, " ((LENGTH(Route) <= {0}) OR (Route IS NULL) OR (Route RLIKE CONCAT('^', LEFT(Route, 4), '[^a-zA-Z0-9]*', LEFT(Route, 4), '$') OR Route RLIKE CONCAT('^', LEFT(Route, 3), '[^a-zA-Z0-9]*', LEFT(Route, 3), '$'))) ", MyFlightbook.Airports.airport.maxCodeLength));
                     Filters.Add(new QueryFilterItem(Resources.FlightQuery.FilterFlightRange, Resources.FlightQuery.FlightRangeLocal, "Distance"));
                     break;
@@ -1287,7 +1288,7 @@ namespace MyFlightbook
             AppendIfChecked(sbFlight, HasFullStopLandings, Resources.FlightQuery.FlightFeatureFSLanding);
             AppendIfChecked(sbFlight, HasLandings, Resources.FlightQuery.FlightFeatureAnyLandings);
             AppendIfChecked(sbFlight, HasApproaches, Resources.FlightQuery.FlightFeatureApproaches);
-            AppendIfChecked(sbFlight, HasHolds, Resources.FlightQuery.FlightFeatureaHolds);
+            AppendIfChecked(sbFlight, HasHolds, Resources.FlightQuery.FlightFeatureHolds);
             AppendIfChecked(sbFlight, HasXC, Resources.FlightQuery.FlightFeatureXC);
             AppendIfChecked(sbFlight, HasSimIMCTime, Resources.FlightQuery.FlightFeatureSimIMC);
             AppendIfChecked(sbFlight, HasGroundSim, Resources.FlightQuery.FlightFeatureGroundsim);

@@ -1638,9 +1638,6 @@
   <data name="Beta" xml:space="preserve">
     <value>BETA</value>
   </data>
-  <data name="SearchTipsToolTip" xml:space="preserve">
-    <value>See the FAQ for search tips</value>
-  </data>
   <data name="BulkCreateFlightsFromTelemetryTitle" xml:space="preserve">
     <value>Create Flights From Telemetry</value>
   </data>
@@ -1790,9 +1787,6 @@
   </data>
   <data name="InsurancePostVisit" xml:space="preserve">
     <value>Visit SkyWatch.ai</value>
-  </data>
-  <data name="SearchTipsAirportToolTip" xml:space="preserve">
-    <value>Use "!" as a prefix or suffix to indicate departure/arrival. !ABC matches flights that depart from ABC (i.e., ABC is the first airport in the route of flight), and ABC! matches flights that arrive at ABC (i.e., ABC is the last airport in the route of flight).</value>
   </data>
   <data name="DefaultPageRecentStatsFurthestRoute" xml:space="preserve">
     <value>Someone logged a flight that went {0:#,##0.0}NM from the starting point!</value>

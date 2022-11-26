@@ -193,24 +193,6 @@ public partial class Controls_mfbSearchForm
     protected global::System.Web.UI.WebControls.Localize locFreeformText;
 
     /// <summary>
-    /// ttText control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::Controls_mfbTooltip ttText;
-
-    /// <summary>
-    /// lnkTextTips control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.HyperLink lnkTextTips;
-
-    /// <summary>
     /// pnlText control.
     /// </summary>
     /// <remarks>
@@ -227,6 +209,15 @@ public partial class Controls_mfbSearchForm
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.TextBox txtRestrict;
+
+    /// <summary>
+    /// lnkTextTips control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.HyperLink lnkTextTips;
 
     /// <summary>
     /// AirportsHeader control.
@@ -652,13 +643,13 @@ public partial class Controls_mfbSearchForm
     protected global::System.Web.UI.WebControls.CheckBox ckAllMakes;
 
     /// <summary>
-    /// Label1 control.
+    /// lblModelContainsPrompt control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Label Label1;
+    protected global::System.Web.UI.WebControls.Label lblModelContainsPrompt;
 
     /// <summary>
     /// txtModelNameText control.

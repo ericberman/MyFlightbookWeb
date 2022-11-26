@@ -3127,9 +3127,6 @@
     <Content Include="App_LocalResources\DefaultMini.aspx.resx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Controls\App_LocalResources\mfbSearchForm.ascx.resx" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Logon\App_LocalResources\newuser.aspx.resx" />
     <Content Include="Logon\App_LocalResources\ResetPass.aspx.resx" />
   </ItemGroup>

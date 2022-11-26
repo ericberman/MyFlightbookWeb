@@ -154,7 +154,7 @@
     <value>Airports</value>
   </data>
   <data name="ContainsMakeModel" xml:space="preserve">
-    <value>Make/model</value>
+    <value>Model</value>
   </data>
   <data name="ContainsText" xml:space="preserve">
     <value>Matches search terms</value>
@@ -172,10 +172,10 @@
     <value>Between {0} and {1}</value>
   </data>
   <data name="DatesPrev12Month" xml:space="preserve">
-    <value>Past 12 months</value>
+    <value>Trailing 12 months</value>
   </data>
   <data name="DatesPrev6Month" xml:space="preserve">
-    <value>Past 6 months</value>
+    <value>Trailing 6 months</value>
   </data>
   <data name="DatesPrevMonth" xml:space="preserve">
     <value>Previous month</value>
@@ -193,11 +193,11 @@
     <value>Flight has characteristics ({0})</value>
     <comment>Has all of the flight features.</comment>
   </data>
-  <data name="FlightFeatureaHolds" xml:space="preserve">
+  <data name="FlightFeatureHolds" xml:space="preserve">
     <value>Holding procedures</value>
   </data>
   <data name="FlightFeatureApproaches" xml:space="preserve">
-    <value>Approaches</value>
+    <value>Instrument Approaches</value>
   </data>
   <data name="FlightFeatureCFI" xml:space="preserve">
     <value>Instructor time</value>
@@ -209,10 +209,10 @@
     <value>Full-stop day landings</value>
   </data>
   <data name="FlightFeatureFSNightLanding" xml:space="preserve">
-    <value>Full-stop nighttime landings</value>
+    <value>Full-stop night landings</value>
   </data>
   <data name="FlightFeatureGroundsim" xml:space="preserve">
-    <value>Ground simulator time</value>
+    <value>Ground sim time</value>
   </data>
   <data name="FlightFeatureHasTelemetry" xml:space="preserve">
     <value>Has telemetry</value>
@@ -251,10 +251,10 @@
     <value>Motor Glider or TMG</value>
   </data>
   <data name="DatesPrev30Days" xml:space="preserve">
-    <value>Past 30 days</value>
+    <value>Trailing 30 days</value>
   </data>
   <data name="DatesPrev90Days" xml:space="preserve">
-    <value>Past 90 days</value>
+    <value>Trailing 90 days</value>
   </data>
   <data name="FlightFeatureIsSigned" xml:space="preserve">
     <value>Signed</value>
@@ -269,7 +269,7 @@
     <value>Real Aircraft</value>
   </data>
   <data name="AircraftFeatureTrainingDevice" xml:space="preserve">
-    <value>Training Device (Simulator, FTD, ATD)</value>
+    <value>Training Device (FTD/ATD/Sim)</value>
   </data>
   <data name="AircraftFeatureTurboprop" xml:space="preserve">
     <value>Turboprop</value>
@@ -281,10 +281,10 @@
     <value>Electric</value>
   </data>
   <data name="ContainsMakeModelText" xml:space="preserve">
-    <value>Make/model contains</value>
+    <value>Model name contains</value>
   </data>
   <data name="ContainsMakeModelTextOR" xml:space="preserve">
-    <value>OR make/model contains</value>
+    <value>OR model name contains</value>
   </data>
   <data name="FilterDate" xml:space="preserve">
     <value>Dates</value>
@@ -308,7 +308,7 @@
     <value>Landings</value>
   </data>
   <data name="FlightFeatureTotalTime" xml:space="preserve">
-    <value>Total Time</value>
+    <value>Total time</value>
   </data>
   <data name="SaveQueryNamePrompt" xml:space="preserve">
     <value>Name this query for future use:</value>
@@ -350,6 +350,72 @@
     <value>Explicitly selected flights</value>
   </data>
   <data name="DatesPrev24Month" xml:space="preserve">
-    <value>Past 24 months</value>
+    <value>Trailing 24 months</value>
+  </data>
+  <data name="AircraftFeatureEngineAny" xml:space="preserve">
+    <value>Any Engine</value>
+  </data>
+  <data name="AircraftFeatureSimOrReal" xml:space="preserve">
+    <value>All Aircraft</value>
+  </data>
+  <data name="AircraftFeatureTAAShort" xml:space="preserve">
+    <value>TAA</value>
+  </data>
+  <data name="DatesFrom" xml:space="preserve">
+    <value>From:</value>
+  </data>
+  <data name="DatesTo" xml:space="preserve">
+    <value>To:</value>
+  </data>
+  <data name="FlightAircraftShowAll" xml:space="preserve">
+    <value>Show All Aircraft</value>
+  </data>
+  <data name="FlightFeatureIMCOrSimIMC" xml:space="preserve">
+    <value>IMC OR Simulated Instr.</value>
+  </data>
+  <data name="FlightFeatureSignedShort" xml:space="preserve">
+    <value>Instructor signature</value>
+  </data>
+  <data name="FlightFeatureTelemetryShort" xml:space="preserve">
+    <value>Telemetry</value>
+  </data>
+  <data name="FlightRangeAll" xml:space="preserve">
+    <value>All Flights</value>
+  </data>
+  <data name="FlightRangeNonLocalLong" xml:space="preserve">
+    <value>Non-local (basic 61.1 XC) flights only</value>
+  </data>
+  <data name="HeaderAircraft" xml:space="preserve">
+    <value>Flight is in one of these aircraft</value>
+  </data>
+  <data name="HeaderAircraftFeature" xml:space="preserve">
+    <value>Flight aircraft has these characteristics</value>
+  </data>
+  <data name="HeaderAirports" xml:space="preserve">
+    <value>Flight visits any of these airports</value>
+  </data>
+  <data name="HeaderCategoryClass" xml:space="preserve">
+    <value>Flight is in one of these categories/classes</value>
+  </data>
+  <data name="HeaderDates" xml:space="preserve">
+    <value>Date of Flight</value>
+  </data>
+  <data name="HeaderFlightCharacteristics" xml:space="preserve">
+    <value>Flight has the following characteristics</value>
+  </data>
+  <data name="HeaderModels" xml:space="preserve">
+    <value>Flight is in one of these models</value>
+  </data>
+  <data name="SearchFindNow" xml:space="preserve">
+    <value>Find Matching Flights</value>
+  </data>
+  <data name="SearchReset" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="SearchTipsAirportToolTip" xml:space="preserve">
+    <value>Use "!" as a prefix or suffix to indicate departure/arrival. E.g.: &lt;ul&gt;&lt;li&gt;&lt;span style="font-weight:bold"&gt;!ABC&lt;/span&gt; matches flights that depart from ABC (i.e., ABC is the first airport in the route of flight)&lt;/li&gt;&lt;li&gt;&lt;span style="font-weight:bold"&gt;ABC!&lt;/span&gt; matches flights that arrive at ABC (i.e., ABC is the last airport in the route of flight)&lt;/li&gt;&lt;/ul&gt;</value>
+  </data>
+  <data name="SearchTipsToolTip" xml:space="preserve">
+    <value>Searching Tips</value>
   </data>
 </root>
