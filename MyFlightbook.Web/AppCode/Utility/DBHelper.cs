@@ -345,5 +345,21 @@ namespace MyFlightbook
             return DoNonQuery(CommandArgs, initCommand);
         }
         #endregion
+
+        private static string dbVer = null;
+
+        /// <summary>
+        /// Return the database version as a string; do with it what you will...
+        /// </summary>
+        /// <returns></returns>
+        public static string GetDbVer()
+        {
+            if (dbVer == null)
+            {
+                DBHelper dbh = new DBHelper("SHOW VARIABLES LIKE 'version'");
+                dbh.ReadRow((comm) => { }, (dr) => { dbVer = dr["Value"].ToString(); });
+            }
+            return dbVer;
+        }
     }
 }
