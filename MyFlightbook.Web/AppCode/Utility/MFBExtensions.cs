@@ -560,7 +560,7 @@ namespace MyFlightbook
             if (sz.Length > index)
                 AddMarkedLines(lstSegs, sz.Substring(index, sz.Length - index), fMarkdown);
 
-            return String.Join(" ", lstSegs);
+            return String.Join(string.Empty, lstSegs);
         }
         #endregion 
 
