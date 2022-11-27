@@ -1021,19 +1021,19 @@ namespace MyFlightbook
         
         private void UpdateAirports(StringBuilder sbQuery)
         {
+            const string regexLocal = "^([a-zA-Z0-9]{3,5})[^a-zA-Z0-9]+\\\\1$";
             switch (Distance)
             {
                 case FlightDistance.AllFlights:
                     break;
                 case FlightDistance.LocalOnly:
-                    // BUGBUG - this query works great on MySql 5.7 but breaks on 8.0.  Looks like the "Left(route, 4)" is being treated as unescaped parenthesis.
-                    AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, " ((LENGTH(Route) <= {0}) OR (Route IS NULL) OR (Route RLIKE CONCAT('^', LEFT(Route, 4), '[^a-zA-Z0-9]*', LEFT(Route, 4), '$') OR Route RLIKE CONCAT('^', LEFT(Route, 3), '[^a-zA-Z0-9]*', LEFT(Route, 3), '$'))) ", MyFlightbook.Airports.airport.maxCodeLength));
+                    AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, " ((LENGTH(Route) <= {0}) OR (Route IS NULL) OR (Route RLIKE '{1}')) ", Airports.airport.maxCodeLength, regexLocal));
                     Filters.Add(new QueryFilterItem(Resources.FlightQuery.FilterFlightRange, Resources.FlightQuery.FlightRangeLocal, "Distance"));
                     break;
                 case FlightDistance.NonLocalOnly:
                     // Query here is for route length greater than the length of a single airport, but we also ad a hack to look for "ABC ABC" or "ABCD-ABCD" 
                     // (i.e., 3- or 4- characters
-                    AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, " LENGTH(Route) > {0}  AND NOT (Route RLIKE CONCAT('^', LEFT(Route, 4), '[^a-zA-Z0-9]*', LEFT(Route, 4), '$') OR Route RLIKE CONCAT('^', LEFT(Route, 3), '[^a-zA-Z0-9]*', LEFT(Route, 3), '$'))", Airports.airport.maxCodeLength));
+                    AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, " (LENGTH(Route) > {0}  AND NOT (Route RLIKE '{1}')) ", Airports.airport.maxCodeLength, regexLocal));
                     Filters.Add(new QueryFilterItem(Resources.FlightQuery.FilterFlightRange, Resources.FlightQuery.FlightRangeNonLocal, "Distance"));
                     break;
                 default:
