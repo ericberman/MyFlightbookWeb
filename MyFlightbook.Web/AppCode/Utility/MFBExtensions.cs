@@ -451,7 +451,7 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="sz"></param>
         /// <returns></returns>
-        public static System.Collections.Generic.IEnumerable<int> ToInts(this string sz)
+        public static IEnumerable<int> ToInts(this string sz)
         {
             List<int> lst = new List<int>();
             if (String.IsNullOrEmpty(sz))
@@ -464,8 +464,49 @@ namespace MyFlightbook
         }
         #endregion
 
+        #region MarkDown
         private static Regex regexpWebLink;
         private static Regex regexMarkDown;
+
+        private static string MarkupNonLinkedText(string sz)
+        {
+            if (String.IsNullOrEmpty(sz))
+                return sz;
+
+            if (regexMarkDown == null)
+                regexMarkDown = new Regex("([*_])([^*_\r\n]*)\\1", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.Multiline);
+
+            sz = regexMarkDown.Replace(sz, (m) =>
+            {
+                if (m.Groups.Count < 3 || m.Value.Contains("&#13;") || m.Value.Contains("&#10;") || m.Value.Contains("\r") || m.Value.Contains("\n")) // Ignore anything with a newline/carriage return.
+                    return m.Value;
+
+                string szCode = m.Groups[1].Value.CompareOrdinalIgnoreCase("*") == 0 ? "strong" : "em";
+
+                return String.Format(CultureInfo.CurrentCulture, "<{0}>{1}</{0}>", szCode, m.Groups[2].Value);
+            });
+            return sz;
+        }
+
+        private static void AddMarkedLines(IList<string> lst, string sz, bool fMarkdown)
+        {
+            if (String.IsNullOrEmpty(sz))
+                return;
+            if (lst == null)
+                throw new ArgumentNullException(nameof(lst));
+
+            if (fMarkdown)
+            {
+                string[] rgLines = sz.Split(new string[] { "\r\n", "\r", "\n"  }, StringSplitOptions.None);
+                // Preserve the line breaks by doing the markup in-line
+                for (int i = 0; i < rgLines.Length; i++)
+                    rgLines[i] = MarkupNonLinkedText(rgLines[i]);
+
+                lst.Add(String.Join("\r\n", rgLines));
+            }
+            else
+                lst.Add(sz);
+        }
 
         /// <summary>
         /// Turn links in the string into anchor tags.  Does html escaping first.
@@ -482,7 +523,17 @@ namespace MyFlightbook
             // avoid injection by escaping explicit HTML elements before linkifying, since linkify itself can't be used in an escaped (i.e., <%: %>) context or it will be escaped.
             sz = sz.EscapeHTML().Replace("&#13;", "\r").Replace("&#10;", "\n");
 
-            sz = regexpWebLink.Replace(sz, (m) => {
+            List<string> lstSegs = new List<string>();
+            // Break up into segments: First by hyperlinks, then by lines.  We don't markdown the hyperlink because it can contain "_" and "*"
+            MatchCollection mc = regexpWebLink.Matches(sz);
+            int index = 0;
+            foreach (Match m in mc)
+            {
+                // Catch up Non-linked text
+                if (m.Index > index)
+                    AddMarkedLines(lstSegs, sz.Substring(index, m.Index - index), fMarkdown);
+
+                // what remains is the hyperlink
                 string szReplace = m.Groups["linkText"].Value;
                 string szLink = m.Groups["linkRef"].Value;
                 string szTrailingPeriod = string.Empty;
@@ -496,28 +547,22 @@ namespace MyFlightbook
 
                 if (String.IsNullOrWhiteSpace(szReplace))
                     szReplace = szLink;
+                else if (fMarkdown)
+                    szReplace = MarkupNonLinkedText(szReplace);
 
-                return "<a href=\"" + szLink + "\" target=\"_blank\">" + szReplace + "</a>" + szTrailingPeriod;
-            });
+                lstSegs.Add("<a href=\"" + szLink + "\" target=\"_blank\">" + szReplace + "</a>" + szTrailingPeriod);
 
-            if (fMarkdown)
-            {
-                if (regexMarkDown == null)
-                    regexMarkDown = new Regex("([*_])([^*_\r\n]*)\\1", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.Multiline);
-
-                sz = regexMarkDown.Replace(sz, (m) =>
-                {
-                    if (m.Groups.Count < 3 || m.Value.Contains("&#13;") || m.Value.Contains("&#10;") || m.Value.Contains("\r") || m.Value.Contains("\n")) // Ignore anything with a newline/carriage return.
-                        return m.Value;
-
-                    string szCode = m.Groups[1].Value.CompareOrdinalIgnoreCase("*") == 0 ? "strong" : "em";
-
-                    return String.Format(CultureInfo.CurrentCulture, "<{0}>{1}</{0}>", szCode, m.Groups[2].Value);
-                });
+                // Advance index to the end of the match
+                index = m.Index + m.Value.Length; ;
             }
 
-            return sz;
+            // Finally, catch up any trailing text
+            if (sz.Length > index)
+                AddMarkedLines(lstSegs, sz.Substring(index, sz.Length - index), fMarkdown);
+
+            return String.Join(" ", lstSegs);
         }
+        #endregion 
 
         /// <summary>
         /// Escapes MySql wildcards (% and _).
