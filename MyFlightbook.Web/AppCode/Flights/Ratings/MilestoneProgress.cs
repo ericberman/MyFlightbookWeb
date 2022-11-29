@@ -536,6 +536,70 @@ namespace MyFlightbook.RatingsProgress
                     throw new NotImplementedException();
             }
         }
+
+        /// <summary>
+        /// Try to capture the distance requirements for 61.1 based on rating being sought.  Generally 50nm for most ratings, but 25 for rotorcraft and 15 for powered parachutes
+        /// Returns -1 outside of FAA jurisdictions (e.g., EASA) or for ratings where no landing is required (e.g., ATP).  Thus the ">" check (vs. >=) will work for any such flight.
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
+        protected int MinXCDistanceForRating()
+        {
+            switch (RatingSought)
+            {
+                // (i) - basic XC, no distance threshold.
+                // (vi) - ATP is 50nm, but no landing required, so use 0
+                default:
+                    return -1;
+
+                // (ii) - PPL, Commercial, or instrument: 50nm, except rotorcraft (v - 25nm) and powered parachutes (iv - 15nm)
+                case RatingType.PPLAirplaneSingle:
+                case RatingType.PPLAirplaneMulti:
+                case RatingType.PPLPoweredLift:
+                case RatingType.PPLGlider:
+                case RatingType.PPLAirship:
+                case RatingType.PPLBalloon:
+                case RatingType.PPLWeightShift:
+                case RatingType.PPLPart141SingleEngine:
+                case RatingType.PPLPart141MultiEngine:
+                case RatingType.PPLPart141Glider:
+                case RatingType.InstrumentAirplane:
+                case RatingType.InstrumentPoweredLift:
+                case RatingType.CommercialASEL:
+                case RatingType.CommercialASES:
+                case RatingType.CommercialAMEL:
+                case RatingType.CommercialAMES:
+                case RatingType.CommercialBalloonHot:
+                case RatingType.CommercialBalloonGas:
+                case RatingType.Commercial141AirplaneSingleEngineLand:
+                case RatingType.Commercial141AirplaneSingleEngineSea:
+                case RatingType.Commercial141AirplaneMultiEngineLand:
+                case RatingType.Commercial141AirplaneMultiEngineSea:
+                case RatingType.CommercialGlider:
+                case RatingType.RecreationalPilot:
+                    return 50;
+
+                case RatingType.PPLPart141Helicopter:
+                case RatingType.PPLPart141Gyroplane:
+                case RatingType.PPLHelicopter:
+                case RatingType.PPLGyroplane:
+                case RatingType.InstrumentHelicopter:
+                case RatingType.CommercialHelicopter:
+                case RatingType.CommercialGyroplane:
+                case RatingType.Commercial141Helicopter:
+                    return 25;
+
+                // (iii) and (iv) - sport pilot: 25nm unless powered parachute
+                case RatingType.SportSingleEngine:
+                case RatingType.SportGlider:
+                case RatingType.SportRotorcraft:
+                case RatingType.SportWeightShift:
+                    return 25;
+
+                // (iv) - PPL powered parachute 
+                case RatingType.PPLPoweredParachute:
+                    return 15;
+            }
+        }
         #endregion
 
         #region Object creation and Initialization
