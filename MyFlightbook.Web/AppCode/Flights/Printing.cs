@@ -221,11 +221,13 @@ namespace MyFlightbook.Printing
 
             // Issue #810 - show multi-pilot time IF the user has ever used multi-pilot time.
             // Even though we don't support optional columns for EASA layout, we use an optional column for this.
+            // And issue #1028 - show single pilot time, similar rule
             IEnumerable<CustomPropertyType> rgcpt = CustomPropertyType.GetCustomPropertyTypes(CurrentUser.UserName);
             foreach (CustomPropertyType cpt in rgcpt)
-                if (cpt.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropMultiPilotTime && cpt.IsFavorite)
+                if ((cpt.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropMultiPilotTime || cpt.PropTypeID == (int) CustomPropertyType.KnownProperties.IDPropSinglePilot) && cpt.IsFavorite)
                 {
-                    po.OptionalColumns.Add(new OptionalColumn(cpt.PropTypeID));
+                    po.OptionalColumns.Add(new OptionalColumn((int) CustomPropertyType.KnownProperties.IDPropSinglePilot));
+                    po.OptionalColumns.Add(new OptionalColumn((int) CustomPropertyType.KnownProperties.IDPropMultiPilotTime));
                     break;
                 }
         }

@@ -14,7 +14,7 @@
                 <th class="headerSmall" colspan="2">2</th>
                 <th class="headerSmall" colspan="2">3</th>
                 <th class="headerSmall" colspan="2">4</th>
-                <th class="headerSmall" colspan='<%# ShowOptionalColumn(0) ? "2" : "1" %>'>5</th>
+                <th class="headerSmall" colspan='<%# ShowOptionalColumn(0) ? "3" : "1" %>'>5</th>
                 <th class="headerSmall">6</th>
                 <th class="headerSmall">7</th>
                 <th class="headerSmall" colspan="2">8</th>
@@ -30,6 +30,7 @@
                 <th colspan="2" class="headerBig"><% =Resources.LogbookEntry.PrintHeaderAircraft %></th>
                 <th rowspan="2" class="headerBig"><%=Resources.LogbookEntry.PrintHeaderCategory %></th>
                 <th rowspan="2" runat="server" id="optColumn1" Visible="<%# ShowOptionalColumn(0) %>"><div class="custColumn"><%# OptionalColumnName(0) %></div></th>
+                <th rowspan="2" runat="server" id="Th1" Visible="<%# ShowOptionalColumn(1) %>"><div class="custColumn"><%# OptionalColumnName(1) %></div></th>
                 <th rowspan="2" class="headerBig"><%=Resources.LogbookEntry.PrintHeaderTotalTime %></th>
                 <th rowspan="2" class="headerBig"><%=Resources.LogbookEntry.PrintHeaderPICName %></th>
                 <th colspan="2" class="headerBig"><%=Resources.LogbookEntry.PrintHeaderLanding %></th>
@@ -69,6 +70,7 @@
                     <td><%#: Eval("TailNumOrSimDisplay") %></td>
                     <td><%#: Eval("CatClassDisplay") %></td>
                     <td class="numericColumn" runat="server" id="tdoptColumn1" visible="<%# ShowOptionalColumn(0) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(0) %></div></td>
+                    <td class="numericColumn" runat="server" id="td1" visible="<%# ShowOptionalColumn(1) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(1) %></div></td>
                     <td><%# Eval("TotalFlightTime").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                     <td><%#: Eval("PICName") %></td>
                     <td><%# Eval("NetDayLandings").FormatInt() %></td>
@@ -101,6 +103,7 @@
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).CatClassDisplay %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).FlightCount.ToString(System.Globalization.CultureInfo.CurrentCulture) %></td>
                             <td runat="server" id="tdoptColumnTotal1" visible="<%# ShowOptionalColumn(0) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnTotalDisplayValue(0, CurrentUser.UsesHHMM) %></div></td>
+                            <td runat="server" id="td2" visible="<%# ShowOptionalColumn(1) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnTotalDisplayValue(1, CurrentUser.UsesHHMM) %></div></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).TotalFlightTime.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             <td></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).NetDayLandings.FormatInt() %></td>
