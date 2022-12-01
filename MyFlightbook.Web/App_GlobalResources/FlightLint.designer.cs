@@ -439,6 +439,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flight indicates both single pilot time and multi pilot time..
+        /// </summary>
+        internal static string warningBothSingleAndMultiPilotFound {
+            get {
+                return ResourceManager.GetString("warningBothSingleAndMultiPilotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Block out time is after flight start.
         /// </summary>
         internal static string warningDateBlockAfterFlight {

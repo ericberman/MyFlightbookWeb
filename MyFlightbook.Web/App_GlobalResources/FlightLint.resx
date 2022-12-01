@@ -245,6 +245,9 @@
   <data name="warningBlockTimeDiffersDate" xml:space="preserve">
     <value>Block in or out differs from date of flight by more than a day</value>
   </data>
+  <data name="warningBothSingleAndMultiPilotFound" xml:space="preserve">
+    <value>Flight indicates both single pilot time and multi pilot time.</value>
+  </data>
   <data name="warningDateBlockAfterFlight" xml:space="preserve">
     <value>Block out time is after flight start</value>
   </data>

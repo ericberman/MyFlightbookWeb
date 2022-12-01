@@ -142,6 +142,7 @@ namespace MyFlightbook
             IDPropMilitarySpecialCrew = 398,
             IDPropMilitaryKindOfFlightCode = 399,
             IDPropXCLessThan25nm = 405,
+            IDPropSinglePilot = 413,
             IDPropFlightCost = 415,
             IDProp135293Knowledge = 427,
             IDProp135293Competency = 428,
