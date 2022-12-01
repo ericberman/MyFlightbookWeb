@@ -390,6 +390,8 @@ namespace MyFlightbook.Lint
                     LintOptions.TimeIssues, String.Format(CultureInfo.CurrentCulture, Resources.FlightLint.warningPropertyGreaterThanTotal, cfp.PropertyType.Title));
             }
 
+            AddConditionalIssue(le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropSinglePilot) && le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropMultiPilotTime),
+                LintOptions.TimeIssues, Resources.FlightLint.warningBothSingleAndMultiPilotFound);
 
             CustomFlightProperty cfpTachStart = le.CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropTachStart);
             CustomFlightProperty cfpTachEnd = le.CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropTachEnd);
