@@ -109,13 +109,14 @@ namespace MyFlightbook.RatingsProgress
             cfr.FlightProps.ForEachEvent(pf => { if (pf.PropertyType.IsSolo) { soloTime += pf.DecValue; } });
             miMinSolo.AddEvent(soloTime);
 
+            AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route, true);
+            decimal xc = cfr.XC > 0 && al.MaxDistanceFromStartingAirport() > MinXCDistanceForRating() ? cfr.XC : 0;
+
             int cFSLandings = cfr.cFullStopLandings + cfr.cFullStopNightLandings;
-            miMinCrossCountry.AddEvent(Math.Min(cfr.XC, cfr.Dual));
+            miMinCrossCountry.AddEvent(Math.Min(xc, cfr.Dual));
             miMinLandings.AddEvent(cFSLandings);
             if (soloTime > 0 && cFSLandings > 1)
             {
-                AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route, true);
-
                 if (al.DistanceForRoute() > MinXCDistance && al.MaxSegmentForRoute() > 25)
                 {
                     miSoloXCFlight.AddEvent(1);

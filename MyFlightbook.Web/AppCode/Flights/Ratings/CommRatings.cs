@@ -364,13 +364,17 @@ namespace MyFlightbook.RatingsProgress
             if (fInstructorOnBoard)
                 substituteSolo = Math.Max(Math.Min(dutiesOfPICTime, cfr.Total - cfr.Dual), 0);    // dual received does NOT count as duties of PIC time here
 
+            AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route, true);
+            double distFromStart = al.MaxDistanceFromStartingAirport();
+            decimal xc = distFromStart > MinXCDistanceForRating() ? cfr.XC : 0;
+
             decimal PIC = Math.Max(cfr.PIC, soloTime);
-            decimal PICXC = Math.Min(PIC, cfr.XC);
+            decimal PICXC = Math.Min(PIC, xc);
 
             decimal PICSubstRemaining = Math.Max(miDualAsPIC.Threshold - miDualAsPIC.Progress, 0);
             decimal PICSubstXCRemaining = Math.Max(miDualAsPICXC.Threshold - miDualAsPICXC.Progress, 0);
             decimal PICSubst = Math.Min(PICSubstRemaining, substituteSolo);   // add in any duties-of-PIC time with instructor on-board 
-            decimal PICSubstXC = Math.Min(PICSubstXCRemaining, Math.Min(substituteSolo, cfr.XC));
+            decimal PICSubstXC = Math.Min(PICSubstXCRemaining, Math.Min(substituteSolo, xc));
 
             // Reduce actual PIC time by substitute PIC time, to avoid double counting
             PIC = Math.Max(0, PIC - PICSubst);
@@ -409,8 +413,6 @@ namespace MyFlightbook.RatingsProgress
             {
                 miMinTrainingSimIMCCategory.AddEvent(Math.Min(cfr.Dual, cfr.IMCSim));
 
-                AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route, true);
-                double distFromStart = al.MaxDistanceFromStartingAirport();
                 CheckXCTraining(cfr, distFromStart);
 
                 // (4)
@@ -1127,8 +1129,9 @@ namespace MyFlightbook.RatingsProgress
 
             AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route, true);
             double distFromStart = al.MaxDistanceFromStartingAirport();
+            decimal xc = distFromStart > MinXCDistanceForRating() ? cfr.XC : 0;
 
-            decimal DualXC = Math.Min(cfr.XC, cfr.Dual);
+            decimal DualXC = Math.Min(xc, cfr.Dual);
             if ((DualXC - cfr.Night) >= _minTimeXCDayFlight && distFromStart >= _minDistXCDayFlight)
                 miDayXCFlight.MatchFlightEvent(cfr);
             if (Math.Min(DualXC, cfr.Night) >= _minTimeXCNightFlight && distFromStart > _minDistXCNightFlight)

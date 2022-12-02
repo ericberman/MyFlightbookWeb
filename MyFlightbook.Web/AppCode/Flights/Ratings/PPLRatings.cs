@@ -299,15 +299,16 @@ namespace MyFlightbook.RatingsProgress
 
             miMinSolo.AddEvent(soloTime);
 
-            AirportList al = null;
+            // Get the matching airport list
+            AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route, true);
+
+            // Only count flights over min 61.1 distance for the rating.
+            decimal xc = cfr.XC > 0 && al.MaxDistanceFromStartingAirport() > MinXCDistanceForRating() ? cfr.XC : 0;
 
             if (fIsCorrectCatClass)
             {
-                // Get the matching airport list
-                al = AirportListOfRoutes.CloneSubset(cfr.Route, true);
-
                 // 61.109(abc)(1)
-                miMinDualXC.AddEvent(Math.Min(cfr.Dual, cfr.XC));
+                miMinDualXC.AddEvent(Math.Min(cfr.Dual, xc));
 
                 // 61.109(abc)(2) - Night
                 if (cfr.fNight && cfr.Dual > 0)
@@ -325,10 +326,10 @@ namespace MyFlightbook.RatingsProgress
                 miMinTestPrep.AddDecayableEvent(cfr.dtFlight, cfr.Dual, DateTime.Now.AddCalendarMonths(-2).CompareTo(cfr.dtFlight) <= 0);
             }
 
-            ExamineSoloFlight(cfr, soloTime, al);
+            ExamineSoloFlight(cfr, soloTime, xc, al);
         }
 
-        private void ExamineSoloFlight(ExaminerFlightRow cfr, decimal soloTime, AirportList al)
+        private void ExamineSoloFlight(ExaminerFlightRow cfr, decimal soloTime, decimal xc, AirportList al)
         {
             // 61.109(a)(5), (c)(4) - Solo XC requirements MUST BE in a single-engine aircraft
             // 61.109(b)(5) - Solo XC requirements must simply be in an airplane
@@ -339,7 +340,7 @@ namespace MyFlightbook.RatingsProgress
             {
                 miMinSoloInType.AddEvent(soloTime);
 
-                miMinXCSolo.AddEvent(Math.Min(cfr.XC, soloTime));
+                miMinXCSolo.AddEvent(Math.Min(xc, soloTime));
 
                 if (al == null)
                     al = AirportListOfRoutes.CloneSubset(cfr.Route, true);
@@ -827,6 +828,7 @@ namespace MyFlightbook.RatingsProgress
     [Serializable]
     public abstract class Part141Base : MilestoneProgress
     {
+        #region Properties
         protected MilestoneItem miTotalTime { get; set; }
         protected MilestoneItem miDualTime { get; set; }
         protected MilestoneItem miXCTraining { get; set; }
@@ -840,6 +842,7 @@ namespace MyFlightbook.RatingsProgress
         protected MilestoneItem miSoloXC { get; set; }
         protected MilestoneItem miSoloTakeoffs { get; set; }
         protected MilestoneItem miSoloLandings { get; set; }
+        #endregion
 
         #region Additional parameters and thresholds
         /// <summary>
@@ -964,16 +967,21 @@ namespace MyFlightbook.RatingsProgress
 
                 double xcDistance = 0.0;
                 double xcLongestLeg = 0.0;
+                decimal xc;
 
                 if (cfr.XC > 0)
                 {
                     AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route, true);
                     xcDistance = al.DistanceForRoute();
                     xcLongestLeg = al.MaxSegmentForRoute();
+                    // Only count flights over min 61.1 distance for the rating.
+                    xc = al.MaxDistanceFromStartingAirport() > MinXCDistanceForRating() ? cfr.XC : 0;
                 }
+                else
+                    xc = 0;
 
                 // i)(1)
-                miXCTraining.AddEvent(cfr.XC);
+                miXCTraining.AddEvent(Math.Min(cfr.Dual, xc));
 
                 // i)(2)
                 if (cfr.Night > 0)
@@ -981,7 +989,7 @@ namespace MyFlightbook.RatingsProgress
                     miNightFlight.AddEvent(cfr.Night);
 
                     // i)(2)(i)
-                    if (cfr.XC > 0 && xcDistance >= XCDistance)
+                    if (xc > 0 && xcDistance >= XCDistance)
                     {
                         miNightXC.AddEvent(1.0M);
                         miNightXC.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MatchingXCFlightTemplate, cfr.dtFlight.ToShortDateString(), cfr.Route);

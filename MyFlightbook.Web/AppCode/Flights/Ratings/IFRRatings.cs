@@ -153,9 +153,12 @@ namespace MyFlightbook.RatingsProgress
                 return;
             }
 
+            AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route);
+            double distanceFromStart = al.MaxDistanceFromStartingAirport();
+            decimal xc = distanceFromStart > MinXCDistanceForRating() ? cfr.XC : 0;
             bool IsInMatchingCategory = CatClassMatchesRatingSought(cfr.idCatClassOverride);
-            decimal XCPICTime = Math.Min(cfr.PIC, cfr.XC);
-            decimal IMCXCTime = Math.Min(IMCTime, cfr.XC);
+            decimal XCPICTime = Math.Min(cfr.PIC, xc);
+            decimal IMCXCTime = Math.Min(IMCTime, xc);
 
             // 61.65(def)(1) - Look for cross-country time as PIC
             miMinXCTime.AddEvent(XCPICTime);
@@ -175,7 +178,6 @@ namespace MyFlightbook.RatingsProgress
 
                 if (cfr.cApproaches >= 3 && IMCXCTime > 0.0M && instTrainingTime > 0)
                 {
-                    AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route);
                     if (al.DistanceForRoute() >= MinXCDistance)
                     {
                         miIMCXC.AddEvent(1.0M);
