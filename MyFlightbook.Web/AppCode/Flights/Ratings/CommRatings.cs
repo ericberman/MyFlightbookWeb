@@ -143,8 +143,8 @@ namespace MyFlightbook.RatingsProgress
         protected MilestoneItem miMinPoweredInCategory { get; set; }
         protected MilestoneItem miPICMin { get; set; }
         protected MilestoneItem miPICMinCategory { get; set; }
-        protected MilestoneItem miPICMinXC { get; set; }
-        protected MilestoneItem miPICMinXCCategory { get; set; }
+        protected MilestoneItemXC miPICMinXC { get; set; }
+        protected MilestoneItemXC miPICMinXCCategory { get; set; }
         protected MilestoneItem miMinTraining { get; set; }
         protected MilestoneItem miMintrainingSimIMC { get; set; }
         protected MilestoneItem miMinTrainingSimIMCCategory { get; set; }
@@ -197,8 +197,8 @@ namespace MyFlightbook.RatingsProgress
             // 61.129 (a/b)(2)
             miPICMin = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CommMinPIC, _minPIC), ResolvedFAR("(2)"), string.Empty, MilestoneItem.MilestoneType.Time, _minPIC);
             miPICMinCategory = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CommMinPICInCategory, _minPICInCategory, szCategory), ResolvedFAR("(2)(i)"), string.Empty, MilestoneItem.MilestoneType.Time, _minPICInCategory);
-            miPICMinXC = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CommMinPICXC, _minPICXC), ResolvedFAR("(2)(ii)"), string.Empty, MilestoneItem.MilestoneType.Time, _minPICXC);
-            miPICMinXCCategory = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CommMinPICXCInCategory, _minPICXCInCategory, szCategory), ResolvedFAR("(2)(ii)"), string.Empty, MilestoneItem.MilestoneType.Time, _minPICXCInCategory);
+            miPICMinXC = new MilestoneItemXC(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CommMinPICXC, _minPICXC), ResolvedFAR("(2)(ii)"), string.Empty, MilestoneItem.MilestoneType.Time, _minPICXC);
+            miPICMinXCCategory = new MilestoneItemXC(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CommMinPICXCInCategory, _minPICXCInCategory, szCategory), ResolvedFAR("(2)(ii)"), string.Empty, MilestoneItem.MilestoneType.Time, _minPICXCInCategory);
 
             miDualAsPIC = new MilestoneItem("local - dual as PIC", ResolvedFAR("(2)"), string.Empty, MilestoneItem.MilestoneType.Time, _minSubstDualForPIC);
             miDualAsPICXC = new MilestoneItem("local - dual as PICXC", ResolvedFAR("(2)"), string.Empty, MilestoneItem.MilestoneType.Time, _minSubstDualForPIC);
@@ -367,6 +367,11 @@ namespace MyFlightbook.RatingsProgress
             AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route, true);
             double distFromStart = al.MaxDistanceFromStartingAirport();
             decimal xc = distFromStart > MinXCDistanceForRating() ? cfr.XC : 0;
+            if (xc < cfr.XC)
+            {
+                miPICMinXC.AddIgnoredFlight(cfr);
+                miPICMinXCCategory.AddIgnoredFlight(cfr);
+            }
 
             decimal PIC = Math.Max(cfr.PIC, soloTime);
             decimal PICXC = Math.Min(PIC, xc);

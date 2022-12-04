@@ -178,11 +178,17 @@
             </asp:TemplateField>
             <asp:TemplateField>
                 <ItemTemplate>
-                    <div><span style="font-weight:bold"><%# ((string) Eval("FARRef")).Linkify(false) %></span> - <%# ((string) Eval("Title")).Linkify(true) %> <asp:Label ID="lblExpiration" runat="server" Font-Bold="true" Text='<%#: Eval("ExpirationNote") %>' /></div>
+                    <div>
+                        <span style="font-weight:bold"><%# ((string) Eval("FARRef")).Linkify(false) %></span> - <%# ((string) Eval("Title")).Linkify(true) %> <asp:Label ID="lblExpiration" runat="server" Font-Bold="true" Text='<%#: Eval("ExpirationNote") %>' />
+                        <asp:Image ID="imgDetails" runat="server" Visible='<%# Eval("HasDetails") %>' ImageUrl="~/images/expand.png" />
+                    </div>
                     <asp:Panel ID="pnlNote" CssClass="fineprint" runat="server">
                         <asp:Label ID="lblNoteHeader" runat="server" Font-Bold="true" Text="<%$ Resources:MilestoneProgress, NoteHeader %>" />
                         <span style="font-style:italic"><%# ((string) Eval("Note")).Linkify(true) %></span>
                     </asp:Panel>
+                    <ajaxtoolkit:CollapsiblePanelExtender ID="cpeDisplayMode" runat="server" Collapsed='true' Enabled='<%# Eval("HasDetails") %>'
+                        TargetControlID="pnlDetails" CollapsedImage="~/images/expand.png" ExpandedImage="~/images/collapse.png" CollapseControlID="imgDetails" ExpandControlID="imgDetails" ImageControlID="imgDetails" />
+                    <asp:Panel ID="pnlDetails" runat="server"><span style="white-space:pre-line""><%# ((string) Eval("Details")).Linkify() %></span></asp:Panel>
                     <asp:MultiView ID="mvProgress" runat="server">
                         <asp:View ID="vwPercentage" runat="server">
                             <div class="progress">

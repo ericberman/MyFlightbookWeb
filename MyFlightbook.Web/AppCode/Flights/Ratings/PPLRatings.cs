@@ -66,14 +66,14 @@ namespace MyFlightbook.RatingsProgress
         protected MilestoneItem miMinTime { get; set; }
         protected MilestoneItem miMinTraining { get; set; }
         protected MilestoneItem miMinSolo { get; set; }
-        protected MilestoneItem miMinDualXC { get; set; }
+        protected MilestoneItemXC miMinDualXC { get; set; }
         protected MilestoneItem miMinNightTime { get; set; }
-        protected MilestoneItem miMinXCNight { get; set; }
+        protected MilestoneItemXC miMinXCNight { get; set; }
         protected MilestoneItem miMinNightTO { get; set; }
         protected MilestoneItem miMinNightFSLandings { get; set; }
         protected MilestoneItem miMinSimIMC { get; set; }
         protected MilestoneItemDecayable miMinTestPrep { get; set; }
-        protected MilestoneItem miMinXCSolo { get; set; }
+        protected MilestoneItemXC miMinXCSolo { get; set; }
         protected MilestoneItem miMinXCDistance { get; set; }
         protected MilestoneItem miMinXCLandings { get; set; }
         protected MilestoneItem miMinSoloInType { get; set; }
@@ -238,11 +238,11 @@ namespace MyFlightbook.RatingsProgress
             miMinSolo = new MilestoneItem(Resources.MilestoneProgress.MinSolo, ResolvedFAR(String.Empty), String.Empty, MilestoneItem.MilestoneType.Time, 10.0M);
 
             // 61.109(ab)(1) - Dual XC
-            miMinDualXC = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MinDualXC, szAircraftRestriction), ResolvedFAR("(1)"), String.Empty, MilestoneItem.MilestoneType.Time, 3.0M);
+            miMinDualXC = new MilestoneItemXC(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MinDualXC, szAircraftRestriction), ResolvedFAR("(1)"), String.Empty, MilestoneItem.MilestoneType.Time, 3.0M);
 
             // 61.109(ab)(2) - Night
             miMinNightTime = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MinNightTime, szAircraftRestriction), ResolvedFAR("(2)"), String.Empty, MilestoneItem.MilestoneType.Time, 3.0M);
-            miMinXCNight = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MinXCNight, szAircraftRestriction, MinNightXCDistance), ResolvedFAR("(2)(i)"), String.Empty, MilestoneItem.MilestoneType.AchieveOnce, 1);
+            miMinXCNight = new MilestoneItemXC(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MinXCNight, szAircraftRestriction, MinNightXCDistance), ResolvedFAR("(2)(i)"), String.Empty, MilestoneItem.MilestoneType.AchieveOnce, 1);
             miMinNightTO = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MinNightTakeoffs, MinNightTakeoffs, szAircraftRestriction), ResolvedFAR("(2)(ii)"), Resources.MilestoneProgress.NoteNightRequirements, MilestoneItem.MilestoneType.Count, MinNightTakeoffs);
             miMinNightFSLandings = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MinNightFSLandings, MinNightLandings, szAircraftRestriction), ResolvedFAR("(2)(ii)"), Resources.MilestoneProgress.NoteNightRequirements, MilestoneItem.MilestoneType.Count, MinNightLandings);
 
@@ -254,7 +254,7 @@ namespace MyFlightbook.RatingsProgress
 
             // 61.109(ab)(5) - XC requirements
             miMinSoloInType = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MinSoloInType, szXCAircraftRestriction), ResolvedFAR("(5)"), Resources.MilestoneProgress.NoteSoloTime, MilestoneItem.MilestoneType.Time, 10.0M);
-            miMinXCSolo = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MinXCSolo, szXCAircraftRestriction, MinXCSoloTime), ResolvedFAR("(5)(i)"), Resources.MilestoneProgress.NoteSoloTime, MilestoneItem.MilestoneType.Time, MinXCSoloTime);
+            miMinXCSolo = new MilestoneItemXC(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MinXCSolo, szXCAircraftRestriction, MinXCSoloTime), ResolvedFAR("(5)(i)"), Resources.MilestoneProgress.NoteSoloTime, MilestoneItem.MilestoneType.Time, MinXCSoloTime);
             miMinXCDistance = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MinXCDistance, szXCAircraftRestriction, MinXCSoloDistance, MinXCSoloSegment), ResolvedFAR("(5)(ii)"), Resources.MilestoneProgress.NoteXCLandings, MilestoneItem.MilestoneType.AchieveOnce, 1);
             miMinSoloTakeoffsTowered = new MilestoneItem(Resources.MilestoneProgress.MinTakeoffsToweredAirport, ResolvedFAR("(5)(iii)"), string.Empty, MilestoneItem.MilestoneType.Count, MinSoloTakeoffsTowered);
             miMinSoloLandingsTowered = new MilestoneItem(Resources.MilestoneProgress.MinLandingsFSToweredAirport, ResolvedFAR("(5)(iii)"), Resources.MilestoneProgress.NoteToweredAirport, MilestoneItem.MilestoneType.Count, MinSoloLandingsTowered);
@@ -304,6 +304,12 @@ namespace MyFlightbook.RatingsProgress
 
             // Only count flights over min 61.1 distance for the rating.
             decimal xc = cfr.XC > 0 && al.MaxDistanceFromStartingAirport() > MinXCDistanceForRating() ? cfr.XC : 0;
+            if (xc < cfr.XC)
+            {
+                miMinXCNight.AddIgnoredFlight(cfr);
+                miMinXCSolo.AddIgnoredFlight(cfr);
+                miMinDualXC.AddIgnoredFlight(cfr);
+            }
 
             if (fIsCorrectCatClass)
             {
@@ -412,11 +418,11 @@ namespace MyFlightbook.RatingsProgress
             miMinSolo = new MilestoneItem(Resources.MilestoneProgress.MinSolo, ResolvedFAR(""), String.Empty, MilestoneItem.MilestoneType.Time, 10.0M);
 
             // 61.109(c)(1) - Dual XC
-            miMinDualXC = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MinDualXC, szHelicopterRestriction), ResolvedFAR("(1)"), String.Empty, MilestoneItem.MilestoneType.Time, 3.0M);
+            miMinDualXC = new MilestoneItemXC(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MinDualXC, szHelicopterRestriction), ResolvedFAR("(1)"), String.Empty, MilestoneItem.MilestoneType.Time, 3.0M);
 
             // 61.109(c)(2) - Night
             miMinNightTime = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MinNightTime, szHelicopterRestriction), ResolvedFAR("(2)"), String.Empty, MilestoneItem.MilestoneType.Time, 3.0M);
-            miMinXCNight = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MinXCNight, szHelicopterRestriction, MinNightXCDistance), ResolvedFAR("(2)(i)"), String.Empty, MilestoneItem.MilestoneType.AchieveOnce, 1);
+            miMinXCNight = new MilestoneItemXC(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MinXCNight, szHelicopterRestriction, MinNightXCDistance), ResolvedFAR("(2)(i)"), String.Empty, MilestoneItem.MilestoneType.AchieveOnce, 1);
             miMinNightTO = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MinNightTakeoffs, MinNightTakeoffs, szHelicopterRestriction), ResolvedFAR("(2)(ii)"), Resources.MilestoneProgress.NoteNightRequirements, MilestoneItem.MilestoneType.Count, MinNightLandings);
             miMinNightFSLandings = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MinNightFSLandings, MinNightLandings, szHelicopterRestriction), ResolvedFAR("(2)(ii)"), Resources.MilestoneProgress.NoteNightRequirements, MilestoneItem.MilestoneType.Count, MinNightTakeoffs);
 
@@ -425,7 +431,7 @@ namespace MyFlightbook.RatingsProgress
 
             // 61.109(c)(4) - Solo and XC requirements
             miMinSoloInType = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MinSoloInType, szHelicopterRestriction), ResolvedFAR("(4)"), Resources.MilestoneProgress.NoteSoloTime, MilestoneItem.MilestoneType.Time, 10.0M);
-            miMinXCSolo = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MinXCSolo, szHelicopterRestriction, MinXCSoloTime), ResolvedFAR("(4)(i)"), Resources.MilestoneProgress.NoteSoloTime, MilestoneItem.MilestoneType.Time, MinXCSoloTime);
+            miMinXCSolo = new MilestoneItemXC(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MinXCSolo, szHelicopterRestriction, MinXCSoloTime), ResolvedFAR("(4)(i)"), Resources.MilestoneProgress.NoteSoloTime, MilestoneItem.MilestoneType.Time, MinXCSoloTime);
             miMinXCDistance = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MinXCDistance, szHelicopterRestriction, MinXCSoloDistance, MinXCSoloSegment), ResolvedFAR("(4)(ii), 61.109(a)(4)(iii)"), Resources.MilestoneProgress.NoteXCLandings, MilestoneItem.MilestoneType.AchieveOnce, 1);
 
             miMinSoloTakeoffsTowered = new MilestoneItem(Resources.MilestoneProgress.MinTakeoffsToweredAirport, ResolvedFAR("(4)(iii)"), string.Empty, MilestoneItem.MilestoneType.Count, MinSoloTakeoffsTowered);

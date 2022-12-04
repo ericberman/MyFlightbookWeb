@@ -71,7 +71,7 @@ namespace MyFlightbook.RatingsProgress
     public abstract class SportPilotAirplaneGyroplane : SportPilotBase
     {
         protected int MinXCDistance { get; set; }
-        protected MilestoneItem miMinCrossCountry { get; set; }
+        protected MilestoneItemXC miMinCrossCountry { get; set; }
         protected MilestoneItem miMinLandings { get; set; }
         protected MilestoneItem miSoloXCFlight { get; set; }
 
@@ -82,7 +82,7 @@ namespace MyFlightbook.RatingsProgress
             miMinInstruction = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.SportMinInstruction, minInstruction, CategoryName), szFar, string.Empty, MilestoneItem.MilestoneType.Time, minInstruction);
             miMinSolo = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.SportMinSolo, minSolo, CategoryName), szFar, string.Empty, MilestoneItem.MilestoneType.Time, minSolo);
 
-            miMinCrossCountry = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.SportMinXC, CategoryName), ResolvedFAR("(1)(i)"), string.Empty, MilestoneItem.MilestoneType.Time, 2.0M);
+            miMinCrossCountry = new MilestoneItemXC(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.SportMinXC, CategoryName), ResolvedFAR("(1)(i)"), string.Empty, MilestoneItem.MilestoneType.Time, 2.0M);
             miMinLandings = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.SportMinLandings, CategoryName), ResolvedFAR("(1)(ii)"), Resources.MilestoneProgress.SportPilotLandingNote, MilestoneItem.MilestoneType.Count, 10);
             miSoloXCFlight = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.SportSoloXCFlight, CategoryName, MinXCDistance), ResolvedFAR("(1)(iii)"), string.Empty, MilestoneItem.MilestoneType.AchieveOnce, 1);
             miTestPrep = new MilestoneItemDecayable(Resources.MilestoneProgress.SportTestPrepTime, ResolvedFAR("(1)(iv)"), Branding.ReBrand(Resources.MilestoneProgress.NoteTestPrep), MilestoneItem.MilestoneType.Time, 2.0M, 2);
@@ -114,6 +114,10 @@ namespace MyFlightbook.RatingsProgress
 
             int cFSLandings = cfr.cFullStopLandings + cfr.cFullStopNightLandings;
             miMinCrossCountry.AddEvent(Math.Min(xc, cfr.Dual));
+
+            if (cfr.XC > xc && cfr.Dual > 0)
+                miMinCrossCountry.AddIgnoredFlight(cfr);
+
             miMinLandings.AddEvent(cFSLandings);
             if (soloTime > 0 && cFSLandings > 1)
             {

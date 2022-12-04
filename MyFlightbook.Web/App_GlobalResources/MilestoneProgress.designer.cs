@@ -1879,6 +1879,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The following flights were not included because the cross-country distance did not meet the requirements of 61.1 for this rating:.
+        /// </summary>
+        internal static string DetailFlightsIgnored {
+            get {
+                return ResourceManager.GetString("DetailFlightsIgnored", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to *{0:#,##0}* hours *CFI* time in *{1}*.
         /// </summary>
         internal static string DPECFICategory {
