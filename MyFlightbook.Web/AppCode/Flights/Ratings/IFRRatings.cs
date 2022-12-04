@@ -51,8 +51,8 @@ namespace MyFlightbook.RatingsProgress
     [Serializable]
     public abstract class IFR6165Base : MilestoneProgress
     {
-        protected MilestoneItem miMinXCTime { get; set; }
-        protected MilestoneItem miMinTimeInCategory { get; set; }
+        protected MilestoneItemXC miMinXCTime { get; set; }
+        protected MilestoneItemXC miMinTimeInCategory { get; set; }
         protected MilestoneItem miMinIMCTime { get; set; }
         protected MilestoneItemDecayable miMinIMCTestPrep { get; set; }
         protected MilestoneItem miIMCXC { get; set; }
@@ -110,8 +110,8 @@ namespace MyFlightbook.RatingsProgress
             }
 
             // 61.65(def)(1)
-            miMinXCTime = new MilestoneItem(Resources.MilestoneProgress.MinInstrumentPICXC, ResolvedFAR("(1)"), Resources.MilestoneProgress.NoteXCTime, MilestoneItem.MilestoneType.Time, 50.0M);
-            miMinTimeInCategory = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MinInstrumentPICInCategory, szAircraftCategory), ResolvedFAR("(1)"), String.Empty, MilestoneItem.MilestoneType.Time, 10.0M);
+            miMinXCTime = new MilestoneItemXC(Resources.MilestoneProgress.MinInstrumentPICXC, ResolvedFAR("(1)"), Resources.MilestoneProgress.NoteXCTime, MilestoneItem.MilestoneType.Time, 50.0M);
+            miMinTimeInCategory = new MilestoneItemXC(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MinInstrumentPICInCategory, szAircraftCategory), ResolvedFAR("(1)"), String.Empty, MilestoneItem.MilestoneType.Time, 10.0M);
 
             // 61.65(def)(2) - total instrument time
             miMinIMCTime = new MilestoneItem(Resources.MilestoneProgress.MinInstrumentTime, ResolvedFAR("(2)"), Branding.ReBrand(Resources.MilestoneProgress.NoteInstrumentTime), MilestoneItem.MilestoneType.Time, 40.0M);
@@ -164,6 +164,13 @@ namespace MyFlightbook.RatingsProgress
             miMinXCTime.AddEvent(XCPICTime);
             if (IsInMatchingCategory)
                 miMinTimeInCategory.AddEvent(XCPICTime);
+
+            // Determine ignored flights
+            if (XCPICTime < Math.Min(cfr.PIC, cfr.XC))
+            {
+                miMinXCTime.AddIgnoredFlight(cfr);
+                miMinTimeInCategory.AddIgnoredFlight(cfr);
+            }
 
             // 61.65(def)(2) - IMC time (total)
             miMinIMCTime.AddEvent(IMCTime);

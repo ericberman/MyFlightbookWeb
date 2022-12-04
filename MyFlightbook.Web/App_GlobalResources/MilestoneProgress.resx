@@ -1678,4 +1678,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
   <data name="CustomProgressNewMilestoneValue" xml:space="preserve">
     <value>Sum of: </value>
   </data>
+  <data name="DetailFlightsIgnored" xml:space="preserve">
+    <value>The following flights were not included because the cross-country distance did not meet the requirements of 61.1 for this rating:</value>
+  </data>
 </root>

@@ -1,11 +1,12 @@
 ﻿using MyFlightbook.Airports;
 using MyFlightbook.Currency;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Linq;
 using System.Text;
+using System.Web;
 
 /******************************************************
  * 
@@ -36,6 +37,16 @@ namespace MyFlightbook.RatingsProgress
         /// A notice/warning/caveat (e.g., "Unknown if these airports have towers")
         /// </summary>
         public string Note { get; set; }
+
+        /// <summary>
+        /// Additional details about how this particular progress item was calculated
+        /// </summary>
+        public virtual string Details { get { return string.Empty; } }
+
+        /// <summary>
+        /// Quick determination if there are any relevant details
+        /// </summary>
+        public virtual bool HasDetails { get { return false; } }
 
         /// <summary>
         /// The progress made so far
@@ -255,6 +266,53 @@ namespace MyFlightbook.RatingsProgress
                     DecayingCurrency.CurrentState == CurrencyState.NotCurrent ? Resources.Currency.FormatExpired : Resources.Currency.FormatCurrent, DecayingCurrency.ExpirationDate.ToShortDateString());
             }
         }
+    }
+
+    /// <summary>
+    /// Class that encapsulates cross-country training requirements for a rating.
+    /// Since XC training is only counted if it meets distance thresholds, this records the flights that
+    /// were excluded
+    /// </summary>
+    [Serializable]
+    public class MilestoneItemXC : MilestoneItem
+    {
+        #region properties
+        private readonly List<ExaminerFlightRow> lstRows = new List<ExaminerFlightRow>();
+
+        public override string Details
+        {
+            get
+            {
+                if (!lstRows.Any())
+                    return string.Empty;
+
+                StringBuilder sb = new StringBuilder(Resources.MilestoneProgress.DetailFlightsIgnored);
+                sb.AppendLine();
+                foreach (ExaminerFlightRow cfr in lstRows)
+                    sb.AppendLine(String.Format(CultureInfo.CurrentCulture, "[{0:d}]({1}) - [*{2}*]({3}{4})",
+                        cfr.dtFlight,
+                        String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx/{0}", cfr.flightID).ToAbsoluteURL(HttpContext.Current.Request),
+                        cfr.Route,
+                        "~/public/MapRoute2.aspx?Airports=".ToAbsoluteURL(HttpContext.Current.Request),
+                        HttpUtility.UrlEncode(cfr.Route)));
+                return sb.ToString();
+            }
+        }
+
+        public override bool HasDetails { get { return lstRows.Any(); } }
+
+        #endregion
+
+        public void AddIgnoredFlight(ExaminerFlightRow cfr)
+        {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
+            lstRows.Add(cfr);
+        }
+
+        public MilestoneItemXC() : base() { }
+
+        public MilestoneItemXC(string title, string farref, string note, MilestoneType type, decimal threshold) : base(title, farref, note, type, threshold) { }
     }
 
     #region Groups of milestones
