@@ -12,7 +12,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2021 MyFlightbook LLC
+ * Copyright (c) 2010-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -300,9 +300,11 @@ namespace MyFlightbook.Airports
 
             Panel p = new Panel();
             plc.Controls.Add(p);
-            Label lbl = new Label();
-            p.Controls.Add(lbl);
-            lbl.Text = ap.ToString();
+            p.Controls.Add(new Label() { Text = ap.ToString() });
+            p.Controls.Add(new LiteralControl("<br />"));
+            p.Controls.Add(new Label() { Text = String.Format(CultureInfo.CurrentCulture, "Country: {0}, Admin1: {1}", 
+                String.IsNullOrEmpty(ap.Country) ? "(NONE)" : ap.Country,
+                String.IsNullOrEmpty(ap.Admin1) ? "(NONE)" : ap.Admin1) } );
             p.Controls.Add(new LiteralControl("<br />"));
             if (!StatusIsOK(ms))
             {
@@ -323,7 +325,7 @@ namespace MyFlightbook.Airports
             h.Text = ap.LatLong.ToDegMinSecString();
             h.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:updateForAirport({0});", JsonConvert.SerializeObject(ap, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore }));
             if (!String.IsNullOrEmpty(ap.UserName))
-                p.Controls.Add(new LiteralControl(String.Format(CultureInfo.InvariantCulture, "{0}<br />", ap.UserName)));
+                p.Controls.Add(new LiteralControl(String.Format(CultureInfo.InvariantCulture, "<br />{0}<br />", ap.UserName)));
         }
     }
 }

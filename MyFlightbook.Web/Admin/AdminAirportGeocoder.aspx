@@ -8,15 +8,43 @@
     Admin Tools - Reverse Geocode airports
 </asp:Content>
 <asp:Content ID="Content1" ContentPlaceHolderID="cpTopForm" runat="Server">
+    <style>
+        tr.handled {
+            background-color: lightgreen;
+        }
+    </style>
      <script> 
 //<![CDATA[
         function clickAndZoom(point) 
         {
             getGMap().setCenter(point);
             getGMap().setZoom(10);
-        }
+         }
+
+         function useSuggestion(szCode, szTypeCode, idCountryHint, idAdminHint) {
+             var params = new Object();
+             params.szCode = szCode;
+             params.szTypeCode = szTypeCode;
+             params.szCountry = document.getElementById(idCountryHint).innerText;
+             params.szAdmin = document.getElementById(idAdminHint).innerText;
+             var d = JSON.stringify(params);
+
+             $.ajax(
+                 {
+                     url: '<% =ResolveUrl("~/Admin/AdminAirportGeocoder.aspx/UseGuess") %>',
+                            type: "POST", data: d, dataType: "json", contentType: "application/json",
+                            error: function (xhr, status, error) {
+                                window.alert(xhr.responseJSON.Message);
+                            },
+                            complete: function (response) { },
+                     success: function (response) {
+                         document.getElementById(idCountryHint).parentElement.parentElement.className = "handled";
+                            }
+                        });
+             return false;
+         }
 //]]>
-        </script>
+     </script>
     <h2>Review airport locations</h2>
     <uc1:mfbGoogleMapManager runat="server" ID="mfbGoogleMapManager" AllowResize="false" Height="400px" Width="100%" ShowRoute="false" />
     <h1>Verify airport countries/admin regions</h1>
@@ -113,6 +141,13 @@
                                 </cc1:AutoCompleteExtender>
                             </EditItemTemplate>
                         </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Guess">
+                            <ItemTemplate>
+                                <asp:HyperLink ID="lnkUseGuess" runat="server" Text="Use" />
+                                Country: <asp:Label ID="lblCountryGuess" runat="server" />
+                                Admin1:  <asp:Label ID="lblAdmin1Guess" runat="server" />
+                            </ItemTemplate>
+                        </asp:TemplateField>
                     </Columns>
                 </asp:GridView>
                 <asp:Label ID="lerr" runat="server" CssClass="error" EnableViewState="false" />
@@ -120,7 +155,7 @@
         </asp:UpdatePanel>
     </div>
     <asp:Panel ID="pnlImportGPX" runat="server" Visible="false">
-        <h1>Geolocate based on KML</h1>
+        <h1>Geolocate based on GPX</h1>
         <p>THIS IS HIDDEN BECAUSE IT IS DANGEROUS - ONLY USE ON LOCAL MACHINE WITH LOCAL DATABASE</p>
         <p><asp:FileUpload ID="fuGPX" runat="server" /> <asp:Button ID="btnLocate" runat="server" Text="GeoLocate" OnClick="btnLocate_Click" /></p>
         <div><asp:Label ID="lblAudit" EnableViewState="false" runat="server" style="white-space:pre" /></div>

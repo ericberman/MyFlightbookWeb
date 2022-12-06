@@ -7,16 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Web.Script.Services;
+using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Web.Services;
-using System.Web.Script.Services;
 using System.Xml;
-
 
 /******************************************************
  * 
- * Copyright (c) 2009-2021 MyFlightbook LLC
+ * Copyright (c) 2009-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -67,6 +66,21 @@ namespace MyFlightbook.Web.Admin
         }
 
         #region Airport Import Functions
+        [WebMethod]
+        [ScriptMethod]
+        public static void UseGuess(string szCode, string szTypeCode, string szCountry, string szAdmin)
+        {
+            CheckAdmin();
+            if (String.IsNullOrEmpty(szCode))
+                throw new ArgumentNullException(nameof(szCode));
+            List<airport> lst = new List<airport>();
+            lst.AddRange(airport.AirportsMatchingCodes(new string[] { szCode }));
+            lst.RemoveAll(ap1 => ap1.FacilityTypeCode.CompareOrdinalIgnoreCase(szTypeCode) != 0);
+            if (lst.Count != 1)
+                return;
+            lst[0].SetLocale(szCountry, szAdmin);
+        }
+
         [WebMethod]
         [ScriptMethod]
         public static bool AirportImportCommand(airportImportCandidate aic, string source, string szCommand)
@@ -268,7 +282,7 @@ namespace MyFlightbook.Web.Admin
 
             int cAirports = 0;
 
-            foreach (AdminAirport ap in rgap)
+            foreach (airport ap in rgap)
                 if (geo.ContainsLocation(ap.LatLong))
                 {
                     UpdateString.AppendLine(String.Format(CultureInfo.InvariantCulture, "UPDATE airports SET Country='{0}' {1} WHERE type='{2}' AND airportID='{3}';", szCountry, String.IsNullOrWhiteSpace(szAdmin) ? string.Empty : String.Format(CultureInfo.InvariantCulture, ", admin1 = '{0}' ", szAdmin), ap.FacilityTypeCode, ap.Code));
@@ -372,7 +386,7 @@ namespace MyFlightbook.Web.Admin
             lblCommands.Text = UpdateString.ToString();
         }
 
-        protected void gvEdit_RowDataBound(object sender, System.Web.UI.WebControls.GridViewRowEventArgs e)
+        protected void gvEdit_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             if (e == null)
                 throw new ArgumentNullException(nameof(e));
@@ -383,7 +397,28 @@ namespace MyFlightbook.Web.Admin
                 l.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:clickAndZoom(new google.maps.LatLng({0}, {1}));", ap.LatLong.Latitude, ap.LatLong.Longitude);
 
                 if (!String.IsNullOrWhiteSpace(ap.Country))
-                    e.Row.BackColor = System.Drawing.Color.LightGray;
+                    e.Row.CssClass = "handled";
+
+                // If this airport has a country and admin1 assigned, use that by default (save the DB hit)
+                // Otherwise, find nearby airports and "guess" the same location as the closest, as a hint.
+                IEnumerable<airport> rgap = (String.IsNullOrWhiteSpace(ap.Country) || String.IsNullOrEmpty(ap.Admin1)) ?
+                    airport.AirportsNearPosition(ap.LatLong.Latitude, ap.LatLong.Longitude, 10, true) :
+                    new airport[] { ap };
+
+                foreach (airport apClosest in rgap)
+                {
+                    if (!String.IsNullOrEmpty(apClosest.Country))
+                    {
+                        Label lCountryHint = (Label)e.Row.FindControl("lblCountryGuess");
+                        Label lAdminHint = (Label)e.Row.FindControl("lblAdmin1Guess");
+                        lCountryHint.Text = apClosest.Country;
+                        lAdminHint.Text = apClosest.Admin1 ?? string.Empty;
+                        l = (HyperLink)e.Row.FindControl("lnkUseGuess");
+                        l.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:useSuggestion('{0}', '{1}', '{2}', '{3}');",
+                            ap.Code, ap.FacilityTypeCode, lCountryHint.ClientID, lAdminHint.ClientID);
+                        break;
+                    }
+                }
             }
         }
 

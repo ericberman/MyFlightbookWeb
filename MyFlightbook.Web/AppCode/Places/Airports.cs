@@ -14,7 +14,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2021 MyFlightbook LLC
+ * Copyright (c) 2010-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -646,21 +646,17 @@ namespace MyFlightbook.Airports
             if (maxLong > 180.0)
                 maxLong -= 180.0;
             if (minLong > maxLong)
-            {
-                double temp = minLong;
-                minLong = maxLong;
-                maxLong = temp;
-            }
+                (maxLong, minLong) = (minLong, maxLong);    // using tuples to swap 
 
             string szQ = String.Format(CultureInfo.InvariantCulture, szTemplate, airport.DefaultSelectStatement(szDistanceComp), minLat, maxLat, minLong, maxLong, (fIncludeHeliports ? " OR airports.type='H'" : ""), limit);
 
-            ArrayList rgAirports = new ArrayList();
+            List<airport> rgAirports = new List<airport>();
             DBHelper dbh = new DBHelper(szQ);
             dbh.ReadRows(
                 (comm) => { },
                 (dr) => { rgAirports.Add(new airport(dr)); });
 
-            return (airport[])rgAirports.ToArray(typeof(airport));
+            return rgAirports.ToArray();
         }
         #endregion
 
@@ -832,13 +828,17 @@ namespace MyFlightbook.Airports
             if (String.IsNullOrWhiteSpace(szCountry) && !String.IsNullOrWhiteSpace(szAdmin))
                 throw new MyFlightbookValidationException("Must specify a country!");
 
+            // Handle null, whitespace, or "NULL"
+            szCountry = (String.IsNullOrWhiteSpace(szCountry) || szCountry.CompareCurrentCultureIgnoreCase("NULL") == 0) ? null : szCountry;
+            szAdmin = (String.IsNullOrWhiteSpace(szAdmin) || szAdmin.CompareCurrentCultureIgnoreCase("NULL") == 0) ? null : szAdmin;
+
             Country = szCountry;
             Admin1 = szAdmin;
             DBHelper dbh = new DBHelper("UPDATE airports SET country = ?country, admin1 = ?admin1 WHERE airportID=?Code && Type=?Type");
             dbh.DoNonQuery((comm) =>
             {
-                comm.Parameters.AddWithValue("country", String.IsNullOrWhiteSpace(szCountry) ? null : szCountry);
-                comm.Parameters.AddWithValue("admin1", String.IsNullOrWhiteSpace(szAdmin) ? null : szAdmin);
+                comm.Parameters.AddWithValue("country", szCountry);
+                comm.Parameters.AddWithValue("admin1", szAdmin);
                 comm.Parameters.AddWithValue("Code", this.Code);
                 comm.Parameters.AddWithValue("Type", this.FacilityTypeCode);
             });
