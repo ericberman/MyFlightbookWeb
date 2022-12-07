@@ -378,7 +378,7 @@ tr.totalsGroupHeaderRow:first-child {
 }
 
 tr.totalsGroupRow td {
-    vertical-align:top;
+    vertical-align: top;
 }
 
 tr.totalsGroupRow:last-child {
@@ -389,8 +389,13 @@ td.totalsByTimeCell:nth-child(even) {
     background-color: #EFEFEF;
 }
 
-td.totalsByTimeCell:first-child {
+tr.totalsGroupDateRanges, tr.totalsGroupRow {
     border-left: 1px solid lightgray;
+}
+
+tr.totalsGroupRow td {
+    padding-left: 3pt;
+    padding-right: 3pt;
 }
 
 .totalsDescription {

@@ -41,7 +41,7 @@ namespace MyFlightbook
         public const string keyTrackOriginal = "prefTrackOriginal";  // true if the user tracks the original version of a flight.
         public const int DefaultMaintenanceWindow = 90;
         public const string keyPrefFlatHierarchy = "UsesFlatCloudStorageFileHierarchy";    // indicates that cloud storage should be done in a flat hierarchy rather than by month.
-        private const int StyleSheetVer = 39;
+        private const int StyleSheetVer = 40;
 
         public static string BaseStylesheet
         {

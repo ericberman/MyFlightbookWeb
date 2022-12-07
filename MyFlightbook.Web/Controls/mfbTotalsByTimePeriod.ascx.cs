@@ -116,7 +116,7 @@ namespace MyFlightbook.Currency
                 TableCell tcGroup = new TableCell() { ColumnSpan = ColumnCount, Text = HttpUtility.HtmlEncode(tic.GroupName) };
                 trGroup.Cells.Add(tcGroup);
 
-                TableRow trHeader = new TableRow();
+                TableRow trHeader = new TableRow() { CssClass = "totalsGroupDateRanges" };
                 tblTotals.Rows.Add(trHeader);
                 const string cssDateRange = "totalsDateRange";
                 AddTextCellToRow(trHeader, string.Empty, true); // no header above the total description itself.
