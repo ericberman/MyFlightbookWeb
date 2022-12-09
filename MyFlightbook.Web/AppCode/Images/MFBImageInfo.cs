@@ -1225,6 +1225,13 @@ namespace MyFlightbook.Image
         public MFBImageInfo(ImageClass ic, string szKey, string szThumbnail) : this(ic, szKey)
         {
             ThumbnailFile = szThumbnail ?? throw new ArgumentNullException(nameof(szThumbnail));
+            if (szKey == null)
+                throw new ArgumentNullException(szKey);
+            char[] invalidChars = Path.GetInvalidFileNameChars();
+            if (szThumbnail.IndexOfAny(invalidChars) >= 0)
+                throw new InvalidDataException(String.Format(CultureInfo.InvariantCulture, "Thumbnail filename '{0}' is invalid", szThumbnail));
+            if (szKey.IndexOfAny(invalidChars) >= 0)
+                throw new InvalidDataException(String.Format(CultureInfo.InvariantCulture, "Thumbnail key '{0}' is invalid", szKey));
             if (szThumbnail.StartsWith(ThumbnailPrefixVideo, StringComparison.OrdinalIgnoreCase))
                 ImageType = ImageFileType.S3VideoMP4;
             else if (Path.GetExtension(szThumbnail).CompareCurrentCultureIgnoreCase(FileExtensions.PDF) == 0)
