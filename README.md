@@ -96,6 +96,7 @@ These are tasks to do ONLY on the live site; there should be no need to set them
 
 ## Additional attributions and licenses
 This source code is provided under the GNU license, but it incorporates other code as well from a variety of other sources, and each such work is covered by its respective license. This includes, but is not limited to:
+ * [Ourairports](https://github.com/davidmegginson/ourairports-data) - Open database of worldwide airports ("Unlicense")
  * [DayPilot](https://javascript.daypilot.org/) Web-based calendar code for club aircraft scheduling (Apache license)
  * [CSV utilities](http://www.heikniemi.fi/jhlib/) Read/write CSV data (free/unlicensed)
  * [EXIF utilities](https://www.codeproject.com/Articles/7888/A-library-to-simplify-access-to-image-metadata) Read/write metadata for images. (free/unlicensed)
