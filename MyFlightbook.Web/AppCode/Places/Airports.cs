@@ -1109,6 +1109,8 @@ namespace MyFlightbook.Airports
         const int iColPreferred = 6;
         const int iColOldCode = 7;
         const int iColCurrentCode = 8;
+        const int iColCountry = 9;
+        const int iColAdmin1 = 10;
 
         private static void MapColumnHeader(string[] rgheaders, Dictionary<int, int> columnMap)
         {
@@ -1116,9 +1118,14 @@ namespace MyFlightbook.Airports
             {
                 switch (rgheaders[i].ToUpperInvariant())
                 {
+                    case "ICAO":
+                    case "IATA":
+                    case "FAA":
+                    case "CODE":
                     case "AIRPORTID":
                         columnMap[iColID] = i;
                         break;
+                    case "NAME":
                     case "FACILITYNAME":
                         columnMap[iColName] = i;
                         break;
@@ -1143,6 +1150,12 @@ namespace MyFlightbook.Airports
                     case "CURRENTCODE":
                         columnMap[iColCurrentCode] = i;
                         break;
+                    case "COUNTRY":
+                        columnMap[iColCountry] = i;
+                        break;
+                    case "ADMIN1":
+                        columnMap[iColAdmin1] = i;
+                        break;
                 }
             }
         }
@@ -1164,10 +1177,10 @@ namespace MyFlightbook.Airports
                     MapColumnHeader(rgheaders, columnMap);
 
                     // Look for just backfilling of old codes: oldcode column and currentcode column
-                    if (columnMap.ContainsKey(iColOldCode) && columnMap.ContainsKey(iColCurrentCode))
-                        return BackfillOldCodes(columnMap[iColOldCode], columnMap[iColCurrentCode], csvReader);
+                    if (columnMap.TryGetValue(iColOldCode, out int valueOld) && columnMap.TryGetValue(iColCurrentCode, out int valueNue))
+                        return BackfillOldCodes(valueOld, valueNue, csvReader);
 
-                    if (!columnMap.ContainsKey(iColID) || !columnMap.ContainsKey(iColName) || !columnMap.ContainsKey(iColType) || !columnMap.ContainsKey(iColLat) || !columnMap.ContainsKey(iColLon))
+                    if (!columnMap.ContainsKey(iColID) || !columnMap.ContainsKey(iColName) || !columnMap.ContainsKey(iColType) || !columnMap.ContainsKey(iColLat) || !columnMap.ContainsKey(iColLon) || !columnMap.ContainsKey(iColCountry) || !columnMap.ContainsKey(iColAdmin1))
                         throw new MyFlightbookValidationException("File doesn't have all required columns.");
 
                     bool fHasPreferred = columnMap.ContainsKey(iColPreferred);
@@ -1182,11 +1195,16 @@ namespace MyFlightbook.Airports
                             Name = rgCols[columnMap[iColName]],
                             LatLong = new LatLong(Convert.ToDouble(rgCols[columnMap[iColLat]], CultureInfo.CurrentCulture), Convert.ToDouble(rgCols[columnMap[iColLon]], CultureInfo.CurrentCulture)),
                             FacilityTypeCode = rgCols[columnMap[iColType]],
-                            UserName = fHasUser ? rgCols[columnMap[iColSourceUserName]] : string.Empty
+                            UserName = fHasUser ? rgCols[columnMap[iColSourceUserName]] : string.Empty,
+                            Country = rgCols[columnMap[iColCountry]],
+                            Admin1 = rgCols[columnMap[iColAdmin1]]
                         };
 
                         if (!ap.FCommit(true, true))
                             throw new MyFlightbookException(ap.ErrorText);
+
+                        if (!String.IsNullOrEmpty(ap.Country))
+                            ap.SetLocale(ap.Country, ap.Admin1);
 
                         ++cAirportsAdded;
 
@@ -1195,7 +1213,7 @@ namespace MyFlightbook.Airports
                     }
 
                 }
-                catch (Exception ex) when (ex is CSVReaderInvalidCSVException || ex is MyFlightbookException)
+                catch (Exception ex) when (ex is CSVReaderInvalidCSVException || ex is MyFlightbookException || ex is MyFlightbookValidationException)
                 {
                     throw new MyFlightbookException(ex.Message, ex);
                 }
