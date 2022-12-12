@@ -875,6 +875,9 @@ namespace MyFlightbook.Airports
     public class AdminAirport : airport
     {
         #region Properties
+        public bool IsPreferred { get; set; }   // generally don't need to actually load this except for admin functions.
+
+        public string SourceUserName { get; set; }  // we don't expose UserName in javascript for privacy, but need it for admin dupe detection
         #endregion
 
         #region constructors

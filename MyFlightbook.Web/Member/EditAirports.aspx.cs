@@ -91,34 +91,6 @@ namespace MyFlightbook.Mapping
         }
         #endregion
 
-        #region Duplicate detection
-        protected static string DeleteDupeScript(string user, string codeDelete, string codeMap, string type)
-        {
-            return String.Format(CultureInfo.InvariantCulture, "deleteDupeUserAirport('{0}', '{1}', '{2}', '{3}', this); return false;", user, codeDelete, codeMap, type);
-        }
-
-        protected static string SetPreferredScript(string szCode, string szType)
-        {
-            return String.Format(CultureInfo.InvariantCulture, "javascript:setPreferred('{0}', '{1}', this); return false;", szCode, szType);
-        }
-
-        protected static string MakeNativeScript(string szCode, string szType)
-        {
-            return String.Format(CultureInfo.InvariantCulture, "javascript:makeNative('{0}', '{1}', this); return false; ", szCode, szType);
-        }
-
-        protected static string MergeWithScript(string szCodeTarget, string szTypeTarget, string szCodeSrc)
-        {
-            return String.Format(CultureInfo.InvariantCulture, "javascript:mergeWith('{0}', '{1}', '{2}', this); return false;", szCodeTarget, szTypeTarget, szCodeSrc);
-        }
-
-        protected void sqlDSUserDupes_Selecting(object sender, SqlDataSourceCommandEventArgs e)
-        {
-            if (e != null)
-                e.Command.CommandTimeout = 600; // give up to 10 minutes - this can be slow.
-        }
-        #endregion
-
         private IEnumerable<airport> m_rgAirportsForUser;
 
         protected void Page_Load(object sender, EventArgs e)
@@ -421,32 +393,6 @@ namespace MyFlightbook.Mapping
             UpdateCandidateStatus(ImportedAirportCandidates);
             gvImportResults.DataSource = ImportedAirportCandidates;
             gvImportResults.DataBind();
-        }
-        #endregion
-
-        #region ADMIN - dupe management
-        protected void btnRefreshDupes_Click(object sender, EventArgs e)
-        {
-            if (String.IsNullOrWhiteSpace(txtDupeSeed.Text))
-                gvDupes.DataSourceID = sqlDSUserDupes.ID;
-            else
-            {
-                gvDupes.DataSourceID = sqlDSSingleDupe.ID;
-                List<airport> rgap = new List<airport>(airport.AirportsWithExactMatch(txtDupeSeed.Text.Trim()));
-
-                rgap.RemoveAll(ap => !ap.IsPort);
-                if (rgap.Count == 0)
-                {
-                    pnlDupeAirports.Visible = false;
-                    return;
-                }
-                hdnSeedLat.Value = rgap[0].LatLong.Latitude.ToString(CultureInfo.InvariantCulture);
-                hdnSeedLon.Value = rgap[0].LatLong.Longitude.ToString(CultureInfo.InvariantCulture);
-            }
-
-            gvDupes.DataBind();
-            pnlDupeAirports.Visible = true;
-            pnlMyAirports.Visible = false;
         }
         #endregion
     }

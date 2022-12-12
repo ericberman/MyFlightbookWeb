@@ -348,93 +348,102 @@
                         success: function (response) { sender.disabled = true; }
                     });
             }
+
+            function getMoreDupes(idRangeStart, idRangeEnd, idTbl, dupeSeed) {
+                var hdnStart = document.getElementById(idRangeStart);
+                var hdnCount = document.getElementById(idRangeEnd);
+                $('#divDupeRange').css({ 'display': 'inline-block' });
+                $('#dupeProgress').css({ 'visibility': 'visible' });
+
+                var params = new Object();
+                params.start = parseInt(hdnStart.value);
+                params.count = parseInt(hdnCount.value);
+                params.dupeSeed = document.getElementById(dupeSeed).value;
+                var d = JSON.stringify(params);
+                $.ajax(
+                    {
+                        url: '<% =ResolveUrl("~/Admin/AdminAirportGeocoder.aspx/GetDupeAirports") %>',
+                        type: "POST", data: d, dataType: "json", contentType: "application/json",
+                        error: function (xhr, status, error) {
+                            window.alert(xhr.responseJSON.Message);
+                        },
+                        complete: function (response) {
+                            $('#dupeProgress').css({ 'visibility': 'hidden' });
+                        },
+                        success: function (response) {
+                            var r = new Array(), j = -1;
+                            r[++j] = "<thead><th>Airport 1</th><th>Airport 2</th></thead>";
+                            for (var iCluster= 0; iCluster< response.d.length; iCluster++) {
+                                // enumerate all of the combinations in the cluster
+                                var rgAp = response.d[iCluster];
+
+                                // Summarize the clusters
+                                r[++j] = '<tr><td colspan="2" style="background-color: lightgray;"><div>';
+                                r[++j] = "Cluster of " + rgAp.length + "airports: ";
+                                var minLat = rgAp[0].LatLong.Latitude, minLon = rgAp[0].LatLong.Longitude, maxLat = rgAp[0].LatLong.Latitude, maxLon = rgAp[0].LatLong.Longitude;
+                                for (var iap = 0; iap < rgAp.length; iap++) {
+                                    var ap = rgAp[iap];
+                                    r[++j] = ap.Code + " ";
+                                    minLat = Math.min(minLat, ap.LatLong.Latitude);
+                                    minLon = Math.min(minLon, ap.LatLong.Longitude);
+                                    maxLat = Math.max(maxLat, ap.LatLong.Latitude);
+                                    maxLon = Math.max(maxLon, ap.LatLong.Longitude);
+                                }
+                                r[++j] = "</div>ΔLat = " + (maxLat - minLat).toFixed(8) + " ΔLon = " + (maxLon - minLon).toFixed(8) + "</div>";
+
+                                r[++j] = '</td></tr>'
+
+                                for (var i = 0; i < rgAp.length - 1; i++)
+                                    for (var k = i + 1; k < rgAp.length; k++) {
+                                        r[++j] = '<tr><td>';
+                                        r[++j] = dupeAirportContent(rgAp[i], rgAp[k]);
+                                        r[++j] = '</td><td>'
+                                        r[++j] = dupeAirportContent(rgAp[k], rgAp[i]);
+                                        r[++j] = '</td></tr>';
+                                    }
+                            }
+                            $('#' + idTbl).html(r.join(''));
+                            hdnStart.value = params.start + response.d.length;
+                        }
+                    });
+            }
+
+            function htmlEncode(value) {
+                return $('<textarea/>').text(value).html();
+            }
+
+            function dupeAirportContent(ap, apAlt) {
+                var r = new Array(), j = -1;
+
+                r[++j] = "<div><a href='javascript:clickAndZoom(new google.maps.LatLng(" + ap.LatLong.Latitude + ", " + ap.LatLong.Longitude + "));'>" + ap.Code + "</a> ";
+                r[++j] = "(" + ap.FacilityTypeCode + ") " + htmlEncode(ap.Name) + " ";
+                if (ap.SourceUserName != '')
+                    r[++j] = "(" + htmlEncode(ap.SourceUserName) + ") ";
+                r[++j] = '</div><div><input type="checkbox" ' + (ap.IsPreferred ? 'checked' : '') + ' onclick="javascript:setPreferred(\'' + ap.Code + '\', \'' + ap.FacilityTypeCode + '\', this)" />Preferred ';
+                r[++j] = '<button type="button" onclick="javascript:mergeWith(\'' + ap.Code + '\', \'' + ap.FacilityTypeCode + '\', \'' + apAlt.Code + '\', this);">Merge from ' + apAlt.Code + '</button> ';
+                if (ap.SourceUserName != '')
+                    r[++j] = '<button type="button" onclick="javascript:makeNative(\'' + ap.Code + '\', \'' + ap.FacilityTypeCode + '\', this);">Make Native</button> ';
+                r[++j] = "</div>"
+                return r.join('');
+            }
         </script>
-        <asp:UpdateProgress ID="UpdateProgress2" runat="server" AssociatedUpdatePanelID="updpDupes">
-            <ProgressTemplate>
-                <asp:Image ID="imgUserDupes" ImageUrl="~/images/ajax-loader.gif" runat="server" />
-            </ProgressTemplate>
-        </asp:UpdateProgress>
-        <asp:UpdatePanel ID="updpDupes" runat="server">
-            <ContentTemplate>
-            <p><asp:Label ID="lblAdminReviewDupeAirports" runat="server" Text="Review likely duplicate airports"></asp:Label> 
-                <asp:Button ID="btnRefreshDupes" runat="server" Text="Refresh (slow)" OnClick="btnRefreshDupes_Click" />
-                Limit to dupes of: <asp:TextBox ID="txtDupeSeed" runat="server" />
-                <asp:HiddenField ID="hdnSeedLat" runat="server" />
-                <asp:HiddenField ID="hdnSeedLon" runat="server" />
-            </p>
-            <asp:Panel ID="pnlDupeAirports" runat="server" ScrollBars="Auto" Height="400px" Width="100%" Visible="false"> 
-                <asp:GridView ID="gvDupes" runat="server" AutoGenerateColumns="false">
-                    <Columns>
-                        <asp:TemplateField HeaderText="Airport 1">
-                            <ItemTemplate>
-                                <asp:ImageButton ID="imgDeleteDupe1" ImageUrl="~/images/x.gif" CausesValidation="False" Visible="false" 
-                                    AlternateText="Delete this airport" ToolTip="Delete this airport"
-                                    OnClientClick='<%# DeleteDupeScript((string)Eval("user1"), (string)Eval("id1"), (string)Eval("id2"), (string)Eval("type1")) %>'
-                                    runat="server" />
-                                <asp:HyperLink ID="lnkID1" runat="server" Font-Bold="true" Text='<%# Eval("id1") %>' NavigateUrl='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "javascript:clickAndZoom(new google.maps.LatLng({0}, {1}));", Eval("lat1"), Eval("lon1")) %>'></asp:HyperLink>
-                                <asp:Label ID="lblType1" runat="server" Text='<%# String.Format(System.Globalization.CultureInfo.CurrentCulture, "({0})", Eval("type1")) %>'></asp:Label>
-                                <asp:Label ID="lblName1" runat="server" Text='<%# Eval("facname1") %>'></asp:Label>
-                                <asp:Label ID="lblUser1" runat="server" Visible='<%# !String.IsNullOrEmpty((string) Eval("user1")) %>' Text='<%# String.Format(System.Globalization.CultureInfo.CurrentCulture, "({0})", Eval("user1")) %>'></asp:Label>
-                                <br />&nbsp;&nbsp;&nbsp;
-                                <asp:Checkbox ID="lblPreferred1" runat="server" Checked='<%# ((int) Eval("pref1")) != 0 %>' Text="Preferred" onclick='<%# SetPreferredScript((string) Eval("id1"), (string) Eval("type1")) %>'></asp:Checkbox>
-                                <asp:Button ID="btnMerge1" runat="server" Text='<%# String.Format(System.Globalization.CultureInfo.CurrentCulture, "Merge from {0}", Eval("id2")) %>' OnClientClick='<%# MergeWithScript((string)Eval("id1"), (string)Eval("type1"), (string) Eval("id2")) %>' />
-                                <asp:Button ID="btnMakeNative" runat="server" Text="Make Native" OnClientClick='<%# MakeNativeScript((string)Eval("id1"), (string)Eval("type1")) %>' />
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Airport 2">
-                            <ItemTemplate>
-                                <asp:ImageButton ID="imgDeleteDupe2" ImageUrl="~/images/x.gif" CausesValidation="False" Visible="false"
-                                    AlternateText="Delete this airport" ToolTip="Delete this airport"
-                                    OnClientClick='<%# DeleteDupeScript((string)Eval("user2"), (string)Eval("id2"), (string)Eval("id1"), (string)Eval("type2")) %>'
-                                    runat="server" />
-                                <asp:HyperLink ID="lnkID2" runat="server" Font-Bold="true" Text='<%# Eval("id2") %>' NavigateUrl='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "javascript:clickAndZoom(new google.maps.LatLng({0}, {1}));", Eval("lat2"), Eval("lon2")) %>'></asp:HyperLink>
-                                <asp:Label ID="lblType2" runat="server" Text='<%# String.Format(System.Globalization.CultureInfo.CurrentCulture, "({0})", Eval("type2")) %>'></asp:Label>
-                                <asp:Label ID="lblName2" runat="server" Text='<%# Eval("facname2") %>'></asp:Label>
-                                <asp:Label ID="lblUser2" runat="server" Visible='<%# !String.IsNullOrEmpty((string) Eval("user2")) %>' Text='<%# String.Format(System.Globalization.CultureInfo.CurrentCulture, "({0})", Eval("user2")) %>'></asp:Label>
-                                <br />&nbsp;&nbsp;&nbsp;
-                                <asp:Checkbox ID="lblPreferred2" runat="server" Checked='<%# ((int) Eval("pref2")) != 0 %>' Text="Preferred" onclick='<%# SetPreferredScript((string) Eval("id2"), (string) Eval("type2")) %>'></asp:Checkbox>
-                                <asp:Button ID="btnMerge2" runat="server" Text='<%# String.Format(System.Globalization.CultureInfo.CurrentCulture, "Merge from {0}", Eval("id1")) %>' OnClientClick='<%# MergeWithScript((string)Eval("id2"), (string)Eval("type2"), (string) Eval("id1")) %>' />
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                    </Columns>
-                    <EmptyDataTemplate>
-                        <p>(No potential dupes)</p>
-                    </EmptyDataTemplate>
-                </asp:GridView>
-                <asp:SqlDataSource ID="sqlDSUserDupes" runat="server" ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>" 
-                    OnSelecting="sqlDSUserDupes_Selecting"
-                    ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" SelectCommand="SELECT 
-        ap1.sourceusername AS 'user1', ap1.AirportID AS 'id1', ap1.facilityname AS 'facname1', ap1.latitude AS 'lat1', ap1.longitude AS 'lon1', ap1.Preferred AS 'pref1', ap1.Type AS type1, ap2.sourceusername AS 'user2', ap2.AirportID AS 'id2', ap2.facilityname AS 'facname2', ap2.latitude AS 'lat2', ap2.longitude AS 'lon2', ap2.Preferred AS 'pref2', ap2.Type as type2
-    FROM
-        airports ap1
-            INNER JOIN
-        airports ap2 ON ap1.AirportID &lt;&gt; ap2.airportid AND ap1.type = ap2.type
-            AND Abs(ap1.latitude - ap2.latitude) &lt; 0.01 AND abs(ap1.longitude - ap2.longitude) &lt; 0.01
-    WHERE
-        ap1.sourceusername &lt;&gt; '' AND ap1.type IN ('A', 'H', 'S') AND ap2.type IN ('A', 'H', 'S')
-    ORDER BY
-        ap1.type ASC, ap1.latitude ASC, ap1.AirportID ASC;">
-                </asp:SqlDataSource>
-                <asp:SqlDataSource ID="sqlDSSingleDupe" runat="server" ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>"
-                    ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" SelectCommand="SELECT 
-        ap1.sourceusername AS 'user1', ap1.AirportID AS 'id1', ap1.facilityname AS 'facname1', ap1.latitude AS 'lat1', ap1.longitude AS 'lon1', ap1.Preferred AS 'pref1', ap1.Type AS type1, ap2.sourceusername AS 'user2', ap2.AirportID AS 'id2', ap2.facilityname AS 'facname2', ap2.latitude AS 'lat2', ap2.longitude AS 'lon2', ap2.Preferred AS 'pref2', ap2.Type as type2
-    FROM
-        airports ap1
-            INNER JOIN
-        airports ap2 ON ap1.AirportID &lt;&gt; ap2.airportid AND ap1.type = ap2.type
-    WHERE
-        ap1.sourceusername &lt;&gt; '' AND ap1.type IN ('A', 'H', 'S') AND ap2.type IN ('A', 'H', 'S')
-        AND Abs(ap1.latitude - ?lat) &lt; 0.01 AND abs(ap1.longitude - ?lon) &lt; 0.01 AND Abs(ap2.latitude - ?lat) &lt; 0.01 AND abs(ap2.longitude - ?lon) &lt; 0.01 
-    ORDER BY
-        ap1.type ASC, ap1.latitude ASC, ap1.AirportID ASC;">
-                    <SelectParameters>
-                        <asp:ControlParameter ControlID="hdnSeedLat" DbType="Double" Name="lat" PropertyName="Value" />
-                        <asp:ControlParameter ControlID="hdnSeedLon" DbType="Double" Name="lon" PropertyName="Value" />
-                     </SelectParameters>
-                </asp:SqlDataSource>
-            </asp:Panel>
-            </ContentTemplate>
-        </asp:UpdatePanel>
+        <h2><asp:Label ID="lblAdminReviewDupeAirports" runat="server" Text="Review likely duplicate airports" /></h2>
+        <div>
+            Start at: <input type="text" id="dupeRangeStart" value="0" style="width: 50px;" /> Max: <input type="text" id="dupeRangeCount" value="50" style="width:50px" /> Limit to dupes of: <input type="text" id="txtDupeSeed" style="width:100px;" />
+            <button type="button" onclick="javascript:getMoreDupes('dupeRangeStart', 'dupeRangeCount', 'tblAdminAjaxDupes', 'txtDupeSeed')">Next set of dupes</button>
+        </div>
+        <div><img src='<%= VirtualPathUtility.ToAbsolute("~/images/ajax-loader.gif") %>' style="visibility: hidden;" id="dupeProgress" /></div>
+        <style type="text/css">
+            table.dupeTable, table.dupeTable th, table.dupeTable td {
+                border: 1px solid gray;
+                border-collapse: collapse;
+            }
+        </style>
+        <div id="divDupeRange" style="height:400px; display: none; overflow-y:scroll;">
+            <table id="tblAdminAjaxDupes" class="dupeTable">
+
+            </table>
+        </div>
         <p><asp:HyperLink ID="lnkManageGeo" runat="server" Text="Manage Georeferences" NavigateUrl="~/Admin/AdminAirportGeocoder.aspx" /></p>
     </asp:Panel>
 </asp:Content>
