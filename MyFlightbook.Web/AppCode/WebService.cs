@@ -16,7 +16,7 @@ using System.Web.Services;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2021 MyFlightbook LLC
+ * Copyright (c) 2008-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -110,7 +110,7 @@ namespace MyFlightbook
         public enum MFBEventID { None, AuthUser = 1, GetAircraft, FlightsByDate, CommitFlightDEPRECATED, CreateAircraft, CreateUser, CreateUserAttemptDEPRECATED, CreateUserError, ExpiredToken, ObsoleteAPI };
         public enum MFBCountID { WSFlight, ImportedFlight };
 
-        private static readonly ILogger wslogger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.File(System.IO.Path.GetTempPath() + "logs/MyFlightbook.log", rollingInterval: RollingInterval.Day, encoding: System.Text.Encoding.UTF8).CreateLogger();
+        private static readonly ILogger wslogger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.File(System.IO.Path.GetTempPath() + "logs/MyFlightbook.log", formatProvider:CultureInfo.InvariantCulture, rollingInterval: RollingInterval.Day, encoding: System.Text.Encoding.UTF8).CreateLogger();
 
         public static void LogCall(string sz, params object[] list)
         {
