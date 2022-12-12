@@ -575,7 +575,7 @@ namespace MyFlightbook.ImportFlights
 
             private void InitFlightFromRowProperties(LogbookEntry le, out string szTail)
             {
-                List<CustomFlightProperty> lstCustPropsForFlight = new List<CustomFlightProperty>(le.CustomProperties);
+                List<CustomFlightProperty> lstCustPropsForFlight = new List<CustomFlightProperty>();
                 foreach (ImportColumn ic in m_cm.CustomPropertiesToImport)
                 {
                     string szVal = m_rgszRow[ic.m_iCol];
