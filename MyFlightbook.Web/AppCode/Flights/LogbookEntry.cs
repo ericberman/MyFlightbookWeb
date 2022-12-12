@@ -2866,7 +2866,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                         // Find the farthest airports from one another.
                         Dictionary<string, airport> dictGroupedAirports = new Dictionary<string, airport>();
                         // Group ports (no navaids, ad-hoc fixes, etc.) geographically
-                        foreach (airport ap in al.UniqueAirports)
+                        foreach (airport ap in al.GetNormalizedAirports())
                             if (ap.IsPort)
                                 dictGroupedAirports[String.Format(CultureInfo.InvariantCulture, "{0:#.000}{1:#.000}", ap.LatLong.Latitude, ap.LatLong.Longitude)] = ap;
 
