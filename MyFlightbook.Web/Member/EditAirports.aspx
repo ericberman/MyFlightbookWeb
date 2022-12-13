@@ -379,7 +379,7 @@
 
                                 // Summarize the clusters
                                 r[++j] = '<tr><td colspan="2" style="background-color: lightgray;"><div>';
-                                r[++j] = "Cluster of " + rgAp.length + "airports: ";
+                                r[++j] = "Cluster of " + rgAp.length + " airports: ";
                                 var minLat = rgAp[0].LatLong.Latitude, minLon = rgAp[0].LatLong.Longitude, maxLat = rgAp[0].LatLong.Latitude, maxLon = rgAp[0].LatLong.Longitude;
                                 for (var iap = 0; iap < rgAp.length; iap++) {
                                     var ap = rgAp[iap];
@@ -403,7 +403,6 @@
                                     }
                             }
                             $('#' + idTbl).html(r.join(''));
-                            hdnStart.value = params.start + response.d.length;
                         }
                     });
             }
