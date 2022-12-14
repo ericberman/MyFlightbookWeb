@@ -7,7 +7,7 @@ using System.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2021 MyFlightbook LLC
+ * Copyright (c) 2010-2022 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -34,6 +34,69 @@ namespace MyFlightbook.Airports
         {
             Result = new List<AirportList>(result);
             MasterList = master;
+        }
+    }
+
+    /// <summary>
+    /// Represents a segment of a route, including distance and two endpoints.
+    /// </summary>
+    public class RouteSegment : IComparable<RouteSegment>
+    {
+        #region properties
+        public IFix From { get; set; } = null;
+        public IFix To { get; set; } = null;
+
+        /// <summary>
+        /// Distance, in nm
+        /// </summary>
+        public double Distance { get; set; } = 0.0;
+        #endregion
+
+        public RouteSegment() { }
+
+        public RouteSegment(IFix from, IFix to, double distance) : this()
+        {
+            From = from;
+            To = to;
+            Distance = distance;
+        }
+
+        public RouteSegment(IFix from, IFix to) : this(from, to, 0)
+        {
+            if (from != null && to != null)
+                Distance = from.DistanceFromFix(to);
+        }
+
+        public int CompareTo(RouteSegment other)
+        {
+            return Distance.CompareTo(other?.Distance);
+        }
+
+        public override string ToString()
+        {
+            return Distance == 0.0 ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.RouteSegmentTemplate, Distance, From.Code, To.Code);
+        }
+
+        public static RouteSegment LongerRouteSegment(RouteSegment rs1, RouteSegment rs2)
+        {
+            if (rs1 == null && rs2 == null)
+                return null;
+            if (rs1 == null)
+                return rs2;
+            if (rs2 == null)
+                return rs1;
+
+            return (rs1.CompareTo(rs2) > 0) ? rs1 : rs2;
+        }
+
+        public static RouteSegment Empty
+        {
+            get { return new RouteSegment(); }
+        }
+
+        public static implicit operator double(RouteSegment rs)
+        {
+            return rs == null ? 0 : rs.Distance;
         }
     }
 
@@ -365,29 +428,29 @@ namespace MyFlightbook.Airports
         /// <summary>
         /// Examines a route and determines the maximum distance flown between ANY two airports (even if that pair doesn't represent a flown segment)
         /// </summary>
-        /// <returns>0 or the maximum distance</returns>
-        public double MaxDistanceForRoute()
+        /// <returns>0 or the maximum distance.  If > 0, ap1/ap2 are filled</returns>
+        public RouteSegment MaxDistanceForRoute()
         {
-            double d = 0.0;
+            RouteSegment rs = RouteSegment.Empty;
             airport[] rgAp = GetNormalizedAirports();
             int cAp = rgAp.Length;
-            if (cAp < 2)
-                return d;
-
-            for (int i = 0; i < cAp; i++)
+            if (cAp >= 2)
             {
-                for (int j = i + 1; j < cAp; j++)
-                    if (rgAp[i].IsPort && rgAp[j].IsPort)
-                        d = Math.Max(d, rgAp[i].DistanceFromAirport(rgAp[j]));
+                for (int i = 0; i < cAp; i++)
+                {
+                    for (int j = i + 1; j < cAp; j++)
+                        if (rgAp[i].IsPort && rgAp[j].IsPort)
+                            rs = RouteSegment.LongerRouteSegment(rs, new RouteSegment(rgAp[i], rgAp[j]));
+                }
             }
 
-            return d;
+            return rs;
         }
 
         /// <summary>
         /// Examines a route and returns the total distance flown.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The distance for the route, in NM</returns>
         public double DistanceForRoute()
         {
             double d = 0.0;
@@ -401,26 +464,26 @@ namespace MyFlightbook.Airports
         /// Finds the longest segment for the route
         /// </summary>
         /// <returns>The longest segment</returns>
-        public double MaxSegmentForRoute()
+        public RouteSegment MaxSegmentForRoute()
         {
-            double d = 0.0;
+            RouteSegment rs = RouteSegment.Empty;
             airport[] rgAp = GetNormalizedAirports();
             for (int i = 1; i < rgAp.Length; i++)
-                d = Math.Max(rgAp[i].DistanceFromAirport(rgAp[i - 1]), d);
-            return d;
+                rs = RouteSegment.LongerRouteSegment(rs, new RouteSegment(rgAp[i - 1], rgAp[i]));
+            return rs;
         }
 
         /// <summary>
         /// Find the furthest distance away from the STARTING airport that was flown.
         /// </summary>
         /// <returns>Distance in nm.</returns>
-        public double MaxDistanceFromStartingAirport()
+        public RouteSegment MaxDistanceFromStartingAirport()
         {
-            double d = 0.0;
+            RouteSegment rs = RouteSegment.Empty;
             airport[] rgAp = GetNormalizedAirports();
             for (int i = 1; i < rgAp.Length; i++)
-                d = Math.Max(d, rgAp[i].DistanceFromAirport(rgAp[0]));
-            return d;
+                rs = RouteSegment.LongerRouteSegment(rs, new RouteSegment(rgAp[0], rgAp[i]));
+            return rs;
         }
         #endregion
     }

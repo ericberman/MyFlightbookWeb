@@ -1456,7 +1456,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Furthest distance from departure: {0:#,#.0}NM.
+        ///   Looks up a localized string similar to Furthest distance from departure: {0}.
         /// </summary>
         internal static string FlightDistanceFurthestFromDeparture {
             get {
@@ -1465,7 +1465,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Furthest points from each other: {0} and {1} ({2:#,#.0}NM).
+        ///   Looks up a localized string similar to Furthest points from each other: {0}.
         /// </summary>
         internal static string FlightDistanceFurthestPoints {
             get {
@@ -1474,7 +1474,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Longest Segment: {0:#,#.0}NM.
+        ///   Looks up a localized string similar to Longest Segment: {0}.
         /// </summary>
         internal static string FlightDistanceLongestSegment {
             get {
@@ -4010,6 +4010,15 @@ namespace Resources {
         internal static string RosterBusterTokenFailed {
             get {
                 return ResourceManager.GetString("RosterBusterTokenFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0:#,##0.0}NM ({1}⬌{2}).
+        /// </summary>
+        internal static string RouteSegmentTemplate {
+            get {
+                return ResourceManager.GetString("RouteSegmentTemplate", resourceCulture);
             }
         }
         

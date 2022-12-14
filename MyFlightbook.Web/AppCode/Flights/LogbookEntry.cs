@@ -2835,10 +2835,10 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                 }
             }
 
-            MyFlightbook.Airports.AirportList al = new MyFlightbook.Airports.AirportList(Route);
+            AirportList al = new AirportList(Route);
             double dRoute = al.DistanceForRoute();
-            double dMaxSegment = al.MaxSegmentForRoute();
-            double dMaxDistanceFromStart = al.MaxDistanceFromStartingAirport();
+            RouteSegment dMaxSegment = al.MaxSegmentForRoute();
+            RouteSegment dMaxDistanceFromStart = al.MaxDistanceFromStartingAirport();
             double dPath = PathDistance ?? 0.0;
 
             double time = (FlightStart.HasValue() && FlightEnd.HasValue()) ? FlightEnd.Subtract(FlightStart).TotalHours : (double)TotalFlightTime;
@@ -2860,39 +2860,14 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                     if (al.GetNormalizedAirports().Length > 2)
                     {
                         lst.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistanceLongestSegment, dMaxSegment));
-                        if (dMaxSegment != dMaxDistanceFromStart)
+                        if (dMaxSegment.Distance != dMaxDistanceFromStart.Distance)
                             lst.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistanceFurthestFromDeparture, dMaxDistanceFromStart));
 
                         // Find the farthest airports from one another.
-                        Dictionary<string, airport> dictGroupedAirports = new Dictionary<string, airport>();
-                        // Group ports (no navaids, ad-hoc fixes, etc.) geographically
-                        foreach (airport ap in al.GetNormalizedAirports())
-                            if (ap.IsPort)
-                                dictGroupedAirports[String.Format(CultureInfo.InvariantCulture, "{0:#.000}{1:#.000}", ap.LatLong.Latitude, ap.LatLong.Longitude)] = ap;
+                        RouteSegment maxDist = al.MaxDistanceForRoute();
 
-                        List<airport> uniques = new List<airport>(dictGroupedAirports.Values);
-                        if (uniques.Count > 2)
-                        {
-                            airport ap1 = null, ap2 = null;
-                            double maxDist = 0;
-
-                            for (int i = 0; i < uniques.Count; i++)
-                            {
-                                for (int j = i + 1; j < uniques.Count; j++)
-                                {
-                                    double dist = uniques[i].DistanceFromAirport(uniques[j]);
-                                    if (dist > maxDist)
-                                    {
-                                        maxDist = dist;
-                                        ap1 = uniques[i];
-                                        ap2 = uniques[j];
-                                    }
-                                }
-                            }
-
-                            if (ap1 != null && ap2 != null && maxDist > 0)
-                                lst.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistanceFurthestPoints, ap1.Code, ap2.Code, maxDist));
-                        }
+                        if (maxDist > 0.0)
+                            lst.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistanceFurthestPoints, maxDist));
                     }
                 }
 
@@ -3687,8 +3662,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
 
             if (dictCatClassTotals == null)
                 dictCatClassTotals = new Dictionary<int, decimal>();
-            dictCatClassTotals[led.EffectiveCatClass] = dictCatClassTotals.ContainsKey(led.EffectiveCatClass)
-                ? dictCatClassTotals[led.EffectiveCatClass].AddMinutes(led.TotalFlightTime)
+            dictCatClassTotals[led.EffectiveCatClass] = dictCatClassTotals.TryGetValue(led.EffectiveCatClass, out decimal value) ? value.AddMinutes(led.TotalFlightTime)
                 : led.TotalFlightTime;
         }
 
@@ -3704,8 +3678,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                 dictCatClassTotals = new Dictionary<int, decimal>();
 
             foreach (int idcatclass in led.dictCatClassTotals.Keys)
-                dictCatClassTotals[idcatclass] = dictCatClassTotals.ContainsKey(idcatclass)
-                    ? dictCatClassTotals[idcatclass].AddMinutes(led.dictCatClassTotals[idcatclass])
+                dictCatClassTotals[idcatclass] = dictCatClassTotals.TryGetValue(idcatclass, out decimal value) ? value.AddMinutes(led.dictCatClassTotals[idcatclass])
                     : led.dictCatClassTotals[idcatclass];
         }
 
@@ -3732,7 +3705,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
         /// <returns></returns>
         public decimal TotalForCategoryClass(CategoryClass.CatClassID ccid)
         {
-            return dictCatClassTotals != null && dictCatClassTotals.ContainsKey((int) ccid) ? dictCatClassTotals[(int) ccid] : 0;
+            return dictCatClassTotals != null && dictCatClassTotals.TryGetValue((int) ccid, out decimal value) ? value : 0;
         }
 
         /// <summary>
@@ -3752,7 +3725,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
 
             OptionalColumn column = OptionalColumns[columnIndex];
             int idCatClass = (int)column.AssociatedCategoryClass;
-            return dictCatClassTotals.ContainsKey(idCatClass) ? dictCatClassTotals[idCatClass] : 0;
+            return dictCatClassTotals.TryGetValue(idCatClass, out decimal value) ? value : 0;
         }
         #endregion
 
@@ -4210,8 +4183,8 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                             {
                                 const string FlightDaysContextKey = "hgFlightDays";
                                 HashSet<DateTime> hs;
-                                if (context.ContainsKey(FlightDaysContextKey))
-                                    hs = (HashSet<DateTime>)context[FlightDaysContextKey];
+                                if (context.TryGetValue(FlightDaysContextKey, out object v))
+                                    hs = (HashSet<DateTime>)v;
                                 else
                                     context[FlightDaysContextKey] = hs = new HashSet<DateTime>();
                                 if (hs.Contains(Date))

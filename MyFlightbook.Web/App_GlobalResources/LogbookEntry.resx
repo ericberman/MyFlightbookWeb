@@ -157,10 +157,10 @@
     <value>Cannot have more full stop landings than total landings.</value>
   </data>
   <data name="FlightDistanceLongestSegment" xml:space="preserve">
-    <value>Longest Segment: {0:#,#.0}NM</value>
+    <value>Longest Segment: {0}</value>
   </data>
   <data name="FlightDistanceFurthestFromDeparture" xml:space="preserve">
-    <value>Furthest distance from departure: {0:#,#.0}NM</value>
+    <value>Furthest distance from departure: {0}</value>
   </data>
   <data name="FlightDistancePathOnly" xml:space="preserve">
     <value>Path distance: {0:#,#.0}NM</value>
@@ -1143,7 +1143,7 @@ Proceed with import?</value>
     <value>Default</value>
   </data>
   <data name="FlightDistanceFurthestPoints" xml:space="preserve">
-    <value>Furthest points from each other: {0} and {1} ({2:#,#.0}NM)</value>
+    <value>Furthest points from each other: {0}</value>
   </data>
   <data name="PrintFormatCASA" xml:space="preserve">
     <value>CASA (E.g., Australia)</value>
@@ -1692,5 +1692,8 @@ Proceed with import?</value>
   </data>
   <data name="PropertyAdd" xml:space="preserve">
     <value>Add Property</value>
+  </data>
+  <data name="RouteSegmentTemplate" xml:space="preserve">
+    <value>{0:#,##0.0}NM ({1}⬌{2})</value>
   </data>
 </root>
