@@ -245,9 +245,8 @@
             <br />
         </asp:Panel>
         <asp:Panel ID="pnlRosterBuster" runat="server" Visible="false" CssClass="calloutSmall calloutSponsor shadowed">
-            <div style="float:left; width:100px;">
-                <asp:Image ID="imgRBLogo" runat="server" ImageUrl="~/images/rb_logo.png" style="float:left; max-width: 2cm; max-height: 2cm; margin-right: 3em; margin-bottom: 1em; vertical-align:middle;" />
-            </div>
+            <asp:Image ID="imgRBLogo" runat="server" ImageUrl="~/images/rb_logo.png" style="max-width: 2cm; max-height: 2cm; margin-right: 3em; margin-bottom: 1em; vertical-align:middle;" />
+            <a style="font-weight:bold; vertical-align: middle;" href="javascript:showRosterBuster();"><%=Resources.LogbookEntry.RosterBusterImportHeader %></a>
             <script type="text/javascript">
                 function showRosterBuster() {
                     showModalById('<%=pnlModalRosterBuster.ClientID %>', '<%=Resources.LogbookEntry.RosterBusterImportHeader %>', 350);
@@ -257,7 +256,6 @@
                         showRosterBuster();
                 });
             </script>
-            <div><p style="vertical-align:middle"><a style="font-weight:bold;" href="javascript:showRosterBuster();"><%=Resources.LogbookEntry.RosterBusterImportHeader %></a></p></div>
         </asp:Panel>
 
         <asp:Panel ID="pnlModalCloudAhoy" runat="server" DefaultButton="btnImportCloudAhoy" style="display:none">

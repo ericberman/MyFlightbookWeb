@@ -150,8 +150,8 @@ namespace MyFlightbook.OAuth.RosterBuster
                 TotalFlightTime = totalFlight
             };
 
-            DateTime? blockOut = flightstats.scheduledGateDeparture ?? departure.Time;
-            DateTime? blockIn = flightstats.scheduledGateArrival ?? arrival.Time;
+            DateTime? blockOut = departure.Time ?? flightstats.scheduledGateDeparture;
+            DateTime? blockIn = arrival.Time ?? flightstats.scheduledGateArrival;
 
             CustomFlightProperty cfpBlockOut = blockOut.HasValue ? CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDBlockOut, DateTime.SpecifyKind(blockOut.Value, DateTimeKind.Utc), true) : null;
             CustomFlightProperty cfpBlockIn = blockIn.HasValue ? CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDBlockIn, DateTime.SpecifyKind(blockIn.Value, DateTimeKind.Utc), true) : null;
