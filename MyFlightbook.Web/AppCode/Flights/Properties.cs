@@ -1,6 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -840,10 +839,62 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
     }
 
     /// <summary>
+    /// Simple property type for fast/condensed serialization/database lookup
+    /// Consists of just 3 things:
+    /// a) property id
+    /// b) property type id
+    /// c) string representation of value.
+    /// </summary>
+    [Serializable]
+    public class SimpleFlightProperty
+    {
+        #region properties
+        public int PropID { get; set; } = CustomFlightProperty.idCustomFlightPropertyNew;
+        public int PropTypeID { get; set; } = (int) CustomPropertyType.KnownProperties.IDPropInvalid;
+        public string ValueString { get; set; }
+        #endregion
+
+        public CustomFlightProperty ToProperty(int idFlight)
+        {
+            if (PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropInvalid)
+                throw new InvalidOperationException("No property type specified");
+
+            CustomPropertyType cpt = CustomPropertyType.GetCustomPropertyType(PropTypeID);
+            if (cpt == null)
+                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Unable to find custom property type with idproptype {0}", PropTypeID));
+            CustomFlightProperty cfp = new CustomFlightProperty(cpt) { PropID = this.PropID, FlightID = idFlight };
+
+            // Set the value from the string
+            switch (cpt.Type)
+            {
+                case CFPPropertyType.cfpBoolean:
+                    cfp.BoolValue = Convert.ToBoolean(ValueString, CultureInfo.InvariantCulture);
+                    break;
+                case CFPPropertyType.cfpCurrency:
+                case CFPPropertyType.cfpDecimal:
+                    cfp.DecValue = Convert.ToDecimal(ValueString, CultureInfo.InvariantCulture);
+                    break;
+                case CFPPropertyType.cfpDate:
+                case CFPPropertyType.cfpDateTime:
+                    cfp.DateValue = DateTime.SpecifyKind(Convert.ToDateTime(ValueString, CultureInfo.InvariantCulture), DateTimeKind.Utc);
+                    break;
+                case CFPPropertyType.cfpInteger:
+                    cfp.IntValue = Convert.ToInt32(ValueString, CultureInfo.InvariantCulture);
+                    break;
+                case CFPPropertyType.cfpString:
+                    cfp.TextValue = (cpt.IsAllCaps) ? ValueString.ToUpper(CultureInfo.CurrentCulture) : ValueString;
+                    break;
+            }
+
+            return cfp;
+        }
+    }
+
+    /// <summary>
     /// An actual instance of a CustomPropertyType - a flight property.  This is ALWAYS tied to a particular flight.
     /// </summary>
     [Serializable]
-    public class CustomFlightProperty
+    public class CustomFlightProperty : IComparable<CustomFlightProperty>
     {
         private const string szDeleteBase = "DELETE FROM flightproperties WHERE idProp=?idProp";
         private const string szReplaceBase = "REPLACE INTO flightproperties SET idFlight=?idFlight, idPropType=?idProptype, intValue=?IntValue, DecValue=?DecValue, DateValue=?DateValue, StringValue=?StringValue";
@@ -1108,67 +1159,13 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
             if (String.IsNullOrEmpty(szJSON))
                 return Array.Empty<CustomFlightProperty>();
 
-            JArray tuples;
-            try
-            {
-                tuples = (JArray)JsonConvert.DeserializeObject(szJSON);
-            }
-            catch (JsonSerializationException)
-            {
-                throw;
-            }
-            catch (JsonReaderException)
-            {
-                throw;
-            }
+            SimpleFlightProperty[] rgsfp = JsonConvert.DeserializeObject<SimpleFlightProperty[]>(szJSON);
+            List<CustomFlightProperty> result = new List<CustomFlightProperty>(rgsfp.Length);
+            foreach (SimpleFlightProperty sfp in rgsfp)
+                result.Add(sfp.ToProperty(idFlight));
 
-            if (tuples == null)
-                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "tuples == null for string {0}, idFlight {1}", szJSON ?? "(null)", idFlight));
-
-            CustomFlightProperty[] result = new CustomFlightProperty[tuples.Count];
-            if (result == null)
-                throw new MyFlightbookException("Unable to allocate flight properties from tuple count");
-
-            int i = 0;
-            foreach (JArray tuple in tuples)
-            {
-                if (tuple.Count < 3)
-                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "tuple has fewer than 3 elements: {0}, idFlight {1}", szJSON ?? "(null)", idFlight));
-
-                int idProp = (int)tuple[0];
-                int idPropType = (int)tuple[1];
-                string value = (string)tuple[2];
-
-                CustomPropertyType cpt = CustomPropertyType.GetCustomPropertyType(idPropType);
-                if (cpt == null)
-                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Unable to find custom property type with idproptype {0}", idPropType));
-
-                CustomFlightProperty cfp = new CustomFlightProperty(cpt) { PropID = idProp, FlightID = idFlight };
-
-                switch (cpt.Type)
-                {
-                    case CFPPropertyType.cfpBoolean:
-                        cfp.boolValue = Convert.ToBoolean(value, CultureInfo.InvariantCulture);
-                        break;
-                    case CFPPropertyType.cfpCurrency:
-                    case CFPPropertyType.cfpDecimal:
-                        cfp.DecValue = Convert.ToDecimal(value, CultureInfo.InvariantCulture);
-                        break;
-                    case CFPPropertyType.cfpDate:
-                    case CFPPropertyType.cfpDateTime:
-                        cfp.DateValue = DateTime.SpecifyKind(Convert.ToDateTime(value, CultureInfo.InvariantCulture), DateTimeKind.Utc);
-                        break;
-                    case CFPPropertyType.cfpInteger:
-                        cfp.IntValue = Convert.ToInt32(value, CultureInfo.InvariantCulture);
-                        break;
-                    case CFPPropertyType.cfpString:
-                        cfp.TextValue = (cpt.IsAllCaps) ? value.ToUpper(CultureInfo.CurrentCulture) : value;
-                        break;
-                }
-
-                result[i++] = cfp;
-            }
-
+            // tuples are not sorted - sort them.
+            result.Sort();
             return result;
         }
 
@@ -1477,6 +1474,14 @@ GROUP BY fp.idPropType;";
 
             return lst;
         }
+
+        public int CompareTo(CustomFlightProperty other)
+        {
+            if (other == null) return 1;
+            if (PropertyType == null || other.PropertyType == null)
+                return 0;   // don't compare if we don't have a formatstring.
+            return PropertyType.SortKey.CompareTo(other.PropertyType.SortKey);
+        }
     }
 
     /// <summary>
@@ -1487,7 +1492,7 @@ GROUP BY fp.idPropType;";
     ///    b) Display a list of BFRs and IPCs to the user
     /// </summary>
     [Serializable]
-    public class ProfileEvent : CustomFlightProperty, IComparable, IEquatable<ProfileEvent>
+    public class ProfileEvent : CustomFlightProperty, IComparable<ProfileEvent>, IEquatable<ProfileEvent>
     {
         #region properties
         /// <summary>
@@ -1600,11 +1605,11 @@ ORDER BY f.Date Desc";
         #endregion
 
         #region IComparable implementation
-        public int CompareTo(object obj)
+        public int CompareTo(ProfileEvent other)
         {
-            if (obj == null)
-                throw new ArgumentNullException(nameof(obj));
-            return Date.CompareTo(((ProfileEvent)obj).Date);
+            if (other == null)
+                throw new ArgumentNullException(nameof(other));
+            return Date.CompareTo(((ProfileEvent)other).Date);
         }
 
         public override bool Equals(object obj)

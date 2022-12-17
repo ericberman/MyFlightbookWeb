@@ -1961,7 +1961,7 @@ namespace MyFlightbook
                     string szVids = dr["FlightVids"].ToString();
                     if (!String.IsNullOrEmpty(szVids))
                     {
-                        IEnumerable<VideoRef> rgvr = Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<VideoRef>>(szVids);
+                        IEnumerable<VideoRef> rgvr = JsonConvert.DeserializeObject<IEnumerable<VideoRef>>(szVids);
                         Videos.Clear();
                         foreach (VideoRef vr in rgvr)
                             Videos.Add(vr);
