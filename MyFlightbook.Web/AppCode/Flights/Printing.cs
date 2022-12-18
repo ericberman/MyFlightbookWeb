@@ -649,6 +649,12 @@ namespace MyFlightbook.Printing
         public bool IncludeTotals { get; set; } = true;
 
         /// <summary>
+        /// True to include the trailing 12-month and 24-month totals.
+        /// </summary>
+        [System.ComponentModel.DefaultValue(false)]
+        public bool CompactTotals { get; set; } = false;
+
+        /// <summary>
         /// True to include flights
         /// </summary>
         [System.ComponentModel.DefaultValue(true)]

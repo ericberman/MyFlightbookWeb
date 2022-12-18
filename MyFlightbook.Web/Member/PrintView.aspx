@@ -9,6 +9,8 @@
 <%@ Register Src="~/Controls/mfbDecimalEdit.ascx" TagPrefix="uc1" TagName="mfbDecimalEdit" %>
 <%@ Register Src="~/Controls/SponsoredAd.ascx" TagPrefix="uc1" TagName="SponsoredAd" %>
 <%@ Register Src="~/Controls/mfbTotalsByTimePeriod.ascx" TagPrefix="uc1" TagName="mfbTotalsByTimePeriod" %>
+<%@ Register Src="~/Controls/mfbTotalSummary.ascx" TagPrefix="uc1" TagName="mfbTotalSummary" %>
+
 
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
     <asp:Label ID="lblUserName" runat="server" ></asp:Label>
@@ -62,7 +64,10 @@
                                         <asp:CheckBox ID="ckTotals" runat="server" Checked="true" AutoPostBack="true" OnCheckedChanged="IncludeParametersChanged" />
                                     </td>
                                     <td>
-                                        <asp:Label ID="lblIncludeTotals" AssociatedControlID="ckTotals" runat="server" Text="<%$ Resources:LocalizedText, PrintViewIncludeTotals %>"></asp:Label>
+                                        <asp:Label ID="lblIncludeTotals" AssociatedControlID="ckTotals" runat="server" Text="<%$ Resources:LocalizedText, PrintViewIncludeTotals %>" />
+                                        <asp:CheckBox ID="ckCompactTotals" runat="server" AutoPostBack="true" OnCheckedChanged="IncludeParametersChanged"  />
+                                        <asp:Label ID="lblTotalsCompact" runat="server" Text="<%$ Resources:LocalizedText, PrintViewTotalsCompact %>" AssociatedControlID="ckCompactTotals" />
+                                        <span class="fineprint"><% =Resources.LocalizedText.PrintViewTotalsCompactNote %></span>
                                     </td>
                                 </tr>
                                 <tr>
@@ -221,7 +226,14 @@
         </asp:Panel>
         <asp:Panel ID="pnlTotals" runat="server" style="page-break-before:always;">
             <h2><asp:Label ID="lblTotalsHeader" runat="server" /></h2>
-            <uc1:mfbTotalsByTimePeriod runat="server" ID="mfbTotalsByTime" />
+            <asp:MultiView ID="mvTotals" runat="server" ActiveViewIndex="0">
+                <asp:View ID="vwFullTotals" runat="server">
+                    <uc1:mfbTotalsByTimePeriod runat="server" ID="mfbTotalsByTime" />
+                </asp:View>
+                <asp:View ID="vwCompactTotals" runat="server">
+                    <uc1:mfbTotalSummary runat="server" ID="mfbTotalSummary" DefaultGroupMode="true" />
+                </asp:View>
+            </asp:MultiView>
         </asp:Panel>
     </asp:Panel>
 </asp:Content>

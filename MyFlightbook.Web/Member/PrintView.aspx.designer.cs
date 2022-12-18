@@ -195,6 +195,24 @@ namespace MyFlightbook.Printing
         protected global::System.Web.UI.WebControls.Label lblIncludeTotals;
 
         /// <summary>
+        /// ckCompactTotals control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox ckCompactTotals;
+
+        /// <summary>
+        /// lblTotalsCompact control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblTotalsCompact;
+
+        /// <summary>
         /// ckEndorsements control.
         /// </summary>
         /// <remarks>
@@ -519,6 +537,24 @@ namespace MyFlightbook.Printing
         protected global::System.Web.UI.WebControls.Label lblTotalsHeader;
 
         /// <summary>
+        /// mvTotals control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.MultiView mvTotals;
+
+        /// <summary>
+        /// vwFullTotals control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.View vwFullTotals;
+
+        /// <summary>
         /// mfbTotalsByTime control.
         /// </summary>
         /// <remarks>
@@ -526,6 +562,24 @@ namespace MyFlightbook.Printing
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::MyFlightbook.Currency.mfbTotalsByTimePeriod mfbTotalsByTime;
+
+        /// <summary>
+        /// vwCompactTotals control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.View vwCompactTotals;
+
+        /// <summary>
+        /// mfbTotalSummary control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::MyFlightbook.Currency.mfbTotalSummary mfbTotalSummary;
 
         /// <summary>
         /// Master property.

@@ -339,7 +339,8 @@ namespace MyFlightbook.MemberPages
                     Endorsements = ckEndorsements.Checked ? (ckIncludeEndorsementImages.Checked ? PrintingSections.EndorsementsLevel.DigitalAndPhotos : PrintingSections.EndorsementsLevel.DigitalOnly) : PrintingSections.EndorsementsLevel.None,
                     IncludeCoverPage = ckIncludeCoverSheet.Checked,
                     IncludeFlights = true,
-                    IncludeTotals = ckTotals.Checked
+                    IncludeTotals = ckTotals.Checked,
+                    CompactTotals = ckCompactTotals.Checked
                 }
             };
             lnkPrintView.NavigateUrl = PrintingOptions.PermaLink(Restriction, po, Request.Url.Host, Request.Url.Scheme).ToString();

@@ -1896,4 +1896,10 @@
   <data name="ChartTotalsRankAndPercentOfTotals" xml:space="preserve">
     <value>({0:#,##0} of {1:#,##0}, {2:#,##0.0}% of total)</value>
   </data>
+  <data name="PrintViewTotalsCompact" xml:space="preserve">
+    <value>Compact Totals</value>
+  </data>
+  <data name="PrintViewTotalsCompactNote" xml:space="preserve">
+    <value>(excludes trailnig 12/24-month totals)</value>
+  </data>
 </root>

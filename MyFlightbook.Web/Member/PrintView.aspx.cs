@@ -221,7 +221,8 @@ namespace MyFlightbook.Printing
                     Endorsements = ckEndorsements.Checked ? (ckIncludeEndorsementImages.Checked ? PrintingSections.EndorsementsLevel.DigitalAndPhotos : PrintingSections.EndorsementsLevel.DigitalOnly) : PrintingSections.EndorsementsLevel.None,
                     IncludeFlights = ckFlights.Checked,
                     IncludeCoverPage = ckIncludeCoverSheet.Checked,
-                    IncludeTotals = ckTotals.Checked
+                    IncludeTotals = ckTotals.Checked,
+                    CompactTotals= ckCompactTotals.Checked
                 };
             }
             set
@@ -231,6 +232,7 @@ namespace MyFlightbook.Printing
                 ckFlights.Checked = value.IncludeFlights;
                 ckIncludeCoverSheet.Checked = value.IncludeCoverPage;
                 ckTotals.Checked = value.IncludeTotals;
+                ckCompactTotals.Checked = value.CompactTotals;
             }
         }
 
@@ -244,6 +246,13 @@ namespace MyFlightbook.Printing
             printingSections = po.Sections;
         }
 
+        private void RefreshCompactTotals(FlightQuery fq)
+        {
+            mfbTotalSummary.Username = CurrentUser.UserName;
+            mfbTotalSummary.UseHHMM = CurrentUser.UsesHHMM;
+            mfbTotalSummary.CustomRestriction = fq;
+        }
+
         private void InitializeTitleAndQueryDescriptor()
         {
             Master.Title = lblUserName.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, CurrentUser.UserFullName);
@@ -253,7 +262,10 @@ namespace MyFlightbook.Printing
             mfbQueryDescriptor.DataBind();
             // Initialize the totals rollup
             TotalsRollup = RollupForQuery(fq);
-            mfbTotalsByTime.RefreshTable(TotalsRollup, false);
+            if (PrintOptions.Sections.CompactTotals)
+                RefreshCompactTotals(fq);
+            else
+                mfbTotalsByTime.RefreshTable(TotalsRollup, false);
         }
 
         private void InitializeEndorsements()
@@ -353,23 +365,28 @@ namespace MyFlightbook.Printing
             PrintOptions = po;
 
             // Make sure copy link is up-to-date
-            lnkPermalink.NavigateUrl = PermaLink(po, mfbSearchForm1.Restriction);
+            FlightQuery fq = mfbSearchForm1.Restriction;
+            lnkPermalink.NavigateUrl = PermaLink(po, fq);
 
-            plcLayout.Visible = po.Sections.IncludeFlights;
-            pnlEndorsements.Visible = po.Sections.Endorsements != PrintingSections.EndorsementsLevel.None;
-            rptImages.Visible = po.Sections.Endorsements == PrintingSections.EndorsementsLevel.DigitalAndPhotos;
-            pnlTotals.Visible = po.Sections.IncludeTotals;
-            pnlCover.Visible = po.Sections.IncludeCoverPage;
+            plcLayout.Visible = printingSections.IncludeFlights;
+            pnlEndorsements.Visible = printingSections.Endorsements != PrintingSections.EndorsementsLevel.None;
+            rptImages.Visible = printingSections.Endorsements == PrintingSections.EndorsementsLevel.DigitalAndPhotos;
+            pnlTotals.Visible = printingSections.IncludeTotals;
+            mvTotals.SetActiveView(printingSections.CompactTotals ? vwCompactTotals : vwFullTotals);
+            pnlCover.Visible = printingSections.IncludeCoverPage;
 
-            if (po.Sections.IncludeFlights)
+            if (printingSections.IncludeFlights)
             {
                 plcLayout.Controls.Clear();
                 plcLayout.Controls.Add(LoadControl(PrintLayout.LayoutForType(PrintOptions1.Options.Layout).ControlPath));
                 IPrintingTemplate pt = plcLayout.Controls[0] as IPrintingTemplate;
-                IList<LogbookEntryDisplay> lstFlights = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntry.QueryCommand(mfbSearchForm1.Restriction, fAsc: true), CurrentUser.UserName, string.Empty, SortDirection.Ascending, CurrentUser.UsesHHMM, CurrentUser.UsesUTCDateOfFlight);
+                IList<LogbookEntryDisplay> lstFlights = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntryBase.QueryCommand(fq, fAsc: true), CurrentUser.UserName, string.Empty, SortDirection.Ascending, CurrentUser.UsesHHMM, CurrentUser.UsesUTCDateOfFlight);
                 PrintLayout pl = LogbookPrintedPage.LayoutLogbook(CurrentUser, lstFlights, pt, po, SuppressFooter);
                 Master.PrintingCSS = pl.CSSPath.ToAbsoluteURL(Request).ToString();
             }
+
+            if (printingSections.CompactTotals)
+                RefreshCompactTotals(fq);
         }
 
         protected void PrintOptions1_OptionsChanged(object sender, PrintingOptionsEventArgs e)
@@ -401,6 +418,9 @@ namespace MyFlightbook.Printing
         {
             if (!ckEndorsements.Checked)
                 ckIncludeEndorsementImages.Checked = false;
+            if (!ckTotals.Checked)
+                ckCompactTotals.Checked = false;
+            mvTotals.SetActiveView(ckCompactTotals.Checked ? vwCompactTotals : vwFullTotals);
             RefreshLogbookData();
         }
 

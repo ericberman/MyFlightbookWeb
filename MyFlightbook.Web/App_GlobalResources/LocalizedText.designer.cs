@@ -4274,6 +4274,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Compact Totals.
+        /// </summary>
+        internal static string PrintViewTotalsCompact {
+            get {
+                return ResourceManager.GetString("PrintViewTotalsCompact", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (excludes trailnig 12/24-month totals).
+        /// </summary>
+        internal static string PrintViewTotalsCompactNote {
+            get {
+                return ResourceManager.GetString("PrintViewTotalsCompactNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Totals for selected flights as of {0:d}.
         /// </summary>
         internal static string PrintViewTotalsHeader {
