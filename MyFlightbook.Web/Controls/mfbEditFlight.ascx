@@ -73,7 +73,7 @@
                             Font-Size="Small" Rows="2" Width="90%" />
                     </div>
                     <script type="text/javascript">
-                        autoInsert(document.getElementById("<% =txtComments.ClientID %>"), '<% =ResolveUrl("~/Member/LogbookNew.aspx/SuggestTraining") %>', '[');
+                        autoInsert(document.getElementById("<% =txtComments.ClientID %>"), '<% =ResolveUrl("~/Member/Ajax.asmx/SuggestTraining") %>', '[');
                     </script> 
                 </div>
             </div>

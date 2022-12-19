@@ -111,7 +111,7 @@ public partial class Controls_mfbDateTime : System.Web.UI.UserControl
                 complete: function(response) {{ }},
                 success: function(response) {{ document.getElementById(wme).value = response.d; }}
             }});
-        }}", ResolveClientUrl("~/Member/LogbookNew.aspx/NowInUTC")), true);
+        }}", ResolveClientUrl("~/Member/Ajax.asmx/NowInUTC")), true);
     }
 
     protected void CustomValidator1_ServerValidate(object source, ServerValidateEventArgs args)

@@ -102,7 +102,7 @@ namespace MyFlightbook.Controls.FlightEditing
                 lblEngine.ToolTip = lblFlight.ToolTip = (UserTimeZone.Id.CompareCurrentCultureIgnoreCase(TimeZoneInfo.Utc.Id) == 0) ? string.Empty : UserTimeZone.DisplayName;
             }
 
-            decHobbsStart.CrossFillScript = String.Format(CultureInfo.InvariantCulture, "getHobbsFill(currentlySelectedAircraft, '{0}')", ResolveClientUrl("~/Member/LogbookNew.aspx"));
+            decHobbsStart.CrossFillScript = String.Format(CultureInfo.InvariantCulture, "getHobbsFill(currentlySelectedAircraft, '{0}')", ResolveClientUrl("~/Member/Ajax.asmx"));
         }
 
         public string Telemetry

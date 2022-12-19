@@ -1,13 +1,13 @@
-﻿using System;
+﻿using MyFlightbook.Printing;
+using Resources;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Net.Mail;
-using System.Text.RegularExpressions;
 using System.ServiceModel;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Services;
-using Resources;
 
 /******************************************************
  * 
@@ -163,5 +163,96 @@ namespace MyFlightbook.Web.Member
         }
 
         #endregion
+
+        #region LogbookNew stuff
+        /// <summary>
+        /// Returns the high-watermark starting hobbs for the specified aircraft.
+        /// </summary>
+        /// <param name="idAircraft"></param>
+        /// <returns>0 if unknown.</returns>
+        [WebMethod(EnableSession = true)]
+        public string HighWaterMarkHobbsForAircraft(int idAircraft)
+        {
+            CheckAuth();
+
+            System.Threading.Thread.CurrentThread.CurrentCulture = util.SessionCulture ?? CultureInfo.CurrentCulture;
+
+            return AircraftUtility.HighWaterMarkHobbsForUserInAircraft(idAircraft, HttpContext.Current.User.Identity.Name).ToString("0.0#", CultureInfo.CurrentCulture);
+        }
+
+        /// <summary>
+        /// Returns the high-watermark starting hobbs for the specified aircraft.
+        /// </summary>
+        /// <param name="idAircraft"></param>
+        /// <returns>0 if unknown.</returns>
+        [WebMethod(EnableSession = true)]
+        public string HighWaterMarkTachForAircraft(int idAircraft)
+        {
+            CheckAuth();
+
+            System.Threading.Thread.CurrentThread.CurrentCulture = util.SessionCulture ?? CultureInfo.CurrentCulture;
+
+            return AircraftUtility.HighWaterMarkTachForUserInAircraft(idAircraft, HttpContext.Current.User.Identity.Name).ToString("0.0#", CultureInfo.CurrentCulture);
+        }
+
+        /// <summary>
+        /// Returns the current time formatted in UTC or specified time-zone
+        /// </summary>
+        /// <returns>Now in the specified locale, adjusted for the timezone.</returns>
+        [WebMethod(EnableSession = true)]
+        public string NowInUTC()
+        {
+            CheckAuth();
+
+            // For now, always return true UTC
+            if (HttpContext.Current != null && HttpContext.Current.Request != null && HttpContext.Current.Request.UserLanguages != null && HttpContext.Current.Request.UserLanguages.Length > 0)
+                util.SetCulture(HttpContext.Current.Request.UserLanguages[0]);
+
+            System.Threading.Thread.CurrentThread.CurrentCulture = util.SessionCulture ?? CultureInfo.CurrentCulture;
+
+            return DateTime.UtcNow.FormattedNowInUtc(Profile.GetUser(HttpContext.Current.User.Identity.Name).PreferredTimeZone);
+        }
+
+        [WebMethod(EnableSession = true)]
+        public string[] SuggestTraining(string prefixText, int count)
+        {
+            CheckAuth();
+
+            return LogbookEntryDisplay.SuggestTraining(prefixText, count);
+        }
+
+
+        [WebMethod(EnableSession = true)]
+        public string PrintLink(string szExisting, PrintingSections ps)
+        {
+            CheckAuth();
+
+            // check for invalid data
+            if (szExisting == null || ps == null)
+                return szExisting;
+
+            return PrintingOptions.UpdatedPermaLink(szExisting, new PrintingOptions() { Sections = ps }).ToString();
+        }
+
+        [WebMethod(EnableSession = true)]
+        public string TaxiTime(string fsStart, string fsEnd, string szTotal)
+        {
+            CheckAuth();
+
+            System.Threading.Thread.CurrentThread.CurrentCulture = util.SessionCulture ?? CultureInfo.CurrentCulture;
+
+            bool fUseHHMM = Profile.GetUser(HttpContext.Current.User.Identity.Name).UsesHHMM;
+
+            DateTime dtFStart = fsStart.SafeParseDate(DateTime.MinValue);
+            DateTime dtFEnd = fsEnd.SafeParseDate(DateTime.MinValue);
+            decimal totalTime = fUseHHMM ? szTotal.DecimalFromHHMM() : decimal.Parse(szTotal, NumberStyles.Any, CultureInfo.CurrentCulture);
+
+            decimal elapsedFlight = (dtFEnd.HasValue() && dtFStart.HasValue() && dtFEnd.CompareTo(dtFStart) > 0) ? (decimal) dtFEnd.Subtract(dtFStart).TotalHours : 0;
+
+            decimal taxi = totalTime - elapsedFlight;
+            return taxi.FormatDecimal(fUseHHMM);
+        }
+        #endregion
+
     }
 }

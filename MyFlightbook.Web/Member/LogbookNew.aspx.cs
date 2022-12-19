@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Web;
-using System.Web.Services;
 using System.Web.UI;
 
 /******************************************************
@@ -19,101 +18,6 @@ namespace MyFlightbook.MemberPages
 {
     public partial class LogbookNew : Page
     {
-        #region Webservices
-        /// <summary>
-        /// Returns the high-watermark starting hobbs for the specified aircraft.
-        /// </summary>
-        /// <param name="idAircraft"></param>
-        /// <returns>0 if unknown.</returns>
-        [WebMethod(EnableSession = true)]
-        public static string HighWaterMarkHobbsForAircraft(int idAircraft)
-        {
-            if (HttpContext.Current == null || HttpContext.Current.User == null || HttpContext.Current.User.Identity == null || !HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
-                throw new MyFlightbookException("You must be authenticated to make this call");
-
-            System.Threading.Thread.CurrentThread.CurrentCulture = util.SessionCulture ?? CultureInfo.CurrentCulture;
-
-            return AircraftUtility.HighWaterMarkHobbsForUserInAircraft(idAircraft, HttpContext.Current.User.Identity.Name).ToString("0.0#", CultureInfo.CurrentCulture);
-        }
-
-        /// <summary>
-        /// Returns the high-watermark starting hobbs for the specified aircraft.
-        /// </summary>
-        /// <param name="idAircraft"></param>
-        /// <returns>0 if unknown.</returns>
-        [WebMethod(EnableSession = true)]
-        public static string HighWaterMarkTachForAircraft(int idAircraft)
-        {
-            if (HttpContext.Current == null || HttpContext.Current.User == null || HttpContext.Current.User.Identity == null || !HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
-                throw new MyFlightbookException("You must be authenticated to make this call");
-
-            System.Threading.Thread.CurrentThread.CurrentCulture = util.SessionCulture ?? CultureInfo.CurrentCulture; 
-            
-            return AircraftUtility.HighWaterMarkTachForUserInAircraft(idAircraft, HttpContext.Current.User.Identity.Name).ToString("0.0#", CultureInfo.CurrentCulture);
-        }
-
-        /// <summary>
-        /// Returns the current time formatted in UTC or specified time-zone
-        /// </summary>
-        /// <returns>Now in the specified locale, adjusted for the timezone.</returns>
-        [WebMethod(EnableSession = true)]
-        public static string NowInUTC()
-        {
-            // For now, always return true UTC
-            if (HttpContext.Current != null && HttpContext.Current.Request != null && HttpContext.Current.Request.UserLanguages != null && HttpContext.Current.Request.UserLanguages.Length > 0)
-                util.SetCulture(HttpContext.Current.Request.UserLanguages[0]);
-            if (HttpContext.Current.User == null || HttpContext.Current.User.Identity == null || !HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
-                throw new MyFlightbookException("You must be authenticated to make this call");
-
-            System.Threading.Thread.CurrentThread.CurrentCulture = util.SessionCulture ?? CultureInfo.CurrentCulture; 
-            
-            return DateTime.UtcNow.FormattedNowInUtc(Profile.GetUser(HttpContext.Current.User.Identity.Name).PreferredTimeZone);
-        }
-
-        [WebMethod(EnableSession = true)]
-        public static string[] SuggestTraining(string prefixText, int count)
-        {
-            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
-                throw new MyFlightbookException("Unauthenticated call to SuggestTraining");
-
-            return LogbookEntryDisplay.SuggestTraining(prefixText, count);
-        }
-
-
-        [WebMethod(EnableSession = true)]
-        public static string PrintLink(string szExisting, PrintingSections ps)
-        {
-            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
-                throw new MyFlightbookException("Unauthenticated call to PrintLink");
-
-            // check for invalid data
-            if (szExisting == null || ps == null)
-                return szExisting;
-
-            return PrintingOptions.UpdatedPermaLink(szExisting, new PrintingOptions() { Sections = ps }).ToString();
-        }
-
-        [WebMethod(EnableSession = true)]
-        public static string TaxiTime(string fsStart, string fsEnd, string szTotal)
-        {
-            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
-                throw new MyFlightbookException("Unauthenticated call to PrintLink");
-
-            System.Threading.Thread.CurrentThread.CurrentCulture = util.SessionCulture ?? CultureInfo.CurrentCulture;
-
-            bool fUseHHMM = Profile.GetUser(HttpContext.Current.User.Identity.Name).UsesHHMM;
-
-            DateTime dtFStart = fsStart.SafeParseDate(DateTime.MinValue);
-            DateTime dtFEnd = fsEnd.SafeParseDate(DateTime.MinValue);
-            double totalTime = fUseHHMM ? (double)szTotal.DecimalFromHHMM() : double.Parse(szTotal, NumberStyles.Any, CultureInfo.CurrentCulture);
-
-            double elapsedFlight = (dtFEnd.HasValue() && dtFStart.HasValue() && dtFEnd.CompareTo(dtFStart) > 0) ? dtFEnd.Subtract(dtFStart).TotalHours : 0;
-
-            double taxi = totalTime - elapsedFlight;
-            return (taxi > 0) ? (fUseHHMM ? ((decimal)taxi).ToHHMM() : taxi.ToString(CultureInfo.CurrentCulture)) : String.Empty;
-        }
-        #endregion
-
         private const string szParamIDFlight = "idFlight";
 
         public enum FlightsTab { None, Add, Search, Totals, Currency, Analysis, Printing, More }

@@ -104,7 +104,7 @@
 
                             $.ajax(
                                 {
-                                    url: '<% =ResolveUrl("~/Member/LogbookNew.aspx/PrintLink") %>',
+                                    url: '<% =ResolveUrl("~/Member/Ajax.asmx/PrintLink") %>',
                                     type: "POST", data: d, dataType: "json", contentType: "application/json",
                                     error: function (xhr, status, error) {
                                         window.alert(xhr.responseJSON.Message);

@@ -69,11 +69,18 @@
                             if (!ckEndorsements.checked)
                                 ckIncludeImgs.checked = false;
                             ckIncludeImgs.disabled = !ckEndorsements.checked;
+                            var ckTotals = $('#<% = ckTotals.ClientID %>')[0];
+                            var ckCompactTotals = $('#<% = ckCompactTotals.ClientID %>')[0]
+                            if (!ckTotals.checked)
+                                ckCompactTotals.checked = false;
+                            ckCompactTotals.disabled = !ckTotals.checked;
+
                             var sects = new Object();
                             sects["Endorsements"] = ckEndorsements.checked ? (ckIncludeImgs.checked ? "DigitalAndPhotos" : "DigitalOnly") : "None";
                             sects["IncludeCoverPage"] = $('#<% = ckIncludeCoverSheet.ClientID %>')[0].checked;
                             sects["IncludeFlights"] = true;
                             sects["IncludeTotals"] = $('#<% =ckTotals.ClientID %>')[0].checked;
+                            sects["CompactTotals"] = ckCompactTotals.checked;
 
                             var lnkPreview = $('#<% =lnkPrintView.ClientID %>')[0];
 
@@ -85,7 +92,7 @@
 
                             $.ajax(
                                 {
-                                    url: '<% =ResolveUrl("~/Member/LogbookNew.aspx/PrintLink") %>',
+                                    url: '<% =ResolveUrl("~/Member/Ajax.asmx/PrintLink") %>',
                                     type: "POST", data: d, dataType: "json", contentType: "application/json",
                                     error: function (xhr, status, error) {
                                         window.alert(xhr.responseJSON.Message);
@@ -115,6 +122,9 @@
                                     </td>
                                     <td>
                                         <asp:Label ID="lblIncludeTotals" AssociatedControlID="ckTotals" runat="server" Text="<%$ Resources:LocalizedText, PrintViewIncludeTotals %>" />
+                                        <asp:CheckBox ID="ckCompactTotals" runat="server" onclick="updPrint();" />
+                                        <asp:Label ID="lblTotalsCompact" runat="server" Text="<%$ Resources:LocalizedText, PrintViewTotalsCompact %>" AssociatedControlID="ckCompactTotals" />
+                                        <span class="fineprint"><% =Resources.LocalizedText.PrintViewTotalsCompactNote %></span>
                                     </td>
                                 </tr>
                                 <tr>
