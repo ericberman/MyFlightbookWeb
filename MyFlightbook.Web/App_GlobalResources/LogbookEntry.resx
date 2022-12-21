@@ -1696,4 +1696,7 @@ Proceed with import?</value>
   <data name="RouteSegmentTemplate" xml:space="preserve">
     <value>{0:#,##0.0}NM ({1}⬌{2})</value>
   </data>
+  <data name="errFlightAlreadySigned" xml:space="preserve">
+    <value>Cannot sign flight because it is already signed with a valid signature.</value>
+  </data>
 </root>

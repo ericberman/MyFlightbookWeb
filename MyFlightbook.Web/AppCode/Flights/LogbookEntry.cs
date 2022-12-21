@@ -1264,6 +1264,10 @@ namespace MyFlightbook
                 throw new MyFlightbookException(Resources.SignOff.errNoInstructor);
             if (String.IsNullOrEmpty(szCFICertificate))
                 throw new MyFlightbookException(Resources.SignOff.errNeedCertificate);
+
+            if (CFISignatureState == SignatureState.Valid)
+                throw new InvalidOperationException(Resources.LogbookEntry.errFlightAlreadySigned);
+
             // Two possible errors around certificate expiration:
             // (a) There is no value provided and we aren't allowing empty certificate expiration OR
             // (b) there IS a value and it has expired.
@@ -1295,6 +1299,9 @@ namespace MyFlightbook
         public void SignFlightAuthenticated(string szCFIUsername, string szComment, bool fGroundOrATP)
         {
             Profile pfCFI = Profile.GetUser(szCFIUsername);
+
+            if (CFISignatureState == SignatureState.Valid)
+                throw new InvalidOperationException(Resources.LogbookEntry.errFlightAlreadySigned);
 
             // Validate that the named user can sign this flight.
             if (!CanSignThisFlight(szCFIUsername, out string szErr))

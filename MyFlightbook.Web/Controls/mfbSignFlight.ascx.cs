@@ -298,6 +298,8 @@ namespace MyFlightbook.Instruction
             {
                 bool fIsGroundOrATP = ckATP.Checked || Flight.IsGroundOnly;
 
+                m_le = null; // force a reload of the flight - issue #1043
+
                 switch (SigningMode)
                 {
                     case SignMode.AdHoc:
@@ -348,12 +350,7 @@ namespace MyFlightbook.Instruction
                         break;
                 }
             }
-            catch (MyFlightbookException ex)
-            {
-                lblErr.Text = ex.Message;
-                return false;
-            }
-            catch (MyFlightbookValidationException ex)
+            catch (Exception ex) when (ex is MyFlightbookException || ex is MyFlightbookValidationException || ex is InvalidOperationException)
             {
                 lblErr.Text = ex.Message;
                 return false;

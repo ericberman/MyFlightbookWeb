@@ -538,6 +538,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot sign flight because it is already signed with a valid signature..
+        /// </summary>
+        internal static string errFlightAlreadySigned {
+            get {
+                return ResourceManager.GetString("errFlightAlreadySigned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Date of flight should be today or in the past..
         /// </summary>
         internal static string errFutureDate {
