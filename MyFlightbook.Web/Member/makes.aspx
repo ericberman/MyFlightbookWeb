@@ -85,7 +85,7 @@
     </div>
     <asp:HiddenField runat="server" ID="hdnQueryJSON" />
     <div style="width:100%; max-width: 800px; margin-left: auto; margin-right: auto;">
-        <table style="width:100%" runat="server" id="tblHeaderRow" visible="false">
+        <table class="gvhDefault" style="width:100%; position: sticky; padding-top: 10px; top: 0px;" runat="server" id="tblHeaderRow" visible="false">
             <tr>
                 <td style="width:160px;"></td>
                 <td style="text-align:left;">
