@@ -83,9 +83,8 @@
         </asp:UpdateProgress>
         <div style="margin-left: 5px; margin-right: 5px">
             <asp:GridView ID="gvFlightLogs" runat="server" AutoGenerateColumns="False" BorderStyle="None"
-            CellPadding="3" DataKeyNames="FlightID" AllowSorting="True" 
-            ShowHeader="true" ShowFooter="true" UseAccessibleHeader="true" Width="100%"
-            Font-Size="8pt" AllowPaging="True"
+            CellPadding="3" DataKeyNames="FlightID" AllowSorting="True" CssClass="lbTable"
+            ShowHeader="true" ShowFooter="true" UseAccessibleHeader="true" AllowPaging="True"
             OnRowDataBound="gvFlightLogs_RowDataBound" EnableViewState="false" 
             PagerSettings-Mode="NumericFirstLast"
             GridLines="None" OnDataBound="gvFlightLogs_DataBound" 
@@ -96,13 +95,13 @@
                 <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldFlight %>" SortExpression="Date">
                     <HeaderStyle CssClass="headerBase headerSortDesc gvhLeft" />
                     <ItemTemplate>
-                        <div class="noprint" style="float:right">
+                        <div class="noprint" style="float:right; background-color: transparent !important">
                             <asp:Repeater ID="rptBadges" runat="server">
                                 <ItemTemplate>
                                     <asp:Image runat="server" CssClass="imgMiddle" ImageUrl="~/images/Badge-sm.png" ToolTip='<%# Eval("Name") %>' AlternateText='<%# Eval("Name") %>'></asp:Image>
                                 </ItemTemplate>
                             </asp:Repeater>
-                            <asp:Panel ID="pnlImagesHover" runat="server" Visible="false" style="display:inline-block;">
+                            <asp:Panel ID="pnlImagesHover" runat="server" Visible="false" style="display:inline-block; background-color: transparent !important;">
                                 <asp:HyperLink ID="lnkViewPublic" NavigateUrl='<%# PublicPath(Eval("FlightID")) %>' runat="server">
                                     <asp:Image ID="imgCamera" ImageUrl="~/Images/camera.png" runat="server" Visible="<%# !ShowImagesInline %>"
                                         ToolTip="<%$ Resources:LogbookEntry, LogbookFlightHasPicturesTooltip %>" style="vertical-align:middle"
@@ -110,14 +109,14 @@
                                     <cc1:HoverMenuExtender ID="hoverMenuImages" TargetControlID="imgCamera" Enabled="<%# !ShowImagesInline %>" PopupControlID="pnlFlightImages" OffsetX="20" OffsetY="-100" runat="server"></cc1:HoverMenuExtender>
                                 </asp:HyperLink>
                             </asp:Panel>
-                            <asp:HyperLink ID="lnkViewflightData" runat="server" Visible='<%# Convert.ToBoolean(Eval("HasFlightData")) %>' NavigateUrl='<%# AnalyzePath(Eval("FlightID")) %>'>
+                            <asp:HyperLink ID="lnkViewflightData" runat="server" Visible='<%# Convert.ToBoolean(Eval("HasFlightData")) %>' NavigateUrl='<%# AnalyzePath(Eval("FlightID")) %>' style="background-color: transparent !important;">
                                 <asp:Image ID="imgViewFlightData" ImageUrl="~/images/Clip.png" CssClass="imgMiddle" AlternateText="<%$ Resources:LogbookEntry, LogbookFlightHasTelemetry %>" ToolTip="<%$ Resources:LogbookEntry, LogbookFlightHasTelemetry %>" runat="server" /></asp:HyperLink>
                         </div>
                         <div>
                             <asp:HyperLink ID="lnkEditFlight" Font-Bold="true" runat="server" Text='<%# ((DateTime) Eval("Date")).ToShortDateString() %>' Font-Size="Larger" NavigateUrl='<%# DetailsPath(Eval("FlightID")) %>'></asp:HyperLink>
                             <asp:HyperLink Font-Bold="true" ID="lnkRoute" runat="server" Text='<%#: Eval("Route") %>' NavigateUrl='<%# PublicPath(Eval("FlightID")) %>'></asp:HyperLink>
                             <span runat="server" id="divComments" style="clear:left; white-space: pre-line;" dir="auto"><asp:Label ID="lblComments" runat="server" Text='<%# Eval("CommentWithReplacedApproaches") %>'></asp:Label></span>
-                            <span class="noprint"><asp:Image ID="imgExpandProps" runat="server" Visible='<%# IsCompact && ((LogbookEntryDisplay) Container.DataItem).CanCollapse(Viewer.DisplayTimesByDefault) %>' ImageUrl="~/images/expand.png" /></span>
+                            <span class="noprint" style="background-color: transparent !important;"><asp:Image ID="imgExpandProps" runat="server" Visible='<%# IsCompact && ((LogbookEntryDisplay) Container.DataItem).CanCollapse(Viewer.DisplayTimesByDefault) %>' ImageUrl="~/images/expand.png" /></span>
                         </div>
                         <cc1:CollapsiblePanelExtender ID="cpeDisplayMode" runat="server" Collapsed='<%# IsCompact %>' Enabled='<%# IsCompact && ((LogbookEntryDisplay) Container.DataItem).CanCollapse(Viewer.DisplayTimesByDefault) %>'
                             TargetControlID="pnlProps" CollapsedImage="~/images/expand.png" ExpandedImage="~/images/collapse.png" CollapseControlID="imgExpandProps" ExpandControlID="imgExpandProps" ImageControlID="imgExpandProps" />
@@ -188,6 +187,7 @@
                         </asp:Panel>
                         <div><asp:Label ID="lblErr" runat="server" CssClass="error" EnableViewState="false" Text='<%# Eval("ErrorString") %>' /></div>
                     </ItemTemplate>
+                    <ItemStyle CssClass="gvcLeft" />
                     <FooterTemplate>
                         <table style="width:100%">
                             <tr>
@@ -328,7 +328,7 @@
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldTotal %>" SortExpression="TotalFlightTime">
                     <HeaderStyle CssClass="headerBase gvhCentered" />
-                    <ItemStyle CssClass="gvcRight" />
+                    <ItemStyle CssClass="gvcRight gvcNoBorderRight" />
                     <ItemTemplate>
                         <%# Eval("TotalFlightTime").FormatDecimal(Viewer.UsesHHMM)%>
                     </ItemTemplate>
@@ -343,11 +343,13 @@
                         </uc7:popmenu>
                         <asp:CheckBox ID="ckSelected" runat="server" Visible="<%# IsViewingOwnFlights && IsInSelectMode %>" Checked='<%# IsViewingOwnFlights && IsInSelectMode && SelectedItems.Contains((int) Eval("FlightID")) %>' />
                     </ItemTemplate>
+                    <HeaderStyle CssClass="headerBase gvhCentered" />
                     <HeaderTemplate>
                         <asp:CheckBox ID="ckSelectAll" runat="server" Visible="<%# IsViewingOwnFlights && IsInSelectMode %>" OnCheckedChanged="ckSelectAll_CheckedChanged" AutoPostBack="true" Checked="<%# AllSelected %>" ToolTip="<%$ ResourceS:LogbookEntry, LogbookSelectAll %>" />
                     </HeaderTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField >
+                    <HeaderStyle CssClass="headerBase gvhCentered" />
                     <ItemTemplate>
                         <asp:HyperLink ID="lnkSignEntry" runat="server"
                             NavigateUrl='<%# String.Format("~/Member/SignFlight.aspx?idFlight={0}&ret={1}", Eval("FlightID"), HttpUtility.UrlEncode(Page.Request.Url.PathAndQuery)) %>'

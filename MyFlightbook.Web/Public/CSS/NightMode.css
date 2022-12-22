@@ -131,3 +131,15 @@ input[type=text].noselect:focus {
 td.totalsByTimeCell:nth-child(even), td.totalsByTimeCell:nth-child(even), td.totalsDateRange:nth-child(even), .PaddedCell:nth-child(even) {
     background-color: #263238;
 }
+
+.gvhDefault {
+    background-color: #263238;
+}
+
+.gvhDefault, .gvcCentered, .gvcLeft, .gvcRight {
+    border-right: 1px solid #444444;
+}
+
+tr.gvhDefault th {
+    border-bottom: 1px solid #444444;
+}

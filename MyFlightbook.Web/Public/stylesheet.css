@@ -1628,13 +1628,30 @@ h3.numberedStep {
 }
 
 /* Gridview styles */
+.lbTable {
+    font-size: 8pt;
+    width: 100%;
+    border-collapse: separate !important;
+    border-spacing: 0px;
+}
 .gvhDefault {
     text-align: left;
     vertical-align: bottom;
+    position: sticky;
+    top: 0;
+    background-color: white;
+}
+
+tr.gvhDefault th {
+    border-bottom: 1px solid lightgray;
+}
+
+.gvhDefault:last-child {
+    border: none;
 }
 
 .gvhCentered, .gvcCentered {
-    text-align:center;
+    text-align: center;
 }
 
 .gvhLeft, .gvcLeft {
@@ -1643,6 +1660,18 @@ h3.numberedStep {
 
 .gvhRight, .gvcRight {
     text-align: right;
+}
+
+.gvcCentered, .gvcLeft, .gvcRight {
+    border-right: 1px solid lightgray;
+}
+
+.gvcCentered:last-child, .gvcLeft:last-child, .gvcRight:last-child {
+    border-right: none;
+}
+
+.gvcNoBorderRight, gvhNoBorderRight {
+    border-right:none;
 }
 
 .gvhBold {
