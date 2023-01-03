@@ -16,7 +16,7 @@ using System.Web.Services;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2022 MyFlightbook LLC
+ * Copyright (c) 2008-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -372,16 +372,9 @@ namespace MyFlightbook
             if (String.IsNullOrEmpty(szTail))
                 throw new MyFlightbookException(Resources.WebService.errBadTailNumber);
 
-            try
-            {
-                MakeModel m = new MakeModel(idModel);
-                if (m == null)
-                    throw new MyFlightbookException(Resources.WebService.errInvalidModel);
-            }
-            catch
-            {
+            MakeModel m = MakeModel.GetModel(idModel);
+            if (m == null || m.MakeModelID == MakeModel.UnknownModel)
                 throw new MyFlightbookException(Resources.WebService.errInvalidModel);
-            }
 
             if (idInstanceType > (int)AircraftInstanceTypes.MaxType || idInstanceType < (int)AircraftInstanceTypes.Mintype)
                 throw new MyFlightbookException(Resources.WebService.errInvalidInstanceType);
