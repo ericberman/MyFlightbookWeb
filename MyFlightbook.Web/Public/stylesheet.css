@@ -1,6 +1,6 @@
 ﻿/******************************************************
  * 
- * Copyright (c) 2007-2022 MyFlightbook LLC
+ * Copyright (c) 2007-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1643,11 +1643,11 @@ h3.numberedStep {
 }
 
 tr.gvhDefault th {
-    border-bottom: 1px solid lightgray;
+    border-bottom: 1px solid #eeeeee;
 }
 
-.gvhDefault:last-child {
-    border: none;
+tr.gvhDefault th:nth-last-child(2), tr.gvhDefault th:last-child {
+    border-bottom: none;
 }
 
 .gvhCentered, .gvcCentered {
@@ -1663,7 +1663,7 @@ tr.gvhDefault th {
 }
 
 .gvcCentered, .gvcLeft, .gvcRight {
-    border-right: 1px solid lightgray;
+    border-right: 1px solid #eeeeee;
 }
 
 .gvcCentered:last-child, .gvcLeft:last-child, .gvcRight:last-child {
@@ -1840,13 +1840,22 @@ table.featureTable {
     .printonly {display:none;}
     .logbookRow, .logbookAlternateRow {
         vertical-align: top;
-        border-bottom: 1px solid #cccccc;
     }
     .logbookAlternateRow {
         background-color: #eeeeee;
     }
-    .logbookRow:nth-last-child(2), .logbookAlternateRow:nth-last-child(2) {
+
+    .logbookAlternateRow td, .logbookRow td {
+        border-bottom: 1px solid #eeeeee;
+    }
+
+    .logbookAlternateRow td:first-child, .logbookRow td:first-child {
+        border-left: 1px solid #eeeeee;
+    }
+
+    .logbookAlternateRow td.noprint, .logbookRow td.noprint {
         border-bottom: none;
+        background-color: white;
     }
 
     body, body {

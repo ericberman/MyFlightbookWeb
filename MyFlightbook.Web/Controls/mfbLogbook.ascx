@@ -328,7 +328,7 @@
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldTotal %>" SortExpression="TotalFlightTime">
                     <HeaderStyle CssClass="headerBase gvhCentered" />
-                    <ItemStyle CssClass="gvcRight gvcNoBorderRight" />
+                    <ItemStyle CssClass="gvcRight" />
                     <ItemTemplate>
                         <%# Eval("TotalFlightTime").FormatDecimal(Viewer.UsesHHMM)%>
                     </ItemTemplate>

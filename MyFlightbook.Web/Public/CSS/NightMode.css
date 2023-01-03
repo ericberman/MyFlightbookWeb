@@ -1,4 +1,11 @@
-﻿body {
+﻿/******************************************************
+ * 
+ * Copyright (c) 2007-2023 MyFlightbook LLC
+ * Contact myflightbook-at-gmail.com for more information
+ *
+*******************************************************/
+
+body {
     background-color: #263238 !important;
     color: white;
 }
@@ -138,6 +145,14 @@ td.totalsByTimeCell:nth-child(even), td.totalsByTimeCell:nth-child(even), td.tot
 
 .gvhDefault, .gvcCentered, .gvcLeft, .gvcRight {
     border-right: 1px solid #444444;
+}
+
+.logbookAlternateRow td, .logbookRow td {
+    border-bottom: 1px solid #444444;
+}
+
+.logbookAlternateRow td:first-child, .logbookRow td:first-child {
+    border-left: 1px solid #444444;
 }
 
 tr.gvhDefault th {

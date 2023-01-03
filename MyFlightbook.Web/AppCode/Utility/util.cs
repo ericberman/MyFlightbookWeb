@@ -17,7 +17,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2022 MyFlightbook LLC
+ * Copyright (c) 2008-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -41,7 +41,7 @@ namespace MyFlightbook
         public const string keyTrackOriginal = "prefTrackOriginal";  // true if the user tracks the original version of a flight.
         public const int DefaultMaintenanceWindow = 90;
         public const string keyPrefFlatHierarchy = "UsesFlatCloudStorageFileHierarchy";    // indicates that cloud storage should be done in a flat hierarchy rather than by month.
-        private const int StyleSheetVer = 41;
+        private const int StyleSheetVer = 42;
 
         public static string BaseStylesheet
         {
