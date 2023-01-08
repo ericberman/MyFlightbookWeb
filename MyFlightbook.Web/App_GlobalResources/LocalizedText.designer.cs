@@ -884,6 +884,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Day of Year.
+        /// </summary>
+        internal static string ChartTotalsGroupDayOfYear {
+            get {
+                return ResourceManager.GetString("ChartTotalsGroupDayOfYear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Month.
         /// </summary>
         internal static string ChartTotalsGroupMonth {

@@ -7,7 +7,6 @@ using MyFlightbook.SocialMedia;
 using MyFlightbook.Telemetry;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
-using NodaTime;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -22,7 +21,7 @@ using System.Xml.Serialization;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2022 MyFlightbook LLC
+ * Copyright (c) 2008-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -4067,6 +4066,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                 new WeeklyBucketManager(szBaseHref),
                 new DailyBucketManager(szBaseHref),
                 new DayOfWeekBucketManager(),
+                new DayOfYearBucketManager(),
                 new StringBucketManager("TAILNUMBER", Resources.LogbookEntry.FieldTail, szBaseHref) { SearchParam = "tn" },
                 new StringBucketManager("MODEL", Resources.Aircraft.ViewAircraftModel, szBaseHref) {SearchParam = "mn" },
                 new StringBucketManager("ICAO", Resources.Aircraft.ViewAircraftICAO, szBaseHref) {SearchParam = "icao" },

@@ -1902,4 +1902,7 @@
   <data name="PrintViewTotalsCompactNote" xml:space="preserve">
     <value>(excludes trailnig 12/24-month totals)</value>
   </data>
+  <data name="ChartTotalsGroupDayOfYear" xml:space="preserve">
+    <value>Day of Year</value>
+  </data>
 </root>

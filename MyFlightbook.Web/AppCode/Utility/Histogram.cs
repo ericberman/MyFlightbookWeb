@@ -7,7 +7,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2022 MyFlightbook LLC
+ * Copyright (c) 2008-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -613,6 +613,37 @@ namespace MyFlightbook.Histogram
                 return day;
             else if (o is DateTime dt)
                 return (int) dt.DayOfWeek;
+            return null;
+        }
+    }
+
+    public class DayOfYearBucketManager : BucketManager
+    {
+        public DayOfYearBucketManager() : base()
+        {
+            DisplayName = Resources.LocalizedText.ChartTotalsGroupDayOfYear;
+            BucketSelectorName = "Date";
+        }
+
+        public override bool SupportsRunningTotals { get { return false; } }
+
+        protected override IDictionary<IComparable, Bucket> BucketsForData(IEnumerable<IHistogramable> items, IEnumerable<HistogramableValue> columns)
+        {
+            Dictionary<IComparable, Bucket> d = new Dictionary<IComparable, Bucket>();
+            // use a leap year to ensure buckets for 366 days
+            DateTime dt = new DateTime(2004, 1, 1); // start on Jan 1 2004, a leap year
+            for (int day = 0; day < 366; day++)
+            {
+                string sz = dt.AddDays(day).ToString("M", CultureInfo.CurrentCulture);
+                d[sz] = new Bucket(day, sz, columns);
+            }
+            return d;
+        }
+
+        protected override IComparable KeyForValue(IComparable o)
+        {
+            if (o is DateTime dt)
+                return dt.ToString("M", CultureInfo.CurrentCulture);
             return null;
         }
     }
