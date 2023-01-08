@@ -6,7 +6,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2017 MyFlightbook LLC
+ * Copyright (c) 2013-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -59,7 +59,7 @@ public partial class Controls_mfbMakeListItem : System.Web.UI.UserControl
             if (il.ImageArray.Count > 0)
             {
                 MFBImageInfo mfbii = il.ImageArray[0];
-                ((HyperLink)modelView.FindControl("lnkImage")).NavigateUrl = mfbii.URLFullImage;
+                img.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:viewMFBImg(\'{0}\'); return false;", ResolveClientUrl(mfbii.URLFullImage));
                 img.ImageUrl = mfbii.URLThumbnail;
                 img.AlternateText = img.ToolTip = string.Empty;
                 break;

@@ -5,9 +5,7 @@
         <table style="width: 100%;">
             <tr style="vertical-align:middle">
                 <td style="width:160px" runat="server" id="cellImages" visible="<%# !SuppressImages %>">
-                    <asp:HyperLink ID="lnkImage" runat="server" Target="_blank">
-                        <asp:Image ID="imgThumbSample" runat="server" ToolTip="<%$ Resources:LocalizedText, NoImageTooltip %>" AlternateText="<%$ Resources:LocalizedText, NoImageTooltip %>" style="max-width:150px;" />
-                    </asp:HyperLink>
+                    <asp:Image ID="imgThumbSample" runat="server" ToolTip="<%$ Resources:LocalizedText, NoImageTooltip %>" AlternateText="<%$ Resources:LocalizedText, NoImageTooltip %>" style="max-width:150px;" />
                 </td>
                 <td style="text-align:left; vertical-align:top;">
                     <table style="width:100%">
