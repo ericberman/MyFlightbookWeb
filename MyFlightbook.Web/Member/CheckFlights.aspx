@@ -64,7 +64,7 @@
                 <p><asp:Button ID="btnCheckAll" runat="server" Text="<%$ Resources:FlightLint, CheckFlightsBegin %>" OnClick="btnCheckAll_Click" /> <asp:Label ID="lblSummary" runat="server"></asp:Label></p>
             </asp:Panel>
             <div><asp:Label ID="lblErr" runat="server" CssClass="error" EnableViewState="false" ></asp:Label></div>
-            <asp:GridView ID="gvFlights" runat="server" ShowHeader="true" GridLines="None" OnRowDataBound="gvFlights_RowDataBound" AutoGenerateColumns="false" Font-Size="8pt" Width="100%" CellPadding="3">
+            <asp:GridView ID="gvFlights" runat="server" ShowHeader="true" CssClass="lbTable" GridLines="None" OnRowDataBound="gvFlights_RowDataBound" AutoGenerateColumns="false" CellPadding="3">
                 <Columns>
                     <asp:TemplateField>
                         <ItemTemplate>
@@ -82,12 +82,15 @@
                                 </asp:Repeater>
                             </ul>
                         </ItemTemplate>
-                        <ItemStyle VerticalAlign="Top" />
+                        <ItemStyle VerticalAlign="Top" BorderStyle="None" />
+                        <HeaderStyle CssClass="headerBase gvhDefault gvhCentered" />
                     </asp:TemplateField>
                     <asp:TemplateField>
+                        <HeaderStyle CssClass="headerBase gvhDefault gvhCentered" />
                         <HeaderTemplate>
-                            <asp:Literal ID="litIgnore" runat="server" Text="<%$ Resources:FlightLint, ignoreForFlight %>" /><span style="text-align:left; font-weight:normal"><uc1:mfbTooltip runat="server" ID="mfbTooltip" BodyContent="<%$ Resources:FlightLint, ignoreForFlightTooltip %>" /></span>
+                            <asp:Literal ID="litIgnore" runat="server" Text="<%$ Resources:FlightLint, ignoreForFlight %>" /><uc1:mfbTooltip runat="server" ID="mfbTooltip" BodyContent="<%$ Resources:FlightLint, ignoreForFlightTooltip %>" />
                         </HeaderTemplate>
+                        <ItemStyle HorizontalAlign="Center" />
                         <ItemTemplate>
                             <asp:CheckBox ID="ckIgnore" runat="server" />
                         </ItemTemplate>
