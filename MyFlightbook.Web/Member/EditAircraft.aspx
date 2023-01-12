@@ -39,12 +39,45 @@
             <asp:Label ID="lblErr" CssClass="error" runat="server" Text="" EnableViewState="false"></asp:Label>
         <asp:SqlDataSource ID="sqlDSFlightsPerUser" runat="server" OnSelecting="sqlDSFlightsPerUser_Selecting" 
             ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>" 
-            ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" SelectCommand="SELECT u.email AS 'Email Address', u.username AS User, u.FirstName, u.LastName, count(f.idflight) AS 'Number of Flights'
-FROM Useraircraft ua
-   INNER JOIN users u ON ua.username=u.username
-   LEFT JOIN flights f ON (f.username=ua.username AND f.idaircraft=ua.idaircraft)
-WHERE ua.idaircraft=?idaircraft
-GROUP BY ua.username">
+            ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" SelectCommand="
+/* Union of an inner join with a not-exists is orders of magnitude faster than a single left join, for reasons I don't quite understand */
+SELECT 
+    u.email AS 'Email Address',
+    u.username AS User,
+    u.FirstName,
+    u.LastName,
+    COUNT(f.idflight) AS 'Number of Flights'
+FROM
+    Useraircraft ua
+        INNER JOIN
+    users u ON ua.username = u.username
+        LEFT JOIN
+    flights f ON (f.username = ua.username)
+WHERE
+    ua.idaircraft = ?idaircraft
+        AND f.idaircraft = ?idaircraft
+GROUP BY ua.username 
+UNION SELECT 
+    u.email AS 'Email Address',
+    u.username AS User,
+    u.FirstName,
+    u.LastName,
+    0 AS 'Number of Flights'
+FROM
+    Useraircraft ua
+        INNER JOIN
+    users u ON ua.username = u.username
+WHERE
+    ua.idaircraft = ?idaircraft
+        AND NOT EXISTS( SELECT 
+            *
+        FROM
+            flights f
+        WHERE
+            f.username = u.username
+                AND f.idaircraft = ?idaircraft)
+GROUP BY ua.username
+ORDER BY user ASC">
         </asp:SqlDataSource>
         <asp:GridView ID="gvFlightsPerUser" runat="server" AutoGenerateColumns="False" 
             EnableModelValidation="True">
