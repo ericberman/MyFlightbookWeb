@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2022 MyFlightbook LLC
+ * Copyright (c) 2013-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -21,6 +21,8 @@ namespace MyFlightbook.Controls.FlightEditing
         private const string vsPropVals = "vsPropVals";
         private const string vsPropTemplates = "vsPropTemplates";
         private const string vsPropUser = "vsPropUser";
+
+        public event EventHandler<CrossFillDescriptorArgs> CrossFillDescriptorRequested;
 
         #region properties
         /// <summary>
@@ -182,8 +184,7 @@ namespace MyFlightbook.Controls.FlightEditing
                     if (cfp.IsDefaultValue && cfp.IsExisting)
                     {
                         cfp.DeleteProperty();
-                        if (ExistingPropIDs.ContainsKey(cfp.PropTypeID))
-                            ExistingPropIDs.Remove(cfp.PropTypeID);
+                        ExistingPropIDs.Remove(cfp.PropTypeID);
                         fPropsDeleted = true;
                     }
                 });
@@ -194,31 +195,6 @@ namespace MyFlightbook.Controls.FlightEditing
                 lst.RemoveAll(cfp => cfp.IsDefaultValue);
                 return lst;
             }
-        }
-
-        const string keyViewStateXFill = "vsXF";
-        const string keyViewStateXFillLanding = "vsXFL";
-        const string keyViewStateXFillApproach = "vsXFA";
-
-        /// <summary>
-        /// The script to run by default for time controls.
-        /// </summary>
-        public string CrossFillDefaultScript
-        {
-            get { return (string)ViewState[keyViewStateXFill]; }
-            set { ViewState[keyViewStateXFill] = value; }
-        }
-
-        public string CrossFillLandingScript
-        {
-            get { return (string)ViewState[keyViewStateXFillLanding]; }
-            set { ViewState[keyViewStateXFillLanding] = value; }
-        }
-
-        public string CrossFillApproachScript
-        {
-            get { return (string)ViewState[keyViewStateXFillApproach]; }
-            set { ViewState[keyViewStateXFillApproach] = value; }
         }
         #endregion
 
@@ -285,8 +261,15 @@ namespace MyFlightbook.Controls.FlightEditing
             mfbEditProp ep = (mfbEditProp)LoadControl("~/Controls/mfbEditProp.ascx");
             // Add it to the placeholder so that the client ID works, then set the client ID before setting the property so that it picks up cross-fill
             plcHolderProps.Controls.Add(ep);
-            ep.CrossFillTotalScript = (cfp.PropertyType.IsLanding) ? CrossFillLandingScript : (cfp.PropertyType.IsApproach ? CrossFillApproachScript : CrossFillDefaultScript);
             ep.ID = IDForPropType(cfp.PropertyType);
+            
+            // Get any cross-fill that's appropriate for this property
+            if (CrossFillDescriptorRequested != null)
+            {
+                CrossFillDescriptorArgs args = new CrossFillDescriptorArgs(cfp.PropertyType);
+                CrossFillDescriptorRequested(this, args);
+                ep.CrossFillDescriptor = args.XFillDescriptor;
+            }
             ep.Username = Username;
             ep.FlightProperty = cfp;
         }

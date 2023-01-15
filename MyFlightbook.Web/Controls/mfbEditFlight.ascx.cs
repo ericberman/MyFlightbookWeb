@@ -13,7 +13,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2022 MyFlightbook LLC
+ * Copyright (c) 2007-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -149,6 +149,36 @@ namespace MyFlightbook.Controls.FlightEditing
         {
             Page.ClientScript.RegisterClientScriptInclude("autoInsert", ResolveClientUrl("~/public/Scripts/autoinsert.js?v=3"));
         }
+
+        #region property cross-fill 
+        protected string CrossFillTotalScript = string.Empty;
+        protected string CrossFillLandingScript = string.Empty;
+        protected string CrossFillApproachesScript = string.Empty;
+
+        protected void CrossFillDescriptorRequested(object sender, CrossFillDescriptorArgs args)
+        {
+            if (args == null)
+                throw new ArgumentNullException(nameof(args));
+            if (args.PropertyType == null)
+                throw new InvalidOperationException("No proptype in provided crossfilldescriptorargs");
+            if (args.PropertyType.Type == CFPPropertyType.cfpInteger)
+            {
+                if (args.PropertyType.IsLanding || args.PropertyType.PropTypeID == (int) CustomPropertyType.KnownProperties.IDPropGliderTow)
+                    args.XFillDescriptor = new CrossFillDescriptor(Resources.LocalizedText.CrossfillPromptLandings, CrossFillLandingScript);
+                else if (args.PropertyType.IsApproach)
+                    args.XFillDescriptor = new CrossFillDescriptor(Resources.LocalizedText.CrossfillPromptApproaches, CrossFillApproachesScript);
+            }
+            else if (args.PropertyType.Type == CFPPropertyType.cfpDecimal)
+            {
+                if (args.PropertyType.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTachStart)
+                    args.XFillDescriptor = new CrossFillDescriptor(Resources.LogbookEntry.TachCrossfillTip, String.Format(CultureInfo.InvariantCulture, "getTachFill(currentlySelectedAircraft, '{0}')", ResolveClientUrl("~/Member/Ajax.asmx")));
+                else if (args.PropertyType.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTaxiTime)
+                    args.XFillDescriptor = new CrossFillDescriptor(Resources.LogbookEntry.TaxiCrossFillTip, String.Format(CultureInfo.InvariantCulture, "getTaxiFill('{0}')", ResolveClientUrl("~/Member/Ajax.asmx")));
+                else if (!args.PropertyType.IsBasicDecimal)
+                    args.XFillDescriptor = new CrossFillDescriptor(Resources.LocalizedText.CrossfillPrompt, CrossFillTotalScript);
+            }
+        }
+        #endregion
     }
 
     public partial class mfbEditFlight : mfbEditFlightBase
@@ -336,6 +366,12 @@ namespace MyFlightbook.Controls.FlightEditing
             cmbCatClasses.DataBind();
 
             SetUpPermutations(pnlTimeRoot);
+
+            // Set up cross-fill scripts once for performance
+            CrossFillTotalScript = String.Format(CultureInfo.InvariantCulture, "getTotalFillFunc(\"{0}\")", decTotal.EditBox.ClientID);
+            CrossFillLandingScript = String.Format(CultureInfo.InvariantCulture, "getTotalFillFunc(\"{0}\")", intLandings.EditBox.ClientID);
+            CrossFillApproachesScript = String.Format(CultureInfo.InvariantCulture, "getTotalFillFunc(\"{0}\")", intApproaches.EditBox.ClientID);
+
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -473,11 +509,10 @@ namespace MyFlightbook.Controls.FlightEditing
                 decNight.EditingMode = decPIC.EditingMode = decSIC.EditingMode = decSimulatedIFR.EditingMode =
                 decTotal.EditingMode = decXC.EditingMode = em;
 
-            mfbEditPropSet1.CrossFillDefaultScript = decCFI.CrossFillScript = decDual.CrossFillScript = decGrndSim.CrossFillScript = decIMC.CrossFillScript =
-                decNight.CrossFillScript = decPIC.CrossFillScript = decSIC.CrossFillScript = decSimulatedIFR.CrossFillScript = decXC.CrossFillScript = String.Format(CultureInfo.InvariantCulture, "getTotalFillFunc(\"{0}\")", decTotal.EditBox.ClientID);
+            decCFI.CrossFillScript = decDual.CrossFillScript = decGrndSim.CrossFillScript = decIMC.CrossFillScript =
+                decNight.CrossFillScript = decPIC.CrossFillScript = decSIC.CrossFillScript = decSimulatedIFR.CrossFillScript = decXC.CrossFillScript = CrossFillTotalScript;
 
-            mfbEditPropSet1.CrossFillLandingScript = intFullStopLandings.CrossFillScript = intNightLandings.CrossFillScript = String.Format(CultureInfo.InvariantCulture, "getTotalFillFunc(\"{0}\")", intLandings.EditBox.ClientID);
-            mfbEditPropSet1.CrossFillApproachScript = String.Format(CultureInfo.InvariantCulture, "getTotalFillFunc(\"{0}\")", intApproaches.EditBox.ClientID);
+            intFullStopLandings.CrossFillScript = intNightLandings.CrossFillScript = CrossFillLandingScript;
 
             mfbMFUFlightImages.AllowGoogleImport = pf.PreferenceExists(GooglePhoto.PrefKeyAuthToken);
         }
@@ -613,7 +648,6 @@ namespace MyFlightbook.Controls.FlightEditing
                 mfbEditPropSet1.SetFlightProperties(le.CustomProperties);
             }
         }
-
         protected void SetTemplatesForAircraft(int idAircraft)
         {
             Aircraft ac = new UserAircraft(Page.User.Identity.Name)[idAircraft];

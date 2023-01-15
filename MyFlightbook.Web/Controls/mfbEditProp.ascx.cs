@@ -4,7 +4,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2022 MyFlightbook LLC
+ * Copyright (c) 2013-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -36,9 +36,9 @@ namespace MyFlightbook.Controls.FlightEditing
         }
 
         /// <summary>
-        /// The ClientID of the source control for cross-filling.
+        /// If this property supports cross-fill, the details are provided here.
         /// </summary>
-        public string CrossFillTotalScript { get; set; }
+        public CrossFillDescriptor CrossFillDescriptor { get; set; }
         #endregion
 
         protected void Page_Load(object sender, EventArgs e)
@@ -82,6 +82,13 @@ namespace MyFlightbook.Controls.FlightEditing
             lblPropName.Text = (fp.PropertyType.Type == CFPPropertyType.cfpDateTime) ? fp.PropertyType.Title.IndicateUTCOrCustomTimeZone(tz) : fp.PropertyType.Title;
             lblPropName.ToolTip = (fp.PropertyType.Type == CFPPropertyType.cfpDateTime && tz.Id.CompareCurrentCultureIgnoreCase(TimeZoneInfo.Utc.Id) != 0) ? tz.DisplayName : string.Empty;
             mfbTooltip.Visible = !String.IsNullOrEmpty(mfbTooltip.BodyContent = fp.PropertyType.Type == CFPPropertyType.cfpDateTime ? fp.PropertyType.Description.Replace("(UTC)", tz.DisplayName) : fp.PropertyType.Description);
+
+            if (CrossFillDescriptor!= null)
+            {
+                mfbDecEdit.CrossFillScript = CrossFillDescriptor.ScriptRef;
+                mfbDecEdit.CrossFillTip = CrossFillDescriptor.Tip;
+            }
+
             switch (fp.PropertyType.Type)
             {
                 case CFPPropertyType.cfpBoolean:
@@ -92,8 +99,6 @@ namespace MyFlightbook.Controls.FlightEditing
                     }
                     break;
                 case CFPPropertyType.cfpInteger:
-                    mfbDecEdit.CrossFillScript = (fp.PropertyType.IsLanding || fp.PropertyType.IsApproach) ? CrossFillTotalScript : string.Empty;
-                    mfbDecEdit.CrossFillTip = fp.PropertyType.IsLanding ? Resources.LocalizedText.CrossfillPromptLandings : (fp.PropertyType.IsApproach ? Resources.LocalizedText.CrossfillPromptApproaches : string.Empty);
                     mfbDecEdit.IntValue = fp.IntValue;
                     mfbDecEdit.EditingMode = Controls_mfbDecimalEdit.EditMode.Integer;
                     mvProp.SetActiveView(vwDecimal);
@@ -101,17 +106,6 @@ namespace MyFlightbook.Controls.FlightEditing
                 case CFPPropertyType.cfpDecimal:
                     mvProp.SetActiveView(vwDecimal);    // need to do this before setting the cross-fill image to visible
                     // Set the cross-fill source before setting the editing mode.
-                    mfbDecEdit.CrossFillScript = fp.PropertyType.IsBasicDecimal ? string.Empty : CrossFillTotalScript;
-                    if (fp.PropertyType.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTachStart)
-                    {
-                        mfbDecEdit.CrossFillTip = Resources.LogbookEntry.TachCrossfillTip;
-                        mfbDecEdit.CrossFillScript = String.Format(CultureInfo.InvariantCulture, "getTachFill(currentlySelectedAircraft, '{0}')", ResolveClientUrl("~/Member/Ajax.asmx"));
-                    }
-                    else if (fp.PropertyType.PropTypeID == (int) CustomPropertyType.KnownProperties.IDPropTaxiTime)
-                    {
-                        mfbDecEdit.CrossFillTip = Resources.LogbookEntry.TaxiCrossFillTip;
-                        mfbDecEdit.CrossFillScript = String.Format(CultureInfo.InvariantCulture, "getTaxiFill('{0}')", ResolveClientUrl("~/Member/Ajax.asmx"));
-                    }
                     mfbDecEdit.EditingMode = (!fp.PropertyType.IsBasicDecimal && Profile.GetUser(Page.User.Identity.Name).UsesHHMM ? Controls_mfbDecimalEdit.EditMode.HHMMFormat : Controls_mfbDecimalEdit.EditMode.Decimal);
                     mfbDecEdit.Value = fp.DecValue;
                     break;

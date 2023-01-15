@@ -187,7 +187,7 @@
     <div id="rowTimes7" class="fullblock">
         <asp:MultiView ID="mvPropEdit" runat="server" ActiveViewIndex="0">
             <asp:View ID="vwPropSet" runat="server">
-                <uc13:mfbEditPropSet ID="mfbEditPropSet1" runat="server" />
+                <uc13:mfbEditPropSet ID="mfbEditPropSet1" runat="server" OnCrossFillDescriptorRequested="CrossFillDescriptorRequested" />
             </asp:View>
             <asp:View ID="vwLegacyProps" runat="server">
                 <uc10:mfbFlightProperties ID="mfbFlightProperties1" Enabled="false" runat="server" />
