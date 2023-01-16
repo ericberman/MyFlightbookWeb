@@ -961,6 +961,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flight indicates cross-country flight of more than 400NM, but route from departure airport was less than that.
+        /// </summary>
+        internal static string warningXCDistanceMoreThan400ButFlewLess {
+            get {
+                return ResourceManager.GetString("warningXCDistanceMoreThan400ButFlewLess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Flight indicates cross-country flight of more than 50NM, but route from departure airport was less than that.
         /// </summary>
         internal static string warningXCDistanceMoreThan50ButFlewLess {

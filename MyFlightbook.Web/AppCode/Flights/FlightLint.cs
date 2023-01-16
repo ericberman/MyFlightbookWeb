@@ -7,7 +7,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2020-2022 MyFlightbook LLC
+ * Copyright (c) 2020-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -324,22 +324,26 @@ namespace MyFlightbook.Lint
             bool fxcLessThan50 = le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropXCLessThan50nm);
             bool fxcMoreThan50 = le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropXCMoreThan50nm);
             bool fxcMoreThan100 = le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropXCMoreThan100nm);
+            bool fxcMoreThan400 = le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropXCMoreThan400nm);
 
             AddConditionalIssue(fxcLessThan25 && distance > 25, LintOptions.XCIssues, Resources.FlightLint.warningXCDistanceLessThan25ButFlewMore);
             AddConditionalIssue(fxcLessThan50 && distance > 50, LintOptions.XCIssues, Resources.FlightLint.warningXCDistanceLessThan50ButFlewMore);
             AddConditionalIssue(fxcMoreThan50 && distance < 50, LintOptions.XCIssues, Resources.FlightLint.warningXCDistanceMoreThan50ButFlewLess);
             AddConditionalIssue(fxcMoreThan100 && distance < 100, LintOptions.XCIssues, Resources.FlightLint.warningXCDistanceMoreThan100ButFlewLess);
-            AddConditionalIssue((fxcLessThan25 ? 1 : 0) + (fxcLessThan50 ? 1 : 0) + (fxcMoreThan50 ? 1 : 0) + (fxcMoreThan100 ? 1 : 0) > 1, LintOptions.XCIssues, Resources.FlightLint.warningXCInconsistentDistances);
+            AddConditionalIssue(fxcMoreThan400 && distance < 400, LintOptions.XCIssues, Resources.FlightLint.warningXCDistanceMoreThan400ButFlewLess);
+            AddConditionalIssue((fxcLessThan25 ? 1 : 0) + (fxcLessThan50 ? 1 : 0) + (fxcMoreThan50 ? 1 : 0) + (fxcMoreThan100 ? 1 : 0) + (fxcMoreThan400 ? 1 : 0) > 1, LintOptions.XCIssues, Resources.FlightLint.warningXCInconsistentDistances);
 
             decimal xcLessThan25 = le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropXCLessThan25nm);
             decimal xcLessThan50 = le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropXCLessThan50nm);
             decimal xcMoreThan50 = le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropXCMoreThan50nm);
             decimal xcMoreThan100 = le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropXCMoreThan100nm);
+            decimal xcMoreThan400 = le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropXCMoreThan400nm);
 
             AddConditionalIssue(xcLessThan25 > 0 && xcLessThan25.ToMinutes() != le.CrossCountry.ToMinutes(), LintOptions.XCIssues, Resources.FlightLint.warningXCTimeDistanceNotEqualXC);
             AddConditionalIssue(xcLessThan50 > 0 && xcLessThan50.ToMinutes() != le.CrossCountry.ToMinutes(), LintOptions.XCIssues, Resources.FlightLint.warningXCTimeDistanceNotEqualXC);
             AddConditionalIssue(xcMoreThan50 > 0 && xcMoreThan50.ToMinutes() != le.CrossCountry.ToMinutes(), LintOptions.XCIssues, Resources.FlightLint.warningXCTimeDistanceNotEqualXC);
             AddConditionalIssue(xcMoreThan100 > 0 && xcMoreThan100.ToMinutes() != le.CrossCountry.ToMinutes(), LintOptions.XCIssues, Resources.FlightLint.warningXCTimeDistanceNotEqualXC);
+            AddConditionalIssue(xcMoreThan400 > 0 && xcMoreThan400.ToMinutes() != le.CrossCountry.ToMinutes(), LintOptions.XCIssues, Resources.FlightLint.warningXCTimeDistanceNotEqualXC);
         }
 
         private void CheckPICSICDualIssues(LogbookEntryBase le)

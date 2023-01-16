@@ -419,6 +419,9 @@
   <data name="warningXCDistanceMoreThan100ButFlewLess" xml:space="preserve">
     <value>Flight indicates cross-country flight of more than 100NM, but route from departure airport was less than that</value>
   </data>
+  <data name="warningXCDistanceMoreThan400ButFlewLess" xml:space="preserve">
+    <value>Flight indicates cross-country flight of more than 400NM, but route from departure airport was less than that</value>
+  </data>
   <data name="warningXCDistanceMoreThan50ButFlewLess" xml:space="preserve">
     <value>Flight indicates cross-country flight of more than 50NM, but route from departure airport was less than that</value>
   </data>

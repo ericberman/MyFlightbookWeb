@@ -189,7 +189,8 @@ namespace MyFlightbook
             IDProp125291IPC = 699,
             IDProp125287Competency = 700,
             IDProp125287Knowledge = 701,
-            IDPropRole = 718
+            IDPropRole = 718,
+            IDPropXCMoreThan400nm = 770
         }
 
         internal static class CFPPropertyFlag
@@ -1497,7 +1498,7 @@ GROUP BY fp.idPropType;";
             foreach (CustomFlightProperty cfp in rgprops)
             {
                 // if this has been coalesced into the dictionary, use that; otherwise, use the display string.
-                string sz = d.ContainsKey(cfp.PropTypeID) ? d[cfp.PropTypeID] : (fUseHHMM ? cfp.DisplayStringHHMM : cfp.DisplayString);
+                string sz = d.TryGetValue(cfp.PropTypeID, out string value) ? value : (fUseHHMM ? cfp.DisplayStringHHMM : cfp.DisplayString);
                 if (String.IsNullOrEmpty(sz))
                     continue;
                 if (fLinkify)
@@ -1989,8 +1990,7 @@ ORDER BY f.Date Desc";
         /// <param name="idPropType"></param>
         public void RemoveItem(int idPropType)
         {
-            if (m_dictProps.ContainsKey(idPropType))
-                m_dictProps.Remove(idPropType);
+            m_dictProps.Remove(idPropType);
         }
         #endregion
     }
