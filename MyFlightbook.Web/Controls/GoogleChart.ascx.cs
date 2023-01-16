@@ -1,16 +1,12 @@
-﻿using MyFlightbook.Weather.ADDS;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2022 MyFlightbook LLC
+ * Copyright (c) 2012-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -150,7 +146,7 @@ namespace MyFlightbook.Charting
         protected void Page_Load(object sender, EventArgs e)
         {
             Page.ClientScript.RegisterClientScriptInclude("GoogleJScript", "https://www.google.com/jsapi");
-            Page.ClientScript.RegisterClientScriptInclude("gchart", ResolveClientUrl("~/public/Scripts/gchart.js?v=1"));
+            Page.ClientScript.RegisterClientScriptInclude("gchart", ResolveClientUrl("~/public/Scripts/gchart.js?v=2"));
             Page.ClientScript.RegisterClientScriptBlock(this.GetType(), "LoadGJScriptPackage", @"
 google.load('visualization', '1.1', {packages:['corechart']});
 var chartsToDraw = [];

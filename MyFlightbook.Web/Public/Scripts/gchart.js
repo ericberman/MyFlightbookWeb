@@ -1,6 +1,6 @@
 ﻿/******************************************************
  * 
- * Copyright (c) 2022 MyFlightbook LLC
+ * Copyright (c) 2022-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -14,7 +14,7 @@ function drawGChart(chartdata) {
         data.addColumn({ type: 'string', role: 'tooltip', 'p': { 'html': true } });
     if (chartdata.HasY2)
         data.addColumn(chartdata.Y2DataType, chartdata.Y2Label);
-    if (chartdata.showaverage)
+    if (chartdata.ShowAverage)
         data.addColumn('number', chartdata.AverageLabel);
 
     data.addRows(chartdata.Data);
