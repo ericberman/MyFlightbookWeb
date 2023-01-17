@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2021 MyFlightbook LLC
+ * Copyright (c) 2019-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -61,6 +61,8 @@ namespace MyFlightbook
             // Populating an object doesn't fully flesh out a custom property with its type
             foreach (CustomFlightProperty cfp in this.CustomProperties)
                 cfp.InitPropertyType(new CustomPropertyType[] { CustomPropertyType.GetCustomPropertyType(cfp.PropTypeID) });
+            // Also fix up any missing tail mappings - aircraft may have been added to the user's account since we last saved this pending flight
+            MapTail();
         }
 
         public PendingFlight(LogbookEntry le) : this()
@@ -68,6 +70,22 @@ namespace MyFlightbook
             if (le == null)
                 return;
             JsonConvert.PopulateObject(JsonConvert.SerializeObject(le, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore }), this);
+        }
+        #endregion
+
+        #region Utility
+        /// <summary>
+        /// Sets the AircraftID for the flight from the display tail number, if the aircraftID is not already set and if the tail number display can be found.
+        /// </summary>
+        public void MapTail()
+        {
+            if (AircraftID > 0 || String.IsNullOrEmpty(TailNumDisplay))
+                return;
+
+            UserAircraft ua = new UserAircraft(User);
+            Aircraft ac = ua[TailNumDisplay];
+            if (ac != null)
+                AircraftID = ac.AircraftID;
         }
         #endregion
 

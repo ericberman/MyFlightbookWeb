@@ -9,7 +9,7 @@
     <asp:MultiView ID="mvPendingFlights" runat="server" ActiveViewIndex="0">
         <asp:View ID="vwList" runat="server">
             <p>
-                <asp:Label ID="lblReviewPending" runat="server" Text="<%$ Resources: LogbookEntry,ReviewPendingFlightsPrompt %>"></asp:Label></p>
+                <asp:Label ID="lblReviewPending" runat="server" Text="<%$ Resources: LogbookEntry,ReviewPendingFlightsPrompt %>" /></p>
             <asp:GridView ID="gvPendingFlights" runat="server" AutoGenerateColumns="false" CellPadding="3" DataKeyNames="PendingID" AllowSorting="True"
                 ShowHeader="true" ShowFooter="true" UseAccessibleHeader="true" GridLines="None" CssClass="lbTable"
                 AllowPaging="false" OnSorting="gvPendingFlights_Sorting" OnRowCommand="gvPendingFlights_RowCommand">
@@ -146,6 +146,10 @@
                         </ItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField>
+                        <ItemStyle CssClass="noprint" />
+                    </asp:TemplateField>
+                    <asp:TemplateField>
+                        <ItemStyle CssClass="noprint" />
                         <HeaderStyle CssClass="headerBase gvhCentered" />
                         <ItemTemplate>
                             <asp:LinkButton ID="lnkDelete" CommandName="_Delete" CommandArgument='<%# Eval("PendingID") %>' runat="server">

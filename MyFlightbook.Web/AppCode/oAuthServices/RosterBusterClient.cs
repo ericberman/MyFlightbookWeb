@@ -13,7 +13,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2022 MyFlightbook LLC
+ * Copyright (c) 2022-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -259,6 +259,7 @@ namespace MyFlightbook.OAuth.RosterBuster
                         if (entry.ToLogbookEntry() is PendingFlight pf)
                         {
                             pf.User = szUser;
+                            pf.MapTail();   // Map the display tail to a user aircraft.
 
                             // Date is likely UTC at this point because it comes from a UTC value like departure time.
                             // Autofill will reset it to match the first (pseudo) time stamp, using the AutoFillOptions offset, but that's
