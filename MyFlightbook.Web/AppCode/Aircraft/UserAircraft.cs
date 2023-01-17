@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2022 MyFlightbook LLC
+ * Copyright (c) 2009-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -201,8 +201,8 @@ namespace MyFlightbook
         public IDictionary<string, Aircraft> DictAircraftForUser()
         {
             Profile pf = Profile.GetUser(User);
-            if (pf.AssociatedData.ContainsKey(szCachedDictionary))
-                return (IDictionary<string, Aircraft>) pf.AssociatedData[szCachedDictionary];
+            if (pf.AssociatedData.TryGetValue(szCachedDictionary, out object value))
+                return (IDictionary<string, Aircraft>)value;
 
             Dictionary<string, Aircraft> dictReturn = new Dictionary<string, Aircraft>();
 
@@ -322,7 +322,9 @@ namespace MyFlightbook
                 return;
 
             // Add the new aircraft first
-            FAddAircraftForUser(acNew);
+            // don't add an aircraft that's already in the list
+            if (!CheckAircraftForUser(acNew))
+                FAddAircraftForUser(acNew);
 
             // Migrate any flights, if necessary...
             if (fMigrateFlights)
