@@ -1057,13 +1057,22 @@ public partial class Controls_mfbSearchForm
     protected global::System.Web.UI.WebControls.Button btnSearch;
 
     /// <summary>
-    /// popCannedQueries control.
+    /// lblSearchPop control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::Controls_popmenu popCannedQueries;
+    protected global::System.Web.UI.WebControls.Label lblSearchPop;
+
+    /// <summary>
+    /// pnlCanned control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Panel pnlCanned;
 
     /// <summary>
     /// txtQueryName control.
@@ -1073,6 +1082,15 @@ public partial class Controls_mfbSearchForm
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.TextBox txtQueryName;
+
+    /// <summary>
+    /// btnSearchNamed control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Button btnSearchNamed;
 
     /// <summary>
     /// gvSavedQueries control.

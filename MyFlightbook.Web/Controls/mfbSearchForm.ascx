@@ -265,29 +265,31 @@
             <td style="text-align:right; vertical-align:middle;">
                 <asp:Button ID="btnReset" runat="server" Text="<%$ Resources:FlightQuery, SearchReset %>" onclick="btnReset_Click" />
                 <asp:Button ID="btnSearch" runat="server" Text="<%$ Resources:FlightQuery, SearchFindNow %>" OnClick="btnSearch_Click" />
-                <div style="vertical-align:text-bottom; display:inline-block;">
-                    <uc2:popmenu runat="server" ID="popCannedQueries">
-                        <MenuContent>
-                            <div style="padding:4px; text-align:left;">
-                                <div><% =Resources.FlightQuery.SaveQueryNamePrompt %></div>
-                                <asp:TextBox ID="txtQueryName" runat="server" />
-                                <asp:GridView ID="gvSavedQueries" BorderStyle="None" BorderWidth="0px" CellPadding="3" GridLines="None" ShowHeader="false" runat="server" AutoGenerateColumns="false" OnRowCommand="gvSavedQueries_RowCommand">
-                                    <Columns>
-                                        <asp:ButtonField ImageUrl="~/images/x.gif" ButtonType="Image" CommandName="_Delete" />
-                                        <asp:TemplateField>
-                                            <ItemTemplate>
-                                                <asp:LinkButton ID="lnkLoad" CommandName="_Load" Text='<%#: Eval("QueryName") %>' CommandArgument='<%# Container.DataItemIndex %>' runat="server" />
-                                            </ItemTemplate>
-                                         </asp:TemplateField>
-                                    </Columns>
-                                    <EmptyDataTemplate>
-                                        <%# Resources.FlightQuery.SaveQueryNoSavedQueries %>
-                                    </EmptyDataTemplate>
-                                </asp:GridView>
-                            </div>
-                        </MenuContent>
-                    </uc2:popmenu>
-                </div>
+                <asp:Label ID="lblSearchPop" runat="server">
+                    <a href="javascript:showModalById('<% =pnlCanned.ClientID %>','<%= Resources.FlightQuery.SaveQueryManage %>', 400);"><% =Resources.FlightQuery.SaveQueryManage %></a>
+                </asp:Label>
+                <asp:Panel runat="server" ID="pnlCanned" style="display:none" DefaultButton="btnSearchNamed">
+                    <div><% =Resources.FlightQuery.SaveQueryNamePrompt %></div>
+                    <div>
+                        <asp:TextBox ID="txtQueryName" runat="server" />
+                        <asp:Button ID="btnSearchNamed" runat="server" Text="<%$ Resources:FlightQuery, SaveQueryPrompt %>" OnClick="btnSearch_Click" />
+                    </div>
+                    <hr />
+                    <asp:GridView ID="gvSavedQueries" BorderStyle="None" BorderWidth="0px" CellPadding="3" GridLines="None" ShowHeader="false" runat="server" AutoGenerateColumns="false" OnRowCommand="gvSavedQueries_RowCommand">
+                        <Columns>
+                            <asp:ButtonField ImageUrl="~/images/x.gif" ButtonType="Image" CommandName="_Delete" />
+                            <asp:TemplateField>
+                                <ItemTemplate>
+                                    <asp:LinkButton ID="lnkLoad" CommandName="_Load" Text='<%#: Eval("QueryName") %>' CommandArgument='<%# Container.DataItemIndex %>' runat="server" />
+                                </ItemTemplate>
+                                </asp:TemplateField>
+                        </Columns>
+                        <EmptyDataTemplate>
+                            <%# Resources.FlightQuery.SaveQueryNoSavedQueries %>
+                        </EmptyDataTemplate>
+                    </asp:GridView>
+                    
+                </asp:Panel>
             </td>
         </tr>
     </table>

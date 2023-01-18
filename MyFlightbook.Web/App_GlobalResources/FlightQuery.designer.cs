@@ -898,7 +898,16 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Name this query for future use:.
+        ///   Looks up a localized string similar to Saved Searches.
+        /// </summary>
+        internal static string SaveQueryManage {
+            get {
+                return ResourceManager.GetString("SaveQueryManage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name this search:.
         /// </summary>
         internal static string SaveQueryNamePrompt {
             get {
@@ -907,7 +916,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You have no saved queries.
+        ///   Looks up a localized string similar to You have no saved searches.
         /// </summary>
         internal static string SaveQueryNoSavedQueries {
             get {
@@ -916,7 +925,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save....
+        ///   Looks up a localized string similar to Save and Search.
         /// </summary>
         internal static string SaveQueryPrompt {
             get {

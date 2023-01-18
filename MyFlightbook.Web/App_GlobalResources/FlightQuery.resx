@@ -311,13 +311,13 @@
     <value>Total time</value>
   </data>
   <data name="SaveQueryNamePrompt" xml:space="preserve">
-    <value>Name this query for future use:</value>
+    <value>Name this search:</value>
   </data>
   <data name="SaveQueryPrompt" xml:space="preserve">
-    <value>Save...</value>
+    <value>Save and Search</value>
   </data>
   <data name="SaveQueryNoSavedQueries" xml:space="preserve">
-    <value>You have no saved queries</value>
+    <value>You have no saved searches</value>
   </data>
   <data name="FlightFeatureHasImages" xml:space="preserve">
     <value>Images or videos</value>
@@ -417,5 +417,8 @@
   </data>
   <data name="SearchTipsToolTip" xml:space="preserve">
     <value>Searching Tips</value>
+  </data>
+  <data name="SaveQueryManage" xml:space="preserve">
+    <value>Saved Searches</value>
   </data>
 </root>

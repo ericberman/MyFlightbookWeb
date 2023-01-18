@@ -10,7 +10,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2022 MyFlightbook LLC
+ * Copyright (c) 2008-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -52,7 +52,7 @@ public partial class Controls_mfbSearchForm : UserControl
         set
         {
             m_szUser = value;
-            popCannedQueries.Visible = (string.CompareOrdinal(Page.User.Identity.Name, m_szUser) == 0);
+            lblSearchPop.Visible = (string.CompareOrdinal(Page.User.Identity.Name, m_szUser) == 0);
         }
     }
     #endregion
