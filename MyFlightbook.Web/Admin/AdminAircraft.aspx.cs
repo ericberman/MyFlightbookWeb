@@ -11,7 +11,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2022 MyFlightbook LLC
+ * Copyright (c) 2009-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -166,24 +166,6 @@ namespace MyFlightbook.Web.Admin
                             t.RenderControl(tw);
                         });
             }
-        }
-
-        [WebMethod(EnableSession = true)]
-        public static void addMissing(string username, int idAircraft)
-        {
-            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name) || !Profile.GetUser(username).CanManageData)
-                throw new MyFlightbookException("Unauthenticated call to addMissing");
-
-            if (String.IsNullOrEmpty(username))
-                throw new ArgumentNullException(nameof(username));
-
-            Aircraft ac = new Aircraft(idAircraft);
-
-            if (String.IsNullOrWhiteSpace(ac.TailNumber) || ac.AircraftID <= 0)
-                throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "No aircraft with ID {0}", idAircraft));
-
-            UserAircraft ua = new UserAircraft(username);
-            ua.FAddAircraftForUser(ac);
         }
 
         [WebMethod(EnableSession = true)]
@@ -458,30 +440,6 @@ WHERE (tailnumber LIKE 'SIM%' OR tailnumber LIKE '#%' OR InstanceType <> 1) ";
             dbh.CommandText = szSQLDeleteVirtualMaintenanceDates;
             dbh.DoNonQuery();
             lblMaintenanceResult.Text = String.Format(CultureInfo.CurrentCulture, "Maintenance cleaned up, {0} maintenance logs cleaned, all virtual aircraft had dates nullified", lst.Count);
-        }
-
-        protected void btnAircraftMissingFromProfile_Click(object sender, EventArgs e)
-        {
-            mvAircraftIssues.SetActiveView(vwMissingAircraft);
-            gvMissingAircraft.DataSourceID = sqlDSMissingAicraft.ID;
-            gvMissingAircraft.DataBind();
-        }
-
-        protected void sqlDSMissingAicraft_Selecting(object sender, SqlDataSourceSelectingEventArgs e)
-        {
-            if (e != null)
-                e.Command.CommandTimeout = 240; // can be slow!!!
-        }
-
-        protected void gvMissingAircraft_RowDataBound(object sender, GridViewRowEventArgs e)
-        {
-            if (e == null)
-                throw new ArgumentNullException(nameof(e));
-            if (e.Row.RowType == DataControlRowType.DataRow)
-            {
-                HyperLink h = (HyperLink)e.Row.FindControl("lnkAddMissingAircraft");
-                h.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:addMissing(\'{0}\', \'{1}\', {2});", h.ClientID, DataBinder.Eval(e.Row.DataItem, "username"), DataBinder.Eval(e.Row.DataItem, "idaircraft"));
-            }
         }
 
         const string szKeyVSMapModels = "VSModelMapping";

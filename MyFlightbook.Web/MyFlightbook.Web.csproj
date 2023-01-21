@@ -973,6 +973,7 @@
     <Content Include="Secure\login.aspx" />
     <Content Include="SecurityError.aspx" />
     <Content Include="Shunt.aspx" />
+    <Content Include="Support\2023-01-21 - Issue1050 FK for UserAircraft.sql" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -3148,7 +3149,6 @@
     <Folder Include="Areas\mvc\Data\" />
     <Folder Include="Areas\mvc\Views\MFBFooter\" />
     <Folder Include="Properties\PublishProfiles\" />
-    <Folder Include="Support\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_GlobalResources\FlightLint.resx">

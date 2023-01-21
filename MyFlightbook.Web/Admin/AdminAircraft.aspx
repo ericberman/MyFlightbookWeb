@@ -196,12 +196,6 @@
                     <td>Remove maintainence for virtual aircraft (sims and generic). <asp:Label ID="lblMaintenanceResult" runat="server" EnableViewState="false" />
                     </td>
                 </tr>
-                <tr>
-                    <td>
-                        <asp:Button ID="btnAircraftMissingFromProfile" runat="server" Width="100%" OnClick="btnAircraftMissingFromProfile_Click" Text="Missing User Aircraft" /></td>
-                    <td>Finds any aircraft that are used in flights but aren't in that user's aircraft list.
-                    </td>
-                </tr>
                 <tr style="vertical-align: top">
                     <td>
                         <div>
@@ -447,7 +441,7 @@ ORDER BY tailnormal ASC, version, numUsers DESC, idaircraft ASC"
                             </p>
                         </EmptyDataTemplate>
                     </asp:GridView>
-                    <asp:SqlDataSource ID="sqlOrphanedAircraft" runat="server" OnSelecting="sqlDSMissingAicraft_Selecting"
+                    <asp:SqlDataSource ID="sqlOrphanedAircraft" runat="server"
                         ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>"
                         ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" SelectCommand="SELECT ac.*, m.* 
                                         FROM aircraft ac 
@@ -455,9 +449,8 @@ ORDER BY tailnormal ASC, version, numUsers DESC, idaircraft ASC"
                                         WHERE ac.idaircraft in (
                                         SELECT ac.idaircraft
                                         FROM aircraft ac 
-                                        LEFT JOIN flights f ON f.idaircraft=ac.idaircraft
                                         LEFT JOIN useraircraft ua ON ua.idaircraft=ac.idaircraft
-                                        WHERE f.idflight IS NULL AND ua.idaircraft IS NULL)">
+                                        WHERE ua.idaircraft IS NULL)">
                         <DeleteParameters>
                             <asp:Parameter Direction="Input" Name="idaircraft" Type="Int32" />
                         </DeleteParameters>
@@ -511,7 +504,7 @@ ORDER BY tailnormal ASC, version, numUsers DESC, idaircraft ASC"
                         </Columns>
                     </asp:GridView>
                     <div id="pnlFlightContent" style="display:none;" />
-                    <asp:SqlDataSource ID="sqlPseudoGeneric" runat="server" OnSelecting="sqlDSMissingAicraft_Selecting"
+                    <asp:SqlDataSource ID="sqlPseudoGeneric" runat="server"
                         ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>"
                         ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>"
                         SelectCommand="SELECT ac.tailnumber, ac.idaircraft, m.model, m.idmodel, man.manufacturer, count(f.idflight) AS numFlights
@@ -573,37 +566,6 @@ ORDER BY tailnumber ASC"></asp:SqlDataSource>
                             <asp:ButtonField CommandName="_MapModel" ButtonType="Link" Text="Map it" />
                         </Columns>
                     </asp:GridView>
-                </asp:View>
-                <asp:View ID="vwMissingAircraft" runat="server">
-                    <asp:GridView ID="gvMissingAircraft" runat="server" AutoGenerateColumns="false" OnRowDataBound="gvMissingAircraft_RowDataBound">
-                        <EmptyDataTemplate>
-                            <p>No missing aircraft!</p>
-                        </EmptyDataTemplate>
-                        <Columns>
-                            <asp:BoundField DataField="Username" HeaderText="User" />
-                            <asp:HyperLinkField DataTextField="idaircraft" HeaderText="AircraftID" Target="_blank" DataNavigateUrlFields="idaircraft" DataNavigateUrlFormatString="~/Member/EditAircraft.aspx?id={0}&a=1" />
-                            <asp:BoundField DataField="numFlights" HeaderText="# of flights" />
-                            <asp:TemplateField>
-                                <ItemTemplate>
-                                    <asp:HyperLink ID="lnkAddMissingAircraft" runat="server" Text="Fix it" />
-                                </ItemTemplate>
-                            </asp:TemplateField>
-                        </Columns>
-                    </asp:GridView>
-                    <asp:SqlDataSource ID="sqlDSMissingAicraft" runat="server" 
-                        ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>"
-                        ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>"
-                        SelectCommand="SELECT 
-    f.username, f.idaircraft, COUNT(f.idflight) AS numFlights
-FROM
-    flights f
-        LEFT JOIN
-    useraircraft ua ON f.idaircraft = ua.idaircraft
-        AND f.username = ua.username
-WHERE
-    ua.idaircraft IS NULL
-GROUP BY f.username , f.idaircraft" OnSelecting="sqlDSMissingAicraft_Selecting">
-                    </asp:SqlDataSource>
                 </asp:View>
             </asp:MultiView>
         </ContentTemplate>

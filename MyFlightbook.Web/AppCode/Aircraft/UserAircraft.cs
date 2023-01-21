@@ -289,7 +289,11 @@ namespace MyFlightbook
         /// <returns>True for success</returns>
         public void FAddAircraftForUser(Aircraft ac)
         {
-            DBHelper dbh = new DBHelper("REPLACE INTO useraircraft SET Flags=?acFlags, PrivateNotes=?userNotes, DefaultImage=?defImg, TemplateIDs=?templates, userName=?username, idAircraft=?AircraftID");
+            // Issue #1050: support foreign-key constraint for flights.
+            // We can't use replace into because that does a delete, which violates the constraint
+            // Instead, use Insert Into/On Duplicate Key
+            DBHelper dbh = new DBHelper(@"INSERT INTO useraircraft (Flags, PrivateNotes, DefaultImage, TemplateIDs, userName, IDAircraft) VALUES (?acFlags, ?userNotes, ?defImg, ?templates, ?username, ?AircraftID)
+ON DUPLICATE KEY UPDATE flags=?acFlags, privatenotes=?userNotes, defaultimage=?defImg, templateids=?templates");
             dbh.DoNonQuery((comm) =>
             {
                 comm.Parameters.AddWithValue("username", User);
