@@ -765,12 +765,16 @@ namespace MyFlightbook.AircraftControls
             ac.PublicNotes = txtPublicNotes.Text;
             ac.DefaultImage = mfbIl.DefaultImage;
 
-            // Preserve any flags
+            // Preserve any flags and templates
             if (!ac.IsNew)
             {
                 Aircraft acExisting = ua[AircraftID];
                 if (acExisting != null)
                     ac.CopyFlags(acExisting);
+                // Issue #1055 - preserve existing templates.
+                ac.DefaultTemplates.Clear();
+                foreach (int idtemplate in acExisting.DefaultTemplates)
+                    ac.DefaultTemplates.Add(idtemplate);
             }
 
             try
