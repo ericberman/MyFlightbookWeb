@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2022 MyFlightbook LLC
+ * Copyright (c) 2007-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -30,11 +30,12 @@ namespace MyFlightbook.MemberPages
             if (HttpContext.Current == null || HttpContext.Current.User == null || HttpContext.Current.User.Identity == null || !HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
                 throw new MyFlightbookException("You must be authenticated to make this call");
 
-            UserAircraft ua = new UserAircraft(HttpContext.Current.User.Identity.Name);
-            Aircraft ac = new Aircraft(idAircraft);
-            if (ac.AircraftID == Aircraft.idAircraftUnknown)
+            if (idAircraft <= 0)
                 throw new MyFlightbookException("Invalid aircraft ID");
-            if (!ua.CheckAircraftForUser(ac))
+
+            UserAircraft ua = new UserAircraft(HttpContext.Current.User.Identity.Name);
+            Aircraft ac = ua[idAircraft];
+            if (ac == null || ac.AircraftID == Aircraft.idAircraftUnknown)
                 throw new MyFlightbookException("This is not your aircraft");
 
             ac.HideFromSelection = !fIsActive;
@@ -53,11 +54,12 @@ namespace MyFlightbook.MemberPages
             if (HttpContext.Current == null || HttpContext.Current.User == null || HttpContext.Current.User.Identity == null || !HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
                 throw new MyFlightbookException("You must be authenticated to make this call");
 
-            UserAircraft ua = new UserAircraft(HttpContext.Current.User.Identity.Name);
-            Aircraft ac = new Aircraft(idAircraft);
-            if (ac.AircraftID == Aircraft.idAircraftUnknown)
+            if (idAircraft <= 0)
                 throw new MyFlightbookException("Invalid aircraft ID");
-            if (!ua.CheckAircraftForUser(ac))
+
+            UserAircraft ua = new UserAircraft(HttpContext.Current.User.Identity.Name);
+            Aircraft ac = ua[idAircraft];
+            if (ac == null || ac.AircraftID == Aircraft.idAircraftUnknown)
                 throw new MyFlightbookException("This is not your aircraft");
 
             if (!Enum.TryParse(Role, true, out Aircraft.PilotRole role))
