@@ -1037,6 +1037,9 @@
     <Compile Include="AppCode\Aircraft\Makes.cs" />
     <Compile Include="AppCode\Aircraft\Manufacturer.cs" />
     <Compile Include="AppCode\Aircraft\UserAircraft.cs" />
+    <Compile Include="AppCode\AjaxSupport.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="AppCode\Charting\GoogleChart.cs" />
     <Compile Include="AppCode\Clubs\Clubs.cs" />
     <Compile Include="AppCode\Clubs\Schedule.cs" />
@@ -2248,10 +2251,6 @@
     </Compile>
     <Compile Include="Member\Airports.aspx.designer.cs">
       <DependentUpon>Airports.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Member\Ajax.asmx.cs">
-      <DependentUpon>Ajax.asmx</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Member\BrowseTemplates.aspx.cs">
       <DependentUpon>BrowseTemplates.aspx</DependentUpon>

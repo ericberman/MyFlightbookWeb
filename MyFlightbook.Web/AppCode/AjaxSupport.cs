@@ -16,7 +16,7 @@ using System.Web.Services;
  *
 *******************************************************/
 
-namespace MyFlightbook.Web.Member
+namespace MyFlightbook.Web.Ajax
 {
     /// <summary>
     /// Provides AUTHENTICATED AJAX support for the Website.  NOT FOR EXTERNAL CONSUMPTION!!!  These APIs may change at any point.
@@ -26,7 +26,7 @@ namespace MyFlightbook.Web.Member
     [ServiceContract]
     [System.Web.Script.Services.ScriptService]
     [System.ComponentModel.ToolboxItem(false)]
-    public class Ajax : System.Web.Services.WebService
+    public class MyFlightbookAjax : System.Web.Services.WebService
     {
         private static void CheckAuth()
         {
@@ -319,7 +319,7 @@ namespace MyFlightbook.Web.Member
             DateTime dtFEnd = fsEnd.SafeParseDate(DateTime.MinValue);
             decimal totalTime = fUseHHMM ? szTotal.DecimalFromHHMM() : decimal.Parse(szTotal, NumberStyles.Any, CultureInfo.CurrentCulture);
 
-            decimal elapsedFlight = (dtFEnd.HasValue() && dtFStart.HasValue() && dtFEnd.CompareTo(dtFStart) > 0) ? (decimal) dtFEnd.Subtract(dtFStart).TotalHours : 0;
+            decimal elapsedFlight = (dtFEnd.HasValue() && dtFStart.HasValue() && dtFEnd.CompareTo(dtFStart) > 0) ? (decimal)dtFEnd.Subtract(dtFStart).TotalHours : 0;
 
             decimal taxi = totalTime - elapsedFlight;
             return taxi.FormatDecimal(fUseHHMM);
