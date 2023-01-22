@@ -770,11 +770,13 @@ namespace MyFlightbook.AircraftControls
             {
                 Aircraft acExisting = ua[AircraftID];
                 if (acExisting != null)
+                {
                     ac.CopyFlags(acExisting);
-                // Issue #1055 - preserve existing templates.
-                ac.DefaultTemplates.Clear();
-                foreach (int idtemplate in acExisting.DefaultTemplates)
-                    ac.DefaultTemplates.Add(idtemplate);
+                    // Issue #1055 - preserve existing templates.
+                    ac.DefaultTemplates.Clear();
+                    foreach (int idtemplate in acExisting.DefaultTemplates)
+                        ac.DefaultTemplates.Add(idtemplate);
+                }
             }
 
             try
