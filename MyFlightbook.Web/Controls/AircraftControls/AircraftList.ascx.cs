@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2018-2022 MyFlightbook LLC
+ * Copyright (c) 2018-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -33,9 +33,6 @@ namespace MyFlightbook.AircraftControls
         }
 
         public event EventHandler<CommandEventArgs> AircraftDeleted;
-
-        public event EventHandler<EventArgs> AircraftPrefChanged;
-
         public event EventHandler<AircraftEventArgs> MigrateAircraft;
 
         public bool EnableAircraftViewState
@@ -47,7 +44,7 @@ namespace MyFlightbook.AircraftControls
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            Page.ClientScript.RegisterClientScriptInclude(GetType(), "AircraftContext", ResolveClientUrl("~/public/Scripts/aircraftcontext.js"));
+            Page.ClientScript.RegisterClientScriptInclude(GetType(), "AircraftContext", ResolveClientUrl("~/public/Scripts/aircraftcontext.js?v=1"));
         }
 
         public void gvAircraft_OnRowDataBound(Object sender, GridViewRowEventArgs e)
@@ -85,15 +82,15 @@ namespace MyFlightbook.AircraftControls
 
                 CheckBox ckIsFavorite = (CheckBox)popup.FindControl("ckShowInFavorites");
                 ckIsFavorite.Checked = !ac.HideFromSelection;
-                ckIsFavorite.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:toggleFavorite({0},this.checked,'{1}');", ac.AircraftID, ResolveClientUrl("~/Member/Aircraft.aspx/SetActive"));
+                ckIsFavorite.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:toggleFavorite({0},this.checked,'{1}');", ac.AircraftID, ResolveClientUrl("~/Member/Ajax.asmx/SetActive"));
                 CheckBox ckAddName = (CheckBox)popup.FindControl("ckAddNameAsPIC");
                 ckAddName.Checked = ac.CopyPICNameWithCrossfill;
                 ckAddName.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:document.getElementById(\"{0}\").click();", rbRolePIC.ClientID);  // clicking the "Add Name" checkbox should effectively click the PIC checkbox.
 
-                rbRoleNone.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:setRole({0},\"{1}\",false,document.getElementById(\"{2}\"),\"{3}\");", ac.AircraftID, Aircraft.PilotRole.None.ToString(), ckAddName.ClientID, ResolveClientUrl("~/Member/Aircraft.aspx/SetRole"));
-                rbRoleCFI.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:setRole({0},\"{1}\",false,document.getElementById(\"{2}\"),\"{3}\");", ac.AircraftID, Aircraft.PilotRole.CFI.ToString(), ckAddName.ClientID, ResolveClientUrl("~/Member/Aircraft.aspx/SetRole"));
-                rbRoleSIC.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:setRole({0},\"{1}\",false,document.getElementById(\"{2}\"),\"{3}\");", ac.AircraftID, Aircraft.PilotRole.SIC.ToString(), ckAddName.ClientID, ResolveClientUrl("~/Member/Aircraft.aspx/SetRole"));
-                rbRolePIC.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:setRole({0},\"{1}\",document.getElementById(\"{2}\").checked, document.getElementById(\"{3}\"),\"{4}\");", ac.AircraftID, Aircraft.PilotRole.PIC.ToString(), ckAddName.ClientID, ckAddName.ClientID, ResolveClientUrl("~/Member/Aircraft.aspx/SetRole"));
+                rbRoleNone.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:setRole({0},\"{1}\",false,document.getElementById(\"{2}\"),\"{3}\");", ac.AircraftID, Aircraft.PilotRole.None.ToString(), ckAddName.ClientID, ResolveClientUrl("~/Member/Ajax.asmx/SetRole"));
+                rbRoleCFI.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:setRole({0},\"{1}\",false,document.getElementById(\"{2}\"),\"{3}\");", ac.AircraftID, Aircraft.PilotRole.CFI.ToString(), ckAddName.ClientID, ResolveClientUrl("~/Member/Ajax.asmx/SetRole"));
+                rbRoleSIC.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:setRole({0},\"{1}\",false,document.getElementById(\"{2}\"),\"{3}\");", ac.AircraftID, Aircraft.PilotRole.SIC.ToString(), ckAddName.ClientID, ResolveClientUrl("~/Member/Ajax.asmx/SetRole"));
+                rbRolePIC.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:setRole({0},\"{1}\",document.getElementById(\"{2}\").checked, document.getElementById(\"{3}\"),\"{4}\");", ac.AircraftID, Aircraft.PilotRole.PIC.ToString(), ckAddName.ClientID, ckAddName.ClientID, ResolveClientUrl("~/Member/Ajax.asmx/SetRole"));
 
                 ((Label)popup.FindControl("lblOptionHeader")).Text = String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.optionHeader, ac.DisplayTailnumber);
 
@@ -118,10 +115,12 @@ namespace MyFlightbook.AircraftControls
                     rpt.DataBind();
                 }
 
-                Controls_mfbSelectTemplates selectTemplates = (Controls_mfbSelectTemplates)popup.FindControl("mfbSelectTemplates");
+                mfbSelectTemplates selectTemplates = (mfbSelectTemplates)popup.FindControl("mfbSelectTemplates");
                 foreach (int i in ac.DefaultTemplates)
                     selectTemplates.AddTemplate(i);
 
+                // set up for web service rather than postback
+                selectTemplates.ToggleClientScript = String.Format(CultureInfo.InvariantCulture, "toggleTemplate({0}, {{0}}, document.getElementById('{{1}}').checked, '{1}')", ac.AircraftID, VirtualPathUtility.ToAbsolute("~/Member/Ajax.asmx/AddRemoveTemplate"));
                 selectTemplates.Refresh();
 
                 if (IsAdminMode)
@@ -189,37 +188,9 @@ namespace MyFlightbook.AircraftControls
             if (sender == null)
                 throw new ArgumentNullException(nameof(sender));
 
-            Controls_mfbSelectTemplates selectTemplates = sender as Controls_mfbSelectTemplates;
+            mfbSelectTemplates selectTemplates = sender as mfbSelectTemplates;
             if (!selectTemplates.GroupedTemplates.Any())
                 selectTemplates.NamingContainer.FindControl("pnlTemplates").Visible = false;
-        }
-
-        protected void mfbSelectTemplates_TemplateSelected(object sender, PropertyTemplateEventArgs e)
-        {
-            if (sender == null)
-                throw new ArgumentNullException(nameof(sender));
-            if (e == null)
-                throw new ArgumentNullException(nameof(e));
-
-            Aircraft ac = AircraftFromControl(sender as Control);
-            ac.DefaultTemplates.Add(e.TemplateID);
-            UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
-            ua.FAddAircraftForUser(ac);
-            AircraftPrefChanged?.Invoke(this, e);
-        }
-
-        protected void mfbSelectTemplates_TemplateUnselected(object sender, PropertyTemplateEventArgs e)
-        {
-            if (sender == null)
-                throw new ArgumentNullException(nameof(sender));
-            if (e == null)
-                throw new ArgumentNullException(nameof(e));
-
-            Aircraft ac = AircraftFromControl(sender as Control);
-            ac.DefaultTemplates.Remove(e.TemplateID);
-            UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
-            ua.FAddAircraftForUser(ac);
-            AircraftPrefChanged?.Invoke(this, e);
         }
 
         protected void lnkMigrate_Click(object sender, EventArgs e)

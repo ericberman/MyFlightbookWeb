@@ -111,7 +111,7 @@ namespace MyFlightbook.Controls.FlightEditing
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_mfbSelectTemplates mfbSelectTemplates;
+        protected global::MyFlightbook.Templates.mfbSelectTemplates mfbSelectTemplates;
 
         /// <summary>
         /// pnlProps control.

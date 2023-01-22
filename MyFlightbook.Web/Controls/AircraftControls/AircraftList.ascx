@@ -90,7 +90,7 @@
                         <asp:Panel ID="pnlTemplates" runat="server">
                             <hr />
                             <div><asp:Label ID="lblTemplates" Font-Bold="true" runat="server" Text="<%$ Resources:LogbookEntry, TemplateAircraftHeader %>"></asp:Label></div>
-                            <uc1:mfbSelectTemplates runat="server" ID="mfbSelectTemplates" IncludeAutomaticTemplates="false" OnTemplatesReady="mfbSelectTemplates_TemplatesReady" OnTemplateSelected="mfbSelectTemplates_TemplateSelected" OnTemplateUnselected="mfbSelectTemplates_TemplateUnselected" />
+                            <uc1:mfbSelectTemplates runat="server" ID="mfbSelectTemplates" IncludeAutomaticTemplates="false" OnTemplatesReady="mfbSelectTemplates_TemplatesReady" />
                         </asp:Panel>
                         <asp:Panel ID="pnlMigrate" runat="server">
                             <hr />

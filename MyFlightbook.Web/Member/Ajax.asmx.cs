@@ -11,7 +11,7 @@ using System.Web.Services;
 
 /******************************************************
  * 
- * Copyright (c) 2022 MyFlightbook LLC
+ * Copyright (c) 2022-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -30,7 +30,7 @@ namespace MyFlightbook.Web.Member
     {
         private static void CheckAuth()
         {
-            if (!HttpContext.Current.User.Identity.IsAuthenticated)
+            if (HttpContext.Current == null || HttpContext.Current.User == null || HttpContext.Current.User.Identity == null || !HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
                 throw new UnauthorizedAccessException();
         }
 
@@ -162,6 +162,78 @@ namespace MyFlightbook.Web.Member
                 return String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.HighWaterMarkTachAndHobbs, hwTach, hwHobbs);
         }
 
+        #region user-specific aircraft calls (roles, templates, active/inactive)
+        /// <summary>
+        /// Calls CheckAuth but also verifies that the specified idAircraft is in the user's aircraft list, returning the aircraft itself and the corresponding useraircraft
+        /// </summary>
+        /// <param name="idAircraft"></param>
+        /// <param name="ua"></param>
+        /// <returns></returns>
+        /// <exception cref="MyFlightbookException"></exception>
+        private static Aircraft CheckValidUserAircraft(int idAircraft, out UserAircraft ua)
+        {
+            CheckAuth();
+
+            if (idAircraft <= 0)
+                throw new MyFlightbookException("Invalid aircraft ID");
+
+            ua = new UserAircraft(HttpContext.Current.User.Identity.Name);
+            Aircraft ac = ua[idAircraft];
+            if (ac == null || ac.AircraftID == Aircraft.idAircraftUnknown)
+                throw new MyFlightbookException("This is not your aircraft");
+            return ac;
+        }
+
+        /// <summary>
+        /// Toggles the active state of a given aircraft.
+        /// </summary>
+        /// <param name="idAircraft">The ID of the aircraft to update</param>
+        /// <param name="fIsActive">Active or inactive</param>
+        [WebMethod(EnableSession = true)]
+        public void SetActive(int idAircraft, bool fIsActive)
+        {
+            Aircraft ac = CheckValidUserAircraft(idAircraft, out UserAircraft ua);
+
+            ac.HideFromSelection = !fIsActive;
+            ua.FAddAircraftForUser(ac);
+        }
+
+        /// <summary>
+        /// Sets the role for flights in the given aircraft
+        /// </summary>
+        /// <param name="idAircraft">The ID of the aircraft to update</param>
+        /// <param name="fAddPICName">True to copy the pic name when autofilling PIC</param>
+        /// <param name="Role">The role to assign</param>
+        [WebMethod(EnableSession = true)]
+        public void SetRole(int idAircraft, string Role, bool fAddPICName)
+        {
+            Aircraft ac = CheckValidUserAircraft(idAircraft, out UserAircraft ua);
+
+            if (!Enum.TryParse(Role, true, out Aircraft.PilotRole role))
+                throw new MyFlightbookException("Invalid role - " + Role);
+            ac.RoleForPilot = role;
+            ac.CopyPICNameWithCrossfill = role == Aircraft.PilotRole.PIC && fAddPICName;
+            ua.FAddAircraftForUser(ac);
+        }
+
+        /// <summary>
+        /// Sets the role for flights in the given aircraft
+        /// </summary>
+        /// <param name="idAircraft">The ID of the aircraft to update</param>
+        /// <param name="idTemplate">The ID of the template to add or remove.</param>
+        /// <param name="fAdd">True to add the template, false to remove it</param>
+        [WebMethod(EnableSession = true)]
+        public void AddRemoveTemplate(int idAircraft, int idTemplate, bool fAdd)
+        {
+            Aircraft ac = CheckValidUserAircraft(idAircraft, out UserAircraft ua);
+
+            if (fAdd)
+                ac.DefaultTemplates.Add(idTemplate);
+            else
+                ac.DefaultTemplates.Remove(idTemplate);
+            ua.FAddAircraftForUser(ac);
+        }
+        #endregion
         #endregion
 
         #region LogbookNew stuff

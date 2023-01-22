@@ -190,7 +190,7 @@
                         <h2><asp:Label ID="lblGroupNames" runat="server" Text='<%# Eval("GroupTitle") %>' /> 
                             <asp:Label ID="lblGroupCount" runat="server" style="font-size: smaller" 
                                 Text='<%# String.IsNullOrEmpty((string) Eval("GroupTitle")) ? string.Empty : String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Aircraft.MyAircraftAircraftGroupCount, ((IEnumerable<Aircraft>)Eval("MatchingAircraft")).Count()) %>' /></h2>
-                        <uc1:AircraftList runat="server" ID="AircraftList" OnAircraftDeleted="AircraftList_AircraftDeleted" OnAircraftPrefChanged="AircraftList_AircraftPrefChanged" OnMigrateAircraft="AircraftList_MigrateAircraft" />
+                        <uc1:AircraftList runat="server" ID="AircraftList" OnAircraftDeleted="AircraftList_AircraftDeleted" OnMigrateAircraft="AircraftList_MigrateAircraft" />
                     </ItemTemplate>
                 </asp:Repeater>
             </div>

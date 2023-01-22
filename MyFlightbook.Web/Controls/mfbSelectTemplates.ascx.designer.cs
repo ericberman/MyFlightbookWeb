@@ -7,17 +7,20 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-
-
-public partial class Controls_mfbSelectTemplates
+namespace MyFlightbook.Templates
 {
 
-    /// <summary>
-    /// rptGroups control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Repeater rptGroups;
+
+    public partial class mfbSelectTemplates
+    {
+
+        /// <summary>
+        /// rptGroups control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptGroups;
+    }
 }
