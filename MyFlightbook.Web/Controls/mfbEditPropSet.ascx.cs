@@ -76,28 +76,32 @@ namespace MyFlightbook.Controls.FlightEditing
             }
         }
 
+        private HashSet<PropertyTemplate> mActiveTemplates = null;
+
         protected HashSet<PropertyTemplate> ActiveTemplates
         {
             get
             {
-                if (ViewState[vsPropTemplates] == null)
+                if (mActiveTemplates == null)
+                    mActiveTemplates = (HashSet<PropertyTemplate>) ViewState[vsPropTemplates];
+                if (mActiveTemplates == null)
                 {
                     // Initialize the hashset with any default property templates; if none found, use the MRU template
-                    HashSet<PropertyTemplate> hs = new HashSet<PropertyTemplate>();
+                    mActiveTemplates = new HashSet<PropertyTemplate>();
                     if (Page.User.Identity.IsAuthenticated)
                     {
                         IEnumerable<PropertyTemplate> rgpt = UserPropertyTemplate.TemplatesForUser(Username);
                         foreach (PropertyTemplate pt in rgpt)
                             if (pt.IsDefault)
-                                hs.Add(pt);
+                                mActiveTemplates.Add(pt);
 
-                        if (hs.Count == 0)
-                            hs.Add(new MRUPropertyTemplate(Username));
+                        if (mActiveTemplates.Count == 0)
+                            mActiveTemplates.Add(new MRUPropertyTemplate(Username));
                     }
-                    mfbSelectTemplates.AddTemplates(hs);
-                    ViewState[vsPropTemplates] = hs;
+                    mfbSelectTemplates.AddTemplates(mActiveTemplates);
+                    ViewState[vsPropTemplates] = mActiveTemplates;
                 }
-                return (HashSet<PropertyTemplate>)ViewState[vsPropTemplates];
+                return mActiveTemplates;
             }
         }
 
@@ -148,7 +152,12 @@ namespace MyFlightbook.Controls.FlightEditing
 
         public void RemoveTemplate(int id)
         {
-            ActiveTemplates.RemoveWhere(pt => pt.ID == id);
+            // Remove for the hashset seems to fail for reasons I can't quite determine (Hashcodes changing?)
+            List<PropertyTemplate> lst = new List<PropertyTemplate>(ActiveTemplates);
+            ActiveTemplates.Clear();
+            foreach (PropertyTemplate pt in lst)
+                if (pt.ID != id)
+                    ActiveTemplates.Add(pt);
             mfbSelectTemplates.RemoveTemplate(id);
         }
 
@@ -358,7 +367,7 @@ namespace MyFlightbook.Controls.FlightEditing
             if (e == null)
                 throw new ArgumentNullException(nameof(e));
             RemoveTemplate(e.TemplateID);
-            Refresh();
+            RefreshList(null, true);
         }
 
         protected void mfbSelectTemplates_TemplatesReady(object sender, EventArgs e)
