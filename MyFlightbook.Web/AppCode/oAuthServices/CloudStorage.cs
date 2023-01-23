@@ -19,7 +19,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2022 MyFlightbook LLC
+ * Copyright (c) 2016-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -206,9 +206,9 @@ namespace MyFlightbook.CloudStorage
                     // JSonConvert can't deserialize space-delimited scopes into a hashset, so we need to do that manually.  Uggh.
                     Dictionary<string, string> d = JsonConvert.DeserializeObject<Dictionary<string, string>>(result);
 
-                    AuthorizationState authstate = new AuthorizationState(d.ContainsKey("scope") ? OAuthUtilities.SplitScopes(d["scope"]) : null)
+                    AuthorizationState authstate = new AuthorizationState(d.TryGetValue("scope", out string scopes) ? OAuthUtilities.SplitScopes(scopes) : null)
                     {
-                        AccessToken = d.ContainsKey("access_token") ? d["access_token"] : string.Empty,
+                        AccessToken = d.TryGetValue("access_token", out string acctok) ? acctok : string.Empty,
                         AccessTokenIssueDateUtc = DateTime.UtcNow
                     };
                     if (d.ContainsKey("expires_in"))
@@ -216,7 +216,7 @@ namespace MyFlightbook.CloudStorage
                         if (int.TryParse(d["expires_in"], NumberStyles.Integer, CultureInfo.InvariantCulture, out int exp))
                             authstate.AccessTokenExpirationUtc = DateTime.UtcNow.AddSeconds(exp);
                     }
-                    authstate.RefreshToken = d.ContainsKey("refresh_token") ? d["refresh_token"] : string.Empty;
+                    authstate.RefreshToken = d.TryGetValue("refresh_token", out string reftok) ? reftok : string.Empty;
 
                     return authstate;
                 }

@@ -19,7 +19,7 @@ using System.Web.UI.HtmlControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2021 MyFlightbook LLC
+ * Copyright (c) 2008-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -365,7 +365,7 @@ namespace MyFlightbook
                     {
                         LogbookEntry le = new LogbookEntry(dr, szUser, LogbookEntry.LoadTelemetryOption.LoadAll);
                         le.FlightImages.Clear();
-                        IEnumerable<MFBImageInfo> rgmfbii = (dImages.ContainsKey(le.FlightID)) ? dImages[le.FlightID] : new Collection<MFBImageInfo>();
+                        IEnumerable<MFBImageInfo> rgmfbii = (dImages.TryGetValue(le.FlightID, out Collection<MFBImageInfo> value)) ? value : new Collection<MFBImageInfo>();
                         foreach (MFBImageInfo mfbii in rgmfbii)
                             le.FlightImages.Add(mfbii);
 

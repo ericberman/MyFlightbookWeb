@@ -12,7 +12,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2022 MyFlightbook LLC
+ * Copyright (c) 2009-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -347,7 +347,10 @@ namespace MyFlightbook.Subscriptions
             }
             catch (UnauthorizedAccessException ex)
             {
-                sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Dropbox FAILED for user (System.UnauthorizedAccessException) {0}: {1}\r\n\r\n{2}", pf.UserName, ex.Message, ex.StackTrace);
+                sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Dropbox FAILED for user (System.UnauthorizedAccessException) {0}: {1}\r\n\r\n{2}\r\n\r\n", pf.UserName, ex.Message, ex.StackTrace);
+                if (ex.InnerException != null)
+                    sbFailures.AppendFormat(CultureInfo.CurrentCulture, "  Inner Exception (type {0}): {1}\r\n\r\n{2}\r\n\r\n", ex.InnerException.GetType().ToString(), ex.InnerException.Message ?? "(no message)", ex.InnerException.StackTrace ?? string.Empty);
+
                 util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.DropboxFailureSubject, ActiveBrand),
                     Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.DropboxFailure, pf.PreferredGreeting, ex.Message, string.Empty), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
             }
