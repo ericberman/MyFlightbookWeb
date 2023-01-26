@@ -2438,7 +2438,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int)CustomPropertyType.KnownProperties.ID
                         lstActive.Sort((ac1, ac2) =>
                         {
                             if (ac1.Stats.LatestDate.Value.CompareTo(ac2.Stats.LatestDate) == 0)
-                                return ac1.TailNumber.CompareCurrentCulture(ac2.TailNumber);
+                                return ac1.SearchTail.CompareCurrentCulture(ac2.SearchTail);
                             else
                                 return ac2.Stats.LatestDate.Value.CompareTo(ac1.Stats.LatestDate);
                         });
