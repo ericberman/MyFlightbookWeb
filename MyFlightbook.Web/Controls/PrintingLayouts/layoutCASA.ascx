@@ -49,7 +49,7 @@
                     </td>
                     <td><%#: Eval("TailNumOrSimDisplay") %></td>
                     <td><%#: Eval("PICName") %></td>
-                    <td><%#: Eval("SICName") %> <%#: Eval("StudentName") %></td>
+                    <td><%#: CrewNames((LogbookEntryDisplay) Container.DataItem) %></td>
                     <td>
                         <span style="text-transform:uppercase; font-style:italic; font-weight:bold;"><%#: Eval("Route") %></span>
                         <span style="white-space:pre-line;" dir="auto"><%# Eval("RedactedCommentWithReplacedApproaches") %></span>
