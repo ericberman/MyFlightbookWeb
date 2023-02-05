@@ -10,7 +10,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2022 MyFlightbook LLC
+ * Copyright (c) 2013-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -173,6 +173,25 @@ namespace MyFlightbook.RatingsProgress
             Note = note;
             Threshold = threshold;
             FARRef = farref;
+        }
+
+        /// <summary>
+        /// New milestone item based on an existing one
+        /// </summary>
+        public MilestoneItem(MilestoneItem mi)
+        {
+            InitObject();
+            if (mi == null)
+                return;
+            Type = mi.Type;
+            Title = mi.Title;
+            Note = mi.Note;
+            Threshold = mi.Threshold;
+            FARRef = mi.FARRef;
+            Progress= mi.Progress;
+            MatchingEventText = mi.MatchingEventText;
+            MatchingEventID= mi.MatchingEventID;
+            TrainingDeviceContribution= mi.TrainingDeviceContribution;
         }
         #endregion
 

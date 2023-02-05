@@ -2851,7 +2851,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [61.65(h) and 61.65(i)](https://www.law.cornell.edu/cfr/text/14/61.65) allow simulators/FTDs/ATDs to contribute towards this as well, but subject to conditions that cannot easily be determined; %APP_NAME% applies up to the lower limits specified (20 hours for FTDs, 10 for ATDs); you may be able to apply more..
+        ///   Looks up a localized string similar to [61.65(h), (i), and (j)](https://www.law.cornell.edu/cfr/text/14/61.65) allow simulators/FTDs/ATDs to contribute towards this as well.  %APP_NAME% treats any ATD as a BATD unless the text &quot;AATD&quot; is found in either the model name or in the flight&apos;s comments..
         /// </summary>
         internal static string NoteInstrumentTime {
             get {
@@ -4295,6 +4295,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to FAR 61.65(d) - Airplane (Part 142 Training).
+        /// </summary>
+        internal static string Title6165DPart142 {
+            get {
+                return ResourceManager.GetString("Title6165DPart142", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to FAR 61.65(e) - Helicopter.
         /// </summary>
         internal static string Title6165E {
@@ -4304,11 +4313,29 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to FAR 61.65(e) - Helicopter (Part 142 Training).
+        /// </summary>
+        internal static string Title6165EPart142 {
+            get {
+                return ResourceManager.GetString("Title6165EPart142", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to FAR 61.65(f) - Powered Lift.
         /// </summary>
         internal static string Title6165F {
             get {
                 return ResourceManager.GetString("Title6165F", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FAR 61.65(f) - Powered Lift (Part 142 Training).
+        /// </summary>
+        internal static string Title6165FPart142 {
+            get {
+                return ResourceManager.GetString("Title6165FPart142", resourceCulture);
             }
         }
         

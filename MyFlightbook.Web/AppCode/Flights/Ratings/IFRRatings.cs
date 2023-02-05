@@ -3,10 +3,11 @@ using MyFlightbook.Currency;
 using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2022 MyFlightbook LLC
+ * Copyright (c) 2013-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -33,6 +34,9 @@ namespace MyFlightbook.RatingsProgress
                     new IFR6165D(),
                     new IFR6165E(),
                     new IFR6165F(),
+                    new IFR6165D142(),
+                    new IFR6165E142(),
+                    new IFR6165F142(),
                     new IFR141CAirplane(),
                     new IFR141CHelicopter(),
                     new IFRCanadaAirplane(),
@@ -57,23 +61,30 @@ namespace MyFlightbook.RatingsProgress
         protected MilestoneItemDecayable miMinIMCTestPrep { get; set; }
         protected MilestoneItem miIMCXC { get; set; }
 
+        protected MilestoneItem miAATDIMCTime { get; set; }
+
+        protected MilestoneItem miBATDIMCTime { get; set; }
+
+        protected MilestoneItem miFTDFFSTime { get; set; }
+
         protected MilestoneItem miInstrumentTraining { get; set; }
 
-        // Per 61.65(h), can count 20 or 30 (part 142) hours of FTD time, and per 61.65(i) can count 10 or 20 hours of ATD time
-        // We use the smaller amount in both cases because we can't tell if it's performed under part 142 (for 61.57(h)) 
-        // nor can we distinguish a BATD from an AATD (for 61.57(i)).
-        // These limits seem additive, though (can do both FTD and ATD), and since AddTrainingEvent can only accomodate
-        // one limited, we have to manually do the FTD limit here.
+        // Per 61.65(h), can count 20 or 30 (part 142) hours of FTD time
+        // We use 20 hours unless we know it's part 142
+        // Per 61.65(i), we can count 10 of BATD time or 20 hours of AATD time
+        // We don't generally distinguish BATD from ATD, so as a hack We look for "AATD" in the flight remarks OR in the model name; 
+        // if it's a match, we add to the AATD time, otherwise, we add to BATD time.
+        // These limits seem additive, though (can do both FTD and ATD), but the ATD limit appears to be mutually exclusive (10 hours of BATD XOR 20 hours of AATD)
         // BUT...per 61.65(j), ATD+FTD time can - at MOST - equal 20 (30, for part 142) hours.  So 10+10 or 5+15 is OK, but 5+20 is not.
-        private const int MaxFTDTime = 20;
+        protected int MaxFTDTime { get; set; } = 20;
 
-        private const int MaxSimTime = 20;
+        protected const int MaxSimTime = 20;
 
-        protected decimal SimTimeRemaining = MaxSimTime;
+        protected int MaxBATDTime { get; set; } = 10;
 
-        protected int MaxATDTime { get; set; } = 10;
+        protected int MaxAATDTime { get; set; } = 20;
 
-        private decimal FTDTimeRemaining { get; set; }
+        static readonly Regex regAATD = new Regex("\\bAATD\\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         protected int MinXCDistance { get; set; } = 250;
 
@@ -89,8 +100,6 @@ namespace MyFlightbook.RatingsProgress
             BaseFAR = szBaseFAR;
             FARLink = farLink;
             RatingSought = ratingSought;
-
-            FTDTimeRemaining = MaxFTDTime;
 
             string szAircraftCategory;
 
@@ -116,6 +125,11 @@ namespace MyFlightbook.RatingsProgress
             // 61.65(def)(2) - total instrument time
             miMinIMCTime = new MilestoneItem(Resources.MilestoneProgress.MinInstrumentTime, ResolvedFAR("(2)"), Branding.ReBrand(Resources.MilestoneProgress.NoteInstrumentTime), MilestoneItem.MilestoneType.Time, 40.0M);
 
+            // 61.65(h)-(j) allow for sim time to contribute; we'll tally these individually and then apply them when we're done
+            miAATDIMCTime = new MilestoneItem(string.Empty, string.Empty, string.Empty, MilestoneItem.MilestoneType.Time, 0);
+            miBATDIMCTime = new MilestoneItem(string.Empty, string.Empty, string.Empty, MilestoneItem.MilestoneType.Time, 0);
+            miFTDFFSTime = new MilestoneItem(string.Empty, string.Empty, string.Empty, MilestoneItem.MilestoneType.Time, 0);
+
             // 61.65(def)(2) - Instrument training
             miInstrumentTraining = new MilestoneItem(Resources.MilestoneProgress.MinInstrumentTraining, ResolvedFAR("(2)"), Branding.ReBrand(Resources.MilestoneProgress.MinInstrumentTrainingNote), MilestoneItem.MilestoneType.Time, 15.0M);
 
@@ -135,23 +149,23 @@ namespace MyFlightbook.RatingsProgress
 
             decimal IMCTime = cfr.IMC + cfr.IMCSim;
 
-            decimal imcTimeInSim = Math.Min(IMCTime, SimTimeRemaining);
-
-            if (cfr.fIsFTD)
-            {
-                decimal FTDTimeToApply = Math.Min(imcTimeInSim, FTDTimeRemaining);
-                miMinIMCTime.AddEvent(FTDTimeToApply);
-                FTDTimeRemaining -= FTDTimeToApply;
-            }
-            else if (cfr.fIsATD)
-                miMinIMCTime.AddTrainingEvent(imcTimeInSim, MaxATDTime, true);
-
-            // Everything past this point only applies to real aircraft
             if (!cfr.fIsRealAircraft)
             {
-                SimTimeRemaining = Math.Max(0, SimTimeRemaining - imcTimeInSim);
+                if (cfr.fIsFTD)
+                    miFTDFFSTime.AddTrainingEvent(IMCTime, MaxFTDTime, true);
+                else if (cfr.fIsATD)
+                {
+                    bool fIsAATD = regAATD.IsMatch(cfr.Comments + " " + cfr.szModel);
+
+                    if (fIsAATD)
+                        miAATDIMCTime.AddTrainingEvent(IMCTime, MaxAATDTime, true);
+                    else
+                        miBATDIMCTime.AddTrainingEvent(IMCTime, MaxBATDTime, true);
+                }
                 return;
             }
+
+            // Everything past this point only applies to real aircraft
 
             AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route);
             double distanceFromStart = al.MaxDistanceFromStartingAirport();
@@ -197,7 +211,23 @@ namespace MyFlightbook.RatingsProgress
 
         public override Collection<MilestoneItem> Milestones
         {
-            get { return new Collection<MilestoneItem>() { miMinXCTime, miMinTimeInCategory, miMinIMCTime, miInstrumentTraining, miMinIMCTestPrep, miIMCXC }; }
+            get 
+            {
+                // Implement 61.65(h)-(j): allow up to 20 hours of FTD/FFS time and up to (10 hours of BATD time OR 20 hours of AATD time), with a max of 20 hours overall (30 if FTD under part 142.
+                // I.e., miMinIMCTime below currently has ONLY real aircraft.  AATD/BATD/FTD time is already limited in each of those milestones.
+                // So we are going to add MAX(MIN(MaxSimTime, FTD time + MAX(BATD time, AATD time), MIN(MaxFTDTime, FTD Time)).  
+                // The first term provides the overall 20 hour limit, while the 2nd term - if MaxFTD Time is higher than MaxSimTime - allows for the part 142 exception
+
+
+                decimal simTimeToCredit = Math.Max(
+                    Math.Min(MaxSimTime, miFTDFFSTime.Progress + Math.Max(miAATDIMCTime.Progress, miBATDIMCTime.Progress)), // limits atd time + ftd time to 20hrs
+                    Math.Min(MaxFTDTime, miFTDFFSTime.Progress));                                                          // if maxFTD time is > 20, allows that FTD time to be applied.
+
+                // Don't pollute the IMC time (keep this getter idempotent), so add the sim time to actual time in a "netIMC" object
+                MilestoneItem miNetIMC = new MilestoneItem(miMinIMCTime);
+                miNetIMC.AddEvent(simTimeToCredit);
+                return new Collection<MilestoneItem>() { miMinXCTime, miMinTimeInCategory, miNetIMC, miInstrumentTraining, miMinIMCTestPrep, miIMCXC }; 
+            }
         }
     }
 
@@ -230,6 +260,36 @@ namespace MyFlightbook.RatingsProgress
     }
 
     [Serializable]
+    public class IFR6165D142 : IFR6165D
+    {
+        public IFR6165D142()
+        {
+            MaxFTDTime = 30;
+            Init(Resources.MilestoneProgress.Title6165DPart142, "61.65(d)", RatingType.InstrumentAirplane, "https://www.law.cornell.edu/cfr/text/14/61.65");
+        }
+    }
+
+    [Serializable]
+    public class IFR6165E142 : IFR6165E
+    {
+        public IFR6165E142()
+        {
+            MaxFTDTime = 30;
+            Init(Resources.MilestoneProgress.Title6165EPart142, "61.65(e)", RatingType.InstrumentAirplane, "https://www.law.cornell.edu/cfr/text/14/61.65");
+        }
+    }
+
+    [Serializable]
+    public class IFR6165F142 : IFR6165F
+    {
+        public IFR6165F142()
+        {
+            MaxFTDTime = 30;
+            Init(Resources.MilestoneProgress.Title6165FPart142, "61.65(f)", RatingType.InstrumentAirplane, "https://www.law.cornell.edu/cfr/text/14/61.65");
+        }
+    }
+
+    [Serializable]
     public abstract class IFRCanadaBase : IFR6165Base
     {
         protected MilestoneItem miXCPIC { get; set; }
@@ -239,7 +299,7 @@ namespace MyFlightbook.RatingsProgress
 
         protected override void Init(string szTitle, string szBaseFAR, RatingType ratingSought, string farLink)
         {
-            MaxATDTime = 20;    // can do 20 hours of FTD OR ATD time.
+            MaxBATDTime = MaxAATDTime = 20;    // can do 20 hours of FTD OR ATD time.
             MinXCDistance = 100;
 
             base.Init(szTitle, szBaseFAR, ratingSought, farLink);
@@ -296,7 +356,17 @@ namespace MyFlightbook.RatingsProgress
 
         public override Collection<MilestoneItem> Milestones
         {
-            get { return new Collection<MilestoneItem>() { miXCPIC, miMinTimeInCategory, miMinIMCTime, miIFRTrainingInCategory, miInstrumentTraining, miXCDualXC }; }
+            get 
+            {
+                // miMinIMCTime below currently has ONLY real aircraft.  AATD/BATD/FTD time is already limited in each of those milestones.
+                // So we are going to add MIN(Allowed Sim Time, FTD time + BATD time, AATD time).
+
+                decimal allowedSimTime = Math.Min(MaxSimTime, miFTDFFSTime.Progress + miBATDIMCTime.Progress + miAATDIMCTime.Progress);
+                // Don't pollute the IMC time (keep this getter idempotent), so add the sim time to actual time in a "netIMC" object
+                MilestoneItem miNetIMC = new MilestoneItem(miMinIMCTime);
+                miNetIMC.AddEvent(allowedSimTime);
+                return new Collection<MilestoneItem>() { miXCPIC, miMinTimeInCategory, miNetIMC, miIFRTrainingInCategory, miInstrumentTraining, miXCDualXC }; 
+            }
         }
     }
 
@@ -380,7 +450,7 @@ namespace MyFlightbook.RatingsProgress
                 decimal allowedFTDTime = Math.Min(miIMCFTDTime.Threshold, miIMCFTDTime.Progress);
                 decimal allowedATDTime = Math.Min(miIMCATDTime.Threshold, miIMCATDTime.Progress);
                 decimal allowedSimTime = Math.Min(maxIMCTrainingDeviceTime, allowedFSTime + allowedFTDTime + allowedATDTime);
-                miIMCAircraftTime.Progress += allowedSimTime;
+                miIMCAircraftTime.AddEvent(allowedSimTime);
 
                 return new Collection<MilestoneItem>() { miIMCAircraftTime, miIMCXC };
             }

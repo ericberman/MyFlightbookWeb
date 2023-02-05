@@ -316,7 +316,7 @@
     <value>Note: </value>
   </data>
   <data name="NoteInstrumentTime" xml:space="preserve">
-    <value>[61.65(h) and 61.65(i)](https://www.law.cornell.edu/cfr/text/14/61.65) allow simulators/FTDs/ATDs to contribute towards this as well, but subject to conditions that cannot easily be determined; %APP_NAME% applies up to the lower limits specified (20 hours for FTDs, 10 for ATDs); you may be able to apply more.</value>
+    <value>[61.65(h), (i), and (j)](https://www.law.cornell.edu/cfr/text/14/61.65) allow simulators/FTDs/ATDs to contribute towards this as well.  %APP_NAME% treats any ATD as a BATD unless the text "AATD" is found in either the model name or in the flight's comments.</value>
   </data>
   <data name="NoteInstrumentXC" xml:space="preserve">
     <value>%APP_NAME% assumes that the flight is conducted under instrument rules if it contains simulated or actual IMC time.  %APP_NAME% does not validate that different kinds of approaches were performed, nor that they were performed at each airport, nor that the flight was along airways.</value>
@@ -1680,5 +1680,14 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
   </data>
   <data name="DetailFlightsIgnored" xml:space="preserve">
     <value>The following flights were not included because the cross-country distance did not meet the requirements of 61.1 for this rating:</value>
+  </data>
+  <data name="Title6165DPart142" xml:space="preserve">
+    <value>FAR 61.65(d) - Airplane (Part 142 Training)</value>
+  </data>
+  <data name="Title6165EPart142" xml:space="preserve">
+    <value>FAR 61.65(e) - Helicopter (Part 142 Training)</value>
+  </data>
+  <data name="Title6165FPart142" xml:space="preserve">
+    <value>FAR 61.65(f) - Powered Lift (Part 142 Training)</value>
   </data>
 </root>
