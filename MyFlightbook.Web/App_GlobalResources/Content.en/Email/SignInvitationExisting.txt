@@ -1,7 +1,7 @@
-﻿<% Requestor %> has asked you to sign an entry they have made in their logbook for a flight on %APP_NAME% (http://%APP_URL%).
+﻿<% Requestor %> has asked you to sign an entry they have made in their logbook for a flight on %APP_NAME% (https://%APP_URL%).
 
 Please visit <% SignPendingFlightsLink %> to view this request and sign their logbook entry.
 
 Thank-you
 
-To contact us, please visit http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.
+To contact us, please visit https://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.

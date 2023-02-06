@@ -8,7 +8,7 @@ using MyFlightbook.Encryptors;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2021 MyFlightbook LLC
+ * Copyright (c) 2007-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -104,7 +104,7 @@ public partial class Public_RSSCurrency : System.Web.UI.Page
         xmltw.WriteAttributeString("version", "2.0");
         xmltw.WriteStartElement("channel");
         xmltw.WriteElementString("title", String.Format(System.Globalization.CultureInfo.CurrentCulture, IsTotals ? Resources.Currency.RSSTitleTotals : Resources.Currency.RSSTitle, Branding.CurrentBrand.AppName));
-        xmltw.WriteElementString("link", String.Format(System.Globalization.CultureInfo.InvariantCulture, "http://{0}", Request.Url.Host));
+        xmltw.WriteElementString("link", String.Format(System.Globalization.CultureInfo.InvariantCulture, "https://{0}", Request.Url.Host));
         xmltw.WriteElementString("ttl", "2");
 
         xmltw.WriteStartElement("item");
@@ -125,7 +125,7 @@ public partial class Public_RSSCurrency : System.Web.UI.Page
         xmltw.WriteStartElement("module");
         xmltw.WriteStartElement("ModulePrefs");
         xmltw.WriteAttributeString("title", String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Currency.RSSHeader, szUser, DateTime.Now.ToShortDateString()));
-        xmltw.WriteAttributeString("title_url", String.Format(System.Globalization.CultureInfo.InvariantCulture, "http://{0}", Request.Url.Host));
+        xmltw.WriteAttributeString("title_url", String.Format(System.Globalization.CultureInfo.InvariantCulture, "https://{0}", Request.Url.Host));
         xmltw.WriteStartElement("Require");
         xmltw.WriteAttributeString("feature", "dynamic-height");
         xmltw.WriteEndElement(); // Require

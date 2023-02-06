@@ -15,12 +15,12 @@ the pre-existing model to be correct.
 Sometimes, aircraft identifiers are reused, or the aircraft in the system is incorrect.  
 
 If you believe that the model you specified is correct, you can update it (or choose the correct 
-version) at http://%APP_URL%, under the "Aircraft" section. 
+version) at https://%APP_URL%, under the "Aircraft" section. 
 
-Please contact us at http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx if you need more assistance.
+Please contact us at https://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx if you need more assistance.
 
 Thank-you,
 
 The %APP_NAME% Team
 
-To contact us, please visit http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.
+To contact us, please visit https://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.

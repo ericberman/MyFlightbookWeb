@@ -906,10 +906,10 @@
     <value>All videos uploaded via %APP_NAME% are publicly visible on Youtube on the %APP_NAME% channel.</value>
   </data>
   <data name="videoYouTubeTOSMobile" xml:space="preserve">
-    <value>http://m.youtube.com/terms</value>
+    <value>https://m.youtube.com/terms</value>
   </data>
   <data name="videoYouTubeTOSPC" xml:space="preserve">
-    <value>http://www.youtube.com/t/terms</value>
+    <value>https://www.youtube.com/t/terms</value>
   </data>
   <data name="errNotAuthorizedVideos" xml:space="preserve">
     <value>Video upload is only available for pilots that have donated to support %APP_NAME%.</value>
@@ -942,7 +942,7 @@
     <value>Save failed: {0}</value>
   </data>
   <data name="DropboxErrorDeAuthorized" xml:space="preserve">
-    <value>%APP_NAME% has removed the credentials that allow it to save for you and will not try to save again until you re-authorize it.  You can re-authorize on the website at http://%APP_URL%.</value>
+    <value>%APP_NAME% has removed the credentials that allow it to save for you and will not try to save again until you re-authorize it.  You can re-authorize on the website at https://%APP_URL%.</value>
   </data>
   <data name="FAQPermaLink" xml:space="preserve">
     <value>Link to this FAQ</value>

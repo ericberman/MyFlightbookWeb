@@ -51,7 +51,7 @@
             <li>Digitized signature is submitted as part of the signature. The CFIUsername data field is blank, but the DigitizedSignature field is populated with the digitized signature.</li>
         </ol>
         <p>In the current implementation, this is done via web page served (securely) from the MyFlightbook server, and requires authentication from the STUDENT’s account.</p>
-        <p>The digitized signature is stored as a <a href="http://en.wikipedia.org/wiki/Portable_Network_Graphics" target="_blank">PNG</a> file with the flight record.</p>
+        <p>The digitized signature is stored as a <a href="https://en.wikipedia.org/wiki/Portable_Network_Graphics" target="_blank">PNG</a> file with the flight record.</p>
         <h3>3.1.2 Student Initiated – Mobile Device, Authenticated</h3>
         <ol>
             <li>Student OR Instructor fills out and submits flight.</li>

@@ -36,7 +36,7 @@ payment required, nor any charges associated with adding members or aircraft.
 
     <p>
         To create a club, go to the website (<a
-            href="http://myflightbook.com">http://myflightbook.com</a>) and go to “Flying
+            href="https://myflightbook.com">https://myflightbook.com</a>) and go to “Flying
 Clubs” under the “Aircraft” tab.  (If you are already a member of a club, then
 you will go to that club by default; click on the link that says “See All
 Available Clubs”)

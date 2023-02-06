@@ -12,7 +12,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2022 MyFlightbook LLC
+ * Copyright (c) 2010-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -648,7 +648,7 @@ namespace MyFlightbook.Instruction
                         throw new MyFlightbookException("Invalid role");
                 }
 
-                string szCallBackUrl = String.Format(CultureInfo.InvariantCulture,"http://{0}{1}/Member/AddRelationship.aspx?req={2}", HttpContext.Current.Request.Url.Host, HttpContext.Current.Request.ApplicationPath, HttpContext.Current.Server.UrlEncode(EncryptRequest()));
+                string szCallBackUrl = String.Format(CultureInfo.InvariantCulture,"https://{0}{1}/Member/AddRelationship.aspx?req={2}", HttpContext.Current.Request.Url.Host, HttpContext.Current.Request.ApplicationPath, HttpContext.Current.Server.UrlEncode(EncryptRequest()));
 
                 string szRequestor = String.Format(CultureInfo.CurrentCulture, "{0} ({1})", pf.UserFullName, pf.Email);
 

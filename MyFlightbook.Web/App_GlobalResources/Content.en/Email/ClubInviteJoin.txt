@@ -4,4 +4,4 @@ If you know <% Requestor %> and/or are interested in joining, please confirm thi
 
 Thank-you
 
-To contact us, please visit http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.
+To contact us, please visit https://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.

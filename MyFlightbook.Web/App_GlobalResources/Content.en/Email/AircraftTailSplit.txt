@@ -18,9 +18,9 @@ The version used for your account is:
 
 If this is correct, there is no action to take.
 
-If it is NOT correct, please go to http://%APP_URL% and click on the "Aircraft" tab, then on the tailnumber for this aircraft.  You will see the other versions of the aircraft there and will have the opportunity to switch to the correct one.
+If it is NOT correct, please go to https://%APP_URL% and click on the "Aircraft" tab, then on the tailnumber for this aircraft.  You will see the other versions of the aircraft there and will have the opportunity to switch to the correct one.
 {5}
-If you have any questions, please do not hesitate to contact us (use the "Contact Us" link at http://%APP_URL%).
+If you have any questions, please do not hesitate to contact us (use the "Contact Us" link at https://%APP_URL%).
 
 Thank-you,
 

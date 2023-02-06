@@ -15,7 +15,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2022 MyFlightbook LLC
+ * Copyright (c) 2009-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1480,7 +1480,7 @@ WHERE
                 return;
 
             util.NotifyAdminEvent(szSubject, String.Format(CultureInfo.CurrentCulture, "User: {0}\r\n\r\n{1}\r\n\r\nMessage that was sent to other users:\r\n\r\n{2}", Profile.GetUser(szUser).DetailedName,
-                String.Format(CultureInfo.InvariantCulture,"http://{0}{1}?id={2}&a=1", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/Member/EditAircraft.aspx"), AircraftID),
+                String.Format(CultureInfo.InvariantCulture,"https://{0}{1}?id={2}&a=1", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/Member/EditAircraft.aspx"), AircraftID),
                 String.Format(CultureInfo.CurrentCulture,szNotificationTemplate, "(username)", this.TailNumber, szMakeMatch, szMakeThis, szReg)), ProfileRoles.maskCanManageData);
 
             // If we're here, then there are other users - need to notify all of them of the change.

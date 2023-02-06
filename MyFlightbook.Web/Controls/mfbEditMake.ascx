@@ -81,7 +81,7 @@
     <div class="vfSection">
         <div class="vfPrompt">
             <asp:Label ID="lblType" runat="server" Text="<%$ Resources:Makes, editMakeTypeRatingPrompt %>"  />
-            <div class="vfSubDesc"><asp:HyperLink ID="lnkTypeRatings" runat="server" NavigateUrl="http://registry.faa.gov/TypeRatings/" Text="<%$ Resources:Makes, promptLookUpTypes %>" /></div>
+            <div class="vfSubDesc"><asp:HyperLink ID="lnkTypeRatings" runat="server" NavigateUrl="https://registry.faa.gov/TypeRatings/" Text="<%$ Resources:Makes, promptLookUpTypes %>" /></div>
         </div>
         <div class="vfValue">
             <asp:TextBox ID="txtType" runat="server" ValidationGroup="EditMake" placeholder="<%$ Resources:LocalizedText, EditMakeWatermarkTypeName %>" />

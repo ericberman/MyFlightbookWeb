@@ -439,7 +439,7 @@
     <value>The &lt;b&gt;SECOND&lt;/b&gt; column must be the model of the aircraft (e.g., "C172" for a Cessna 172), or it can be blank.  We will try to match it to an existing make/model, and you will have the chance to review/adjust this before import.</value>
   </data>
   <data name="locDataFormatBodyResource1.Text" xml:space="preserve">
-    <value>Your data must be a &lt;a href='http://en.wikipedia.org/wiki/Comma-separated_values' target='_blank'&gt;CSV file&lt;/a&gt; (which you can create with Excel, for example):</value>
+    <value>Your data must be a &lt;a href='https://en.wikipedia.org/wiki/Comma-separated_values' target='_blank'&gt;CSV file&lt;/a&gt; (which you can create with Excel, for example):</value>
   </data>
   <data name="locDataFormatHeaderResource1.Text" xml:space="preserve">
     <value>Data Format</value>

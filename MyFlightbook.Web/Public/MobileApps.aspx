@@ -43,7 +43,7 @@
                 <p class="EntryBlock" style="text-align: center">
                     <asp:HyperLink ID="lnkDownloadIPhone" runat="server"
                         Text="Download iPhone/iPad App"
-                        NavigateUrl="http://itunes.apple.com/us/app/myflightbook-for-iphone/id349983064?mt=8"
+                        NavigateUrl="https://itunes.apple.com/us/app/myflightbook-for-iphone/id349983064?mt=8"
                         Target="_blank" Font-Bold="True"
                         meta:resourcekey="lnkDownloadIPhoneResource1"></asp:HyperLink>
                     <br />
@@ -64,7 +64,7 @@
                 <p class="EntryBlock" style="text-align: center">
                     <asp:HyperLink ID="lnkDownloadIPad" runat="server"
                         Text="Download iPhone/iPad App"
-                        NavigateUrl="http://itunes.apple.com/us/app/myflightbook-for-iphone/id349983064?mt=8"
+                        NavigateUrl="https://itunes.apple.com/us/app/myflightbook-for-iphone/id349983064?mt=8"
                         Target="_blank" Font-Bold="True"
                         meta:resourcekey="lnkDownloadIPadResource1"></asp:HyperLink>
                     <br />

@@ -2,14 +2,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
     <title>Welcome to %APP_NAME%</title>
-    <link href="http://%APP_URL%%APP_ROOT%/Public/StyleSheet.css" rel="stylesheet" type="text/css" />
+    <link href="https://%APP_URL%%APP_ROOT%/Public/StyleSheet.css" rel="stylesheet" type="text/css" />
 </head>
 <body style="font-family: Arial; font-size: 9pt;">
 <p>
-    <img alt="%APP_NAME% Logo" src="http://%APP_URL%%APP_LOGO%" /></p>
+    <img alt="%APP_NAME% Logo" src="https://%APP_URL%%APP_LOGO%" /></p>
     <p>Welcome to %APP_NAME%, an online pilot's logbook.</p>
 	<p>
-		%APP_NAME% keeps your logbook in the cloud, so you have access to it from anywhere and any device.  (It's your data, so you always have the ability to download it from the <a href="http://%APP_URL%">%APP_NAME% Website</a>.)
+		%APP_NAME% keeps your logbook in the cloud, so you have access to it from anywhere and any device.  (It's your data, so you always have the ability to download it from the <a href="https://%APP_URL%">%APP_NAME% Website</a>.)
 	</p>
     <p>
         With %APP_NAME%, you can:</p>
@@ -30,20 +30,20 @@
             for each airport.</li>
     </ul>
 	<p>
-	IF YOU ALREADY HAVE A LOGBOOK, you may want to get started by bulk-importing your existing flights or by entering starting totals.  See the "Getting Started" section in the <a href="http://%APP_URL%%APP_ROOT%/Public/FAQ.aspx">FAQ</a> for more information.
+	IF YOU ALREADY HAVE A LOGBOOK, you may want to get started by bulk-importing your existing flights or by entering starting totals.  See the "Getting Started" section in the <a href="https://%APP_URL%%APP_ROOT%/Public/FAQ.aspx">FAQ</a> for more information.
 	</p>
-	<p>Using %APP_NAME% from a mobile device?  There's a whole lot more functionality available on the <a href="http://%APP_URL%">%APP_NAME% Website</a>.</p>
+	<p>Using %APP_NAME% from a mobile device?  There's a whole lot more functionality available on the <a href="https://%APP_URL%">%APP_NAME% Website</a>.</p>
     <p>Using %APP_NAME% on the web but want it on your phone or tablet? Download the FREE %APP_NAME% applications for your 
-        <a href="http://itunes.apple.com/us/app/%APP_NAME%-for-iphone/id349983064?mt=8">
-        iPhone/iPad</a>, <a href="https://play.google.com/store/apps/details?id=com.myflightbook.android">Android</a>, and <a href="http://windowsphone.com/s?appid=606179af-90e7-41b9-be1b-71607cdec86c">Windows 7 Phone</a>.
+        <a href="https://itunes.apple.com/us/app/%APP_NAME%-for-iphone/id349983064?mt=8">
+        iPhone/iPad</a> or <a href="https://play.google.com/store/apps/details?id=com.myflightbook.android">Android</a>.
     </p>
-	<div><a href="http://www.facebook.com/MyFlightbook"><img title="Facebook" src="http://myflightbook.com/logbook/images/f_logo_20.png" alt="Facebook" style="border-width:0px;" />&nbsp;Follow MyFlightbook on Facebook</a></div>
-    <div><a href="http://twitter.com/MyFlightbook"><img title="Twitter" src="http://myflightbook.com/logbook/images/twitter_round_20.png" alt="Twitter" style="border-width:0px;" />&nbsp;Follow MyFlightbook on Twitter</a></div>
+	<div><a href="https://www.facebook.com/MyFlightbook"><img title="Facebook" src="https://myflightbook.com/logbook/images/f_logo_20.png" alt="Facebook" style="border-width:0px;" />&nbsp;Follow MyFlightbook on Facebook</a></div>
+    <div><a href="https://twitter.com/MyFlightbook"><img title="Twitter" src="https://myflightbook.com/logbook/images/twitter_round_20.png" alt="Twitter" style="border-width:0px;" />&nbsp;Follow MyFlightbook on Twitter</a></div>
     <p>We hope you find it useful!</p>
 	<br />
 	<p>Sincerely,<br />The MyFlightbook Team
 	<br /><br />
     MyFlightbook LLC</p>
-	<p>To contact us, please visit <a href="http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx">here</a>.
+	<p>To contact us, please visit <a href="https://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx">here</a>.
 </body>
 </html>

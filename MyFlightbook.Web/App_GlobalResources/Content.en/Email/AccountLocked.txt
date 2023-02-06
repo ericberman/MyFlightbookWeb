@@ -2,9 +2,9 @@
 
 Until it is unlocked, you will be unable to sign in or reset your password, even if you use the correct existing password.
 
-The site administrators have been notified and will unlock it for you shortly.  Or, you can use the Contact link on the website (http://%APP_URL%) to ask for help resetting your password.
+The site administrators have been notified and will unlock it for you shortly.  Or, you can use the Contact link on the website (https://%APP_URL%) to ask for help resetting your password.
 
 Thank-you,
 The %APP_NAME% Team
 
-To contact us, please visit http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.
+To contact us, please visit https://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.

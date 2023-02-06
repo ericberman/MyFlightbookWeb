@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2022 MyFlightbook LLC
+ * Copyright (c) 2007-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -143,7 +143,7 @@ public partial class Controls_mfbEditableImage : UserControl
                     break;
                 case GeoLinkType.ZoomOnGoogleMaps:
                     divZoom.Visible = lnkZoom.Visible = true;
-                    lnkZoom.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "http://maps.google.com?q={0},{1}", mfbii.Location.LatitudeString, mfbii.Location.LongitudeString);
+                    lnkZoom.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "https://maps.google.com?q={0},{1}", mfbii.Location.LatitudeString, mfbii.Location.LongitudeString);
                     lnkZoom.Target = "_blank";
                     break;
             }

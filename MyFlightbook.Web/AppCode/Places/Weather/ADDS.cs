@@ -8,7 +8,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2022 MyFlightbook LLC
+ * Copyright (c) 2017-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -337,7 +337,7 @@ namespace MyFlightbook.Weather.ADDS
     /// </summary>
     public static class ADDSService
     {
-        private const string szRecentTemplate = @"http://aviationweather.gov/adds/dataserver_current/httpparam?dataSource=metars&format=xml&requestType=retrieve&hoursBeforeNow={0}&mostRecent=false&stationString={1}";
+        private const string szRecentTemplate = @"https://aviationweather.gov/adds/dataserver_current/httpparam?dataSource=metars&format=xml&requestType=retrieve&hoursBeforeNow={0}&mostRecent=false&stationString={1}";
 
         #region Getting requests
         private static response GetRequest(string szU)

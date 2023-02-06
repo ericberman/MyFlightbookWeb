@@ -9,7 +9,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2021 MyFlightbook LLC
+ * Copyright (c) 2013-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -253,7 +253,7 @@ namespace MyFlightbook.Image
                     return String.Format(CultureInfo.InvariantCulture, vidTemplateYouTube, YouTubeID(), defWidth, defHeight);
                 case VideoSource.Vimeo:
                     {
-                        WebRequest request = WebRequest.Create(new Uri(String.Format(CultureInfo.InvariantCulture, "http://vimeo.com/api/oembed.json?url={0}", HttpUtility.UrlEncode(VideoReference))));
+                        WebRequest request = WebRequest.Create(new Uri(String.Format(CultureInfo.InvariantCulture, "https://vimeo.com/api/oembed.json?url={0}", HttpUtility.UrlEncode(VideoReference))));
                         try
                         {
                             using (WebResponse response = request.GetResponse())

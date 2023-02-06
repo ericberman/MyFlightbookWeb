@@ -6,7 +6,7 @@ Your last donation entitled you to a year of nightly cloud storage backups of yo
 
 Please consider continuing your support for %APP_NAME% with a new donation, and your backups will resume.
 
-You can view your donation history and make a new donation at http://%APP_URL%%APP_ROOT%/Member/EditProfile.aspx/pftDonate
+You can view your donation history and make a new donation at https://%APP_URL%%APP_ROOT%/Member/EditProfile.aspx/pftDonate
 
 Thanks again for your support,
 

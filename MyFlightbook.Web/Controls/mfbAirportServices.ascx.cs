@@ -6,7 +6,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2020 MyFlightbook LLC
+ * Copyright (c) 2015-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -82,7 +82,7 @@ public partial class Controls_mfbAirportServices : System.Web.UI.UserControl
             imgAirport.Attributes["onclick"] = lnkZoom.NavigateUrl = ZoomLink(ap);
 
             HyperLink lnkHotels = (HyperLink)e.Row.FindControl("lnkHotels");
-            lnkHotels.NavigateUrl = String.Format(System.Globalization.CultureInfo.InvariantCulture, "http://www.expedia.com/pubspec/scripts/eap.asp?goto=hotsearch&Map=1&lat={0}&long={1}&CityName={2}", ap.LatLong.LatitudeString, ap.LatLong.LongitudeString, HttpUtility.UrlEncode(ap.Name));
+            lnkHotels.NavigateUrl = String.Format(System.Globalization.CultureInfo.InvariantCulture, "https://www.expedia.com/pubspec/scripts/eap.asp?goto=hotsearch&Map=1&lat={0}&long={1}&CityName={2}", ap.LatLong.LatitudeString, ap.LatLong.LongitudeString, HttpUtility.UrlEncode(ap.Name));
             lnkHotels.Text = String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.AirportServiceHotels, ap.Name);
         }
     }

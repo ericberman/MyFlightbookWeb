@@ -5,7 +5,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2022 MyFlightbook LLC
+ * Copyright (c) 2012-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -129,8 +129,8 @@ namespace MyFlightbook
                             LogoHRef = "~/Public/mfblogonew.png",
                             StyleSheet = string.Empty,
                             EmailAddress = "noreply@mg.myflightbook.com",
-                            FacebookFeed = "http://www.facebook.com/MyFlightbook",
-                            TwitterFeed = "http://twitter.com/MyFlightbook",
+                            FacebookFeed = "https://www.facebook.com/MyFlightbook",
+                            TwitterFeed = "https://twitter.com/MyFlightbook",
                             BlogAddress = "https://myflightbookblog.blogspot.com/",
                             VideoRef = "https://www.youtube.com/channel/UC6oqJL-aLMEagSyV0AKkIoQ?view_as=subscriber",
                             AWSBucket = "mfbimages",

@@ -740,7 +740,7 @@ namespace Resources {
         ///
         ///Thank-you for using %APP_NAME%!
         ///
-        ///To contact us, please visit http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx..
+        ///To contact us, please visit https://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx..
         /// </summary>
         internal static string ChangePassEmail {
             get {
@@ -1919,7 +1919,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to %APP_NAME% has removed the credentials that allow it to save for you and will not try to save again until you re-authorize it.  You can re-authorize on the website at http://%APP_URL%..
+        ///   Looks up a localized string similar to %APP_NAME% has removed the credentials that allow it to save for you and will not try to save again until you re-authorize it.  You can re-authorize on the website at https://%APP_URL%..
         /// </summary>
         internal static string DropboxErrorDeAuthorized {
             get {
@@ -4370,7 +4370,7 @@ namespace Resources {
         ///
         ///Thank-you for using %APP_NAME%!
         ///
-        ///To contact us, please visit http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx..
+        ///To contact us, please visit https://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx..
         /// </summary>
         internal static string ResetPassEmail {
             get {
@@ -5244,7 +5244,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to http://m.youtube.com/terms.
+        ///   Looks up a localized string similar to https://m.youtube.com/terms.
         /// </summary>
         internal static string videoYouTubeTOSMobile {
             get {
@@ -5253,7 +5253,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to http://www.youtube.com/t/terms.
+        ///   Looks up a localized string similar to https://www.youtube.com/t/terms.
         /// </summary>
         internal static string videoYouTubeTOSPC {
             get {
@@ -5364,7 +5364,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PDF generation is done using the &lt;a href=&quot;http://wkhtmltopdf.org&quot; target=&quot;_blank&quot;&gt;WkHtmlToPdf utility&lt;/a&gt; which is governed by the &lt;a href=&quot;https://opensource.org/licenses/lgpl-3.0.html&quot; target=&quot;_blank&quot;&gt;LGPLv3&lt;/a&gt; license.  It&apos;s source code is unmodified, and the tool and source can be &lt;a href=&quot;http://wkhtmltopdf.org&quot; target=&quot;_blank&quot;&gt;downloaded&lt;/a&gt; at the WkHtmlToPdf website..
+        ///   Looks up a localized string similar to PDF generation is done using the &lt;a href=&quot;https://wkhtmltopdf.org&quot; target=&quot;_blank&quot;&gt;WkHtmlToPdf utility&lt;/a&gt; which is governed by the &lt;a href=&quot;https://opensource.org/licenses/lgpl-3.0.html&quot; target=&quot;_blank&quot;&gt;LGPLv3&lt;/a&gt; license.  It&apos;s source code is unmodified, and the tool and source can be &lt;a href=&quot;http://wkhtmltopdf.org&quot; target=&quot;_blank&quot;&gt;downloaded&lt;/a&gt; at the WkHtmlToPdf website..
         /// </summary>
         internal static string wkhtmlnote {
             get {

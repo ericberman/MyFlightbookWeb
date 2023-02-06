@@ -5,7 +5,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2022 MyFlightbook LLC
+ * Copyright (c) 2013-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -90,7 +90,7 @@ namespace MyFlightbook.RatingsProgress
             if (dpet == null)
                 throw new ArgumentNullException(nameof(dpet));
             BaseFAR = "Order 8900.2A";
-            FARLink = "http://www.faa.gov/documentLibrary/media/Order/Order_8900_2A_CHG_1-3.pdf";
+            FARLink = "https://www.faa.gov/documentLibrary/media/Order/Order_8900_2A_CHG_1-3.pdf";
             string szResolved = ResolvedFAR(szFarRef);
             catClass = CategoryClass.CategoryClassFromID(ccid);
             string szCatClass = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, catClass.Category, catClass.Class);

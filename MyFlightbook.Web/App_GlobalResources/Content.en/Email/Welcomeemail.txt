@@ -14,16 +14,16 @@ With %APP_NAME%, you can:
     * Search for flights.
     * See flights you've taken on Google maps, or plan new flights and find out information for each airport.
 
-IF YOU ALREADY HAVE A LOGBOOK, you may want to get started by bulk-importing your existing flights or by entering starting totals.  See the "Getting Started" section in http://%APP_URL%%APP_ROOT%/Public/FAQ.aspx for more information.
+IF YOU ALREADY HAVE A LOGBOOK, you may want to get started by bulk-importing your existing flights or by entering starting totals.  See the "Getting Started" section in https://%APP_URL%%APP_ROOT%/Public/FAQ.aspx for more information.
 
-Using %APP_NAME% from a mobile device?  There's a whole lot more functionality available on the %APP_NAME% Website at http://%APP_URL%.
+Using %APP_NAME% from a mobile device?  There's a whole lot more functionality available on the %APP_NAME% Website at https://%APP_URL%.
 
-%APP_NAME% even has a applications for iPhone, iPad, Android, and Windows 7 Phone (also free!); go to http://%APP_URL% for more information.
+%APP_NAME% even has a applications for iPhone, iPad, and Android (also free!); go to https://%APP_URL% for more information.
 
 We hope you find it useful!
 
-Follow MyFlightbook on Facebook at http://www.facebook.com/MyFlightbook or on Twitter at http://twitter.com/MyFlightbook.
+Follow MyFlightbook on Facebook at https://www.facebook.com/MyFlightbook or on Twitter at https://twitter.com/MyFlightbook.
 
 MyFlightbook LLC
 
-To contact us, please visit http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.
+To contact us, please visit https://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.

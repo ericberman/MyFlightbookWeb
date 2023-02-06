@@ -6,4 +6,4 @@ IMPORTANT: you will need to know the answer to the secret question that you prov
 
 Thank-you for using %APP_NAME%!
 
-To contact us, please visit http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.
+To contact us, please visit https://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.

@@ -31,7 +31,7 @@
                 <h3><asp:Localize ID="locDataFormatHeader" runat="server" Text="Data Format" 
                         meta:resourcekey="locDataFormatHeaderResource1"></asp:Localize></h3>
                 <p><asp:Localize ID="locDataFormatBody" runat="server" 
-                        Text="Your data must be a &lt;a href='http://en.wikipedia.org/wiki/Comma-separated_values' target='_blank'&gt;CSV file&lt;/a&gt; (which you can create with Excel, for example):" 
+                        Text="Your data must be a &lt;a href='https://en.wikipedia.org/wiki/Comma-separated_values' target='_blank'&gt;CSV file&lt;/a&gt; (which you can create with Excel, for example):" 
                         meta:resourcekey="locDataFormatBodyResource1" ></asp:Localize></p>
                 <p>
                     <asp:Label ID="lblHeaderRow" runat="server" Text="The FIRST row of the data must be a header row, identifying which column is which, and it MUST have the following column names:" meta:resourcekey="lblHeaderRowResource1"></asp:Label>

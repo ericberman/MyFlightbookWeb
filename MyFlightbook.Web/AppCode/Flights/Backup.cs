@@ -401,7 +401,7 @@ namespace MyFlightbook
                         string szUserFullName = User.UserFullName;
 
                         // Write header tags.  This leaves an open body tag and an open html tag.
-                        WriteHtmlHeaders(tw, Branding.ReBrand("http://%APP_URL%%APP_ROOT%/public/stylesheet.css", activeBrand), szUserFullName);
+                        WriteHtmlHeaders(tw, Branding.ReBrand("https://%APP_URL%%APP_ROOT%/public/stylesheet.css", activeBrand), szUserFullName);
 
                         // Write out pilot information
                         WritePilotInformation(tw, User);

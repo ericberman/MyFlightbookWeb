@@ -6,4 +6,4 @@ However, I will be traveling with intermittant Internet access from June 25 - Ju
 
 Thank-you very much.
 
-To contact us, please visit http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.
+To contact us, please visit https://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.
