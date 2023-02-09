@@ -326,5 +326,42 @@ namespace MyFlightbook.Web.Ajax
         }
         #endregion
 
+        #region Preferences
+        /// <summary>
+        /// Sets the color for a specified query; null or empty color string to remove it.
+        /// </summary>
+        /// <param name="queryName"></param>
+        /// <param name="color"></param>
+        [WebMethod(EnableSession = true)]
+        public void SetColorForQuery(string queryName, string color)
+        {
+            CheckAuth();
+
+            // Get the query
+            List<CannedQuery> lst = new List<CannedQuery>(CannedQuery.QueriesForUser(User.Identity.Name));
+            CannedQuery cq = lst.Find(q => q.QueryName.CompareCurrentCultureIgnoreCase(queryName) == 0);
+            if (cq == null)
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, "Unknown query '{0}'", queryName));
+            cq.ColorString = String.IsNullOrWhiteSpace(color) ? null : color.Replace("#", string.Empty);
+            cq.Commit();
+        }
+
+        [WebMethod(EnableSession = true)]
+        public void SetMapColors(string routeColor, string pathColor)
+        {
+            CheckAuth();
+
+            // Verify that both colors are valid colors
+            Regex r = new Regex("^#[a-zA-Z0-9]{6}$", RegexOptions.IgnoreCase);
+
+            if (!String.IsNullOrWhiteSpace(routeColor) && !r.IsMatch(routeColor))
+                throw new ArgumentOutOfRangeException("Invalid route color: " + routeColor);
+            if (!String.IsNullOrWhiteSpace(pathColor) && !r.IsMatch(pathColor))
+                throw new ArgumentOutOfRangeException("Invalid path color: " + pathColor);
+            Profile pf = Profile.GetUser(User.Identity.Name);
+            pf.SetPreferenceForKey(MFBConstants.keyRouteColor, routeColor, String.IsNullOrWhiteSpace(routeColor));
+            pf.SetPreferenceForKey(MFBConstants.keyPathColor, pathColor, String.IsNullOrWhiteSpace(pathColor));
+        }
+        #endregion
     }
 }

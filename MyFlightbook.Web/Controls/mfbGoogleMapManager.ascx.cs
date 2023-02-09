@@ -1,3 +1,4 @@
+using MyFlightbook;
 using MyFlightbook.Mapping;
 using System;
 using System.Globalization;
@@ -6,7 +7,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2021 MyFlightbook LLC
+ * Copyright (c) 2008-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -101,11 +102,18 @@ public partial class Controls_mfbGoogleMapMgr : UserControl
 
     protected override void OnPreRender(EventArgs e)
     {
+        if (Page.User.Identity.IsAuthenticated)
+        {
+            Profile pf = Profile.GetUser(Page.User.Identity.Name);
+            Map.Options.PathColor = pf.GetPreferenceForKey<string>(MFBConstants.keyPathColor, MFBGoogleMapOptions.DefaultPathColor);
+            Map.Options.RouteColor = pf.GetPreferenceForKey<string>(MFBConstants.keyRouteColor, MFBGoogleMapOptions.DefaultRouteColor);
+        }
+
         switch (Mode)
         {
             case GMap_Mode.Dynamic:
                 Page.ClientScript.RegisterClientScriptInclude("googleMaps", String.Format(CultureInfo.InvariantCulture, "https://maps.googleapis.com/maps/api/js?key={0}", MyFlightbook.SocialMedia.GooglePlusConstants.MapsKey));
-                Page.ClientScript.RegisterClientScriptInclude("MFBMapScript", ResolveClientUrl("~/Public/Scripts/GMapScript.js?v=7"));
+                Page.ClientScript.RegisterClientScriptInclude("MFBMapScript", ResolveClientUrl("~/Public/Scripts/GMapScript.js?v=8"));
                 Page.ClientScript.RegisterClientScriptInclude("MFBMapOMS", ResolveClientUrl("~/Public/Scripts/oms.min.js"));
                 Page.ClientScript.RegisterStartupScript(GetType(), "MapInit" + UniqueID, Map.MapJScript(MapID, pnlMap.ClientID), true);
                 break;

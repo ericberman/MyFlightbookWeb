@@ -268,7 +268,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choose colors to highlight flights that match saved searches.  If a flight matches multiple saved searches, the color will reflect the first match that is found. .
+        ///   Looks up a localized string similar to If a flight matches multiple saved searches, the color will reflect the first match that is found. .
         /// </summary>
         internal static string FlightColoringDescription {
             get {
@@ -282,6 +282,15 @@ namespace Resources {
         internal static string FlightColoringDescriptionLearnMore {
             get {
                 return ResourceManager.GetString("FlightColoringDescriptionLearnMore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Color flights that match saved searches.
+        /// </summary>
+        internal static string FlightColoringFlightsHeader {
+            get {
+                return ResourceManager.GetString("FlightColoringFlightsHeader", resourceCulture);
             }
         }
         
@@ -327,6 +336,42 @@ namespace Resources {
         internal static string FlightColoringSample {
             get {
                 return ResourceManager.GetString("FlightColoringSample", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Path (GPS track).
+        /// </summary>
+        internal static string MapColorPath {
+            get {
+                return ResourceManager.GetString("MapColorPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Route (airport-to-airport).
+        /// </summary>
+        internal static string MapColorRoute {
+            get {
+                return ResourceManager.GetString("MapColorRoute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Colors when showing flights on a map.
+        /// </summary>
+        internal static string MapColorsHeader {
+            get {
+                return ResourceManager.GetString("MapColorsHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset.
+        /// </summary>
+        internal static string MapColorsReset {
+            get {
+                return ResourceManager.GetString("MapColorsReset", resourceCulture);
             }
         }
         

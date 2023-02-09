@@ -2127,7 +2127,7 @@ namespace MyFlightbook.MemberPages
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected MyFlightbook.Currency.mfbCustomCurrencyList mfbCustomCurrencyList1;
+        protected global::MyFlightbook.Currency.mfbCustomCurrencyList mfbCustomCurrencyList1;
 
         /// <summary>
         /// acpCustomDeadlines control.

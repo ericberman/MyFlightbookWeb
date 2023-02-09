@@ -12,7 +12,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2021 MyFlightbook LLC
+ * Copyright (c) 2015-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -140,11 +140,11 @@ namespace MyFlightbook.Mapping
 
                     // always connect the segments...
                     foreach (List<string> segment in lstSegments)
-                        sb.Append("&path=color:0x0000FF88|weight:5|geodesic:true|" + String.Join("|", segment));
+                        sb.Append("&path=color:0x" + Options.RouteColor.Substring(1) + "88|weight:5|geodesic:true|" + String.Join("|", segment));
 
                     // and add the path, if possible
                     if (sb.Length + szPath.Length < 8100)
-                        sb.Append("&path=color:0xFF000088|weight:5|" + szPath);
+                        sb.Append("&path=color:0x" + Options.PathColor.Substring(1) + "88|weight:5|" + szPath);
                 }
             }
             else
@@ -346,6 +346,14 @@ namespace MyFlightbook.Mapping
                 defaultLong = value.Longitude;
             }
         }
+
+        public const string DefaultRouteColor = "#0000FF";
+
+        public const string DefaultPathColor = "#FF0000";
+
+        public string RouteColor { get; set; } = DefaultRouteColor;
+
+        public string PathColor { get; set; } = DefaultPathColor;
         #endregion
 
         private void UpdateBoundingBox(MFBGMapLatLon gll)

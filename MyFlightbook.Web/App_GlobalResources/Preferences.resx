@@ -187,10 +187,13 @@
     <value>With color:</value>
   </data>
   <data name="FlightColoringDescription" xml:space="preserve">
-    <value>Choose colors to highlight flights that match saved searches.  If a flight matches multiple saved searches, the color will reflect the first match that is found. </value>
+    <value>If a flight matches multiple saved searches, the color will reflect the first match that is found. </value>
   </data>
   <data name="FlightColoringDescriptionLearnMore" xml:space="preserve">
     <value>Learn more about saving searches</value>
+  </data>
+  <data name="FlightColoringFlightsHeader" xml:space="preserve">
+    <value>Color flights that match saved searches</value>
   </data>
   <data name="FlightColoringHeader" xml:space="preserve">
     <value>Flight Coloring</value>
@@ -206,6 +209,18 @@
   </data>
   <data name="FlightColoringSample" xml:space="preserve">
     <value>Sample (Click to change)</value>
+  </data>
+  <data name="MapColorPath" xml:space="preserve">
+    <value>Path (GPS track)</value>
+  </data>
+  <data name="MapColorRoute" xml:space="preserve">
+    <value>Route (airport-to-airport)</value>
+  </data>
+  <data name="MapColorsHeader" xml:space="preserve">
+    <value>Colors when showing flights on a map</value>
+  </data>
+  <data name="MapColorsReset" xml:space="preserve">
+    <value>Reset</value>
   </data>
   <data name="MedicalDescriptionCalendarMonths" xml:space="preserve">
     <value>calendar months</value>

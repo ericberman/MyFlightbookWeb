@@ -42,21 +42,57 @@ namespace MyFlightbook.Web.Controls.Prefs
         protected global::System.Web.UI.WebControls.GridView gvCanned;
 
         /// <summary>
-        /// btnUpdateColors control.
+        /// lblRteSample control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnUpdateColors;
+        protected global::System.Web.UI.WebControls.Label lblRteSample;
 
         /// <summary>
-        /// lblColorsUpdated control.
+        /// txtRteSample control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblColorsUpdated;
+        protected global::System.Web.UI.WebControls.TextBox txtRteSample;
+
+        /// <summary>
+        /// cpeRte control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.ColorPickerExtender cpeRte;
+
+        /// <summary>
+        /// lblPathSample control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblPathSample;
+
+        /// <summary>
+        /// txtPathSample control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtPathSample;
+
+        /// <summary>
+        /// cpePath control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.ColorPickerExtender cpePath;
     }
 }

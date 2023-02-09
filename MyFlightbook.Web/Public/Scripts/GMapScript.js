@@ -1,6 +1,6 @@
 ﻿/******************************************************
  * 
- * Copyright (c) 2015-2021 MyFlightbook LLC
+ * Copyright (c) 2015-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -133,6 +133,8 @@ function MFBMap()
     this.infoWindow = null;
     this.mapType = google.maps.MapTypeId.HYBRID;
     this.clickPositionMarker = null;
+    this.routeColor = "#0000FF";
+    this.pathColor = "#FF0000";
     
     this.NewMap = function () {
         this.center = new google.maps.LatLng(this.defaultLat, this.defaultLong);
@@ -352,7 +354,7 @@ function MFBMap()
                     }
 
                     if (this.fShowRoute && !this.fAutofillPanZoom)
-                        var _ = new google.maps.Polyline({ path: points, strokeColor: "#0000FF", strokeOpacity: 0.5, strokeWeight: 5, map: this.gmap, geodesic: true });
+                        var _ = new google.maps.Polyline({ path: points, strokeColor: this.routeColor, strokeOpacity: 0.5, strokeWeight: 5, map: this.gmap, geodesic: true });
                 }
             }
         }
@@ -385,7 +387,7 @@ function MFBMap()
         }
 
         if (this.pathArray)
-            var __ = new google.maps.Polyline({ path: this.pathArray, strokeColor: "#FF0000", strokeOpacity: 0.5, strokeWeight: 5, map: this.gmap });
+            var __ = new google.maps.Polyline({ path: this.pathArray, strokeColor: this.pathColor, strokeOpacity: 0.5, strokeWeight: 5, map: this.gmap });
     };
 }
 
@@ -447,6 +449,8 @@ function MFBNewMapOptions(mfbMapOptions, rgPath)
     if (mfbMapOptions.id)
         mfbNewMap.id = mfbMapOptions.id;
 
+    mfbNewMap.routeColor = mfbMapOptions.RouteColor;
+    mfbNewMap.pathColor = mfbMapOptions.PathColor;
     mfbNewMap.fShowMap = mfbMapOptions.fShowMap;
     mfbNewMap.fShowMarkers = mfbMapOptions.fShowMarkers;
     mfbNewMap.fShowRoute = mfbMapOptions.fShowRoute;
