@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2022 MyFlightbook LLC
+ * Copyright (c) 2007-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -617,6 +617,10 @@ namespace MyFlightbook.Currency
                         break;
                     case FeatureTotalType.TAA:
                         fq.IsTechnicallyAdvanced = true;
+                        fq.AddCatClass(CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.ASEL));
+                        fq.AddCatClass(CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.AMEL));
+                        fq.AddCatClass(CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.ASES));
+                        fq.AddCatClass(CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.AMES));
                         break;
                     case FeatureTotalType.MEHelicopter:
                         fq.IsMultiEngineHeli = true;
