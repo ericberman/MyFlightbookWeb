@@ -190,7 +190,8 @@ namespace MyFlightbook
             IDProp125287Competency = 700,
             IDProp125287Knowledge = 701,
             IDPropRole = 718,
-            IDPropXCMoreThan400nm = 770
+            IDPropXCMoreThan400nm = 770,
+            IDPropXCNoLanding = 781,
         }
 
         internal static class CFPPropertyFlag

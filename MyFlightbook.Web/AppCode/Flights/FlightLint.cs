@@ -320,6 +320,10 @@ namespace MyFlightbook.Lint
                 AddConditionalIssue(distance > minDistanceXC, LintOptions.XCIssues, String.Format(CultureInfo.CurrentCulture, Resources.FlightLint.warningXCMissingXC, minDistanceXC));
             }
 
+            decimal xcATP = le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropXCNoLanding);
+            AddConditionalIssue(xcATP > 0 && le.CrossCountry > 0, LintOptions.XCIssues, Resources.FlightLint.warningATPXCAndXCFound);
+            AddConditionalIssue(xcATP > 0 && xcATP.ToMinutes() != le.TotalFlightTime.ToMinutes(), LintOptions.XCIssues, Resources.FlightLint.warningATPXCNotEqualTotal);
+
             bool fxcLessThan25 = le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropXCLessThan25nm);
             bool fxcLessThan50 = le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropXCLessThan50nm);
             bool fxcMoreThan50 = le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropXCMoreThan50nm);

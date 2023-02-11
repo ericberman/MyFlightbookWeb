@@ -5,7 +5,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2022 MyFlightbook LLC
+ * Copyright (c) 2013-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -129,7 +129,9 @@ namespace MyFlightbook.RatingsProgress
                 return;
 
             miTotal.AddEvent(Math.Max(CanCreditSICAndFlightEngineer ? cfr.SIC : 0, cfr.Total));
-            miMinXCTime.AddEvent(cfr.XC);
+
+            decimal ATPXCTime = cfr.FlightProps.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropXCNoLanding);
+            miMinXCTime.AddEvent(Math.Max(cfr.XC, ATPXCTime));  // use any logged XC time OR any ATP time.
             miMinNightTime.AddEvent(cfr.Night);
 
             if (CanCreditSICAndFlightEngineer)

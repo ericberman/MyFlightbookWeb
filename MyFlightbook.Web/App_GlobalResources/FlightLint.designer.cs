@@ -421,6 +421,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flight indicates both cross-country and no-landing cross-country time.  Generally you&apos;ll want to log onlyi one or the other; otherwise if you add the two you could double-count.  &quot;No landing&quot; cross-country time generally is only used towards the experience requirements for the FAA 61.159 ATP rating..
+        /// </summary>
+        internal static string warningATPXCAndXCFound {
+            get {
+                return ResourceManager.GetString("warningATPXCAndXCFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flight indicates cross-country time with no landing (e.g., for an ATP rating), but the logged time doesn&apos;t equal the time of the flight..
+        /// </summary>
+        internal static string warningATPXCNotEqualTotal {
+            get {
+                return ResourceManager.GetString("warningATPXCNotEqualTotal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Block time and total time differ by {0}.
         /// </summary>
         internal static string warningBlockAndTotalsDiffer {
