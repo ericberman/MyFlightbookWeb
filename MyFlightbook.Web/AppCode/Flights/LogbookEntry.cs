@@ -4116,7 +4116,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                     if (Int32.TryParse(bucketSelectorName, out int idPropType))
                     {
                         CustomFlightProperty cfp = CustomProperties.GetEventWithTypeID(idPropType);
-                        return (cfp == null || cfp.PropertyType.Type != CFPPropertyType.cfpString) ? Resources.LocalizedText.None.ToUpper(CultureInfo.CurrentCulture) : cfp.TextValue.ToUpper(CultureInfo.CurrentCulture);
+                        return (cfp == null || cfp.PropertyType.Type != CFPPropertyType.cfpString) ? Resources.LocalizedText.None.ToUpper(CultureInfo.CurrentCulture) : cfp.TextValue.ToUpper(CultureInfo.CurrentCulture).Trim();
                     }
                     else
                         throw new InvalidOperationException("Unknown bucketSelectorName: " + bucketSelectorName);
