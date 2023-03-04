@@ -26,7 +26,6 @@ namespace MyFlightbook
     /// Instance types for an aircraft.  Meaning it's a real aircraft or one of a set of different flavors of aircraft.
     /// Does NOT have a 0 value, since that doesn't correspond to anything in the database.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1008:EnumsShouldHaveZeroValue")]
     public enum AircraftInstanceTypes
     {
         RealAircraft = 1, Mintype = RealAircraft,
@@ -2303,23 +2302,32 @@ OR (aircraft.tailnormal IN ('{5}'))";
         }
 
         /// <summary>
-        /// Deletes an aircraft that is completely unused.  DOES NOT DO THAT VERIFICATION for performance!!!
+        /// Deletes an aircraft that is completely unused.
         /// </summary>
         /// <param name="idAircraft"></param>
         public static void DeleteOrphanAircraft(int idAircraft)
         {
+            // Verify that the aircraft is still an orphan
+            DBHelper dbh = new DBHelper("select count(username) AS num from useraircraft where idaircraft=?idaircraft GROUP BY idaircraft");
+            int cRows = 0;
+            dbh.ReadRow((comm) => { comm.Parameters.AddWithValue("idaircraft", idAircraft); },
+                (dr) => { cRows = Convert.ToInt32(util.ReadNullableField(dr, "num", 0), CultureInfo.InvariantCulture); });
+
+            if (cRows > 0)
+                throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "Aircraft {0} is not an orphan!", idAircraft));
+
             Aircraft ac = new Aircraft(idAircraft);
             ac.PopulateImages();
             foreach (MFBImageInfo mfbii in ac.AircraftImages)
                 mfbii.DeleteImage();
 
-            ImageList il = new ImageList(MFBImageInfo.ImageClass.Aircraft, ac.AircraftID.ToString(CultureInfo.InvariantCulture));
+            ImageList il = new ImageList(MFBImageInfoBase.ImageClass.Aircraft, ac.AircraftID.ToString(CultureInfo.InvariantCulture));
             DirectoryInfo di = new DirectoryInfo(System.Web.Hosting.HostingEnvironment.MapPath(il.VirtPath));
             if (di.Exists)
                 di.Delete(true);
 
             // Delete any tombstone that might point to *this*
-            DBHelper dbh = new DBHelper("DELETE FROM aircraftTombstones WHERE idMappedAircraft=?idAc");
+            dbh = new DBHelper("DELETE FROM aircraftTombstones WHERE idMappedAircraft=?idAc");
             dbh.DoNonQuery((comm) => { comm.Parameters.AddWithValue("idAc", ac.AircraftID); });
 
             // Now delete this.
@@ -2431,10 +2439,10 @@ ORDER BY f.date DESC LIMIT 10) tach", (int)CustomPropertyType.KnownProperties.ID
                     lstDst.Add(new AircraftGroup() { GroupTitle = string.Empty, MatchingAircraft = d[string.Empty] });
                     break;
                 case GroupMode.Recency:
-                    if (d.ContainsKey(true.ToString(CultureInfo.InvariantCulture)))
+                    if (d.TryGetValue(true.ToString(CultureInfo.InvariantCulture), out IEnumerable<Aircraft> value))
                     {
                         // HasBeenFlown, so Stats and dates are both present
-                        List<Aircraft> lstActive = new List<Aircraft>(d[true.ToString(CultureInfo.InvariantCulture)]);
+                        List<Aircraft> lstActive = new List<Aircraft>(value);
                         lstActive.Sort((ac1, ac2) =>
                         {
                             if (ac1.Stats.LatestDate.Value.CompareTo(ac2.Stats.LatestDate) == 0)
@@ -2483,10 +2491,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int)CustomPropertyType.KnownProperties.ID
             if (obj == null)
                 throw new ArgumentNullException(nameof(obj));
 
-            AircraftImportMatchRow aim = (AircraftImportMatchRow)obj;
-            if (aim is null)
-                throw new InvalidCastException("object passed to CompareTo is not an AircraftImportMatchRow");
-
+            AircraftImportMatchRow aim = (AircraftImportMatchRow)obj ?? throw new InvalidCastException("object passed to CompareTo is not an AircraftImportMatchRow");
             if (State == aim.State)
                 return TailNumber.CompareCurrentCultureIgnoreCase(aim.TailNumber);
             else
@@ -2720,11 +2725,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int)CustomPropertyType.KnownProperties.ID
                     int iColAircraftID = -1;
                     int iColTargetModelID = -1;
 
-                    string[] rgCols = reader.GetCSVLine(true);
-
-                    if (rgCols == null)
-                        throw new MyFlightbookValidationException("No column headers found.");
-
+                    string[] rgCols = reader.GetCSVLine(true) ?? throw new MyFlightbookValidationException("No column headers found.");
                     for (int i = 0; i < rgCols.Length; i++)
                     {
                         string sz = rgCols[i];
