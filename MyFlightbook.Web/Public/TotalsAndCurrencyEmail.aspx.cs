@@ -94,11 +94,16 @@ namespace MyFlightbook.Subscriptions
             {
                 ValidateAuthorization(szAuthKey);
 
-                Profile pf = MyFlightbook.Profile.GetUser(Username);
+                Profile pf = Profile.GetUser(Username);
 
                 // Set up the correct decimal formatting for the user
                 if (pf.PreferenceExists(MFBConstants.keyDecimalSettings))
                     Session[MFBConstants.keyDecimalSettings] = pf.GetPreferenceForKey<DecimalFormat>(MFBConstants.keyDecimalSettings);
+
+                // Issue #1069 - set up best guess locale for user
+                string szLocale = pf.GetPreferenceForKey<string>(MFBConstants.keyPrefLastUsedLocale, MFBConstants.USCulture);
+                if (szLocale != null)
+                    util.SetCulture(szLocale);
 
                 EmailSubscriptionManager em = new EmailSubscriptionManager(pf.Subscriptions);
 

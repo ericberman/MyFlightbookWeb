@@ -7,7 +7,7 @@ using System.Web.UI.HtmlControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2022 MyFlightbook LLC
+ * Copyright (c) 2007-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -152,7 +152,25 @@ namespace MyFlightbook.Web
                     IsIOSORAndroid = true;
             }
 
-            util.SetCulture(Request.UserLanguages[0]);
+            string szCulture = Request.UserLanguages[0];
+            util.SetCulture(szCulture);
+
+            // Issue #1069 - remember the most recently used locale so that we can use that for things like emails.
+            if (Page.User.Identity.IsAuthenticated)
+            {
+                Profile pf = Profile.GetUser(Page.User.Identity.Name);
+                if (szCulture.CompareCurrentCultureIgnoreCase(MFBConstants.USCulture) == 0)
+                {
+                    // US culture - delete alternative if present
+                    if (pf.PreferenceExists(MFBConstants.keyPrefLastUsedLocale))
+                        pf.SetPreferenceForKey(MFBConstants.keyPrefLastUsedLocale, string.Empty, true);
+                } else
+                {
+                    // non-us culture - save the new one if not already saved
+                    if (!pf.PreferenceExists(MFBConstants.keyPrefLastUsedLocale) || szCulture.CompareCurrentCultureIgnoreCase(pf.GetPreferenceForKey(MFBConstants.keyPrefLastUsedLocale) as string) != 0)
+                        pf.SetPreferenceForKey(MFBConstants.keyPrefLastUsedLocale, szCulture);
+                }
+            }
         }
 
         protected void Page_Load(object sender, EventArgs e)
