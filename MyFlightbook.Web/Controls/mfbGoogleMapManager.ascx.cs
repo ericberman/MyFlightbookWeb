@@ -2,6 +2,7 @@ using MyFlightbook;
 using MyFlightbook.Mapping;
 using System;
 using System.Globalization;
+using System.Text.RegularExpressions;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -112,10 +113,17 @@ public partial class Controls_mfbGoogleMapMgr : UserControl
         switch (Mode)
         {
             case GMap_Mode.Dynamic:
-                Page.ClientScript.RegisterClientScriptInclude("googleMaps", String.Format(CultureInfo.InvariantCulture, "https://maps.googleapis.com/maps/api/js?key={0}", MyFlightbook.SocialMedia.GooglePlusConstants.MapsKey));
-                Page.ClientScript.RegisterClientScriptInclude("MFBMapScript", ResolveClientUrl("~/Public/Scripts/GMapScript.js?v=8"));
-                Page.ClientScript.RegisterClientScriptInclude("MFBMapOMS", ResolveClientUrl("~/Public/Scripts/oms.min.js"));
-                Page.ClientScript.RegisterStartupScript(GetType(), "MapInit" + UniqueID, Map.MapJScript(MapID, pnlMap.ClientID), true);
+                {
+                    // Generate a name for the callback function that is unique to this map.
+                    string szFuncName = "initMap" + Regex.Replace(UniqueID, "[^a-zA-Z0-9]", string.Empty);
+                    Page.ClientScript.RegisterClientScriptInclude("MFBMapScript", ResolveClientUrl("~/Public/Scripts/GMapScript.js?v=9"));
+                    Page.ClientScript.RegisterClientScriptBlock(GetType(), "MapInit" + UniqueID, Map.MapJScript(MapID, szFuncName, pnlMap.ClientID), true);
+
+                    // We put this in-line because, as far as I can tell, there's no way to do a registerclientscriptinclude that includes the async or the defer attribute AND because it MUST be after the <div> is loaded; 
+                    // if we register these as an include, they get placed at the top, before the <div>
+                    // Load googlemaps and then the spiderfier, and use the same callback for both so we can tell when both have loaded
+                    litScript.Text = String.Format(CultureInfo.InvariantCulture, "<script defer src=\"https://maps.googleapis.com/maps/api/js?key={0}&callback={1}\"></script><script defer src=\"{2}?v=9&?spiderfier_callback={1}\"></script>", MyFlightbook.SocialMedia.GooglePlusConstants.MapsKey, szFuncName, ResolveClientUrl("~/Public/Scripts/oms.min.js"));
+                }
                 break;
             case GMap_Mode.Static:
                 imgMap.ImageUrl = Map.StaticMapHRef(MyFlightbook.SocialMedia.GooglePlusConstants.MapsKey, (int)Height.Value, (int)Width.Value);

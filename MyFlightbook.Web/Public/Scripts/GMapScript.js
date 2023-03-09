@@ -348,7 +348,7 @@ function MFBMap()
                         var key = airportList[j].Code + airportList[j].Type;
                         if (!airports[key]) {
                             airports[key] = point;
-                            this.oms.addMarker(this.createNavaidMarker(point, airportList[j].Code + " - " + airportList[j].Name, airportList[j], this.id));
+                            this.oms.trackMarker(this.createNavaidMarker(point, airportList[j].Code + " - " + airportList[j].Name, airportList[j], this.id));
                         }
                         points.push(point);
                     }
@@ -375,14 +375,14 @@ function MFBMap()
 
                 // Instead of adding the clickhandler to google.maps.event, add it to the spiderfier.
                 mfbmarker.marker.clickHandleOverride = c.handleClick;
-                this.oms.addMarker(mfbmarker.marker);
+                this.oms.trackMarker(mfbmarker.marker);
             }
         }
 
         if (this.rgImages.length > 0 && this.fShowMarkers) {
             for (i = 0; i < this.rgImages.length; i++) {
                 point = new google.maps.LatLng(this.rgImages[i].latitude, this.rgImages[i].longitude);
-                this.oms.addMarker(this.createImageMarker(point, i, this.id));
+                this.oms.trackMarker(this.createImageMarker(point, i, this.id));
             }
         }
 

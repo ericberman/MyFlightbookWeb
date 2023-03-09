@@ -3,6 +3,7 @@
     <asp:View ID="vwDynamic" runat="server">
         <asp:Panel ID="pnlMap" runat="server" EnableViewState="false" Width="100%" Height="400px">
         </asp:Panel>
+        <asp:Literal ID="litScript" runat="server"></asp:Literal>
         <ajaxToolkit:ResizableControlExtender ID="ResizableControlExtender1" OnClientResize="onResizeMapContainer" TargetControlID="pnlMap" HandleCssClass="resizeHandle"
              MinimumHeight="250" MinimumWidth="350" runat="server" />
     </asp:View>
