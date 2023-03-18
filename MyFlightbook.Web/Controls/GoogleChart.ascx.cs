@@ -146,15 +146,18 @@ namespace MyFlightbook.Charting
         protected void Page_Load(object sender, EventArgs e)
         {
             Page.ClientScript.RegisterClientScriptInclude("GoogleJScript", "https://www.google.com/jsapi");
-            Page.ClientScript.RegisterClientScriptInclude("gchart", ResolveClientUrl("~/public/Scripts/gchart.js?v=2"));
+            Page.ClientScript.RegisterClientScriptInclude("gchart", ResolveClientUrl("~/public/Scripts/gchart.js?v=3"));
             Page.ClientScript.RegisterClientScriptBlock(this.GetType(), "LoadGJScriptPackage", @"
 google.load('visualization', '1.1', {packages:['corechart']});
 var chartsToDraw = [];
+var chartData = [];
   google.setOnLoadCallback(drawCharts);
   function drawCharts()
   {
-    for (var i = 0; i < chartsToDraw.length; i++)
-        drawGChart(chartsToDraw[i]);
+    for (var i = 0; i < chartsToDraw.length; i++) {
+        var cd = drawGChart(chartsToDraw[i]);
+        chartData.push(cd);
+    }
   }", true);
         }
     }

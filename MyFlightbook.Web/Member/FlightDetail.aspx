@@ -321,7 +321,7 @@
                                     function updateClip(s, e) {
                                         var minidx = minIndex(s);
                                         var maxidx = maxIndex(s);
-                                        $("#dragStatus")[0].innerText = datagcData.getFormattedValue(minidx, 0) + " - " + datagcData.getFormattedValue(maxidx, 0);
+                                        $("#dragStatus")[0].innerText = chartData[0].getFormattedValue(minidx, 0) + " - " + chartData[0].getFormattedValue(maxidx, 0);
                                     }
                                 </script>
                                 <div><uc2:GoogleChart ID="gcData" SlantAngle="0" LegendType="bottom" Width="800" Height="500" runat="server" /></div>

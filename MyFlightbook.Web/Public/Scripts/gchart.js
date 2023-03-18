@@ -99,5 +99,6 @@ function drawGChart(chartdata) {
         }
     });
     chart.draw(data, options);
+    return data;
 };
 
