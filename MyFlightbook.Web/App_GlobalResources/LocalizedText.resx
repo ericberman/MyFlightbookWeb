@@ -1905,4 +1905,7 @@
   <data name="ChartTotalsGroupDayOfYear" xml:space="preserve">
     <value>Day of Year</value>
   </data>
+  <data name="AirportServiceGuide" xml:space="preserve">
+    <value>Airport Guide</value>
+  </data>
 </root>

@@ -454,6 +454,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Airport Guide.
+        /// </summary>
+        internal static string AirportServiceGuide {
+            get {
+                return ResourceManager.GetString("AirportServiceGuide", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hotels near {0}.
         /// </summary>
         internal static string AirportServiceHotels {

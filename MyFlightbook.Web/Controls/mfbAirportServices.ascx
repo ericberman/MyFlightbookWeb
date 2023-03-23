@@ -18,6 +18,12 @@
                 </asp:MultiView>
             </ItemTemplate>
         </asp:TemplateField>
+        <asp:TemplateField>
+            <ItemTemplate>
+                <asp:HyperLink runat="server" Visible ='<%# false && ((MyFlightbook.Airports.airport) Container.DataItem).Country.CompareCurrentCultureIgnoreCase("United States") == 0 %>' Text="<%$ Resources:LocalizedText, AirportServiceGuide %>"
+                    NavigateUrl='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "https://pirep.io/airports/{0}", ((MyFlightbook.Airports.airport) Container.DataItem).Code) %>' Target="_blank" />
+            </ItemTemplate>
+        </asp:TemplateField>
         <asp:HyperLinkField Text="<%$ Resources:LocalizedText, AirportServiceAirportInformation %>" DataNavigateUrlFormatString="https://acukwik.com/Airport-Info/{0}" DataNavigateUrlFields="Code" Target="_blank" />
         <asp:HyperLinkField Text="<%$ Resources:LocalizedText, AirportServiceFBO %>" DataNavigateUrlFields="Code" DataNavigateUrlFormatString="https://www.aopa.org/destinations/airports/{0}/details?q=kpae&public=0#fbos" Target="_blank" />
         <asp:HyperLinkField Text="<%$ Resources:LocalizedText, AirportServiceMetar %>" DataNavigateUrlFields="Code" DataNavigateUrlFormatString="https://www.checkwx.com/weather/{0}" Target="_blank" />
