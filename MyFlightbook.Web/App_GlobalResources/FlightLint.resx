@@ -305,6 +305,9 @@
   <data name="warningIFRApproachesButNoIFR" xml:space="preserve">
     <value>Instrument approaches or holding is indicated without IMC or simulated IMC</value>
   </data>
+  <data name="warningIFRInvalidNightIMC" xml:space="preserve">
+    <value>More "night-IMC" is recorded than either night or IMC time.  That is not possible; if you have night-IMC time, you must record at least that much IMC time and that much night time.</value>
+  </data>
   <data name="warningIFRNoApproachDescription" xml:space="preserve">
     <value>Approaches were performed but no "Approach Name(s)" property was found.  Be sure that the approaches are documented either in the comments or in the "Approach Name(s)" property.</value>
   </data>

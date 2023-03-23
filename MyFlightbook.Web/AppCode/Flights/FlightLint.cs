@@ -253,6 +253,8 @@ namespace MyFlightbook.Lint
                 !le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropSafetyPilotName) &&
                 !le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropNameOfExaminer), LintOptions.IFRIssues, Resources.FlightLint.warningIFRNoSafetyPilot);
             AddConditionalIssue((le.Approaches > 0 || le.fHoldingProcedures) && le.SimulatedIFR + le.IMC == 0, LintOptions.IFRIssues, Resources.FlightLint.warningIFRApproachesButNoIFR);
+
+            AddConditionalIssue(le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropNightIMC) > Math.Min(le.IMC, le.Nighttime), LintOptions.IFRIssues, Resources.FlightLint.warningIFRInvalidNightIMC);
         }
 
         private void CheckAirportIssues(LogbookEntryBase le)

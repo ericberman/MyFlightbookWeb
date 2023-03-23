@@ -619,6 +619,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to More &quot;night-IMC&quot; is recorded than either night or IMC time.  That is not possible; if you have night-IMC time, you must record at least that much IMC time and that much night time..
+        /// </summary>
+        internal static string warningIFRInvalidNightIMC {
+            get {
+                return ResourceManager.GetString("warningIFRInvalidNightIMC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Approaches were performed but no &quot;Approach Name(s)&quot; property was found.  Be sure that the approaches are documented either in the comments or in the &quot;Approach Name(s)&quot; property..
         /// </summary>
         internal static string warningIFRNoApproachDescription {

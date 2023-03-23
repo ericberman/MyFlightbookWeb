@@ -192,6 +192,7 @@ namespace MyFlightbook
             IDPropRole = 718,
             IDPropXCMoreThan400nm = 770,
             IDPropXCNoLanding = 781,
+            IDPropNightIMC = 793,
         }
 
         internal static class CFPPropertyFlag
