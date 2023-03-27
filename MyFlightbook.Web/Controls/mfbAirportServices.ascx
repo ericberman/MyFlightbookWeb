@@ -20,7 +20,7 @@
         </asp:TemplateField>
         <asp:TemplateField>
             <ItemTemplate>
-                <asp:HyperLink runat="server" Visible ='<%# false && ((MyFlightbook.Airports.airport) Container.DataItem).Country.CompareCurrentCultureIgnoreCase("United States") == 0 %>' Text="<%$ Resources:LocalizedText, AirportServiceGuide %>"
+                <asp:HyperLink runat="server" Visible ='<%# ((MyFlightbook.Airports.airport) Container.DataItem).Country.CompareCurrentCultureIgnoreCase("United States") == 0 %>' Text="<%$ Resources:LocalizedText, AirportServiceGuide %>"
                     NavigateUrl='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "https://pirep.io/airports/{0}", ((MyFlightbook.Airports.airport) Container.DataItem).Code) %>' Target="_blank" />
             </ItemTemplate>
         </asp:TemplateField>
