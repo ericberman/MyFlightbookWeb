@@ -24,6 +24,8 @@ public partial class Controls_mfbAirportServices : System.Web.UI.UserControl
     public bool ShowHotels { get; set; }
     public bool ShowMetar { get; set; }
 
+    public bool ShowGuide { get; set; } = true;
+
     public bool AddZoomLink { get; set; }
 
     /// <summary>
@@ -81,9 +83,12 @@ public partial class Controls_mfbAirportServices : System.Web.UI.UserControl
 
             imgAirport.Attributes["onclick"] = lnkZoom.NavigateUrl = ZoomLink(ap);
 
-            HyperLink lnkHotels = (HyperLink)e.Row.FindControl("lnkHotels");
-            lnkHotels.NavigateUrl = String.Format(System.Globalization.CultureInfo.InvariantCulture, "https://www.expedia.com/pubspec/scripts/eap.asp?goto=hotsearch&Map=1&lat={0}&long={1}&CityName={2}", ap.LatLong.LatitudeString, ap.LatLong.LongitudeString, HttpUtility.UrlEncode(ap.Name));
-            lnkHotels.Text = String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.AirportServiceHotels, ap.Name);
+            if (ShowHotels)
+            {
+                HyperLink lnkHotels = (HyperLink)e.Row.FindControl("lnkHotels");
+                lnkHotels.NavigateUrl = String.Format(System.Globalization.CultureInfo.InvariantCulture, "https://www.expedia.com/pubspec/scripts/eap.asp?goto=hotsearch&Map=1&lat={0}&long={1}&CityName={2}", ap.LatLong.LatitudeString, ap.LatLong.LongitudeString, HttpUtility.UrlEncode(ap.Name));
+                lnkHotels.Text = String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.AirportServiceHotels, ap.Name);
+            }
         }
     }
 }

@@ -54,7 +54,7 @@
                     <asp:Label ID="lblDistance" runat="server" Text=""></asp:Label>
                 </asp:Panel>
             </div>
-            <uc5:mfbAirportServices ID="mfbAirportServices1" runat="server" ShowFBO="false" ShowHotels="false" ShowInfo="false" ShowMetar="false" ShowZoom="true" />
+            <uc5:mfbAirportServices ID="mfbAirportServices1" runat="server" ShowFBO="false" ShowGuide="true" ShowHotels="false" ShowInfo="true" ShowMetar="true" ShowZoom="true" />
         </div>
     </div>
     <div>
