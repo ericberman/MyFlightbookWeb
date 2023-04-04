@@ -68,6 +68,14 @@ function getGMap() {
     return MFBMapsOnPage.length === 0 ? null : MFBMapsOnPage[0].gmap;
 }
 
+function gmapForMapID(id) {
+    for (var i = 0; i < MFBMapsOnPage.length; i++) {
+        if (MFBMapsOnPage[i].id == id)
+            return MFBMapsOnPage[i]
+    }
+    return null;
+}
+
 function gmapForContainerID(id) {
     for (var i = 0; i < MFBMapsOnPage.length; i++)
         if (MFBMapsOnPage[i].divContainer === id)
@@ -304,11 +312,11 @@ function MFBMap()
             else
                 sz += airport.Type + "<br />";
 
-            sz += "<a href=\"javascript:" + mapID + ".showAirport(" + airport.latitude + ", " + airport.longitude + ")\">Zoom in</a>";
+            sz += "<a href=\"javascript:gmapForMapID('" + mapID + "').showAirport(" + airport.latitude + ", " + airport.longitude + ")\">Zoom in</a>";
             icon = this.iconForType(airport.Type);
         }
 
-        return this.createMarker(point, name, icon, sz);
+        return this.createMarker(point, '', icon, sz);
     };
     
     this.createImageMarker = function (point, i, mapID) {

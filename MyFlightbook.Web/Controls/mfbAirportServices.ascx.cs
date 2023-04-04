@@ -61,7 +61,7 @@ public partial class Controls_mfbAirportServices : System.Web.UI.UserControl
     {
         if (ap == null)
             throw new ArgumentNullException(nameof(ap));
-        return String.Format(System.Globalization.CultureInfo.InvariantCulture, "javascript:{0}.gmap.setCenter(new google.maps.LatLng({1}, {2}));{0}.gmap.setZoom(14);", GoogleMapID, ap.LatLong.LatitudeString, ap.LatLong.LongitudeString);
+        return String.Format(System.Globalization.CultureInfo.InvariantCulture, "javascript:gmapForMapID('{0}').gmap.setCenter(new google.maps.LatLng({1}, {2}));gmapForMapID('{0}').gmap.setZoom(14);", GoogleMapID, ap.LatLong.LatitudeString, ap.LatLong.LongitudeString);
     }
 
     protected void Page_Load(object sender, EventArgs e)

@@ -351,7 +351,7 @@ namespace MyFlightbook.MemberPages
             gcData.Y2DataType = GoogleChartData.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(yAxis2.Value).Type);
 
             if (HasLatLongInfo)
-                gcData.ChartData.ClickHandlerJS = String.Format(CultureInfo.InvariantCulture, "function(row, column, xvalue, value) {{ dropPin({0}[row], xvalue + ': ' + ((column == 1) ? '{1}' : '{2}') + ' = ' + value); }}", PathLatLongArrayID, yAxis1, yAxis2);
+                gcData.ChartData.ClickHandlerJS = String.Format(CultureInfo.InvariantCulture, "function(row, column, xvalue, value) {{ dropPin(MFBMapsOnPage[0].pathArray[row], xvalue + ': ' + ((column == 1) ? '{0}' : '{1}') + ' = ' + value); }}", yAxis1, yAxis2);
 
             foreach (DataRow dr in tdt.Rows)
             {

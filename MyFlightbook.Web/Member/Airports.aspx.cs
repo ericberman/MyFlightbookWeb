@@ -11,7 +11,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2011-2021 MyFlightbook LLC
+ * Copyright (c) 2011-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -52,6 +52,12 @@ public partial class Member_Airports : System.Web.UI.Page
 
         if (fForceRefresh || CurrentVisitedAirports == null)
             CurrentVisitedAirports = VisitedAirport.VisitedAirportsForQuery(mfbSearchForm1.Restriction);
+
+        // Convert everything to title case for legibility
+        foreach (VisitedAirport va in CurrentVisitedAirports)
+        {
+            va.Airport.Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(va.Airport.Name.ToLower());
+        }
 
         gvAirports.DataSource = CurrentVisitedAirports;
         gvAirports.DataBind();
