@@ -8,7 +8,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2021 MyFlightbook LLC
+ * Copyright (c) 2015-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
  * This file contains classes to handle Amazon notifications
@@ -136,6 +136,7 @@ namespace AWSNotifications
     /// </summary>
     public class SNSNotification
     {
+#pragma warning disable CA1507 // Use nameof to express symbol names
         #region properties
         [JsonProperty("Type")]
         public string Type { get; set; }
@@ -167,6 +168,7 @@ namespace AWSNotifications
         [JsonProperty("UnsubscribeURL")]
         public string UnsubscribeLink { get; set; }
         #endregion
+#pragma warning restore CA1507 // Use nameof to express symbol names
 
         public SNSNotification() { }
 
@@ -197,6 +199,7 @@ namespace AWSNotifications
     /// </summary>
     public class SNSSubscriptionConfirmation
     {
+#pragma warning disable CA1507 // Use nameof to express symbol names
         #region properties
         [JsonProperty("Type")]
         public string Type { get; set; }
@@ -228,6 +231,7 @@ namespace AWSNotifications
         [JsonProperty("SigningCertURL")]
         public string SigningCertLink { get; set; }
         #endregion
+#pragma warning restore CA1507 // Use nameof to express symbol names
 
         public SNSSubscriptionConfirmation() { }
 
@@ -261,6 +265,7 @@ namespace AWSNotifications
     /// </summary>
     public class SNSUnsubscribeConfirmation
     {
+#pragma warning disable CA1507 // Use nameof to express symbol names
         #region properties
         [JsonProperty("Type")]
         public string Type { get; set; }
@@ -292,6 +297,7 @@ namespace AWSNotifications
         [JsonProperty("SigningCertURL")]
         public string SigningCertLink { get; set; }
         #endregion
+#pragma warning restore CA1507 // Use nameof to express symbol names
 
         public SNSUnsubscribeConfirmation() { }
     }

@@ -56,7 +56,7 @@ public partial class Member_Airports : System.Web.UI.Page
         // Convert everything to title case for legibility
         foreach (VisitedAirport va in CurrentVisitedAirports)
         {
-            va.Airport.Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(va.Airport.Name.ToLower());
+            va.Airport.Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(va.Airport.Name.ToLower(CultureInfo.CurrentCulture));
         }
 
         gvAirports.DataSource = CurrentVisitedAirports;

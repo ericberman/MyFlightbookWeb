@@ -8,7 +8,7 @@ using System.IO;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2022 MyFlightbook LLC
+ * Copyright (c) 2017-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -20,6 +20,7 @@ namespace MyFlightbook.ImportFlights
     /// </summary>
     public class LogTenPro : ExternalFormat
     {
+#pragma warning disable CA1507 // Use nameof to express symbol names
         #region Properties
         #region CloudAhoy
         [JsonProperty("flight_key")]
@@ -755,6 +756,7 @@ namespace MyFlightbook.ImportFlights
         [JsonProperty("flight_track")]
         public string flight_track { get; set; }
         #endregion
+#pragma warning restore CA1507 // Use nameof to express symbol names
 
         public LogTenPro(DataRow dr) : base(dr) {  }
 

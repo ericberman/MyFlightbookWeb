@@ -7,7 +7,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2022 MyFlightbook LLC
+ * Copyright (c) 2022-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -118,8 +118,10 @@ namespace MyFlightbook.ImportFlights.Leon
         [JsonProperty("sic")]
         public LeonPerson Sic { get; set; }
 
+#pragma warning disable CA1507 // Use nameof to express symbol names
         [JsonProperty("totalFlightTime")]
         public string totalFlightTime { get; set; } = string.Empty;
+#pragma warning restore CA1507 // Use nameof to express symbol names
 
         [JsonProperty("durationOfFlightTime")]
         public string DurationOfFlightTime { get; set; } = string.Empty;

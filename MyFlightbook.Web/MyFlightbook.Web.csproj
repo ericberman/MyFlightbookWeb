@@ -2160,6 +2160,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Logon\newuser.aspx.cs">
       <DependentUpon>newuser.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
