@@ -1054,8 +1054,10 @@ namespace MyFlightbook.CloudStorage
         public string id { get; set; }
         public string description { get; set; }
 
+#pragma warning disable CA1056 // URI-like properties should not be strings
         public string productUrl { get; set; }
         public string baseUrl { get; set; }
+#pragma warning restore CA1056 // URI-like properties should not be strings
 
         public string mimeType { get; set; }
         public string filename { get; set; }

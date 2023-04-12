@@ -26,7 +26,9 @@ namespace MyFlightbook
     /// Instance types for an aircraft.  Meaning it's a real aircraft or one of a set of different flavors of aircraft.
     /// Does NOT have a 0 value, since that doesn't correspond to anything in the database.
     /// </summary>
+#pragma warning disable CA1008 // Enums should have zero value
     public enum AircraftInstanceTypes
+#pragma warning restore CA1008 // Enums should have zero value
     {
         RealAircraft = 1, Mintype = RealAircraft,
         UncertifiedSimulator,
