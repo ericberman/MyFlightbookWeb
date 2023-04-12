@@ -6,7 +6,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2018-2020 MyFlightbook LLC
+ * Copyright (c) 2018-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -647,11 +647,9 @@ namespace MyFlightbook.Achievements
                 return;
             }
            
-            DBHelper dbh = new DBHelper(@"SELECT cpt.idproptype, f.date, f.idflight, m.typename, cc.Category, cc.Class, cc.idCatClass
+            DBHelper dbh = new DBHelper(@"SELECT fp.idproptype, f.date, f.idflight, m.typename, cc.Category, cc.Class, cc.idCatClass
                 FROM
                     flightproperties fp
-                        INNER JOIN
-                    custompropertytypes cpt ON fp.idproptype = cpt.idproptype
                         INNER JOIN
                     flights f ON fp.idflight = f.idflight
                         INNER JOIN
