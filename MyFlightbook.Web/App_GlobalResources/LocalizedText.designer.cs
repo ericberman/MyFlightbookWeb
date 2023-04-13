@@ -4301,7 +4301,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to (excludes trailnig 12/24-month totals).
+        ///   Looks up a localized string similar to (excludes trailing 12/24-month totals).
         /// </summary>
         internal static string PrintViewTotalsCompactNote {
             get {
