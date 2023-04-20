@@ -652,11 +652,7 @@ namespace MyFlightbook.Instruction
 
                 string szRequestor = String.Format(CultureInfo.CurrentCulture, "{0} ({1})", pf.UserFullName, pf.Email);
 
-                msg.Body = String.Format(CultureInfo.InvariantCulture, @"<html>
-                        <head><head>
-                        <body>{0}</body>
-                </html>", szTemplate.Replace("<% Requestor %>", szRequestor).Replace("<% Role %>", szRole).Replace("<% ConfirmRoleLink %>", szCallBackUrl).Replace("<% ClubName %>", ClubToJoin == null ? string.Empty : ClubToJoin.Name).Linkify(false).Replace("\r\n", "<br />"));
-                msg.IsBodyHtml = true;
+                util.PopulateMessageContentWithTemplate(msg, szTemplate.Replace("<% Requestor %>", szRequestor).Replace("<% Role %>", szRole).Replace("<% ConfirmRoleLink %>", szCallBackUrl).Replace("<% ClubName %>", ClubToJoin == null ? string.Empty : ClubToJoin.Name));
                 util.SendMessage(msg);
             }
         }

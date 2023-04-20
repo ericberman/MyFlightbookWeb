@@ -1343,7 +1343,7 @@ namespace MyFlightbook
 
             if (String.Compare(Email, szOriginalEmail, StringComparison.OrdinalIgnoreCase) != 0)
             {
-                string szBody = String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.ChangeEmailConfirmation, szOriginalEmail, Email);
+                string szBody = util.ApplyHtmlEmailTemplate(String.Format(CultureInfo.CurrentCulture, Branding.ReBrand(Resources.EmailTemplates.ChangeEmailConfirmation), szOriginalEmail, Email), false);
                 // Email has changed - send new email to both the old and the new address
                 util.NotifyUser(Resources.Profile.EmailChangedSubjectLine, szBody, new MailAddress(szOriginalEmail, UserFullName), false, false);
                 util.NotifyUser(Resources.Profile.EmailChangedSubjectLine, szBody, new MailAddress(Email, UserFullName), false, false);
@@ -1569,8 +1569,8 @@ namespace MyFlightbook
                 msg.From = new MailAddress(brand.EmailAddress, brand.AppName);
                 msg.To.Add(new MailAddress(szEmail, UserFullName));
                 msg.Subject = Branding.ReBrand(Resources.Profile.accountVerifySubject);
-                msg.Body = Branding.ReBrand(Resources.Profile.VerifyEmail.Replace("<% email %>", szEmail).Replace("<% confirmaddress %>", encLink));
                 msg.IsBodyHtml = true;
+                util.PopulateMessageContentWithTemplate(msg, Resources.Profile.VerifyEmail.Replace("<% email %>", szEmail).Replace("<% confirmaddress %>", encLink));
 
                 util.SendMessage(msg);
             }

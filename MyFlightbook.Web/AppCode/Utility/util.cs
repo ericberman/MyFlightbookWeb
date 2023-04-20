@@ -9,8 +9,8 @@ using System.IO;
 using System.Net.Http;
 using System.Net.Mail;
 using System.Reflection;
-using System.Threading.Tasks;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -666,6 +666,55 @@ namespace MyFlightbook
                 return;
 
             NotifyAdminEvent("Error on the myflightbook site", szErr, ProfileRoles.maskSiteAdminOnly);
+        }
+
+        /// <summary>
+        /// Returns email message content with the HTML template applied.  If the content is plain text, it is linkified and newlines are converted to html "p" tags.
+        /// </summary>
+        /// <param name="content">The content to inject</param>
+        /// <param name="fIsHtml">True if the content is already in HTML form (vs. plain text)</param>
+        /// <returns>HTML representing the body of an HTML email message</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        static public string ApplyHtmlEmailTemplate(string content, bool fIsHtml)
+        {
+            if (content == null)
+                throw new ArgumentNullException(nameof(content));
+
+            string template = Branding.ReBrand(Resources.EmailTemplates.HTMLTemplate);
+
+            if (fIsHtml)
+            {
+                // Already HTML content - just inject it
+                return template.Replace("%BODYCONTENT%", content);
+            }
+            else
+            {
+                string[] rgLines = content.Linkify(true).Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                return template.Replace("%BODYCONTENT%", String.Format(CultureInfo.InvariantCulture, "<p>{0}</p>", String.Join("</p><p>", rgLines)));
+            }
+        }
+
+        /// <summary>
+        /// Populates the body of a message using Resources
+        /// </summary>
+        /// <param name="email">The content of the message.  If msg.IsBodyHtml is true, this is assumed to already be in HTML</param>
+        /// <param name="msg">The mail message to which to set the content</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        static public void PopulateMessageContentWithTemplate(MailMessage msg, string email)
+        {
+            if (email == null)
+                throw new ArgumentNullException(nameof(email));
+
+            if (msg == null)
+                throw new ArgumentNullException(nameof(msg));
+
+
+            // replace newlines with html divs.
+            string szContent = Branding.ReBrand(email);
+
+            msg.Body = ApplyHtmlEmailTemplate(szContent, msg.IsBodyHtml);
+            msg.IsBodyHtml = true;
+            // Don't set an alternate - it will be created and set by util.sendMsg
         }
         #endregion
 

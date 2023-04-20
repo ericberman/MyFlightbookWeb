@@ -1067,9 +1067,6 @@
   <data name="EditableImageMakeFavorite" xml:space="preserve">
     <value>Use this as default image</value>
   </data>
-  <data name="ChangePassEmail" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>content.en\email\changepassemail.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
   <data name="ResetPassEmailSent" xml:space="preserve">
     <value>A message has been sent to {0} with instructions for how to reset your password.</value>
   </data>

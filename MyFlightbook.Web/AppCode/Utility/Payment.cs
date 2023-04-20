@@ -805,7 +805,7 @@ ORDER BY dateEarned ASC ";
             if (String.IsNullOrEmpty(szSubject) || String.IsNullOrEmpty(szBody))
                 return false;
 
-            util.NotifyUser(szSubject, szBody, new System.Net.Mail.MailAddress(UserProfile.Email, UserProfile.UserFullName), true, false);
+            util.NotifyUser(szSubject, util.ApplyHtmlEmailTemplate(szBody, false), new System.Net.Mail.MailAddress(UserProfile.Email, UserProfile.UserFullName), true, true);
             // Update the # of reminders sent
             ReminderCount++;
             LastReminderDate = DateTime.Now;
@@ -857,8 +857,8 @@ ORDER BY dateEarned ASC ";
         {
             Profile pf = Profile.GetUser(szUser);
             string szSessionKey = SessionKeyForUser(szUser, gt);
-            if (pf.AssociatedData.ContainsKey(szSessionKey))
-                return (bool) pf.AssociatedData[szSessionKey];
+            if (pf.AssociatedData.TryGetValue(szSessionKey, out object value))
+                return (bool)value;
 
             List<EarnedGratuity> lst = GratuitiesForUser(szUser, gt);
             return (bool) (pf.AssociatedData[szSessionKey] = lst.Count != 0 && lst[0].ExpirationDate.CompareTo(DateTime.Now) > 0);
@@ -903,7 +903,7 @@ ORDER BY dateEarned ASC ";
             // Now splice them up into individual payment lists by user
             Dictionary<string, Collection<Payment>> dictPayments = new Dictionary<string, Collection<Payment>>();
             foreach (Payment p in lstAllPayments)
-                (dictPayments.ContainsKey(p.Username) ? dictPayments[p.Username] : (dictPayments[p.Username] = new Collection<Payment>())).Add(p);
+                (dictPayments.TryGetValue(p.Username, out Collection<Payment> value) ? value : (dictPayments[p.Username] = new Collection<Payment>())).Add(p);
 
             return dictPayments;
         }

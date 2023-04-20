@@ -62,9 +62,9 @@ namespace MyFlightbook.Web.Admin
             string szUser = lblPwdUsername.Text;
             if (!String.IsNullOrEmpty(szPass) && !String.IsNullOrEmpty(szUser))
             {
-                string szEmail = Branding.ReBrand(Resources.EmailTemplates.ChangePassEmail.Replace("<% Password %>", szPass));
+                string szEmail = util.ApplyHtmlEmailTemplate(Resources.EmailTemplates.ChangePassEmail.Replace("<% Password %>", HttpUtility.HtmlEncode(szPass)), true);
                 Profile pf = Profile.GetUser(szUser);
-                util.NotifyUser(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ResetPasswordEmailSubject, Branding.CurrentBrand.AppName), szEmail, new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, false);
+                util.NotifyUser(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ResetPasswordEmailSubject, Branding.CurrentBrand.AppName), szEmail, new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, true);
             }
         }
 

@@ -83,12 +83,12 @@ namespace Resources {
         ///
         ///Until it is unlocked, you will be unable to sign in or reset your password, even if you use the correct existing password.
         ///
-        ///The site administrators have been notified and will unlock it for you shortly.  Or, you can use the Contact link on the website (http://%APP_URL%) to ask for help resetting your password.
+        ///The site administrators have been notified and will unlock it for you shortly.  Or, you can use the Contact link on the website (https://%APP_URL%) to ask for help resetting your password.
         ///
         ///Thank-you,
         ///The %APP_NAME% Team
         ///
-        ///To contact us, please visit http://%APP_URL%% [rest of string was truncated]&quot;;.
+        ///To contact us, please visit https://%APP_URL [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string AccountLocked {
             get {
@@ -103,7 +103,7 @@ namespace Resources {
         ///
         ///We have unlocked your account, so you can try again.  If you need to reset your password, you can do that, but you will need to know the secret answer to the question that you provided when you set up your account.  
         ///
-        ///If you still cannot sign in, please use the &quot;Contact Us&quot; link on the website at http://%APP_URL%  [rest of string was truncated]&quot;;.
+        ///If you still cannot sign in, please use the &quot;Contact Us&quot; link on the website at https://%APP_URL% [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string AccountUnlocked {
             get {
@@ -132,7 +132,7 @@ namespace Resources {
         ///
         ///If this is correct, there is no action to take.
         ///
-        ///If it is NOT correct, please go to http://%APP_U [rest of string was truncated]&quot;;.
+        ///If it is NOT correct, please go to https://%APP_ [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string AircraftTailSplit {
             get {
@@ -141,13 +141,10 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You have changed your email address from {0} to {1}.
+        ///   Looks up a localized string similar to You have changed your email address from *{0}* to *{1}*.
         ///
-        ///If this was not your intent, please visit http://%APP_URL% and change your e-mail as appropriate.
-        ///
-        ///Thank-you,
-        ///
-        ///The %APP_NAME% Team.
+        ///If this was not your intent, please visit [%APP_NAME%](https://%APP_URL%) and change your e-mail as appropriate.
+        ///.
         /// </summary>
         internal static string ChangeEmailConfirmation {
             get {
@@ -156,17 +153,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your password has been reset.  You may now return to the site and log-in again, using your e-mail address and your new password.
-        ///
-        ///Your new password for %APP_NAME% is:  &lt;% Password %&gt;
-        ///
-        ///Please note that your password is case sensitive!
-        ///
-        ///We also STRONGLY recommend that you change this password after signing in.  You can do this by clicking the &quot;Profile&quot; tab.
-        ///
-        ///Thank-you for using %APP_NAME%!
-        ///
-        ///To contact us, please visit http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx..
+        ///   Looks up a localized string similar to .
         /// </summary>
         internal static string ChangePassEmail {
             get {
@@ -183,7 +170,7 @@ namespace Resources {
         ///
         ///Thank-you very much.
         ///
-        ///To contact us, please visit http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx..
+        ///To contact us, please visit https://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx..
         /// </summary>
         internal static string ContactMeResponse {
             get {
@@ -198,11 +185,7 @@ namespace Resources {
         ///
         ///Depending on the level at which you gave, you may have earned a gratuity; this has been activated on your behalf.
         ///
-        ///Please don&apos;t hesitate to contact us with any thoughts, questions, concerns, or ideas at http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.  We love hearing from you!
-        ///
-        ///Thanks again,
-        ///
-        ///--The %APP_NAME% team
+        ///Please don&apos;t hesitate to [contact us](https://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx) with any thoughts, questions, concerns, or ideas at.  We love hearing from you!
         ///.
         /// </summary>
         internal static string DonationThankYou {
@@ -220,9 +203,7 @@ namespace Resources {
         ///
         ///Please consider continuing your support for %APP_NAME% with a new donation, and your backups will resume.
         ///
-        ///You can view your donation history and make a new donation at http://%APP_URL%%APP_ROOT%/Member/EditProfile.aspx/pftDonate
-        ///
-        ///Th [rest of string was truncated]&quot;;.
+        ///You can view your donation history and make a new donation at [%APP_NAME%](https://%APP_URL%%APP_ROOT%/Member/EditProfile.aspx/p [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string DropboxExpired {
             get {
@@ -239,9 +220,7 @@ namespace Resources {
         ///
         ///Please consider continuing your support for %APP_NAME% with a new donation, and your backups will continue uninterrupted.
         ///
-        ///You can view your donation history and make a new donation at http://%APP_URL%%APP_ROOT%/Member/EditProfile.aspx/pftDonate
-        ///
-        ///Thanks  [rest of string was truncated]&quot;;.
+        ///You can view your donation history and make a new donation at [%APP_NAME%](https://%APP_URL%%APP_ROOT%/Member/EditProfile.aspx/pftDon [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string DropboxExpiring {
             get {
@@ -259,7 +238,7 @@ namespace Resources {
         ///
         ///{2}
         ///
-        ///Please contact us using the &quot;Contact Us&quot; link on the website at http://%APP_URL% if you have any questions about this.
+        ///Please contact us using the &quot;Contact Us&quot; link on the website at https://%APP_URL% if you have any questions about this.
         ///
         ///Thank-you..
         /// </summary>
@@ -279,40 +258,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  Dear {0}
-        ///
-        ///You recently saved a flight on %APP_NAME% with a request to post it to your account on Facebook.
-        ///
-        ///Your flight was successfully saved, but it was not posted to Facebook because you have not yet authorized %APP_NAME% to post on your behalf to Facebook.
-        ///
-        ///To give %APP_NAME% the ability to post flights (only the ones you select) to your Facebook profile, please visit http://%APP_URL%%APP_ROOT%/Member/EditProfile.aspx/pftPrefs.
-        ///
-        ///Doing this will enable you to choose whether or not to post a fligh [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string EnableFacebook {
-            get {
-                return ResourceManager.GetString("EnableFacebook", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to  Dear {0}
-        ///
-        ///You recently saved a flight on %APP_NAME% with a request to tweet it to your feed on Twitter.
-        ///
-        ///Your flight was successfully saved, but it was not posted to Twitter because you have not yet authorized %APP_NAME% to post on your behalf to your Twitter feed.
-        ///
-        ///To give %APP_NAME% the ability to post flights (only the ones you select) to your Twitter feed, please visit http://%APP_URL%%APP_ROOT%/Member/EditProfile.aspx and click on the &quot;Preferences&quot; section.
-        ///
-        ///Doing this will enable you to choose [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string EnableTwitter {
-            get {
-                return ResourceManager.GetString("EnableTwitter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to  Dear {0}:
         ///
         ///Thank-you very much for your previous donation to %APP_NAME%.  Your support is very greatly appreciated, and helps to keep the service free!
@@ -321,9 +266,7 @@ namespace Resources {
         ///
         ///Please consider continuing your support for %APP_NAME% with a new donation, and your eternal gratitude will resume.
         ///
-        ///You can view your donation history and make a new donation at http://%APP_URL%%APP_ROOT%/Member/EditProfile.aspx/pftDonate
-        ///
-        ///Thank [rest of string was truncated]&quot;;.
+        ///You can view your donation history and make a new donation at [%APP_NAME%](https://%APP_URL%%APP_ROOT%/Member/EditProfile.aspx/pftD [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string EternalGratitudeExpired {
             get {
@@ -332,7 +275,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  Dear {0}:
+        ///   Looks up a localized string similar to Dear {0}:
         ///
         ///Thank-you very much for your previous donation to %APP_NAME%.  Your support is very greatly appreciated, and helps to keep the service free!
         ///
@@ -340,9 +283,9 @@ namespace Resources {
         ///
         ///Please consider continuing your support for %APP_NAME% with a new donation, and will continue to receive eternal gratitude for another year.
         ///
-        ///You can view your donation history and make a new donation at http://%APP_URL%%APP_ROOT%/Member/EditProfile.aspx/pftDonate
+        ///You can view your donation history and make a new donation at [%APP_NAME%](https://%APP_URL%%APP_ROOT%/Member/EditProfile.aspx/pftDonate).
         ///
-        ///Thanks again for [rest of string was truncated]&quot;;.
+        ///.
         /// </summary>
         internal static string EternalGratitudeExpiring {
             get {
@@ -378,7 +321,7 @@ namespace Resources {
         ///
         ///{2}
         ///
-        ///Please contact us using the &quot;Contact Us&quot; link on the website at http://%APP_URL% if you have any questions about this.
+        ///Please contact us using the &quot;Contact Us&quot; link on the website at https://%APP_URL% if you have any questions about this.
         ///
         ///Thank-you..
         /// </summary>
@@ -398,6 +341,23 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  &lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;
+        ///&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+        ///&lt;head&gt;
+        ///    &lt;link href=&quot;https://%APP_URL%%APP_ROOT%/Public/StyleSheet.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;
+        ///&lt;/head&gt;
+        ///&lt;body style=&quot;min-width: 300px; max-width: 800px; margin-left: auto; margin-right: auto;&quot;&gt;
+        ///    &lt;p style=&quot;text-align:center&quot;&gt;&lt;img alt=&quot;%APP_NAME% Logo&quot; src=&quot;https://%APP_URL%%APP_LOGO%&quot; /&gt;&lt;/p&gt;
+        ///    %BODYCONTENT%
+        ///    &lt;br /&gt;&lt; [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string HTMLTemplate {
+            get {
+                return ResourceManager.GetString("HTMLTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dear {0}:
         ///
         ///The backup of your logbook on %APP_NAME% to OneDrive was not successful.  
@@ -407,7 +367,7 @@ namespace Resources {
         ///
         ///{2}
         ///
-        ///Please contact us using the &quot;Contact Us&quot; link on the website at http://%APP_URL% if you have any questions about this.
+        ///Please contact us using the &quot;Contact Us&quot; link on the website at https://%APP_URL% if you have any questions about this.
         ///
         ///Thank-you..
         /// </summary>
@@ -429,55 +389,15 @@ namespace Resources {
         /// <summary>
         ///   Looks up a localized string similar to Your password has been changed on %APP_NAME%.
         ///
-        ///If this is what you expected, then no action is required.  If you did not make this change, however, please sign in and change your password, or contact us (use the &quot;Contact Us&quot; link at http://%APP_URL%) for help.
+        ///If this is what you expected, then no action is required.  If you did not make this change, however, please sign in and change your password, or contact us (use the &quot;Contact Us&quot; link at https://%APP_URL%) for help.
         ///
         ///Thank-you for using %APP_NAME%!
         ///
-        ///To contact us, please visit http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx..
+        ///To contact us, please visit https://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx..
         /// </summary>
         internal static string PasswordChanged {
             get {
                 return ResourceManager.GetString("PasswordChanged", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to  Dear {0}
-        ///
-        ///You recently saved a flight on %APP_NAME% with a request to post it to your account on Facebook.
-        ///
-        ///Your flight was successfully saved, but your authorization for %APP_NAME% to post on your behalf to Facebook has expired or is no longer valid.
-        ///
-        ///You can re-authorize %APP_NAME% by visiting http://%APP_URL%%APP_ROOT%/Member/EditProfile.aspx/pftPrefs.
-        ///
-        ///Doing this will re-enable you to choose whether or not to post a flight to your Facebook account when you save it.
-        ///
-        ///Thanks
-        ///
-        ///--The %APP_NAME%  [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string ReauthFacebook {
-            get {
-                return ResourceManager.GetString("ReauthFacebook", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Dear {0}
-        ///
-        ///You recently added a flight on %APP_NAME% with the attached telemetry data which is too large for the system.
-        ///
-        ///We saved the flight for you without the data, but didn&apos;t want you to lose any of your data, so we are including it with this message.
-        ///
-        ///You can try again to attach it to your flight (you can do this from the website at http://%APP_URL%), but please reduce it to less than 300K before doing so. 
-        ///
-        ///Thanks
-        ///
-        ///--The %APP_NAME% Team.
-        /// </summary>
-        internal static string TelemetryTooLarge {
-            get {
-                return ResourceManager.GetString("TelemetryTooLarge", resourceCulture);
             }
         }
         
@@ -513,12 +433,12 @@ namespace Resources {
         ///&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot; &gt;
         ///&lt;head&gt;
         ///    &lt;title&gt;Welcome to %APP_NAME%&lt;/title&gt;
-        ///    &lt;link href=&quot;http://%APP_URL%%APP_ROOT%/Public/StyleSheet.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;
+        ///    &lt;link href=&quot;https://%APP_URL%%APP_ROOT%/Public/StyleSheet.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;
         ///&lt;/head&gt;
         ///&lt;body style=&quot;font-family: Arial; font-size: 9pt;&quot;&gt;
         ///&lt;p&gt;
-        ///    &lt;img alt=&quot;%APP_NAME% Logo&quot; src=&quot;http://%APP_URL%%APP_LOGO%&quot; /&gt;&lt;/p&gt;
-        ///    &lt;p&gt;Welcome to %APP_NAME%, an online pilot&apos;s logb [rest of string was truncated]&quot;;.
+        ///    &lt;img alt=&quot;%APP_NAME% Logo&quot; src=&quot;https://%APP_URL%%APP_LOGO%&quot; /&gt;&lt;/p&gt;
+        ///    &lt;p&gt;Welcome to %APP_NAME%, an online pilot&apos;s lo [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Welcomeemailhtm {
             get {

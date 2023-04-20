@@ -137,7 +137,7 @@
     <value>Content.en\Email\ChangeEmailConfirmation.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="ChangePassEmail" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Content.en\Email\ChangePassEmail.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>content.en\email\changepassemail.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="ContactMeResponse" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>content.en\email\contactmeresponse.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
@@ -157,12 +157,6 @@
   <data name="DropboxFailureSubject" xml:space="preserve">
     <value>%APP_NAME% - Backup failed to Dropbox</value>
   </data>
-  <data name="EnableFacebook" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Content.en\Email\EnableFacebook.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="EnableTwitter" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Content.en\Email\EnableTwitter.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
   <data name="EternalGratitudeExpired" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>content.en\email\eternalgratitudeexpired.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
@@ -181,6 +175,9 @@
   <data name="GoogleDriveFailureSubject" xml:space="preserve">
     <value>%APP_NAME% - Backup failed to GoogleDrive</value>
   </data>
+  <data name="HTMLTemplate" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Content.en\Email\HTMLTemplate.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
   <data name="OneDriveFailure" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>content.en\email\onedrivefailure.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
@@ -189,12 +186,6 @@
   </data>
   <data name="PasswordChanged" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>content.en\email\passwordchanged.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="ReauthFacebook" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>content.en\email\reauthfacebook.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="TelemetryTooLarge" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Content.en\Email\TelemetryTooLarge.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="ThankYouCloser" xml:space="preserve">
     <value>Thank-you for using %APP_NAME%</value>

@@ -6,8 +6,5 @@ Your last donation entitled you to a year of eternal gratitude.
 
 Please consider continuing your support for %APP_NAME% with a new donation, and will continue to receive eternal gratitude for another year.
 
-You can view your donation history and make a new donation at https://%APP_URL%%APP_ROOT%/Member/EditProfile.aspx/pftDonate
+You can view your donation history and make a new donation at [%APP_NAME%](https://%APP_URL%%APP_ROOT%/Member/EditProfile.aspx/pftDonate).
 
-Thanks again for your support,
-
---The %APP_NAME% team

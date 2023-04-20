@@ -739,25 +739,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your password has been reset.  You may now return to the site and log-in again, using your e-mail address and your new password.
-        ///
-        ///Your new password for %APP_NAME% is:  &lt;% Password %&gt;
-        ///
-        ///Please note that your password is case sensitive!
-        ///
-        ///We also STRONGLY recommend that you change this password after signing in.  You can do this by clicking the &quot;Profile&quot; tab.
-        ///
-        ///Thank-you for using %APP_NAME%!
-        ///
-        ///To contact us, please visit https://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx..
-        /// </summary>
-        internal static string ChangePassEmail {
-            get {
-                return ResourceManager.GetString("ChangePassEmail", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Change Query....
         /// </summary>
         internal static string ChangeQuery {

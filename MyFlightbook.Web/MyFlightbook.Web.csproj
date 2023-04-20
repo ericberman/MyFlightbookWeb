@@ -418,7 +418,7 @@
     <Content Include="App_GlobalResources\Content.en\Email\AircraftTailSplit.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\AppointmentDeleted.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\ChangeEmailConfirmation.txt" />
-    <Content Include="App_GlobalResources\Content.en\Email\ChangePassEmail.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\ChangePassEmail.htm" />
     <Content Include="App_GlobalResources\Content.en\Email\ClubInvitationAccepted.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\ClubInviteJoin.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\ClubRequestAccepted.txt" />
@@ -428,15 +428,13 @@
     <Content Include="App_GlobalResources\Content.en\Email\DropboxExpired.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\DropboxExpiring.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\DropboxFailure.txt" />
-    <Content Include="App_GlobalResources\Content.en\Email\EnableFacebook.txt" />
-    <Content Include="App_GlobalResources\Content.en\Email\EnableTwitter.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\EternalGratitudeExpired.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\EternalGratitudeExpiring.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\GoogleDriveFailure.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\HTMLTemplate.htm" />
     <Content Include="App_GlobalResources\Content.en\Email\OneDriveFailure.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\PasswordChanged.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\PendingFlightsReminder.htm" />
-    <Content Include="App_GlobalResources\Content.en\Email\ReauthFacebook.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\ResetPassEmail.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\ResourceBooked.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\ResourceChangedByOther.txt" />
@@ -444,7 +442,6 @@
     <Content Include="App_GlobalResources\Content.en\Email\RoleInvitation.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\SendFlightBody.htm" />
     <Content Include="App_GlobalResources\Content.en\Email\SignInvitationExisting.txt" />
-    <Content Include="App_GlobalResources\Content.en\Email\TelemetryTooLarge.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\VerifyEmail.htm" />
     <Content Include="App_GlobalResources\Content.en\Email\Welcomeemail.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\Welcomeemailhtm.txt" />

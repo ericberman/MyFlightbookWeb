@@ -1,7 +1,3 @@
 ﻿<% Requestor %> has requested membership in the club/FBO "<% ClubName %>" on %APP_NAME% (https://%APP_URL%).
 
 If you know <% Requestor %> and approve their membership, please confirm this by visiting [this page](<% ConfirmRoleLink %>).
-
-Thank-you
-
-To contact us, please visit https://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.
