@@ -1408,7 +1408,7 @@ namespace MyFlightbook
                 UncacheUser(UserName);
 
                 util.NotifyUser(String.Format(CultureInfo.CurrentCulture, Resources.Profile.PasswordChangedSubject, Branding.CurrentBrand.AppName),
-                    Branding.ReBrand(Resources.EmailTemplates.PasswordChanged), new MailAddress(Email, UserFullName), false, false);
+                    util.ApplyHtmlEmailTemplate(Resources.EmailTemplates.PasswordChanged, false), new MailAddress(Email, UserFullName), false, false);
             }
             catch (UserEntityException ex)
             {

@@ -3,7 +3,3 @@
 We usually respond to requests within a few hours.  
 
 However, I will be traveling with intermittant Internet access from June 25 - July 17, so it may be a few days before you get a response in that timeframe.  The FAQ on the site addresses many common questions; please give that a try.
-
-Thank-you very much.
-
-To contact us, please visit https://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.

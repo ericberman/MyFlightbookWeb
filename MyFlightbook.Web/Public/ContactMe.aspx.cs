@@ -75,7 +75,7 @@ namespace MyFlightbook.PublicPages
                 string szOOF = ConfigurationManager.AppSettings["UseOOF"];
 
                 if (!String.IsNullOrEmpty(szOOF) && String.Compare(szOOF, "yes", StringComparison.Ordinal) == 0)
-                    util.NotifyUser(szSubject, Branding.ReBrand(Resources.EmailTemplates.ContactMeResponse), ma, false, false);
+                    util.NotifyUser(szSubject, util.ApplyHtmlEmailTemplate(Resources.EmailTemplates.ContactMeResponse, false), ma, false, false);
 
                 // if this was done via iPhone/iPad (i.e., popped up browser), suppress the "return" link.
                 if (util.GetIntParam(Request, "noCap", 0) != 0)
