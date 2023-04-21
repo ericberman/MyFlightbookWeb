@@ -1439,7 +1439,7 @@ WHERE
                         ListAlternativeVersions());
 
                     string szSubject = String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.ModelCollisionSubjectLine, this.TailNumber, Branding.CurrentBrand.AppName);
-                    util.NotifyUser(szSubject, szNotification, new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, false);
+                    util.NotifyUser(szSubject, util.ApplyHtmlEmailTemplate(szNotification, false), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, true);
                 }
                 return acMatch;
             }
@@ -1467,7 +1467,6 @@ WHERE
 
             // Notify the admin here - model changed, I want to see it.
             string szSubject = String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.ModelCollisionSubjectLine, this.TailNumber, Branding.CurrentBrand.AppName);
-            string szNotificationTemplate = Branding.ReBrand(Resources.Aircraft.AircraftModelChangedNotification);
             MakeModel mmMatch = MakeModel.GetModel(acMatch.ModelID);
             MakeModel mmThis = MakeModel.GetModel(this.ModelID);
             string szMakeMatch = mmMatch.DisplayName + mmMatch.ICAODisplay;
@@ -1480,9 +1479,9 @@ WHERE
             if (String.Compare(szMakeMatch, szMakeThis, StringComparison.CurrentCultureIgnoreCase) == 0)
                 return;
 
-            util.NotifyAdminEvent(szSubject, String.Format(CultureInfo.CurrentCulture, "User: {0}\r\n\r\n{1}\r\n\r\nMessage that was sent to other users:\r\n\r\n{2}", Profile.GetUser(szUser).DetailedName,
+            util.NotifyAdminEvent(szSubject, util.ApplyHtmlEmailTemplate(String.Format(CultureInfo.CurrentCulture, "User: {0}\r\n\r\n{1}\r\n\r\nMessage that was sent to other users:\r\n\r\n{2}", Profile.GetUser(szUser).DetailedName,
                 String.Format(CultureInfo.InvariantCulture,"https://{0}{1}?id={2}&a=1", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/Member/EditAircraft.aspx"), AircraftID),
-                String.Format(CultureInfo.CurrentCulture,szNotificationTemplate, "(username)", this.TailNumber, szMakeMatch, szMakeThis, szReg)), ProfileRoles.maskCanManageData);
+                String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AircraftModelChangedNotification, "(username)", this.TailNumber, szMakeMatch, szMakeThis, szReg)), false), ProfileRoles.maskCanManageData);
 
             // If we're here, then there are other users - need to notify all of them of the change.
             if (!String.IsNullOrEmpty(szUser))
@@ -1494,7 +1493,7 @@ WHERE
                         continue;
 
                     Profile pf = Profile.GetUser(szName);
-                    util.NotifyUser(szSubject, String.Format(CultureInfo.CurrentCulture,szNotificationTemplate, pf.UserFullName, this.TailNumber, szMakeMatch, szMakeThis, szReg), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, false);
+                    util.NotifyUser(szSubject, util.ApplyHtmlEmailTemplate(String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AircraftModelChangedNotification, pf.UserFullName, this.TailNumber, szMakeMatch, szMakeThis, szReg), false), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, true);
                 }
             }
         }
@@ -1577,15 +1576,15 @@ WHERE
             {
                 Profile pf = Profile.GetUser(sz);
                 string szEmailNotification =
-                    Branding.ReBrand(String.Format(CultureInfo.CurrentCulture,Resources.EmailTemplates.AircraftTailSplit,
+                    util.ApplyHtmlEmailTemplate(String.Format(CultureInfo.CurrentCulture,Branding.ReBrand(Resources.EmailTemplates.AircraftTailSplit),
                     pf.UserFullName,
                     acOriginal.TailNumber,
                     mmOriginal.DisplayName,
                     mmNew.DisplayName,
                     lstUsersToMigrate.Contains(sz) ? mmNew.DisplayName : mmOriginal.DisplayName,
-                    szAlternatives));
+                    szAlternatives), false);
 
-                util.NotifyUser(String.Format(CultureInfo.CurrentCulture,Resources.Aircraft.ModelCollisionSubjectLine, this.TailNumber, Branding.CurrentBrand.AppName), szEmailNotification, new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, false);
+                util.NotifyUser(String.Format(CultureInfo.CurrentCulture,Resources.Aircraft.ModelCollisionSubjectLine, this.TailNumber, Branding.CurrentBrand.AppName), szEmailNotification, new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, true);
             }
         }
 

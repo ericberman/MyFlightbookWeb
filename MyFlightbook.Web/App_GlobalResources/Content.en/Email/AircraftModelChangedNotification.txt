@@ -4,27 +4,17 @@ You have indicated on %APP_NAME% that you fly the aircraft with the tailnumber "
 
 This aircraft had been identified as being this model:
 
-     {2}
+     *{2}*
 
 However, another pilot has just changed it to be this model:
 
-     {3}
+     *{3}*
 
 The change in model could affect your totals and your flying currency computations.
 
-Often, this is a minor change, such as specifying a specific variant of a model.  E.g., changing a
-Cessna 172 to be a Cessna 172-S.
+Often, this is a minor change, such as specifying a specific variant of a model.  E.g., changing a Cessna 172 to be a Cessna 172-S.
 
-Sometimes, aircraft identifiers are reused, and the change of model may be an indication of this.
-If that is the case, please contact us (use the "Contact Us" link at https://%APP_URL%) and we can 
-address this.
+Sometimes, aircraft identifiers are reused, and the change of model may be an indication of this.  If that is the case, or if you believe that this change was made in error, please contact us (use the "Contact Us" link at https://%APP_URL%) and we can address this.
 
-If you believe that this change was made in error, or if this could possibly be the
-result of a tailnumber being re-assigned to a new aircraft, please contact us at 
-https://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx and we can help resolve this.
 {4}
-Thank-you,
 
-The %APP_NAME% Team
-
-To contact us, please visit https://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.

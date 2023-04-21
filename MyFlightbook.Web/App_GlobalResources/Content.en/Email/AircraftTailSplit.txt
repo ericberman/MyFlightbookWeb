@@ -6,23 +6,18 @@ Sometimes, aircraft registrations are re-assigned from one aircraft to another. 
 
 This aircraft had been identified as being:
 
-     {2}
+     *{2}*
 
 However, a new version has been created which is:
 
-     {3}
+     *{3}*
 
 The version used for your account is:
 
-     {4}
+     *{4}*
 
 If this is correct, there is no action to take.
 
 If it is NOT correct, please go to https://%APP_URL% and click on the "Aircraft" tab, then on the tailnumber for this aircraft.  You will see the other versions of the aircraft there and will have the opportunity to switch to the correct one.
 {5}
-If you have any questions, please do not hesitate to contact us (use the "Contact Us" link at https://%APP_URL%).
-
-Thank-you,
-
-The %APP_NAME% Team
-
+If you have any questions, please do not hesitate to [contact us](https://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx).

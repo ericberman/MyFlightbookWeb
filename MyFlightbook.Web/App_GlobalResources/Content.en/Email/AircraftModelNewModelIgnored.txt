@@ -2,25 +2,17 @@
 
 You just created a new aircraft "{1}" on %APP_NAME%, and identified this aircraft with the following model:
 
-     {2}
+     *{2}*
 
 However, this aircraft was already identified by other pilots as being this model:
 
-     {3}
+     *{3}*
 
-Because this aircraft is already being used in flights by other pilots, %APP_NAME% assumes
-the pre-existing model to be correct.
+Because this aircraft is already being used in flights by other pilots, %APP_NAME% assumes the pre-existing model to be correct.
 {4}
 
 Sometimes, aircraft identifiers are reused, or the aircraft in the system is incorrect.  
 
-If you believe that the model you specified is correct, you can update it (or choose the correct 
-version) at https://%APP_URL%, under the "Aircraft" section. 
+If you believe that the model you specified is correct, you can update it (or choose the correct version) at https://%APP_URL%, under the "Aircraft" section. 
 
-Please contact us at https://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx if you need more assistance.
-
-Thank-you,
-
-The %APP_NAME% Team
-
-To contact us, please visit https://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.
+Please [contact us](https://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx) if you need more assistance.
