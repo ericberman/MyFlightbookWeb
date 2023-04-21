@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2021 MyFlightbook LLC
+ * Copyright (c) 2015-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -204,7 +204,7 @@ namespace MyFlightbook.Instruction
 
                     string szURL = String.Format(System.Globalization.CultureInfo.InvariantCulture, "https://{0}{1}/{2}", Request.Url.Host, ResolveUrl("~/Member/Training.aspx"), tabID.instStudents.ToString());
 
-                    msg.Body = Branding.ReBrand(Resources.SignOff.SignInvitationExisting).Replace("<% SignPendingFlightsLink %>", szURL).Replace("<% Requestor %>", pf.UserFullName);
+                    util.PopulateMessageContentWithTemplate(msg, Resources.SignOff.SignInvitationExisting.Replace("<% SignPendingFlightsLink %>", szURL).Replace("<% Requestor %>", pf.UserFullName));
                     util.SendMessage(msg);
                 }
             }
