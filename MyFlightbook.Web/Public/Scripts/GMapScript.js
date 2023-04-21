@@ -199,19 +199,33 @@ function MFBMap()
                 var llb = mfbMap.gmap.getBounds();
                 var llbSW = llb.getSouthWest();
                 var llbNE = llb.getNorthEast();
-                MyFlightbook.MFBWebService.AirportsInBoundingBox(llbSW.lat(), llbSW.lng(), llbNE.lat(), llbNE.lng(), mfbMap.fAutofillHeliports,
-                    function (result) {
-                        mfbMap.clearMarkers();
-                        var rgAirports = new Array();
-                        for (var i = 0; i < result.length; i++) {
-                            rgAirports.push(new MFBAirportMarker(result[i].LatLong.Latitude, result[i].LatLong.Longitude, result[i].NameWithGeoRegion, result[i].Code, result[i].FacilityType, true));
+
+                var params = new Object();
+                params.latSouth = llbSW.lat();
+                params.lonWest = llbSW.lng();
+                params.latNorth = llbNE.lat();
+                params.lonEast = llbNE.lng();
+                params.fIncludeHeliports = mfbMap.fAutofillHeliports;
+                var d = JSON.stringify(params);
+                $.ajax(
+                    {
+                        url: '/logbook/public/MapRoute2.aspx/AirportsInBoundingBox',
+                        type: "POST", data: d, dataType: "json", contentType: "application/json",
+                        error: function (xhr, status, error) {
+                            window.alert(xhr.responseJSON.Message);
+                        },
+                        complete: function (response) { },
+                        success: function (response) {
+                            var result = response.d;
+                            mfbMap.clearMarkers();
+                            var rgAirports = new Array();
+                            for (var i = 0; i < result.length; i++) {
+                                rgAirports.push(new MFBAirportMarker(result[i].LatLong.Latitude, result[i].LatLong.Longitude, result[i].NameWithGeoRegion, result[i].Code, result[i].FacilityType, true));
+                            }
+                            mfbMap.rgAirports = new Array();
+                            mfbMap.rgAirports.push(rgAirports);
+                            mfbMap.ShowOverlays();
                         }
-                        mfbMap.rgAirports = new Array();
-                        mfbMap.rgAirports.push(rgAirports);
-                        mfbMap.ShowOverlays();
-                    },
-                    function (result) {
-                        alert(arguments[0].get_message());
                     });
             }
             else {

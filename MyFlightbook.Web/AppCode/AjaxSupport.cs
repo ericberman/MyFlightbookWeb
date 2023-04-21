@@ -339,9 +339,7 @@ namespace MyFlightbook.Web.Ajax
 
             // Get the query
             List<CannedQuery> lst = new List<CannedQuery>(CannedQuery.QueriesForUser(User.Identity.Name));
-            CannedQuery cq = lst.Find(q => q.QueryName.CompareCurrentCultureIgnoreCase(queryName) == 0);
-            if (cq == null)
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, "Unknown query '{0}'", queryName));
+            CannedQuery cq = lst.Find(q => q.QueryName.CompareCurrentCultureIgnoreCase(queryName) == 0) ?? throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, "Unknown query '{0}'", queryName));
             cq.ColorString = String.IsNullOrWhiteSpace(color) ? null : color.Replace("#", string.Empty);
             cq.Commit();
         }
@@ -361,6 +359,65 @@ namespace MyFlightbook.Web.Ajax
             Profile pf = Profile.GetUser(User.Identity.Name);
             pf.SetPreferenceForKey(MFBConstants.keyRouteColor, routeColor, String.IsNullOrWhiteSpace(routeColor));
             pf.SetPreferenceForKey(MFBConstants.keyPathColor, pathColor, String.IsNullOrWhiteSpace(pathColor));
+        }
+        #endregion
+
+        #region Property Autocomplete 
+        [WebMethod(EnableSession = true)]
+        [System.Web.Script.Services.ScriptMethod]
+        public string[] PreviouslyUsedTextProperties(string prefixText, int count, string contextKey)
+        {
+            string[] rgResultDefault = Array.Empty<string>();
+
+            if (String.IsNullOrEmpty(contextKey) || String.IsNullOrWhiteSpace(prefixText))
+                return rgResultDefault;
+
+            string[] rgsz = contextKey.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            if (rgsz.Length != 2 || String.IsNullOrEmpty(rgsz[0]) || string.IsNullOrEmpty(rgsz[1]))
+                return rgResultDefault;
+
+            if (!Int32.TryParse(rgsz[1], out int idPropType))
+                return rgResultDefault;
+
+            // Handle METAR autofill a bit different from other properties: fetch raw metar.
+            if (idPropType == (int)CustomPropertyType.KnownProperties.IDPropMetar)
+            {
+                string[] rgAirports = prefixText.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                if (rgAirports == null || rgAirports.Length == 0)
+                    return rgResultDefault;
+
+                string szLastWord = rgAirports[rgAirports.Length - 1];
+                if (szLastWord.Length != 4)
+                    return rgResultDefault;
+
+                // trim the last word out of the prefix
+                prefixText = prefixText.Trim();
+                prefixText = prefixText.Substring(0, prefixText.Length - szLastWord.Length);
+
+                List<string> lst = new List<string>();
+                foreach (Weather.ADDS.METAR m in Weather.ADDS.ADDSService.LatestMETARSForAirports(szLastWord, false))
+                    lst.Add(String.Format(CultureInfo.CurrentCulture, "{0} {1}", prefixText, m.raw_text).Trim());
+
+                return lst.ToArray();
+            }
+            else
+            {
+                Dictionary<int, string[]> d = CustomFlightProperty.PreviouslyUsedTextValuesForUser(rgsz[0]);
+
+                string[] results = (d.TryGetValue(idPropType, out string[] value)) ? value : null;
+                if (results == null)
+                    return Array.Empty<string>();
+
+                List<string> lst = new List<string>(results);
+
+                string szSearch = prefixText.ToUpperInvariant();
+
+                lst = lst.FindAll(sz => sz.ToUpperInvariant().StartsWith(szSearch, StringComparison.InvariantCulture));
+                if (lst.Count > count && count >= 1)
+                    lst.RemoveRange(count - 1, lst.Count - count);
+
+                return lst.ToArray();
+            }
         }
         #endregion
     }

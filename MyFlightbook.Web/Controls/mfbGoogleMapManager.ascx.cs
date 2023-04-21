@@ -116,7 +116,7 @@ public partial class Controls_mfbGoogleMapMgr : UserControl
                 {
                     // Generate a name for the callback function that is unique to this map.
                     string szFuncName = "initMap" + Regex.Replace(UniqueID, "[^a-zA-Z0-9]", string.Empty);
-                    Page.ClientScript.RegisterClientScriptInclude("MFBMapScript", ResolveClientUrl("~/Public/Scripts/GMapScript.js?v=10"));
+                    Page.ClientScript.RegisterClientScriptInclude("MFBMapScript", ResolveClientUrl("~/Public/Scripts/GMapScript.js?v=11"));
                     Page.ClientScript.RegisterClientScriptBlock(GetType(), "MapInit" + UniqueID, Map.MapJScript(MapID, szFuncName, pnlMap.ClientID), true);
 
                     // We put this in-line because, as far as I can tell, there's no way to do a registerclientscriptinclude that includes the async or the defer attribute AND because it MUST be after the <div> is loaded; 

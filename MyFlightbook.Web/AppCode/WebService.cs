@@ -945,9 +945,7 @@ namespace MyFlightbook
             if (pf.User.CompareCurrentCultureIgnoreCase(szUser) != 0)
                 throw new MyFlightbookException(Resources.WebService.errFlightNotYours);
 
-            PendingFlight pfOwned = PendingFlight.PendingFlightsForUser(szUser).FirstOrDefault(pf2 => pf2.PendingID.CompareOrdinal(pf.PendingID) == 0);
-            if (pfOwned == null)
-                throw new MyFlightbookException(Resources.WebService.errFlightNotYours);
+            PendingFlight pfOwned = PendingFlight.PendingFlightsForUser(szUser).FirstOrDefault(pf2 => pf2.PendingID.CompareOrdinal(pf.PendingID) == 0) ?? throw new MyFlightbookException(Resources.WebService.errFlightNotYours);
         }
 
         [WebMethod]
@@ -1427,23 +1425,6 @@ namespace MyFlightbook
             }
         }
 
-        /// <summary>
-        /// Determines if the calling referrer is authorized to call us
-        /// </summary>
-        /// <returns></returns>
-        private static bool IsValidCaller()
-        {
-            if (HttpContext.Current == null || HttpContext.Current.Request == null)
-                return false;
-            if (HttpContext.Current.Request.IsLocal)
-                return true;
-            if (HttpContext.Current.Request.UrlReferrer == null)
-                return false;
-            if (HttpContext.Current.Request.UrlReferrer.Host.EndsWith(Branding.CurrentBrand.HostName, StringComparison.OrdinalIgnoreCase))
-                return true;
-            return false;
-        }
-
         #region Named (canned) queries:
         [WebMethod]
         public CannedQuery[] GetNamedQueriesForUser(string szAuthToken)
@@ -1517,77 +1498,16 @@ namespace MyFlightbook
             return responses.ToArray();
         }
 
-        [System.Web.Services.WebMethod]
+        [WebMethod]
         [System.Web.Script.Services.ScriptMethod]
         public string[] SuggestModels(string prefixText, int count)
         {
             return DoSuggestion("SELECT model AS {0} FROM models WHERE model LIKE CONCAT(?prefix, '%') ORDER BY model ASC LIMIT {1}", prefixText, count);
         }
-
-        [System.Web.Services.WebMethod]
-        [System.Web.Script.Services.ScriptMethod]
-        public string[] PreviouslyUsedTextProperties(string prefixText, int count, string contextKey)
-        {
-            string[] rgResultDefault = Array.Empty<string>();
-
-            if (String.IsNullOrEmpty(contextKey) || String.IsNullOrWhiteSpace(prefixText))
-                return rgResultDefault;
-
-            string[] rgsz = contextKey.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-            if (rgsz.Length != 2 || String.IsNullOrEmpty(rgsz[0]) || string.IsNullOrEmpty(rgsz[1]))
-                return rgResultDefault;
-
-            if (!Int32.TryParse(rgsz[1], out int idPropType))
-                return rgResultDefault;
-
-            // Handle METAR autofill a bit different from other properties: fetch raw metar.
-            if (idPropType == (int)CustomPropertyType.KnownProperties.IDPropMetar)
-            {
-                string[] rgAirports = prefixText.Split(new char[] {' '}, StringSplitOptions.RemoveEmptyEntries);
-                if (rgAirports == null || rgAirports.Length == 0)
-                    return rgResultDefault;
-
-                string szLastWord = rgAirports[rgAirports.Length - 1];
-                if (szLastWord.Length != 4)
-                    return rgResultDefault;
-
-                // trim the last word out of the prefix
-                prefixText = prefixText.Trim();
-                prefixText = prefixText.Substring(0, prefixText.Length - szLastWord.Length);
-
-                List<string> lst = new List<string>();
-                foreach (Weather.ADDS.METAR m in Weather.ADDS.ADDSService.LatestMETARSForAirports(szLastWord, false))
-                    lst.Add(String.Format(CultureInfo.CurrentCulture, "{0} {1}", prefixText, m.raw_text).Trim());
-
-                return lst.ToArray();
-            }
-            else
-            {
-                Dictionary<int, string[]> d = CustomFlightProperty.PreviouslyUsedTextValuesForUser(rgsz[0]);
-
-                string[] results = (d.ContainsKey(idPropType)) ? d[idPropType] : null;
-                if (results == null)
-                    return Array.Empty<string>();
-
-                List<string> lst = new List<string>(results);
-
-                string szSearch = prefixText.ToUpperInvariant();
-
-                lst = lst.FindAll(sz => sz.ToUpperInvariant().StartsWith(szSearch, StringComparison.InvariantCulture));
-                if (lst.Count > count && count >= 1)
-                    lst.RemoveRange(count - 1, lst.Count - count);
-
-                return lst.ToArray();
-            }
-        }
         #endregion
 
         #region Other Ajax
-        [WebMethod]
-        public airport[] AirportsInBoundingBox(double latSouth, double lonWest, double latNorth, double lonEast, bool fIncludeHeliports = false)
-        {
-            return (IsValidCaller()) ? airport.AirportsWithinBounds(latSouth, lonWest, latNorth, lonEast, fIncludeHeliports).ToArray() : Array.Empty<airport>();
-        }
+
         #endregion
     }
 }

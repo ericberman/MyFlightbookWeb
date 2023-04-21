@@ -15,7 +15,7 @@
         <asp:View ID="vwDate" runat="server"><uc4:mfbTypeInDate ID="mfbTypeInDate" runat="server" DefaultType="None" /></asp:View>
         <asp:View ID="vwText" runat="server">
             <asp:TextBox ID="txtString" runat="server" Width="100%"></asp:TextBox>
-            <asp:AutoCompleteExtender ID="autocompleteStringProp" ServicePath="~/Public/WebService.asmx" ServiceMethod="PreviouslyUsedTextProperties"
+            <asp:AutoCompleteExtender ID="autocompleteStringProp" ServicePath="~/Member/Ajax.asmx" ServiceMethod="PreviouslyUsedTextProperties"
                 CompletionListItemCssClass="AutoExtenderList" 
                 CompletionListHighlightedItemCssClass="AutoExtenderHighlight"
                 CompletionListCssClass="AutoExtender"
