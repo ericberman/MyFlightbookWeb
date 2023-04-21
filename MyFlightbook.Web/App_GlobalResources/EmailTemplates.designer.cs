@@ -153,7 +153,15 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to  &lt;p&gt;Your password has been reset.  You may now return to the site and log-in again, using your e-mail address and your new password.&lt;/p&gt;
+        ///
+        ///&lt;p&gt;Your new password for %APP_NAME% is:&lt;/p&gt;
+        ///
+        ///&lt;p style=&quot;font-size: 18pt; font-weight:bold; margin-left: 6em&quot;&gt;&lt;% Password %&gt;&lt;/p&gt;
+        ///
+        ///&lt;p&gt;Please note that your password is case sensitive!&lt;/p&gt;
+        ///
+        ///&lt;p&gt;We also STRONGLY recommend that you change this password after signing in.  You can do this &lt;a href=&quot;https://%APP_URL%%APP_ROOT%/Member/EditProfile.aspx/pftAccount&quot;&gt;viewing your  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ChangePassEmail {
             get {
@@ -411,38 +419,24 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  Welcome to %APP_NAME%, an online pilot&apos;s logbook.
-        ///
-        ///%APP_NAME% keeps your logbook in the cloud, so you have access to it from anywhere and any device.  (It&apos;s your data, so you always have the ability to download it from the %APP_NAME% website.)
-        ///
-        ///With %APP_NAME%, you can:
-        ///
-        ///    * Track your flights and access your logbook anywhere.
-        ///    * Enter new flights and view your flying history and stats from mobile devices such as iPhone, iPad, Android, and Windows 7 phone
-        ///    * Keep track of your total times.
-        /// [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to  	&lt;p&gt;
+        ///		&lt;img alt=&quot;%APP_NAME% Logo&quot; src=&quot;https://%APP_URL%%APP_LOGO%&quot; /&gt;
+        ///	&lt;/p&gt;
+        ///	&lt;p&gt;Welcome to %APP_NAME%, an online pilot&apos;s logbook.&lt;/p&gt;
+        ///	&lt;p&gt;
+        ///		%APP_NAME% keeps your logbook in the cloud, so you have access to it from anywhere and any device.  (It&apos;s your data, so you always have the ability to download it from the &lt;a href=&quot;https://%APP_URL%&quot;&gt;%APP_NAME% Website&lt;/a&gt;.)
+        ///	&lt;/p&gt;
+        ///	&lt;p&gt;
+        ///		With %APP_NAME%, you can:
+        ///	&lt;/p&gt;
+        ///	&lt;ul&gt;
+        ///		&lt;li&gt;Track your flights and access your logbook anywhere.&lt;/li&gt;
+        ///		&lt;li&gt;
+        ///			Enter n [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string Welcomeemail {
+        internal static string WelcomeEmail {
             get {
-                return ResourceManager.GetString("Welcomeemail", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to  &lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;
-        ///&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot; &gt;
-        ///&lt;head&gt;
-        ///    &lt;title&gt;Welcome to %APP_NAME%&lt;/title&gt;
-        ///    &lt;link href=&quot;https://%APP_URL%%APP_ROOT%/Public/StyleSheet.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;
-        ///&lt;/head&gt;
-        ///&lt;body style=&quot;font-family: Arial; font-size: 9pt;&quot;&gt;
-        ///&lt;p&gt;
-        ///    &lt;img alt=&quot;%APP_NAME% Logo&quot; src=&quot;https://%APP_URL%%APP_LOGO%&quot; /&gt;&lt;/p&gt;
-        ///    &lt;p&gt;Welcome to %APP_NAME%, an online pilot&apos;s lo [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string Welcomeemailhtm {
-            get {
-                return ResourceManager.GetString("Welcomeemailhtm", resourceCulture);
+                return ResourceManager.GetString("WelcomeEmail", resourceCulture);
             }
         }
     }

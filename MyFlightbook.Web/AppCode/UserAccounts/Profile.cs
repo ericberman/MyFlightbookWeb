@@ -1890,8 +1890,7 @@ namespace MyFlightbook
         /// <param name="szUser">Username</param>
         /// <param name="szFirst">First Name</param>
         /// <param name="szLast">Last Name</param>
-        /// <param name="fWebService">True if this was from the web service</param>
-        static public void FinalizeUser(string szUser, string szFirst, string szLast, Boolean fWebService)
+        static public void FinalizeUser(string szUser, string szFirst, string szLast)
         {
             Profile pf = Profile.GetUser(szUser);
             pf.FirstName = szFirst;
@@ -1900,7 +1899,7 @@ namespace MyFlightbook
             pf.FCommit();
 
             // send welcome mail
-            util.NotifyUser(String.Format(CultureInfo.CurrentCulture, Resources.Profile.WelcomeTitle, Branding.CurrentBrand.AppName), Resources.EmailTemplates.Welcomeemailhtm, new MailAddress(pf.Email, pf.UserFullName), false, true);
+            util.NotifyUser(String.Format(CultureInfo.CurrentCulture, Resources.Profile.WelcomeTitle, Branding.CurrentBrand.AppName), util.ApplyHtmlEmailTemplate(Resources.EmailTemplates.WelcomeEmail, true), new MailAddress(pf.Email, pf.UserFullName), false, true);
         }
     }
 

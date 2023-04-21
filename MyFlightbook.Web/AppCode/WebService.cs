@@ -1396,7 +1396,7 @@ namespace MyFlightbook
                     try
                     {
                         // set the first/last name for the user
-                        ProfileAdmin.FinalizeUser(szUser, szFirst, szLast, true);
+                        ProfileAdmin.FinalizeUser(szUser, szFirst, szLast);
                         EventRecorder.WriteEvent(EventRecorder.MFBEventID.CreateUser, szUser, String.Format(CultureInfo.InvariantCulture, "User '{0}' was created at {1}, connection {2} - {3}", szUser, DateTime.Now.ToShortDateString(), HttpContext.Current.Request.IsSecureConnection ? "Secure" : "NOT SECURE", szAppToken));
                     }
                     catch (Exception ex)
