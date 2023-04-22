@@ -36,7 +36,7 @@
             <cc1:AutoCompleteExtender ID="txtModel_AutoCompleteExtender" runat="server" 
                 DelimiterCharacters="" TargetControlID="txtModel"
                 ServiceMethod="SuggestModels" CompletionInterval="100"  
-                ServicePath="~/Public/WebService.asmx" MinimumPrefixLength="1"
+                ServicePath="~/Member/Ajax.asmx" MinimumPrefixLength="1"
                 CompletionListCssClass="AutoExtender" CompletionListItemCssClass="AutoExtenderList" 
                 CompletionListHighlightedItemCssClass="AutoExtenderHighlight" BehaviorID="ctl00_txtModel_AutoCompleteExtender" >
             </cc1:AutoCompleteExtender>

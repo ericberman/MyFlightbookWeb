@@ -420,5 +420,34 @@ namespace MyFlightbook.Web.Ajax
             }
         }
         #endregion
+
+        #region Other Autocomplete
+        private static string[] DoSuggestion(string szQ, string prefixText, int count)
+        {
+            if (String.IsNullOrEmpty(prefixText) || string.IsNullOrEmpty(szQ) || prefixText.Length <= 2)
+                return Array.Empty<string>();
+
+            string[] rgsz = util.GetKeysFromDB(String.Format(CultureInfo.InvariantCulture, szQ, util.keyColumn, count), prefixText);
+
+            List<string> responses = new List<string>(count);
+
+            int i = 0;
+            while (responses.Count < count && i < rgsz.Length)
+            {
+                if (rgsz[i].StartsWith(prefixText, StringComparison.CurrentCultureIgnoreCase))
+                    responses.Add(rgsz[i]);
+                i++;
+            }
+
+            return responses.ToArray();
+        }
+
+        [WebMethod]
+        [System.Web.Script.Services.ScriptMethod]
+        public string[] SuggestModels(string prefixText, int count)
+        {
+            return DoSuggestion("SELECT model AS {0} FROM models WHERE model LIKE CONCAT(?prefix, '%') ORDER BY model ASC LIMIT {1}", prefixText, count);
+        }
+        #endregion
     }
 }
