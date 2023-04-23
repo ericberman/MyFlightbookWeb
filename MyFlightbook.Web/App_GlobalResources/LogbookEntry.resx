@@ -1699,4 +1699,7 @@ Proceed with import?</value>
   <data name="errFlightAlreadySigned" xml:space="preserve">
     <value>Cannot sign flight because it is already signed with a valid signature.</value>
   </data>
+  <data name="InvertSelection" xml:space="preserve">
+    <value>Invert Selected Flights</value>
+  </data>
 </root>

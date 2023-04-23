@@ -45,7 +45,7 @@
                             <div><asp:CheckBox ID="ckIncludeImages" runat="server" Text="<%$ Resources:LogbookEntry, LogbookIncludeImages %>" CausesValidation="false" AutoPostBack="true" OnCheckedChanged="ckIncludeImages_CheckedChanged" /></div>
                             <div><asp:CheckBox ID="ckSelectFlights" runat="server" Text="<%$ Resources:LogbookEntry, LogbookSelectFlights %>" AutoPostBack="true" OnCheckedChanged="ckSelectFlights_CheckedChanged" CausesValidation="false" /></div>
                             <div runat="server" id="divMulti" visible="false">
-                                <div runat="server" visible='<%# IsInSelectMode %>'>
+                                <div>
                                     <asp:LinkButton ID="lnkDeleteFlights" OnClick="lnkDeleteFlights_Click" runat="server">
                                         <asp:Image ID="imgDelete" style="padding-right: 10px" ImageUrl="~/images/x.gif" AlternateText="<%$ Resources:LogbookEntry, LogbookDeleteMultipleTooltip %>" ToolTip="<%$ Resources:LogbookEntry, LogbookDeleteMultipleTooltip %>" runat="server" />
                                         <asp:Label ID="lblDelMulti" runat="server" Text="<%$ Resources:LogbookEntry, LogbookDeleteMultipleTooltip %>"></asp:Label>
@@ -53,16 +53,22 @@
                                     <ajaxToolkit:ConfirmButtonExtender ID="ConfirmButtonExtender1" runat="server" TargetControlID="lnkDeleteFlights" ConfirmOnFormSubmit="True" ConfirmText="<%$ Resources:LogbookEntry, LogbookConfirmDeleteFlights %>">
                                     </ajaxToolkit:ConfirmButtonExtender>
                                 </div>
-                                <div runat="server" visible='<%# IsInSelectMode %>'>
+                                <div>
                                     <asp:LinkButton ID="lnkReqSigs" runat="server" OnClick="lnkReqSigs_Click">
                                         <asp:Image ID="imgSignature" runat="server" style="padding-right: 4px" ImageUrl="~/images/signaturesm.png" AlternateText="<%$ Resources:SignOff, RequestSignatures %>" />
                                         <asp:Label ID="lblRequestSignature" runat="server" Text="<%$ Resources:SignOff, RequestSignatures %>"></asp:Label>
                                     </asp:LinkButton>
                                 </div>
-                                <div runat="server" visible='<%# IsInSelectMode %>'>
+                                <div>
                                     <asp:LinkButton ID="lnkRestrictSelected" runat="server" OnClick="lnkRestrictSelected_Click">
                                         <asp:Image ID="imgSrch" runat="server" style="padding-right: 4px; height:20px; width:20px;" ImageUrl="~/images/search.png" AlternateText="<%$ Resources:LogbookEntry, LogbookSearchSelected %>" />
                                         <asp:Label ID="lblSearchSelected" runat="server" Text="<%$ Resources:LogbookEntry, LogbookSearchSelected %>"></asp:Label>
+                                    </asp:LinkButton>
+                                </div>
+                                <div>
+                                    <asp:LinkButton ID="lnkInvertSelected" runat="server" OnClick="lnkInvertSelected_Click">
+                                        <asp:Image ID="imgInver" runat="server" style="padding-right: 4px; height:20px; width:20px;" ImageUrl="~/images/invertsel.png" AlternateText="<%$ Resources:LogbookEntry, InvertSelection %>" />
+                                        <asp:Label ID="lblInvertSelected" runat="server" Text="<%$ Resources:LogbookEntry, InvertSelection %>" />
                                     </asp:LinkButton>
                                 </div>
                             </div>

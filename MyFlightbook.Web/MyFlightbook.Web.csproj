@@ -589,6 +589,7 @@
     <Content Include="images\back.png" />
     <Content Include="images\flightimportsample.png" />
     <Content Include="images\globe.png" />
+    <Content Include="images\invertsel.png" />
     <Content Include="images\LeonLogo.svg" />
     <Content Include="images\rb_logo.png" />
     <Content Include="images\SponsoredAds\SkyWatch_Logo_New2020.png" />

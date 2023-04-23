@@ -11,7 +11,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2021 MyFlightbook LLC
+ * Copyright (c) 2012-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -215,15 +215,13 @@ public partial class Controls_MFBLogbookBase : UserControl
             if (cachedValues != null)
             {
                 string key = Restriction.ToJSONString();
-                return (cachedValues.ContainsKey(key)) ? cachedValues[key] : null;
+                return (cachedValues.TryGetValue(key, out IEnumerable<LogbookEntryDisplay> value)) ? value : null;
             }
             return null;
         }
         set
         {
-            Dictionary<string, IEnumerable<LogbookEntryDisplay>> cachedValues = (Dictionary<string, IEnumerable<LogbookEntryDisplay>>)Cache[CacheKey];
-            if (cachedValues == null)
-                cachedValues = new Dictionary<string, IEnumerable<LogbookEntryDisplay>>();
+            Dictionary<string, IEnumerable<LogbookEntryDisplay>> cachedValues = (Dictionary<string, IEnumerable<LogbookEntryDisplay>>)Cache[CacheKey] ?? new Dictionary<string, IEnumerable<LogbookEntryDisplay>>();
             cachedValues[Restriction.ToJSONString()] = value;
             Cache.Add(CacheKey, cachedValues, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, 10, 0), System.Web.Caching.CacheItemPriority.Normal, null);
         }
@@ -348,9 +346,9 @@ public partial class Controls_MFBLogbookBase : UserControl
         if (Pilot != null && Pilot.AchievementStatus == Achievement.ComputeStatus.UpToDate)
         {
             Repeater rptBadges = (Repeater)row.FindControl("rptBadges");
-            if (CachedBadgesByFlight.ContainsKey(le.FlightID))
+            if (CachedBadgesByFlight.TryGetValue(le.FlightID, out List<Badge> value))
             {
-                IEnumerable<Badge> badges = CachedBadgesByFlight[le.FlightID];
+                IEnumerable<Badge> badges = value;
                 if (badges != null)
                 {
                     rptBadges.DataSource = badges;
@@ -958,6 +956,17 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
         IsInSelectMode = false;
         Restriction.EnumeratedFlights = SelectedItems;
         Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/Logbooknew.aspx?fq={0}", HttpUtility.UrlEncode(Restriction.ToBase64CompressedJSONString())));
+    }
+
+    protected void lnkInvertSelected_Click(object sender, EventArgs e)
+    {
+        if (BoundItems == null)
+            return;
+
+        HashSet<int> hs = new HashSet<int>(SelectedItems);
+        HashSet<int> hsAll = new HashSet<int>(BoundItems);
+        SelectedItems = hsAll.Except(hs);
+        BindData();
     }
 
     protected void lnkReqSigs_Click(object sender, EventArgs e)

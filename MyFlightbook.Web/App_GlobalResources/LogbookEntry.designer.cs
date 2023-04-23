@@ -1886,10 +1886,10 @@ namespace Resources {
         ///   Looks up a localized string similar to  &lt;p&gt;
         ///    %APP_NAME% can import flights, whether from a spreadsheet that you create or as an export from other logbook programs. &lt;/p&gt;
         ///&lt;p&gt;
-        ///    Your file it &lt;span style=&quot;font-weight:bold&quot;&gt;must&lt;/span&gt; be in the form of a &lt;a href=&apos;http://en.wikipedia.org/wiki/Comma-separated_values&apos; style=&quot;font-weight:bold;&quot; target=&apos;_blank\&apos;&gt;CSV&lt;/a&gt; (spreadsheet) file.
+        ///    Your file it &lt;span style=&quot;font-weight:bold&quot;&gt;must&lt;/span&gt; be in the form of a &lt;a href=&apos;https://en.wikipedia.org/wiki/Comma-separated_values&apos; style=&quot;font-weight:bold;&quot; target=&apos;_blank\&apos;&gt;CSV&lt;/a&gt; (spreadsheet) file.
         ///&lt;/p&gt;
         ///&lt;ul&gt;
-        ///    &lt;li&gt;The &lt;span style=&quot;font-weight:bold&quot;&gt;first&lt;/span&gt; row of the table (spreadsheet) must be the set of headers that identify which column is whi [rest of string was truncated]&quot;;.
+        ///    &lt;li&gt;The &lt;span style=&quot;font-weight:bold&quot;&gt;first&lt;/span&gt; row of the table (spreadsheet) must be the set of headers that identify which column is wh [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ImportOverview {
             get {
@@ -2219,6 +2219,15 @@ namespace Resources {
         internal static string ImportWizardUploadPrompt {
             get {
                 return ResourceManager.GetString("ImportWizardUploadPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invert Selected Flights.
+        /// </summary>
+        internal static string InvertSelection {
+            get {
+                return ResourceManager.GetString("InvertSelection", resourceCulture);
             }
         }
         
@@ -4063,11 +4072,11 @@ namespace Resources {
         ///&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
         ///&lt;head&gt;
         ///    &lt;title&gt;Flight from %APP_NAME%&lt;/title&gt;
-        ///    &lt;link href=&quot;http://%APP_URL%%APP_ROOT%/Public/StyleSheet.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;
+        ///    &lt;link href=&quot;https://%APP_URL%%APP_ROOT%/Public/StyleSheet.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;
         ///&lt;/head&gt;
         ///&lt;body style=&quot;font-family: Arial; font-size: 9pt; margin-left: auto; margin-right: auto; min-width: 300px;&quot;&gt;
         ///    &lt;p&gt;
-        ///        &lt;img alt=&quot;%APP_NAME% Logo&quot; src=&quot;http://%APP_URL%%APP_LO [rest of string was truncated]&quot;;.
+        ///        &lt;img alt=&quot;%APP_NAME% Logo&quot; src=&quot;https://%APP_URL%%APP_ [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string SendFlightBody {
             get {

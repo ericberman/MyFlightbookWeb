@@ -229,6 +229,33 @@ public partial class Controls_mfbLogbook
     protected global::System.Web.UI.WebControls.Label lblSearchSelected;
 
     /// <summary>
+    /// lnkInvertSelected control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.LinkButton lnkInvertSelected;
+
+    /// <summary>
+    /// imgInver control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Image imgInver;
+
+    /// <summary>
+    /// lblInvertSelected control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblInvertSelected;
+
+    /// <summary>
     /// pnlFlightsPerPage control.
     /// </summary>
     /// <remarks>
