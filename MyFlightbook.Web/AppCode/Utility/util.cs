@@ -536,20 +536,26 @@ namespace MyFlightbook
                     string szHTML = msg.Body;
                     HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
                     doc.LoadHtml(msg.Body);
-                    StringBuilder sb = new StringBuilder();
-                    foreach (HtmlAgilityPack.HtmlNode node in doc.DocumentNode.SelectNodes("//text()"))
+                    // Issue #1081: A bit of a hack, but don't create a plain text view of anything that contains a table - it won't be pretty.
+                    if (doc.DocumentNode.SelectNodes("//table") == null)
                     {
-                        string szLine = node.InnerText.Trim();
-                        if (!String.IsNullOrEmpty(szLine))
-                            sb.AppendLine(node.InnerText.Trim());
+                        StringBuilder sb = new StringBuilder();
+                        foreach (HtmlAgilityPack.HtmlNode node in doc.DocumentNode.SelectNodes("//text()"))
+                        {
+                            string szLine = node.InnerText.Trim();
+                            if (!String.IsNullOrEmpty(szLine))
+                                sb.AppendLine(node.InnerText.Trim());
 
-                        if (node.ParentNode.OriginalName.CompareCurrentCultureIgnoreCase("a") == 0 && node.ParentNode.Attributes["href"] != null)
-                            sb.AppendFormat(CultureInfo.CurrentCulture, "{0}{1}{2}", Resources.LocalizedText.LocalizedSpace, node.ParentNode.Attributes["href"].Value, Resources.LocalizedText.LocalizedSpace);
+                            if (node.ParentNode.OriginalName.CompareCurrentCultureIgnoreCase("a") == 0 && node.ParentNode.Attributes["href"] != null)
+                                sb.AppendFormat(CultureInfo.CurrentCulture, " {1}", Resources.LocalizedText.LocalizedSpace, node.ParentNode.Attributes["href"].Value, Resources.LocalizedText.LocalizedSpace);
+
+                            sb.Append(' ');
+                        }
+
+                        msg.Body = sb.ToString();
+                        msg.IsBodyHtml = false; // we're now sending plain text with an html alternate
+                        msg.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(szHTML, new System.Net.Mime.ContentType("text/html")));
                     }
-
-                    msg.Body = sb.ToString();
-                    msg.IsBodyHtml = false; // we're now sending plain text with an html alternate
-                    msg.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(szHTML, new System.Net.Mime.ContentType("text/html")));
                 }
 
                 smtpClient.Send(msg);
