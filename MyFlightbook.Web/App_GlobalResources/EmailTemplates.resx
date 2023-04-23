@@ -191,6 +191,6 @@
     <value>Thank-you for using %APP_NAME%</value>
   </data>
   <data name="WelcomeEmail" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Content.en\Email\WelcomeEmail.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>content.en\email\welcomeemail.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
 </root>

@@ -120,19 +120,19 @@ namespace Resources {
         ///
         ///This aircraft had been identified as being:
         ///
-        ///     {2}
+        ///     *{2}*
         ///
         ///However, a new version has been created which is:
         ///
-        ///     {3}
+        ///     *{3}*
         ///
         ///The version used for your account is:
         ///
-        ///     {4}
+        ///     *{4}*
         ///
         ///If this is correct, there is no action to take.
         ///
-        ///If it is NOT correct, please go to https://%APP_ [rest of string was truncated]&quot;;.
+        ///If it is NOT correct, please go to https:/ [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string AircraftTailSplit {
             get {
@@ -175,10 +175,7 @@ namespace Resources {
         ///We usually respond to requests within a few hours.  
         ///
         ///However, I will be traveling with intermittant Internet access from June 25 - July 17, so it may be a few days before you get a response in that timeframe.  The FAQ on the site addresses many common questions; please give that a try.
-        ///
-        ///Thank-you very much.
-        ///
-        ///To contact us, please visit https://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx..
+        ///.
         /// </summary>
         internal static string ContactMeResponse {
             get {
@@ -398,10 +395,7 @@ namespace Resources {
         ///   Looks up a localized string similar to Your password has been changed on %APP_NAME%.
         ///
         ///If this is what you expected, then no action is required.  If you did not make this change, however, please sign in and change your password, or contact us (use the &quot;Contact Us&quot; link at https://%APP_URL%) for help.
-        ///
-        ///Thank-you for using %APP_NAME%!
-        ///
-        ///To contact us, please visit https://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx..
+        ///.
         /// </summary>
         internal static string PasswordChanged {
             get {

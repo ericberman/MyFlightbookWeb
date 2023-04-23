@@ -444,6 +444,7 @@
     <Content Include="App_GlobalResources\Content.en\Email\SignInvitationExisting.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\VerifyEmail.htm" />
     <Content Include="App_GlobalResources\Content.en\About.htm" />
+    <Content Include="App_GlobalResources\Content.en\Email\WelcomeEmail.htm" />
     <Content Include="App_GlobalResources\Content.en\FeatureTable.htm" />
     <Content Include="App_GlobalResources\Content.en\FlightDataKey.txt" />
     <Content Include="App_GlobalResources\Content.en\ImportOverview.htm" />
@@ -3033,6 +3034,7 @@
     <Content Include="App_GlobalResources\EmailTemplates.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>
       <LastGenOutput>EmailTemplates.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="App_GlobalResources\FlightData.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>
@@ -3173,12 +3175,6 @@
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.1\analyzers\dotnet\cs\Microsoft.CodeAnalysis.NetAnalyzers.dll" />
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="App_GlobalResources\Content.en\Email\WelcomeEmail.htm">
-      <Generator>GlobalResourceProxyGenerator</Generator>
-      <LastGenOutput>WelcomeEmail1.designer.cs</LastGenOutput>
-    </Content>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
