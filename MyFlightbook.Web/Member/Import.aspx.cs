@@ -148,9 +148,9 @@ namespace MyFlightbook.ImportFlights
                     e.Item.FindControl("imgNewOrUpdate").Visible = false;
             }
 
-            if (!le.IsNewFlight && CurrentImporter != null && CurrentImporter.OriginalFlightsToModify.ContainsKey(le.FlightID))
+            if (!le.IsNewFlight && CurrentImporter != null && CurrentImporter.OriginalFlightsToModify.TryGetValue(le.FlightID, out LogbookEntry value))
             {
-                List<PropertyDelta> lst = new List<PropertyDelta>(CurrentImporter.OriginalFlightsToModify[le.FlightID].CompareTo(le, UseHHMM));
+                List<PropertyDelta> lst = new List<PropertyDelta>(value.CompareTo(le, UseHHMM));
                 if (lst.Count > 0)
                 {
                     e.Item.FindControl("pnlDiffs").Visible = true;
@@ -333,6 +333,14 @@ namespace MyFlightbook.ImportFlights
                     wzImportFlights.ActiveStepIndex = i;
                     break;
                 }
+        }
+
+        protected string ImportButtonClientID
+        {
+            get
+            {
+                return wzImportFlights.FindControl("FinishNavigationTemplateContainerID").FindControl("btnImport").ClientID.Trim();
+            }
         }
 
         protected void Import(object sender, WizardNavigationEventArgs e)

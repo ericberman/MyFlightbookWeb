@@ -146,7 +146,8 @@
             <div style="text-align:center">
                 <asp:Button ID="btnNewFile" OnClick="btnNewFile_Click" Runat="server" Visible="false" Text="<%$ Resources:LogbookEntry, ImportUploadNewFile %>" />
                 <asp:Button CommandName="MovePrevious" Runat="server" Text="<%$ Resources:LocalizedText, PreviousPrompt %>" />
-                <asp:Button CommandName="MoveComplete" Runat="server" ID="btnImport" Text="<%$ Resources:LogbookEntry, ImportWizardFinishButton %>" />
+                <button type="button" onclick="this.disabled=true;document.getElementById('<% =ImportButtonClientID %>').click();"><% =Resources.LogbookEntry.ImportWizardFinishButton %></button>
+                <asp:Button CommandName="MoveComplete" Runat="server" ID="btnImport" Text="<%$ Resources:LogbookEntry, ImportWizardFinishButton %>" style="display:none" />
             </div>
             <ajaxToolkit:ConfirmButtonExtender ID="confirmImportWithErrors" runat="server" ConfirmText="<%$ Resources:LogbookEntry, ImportErrorsConfirm %>" TargetControlID="btnImport" />
         </FinishNavigationTemplate>
