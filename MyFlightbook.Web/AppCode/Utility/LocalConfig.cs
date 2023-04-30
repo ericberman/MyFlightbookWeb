@@ -2,7 +2,7 @@
 
 /******************************************************
  * 
- * Copyright (c) 2008-2016 MyFlightbook LLC
+ * Copyright (c) 2008-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -15,20 +15,23 @@ namespace MyFlightbook
     /// </summary>
     public static class LocalConfig
     {
-        static private Dictionary<string, string> dictConfig;
+        static readonly private Dictionary<string, string> dictConfig = new Dictionary<string, string>();
 
         public static string SettingForKey(string szKey)
         {
-            if (dictConfig == null || dictConfig.Count == 0 || !dictConfig.ContainsKey(szKey))
+            lock (dictConfig)
             {
-                dictConfig = new Dictionary<string, string>();
-                DBHelper dbh = new DBHelper("SELECT * FROM localconfig");
-                dbh.ReadRows(
-                    (comm) => { },
-                    (dr) => { dictConfig[(string)dr["keyName"]] = (string)dr["keyValue"]; });
-            }
+                if (dictConfig.Count == 0 || !dictConfig.ContainsKey(szKey))
+                {
+                    dictConfig.Clear();
+                    DBHelper dbh = new DBHelper("SELECT * FROM localconfig");
+                    dbh.ReadRows(
+                        (comm) => { },
+                        (dr) => { dictConfig[(string)dr["keyName"]] = (string)dr["keyValue"]; });
+                }
 
-            return dictConfig[szKey];
+                return dictConfig[szKey];
+            }
         }
     }
 }
