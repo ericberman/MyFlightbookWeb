@@ -1,6 +1,6 @@
 ﻿/******************************************************
  *
- * Copyright (c) 2019 MyFlightbook LLC
+ * Copyright (c) 2019-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -78,7 +78,7 @@ function listDragger(idTxt, idBtnLeft, idBtnRight) {
         const setDst = new Set(JSON.parse(dstObj.value));
 
         // Detect drop on source.  No-op if this happens.
-        if (setDst.has(valInt))
+        if (valInt == null || isNaN(valInt) || setDst.has(valInt))
             return;
 
         setDst.add(valInt);

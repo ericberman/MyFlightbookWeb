@@ -5,7 +5,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2021 MyFlightbook LLC
+ * Copyright (c) 2010-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -40,10 +40,12 @@ namespace MyFlightbook.Web.Controls.Prefs
             {
                 try
                 {
-                    int idPropType = Convert.ToInt32(txtPropID.Text, CultureInfo.InvariantCulture);
-                    m_pf.BlocklistedProperties.RemoveAll(id => id == idPropType);
-                    m_pf.FCommit();
-                    UpdateBlocklist(true);
+                    if (int.TryParse(txtPropID.Text, NumberStyles.Integer, CultureInfo.InvariantCulture, out int idPropType))
+                    {
+                        m_pf.BlocklistedProperties.RemoveAll(id => id == idPropType);
+                        m_pf.FCommit();
+                        UpdateBlocklist(true);
+                    }
                 }
                 catch
                 {
@@ -58,12 +60,13 @@ namespace MyFlightbook.Web.Controls.Prefs
             {
                 try
                 {
-                    int idPropType = Convert.ToInt32(txtPropID.Text, CultureInfo.InvariantCulture);
-                    if (!m_pf.BlocklistedProperties.Contains(idPropType))
-                    {
-                        m_pf.BlocklistedProperties.Add(idPropType);
-                        m_pf.FCommit();
-                        UpdateBlocklist(true);
+                    if (int.TryParse(txtPropID.Text, NumberStyles.Integer, CultureInfo.InvariantCulture, out int idPropType)) {
+                        if (!m_pf.BlocklistedProperties.Contains(idPropType))
+                        {
+                            m_pf.BlocklistedProperties.Add(idPropType);
+                            m_pf.FCommit();
+                            UpdateBlocklist(true);
+                        }
                     }
                 }
                 catch

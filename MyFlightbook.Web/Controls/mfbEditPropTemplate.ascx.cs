@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2021 MyFlightbook LLC
+ * Copyright (c) 2019-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -31,7 +31,7 @@ namespace MyFlightbook.Templates.Controls
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            Page.ClientScript.RegisterClientScriptInclude("ListDrag", ResolveClientUrl("~/Public/Scripts/listdrag.js?v=5"));
+            Page.ClientScript.RegisterClientScriptInclude("ListDrag", ResolveClientUrl("~/Public/Scripts/listdrag.js?v=6"));
             Page.ClientScript.RegisterClientScriptInclude("filterDropdown", ResolveClientUrl("~/Public/Scripts/DropDownFilter.js?v=3"));
             searchProps.TextBoxControl.Attributes["onkeyup"] = String.Format(CultureInfo.InvariantCulture, "FilterProps(this, '{0}', '{1}', '{2}')", divAvailableProps.ClientID, lblFilteredLabel.ClientID, Resources.LogbookEntry.PropertiesFound);
             divAvailableProps.Attributes["ondrop"] = String.Format(CultureInfo.InvariantCulture, "javascript:lstDropTemplate.moveProp(event, 'cptT', this, '{0}', '{1}')", hdnUsedProps.ClientID, hdnAvailableProps.ClientID);
