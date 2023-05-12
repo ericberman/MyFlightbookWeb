@@ -1132,13 +1132,20 @@ namespace MyFlightbook
             return true;
         }
 
+        private static readonly object cachelock = new object();
+
         protected static void CacheProfile(ProfileBase pf)
         {
             if (pf == null || String.IsNullOrEmpty(pf.UserName))
                 return;
 
-            // Cache this for 30 minutes
-            HttpRuntime.Cache.Add(GetCacheKey(pf.UserName), pf, null, DateTime.Now.AddMinutes(30), Cache.NoSlidingExpiration, CacheItemPriority.Normal, null);
+            lock (cachelock) {
+                string szKey = GetCacheKey(pf.UserName);
+                // Issue #1084 - Remove the object, if it exists.
+                HttpRuntime.Cache.Remove(szKey);
+                // Cache this for 30 minutes
+                HttpRuntime.Cache.Add(szKey, pf, null, DateTime.Now.AddMinutes(30), Cache.NoSlidingExpiration, CacheItemPriority.Normal, null);
+            }
         }
 
         public Boolean FCommit()
