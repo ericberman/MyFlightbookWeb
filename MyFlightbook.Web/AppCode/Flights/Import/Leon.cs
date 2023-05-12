@@ -172,8 +172,29 @@ namespace MyFlightbook.ImportFlights.Leon
         public string[] ApproachList { get; set; } = Array.Empty<string>();
 
         [JsonProperty("approachTypeList")]
-        public string[] ApproachTypeList { get; set; } = Array.Empty<string>();
+        public Dictionary<string, string>[] ApproachTypeList { get; set; } = Array.Empty<Dictionary<string, string>>();
         #endregion
+
+        protected string ApproachesFromApproachTypeList()
+        {
+            if (ApproachTypeList == null)
+                return string.Empty;
+
+            StringBuilder sb = new StringBuilder();
+
+            foreach (Dictionary<string, string> d in ApproachTypeList)
+            {
+                if (d.TryGetValue("count", out string s))
+                {
+                    if (int.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out int cApproaches))
+                    sb.AppendFormat(CultureInfo.CurrentCulture, "{0} ", cApproaches);
+                }
+                if (d.TryGetValue("approachType", out string sType))
+                    sb.AppendFormat(CultureInfo.CurrentCulture, "{0} ", sType);
+            }
+
+            return sb.ToString().Trim();
+        }
 
         private static void AutoComplete(LogbookEntry le)
         {
@@ -233,7 +254,7 @@ namespace MyFlightbook.ImportFlights.Leon
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropSolo, SoloFlightTime == null ? 0 : SoloFlightTime.DecimalFromHHMM()),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNightTakeoff, NightTakeoffCount),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropIFRTime, IfrTime == null ? 0 : IfrTime.SafeParseDecimal()),
-                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropApproachName, ApproachTypeList == null ? string.Empty : JoinStrings(ApproachTypeList))
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropApproachName, ApproachesFromApproachTypeList())
             };
 
             if (ac != null)
