@@ -59,9 +59,7 @@ namespace MyFlightbook.Templates.Controls
                 if (ActiveTemplate == null)
                     throw new InvalidOperationException("Active Template is null - how? ");
                 ActiveTemplate.PropertyTypes.Clear();
-                int[] props = String.IsNullOrEmpty(hdnUsedProps.Value) ? Array.Empty<int>() : JsonConvert.DeserializeObject<int[]>(hdnUsedProps.Value);
-                if (props == null)
-                    throw new InvalidOperationException("props is null");
+                int[] props = (String.IsNullOrEmpty(hdnUsedProps.Value) ? Array.Empty<int>() : JsonConvert.DeserializeObject<int[]>(hdnUsedProps.Value)) ?? throw new InvalidOperationException("props is null");
                 foreach (int propid in props)
                     ActiveTemplate.PropertyTypes.Add(propid);
                 UpdateLists();
