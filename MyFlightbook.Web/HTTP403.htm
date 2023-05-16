@@ -6,16 +6,21 @@
     <link href="Public/stylesheet.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a href="Default.aspx"><img src="Public/mfblogonew.png" /></a>
-<h1>Oops - you don&#39;t have permission to view that</h1>
-<p>We&#39;re terribly sorry about that, but you have requested something that you 
-    are not authorized to view.</p>
-<p>Please do one of the following:</p>
-<ul>
-<li>Go to the <a href="Default.aspx">MyFlightbook</a> home page.</li>
-<li>Go <a href="javascript:history.go(-1)">back to the page you were just on</a>.</li>
-<li>If you think you got this in error, and there is more you can tell us about what you were 
-    trying to do, please <a href="Public/ContactMe.aspx">let us know</a>!</li>
-</ul>
+    <style type="text/css">
+        a {
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+    </style>
+    <a href="Default.aspx"><img src="Public/mfblogonew.png" /></a>
+    <h1>Oops - you aren&#39;t cleared to view that</h1>
+    <h2>You are trying to enter a restricted or prohibited webspace without proper clearance!</h2>
+    <div style="text-align:center"><img src="images/prohibited.png" /></div>
+    <h3>Here is a checklist you can use:</h3>
+    <ul>
+        <li>Go to the <a href="Default.aspx">MyFlightbook</a> home page.</li>
+        <li>Perform a 180&deg; turn <a href="javascript:history.go(-1)">back to the page you were just on</a>.</li>
+        <li><a href="Public/ContactMe.aspx">Request clearance</a> if you believe you should be authorized!</li>
+    </ul>
 </body>
 </html>
