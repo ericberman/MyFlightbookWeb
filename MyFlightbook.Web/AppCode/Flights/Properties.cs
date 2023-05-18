@@ -897,9 +897,7 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
             if (PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropInvalid)
                 throw new InvalidOperationException("No property type specified");
 
-            CustomPropertyType cpt = CustomPropertyType.GetCustomPropertyType(PropTypeID);
-            if (cpt == null)
-                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Unable to find custom property type with idproptype {0}", PropTypeID));
+            CustomPropertyType cpt = CustomPropertyType.GetCustomPropertyType(PropTypeID) ?? throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Unable to find custom property type with idproptype {0}", PropTypeID));
             CustomFlightProperty cfp = new CustomFlightProperty(cpt) { PropID = this.PropID, FlightID = idFlight };
 
             // Set the value from the string
@@ -1100,7 +1098,7 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
         /// <summary>
         /// Is the current value for the property the default value?
         /// </summary>
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Boolean IsDefaultValue
         {
             get
@@ -1121,7 +1119,7 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
                     case CFPPropertyType.cfpDateTime:
                         return DateValue.CompareTo(DateTime.MinValue) == 0;
                     case CFPPropertyType.cfpString:
-                        return String.IsNullOrEmpty(TextValue);
+                        return String.IsNullOrWhiteSpace(TextValue);
                 }
                 return false;
             }
