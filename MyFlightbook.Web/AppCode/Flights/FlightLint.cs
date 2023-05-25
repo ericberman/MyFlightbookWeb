@@ -284,7 +284,7 @@ namespace MyFlightbook.Lint
             }
 
             // Sanity check for speed
-            if (le.TotalFlightTime > 0)
+            if (le.TotalFlightTime > 0 && currentAircraft.InstanceType == AircraftInstanceTypes.RealAircraft)
             {
                 double dist = alSubset.DistanceForRoute();
                 double speed = dist / (double) le.TotalFlightTime;
