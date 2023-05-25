@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2022 MyFlightbook LLC
+ * Copyright (c) 2008-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -87,21 +87,21 @@ namespace MyFlightbook.ImportFlights
         private readonly static string[] colTail = { "Tail Number", "Registration", "Tail", "Ident", "SERIAL_NUM", "ACFT", "Aircraft ID", "Aircraft Ident", "Reg", "Reg.", "AIRCRAFT REGISTRATION", "aircraft_registration", "tailNo", "aircraft_tail_number", "Tail #" };
         private readonly static string[] colAircraftID = { "Aircraft ID" };
         private readonly static string[] colTotal = { "Total Flight Time", "Total Time", "TotalDuration", "Total Duration", "Flt Time", "Block", "HRS", "TIME FLOWN", "FltTime", "Total", "total_time", "totalFlightTime", "flight_time", "total_flight_time", "Duration", "Flight Time" };
-        private readonly static string[] colApproaches = { "Approaches", "NumApproaches", "Inst App (D/N)", "Inst App", "IAP", "APPROACHES & TYPE", "instrumentApproaches", "Approaches Instrument" };
+        private readonly static string[] colApproaches = { "Approaches", "NumApproaches", "Inst App (D/N)", "Inst App", "IAP", "APPROACHES & TYPE", "instrumentApproaches", "Approaches Instrument", "Num App..", "Num App." };
         private readonly static string[] colHold = { "Hold", "Holds", "Holding", "Holding Patterns", "nbr_hold" };
         private readonly static string[] colLandings = { "Landings", "LAND_STD", "Lnd" };
-        private readonly static string[] colNightLandings = { "FS Night Landings", "flight_nightLandings", "Night Ldg", "Night Ldgs", "Ngt Ldgs", "Full-Stop Night Landings", "LANDINGS NIGHT", "Night Landings", "LandsNight", "landings_night", "ldgs_night", "Ldg Night", "nightLandings", "night_landings", "Night Landing" };
-        private readonly static string[] colFullStopLandings = { "FS Day Landings", "flight_dayLandings", "Day Ldg", "Day Ldgs", "Full-Stop Day Landings", "LANDINGS DAY", "Day Landings", "LandsDay", "landings_day", "ldgs_day", "dayLandings", "day_landings", "Ldg Day", "Day Landing" };
+        private readonly static string[] colNightLandings = { "FS Night Landings", "flight_nightLandings", "Night Ldg", "Night Ldgs", "Ngt Ldgs", "Full-Stop Night Landings", "LANDINGS NIGHT", "Night Landings", "LandsNight", "landings_night", "ldgs_night", "Ldg Night", "nightLandings", "night_landings", "Night Landing", "Night Land" };
+        private readonly static string[] colFullStopLandings = { "FS Day Landings", "flight_dayLandings", "Day Ldg", "Day Ldgs", "Full-Stop Day Landings", "LANDINGS DAY", "Day Landings", "LandsDay", "landings_day", "ldgs_day", "dayLandings", "day_landings", "Ldg Day", "Day Landing", "Day Land" };
         private readonly static string[] colCrossCountry = { "X-Country", "flight_crossCountry", "XCountry", "XC", "X-C", "X CNTY", "X/Ctry", "X/C", "CROSS COUNTRY", "CrossCountry", "Cross Country Duration", "cross_country" };
         private readonly static string[] colNight = { "Night", "flight_night", "Night Duration", "nightTime", "Night Time" };
         private readonly static string[] colIMC = { "IMC", "flight_actualInstrument", "Actual Inst", "INSTRUMENT", "Actual Instrument Duration", "Instr", "Instr.", "Inst", "Actual Instrument", "ifr", "actualInstrument", "actual_instrument" };
         private readonly static string[] colSimIFR = { "Simulated Instrument", "flight_simulatedInstrument", "Hood", "Sim Inst", "Simulated Instrument Duration", "simulated_instrument", "Simulated Instrument (Hood)" };
-        private readonly static string[] colGroundSim = { "Ground Simulator", "flight_simulator", "Sim/FTD", "SIMULATOR", "Simulator Duration", "SimTime", "synthetic_training", "simulator_time", "Flight Simulator", "Ground Sim" };
-        private readonly static string[] colDual = { "Dual Received", "flight_dualReceived", "Dualreceived", "Dual Recd", "Dual", "Dual Received Duration", "dual_received", "Dual Received (Student)" };
+        private readonly static string[] colGroundSim = { "Ground Simulator", "flight_simulator", "Sim/FTD", "SIMULATOR", "Simulator Duration", "SimTime", "synthetic_training", "simulator_time", "Flight Simulator", "Ground Sim", "FTD", "ATD" };
+        private readonly static string[] colDual = { "Dual Received", "flight_dualReceived", "Dualreceived", "Dual Recd", "Dual", "Dual Received Duration", "dual_received", "Dual Received (Student)", "Dual Rec'd" };
         private readonly static string[] colCFI = { "CFI", "flight_dualGiven", "DualGiven", "Dual Given", "Dual Given Duration", "flight_instructor", "instructor", "as_instructor", "As Instr.", "IP", "Instructor (PIC)" };
         private readonly static string[] colSIC = { "SIC", "flight_sic", "SECOND IN COMMAND", "SIC Duration", "CoPlt", "Co-Plt", "co_pilot", "copilot", "Co-Pilot" };
         private readonly static string[] colPIC = { "PIC", "flight_pic", "PILOT IN COMMAND", "PIC Duration", "pilot_in_command_time", "Pilot in CMD" };
-        private readonly static string[] colRoute = { "Route", "flight_route", "Via", "ROUTE OF FLIGHT", "LOC_INTM", "Route of Flight Via" };
+        private readonly static string[] colRoute = { "Route", "flight_route", "Via", "ROUTE OF FLIGHT", "LOC_INTM", "Route of Flight Via", "Enroute" };
         private readonly static string[] colFrom = { "From", "flight_from", "Departure", "Origin", "LOC_FROM", "DepPlace", "departure_airport_name", "departure_airport", "departureAirport", "Route of Flight From", "ADEP" };
         private readonly static string[] colTo = { "To", "flight_to", "Arrival", "Dest", "Destination", "LOC_TO", "ArrPlace", "arrival_airport_name", "arrival_airport", "arrivalAirport", "Route of Flight To", "ADES" };
         private readonly static string[] colComment = { "Comments", "Remarks", "remarks_and_endorsements", "Comment", "Remark" };
@@ -158,6 +158,7 @@ namespace MyFlightbook.ImportFlights
             {"Aircraft Commander Time", new string[] { "Aircraft Commander Time", "A/C Cmdr", "A/C Cdr"} },
             {"Number of Passengers", new string[] {"Number of Passengers", "PAX" } },
             {"Student Name", new string[] {"Student Name", "Student"} },
+            {"Approach Name(s)", new string[] { "Approach Name(s)", "App Type", "Type App..", "Type App." } },
             {"Approaches - ILS", new string[] {"Approaches - ILS", "nbr_ils"}},
             {"Approaches - LDA", new string[] {"Approaches - LDA", "nbr_lda"}},
             {"Approaches - Localizer", new string[] {"Approaches - Localizer", "nbr_loc"}},
