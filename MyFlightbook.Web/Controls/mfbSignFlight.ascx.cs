@@ -298,6 +298,7 @@ namespace MyFlightbook.Instruction
             {
                 bool fIsGroundOrATP = ckATP.Checked || Flight.IsGroundOnly;
 
+                string szPendingSigUsername = m_le?.PendingSignatureUserName();
                 m_le = null; // force a reload of the flight - issue #1043
 
                 switch (SigningMode)
@@ -331,6 +332,10 @@ namespace MyFlightbook.Instruction
                         // If we are here, then we were successful - update the profile if it needed it
                         if (needProfileRefresh)
                             CFIProfile.FCommit();
+
+                        // Issue #1087: forcing the reload above means that the CFIUsername probably got wiped.
+                        if (!String.IsNullOrEmpty(szPendingSigUsername))
+                            Flight.SetPendingSignature(szPendingSigUsername);
 
                         // Prepare for signing
                         Flight.SignFlightAuthenticated(CFIProfile.UserName, SigningComments, fIsGroundOrATP);
@@ -415,7 +420,8 @@ namespace MyFlightbook.Instruction
                 CFIProfile == null ||
                 !System.Web.Security.Membership.ValidateUser(CFIProfile.UserName, txtPassConfirm.Text))
                 args.IsValid = false;
-            else Flight?.SetPendingSignature(CFIProfile.UserName);    // successfully authenticated - now set up to expect the signature.
+            else
+                Flight?.SetPendingSignature(CFIProfile.UserName);    // successfully authenticated - now set up to expect the signature.
         }
 
         protected void lnkEditFlightToSign_Click(object sender, EventArgs e)

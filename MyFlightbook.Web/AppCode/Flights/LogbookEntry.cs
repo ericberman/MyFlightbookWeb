@@ -1367,9 +1367,7 @@ namespace MyFlightbook
             CustomFlightProperty cfpGIReceived = lstProps.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived);
             if (cfpGIReceived != null)
             {
-                CustomFlightProperty cfpGIGiven = lstProps.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven);
-                if (cfpGIGiven == null)
-                    cfpGIGiven = new CustomFlightProperty(new CustomPropertyType(CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven));
+                CustomFlightProperty cfpGIGiven = lstProps.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven) ?? new CustomFlightProperty(new CustomPropertyType(CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven));
                 cfpGIGiven.DecValue = cfpGIReceived.DecValue;
                 cfpGIGiven.FlightID = le.FlightID;
                 cfpGIReceived.DeleteProperty();
@@ -1477,6 +1475,15 @@ namespace MyFlightbook
             {
                 this.CFIUsername = szCFIUserName;
             }
+        }
+
+        /// <summary>
+        /// Returns the username of the CFI for whom a signature is 
+        /// </summary>
+        /// <returns></returns>
+        public string PendingSignatureUserName()
+        {
+            return CFIUsername;
         }
         #endregion
         #endregion
