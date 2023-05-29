@@ -7,7 +7,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2022 MyFlightbook LLC
+ * Copyright (c) 2008-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -282,7 +282,9 @@ WHERE f.Date > ?dateMin AND f.Date < ?dateMax AND ac.InstanceType = 1");
                     if (!ap.IsPort)
                         continue;
 
-                    dictVisited[ap.GeoHashKey] = new AirportStats(ap);
+                    string szKey = ap.GeoHashKey;
+                    if (!dictVisited.ContainsKey(szKey))
+                        dictVisited.Add(szKey, new AirportStats(ap));
 
                     if (!String.IsNullOrWhiteSpace(ap.Country))
                         hsCountries.Add(ap.Country);
@@ -314,7 +316,15 @@ WHERE f.Date > ?dateMin AND f.Date < ?dateMax AND ac.InstanceType = 1");
                 m_lstAirports.AddRange(dictVisited.Values);
 
                 // Sort the list by number of visits, descending, and remove anything that never matched to an airport.
-                m_lstAirports.Sort((ap1, ap2) => { return dictVisited[ap2.GeoHashKey].Visits.CompareTo(dictVisited[ap1.GeoHashKey].Visits); });
+                m_lstAirports.Sort((ap1, ap2) => {
+                    bool f1 = dictVisited.ContainsKey(ap1.GeoHashKey);
+                    bool f2 = dictVisited.ContainsKey(ap2.GeoHashKey);
+                    if (!f1 || !f2)
+                    {
+                        return 0;   // should never happen, but can due to rounding between unique airports and getairportlist.  
+                    }
+                    return dictVisited[ap2.GeoHashKey].Visits.CompareTo(dictVisited[ap1.GeoHashKey].Visits); 
+                });
 
                 // Popular models
                 const string szPopularModels = @"SELECT 
