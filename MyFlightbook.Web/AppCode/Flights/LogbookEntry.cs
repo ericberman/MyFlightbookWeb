@@ -1344,6 +1344,12 @@ namespace MyFlightbook
             if (!ua.CheckAircraftForUser(ac))
                 ua.FAddAircraftForUser(ac);
 
+            // Issue #1090 - don't copy solo time to instructor's account (and subtract it from total time)
+            decimal soloTime = le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropSolo);
+            if (soloTime > 0)
+                le.TotalFlightTime = Math.Max(0, le.TotalFlightTime - soloTime);
+            lstProps.RemoveAll(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropSolo);
+
             // Add the student's name as a property
             lstProps.RemoveAll(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropStudentName);
             lstProps.Add(new CustomFlightProperty(new CustomPropertyType(CustomPropertyType.KnownProperties.IDPropStudentName)) { FlightID = le.FlightID, TextValue = szStudentName });
