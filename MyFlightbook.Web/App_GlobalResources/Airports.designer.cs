@@ -529,6 +529,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show Routes.
+        /// </summary>
+        internal static string MapConnectDots {
+            get {
+                return ResourceManager.GetString("MapConnectDots", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to  &lt;div style=&quot;max-width: 400px&quot;&gt;
         ///    &lt;p&gt;Use identifiers for airports or navaids in either ICAO, IATA, or FAA format - e.g., &quot;SFO&quot; or &quot;KJFK&quot;.&lt;/p&gt;
         ///    &lt;p&gt;Tips:&lt;/p&gt;

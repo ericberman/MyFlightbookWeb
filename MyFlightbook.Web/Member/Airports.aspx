@@ -175,7 +175,7 @@
         </asp:View>
     </asp:MultiView>
     <p>
-        <asp:HyperLink ID="lnkZoomOut" runat="server" Text="<%$ Resources:Airports, MapZoomAllAirports %>"></asp:HyperLink>
+        <asp:HyperLink ID="lnkZoomOut" runat="server" Text="<%$ Resources:Airports, MapZoomAllAirports %>" /> <asp:CheckBox ID="ckConnectDots" runat="server" Text="<%$ Resources:Airports, MapConnectDots %>" AutoPostBack="true" OnCheckedChanged="ckConnectDots_CheckedChanged" />
     </p>
     <div style="width:100%;">
         <uc1:mfbGoogleMapManager ID="mfbGoogleMapManager1" runat="server" AllowResize="false" Height="400px" />

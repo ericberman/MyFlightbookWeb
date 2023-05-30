@@ -331,4 +331,7 @@
   <data name="errMissingFacilityName" xml:space="preserve">
     <value>Please provide a name for the facility</value>
   </data>
+  <data name="MapConnectDots" xml:space="preserve">
+    <value>Show Routes</value>
+  </data>
 </root>

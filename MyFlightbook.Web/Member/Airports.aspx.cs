@@ -40,6 +40,7 @@ public partial class Member_Airports : System.Web.UI.Page
                     UpdateDescription();
                 }
             }
+            ckConnectDots.Checked = util.GetIntParam(Request, "path", 0) != 0;
         }
 
         RefreshData(!IsPostBack);
@@ -74,7 +75,7 @@ public partial class Member_Airports : System.Web.UI.Page
         // get an airport list of the airports
         mfbGoogleMapManager1.Map.SetAirportList(alMatches);
 
-        bool fIncludeRoutes = util.GetIntParam(Request, "path", 0) != 0;
+        bool fIncludeRoutes = ckConnectDots.Checked;
 
         if (mfbGoogleMapManager1.Map.Options.fShowRoute = fIncludeRoutes)
         {
@@ -254,5 +255,10 @@ public partial class Member_Airports : System.Web.UI.Page
         gvAirportsDownload.ToCSV(Response.OutputStream);
         Response.Write(String.Format(CultureInfo.CurrentCulture, "\r\n\r\n\" *{0}\"", Branding.ReBrand(Resources.Airports.airportCountryDisclaimer)));
         Response.End();
+    }
+
+    protected void ckConnectDots_CheckedChanged(object sender, EventArgs e)
+    {
+        RefreshData(false);
     }
 }
