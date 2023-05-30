@@ -134,8 +134,8 @@ public partial class Member_Airports : System.Web.UI.Page
             p.Controls.Add(a);
             VisitedAirport va = (VisitedAirport)e.Row.DataItem;
 
-            string szLink = String.Format(CultureInfo.InvariantCulture, "javascript:{0}.gmap.setCenter(new google.maps.LatLng({1}, {2}));{0}.gmap.setZoom(14);",
-                mfbGoogleMapManager1.MapID, va.Airport.LatLong.Latitude, va.Airport.LatLong.Longitude);
+            string szLink = String.Format(CultureInfo.InvariantCulture, "javascript:getMfbMap().gmap.setCenter(new google.maps.LatLng({0}, {1}));getMfbMap().gmap.setZoom(14);",
+                va.Airport.LatLong.Latitude, va.Airport.LatLong.Longitude);
             a.InnerText = va.Code;
             a.HRef = szLink;
         }
