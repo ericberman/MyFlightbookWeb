@@ -235,17 +235,20 @@ namespace MyFlightbook.FlightStatistics
         {
             m_lstAirports.Clear();
 
-            HashSet<string> hsAirportCodes = new HashSet<string>();
-            HashSet<string> hsCountries = new HashSet<string>();
-            Dictionary<string, AirportStats> dictVisited = new Dictionary<string, AirportStats>();
             new Thread(() =>
             {
-                Refresh30DayPublicFlights();
-                RefreshUserCounts();
-                RefreshAircraftAndModels();
+                HashSet<string> hsAirportCodes = new HashSet<string>();
+                HashSet<string> hsCountries = new HashSet<string>();
+                Dictionary<string, AirportStats> dictVisited = new Dictionary<string, AirportStats>();
 
-                // Get all of the airports recorded for the last 30 days
-                DBHelper dbh = new DBHelper(@"SELECT 
+                try
+                {
+                    Refresh30DayPublicFlights();
+                    RefreshUserCounts();
+                    RefreshAircraftAndModels();
+
+                    // Get all of the airports recorded for the last 30 days
+                    DBHelper dbh = new DBHelper(@"SELECT 
     f.route,
     f.username,
     ac.tailnumber,
@@ -263,71 +266,72 @@ FROM
         INNER JOIN
     manufacturers man ON m.idmanufacturer = man.idmanufacturer
 WHERE f.Date > ?dateMin AND f.Date < ?dateMax AND ac.InstanceType = 1");
-                dbh.ReadRows((comm) =>
-                {
-                    comm.Parameters.AddWithValue("dateMin", DateTime.Now.AddDays(-MaxDays));
-                    comm.Parameters.AddWithValue("dateMax", DateTime.Now.AddDays(1));
-                },
-                (dr) =>
-                {
-                    foreach (string szCode in airport.SplitCodes(util.ReadNullableString(dr, "route").ToUpperInvariant()))
-                        hsAirportCodes.Add(szCode);
-                });
-
-                // OK, now we have all of the airport codes - get the actual airports
-                AirportList alMaster = new AirportList(String.Join(" ", hsAirportCodes));
-
-                foreach (airport ap in alMaster.GetAirportList())
-                {
-                    if (!ap.IsPort)
-                        continue;
-
-                    string szKey = ap.GeoHashKey;
-                    if (!dictVisited.ContainsKey(szKey))
-                        dictVisited.Add(szKey, new AirportStats(ap));
-
-                    if (!String.IsNullOrWhiteSpace(ap.Country))
-                        hsCountries.Add(ap.Country);
-                }
-
-                CountriesVisited = hsCountries.Count;
-
-                // Now go through the flights a 2nd time and find longest route and the furthest route.
-                dbh.ReadRows((comm) =>
+                    dbh.ReadRows((comm) =>
                     {
                         comm.Parameters.AddWithValue("dateMin", DateTime.Now.AddDays(-MaxDays));
                         comm.Parameters.AddWithValue("dateMax", DateTime.Now.AddDays(1));
                     },
                     (dr) =>
                     {
-                        string szRoute = util.ReadNullableString(dr, "route").ToUpperInvariant();
-                        string szUser = util.ReadNullableString(dr, "username");
-                        string szTail = util.ReadNullableString(dr, "tailnumber");
-                        string szFamily = util.ReadNullableString(dr, "family");
-
-                        AirportList al = alMaster.CloneSubset(szRoute, true);
-
-                        foreach (airport ap in al.UniqueAirports)
-                            if (dictVisited.ContainsKey(ap.GeoHashKey))
-                                dictVisited[ap.GeoHashKey].Visit(szUser, szFamily, szTail);
+                        foreach (string szCode in airport.SplitCodes(util.ReadNullableString(dr, "route").ToUpperInvariant()))
+                            hsAirportCodes.Add(szCode);
                     });
 
-                m_lstAirports.Clear();
-                m_lstAirports.AddRange(dictVisited.Values);
+                    // OK, now we have all of the airport codes - get the actual airports
+                    AirportList alMaster = new AirportList(String.Join(" ", hsAirportCodes));
 
-                // Sort the list by number of visits, descending, and remove anything that never matched to an airport.
-                m_lstAirports.Sort((ap1, ap2) => {
-                    bool f1 = dictVisited.ContainsKey(ap1.GeoHashKey);
-                    bool f2 = dictVisited.ContainsKey(ap2.GeoHashKey);
-                    if (!f1 || !f2)
+                    foreach (airport ap in alMaster.GetAirportList())
                     {
-                        return 0;   // should never happen, but can due to rounding between unique airports and getairportlist.  
-                    }
-                    return dictVisited[ap2.GeoHashKey].Visits.CompareTo(dictVisited[ap1.GeoHashKey].Visits); 
-                });
+                        if (!ap.IsPort)
+                            continue;
 
-                // Popular models
-                const string szPopularModels = @"SELECT 
+                        string szKey = ap.GeoHashKey;
+                        if (!dictVisited.ContainsKey(szKey))
+                            dictVisited.Add(szKey, new AirportStats(ap));
+
+                        if (!String.IsNullOrWhiteSpace(ap.Country))
+                            hsCountries.Add(ap.Country);
+                    }
+
+                    CountriesVisited = hsCountries.Count;
+
+                    // Now go through the flights a 2nd time and find longest route and the furthest route.
+                    dbh.ReadRows((comm) =>
+                        {
+                            comm.Parameters.AddWithValue("dateMin", DateTime.Now.AddDays(-MaxDays));
+                            comm.Parameters.AddWithValue("dateMax", DateTime.Now.AddDays(1));
+                        },
+                        (dr) =>
+                        {
+                            string szRoute = util.ReadNullableString(dr, "route").ToUpperInvariant();
+                            string szUser = util.ReadNullableString(dr, "username");
+                            string szTail = util.ReadNullableString(dr, "tailnumber");
+                            string szFamily = util.ReadNullableString(dr, "family");
+
+                            AirportList al = alMaster.CloneSubset(szRoute, true);
+
+                            foreach (airport ap in al.UniqueAirports)
+                                if (dictVisited.ContainsKey(ap.GeoHashKey))
+                                    dictVisited[ap.GeoHashKey].Visit(szUser, szFamily, szTail);
+                        });
+
+                    m_lstAirports.Clear();
+                    m_lstAirports.AddRange(dictVisited.Values);
+
+                    // Sort the list by number of visits, descending, and remove anything that never matched to an airport.
+                    m_lstAirports.Sort((ap1, ap2) =>
+                    {
+                        bool f1 = dictVisited.ContainsKey(ap1.GeoHashKey);
+                        bool f2 = dictVisited.ContainsKey(ap2.GeoHashKey);
+                        if (!f1 || !f2)
+                        {
+                            return 0;   // should never happen, but can due to rounding between unique airports and getairportlist.  
+                        }
+                        return dictVisited[ap2.GeoHashKey].Visits.CompareTo(dictVisited[ap1.GeoHashKey].Visits);
+                    });
+
+                    // Popular models
+                    const string szPopularModels = @"SELECT 
                     man.manufacturer, IF(m.typename='', IF(m.family = '', m.model, m.family), m.typename) AS icao, COUNT(f.idflight) AS num
                 FROM
                     flights f
@@ -344,17 +348,21 @@ WHERE f.Date > ?dateMin AND f.Date < ?dateMax AND ac.InstanceType = 1");
                 ORDER BY num DESC
                 LIMIT 30";
 
-                m_lstPopularModels.Clear();
-                dbh.CommandText = szPopularModels;
-                dbh.ReadRows(
-                    (comm) => 
-                    {
-                        comm.Parameters.AddWithValue("dateMin", DateTime.Now.AddDays(-MaxDays));
-                        comm.Parameters.AddWithValue("dateMax", DateTime.Now.AddDays(1));
-                    }, 
-                    (dr) => { m_lstPopularModels.Add(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsModelInfo, dr["manufacturer"], dr["icao"], dr["num"])); });
+                    m_lstPopularModels.Clear();
+                    dbh.CommandText = szPopularModels;
+                    dbh.ReadRows(
+                        (comm) =>
+                        {
+                            comm.Parameters.AddWithValue("dateMin", DateTime.Now.AddDays(-MaxDays));
+                            comm.Parameters.AddWithValue("dateMax", DateTime.Now.AddDays(1));
+                        },
+                        (dr) => { m_lstPopularModels.Add(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsModelInfo, dr["manufacturer"], dr["icao"], dr["num"])); });
 
-                HasSlowInformation = true;
+                    HasSlowInformation = true;
+                } catch (Exception ex) when (!(ex is OutOfMemoryException))
+                {
+                    util.NotifyAdminException("Error getting flight stats: " + ex.Message, ex);
+                }
             }).Start();
         }
         #endregion

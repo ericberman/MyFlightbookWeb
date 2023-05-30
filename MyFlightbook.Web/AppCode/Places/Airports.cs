@@ -14,7 +14,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2022 MyFlightbook LLC
+ * Copyright (c) 2010-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -108,7 +108,7 @@ namespace MyFlightbook.Airports
         public string Latitude
         {
             get { return this.LatLong.LatitudeString; }
-            set { this.LatLong.Latitude = Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture); }
+            set { /* This is only here for backwards compatibility in the WSDL;  DO NOT SET */ }
         }
 
         /// <summary>
@@ -118,7 +118,7 @@ namespace MyFlightbook.Airports
         public string Longitude
         {
             get { return this.LatLong.LongitudeString; }
-            set { this.LatLong.Longitude = Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture); }
+            set { /* This is only here for backwards compatibility in the WSDL; DO NOT SET */ }
         }
 
         /// <summary>
