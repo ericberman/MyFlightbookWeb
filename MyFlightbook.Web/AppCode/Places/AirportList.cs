@@ -7,7 +7,7 @@ using System.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2022 MyFlightbook LLC
+ * Copyright (c) 2010-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -163,6 +163,16 @@ namespace MyFlightbook.Airports
             {
                 m_rgAirports.Add(va.Airport);
                 m_htAirportsByCode[va.Code] = va.Airport;
+
+                if (!String.IsNullOrEmpty(va.Aliases))
+                {
+                    foreach (string alias in NormalizeAirportList(va.Aliases))
+                    {
+                        if (!m_htAirportsByCode.ContainsKey(alias))
+                            m_htAirportsByCode[alias] = va.Airport;
+                    }
+                }
+
                 alAirports.Add(va.Code);
             }
 
