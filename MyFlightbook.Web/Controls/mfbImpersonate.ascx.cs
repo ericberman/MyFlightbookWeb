@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2022 MyFlightbook LLC
+ * Copyright (c) 2009-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -133,7 +133,7 @@ namespace MyFlightbook.Web.Admin
             else if (e.CommandName.CompareOrdinalIgnoreCase("EndowClub") == 0)
             {
                 DBHelper dbh = new DBHelper();
-                dbh.DoNonQuery("INSERT INTO earnedgratuities SET idgratuitytype=3, username=?szUser, dateEarned=Now(), dateExpired=Date_Add(Now(), interval 30 day), reminderssent=0, dateLastReminder='0001-01-01 00:00:00'", (comm) => { comm.Parameters.AddWithValue("szUser", mu.UserName); });
+                dbh.DoNonQuery("REPLACE INTO earnedgratuities SET idgratuitytype=3, username=?szUser, dateEarned=Now(), dateExpired=Date_Add(Now(), interval 30 day), reminderssent=0, dateLastReminder='0001-01-01 00:00:00'", (comm) => { comm.Parameters.AddWithValue("szUser", mu.UserName); });
             }
             else if (e.CommandName.CompareCurrentCultureIgnoreCase("Disable2FA") == 0)
             {
