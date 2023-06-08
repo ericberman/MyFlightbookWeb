@@ -545,6 +545,21 @@ namespace MyFlightbook
             return true;
         }
 
+        private bool ValidateProps()
+        {
+            // Issue #1094: catch negative time values in properties as well
+            foreach (CustomFlightProperty cfp in CustomProperties)
+            {
+                if (cfp.DecValue < 0 && cfp.PropertyType.IsTimeValue)
+                {
+                    LastError = ErrorCode.NegativeTime;
+                    ErrorString = Resources.LogbookEntry.errInvalidTime;
+                    return false;
+                }
+            }
+            return true;
+        }
+
         private bool ValidateDateTimeFields()
         {
             if (DateTime.Compare(dtEngineStart, dtEngineEnd) > 0 && dtEngineStart.HasValue() && dtEngineEnd.HasValue())
@@ -714,6 +729,7 @@ namespace MyFlightbook
             }
 
             return ValidateMainFields() &&
+                ValidateProps() &&
                 ValidateDateTimeFields() &&
                 ValidateApproaches() &&
                 ValidateAircraft();

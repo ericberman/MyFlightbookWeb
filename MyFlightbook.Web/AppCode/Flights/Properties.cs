@@ -498,6 +498,15 @@ namespace MyFlightbook
             get { return Type == CFPPropertyType.cfpDecimal && ((Flags & CFPPropertyFlag.cfpFlagBasicDecimal) != CFPPropertyFlag.cfpFlagNone); }
         }
 
+        /// <summary>
+        /// Is this property a time?  (Complement to IsBasicDecimal for decimal values)
+        /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
+        public Boolean IsTimeValue
+        {
+            get { return Type == CFPPropertyType.cfpDecimal && ((Flags & CFPPropertyFlag.cfpFlagBasicDecimal) == CFPPropertyFlag.cfpFlagNone); }
+        }
+
         [Newtonsoft.Json.JsonIgnore]
         public Boolean IsNoAutocomplete
         {
@@ -1242,7 +1251,7 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
         public Boolean FIsValid()
         {
             return (FlightID >= 0 && PropTypeID >= 0);
-        }
+            }
 
         public Boolean FCommit()
         {
