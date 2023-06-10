@@ -15,7 +15,7 @@ using System.Web.Caching;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2022 MyFlightbook LLC
+ * Copyright (c) 2009-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1005,9 +1005,21 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
 
             foreach (Aircraft ac in rgac)
             {
-                ac.ModelID = idModelToMergeInto;
-                ac.Commit();
-                lst.Add(String.Format(CultureInfo.CurrentCulture, "Updated aircraft {0} to model {1}", ac.AircraftID, idModelToMergeInto));
+                // Issue #1068: if Aircraft already exists with idModelToMergeInto, do a merge
+                List<Aircraft> lstSimilarTails = Aircraft.AircraftMatchingTail(ac.TailNumber);
+                Aircraft acDupe = lstSimilarTails.FirstOrDefault(a => a.ModelID == idModelToMergeInto);
+
+                if (acDupe == null) // no collision
+                {
+                    ac.ModelID = idModelToMergeInto;
+                    ac.Commit();
+                    lst.Add(String.Format(CultureInfo.CurrentCulture, "Updated aircraft {0} to model {1}", ac.AircraftID, idModelToMergeInto));
+                } else
+                {
+                    // collision - do a merge instead!
+                    AircraftUtility.AdminMergeDupeAircraft(acDupe, ac);
+                    lst.Add(string.Format(CultureInfo.CurrentCulture, "Aircraft {0} exists with both models!  Merged", ac.TailNumber));
+                }
             }
 
             // Update any custom currency references to the old model
