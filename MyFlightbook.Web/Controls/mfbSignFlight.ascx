@@ -219,7 +219,27 @@
                         <uc1:mfbScribbleSignature runat="server" id="mfbScribbleSignature" />
                     </asp:Panel>
                     <asp:Panel ID="pnlCopyFlight" runat="server">
-                        <asp:CheckBox ID="ckCopyFlight" runat="server" />
+                        <div><asp:CheckBox ID="ckCopyFlight" runat="server" onclick="javascript:toggleCFIOpts()" /></div>
+                        <div id="divCfiCopyOpt">
+                            <div>
+                                <div style="display:inline-block; vertical-align: top;"><asp:RadioButton ID="rbCopyPending" GroupName="copyOpt" Checked="true" runat="server" /></div>
+                                <div style="display: inline-block"><asp:Label ID="lblCopyPending" runat="server" Text="<%$ Resources:SignOff, SignFlightCopyPending %>" AssociatedControlID="rbCopyPending" />
+                                    <br /><asp:Label ID="lblPendingNote" runat="server" Text="<%$ Resources:SignOff, SignFlightCopyPendingNote %>" CssClass="fineprint" AssociatedControlID="rbCopyPending" />
+                                </div>
+                            </div>
+                            <div>
+                                <asp:RadioButton ID="rbCopyLive" runat="server" GroupName="copyOpt" Text="<%$ Resources:SignOff, SignFlightCopyLive %>" />
+                            </div>
+                        </div>
+                        <script type="text/javascript">
+                            function toggleCFIOpts() {
+                                $("#divCfiCopyOpt")[0].style.display = $("#<% =ckCopyFlight.ClientID %>")[0].checked ? "block" : "none";
+                            }
+
+                            $(function () {
+                                toggleCFIOpts();
+                            });
+                        </script>
                     </asp:Panel>
                     <asp:Label ID="lblErr" runat="server" CssClass="error" EnableViewState="False" />
                 </div>

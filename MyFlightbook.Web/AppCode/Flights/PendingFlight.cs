@@ -65,7 +65,7 @@ namespace MyFlightbook
             MapTail();
         }
 
-        public PendingFlight(LogbookEntry le) : this()
+        public PendingFlight(LogbookEntryBase le) : this()
         {
             if (le == null)
                 return;

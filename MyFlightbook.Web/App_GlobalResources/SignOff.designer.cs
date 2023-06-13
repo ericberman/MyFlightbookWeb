@@ -1126,10 +1126,7 @@ namespace Resources {
         ///   Looks up a localized string similar to &lt;% Requestor %&gt; has invited you to be their &lt;% Role %&gt; on [%APP_NAME%](https://%APP_URL%), a free online logbook for pilots.
         ///
         ///If you know &lt;% Requestor %&gt;, please confirm this by visiting [this page](&lt;% ConfirmRoleLink %&gt;).
-        ///
-        ///Thank-you
-        ///
-        ///To contact us, please visit http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx..
+        ///.
         /// </summary>
         internal static string RoleInvitation {
             get {
@@ -1264,6 +1261,33 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add directly to logbook.
+        /// </summary>
+        internal static string SignFlightCopyLive {
+            get {
+                return ResourceManager.GetString("SignFlightCopyLive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add as a pending flight.
+        /// </summary>
+        internal static string SignFlightCopyPending {
+            get {
+                return ResourceManager.GetString("SignFlightCopyPending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Review/Edit before adding to your logbook.
+        /// </summary>
+        internal static string SignFlightCopyPendingNote {
+            get {
+                return ResourceManager.GetString("SignFlightCopyPendingNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sign flight for {0}.
         /// </summary>
         internal static string SignFlightHeader {
@@ -1300,13 +1324,10 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;% Requestor %&gt; has asked you to sign an entry they have made in their logbook for a flight on %APP_NAME% (http://%APP_URL%).
+        ///   Looks up a localized string similar to &lt;% Requestor %&gt; has asked you to sign an entry they have made in their logbook for a flight on %APP_NAME%.
         ///
-        ///Please visit &lt;% SignPendingFlightsLink %&gt; to view this request and sign their logbook entry.
-        ///
-        ///Thank-you
-        ///
-        ///To contact us, please visit http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx..
+        ///Please visit the [Students Page](&lt;% SignPendingFlightsLink %&gt;) on %APP_NAME% to view this request and sign their logbook entry.
+        ///.
         /// </summary>
         internal static string SignInvitationExisting {
             get {

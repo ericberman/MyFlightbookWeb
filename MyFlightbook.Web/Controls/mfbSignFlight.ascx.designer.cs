@@ -402,6 +402,42 @@ namespace MyFlightbook.Instruction
         protected global::System.Web.UI.WebControls.CheckBox ckCopyFlight;
 
         /// <summary>
+        /// rbCopyPending control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButton rbCopyPending;
+
+        /// <summary>
+        /// lblCopyPending control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblCopyPending;
+
+        /// <summary>
+        /// lblPendingNote control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblPendingNote;
+
+        /// <summary>
+        /// rbCopyLive control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButton rbCopyLive;
+
+        /// <summary>
         /// lblErr control.
         /// </summary>
         /// <remarks>

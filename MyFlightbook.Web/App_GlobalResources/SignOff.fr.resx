@@ -386,4 +386,13 @@
   <data name="PromptUseAC13543ForSIC" xml:space="preserve">
     <value>Utiliser l’approbation SIC de la CA 135-43</value>
   </data>
+  <data name="SignFlightCopyLive" xml:space="preserve">
+    <value>Ajouter directement au journal de bord</value>
+  </data>
+  <data name="SignFlightCopyPending" xml:space="preserve">
+    <value>Ajouter aux vols en attente</value>
+  </data>
+  <data name="SignFlightCopyPendingNote" xml:space="preserve">
+    <value>Réviser/Modifier avant d'ajouter à votre journal de bord</value>
+  </data>
 </root>

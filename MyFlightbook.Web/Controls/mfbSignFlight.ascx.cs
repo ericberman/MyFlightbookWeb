@@ -46,7 +46,9 @@ namespace MyFlightbook.Instruction
         private const string szKeyVSIDFlight = "keyVSEntryToSign";
         private const string szKeyVSIDStudent = "keyVSStudentName";
         private const string szKeyCFIUserName = "keyVSCFIUserName";
-        private const string szKeyCookieCopy = "cookieCopy";
+        private const string szKeyPrefCopy = "copySignedFlights";
+        
+        enum CopyFlightCFIPrefDefault { None, CopyPending, CopyLive }
 
         public event EventHandler<LogbookEventArgs> Cancel;
         public event EventHandler<LogbookEventArgs> SigningFinished;
@@ -116,6 +118,23 @@ namespace MyFlightbook.Instruction
                         // Offer to copy the flight for the CFI
                         pnlCopyFlight.Visible = CFIProfile != null;
                         ckCopyFlight.Text = String.Format(CultureInfo.CurrentCulture, Resources.SignOff.SignFlightCopy, CFIProfile == null ? String.Empty : HttpUtility.HtmlEncode(CFIProfile.UserFullName));
+
+                        const string szKeyCookieCopy = "cookieCopy";
+
+                        // Legacy - clear the old cookie if present
+                        if (Request.Cookies[szKeyCookieCopy] != null )
+                        {
+                            Response.Cookies[szKeyCookieCopy].Expires = DateTime.Now.AddDays(-5);
+                        }
+
+                        if (CFIProfile != null && !IsPostBack)
+                        {
+                            CopyFlightCFIPrefDefault copyPref = (CopyFlightCFIPrefDefault) (CFIProfile.GetPreferenceForKey(szKeyPrefCopy) ?? 0);
+                            // Set defaults appropriately
+                            ckCopyFlight.Checked = copyPref != CopyFlightCFIPrefDefault.None;
+                            rbCopyLive.Checked = copyPref == CopyFlightCFIPrefDefault.CopyLive;
+                        }
+
                         valCertificateRequired.Enabled = valCFIExpiration.Enabled = valNameRequired.Enabled = valBadEmail.Enabled = valEmailRequired.Enabled = mfbScribbleSignature.Enabled = false;
                         break;
                 }
@@ -258,12 +277,6 @@ namespace MyFlightbook.Instruction
             if (!IsPostBack)
             {
                 lblSignatureDisclaimer.Text = Branding.ReBrand(Resources.SignOff.SignedFlightDisclaimer);
-
-                if (Request.Cookies[szKeyCookieCopy] != null)
-                {
-                    if (Boolean.TryParse(Request.Cookies[szKeyCookieCopy].Value, out bool copyFlight))
-                        ckCopyFlight.Checked = copyFlight;
-                }
             }
             else
             {
@@ -340,18 +353,19 @@ namespace MyFlightbook.Instruction
                         // Prepare for signing
                         Flight.SignFlightAuthenticated(CFIProfile.UserName, SigningComments, fIsGroundOrATP);
 
+                        // Preserve the CFI's preferences for copying flights
+                        CopyFlightCFIPrefDefault cpd = ckCopyFlight.Checked ? (rbCopyPending.Checked ? CopyFlightCFIPrefDefault.CopyPending : CopyFlightCFIPrefDefault.CopyLive) : CopyFlightCFIPrefDefault.None;
+                        CFIProfile.SetPreferenceForKey(szKeyPrefCopy, (int) cpd, cpd == CopyFlightCFIPrefDefault.None);
+
                         // Copy the flight to the CFI's logbook if needed.
                         // We modify a new copy of the flight; this avoids modifying this.Flight, but ensures we get every property
-                        if (ckCopyFlight.Checked)
+                        if (cpd != CopyFlightCFIPrefDefault.None)
                         {
                             // Issue #593 Load any telemetry, if necessary
                             LogbookEntry le = new LogbookEntry(Flight.FlightID, Flight.User, LogbookEntryCore.LoadTelemetryOption.LoadAll);
                             Flight.FlightData = le.FlightData;
-                            Flight.CopyToInstructor(CFIProfile.UserName, SigningComments);
+                            Flight.CopyToInstructor(CFIProfile.UserName, SigningComments, cpd == CopyFlightCFIPrefDefault.CopyPending);
                         }
-
-                        Response.Cookies[szKeyCookieCopy].Value = ckCopyFlight.Checked.ToString(CultureInfo.InvariantCulture);
-                        Response.Cookies[szKeyCookieCopy].Expires = DateTime.Now.AddYears(10);
                         break;
                 }
             }

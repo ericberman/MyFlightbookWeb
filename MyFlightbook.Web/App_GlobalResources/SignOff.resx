@@ -563,4 +563,13 @@
   <data name="ViewStudentLogbook" xml:space="preserve">
     <value>View logbook</value>
   </data>
+  <data name="SignFlightCopyLive" xml:space="preserve">
+    <value>Add directly to logbook</value>
+  </data>
+  <data name="SignFlightCopyPending" xml:space="preserve">
+    <value>Add as a pending flight</value>
+  </data>
+  <data name="SignFlightCopyPendingNote" xml:space="preserve">
+    <value>Review/Edit before adding to your logbook</value>
+  </data>
 </root>

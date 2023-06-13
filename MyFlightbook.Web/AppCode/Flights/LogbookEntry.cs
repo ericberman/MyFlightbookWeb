@@ -1339,14 +1339,14 @@ namespace MyFlightbook
                 throw new MyFlightbookValidationException(ErrorString);
         }
 
-        public void CopyToInstructor(string szCFI, string szSigningComments)
+        public void CopyToInstructor(string szCFI, string szSigningComments, bool fAsPending)
         {
             if (szCFI == null)
                 throw new ArgumentNullException(nameof(szCFI));
             if (szSigningComments == null)
                 szSigningComments = string.Empty;
 
-            LogbookEntry le = Clone();
+            LogbookEntry le = fAsPending ? new PendingFlight(this) : Clone();
 
             // Now make it look like the CFI's: their username, swap DUAL for CFI time, ensure that PIC time is present.
             le.FlightID = idFlightNew;
@@ -1398,7 +1398,15 @@ namespace MyFlightbook
             }
             le.CustomProperties.SetItems(lstProps);
 
-            bool result = le.FCommit(true);
+            bool result = true;
+            if (le is PendingFlight pf)
+            {
+                pf.Commit();
+            }
+            else
+            {
+                result = le.FCommit(true);
+            }
             if (!result || le.LastError != ErrorCode.None)
                 util.NotifyAdminEvent("Error copying flight to instructor's logbook",
                     String.Format(CultureInfo.CurrentCulture, "Flight: {0}, CFI: {1}, Student: {2}, ErrorCode: {3}, Error: {4}", le.ToString(), le.User, szStudentName, le.LastError, le.ErrorString),
