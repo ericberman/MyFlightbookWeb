@@ -16,6 +16,7 @@
         <asp:DropDownList ID="cmbHourEnd" runat="server">
         </asp:DropDownList>
     </div>
+    <div style="line-height: 120pt;">&nbsp;</div>
     <div style="text-align: center; margin-top: 5px;">
         <asp:Button runat="server" Text="<%$ Resources:Schedule, EventCancel %>" ID="btnCancel" OnClientClick="javascript:hideEditor();return false;"></asp:Button>
         <asp:Button runat="server" Text="<%$ Resources:Schedule, EventDelete %>" ID="btnDeleteAppt"></asp:Button>
