@@ -9,7 +9,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2018-2022 MyFlightbook LLC
+ * Copyright (c) 2018-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -158,8 +158,13 @@ namespace MyFlightbook.RatingsProgress
         public bool AutoDateRange { get; set; }
 
         // # of distinct dates with flights, flights per day
-        protected Dictionary<string, int> FlightDates { get; private set; }
-        protected Dictionary<string, int> FlightLandings { get; private set; }
+        protected Dictionary<string, int> FlightDates { get; private set; } = new Dictionary<string, int>();
+        protected Dictionary<string, int> FlightLandings { get; private set; } = new Dictionary<string, int>();
+
+        /// <summary>
+        /// Airports visited on a flight.
+        /// </summary>
+        protected Dictionary<string, string> AirportsByDate { get; private set; } = new Dictionary<string, string>();
         protected int MaxFlightsPerDay { get; set; }
         protected int MaxLandingsPerDay { get; set; }
 
@@ -175,14 +180,14 @@ namespace MyFlightbook.RatingsProgress
         protected double FurthestFlightDistance { get; set; }
         
         // Distinct aircraft/models
-        protected HashSet<int> DistinctAircraft { get; private set; }
-        protected HashSet<int> DistinctModels { get; private set; }
-        protected HashSet<string> DistinctICAO { get; private set; }
+        protected HashSet<int> DistinctAircraft { get; private set; } = new HashSet<int>();
+        protected HashSet<int> DistinctModels { get; private set; } = new HashSet<int>();
+        protected HashSet<string> DistinctICAO { get; private set; } = new HashSet<string>();
 
         // Airports
-        protected HashSet<string> Airports { get; private set; }
+        protected HashSet<string> Airports { get; private set; } = new HashSet<string>();
 
-        protected Dictionary<string, HashSet<string>> GeoRegions { get; private set; }
+        protected Dictionary<string, HashSet<string>> GeoRegions { get; private set; } = new Dictionary<string, HashSet<string>>();
 
         protected int MostAirportsFlightCount { get; set; }
 
@@ -216,6 +221,21 @@ namespace MyFlightbook.RatingsProgress
         /// Most landings in a day
         /// </summary>
         protected RecentAchievementMilestone miMostLandingsInDay { get; set; }
+
+        /// <summary>
+        /// Most airports in a single day
+        /// </summary>
+        protected RecentAchievementMilestone miMostAirportsDay { get; set; }
+
+        /// <summary>
+        /// Most countries in a single day
+        /// </summary>
+        protected RecentAchievementMilestone miMostCountriesDay { get; set; }
+
+        /// <summary>
+        /// Most states/provinces/etc in a single day
+        /// </summary>
+        protected RecentAchievementMilestone miMostAdmin1sDay { get; set; }
 
         /// <summary>
         /// Longest Flight (total time)
@@ -278,14 +298,6 @@ namespace MyFlightbook.RatingsProgress
             StartDate = dtStart.Date;
             EndDate = dtEnd.Date;
 
-            FlightDates = new Dictionary<string, int>();
-            FlightLandings = new Dictionary<string, int>();
-            DistinctAircraft = new HashSet<int>();
-            DistinctModels = new HashSet<int>();
-            DistinctICAO = new HashSet<string>();
-            Airports = new HashSet<string>();
-            GeoRegions = new Dictionary<string, HashSet<string>>();
-
             miFlightCount = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsFlightsLogged, MilestoneItem.MilestoneType.Count, 1);
             miLongestStreak = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementFlyingStreakTitle, MilestoneItem.MilestoneType.Count, 1);
             miLongestNoFlyStreak = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsNoFlyingStreakTitle, MilestoneItem.MilestoneType.Count, 1);
@@ -300,6 +312,9 @@ namespace MyFlightbook.RatingsProgress
             miMostAirportsFlight = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsAirportsOnFlightTitle, MilestoneItem.MilestoneType.AchieveOnce, 1);
             miCountries = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsCountriesVisited, MilestoneItem.MilestoneType.Count, 2);
             miAdmin1 = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsAdmin1Visited, MilestoneItem.MilestoneType.Count, 2);
+            miMostAirportsDay = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementMostAirportsInDayTitle, MilestoneItem.MilestoneType.Count, 2);
+            miMostCountriesDay = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementMostCountriesDayTitle, MilestoneItem.MilestoneType.Count, 2);
+            miMostAdmin1sDay = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementMostAdmin1sDayTitle, MilestoneItem.MilestoneType.Count, 2);
         }
 
         public override Collection<MilestoneItem> Milestones
@@ -347,14 +362,17 @@ namespace MyFlightbook.RatingsProgress
                 miAirports.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementsAirportsVisited, Airports.Count);
 
                 // If multiple countries, then we'll say how many countries visited.
-                // If only one country, then show how many states/provinces/regions visited
+                // Also show most states/provinces/etc. for whichever country has that distinction
                 miCountries.Progress = GeoRegions.Count;
                 miCountries.MatchingEventText = GeoRegions.Count.ToString("#,##0", CultureInfo.CurrentCulture);
-                if (GeoRegions.Count == 1)
+                foreach (string country in GeoRegions.Keys)
                 {
-                    int cRegions = GeoRegions.Values.First().Count;
-                    miAdmin1.Progress = cRegions;
-                    miAdmin1.MatchingEventText = cRegions.ToString("#,##0", CultureInfo.CurrentCulture);
+                    int cAdmin1 = GeoRegions[country].Count;
+                    if (cAdmin1 > miAdmin1.Progress)
+                    {
+                        miAdmin1.Progress = cAdmin1;
+                        miAdmin1.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementsAdmin1VisitedDisplay, cAdmin1, country);
+                    }
                 }
 
                 miAirports.Query = miFlyingDates.Query; // both use the entire time period.
@@ -371,8 +389,11 @@ namespace MyFlightbook.RatingsProgress
                     miFurthestFlight,
                     miAirports,
                     miMostAirportsFlight,
+                    miMostAirportsDay,
                     miCountries,
                     miAdmin1,
+                    miMostCountriesDay,
+                    miMostAdmin1sDay,
                     miAircraft,
                     miModels,
                     fs100.ToMilestone(Username),
@@ -385,7 +406,7 @@ namespace MyFlightbook.RatingsProgress
             }
         }
 
-        private int MatchAirports(IEnumerable<airport> rgap)
+        private static int MatchAirports(IEnumerable<airport> rgap, HashSet<string> airports, Dictionary<string, HashSet<string>> geoRegions)
         {
             int cUniqueAirports = 0;
             HashSet<string> hsThisFlight = new HashSet<string>();
@@ -397,9 +418,9 @@ namespace MyFlightbook.RatingsProgress
                 if (ap.IsPort)
                 {
                     string szHash = ap.GeoHashKey;
-                    if (!Airports.Contains(szHash))
+                    if (!airports.Contains(szHash))
                     {
-                        Airports.Add(ap.GeoHashKey);
+                        airports.Add(ap.GeoHashKey);
                         cUniqueAirports++;
                     }
                     hsThisFlight.Add(szHash);
@@ -410,11 +431,11 @@ namespace MyFlightbook.RatingsProgress
                     // Keep track of visited countries/regions
                     if (!String.IsNullOrWhiteSpace(szCountry))
                     {
-                        if (!GeoRegions.ContainsKey(szCountry))
-                            GeoRegions[szCountry] = new HashSet<string>();
+                        if (!geoRegions.ContainsKey(szCountry))
+                            geoRegions[szCountry] = new HashSet<string>();
 
-                        if (!String.IsNullOrWhiteSpace(szAdmin1) && !GeoRegions[szCountry].Contains(szAdmin1))
-                            GeoRegions[szCountry].Add(szAdmin1);
+                        if (!String.IsNullOrWhiteSpace(szAdmin1) && !geoRegions[szCountry].Contains(szAdmin1))
+                            geoRegions[szCountry].Add(szAdmin1);
                     }
                 }
             }
@@ -496,7 +517,7 @@ namespace MyFlightbook.RatingsProgress
             DistinctModels.Add(cfr.idModel);
             DistinctICAO.Add(cfr.szFamily);
 
-            // Furthest Flight & airport computations.
+            // Furthest Flight & airport computations on a flight-by-flight basis (rather than date-of-flight)
             AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route, true);
 
             double distance = al.DistanceForRoute();
@@ -508,7 +529,7 @@ namespace MyFlightbook.RatingsProgress
                 miFurthestFlight.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementsFurthestFlight, distance, dtFlight);
             }
 
-            int cAirportsThisFlight = MatchAirports(al.UniqueAirports);
+            int cAirportsThisFlight = MatchAirports(al.UniqueAirports, Airports, GeoRegions); // Using the *shared* Airports/GeoRegions, since we want to build that up
             if (cAirportsThisFlight > MostAirportsFlightCount)
             {
                 MostAirportsFlightCount = cAirportsThisFlight;
@@ -516,6 +537,39 @@ namespace MyFlightbook.RatingsProgress
                 miMostAirportsFlight.Progress = 1;
                 miMostAirportsFlight.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementsAirportsOnFlight, cAirportsThisFlight, dtFlight.ToShortDateString());
                 miMostAirportsFlight.Query = new FlightQuery(Username) { DateRange = FlightQuery.DateRanges.Custom, DateMax = dtFlight, DateMin = dtFlight };
+            }
+
+            // Append the set of airports for this day and see if there are any single-date (vs. single-flight) achievements)
+            AirportsByDate[szDateKey] = AirportsByDate.TryGetValue(szDateKey, out var routeSoFar)
+                ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, routeSoFar, cfr.Route)
+                : cfr.Route;
+
+            // See if the day has broken any records
+            al = AirportListOfRoutes.CloneSubset(AirportsByDate[szDateKey], true);
+            HashSet<string> airports = new HashSet<string>();
+            Dictionary<string, HashSet<string>> geoRegions = new Dictionary<string, HashSet<string>>();
+            cAirportsThisFlight = MatchAirports(al.UniqueAirports, airports, geoRegions);    // Using a *local* airports/GeoRegions.
+            if (cAirportsThisFlight > miMostAirportsDay.Progress)
+            {
+                miMostAirportsDay.Progress = cAirportsThisFlight;
+                miMostAirportsDay.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementMostAirportsInDay, cAirportsThisFlight, dtFlight);
+                miMostAirportsDay.Query = new FlightQuery(Username) { DateRange = FlightQuery.DateRanges.Custom, DateMax = dtFlight, DateMin = dtFlight };
+            }
+            if (geoRegions.Count > miMostCountriesDay.Progress)
+            {
+                miMostCountriesDay.Progress = geoRegions.Count;
+                miMostCountriesDay.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementMostCountriesDay, geoRegions.Count, dtFlight);
+                miMostCountriesDay.Query = new FlightQuery(Username) { DateRange = FlightQuery.DateRanges.Custom, DateMax = dtFlight, DateMin = dtFlight };
+            }
+            // Most states/countries in a day needs to be within a single country
+            foreach (HashSet<string> hsAdmin1 in geoRegions.Values)
+            {
+                if (hsAdmin1.Count > miMostAdmin1sDay.Progress)
+                {
+                    miMostAdmin1sDay.Progress = hsAdmin1.Count;
+                    miMostAdmin1sDay.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementMostAdmin1sDay, hsAdmin1.Count, dtFlight);
+                    miMostAdmin1sDay.Query = new FlightQuery(Username) { DateRange = FlightQuery.DateRanges.Custom, DateMax = dtFlight, DateMin = dtFlight };
+                }
             }
 
             fs100.ExamineFlight(cfr);

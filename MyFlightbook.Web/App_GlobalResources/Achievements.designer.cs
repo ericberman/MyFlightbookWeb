@@ -772,6 +772,60 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0:#,##0} on {1:d}.
+        /// </summary>
+        internal static string RecentAchievementMostAdmin1sDay {
+            get {
+                return ResourceManager.GetString("RecentAchievementMostAdmin1sDay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Most states/provinces/regions visited in a single day:.
+        /// </summary>
+        internal static string RecentAchievementMostAdmin1sDayTitle {
+            get {
+                return ResourceManager.GetString("RecentAchievementMostAdmin1sDayTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0:#,##0} airports on {1:d}.
+        /// </summary>
+        internal static string RecentAchievementMostAirportsInDay {
+            get {
+                return ResourceManager.GetString("RecentAchievementMostAirportsInDay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Most airports visited in a single day:.
+        /// </summary>
+        internal static string RecentAchievementMostAirportsInDayTitle {
+            get {
+                return ResourceManager.GetString("RecentAchievementMostAirportsInDayTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0:#,##0} on {1:d}.
+        /// </summary>
+        internal static string RecentAchievementMostCountriesDay {
+            get {
+                return ResourceManager.GetString("RecentAchievementMostCountriesDay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Most countries visited in a single day:.
+        /// </summary>
+        internal static string RecentAchievementMostCountriesDayTitle {
+            get {
+                return ResourceManager.GetString("RecentAchievementMostCountriesDayTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} flights on {1:d}.
         /// </summary>
         internal static string RecentAchievementMostFlightsInDay {
@@ -813,6 +867,15 @@ namespace Resources {
         internal static string RecentAchievementsAdmin1Visited {
             get {
                 return ResourceManager.GetString("RecentAchievementsAdmin1Visited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0:#,##0} ({1}).
+        /// </summary>
+        internal static string RecentAchievementsAdmin1VisitedDisplay {
+            get {
+                return ResourceManager.GetString("RecentAchievementsAdmin1VisitedDisplay", resourceCulture);
             }
         }
         

@@ -438,4 +438,26 @@
   <data name="FastestHrsNotAchieved" xml:space="preserve">
     <value>(not achieved)</value>
   </data>
+  <data name="RecentAchievementMostAdmin1sDay" xml:space="preserve">
+    <value>{0:#,##0} on {1:d}</value>
+  </data>
+  <data name="RecentAchievementMostAdmin1sDayTitle" xml:space="preserve">
+    <value>Most states/provinces/regions visited in a single day:</value>
+  </data>
+  <data name="RecentAchievementMostAirportsInDay" xml:space="preserve">
+    <value>{0:#,##0} airports on {1:d}</value>
+  </data>
+  <data name="RecentAchievementMostAirportsInDayTitle" xml:space="preserve">
+    <value>Most airports visited in a single day:</value>
+  </data>
+  <data name="RecentAchievementMostCountriesDay" xml:space="preserve">
+    <value>{0:#,##0} on {1:d}</value>
+  </data>
+  <data name="RecentAchievementMostCountriesDayTitle" xml:space="preserve">
+    <value>Most countries visited in a single day:</value>
+  </data>
+  <data name="RecentAchievementsAdmin1VisitedDisplay" xml:space="preserve">
+    <value>{0:#,##0} ({1})</value>
+    <comment>e.g., "32 (United States)"</comment>
+  </data>
 </root>
