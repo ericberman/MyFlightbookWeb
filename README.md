@@ -92,6 +92,7 @@ These are tasks to do ONLY on the live site; there should be no need to set them
 * Install root files (support directory) so that http://xxx/ will go straight to the default home page, and so that favicon.ico will work. Need to edit the file and ensure that default.aspx is the top-level default doc.
 * Ensure reverse DNS is set up for host so that email can be received
 * Set up custom errors in web.config, but TURN THEM OFF in IIS so that oAuth will return errors. IIS->(site)->Error Pages->Edit Feature Settings->Detailed Errors.
+* Use a custom application pool.  Then, in IIS Manager go to that pool and under "Edit Application Pool", click "Recycling...".  Set the pool to automatically recycle once daily (I use 10pm) and if it uses too much memory (I use 2000000KB - i.e., 2GB)
 * Ensure that 3306 (database) port is closed, ensure that firewall is otherwise appropriately configured
 
 ## Additional attributions and licenses
