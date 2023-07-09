@@ -364,6 +364,15 @@ public partial class Member_Airports
     protected global::System.Web.UI.WebControls.Label locViewRgns;
 
     /// <summary>
+    /// mfbttCountry control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::Controls_mfbTooltip mfbttCountry;
+
+    /// <summary>
     /// cpeRegion control.
     /// </summary>
     /// <remarks>

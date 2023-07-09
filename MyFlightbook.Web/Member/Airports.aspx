@@ -147,6 +147,11 @@
                             <asp:Image ID="imgGlobe" runat="server" ImageUrl="~/images/globe.png" ImageAlign="Middle" style="margin-right: 4px;" />
                             <asp:Label ID="locViewRgns" runat="server" Text="<%$ Resources:Airports, ViewRegions %>" />
                         </asp:Hyperlink>
+                        <span style="font-weight:normal; text-align:left;"><uc5:mfbTooltip ID="mfbttCountry" runat="server">
+                            <TooltipBody>
+                                <% =Branding.ReBrand(Resources.Airports.airportCountryDisclaimer) %>
+                            </TooltipBody>
+                        </uc5:mfbTooltip></span>
                         <asp:CollapsiblePanelExtender ID="cpeRegion" runat="server"
                             ExpandedText="<%$ Resources:Airports, ViewRegions %>" CollapsedText ="<%$ Resources:Airports, ViewRegions %>"
                             ExpandControlID="lnkViewRegions" CollapseControlID="lnkViewRegions"
