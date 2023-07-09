@@ -3,7 +3,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title></title>
+    <title><% =Resources.Airports.visitedAirportTitle %></title>
 </head>
 <body>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
