@@ -636,6 +636,42 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to View a colored map of visited countries/regions/sub-regions.
+        /// </summary>
+        internal static string viewCountryAdminMap {
+            get {
+                return ResourceManager.GetString("viewCountryAdminMap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Subregions/States/Provinces:.
+        /// </summary>
+        internal static string viewCountryAdminMapAdmin1 {
+            get {
+                return ResourceManager.GetString("viewCountryAdminMapAdmin1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Airports.
+        /// </summary>
+        internal static string viewCountryAdminMapAirports {
+            get {
+                return ResourceManager.GetString("viewCountryAdminMapAirports", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Countries/Regions:.
+        /// </summary>
+        internal static string viewCountryAdminMapTopLevel {
+            get {
+                return ResourceManager.GetString("viewCountryAdminMapTopLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Countries/Regions.
         /// </summary>
         internal static string ViewRegions {

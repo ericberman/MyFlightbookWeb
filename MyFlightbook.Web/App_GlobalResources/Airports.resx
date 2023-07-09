@@ -334,4 +334,16 @@
   <data name="MapConnectDots" xml:space="preserve">
     <value>Show Routes</value>
   </data>
+  <data name="viewCountryAdminMap" xml:space="preserve">
+    <value>View a colored map of visited countries/regions/sub-regions</value>
+  </data>
+  <data name="viewCountryAdminMapAdmin1" xml:space="preserve">
+    <value>Subregions/States/Provinces:</value>
+  </data>
+  <data name="viewCountryAdminMapAirports" xml:space="preserve">
+    <value>Airports</value>
+  </data>
+  <data name="viewCountryAdminMapTopLevel" xml:space="preserve">
+    <value>Countries/Regions:</value>
+  </data>
 </root>

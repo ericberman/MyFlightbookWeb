@@ -1,16 +1,20 @@
-﻿using MyFlightbook.Image;
+﻿using MyFlightbook.Geography;
+using MyFlightbook.Image;
 using MyFlightbook.Telemetry;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IdentityModel.Tokens;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2021 MyFlightbook LLC
+ * Copyright (c) 2010-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -877,4 +881,199 @@ namespace MyFlightbook.Airports
             return segmentsSearched;
         }
     }
+
+    #region TravelMap of visited locations
+    /// <summary>
+    /// Maps a country and admin to ISO codes.
+    /// </summary>
+    public class ISOMap
+    {
+        private readonly Dictionary<string, string> countryMap = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> admin1Map = new Dictionary<string, string>();
+
+        private void InitMapping()
+        {
+            countryMap.Clear();
+            admin1Map.Clear();
+
+            DBHelper dbh = new DBHelper("SELECT * FROM isocodes");
+            dbh.ReadRows((comm) => { },
+                (dr) =>
+                {
+                    int level = Convert.ToInt32(dr["Level"], CultureInfo.InvariantCulture);
+                    Dictionary<string, string> d = (level == 0) ? countryMap : admin1Map;
+                    d[(string)dr["Region"]] = (string)dr["ISO"];
+                });
+        }
+
+        public string CountryCodeForAirport(airport ap)
+        {
+            if (ap == null || String.IsNullOrEmpty(ap.Country))
+                return string.Empty;
+
+            return countryMap.TryGetValue(ap.Country, out string countryCode) ? countryCode : string.Empty;
+        }
+
+        public string AdminCodeForAirport(airport ap)
+        {
+            if (ap == null || String.IsNullOrEmpty(ap.Country))
+                return string.Empty;
+
+            return admin1Map.TryGetValue(ap.Admin1, out string adminCode) ? adminCode : ap.Admin1;
+        }
+
+        protected ISOMap()
+        {
+            InitMapping();
+        }
+
+        public static ISOMap CachedMap
+        {
+            get
+            {
+                const string cacheKey = "isoMapCacheKey";
+                ISOMap map = (ISOMap)HttpRuntime.Cache[cacheKey];
+                if (map == null)
+                {
+                    map = new ISOMap();
+                    HttpRuntime.Cache[cacheKey] = map;
+                }
+                return map;
+            }
+        }
+    }
+
+    public class VisitedCity
+    {
+
+        [JsonProperty("name")]
+        public string Name { get; set; } = "";
+
+        [JsonProperty("description")]
+        public string Description { get; set; } = "";
+
+        [JsonProperty("coordinates")]
+        public double[] Coordinates { get; private set; }
+
+        public VisitedCity()
+        {
+            Coordinates = new double[2];
+        }
+
+        public VisitedCity(LatLong ll) : this()
+        {
+            if (ll == null)
+                throw new ArgumentNullException(nameof(ll));
+
+            Coordinates[0] = ll.Latitude;
+            Coordinates[1] = ll.Longitude;
+        }
+    }
+
+    public class VisitedAdmin1
+    {
+        [JsonProperty("id")]
+        public string Id { get; set; } = "";
+
+        [JsonProperty("name")]
+        public string Name { get; set; } = "";
+
+        [JsonProperty("cities")]
+        public IList<VisitedCity> Cities { get; private set; }
+
+        public VisitedAdmin1()
+        {
+            Cities = new List<VisitedCity>();
+        }
+    }
+
+    public class VisitedCountry
+    {
+        [JsonProperty("id")]
+        public string Id { get; set; } = "";
+
+        [JsonProperty("cities")]
+        public IList<VisitedCity> Cities { get; private set; }
+
+        [JsonProperty("states")]
+        public IList<VisitedAdmin1> Admin1s { get; private set; }
+
+        private readonly Dictionary<string, VisitedAdmin1> d = new Dictionary<string, VisitedAdmin1>();
+
+        public VisitedAdmin1 GetAdmin1(string idAdmin1, string name)
+        {
+            if (!d.TryGetValue(idAdmin1, out VisitedAdmin1 va1))
+            {
+                va1 = new VisitedAdmin1 { Id = idAdmin1, Name = name };
+                d[idAdmin1] = va1;
+                Admin1s.Add(va1);
+            }
+            return va1;
+        }
+
+        public VisitedCountry()
+        {
+            Cities = new List<VisitedCity>();
+            Admin1s = new List<VisitedAdmin1>();
+        }
+
+        public VisitedCountry(string id) : this()
+        {
+            Id = id;
+        }
+    }
+
+    public class VisitedLocations
+    {
+
+        [JsonProperty("countries")]
+        public IList<VisitedCountry> Countries { get; private set; }
+
+        public VisitedLocations()
+        {
+            Countries = new List<VisitedCountry>();
+        }
+
+        private readonly Dictionary<string, VisitedCountry> d = new Dictionary<string, VisitedCountry>();
+
+        public VisitedCountry GetCountry(string idCountry)
+        {
+            if (!d.TryGetValue(idCountry, out VisitedCountry vc))
+            {
+                vc = new VisitedCountry(idCountry);
+                d[idCountry] = vc;
+                Countries.Add(vc);
+            }
+
+            return vc;
+        }
+
+        public VisitedLocations(IEnumerable<VisitedAirport> airports) : this()
+        {
+            if (airports == null)
+                return;
+
+            ISOMap map = ISOMap.CachedMap;
+
+
+            foreach (VisitedAirport va in airports)
+            {
+                string idCountry = map.CountryCodeForAirport(va.Airport);
+                string idAdmin1 = map.AdminCodeForAirport(va.Airport);
+                if (!String.IsNullOrEmpty(idCountry))   // ignore anything that doesn't map to a country code.
+                {
+                    VisitedCountry vc = GetCountry(idCountry);  // get (or re-use) the country.  This will add it to the countries list if necessary
+
+                    // Treat each airport as a "city" within the admin1, in the travelmap argot, indicating the first visit.
+                    // Visited airports are already coalesced (deduped), so we shouldn't need to worry about de-duping them the way we do for countries (i.e., multiple 
+                    VisitedCity vcity = new VisitedCity(va.Airport.LatLong) { Description = String.Format(CultureInfo.InvariantCulture, "{0}, {1}", va.Airport.Name, va.EarliestVisitDate.Year), Name = va.Airport.Code };
+
+                    // Add or re-use the admin1 and add the city to *that*
+                    VisitedAdmin1 va1 = vc.GetAdmin1(idAdmin1, va.Airport.Admin1);
+                    va1.Cities.Add(vcity);
+                }
+            }
+        }
+    }
+    #endregion
 }

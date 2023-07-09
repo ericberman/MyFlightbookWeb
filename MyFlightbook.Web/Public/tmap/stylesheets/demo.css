@@ -1,0 +1,264 @@
+
+html, body { 
+    width: 100%; 
+    height: 100%; 
+    margin: 0; 
+    overflow: hidden; 
+    font-size: 14px;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; 
+}
+
+body.black { 
+    background-color: #000000; 
+}
+
+a { 
+    color: #CCCCCC; 
+    text-decoration: dotted underline; 
+    cursor: pointer; 
+}
+
+ul { 
+    list-style: none; 
+    padding: 0; 
+    margin: 0; 
+}
+
+ul li { 
+    cursor: pointer; 
+    padding: 5px; 
+    border-radius: 5px; 
+}
+
+ul li:hover { 
+    background-color: #444444; 
+}
+
+ul li:last-child { 
+    margin-bottom: 10px;
+}
+
+.box { 
+    position: fixed; 
+    top: 10px; 
+    right: 10px; 
+    width: 250px;
+    padding: 10px; 
+    background-color: rgba(100, 100, 100, .95); 
+    color: #FFFFFF; 
+    border-radius: 5px; 
+    overflow-y: auto; 
+}
+
+.box button, .box input { 
+    cursor: pointer; 
+    width: 100%; 
+    padding: 5px 10px; 
+    font-size: 13px; 
+    text-align: center; 
+    border: none;  
+    border-radius: 5px; 
+    color: #FFFFFF; 
+    background-color: #444444; 
+}
+
+.box button:hover, .box input:hover { 
+    background-color: #999999; 
+}
+
+.box button:nth-child(3), .box button:nth-child(4) { 
+    margin-top: 10px; 
+}
+
+.box input { 
+    padding: 5px; 
+    text-align: left; 
+}
+
+.hide { 
+    position: fixed; 
+    margin-top: -5px; 
+    right: 20px; 
+    cursor: pointer; 
+    font-size: 25px; 
+    text-decoration: none; 
+    color: #FFFFFF;
+}
+
+.hidden { 
+    display: none; 
+}
+
+#options, #groups { 
+    left: 10px; 
+    right: unset; 
+}
+
+#labels { 
+    top: 10px; 
+    min-width: 255px; 
+}
+
+#labels button {
+    width: 125px;
+}
+
+#details, #countries { 
+    top: 222px; 
+    max-height: calc(100vh - 252px);
+}
+
+#overout { 
+    top: 102px;
+    right: 10px; 
+    left: unset; 
+}
+
+body.black #overout {
+    top: 10px; 
+}
+
+#out { 
+    margin-left: 8px; 
+}
+
+#info { 
+    top: unset; 
+    bottom: 10px; 
+    left: calc(50vw - 300px); 
+    width: 600px; 
+    height: 200px; 
+}
+
+#info .hide { 
+    right: unset;
+    margin-left: 585px;
+}
+
+#info.time {
+    bottom: 50px; 
+}
+
+#wikidata { 
+    right: unset; 
+    left: 10px; 
+    width: 350px; 
+}
+
+#wikidata button { 
+    margin-top: 10px; 
+    width: auto; 
+    padding: 5px; 
+}
+
+#wikidata button:nth-child(4) { 
+    margin-bottom: 10px;
+}
+
+#wikidata button:nth-child(5) { 
+    float: right; 
+}
+
+#pageurl { 
+    width: 340px; 
+    margin-top: 10px; 
+}
+
+#code { 
+    right: unset; 
+    left: 10px; 
+    top: 230px;
+    width: 350px; 
+    max-height: calc(100vh - 260px); 
+    font-family: monospace; 
+    white-space: pre; 
+    background-color: rgba(10, 10, 10, .85);
+}
+
+#code .hide { 
+    right: unset; 
+    margin-left: 335px; 
+}
+
+body.black #code, #code.break {
+    top: 10px; 
+}
+
+body.wikianim #code {
+    top: 94px; 
+}
+
+/* Taken from: https://gist.github.com/faffyman/6183311 */
+pre {
+    margin: 5px;
+}
+
+.break pre {
+    white-space: normal;
+}
+
+.function {
+    color: #BDBB16;
+}
+
+.string {
+    color: #008000;
+}
+
+.number {
+    color: #8585F2;
+}
+
+.boolean {
+    color: #B22222;
+}
+
+.null, 
+.comment {
+    color: #808080;
+}
+
+.key {
+    color: #CCCCCC;
+}
+
+/* Responsive breakpoints */
+
+@media all and (max-width: 999px) {
+    
+    body, .box button, .box input { 
+        font-size: 11px;
+    }
+
+    .box {
+        width: 120px;
+    }
+
+    #code, #countries, #groups, #overout {
+        display: none;
+    }
+
+    #pageurl {
+        width: calc(100% - 10px);
+    }
+
+    @media all and (orientation: portrait) {
+
+        #wikidata {
+            top: unset;
+            bottom: 10px;
+            right: 10px;
+            width: auto;
+        }
+
+    }
+
+    @media all and (orientation: landscape) {
+
+        #wikidata {
+            width: 200px;
+        }
+
+    }
+
+}

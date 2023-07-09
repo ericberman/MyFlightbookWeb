@@ -168,6 +168,7 @@
                     </ItemTemplate>
                 </asp:Repeater>
                 <div><asp:Label ID="lblNone" runat="server" Text="<%$ Resources:Airports, ViewRegionsNone %>" /></div>
+                <ul class="nextStep"><li><asp:HyperLink ID="lnkViewMap" runat="server" Text="<%$ Resources:Airports, viewCountryAdminMap %>" /></li></ul>
             </asp:Panel>
         </asp:View>
         <asp:View ID="vwSearch" runat="server">
