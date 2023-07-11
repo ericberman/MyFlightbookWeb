@@ -76,7 +76,7 @@
 
             var baseColor = '#B9B9B9';
             var highColor = '#008000';
-            var stateColor = '#004000';
+            var stateColor = '#002000';
 
             var countries = [];
             var count_city = 0;
