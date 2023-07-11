@@ -1039,7 +1039,6 @@
     <Content Include="Public\tmap\flags\1x1\tr.svg" />
     <Content Include="Public\tmap\flags\1x1\tt.svg" />
     <Content Include="Public\tmap\flags\1x1\tv.svg" />
-    <Content Include="Public\tmap\flags\1x1\tw.svg" />
     <Content Include="Public\tmap\flags\1x1\tz.svg" />
     <Content Include="Public\tmap\flags\1x1\ua.svg" />
     <Content Include="Public\tmap\flags\1x1\ug.svg" />
@@ -1297,7 +1296,6 @@
     <Content Include="Public\tmap\flags\4x3\tr.svg" />
     <Content Include="Public\tmap\flags\4x3\tt.svg" />
     <Content Include="Public\tmap\flags\4x3\tv.svg" />
-    <Content Include="Public\tmap\flags\4x3\tw.svg" />
     <Content Include="Public\tmap\flags\4x3\tz.svg" />
     <Content Include="Public\tmap\flags\4x3\ua.svg" />
     <Content Include="Public\tmap\flags\4x3\ug.svg" />

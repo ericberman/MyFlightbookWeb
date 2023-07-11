@@ -62,7 +62,7 @@
                 for (let m of marker) {
                     m.style.height = 3.0; // / scale;
                     m.style.width = 4.0;// / scale;
-                    m.style.transform = "scale(" + (4.0 / scale) + ")";
+                    m.style.transform = "scale(" + (1.0 / scale) + ")";
                     m.style.transformBox = "fill-box";
                     m.style.transformOrigin = "50% 50%";
                 }
