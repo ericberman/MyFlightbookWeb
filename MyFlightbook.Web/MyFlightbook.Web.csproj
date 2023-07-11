@@ -3566,6 +3566,7 @@
     <Content Include="App_GlobalResources\Airports.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>
       <LastGenOutput>Airports.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="App_GlobalResources\Club.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>

@@ -636,7 +636,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to View a colored map of visited countries/regions/sub-regions.
+        ///   Looks up a localized string similar to View a colored map of visited countries/regions/sub-regions (BETA).
         /// </summary>
         internal static string viewCountryAdminMap {
             get {

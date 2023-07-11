@@ -335,7 +335,7 @@
     <value>Show Routes</value>
   </data>
   <data name="viewCountryAdminMap" xml:space="preserve">
-    <value>View a colored map of visited countries/regions/sub-regions</value>
+    <value>View a colored map of visited countries/regions/sub-regions (BETA)</value>
   </data>
   <data name="viewCountryAdminMapAdmin1" xml:space="preserve">
     <value>Subregions/States/Provinces:</value>
