@@ -156,12 +156,12 @@ var svgWorldMap = (function() {
             svg.setAttribute("id", "svg-world-map");
             svg.setAttribute("type", "image/svg+xml");
             // Load small map with states only
-            if (smallScreen != false || options.bigMap == false) { // isMobile == true
-                svg.setAttribute("data", options.libPath + "world-states.svg");
+            // if (smallScreen != false || options.bigMap == false) { // isMobile == true
+            //    svg.setAttribute("data", options.libPath + "world-states.svg");
             // Load big map with provinces
-            } else {
+            // } else {
                 svg.setAttribute("data", options.libPath + "world-states-provinces.svg");
-            }
+            // }
             container.appendChild(svg);
             // Add container and SVG CSS
             // TODO: Make optional? Not needed for SVG World Map, but for SVG pan zoom etc.

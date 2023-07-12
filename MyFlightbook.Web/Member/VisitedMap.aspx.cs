@@ -19,7 +19,7 @@ namespace MyFlightbook.Mapping
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            Page.ClientScript.RegisterClientScriptInclude("tmapsvg", ResolveClientUrl("~/public/tmap/scripts/svg-world-map.js"));
+            Page.ClientScript.RegisterClientScriptInclude("tmapsvg", ResolveClientUrl("~/public/tmap/scripts/svg-world-map.js?v=1"));
             Page.ClientScript.RegisterClientScriptInclude("robinson", ResolveClientUrl("~/public/tmap/scripts/robinson.js"));
             Page.ClientScript.RegisterClientScriptInclude("tmapsvgpan", ResolveClientUrl("~/public/tmap/scripts/svg-pan-zoom.js"));
             Page.ClientScript.RegisterClientScriptInclude("tmapiso", ResolveClientUrl("~/public/tmap/scripts/iso.js"));
