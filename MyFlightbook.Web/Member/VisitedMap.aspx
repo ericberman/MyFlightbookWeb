@@ -14,6 +14,8 @@
         <div id="stat" class="box" style="left: 1em;"></div>
         <script>
             var data = <% =DataToMap %>;
+            var timelineData = <% =TimelineData %>;
+
             var marker = [];
 
             function addMarker(map, latitude, longitude, cityid) {
@@ -90,20 +92,15 @@
 
             var years = {};
             forEachCity(function (city, state, country) {
-                for (let desc of city.description.split("\n")) {
-                    var info = desc.split(", ");
-                    if (info.length >= 2) {
-                        var year = parseInt(info[info.length - 1]);
-                        if (!(year in years)) {
-                            years[year] = {};
-                        }
-                        if (!(country.id in years[year])) {
-                            years[year][country.id] = [];
-                        }
-                        if (!(city in years[year][country.id])) {
-                            years[year][country.id].push(city);
-                        }
-                    }
+                var year = city.visityear;
+                if (!(year in years)) {
+                    years[year] = {};
+                }
+                if (!(country.id in years[year])) {
+                    years[year][country.id] = [];
+                }
+                if (!(city in years[year][country.id])) {
+                    years[year][country.id].push(city);
                 }
             });
             var timeData = [];
@@ -125,8 +122,19 @@
                 for (let c of countries) {
                     obj[y][iso3to2(c)] = baseColor;
                 }
+                // Instead of using the accumulated above, used passed in data to highlight states in timeline
+                /*
                 for (let c of accumulated) {
                     obj[y][iso3to2(c)] = highColor;
+                }
+                */
+                for (let iso of timelineData[y]) {
+                    var codes = iso.split("-");
+                    var ccode = iso3to2(codes[0]);
+                    obj[y][ccode] = highColor;
+                    if (codes.length == 2) {
+                        obj[y][ccode + '-' + codes[1]] = stateColor;
+                    }
                 }
                 timeData.push(obj);
                 var html = document.getElementById("timeline").innerHTML;

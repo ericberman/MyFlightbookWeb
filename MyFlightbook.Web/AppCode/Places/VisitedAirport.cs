@@ -955,6 +955,9 @@ namespace MyFlightbook.Airports
         [JsonProperty("coordinates")]
         public double[] Coordinates { get; private set; }
 
+        [JsonProperty("visityear")]
+        public int VisitYear { get; set; } = DateTime.Now.Year;
+
         public VisitedCity()
         {
             Coordinates = new double[2];
@@ -1048,6 +1051,8 @@ namespace MyFlightbook.Airports
             return vc;
         }
 
+        private readonly Dictionary<int, HashSet<string>> dByYear = new Dictionary<int, HashSet<string>>();
+
         public VisitedLocations(IEnumerable<VisitedAirport> airports) : this()
         {
             if (airports == null)
@@ -1066,13 +1071,61 @@ namespace MyFlightbook.Airports
 
                     // Treat each airport as a "city" within the admin1, in the travelmap argot, indicating the first visit.
                     // Visited airports are already coalesced (deduped), so we shouldn't need to worry about de-duping them the way we do for countries (i.e., multiple 
-                    VisitedCity vcity = new VisitedCity(va.Airport.LatLong) { Description = String.Format(CultureInfo.InvariantCulture, "{0}, {1}", va.Airport.Name, va.EarliestVisitDate.Year), Name = va.Airport.Code };
+                    int year = va.EarliestVisitDate.Year;
+                    VisitedCity vcity = new VisitedCity(va.Airport.LatLong) { Description = String.Format(CultureInfo.InvariantCulture, "{0}, {1}", va.Airport.Name, year), Name = va.Airport.Code, VisitYear = year };
 
                     // Add or re-use the admin1 and add the city to *that*
                     VisitedAdmin1 va1 = vc.GetAdmin1(idAdmin1, va.Airport.Admin1);
                     va1.Cities.Add(vcity);
+
+                    if (!dByYear.TryGetValue(year, out HashSet<string> codes))
+                        dByYear[year] = codes = new HashSet<string>();
+                    codes.Add(idCountry);
+                    if (!String.IsNullOrEmpty(idAdmin1))
+                        codes.Add(idCountry + "-" + idAdmin1);
                 }
             }
+        }
+
+        /// <summary>
+        /// Returns a timeline of visits, indexed by year.  Each year contains a cumulative list of country and country+admin1 codes
+        /// Only works once VisitedLocations has been initialized from visitedairports
+        /// </summary>
+        /// <returns></returns>
+        public IDictionary<int, IEnumerable<string>> BuildTimeline()
+        {
+            Dictionary<int, IEnumerable<string>> result = new Dictionary<int, IEnumerable<string>>();
+
+            if (dByYear.Count == 0)
+                return result;
+
+            int minYear = int.MaxValue;
+            int maxYear = int.MinValue;
+
+            // Find the range of years
+            foreach (int year in dByYear.Keys)
+            {
+                minYear = Math.Min(year, minYear);
+                maxYear = Math.Max(year, maxYear);
+            }
+
+            for (int year = minYear; year <= maxYear; year++)
+            {
+                // Add all of the comulative visits through this year
+                HashSet<string> curYearVisits = new HashSet<string>();
+                result[year] = curYearVisits;
+                for (int y2 = minYear; y2 <= year; y2++)
+                {
+                    if (dByYear.TryGetValue(y2, out HashSet<string> visits))
+                    {
+                        foreach (string s in visits)
+                            curYearVisits.Add(s);
+                    }
+                }
+            }
+
+
+            return result;
         }
     }
     #endregion

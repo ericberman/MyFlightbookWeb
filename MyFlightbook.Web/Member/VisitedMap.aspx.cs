@@ -17,6 +17,8 @@ namespace MyFlightbook.Mapping
     {
         protected string DataToMap { get; set; } = string.Empty;
 
+        protected string TimelineData { get; set; } = string.Empty;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             Page.ClientScript.RegisterClientScriptInclude("tmapsvg", ResolveClientUrl("~/public/tmap/scripts/svg-world-map.js?v=1"));
@@ -32,7 +34,9 @@ namespace MyFlightbook.Mapping
                     throw new UnauthorizedAccessException();
 
                 VisitedLocations locations = new VisitedLocations(VisitedAirport.VisitedAirportsForQuery(fq));
-                DataToMap = JsonConvert.SerializeObject(locations, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore, Formatting = Formatting.Indented, NullValueHandling = NullValueHandling.Ignore });
+                DataToMap = JsonConvert.SerializeObject(locations, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
+
+                TimelineData = JsonConvert.SerializeObject(locations.BuildTimeline());
             }
         }
     }
