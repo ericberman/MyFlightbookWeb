@@ -6,7 +6,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2022 MyFlightbook LLC
+ * Copyright (c) 2016-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -76,6 +76,7 @@ namespace MyFlightbook.Printing
                     m_options.OptionalColumns.Add(oc);
 
                 m_options.IncludePullForwardTotals = ckPullForwardTotals.Checked;
+                m_options.IncludeColumnTotals = ckShowColumnTotals.Checked;
                 m_options.StripeSubtotalsByCategoryClass = ckSeparateCategoryClass.Checked;
 
                 m_options.DisplayMode = (PrintingOptions.ModelDisplayMode)rblModelDisplay.SelectedIndex;
@@ -113,6 +114,7 @@ namespace MyFlightbook.Printing
                 }
 
                 ckPullForwardTotals.Checked = value.IncludePullForwardTotals;
+                ckPullForwardTotals.Enabled = ckShowColumnTotals.Checked = value.IncludeColumnTotals;
                 pnlForceBreak.Visible = ckPullForwardTotals.Visible = m_options.FlightsPerPage > 0;
                 ckSeparateCategoryClass.Checked = m_options.StripeSubtotalsByCategoryClass;
 
@@ -307,6 +309,12 @@ namespace MyFlightbook.Printing
 
         protected void ckPullForwardTotals_CheckedChanged(object sender, EventArgs e)
         {
+            NotifyDelegate();
+        }
+
+        protected void ckShowColumnTotals_CheckedChanged(object sender, EventArgs e)
+        {
+            ckPullForwardTotals.Enabled = ckShowColumnTotals.Checked;
             NotifyDelegate();
         }
 

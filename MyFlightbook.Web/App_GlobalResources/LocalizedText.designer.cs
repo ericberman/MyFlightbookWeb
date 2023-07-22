@@ -3967,6 +3967,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show column totals.
+        /// </summary>
+        internal static string PrintViewIncludeColumnTotals {
+            get {
+                return ResourceManager.GetString("PrintViewIncludeColumnTotals", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cover page.
         /// </summary>
         internal static string PrintViewIncludeCoverSheet {

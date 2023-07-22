@@ -45,6 +45,7 @@
     <asp:DropDownList ID="cmbFlightsPerPage" runat="server" AutoPostBack="true" OnSelectedIndexChanged="cmbFlightsPerPage_SelectedIndexChanged">
         <asp:ListItem Value="-1" Text="<%$ Resources:LocalizedText, PrintViewAsFit %>" Selected="True"></asp:ListItem>
     </asp:DropDownList>
+    <div><asp:CheckBox ID="ckShowColumnTotals" runat="server" Text="<%$ Resources:LocalizedText, PrintViewIncludeColumnTotals %>" Checked="true" AutoPostBack="true" OnCheckedChanged="ckShowColumnTotals_CheckedChanged" /></div>
     <div><asp:CheckBox ID="ckPullForwardTotals" runat="server" Text="<%$ Resources:LocalizedText, PrintViewIncludePreviousPageTotals %>" Checked="true" AutoPostBack="true" OnCheckedChanged="ckPullForwardTotals_CheckedChanged" /></div>
     <div><asp:CheckBox ID="ckSeparateCategoryClass" runat="server" Text="<%$ Resources:LocalizedText, PrintViewSubtotalsByCategoryClass %>" Checked="true" AutoPostBack="true" OnCheckedChanged="ckSeparateCategoryClass_CheckedChanged" /></div>
     <asp:Panel runat="server" ID="pnlForceBreak"><asp:Label ID="lblForceBreak" runat="server" Text="<%$ Resources:LocalizedText, PrintViewBreakPeriodPrompt %>" />

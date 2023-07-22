@@ -12,7 +12,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2022 MyFlightbook LLC
+ * Copyright (c) 2008-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -518,6 +518,12 @@ namespace MyFlightbook.Printing
         /// </summary>
         [System.ComponentModel.DefaultValue(true)]
         public bool IncludePullForwardTotals { get; set; } = true;
+
+        /// <summary>
+        /// If true, show column totals beneath each page (or end of list).  True by default.
+        /// </summary>
+        [System.ComponentModel.DefaultValue(true)]
+        public bool IncludeColumnTotals { get; set; } = true;
 
         /// <summary>
         /// If true, stripes subtotals by category/class
@@ -1049,7 +1055,7 @@ namespace MyFlightbook.Printing
 
                 dtLastEntry = led.Date;
                 led.SetOptionalColumns(po.OptionalColumns);
-                if (((po.FlightsPerPage > 0 && flightIndexOnPage >= po.FlightsPerPage) || flightIndexOnPage < 0) || currentPage == null)   // need to start a new page.
+                if (((po.FlightsPerPage > 0 && flightIndexOnPage >= po.FlightsPerPage) || flightIndexOnPage < 0) || currentPage == null || led.Comment.Contains("///--"))   // need to start a new page.
                 {
                     flightIndexOnPage = 0;  // reset
                     dictPageTotals = new Dictionary<string, LogbookEntryDisplay>();
@@ -1135,6 +1141,13 @@ namespace MyFlightbook.Printing
 
                 if (!po.IncludePullForwardTotals)
                     lpp.TotalsPreviousPages.Clear();
+
+                if (!po.IncludeColumnTotals)
+                {
+                    lpp.TotalsThisPage.Clear();
+                    lpp.TotalsPreviousPages.Clear();
+                    lpp.RunningTotals.Clear();
+                }
             }
         }
 

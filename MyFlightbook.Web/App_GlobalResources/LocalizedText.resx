@@ -1905,4 +1905,7 @@
   <data name="AirportServiceGuide" xml:space="preserve">
     <value>Airport Guide</value>
   </data>
+  <data name="PrintViewIncludeColumnTotals" xml:space="preserve">
+    <value>Show column totals</value>
+  </data>
 </root>
