@@ -839,7 +839,7 @@ namespace MyFlightbook.ImportFlights
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived, flight_ground),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropMultiPilotTime, flight_multiPilot),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDBlockOut, flight_actualDepartureTime, true),
-                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDBlockIn, flight_actualDepartureTime, true),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDBlockIn, flight_actualArrivalTime, true),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPassengerCount, flight_paxCount)
             });
 
