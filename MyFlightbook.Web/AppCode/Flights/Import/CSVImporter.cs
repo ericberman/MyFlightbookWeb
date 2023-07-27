@@ -158,7 +158,7 @@ namespace MyFlightbook.ImportFlights
             {"Aircraft Commander Time", new string[] { "Aircraft Commander Time", "A/C Cmdr", "A/C Cdr"} },
             {"Number of Passengers", new string[] {"Number of Passengers", "PAX" } },
             {"Student Name", new string[] {"Student Name", "Student"} },
-            {"Approach Name(s)", new string[] { "Approach Name(s)", "App Type", "Type App..", "Type App." } },
+            {"Approach Name(s)", new string[] { "Approach Name(s)", "App Type", "Type App..", "Type App.", "Approaches Summary" } },
             {"Approaches - ILS", new string[] {"Approaches - ILS", "nbr_ils"}},
             {"Approaches - LDA", new string[] {"Approaches - LDA", "nbr_lda"}},
             {"Approaches - Localizer", new string[] {"Approaches - Localizer", "nbr_loc"}},
