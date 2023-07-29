@@ -1669,6 +1669,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Current Hobbs Est.: {0:#,##0.0#}.
+        /// </summary>
+        internal static string DeadlineCurrentHobbs {
+            get {
+                return ResourceManager.GetString("DeadlineCurrentHobbs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current Tach Est.: {0:#,##0.0#}.
+        /// </summary>
+        internal static string DeadlineCurrentTach {
+            get {
+                return ResourceManager.GetString("DeadlineCurrentTach", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Days.
         /// </summary>
         internal static string DeadlineDays {

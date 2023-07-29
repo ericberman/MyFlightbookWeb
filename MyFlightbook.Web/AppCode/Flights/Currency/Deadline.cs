@@ -5,7 +5,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2019 MyFlightbook LLC
+ * Copyright (c) 2007-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -165,6 +165,16 @@ namespace MyFlightbook.Currency
         {
             get { return AircraftID > 0; }
         }
+
+        /// <summary>
+        /// High water mark hobbs that *you* have recorded in this aircraft (requires username to be > 0)
+        /// </summary>
+        protected decimal HighWaterHobbs { get; set; }
+
+        /// <summary>
+        /// High water mark tach that *you* have recorded in this aircraft (requires username to be > 0)
+        /// </summary>
+        protected decimal HighWaterTach { get; set; }
         #endregion
 
         #region Initialization
@@ -172,7 +182,8 @@ namespace MyFlightbook.Currency
         {
             ID = idUnknownDeadline;
             AircraftID = 0;
-            AircraftHours = 0.0M;
+            HighWaterHobbs = HighWaterTach = AircraftHours = 0.0M;
+
             Expiration = DateTime.MinValue;
         }
 
@@ -200,6 +211,8 @@ namespace MyFlightbook.Currency
             AircraftID = Convert.ToInt32(dr["aircraftID"], CultureInfo.InvariantCulture);
             AircraftHours = Convert.ToDecimal(dr["aircraftHours"], CultureInfo.InvariantCulture);
             TailNumber = util.ReadNullableString(dr, "tailnumber");
+            HighWaterHobbs = Convert.ToDecimal(dr["maxHobbs"], CultureInfo.InvariantCulture);
+            HighWaterTach = Convert.ToDecimal(dr["maxTach"], CultureInfo.InvariantCulture);
         }
         #endregion
 
@@ -307,17 +320,26 @@ namespace MyFlightbook.Currency
         public static IEnumerable<DeadlineCurrency> DeadlinesForUser(string szUser, int idAircraft = Aircraft.idAircraftUnknown, bool fIncludeSharedDeadlines = false)
         {
             string szWhere = string.Empty;
-            const string szQBase = "SELECT d.*, ac.tailnumber FROM deadlines d LEFT JOIN aircraft ac ON d.aircraftID = ac.idaircraft WHERE ";
+            const string szQBase = @"SELECT 
+	d.*, 
+    ac.tailnumber,
+	COALESCE(MAX(f.hobbsEnd), 0) AS maxHobbs,
+	COALESCE(MAX(fp.decValue), 0) AS maxTach
+FROM deadlines d 
+LEFT JOIN aircraft ac ON d.aircraftID = ac.idaircraft 
+LEFT JOIN flights f on (f.username=?user and f.idaircraft=d.aircraftid)
+LEFT JOIN flightproperties fp on (fp.idproptype=96 and fp.idflight=f.idflight)
+WHERE {0}
+GROUP BY d.iddeadlines";
 
-            if (idAircraft <= 0)   // just user deadlines - no restriction on aircraft
-                szWhere = "username=?user";
-            else if (fIncludeSharedDeadlines)               // AircraftID matches, either yours or shared
-                szWhere = "aircraftID=?id AND (username=?user OR username IS NULL)";
-            else                                            // AircraftID matches, only yours
-                szWhere = "aircraftID=?id AND username=?user ";
+            szWhere = idAircraft <= 0
+                ? "d.username=?user"
+                : fIncludeSharedDeadlines
+                ? "d.aircraftID=?id AND (d.username=?user OR d.username IS NULL)"
+                : "d.aircraftID=?id AND d.username=?user ";
 
             List<DeadlineCurrency> lst = new List<DeadlineCurrency>();
-            DBHelper dbh = new DBHelper(szQBase + szWhere);
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, szQBase, szWhere));
             dbh.ReadRows(
                 (comm) => 
                 {
@@ -337,7 +359,10 @@ namespace MyFlightbook.Currency
         public static IEnumerable<DeadlineCurrency> SharedAircraftDeadlinesForUser(string szUser)
         {
             string szQ = @"SELECT 
-    d.*, ac.tailnumber
+	d.*, 
+    ac.tailnumber,
+	COALESCE(MAX(f.hobbsEnd), 0) AS maxHobbs,
+	COALESCE(MAX(fp.decValue), 0) AS maxTach
 FROM
     useraircraft ua
         INNER JOIN
@@ -347,6 +372,8 @@ FROM
         AND d.username IS NULL)
         INNER JOIN
     aircraft ac ON d.aircraftID = ac.idaircraft
+	LEFT JOIN flights f on (f.username=?user and f.idaircraft=d.aircraftid)
+	LEFT JOIN flightproperties fp on (fp.idproptype=96 and fp.idflight=f.idflight)
 WHERE
     ua.username = ?user
         AND (ua.Flags & 0x0008) = 0
@@ -378,8 +405,31 @@ GROUP BY d.iddeadlines";
                 string szLabel = dc.AircraftID > 0 ? String.Format(CultureInfo.CurrentCulture, "{0} - {1}", dc.TailNumber, dc.Name) : dc.Name;
 
                 if (dc.UsesHours)
-                    lst.Add(new CurrencyStatusItem(szLabel, dc.AircraftHours.ToString("#,##0.0#", CultureInfo.CurrentCulture), CurrencyState.NoDate, string.Empty)
-                    { AssociatedResourceID = dc.AircraftID, CurrencyGroup = (dc.IsSharedAircraftDeadline ? CurrencyStatusItem.CurrencyGroups.AircraftDeadline : CurrencyStatusItem.CurrencyGroups.Deadline) });
+                {
+                    // determine status by how close/over you are from the hobbs/tach
+                    string szDesc = string.Empty;
+                    decimal dHobbs = dc.HighWaterHobbs - dc.AircraftHours;
+                    decimal dTach = dc.HighWaterTach - dc.AircraftHours;
+                    decimal delta = decimal.MinValue;
+
+                    if (dc.HighWaterTach > 0)
+                    {
+                        delta = dTach;
+                        szDesc = String.Format(CultureInfo.CurrentCulture, Resources.Currency.DeadlineCurrentTach, dc.HighWaterTach);
+                    }
+
+                    // see if hobbs has a smaller delta from the target than tach did
+                    if (dc.HighWaterHobbs > 0 && Math.Abs(dHobbs) < Math.Abs(dTach))
+                    {
+                        delta = dHobbs;
+                        szDesc = String.Format(CultureInfo.CurrentCulture, Resources.Currency.DeadlineCurrentHobbs, dc.HighWaterHobbs);
+                    }
+
+                    CurrencyState defState = delta == decimal.MinValue ? CurrencyState.NoDate : (delta < -10 ? CurrencyState.OK : (delta < 0 ? CurrencyState.GettingClose : CurrencyState.NotCurrent));
+
+                    lst.Add(new CurrencyStatusItem(szLabel, dc.AircraftHours.ToString("#,##0.0#", CultureInfo.CurrentCulture), defState, string.Empty)
+                    { AssociatedResourceID = dc.AircraftID, Discrepancy=szDesc, CurrencyGroup = (dc.IsSharedAircraftDeadline ? CurrencyStatusItem.CurrencyGroups.AircraftDeadline : CurrencyStatusItem.CurrencyGroups.Deadline) });
+                }
                 else if (dc.Expiration.HasValue())
                 {
                     TimeSpan ts = dc.Expiration.Subtract(DateTime.Now);

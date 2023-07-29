@@ -61,6 +61,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} hours.
+        /// </summary>
+        internal static string AddDeadlineIntervalTemplate {
+            get {
+                return ResourceManager.GetString("AddDeadlineIntervalTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add a deadline using an interval of:.
+        /// </summary>
+        internal static string AddDeadlineMaintenancePrompt {
+            get {
+                return ResourceManager.GetString("AddDeadlineMaintenancePrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This doesn&apos;t look like it should be a sim.
         /// </summary>
         internal static string AdminNotASim {
@@ -184,18 +202,17 @@ namespace Resources {
         ///
         ///This aircraft had been identified as being this model:
         ///
-        ///     {2}
+        ///     *{2}*
         ///
         ///However, another pilot has just changed it to be this model:
         ///
-        ///     {3}
+        ///     *{3}*
         ///
         ///The change in model could affect your totals and your flying currency computations.
         ///
-        ///Often, this is a minor change, such as specifying a specific variant of a model.  E.g., changing a
-        ///Cessna 172 to be a Cessna 172-S.
+        ///Often, this is a minor change, such as specifying a specific variant of a model.  E.g., changing a Cessna 172 to be a Cessna 172-S.
         ///
-        ///Sometimes, aircraft identifiers are reused [rest of string was truncated]&quot;;.
+        ///Sometimes, aircraft identifiers are reu [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string AircraftModelChangedNotification {
             get {
@@ -208,19 +225,18 @@ namespace Resources {
         ///
         ///You just created a new aircraft &quot;{1}&quot; on %APP_NAME%, and identified this aircraft with the following model:
         ///
-        ///     {2}
+        ///     *{2}*
         ///
         ///However, this aircraft was already identified by other pilots as being this model:
         ///
-        ///     {3}
+        ///     *{3}*
         ///
-        ///Because this aircraft is already being used in flights by other pilots, %APP_NAME% assumes
-        ///the pre-existing model to be correct.
+        ///Because this aircraft is already being used in flights by other pilots, %APP_NAME% assumes the pre-existing model to be correct.
         ///{4}
         ///
         ///Sometimes, aircraft identifiers are reused, or the aircraft in the system is incorrect.  
         ///
-        ///If you believe that the model you specified is c [rest of string was truncated]&quot;;.
+        ///If you believe that the model you specified i [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string AircraftModelNewModelIgnored {
             get {
@@ -396,6 +412,15 @@ namespace Resources {
         internal static string CurrencyXPonder {
             get {
                 return ResourceManager.GetString("CurrencyXPonder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next Oil Change.
+        /// </summary>
+        internal static string DeadlineOilChangeTitle {
+            get {
+                return ResourceManager.GetString("DeadlineOilChangeTitle", resourceCulture);
             }
         }
         
@@ -1489,15 +1514,6 @@ namespace Resources {
         internal static string MaintenanceNextDue {
             get {
                 return ResourceManager.GetString("MaintenanceNextDue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Oil change at: 25hrs: {0:#,##0.0}, 50hrs: {1:#,##0.0}, 100hrs: {2:#,##0.0}.
-        /// </summary>
-        internal static string MaintenanceNextOilTemplate {
-            get {
-                return ResourceManager.GetString("MaintenanceNextOilTemplate", resourceCulture);
             }
         }
         

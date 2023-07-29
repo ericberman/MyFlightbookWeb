@@ -1236,4 +1236,10 @@
   <data name="DeadlineRegenAction" xml:space="preserve">
     <value>When the deadline has passed and you've done whatever is required:</value>
   </data>
+  <data name="DeadlineCurrentHobbs" xml:space="preserve">
+    <value>Current Hobbs Est.: {0:#,##0.0#}</value>
+  </data>
+  <data name="DeadlineCurrentTach" xml:space="preserve">
+    <value>Current Tach Est.: {0:#,##0.0#}</value>
+  </data>
 </root>

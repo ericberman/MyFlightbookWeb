@@ -623,9 +623,6 @@
   <data name="MaintenanceNextDue" xml:space="preserve">
     <value>Next Due:</value>
   </data>
-  <data name="MaintenanceNextOilTemplate" xml:space="preserve">
-    <value>Oil change at: 25hrs: {0:#,##0.0}, 50hrs: {1:#,##0.0}, 100hrs: {2:#,##0.0}</value>
-  </data>
   <data name="MaintenanceNotesPrompt" xml:space="preserve">
     <value>Notes:</value>
   </data>
@@ -729,5 +726,14 @@ Do you still want to delete?</value>
   </data>
   <data name="MyAircraftAircraftGroupCount" xml:space="preserve">
     <value>({0:#,##0} aircraft)</value>
+  </data>
+  <data name="AddDeadlineIntervalTemplate" xml:space="preserve">
+    <value>{0} hours</value>
+  </data>
+  <data name="AddDeadlineMaintenancePrompt" xml:space="preserve">
+    <value>Add a deadline using an interval of:</value>
+  </data>
+  <data name="DeadlineOilChangeTitle" xml:space="preserve">
+    <value>Next Oil Change</value>
   </data>
 </root>

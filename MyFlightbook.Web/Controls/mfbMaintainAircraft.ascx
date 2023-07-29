@@ -126,7 +126,8 @@
                     <uc3:mfbDecimalEdit ID="mfbLastOil" runat="server" />
                 </td>
                 <td>
-                    <asp:Label ID="lblNextOil" runat="server" />
+                    <asp:LinkButton ID="lnkMakeOilDeadline" runat="server" Text="<%$ Resources:Aircraft, AddDeadlineMaintenancePrompt %>" OnClick="lnkMakeOilDeadline_Click" />
+                    <asp:DropDownList ID="cmbOilInterval" runat="server" />
                 </td>
             </tr>
             <tr>

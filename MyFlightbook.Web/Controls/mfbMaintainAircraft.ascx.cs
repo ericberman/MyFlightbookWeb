@@ -5,7 +5,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2021 MyFlightbook LLC
+ * Copyright (c) 2009-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -73,9 +73,12 @@ namespace MyFlightbook.AircraftControls
                 SetTextForDate(lblNextPitot, Maintenance.NextStatic);
                 SetTextForDate(lblNextTransponder, Maintenance.NextTransponder);
 
-                lblNextOil.Text = (Maintenance.LastOilChange > 0.0M) ? String.Format(CultureInfo.InvariantCulture, Resources.Aircraft.MaintenanceNextOilTemplate, Maintenance.LastOilChange + 25, Maintenance.LastOilChange + 50, Maintenance.LastOilChange + 100) : String.Empty;
-
                 UpdateMaintHistory();
+
+                cmbOilInterval.Items.Clear();
+                int[] oilIntervals = new int[] { 25, 50, 75, 100 };
+                foreach (int interval in oilIntervals)
+                    cmbOilInterval.Items.Add(new ListItem(String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AddDeadlineIntervalTemplate, interval), interval.ToString(CultureInfo.InvariantCulture)) { Selected = (interval == oilIntervals[0]) });
             }
 
             // See if any deadlines are associated with this aircraft
@@ -182,6 +185,20 @@ namespace MyFlightbook.AircraftControls
 
                 UpdateMaintHistory();
             }
+        }
+
+        protected void lnkMakeOilDeadline_Click(object sender, EventArgs e)
+        {
+            int interval = Convert.ToInt32(cmbOilInterval.SelectedValue, CultureInfo.InvariantCulture);
+            DeadlineCurrency dc = new DeadlineCurrency(Page.User.Identity.Name, Resources.Aircraft.DeadlineOilChangeTitle, DateTime.MinValue, interval, DeadlineCurrency.RegenUnit.Hours, AircraftID, mfbLastOil.Value + interval);
+            dc.FCommit();
+
+            mfbDeadlines1.ForceRefresh();
+
+            MaintenanceLog ml = new MaintenanceLog() { AircraftID = AircraftID, ChangeDate = DateTime.Now, User = Page.User.Identity.Name, Description = String.Format(CultureInfo.CurrentCulture, Resources.Currency.DeadlineCreated, Resources.Aircraft.DeadlineOilChangeTitle), Comment = string.Empty };
+            ml.FAddToLog();
+
+            UpdateMaintHistory();
         }
     }
 }

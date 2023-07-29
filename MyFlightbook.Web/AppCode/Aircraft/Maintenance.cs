@@ -2,14 +2,13 @@
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2022 MyFlightbook LLC
+ * Copyright (c) 2009-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -248,11 +247,11 @@ namespace MyFlightbook
                 throw new MyFlightbookException("Error adding to log: " + dbh.CommandText + "\r\n" + dbh.LastError);
         }
 
-        private static void AddLogToArray(ArrayList al, MySqlDataReader dr)
+        private static void AddLogToArray(IList<MaintenanceLog> lst, MySqlDataReader dr)
         {
             MaintenanceLog ml = new MaintenanceLog();
             ml.InitFromDataReader(dr);
-            al.Add(ml);
+            lst.Add(ml);
         }
 
         /// <summary>
@@ -262,46 +261,42 @@ namespace MyFlightbook
         /// <returns>An array of all edits to that aircraft</returns>
         public static MaintenanceLog[] ChangesByAircraftID(int aircraftid)
         {
-            ArrayList al = new ArrayList();
+            List<MaintenanceLog> lst = new List<MaintenanceLog>();
             DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["GetMaintenanceLog"], "m.idaircraft = ?idAircraft"));
             dbh.ReadRows(
                 (comm) => { comm.Parameters.AddWithValue("idAircraft", aircraftid); },
-                (dr) => { AddLogToArray(al, dr); });
+                (dr) => { AddLogToArray(lst, dr); });
 
-            return (MaintenanceLog[])al.ToArray(typeof(MaintenanceLog));
+            return lst.ToArray();
         }
 
-        public static Aircraft[] AircraftMaintainedByUser(string szUser)
+        private static IEnumerable<Aircraft> AircraftMaintainedByUser(string szUser)
         {
-            Aircraft[] rgar = null;
-
             // short-circuit a call to the database if szUser is empty - we know there will be no result.
             if (String.IsNullOrEmpty(szUser))
-                return rgar;
+                return Array.Empty<Aircraft>();
 
             string szRestrict = @"INNER JOIN useraircraft ON aircraft.idAircraft = useraircraft.idAircraft 
 INNER JOIN maintenancelog ON maintenancelog.user = useraircraft.userName AND maintenancelog.idaircraft = aircraft.idaircraft
 WHERE useraircraft.userName = ?UserName AND (flags & 0x0008) = 0";
             string szQ = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"], "useraircraft.flags", "''", "''", "''", szRestrict);
-            ArrayList alar = new ArrayList();
+            List<Aircraft> rgac = new List<Aircraft>();
 
             DBHelper dbh = new DBHelper(szQ);
             if (!dbh.ReadRows(
                 (comm) => { comm.Parameters.AddWithValue("UserName", szUser); },
-                (dr) => { alar.Add(new Aircraft(dr)); }))
+                (dr) => { rgac.Add(new Aircraft(dr)); }))
                 throw new MyFlightbookException("Error getting aircraft maintained by user " + szUser + " " + szQ + "\r\n" + dbh.LastError);
 
-            rgar = (Aircraft[])alar.ToArray(typeof(Aircraft));
-
-            return rgar;
+            return rgac;
         }
 
         public static IEnumerable<CurrencyStatusItem> AircraftInspectionWarningsForUser(string szUser, IEnumerable<DeadlineCurrency> aircraftDeadlines)
         {
-            Aircraft[] rgar = AircraftMaintainedByUser(szUser);
+            IEnumerable<Aircraft> rgar = AircraftMaintainedByUser(szUser);
             List<CurrencyStatusItem> arcs = new List<CurrencyStatusItem>();
 
-            List<DeadlineCurrency> lstDeadlines = (aircraftDeadlines == null) ? new List<DeadlineCurrency>() : new List<DeadlineCurrency>(aircraftDeadlines);
+            List<DeadlineCurrency> lstDeadlines = new List<DeadlineCurrency>(aircraftDeadlines ?? Array.Empty<DeadlineCurrency>());
 
             if (rgar != null)
             {

@@ -258,13 +258,22 @@ namespace MyFlightbook.AircraftControls
         protected global::Controls_mfbDecimalEdit mfbLastOil;
 
         /// <summary>
-        /// lblNextOil control.
+        /// lnkMakeOilDeadline control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblNextOil;
+        protected global::System.Web.UI.WebControls.LinkButton lnkMakeOilDeadline;
+
+        /// <summary>
+        /// cmbOilInterval control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList cmbOilInterval;
 
         /// <summary>
         /// locLastEngine control.
