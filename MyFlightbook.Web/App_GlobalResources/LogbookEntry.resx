@@ -1702,4 +1702,7 @@ Proceed with import?</value>
   <data name="InvertSelection" xml:space="preserve">
     <value>Invert Selected Flights</value>
   </data>
+  <data name="PrintHeaderApproachDesc" xml:space="preserve">
+    <value>Approach Details</value>
+  </data>
 </root>

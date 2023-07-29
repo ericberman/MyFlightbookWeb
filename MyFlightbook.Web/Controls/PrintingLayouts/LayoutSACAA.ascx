@@ -30,6 +30,7 @@
                 <th class="headerSmall">19</th>
                 <th class="headerSmall">20</th>
                 <th class="headerSmall">21</th>
+                <th class="headerSmall">22</th>
             </tr>
             <tr class="borderedBold">
                 <th rowspan="3" class="headerBig"><% =Resources.LogbookEntry.PrintHeaderDate %></th>
@@ -37,8 +38,8 @@
                 <th rowspan="3" class="headerBig"><% =Resources.LogbookEntry.PrintHeaderCategory2 %></th>
                 <th rowspan="3" class="headerBig"><% =Resources.LogbookEntry.PrintHeaderAircraft %></th>
                 <th rowspan="3" class="headerBig"><% =Resources.LogbookEntry.PrintHeaderPICName %></th>
-                <th rowspan="3" class="headerBig"><% =Resources.LogbookEntry.PrintHeaderRoute %></th>
-                <th colspan="2" class="headerBig"><% =Resources.LogbookEntry.PrintHeaderInstrumentTime %></th>
+                <th rowspan="3" class="headerBig"><% =Resources.LogbookEntry.PrintHeaderFlightDetails %></th>
+                <th colspan="3" class="headerBig"><% =Resources.LogbookEntry.PrintHeaderInstrumentTime %></th>
                 <th rowspan="3" class="headerBig"><% =Resources.LogbookEntry.PrintHeaderInstructorTime %></th>
                 <th rowspan="3" class="headerBig"><% =Resources.LogbookEntry.PrintHeaderFSTDTotalTime %></th>
                 <th colspan="8" class="headerBig"><% =Resources.LogbookEntry.PrintHeaderAircraftTimes %></th>
@@ -46,12 +47,12 @@
                 <th rowspan="3" class="headerBig"><% =Resources.LogbookEntry.PrintHeaderRemarks %></th>
             </tr>
             <tr class="borderedBold">
+                <th rowspan="2" class="headerSmall"><%=Resources.LogbookEntry.PrintHeaderApproachDesc %></th>
                 <th rowspan="2" class="headerSmall"><%=Resources.LogbookEntry.PrintHeaderTime %></th>
                 <th rowspan="2" class="headerSmall"><%=Resources.LogbookEntry.PrintHeaderFSTDInstrumentTime %></th>
 
                 <th colspan="4" class="headerSmall"><%=Resources.LogbookEntry.PrintHeaderDay %></th>
                 <th colspan="4" class="headerSmall"><%=Resources.LogbookEntry.PrintHeaderNight %></th>
-
             </tr>                       
             <tr class="borderedBold">
                 <th class="headerSmall"><%=Resources.LogbookEntry.FieldDual %></th>
@@ -75,7 +76,12 @@
                     <td><%#: Eval("CatClassDisplay") %></td>
                     <td><%#: Eval("TailNumOrSimDisplay") %></td>
                     <td><%#: Eval("PICName") %></td>
-                    <td><%#: Eval("Route") %></td>
+                    <td>
+                        <div style="font-weight:bold;"><%#: Eval("Route") %></div>
+                        <div style="clear:left; white-space:pre-line;" dir="auto"><%# ((string) Eval("RedactedCommentWithReplacedApproaches")) %></div>
+                        <div style="white-space:pre-line;"><%#: Eval("CustPropertyDisplay") %></div>
+                    </td>
+                    <td><%# ((LogbookEntryDisplay) Container.DataItem).CustomProperties.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropApproachName) %></td>
                     <td><%# Eval("IMC").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                     <td><%# ((bool) Eval("IsFSTD")) ? Eval("SimulatedIFR").FormatDecimal(CurrentUser.UsesHHMM) : string.Empty %></td>
                     <td><%# Eval("CFI").FormatDecimal(CurrentUser.UsesHHMM) %></td>
@@ -88,13 +94,9 @@
                     <td><%# Math.Min(((decimal)Eval("PIC")), ((decimal)Eval("Nighttime"))).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                     <td><%# Math.Min(((decimal)Eval("PICUSTime")), ((decimal)Eval("Nighttime"))).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                     <td><%# Math.Min(((decimal)Eval("SIC")), ((decimal)Eval("Nighttime"))).FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                    <td><%# Convert.ToInt32(Eval("NetDayLandings")) %></td>
-                    <td><%# Eval("NetNightLandings") %></td>
-                    <td>
-                        <div style="clear:left; white-space:pre-line;" dir="auto"><%# ((string) Eval("RedactedCommentWithReplacedApproaches")) %></div>
-                        <div style="white-space:pre-line;"><%#: Eval("CustPropertyDisplay") %></div>
-                        <div><uc1:mfbSignature runat="server" ID="mfbSignature" EnableViewState="false" /></div>
-                    </td>
+                    <td><%# Convert.ToInt32(Eval("NetDayLandings")).FormatInt() %></td>
+                    <td><%# Eval("NetNightLandings").FormatInt() %></td>
+                    <td><uc1:mfbSignature runat="server" ID="mfbSignature" EnableViewState="false" /></td>
                 </tr>
             </ItemTemplate>
         </asp:Repeater>
@@ -110,6 +112,7 @@
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).InstrumentAircraftTotal.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).InstrumentFSTDTotal.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).CFI.FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                            <td></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).GroundSim.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             <td><%# Math.Max(((LogbookEntryDisplay) Container.DataItem).Dual - ((LogbookEntryDisplay) Container.DataItem).NightDualTotal, 0).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             <td><%# Math.Max(((LogbookEntryDisplay) Container.DataItem).PIC - ((LogbookEntryDisplay) Container.DataItem).NightPICTotal, 0).FormatDecimal(CurrentUser.UsesHHMM) %></td>

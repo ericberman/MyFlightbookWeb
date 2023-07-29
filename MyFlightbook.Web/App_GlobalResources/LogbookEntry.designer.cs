@@ -2799,6 +2799,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Approach Details.
+        /// </summary>
+        internal static string PrintHeaderApproachDesc {
+            get {
+                return ResourceManager.GetString("PrintHeaderApproachDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to # Inst. App..
         /// </summary>
         internal static string PrintHeaderApproaches {
