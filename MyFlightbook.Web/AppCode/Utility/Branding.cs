@@ -130,7 +130,7 @@ namespace MyFlightbook
                             StyleSheet = string.Empty,
                             EmailAddress = "noreply@mg.myflightbook.com",
                             FacebookFeed = "https://www.facebook.com/MyFlightbook",
-                            TwitterFeed = "https://twitter.com/MyFlightbook",
+                            // TwitterFeed = "https://twitter.com/MyFlightbook",
                             BlogAddress = "https://myflightbookblog.blogspot.com/",
                             VideoRef = "https://www.youtube.com/channel/UC6oqJL-aLMEagSyV0AKkIoQ?view_as=subscriber",
                             AWSBucket = "mfbimages",
