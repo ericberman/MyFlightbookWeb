@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Globalization;
+using System.Text.RegularExpressions;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2022 MyFlightbook LLC
+ * Copyright (c) 2015-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 ************************************************/
@@ -76,6 +78,13 @@ public partial class Controls_mfbTooltip : UserControl
         public TooltipContentTemplate() { }
     }
 
+    protected string UniqueTTFuncName
+    {
+        get
+        {
+            return "wireTT" + Regex.Replace(ClientID, "[^a-zA-Z0-9]", "");
+        }
+    }
 
     protected override void OnInit(EventArgs e)
     {
@@ -90,5 +99,27 @@ public partial class Controls_mfbTooltip : UserControl
             if (!String.IsNullOrEmpty(BodySource))
                 BodyContent = ((Label)this.NamingContainer.FindControl(BodySource)).Text;
         }
+
+        string szTTScript = @"function wireToolTip(hoverControlSelector, tipID) {
+        $(hoverControlSelector).tooltip({
+            items: ""hoverControlSelector, .hint"",
+            classes: { ""ui-tooltip"" : ""hintPopup itemlabel"" },
+            content: function () {
+                return $(""#"" + tipID).html();
+                    }
+                });
+        }";
+        // WireToolTip is declared just once.
+        Page.ClientScript.RegisterStartupScript(GetType(), "wireTT", szTTScript, true);
+    }
+
+    protected void Page_PreRender(object sender, EventArgs e)
+    {
+        string szThisScript = String.Format(CultureInfo.InvariantCulture, @"function {0}() {{ wireToolTip(""{1}"", ""{2}"");}}
+            $(function () {{ {0}(); }});
+            Sys.WebForms.PageRequestManager.getInstance().add_endRequest({0});",
+            UniqueTTFuncName, HoverControlSelector, pnlTip.ClientID);
+
+        Page.ClientScript.RegisterStartupScript(GetType(), "wireThisTT" + UniqueID, szThisScript, true);
     }
 }
