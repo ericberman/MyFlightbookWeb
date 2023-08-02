@@ -730,6 +730,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Buy %APP_NAME% t-shirts, mugs, hats, and other swag!.
+        /// </summary>
+        internal static string BuySwag {
+            get {
+                return ResourceManager.GetString("BuySwag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         internal static string Cancel {

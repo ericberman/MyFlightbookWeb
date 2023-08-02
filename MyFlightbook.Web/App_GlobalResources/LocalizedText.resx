@@ -1908,4 +1908,7 @@
   <data name="PrintViewIncludeColumnTotals" xml:space="preserve">
     <value>Show column totals</value>
   </data>
+  <data name="BuySwag" xml:space="preserve">
+    <value>Buy %APP_NAME% t-shirts, mugs, hats, and other swag!</value>
+  </data>
 </root>

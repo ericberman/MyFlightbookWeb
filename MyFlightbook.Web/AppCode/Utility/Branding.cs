@@ -79,6 +79,11 @@ namespace MyFlightbook
         public string VideoRef { get; private set; }
 
         /// <summary>
+        /// Link to any swag shop
+        /// </summary>
+        public string SwagRef { get; private set; }
+
+        /// <summary>
         /// which AWS bucket to use for this brand?
         /// </summary>
         public string AWSBucket { get; private set; }
@@ -92,7 +97,7 @@ namespace MyFlightbook
         public Brand(BrandID brandID)
         {
             BrandID = brandID;
-            AppName = HostName = Root = LogoHRef = EmailAddress = FacebookFeed = TwitterFeed = StyleSheet = BlogAddress = VideoRef = AWSBucket = AWSETSPipelineConfigKey = string.Empty;
+            AppName = HostName = Root = LogoHRef = EmailAddress = FacebookFeed = TwitterFeed = StyleSheet = BlogAddress = VideoRef = SwagRef = AWSBucket = AWSETSPipelineConfigKey = string.Empty;
         }
 
         private const string szPrefixToIgnore = "www.";
@@ -131,6 +136,7 @@ namespace MyFlightbook
                             EmailAddress = "noreply@mg.myflightbook.com",
                             FacebookFeed = "https://www.facebook.com/MyFlightbook",
                             // TwitterFeed = "https://twitter.com/MyFlightbook",
+                            SwagRef = "https://www.cafepress.com/myflightbookswagshop",
                             BlogAddress = "https://myflightbookblog.blogspot.com/",
                             VideoRef = "https://www.youtube.com/channel/UC6oqJL-aLMEagSyV0AKkIoQ?view_as=subscriber",
                             AWSBucket = "mfbimages",
@@ -166,7 +172,7 @@ namespace MyFlightbook
 
         public enum FooterLinkKey
         {
-            About, Privacy, Terms, Developers, Contact, FAQ, Videos, Blog, Mobile, Classic, Facebook, Twitter, RSS
+            About, Privacy, Terms, Developers, Contact, FAQ, Videos, Blog, Mobile, Classic, Facebook, Twitter, Swag, RSS
         }
 
         /// <summary>
@@ -195,7 +201,8 @@ namespace MyFlightbook
                 { FooterLinkKey.Blog , new BrandLink() { Name=Resources.LocalizedText.footerBlog, OpenInNewPage = true, LinkRef = BlogAddress } },
                 { FooterLinkKey.Mobile, new BrandLink() {Name = Resources.LocalizedText.footerMobileAccess, LinkRef = "~/DefaultMini.aspx" } },
                 { FooterLinkKey.Facebook, new BrandLink() {Name = Branding.ReBrand(Resources.LocalizedText.FollowOnFacebook), OpenInNewPage = true, LinkRef = FacebookFeed, ImageRef = "~/images/f_logo_20.png" } },
-                { FooterLinkKey.Twitter, new BrandLink() { Name = Branding.ReBrand(Resources.LocalizedText.FollowOnTwitter), OpenInNewPage = true, LinkRef = TwitterFeed, ImageRef = "~/images/twitter_round_20.png" } }
+                { FooterLinkKey.Twitter, new BrandLink() { Name = Branding.ReBrand(Resources.LocalizedText.FollowOnTwitter), OpenInNewPage = true, LinkRef = TwitterFeed, ImageRef = "~/images/twitter_round_20.png" } },
+                { FooterLinkKey.Swag, new BrandLink() {Name = Branding.ReBrand(Resources.LocalizedText.BuySwag), OpenInNewPage = true, LinkRef = SwagRef } }
             };
 
             string szUser = HttpContext.Current?.User?.Identity?.Name;

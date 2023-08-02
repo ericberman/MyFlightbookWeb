@@ -166,7 +166,7 @@
     <value>72 Minutes displays as...</value>
   </data>
   <data name="DonateCrypto" xml:space="preserve">
-    <value>Prefer cryptocurrency?  MyFlightbook now accepts Bitcoin and Ethereum</value>
+    <value>Prefer alternative means of payment?  %APP_NAME% now accepts *Bitcoin*, *Ethereum*, *Venmo*, and *Zelle*</value>
   </data>
   <data name="DonateCryptoContact" xml:space="preserve">
     <value>Contact us for details.</value>

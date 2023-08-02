@@ -205,7 +205,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Prefer cryptocurrency?  MyFlightbook now accepts Bitcoin and Ethereum.
+        ///   Looks up a localized string similar to Prefer alternative means of payment?  %APP_NAME% now accepts *Bitcoin*, *Ethereum*, *Venmo*, and *Zelle*.
         /// </summary>
         internal static string DonateCrypto {
             get {

@@ -1,6 +1,12 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="mfbDonate.ascx.cs" Inherits="MyFlightbook.Web.Controls.Prefs.mfbDonate" %>
 <%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc1" TagName="mfbTooltip" %>
 <h2><asp:Label ID="lblDonateHeader" runat="server" Text="<%$ Resources:Preferences, DonateHeader %>" /></h2>
+<div style="float: right; max-width: 180px; margin-top: 10px; margin-bottom: 10px; padding: 5px; border: 1px solid gray;">
+    <asp:HyperLink ID="lnkBuySwag" runat="server" Target="_blank">
+        <img src="https://i3.cpcache.com/product/1145595163/20_oz_ceramic_mega_mug.jpg?side=Back&color=White&height=48&width=48&cid=Najv2dtZhRo46F12FebBfg%3d%3d+%7c%7c+evWcdKm%2b6mRVx9OB6NguQQ%3d%3d&c=False" style="float: left; margin: 5px;" />
+        <span style="font-weight: bold;"><% =Branding.ReBrand(Resources.LocalizedText.BuySwag) %></span>
+    </asp:HyperLink>
+</div>
 <asp:Panel ID="pnlPaypalSuccess" runat="server" Visible="False">
     <asp:Label ID="lblSuccess" runat="server" Text="<%$ Resources:Preferences, PaymentSuccess %>" Font-Bold="True" CssClass="success" />
 </asp:Panel>
@@ -36,7 +42,8 @@
 </table>
 <div>&nbsp;</div>
 <iframe id="iframeDonate" runat="server" style="border:none;" width="300" height="120"></iframe>
-<div><asp:Label ID="lblDonateCrypto" runat="server" Text="<%$ Resources:Preferences, DonateCrypto %>" /> 
+<div>
+    <% = Branding.ReBrand(Resources.Preferences.DonateCrypto).Linkify() %>
     <asp:HyperLink ID="lnkContact" runat="server" Text="<%$ Resources:Preferences, DonateCryptoContact %>" NavigateUrl="~/Public/ContactMe.aspx" /></div>
 <h2><asp:Label ID="lblDonationHistory" runat="server" Text="<%$ Resources:Preferences, DonationHistoryHeader %>" /></h2>
 <asp:Panel ID="pnlEarnedGratuities" runat="server" CssClass="callout" Visible="False">

@@ -24,6 +24,15 @@ namespace MyFlightbook.Web.Controls.Prefs
         protected global::System.Web.UI.WebControls.Label lblDonateHeader;
 
         /// <summary>
+        /// lnkBuySwag control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink lnkBuySwag;
+
+        /// <summary>
         /// pnlPaypalSuccess control.
         /// </summary>
         /// <remarks>
@@ -94,15 +103,6 @@ namespace MyFlightbook.Web.Controls.Prefs
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlIframe iframeDonate;
-
-        /// <summary>
-        /// lblDonateCrypto control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblDonateCrypto;
 
         /// <summary>
         /// lnkContact control.
