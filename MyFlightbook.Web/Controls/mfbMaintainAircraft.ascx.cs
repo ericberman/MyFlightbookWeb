@@ -76,7 +76,7 @@ namespace MyFlightbook.AircraftControls
                 UpdateMaintHistory();
 
                 cmbOilInterval.Items.Clear();
-                int[] oilIntervals = new int[] { 25, 50, 75, 100 };
+                int[] oilIntervals = new int[] { 10, 15, 20, 25, 30, 33, 35, 40, 45, 50, 60, 75, 100 };
                 foreach (int interval in oilIntervals)
                     cmbOilInterval.Items.Add(new ListItem(String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AddDeadlineIntervalTemplate, interval), interval.ToString(CultureInfo.InvariantCulture)) { Selected = (interval == oilIntervals[0]) });
             }
