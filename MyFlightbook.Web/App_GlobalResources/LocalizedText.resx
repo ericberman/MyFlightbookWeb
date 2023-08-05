@@ -1911,4 +1911,10 @@
   <data name="BuySwag" xml:space="preserve">
     <value>Buy %APP_NAME% t-shirts, mugs, hats, and other swag!</value>
   </data>
+  <data name="GratuityDescriptionPartnerDiscount" xml:space="preserve">
+    <value>You get a unique discount code to register for a ground school from %APP_NAME% partner Cowford Ground</value>
+  </data>
+  <data name="GratuityNamePartnerDiscount" xml:space="preserve">
+    <value>Discounted Ground School Coupon</value>
+  </data>
 </root>

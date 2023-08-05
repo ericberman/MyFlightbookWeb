@@ -2581,6 +2581,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You get a unique discount code to register for a ground school from %APP_NAME% partner Cowford Ground.
+        /// </summary>
+        internal static string GratuityDescriptionPartnerDiscount {
+            get {
+                return ResourceManager.GetString("GratuityDescriptionPartnerDiscount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Videos are one of those few things where my costs go up the more they are used, so I ask for a contribution if you want videos.  With this gratuity, you can add videos to your flights for a year.  Videos remain after the year is up, but you can&apos;t upload new ones..
         /// </summary>
         internal static string GratuityDescriptionVideo {
@@ -2649,6 +2658,15 @@ namespace Resources {
         internal static string GratuityNameEternalGratitude {
             get {
                 return ResourceManager.GetString("GratuityNameEternalGratitude", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Discounted Ground School Coupon.
+        /// </summary>
+        internal static string GratuityNamePartnerDiscount {
+            get {
+                return ResourceManager.GetString("GratuityNamePartnerDiscount", resourceCulture);
             }
         }
         

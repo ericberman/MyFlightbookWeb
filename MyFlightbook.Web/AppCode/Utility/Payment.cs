@@ -10,7 +10,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2022 MyFlightbook LLC
+ * Copyright (c) 2013-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -335,7 +335,7 @@ namespace MyFlightbook.Payments
         #endregion
 
         #region GratuityFactory
-        public enum GratuityTypes { Unknown, CloudBackup, Videos, CreateClub, EternalGratitude, CurrencyAlerts };
+        public enum GratuityTypes { Unknown, CloudBackup, Videos, CreateClub, EternalGratitude, CurrencyAlerts, PartnerDiscount };
 
         /// <summary>
         /// Return a concrete gratuity from a specified gratuitytype.
@@ -356,6 +356,8 @@ namespace MyFlightbook.Payments
                     return new EternalGratitudeGratuity();
                 case GratuityTypes.CurrencyAlerts:
                     return new CurrencyAlertGratuity();
+                case GratuityTypes.PartnerDiscount:
+                    return new PartnerDiscountGratuity();
                 case GratuityTypes.Unknown:
                 default:
                     return null;
@@ -554,6 +556,11 @@ namespace MyFlightbook.Payments
     public class CurrencyAlertGratuity : Gratuity
     {
         public CurrencyAlertGratuity() : base(GratuityTypes.CurrencyAlerts, 15, new TimeSpan(366, 0, 0, 0), 0, Resources.LocalizedText.GratuityNameCurrencyNotifications, Resources.LocalizedText.GratuityThanksCurrencyNotification, Resources.LocalizedText.GratuityDescriptionCurrencyNotification) { }
+    }
+
+    public class PartnerDiscountGratuity : Gratuity
+    {
+        public PartnerDiscountGratuity() : base(GratuityTypes.PartnerDiscount, 15, new TimeSpan(366, 0, 0, 0), 0, Branding.ReBrand(Resources.LocalizedText.GratuityNamePartnerDiscount), LocalConfig.SettingForKey("GroundSchoolDiscountLink"), Branding.ReBrand(Resources.LocalizedText.GratuityDescriptionPartnerDiscount)) { }
     }
     #endregion
 

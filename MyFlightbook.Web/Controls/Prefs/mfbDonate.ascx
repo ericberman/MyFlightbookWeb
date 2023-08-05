@@ -1,7 +1,7 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="mfbDonate.ascx.cs" Inherits="MyFlightbook.Web.Controls.Prefs.mfbDonate" %>
 <%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc1" TagName="mfbTooltip" %>
 <h2><asp:Label ID="lblDonateHeader" runat="server" Text="<%$ Resources:Preferences, DonateHeader %>" /></h2>
-<div style="float: right; max-width: 180px; margin-top: 10px; margin-bottom: 10px; padding: 5px; border: 1px solid gray;">
+<div style="float: right; max-width: 180px; margin-top: 10px; margin-bottom: 10px; padding: 5px; border: 1px solid gray; display: none;">
     <asp:HyperLink ID="lnkBuySwag" runat="server" Target="_blank">
         <img src="https://i3.cpcache.com/product/1145595163/20_oz_ceramic_mega_mug.jpg?side=Back&color=White&height=48&width=48&cid=Najv2dtZhRo46F12FebBfg%3d%3d+%7c%7c+evWcdKm%2b6mRVx9OB6NguQQ%3d%3d&c=False" style="float: left; margin: 5px;" />
         <span style="font-weight: bold;"><% =Branding.ReBrand(Resources.LocalizedText.BuySwag) %></span>
@@ -52,7 +52,7 @@
     <ul>
         <asp:Repeater ID="rptEarnedGratuities" runat="server">
             <ItemTemplate>
-                <li><%#: Eval("ThankYou") %></li>
+                <li><%# ((string) Eval("ThankYou")).Linkify() %></li>
             </ItemTemplate>
         </asp:Repeater>
     </ul>
