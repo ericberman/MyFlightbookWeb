@@ -321,33 +321,6 @@ namespace MyFlightbook.Mapping
         protected global::System.Web.UI.WebControls.Panel pnlAdminImport;
 
         /// <summary>
-        /// Label1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label1;
-
-        /// <summary>
-        /// mfbTooltip1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Controls_mfbTooltip mfbTooltip1;
-
-        /// <summary>
-        /// ckShowAllUserAirports control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox ckShowAllUserAirports;
-
-        /// <summary>
         /// fileUploadAirportList control.
         /// </summary>
         /// <remarks>

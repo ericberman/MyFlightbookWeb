@@ -124,17 +124,13 @@
         </tr>
     </table>
     <asp:Panel ID="pnlAdminImport" Visible="false" runat="server">
-        <p>
-            <asp:Label ID="Label1" runat="server" Text="Spreadsheet of airports:"></asp:Label>
-            <uc2:mfbTooltip ID="mfbTooltip1" runat="server" BodyContent="FAA: FAA Designator,  ICAO: ICAO Designator, IATA:IATA Designator, Name: Facility Name,  (Latitude, Longitude) OR (LatLong), Type (optional)" />
-            &nbsp;<asp:CheckBox 
-                ID="ckShowAllUserAirports" runat="server" 
-                Text="Continue to show all user airports (off for performance)" />
-        </p>
+        <h2>
+            Bulk Import Airports
+        </h2>
         <div>
             <asp:FileUpload ID="fileUploadAirportList" runat="server" />
             <asp:Button ValidationGroup="importAirports" ID="btnImport" runat="server" Text="Import" OnClick="btnImport_Click" />
-            <asp:Button ValidationGroup="importAirports" ID="btnBulkImport" runat="server" Text="Bulk Import (no interactive)" OnClick="btnBulkImport_Click" />
+            <asp:Button ValidationGroup="importAirports" ID="btnBulkImport" runat="server" Text="Bulk Import (no interactive)" OnClick="btnBulkImport_Click" Visible="false" />
             <uc2:mfbTooltip ID="mfbTooltip2" runat="server" BodyContent="MUST be: FAA/IATA/ICAO for airportID, Name, Type, SourceUserName, Latitude, Longitude, Preferred.  SourceUserName and Preferred are optional.  OR OldCode/CurrentCode (bulk only) to backfill old codes.  Country and Admin1 are optional." />
             <cc1:ConfirmButtonExtender runat="server" ID="confirmBulkImport" TargetControlID="btnBulkImport" ConfirmText="THIS WILL BULK IMPORT WITH NO UNDO!" />
             <asp:Label ID="lblBulkImportResults" runat="server" Text="" EnableViewState="false"></asp:Label>
@@ -228,6 +224,7 @@
                 }
             </script>
             <asp:GridView ID="gvImportResults" runat="server" AutoGenerateColumns="false" OnRowDataBound="gvImportResults_RowDataBound">
+                <HeaderStyle CssClass="headerBase gvhDefault gvhCentered" />
                 <Columns>
                     <asp:TemplateField HeaderText="To Import">
                         <ItemTemplate>
@@ -443,6 +440,7 @@
 
             </table>
         </div>
+        <h2>Geo coding airports</h2>
         <p><asp:HyperLink ID="lnkManageGeo" runat="server" Text="Manage Georeferences" NavigateUrl="~/Admin/AdminAirportGeocoder.aspx" /></p>
     </asp:Panel>
 </asp:Content>
@@ -453,6 +451,7 @@
             runat="server" AutoGenerateColumns="False" GridLines="None"
             OnRowCommand="gvMyAirports_RowCommand" 
             OnRowDataBound="gvMyAirports_RowDataBound">
+            <HeaderStyle CssClass="headerBase gvhDefault gvhCentered" />
             <Columns>
                 <asp:TemplateField HeaderText="<%$ Resources:Airports, EditAirportFacilityType %>">
                     <ItemTemplate>
@@ -554,6 +553,7 @@
         <div><asp:Label ID="lblDupe" runat="server" Text="<%$ Resources:Airports, errDupeAirport %>" /></div>
         <div style="margin-left:auto; margin-right: auto;">
             <asp:GridView ID="gvUserDupes" runat="server" CellPadding="3" AutoGenerateColumns="false" GridLines="None">
+                <HeaderStyle CssClass="headerBase gvhDefault gvhCentered" />
                 <Columns>
                     <asp:BoundField ItemStyle-Font-Bold="true" DataField="Code" ItemStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top" />
                     <asp:BoundField DataField="Name" ItemStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top" />

@@ -12,7 +12,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2022 MyFlightbook LLC
+ * Copyright (c) 2010-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -248,13 +248,8 @@ namespace MyFlightbook.Mapping
 
                 initForm();
 
-                if (!fAdmin || ckShowAllUserAirports.Checked)
+                if (!fAdmin)
                     RefreshMyAirports();
-                else
-                {
-                    gvMyAirports.DataSource = null;
-                    gvMyAirports.DataBind();
-                }
 
                 if (fAdmin)
                     UpdateImportData();
@@ -286,11 +281,10 @@ namespace MyFlightbook.Mapping
             if (!fileUploadAirportList.HasFile)
                 return;
 
-            if (!ckShowAllUserAirports.Checked)
-            {
-                gvMyAirports.DataSource = null;
-                gvMyAirports.DataBind();
-            }
+            // Don't show the user airports for page size
+            pnlMyAirports.Visible = false;
+            gvMyAirports.DataSource = null;
+            gvMyAirports.DataBind();
 
             List<airportImportCandidate> lst = ImportedAirportCandidates;
             lst.Clear();
