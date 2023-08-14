@@ -489,20 +489,29 @@ namespace MyFlightbook.CloudStorage
                                         Dictionary<string, GoogleDriveError> d = String.IsNullOrEmpty(szResult) ? null : JsonConvert.DeserializeObject<Dictionary<string, GoogleDriveError>>(szResult);
                                         GoogleDriveError gde = (d == null || !d.ContainsKey("error")) ? null : d["error"];
 
-                                        bool fHasReason = gde != null && gde.code == 403 && gde.errors != null && gde.errors.Count > 0 && gde.errors[0].reason != null;
-                                        if (fHasReason && gde.errors[0].reason.CompareCurrentCultureIgnoreCase("storageQuotaExceeded") == 0)
-                                            throw new MyFlightbookException(Resources.LocalizedText.GoogleDriveOutOfSpace);
-                                        else if (fHasReason && gde.errors[0].reason.CompareCurrentCultureIgnoreCase("userRateLimitExceeded") == 0)
+                                        bool fHasReason = gde != null && gde.errors != null && gde.errors.Count > 0 && gde.errors[0].reason != null;
+                                        if (fHasReason)
                                         {
-                                            if (cRetry < MaxRetry)
+                                            if (gde.code == 403)
                                             {
-                                                // exponential backoff.
-                                                System.Threading.Thread.Sleep(1000 * (1 << (cRetry - 1)));
-                                                // fall through, we'll try again.
-                                                return null;
+                                                if (gde.errors[0].reason.CompareCurrentCultureIgnoreCase("storageQuotaExceeded") == 0)
+                                                    throw new MyFlightbookException(Resources.LocalizedText.GoogleDriveOutOfSpace);
+                                                else if (gde.errors[0].reason.CompareCurrentCultureIgnoreCase("userRateLimitExceeded") == 0)
+                                                {
+                                                    if (cRetry < MaxRetry)
+                                                    {
+                                                        // exponential backoff.
+                                                        System.Threading.Thread.Sleep(1000 * (1 << (cRetry - 1)));
+                                                        // fall through, we'll try again.
+                                                        return null;
+                                                    }
+                                                    else // too many attempts - just report that as an error.
+                                                        throw new MyFlightbookException(gde.message);
+                                                }
                                             }
-                                            else // too many attempts - just report that as an error.
-                                                throw new MyFlightbookException(gde.message);
+
+                                            // We have a GoogleDrive error, but it was not a 403 or it was not quota/ratelimit.
+                                            throw new MyFlightbookException(response.ReasonPhrase + " " + gde.errors[0].reason + ": " + gde.errors[0].message ?? string.Empty);
                                         }
                                         else
                                             throw new MyFlightbookException(response.ReasonPhrase + " " + (szResult ?? string.Empty));
