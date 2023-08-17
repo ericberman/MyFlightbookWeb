@@ -235,7 +235,7 @@ namespace MyFlightbook.CloudStorage
 
         private const string szURLUploadEndpoint = "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart";
         private const string szURLUpdateEndpointTemplate = "https://www.googleapis.com/upload/drive/v3/files/{0}?uploadType=multipart";
-        private const string szURLViewFilesEndpointTemplate = "https://www.googleapis.com/drive/v3/files?q={0}&access_token={1}";
+        private const string szURLViewFilesEndpointTemplate = "https://www.googleapis.com/drive/v3/files?q={0}";
         private string RootFolderID { get; set; }
 
         public GoogleDrive(Profile pf = null)
@@ -319,9 +319,9 @@ namespace MyFlightbook.CloudStorage
         protected async Task<string> FindIDForQuery(string szQuery)
         {
             // See if the folder exists
-            Uri uri = new Uri(String.Format(CultureInfo.InvariantCulture, szURLViewFilesEndpointTemplate, szQuery, AuthState.AccessToken));
+            Uri uri = new Uri(String.Format(CultureInfo.InvariantCulture, szURLViewFilesEndpointTemplate, szQuery));
 
-            return (string)await SharedHttpClient.GetResponseForAuthenticatedUri(uri, null, HttpMethod.Get, (response) =>
+            return (string)await SharedHttpClient.GetResponseForAuthenticatedUri(uri, AuthState.AccessToken, (response) =>
             {
                 string szResult = string.Empty;
                 try
