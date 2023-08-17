@@ -323,10 +323,11 @@ namespace MyFlightbook.CloudStorage
 
             return (string)await SharedHttpClient.GetResponseForAuthenticatedUri(uri, null, HttpMethod.Get, (response) =>
             {
+                string szResult = string.Empty;
                 try
                 {
+                    szResult = response.Content.ReadAsStringAsync().Result;
                     response.EnsureSuccessStatusCode();
-                    string szResult = response.Content.ReadAsStringAsync().Result;
                     if (!String.IsNullOrEmpty(szResult))
                     {
                         GoogleFileList gfl = JsonConvert.DeserializeObject<GoogleFileList>(szResult);
@@ -340,7 +341,14 @@ namespace MyFlightbook.CloudStorage
                     if (response == null)
                         throw new MyFlightbookException("Unknown error in GoogleDrive.GetFolderID", ex);
                     else
-                        throw new MyFlightbookException(response.ReasonPhrase);
+                    {
+                        Dictionary<string, GoogleDriveError> d = String.IsNullOrEmpty(szResult) ? null : JsonConvert.DeserializeObject<Dictionary<string, GoogleDriveError>>(szResult);
+                        GoogleDriveError gde = (d == null || !d.ContainsKey("error")) ? null : d["error"];
+                        if (gde == null || gde.errors.Count == 0)
+                            throw new MyFlightbookException(response.ReasonPhrase);
+                        else
+                            throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "{0} {1}: {2} (Query: {3})", response.ReasonPhrase, gde.errors[0].reason, gde.errors[0].message, szQuery));
+                    }
                 }
             });
         }
