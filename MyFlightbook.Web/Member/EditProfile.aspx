@@ -466,6 +466,14 @@
                                         <td style="text-align:center;"><% =(72.0 / 60.0).FormatDecimal(true) %></td>
                                     </tr>
                                 </table>
+                                <div>
+                                    <asp:Label ID="lblPrecHeader" runat="server" Text="<%$ Resources:Preferences, PrefMathPrecisionHeader %>" Font-Bold="true" />
+                                    <asp:HyperLink ID="lnkQuant" runat="server" Text="<%$ Resources:Preferences, PrefMathPrecisionNote %>" NavigateUrl="~/Public/FAQ.aspx?q=72#72" />
+                                    <asp:RadioButtonList ID="rblQuantization" runat="server" RepeatDirection="Horizontal">
+                                        <asp:ListItem Text="<%$ Resources:Preferences, PrefMathPrecisionMinutes %>" Value="60" Selected="True" />
+                                        <asp:ListItem Text="<%$ Resources:Preferences, PrefMathPrecisionHundredths %>" Value="100" />
+                                    </asp:RadioButtonList>
+                                </div>
                                 <h3><asp:Label ID="lblPrefTimeZone" runat="server" Text="<%$ Resources:Preferences, PrefSectNewFlightTimeZone %>" /></h3>
                                 <div>&nbsp;&nbsp;<asp:Label ID="lblPrefTimeZoneExplanation" CssClass="fineprint" runat="server" Text="<%$ Resources:Preferences, PrefSectNewFlightTimeZoneTip %>" /></div>
                                 <div>&nbsp;&nbsp;<uc1:TimeZone runat="server" ID="prefTimeZone" DefaultOffset="0" /></div>

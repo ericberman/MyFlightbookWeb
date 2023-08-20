@@ -145,6 +145,7 @@ namespace MyFlightbook
                     HttpContext.Current.Session[MFBConstants.keyDecimalSettings] = pf.PreferenceExists(MFBConstants.keyDecimalSettings)
                         ? pf.GetPreferenceForKey<DecimalFormat>(MFBConstants.keyDecimalSettings)
                         : (object)null;
+                    HttpContext.Current.Session[MFBConstants.keyMathRoundingUnits] = pf.MathRoundingUnit;
                 }
                 else
                     FormsAuthentication.SignOut();
@@ -169,6 +170,7 @@ namespace MyFlightbook
             HttpContext.Current.Session[MFBConstants.keyDecimalSettings] = pf.PreferenceExists(MFBConstants.keyDecimalSettings)
                 ? pf.GetPreferenceForKey<DecimalFormat>(MFBConstants.keyDecimalSettings)
                 : (object)null;
+            HttpContext.Current.Session[MFBConstants.keyMathRoundingUnits] = pf.MathRoundingUnit;
         }
         #endregion
     }
@@ -909,6 +911,13 @@ namespace MyFlightbook
         {
             get { return GetPreferenceForKey<DateTime?>(prefDOB); }
             set { SetPreferenceForKey(prefDOB, value, value == null || !value.HasValue || !value.Value.HasValue()); }
+        }
+
+        [System.Runtime.Serialization.IgnoreDataMemberAttribute]
+        public int MathRoundingUnit
+        {
+            get { return GetPreferenceForKey(MFBConstants.keyMathRoundingUnits, 60); }
+            set { SetPreferenceForKey(MFBConstants.keyMathRoundingUnits, value, value == 60); }
         }
         #endregion
 

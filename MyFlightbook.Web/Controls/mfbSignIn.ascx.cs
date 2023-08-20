@@ -1,4 +1,3 @@
-using MyFlightbook.Web.Controls;
 using System;
 using System.Web;
 using System.Web.Security;
@@ -6,7 +5,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2021 MyFlightbook LLC
+ * Copyright (c) 2007-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -94,10 +93,10 @@ namespace MyFlightbook.Web.Controls
             // Set up the correct decimal formatting
             TextBox txtEmail = (TextBox)ctlSignIn.FindControl("txtEmail");
             Profile pf = Profile.GetUser(Membership.GetUserNameByEmail(txtEmail.Text));
-            if (pf.PreferenceExists(MFBConstants.keyDecimalSettings))
-                Session[MFBConstants.keyDecimalSettings] = pf.GetPreferenceForKey<DecimalFormat>(MFBConstants.keyDecimalSettings);
-            else
-                Session[MFBConstants.keyDecimalSettings] = null;
+            Session[MFBConstants.keyDecimalSettings] = pf.PreferenceExists(MFBConstants.keyDecimalSettings)
+                ? pf.GetPreferenceForKey<DecimalFormat>(MFBConstants.keyDecimalSettings)
+                : (object)null;
+            Session[MFBConstants.keyMathRoundingUnits] = pf.MathRoundingUnit;
         }
     }
 }

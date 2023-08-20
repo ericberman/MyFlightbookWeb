@@ -5,7 +5,7 @@ using System.Web.UI;
 
 /******************************************************
     * 
-    * Copyright (c) 2015-2022 MyFlightbook LLC
+    * Copyright (c) 2015-2023 MyFlightbook LLC
     * Contact myflightbook-at-gmail.com for more information
     *
    *******************************************************/
@@ -94,6 +94,7 @@ namespace MyFlightbook.Web
                 Profile pf = Profile.GetUser(Context.User.Identity.Name);
                 if (pf.PreferenceExists(MFBConstants.keyDecimalSettings))
                     Session[MFBConstants.keyDecimalSettings] = pf.GetPreferenceForKey<DecimalFormat>(MFBConstants.keyDecimalSettings);
+                Session[MFBConstants.keyMathRoundingUnits] = pf.MathRoundingUnit;
             }
         }
 

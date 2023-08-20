@@ -35,6 +35,7 @@ namespace MyFlightbook
         public const string keyCookiePrivacy = "cookiesAccepted";
         public const string keyTFASettings = "prefTFASettings"; // any 2-factor authentication settings.
         public const string keyDecimalSettings = "prefDecimalDisplay";  // adaptive, single, or double digit precision
+        public const string keyMathRoundingUnits = "prefMath";   // whether to use decimal math (36-second precision) or minute math (60-second precision) when adding
         public const string keyPrefLastUsedLocale = "prefLastUsedLocale";   // most recently used locale, if not en-us
         public const string USCulture = "en-us";
         public const string keyMedicalNotes = "prefMedicalNotes";   // any notes on your medical

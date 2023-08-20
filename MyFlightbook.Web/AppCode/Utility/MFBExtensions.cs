@@ -15,7 +15,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2022 MyFlightbook LLC
+ * Copyright (c) 2008-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -723,10 +723,13 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="d1"></param>
         /// <param name="d2"></param>
+        /// <param name="roundingUnit">Quantization factor - 60 = minute, 100 = 0.01 hours</param>
         /// <returns></returns>
-        static public decimal AddMinutes(this decimal d1, decimal d2)
+        static public decimal AddMinutes(this decimal d1, decimal d2, int roundingUnit)
         {
-            return (Math.Round(d1 * 60) / 60M) + (Math.Round(d2 * 60) / 60M);
+            if (roundingUnit <= 0)
+                throw new ArgumentOutOfRangeException(nameof(roundingUnit), "quantFactor must be a positive integer");
+            return (Math.Round(d1 * roundingUnit) / (decimal) roundingUnit) + (Math.Round(d2 * roundingUnit) / (decimal) roundingUnit);
         }
 
         /// <summary>
@@ -960,8 +963,7 @@ namespace MyFlightbook
 
             foreach (string sz in paramsToRemove)
             {
-                if (dictParams.ContainsKey(sz))
-                    dictParams.Remove(sz);
+                dictParams.Remove(sz);
             }
 
             if (dictParams.Count == 0)

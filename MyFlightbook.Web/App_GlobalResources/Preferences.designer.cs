@@ -925,6 +925,42 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to When summing times.
+        /// </summary>
+        internal static string PrefMathPrecisionHeader {
+            get {
+                return ResourceManager.GetString("PrefMathPrecisionHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use hundredths of an hour.
+        /// </summary>
+        internal static string PrefMathPrecisionHundredths {
+            get {
+                return ResourceManager.GetString("PrefMathPrecisionHundredths", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use whole minutes.
+        /// </summary>
+        internal static string PrefMathPrecisionMinutes {
+            get {
+                return ResourceManager.GetString("PrefMathPrecisionMinutes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to See the FAQ.
+        /// </summary>
+        internal static string PrefMathPrecisionNote {
+            get {
+                return ResourceManager.GetString("PrefMathPrecisionNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Track differences from when a flight is originally saved.
         /// </summary>
         internal static string PrefSaveOriginalFlight {

@@ -1012,6 +1012,7 @@ namespace MyFlightbook.Currency
                         // Set up temporary table:
                         comm.Connection.Open();
                         comm.Parameters.AddWithValue("lang", System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName);
+                        comm.Parameters.AddWithValue("qf", pf.MathRoundingUnit);    // used in all of the above queries.
 
                         // Create the temp table
                         comm.CommandText = String.Format(CultureInfo.InvariantCulture, "DROP TEMPORARY TABLE IF EXISTS {0}", szTempTableName);

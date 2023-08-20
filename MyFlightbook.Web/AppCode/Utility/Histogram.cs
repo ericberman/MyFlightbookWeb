@@ -438,10 +438,13 @@ namespace MyFlightbook.Histogram
 
             hm.Context.Clear(); // start fresh, in case multiple scan-data passes.
 
+            object rf = HttpContext.Current.Session[MFBConstants.keyMathRoundingUnits];
+            double roundingFactor = rf == null ? 60.0 : Convert.ToDouble((int)rf);
+
             foreach (IHistogramable h in hm.SourceData)
             {
                 foreach (HistogramableValue hv in hm.Values)
-                    dict[KeyForValue(h.BucketSelector(BucketSelectorName))].Values[hv.DataField] += (hv.DataType == HistogramValueTypes.Time) ? Math.Round(h.HistogramValue(hv.DataField, hm.Context) * 60.0) / 60.0 : h.HistogramValue(hv.DataField, hm.Context);
+                    dict[KeyForValue(h.BucketSelector(BucketSelectorName))].Values[hv.DataField] += (hv.DataType == HistogramValueTypes.Time) ? Math.Round(h.HistogramValue(hv.DataField, hm.Context) * roundingFactor) / roundingFactor : h.HistogramValue(hv.DataField, hm.Context);
             }
 
             // compute percent of total and rank for each datafield
@@ -476,7 +479,7 @@ namespace MyFlightbook.Histogram
                     foreach (Bucket b in Buckets)
                     {
                         b.HasRunningTotals = true;
-                        b.RunningTotals[hv.DataField] = (total += (hv.DataType == HistogramValueTypes.Time) ? (Math.Round(b.Values[hv.DataField] * 60.0) / 60.0) : b.Values[hv.DataField]);
+                        b.RunningTotals[hv.DataField] = (total += (hv.DataType == HistogramValueTypes.Time) ? (Math.Round(b.Values[hv.DataField] * roundingFactor) / roundingFactor) : b.Values[hv.DataField]);
                     }
                 }
             }

@@ -330,7 +330,7 @@ namespace MyFlightbook
         WHERE
             ua.idaircraft = ?aircraftID) AS userNames,
     COUNT(DISTINCT (f2.idflight)) AS flightsForUser,
-    SUM(ROUND(f2.TotalFlightTime * 60) / 60) AS hours,
+    SUM(ROUND(f2.TotalFlightTime * ?qf) / ?qf) AS hours,
     MIN(f2.date) AS EarliestDate,
     MAX(f2.date) AS LatestDate
 FROM
@@ -347,6 +347,7 @@ WHERE
                 {
                     comm.Parameters.AddWithValue("user", szUser);
                     comm.Parameters.AddWithValue("aircraftID", idAircraft);
+                    comm.Parameters.AddWithValue("qf", Profile.GetUser(szUser).MathRoundingUnit);
                 },
                 (dr) => { readStats(dr); }
                 );

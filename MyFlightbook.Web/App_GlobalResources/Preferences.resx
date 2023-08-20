@@ -406,6 +406,18 @@
   <data name="PrefBlockListShow" xml:space="preserve">
     <value>Show these...</value>
   </data>
+  <data name="PrefMathPrecisionHeader" xml:space="preserve">
+    <value>When summing times</value>
+  </data>
+  <data name="PrefMathPrecisionHundredths" xml:space="preserve">
+    <value>Use hundredths of an hour</value>
+  </data>
+  <data name="PrefMathPrecisionMinutes" xml:space="preserve">
+    <value>Use whole minutes</value>
+  </data>
+  <data name="PrefMathPrecisionNote" xml:space="preserve">
+    <value>See the FAQ</value>
+  </data>
   <data name="PrefSaveOriginalFlight" xml:space="preserve">
     <value>Track differences from when a flight is originally saved</value>
   </data>

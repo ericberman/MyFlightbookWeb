@@ -322,6 +322,7 @@ namespace MyFlightbook.MemberPages
                 else
                     rbDecimal2.Checked = true;
             }
+            rblQuantization.SelectedIndex = m_pf.MathRoundingUnit != 60 ? 1 : 0;
             rblDateEntryPreferences.SelectedIndex = (m_pf.UsesUTCDateOfFlight ? 1 : 0);
             prefTimeZone.SelectedTimeZone = m_pf.PreferredTimeZone;
             AddCurrencyExpirations(cmbExpiredCurrency);
@@ -692,6 +693,9 @@ namespace MyFlightbook.MemberPages
                     Session[MFBConstants.keyDecimalSettings] = df;  
                 }
             }
+            int quant = Convert.ToInt32(rblQuantization.SelectedValue, CultureInfo.InvariantCulture);
+            m_pf.SetPreferenceForKey(MFBConstants.keyMathRoundingUnits, quant, quant == 60);
+            Session[MFBConstants.keyMathRoundingUnits] = quant; // make sure it's updated in the session as well!
 
             m_pf.SetPreferenceForKey(MFBConstants.keyTrackOriginal, ckPreserveOriginal.Checked, !ckPreserveOriginal.Checked);
 

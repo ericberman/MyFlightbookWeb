@@ -16,6 +16,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web;
 using System.Web.UI.WebControls;
 using System.Xml.Serialization;
 
@@ -2272,6 +2273,26 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
             get { return (fIsPublic || Route.Length > 0); }
         }
 
+        private int _roundingUnit = 0;
+
+        /// <summary>
+        /// Rounding factor for adding minutes - add whole minutes (Quantization = 60) or add hundredths-of-an-hour (Quantization = 0.01)
+        /// Should be nice and fast, since it's retrieved from cached items (session or cached user's prefs) and then cached locally within this object.
+        /// </summary>
+        [JsonIgnore]
+        protected int RoundingUnit
+        {
+            get
+            {
+                if (_roundingUnit <= 0)
+                {
+                    object o = HttpContext.Current?.Session?[MFBConstants.keyMathRoundingUnits];
+                    _roundingUnit = (o == null) ? String.IsNullOrEmpty(User) ? 60 : Profile.GetUser(User).MathRoundingUnit : (int) o;
+                }
+                return _roundingUnit;
+            }
+        }
+
         #region Sharing
         // Send flight and social media links are
         // done as overrides so that the WSDL doesn't have to refer to LogbookEntryBase.
@@ -2712,16 +2733,16 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
             NightLandings += le.NightLandings;
             FullStopLandings += le.FullStopLandings;
 
-            CrossCountry = CrossCountry.AddMinutes(le.CrossCountry);
-            Dual = Dual.AddMinutes(le.Dual);
-            GroundSim = GroundSim.AddMinutes(le.GroundSim);
-            IMC = IMC.AddMinutes(le.IMC);
-            SimulatedIFR = SimulatedIFR.AddMinutes(le.SimulatedIFR);
-            Nighttime = Nighttime.AddMinutes(le.Nighttime);
-            CFI = CFI.AddMinutes(le.CFI);
-            SIC = SIC.AddMinutes(le.SIC);
-            PIC = PIC.AddMinutes(le.PIC);
-            TotalFlightTime = TotalFlightTime.AddMinutes(le.TotalFlightTime);
+            CrossCountry = CrossCountry.AddMinutes(le.CrossCountry, RoundingUnit);
+            Dual = Dual.AddMinutes(le.Dual, RoundingUnit);
+            GroundSim = GroundSim.AddMinutes(le.GroundSim, RoundingUnit);
+            IMC = IMC.AddMinutes(le.IMC, RoundingUnit);
+            SimulatedIFR = SimulatedIFR.AddMinutes(le.SimulatedIFR, RoundingUnit);
+            Nighttime = Nighttime.AddMinutes(le.Nighttime, RoundingUnit);
+            CFI = CFI.AddMinutes(le.CFI, RoundingUnit);
+            SIC = SIC.AddMinutes(le.SIC, RoundingUnit);
+            PIC = PIC.AddMinutes(le.PIC, RoundingUnit);
+            TotalFlightTime = TotalFlightTime.AddMinutes(le.TotalFlightTime, RoundingUnit);
         }
 
         private static void MergeProperty(CustomFlightProperty cfpExisting, CustomFlightProperty cfp)
@@ -3670,15 +3691,15 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
         #region Printing support
         private void AddComboTotalsFromEntry(LogbookEntry le, LogbookEntryDisplay led)
         {
-            NightDualTotal = NightDualTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, le.Dual) : led.NightDualTotal);
-            NightPICTotal = NightPICTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, le.PIC) : led.NightPICTotal);
-            NightSICTotal = NightSICTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, le.SIC) : led.NightSICTotal);
-            XCDualTotal = XCDualTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.CrossCountry, le.Dual) : led.XCDualTotal);
-            XCNightDualTotal = XCNightDualTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, Math.Min(le.CrossCountry, le.Dual)) : led.XCNightDualTotal);
-            XCPICTotal = XCPICTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.CrossCountry, le.PIC) : led.XCPICTotal);
-            XCSICTotal = XCSICTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.CrossCountry, le.SIC) : led.XCSICTotal);
-            XCNightPICTotal = XCNightPICTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, Math.Min(le.CrossCountry, le.PIC)) : led.XCNightPICTotal);
-            XCNightSICTotal = XCNightSICTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, Math.Min(le.CrossCountry, le.SIC)) : led.XCNightSICTotal);
+            NightDualTotal = NightDualTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, le.Dual) : led.NightDualTotal, RoundingUnit);
+            NightPICTotal = NightPICTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, le.PIC) : led.NightPICTotal, RoundingUnit);
+            NightSICTotal = NightSICTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, le.SIC) : led.NightSICTotal, RoundingUnit);
+            XCDualTotal = XCDualTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.CrossCountry, le.Dual) : led.XCDualTotal, RoundingUnit);
+            XCNightDualTotal = XCNightDualTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, Math.Min(le.CrossCountry, le.Dual)) : led.XCNightDualTotal, RoundingUnit);
+            XCPICTotal = XCPICTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.CrossCountry, le.PIC) : led.XCPICTotal, RoundingUnit);
+            XCSICTotal = XCSICTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.CrossCountry, le.SIC) : led.XCSICTotal, RoundingUnit);
+            XCNightPICTotal = XCNightPICTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, Math.Min(le.CrossCountry, le.PIC)) : led.XCNightPICTotal, RoundingUnit);
+            XCNightSICTotal = XCNightSICTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, Math.Min(le.CrossCountry, le.SIC)) : led.XCNightSICTotal, RoundingUnit);
         }
 
         #region support for USA print layout or other potential layouts with vertical category/class columns.
@@ -3704,7 +3725,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
 
             if (dictCatClassTotals == null)
                 dictCatClassTotals = new Dictionary<int, decimal>();
-            dictCatClassTotals[led.EffectiveCatClass] = dictCatClassTotals.TryGetValue(led.EffectiveCatClass, out decimal value) ? value.AddMinutes(led.TotalFlightTime)
+            dictCatClassTotals[led.EffectiveCatClass] = dictCatClassTotals.TryGetValue(led.EffectiveCatClass, out decimal value) ? value.AddMinutes(led.TotalFlightTime, RoundingUnit)
                 : led.TotalFlightTime;
         }
 
@@ -3720,7 +3741,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                 dictCatClassTotals = new Dictionary<int, decimal>();
 
             foreach (int idcatclass in led.dictCatClassTotals.Keys)
-                dictCatClassTotals[idcatclass] = dictCatClassTotals.TryGetValue(idcatclass, out decimal value) ? value.AddMinutes(led.dictCatClassTotals[idcatclass])
+                dictCatClassTotals[idcatclass] = dictCatClassTotals.TryGetValue(idcatclass, out decimal value) ? value.AddMinutes(led.dictCatClassTotals[idcatclass], RoundingUnit)
                     : led.dictCatClassTotals[idcatclass];
         }
 
@@ -3757,7 +3778,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
         /// <returns></returns>
         public decimal TotalExceptForCategoryClasses(IEnumerable<int> rgCats)
         {
-            return TotalFlightTime.AddMinutes(- TotalForCategoryClasses(rgCats));
+            return TotalFlightTime.AddMinutes(- TotalForCategoryClasses(rgCats), RoundingUnit);
         }
 
         public decimal OptionalColumnCatClassTotal(int columnIndex)
@@ -3781,13 +3802,13 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
             {
                 if (led.RowType == LogbookRowType.Flight)
                 {
-                    PICUSTotal = PICUSTotal.AddMinutes(led.PICUSTime);
-                    NightPICUSTotal = NightPICUSTotal.AddMinutes(Math.Min(led.Nighttime, led.PICUSTime));
-                    InstrumentAircraftTotal = InstrumentAircraftTotal.AddMinutes((led.IsFSTD ? 0 : led.IMC));
-                    InstrumentFSTDTotal = InstrumentFSTDTotal.AddMinutes((led.IsFSTD ? led.SimulatedIFR : 0));
-                    SoloTotal = SoloTotal.AddMinutes(led.SoloTime);
-                    GroundInstructionTotal = GroundInstruction.AddMinutes(led.GroundInstruction);
-                    IFRTimeTotal = IFRTimeTotal.AddMinutes(led.IFRTime);
+                    PICUSTotal = PICUSTotal.AddMinutes(led.PICUSTime, RoundingUnit);
+                    NightPICUSTotal = NightPICUSTotal.AddMinutes(Math.Min(led.Nighttime, led.PICUSTime), RoundingUnit);
+                    InstrumentAircraftTotal = InstrumentAircraftTotal.AddMinutes((led.IsFSTD ? 0 : led.IMC), RoundingUnit);
+                    InstrumentFSTDTotal = InstrumentFSTDTotal.AddMinutes((led.IsFSTD ? led.SimulatedIFR : 0), RoundingUnit);
+                    SoloTotal = SoloTotal.AddMinutes(led.SoloTime, RoundingUnit);
+                    GroundInstructionTotal = GroundInstruction.AddMinutes(led.GroundInstruction, RoundingUnit);
+                    IFRTimeTotal = IFRTimeTotal.AddMinutes(led.IFRTime, RoundingUnit);
                     NightTouchAndGoLandings += led.CustomProperties.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropNightTouchAndGo);
 
                     SelfLaunchTotal += led.SelfLaunches;
@@ -3811,13 +3832,13 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                 }
                 else
                 {
-                    PICUSTotal = PICUSTotal.AddMinutes(led.PICUSTotal);
-                    NightPICUSTotal = NightPICUSTotal.AddMinutes(led.NightPICUSTotal);
-                    InstrumentAircraftTotal = InstrumentAircraftTotal.AddMinutes(led.InstrumentAircraftTotal);
-                    InstrumentFSTDTotal = InstrumentFSTDTotal.AddMinutes(led.InstrumentFSTDTotal);
-                    SoloTotal = SoloTime.AddMinutes(led.SoloTotal);
-                    GroundInstructionTotal = GroundInstruction.AddMinutes(led.GroundInstructionTotal);
-                    IFRTimeTotal = IFRTimeTotal.AddMinutes(led.IFRTimeTotal);
+                    PICUSTotal = PICUSTotal.AddMinutes(led.PICUSTotal, RoundingUnit);
+                    NightPICUSTotal = NightPICUSTotal.AddMinutes(led.NightPICUSTotal, RoundingUnit);
+                    InstrumentAircraftTotal = InstrumentAircraftTotal.AddMinutes(led.InstrumentAircraftTotal, RoundingUnit);
+                    InstrumentFSTDTotal = InstrumentFSTDTotal.AddMinutes(led.InstrumentFSTDTotal, RoundingUnit);
+                    SoloTotal = SoloTime.AddMinutes(led.SoloTotal, RoundingUnit);
+                    GroundInstructionTotal = GroundInstruction.AddMinutes(led.GroundInstructionTotal, RoundingUnit);
+                    IFRTimeTotal = IFRTimeTotal.AddMinutes(led.IFRTimeTotal, RoundingUnit);
                     NightTouchAndGoLandings += led.NightTouchAndGoLandings;
 
                     SelfLaunchTotal += led.SelfLaunchTotal;
@@ -3855,7 +3876,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                         if (OptionalColumns[i].ValueType == OptionalColumnValueType.Integer)
                             OptionalColumnTotals[i] += led.RowType == LogbookRowType.Flight ? led.OptionalColumnValue(i) : led.OptionalColumnTotalValue(i);
                         else
-                            OptionalColumnTotals[i] = OptionalColumnTotals[i].AddMinutes(led.RowType == LogbookRowType.Flight ? led.OptionalColumnValue(i) : led.OptionalColumnTotalValue(i));
+                            OptionalColumnTotals[i] = OptionalColumnTotals[i].AddMinutes(led.RowType == LogbookRowType.Flight ? led.OptionalColumnValue(i) : led.OptionalColumnTotalValue(i), RoundingUnit);
                     }
                 }
             }

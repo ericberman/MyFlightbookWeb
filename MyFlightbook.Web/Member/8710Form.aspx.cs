@@ -93,6 +93,9 @@ namespace MyFlightbook.MemberPages
             DBHelperCommandArgs args = new DBHelperCommandArgs() { Timeout = 120 };
             args.AddFrom(fq.QueryParameters());
 
+            object o = Session[MFBConstants.keyMathRoundingUnits];
+            args.AddWithValue("qf", o == null ? Profile.GetUser(fq.UserName).MathRoundingUnit : (int)o);
+
             UpdateDescription();
 
             IEnumerable<Form8710Row> lst8710 = null;

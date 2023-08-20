@@ -1374,6 +1374,33 @@ namespace MyFlightbook.MemberPages
         protected global::System.Web.UI.WebControls.Label lblHHMM;
 
         /// <summary>
+        /// lblPrecHeader control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblPrecHeader;
+
+        /// <summary>
+        /// lnkQuant control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink lnkQuant;
+
+        /// <summary>
+        /// rblQuantization control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButtonList rblQuantization;
+
+        /// <summary>
         /// lblPrefTimeZone control.
         /// </summary>
         /// <remarks>
