@@ -290,7 +290,7 @@
                                         <asp:View ID="vwStaticPass" runat="server">
                                             <ul>
                                                 <li><asp:Label ID="lblLastLogin" runat="server"></asp:Label></li>
-                                                <li runat="server" id="itemLastActivity"><asp:Label ID="lblLastActivity" runat="server"></asp:Label></li>
+                                                <li runat="server" id="itemLastActivity"><asp:Label ID="lblLastActivity" runat="server" /></li>
                                                 <li><asp:Label ID="lblPasswordStatus" runat="server"></asp:Label></li>
                                             </ul>
                                             <div><asp:Button ID="btnChangePass" runat="server" Text="<%$ Resources:Profile, ChangePassword %>" OnClick="btnChangePass_Click" /></div>
@@ -306,41 +306,41 @@
                                                 <table>
                                                     <tr>
                                                         <td>
-                                                            <asp:Label ID="CurrentPasswordLabel" runat="server" AssociatedControlID="CurrentPassword" meta:resourceKey="CurrentPasswordLabelResource1" Text="Current Password"></asp:Label>
+                                                            <asp:Label ID="CurrentPasswordLabel" runat="server" AssociatedControlID="CurrentPassword" Text="<%$ Resources:Preferences, AccountPasswordCurrent %>" />
                                                         </td>
                                                         <td>
-                                                            <asp:TextBox ID="CurrentPassword" runat="server" meta:resourceKey="CurrentPasswordResource1" TextMode="Password" ValidationGroup="valPassword"></asp:TextBox>
-                                                            <asp:CustomValidator ID="valCurrentPasswordRequired" runat="server" CssClass="error" Display="Dynamic" ErrorMessage="To change your password, you must first correctly provide your current password" meta:resourceKey="valCurrentPasswordRequiredResource1" OnServerValidate="ValidateCurrentPassword" ValidationGroup="valPassword"></asp:CustomValidator>
-                                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator5" runat="server" ControlToValidate="CurrentPassword" CssClass="error" Display="Dynamic" ErrorMessage="To change your password you must first correctly provide your current password." meta:resourceKey="RequiredFieldValidator5Resource1" ValidationGroup="valPassword"></asp:RequiredFieldValidator>
+                                                            <asp:TextBox ID="CurrentPassword" runat="server" TextMode="Password" ValidationGroup="valPassword"></asp:TextBox>
+                                                            <asp:CustomValidator ID="valCurrentPasswordRequired" runat="server" CssClass="error" Display="Dynamic" ErrorMessage="<%$ Resources:Preferences, errAccountPasswordNeedPrevious %>" OnServerValidate="ValidateCurrentPassword" ValidationGroup="valPassword" />
+                                                            <asp:RequiredFieldValidator ID="valCurrentPasswordPresent" runat="server" ControlToValidate="CurrentPassword" CssClass="error" Display="Dynamic" ErrorMessage="<%$ Resources:Preferences, errAccountPasswordNeedPrevious %>" ValidationGroup="valPassword" />
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td>
-                                                            <asp:Label ID="NewPasswordLabel" runat="server" AssociatedControlID="NewPassword" meta:resourceKey="NewPasswordLabelResource1" Text="New Password"></asp:Label>
+                                                            <asp:Label ID="lblNewPassword" runat="server" AssociatedControlID="NewPassword" Text="<%$ Resources:Preferences, AccountPasswordNew %>" />
                                                         </td>
                                                         <td>
-                                                            <asp:TextBox ID="NewPassword" runat="server" meta:resourceKey="NewPasswordResource1" TextMode="Password" ValidationGroup="valPassword"></asp:TextBox>
+                                                            <asp:TextBox ID="NewPassword" runat="server" TextMode="Password" ValidationGroup="valPassword" />
                                                             <cc1:PasswordStrength ID="PasswordStrength2" runat="server" BehaviorID="PasswordStrength2" TargetControlID="NewPassword" TextStrengthDescriptions="<%$ Resources:LocalizedText, PasswordStrengthStrings %>" StrengthIndicatorType="BarIndicator"
                                                                 StrengthStyles="pwWeak;pwOK;pwGood;pwExcellent" PreferredPasswordLength="10" BarBorderCssClass="pwBorder" />
-                                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" ControlToValidate="NewPassword" CssClass="error" Display="Dynamic" ErrorMessage="Please provide a new password" meta:resourceKey="RequiredFieldValidator6Resource1" ValidationGroup="valPassword"></asp:RequiredFieldValidator>
+                                                            <asp:RequiredFieldValidator ID="valNewPassword" runat="server" ControlToValidate="NewPassword" CssClass="error" Display="Dynamic" ErrorMessage="<%$ Resources:Preferences, errAccountPasswordNewMissing %>" ValidationGroup="valPassword" />
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td>
-                                                            <asp:Label ID="ConfirmNewPasswordLabel" runat="server" AssociatedControlID="ConfirmNewPassword" meta:resourceKey="ConfirmNewPasswordLabelResource1" Text="Confirm New Password"></asp:Label>
+                                                            <asp:Label ID="ConfirmNewPasswordLabel" runat="server" AssociatedControlID="ConfirmNewPassword" Text="<%$ Resources:Preferences, AccountPasswordConfirmNew %>" />
                                                         </td>
                                                         <td>
-                                                            <asp:TextBox ID="ConfirmNewPassword" runat="server" meta:resourceKey="ConfirmNewPasswordResource1" TextMode="Password" ValidationGroup="valPassword"></asp:TextBox>
-                                                            <asp:CompareValidator ID="NewPasswordCompare" runat="server" ControlToCompare="NewPassword" ControlToValidate="ConfirmNewPassword" CssClass="error" Display="Dynamic" ErrorMessage="The Confirm New Password must match the New Password entry." meta:resourceKey="NewPasswordCompareResource1" ValidationGroup="valPassword"></asp:CompareValidator>
-                                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator7" runat="server" ControlToValidate="ConfirmNewPassword" CssClass="error" Display="Dynamic" ErrorMessage="Please retype your new password.  This reduces the likelihood of a typo." meta:resourceKey="RequiredFieldValidator7Resource1" ValidationGroup="valPassword"></asp:RequiredFieldValidator>
+                                                            <asp:TextBox ID="ConfirmNewPassword" runat="server" TextMode="Password" ValidationGroup="valPassword" />
+                                                            <asp:CompareValidator ID="valPassCompare" runat="server" ControlToCompare="NewPassword" ControlToValidate="ConfirmNewPassword" CssClass="error" Display="Dynamic" ErrorMessage="<%$ Resources:Preferences, errAccountPasswordConfirmDoesNotMatch %>" ValidationGroup="valPassword" />
+                                                            <asp:RequiredFieldValidator ID="valPassConfirm" runat="server" ControlToValidate="ConfirmNewPassword" CssClass="error" Display="Dynamic" ErrorMessage="<%$ Resources:Preferences, errAccountPasswordConfirmDoesNotMatch %>" ValidationGroup="valPassword" />
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td>&nbsp;</td>
                                                         <td>
-                                                            <asp:Button ID="btnUpdatePass" runat="server" meta:resourceKey="btnUpdatePassResource1" OnClick="btnUpdatePass_Click" Text="Change Password" ValidationGroup="valPassword" />
+                                                            <asp:Button ID="btnUpdatePass" runat="server" OnClick="btnUpdatePass_Click" Text="<%$ Resources:Preferences, AccountPasswordChange %>" ValidationGroup="valPassword" />
                                                             <br />
-                                                            <asp:Label ID="lblPassChanged" runat="server" CssClass="success" EnableViewState="False" meta:resourceKey="lblPassChangedResource1" Text="Password successfully changed" Visible="False"></asp:Label>
+                                                            <asp:Label ID="lblPassChanged" runat="server" CssClass="success" EnableViewState="False" Text="<%$ Resources:Preferences, AccountPasswordSuccess %>" Visible="False" />
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -351,47 +351,47 @@
                             </asp:UpdatePanel>
                         </Content>
                     </cc1:AccordionPane>
-                    <cc1:AccordionPane ID="acpQandA" runat="server" ContentCssClass="" HeaderCssClass="" meta:resourcekey="acpQandAResource1">
+                    <cc1:AccordionPane ID="acpQandA" runat="server" ContentCssClass="" HeaderCssClass="">
                         <Header>
-                            <asp:Localize ID="locHeadQA" runat="server" Text="<%$ Resources:Tabs, ProfileQA %>" ></asp:Localize>
+                            <asp:Localize ID="locHeadQA" runat="server" Text="<%$ Resources:Tabs, ProfileQA %>" />
                         </Header>
                         <Content>
-                            <asp:Panel ID="pnlQandA" runat="server" DefaultButton="btnChangeQA" meta:resourceKey="pnlQandAResource1">
+                            <asp:Panel ID="pnlQandA" runat="server" DefaultButton="btnChangeQA">
                                 <asp:UpdatePanel ID="updQA" runat="server">
                                     <ContentTemplate>
                                         <% =Resources.LocalizedText.AccountQuestionHint %>
                                         <asp:MultiView ID="mvQA" runat="server" ActiveViewIndex="0">
                                             <asp:View ID="vwStaticQA" runat="server">
-                                                <div><asp:Button ID="btnChangeQA" runat="server" Text="<%$ Resources:Profile, ChangeQA %>" OnClick="btnChangeQA_Click1" /></div>
+                                                <div><asp:Button ID="btnChangeQA1" runat="server" Text="<%$ Resources:Profile, ChangeQA %>" OnClick="btnChangeQA_Click1" /></div>
                                             </asp:View>
                                             <asp:View ID="vwVerifyTFAQA" runat="server">
-                                                <p><asp:Label ID="lblTFA2" runat="server" Text="<%$ Resources:Profile, TFARequired %>"></asp:Label></p>
-                                                <p><asp:Label ID="lblTFAUseApp2" runat="server" Text="<%$ Resources:Profile, TFAUseYourApp %>"></asp:Label></p>
+                                                <p><asp:Label ID="lblTFA2" runat="server" Text="<%$ Resources:Profile, TFARequired %>" /></p>
+                                                <p><asp:Label ID="lblTFAUseApp2" runat="server" Text="<%$ Resources:Profile, TFAUseYourApp %>" /></p>
                                                 <uc1:TwoFactorAuthVerifyCode runat="server" ID="tfaChangeQA" OnTFACodeFailed="tfaChangeQA_TFACodeFailed" OnTFACodeVerified="tfaChangeQA_TFACodeVerified" />
-                                                <div><asp:Label ID="lblTFAErrQA" runat="server" CssClass="error" EnableViewState="false" Text="<%$ Resources:Profile, TFACodeFailed %>" Visible="false"></asp:Label></div>
+                                                <div><asp:Label ID="lblTFAErrQA" runat="server" CssClass="error" EnableViewState="false" Text="<%$ Resources:Profile, TFACodeFailed %>" Visible="false" /></div>
                                             </asp:View>
                                             <asp:View ID="vwChangeQA" runat="server">
                                                 <table>
                                                     <tr>
                                                         <td>
-                                                            <asp:Localize ID="locPasswordPromptForQA" runat="server" meta:resourceKey="locPasswordPromptForQAResource1" Text="Password"></asp:Localize>
+                                                            <asp:Localize ID="locPasswordPromptForQA" runat="server" Text="<%$ Resources:Preferences, AccountQAPasswordPrompt %>" />
                                                         </td>
                                                         <td>
-                                                            <asp:TextBox ID="txtPassQA" runat="server" meta:resourceKey="txtPassQAResource1" TextMode="Password" ValidationGroup="vgNewQA"></asp:TextBox>
-                                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator8" runat="server" ControlToValidate="txtPassQA" CssClass="error" Display="Dynamic" ErrorMessage="Please type your password" meta:resourceKey="RequiredFieldValidator8Resource1" ValidationGroup="vgNewQA"></asp:RequiredFieldValidator>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <asp:Localize ID="locCurrentQuestion" runat="server" meta:resourceKey="locCurrentQuestionResource1" Text="Current question: "></asp:Localize>
-                                                        </td>
-                                                        <td>
-                                                            <asp:Label ID="lblQuestion" runat="server" Font-Bold="True" meta:resourceKey="lblQuestionResource1"></asp:Label>
+                                                            <asp:TextBox ID="txtPassQA" runat="server" TextMode="Password" ValidationGroup="vgNewQA" />
+                                                            <asp:RequiredFieldValidator ID="valQAPassRequired" runat="server" ControlToValidate="txtPassQA" CssClass="error" Display="Dynamic" ErrorMessage="<%$ Resources:Preferences, errAccountQAPasswordRequired %>" ValidationGroup="vgNewQA" />
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td>
-                                                            <asp:Localize ID="locQuestionPrompt" runat="server" meta:resourceKey="locQuestionPromptResource1" Text="New Security Question"></asp:Localize>
+                                                            <asp:Localize ID="locCurrentQuestion" runat="server" Text="<%$ Resources:Preferences, AccountQACurrentQuestion %>" />
+                                                        </td>
+                                                        <td>
+                                                            <asp:Label ID="lblQuestion" runat="server" Font-Bold="True" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <asp:Localize ID="locQuestionPrompt" runat="server" Text="<%$ Resources:Preferences, AccountQANewQuestion %>" />
                                                         </td>
                                                         <td>
                                                             <uc4:AccountQuestions ID="txtQuestion" ValidationGroup="vgNewQA" runat="server" />
@@ -399,19 +399,19 @@
                                                     </tr>
                                                     <tr>
                                                         <td>
-                                                            <asp:Localize ID="locNewAnswer" runat="server" meta:resourceKey="locNewAnswerResource1" Text="New Security Answer"></asp:Localize>
+                                                            <asp:Localize ID="locNewAnswer" runat="server" Text="<%$ Resources:Preferences, AccountQANewAnswer %>" />
                                                         </td>
                                                         <td>
-                                                            <asp:TextBox ID="txtAnswer" runat="server" meta:resourceKey="txtAnswerResource1" ValidationGroup="vgNewQA"></asp:TextBox>
-                                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator10" runat="server" ControlToValidate="txtAnswer" CssClass="error" Display="Dynamic" ErrorMessage="Please type an answer for your question" meta:resourceKey="RequiredFieldValidator10Resource1" ValidationGroup="vgNewQA"></asp:RequiredFieldValidator>
+                                                            <asp:TextBox ID="txtAnswer" runat="server" ValidationGroup="vgNewQA" />
+                                                            <asp:RequiredFieldValidator ID="reqAnswer" runat="server" ControlToValidate="txtAnswer" CssClass="error" Display="Dynamic" ErrorMessage="<%$ Resources:Preferences, errAccountQAAnswerMissing %>" ValidationGroup="vgNewQA" />
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td>&nbsp;</td>
                                                         <td>
-                                                            <asp:Button ID="Button1" runat="server" meta:resourceKey="btnChangeQAResource1" OnClick="btnChangeQA_Click" Text="Change Security Question" ValidationGroup="vgNewQA" />
+                                                            <asp:Button ID="btnChangeQA" runat="server" OnClick="btnChangeQA_Click" Text="<%$ Resources:Preferences, AccountQAChange %>" ValidationGroup="vgNewQA" />
                                                             <br />
-                                                            <asp:Label ID="lblQAChangeSuccess" runat="server" CssClass="success" EnableViewState="False" meta:resourceKey="lblQAChangeSuccessResource1" Text="Security question and answer successfully changed" Visible="False"></asp:Label>
+                                                            <asp:Label ID="lblQAChangeSuccess" runat="server" CssClass="success" EnableViewState="False" Text="<%$ Resources:Preferences, AccountQAChangeSuccess %>" Visible="False" />
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -446,12 +446,8 @@
             </cc1:Accordion>
         </asp:View>
         <asp:View runat="server" ID="vwPrefs">
-            <h2>
-                <asp:Localize ID="locPrefsheader" runat="server" 
-                    Text="Features and preferences" 
-                    meta:resourcekey="locPrefsheaderResource1"></asp:Localize>
-            </h2>
-            <cc1:Accordion ID="accordianPrefs" runat="server" HeaderCssClass="accordianHeader" HeaderSelectedCssClass="accordianHeaderSelected" ContentCssClass="accordianContent" meta:resourcekey="accordianPrefsResource1" TransitionDuration="250" SelectedIndex="-1" RequireOpenedPane="false">
+            <h2><% =Resources.Preferences.HeaderFeatures %></h2>
+            <cc1:Accordion ID="accordianPrefs" runat="server" HeaderCssClass="accordianHeader" HeaderSelectedCssClass="accordianHeaderSelected" ContentCssClass="accordianContent" TransitionDuration="250" SelectedIndex="-1" RequireOpenedPane="false">
                 <Panes>
                     <cc1:AccordionPane runat="server" ID="acpLocalPrefs">
                         <Header>
@@ -648,9 +644,9 @@
                             </asp:UpdatePanel>
                         </Content>
                     </cc1:AccordionPane>
-                    <cc1:AccordionPane runat="server" ID="acpProperties" ContentCssClass="" HeaderCssClass="" meta:resourcekey="acpPropertiesResource1">
+                    <cc1:AccordionPane runat="server" ID="acpProperties" ContentCssClass="" HeaderCssClass="">
                         <Header>
-                            <asp:Localize ID="locPropertiesHeader" runat="server" Text="Flight Properties and Templates" meta:resourcekey="locPropertiesHeaderResource1"></asp:Localize>
+                            <% =Resources.Preferences.HeaderPropsAndTemplates %>
                         </Header>
                         <Content>
                             <div class="prefSectionRow">
@@ -663,7 +659,7 @@
                             </div>
                         </Content>
                     </cc1:AccordionPane>
-                    <cc1:AccordionPane ID="acpCurrency" runat="server" ContentCssClass="" HeaderCssClass="" meta:resourcekey="acpCurrencyResource1">
+                    <cc1:AccordionPane ID="acpCurrency" runat="server" ContentCssClass="" HeaderCssClass="">
                         <Header>
                             <asp:Label ID="lblCurrencyPrefs" runat="server" Text="<%$ Resources:Preferences, PrefCurrencyTotalsSectionHeader %>" />
                         </Header>
@@ -735,39 +731,33 @@
                             </div>
                         </Content>
                     </cc1:AccordionPane>
-                    <cc1:AccordionPane runat="server" ID="acpEmail" ContentCssClass="" HeaderCssClass="" meta:resourcekey="acpEmailResource1">
+                    <cc1:AccordionPane runat="server" ID="acpEmail" ContentCssClass="" HeaderCssClass="">
                         <Header>
-                            <asp:Label ID="lblEmailNotifications" runat="server"
-                                Text="Email Notifications" meta:resourcekey="lblEmailNotifications1"></asp:Label>
+                            <% =Resources.Preferences.HeaderEmail %>
                         </Header>
                         <Content>
                             <uc1:mfbSubscriptionManager runat="server" id="mfbSubscriptionManager" />
                         </Content>
                     </cc1:AccordionPane>
-                    <cc1:AccordionPane runat="server" ID="acpCustomCurrencies" ContentCssClass="" HeaderCssClass="" meta:resourcekey="acpCustomCurrenciesResource1">
+                    <cc1:AccordionPane runat="server" ID="acpCustomCurrencies" ContentCssClass="" HeaderCssClass="">
                         <Header>
-                            <asp:Localize ID="locCustomCurrencyHeader" Text="Custom Currency Rules" 
-                                    runat="server" meta:resourcekey="locCustomCurrencyHeaderResource1"></asp:Localize>
+                            <% =Resources.Preferences.HeaderCustomCurrency %>
                         </Header>
                         <Content>
                             <div class="prefSectionRow">
                                 <asp:UpdatePanel ID="UpdatePanel2" runat="server">
                                     <ContentTemplate>
-										<asp:Label ID="lblAddCustomCurrency" runat="server"  
-											Text="You can define your own currency rules (can be useful for FBO or insurance rules)" 
-                                            meta:resourceKey="locCustCurrencyDescResource1"></asp:Label>&nbsp;
-                                        <asp:Label ID="lblShowcurrency" runat="server" style="font-weight:bold" 
-                                            meta:resourcekey="lblShowcurrencyResource1"></asp:Label>
+										<asp:Label ID="lblAddCustomCurrency" runat="server" Text="<%$ Resources:Preferences, CustCurrencyDescription %>" />
+                                        <asp:Label ID="lblShowcurrency" runat="server" style="font-weight:bold" />
                                         <uc1:mfbCustomCurrencyList runat="server" ID="mfbCustomCurrencyList1" />
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
                             </div>
                         </Content>
                     </cc1:AccordionPane>
-                    <cc1:AccordionPane ID="acpCustomDeadlines" runat="server" ContentCssClass="" HeaderCssClass="" meta:resourcekey="acpCustomDeadlinesResource1">
+                    <cc1:AccordionPane ID="acpCustomDeadlines" runat="server" ContentCssClass="" HeaderCssClass="">
                         <Header>
-                            <asp:Label ID="lblDeadlinesSection" runat="server" Text="Custom Deadlines" 
-                                meta:resourcekey="lblDeadlinesSectionResource1"></asp:Label>
+                            <% =Resources.Preferences.HeaderCustomDeadlines %>
                         </Header>
                         <Content>
                             <div class="prefSectionRow">
@@ -782,24 +772,18 @@
                         </Header>
                         <Content>
                             <div class="prefSectionRow">
-                                <h2><asp:Localize ID="locShareAllFlightsPrompt" runat="server" 
-                                    Text="Share your public flights" 
-                                    meta:resourcekey="locShareAllFlightsPromptResource1"></asp:Localize></h2>
+                                <h2><% =Resources.Preferences.HeaderSharePublicFlights %></h2>
+                                <p><%=Resources.LocalizedText.SharePublicFlightsDescription %></p>
+                                <p><%=Resources.Preferences.SharingShareFlightsDisclaimer %></p>
                                 <p>
-                                    <asp:Localize ID="locSharePublicDesc" runat="server" Text="<%$ Resources:LocalizedText, SharePublicFlightsDescription %>"></asp:Localize></p>
-                                <asp:Localize ID="locShareAllFlightsDisclaimer" runat="server" 
-                                    Text="This will ONLY show flights for which you have allowed details to be visible." 
-                                    meta:resourcekey="locShareAllFlightsDisclaimerResource1"></asp:Localize></p>
-                                <p>
-                                    <asp:TextBox ID="lnkMyFlights" runat="server" ReadOnly="true" Width="200px" meta:resourcekey="lnkMyFlightsResource1"></asp:TextBox>
+                                    <asp:TextBox ID="lnkMyFlights" runat="server" ReadOnly="true" Width="200px" />
                                     <asp:ImageButton ID="imgCopyMyFlights" style="vertical-align:text-bottom" ImageUrl="~/images/copyflight.png" AlternateText="<%$ Resources:LocalizedText, CopyToClipboard %>" ToolTip="<%$ Resources:LocalizedText, CopyToClipboard %>" runat="server" />
-                                    <asp:Label ID="lblMyFlightsCopied" runat="server" Text="<%$ Resources:LocalizedText, CopiedToClipboard %>" CssClass="hintPopup" style="display:none; font-weight:bold; font-size: 10pt; color:black; "></asp:Label>
+                                    <asp:Label ID="lblMyFlightsCopied" runat="server" Text="<%$ Resources:LocalizedText, CopiedToClipboard %>" CssClass="hintPopup" style="display:none; font-weight:bold; font-size: 10pt; color:black; " />
                                 </p>
-                                <p>
                             </div>
                             <div class="prefSectionRow">
-                                <h2><asp:Localize ID="locShareLogbook" runat="server" Text="<%$ Resources:LocalizedText, ShareLogbookPrompt1 %>"></asp:Localize></h2>
-                                <p><asp:Localize ID="locCreateShareLinksPrompt" runat="server" Text="<%$ Resources:LocalizedText, ShareLogbookPrompt2 %>"></asp:Localize></p>
+                                <h2><asp:Localize ID="locShareLogbook" runat="server" Text="<%$ Resources:LocalizedText, ShareLogbookPrompt1 %>" /></h2>
+                                <p><asp:Localize ID="locCreateShareLinksPrompt" runat="server" Text="<%$ Resources:LocalizedText, ShareLogbookPrompt2 %>" /></p>
                                 <asp:UpdatePanel ID="UpdatePanel3" runat="server">
                                     <ContentTemplate>
                                         <uc1:mfbShareKeys runat="server" id="mfbShareKeys" />
@@ -824,7 +808,7 @@
                             </asp:Panel>
                         </Content>
                     </cc1:AccordionPane>
-                    <cc1:AccordionPane ID="acpBackup" runat="server" ContentCssClass="" HeaderCssClass="" meta:resourcekey="acpBackupResource1">
+                    <cc1:AccordionPane ID="acpBackup" runat="server" ContentCssClass="" HeaderCssClass="">
                         <Header>
                             <asp:Localize ID="locCloudStorage" runat="server" Text="<%$ Resources:Preferences, CloudStorageHeader %>" />
                         </Header>
@@ -832,7 +816,7 @@
                             <uc1:mfbCloudStorage runat="server" id="mfbCloudStorage" />
                         </Content>
                     </cc1:AccordionPane>
-                    <cc1:AccordionPane ID="acpCloudAhoy" runat="server" meta:resourcekey="acpCloudAhoyResource1">
+                    <cc1:AccordionPane ID="acpCloudAhoy" runat="server">
                         <Header>
                             <asp:Localize ID="locCloudAhoy" runat="server" Text="<%$ Resources:Preferences, CloudAhoyName %>" />
                         </Header>
@@ -865,9 +849,9 @@
                             </table>
                         </Content>
                     </cc1:AccordionPane>
-                    <cc1:AccordionPane ID="acpoAuthApps" runat="server" Visible="False" ContentCssClass="" HeaderCssClass="" meta:resourcekey="acpoAuthAppsResource1">
+                    <cc1:AccordionPane ID="acpoAuthApps" runat="server" Visible="False" ContentCssClass="" HeaderCssClass="">
                         <Header>
-                            <asp:Localize ID="locPrefOAuthApps" Text="Authorized Applications" runat="server" meta:resourcekey="locPrefOAuthAppsResource1"></asp:Localize>
+                            <% =Resources.Preferences.HeaderOAuthApps %>
                         </Header>
                         <Content>
                             <div class="prefSectionRow">

@@ -843,22 +843,22 @@ namespace MyFlightbook.MemberPages
         protected global::System.Web.UI.WebControls.CustomValidator valCurrentPasswordRequired;
 
         /// <summary>
-        /// RequiredFieldValidator5 control.
+        /// valCurrentPasswordPresent control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator5;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator valCurrentPasswordPresent;
 
         /// <summary>
-        /// NewPasswordLabel control.
+        /// lblNewPassword control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label NewPasswordLabel;
+        protected global::System.Web.UI.WebControls.Label lblNewPassword;
 
         /// <summary>
         /// NewPassword control.
@@ -879,13 +879,13 @@ namespace MyFlightbook.MemberPages
         protected global::AjaxControlToolkit.PasswordStrength PasswordStrength2;
 
         /// <summary>
-        /// RequiredFieldValidator6 control.
+        /// valNewPassword control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator6;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator valNewPassword;
 
         /// <summary>
         /// ConfirmNewPasswordLabel control.
@@ -906,22 +906,22 @@ namespace MyFlightbook.MemberPages
         protected global::System.Web.UI.WebControls.TextBox ConfirmNewPassword;
 
         /// <summary>
-        /// NewPasswordCompare control.
+        /// valPassCompare control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CompareValidator NewPasswordCompare;
+        protected global::System.Web.UI.WebControls.CompareValidator valPassCompare;
 
         /// <summary>
-        /// RequiredFieldValidator7 control.
+        /// valPassConfirm control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator7;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator valPassConfirm;
 
         /// <summary>
         /// btnUpdatePass control.
@@ -996,13 +996,13 @@ namespace MyFlightbook.MemberPages
         protected global::System.Web.UI.WebControls.View vwStaticQA;
 
         /// <summary>
-        /// btnChangeQA control.
+        /// btnChangeQA1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnChangeQA;
+        protected global::System.Web.UI.WebControls.Button btnChangeQA1;
 
         /// <summary>
         /// vwVerifyTFAQA control.
@@ -1077,13 +1077,13 @@ namespace MyFlightbook.MemberPages
         protected global::System.Web.UI.WebControls.TextBox txtPassQA;
 
         /// <summary>
-        /// RequiredFieldValidator8 control.
+        /// valQAPassRequired control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator8;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator valQAPassRequired;
 
         /// <summary>
         /// locCurrentQuestion control.
@@ -1140,22 +1140,22 @@ namespace MyFlightbook.MemberPages
         protected global::System.Web.UI.WebControls.TextBox txtAnswer;
 
         /// <summary>
-        /// RequiredFieldValidator10 control.
+        /// reqAnswer control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator10;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator reqAnswer;
 
         /// <summary>
-        /// Button1 control.
+        /// btnChangeQA control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button1;
+        protected global::System.Web.UI.WebControls.Button btnChangeQA;
 
         /// <summary>
         /// lblQAChangeSuccess control.
@@ -1237,15 +1237,6 @@ namespace MyFlightbook.MemberPages
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.View vwPrefs;
-
-        /// <summary>
-        /// locPrefsheader control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locPrefsheader;
 
         /// <summary>
         /// accordianPrefs control.
@@ -1734,15 +1725,6 @@ namespace MyFlightbook.MemberPages
         protected global::AjaxControlToolkit.AccordionPane acpProperties;
 
         /// <summary>
-        /// locPropertiesHeader control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locPropertiesHeader;
-
-        /// <summary>
         /// UpdatePanel1 control.
         /// </summary>
         /// <remarks>
@@ -2103,15 +2085,6 @@ namespace MyFlightbook.MemberPages
         protected global::AjaxControlToolkit.AccordionPane acpEmail;
 
         /// <summary>
-        /// lblEmailNotifications control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblEmailNotifications;
-
-        /// <summary>
         /// mfbSubscriptionManager control.
         /// </summary>
         /// <remarks>
@@ -2128,15 +2101,6 @@ namespace MyFlightbook.MemberPages
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::AjaxControlToolkit.AccordionPane acpCustomCurrencies;
-
-        /// <summary>
-        /// locCustomCurrencyHeader control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locCustomCurrencyHeader;
 
         /// <summary>
         /// UpdatePanel2 control.
@@ -2184,15 +2148,6 @@ namespace MyFlightbook.MemberPages
         protected global::AjaxControlToolkit.AccordionPane acpCustomDeadlines;
 
         /// <summary>
-        /// lblDeadlinesSection control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblDeadlinesSection;
-
-        /// <summary>
         /// mfbDeadlines1 control.
         /// </summary>
         /// <remarks>
@@ -2218,33 +2173,6 @@ namespace MyFlightbook.MemberPages
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblSocialNetworkingPrompt;
-
-        /// <summary>
-        /// locShareAllFlightsPrompt control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locShareAllFlightsPrompt;
-
-        /// <summary>
-        /// locSharePublicDesc control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locSharePublicDesc;
-
-        /// <summary>
-        /// locShareAllFlightsDisclaimer control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locShareAllFlightsDisclaimer;
 
         /// <summary>
         /// lnkMyFlights control.
@@ -2488,15 +2416,6 @@ namespace MyFlightbook.MemberPages
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::AjaxControlToolkit.AccordionPane acpoAuthApps;
-
-        /// <summary>
-        /// locPrefOAuthApps control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locPrefOAuthApps;
 
         /// <summary>
         /// oAuthAuthorizationManager control.

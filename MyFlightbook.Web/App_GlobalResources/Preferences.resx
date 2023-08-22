@@ -117,6 +117,39 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AccountPasswordChange" xml:space="preserve">
+    <value>Change Password</value>
+  </data>
+  <data name="AccountPasswordConfirmNew" xml:space="preserve">
+    <value>Confirm New Password</value>
+  </data>
+  <data name="AccountPasswordCurrent" xml:space="preserve">
+    <value>Current Password</value>
+  </data>
+  <data name="AccountPasswordNew" xml:space="preserve">
+    <value>New Password</value>
+  </data>
+  <data name="AccountPasswordSuccess" xml:space="preserve">
+    <value>Password successfully changed</value>
+  </data>
+  <data name="AccountQAChange" xml:space="preserve">
+    <value>Change Security Question</value>
+  </data>
+  <data name="AccountQAChangeSuccess" xml:space="preserve">
+    <value>Security question and answer successfully changed</value>
+  </data>
+  <data name="AccountQACurrentQuestion" xml:space="preserve">
+    <value>Current question: </value>
+  </data>
+  <data name="AccountQANewAnswer" xml:space="preserve">
+    <value>New Security Answer</value>
+  </data>
+  <data name="AccountQANewQuestion" xml:space="preserve">
+    <value>New Security Question</value>
+  </data>
+  <data name="AccountQAPasswordPrompt" xml:space="preserve">
+    <value>Password</value>
+  </data>
   <data name="CloudAhoyName" xml:space="preserve">
     <value>CloudAhoy</value>
   </data>
@@ -143,6 +176,9 @@
   </data>
   <data name="CloudStoragePickDefault" xml:space="preserve">
     <value>Default cloud provider: </value>
+  </data>
+  <data name="CustCurrencyDescription" xml:space="preserve">
+    <value>You can define your own currency rules (can be useful for FBO or insurance rules)</value>
   </data>
   <data name="DecimalPref1Decimal" xml:space="preserve">
     <value>Decimal, 1 digit after decimal</value>
@@ -183,6 +219,21 @@
   <data name="DonationHistoryHeader" xml:space="preserve">
     <value>Your donation history</value>
   </data>
+  <data name="errAccountPasswordConfirmDoesNotMatch" xml:space="preserve">
+    <value>The new password and its confirmation much match.  This reduces the likelihood of a typo.</value>
+  </data>
+  <data name="errAccountPasswordNeedPrevious" xml:space="preserve">
+    <value>To change your password, you must first correctly provide your current password</value>
+  </data>
+  <data name="errAccountPasswordNewMissing" xml:space="preserve">
+    <value>Please provide a new password</value>
+  </data>
+  <data name="errAccountQAAnswerMissing" xml:space="preserve">
+    <value>Please type an answer for your question</value>
+  </data>
+  <data name="errAccountQAPasswordRequired" xml:space="preserve">
+    <value>Please type your password</value>
+  </data>
   <data name="FlightColoringColorHeader" xml:space="preserve">
     <value>With color:</value>
   </data>
@@ -209,6 +260,27 @@
   </data>
   <data name="FlightColoringSample" xml:space="preserve">
     <value>Sample (Click to change)</value>
+  </data>
+  <data name="HeaderCustomCurrency" xml:space="preserve">
+    <value>Custom Currency Rules</value>
+  </data>
+  <data name="HeaderCustomDeadlines" xml:space="preserve">
+    <value>Custom Deadlines</value>
+  </data>
+  <data name="HeaderEmail" xml:space="preserve">
+    <value>Email Notifications</value>
+  </data>
+  <data name="HeaderFeatures" xml:space="preserve">
+    <value>Features and Preferences</value>
+  </data>
+  <data name="HeaderOAuthApps" xml:space="preserve">
+    <value>Authorized Applications</value>
+  </data>
+  <data name="HeaderPropsAndTemplates" xml:space="preserve">
+    <value>Flight Properties and Templates</value>
+  </data>
+  <data name="HeaderSharePublicFlights" xml:space="preserve">
+    <value>Share your public flights</value>
   </data>
   <data name="MapColorPath" xml:space="preserve">
     <value>Path (GPS track)</value>
@@ -501,5 +573,8 @@
   </data>
   <data name="ScheduleServiceRBScanQRCode" xml:space="preserve">
     <value>Scan the QR code below to download the RosterBuster app to your iOS or Android device</value>
+  </data>
+  <data name="SharingShareFlightsDisclaimer" xml:space="preserve">
+    <value>This will ONLY show flights for which you have allowed details to be visible.</value>
   </data>
 </root>

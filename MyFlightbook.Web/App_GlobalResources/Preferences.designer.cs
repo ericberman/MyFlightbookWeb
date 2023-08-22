@@ -61,6 +61,105 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Change Password.
+        /// </summary>
+        internal static string AccountPasswordChange {
+            get {
+                return ResourceManager.GetString("AccountPasswordChange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirm New Password.
+        /// </summary>
+        internal static string AccountPasswordConfirmNew {
+            get {
+                return ResourceManager.GetString("AccountPasswordConfirmNew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current Password.
+        /// </summary>
+        internal static string AccountPasswordCurrent {
+            get {
+                return ResourceManager.GetString("AccountPasswordCurrent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Password.
+        /// </summary>
+        internal static string AccountPasswordNew {
+            get {
+                return ResourceManager.GetString("AccountPasswordNew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password successfully changed.
+        /// </summary>
+        internal static string AccountPasswordSuccess {
+            get {
+                return ResourceManager.GetString("AccountPasswordSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change Security Question.
+        /// </summary>
+        internal static string AccountQAChange {
+            get {
+                return ResourceManager.GetString("AccountQAChange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Security question and answer successfully changed.
+        /// </summary>
+        internal static string AccountQAChangeSuccess {
+            get {
+                return ResourceManager.GetString("AccountQAChangeSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current question: .
+        /// </summary>
+        internal static string AccountQACurrentQuestion {
+            get {
+                return ResourceManager.GetString("AccountQACurrentQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Security Answer.
+        /// </summary>
+        internal static string AccountQANewAnswer {
+            get {
+                return ResourceManager.GetString("AccountQANewAnswer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Security Question.
+        /// </summary>
+        internal static string AccountQANewQuestion {
+            get {
+                return ResourceManager.GetString("AccountQANewQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password.
+        /// </summary>
+        internal static string AccountQAPasswordPrompt {
+            get {
+                return ResourceManager.GetString("AccountQAPasswordPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CloudAhoy.
         /// </summary>
         internal static string CloudAhoyName {
@@ -138,6 +237,15 @@ namespace Resources {
         internal static string CloudStoragePickDefault {
             get {
                 return ResourceManager.GetString("CloudStoragePickDefault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can define your own currency rules (can be useful for FBO or insurance rules).
+        /// </summary>
+        internal static string CustCurrencyDescription {
+            get {
+                return ResourceManager.GetString("CustCurrencyDescription", resourceCulture);
             }
         }
         
@@ -259,6 +367,51 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The new password and its confirmation much match.  This reduces the likelihood of a typo..
+        /// </summary>
+        internal static string errAccountPasswordConfirmDoesNotMatch {
+            get {
+                return ResourceManager.GetString("errAccountPasswordConfirmDoesNotMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To change your password, you must first correctly provide your current password.
+        /// </summary>
+        internal static string errAccountPasswordNeedPrevious {
+            get {
+                return ResourceManager.GetString("errAccountPasswordNeedPrevious", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please provide a new password.
+        /// </summary>
+        internal static string errAccountPasswordNewMissing {
+            get {
+                return ResourceManager.GetString("errAccountPasswordNewMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please type an answer for your question.
+        /// </summary>
+        internal static string errAccountQAAnswerMissing {
+            get {
+                return ResourceManager.GetString("errAccountQAAnswerMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please type your password.
+        /// </summary>
+        internal static string errAccountQAPasswordRequired {
+            get {
+                return ResourceManager.GetString("errAccountQAPasswordRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to With color:.
         /// </summary>
         internal static string FlightColoringColorHeader {
@@ -336,6 +489,69 @@ namespace Resources {
         internal static string FlightColoringSample {
             get {
                 return ResourceManager.GetString("FlightColoringSample", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom Currency Rules.
+        /// </summary>
+        internal static string HeaderCustomCurrency {
+            get {
+                return ResourceManager.GetString("HeaderCustomCurrency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom Deadlines.
+        /// </summary>
+        internal static string HeaderCustomDeadlines {
+            get {
+                return ResourceManager.GetString("HeaderCustomDeadlines", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Email Notifications.
+        /// </summary>
+        internal static string HeaderEmail {
+            get {
+                return ResourceManager.GetString("HeaderEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Features and Preferences.
+        /// </summary>
+        internal static string HeaderFeatures {
+            get {
+                return ResourceManager.GetString("HeaderFeatures", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Authorized Applications.
+        /// </summary>
+        internal static string HeaderOAuthApps {
+            get {
+                return ResourceManager.GetString("HeaderOAuthApps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flight Properties and Templates.
+        /// </summary>
+        internal static string HeaderPropsAndTemplates {
+            get {
+                return ResourceManager.GetString("HeaderPropsAndTemplates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share your public flights.
+        /// </summary>
+        internal static string HeaderSharePublicFlights {
+            get {
+                return ResourceManager.GetString("HeaderSharePublicFlights", resourceCulture);
             }
         }
         
@@ -1209,6 +1425,15 @@ namespace Resources {
         internal static string ScheduleServiceRBScanQRCode {
             get {
                 return ResourceManager.GetString("ScheduleServiceRBScanQRCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This will ONLY show flights for which you have allowed details to be visible..
+        /// </summary>
+        internal static string SharingShareFlightsDisclaimer {
+            get {
+                return ResourceManager.GetString("SharingShareFlightsDisclaimer", resourceCulture);
             }
         }
     }
