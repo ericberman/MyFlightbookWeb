@@ -406,6 +406,15 @@
   <data name="PrefBlockListShow" xml:space="preserve">
     <value>Show these...</value>
   </data>
+  <data name="PrefCurrencyClutterControl" xml:space="preserve">
+    <value>Clutter control</value>
+  </data>
+  <data name="PrefCurrencyDisplay" xml:space="preserve">
+    <value>Currency to include</value>
+  </data>
+  <data name="PrefCurrencyTotalsSectionHeader" xml:space="preserve">
+    <value>Currency/Totals</value>
+  </data>
   <data name="PrefMathPrecisionHeader" xml:space="preserve">
     <value>When summing times</value>
   </data>

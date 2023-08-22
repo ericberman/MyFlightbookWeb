@@ -178,7 +178,7 @@ namespace MyFlightbook.Subscriptions
             return (SubscriptionFlags & EmailSubscription.FlagForType(st)) != 0;
         }
 
-        public void SetSubscription(SubscriptionType st, bool value)
+        public UInt32 SetSubscription(SubscriptionType st, bool value)
         {
             foreach (EmailSubscription es in this.Subscriptions)
             {
@@ -188,7 +188,7 @@ namespace MyFlightbook.Subscriptions
                     break;
                 }
             }
-            ToUint();
+            return ToUint();
         }
 
         /// <summary>

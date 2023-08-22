@@ -925,6 +925,33 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Clutter control.
+        /// </summary>
+        internal static string PrefCurrencyClutterControl {
+            get {
+                return ResourceManager.GetString("PrefCurrencyClutterControl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Currency to include.
+        /// </summary>
+        internal static string PrefCurrencyDisplay {
+            get {
+                return ResourceManager.GetString("PrefCurrencyDisplay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Currency/Totals.
+        /// </summary>
+        internal static string PrefCurrencyTotalsSectionHeader {
+            get {
+                return ResourceManager.GetString("PrefCurrencyTotalsSectionHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to When summing times.
         /// </summary>
         internal static string PrefMathPrecisionHeader {

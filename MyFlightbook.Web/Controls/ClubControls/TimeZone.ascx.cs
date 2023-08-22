@@ -1,10 +1,9 @@
 ﻿using MyFlightbook.Schedule;
 using System;
-using System.Collections.ObjectModel;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2020 MyFlightbook LLC
+ * Copyright (c) 2015-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -44,6 +43,12 @@ public partial class Controls_ClubControls_TimeZone : System.Web.UI.UserControl
         set { cmbTimezones.AutoPostBack = value; }
     }
 
+    public string ClientScript
+    {
+        get { return cmbTimezones.Attributes["onchange"]; }
+        set { cmbTimezones.Attributes["onchange"] = value; }
+    }
+
     public string SelectedTimeZoneId
     {
         get { return cmbTimezones.SelectedValue; }
@@ -58,8 +63,7 @@ public partial class Controls_ClubControls_TimeZone : System.Web.UI.UserControl
 
     protected void Page_Init(object sender, EventArgs e)
     {
-        ReadOnlyCollection<TimeZoneInfo> lstTZ = TimeZoneInfo.GetSystemTimeZones();
-        cmbTimezones.DataSource = lstTZ;
+        cmbTimezones.DataSource = TimeZoneInfo.GetSystemTimeZones();
         cmbTimezones.DataBind();
     }
 

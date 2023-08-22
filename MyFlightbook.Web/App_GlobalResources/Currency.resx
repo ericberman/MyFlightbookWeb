@@ -677,7 +677,7 @@
     <value>Currency computation:</value>
   </data>
   <data name="CurrencyTotalsDisplayHeader" xml:space="preserve">
-    <value>Display:</value>
+    <value>Totals options:</value>
   </data>
   <data name="Part135265a1FormatStatus" xml:space="preserve">
     <value>{0:F2} of 1,200 flight hours</value>
@@ -1241,5 +1241,8 @@
   </data>
   <data name="DeadlineCurrentTach" xml:space="preserve">
     <value>Current Tach Est.: {0:#,##0.0#}</value>
+  </data>
+  <data name="CurrencyOptions135DutyTime" xml:space="preserve">
+    <value>Show FAR 135 Duty Time Status</value>
   </data>
 </root>

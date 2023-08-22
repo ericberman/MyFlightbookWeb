@@ -70,23 +70,6 @@ namespace MyFlightbook.MemberPages
             Page.ClientScript.RegisterClientScriptInclude("copytoClip", ResolveClientUrl("~/public/Scripts/CopyClipboard.js"));
         }
 
-        protected void SetPermutationsForUser(string json)
-        {
-            int[] rgPerms = (String.IsNullOrEmpty(json)) ? Array.Empty<int>() : JsonConvert.DeserializeObject<int[]>(json);
-
-            // check for default array - 10 items, in order.
-            const int defSize = 10;  // hack - assuming it's 10.
-            bool fIsDefault = rgPerms.Length == defSize;
-            int i = 0;
-            while (fIsDefault && i < rgPerms.Length && rgPerms[i] == i)
-                i++;
-
-            if (fIsDefault && i == defSize)
-                rgPerms = Array.Empty<int>();
-
-            m_pf.SetPreferenceForKey(MFBConstants.keyCoreFieldsPermutation, rgPerms, rgPerms == null || !rgPerms.Any());
-        }
-
         private bool fHasSetUpFields = false;
 
         protected void SetUpCoreFields(HiddenField hdn, Control divCore, Control divUnused)
@@ -293,7 +276,8 @@ namespace MyFlightbook.MemberPages
             ckTrackCFITime.Checked = m_pf.IsInstructor;
             ckUseArmyCurrency.Checked = m_pf.UsesArmyCurrency;
             ckUse117DutyTime.Checked = m_pf.UsesFAR117DutyTime;
-            rbl117Rules.SelectedIndex = m_pf.UsesFAR117DutyTimeAllFlights ? 1 : 0;
+            rb117AllFlights.Checked = m_pf.UsesFAR117DutyTimeAllFlights;
+            rb117OnlyDutyTimeFlights.Checked = !m_pf.UsesFAR117DutyTimeAllFlights;
             ckUse135DutyTime.Checked = m_pf.UsesFAR135DutyTime;
             ckUse1252xxCurrency.Checked = m_pf.UsesFAR1252xxCurrency;
             ckUse13529xCurrency.Checked = m_pf.UsesFAR13529xCurrency;
@@ -307,9 +291,20 @@ namespace MyFlightbook.MemberPages
             rbFAARules.Checked = cj == CurrencyJurisdiction.FAA;
             ckAllowNightTouchAndGo.Checked = m_pf.AllowNightTouchAndGoes;
             ckDayLandingsForDayCurrency.Checked = m_pf.OnlyDayLandingsForDayCurrency;
-            rblTotalsOptions.SelectedValue = m_pf.TotalsGroupingMode.ToString();
+            switch (m_pf.TotalsGroupingMode)
+            {
+                case TotalsGrouping.Model:
+                    rbTotalsModeModel.Checked = true;
+                    break;
+                case TotalsGrouping.CatClass:
+                    rbTotalsModeCatClass.Checked = true;
+                    break;
+                case TotalsGrouping.Family:
+                    rbTotalsModeICAO.Checked = true;
+                    break;
+            }
             ckIncludeModelFeatureTotals.Checked = !m_pf.SuppressModelFeatureTotals;
-            rblCurrencyPref.SelectedIndex = (m_pf.UsesPerModelCurrency ? 1 : 0);
+            rbCurrencyModeModel.Checked = m_pf.UsesPerModelCurrency;
             if (m_pf.UsesHHMM)
                 rbDecimalHHMM.Checked = true;
             else
@@ -322,8 +317,15 @@ namespace MyFlightbook.MemberPages
                 else
                     rbDecimal2.Checked = true;
             }
-            rblQuantization.SelectedIndex = m_pf.MathRoundingUnit != 60 ? 1 : 0;
-            rblDateEntryPreferences.SelectedIndex = (m_pf.UsesUTCDateOfFlight ? 1 : 0);
+            if (m_pf.MathRoundingUnit == 60)
+                rbPrecisionMinutes.Checked = true;
+            else
+                rbPrecisionHundredths.Checked = true;
+            if (m_pf.UsesUTCDateOfFlight)
+                rbDateUTC.Checked = true;
+            else
+                rbDateLocal.Checked = true;
+
             prefTimeZone.SelectedTimeZone = m_pf.PreferredTimeZone;
             AddCurrencyExpirations(cmbExpiredCurrency);
             cmbAircraftMaintWindow.SelectedValue = m_pf.GetPreferenceForKey(MFBConstants.keyWindowAircraftMaintenance, MFBConstants.DefaultMaintenanceWindow).ToString(CultureInfo.InvariantCulture);
@@ -665,104 +667,6 @@ namespace MyFlightbook.MemberPages
             mvQA.SetActiveView(vwChangeQA);
         }
         #endregion
-
-        #region Preferences
-        protected void btnUpdateLocalPrefs_Click(object sender, EventArgs e)
-        {
-            m_pf.DisplayTimesByDefault = ckShowTimes.Checked;
-            m_pf.TracksSecondInCommandTime = ckSIC.Checked;
-            m_pf.IsInstructor = ckTrackCFITime.Checked;
-
-            if (m_pf.UsesHHMM = rbDecimalHHMM.Checked)
-            {
-                m_pf.SetPreferenceForKey(MFBConstants.keyDecimalSettings, null, true); 
-                Session[MFBConstants.keyDecimalSettings] = null;
-            }
-            else
-            {
-                // update the session as well.
-                DecimalFormat df = rbDecimalAdaptive.Checked ? DecimalFormat.Adaptive : (rbDecimal1.Checked ? DecimalFormat.OneDecimal : DecimalFormat.TwoDecimal);
-                if (df == DecimalFormat.Adaptive)
-                {
-                    m_pf.SetPreferenceForKey(MFBConstants.keyDecimalSettings, null, true);
-                    Session[MFBConstants.keyDecimalSettings] = null;
-                }
-                else
-                {
-                    m_pf.SetPreferenceForKey(MFBConstants.keyDecimalSettings, df);
-                    Session[MFBConstants.keyDecimalSettings] = df;  
-                }
-            }
-            int quant = Convert.ToInt32(rblQuantization.SelectedValue, CultureInfo.InvariantCulture);
-            m_pf.SetPreferenceForKey(MFBConstants.keyMathRoundingUnits, quant, quant == 60);
-            Session[MFBConstants.keyMathRoundingUnits] = quant; // make sure it's updated in the session as well!
-
-            m_pf.SetPreferenceForKey(MFBConstants.keyTrackOriginal, ckPreserveOriginal.Checked, !ckPreserveOriginal.Checked);
-
-            m_pf.UsesUTCDateOfFlight = rblDateEntryPreferences.SelectedIndex > 0;
-            m_pf.PreferredTimeZoneID = prefTimeZone.SelectedTimeZoneId;
-
-            SetPermutationsForUser(hdnPermutation.Value);
-
-            try
-            {
-                m_pf.FCommit();
-                lblLocalPrefsUpdated.Visible = true;
-            }
-            catch (MyFlightbookException ex)
-            {
-                lblLocalPrefsUpdated.Visible = true;
-                lblLocalPrefsUpdated.Text = ex.Message;
-                lblLocalPrefsUpdated.CssClass = "error";
-            }
-        }
-
-        protected void btnResetPermutations_Click(object sender, EventArgs e)
-        {
-            SetPermutationsForUser(hdnPermutation.Value);
-        }
-
-        protected void btnUpdateCurrencyPrefs_Click(object sender, EventArgs e)
-        {
-            m_pf.UsesArmyCurrency = ckUseArmyCurrency.Checked;
-            m_pf.UsesFAR117DutyTime = ckUse117DutyTime.Checked;
-            m_pf.UsesFAR117DutyTimeAllFlights = rbl117Rules.SelectedIndex != 0;
-            m_pf.UsesFAR1252xxCurrency = ckUse1252xxCurrency.Checked;
-            m_pf.UsesFAR135DutyTime = ckUse135DutyTime.Checked;
-            m_pf.UsesFAR13529xCurrency = ckUse13529xCurrency.Checked;
-            m_pf.UsesFAR13526xCurrency = ckUse13526xCurrency.Checked;
-            m_pf.UsesFAR61217Currency = ckUse61217Currency.Checked;
-            if (rbFAARules.Checked)
-                m_pf.CurrencyJurisdiction = CurrencyJurisdiction.FAA;
-            else if (rbCanadianRules.Checked)
-                m_pf.CurrencyJurisdiction = CurrencyJurisdiction.Canada;
-            else if (rbEASARules.Checked)
-                m_pf.CurrencyJurisdiction = CurrencyJurisdiction.EASA;
-            else if (rbAustraliaRules.Checked)
-                m_pf.CurrencyJurisdiction = CurrencyJurisdiction.Australia;
-            m_pf.AllowNightTouchAndGoes = ckAllowNightTouchAndGo.Checked;
-            m_pf.OnlyDayLandingsForDayCurrency = ckDayLandingsForDayCurrency.Checked;
-            m_pf.UsesPerModelCurrency = (rblCurrencyPref.SelectedIndex > 0);
-            m_pf.TotalsGroupingMode = (TotalsGrouping)Enum.Parse(typeof(TotalsGrouping), rblTotalsOptions.SelectedValue);
-            m_pf.SuppressModelFeatureTotals = !ckIncludeModelFeatureTotals.Checked;
-            m_pf.CurrencyExpiration = (CurrencyExpiration.Expiration)Enum.Parse(typeof(CurrencyExpiration.Expiration), cmbExpiredCurrency.SelectedValue);
-
-            try
-            {
-                m_pf.FCommit();
-                lblCurrencyPrefsUpdated.Visible = true;
-                int maintWindow = Convert.ToInt32(cmbAircraftMaintWindow.SelectedValue, CultureInfo.InvariantCulture);
-                m_pf.SetPreferenceForKey(MFBConstants.keyWindowAircraftMaintenance, maintWindow, maintWindow == MFBConstants.DefaultMaintenanceWindow);
-            }
-            catch (MyFlightbookException ex)
-            {
-                lblCurrencyPrefsUpdated.Visible = true;
-                lblCurrencyPrefsUpdated.Text = ex.Message;
-                lblCurrencyPrefsUpdated.CssClass = "error";
-            }
-        }
-
-        #endregion // Preferences
 
         #region Sharing
         protected void lnkDeAuthGPhotos_Click(object sender, EventArgs e)

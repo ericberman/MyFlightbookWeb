@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master"
-    Codebehind="EditProfile.aspx.cs" Inherits="MyFlightbook.MemberPages.Member_EditProfile" Title="Edit Profile" culture="auto" meta:resourcekey="PageResource1" %>
+    Codebehind="EditProfile.aspx.cs" Inherits="MyFlightbook.MemberPages.Member_EditProfile" culture="auto" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register src="../Controls/mfbMultiFileUpload.ascx" tagname="mfbMultiFileUpload" tagprefix="uc7" %>
@@ -29,17 +29,41 @@
     <asp:Label ID="lblName" runat="server" />
 </asp:Content>
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
+    <script type="text/javascript">
+        function setLocalPref(name, value) {
+            var params = new Object();
+            params.prefName = name;
+            params.prefValue = value;
+            var d = JSON.stringify(params);
+            $.ajax({
+                url: '<% =ResolveUrl("~/Member/Ajax.asmx/SetLocalPref") %>',
+                type: "POST", data: d, dataType: "json", contentType: "application/json",
+                error: function (xhr, status, error) {
+                    window.alert(xhr.responseJSON.Message);
+                },
+                complete: function () { },
+                success: function () { }
+            });
+        }
+        function setLocalPrefValue(name, sender) {
+            setLocalPref(name, sender.value);
+        }
+
+        function setLocalPrefChecked(name, sender) {
+            setLocalPref(name, sender.checked);
+        }
+    </script>
     <asp:MultiView ID="mvProfile" runat="server">
         <asp:View runat="server" ID="vwAccount">
             <h2>
-                <asp:Localize ID="locAccountHeader" runat="server" Text="<%$ Resources:Profile, accountHeader %>"></asp:Localize>
+                <asp:Localize ID="locAccountHeader" runat="server" Text="<%$ Resources:Profile, accountHeader %>" />
             </h2>
             <p><asp:Label ID="lblMemberSince" runat="server"></asp:Label></p>
             <cc1:Accordion ID="accordianAccount" runat="server" HeaderCssClass="accordianHeader" HeaderSelectedCssClass="accordianHeaderSelected" ContentCssClass="accordianContent" TransitionDuration="250"  SelectedIndex="-1" RequireOpenedPane="false">
                 <Panes>
                     <cc1:AccordionPane runat="server" ID="acpName">
                         <Header>
-                            <asp:Localize ID="locaHeadName" runat="server" Text="<%$ Resources:Tabs, ProfileName %>" ></asp:Localize>
+                            <asp:Localize ID="locaHeadName" runat="server" Text="<%$ Resources:Tabs, ProfileName %>" />
                         </Header>
                         <Content>
                             <asp:MultiView ID="mvNameEmail" runat="server" ActiveViewIndex="0">
@@ -442,25 +466,25 @@
                                         <td style="font-size:smaller; font-style:italic;">&nbsp;<asp:Localize ID="locSamp2" runat="server" Text="<%$ Resources:Preferences, DecimalPrefSample2 %>" /></td>
                                     </tr>
                                     <tr>
-                                        <td><asp:RadioButton ID="rbDecimalAdaptive" runat="server" GroupName="decimalPref" /></td>
+                                        <td><asp:RadioButton ID="rbDecimalAdaptive" runat="server" GroupName="decimalPref" onclick="setLocalPref('decimal', 'Adaptive');" /></td>
                                         <td><asp:Label ID="locAdapt" runat="server" Text="<%$ Resources:Preferences, DecimalPrefAdaptive %>" AssociatedControlID="rbDecimalAdaptive" /></td>
                                         <td style="text-align:center"><% =(70.0M / 60.0M).ToString("#,##0.0#", System.Globalization.CultureInfo.CurrentCulture) %></td>
                                         <td style="text-align:center;"><% =(72.0 / 60.0).ToString("#,##0.0#", System.Globalization.CultureInfo.CurrentCulture) %></td>
                                     </tr>
                                     <tr>
-                                        <td><asp:RadioButton ID="rbDecimal1" runat="server" GroupName="decimalPref" /></td>
+                                        <td><asp:RadioButton ID="rbDecimal1" runat="server" GroupName="decimalPref" onclick="setLocalPref('decimal', 'OneDecimal');" /></td>
                                         <td><asp:Label ID="lbl1Dec" runat="server" Text="<%$ Resources:Preferences, DecimalPref1Decimal %>" AssociatedControlID="rbDecimal1" /></td>
                                         <td style="text-align:center;"><% =(70.0M / 60.0M).ToString("#,##0.0", System.Globalization.CultureInfo.CurrentCulture) %></td>
                                         <td style="text-align:center;"><% =(72.0 / 60.0).ToString("#,##0.0", System.Globalization.CultureInfo.CurrentCulture) %></td>
                                     </tr>
                                     <tr>
-                                        <td><asp:RadioButton ID="rbDecimal2" runat="server" GroupName="decimalPref" /></td>
+                                        <td><asp:RadioButton ID="rbDecimal2" runat="server" GroupName="decimalPref" onclick="setLocalPref('decimal', 'TwoDecimal');" /></td>
                                         <td><asp:Label ID="lbl2Dec" runat="server" Text="<%$ Resources:Preferences, DecimalPref2Decimal %>" AssociatedControlID="rbDecimal2" /></td>
                                         <td style="text-align:center;"><% =(70.0M / 60.0M).ToString("#,##0.00", System.Globalization.CultureInfo.CurrentCulture) %></td>
                                         <td style="text-align:center;"><% =(72.0 / 60.0).ToString("#,##0.00", System.Globalization.CultureInfo.CurrentCulture) %></td>
                                     </tr>
                                     <tr>
-                                        <td><asp:RadioButton ID="rbDecimalHHMM" runat="server" GroupName="decimalPref" /></td>
+                                        <td><asp:RadioButton ID="rbDecimalHHMM" runat="server" GroupName="decimalPref" onclick="setLocalPref('decimal', 'HHMM');" /></td>
                                         <td><asp:Label ID="lblHHMM" runat="server" Text="<%$ Resources:Preferences, DecimalPrefHHMM %>" AssociatedControlID="rbDecimalHHMM" /></td>
                                         <td style="text-align:center;"><% =(70.0M / 60.0M).FormatDecimal(true) %></td>
                                         <td style="text-align:center;"><% =(72.0 / 60.0).FormatDecimal(true) %></td>
@@ -469,40 +493,35 @@
                                 <div>
                                     <asp:Label ID="lblPrecHeader" runat="server" Text="<%$ Resources:Preferences, PrefMathPrecisionHeader %>" Font-Bold="true" />
                                     <asp:HyperLink ID="lnkQuant" runat="server" Text="<%$ Resources:Preferences, PrefMathPrecisionNote %>" NavigateUrl="~/Public/FAQ.aspx?q=72#72" />
-                                    <asp:RadioButtonList ID="rblQuantization" runat="server" RepeatDirection="Horizontal">
-                                        <asp:ListItem Text="<%$ Resources:Preferences, PrefMathPrecisionMinutes %>" Value="60" Selected="True" />
-                                        <asp:ListItem Text="<%$ Resources:Preferences, PrefMathPrecisionHundredths %>" Value="100" />
-                                    </asp:RadioButtonList>
+                                    <asp:RadioButton ID="rbPrecisionMinutes" runat="server" GroupName="rbgMathPrecision" onclick="setLocalPref('rounding', '60');" Text="<%$ Resources:Preferences, PrefMathPrecisionMinutes %>" Checked="true" />
+                                    <asp:RadioButton ID="rbPrecisionHundredths" runat="server" GroupName="rbgMathPrecision" onclick="setLocalPref('rounding', '100');" Text="<%$ Resources:Preferences, PrefMathPrecisionHundredths %>" />
                                 </div>
                                 <h3><asp:Label ID="lblPrefTimeZone" runat="server" Text="<%$ Resources:Preferences, PrefSectNewFlightTimeZone %>" /></h3>
                                 <div>&nbsp;&nbsp;<asp:Label ID="lblPrefTimeZoneExplanation" CssClass="fineprint" runat="server" Text="<%$ Resources:Preferences, PrefSectNewFlightTimeZoneTip %>" /></div>
-                                <div>&nbsp;&nbsp;<uc1:TimeZone runat="server" ID="prefTimeZone" DefaultOffset="0" /></div>
+                                <div>&nbsp;&nbsp;<uc1:TimeZone runat="server" ID="prefTimeZone" DefaultOffset="0" AutoPostBack="false" ClientScript="javascript:setLocalPrefValue('timezone', this);" /></div>
                                 <h3><asp:Label ID="lblPrefDates" runat="server" Text="<%$ Resources:Preferences, PrefSectNewFlightTimeZonePrompt %>" /></h3>
-                                <asp:RadioButtonList ID="rblDateEntryPreferences" runat="server" 
-                                    ValidationGroup="valPrefs" meta:resourcekey="rblDateEntryPreferencesResource1">
-                                    <asp:ListItem Text="<%$ Resources:Preferences, PrefSectNewFlightTimeZoneLocal %>" Value="1" />
-                                    <asp:ListItem Text="<%$ Resources:Preferences, PrefSectNewFlightTimeZoneUTC %>" Value="0" />
-                                </asp:RadioButtonList>
+                                <div><asp:RadioButton ID="rbDateLocal" runat="server" GroupName="rbgDateEntryTZ" Text="<%$ Resources:Preferences, PrefSectNewFlightTimeZoneLocal %>" onclick="setLocalPref('dateofflighttz', 'local');" /></div>
+                                <div><asp:RadioButton ID="rbDateUTC" runat="server" GroupName="rbgDateEntryTZ" Text="<%$ Resources:Preferences, PrefSectNewFlightTimeZoneUTC %>" onclick="setLocalPref('dateofflighttz', 'utc');" /></div>
                                 <h3><asp:Label ID="lblFieldsToShow" runat="server" Text="<%$ Resources:Preferences, PrefSectFlightEntryDataToInclude %>" /></h3>
                                 <table> <!-- table here is to match layout of radiobuttonlist above -->
                                     <tr>
                                         <td>
-                                            <asp:CheckBox ID="ckTrackCFITime" runat="server" Text="<%$ Resources:Preferences, PrefSectNewFlightShowCFI %>" ValidationGroup="valPrefs" />
+                                            <asp:CheckBox ID="ckTrackCFITime" runat="server" onclick="setLocalPrefChecked('usecfi', this);" Text="<%$ Resources:Preferences, PrefSectNewFlightShowCFI %>" ValidationGroup="valPrefs" />
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <asp:CheckBox ID="ckSIC" runat="server" Text="<%$ Resources:Preferences, PrefSectNewFlightShowSIC %>" ValidationGroup="valPrefs" />
+                                            <asp:CheckBox ID="ckSIC" runat="server" onclick="setLocalPrefChecked('usesic', this);" Text="<%$ Resources:Preferences, PrefSectNewFlightShowSIC %>" ValidationGroup="valPrefs" />
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <asp:CheckBox ID="ckShowTimes" runat="server" Text="<%$ Resources:Preferences, PrefSectNewFlightShowTimes %>" ValidationGroup="valPrefs" />
+                                            <asp:CheckBox ID="ckShowTimes" runat="server" onclick="setLocalPrefChecked('tracktimes', this);" Text="<%$ Resources:Preferences, PrefSectNewFlightShowTimes %>" ValidationGroup="valPrefs" />
                                         </td>
                                     </tr>
                                 </table>
                                 <h3><% =Resources.Preferences.PrefSectFlightMisc %></h3>
-                                <div><asp:CheckBox ID="ckPreserveOriginal" runat="server" Text="<%$ Resources:Preferences, PrefSaveOriginalFlight %>" /><uc1:mfbTooltip runat="server" ID="ttTrackChanges" BodyContent="<%$ Resources:Preferences, PrefSaveOriginalFlightDesc %>" />
+                                <div><asp:CheckBox ID="ckPreserveOriginal" runat="server" Text="<%$ Resources:Preferences, PrefSaveOriginalFlight %>" onclick="setLocalPrefChecked('trackoriginal', this);" /><uc1:mfbTooltip runat="server" ID="ttTrackChanges" BodyContent="<%$ Resources:Preferences, PrefSaveOriginalFlightDesc %>" />
                                 </div>
                             </div>
                             <script type="text/javascript">
@@ -560,6 +579,7 @@
                                 function setPermutations(perms) {
                                     var elePerms = document.getElementById('<% =hdnPermutation.ClientID %>');
                                     elePerms.value = JSON.stringify(perms);
+                                    setLocalPref("FIELDDISPLAY", elePerms.value);
                                 }
 
                                 function updatePermuation(insert, before) {
@@ -578,7 +598,6 @@
 
                                 function resetPermutations() {
                                     setPermutations([]);
-                                    __doPostBack('<% =btnResetPermutations.ClientID %>', '');
                                 }
                             </script>
                             <h3><asp:Label ID="lblCustCore" runat="server" Text="<%$ Resources:Preferences, PrefSectNewFlightCustomization %>" /></h3>
@@ -610,18 +629,11 @@
                                 </tr>
                                 <tr>
                                     <td colspan="2">
-                                        <asp:Button ID="btnResetPermutations" runat="server" Text="<%$ Resources:Preferences, PrefSectNewFlightCustReset %>" OnClientClick="javascript:resetPermutations();" OnClick="btnResetPermutations_Click" />
+                                        <asp:Button ID="btnResetPermutations" runat="server" Text="<%$ Resources:Preferences, PrefSectNewFlightCustReset %>" OnClientClick="javascript:resetPermutations();" />
                                     </td>
                                 </tr>
                             </table>
                             <asp:HiddenField ID="hdnPermutation" runat="server" Value="0,1,2,3,4,5,6,7,8,9" />
-                            <div class="prefSectionRow">
-                                <asp:Button ID="btnUpdateLocalPrefs" runat="server"  
-                                    Text="<%$ Resources:LocalizedText, profileUpdatePreferences %>" 
-                                    ValidationGroup="valPrefs" onclick="btnUpdateLocalPrefs_Click" />
-                                <br />
-                                <asp:Label ID="lblLocalPrefsUpdated" runat="server" CssClass="success" EnableViewState="False" Text="<%$ Resources:LocalizedText, profilePreferencesUpdated %>" Visible="False" />
-                            </div>
                         </Content>
                     </cc1:AccordionPane>
                     <cc1:AccordionPane ID="accColoring" runat="server" HeaderCssClass="accordianHeader" ContentCssClass="accordianContent">
@@ -653,84 +665,73 @@
                     </cc1:AccordionPane>
                     <cc1:AccordionPane ID="acpCurrency" runat="server" ContentCssClass="" HeaderCssClass="" meta:resourcekey="acpCurrencyResource1">
                         <Header>
-                            <asp:Label ID="lblCurrencyPrefs" runat="server" Text="Currency/Totals" 
-                                meta:resourcekey="lblCurrencyPrefsResource1"></asp:Label>
+                            <asp:Label ID="lblCurrencyPrefs" runat="server" Text="<%$ Resources:Preferences, PrefCurrencyTotalsSectionHeader %>" />
                         </Header>
                         <Content>
                             <div class="prefSectionRow">
                                 <h3><%=Resources.Currency.CurrencyTotalsDisplayHeader %></h3>
-                                <asp:RadioButtonList ID="rblTotalsOptions" runat="server">
-                                    <asp:ListItem Selected="True" Text="<%$ Resources:Currency, CurrencyOptionsGroupCatClass %>" Value="CatClass" />
-                                    <asp:ListItem Text="<%$ Resources:Currency, CurrencyOptionsGroupModel %>" Value="Model" />
-                                    <asp:ListItem Text="<%$ Resources:Currency, CurrencyOptionsGroupICAO %>" Value="Family" />
-                                </asp:RadioButtonList>
-                                <div><asp:CheckBox ID="ckIncludeModelFeatureTotals" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsTotalsModelFeatures %>" /></div>
+                                <div><asp:RadioButton ID="rbTotalsModeCatClass" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsGroupCatClass %>" GroupName="rbTotalsMode" onclick="setLocalPref('TotalsMode', 'CatClass');" /></div>
+                                <div><asp:RadioButton ID="rbTotalsModeModel" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsGroupModel %>" GroupName="rbTotalsMode" onclick="setLocalPref('TotalsMode', 'Model');" /></div>
+                                <div><asp:RadioButton ID="rbTotalsModeICAO" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsGroupICAO %>" GroupName="rbTotalsMode" onclick="setLocalPref('TotalsMode', 'Family');" /></div>
+                                <div><asp:CheckBox ID="ckIncludeModelFeatureTotals" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsTotalsModelFeatures %>" onclick="setLocalPrefChecked('totalsIncludeMF', this);" /></div>
                                 <h3><%=Resources.Currency.CurrencyPrefsHeader %></h3>
                                 <div>
                                     <asp:Label ID="lblJurisdictionHeader" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsJurisdiction %>" />
-                                    <table>
-                                        <tr>
-                                            <td><asp:RadioButton ID="rbFAARules" runat="server" GroupName="currJurisd" /></td>
-                                            <td><asp:Label ID="lblFAARules" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsUseFAA %>" AssociatedControlID="rbFAARules" /></td>
-                                        </tr>
-                                        <tr>
-                                            <td><asp:RadioButton ID="rbCanadianRules" runat="server" GroupName="currJurisd" /></td>
-                                            <td><asp:Label ID="lblCanadaRules" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsUseCanada %>" AssociatedControlID="rbCanadianRules" /></td>
-                                        </tr>
-                                        <tr>
-                                            <td><asp:RadioButton ID="rbEASARules" runat="server" GroupName="currJurisd" /></td>
-                                            <td><asp:Label ID="lblEASARules" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsUseEASA %>" AssociatedControlID="rbEASARules" />
-                                                <span class="fineprint"><asp:HyperLink ID="lnkCurrencyNotes2" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsNotesRef %>" Target="_blank" NavigateUrl="~/Public/CurrencyDisclaimer.aspx#instrument" /></span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><asp:RadioButton ID="rbAustraliaRules" runat="server" GroupName="currJurisd" /></td>
-                                            <td><asp:Label ID="lblAustraliaRules" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsUseCASA %>" AssociatedControlID="rbAustraliaRules" /></td>
-                                        </tr>
-                                    </table>
+                                    <div>
+                                        <asp:RadioButton ID="rbFAARules" runat="server" GroupName="currJurisd" onclick="setLocalPref('CurrencyJurisdiction', 'FAA');" />
+                                        <asp:Label ID="lblFAARules" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsUseFAA %>" AssociatedControlID="rbFAARules" />
+                                    </div>
+                                    <div>
+                                        <asp:RadioButton ID="rbCanadianRules" runat="server" GroupName="currJurisd" onclick="setLocalPref('CurrencyJurisdiction', 'Canada');" />
+                                        <asp:Label ID="lblCanadaRules" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsUseCanada %>" AssociatedControlID="rbCanadianRules" />
+                                    </div>
+                                    <div>
+                                        <asp:RadioButton ID="rbEASARules" runat="server" GroupName="currJurisd" onclick="setLocalPref('CurrencyJurisdiction', 'EASA');" />
+                                        <asp:Label ID="lblEASARules" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsUseEASA %>" AssociatedControlID="rbEASARules" />
+                                            <span class="fineprint"><asp:HyperLink ID="lnkCurrencyNotes2" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsNotesRef %>" Target="_blank" NavigateUrl="~/Public/CurrencyDisclaimer.aspx#instrument" /></span>
+                                        
+                                    </div>
+                                    <div>
+                                        <asp:RadioButton ID="rbAustraliaRules" runat="server" GroupName="currJurisd" onclick="setLocalPref('CurrencyJurisdiction', 'Australia');" />
+                                        <asp:Label ID="lblAustraliaRules" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsUseCASA %>" AssociatedControlID="rbAustraliaRules" />
+                                    </div>
                                 </div>
-                                <div><asp:Localize ID="locExpireCurrency" Text="<%$ Resources:Currency, CurrencyOptionsExpiredCurrency %>" runat="server" /> <asp:DropDownList ID="cmbExpiredCurrency" runat="server" /></div>
-                                <div><asp:CheckBox ID="ckUseArmyCurrency" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsArmyCurreny %>" /></div>
-                                <div><asp:CheckBox ID="ckUse117DutyTime" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsFAR117DutyTime %>" /></div>
+                                <br />
+                                <div><asp:RadioButton ID="rbCurrencyModeCatClass" GroupName="currencyMode" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsByCatClass %>" onclick="setLocalPref('usePerModelCurrency', 'false');" Checked="true" /></div>
+                                <div><asp:RadioButton ID="rbCurrencyModeModel" GroupName="currencyMode" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsByModel %>" onclick="setLocalPref('usePerModelCurrency', 'true');" /></div>
+                                <br />
+                                <div><asp:CheckBox ID="ckAllowNightTouchAndGo" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsNightTouchAndGo %>" onclick="setLocalPrefChecked('allowNightTouchAndGo', this);" /> <uc1:mfbTooltip runat="server" ID="ttNightTG" BodyContent="<%$ Resources:Currency, CurrencyOptionNoteNightTouchAndGo %>" /></div>
+                                <div><asp:CheckBox ID="ckDayLandingsForDayCurrency" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsDayLandings %>" onclick="setLocalPrefChecked('onlyDayLandingsForDayCurrency', this);" /> <uc1:mfbTooltip runat="server" ID="ttDayLandings" BodyContent="<%$ Resources:Currency, CurrencyOptionNoteDayLandings %>" /></div>
+
+                                <h3><% =Resources.Preferences.PrefCurrencyDisplay %></h3>
+                                <div><asp:CheckBox ID="ckUseArmyCurrency" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsArmyCurreny %>" onclick="setLocalPrefChecked('useArmyCurrency', this);" /></div>
+                                <div><asp:CheckBox ID="ckUse117DutyTime" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsFAR117DutyTime %>" onclick="setLocalPrefChecked('use117DutyTime', this);" /></div>
                                 <div style="margin-left:2em;">
-                                    <asp:RadioButtonList ID="rbl117Rules" runat="server">
-                                        <asp:ListItem Value="0" Text="<%$ Resources:Currency, Currency117OnlyDutyTimeFlights %>"></asp:ListItem>
-                                        <asp:ListItem Selected="True" Value="1" Text="<%$ Resources:Currency, Currency117AllFlights %>"></asp:ListItem>
-                                    </asp:RadioButtonList>
+                                    <div><asp:RadioButton ID="rb117OnlyDutyTimeFlights" GroupName="117Flights" runat="server" Text="<%$ Resources:Currency, Currency117OnlyDutyTimeFlights %>" onclick="setLocalPref('use117DutyAllFlights', 'false');" /></div>
+                                    <div><asp:RadioButton ID="rb117AllFlights" GroupName="117Flights" runat="server" Text="<%$ Resources:Currency, Currency117AllFlights %>" onclick="setLocalPref('use117DutyAllFlights', 'true');" /></div>
                                 </div>
                                 <div runat="server" id="div135DutyTime" visible="False">
-                                    <asp:CheckBox ID="ckUse135DutyTime" runat="server" Text="Show FAR 135 Duty Time Status" />
+                                    <asp:CheckBox ID="ckUse135DutyTime" runat="server" Text="<%$ Resources:Currency, CurrencyOptions135DutyTime %>" onclick="setLocalPrefChecked('use135DutyTime', this);" />
                                 </div>
-                                <div><asp:CheckBox ID="ckUse1252xxCurrency" runat="server" Text="<%$ Resources:Currency, CurrencyOptions1252xx %>" /></div>
-                                <div><asp:CheckBox ID="ckUse13529xCurrency" runat="server" Text="<%$ Resources:Currency, CurrencyOptions13529x %>" /></div>
-                                <div><asp:CheckBox ID="ckUse13526xCurrency" runat="server" Text="<%$ Resources:Currency, CurrencyOptions13526x %>" /></div>
-                                <div><asp:CheckBox ID="ckUse61217Currency" runat="server" Text="<%$ Resources:Currency, Part61217Option %>" /></div>
-                                <div><asp:CheckBox ID="ckAllowNightTouchAndGo" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsNightTouchAndGo %>" /> <uc1:mfbTooltip runat="server" ID="ttNightTG" BodyContent="<%$ Resources:Currency, CurrencyOptionNoteNightTouchAndGo %>" /></div>
-                                <div><asp:CheckBox ID="ckDayLandingsForDayCurrency" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsDayLandings %>" /> <uc1:mfbTooltip runat="server" ID="ttDayLandings" BodyContent="<%$ Resources:Currency, CurrencyOptionNoteDayLandings %>" /></div>
-                                <div>
-                                    <asp:RadioButtonList ID="rblCurrencyPref" runat="server">
-                                        <asp:ListItem Selected="True" Value="0" Text="<%$ Resources:Currency, CurrencyOptionsByCatClass %>" />
-                                        <asp:ListItem Value="1" Text="<%$ Resources:Currency, CurrencyOptionsByModel %>" />
-                                    </asp:RadioButtonList>
-                                </div>
-                                <div>
+                                <div><asp:CheckBox ID="ckUse1252xxCurrency" runat="server" Text="<%$ Resources:Currency, CurrencyOptions1252xx %>" onclick="setLocalPrefChecked('use1252Currency', this);" /></div>
+                                <div><asp:CheckBox ID="ckUse13529xCurrency" runat="server" Text="<%$ Resources:Currency, CurrencyOptions13529x %>" onclick="setLocalPrefChecked('useFAR13529xCurrency', this);" /></div>
+                                <div><asp:CheckBox ID="ckUse13526xCurrency" runat="server" Text="<%$ Resources:Currency, CurrencyOptions13526x %>" onclick="setLocalPrefChecked('useFAR13526xCurrency', this);" /></div>
+                                <div><asp:CheckBox ID="ckUse61217Currency" runat="server" Text="<%$ Resources:Currency, Part61217Option %>" onclick="setLocalPrefChecked('useFAR61217Currency', this);" /></div>
+                                <h3><% =Resources.Preferences.PrefCurrencyClutterControl %></h3>
+                                <p>
+                                    <asp:Localize ID="locExpireCurrency" Text="<%$ Resources:Currency, CurrencyOptionsExpiredCurrency %>" runat="server" />
+                                    <asp:DropDownList ID="cmbExpiredCurrency" runat="server" onchange="setLocalPrefValue('currencyExpiration', this);" />
+                                </p>
+                                <p>
                                     <asp:Localize ID="Localize1" Text="<%$ Resources:Currency, CurrencyOptionsAircraftMaintenance %>" runat="server" />
-                                    <asp:DropDownList ID="cmbAircraftMaintWindow" runat="server">
+                                    <asp:DropDownList ID="cmbAircraftMaintWindow" runat="server" onchange="setLocalPrefValue('maintWindow', this);">
                                         <asp:ListItem Text="<%$ Resources:Currency, CurrencyOptionsAircraftMaintenanceAlways %>" Value="-1" />
                                         <asp:ListItem Text="<%$ Resources:Currency, CurrencyOptionsAircraftMaintenance180Days %>" Value="180" />
                                         <asp:ListItem Text="<%$ Resources:Currency, CurrencyOptionsAircraftMaintenance120Days %>" Value="120" />
                                         <asp:ListItem Text="<%$ Resources:Currency, CurrencyOptionsAircraftMaintenance90Days %>" Value="90" Selected="True" />
                                         <asp:ListItem Text="<%$ Resources:Currency, CurrencyOptionsAircraftMaintenance30Days %>" Value="30" />
                                     </asp:DropDownList> 
-                                </div>
-                            </div>
-                            <div class="prefSectionRow">
-                                <asp:Button ID="btnUpdateCurrencyPrefs" runat="server"  
-                                    Text="<%$ Resources:LocalizedText, profileUpdatePreferences %>" 
-                                    ValidationGroup="valPrefs" onclick="btnUpdateCurrencyPrefs_Click" meta:resourcekey="btnUpdateCurrencyPrefsResource3" />
-                                <br />
-                                <asp:Label ID="lblCurrencyPrefsUpdated" runat="server" CssClass="success" EnableViewState="False"
-                                    Text="<%$ Resources:LocalizedText, profilePreferencesUpdated %>" Visible="False" meta:resourcekey="lblCurrencyPrefsUpdatedResource3"></asp:Label>
+                                </p>
                             </div>
                         </Content>
                     </cc1:AccordionPane>

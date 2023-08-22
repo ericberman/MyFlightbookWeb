@@ -1,8 +1,12 @@
-﻿using MyFlightbook.Printing;
+﻿using MyFlightbook.Currency;
+using MyFlightbook.Printing;
+using MyFlightbook.Subscriptions;
+using Newtonsoft.Json;
 using Resources;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Net.Mail;
 using System.ServiceModel;
 using System.Text.RegularExpressions;
@@ -359,6 +363,143 @@ namespace MyFlightbook.Web.Ajax
             Profile pf = Profile.GetUser(User.Identity.Name);
             pf.SetPreferenceForKey(MFBConstants.keyRouteColor, routeColor, String.IsNullOrWhiteSpace(routeColor));
             pf.SetPreferenceForKey(MFBConstants.keyPathColor, pathColor, String.IsNullOrWhiteSpace(pathColor));
+        }
+
+        #region Preference Helper Functions 
+        private static void SetDecimalPref(Profile pf, string prefValue)
+        {
+            if (prefValue.CompareCurrentCultureIgnoreCase("HHMM") == 0)
+            {
+                pf.UsesHHMM = true;
+                pf.SetPreferenceForKey(MFBConstants.keyDecimalSettings, null, true);
+                HttpContext.Current.Session[MFBConstants.keyDecimalSettings] = null;
+            }
+            else if (Enum.TryParse<DecimalFormat>(prefValue, true, out DecimalFormat df))
+            {
+                pf.UsesHHMM = false;
+                pf.SetPreferenceForKey(MFBConstants.keyDecimalSettings, df, df == DecimalFormat.Adaptive);
+                HttpContext.Current.Session[MFBConstants.keyDecimalSettings] = df;
+            }
+            else
+                throw new ArgumentException("Unknown decimal value preference: " + prefValue);
+        }
+
+        private static void SetRoundingPref(Profile pf, string prefValue)
+        {
+            if (int.TryParse(prefValue, out int n) && n >= 0)
+            {
+                pf.SetPreferenceForKey(MFBConstants.keyMathRoundingUnits, n, n == 60);
+                HttpContext.Current.Session[MFBConstants.keyMathRoundingUnits] = n;
+            }
+            else
+                throw new ArgumentException("invalid math rounding value " + prefValue);
+        }
+
+        private static void SetDisplayFields(Profile pf, string prefValue)
+        {
+            int[] rgPerms = (String.IsNullOrEmpty(prefValue)) ? Array.Empty<int>() : JsonConvert.DeserializeObject<int[]>(prefValue);
+
+            // check for default array - 10 items, in order.
+            const int defSize = 10;  // hack - assuming it's 10.
+            bool fIsDefault = rgPerms.Length == defSize;
+            int i = 0;
+            while (fIsDefault && i < rgPerms.Length && rgPerms[i] == i)
+                i++;
+
+            if (fIsDefault && i == defSize)
+                rgPerms = Array.Empty<int>();
+
+            pf.SetPreferenceForKey(MFBConstants.keyCoreFieldsPermutation, rgPerms, rgPerms == null || !rgPerms.Any());
+        }
+
+        private static void SetTotalsMode(Profile pf, string prefValue)
+        {
+            pf.TotalsGroupingMode = Enum.TryParse(prefValue, true, out TotalsGrouping tg)
+                ? tg
+                : throw new ArgumentException("invalid totals grouping mode " + prefValue);
+        }
+
+        private static void SetCurrencyJurisdiction(Profile pf, string prefValue)
+        {
+            pf.CurrencyJurisdiction = Enum.TryParse(prefValue, true, out CurrencyJurisdiction cj)
+                ? cj
+                : throw new ArgumentException("invalid currency jurisdiction " + prefValue);
+        }
+
+        private static void SetCurrencyExpiration(Profile pf, string prefValue)
+        {
+            pf.CurrencyExpiration = Enum.TryParse(prefValue, true, out CurrencyExpiration.Expiration ce)
+                ? ce
+                : throw new ArgumentException("invalid currency expiration " + prefValue);
+        }
+
+        private static void SetMaintenanceWindow(Profile pf, string prefValue)
+        {
+            int maintWindow = Convert.ToInt32(prefValue, CultureInfo.InvariantCulture);
+            pf.SetPreferenceForKey(MFBConstants.keyWindowAircraftMaintenance, maintWindow, maintWindow == MFBConstants.DefaultMaintenanceWindow);
+        }
+
+        private static readonly Dictionary<string, Action<Profile, string, bool>> _setPrefMap = new Dictionary<string, Action<Profile, string, bool>>()
+        {
+            { "DECIMAL" , (pf, prefValue, fIsSet) => { SetDecimalPref(pf, prefValue); } },
+            { "ROUNDING" , (pf, prefValue, fIsSet) => { SetRoundingPref(pf, prefValue); } },
+            { "TIMEZONE" , (pf, prefValue, fIsSet) => { pf.PreferredTimeZoneID = prefValue; } },
+            { "DATEOFFLIGHTTZ" , (pf, prefValue, fIsSet) => { pf.UsesUTCDateOfFlight = prefValue.CompareCurrentCultureIgnoreCase("UTC") == 0; } },
+            { "USECFI" , (pf, prefValue, fIsSet) => { pf.IsInstructor = fIsSet; } },
+            { "USESIC" , (pf, prefValue, fIsSet) => { pf.TracksSecondInCommandTime = fIsSet; } },
+            { "TRACKTIMES" , (pf, prefValue, fIsSet) => { pf.DisplayTimesByDefault = fIsSet; } },
+            { "TRACKORIGINAL" , (pf, prefValue, fIsSet) => { pf.SetPreferenceForKey(MFBConstants.keyTrackOriginal, fIsSet, !fIsSet); } },
+            { "FIELDDISPLAY" , (pf, prefValue, fIsSet) => { SetDisplayFields(pf, prefValue); } },
+            { "EMAILCURRENCYWEEKLY" , (pf, prefValue, fIsSet) => { pf.Subscriptions = new EmailSubscriptionManager(pf.Subscriptions).SetSubscription(SubscriptionType.Currency, fIsSet); } },
+            { "EMAILCURRENCYEXPIRING" , (pf, prefValue, fIsSet) => { pf.Subscriptions = new EmailSubscriptionManager(pf.Subscriptions).SetSubscription(SubscriptionType.Expiration, fIsSet); } },
+            { "EMAILTOTALSWEEKLY" , (pf, prefValue, fIsSet) => { pf.Subscriptions = new EmailSubscriptionManager(pf.Subscriptions).SetSubscription(SubscriptionType.Totals, fIsSet); } },
+            { "EMAILTOTALSMONTHLY" , (pf, prefValue, fIsSet) => { pf.Subscriptions = new EmailSubscriptionManager(pf.Subscriptions).SetSubscription(SubscriptionType.MonthlyTotals, fIsSet); } },
+            { "TOTALSMODE" , (pf, prefValue, fIsSet) => { SetTotalsMode(pf, prefValue); } },
+            { "TOTALSINCLUDEMF" , (pf, prefValue, fIsSet) => { pf.SuppressModelFeatureTotals = !fIsSet; } },
+            { "CURRENCYJURISDICTION" , (pf, prefValue, fIsSet) => { SetCurrencyJurisdiction(pf, prefValue); } },
+            { "CURRENCYEXPIRATION" , (pf, prefValue, fIsSet) => { SetCurrencyExpiration(pf, prefValue); } },
+            { "USEARMYCURRENCY" , (pf, prefValue, fIsSet) => { pf.UsesArmyCurrency = fIsSet; } },
+            { "USE117DUTYTIME" , (pf, prefValue, fIsSet) => { pf.UsesFAR117DutyTime = fIsSet; } },
+            { "USE117DUTYALLFLIGHTS" , (pf, prefValue, fIsSet) => { pf.UsesFAR117DutyTimeAllFlights = fIsSet; } },
+            { "USE1252CURRENCY" , (pf, prefValue, fIsSet) => { pf.UsesFAR1252xxCurrency = fIsSet; } },
+            { "USE135DUTYTIME" , (pf, prefValue, fIsSet) => { pf.UsesFAR135DutyTime = fIsSet; } },
+            { "USEFAR13529XCURRENCY" , (pf, prefValue, fIsSet) => { pf.UsesFAR13529xCurrency = fIsSet; } },
+            { "USEFAR13526XCURRENCY" , (pf, prefValue, fIsSet) => { pf.UsesFAR13526xCurrency = fIsSet; } },
+            { "USEFAR61217CURRENCY" , (pf, prefValue, fIsSet) => { pf.UsesFAR61217Currency = fIsSet; } },
+            { "ALLOWNIGHTTOUCHANDGO" , (pf, prefValue, fIsSet) => { pf.AllowNightTouchAndGoes = fIsSet; } },
+            { "ONLYDAYLANDINGSFORDAYCURRENCY" , (pf, prefValue, fIsSet) => { pf.OnlyDayLandingsForDayCurrency = fIsSet; } },
+            { "USEPERMODELCURRENCY" , (pf, prefValue, fIsSet) => { pf.UsesPerModelCurrency = fIsSet; } },
+            { "MAINTWINDOW", (pf, prefValue, fIsSet) => { SetMaintenanceWindow(pf, prefValue); } }
+        };
+        #endregion
+
+        /// <summary>
+        /// Set a preference value without requiring a postback
+        /// </summary>
+        /// <param name="prefName">Name of the preference (case insensitive)</param>
+        /// <param name="prefValue">The value (validation all depends on the name of the preference)</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        [WebMethod(EnableSession = true)]
+        public void SetLocalPref(string prefName, string prefValue)
+        {
+            if (prefName == null)
+                throw new ArgumentNullException(nameof(prefName));
+            if (prefValue == null)
+                throw new ArgumentNullException(nameof(prefValue));
+
+            CheckAuth();
+
+            Profile pf = Profile.GetUser(HttpContext.Current.User.Identity.Name);
+
+            bool fIsSet = prefValue.CompareCurrentCultureIgnoreCase("true") == 0;
+
+            if (_setPrefMap.TryGetValue(prefName.ToUpperInvariant(), out Action<Profile, string, bool> action))
+                action(pf, prefValue, fIsSet);
+            else
+                throw new ArgumentException("Unknown value for preference " + prefName, nameof(prefName));
+
+            pf.FCommit();
         }
         #endregion
 

@@ -1392,13 +1392,22 @@ namespace MyFlightbook.MemberPages
         protected global::System.Web.UI.WebControls.HyperLink lnkQuant;
 
         /// <summary>
-        /// rblQuantization control.
+        /// rbPrecisionMinutes control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList rblQuantization;
+        protected global::System.Web.UI.WebControls.RadioButton rbPrecisionMinutes;
+
+        /// <summary>
+        /// rbPrecisionHundredths control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButton rbPrecisionHundredths;
 
         /// <summary>
         /// lblPrefTimeZone control.
@@ -1437,13 +1446,22 @@ namespace MyFlightbook.MemberPages
         protected global::System.Web.UI.WebControls.Label lblPrefDates;
 
         /// <summary>
-        /// rblDateEntryPreferences control.
+        /// rbDateLocal control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList rblDateEntryPreferences;
+        protected global::System.Web.UI.WebControls.RadioButton rbDateLocal;
+
+        /// <summary>
+        /// rbDateUTC control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButton rbDateUTC;
 
         /// <summary>
         /// lblFieldsToShow control.
@@ -1671,24 +1689,6 @@ namespace MyFlightbook.MemberPages
         protected global::System.Web.UI.WebControls.HiddenField hdnPermutation;
 
         /// <summary>
-        /// btnUpdateLocalPrefs control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnUpdateLocalPrefs;
-
-        /// <summary>
-        /// lblLocalPrefsUpdated control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblLocalPrefsUpdated;
-
-        /// <summary>
         /// accColoring control.
         /// </summary>
         /// <remarks>
@@ -1788,13 +1788,31 @@ namespace MyFlightbook.MemberPages
         protected global::System.Web.UI.WebControls.Label lblCurrencyPrefs;
 
         /// <summary>
-        /// rblTotalsOptions control.
+        /// rbTotalsModeCatClass control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList rblTotalsOptions;
+        protected global::System.Web.UI.WebControls.RadioButton rbTotalsModeCatClass;
+
+        /// <summary>
+        /// rbTotalsModeModel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButton rbTotalsModeModel;
+
+        /// <summary>
+        /// rbTotalsModeICAO control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButton rbTotalsModeICAO;
 
         /// <summary>
         /// ckIncludeModelFeatureTotals control.
@@ -1896,22 +1914,58 @@ namespace MyFlightbook.MemberPages
         protected global::System.Web.UI.WebControls.Label lblAustraliaRules;
 
         /// <summary>
-        /// locExpireCurrency control.
+        /// rbCurrencyModeCatClass control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locExpireCurrency;
+        protected global::System.Web.UI.WebControls.RadioButton rbCurrencyModeCatClass;
 
         /// <summary>
-        /// cmbExpiredCurrency control.
+        /// rbCurrencyModeModel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList cmbExpiredCurrency;
+        protected global::System.Web.UI.WebControls.RadioButton rbCurrencyModeModel;
+
+        /// <summary>
+        /// ckAllowNightTouchAndGo control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox ckAllowNightTouchAndGo;
+
+        /// <summary>
+        /// ttNightTG control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Controls_mfbTooltip ttNightTG;
+
+        /// <summary>
+        /// ckDayLandingsForDayCurrency control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox ckDayLandingsForDayCurrency;
+
+        /// <summary>
+        /// ttDayLandings control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Controls_mfbTooltip ttDayLandings;
 
         /// <summary>
         /// ckUseArmyCurrency control.
@@ -1932,13 +1986,22 @@ namespace MyFlightbook.MemberPages
         protected global::System.Web.UI.WebControls.CheckBox ckUse117DutyTime;
 
         /// <summary>
-        /// rbl117Rules control.
+        /// rb117OnlyDutyTimeFlights control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList rbl117Rules;
+        protected global::System.Web.UI.WebControls.RadioButton rb117OnlyDutyTimeFlights;
+
+        /// <summary>
+        /// rb117AllFlights control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButton rb117AllFlights;
 
         /// <summary>
         /// div135DutyTime control.
@@ -1995,49 +2058,22 @@ namespace MyFlightbook.MemberPages
         protected global::System.Web.UI.WebControls.CheckBox ckUse61217Currency;
 
         /// <summary>
-        /// ckAllowNightTouchAndGo control.
+        /// locExpireCurrency control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox ckAllowNightTouchAndGo;
+        protected global::System.Web.UI.WebControls.Localize locExpireCurrency;
 
         /// <summary>
-        /// ttNightTG control.
+        /// cmbExpiredCurrency control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_mfbTooltip ttNightTG;
-
-        /// <summary>
-        /// ckDayLandingsForDayCurrency control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox ckDayLandingsForDayCurrency;
-
-        /// <summary>
-        /// ttDayLandings control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Controls_mfbTooltip ttDayLandings;
-
-        /// <summary>
-        /// rblCurrencyPref control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList rblCurrencyPref;
+        protected global::System.Web.UI.WebControls.DropDownList cmbExpiredCurrency;
 
         /// <summary>
         /// Localize1 control.
@@ -2056,24 +2092,6 @@ namespace MyFlightbook.MemberPages
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList cmbAircraftMaintWindow;
-
-        /// <summary>
-        /// btnUpdateCurrencyPrefs control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnUpdateCurrencyPrefs;
-
-        /// <summary>
-        /// lblCurrencyPrefsUpdated control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblCurrencyPrefsUpdated;
 
         /// <summary>
         /// acpEmail control.

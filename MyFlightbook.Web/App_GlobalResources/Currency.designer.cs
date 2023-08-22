@@ -265,6 +265,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show FAR 135 Duty Time Status.
+        /// </summary>
+        internal static string CurrencyOptions135DutyTime {
+            get {
+                return ResourceManager.GetString("CurrencyOptions135DutyTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show upcoming maintenance due dates for aircraft.
         /// </summary>
         internal static string CurrencyOptionsAircraftMaintenance {
@@ -481,7 +490,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Display:.
+        ///   Looks up a localized string similar to Totals options:.
         /// </summary>
         internal static string CurrencyTotalsDisplayHeader {
             get {

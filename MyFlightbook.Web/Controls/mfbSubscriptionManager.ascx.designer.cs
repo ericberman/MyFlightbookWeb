@@ -92,22 +92,4 @@ public partial class Controls_mfbSubscriptionManager
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.CheckBox ckMonthly;
-
-    /// <summary>
-    /// btnUpdateEmailPrefs control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Button btnUpdateEmailPrefs;
-
-    /// <summary>
-    /// lblEmailPrefsUpdated control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Label lblEmailPrefsUpdated;
 }
