@@ -13,7 +13,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2022 MyFlightbook LLC
+ * Copyright (c) 2017-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -202,7 +202,7 @@ namespace MyFlightbook.MemberPages
         #endregion
 
         #region RawData Row Binding
-        protected void BindRawDataRow(DataRowView drv, int iRow, Control cPin, Control cZoom)
+        protected void BindRawDataRow(DataRowView drv, Control cPin, Control cZoom)
         {
             if (drv == null)
                 throw new ArgumentNullException(nameof(drv));
@@ -322,7 +322,7 @@ namespace MyFlightbook.MemberPages
         #region Charting
         protected int DataPointCount { get; set; }
 
-        protected static void UpdateChart(TelemetryDataTable tdt, Controls_GoogleChart gcData, bool HasLatLongInfo, string PathLatLongArrayID, ListItem xAxis, ListItem yAxis1, ListItem yAxis2, double y1Scale, double y2Scale, out double max, out double min, out double max2, out double min2)
+        protected static void UpdateChart(TelemetryDataTable tdt, Controls_GoogleChart gcData, bool HasLatLongInfo, ListItem xAxis, ListItem yAxis1, ListItem yAxis2, double y1Scale, double y2Scale, out double max, out double min, out double max2, out double min2)
         {
             max = double.MinValue;
             min = double.MaxValue;
@@ -355,7 +355,9 @@ namespace MyFlightbook.MemberPages
 
             foreach (DataRow dr in tdt.Rows)
             {
-                gcData.ChartData.XVals.Add(dr[xAxis.Value]);
+                object obj = dr[xAxis.Value];
+                DateTime? date = obj as DateTime?;    // Treat local dates as pseudo-UTC so that they display correctly.
+                gcData.ChartData.XVals.Add(date == null ? obj : DateTime.SpecifyKind(date.Value, DateTimeKind.Utc));
 
                 if (!String.IsNullOrEmpty(yAxis1.Value))
                 {
@@ -849,7 +851,7 @@ namespace MyFlightbook.MemberPages
             double y1Scale = TryParse(rblConvert1.SelectedValue, 1.0);
             double y2Scale = TryParse(rblConvert2.SelectedValue, 1.0);
 
-            UpdateChart(tdt, gcData, fd.HasLatLongInfo, PathLatLongArrayID, cmbXAxis.SelectedItem, cmbYAxis1.SelectedItem, cmbYAxis2.SelectedItem, y1Scale, y2Scale, out double max, out double min, out double max2, out double min2);
+            UpdateChart(tdt, gcData, fd.HasLatLongInfo, cmbXAxis.SelectedItem, cmbYAxis1.SelectedItem, cmbYAxis2.SelectedItem, y1Scale, y2Scale, out double max, out double min, out double max2, out double min2);
             DataPointCount = gcData.ChartData.YVals.Count;
 
             bool HasCrop = GetCropRange(CurrentFlight, out int _, out int _);
@@ -952,7 +954,7 @@ namespace MyFlightbook.MemberPages
             if (e == null)
                 throw new ArgumentNullException(nameof(e));
             if (e.Row.RowType == DataControlRowType.DataRow)
-                BindRawDataRow((DataRowView) e.Row.DataItem, e.Row.DataItemIndex, e.Row.FindControl("imgPin"), e.Row.FindControl("lnkZoom"));
+                BindRawDataRow((DataRowView)e.Row.DataItem, e.Row.FindControl("imgPin"), e.Row.FindControl("lnkZoom"));
         }
 
         protected void apcRaw_ControlClicked(object sender, EventArgs e)

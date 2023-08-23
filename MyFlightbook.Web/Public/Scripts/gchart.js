@@ -21,7 +21,7 @@ function drawGChart(chartdata) {
 
     if (chartdata.XDataType == 'date' || chartdata.XDataType == 'datetime') {
         // format first column
-        var format = new google.visualization.DateFormat({ pattern: chartdata.XFormatString });
+        var format = new google.visualization.DateFormat({ pattern: chartdata.XFormatString, timeZone : 0 });
         format.format(data, 0);
     }
 
