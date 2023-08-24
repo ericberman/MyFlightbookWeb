@@ -235,7 +235,7 @@ namespace MyFlightbook.CloudStorage
 
         private const string szURLUploadEndpoint = "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart";
         private const string szURLUpdateEndpointTemplate = "https://www.googleapis.com/upload/drive/v3/files/{0}?uploadType=multipart";
-        private const string szURLViewFilesEndpointTemplate = "https://www.googleapis.com/drive/v3/files?q={0}";
+        private const string szURLViewFilesEndpointTemplate = "https://www.googleapis.com/drive/v3/files?q={0}&key={1}";
         private string RootFolderID { get; set; }
 
         public GoogleDrive(Profile pf = null)
@@ -297,7 +297,7 @@ namespace MyFlightbook.CloudStorage
         /// <returns>The ID of the resulting object (if found)</returns>
         protected static string FolderQuery(string szFolderName)
         {
-            return String.Format(CultureInfo.InvariantCulture, "name%3D'{0}'+and+mimeType%3D'application%2Fvnd.google-apps.folder'", szFolderName);
+            return String.Format(CultureInfo.InvariantCulture, "name%3D%27{0}%27%20and%20trashed%3Dfalse%20and%20mimeType%3D%27application%2Fvnd.google-apps.folder%27", szFolderName);
         }
 
         /// <summary>
@@ -308,7 +308,7 @@ namespace MyFlightbook.CloudStorage
         /// <returns>The ID of the resulting object (if found)</returns>
         protected static string FileQuery(string szFileName, string szParent)
         {
-            return String.Format(CultureInfo.InvariantCulture, "name%3D'{0}'+and+'{1}'+in+parents+and+trashed%3Dfalse", szFileName, szParent);
+            return String.Format(CultureInfo.InvariantCulture, "name%3D%27{0}%27%20and%20%27{1}%27%20in%20parents%20and%20trashed%3Dfalse", szFileName, szParent);
         }
 
         /// <summary>
@@ -319,9 +319,9 @@ namespace MyFlightbook.CloudStorage
         protected async Task<string> FindIDForQuery(string szQuery)
         {
             // See if the folder exists
-            Uri uri = new Uri(String.Format(CultureInfo.InvariantCulture, szURLViewFilesEndpointTemplate, szQuery));
+            Uri uri = new Uri(String.Format(CultureInfo.InvariantCulture, szURLViewFilesEndpointTemplate, szQuery, AppKey));
 
-            return (string)await SharedHttpClient.GetResponseForAuthenticatedUri(uri, AuthState.AccessToken, (response) =>
+            return (string)await SharedHttpClient.GetResponseForAuthenticatedUri(uri, AuthState.AccessToken, HttpMethod.Get, (response) =>
             {
                 string szResult = string.Empty;
                 try
