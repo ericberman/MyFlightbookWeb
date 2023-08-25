@@ -236,22 +236,29 @@ namespace MyFlightbook.CloudStorage
         private const string szURLUploadEndpoint = "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart";
         private const string szURLUpdateEndpointTemplate = "https://www.googleapis.com/upload/drive/v3/files/{0}?uploadType=multipart";
         private const string szURLViewFilesEndpointTemplate = "https://www.googleapis.com/drive/v3/files?q={0}&key={1}";
+
+        // The google ID of the root folder where we place files.
         private string RootFolderID { get; set; }
 
         public GoogleDrive(Profile pf = null)
             : base("GoogleDriveAccessID", "GoogleDriveClientSecret", "https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent", "https://www.googleapis.com/oauth2/v4/token", new string[] { "https://www.googleapis.com/auth/drive.appdata", "https://www.googleapis.com/auth/drive.file" })
         {
             AuthParam = szParamGDriveAuth;
-            RootPath = String.Format(CultureInfo.CurrentCulture, "{0} {1}", Branding.CurrentBrand.AppName, UserUsesFlatHierarchy(pf) ? String.Empty : DateTime.Now.ToString("yyyy-MM-MMMM", CultureInfo.CurrentCulture)).Trim();
+            // Issue #1067: put everything under a single root
+            // Root path uses backslashes here and is either just the brand name ("MyFlightbook") or it is Brand\year\month.
+            RootPath = Branding.CurrentBrand.AppName + (UserUsesFlatHierarchy(pf) ? string.Empty : DateTime.Now.ToString("\\\\yyyy\\\\MM-MMMM", CultureInfo.CurrentCulture));
             RootFolderID = string.Empty;
             CurrentUser = pf;
             AuthState = pf?.GoogleDriveAccessToken;
         }
 
-        protected async Task<string> CreateFolder(string szFolderName)
+        protected async Task<string> CreateFolder(string szFolderName, string parentID)
         {
             // Create the metadata.  Name is most important, but we can also specify mimeType for CSV to import into GoogleDocs
-            Dictionary<string, string> dictMeta = new Dictionary<string, string>() { { "name", szFolderName }, { "mimeType", "application/vnd.google-apps.folder" } };
+            Dictionary<string, object> dictMeta = new Dictionary<string, object>() { { "name", szFolderName }, { "mimeType", "application/vnd.google-apps.folder" } };
+
+            if (!String.IsNullOrEmpty(parentID))
+                dictMeta["parents"] = new string[] { parentID };
 
             // Create the form.  The form itself needs the authtoken header
             using (MultipartContent form = new MultipartContent("related"))
@@ -275,7 +282,7 @@ namespace MyFlightbook.CloudStorage
                                 if (gfm != null)
                                     return gfm.id;
                             }
-                            return szResult;
+                            throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Unknown result '{0}' returned trying to create folder named '{1}'", szResult, szFolderName));
                         }
                         catch (HttpRequestException ex)
                         {
@@ -295,9 +302,32 @@ namespace MyFlightbook.CloudStorage
         /// </summary>
         /// <param name="szFolderName">The name of the folder</param>
         /// <returns>The ID of the resulting object (if found)</returns>
-        protected static string FolderQuery(string szFolderName)
+        private static string FolderQuery(string szFolderName, string parentID)
         {
-            return String.Format(CultureInfo.InvariantCulture, "name%3D%27{0}%27%20and%20trashed%3Dfalse%20and%20mimeType%3D%27application%2Fvnd.google-apps.folder%27", szFolderName);
+            return String.Format(CultureInfo.InvariantCulture, "name%3D%27{0}%27%20and%20trashed%3Dfalse%20and%20mimeType%3D%27application%2Fvnd.google-apps.folder%27", szFolderName) + (String.IsNullOrEmpty(parentID) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "%20and%20%27{0}%27%20in%20parents", parentID));
+        }
+
+        /// <summary>
+        /// Returns the ID of the leaf of the specified path, creating any folders as needed.
+        /// E.g., if you want to put files into "MyFlightbook/2023/08-August", pass ["MyFlightbook", "2023", "08-August"].
+        /// If any of those don't exist, they will be created; the id for "08-August" will be returned.
+        /// </summary>
+        /// <param name="path">An enumerable of folders</param>
+        /// <returns>The ID of the leaf node</returns>
+        protected async Task<string> GetLeafFolderForPath(IEnumerable<string> path)
+        {
+            if (path == null)
+                return null;
+
+            string lastParentID = null;
+
+            foreach (string folder in path)
+            {
+                string folderID = await IDForFolder(folder, lastParentID);
+                // Create the folder if it wasn't found, under the most recently created parent.
+                lastParentID = String.IsNullOrEmpty(folderID) ? await CreateFolder(folder, lastParentID) : folderID;
+            }
+            return lastParentID;
         }
 
         /// <summary>
@@ -353,9 +383,9 @@ namespace MyFlightbook.CloudStorage
             });
         }
 
-        protected async Task<string> IDForFolder(string szFoldername)
+        protected async Task<string> IDForFolder(string szFoldername, string parentID)
         {
-            return await FindIDForQuery(FolderQuery(szFoldername)).ConfigureAwait(false);
+            return await FindIDForQuery(FolderQuery(szFoldername, parentID)).ConfigureAwait(false);
         }
 
         protected async Task<string> IDForFile(string szFileName, string szParentID)
@@ -409,11 +439,7 @@ namespace MyFlightbook.CloudStorage
             ms.Seek(0, SeekOrigin.Begin);   // write out the whole stream.  UploadAsync appears to pick up from the current location, which is the end-of-file after writing to a ZIP.
 
             if (String.IsNullOrEmpty(RootFolderID))
-            {
-                RootFolderID = await IDForFolder(RootPath).ConfigureAwait(false);
-                if (String.IsNullOrEmpty(RootFolderID))
-                    RootFolderID = await CreateFolder(RootPath).ConfigureAwait(false);
-            }
+                RootFolderID = await GetLeafFolderForPath(RootPath.Split(new char[] { '\\' }, StringSplitOptions.RemoveEmptyEntries));
 
             // CSV loses its extension when uploaded because we map it to a google spreadsheet.  So if it's CSV AND we are patching an existing file, drop the extension so that we ov
             // update the existing file if it is present.  If CSV, strip the extension
