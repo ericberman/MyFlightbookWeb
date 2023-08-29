@@ -199,7 +199,7 @@
         <Roles></Roles>
       </Item>
       <Item>
-        <Link>~/Member/EditProfile.aspx/pftDonate</Link>
+        <Link>~/mvc/Donate</Link>
         <ID>pftDonate</ID>
         <Roles></Roles>
       </Item>

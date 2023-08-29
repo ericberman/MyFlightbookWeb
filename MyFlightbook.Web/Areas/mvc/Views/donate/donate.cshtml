@@ -1,0 +1,116 @@
+﻿
+@{
+    ViewBag.defaultTab = tabID.tabProfile;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+
+@using System.Globalization;
+@using MyFlightbook;
+
+<h2>@Resources.Preferences.DonateHeader</h2>
+
+<div style="float: right; max-width: 180px; margin-top: 10px; margin-bottom: 10px; padding: 5px; border: 1px solid gray; display: @(!String.IsNullOrEmpty(Branding.CurrentBrand.SwagRef) ? "block" : "none")">
+    <a href="@Branding.CurrentBrand.SwagRef" target="_blank">
+        <img src="https://i3.cpcache.com/product/1145595163/20_oz_ceramic_mega_mug.jpg?side=Back&color=White&height=48&width=48&cid=Najv2dtZhRo46F12FebBfg%3d%3d+%7c%7c+evWcdKm%2b6mRVx9OB6NguQQ%3d%3d&c=False" style="float: left; margin: 5px;" />
+        <span style="font-weight: bold;">@Branding.ReBrand(Resources.LocalizedText.BuySwag)</span>
+    </a>
+</div>
+<div style="display: @(ViewBag.Success ? "block" : "none")">
+    <span style="font-weight:bold;" class="success">@Resources.Preferences.PaymentSuccess</span>
+</div>
+<div style="display: @(ViewBag.Cancelled ? "block" : "none")">
+    <span class="error">@Resources.Preferences.PaymentCancelled</span>
+</div>
+<p>@Branding.ReBrand(Resources.LocalizedText.DonatePrompt)</p>
+<p>@Resources.LocalizedText.DonatePromptGratuity</p>
+<table style="border-spacing: 0px; border-collapse: collapse;">
+    <tr>
+        <td></td>
+        <td style="width: 5em; text-align: center; font-weight:bold;">US$10</td>
+        <td style="width: 5em; text-align: center; font-weight:bold;">US$15</td>
+        <td style="width: 5em; text-align: center; font-weight:bold;">US$25</td>
+        <td style="width: 5em; text-align: center; font-weight:bold;">US$40</td>
+        <td style="width: 5em; text-align: center; font-weight:bold;">US$75</td>
+        <td style="width: 5em; text-align: center; font-weight:bold;">US$100</td>
+    </tr>
+    @foreach (MyFlightbook.Payments.Gratuity g in ViewBag.Gratuities)
+    {
+        string ttID = "tip" + g.GratuityType.ToString();
+        <tr>
+            <td style="max-width: 250px; text-align:left; padding: 3px; border-bottom: 1px solid gray;">
+                @g.Name&nbsp;@{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = ttID, tipTextHTML = g.Description.Linkify() }); }
+            </td>
+            <td style="border: 1px solid gray; padding: 3px; text-align:center;">@(g.Threshold <= 10 ? "●" : string.Empty)</td>
+            <td style="border: 1px solid gray; padding: 3px; text-align:center;">@(g.Threshold <= 15 ? "●" : string.Empty)</td>
+            <td style="border: 1px solid gray; padding: 3px; text-align:center;">@(g.Threshold <= 25 ? "●" : string.Empty)</td>
+            <td style="border: 1px solid gray; padding: 3px; text-align:center;">@(g.Threshold <= 40 ? "●" : string.Empty)</td>
+            <td style="border: 1px solid gray; padding: 3px; text-align:center;">@(g.Threshold <= 75 ? "●" : string.Empty)</td>
+            <td style="border: 1px solid gray; padding: 3px; text-align:center;">@(g.Threshold <= 100 ? "●" : string.Empty)</td>
+        </tr>
+    }
+</table>
+<div style="margin-top: 15pt; margin-bottom: 15pt;">
+    <form id="form1" runat="server" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+        <div>
+            <input type="hidden" name="cmd" value="_s-xclick" />
+            <input type="hidden" name="hosted_button_id" value="YH8NJZL5W9HTU" />
+            <table>
+                <tr><td><input type="hidden" name="on0" value="Donation Levels:" />Donation Levels:</td></tr>
+                <tr>
+                    <td>
+                        <select name="os0">
+                            <option value="'Overnight parking fees'">US$10 - Overnight parking fees</option>
+                            <option value="'Twice around the pattern'">US$15 - Twice around the pattern</option>
+                            <option value="'Shockingly little avgas'">US$25 - Shockingly little avgas</option>
+                            <option value="'An hour of instruction'">US$40 - 1 (1/2?) hour of instruction</option>
+                            <option value="'VFR Eastbound'">US$75 - VFR Eastbound</option>
+                            <option value="'Hundred Dollar Hamburger'">US$100 - Hundred Dollar Hamburger</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            <input type="hidden" name="custom" value="@User.Identity.Name" />
+            <input type="hidden" name="on1" value="ProductID" />
+            <input type="hidden" name="os1" value="MFBDonation" />
+            <input type="hidden" name="currency_code" value="USD" />
+            <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_paynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!" />
+            <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1" />
+        </div>
+    </form>
+</div>
+<div>
+    @Html.Raw(Branding.ReBrand(Resources.Preferences.DonateCrypto).Linkify())
+    <a href="@("~/Public/ContactMe.aspx".ToAbsoluteURL(HttpContext.Current.Request))">@Resources.Preferences.DonateCryptoContact</a>
+</div>
+<h2>@Resources.Preferences.DonationHistoryHeader</h2>
+
+<div class="callout" style="display:@(ViewBag.ShowGratuityHistory ? "block" : "none")">
+    <p style="font-weight:bold">@Resources.Preferences.DonateThankYou</p>
+    <p>@Resources.LocalizedText.GratuityEarnedHeader</p>
+    <ul>
+        @foreach(MyFlightbook.Payments.EarnedGratuity eg in ViewBag.GratuityHistory)
+            {
+                <li>@Html.Raw(eg.ThankYou.Linkify())</li>
+            }
+    </ul>
+</div>
+
+@if(ViewBag.PaymentHistory.Count > 0)
+{
+    <table cellpadding="4" cellspacing="0" style="border-collapse: collapse;">
+        @foreach(MyFlightbook.Payments.Payment p in ViewBag.PaymentHistory)
+                {
+                    <tr>
+                        <td style="font-weight:bold">@(p.Timestamp.ToShortDateString())</td>
+                        <td>@String.Format(CultureInfo.CurrentCulture, "US${0}", p.Amount)</td>
+                        <td>@p.Notes</td>
+                    </tr>
+                }
+    </table>
+}
+else
+{
+    <p>@Resources.Preferences.DonateNoDonations</p>
+} 
+
+

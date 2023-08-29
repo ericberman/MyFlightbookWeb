@@ -504,7 +504,6 @@
     <Content Include="Controls\mfbDeadlines.ascx" />
     <Content Include="Controls\mfbDecimalEdit.ascx" />
     <Content Include="Controls\Prefs\mfbCloudStorage.ascx" />
-    <Content Include="Controls\Prefs\mfbDonate.ascx" />
     <Content Include="Controls\mfbDownload.ascx" />
     <Content Include="Controls\mfbEditableImage.ascx" />
     <Content Include="Controls\mfbEditAircraft.ascx" />
@@ -1848,8 +1847,8 @@
       <DependentUpon>WebService.resx</DependentUpon>
     </Compile>
     <Compile Include="Areas\mvc\Controllers\AllMakesController.cs" />
+    <Compile Include="Areas\mvc\Controllers\DonateController.cs" />
     <Compile Include="Areas\mvc\Controllers\MFBTemplateController.cs" />
-    <Compile Include="Areas\mvc\Controllers\MVCTestController.cs" />
     <Compile Include="Areas\mvc\Controllers\PubController.cs" />
     <Compile Include="Areas\mvc\Controllers\rbredirectController.cs" />
     <Compile Include="Areas\mvc\mvcAreaRegistration.cs" />
@@ -2167,13 +2166,6 @@
     </Compile>
     <Compile Include="Controls\Prefs\mfbCloudStorage.ascx.designer.cs">
       <DependentUpon>mfbCloudStorage.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\Prefs\mfbDonate.ascx.cs">
-      <DependentUpon>mfbDonate.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\Prefs\mfbDonate.ascx.designer.cs">
-      <DependentUpon>mfbDonate.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\mfbDownload.ascx.cs">
       <DependentUpon>mfbDownload.ascx</DependentUpon>
@@ -3513,7 +3505,6 @@
     <Content Include="Areas\mvc\Views\web.config" />
     <Content Include="Areas\mvc\Views\_ViewStart.cshtml" />
     <Content Include="Areas\mvc\Views\Shared\_Layout.cshtml" />
-    <Content Include="Areas\mvc\Views\MVCTest\Index.cshtml" />
     <Content Include="Areas\mvc\Views\MFBTemplate\_footer.cshtml" />
     <Content Include="Areas\mvc\Views\MFBTemplate\_footermobile.cshtml" />
     <Content Include="Areas\mvc\Views\MFBTemplate\_header.cshtml" />
@@ -3534,6 +3525,8 @@
     <Content Include="Public\tmap\src\font\flaticon.ttf" />
     <Content Include="Public\tmap\src\font\flaticon.woff" />
     <Content Include="Public\tmap\src\font\flaticon.woff2" />
+    <Content Include="Areas\mvc\Views\donate\donate.cshtml" />
+    <Content Include="Areas\mvc\Views\MFBTemplate\_tooltip.cshtml" />
     <None Include="packages.config" />
     <None Include="SecuritySwitch-v4.xsd">
       <SubType>Designer</SubType>

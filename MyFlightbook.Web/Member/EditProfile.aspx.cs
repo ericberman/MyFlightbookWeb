@@ -158,7 +158,7 @@ namespace MyFlightbook.MemberPages
                     Response.Redirect(Request.Url.PathAndQuery.Replace("EditProfile.aspx", String.Format(CultureInfo.InvariantCulture, "Training.aspx/{0}", szPref)).Replace(String.Format(CultureInfo.InvariantCulture, "pref={0}", szPref), string.Empty).Replace("?&", "?"));
                     break;
                 case tabID.pftDonate:
-                    mvProfile.SetActiveView(vwDonate);
+                    Response.Redirect("~/mvc/donate" + Request.Url.Query);
                     break;
             }
         }
@@ -447,7 +447,7 @@ namespace MyFlightbook.MemberPages
                         break;
 
                     case tabID.pftDonate:
-                        mfbDonate.InitDonations();
+                        Response.Redirect("~/mvc/donate" + Request.Url.Query);
                         break;
                 }
             }

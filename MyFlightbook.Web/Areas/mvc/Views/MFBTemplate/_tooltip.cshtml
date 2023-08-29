@@ -1,0 +1,10 @@
+﻿<span id="@ViewBag.tipID" class="hint">@ViewBag.tipPrompt</span>
+<script type="text/javascript">
+    $(function () {
+        $("#@ViewBag.tipID").tooltip({
+            items: "hoverControlSelector, .hint",
+            classes: { "ui-tooltip": "hintPopup itemlabel" },
+            content: function () { return "@Html.Raw(ViewBag.tipText)"; }
+        });
+    });
+</script>

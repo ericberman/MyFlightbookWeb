@@ -8,7 +8,7 @@ using System.Web.Security;
 
 /******************************************************
     * 
-    * Copyright (c) 2022 MyFlightbook LLC
+    * Copyright (c) 2022-2023 MyFlightbook LLC
     * Contact myflightbook-at-gmail.com for more information
     *
    *******************************************************/
@@ -74,6 +74,16 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.LastLogin = (pf.LastLogon.HasValue()) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MemberLastLogonShort, pf.LastLogon) : String.Empty;
             ViewBag.LastActivity = pf.LastActivity.Date.CompareTo(pf.LastLogon.Date) != 0 ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MemberLastActivityShort, pf.LastActivity) : String.Empty;
         }
+
+        [ChildActionOnly]
+        public ActionResult RenderTooltip(string tipID, string tipTextHTML, string tipPrompt = "[?]")
+        {
+            ViewBag.tipPrompt = tipPrompt;
+            ViewBag.tipID = tipID;
+            ViewBag.tipText = tipTextHTML;
+            return PartialView("_tooltip");
+        }
+
 
         [ChildActionOnly]
         public ActionResult RenderPrivacyLink()
