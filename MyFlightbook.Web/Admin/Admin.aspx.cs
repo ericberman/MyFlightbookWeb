@@ -115,7 +115,7 @@ namespace MyFlightbook.Web.Admin
                 return;
 
             int idModelToDelete = Convert.ToInt32(cmbModelToDelete.SelectedValue, CultureInfo.InvariantCulture);
-            lblPreview.Text = HttpUtility.HtmlEncode(String.Format(CultureInfo.CurrentCulture, "Model {0} will be deleted\r\nThe following airplanes will be mapped from model {1} to {2}", idModelToDelete, cmbModelToDelete.SelectedValue, idModelToDelete));
+            lblPreview.Text = HttpUtility.HtmlEncode(String.Format(CultureInfo.CurrentCulture, "Model {0} will be deleted\r\nThe following airplanes will be mapped from model {1} to {2}", idModelToDelete, cmbModelToDelete.SelectedValue, cmbModelToMergeInto.SelectedValue));
 
             pnlPreview.Visible = true;
 
