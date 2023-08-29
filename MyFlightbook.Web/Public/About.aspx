@@ -11,7 +11,7 @@
         </asp:HyperLink>
         
         <asp:Image ID="imgLogo" runat="server" ImageUrl="~/images/mfbicon.png" style="vertical-align:middle;" />
-        <asp:HyperLink ID="lnkFeatures" runat="server" Font-Bold="true" NavigateUrl="~/Public/FeatureChart.aspx" style="vertical-align:middle">
+        <asp:HyperLink ID="lnkFeatures" runat="server" Font-Bold="true" NavigateUrl="~/mvc/pub/FeatureChart" style="vertical-align:middle">
         </asp:HyperLink>
     </p>
     <div style="text-align:center;">

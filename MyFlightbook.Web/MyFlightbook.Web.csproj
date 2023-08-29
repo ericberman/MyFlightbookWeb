@@ -1404,7 +1404,6 @@
     <Content Include="Public\Developer.aspx" />
     <Content Include="Public\Export.aspx" />
     <Content Include="Public\FAQ.aspx" />
-    <Content Include="Public\FeatureChart.aspx" />
     <Content Include="Public\FindAirport.aspx" />
     <Content Include="Public\FlightDataKey.aspx" />
     <Content Include="Public\Game.aspx" />
@@ -3256,13 +3255,6 @@
     </Compile>
     <Compile Include="Public\FAQ.aspx.designer.cs">
       <DependentUpon>FAQ.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Public\FeatureChart.aspx.cs">
-      <DependentUpon>FeatureChart.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\FeatureChart.aspx.designer.cs">
-      <DependentUpon>FeatureChart.aspx</DependentUpon>
     </Compile>
     <Compile Include="Public\FindAirport.aspx.cs">
       <DependentUpon>FindAirport.aspx</DependentUpon>

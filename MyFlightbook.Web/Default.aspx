@@ -13,7 +13,7 @@
 <asp:content id="Content1" contentplaceholderid="cpMain" runat="Server">
     <asp:Panel ID="pnlWelcome" runat="server">
         <div id="homePagePromo" class="welcomeHeader">
-            <asp:HyperLink ID="lnkFeature" runat="server" NavigateUrl="~/Public/FeatureChart.aspx">
+            <asp:HyperLink ID="lnkFeature" runat="server" NavigateUrl="~/mvc/pub/FeatureChart">
                 <% =Branding.ReBrand(Resources.Profile.NewAccountPromo) %>
             </asp:HyperLink>
         </div>

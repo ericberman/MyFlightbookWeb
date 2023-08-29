@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Globalization;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System.Net.Http;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2022 MyFlightbook LLC
+ * Copyright (c) 2007-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -31,6 +27,13 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrivacyPolicyHeader, Branding.CurrentBrand.AppName);
             ViewBag.HTMLContent = Branding.ReBrand(Resources.LocalizedText.Privacy);
+            return View("_localizedContent");
+        }
+
+        public ActionResult FeatureChart()
+        {
+            ViewBag.Title = Resources.LocalizedText.FeaturesHeader;
+            ViewBag.HTMLContent = Branding.ReBrand(Resources.LocalizedText.FeatureTable);
             return View("_localizedContent");
         }
 
