@@ -192,8 +192,8 @@ namespace MyFlightbook
             Dictionary<FooterLinkKey, BrandLink> d = new Dictionary<FooterLinkKey, BrandLink>()
             {
                 { FooterLinkKey.About, new BrandLink() { Name = Branding.ReBrand(Resources.LocalizedText.AboutTitle), LinkRef = "~/Public/About.aspx"} },
-                { FooterLinkKey.Privacy, new BrandLink() { Name = Resources.LocalizedText.footerPrivacy, LinkRef = "~/Public/Privacy.aspx"} },
-                { FooterLinkKey.Terms, new BrandLink() {Name = Resources.LocalizedText.footerTerms, LinkRef = "~/Public/TandC.aspx" } },
+                { FooterLinkKey.Privacy, new BrandLink() { Name = Resources.LocalizedText.footerPrivacy, LinkRef = "~/mvc/pub/Privacy"} },
+                { FooterLinkKey.Terms, new BrandLink() {Name = Resources.LocalizedText.footerTerms, LinkRef = "~/mvc/pub/TandC" } },
                 { FooterLinkKey.Developers, new BrandLink() {Name = Resources.LocalizedText.footerDevelopers, LinkRef = "~/Public/Developer.aspx" } },
                 { FooterLinkKey.Contact, new BrandLink() {Name = Resources.LocalizedText.footerContact, LinkRef = "~/Public/ContactMe.aspx" } },
                 { FooterLinkKey.FAQ, new BrandLink() {Name = Resources.LocalizedText.footerFAQ, LinkRef = "~/Public/FAQ.aspx" } },

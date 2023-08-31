@@ -18,6 +18,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
     {
         public ActionResult TandC()
         {
+            ViewBag.defaultTab = tabID.tabUnknown;
             ViewBag.Title = Resources.LocalizedText.TermsAndConditionsHeader;
             ViewBag.HTMLContent = Branding.ReBrand(Resources.LocalizedText.TermsAndConditions);
             return View("_localizedContent");
@@ -25,6 +26,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         public ActionResult Privacy()
         {
+            ViewBag.defaultTab = tabID.tabUnknown;
             ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrivacyPolicyHeader, Branding.CurrentBrand.AppName);
             ViewBag.HTMLContent = Branding.ReBrand(Resources.LocalizedText.Privacy);
             return View("_localizedContent");
@@ -32,6 +34,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         public ActionResult FeatureChart()
         {
+            ViewBag.defaultTab = tabID.tabUnknown;
             ViewBag.Title = Resources.LocalizedText.FeaturesHeader;
             ViewBag.HTMLContent = Branding.ReBrand(Resources.LocalizedText.FeatureTable);
             return View("_localizedContent");
