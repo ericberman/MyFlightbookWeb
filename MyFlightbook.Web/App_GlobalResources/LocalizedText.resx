@@ -1917,4 +1917,16 @@
   <data name="GratuityNamePartnerDiscount" xml:space="preserve">
     <value>Discounted Ground School Coupon</value>
   </data>
+  <data name="CFISigs" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Content.en\CFISigs.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="CFISigsTitle" xml:space="preserve">
+    <value>1 Endorsements and Signed Flights</value>
+  </data>
+  <data name="ClubsManual" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Content.en\ClubsManual.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="ClubsManualTitle" xml:space="preserve">
+    <value>Overview of Clubs on MyFlightbook</value>
+  </data>
 </root>

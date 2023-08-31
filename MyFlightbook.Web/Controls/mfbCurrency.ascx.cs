@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2020 MyFlightbook LLC
+ * Copyright (c) 2007-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -139,7 +139,7 @@ public partial class Controls_mfbCurrency : System.Web.UI.UserControl
         gvCurrency.DataBind();
 
         // HACK - We do this here because Page_Load may not be called if this is for an RSS feed, and it needs to be an absolute URL (including branded host name) for scenarios like that
-        lnkDisclaimer.NavigateUrl = "~/Public/CurrencyDisclaimer.aspx".ToAbsoluteURL(Request.Url.Scheme, Branding.CurrentBrand.HostName, Request.Url.Port).ToString();
+        lnkDisclaimer.NavigateUrl = "~/mvc/pub/CurrencyNotes".ToAbsoluteURL(Request.Url.Scheme, Branding.CurrentBrand.HostName, Request.Url.Port).ToString();
     }
 
     protected void gvCurrency_RowDataBound(object sender, GridViewRowEventArgs e)

@@ -685,7 +685,7 @@
                                     <div>
                                         <asp:RadioButton ID="rbEASARules" runat="server" GroupName="currJurisd" onclick="setLocalPref('CurrencyJurisdiction', 'EASA');" />
                                         <asp:Label ID="lblEASARules" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsUseEASA %>" AssociatedControlID="rbEASARules" />
-                                            <span class="fineprint"><asp:HyperLink ID="lnkCurrencyNotes2" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsNotesRef %>" Target="_blank" NavigateUrl="~/Public/CurrencyDisclaimer.aspx#instrument" /></span>
+                                            <span class="fineprint"><asp:HyperLink ID="lnkCurrencyNotes2" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsNotesRef %>" Target="_blank" NavigateUrl="~/mvc/pub/CurrencyNotes#EASA" /></span>
                                         
                                     </div>
                                     <div>

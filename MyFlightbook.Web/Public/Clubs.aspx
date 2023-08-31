@@ -15,7 +15,7 @@
     <p><% =Branding.ReBrand(Resources.Club.ClubDescOverview1) %></p>
     
     <p><% =Branding.ReBrand(Resources.Club.ClubDescOverview2Aircraft) %></p>
-    <p><asp:HyperLink ID="lnkLearnMore" Target="_blank" NavigateUrl="~/Public/ClubsManual.aspx" runat="server"><% =Branding.ReBrand(Resources.Club.ClubDescLearnMore) %></asp:HyperLink></p>
+    <p><asp:HyperLink ID="lnkLearnMore" Target="_blank" NavigateUrl="~/mvc/pub/ClubManual" runat="server"><% =Branding.ReBrand(Resources.Club.ClubDescLearnMore) %></asp:HyperLink></p>
     <p><% =FixUpDonationAmount() %></p>
     <asp:Panel ID="pnlCreateClub" runat="server">
         <uc3:Expando ID="expandoCreateClub" runat="server">

@@ -408,7 +408,9 @@
     <Content Include="App_Data\connection.config" />
     <Content Include="App_GlobalResources\Content.en\AccountQuestionHint.txt" />
     <Content Include="App_GlobalResources\Content.en\AccountQuestionSamplesList.txt" />
+    <Content Include="App_GlobalResources\Content.en\ClubsManual.htm" />
     <Content Include="App_GlobalResources\Content.en\ClubRolesDescription.htm" />
+    <Content Include="App_GlobalResources\Content.en\CFISigs.htm" />
     <Content Include="App_GlobalResources\Content.en\CurrencyDisclaimer.htm" />
     <Content Include="App_GlobalResources\Content.en\DeadlineDescription.htm" />
     <Content Include="App_GlobalResources\Content.en\Email\AccountLocked.txt" />
@@ -1361,11 +1363,8 @@
     <Content Include="Public\AppleAppStore.svg" />
     <Content Include="Public\authredir.aspx" />
     <Content Include="Public\AWS-SNSListener.aspx" />
-    <Content Include="Public\CFISigs-2012-12.htm" />
-    <Content Include="Public\CFISigs.aspx" />
     <Content Include="Public\CloudAhoyRedir.aspx" />
     <Content Include="Public\Clubs.aspx" />
-    <Content Include="Public\ClubsManual.aspx" />
     <Content Include="Public\ClubsManual_files\image015.png" />
     <Content Include="Public\ClubsManual_files\image016.png" />
     <Content Include="Public\ClubsManual_files\image017.jpg" />
@@ -1398,7 +1397,6 @@
     <Content Include="Public\CSS\printNavy.css" />
     <Content Include="Public\CSS\printUSA.css" />
     <Content Include="Public\CSS\staging.css" />
-    <Content Include="Public\CurrencyDisclaimer.aspx" />
     <Content Include="Public\DayPilot-LICENSE.txt" />
     <Content Include="Public\DayPilot-NOTICE.txt" />
     <Content Include="Public\Developer.aspx" />
@@ -3184,13 +3182,6 @@
     <Compile Include="Public\AWS-SNSListener.aspx.designer.cs">
       <DependentUpon>AWS-SNSListener.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Public\CFISigs.aspx.cs">
-      <DependentUpon>CFISigs.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\CFISigs.aspx.designer.cs">
-      <DependentUpon>CFISigs.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Public\CloudAhoyRedir.aspx.cs">
       <DependentUpon>CloudAhoyRedir.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3205,13 +3196,6 @@
     <Compile Include="Public\Clubs.aspx.designer.cs">
       <DependentUpon>Clubs.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Public\ClubsManual.aspx.cs">
-      <DependentUpon>ClubsManual.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\ClubsManual.aspx.designer.cs">
-      <DependentUpon>ClubsManual.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Public\ContactMe.aspx.cs">
       <DependentUpon>ContactMe.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3225,13 +3209,6 @@
     </Compile>
     <Compile Include="Public\CrashReport.aspx.designer.cs">
       <DependentUpon>CrashReport.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Public\CurrencyDisclaimer.aspx.cs">
-      <DependentUpon>CurrencyDisclaimer.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\CurrencyDisclaimer.aspx.designer.cs">
-      <DependentUpon>CurrencyDisclaimer.aspx</DependentUpon>
     </Compile>
     <Compile Include="Public\Developer.aspx.cs">
       <DependentUpon>Developer.aspx</DependentUpon>

@@ -40,6 +40,30 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return View("_localizedContent");
         }
 
+        public ActionResult CFISigs()
+        {
+            ViewBag.defaultTab = tabID.tabUnknown;
+            ViewBag.Title = Resources.LocalizedText.CFISigsTitle;
+            ViewBag.HTMLContent = Branding.ReBrand(Resources.LocalizedText.CFISigs);
+            return View("_localizedContent");
+        }
+
+        public ActionResult ClubManual()
+        {
+            ViewBag.defaultTab = tabID.tabUnknown;
+            ViewBag.Title = Resources.LocalizedText.ClubsManualTitle;
+            ViewBag.HTMLContent = Branding.ReBrand(Resources.LocalizedText.ClubsManual);
+            return View("_localizedContent");
+        }
+
+        public ActionResult CurrencyNotes()
+        {
+            ViewBag.defaultTab = tabID.tabUnknown;
+            ViewBag.Title = Resources.Currency.CurrencyImportantNotes;
+            ViewBag.HTMLContent = Branding.ReBrand(Resources.Currency.CurrencyDisclaimer);
+            return View("_localizedContent");
+        }
+
         // GET: mvc/Pub - shouldn't ever call.
         public ActionResult Index()
         {

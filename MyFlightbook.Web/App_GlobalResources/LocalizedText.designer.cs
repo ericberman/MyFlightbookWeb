@@ -748,6 +748,25 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  &lt;p&gt;A method is needed by which an instructor can sign a student’s logbook, or by which an instructor can endorse a student.   Reference is made to &lt;a href=&quot;https://www.faa.gov/regulations_policies/advisory_circulars/index.cfm/go/document.information/documentID/1029747&quot; target=&quot;_blank&quot;&gt;FAA circular AC No: 120-78A&lt;/a&gt;, which outlines the criteria to be used to ensure that such a signature is acceptable to the FAA.&lt;/p&gt;
+        ///&lt;p&gt;This document describes the implementation used by %APP_NAME%.   It has NOT been vetted  [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string CFISigs {
+            get {
+                return ResourceManager.GetString("CFISigs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 Endorsements and Signed Flights.
+        /// </summary>
+        internal static string CFISigsTitle {
+            get {
+                return ResourceManager.GetString("CFISigsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Change Query....
         /// </summary>
         internal static string ChangeQuery {
@@ -1311,6 +1330,38 @@ namespace Resources {
         internal static string CloudStorageSuccess {
             get {
                 return ResourceManager.GetString("CloudStorageSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to      &lt;p&gt;
+        ///        Flying clubs on %APP_NAME% provide a convenient way to
+        ///        manage aircraft that are shared among multiple pilots, whether in a club/FBO
+        ///        environment or even just a single aircraft shared among a few co-owner pilots. 
+        ///        (The term “club” here refers to any of these scenarios.)
+        ///    &lt;/p&gt;
+        ///
+        ///    &lt;p&gt;
+        ///        The club functionality provides the following high-level
+        ///        features:
+        ///    &lt;/p&gt;
+        ///
+        ///    &lt;ul&gt;
+        ///        &lt;li&gt;
+        ///            Associate aircraft with your club and manage [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string ClubsManual {
+            get {
+                return ResourceManager.GetString("ClubsManual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Overview of Clubs on MyFlightbook.
+        /// </summary>
+        internal static string ClubsManualTitle {
+            get {
+                return ResourceManager.GetString("ClubsManualTitle", resourceCulture);
             }
         }
         
