@@ -1,5 +1,4 @@
-﻿using MyFlightbook;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Web.Security;
@@ -7,7 +6,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2022 MyFlightbook LLC
+ * Copyright (c) 2015-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -29,7 +28,7 @@ namespace MyFlightbook.PublicPages
                     lstParams.Add("nolocalprefs=yes");
                     return "~/Member/EditProfile.aspx/pftPrefs";
                 case "DONATE":
-                    return "~/Member/EditProfile.aspx/pftDonate";
+                    return "~/mvc/Donate";
                 case "ENDORSE":
                     return "~/Member/Training.aspx/instEndorsements";
                 case "PROGRESS":
