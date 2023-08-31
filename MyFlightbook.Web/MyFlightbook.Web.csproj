@@ -1455,7 +1455,6 @@
     <Content Include="Public\PaypalIPNListener.aspx" />
     <Content Include="Public\PendingImg.aspx" />
     <Content Include="Public\PrintFooter.aspx" />
-    <Content Include="Public\Privacy.aspx" />
     <Content Include="Public\PropertyTable.aspx" />
     <Content Include="Public\RSSCurrency.aspx" />
     <Content Include="Public\Scripts\aircraftcontext.js" />
@@ -1485,7 +1484,6 @@
     <Content Include="Public\tabimages\LogbookTab.png" />
     <Content Include="Public\tabimages\ProfileTab.png" />
     <Content Include="Public\tabimages\TrainingTab.png" />
-    <Content Include="Public\TandC.aspx" />
     <Content Include="Public\TotalsAndCurrencyEmail.aspx" />
     <Content Include="Public\Unsubscribe.aspx" />
     <Content Include="Public\UploadAirplanePicture.aspx" />
@@ -3347,13 +3345,6 @@
     <Compile Include="Public\PrintFooter.aspx.designer.cs">
       <DependentUpon>PrintFooter.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Public\Privacy.aspx.cs">
-      <DependentUpon>Privacy.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\Privacy.aspx.designer.cs">
-      <DependentUpon>Privacy.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Public\PropertyTable.aspx.cs">
       <DependentUpon>PropertyTable.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3381,13 +3372,6 @@
     </Compile>
     <Compile Include="Public\StatsForMail.aspx.designer.cs">
       <DependentUpon>StatsForMail.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Public\TandC.aspx.cs">
-      <DependentUpon>TandC.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\TandC.aspx.designer.cs">
-      <DependentUpon>TandC.aspx</DependentUpon>
     </Compile>
     <Compile Include="Public\TotalsAndCurrencyEmail.aspx.cs">
       <DependentUpon>TotalsAndCurrencyEmail.aspx</DependentUpon>
