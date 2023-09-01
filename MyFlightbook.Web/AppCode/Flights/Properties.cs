@@ -597,6 +597,7 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
             return String.Format(CultureInfo.InvariantCulture, "{0}{1} - {2}", PropTypeID, IsFavorite ? "*" : " ", Title);
         }
 
+        #region Admin tools
         private static void AppendIfFlagged(StringBuilder sb, UInt32 flag, uint flagToTest, string szText)
         {
             if ((flag & flagToTest) != 0)
@@ -652,6 +653,35 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
             if (sz.EndsWith(": ", StringComparison.Ordinal))
                 sz = sz.Remove(sz.Length - 2);
             return sz;
+        }
+        #endregion
+
+        /// <summary>
+        /// Returns a human readable description of the property type's unit
+        /// </summary>
+        [JsonIgnore]
+        [XmlIgnore]
+        public string PropTypeUnitDescription
+        {
+            get
+            {
+                switch (Type)
+                {
+                    case CFPPropertyType.cfpBoolean:
+                        return Resources.LogbookEntry.importUnitBoolean;
+                    case CFPPropertyType.cfpCurrency:
+                    case CFPPropertyType.cfpDecimal:
+                    case CFPPropertyType.cfpInteger:
+                        return Resources.LogbookEntry.importUnitNumber;
+                    case CFPPropertyType.cfpDate:
+                    case CFPPropertyType.cfpDateTime:
+                        return Resources.LogbookEntry.importUnitDate;
+                    case CFPPropertyType.cfpString:
+                        return Resources.LogbookEntry.importUnitText;
+                    default:
+                        return string.Empty;
+                }
+            }
         }
 
         public static void FlushUserCache(string szUser)

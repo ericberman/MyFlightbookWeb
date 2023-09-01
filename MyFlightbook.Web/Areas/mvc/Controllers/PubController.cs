@@ -64,10 +64,21 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return View("_localizedContent");
         }
 
+        public ActionResult ImportTable()
+        {
+            ViewBag.defaultTab = tabID.tabLogbook;
+            ViewBag.Title = String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LogbookEntry.importTableHeader, Branding.CurrentBrand.AppName);
+            ViewBag.HTMLContent = Branding.ReBrand(Resources.LogbookEntry.ImportTableDescription);
+            ViewBag.PropTypeList = CustomPropertyType.GetCustomPropertyTypes();
+            return View("ImportTable");
+        }
+
         // GET: mvc/Pub - shouldn't ever call.
         public ActionResult Index()
         {
-            return View();
+            Response.Redirect("~");
+            Response.End();
+            return null;
         }
     }
 }

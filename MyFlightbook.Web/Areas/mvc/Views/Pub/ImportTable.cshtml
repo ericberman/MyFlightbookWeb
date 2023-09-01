@@ -1,0 +1,33 @@
+﻿@{
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    const int cColumnsOfProps = 4;
+    CustomPropertyType[] lst = ViewBag.PropTypeList;
+    int cRows = (lst.Length + cColumnsOfProps - 1) / cColumnsOfProps;
+}
+@Html.Raw(ViewBag.HTMLContent)
+
+<table>
+    @for (int iRow = 0; iRow < cRows; iRow++)
+    {
+        <tr style="vertical-align: top">
+            @for (int iCol = 0; iCol < cColumnsOfProps; iCol++)
+            {
+                int iProp = (iCol * cRows) + iRow;
+                if (iProp < lst.Length)
+                {
+                    CustomPropertyType cpt = lst[iProp];
+                    <td style="padding: 5px;">
+                        <span style="font-weight: bold">@cpt.Title</span>
+                        <div>@cpt.PropTypeUnitDescription</div>
+                        <div style="font-size: smaller">@cpt.Description</div>
+                    </td>
+                }
+                else
+                {
+                    // Add blank cells to pad out the row Pad out the row
+                    <td></td>
+                }
+            }
+        </tr>
+    }
+ </table>

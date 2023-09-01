@@ -1405,7 +1405,6 @@
     <Content Include="Public\FindAirport.aspx" />
     <Content Include="Public\FlightDataKey.aspx" />
     <Content Include="Public\Game.aspx" />
-    <Content Include="Public\ImportTable.aspx" />
     <Content Include="Public\iPadImages\Full\iPad1.png" />
     <Content Include="Public\iPadImages\Full\iPad2.png" />
     <Content Include="Public\iPadImages\Full\iPad3.png" />
@@ -3252,13 +3251,6 @@
     <Compile Include="Public\Game.aspx.designer.cs">
       <DependentUpon>Game.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Public\ImportTable.aspx.cs">
-      <DependentUpon>ImportTable.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\ImportTable.aspx.designer.cs">
-      <DependentUpon>ImportTable.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Public\MapRoute2.aspx.cs">
       <DependentUpon>MapRoute2.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3480,6 +3472,7 @@
     <Content Include="Public\tmap\src\font\flaticon.woff2" />
     <Content Include="Areas\mvc\Views\donate\donate.cshtml" />
     <Content Include="Areas\mvc\Views\MFBTemplate\_tooltip.cshtml" />
+    <Content Include="Areas\mvc\Views\Pub\ImportTable.cshtml" />
     <None Include="packages.config" />
     <None Include="SecuritySwitch-v4.xsd">
       <SubType>Designer</SubType>

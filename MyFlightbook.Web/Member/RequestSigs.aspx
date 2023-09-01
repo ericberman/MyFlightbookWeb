@@ -127,7 +127,7 @@
             Text="<%$ Resources:LocalizedText, Note %>" meta:resourcekey="lblNoteResource1"></asp:Label> 
         <asp:Label ID="lblSignatureDisclaimer" runat="server" CssClass="fineprint" Text="MyFlightbook provides facilities for an instructor to sign a logbook on another pilot's behalf, with that pilot's permission. While every attempt is made to ensure the integrity of this process, it has not been vetted by the FAA or other similar agencies, and may therefore not be acceptible to these agencies." 
             meta:resourcekey="lblSignatureDisclaimerResource1"></asp:Label>
-        <asp:HyperLink ID="lnkSignatureDescription" runat="server" Text="Learn More..." NavigateUrl="~/Public/CFISigs.aspx" meta:resourcekey="lnkSignatureDescriptionResource1"></asp:HyperLink></p>
+        <asp:HyperLink ID="lnkSignatureDescription" runat="server" Text="Learn More..." NavigateUrl="~/mvc/pub/CFISigs" meta:resourcekey="lnkSignatureDescriptionResource1"></asp:HyperLink></p>
 </asp:Content>
 <asp:Content ID="Content1" ContentPlaceHolderID="cpMain" Runat="Server">
 </asp:Content>

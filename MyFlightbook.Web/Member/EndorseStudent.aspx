@@ -17,7 +17,7 @@
         <p>
             <asp:Label ID="lblNote" Font-Bold="true" runat="server" Text="<%$ Resources:LocalizedText, Note %>"></asp:Label>
             <asp:Localize ID="locEndorsementDisclaimer" runat="server" Text="<%$ Resources:Profile, EndorsementDisclaimer %>"></asp:Localize>
-            <asp:HyperLink ID="lnkCFISigs" Text='<%$ Resources:SignOff, CFISigsLinkLabel %>' Target="_blank" runat="server" NavigateUrl="~/Public/CFISigs.aspx" ></asp:HyperLink>
+            <asp:HyperLink ID="lnkCFISigs" Text='<%$ Resources:SignOff, CFISigsLinkLabel %>' Target="_blank" runat="server" NavigateUrl="~/mvc/pub/CFISigs" ></asp:HyperLink>
         </p>
         <h2><%=Resources.SignOff.EndorsementPickTemplate %></h2>
         <div>
