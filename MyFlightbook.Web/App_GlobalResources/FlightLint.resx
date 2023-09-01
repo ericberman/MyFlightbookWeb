@@ -383,6 +383,9 @@
   <data name="warningSoloTimeWithNonSoloTime" xml:space="preserve">
     <value>Solo time is indicated on the flight alongside incompatible amounts of SIC, Dual Received, or Instructor Time.  If you were solo, how could that be true?</value>
   </data>
+  <data name="warningSoloTimeWithNonSoloTime2" xml:space="preserve">
+    <value>Solo time is indicated on the flight alongside data that is incompatible with solo flight, such as passenger names.  If you were solo, how could that be true?</value>
+  </data>
   <data name="warningTachEndBeforeTachStart" xml:space="preserve">
     <value>Tachometer end is less than tachometer start</value>
   </data>

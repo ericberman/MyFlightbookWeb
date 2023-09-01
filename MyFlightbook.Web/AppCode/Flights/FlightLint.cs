@@ -391,6 +391,12 @@ namespace MyFlightbook.Lint
                 int soloMinutes = cfpSolo.DecValue.ToMinutes();
                 AddConditionalIssue(soloMinutes > le.PIC.ToMinutes(), LintOptions.TimeIssues, Resources.FlightLint.warningSoloTimeExceedsPICTime);
                 AddConditionalIssue(soloMinutes > totalMinutes - le.SIC.ToMinutes() - le.CFI.ToMinutes() - le.Dual.ToMinutes(), LintOptions.TimeIssues, Resources.FlightLint.warningSoloTimeWithNonSoloTime);
+
+                AddConditionalIssue(soloMinutes == totalMinutes &&
+                    (le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropInstructorOnBoard) ||
+                     le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropPassengerNames) ||
+                     le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropInstructorName) ||
+                     le.CustomProperties.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropPassengerCount) > 0), LintOptions.TimeIssues, Resources.FlightLint.warningSoloTimeWithNonSoloTime2);
             }
 
             foreach (CustomFlightProperty cfp in le.CustomProperties)

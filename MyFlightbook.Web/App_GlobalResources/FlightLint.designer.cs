@@ -853,6 +853,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Solo time is indicated on the flight alongside data that is incompatible with solo flight, such as passenger names.  If you were solo, how could that be true?.
+        /// </summary>
+        internal static string warningSoloTimeWithNonSoloTime2 {
+            get {
+                return ResourceManager.GetString("warningSoloTimeWithNonSoloTime2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Tachometer end is less than tachometer start.
         /// </summary>
         internal static string warningTachEndBeforeTachStart {
