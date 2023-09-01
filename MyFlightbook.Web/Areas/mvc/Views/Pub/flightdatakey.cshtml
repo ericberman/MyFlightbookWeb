@@ -1,0 +1,32 @@
+﻿@{
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+<div class="detailsSection" style="float:right; max-width: 250px;">
+    @Resources.LogbookEntry.BulkImportPrompt
+    <a href="@VirtualPathUtility.ToAbsolute("~/Member/ImportTelemetry.aspx")">@Resources.LogbookEntry.BulkImportLink</a>
+</div>
+
+@Html.Raw(ViewBag.HTMLContent)
+<table cellpadding="3">
+    <thead>
+        <tr>
+            <td style="font-weight: bold;">@Resources.FlightData.headerColumnName</td>
+            <td style="font-weight: bold;">@Resources.FlightData.headerColumnDescription</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (MyFlightbook.Telemetry.KnownColumn kc in ViewBag.Columns)
+        {
+            <tr style="vertical-align: top">
+                <td style="font-weight: bold;">@kc.Column</td>
+                <td>
+                    <div>@kc.ColumnDescription</div>
+                    <div class="fineprint">@kc.ColumnNotes</div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<p><a href="@VirtualPathUtility.ToAbsolute("~/Public/ContactMe.aspx")">@Resources.FlightData.FlightDataContactUs</a></p>
+
+

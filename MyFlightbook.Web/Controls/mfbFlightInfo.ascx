@@ -98,7 +98,7 @@
                 <td>
                     <asp:Label ID="lblTelemetryData" Font-Bold="True" runat="server" Text="<%$ Resources:LogbookEntry, FieldTelemetry %>"></asp:Label>
                     <asp:HyperLink ID="lnkLearnMore" CssClass="fineprint" runat="server" 
-                        NavigateUrl="~/Public/FlightDataKey.aspx" Target="_blank" Text="<%$ Resources:LogbookEntry, FieldTelemetryLearnMore %>"></asp:HyperLink>
+                        NavigateUrl="~/mvc/pub/FlightDataKey" Target="_blank" Text="<%$ Resources:LogbookEntry, FieldTelemetryLearnMore %>"></asp:HyperLink>
                 </td>
                 <td>
                     <asp:MultiView ID="mvData" runat="server">

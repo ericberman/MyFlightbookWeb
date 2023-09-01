@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MyFlightbook.Telemetry;
+using System;
 using System.Globalization;
 using System.Web.Mvc;
 
@@ -67,10 +68,19 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         public ActionResult ImportTable()
         {
             ViewBag.defaultTab = tabID.tabLogbook;
-            ViewBag.Title = String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LogbookEntry.importTableHeader, Branding.CurrentBrand.AppName);
+            ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.importTableHeader, Branding.CurrentBrand.AppName);
             ViewBag.HTMLContent = Branding.ReBrand(Resources.LogbookEntry.ImportTableDescription);
             ViewBag.PropTypeList = CustomPropertyType.GetCustomPropertyTypes();
             return View("ImportTable");
+        }
+
+        public ActionResult FlightDataKey()
+        {
+            ViewBag.defaultTab = tabID.tabLogbook;
+            ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.FlightData.FlightDataHeader, Branding.CurrentBrand.AppName);
+            ViewBag.HTMLContent = Branding.ReBrand(Resources.FlightData.FlightDataKey);
+            ViewBag.Columns = KnownColumn.GetKnownColumns();
+            return View("flightdatakey");
         }
 
         // GET: mvc/Pub - shouldn't ever call.

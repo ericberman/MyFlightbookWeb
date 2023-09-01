@@ -37,7 +37,7 @@
     <p>
         <asp:Localize ID="locOverview" runat="server"
             Text="<%$ Resources:LogbookEntry, FlightDetailsDesc %>"></asp:Localize>
-        <asp:HyperLink ID="lnkKey" NavigateUrl="~/Public/FlightDataKey.aspx"
+        <asp:HyperLink ID="lnkKey" NavigateUrl="~/mvc/pub/FlightDataKey"
             runat="server" Target="_blank" Text="<%$ Resources:LogbookEntry, FlightDetailsLearnAboutTelemetry %>" />
     </p>
     <asp:Panel runat="server" ID="pnlFlightDesc" CssClass="detailsHeaderBar shadowed">

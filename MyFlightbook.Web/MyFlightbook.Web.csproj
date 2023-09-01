@@ -1403,7 +1403,6 @@
     <Content Include="Public\Export.aspx" />
     <Content Include="Public\FAQ.aspx" />
     <Content Include="Public\FindAirport.aspx" />
-    <Content Include="Public\FlightDataKey.aspx" />
     <Content Include="Public\Game.aspx" />
     <Content Include="Public\iPadImages\Full\iPad1.png" />
     <Content Include="Public\iPadImages\Full\iPad2.png" />
@@ -3237,13 +3236,6 @@
     <Compile Include="Public\FindAirport.aspx.designer.cs">
       <DependentUpon>FindAirport.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Public\FlightDataKey.aspx.cs">
-      <DependentUpon>FlightDataKey.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\FlightDataKey.aspx.designer.cs">
-      <DependentUpon>FlightDataKey.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Public\Game.aspx.cs">
       <DependentUpon>Game.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3473,6 +3465,7 @@
     <Content Include="Areas\mvc\Views\donate\donate.cshtml" />
     <Content Include="Areas\mvc\Views\MFBTemplate\_tooltip.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\ImportTable.cshtml" />
+    <Content Include="Areas\mvc\Views\Pub\flightdatakey.cshtml" />
     <None Include="packages.config" />
     <None Include="SecuritySwitch-v4.xsd">
       <SubType>Designer</SubType>
