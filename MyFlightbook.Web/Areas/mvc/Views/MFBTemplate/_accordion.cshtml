@@ -1,0 +1,17 @@
+﻿<script type="text/javascript">
+        $(function () {
+            $("#" + "@ViewBag.containerID").accordion({
+                active: @ViewBag.active,
+                collapsible: true,
+                heightStyle: "content",
+                icons: false,
+                classes: {
+                    "ui-accordion-header": "accordianHeader",
+                    "ui-accordion-header-active": "accordianHeaderSelected",
+                    "ui-accordion-header-collapsed": "accordianHeader",
+                    "ui-accordion-content": "accordianContent",
+                    "ui-accordion-content-active": "accordianContent"
+                }
+            });
+        });
+</script>

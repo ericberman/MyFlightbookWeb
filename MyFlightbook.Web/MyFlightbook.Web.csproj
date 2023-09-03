@@ -1841,6 +1841,7 @@
     </Compile>
     <Compile Include="Areas\mvc\Controllers\AllMakesController.cs" />
     <Compile Include="Areas\mvc\Controllers\DonateController.cs" />
+    <Compile Include="Areas\mvc\Controllers\FAQController.cs" />
     <Compile Include="Areas\mvc\Controllers\MFBTemplateController.cs" />
     <Compile Include="Areas\mvc\Controllers\PubController.cs" />
     <Compile Include="Areas\mvc\Controllers\rbredirectController.cs" />
@@ -3466,6 +3467,9 @@
     <Content Include="Areas\mvc\Views\MFBTemplate\_tooltip.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\ImportTable.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\flightdatakey.cshtml" />
+    <Content Include="Areas\mvc\Views\FAQ\_faq.cshtml" />
+    <Content Include="Areas\mvc\Views\MFBTemplate\_searchbox.cshtml" />
+    <Content Include="Areas\mvc\Views\MFBTemplate\_accordion.cshtml" />
     <None Include="packages.config" />
     <None Include="SecuritySwitch-v4.xsd">
       <SubType>Designer</SubType>

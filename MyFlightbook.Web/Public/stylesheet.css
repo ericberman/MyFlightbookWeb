@@ -575,6 +575,39 @@ td.totalsByTimeCell:nth-child(even), td.totalsDateRange:nth-child(even) {
     box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.75);
 }
 
+/* Accordion from jQuery-UI */
+.ui-accordion, .ui-accordion h3 {
+    font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 9pt !important;
+}
+
+.ui-accordion h3 {
+    font-weight: bold;
+    line-height: 24pt;
+}
+
+.ui-accordion .ui-accordion-header {
+    background: none;
+    background-color: lightgray;
+    margin-top: 4px;
+    padding: 3px;
+}
+
+.ui-accordion .ui-accordion-header-active {
+    background: none;
+    background-color: darkgray;
+    margin-top: 4px;
+    padding: 3px;
+}
+
+.ui-accordion-content, ui-accordion-content p {
+    margin: 0;
+    margin-block: 0;
+    margin-inline: 0;
+    padding: 0;
+    font-size: 12px;
+}
+
 /* aircraft and flight pictures popup */
 .rollAble
 {

@@ -1,0 +1,46 @@
+﻿@{
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    int iGroup = 0;
+}
+
+<div style="padding-top:3px;">
+    @Branding.ReBrand(Resources.LocalizedText.FAQDesc)
+    <a href="@VirtualPathUtility.ToAbsolute("~/Public/ContactMe.aspx")">@Resources.LocalizedText.FAQContactUs</a>
+    <div style="display:inline-block; vertical-align:middle;">
+        @using (Html.BeginForm("", "FAQ", FormMethod.Post))
+        {
+            Html.RenderAction("RenderSearchBox", "MFBTemplate", new { id = "searchBox", placeholder = Resources.LocalizedText.FAQSearchWatermark });
+        }
+    </div>
+    <div class="error">@ViewBag.error</div>
+</div>
+
+@foreach (FAQGroup fg in ViewBag.faqList)
+{
+    string groupAccordionID = "faqAccordion" + iGroup.ToString();
+    iGroup++;
+    int iFaq = 0;
+    int selectedFaq = -1;
+
+    <h2>@fg.Category</h2>
+    <div id="@groupAccordionID">
+        @foreach (FAQItem fi in fg.Items)
+        {
+            if (fi.idFAQ == ViewBag.selectedIndex)
+            {
+                selectedFaq = iFaq;
+            }
+            iFaq++;
+            <h3><a name='@fi.idFAQ'></a>@fi.Question</h3>
+            <div>
+                <div style="float:right">
+                    <a href="@VirtualPathUtility.ToAbsolute(String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/mvc/faq?q={0}#{0}", fi.idFAQ))">
+                        <img style="opacity: 0.5;" alt="@Resources.LocalizedText.FAQPermaLink" src="@VirtualPathUtility.ToAbsolute("~/images/Link.png")" />
+                    </a>
+                </div>
+                @Html.Raw(fi.Answer)
+            </div>
+        }
+    </div>
+    Html.RenderAction("RenderAccordion", "MFBTemplate", new { containerID = groupAccordionID, active = selectedFaq >= 0 ? selectedFaq.ToString() : "false" });
+}

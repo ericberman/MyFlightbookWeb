@@ -9,27 +9,12 @@
             <div id="headerSearchAndSign">
                 <div id="headerSearchBox">
                     <div style="padding-top:3px;">
-                        <div class="searchBox" id="searchBox">
-                            @using (Html.BeginForm("Search", "MFBTemplate", FormMethod.Post))
-                            {
-                                @Html.AntiForgeryToken();
-                                <img src=@VirtualPathUtility.ToAbsolute("~/images/Search.png") class="searchBoxIcon" alt="" tooltip="" />
-                                <input type="text" class="searchBoxTextBox noselect" name="searchText" placeholder="@Resources.LocalizedText.SearchBoxWatermark" />
-                                <input type="submit" value="submit" id="_searchBtn" style="display:none;" />
-                            }
-                            <script type="text/javascript">
-                                $(function () {
-                                    $('searchBox').keydown(function (e) {
-                                        if (e.keyCode == 13) {
-                                            $("_searchBtn").focus().click();
-                                            return false;
-                                        }
-                                    });
-                                });
-                            </script>
-                        </div>
+                        @using (Html.BeginForm("Search", "MFBTemplate", FormMethod.Post))
+                        {
+                            Html.RenderAction("RenderSearchBox", "MFBTemplate", new { id = "searchBox", placeholder = Resources.LocalizedText.SearchBoxWatermark });
+                        }
                     </div>
-                </div>
+                        </div>
                 <div id="headerLoginStatus">
                     @{
                         if (User.Identity.IsAuthenticated)

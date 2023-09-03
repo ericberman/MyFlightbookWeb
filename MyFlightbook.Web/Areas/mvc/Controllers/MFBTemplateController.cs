@@ -75,6 +75,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.LastActivity = pf.LastActivity.Date.CompareTo(pf.LastLogon.Date) != 0 ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MemberLastActivityShort, pf.LastActivity) : String.Empty;
         }
 
+        #region shared Partial views
         [ChildActionOnly]
         public ActionResult RenderTooltip(string tipID, string tipTextHTML, string tipPrompt = "[?]")
         {
@@ -83,6 +84,26 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.tipText = tipTextHTML;
             return PartialView("_tooltip");
         }
+
+        [ChildActionOnly]
+        public ActionResult RenderSearchBox(string id, string placeholder)
+        {
+            ViewBag.searchID = id;
+            ViewBag.searchBtnID = id + "btn";
+            ViewBag.searchPrompt = placeholder;
+            return PartialView("_searchbox");
+        }
+
+        [ChildActionOnly]
+        public ActionResult RenderAccordion(string containerID, string active)
+        {
+            ViewBag.containerID = containerID;
+            ViewBag.active = active;
+            return PartialView("_accordion");
+        }
+
+        #endregion
+
 
 
         [ChildActionOnly]
