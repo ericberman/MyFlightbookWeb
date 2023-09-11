@@ -579,11 +579,21 @@ td.totalsByTimeCell:nth-child(even), td.totalsDateRange:nth-child(even) {
 .ui-accordion, .ui-accordion h3 {
     font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     font-size: 9pt !important;
+    color: black;
+}
+
+.ui-accordion p {
+    margin-block-start: 0;
+    margin-block-end: 0;
 }
 
 .ui-accordion h3 {
     font-weight: bold;
     line-height: 24pt;
+}
+
+.ui-accordion .ui-accordion-content {
+    padding: 1em;
 }
 
 .ui-accordion .ui-accordion-header {
