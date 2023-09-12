@@ -348,39 +348,75 @@
             <asp:View runat="server" ID="vwPreviewResults">
                 <asp:MultiView ID="mvPreview" runat="server">
                     <asp:View ID="vwPreview" runat="server">
-                        <table style="width:100%; font-size: 8pt; border-color: gray; border-collapse:collapse" border="1">
+                        <style type="text/css">
+                            .previewTable { 
+                                border-color: #eeeeee;
+                                font-size: 8pt;
+                            }
+
+                            table.previewTable {
+                                width: 100%;
+                                border-collapse: separate; /* Don't collapse */
+                                border-spacing: 0;
+                            }
+
+                            table.previewTable th {
+                                /* Apply both top and bottom borders to the <th> */
+                                border-bottom: 1px solid #eeeeee;
+                                padding: .5em 1em .5em 1em;
+                                vertical-align: bottom;
+                                text-align: center;
+                                font-weight: bold;
+                            }
+
+                            table.previewTable td {
+                                /* For cells, apply the border to one of each side only (right but not left, bottom but not top) */
+                                border-bottom: 1px solid #eeeeee;
+                                border-right: 1px solid#eeeeee;
+                                padding: .5em 1em .5em 1em;
+                            }
+
+                            table.previewTable tr {
+                                vertical-align: top;
+                            }
+
+                            table.previewTable td:first-child {
+                                border-left: 1px solid #eeeeee;
+                            }
+                        </style>
+                        <table class="previewTable">
                             <thead>
-                                <tr style="font-weight:bold">
-                                    <td></td>
-                                    <td style="text-align:center;padding: 2px"><%=Resources.LogbookEntry.FieldTail %></td>
-                                    <td style="text-align:center;padding: 2px"><%=Resources.LogbookEntry.FieldApproaches %></td>
-                                    <td style="text-align:center;padding: 2px"><%=Resources.LogbookEntry.FieldHold %></td>
-                                    <td style="text-align:center;padding: 2px">
+                                <tr>
+                                    <th class="gvhDefault"></th>
+                                    <th class="gvhDefault"><%=Resources.LogbookEntry.FieldTail %></th>
+                                    <th class="gvhDefault"><%=Resources.LogbookEntry.FieldApproaches %></th>
+                                    <th class="gvhDefault"><%=Resources.LogbookEntry.FieldHold %></th>
+                                    <th class="gvhDefault">
                                         <% =Resources.LogbookEntry.FieldLanding %>
                                         <uc1:mfbTooltip runat="server" ID="mfbTooltip" BodyContent="<%$ Resources:LogbookEntry, LogbookLandingKey %>" />
-                                    </td>
-                                    <td style="text-align:center;padding: 2px"><% =Resources.LogbookEntry.FieldXCountry %></td>
-                                    <td style="text-align:center;padding: 2px"><%=Resources.LogbookEntry.FieldNight %></td>
-                                    <td style="text-align:center;padding: 2px"><%=Resources.LogbookEntry.FieldSimIMC %></td>
-                                    <td style="text-align:center;padding: 2px"><%=Resources.LogbookEntry.FieldIMC %></td>
-                                    <td style="text-align:center;padding: 2px"><%=Resources.LogbookEntry.FieldGroundSim %></td>
-                                    <td style="text-align:center;padding: 2px"><%=Resources.LogbookEntry.FieldDual %></td>
-                                    <td style="text-align:center;padding: 2px"><%=Resources.LogbookEntry.FieldCFI %></td>
-                                    <td style="text-align:center;padding: 2px"><%=Resources.LogbookEntry.FieldSIC %></td>
-                                    <td style="text-align:center;padding: 2px"><%=Resources.LogbookEntry.FieldPIC %></td>
-                                    <td style="text-align:center;padding: 2px"><%=Resources.LogbookEntry.FieldTotal %></td>
+                                    </th>
+                                    <th class="gvhDefault"><% =Resources.LogbookEntry.FieldXCountry %></th>
+                                    <th class="gvhDefault"><%=Resources.LogbookEntry.FieldNight %></th>
+                                    <th class="gvhDefault"><%=Resources.LogbookEntry.FieldSimIMC %></th>
+                                    <th class="gvhDefault"><%=Resources.LogbookEntry.FieldIMC %></th>
+                                    <th class="gvhDefault"><%=Resources.LogbookEntry.FieldGroundSim %></th>
+                                    <th class="gvhDefault"><%=Resources.LogbookEntry.FieldDual %></th>
+                                    <th class="gvhDefault"><%=Resources.LogbookEntry.FieldCFI %></th>
+                                    <th class="gvhDefault"><%=Resources.LogbookEntry.FieldSIC %></th>
+                                    <th class="gvhDefault"><%=Resources.LogbookEntry.FieldPIC %></th>
+                                    <th class="gvhDefault"><%=Resources.LogbookEntry.FieldTotal %></th>
                                 </tr>
                             </thead>
                             <asp:Repeater ID="rptPreview" OnItemDataBound="rptPreview_ItemDataBound" runat="server">
                                 <ItemTemplate>
-                                    <tr runat="server" id="rowError" visible='false' style="vertical-align:top">
-                                        <td colspan="15" runat="server">
-                                            <div><asp:Label ID="lblFlightErr" CssClass="error" runat="server" Text='<%# Eval("ErrorString") %>'></asp:Label></div>
-                                            <div><asp:Label ID="lblRawRow" CssClass="error" runat="server"></asp:Label></div>
+                                    <tr runat="server" id="rowError" visible='false'>
+                                        <td colspan="15" runat="server" >
+                                            <div><asp:Label ID="lblFlightErr" CssClass="error" runat="server" Text='<%# Eval("ErrorString") %>' /></div>
+                                            <div><asp:Label ID="lblRawRow" CssClass="error" runat="server" /></div>
                                         </td>
                                     </tr>
-                                    <tr runat="server" id="rowFlight" style="vertical-align:top; text-align:center; border: 1px solid gray">
-                                        <td style="text-align:left" runat="server">
+                                    <tr runat="server" id="rowFlight">
+                                        <td runat="server" >
                                             <div>
                                                 <asp:Image ID="imgNewOrUpdate" runat="server" ImageUrl='<%# String.IsNullOrEmpty((string) Eval("ErrorString")) ? (Convert.ToBoolean(Eval("IsNewFlight")) ? "~/images/add.png" : "~/images/update.png") : "~/images/circleslash.png" %>' 
                                                 ToolTip='<%# String.IsNullOrEmpty((string) Eval("ErrorString")) ? (Convert.ToBoolean(Eval("IsNewFlight")) ? Resources.LogbookEntry.ImportAddTooltip : Resources.LogbookEntry.ImportUpdateTooltip) : (string) Eval("ErrorString") %>'  />
@@ -389,7 +425,7 @@
                                             </div>
                                             <div><%#: Eval("Comment") %></div>
                                             <div><asp:PlaceHolder ID="plcAdditional" runat="server"></asp:PlaceHolder></div>
-                                            <asp:Panel ID="pnlDiffs" runat="server" Visible="False" style="background-color:#eeeeee; border:1px solid darkgray; margin:3px;">
+                                            <asp:Panel ID="pnlDiffs" runat="server" Visible="False" CssClass="calloutBackground calloutSmall">
                                                 <ul>
                                                     <asp:Repeater ID="rptDiffs" runat="server">
                                                         <ItemTemplate>
@@ -399,24 +435,24 @@
                                                 </ul>
                                             </asp:Panel>
                                         </td>
-                                        <td runat="server">
+                                        <td runat="server" >
                                             <div style="font-weight:bold"><%#: Eval("TailNumDisplay") %></div>
                                             <div><%#: Eval("ModelDisplay") %></div>
                                             <div><%#: Eval("CatClassDisplay") %></div>
                                         </td>
-                                        <td runat="server"><%# Eval("Approaches").FormatInt() %></td>
-                                        <td style="font-weight:bold" runat="server"><%# Eval("fHoldingProcedures").FormatBoolean() %></td>
-                                        <td runat="server"><%# LogbookEntryDisplay.LandingDisplayForFlight((LogbookEntry) Container.DataItem) %></td>
-                                        <td runat="server"><%# Eval("CrossCountry").FormatDecimal(UseHHMM) %></td>
-                                        <td runat="server"><%# Eval("Nighttime").FormatDecimal(UseHHMM) %></td>
-                                        <td runat="server"><%# Eval("SimulatedIFR").FormatDecimal(UseHHMM) %></td>
-                                        <td runat="server"><%# Eval("IMC").FormatDecimal(UseHHMM) %></td>
-                                        <td runat="server"><%# Eval("GroundSim").FormatDecimal(UseHHMM) %></td>
-                                        <td runat="server"><%# Eval("Dual").FormatDecimal(UseHHMM) %></td>
-                                        <td runat="server"><%# Eval("CFI").FormatDecimal(UseHHMM) %></td>
-                                        <td runat="server"><%# Eval("SIC").FormatDecimal(UseHHMM) %></td>
-                                        <td runat="server"><%# Eval("PIC").FormatDecimal(UseHHMM) %></td>
-                                        <td runat="server"><%# Eval("TotalFlightTime").FormatDecimal(UseHHMM) %></td>
+                                        <td runat="server" ><%# Eval("Approaches").FormatInt() %></td>
+                                        <td style="font-weight:bold; padding: 3px;" runat="server" ><%# Eval("fHoldingProcedures").FormatBoolean() %></td>
+                                        <td runat="server" ><%# LogbookEntryDisplay.LandingDisplayForFlight((LogbookEntry) Container.DataItem) %></td>
+                                        <td runat="server" ><%# Eval("CrossCountry").FormatDecimal(UseHHMM) %></td>
+                                        <td runat="server" ><%# Eval("Nighttime").FormatDecimal(UseHHMM) %></td>
+                                        <td runat="server" ><%# Eval("SimulatedIFR").FormatDecimal(UseHHMM) %></td>
+                                        <td runat="server" ><%# Eval("IMC").FormatDecimal(UseHHMM) %></td>
+                                        <td runat="server" ><%# Eval("GroundSim").FormatDecimal(UseHHMM) %></td>
+                                        <td runat="server" ><%# Eval("Dual").FormatDecimal(UseHHMM) %></td>
+                                        <td runat="server" ><%# Eval("CFI").FormatDecimal(UseHHMM) %></td>
+                                        <td runat="server" ><%# Eval("SIC").FormatDecimal(UseHHMM) %></td>
+                                        <td runat="server" ><%# Eval("PIC").FormatDecimal(UseHHMM) %></td>
+                                        <td runat="server" ><%# Eval("TotalFlightTime").FormatDecimal(UseHHMM) %></td>
                                     </tr>
                                 </ItemTemplate>
                             </asp:Repeater>
