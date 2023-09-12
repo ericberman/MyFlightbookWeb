@@ -16,7 +16,7 @@ using System.Xml;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2022 MyFlightbook LLC
+ * Copyright (c) 2009-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -94,33 +94,7 @@ namespace MyFlightbook.Web.Admin
         public static IEnumerable<AdminAirport[]> GetDupeAirports(int start, int count, string dupeSeed)
         {
             CheckAdmin();
-
-            string szLimit = string.Empty;
-            if (!String.IsNullOrWhiteSpace(dupeSeed))
-            {
-                AirportList al = new AirportList(dupeSeed);
-                airport[] rgap = al.GetNormalizedAirports();
-                if (rgap.Length > 0)
-                {
-                    airport ap = rgap[0];
-                    szLimit = String.Format(CultureInfo.InvariantCulture, " AND latitude between {0:F8} and {1:F8} and longitude between {2:F8} and {3:F8} ", ap.LatLong.Latitude - 0.02, ap.LatLong.Latitude + 0.02, ap.LatLong.Longitude - 0.02, ap.LatLong.Longitude + 0.02);
-                }
-            }
-
-            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, @"select JSON_ARRAYAGG(JSON_OBJECT(""Code"", airportid, ""Name"", facilityname, ""FacilityTypeCode"", type, ""IsPreferred"", preferred, ""SourceUserName"", sourceusername,  ""LatLong"", JSON_OBJECT(""Latitude"", latitude, ""Longitude"", longitude), ""Country"", country, ""Admin1"", admin1)) as ports, type, count(*) as num, max(latitude)-min(latitude) as dlat, max(longitude)-min(Longitude) as dlon, max(Preferred) as hasPref
-from airports 
-where type in ('A', 'H', 'S') {0}
-group by type, CONCAT(Round(latitude, 2), '/', round(longitude, 2))
-having num > 1 and ((dlat > 0 or dlon > 0) OR hasPref=0)
-order by type asc, num desc
-limit ?start, ?count", szLimit));
-
-            List<AdminAirport[]> lst = new List<AdminAirport[]>();
-
-            // First pass: get all of the airport circles:
-            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("start", start); comm.Parameters.AddWithValue("count", count); },
-            (dr) => { lst.Add(JsonConvert.DeserializeObject<AdminAirport[]>((string)dr["ports"])); });
-            return lst;
+            return AdminAirport.GetDupeAirports(start, count, dupeSeed);
         }
 
         [WebMethod]
@@ -211,10 +185,7 @@ limit ?start, ?count", szLimit));
         {
             CheckAdmin();
 
-            AdminAirport ap = AdminAirport.AirportWithCodeAndType(szCode, szType);
-            if (ap == null)
-                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Airport {0} (type {1}) not found", szCode, szType));
-
+            AdminAirport ap = AdminAirport.AirportWithCodeAndType(szCode, szType) ?? throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Airport {0} (type {1}) not found", szCode, szType));
             ap.SetPreferred(fPreferred);
         }
 
@@ -226,10 +197,7 @@ limit ?start, ?count", szLimit));
         {
             CheckAdmin();
 
-            AdminAirport ap = AdminAirport.AirportWithCodeAndType(szCode, szType);
-            if (ap == null)
-                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Airport {0} (type {1}) not found", szCode, szType));
-
+            AdminAirport ap = AdminAirport.AirportWithCodeAndType(szCode, szType) ?? throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Airport {0} (type {1}) not found", szCode, szType));
             ap.MakeNative();
         }
 
@@ -241,14 +209,8 @@ limit ?start, ?count", szLimit));
         {
             CheckAdmin();
 
-            AdminAirport apTarget = AdminAirport.AirportWithCodeAndType(szCodeTarget, szTypeTarget);
-            if (apTarget == null)
-                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Target Airport {0} (type {1}) not found", szCodeTarget, szTypeTarget));
-
-            AdminAirport apSource = AdminAirport.AirportWithCodeAndType(szCodeSource, szTypeTarget);
-            if (apSource == null)
-                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Source Airport {0} (type {1}) not found", szCodeSource, szTypeTarget));
-
+            AdminAirport apTarget = AdminAirport.AirportWithCodeAndType(szCodeTarget, szTypeTarget) ?? throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Target Airport {0} (type {1}) not found", szCodeTarget, szTypeTarget));
+            AdminAirport apSource = AdminAirport.AirportWithCodeAndType(szCodeSource, szTypeTarget) ?? throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Source Airport {0} (type {1}) not found", szCodeSource, szTypeTarget));
             apTarget.MergeFrom(apSource);
         }
         #endregion

@@ -935,6 +935,46 @@ namespace MyFlightbook.Airports
             return lst;
         }
 
+        /// <summary>
+        /// Finds clusters of potentially duplicate airports.
+        /// Airports are duplicate if they are very close (within 0.02 latitude or longitude) to one another (but not exactly identical) and no preferred airport is indicated.
+        /// If a seed airport ("dupeseed") is provided, then the constraints above are relaxed and instead ANY airport that is close to that airport is returned in a cluster
+        /// </summary>
+        /// <param name="start">Index of starting cluster</param>
+        /// <param name="count">Number of clusters to return</param>
+        /// <param name="dupeSeed">(optional) seed airport</param>
+        /// <returns>A list of clusters of potential duplicate airports.</returns>
+        public static IEnumerable<AdminAirport[]> GetDupeAirports(int start, int count, string dupeSeed)
+        {
+            string szLimit = string.Empty;
+            if (!String.IsNullOrWhiteSpace(dupeSeed))
+            {
+                AirportList al = new AirportList(dupeSeed);
+                airport[] rgap = al.GetNormalizedAirports();
+                if (rgap.Length > 0)
+                {
+                    airport ap = rgap[0];
+                    szLimit = String.Format(CultureInfo.InvariantCulture, " AND latitude between {0:F8} and {1:F8} and longitude between {2:F8} and {3:F8} ", ap.LatLong.Latitude - 0.02, ap.LatLong.Latitude + 0.02, ap.LatLong.Longitude - 0.02, ap.LatLong.Longitude + 0.02);
+                }
+            }
+
+            // Issue #1117: if a seed is provided, don't restrict to num > 1 or differing lat/lon; just find all of the potential dupes.
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, @"select JSON_ARRAYAGG(JSON_OBJECT(""Code"", airportid, ""Name"", facilityname, ""FacilityTypeCode"", type, ""IsPreferred"", preferred, ""SourceUserName"", sourceusername,  ""LatLong"", JSON_OBJECT(""Latitude"", latitude, ""Longitude"", longitude), ""Country"", country, ""Admin1"", admin1)) as ports, type, count(*) as num, max(latitude)-min(latitude) as dlat, max(longitude)-min(Longitude) as dlon, max(Preferred) as hasPref
+from airports 
+where type in ('A', 'H', 'S') {0}
+group by type, CONCAT(Round(latitude, 2), '/', round(longitude, 2))
+{1}
+order by type asc, num desc
+limit ?start, ?count", szLimit, String.IsNullOrWhiteSpace(dupeSeed) ? "having num > 1 and ((dlat > 0 or dlon > 0)  OR hasPref=0)" : string.Empty));
+
+            List<AdminAirport[]> lst = new List<AdminAirport[]>();
+
+            // First pass: get all of the airport circles:
+            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("start", start); comm.Parameters.AddWithValue("count", count); },
+            (dr) => { lst.Add(JsonConvert.DeserializeObject<AdminAirport[]>((string)dr["ports"])); });
+            return lst;
+        }
+
         public static IEnumerable<AdminAirport> UntaggedAirportsInBox(LatLongBox llb)
         {
             if (llb == null)
