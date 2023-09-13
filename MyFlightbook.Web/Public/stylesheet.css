@@ -1746,6 +1746,42 @@ tr.gvhDefault th:nth-last-child(2), tr.gvhDefault th:last-child {
     width: 13px;
 }
 
+/* Sticky-header tables (not gridview) */
+.stickyHeaderTable {
+    border-color: #eeeeee;
+    font-size: 8pt;
+}
+
+table.stickyHeaderTable {
+    width: 100%;
+    border-collapse: separate; /* Don't collapse */
+    border-spacing: 0;
+}
+
+table.stickyHeaderTable th {
+    /* Apply both top and bottom borders to the <th> */
+    border-bottom: 1px solid #eeeeee;
+    padding: .5em 1em .5em 1em;
+    vertical-align: bottom;
+    text-align: center;
+    font-weight: bold;
+}
+
+table.stickyHeaderTable td {
+    /* For cells, apply the border to one of each side only (right but not left, bottom but not top) */
+    border-bottom: 1px solid #eeeeee;
+    border-right: 1px solid#eeeeee;
+    padding: .5em 1em .5em 1em;
+}
+
+table.stickyHeaderTable tr {
+    vertical-align: top;
+}
+
+table.stickyHeaderTable td:first-child {
+    border-left: 1px solid #eeeeee;
+}
+
 .largeBold {
     font-weight:bold;
     font-size:larger;

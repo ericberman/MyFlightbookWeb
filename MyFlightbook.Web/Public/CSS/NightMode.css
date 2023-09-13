@@ -158,3 +158,37 @@ td.totalsByTimeCell:nth-child(even), td.totalsByTimeCell:nth-child(even), td.tot
 tr.gvhDefault th {
     border-bottom: 1px solid #444444;
 }
+
+/* Sticky-header tables (not gridview) */
+.stickyHeaderTable {
+    border-color: #444444;
+}
+
+table.stickyHeaderTable th {
+    /* Apply both top and bottom borders to the <th> */
+    border-bottom: 1px solid #444444;
+    border-right: none;
+}
+
+table.stickyHeaderTable td {
+    /* For cells, apply the border to one of each side only (right but not left, bottom but not top) */
+    border-bottom: 1px solid #444444;
+    border-right: 1px solid#444444;
+}
+
+table.stickyHeaderTable td:first-child {
+    border-left: 1px solid #444444;
+}
+
+/* Wizard steps */
+.wizStepCompleted {
+    color: #686868;
+}
+
+.wizStepInProgress {
+    color: #e8e8e8;
+}
+
+.wizStepFuture {
+    color: #4983B7;
+}

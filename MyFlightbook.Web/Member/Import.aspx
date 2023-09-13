@@ -348,43 +348,7 @@
             <asp:View runat="server" ID="vwPreviewResults">
                 <asp:MultiView ID="mvPreview" runat="server">
                     <asp:View ID="vwPreview" runat="server">
-                        <style type="text/css">
-                            .previewTable { 
-                                border-color: #eeeeee;
-                                font-size: 8pt;
-                            }
-
-                            table.previewTable {
-                                width: 100%;
-                                border-collapse: separate; /* Don't collapse */
-                                border-spacing: 0;
-                            }
-
-                            table.previewTable th {
-                                /* Apply both top and bottom borders to the <th> */
-                                border-bottom: 1px solid #eeeeee;
-                                padding: .5em 1em .5em 1em;
-                                vertical-align: bottom;
-                                text-align: center;
-                                font-weight: bold;
-                            }
-
-                            table.previewTable td {
-                                /* For cells, apply the border to one of each side only (right but not left, bottom but not top) */
-                                border-bottom: 1px solid #eeeeee;
-                                border-right: 1px solid#eeeeee;
-                                padding: .5em 1em .5em 1em;
-                            }
-
-                            table.previewTable tr {
-                                vertical-align: top;
-                            }
-
-                            table.previewTable td:first-child {
-                                border-left: 1px solid #eeeeee;
-                            }
-                        </style>
-                        <table class="previewTable">
+                        <table class="stickyHeaderTable">
                             <thead>
                                 <tr>
                                     <th class="gvhDefault"></th>
