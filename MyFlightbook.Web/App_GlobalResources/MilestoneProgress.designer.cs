@@ -2545,6 +2545,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to *15* hours of *instrument training* from an authorized instructor.
+        /// </summary>
+        internal static string MinInstrumentTrainingNonUS {
+            get {
+                return ResourceManager.GetString("MinInstrumentTrainingNonUS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Any dual with IMC or Simulated IMC contributes to this, but %APP_NAME% cannot determine what rating your instructor held, so this may OVERSTATE your progress.  Also, 61.65(h) and (i) are ambiguous whether ATD/FTD/FFS time contributes to this, so %APP_NAME% is conservative and only allows time in a real aircraft towards this requirement.  You may be able to apply more time than shown here..
         /// </summary>
         internal static string MinInstrumentTrainingNote {

@@ -393,6 +393,8 @@ namespace MyFlightbook.RatingsProgress
         InstrumentPoweredLift,
         InstrumentEASAIRAirplane,
         InstrumentUKIRRestricted,
+        InstrumentAirplaneCA,
+        InstrumentHelicopterCA,
 
         // Recreational Pilot - 61.99
         RecreationalPilot,
@@ -563,6 +565,7 @@ namespace MyFlightbook.RatingsProgress
                     return (ccid == CategoryClass.CatClassID.ASEL || ccid == CategoryClass.CatClassID.ASES);
                 case RatingType.PPLHelicopter:
                 case RatingType.InstrumentHelicopter:
+                case RatingType.InstrumentHelicopterCA:
                 case RatingType.CommercialHelicopter:
                 case RatingType.PPLPart141Helicopter:
                 case RatingType.SAPPLHelicopter:
@@ -576,6 +579,7 @@ namespace MyFlightbook.RatingsProgress
                 case RatingType.PPLEASANightHelicopter:
                     return (ccid == CategoryClass.CatClassID.Helicopter || ccid == CategoryClass.CatClassID.Gyroplane);
                 case RatingType.InstrumentAirplane:
+                case RatingType.InstrumentAirplaneCA:
                 case RatingType.InstrumentEASAIRAirplane:
                 case RatingType.InstrumentUKIRRestricted:
                 case RatingType.SAPPLAirplane:

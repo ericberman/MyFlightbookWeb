@@ -1690,4 +1690,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
   <data name="Title6165FPart142" xml:space="preserve">
     <value>FAR 61.65(f) - Powered Lift (Part 142 Training)</value>
   </data>
+  <data name="MinInstrumentTrainingNonUS" xml:space="preserve">
+    <value>*15* hours of *instrument training* from an authorized instructor</value>
+  </data>
 </root>

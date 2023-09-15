@@ -106,9 +106,11 @@ namespace MyFlightbook.RatingsProgress
             switch (RatingSought)
             {
                 case RatingType.InstrumentAirplane:
+                case RatingType.InstrumentAirplaneCA:
                     szAircraftCategory = Resources.MilestoneProgress.ratingAirplane;
                     break;
                 case RatingType.InstrumentHelicopter:
+                case RatingType.InstrumentHelicopterCA:
                     szAircraftCategory = Resources.MilestoneProgress.ratingHelicopter;
                     break;
                 case RatingType.InstrumentPoweredLift:
@@ -306,12 +308,13 @@ namespace MyFlightbook.RatingsProgress
 
             miXCPIC = new MilestoneItem(Resources.MilestoneProgress.MinInstrumentPICXC, ResolvedFAR("i"), Resources.MilestoneProgress.NoteCanadaIRXC, MilestoneItem.MilestoneType.Time, 50.0M);
             miXCDualXC = new MilestoneItem(String.Format(CultureInfo.InvariantCulture, Resources.MilestoneProgress.MinInstrumentXCCanada, MinXCDistance), ResolvedFAR("(ii)(D)"), Resources.MilestoneProgress.MinInstrumentXCCanadaNote, MilestoneItem.MilestoneType.AchieveOnce, 1.0M);
-            miIFRTrainingInCategory = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MinInstrumentTrainingInCategoryCanada, ratingSought == RatingType.InstrumentAirplane ? Resources.MilestoneProgress.CAATPAeroplanes : Resources.MilestoneProgress.CAATPHelicopters), ResolvedFAR("(ii)(B)"), string.Empty, MilestoneItem.MilestoneType.Time, 5.0M);
+            miIFRTrainingInCategory = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MinInstrumentTrainingInCategoryCanada, ratingSought == RatingType.InstrumentAirplaneCA ? Resources.MilestoneProgress.CAATPAeroplanes : Resources.MilestoneProgress.CAATPHelicopters), ResolvedFAR("(ii)(B)"), string.Empty, MilestoneItem.MilestoneType.Time, 5.0M);
 
             // fix up FAR references for inherited milestones
             miMinTimeInCategory.FARRef = ResolvedFAR("(i)");
             miMinIMCTime.FARRef = ResolvedFAR("(ii)");
             miInstrumentTraining.FARRef = ResolvedFAR("(ii)(C)");
+            miInstrumentTraining.Title = Resources.MilestoneProgress.MinInstrumentTrainingNonUS;
 
             this.GeneralDisclaimer = Branding.ReBrand(Resources.MilestoneProgress.InstrumentCanadaGeneralDisclaimer);
         }
@@ -379,7 +382,7 @@ namespace MyFlightbook.RatingsProgress
     {
         public IFRCanadaAirplane() : base()
         {
-            Init(Resources.MilestoneProgress.Title42146Airplane, "421.46(2)(b)", RatingType.InstrumentAirplane, "https://tc.canada.ca/en/corporate-services/acts-regulations/list-regulations/canadian-aviation-regulations-sor-96-433/standards/standard-421-flight-crew-permits-licences-ratings-canadian-aviation-regulations-cars#421_46");
+            Init(Resources.MilestoneProgress.Title42146Airplane, "421.46(2)(b)", RatingType.InstrumentAirplaneCA, "https://tc.canada.ca/en/corporate-services/acts-regulations/list-regulations/canadian-aviation-regulations-sor-96-433/standards/standard-421-flight-crew-permits-licences-ratings-canadian-aviation-regulations-cars#421_46");
         }
     }
 
@@ -392,7 +395,7 @@ namespace MyFlightbook.RatingsProgress
     {
         public IFRCanadaHelicopter() : base()
         {
-            Init(Resources.MilestoneProgress.Title42146Helicopter, "421.46(2)(b)", RatingType.InstrumentHelicopter, "https://tc.canada.ca/en/corporate-services/acts-regulations/list-regulations/canadian-aviation-regulations-sor-96-433/standards/standard-421-flight-crew-permits-licences-ratings-canadian-aviation-regulations-cars#421_46");
+            Init(Resources.MilestoneProgress.Title42146Helicopter, "421.46(2)(b)", RatingType.InstrumentHelicopterCA, "https://tc.canada.ca/en/corporate-services/acts-regulations/list-regulations/canadian-aviation-regulations-sor-96-433/standards/standard-421-flight-crew-permits-licences-ratings-canadian-aviation-regulations-cars#421_46");
         }
     }
 
