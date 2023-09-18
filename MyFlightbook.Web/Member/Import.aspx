@@ -39,7 +39,7 @@
                         <li><asp:HyperLink ID="lnkImportTable" runat="server" Font-Bold="True" 
                                 NavigateUrl="~/mvc/pub/ImportTable" Target="_blank" 
                                 Text="<%$ Resources:LogbookEntry, ImportColumnDescriptions %>" /></li>
-                        <li><asp:HyperLink ID="lnkFAQTips" Font-Bold="true" runat="server" NavigateUrl="~/Public/FAQ.aspx?q=44#44" Text="<%$ Resources:LogbookEntry, ImportFAQTipsLink %>" /></li>
+                        <li><asp:HyperLink ID="lnkFAQTips" Font-Bold="true" runat="server" NavigateUrl="~/mvc/faq?q=44#44" Text="<%$ Resources:LogbookEntry, ImportFAQTipsLink %>" /></li>
                         <li><asp:HyperLink ID="lnkBlogTips" Font-Bold="true" runat="server" Text="<%$ Resources:LogbookEntry, ImportBlogLink %>" NavigateUrl="https://myflightbookblog.blogspot.com/2020/05/importing-in-depth.html" /></li>
                     </ul>
                 </div>

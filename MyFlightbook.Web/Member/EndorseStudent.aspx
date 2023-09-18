@@ -48,7 +48,7 @@
     <asp:Panel ID="pnlExistingEndorsements" runat="server">
         <h2><asp:Label ID="lblExistingEndorsementHeader" runat="server" /></h2>
         <p>
-            <asp:HyperLink ID="lnkDisclaimer" Text="<%$ Resources:SignOff, DigitalEndorsementDisclaimer %>" Target="_blank" NavigateUrl="~/Public/FAQ.aspx?q=23#23" runat="server"></asp:HyperLink>
+            <asp:HyperLink ID="lnkDisclaimer" Text="<%$ Resources:SignOff, DigitalEndorsementDisclaimer %>" Target="_blank" NavigateUrl="~/mvc/faq?q=23#23" runat="server"></asp:HyperLink>
         </p>
         <uc2:mfbEndorsementList ID="mfbEndorsementList1" runat="server" OnCopyEndorsement="mfbEndorsementList1_CopyEndorsement" />
     </asp:Panel>

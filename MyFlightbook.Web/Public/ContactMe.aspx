@@ -10,7 +10,7 @@
         <asp:View ID="vwContact" runat="server">
             <asp:Panel ID="Panel1" runat="server" DefaultButton="btnSend">
                 <p>
-                    <asp:HyperLink ID="lnkFAQ" runat="server" Font-Bold="true" NavigateUrl="~/Public/FAQ.aspx" Target="_blank" Text="<%$ Resources:LocalizedText, ContactUsReadFAQ %>"></asp:HyperLink>
+                    <asp:HyperLink ID="lnkFAQ" runat="server" Font-Bold="true" NavigateUrl="~/mvc/faq" Target="_blank" Text="<%$ Resources:LocalizedText, ContactUsReadFAQ %>"></asp:HyperLink>
                 </p>
                 <div>
                     <asp:Label ID="Literal1" runat="server" Text="<%$ Resources:LocalizedText, ContactUsName %>"></asp:Label>

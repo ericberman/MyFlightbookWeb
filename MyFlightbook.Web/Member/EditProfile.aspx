@@ -487,7 +487,7 @@
                                 </table>
                                 <div>
                                     <asp:Label ID="lblPrecHeader" runat="server" Text="<%$ Resources:Preferences, PrefMathPrecisionHeader %>" Font-Bold="true" />
-                                    <asp:HyperLink ID="lnkQuant" runat="server" Text="<%$ Resources:Preferences, PrefMathPrecisionNote %>" NavigateUrl="~/Public/FAQ.aspx?q=72#72" />
+                                    <asp:HyperLink ID="lnkQuant" runat="server" Text="<%$ Resources:Preferences, PrefMathPrecisionNote %>" NavigateUrl="~/mvc/faq?q=72#72" />
                                 </div>
                                 <div>
                                     <asp:RadioButton ID="rbPrecisionMinutes" runat="server" GroupName="rbgMathPrecision" onclick="setLocalPref('rounding', '60');" Text="<%$ Resources:Preferences, PrefMathPrecisionMinutes %>" Checked="true" />

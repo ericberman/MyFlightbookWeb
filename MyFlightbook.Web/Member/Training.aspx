@@ -19,7 +19,7 @@
         <asp:View runat="server" ID="vwEndorsements">
             <div style="float:right"><asp:HyperLink ID="lnkPrintFriendly" Target="_blank" runat="server" Text="<%$ Resources:SignOff, EndorsementsPrintView %>" /></div>
             <h2><asp:Localize ID="locEndorsementsPrompt" runat="server" Text="<%$ Resources:SignOff, EndorsementsYourEndorsements %>" /></h2>
-            <p><asp:HyperLink ID="lnkDisclaimer" Text="<%$ Resources:SignOff, DigitalEndorsementDisclaimer %>" Target="_blank" NavigateUrl="~/Public/FAQ.aspx?q=23#23" runat="server"></asp:HyperLink></p>
+            <p><asp:HyperLink ID="lnkDisclaimer" Text="<%$ Resources:SignOff, DigitalEndorsementDisclaimer %>" Target="_blank" NavigateUrl="~/mvc/faq?q=23#23" runat="server"></asp:HyperLink></p>
             <uc6:mfbEndorsementList ID="mfbEndorsementList1" runat="server" />
             <p><asp:HyperLink ID="lnkAddEndorsement" runat="server" Text="<%$ Resources:SignOff, EndorsementsAddEndorsement %>" NavigateUrl="~/Member/AddEndorsement.aspx" /></p>
             <div class="noprint">

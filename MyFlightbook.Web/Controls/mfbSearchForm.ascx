@@ -43,7 +43,7 @@
                 </p>
                 <asp:Panel ID="pnlText" runat="server" style="overflow:hidden">
                     <asp:TextBox ID="txtRestrict" runat="server" Width="50%" /> 
-                    <asp:HyperLink ID="lnkTextTips" runat="server" NavigateUrl="~/Public/FAQ.aspx?q=63#63" Target="_blank" Text="<%$ Resources:FlightQuery, SearchTipsToolTip %>" />
+                    <asp:HyperLink ID="lnkTextTips" runat="server" NavigateUrl="~/mvc/faq?q=63#63" Target="_blank" Text="<%$ Resources:FlightQuery, SearchTipsToolTip %>" />
                 </asp:Panel>
                 <p class="header" runat="server" id="AirportsHeader">
                     <asp:Localize ID="locAirports" runat="server" Text="<%$ Resources:FlightQuery, HeaderAirports %>" /> 

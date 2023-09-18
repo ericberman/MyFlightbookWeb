@@ -65,7 +65,7 @@
             </asp:MultiView>
             <asp:ImageButton ID="imgEditAircraftModel" ToolTip="<%$ Resources:Aircraft, editAircraftModelPrompt %>" ImageUrl="~/images/pencilsm.png" runat="server" OnClick="btnChangeModelTweak_Click" />
             <div>
-                <asp:HyperLink ID="lnkFAQ" runat="server" NavigateUrl="~/Public/FAQ.aspx?q=68#68" Text="<%$ Resources:Aircraft, EditPopularAircraftFAQLink %>" />
+                <asp:HyperLink ID="lnkFAQ" runat="server" NavigateUrl="~/mvc/faq?q=68#68" Text="<%$ Resources:Aircraft, EditPopularAircraftFAQLink %>" />
                 <cc1:ConfirmButtonExtender ID="cbeEdit" runat="server" Enabled="false" TargetControlID="imgEditAircraftModel" />
             </div>
         </div>

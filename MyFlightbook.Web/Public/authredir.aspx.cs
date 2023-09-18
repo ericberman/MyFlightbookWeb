@@ -52,7 +52,7 @@ namespace MyFlightbook.PublicPages
                 case "AIRCRAFTSCHEDULE":
                     return "~/Member/ACSchedule.aspx";
                 case "FAQ":
-                    return "~/Public/FAQ.aspx";
+                    return "~/mvc/faq";
                 case "REQSIGS":
                     return "~/Member/RequestSigs.aspx";
                 case "FLIGHTREVIEW":
