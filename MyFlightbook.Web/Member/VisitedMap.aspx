@@ -8,7 +8,7 @@
 <body>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <form id="form1" runat="server">
-    <link rel="stylesheet" type="text/css" href='<% = "~/public/tmap/stylesheets/demo.css".ToAbsoluteURL(Request) %>'>
+    <link rel="stylesheet" type="text/css" href='<% = "~/public/tmap/stylesheets/demo.css".ToAbsoluteURL(Request) %>' />
       <div id="info" class="box hidden time"></div>
         <div id="timeline" class="box" style="height: 80vh;"></div>
         <div id="stat" class="box" style="left: 1em;"></div>
