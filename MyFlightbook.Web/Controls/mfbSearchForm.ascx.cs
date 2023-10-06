@@ -403,15 +403,18 @@ public partial class Controls_mfbSearchForm : UserControl
 
     protected void SetUpPropertiesForUser(bool fIncludeAll)
     {
-        CustomPropertyType[] rgCpt = CustomPropertyType.GetCustomPropertyTypes(Username);
+        IEnumerable<CustomPropertyType> rgCpt = fIncludeAll ? CustomPropertyType.AllPreviouslyUsedPropsForUser(Username) : CustomPropertyType.GetCustomPropertyTypes(Username, true);
         List<CustomPropertyType> al = new List<CustomPropertyType>(rgCpt);
         int cAllProps = al.Count;
 
-        HashSet<int> hsBlackList = fIncludeAll ? new HashSet<int>(Profile.GetUser(Username).BlocklistedProperties) : new HashSet<int>();
+        if (!fIncludeAll)
+        {
+            HashSet<int> hsBlackList = fIncludeAll ? new HashSet<int>(Profile.GetUser(Username).BlocklistedProperties) : new HashSet<int>();
 
-        // Props to include are favorites OR it's in the query OR (Include ALL and in blacklist)
-        // So remove anything that is NOT favorite AND NOT in the query AND NOT (include all and in blacklist)
-        al.RemoveAll(cpt => !cpt.IsFavorite && !(m_fq != null && m_fq.PropertyTypes.Contains(cpt)) && !(fIncludeAll && hsBlackList.Contains(cpt.PropTypeID)));
+            // Props to include are favorites OR it's in the query OR (Include ALL and in blacklist)
+            // So remove anything that is NOT favorite AND NOT in the query AND NOT (include all and in blacklist)
+            al.RemoveAll(cpt => !cpt.IsFavorite && !(m_fq != null && m_fq.PropertyTypes.Contains(cpt)) && !(fIncludeAll && hsBlackList.Contains(cpt.PropTypeID)));
+        }
 
         lnkShowAllProps.Visible = !fIncludeAll && cAllProps > al.Count;
 

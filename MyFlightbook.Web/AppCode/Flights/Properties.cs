@@ -771,6 +771,31 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
         }
 
         /// <summary>
+        /// Returns the subset of ALL properties ever used by the user, even ones which are excluded by MRU.
+        /// Does a separate query from GetCustomPropertyTypes both for performance and to avoid caching
+        /// </summary>
+        /// <param name="szUser"></param>
+        /// <returns>The set of properties that the user has ever used</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static IEnumerable<CustomPropertyType> AllPreviouslyUsedPropsForUser(string szUser)
+        {
+            if (szUser == null)
+                throw new ArgumentNullException(nameof(szUser));
+
+            HashSet<int> hs = new HashSet<int>();
+
+            DBHelper dbh = new DBHelper("SELECT DISTINCT idproptype FROM flightproperties fp INNER JOIN flights f ON fp.idflight=f.idflight WHERE f.username=?username");
+            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("username", szUser); },
+                (dr) => { hs.Add(Convert.ToInt32(dr["idproptype"], CultureInfo.InvariantCulture)); });
+
+            List<CustomPropertyType> lst = new List<CustomPropertyType>(GetCustomPropertyTypes());
+
+            lst.RemoveAll(cpt => !hs.Contains(cpt.PropTypeID));
+
+            return lst;
+        }
+
+        /// <summary>
         /// Get custom property types for the specified user, or the global list (if szUser is null or empty)
         /// </summary>
         /// <param name="szUser">The username</param>
