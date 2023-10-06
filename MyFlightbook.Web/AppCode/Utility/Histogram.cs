@@ -438,7 +438,7 @@ namespace MyFlightbook.Histogram
 
             hm.Context.Clear(); // start fresh, in case multiple scan-data passes.
 
-            object rf = HttpContext.Current.Session[MFBConstants.keyMathRoundingUnits];
+            object rf = HttpContext.Current?.Session?[MFBConstants.keyMathRoundingUnits];
             double roundingFactor = rf == null ? 60.0 : Convert.ToDouble((int)rf);
 
             foreach (IHistogramable h in hm.SourceData)
