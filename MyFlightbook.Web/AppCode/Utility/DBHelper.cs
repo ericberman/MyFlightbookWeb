@@ -3,12 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
+using System.Data;
 using System.Globalization;
 using System.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2022 MyFlightbook LLC
+ * Copyright (c) 2008-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -107,6 +108,8 @@ namespace MyFlightbook
         /// </summary>
         public DBHelperCommandArgs CommandArgs { get; set; }
 
+        private readonly CommandType CommandType = CommandType.Text;
+
         /// <summary>
         /// The SQL query string.
         /// </summary>
@@ -123,14 +126,16 @@ namespace MyFlightbook
             AffectedRowCount = -1;
         }
 
-        public DBHelper(string szQuery) : this()
+        public DBHelper(string szQuery, CommandType commandType = CommandType.Text) : this()
         {
             CommandText = szQuery;
+            CommandType = commandType;
         }
 
-        public DBHelper(DBHelperCommandArgs args) : this()
+        public DBHelper(DBHelperCommandArgs args, CommandType commandType = CommandType.Text) : this()
         {
             CommandArgs = args ?? throw new ArgumentNullException(nameof(args));
+            CommandType = commandType;
         }
         #endregion
 
@@ -144,7 +149,7 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="args">The specification of the query string and any pre-initialized parameters</param>
         /// <returns>A usable MySqlCommand object</returns>
-        public static void InitCommandObject(MySqlCommand comm, DBHelperCommandArgs args)
+        public static void InitCommandObject(MySqlCommand comm, DBHelperCommandArgs args, CommandType commandType = CommandType.Text)
         {
             if (comm == null)
                 throw new ArgumentNullException(nameof(comm));
@@ -154,6 +159,7 @@ namespace MyFlightbook
             comm.Parameters.AddRange(args.Parameters.ToArray());
             if (args.Timeout > 0)
                 comm.CommandTimeout = args.Timeout;
+            comm.CommandType = commandType;
         }
         #endregion
 
@@ -206,7 +212,7 @@ namespace MyFlightbook
             bool fResult = true;
             using (MySqlCommand comm = new MySqlCommand())
             {
-                InitCommandObject(comm, args);
+                InitCommandObject(comm, args, CommandType);
 
                 using (comm.Connection = new MySqlConnection(ConnectionString))
                 {
@@ -299,7 +305,7 @@ namespace MyFlightbook
             bool fResult = true;
             using (MySqlCommand comm = new MySqlCommand())
             {
-                InitCommandObject(comm, args);
+                InitCommandObject(comm, args, CommandType);
 
                 initCommand?.Invoke(comm);
 
