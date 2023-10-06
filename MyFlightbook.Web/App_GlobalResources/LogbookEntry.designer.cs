@@ -3528,6 +3528,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PIC/Turbine.
+        /// </summary>
+        internal static string PrintHeaderTurbinePIC {
+            get {
+                return ResourceManager.GetString("PrintHeaderTurbinePIC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SIC/Turbine.
+        /// </summary>
+        internal static string PrintHeaderTurbineSIC {
+            get {
+                return ResourceManager.GetString("PrintHeaderTurbineSIC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Aircraft Type.
         /// </summary>
         internal static string PrintHeaderType {

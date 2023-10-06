@@ -3955,6 +3955,16 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                         MakeModel m = MakeModel.GetModel(ModelID);
                         return OptionalColumnTotalIfCondition(m.EngineType == MakeModel.TurbineLevel.TurboProp || m.EngineType == MakeModel.TurbineLevel.UnspecifiedTurbine || m.EngineType == MakeModel.TurbineLevel.Jet);
                     }
+                case OptionalColumnType.TurbinePIC:
+                    {
+                        MakeModel m = MakeModel.GetModel(ModelID);
+                        return m.EngineType == MakeModel.TurbineLevel.TurboProp || m.EngineType == MakeModel.TurbineLevel.UnspecifiedTurbine || m.EngineType == MakeModel.TurbineLevel.Jet ? PIC : 0;
+                    }
+                case OptionalColumnType.TurbineSIC:
+                    {
+                        MakeModel m = MakeModel.GetModel(ModelID);
+                        return m.EngineType == MakeModel.TurbineLevel.TurboProp || m.EngineType == MakeModel.TurbineLevel.UnspecifiedTurbine || m.EngineType == MakeModel.TurbineLevel.Jet ? SIC : 0;
+                    }
                 case OptionalColumnType.TurboProp:
                     return OptionalColumnTotalIfCondition(MakeModel.GetModel(ModelID).EngineType == MakeModel.TurbineLevel.TurboProp);
                 case OptionalColumnType.ASEL:

@@ -200,6 +200,8 @@ namespace MyFlightbook.Printing
                 new ListItem(Resources.Makes.IsTurboprop, OptionalColumnType.TurboProp.ToString()),
                 new ListItem(Resources.Makes.IsTurbine, OptionalColumnType.Turbine.ToString()),
                 new ListItem(Resources.Makes.IsJet, OptionalColumnType.Jet.ToString()),
+                new ListItem(Resources.LogbookEntry.PrintHeaderTurbineSIC, OptionalColumnType.TurbineSIC.ToString()),
+                new ListItem(Resources.LogbookEntry.PrintHeaderTurbinePIC, OptionalColumnType.TurbinePIC.ToString()),
                 new ListItem(Resources.LogbookEntry.PrintHeaderCrossCountry, OptionalColumnType.CrossCountry.ToString()),
                 new ListItem(Resources.LocalizedText.DropDownListSeparator, string.Empty),
                 new ListItem(OptionalColumn.TitleForType(OptionalColumnType.ATD), OptionalColumnType.ATD.ToString()),

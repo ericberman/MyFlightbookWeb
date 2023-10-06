@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Amazon.Runtime.Internal.Transform;
+using MyFlightbook;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2022 MyFlightbook LLC
+ * Copyright (c) 2008-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -15,7 +17,7 @@ namespace MyFlightbook
     /// <summary>
     /// Specifies the kind of additional columns that can be displayed for printing.
     /// </summary>
-    public enum OptionalColumnType { None, Complex, Retract, Tailwheel, HighPerf, TAA, Turbine, Jet, TurboProp, ATD, FTD, FFS, ASEL, ASES, AMEL, AMES, Helicopter, Glider, CustomProp, CrossCountry, Gyroplane, HotAirBalloon, GasBalloon, UAS }
+    public enum OptionalColumnType { None, Complex, Retract, Tailwheel, HighPerf, TAA, Turbine, Jet, TurboProp, ATD, FTD, FFS, ASEL, ASES, AMEL, AMES, Helicopter, Glider, CustomProp, CrossCountry, Gyroplane, HotAirBalloon, GasBalloon, UAS, TurbinePIC, TurbineSIC }
 
     public enum OptionalColumnValueType { Decimal, Integer, Time }
 
@@ -83,56 +85,41 @@ namespace MyFlightbook
         }
         #endregion
 
+        private static readonly Dictionary<OptionalColumnType, string> dTitles = new Dictionary<OptionalColumnType, string>()
+        {
+            { OptionalColumnType.None, string.Empty },
+            { OptionalColumnType.CustomProp, string.Empty },
+            { OptionalColumnType.Complex, Resources.Makes.IsComplex },
+            { OptionalColumnType.Retract, Resources.Makes.IsRetract },
+            { OptionalColumnType.Tailwheel, Resources.Makes.IsTailwheel },
+            { OptionalColumnType.HighPerf, Resources.Makes.IsHighPerf },
+            { OptionalColumnType.TAA, Resources.Makes.IsTAA },
+            { OptionalColumnType.Turbine, Resources.Makes.IsTurbine },
+            { OptionalColumnType.TurbinePIC, Resources.LogbookEntry.PrintHeaderTurbinePIC },
+            { OptionalColumnType.TurbineSIC, Resources.LogbookEntry.PrintHeaderTurbineSIC },
+            { OptionalColumnType.Jet, Resources.Makes.IsJet },
+            { OptionalColumnType.TurboProp, Resources.Makes.IsTurboprop },
+            { OptionalColumnType.ASEL, CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.ASEL).CatClass },
+            { OptionalColumnType.AMEL, CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.AMEL).CatClass },
+            { OptionalColumnType.ASES, CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.ASES).CatClass },
+            { OptionalColumnType.AMES, CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.AMES).CatClass },
+            { OptionalColumnType.Glider, CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.Glider).CatClass },
+            { OptionalColumnType.Helicopter, CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.Helicopter).CatClass },
+            { OptionalColumnType.Gyroplane, CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.Gyroplane).CatClass },
+            { OptionalColumnType.HotAirBalloon, CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.HotAirBalloon).CatClass },
+            { OptionalColumnType.GasBalloon, CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.GasBalloon).CatClass },
+            { OptionalColumnType.UAS, CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.UnmannedAerialSystem).CatClass },
+            { OptionalColumnType.ATD, OptionalColumnType.ATD.ToString() },
+            { OptionalColumnType.FTD, OptionalColumnType.FTD.ToString() },
+            { OptionalColumnType.FFS, OptionalColumnType.FFS.ToString() },
+            { OptionalColumnType.CrossCountry, Resources.LogbookEntry.PrintHeaderCrossCountry },
+        };
+
         public static string TitleForType(OptionalColumnType type)
         {
-            switch (type)
-            {
-                case OptionalColumnType.CustomProp:
-                case OptionalColumnType.None:
-                    return string.Empty;
-                case OptionalColumnType.Complex:
-                    return Resources.Makes.IsComplex;
-                case OptionalColumnType.Retract:
-                    return Resources.Makes.IsRetract;
-                case OptionalColumnType.Tailwheel:
-                    return Resources.Makes.IsTailwheel;
-                case OptionalColumnType.HighPerf:
-                    return Resources.Makes.IsHighPerf;
-                case OptionalColumnType.TAA:
-                    return Resources.Makes.IsTAA;
-                case OptionalColumnType.Turbine:
-                    return Resources.Makes.IsTurbine;
-                case OptionalColumnType.Jet:
-                    return Resources.Makes.IsJet;
-                case OptionalColumnType.TurboProp:
-                    return Resources.Makes.IsTurboprop;
-                case OptionalColumnType.ASEL:
-                    return CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.ASEL).CatClass;
-                case OptionalColumnType.AMEL:
-                    return CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.AMEL).CatClass;
-                case OptionalColumnType.ASES:
-                    return CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.ASES).CatClass;
-                case OptionalColumnType.AMES:
-                    return CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.AMES).CatClass;
-                case OptionalColumnType.Glider:
-                    return CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.Glider).CatClass;
-                case OptionalColumnType.Helicopter:
-                    return CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.Helicopter).CatClass;
-                case OptionalColumnType.Gyroplane:
-                    return CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.Gyroplane).CatClass;
-                case OptionalColumnType.HotAirBalloon:
-                    return CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.HotAirBalloon).CatClass;
-                case OptionalColumnType.GasBalloon:
-                    return CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.GasBalloon).CatClass;
-                case OptionalColumnType.UAS:
-                    return CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.UnmannedAerialSystem).CatClass;
-                case OptionalColumnType.ATD:
-                case OptionalColumnType.FTD:
-                case OptionalColumnType.FFS:
-                    return type.ToString();
-                case OptionalColumnType.CrossCountry:
-                    return Resources.LogbookEntry.PrintHeaderCrossCountry;
-            }
+            if (dTitles.TryGetValue(type, out var title)) 
+                return title;
+
             throw new ArgumentOutOfRangeException(nameof(type), "Unknown OptionalColumnType: " + type.ToString());
         }
 

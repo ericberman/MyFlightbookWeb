@@ -1705,4 +1705,10 @@ Proceed with import?</value>
   <data name="PrintHeaderApproachDesc" xml:space="preserve">
     <value>Approach Details</value>
   </data>
+  <data name="PrintHeaderTurbinePIC" xml:space="preserve">
+    <value>PIC/Turbine</value>
+  </data>
+  <data name="PrintHeaderTurbineSIC" xml:space="preserve">
+    <value>SIC/Turbine</value>
+  </data>
 </root>
