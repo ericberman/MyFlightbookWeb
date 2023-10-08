@@ -7,7 +7,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2022 MyFlightbook LLC
+ * Copyright (c) 2019-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -247,8 +247,9 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
                             break;
                         case CloudAhoyManeuvers.tow:
                             if (!DictProps.ContainsKey(CustomPropertyType.KnownProperties.IDPropGliderTow))
-                                DictProps[CustomPropertyType.KnownProperties.IDPropGliderTow] = CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropGliderTow, 0);
-                            DictProps[CustomPropertyType.KnownProperties.IDPropGliderTow].IntValue++;
+                                DictProps[CustomPropertyType.KnownProperties.IDPropGliderTow] = CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropGliderTow, 1);
+                            else
+                                DictProps[CustomPropertyType.KnownProperties.IDPropGliderTow].IntValue++;
                             break;
                         default:
                             break;
