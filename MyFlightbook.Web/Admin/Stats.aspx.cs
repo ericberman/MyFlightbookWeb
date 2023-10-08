@@ -8,7 +8,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2022 MyFlightbook LLC
+ * Copyright (c) 2015-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -52,7 +52,7 @@ namespace MyFlightbook.Web.Admin
     DATE_FORMAT(f.date, '%Y-%m-01') AS creationbucket
 FROM
     flights f
-GROUP BY creationbucket
+GROUP BY YEAR(f.date), MONTH(f.date)
 ORDER BY creationbucket ASC");
             dbh.CommandArgs.Timeout = 300;
             dbh.ReadRows((comm) => { }, (dr) => { lstFlightsByDate.Add(new SimpleDateHistogrammable() { Date = Convert.ToDateTime(dr["creationbucket"], CultureInfo.InvariantCulture), Count = Convert.ToInt32(dr["numflights"], CultureInfo.InvariantCulture) }); });
@@ -92,7 +92,21 @@ ORDER BY creationbucket ASC");
                 Values = new HistogramableValue[] { new HistogramableValue("Range", "Flights", HistogramValueTypes.Integer) }
             };
 
+            // For performance, MUCH faster to find the users without flights first, then find those with flights (use an inner join rather than the overall left join).
             DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, @"SELECT 
+    COUNT(u.username) AS numusers, 0 AS numflights
+FROM
+    users u
+        LEFT JOIN
+    flights f ON u.username = f.username
+WHERE {0}
+    f.username IS NULL;", String.IsNullOrEmpty(cmbNewUserAge.SelectedValue) ? string.Empty : "u.creationdate > ?creationDate AND"));
+
+            dbh.ReadRow((comm) => { comm.Parameters.AddWithValue("creationDate", String.IsNullOrEmpty(cmbNewUserAge.SelectedValue) ? DateTime.MinValue : DateTime.Now.AddMonths(-Convert.ToInt32(cmbNewUserAge.SelectedValue, CultureInfo.InvariantCulture))); },
+                (dr) => { lstFlightsPerUser.Add(new SimpleCountHistogrammable() { Count = Convert.ToInt32(dr["numusers"], CultureInfo.InvariantCulture), Range = Convert.ToInt32(dr["numflights"], CultureInfo.InvariantCulture) }); });
+
+            // Now get the counts for those WITH flights using an inner join
+            dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, @"SELECT 
     COUNT(f2.usercount) AS numusers, f2.numflights
 FROM
     (SELECT 
@@ -100,7 +114,7 @@ FROM
             FLOOR((COUNT(f.idflight) + 99) / 100) * 100 AS numflights
     FROM
         users u
-    LEFT JOIN flights f ON u.username = f.username
+    INNER JOIN flights f ON u.username = f.username
     {0}
     GROUP BY u.username
     ORDER BY numflights ASC) f2
@@ -108,10 +122,7 @@ GROUP BY f2.numflights
 ORDER BY f2.numflights ASC;", String.IsNullOrEmpty(cmbNewUserAge.SelectedValue) ? string.Empty : "WHERE u.creationdate > ?creationDate"));
             dbh.CommandArgs.Timeout = 300;
             dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("creationDate", String.IsNullOrEmpty(cmbNewUserAge.SelectedValue) ? DateTime.MinValue : DateTime.Now.AddMonths(-Convert.ToInt32(cmbNewUserAge.SelectedValue, CultureInfo.InvariantCulture))); },
-                (dr) =>
-                {
-                    lstFlightsPerUser.Add(new SimpleCountHistogrammable() { Count = Convert.ToInt32(dr["numusers"], CultureInfo.InvariantCulture), Range = Convert.ToInt32(dr["numflights"], CultureInfo.InvariantCulture) });
-                });
+                (dr) => { lstFlightsPerUser.Add(new SimpleCountHistogrammable() { Count = Convert.ToInt32(dr["numusers"], CultureInfo.InvariantCulture), Range = Convert.ToInt32(dr["numflights"], CultureInfo.InvariantCulture) }); });
 
             gcFlightsPerUser.ChartData.TickSpacing = (uint)((lstFlightsPerUser.Count < 20) ? 1 : (lstFlightsPerUser.Count < 100 ? 5 : 10));
 
