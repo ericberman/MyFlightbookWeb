@@ -1,181 +1,126 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="adminStats.ascx.cs" Inherits="MyFlightbook.Web.Admin.adminStats" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
     <%@ Register src="GoogleChart.ascx" tagname="GoogleChart" tagprefix="uc1" %>
-    <h1>Site Stats</h1>
-    <h3>Users:</h3>
-    <asp:GridView ID="gvUserStats" runat="server" DataSourceID="sqlUserStats" CellPadding="3">
+    <h2>Users:</h2>
+    <asp:GridView ID="gvUserStats" runat="server" CellPadding="3" AutoGenerateColumns="false" CssClass="stickyHeaderTable">
+        <Columns>
+            <asp:BoundField HeaderText="# Users" DataField="Users" DataFormatString="{0:#,##0}" />
+            <asp:BoundField HeaderText="Month To Date Users" DataField="UsersMonthToDate" DataFormatString="{0:#,##0}" />
+            <asp:BoundField HeaderText="Email Subscriptions" DataField="EmailSubscriptions" DataFormatString="{0:#,##0}" />
+            <asp:BoundField HeaderText="Blacklists" DataField="PropertyBlacklists" DataFormatString="{0:#,##0}" />
+            <asp:BoundField HeaderText="Dropbox Users" DataField="DropboxUsers" DataFormatString="{0:#,##0}" />
+            <asp:BoundField HeaderText="GDrive Users" DataField="GDriveUsers" DataFormatString="{0:#,##0}" />
+            <asp:BoundField HeaderText="1Drive Users" DataField="OneDriveUsers" DataFormatString="{0:#,##0}" />
+            <asp:BoundField HeaderText="Multiple Cloud Users" DataField="CloudStorageUsers" DataFormatString="{0:#,##0}" />
+            <asp:BoundField HeaderText="DefaultCloud Users" DataField="DefaultedCloudUsers" DataFormatString="{0:#,##0}" />
+        </Columns>
     </asp:GridView>
-    <asp:SqlDataSource ID="sqlUserStats" runat="server" ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>" 
-        ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" 
-        SelectCommand="SELECT COUNT(username) AS 'Users', 
-	SUM(emailsubscriptions&lt;&gt; 0) AS Subscriptions, 
-    SUM(propertyblacklist &lt;&gt; '') AS blocklistcount,
-    SUM(DropboxAccesstoken &lt;&gt; '') AS dropboxusers,
-    SUM(GoogleDriveAccessToken &lt;&gt; '') AS googleusers,
-    SUM(OnedriveaccessToken &lt;&gt; '') AS oneDriveUsers,
-    SUM(IF(DropboxAccesstoken &lt;&gt; '', 1, 0) + IF(GoogleDriveAccessToken&lt;&gt;'', 1, 0) + IF(OneDriveAccessToken &lt;&gt; '', 1, 0) &gt; 1) as multicloudusers,
-    SUM(DefaultCloudDriveID &lt;&gt; 0) AS multiusers,
-    SUM(month(creationdate)=month(now()) AND year(creationdate)=year(now())) AS 'New Users this month' 
-FROM users;" 
-        onselecting="setTimeout">
-    </asp:SqlDataSource>
-    <asp:Button ID="btnTrimAuthenticate" runat="server" Text="Trim Authentications" 
-        onclick="btnTrimAuthenticate_Click" />
-    <asp:GridView ID="gvOAuthAndPass" runat="server" DataSourceID="sqlOAuthAndPass" CellPadding="3"></asp:GridView>
-    <asp:SqlDataSource ID="sqlOAuthAndPass" runat="server" ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>" 
-        ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" 
-        SelectCommand="SELECT 
-            (SELECT count(*) FROM nonce) AS NonceCount,
-            (SELECT count(*) FROM oauthclientauthorization) AS 'oAuthClient Auths',
-            (SELECT count(*) FROM passwordresetrequests) AS PasswordResetCount;"          
-        onselecting="setTimeout">
-    </asp:SqlDataSource>
-    <asp:Button ID="btnTrimOAuth" runat="server" OnClick="btnTrimOAuth_Click" Text="Trim old oAuth authentications" />
-    <h3>Usage:</h3>
-    <asp:GridView ID="gvMiscStats" runat="server" DataSourceID="sqlMiscStats">
+    <asp:GridView ID="gvOAuthAndPass" runat="server" CellPadding="3" AutoGenerateColumns="false" CssClass="stickyHeaderTable">
+        <Columns>
+            <asp:BoundField HeaderText="# Nonce" DataField="NonceCount" />
+            <asp:BoundField HeaderText="# oAuth Accounts" DataField="OAuthAccounts" DataFormatString="{0:#,##0}" />
+            <asp:BoundField HeaderText="# Password Resets" DataField="PasswordResets" DataFormatString="{0:#,##0}" />
+        </Columns>
     </asp:GridView>
-    <asp:SqlDataSource ID="SqlMiscStats" runat="server" ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>" 
-        ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" 
-        SelectCommand="SELECT
-                        (SELECT COUNT(*) FROM students) AS Students, 
-                        (SELECT count(*) from aircraft where publicnotes &lt;&gt; '') AS publicnotescount,
-                        (SELECT count(*) from useraircraft where privatenotes &lt;&gt; '') AS privatenotescount,
-                        (SELECT count(*) from flightvideos) AS flightVideoCount,
-                        (SELECT count(*) from images where virtpathid=0 and imagetype=3) AS AWSVideoCount,
-                        (SELECT count(*) from clubs) AS clubcount" 
-        onselecting="setTimeout">
-    </asp:SqlDataSource>
+    <div>
+        <asp:Button ID="btnTrimAuthenticate" runat="server" Text="Trim all but latest authuser/expired tokens" onclick="btnTrimAuthenticate_Click" />
+        <asp:Button ID="btnTrimOAuth" runat="server" OnClick="btnTrimOAuth_Click" Text="Trim old oAuth authentications / password resets" />
+    </div>
+    <div><asp:Label ID="lblTrimErr" runat="server" EnableViewState="false" Font-Bold="true" /></div>
+    <h2>Usage:</h2>
+    <asp:GridView ID="gvMiscStats" runat="server" AutoGenerateColumns="false" CssClass="stickyHeaderTable">
+        <Columns>
+            <asp:BoundField HeaderText="# Students" DataField="Students" DataFormatString="{0:#,##0}" />
+            <asp:BoundField HeaderText="# Pub Notes" DataField="PublicNotes" DataFormatString="{0:#,##0}" />
+            <asp:BoundField HeaderText="# Private Notes" DataField="PrivateNotes" DataFormatString="{0:#,##0}" />
+            <asp:BoundField HeaderText="# Linked videos" DataField="EmbeddedVideos" DataFormatString="{0:#,##0}" />
+            <asp:BoundField HeaderText="# AWS Videos" DataField="AWSVideos" DataFormatString="{0:#,##0}" />
+            <asp:BoundField HeaderText="# Clubs" DataField="Clubs" DataFormatString="{0:#,##0}" />
+        </Columns>
+    </asp:GridView>
     <table>
-        <tr>
+        <tr style="vertical-align:top;">
             <td>
-                <asp:GridView ID="gvUserSources" runat="server" DataSourceID="sqlUserSources">
+                <asp:GridView ID="gvUserSources" runat="server" AutoGenerateColumns="false" CssClass="stickyHeaderTable">
+                    <Columns>
+                        <asp:BoundField HeaderText="Source Key" DataField="SourceKey" />
+                        <asp:BoundField HeaderText="# Users" ItemStyle-HorizontalAlign="Right" DataField="NumUsers" DataFormatString="{0:#,##0}" />
+                    </Columns>
                 </asp:GridView>
-                <asp:SqlDataSource ID="sqlUserSources" runat="server" ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>"
-                    ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" 
-                    SelectCommand="select count(eventID) AS 'Users', RIGHT(description, LENGTH(description) - LOCATE(' - ', description) - 2) AS Source from wsevents where eventType=6 AND description LIKE '% - %' GROUP BY Source" 
-                    onselecting="setTimeout">
-                </asp:SqlDataSource>
             </td>
             <td>
-                <asp:GridView ID="gvWSEvents" runat="server" DataSourceID="sqlDSWebEvents">
+                <asp:GridView ID="gvWSEvents" runat="server" AutoGenerateColumns="false" CssClass="stickyHeaderTable">
+                    <Columns>
+                        <asp:BoundField HeaderText="Event Type" DataField="EventType" />
+                        <asp:BoundField HeaderText="# Events" DataField="EventCount" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:#,##0}" />
+                    </Columns>
                 </asp:GridView>
-                <asp:SqlDataSource ID="sqlDSWebEvents" runat="server" ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>" 
-                    ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" 
-                    SelectCommand="SELECT ELT(eventtype, 'AuthUser', 'GetAircraft', 'FlightsByDate', 'CommitFlightDEPRECATED', 'CreateAircraft', 'CreateUser', 'CreateUserAttemptDEPRECATED', 'CreateUserError', 'ExpiredToken') AS 'Event Type', COUNT(*) AS 'Number of Events' FROM wsevents GROUP BY eventtype;" 
-                    onselecting="setTimeout">
-                </asp:SqlDataSource>
             </td>
         </tr>
-        <tr>
+        <tr style="vertical-align:top;">
             <td>
-                <asp:GridView ID="gvPayments" DataSourceID="sqlDSPayments" runat="server"></asp:GridView>
-                <asp:SqlDataSource ID="sqlDSPayments" runat="server" ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>" 
-                    ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" 
-                    SelectCommand="SELECT numpayments AS 'Number of payments', COUNT(numpayments) AS 'Number of Users' FROM (SELECT COUNT(username) AS numpayments FROM payments WHERE TransactionType=0 GROUP BY username) p GROUP BY p.numpayments ORDER BY p.numpayments" >
-                </asp:SqlDataSource>
+                <asp:GridView ID="gvPaymentsXActions" runat="server" AutoGenerateColumns="false" CssClass="stickyHeaderTable">
+                    <Columns>
+                        <asp:BoundField HeaderText="# Payments" DataField="NumPayments" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:#,##0}" />
+                        <asp:BoundField HeaderText="# Users" DataField="NumUsers" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:#,##0}" />
+                    </Columns>
+                </asp:GridView>
             </td>
             <td>
-                <asp:GridView ID="gvPaymentStats" DataSourceID="sqlDSPaymentsStats" runat="server"></asp:GridView>
-                <asp:SqlDataSource ID="sqlDSPaymentsStats" runat="server" ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>" 
-                    ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" 
-                    SelectCommand="SELECT count(Amount) AS 'Number of transactions', Amount FROM payments WHERE TransactionType=0 GROUP BY amount ORDER BY Amount ASC" >
-                </asp:SqlDataSource>
+                <asp:GridView ID="gvPaymentAmounts" runat="server" AutoGenerateColumns="false" CssClass="stickyHeaderTable">
+                    <Columns>
+                        <asp:BoundField HeaderText="# Xactions" DataField="NumTransactions" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:#,##0}" />
+                        <asp:BoundField HeaderText="Amount" DataField="TransactionValue" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:C}" />
+                    </Columns>
+                </asp:GridView>
             </td>
         </tr>
     </table>
-    <h3>Flights and Aircraft:</h3>
+    <h2>Flights and Aircraft:</h2>
     <table>
         <tr style="vertical-align:top">
             <td>
-                <asp:GridView ID="GridViewMisc" runat="server" DataSourceID="sqlSiteOther">
+                <asp:GridView ID="gvMisc" runat="server" AutoGenerateColumns="false" CssClass="stickyHeaderTable">
+                    <Columns>
+                        <asp:BoundField HeaderText="# Flights" DataField="FlightCount" DataFormatString="{0:#,##0}" />
+                        <asp:BoundField HeaderText="# Flights w/Telemetry" DataField="TelemetryCount" DataFormatString="{0:#,##0}" />
+                        <asp:BoundField HeaderText="# Models" DataField="ModelsCount" DataFormatString="{0:#,##0}" />
+                        <asp:BoundField HeaderText="# User Airports" DataField="UserAirportCount" DataFormatString="{0:#,##0}" />
+                        <asp:BoundField HeaderText="# WS Flights" DataField="WSCommittedFlights" DataFormatString="{0:#,##0}" />
+                        <asp:BoundField HeaderText="# Imported Flights" DataField="ImportedFlights" DataFormatString="{0:#,##0}" />
+                    </Columns>
                 </asp:GridView>
-                <asp:SqlDataSource ID="SqlSiteOther" runat="server" ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>"
-                    ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" SelectCommand="SELECT
-                   (SELECT COUNT(*) FROM flights) AS 'Flights',
-                   (SELECT COUNT(*) from flighttelemetry) AS 'Telemetry Count',
-                   (SELECT COUNT(*) FROM models) AS 'Models',
-                   (SELECT COUNT(*) FROM airports where sourceusername &lt;&gt; '') AS UserAirports,
-                   (SELECT WSCommittedFlights FROM eventcounts WHERE id=1) AS 'WS Committed Flights',
-                   (SELECT ImportedFlights FROM eventcounts WHERE id=1) AS 'Imported Flights'" 
-                    onselecting="setTimeout">
-                </asp:SqlDataSource>
             </td>
             <td>
-                <asp:GridView ID="gvAircraft" runat="server" DataSourceID="sqlAircraftStats">
+                <asp:GridView ID="gvAircraft" runat="server" AutoGenerateColumns="false" CssClass="stickyHeaderTable">
+                    <Columns>
+                        <asp:BoundField HeaderText="Instance Type" DataField="InstanceType" />
+                        <asp:BoundField HeaderText="# Aircraft" ItemStyle-HorizontalAlign="Right" DataField="NumAircraft" DataFormatString="{0:#,##0}" />
+                    </Columns>
                 </asp:GridView>
-                <asp:SqlDataSource ID="sqlAircraftStats" runat="server" 
-                    ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>" 
-                    ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" SelectCommand="SELECT IF(ac.instancetype=1, IF(ac.Tailnumber LIKE '#%', 'Anonymous', 'Real'), aic.Description) AS AircraftInstance, COUNT(ac.idaircraft) AS 'Number of Aircraft'
-                    FROM Aircraft ac INNER JOIN aircraftinstancetypes aic ON ac.instancetype=aic.id
-                    GROUP BY AircraftInstance
-                    ORDER BY ac.instancetype ASC" onselecting="setTimeout">
-                </asp:SqlDataSource>
             </td>
         </tr>
     </table>
-    <asp:Label ID="lblTrimErr" runat="server" Text="" CssClass="error"></asp:Label>
     <!-- Daily new users -->
-    <h3>New Users: <asp:Label ID="lblShowUsersData" runat="server" Text="(Click to show)"></asp:Label></h3>
+    <h2>New Users: <asp:Label ID="lblShowUsersData" runat="server" Text="(Click to show)"></asp:Label></h2>
     <asp:Panel ID="pnlShowUSersData" runat="server" Height="0px" Style="overflow: hidden;">
-        <h3>Daily new users:</h3>
-        <asp:SqlDataSource ID="sqlDSDaily" runat="server" 
-            ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>" 
-            ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" SelectCommand="select  CAST(Date_Format(creationdate, '%m/%e/%Y') AS CHAR) AS Date, count(username) AS 'New Users'
-            from users
-            group by date(creationdate)
-            order by creationdate desc
-            limit 40" onselecting="setTimeout">
-        </asp:SqlDataSource>
-        <asp:GridView ID="gvUsers" runat="server" AutoGenerateColumns="False" 
-            DataSourceID="sqlDSDaily" EnableModelValidation="True">
+        <h2>Daily new users:</h2>
+        <asp:GridView ID="gvDailyUsers" runat="server" AutoGenerateColumns="False" CssClass="stickyHeaderTable">
             <Columns>
-                <asp:BoundField DataField="New Users" HeaderText="New Users" ReadOnly="True" 
-                    SortExpression="New Users" />
-                <asp:BoundField DataField="Date" HeaderText="Date" ReadOnly="True" 
-                    SortExpression="Date" />
+                <asp:BoundField DataField="DisplayPeriod" HeaderText="Month" ReadOnly="True" DataFormatString="{0:d}" />
+                <asp:BoundField DataField="NewUsers" ItemStyle-HorizontalAlign="Right" HeaderText="New Users" DataFormatString="{0:#,##0}" />
+                <asp:BoundField DataField="RunningTotal" ItemStyle-HorizontalAlign="Right" HeaderText="Running Total" DataFormatString="{0:#,##0}" SortExpression="RunningTotal" />
             </Columns>
         </asp:GridView>
-        <h3>Monthly new users:</h3>
-        <asp:GridView ID="gvUserData" AllowSorting="true" runat="server" AutoGenerateColumns="false">
+        <h2>Monthly new users:</h2>
+        <asp:GridView ID="gvMonthlyUsers" AllowSorting="true" runat="server" AutoGenerateColumns="false" CssClass="stickyHeaderTable">
             <Columns>
-                <asp:BoundField DataField="DisplayPeriod" HeaderText="Month" ReadOnly="True" 
-                    SortExpression="SortPeriod" />
-                <asp:BoundField DataField="NewUsers" HeaderText="New Users" ReadOnly="True" 
-                    SortExpression="NewUSers" />
-                <asp:BoundField DataField="RunningTotal" HeaderText="Running Total" ReadOnly="True" 
-                    SortExpression="RunningTotal" />
+                <asp:BoundField DataField="DisplayPeriod" HeaderText="Month" DataFormatString="{0:yyyy-MMM}" />
+                <asp:BoundField DataField="NewUsers" HeaderText="New Users" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:#,##0}" />
+                <asp:BoundField DataField="RunningTotal" HeaderText="Running Total" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:#,##0}" />
             </Columns>
         </asp:GridView>
     </asp:Panel>
-    <asp:SqlDataSource ID="sqlUserData" runat="server" ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>"
-    ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" SelectCommand="SELECT
-    x1.SortPeriod,
-    x1.DisplayPeriod,
-    CreationYear,
-    CreationMonth,
-    x1.NewUsers AS NewUsers,
-    SUM(x2.NewUsers) AS RunningTotal
-    FROM (SELECT
-    CONCAT(YEAR(CreationDate), LPAD(MONTH(CreationDate),2,'0')) AS 'SortPeriod',
-    CAST(CONCAT(YEAR(CreationDate), '-', MONTHNAME(CreationDate)) AS CHAR) AS 'DisplayPeriod',
-    YEAR(CreationDate) AS CreationYear,
-    MONTH(CreationDate) AS CreationMonth,
-    COUNT(DISTINCT(username)) AS 'NewUsers'
-    FROM users
-    GROUP BY SortPeriod
-    ORDER BY SortPeriod ASC
-    ) AS x1
-    INNER JOIN (SELECT
-    CONCAT(YEAR(CreationDate), LPAD(MONTH(CreationDate),2,'0')) AS 'SortPeriod',
-    CAST(CONCAT(YEAR(CreationDate), '-', MONTHNAME(CreationDate)) AS CHAR) AS 'DisplayPeriod',
-    COUNT(DISTINCT(username)) AS 'NewUsers'
-    FROM users
-    GROUP BY SortPeriod
-    ORDER BY SortPeriod ASC
-    ) AS x2
-    ON x1.SortPeriod &gt;= x2.SortPeriod
-    GROUP BY DisplayPeriod
-    ORDER BY SortPeriod ASC" onselecting="setTimeout"></asp:SqlDataSource>
     <uc1:GoogleChart ID="gcNewUsers" XDataType="date" YDataType="number" Y2DataType="number" UseMonthYearDate="true" Title="Number of New Users" LegendType="bottom" TickSpacing="1" SlantAngle="0" XLabel="Year/Month" YLabel="New Users" Y2Label="Cumulative Users" ChartType="LineChart" runat="server" />
    <cc1:CollapsiblePanelExtender ID="CollapsiblePanelExtender1" runat="server" Enabled="True"
         TargetControlID="pnlShowUSersData" CollapsedText="Click to show user data" Collapsed="true"

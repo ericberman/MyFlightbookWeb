@@ -1,4 +1,5 @@
 ﻿using MyFlightbook.Encryptors;
+using MyFlightbook.Web.Admin;
 using System;
 using System.Globalization;
 using System.Web;
@@ -6,7 +7,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2022 MyFlightbook LLC
+ * Copyright (c) 2012-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -15,7 +16,7 @@ namespace MyFlightbook.PublicPages
 {
     public partial class StatsForMail : Page
     {
-        protected void Page_Load(object sender, EventArgs e)
+        protected async void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
@@ -60,7 +61,12 @@ namespace MyFlightbook.PublicPages
 
                     // If we're here, then the auth was successfully sent - show the admin panel!
                     Page.Title = String.Format(CultureInfo.CurrentCulture, Resources.Admin.SiteStatsTemplate, Request.Url.Host);
-                    adminStats1.Visible = true;
+                    AdminStats astats = new AdminStats();
+                    if (await astats.Refresh(false))   // don't include slow queries for email
+                    {
+                        adminStats1.Refresh(astats);
+                        adminStats1.Visible = true;
+                    }
                 }
             }
         }

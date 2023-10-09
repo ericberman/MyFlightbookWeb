@@ -3,39 +3,14 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register src="../Controls/adminStats.ascx" tagname="adminStats" tagprefix="uc1" %>
 <%@ Register src="../Controls/GoogleChart.ascx" tagname="GoogleChart" tagprefix="uc2" %>
+<asp:Content ID="contentTitle" ContentPlaceHolderID="cpPageTitle" runat="server">
+    Site Stats
+</asp:Content>
 <asp:Content ID="Content1" ContentPlaceHolderID="cpTopForm" runat="server">
     <uc1:adminStats ID="adminStats1" runat="server" />
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="cpMain" Runat="Server">
     <h3>User Activity</h3>
-    <asp:SqlDataSource ID="sqlUserActivity" runat="server" ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>"
-        ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" SelectCommand="SELECT
-    x1.SortPeriod,
-    x1.DisplayPeriod,
-    x1.ActivityYear,
-    x1.ActivityMonth,
-    x1.UsersWithSessions
-FROM (SELECT
-        CONCAT(YEAR(users.LastActivityDate), LPAD(MONTH(users.LastActivityDate),2,'0')) AS 'SortPeriod',
-        CAST(CONCAT(YEAR(users.LastActivityDate), '-', MONTHNAME(users.LastActivityDate)) AS CHAR) AS 'DisplayPeriod',
-        YEAR(users.lastActivityDate) AS ActivityYear,
-        MONTH(users.lastActivityDate) AS ActivityMonth,
-        COUNT(DISTINCT(PKID)) AS 'UsersWithSessions'
-    FROM users
-    GROUP BY SortPeriod
-    ORDER BY SortPeriod ASC
-    ) AS x1
-INNER JOIN (SELECT
-        CONCAT(YEAR(users.LastActivityDate), LPAD(MONTH(users.LastActivityDate),2,'0')) AS 'SortPeriod',
-        CAST(CONCAT(YEAR(users.LastActivityDate), '-', MONTHNAME(users.LastActivityDate)) AS CHAR) AS 'DisplayPeriod',
-        COUNT(DISTINCT(PKID)) AS 'UsersWithSessions'
-    FROM users
-    GROUP BY SortPeriod
-    ORDER BY SortPeriod ASC
-    ) AS x2
-ON x1.SortPeriod &gt;= x2.SortPeriod
-GROUP BY DisplayPeriod
-ORDER BY SortPeriod ASC"></asp:SqlDataSource>
     <uc2:GoogleChart ID="gcUserActivity" LegendType="right" UseMonthYearDate="true" XDataType="date" Title="User Activity" XLabel="Date of Last Activity" YLabel="Users" SlantAngle="90" ChartType="LineChart" runat="server" />
 
     <!-- Flights per user -->
@@ -56,11 +31,11 @@ ORDER BY SortPeriod ASC"></asp:SqlDataSource>
     <uc2:GoogleChart ID="gcFlightsPerUser" Title="Flights/User" XDataType="string" YDataType="number" Y2DataType="number" XLabel="Flights/User" YLabel="Users - All" TickSpacing="10" SlantAngle="90" Width="1000" Height="500" ChartType="ColumnChart" runat="server" />
     <p><asp:Label ID="lblShowFlightsPerUser" runat="server" Text="" EnableViewState="false"></asp:Label></p>
     <asp:Panel ID="pnlFlightPerUser" runat="server" Height="0px" Style="overflow: hidden;">
-        <asp:GridView ID="gvFlightPerUser" runat="server" AutoGenerateColumns="false">
+        <asp:GridView ID="gvFlightPerUser" runat="server" AutoGenerateColumns="false" CssClass="stickyHeaderTable">
             <Columns>
                 <asp:BoundField DataField="DisplayName" HeaderText="Range" />
-                <asp:BoundField DataField="Flights" HeaderText="Flights" />
-                <asp:BoundField DataField="Flights Running Total" HeaderText="Flights (running total)" />
+                <asp:BoundField DataField="Flights" HeaderText="Flights" DataFormatString="{0:#,##0}" />
+                <asp:BoundField DataField="Flights Running Total" HeaderText="Flights (running total)" DataFormatString="{0:#,##0}" />
             </Columns>
         </asp:GridView>
     </asp:Panel>
@@ -74,11 +49,11 @@ ORDER BY SortPeriod ASC"></asp:SqlDataSource>
     <uc2:GoogleChart ID="gcFlightsOnSite" LegendType="bottom" Title="Flights recorded / month" XDataType="string" YDataType="number" UseMonthYearDate="true" Y2DataType="number" XLabel="Flights/Month" TickSpacing="36" YLabel="Flights" Y2Label="Running Total" SlantAngle="90" ChartType="LineChart" Width="1000" runat="server" Height="500" />
     <p><asp:Label ID="lblShowFlightsData" runat="server" Text="" EnableViewState="false"></asp:Label></p>
     <asp:Panel ID="pnlShowFlightsData" runat="server" Height="0px" Style="overflow: hidden;">
-        <asp:GridView ID="gvFlightsData" runat="server" AutoGenerateColumns="false">
+        <asp:GridView ID="gvFlightsData" runat="server" AutoGenerateColumns="false" CssClass="stickyHeaderTable" >
             <Columns>
                 <asp:BoundField DataField="DisplayName" HeaderText="Range" />
-                <asp:BoundField DataField="Flights" HeaderText="Flights" />
-                <asp:BoundField DataField="Flights Running Total" HeaderText="Flights (running total)" />
+                <asp:BoundField DataField="Flights" HeaderText="Flights" DataFormatString="{0:#,##0}" />
+                <asp:BoundField DataField="Flights Running Total" HeaderText="Flights (running total)" DataFormatString="{0:#,##0}" />
             </Columns>
         </asp:GridView>
     </asp:Panel>

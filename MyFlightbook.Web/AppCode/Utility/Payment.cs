@@ -260,6 +260,65 @@ namespace MyFlightbook.Payments
         #endregion
     }
 
+    #region Admin reporting
+    /// <summary>
+    /// Provides an admin report about the number of users who have made 1 payment, 2 payments, etc.
+    /// </summary>
+    public class UserTransactionSummary
+    {
+        public int NumPayments { get; set; }
+        public int NumUsers { get; set; }
+
+        public static IEnumerable<UserTransactionSummary> Refresh()
+        {
+            List<UserTransactionSummary> lst = new List<UserTransactionSummary>();
+            DBHelper dbh = new DBHelper(@"SELECT 
+    numpayments AS 'Number of payments',
+    COUNT(numpayments) AS 'Number of Users'
+FROM
+    (SELECT 
+        COUNT(username) AS numpayments
+    FROM
+        payments
+    WHERE
+        TransactionType = 0
+    GROUP BY username) p
+GROUP BY p.numpayments
+ORDER BY p.numpayments");
+
+            dbh.ReadRows((comm) => { },
+                (dr) => { lst.Add(new UserTransactionSummary() { NumPayments = Convert.ToInt32(dr["Number of payments"], CultureInfo.InvariantCulture), NumUsers = Convert.ToInt32(dr["Number of Users"], CultureInfo.InvariantCulture) }); });
+            return lst;
+        }
+    }
+
+    /// <summary>
+    /// Provides an admin report about the number of users who have donated $10, $15, ...
+    /// </summary>
+    public class AmountTransactionSummary
+    {
+        public int NumTransactions { get; set; }
+        public double TransactionValue { get; set; }
+
+        public static IEnumerable<AmountTransactionSummary> Refresh()
+        {
+            List<AmountTransactionSummary> lst = new List<AmountTransactionSummary>();
+            DBHelper dbh = new DBHelper(@"SELECT 
+    COUNT(Amount) AS 'Number of transactions', Amount
+FROM
+    payments
+WHERE
+    TransactionType = 0
+GROUP BY amount
+ORDER BY Amount ASC");
+
+            dbh.ReadRows((comm) => { },
+                (dr) => { lst.Add(new AmountTransactionSummary() { NumTransactions = Convert.ToInt32(dr["Number of transactions"], CultureInfo.InvariantCulture), TransactionValue = Convert.ToDouble(dr["Amount"], CultureInfo.InvariantCulture) }); });
+            return lst;
+        }
+    }
+    #endregion
+
     /// <summary>
     /// Abstract class for gratuities.
     /// </summary>

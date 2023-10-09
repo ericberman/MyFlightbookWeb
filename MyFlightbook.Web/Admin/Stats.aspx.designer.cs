@@ -24,15 +24,6 @@ namespace MyFlightbook.Web.Admin
         protected global::MyFlightbook.Web.Admin.adminStats adminStats1;
 
         /// <summary>
-        /// sqlUserActivity control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.SqlDataSource sqlUserActivity;
-
-        /// <summary>
         /// gcUserActivity control.
         /// </summary>
         /// <remarks>

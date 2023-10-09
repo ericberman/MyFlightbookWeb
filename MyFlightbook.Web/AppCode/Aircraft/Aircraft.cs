@@ -173,6 +173,34 @@ namespace MyFlightbook
 
             return result;
         }
+
+        public class AircraftInstanceTypeStat
+        {
+            public string InstanceType { get; set; } = string.Empty;
+            public int NumAircraft { get; set; }
+        }
+
+        public static IEnumerable<AircraftInstanceTypeStat> AdminInstanceTypeCounts()
+        {
+            List<AircraftInstanceTypeStat> lst = new List<AircraftInstanceTypeStat>();
+            DBHelper dbh = new DBHelper(@"SELECT 
+    IF(ac.instancetype = 1,
+        IF(ac.Tailnumber LIKE '#%',
+            'Anonymous',
+            'Real'),
+        aic.Description) AS AircraftInstance,
+    COUNT(ac.idaircraft) AS 'Number of Aircraft'
+FROM
+    Aircraft ac
+        INNER JOIN
+    aircraftinstancetypes aic ON ac.instancetype = aic.id
+GROUP BY AircraftInstance
+ORDER BY ac.instancetype ASC");
+            dbh.ReadRows((comm) => { },
+                (dr) => { lst.Add(new AircraftInstanceTypeStat() { InstanceType = (string)dr["AircraftInstance"], NumAircraft = Convert.ToInt32(dr["Number of Aircraft"], CultureInfo.InvariantCulture) }); });
+
+            return lst;
+        }
     }
 
     /// <summary>

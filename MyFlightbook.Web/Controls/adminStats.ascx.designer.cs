@@ -24,13 +24,13 @@ namespace MyFlightbook.Web.Admin
         protected global::System.Web.UI.WebControls.GridView gvUserStats;
 
         /// <summary>
-        /// sqlUserStats control.
+        /// gvOAuthAndPass control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.SqlDataSource sqlUserStats;
+        protected global::System.Web.UI.WebControls.GridView gvOAuthAndPass;
 
         /// <summary>
         /// btnTrimAuthenticate control.
@@ -42,24 +42,6 @@ namespace MyFlightbook.Web.Admin
         protected global::System.Web.UI.WebControls.Button btnTrimAuthenticate;
 
         /// <summary>
-        /// gvOAuthAndPass control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvOAuthAndPass;
-
-        /// <summary>
-        /// sqlOAuthAndPass control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.SqlDataSource sqlOAuthAndPass;
-
-        /// <summary>
         /// btnTrimOAuth control.
         /// </summary>
         /// <remarks>
@@ -67,6 +49,15 @@ namespace MyFlightbook.Web.Admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnTrimOAuth;
+
+        /// <summary>
+        /// lblTrimErr control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblTrimErr;
 
         /// <summary>
         /// gvMiscStats control.
@@ -78,15 +69,6 @@ namespace MyFlightbook.Web.Admin
         protected global::System.Web.UI.WebControls.GridView gvMiscStats;
 
         /// <summary>
-        /// SqlMiscStats control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.SqlDataSource SqlMiscStats;
-
-        /// <summary>
         /// gvUserSources control.
         /// </summary>
         /// <remarks>
@@ -94,15 +76,6 @@ namespace MyFlightbook.Web.Admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView gvUserSources;
-
-        /// <summary>
-        /// sqlUserSources control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.SqlDataSource sqlUserSources;
 
         /// <summary>
         /// gvWSEvents control.
@@ -114,67 +87,31 @@ namespace MyFlightbook.Web.Admin
         protected global::System.Web.UI.WebControls.GridView gvWSEvents;
 
         /// <summary>
-        /// sqlDSWebEvents control.
+        /// gvPaymentsXActions control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.SqlDataSource sqlDSWebEvents;
+        protected global::System.Web.UI.WebControls.GridView gvPaymentsXActions;
 
         /// <summary>
-        /// gvPayments control.
+        /// gvPaymentAmounts control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvPayments;
+        protected global::System.Web.UI.WebControls.GridView gvPaymentAmounts;
 
         /// <summary>
-        /// sqlDSPayments control.
+        /// gvMisc control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.SqlDataSource sqlDSPayments;
-
-        /// <summary>
-        /// gvPaymentStats control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvPaymentStats;
-
-        /// <summary>
-        /// sqlDSPaymentsStats control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.SqlDataSource sqlDSPaymentsStats;
-
-        /// <summary>
-        /// GridViewMisc control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView GridViewMisc;
-
-        /// <summary>
-        /// SqlSiteOther control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.SqlDataSource SqlSiteOther;
+        protected global::System.Web.UI.WebControls.GridView gvMisc;
 
         /// <summary>
         /// gvAircraft control.
@@ -184,24 +121,6 @@ namespace MyFlightbook.Web.Admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView gvAircraft;
-
-        /// <summary>
-        /// sqlAircraftStats control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.SqlDataSource sqlAircraftStats;
-
-        /// <summary>
-        /// lblTrimErr control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblTrimErr;
 
         /// <summary>
         /// lblShowUsersData control.
@@ -222,40 +141,22 @@ namespace MyFlightbook.Web.Admin
         protected global::System.Web.UI.WebControls.Panel pnlShowUSersData;
 
         /// <summary>
-        /// sqlDSDaily control.
+        /// gvDailyUsers control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.SqlDataSource sqlDSDaily;
+        protected global::System.Web.UI.WebControls.GridView gvDailyUsers;
 
         /// <summary>
-        /// gvUsers control.
+        /// gvMonthlyUsers control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvUsers;
-
-        /// <summary>
-        /// gvUserData control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvUserData;
-
-        /// <summary>
-        /// sqlUserData control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.SqlDataSource sqlUserData;
+        protected global::System.Web.UI.WebControls.GridView gvMonthlyUsers;
 
         /// <summary>
         /// gcNewUsers control.

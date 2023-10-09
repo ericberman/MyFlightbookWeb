@@ -3,8 +3,8 @@ using DotNetOpenAuth.OAuth2;
 using MyFlightbook.Achievements;
 using MyFlightbook.BasicmedTools;
 using MyFlightbook.CloudStorage;
-using MyFlightbook.Encryptors;
 using MyFlightbook.Currency;
+using MyFlightbook.Encryptors;
 using MyFlightbook.Image;
 using MyFlightbook.Telemetry;
 using MySql.Data.MySqlClient;
@@ -1631,6 +1631,22 @@ namespace MyFlightbook
         #endregion
     }
 
+    public class NewUserStats
+    {
+        public DateTime DisplayPeriod { get; set; }
+        public int NewUsers { get; set; }
+        public int RunningTotal { get; set; }
+        public NewUserStats()
+        {
+        }
+        public NewUserStats(DateTime dt, int numUsers, int total)
+        {
+            DisplayPeriod = dt;
+            NewUsers = numUsers;
+            RunningTotal = total;
+        }
+    }
+
     public class ProfileAdmin : Profile
     {
         public static bool ValidateUser(string szUser)
@@ -1916,6 +1932,60 @@ namespace MyFlightbook
 
             // send welcome mail
             util.NotifyUser(String.Format(CultureInfo.CurrentCulture, Resources.Profile.WelcomeTitle, Branding.CurrentBrand.AppName), util.ApplyHtmlEmailTemplate(Resources.EmailTemplates.WelcomeEmail, true), new MailAddress(pf.Email, pf.UserFullName), false, true);
+        }
+
+        /// <summary>
+        /// Report on the # of new users by year/month for all time, including running total
+        /// </summary>
+        /// <returns></returns>
+        static public IEnumerable<NewUserStats> ADMINUserStatsByTime()
+        {
+            List<NewUserStats> lst = new List<NewUserStats>();
+            int runningTotal = 0;
+            DBHelper dbh = new DBHelper(@"SELECT
+    CAST(CONCAT(YEAR(CreationDate), '-', MONTHNAME(CreationDate)) AS CHAR) AS 'DisplayPeriod',
+    DATE(CreationDate) AS CDate,
+    COUNT(DISTINCT(username)) AS NewUsers
+FROM
+	users
+    GROUP BY YEAR(CreationDate), MONTH(CreationDate)
+    ORDER by YEAR(CreationDate) ASC, MONTH(CreationDate) ASC;");
+
+            dbh.ReadRows((comm) => { },
+                (dr) =>
+                {
+                    int newUsers = Convert.ToInt32(dr["NewUsers"], CultureInfo.InvariantCulture);
+                    runningTotal += newUsers;
+                    lst.Add(new NewUserStats(Convert.ToDateTime(dr["CDate"], CultureInfo.InvariantCulture), newUsers, runningTotal));
+                });
+            return lst;
+        }
+
+        /// <summary>
+        /// Report on the number of new users by date for up to the specified limit, including running totals
+        /// </summary>
+        /// <param name="days"></param>
+        /// <returns></returns>
+        static public IEnumerable<NewUserStats> ADMINDailyNewUsers(int days = 40)
+        {
+            int runningTotal = 0;
+            List<NewUserStats> newUserStats = new List<NewUserStats>();
+            DBHelper dbh = new DBHelper(@"SELECT 
+    DATE(creationdate) AS CDate, COUNT(username) AS NewUsers
+FROM
+    users
+GROUP BY CDate
+ORDER BY CDate DESC
+LIMIT ?days");
+            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("days", days); },
+                (dr) =>
+                {
+                    int newUsers = Convert.ToInt32(dr["NewUsers"], CultureInfo.InvariantCulture);
+                    runningTotal += newUsers;
+                    newUserStats.Add(new NewUserStats(Convert.ToDateTime(dr["CDate"], CultureInfo.InvariantCulture), newUsers, runningTotal));
+                });
+
+            return newUserStats;
         }
     }
 
