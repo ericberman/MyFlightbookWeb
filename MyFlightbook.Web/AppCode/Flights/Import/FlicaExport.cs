@@ -51,7 +51,7 @@ namespace MyFlightbook.ImportFlights
         public override LogbookEntry ToLogbookEntry()
         {
             // "BLOCK" contains the time as a solid integer.  E.g., 77 minutes is 107.  Pathetic.  What's wrong with using a colon?
-            int totalTime = String.IsNullOrEmpty(BLOCK) ? 0 : Convert.ToInt32(BLOCK, CultureInfo.InvariantCulture);
+            int totalTime = String.IsNullOrEmpty(BLOCK) ? 0 : Convert.ToInt32(BLOCK.Replace(":", string.Empty), CultureInfo.InvariantCulture);
             int totalMinutes = totalTime % 100;
             int totalHours = totalTime / 100;
             PendingFlight pf = new PendingFlight()
