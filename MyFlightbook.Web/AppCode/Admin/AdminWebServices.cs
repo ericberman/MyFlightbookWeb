@@ -36,7 +36,7 @@ namespace MyFlightbook.Web.Ajax
         public void ConvertOandI(int idAircraft)
         {
             if (!Profile.GetUser(HttpContext.Current.User.Identity.Name).CanManageData)
-                throw new MyFlightbookException("Unauthenticated call to ConvertOandI");
+                throw new UnauthorizedAccessException("Unauthenticated call to ConvertOandI");
 
             Aircraft ac = new Aircraft(idAircraft);
 
@@ -50,7 +50,7 @@ namespace MyFlightbook.Web.Ajax
         public void TrimLeadingN(int idAircraft)
         {
             if (!Profile.GetUser(HttpContext.Current.User.Identity.Name).CanManageData)
-                throw new MyFlightbookException("Unauthenticated call to TrimLeadingN");
+                throw new UnauthorizedAccessException("Unauthenticated call to TrimLeadingN");
 
             Aircraft ac = new Aircraft(idAircraft);
 
@@ -67,7 +67,7 @@ namespace MyFlightbook.Web.Ajax
         public void TrimN0(int idAircraft)
         {
             if (!Profile.GetUser(HttpContext.Current.User.Identity.Name).CanManageData)
-                throw new MyFlightbookException("Unauthenticated call to TrimN0");
+                throw new UnauthorizedAccessException("Unauthenticated call to TrimN0");
 
             Aircraft ac = new Aircraft(idAircraft);
 
@@ -86,7 +86,7 @@ namespace MyFlightbook.Web.Ajax
         public void MigrateGeneric(int idAircraft)
         {
             if (!Profile.GetUser(HttpContext.Current.User.Identity.Name).CanManageData)
-                throw new MyFlightbookException("Unauthenticated call to MigrateGeneric");
+                throw new UnauthorizedAccessException("Unauthenticated call to MigrateGeneric");
 
             Aircraft ac = new Aircraft(idAircraft);
 
@@ -113,7 +113,7 @@ namespace MyFlightbook.Web.Ajax
         public void MigrateSim(int idAircraft)
         {
             if (!Profile.GetUser(HttpContext.Current.User.Identity.Name).CanManageData)
-                throw new MyFlightbookException("Unauthenticated call to MigrateSim");
+                throw new UnauthorizedAccessException("Unauthenticated call to MigrateSim");
 
             Aircraft ac = new Aircraft(idAircraft);
 
@@ -127,8 +127,8 @@ namespace MyFlightbook.Web.Ajax
         [WebMethod(EnableSession = true)]
         public string ViewFlights(int idAircraft)
         {
-            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
-                throw new MyFlightbookException("Unauthenticated call to ViewFlights");
+            if (!Profile.GetUser(HttpContext.Current.User.Identity.Name).CanManageData)
+                throw new UnauthorizedAccessException("Unauthenticated call to ViewFlights");
 
             Aircraft ac = new Aircraft(idAircraft);
 
@@ -156,7 +156,7 @@ namespace MyFlightbook.Web.Ajax
         public void IgnorePseudo(int idAircraft)
         {
             if (!Profile.GetUser(HttpContext.Current.User.Identity.Name).CanManageData)
-                throw new MyFlightbookException("Unauthenticated call to IgnorePseudo");
+                throw new UnauthorizedAccessException("Unauthenticated call to IgnorePseudo");
 
             Aircraft ac = new Aircraft(idAircraft);
             ac.PublicNotes += '\u2006'; // same marker as in flightlint - a very thin piece of whitespace

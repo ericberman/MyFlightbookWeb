@@ -485,7 +485,7 @@ ORDER BY tailnormal ASC, version, numUsers DESC, idaircraft ASC"
                                         <Columns>
                                             <asp:BoundField DataField="ID" HeaderText="ID" SortExpression="ID" ReadOnly="true" HeaderStyle-CssClass="headerBase gvhDefault gvhCentered" />
                                             <asp:BoundField DataField="Prefix" HeaderText="Prefix" SortExpression="Prefix" HeaderStyle-CssClass="headerBase gvhDefault gvhCentered" />
-                                            <asp:TemplateField HeaderText="Prefix" SortExpression="Prefix">
+                                            <asp:TemplateField HeaderText="Prefix" SortExpression="Prefix" HeaderStyle-CssClass="headerBase gvhDefault gvhCentered" Visible="false">
                                                 <ItemTemplate>
                                                     <asp:Label ID="lblPrefix" runat="server" Text='<%# Eval("Prefix") %>' />
                                                 </ItemTemplate>
