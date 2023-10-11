@@ -1,0 +1,1 @@
+﻿<%@ WebService Language="C#" CodeBehind="~/App_Code/Admin/AdminWebServices.cs" Class="MyFlightbook.Web.Ajax.AdminWebServices" %>

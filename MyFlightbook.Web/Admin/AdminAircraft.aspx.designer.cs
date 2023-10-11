@@ -348,49 +348,13 @@ namespace MyFlightbook.Web.Admin
         protected global::System.Web.UI.WebControls.GridView gvFoundAircraft;
 
         /// <summary>
-        /// vwPseudoGeneric control.
+        /// vwCountryCodes control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.View vwPseudoGeneric;
-
-        /// <summary>
-        /// gvPseudoGeneric control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvPseudoGeneric;
-
-        /// <summary>
-        /// sqlPseudoGeneric control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.SqlDataSource sqlPseudoGeneric;
-
-        /// <summary>
-        /// vwMapModels control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.View vwMapModels;
-
-        /// <summary>
-        /// gvMapModels control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvMapModels;
+        protected global::System.Web.UI.WebControls.View vwCountryCodes;
 
         /// <summary>
         /// UpdatePanel4 control.
@@ -436,6 +400,51 @@ namespace MyFlightbook.Web.Admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.SqlDataSource sqlDSCountryCode;
+
+        /// <summary>
+        /// vwPseudoGeneric control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.View vwPseudoGeneric;
+
+        /// <summary>
+        /// gvPseudoGeneric control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvPseudoGeneric;
+
+        /// <summary>
+        /// sqlPseudoGeneric control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.SqlDataSource sqlPseudoGeneric;
+
+        /// <summary>
+        /// vwMapModels control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.View vwMapModels;
+
+        /// <summary>
+        /// gvMapModels control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvMapModels;
 
         /// <summary>
         /// Master property.

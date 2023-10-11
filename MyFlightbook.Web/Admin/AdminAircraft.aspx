@@ -13,7 +13,7 @@
             var d = JSON.stringify(params);
             $.ajax(
                 {
-                    url: '<% =ResolveUrl("~/Admin/AdminAircraft.aspx/ConvertOandI") %>',
+                    url: '<% =ResolveUrl("~/Admin/AdminService.asmx/ConvertOandI") %>',
                     type: "POST", data: d, dataType: "json", contentType: "application/json",
                     error: function (xhr, status, error) {
                         window.alert(xhr.responseJSON.Message);
@@ -28,7 +28,7 @@
             var d = JSON.stringify(params);
             $.ajax(
                 {
-                    url: '<% =ResolveUrl("~/Admin/AdminAircraft.aspx/TrimLeadingN") %>',
+                    url: '<% =ResolveUrl("~/Admin/AdminService.asmx/TrimLeadingN") %>',
                     type: "POST", data: d, dataType: "json", contentType: "application/json",
                     error: function (xhr, status, error) {
                         window.alert(xhr.responseJSON.Message);
@@ -43,7 +43,7 @@
             var d = JSON.stringify(params);
             $.ajax(
                 {
-                    url: '<% =ResolveUrl("~/Admin/AdminAircraft.aspx/MigrateGeneric") %>',
+                    url: '<% =ResolveUrl("~/Admin/AdminService.asmx/MigrateGeneric") %>',
                     type: "POST", data: d, dataType: "json", contentType: "application/json",
                     error: function (xhr, status, error) {
                         window.alert(xhr.responseJSON.Message);
@@ -58,7 +58,7 @@
             var d = JSON.stringify(params);
             $.ajax(
                 {
-                    url: '<% =ResolveUrl("~/Admin/AdminAircraft.aspx/MigrateSim") %>',
+                    url: '<% =ResolveUrl("~/Admin/AdminService.asmx/MigrateSim") %>',
                     type: "POST", data: d, dataType: "json", contentType: "application/json",
                     error: function (xhr, status, error) {
                         window.alert(xhr.responseJSON.Message);
@@ -73,7 +73,7 @@
             var d = JSON.stringify(params);
             $.ajax(
                 {
-                    url: '<% =ResolveUrl("~/Admin/AdminAircraft.aspx/TrimN0") %>',
+                    url: '<% =ResolveUrl("~/Admin/AdminService.asmx/TrimN0") %>',
                     type: "POST", data: d, dataType: "json", contentType: "application/json",
                     error: function (xhr, status, error) {
                         window.alert(xhr.responseJSON.Message);
@@ -87,7 +87,7 @@
             params.idAircraft = idaircraft;
             var d = JSON.stringify(params);
             $.ajax({
-                url: '<% =ResolveUrl("~/Admin/AdminAircraft.aspx/IgnorePseudo") %>',
+                url: '<% =ResolveUrl("~/Admin/AdminService.asmx/IgnorePseudo") %>',
                 type: "POST", data: d, dataType: "json", contentType: "application/json",
                 error: function (xhr, status, error) {
                     window.alert(xhr.responseJSON.Message);
@@ -102,7 +102,7 @@
             var d = JSON.stringify(params);
             $.ajax(
                 {
-                    url: '<% =ResolveUrl("~/Admin/AdminAircraft.aspx/ViewFlights") %>',
+                    url: '<% =ResolveUrl("~/Admin/AdminService.asmx/ViewFlights") %>',
                     type: "POST", data: d, dataType: "json", contentType: "application/json",
                     error: function (xhr, status, error) {
                         window.alert(xhr.responseJSON.Message);
@@ -122,7 +122,7 @@
             params.idAircraft = idaircraft;
             var d = JSON.stringify(params);
             $.ajax({
-                url: '<% =ResolveUrl("~/Admin/AdminAircraft.aspx/addMissing") %>',
+                url: '<% =ResolveUrl("~/Admin/AdminService.asmx/addMissing") %>',
                 type: "POST", data: d, dataType: "json", contentType: "application/json",
                 error: function (xhr, status, error) {
                     window.alert(xhr.responseJSON.Message);
@@ -242,21 +242,21 @@
                     <p>
                         Potential duplicate aircraft:
                     </p>
-                    <asp:GridView ID="gvDupeAircraft" runat="server" AutoGenerateColumns="False" AutoGenerateEditButton="true" DataKeyNames="idaircraft">
+                    <asp:GridView ID="gvDupeAircraft" runat="server" AutoGenerateColumns="False" AutoGenerateEditButton="true" DataKeyNames="idaircraft" CssClass="stickyHeaderTable">
                         <Columns>
-                            <asp:BoundField DataField="TailNumber" HeaderText="Tail Number" ReadOnly="true" />
-                            <asp:BoundField DataField="TailNormal" HeaderText="Normalized Tail" ReadOnly="true" />
+                            <asp:BoundField DataField="TailNumber" HeaderText="Tail Number" ReadOnly="true" Headerstyle-CssClass="headerBase gvhDefault gvhCentered" />
+                            <asp:BoundField DataField="TailNormal" HeaderText="Normalized Tail" ReadOnly="true" Headerstyle-CssClass="headerBase gvhDefault gvhCentered" />
                             <asp:HyperLinkField DataNavigateUrlFields="idaircraft"
                                 DataNavigateUrlFormatString="~/Member/EditAircraft.aspx?id={0}&amp;a=1"
-                                DataTextField="idaircraft" HeaderText="Aircraft ID" Target="_blank" />
+                                DataTextField="idaircraft" HeaderText="Aircraft ID" Target="_blank" Headerstyle-CssClass="headerBase gvhDefault gvhCentered" />
                             <asp:HyperLinkField DataNavigateUrlFields="idmodel"
                                 DataNavigateUrlFormatString="~/Member/EditMake.aspx?id={0}&amp;a=1"
-                                DataTextField="idmodel" HeaderText="Model ID" Target="_blank" />
-                            <asp:BoundField DataField="version" HeaderText="Version" />
-                            <asp:BoundField DataField="ModelCommonName" HeaderText="Model Name" ReadOnly="true" />
-                            <asp:BoundField DataField="instancetype" HeaderText="Instance Type" ReadOnly="true" />
-                            <asp:BoundField DataField="numFlights" HeaderText="# of Flights" ReadOnly="true" />
-                            <asp:BoundField DataField="numUsers" HeaderText="# of Users" ReadOnly="true" />
+                                DataTextField="idmodel" HeaderText="Model ID" Target="_blank" Headerstyle-CssClass="headerBase gvhDefault gvhCentered" />
+                            <asp:BoundField DataField="version" HeaderText="Version" Headerstyle-CssClass="headerBase gvhDefault gvhCentered" />
+                            <asp:BoundField DataField="ModelCommonName" HeaderText="Model Name" ReadOnly="true" Headerstyle-CssClass="headerBase gvhDefault gvhCentered" />
+                            <asp:BoundField DataField="instancetype" HeaderText="Instance Type" ReadOnly="true" Headerstyle-CssClass="headerBase gvhDefault gvhCentered" />
+                            <asp:BoundField DataField="numFlights" HeaderText="# of Flights" ReadOnly="true" Headerstyle-CssClass="headerBase gvhDefault gvhCentered" />
+                            <asp:BoundField DataField="numUsers" HeaderText="# of Users" ReadOnly="true" Headerstyle-CssClass="headerBase gvhDefault gvhCentered" />
                         </Columns>
                         <EmptyDataTemplate>
                             <p class="success">
@@ -300,25 +300,25 @@ ORDER BY tailnormal ASC, version, numUsers DESC, idaircraft ASC"
                     <p>
                         Duplicate sims:
                     </p>
-                    <asp:GridView ID="gvDupeSims" runat="server" AutoGenerateColumns="False"
+                    <asp:GridView ID="gvDupeSims" runat="server" AutoGenerateColumns="False" CssClass="stickyHeaderTable"
                         OnRowCommand="gvDupeSims_RowCommand">
                         <Columns>
-                            <asp:BoundField DataField="instancetype" HeaderText="Instance Type" />
-                            <asp:BoundField DataField="idmodel" HeaderText="Model ID" />
-                            <asp:BoundField DataField="idaircraft" HeaderText="Aircraft ID" />
-                            <asp:BoundField DataField="ModelCommonName" HeaderText="Model Name" />
-                            <asp:BoundField DataField="TailNumber" HeaderText="Tail Number" />
+                            <asp:BoundField DataField="instancetype" HeaderText="Instance Type" Headerstyle-CssClass="headerBase gvhDefault gvhCentered" />
+                            <asp:BoundField DataField="idmodel" HeaderText="Model ID" Headerstyle-CssClass="headerBase gvhDefault gvhCentered" />
+                            <asp:BoundField DataField="idaircraft" HeaderText="Aircraft ID" Headerstyle-CssClass="headerBase gvhDefault gvhCentered" />
+                            <asp:BoundField DataField="ModelCommonName" HeaderText="Model Name" Headerstyle-CssClass="headerBase gvhDefault gvhCentered" />
+                            <asp:BoundField DataField="TailNumber" HeaderText="Tail Number" Headerstyle-CssClass="headerBase gvhDefault gvhCentered" />
                             <asp:HyperLinkField DataNavigateUrlFields="idaircraft"
                                 DataNavigateUrlFormatString="~/Member/EditAircraft.aspx?id={0}&amp;a=1"
-                                DataTextField="idaircraft" HeaderText="Aircraft ID" Target="_blank" />
+                                DataTextField="idaircraft" HeaderText="Aircraft ID" Target="_blank" Headerstyle-CssClass="headerBase gvhDefault gvhCentered" />
                             <asp:HyperLinkField DataNavigateUrlFields="idmodel"
                                 DataNavigateUrlFormatString="~/Member/EditMake.aspx?id={0}&amp;a=1"
-                                DataTextField="idmodel" HeaderText="Model ID" Target="_blank" />
-                            <asp:BoundField DataField="ModelCommonName" HeaderText="Model Name" />
-                            <asp:BoundField DataField="numFlights" HeaderText="# of Flights" />
-                            <asp:BoundField DataField="numUsers" HeaderText="# of Users" />
-                            <asp:ButtonField CommandName="ResolveAircraft" Text="Keep This" />
-                            <asp:TemplateField>
+                                DataTextField="idmodel" HeaderText="Model ID" Target="_blank"  Headerstyle-CssClass="headerBase gvhDefault gvhCentered"/>
+                            <asp:BoundField DataField="ModelCommonName" HeaderText="Model Name" Headerstyle-CssClass="headerBase gvhDefault gvhCentered" />
+                            <asp:BoundField DataField="numFlights" HeaderText="# of Flights" Headerstyle-CssClass="headerBase gvhDefault gvhCentered" />
+                            <asp:BoundField DataField="numUsers" HeaderText="# of Users" Headerstyle-CssClass="headerBase gvhDefault gvhCentered" />
+                            <asp:ButtonField CommandName="ResolveAircraft" Text="Keep This" Headerstyle-CssClass="headerBase gvhDefault gvhCentered" />
+                            <asp:TemplateField HeaderStyle-CssClass="headerBase gvhDefault gvhCentered">
                                 <ItemTemplate>
                                     <asp:Label ID="lblError" runat="server" CssClass="error"
                                         EnableViewState="false"></asp:Label>
@@ -360,10 +360,10 @@ ORDER BY tailnormal ASC, version, numUsers DESC, idaircraft ASC"
                     <p>
                         Aircraft that may be invalid:
                     </p>
-                    <asp:GridView ID="gvInvalidAircraft" runat="server" AutoGenerateColumns="False"
+                    <asp:GridView ID="gvInvalidAircraft" runat="server" AutoGenerateColumns="False" CssClass="stickyHeaderTable"
                         EnableViewState="false">
                         <Columns>
-                            <asp:TemplateField HeaderText="Aircraft">
+                            <asp:TemplateField HeaderText="Aircraft" Headerstyle-CssClass="headerBase gvhDefault gvhCentered">
                                 <ItemTemplate>
                                     <div>
                                         <a href='../Member/EditAircraft.aspx?id=<%# Eval("AircraftID") %>&amp;a=1'
@@ -387,53 +387,53 @@ ORDER BY tailnormal ASC, version, numUsers DESC, idaircraft ASC"
                         All sims:
                     </p>
                     <asp:Label ID="lblSimsFound" runat="server" Text=""></asp:Label>
-                    <asp:GridView ID="gvSims" runat="server" AllowSorting="true"
+                    <asp:GridView ID="gvSims" runat="server" AllowSorting="true" CssClass="stickyHeaderTable"
                         AutoGenerateColumns="false" OnRowCommand="gvSims_RowCommand">
                         <Columns>
-                            <asp:BoundField DataField="AircraftID" HeaderText="ID"
+                            <asp:BoundField DataField="AircraftID" HeaderText="ID" Headerstyle-CssClass="headerBase gvhDefault gvhCentered"
                                 SortExpression="AircraftID" />
-                            <asp:TemplateField HeaderText="Aircraft" SortExpression="TailNumber">
+                            <asp:TemplateField HeaderText="Aircraft" SortExpression="TailNumber" Headerstyle-CssClass="headerBase gvhDefault gvhCentered">
                                 <ItemTemplate>
                                     <a href='../Member/EditAircraft.aspx?id=<%# Eval("AircraftID") %>&amp;a=1'
                                         target="_blank"><%# Eval("TailNumber") %></a>
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField>
+                            <asp:TemplateField Headerstyle-CssClass="headerBase gvhDefault gvhCentered">
                                 <ItemTemplate>
                                     <%# Eval("ModelDescription") %><%# Eval("ModelCommonName") %>
                                     <%# Eval("InstanceTypeDescription") %>
                                     <asp:Label ID="lblProposedRename" runat="server" Font-Bold="true" Text=""></asp:Label>
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:ButtonField ButtonType="Link" CommandName="Preview"
+                            <asp:ButtonField ButtonType="Link" CommandName="Preview" Headerstyle-CssClass="headerBase gvhDefault gvhCentered"
                                 HeaderText="Suggest new tail" Text="Preview" />
-                            <asp:ButtonField ButtonType="Link" CommandName="Rename" Text="Rename" />
+                            <asp:ButtonField ButtonType="Link" CommandName="Rename" Text="Rename" Headerstyle-CssClass="headerBase gvhDefault gvhCentered" />
                         </Columns>
                     </asp:GridView>
                 </asp:View>
                 <asp:View ID="vwOrphans" runat="server">
                     <p>Orphaned Aircraft
                         <asp:Button ID="btnDeleteAllOrphans" runat="server" Text="Delete all orphans" OnClick="btnDeleteAllOrphans_Click" /></p>
-                    <asp:GridView ID="gvOrphanedAircraft" runat="server"
+                    <asp:GridView ID="gvOrphanedAircraft" runat="server" CssClass="stickyHeaderTable"
                         AutoGenerateColumns="false" OnRowCommand="gvOrphanedAircraft_RowCommand"
                         DataKeyNames="idAircraft">
                         <Columns>
-                            <asp:TemplateField>
+                            <asp:TemplateField Headerstyle-CssClass="headerBase gvhDefault gvhCentered">
                                 <ItemTemplate>
                                     <asp:LinkButton ID="lnkDelete" CommandArgument='<%# Eval("idAircraft") %>' CommandName="_Delete" runat="server" Text="Delete"></asp:LinkButton>
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="Tailnumber">
+                            <asp:TemplateField HeaderText="Tailnumber" Headerstyle-CssClass="headerBase gvhDefault gvhCentered">
                                 <ItemTemplate>
                                     <a href='../Member/EditAircraft.aspx?id=<%# Eval("idAircraft") %>&amp;a=1'
                                         target="_blank"><%# Eval("TailNumber") %></a>
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:BoundField DataField="idmodel" HeaderText="Model ID" />
-                            <asp:BoundField DataField="model" HeaderText="Model" />
-                            <asp:BoundField DataField="modelname" HeaderText="ModelName" />
-                            <asp:BoundField DataField="typename" HeaderText="TypeName" />
-                            <asp:BoundField DataField="version" HeaderText="Version" />
+                            <asp:BoundField DataField="idmodel" HeaderText="Model ID" Headerstyle-CssClass="headerBase gvhDefault gvhCentered" />
+                            <asp:BoundField DataField="model" HeaderText="Model" Headerstyle-CssClass="headerBase gvhDefault gvhCentered" />
+                            <asp:BoundField DataField="modelname" HeaderText="ModelName" Headerstyle-CssClass="headerBase gvhDefault gvhCentered" />
+                            <asp:BoundField DataField="typename" HeaderText="TypeName" Headerstyle-CssClass="headerBase gvhDefault gvhCentered" />
+                            <asp:BoundField DataField="version" HeaderText="Version" Headerstyle-CssClass="headerBase gvhDefault gvhCentered" />
                         </Columns>
                         <EmptyDataTemplate>
                             <p class="success">
@@ -457,9 +457,9 @@ ORDER BY tailnormal ASC, version, numUsers DESC, idaircraft ASC"
                     </asp:SqlDataSource>
                 </asp:View>
                 <asp:View ID="vwMatchingAircraft" runat="server">
-                    <asp:GridView ID="gvFoundAircraft" runat="server" AutoGenerateColumns="false">
+                    <asp:GridView ID="gvFoundAircraft" runat="server" AutoGenerateColumns="false" CssClass="stickyHeaderTable">
                         <Columns>
-                            <asp:TemplateField HeaderText="Tailnumber">
+                            <asp:TemplateField HeaderText="Tailnumber" Headerstyle-CssClass="headerBase gvhDefault gvhCentered">
                                 <ItemTemplate>
                                     <a href='../Member/EditAircraft.aspx?id=<%# Eval("AircraftID") %>&amp;a=1&amp;gencandidate=1'
                                         target="_blank"><%# Eval("TailNumber") %></a>
@@ -473,22 +473,97 @@ ORDER BY tailnormal ASC, version, numUsers DESC, idaircraft ASC"
                         </EmptyDataTemplate>
                     </asp:GridView>
                 </asp:View>
+                <asp:View ID="vwCountryCodes" runat="server">
+                        <asp:UpdatePanel ID="UpdatePanel4" runat="server">
+                            <ContentTemplate>
+                                <div style="padding: 5px;">
+                                    <asp:HiddenField ID="hdnLastCountryEdited" runat="server" />
+                                    <asp:HiddenField ID="hdnLastCountryResult" runat="server" />
+                                    <asp:GridView ID="gvCountryCodes" runat="server" AllowSorting="True" OnRowEditing="gvCountryCodes_RowEditing" CssClass="stickyHeaderTable"
+                                        AutoGenerateEditButton="true" CellPadding="3" AutoGenerateColumns="false" OnRowCommand="gvCountryCodes_RowCommand"
+                                        OnRowDataBound="gvCountryCodes_RowDataBound" DataKeyNames="ID" OnRowUpdating="gvCountryCodes_RowUpdating">
+                                        <Columns>
+                                            <asp:BoundField DataField="ID" HeaderText="ID" SortExpression="ID" ReadOnly="true" HeaderStyle-CssClass="headerBase gvhDefault gvhCentered" />
+                                            <asp:BoundField DataField="Prefix" HeaderText="Prefix" SortExpression="Prefix" HeaderStyle-CssClass="headerBase gvhDefault gvhCentered" />
+                                            <asp:TemplateField HeaderText="Prefix" SortExpression="Prefix">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblPrefix" runat="server" Text='<%# Eval("Prefix") %>' />
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:BoundField DataField="CountryName" HeaderText="Country Name" SortExpression="CountryName" HeaderStyle-CssClass="headerBase gvhDefault gvhCentered" />
+                                            <asp:BoundField DataField="Locale" HeaderText="Locale" SortExpression="Locale" ConvertEmptyStringToNull="false" HeaderStyle-CssClass="headerBase gvhDefault gvhCentered" />
+                                            <asp:BoundField DataField="RegistrationURLTemplate" HeaderStyle-CssClass="headerBase gvhDefault gvhCentered" />
+                                            <asp:TemplateField HeaderText="Template Mode" SortExpression="RegistrationURLTemplateMode" HeaderStyle-CssClass="headerBase gvhDefault gvhCentered">
+                                                <ItemTemplate>
+                                                    <%# ((CountryCodePrefix.RegistrationTemplateMode) Convert.ToUInt32(Eval("TemplateType"), System.Globalization.CultureInfo.InvariantCulture)).ToString() %>
+                                                </ItemTemplate>
+                                                <EditItemTemplate>
+                                                    <asp:HiddenField ID="hdnTempType" runat="server" Value='<%# Eval("TemplateType") %>' />
+                                                    <asp:RadioButtonList ID="rblTemplateType" runat="server">
+                                                        <asp:ListItem Text="None" Value="0" Selected="<% Eval( %>"></asp:ListItem>
+                                                        <asp:ListItem Text="Whole Tailnumber" Value="1"></asp:ListItem>
+                                                        <asp:ListItem Text="Suffix Only (only what follows dash)" Value="2"></asp:ListItem>
+                                                        <asp:ListItem Text="Whole - with dash" Value="3"></asp:ListItem>
+                                                    </asp:RadioButtonList>
+                                                </EditItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Hyphen Rules" SortExpression="HyphenPref" HeaderStyle-CssClass="headerBase gvhDefault gvhCentered">
+                                                <ItemTemplate>
+                                                    <%# ((CountryCodePrefix.HyphenPreference) Convert.ToUInt32(Eval("HyphenPref"), System.Globalization.CultureInfo.InvariantCulture)).ToString() %>
+                                                </ItemTemplate>
+                                                <EditItemTemplate>
+                                                    <asp:HiddenField ID="hdnHyphPref" runat="server" Value='<%# Eval("hyphenpref") %>' />
+                                                    <asp:RadioButtonList ID="rblHyphenPref" runat="server">
+                                                        <asp:ListItem Text="None" Value="0"></asp:ListItem>
+                                                        <asp:ListItem Text="Hyphenate" Value="1"></asp:ListItem>
+                                                        <asp:ListItem Text="No Hyphen" Value="2"></asp:ListItem>
+                                                    </asp:RadioButtonList>
+                                                </EditItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderStyle-CssClass="headerBase gvhDefault gvhCentered">
+                                                <ItemTemplate>
+                                                    <asp:Button ID="btnFixHyphens" runat="server" Text="Fix Aircraft Hyphenation" CommandArgument='<%# Eval("Prefix") %>' CommandName="fixHyphens" />
+                                                    <div>
+                                                        <asp:Label ID="lblHyphenResult" runat="server" Font-Bold="true" Visible="false"></asp:Label></div>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                        </Columns>
+                                    </asp:GridView>
+                                    <asp:SqlDataSource ID="sqlDSCountryCode" runat="server"
+                                        ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>"
+                                        ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>"
+                                        SelectCommand="SELECT * FROM countrycodes ORDER BY ID ASC"
+                                        UpdateCommand="UPDATE countrycodes SET Prefix=?Prefix, CountryName=?CountryName, Locale=?Locale, RegistrationURLTemplate=?RegistrationURLTemplate, TemplateType=?TemplateType, HyphenPref=?HyphenPref WHERE ID=?ID">
+                                        <UpdateParameters>
+                                            <asp:Parameter Name="Prefix" Type="String" Size="10" Direction="InputOutput" />
+                                            <asp:Parameter Name="CountryName" Type="String" Size="80" Direction="InputOutput" />
+                                            <asp:Parameter Name="Locale" Type="String" Size="3" Direction="InputOutput" ConvertEmptyStringToNull="false" />
+                                            <asp:Parameter Name="RegistrationURLTemplate" Type="String" Size="512" Direction="InputOutput" />
+                                            <asp:Parameter Name="TemplateType" Type="Int16" Direction="InputOutput" />
+                                            <asp:Parameter Name="HyphenPref" Type="Int16" Direction="InputOutput" />
+                                            <asp:Parameter Name="ID" Type="Int32" Direction="Input" />
+                                        </UpdateParameters>
+                                    </asp:SqlDataSource>
+                                </div>
+                            </ContentTemplate>
+                        </asp:UpdatePanel>
+                </asp:View>
                 <asp:View ID="vwPseudoGeneric" runat="server">
-                    <asp:GridView ID="gvPseudoGeneric" runat="server" AutoGenerateColumns="false" OnRowDataBound="gvPseudoGeneric_RowDataBound">
+                    <asp:GridView ID="gvPseudoGeneric" runat="server" AutoGenerateColumns="false" OnRowDataBound="gvPseudoGeneric_RowDataBound" CssClass="stickyHeaderTable">
                         <Columns>
-                            <asp:TemplateField>
+                            <asp:TemplateField HeaderStyle-CssClass="headerBase gvhDefault gvhCentered">
                                 <ItemTemplate>
                                     <asp:HyperLInk ID="lblTailnumber" Font-Bold="true" runat="server" Text='<%# Eval("Tailnumber") %>' Target="_blank" NavigateUrl='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}&a=1&genCandidate=1", Eval("idaircraft")) %>' />
                                     <asp:Label ID="lblManufacturer" runat="server" Text='<%# Eval("manufacturer") %>'></asp:Label>
                                     <asp:Label ID="lblModel" runat="server" Text='<%# Eval("model") %>'></asp:Label>
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="# Flights">
+                            <asp:TemplateField HeaderText="# Flights" HeaderStyle-CssClass="headerBase gvhDefault gvhCentered">
                                 <ItemTemplate>
                                     <asp:HyperLink ID="lnkFlights" runat="server" Text='<%# Eval("numFlights") %>' />
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField>
+                            <asp:TemplateField HeaderStyle-CssClass="headerBase gvhDefault gvhCentered">
                                 <ItemTemplate>
                                     <div class="adm">
                                         <asp:HyperLink ID="lnkViewFixedTail" Target="_blank" runat="server" CssClass="admItem" />
@@ -529,14 +604,14 @@ GROUP BY ac.idaircraft
 ORDER BY tailnumber ASC"></asp:SqlDataSource>
                 </asp:View>
                 <asp:View ID="vwMapModels" runat="server">
-                    <asp:GridView ID="gvMapModels" runat="server" OnRowCommand="gvMapModels_RowCommand" AutoGenerateColumns="false">
+                    <asp:GridView ID="gvMapModels" runat="server" OnRowCommand="gvMapModels_RowCommand" AutoGenerateColumns="false" CssClass="stickyHeaderTable">
                         <Columns>
-                            <asp:TemplateField>
+                            <asp:TemplateField HeaderStyle-CssClass="headerBase gvhDefault gvhCentered">
                                 <ItemTemplate>
                                     <asp:HyperLink ID="lnkRegistration" runat="server" NavigateUrl='<%# Aircraft.LinkForTailnumberRegistry(((AircraftAdminModelMapping) Container.DataItem).aircraft.TailNumber) %>' Target="_blank" Text="Registration" Visible='<%# !String.IsNullOrEmpty(Aircraft.LinkForTailnumberRegistry(((AircraftAdminModelMapping) Container.DataItem).aircraft.TailNumber)) %>'></asp:HyperLink>
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField>
+                            <asp:TemplateField HeaderStyle-CssClass="headerBase gvhDefault gvhCentered">
                                 <ItemTemplate>
                                     <asp:HyperLink ID="lnkAircraft" Text="<%# ((AircraftAdminModelMapping) Container.DataItem).aircraft.DisplayTailnumber %>" Target="_blank"
                                         NavigateUrl='<%# "~/Member/EditAircraft.aspx?id=" + ((AircraftAdminModelMapping) Container.DataItem).aircraft.AircraftID.ToString() %>' runat="server"></asp:HyperLink>
@@ -545,7 +620,7 @@ ORDER BY tailnumber ASC"></asp:SqlDataSource>
                                     Aircraft
                                 </HeaderTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField>
+                            <asp:TemplateField HeaderStyle-CssClass="headerBase gvhDefault gvhCentered">
                                 <ItemTemplate>
                                     <asp:HyperLink ID="lnkModel" Text="<%# ((AircraftAdminModelMapping) Container.DataItem).currentModel.ModelDisplayName %>" Target="_blank"
                                         NavigateUrl='<%# "~/Member/EditMake.aspx?id=" + ((AircraftAdminModelMapping) Container.DataItem).currentModel.MakeModelID.ToString() %>' runat="server"></asp:HyperLink>
@@ -554,7 +629,7 @@ ORDER BY tailnumber ASC"></asp:SqlDataSource>
                                     Current Model
                                 </HeaderTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField>
+                            <asp:TemplateField HeaderStyle-CssClass="headerBase gvhDefault gvhCentered">
                                 <ItemTemplate>
                                     <asp:HyperLink ID="lnkModel" Text="<%# ((AircraftAdminModelMapping) Container.DataItem).targetModel.ModelDisplayName %>" Target="_blank"
                                         NavigateUrl='<%# "~/Member/EditMake.aspx?id=" + ((AircraftAdminModelMapping) Container.DataItem).targetModel.MakeModelID.ToString() %>' runat="server"></asp:HyperLink>
@@ -563,7 +638,7 @@ ORDER BY tailnumber ASC"></asp:SqlDataSource>
                                     Target Model Model
                                 </HeaderTemplate>
                             </asp:TemplateField>
-                            <asp:ButtonField CommandName="_MapModel" ButtonType="Link" Text="Map it" />
+                            <asp:ButtonField CommandName="_MapModel" ButtonType="Link" Text="Map it" HeaderStyle-CssClass="headerBase gvhDefault gvhCentered" />
                         </Columns>
                     </asp:GridView>
                 </asp:View>
@@ -572,77 +647,4 @@ ORDER BY tailnumber ASC"></asp:SqlDataSource>
     </asp:UpdatePanel>
 </asp:Content>
 <asp:Content runat="server" ID="content3" ContentPlaceHolderID="cpMain">
-    <asp:UpdatePanel ID="UpdatePanel4" runat="server">
-        <ContentTemplate>
-            <div style="padding: 5px;">
-                <asp:HiddenField ID="hdnLastCountryEdited" runat="server" />
-                <asp:HiddenField ID="hdnLastCountryResult" runat="server" />
-                <asp:GridView ID="gvCountryCodes" runat="server" AllowSorting="True" OnRowEditing="gvCountryCodes_RowEditing"
-                    AutoGenerateEditButton="true" CellPadding="3" AutoGenerateColumns="false" OnRowCommand="gvCountryCodes_RowCommand"
-                    OnRowDataBound="gvCountryCodes_RowDataBound" DataKeyNames="ID" OnRowUpdating="gvCountryCodes_RowUpdating">
-                    <Columns>
-                        <asp:BoundField DataField="ID" HeaderText="ID" SortExpression="ID" ReadOnly="true" />
-                        <asp:BoundField DataField="Prefix" HeaderText="Prefix" SortExpression="Prefix" />
-                        <asp:TemplateField HeaderText="Prefix" SortExpression="Prefix">
-                            <ItemTemplate>
-                                <asp:Label ID="lblPrefix" runat="server" Text='<%# Eval("Prefix") %>' />
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:BoundField DataField="CountryName" HeaderText="Country Name" SortExpression="CountryName" />
-                        <asp:BoundField DataField="Locale" HeaderText="Locale" SortExpression="Locale" ConvertEmptyStringToNull="false" />
-                        <asp:BoundField DataField="RegistrationURLTemplate" />
-                        <asp:TemplateField HeaderText="Template Mode" SortExpression="RegistrationURLTemplateMode">
-                            <ItemTemplate>
-                                <%# ((CountryCodePrefix.RegistrationTemplateMode) Convert.ToUInt32(Eval("TemplateType"), System.Globalization.CultureInfo.InvariantCulture)).ToString() %>
-                            </ItemTemplate>
-                            <EditItemTemplate>
-                                <asp:HiddenField ID="hdnTempType" runat="server" Value='<%# Eval("TemplateType") %>' />
-                                <asp:RadioButtonList ID="rblTemplateType" runat="server">
-                                    <asp:ListItem Text="None" Value="0" Selected="<% Eval( %>"></asp:ListItem>
-                                    <asp:ListItem Text="Whole Tailnumber" Value="1"></asp:ListItem>
-                                    <asp:ListItem Text="Suffix Only (only what follows dash)" Value="2"></asp:ListItem>
-                                    <asp:ListItem Text="Whole - with dash" Value="3"></asp:ListItem>
-                                </asp:RadioButtonList>
-                            </EditItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Hyphen Rules" SortExpression="HyphenPref">
-                            <ItemTemplate>
-                                <%# ((CountryCodePrefix.HyphenPreference) Convert.ToUInt32(Eval("HyphenPref"), System.Globalization.CultureInfo.InvariantCulture)).ToString() %>
-                            </ItemTemplate>
-                            <EditItemTemplate>
-                                <asp:HiddenField ID="hdnHyphPref" runat="server" Value='<%# Eval("hyphenpref") %>' />
-                                <asp:RadioButtonList ID="rblHyphenPref" runat="server">
-                                    <asp:ListItem Text="None" Value="0"></asp:ListItem>
-                                    <asp:ListItem Text="Hyphenate" Value="1"></asp:ListItem>
-                                    <asp:ListItem Text="No Hyphen" Value="2"></asp:ListItem>
-                                </asp:RadioButtonList>
-                            </EditItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField>
-                            <ItemTemplate>
-                                <asp:Button ID="btnFixHyphens" runat="server" Text="Fix Aircraft Hyphenation" CommandArgument='<%# Eval("Prefix") %>' CommandName="fixHyphens" />
-                                <div>
-                                    <asp:Label ID="lblHyphenResult" runat="server" Font-Bold="true" Visible="false"></asp:Label></div>
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                    </Columns>
-                </asp:GridView>
-                <asp:SqlDataSource ID="sqlDSCountryCode" runat="server"
-                    ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>"
-                    ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>"
-                    SelectCommand="SELECT * FROM countrycodes ORDER BY ID ASC"
-                    UpdateCommand="UPDATE countrycodes SET Prefix=?Prefix, CountryName=?CountryName, Locale=?Locale, RegistrationURLTemplate=?RegistrationURLTemplate, TemplateType=?TemplateType, HyphenPref=?HyphenPref WHERE ID=?ID">
-                    <UpdateParameters>
-                        <asp:Parameter Name="Prefix" Type="String" Size="10" Direction="InputOutput" />
-                        <asp:Parameter Name="CountryName" Type="String" Size="80" Direction="InputOutput" />
-                        <asp:Parameter Name="Locale" Type="String" Size="3" Direction="InputOutput" ConvertEmptyStringToNull="false" />
-                        <asp:Parameter Name="RegistrationURLTemplate" Type="String" Size="512" Direction="InputOutput" />
-                        <asp:Parameter Name="TemplateType" Type="Int16" Direction="InputOutput" />
-                        <asp:Parameter Name="HyphenPref" Type="Int16" Direction="InputOutput" />
-                        <asp:Parameter Name="ID" Type="Int32" Direction="Input" />
-                    </UpdateParameters>
-                </asp:SqlDataSource>
-            </div>
-        </ContentTemplate>
-    </asp:UpdatePanel>
 </asp:Content>

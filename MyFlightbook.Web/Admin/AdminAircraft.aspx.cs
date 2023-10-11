@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
-using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -20,171 +19,6 @@ namespace MyFlightbook.Web.Admin
 {
     public partial class AdminAircraft : AdminPage
     {
-        #region WebMethods
-        [WebMethod(EnableSession = true)]
-        public static void ConvertOandI(int idAircraft)
-        {
-            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name) || !Profile.GetUser(HttpContext.Current.User.Identity.Name).CanManageData)
-                throw new MyFlightbookException("Unauthenticated call to ConvertOandI");
-
-            Aircraft ac = new Aircraft(idAircraft);
-
-            if (String.IsNullOrWhiteSpace(ac.TailNumber) || ac.AircraftID <= 0)
-                throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "No aircraft with ID {0}", idAircraft));
-
-            Aircraft.AdminRenameAircraft(ac, ac.TailNumber.ToUpper(CultureInfo.CurrentCulture).Replace('O', '0').Replace('I', '1'));
-        }
-
-        [WebMethod(EnableSession = true)]
-        public static void TrimLeadingN(int idAircraft)
-        {
-            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name) || !Profile.GetUser(HttpContext.Current.User.Identity.Name).CanManageData)
-                throw new MyFlightbookException("Unauthenticated call to TrimLeadingN");
-
-            Aircraft ac = new Aircraft(idAircraft);
-
-            if (String.IsNullOrWhiteSpace(ac.TailNumber) || ac.AircraftID <= 0)
-                throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "No aircraft with ID {0}", idAircraft));
-
-            if (!ac.TailNumber.StartsWith("N", StringComparison.CurrentCultureIgnoreCase))
-                return;
-
-            Aircraft.AdminRenameAircraft(ac, ac.TailNumber.Replace("-", string.Empty).Substring(1));
-        }
-
-        [WebMethod(EnableSession = true)]
-        public static void TrimN0(int idAircraft)
-        {
-            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name) || !Profile.GetUser(HttpContext.Current.User.Identity.Name).CanManageData)
-                throw new MyFlightbookException("Unauthenticated call to TrimN0");
-
-            Aircraft ac = new Aircraft(idAircraft);
-
-            if (String.IsNullOrWhiteSpace(ac.TailNumber) || ac.AircraftID <= 0)
-                throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "No aircraft with ID {0}", idAircraft));
-
-            string szTail = ac.TailNumber.Replace("-", string.Empty);
-
-            if (!szTail.StartsWith("N0", StringComparison.CurrentCultureIgnoreCase) || szTail.Length <= 2)
-                return;
-
-            Aircraft.AdminRenameAircraft(ac, "N" + szTail.Substring(2));
-        }
-
-        [WebMethod(EnableSession = true)]
-        public static void MigrateGeneric(int idAircraft)
-        {
-            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name) || !Profile.GetUser(HttpContext.Current.User.Identity.Name).CanManageData)
-                throw new MyFlightbookException("Unauthenticated call to MigrateGeneric");
-
-            Aircraft ac = new Aircraft(idAircraft);
-
-            if (String.IsNullOrWhiteSpace(ac.TailNumber) || ac.AircraftID <= 0)
-                throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "No aircraft with ID {0}", idAircraft));
-
-            Aircraft acOriginal = new Aircraft(ac.AircraftID);
-
-            // See if there is a generic for the model
-            string szTailNumGeneric = Aircraft.AnonymousTailnumberForModel(acOriginal.ModelID);
-            Aircraft acGeneric = new Aircraft(szTailNumGeneric);
-            if (acGeneric.IsNew)
-            {
-                acGeneric.TailNumber = szTailNumGeneric;
-                acGeneric.ModelID = acOriginal.ModelID;
-                acGeneric.InstanceType = AircraftInstanceTypes.RealAircraft;
-                acGeneric.Commit();
-            }
-
-            AircraftUtility.AdminMergeDupeAircraft(acGeneric, acOriginal);
-        }
-
-        [WebMethod(EnableSession = true)]
-        public static void MigrateSim(int idAircraft)
-        {
-            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name) || !Profile.GetUser(HttpContext.Current.User.Identity.Name).CanManageData)
-                throw new MyFlightbookException("Unauthenticated call to MigrateSim");
-
-            Aircraft ac = new Aircraft(idAircraft);
-
-            if (String.IsNullOrWhiteSpace(ac.TailNumber) || ac.AircraftID <= 0)
-                throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "No aircraft with ID {0}", idAircraft));
-
-            if (AircraftUtility.MapToSim(ac) < 0)
-                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Unable to map aircraft {0}", ac.TailNumber));
-        }
-
-        [WebMethod(EnableSession = true)]
-        public static string ViewFlights(int idAircraft)
-        {
-            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
-                throw new MyFlightbookException("Unauthenticated call to ViewFlights");
-
-            Aircraft ac = new Aircraft(idAircraft);
-
-            if (String.IsNullOrWhiteSpace(ac.TailNumber) || ac.AircraftID <= 0)
-                throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "No aircraft with ID {0}", idAircraft));
-
-            using (Table t = new Table())
-            {
-                return FormlessPage.RenderControlsToHTML(
-                    (p) =>
-                        {
-                            p.Form.Controls.Add(t);
-
-                            DBHelper dbh = new DBHelper("SELECT *, IF(SignatureState = 0, '', 'Yes') AS sigState FROM flights f WHERE idAircraft=?id");
-                            TableRow tr = new TableRow() { VerticalAlign = VerticalAlign.Top };
-                            t.Rows.Add(tr);
-                            tr.Cells.Add(new TableCell() { Text = "Date" });
-                            tr.Cells.Add(new TableCell() { Text = "User" });
-                            tr.Cells.Add(new TableCell() { Text = "Grnd" });
-                            tr.Cells.Add(new TableCell() { Text = "Total" });
-                            tr.Cells.Add(new TableCell() { Text = "Signed?" });
-                            tr.Style["font-weight"] = "bold";
-
-                            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("id", idAircraft); },
-                                (dr) =>
-                                {
-                                    TableRow tr2 = new TableRow() { VerticalAlign = VerticalAlign.Top };
-                                    t.Rows.Add(tr2);
-                                    TableCell tc = new TableCell();
-                                    tr2.Cells.Add(tc);
-                                    tc.Controls.Add(new HyperLink()
-                                    {
-                                        NavigateUrl = VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx/{0}?a=1", dr["idFlight"])),
-                                        Text = Convert.ToDateTime(dr["date"], CultureInfo.InvariantCulture).ToShortDateString(),
-                                        Target = "_blank"
-                                    });
-
-                                    tr2.Cells.Add(new TableCell() { Text = (string)dr["username"] });
-                                    tr2.Cells.Add(new TableCell() { Text = String.Format(CultureInfo.CurrentCulture, "{0:F2}", dr["groundSim"]) });
-                                    tr2.Cells.Add(new TableCell() { Text = String.Format(CultureInfo.CurrentCulture, "{0:F2}", dr["totalFlightTime"]) });
-                                    tr2.Cells.Add(new TableCell() { Text = (string)dr["sigState"] });
-                                });
-                        },
-                    (tw) =>
-                        {
-                            t.RenderControl(tw);
-                        });
-            }
-        }
-
-        [WebMethod(EnableSession = true)]
-        public static void IgnorePseudo(int idAircraft)
-        {
-            if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name) || !Profile.GetUser(HttpContext.Current.User.Identity.Name).CanManageData)
-                throw new MyFlightbookException("Unauthenticated call to IgnorePseudo");
-
-            Aircraft ac = new Aircraft(idAircraft);
-            ac.PublicNotes += '\u2006'; // same marker as in flightlint - a very thin piece of whitespace
-            DBHelper dbh = new DBHelper("UPDATE aircraft SET publicnotes=?notes WHERE idaircraft=?id");
-            dbh.DoNonQuery((comm) =>
-            {
-                comm.Parameters.AddWithValue("notes", ac.PublicNotes);
-                comm.Parameters.AddWithValue("id", idAircraft);
-            });
-        }
-        #endregion
-
         protected void Page_Load(object sender, EventArgs e)
         {
             CheckAdmin(Profile.GetUser(Page.User.Identity.Name).CanManageData);
@@ -491,6 +325,7 @@ WHERE (tailnumber LIKE 'SIM%' OR tailnumber LIKE '#%' OR InstanceType <> 1) ";
         #region country codes
         protected void btnManageCountryCodes_Click(object sender, EventArgs e)
         {
+            mvAircraftIssues.SetActiveView(vwCountryCodes);
             gvCountryCodes.DataSourceID = "sqlDSCountryCode";
             gvCountryCodes.DataBind();
         }

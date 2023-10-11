@@ -421,6 +421,7 @@
     <Content Include="Admin\AdminImgs.aspx" />
     <Content Include="Admin\AdminPayments.aspx" />
     <Content Include="Admin\AdminProperties.aspx" />
+    <Content Include="Admin\AdminService.asmx" />
     <Content Include="AppCode\Clubs\DayPilotLICENSE.txt" />
     <Content Include="AppCode\oAuthServices\MS-PL LICENSE for DotNetOpenAuth.txt" />
     <Content Include="App_Data\connection.config" />
@@ -1566,6 +1567,9 @@
     </Compile>
     <Compile Include="Admin\AdminProperties.aspx.designer.cs">
       <DependentUpon>AdminProperties.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="AppCode\Admin\AdminWebServices.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="AppCode\Aircraft\Aircraft.cs" />
     <Compile Include="AppCode\Aircraft\CategoryClass.cs" />
