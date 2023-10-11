@@ -483,7 +483,8 @@ namespace MyFlightbook
 
                 string szCode = m.Groups[1].Value.CompareOrdinalIgnoreCase("*") == 0 ? "strong" : "em";
 
-                return String.Format(CultureInfo.CurrentCulture, "<{0}>{1}</{0}>", szCode, m.Groups[2].Value);
+                // let two asterisks == an asterisk and/or two underscores == an underscore
+                return (String.IsNullOrEmpty(m.Groups[2].Value)) ? m.Groups[1].Value : String.Format(CultureInfo.CurrentCulture, "<{0}>{1}</{0}>", szCode, m.Groups[2].Value);
             });
             return sz;
         }
