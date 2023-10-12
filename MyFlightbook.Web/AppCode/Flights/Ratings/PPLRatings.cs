@@ -7,7 +7,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2022 MyFlightbook LLC
+ * Copyright (c) 2013-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1172,7 +1172,17 @@ namespace MyFlightbook.RatingsProgress
             if (!fIsMatch || !cfr.fIsCertifiedIFR)
                 return;
 
-            miTotal.AddTrainingEvent(Math.Min(cfr.Dual, cfr.fIsRealAircraft ? cfr.Total : cfr.GroundSim), CASimSub, fIsSim);
+            // Issue #1125 - solo time counts as training time.
+            // Get solo time
+            decimal soloTime = 0.0M;
+            cfr.FlightProps.ForEachEvent(pf =>
+            {
+                if (pf.PropertyType.IsSolo)
+                    soloTime += pf.DecValue;
+            });
+
+
+            miTotal.AddTrainingEvent(Math.Min(Math.Max(cfr.Dual, soloTime), cfr.fIsRealAircraft ? cfr.Total : cfr.GroundSim), CASimSub, fIsSim);
 
             miInstrumentDual.AddTrainingEvent(Math.Min(cfr.Dual, cfr.IMC + cfr.IMCSim), CAGroundInstr, fIsSim);
 
@@ -1182,14 +1192,6 @@ namespace MyFlightbook.RatingsProgress
 
             miDual.AddEvent(cfr.Dual);
             miXC.AddEvent(Math.Min(cfr.Dual, cfr.XC));
-
-            // Get solo time
-            decimal soloTime = 0.0M;
-            cfr.FlightProps.ForEachEvent(pf =>
-            {
-                if (pf.PropertyType.IsSolo)
-                    soloTime += pf.DecValue;
-            });
 
             miSolo.AddEvent(soloTime);
             miSoloXC.AddEvent(Math.Min(soloTime, cfr.XC));
