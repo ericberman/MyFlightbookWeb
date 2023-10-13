@@ -1951,7 +1951,7 @@ FROM
     GROUP BY YEAR(CreationDate), MONTH(CreationDate)
     ORDER by YEAR(CreationDate) ASC, MONTH(CreationDate) ASC;");
 
-            dbh.ReadRows((comm) => { },
+            dbh.ReadRows((comm) => { comm.CommandTimeout = 300; },
                 (dr) =>
                 {
                     int newUsers = Convert.ToInt32(dr["NewUsers"], CultureInfo.InvariantCulture);
@@ -1977,7 +1977,11 @@ FROM
 GROUP BY CDate
 ORDER BY CDate DESC
 LIMIT ?days");
-            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("days", days); },
+            dbh.ReadRows((comm) =>
+            {
+                comm.CommandTimeout = 300;
+                comm.Parameters.AddWithValue("days", days);
+            },
                 (dr) =>
                 {
                     int newUsers = Convert.ToInt32(dr["NewUsers"], CultureInfo.InvariantCulture);

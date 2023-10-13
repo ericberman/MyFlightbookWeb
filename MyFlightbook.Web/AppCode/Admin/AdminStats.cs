@@ -40,7 +40,7 @@ namespace MyFlightbook.Web.Admin
     SUM(DefaultCloudDriveID <> 0) AS multiusers,
     SUM(month(creationdate)=month(now()) AND year(creationdate)=year(now())) AS 'New Users this month' 
 FROM users");
-            dbh.ReadRow((comm) => { },
+            dbh.ReadRow((comm) => { comm.CommandTimeout = 300; },
                 (dr) =>
                 {
                     Users = Convert.ToInt32(dr["Users"], CultureInfo.InvariantCulture);
@@ -68,7 +68,7 @@ FROM users");
             (SELECT count(*) FROM nonce) AS NonceCount,
             (SELECT count(*) FROM oauthclientauthorization) AS 'oAuthClient Auths',
             (SELECT count(*) FROM passwordresetrequests) AS PasswordResetCount;");
-            dbh.ReadRow((comm) => { },
+            dbh.ReadRow((comm) => { comm.CommandTimeout = 300; },
                 (dr) =>
                 {
                     NonceCount = Convert.ToInt32(dr["NonceCount"], CultureInfo.InvariantCulture);
@@ -96,7 +96,7 @@ FROM users");
                         (SELECT count(*) from flightvideos) AS flightVideoCount,
                         (SELECT count(*) from images where virtpathid=0 and imagetype=3) AS AWSVideoCount,
                         (SELECT count(*) from clubs) AS clubcount");
-            dbh.ReadRow((comm) => { },
+            dbh.ReadRow((comm) => { comm.CommandTimeout = 300; },
                 (dr) =>
                 {
                     Students = Convert.ToInt32(dr["Students"], CultureInfo.InvariantCulture);
@@ -128,7 +128,7 @@ WHERE
         AND description LIKE '% - %'
 GROUP BY Source
 ORDER BY Users DESC");
-            dbh.ReadRows((comm) => { },
+            dbh.ReadRows((comm) => { comm.CommandTimeout = 300; },
                 (dr) => { lst.Add(new AppSourceStats() { NumUsers = Convert.ToInt32(dr["Users"], CultureInfo.InvariantCulture), SourceKey = dr["source"].ToString() }); });
             return lst;
         }
@@ -157,7 +157,7 @@ ORDER BY Users DESC");
 FROM
     wsevents
 GROUP BY eventtype;");
-            dbh.ReadRows((comm) => { },
+            dbh.ReadRows((comm) => { comm.CommandTimeout = 300; },
                 (dr) => { lst.Add(new WebServiceEventStats() { EventCount = Convert.ToInt32(dr["Number of Events"], CultureInfo.InvariantCulture), EventType = (string)dr["Event type"] }); });
 
             return lst;
@@ -188,7 +188,7 @@ GROUP BY eventtype;");
    (SELECT WSCommittedFlights FROM eventcounts WHERE id=1) AS 'WS Committed Flights',
    (SELECT ImportedFlights FROM eventcounts WHERE id=1) AS 'Imported Flights'");
 
-            dbh.ReadRows((comm) => { },
+            dbh.ReadRows((comm) => { comm.CommandTimeout = 300; },
                 (dr) =>
                 {
                     TelemetryCount = Convert.ToInt32(dr["Telemetry Count"], CultureInfo.InvariantCulture);
@@ -241,7 +241,7 @@ FROM
     users
 GROUP BY activityyear , activitymonth
 ORDER BY activityyear ASC , activitymonth ASC");
-            dbh.ReadRows((comm) => { },
+            dbh.ReadRows((comm) => { comm.CommandTimeout = 300; },
                 (dr) =>
                 {
                     DateTime dt = new DateTime(Convert.ToInt32(dr["activityyear"], CultureInfo.InvariantCulture), Convert.ToInt32(dr["activitymonth"], CultureInfo.InvariantCulture), 1);
