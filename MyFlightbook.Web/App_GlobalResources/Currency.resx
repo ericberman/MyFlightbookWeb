@@ -642,7 +642,7 @@
     <value>{0:F2} of 500 flight hours</value>
   </data>
   <data name="Part135267FormatStatusYear" xml:space="preserve">
-    <value>{0:F2} of 1400 flight hours</value>
+    <value>{0:F2} of 1,400 flight hours</value>
   </data>
   <data name="LAPLA" xml:space="preserve">
     <value>LAPL(A) - FCL.140.A</value>
@@ -1009,7 +1009,7 @@
     <value>special authorization approaches</value>
   </data>
   <data name="CurrencyOptions13526x" xml:space="preserve">
-    <value>Show FAR 135.265/135.267 Progress</value>
+    <value>Show FAR 135.265/135.267 (or EASA ORO.FTL.210) Status</value>
   </data>
   <data name="CurrencyOptions13529x" xml:space="preserve">
     <value>Show FAR 135.293, 297, 299 Status</value>
@@ -1030,7 +1030,7 @@
     <value>When a currency is expired, display it:</value>
   </data>
   <data name="CurrencyOptionsFAR117DutyTime" xml:space="preserve">
-    <value>Show FAR 117 Duty Time Status</value>
+    <value>Show FAR 117 (or EASA ORO.FTL.210) Duty Time Status</value>
   </data>
   <data name="CurrencyOptionsGroupCatClass" xml:space="preserve">
     <value>Show totals by category/class (and type, for models that require a type rating)</value>
@@ -1244,5 +1244,29 @@
   </data>
   <data name="CurrencyOptions135DutyTime" xml:space="preserve">
     <value>Show FAR 135 Duty Time Status</value>
+  </data>
+  <data name="EASAOROFTL210A1Title" xml:space="preserve">
+    <value>ORO.FTL.210(a)(1) - 60 duty hrs/7 days</value>
+  </data>
+  <data name="EASAOROFTL210A2Title" xml:space="preserve">
+    <value>ORO.FTL.210(a)(2) - 110 duty hrs/14 days</value>
+  </data>
+  <data name="EASAOROFTL210A3Title" xml:space="preserve">
+    <value>ORO.FTL.210(a)(3) - 190 duty hrs/28 days</value>
+  </data>
+  <data name="EASAOROFTL210AFormat" xml:space="preserve">
+    <value>{0:F2} of {1}hrs</value>
+  </data>
+  <data name="EASAOROFTL210b1Title" xml:space="preserve">
+    <value>ORO.FTL.210(b)(1) - 100hrs/28 days</value>
+  </data>
+  <data name="EASAOROFTL210b2Title" xml:space="preserve">
+    <value>ORO.FTL.210(b)(2) - 900hrs/YTD</value>
+  </data>
+  <data name="EASAOROFTL210b3Title" xml:space="preserve">
+    <value>ORO.FTL.210(b)(3) - 1,000hrs/12mos</value>
+  </data>
+  <data name="EASAOROFTL210bFormat" xml:space="preserve">
+    <value>{{0:F2}} of {0:#,##0}hrs</value>
   </data>
 </root>

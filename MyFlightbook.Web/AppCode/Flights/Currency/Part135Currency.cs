@@ -3,7 +3,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2021 MyFlightbook LLC
+ * Copyright (c) 2007-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -250,6 +250,47 @@ namespace MyFlightbook.Currency
 
         public override DateTime ExpirationDate { get { return DateTime.Now; } }
     }
+
+    #region EASA flight limits - see https://www.easa.europa.eu/en/document-library/easy-access-rules/online-publications/easy-access-rules-air-operations?page=1&kw=Flight%20duty&regulatory-subject=Part-ORO
+    /// <summary>
+    /// ORO.FTL.210(b)(1) - 100 flight hours in 28 days
+    /// </summary>
+    public class EASAOROFTL210b1 : Part135_267Base
+    {
+        public EASAOROFTL210b1() : base(Resources.Currency.EASAOROFTL210b1Title, 100, String.Format(CultureInfo.CurrentCulture, Resources.Currency.EASAOROFTL210bFormat, 100))
+        {
+            PeriodStart = DateTime.UtcNow.Date.AddDays(-28);
+        }
+
+        public override DateTime ExpirationDate { get { return DateTime.Now; } }
+    }
+
+    /// <summary>
+    /// ORO.FTL.210(b)(2) - 900 flight hours in calendar year
+    /// </summary>
+    public class EASAOROFTL210b2 : Part135_267Base
+    {
+        public EASAOROFTL210b2() : base(Resources.Currency.EASAOROFTL210b2Title, 900, String.Format(CultureInfo.CurrentCulture, Resources.Currency.EASAOROFTL210bFormat, 900))
+        {
+            PeriodStart = new DateTime(DateTime.Now.Year, 1, 1);
+        }
+
+        public override DateTime ExpirationDate { get { return DateTime.Now; } }
+    }
+
+    /// <summary>
+    /// ORO.FTL.210(b)(1) - 1000 flight hours in 12 calendar months days
+    /// </summary>
+    public class EASAOROFTL210b3 : Part135_267Base
+    {
+        public EASAOROFTL210b3() : base(Resources.Currency.EASAOROFTL210b3Title, 1000, String.Format(CultureInfo.CurrentCulture, Resources.Currency.EASAOROFTL210bFormat, 1000))
+        {
+            PeriodStart = DateTime.UtcNow.Date.AddCalendarMonths(-12).AddDays(1);
+        }
+
+        public override DateTime ExpirationDate { get { return PeriodStart.AddCalendarMonths(12); } }
+    }
+    #endregion
     #endregion
 
     #region 135.267(b)

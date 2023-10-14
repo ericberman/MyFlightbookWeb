@@ -5,7 +5,7 @@ using System.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2021 MyFlightbook LLC
+ * Copyright (c) 2007-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -341,6 +341,9 @@ namespace MyFlightbook.Currency
         protected bool HasIndeterminateEDP { get { return m_edpCurrent != null; } }
 
         public IEnumerable<EffectiveDutyPeriod> EffectiveDutyPeriods { get { return m_effectiveDutyPeriods; } }
+
+        protected bool UseHHMM { get; set; }
+
         #endregion
 
         /// <summary>
@@ -411,10 +414,19 @@ namespace MyFlightbook.Currency
             HasSeenProperDutyPeriod = HasSeenProperDutyPeriod || edp.Specification != DutySpecification.None;
         }
 
-        public DutyPeriodExaminer(bool includeAllFlights) : base()
+        public DutyPeriodExaminer(bool includeAllFlights, bool useHHMM = false) : base()
         {
             IncludeAllFlights = includeAllFlights;
             m_edpCurrent = null;
+            UseHHMM = useHHMM;
+        }
+
+        /// <summary>
+        /// Should be subclassed
+        /// </summary>
+        public virtual IEnumerable<CurrencyStatusItem> Status
+        {
+            get { return Array.Empty<CurrencyStatusItem>(); }
         }
     }
 
@@ -423,8 +435,6 @@ namespace MyFlightbook.Currency
     /// </summary>
     public class FAR117Currency : DutyPeriodExaminer
     {
-        protected bool UseHHMM { get; set; }
-
         #region local variables
         private decimal hoursFlightTime11723b1 = 0.0M;
         private decimal hoursFlightTime11723b2 = 0.0M;
@@ -434,10 +444,7 @@ namespace MyFlightbook.Currency
         private readonly DateTime dt365DaysAgo = DateTime.UtcNow.AddDays(-365).Date;
         #endregion
 
-        public FAR117Currency(bool includeAllFlights = true, bool fUseHHMM = false) : base(includeAllFlights)
-        {
-            UseHHMM = fUseHHMM;
-        }
+        public FAR117Currency(bool includeAllFlights = true, bool fUseHHMM = false) : base(includeAllFlights, fUseHHMM) { }
 
         private void Add11723BTime(ExaminerFlightRow cfr, DateTime dtDutyEnd)
         {
@@ -500,7 +507,7 @@ namespace MyFlightbook.Currency
                 Add11723BTime(cfr, edp.FlightDutyEnd);
         }
 
-        public IEnumerable<CurrencyStatusItem> Status
+        public override IEnumerable<CurrencyStatusItem> Status
         {
             get
             {
@@ -566,4 +573,47 @@ namespace MyFlightbook.Currency
             }
         }
     }
+
+    /// <summary>
+    /// EASA ORO FTL.210.A - duty period limits in EASA
+    ///  * 60 duty hours in 7 days
+    ///  * 110 duty hours in 14 days
+    ///  * 190 duty hours in 28 days
+    /// See https://www.easa.europa.eu/en/document-library/easy-access-rules/online-publications/easy-access-rules-air-operations?page=1&kw=Flight%20duty&regulatory-subject=Part-ORO
+    /// </summary>
+    public class EASAOROFTL210A : DutyPeriodExaminer
+    {
+        public EASAOROFTL210A(bool includeAllFlights, bool useHHMM) : base(includeAllFlights, useHHMM) { }
+
+        // No need to override examine flight - the base will set the currentEDP and everything we need
+
+        private CurrencyStatusItem StatusForRange(decimal hoursThreshold, int days, string title)
+        {
+            decimal hoursDutySince = EffectiveDutyPeriod.DutyTimeSince(new TimeSpan(days, 0, 0, 0), EffectiveDutyPeriods);
+            return new CurrencyStatusItem(title,
+                String.Format(CultureInfo.CurrentCulture, Resources.Currency.EASAOROFTL210AFormat, hoursDutySince.FormatDecimal(UseHHMM, true), hoursThreshold),
+                (hoursDutySince > hoursThreshold) ? CurrencyState.NotCurrent : ((hoursDutySince > 0.8M * hoursThreshold) ? CurrencyState.GettingClose : CurrencyState.OK),
+                (hoursDutySince > hoursThreshold) ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursOver, (hoursDutySince - hoursThreshold).FormatDecimal(UseHHMM)) : String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursAvailable, (hoursThreshold - hoursDutySince).FormatDecimal(UseHHMM)))
+            { CurrencyGroup = CurrencyStatusItem.CurrencyGroups.FlightExperience };
+
+        }
+
+        public override IEnumerable<CurrencyStatusItem> Status
+        {
+            get
+            {
+                List<CurrencyStatusItem> lst = new List<CurrencyStatusItem>();
+
+                if (HasSeenProperDutyPeriod)
+                {
+                    lst.Add(StatusForRange(60, 7, Resources.Currency.EASAOROFTL210A1Title));
+                    lst.Add(StatusForRange(110, 14, Resources.Currency.EASAOROFTL210A2Title));
+                    lst.Add(StatusForRange(190, 28, Resources.Currency.EASAOROFTL210A3Title));
+                }
+
+                return lst;
+            }
+        }
+    }
+
 }

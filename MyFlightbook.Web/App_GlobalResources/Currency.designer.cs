@@ -247,7 +247,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show FAR 135.265/135.267 Progress.
+        ///   Looks up a localized string similar to Show FAR 135.265/135.267 (or EASA ORO.FTL.210) Status.
         /// </summary>
         internal static string CurrencyOptions13526x {
             get {
@@ -373,7 +373,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show FAR 117 Duty Time Status.
+        ///   Looks up a localized string similar to Show FAR 117 (or EASA ORO.FTL.210) Duty Time Status.
         /// </summary>
         internal static string CurrencyOptionsFAR117DutyTime {
             get {
@@ -2006,6 +2006,78 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ORO.FTL.210(a)(1) - 60 duty hrs/7 days.
+        /// </summary>
+        internal static string EASAOROFTL210A1Title {
+            get {
+                return ResourceManager.GetString("EASAOROFTL210A1Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ORO.FTL.210(a)(2) - 110 duty hrs/14 days.
+        /// </summary>
+        internal static string EASAOROFTL210A2Title {
+            get {
+                return ResourceManager.GetString("EASAOROFTL210A2Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ORO.FTL.210(a)(3) - 190 duty hrs/28 days.
+        /// </summary>
+        internal static string EASAOROFTL210A3Title {
+            get {
+                return ResourceManager.GetString("EASAOROFTL210A3Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0:F2} of {1}hrs.
+        /// </summary>
+        internal static string EASAOROFTL210AFormat {
+            get {
+                return ResourceManager.GetString("EASAOROFTL210AFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ORO.FTL.210(b)(1) - 100hrs/28 days.
+        /// </summary>
+        internal static string EASAOROFTL210b1Title {
+            get {
+                return ResourceManager.GetString("EASAOROFTL210b1Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ORO.FTL.210(b)(2) - 900hrs/YTD.
+        /// </summary>
+        internal static string EASAOROFTL210b2Title {
+            get {
+                return ResourceManager.GetString("EASAOROFTL210b2Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ORO.FTL.210(b)(3) - 1,000hrs/12mos.
+        /// </summary>
+        internal static string EASAOROFTL210b3Title {
+            get {
+                return ResourceManager.GetString("EASAOROFTL210b3Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {{0:F2}} of {0:#,##0}hrs.
+        /// </summary>
+        internal static string EASAOROFTL210bFormat {
+            get {
+                return ResourceManager.GetString("EASAOROFTL210bFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to EASA FCL.740A.
         /// </summary>
         internal static string EASAPPLValidation {
@@ -3059,7 +3131,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0:F2} of 1400 flight hours.
+        ///   Looks up a localized string similar to {0:F2} of 1,400 flight hours.
         /// </summary>
         internal static string Part135267FormatStatusYear {
             get {

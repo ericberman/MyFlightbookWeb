@@ -9,7 +9,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2022 MyFlightbook LLC
+ * Copyright (c) 2007-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -656,7 +656,7 @@ namespace MyFlightbook.Currency
         // Get any customcurrency objects for the user
         public IEnumerable<CustomCurrency> rgCustomCurrency { get; set; }
 
-        public FAR117Currency fcFAR117 { get; set; }
+        public DutyPeriodExaminer fcFAR117 { get; set; }
         public FAR195ACurrency fcFAR195 { get; set; }
         public UASCurrency fcUAS { get; set; } = new UASCurrency();
 
@@ -678,7 +678,7 @@ namespace MyFlightbook.Currency
             // Get any customcurrency objects for the user
             rgCustomCurrency = CustomCurrency.CustomCurrenciesForUser(szUser, true);
 
-            fcFAR117 = new FAR117Currency(pf.UsesFAR117DutyTimeAllFlights, pf.UsesHHMM);
+            fcFAR117 = pf.CurrencyJurisdiction == CurrencyJurisdiction.EASA ? (DutyPeriodExaminer) new EASAOROFTL210A(pf.UsesFAR117DutyTimeAllFlights, pf.UsesHHMM) : (DutyPeriodExaminer) new FAR117Currency(pf.UsesFAR117DutyTimeAllFlights, pf.UsesHHMM);
             fcFAR195 = new FAR195ACurrency(pf.UsesHHMM);
         }
 
@@ -1110,46 +1110,67 @@ namespace MyFlightbook.Currency
         {
             if (ccc.pf.UsesFAR13526xCurrency)
             {
-                const string szKey267a1 = "135.267(a)(1)";
-                const string szKey267a2 = "135.267(a)(2)";
-                const string szKey267a3 = "135.267(a)(3)";
-                const string szKey265a1 = "135.265(a)(1)";
-                const string szKey265a2 = "135.265(a)(2)";
-                const string szKey265a3 = "135.265(a)(3)";
-                const string szKey267b1 = "135.267(b)(1)";
-                const string szKey267b2 = "135.267(b)(2)";
+                if (ccc.pf.CurrencyJurisdiction == CurrencyJurisdiction.EASA)
+                {
+                    const string szKeyOROFTL210B1 = "ORO.FTL.210(b)(1)";
+                    const string szKeyOROFTL210B2 = "ORO.FTL.210(b)(2)";
+                    const string szKeyOROFTL210B3 = "ORO.FTL.210(b)(3)";
 
-                if (!ccc.dictFlightCurrency.ContainsKey(szKey267a1))
-                    ccc.dictFlightCurrency.Add(szKey267a1, new Part135_267a1());
-                ccc.dictFlightCurrency[szKey267a1].ExamineFlight(cfr);
+                    if (!ccc.dictFlightCurrency.ContainsKey(szKeyOROFTL210B1))
+                        ccc.dictFlightCurrency.Add(szKeyOROFTL210B1, new EASAOROFTL210b1());
+                    ccc.dictFlightCurrency[szKeyOROFTL210B1].ExamineFlight(cfr);
 
-                if (!ccc.dictFlightCurrency.ContainsKey(szKey267a2))
-                    ccc.dictFlightCurrency.Add(szKey267a2, new Part135_267a2());
-                ccc.dictFlightCurrency[szKey267a2].ExamineFlight(cfr);
+                    if (!ccc.dictFlightCurrency.ContainsKey(szKeyOROFTL210B2))
+                        ccc.dictFlightCurrency.Add(szKeyOROFTL210B2, new EASAOROFTL210b2());
+                    ccc.dictFlightCurrency[szKeyOROFTL210B2].ExamineFlight(cfr);
 
-                if (!ccc.dictFlightCurrency.ContainsKey(szKey267a3))
-                    ccc.dictFlightCurrency.Add(szKey267a3, new Part135_267a3());
-                ccc.dictFlightCurrency[szKey267a3].ExamineFlight(cfr);
+                    if (!ccc.dictFlightCurrency.ContainsKey(szKeyOROFTL210B3))
+                        ccc.dictFlightCurrency.Add(szKeyOROFTL210B3, new EASAOROFTL210b3());
+                    ccc.dictFlightCurrency[szKeyOROFTL210B3].ExamineFlight(cfr);
+                }
+                else
+                {
+                    const string szKey267a1 = "135.267(a)(1)";
+                    const string szKey267a2 = "135.267(a)(2)";
+                    const string szKey267a3 = "135.267(a)(3)";
+                    const string szKey265a1 = "135.265(a)(1)";
+                    const string szKey265a2 = "135.265(a)(2)";
+                    const string szKey265a3 = "135.265(a)(3)";
+                    const string szKey267b1 = "135.267(b)(1)";
+                    const string szKey267b2 = "135.267(b)(2)";
 
-                if (!ccc.dictFlightCurrency.ContainsKey(szKey265a1))
-                    ccc.dictFlightCurrency.Add(szKey265a1, new Part135_265a1());
-                ccc.dictFlightCurrency[szKey265a1].ExamineFlight(cfr);
+                    if (!ccc.dictFlightCurrency.ContainsKey(szKey267a1))
+                        ccc.dictFlightCurrency.Add(szKey267a1, new Part135_267a1());
+                    ccc.dictFlightCurrency[szKey267a1].ExamineFlight(cfr);
 
-                if (!ccc.dictFlightCurrency.ContainsKey(szKey265a2))
-                    ccc.dictFlightCurrency.Add(szKey265a2, new Part135_265a2());
-                ccc.dictFlightCurrency[szKey265a2].ExamineFlight(cfr);
+                    if (!ccc.dictFlightCurrency.ContainsKey(szKey267a2))
+                        ccc.dictFlightCurrency.Add(szKey267a2, new Part135_267a2());
+                    ccc.dictFlightCurrency[szKey267a2].ExamineFlight(cfr);
 
-                if (!ccc.dictFlightCurrency.ContainsKey(szKey265a3))
-                    ccc.dictFlightCurrency.Add(szKey265a3, new Part135_265a3());
-                ccc.dictFlightCurrency[szKey265a3].ExamineFlight(cfr);
+                    if (!ccc.dictFlightCurrency.ContainsKey(szKey267a3))
+                        ccc.dictFlightCurrency.Add(szKey267a3, new Part135_267a3());
+                    ccc.dictFlightCurrency[szKey267a3].ExamineFlight(cfr);
 
-                if (!ccc.dictFlightCurrency.ContainsKey(szKey267b1))
-                    ccc.dictFlightCurrency.Add(szKey267b1, new Part135_267B1Currency(ccc.pf.UsesHHMM));
-                ccc.dictFlightCurrency[szKey267b1].ExamineFlight(cfr);
+                    if (!ccc.dictFlightCurrency.ContainsKey(szKey265a1))
+                        ccc.dictFlightCurrency.Add(szKey265a1, new Part135_265a1());
+                    ccc.dictFlightCurrency[szKey265a1].ExamineFlight(cfr);
 
-                if (!ccc.dictFlightCurrency.ContainsKey(szKey267b2))
-                    ccc.dictFlightCurrency.Add(szKey267b2, new Part135_267B2Currency(ccc.pf.UsesHHMM));
-                ccc.dictFlightCurrency[szKey267b2].ExamineFlight(cfr);
+                    if (!ccc.dictFlightCurrency.ContainsKey(szKey265a2))
+                        ccc.dictFlightCurrency.Add(szKey265a2, new Part135_265a2());
+                    ccc.dictFlightCurrency[szKey265a2].ExamineFlight(cfr);
+
+                    if (!ccc.dictFlightCurrency.ContainsKey(szKey265a3))
+                        ccc.dictFlightCurrency.Add(szKey265a3, new Part135_265a3());
+                    ccc.dictFlightCurrency[szKey265a3].ExamineFlight(cfr);
+
+                    if (!ccc.dictFlightCurrency.ContainsKey(szKey267b1))
+                        ccc.dictFlightCurrency.Add(szKey267b1, new Part135_267B1Currency(ccc.pf.UsesHHMM));
+                    ccc.dictFlightCurrency[szKey267b1].ExamineFlight(cfr);
+
+                    if (!ccc.dictFlightCurrency.ContainsKey(szKey267b2))
+                        ccc.dictFlightCurrency.Add(szKey267b2, new Part135_267B2Currency(ccc.pf.UsesHHMM));
+                    ccc.dictFlightCurrency[szKey267b2].ExamineFlight(cfr);
+                }
             }
         }
 
