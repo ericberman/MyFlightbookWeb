@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MyFlightbook.Web.Ajax;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -24,6 +25,7 @@ namespace MyFlightbook.Web.Admin
             CheckAdmin(Profile.GetUser(Page.User.Identity.Name).CanManageData);
             Master.SelectedTab = tabID.admAircraft;
 
+            Page.ClientScript.RegisterClientScriptInclude("adminajax", ResolveClientUrl(AdminWebServices.AjaxScriptLink));
             ScriptManager.GetCurrent(this).AsyncPostBackTimeout = 1500;  // use a long timeout
         }
 
@@ -108,7 +110,7 @@ namespace MyFlightbook.Web.Admin
                 hConvertOandI.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:convertOandI('{0}',{1});", hConvertOandI.ClientID, idAircraft);
 
                 HyperLink hMigrateGeneric = (HyperLink)e.Row.FindControl("lnkMigrateGeneric");
-                hMigrateGeneric.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:migrateGeneric('{0}',{1});", hMigrateGeneric.ClientID, idAircraft);
+                hMigrateGeneric.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:migrateGeneric('{0}', {1}, s => document.getElementById(s).parentElement.parentElement.className = 'handled');", hMigrateGeneric.ClientID, idAircraft);
 
                 HyperLink hN0ToN = (HyperLink)e.Row.FindControl("lnkN0ToN");
                 hN0ToN.Visible = l.Text.StartsWith("N0", StringComparison.CurrentCultureIgnoreCase);
@@ -116,7 +118,7 @@ namespace MyFlightbook.Web.Admin
 
                 HyperLink hMigSim = (HyperLink)e.Row.FindControl("lnkMigrateSim");
                 hMigSim.Visible = AircraftUtility.PseudoSimTypeFromTail(l.Text) != AircraftInstanceTypes.RealAircraft;
-                hMigSim.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:migrateSim('{0}', {1});", hMigSim.ClientID, idAircraft);
+                hMigSim.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:migrateSim('{0}', {1}, s => document.getElementById(s).parentElement.parentElement.className = 'handled');", hMigSim.ClientID, idAircraft);
 
                 HyperLink hViewFlights = (HyperLink)e.Row.FindControl("lnkFlights");
                 hViewFlights.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:viewFlights({0}, '{1}');", idAircraft, l.Text);

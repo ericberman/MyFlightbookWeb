@@ -24,14 +24,10 @@
             <li>Select the NEW model above, then hit "Create new version".  The new version will be created using the specified model above.</li>
             <li>If you know that specific users belong in the newly created version, select them below PRIOR to cloning; they will be migrated automatically.</li>
         </ul>
-        <asp:Button ID="btnMigrateGeneric" runat="server" 
-            onclick="btnMigrateGeneric_Click" Text="Migrate to Generic" Visible="False" />
-        <asp:Button ID="btnMigrateSim" runat="server" 
-            onclick="btnMigrateSim_Click" Text="Migrate to Sim" Visible="false" />
-        <asp:Button ID="btnAdminCloneThis" runat="server" Text="Create New Version" CausesValidation="true" ValidationGroup="adminclone" 
-            onclick="btnAdminCloneThis_Click" />
-        <asp:Button ID="btnMakeDefault" runat="server" Text="MakeDefault" CausesValidation="true" Visible="false"
-            onclick="btnAdminMakeDefault_Click" />
+        <asp:Button ID="btnMigrateGeneric" runat="server" Text="Migrate to Generic" Visible="false" />
+        <asp:Button ID="btnMigrateSim" runat="server" Text="Migrate to Sim" Visible="false" />
+        <asp:Button ID="btnAdminCloneThis" runat="server" Text="Create New Version" CausesValidation="true" ValidationGroup="adminclone" onclick="btnAdminCloneThis_Click" />
+        <asp:Button ID="btnMakeDefault" runat="server" Text="MakeDefault" CausesValidation="true" Visible="false" />
         <asp:CustomValidator ID="valModelSelected" runat="server" CssClass="error" 
             ErrorMessage="Please select a new (different) model to which to clone this aircraft" 
             onservervalidate="valModelSelected_ServerValidate" 

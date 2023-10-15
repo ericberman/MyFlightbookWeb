@@ -1,4 +1,5 @@
 using MyFlightbook.Image;
+using MyFlightbook.Web.Ajax;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -31,7 +32,11 @@ namespace MyFlightbook.AircraftControls
         public bool AdminMode
         {
             get { return Convert.ToBoolean(ViewState[szKeyVSAdminMode] ?? false, CultureInfo.CurrentCulture); }
-            set { ViewState[szKeyVSAdminMode] = value; }
+            set { 
+                ViewState[szKeyVSAdminMode] = value; 
+                if (value)
+                    Page.ClientScript.RegisterClientScriptInclude("adminajax", ResolveClientUrl(AdminWebServices.AjaxScriptLink));
+            }
         }
 
         #region Schedule stuff
@@ -536,6 +541,7 @@ namespace MyFlightbook.AircraftControls
             pnlLockedExplanation.Visible = m_ac.IsLocked;
             ckLocked.Visible = AdminMode && IsRealAircraft;
             ckLocked.Checked = m_ac.IsLocked;
+            ckLocked.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:toggleLock(this, {0});", m_ac.AircraftID);
 
             SelectedInstanceType = m_ac.InstanceType;
 
@@ -897,17 +903,16 @@ namespace MyFlightbook.AircraftControls
                 SwitchToAlternateVersion(Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture), true);
             else if (e.CommandName.CompareCurrentCultureIgnoreCase("_switchNoMigrate") == 0)
                 SwitchToAlternateVersion(Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture), false);
-            else if (e.CommandName.CompareCurrentCultureIgnoreCase("_merge") == 0)
-            {
-                Aircraft acClone = new Aircraft(Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture));
-                MergeClone(m_ac, acClone);
-            }
         }
 
         protected void gvAlternativeVersions_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             if (e != null && e.Row.RowType == DataControlRowType.DataRow)
+            {
                 RefreshImages(e.Row.FindControl("mfbHoverThumb"));
+                Button b = e.Row.FindControl("lnkMergeThis") as Button;
+                b.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:mergeMain(this, {0}, {1}); return false;", ((Aircraft)e.Row.DataItem).AircraftID, m_ac.AircraftID);
+            }
         }
         #endregion
 

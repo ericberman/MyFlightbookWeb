@@ -1,4 +1,5 @@
-﻿using Resources;
+﻿using MyFlightbook.AircraftControls;
+using Resources;
 using System;
 using System.Globalization;
 using System.ServiceModel;
@@ -25,6 +26,14 @@ namespace MyFlightbook.Web.Ajax
     [System.ComponentModel.ToolboxItem(false)]
     public class AdminWebServices : System.Web.Services.WebService
     {
+        public static string AjaxScriptLink
+        {
+            get
+            {
+                return "~/public/Scripts/adminajax.js?v=1";
+            }
+        }
+
         public AdminWebServices()
         {
             if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
@@ -166,6 +175,58 @@ namespace MyFlightbook.Web.Ajax
                 comm.Parameters.AddWithValue("notes", ac.PublicNotes);
                 comm.Parameters.AddWithValue("id", idAircraft);
             });
+        }
+
+        [WebMethod(EnableSession = true)]
+        public bool ToggleLock(int idAircraft)
+        {
+            if (!Profile.GetUser(HttpContext.Current.User.Identity.Name).CanManageData)
+                throw new UnauthorizedAccessException("Unauthenticated call to ToggleLock");
+
+            DBHelper dbh = new DBHelper("UPDATE aircraft SET isLocked = IF(isLocked = 0, 1, 0) WHERE idaircraft=?id");
+            dbh.DoNonQuery((comm) => { comm.Parameters.AddWithValue("id", idAircraft); });
+
+            bool result = false;
+
+            dbh.CommandText = "SELECT isLocked FROM aircraft WHERE idaircraft=?id";
+            dbh.ReadRow((comm) => { comm.Parameters.AddWithValue("id", idAircraft); },
+                (dr) => { result = Convert.ToInt32(dr["isLocked"], CultureInfo.InvariantCulture) != 0; });
+            return result;
+        }
+
+        [WebMethod(EnableSession = true)]
+        public void MergeAircraft(int idAircraftToMerge, int idTargetAircraft)
+        {
+            if (!Profile.GetUser(HttpContext.Current.User.Identity.Name).CanManageData)
+                throw new UnauthorizedAccessException("Unauthenticated call to MergeAircraft");
+
+            if (idAircraftToMerge <= 0)
+                throw new ArgumentOutOfRangeException(nameof(idAircraftToMerge), "Invalid id for aircraft to merge");
+            if (idTargetAircraft <= 0)
+                throw new ArgumentOutOfRangeException(nameof(idTargetAircraft), "Invalid target aircraft for merge");
+
+            Aircraft acMaster = new Aircraft(idTargetAircraft);
+            Aircraft acClone = new Aircraft(idAircraftToMerge);
+
+            if (!acMaster.IsValid())
+                throw new InvalidOperationException("Invalid target aircraft for merge");
+            if (!acClone.IsValid())
+                throw new InvalidOperationException("Invalid source aircraft for merge");
+
+            AircraftUtility.AdminMergeDupeAircraft(acMaster, acClone);
+        }
+
+        [WebMethod(EnableSession = true)]
+        public void MakeDefault(int idAircraft)
+        {
+            if (!Profile.GetUser(HttpContext.Current.User.Identity.Name).CanManageData)
+                throw new UnauthorizedAccessException("Unauthenticated call to MakeDefault");
+
+            Aircraft ac = new Aircraft(idAircraft);
+            if (ac.IsValid())
+                ac.MakeDefault();
+            else
+                throw new InvalidOperationException(ac.ErrorString);
         }
         #endregion
 

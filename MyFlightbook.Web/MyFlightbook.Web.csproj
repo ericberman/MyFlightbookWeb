@@ -823,6 +823,7 @@
     <Content Include="Member\StartingTotals.aspx" />
     <Content Include="Admin\Stats.aspx" />
     <Content Include="Member\StudentLogbook.aspx" />
+    <Content Include="Public\Scripts\adminajax.js" />
     <Content Include="Public\tmap\airport.svg" />
     <Content Include="Public\tmap\data\data.js" />
     <Content Include="Public\tmap\flags\1x1\ad.svg" />

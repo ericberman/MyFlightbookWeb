@@ -16,14 +16,8 @@
 <%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc1" TagName="mfbTooltip" %>
 <asp:Panel ID="pnlEditAircraft" runat="server" DefaultButton="btnAddAircraft">
     <asp:Panel runat="server" ID="pnlLockedExplanation" CssClass="callout" Visible="False">
-        <p>
-            <asp:Label ID="lblWhyNoEditQ" runat="server" Font-Bold="True"
-                Text="<%$ Resources:LocalizedText, LabelWhyCantEditSims %>"></asp:Label>
-        </p>
-        <p>
-            <asp:Label ID="lblWhyNoEditA" runat="server"
-                Text="<%$ Resources:LocalizedText, AnswerWhyCantEditLockedAircraft %>"></asp:Label>
-        </p>
+        <p><%= Resources.LocalizedText.LabelWhyCantEditSims %></p>
+        <p><%= Resources.LocalizedText.AnswerWhyCantEditLockedAircraft %></p>
     </asp:Panel>
     <div><asp:Label ID="lblTailnumber" Font-Size="X-Large" Font-Bold="true" runat="server"></asp:Label> <asp:CheckBox ID="ckLocked" runat="server" Text="<%$ Resources:Aircraft, editAircraftAdminLocked %>" /></div>
     <uc1:SelectMake runat="server" id="SelectMake1" OnModelChanged="SelectMake1_ModelChanged" OnMajorChangeRequested="SelectMake1_MajorChangeRequested">
@@ -336,9 +330,7 @@
                 </asp:TemplateField>
                 <asp:TemplateField>
                     <ItemTemplate>
-                        <asp:Button ID="lnkMergeThis" runat="server" Visible="<%# AdminMode %>"
-                            Text="Merge into main (Admin)"
-                            CommandName="_merge" CommandArgument='<%# Bind("AircraftID") %>'></asp:Button>
+                        <asp:Button ID="lnkMergeThis" runat="server" Visible="<%# AdminMode %>" Text="Merge into main (Admin)" />
                     </ItemTemplate>
                     <ItemStyle VerticalAlign="Middle" />
                 </asp:TemplateField>
