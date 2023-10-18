@@ -1,5 +1,5 @@
 ﻿<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src='<% =String.Format(System.Globalization.CultureInfo.InvariantCulture, "https://www.googletagmanager.com/gtag/js?id={0}", AnalyticsID) %>'></script>
+<script async src='@String.Format(System.Globalization.CultureInfo.InvariantCulture, "https://www.googletagmanager.com/gtag/js?id={0}", LocalConfig.SettingForKey(Request.IsLocal ? "GoogleAnalyticsGA4Developer" : "GoogleAnalyticsGA4Production"))'></script>
 <script>
     window.dataLayer = window.dataLayer || [];
     function gtag() { dataLayer.push(arguments); }
