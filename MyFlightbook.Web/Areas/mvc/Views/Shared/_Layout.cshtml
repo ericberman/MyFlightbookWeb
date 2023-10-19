@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
     <head>
-        @{ Html.RenderAction("RenderHead", "MFBTemplate", new ViewDataDictionary() { { "Title", ViewBag.Title } }); }
+        @{ Html.RenderAction("RenderHead", "MFBTemplate", new { Title = ViewBag.Title }); }
     </head>
     <body>
         @{ Html.RenderAction("RenderImpersonation", "MFBTemplate"); }
