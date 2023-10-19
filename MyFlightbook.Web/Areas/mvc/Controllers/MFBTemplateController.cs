@@ -160,8 +160,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         public ActionResult StopImpersonation()
         {
             ProfileRoles.StopImpersonating();
-            Response.Redirect(VirtualPathUtility.ToAbsolute("~/Admin/Admin.aspx"));
-            return null;
+            return Redirect("~/mvc/AdminUser");
         }
 
         [ChildActionOnly]
@@ -234,7 +233,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 IsNaked = naked > 0 || IsNaked || (Session["IsNaked"] != null && ((bool)Session["IsNaked"]) == true);
 
             // Now do all of the main header stuff.
-            ViewBag.Title = Title;
+            ViewBag.Title = Title ?? Branding.CurrentBrand.AppName;
 
             string szUserAgent = Request.UserAgent.ToUpperInvariant();
             ViewBag.IsIOSOrAndroid = szUserAgent.Contains("IPHONE") || szUserAgent.Contains("IPAD") || szUserAgent.Contains("ANDROID");

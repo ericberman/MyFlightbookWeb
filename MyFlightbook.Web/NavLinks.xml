@@ -206,12 +206,12 @@
     </Items>
   </Item>
   <Item>
-    <Link>~/Admin/Admin.aspx</Link>
+    <Link>~/mvc/AdminUser</Link>
     <ID>tabAdmin</ID>
     <Roles>Support,DataManager,SiteAdmin,Reporter,Accountant</Roles>
     <Items>
       <Item>
-        <Link>~/Admin/Admin.aspx?t=admUsers</Link>
+        <Link>~/mvc/AdminUser</Link>
         <ID>admUsers</ID>
         <Roles>SiteAdmin,Support,DataManager</Roles>
       </Item>

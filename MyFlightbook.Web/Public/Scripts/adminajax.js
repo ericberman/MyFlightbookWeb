@@ -164,3 +164,129 @@ function viewFlights(idAircraft, tail) {
             }
         });
 }
+
+function unlockUser(sender, szUser) {
+    var params = new Object();
+    params.szUser = szUser;
+    var d = JSON.stringify(params);
+    $.ajax(
+        {
+            url: '/logbook/Admin/AdminService.asmx/UnlockUser',
+            type: "POST", data: d, dataType: "json", contentType: "application/json",
+            error: function (xhr, status, error) {
+                window.alert(xhr.responseJSON.Message);
+            },
+            complete: function (response) { },
+            success: function (response) {
+                sender.disabled = true;
+                window.alert("User " + szUser + " UNLOCKED");
+            }
+        });
+    return false;
+}
+
+function resetPassword(sender, szUserPKID, szUser) {
+    var params = new Object();
+    params.szPKID = szUserPKID;
+    var d = JSON.stringify(params);
+    $.ajax(
+        {
+            url: '/logbook/Admin/AdminService.asmx/ResetPasswordForUser',
+            type: "POST", data: d, dataType: "json", contentType: "application/json",
+            error: function (xhr, status, error) {
+                window.alert(xhr.responseJSON.Message);
+            },
+            complete: function (response) { },
+            success: function (response) {
+                sender.disabled = true;
+                window.alert("Password reset and email sent for user " + szUser);
+            }
+        });
+    return false;
+}
+
+function deleteUser(sender, szUserPKID, szUser, szEmail) {
+    if (!window.confirm("Are you sure you want to DELETE THIS USER?  This action cannot be undone!"))
+        return;
+
+    var params = new Object();
+    params.szPKID = szUserPKID;
+    var d = JSON.stringify(params);
+    $.ajax(
+        {
+            url: '/logbook/Admin/AdminService.asmx/DeleteUserAccount',
+            type: "POST", data: d, dataType: "json", contentType: "application/json",
+            error: function (xhr, status, error) {
+                window.alert(xhr.responseJSON.Message);
+            },
+            complete: function (response) { },
+            success: function (response) {
+                sender.disabled = true;
+                window.alert("User " + szUser + " (" + szEmail + ") account deleted");
+            }
+        });
+    return false;
+}
+function deleteFlightsForUser(sender, szUserPKID, szUser, szEmail) {
+    if (!window.confirm("Are you sure you want to delete the FLIGHTS for this user?  This action cannot be undone!"))
+        return;
+
+    var params = new Object();
+    params.szPKID = szUserPKID;
+    var d = JSON.stringify(params);
+    $.ajax(
+        {
+            url: '/logbook/Admin/AdminService.asmx/DeleteFlightsForUser',
+            type: "POST", data: d, dataType: "json", contentType: "application/json",
+            error: function (xhr, status, error) {
+                window.alert(xhr.responseJSON.Message);
+            },
+            complete: function (response) { },
+            success: function (response) {
+                sender.disabled = true;
+                window.alert("FLIGHTS for user " + szUser + " (" + szEmail + ") successfully deleted");
+            }
+        });
+    return false;
+}
+
+function disable2FAForUser(sender, szUserPKID, szUser) {
+    var params = new Object();
+    params.szPKID = szUserPKID;
+    var d = JSON.stringify(params);
+    $.ajax(
+        {
+            url: '/logbook/Admin/AdminService.asmx/Disable2FA',
+            type: "POST", data: d, dataType: "json", contentType: "application/json",
+            error: function (xhr, status, error) {
+                window.alert(xhr.responseJSON.Message);
+            },
+            complete: function (response) { },
+            success: function (response) {
+                sender.disabled = true;
+                window.alert("2fa turned off for user " + szUser);
+            }
+        });
+    return false;
+}
+
+function endowClubCreation(sender, szUserPKID) {
+    var params = new Object();
+    params.szPKID = szUserPKID;
+    var d = JSON.stringify(params);
+    $.ajax(
+        {
+            url: '/logbook/Admin/AdminService.asmx/EndowClubCreation',
+            type: "POST", data: d, dataType: "json", contentType: "application/json",
+            error: function (xhr, status, error) {
+                window.alert(xhr.responseJSON.Message);
+            },
+            complete: function (response) { },
+            success: function (response) {
+                sender.disabled = true;
+                window.alert("Club creation endowment bestowed!")
+            }
+        });
+    return false;
+}
+

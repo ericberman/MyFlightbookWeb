@@ -248,7 +248,7 @@ namespace MyFlightbook.Web
         {
             ProfileRoles.StopImpersonating();
             pnlImpersonation.Visible = false;
-            Response.Redirect("~/Admin/Admin.aspx");
+            Response.Redirect("~/mvc/AdminUser");
         }
 
         protected void btnAcceptCookies_Click(object sender, EventArgs e)

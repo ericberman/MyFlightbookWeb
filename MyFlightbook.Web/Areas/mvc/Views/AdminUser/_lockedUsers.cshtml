@@ -1,0 +1,35 @@
+﻿@if (ViewBag.LockedUsers.Count != 0)
+{
+    <table class="stickyHeaderTable">
+        <thead>
+            <tr>
+                <th class="gvhDefault"></th>
+                <th class="gvhDefault">Username</th>
+                <th class="gvhDefault">Email</th>
+                <th class="gvhDefault">Last Locked Out</th>
+                <th class="gvhDefault"># Failed PW</th>
+                <th class="gvhDefault">Failed PW Window Start</th>
+                <th class="gvhDefault"># Failed Q/A</th>
+                <th class="gvhDefault">Failed QA Window Start</th>
+            </tr>
+        </thead>
+        @foreach (ProfileAdmin pf in ViewBag.LockedUsers)
+        {
+            <tr>
+                <td><input type="button" onclick="javascript: unlockUser(this, '@pf.UserName'); return false;" value="Unlock" /></td>
+                <td>@pf.UserName</td>
+                <td>@pf.Email</td>
+                <td>@pf.LastLockedDate.FormatDateZulu()</td>
+                <td>@pf.FailedPasswordAttemptCount.ToString(System.Globalization.CultureInfo.CurrentCulture)</td>
+                <td>@pf.FailedPasswordAttemptWindow.FormatDateZulu()</td>
+                <td>@pf.FailedQAAttemptCount.ToString(System.Globalization.CultureInfo.CurrentCulture)</td>
+                <td>@pf.FailedQAAttemptWindow.FormatDateZulu()</td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+                <div>(No locked users)</div>
+}
+

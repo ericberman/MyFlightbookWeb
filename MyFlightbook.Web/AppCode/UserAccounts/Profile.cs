@@ -17,6 +17,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Caching;
@@ -1649,6 +1650,30 @@ namespace MyFlightbook
 
     public class ProfileAdmin : Profile
     {
+        #region Admin properties
+        public int FailedPasswordAttemptCount { get; set; } = 0;
+        public int FailedQAAttemptCount { get; set; } = 0;
+        public DateTime FailedPasswordAttemptWindow { get; set; } = DateTime.MinValue;
+        public DateTime FailedQAAttemptWindow { get; set; } = DateTime.MinValue;
+
+        public DateTime LastLockedDate { get; set;} = DateTime.MinValue;
+        #endregion
+
+        public ProfileAdmin() : base() { }
+
+        public ProfileAdmin(MySqlDataReader dr) : base(dr) { }
+
+        public static MembershipUser UserFromPKID(object pkid)
+        {
+            if (pkid == null)
+                throw new ArgumentNullException(nameof(pkid));
+
+            MembershipUser mu = Membership.GetUser(pkid, false);
+            if (mu == null || String.IsNullOrEmpty(mu.UserName))
+                throw new InvalidOperationException("Invalid PKID provided - no such user");
+            return mu;
+        }
+
         public static bool ValidateUser(string szUser)
         {
             if (szUser == null)
@@ -1990,6 +2015,105 @@ LIMIT ?days");
                 });
 
             return newUserStats;
+        }
+
+        /// <summary>
+        /// Returns a list of usernames that are duplicates in the system.
+        /// </summary>
+        /// <returns></returns>
+        static public IEnumerable<string> ADMINDuplicateUsers()
+        {
+            List<string> lst = new List<string>();
+            DBHelper dbh = new DBHelper(@"SELECT 
+    COUNT(username) AS numaccounts, username
+FROM
+    users
+GROUP BY username
+HAVING numaccounts > 1");
+            dbh.ReadRows((comm) => { }, (dr) => { lst.Add((string)dr["username"]); });
+            return lst;
+        }
+
+        static public IEnumerable<ProfileAdmin> ADMINLockedUsers()
+        {
+            List<ProfileAdmin> lst = new List<ProfileAdmin>();
+            DBHelper dbh = new DBHelper(@"SELECT null AS Role, u.* FROM users u WHERE islockedOut <> 0;");
+
+            dbh.ReadRows((comm) => { }, (dr) =>
+            {
+                lst.Add(new ProfileAdmin(dr)
+                {
+                    LastLockedDate = Convert.ToDateTime(dr["LastLockedOutDate"], CultureInfo.InvariantCulture),
+                    FailedPasswordAttemptCount = Convert.ToInt32(dr["FailedPasswordAttemptCount"], CultureInfo.InvariantCulture),
+                    FailedPasswordAttemptWindow = Convert.ToDateTime(dr["FailedPasswordAttemptWindowStart"], CultureInfo.InvariantCulture),
+                    FailedQAAttemptCount = Convert.ToInt32(dr["FailedPasswordAnswerAttemptCount"], CultureInfo.InvariantCulture),
+                    FailedQAAttemptWindow = Convert.ToDateTime(dr["FailedPasswordAnswerAttemptWindowStart"], CultureInfo.InvariantCulture)
+                });
+            });
+            return lst;
+        }
+
+        static public void UnlockUser(string szUser)
+        {
+            if (String.IsNullOrEmpty(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+
+            MembershipUser u = Membership.GetUser(szUser);
+
+            if (!u.IsLockedOut)
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, "User '{0}' is not locked out!", szUser));
+
+            u.UnlockUser();
+
+            // Now send an email to the user
+            util.NotifyUser(String.Format(CultureInfo.CurrentCulture, Resources.Profile.AccountUnlockedSubject, Branding.CurrentBrand.AppName), Resources.EmailTemplates.AccountUnlocked, new MailAddress(u.Email, MyFlightbook.Profile.GetUser(szUser).UserFullName), true, false);
+        }
+
+        static public IEnumerable<Profile> FindUsers(string szSearch)
+        {
+            List<Profile> lst = new List<Profile>();
+
+            if (String.IsNullOrEmpty(szSearch))
+                return lst;
+
+            string[] rgWords = szSearch.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+            if (rgWords.Length == 0)
+                return lst;
+
+            DBHelperCommandArgs args = new DBHelperCommandArgs();
+
+
+            StringBuilder sb = new StringBuilder();
+            int i = 0;
+            foreach (string szWord in rgWords)
+            {
+                string sz = szWord.Trim();
+                if (sz.Length == 0)
+                    continue;
+                if (sb.Length > 0)
+                    sb.Append(" AND ");
+                sb.AppendFormat(CultureInfo.InvariantCulture, " SearchString LIKE ?param{0} ", i);
+                args.AddWithValue(String.Format(CultureInfo.InvariantCulture, "param{0}", i), String.Format(CultureInfo.InvariantCulture, "%{0}%", sz));
+                i++;
+            }
+
+            // bias mostly to a perfect match, then bias towards something that has the name as specified (in order), then bias towards anything else containing the words
+            const string szQ = @"SELECT NULL AS Role, Users.*, IF(username = ?uname, 2, (IF(username like ?fullName, 1, 0))) AS Bias, CONCAT_WS(' ', email, username, firstname, lastname) AS SearchString 
+                            FROM Users 
+                            HAVING {0}
+                            ORDER BY bias DESC, length(Username) ASC 
+                            LIMIT 200";
+
+            DBHelper dbh = new DBHelper(args) { CommandText = String.Format(CultureInfo.InvariantCulture, szQ, sb.ToString()) };
+
+            dbh.ReadRows((comm) => { 
+                comm.Parameters.AddWithValue("fullName", String.Format(CultureInfo.InvariantCulture, "%{0}%", szSearch));
+                comm.Parameters.AddWithValue("uname", szSearch);    // no wildcarding - must match exactly
+                },
+                (dr) => { lst.Add(new Profile(dr)); });
+
+            return lst;
         }
     }
 

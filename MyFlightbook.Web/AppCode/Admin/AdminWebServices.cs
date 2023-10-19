@@ -1,10 +1,10 @@
-﻿using MyFlightbook.AircraftControls;
-using Resources;
+﻿using Resources;
 using System;
 using System.Globalization;
 using System.ServiceModel;
 using System.Text;
 using System.Web;
+using System.Web.Security;
 using System.Web.Services;
 
 /******************************************************
@@ -230,5 +230,109 @@ namespace MyFlightbook.Web.Ajax
         }
         #endregion
 
+        #region UserManagement WebMethods 
+        [WebMethod(EnableSession = true)]
+        public void UnlockUser(string szUser)
+        {
+            if (!Profile.GetUser(User.Identity.Name).CanSupport)
+                throw new UnauthorizedAccessException();
+
+            ProfileAdmin.UnlockUser(szUser);
+        }
+
+        /// <summary>
+        /// Resets the password for a user AND sends the email.  (no longer a separate button)
+        /// </summary>
+        /// <param name="szPKID"></param>
+        /// <exception cref="UnauthorizedAccessException"></exception>
+        [WebMethod(EnableSession = true)]
+        public void ResetPasswordForUser(string szPKID)
+        {
+            if (!Profile.GetUser(User.Identity.Name).CanSupport)
+                throw new UnauthorizedAccessException();
+
+            MembershipUser mu = ProfileAdmin.UserFromPKID(szPKID);  // will throw an error if szPKID is empty or null
+            // Need to get the user offline
+            mu = ProfileAdmin.ADMINUserFromName(mu.UserName);
+
+            string szPass = mu.ResetPassword();
+
+            if (String.IsNullOrEmpty(szPass))
+                throw new InvalidOperationException("Failure resetting password for user " + mu.UserName);
+            Profile.UncacheUser(mu.UserName);
+
+            string szEmail = util.ApplyHtmlEmailTemplate(Resources.EmailTemplates.ChangePassEmail.Replace("<% Password %>", HttpUtility.HtmlEncode(szPass)), true);
+            Profile pf = Profile.GetUser(mu.UserName);
+            util.NotifyUser(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ResetPasswordEmailSubject, Branding.CurrentBrand.AppName), szEmail, new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, true);
+        }
+
+        [WebMethod(EnableSession = true)]
+        public void DeleteFlightsForUser(string szPKID)
+        {
+            if (!Profile.GetUser(User.Identity.Name).CanSupport)
+                throw new UnauthorizedAccessException();
+
+            MembershipUser mu = ProfileAdmin.UserFromPKID(szPKID);  // will throw an error if szPKID is empty or null
+
+            if (String.Compare(mu.UserName, User.Identity.Name, StringComparison.InvariantCultureIgnoreCase) == 0)
+                throw new InvalidOperationException("Don't delete your own flights here, silly!");
+
+            ProfileAdmin.DeleteForUser(mu, ProfileAdmin.DeleteLevel.OnlyFlights);
+        }
+
+        [WebMethod(EnableSession = true)]
+        public void DeleteUserAccount(string szPKID)
+        {
+            if (!Profile.GetUser(User.Identity.Name).CanSupport)
+                throw new UnauthorizedAccessException();
+
+            MembershipUser mu = ProfileAdmin.UserFromPKID(szPKID);  // will throw an error if szPKID is empty or null
+
+            if (String.Compare(mu.UserName, User.Identity.Name, StringComparison.InvariantCultureIgnoreCase) == 0)
+                throw new InvalidOperationException("Don't delete your own account here, silly!");
+
+            ProfileAdmin.DeleteForUser(mu, ProfileAdmin.DeleteLevel.EntireUser);
+        }
+
+        [WebMethod(EnableSession = true)]
+        public void Disable2FA(string szPKID)
+        {
+            if (!Profile.GetUser(User.Identity.Name).CanSupport)
+                throw new UnauthorizedAccessException();
+
+            MembershipUser mu = ProfileAdmin.UserFromPKID(szPKID);  // will throw an error if szPKID is empty or null
+
+            Profile pf = Profile.GetUser(mu.UserName);
+            if (!pf.PreferenceExists(MFBConstants.keyTFASettings))
+                throw new InvalidOperationException("2fa was not on for user " + mu.UserName);
+
+            pf.SetPreferenceForKey(MFBConstants.keyTFASettings, null, true);
+        }
+
+
+        [WebMethod(EnableSession = true)]
+        public void EndowClubCreation(string szPKID)
+        {
+            if (!Profile.GetUser(User.Identity.Name).CanSupport)
+                throw new UnauthorizedAccessException();
+
+            MembershipUser mu = ProfileAdmin.UserFromPKID(szPKID);  // will throw an error if szPKID is empty or null
+
+            DBHelper dbh = new DBHelper();
+            dbh.DoNonQuery("REPLACE INTO earnedgratuities SET idgratuitytype=3, username=?szUser, dateEarned=Now(), dateExpired=Date_Add(Now(), interval 30 day), reminderssent=0, dateLastReminder='0001-01-01 00:00:00'", (comm) => { comm.Parameters.AddWithValue("szUser", mu.UserName); });
+        }
+
+        [WebMethod(EnableSession = true)]
+        public void SendUserMessage(string szPKID, string szSubject, string szBody)
+        {
+            if (!Profile.GetUser(User.Identity.Name).CanSupport)
+                throw new UnauthorizedAccessException();
+
+            MembershipUser mu = ProfileAdmin.UserFromPKID(szPKID);  // will throw an error if szPKID is empty or null
+
+            Profile pf = Profile.GetUser(mu.UserName);
+            util.NotifyUser(szSubject, szBody, new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
+        }
+        #endregion
     }
 }

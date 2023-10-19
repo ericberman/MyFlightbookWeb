@@ -1,0 +1,33 @@
+﻿@if (ViewBag.FoundUsers.Count == 0)
+{
+    <p class="error">No results found!</p>
+}
+else
+{
+    <table cellspacing="5">
+        <thead>
+            <tr style="font-weight: bold;">
+                <th>User Name</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        @foreach (MyFlightbook.Profile pf in ViewBag.FoundUsers)
+        {
+            <tr>
+                <td>@pf.UserName</td>
+                <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0} {1} <{2}>", pf.FirstName, pf.LastName, pf.Email)</td>
+                <td>
+                    <a href="javascript:return false;" onclick="javascript:impersonate('@pf.PKID');">Impersonate</a> | 
+                    <a href="javascript:return false;" onclick="javascript:return resetPassword(this, '@pf.PKID', '@pf.UserName');">Reset Password</a> | 
+                    <a href="javascript:return false;" onclick="javascript:return deleteUser(this, '@pf.PKID', '@pf.UserName', '@pf.Email');">Delete User</a> | 
+                    <a href="javascript:return false;" onclick="javascript:return deleteFlightsForUser(this, '@pf.PKID', '@pf.UserName', '@pf.Email');">Delete only flights for user</a> | 
+                    <a href="javascript:return false;" onclick="javascript:return disable2FAForUser(this, '@pf.PKID', '@pf.Email');">Disable 2FA</a> | 
+                    <a href="javascript:return false;" onclick="javascript:return showSendMessage('@pf.PKID', '@pf.UserFullName');">Send Message</a> | 
+                    <a href="javascript:return false;" onclick="javascript:return endowClubCreation(this, '@pf.PKID');">Endow Club Creation</a>
+                </td>
+            </tr>
+        }
+    </table>
+}
+
