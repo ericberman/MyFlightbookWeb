@@ -293,7 +293,8 @@ namespace MyFlightbook.Lint
             }
 
             // Look for missing night takeoffs or landings
-            if (rgCodes.Any())
+            // Issue #1129: suppress this check if pilot monitoring whole flight.
+            if (rgCodes.Any() && !le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropPilotMonitoring))
             {
                 airport apDep = alSubset.GetAirportByCode(rgCodes.ElementAt(0));
                 airport apArr = alSubset.GetAirportByCode(rgCodes.ElementAt(rgCodes.Count() - 1));
