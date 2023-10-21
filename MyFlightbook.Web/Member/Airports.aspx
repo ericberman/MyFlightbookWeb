@@ -12,7 +12,7 @@
     <asp:MultiView ID="mvVisitedAirports" runat="server" ActiveViewIndex="0">
         <asp:View ID="vwVisitedAirports" runat="server">
             <p>
-                <asp:Label ID="lblNumAirports" runat="server" Font-Bold="True"></asp:Label>  
+                <asp:Label ID="lblNumAirports" runat="server" Font-Bold="True" />  
                 &nbsp;<asp:Label ID="lblNote" runat="server" Font-Bold="True" Text="<%$ Resources:LocalizedText, Note %>"></asp:Label> 
                 <asp:Localize ID="locVANote" runat="server" Text="<%$ Resources:Airports, airportVisitedAirportsNote %>"></asp:Localize>
             </p>
@@ -23,7 +23,7 @@
             <asp:Panel ID="Panel1" runat="server" ScrollBars="Auto" Height="300px">
                 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
                     <ContentTemplate>
-                        <asp:GridView ID="gvAirports" runat="server" AllowSorting="True" 
+                        <asp:GridView ID="gvAirports" runat="server" AllowSorting="True" CssClass="stickyHeaderTable" 
                             AutoGenerateColumns="False" EnableModelValidation="True" OnRowDataBound="gvAirports_DataBound"
                             EnableViewState="False"  BorderStyle="None" onsorting="gvAirports_Sorting"
                                 CellPadding="3" GridLines="None">
