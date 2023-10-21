@@ -335,6 +335,9 @@
   <data name="warningNewFlightDutyStart" xml:space="preserve">
     <value>Flight Duty Period Start found while a prior one is still open (not matched with a corresponding Flight Duty Period End)</value>
   </data>
+  <data name="warningOperationsLoggedWhileMonitoring" xml:space="preserve">
+    <value>Flight indicates monitoring for the whole flight, but landings/takeoffs/approaches were recorded.  Verify that it was appropriate to log these if monitoring!</value>
+  </data>
   <data name="warningPICSICDualBroken" xml:space="preserve">
     <value>Total time does not equal PIC + SIC + Dual time.</value>
   </data>

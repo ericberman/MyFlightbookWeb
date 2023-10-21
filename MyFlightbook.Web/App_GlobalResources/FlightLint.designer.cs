@@ -709,6 +709,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flight indicates monitoring for the whole flight, but landings/takeoffs/approaches were recorded.  Verify that it was appropriate to log these if monitoring!.
+        /// </summary>
+        internal static string warningOperationsLoggedWhileMonitoring {
+            get {
+                return ResourceManager.GetString("warningOperationsLoggedWhileMonitoring", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Total time does not equal PIC + SIC + Dual time..
         /// </summary>
         internal static string warningPICSICDualBroken {

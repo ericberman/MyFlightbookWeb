@@ -579,6 +579,8 @@ namespace MyFlightbook.Lint
                 }
             }
 
+            AddConditionalIssue(le.Landings + le.Approaches > 0 && le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropPilotMonitoring), LintOptions.MiscIssues, Resources.FlightLint.warningOperationsLoggedWhileMonitoring);
+
             int maxDescribedLandings = 0;
             le.CustomProperties.ForEachEvent((cfp) => { if (cfp.PropertyType.IsLanding) maxDescribedLandings = Math.Max(maxDescribedLandings, cfp.IntValue); });
             AddConditionalIssue(maxDescribedLandings > le.Landings, LintOptions.MiscIssues, String.Format(CultureInfo.CurrentCulture, Resources.FlightLint.warningMoreDescribedLandingsThanTotal, le.Landings));
