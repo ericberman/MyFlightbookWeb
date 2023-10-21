@@ -7,8 +7,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 
 /******************************************************
  * 
@@ -1362,49 +1360,6 @@ ORDER BY Year ASC , Month ASC;");
             return left is null ? right is null : left.CompareTo(right) >= 0;
         }
         #endregion
-
-        private static TableCell[] NewRow()
-        {
-            TableCell[] rgc = new TableCell[14];
-            for (int i = 0; i < rgc.Length; i++)
-                rgc[i] = new TableCell();
-            return rgc;
-        }
-
-        public static void ToTable(Control c, IEnumerable<YearlyPayments> rgyp)
-        {
-            if (rgyp == null)
-                return;
-            if (c == null)
-                throw new ArgumentNullException(nameof(c));
-            Table t = new Table();
-            c.Controls.Add(t);
-            t.CellPadding = 3;
-
-            TableRow tr = new TableRow();
-            t.Rows.Add(tr);
-            tr.TableSection = TableRowSection.TableHeader;
-            tr.Cells.AddRange(NewRow());
-
-            tr.Cells[0].Text = Resources.LocalizedText.ChartTotalsGroupYear;
-            for (int i = 1; i < 13; i++)
-                tr.Cells[i].Text = CultureInfo.CurrentCulture.DateTimeFormat.AbbreviatedMonthNames[i - 1];
-            tr.Cells[13].Text = Resources.LocalizedText.ChartDataTotal;
-            tr.Font.Bold = true;
-
-            foreach (YearlyPayments yp in rgyp)
-            {
-                TableRow tr2 = new TableRow();
-                t.Rows.Add(tr2);
-                tr2.Cells.AddRange(NewRow());
-                tr2.Cells[0].Text = yp.Year.ToString(CultureInfo.CurrentCulture);
-                tr2.Cells[0].Font.Bold = true;
-                for (int i = 1; i < 13; i++)
-                    yp.MonthlyPayments[i - 1].AddToContainer(tr2.Cells[i]);
-                yp.AnnualPayment.AddToContainer(tr2.Cells[13]);
-                tr2.Cells[13].Font.Bold = true;
-            }
-        }
     }
 
     public class PeriodPaymentStat
@@ -1414,24 +1369,5 @@ ORDER BY Year ASC , Month ASC;");
         public double Fee { get; set; }
         public double YOYPercent { get; set; }
         public double YOYGross { get; set; }
-
-        public void AddToContainer(Control c)
-        {
-            if (Net == 0)
-                return;
-            if (c == null)
-                throw new ArgumentNullException(nameof(c));
-            Label l = new Label();
-            c.Controls.Add(l);
-            l.Text = Net.ToString("C", CultureInfo.CurrentCulture);
-
-            l.ToolTip = String.Format(CultureInfo.CurrentCulture, "Gross: {0:C}, Fee: {1:C}", Gross, Fee);
-
-            if (YOYGross != 0)
-            {
-                l.ToolTip += String.Format(CultureInfo.CurrentCulture, ".\r\nYOY: {0:C} ({1:#,##0.0}%)", YOYGross, YOYPercent * 100);
-                l.ForeColor = (YOYGross > 0) ? System.Drawing.Color.Green : System.Drawing.Color.Red;
-            }
-        }
     }
 }

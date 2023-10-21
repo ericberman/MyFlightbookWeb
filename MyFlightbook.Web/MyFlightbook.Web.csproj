@@ -419,7 +419,6 @@
     <Content Include="Admin\AdminAirportGeocoder.aspx" />
     <Content Include="Admin\AdminEndorsements.aspx" />
     <Content Include="Admin\AdminImgs.aspx" />
-    <Content Include="Admin\AdminPayments.aspx" />
     <Content Include="Admin\AdminProperties.aspx" />
     <Content Include="Admin\AdminService.asmx" />
     <Content Include="AppCode\Clubs\DayPilotLICENSE.txt" />
@@ -1554,13 +1553,6 @@
     </Compile>
     <Compile Include="Admin\AdminPage.cs">
       <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Admin\AdminPayments.aspx.cs">
-      <DependentUpon>AdminPayments.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Admin\AdminPayments.aspx.designer.cs">
-      <DependentUpon>AdminPayments.aspx</DependentUpon>
     </Compile>
     <Compile Include="Admin\AdminProperties.aspx.cs">
       <DependentUpon>AdminProperties.aspx</DependentUpon>
