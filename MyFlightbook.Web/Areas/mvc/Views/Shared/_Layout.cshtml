@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
     <head>
-        @{ Html.RenderAction("RenderHead", "MFBTemplate", new { Title = ViewBag.Title }); }
+        @{ Html.RenderAction("RenderHead", "MFBTemplate", new { Title = ViewBag.Title, UseCharting = ViewBag.UseCharting }); }
     </head>
     <body>
         @{ Html.RenderAction("RenderImpersonation", "MFBTemplate"); }
@@ -33,6 +33,21 @@
 
             function viewMFBImg(src) {
                 setImg(src, "imgImgToView", "divViewImg", "imgDismissBtn");
+            }
+
+            function toggleItem(targetID) {
+                var target = $("#" + targetID);
+                var fIsCollapsed = (target[0].style.display == 'none');
+                target.toggle(400);
+                return fIsCollapsed;
+            }
+
+            function toggleImage(sender, targetID) {
+                sender.src = toggleItem(targetID) ? "@VirtualPathUtility.ToAbsolute("~/images/collapse.png")" : "@VirtualPathUtility.ToAbsolute("~/images/expand.png")";
+            }
+
+            function toggleLabel(sender, targetID, expandText, collapseText) {
+                sender.innerText = toggleItem(targetID) ? expandText : collapseText;
             }
         </script>
         <div id="divViewImg" style="display:none; overflow: hidden;" class="modalpopup">

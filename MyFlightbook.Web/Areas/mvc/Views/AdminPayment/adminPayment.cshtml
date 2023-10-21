@@ -1,0 +1,246 @@
+﻿@using System.Globalization;
+@using MyFlightbook.Payments;
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Converters;
+@{
+    ViewBag.Title = "Admin - Payments";
+    ViewBag.defaultTab = tabID.tabAdmin;
+    ViewBag.UseCharting = true;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute(MyFlightbook.Web.Ajax.AdminWebServices.AjaxScriptLink)"></script>
+<script src='@VirtualPathUtility.ToAbsolute("~/public/Scripts/endless-scroll.js")'></script>
+<h2>Find Transactions</h2>
+<div>
+    @using (Html.BeginForm("", "AdminPayment", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <table cellpadding="3">
+            <tr>
+                <td>For donations for:</td>
+                <td>@Html.TextBox("szUser", "", new { placeholder = "(Username, empty for all)", id = "txtUserName", value = ViewBag.UserRestriction })</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="submit" name="action" value="Find matching transactions" />
+                    @{ 
+                        HashSet<Payment.TransactionType> hs = ViewBag.TypeRestriction;
+                        @Html.CheckBox("fPayments", hs.Contains(Payment.TransactionType.Payment), new { id = "ckPayments" });
+                        <label for="ckPayments">Payments</label>
+                        @Html.CheckBox("fRefunds", hs.Contains(Payment.TransactionType.Refund), new { id = "ckRefunds" });
+                        <label for="ckRefunds">Refunds</label>
+                        @Html.CheckBox("fAdjustments", hs.Contains(Payment.TransactionType.Adjustment), new { id = "ckAdjustments" });
+                        <label for="ckAdjustments">Adjustments</label>
+                        @Html.CheckBox("fTestTransactions", hs.Contains(Payment.TransactionType.TestTransaction), new { id = "ckTests" });
+                        <label for="ckTests">Test Transactions</label>
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="button" onclick="javascript:resetGratuities($('#txtUserName')[0].value, $('#ckResetGratuities')[0].checked);" value="Reset Gratuities" />
+                    @Html.CheckBox("includeReminders", false, new { id = "ckResetGratuities" })
+                    <label for="ckResetGratuities">Reset gratuity reminders too</label>
+                </td>
+            </tr>
+        </table>
+    }
+
+    <p><input type="button" onclick="javascript:fixFees(this);" value="Fix Donation Fees" /></p>
+    <div style="width:800px;">
+        <div style="font-weight:bold; text-align:center;">Running-30-day donations for the past year</div>
+
+        <div id="@ViewBag.ChartData.ContainerID" style="display: inline-block; margin: 0 auto !important; height: @(ViewBag.ChartData.Height.ToString(CultureInfo.InvariantCulture) + "px")">
+        </div>
+        <script type="text/javascript">
+            chartsToDraw.push(@Html.Raw(JsonConvert.SerializeObject(ViewBag.ChartData, new JsonConverter[] { new JavaScriptDateTimeConverter() })));
+        </script>
+    </div>
+</div>
+<table cellpadding="3">
+    <thead>
+        <tr style="font-weight: bold;">
+            <th>@Resources.LocalizedText.ChartTotalsGroupYear</th>
+            @for (int i = 0; i < 12; i++)
+            {
+                <th>@CultureInfo.CurrentCulture.DateTimeFormat.AbbreviatedMonthNames[i]</th>
+            }
+            <th>@Resources.LocalizedText.ChartDataTotal</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            List<MyFlightbook.Payments.YearlyPayments> rgypp = new List<MyFlightbook.Payments.YearlyPayments>(ViewBag.PaymentsByYearMonth);
+
+            for (int iYear = 0; iYear < rgypp.Count(); iYear++)
+            {
+                YearlyPayments yp = rgypp[iYear];
+                <tr>
+                    <td style="font-weight: bold;">@yp.Year.ToString(CultureInfo.CurrentCulture)</td>
+                    @for (int i = 0; i < 12; i++)
+                    {
+                        PeriodPaymentStat pp = yp.MonthlyPayments[i];
+                        <td>
+                            @if (pp.Net != 0)
+                            {
+                                <span title="@String.Format(CultureInfo.CurrentCulture, "Gross: {0:C}, Fee: {1:C}{2}", pp.Gross, pp.Fee, pp.YOYGross == 0 ? string.Empty : String.Format(CultureInfo.CurrentCulture, ".\r\nYOY: {0:C} ({1:#,##0.0}%)", pp.YOYGross, pp.YOYPercent * 100))"
+                                      style="color: @(pp.YOYGross > 0 ? "green" : (pp.YOYGross < 0 ? "red" : "inherit"))">
+                                    @pp.Net.ToString("C", CultureInfo.CurrentCulture)
+                                </span>
+                            }
+                        </td>
+                    }
+                    <td style="font-weight: bold;">
+                        @if (yp.AnnualPayment.Net != 0)
+                        {
+                            <span title="@String.Format(CultureInfo.CurrentCulture, "Gross: {0:C}, Fee: {1:C}{2}", yp.AnnualPayment.Gross, yp.AnnualPayment.Fee, yp.AnnualPayment.YOYGross == 0 ? string.Empty : String.Format(CultureInfo.CurrentCulture, ".\r\nYOY: {0:C} ({1:#,##0.0}%)", yp.AnnualPayment.YOYGross, yp.AnnualPayment.YOYPercent * 100))"
+                                  style="color: @(yp.AnnualPayment.YOYGross > 0 ? "green" : (yp.AnnualPayment.YOYGross < 0 ? "red" : "inherit"))">
+                                @yp.AnnualPayment.Net.ToString("C", CultureInfo.CurrentCulture)
+                            </span>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+<div><span style="font-weight:bold">Test Transaction</span> @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = ViewBag.CreateError == null, targetID = "divEnterXactions" }); }</div>
+<div style="@(ViewBag.CreateError == null ? "display:none;" : string.Empty)" id="divEnterXactions">
+    @using (Html.BeginForm("Create", "AdminPayment", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <table>
+            <tr>
+                <td>Date: </td>
+                <td><input type="date" name="txtDate" value="@DateTime.Now.YMDString()" /></td>
+            </tr>
+            <tr>
+                <td>Username:</td>
+                <td><input type="text" name="txtTestTransactionUsername" /></td>
+            </tr>
+            <tr>
+                <td>Amount: </td>
+                <td><input type="number" name="decTestTransactionAmount" step="0.01" /></td>
+            </tr>
+            <tr>
+                <td>Fee: </td>
+                <td><input type="number" name="decTestTransactionFee" step="0.01" /></td>
+            </tr>
+            <tr>
+                <td>Transaction Type: </td>
+                <td>@Html.DropDownList("cmbTestTransactionType", new SelectList(Enum.GetValues(typeof(Payment.TransactionType))))</td>
+            </tr>
+            <tr>
+                <td>Notes:</td>
+                <td><input type="text" name="txtTestTransactionNotes" /></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="submit" value="Enter" /></td>
+            </tr>
+        </table>
+        <div class="error">@(ViewBag.CreateError ?? string.Empty)</div>
+    }
+</div>
+<h2>Transactions</h2>
+<table class="stickyHeaderTable">
+    <thead>
+        <tr>
+            <th class="gvhDefault">ID</th>
+            <th class="gvhDefault">Date</th>
+            <th class="gvhDefault">Username</th>
+            <th class="gvhDefault">Amount</th>
+            <th class="gvhDefault">Fee</th>
+            <th class="gvhDefault">Net</th>
+            <th class="gvhDefault">TransactionType</th>
+            <th class="gvhDefault">Notes</th>
+            <th class="gvhDefault">TransactionData</th>
+        </tr>
+    </thead>
+    <tbody id="tblPaymentTransactions">
+        @{ Html.RenderAction("PaymentDetailRows", "AdminPayment", new { szUser = ViewBag.UserRestriction, xactions = ViewBag.TypeRestriction, offset = -1, limit = 25 }); }
+    </tbody>
+</table>
+<script type="text/javascript">
+    var params = new Object();
+    params.szRestrict = $('#txtUserName').val();
+    params.szUser = "@ViewBag.UserRestriction";
+    params.fPayments = @Json.Encode(ViewBag.TypeRestriction.Contains(Payment.TransactionType.Payment));
+    params.fRefunds= @Json.Encode(ViewBag.TypeRestriction.Contains(Payment.TransactionType.Refund));
+    params.fAdjustments = @Json.Encode(ViewBag.TypeRestriction.Contains(Payment.TransactionType.Adjustment));
+    params.fTestTransactions = @Json.Encode(ViewBag.TypeRestriction.Contains(Payment.TransactionType.TestTransaction));
+    params.offset = "25";
+    params.limit = "25";
+
+    $(document).ready(function () {
+        $(document).endlessScroll(
+            {
+                bottomPixels: 300,
+                fireOnce: true,
+                fireDelay: 2000,
+                callback: function (p) {
+                    // ajax call to fetch next set of rows
+                    $.ajax(
+                        {
+                            type: "POST",
+                            data: JSON.stringify(params),
+                            url: "@VirtualPathUtility.ToAbsolute("~/mvc/AdminPayment/PaymentSet")",
+                            dataType: "html",
+                            contentType: "application/json",
+                            error: function (response) {
+                                alert(response.status + ' ' + response.statusText);
+                            },
+                            complete: function (response) {
+                                params.offset = parseInt(params.offset) + parseInt(params.limit);
+                            },
+                            success: function (response) {
+                                $("#tblPaymentTransactions")[0].innerHTML += response;
+                            }
+                        });
+                }
+            });
+    });
+
+    function resetGratuities(szUser, fResetReminders) {
+        var params = new Object();
+        params.szUser = szUser;
+        params.fResetReminders = fResetReminders;
+        var d = JSON.stringify(params);
+        $.ajax(
+            {
+                url: "@VirtualPathUtility.ToAbsolute("~/mvc/AdminPayment/ResetGratuities")",
+                type: "POST", data: d, dataType: "html", contentType: "application/json",
+                error: function (xhr, status, error) {
+                    window.alert(error);
+                },
+                complete: function (response) { },
+                success: function (response) {
+                    window.alert("Gratuities reset");
+                }
+            });
+        return false;
+    }
+
+    function fixFees(sender) {
+        var params = new Object();
+        var d = JSON.stringify(params);
+        $.ajax(
+            {
+                url: "@VirtualPathUtility.ToAbsolute("~/mvc/AdminPayment/FixFees")",
+                type: "POST", data: d, dataType: "html", contentType: "application/json",
+                error: function (xhr, status, error) {
+                    window.alert(xhr.responseJSON.Message);
+                },
+                complete: function (response) { },
+                success: function (response) {
+                    sender.disabled = true;
+                    window.alert("fees fixed");
+                    location.reload();
+                }
+            });
+        return false;
+    }
+</script>
+

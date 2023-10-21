@@ -102,9 +102,24 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return PartialView("_accordion");
         }
 
+        [ChildActionOnly]
+        public ActionResult RenderExpandoImg(bool fExpanded, string targetID)
+        {
+            ViewBag.Expanded = fExpanded;
+            ViewBag.TargetID = targetID;
+            return PartialView("_expandoImg");
+        }
+
+        [ChildActionOnly]
+        public ActionResult RenderExpandoText(bool fExpanded, string targetID, string expandText = null, string collapseText = null)
+        {
+            ViewBag.Expanded = fExpanded;
+            ViewBag.TargetID = targetID;
+            ViewBag.CollapseText = collapseText ?? Resources.LocalizedText.ClickToHide;
+            ViewBag.ExpandText = expandText ?? Resources.LocalizedText.ClickToShow;
+            return PartialView("_expandoText");
+        }
         #endregion
-
-
 
         [ChildActionOnly]
         public ActionResult RenderPrivacyLink()
@@ -197,7 +212,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         [ChildActionOnly]
-        public ActionResult RenderHead(string Title)
+        public ActionResult RenderHead(string Title, bool UseCharting = false)
         {
             int idBrand = util.GetIntParam(Request, "bid", -1);
             if (idBrand >= 0 && idBrand < Enum.GetNames(typeof(BrandID)).Length)
@@ -234,6 +249,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
             // Now do all of the main header stuff.
             ViewBag.Title = Title ?? Branding.CurrentBrand.AppName;
+            ViewBag.UseCharting = UseCharting;
 
             string szUserAgent = Request.UserAgent.ToUpperInvariant();
             ViewBag.IsIOSOrAndroid = szUserAgent.Contains("IPHONE") || szUserAgent.Contains("IPAD") || szUserAgent.Contains("ANDROID");

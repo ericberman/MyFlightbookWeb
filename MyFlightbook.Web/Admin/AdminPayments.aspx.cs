@@ -105,11 +105,8 @@ namespace MyFlightbook.Web.Admin
             sqlDSDonations.SelectCommand = String.Format(CultureInfo.InvariantCulture, szDonationsTemplate, (l.Count == 0) ? string.Empty : String.Format(CultureInfo.InvariantCulture, " AND TransactionType IN ({0}) ", String.Join(",", l.ToArray())));
             gvDonations.DataBind();
 
-            using (IDataReader idr = (IDataReader)sqlDSTotalPayments.Select(DataSourceSelectArguments.Empty))
-            {
-                IEnumerable<YearlyPayments> rgyp = YearlyPayments.PaymentsByYearAndMonth(idr);
-                YearlyPayments.ToTable(plcPayments, rgyp);
-            }
+            IEnumerable<YearlyPayments> rgyp = YearlyPayments.PaymentsByYearAndMonth();
+            YearlyPayments.ToTable(plcPayments, rgyp);
         }
 
         protected void btnFindDonations_Click(object sender, EventArgs e)

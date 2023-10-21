@@ -18,10 +18,27 @@
 <script src='@VirtualPathUtility.ToAbsolute("~/Public/Scripts/jquery.fitvids.js")' type="text/javascript"></script>
 <script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js" type="text/javascript"></script>
 
-@{ if (ViewBag.IsIOSOrAndroid)
-    {
-        <meta name="format-detection" content="telephone=no" />
-    }
+@if (ViewBag.UseCharting)
+{
+    <script src="https://www.google.com/jsapi" type="text/javascript"></script>
+    <script src="@VirtualPathUtility.ToAbsolute("~/public/Scripts/gchart.js?v=4")" type="text/javascript"></script>
+    <script type="text/javascript">
+        google.load('visualization', '1.1', { packages: ['corechart'] });
+        var chartsToDraw = [];
+        var chartData = [];
+        google.setOnLoadCallback(drawCharts);
+        function drawCharts() {
+            for (var i = 0; i < chartsToDraw.length; i++) {
+                var cd = drawGChart(chartsToDraw[i]);
+                chartData.push(cd);
+            }
+        }
+    </script>
+}
+
+@if (ViewBag.IsIOSOrAndroid)
+{
+    <meta name="format-detection" content="telephone=no" />
 }
 <link rel="shortcut icon" href="/favicon.ico?v2" />
 <link rel="icon" href="/favicon.ico?v2" />

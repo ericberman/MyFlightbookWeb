@@ -1,0 +1,41 @@
+﻿@using System.Globalization;
+@using System.Collections.Specialized;
+@using MyFlightbook.Payments;
+@{
+    foreach (Payment p in ViewBag.PaymentList)
+    {
+        NameValueCollection nvc = HttpUtility.ParseQueryString(p.TransactionNotes);
+        string targetID = String.Format(CultureInfo.InvariantCulture, "divPmt{0}", p.ID);
+        string clickID = String.Format(CultureInfo.InvariantCulture, "lblPmt{0}", p.ID);
+    <tr style="vertical-align: top;">
+        <td>@p.ID</td>
+        <td>@p.Timestamp.ToString()</td>
+        <td>@p.Username</td>
+        <td>@p.Amount.ToString("C")</td>
+        <td>@p.Fee.ToString("C")</td>
+        <td>@((p.Amount - Math.Abs(p.Fee)).ToString("C"))</td>
+        <td>@p.Type.ToString()</td>
+        <td>@p.Notes</td>
+        <td style="min-width: 300px; width: 40%">
+            <span style="font-weight: bold;">@p.TransactionID</span>
+            @{ Html.RenderAction("RenderExpandoImg", "MFBTemplate", new { fExpanded = false, targetID = targetID }); }
+            <div style="display:none;" id="@targetID">
+                <table>
+                    @foreach (string szKey in nvc.AllKeys)
+                    {
+                        <tr>
+                            <td style="font-weight:bold">@szKey</td>
+                            <td>@nvc[szKey]</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+            <script type="text/javascript">
+                            $("#@clickID").click(function () {
+                                $("#@targetID").toggle(400);
+                            });
+            </script>
+        </td>
+    </tr>
+    }
+}

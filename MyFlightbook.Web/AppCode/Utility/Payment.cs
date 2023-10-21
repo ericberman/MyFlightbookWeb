@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -208,11 +210,30 @@ namespace MyFlightbook.Payments
         /// <summary>
         /// Get all of the payment records for a specified user
         /// </summary>
-        /// <param name="szUser">The name of the user</param>
+        /// <param name="szUser">The name of the user.  Can be null.</param>
+        /// <param name="types">The transaction types; if null, all transactions are returned.</param>
         /// <returns>A list containing the records in reverse chronological order</returns>
-        public static IEnumerable<Payment> RecordsForUser(string szUser)
+        public static IEnumerable<Payment> RecordsForUser(string szUser, IEnumerable<TransactionType> types = null, int offset = -1, int limit = -1)
         {
-            return RecordsForQuery("SELECT * FROM payments WHERE Username=?szUser ORDER BY Date DESC", (comm) => { comm.Parameters.AddWithValue("szUser", szUser); });
+            List<string> lstRestrictions = new List<string>();
+            if (!String.IsNullOrEmpty(szUser))
+                lstRestrictions.Add("Username=?szUser");
+            if (types != null && types.Any())
+            {
+                List<int> ints = new List<int>();
+                foreach (TransactionType t in types)
+                    ints.Add((int)t);
+                lstRestrictions.Add(String.Format(CultureInfo.InvariantCulture, "TransactionType IN ({0})", String.Join(", ", ints)));
+            }
+
+            string szWHERE = lstRestrictions.Any() ? String.Format(CultureInfo.InvariantCulture, " WHERE {0}", String.Join(" AND ", lstRestrictions)) : string.Empty;
+
+            string szLimit = string.Empty;
+            if (limit > 0)
+                szLimit = offset > 0 ? String.Format(CultureInfo.InvariantCulture, " LIMIT {0},{1} ", offset, limit) : String.Format(CultureInfo.InvariantCulture, "LIMIT {0}", limit);
+
+            return RecordsForQuery(String.Format(CultureInfo.InvariantCulture, "SELECT * FROM payments {0} ORDER BY Date DESC {1}", szWHERE, szLimit),
+                (comm) => { comm.Parameters.AddWithValue("szUser", szUser ?? string.Empty); });
         }
 
         /// <summary>
@@ -256,6 +277,75 @@ namespace MyFlightbook.Payments
                 },
                 (dr) => { total = dr["totalPayment"].ToString().SafeParseDecimal(); });
             return total;
+        }
+
+        /// <summary>
+        /// Returns running totals for the given period.  E.g,. if you pass 12 months of 30 days, it returns the running 30-day total for 12 months
+        /// </summary>
+        /// <param name="cDays">Number of days back to look</param>
+        /// <param name="cMonths">Number of months back to look</param>
+        /// <returns></returns>
+        public static IDictionary<DateTime, decimal> RunningPaymentsForTrailingPeriod(int cMonths = 12, int cDays = 30)
+        {
+            DateTime dtMin = DateTime.Now.AddMonths(- cMonths).Date;
+            DateTime dtMax = DateTime.Now.Date;
+
+            List<Payment> lstPayments = new List<Payment>(RecordsForUser(null, new TransactionType[] { TransactionType.Payment, TransactionType.Adjustment, TransactionType.TestTransaction }));
+            lstPayments.RemoveAll(pmt => pmt.Timestamp.CompareTo(dtMin) < 0);   // Remove all the oldest
+            lstPayments.Reverse();  // go in ascending order
+
+            // Now compute a year's worth of 30-day averages.
+            DateTime dtFirstRunning = dtMin.AddDays(cDays).Date;
+            Queue<Payment> queue = new Queue<Payment>();
+
+            Dictionary<DateTime, decimal> dReturn = new Dictionary<DateTime, decimal>();
+
+            int iPayment = 0;
+            decimal runningTotal = 0.0M;
+            for (DateTime dt = dtMin; dt.CompareTo(dtMax) <= 0; dt = dt.AddDays(1))
+            {
+                // while there are payments to add to the rolling 30-day window, add them
+                while (iPayment < lstPayments.Count)
+                {
+                    Payment p = lstPayments[iPayment];
+                    if (p.Timestamp.Date.CompareTo(dt) <= 0)
+                    {
+                        queue.Enqueue(p);   // add it to the queue
+                        runningTotal += (p.Amount - p.Fee);
+                        iPayment++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                // And de-queue anything that's fallen out of the cDays day window
+                while (queue.Count > 0 && queue.Peek().Timestamp.Date.CompareTo(dt.AddDays(-cDays)) < 0)
+                {
+                    Payment p = queue.Dequeue();
+                    runningTotal -= (p.Amount - p.Fee);
+                }
+
+                // OK, we should have our running total.
+                if (dt.CompareTo(dtFirstRunning) >= 0)
+                    dReturn[dt.Date] = runningTotal;
+            }
+            return dReturn;
+        }
+
+        public static void ADMINFixFees()
+        {
+            IEnumerable<Payment> lst = AllRecords();
+            foreach (Payment p in lst)
+            {
+                if (String.IsNullOrEmpty(p.TransactionID) || String.IsNullOrEmpty(p.TransactionNotes))
+                    continue;
+                System.Collections.Specialized.NameValueCollection nvc = HttpUtility.ParseQueryString(p.TransactionNotes);
+                p.Fee = Math.Abs(Convert.ToDecimal(nvc["mc_fee"], CultureInfo.InvariantCulture));
+                if (p.Type == TransactionType.Payment || p.Type == TransactionType.Refund)
+                    p.Commit();
+            }
         }
         #endregion
     }
@@ -1142,32 +1232,41 @@ ORDER BY dateEarned ASC ";
             AnnualPayment = new PeriodPaymentStat();
         }
 
-        public static IEnumerable<YearlyPayments> PaymentsByYearAndMonth(System.Data.IDataReader idr)
+        public static IEnumerable<YearlyPayments> PaymentsByYearAndMonth()
         {
             Dictionary<int, YearlyPayments> d = new Dictionary<int, YearlyPayments>();
-            
 
-            if (idr == null)
-                throw new ArgumentNullException(nameof(idr));
-            while (idr.Read())
-            {
-                string MonthPeriod = idr["MonthPeriod"].ToString();
-                string[] rgsz = MonthPeriod.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
-                if (rgsz.Length != 2)
-                    throw new MyFlightbookValidationException("Bogus month/year in donations");
-                int year = Convert.ToInt32(rgsz[0], CultureInfo.InvariantCulture);
-                int month = Convert.ToInt32(rgsz[1], CultureInfo.InvariantCulture);
-                if (!d.ContainsKey(year))
-                    d[year] = new YearlyPayments(year);
-                if (month <= 0 || month > 12)
-                    throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "Invalid month in donations: {0}", month));
-                d[year].MonthlyPayments[month - 1] = new PeriodPaymentStat()
+            DBHelper dbh = new DBHelper(@"SELECT 
+    YEAR(Date) AS Year,
+    MONTH(Date) AS Month,
+    SUM(Amount) AS Gross,
+    SUM(Fee) AS Fee,
+    SUM(Amount - Fee) AS Net,
+    SUM(IF(TransactionID = '', 0, Amount - FEE)) AS NetPaypal
+FROM
+    Payments
+WHERE
+    TransactionType IN (0 , 1)
+GROUP BY Year , Month
+ORDER BY Year ASC , Month ASC;");
+
+            dbh.ReadRows((comm) => { },
+                (dr) =>
                 {
-                    Net = Convert.ToDouble(idr["NetPaypal"], CultureInfo.InvariantCulture),
-                    Gross = Convert.ToDouble(idr["Gross"], CultureInfo.InvariantCulture),
-                    Fee = Convert.ToDouble(idr["Fee"], CultureInfo.InvariantCulture)
-                };
-            }
+                    int year = Convert.ToInt32(dr["Year"], CultureInfo.InvariantCulture);
+                    int month = Convert.ToInt32(dr["Month"], CultureInfo.InvariantCulture);
+                    if (month <= 0 || month > 12)
+                        throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "Invalid month in donations: {0}", month));
+                    string MonthPeriod = String.Format(CultureInfo.InvariantCulture, "{0:0000}-{1:00}", year, month);
+                    if (!d.ContainsKey(year))
+                        d[year] = new YearlyPayments(year);
+                    d[year].MonthlyPayments[month - 1] = new PeriodPaymentStat()
+                    {
+                        Net = Convert.ToDouble(dr["NetPaypal"], CultureInfo.InvariantCulture),
+                        Gross = Convert.ToDouble(dr["Gross"], CultureInfo.InvariantCulture),
+                        Fee = Convert.ToDouble(dr["Fee"], CultureInfo.InvariantCulture)
+                    };
+                });
 
             List<YearlyPayments> lst = new List<YearlyPayments>(d.Values);
             lst.Sort();

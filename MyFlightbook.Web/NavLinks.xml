@@ -261,7 +261,7 @@
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>
       <Item>
-        <Link>~/Admin/AdminPayments.aspx</Link>
+        <Link>~/mvc/AdminPayment</Link>
         <ID>admDonations</ID>
         <Roles>SiteAdmin,Accountant</Roles>
       </Item>
