@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2021 MyFlightbook LLC
+ * Copyright (c) 2021-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -40,7 +41,12 @@ namespace MyFlightbook.Currency
     /// </summary>
     public class AustraliaNightPassengerCurrency : NightCurrency
     {
-        public AustraliaNightPassengerCurrency(string szName) : base(szName, true) { }
+        private List<int> relevantFlights { get; set; } = new List<int>();
+
+        public AustraliaNightPassengerCurrency(string szName) : base(szName, true)
+        {
+            Query.HasNightLandings = false; // we support touch-and-to too so look for explicit flights
+        }
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
@@ -68,6 +74,9 @@ namespace MyFlightbook.Currency
                 AddRecentFlightEvents(cfr.dtFlight, cNightLandings);
                 NightTakeoffCurrency.AddRecentFlightEvents(cfr.dtFlight, cNightTakeoffs);
             }
+
+            if (fMeetsFlightReview || cNightLandings + cNightTakeoffs + cNightTouchAndGo > 0)
+                relevantFlights.Add(cfr.flightID);
         }
 
         protected override void ComputeComposite()
@@ -76,6 +85,7 @@ namespace MyFlightbook.Currency
             CompositeCurrencyState = fcComposite.CurrentState;
             CompositeDiscrepancy = fcComposite.DiscrepancyString;
             CompositeExpiration = fcComposite.ExpirationDate;
+            Query.EnumeratedFlights = relevantFlights;
         }
     }
 
