@@ -10,47 +10,6 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="cpTopForm" runat="Server">
     <asp:MultiView ID="mvAdmin" runat="server" ActiveViewIndex="0">
         <asp:View ID="vwUsers" runat="server">
-            <h2>User Management</h2>
-            <asp:GridView ID="gvLockedUsers" runat="server" AutoGenerateColumns="False" 
-                DataSourceID="sqlDSLockedUsers" onrowcommand="UnlockUser" >
-                <Columns>
-                    <asp:ButtonField ButtonType="Button" CommandName="Unlock" Text="Unlock" />
-                    <asp:BoundField DataField="Username" HeaderText="Username" 
-                        SortExpression="Username" />
-                    <asp:BoundField DataField="Email" HeaderText="Email" SortExpression="Email" />
-                    <asp:BoundField DataField="LastLockedOutDate" HeaderText="LastLockedOutDate" 
-                        SortExpression="LastLockedOutDate" />
-                    <asp:BoundField DataField="FailedPasswordAttemptCount" 
-                        HeaderText="FailedPasswordAttemptCount" 
-                        SortExpression="FailedPasswordAttemptCount" />
-                    <asp:BoundField DataField="FailedPasswordAttemptWindowStart" 
-                        HeaderText="FailedPasswordAttemptWindowStart" 
-                        SortExpression="FailedPasswordAttemptWindowStart" />
-                    <asp:BoundField DataField="FailedPasswordAnswerAttemptCount" 
-                        HeaderText="FailedPasswordAnswerAttemptCount" 
-                        SortExpression="FailedPasswordAnswerAttemptCount" />
-                    <asp:BoundField DataField="FailedPasswordAnswerAttemptWindowStart" 
-                        HeaderText="FailedPasswordAnswerAttemptWindowStart" 
-                        SortExpression="FailedPasswordAnswerAttemptWindowStart" />
-                </Columns>
-            </asp:GridView>
-            <asp:SqlDataSource ID="sqlDSLockedUsers" runat="server" 
-                ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>" 
-                ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" 
-                SelectCommand="SELECT Username, Email, LastLockedOutDate, FailedPasswordAttemptCount, FailedPasswordAttemptWindowStart, FailedPasswordAnswerAttemptCount, FailedPasswordAnswerAttemptWindowStart FROM users WHERE IsLockedOut&lt;&gt;0">
-            </asp:SqlDataSource>
-            <uc1:mfbImpersonate ID="mfbImpersonate1" runat="server" />
-            <asp:SqlDataSource ID="sqlDSDupeUsers" runat="server" 
-                ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>" 
-                ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" 
-                SelectCommand="select count(username) as numaccounts, username from users group by username having numaccounts &gt; 1;">
-            </asp:SqlDataSource>
-            <h3>Dupe users:</h3>
-            <asp:GridView ID="gvDupeUsers" DataSourceID="sqlDSDupeUsers" runat="server">
-                <EmptyDataTemplate>
-                    <p>No duplicate users found.</p>
-                </EmptyDataTemplate>
-            </asp:GridView>
         </asp:View>
         <asp:View ID="vwModels" runat="server">
         </asp:View>

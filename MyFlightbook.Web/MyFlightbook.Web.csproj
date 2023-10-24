@@ -780,7 +780,6 @@
     <Content Include="Member\AddRelationship.aspx" />
     <Content Include="Admin\Admin.aspx" />
     <Content Include="Admin\AdminImages.aspx" />
-    <Content Include="Admin\AdminTelemetry.aspx" />
     <Content Include="Member\Aircraft.aspx" />
     <Content Include="Member\Airports.aspx" />
     <Content Include="Member\Ajax.asmx" />
@@ -1856,6 +1855,7 @@
       <DependentUpon>WebService.resx</DependentUpon>
     </Compile>
     <Compile Include="Areas\mvc\Controllers\AdminPaymentController.cs" />
+    <Compile Include="Areas\mvc\Controllers\AdminTelemetryController.cs" />
     <Compile Include="Areas\mvc\Controllers\AdminUserController.cs" />
     <Compile Include="Areas\mvc\Controllers\AllMakesController.cs" />
     <Compile Include="Areas\mvc\Controllers\DonateController.cs" />
@@ -2764,13 +2764,6 @@
     <Compile Include="Admin\AdminImages.aspx.designer.cs">
       <DependentUpon>AdminImages.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Admin\AdminTelemetry.aspx.cs">
-      <DependentUpon>AdminTelemetry.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Admin\AdminTelemetry.aspx.designer.cs">
-      <DependentUpon>AdminTelemetry.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Member\Aircraft.aspx.cs">
       <DependentUpon>Aircraft.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3496,6 +3489,8 @@
     <Content Include="Areas\mvc\Views\MFBTemplate\_expandoImg.cshtml" />
     <Content Include="Areas\mvc\Views\MFBTemplate\_expandoText.cshtml" />
     <Content Include="Areas\mvc\Views\AdminPayment\_pmtDetailRows.cshtml" />
+    <Content Include="Areas\mvc\Views\AdminTelemetry\adminTelemetry.cshtml" />
+    <Content Include="Areas\mvc\Views\AdminTelemetry\_userTelemetry.cshtml" />
     <None Include="packages.config" />
     <None Include="SecuritySwitch-v4.xsd">
       <SubType>Designer</SubType>

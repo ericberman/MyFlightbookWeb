@@ -1,0 +1,38 @@
+﻿@using MyFlightbook.Telemetry
+@using System.Globalization
+@if (new List<TelemetryReference>(ViewBag.Telemetries).Any())
+{
+    <table class="stickyHeaderTable">
+        <thead>
+            <tr>
+                <th class="gvhCentered">Flight ID</th>
+                <th class="gvhCentered">Uncompressed Size</th>
+                <th class="gvhCentered">Compressed Size</th>
+                <th class="gvhCentered">Google Size</th>
+                <th class="gvhCentered">Distance</th>
+                <th class="gvhCentered">Compression Ratios<br />(C/U, G/U, G/C)</th>
+                <th class="gvhCentered"></th>
+                <th class="gvhCentered"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (TelemetryReference tr in ViewBag.Telemetries)
+            {
+                <tr>
+                    <td><a href="javascript:viewPathsForFlight(@tr.FlightID);">@tr.FlightID</a></td>
+                    <td style="text-align:right">@tr.Uncompressed.ToString("#,###", CultureInfo.CurrentCulture)</td>
+                    <td style="text-align:right">@tr.Compressed.ToString("#,###", CultureInfo.CurrentCulture)</td>
+                    <td style="text-align:right">@tr.GoogleDataSize.ToString("#,###", CultureInfo.CurrentCulture)</td>
+                    <td style="text-align:right">@(tr.CachedDistance.HasValue ? tr.CachedDistance.Value.ToString("#,###.0NM", CultureInfo.CurrentCulture) : string.Empty)</td>
+                    <td>
+                        @((100.0 * tr.Compressed / tr.Uncompressed).ToString("#.0%", CultureInfo.CurrentCulture))
+                        @((100.0 * tr.GoogleDataSize / tr.Uncompressed).ToString("#.0%", CultureInfo.CurrentCulture))
+                        @((100.0 * tr.GoogleDataSize / tr.Compressed).ToString("#.0%", CultureInfo.CurrentCulture))
+                    </td>
+                    <td><input type="button" value="DB to Disk" onclick="javascript: migrateToDisk(@tr.FlightID);" /></td>
+                    <td><input type="button" value="Disk to DB" onclick="javascript: migrateFromDisk(@tr.FlightID);" /></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

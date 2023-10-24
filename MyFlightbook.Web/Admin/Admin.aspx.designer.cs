@@ -33,51 +33,6 @@ namespace MyFlightbook.Web.Admin
         protected global::System.Web.UI.WebControls.View vwUsers;
 
         /// <summary>
-        /// gvLockedUsers control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvLockedUsers;
-
-        /// <summary>
-        /// sqlDSLockedUsers control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.SqlDataSource sqlDSLockedUsers;
-
-        /// <summary>
-        /// mfbImpersonate1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::MyFlightbook.Web.Admin.mfbImpersonate mfbImpersonate1;
-
-        /// <summary>
-        /// sqlDSDupeUsers control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.SqlDataSource sqlDSDupeUsers;
-
-        /// <summary>
-        /// gvDupeUsers control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvDupeUsers;
-
-        /// <summary>
         /// vwModels control.
         /// </summary>
         /// <remarks>

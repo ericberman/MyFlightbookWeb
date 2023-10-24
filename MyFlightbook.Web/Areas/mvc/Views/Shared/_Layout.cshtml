@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
     <head>
-        @{ Html.RenderAction("RenderHead", "MFBTemplate", new { Title = ViewBag.Title, UseCharting = ViewBag.UseCharting }); }
+        @{ Html.RenderAction("RenderHead", "MFBTemplate", new { Title = ViewBag.Title, UseCharting = ViewBag.UseCharting, UseMaps = ViewBag.UseMaps }); }
     </head>
     <body>
         @{ Html.RenderAction("RenderImpersonation", "MFBTemplate"); }

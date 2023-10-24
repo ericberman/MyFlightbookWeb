@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2022 MyFlightbook LLC
+ * Copyright (c) 2009-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -58,10 +55,6 @@ namespace MyFlightbook.Web.Admin
                 switch (sidebarTab)
                 {
                     default:
-                    case tabID.admUsers:
-                        mvAdmin.SetActiveView(vwUsers);
-                        mvMain.SetActiveView(vwMainUsers);
-                        break;
                     case tabID.admManufacturers:
                         mvAdmin.SetActiveView(vwManufacturers);
                         mvMain.SetActiveView(vwMainManufacturers);
@@ -278,24 +271,6 @@ namespace MyFlightbook.Web.Admin
             gv.EditIndex = -1;
 
             Manufacturer.FlushCache();
-        }
-        #endregion
-
-        #region User Management
-        protected void UnlockUser(object sender, CommandEventArgs e)
-        {
-            if (e != null && String.Compare(e.CommandName, "Unlock", StringComparison.OrdinalIgnoreCase) == 0)
-            {
-                int row = Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture);
-                string szUser = gvLockedUsers.Rows[row].Cells[1].Text;
-                MembershipUser u = Membership.GetUser(szUser);
-                u.UnlockUser();
-                sqlDSLockedUsers.DataBind();
-                gvLockedUsers.DataBind();
-
-                // Now send an email to the user
-                util.NotifyUser(String.Format(CultureInfo.CurrentCulture, Resources.Profile.AccountUnlockedSubject, Branding.CurrentBrand.AppName), Resources.EmailTemplates.AccountUnlocked, new MailAddress(u.Email, MyFlightbook.Profile.GetUser(szUser).UserFullName), true, false);
-            }
         }
         #endregion
 

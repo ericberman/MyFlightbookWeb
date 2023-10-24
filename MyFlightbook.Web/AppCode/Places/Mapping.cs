@@ -175,9 +175,8 @@ namespace MyFlightbook.Mapping
         /// Registers the script block that includes the data for the airports and the preferences for the map.
         /// <param name="mapID">The ID of the element on the page that holds the map</param>
         /// <param name="containerID">The client ID of the map's container</param>
-        /// <param name="=mapInitFuncName">The name of the global function to be called when the map is initialized</param>
         /// </summary>
-        public string MapJScript(string mapID, string mapInitFuncName, string containerID)
+        public string MapJScript(string mapID, string containerID)
         {
             Options.id = mapID;
             Options.divContainer = containerID;
@@ -192,11 +191,7 @@ namespace MyFlightbook.Mapping
             if (Options.BoundingBox == null)
                 Options.BoundingBox = new LatLongBox(new LatLong(Options.defaultLat, Options.defaultLong));
 
-            StringBuilder sbInitMap = new StringBuilder();
-
-            sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "var mapLibsReady = 0;\r\n\r\nfunction {0}() {{\r\n", mapInitFuncName);
-            // Need BOTH spiderfier AND googlemaps to be ready before we can continue
-            sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "if (++mapLibsReady < 2) return;\r\n");
+            StringBuilder sbInitMap = new StringBuilder("function () {\r\n");
 
             // If there is a path, define a variable to hold it now.
             // We do this as an array of 2-element latitude/longitude pairs; setPath already converted the path to MFBGMapLatLong objects

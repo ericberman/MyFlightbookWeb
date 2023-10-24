@@ -143,6 +143,7 @@ function MFBMap()
     this.clickPositionMarker = null;
     this.routeColor = "#0000FF";
     this.pathColor = "#FF0000";
+    this.overlays = [];
     
     this.NewMap = function () {
         this.center = new google.maps.LatLng(this.defaultLat, this.defaultLong);
@@ -376,7 +377,7 @@ function MFBMap()
                     }
 
                     if (this.fShowRoute && !this.fAutofillPanZoom)
-                        var _ = new google.maps.Polyline({ path: points, strokeColor: this.routeColor, strokeOpacity: 0.5, strokeWeight: 5, map: this.gmap, geodesic: true });
+                        this.overlays.push(new google.maps.Polyline({ path: points, strokeColor: this.routeColor, strokeOpacity: 0.5, strokeWeight: 5, map: this.gmap, geodesic: true }));
                 }
             }
         }
@@ -409,8 +410,19 @@ function MFBMap()
         }
 
         if (this.pathArray)
-            var __ = new google.maps.Polyline({ path: this.pathArray, strokeColor: this.pathColor, strokeOpacity: 0.5, strokeWeight: 5, map: this.gmap });
+            this.overlays.push(new google.maps.Polyline({ path: this.pathArray, strokeColor: this.pathColor, strokeOpacity: 0.5, strokeWeight: 5, map: this.gmap }));
     };
+
+    this.ClearOverlays = function () {
+        for (var i = 0; i < this.overlays.length; i++) {
+            this.overlays[i].setMap(null);
+        }
+        this.overlays = [];
+    }
+
+    this.AddPath = function (path) {
+        this.overlays.push(new google.maps.Polyline({ path: path, strokeColor: this.pathColor, strokeOpacity: 0.5, strokeWeight: 5, map: this.gmap }));
+    }
 }
 
 function MFBNewMapOptions(mfbMapOptions, rgPath)

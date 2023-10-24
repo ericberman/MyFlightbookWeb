@@ -17,7 +17,6 @@
 <script src="@VirtualPathUtility.ToAbsolute("~/Public/Scripts/jqueryutil.js")"></script>
 <script src='@VirtualPathUtility.ToAbsolute("~/Public/Scripts/jquery.fitvids.js")' type="text/javascript"></script>
 <script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js" type="text/javascript"></script>
-
 @if (ViewBag.UseCharting)
 {
     <script src="https://www.google.com/jsapi" type="text/javascript"></script>
@@ -35,7 +34,29 @@
         }
     </script>
 }
+@if (ViewBag.UseMaps)
+{
+    <script type="text/javascript">
+        var mapLibsReady = 0;   // Has mapping fully loaded?
+        var mapInitFuncs = [];  // init functions (closures) to call once mapping is loaded.
 
+        function onGMapLoaded() {
+            // Need BOTH spiderfier AND googlemaps to be ready before we can continue
+            if (++mapLibsReady < 2)
+                return;
+            for (var i = 0; i < mapInitFuncs.length; i++) {
+                mapInitFuncs[i]();
+            }
+        }
+
+        function deferMapLoad(func) {
+            mapInitFuncs.push(func);
+        }
+    </script>
+    <script src="@VirtualPathUtility.ToAbsolute("~/Public/Scripts/GMapScript.js?v=12")" type="text/javascript"></script>
+    <script defer src="@Html.Raw(String.Format(System.Globalization.CultureInfo.InvariantCulture, "https://maps.googleapis.com/maps/api/js?key={0}&callback=onGMapLoaded", HttpUtility.HtmlEncode(MyFlightbook.SocialMedia.GooglePlusConstants.MapsKey)))"></script>
+    <script defer src="@VirtualPathUtility.ToAbsolute("~/Public/Scripts/oms.min.js")?v=9&?spiderfier_callback=onGMapLoaded"></script>
+}
 @if (ViewBag.IsIOSOrAndroid)
 {
     <meta name="format-detection" content="telephone=no" />

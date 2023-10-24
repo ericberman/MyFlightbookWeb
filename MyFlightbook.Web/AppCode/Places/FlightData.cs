@@ -19,7 +19,7 @@ using System.Xml;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2022 MyFlightbook LLC
+ * Copyright (c) 2010-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1744,6 +1744,21 @@ namespace MyFlightbook.Telemetry
             if (!String.IsNullOrEmpty(szTelemetry))
                 InitFromTelemetry();
         }
+
+        /// <summary>
+        /// Loads the telemetry reference for the specified flight.  CAN RETURN NULL
+        /// </summary>
+        /// <param name="idFlight"></param>
+        /// <returns></returns>
+        public static TelemetryReference LoadForFlight(int idFlight) 
+        {
+            TelemetryReference result = null;
+            DBHelper dbh = new DBHelper("SELECT * FROM flighttelemetry WHERE idflight=?idf");
+            dbh.ReadRow(
+                (comm) => { comm.Parameters.AddWithValue("idf", idFlight); }, 
+                (dr) => { result = new TelemetryReference(dr); });
+            return result;
+        }
         #endregion
 
         #region Object Initialization
@@ -2061,42 +2076,173 @@ namespace MyFlightbook.Telemetry
         {
             List<int> lst = new List<int>();
             DBHelper dbh = new DBHelper("SELECT f.idFlight FROM flights f INNER JOIN flighttelemetry ft ON f.idflight=ft.idflight WHERE f.telemetry IS NOT NULL");
-            dbh.ReadRows((comm) => { }, (dr) => { lst.Add(Convert.ToInt32(dr["idflight"], CultureInfo.InvariantCulture)); });
+            dbh.ReadRows((comm) => { comm.CommandTimeout = 300; }, (dr) => { lst.Add(Convert.ToInt32(dr["idflight"], CultureInfo.InvariantCulture)); });
             return lst;
         }
 
         /// <summary>
-        /// Find all flights for there is both a telemetryreference AND data in the flights table
+        /// Find all flights for there is a telemetryreference but no corresponding file on the disk
         /// </summary>
         /// <returns>An enumeration of flightIDs</returns>
         public static IEnumerable<int> FindOrphanedRefs()
         {
-            List<int> lst = new List<int>();
+            List<int> lst = new  List<int>();
+            HashSet<string> files = new HashSet<string>(Directory.EnumerateFiles(System.Web.Hosting.HostingEnvironment.MapPath(VirtualPathUtility.ToAbsolute(FileDir)), "*" + TelemetryExtension, SearchOption.TopDirectoryOnly));
             DBHelper dbh = new DBHelper("SELECT * FROM FlightTelemetry");
-            dbh.ReadRows((comm) => { }, (dr) =>
+            dbh.ReadRows((comm) => { comm.CommandTimeout = 300; }, (dr) =>
             {
                 TelemetryReference tr = new TelemetryReference(dr);
-                if (!File.Exists(tr.FilePath))
+                if (!files.Contains(tr.FilePath))
                     lst.Add(tr.FlightID.Value);
             });
             return lst;
         }
 
         /// <summary>
-        /// Find all files for which there is no corresponding reference in the flight telemetry table
+        /// Find all files for which there is a file on the disk but no telemetry reference
         /// </summary>
         /// <returns></returns>
         public static IEnumerable<string> FindOrphanedFiles()
         {
-            List<string> files = new List<string>(Directory.EnumerateFiles(System.Web.Hosting.HostingEnvironment.MapPath(VirtualPathUtility.ToAbsolute(FileDir)), "*" + TelemetryExtension, SearchOption.TopDirectoryOnly));
+            HashSet<string> files = new HashSet<string>(Directory.EnumerateFiles(System.Web.Hosting.HostingEnvironment.MapPath(VirtualPathUtility.ToAbsolute(FileDir)), "*" + TelemetryExtension, SearchOption.TopDirectoryOnly));
             DBHelper dbh = new DBHelper("SELECT * FROM FlightTelemetry");
-            dbh.ReadRows((comm) => { },
+            HashSet<string> References = new HashSet<string>();
+            dbh.ReadRows(
+                (comm) => { comm.CommandTimeout = 300; },
+                (dr) => { References.Add(new TelemetryReference(dr).FilePath); });
+            return files.Except(References);
+        }
+
+        /// <summary>
+        /// Migrates Telemetry FROM the database TO files
+        /// </summary>
+        /// <param name="szUser">The user for whom to move files</param>
+        /// <param name="limit">The max number of files to move; 50 if not provided.</param>
+        /// <returns>Status of the result</returns>
+        /// <exception cref="MyFlightbookException"></exception>
+        public static string MigrateFROMDBToFiles(string szUser = null, int limit = 50)
+        {
+            DateTime dtStart = DateTime.Now;
+
+            // for memory, just get the ID's up front, then we'll do flights one at a time.
+            List<int> lst = new List<int>();
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "SELECT idFlight FROM flights WHERE {0} telemetry IS NOT NULL LIMIT {1}", String.IsNullOrEmpty(szUser) ? string.Empty : "username=?szuser AND ", limit));
+            dbh.ReadRows((comm) =>
+            {
+                comm.Parameters.AddWithValue("szuser", szUser);
+                comm.CommandTimeout = 300;  // can be slow.
+            },
+            (dr) => { lst.Add(Convert.ToInt32(dr["idFlight"], CultureInfo.InvariantCulture)); });
+
+            // HACK: Force load the flight, so provide a non-empty username. 
+            if (String.IsNullOrEmpty(szUser))
+                szUser = "ADMIN";
+
+            int cFlightsMigrated = 0;
+            lst.ForEach((idFlight) =>
+            {
+                try
+                {
+                    new LogbookEntry(idFlight, szUser, LogbookEntryCore.LoadTelemetryOption.LoadAll, true).MoveTelemetryFromFlightEntry();
+                    cFlightsMigrated++;
+                    if ((cFlightsMigrated % 20) == 0)
+                        System.Threading.Thread.Sleep(0);
+                }
+                catch (Exception ex)
+                {
+                    throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, "Exception migrating flight {0}: {1}", idFlight, ex.Message), ex);
+                }
+            });
+
+            DateTime dtEnd = DateTime.Now;
+
+            return String.Format(CultureInfo.InvariantCulture, "{0} flights migrated, elapsed: {1} seconds", cFlightsMigrated, dtEnd.Subtract(dtStart).TotalSeconds);
+        }
+
+        /// <summary>
+        /// Migrates Telemetry FROM files TO the database
+        /// </summary>
+        /// <param name="szUser">The user for whom to move files</param>
+        /// <param name="limit">The max number of files to move; 50 if not provided.</param>
+        /// <returns>Status of the result</returns>
+        /// <exception cref="MyFlightbookException"></exception>
+        public static string MigrateFROMFilesToDB(string szUser = null, int limit = 50)
+        {
+            DateTime dtStart = DateTime.Now;
+
+            // for memory, just get the ID's up front, then we'll do flights one at a time.
+            List<TelemetryReference> lst = new List<TelemetryReference>();
+            DBHelper dbh = new DBHelper((String.IsNullOrEmpty(szUser) ? "SELECT * from FlightTelemetry" : "SELECT ft.* FROM FlightTelemetry ft INNER JOIN flights f ON ft.idflight=f.idflight WHERE f.username=?szuser") + " LIMIT " + limit.ToString(CultureInfo.InvariantCulture));
+            dbh.ReadRows((comm) =>
+            {
+                comm.Parameters.AddWithValue("szuser", szUser);
+                comm.CommandTimeout = 300;
+            }, (dr) => { lst.Add(new TelemetryReference(dr)); });
+
+            string szStatus = string.Empty;
+
+            // HACK: Force load the flight, so provide a non-empty username. 
+            if (String.IsNullOrEmpty(szUser))
+                szUser = "ADMIN";
+
+            int cFlightsMigrated = 0;
+            lst.ForEach((tr) =>
+            {
+                if (!tr.FlightID.HasValue)
+                {
+                    szStatus += "Flight ID without a value!!! ";
+                }
+                else
+                {
+                    new LogbookEntry(tr.FlightID.Value, szUser, LogbookEntryCore.LoadTelemetryOption.LoadAll, true).MoveTelemetryToFlightEntry();
+                    cFlightsMigrated++;
+                }
+                if ((cFlightsMigrated % 20) == 0)
+                    System.Threading.Thread.Sleep(0);
+            });
+
+            DateTime dtEnd = DateTime.Now;
+
+            szStatus += String.Format(CultureInfo.InvariantCulture, "{0} flights migrated, elapsed: {1} seconds", cFlightsMigrated, dtEnd.Subtract(dtStart).TotalSeconds);
+            return szStatus;
+        }
+
+        /// <summary>
+        /// Get all telemetry for the specified user
+        /// </summary>
+        /// <param name="szUser">User to view</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static IEnumerable<TelemetryReference> ADMINTelemetryForUser(string szUser)
+        {
+            if (String.IsNullOrEmpty(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+
+            List<TelemetryReference> lst = new List<TelemetryReference>();
+
+            DBHelper dbh = new DBHelper(@"SELECT 
+	f.idflight, 
+    Length(telemetry) AS compressed, 
+    length(uncompress(telemetry)) AS uncompressed, 
+    CAST(UNCOMPRESS(telemetry) AS CHAR) AS telemetry,
+    ft.*,
+    IF(ft.idflight IS NULL, 0 , 1) AS HasFT
+FROM flights f 
+	LEFT JOIN FlightTelemetry ft ON f.idflight=ft.idflight
+WHERE username=?szUser AND Coalesce(f.telemetry, ft.idflight) IS NOT NULL 
+ORDER BY f.idFlight DESC;");
+            
+            lst.Clear();
+            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("szUser", szUser); },
                 (dr) =>
                 {
-                    TelemetryReference tr = new TelemetryReference(dr);
-                    files.RemoveAll(s => s.CompareOrdinalIgnoreCase(tr.FilePath) == 0);
+                    TelemetryReference tr = (Convert.ToInt32(dr["HasFT"], CultureInfo.InvariantCulture) == 0) ?
+                        new TelemetryReference(dr["telemetry"].ToString(), Convert.ToInt32(dr["idflight"], CultureInfo.InvariantCulture)) { Compressed = Convert.ToInt32(dr["compressed"], CultureInfo.InvariantCulture) } :
+                        new TelemetryReference(dr) { Compressed = 0, RawData = dr["telemetry"].ToString() };
+                    lst.Add(tr);
                 });
-            return files;
+
+            return lst;
         }
         #endregion
 

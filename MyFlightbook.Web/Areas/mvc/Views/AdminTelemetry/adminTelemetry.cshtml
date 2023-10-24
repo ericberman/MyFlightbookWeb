@@ -1,0 +1,282 @@
+﻿@using System.Globalization;
+@using MyFlightbook.Mapping;
+@using MyFlightbook.Telemetry;
+@{
+    ViewBag.Title = "Admin - Telemetry";
+    ViewBag.defaultTab = tabID.tabAdmin;
+    ViewBag.UseMaps = true;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+
+<script type="text/javascript">
+    function migrateDBToFiles(idStatus) {
+        var params = new Object();
+        params.szLimitUser = $('#ckLimitUsers')[0].checked ? $('#txtUserName')[0].value : "";
+        params.cLimit = $('#txtMaxFiles')[0].value;
+        var d = JSON.stringify(params);
+        $('#prgBulkMigrate').toggle();
+        $.ajax(
+            {
+                url: '@VirtualPathUtility.ToAbsolute("~/Admin/AdminService.asmx/MigrateDBToFiles")',
+                type: "POST", data: d, dataType: "json", contentType: "application/json",
+                error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
+                complete: function (response) { $('#prgBulkMigrate').toggle(); },
+                success: function (response) {
+                    $("#" + idStatus)[0].innerText = response.d;
+                }
+            });
+        return false;
+    }
+
+    function migrateFilesToDB(idStatus) {
+        var params = new Object();
+        params.szLimitUser = $('#ckLimitUsers')[0].checked ? $('#txtUserName')[0].value : "";
+        params.cLimit = $('#txtMaxFiles')[0].value;
+        var d = JSON.stringify(params);
+        $('#prgBulkMigrate').toggle();
+        $.ajax(
+            {
+                url: '@VirtualPathUtility.ToAbsolute("~/Admin/AdminService.asmx/MigrateFilesToDB")',
+                type: "POST", data: d, dataType: "json", contentType: "application/json",
+                error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
+                complete: function (response) { $('#prgBulkMigrate').toggle(); },
+                success: function (response) {
+                    $("#" + idStatus)[0].innerText = response.d;
+                }
+            });
+        return false;
+    }
+
+    function findDupeTelemetry(idStatus) {
+        var params = new Object();
+        var d = JSON.stringify(params);
+        $('#prgFindExceptions').toggle();
+        $.ajax(
+            {
+                url: '@VirtualPathUtility.ToAbsolute("~/Admin/AdminService.asmx/FindDupeTelemetry")',
+                type: "POST", data: d, dataType: "json", contentType: "application/json",
+                error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
+                complete: function (response) { $('#prgFindExceptions').toggle(); },
+                success: function (response) {
+                    $("#" + idStatus)[0].innerHTML = response.d;
+                }
+            });
+        return false;
+    }
+
+    function findOrphanReferences(idStatus) {
+        var params = new Object();
+        var d = JSON.stringify(params);
+        $('#prgFindExceptions').toggle();
+        $.ajax(
+            {
+                url: '@VirtualPathUtility.ToAbsolute("~/Admin/AdminService.asmx/FindOrphanReferences")',
+                type: "POST", data: d, dataType: "json", contentType: "application/json",
+                error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
+                complete: function (response) { $('#prgFindExceptions').toggle(); },
+                success: function (response) {
+                    $("#" + idStatus)[0].innerHTML = response.d;
+                }
+            });
+        return false;
+    }
+
+    function findOrphanedFiles(idStatus) {
+        var params = new Object();
+        var d = JSON.stringify(params);
+        $('#prgFindExceptions').toggle();
+        $.ajax(
+            {
+                url: '@VirtualPathUtility.ToAbsolute("~/Admin/AdminService.asmx/FindOrphanedFiles")',
+                type: "POST", data: d, dataType: "json", contentType: "application/json",
+                error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
+                complete: function (response) { $('#prgFindExceptions').toggle(); },
+                success: function (response) {
+                    $("#" + idStatus)[0].innerHTML = response.d;
+                }
+            });
+        return false;
+    }
+
+    function migrateToDisk(idFlight) {
+        var params = new Object();
+        params.idFlight = idFlight;
+        var d = JSON.stringify(params);
+        $.ajax(
+            {
+                url: '@VirtualPathUtility.ToAbsolute("~/Admin/AdminService.asmx/MigrateFlightToDisk")',
+                type: "POST", data: d, dataType: "json", contentType: "application/json",
+                error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
+                complete: function (response) { },
+                success: function (response) {
+                    window.alert(response.d);
+                }
+            });
+        return false;
+    }
+
+    function migrateFromDisk(idFlight) {
+        var params = new Object();
+        params.idFlight = idFlight;
+        var d = JSON.stringify(params);
+        $.ajax(
+            {
+                url: '@VirtualPathUtility.ToAbsolute("~/Admin/AdminService.asmx/MigrateFlightFromDisk")',
+                type: "POST", data: d, dataType: "json", contentType: "application/json",
+                error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
+                complete: function (response) { },
+                success: function (response) {
+                    window.alert(response.d);
+                }
+            });
+        return false;
+    }
+
+    function setPathForMap(map, rgll, llb) {
+        var path = [];
+        // rgll came down as an array of number pairs, for efficiency
+        rgll.forEach((ll, _) => { path.push(nll(ll[0], ll[1])); });
+        map.ClearOverlays();
+        map.AddPath(path);
+        map.minLat = llb.LatMin;
+        map.maxLat = llb.LatMax;
+        map.minLong = llb.LongMin;
+        map.maxLong = llb.LongMax;
+
+        map.ZoomOut();
+    }
+
+    function viewPathsForFlight(idFlight) {
+        var params = new Object();
+        params.idFlight = idFlight;
+        var d = JSON.stringify(params);
+        $.ajax(
+            {
+                url: '@VirtualPathUtility.ToAbsolute("~/Admin/AdminService.asmx/PathsForFlight")',
+                type: "POST", data: d, dataType: "json", contentType: "application/json",
+                error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
+                complete: function (response) { },
+                success: function (response) {
+                    setPathForMap(gmapForMapID("idMap1"), response.d.straight, response.d.boundingBox);
+                    setPathForMap(gmapForMapID("idMap2"), response.d.reconstituded, response.d.boundingBox);
+                }
+            });
+        return false;
+    }
+
+    function viewAntipodes() {
+        var fileData = $('#fuAntipodes').prop('files')[0];
+        var formData = new FormData();
+        formData.append('file', fileData);
+        var fName = fileData.name;
+        // Need to do this as a two-step: upload the file, then request the antipodes
+        // This is because the upload requires contenttype=false and datatype=text since the server responds with XML to the file upload (weirdly)
+        // The 2nd ajax then gets the data for the antipodes
+        $.ajax(
+            {
+                url: '@VirtualPathUtility.ToAbsolute("~/Admin/AdminService.asmx/UploadAntipodes")',
+                type: "POST", data: formData, dataType: "text", contentType: false, processData: false,
+                error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
+                complete: function (response) { },
+                success: function (response) {
+                    // Now do the ajax call to actually get the data
+                    var params = new Object();
+                    params.fileName = fName;
+                    var d = JSON.stringify(params);
+                    $.ajax({
+                        url: '@VirtualPathUtility.ToAbsolute("~/Admin/AdminService.asmx/Antipodes")',
+                        type: "POST", data: d, dataType: "json", contentType: "application/json",
+                        error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
+                        complete: function (response) { },
+                        success: function (response) {
+                            setPathForMap(gmapForMapID("idMap1"), response.d.original, response.d.boundingBoxOriginal);
+                            setPathForMap(gmapForMapID("idMap2"), response.d.antipodes, response.d.boundingBoxAntipodes);
+                        }
+                    })
+                }
+            });
+        return false;
+    }
+
+    function getUserTelemetry(szUser, targetDivID) {
+        $("#prgGetTelemetry").toggle();
+        var params = new Object();
+        params.szUser = szUser;
+        var d = JSON.stringify(params);
+        $.ajax({
+            url: '@Url.Action("TelemetryForUser", "AdminTelemetry")',
+            type: "POST", data: d, dataType: "html", contentType: "application/json",
+            error: function (xhr, status, error) {
+                window.alert(xhr.responseJSON.Message);
+            },
+            complete: function (response) {
+                $("#prgGetTelemetry").toggle();
+            },
+            success: function (response) {
+                targetDivID.html(response);
+            }
+        });
+    }
+</script>
+
+<div id="pnlBulkMigrate">
+    <h2>Migration between database and files</h2>
+    <div><input type="number" placeholder="(Limit)" value="50" name="txtMaxFiles" id="txtMaxFiles" /></div>
+    <div>@Html.CheckBox("fLimitUsers", new { id = "ckLimitUsers" }) <label for="ckLimitUsers">Restrict to user (below)</label></div>
+    <input type="button" id="btnMigrateFROMDBtoFILES" name="btnMigrateTOFiles" value="Migrate from DATABASE to FILES" onclick="javascrtipt:migrateDBToFiles('lblMigrateStatus')" />
+    <input type="button" id="btnMigrateFILEStoDB" name="btnMigrateFROMFiles" value="Migrate from FILES to DATABASE" onclick="javascrtipt:migrateFilesToDB('lblMigrateStatus')" />
+    <img style="max-height: 16px; max-width: 16px; display:none;" id="prgBulkMigrate" src="@VirtualPathUtility.ToAbsolute("~/images/progress.gif")" /><span id="lblMigrateStatus"></span>
+
+    <h2>Synchronization, data integrity</h2>
+    <div>
+        <input type="button" id="btnFindDupeTelemetry" value="Find flights in both DB and disk" onclick="javascript:findDupeTelemetry('migrateResults');" />
+        <input type="button" id="btnFindOrphanReferences" value="Find orphaned references" onclick="javascript:findOrphanReferences('migrateResults');" />
+        <input type="button" id="btnFindOrphanedFiles" value="Find orphaned files" onclick="javascript:findOrphanedFiles('migrateResults');" />
+    </div>
+</div>
+<div>
+    <img style="max-height: 16px; max-width: 16px; display:none;" id="prgFindExceptions" src="@VirtualPathUtility.ToAbsolute("~/images/progress.gif")" />
+    <span id="migrateResults"></span>
+</div>
+<h2>Antipodes (just for fun)</h2>
+<p>Upload a telemetry file and view it side-by-side with its antipodes</p>
+<input type="file" id="fuAntipodes" name="fuAntipodes" />
+<input type="button" name="btnViewAntipodes" value="View Antipodes" onclick="javascript: viewAntipodes();" />
+<h2>View telemetry for user</h2>
+<div id="pnlMaps" style="position: sticky; top: 0; margin-top: 30px; margin-bottom: 30px; width: 400px; float: right;">
+    <div>Raw:</div>
+    <div id="mapRawContainer">
+        <div id="mapRaw" style="width: 100%; height: 400px;"></div>
+    </div>
+    <div>Compressed/uncompressed:</div>
+    <div id="mapReconstitutedContainer">
+        <div id="mapReconstituted" style="width: 100%; height: 400px;"></div>
+    </div>
+    @{
+        GoogleMap gmapRaw = new GoogleMap() { MapMode = GMap_Mode.Dynamic };
+        GoogleMap gmapReconstituted = new GoogleMap() { MapMode = GMap_Mode.Dynamic };
+        gmapRaw.Options.PathVarName = "pathArray1";
+        Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+        gmapRaw.Options.PathColor = gmapReconstituted.Options.PathColor = pf.GetPreferenceForKey<string>(MFBConstants.keyPathColor, MFBGoogleMapOptions.DefaultPathColor);
+        gmapRaw.Options.RouteColor = gmapReconstituted.Options.RouteColor = pf.GetPreferenceForKey<string>(MFBConstants.keyRouteColor, MFBGoogleMapOptions.DefaultRouteColor);
+        gmapReconstituted.Options.PathVarName = "pathArray2";
+    }
+    <script type="text/javascript">
+        $("#mapRawContainer").resizable();
+        $("#mapReconstitutedContainer").resizable();
+
+        var pathArray1 = [];
+        var pathArray2 = [];
+
+        deferMapLoad(@Html.Raw(gmapRaw.MapJScript("idMap1", "mapRaw")));
+        deferMapLoad(@Html.Raw(gmapReconstituted.MapJScript("idMap2", "mapReconstituted")));
+    </script>
+</div>
+<div id="pnlUser">
+    <input type="text" placeholder="(Username)" id="txtUserName" name="szUser" value="@User.Identity.Name" />
+    <input type="button" value="Refresh" onclick="javascript:getUserTelemetry($('#txtUserName')[0].value, $('#telemetryContainer'));" />
+    <img style="max-height: 16px; max-width: 16px; display:none;" id="prgGetTelemetry" src="@VirtualPathUtility.ToAbsolute("~/images/progress.gif")" />
+    <div id="telemetryContainer" style="max-width: 500px;">
+    </div>
+</div>
+

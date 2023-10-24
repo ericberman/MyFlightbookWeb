@@ -114,15 +114,31 @@ public partial class Controls_mfbGoogleMapMgr : UserControl
         {
             case GMap_Mode.Dynamic:
                 {
-                    // Generate a name for the callback function that is unique to this map.
-                    string szFuncName = "initMap" + Regex.Replace(UniqueID, "[^a-zA-Z0-9]", string.Empty);
-                    Page.ClientScript.RegisterClientScriptInclude("MFBMapScript", ResolveClientUrl("~/Public/Scripts/GMapScript.js?v=11"));
-                    Page.ClientScript.RegisterClientScriptBlock(GetType(), "MapInit" + UniqueID, Map.MapJScript(MapID, szFuncName, pnlMap.ClientID), true);
+                    Page.ClientScript.RegisterClientScriptBlock(GetType(), "MapInitLibsReady", @"
+var mapLibsReady = 0;
+var mapInitFuncs = [];  // init functions (closures) to call once mapping is loaded.
+
+function onGMapLoaded() {
+    // Need BOTH spiderfier AND googlemaps to be ready before we can continue
+    if (++mapLibsReady < 2)
+        return;
+    for (var i = 0; i < mapInitFuncs.length; i++) {
+        mapInitFuncs[i]();
+    }
+}
+
+function deferMapLoad(func) {
+    mapInitFuncs.push(func);
+}", true);
+                    Page.ClientScript.RegisterClientScriptInclude("MFBMapScript", ResolveClientUrl("~/Public/Scripts/GMapScript.js?v=12"));
+                    Page.ClientScript.RegisterClientScriptBlock(GetType(), "MapInit" + UniqueID, String.Format(CultureInfo.InvariantCulture, "deferMapLoad({0});", Map.MapJScript(MapID, pnlMap.ClientID)), true);
 
                     // We put this in-line because, as far as I can tell, there's no way to do a registerclientscriptinclude that includes the async or the defer attribute AND because it MUST be after the <div> is loaded; 
                     // if we register these as an include, they get placed at the top, before the <div>
                     // Load googlemaps and then the spiderfier, and use the same callback for both so we can tell when both have loaded
-                    litScript.Text = String.Format(CultureInfo.InvariantCulture, "<script defer src=\"https://maps.googleapis.com/maps/api/js?key={0}&callback={1}\"></script><script defer src=\"{2}?v=9&?spiderfier_callback={1}\"></script>", MyFlightbook.SocialMedia.GooglePlusConstants.MapsKey, szFuncName, ResolveClientUrl("~/Public/Scripts/oms.min.js"));
+                    litScript.Text = String.Format(CultureInfo.InvariantCulture, @"
+<script defer src=""https://maps.googleapis.com/maps/api/js?key={0}&callback=onGMapLoaded""></script>
+<script defer src=""{1}?v=9&?spiderfier_callback=onGMapLoaded""></script>", MyFlightbook.SocialMedia.GooglePlusConstants.MapsKey, ResolveClientUrl("~/Public/Scripts/oms.min.js"));
                 }
                 break;
             case GMap_Mode.Static:

@@ -266,7 +266,7 @@
         <Roles>SiteAdmin,Accountant</Roles>
       </Item>
       <Item>
-        <Link>~/Admin/AdminTelemetry.aspx</Link>
+        <Link>~/mvc/AdminTelemetry</Link>
         <ID>admTelemetry</ID>
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>

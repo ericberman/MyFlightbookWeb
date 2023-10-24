@@ -212,7 +212,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         [ChildActionOnly]
-        public ActionResult RenderHead(string Title, bool UseCharting = false)
+        public ActionResult RenderHead(string Title, bool UseCharting = false, bool UseMaps = false)
         {
             int idBrand = util.GetIntParam(Request, "bid", -1);
             if (idBrand >= 0 && idBrand < Enum.GetNames(typeof(BrandID)).Length)
@@ -250,6 +250,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             // Now do all of the main header stuff.
             ViewBag.Title = Title ?? Branding.CurrentBrand.AppName;
             ViewBag.UseCharting = UseCharting;
+            ViewBag.UseMaps = UseMaps;
 
             string szUserAgent = Request.UserAgent.ToUpperInvariant();
             ViewBag.IsIOSOrAndroid = szUserAgent.Contains("IPHONE") || szUserAgent.Contains("IPAD") || szUserAgent.Contains("ANDROID");

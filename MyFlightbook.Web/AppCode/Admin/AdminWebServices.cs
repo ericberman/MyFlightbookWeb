@@ -1,9 +1,14 @@
-﻿using Resources;
+﻿using MyFlightbook.Geography;
+using MyFlightbook.Telemetry;
+using Resources;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.ServiceModel;
 using System.Text;
 using System.Web;
+using System.Web.Script.Services;
 using System.Web.Security;
 using System.Web.Services;
 
@@ -22,7 +27,7 @@ namespace MyFlightbook.Web.Ajax
     [WebService(Namespace = "http://myflightbook.com/")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [ServiceContract]
-    [System.Web.Script.Services.ScriptService]
+    [ScriptService]
     [System.ComponentModel.ToolboxItem(false)]
     public class AdminWebServices : System.Web.Services.WebService
     {
@@ -37,6 +42,8 @@ namespace MyFlightbook.Web.Ajax
         public AdminWebServices()
         {
             if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+                throw new UnauthorizedAccessException();
+            if (!Profile.GetUser(HttpContext.Current.User.Identity.Name).CanDoSomeAdmin)
                 throw new UnauthorizedAccessException();
         }
 
@@ -332,6 +339,200 @@ namespace MyFlightbook.Web.Ajax
 
             Profile pf = Profile.GetUser(mu.UserName);
             util.NotifyUser(szSubject, szBody, new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
+        }
+        #endregion
+
+        #region Telemetry WebMethods
+        [WebMethod(EnableSession = true)]
+        public string MigrateDBToFiles(int cLimit, string szLimitUser)
+        {
+            if (!Profile.GetUser(User.Identity.Name).CanManageData)
+                throw new UnauthorizedAccessException();
+
+            return TelemetryReference.MigrateFROMDBToFiles(szLimitUser, cLimit);
+        }
+
+        [WebMethod(EnableSession = true)]
+        public string MigrateFilesToDB(int cLimit, string szLimitUser)
+        {
+            if (!Profile.GetUser(User.Identity.Name).CanManageData)
+                throw new UnauthorizedAccessException();
+
+            return TelemetryReference.MigrateFROMFilesToDB(szLimitUser, cLimit);
+        }
+
+        [WebMethod(EnableSession = true)]
+        private static string EnumerableToHtmlResult<T>(IEnumerable<T> lst)
+        {
+            if (lst.Any())
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (T item in lst)
+                    sb.AppendFormat(CultureInfo.CurrentCulture, "<div>{0}</div>", item.ToString());
+                return sb.ToString();
+            }
+            else
+                return "<p>No issues found!</p>";
+        }
+
+        [WebMethod(EnableSession = true)]
+        public string FindDupeTelemetry()
+        {
+            if (!Profile.GetUser(User.Identity.Name).CanManageData)
+                throw new UnauthorizedAccessException();
+
+            return EnumerableToHtmlResult(TelemetryReference.FindDuplicateTelemetry());
+        }
+
+        [WebMethod(EnableSession = true)]
+        public string FindOrphanReferences()
+        {
+            if (!Profile.GetUser(User.Identity.Name).CanManageData)
+                throw new UnauthorizedAccessException();
+
+            return EnumerableToHtmlResult(TelemetryReference.FindOrphanedRefs());
+        }
+
+        [WebMethod(EnableSession = true)]
+        public string FindOrphanedFiles()
+        {
+            if (!Profile.GetUser(User.Identity.Name).CanManageData)
+                throw new UnauthorizedAccessException();
+
+            return EnumerableToHtmlResult(TelemetryReference.FindOrphanedFiles());
+        }
+
+        [WebMethod(EnableSession = true)]
+        public string MigrateFlightToDisk(int idFlight)
+        {
+            if (!Profile.GetUser(User.Identity.Name).CanManageData)
+                throw new UnauthorizedAccessException();
+
+            LogbookEntry le = new LogbookEntry();
+            le.FLoadFromDB(idFlight, null, LogbookEntryCore.LoadTelemetryOption.LoadAll, true);
+            le.Telemetry.Compressed = 0;    // no longer know the compressed 
+            le.MoveTelemetryFromFlightEntry();
+
+            return "Flight moved from DB to disk";
+        }
+
+        [WebMethod(EnableSession = true)]
+        public string MigrateFlightFromDisk(int idFlight)
+        {
+            if (!Profile.GetUser(User.Identity.Name).CanManageData)
+                throw new UnauthorizedAccessException();
+
+            LogbookEntry le = new LogbookEntry();
+            le.FLoadFromDB(idFlight, null, LogbookEntryCore.LoadTelemetryOption.LoadAll, true);
+            le.MoveTelemetryToFlightEntry();
+            return "Flight moved from disk back to DB";
+        }
+
+        private static string AntipodesSessionKey(string filename)
+        {
+            return "ANTIPODES-FILE*:" + filename;
+        }
+
+        [WebMethod(EnableSession = true)]
+        public void UploadAntipodes()
+        {
+            if (!Profile.GetUser(User.Identity.Name).CanManageData)
+                throw new UnauthorizedAccessException();
+
+            if (HttpContext.Current.Request.Files.Count == 0)
+                throw new InvalidOperationException("No file uploaded");
+            HttpPostedFile pf = HttpContext.Current.Request.Files[0];
+            byte[] rgbytes = new byte[pf.ContentLength];
+            pf.InputStream.Read(rgbytes, 0, pf.ContentLength);
+            pf.InputStream.Close();
+            HttpContext.Current.Session[AntipodesSessionKey(HttpContext.Current.Request.Files[0].FileName)] = rgbytes;
+        }
+
+        [WebMethod(EnableSession = true)]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+        public dynamic Antipodes(string fileName)
+        {
+            if (!Profile.GetUser(User.Identity.Name).CanManageData)
+                throw new UnauthorizedAccessException();
+
+            string sessionKey = AntipodesSessionKey(fileName);
+            byte[] rgbytes = (byte[])HttpContext.Current.Session[sessionKey] ?? throw new InvalidOperationException("Uploaded file not found");
+            HttpContext.Current.Session[sessionKey] = null; // clear it out.
+
+            LatLong[] rgStraight = null;
+            LatLong[] rgAntipodes = null;
+
+            using (Telemetry.FlightData fdOriginal = new Telemetry.FlightData())
+            {
+                if (fdOriginal.ParseFlightData(Encoding.UTF8.GetString(rgbytes)))
+                {
+                    rgStraight = fdOriginal.GetPath();
+                    rgAntipodes = new LatLong[rgStraight.Length];
+                    for (int i = 0; i < rgStraight.Length; i++)
+                        rgAntipodes[i] = rgStraight[i].Antipode;
+                }
+            }
+
+            if (rgStraight == null || rgAntipodes == null)
+                throw new InvalidOperationException("No path found");
+
+            LatLongBox boundingBoxOriginal = new LatLongBox(rgStraight[0]);
+            LatLongBox boundingBoxAntipodes = new LatLongBox(rgAntipodes[0]);
+            List<double[]> original = new List<double[]>();
+            List<double[]> antipodes = new List<double[]>();
+
+            foreach (LatLong ll in rgStraight)
+            {
+                original.Add(new double[] { ll.Latitude, ll.Longitude });
+                boundingBoxOriginal.ExpandToInclude(ll);
+            }
+
+            foreach (LatLong ll in rgAntipodes)
+            {
+                antipodes.Add(new double[] { ll.Latitude, ll.Longitude });
+                boundingBoxAntipodes.ExpandToInclude(ll);
+            }
+
+            return new { original, antipodes, boundingBoxOriginal, boundingBoxAntipodes };
+        }
+
+        [WebMethod(EnableSession = true)]
+        public dynamic PathsForFlight(int idFlight)
+        {
+            if (!Profile.GetUser(User.Identity.Name).CanManageData)
+                throw new UnauthorizedAccessException();
+
+            TelemetryReference ted = TelemetryReference.LoadForFlight(idFlight);
+            if (ted == null)
+                return null;
+            LogbookEntry le = new LogbookEntry();
+            le.FLoadFromDB(idFlight, User.Identity.Name, LogbookEntryCore.LoadTelemetryOption.LoadAll, true);
+
+            IEnumerable<LatLong> pathReconstituded = ted.GoogleData.DecodedPath();
+            IEnumerable<LatLong> pathStraight = Array.Empty<LatLong>();
+            using (Telemetry.FlightData fd = new Telemetry.FlightData())
+            {
+                if (fd.ParseFlightData(le.FlightData))
+                    pathStraight = fd.GetPath();
+            }
+
+            LatLongBox llb = new LatLongBox(pathReconstituded.First());
+            List<double[]> lstReconstituded = new List<double[]>();
+            List<double[]> lstStraight = new List<double[]>();
+
+            foreach (LatLong ll in pathReconstituded)
+            {
+                lstReconstituded.Add(new double[] { ll.Latitude, ll.Longitude });
+                llb.ExpandToInclude(ll);
+            }
+
+            foreach (LatLong ll in pathStraight)
+            {
+                lstStraight.Add(new double[] { ll.Latitude, ll.Longitude });
+                llb.ExpandToInclude(ll);
+            }
+
+            return new { reconstituded = lstReconstituded, straight = lstStraight, boundingBox = llb };
         }
         #endregion
     }
