@@ -337,16 +337,17 @@ namespace MyFlightbook.Weather.ADDS
     /// </summary>
     public static class ADDSService
     {
-        private const string szRecentTemplate = @"https://aviationweather.gov/adds/dataserver_current/httpparam?dataSource=metars&format=xml&requestType=retrieve&hoursBeforeNow={0}&mostRecent=false&stationString={1}";
+        private const string szRecentTemplate = @"https://aviationweather.gov/api/data/metar?ids={1}&hours={0}";
 
         #region Getting requests
         private static response GetRequest(string szU)
         {
-            WebRequest req = (HttpWebRequest)WebRequest.Create(new Uri(szU));
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(new Uri(szU));
             //Set values for the request back
             req.Method = "GET";
             req.ContentType = "text/xml";
             req.ContentLength = 0;
+            req.Accept = "application/xml";
             string strResponse = string.Empty;
 
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;

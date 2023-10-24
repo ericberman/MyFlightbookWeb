@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2020 MyFlightbook LLC
+ * Copyright (c) 2017-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -375,7 +374,7 @@ namespace MyFlightbook.Weather.ADDS
 
         private bool wind_gust_ktFieldSpecified;
 
-        private float visibility_statute_miField;
+        private string visibility_statute_miField;
 
         private bool visibility_statute_miFieldSpecified;
 
@@ -674,7 +673,7 @@ namespace MyFlightbook.Weather.ADDS
         }
 
         /// <remarks/>
-        public float visibility_statute_mi
+        public string visibility_statute_mi
         {
             get
             {
