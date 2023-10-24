@@ -336,7 +336,7 @@ function MFBMap()
     
     this.createImageMarker = function (point, i, mapID) {
         var szImg = "<a href=\"" + this.rgImages[i].hrefFull + "\" target=\"_blank\"><img src=\"" + this.rgImages[i].hrefThumb + "\"></a>";
-        var szZoom = "<a href=\"javascript:" + mapID + ".showImage(" + i + ")\">Zoom in</a>";
+        var szZoom = "<a href=\"javascript:gmapForMapID('" + mapID + "').showImage(" + i + ")\">Zoom in</a>";
         var szDiv = "<div>" + szZoom + "<br />" + szImg + "<br /><p>" + this.rgImages[i].comment + "</p></div>";
         var szName = "Photograph";
         var img = this.rgImages[i];
