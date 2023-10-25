@@ -1,0 +1,83 @@
+﻿@using MyFlightbook
+@using System.Globalization
+@using MyFlightbook.FlightStatistics
+@{
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    FlightStats fs = MyFlightbook.FlightStatistics.FlightStats.GetFlightStats();
+}
+@Html.Raw(Branding.ReBrand(Resources.LocalizedText.About))
+<p style="text-align:center">
+
+    <img src="@VirtualPathUtility.ToAbsolute("~/images/mfbicon.png")" style="vertical-align:middle;" />
+    <a href="@VirtualPathUtility.ToAbsolute("~/Public/ContactMe.aspx")" style="margin-right: 10px; font-weight:bold;">@Resources.LocalizedText.AboutContact</a>
+
+    <img src="@VirtualPathUtility.ToAbsolute("~/images/mfbicon.png")" style="vertical-align:middle;" />
+    <a href="@VirtualPathUtility.ToAbsolute("~/mvc/pub/FeatureChart")" style="vertical-align:middle; font-weight: bold;">@Branding.ReBrand(Resources.LocalizedText.AboutViewFeatures)</a>
+</p>
+<div style="text-align:center;">
+    @if (!String.IsNullOrEmpty(Branding.CurrentBrand.FacebookFeed))
+    {
+        <img style="vertical-align:middle" src="@VirtualPathUtility.ToAbsolute("~/images/f_logo_32.png")" alt="Facebook" />
+        <a target="_blank" style="margin-right: 10px; font-weight:bold" href="@Branding.CurrentBrand.FacebookFeed">@Branding.ReBrand(Resources.LocalizedText.FollowOnFacebook)</a>
+    }
+</div>
+<div style="margin-left:auto; margin-right:auto; max-width: 800px; margin-top: 10px; padding: 5px; border-radius: 5px; border: 1px solid gray;">
+    <h2>@Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsHeader, fs.MaxDays))</h2>
+    <ul>
+        @foreach (LinkedString ls in fs.Stats)
+        {
+            if (String.IsNullOrEmpty(ls.Link))
+            {
+                <li>@ls.Value</li>
+            }
+            else
+            {
+                <li><a href="@ls.Link" target="_blank">@ls.Value</a></li>
+            }
+        }
+    </ul>
+    @if (fs.HasSlowInformation)
+    {
+        <div style="margin-left:auto; margin-right: auto;">
+            <div style="display:inline-block; vertical-align:top;">
+                <h3>@Resources.LocalizedText.DefaultPageRecentStatsPopularAirports</h3>
+                <ol>
+                    @{ 
+                        const int maxAirports = 20;
+                        List<AirportStats> lstTopAirports = new List<AirportStats>(fs.AirportsVisited);
+                        if (lstTopAirports.Count > maxAirports)
+                        {
+                            lstTopAirports.RemoveRange(maxAirports, lstTopAirports.Count - maxAirports);
+                        }
+
+                        int i = 0;
+                        foreach (AirportStats aps in lstTopAirports)
+                        {
+                            string szExpandID = "divStatinfo" + i++.ToString();
+                                        <li>
+                                            <div><a target="_blank" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Public/MapRoute2.aspx?sm=1&Airports={0}", aps.Code))">@aps.FullName</a></div>
+                                            <div class="fineprint">@aps.StatsDisplay @{ Html.RenderAction("RenderExpandoImg", "MFBTemplate", new { fExpanded = false, targetID = szExpandID }); }</div>
+                                            <div id="@szExpandID" style="display:none;">
+                                                @foreach (string szModel in aps.ModelsUsed)
+                                                {
+                        <div>@szModel</div>
+                                                }
+                                            </div>
+                                        </li>
+                                                    }
+                                                }
+                </ol>
+            </div>
+            <div style="display:inline-block; vertical-align:top;">
+                <h3>@Resources.LocalizedText.DefaultPageRecentStatsPopularModels</h3>
+                <ol>
+                    @foreach(string szModel in fs.ModelsUsed)
+                {
+                    <li>@szModel</li>
+                }
+                </ol>
+            </div>
+        </div>
+                        }
+</div>
+

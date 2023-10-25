@@ -83,6 +83,13 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return View("flightdatakey");
         }
 
+        public ActionResult About()
+        {
+            ViewBag.defaultTab = tabID.tabHome;
+            ViewBag.Title = Branding.ReBrand(Resources.LocalizedText.AboutTitle);
+            return View("about");
+        }
+
         // GET: mvc/Pub - shouldn't ever call.
         public ActionResult Index()
         {
