@@ -45,7 +45,7 @@ namespace MyFlightbook.Mapping
         protected void Page_Load(object sender, EventArgs e)
         {
             this.Master.SelectedTab = tabID.mptRoute;
-            lblPageHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.Airports.MapRouteHeader, Branding.CurrentBrand.AppName);
+            lblPageHeader.Text =  Branding.ReBrand(Resources.Airports.MapRouteHeader);
 
             bool viewHist = User.Identity.IsAuthenticated && MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData && util.GetStringParam(Request, "hist").Length > 0;
 

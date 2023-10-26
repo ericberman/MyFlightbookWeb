@@ -1419,7 +1419,6 @@
     <Content Include="Public\Developer.aspx" />
     <Content Include="Public\Export.aspx" />
     <Content Include="Public\FAQ.aspx" />
-    <Content Include="Public\FindAirport.aspx" />
     <Content Include="Public\Game.aspx" />
     <Content Include="Public\iPadImages\Full\iPad1.png" />
     <Content Include="Public\iPadImages\Full\iPad2.png" />
@@ -1857,6 +1856,7 @@
     <Compile Include="Areas\mvc\Controllers\AdminPaymentController.cs" />
     <Compile Include="Areas\mvc\Controllers\AdminTelemetryController.cs" />
     <Compile Include="Areas\mvc\Controllers\AdminUserController.cs" />
+    <Compile Include="Areas\mvc\Controllers\AirportController.cs" />
     <Compile Include="Areas\mvc\Controllers\AllMakesController.cs" />
     <Compile Include="Areas\mvc\Controllers\DonateController.cs" />
     <Compile Include="Areas\mvc\Controllers\FAQController.cs" />
@@ -3234,13 +3234,6 @@
     <Compile Include="Public\FAQ.aspx.designer.cs">
       <DependentUpon>FAQ.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Public\FindAirport.aspx.cs">
-      <DependentUpon>FindAirport.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\FindAirport.aspx.designer.cs">
-      <DependentUpon>FindAirport.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Public\Game.aspx.cs">
       <DependentUpon>Game.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3485,6 +3478,10 @@
     <Content Include="Areas\mvc\Views\AdminTelemetry\adminTelemetry.cshtml" />
     <Content Include="Areas\mvc\Views\AdminTelemetry\_userTelemetry.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\about.cshtml" />
+    <Content Include="Areas\mvc\Views\Airport\_mapContainer.cshtml" />
+    <Content Include="Areas\mvc\Views\Airport\findAirports.cshtml" />
+    <Content Include="Areas\mvc\Views\MFBTemplate\_googleAd.cshtml" />
+    <Content Include="Areas\mvc\Views\Airport\_foundAirportTable.cshtml" />
     <None Include="packages.config" />
     <None Include="SecuritySwitch-v4.xsd">
       <SubType>Designer</SubType>
@@ -3637,7 +3634,6 @@
     <Content Include="Member\App_LocalResources\StartingTotals.aspx.resx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Public\App_LocalResources\FindAirport.aspx.resx" />
     <Content Include="Public\App_LocalResources\MobileApps.aspx.resx" />
   </ItemGroup>
   <ItemGroup>

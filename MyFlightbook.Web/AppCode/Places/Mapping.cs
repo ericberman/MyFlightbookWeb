@@ -31,6 +31,17 @@ namespace MyFlightbook.Mapping
     /// </summary>
     public class GoogleMap
     {
+        #region Constructors
+        public GoogleMap() { }
+
+        public GoogleMap(string containerName, GMap_Mode mapMode = GMap_Mode.Static) : base()
+        {
+            MapMode = mapMode;
+
+            Options.divContainer = containerName ?? throw new ArgumentNullException(nameof(containerName));
+        }
+        #endregion
+
         #region properties
         public MFBGoogleMapOptions Options { get; private set; } = new MFBGoogleMapOptions();
 

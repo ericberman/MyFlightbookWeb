@@ -86,11 +86,14 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         [ChildActionOnly]
-        public ActionResult RenderSearchBox(string id, string placeholder)
+        public ActionResult RenderSearchBox(string id, string placeholder, string text = "", string onEnterScript = "")
         {
             ViewBag.searchID = id;
             ViewBag.searchBtnID = id + "btn";
+            ViewBag.searchTextID = id + "txt";
             ViewBag.searchPrompt = placeholder;
+            ViewBag.searchText = text;
+            ViewBag.onEnterScript = onEnterScript;
             return PartialView("_searchbox");
         }
 
@@ -118,6 +121,13 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.CollapseText = collapseText ?? Resources.LocalizedText.ClickToHide;
             ViewBag.ExpandText = expandText ?? Resources.LocalizedText.ClickToShow;
             return PartialView("_expandoText");
+        }
+
+        [ChildActionOnly]
+        public ActionResult RenderGoogleAd(bool fVertical)
+        {
+            ViewBag.Vertical = fVertical;
+            return PartialView("_googleAd");
         }
         #endregion
 

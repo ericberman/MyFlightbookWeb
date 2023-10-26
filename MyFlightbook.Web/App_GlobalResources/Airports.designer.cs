@@ -529,6 +529,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Find an airport by name or code.
+        /// </summary>
+        internal static string FindAirportHeader {
+            get {
+                return ResourceManager.GetString("FindAirportHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can&apos;t remember an airport&apos;s code?  Search for it below.
+        /// </summary>
+        internal static string FindAirportPrompt {
+            get {
+                return ResourceManager.GetString("FindAirportPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show Routes.
         /// </summary>
         internal static string MapConnectDots {
@@ -564,7 +582,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} - Map a route.
+        ///   Looks up a localized string similar to %APP_NAME% - Map a route.
         /// </summary>
         internal static string MapRouteHeader {
             get {

@@ -157,8 +157,8 @@
                 error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
                 complete: function (response) { },
                 success: function (response) {
-                    setPathForMap(gmapForMapID("idMap1"), response.d.straight, response.d.boundingBox);
-                    setPathForMap(gmapForMapID("idMap2"), response.d.reconstituded, response.d.boundingBox);
+                    setPathForMap(mfbMapForContainerID("divMapRaw"), response.d.straight, response.d.boundingBox);
+                    setPathForMap(mfbMapForContainerID("divMapReconstituted"), response.d.reconstituded, response.d.boundingBox);
                 }
             });
         return false;
@@ -189,8 +189,8 @@
                         error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
                         complete: function (response) { },
                         success: function (response) {
-                            setPathForMap(gmapForMapID("idMap1"), response.d.original, response.d.boundingBoxOriginal);
-                            setPathForMap(gmapForMapID("idMap2"), response.d.antipodes, response.d.boundingBoxAntipodes);
+                            setPathForMap(mfbMapForContainerID("divMapRaw"), response.d.original, response.d.boundingBoxOriginal);
+                            setPathForMap(mfbMapForContainerID("divMapReconstituted"), response.d.antipodes, response.d.boundingBoxAntipodes);
                         }
                     })
                 }
@@ -246,30 +246,15 @@
 <div id="pnlMaps" style="position: sticky; top: 0; margin-top: 30px; margin-bottom: 30px; width: 400px; float: right;">
     <div>Raw:</div>
     <div id="mapRawContainer">
-        <div id="mapRaw" style="width: 100%; height: 400px;"></div>
+        @{ Html.RenderAction("MapDiv", "Airport", new { map = new GoogleMap("divMapRaw", GMap_Mode.Dynamic) }); }
     </div>
     <div>Compressed/uncompressed:</div>
     <div id="mapReconstitutedContainer">
-        <div id="mapReconstituted" style="width: 100%; height: 400px;"></div>
+        @{ Html.RenderAction("MapDiv", "Airport", new { map = new GoogleMap("divMapReconstituted", GMap_Mode.Dynamic) }); }
     </div>
-    @{
-        GoogleMap gmapRaw = new GoogleMap() { MapMode = GMap_Mode.Dynamic };
-        GoogleMap gmapReconstituted = new GoogleMap() { MapMode = GMap_Mode.Dynamic };
-        gmapRaw.Options.PathVarName = "pathArray1";
-        Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
-        gmapRaw.Options.PathColor = gmapReconstituted.Options.PathColor = pf.GetPreferenceForKey<string>(MFBConstants.keyPathColor, MFBGoogleMapOptions.DefaultPathColor);
-        gmapRaw.Options.RouteColor = gmapReconstituted.Options.RouteColor = pf.GetPreferenceForKey<string>(MFBConstants.keyRouteColor, MFBGoogleMapOptions.DefaultRouteColor);
-        gmapReconstituted.Options.PathVarName = "pathArray2";
-    }
     <script type="text/javascript">
         $("#mapRawContainer").resizable();
         $("#mapReconstitutedContainer").resizable();
-
-        var pathArray1 = [];
-        var pathArray2 = [];
-
-        deferMapLoad(@Html.Raw(gmapRaw.MapJScript("idMap1", "mapRaw")));
-        deferMapLoad(@Html.Raw(gmapReconstituted.MapJScript("idMap2", "mapReconstituted")));
     </script>
 </div>
 <div id="pnlUser">

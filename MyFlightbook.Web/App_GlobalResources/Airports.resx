@@ -168,8 +168,7 @@
     <value>Planning a flight?&amp;nbsp; Enter the airport codes below.  You can also get METARs for individual airports.</value>
   </data>
   <data name="MapRouteHeader" xml:space="preserve">
-    <value>{0} - Map a route</value>
-    <comment>{0} is application name</comment>
+    <value>%APP_NAME% - Map a route</value>
   </data>
   <data name="MapUpdateMap" xml:space="preserve">
     <value>Map these airports</value>
@@ -345,5 +344,11 @@
   </data>
   <data name="viewCountryAdminMapTopLevel" xml:space="preserve">
     <value>Countries/Regions:</value>
+  </data>
+  <data name="FindAirportHeader" xml:space="preserve">
+    <value>Find an airport by name or code</value>
+  </data>
+  <data name="FindAirportPrompt" xml:space="preserve">
+    <value>Can't remember an airport's code?  Search for it below</value>
   </data>
 </root>

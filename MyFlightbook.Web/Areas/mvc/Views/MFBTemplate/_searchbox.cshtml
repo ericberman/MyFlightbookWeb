@@ -1,15 +1,23 @@
-﻿@Html.AntiForgeryToken()
+﻿@using System.Globalization
+@Html.AntiForgeryToken()
 <div class="searchBox" id="@ViewBag.searchID">
     <img src=@VirtualPathUtility.ToAbsolute("~/images/Search.png") class="searchBoxIcon" alt="" tooltip="" />
-    <input type="text" class="searchBoxTextBox noselect" name="searchText" placeholder="@ViewBag.searchPrompt" />
+    <input type="text" class="searchBoxTextBox noselect" id="@ViewBag.searchTextID" name="searchText" placeholder="@ViewBag.searchPrompt" value="@ViewBag.searchText" />
     <input type="submit" value="submit" id="@ViewBag.searchBtnID" style="display:none;" />
     <script type="text/javascript">
     $(function () {
-        $('@ViewBag.searchID').keydown(function (e) {
+        $('#@ViewBag.searchTextID').keydown(function (e) {
             if (e.keyCode == 13) {
-                $("#@ViewBag.searchBtnID").focus().click();
-                return false;
-            }
+                    @if (String.IsNullOrEmpty(ViewBag.onEnterScript))
+                    {
+                        @Html.Raw(String.Format(CultureInfo.InvariantCulture, "$('#{0}').focus().click();", ViewBag.searchBtnID))
+                    }
+                    else
+                    {
+                        @Html.Raw(String.Format(CultureInfo.InvariantCulture, "{0}($('#{1}')[0]);", ViewBag.onEnterScript, ViewBag.searchTextID))
+                        }
+                    return false;
+                }
         });
     });
     </script>

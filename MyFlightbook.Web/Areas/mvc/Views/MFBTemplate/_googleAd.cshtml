@@ -1,0 +1,20 @@
+﻿@using MyFlightbook
+<script async src='@("https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client="+LocalConfig.SettingForKey("GoogleAdClient"))'
+        crossorigin="anonymous"></script>
+@if (ViewBag.Vertical)
+{
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:120px;height:600px"
+         data-ad-client='@LocalConfig.SettingForKey("GoogleAdClient")'
+         data-ad-slot='@LocalConfig.SettingForKey("GoogleAdVerticalSlot")'></ins>
+}
+else
+{
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:728px;height:90px"
+         data-ad-client='@LocalConfig.SettingForKey("GoogleAdClient")'
+         data-ad-slot='@LocalConfig.SettingForKey("GoogleAdHorizontalSlot")'></ins>
+}
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>

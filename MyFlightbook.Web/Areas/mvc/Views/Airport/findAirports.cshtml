@@ -1,0 +1,67 @@
+﻿@{
+    ViewBag.Title = Resources.Airports.FindAirportHeader;
+    ViewBag.defaultTab = tabID.tabMaps;
+    ViewBag.UseMaps = true;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+<div id="ads" style="float:right; width: 130px; padding:4px; ">
+    @{ Html.RenderAction("RenderGoogleAd", "MFBTemplate", new { fVertical = true }); }
+</div>
+<div>
+    <p>@Resources.Airports.FindAirportPrompt</p>
+    @using (Html.BeginForm("FindAirports", "Airport", FormMethod.Post))
+    {
+        Html.RenderAction("RenderSearchBox", "MFBTemplate", new { id = "searchBox", placeholder = Resources.Airports.wmAirportCode, text = ViewBag.searchTerm });
+    }
+
+    @if (ViewBag.AirportsResultsList.Length > 0)
+    {
+        <script type="text/javascript">
+    //<![CDATA[
+    function clickAndZoom(lat, lon) {
+        var point = new google.maps.LatLng(lat, lon);
+        var mvbMap = mfbMapForContainerID('@ViewBag.Map.Options.divContainer')
+        getGMap().setCenter(point);
+        getGMap().setZoom(14);
+        return false;
+            }
+
+            function getResultPage(searchTerm, start, pageSize) {
+                var params = new Object();
+                params.searchTerm = searchTerm;
+                params.start = start;
+                params.pageSize = pageSize;
+                var d = JSON.stringify(params);
+                $.ajax(
+                    {
+                        url: "@VirtualPathUtility.ToAbsolute("~/mvc/Airport/AirportResultsForText")",
+                        type: "POST", data: d, dataType: "html", contentType: "application/json",
+                        error: function (xhr, status, error) { },
+                        complete: function (response) { },
+                        success: function (response) {
+                            var div = $("#divSearchResults");
+                            div.html(response);
+                        }
+                    });
+            }
+    //]]>
+        </script>
+
+        <div id="divSearchResults">
+            @{ Html.RenderAction("AirportResultsForText", "Airport", new { searchTerm = ViewBag.searchTerm, start = ViewBag.start, pageSize = ViewBag.pageSize, existingResults = ViewBag.AirportsResultsList }); }
+        </div>
+
+        <p><a href="javascript:mfbMapForContainerID('@ViewBag.Map.Options.divContainer').ZoomOut();">@Resources.Airports.MapZoomAllAirports</a></p>
+        <div id="divResultsContainer" style="height: 400px; width:80%">
+            @{ Html.RenderAction("MapDiv", "Airport", new { map = ViewBag.Map }); }
+        </div>
+        <script type="text/javascript">
+            $("#@ViewBag.Map.Options.divContainer")[0].style.height = "95%";
+            $("#divResultsContainer").resizable();
+        </script>
+    }
+    else if (!String.IsNullOrEmpty(ViewBag.SearchTerm))
+    {
+        <p>@Resources.Airports.errNoAirportsFound</p>
+    }
+</div>

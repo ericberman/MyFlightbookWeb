@@ -64,6 +64,13 @@ function getMfbMap() {
     return MFBMapsOnPage.length === 0 ? null : MFBMapsOnPage[0];
 }
 
+function mfbMapForContainerID(id) {
+    for (var i = 0; i < MFBMapsOnPage.length; i++)
+        if (MFBMapsOnPage[i].divContainer === id)
+            return MFBMapsOnPage[i];
+    return null;
+}
+
 function getGMap() {
     return MFBMapsOnPage.length === 0 ? null : MFBMapsOnPage[0].gmap;
 }

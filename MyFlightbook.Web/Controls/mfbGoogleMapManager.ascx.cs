@@ -130,7 +130,7 @@ function onGMapLoaded() {
 function deferMapLoad(func) {
     mapInitFuncs.push(func);
 }", true);
-                    Page.ClientScript.RegisterClientScriptInclude("MFBMapScript", ResolveClientUrl("~/Public/Scripts/GMapScript.js?v=12"));
+                    Page.ClientScript.RegisterClientScriptInclude("MFBMapScript", ResolveClientUrl("~/Public/Scripts/GMapScript.js?v=13"));
                     Page.ClientScript.RegisterClientScriptBlock(GetType(), "MapInit" + UniqueID, String.Format(CultureInfo.InvariantCulture, "deferMapLoad({0});", Map.MapJScript(MapID, pnlMap.ClientID)), true);
 
                     // We put this in-line because, as far as I can tell, there's no way to do a registerclientscriptinclude that includes the async or the defer attribute AND because it MUST be after the <div> is loaded; 

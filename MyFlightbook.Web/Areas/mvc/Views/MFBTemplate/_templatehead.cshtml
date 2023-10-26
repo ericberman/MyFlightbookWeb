@@ -53,7 +53,7 @@
             mapInitFuncs.push(func);
         }
     </script>
-    <script src="@VirtualPathUtility.ToAbsolute("~/Public/Scripts/GMapScript.js?v=12")" type="text/javascript"></script>
+    <script src="@VirtualPathUtility.ToAbsolute("~/Public/Scripts/GMapScript.js?v=13")" type="text/javascript"></script>
     <script defer src="@Html.Raw(String.Format(System.Globalization.CultureInfo.InvariantCulture, "https://maps.googleapis.com/maps/api/js?key={0}&callback=onGMapLoaded", HttpUtility.HtmlEncode(MyFlightbook.SocialMedia.GooglePlusConstants.MapsKey)))"></script>
     <script defer src="@VirtualPathUtility.ToAbsolute("~/Public/Scripts/oms.min.js")?v=9&?spiderfier_callback=onGMapLoaded"></script>
 }
