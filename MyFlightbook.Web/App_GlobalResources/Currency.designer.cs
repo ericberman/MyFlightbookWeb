@@ -1246,6 +1246,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to hour of unaided NV time.
+        /// </summary>
+        internal static string CustomCurrencyEventNVUnaidedHour {
+            get {
+                return ResourceManager.GetString("CustomCurrencyEventNVUnaidedHour", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to hours of unaided NV time.
+        /// </summary>
+        internal static string CustomCurrencyEventNVUnaidedHours {
+            get {
+                return ResourceManager.GetString("CustomCurrencyEventNVUnaidedHours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to unmanned aerial system (UAS) recoveries.
         /// </summary>
         internal static string CustomCurrencyEventRecoveries {

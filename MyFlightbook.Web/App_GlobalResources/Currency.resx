@@ -1269,4 +1269,10 @@
   <data name="EASAOROFTL210bFormat" xml:space="preserve">
     <value>{{0:F2}} of {0:#,##0}hrs</value>
   </data>
+  <data name="CustomCurrencyEventNVUnaidedHour" xml:space="preserve">
+    <value>hour of unaided NV time</value>
+  </data>
+  <data name="CustomCurrencyEventNVUnaidedHours" xml:space="preserve">
+    <value>hours of unaided NV time</value>
+  </data>
 </root>

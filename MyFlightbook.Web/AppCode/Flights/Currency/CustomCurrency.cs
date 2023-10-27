@@ -8,7 +8,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2022 MyFlightbook LLC
+ * Copyright (c) 2007-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -244,7 +244,8 @@ namespace MyFlightbook.Currency
                         { CustomCurrency.CustomCurrencyEventType.DutyTime, new string[] { Resources.Currency.CustomCurrencyEventDutyHour, Resources.Currency.CustomCurrencyEventDutyHours } },
                         { CustomCurrency.CustomCurrencyEventType.FlightDutyTime, new string[] {Resources.Currency.CustomCurrencyEventFlightDutyHour, Resources.Currency.CustomCurrencyEventFlightDutyHours } },
                         { CustomCurrency.CustomCurrencyEventType.SpecialAuthorizationApproach, new string[] { Resources.Currency.CustomCurrencyEventSAApproach, Resources.Currency.CustomCurrencyEventSAApproaches } },
-                        { CustomCurrency.CustomCurrencyEventType.EnhancedVisionApproach, new string[] { Resources.Currency.CustomCurrencyEventEVApproach, Resources.Currency.CustomCurrencyEventEVApproaches } }
+                        { CustomCurrency.CustomCurrencyEventType.EnhancedVisionApproach, new string[] { Resources.Currency.CustomCurrencyEventEVApproach, Resources.Currency.CustomCurrencyEventEVApproaches } },
+                        { CustomCurrency.CustomCurrencyEventType.NVUnaidedTime, new string[] { Resources.Currency.CustomCurrencyEventNVUnaidedHour , Resources.Currency.CustomCurrencyEventNVUnaidedHours} }
                     };
             }
 
@@ -389,7 +390,8 @@ namespace MyFlightbook.Currency
             TakeoffsAny = 34,
             SpecialAuthorizationApproach = 35,
             EnhancedVisionApproach = 36,
-            InstructionGiven = 37
+            InstructionGiven = 37,
+            NVUnaidedTime = 38
         };
 
         public enum CurrencyRefType { Aircraft = 0, Models = 1, Properties = 2 };
@@ -961,6 +963,9 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                     case CustomCurrencyEventType.NVHours:
                         fq.AddPropertyTypes(lstprops.FindAll(cpt => cpt.IsNightVisionTime));
                         break;
+                    case CustomCurrencyEventType.NVUnaidedTime:
+                        prop = CustomPropertyType.KnownProperties.IDPropNVUnaided;
+                        break;
                     case CustomCurrencyEventType.PICNightLandings:
                         fq.HasNightLandings = true;
                         fq.HasPIC = true;
@@ -1218,6 +1223,10 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                     break;
                 case CustomCurrencyEventType.NVFLIR:
                     if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropNVFLIRTime)) != null)
+                        AddRecentFlightEvents(cfr.dtFlight, cfp.DecValue);
+                    break;
+                case CustomCurrencyEventType.NVUnaidedTime:
+                    if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropNVUnaided)) != null)
                         AddRecentFlightEvents(cfr.dtFlight, cfp.DecValue);
                     break;
                 case CustomCurrencyEventType.LandingsHighAltitude:
