@@ -1,14 +1,8 @@
-﻿using MyFlightbook.Weather.ADDS;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Globalization;
-using System.Text;
-using System.Web.UI.WebControls;
+﻿using System;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2020 MyFlightbook LLC
+ * Copyright (c) 2017-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -16,89 +10,15 @@ using System.Web.UI.WebControls;
 public partial class Controls_METAR : System.Web.UI.UserControl
 {
     #region Properties
-    private IEnumerable<METAR> m_METARS;
-
-    /// <summary>
-    /// Specify the enumerable set of METARs
-    /// </summary>
-    public IEnumerable<METAR> METARs
+    public string Route
     {
-        get { return m_METARS; }
-        set
-        {
-            gvMetar.DataSource = m_METARS = value;
-            gvMetar.DataBind();
-        }
-    }
-    #endregion
-
-    #region Display Utilities
-    protected static Color ColorForFlightRules(METAR m)
-    {
-        if (m == null)
-            throw new ArgumentNullException(nameof(m));
-        switch (m.Category)
-        {
-            default:
-            case METAR.FlightCategory.None:
-                return Color.Black;
-            case METAR.FlightCategory.VFR:
-                return Color.Green;
-            case METAR.FlightCategory.MVFR:
-                return Color.Blue;
-            case METAR.FlightCategory.IFR:
-                return Color.Red;
-            case METAR.FlightCategory.LIFR:
-                return Color.Purple;
-        }
-    }
-
-    protected static string WindVectorInlineStyle(METAR m)
-    {
-        if (m == null)
-            throw new ArgumentNullException(nameof(m));
-        StringBuilder sb = new StringBuilder();
-        sb.Append("display:inline-block; height:20px; width:20px; text-align: center; line-height: 20px; position:relative; vertical-align: middle; ");
-        sb.AppendFormat(CultureInfo.InvariantCulture, "transform: rotate({0}deg); -webkit-transform: rotate({0}deg); -ms-transform: rotate({0}deg); ", m.wind_dir_degrees);
-
-        if (m.wind_speed_ktSpecified)
-        {
-            int fontsize = 14;
-
-            if (m.wind_speed_kt < 5)
-                fontsize = 16;
-            else if (m.wind_speed_kt > 10)
-                fontsize = 18;
-
-            sb.AppendFormat(CultureInfo.InvariantCulture, "font-size: {0}px", fontsize);
-        }
-        return sb.ToString();
+        get { return hdnAirports.Value; }
+        set { hdnAirports.Value = value; }
     }
     #endregion
 
     protected void Page_Load(object sender, EventArgs e)
     {
 
-    }
-
-    public void RefreshForRoute(string szRoute)
-    {
-        if (szRoute == null)
-            throw new ArgumentNullException(nameof(szRoute));
-
-        METARs = ADDSService.LatestMETARSForAirports(szRoute);
-    }
-
-    protected void gvMetar_RowDataBound(object sender, GridViewRowEventArgs e)
-    {
-        if (e == null)
-            throw new ArgumentNullException(nameof(e));
-
-        if (e.Row.RowType == DataControlRowType.DataRow)
-        {
-            Repeater rpt = (Repeater)e.Row.FindControl("rptSkyConditions");
-            rpt.DataSource = ((METAR)e.Row.DataItem).sky_condition;
-            rpt.DataBind();
-        }
     }
 }

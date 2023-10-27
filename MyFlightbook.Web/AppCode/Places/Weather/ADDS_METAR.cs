@@ -362,7 +362,7 @@ namespace MyFlightbook.Weather.ADDS
 
         private bool dewpoint_cFieldSpecified;
 
-        private int wind_dir_degreesField;
+        private string wind_dir_degreesField;
 
         private bool wind_dir_degreesFieldSpecified;
 
@@ -592,7 +592,7 @@ namespace MyFlightbook.Weather.ADDS
         }
 
         /// <remarks/>
-        public int wind_dir_degrees
+        public string wind_dir_degrees
         {
             get
             {

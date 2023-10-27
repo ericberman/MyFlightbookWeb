@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using MyFlightbook.Mapping;
 using System;
 using System.Web.Mvc;
+using MyFlightbook.Weather.ADDS;
 
 /******************************************************
  * 
@@ -15,6 +16,13 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 {
     public class AirportController : Controller
     {
+        [HttpPost]
+        public ActionResult METARSForRoute(string szRoute)
+        {
+            ViewBag.METARs = ADDSService.LatestMETARSForAirports(szRoute);
+            return PartialView("_metar");
+        }
+
         private static AirportList AirportsForTerm(string searchTerm)
         {
             AirportList alResults = new AirportList();

@@ -515,15 +515,6 @@ namespace MyFlightbook.MemberPages
             hil.Refresh();
         }
 
-        protected static void BindMetars(Control c, string szRoute)
-        {
-            if (szRoute == null)
-                throw new ArgumentNullException(nameof(szRoute));
-            if (!(c is Controls_METAR m))
-                throw new ArgumentNullException(nameof(c));
-            m.RefreshForRoute(szRoute);
-        }
-
         /// <summary>
         /// Checks to see if the viewer is an instructor of the owner of the flight; throws an exception if not.
         /// </summary>
@@ -1006,6 +997,8 @@ namespace MyFlightbook.MemberPages
             BindBadges(Viewer, le.FlightID, fv.FindControl("rptBadges"));
 
             ((Label)fv.FindControl("lblDistanceForFlight")).Text = DistanceDisplay;
+
+            ((Controls_METAR) fv.FindControl("METARDisplay")).Route = CurrentFlight.Route;
         }
 
         protected void fmvAircraft_DataBound(object sender, EventArgs e)
@@ -1017,14 +1010,6 @@ namespace MyFlightbook.MemberPages
             BindAircraftImages(fv.FindControl("mfbHoverImageList"));
         }
         #endregion
-
-        protected void btnMetars_Click(object sender, EventArgs e)
-        {
-            if (e == null)
-                throw new ArgumentNullException(nameof(e));
-            BindMetars(fmvLE.FindControl("METARDisplay"), CurrentFlight.Route);
-            fmvLE.FindControl("btnMetars").Visible = false;
-        }
 
         protected void mfbFlightContextMenu_DeleteFlight(object sender, LogbookEventArgs e)
         {

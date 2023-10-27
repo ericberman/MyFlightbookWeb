@@ -1466,7 +1466,6 @@
     <Content Include="Public\PaypalIPNListener.aspx" />
     <Content Include="Public\PendingImg.aspx" />
     <Content Include="Public\PrintFooter.aspx" />
-    <Content Include="Public\PropertyTable.aspx" />
     <Content Include="Public\RSSCurrency.aspx" />
     <Content Include="Public\Scripts\aircraftcontext.js" />
     <Content Include="Public\Scripts\autoinsert.js" />
@@ -3296,13 +3295,6 @@
     <Compile Include="Public\PrintFooter.aspx.designer.cs">
       <DependentUpon>PrintFooter.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Public\PropertyTable.aspx.cs">
-      <DependentUpon>PropertyTable.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\PropertyTable.aspx.designer.cs">
-      <DependentUpon>PropertyTable.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Public\RSSCurrency.aspx.cs">
       <DependentUpon>RSSCurrency.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3476,6 +3468,7 @@
     <Content Include="Areas\mvc\Views\Airport\_foundAirportTable.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\mobileApps.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\propertyTable.cshtml" />
+    <Content Include="Areas\mvc\Views\Airport\_metar.cshtml" />
     <None Include="packages.config" />
     <None Include="SecuritySwitch-v4.xsd">
       <SubType>Designer</SubType>

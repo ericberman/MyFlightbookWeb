@@ -160,7 +160,6 @@
                                 <asp:Panel ID="pnlMetars" runat="server">
                                     <asp:UpdatePanel ID="updp1" runat="server">
                                         <ContentTemplate>
-                                            <asp:Button ID="btnMetars" runat="server" Text="<%$ Resources:Weather, GetMETARSPrompt %>" OnClick="btnMetars_Click" />
                                             <uc1:METAR runat="server" ID="METARDisplay" />
                                         </ContentTemplate>
                                     </asp:UpdatePanel>

@@ -1,0 +1,66 @@
+﻿@using MyFlightbook.Weather.ADDS
+@using System.Globalization
+@if (ViewBag.METARs.Count > 0)
+{
+    <table cellpadding="5">
+        <thead>
+            <tr>
+                <th></th>
+                <th>@Resources.Weather.headerCategory</th>
+                <th>@Resources.Weather.headerWind</th>
+                <th>@Resources.Weather.headerVisibility</th>
+                <th>@Resources.Weather.headerCeiling</th>
+                <th>@Resources.Weather.headerTemp</th>
+                <th>@Resources.Weather.headerAltimeter</th>
+                <th></th>
+            </tr>
+        </thead>
+        @foreach (METAR m in ViewBag.METARs)
+        {
+            <tr style="vertical-align:top;">
+                <td>
+                    <div><span title="@m.raw_text" style="font-size: larger; font-weight:bold">@m.station_id</span></div>
+                    <div>@m.TimeDisplay</div>
+                    <div>@m.METARTypeDisplay</div>
+                    <div>@m.QualityDisplay</div>
+                </td>
+                <td><span @Html.Raw(String.Format(CultureInfo.InvariantCulture, "style=\"font-weight: bold; color: {0}\"", System.Drawing.ColorTranslator.ToHtml(m.ColorForFlightRules)))>@m.flight_category</span></td>
+                <td>
+                    @if (m.wind_dir_degreesSpecified)
+                    {
+                        <div style="@m.WindVectorInlineStyle">
+                            <img src="@VirtualPathUtility.ToAbsolute("~/images/windvector.png")" title="@m.WindDirDisplay" alt="@m.WindDirDisplay" />
+                        </div>
+                    }
+                    @m.WindDirDisplay
+                    @(m.wind_speed_ktSpecified ? String.Format(CultureInfo.CurrentCulture, Resources.Weather.wind_speed_nolabel, m.wind_speed_kt) : string.Empty)
+                    @(m.wind_gust_ktSpecified ? String.Format(CultureInfo.CurrentCulture, Resources.Weather.wind_gust_ktField, m.wind_speed_kt) : string.Empty)
+                </td>
+                <td>
+                    @m.VisibilityDisplay
+                    @if (m.vert_vis_ftSpecified)
+                    {
+                        @String.Format(CultureInfo.CurrentCulture, Resources.Weather.altitudeFtFormat, m.vert_vis_ft)
+                    }
+                </td>
+                <td>
+                    @foreach (sky_condition sc in m.sky_condition)
+                    {
+                        @sc.SkyCoverDisplay
+                        if (sc.cloud_base_ft_aglSpecified)
+                        {
+                            @String.Format(CultureInfo.CurrentCulture, Resources.Weather.cloud_base_ft_aglField, sc.cloud_base_ft_agl)
+                        }
+                    }
+                </td>
+                <td>@m.TempAndDewpointDisplay</td>
+                <td>@m.AltitudeHgDisplay</td>
+                <td>@m.wx_string</td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <p>@Resources.Weather.NoMetarsFound</p>
+}

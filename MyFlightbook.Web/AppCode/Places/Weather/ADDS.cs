@@ -1,6 +1,7 @@
 ﻿using MyFlightbook.Airports;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Net;
@@ -181,7 +182,7 @@ namespace MyFlightbook.Weather.ADDS
         /// </summary>
         public string WindDirDisplay
         {
-            get { return wind_dir_degreesFieldSpecified ? String.Format(CultureInfo.CurrentCulture, Resources.Weather.wind_dir_degreesField, wind_dir_degrees) : string.Empty; }
+            get { return wind_dir_degreesFieldSpecified ? (Int32.TryParse(wind_dir_degrees, out int wdir) ?  String.Format(CultureInfo.CurrentCulture, Resources.Weather.wind_dir_degreesField, wdir) : wind_dir_degrees) : string.Empty; }
         }
 
 
@@ -303,6 +304,56 @@ namespace MyFlightbook.Weather.ADDS
         public static bool operator >=(METAR left, METAR right)
         {
             return left is null ? right is null : left.CompareTo(right) >= 0;
+        }
+        #endregion
+
+        #region Display Utilities
+        public Color ColorForFlightRules
+        {
+            get
+            {
+                switch (Category)
+                {
+                    default:
+                    case FlightCategory.None:
+                        return Color.Black;
+                    case FlightCategory.VFR:
+                        return Color.Green;
+                    case FlightCategory.MVFR:
+                        return Color.Blue;
+                    case FlightCategory.IFR:
+                        return Color.Red;
+                    case FlightCategory.LIFR:
+                        return Color.Purple;
+                }
+            }
+        }
+
+        public string WindVectorInlineStyle
+        {
+            get
+            {
+                if (Int32.TryParse(wind_dir_degrees, out int wdir))
+                {
+                    StringBuilder sb = new StringBuilder("display:inline-block; height:20px; width:20px; text-align: center; line-height: 20px; position:relative; vertical-align: middle; ");
+                    sb.AppendFormat(CultureInfo.InvariantCulture, "transform: rotate({0}deg); -webkit-transform: rotate({0}deg); -ms-transform: rotate({0}deg); ", wdir);
+
+                    if (wind_speed_ktSpecified)
+                    {
+                        int fontsize = 14;
+
+                        if (wind_speed_kt < 5)
+                            fontsize = 16;
+                        else if (wind_speed_kt > 10)
+                            fontsize = 18;
+
+                        sb.AppendFormat(CultureInfo.InvariantCulture, "font-size: {0}px", fontsize);
+                    }
+                    return sb.ToString();
+                }
+                else
+                    return "display: none;";
+            }
         }
         #endregion
     }

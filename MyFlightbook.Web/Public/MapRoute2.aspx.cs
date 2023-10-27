@@ -87,6 +87,7 @@ namespace MyFlightbook.Mapping
                 MapAirports(txtAirports.Text);
 
             MfbGoogleMapManager1.Visible = !String.IsNullOrWhiteSpace(txtAirports.Text);    // cut down on pointless mapping.
+            METAR.Route = txtAirports.Text;
         }
 
         protected void btnMapEm_Click(object sender, EventArgs e)
@@ -112,14 +113,6 @@ namespace MyFlightbook.Mapping
 
             lnkZoomOut.Visible = !result.MasterList.LatLongBox().IsEmpty;
             pnlMetars.Visible = result != null && result.Result != null && result.Result.Count > 0;
-        }
-
-        protected void btnMetars_Click(object sender, EventArgs e)
-        {
-            if (e == null)
-                throw new ArgumentNullException(nameof(e));
-            METAR.RefreshForRoute(txtAirports.Text);
-            btnMetars.Visible = false;
         }
 
         #region Visited Routes
