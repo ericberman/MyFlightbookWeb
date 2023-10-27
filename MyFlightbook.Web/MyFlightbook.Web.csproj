@@ -3475,6 +3475,7 @@
     <Content Include="Areas\mvc\Views\MFBTemplate\_googleAd.cshtml" />
     <Content Include="Areas\mvc\Views\Airport\_foundAirportTable.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\mobileApps.cshtml" />
+    <Content Include="Areas\mvc\Views\Pub\propertyTable.cshtml" />
     <None Include="packages.config" />
     <None Include="SecuritySwitch-v4.xsd">
       <SubType>Designer</SubType>

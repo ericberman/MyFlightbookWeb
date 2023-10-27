@@ -1,0 +1,80 @@
+﻿@{
+    ViewBag.Title = "Available property types";
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+<p>The Type field indicates the data type for a given property.  The value for a given property is expressed in a specific flight property as:</p>
+<table>
+    <tr><td>cfpInteger</td><td>IntValue (0)</td><td>A whole integer (0, 1, 2, ...)</td></tr>
+    <tr><td>cfpDecimal</td><td>DecValue (1)</td><td>A decimal value (1.3, 2.58, etc.) - typically a time</td></tr>
+    <tr><td>cfpBoolean</td><td>BoolValue (2)</td><td>A true/false value</td></tr>
+    <tr><td>cfpDate</td><td>DateValue (3)</td><td>A date (no specific time)</td></tr>
+    <tr><td>cfpDateTime</td><td>DateValueTime (4)</td><td>A date with a time, in UTC</td></tr>
+    <tr><td>cfpString</td><td>TextValue (5)</td><td>A text value</td></tr>
+    <tr><td>cfpCurrency</td><td>DecValue (6)</td><td>A decimal value indicating money</td></tr>
+</table>
+
+<p>Each property type also has a "flags" value that is a set of bitwise flags indicating some sort of semantic meaning.  Multiple flags can be combined using a bitwise "or" operation.  Most of these are used internally for computations, but here is a list of available </p>
+<table class="stickyHeaderTable">
+    <thead>
+        <tr>
+            <th class="gvhDefault gvhDefault gvhCentered">Flag Name</th>
+            <th class="gvhDefault gvhDefault gvhCentered">Flag Value (Hex)</th>
+            <th class="gvhDefault gvhDefault gvhCentered">Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td>cfpFlagBFR</td><td>0x00000001</td><td>Indicates that this property counts as a flight review</td></tr>
+        <tr><td>cfpFlagIPC</td><td>0x00000002</td><td>Indicates that this property counts as an instrument proficiency check</td></tr>
+        <tr><td>cfpFlagUADescending</td><td>0x00000004</td><td>Internal</td></tr>
+        <tr><td>cfpFlagUAAscending</td><td>0x00000008</td><td>Internal</td></tr>
+        <tr><td>cfpFlagNightVisionTakeoff</td><td>0x00000010</td><td>Internal</td></tr>
+        <tr><td>cfpFlagNightVisionLanding</td><td>0x00000020</td><td>Internal</td></tr>
+        <tr><td>cfpFlagNightVisionHover</td><td>0x00000040</td><td>Internal</td></tr>
+        <tr><td>cfpFlagNightVisionDepartureAndArrival</td><td>0x00000080</td><td>Internal</td></tr>
+        <tr><td>cfpFlagNightVisionTransitions</td><td>0x00000100</td><td>Internal</td></tr>
+        <tr><td>cfpFlagNightVisionProficiencyCheck</td><td>0x00000200</td><td>Internal</td></tr>
+        <tr><td>cfpFlagGliderInstrumentManeuvers</td><td>0x00000400</td><td>Internal</td></tr>
+        <tr><td>cfpFlagGliderInstrumentManeuversPassengers</td><td>0x00000800</td><td>Internal</td></tr>
+        <tr><td>cfpFlagIsApproach</td><td>0x00001000</td><td>Indicates that this property is a kind of approach</td></tr>
+        <tr><td>cfpNosum</td><td>0x00002000</td><td>Indicates that this property should not be summed in totals.  E.g., a Pay Rate makes no sense to add together</td></tr>
+        <tr><td>cfpFlagBaseCheck</td><td>0x00020000</td><td>Internal</td></tr>
+        <tr><td>cfpFlagSolo</td><td>0x00040000</td><td>Internal</td></tr>
+        <tr><td>cfpFlagGliderGroundLaunch</td><td>0x00080000</td><td>Internal</td></tr>
+        <tr><td>cfpFlagExcludeMRU</td><td>0x00100000</td><td>Indicates that this is a "one and done" property (i.e., unlikely to be used on more than one flight) and hence should not be shown in the list of previously used properties by default</td></tr>
+        <tr><td>cfpFlagBasicDecimal</td><td>0x00200000</td><td>Indicates that this is a decimal but is NOT a time.  Decimals should normally respect the user's HH:MM settings, but for things like Oil Added, it should never be shown in hh:mm.</td></tr>
+        <tr><td>cfpFlagsUASLaunch</td><td>0x00400000</td><td>Internal</td></tr>
+        <tr><td>cfpFlagsUASRecovery</td><td>0x00800000</td><td>Internal</td></tr>
+        <tr><td>cfpFlagKnownProperty</td><td>0x01000000</td><td>Internal</td></tr>
+        <tr><td>cfpFlagNoAutoComplete</td><td>0x02000000</td><td>For text properties, indicates that no autocompletion to previously used values should be used.  METAR is a good example where you don't want to autocomplete'</td></tr>
+        <tr><td>cfpFlagAllCaps</td><td>0x04000000</td><td>Indicates that the text property should be in ALL CAPS.  A good example here is aircraft registrations</td></tr>
+        <tr><td>cfpFlagIsLanding</td><td>0x08000000</td><td>Internal</td></tr>
+        <tr><td>cfpFlagInitialCaps</td><td>0x10000000</td><td>Like All Caps, this indicates that the property should be default to initial caps.  Names of crew members are a good example of this</td></tr>
+        <tr><td>cfpFlagPrecisionApproach</td><td>0x20000000</td><td>Internal</td></tr>
+    </tbody>
+</table>
+<br />
+<table class="stickyHeaderTable">
+    <thead>
+        <tr>
+            <th class="gvhDefault gvhCentered">Title</th>
+            <th class="gvhDefault gvhCentered">PropTypeID</th>
+            <th class="gvhDefault gvhCentered">SortKey</th>
+            <th class="gvhDefault gvhCentered">Type</th>
+            <th class="gvhDefault gvhCentered">Description</th>
+            <th class="gvhDefault gvhCentered">Flags</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (CustomPropertyType cpt in ViewBag.props)
+        {
+            <tr>
+                <td style="font-weight: bold;">@cpt.Title</td>
+                <td>@cpt.PropTypeID</td>
+                <td>@cpt.SortKey</td>
+                <td>@cpt.Type.ToString() (@(((int) cpt.Type).ToString())) </td>
+                <td>@cpt.Description</td>
+                <td>@cpt.Flags.ToString("X8")</td>
+            </tr>
+        }
+    </tbody>
+</table>

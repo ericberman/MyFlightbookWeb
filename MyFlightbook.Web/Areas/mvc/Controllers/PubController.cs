@@ -17,6 +17,12 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
     /// </summary>
     public class PubController : Controller
     {
+        public ActionResult PropertyTable()
+        {
+            ViewBag.props = CustomPropertyType.GetCustomPropertyTypes();
+            return View("propertyTable");
+        }
+
         public ActionResult MobileApps(string selectedOS = "")
         {
             ViewBag.SelectedOS = selectedOS;
