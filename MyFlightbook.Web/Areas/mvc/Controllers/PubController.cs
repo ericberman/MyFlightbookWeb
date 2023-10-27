@@ -17,6 +17,12 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
     /// </summary>
     public class PubController : Controller
     {
+        public ActionResult MobileApps(string selectedOS = "")
+        {
+            ViewBag.SelectedOS = selectedOS;
+            return View("mobileApps");
+        }
+
         public ActionResult TandC()
         {
             ViewBag.defaultTab = tabID.tabUnknown;

@@ -1929,4 +1929,19 @@
   <data name="ClubsManualTitle" xml:space="preserve">
     <value>Overview of Clubs on MyFlightbook</value>
   </data>
+  <data name="MobileAppChoosePlatform" xml:space="preserve">
+    <value>Choose your platform</value>
+  </data>
+  <data name="MobileAppDownloadAndroid" xml:space="preserve">
+    <value>Download the Android app</value>
+  </data>
+  <data name="MobileAppDownloadiOS" xml:space="preserve">
+    <value>Download the iOS app for iPhone and iPad</value>
+  </data>
+  <data name="MobileAppNoPlatformSelected" xml:space="preserve">
+    <value>(Select a platform)</value>
+  </data>
+  <data name="MobileAppsPromoHeader" xml:space="preserve">
+    <value>%APP_NAME% Apps for iOS and Android</value>
+  </data>
 </root>

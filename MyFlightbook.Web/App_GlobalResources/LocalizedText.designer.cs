@@ -3307,6 +3307,42 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Choose your platform.
+        /// </summary>
+        internal static string MobileAppChoosePlatform {
+            get {
+                return ResourceManager.GetString("MobileAppChoosePlatform", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download the Android app.
+        /// </summary>
+        internal static string MobileAppDownloadAndroid {
+            get {
+                return ResourceManager.GetString("MobileAppDownloadAndroid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download the iOS app for iPhone and iPad.
+        /// </summary>
+        internal static string MobileAppDownloadiOS {
+            get {
+                return ResourceManager.GetString("MobileAppDownloadiOS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Select a platform).
+        /// </summary>
+        internal static string MobileAppNoPlatformSelected {
+            get {
+                return ResourceManager.GetString("MobileAppNoPlatformSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to      &lt;p&gt;Take %APP_NAME% in-flight with you to make it easier to enter flights and view your logbook while on the go.&lt;/p&gt;
         ///    &lt;p&gt;With &lt;b&gt;%APP_NAME% applications&lt;/b&gt;, you can:&lt;/p&gt;
         ///    &lt;ul&gt;
@@ -3328,6 +3364,15 @@ namespace Resources {
         internal static string MobileAppSampleImageAltText {
             get {
                 return ResourceManager.GetString("MobileAppSampleImageAltText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to %APP_NAME% Apps for iOS and Android.
+        /// </summary>
+        internal static string MobileAppsPromoHeader {
+            get {
+                return ResourceManager.GetString("MobileAppsPromoHeader", resourceCulture);
             }
         }
         

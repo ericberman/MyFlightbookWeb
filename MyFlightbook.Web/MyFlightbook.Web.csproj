@@ -1455,7 +1455,6 @@
     <Content Include="Public\MapRoute2.aspx" />
     <Content Include="Public\mfblogonew-large.png" />
     <Content Include="Public\mfblogonew.png" />
-    <Content Include="Public\MobileApps.aspx" />
     <Content Include="Public\myflightbooknewstaging.png" />
     <Content Include="Public\MyFlights.aspx" />
     <Content Include="Public\oAuthToken.aspx" />
@@ -3248,13 +3247,6 @@
     <Compile Include="Public\MapRoute2.aspx.designer.cs">
       <DependentUpon>MapRoute2.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Public\MobileApps.aspx.cs">
-      <DependentUpon>MobileApps.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\MobileApps.aspx.designer.cs">
-      <DependentUpon>MobileApps.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Public\MyFlights.aspx.cs">
       <DependentUpon>MyFlights.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3482,6 +3474,7 @@
     <Content Include="Areas\mvc\Views\Airport\findAirports.cshtml" />
     <Content Include="Areas\mvc\Views\MFBTemplate\_googleAd.cshtml" />
     <Content Include="Areas\mvc\Views\Airport\_foundAirportTable.cshtml" />
+    <Content Include="Areas\mvc\Views\Pub\mobileApps.cshtml" />
     <None Include="packages.config" />
     <None Include="SecuritySwitch-v4.xsd">
       <SubType>Designer</SubType>
@@ -3632,9 +3625,6 @@
     <Content Include="Member\App_LocalResources\oAuthAuthorize.aspx.resx" />
     <Content Include="Member\App_LocalResources\RequestSigs.aspx.resx" />
     <Content Include="Member\App_LocalResources\StartingTotals.aspx.resx" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Public\App_LocalResources\MobileApps.aspx.resx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\mvc\Data\" />

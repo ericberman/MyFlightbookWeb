@@ -48,14 +48,14 @@
                             <asp:Image ID="imgSmartphone" ImageUrl="~/images/Smartphone.png" runat="server" style="vertical-align:middle" GenerateEmptyAlternateText="true" />
                             <asp:MultiView ID="mvXSell" runat="server" ActiveViewIndex="0">
                                 <asp:View runat="server" ID="vwGeneric">
-                                    <asp:HyperLink ID="lnkDownload" NavigateUrl="~/Public/MobileApps.aspx" runat="server"></asp:HyperLink>
+                                    <asp:HyperLink ID="lnkDownload" NavigateUrl="~/mvc/pub/MobileApps" runat="server"></asp:HyperLink>
                                     <asp:Localize ID="Localize5" Text="<%$ Resources:LocalizedText, HeaderDownloadIsFree %>" runat="server"></asp:Localize> 
                                 </asp:View>
                                 <asp:View runat="server" ID="vwIOS">
-                                    <asp:HyperLink ID="lnkDownloadIPhone" NavigateUrl="~/Public/MobileApps.aspx?p=0" runat="server" Text=""></asp:HyperLink>.
+                                    <asp:HyperLink ID="lnkDownloadIPhone" NavigateUrl="~/mvc/pub/MobileApps?selectedOS=iPhone" runat="server" Text=""></asp:HyperLink>.
                                 </asp:View>
                                 <asp:View runat="server" ID="vwDroid">
-                                    <asp:HyperLink ID="lnkDownloadAndroid" NavigateUrl="~/Public/MobileApps.aspx?p=2" runat="server" Text=""></asp:HyperLink>.
+                                    <asp:HyperLink ID="lnkDownloadAndroid" NavigateUrl="~/mvc/pub/Mobileapps?selectedOS=Android" runat="server" Text=""></asp:HyperLink>.
                                 </asp:View>
                             </asp:MultiView>
                         </div>

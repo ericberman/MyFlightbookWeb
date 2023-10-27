@@ -1,0 +1,88 @@
+﻿
+@{
+    ViewBag.Title = Branding.ReBrand(Resources.LocalizedText.MobileAppsPromoHeader);
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+<div style="display: inline-block; vertical-align: top;">
+    @Html.Raw(Branding.ReBrand(Resources.LocalizedText.MobileAppPromo))
+                
+    <h2>
+        @using (Html.BeginForm("MobileApps", "Pub", FormMethod.Post))
+        {
+            // No need for antiforgery token here
+            @Resources.LocalizedText.MobileAppChoosePlatform
+            <select onchange="this.form.submit()" name="selectedOS">
+                <option @(ViewBag.SelectedOS == "" ? "selected=\"selected\"" : string.Empty) value="">@Resources.LocalizedText.MobileAppNoPlatformSelected</option>
+                <option @(ViewBag.SelectedOS == "iPhone" ? "selected=\"selected\"" : string.Empty) value="iPhone">iPhone</option>
+                <option @(ViewBag.SelectedOS == "iPad" ? "selected=\"selected\"" : string.Empty) value="iPad">iPad</option>
+                <option @(ViewBag.SelectedOS == "Android" ? "selected=\"selected\"" : string.Empty) value="Android">Android</option>
+            </select>
+        }
+    </h2>
+</div>
+<div style="display: inline-block; vertical-align: top; margin-left: 30px;">
+    <p>
+        <object data="@VirtualPathUtility.ToAbsolute("~/public/AppleAppStore.svg")" type="image/svg+xml" width="150"></object>
+    </p>
+    <p>
+        <a href="https://play.google.com/store/apps/details?id=com.myflightbook.android" target="_blank">
+            <img src="@VirtualPathUtility.ToAbsolute("~/images/google-play-badge.png")" alt="Get it on Google Play" style="width: 150px" />
+        </a>
+    </p>
+</div>
+
+    @if (ViewBag.SelectedOS == "iPhone")
+    {
+        <p class="EntryBlock" style="text-align: center">
+            <a href="https://itunes.apple.com/us/app/myflightbook-for-iphone/id349983064?mt=8" target="_blank" style="font-weight:bold;">@Resources.LocalizedText.MobileAppDownloadiOS</a>
+            <br />
+            <object data="@VirtualPathUtility.ToAbsolute("~/public/AppleAppStore.svg")" type="image/svg+xml"></object>
+        </p>
+        <div>
+            <a href="@VirtualPathUtility.ToAbsolute("~/Public/iPhoneImages/Full/iPhone1.png")" target="_blank"><img src="@VirtualPathUtility.ToAbsolute("~/Public/iPhoneImages/iPhone1.png")" alt="@Resources.LocalizedText.MobileAppSampleImageAltText" title="@Resources.LocalizedText.MobileAppSampleImageAltText" /></a>
+            <a href="@VirtualPathUtility.ToAbsolute("~/Public/iPhoneImages/Full/iPhone2.png")" target="_blank"><img src="@VirtualPathUtility.ToAbsolute("~/Public/iPhoneImages/iPhone2.png")" alt="@Resources.LocalizedText.MobileAppSampleImageAltText" title="@Resources.LocalizedText.MobileAppSampleImageAltText" /></a>
+            <a href="@VirtualPathUtility.ToAbsolute("~/Public/iPhoneImages/Full/iPhone3.png")" target="_blank"><img src="@VirtualPathUtility.ToAbsolute("~/Public/iPhoneImages/iPhone3.png")" alt="@Resources.LocalizedText.MobileAppSampleImageAltText" title="@Resources.LocalizedText.MobileAppSampleImageAltText" /></a>
+            <a href="@VirtualPathUtility.ToAbsolute("~/Public/iPhoneImages/Full/iPhone4.png")" target="_blank"><img src="@VirtualPathUtility.ToAbsolute("~/Public/iPhoneImages/iPhone4.png")" alt="@Resources.LocalizedText.MobileAppSampleImageAltText" title="@Resources.LocalizedText.MobileAppSampleImageAltText" /></a>
+            <a href="@VirtualPathUtility.ToAbsolute("~/Public/iPhoneImages/Full/iPhone5.png")" target="_blank"><img src="@VirtualPathUtility.ToAbsolute("~/Public/iPhoneImages/iPhone5.png")" alt="@Resources.LocalizedText.MobileAppSampleImageAltText" title="@Resources.LocalizedText.MobileAppSampleImageAltText" /></a>
+            <a href="@VirtualPathUtility.ToAbsolute("~/Public/iPhoneImages/Full/iPhone6.png")" target="_blank"><img src="@VirtualPathUtility.ToAbsolute("~/Public/iPhoneImages/iPhone6.png")" alt="@Resources.LocalizedText.MobileAppSampleImageAltText" title="@Resources.LocalizedText.MobileAppSampleImageAltText" /></a>
+            <a href="@VirtualPathUtility.ToAbsolute("~/Public/iPhoneImages/Full/iPhone7.png")" target="_blank"><img src="@VirtualPathUtility.ToAbsolute("~/Public/iPhoneImages/iPhone7.png")" alt="@Resources.LocalizedText.MobileAppSampleImageAltText" title="@Resources.LocalizedText.MobileAppSampleImageAltText" /></a>
+            <a href="@VirtualPathUtility.ToAbsolute("~/Public/iPhoneImages/Full/iPhone8.png")" target="_blank"><img src="@VirtualPathUtility.ToAbsolute("~/Public/iPhoneImages/iPhone8.png")" alt="@Resources.LocalizedText.MobileAppSampleImageAltText" title="@Resources.LocalizedText.MobileAppSampleImageAltText" /></a>
+        </div>
+    }
+    else if (ViewBag.SelectedOS == "iPad")
+    {
+        <p class="EntryBlock" style="text-align: center">
+            <a href="https://itunes.apple.com/us/app/myflightbook-for-iphone/id349983064?mt=8" target="_blank" style="font-weight:bold">@Resources.LocalizedText.MobileAppDownloadiOS</a>
+            <br />
+            <object data="@VirtualPathUtility.ToAbsolute("~/public/AppleAppStore.svg")" type="image/svg+xml"></object>
+        </p>
+        <div>
+            <a href="@VirtualPathUtility.ToAbsolute("~/Public/iPadImages/Full/iPad1.png")" target="_blank"><img src="@VirtualPathUtility.ToAbsolute("~/Public/iPadImages/iPad1.png")" alt="@Resources.LocalizedText.MobileAppSampleImageAltText" title="@Resources.LocalizedText.MobileAppSampleImageAltText" /></a>
+            <a href="@VirtualPathUtility.ToAbsolute("~/Public/iPadImages/Full/iPad2.png")" target="_blank"><img src="@VirtualPathUtility.ToAbsolute("~/Public/iPadImages/iPad2.png")" alt="@Resources.LocalizedText.MobileAppSampleImageAltText" title="@Resources.LocalizedText.MobileAppSampleImageAltText" /></a>
+            <a href="@VirtualPathUtility.ToAbsolute("~/Public/iPadImages/Full/iPad3.png")" target="_blank"><img src="@VirtualPathUtility.ToAbsolute("~/Public/iPadImages/iPad3.png")" alt="@Resources.LocalizedText.MobileAppSampleImageAltText" title="@Resources.LocalizedText.MobileAppSampleImageAltText" /></a>
+            <a href="@VirtualPathUtility.ToAbsolute("~/Public/iPadImages/Full/iPad4.png")" target="_blank"><img src="@VirtualPathUtility.ToAbsolute("~/Public/iPadImages/iPad4.png")" alt="@Resources.LocalizedText.MobileAppSampleImageAltText" title="@Resources.LocalizedText.MobileAppSampleImageAltText" /></a>
+            <a href="@VirtualPathUtility.ToAbsolute("~/Public/iPadImages/Full/iPad5.png")" target="_blank"><img src="@VirtualPathUtility.ToAbsolute("~/Public/iPadImages/iPad5.png")" alt="@Resources.LocalizedText.MobileAppSampleImageAltText" title="@Resources.LocalizedText.MobileAppSampleImageAltText" /></a>
+            <a href="@VirtualPathUtility.ToAbsolute("~/Public/iPadImages/Full/iPad6.png")" target="_blank"><img src="@VirtualPathUtility.ToAbsolute("~/Public/iPadImages/iPad6.png")" alt="@Resources.LocalizedText.MobileAppSampleImageAltText" title="@Resources.LocalizedText.MobileAppSampleImageAltText" /></a>
+            <a href="@VirtualPathUtility.ToAbsolute("~/Public/iPadImages/Full/iPad7.png")" target="_blank"><img src="@VirtualPathUtility.ToAbsolute("~/Public/iPadImages/iPad7.png")" alt="@Resources.LocalizedText.MobileAppSampleImageAltText" title="@Resources.LocalizedText.MobileAppSampleImageAltText" /></a>
+            <a href="@VirtualPathUtility.ToAbsolute("~/Public/iPadImages/Full/iPad8.png")" target="_blank"><img src="@VirtualPathUtility.ToAbsolute("~/Public/iPadImages/iPad8.png")" alt="@Resources.LocalizedText.MobileAppSampleImageAltText" title="@Resources.LocalizedText.MobileAppSampleImageAltText" /></a>
+        </div>
+    }
+    else if (ViewBag.SelectedOS == "Android")
+    {
+        <p class="EntryBlock" style="text-align: center">
+            <a href="https://market.android.com/details?id=com.myflightbook.android" target="_blank" style="font-weight: bold">@Resources.LocalizedText.MobileAppDownloadAndroid</a>
+            <br />
+            <a href="https://play.google.com/store/apps/details?id=com.myflightbook.android" target="_blank">
+                <img src="@VirtualPathUtility.ToAbsolute("~/images/google-play-badge.png")" alt="Get it on Google Play" ImageAlign="Middle" Style="padding:3px;" />
+            </a>
+        </p>
+        <div>
+            <a href="@VirtualPathUtility.ToAbsolute("~/Public/AndroidImages/Android1.png")" target="_blank"><img src="@VirtualPathUtility.ToAbsolute("~/Public/AndroidImages/Android1.png")" alt="@Resources.LocalizedText.MobileAppSampleImageAltText" title="@Resources.LocalizedText.MobileAppSampleImageAltText" style="width: 400px;" /></a>
+            <a href="@VirtualPathUtility.ToAbsolute("~/Public/AndroidImages/Android2.png")" target="_blank"><img src="@VirtualPathUtility.ToAbsolute("~/Public/AndroidImages/Android2.png")" alt="@Resources.LocalizedText.MobileAppSampleImageAltText" title="@Resources.LocalizedText.MobileAppSampleImageAltText" style="width: 400px;" /></a>
+            <a href="@VirtualPathUtility.ToAbsolute("~/Public/AndroidImages/Android3.png")" target="_blank"><img src="@VirtualPathUtility.ToAbsolute("~/Public/AndroidImages/Android3.png")" alt="@Resources.LocalizedText.MobileAppSampleImageAltText" title="@Resources.LocalizedText.MobileAppSampleImageAltText" style="width: 400px;" /></a>
+            <a href="@VirtualPathUtility.ToAbsolute("~/Public/AndroidImages/Android4.png")" target="_blank"><img src="@VirtualPathUtility.ToAbsolute("~/Public/AndroidImages/Android4.png")" alt="@Resources.LocalizedText.MobileAppSampleImageAltText" title="@Resources.LocalizedText.MobileAppSampleImageAltText" style="width: 400px;" /></a>
+            <a href="@VirtualPathUtility.ToAbsolute("~/Public/AndroidImages/Android5.png")" target="_blank"><img src="@VirtualPathUtility.ToAbsolute("~/Public/AndroidImages/Android5.png")" alt="@Resources.LocalizedText.MobileAppSampleImageAltText" title="@Resources.LocalizedText.MobileAppSampleImageAltText" style="width: 400px;" /></a>
+            <a href="@VirtualPathUtility.ToAbsolute("~/Public/AndroidImages/Android6.png")" target="_blank"><img src="@VirtualPathUtility.ToAbsolute("~/Public/AndroidImages/Android6.png")" alt="@Resources.LocalizedText.MobileAppSampleImageAltText" title="@Resources.LocalizedText.MobileAppSampleImageAltText" style="width: 400px;" /></a>
+            <a href="@VirtualPathUtility.ToAbsolute("~/Public/AndroidImages/Android7.png")" target="_blank"><img src="@VirtualPathUtility.ToAbsolute("~/Public/AndroidImages/Android7.png")" alt="@Resources.LocalizedText.MobileAppSampleImageAltText" title="@Resources.LocalizedText.MobileAppSampleImageAltText" style="width: 400px;" /></a>
+        </div>
+    }
