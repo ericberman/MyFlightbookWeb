@@ -1469,7 +1469,8 @@ namespace MyFlightbook.Currency
             foreach (CustomCurrency cc in ccc.rgCustomCurrency)
             {
                 cc.Finalize(ccc.totalTime, ccc.picTime);
-                if (cc.HasBeenCurrent && (!cc.ExpirationDate.HasValue() || cc.ExpirationDate.CompareTo(dtCutoff) > 0)) 
+                // Issue #1132: always show custom currencies, even if never current.  You added it, you probably care...
+                if (!cc.ExpirationDate.HasValue() || cc.ExpirationDate.CompareTo(dtCutoff) > 0) 
                     arcs.Add(new CurrencyStatusItem(cc.DisplayName, cc.StatusDisplay, cc.CurrentState, cc.DiscrepancyString) { Query = cc.Query, CurrencyGroup = CurrencyStatusItem.CurrencyGroups.CustomCurrency });
             }
         }
