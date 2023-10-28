@@ -18,59 +18,81 @@ namespace MyFlightbook.Currency
     public static class CustomCurrencyTimespanExtensions
     {
         #region extension methods for CustomCurrencyTimespanTypeTimespanType
+        private static Dictionary<TimespanType, int> _mDictAlignmentMonths = null;
+        private static Dictionary<TimespanType, int> dictAlighmentMonths
+        {
+            get
+            {
+                if (_mDictAlignmentMonths == null)
+                    _mDictAlignmentMonths = new Dictionary<TimespanType, int>() {
+                        { TimespanType.ThreeMonthJan, 1 }, { TimespanType.FourMonthJan, 1 }, { TimespanType.SixMonthJan, 1 }, { TimespanType.TwelveMonthJan, 1 },
+                        { TimespanType.ThreeMonthFeb, 2 }, { TimespanType.FourMonthFeb, 2 }, {TimespanType.SixMonthFeb, 2 }, {TimespanType.TwelveMonthFeb, 2 },
+                        { TimespanType.ThreeMonthMar, 3 }, { TimespanType.FourMonthMar, 3 }, {TimespanType.SixMonthMar, 3 }, {TimespanType.TwelveMonthMar, 3 },
+                        { TimespanType.FourMonthApr, 4 }, {TimespanType.SixMonthApr, 4 }, {TimespanType.TwelveMonthApr, 4 },
+                        { TimespanType.SixMonthMay, 5 }, {TimespanType.TwelveMonthMay, 5 },
+                        { TimespanType.SixMonthJun, 6 }, {TimespanType.TwelveMonthJun, 6 },
+                        { TimespanType.TwelveMonthJul, 7 },
+                        { TimespanType.TwelveMonthAug, 8 },
+                        { TimespanType.TwelveMonthSep, 9 },
+                        { TimespanType.TwelveMonthOct, 10 },
+                        { TimespanType.TwelveMonthNov, 11 },
+                        { TimespanType.TwelveMonthDec, 12 }
+                    };
+                return _mDictAlignmentMonths;
+            }
+        }
         /// <summary>
         /// For fixed-range timespan ranges, returns the month (1 = Jan) for alignment
         /// </summary>
         /// <param name="tst"></param>
         /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         public static int AlignmentMonth(this TimespanType tst)
         {
-            switch (tst)
+            if (tst == TimespanType.SlidingMonths)
+                throw new ArgumentException("CalendarMonths, sliding months, and days do not have an alignment date");
+            else if (dictAlighmentMonths.TryGetValue(tst, out int result))
+                return result;
+            else
+                throw new ArgumentException("Unknown duration for TimeSpanType: {0}", tst.ToString());
+        }
+
+        private static Dictionary<TimespanType, int> _mDictDuration = null;
+
+        private static Dictionary<TimespanType, int> dictDurations
+        {
+            get
             {
-                default:
-                    throw new ArgumentException("Unknown duration for TimeSpanType: {0}", tst.ToString());
-                case TimespanType.CalendarMonths:
-                case TimespanType.Days:
-                case TimespanType.SlidingMonths:
-                    throw new ArgumentException("CalendarMonths, sliding months, and days do not have an alignment date");
-                case TimespanType.ThreeMonthJan:
-                case TimespanType.FourMonthJan:
-                case TimespanType.SixMonthJan:
-                case TimespanType.TwelveMonthJan:
-                    return 1;
-                case TimespanType.ThreeMonthFeb:
-                case TimespanType.FourMonthFeb:
-                case TimespanType.SixMonthFeb:
-                case TimespanType.TwelveMonthFeb:
-                    return 2;
-                case TimespanType.ThreeMonthMar:
-                case TimespanType.FourMonthMar:
-                case TimespanType.SixMonthMar:
-                case TimespanType.TwelveMonthMar:
-                    return 3;
-                case TimespanType.FourMonthApr:
-                case TimespanType.SixMonthApr:
-                case TimespanType.TwelveMonthApr:
-                    return 4;
-                case TimespanType.SixMonthMay:
-                case TimespanType.TwelveMonthMay:
-                    return 5;
-                case TimespanType.SixMonthJun:
-                case TimespanType.TwelveMonthJun:
-                    return 6;
-                case TimespanType.TwelveMonthJul:
-                    return 7;
-                case TimespanType.TwelveMonthAug:
-                    return 8;
-                case TimespanType.TwelveMonthSep:
-                    return 9;
-                case TimespanType.TwelveMonthOct:
-                    return 10;
-                case TimespanType.TwelveMonthNov:
-                    return 11;
-                case TimespanType.TwelveMonthDec:
-                    return 12;
+                if (_mDictDuration == null)
+                    _mDictDuration = new Dictionary<TimespanType, int>()
+                    {
+                        {TimespanType.CalendarMonths, 1 },
+                        { TimespanType.ThreeMonthJan, 3 },
+                        { TimespanType.ThreeMonthFeb, 3 },
+                        { TimespanType.ThreeMonthMar, 3 },
+                        { TimespanType.FourMonthJan, 4 },
+                        { TimespanType.FourMonthFeb, 4 },
+                        { TimespanType.FourMonthMar, 4 },
+                        { TimespanType.FourMonthApr, 4 },
+                        { TimespanType.SixMonthJan, 6 },
+                        { TimespanType.SixMonthFeb, 6 },
+                        { TimespanType.SixMonthMar, 6 },
+                        { TimespanType.SixMonthApr, 6 },
+                        { TimespanType.SixMonthMay, 6 },
+                        { TimespanType.SixMonthJun, 6 },
+                        { TimespanType.TwelveMonthJan, 12 },
+                        { TimespanType.TwelveMonthFeb, 12 },
+                        { TimespanType.TwelveMonthMar, 12 },
+                        { TimespanType.TwelveMonthApr, 12 },
+                        { TimespanType.TwelveMonthMay, 12 },
+                        { TimespanType.TwelveMonthJun, 12 },
+                        { TimespanType.TwelveMonthJul, 12 },
+                        { TimespanType.TwelveMonthAug, 12 },
+                        { TimespanType.TwelveMonthSep, 12 },
+                        { TimespanType.TwelveMonthOct, 12 },
+                        { TimespanType.TwelveMonthNov, 12 },
+                        { TimespanType.TwelveMonthDec, 12 }
+                    }; 
+                return _mDictDuration;
             }
         }
 
@@ -79,49 +101,15 @@ namespace MyFlightbook.Currency
         /// </summary>
         /// <param name="tst"></param>
         /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         public static int Duration(this TimespanType tst)
         {
-            switch (tst)
-            {
-                default:
-                    throw new ArgumentException("Unknown duration for TimeSpanType: {0}", tst.ToString());
-                case TimespanType.SlidingMonths:
-                    throw new ArgumentException("Sliding months do not have a duration of whole months (ironically)");
-                case TimespanType.Days:
-                    throw new ArgumentException("Days do not have a duration of months");
-                case TimespanType.CalendarMonths:
-                    return 1;
-                case TimespanType.ThreeMonthJan:
-                case TimespanType.ThreeMonthFeb:
-                case TimespanType.ThreeMonthMar:
-                    return 3;
-                case TimespanType.FourMonthJan:
-                case TimespanType.FourMonthFeb:
-                case TimespanType.FourMonthMar:
-                case TimespanType.FourMonthApr:
-                    return 4;
-                case TimespanType.SixMonthJan:
-                case TimespanType.SixMonthFeb:
-                case TimespanType.SixMonthMar:
-                case TimespanType.SixMonthApr:
-                case TimespanType.SixMonthMay:
-                case TimespanType.SixMonthJun:
-                    return 6;
-                case TimespanType.TwelveMonthJan:
-                case TimespanType.TwelveMonthFeb:
-                case TimespanType.TwelveMonthMar:
-                case TimespanType.TwelveMonthApr:
-                case TimespanType.TwelveMonthMay:
-                case TimespanType.TwelveMonthJun:
-                case TimespanType.TwelveMonthJul:
-                case TimespanType.TwelveMonthAug:
-                case TimespanType.TwelveMonthSep:
-                case TimespanType.TwelveMonthOct:
-                case TimespanType.TwelveMonthNov:
-                case TimespanType.TwelveMonthDec:
-                    return 12;
-            }
+            if (tst == TimespanType.SlidingMonths)
+                throw new ArgumentException("Sliding months do not have a duration of whole months (ironically)");
+            else if (tst == TimespanType.Days)
+                throw new ArgumentException("Days do not have a duration of months");
+            else if (dictDurations.TryGetValue(tst, out int duration))
+                return duration;
+            throw new ArgumentException("Unknown duration for TimeSpanType: {0}", tst.ToString());
         }
 
         /// <summary>
@@ -129,7 +117,6 @@ namespace MyFlightbook.Currency
         /// </summary>
         /// <param name="tst"></param>
         /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         public static string DisplayString(this TimespanType tst)
         {
             bool isAligned = tst.IsAligned();
@@ -142,42 +129,25 @@ namespace MyFlightbook.Currency
             switch (tst)
             {
                 default:
-                    throw new ArgumentException("Unknown duration for TimeSpanType: {0}", tst.ToString());
+                    switch (tst.Duration())
+                    {
+                        case 3:
+                            return String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrency3Month, dt1.ToString("MMM", CultureInfo.CurrentCulture), dt2.ToString("MMM", CultureInfo.CurrentCulture), dt3.ToString("MMM", CultureInfo.CurrentCulture), dt4.ToString("MMM", CultureInfo.CurrentCulture));
+                        case 4:
+                            return String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrency4Month, dt1.ToString("MMM", CultureInfo.CurrentCulture), dt2.ToString("MMM", CultureInfo.CurrentCulture), dt3.ToString("MMM", CultureInfo.CurrentCulture));
+                        case 6:
+                            return String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrency6Month, dt1.ToString("MMM", CultureInfo.CurrentCulture), dt2.ToString("MMM", CultureInfo.CurrentCulture));
+                        case 12:
+                            return String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrency12Month, dt1.ToString("MMM", CultureInfo.CurrentCulture));
+                        default:
+                            throw new ArgumentException("Unknown duration for TimeSpanType: {0}", tst.ToString());
+                    }
                 case TimespanType.CalendarMonths:
                     return Resources.Currency.CustomCurrencyMonths;
                 case TimespanType.Days:
                     return Resources.Currency.CustomCurrencyDays;
                 case TimespanType.SlidingMonths:
                     return Resources.Currency.CustomCurrencySlidingMonths;
-                case TimespanType.ThreeMonthJan:
-                case TimespanType.ThreeMonthFeb:
-                case TimespanType.ThreeMonthMar:
-                    return String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrency3Month, dt1.ToString("MMM", CultureInfo.CurrentCulture), dt2.ToString("MMM", CultureInfo.CurrentCulture), dt3.ToString("MMM", CultureInfo.CurrentCulture), dt4.ToString("MMM", CultureInfo.CurrentCulture));
-                case TimespanType.FourMonthJan:
-                case TimespanType.FourMonthFeb:
-                case TimespanType.FourMonthMar:
-                case TimespanType.FourMonthApr:
-                    return String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrency4Month, dt1.ToString("MMM", CultureInfo.CurrentCulture), dt2.ToString("MMM", CultureInfo.CurrentCulture), dt3.ToString("MMM", CultureInfo.CurrentCulture));
-                case TimespanType.SixMonthJan:
-                case TimespanType.SixMonthFeb:
-                case TimespanType.SixMonthMar:
-                case TimespanType.SixMonthApr:
-                case TimespanType.SixMonthMay:
-                case TimespanType.SixMonthJun:
-                    return String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrency6Month, dt1.ToString("MMM", CultureInfo.CurrentCulture), dt2.ToString("MMM", CultureInfo.CurrentCulture));
-                case TimespanType.TwelveMonthJan:
-                case TimespanType.TwelveMonthFeb:
-                case TimespanType.TwelveMonthMar:
-                case TimespanType.TwelveMonthApr:
-                case TimespanType.TwelveMonthMay:
-                case TimespanType.TwelveMonthJun:
-                case TimespanType.TwelveMonthJul:
-                case TimespanType.TwelveMonthAug:
-                case TimespanType.TwelveMonthSep:
-                case TimespanType.TwelveMonthOct:
-                case TimespanType.TwelveMonthNov:
-                case TimespanType.TwelveMonthDec:
-                    return String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrency12Month, dt1.ToString("MMM", CultureInfo.CurrentCulture));
             }
         }
 
@@ -866,10 +836,52 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
         }
         #endregion
 
+        private readonly Dictionary<CustomCurrencyEventType, Action<FlightQuery, List<CustomPropertyType>, Action<CustomPropertyType.KnownProperties>>> mDictAddQuery = new Dictionary<CustomCurrencyEventType, Action<FlightQuery, List<CustomPropertyType>, Action<CustomPropertyType.KnownProperties>>>()
+        {
+            { CustomCurrencyEventType.BackseatHours, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropBackSeatTime); } },
+            { CustomCurrencyEventType.BaseCheck, (fq, lst, ap) => { fq.AddPropertyTypes(lst.FindAll(cpt => cpt.IsBaseCheck)); } },
+            { CustomCurrencyEventType.Flights, (fq, lst, qp) => { } },
+            { CustomCurrencyEventType.FrontSeatHours, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropFrontSeatTime); } },
+            { CustomCurrencyEventType.GroundSimHours, (fq, lst, ap) => { fq.HasGroundSim = true; } },
+            { CustomCurrencyEventType.HoistOperations, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropHoistOperations); } },
+            { CustomCurrencyEventType.Hours, (fq, lst, ap) => { fq.HasPIC = true; } },
+            { CustomCurrencyEventType.IFRApproaches, (fq, lst, ap) => { fq.HasApproaches = true; } },
+            { CustomCurrencyEventType.IFRHours, (fq, lst, ap) => { fq.HasAnyInstrument = true; } },
+            { CustomCurrencyEventType.Landings, (fq, lst, ap) => { fq.HasLandings = true; } },
+            { CustomCurrencyEventType.PICLandings, (fq, lst, ap) => { fq.HasLandings = true; fq.HasPIC = true; } },
+            { CustomCurrencyEventType.TakeoffsAny, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropTakeoffAny); } },
+            { CustomCurrencyEventType.LandingsHighAltitude, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropHighAltitudeLandings); } },
+            { CustomCurrencyEventType.NightFlight, (fq, lst, ap) => { fq.HasNight = true; } },
+            { CustomCurrencyEventType.NightLandings, (fq, lst, ap) => { fq.HasNightLandings = true; } },
+            { CustomCurrencyEventType.NightTouchAndGo, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropNightTouchAndGo); } },
+            { CustomCurrencyEventType.NightTakeoffs, (fq, lst, ap) => { fq.AddPropertyTypes(lst.FindAll(cpt => cpt.IsNightTakeOff)); } },
+            { CustomCurrencyEventType.NVFLIR, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropNVFLIRTime); } },
+            { CustomCurrencyEventType.NVGoggles, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropNVGoggleTime); } },
+            { CustomCurrencyEventType.NVHours, (fq, lst, ap) => { fq.AddPropertyTypes(lst.FindAll(cpt => cpt.IsNightVisionTime)); } },
+            { CustomCurrencyEventType.NVUnaidedTime, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropNVUnaided); } },
+            { CustomCurrencyEventType.PICNightLandings, (fq, lst, ap) => { fq.HasNightLandings = true; fq.HasPIC = true; } },
+            { CustomCurrencyEventType.TotalHours, (fq, lst, ap) => { fq.HasTotalTime = true; } },
+            { CustomCurrencyEventType.UASLaunch, (fq, lst, ap) => { fq.AddPropertyTypes(lst.FindAll(cpt => cpt.IsUASLaunch)); } },
+            { CustomCurrencyEventType.UASRecovery, (fq, lst, ap) => { fq.AddPropertyTypes(lst.FindAll(cpt => cpt.IsUASRecovery)); } },
+            { CustomCurrencyEventType.CAP5Checkride, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropCAP5Checkride); } },
+            { CustomCurrencyEventType.CAP91Checkride, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropCAP91Checkride); } },
+            { CustomCurrencyEventType.FMSApproaches, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropFMSApproaches); } },
+            { CustomCurrencyEventType.GliderTow, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropGliderTow); } },
+            { CustomCurrencyEventType.HoursDual, (fq, lst, ap) => { fq.HasDual = true; } },
+            { CustomCurrencyEventType.InstructionGiven, (fq, lst, ap) => { fq.HasCFI = true; } },
+            { CustomCurrencyEventType.FlightReview, (fq, lst, ap) => { fq.AddPropertyTypes(lst.FindAll(cpt => cpt.IsBFR)); } },
+            { CustomCurrencyEventType.IPC, (fq, lst, ap) => { fq.AddPropertyTypes(lst.FindAll(cpt => cpt.IsIPC)); } },
+            { CustomCurrencyEventType.NightLandingAny, (fq, lst, ap) => { fq.HasNight = true; fq.HasLandings = true; } },
+            { CustomCurrencyEventType.FlightDutyTime, (fq, lst, ap) => { } },
+            { CustomCurrencyEventType.DutyTime, (fq, lst, ap) => { } },
+            { CustomCurrencyEventType.RestTime, (fq, lst, ap) => { } },
+            { CustomCurrencyEventType.SpecialAuthorizationApproach, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropSpecialAuthorizationApproach); } },
+            { CustomCurrencyEventType.EnhancedVisionApproach, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropEnhancedVisionApproach); } }
+        };
+
         /// <summary>
         /// Generates a new flightquery object representing flights that match this custom currency
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         public override FlightQuery Query
         {
             get
@@ -902,124 +914,11 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                 CustomPropertyType.KnownProperties prop = CustomPropertyType.KnownProperties.IDPropInvalid;
                 List<CustomPropertyType> lstprops = new List<CustomPropertyType>(CustomPropertyType.GetCustomPropertyTypes());
                 fq.PropertiesConjunction = GroupConjunction.All;
-                switch (EventType)
-                {
-                    case CustomCurrencyEventType.BackseatHours:
-                        prop = CustomPropertyType.KnownProperties.IDPropBackSeatTime;
-                        break;
-                    case CustomCurrencyEventType.BaseCheck:
-                        fq.AddPropertyTypes(lstprops.FindAll(cpt => cpt.IsBaseCheck));
-                        break;
-                    case CustomCurrencyEventType.Flights:
-                        break;
-                    case CustomCurrencyEventType.FrontSeatHours:
-                        prop = CustomPropertyType.KnownProperties.IDPropFrontSeatTime;
-                        break;
-                    case CustomCurrencyEventType.GroundSimHours:
-                        fq.HasGroundSim = true;
-                        break;
-                    case CustomCurrencyEventType.HoistOperations:
-                        prop = CustomPropertyType.KnownProperties.IDPropHoistOperations;
-                        break;
-                    case CustomCurrencyEventType.Hours:
-                        fq.HasPIC = true;
-                        break;
-                    case CustomCurrencyEventType.IFRApproaches:
-                        fq.HasApproaches = true;
-                        break;
-                    case CustomCurrencyEventType.IFRHours:
-                        fq.HasAnyInstrument = true;
-                        break;
-                    case CustomCurrencyEventType.Landings:
-                    case CustomCurrencyEventType.PICLandings:
-                        fq.HasLandings = true;
-                        if (EventType == CustomCurrencyEventType.PICLandings)
-                            fq.HasPIC = true;
-                        break;
-                    case CustomCurrencyEventType.TakeoffsAny:
-                        prop = CustomPropertyType.KnownProperties.IDPropTakeoffAny;
-                        break;
-                    case CustomCurrencyEventType.LandingsHighAltitude:
-                        prop = CustomPropertyType.KnownProperties.IDPropHighAltitudeLandings;
-                        break;
-                    case CustomCurrencyEventType.NightFlight:
-                        fq.HasNight = true;
-                        break;
-                    case CustomCurrencyEventType.NightLandings:
-                        fq.HasNightLandings = true;
-                        break;
-                    case CustomCurrencyEventType.NightTouchAndGo:
-                        prop = CustomPropertyType.KnownProperties.IDPropNightTouchAndGo;
-                        break;
-                    case CustomCurrencyEventType.NightTakeoffs:
-                        fq.AddPropertyTypes(lstprops.FindAll(cpt => cpt.IsNightTakeOff));
-                        break;
-                    case CustomCurrencyEventType.NVFLIR:
-                        prop = CustomPropertyType.KnownProperties.IDPropNVFLIRTime;
-                        break;
-                    case CustomCurrencyEventType.NVGoggles:
-                        prop = CustomPropertyType.KnownProperties.IDPropNVGoggleTime;
-                        break;
-                    case CustomCurrencyEventType.NVHours:
-                        fq.AddPropertyTypes(lstprops.FindAll(cpt => cpt.IsNightVisionTime));
-                        break;
-                    case CustomCurrencyEventType.NVUnaidedTime:
-                        prop = CustomPropertyType.KnownProperties.IDPropNVUnaided;
-                        break;
-                    case CustomCurrencyEventType.PICNightLandings:
-                        fq.HasNightLandings = true;
-                        fq.HasPIC = true;
-                        break;
-                    case CustomCurrencyEventType.TotalHours:
-                        fq.HasTotalTime = true;
-                        break;
-                    case CustomCurrencyEventType.UASLaunch:
-                        fq.AddPropertyTypes(lstprops.FindAll(cpt => cpt.IsUASLaunch));
-                        break;
-                    case CustomCurrencyEventType.UASRecovery:
-                        fq.AddPropertyTypes(lstprops.FindAll(cpt => cpt.IsUASRecovery));
-                        break;
-                    case CustomCurrencyEventType.CAP5Checkride:
-                        prop = CustomPropertyType.KnownProperties.IDPropCAP5Checkride;
-                        break;
-                    case CustomCurrencyEventType.CAP91Checkride:
-                        prop = CustomPropertyType.KnownProperties.IDPropCAP91Checkride;
-                        break;
-                    case CustomCurrencyEventType.FMSApproaches:
-                        prop = CustomPropertyType.KnownProperties.IDPropFMSApproaches;
-                        break;
-                    case CustomCurrencyEventType.GliderTow:
-                        prop = CustomPropertyType.KnownProperties.IDPropGliderTow;
-                        break;
-                    case CustomCurrencyEventType.HoursDual:
-                        fq.HasDual = true;
-                        break;
-                    case CustomCurrencyEventType.InstructionGiven:
-                        fq.HasCFI = true;
-                        break;
-                    case CustomCurrencyEventType.FlightReview:
-                        fq.AddPropertyTypes(lstprops.FindAll(cpt => cpt.IsBFR));
-                        break;
-                    case CustomCurrencyEventType.IPC:
-                        fq.AddPropertyTypes(lstprops.FindAll(cpt => cpt.IsIPC));
-                        break;
-                    case CustomCurrencyEventType.NightLandingAny:
-                        fq.HasNight = true;
-                        fq.HasLandings = true;
-                        break;
-                    case CustomCurrencyEventType.FlightDutyTime:
-                    case CustomCurrencyEventType.DutyTime:
-                    case CustomCurrencyEventType.RestTime:
-                        break;
-                    case CustomCurrencyEventType.SpecialAuthorizationApproach:
-                        prop = CustomPropertyType.KnownProperties.IDPropSpecialAuthorizationApproach;
-                        break;
-                    case CustomCurrencyEventType.EnhancedVisionApproach:
-                        prop = CustomPropertyType.KnownProperties.IDPropEnhancedVisionApproach;
-                        break;
-                    default:
-                        throw new InvalidOperationException("Unknown event type: " + EventType.ToString() + " in ToQuery()");
-                }
+                if (mDictAddQuery.TryGetValue(EventType, out Action<FlightQuery, List<CustomPropertyType>, Action<CustomPropertyType.KnownProperties>> f))
+                    f(fq, lstprops, (kp) => { prop = kp; });
+                else 
+                    throw new InvalidOperationException("Unknown event type: " + EventType.ToString() + " in ToQuery()");
+
                 if (prop != CustomPropertyType.KnownProperties.IDPropInvalid)
                     fq.AddPropertyTypes(lstprops.FindAll(cpt => cpt.PropTypeID == (int)prop));
 
@@ -1043,66 +942,220 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
         {
             get { return System.Web.HttpUtility.UrlEncode(Query.ToBase64CompressedJSONString()); }
         }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        private bool CheckMatchesCriteria(ExaminerFlightRow cfr)
+        #region Criteria Matching
+        private bool MatchesModel(int idModel)
         {
-            // quickly see if we can ignore this.
-            int idmodel = cfr.idModel;
-            if (ModelsRestriction != null && ModelsRestriction.Any() && !ModelsRestriction.Any(model => model == idmodel))
+            return ModelsRestriction == null || !ModelsRestriction.Any() || ModelsRestriction.Any(model => model == idModel);
+        }
+
+        private bool MatchesCategory(string szCategory)
+        {
+            return String.IsNullOrEmpty(CategoryRestriction) || szCategory.CompareOrdinalIgnoreCase(CategoryRestriction) == 0;
+        }
+
+        private bool MatchesCatClass(CategoryClass.CatClassID idCatClassOverride)
+        {
+            return CatClassRestriction == 0 || idCatClassOverride == CatClassRestriction;
+        }
+
+        private bool MatchesAircraft(int idAircraft)
+        {
+            return AircraftRestriction == null || !AircraftRestriction.Any() || AircraftRestriction.Any(idac => idac == idAircraft);
+        }
+
+        private bool MatchesAlignedStart(DateTime dtFlight)
+        {
+            return !AlignedStartDate.HasValue || AlignedStartDate.Value.CompareTo(dtFlight) <= 0;
+        }
+
+        private bool MatchesProperties(CustomPropertyCollection cpc)
+        {
+            if (PropertyRestriction == null || !PropertyRestriction.Any())
+                return true;
+
+            if (!cpc.Any()) // short circuit, plus empty set can be superset of other sets.
                 return false;
-            if (!String.IsNullOrEmpty(CategoryRestriction) && cfr.szCategory.CompareOrdinalIgnoreCase(CategoryRestriction) != 0)
-                return false;
-            if (CatClassRestriction > 0 && cfr.idCatClassOverride != CatClassRestriction)
-                return false;
-            int idAircraft = Convert.ToInt32(cfr.idAircraft);
-            if (AircraftRestriction != null && AircraftRestriction.Any() && !AircraftRestriction.Any(idac => idac == idAircraft))
-                return false;
-            if (AlignedStartDate.HasValue && AlignedStartDate.Value.CompareTo(cfr.dtFlight) > 0)
-                return false;
-            if (PropertyRestriction != null && PropertyRestriction.Any())
-            {
-                if (!cfr.FlightProps.Any())  // short circuit, plus empty set can be superset of other sets.
+
+            HashSet<int> hsProps = new HashSet<int>(PropertyRestriction);
+            HashSet<int> hsFlight = new HashSet<int>();
+            foreach (CustomFlightProperty cfp in cpc)
+                hsFlight.Add(cfp.PropTypeID);
+
+            return hsFlight.IsSupersetOf(hsProps);
+        }
+
+        private bool MatchesText(ExaminerFlightRow cfr)
+        {
+            if (String.IsNullOrWhiteSpace(TextRestriction))
+                return true;    // no text restriction specified
+
+            string szUpper = TextRestriction.ToUpper(CultureInfo.CurrentCulture);
+            // check comments...
+            if (cfr.Comments.ToUpper(CultureInfo.CurrentCulture).Contains(szUpper))
+                return true;
+
+            // if not in comments, check string values of properties...
+            foreach (CustomFlightProperty cfp in cfr.FlightProps)
+                if (cfp.PropertyType.Type == CFPPropertyType.cfpString && cfp.TextValue.ToUpper(CultureInfo.CurrentCulture).Contains(szUpper))
+                    return true;
+
+            // Finally, if not in properties, check for hit in private notes for the aircraft
+            Aircraft ac = new UserAircraft(UserName).GetUserAircraftByID(cfr.idAircraft);
+            if (ac != null && ac.PrivateNotes.ToUpper(CultureInfo.CurrentCulture).Contains(szUpper))
+                return true;
+            return false;
+        }
+
+        private bool MatchesAirports(string szRoute)
+        {
+            if (String.IsNullOrWhiteSpace(AirportRestriction))
+                return true;    // no airport restriction specified
+
+            string[] szAirports = Airports.AirportList.NormalizeAirportList(AirportRestriction.ToUpper(CultureInfo.CurrentCulture));
+            string szRouteUpper = szRoute.ToUpper(CultureInfo.CurrentCulture);
+
+            // verify that each of the airports in the Airport list is found somewhere in the route field.
+            foreach (string szAirport in szAirports)
+                if (!szRouteUpper.Contains(szAirport))
                     return false;
 
-                HashSet<int> hsProps = new HashSet<int>(PropertyRestriction);
-                HashSet<int> hsFlight = new HashSet<int>();
-                foreach (CustomFlightProperty cfp in cfr.FlightProps)
-                    hsFlight.Add(cfp.PropTypeID);
-
-                if (!hsFlight.IsSupersetOf(hsProps))
-                    return false;
-            }
-            if (!String.IsNullOrWhiteSpace(TextRestriction))
-            {
-                string szUpper = TextRestriction.ToUpper(CultureInfo.CurrentCulture);
-                if (cfr.Comments.ToUpper(CultureInfo.CurrentCulture).Contains(szUpper))
-                    return true;
-                foreach (CustomFlightProperty cfp in cfr.FlightProps)
-                    if (cfp.PropertyType.Type == CFPPropertyType.cfpString && cfp.TextValue.ToUpper(CultureInfo.CurrentCulture).Contains(szUpper))
-                        return true;
-                Aircraft ac = new UserAircraft(UserName).GetUserAircraftByID(cfr.idAircraft);
-                if (ac != null && ac.PrivateNotes.ToUpper(CultureInfo.CurrentCulture).Contains(szUpper))
-                    return true;
-                return false;
-            }
-            if (!String.IsNullOrWhiteSpace(AirportRestriction))
-            {
-                string[] szAirports = Airports.AirportList.NormalizeAirportList(AirportRestriction.ToUpper(CultureInfo.CurrentCulture));
-                string szRouteUpper = cfr.Route.ToUpper(CultureInfo.CurrentCulture);
-                foreach (string szAirport in szAirports)
-                    if (!szRouteUpper.Contains(szAirport))
-                        return false;
-            }
             return true;
         }
+
+        private bool CheckMatchesCriteria(ExaminerFlightRow cfr)
+        {
+            return MatchesModel(cfr.idModel) &&
+                MatchesCategory(cfr.szCategory) &&
+                MatchesCatClass(cfr.idCatClassOverride) &&
+                MatchesAircraft(cfr.idAircraft) &&
+                MatchesAlignedStart(cfr.dtFlight) &&
+                MatchesProperties(cfr.FlightProps) &&
+                MatchesText(cfr) &&
+                MatchesAirports(cfr.Route);
+        }
+        #endregion
+
+        /// <summary>
+        /// This has the meat of flight inspection for a custom currency.  For clarity, this is a dictionary of lambdas, where each lambda is specific to the type of currency.
+        /// </summary>
+        private readonly Dictionary<CustomCurrencyEventType, Action<CustomCurrency, ExaminerFlightRow>> mDictExamineFlight = new Dictionary<CustomCurrencyEventType, Action<CustomCurrency, ExaminerFlightRow>>()
+        {
+            { CustomCurrencyEventType.Flights, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, 1); } },
+            { CustomCurrencyEventType.Landings, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.cLandingsThisFlight); } },
+            { CustomCurrencyEventType.Hours, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.PIC); } },
+            { CustomCurrencyEventType.IFRHours, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.IMCSim + cfr.IMC); } },
+            { CustomCurrencyEventType.IFRApproaches, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.cApproaches); } },
+            { CustomCurrencyEventType.BaseCheck, (fc, cfr) => {
+                cfr.FlightProps.ForEachEvent((pfe) =>
+                    {
+                        if (pfe.PropertyType.IsBaseCheck)
+                            fc.AddRecentFlightEvents(cfr.dtFlight, pfe.BoolValue ? 1 : 0);
+                    }); } },
+            { CustomCurrencyEventType.UASLaunch, (fc, cfr) => {
+                cfr.FlightProps.ForEachEvent((pfe) =>
+                    {
+                        if (pfe.PropertyType.IsUASLaunch)
+                            fc.AddRecentFlightEvents(cfr.dtFlight, pfe.IntValue);
+                    }); } },
+            { CustomCurrencyEventType.UASRecovery, (fc, cfr) => {
+                cfr.FlightProps.ForEachEvent((pfe) =>
+                    {
+                        if (pfe.PropertyType.IsUASRecovery)
+                            fc.AddRecentFlightEvents(cfr.dtFlight, pfe.IntValue);
+                    }); } },
+            { CustomCurrencyEventType.NightLandings, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.cFullStopNightLandings); } },
+            { CustomCurrencyEventType.NightTakeoffs, (fc, cfr) => {
+                cfr.FlightProps.ForEachEvent((pfe) =>
+                    {
+                        if (pfe.PropertyType.IsNightTakeOff)
+                            fc.AddRecentFlightEvents(cfr.dtFlight, pfe.IntValue);
+                    }); } },
+            { CustomCurrencyEventType.PICLandings, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.PIC > 0 ? cfr.cLandingsThisFlight : 0); } },
+            { CustomCurrencyEventType.PICNightLandings, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.PIC > 0 ? cfr.cFullStopNightLandings : 0); } },
+            { CustomCurrencyEventType.TotalHours, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.Total); } },
+            { CustomCurrencyEventType.GroundSimHours, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.GroundSim); } },
+            { CustomCurrencyEventType.BackseatHours, (fc, cfr) => {
+                CustomFlightProperty cfp = null;
+                if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropBackSeatTime)) != null)
+                        fc.AddRecentFlightEvents(cfr.dtFlight, cfp.DecValue); } },
+            { CustomCurrencyEventType.FrontSeatHours, (fc, cfr) => {
+                CustomFlightProperty cfp = null;
+                if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropFrontSeatTime)) != null)
+                        fc.AddRecentFlightEvents(cfr.dtFlight, cfp.DecValue); } },
+            { CustomCurrencyEventType.HoistOperations, (fc, cfr) => {
+                CustomFlightProperty cfp = null;
+                if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropHoistOperations)) != null)
+                            fc.AddRecentFlightEvents(cfr.dtFlight, cfp.IntValue);
+                } },
+            { CustomCurrencyEventType.NVHours, (fc, cfr) => {
+                cfr.FlightProps.ForEachEvent((pfe) =>
+                    {
+                        if (pfe.PropertyType.IsNightVisionTime)
+                            fc.AddRecentFlightEvents(cfr.dtFlight, pfe.DecValue);
+                    });} },
+            { CustomCurrencyEventType.NVGoggles, (fc, cfr) => {
+                CustomFlightProperty cfp = null;
+                if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropNVGoggleTime)) != null)
+                        fc.AddRecentFlightEvents(cfr.dtFlight, cfp.DecValue); } },
+            { CustomCurrencyEventType.NVFLIR, (fc, cfr) => {
+                CustomFlightProperty cfp = null;
+                if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropNVFLIRTime)) != null)
+                        fc.AddRecentFlightEvents(cfr.dtFlight, cfp.DecValue); } },
+            { CustomCurrencyEventType.LandingsHighAltitude, (fc, cfr) => {
+                CustomFlightProperty cfp = null;
+                if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropHighAltitudeLandings)) != null)
+                        fc.AddRecentFlightEvents(cfr.dtFlight, cfp.IntValue); } },
+            { CustomCurrencyEventType.NightFlight, (fc, cfr) => {fc.AddRecentFlightEvents(cfr.dtFlight, cfr.Night); } },
+            { CustomCurrencyEventType.CAP5Checkride, (fc, cfr) => {
+                CustomFlightProperty cfp = null;
+                if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropCAP5Checkride)) != null)
+                            fc.AddRecentFlightEvents(cfr.dtFlight, cfp.BoolValue ? 1 : 0); } },
+            { CustomCurrencyEventType.CAP91Checkride, (fc, cfr) => {
+                CustomFlightProperty cfp = null;
+                if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropCAP91Checkride)) != null)
+                            fc.AddRecentFlightEvents(cfr.dtFlight, cfp.BoolValue ? 1 : 0); } },
+            { CustomCurrencyEventType.FMSApproaches, (fc, cfr) => {
+                CustomFlightProperty cfp = null;
+                if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropFMSApproaches)) != null)
+                        fc.AddRecentFlightEvents(cfr.dtFlight, cfp.IntValue); } },
+            { CustomCurrencyEventType.HoursDual, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.Dual); } },
+            { CustomCurrencyEventType.NightTouchAndGo, (fc, cfr) => {
+                CustomFlightProperty cfp = null;
+                if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropNightTouchAndGo)) != null)
+                        fc.AddRecentFlightEvents(cfr.dtFlight, cfp.IntValue); } },
+            { CustomCurrencyEventType.GliderTow, (fc, cfr) => {
+                CustomFlightProperty cfp = null;
+                 if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropGliderTow)) != null)
+                            fc.AddRecentFlightEvents(cfr.dtFlight, cfp.IntValue); } },
+            { CustomCurrencyEventType.IPC, (fc, cfr) => {
+                CustomFlightProperty cfp = null;
+                if ((cfp = cfr.FlightProps.FindEvent(fp => fp.PropertyType.IsIPC)) != null)
+                            fc.AddRecentFlightEvents(cfr.dtFlight, 1); } },
+            { CustomCurrencyEventType.FlightReview, (fc, cfr) => {
+                CustomFlightProperty cfp = null;
+                if ((cfp = cfr.FlightProps.FindEvent(fp => fp.PropertyType.IsBFR)) != null)
+                        fc.AddRecentFlightEvents(cfr.dtFlight, 1); } },
+            { CustomCurrencyEventType.NightLandingAny, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.cFullStopNightLandings + cfr.FlightProps.TotalCountForPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTouchAndGo)); } },
+            { CustomCurrencyEventType.RestTime, (fc, cfr) => { fc._DutyPeriodExaminer.ExamineFlight(cfr); } },
+            { CustomCurrencyEventType.DutyTime, (fc, cfr) => { fc._DutyPeriodExaminer.ExamineFlight(cfr); } },
+            { CustomCurrencyEventType.FlightDutyTime, (fc, cfr) => { fc._DutyPeriodExaminer.ExamineFlight(cfr); } },
+            { CustomCurrencyEventType.TakeoffsAny, (fc, cfr) => {
+                CustomFlightProperty cfp = null;
+                if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropTakeoffAny)) != null)
+                        fc.AddRecentFlightEvents(cfr.dtFlight, cfp.IntValue); } },
+            { CustomCurrencyEventType.SpecialAuthorizationApproach, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropSpecialAuthorizationApproach)); } },
+            { CustomCurrencyEventType.EnhancedVisionApproach, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropEnhancedVisionApproach)); } },
+            { CustomCurrencyEventType.InstructionGiven, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.CFI); } },
+            { CustomCurrencyEventType.NVUnaidedTime, (fc, cfr) => {
+                CustomFlightProperty cfp = null;
+                if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropNVUnaided)) != null)
+                        fc.AddRecentFlightEvents(cfr.dtFlight, cfp.DecValue); } }
+        };
 
         /// <summary>
         /// Looks at the events in the flight for custom currency computations.
         /// </summary>
         /// <param name="cfr">The flight row to examine</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1505:AvoidUnmaintainableCode")]
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
@@ -1114,161 +1167,8 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
             if (CurrencyLimitType == LimitType.Maximum && cfr.dtFlight.CompareTo(EarliestDate) < 0)
                 return;
 
-            CustomFlightProperty cfp = null;    //useful for checking properties
-
             // OK if we're here then the currency applies.
-            switch (EventType)
-            {
-                case CustomCurrencyEventType.Flights:
-                    AddRecentFlightEvents(cfr.dtFlight, 1);
-                    break;
-                case CustomCurrencyEventType.Hours:
-                    AddRecentFlightEvents(cfr.dtFlight, Convert.ToDecimal(cfr.PIC));
-                    break;
-                case CustomCurrencyEventType.TotalHours:
-                    AddRecentFlightEvents(cfr.dtFlight, cfr.Total);
-                    break;
-                case CustomCurrencyEventType.GroundSimHours:
-                    AddRecentFlightEvents(cfr.dtFlight, cfr.GroundSim);
-                    break;
-                case CustomCurrencyEventType.FrontSeatHours:
-                    if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropFrontSeatTime)) != null)
-                        AddRecentFlightEvents(cfr.dtFlight, cfp.DecValue);
-                    break;
-                case CustomCurrencyEventType.BackseatHours:
-                    if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropBackSeatTime)) != null)
-                        AddRecentFlightEvents(cfr.dtFlight, cfp.DecValue);
-                    break;
-                case CustomCurrencyEventType.HoistOperations:
-                    if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropHoistOperations)) != null)
-                        AddRecentFlightEvents(cfr.dtFlight, cfp.IntValue);
-                    break;
-                case CustomCurrencyEventType.Landings:
-                    AddRecentFlightEvents(cfr.dtFlight, Convert.ToInt32(cfr.cLandingsThisFlight));
-                    break;
-                case CustomCurrencyEventType.TakeoffsAny:
-                    if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropTakeoffAny)) != null)
-                        AddRecentFlightEvents(cfr.dtFlight, cfp.IntValue);
-                    break;
-                case CustomCurrencyEventType.PICLandings:
-                    AddRecentFlightEvents(cfr.dtFlight, cfr.PIC > 0 ? cfr.cLandingsThisFlight : 0);
-                    break;
-                case CustomCurrencyEventType.PICNightLandings:
-                    AddRecentFlightEvents(cfr.dtFlight, cfr.PIC > 0 ? cfr.cFullStopNightLandings : 0);
-                    break;
-                case CustomCurrencyEventType.IFRHours:
-                    AddRecentFlightEvents(cfr.dtFlight, Convert.ToDecimal(cfr.IMCSim));
-                    AddRecentFlightEvents(cfr.dtFlight, Convert.ToDecimal(cfr.IMC));
-                    break;
-                case CustomCurrencyEventType.IFRApproaches:
-                    AddRecentFlightEvents(cfr.dtFlight, Convert.ToInt32(cfr.cApproaches));
-                    break;
-                case CustomCurrencyEventType.HoursDual:
-                    AddRecentFlightEvents(cfr.dtFlight, cfr.Dual);
-                    break;
-                case CustomCurrencyEventType.InstructionGiven:
-                    AddRecentFlightEvents(cfr.dtFlight, cfr.CFI);
-                    break;
-                case CustomCurrencyEventType.BaseCheck:
-                    cfr.FlightProps.ForEachEvent((pfe) =>
-                    {
-                        if (pfe.PropertyType.IsBaseCheck)
-                            AddRecentFlightEvents(cfr.dtFlight, pfe.BoolValue ? 1 : 0);
-                    });
-                    break;
-                case CustomCurrencyEventType.UASLaunch:
-                    cfr.FlightProps.ForEachEvent((pfe) =>
-                    {
-                        if (pfe.PropertyType.IsUASLaunch)
-                            AddRecentFlightEvents(cfr.dtFlight, pfe.IntValue);
-                    });
-                    break;
-                case CustomCurrencyEventType.UASRecovery:
-                    cfr.FlightProps.ForEachEvent((pfe) =>
-                    {
-                        if (pfe.PropertyType.IsUASRecovery)
-                            AddRecentFlightEvents(cfr.dtFlight, pfe.IntValue);
-                    });
-                    break;
-                case CustomCurrencyEventType.NightLandings:
-                    AddRecentFlightEvents(cfr.dtFlight, cfr.cFullStopNightLandings);
-                    break;
-                case CustomCurrencyEventType.NightLandingAny:
-                    AddRecentFlightEvents(cfr.dtFlight, cfr.cFullStopNightLandings + cfr.FlightProps.TotalCountForPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTouchAndGo));
-                    break;
-                case CustomCurrencyEventType.NightTakeoffs:
-                    cfr.FlightProps.ForEachEvent((pfe) =>
-                    {
-                        if (pfe.PropertyType.IsNightTakeOff)
-                            AddRecentFlightEvents(cfr.dtFlight, pfe.IntValue);
-                    });
-                    break;
-                case CustomCurrencyEventType.NightTouchAndGo:
-                    if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropNightTouchAndGo)) != null)
-                        AddRecentFlightEvents(cfr.dtFlight, cfp.IntValue);
-                    break;
-                case CustomCurrencyEventType.NightFlight:
-                    AddRecentFlightEvents(cfr.dtFlight, cfr.Night);
-                    break;
-                case CustomCurrencyEventType.NVHours:
-                    cfr.FlightProps.ForEachEvent((pfe) =>
-                    {
-                        if (pfe.PropertyType.IsNightVisionTime)
-                            AddRecentFlightEvents(cfr.dtFlight, pfe.DecValue);
-                    });
-                    break;
-                case CustomCurrencyEventType.NVGoggles:
-                    if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropNVGoggleTime)) != null)
-                        AddRecentFlightEvents(cfr.dtFlight, cfp.DecValue);
-                    break;
-                case CustomCurrencyEventType.NVFLIR:
-                    if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropNVFLIRTime)) != null)
-                        AddRecentFlightEvents(cfr.dtFlight, cfp.DecValue);
-                    break;
-                case CustomCurrencyEventType.NVUnaidedTime:
-                    if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropNVUnaided)) != null)
-                        AddRecentFlightEvents(cfr.dtFlight, cfp.DecValue);
-                    break;
-                case CustomCurrencyEventType.LandingsHighAltitude:
-                    if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropHighAltitudeLandings)) != null)
-                        AddRecentFlightEvents(cfr.dtFlight, cfp.IntValue);
-                    break;
-                case CustomCurrencyEventType.CAP5Checkride:
-                    if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropCAP5Checkride)) != null)
-                        AddRecentFlightEvents(cfr.dtFlight, cfp.BoolValue ? 1 : 0);
-                    break;
-                case CustomCurrencyEventType.CAP91Checkride:
-                    if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropCAP91Checkride)) != null)
-                        AddRecentFlightEvents(cfr.dtFlight, cfp.BoolValue ? 1 : 0);
-                    break;
-                case CustomCurrencyEventType.FMSApproaches:
-                    if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropFMSApproaches)) != null)
-                        AddRecentFlightEvents(cfr.dtFlight, cfp.IntValue);
-                    break;
-                case CustomCurrencyEventType.GliderTow:
-                    if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropGliderTow)) != null)
-                        AddRecentFlightEvents(cfr.dtFlight, cfp.IntValue);
-                    break;
-                case CustomCurrencyEventType.FlightReview:
-                    if ((cfp = cfr.FlightProps.FindEvent(fp => fp.PropertyType.IsBFR)) != null)
-                        AddRecentFlightEvents(cfr.dtFlight, 1);
-                    break;
-                case CustomCurrencyEventType.IPC:
-                    if ((cfp = cfr.FlightProps.FindEvent(fp => fp.PropertyType.IsIPC)) != null)
-                        AddRecentFlightEvents(cfr.dtFlight, 1);
-                    break;
-                case CustomCurrencyEventType.DutyTime:
-                case CustomCurrencyEventType.FlightDutyTime:
-                case CustomCurrencyEventType.RestTime:
-                    _DutyPeriodExaminer.ExamineFlight(cfr);
-                    break;
-                case CustomCurrencyEventType.EnhancedVisionApproach:
-                    AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropEnhancedVisionApproach));
-                    break;
-                case CustomCurrencyEventType.SpecialAuthorizationApproach:
-                    AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropSpecialAuthorizationApproach));
-                    break;
-            }
+            mDictExamineFlight[EventType](this, cfr);
         }
 
         public override void Finalize(decimal totalTime, decimal picTime)
