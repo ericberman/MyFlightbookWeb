@@ -410,9 +410,14 @@ namespace MyFlightbook.Weather.ADDS
                     strResponse = streamIn.ReadToEnd();
                 return strResponse.DeserializeFromXML<response>();
             }
-            catch (Exception ex) when (ex is WebException)
+            catch (WebException)
             {
                 return null;
+            }
+            catch (System.Xml.XmlException ex)
+            {
+                util.NotifyAdminException("Exception in XML doc:\r\n\r\n" + strResponse + "\r\n\r\n", ex);
+                return null; 
             }
         }
         #endregion
