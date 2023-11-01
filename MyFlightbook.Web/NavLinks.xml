@@ -95,12 +95,12 @@
     </Items>
   </Item>
   <Item>
-    <Link>~/Public/MapRoute2.aspx</Link>
+    <Link>~/mvc/Airport/MapRoute</Link>
     <ID>tabMaps</ID>
     <Roles></Roles>
     <Items>
       <Item>
-        <Link>~/Public/MapRoute2.aspx</Link>
+        <Link>~/mvc/Airport/MapRoute</Link>
         <ID>mptRoute</ID>
         <Roles></Roles>
       </Item>

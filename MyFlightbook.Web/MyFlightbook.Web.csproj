@@ -3469,6 +3469,10 @@
     <Content Include="Areas\mvc\Views\Pub\mobileApps.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\propertyTable.cshtml" />
     <Content Include="Areas\mvc\Views\Airport\_metar.cshtml" />
+    <Content Include="Areas\mvc\Views\Airport\mapRoute.cshtml" />
+    <Content Include="Areas\mvc\Views\Airport\_airportServices.cshtml" />
+    <Content Include="Areas\mvc\Views\Airport\_getMetar.cshtml" />
+    <Content Include="Areas\mvc\Views\Airport\_visitedRoutesSummary.cshtml" />
     <None Include="packages.config" />
     <None Include="SecuritySwitch-v4.xsd">
       <SubType>Designer</SubType>

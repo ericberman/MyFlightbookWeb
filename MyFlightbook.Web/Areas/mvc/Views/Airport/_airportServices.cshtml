@@ -1,0 +1,46 @@
+﻿@using MyFlightbook.Airports
+@using System.Globalization
+<table class="stickyHeaderTable">
+    @foreach (airport ap in ViewBag.airports)
+    {
+        string zoomScript = ViewBag.isStatic ? string.Empty : String.Format(CultureInfo.InvariantCulture, "javascript:gmapForContainerID('{0}').setCenter(new google.maps.LatLng({1:F8}, {2:F8}));gmapForContainerID('{0}').setZoom(14);", ViewBag.gmapDivID, ap.LatLong.Latitude, ap.LatLong.LongitudeString);
+        <tr style="vertical-align: top;">
+            @if (ViewBag.ShowZoom)
+            {
+                <td>
+                    <img src="@VirtualPathUtility.ToAbsolute(ap.IsPort ? "~/images/airport.png" : "~/images/tower.png")" onclick="@Html.Raw(zoomScript)" />&nbsp; &nbsp;
+                    @if (ViewBag.IsStatic)
+                    {
+                        <span>@ap.FullName</span>
+                    }
+                    else
+                    {
+                        <a href="@Html.Raw(zoomScript)">@ap.FullName</a>
+                    }
+                </td>
+            }
+            @if (ViewBag.ShowServices && ap.Country.CompareCurrentCultureIgnoreCase("United States") == 0)
+            {
+                <td>
+                    <a href="@String.Format(CultureInfo.InvariantCulture, "https://pirep.io/airports/{0}", ap.Code)" target="_blank">@Resources.LocalizedText.AirportServiceGuide</a>
+                </td>
+            }
+            @if (ViewBag.ShowInfo)
+            {
+                <td><a target="_blank" href="@String.Format(CultureInfo.InvariantCulture, "https://acukwik.com/Airport-Info/{0}", ap.Code)">@Resources.LocalizedText.AirportServiceAirportInformation</a></td>
+            }
+            @if (ViewBag.ShowFBO)
+            {
+                <td><a target="_blank" href="@String.Format(CultureInfo.InvariantCulture, "https://www.aopa.org/destinations/airports/{0}/details?q=kpae&public=0#fbos", ap.Code)">@Resources.LocalizedText.AirportServiceFBO</a></td>
+            }
+            @if (ViewBag.ShowMetar)
+            {
+                <td><a target="_blank" href="@String.Format(CultureInfo.InvariantCulture, "https://www.checkwx.com/weather/{0}", ap.Code)">@Resources.LocalizedText.AirportServiceMETAR</a></td>
+            }
+            @if (ViewBag.ShowHotels)
+            {
+                <td><a target="_blank" href="@String.Format(CultureInfo.InvariantCulture, "https://www.expedia.com/pubspec/scripts/eap.asp?goto=hotsearch&Map=1&lat={0:8F}&long={1:8F}&CityName={2}", ap.LatLong.Latitude, ap.LatLong.Longitude, HttpUtility.UrlEncode(ap.Name))">@String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.AirportServiceHotels, ap.Name)</a></td>
+            }
+        </tr>
+    }
+</table>

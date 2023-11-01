@@ -1,0 +1,22 @@
+﻿<script type="text/javascript">
+    function getMetars(target, szRoute) {
+        var params = new Object();
+        params.szRoute = szRoute;
+        var d = JSON.stringify(params);
+        $.ajax(
+            {
+                url: '/logbook/mvc/Airport/METARSForRoute',
+                type: "POST", data: d, dataType: "html", contentType: "application/json",
+                error: function (xhr, status, error) {
+                    window.alert(xhr.statusText);
+                },
+                complete: function (response) { },
+                success: function (response) { target.html(response); }
+            });
+        return false;
+    }
+</script>
+<div id="@ViewBag.id">
+    <a href="javascript:getMetars($('#@ViewBag.id'), '@ViewBag.airports');">@Resources.Weather.GetMETARSPrompt</a>
+</div>
+

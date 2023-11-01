@@ -573,7 +573,25 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Planning a flight?&amp;nbsp; Enter the airport codes below.  You can also get METARs for individual airports..
+        ///   Looks up a localized string similar to Optimize Route.
+        /// </summary>
+        internal static string mapOptimizeRoute {
+            get {
+                return ResourceManager.GetString("mapOptimizeRoute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save a link to this map.
+        /// </summary>
+        internal static string mapPermalink {
+            get {
+                return ResourceManager.GetString("mapPermalink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Planning a flight? Enter the airport codes below.  You can also get METARs for individual airports..
         /// </summary>
         internal static string MapPrompt {
             get {

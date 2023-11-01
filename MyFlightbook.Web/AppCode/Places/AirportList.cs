@@ -1,4 +1,5 @@
 ﻿using MyFlightbook.Geography;
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -136,7 +137,7 @@ namespace MyFlightbook.Airports
         /// </summary>
         public airport[] AirportArrayForSerialization
         {
-            get { return m_rgAirports.ToArray(); }
+            get { return m_rgAirports?.ToArray() ?? Array.Empty<airport>(); }
             set
             {
                 if (value == null)
@@ -363,6 +364,7 @@ namespace MyFlightbook.Airports
             return m_rgAirports.ToArray();
         }
 
+        [JsonIgnore]
         public IEnumerable<airport> UniqueAirports
         {
             get { return (m_htAirportsByCode == null) ? Array.Empty<airport>() : (IEnumerable<airport>)m_htAirportsByCode.Values; }

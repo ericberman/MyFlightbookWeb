@@ -414,7 +414,7 @@ namespace MyFlightbook.Weather.ADDS
             {
                 return null;
             }
-            catch (System.Xml.XmlException ex)
+            catch (Exception ex) when (!(ex is WebException))
             {
                 util.NotifyAdminException("Exception in XML doc:\r\n\r\n" + strResponse + "\r\n\r\n", ex);
                 return null; 

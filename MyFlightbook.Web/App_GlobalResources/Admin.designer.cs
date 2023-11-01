@@ -169,7 +169,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &quot;{0} of {1} segments examined&quot;.
+        ///   Looks up a localized string similar to {0} of {1} segments examined.
         /// </summary>
         internal static string VisitedRoutesExaminedTemplate {
             get {

@@ -191,7 +191,7 @@ namespace MyFlightbook.PublicPages
                     hdnID.Value = id.ToString(CultureInfo.InvariantCulture);
 
                     if (!le.fIsPublic && (String.Compare(le.User, User.Identity.Name, StringComparison.OrdinalIgnoreCase) != 0)) // not public and this isn't the owner...
-                        szRedirect = "~/public/MapRoute2.aspx?sm=1&Airports=" + HttpUtility.UrlEncode(le.Route);
+                        szRedirect = "~/mvc/Airport/MapRoute?sm=1&Airports=" + HttpUtility.UrlEncode(le.Route);
 
                     SetComponentsDisplay(szComponents);
 
@@ -201,7 +201,7 @@ namespace MyFlightbook.PublicPages
 
                     string szRoute = le.Route;
                     lnkRoute.Text = HttpUtility.HtmlEncode(szRoute);
-                    lnkRoute.NavigateUrl = "~/Public/MapRoute2.aspx?sm=1&Airports=" + HttpUtility.UrlEncode(szRoute);
+                    lnkRoute.NavigateUrl = "~/mvc/Airport/MapRoute?sm=1&Airports=" + HttpUtility.UrlEncode(szRoute);
 
                     Profile pf = MyFlightbook.Profile.GetUser(le.User);
                     lnkUser.Text = HttpUtility.HtmlEncode(pf.UserFullName);

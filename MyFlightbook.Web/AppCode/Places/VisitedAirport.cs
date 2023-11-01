@@ -5,10 +5,8 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IdentityModel.Tokens;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Web;
 
@@ -849,8 +847,9 @@ namespace MyFlightbook.Airports
         {
             int segmentsSearched = 0;
             DBHelper dbh = new DBHelper();
+            dbh.CommandArgs.Timeout = 300;  // can be slow.
             const string szSearchTemplate = "SELECT route, idflight FROM flights WHERE route RLIKE '{0}[^a-z0-9]+{1}' OR route RLIKE '{1}[^a-z0-9]{0}' ORDER BY flights.Date ASC LIMIT 1";
-            foreach (AirportList apl in Routes)
+            foreach (AirportList apl in SerializedRoutes)
             {
                 airport[] rgap = apl.GetAirportList();
                 for (int i = 0; i < rgap.Length - 1; i++)
@@ -861,12 +860,12 @@ namespace MyFlightbook.Airports
 
                     dbh.CommandText = String.Format(CultureInfo.InvariantCulture, szSearchTemplate, RegexpForCode(rgap[i].Code), RegexpForCode(rgap[i + 1].Code));
 
-                    int idFlight = LogbookEntry.idFlightNone;
+                    int idFlight = LogbookEntryCore.idFlightNone;
 
                     dbh.ReadRow((comm) => { }, (dr) => { idFlight = Convert.ToInt32(dr["idflight"], CultureInfo.InvariantCulture); });
 
-                    FlownSegment fs = new FlownSegment() { Segment = szKey, HasMatch = (idFlight != LogbookEntry.idFlightNone) };
-                    fs.MatchingFlight = fs.HasMatch ? new LogbookEntry(idFlight, lto: LogbookEntry.LoadTelemetryOption.None) : null;
+                    FlownSegment fs = new FlownSegment() { Segment = szKey, HasMatch = (idFlight != LogbookEntryCore.idFlightNone) };
+                    fs.MatchingFlight = fs.HasMatch ? new LogbookEntry(idFlight, szUser:"ADMIN", lto: LogbookEntryCore.LoadTelemetryOption.None, fForceLoad:true) : null;
 
                     FlownSegments.Add(szKey, fs);
 

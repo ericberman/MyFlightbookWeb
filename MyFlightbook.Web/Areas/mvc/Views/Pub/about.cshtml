@@ -55,7 +55,7 @@
                         {
                             string szExpandID = "divStatinfo" + i++.ToString();
                                         <li>
-                                            <div><a target="_blank" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Public/MapRoute2.aspx?sm=1&Airports={0}", aps.Code))">@aps.FullName</a></div>
+                                            <div><a target="_blank" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/Airport/MapRoute?sm=1&Airports={0}", aps.Code))">@aps.FullName</a></div>
                                             <div class="fineprint">@aps.StatsDisplay @{ Html.RenderAction("RenderExpandoImg", "MFBTemplate", new { fExpanded = false, targetID = szExpandID }); }</div>
                                             <div id="@szExpandID" style="display:none;">
                                                 @foreach (string szModel in aps.ModelsUsed)

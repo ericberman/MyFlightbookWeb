@@ -1,0 +1,53 @@
+﻿@using MyFlightbook.Airports
+@using MyFlightbook.Image
+@using System.Globalization
+<p>@String.Format(CultureInfo.CurrentCulture, Resources.Admin.VisitedRoutesExaminedTemplate, ViewBag.visitedRoute.SearchedSegmentsCount, ViewBag.visitedRoute.TotalSegmentCount)</p>
+<table class="stickyHeaderTable" style="width: 75%">
+    <thead>
+        <tr>
+            <th class="gvhDefault">Segment</th>
+            <th class="gvhDefault">Match?</th>
+            <th class="gvhDefault">Matching user</th>
+            <th class="gvhDefault">Flight link</th>
+            <th class="gvhDefault">Route</th>
+            <th class="gvhDefault">Comment and images</th>
+        </tr>
+    </thead>
+    @foreach (FlownSegment fs in ViewBag.visitedRoute.SerializedSegments)
+    {
+        <tr>
+            <td>@fs.Segment</td>
+            <td>@fs.HasMatch</td>
+            @if (fs.MatchingFlight != null)
+            {
+            <td>@fs.MatchingFlight.User</td>
+            <td><a href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/FlightDetail.aspx/{0}?a=1", fs.MatchingFlight.FlightID))" target="_blank">@fs.MatchingFlight.FlightID.ToString(CultureInfo.InvariantCulture)</a></td>
+            <td>@fs.MatchingFlight.Route</td>
+            <td>
+                @fs.MatchingFlight.Comment
+                <div>
+                    @{
+                        ImageList il = new MyFlightbook.Image.ImageList(MFBImageInfoBase.ImageClass.Flight, fs.MatchingFlight.FlightID.ToString(CultureInfo.InvariantCulture));
+                        il.Refresh();
+                        foreach (MFBImageInfo mfbii in il.ImageArray)
+                        {
+                            <div>
+                                <div>@mfbii.Comment</div>
+                                <img src="@VirtualPathUtility.ToAbsolute(mfbii.URLThumbnail)"
+                                     onclick="@String.Format(CultureInfo.InvariantCulture, mfbii.ImageType == MFBImageInfoBase.ImageFileType.PDF || mfbii.ImageType == MFBImageInfoBase.ImageFileType.S3PDF ? "javascript:window.location = '{0}';" : "javascript:viewMFBImg('{0}');", VirtualPathUtility.ToAbsolute(mfbii.URLFullImage))" />
+                            </div>
+                        }
+                    }
+                </div>
+            </td>
+            }
+            else
+            {
+            <td>(None)</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            }
+        </tr>
+    }
+</table>

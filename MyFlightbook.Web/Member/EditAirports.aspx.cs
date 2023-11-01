@@ -235,7 +235,7 @@ namespace MyFlightbook.Mapping
                     // needs review
                     StringBuilder sb = new StringBuilder();
                     StringBuilder sbViewLink = new StringBuilder();
-                    sbViewLink.AppendFormat(CultureInfo.InvariantCulture, "https://{0}{1}?Airports={2}", Branding.CurrentBrand.HostName, ResolveUrl("~/Public/MapRoute2.aspx"), ap.Code); 
+                    sbViewLink.AppendFormat(CultureInfo.InvariantCulture, "https://{0}{1}?Airports={2}", Branding.CurrentBrand.HostName, ResolveUrl("~/mvc/Airport/MapRoute"), ap.Code); 
                     sb.AppendFormat(CultureInfo.CurrentCulture, "User: {0}, Airport: {1} ({2}) {3} {4}\r\n\r\nCould match:\r\n", ap.UserName, ap.Code, ap.FacilityTypeCode, ap.Name, ap.LatLong.ToDegMinSecString());
                     foreach (airport a in lstDupes)
                     {
