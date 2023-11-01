@@ -157,6 +157,9 @@ namespace MyFlightbook.Mapping
                     if (sb.Length + szPath.Length < 8100)
                         sb.Append("&path=color:0x" + Options.PathColor.Substring(1) + "88|weight:5|" + szPath);
                 }
+
+                if (lstSegments.Count == 1 && lstSegments[0].Count == 1)
+                    sb.AppendFormat(CultureInfo.InvariantCulture, "&zoom={0}", (int)GMap_ZoomLevels.Airport);
             }
             else
                 sb.AppendFormat(CultureInfo.InvariantCulture, "&center={0:F8},{1:F8}&zoom={2}", Options.defaultLat, Options.defaultLong, Options.defaultZoom);
