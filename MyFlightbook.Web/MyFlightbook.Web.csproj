@@ -1418,7 +1418,6 @@
     <Content Include="Public\DayPilot-NOTICE.txt" />
     <Content Include="Public\Developer.aspx" />
     <Content Include="Public\Export.aspx" />
-    <Content Include="Public\FAQ.aspx" />
     <Content Include="Public\Game.aspx" />
     <Content Include="Public\iPadImages\Full\iPad1.png" />
     <Content Include="Public\iPadImages\Full\iPad2.png" />
@@ -1452,7 +1451,6 @@
     <Content Include="Public\iPhoneImages\iPhone6.png" />
     <Content Include="Public\iPhoneImages\iPhone7.png" />
     <Content Include="Public\iPhoneImages\iPhone8.png" />
-    <Content Include="Public\MapRoute2.aspx" />
     <Content Include="Public\mfblogonew-large.png" />
     <Content Include="Public\mfblogonew.png" />
     <Content Include="Public\myflightbooknewstaging.png" />
@@ -3225,26 +3223,12 @@
     <Compile Include="Public\Export.aspx.designer.cs">
       <DependentUpon>Export.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Public\FAQ.aspx.cs">
-      <DependentUpon>FAQ.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\FAQ.aspx.designer.cs">
-      <DependentUpon>FAQ.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Public\Game.aspx.cs">
       <DependentUpon>Game.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Public\Game.aspx.designer.cs">
       <DependentUpon>Game.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Public\MapRoute2.aspx.cs">
-      <DependentUpon>MapRoute2.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\MapRoute2.aspx.designer.cs">
-      <DependentUpon>MapRoute2.aspx</DependentUpon>
     </Compile>
     <Compile Include="Public\MyFlights.aspx.cs">
       <DependentUpon>MyFlights.aspx</DependentUpon>
