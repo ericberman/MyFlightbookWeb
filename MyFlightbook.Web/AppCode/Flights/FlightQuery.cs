@@ -589,6 +589,8 @@ namespace MyFlightbook
                     fqNew.PropertyTypes.Add(cpt);
                 }
             }
+            fqNew.DateMax = fqNew.DateMax.Date; // remove any time portion - issue #1135
+            fqNew.DateMin = fqNew.DateMin.Date;
             return JsonConvert.SerializeObject(fqNew, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore });
         }
 
