@@ -836,47 +836,47 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
         }
         #endregion
 
-        private readonly Dictionary<CustomCurrencyEventType, Action<FlightQuery, List<CustomPropertyType>, Action<CustomPropertyType.KnownProperties>>> mDictAddQuery = new Dictionary<CustomCurrencyEventType, Action<FlightQuery, List<CustomPropertyType>, Action<CustomPropertyType.KnownProperties>>>()
+        private static readonly Dictionary<CustomCurrencyEventType, Action<FlightQuery, List<CustomPropertyType>, Action<CustomPropertyType.KnownProperties>>> mDictAddQuery = new Dictionary<CustomCurrencyEventType, Action<FlightQuery, List<CustomPropertyType>, Action<CustomPropertyType.KnownProperties>>>()
         {
-            { CustomCurrencyEventType.BackseatHours, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropBackSeatTime); } },
-            { CustomCurrencyEventType.BaseCheck, (fq, lst, ap) => { fq.AddPropertyTypes(lst.FindAll(cpt => cpt.IsBaseCheck)); } },
             { CustomCurrencyEventType.Flights, (fq, lst, qp) => { } },
-            { CustomCurrencyEventType.FrontSeatHours, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropFrontSeatTime); } },
-            { CustomCurrencyEventType.GroundSimHours, (fq, lst, ap) => { fq.HasGroundSim = true; } },
-            { CustomCurrencyEventType.HoistOperations, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropHoistOperations); } },
-            { CustomCurrencyEventType.Hours, (fq, lst, ap) => { fq.HasPIC = true; } },
-            { CustomCurrencyEventType.IFRApproaches, (fq, lst, ap) => { fq.HasApproaches = true; } },
-            { CustomCurrencyEventType.IFRHours, (fq, lst, ap) => { fq.HasAnyInstrument = true; } },
             { CustomCurrencyEventType.Landings, (fq, lst, ap) => { fq.HasLandings = true; } },
-            { CustomCurrencyEventType.PICLandings, (fq, lst, ap) => { fq.HasLandings = true; fq.HasPIC = true; } },
-            { CustomCurrencyEventType.TakeoffsAny, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropTakeoffAny); } },
-            { CustomCurrencyEventType.LandingsHighAltitude, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropHighAltitudeLandings); } },
-            { CustomCurrencyEventType.NightFlight, (fq, lst, ap) => { fq.HasNight = true; } },
-            { CustomCurrencyEventType.NightLandings, (fq, lst, ap) => { fq.HasNightLandings = true; } },
-            { CustomCurrencyEventType.NightTouchAndGo, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropNightTouchAndGo); } },
-            { CustomCurrencyEventType.NightTakeoffs, (fq, lst, ap) => { fq.AddPropertyTypes(lst.FindAll(cpt => cpt.IsNightTakeOff)); } },
-            { CustomCurrencyEventType.NVFLIR, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropNVFLIRTime); } },
-            { CustomCurrencyEventType.NVGoggles, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropNVGoggleTime); } },
-            { CustomCurrencyEventType.NVHours, (fq, lst, ap) => { fq.AddPropertyTypes(lst.FindAll(cpt => cpt.IsNightVisionTime)); } },
-            { CustomCurrencyEventType.NVUnaidedTime, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropNVUnaided); } },
-            { CustomCurrencyEventType.PICNightLandings, (fq, lst, ap) => { fq.HasNightLandings = true; fq.HasPIC = true; } },
-            { CustomCurrencyEventType.TotalHours, (fq, lst, ap) => { fq.HasTotalTime = true; } },
+            { CustomCurrencyEventType.Hours, (fq, lst, ap) => { fq.HasPIC = true; } },
+            { CustomCurrencyEventType.IFRHours, (fq, lst, ap) => { fq.HasAnyInstrument = true; } },
+            { CustomCurrencyEventType.IFRApproaches, (fq, lst, ap) => { fq.HasApproaches = true; } },
+            { CustomCurrencyEventType.BaseCheck, (fq, lst, ap) => { fq.AddPropertyTypes(lst.FindAll(cpt => cpt.IsBaseCheck)); } },
             { CustomCurrencyEventType.UASLaunch, (fq, lst, ap) => { fq.AddPropertyTypes(lst.FindAll(cpt => cpt.IsUASLaunch)); } },
             { CustomCurrencyEventType.UASRecovery, (fq, lst, ap) => { fq.AddPropertyTypes(lst.FindAll(cpt => cpt.IsUASRecovery)); } },
+            { CustomCurrencyEventType.NightLandings, (fq, lst, ap) => { fq.HasNightLandings = true; } },
+            { CustomCurrencyEventType.NightTakeoffs, (fq, lst, ap) => { fq.AddPropertyTypes(lst.FindAll(cpt => cpt.IsNightTakeOff)); } },
+            { CustomCurrencyEventType.PICLandings, (fq, lst, ap) => { fq.HasLandings = true; fq.HasPIC = true; } },
+            { CustomCurrencyEventType.PICNightLandings, (fq, lst, ap) => { fq.HasNightLandings = true; fq.HasPIC = true; } },
+            { CustomCurrencyEventType.TotalHours, (fq, lst, ap) => { fq.HasTotalTime = true; } },
+            { CustomCurrencyEventType.GroundSimHours, (fq, lst, ap) => { fq.HasGroundSim = true; } },
+            { CustomCurrencyEventType.BackseatHours, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropBackSeatTime); } },
+            { CustomCurrencyEventType.FrontSeatHours, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropFrontSeatTime); } },
+            { CustomCurrencyEventType.HoistOperations, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropHoistOperations); } },
+            { CustomCurrencyEventType.NVHours, (fq, lst, ap) => { fq.AddPropertyTypes(lst.FindAll(cpt => cpt.IsNightVisionTime)); } },
+            { CustomCurrencyEventType.NVGoggles, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropNVGoggleTime); } },
+            { CustomCurrencyEventType.NVFLIR, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropNVFLIRTime); } },
+            { CustomCurrencyEventType.LandingsHighAltitude, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropHighAltitudeLandings); } },
+            { CustomCurrencyEventType.NightFlight, (fq, lst, ap) => { fq.HasNight = true; } },
             { CustomCurrencyEventType.CAP5Checkride, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropCAP5Checkride); } },
             { CustomCurrencyEventType.CAP91Checkride, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropCAP91Checkride); } },
             { CustomCurrencyEventType.FMSApproaches, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropFMSApproaches); } },
-            { CustomCurrencyEventType.GliderTow, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropGliderTow); } },
             { CustomCurrencyEventType.HoursDual, (fq, lst, ap) => { fq.HasDual = true; } },
-            { CustomCurrencyEventType.InstructionGiven, (fq, lst, ap) => { fq.HasCFI = true; } },
-            { CustomCurrencyEventType.FlightReview, (fq, lst, ap) => { fq.AddPropertyTypes(lst.FindAll(cpt => cpt.IsBFR)); } },
+            { CustomCurrencyEventType.NightTouchAndGo, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropNightTouchAndGo); } },
+            { CustomCurrencyEventType.GliderTow, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropGliderTow); } },
             { CustomCurrencyEventType.IPC, (fq, lst, ap) => { fq.AddPropertyTypes(lst.FindAll(cpt => cpt.IsIPC)); } },
+            { CustomCurrencyEventType.FlightReview, (fq, lst, ap) => { fq.AddPropertyTypes(lst.FindAll(cpt => cpt.IsBFR)); } },
             { CustomCurrencyEventType.NightLandingAny, (fq, lst, ap) => { fq.HasNight = true; fq.HasLandings = true; } },
-            { CustomCurrencyEventType.FlightDutyTime, (fq, lst, ap) => { } },
-            { CustomCurrencyEventType.DutyTime, (fq, lst, ap) => { } },
             { CustomCurrencyEventType.RestTime, (fq, lst, ap) => { } },
+            { CustomCurrencyEventType.DutyTime, (fq, lst, ap) => { } },
+            { CustomCurrencyEventType.FlightDutyTime, (fq, lst, ap) => { } },
+            { CustomCurrencyEventType.TakeoffsAny, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropTakeoffAny); } },
             { CustomCurrencyEventType.SpecialAuthorizationApproach, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropSpecialAuthorizationApproach); } },
-            { CustomCurrencyEventType.EnhancedVisionApproach, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropEnhancedVisionApproach); } }
+            { CustomCurrencyEventType.EnhancedVisionApproach, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropEnhancedVisionApproach); } },
+            { CustomCurrencyEventType.InstructionGiven, (fq, lst, ap) => { fq.HasCFI = true; } },
+            { CustomCurrencyEventType.NVUnaidedTime, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropNVUnaided); } },
         };
 
         /// <summary>
@@ -1038,7 +1038,7 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
         /// <summary>
         /// This has the meat of flight inspection for a custom currency.  For clarity, this is a dictionary of lambdas, where each lambda is specific to the type of currency.
         /// </summary>
-        private readonly Dictionary<CustomCurrencyEventType, Action<CustomCurrency, ExaminerFlightRow>> mDictExamineFlight = new Dictionary<CustomCurrencyEventType, Action<CustomCurrency, ExaminerFlightRow>>()
+        private static readonly Dictionary<CustomCurrencyEventType, Action<CustomCurrency, ExaminerFlightRow>> mDictExamineFlight = new Dictionary<CustomCurrencyEventType, Action<CustomCurrency, ExaminerFlightRow>>()
         {
             { CustomCurrencyEventType.Flights, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, 1); } },
             { CustomCurrencyEventType.Landings, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.cLandingsThisFlight); } },
@@ -1051,82 +1051,28 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                         if (pfe.PropertyType.IsBaseCheck)
                             fc.AddRecentFlightEvents(cfr.dtFlight, pfe.BoolValue ? 1 : 0);
                     }); } },
-            { CustomCurrencyEventType.UASLaunch, (fc, cfr) => {
-                cfr.FlightProps.ForEachEvent((pfe) =>
-                    {
-                        if (pfe.PropertyType.IsUASLaunch)
-                            fc.AddRecentFlightEvents(cfr.dtFlight, pfe.IntValue);
-                    }); } },
-            { CustomCurrencyEventType.UASRecovery, (fc, cfr) => {
-                cfr.FlightProps.ForEachEvent((pfe) =>
-                    {
-                        if (pfe.PropertyType.IsUASRecovery)
-                            fc.AddRecentFlightEvents(cfr.dtFlight, pfe.IntValue);
-                    }); } },
+            { CustomCurrencyEventType.UASLaunch, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.TotalCountForPredicate(fp => fp.PropertyType.IsUASLaunch)); } },
+            { CustomCurrencyEventType.UASRecovery, (fc, cfr) => {fc.AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.TotalCountForPredicate(fp => fp.PropertyType.IsUASRecovery)); } },
             { CustomCurrencyEventType.NightLandings, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.cFullStopNightLandings); } },
-            { CustomCurrencyEventType.NightTakeoffs, (fc, cfr) => {
-                cfr.FlightProps.ForEachEvent((pfe) =>
-                    {
-                        if (pfe.PropertyType.IsNightTakeOff)
-                            fc.AddRecentFlightEvents(cfr.dtFlight, pfe.IntValue);
-                    }); } },
+            { CustomCurrencyEventType.NightTakeoffs, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.TotalCountForPredicate(fp => fp.PropertyType.IsNightTakeOff)); } },
             { CustomCurrencyEventType.PICLandings, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.PIC > 0 ? cfr.cLandingsThisFlight : 0); } },
             { CustomCurrencyEventType.PICNightLandings, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.PIC > 0 ? cfr.cFullStopNightLandings : 0); } },
             { CustomCurrencyEventType.TotalHours, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.Total); } },
             { CustomCurrencyEventType.GroundSimHours, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.GroundSim); } },
-            { CustomCurrencyEventType.BackseatHours, (fc, cfr) => {
-                CustomFlightProperty cfp = null;
-                if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropBackSeatTime)) != null)
-                        fc.AddRecentFlightEvents(cfr.dtFlight, cfp.DecValue); } },
-            { CustomCurrencyEventType.FrontSeatHours, (fc, cfr) => {
-                CustomFlightProperty cfp = null;
-                if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropFrontSeatTime)) != null)
-                        fc.AddRecentFlightEvents(cfr.dtFlight, cfp.DecValue); } },
-            { CustomCurrencyEventType.HoistOperations, (fc, cfr) => {
-                CustomFlightProperty cfp = null;
-                if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropHoistOperations)) != null)
-                            fc.AddRecentFlightEvents(cfr.dtFlight, cfp.IntValue);
-                } },
-            { CustomCurrencyEventType.NVHours, (fc, cfr) => {
-                cfr.FlightProps.ForEachEvent((pfe) =>
-                    {
-                        if (pfe.PropertyType.IsNightVisionTime)
-                            fc.AddRecentFlightEvents(cfr.dtFlight, pfe.DecValue);
-                    });} },
-            { CustomCurrencyEventType.NVGoggles, (fc, cfr) => {
-                CustomFlightProperty cfp = null;
-                if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropNVGoggleTime)) != null)
-                        fc.AddRecentFlightEvents(cfr.dtFlight, cfp.DecValue); } },
-            { CustomCurrencyEventType.NVFLIR, (fc, cfr) => {
-                CustomFlightProperty cfp = null;
-                if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropNVFLIRTime)) != null)
-                        fc.AddRecentFlightEvents(cfr.dtFlight, cfp.DecValue); } },
-            { CustomCurrencyEventType.LandingsHighAltitude, (fc, cfr) => {
-                CustomFlightProperty cfp = null;
-                if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropHighAltitudeLandings)) != null)
-                        fc.AddRecentFlightEvents(cfr.dtFlight, cfp.IntValue); } },
+            { CustomCurrencyEventType.BackseatHours, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropBackSeatTime)); } },
+            { CustomCurrencyEventType.FrontSeatHours, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropFrontSeatTime)); } },
+            { CustomCurrencyEventType.HoistOperations, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropHoistOperations)); } },
+            { CustomCurrencyEventType.NVHours, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.TotalTimeForPredicate(fp => fp.PropertyType.IsNightVisionTime)); } },
+            { CustomCurrencyEventType.NVGoggles, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropNVGoggleTime)); } },
+            { CustomCurrencyEventType.NVFLIR, (fc, cfr) => {fc.AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropNVFLIRTime)); } },
+            { CustomCurrencyEventType.LandingsHighAltitude, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropHighAltitudeLandings)); } },
             { CustomCurrencyEventType.NightFlight, (fc, cfr) => {fc.AddRecentFlightEvents(cfr.dtFlight, cfr.Night); } },
-            { CustomCurrencyEventType.CAP5Checkride, (fc, cfr) => {
-                CustomFlightProperty cfp = null;
-                if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropCAP5Checkride)) != null)
-                            fc.AddRecentFlightEvents(cfr.dtFlight, cfp.BoolValue ? 1 : 0); } },
-            { CustomCurrencyEventType.CAP91Checkride, (fc, cfr) => {
-                CustomFlightProperty cfp = null;
-                if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropCAP91Checkride)) != null)
-                            fc.AddRecentFlightEvents(cfr.dtFlight, cfp.BoolValue ? 1 : 0); } },
-            { CustomCurrencyEventType.FMSApproaches, (fc, cfr) => {
-                CustomFlightProperty cfp = null;
-                if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropFMSApproaches)) != null)
-                        fc.AddRecentFlightEvents(cfr.dtFlight, cfp.IntValue); } },
+            { CustomCurrencyEventType.CAP5Checkride, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropCAP5Checkride) ? 1 : 0); } },
+            { CustomCurrencyEventType.CAP91Checkride, (fc, cfr) => {fc.AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropCAP91Checkride) ? 1 : 0); } },
+            { CustomCurrencyEventType.FMSApproaches, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropFMSApproaches)); } },
             { CustomCurrencyEventType.HoursDual, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.Dual); } },
-            { CustomCurrencyEventType.NightTouchAndGo, (fc, cfr) => {
-                CustomFlightProperty cfp = null;
-                if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropNightTouchAndGo)) != null)
-                        fc.AddRecentFlightEvents(cfr.dtFlight, cfp.IntValue); } },
-            { CustomCurrencyEventType.GliderTow, (fc, cfr) => {
-                CustomFlightProperty cfp = null;
-                 if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropGliderTow)) != null)
-                            fc.AddRecentFlightEvents(cfr.dtFlight, cfp.IntValue); } },
+            { CustomCurrencyEventType.NightTouchAndGo, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropNightTouchAndGo)); } },
+            { CustomCurrencyEventType.GliderTow, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropGliderTow)); } },
             { CustomCurrencyEventType.IPC, (fc, cfr) => {
                 CustomFlightProperty cfp = null;
                 if ((cfp = cfr.FlightProps.FindEvent(fp => fp.PropertyType.IsIPC)) != null)
@@ -1139,17 +1085,11 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
             { CustomCurrencyEventType.RestTime, (fc, cfr) => { fc._DutyPeriodExaminer.ExamineFlight(cfr); } },
             { CustomCurrencyEventType.DutyTime, (fc, cfr) => { fc._DutyPeriodExaminer.ExamineFlight(cfr); } },
             { CustomCurrencyEventType.FlightDutyTime, (fc, cfr) => { fc._DutyPeriodExaminer.ExamineFlight(cfr); } },
-            { CustomCurrencyEventType.TakeoffsAny, (fc, cfr) => {
-                CustomFlightProperty cfp = null;
-                if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropTakeoffAny)) != null)
-                        fc.AddRecentFlightEvents(cfr.dtFlight, cfp.IntValue); } },
+            { CustomCurrencyEventType.TakeoffsAny, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropTakeoffAny)); } },
             { CustomCurrencyEventType.SpecialAuthorizationApproach, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropSpecialAuthorizationApproach)); } },
             { CustomCurrencyEventType.EnhancedVisionApproach, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropEnhancedVisionApproach)); } },
             { CustomCurrencyEventType.InstructionGiven, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.CFI); } },
-            { CustomCurrencyEventType.NVUnaidedTime, (fc, cfr) => {
-                CustomFlightProperty cfp = null;
-                if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropNVUnaided)) != null)
-                        fc.AddRecentFlightEvents(cfr.dtFlight, cfp.DecValue); } }
+            { CustomCurrencyEventType.NVUnaidedTime, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropNVUnaided)); } },
         };
 
         /// <summary>
