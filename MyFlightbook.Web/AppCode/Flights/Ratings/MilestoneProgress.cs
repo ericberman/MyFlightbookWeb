@@ -312,7 +312,7 @@ namespace MyFlightbook.RatingsProgress
                         cfr.dtFlight,
                         String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx/{0}", cfr.flightID).ToAbsoluteURL(HttpContext.Current.Request),
                         cfr.Route,
-                        "~/public/MapRoute2.aspx?Airports=".ToAbsoluteURL(HttpContext.Current.Request),
+                        "~/mvc/Airport/MapRoute?Airports=".ToAbsoluteURL(HttpContext.Current.Request),
                         HttpUtility.UrlEncode(cfr.Route)));
                 return sb.ToString();
             }

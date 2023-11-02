@@ -92,7 +92,7 @@
                                         -
                                         <asp:Label ID="txtTitle" runat="server" Text='<%# Bind("name") %>' />
                                         <br />
-                                        <asp:HyperLink ID="lnkViewAirports" Target="_blank" runat="server" NavigateUrl='<%# String.Format("~/public/maproute2.aspx?Airports={0}", HttpUtility.UrlEncode(Eval("airportcodes").ToString())) %>'>
+                                        <asp:HyperLink ID="lnkViewAirports" Target="_blank" runat="server" NavigateUrl='<%# String.Format("~/mvc/Airport/MapRoute?Airports={0}", HttpUtility.UrlEncode(Eval("airportcodes").ToString())) %>'>
                                             <asp:Label ID="txtText" runat="server" Width="300px" Text='<%# Bind("airportcodes")%>' />
                                         </asp:HyperLink><asp:Label ID="lblLevels" runat="server" Text='<%# Convert.ToInt32(Eval("fBinaryOnly")) != 0 ? "Binary Only" : String.Format("{0}, {1}, {2}, {3}", Eval("thresholdBronze"), Eval("thresholdSilver"), Eval("thresholdGold"), Eval("thresholdPlatinum"))  %>'></asp:Label></td>
                                 </tr>

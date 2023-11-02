@@ -70,6 +70,7 @@ namespace MyFlightbook.Airports
         /// </summary>
         public string Name { get; set; }
 
+        [JsonIgnore]
         public string NameWithGeoRegion
         {
             get
@@ -92,8 +93,10 @@ namespace MyFlightbook.Airports
         /// </summary>
         public string Admin1 { get; set; }
 
+        [JsonIgnore]
         public string CountryDisplay { get { return (Country ?? string.Empty).StartsWith(szDisputedRegion, StringComparison.CurrentCultureIgnoreCase) ? string.Empty : Country ?? string.Empty; } }
 
+        [JsonIgnore]
         public string Admin1Display { get { return (Admin1 ?? string.Empty).StartsWith(szDisputedRegion, StringComparison.CurrentCultureIgnoreCase) ? string.Empty : Admin1 ?? string.Empty; } }
 
         /// <summary>
@@ -133,7 +136,7 @@ namespace MyFlightbook.Airports
         [Newtonsoft.Json.JsonIgnore]
         public Boolean IsUserGenerated
         {
-            get { return (UserName.Length > 0); }
+            get { return ((UserName?.Length ?? 0) > 0); }
         }
 
         [Newtonsoft.Json.JsonIgnore]

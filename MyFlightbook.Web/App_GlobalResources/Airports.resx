@@ -165,7 +165,7 @@
     <value>Airport Identification Game</value>
   </data>
   <data name="MapPrompt" xml:space="preserve">
-    <value>Planning a flight?&amp;nbsp; Enter the airport codes below.  You can also get METARs for individual airports.</value>
+    <value>Planning a flight? Enter the airport codes below.  You can also get METARs for individual airports.</value>
   </data>
   <data name="MapRouteHeader" xml:space="preserve">
     <value>%APP_NAME% - Map a route</value>
@@ -350,5 +350,11 @@
   </data>
   <data name="FindAirportPrompt" xml:space="preserve">
     <value>Can't remember an airport's code?  Search for it below</value>
+  </data>
+  <data name="mapOptimizeRoute" xml:space="preserve">
+    <value>Optimize Route</value>
+  </data>
+  <data name="mapPermalink" xml:space="preserve">
+    <value>Save a link to this map</value>
   </data>
 </root>

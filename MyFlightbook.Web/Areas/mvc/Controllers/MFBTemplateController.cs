@@ -77,10 +77,12 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         #region shared Partial views
         [ChildActionOnly]
-        public ActionResult RenderTooltip(string tipID, string tipTextHTML, string tipPrompt = "[?]")
+        public ActionResult RenderTooltip(string tipID, string tipTextHTML, string tipTextSrcID = "", string tipPrompt = "[?]")
         {
             ViewBag.tipPrompt = tipPrompt;
             ViewBag.tipID = tipID;
+            ViewBag.tipSrcID = String.IsNullOrEmpty(tipTextSrcID) ? ("idTipFor" + tipID) : tipTextSrcID;
+            ViewBag.externalSrc = !String.IsNullOrEmpty(tipTextSrcID);
             ViewBag.tipText = tipTextHTML;
             return PartialView("_tooltip");
         }

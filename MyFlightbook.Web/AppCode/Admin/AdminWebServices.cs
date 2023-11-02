@@ -1,4 +1,5 @@
-﻿using MyFlightbook.Geography;
+﻿using MyFlightbook.Airports;
+using MyFlightbook.Geography;
 using MyFlightbook.Telemetry;
 using Resources;
 using System;
@@ -533,6 +534,20 @@ namespace MyFlightbook.Web.Ajax
             }
 
             return new { reconstituded = lstReconstituded, straight = lstStraight, boundingBox = llb };
+        }
+        #endregion
+
+        #region Airports 
+        [WebMethod(EnableSession = true)]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+        public VisitedRoute VisitedRoutesForRoute(string szRoute, int maxSegments = 10)
+        {
+            if (!Profile.GetUser(User.Identity.Name).CanManageData)
+                throw new UnauthorizedAccessException();
+
+            VisitedRoute vr = new VisitedRoute(szRoute);
+            vr.Refresh(maxSegments);
+            return vr;
         }
         #endregion
     }

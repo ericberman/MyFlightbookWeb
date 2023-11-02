@@ -154,6 +154,6 @@
     <value>Registration for {0}</value>
   </data>
   <data name="VisitedRoutesExaminedTemplate" xml:space="preserve">
-    <value>"{0} of {1} segments examined"</value>
+    <value>{0} of {1} segments examined</value>
   </data>
 </root>

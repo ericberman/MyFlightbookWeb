@@ -217,14 +217,13 @@ function MFBMap()
                 var d = JSON.stringify(params);
                 $.ajax(
                     {
-                        url: '/logbook/public/MapRoute2.aspx/AirportsInBoundingBox',
+                        url: '/logbook/mvc/Airport/AirportsInBoundingBox',
                         type: "POST", data: d, dataType: "json", contentType: "application/json",
                         error: function (xhr, status, error) {
                             window.alert(xhr.responseJSON.Message);
                         },
                         complete: function (response) { },
-                        success: function (response) {
-                            var result = response.d;
+                        success: function (result) {
                             mfbMap.clearMarkers();
                             var rgAirports = new Array();
                             for (var i = 0; i < result.length; i++) {

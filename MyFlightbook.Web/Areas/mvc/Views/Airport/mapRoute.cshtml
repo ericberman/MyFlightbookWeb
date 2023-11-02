@@ -1,0 +1,169 @@
+﻿@using System.Globalization
+@{
+    ViewBag.Title = Branding.ReBrand(Resources.Airports.MapRouteHeader);
+    ViewBag.defaultTab = tabID.tabMaps;
+    ViewBag.UseMaps = true;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+<div id="ads" style="float:right; width: 130px; padding:4px; ">
+    @{ Html.RenderAction("RenderGoogleAd", "MFBTemplate", new { fVertical = true }); }
+</div>
+
+@using (Html.BeginForm("MapRoute", "Airport", new { tsp = ViewBag.travelingSalesman, hist = ViewBag.history, sm = ViewBag.staticMap }, FormMethod.Get))
+{
+    if (ViewBag.staticMap)
+    {
+        <input type="hidden" name="sm" value="1" />
+    }
+    if (ViewBag.history)
+    {
+        <input type="hidden" name="hist" value="1" />
+    }
+    <div>
+        @Resources.Airports.MapPrompt@{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "mapTips", tipTextHTML = Resources.Airports.MapNavaidTip }); }
+    </div>
+    <div><textarea id="txtAirports" name="Airports" style="width: 600px;" class="ui-widget-content" rows="@(Math.Min(6, Math.Max((ViewBag.Airports.Length / 70 + 1), 1)))">@ViewBag.Airports</textarea></div>
+    <div>
+        <button type="submit">@Resources.Airports.MapUpdateMap</button>
+        @if (ViewBag.travelingSalesman)
+        {
+            <button type="submit" name="tsp" value="1">@Resources.Airports.mapOptimizeRoute</button>
+        }
+    </div>
+}
+
+@if (ViewBag.history)
+{
+    <script type="text/javascript">
+        var activeRoute;
+
+        function RenderVisitedRoutes() {
+            var params = new Object();
+            params.szVRJson = JSON.stringify(activeRoute);
+            var d = JSON.stringify(params);
+            $.ajax(
+                {
+                    url: '@VirtualPathUtility.ToAbsolute("~/mvc/Airport/RenderVisitedRoutes")',
+                    type: "POST", data: d, dataType: "html", contentType: "application/json",
+                    error: function (xhr, status, error) {
+                        window.alert(error);
+                    },
+                    complete: function (response) { },
+                    success: function (response) {
+                        $('#visitedRouteContainer').html(response);
+                    }
+                });
+            return false;
+        }
+
+        function CheckFlown() {
+            $('#imgProgress').toggle();
+            var params = new Object();
+            params.szRoute = $('#txtAirports')[0].value;
+            params.maxSegments = 10;
+            var d = JSON.stringify(params);
+            $.ajax(
+                {
+                    url: '@VirtualPathUtility.ToAbsolute("~/Admin/AdminService.asmx/VisitedRoutesForRoute")',
+                    type: "POST", data: d, dataType: "html", contentType: "application/json",
+                    error: function (xhr, status, error) {
+                        window.alert(xhr.responseJSON.Message);
+                    },
+                    complete: function (response) {
+                        $('#imgProgress').toggle();
+                    },
+                    success: function (response) {
+                        activeRoute = JSON.parse(response).d;
+                        RenderVisitedRoutes();
+                    }
+                });
+            return false;
+        }
+
+        function UploadFlown() {
+            $('#imgProgress').toggle();
+            var fileData = $('#fuXMLFlownRoutes').prop('files')[0];
+            var formData = new FormData();
+            formData.append('file', fileData);
+            $.ajax(
+                {
+                    url: '@VirtualPathUtility.ToAbsolute("~/mvc/Airport/VisitedRoutesFromFile")',
+                    type: "POST", data: formData, dataType: "text", contentType: false, processData : false,
+                    error: function (xhr, status, error) {
+                        window.alert(xhr.responseJSON.Message);
+                    },
+                    complete: function (response) {
+                        $('#imgProgress').toggle();
+                    },
+                    success: function (response) {
+                        activeRoute = JSON.parse(response);
+                        RenderVisitedRoutes();
+                    }
+                });
+            return false;
+        }
+
+        function DownloadXML() {
+            var params = new Object();
+            params.szVRJSon = JSON.stringify(activeRoute);
+            var d = JSON.stringify(params);
+            $.ajax(
+                {
+                    url: '@VirtualPathUtility.ToAbsolute("~/mvc/Airport/DownloadVisitedRoutes")',
+                    type: "POST", data: d, dataType: "html", contentType: "application/json",
+                    error: function (xhr, status, error) {
+                        window.alert(xhr.responseJSON.Message);
+                    },
+                    complete: function (response) { },
+                    success: function (response) {
+                        window.location = "@VirtualPathUtility.ToAbsolute("~/mvc/Airport/GetVisitedroutesDownload")";
+                    }
+                });
+            return false;
+        }
+
+    </script>
+    <div id="divHistory">
+        <div style="padding: 5px; border: 1px solid black; margin: 5px; width: 70%">
+            <div>View historical routes:</div>
+            <div><button id="btnCheckFlown" onclick="javascript:CheckFlown()">Check what's flown</button> Find flown routes based on route above</div>
+            <div><input type="file" id="fuXMLFlownRoutes" name="fuFlownRoutes" /> <button onclick="javascript:UploadFlown();">Initialize Flown Routes from XML</button> Upload a previously computed XML file with flown routes results</div>
+            <div><button onclick="javascript:DownloadXML()">Download XML</button> Download computed results</div>
+        </div>
+        <div><img src="@VirtualPathUtility.ToAbsolute("~/images/progress.gif")" style="display:none;" id="imgProgress" /></div>
+        <div id="visitedRouteContainer">
+
+        </div>
+    </div>
+}
+
+@if (!String.IsNullOrEmpty(ViewBag.Airports))
+{
+    if (!ViewBag.staticMap)
+    {
+        <p><a href="javascript:mfbMapForContainerID('@ViewBag.Map.Options.divContainer').ZoomOut();">@Resources.Airports.MapZoomOut</a></p>
+    }
+    <div id="divResultsContainer" style="height: 400px; width:80%">
+        @{ Html.RenderAction("MapDiv", "Airport", new { map = ViewBag.Map }); }
+    </div>
+    <script type="text/javascript">
+            $("#@ViewBag.Map.Options.divContainer")[0].style.height = "95%";
+            $("#divResultsContainer").resizable();
+    </script>
+    <div style="width: 80%; text-align: center; margin-bottom: 10px;">
+        @((new LogbookEntry() { Route = ViewBag.Airports }).GetPathDistanceDescription(null));
+    </div>
+    <p>@{ Html.RenderAction("GetMetar", "Airport", new { id = "divMetar", szAirports = ViewBag.Airports }); }</p>
+    <div style="width: 80%">
+        @{ Html.RenderAction("AirportServicesTable", "Airport", new
+            {
+                airports = ViewBag.normalizedAirports,
+                isStatic = ViewBag.staticMap,
+                gmapDivID = ViewBag.Map.Options.divContainer,
+            });
+        }
+    </div>
+}
+<script type="text/javascript">
+    $('#txtAirports').resizable();
+</script>

@@ -8,7 +8,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2022 MyFlightbook LLC
+ * Copyright (c) 2007-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -47,7 +47,7 @@ public partial class Public_Home : System.Web.UI.Page
             {
                 new AppAreaDescriptor(Resources.Tabs.TabLogbook, "~/Member/LogbookNew.aspx", Branding.ReBrand(Resources.Profile.appDescriptionLogbook), tabID.tabLogbook),
                 new AppAreaDescriptor(Resources.Tabs.TabAircraft, "~/Member/Aircraft.aspx", Branding.ReBrand(Resources.Profile.appDescriptionAircraft), tabID.tabAircraft),
-                new AppAreaDescriptor(Resources.Tabs.TabAirports, "~/Public/MapRoute2.aspx", Branding.ReBrand(Resources.Profile.appDescriptionAirports), tabID.tabMaps),
+                new AppAreaDescriptor(Resources.Tabs.TabAirports, "~/mvc/Airport/MapRoute", Branding.ReBrand(Resources.Profile.appDescriptionAirports), tabID.tabMaps),
                 new AppAreaDescriptor(Resources.Tabs.TabInstruction, "~/Member/Training.aspx", Branding.ReBrand(Resources.Profile.appDescriptionTraining), tabID.tabTraining),
                 new AppAreaDescriptor(Resources.Tabs.TabProfile, "~/Member/EditProfile.aspx", Branding.ReBrand(Resources.Profile.appDescriptionProfile), tabID.tabProfile)
             };
