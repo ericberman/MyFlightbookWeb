@@ -551,7 +551,6 @@
     <Content Include="Controls\mfbHoverImageList.ascx" />
     <Content Include="Controls\mfbHtmlEdit.ascx" />
     <Content Include="Controls\mfbImageList.ascx" />
-    <Content Include="Controls\mfbImpersonate.ascx" />
     <Content Include="Controls\mfbImportAircraft.ascx" />
     <Content Include="Controls\mfbLogbook.ascx" />
     <Content Include="Controls\mfbMaintainAircraft.ascx" />
@@ -2345,13 +2344,6 @@
     </Compile>
     <Compile Include="Controls\mfbImageList.ascx.designer.cs">
       <DependentUpon>mfbImageList.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\mfbImpersonate.ascx.cs">
-      <DependentUpon>mfbImpersonate.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbImpersonate.ascx.designer.cs">
-      <DependentUpon>mfbImpersonate.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\mfbImportAircraft.ascx.cs">
       <DependentUpon>mfbImportAircraft.ascx</DependentUpon>

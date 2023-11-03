@@ -1,7 +1,6 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Async="true" AsyncTimeout="300"
     Codebehind="Admin.aspx.cs" Inherits="MyFlightbook.Web.Admin.Member_Admin" Title="Administer MyFlightbook" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
-<%@ Register Src="../Controls/mfbImpersonate.ascx" TagName="mfbImpersonate" TagPrefix="uc1" %>
 <%@ Register Src="~/Controls/Expando.ascx" TagPrefix="uc1" TagName="Expando" %>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="cpPageTitle" runat="Server">
