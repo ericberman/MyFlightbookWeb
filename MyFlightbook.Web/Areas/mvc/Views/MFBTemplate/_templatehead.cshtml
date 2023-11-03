@@ -64,7 +64,7 @@
 <link rel="shortcut icon" href="/favicon.ico?v2" />
 <link rel="icon" href="/favicon.ico?v2" />
 <link href="@VirtualPathUtility.ToAbsolute("~/images/apple-touch-icon.png")" rel="apple-touch-icon" />
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css" />
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 <link href="@VirtualPathUtility.ToAbsolute("~/public/CSS/jqueryuimods.css")" type="text/css" rel="stylesheet" />
 <link href="@VirtualPathUtility.ToAbsolute(MFBConstants.BaseStylesheet)" rel="stylesheet" type="text/css" />
 <link href="@VirtualPathUtility.ToAbsolute("~/public/CSS/mfbheader.css?v=3")" rel="stylesheet" type="text/css" />
@@ -77,4 +77,9 @@
         <link href="@VirtualPathUtility.ToAbsolute(ViewBag.PrintingCSS)" rel="Stylesheet" type="text/css" />
     }
 }
+<style type="text/css">
+    .ui-wrapper {
+        padding: 0 !important;
+    }
+</style>
 
