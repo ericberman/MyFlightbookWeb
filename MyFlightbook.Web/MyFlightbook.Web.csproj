@@ -1457,7 +1457,6 @@
     <Content Include="Public\mfblogonew.png" />
     <Content Include="Public\myflightbooknewstaging.png" />
     <Content Include="Public\MyFlights.aspx" />
-    <Content Include="Public\oAuthToken.aspx" />
     <Content Include="Public\LeonRedir.aspx" />
     <Content Include="Public\OneDriveRedir.aspx" />
     <Content Include="Public\OpenSource\Database model.pdf" />
@@ -3231,13 +3230,6 @@
     </Compile>
     <Compile Include="Public\MyFlights.aspx.designer.cs">
       <DependentUpon>MyFlights.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Public\oAuthToken.aspx.cs">
-      <DependentUpon>oAuthToken.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\oAuthToken.aspx.designer.cs">
-      <DependentUpon>oAuthToken.aspx</DependentUpon>
     </Compile>
     <Compile Include="Public\LeonRedir.aspx.cs">
       <DependentUpon>LeonRedir.aspx</DependentUpon>
