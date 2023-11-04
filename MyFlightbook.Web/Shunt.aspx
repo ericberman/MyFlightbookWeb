@@ -18,7 +18,7 @@
         }(document, 'script', 'facebook-jssdk'));
     </script>
         <div>
-        <a href="Default.aspx"><img src="Public/mfblogonew.png" alt="MyFlightbook Logo" /></a>
+        <a href="Default.aspx"><img src="Images/mfblogonew.png" alt="MyFlightbook Logo" /></a>
         <h1>Scheduled Maintenance Underway</h1>
         <p><asp:label ID="lblShuntMsg" runat="server" text=""></asp:label></p>
         <div class="fb-page" data-href="https://www.facebook.com/MyFlightbook/" data-tabs="timeline" data-height="600" data-small-header="true" data-adapt-container-width="true" data-hide-cover="true" data-show-facepile="true">

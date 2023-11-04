@@ -614,6 +614,9 @@
     <Content Include="images\inop.png" />
     <Content Include="images\invertsel.png" />
     <Content Include="images\LeonLogo.svg" />
+    <Content Include="images\mfblogonew-large.png" />
+    <Content Include="images\mfblogonew.png" />
+    <Content Include="images\myflightbooknewstaging.png" />
     <Content Include="images\prohibited.png" />
     <Content Include="images\rb_logo.png" />
     <Content Include="images\SponsoredAds\SkyWatch_Logo_New2020.png" />
@@ -1453,9 +1456,6 @@
     <Content Include="Public\iPhoneImages\iPhone6.png" />
     <Content Include="Public\iPhoneImages\iPhone7.png" />
     <Content Include="Public\iPhoneImages\iPhone8.png" />
-    <Content Include="Public\mfblogonew-large.png" />
-    <Content Include="Public\mfblogonew.png" />
-    <Content Include="Public\myflightbooknewstaging.png" />
     <Content Include="Public\MyFlights.aspx" />
     <Content Include="Public\LeonRedir.aspx" />
     <Content Include="Public\OneDriveRedir.aspx" />
