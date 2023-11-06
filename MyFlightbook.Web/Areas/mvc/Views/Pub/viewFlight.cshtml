@@ -1,0 +1,136 @@
+﻿@using MyFlightbook
+@using MyFlightbook.Image
+@using MyFlightbook.Mapping
+@using System.Globalization
+@{
+    LogbookEntry le = ViewBag.flight;
+    ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithDash, le.Date.ToShortDateString(), HttpUtility.HtmlEncode(le.TailNumDisplay));
+    ViewBag.UseMaps = true;
+    ViewBag.defaultTab = tabID.tabHome;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    Profile pf = MyFlightbook.Profile.GetUser(le.User);
+}
+<asp:content id="Content1" contentplaceholderid="cpTopForm" runat="Server">
+    <script type="text/javascript">
+        function toggleComponent() {
+            var url = '@ViewBag.baseURL';
+            var checkboxes = ['#ckDetails', '#ckPictures', '#ckVideos', '#ckShowMap', '#ckShowAirports'];
+            var parts = [];
+            for (ick in checkboxes) {
+                var ck = $(checkboxes[ick])[0];
+                if (ck.checked)
+                    parts.push(ck.value)
+            }
+
+            var newLoc = url + ((parts.length == 0 || parts.length == checkboxes.length) ? "" : ("&show=" + parts.join(",")));
+            if (!$('#ckShowPath')[0].checked)
+                newLoc += "&p=0"
+            if (!$('#ckShowRoute')[0].checked)
+                newLoc += "&r=0"
+            if (!$('#ckShowImages')[0].checked)
+                newLoc += "&i=0"
+            window.location = newLoc;
+        }
+
+        function toggleMapComponent() {
+            window.alert("TO BE IMPLEMENTED");
+            return false;
+        }
+    </script>
+    @if (ViewBag.Map.MapMode == GMap_Mode.Dynamic)
+    {
+        <div style="float:right; text-align:left;">
+            <div class="popContainer">
+                <img src="@VirtualPathUtility.ToAbsolute("~/images/MenuChevron.png")" class="popTrigger" />
+                <div class="popMenuContent popMenuHidden" style="margin-top: -5px; margin-left: -160px">
+                    @if (le.Telemetry.HasPath)
+                    {
+                        <div style="margin-top: 3px;">&nbsp;<img style="vertical-align:middle" src="@VirtualPathUtility.ToAbsolute("~/images/download.png")" />&nbsp;&nbsp;@Html.ActionLink(Resources.LogbookEntry.PublicFlightKMLDownload, "DownloadKML", new { id = le.FlightID })</div>
+                    }
+                    <h3>@Resources.LogbookEntry.PublicFlightShowOptions</h3>
+                    <div><input type="checkbox" @(ViewBag.showDetails ? "checked" : string.Empty) value="details" id="ckDetails" onchange="javascript: toggleComponent();" /><label for="ckDetails">@Resources.LogbookEntry.PublicFlightShowComponentDetails</label></div>
+                    <div><input type="checkbox" @(ViewBag.showPix ? "checked" : string.Empty) value="pictures" id="ckPictures" onchange="javascript: toggleComponent();" /><label for="ckPictures">@Resources.LogbookEntry.PublicFlightShowComponentPictures</label></div>
+                    <div><input type="checkbox" @(ViewBag.showVids ? "checked" : string.Empty) value="videos" id="ckVideos" onchange="javascript: toggleComponent();" /><label for="ckVideos">@Resources.LogbookEntry.PublicFlightShowComponentVideos</label></div>
+                    <div><input type="checkbox" @(ViewBag.showMap ? "checked" : string.Empty) value="map" id="ckShowMap" onchange="javascript: toggleComponent();" /><label for="ckShowMap">@Resources.LogbookEntry.PublicFlightShowComponentMap</label></div>
+
+                    <div>&nbsp;&nbsp;&nbsp;<input type="checkbox" @(ViewBag.showAirports ? "checked" : string.Empty) value="airports" id="ckShowAirports" onchange="javascript: toggleComponent();" /><label for="ckShowAirports">@Resources.LogbookEntry.PublicFlightShowComponentAirports</label></div>
+                    <div>&nbsp;&nbsp;&nbsp;<input type="checkbox" @(ViewBag.showPath ? "checked" : string.Empty) value="mapPath" id="ckShowPath" onchange="javascript: toggleComponent();" /><label for="ckShowPath">@Resources.Airports.mapShowPath</label></div>
+                    <div>&nbsp;&nbsp;&nbsp;<input type="checkbox" @(ViewBag.showRoute ? "checked" : string.Empty) value="mapRoute" id="ckShowRoute" onchange="javascript: toggleComponent();" /><label for="ckShowRoute">@Resources.Airports.mapShowRoute</label></div>
+                    <div>&nbsp;&nbsp;&nbsp;<input type="checkbox" @(ViewBag.showImagesOnMap ? "checked" : string.Empty) value="mapImages" id="ckShowImages" onchange="javascript: toggleComponent();" /><label for="ckShowImages">@Resources.Airports.mapShowImages</label></div>
+                </div>
+            </div>
+        </div>
+    }
+    @if (ViewBag.showDetails)
+    {
+        <div>
+            <a href="@pf.PublicFlightsURL(Request.Url.Host).AbsoluteUri">@pf.UserFullName</a>
+            <a href="@String.Format(CultureInfo.InvariantCulture, "{0}{1}", VirtualPathUtility.ToAbsolute("~/mvc/Airport/MapRoute?sm=1&Airports="), HttpUtility.UrlEncode(le.Route))">@le.Route</a>
+            <span style="white-space:pre-line;">@Html.Raw(le.Comment.Linkify())</span>
+            @if (User.Identity.Name.CompareOrdinal(le.User) == 0)
+            {
+                <a href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx/{0}", le.FlightID))"><img src="@VirtualPathUtility.ToAbsolute("~/images/pencilsm.png")" title="@Resources.LogbookEntry.PublicFlightEditThisFlight" alt="@Resources.LogbookEntry.PublicFlightEditThisFlight" /></a>
+            }
+        </div>
+    }
+    @if (ViewBag.showVids && le.Videos.Any())
+    {
+        <div style="margin-left:auto;margin-right:auto; width:640px;">
+            @foreach (VideoRef vr in le.Videos)
+            {
+                <div>
+                    <div>@Html.Raw(vr.EmbedHTML())</div>
+                    <p><a href="@vr.VideoReference" target="_blank">@vr.DisplayString</a></p>
+                </div>
+            }
+        </div>
+    }
+    @if (ViewBag.showPix)
+    {
+        <div style="max-width:480px; margin-left:auto; margin-right:auto;">
+            @{ Html.RenderAction("ImageSlider", "Image", new { rgImages = ViewBag.sliderImages, id = "divSlider" }); }
+        </div>
+    }
+    <div>
+    @if (ViewBag.showMap)
+    {
+        if (ViewBag.map.MapMode == GMap_Mode.Dynamic)
+        {
+            <p><a href="javascript:mfbMapForContainerID('@ViewBag.map.Options.divContainer').ZoomOut();">@Resources.Airports.MapZoomOut</a></p>
+        }
+        <div id="divResultsContainer" style="height: 400px; width:100%">
+            @{ Html.RenderAction("MapDiv", "Airport", new { map = ViewBag.map }); }
+        </div>
+        <script type="text/javascript">
+            $("#@ViewBag.map.Options.divContainer")[0].style.height = "95%";
+            $("#divResultsContainer").resizable();
+        </script>
+        <div style="width: 100%; text-align: center; margin-bottom: 10px;">
+            @ViewBag.distanceDescription
+        </div>
+    }
+    @if (ViewBag.Map.MapMode == GMap_Mode.Dynamic && ViewBag.showAirports)
+    {
+        <div style="width: 100%">
+            @{ Html.RenderAction("AirportServicesTable", "Airport", new
+                {
+                    airports = ViewBag.normalizedAirports,
+                    isStatic = ViewBag.map.MapMode == GMap_Mode.Static,
+                    gmapDivID = ViewBag.Map.Options.divContainer,
+                });
+            }
+        </div>
+    }
+    </div>
+    <div>
+        <div id="FullPageBottom" runat="server">
+            <div style="text-align:center">
+                @if (!ViewBag.ForceNaked)
+                { 
+                    Html.RenderAction("RenderGoogleAd", "MFBTemplate", new { fVertical = false }); 
+                }
+            </div>
+        </div>
+    </div>
+
+

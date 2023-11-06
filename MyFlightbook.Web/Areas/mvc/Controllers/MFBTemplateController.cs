@@ -263,6 +263,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.Title = Title ?? Branding.CurrentBrand.AppName;
             ViewBag.UseCharting = UseCharting;
             ViewBag.UseMaps = UseMaps;
+            ViewBag.ForceNaked = false; // provide a default value but allow pages to override the session state
 
             string szUserAgent = Request.UserAgent.ToUpperInvariant();
             ViewBag.IsIOSOrAndroid = szUserAgent.Contains("IPHONE") || szUserAgent.Contains("IPAD") || szUserAgent.Contains("ANDROID");

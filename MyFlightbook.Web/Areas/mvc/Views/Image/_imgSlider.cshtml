@@ -1,0 +1,44 @@
+﻿@using MyFlightbook.Image
+<div>
+    <style type="text/css">
+        .bxslider-wrap {
+            visibility: hidden;
+        }
+    </style>
+    <div class="bxslider-wrap">
+        <div id="@ViewBag.sliderID" class="bxslider">
+            @foreach (MFBImageInfo mfbii in ViewBag.images)
+            {
+                <div style="max-height:480px; max-width: 480px">
+                    @if (mfbii.ImageType == MFBImageInfoBase.ImageFileType.S3VideoMP4)
+                    {
+                        <div><video width="480" height="360" controls><source src='@mfbii.ResolveFullImage()' type="video/mp4"></video></div>
+                        <div>@mfbii.Comment</div>
+                    }
+                    else
+                    {
+                    <img alt="@mfbii.Comment" title="@mfbii.Comment" src="@mfbii.URLFullImage" onmousedown="viewMFBImg(this.src); return false;" style="max-width:480px; max-height:480px" />
+                    }
+                </div>
+            }
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $('#@ViewBag.sliderID').bxSlider({
+                onSliderLoad: function () {
+                    let firstChild = $(this).children().first();
+                    let width = firstChild.width();
+                    $(this).css("transform", "translate3d(-" + width + "px,0,0)");
+                    $(".bxslider-wrap").css("visibility", "visible");
+                },
+                adaptiveHeight: true,
+                video: true,
+                useCSS: true,
+                captions: true,
+                startSlide: 0,
+                touchEnabled: true
+            });
+        });
+    </script>
+</div>

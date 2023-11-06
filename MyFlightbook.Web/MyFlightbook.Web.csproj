@@ -505,7 +505,6 @@
     <Content Include="Controls\ClubControls\TimeZone.ascx" />
     <Content Include="Controls\ClubControls\ViewClub.ascx" />
     <Content Include="Controls\Expando.ascx" />
-    <Content Include="Controls\fbComment.ascx" />
     <Content Include="Controls\GoogleAnalytics.ascx" />
     <Content Include="Controls\GoogleChart.ascx" />
     <Content Include="Controls\imageSlider.ascx" />
@@ -1358,7 +1357,6 @@
     <Content Include="Member\VisitedMap.aspx" />
     <Content Include="Member\Totals.aspx" />
     <Content Include="Member\Training.aspx" />
-    <Content Include="Member\ViewUser.aspx" />
     <Content Include="NavLinks.xml" />
     <Content Include="OAuth\oAuthToken.aspx" />
     <Content Include="PlayPen\BulkImportFromTelemetry.aspx" />
@@ -1463,7 +1461,6 @@
     <Content Include="Public\OpenSource\Database model.svg" />
     <Content Include="Public\OpenSource\myflightbook.mwb" />
     <Content Include="Public\PaypalIPNListener.aspx" />
-    <Content Include="Public\PendingImg.aspx" />
     <Content Include="Public\PrintFooter.aspx" />
     <Content Include="Public\RSSCurrency.aspx" />
     <Content Include="Public\Scripts\aircraftcontext.js" />
@@ -1498,10 +1495,8 @@
     <Content Include="Public\UploadAirplanePicture.aspx" />
     <Content Include="Public\UploadEndorsement.aspx" />
     <Content Include="Public\UploadPicture.aspx" />
-    <Content Include="Public\ViewPic.aspx" />
     <Content Include="Public\ViewPublicFlight.aspx" />
     <Content Include="Public\ViewSharedLogbook.aspx" />
-    <Content Include="Public\ViewSig.aspx" />
     <Content Include="Public\WebService.asmx" />
     <Content Include="Secure\login.aspx" />
     <Content Include="SecurityError.aspx" />
@@ -1857,6 +1852,7 @@
     <Compile Include="Areas\mvc\Controllers\AllMakesController.cs" />
     <Compile Include="Areas\mvc\Controllers\DonateController.cs" />
     <Compile Include="Areas\mvc\Controllers\FAQController.cs" />
+    <Compile Include="Areas\mvc\Controllers\ImageController.cs" />
     <Compile Include="Areas\mvc\Controllers\MFBTemplateController.cs" />
     <Compile Include="Areas\mvc\Controllers\PubController.cs" />
     <Compile Include="Areas\mvc\Controllers\rbredirectController.cs" />
@@ -2021,13 +2017,6 @@
     </Compile>
     <Compile Include="Controls\Expando.ascx.designer.cs">
       <DependentUpon>Expando.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\fbComment.ascx.cs">
-      <DependentUpon>fbComment.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\fbComment.ascx.designer.cs">
-      <DependentUpon>fbComment.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\GoogleAnalytics.ascx.cs">
       <DependentUpon>GoogleAnalytics.ascx</DependentUpon>
@@ -3055,13 +3044,6 @@
     <Compile Include="Member\Training.aspx.designer.cs">
       <DependentUpon>Training.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Member\ViewUser.aspx.cs">
-      <DependentUpon>ViewUser.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\ViewUser.aspx.designer.cs">
-      <DependentUpon>ViewUser.aspx</DependentUpon>
-    </Compile>
     <Compile Include="OAuth\oAuthToken.aspx.cs">
       <DependentUpon>oAuthToken.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3252,13 +3234,6 @@
     <Compile Include="Public\PaypalIPNListener.aspx.designer.cs">
       <DependentUpon>PaypalIPNListener.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Public\PendingImg.aspx.cs">
-      <DependentUpon>PendingImg.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\PendingImg.aspx.designer.cs">
-      <DependentUpon>PendingImg.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Public\PrintFooter.aspx.cs">
       <DependentUpon>PrintFooter.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3322,13 +3297,6 @@
     <Compile Include="Public\UploadPicture.aspx.designer.cs">
       <DependentUpon>UploadPicture.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Public\ViewPic.aspx.cs">
-      <DependentUpon>ViewPic.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\ViewPic.aspx.designer.cs">
-      <DependentUpon>ViewPic.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Public\ViewPublicFlight.aspx.cs">
       <DependentUpon>ViewPublicFlight.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3342,13 +3310,6 @@
     </Compile>
     <Compile Include="Public\ViewSharedLogbook.aspx.designer.cs">
       <DependentUpon>ViewSharedLogbook.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Public\ViewSig.aspx.cs">
-      <DependentUpon>ViewSig.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\ViewSig.aspx.designer.cs">
-      <DependentUpon>ViewSig.aspx</DependentUpon>
     </Compile>
     <Compile Include="Secure\login.aspx.cs">
       <DependentUpon>login.aspx</DependentUpon>
@@ -3444,6 +3405,8 @@
     <Content Include="Areas\mvc\Views\Airport\_airportServices.cshtml" />
     <Content Include="Areas\mvc\Views\Airport\_getMetar.cshtml" />
     <Content Include="Areas\mvc\Views\Airport\_visitedRoutesSummary.cshtml" />
+    <Content Include="Areas\mvc\Views\Image\_imgSlider.cshtml" />
+    <Content Include="Areas\mvc\Views\Pub\viewFlight.cshtml" />
     <None Include="packages.config" />
     <None Include="SecuritySwitch-v4.xsd">
       <SubType>Designer</SubType>

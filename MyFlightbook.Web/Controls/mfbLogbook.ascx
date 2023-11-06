@@ -148,12 +148,12 @@
                                     <table>
                                         <tr>
                                             <td style="vertical-align:middle">
-                                                <asp:HyperLink ID="lnkImageSig" runat="server" NavigateUrl='<%# ((bool) Eval("HasDigitizedSig")) ? String.Format("~/Public/ViewSig.aspx?id={0}", Eval("FlightID")) : string.Empty %>'>
+                                                <asp:HyperLink ID="lnkImageSig" runat="server" NavigateUrl='<%# ((bool) Eval("HasDigitizedSig")) ? String.Format("~/mvc/Image/FlightSig/{0}", Eval("FlightID")) : string.Empty %>'>
                                                     <asp:Image ID="imgSigState" ToolTip='<%# Eval("SignatureStateDescription") %>' AlternateText='<%# Eval("SignatureStateDescription") %>' ImageUrl='<%# ((bool) Eval("HasValidSig")) ? "~/Images/sigok.png" : "~/Images/siginvalid.png" %>' CssClass="imgMiddle" runat="server" />
                                                 </asp:HyperLink>
                                                 <cc1:HoverMenuExtender ID="HoverMenuExtender1" TargetControlID="imgSigState" PopupControlID="pnlSigState" OffsetX="10" OffsetY="10" runat="server"></cc1:HoverMenuExtender>
                                                 <asp:Panel ID="pnlSigState" runat="server" CssClass="hintPopup" Visible='<%# Convert.ToBoolean(Eval("HasDigitizedSig")) %>'>
-                                                    <asp:Image ID="imgDigitizedSig" runat="server" ImageUrl='<%# String.Format("~/Public/ViewSig.aspx?id={0}", Eval("FlightID")) %>' />
+                                                    <asp:Image ID="imgDigitizedSig" runat="server" ImageUrl='<%# String.Format("~/mvc/Image/FlightSig/{0}", Eval("FlightID")) %>' />
                                                 </asp:Panel>
                                             </td>
                                             <td style="vertical-align:middle">

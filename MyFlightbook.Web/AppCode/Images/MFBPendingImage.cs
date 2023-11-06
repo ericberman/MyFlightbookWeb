@@ -44,7 +44,7 @@ namespace MyFlightbook.Image
                     return string.Empty;
 
                 if (ImageType == ImageFileType.JPEG)
-                    return String.Format(CultureInfo.InvariantCulture, "~/Public/PendingImg.aspx?i={0}", HttpUtility.UrlEncode(SessionKey));
+                    return String.Format(CultureInfo.InvariantCulture, "~/mvc/Image/PendingImage/{0}", HttpUtility.UrlEncode(SessionKey));
                 else if (ImageType == ImageFileType.S3VideoMP4)
                     return "~/images/pendingvideo.png";
                 else
@@ -68,7 +68,7 @@ namespace MyFlightbook.Image
                     case ImageFileType.JPEG:
                     case ImageFileType.S3PDF:   // should never happen for a pending image...
                     case ImageFileType.PDF:
-                        return String.Format(CultureInfo.InvariantCulture, "~/Public/PendingImg.aspx?i={0}&full=1", HttpUtility.UrlEncode(SessionKey));
+                        return String.Format(CultureInfo.InvariantCulture, "~/mvc/Image/PendingImage/{0}?full=1", HttpUtility.UrlEncode(SessionKey));
                     case ImageFileType.S3VideoMP4:
                         return string.Empty;    // nothing to click on, at least not yet.
                     default:

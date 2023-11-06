@@ -201,7 +201,7 @@ namespace MyFlightbook.Image
                     case ImageFileType.JPEG:
                     case ImageFileType.S3VideoMP4:
                     case ImageFileType.S3PDF:
-                        return VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/public/ViewPic.aspx?r={0}&k={1}&t={2}", HttpUtility.UrlEncode(Class.ToString()), HttpUtility.UrlEncode(Key), HttpUtility.UrlEncode(ThumbnailFile)));
+                        return VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/Image/ViewPic?r={0}&k={1}&t={2}", HttpUtility.UrlEncode(Class.ToString()), HttpUtility.UrlEncode(Key), HttpUtility.UrlEncode(ThumbnailFile)));
                     case ImageFileType.PDF:
                         return VirtualPathUtility.ToAbsolute(PathThumbnail);
                 }

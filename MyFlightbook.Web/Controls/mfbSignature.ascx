@@ -22,7 +22,7 @@
             </div>
             <div class="signatureBlockSig">
                 <asp:Panel ID="pnlSigState" runat="server" Visible='<%# Convert.ToBoolean(Eval("HasDigitizedSig")) %>'>
-                    <asp:Image ID="imgDigitizedSig" runat="server" Width="140px" ImageUrl='<%# String.Format("~/Public/ViewSig.aspx?id={0}", Eval("FlightID")) %>' />
+                    <asp:Image ID="imgDigitizedSig" runat="server" Width="140px" ImageUrl='<%# String.Format("~/mvc/Image/FlightSig/{0}", Eval("FlightID")) %>' />
                 </asp:Panel>
             </div>
         </asp:Panel>

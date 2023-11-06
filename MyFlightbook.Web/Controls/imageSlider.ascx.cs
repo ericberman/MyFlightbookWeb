@@ -5,7 +5,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2021 MyFlightbook LLC
+ * Copyright (c) 2017-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -35,7 +35,7 @@ namespace MyFlightbook.Image
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            Page.Header.Controls.Add(new LiteralControl("<link rel=\"stylesheet\" type=\"text/css\" href=\"https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css\")"));
+            Page.Header.Controls.Add(new LiteralControl("<link rel=\"stylesheet\" type=\"text/css\" href=\"https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css\" />"));
         }
     }
 }

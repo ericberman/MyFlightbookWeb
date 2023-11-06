@@ -1,14 +1,17 @@
 ﻿<!DOCTYPE html>
 <html>
     <head>
-        @{ Html.RenderAction("RenderHead", "MFBTemplate", new { Title = ViewBag.Title, UseCharting = ViewBag.UseCharting, UseMaps = ViewBag.UseMaps }); }
+         @{ Html.RenderAction("RenderHead", "MFBTemplate", new { Title = ViewBag.Title, UseCharting = ViewBag.UseCharting, UseMaps = ViewBag.UseMaps }); }
     </head>
     <body>
         @{ Html.RenderAction("RenderImpersonation", "MFBTemplate"); }
-        @{ Html.RenderAction("RenderHeader", "MFBTemplate", new { selectedTab = ViewBag.defaultTab ?? tabID.tabHome }); }
-        <div class="noprint centeredBody">
-            <h1>@ViewBag.Title</h1>
-        </div>
+        @if (ViewBag.ForceNaked == null || !ViewBag.ForceNaked)
+        {
+            Html.RenderAction("RenderHeader", "MFBTemplate", new { selectedTab = ViewBag.defaultTab ?? tabID.tabHome });
+            <div class="noprint centeredBody">
+                <h1>@ViewBag.Title</h1>
+            </div>
+        }
         <div class="topForm">
             <div class="sidebarRight">
                 @RenderBody()
@@ -54,9 +57,12 @@
             <button type="button" class="imgDismissBtn" id="imgDismissBtn"><img src="@VirtualPathUtility.ToAbsolute("~/images/closeimg.png")" /></button>
             <img id="imgImgToView" />
         </div>
-        <footer>
-            @{ Html.RenderAction("RenderFooter", "MFBTemplate"); }
-        </footer>
-        @{ Html.RenderAction("RenderPrivacyLink", "MFBTemplate"); }
+        @if (ViewBag.ForceNaked == null || !ViewBag.ForceNaked)
+        {
+            <footer>
+                @{ Html.RenderAction("RenderFooter", "MFBTemplate"); }
+            </footer>
+            Html.RenderAction("RenderPrivacyLink", "MFBTemplate");
+        }
     </body>
 </html>
