@@ -12,6 +12,7 @@ using System.Linq;
 using System.Net.Mail;
 using System.Text;
 using System.Web;
+using System.Web.Caching;
 
 /******************************************************
  * 
@@ -1349,28 +1350,32 @@ namespace MyFlightbook.Clubs
             if (szUser1.CompareOrdinal(szUser2) == 0)
                 return true;
 
-            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, @"SELECT 
-                        cm1.*
-                    FROM
-                        clubmembers cm1
-                            INNER JOIN
-                        clubmembers cm2 ON cm1.idclub = cm2.idclub
-                            INNER JOIN
-                        clubs c ON cm1.idclub = c.idclub
-                    WHERE
-                    (c.policyFlags & 0x{0} = 0)
-                    AND cm1.username = ?u1
-                    AND cm2.username = ?u2", Club.maskForSharing(fPhoto, fMobile).ToString("x", CultureInfo.InvariantCulture)));
+            string szCacheKey = "clubPeersFor" + szUser1;
 
-            dbh.ReadRow((comm) =>
+            HashSet<string> hsPeers = (HashSet<String>)HttpContext.Current.Cache[szCacheKey];
+
+            if (hsPeers == null)
             {
-                comm.Parameters.AddWithValue("u1", szUser1);
-                comm.Parameters.AddWithValue("u2", szUser2);
-            }, (dr) =>
-            {
-                fResult = true;
-            });
-            return fResult;
+                hsPeers = new HashSet<string>();
+                DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, @"SELECT DISTINCT
+                    cm.username
+                FROM
+                    clubs c
+                        INNER JOIN
+                    clubmembers cm ON cm.idclub = c.idclub
+                        INNER JOIN
+                    clubmembers cm2 ON cm2.idclub = c.idclub
+                WHERE
+	                (c.policyFlags & 0x{0} = 0) AND
+                    cm2.username = ?u1;", Club.maskForSharing(fPhoto, fMobile).ToString("x", CultureInfo.InvariantCulture)));
+
+                dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("u1", szUser1); },
+                    (dr) => { hsPeers.Add(dr["username"].ToString()); });
+
+                // We are likely to get a few requests all at once, and then none for a while, so cache this for 15 minutes.
+                HttpContext.Current.Cache.Add(szCacheKey, hsPeers, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 15, 0), CacheItemPriority.Normal, null);
+            }
+            return hsPeers.Contains(szUser2);
         }
 
         /// <summary>

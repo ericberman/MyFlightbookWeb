@@ -883,7 +883,7 @@ namespace MyFlightbook
             get
             {
                 bool fHasHeadshot = HasHeadShot;
-                return fHasHeadshot ? String.Format(CultureInfo.InvariantCulture, "~/mvc/Image/ViewUser/{0}", UserName) : VirtualPathUtility.ToAbsolute("~/Public/tabimages/ProfileTab.png");
+                return fHasHeadshot ? String.Format(CultureInfo.InvariantCulture, "~/mvc/Image/ViewUser?id={0}", HttpUtility.UrlEncode(UserName)) : VirtualPathUtility.ToAbsolute("~/Public/tabimages/ProfileTab.png");
             }
         }
 
