@@ -605,6 +605,7 @@
     <Content Include="images\1536 full.png" />
     <Content Include="images\1536 with white.png" />
     <Content Include="images\1536xparent.png" />
+    <Content Include="images\AppleAppStore.svg" />
     <Content Include="images\audio.png" />
     <Content Include="images\back.png" />
     <Content Include="images\flightimportsample.png" />
@@ -1372,7 +1373,6 @@
     <Content Include="Private\SetupNotes.txt" />
     <Content Include="Public\AdTracker.aspx" />
     <Content Include="Public\AllClubs.aspx" />
-    <Content Include="Public\AllMakes.aspx" />
     <Content Include="Public\AndroidImages\Android1.png" />
     <Content Include="Public\AndroidImages\Android2.png" />
     <Content Include="Public\AndroidImages\Android3.png" />
@@ -1380,7 +1380,6 @@
     <Content Include="Public\AndroidImages\Android5.png" />
     <Content Include="Public\AndroidImages\Android6.png" />
     <Content Include="Public\AndroidImages\Android7.png" />
-    <Content Include="Public\AppleAppStore.svg" />
     <Content Include="Public\authredir.aspx" />
     <Content Include="Public\AWS-SNSListener.aspx" />
     <Content Include="Public\CloudAhoyRedir.aspx" />
@@ -1457,11 +1456,7 @@
     <Content Include="Public\MyFlights.aspx" />
     <Content Include="Public\LeonRedir.aspx" />
     <Content Include="Public\OneDriveRedir.aspx" />
-    <Content Include="Public\OpenSource\Database model.pdf" />
-    <Content Include="Public\OpenSource\Database model.svg" />
-    <Content Include="Public\OpenSource\myflightbook.mwb" />
     <Content Include="Public\PaypalIPNListener.aspx" />
-    <Content Include="Public\PrintFooter.aspx" />
     <Content Include="Public\RSSCurrency.aspx" />
     <Content Include="Public\Scripts\aircraftcontext.js" />
     <Content Include="Public\Scripts\autoinsert.js" />
@@ -1853,6 +1848,7 @@
     <Compile Include="Areas\mvc\Controllers\DonateController.cs" />
     <Compile Include="Areas\mvc\Controllers\FAQController.cs" />
     <Compile Include="Areas\mvc\Controllers\ImageController.cs" />
+    <Compile Include="Areas\mvc\Controllers\InternalController.cs" />
     <Compile Include="Areas\mvc\Controllers\MFBTemplateController.cs" />
     <Compile Include="Areas\mvc\Controllers\PubController.cs" />
     <Compile Include="Areas\mvc\Controllers\rbredirectController.cs" />
@@ -3136,13 +3132,6 @@
     <Compile Include="Public\AllClubs.aspx.designer.cs">
       <DependentUpon>AllClubs.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Public\AllMakes.aspx.cs">
-      <DependentUpon>AllMakes.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\AllMakes.aspx.designer.cs">
-      <DependentUpon>AllMakes.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Public\authredir.aspx.cs">
       <DependentUpon>authredir.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3233,13 +3222,6 @@
     </Compile>
     <Compile Include="Public\PaypalIPNListener.aspx.designer.cs">
       <DependentUpon>PaypalIPNListener.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Public\PrintFooter.aspx.cs">
-      <DependentUpon>PrintFooter.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\PrintFooter.aspx.designer.cs">
-      <DependentUpon>PrintFooter.aspx</DependentUpon>
     </Compile>
     <Compile Include="Public\RSSCurrency.aspx.cs">
       <DependentUpon>RSSCurrency.aspx</DependentUpon>
@@ -3407,6 +3389,7 @@
     <Content Include="Areas\mvc\Views\Airport\_visitedRoutesSummary.cshtml" />
     <Content Include="Areas\mvc\Views\Image\_imgSlider.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\viewFlight.cshtml" />
+    <Content Include="Areas\mvc\Views\Internal\_printFooter.cshtml" />
     <None Include="packages.config" />
     <None Include="SecuritySwitch-v4.xsd">
       <SubType>Designer</SubType>
@@ -3562,6 +3545,7 @@
     <Folder Include="Areas\mvc\Data\" />
     <Folder Include="Areas\mvc\Views\MFBFooter\" />
     <Folder Include="Properties\PublishProfiles\" />
+    <Folder Include="Public\OpenSource\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_GlobalResources\FlightLint.resx">

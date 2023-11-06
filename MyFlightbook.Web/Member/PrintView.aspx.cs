@@ -191,7 +191,7 @@ namespace MyFlightbook.Printing
                     PageHeight = decCustHeight.IntValue,
                     PageWidth = decCustWidth.IntValue,
                     Orientation = rbLandscape.Checked ? PDFOptions.PageOrientation.Landscape : PDFOptions.PageOrientation.Portrait,
-                    FooterUri = VirtualPathUtility.ToAbsolute("~/Public/PrintFooter.aspx/" + PDFOptions.PathEncodeOptions(ckIncludeCoverSheet.Checked, ckPrintTotalPages.Checked, CurrentUser.PreferenceExists(MFBConstants.keyTrackOriginal))).ToAbsoluteURL(Request),
+                    FooterUri = VirtualPathUtility.ToAbsolute("~/mvc/Internal/PrintFooter/" + PDFOptions.PathEncodeOptions(ckIncludeCoverSheet.Checked, ckPrintTotalPages.Checked, CurrentUser.PreferenceExists(MFBConstants.keyTrackOriginal))).ToAbsoluteURL(Request),
                     LeftMargin = decLeftMargin.IntValue,
                     RightMargin = decRightMargin.IntValue,
                     TopMargin = decTopMargin.IntValue,
