@@ -1355,7 +1355,6 @@
     <Content Include="Public\tmap\src\world-states-provinces.svg" />
     <Content Include="Public\tmap\src\world-states.svg" />
     <Content Include="Public\tmap\stylesheets\demo.css" />
-    <Content Include="Member\Totals.aspx" />
     <Content Include="Member\Training.aspx" />
     <Content Include="NavLinks.xml" />
     <Content Include="OAuth\oAuthToken.aspx" />
@@ -3015,13 +3014,6 @@
     </Compile>
     <Compile Include="Member\StudentLogbook.aspx.designer.cs">
       <DependentUpon>StudentLogbook.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Member\Totals.aspx.cs">
-      <DependentUpon>Totals.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\Totals.aspx.designer.cs">
-      <DependentUpon>Totals.aspx</DependentUpon>
     </Compile>
     <Compile Include="Member\Training.aspx.cs">
       <DependentUpon>Training.aspx</DependentUpon>
