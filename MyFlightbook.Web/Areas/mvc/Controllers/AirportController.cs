@@ -21,6 +21,27 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 {
     public class AirportController : Controller
     {
+        #region Visited Map
+        [Authorize]
+        public ActionResult VisitedMap(string fqs = null, string v = null)
+        {
+            VisitedLocations locations = (v == null) ? null : new VisitedLocations(v);
+
+            if (v == null)
+            {
+                FlightQuery fq = String.IsNullOrEmpty(fqs) ? new FlightQuery(User.Identity.Name) : FlightQuery.FromBase64CompressedJSON(fqs);
+                if (fq.UserName.CompareCurrentCultureIgnoreCase(User.Identity.Name) != 0)
+                    throw new UnauthorizedAccessException();
+
+                locations = new VisitedLocations(VisitedAirport.VisitedAirportsForQuery(fq));
+            }
+
+            ViewBag.DataToMap = JsonConvert.SerializeObject(locations, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
+            ViewBag.TimelineData = JsonConvert.SerializeObject(locations.BuildTimeline());
+            return View("visitedMap");
+        }
+        #endregion
+
         [HttpPost]
         public ActionResult AirportsInBoundingBox(double latSouth, double lonWest, double latNorth, double lonEast, bool fIncludeHeliports = false)
         {

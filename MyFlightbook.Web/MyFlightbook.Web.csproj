@@ -1355,7 +1355,6 @@
     <Content Include="Public\tmap\src\world-states-provinces.svg" />
     <Content Include="Public\tmap\src\world-states.svg" />
     <Content Include="Public\tmap\stylesheets\demo.css" />
-    <Content Include="Member\VisitedMap.aspx" />
     <Content Include="Member\Totals.aspx" />
     <Content Include="Member\Training.aspx" />
     <Content Include="NavLinks.xml" />
@@ -1371,7 +1370,6 @@
     <Content Include="PlayPen\MergeTelemetry.aspx" />
     <Content Include="PlayPen\oAuthClientTest.aspx" />
     <Content Include="Private\SetupNotes.txt" />
-    <Content Include="Public\AllClubs.aspx" />
     <Content Include="Public\AndroidImages\Android1.png" />
     <Content Include="Public\AndroidImages\Android2.png" />
     <Content Include="Public\AndroidImages\Android3.png" />
@@ -3018,13 +3016,6 @@
     <Compile Include="Member\StudentLogbook.aspx.designer.cs">
       <DependentUpon>StudentLogbook.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Member\VisitedMap.aspx.cs">
-      <DependentUpon>VisitedMap.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\VisitedMap.aspx.designer.cs">
-      <DependentUpon>VisitedMap.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Member\Totals.aspx.cs">
       <DependentUpon>Totals.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3117,13 +3108,6 @@
       <DependentUpon>oAuthClientTest.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Public\AllClubs.aspx.cs">
-      <DependentUpon>AllClubs.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\AllClubs.aspx.designer.cs">
-      <DependentUpon>AllClubs.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Public\authredir.aspx.cs">
       <DependentUpon>authredir.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3384,6 +3368,7 @@
     <Content Include="Areas\mvc\Views\Internal\_printFooter.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\allClubs.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\_clubDesc.cshtml" />
+    <Content Include="Areas\mvc\Views\Airport\visitedMap.cshtml" />
     <None Include="packages.config" />
     <None Include="SecuritySwitch-v4.xsd">
       <SubType>Designer</SubType>

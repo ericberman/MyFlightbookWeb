@@ -55,7 +55,7 @@ public partial class Member_Airports : System.Web.UI.Page
         if (fForceRefresh || CurrentVisitedAirports == null)
             CurrentVisitedAirports = VisitedAirport.VisitedAirportsForQuery(mfbSearchForm1.Restriction);
 
-        lnkViewMap.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/VisitedMap.aspx?fq={0}", HttpUtility.UrlEncode(mfbSearchForm1.Restriction.ToBase64CompressedJSONString()));
+        lnkViewMap.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/mvc/Airport/VisitedMap?fq={0}", HttpUtility.UrlEncode(mfbSearchForm1.Restriction.ToBase64CompressedJSONString()));
 
         // Convert everything to title case for legibility
         foreach (VisitedAirport va in CurrentVisitedAirports)

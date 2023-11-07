@@ -8,6 +8,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 
 /******************************************************
@@ -1059,7 +1060,6 @@ namespace MyFlightbook.Airports
 
             ISOMap map = ISOMap.CachedMap;
 
-
             foreach (VisitedAirport va in airports)
             {
                 string idCountry = map.CountryCodeForAirport(va.Airport);
@@ -1082,6 +1082,48 @@ namespace MyFlightbook.Airports
                     codes.Add(idCountry);
                     if (!String.IsNullOrEmpty(idAdmin1))
                         codes.Add(idCountry + "-" + idAdmin1);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Generate locations based on visits, but without airports.
+        /// </summary>
+        /// <param name="szVisits">A string in the form of YEAR:code1,code2,code3;
+        /// E.g.:
+        /// 1998:US-NY,UK;1999:CHN,BRA, ...
+        /// </param>
+        public VisitedLocations(string szVisits) : this()
+        {
+            if (String.IsNullOrEmpty(szVisits))
+                return;
+
+            Regex r = new Regex("(?<year>\\d{4}):(?<codes>[^;]+)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+            MatchCollection mc = r.Matches(szVisits);
+            foreach ( Match m in mc )
+            {
+                if (Int32.TryParse(m.Groups["year"].Value, out int year))
+                {
+                    string[] rgCodes = m.Groups["codes"].Value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    if (rgCodes.Any())
+                    {
+                        if (!dByYear.TryGetValue(year, out HashSet<string> codes))
+                            dByYear[year] = codes = new HashSet<string>();
+
+                        foreach (string code in rgCodes)
+                        {
+                            string[] rgCountryAdmin = code.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
+                            if (rgCountryAdmin.Length > 0)
+                            {
+                                VisitedCountry vc = GetCountry(rgCountryAdmin[0]);
+                                if (rgCountryAdmin.Length > 1)
+                                    vc.GetAdmin1(rgCountryAdmin[1], rgCountryAdmin[1]); // will add the admin1 to the country; we can ignore result
+                                codes.Add(code);
+                            }
+                        }
+                    }
                 }
             }
         }
