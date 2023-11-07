@@ -1371,7 +1371,6 @@
     <Content Include="PlayPen\MergeTelemetry.aspx" />
     <Content Include="PlayPen\oAuthClientTest.aspx" />
     <Content Include="Private\SetupNotes.txt" />
-    <Content Include="Public\AdTracker.aspx" />
     <Content Include="Public\AllClubs.aspx" />
     <Content Include="Public\AndroidImages\Android1.png" />
     <Content Include="Public\AndroidImages\Android2.png" />
@@ -3118,13 +3117,6 @@
       <DependentUpon>oAuthClientTest.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Public\AdTracker.aspx.cs">
-      <DependentUpon>AdTracker.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\AdTracker.aspx.designer.cs">
-      <DependentUpon>AdTracker.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Public\AllClubs.aspx.cs">
       <DependentUpon>AllClubs.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

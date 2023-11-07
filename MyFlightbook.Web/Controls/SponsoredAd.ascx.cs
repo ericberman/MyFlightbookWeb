@@ -4,7 +4,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2020 MyFlightbook LLC
+ * Copyright (c) 2016-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -27,7 +27,7 @@ public partial class Controls_SponsoredAd : System.Web.UI.UserControl
     protected void InitForAd()
     {
         imgAd.ImageUrl = SpecifiedAd.ImagePath;
-        lnkAd.NavigateUrl = "~/public/AdTracker.aspx/" + SponsoredAdID.ToString(CultureInfo.InvariantCulture);
+        lnkAd.NavigateUrl = "~/mvc/internal/AdTracker/" + SponsoredAdID.ToString(CultureInfo.InvariantCulture);
     }
 
     protected void Page_Load(object sender, EventArgs e)
