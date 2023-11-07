@@ -1,4 +1,5 @@
 ﻿using MyFlightbook.Airports;
+using MyFlightbook.Clubs;
 using MyFlightbook.Image;
 using MyFlightbook.Mapping;
 using MyFlightbook.Telemetry;
@@ -24,6 +25,15 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
     /// </summary>
     public class PubController : Controller
     {
+        #region club viewing
+        public ActionResult AllClubs(int a = 0)
+        {
+            bool fAdmin = User.Identity.IsAuthenticated && a != 0 && MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData;
+            ViewBag.Clubs = Club.AllClubs(fAdmin);
+            return View("allClubs");
+        }
+        #endregion
+
         #region View public flight
         const string szMap = "map";
         const string szAirports = "airports";

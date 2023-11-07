@@ -37,7 +37,7 @@
         <asp:RequiredFieldValidator ID="RequiredFieldValidator1" ValidationGroup="valFindClubs"  runat="server" ErrorMessage="<%$ Resources:Club, errNoHomeAirport %>" ControlToValidate="txtHomeAirport" CssClass="error" Enabled="false" Display="Dynamic"></asp:RequiredFieldValidator>
         <div><asp:Label ID="lblErr" CssClass="error" EnableViewState="false" runat="server" Text=""></asp:Label></div>
         <asp:HiddenField ID="hdnMatchingHomeAirport" runat="server" />
-        <asp:HyperLink ID="lnkAllClubs" runat="server" Text="<%$ Resources:Club, LabelSeeAllClubs %>" CssClass="fineprint" Target="_blank" NavigateUrl="~/Public/AllClubs.aspx"></asp:HyperLink>
+        <asp:HyperLink ID="lnkAllClubs" runat="server" Text="<%$ Resources:Club, LabelSeeAllClubs %>" CssClass="fineprint" Target="_blank" NavigateUrl="~/mvc/pub/AllClubs"></asp:HyperLink>
     </asp:Panel>
     <asp:Panel ID="pnlSearchResults" runat="server" Visible="false">
         <h2><% =Resources.Club.HeaderFoundClubs %></h2>

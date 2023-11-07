@@ -1,0 +1,16 @@
+﻿@using MyFlightbook.Clubs
+@{
+    ViewBag.Title = Branding.ReBrand(Resources.Club.HeaderAllClubs);
+    ViewBag.defaultTab = tabID.tabAircraft;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+
+    @foreach (Club c in ViewBag.Clubs)
+    {
+        <div style="width: 100%; max-width: 600px; padding: 3px;">
+            @{ Html.RenderPartial("_clubDesc", new ViewDataDictionary { { "club", c } }); }
+            <div style="clear:both; width: 100%; padding: 1px;">
+                <hr />
+            </div>
+        </div>
+    }

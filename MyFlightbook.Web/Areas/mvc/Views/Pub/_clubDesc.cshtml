@@ -1,0 +1,26 @@
+﻿@using MyFlightbook.Clubs
+@using System.Globalization
+@{ 
+    Club c = ViewData["club"] as Club;
+}
+<div>
+    <div class="clubDetailsRight">
+        <a style="font-weight: bold;" href="@c.EditLink">@c.Name</a>
+        @if (!String.IsNullOrEmpty(c.HomeAirportCode))
+        {
+            <div><a href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/Airport/MapRoute?sm=1&Airports={0}", c.HomeAirport.Code))">@c.HomeAirport.Code</a> - @c.HomeAirport.Name</div>
+        }
+        @if (c.HasContactInfo)
+        {
+            <div>@c.LocationString @c.ContactPhone</div>
+        }
+        @if (!String.IsNullOrEmpty(c.ProvidedLink))
+        {
+            <div><a href="@c.Link" target="_blank">@Resources.Club.LabelClubWebsite</a></div>
+        }
+    </div>
+    <div class="clubDetailsLeft">
+        <div>@Html.Raw(c.Description)&nbsp;</div>
+        <div><a style="font-weight:bold;" href="@c.EditLink">@Resources.Club.LabelViewClubDetails</a></div>
+    </div>
+</div>
