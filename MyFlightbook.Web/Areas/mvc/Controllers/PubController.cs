@@ -150,8 +150,14 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             map.MapMode = (dm > 0 || fHasGeotaggedImages || fHasPath) ? GMap_Mode.Dynamic : GMap_Mode.Static;
 
             ViewBag.map = map;
-            ViewBag.normalizedAirports = result.MasterList.GetNormalizedAirports();
-            ViewBag.distanceDescription = le.GetPathDistanceDescription(distance);
+
+            if (result == null)
+                ViewBag.showMap = false;
+            else
+            {
+                ViewBag.normalizedAirports = result.MasterList.GetNormalizedAirports();
+                ViewBag.distanceDescription = le.GetPathDistanceDescription(distance);
+            }
 
             ViewBag.baseURL = Request.Url.GetLeftPart(UriPartial.Path) + String.Format(CultureInfo.InvariantCulture, "?dm={0}", dm);
 
