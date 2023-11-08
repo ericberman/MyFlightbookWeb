@@ -25,9 +25,11 @@
         var marker = [];
 
         function addMarker(map, latitude, longitude, cityid) {
-            var pos = projectAbsolute(latitude, longitude, 1000, 1, -26, 0); //-25, 2.7);
-            var markerPath = "@VirtualPathUtility.ToAbsolute("~/public/tmap/airport.svg")";
-            map.shape('<image href=' + markerPath + ' class="citymarker" height="3" width="4" style="transform:scale(1); transform-box: fill-box; transform-origin: 50% 50%" x="' + pos.x + '" y="' + pos.y + '" id="cm_' + cityid + '"/>');
+            if (latitude != 0 && longitude != 0) {
+                var pos = projectAbsolute(latitude, longitude, 1000, 1, -26, 0); //-25, 2.7);
+                var markerPath = "@VirtualPathUtility.ToAbsolute("~/public/tmap/airport.svg")";
+                map.shape('<image href=' + markerPath + ' class="citymarker" height="3" width="4" style="transform:scale(1); transform-box: fill-box; transform-origin: 50% 50%" x="' + pos.x + '" y="' + pos.y + '" id="cm_' + cityid + '"/>');
+            }
         }
 
         function getCountry(iso) {

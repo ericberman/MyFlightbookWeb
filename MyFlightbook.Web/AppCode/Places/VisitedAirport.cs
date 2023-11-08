@@ -941,6 +941,24 @@ namespace MyFlightbook.Airports
                 return map;
             }
         }
+
+        public string ReverseLookupCountry(string code)
+        {
+            var result = code;
+            foreach (string szCountry in countryMap.Keys)
+                if (countryMap[szCountry].CompareCurrentCultureIgnoreCase(code) == 0)
+                    result = szCountry;
+            return result;
+        }
+
+
+        public string ReverseLookupAdmin1(string admin1)
+        {
+            foreach (string szAdmin1 in admin1Map.Keys)
+                if (admin1Map[szAdmin1].CompareCurrentCultureIgnoreCase(admin1) == 0)
+                    return szAdmin1;
+            return admin1;
+        }
     }
 
     public class VisitedCity
@@ -1098,6 +1116,8 @@ namespace MyFlightbook.Airports
             if (String.IsNullOrEmpty(szVisits))
                 return;
 
+            ISOMap map = ISOMap.CachedMap;
+
             Regex r = new Regex("(?<year>\\d{4}):(?<codes>[^;]+)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
             MatchCollection mc = r.Matches(szVisits);
@@ -1117,10 +1137,16 @@ namespace MyFlightbook.Airports
                             string[] rgCountryAdmin = code.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
                             if (rgCountryAdmin.Length > 0)
                             {
+                                string country = rgCountryAdmin[0];
+                                string admin1 = rgCountryAdmin.Length > 1 ? rgCountryAdmin[1] : string.Empty;
+
                                 VisitedCountry vc = GetCountry(rgCountryAdmin[0]);
-                                if (rgCountryAdmin.Length > 1)
-                                    vc.GetAdmin1(rgCountryAdmin[1], rgCountryAdmin[1]); // will add the admin1 to the country; we can ignore result
-                                codes.Add(code);
+                                VisitedCity vcity = new VisitedCity() { Description = String.Format(CultureInfo.InvariantCulture, "{0} {1}", map.ReverseLookupCountry(country), admin1, year), Name = code, VisitYear = year };
+                                VisitedAdmin1 va1 = vc.GetAdmin1(admin1, map.ReverseLookupAdmin1(admin1));
+                                va1.Cities.Add(vcity);
+                                codes.Add(country);
+                                if (!String.IsNullOrEmpty(admin1))
+                                    codes.Add(code);
                             }
                         }
                     }
