@@ -388,7 +388,7 @@ namespace MyFlightbook.Weather.ADDS
     /// </summary>
     public static class ADDSService
     {
-        private const string szRecentTemplate = @"https://aviationweather.gov/api/data/metar?ids={1}&hours={0}";
+        private const string szRecentTemplate = @"https://aviationweather.gov/api/data/metar?ids={1}&hours={0}&format=xml";
 
         #region Getting requests
         private static response GetRequest(string szU)
@@ -416,7 +416,7 @@ namespace MyFlightbook.Weather.ADDS
             }
             catch (Exception ex) when (!(ex is WebException))
             {
-                util.NotifyAdminException("Exception in XML doc:\r\n\r\n" + strResponse + "\r\n\r\n", ex);
+                // util.NotifyAdminException("Exception in XML doc:\r\n\r\n" + strResponse + "\r\n\r\n", ex);
                 return null; 
             }
         }

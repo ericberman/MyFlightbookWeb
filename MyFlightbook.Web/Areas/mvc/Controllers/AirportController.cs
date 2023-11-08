@@ -238,7 +238,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         // GET: mvc/Airport
         public ActionResult Index()
         {
-            return View();
+            return Redirect("MapRoute");
         }
     }
 }
