@@ -106,7 +106,7 @@
         }
     </tbody>
 </table>
-<div><span style="font-weight:bold">Test Transaction</span> @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = ViewBag.CreateError == null, targetID = "divEnterXactions" }); }</div>
+<div><span style="font-weight:bold">Test Transaction</span> @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = !String.IsNullOrEmpty(ViewBag.CreateError), targetID = "divEnterXactions" }); }</div>
 <div style="@(ViewBag.CreateError == null ? "display:none;" : string.Empty)" id="divEnterXactions">
     @using (Html.BeginForm("Create", "AdminPayment", FormMethod.Post))
     {

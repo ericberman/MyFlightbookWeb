@@ -116,12 +116,14 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         [ChildActionOnly]
-        public ActionResult RenderExpandoText(bool fExpanded, string targetID, string expandText = null, string collapseText = null)
+        public ActionResult RenderExpandoText(bool fExpanded, string targetID, string expandText = null, string collapseText = null, string labelText = null, string labelClass = null)
         {
             ViewBag.Expanded = fExpanded;
             ViewBag.TargetID = targetID;
             ViewBag.CollapseText = collapseText ?? Resources.LocalizedText.ClickToHide;
             ViewBag.ExpandText = expandText ?? Resources.LocalizedText.ClickToShow;
+            ViewBag.labelClass = labelClass ?? string.Empty;
+            ViewBag.labelText = labelText ?? string.Empty;
             return PartialView("_expandoText");
         }
 

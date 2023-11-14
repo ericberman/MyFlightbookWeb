@@ -1,2 +1,3 @@
-﻿<span onclick="javascript: toggleLabel(this, '@ViewBag.TargetID', '@ViewBag.CollapseText', '@ViewBag.ExpandText');">@(ViewBag.Expanded ? ViewBag.CollapseText : ViewBag.ExpandText)</span>
+﻿<span class="@ViewBag.labelClass" onclick="javascript: toggleLabel($(this).next()[0], '@ViewBag.TargetID', '@ViewBag.CollapseText', '@ViewBag.ExpandText');" >@ViewBag.labelText</span>
+<span onclick="javascript: toggleLabel(this, '@ViewBag.TargetID', '@ViewBag.CollapseText', '@ViewBag.ExpandText');">@(ViewBag.Expanded ? ViewBag.CollapseText : ViewBag.ExpandText)</span>
 
