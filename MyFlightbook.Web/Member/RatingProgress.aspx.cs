@@ -11,7 +11,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2022 MyFlightbook LLC
+ * Copyright (c) 2013-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -347,13 +347,14 @@ namespace MyFlightbook.RatingsProgress
             {
                 // Find the existing item
                 CustomRatingProgress crp = lst[gv.EditIndex];
+                GridViewRow grow = gv.Rows[gv.EditIndex];
                 if (crp != null)
                 {
-                    string szNewTitle = ((TextBox)gv.Rows[0].Cells[1].Controls[0]).Text;
+                    string szNewTitle = ((TextBox)grow.Cells[1].Controls[0]).Text;
                     if (String.IsNullOrWhiteSpace(szNewTitle))
                         return;
                     crp.Title = szNewTitle;
-                    crp.GeneralDisclaimer = ((TextBox)gv.Rows[0].Cells[2].Controls[0]).Text;
+                    crp.GeneralDisclaimer = ((TextBox)grow.Cells[2].Controls[0]).Text;
                 }
                 CustomRatingProgress.CommitRatingsForUser(Page.User.Identity.Name, lst);
                 gvCustomRatings.EditIndex = -1;
