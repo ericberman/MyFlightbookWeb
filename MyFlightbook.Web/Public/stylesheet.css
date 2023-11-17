@@ -1782,6 +1782,10 @@ table.stickyHeaderTable td:first-child {
     border-left: 1px solid #eeeeee;
 }
 
+table.stickyHeaderTable.stickyHeaderAlternate tr:nth-child(even) {
+    background-color: #E0E0E0;
+}
+
 .largeBold {
     font-weight:bold;
     font-size:larger;
