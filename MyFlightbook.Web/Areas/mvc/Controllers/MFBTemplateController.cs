@@ -232,10 +232,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             if (idBrand >= 0 && idBrand < Enum.GetNames(typeof(BrandID)).Length)
                 Branding.CurrentBrandID = (BrandID)idBrand;
 
-            // set the right locale for the requester.
-            if (Request != null && Request.UserLanguages != null && Request.UserLanguages.Length > 0)
-                util.SetCulture(Request.UserLanguages[0]);
-
             // Handle parameters here.
             if (ShuntState.IsShunted && String.IsNullOrEmpty(Request["noshunt"]))
             {

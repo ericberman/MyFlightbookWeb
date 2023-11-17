@@ -45,6 +45,36 @@ namespace MyFlightbook.Web
                 Response.AddHeader("Location", uri.ToString().Replace("www.myflightbook.com", "myflightbook.com"));
                 Response.End();
             }
+
+            string szCulture = string.Empty;
+
+            if (Request?.UserLanguages != null && Request.UserLanguages.Length > 0)
+            {
+                szCulture = Request.UserLanguages[0];
+                util.SetCulture(szCulture);
+            }
+        }
+
+        protected void Application_AuthenticateRequest(Object sender, EventArgs e)
+        {
+            // Issue #1069 - remember the most recently used locale so that we can use that for things like emails.
+            if (HttpContext.Current.User.Identity.IsAuthenticated)
+            {
+                Profile pf = Profile.GetUser(HttpContext.Current.User.Identity.Name);
+                string szCulture = System.Globalization.CultureInfo.CurrentCulture.Name ?? string.Empty;
+                if (szCulture.CompareCurrentCultureIgnoreCase(MFBConstants.USCulture) == 0)
+                {
+                    // US culture - delete alternative if present
+                    if (pf.PreferenceExists(MFBConstants.keyPrefLastUsedLocale))
+                        pf.SetPreferenceForKey(MFBConstants.keyPrefLastUsedLocale, string.Empty, true);
+                }
+                else
+                {
+                    // non-us culture - save the new one if not already saved
+                    if (!pf.PreferenceExists(MFBConstants.keyPrefLastUsedLocale) || szCulture.CompareCurrentCultureIgnoreCase(pf.GetPreferenceForKey(MFBConstants.keyPrefLastUsedLocale) as string) != 0)
+                        pf.SetPreferenceForKey(MFBConstants.keyPrefLastUsedLocale, szCulture);
+                }
+            }
         }
 
         protected void Application_Error(object sender, EventArgs e)

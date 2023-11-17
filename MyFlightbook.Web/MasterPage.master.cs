@@ -151,26 +151,6 @@ namespace MyFlightbook.Web
                 if (szUserAgent.Contains("IPHONE") || szUserAgent.Contains("IPAD") || szUserAgent.Contains("ANDROID"))
                     IsIOSORAndroid = true;
             }
-
-            string szCulture = Request.UserLanguages[0];
-            util.SetCulture(szCulture);
-
-            // Issue #1069 - remember the most recently used locale so that we can use that for things like emails.
-            if (Page.User.Identity.IsAuthenticated)
-            {
-                Profile pf = Profile.GetUser(Page.User.Identity.Name);
-                if (szCulture.CompareCurrentCultureIgnoreCase(MFBConstants.USCulture) == 0)
-                {
-                    // US culture - delete alternative if present
-                    if (pf.PreferenceExists(MFBConstants.keyPrefLastUsedLocale))
-                        pf.SetPreferenceForKey(MFBConstants.keyPrefLastUsedLocale, string.Empty, true);
-                } else
-                {
-                    // non-us culture - save the new one if not already saved
-                    if (!pf.PreferenceExists(MFBConstants.keyPrefLastUsedLocale) || szCulture.CompareCurrentCultureIgnoreCase(pf.GetPreferenceForKey(MFBConstants.keyPrefLastUsedLocale) as string) != 0)
-                        pf.SetPreferenceForKey(MFBConstants.keyPrefLastUsedLocale, szCulture);
-                }
-            }
         }
 
         protected void Page_Load(object sender, EventArgs e)
