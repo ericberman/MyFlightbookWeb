@@ -58,7 +58,7 @@ namespace MyFlightbook.Web
         protected void Application_AuthenticateRequest(Object sender, EventArgs e)
         {
             // Issue #1069 - remember the most recently used locale so that we can use that for things like emails.
-            if (HttpContext.Current.User.Identity.IsAuthenticated)
+            if (HttpContext.Current != null && HttpContext.Current.User != null && HttpContext.Current.User.Identity.IsAuthenticated)
             {
                 Profile pf = Profile.GetUser(HttpContext.Current.User.Identity.Name);
                 string szCulture = System.Globalization.CultureInfo.CurrentCulture.Name ?? string.Empty;
