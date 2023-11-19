@@ -821,7 +821,6 @@
     <Content Include="Member\RequestSigs.aspx" />
     <Content Include="Member\ReviewPendingFlights.aspx" />
     <Content Include="Member\Schedule.aspx" />
-    <Content Include="Member\SearchTotals.aspx" />
     <Content Include="Member\SignFlight.aspx" />
     <Content Include="Member\StartingTotals.aspx" />
     <Content Include="Admin\Stats.aspx" />
@@ -2980,13 +2979,6 @@
     </Compile>
     <Compile Include="Member\Schedule.aspx.designer.cs">
       <DependentUpon>Schedule.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Member\SearchTotals.aspx.cs">
-      <DependentUpon>SearchTotals.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\SearchTotals.aspx.designer.cs">
-      <DependentUpon>SearchTotals.aspx</DependentUpon>
     </Compile>
     <Compile Include="Member\SignFlight.aspx.cs">
       <DependentUpon>SignFlight.aspx</DependentUpon>
