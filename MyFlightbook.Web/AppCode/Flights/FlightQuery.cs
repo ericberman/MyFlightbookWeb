@@ -255,7 +255,7 @@ namespace MyFlightbook
             set
             {
                 AircraftList.Clear();
-                if (value == null)
+                if (value == null || !value.Any())
                     return;
                 if (String.IsNullOrEmpty(UserName)) // no user - hit the database
                     AddAircraft(Aircraft.AircraftFromIDs(value));
@@ -406,14 +406,14 @@ namespace MyFlightbook
         /// </summary>
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
-        protected bool HasAircraftFeatures
+        public bool HasAircraftFeatures
         {
             get
             {
                 return (AircraftInstanceTypes != AircraftInstanceRestriction.AllAircraft) || (EngineType != EngineTypeRestriction.AllEngines) ||
                     IsComplex || HasFlaps || IsHighPerformance || IsConstantSpeedProp || IsRetract || IsTailwheel || IsGlass || IsTechnicallyAdvanced || IsMotorglider || IsMultiEngineHeli;
             }
-            set
+            protected set
             {
                 if (value)  // ONLY reset
                     return;
@@ -429,14 +429,14 @@ namespace MyFlightbook
         /// </summary>
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
-        protected bool HasFlightFeatures
+        public bool HasFlightFeatures
         {
             get
             {
                 return HasNightLandings || HasFullStopLandings || HasLandings || HasApproaches || HasHolds || HasXC || HasSimIMCTime || HasGroundSim || HasIMC || HasAnyInstrument || HasNight || HasDual ||
                     HasCFI || HasSIC || HasPIC || HasTotalTime || IsPublic || IsSigned || HasTelemetry || HasImages;
             }
-            set
+            protected set
             {
                 if (value)  // ONLY reset
                     return;
@@ -1107,7 +1107,7 @@ namespace MyFlightbook
                 Filters.Add(new QueryFilterItem(Resources.FlightQuery.ContainsMakeModel, String.Join(", ", lstDesc), "MakeList"));
             }
 
-            if (!String.IsNullOrEmpty(ModelName.Trim()))
+            if (!String.IsNullOrWhiteSpace(ModelName))
             {
                 string[] rgModelFragment = Regex.Split(ModelName, "[^a-zA-Z0-9:]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
                 int i = 0;
@@ -1406,6 +1406,14 @@ namespace MyFlightbook
             szHaving = sbHaving.ToString();
 
             szRestrict = sbQuery.ToString();
+        }
+
+        public FlightQuery ClearRestriction(string prop)
+        {
+            if (Filters == null)
+                UpdateRestriction();
+
+            return ClearRestriction(new QueryFilterItem(string.Empty, string.Empty, prop ?? string.Empty));
         }
 
         /// <summary>

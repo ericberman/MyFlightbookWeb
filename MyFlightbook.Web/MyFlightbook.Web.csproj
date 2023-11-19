@@ -1848,6 +1848,7 @@
     <Compile Include="Areas\mvc\Controllers\MFBTemplateController.cs" />
     <Compile Include="Areas\mvc\Controllers\PubController.cs" />
     <Compile Include="Areas\mvc\Controllers\rbredirectController.cs" />
+    <Compile Include="Areas\mvc\Controllers\SearchController.cs" />
     <Compile Include="Areas\mvc\mvcAreaRegistration.cs" />
     <Compile Include="Controls\Prefs\mfbBigRedButtons.ascx.cs">
       <DependentUpon>mfbBigRedButtons.ascx</DependentUpon>
@@ -3361,6 +3362,10 @@
     <Content Include="Areas\mvc\Views\Pub\allClubs.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\_clubDesc.cshtml" />
     <Content Include="Areas\mvc\Views\Airport\visitedMap.cshtml" />
+    <Content Include="Areas\mvc\Views\Search\_searchForm.cshtml" />
+    <Content Include="Areas\mvc\Views\Airport\visitedAirports.cshtml" />
+    <Content Include="Areas\mvc\Views\Search\_queryDescriptorItem.cshtml" />
+    <Content Include="Areas\mvc\Views\Search\_queryDescriptor.cshtml" />
     <None Include="packages.config" />
     <None Include="SecuritySwitch-v4.xsd">
       <SubType>Designer</SubType>

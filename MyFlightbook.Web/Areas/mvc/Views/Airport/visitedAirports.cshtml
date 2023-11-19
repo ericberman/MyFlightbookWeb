@@ -1,0 +1,245 @@
+﻿@using MyFlightbook
+@using MyFlightbook.Airports
+@using System.Globalization
+@{
+    ViewBag.Title = Resources.Airports.visitedAirportTitle;
+    ViewBag.defaultTab = tabID.tabMaps;
+    ViewBag.UseMaps = true;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    FlightQuery fq = ViewBag.query;
+    VisitedAirport[] rgva = ViewBag.visitedAirports;
+    IEnumerable<VisitedRegion> regions = VisitedAirport.VisitedCountriesAndAdmins(rgva);
+}
+<script type="text/javascript">
+    function doSearch(fq) {
+        $("#hdnQueryForVA").val(JSON.stringify(fq));
+        $("#hdnQFEClicked").val(false);
+        $("#hdnPropToDelete").val("");
+        $("#updateQuery").submit();
+        return false;
+    }
+
+    function qfeClicked(propName) {
+        $("#hdnQueryForVA").val(JSON.stringify(buildQuery()));
+        $("#hdnQFEClicked").val(true);
+        $("#hdnPropToDelete").val(propName);
+        $("#updateQuery").submit();
+        return false;
+    }
+
+    function toggleSearch() {
+        $("#divNonSearch").toggle();
+        $("#searchForm").toggle();
+    }
+
+    function sortTable(sender, colIndex, sortType) {
+        var table = $("#visitedTable");
+        var lastSortIndex = parseInt($("#hdnSortIndex").val());
+        var lastSortDir = $("#hdnLastSortDir").val();
+
+        var order = "asc";
+
+        if (lastSortIndex == colIndex && lastSortDir == "asc") {
+            order = "desc";
+        }
+
+        $("#hdnSortIndex").val(colIndex);
+        $("#hdnLastSortDir").val(order);
+
+        table.find("th").each(function () {
+            $(this).removeClass("headerSortAsc").removeClass("headerSortDesc")
+        })
+        $(sender).addClass(order == "asc" ? "headerSortAsc" : "headerSortDesc");
+
+        var sortDir = (order === 'asc') ? 1 : -1;
+        var selector = 'td:nth-child(' + (colIndex + 1) + ')';
+
+        tbody = table.find('tbody');
+        tbody.find('tr').sort(function (a, b) {
+            var vala = $(a).find(selector);
+            var valb = $(b).find(selector);
+
+            if (sortType == "num") {
+                var aint = parseInt(vala.text());
+                var bint = parseInt(valb.text())
+                return sortDir * ((aint < bint) ? -1 : ((aint == bint) ? 0 : 1));
+            } else if (sortType == "date") {
+                var sortKeyA = vala.find("span:hidden").text();
+                var sortKeyB = valb.find("span:hidden").text();
+                return sortDir * (sortKeyA.localeCompare(sortKeyB));
+            } else {
+                return sortDir * (vala.text().localeCompare(valb.text()));
+            }
+        }).appendTo(tbody);
+    }
+
+    function togglePath(sender) {
+        $("#hdnQueryForVA").val(JSON.stringify(buildQuery()));
+        $("#hdnQFEClicked").val(false);
+        $("#hdnPropToDelete").val("");
+        $("#hdnShowPath").val(sender.checked ? 1 : 0);
+        $("#updateQuery").submit();
+        return false;
+    }
+
+    function estimateDistance() {
+        var params = new Object();
+        params.fq = buildQuery();
+        var d = JSON.stringify(params);
+        $("#divEstimatingProgress").toggle();
+        $("#lnkEstimateDistance").toggle();
+
+        $.ajax({
+                url: '@Url.Action("EstimateDistance", "Airport")',
+                type: "POST", data: d, dataType: "text", contentType: "application/json",
+                error: function (xhr, status, error) {
+                    window.alert(error);
+                },
+                complete: function (response) {
+                    $("#divEstimatingProgress").toggle();
+                },
+                success: function (response) {
+                    $("#divDistanceEstimateResult")[0].style.display = "block";
+                    $("#lblDistanceEstimate").text(response);
+                }
+            });
+        return false;
+    }
+</script>
+<div style="display:none;">
+    @using (Html.BeginForm("VisitedAirports", "Airport", FormMethod.Post, new { id = "updateQuery" }))
+    {
+        @Html.AntiForgeryToken();
+        <input type="hidden" value="" name="fqJSON" id="hdnQueryForVA" />
+        <input type="hidden" value="" name="fPropDeleteClicked" id="hdnQFEClicked" />
+        <input type="hidden" value="" name="propToDelete" id="hdnPropToDelete" />
+        <input type="hidden" value="@util.GetIntParam(Request, "path", 0)" name="path" id="hdnShowPath" />
+    }
+</div>
+<p>
+    <span style="font-weight:bold">@String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.VisitedAirportsNumAirports, rgva.Length)&nbsp;@Resources.LocalizedText.Note</span>
+    @Resources.Airports.airportVisitedAirportsNote
+</p>
+<div id="searchForm" style="display:none;">
+    @{ Html.RenderAction("SearchForm", "Search", new { fq = fq, onClientSearch = "doSearch", onClientReset = "doSearch" }); }
+</div>
+<div id="divNonSearch">
+    <div id="searchSummary">
+        <button onclick="javascript: toggleSearch();">@Resources.LocalizedText.ChangeQuery</button>
+        @{ Html.RenderAction("QueryDescription", "Search", new { fq = fq, onClientClick = "qfeClicked" }); }
+    </div>
+    <div id="visitedResults" style="height: 300px; overflow-x: hidden; overflow-y:scroll;">
+        <table class="stickyHeaderTable stickyHeaderAlternate" id="visitedTable">
+            <thead>
+                <tr style="vertical-align:top;">
+                    <th class="headerBase headerSortAsc" style="text-align:left" onclick="javascript:sortTable(this, 0, '');">@Resources.Airports.airportCode</th>
+                    <th class="headerBase" style="text-align:left" onclick="javascript:sortTable(this, 1, '');">@Resources.Airports.airportName</th>
+                    <th class="headerBase" style="text-align:left" onclick="javascript:sortTable(this, 2, '');">
+                        @Resources.Airports.airportCountry<span style="font-weight:normal; text-align:left;">
+                            @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "countryTips", tipTextHTML = Branding.ReBrand(Resources.Airports.airportCountryDisclaimer) });}
+                        </span>
+                    </th>
+                    <th class="headerBase" style="text-align:left" onclick="javascript:sortTable(this, 3, '');">@Resources.Airports.airportRegion</th>
+                    <th class="headerBase" style="text-align:left" onclick="javascript:sortTable(this, 4, 'num');">
+                        @Resources.Airports.airportVisits
+                        @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "visitsTip", tipTextHTML = Resources.Airports.vistedAirportsCountTip }); }
+                    </th>
+                    <th class="headerBase" style="text-align:left" onclick="javascript:sortTable(this, 5, 'date');">@Resources.Airports.airportEarliestVisit</th>
+                    <th class="headerBase" style="text-align:left" onclick="javascript:sortTable(this, 6, 'date');">@Resources.Airports.airportLatestVisit</th>
+                    <th class="headerBase" style="text-align:left"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (VisitedAirport va in rgva)
+                {
+                    <tr>
+                        <td><a href="@String.Format(CultureInfo.InvariantCulture, "javascript:getMfbMap().gmap.setCenter(new google.maps.LatLng({0}, {1}));getMfbMap().gmap.setZoom(14);", va.Airport.LatLong.Latitude, va.Airport.LatLong.Longitude)">@va.Code</a></td>
+                        <td>@CultureInfo.CurrentCulture.TextInfo.ToTitleCase(va.Airport.Name.ToLower(CultureInfo.CurrentCulture))</td>
+                        <td>@va.Country</td>
+                        <td>@va.Admin1</td>
+                        <td>@va.NumberOfVisits.ToString("#,##0", CultureInfo.CurrentCulture)</td>
+                        <td>@va.EarliestVisitDate.ToString("d", CultureInfo.CurrentCulture)<span style="display:none">@va.EarliestVisitDate.YMDString()</span></td>
+                        <td>@va.LatestVisitDate.ToString("d", CultureInfo.CurrentCulture)<span style="display:none">@va.LatestVisitDate.YMDString()</span></td>
+                        <td><a href="@String.Format(CultureInfo.InvariantCulture, "{0}?ap={1}", VirtualPathUtility.ToAbsolute("~/Member/LogbookNew.aspx"), va.Code)">@Resources.Airports.airportViewFlights</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <input type="hidden" id="hdnLastSortDir" value="asc" />
+    <input type="hidden" id="hdnSortIndex" value="0" />
+    <br />
+    <table style="width:100%">
+        <tr style="vertical-align: top;">
+            <td style="width:25%; padding: 3px;">
+                <div ID="pnlDownload" runat="server">
+                    <a href="DownloadVisited?fq=@Html.Raw(HttpUtility.UrlEncode(fq.ToBase64CompressedJSONString()))">
+                        <img src="@VirtualPathUtility.ToAbsolute("~/images/download.png")" style="padding-right: 5px; vertical-align: middle" />
+                        <img src="@VirtualPathUtility.ToAbsolute("~/images/csvicon_med.png")" style="padding-right: 5px; vertical-align: middle" />
+                        @Resources.Airports.DownloadVisited
+                    </a>
+                </div>
+            </td>
+            <td style="width:25%; padding: 3px;">
+                <a href="DownloadKML?fq=@Html.Raw(HttpUtility.UrlEncode(fq.ToBase64CompressedJSONString()))">
+                    <img src="@VirtualPathUtility.ToAbsolute("~/images/download.png")" style="padding-right: 5px; vertical-align: middle" />
+                    <img src="@VirtualPathUtility.ToAbsolute("~/images/kmlicon_med.png")" style="padding-right: 5px; vertical-align: middle" />
+                    <div style="display:inline-block;vertical-align:middle">@Resources.Airports.DownloadKML<br />@Resources.Airports.WarningSlow</div>
+                </a>
+            </td>
+            <td style="width:25%; padding: 3px;">
+                <div>
+                    <a href="javascript:estimateDistance();" id="lnkEstimateDistance">
+                        <img src="@VirtualPathUtility.ToAbsolute("~/images/ruler.png")" style="padding-right: 5px; vertical-align: middle" />
+                        <div style="display:inline-block;vertical-align:middle">@Resources.Airports.EstimateDistance</div>
+                    </a>
+                    <span id="divEstimatingProgress" style="display:none">
+                        @Resources.Airports.visitedAirportComputing
+                        <img src="@VirtualPathUtility.ToAbsolute("~/images/progress.gif")" style="width: 12pt; height: 12pt;" />
+                    </span>
+                    <div id="divDistanceEstimateResult" style="display:none">
+                        <span id="lblDistanceEstimate" style="font-weight:bold"></span>
+                        <br />
+                        <span style="font-weight:bold;">@Resources.LocalizedText.Note</span>
+                        @Resources.Airports.airportDistanceNote
+                    </div>
+                    <div id="lblErr" class="error"></div>
+                </div>
+            </td>
+            <td style="width:25%; padding: 3px;">
+                <a style="cursor:pointer;">
+                    <img src="@VirtualPathUtility.ToAbsolute("~/images/globe.png")" style="margin-right: 4px; vertical-align: middle;" />
+                    <span style="vertical-align: middle">@{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "divRegions", labelText = Resources.Airports.ViewRegions }); }</span>
+                </a>
+                @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "countryTips2", tipTextHTML = Branding.ReBrand(Resources.Airports.airportCountryDisclaimer) }); }
+            </td>
+        </tr>
+    </table>
+    <div id="divRegions" style="display:none;">
+        @if (regions.Any())
+        {
+            foreach (VisitedRegion vr in regions)
+            {
+                <div style="display:inline-block; vertical-align: top; margin-left: 8px; margin-right: 8px;">
+                    <div><a style="font-weight:bold;" href="@VirtualPathUtility.ToAbsolute(String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?ap={0}", vr.JoinedCodes))">@vr.Name</a></div>
+                    @foreach (VisitedRegion admin1 in vr.SubRegions)
+                    {
+                        <div><a href="@VirtualPathUtility.ToAbsolute(String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?ap={0}", admin1.JoinedCodes))">@admin1.Name</a></div>
+                    }
+                </div>
+            }
+        }
+        else
+        {
+            <div>@Resources.Airports.ViewRegionsNone</div>
+        }
+        <ul class="nextStep"><li><a target="_blank" href="@String.Format(CultureInfo.InvariantCulture, "{0}?fqs={1}", VirtualPathUtility.ToAbsolute("~/mvc/Airport/VisitedMap"), HttpUtility.UrlEncode(fq.ToBase64CompressedJSONString()))">@Resources.Airports.viewCountryAdminMap</a></li></ul>
+    </div>
+    <p>
+        <a href="javascript:mfbMapForContainerID('@ViewBag.map.Options.divContainer').ZoomOut();">@Resources.Airports.MapZoomAllAirports</a> 
+        <input type="checkbox" id="ckConnectDots" @(util.GetIntParam(Request, "path", 0) == 0 ? string.Empty : "checked") onclick="javascript:togglePath(this);" /><label for="ckConnectDots">@Resources.Airports.MapConnectDots</label>
+    </p>
+    <div id="divMapContainer" style="height: 400px; width:100%">
+        @{ Html.RenderAction("MapDiv", "Airport", new { map = ViewBag.map }); }
+    </div>
+</div>

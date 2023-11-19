@@ -1,0 +1,514 @@
+﻿@using System.Globalization
+@using Newtonsoft.Json
+@{
+    FlightQuery fq = ViewBag.query;
+}
+<style type="text/css">
+    .decluttered {
+        padding: 1px;
+        display: none;
+        vertical-align: top;
+    }
+
+    .alwaysVisible {
+        padding: 1px;
+        display: inline-block;
+        vertical-align: top;
+    }
+</style>
+<script type="text/javascript">
+    $(function () {
+        $('#pnlSearch').keydown(function (e) {
+            if (e.keyCode == 13) {
+                $('#btnSearch')[0].click();
+                return false;
+            }
+        });
+        $('#txtQueryName').keydown(function (e) {
+            if (e.keyCode == 13) {
+                $('#btnSearchNamed')[0].click();
+                return false;
+            }
+        });
+    });
+
+    function clutter(sender, targetID) {
+        $("#" + targetID).find(".decluttered").removeClass("decluttered").addClass("alwaysVisible");
+        sender.style.display = "none";
+    }
+
+    function selectAll(sender, targetID) {
+        $('#' + targetID).find(':checkbox').filter(":visible").prop("checked", sender.checked ? true : false);
+    }
+
+    function clearCustomDates() {
+        $("#mfbTIDateFrom")[0].value = $("#mfbTIDateTo")[0].value = "";
+    }
+
+    function setCustomDates(val) {
+        $('#rbCustom')[0].checked = val;
+        if (!val) {
+            clearCustomDates();
+        }
+    }
+
+    function reset() {
+        $('#pnlSearch').find(':checkbox').prop("checked", false);
+        $("#hdnTypeNames")[0].value = $('#txtRestrict')[0].value = $('#txtAirports')[0].value = $('#txtModelNameText')[0].value = "";
+        $('#rbAllTime')[0].checked = $('#rbEngineAny')[0].checked = $('#rbInstanceAny')[0].checked = $('#rbFlightRangeAll')[0].checked = true;
+        $("#flightConjunction").prop("selectedIndex", 0);
+        $("#propertyConjunction").prop("selectedIndex", 1); // Any for props
+        clearCustomDates();
+        return false;
+    }
+
+    function buildQuery() {
+        var fq = new Object();
+        fq.UserName = $('#hdnUser').val();
+        fq.QueryName = $('#txtQueryName').val();
+        fq.DateRange = $('input[name="DateRange"]:checked').val();
+        if (fq.DateRange == "Custom") {
+            fq.DateMin = $('#mfbTIDateFrom').val();
+            fq.DateMax = $('#mfbTIDateTo').val();
+
+            if (fq.DateMin == "")
+                fq.DateMin = "0001-01-01";
+            if (fq.DateMax == "")
+                fq.DateMax = "0001-01-01";
+        }
+        fq.GeneralText = $('#txtRestrict').val();
+        const reAirports = /!?@@?[a-zA-Z0-9]+!?/g;
+        fq.AirportList = $('#txtAirports').val().match(reAirports);
+        fq.Distance = $('input[name="FlightRange"]:checked').val();
+
+        fq.AircraftIDList = [];
+        $("#divACList").find('input[type=checkbox]').each(function () {
+            if (this.checked)
+                fq.AircraftIDList.push(parseInt(this.value));
+        });
+
+        fq.IsTailwheel = $('#ckTailwheel')[0].checked;
+        fq.IsHighPerformance = $('#ckHighPerf')[0].checked;
+        fq.IsGlass = $('#ckGlass')[0].checked;
+        fq.IsTechnicallyAdvanced = $('#ckTAA')[0].checked;
+        fq.IsMotorglider = $('#ckMotorGlider')[0].checked;
+        fq.IsMultiEngineHeli = $('#ckMultiEngineHeli')[0].checked;
+        fq.IsComplex = $('#ckComplex')[0].checked;
+        fq.IsRetract = $('#ckRetract')[0].checked;
+        fq.IsConstantSpeedProp = $('#ckProp')[0].checked;
+        fq.HasFlaps = $('#ckFlaps')[0].checked;
+        fq.EngineType = $('input[name="EngineGroup"]:checked').val();
+        fq.AircraftInstanceTypes = $('input[name="InstanceGroup"]:checked').val();
+
+        fq.MakeIDList = [];
+        $("#divMakeList").find('input[type=checkbox]').each(function () {
+            if (this.checked)
+                fq.MakeIDList.push(parseInt(this.value));
+        });
+        fq.ModelName = $("#txtModelNameText").val();
+
+
+        fq.CatClasses = [];
+        $("#divCatClass").find('input[type=checkbox]').each(function () {
+            if (this.checked) {
+                // create a pseudo-catclass
+                var cc = new Object();
+                cc.CatClass = this.value;
+                cc.IdCatClass = this.value;
+                fq.CatClasses.push(cc);
+            }
+        });
+
+        fq.FlightCharacteristicsConjunction = $('#flightConjunction').val();
+        fq.HasLandings = $("#ckAnyLandings")[0].checked;
+        fq.HasFullStopLandings = $("#ckFSLanding")[0].checked;
+        fq.HasNightLandings = $("#ckNightLandings")[0].checked;
+        fq.HasApproaches = $("#ckApproaches")[0].checked;
+        fq.HasHolds = $("#ckHolds")[0].checked;
+        fq.HasXC = $("#ckXC")[0].checked;
+        fq.HasIMC = $("#ckIMC")[0].checked;
+        fq.HasSimIMCTime = $("#ckSimIMC")[0].checked;
+        fq.HasAnyInstrument = $("#ckAnyInstrument")[0].checked;
+        fq.HasGroundSim = $("#ckGroundSim")[0].checked;
+        fq.HasNight = $("#ckNight")[0].checked;
+        fq.HasDual = $("#ckDual")[0].checked;
+        fq.HasCFI = $("#ckCFI")[0].checked;
+        fq.HasSIC = $("#ckSIC")[0].checked;
+        fq.HasPIC = $("#ckPIC")[0].checked;
+        fq.HasTotalTime = $("#ckTotal")[0].checked;
+        fq.IsPublic = $("#ckPublic")[0].checked;
+        fq.HasTelemetry = $("#ckHasTelemetry")[0].checked;
+        fq.HasImages = $("#ckHasImages")[0].checked;
+        fq.IsSigned = $("#ckIsSigned")[0].checked;
+
+
+        fq.PropertiesConjunction = $('#propertyConjunction').val();
+        fq.PropertyTypes = [];
+        $("#divPropsList").find('input[type=checkbox]').each(function () {
+            if (this.checked) {
+                // create a CPT.  It's a pseudo-object - proptypeid is the key piece here.
+                var cpt = new Object();
+                cpt.PropTypeID = parseInt(this.value);
+                cpt.Title = this.title;
+                cpt.SortKey = cpt.FormatString = cpt.Description = "";
+                cpt.Type = "cfpInteger";
+                cpt.IsFavorite = false;
+                cpt.Flags = 0;
+                fq.PropertyTypes.push(cpt);
+            }
+        });
+
+        // Preserve any type names.
+        var typeNames = $("#hdnTypeNames")[0].value;
+        fq.TypeNames = JSON.parse(typeNames == "" ? "[]" : typeNames);
+
+        return fq;
+    }
+
+    var rgCanned = [];
+    @foreach(CannedQuery cq in ViewBag.cannedQueries)
+    {
+        @: rgCanned.push(@Html.Raw(cq.ToJSONString()));
+    }
+
+    function deleteQuery(sender, cq, name) {
+        var params = new Object();
+        params.cq = cq;
+        cq.QueryName = name;
+        var d = JSON.stringify(params);
+        $.ajax(
+            {
+                url: '@Url.Action("DeleteCannedQuery", "Search")',
+                type: "POST", data: d, dataType: "text", contentType: "application/json",
+                error: function (xhr, status, error) {
+                    window.alert(xhr.responseJSON.Message);
+                },
+                complete: function (response) { },
+                success: function (response) {
+                    sender.parentElement.style.display = "none";
+                }
+            });
+    }
+
+    function saveAndSearch() {
+        var queryName = $("#txtQueryName").val();
+        var fq = buildQuery();
+        saveQuery(fq, queryName);
+        @(ViewBag.onClientSearch)(fq);
+        return false;
+    }
+
+    function saveQuery(cq, name) {
+        if (name == '' || name === undefined)   // no op if not named
+            return;
+
+        var params = new Object();
+        if (cq.QueryName == '' || cq.QueryName === undefined)
+            cq.QueryName = name;
+        params.cq = cq;
+        var d = JSON.stringify(params);
+        $.ajax(
+            {
+        url: '@Url.Action("AddCannedQuery", "Search")',
+                type: "POST", data: d, dataType: "text", contentType: "application/json",
+                error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
+                complete: function (response) { },
+                success: function (response) { }
+        });
+}
+</script>
+<div id="pnlSearch">
+    <input type="hidden" value="@fq.UserName" id="hdnUser" />
+    <input type="hidden" value="@JsonConvert.SerializeObject(fq.TypeNames)" id="hdnTypeNames" />
+    <div style="vertical-align:top;">
+        <p class="header" id="DatesHeader">
+            @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = true, targetID = "divDates", labelText = Resources.FlightQuery.HeaderDates }); }
+        </p>
+        <div id="divDates" style="overflow:hidden">
+            <table>
+                <tr style="vertical-align: top">
+                    <td>
+                        <div><input type="radio" name="DateRange" value="AllTime" onchange="javascript:setCustomDates(false)" @(fq.DateRange == FlightQuery.DateRanges.AllTime ? "checked" : string.Empty) id="rbAllTime" /><label for="rbAllTime">@Resources.FlightQuery.DatesAll</label></div>
+                        <div><input type="radio" name="DateRange" value="YTD" onchange="javascript:setCustomDates(false)" @(fq.DateRange == FlightQuery.DateRanges.YTD ? "checked" : string.Empty) id="rbYTD" /><label for="rbYTD">@Resources.FlightQuery.DatesYearToDate</label></div>
+                        <div><input type="radio" name="DateRange" value="PrevYear" onchange="javascript:setCustomDates(false)" @(fq.DateRange == FlightQuery.DateRanges.PrevYear ? "checked" : string.Empty) id="rbPrevYear" /><label for="rbPrevYear">@Resources.FlightQuery.DatesPrevYear</label></div>
+                        <div><input type="radio" name="DateRange" value="ThisMonth" onchange="javascript:setCustomDates(false)" @(fq.DateRange == FlightQuery.DateRanges.ThisMonth ? "checked" : string.Empty) id="rbThisMonth" /><label for="rbThisMonth">@Resources.FlightQuery.DatesThisMonth</label></div>
+                        <div><input type="radio" name="DateRange" value="PrevMonth" onchange="javascript:setCustomDates(false)" @(fq.DateRange == FlightQuery.DateRanges.PrevMonth ? "checked" : string.Empty) id="rbPrevMonth" /><label for="rbPrevMonth">@Resources.FlightQuery.DatesPrevMonth</label></div>
+                    </td>
+                    <td>
+                        <div><input type="radio" name="DateRange" value="Trailing30" onchange="javascript:setCustomDates(false)" @(fq.DateRange == FlightQuery.DateRanges.Trailing30 ? "checked" : string.Empty) id="rbTrailing30" /><label for="rbTrailing30">@Resources.FlightQuery.DatesPrev30Days</label></div>
+                        <div><input type="radio" name="DateRange" value="Trailing90" onchange="javascript:setCustomDates(false)" @(fq.DateRange == FlightQuery.DateRanges.Trailing90 ? "checked" : string.Empty) id="rbTrailing90" /><label for="rbTrailing90">@Resources.FlightQuery.DatesPrev90Days</label></div>
+                        <div><input type="radio" name="DateRange" value="Tailing6Months" onchange="javascript:setCustomDates(false)" @(fq.DateRange == FlightQuery.DateRanges.Tailing6Months ? "checked" : string.Empty) id="rbTrailing6Months" /><label for="rbTrailing6Months">@Resources.FlightQuery.DatesPrev6Month</label></div>
+                        <div><input type="radio" name="DateRange" value="Trailing12Months" onchange="javascript:setCustomDates(false)" @(fq.DateRange == FlightQuery.DateRanges.Trailing12Months ? "checked" : string.Empty) id="rbTrailing12" /><label for="rbTrailing12">@Resources.FlightQuery.DatesPrev12Month</label></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="radio" name="DateRange" value="Custom" @(fq.DateRange == FlightQuery.DateRanges.Custom ? "checked" : string.Empty) id="rbCustom" /><label for="rbCustom">@Resources.FlightQuery.DatesFrom</label>
+                        <input type="date" id="mfbTIDateFrom" onchange="javascript: setCustomDates(true);" value="@(fq.DateMin.HasValue() ? fq.DateMin.YMDString() : string.Empty)" />
+                        <label for="mfbTIDateFrom">@Resources.FlightQuery.DatesTo</label><input type="date" value="@(fq.DateMax.HasValue() ? fq.DateMax.YMDString() : string.Empty)" id="mfbTIDateTo" onchange="javascript: setCustomDates(true);" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <p class="header">
+            @Resources.FlightQuery.ContainsText
+        </p>
+        <div id="divText" style="overflow:hidden;">
+            <input type="text" value="@fq.GeneralText" id="txtRestrict" style="width: 50%;" />
+            <a href="@VirtualPathUtility.ToAbsolute("~/mvc/faq?q=63#63")" target="_blank">@Resources.FlightQuery.SearchTipsToolTip</a>
+        </div>
+        <p class="header" id="AirportsHeader">
+            @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = fq.AirportList.Any(), targetID = "divAirports", labelText = Resources.FlightQuery.HeaderAirports }); }
+        </p>
+        <div id="divAirports" style="overflow:hidden; @(fq.AirportList.Any() ? string.Empty : "display: none;")">
+            <div>
+                <input type="text" id="txtAirports" style="width:50%" value="@String.Join(Resources.LocalizedText.LocalizedSpace, fq.AirportList)" />@{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "airportTips", tipTextHTML = Resources.FlightQuery.SearchTipsAirportToolTip }); }
+            </div>
+            <input type="radio" name="FlightRange" id="rbFlightRangeAll" value="AllFlights" @(fq.Distance == FlightQuery.FlightDistance.AllFlights ? "checked" : string.Empty) /><label for="rbFlightRangeAll">@Resources.FlightQuery.FlightRangeAll</label>
+            <input type="radio" name="FlightRange" id="rbFlightRangeLocal" value="LocalOnly" @(fq.Distance == FlightQuery.FlightDistance.LocalOnly ? "checked" : string.Empty) /><label for="rbFlightRangeLocal">@Resources.FlightQuery.FlightRangeLocal</label>
+            <input type="radio" name="FlightRange" id="rbFlightRangeNonLocal" value="NonLocalOnly" @(fq.Distance == FlightQuery.FlightDistance.NonLocalOnly ? "checked" : string.Empty) /><label for="rbFlightRangeNonLocal">@Resources.FlightQuery.FlightRangeNonLocal</label>
+        </div>
+        <p class="header" id="AirplanesHeader">
+            @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = fq.AircraftList.Any(), targetID = "divAirplanes", labelText = Resources.FlightQuery.HeaderAircraft }); }
+        </p>
+        <div id="divAirplanes" style="overflow:hidden; @(fq.AircraftList.Any() ? string.Empty : "display: none;")">
+            <div id="divACList">
+                @foreach (Aircraft ac in ViewBag.aircraft)
+                {
+                    string szID = String.Format(CultureInfo.InvariantCulture, "ckAc{0}", ac.AircraftID);
+                    bool fDecluttered = ac.HideFromSelection && !fq.AircraftList.Contains(ac);
+
+                    <div class="@(fDecluttered ? "decluttered" : "alwaysVisible")" style="width:17%;">
+                        <input type="checkbox" name="cklAircraft" id="@szID" value="@ac.AircraftID" @(fq.AircraftList.Contains(ac) ? "checked" : string.Empty) /><label for="@szID">@ac.TailNumber</label>
+                    </div>
+                }
+            </div>
+            <div><a id="lnkShowAllAircraft" onclick='javascript:clutter(this, "divAirplanes");'>@Resources.FlightQuery.FlightAircraftShowAll)</a></div>
+            @if (ViewBag.aircraft.Count > 4)
+            {
+                <div><input type="checkbox" onclick="javascript:selectAll(this, 'divAirplanes');" id="ckSelectAllAircraft" /><label for="ckSelectAllAircraft">@Resources.LocalizedText.SelectAll</label></div>
+            }
+        </div>
+        <p class="header" id="AircraftCharsHeader">
+            @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = fq.HasAircraftFeatures, targetID = "divAircraftType", labelText = Resources.FlightQuery.HeaderAircraftFeature }); }
+        </p>
+        <div id="divAircraftType" style="overflow:hidden; @(fq.HasAircraftFeatures ? string.Empty : "display: none;")">
+            <div style="display:inline-block; vertical-align:top;">
+                <div><input type="checkbox" id="ckTailwheel" @(fq.IsTailwheel ? "checked" : string.Empty) /><label for="ckTailwheel">@Resources.FlightQuery.AircraftFeatureTailwheel</label></div>
+                <div><input type="checkbox" id="ckHighPerf" @(fq.IsHighPerformance ? "checked" : string.Empty) /><label for="ckHighPerf">@Resources.FlightQuery.AircraftFeatureHighPerformance</label></div>
+                <div><input type="checkbox" id="ckGlass" @(fq.IsGlass ? "checked" : string.Empty) /><label for="ckGlass">@Resources.FlightQuery.AircraftFeatureGlass</label></div>
+                <div>
+                    <input type="checkbox" id="ckTAA" @(fq.IsTechnicallyAdvanced ? "checked" : string.Empty) /><label for="ckTAA">@Resources.FlightQuery.AircraftFeatureTAAShort</label>@{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "taaTIP", tipTextHTML = Resources.Makes.TAADefinition }); }
+                </div>
+                <div><input type="checkbox" id="ckMotorGlider" @(fq.IsMotorglider ? "checked" : string.Empty) /><label for="ckMotorGlider">@Resources.FlightQuery.AircraftFeatureMotorGlider</label></div>
+                <div><input type="checkbox" id="ckMultiEngineHeli" @(fq.IsMultiEngineHeli ? "checked" : string.Empty) /><label for="ckMultiEngineHeli">@Resources.FlightQuery.AircraftFeatureMultiEngineHelicopter</label></div>
+            </div>
+            <div style="display:inline-block; vertical-align:top;">
+                <div><input type="checkbox" id="ckComplex" @(fq.IsComplex ? "checked" : string.Empty) /><label for="ckComplex">@Resources.FlightQuery.AircraftFeatureComplex</label></div>
+                <div>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="checkbox" id="ckRetract" @(fq.IsRetract ? "checked" : string.Empty) /><label for="ckRetract">@Resources.FlightQuery.AircraftFeatureRetractableGear</label>
+                </div>
+                <div>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="checkbox" id="ckProp" @(fq.IsConstantSpeedProp ? "checked" : string.Empty) /><label for="ckProp">@Resources.FlightQuery.AircraftFeatureConstantSpeedProp</label>
+                </div>
+                <div>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="checkbox" id="ckFlaps" @(fq.HasFlaps ? "checked" : string.Empty) /><label for="ckFlaps">@Resources.FlightQuery.AircraftFeatureFlaps</label>
+                </div>
+            </div>
+            <div style="display:inline-block; vertical-align:top;">
+                <div><input type="radio" id="rbEngineAny" name="EngineGroup" value="AllEngines" @(fq.EngineType == FlightQuery.EngineTypeRestriction.AllEngines ? "checked" : string.Empty) /><label for="rbEngineAny">@Resources.FlightQuery.AircraftFeatureEngineAny</label></div>
+                <div><input type="radio" id="rbEnginePiston" name="EngineGroup" value="Piston" @(fq.EngineType == FlightQuery.EngineTypeRestriction.Piston ? "checked" : string.Empty) /><label for="rbEnginePiston">@Resources.FlightQuery.AircraftFeaturePiston</label></div>
+                <div><input type="radio" id="rbEngineTurboprop" name="EngineGroup" value="Turboprop" @(fq.EngineType == FlightQuery.EngineTypeRestriction.Turboprop ? "checked" : string.Empty) /><label for="rbEngineTurboprop">@Resources.FlightQuery.AircraftFeatureTurboprop</label></div>
+                <div><input type="radio" id="rbEngineJet" name="EngineGroup" value="Jet" @(fq.EngineType == FlightQuery.EngineTypeRestriction.Jet ? "checked" : string.Empty) /><label for="rbEngineJet">@Resources.FlightQuery.AircraftFeatureJet</label></div>
+                <div><input type="radio" id="rbEngineTurbine" name="EngineGroup" value="AnyTurbine" @(fq.EngineType == FlightQuery.EngineTypeRestriction.AnyTurbine ? "checked" : string.Empty) /><label for="rbEngineTurbine">@Resources.FlightQuery.AircraftFeatureTurbine</label></div>
+                <div><input type="radio" id="rbEngineElectric" name="EngineGroup" value="Electric" @(fq.EngineType == FlightQuery.EngineTypeRestriction.Electric ? "checked" : string.Empty) /><label for="rbEngineElectric">@Resources.FlightQuery.AircraftFeatureElectric</label></div>
+            </div>
+            <div style="display:inline-block; vertical-align:top;">
+                <div><input type="radio" id="rbInstanceAny" name="InstanceGroup" value="AllAircraft" @(fq.AircraftInstanceTypes == FlightQuery.AircraftInstanceRestriction.AllAircraft ? "checked" : string.Empty) /><label for="rbInstanceAny">@Resources.FlightQuery.AircraftFeatureSimOrReal</label></div>
+                <div><input type="radio" id="rbInstanceReal" name="InstanceGroup" value="RealOnly" @(fq.AircraftInstanceTypes == FlightQuery.AircraftInstanceRestriction.RealOnly ? "checked" : string.Empty) /><label for="rbInstanceReal">@Resources.FlightQuery.AircraftFeatureReal</label></div>
+                <div><input type="radio" id="rbInstanceTrainingDevices" name="InstanceGroup" value="TrainingOnly" @(fq.AircraftInstanceTypes == FlightQuery.AircraftInstanceRestriction.TrainingOnly ? "checked" : string.Empty) /><label for="rbInstanceTrainingDevices">@Resources.FlightQuery.AircraftFeatureTrainingDevice</label></div>
+            </div>
+        </div>
+        <p class="header" id="MakesHeader">
+            @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = fq.MakeList.Any() || !String.IsNullOrEmpty(fq.ModelName), targetID = "divMakes", labelText = Resources.FlightQuery.HeaderModels }); }
+        </p>
+        <div id="divMakes" Style="overflow: hidden; @(fq.MakeList.Any() || !String.IsNullOrEmpty(fq.ModelName) ? string.Empty : "display: none;")">
+            <div id="divMakeList">
+                @foreach (MakeModel mm in ViewBag.models)
+                {
+                    string szID = String.Format(CultureInfo.InvariantCulture, "ckMM{0}", mm.MakeModelID);
+
+                    <div class="alwaysVisible" style="width:25%;">
+                        <input type="checkbox" name="cklModel" id="@szID" value="@mm.MakeModelID" @(fq.MakeList.Contains(mm) ? "checked" : string.Empty) /><label for="@szID">@mm.DisplayName</label>
+                    </div>
+                }
+            </div>
+
+            @if (ViewBag.models.Count > 4)
+            {
+                <div><input type="checkbox" onclick="javascript:selectAll(this, 'divMakes');" id="ckSelectAllMakes" /><label for="ckSelectAllMakes">@Resources.LocalizedText.SelectAll</label></div>
+            }
+            <div>
+                @Resources.FlightQuery.ContainsMakeModelText <input type="text" id="txtModelNameText" value="@fq.ModelName" />
+            </div>
+        </div>
+        <p class="header" id="CatClassHeader">
+            @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = fq.CatClasses.Any(), targetID = "divCatClass", labelText = Resources.FlightQuery.HeaderCategoryClass }); }
+        </p>
+        <div id="divCatClass" style="overflow:hidden; @(fq.CatClasses.Any() ? string.Empty : "display: none;")">
+            <div id="divCCList">
+                @foreach (CategoryClass cc in ViewBag.categoryClasses)
+                {
+                    string szID = String.Format(CultureInfo.InvariantCulture, "ckCc{0}", cc.IDCatClassAsInt);
+
+                    <div class="alwaysVisible" style="width:25%;">
+                        <input type="checkbox" name="cklCatClass" id="@szID" value="@cc.IdCatClass" @(fq.CatClasses.Contains(cc) ? "checked" : string.Empty) /><label for="@szID">@cc.CatClass</label>
+                    </div>
+                }
+            </div>
+            <div><input type="checkbox" onclick="javascript:selectAll(this, 'divCatClass');" id="ckSelectAllCatClass" /><label for="ckSelectAllCatClass">@Resources.LocalizedText.SelectAll</label></div>
+        </div>
+        <p class="header" id="FlightCharsHeader">
+            @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = fq.HasFlightFeatures || fq.PropertyTypes.Any(), targetID = "divFlightCharacteristics", labelText = Resources.FlightQuery.HeaderFlightCharacteristics }); }
+        </p>
+        <div id="divFlightCharacteristics" style="overflow:hidden; @((fq.HasFlightFeatures || fq.PropertyTypes.Any()) ? string.Empty : "display: none;")">
+            <div id="divFlightCharsConjunction" runat="server">
+                @Resources.FlightQuery.ConjunctionPrompt1
+                <select name="flightConjunction" id="flightConjunction">
+                    <option value="All" @(fq.FlightCharacteristicsConjunction == GroupConjunction.All ? "selected" : string.Empty)>@Resources.FlightQuery.ConjunctionAll</option>
+                    <option value="Any" @(fq.FlightCharacteristicsConjunction == GroupConjunction.Any ? "selected" : string.Empty)>@Resources.FlightQuery.ConjunctionAny</option>
+                    <option value="None" @(fq.FlightCharacteristicsConjunction == GroupConjunction.None ? "selected" : string.Empty)>@Resources.FlightQuery.ConjunctionNone</option>
+                </select>
+                @Resources.FlightQuery.ConjunctionPrompt2
+            </div>
+            <table>
+                <tr>
+                    <td>
+                        <input type="checkbox" id="ckAnyLandings" @(fq.HasLandings ? "checked" : string.Empty) /><label for="ckAnyLandings">@Resources.FlightQuery.FlightFeatureAnyLandings</label>
+                    </td>
+                    <td>
+                        <input type="checkbox" id="ckFSLanding" @(fq.HasFullStopLandings ? "checked" : string.Empty) /><label for="ckFSLanding">@Resources.FlightQuery.FlightFeatureFSLanding</label>
+                    </td>
+                    <td>
+                        <input type="checkbox" id="ckNightLandings" @(fq.HasNightLandings ? "checked" : string.Empty) /><label for="ckNightLandings">@Resources.FlightQuery.FlightFeatureFSNightLanding</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" id="ckApproaches" @(fq.HasApproaches ? "checked" : string.Empty) /><label for="ckApproaches">@Resources.FlightQuery.FlightFeatureApproaches</label>
+                    </td>
+                    <td>
+                        <input type="checkbox" id="ckHolds" @(fq.HasHolds ? "checked" : string.Empty) /><label for="ckHolds">@Resources.FlightQuery.FlightFeatureHolds</label>
+                    </td>
+                    <td>
+                        <input type="checkbox" id="ckXC" @(fq.HasXC ? "checked" : string.Empty) /><label for="ckXC">@Resources.FlightQuery.FlightFeatureXC</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" id="ckIMC" @(fq.HasIMC ? "checked" : string.Empty) /><label for="ckIMC">@Resources.FlightQuery.FlightFeatureIMC</label>
+                    </td>
+                    <td>
+                        <input type="checkbox" id="ckSimIMC" @(fq.HasSimIMCTime ? "checked" : string.Empty) /><label for="ckSimIMC">@Resources.FlightQuery.FlightFeatureSimIMC</label>
+                    </td>
+                    <td>
+                        <input type="checkbox" id="ckAnyInstrument" @(fq.HasAnyInstrument ? "checked" : string.Empty) /><label for="ckAnyInstrument">@Resources.FlightQuery.FlightFeatureIMCOrSimIMC</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" id="ckGroundSim" @(fq.HasGroundSim ? "checked" : string.Empty) /><label for="ckGroundSim">@Resources.FlightQuery.FlightFeatureGroundsim</label>
+                    </td>
+                    <td>
+                        <input type="checkbox" id="ckNight" @(fq.HasNight ? "checked" : string.Empty) /><label for="ckNight">@Resources.FlightQuery.FlightFeatureNight</label>
+                    </td>
+                    <td>
+                        <input type="checkbox" id="ckDual" @(fq.HasDual ? "checked" : string.Empty) /><label for="ckDual">@Resources.FlightQuery.FlightFeatureDual</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" id="ckCFI" @(fq.HasCFI ? "checked" : string.Empty) /><label for="ckCFI">@Resources.FlightQuery.FlightFeatureCFI</label>
+                    </td>
+                    <td>
+                        <input type="checkbox" id="ckSIC" @(fq.HasSIC ? "checked" : string.Empty) /><label for="ckSIC">@Resources.FlightQuery.FlightFeatureSIC</label>
+                    </td>
+                    <td>
+                        <input type="checkbox" id="ckPIC" @(fq.HasPIC ? "checked" : string.Empty) /><label for="ckPIC">@Resources.FlightQuery.FlightFeaturePIC</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" id="ckTotal" @(fq.HasTotalTime ? "checked" : string.Empty) /><label for="ckTotal">@Resources.FlightQuery.FlightFeatureTotalTime</label>
+                    </td>
+                    <td>
+                        <input type="checkbox" id="ckPublic" @(fq.IsPublic ? "checked" : string.Empty) /><label for="ckPublic">@Resources.FlightQuery.FlightFeaturePublic</label>
+                    </td>
+                    <td>
+                        <input type="checkbox" id="ckHasTelemetry" @(fq.HasTelemetry ? "checked" : string.Empty) /><label for="ckHasTelemetry">@Resources.FlightQuery.FlightFeatureTelemetryShort</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" id="ckHasImages" @(fq.HasImages ? "checked" : string.Empty) /><label for="ckHasImages">@Resources.FlightQuery.FlightFeatureHasImages</label>
+                    </td>
+                    <td>
+                        <input type="checkbox" id="ckIsSigned" @(fq.IsSigned ? "checked" : string.Empty) /><label for="ckIsSigned">@Resources.FlightQuery.FlightFeatureSignedShort</label>
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+            </table>
+            <div id="divCustomProps" style="overflow:hidden">
+                <div id="divPropsConjunction" runat="server">
+                    @Resources.FlightQuery.ConjunctionPrompt1
+                    <select name="propertyConjunction" id="propertyConjunction">
+                        <option value="All" @(fq.PropertiesConjunction == GroupConjunction.All ? "selected" : string.Empty)>@Resources.FlightQuery.ConjunctionAll</option>
+                        <option value="Any" @(fq.PropertiesConjunction == GroupConjunction.Any ? "selected" : string.Empty)>@Resources.FlightQuery.ConjunctionAny</option>
+                        <option value="None" @(fq.PropertiesConjunction == GroupConjunction.None ? "selected" : string.Empty)>@Resources.FlightQuery.ConjunctionNone</option>
+                    </select>
+                    @Resources.FlightQuery.ConjunctionPrompt2
+                </div>
+                <div id="divPropsList">
+                    @foreach (CustomPropertyType cpt in ViewBag.properties)
+                    {
+                        string szID = String.Format(CultureInfo.InvariantCulture, "ckProp{0}", cpt.PropTypeID);
+
+                        <div class="alwaysVisible" )" style="width:25%;">
+                            <input type="checkbox" name="cklCatClass" id="@szID" title="@cpt.Title" value="@cpt.PropTypeID" @(fq.PropertyTypes.Contains(cpt) ? "checked" : string.Empty) />
+                            <label for="@szID">@cpt.Title</label>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div style="text-align:center; width: 100%; vertical-align:middle;">
+            <button id="btnReset" onclick="javascript: reset();@(ViewBag.onClientReset)(buildQuery());">@Resources.FlightQuery.SearchReset</button>
+            <button id="btnSearch" onclick="@(ViewBag.onClientSearch)(buildQuery());">@Resources.FlightQuery.SearchFindNow</button>
+            <a style="cursor:pointer;" onclick="javascript: showModalById('divCanned', '@Resources.FlightQuery.SaveQueryManage', 400); $('#txtQueryName').focus();">@Resources.FlightQuery.SaveQueryManage</a>
+        </div>
+        <div id="divCanned" style="display:none">
+            <div>@Resources.FlightQuery.SaveQueryNamePrompt</div>
+            <div>
+                <input type="text" id="txtQueryName" />
+                <button type="button" id="btnSearchNamed" onclick="javascript:saveAndSearch();">@Resources.FlightQuery.SaveQueryPrompt</button>
+            </div>
+            <hr />
+            @if (ViewBag.cannedQueries.Count > 0)
+            {
+                int i = 0;
+                foreach (CannedQuery cq in ViewBag.cannedQueries)
+                {
+                    <p><img src="@VirtualPathUtility.ToAbsolute("~/images/x.gif")" onclick="javascript: deleteQuery(this, rgCanned[@i], '@HttpUtility.JavaScriptStringEncode(cq.QueryName)');" /> <a style="cursor:pointer;" onclick="javascript: $('#divCanned').dialog('close');@(ViewBag.onClientSearch)(rgCanned[@(i++)]);">@cq.QueryName</a></p>
+                }
+            }
+            else
+            {
+                <div>@Resources.FlightQuery.SaveQueryNoSavedQueries</div>
+            }
+        </div>
+    </div>
+</div>

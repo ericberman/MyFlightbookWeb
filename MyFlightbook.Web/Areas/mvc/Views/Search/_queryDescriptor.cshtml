@@ -1,0 +1,18 @@
+﻿@using System.Linq
+@if (ViewBag.query.IsDefault)
+{
+    <div>@Html.Raw(Resources.LocalizedText.SearchAndTotalsAllFlights)</div>
+}
+else
+{
+    FlightQuery fq = ViewBag.query;
+    IEnumerable<QueryFilterItem> rgqfe = fq.QueryFilterItems;
+    foreach (QueryFilterItem qfe in rgqfe)
+    {
+        Html.RenderAction("QueryDescriptorItem", "Search", new { qfe = qfe, onClientClick = ViewBag.onClientClick });
+    }
+    if (rgqfe.Count() > 1)
+    {
+        Html.RenderAction("QueryDescriptorItem", "Search", new { qfe = new QueryFilterItem(Resources.FlightQuery.ClearAllCriteria, string.Empty, string.Empty), onClientClick = ViewBag.onClientClick });
+    }
+}

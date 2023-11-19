@@ -97,6 +97,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Estimate is based on airport-to-airport distance in the route of your flight or telemetry, if present..
+        /// </summary>
+        internal static string airportDistanceNote {
+            get {
+                return ResourceManager.GetString("airportDistanceNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Date of first visit.
         /// </summary>
         internal static string airportEarliestVisit {
@@ -672,7 +681,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to View a colored map of visited countries/regions/sub-regions (BETA).
+        ///   Looks up a localized string similar to View a colored map of visited countries/regions/sub-regions.
         /// </summary>
         internal static string viewCountryAdminMap {
             get {

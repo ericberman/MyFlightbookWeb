@@ -334,7 +334,7 @@
     <value>Show Routes</value>
   </data>
   <data name="viewCountryAdminMap" xml:space="preserve">
-    <value>View a colored map of visited countries/regions/sub-regions (BETA)</value>
+    <value>View a colored map of visited countries/regions/sub-regions</value>
   </data>
   <data name="viewCountryAdminMapAdmin1" xml:space="preserve">
     <value>Subregions/States/Provinces:</value>
@@ -356,5 +356,8 @@
   </data>
   <data name="mapPermalink" xml:space="preserve">
     <value>Save a link to this map</value>
+  </data>
+  <data name="airportDistanceNote" xml:space="preserve">
+    <value>Estimate is based on airport-to-airport distance in the route of your flight or telemetry, if present.</value>
   </data>
 </root>

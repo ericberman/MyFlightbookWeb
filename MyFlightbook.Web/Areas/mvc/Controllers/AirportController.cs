@@ -1,9 +1,13 @@
 ﻿using MyFlightbook.Airports;
+using MyFlightbook.CSV;
 using MyFlightbook.Mapping;
+using MyFlightbook.Telemetry;
 using MyFlightbook.Weather.ADDS;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -21,6 +25,149 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 {
     public class AirportController : Controller
     {
+        #region VisitedAirport
+        [Authorize]
+        [HttpPost]
+        public string EstimateDistance(FlightQuery fq)
+        {
+            if (fq == null || fq.UserName.CompareOrdinal(User.Identity.Name) != 0)
+                throw new UnauthorizedAccessException();
+
+            double distance = VisitedAirport.DistanceFlownByUser(fq, util.GetIntParam(Request, "df", 0) != 0, out string szErr);
+
+            return (String.IsNullOrEmpty(szErr)) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.VisitedAirportsDistanceEstimate, distance) : szErr;
+        }
+
+        [Authorize]
+        public ActionResult DownloadKML(string fq)
+        {
+            FlightQuery query = FlightQuery.FromBase64CompressedJSON(fq);
+            if (query.UserName.CompareOrdinal(User.Identity.Name) != 0)
+                throw new UnauthorizedAccessException();
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                DataSourceType dst = DataSourceType.DataSourceTypeFromFileType(DataSourceType.FileType.KML);
+                string error = string.Empty;
+                VisitedAirport.AllFlightsAsKML(query, ms, out error);
+                return File(ms.ToArray(), dst.Mimetype, String.Format(CultureInfo.CurrentCulture, "{0}-Visited.{1}", Branding.CurrentBrand.AppName, dst.DefaultExtension));
+            }
+        }
+
+        [Authorize]
+        public ActionResult DownloadVisited(string fq)
+        {
+            FlightQuery query = FlightQuery.FromBase64CompressedJSON(fq);
+            if (query.UserName.CompareOrdinal(User.Identity.Name) != 0)
+                throw new UnauthorizedAccessException();
+
+            IEnumerable<VisitedAirport> rgva = VisitedAirport.VisitedAirportsForQuery(query);
+
+            using (DataTable dt = new DataTable())
+            {
+                dt.Locale = CultureInfo.CurrentCulture;
+
+                // add the header columns from the gridview
+                dt.Columns.Add(new DataColumn(Resources.Airports.airportCode, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Airports.airportName, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Airports.airportCountry + "*", typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Airports.airportRegion, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Airports.airportVisits, typeof(int)));
+                dt.Columns.Add(new DataColumn(Resources.Airports.airportEarliestVisit, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Airports.airportLatestVisit, typeof(string)));
+
+                foreach (VisitedAirport va in rgva)
+                {
+                    DataRow dr = dt.NewRow();
+                    dr[0] = va.Code;
+                    dr[1] = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(va.Airport.Name.ToLower(CultureInfo.CurrentCulture));
+                    dr[2] = va.Country;
+                    dr[3] = va.Admin1;
+                    dr[4] = va.NumberOfVisits;
+                    dr[5] = va.EarliestVisitDate.ToString("d", CultureInfo.CurrentCulture);
+                    dr[6] = va.LatestVisitDate.ToString("d", CultureInfo.CurrentCulture);
+
+                    dt.Rows.Add(dr);
+                }
+
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    using (StreamWriter sw = new StreamWriter(ms, Encoding.UTF8, 1024))
+                    {
+                        CsvWriter.WriteToStream(sw, dt, true, true);
+                        sw.Write(String.Format(CultureInfo.CurrentCulture, "\r\n\r\n\" *{0}\"", Branding.ReBrand(Resources.Airports.airportCountryDisclaimer)));
+                        sw.Flush();
+
+                        return File(ms.ToArray(), "text/csv", String.Format(CultureInfo.InvariantCulture, "{0}-Visited-{1}.csv", Branding.CurrentBrand.AppName, DateTime.Now.YMDString()));
+                    }
+                }
+            }
+        }
+
+        private static IEnumerable<AirportList> PathsForQuery(FlightQuery fq, AirportList alMatches, bool fShowRoute)
+        {
+            if (!fShowRoute)
+                return new AirportList[] { alMatches };
+
+            List<AirportList> lst = new List<AirportList>();
+
+            DBHelper dbh = new DBHelper(LogbookEntryBase.QueryCommand(fq, lto: LogbookEntryCore.LoadTelemetryOption.None));
+            dbh.ReadRows((comm) => { }, (dr) =>
+            {
+                object o = dr["Route"];
+                string szRoute = (string)(o == DBNull.Value ? string.Empty : o);
+
+                if (!String.IsNullOrEmpty(szRoute))
+                    lst.Add(alMatches.CloneSubset(szRoute));
+            });
+            return lst;
+        }
+
+        private ActionResult VisitedAirportViewForQuery(FlightQuery fq)
+        {
+            ViewBag.query = fq;
+            VisitedAirport[] rgva = VisitedAirport.VisitedAirportsForQuery(fq);
+            ViewBag.visitedAirports = rgva;
+            AirportList alMatches = new AirportList(rgva);
+            bool fShowRoute = util.GetIntParam(Request, "path", 0) != 0;
+            GoogleMap map = new GoogleMap("divMapVisited", GMap_Mode.Dynamic)
+            {
+                Airports = PathsForQuery(fq, alMatches,fShowRoute)
+            };
+            map.Options.fShowRoute = fShowRoute;
+            ViewBag.Map = map;
+
+            return View("visitedAirports");
+        }
+
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        [Authorize]
+        public ActionResult VisitedAirports(string fqJSON, bool fPropDeleteClicked = false, string propToDelete = null)
+        {
+            FlightQuery fq = String.IsNullOrEmpty(fqJSON) ? new FlightQuery(User.Identity.Name) : JsonConvert.DeserializeObject<FlightQuery>(fqJSON);
+
+            if (fq.UserName.CompareOrdinal(User.Identity.Name) != 0)
+                throw new UnauthorizedAccessException();
+
+            if (fPropDeleteClicked)
+                fq.ClearRestriction(propToDelete ?? string.Empty);
+
+            return VisitedAirportViewForQuery(fq);
+        }
+
+        [HttpGet]
+        [Authorize]
+        public ActionResult VisitedAirports(string fq)
+        {
+            FlightQuery _fq = String.IsNullOrEmpty(fq) ? new FlightQuery(User.Identity.Name) : FlightQuery.FromBase64CompressedJSON(fq);
+            if (_fq.UserName.CompareOrdinal(User.Identity.Name) != 0)
+                throw new UnauthorizedAccessException();
+
+            return VisitedAirportViewForQuery(_fq);
+        }
+        #endregion
+
         #region Visited Map
         [Authorize]
         public ActionResult VisitedMap(string fqs = null, string v = null)
@@ -64,7 +211,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.IsStatic = isStatic;
             ViewBag.gmapDivID = gmapDivID;
 
-            List<airport> lst = new List<airport>(airports);
+            List<airport> lst = new List<airport>(airports ?? Array.Empty<airport>());
             lst.RemoveAll(ap => !ap.IsPort);
             lst.Sort();
             ViewBag.airports = lst;

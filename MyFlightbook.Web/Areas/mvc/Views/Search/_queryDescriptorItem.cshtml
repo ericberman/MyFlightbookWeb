@@ -1,0 +1,12 @@
+﻿@{ 
+    QueryFilterItem qfe = ViewBag.qfe;
+}
+<div class="queryFilterItem">
+    <span style="font-weight:bold">@qfe.FilterName: </span>
+    @if (!String.IsNullOrEmpty(qfe.FilterValue))
+    { 
+        @qfe.FilterValue
+    }
+    <img src="@VirtualPathUtility.ToAbsolute("~/images/x.gif")" style="vertical-align:middle" onclick="javascript:@(ViewBag.onClientClick)('@qfe.PropertyName');" />
+    <input type="hidden" name="hdnPropName" value="@qfe.PropertyName" />
+</div>
