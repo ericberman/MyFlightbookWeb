@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2011-2022 MyFlightbook LLC
+ * Copyright (c) 2011-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -38,6 +38,7 @@ namespace MyFlightbook.MemberPages
                 IncludeMonthToDate = DateTime.Now.Day > 1,
                 IncludePreviousMonth = true,
                 IncludePreviousYear = true,
+                IncludeTrailing90 = true,
                 IncludeTrailing12 = !fNewYearsDay,
                 IncludeYearToDate = !fNewYearsDay
             };

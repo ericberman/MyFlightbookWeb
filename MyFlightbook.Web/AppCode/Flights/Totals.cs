@@ -1356,6 +1356,7 @@ namespace MyFlightbook.Currency
         public IDictionary<string, TotalsItem> MonthToDate { get; private set; } = new Dictionary<string, TotalsItem>();
         public IDictionary<string, TotalsItem> PrevMonth { get; private set; } = new Dictionary<string, TotalsItem>();
         public IDictionary<string, TotalsItem> YTD { get; private set; } = new Dictionary<string, TotalsItem>();
+        public IDictionary<string, TotalsItem> Trailing90 { get; private set; } = new Dictionary<string, TotalsItem>();
         public IDictionary<string, TotalsItem> Trailing12 { get; private set; } = new Dictionary<string, TotalsItem>();
         public IDictionary<string, TotalsItem> Trailing24 { get; private set; } = new Dictionary<string, TotalsItem>();
         public IDictionary<string, TotalsItem> PrevYear { get; private set; } = new Dictionary<string, TotalsItem>();
@@ -1367,6 +1368,7 @@ namespace MyFlightbook.Currency
         public bool IncludePreviousMonth { get; set; }
         public bool IncludePreviousYear { get; set; }
         public bool IncludeYearToDate { get; set; }
+        public bool IncludeTrailing90 { get; set; }
         public bool IncludeTrailing12 { get; set; }
         public bool IncludeTrailing24 {get; set;}
 
@@ -1386,7 +1388,6 @@ namespace MyFlightbook.Currency
             User = szUser;
             Query = fq;
         }
-
 
         private static IDictionary<string, TotalsItem> TotalsForQuery(FlightQuery fq, bool fBind, IDictionary<string, TotalsItem> d)
         {
@@ -1423,6 +1424,7 @@ namespace MyFlightbook.Currency
             FlightQuery fqThisMonth = new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.ThisMonth };
             FlightQuery fqPrevMonth = new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.PrevMonth };
             FlightQuery fqYTD = new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.YTD };
+            FlightQuery fqTrailing90 = new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.Trailing90 };
             FlightQuery fqTrailing12 = new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.Trailing12Months };
             FlightQuery fqTrailing24 = new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.Custom, DateMin = DateTime.Now.Date.AddMonths(-24), DateMax = DateTime.Now.Date.AddDays(1) };
             FlightQuery fqPrevYear = new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.PrevYear };
@@ -1434,6 +1436,7 @@ namespace MyFlightbook.Currency
                 Task.Run(() => { TotalsForQuery(fqThisMonth, IncludeMonthToDate, MonthToDate); }),
                 Task.Run(() => { TotalsForQuery(fqPrevMonth, IncludePreviousMonth, PrevMonth); }),
                 Task.Run(() => { TotalsForQuery(fqYTD, IncludeYearToDate, YTD); }),
+                Task.Run(() => { TotalsForQuery(fqTrailing90, IncludeTrailing90, Trailing90); }),
                 Task.Run(() => { TotalsForQuery(fqTrailing12, IncludeTrailing12, Trailing12); }),
                 Task.Run(() => { TotalsForQuery(fqTrailing24, IncludeTrailing24, Trailing24); }),
                 Task.Run(() => { TotalsForQuery(fqPrevYear, IncludePreviousYear, PrevYear); }),

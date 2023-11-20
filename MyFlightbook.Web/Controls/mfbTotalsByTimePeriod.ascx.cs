@@ -95,6 +95,8 @@ namespace MyFlightbook.Currency
                 ColumnCount++;
             if (Rollup.IncludePreviousMonth &= Rollup.PrevMonth.Any())
                 ColumnCount++;
+            if (Rollup.IncludeTrailing90 &= Rollup.Trailing90.Any())
+                ColumnCount++;
             if (Rollup.IncludeTrailing12 &= Rollup.Trailing12.Any())
                 ColumnCount++;
             if (Rollup.IncludeTrailing24 &= Rollup.Trailing24.Any())
@@ -125,6 +127,7 @@ namespace MyFlightbook.Currency
                 AddTextCellToRow(trHeader, Resources.FlightQuery.DatesThisMonth, Rollup.IncludeMonthToDate, cssDateRange);
                 AddTextCellToRow(trHeader, szPreviousMonth, Rollup.IncludePreviousMonth, cssDateRange);
                 AddTextCellToRow(trHeader, Resources.FlightQuery.DatesYearToDate, Rollup.IncludeYearToDate, cssDateRange);
+                AddTextCellToRow(trHeader, Resources.FlightQuery.DatesPrev90Days, Rollup.IncludeTrailing90, cssDateRange);
                 AddTextCellToRow(trHeader, Resources.FlightQuery.DatesPrev12Month, Rollup.IncludeTrailing12, cssDateRange);
                 AddTextCellToRow(trHeader, Resources.FlightQuery.DatesPrev24Month, Rollup.IncludeTrailing24, cssDateRange);
                 AddTextCellToRow(trHeader, szPreviousYear, Rollup.IncludePreviousYear, cssDateRange);
@@ -142,6 +145,7 @@ namespace MyFlightbook.Currency
                     AddCellForTotalsItem(tr, Rollup.MonthToDate.ContainsKey(ti.Description) ? Rollup.MonthToDate[ti.Description] : null, Rollup.IncludeMonthToDate, fLinkQuery) +
                     AddCellForTotalsItem(tr, Rollup.PrevMonth.ContainsKey(ti.Description) ? Rollup.PrevMonth[ti.Description] : null, Rollup.IncludePreviousMonth, fLinkQuery) +
                     AddCellForTotalsItem(tr, Rollup.YTD.ContainsKey(ti.Description) ? Rollup.YTD[ti.Description] : null, Rollup.IncludeYearToDate, fLinkQuery) +
+                    AddCellForTotalsItem(tr, Rollup.Trailing90.ContainsKey(ti.Description) ? Rollup.Trailing90[ti.Description] : null, Rollup.IncludeTrailing90, fLinkQuery) +
                     AddCellForTotalsItem(tr, Rollup.Trailing12.ContainsKey(ti.Description) ? Rollup.Trailing12[ti.Description] : null, Rollup.IncludeTrailing12, fLinkQuery) +
                     AddCellForTotalsItem(tr, Rollup.Trailing24.ContainsKey(ti.Description) ? Rollup.Trailing24[ti.Description] : null, Rollup.IncludeTrailing24, fLinkQuery) +
                     AddCellForTotalsItem(tr, Rollup.PrevYear.ContainsKey(ti.Description) ? Rollup.PrevYear[ti.Description] : null, Rollup.IncludePreviousYear, fLinkQuery);
