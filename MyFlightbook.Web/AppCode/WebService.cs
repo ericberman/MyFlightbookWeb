@@ -686,7 +686,7 @@ namespace MyFlightbook
             if (szUser.Length == 0)
                 return null;
             EventRecorder.LogCall("VisitedAirports - user {user}", szUser);
-            return VisitedAirport.VisitedAirportsForUser(szUser);
+            return VisitedAirport.VisitedAirportsForUser(szUser).ToArray();
         }
 
         /// <summary>

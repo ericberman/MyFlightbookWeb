@@ -786,7 +786,6 @@
     <Content Include="Admin\Admin.aspx" />
     <Content Include="Admin\AdminImages.aspx" />
     <Content Include="Member\Aircraft.aspx" />
-    <Content Include="Member\Airports.aspx" />
     <Content Include="Member\Ajax.asmx" />
     <Content Include="Member\BrowseTemplates.aspx" />
     <Content Include="Member\CheckFlights.aspx" />
@@ -2741,13 +2740,6 @@
     </Compile>
     <Compile Include="Member\Aircraft.aspx.designer.cs">
       <DependentUpon>Aircraft.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Member\Airports.aspx.cs">
-      <DependentUpon>Airports.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\Airports.aspx.designer.cs">
-      <DependentUpon>Airports.aspx</DependentUpon>
     </Compile>
     <Compile Include="Member\BrowseTemplates.aspx.cs">
       <DependentUpon>BrowseTemplates.aspx</DependentUpon>

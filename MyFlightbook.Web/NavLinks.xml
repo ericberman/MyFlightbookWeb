@@ -115,7 +115,7 @@
         <Roles></Roles>
       </Item>
       <Item>
-        <Link>~/Member/Airports.aspx</Link>
+        <Link>~/mvc/Airport/VisitedAirports</Link>
         <ID>mptVisited</ID>
         <Roles></Roles>
       </Item>

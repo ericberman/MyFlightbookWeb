@@ -6,13 +6,14 @@ using MyFlightbook.Web.Sharing;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2020 MyFlightbook LLC
+ * Copyright (c) 2020-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -238,7 +239,7 @@ public partial class ViewSharedLogbook : System.Web.UI.Page
     protected void RefreshVisitedAirports()
     {
         if (CurrentVisitedAirports == null)
-            CurrentVisitedAirports = VisitedAirport.VisitedAirportsForQuery(Restriction);
+            CurrentVisitedAirports = VisitedAirport.VisitedAirportsForQuery(Restriction).ToArray();
         lblNumAirports.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.VisitedAirportsNumAirports, CurrentVisitedAirports.Length);
 
         gvAirports.DataSource = CurrentVisitedAirports;

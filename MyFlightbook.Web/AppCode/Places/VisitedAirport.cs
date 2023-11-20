@@ -311,7 +311,7 @@ namespace MyFlightbook.Airports
         /// </summary>
         /// <param name="fq">The flight query</param>
         /// <returns>A set of visited airports</returns>
-        public static VisitedAirport[] VisitedAirportsForQuery(FlightQuery fq)
+        public static IEnumerable<VisitedAirport> VisitedAirportsForQuery(FlightQuery fq)
         {
             if (fq == null)
                 throw new ArgumentNullException(nameof(fq));
@@ -411,6 +411,10 @@ namespace MyFlightbook.Airports
             // copy the ones with matching airports into an array list
             List<VisitedAirport> lstResults = new List<VisitedAirport>(dDedupe.Values);
 
+            // Convert everything to title case for legibility
+            foreach (VisitedAirport va in lstResults)
+                va.Airport.Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(va.Airport.Name.ToLower(CultureInfo.CurrentCulture));
+
             lstResults.Sort();
             return lstResults.ToArray();
         }
@@ -420,7 +424,7 @@ namespace MyFlightbook.Airports
         /// </summary>
         /// <param name="szUser">The username</param>
         /// <returns>A set of visited airports.</returns>
-        public static VisitedAirport[] VisitedAirportsForUser(string szUser)
+        public static IEnumerable<VisitedAirport> VisitedAirportsForUser(string szUser)
         {
             return VisitedAirportsForQuery(new FlightQuery(szUser));
         }

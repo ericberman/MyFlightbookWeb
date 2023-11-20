@@ -180,7 +180,7 @@ namespace MyFlightbook.Airports
                 return (new AirportList(szDefault)).GetAirportList();
             }
 
-            VisitedAirport[] rgva = VisitedAirport.VisitedAirportsForUser(Page.User.Identity.Name);
+            VisitedAirport[] rgva = VisitedAirport.VisitedAirportsForUser(Page.User.Identity.Name).ToArray();
 
             if (rgva.Length < 15)
             {

@@ -80,7 +80,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 {
                     DataRow dr = dt.NewRow();
                     dr[0] = va.Code;
-                    dr[1] = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(va.Airport.Name.ToLower(CultureInfo.CurrentCulture));
+                    dr[1] = va.Airport.Name;
                     dr[2] = va.Country;
                     dr[3] = va.Admin1;
                     dr[4] = va.NumberOfVisits;
@@ -123,10 +123,10 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return lst;
         }
 
-        private ActionResult VisitedAirportViewForQuery(FlightQuery fq)
+        private ViewResult VisitedAirportViewForQuery(FlightQuery fq)
         {
             ViewBag.query = fq;
-            VisitedAirport[] rgva = VisitedAirport.VisitedAirportsForQuery(fq);
+            IEnumerable<VisitedAirport> rgva = VisitedAirport.VisitedAirportsForQuery(fq);
             ViewBag.visitedAirports = rgva;
             AirportList alMatches = new AirportList(rgva);
             bool fShowRoute = util.GetIntParam(Request, "path", 0) != 0;
@@ -288,10 +288,10 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             if (ViewBag.travelingSalesman)
             {
                 ListsFromRoutesResults lrr = AirportList.ListsFromRoutes(Airports);
-                if (lrr.Result.Any())
+                if (lrr.Result.Count != 0)
                 {
                     List<airport> lst = new List<airport>(lrr.Result[0].UniqueAirports);
-                    if (lst.Any())
+                    if (lst.Count != 0)
                     {
                         IEnumerable<IFix> path = TravelingSalesman.ShortestPath(lst);
                         ViewBag.Airports = Airports = String.Join(" ", path.Select(ap => ap.Code));
@@ -306,7 +306,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             GoogleMap map = new GoogleMap("divMappedRoutes", sm == 0 ? GMap_Mode.Dynamic : GMap_Mode.Static);
             ListsFromRoutesResults result = AirportList.ListsFromRoutes(Airports);
             map.Airports = result.Result;
-            map.Options.fAutofillPanZoom = !result.Result.Any();
+            map.Options.fAutofillPanZoom = result.Result.Count == 0;
             ViewBag.Map = map;
 
             ViewBag.normalizedAirports = result.MasterList.GetNormalizedAirports();

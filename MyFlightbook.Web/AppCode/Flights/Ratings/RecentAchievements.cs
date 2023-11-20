@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Linq;
 using System.Web;
 
 /******************************************************
@@ -308,7 +307,7 @@ namespace MyFlightbook.RatingsProgress
             miFurthestFlight = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsFurthestFlightTitle, MilestoneItem.MilestoneType.AchieveOnce, 1);
             miAircraft = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsDistinctAircraftTitle, MilestoneItem.MilestoneType.Count, 1);
             miModels = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsDistinctModelsTitle, MilestoneItem.MilestoneType.Count, 1);
-            miAirports = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsAirportsVisitedTitle, MilestoneItem.MilestoneType.Count, 1) { QueryLinkTemplate = "~/Member/Airports.aspx?fq={0}" };
+            miAirports = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsAirportsVisitedTitle, MilestoneItem.MilestoneType.Count, 1) { QueryLinkTemplate = "~/mvc/Airport/VisitedAirports?fq={0}" };
             miMostAirportsFlight = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsAirportsOnFlightTitle, MilestoneItem.MilestoneType.AchieveOnce, 1);
             miCountries = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsCountriesVisited, MilestoneItem.MilestoneType.Count, 2);
             miAdmin1 = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsAdmin1Visited, MilestoneItem.MilestoneType.Count, 2);
@@ -481,7 +480,7 @@ namespace MyFlightbook.RatingsProgress
             }
                   
             // Distinct flights on dates
-            FlightDates[szDateKey] = FlightDates.ContainsKey(szDateKey) ? FlightDates[szDateKey] + 1 : 1;
+            FlightDates[szDateKey] = FlightDates.TryGetValue(szDateKey, out int value) ? value + 1 : 1;
 
             if (FlightDates[szDateKey] > MaxFlightsPerDay)
             {
@@ -492,7 +491,7 @@ namespace MyFlightbook.RatingsProgress
                 miMostFlightsInDay.Query = new FlightQuery(Username) { DateRange = FlightQuery.DateRanges.Custom, DateMin = cfr.dtFlight, DateMax = cfr.dtFlight };
             }
 
-            FlightLandings[szDateKey] = FlightLandings.ContainsKey(szDateKey) ? FlightLandings[szDateKey] + cfr.cLandingsThisFlight : cfr.cLandingsThisFlight;
+            FlightLandings[szDateKey] = FlightLandings.TryGetValue(szDateKey, out int value2) ? value2 + cfr.cLandingsThisFlight : cfr.cLandingsThisFlight;
 
             if (FlightLandings[szDateKey] > MaxLandingsPerDay)
             {
