@@ -802,13 +802,11 @@
     <Content Include="Member\FBPost.aspx" />
     <Content Include="Member\FlightAnalysis.aspx" />
     <Content Include="Member\FlightDetail.aspx" />
-    <Content Include="Member\Game.aspx" />
     <Content Include="Member\IcalAppt.aspx" />
     <Content Include="Member\ImpAircraft.aspx" />
     <Content Include="Member\ImpAircraftService.aspx" />
     <Content Include="Member\Import.aspx" />
     <Content Include="Member\ImportTelemetry.aspx" />
-    <Content Include="Member\Logbook.aspx" />
     <Content Include="Member\LogbookNew.aspx" />
     <Content Include="Member\makes.aspx" />
     <Content Include="Member\MiniLogbook.aspx" />
@@ -2845,13 +2843,6 @@
     <Compile Include="Member\FlightDetail.aspx.designer.cs">
       <DependentUpon>FlightDetail.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Member\Game.aspx.cs">
-      <DependentUpon>Game.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\Game.aspx.designer.cs">
-      <DependentUpon>Game.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Member\IcalAppt.aspx.cs">
       <DependentUpon>IcalAppt.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2886,13 +2877,6 @@
     </Compile>
     <Compile Include="Member\ImportTelemetry.aspx.designer.cs">
       <DependentUpon>ImportTelemetry.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Member\Logbook.aspx.cs">
-      <DependentUpon>Logbook.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\Logbook.aspx.designer.cs">
-      <DependentUpon>Logbook.aspx</DependentUpon>
     </Compile>
     <Compile Include="Member\LogbookNew.aspx.cs">
       <DependentUpon>LogbookNew.aspx</DependentUpon>
