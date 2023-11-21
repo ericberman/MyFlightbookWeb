@@ -8,7 +8,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2022 MyFlightbook LLC
+ * Copyright (c) 2015-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -402,7 +402,7 @@ namespace MyFlightbook.Schedule
                 case Club.EditPolicy.OwnersAndAdmins:
                     return fIsAdmin || fIsOwner;
                 case Club.EditPolicy.AllMembers:
-                    return c.HasMember(szUser);
+                    return !(c.GetMember(szUser)?.IsInactive ?? true);
                 default:
                     throw new InvalidOperationException("Unknown editing policy: " + c.EditingPolicy.ToString());
             }

@@ -15,7 +15,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2021 MyFlightbook LLC
+ * Copyright (c) 2015-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -35,9 +35,7 @@ namespace MyFlightbook.Clubs
             if (idClub == Club.ClubIDNew)
                 throw new MyFlightbookException("Each scheduled item must be in the context of a club.");
 
-            Club c = Club.ClubWithID(idClub);
-            if (c == null)
-                throw new MyFlightbookException("Invalid club specification - no such club.");
+            Club c = Club.ClubWithID(idClub) ?? throw new MyFlightbookException("Invalid club specification - no such club.");
 
             // Check that the user is a member of the specified club
             if (!c.HasMember(HttpContext.Current.User.Identity.Name))
@@ -71,17 +69,19 @@ namespace MyFlightbook.Clubs
 
                     Club c = Club.ClubWithID(clubID);
 
-                    if (c.EditingPolicy == Club.EditPolicy.AdminsOnly && !c.HasAdmin(HttpContext.Current.User.Identity.Name))
+                    string szUser = HttpContext.Current.User.Identity.Name;
+
+                    if ((c.EditingPolicy == Club.EditPolicy.AdminsOnly && !c.HasAdmin(szUser)) || c.GetMember(szUser).IsInactive) 
                         throw new MyFlightbookException(Resources.Schedule.ErrUnauthorizedEdit);
 
                     TimeZoneInfo tzi = Club.ClubWithID(clubID).TimeZone;
 
                     // timezoneOffset is UTC time minus local time, so in Seattle it is 420 or 480 (depending on time of year)
-                    ScheduledEvent se = new ScheduledEvent(ScheduledEvent.ToUTC(start, tzi), ScheduledEvent.ToUTC(end, tzi), HttpUtility.HtmlDecode(text), id, HttpContext.Current.User.Identity.Name, resource, clubID, tzi);
+                    ScheduledEvent se = new ScheduledEvent(ScheduledEvent.ToUTC(start, tzi), ScheduledEvent.ToUTC(end, tzi), HttpUtility.HtmlDecode(text), id, szUser, resource, clubID, tzi);
                     if (!se.FCommit())
                         throw new MyFlightbookException(se.LastError);
 
-                    c.NotifyAdd(se, HttpContext.Current.User.Identity.Name);
+                    c.NotifyAdd(se, szUser);
                 }
             }
             catch (MyFlightbookException ex)
