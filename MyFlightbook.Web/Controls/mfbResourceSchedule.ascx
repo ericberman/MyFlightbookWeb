@@ -15,7 +15,7 @@
 <asp:HiddenField ID="hdnResourceName" runat="server" />
 <asp:HiddenField ID="hdnClubID" runat="server" />
 <script>
-    var cal = new mfbCalendar('<% =ResolveUrl("~/Member/Schedule.aspx") %>', '<% =ResourceID %>', '<% =ClubID %>', '<% =Mode %>', '<% =pnlCalendar.ClientID %>', newAppt, editAppt, getAppointment);
+    var cal = new mfbCalendar('<% =ResolveUrl("~/Member/Ajax.asmx") %>', '<% =ResourceID %>', '<% =ClubID %>', '<% =Mode %>', '<% =pnlCalendar.ClientID %>', newAppt, editAppt, getAppointment);
     <% if (String.IsNullOrEmpty(NavInitClientFunction))
            Response.Write(String.Format("cal.initNav('{0}').select(new DayPilot.Date('{1}'));", pnlCalendarNav.ClientID, NowUTCInClubTZ));
        else

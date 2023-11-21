@@ -1,8 +1,9 @@
-﻿using MyFlightbook.Currency;
+﻿using MyFlightbook.Clubs;
+using MyFlightbook.Currency;
 using MyFlightbook.Printing;
+using MyFlightbook.Schedule;
 using MyFlightbook.Subscriptions;
 using Newtonsoft.Json;
-using Resources;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -30,7 +31,7 @@ namespace MyFlightbook.Web.Ajax
     [ServiceContract]
     [System.Web.Script.Services.ScriptService]
     [System.ComponentModel.ToolboxItem(false)]
-    public class MyFlightbookAjax : System.Web.Services.WebService
+    public class MyFlightbookAjax : WebService
     {
         private static void CheckAuth()
         {
@@ -68,10 +69,10 @@ namespace MyFlightbook.Web.Ajax
             CheckAuth();
 
             if (String.IsNullOrWhiteSpace(szTargetEmail))
-                throw new ArgumentException(LocalizedText.ValidationEmailRequired);
+                throw new ArgumentException(Resources.LocalizedText.ValidationEmailRequired);
 
             if (!Regex.IsMatch(szTargetEmail, "\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*"))
-                throw new ArgumentException(LocalizedText.ValidationEmailFormat);
+                throw new ArgumentException(Resources.LocalizedText.ValidationEmailFormat);
 
             string szUser = HttpContext.Current.User.Identity.Name;
             LogbookEntry le = new LogbookEntry(Convert.ToInt32(idFlight, CultureInfo.InvariantCulture), szUser);
@@ -588,6 +589,48 @@ namespace MyFlightbook.Web.Ajax
         public string[] SuggestModels(string prefixText, int count)
         {
             return DoSuggestion("SELECT model AS {0} FROM models WHERE model LIKE CONCAT(?prefix, '%') ORDER BY model ASC LIMIT {1}", prefixText, count);
+        }
+        #endregion
+
+        #region Club Scheduling
+        /// <summary>
+        /// Create an event.
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <param name="id"></param>
+        /// <param name="text"></param>
+        /// <param name="resource"></param>
+        /// <param name="clubID"></param>
+        /// <returns>Empty string for success; otherwise, the error message</returns>
+        [WebMethod(EnableSession = true)]
+        public string CreateEvent(DateTime start, DateTime end, string id, string text, string resource, int clubID = Club.ClubIDNew)
+        {
+            return ScheduledEvent.CreateEvent(start, end, id, text, resource, clubID);
+        }
+
+        [WebMethod(EnableSession = true)]
+        public ScheduledEvent[] ReadEvents(DateTime dtStart, DateTime dtEnd, int clubID = Club.ClubIDNew, string resourceName = null)
+        {
+            return ScheduledEvent.ReadEvents(dtStart, dtEnd, clubID, resourceName);
+        }
+
+        [WebMethod(EnableSession = true)]
+        public string UpdateEvent(DateTime start, DateTime end, string id, string text, string resource, int clubID)
+        {
+            return ScheduledEvent.UpdateEvent(start, end, id, text, resource, clubID);
+        }
+
+        [WebMethod(EnableSession = true)]
+        public string DeleteEvent(string id)
+        {
+            return ScheduledEvent.DeleteEvent(id);
+        }
+
+        [WebMethod(EnableSession = true)]
+        public string AvailabilityMap(DateTime dtStart, int clubID, int limitAircraft = Aircraft.idAircraftUnknown, int cDays = 1)
+        {
+            return ScheduledEvent.AvailabilityMap(dtStart, clubID, limitAircraft, cDays);
         }
         #endregion
     }

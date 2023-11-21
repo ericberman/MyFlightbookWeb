@@ -216,7 +216,7 @@
                                             {
                                                 type: "POST",
                                                 data: JSON.stringify(params),
-                                                url: "<% =ResolveUrl("~/Member/Schedule.aspx") %>/AvailabilityMap",
+                                                url: '<% =ResolveUrl("~/Member/Ajax.asmx/AvailabilityMap") %>',
                                                 dataType: "json",
                                                 contentType: "application/json",
                                                 error: function (xhr, status, error) {
