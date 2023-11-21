@@ -16,7 +16,7 @@ using System.Web.Caching;
 
 /******************************************************
  * 
- * Copyright (c) 2014-2022 MyFlightbook LLC
+ * Copyright (c) 2014-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -796,6 +796,8 @@ namespace MyFlightbook.Clubs
                     break;
             }
 
+            lst.RemoveAll(pf => pf is ClubMember cm && cm.IsInactive);
+
             s.LocalTimeZone = TimeZone;    // ensure that we're using the right timezone
             if (s.ResourceAircraft == null)
                 s.ResourceAircraft = MemberAircraft.FirstOrDefault(ca => ca.AircraftID.ToString(CultureInfo.InvariantCulture).CompareOrdinal(s.ResourceID) == 0);
@@ -807,7 +809,7 @@ namespace MyFlightbook.Clubs
             string szSubject = Branding.ReBrand(Resources.Schedule.CreateNotificationSubject);
 
             foreach (Profile pf in lst)
-                util.NotifyUser(szSubject, szBody, new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, false);
+                util.NotifyUser(szSubject, szBody, new MailAddress(pf.Email, pf.UserFullName), false, false);
         }
 
         public void NotifyOfChange(ScheduledEvent sOriginal, ScheduledEvent sNew, string changingUser)
@@ -839,6 +841,8 @@ namespace MyFlightbook.Clubs
                     break;
             }
 
+            lst.RemoveAll(pf => pf is ClubMember cm && cm.IsInactive);
+
             // check if no notifications required
             if (lst.Count == 0)
                 return;
@@ -858,7 +862,7 @@ namespace MyFlightbook.Clubs
             string szSubject = Branding.ReBrand(Resources.Schedule.ChangeNotificationSubject);
 
             foreach (Profile pf in lst)
-                util.NotifyUser(szSubject, szBody, new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, false);
+                util.NotifyUser(szSubject, szBody, new MailAddress(pf.Email, pf.UserFullName), false, false);
         }
 
         public void NotifyOfDelete(ScheduledEvent s, string deletingUser)
@@ -880,6 +884,8 @@ namespace MyFlightbook.Clubs
                     break;
             }
 
+            lst.RemoveAll(pf => pf is ClubMember cm && cm.IsInactive);
+
             // And add the owner if they didn't delete it themselves - but only if not already in list above
             if (s.OwningUser.CompareOrdinalIgnoreCase(deletingUser) != 0 && !lst.Exists(pf => pf.UserName.CompareOrdinalIgnoreCase(s.OwningUser) == 0))
                 lst.Add(Profile.GetUser(s.OwningUser));
@@ -898,7 +904,7 @@ namespace MyFlightbook.Clubs
                     .Replace("<% TimeStamp %>", string.Empty /* DateTime.Now.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture) */);
                 string szSubject = Branding.ReBrand(Resources.Schedule.DeleteNotificationSubject);
 
-                lst.ForEach((pf) => { util.NotifyUser(szSubject, szBody, new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, false); });
+                lst.ForEach((pf) => { util.NotifyUser(szSubject, szBody, new MailAddress(pf.Email, pf.UserFullName), false, false); });
             }
         }
 
@@ -1107,11 +1113,14 @@ namespace MyFlightbook.Clubs
         /// </summary>
         public enum ClubMemberRole {Member, Admin, Owner}
 
+        private const UInt32 RoleMask = 0xFF;
+
+        // Officers.  These are NOT mutually exclusive, but are limited to 0xFF00 mask
         private const UInt32 MaintenanceOfficerMask = 0x0100;
         private const UInt32 TreasurerMask = 0x0200;
         private const UInt32 InsuranceOfficerMask = 0x0400;
 
-        private const UInt32 RoleMask = 0xFF;
+        private const UInt32 InactiveMask = 0x00010000;   // Is the user inactive.
 
         #region properties
         /// <summary>
@@ -1195,9 +1204,11 @@ namespace MyFlightbook.Clubs
         /// </summary>
         public bool IsInsuranceOfficer { get; set; }
 
+        public bool IsInactive { get; set; }
+
         protected UInt32 ConsolidatedRoleFlags
         {
-            get { return ((UInt32)RoleInClub) | (IsMaintanenceOfficer ? MaintenanceOfficerMask : 0) | (IsTreasurer ? TreasurerMask : 0) | (IsInsuranceOfficer ? InsuranceOfficerMask : 0); }
+            get { return ((UInt32)RoleInClub) | (IsMaintanenceOfficer ? MaintenanceOfficerMask : 0) | (IsTreasurer ? TreasurerMask : 0) | (IsInsuranceOfficer ? InsuranceOfficerMask : 0) | (IsInactive ? InactiveMask : 0); }
         }
         #endregion
 
@@ -1228,6 +1239,7 @@ namespace MyFlightbook.Clubs
             IsMaintanenceOfficer = ((roleFlags & MaintenanceOfficerMask) != 0);
             IsTreasurer = ((roleFlags & TreasurerMask) != 0);
             IsInsuranceOfficer = ((roleFlags & InsuranceOfficerMask) != 0);
+            IsInactive = ((roleFlags & InactiveMask) != 0);
             JoinedDate = Convert.ToDateTime(dr["joindate"], CultureInfo.InvariantCulture);
             LastError = string.Empty;
             ClubOffice = (string) util.ReadNullableField(dr, "cluboffice", string.Empty);

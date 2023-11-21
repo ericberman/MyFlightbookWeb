@@ -42,9 +42,14 @@
                                                 <img src='<%# Eval("HeadShotHRef") %>' runat="server" class="roundedImg" style="width: 60px; height:60px;" />
                                             </ItemTemplate>
                                         </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="<%$ Resources:Club, LabelMemberName %>" HeaderStyle-HorizontalAlign="Left" ItemStyle-Font-Bold="true" ItemStyle-Font-Size="Larger">
+                                        <asp:TemplateField HeaderText="<%$ Resources:Club, LabelMemberName %>" HeaderStyle-HorizontalAlign="Left">
                                             <ItemTemplate>
-                                                <%#: Eval("UserFullName") %>
+                                                <span style="font-weight: bold; font-size: larger" runat="server" visible='<%# !((bool) Eval("IsInactive")) %>'>
+                                                    <%#: Eval("UserFullName") %>
+                                                </span>
+                                                <span style="font-size: larger; font-style:italic;" runat="server" visible='<%# ((bool) Eval("IsInactive")) %>'>
+                                                    <%#: Eval("UserFullName") %> (<%=Resources.Club.RoleInactive %>)
+                                                </span>
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                         <asp:TemplateField HeaderStyle-HorizontalAlign="Left">
@@ -79,6 +84,7 @@
                                                 <div><asp:CheckBox ID="ckTreasurer" runat="server" Text="<%$ Resources:Club, RoleTreasurer %>" /></div>
                                                 <div><asp:CheckBox ID="ckInsuranceOfficer" runat="server" Text="<%$ Resources:Club, RoleInsuranceOfficer %>" /></div>
                                                 <div><asp:Label ID="lblOffice" runat="server" Text="<%$ Resources:Club, RoleOfficeHeld %>" /> <asp:TextBox ID="txtOffice" runat="server" /></div>
+                                                <div><asp:CheckBox ID="ckInactive" runat="server" Text="<%$ Resources:Club, RoleInactive %>" /></div>
                                             </EditItemTemplate>
                                         </asp:TemplateField>
                                         <asp:BoundField DataField="MobilePhone" HeaderText="<%$ Resources:Club, ClubStatusContact %>" HeaderStyle-HorizontalAlign="Left" ReadOnly="true" />

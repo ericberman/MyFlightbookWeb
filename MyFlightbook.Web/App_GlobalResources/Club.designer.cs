@@ -304,10 +304,7 @@ namespace Resources {
         ///   Looks up a localized string similar to &lt;% Requestor %&gt; has invited you to join the club/FBO &quot;&lt;% ClubName %&gt;&quot; on [%APP_NAME%](https://%APP_URL%), a free online logbook for pilots.
         ///
         ///If you know &lt;% Requestor %&gt; and/or are interested in joining, please confirm this by visiting [this page](&lt;% ConfirmRoleLink %&gt;).
-        ///
-        ///Thank-you
-        ///
-        ///To contact us, please visit http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx..
+        ///.
         /// </summary>
         internal static string ClubInviteJoin {
             get {
@@ -388,10 +385,7 @@ namespace Resources {
         ///   Looks up a localized string similar to &lt;% Requestor %&gt; has requested membership in the club/FBO &quot;&lt;% ClubName %&gt;&quot; on %APP_NAME% (https://%APP_URL%).
         ///
         ///If you know &lt;% Requestor %&gt; and approve their membership, please confirm this by visiting [this page](&lt;% ConfirmRoleLink %&gt;).
-        ///
-        ///Thank-you
-        ///
-        ///To contact us, please visit http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx..
+        ///.
         /// </summary>
         internal static string ClubRequestJoin {
             get {
@@ -1943,6 +1937,15 @@ namespace Resources {
         internal static string ReportUpdate {
             get {
                 return ResourceManager.GetString("ReportUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inactive.
+        /// </summary>
+        internal static string RoleInactive {
+            get {
+                return ResourceManager.GetString("RoleInactive", resourceCulture);
             }
         }
         

@@ -86,9 +86,14 @@
                                     <img src='<%# CurrentClub.ShowHeadshots ? Eval("HeadShotHRef") : VirtualPathUtility.ToAbsolute("~/Public/tabimages/ProfileTab.png") %>' runat="server" class="roundedImg" style="width: 60px; height:60px;" />
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="<%$ Resources:Club, LabelMemberName %>" HeaderStyle-HorizontalAlign="Left" ItemStyle-Font-Bold="true" ItemStyle-Font-Size="Larger">
+                            <asp:TemplateField HeaderText="<%$ Resources:Club, LabelMemberName %>" HeaderStyle-HorizontalAlign="Left">
                                 <ItemTemplate>
-                                    <%#: Eval("UserFullName") %>
+                                    <span style="font-weight: bold; font-size: larger" runat="server" visible='<%# !((bool) Eval("IsInactive")) %>'>
+                                        <%#: Eval("UserFullName") %>
+                                    </span>
+                                    <span style="font-size: larger; font-style:italic;" runat="server" visible='<%# ((bool) Eval("IsInactive")) %>'>
+                                        <%#: Eval("UserFullName") %> (<%=Resources.Club.RoleInactive %>)
+                                    </span>
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField>

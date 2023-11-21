@@ -803,4 +803,7 @@ Sender Email: {1}</value>
   <data name="ReportHeaderPaxCount" xml:space="preserve">
     <value># Pax</value>
   </data>
+  <data name="RoleInactive" xml:space="preserve">
+    <value>Inactive</value>
+  </data>
 </root>

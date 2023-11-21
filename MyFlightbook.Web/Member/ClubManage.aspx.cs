@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2022 MyFlightbook LLC
+ * Copyright (c) 2017-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -232,6 +232,7 @@ namespace MyFlightbook.Clubs
                 ((CheckBox)e.Row.FindControl("ckMaintenanceOfficer")).Checked = cm.IsMaintanenceOfficer;
                 ((CheckBox)e.Row.FindControl("ckTreasurer")).Checked = cm.IsTreasurer;
                 ((CheckBox)e.Row.FindControl("ckInsuranceOfficer")).Checked = cm.IsInsuranceOfficer;
+                ((CheckBox)e.Row.FindControl("ckInactive")).Checked = cm.IsInactive;
 
                 ((TextBox)e.Row.FindControl("txtOffice")).Text = cm.ClubOffice ?? string.Empty;
             }
@@ -249,6 +250,7 @@ namespace MyFlightbook.Clubs
                 cm.IsMaintanenceOfficer = ((CheckBox)gvr.FindControl("ckMaintenanceOfficer")).Checked;
                 cm.IsTreasurer = ((CheckBox)gvr.FindControl("ckTreasurer")).Checked;
                 cm.IsInsuranceOfficer = ((CheckBox)gvr.FindControl("ckInsuranceOfficer")).Checked;
+                cm.IsInactive = ((CheckBox)gvr.FindControl("ckInactive")).Checked;
                 cm.ClubOffice = ((TextBox)gvr.FindControl("txtOffice")).Text.Trim();
 
                 bool fResult = true;
