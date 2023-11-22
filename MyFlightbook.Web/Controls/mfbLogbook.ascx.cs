@@ -100,7 +100,7 @@ public partial class Controls_MFBLogbookBase : UserControl
     private string m_szDetailsPageTemplate = "~/Member/FlightDetail.aspx/{0}";
     private string m_szEditPageTemplate = "~/member/LogbookNew.aspx/{0}";
     private string m_szAnalysisPageTemplate = "~/member/FlightDetail.aspx/{0}?tabID=Chart";
-    private string m_szPublicRouteTemplate = "~/Public/ViewPublicFlight.aspx/{0}";
+    private string m_szPublicRouteTemplate = "~/mvc/pub/ViewFlight/{0}";
 
     /// <summary>
     /// The URL for details page, ID of the flight replaces {0}

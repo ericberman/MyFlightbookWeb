@@ -2271,7 +2271,7 @@ ORDER BY f.idFlight DESC;");
         public string CssClass { get { return Success ? "success" : "error"; } }
         public string DateDisplay { get { return Date.HasValue ? Date.Value.ToShortDateString() : string.Empty; } }
         public string AdjustedDateDisplay { get { return Date.HasValue ? AdjustedDate.ToShortDateString() : string.Empty; } }
-        public string MatchHREF { get { return "~/Public/ViewPublicFlight.aspx/" + FlightID.ToString(CultureInfo.CurrentCulture); } }
+        public string MatchHREF { get { return "~/mvc/pub/ViewFlight/" + FlightID.ToString(CultureInfo.CurrentCulture); } }
         #endregion
         #endregion;
 

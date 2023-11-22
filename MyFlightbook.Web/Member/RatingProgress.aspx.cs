@@ -196,7 +196,7 @@ namespace MyFlightbook.RatingsProgress
                 {
                     mv.ActiveViewIndex = 1;
                     HyperLink l = (HyperLink)e.Row.FindControl("lnkFlight");
-                    l.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Public/ViewPublicFlight.aspx/{0}", mi.MatchingEventID);
+                    l.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/mvc/pub/ViewFlight/{0}", mi.MatchingEventID);
 
                     MultiView mvAchievedStatus = (MultiView)e.Row.FindControl("mvAchievement");
                     mvAchievedStatus.ActiveViewIndex = (mi.IsSatisfied) ? 0 : 1;

@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2021 MyFlightbook LLC
+ * Copyright (c) 2015-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -22,7 +22,7 @@ public partial class Controls_mfbPublicFlightItem : System.Web.UI.UserControl
         set
         {
             m_le = value ?? throw new ArgumentNullException(nameof(value));
-            lnkFlight.NavigateUrl = VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/public/ViewPublicFlight.aspx/{0}", value.FlightID));
+            lnkFlight.NavigateUrl = VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/pub/ViewFlight/{0}", value.FlightID));
             lblDate.Text = value.Date.ToShortDateString();
             lblDetails.Text = (value.TotalFlightTime > 0) ? String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.PublicFlightDuration, value.TotalFlightTime) : string.Empty;
 

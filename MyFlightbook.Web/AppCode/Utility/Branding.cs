@@ -318,7 +318,7 @@ namespace MyFlightbook
 
         static public Uri PublicFlightURL(int idFlight)
         {
-            return new Uri(String.Format(System.Globalization.CultureInfo.InvariantCulture, "http://{0}/{1}public/ViewPublicFlight.aspx/{2}", CurrentBrand.HostName, CurrentBrand.Root, idFlight));
+            return new Uri(String.Format(System.Globalization.CultureInfo.InvariantCulture, "http://{0}/{1}mvc/pub/ViewFlight/{2}", CurrentBrand.HostName, CurrentBrand.Root, idFlight));
         }
     }
 
