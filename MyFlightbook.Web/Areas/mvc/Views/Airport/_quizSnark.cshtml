@@ -1,0 +1,6 @@
+﻿@{ Html.RenderAction("QuizStatusForAnswer", "Airport", new { q = ViewBag.quiz, question = ViewBag.answeredQuestion, ViewBag.answerIndex }); }
+<h2>@Resources.LocalizedText.AirportGameFinished</h2>
+<p>@ViewBag.results</p>
+<p>@ViewBag.snark</p>
+<p><img src="@VirtualPathUtility.ToAbsolute("~/images/rightarrow.png")" style="vertical-align:middle;" />
+    <a href="Game" style="vertical-align: middle; font-weight: bold; font-size: larger;">@Resources.LocalizedText.AirportGamePlayAgain</a></p>

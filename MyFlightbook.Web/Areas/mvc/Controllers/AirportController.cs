@@ -10,6 +10,7 @@ using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
@@ -25,6 +26,97 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 {
     public class AirportController : Controller
     {
+        #region AirportQuiz
+        [ChildActionOnly]
+        public ActionResult QuizStatusForAnswer(AirportQuiz q, AirportQuizQuestion question, int answerIndex)
+        {
+            if (q == null)
+                throw new ArgumentNullException(nameof(q));
+            if (question == null)
+                throw new ArgumentNullException(nameof(question));
+
+            bool fCorrect = question.CorrectAnswerIndex == answerIndex;
+            if (fCorrect)
+                q.CorrectAnswerCount++;
+
+            ViewBag.lastAnswerCorrect = fCorrect;
+            ViewBag.previousCorrectAnswer = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.AirportGameCorrectAnswer, question.Answers[question.CorrectAnswerIndex].FullName);
+            ViewBag.runningScore = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.AirportGameAnswerStatus, q.CorrectAnswerCount);
+            return PartialView("_quizStatus");
+        }
+
+        [HttpPost]
+        public ActionResult NextQuestion(string quizRef, int answerIndex)
+        {
+            AirportQuiz q = (AirportQuiz)Session[quizRef];
+            if (q == null)
+            {
+                Response.StatusCode = (int) HttpStatusCode.ExpectationFailed;
+                Response.TrySkipIisCustomErrors = true;
+                return Content(Resources.LocalizedText.AirportGameNotFound);
+            }
+
+            ViewBag.quiz = q;
+            ViewBag.answeredQuestion = q.CurrentQuestion;
+            ViewBag.answerIndex = answerIndex;
+
+            if (q.CurrentQuestionIndex < q.QuestionCount)
+            {
+                q.GenerateQuestion();
+
+                AirportQuizQuestion quizQuestion = q.CurrentQuestion;
+                GoogleMap map = new GoogleMap("divQuizQuestion", GMap_Mode.Static);
+                map.Options.MapCenter = quizQuestion.Answers[quizQuestion.CorrectAnswerIndex].LatLong;
+                map.Options.ZoomFactor = GMap_ZoomLevels.Airport;
+                map.Options.MapType = GMap_MapType.G_SATELLITE_MAP;
+                map.StaticMapAdditionalParams = "style=feature:all|element:labels|visibility:off";
+
+                ViewBag.map = map;
+                ViewBag.progress = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.AirportGameProgress, q.CurrentQuestionIndex, q.QuestionCount);
+                return PartialView("_quizQuestion");
+            }
+            else
+            {
+                int cCorrectAnswers = q.CorrectAnswerCount + (answerIndex == q.CurrentQuestion.CorrectAnswerIndex ? 1 : 0); // this will get incremented in QuizStatusForAnswer, but we need it here for proper result.
+                int score = Convert.ToInt32((cCorrectAnswers * 100.0) / q.QuestionCount);
+                ViewBag.results = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.AirportGameCompletionStatus, cCorrectAnswers, q.QuestionCount, score);
+
+                ViewBag.snark = score == 100
+                    ? Resources.LocalizedText.AirportGameSnarkPerfect
+                    : score >= 70
+                    ? Resources.LocalizedText.AirportGameSnark75
+                    : score >= 50 ? Resources.LocalizedText.AirportGameSnark50 : Resources.LocalizedText.AirportGameSnarkPoor;
+                return PartialView("_quizSnark");
+            }
+        }
+
+        [HttpPost]
+        public string GetQuiz(bool fAnonymous, int bluffCount, int questionCount)
+        {
+            AirportQuiz quiz = new AirportQuiz() { BluffCount = bluffCount, QuestionCount = questionCount };
+            quiz.Init(fAnonymous ? string.Empty : User.Identity.Name, AirportQuiz.szBusyUSAirports);
+            string sessionGuid = Guid.NewGuid().ToString();
+            Session[sessionGuid] = quiz;
+            return sessionGuid;
+        }
+
+        [Authorize]
+        public ActionResult GameAuthed()
+        {
+            return Redirect("Game?SkipIntro=true&anon=false");
+        }
+
+        public ActionResult Game(bool SkipIntro = false, bool anon = false, int bluffCount = 4, int questionCount = 10)
+        {
+            ViewBag.bluffCount = Math.Min(Math.Max(bluffCount, 4), 10);
+            ViewBag.questionCount = Math.Min(Math.Max(questionCount, 1), 30);
+            ViewBag.skipIntro = SkipIntro;
+            ViewBag.anon = anon;
+            
+            return View("game");
+        }
+        #endregion
+
         #region VisitedAirport
         [Authorize]
         [HttpPost]

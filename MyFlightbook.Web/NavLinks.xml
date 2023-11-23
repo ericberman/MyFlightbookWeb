@@ -120,7 +120,7 @@
         <Roles></Roles>
       </Item>
       <Item>
-        <Link>~/Public/Game.aspx</Link>
+        <Link>~/mvc/Airport/Game</Link>
         <ID>mptQuiz</ID>
         <Roles></Roles>
       </Item>

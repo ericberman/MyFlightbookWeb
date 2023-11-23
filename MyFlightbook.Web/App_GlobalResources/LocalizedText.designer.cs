@@ -292,6 +292,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Correct!.
+        /// </summary>
+        internal static string AirportGameCorrect {
+            get {
+                return ResourceManager.GetString("AirportGameCorrect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The airport was {0}.
         /// </summary>
         internal static string AirportGameCorrectAnswer {
@@ -310,11 +319,29 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You must be signed in and have at least 15 airports in your logbook;&lt;br /&gt; otherwise major US airports will be used..
+        ///   Looks up a localized string similar to Incorrect!.
+        /// </summary>
+        internal static string AirportGameIncorrect {
+            get {
+                return ResourceManager.GetString("AirportGameIncorrect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must be signed in and have at least 15 airports in your logbook; otherwise major US airports will be used..
         /// </summary>
         internal static string AirportGameMustBeSignedIn {
             get {
                 return ResourceManager.GetString("AirportGameMustBeSignedIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In-progress quiz not found; please start over..
+        /// </summary>
+        internal static string AirportGameNotFound {
+            get {
+                return ResourceManager.GetString("AirportGameNotFound", resourceCulture);
             }
         }
         

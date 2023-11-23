@@ -1,0 +1,52 @@
+﻿@using MyFlightbook.Airports
+<script type="text/javascript">
+    var t = 30;
+    var timer;
+
+    function TickTock() {
+        if (t > 0) {
+            t = t - 1;
+            document.getElementById("timer").innerHTML = parseInt(t / 60) + ":" + (((t % 60) < 10) ? "0" : "") + (t % 60);
+            timer = setTimeout("TickTock()", 1000);
+        }
+        else {
+            nextQuestion(-1);
+        }
+    }
+
+    $(function () {
+        t = 30;
+        timer = setTimeout("TickTock()", 1000);
+    });
+
+    function nextQ(i) {
+        if (timer !== null)
+            clearTimeout(timer);
+        nextQuestion(i);
+    }
+</script>
+@if (ViewBag.answeredQuestion != null)
+{
+    Html.RenderAction("QuizStatusForAnswer", "Airport", new { q = ViewBag.quiz, question = ViewBag.answeredQuestion, ViewBag.answerIndex });
+}
+<p>@ViewBag.progress</p>
+<p>@Resources.LocalizedText.AirportGameTimeRemaining <span id="timer" style="font-weight: bold;">0:30</span></p>
+<p>@Resources.LocalizedText.AirportGameAirportPrompt</p>
+<div style="width:400px; height:400px; margin-left: auto; margin-right: auto;">
+    @{ Html.RenderAction("MapDiv", "Airport", new { map = ViewBag.Map }); }
+</div>
+@{
+    AirportQuiz q = ViewBag.quiz;
+    int i = 0;
+    foreach (airport ap in q.CurrentQuestion.Answers)
+    {
+        string id = "bluff" + i.ToString();
+        <p><input type="radio" title="@ap.FullName" value="@i" id="@id" onclick="javascript:nextQ(@i)" /><label for="@id">@ap.FullName</label></p>
+        i++;
+    }
+}
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<p><button id="btnSkip" type="button" onclick="javascript:nextQ(-1);">@Resources.LocalizedText.AirportGameSkipAirport</button></p>
+<div>&nbsp;</div>
+<p>@q.Notes</p>

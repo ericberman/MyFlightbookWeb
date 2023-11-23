@@ -136,7 +136,7 @@
     <value>Finished!</value>
   </data>
   <data name="AirportGameMustBeSignedIn" xml:space="preserve">
-    <value>You must be signed in and have at least 15 airports in your logbook;&lt;br /&gt; otherwise major US airports will be used.</value>
+    <value>You must be signed in and have at least 15 airports in your logbook; otherwise major US airports will be used.</value>
   </data>
   <data name="AirportGamePlayAgain" xml:space="preserve">
     <value>Play Again</value>
@@ -1943,5 +1943,14 @@
   </data>
   <data name="MobileAppsPromoHeader" xml:space="preserve">
     <value>%APP_NAME% Apps for iOS and Android</value>
+  </data>
+  <data name="AirportGameCorrect" xml:space="preserve">
+    <value>Correct!</value>
+  </data>
+  <data name="AirportGameIncorrect" xml:space="preserve">
+    <value>Incorrect!</value>
+  </data>
+  <data name="AirportGameNotFound" xml:space="preserve">
+    <value>In-progress quiz not found; please start over.</value>
   </data>
 </root>

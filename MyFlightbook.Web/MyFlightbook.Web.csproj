@@ -511,7 +511,6 @@
     <Content Include="Controls\METAR.ascx" />
     <Content Include="Controls\mfbAccordionProxyControl.ascx" />
     <Content Include="Controls\mfbAccordionProxyExtender.ascx" />
-    <Content Include="Controls\mfbAirportIDGame.ascx" />
     <Content Include="Controls\mfbAirportServices.ascx" />
     <Content Include="Controls\mfbATDFTD.ascx" />
     <Content Include="Controls\mfbBadgeSet.ascx" />
@@ -1411,7 +1410,6 @@
     <Content Include="Public\DayPilot-NOTICE.txt" />
     <Content Include="Public\Developer.aspx" />
     <Content Include="Public\Export.aspx" />
-    <Content Include="Public\Game.aspx" />
     <Content Include="Public\iPadImages\Full\iPad1.png" />
     <Content Include="Public\iPadImages\Full\iPad2.png" />
     <Content Include="Public\iPadImages\Full\iPad3.png" />
@@ -2047,13 +2045,6 @@
     </Compile>
     <Compile Include="Controls\mfbAccordionProxyExtender.ascx.designer.cs">
       <DependentUpon>mfbAccordionProxyExtender.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\mfbAirportIDGame.ascx.cs">
-      <DependentUpon>mfbAirportIDGame.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbAirportIDGame.ascx.designer.cs">
-      <DependentUpon>mfbAirportIDGame.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\mfbAirportServices.ascx.cs">
       <DependentUpon>mfbAirportServices.ascx</DependentUpon>
@@ -3117,13 +3108,6 @@
     <Compile Include="Public\Export.aspx.designer.cs">
       <DependentUpon>Export.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Public\Game.aspx.cs">
-      <DependentUpon>Game.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\Game.aspx.designer.cs">
-      <DependentUpon>Game.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Public\MyFlights.aspx.cs">
       <DependentUpon>MyFlights.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3326,6 +3310,10 @@
     <Content Include="Areas\mvc\Views\Airport\visitedAirports.cshtml" />
     <Content Include="Areas\mvc\Views\Search\_queryDescriptorItem.cshtml" />
     <Content Include="Areas\mvc\Views\Search\_queryDescriptor.cshtml" />
+    <Content Include="Areas\mvc\Views\Airport\game.cshtml" />
+    <Content Include="Areas\mvc\Views\Airport\_quizQuestion.cshtml" />
+    <Content Include="Areas\mvc\Views\Airport\_quizSnark.cshtml" />
+    <Content Include="Areas\mvc\Views\Airport\_quizStatus.cshtml" />
     <None Include="packages.config" />
     <None Include="SecuritySwitch-v4.xsd">
       <SubType>Designer</SubType>

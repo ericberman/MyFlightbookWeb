@@ -1,0 +1,12 @@
+﻿<p style="font-weight: bold; font-size: 14px;">
+    @if (ViewBag.lastAnswerCorrect)
+    {
+        <span style="color: Green;">@Resources.LocalizedText.AirportGameCorrect</span>
+    }
+    else
+    {
+        <span style="color: Red;">@Resources.LocalizedText.AirportGameIncorrect</span>
+    }
+    @ViewBag.previousCorrectAnswer<br />
+    @ViewBag.runningScore
+</p>

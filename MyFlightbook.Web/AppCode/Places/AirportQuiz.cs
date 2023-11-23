@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2021 MyFlightbook LLC
+ * Copyright (c) 2010-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -17,24 +17,19 @@ namespace MyFlightbook.Airports
     [Serializable]
     public class AirportQuizQuestion
     {
-        private int m_CorrectAnswer = -1;
         private readonly airport[] m_Answers;
 
         /// <summary>
         /// The index of the answer to the most recently asked question
         /// </summary>
-        public int CorrectAnswerIndex
-        {
-            get { return m_CorrectAnswer; }
-            set { m_CorrectAnswer = value; }
-        }
+        public int CorrectAnswerIndex { get; set; } = -1;
 
         /// <summary>
         /// The airports that comprise the choices for the user; the correct one is in index CorrectAnswerIndex
         /// </summary>
-        public ReadOnlyCollection<airport> Answers
+        public airport[] Answers
         {
-            get { return new ReadOnlyCollection<airport>(m_Answers); }
+            get { return m_Answers; }
         }
 
         public AirportQuizQuestion(airport[] answers, int correctAnswerIndex)
@@ -49,8 +44,6 @@ namespace MyFlightbook.Airports
     {
         public const string szBusyUSAirports = "KABQ;KALB;KATL;KAUS;KBDL;KBHM;KBNA;KBOI;KBOS;KBTV;KBUF;KBUR;KBWI;KCAK;KCHS;KCLE;KCLT;KCMH;KCOS;KCVG;KDAL;KDAY;KDCA;KDEN;KDFW;KDSM;KDTW;KELP;KEWR;KFLL;KGEG;KGRR;KGSO;PHNL;KHOU;KHPN;KIAD;KIAH;KICT;KIND;KISP;KJAN;KJAX;KJFK;PHKO;KLAS;KLAX;KLGA;KLGB;PHLI;KLIT;KMCI;KMCO;KMDW;KMEM;KMHT;KMIA;KMKE;KMSN;KMSP;KMSY;KMYR;KOAK;PHOG;KOKC;KOMA;KONT;KORD;KORF;KPBI;KPDX;KPHL;KPHX;KPIT;KPNS;KPVD;KPWM;KRDU;KRIC;KRNO;KROC;KRSW;KSAN;KSAT;KSAV;KSDF;KSEA;KSFO;KSJC;TJSJ;KSLC;KSMF;KSNA;KSTL;KSYR;KTPA;KTUL;KTUS;KTYS";
 
-        private int m_CurrentIndex = -1;
-        private int m_CorrectAnswerCount = -1;
         private int[] m_rgShuffle;
         private airport[] m_rgAirport;
         private int m_cBluffs = 3;
@@ -59,25 +52,24 @@ namespace MyFlightbook.Airports
         /// <summary>
         /// The index of the current question
         /// </summary>
-        public int CurrentQuestionIndex
-        {
-            get { return m_CurrentIndex; }
-            set { m_CurrentIndex = value; }
-        }
+        public int CurrentQuestionIndex { get; set; } = -1;
 
         /// <summary>
         /// The # of correct answers given so far
         /// </summary>
-        public int CorrectAnswerCount
-        {
-            get { return m_CorrectAnswerCount; }
-            set { m_CorrectAnswerCount = value; }
-        }
+        public int CorrectAnswerCount { get; set; } = -1;
+
+        public int QuestionCount { get; set; } = 10;
 
         /// <summary>
         /// Returns the random object in use, so that it doesn't have to be recreated.
         /// </summary>
         public Random Random { get; set; }
+
+        /// <summary>
+        /// Any useful notes about the quiz.
+        /// </summary>
+        public string Notes { get; set; }
 
         /// <summary>
         /// Gets/sets the # of bluff answers for each question
@@ -110,18 +102,52 @@ namespace MyFlightbook.Airports
         public IEnumerable<airport> DefaultAirportList { get; set; }
 
         /// <summary>
+        /// Gets the airports to use for a given user, with a set of default airports if the user is unspecified or has insufficient airports.
+        /// </summary>
+        /// <param name="szUser"></param>
+        /// <param name="szDefault"></param>
+        /// <returns></returns>
+        private IEnumerable<airport> AirportsForGame(string szUser, string szDefault)
+        {
+            if (String.IsNullOrEmpty(szUser))
+                return new AirportList(szDefault).GetAirportList();
+
+            IEnumerable<VisitedAirport> rgva = VisitedAirport.VisitedAirportsForUser(szUser);
+
+            if (rgva.Count() < 15)
+            {
+                Notes = Resources.LocalizedText.AirportGameTooFewAirports;
+                return airport.AirportsWithExactMatch(szDefault);
+            }
+
+            List<airport> lst = new List<airport>();
+            foreach (VisitedAirport va in rgva)
+                lst.Add(va.Airport);
+
+            return lst;
+        }
+
+        /// <summary>
         /// Initializes a quiz, shuffling the airports and resetting the current quiz index and correct answer count.  You must then do GenerateQuestion to actually create a question.
         /// </summary>
         /// <param name="szDefaultAirportList"></param>
-        public void Init(airport[] rgAirports)
+        public void Init(IEnumerable<airport> rgAirports)
         {
             DefaultAirportList = rgAirports ?? throw new ArgumentNullException(nameof(rgAirports));
 
-            m_rgAirport = rgAirports;
+            m_rgAirport = rgAirports.ToArray();
             m_rgShuffle = ShuffleIndex(m_rgAirport.Length);
             CurrentQuestionIndex = 0;
             CurrentQuestion = null;
-            m_CorrectAnswerCount = 0;
+            CorrectAnswerCount = 0;
+        }
+
+        public void Init(string szUser, string szDefault)
+        {
+            if (String.IsNullOrEmpty(szUser))
+                Init(airport.AirportsWithExactMatch(szDefault).ToArray());
+            else
+                Init(AirportsForGame(szUser, szDefault).ToArray());
         }
 
         /// <summary>
@@ -151,7 +177,7 @@ namespace MyFlightbook.Airports
                 iBluff = (iBluff + 1) % rgBluffs.Length;
             }
 
-            m_CurrentIndex++;
+            CurrentQuestionIndex++;
         }
 
         /// <summary>
@@ -172,9 +198,7 @@ namespace MyFlightbook.Airports
             for (int i = 0; i < count; i++)
             {
                 int k = this.Random.Next(i, count);
-                int j = rgShuffle[i];
-                rgShuffle[i] = rgShuffle[k];
-                rgShuffle[k] = j;
+                (rgShuffle[k], rgShuffle[i]) = (rgShuffle[i], rgShuffle[k]);
             }
 
             return rgShuffle;
