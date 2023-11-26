@@ -418,7 +418,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Admin\AdminAchievements.aspx" />
-    <Content Include="Admin\AdminAircraft.aspx" />
     <Content Include="Admin\AdminAirportGeocoder.aspx" />
     <Content Include="Admin\AdminEndorsements.aspx" />
     <Content Include="Admin\AdminImgs.aspx" />
@@ -1482,6 +1481,24 @@
     <Content Include="Public\ViewPublicFlight.aspx" />
     <Content Include="Public\ViewSharedLogbook.aspx" />
     <Content Include="Public\WebService.asmx" />
+    <Content Include="Areas\mvc\Views\AdminAircraft\_modelsTable.cshtml" />
+    <Content Include="Areas\mvc\Views\AdminAircraft\_mergeModelsPreview.cshtml" />
+    <Content Include="Areas\mvc\Views\AdminAircraft\_dupeAircraft.cshtml" />
+    <Content Include="Areas\mvc\Views\AdminAircraft\_dupeSims.cshtml" />
+    <Content Include="Areas\mvc\Views\AdminAircraft\_allSims.cshtml" />
+    <Content Include="Areas\mvc\Views\AdminAircraft\_invalidAircraft.cshtml" />
+    <Content Include="Areas\mvc\Views\AdminAircraft\_aircraftList.cshtml" />
+    <Content Include="Areas\mvc\Views\AdminAircraft\_pseudoGeneric.cshtml" />
+    <Content Include="Areas\mvc\Views\AdminAircraft\_countryCodes.cshtml" />
+    <Content Include="Areas\mvc\Views\AdminAircraft\_orphanedAircraft.cshtml" />
+    <None Include="Scripts\jquery-1.8.0.intellisense.js" />
+    <Content Include="Scripts\jquery-1.8.0.js" />
+    <Content Include="Scripts\jquery-1.8.0.min.js" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Secure\login.aspx" />
     <Content Include="SecurityError.aspx" />
     <Content Include="Shunt.aspx" />
@@ -1496,13 +1513,6 @@
     </Compile>
     <Compile Include="Admin\AdminAchievements.aspx.designer.cs">
       <DependentUpon>AdminAchievements.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Admin\AdminAircraft.aspx.cs">
-      <DependentUpon>AdminAircraft.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Admin\AdminAircraft.aspx.designer.cs">
-      <DependentUpon>AdminAircraft.aspx</DependentUpon>
     </Compile>
     <Compile Include="Admin\AdminAirportGeocoder.aspx.cs">
       <DependentUpon>AdminAirportGeocoder.aspx</DependentUpon>
@@ -1829,6 +1839,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>WebService.resx</DependentUpon>
     </Compile>
+    <Compile Include="Areas\mvc\Controllers\AdminAircraftController.cs" />
     <Compile Include="Areas\mvc\Controllers\AdminPaymentController.cs" />
     <Compile Include="Areas\mvc\Controllers\AdminTelemetryController.cs" />
     <Compile Include="Areas\mvc\Controllers\AdminUserController.cs" />
@@ -3314,6 +3325,9 @@
     <Content Include="Areas\mvc\Views\Airport\_quizQuestion.cshtml" />
     <Content Include="Areas\mvc\Views\Airport\_quizSnark.cshtml" />
     <Content Include="Areas\mvc\Views\Airport\_quizStatus.cshtml" />
+    <Content Include="Areas\mvc\Views\AdminAircraft\adminAircraft.cshtml" />
+    <Content Include="Areas\mvc\Views\AdminAircraft\adminManufacturers.cshtml" />
+    <Content Include="Areas\mvc\Views\AdminAircraft\adminModels.cshtml" />
     <None Include="packages.config" />
     <None Include="SecuritySwitch-v4.xsd">
       <SubType>Designer</SubType>

@@ -1,0 +1,27 @@
+﻿<div style="white-space: pre-line;">@ViewBag.previewAudit</div>
+<table class="stickyHeaderTable stickyHeaderAlternate">
+    <thead>
+        <tr>
+            <th class="headerBase gvhDefault">AircraftID</th>
+            <th class="headerBase gvhDefault">ModelID</th>
+            <th class="headerBase gvhDefault">TailNumber</th>
+            <th class="headerBase gvhDefault">(Full Tail)</th>
+            <th class="headerBase gvhDefault">InstanceType</th>
+            <th class="headerBase gvhDefault">Version</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Aircraft ac in ViewBag.affectedAircraft)
+            {
+                <tr>
+                    <td>@ac.AircraftID</td>
+                    <td>@ac.ModelID</td>
+                    <td>@ac.TailNumber</td>
+                    <td>@ac.DisplayTailnumberWithModel</td>
+                    <td>@AircraftInstance.ShortNameForInstanceType(ac.InstanceType)</td>
+                    <td>@ac.Version</td>
+                </tr>
+            }
+    </tbody>
+</table>
+<div><button type="button" onclick="javascript: deleteDupeMake(@ViewBag.modelIDToKeep, @ViewBag.modelIDToKill);">Delete Duplicate Make</button></div>

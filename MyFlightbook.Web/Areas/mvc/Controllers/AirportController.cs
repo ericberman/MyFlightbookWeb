@@ -86,6 +86,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     : score >= 70
                     ? Resources.LocalizedText.AirportGameSnark75
                     : score >= 50 ? Resources.LocalizedText.AirportGameSnark50 : Resources.LocalizedText.AirportGameSnarkPoor;
+
+                Session.Remove(quizRef);    // clear out the session
                 return PartialView("_quizSnark");
             }
         }

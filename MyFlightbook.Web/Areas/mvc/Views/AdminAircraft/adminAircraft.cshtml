@@ -1,0 +1,449 @@
+﻿@using System.Globalization
+@using Newtonsoft.Json
+@{
+    ViewBag.Title = "Admin Tools - Aircraft";
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    ViewBag.defaultTab = tabID.tabAdmin;
+}
+<style type="text/css">
+    .adm .admItem {
+    }
+
+        .adm .admItem:after {
+            content: " | ";
+        }
+
+        .adm .admItem:last-child:after {
+            content: "";
+        }
+
+    .handled {
+        background-color: lightgray;
+        color: darkgray;
+    }
+</style>
+<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/public/Scripts/adminajax.js")" ></script>
+<script type="text/javascript">
+    function refreshDupeAircraft() {
+        $("#divProgress").toggle();
+        var params = new Object();
+        var d = JSON.stringify(params);
+        $.ajax({
+            url: '@Url.Action("RefreshDupeAircraft", "AdminAircraft")',
+            type: "POST", data: d, dataType: "html", contentType: "application/json",
+            error: function (xhr, status, error) {
+                window.alert(xhr.responseText);
+            },
+            complete: function (response) { $("#divProgress").toggle(); },
+            success: function (response) {
+                $("#divResults").html(response);
+            }
+        });
+    }
+
+    function updateVersion(aircraftID, newVersion) {
+        $("#divProgress").toggle();
+        var params = new Object();
+        params.aircraftID = aircraftID;
+        params.newVersion = newVersion;
+        var d = JSON.stringify(params);
+        $.ajax({
+            url: '@Url.Action("UpdateVersion", "AdminAircraft")',
+            type: "POST", data: d, dataType: "html", contentType: "application/json",
+            error: function (xhr, status, error) {
+                window.alert(xhr.responseText);
+            },
+            complete: function (response) { $("#divProgress").toggle(); },
+            success: function (response) {
+                $("#divResults").html(response);
+            }
+        });
+    }
+
+    function refreshDupeSims() {
+        $("#divProgress").toggle();
+        var params = new Object();
+        var d = JSON.stringify(params);
+        $.ajax({
+            url: '@Url.Action("RefreshDupeSims", "AdminAircraft")',
+            type: "POST", data: d, dataType: "html", contentType: "application/json",
+            error: function (xhr, status, error) {
+                window.alert(xhr.responseText);
+            },
+            complete: function (response) { $("#divProgress").toggle(); },
+            success: function (response) {
+                $("#divResults").html(response);
+            }
+        });
+    }
+
+    function keepDupeSim(idAircraft) {
+        $("#divProgress").toggle();
+        var params = new Object();
+        params.idAircraft = idAircraft;
+        var d = JSON.stringify(params);
+        $.ajax({
+            url: '@Url.Action("keepDupeSim", "AdminAircraft")',
+            type: "POST", data: d, dataType: "html", contentType: "application/json",
+            error: function (xhr, status, error) {
+                window.alert(xhr.responseText);
+            },
+            complete: function (response) { $("#divProgress").toggle(); },
+            success: function (response) {
+                $("#divResults").html(response);
+            }
+        });
+    }
+
+    function allSims() {
+        $("#divProgress").toggle();
+        var params = new Object();
+        var d = JSON.stringify(params);
+        $.ajax({
+            url: '@Url.Action("AllSims", "AdminAircraft")',
+            type: "POST", data: d, dataType: "html", contentType: "application/json",
+            error: function (xhr, status, error) {
+                window.alert(xhr.responseText);
+            },
+            complete: function (response) { $("#divProgress").toggle(); },
+            success: function (response) {
+                $("#divResults").html(response);
+            }
+        });
+    }
+
+    function renameSim(idAircraft, container, fPreview) {
+        $("#divProgress").toggle();
+        var params = new Object();
+        params.idAircraft = idAircraft;
+        params.fPreview = fPreview;
+        var d = JSON.stringify(params);
+        $.ajax({
+            url: '@Url.Action("RenameSim", "AdminAircraft")',
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
+            error: function (xhr, status, error) {
+                window.alert(xhr.responseText);
+            },
+            complete: function (response) { $("#divProgress").toggle(); },
+            success: function (response) {
+                container.innerText = response;
+                container.style.color = fPreview ? "blue" : "black";
+            }
+        });
+    }
+
+    function refreshInvalidAircraft() {
+        $("#divProgress").toggle();
+        var params = new Object();
+        var d = JSON.stringify(params);
+        $.ajax({
+            url: '@Url.Action("InvalidAircraft", "AdminAircraft")',
+            type: "POST", data: d, dataType: "html", contentType: "application/json",
+            error: function (xhr, status, error) {
+                window.alert(xhr.responseText);
+            },
+            complete: function (response) { $("#divProgress").toggle(); },
+            success: function (response) {
+                $("#divResults").html(response);
+            }
+        });
+    }
+
+    function refreshOrphans() {
+        $("#divProgress").toggle();
+        var params = new Object();
+        var d = JSON.stringify(params);
+        $.ajax({
+            url: '@Url.Action("RefreshOrphans", "AdminAircraft")',
+            type: "POST", data: d, dataType: "html", contentType: "application/json",
+            error: function (xhr, status, error) {
+                window.alert(xhr.responseText);
+            },
+            complete: function (response) { $("#divProgress").toggle(); },
+            success: function (response) {
+                $("#divResults").html(response);
+            }
+        });
+    }
+
+    function deleteOrphans(idAircraft) {
+        $("#divProgress").toggle();
+        var params = new Object();
+        params.idAircraft = idAircraft;
+        var d = JSON.stringify(params);
+        $.ajax({
+            url: '@Url.Action("DeleteOrphans", "AdminAircraft")',
+            type: "POST", data: d, dataType: "html", contentType: "application/json",
+            error: function (xhr, status, error) {
+                window.alert(xhr.responseText);
+            },
+            complete: function (response) { $("#divProgress").toggle(); },
+            success: function (response) {
+                $("#divResults").html(response);
+            }
+        });
+    }
+
+    function refreshPseudoGeneric() {
+        $("#divProgress").toggle();
+        var params = new Object();
+        var d = JSON.stringify(params);
+        $.ajax({
+            url: '@Url.Action("RefreshPseudoGeneric", "AdminAircraft")',
+            type: "POST", data: d, dataType: "html", contentType: "application/json",
+            error: function (xhr, status, error) {
+                window.alert(xhr.responseText);
+            },
+            complete: function (response) { $("#divProgress").toggle(); },
+            success: function (response) {
+                $("#divResults").html(response);
+            }
+        });
+    }
+
+    function refreshCountryCodes() {
+        $("#divProgress").toggle();
+        var params = new Object();
+        var d = JSON.stringify(params);
+        $.ajax({
+            url: '@Url.Action("RefreshCountryCodes", "AdminAircraft")',
+            type: "POST", data: d, dataType: "html", contentType: "application/json",
+            error: function (xhr, status, error) {
+                window.alert(xhr.responseText);
+            },
+            complete: function (response) { $("#divProgress").toggle(); },
+            success: function (response) {
+                $("#divResults").html(response);
+            }
+        });
+    }
+
+    function updateCountryCode(id, jqobject) {
+        $("#divProgress").toggle();
+        var params = new Object();
+        params.id = id;
+        params.prefix = jqobject.find('input[name="txtPrefix"]')[0].value;
+        params.countryName = jqobject.find('input[name="txtCountry"]')[0].value;
+        params.locale = jqobject.find('input[name="txtLocale"]')[0].value;
+        params.registrationLinkTemplate = jqobject.find('input[name="txtTemplate"]')[0].value;
+        params.templateMode = jqobject.find('select[name="ddTempType"]').val();
+        params.hyphenPref = jqobject.find('select[name="ddHyphenPref"]').val();
+
+        var d = JSON.stringify(params);
+        $.ajax({
+            url: '@Url.Action("UpdatecountryCode", "AdminAircraft")',
+            type: "POST", data: d, dataType: "html", contentType: "application/json",
+            error: function (xhr, status, error) {
+                window.alert(xhr.responseText);
+            },
+            complete: function (response) { $("#divProgress").toggle(); },
+            success: function (response) {
+                $("#divResults").html(response);
+            }
+        });
+    }
+
+    function fixHyphenation(id, obj) {
+        $("#divProgress").toggle();
+        var params = new Object();
+        params.id = id;
+        var d = JSON.stringify(params);
+        $.ajax({
+            url: '@Url.Action("FixHyphenation", "AdminAircraft")',
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
+            error: function (xhr, status, error) {
+                window.alert(xhr.responseText);
+            },
+            complete: function (response) { $("#divProgress").toggle(); },
+            success: function (response) {
+                obj.text(response);
+            }
+        });
+    }
+
+    function cleanUpMaint() {
+        $("#divProgress").toggle();
+        var params = new Object();
+        var d = JSON.stringify(params);
+        $.ajax({
+            url: '@Url.Action("CleanUpMaintenance", "AdminAircraft")',
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
+            error: function (xhr, status, error) {
+                window.alert(xhr.responseText);
+            },
+            complete: function (response) { $("#divProgress").toggle(); },
+            success: function (response) {
+                $("#divResults").text(response);
+            }
+        });
+    }
+
+    function findAircraft(tailToFind) {
+        $("#divProgress").toggle();
+        var params = new Object();
+        params.tailToFind = tailToFind;
+        var d = JSON.stringify(params);
+        $.ajax({
+            url: '@Url.Action("FindAircraft", "AdminAircraft")',
+            type: "POST", data: d, dataType: "html", contentType: "application/json",
+            error: function (xhr, status, error) {
+                window.alert(xhr.responseText);
+            },
+            complete: function (response) { $("#divProgress").toggle(); },
+            success: function (response) {
+                $("#divResults").html(response);
+            }
+        });
+    }
+
+    function mapModel(sender, ammJSON) {
+        $("#divProgress").toggle();
+        var d = ammJSON;
+        $.ajax({
+            url: '@Url.Action("MapModel", "AdminAircraft")',
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
+            error: function (xhr, status, error) {
+                window.alert(xhr.responseText);
+            },
+            complete: function (response) { $("#divProgress").toggle(); },
+            success: function (response) {
+                $(sender).parents("tr").toggle();
+            }
+        });
+    }
+
+    $(function () {
+        $('#divFindAircraft').keydown(function (e) {
+            if (e.keyCode == 13) {
+                $('#btnFindAircraft')[0].click();
+                return false;
+            }
+        });
+        $("#divFindAircraft")[0].focus();
+    });
+</script>
+<h2>Aircraft</h2>
+@using (Html.BeginForm("", "AdminAircraft", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <table>
+        <tr>
+            <td>
+                <button type="button" id="btnRefreshDupes" style="width: 100%;" onclick="javascript: refreshDupeAircraft();">Dupe Aircraft</button>
+            </td>
+            <td>View potentially duplicate aircraft</td>
+        </tr>
+        <tr>
+            <td>
+                <button type="button" id="btnDupeSims" style="width: 100%;" onclick="javascript: refreshDupeSims();">Dupe Sims</button>
+            </td>
+            <td>View and reconcile duplicate sims</td>
+        </tr>
+        <tr>
+            <td>
+                <button type="button" id="btnRefreshInvalid" style="width: 100%;" onclick="javascript: refreshInvalidAircraft();">Invalid Aircraft</button>
+            </td>
+            <td>Perform validity check on ALL aircraft</td>
+        </tr>
+        <tr>
+            <td>
+                <button type="button" id="btnAllSims" style="width: 100%;" onclick="javascript:allSims();">ALL Sims</button>
+            </td>
+            <td>View all sims</td>
+        </tr>
+        <tr>
+            <td>
+                <button type="button" id="btnOrphans" style="width: 100%;" onclick="javascript:refreshOrphans();">Orphaned Aircraft</button>
+            </td>
+            <td>View aircraft that are no longer used by any pilot and can be deleted</td>
+        </tr>
+        <tr>
+            <td>
+                <button type="button" id="btnPseudoGeneric" style="width: 100%;" onclick="javascript:refreshPseudoGeneric();">Pseudo-generic Aircraft</button>
+            </td>
+            <td>View aircraft that are suspected of having a made-up tailnumber</td>
+        </tr>
+        <tr>
+            <td>
+                <button type="button" id="btnManageCountryCodes" style="width: 100%;" onclick="javascript: refreshCountryCodes();">Country Codes</button>
+            </td>
+            <td>
+                Country codes
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button type="button" id="btnCleanUpMaintenance" style="width: 100%;" onclick="javascript: cleanUpMaint();">Clean up Maint.</button>
+            </td>
+            <td>
+                Remove maintainence for virtual aircraft (sims and generic). <asp:Label id="lblMaintenanceResult" EnableViewState="false" />
+            </td>
+        </tr>
+        <tr style="vertical-align: top">
+            <td>
+                <div>
+                    <button type="submit" id="btnMapModels" style="width: 100%;">Bulk Map Models</button>
+                </div>
+            </td>
+            <td>
+                <div>
+                    <input type="file" id="fuMapModels" name="fuMapModels" />
+                </div>
+                Bulk map aircraft models from spreadsheet.
+                <div id="spanTipBulkMap" style="display:none;">
+                    <div>CSV spreadsheet needs two columns:</div>
+                    <ul>
+                        <li>idaircraft - the ID of the aircraft to map</li>
+                        <li>idModelProper - the ID of the model to which it should be mapped.</li>
+                    </ul>
+                </div>
+                @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "bulkMap", tipTextHTML = "", tipTextSrcID = "spanTipBulkMap" }); }
+                <div class="error" id="mapModelError">
+                </div>
+            </td>
+        </tr>
+    </table>
+}
+<div id="divFindAircraft">
+    Find aircraft by tail (use * and ? as wildcards):
+    <input type="text" id="txtTailToFind" />
+    <button type="button" id="btnFindAircraft" onclick="javascript: findAircraft($('#txtTailToFind')[0].value);">Find</button>
+</div>
+<div id="divProgress" style="display:none;">Evaluating aircraft for issues... <img id="imgProgress" src="@VirtualPathUtility.ToAbsolute("~/images/progress.gif")" style="height:16px; width: 16px;" /></div>
+<div id="divResults">
+
+</div>
+<div class="error">@(ViewBag.modelMapError ?? string.Empty)</div>
+@if (ViewBag.modelMapping != null)
+{
+    <table class="stickyHeaderTable">
+        <thead>
+            <tr>
+                <th class="headerBase gvhDefault gvhCentered">Registration</th>
+                <th class="headerBase gvhDefault gvhCentered">Aircraft</th>
+                <th class="headerBase gvhDefault gvhCentered">Current Model</th>
+                <th class="headerBase gvhDefault gvhCentered">Target Model model</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (AircraftAdminModelMapping amm in ViewBag.modelMapping)
+            {
+                string szLink = amm.aircraft.LinkForTailnumberRegistry();
+                <tr>
+                    <td>
+                        @if (!String.IsNullOrEmpty(szLink))
+                        {
+                            <a target="_blank" href="@szLink">@amm.aircraft.TailNumber</a>
+                        }
+                    </td>
+                    <td><a target="_blank" href="@VirtualPathUtility.ToAbsolute(String.Format("~/Member/EditAircraft.aspx?id={0}&a=1", amm.aircraft.AircraftID))">@amm.aircraft.DisplayTailnumber</a></td>
+                    <td><a target="_blank" href="@VirtualPathUtility.ToAbsolute(String.Format("~/Member/EditMake.aspx?id={0}&a=1", amm.currentModel.MakeModelID))">@amm.currentModel.MakeModelID</a></td>
+                    <td><a target="_blank" href="@VirtualPathUtility.ToAbsolute(String.Format("~/Member/EditMake.aspx?id={0}&a=1", amm.targetModel.MakeModelID))">@amm.targetModel.MakeModelID</a></td>
+                    <td><button type="button" onclick="javascript: mapModel(this, '@(JsonConvert.SerializeObject(amm, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling=NullValueHandling.Ignore }))');" >Map it!</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+

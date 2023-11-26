@@ -472,4 +472,7 @@
   <data name="makesPrompt" xml:space="preserve">
     <value>There are currently {0:#,##0} models in the system; use the search functionality to browse them.</value>
   </data>
+  <data name="errManufacturerNameRequired" xml:space="preserve">
+    <value>Please provide a name for the manufacturer</value>
+  </data>
 </root>

@@ -1,0 +1,38 @@
+﻿@using MyFlightbook
+@using System.Globalization
+@{
+    IEnumerable<Aircraft> rgac = ViewBag.rgac;
+}
+<p>Orphaned Aircraft <button type="button" onclick="javascript:deleteOrphans(-1);">Delete All Orphans</button> </p>
+@if (!rgac.Any())
+{
+    <p>No orphaned aircraft found!</p>
+}
+else
+{
+    <table class="stickyHeaderTable">
+        <thead>
+            <tr>
+                <th></th>
+                <th class="headerBase gvhDefault gvhCentered">Tail</th>
+                <th class="headerBase gvhDefault gvhCentered">Model</th>
+                <th class="headerBase gvhDefault gvhCentered">Version</th>
+                <th class="headerBase gvhDefault gvhCentered">InstanceType</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Aircraft ac in ViewBag.rgac)
+            {
+                <tr>
+                    <td><img src="@VirtualPathUtility.ToAbsolute("~/images/x.gif")" onclick="javascript: deleteOrphans(@ac.AircraftID);" /></td>
+                    <td><a target="_blank" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}&a=1", ac.AircraftID))">@ac.TailNumber</a></td>
+                    <td>@ac.ModelCommonName</td>
+                    <td>@ac.Version</td>
+                    <td>@ac.InstanceTypeDescription</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+

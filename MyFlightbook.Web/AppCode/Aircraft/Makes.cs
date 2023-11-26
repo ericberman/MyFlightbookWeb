@@ -500,21 +500,23 @@ namespace MyFlightbook
             CategoryClassID = CategoryClass.CatClassID.ASEL;
         }
 
-        private const string szSQLSelectTemplate = @"SELECT models.*, categoryclass.CatClass as 'Category/Class', manufacturers.manufacturer 
+        protected const string szSQLSelectTemplate = @"SELECT models.*, categoryclass.CatClass as 'Category/Class', manufacturers.manufacturer 
 FROM models 
 INNER JOIN categoryclass ON categoryclass.idCatClass = models.idcategoryclass 
-INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer WHERE {0}";
+INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer 
+{0}
+WHERE {1}";
 
         // Create a new make/model object, initialize by ID
         public MakeModel(int id) : this()
         {
-            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, szSQLSelectTemplate, String.Format(CultureInfo.InvariantCulture, "models.idmodel={0} LIMIT 1", id)));
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, szSQLSelectTemplate, string.Empty, String.Format(CultureInfo.InvariantCulture, "models.idmodel={0} LIMIT 1", id)));
             dbh.ReadRow((comm) => { }, (dr) => { InitFromDataReader(dr); });
             if (dbh.LastError.Length > 0)
                 throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, "Error loading make {0}: {1}", id, dbh.LastError));
         }
 
-        private MakeModel(MySqlDataReader dr) : this()
+        protected MakeModel(MySqlDataReader dr) : this()
         {
             InitFromDataReader(dr);
         }
@@ -877,7 +879,7 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
             // Now get each of the models that didn't hit the cache
             if (lstIdsToGet.Count > 0)
             {
-                DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, szSQLSelectTemplate, String.Format(CultureInfo.InvariantCulture, "models.idmodel IN ({0})", String.Join(",", lstIdsToGet))));
+                DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, szSQLSelectTemplate, string.Empty, String.Format(CultureInfo.InvariantCulture, "models.idmodel IN ({0})", String.Join(",", lstIdsToGet))));
                 dbh.ReadRows((comm) => { }, (dr) =>
                 {
                     MakeModel mm = new MakeModel(dr);
@@ -962,82 +964,6 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
                 IEnumerable<string> col = AttributeList();
                 return !col.Any() ? string.Empty : String.Format(CultureInfo.CurrentCulture, "({0})", String.Join(", ", col));
             }
-        }
-
-        /// <summary>
-        /// Admin function to merge two duplicate models
-        /// </summary>
-        /// <param name="idModelToDelete">The id of the model that is redundant</param>
-        /// <param name="idModelToMergeInto">The id of the model into which the redundant model should be merged</param>
-        /// <returns>Audit of the operations that occor</returns>
-        /// <exception cref="InvalidOperationException"></exception>
-        /// <exception cref="MyFlightbookException"></exception>
-        public static IEnumerable<string> AdminMergeDuplicateModels(int idModelToDelete, int idModelToMergeInto)
-        {
-            if (idModelToDelete < 0)
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, "Invalid model to delete: {0}", idModelToDelete));
-            if (idModelToDelete < 0)
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, "Invalid model to merge into: {0}", idModelToMergeInto));
-
-            List<string> lst = new List<string>() { "Audit of changes made" };
-
-            // Before we migrate old aircraft, see if there are generics.
-            Aircraft acGenericSource = new Aircraft(Aircraft.AnonymousTailnumberForModel(idModelToDelete));
-            Aircraft acGenericTarget = new Aircraft(Aircraft.AnonymousTailnumberForModel(idModelToMergeInto));
-
-            if (acGenericSource.AircraftID != Aircraft.idAircraftUnknown)
-            {
-                // if the generic for the target doesn't exist, then no problem - just rename it and remap it!
-                if (acGenericTarget.AircraftID == Aircraft.idAircraftUnknown)
-                {
-                    acGenericSource.ModelID = idModelToMergeInto;
-                    acGenericSource.TailNumber = Aircraft.AnonymousTailnumberForModel(idModelToMergeInto);
-                    acGenericSource.Commit();
-                }
-                else
-                {
-                    // if the generic for the target also exists, need to merge the aircraft (creating a tombstone).
-                    AircraftUtility.AdminMergeDupeAircraft(acGenericTarget, acGenericSource);
-                }
-            }
-
-            IEnumerable<Aircraft> rgac = new UserAircraft(null).GetAircraftForUser(UserAircraft.AircraftRestriction.AllMakeModel, idModelToDelete);
-
-            foreach (Aircraft ac in rgac)
-            {
-                // Issue #1068: if Aircraft already exists with idModelToMergeInto, do a merge
-                List<Aircraft> lstSimilarTails = Aircraft.AircraftMatchingTail(ac.TailNumber);
-                Aircraft acDupe = lstSimilarTails.FirstOrDefault(a => a.ModelID == idModelToMergeInto);
-
-                if (acDupe == null) // no collision
-                {
-                    ac.ModelID = idModelToMergeInto;
-                    ac.Commit();
-                    lst.Add(String.Format(CultureInfo.CurrentCulture, "Updated aircraft {0} to model {1}", ac.AircraftID, idModelToMergeInto));
-                } else
-                {
-                    // collision - do a merge instead!
-                    AircraftUtility.AdminMergeDupeAircraft(acDupe, ac);
-                    lst.Add(string.Format(CultureInfo.CurrentCulture, "Aircraft {0} exists with both models!  Merged", ac.TailNumber));
-                }
-            }
-
-            // Update any custom currency references to the old model
-            DBHelper dbhCCR = new DBHelper("UPDATE CustCurrencyRef SET value=?newID WHERE value=?oldID AND type=?modelsType");
-            dbhCCR.DoNonQuery((comm) =>
-            {
-                comm.Parameters.AddWithValue("newID", idModelToMergeInto);
-                comm.Parameters.AddWithValue("oldID", idModelToDelete);
-                comm.Parameters.AddWithValue("modelsType", (int)Currency.CustomCurrency.CurrencyRefType.Models);
-            });
-
-            // Then delete the old model
-            string szQ = "DELETE FROM models WHERE idmodel=?idOldModel";
-            DBHelper dbhDelete = new DBHelper(szQ);
-            if (!dbhDelete.DoNonQuery((comm) => { comm.Parameters.AddWithValue("idOldModel", idModelToDelete); }))
-                throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, "Error deleting model {0}: {1}", idModelToDelete, dbhDelete.LastError));
-            lst.Add(String.Format(CultureInfo.CurrentCulture, "Deleted model {0}", idModelToDelete));
-            return lst;
         }
     }
     
@@ -1134,6 +1060,8 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
         /// Should we give a boost to models where the model itself matches?
         /// </summary>
         public bool PreferModelNameMatch { get; set; }
+
+        private static readonly char[] searchSeparator = new char[] { ' ' };
         #endregion
 
         #region Query utilities
@@ -1146,7 +1074,7 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
             List<MySqlParameter> lstParams = new List<MySqlParameter>();
 
             // Add each of the terms
-            string[] rgTerms = FullText.Replace("-", string.Empty).Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] rgTerms = FullText.Replace("-", string.Empty).Split(searchSeparator, StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i < rgTerms.Length; i++)
                 AddQueryTerm(rgTerms[i], String.Format(CultureInfo.InvariantCulture, "FullText{0}", i), "REPLACE(Concat(model, ' ', manufacturers.manufacturer, ' ', typename, ' ', family, ' ', modelname, ' ', categoryclass.CatClass), '-', '')", lstWhereTerms, lstParams);
 
@@ -1270,6 +1198,130 @@ FROM models
         public MakeSelectedEventArgs(int idModel) : base()
         {
             SelectedModel = idModel;
+        }
+    }
+
+    public class AdminMakeModel : MakeModel
+    {
+        private AdminMakeModel(MySqlDataReader dr) : base(dr) { }
+
+        /// <summary>
+        /// Admin function to merge two duplicate models
+        /// </summary>
+        /// <param name="idModelToDelete">The id of the model that is redundant</param>
+        /// <param name="idModelToMergeInto">The id of the model into which the redundant model should be merged</param>
+        /// <returns>Audit of the operations that occor</returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="MyFlightbookException"></exception>
+        public static IEnumerable<string> AdminMergeDuplicateModels(int idModelToDelete, int idModelToMergeInto)
+        {
+            if (idModelToDelete < 0)
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, "Invalid model to delete: {0}", idModelToDelete));
+            if (idModelToDelete < 0)
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, "Invalid model to merge into: {0}", idModelToMergeInto));
+
+            List<string> lst = new List<string>() { "Audit of changes made" };
+
+            // Before we migrate old aircraft, see if there are generics.
+            Aircraft acGenericSource = new Aircraft(Aircraft.AnonymousTailnumberForModel(idModelToDelete));
+            Aircraft acGenericTarget = new Aircraft(Aircraft.AnonymousTailnumberForModel(idModelToMergeInto));
+
+            if (acGenericSource.AircraftID != Aircraft.idAircraftUnknown)
+            {
+                // if the generic for the target doesn't exist, then no problem - just rename it and remap it!
+                if (acGenericTarget.AircraftID == Aircraft.idAircraftUnknown)
+                {
+                    acGenericSource.ModelID = idModelToMergeInto;
+                    acGenericSource.TailNumber = Aircraft.AnonymousTailnumberForModel(idModelToMergeInto);
+                    acGenericSource.Commit();
+                }
+                else
+                {
+                    // if the generic for the target also exists, need to merge the aircraft (creating a tombstone).
+                    AircraftUtility.AdminMergeDupeAircraft(acGenericTarget, acGenericSource);
+                }
+            }
+
+            IEnumerable<Aircraft> rgac = new UserAircraft(null).GetAircraftForUser(UserAircraft.AircraftRestriction.AllMakeModel, idModelToDelete);
+
+            foreach (Aircraft ac in rgac)
+            {
+                // Issue #1068: if Aircraft already exists with idModelToMergeInto, do a merge
+                List<Aircraft> lstSimilarTails = Aircraft.AircraftMatchingTail(ac.TailNumber);
+                Aircraft acDupe = lstSimilarTails.FirstOrDefault(a => a.ModelID == idModelToMergeInto);
+
+                if (acDupe == null) // no collision
+                {
+                    ac.ModelID = idModelToMergeInto;
+                    ac.Commit();
+                    lst.Add(String.Format(CultureInfo.CurrentCulture, "Updated aircraft {0} to model {1}", ac.AircraftID, idModelToMergeInto));
+                }
+                else
+                {
+                    // collision - do a merge instead!
+                    AircraftUtility.AdminMergeDupeAircraft(acDupe, ac);
+                    lst.Add(string.Format(CultureInfo.CurrentCulture, "Aircraft {0} exists with both models!  Merged", ac.TailNumber));
+                }
+            }
+
+            // Update any custom currency references to the old model
+            DBHelper dbhCCR = new DBHelper("UPDATE CustCurrencyRef SET value=?newID WHERE value=?oldID AND type=?modelsType");
+            dbhCCR.DoNonQuery((comm) =>
+            {
+                comm.Parameters.AddWithValue("newID", idModelToMergeInto);
+                comm.Parameters.AddWithValue("oldID", idModelToDelete);
+                comm.Parameters.AddWithValue("modelsType", (int)Currency.CustomCurrency.CurrencyRefType.Models);
+            });
+
+            // Then delete the old model
+            string szQ = "DELETE FROM models WHERE idmodel=?idOldModel";
+            DBHelper dbhDelete = new DBHelper(szQ);
+            if (!dbhDelete.DoNonQuery((comm) => { comm.Parameters.AddWithValue("idOldModel", idModelToDelete); }))
+                throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, "Error deleting model {0}: {1}", idModelToDelete, dbhDelete.LastError));
+            lst.Add(String.Format(CultureInfo.CurrentCulture, "Deleted model {0}", idModelToDelete));
+            return lst;
+        }
+
+        public static IEnumerable<MakeModel> ModelsThatShoulBeSims()
+        {
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, szSQLSelectTemplate, string.Empty, "manufacturers.defaultSim <> 0 AND models.fSimOnly = 0"));
+            List<MakeModel> lst = new List<MakeModel>();
+            dbh.ReadRows((comm) => { }, (dr) => { lst.Add(new AdminMakeModel(dr)); });
+            return lst;
+        }
+
+        public static IEnumerable<MakeModel> OrphanedModels()
+        {
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, szSQLSelectTemplate, "LEFT JOIN aircraft ac ON models.idmodel=ac.idmodel", "ac.idaircraft IS NULL"));
+            List<MakeModel> lst = new List<MakeModel>();
+            dbh.ReadRows((comm) => { }, (dr) => { lst.Add(new AdminMakeModel(dr)); });
+            return lst;
+        }
+
+        public static IEnumerable<MakeModel> TypeRatedModels()
+        {
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, szSQLSelectTemplate, string.Empty, "typename <> '' ORDER BY categoryclass.idcatclass ASC, manufacturers.manufacturer ASC, models.model ASC, models.typename ASC"));
+            List<MakeModel> lst = new List<MakeModel>();
+            dbh.ReadRows((comm) => { }, (dr) => { lst.Add(new AdminMakeModel(dr)); });
+            return lst;
+        }
+
+        public static IEnumerable<MakeModel> PotentialDupes(bool fIncludeSims)
+        {
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, szSQLSelectTemplate, string.Empty,
+                String.Format(CultureInfo.InvariantCulture, @"UPPER(REPLACE(REPLACE(CONCAT(models.model,CONVERT(models.idcategoryclass, char),models.typename), '-', ''), ' ', '')) IN
+                    (SELECT modelandtype FROM (SELECT model, COUNT(model) AS cModel, UPPER(REPLACE(REPLACE(CONCAT(m2.model,CONVERT(m2.idcategoryclass, char),m2.typename), '-', ''), ' ', '')) AS modelandtype FROM models m2 GROUP BY modelandtype HAVING cModel > 1) AS dupes)
+                    {0}
+                ORDER BY models.model", fIncludeSims ? string.Empty : "HAVING models.fSimOnly = 0")));
+            List<MakeModel> lst = new List<MakeModel>();
+            dbh.ReadRows((comm) => { }, (dr) => { lst.Add(new AdminMakeModel(dr)); });
+            return lst;
+        }
+
+        public static void DeleteModel(int id)
+        {
+            DBHelper dbh = new DBHelper("DELETE FROM models WHERE idmodel=?idmodel");
+            dbh.DoNonQuery((comm) => { comm.Parameters.AddWithValue("idmodel", id); });
         }
     }
 }

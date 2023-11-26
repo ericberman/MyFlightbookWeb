@@ -281,6 +281,8 @@ ORDER BY ac.instancetype ASC");
                 }
             }
         }
+
+        private static readonly char[] usernameSeparator = new char[] { ';' };
         #endregion
 
         #region Constructors
@@ -289,7 +291,7 @@ ORDER BY ac.instancetype ASC");
             Flights = Convert.ToInt32(dr["numFlights"], CultureInfo.InvariantCulture);
             UserFlights = Convert.ToInt32(dr["flightsForUser"], CultureInfo.InvariantCulture);
             Users = Convert.ToInt32(dr["numUsers"], CultureInfo.InvariantCulture);
-            UserNames = dr["userNames"].ToString().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            UserNames = dr["userNames"].ToString().Split(usernameSeparator, StringSplitOptions.RemoveEmptyEntries);
 
             object o = dr["EarliestDate"];
             if (o != DBNull.Value)
@@ -325,7 +327,7 @@ ORDER BY ac.instancetype ASC");
             });
         }
 
-        protected AircraftStats(MySqlDataReader dr) : this()
+        internal AircraftStats(MySqlDataReader dr) : this()
         {
             if (dr == null)
                 throw new ArgumentNullException(nameof(dr));
@@ -1647,7 +1649,7 @@ WHERE
 
             List<Aircraft> lstAc = Aircraft.AircraftMatchingTail(szTailNew);
 
-            if (!lstAc.Any())
+            if (lstAc.Count == 0)
             {
                 // No collision - simple rename, no need to send notifications or update useraircraft or similar.
                 ac.TailNumber = szTailNew;
@@ -2241,6 +2243,256 @@ OR (aircraft.tailnormal IN ('{5}'))";
             // Finally, it should now be safe to delete the aircraft
             dbh.CommandText = "DELETE FROM aircraft WHERE idAircraft=?idAircraftOld";
             dbh.DoNonQuery();
+        }
+
+        public static IEnumerable<Aircraft> AdminDupeAircraft()
+        {
+            List<Aircraft> lst = new List<Aircraft>();
+            
+            DBHelper dbh = new DBHelper(@"SELECT
+    ac.*,
+    models.*,
+	IF (ac.Tailnumber LIKE '#%', CONCAT('#', models.model), ac.TailNormal) AS sortKey,
+    IF (ac.InstanceType = 1, '', Concat(' (', aircraftinstancetypes.Description, ')')) as 'InstanceTypeDesc',
+    TRIM(CONCAT(manufacturers.manufacturer, ' ', CONCAT(COALESCE(models.typename, ''), ' '), models.modelname)) AS 'ModelCommonName',
+    0 AS Flags,
+    '' AS DefaultImage,
+    '' AS UserNotes,
+    '' AS TemplateIDs,
+    COUNT(DISTINCT f.idflight) AS numFlights,
+    COUNT(DISTINCT ua.username) AS numUsers,
+    0 AS flightsForUser,
+    '' AS userNames,
+    NULL AS EarliestDate,
+    NULL AS LatestDate,
+    0 AS hours
+FROM Aircraft ac
+    INNER JOIN models ON ac.idmodel=models.idmodel
+    INNER JOIN manufacturers ON manufacturers.idManufacturer=models.idmanufacturer
+    INNER JOIN aircraftinstancetypes ON ac.InstanceType=aircraftinstancetypes.ID
+    LEFT JOIN flights f on f.idaircraft = ac.idaircraft
+    LEFT JOIN useraircraft ua ON ua.idaircraft=ac.idaircraft
+WHERE ac.tailnormal IN
+    (SELECT NormalizedTail FROM
+        (SELECT ac.tailnormal AS NormalizedTail,
+             CONCAT(ac.tailnormal, ',', Version) AS TailMatch,
+             COUNT(idAircraft) AS cAircraft
+         FROM Aircraft ac
+         GROUP BY TailMatch
+         HAVING cAircraft > 1) AS Dupes)
+GROUP BY ac.idaircraft
+ORDER BY tailnormal ASC, version, numUsers DESC, idaircraft ASC");
+
+            dbh.ReadRows((comm) => { },
+                (dr) => { lst.Add(new Aircraft(dr) { Stats = new AircraftStats(dr) }); });
+
+            return lst;
+        }
+
+        public static IEnumerable<Aircraft> AdminDupeSims()
+        {
+            List<Aircraft> lst = new List<Aircraft>();
+            DBHelper dbh = new DBHelper(@"SELECT 
+	aircraft.*, 
+	models.*, 
+	IF (aircraft.Tailnumber LIKE '#%', CONCAT('#', models.model), aircraft.TailNormal) AS sortKey,
+	if (aircraft.InstanceType = 1, '', Concat(' (', aircraftinstancetypes.Description, ')')) as 'InstanceTypeDesc',
+	TRIM(CONCAT(manufacturers.manufacturer, ' ', CONCAT(COALESCE(models.typename, ''), ' '), models.modelname)) AS 'ModelCommonName',
+	0 AS Flags,
+	'' AS DefaultImage,
+	'' AS UserNotes,
+	'' AS TemplateIDs,
+	COUNT(DISTINCT f.idflight) AS numFlights,
+	COUNT(DISTINCT ua.username) AS numUsers,
+	0 AS flightsForUser,
+	'' AS userNames,
+    NULL AS EarliestDate,
+    NULL AS LatestDate,
+    0 AS hours
+FROM aircraft 
+	INNER JOIN models ON aircraft.idmodel=models.idmodel 
+	INNER JOIN manufacturers ON manufacturers.idManufacturer=models.idmanufacturer 
+	INNER JOIN aircraftinstancetypes ON aircraft.InstanceType=aircraftinstancetypes.ID
+	INNER JOIN Aircraft ac2 on aircraft.idmodel = ac2.idmodel AND aircraft.instancetype=ac2.instancetype AND aircraft.idaircraft <> ac2.idaircraft
+	LEFT JOIN flights f on f.idaircraft = aircraft.idaircraft
+	LEFT JOIN useraircraft ua ON ua.idaircraft=aircraft.idaircraft
+WHERE aircraft.instancetype <> 1 AND ac2.instancetype <> 1 
+GROUP BY aircraft.idaircraft
+ORDER BY aircraft.instancetype, aircraft.idmodel");
+
+            dbh.ReadRows((comm) => { },
+    (dr) => { lst.Add(new Aircraft(dr) { Stats = new AircraftStats(dr) }); });
+
+            return lst;
+        }
+
+        public static IEnumerable<Aircraft> ResolveDupeSim(int idAircraft)
+        {
+            Aircraft acMaster = new Aircraft(idAircraft);
+            if (acMaster.AircraftID < 0)
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, "Invalid ID to resolve: {0}", idAircraft));
+            if (acMaster.InstanceType == AircraftInstanceTypes.RealAircraft)
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, "Aircraft is not a sim: {0}", idAircraft));
+            List<int> AircraftToMergeToThis = new List<int>();
+            DBHelper dbh = new DBHelper("SELECT idAircraft FROM Aircraft WHERE idmodel=?m AND instanceType=?i AND idAircraft <> ?acid");
+            dbh.ReadRows((comm) =>
+            {
+                comm.Parameters.AddWithValue("m", acMaster.ModelID);
+                comm.Parameters.AddWithValue("i", acMaster.InstanceTypeID);
+                comm.Parameters.AddWithValue("acid", idAircraft);
+            },
+            (dr) => { AircraftToMergeToThis.Add(Convert.ToInt32(dr["idAircraft"], CultureInfo.InvariantCulture)); });
+
+            // Merge each of the dupes to the one we want to keep
+            foreach (int acID in AircraftToMergeToThis)
+            {
+                Aircraft acToMerge = new Aircraft(acID);
+                AircraftUtility.AdminMergeDupeAircraft(acMaster, acToMerge);
+            }
+
+            return AdminDupeSims();
+        }
+
+        public static IEnumerable<Aircraft> OrphanedAircraft()
+        {
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"], 0, "''", "''", "''", @"LEFT JOIN useraircraft ua ON ua.idaircraft=aircraft.idaircraft WHERE ua.idaircraft IS NULL"));
+
+            List<Aircraft> lstAc = new List<Aircraft>();
+            dbh.ReadRows(
+                (comm) => { }, (dr) => { lstAc.Add(new Aircraft(dr)); });
+            return lstAc;
+        }
+
+        public static IEnumerable<Aircraft> AircraftMatchingPattern(string szPattern)
+        {
+            if (String.IsNullOrEmpty(szPattern))
+                return Array.Empty<Aircraft>();
+
+            string szTailToMatch = Regex.Replace(szPattern, "[^a-zA-Z0-9#?]", "*").ConvertToMySQLWildcards();
+
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"], 0, "''", "''", "''", @"WHERE tailnormal LIKE ?tailNum"));
+
+            List<Aircraft> lstAc = new List<Aircraft>();
+            dbh.ReadRows(
+                (comm) => { comm.Parameters.AddWithValue("tailNum", szTailToMatch); },
+                (dr) => { lstAc.Add(new Aircraft(dr)); });
+            return lstAc;
+        }
+
+        public static IEnumerable<Aircraft> PseudoGenericAircraft()
+        {
+            DBHelper dbh = new DBHelper(@"SELECT 
+	aircraft.*, 
+	models.*, 
+	IF (aircraft.Tailnumber LIKE '#%', CONCAT('#', models.model), aircraft.TailNormal) AS sortKey,
+	if (aircraft.InstanceType = 1, '', Concat(' (', aircraftinstancetypes.Description, ')')) as 'InstanceTypeDesc',
+	TRIM(CONCAT(manufacturers.manufacturer, ' ', CONCAT(COALESCE(models.typename, ''), ' '), models.modelname)) AS 'ModelCommonName',
+	0 AS Flags,
+	'' AS DefaultImage,
+	'' AS UserNotes,
+	'' AS TemplateIDs,
+	COUNT(DISTINCT f.idflight) AS numFlights,
+	COUNT(DISTINCT ua.username) AS numUsers,
+	0 AS flightsForUser,
+	'' AS userNames,
+    NULL AS EarliestDate,
+    NULL AS LatestDate,
+    0 AS hours
+FROM aircraft
+	INNER JOIN models ON aircraft.idmodel=models.idmodel
+	INNER JOIN manufacturers ON models.idmanufacturer=manufacturers.idmanufacturer
+	INNER JOIN aircraftinstancetypes ON aircraft.InstanceType=aircraftinstancetypes.ID
+	LEFT JOIN Flights f ON f.idaircraft=aircraft.idaircraft
+	LEFT JOIN useraircraft ua ON ua.idaircraft=aircraft.idaircraft
+WHERE
+	((aircraft.tailnormal RLIKE '^N[ABD-FH-KM-QT-WYZ][-0-9A-Z]+' AND aircraft.tailnormal NOT RLIKE '^NZ[0-9]{2,4}$')
+    OR aircraft.tailnormal RLIKE '^N.*[ioIO]'
+    OR aircraft.tailnormal LIKE 'N0%'
+    OR LEFT(aircraft.tailnormal, 4) = LEFT(REPLACE(models.model, '-', ''), 4)
+    OR RIGHT(aircraft.tailnormal, LENGTH(aircraft.tailnumber) - 1) = REPLACE(RIGHT(models.model, LENGTH(models.model) - 1), '-', '')
+    OR (LEFT(aircraft.tailnumber, 3) <> 'SIM' AND (LEFT(aircraft.tailnormal, 4) = LEFT(manufacturers.manufacturer, 4)))
+    OR (aircraft.instancetype=1 AND aircraft.tailnormal RLIKE 'SIM|FTD|ATD|FFS|REDB|ANON|FRAS|ELIT|CAE|ALSIM|FLIG|SAFE|PREC|TRUF|FMX|GROU|VARI|MISC|NONE|UNKN|OTHE|FAA|MENTO|TAIL'))
+    AND aircraft.publicnotes NOT LIKE '% '
+GROUP BY aircraft.idaircraft
+ORDER BY tailnumber ASC");
+
+            List<Aircraft> lstAc = new List<Aircraft>();
+            dbh.ReadRows((comm) => { }, (dr) => { lstAc.Add(new Aircraft(dr) { Stats = new AircraftStats(dr) }); });
+            return lstAc;
+        }
+
+        static readonly Regex regexPseudoSim = new Regex("N[a-zA-Z-]+([0-9].*)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        static readonly Regex regexOOrI = new Regex("^N.*[oOiI].*", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        public static string FixedPsuedoTail(string szTail)
+        {
+            if (String.IsNullOrEmpty(szTail))
+                return szTail;
+
+            GroupCollection gc = regexPseudoSim.Match(szTail).Groups;
+            string szTailnumFixed = szTail;
+            if (gc != null && gc.Count > 1)
+                szTailnumFixed = String.Format(CultureInfo.InvariantCulture, "N{0}", gc[1].Value);
+            else if (regexOOrI.IsMatch(szTail))
+                szTailnumFixed = szTail.ToUpper(CultureInfo.CurrentCulture).Replace('I', '1').Replace('O', '0');
+            else if (szTailnumFixed.StartsWith("N0", StringComparison.CurrentCultureIgnoreCase))
+                szTailnumFixed = "N" + szTailnumFixed.Substring(2);
+
+            return szTailnumFixed;
+        }
+
+        public static bool HasMixedOorI(string szTail)
+        {
+            return regexOOrI.IsMatch(szTail ?? string.Empty);
+        }
+
+        public static void UpdateVersionForAircraft(Aircraft aircraft, int newVersion)
+        {
+            if (aircraft == null)
+                throw new ArgumentNullException(nameof(aircraft));
+            if (newVersion < 0)
+                throw new ArgumentOutOfRangeException(nameof(newVersion));
+
+            DBHelper dbh = new DBHelper("UPDATE aircraft SET version=?Version WHERE idaircraft=?idaircraft");
+            dbh.DoNonQuery((comm) =>
+            {
+                comm.Parameters.AddWithValue("Version", newVersion);
+                comm.Parameters.AddWithValue("idaircraft", aircraft.AircraftID);
+            });
+        }
+
+        public static string CleanUpMaintenance()
+        {
+            const string szSQLMaintainedVirtualAircraft = @"SELECT ac.*, group_concat(ml.id), group_concat(ml.Description)
+FROM aircraft ac 
+INNER JOIN maintenancelog ml ON ac.idaircraft=ml.idaircraft
+WHERE (ac.tailnumber LIKE 'SIM%' OR ac.tailnumber LIKE '#%' OR ac.InstanceType <> 1) AND ml.idAircraft IS NOT NULL
+GROUP BY ac.idaircraft";
+            const string szSQLDeleteVirtualMaintenanceDates = @"UPDATE aircraft
+SET lastannual=null, lastPitotStatic=null, lastVOR=null, lastAltimeter=null, lasttransponder=null, registrationdue=null, glassupgradedate=null
+WHERE (tailnumber LIKE 'SIM%' OR tailnumber LIKE '#%' OR InstanceType <> 1) ";
+
+            List<int> lst = new List<int>();
+            DBHelper dbh = new DBHelper(szSQLMaintainedVirtualAircraft);
+            dbh.ReadRows((comm) => { }, (dr) => { lst.Add(Convert.ToInt32(dr["idaircraft"], CultureInfo.InvariantCulture)); });
+            if (lst.Count != 0)
+            {
+                IEnumerable<Aircraft> rgac = Aircraft.AircraftFromIDs(lst);
+                DBHelper dbhDelMaintenance = new DBHelper("DELETE FROM maintenancelog WHERE idAircraft=?idac");
+                foreach (Aircraft ac in rgac)
+                {
+                    // clean up the maintenance
+                    ac.Last100 = ac.LastNewEngine = ac.LastOilChange = 0.0M;
+                    ac.LastAltimeter = ac.LastAnnual = ac.LastELT = ac.LastStatic = ac.LastTransponder = ac.LastVOR = ac.RegistrationDue = DateTime.MinValue;
+                    ac.Commit();
+
+                    // and then delete any maintenance records for this.
+                    dbhDelMaintenance.DoNonQuery((comm) => { comm.Parameters.AddWithValue("idac", ac.AircraftID); });
+                }
+            }
+            dbh.CommandText = szSQLDeleteVirtualMaintenanceDates;
+            dbh.DoNonQuery();
+            return String.Format(CultureInfo.CurrentCulture, "Maintenance cleaned up, {0} maintenance logs cleaned, all virtual aircraft had dates nullified", lst.Count);
         }
 
         /// <summary>

@@ -1,0 +1,39 @@
+﻿@using MyFlightbook
+@using System.Globalization
+@{
+    IEnumerable<Aircraft> rgac = ViewBag.rgac;
+}
+@if (!rgac.Any())
+{
+    <p>No matching aircraft found!</p>
+}
+else
+{
+    <input type="hidden" id="hdnSortAclIndexID" value="1" />
+    <input type="hidden" id="hdnSortAclDirID" value="asc" />
+
+    <table class="stickyHeaderTable" style="width:unset;">
+        <thead>
+            <tr>
+                <th class="headerBase gvhDefault gvhCentered" onclick="javascript:sortTable(this, 0, 'num', 'hdnSortAclIndexID', 'hdnSortAclDirID');">ID</th>
+                <th class="headerBase gvhDefault gvhCentered headerSortAsc" onclick="javascript:sortTable(this, 1, '', 'hdnSortAclIndexID', 'hdnSortAclDirID');">Tail</th>
+                <th class="headerBase gvhDefault gvhCentered" onclick="javascript:sortTable(this, 2, '', 'hdnSortAclIndexID', 'hdnSortAclDirID');">Model</th>
+                <th class="headerBase gvhDefault gvhCentered" onclick="javascript:sortTable(this, 3, 'num', 'hdnSortAclIndexID', 'hdnSortAclDirID');">Version</th>
+                <th class="headerBase gvhDefault gvhCentered" onclick="javascript:sortTable(this, 4, '', 'hdnSortAclIndexID', 'hdnSortAclDirID');">InstanceType</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Aircraft ac in ViewBag.rgac)
+            {
+                <tr>
+                    <td><a target="_blank" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}&a=1&genCandidate=1", ac.AircraftID))">@ac.AircraftID</a></td>
+                    <td>@ac.TailNumber</td>
+                    <td>@ac.LongModelDescription</td>
+                    <td>@ac.Version</td>
+                    <td>@ac.InstanceTypeDescription</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+

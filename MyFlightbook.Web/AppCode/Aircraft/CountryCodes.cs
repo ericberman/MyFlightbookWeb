@@ -6,7 +6,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2022 MyFlightbook LLC
+ * Copyright (c) 2009-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -77,6 +77,11 @@ namespace MyFlightbook
         {
             get { return HyphenPref == HyphenPreference.Hyphenate ? Prefix + "-" : Prefix; }
         }
+
+        /// <summary>
+        /// Database ID of the prefix
+        /// </summary>
+        public int ID { get; private set; } = -1;
 
         /// <summary>
         /// The prefix with NO hyphens at all
@@ -150,6 +155,7 @@ namespace MyFlightbook
 
         private CountryCodePrefix(MySqlDataReader dr) : this()
         {
+            ID = Convert.ToInt32(dr["ID"], CultureInfo.InvariantCulture);
             CountryName = Convert.ToString(dr["CountryName"], CultureInfo.InvariantCulture);
             Prefix = Convert.ToString(dr["Prefix"], CultureInfo.InvariantCulture);
             NormalizedPrefix = Prefix.Replace("-", string.Empty);
@@ -315,13 +321,29 @@ namespace MyFlightbook
 
             _cachedCountryCodes = new List<CountryCodePrefix>();
 
-            DBHelper dbh = new DBHelper("SELECT * FROM countrycodes");
+            DBHelper dbh = new DBHelper("SELECT * FROM countrycodes ORDER BY CountryName ASC");
             if (!dbh.ReadRows(
                 (comm) => { },
                 (dr) => { _cachedCountryCodes.Add(new CountryCodePrefix(dr)); }))
                 throw new MyFlightbookException("Error getting countrycodes:\r\n" + dbh.LastError);
 
             return _cachedCountryCodes;
+        }
+
+        public void Commit()
+        {
+            DBHelper dbh = new DBHelper("REPLACE INTO countrycodes SET prefix=?pre, locale=?loc, Countryname=?cn, RegistrationURLTemplate=?templ, TemplateType=?ttype, HyphenPref=?hpref, ID=?id");
+            dbh.DoNonQuery((comm) =>
+            {
+                comm.Parameters.AddWithValue("pre", Prefix);
+                comm.Parameters.AddWithValue("loc", Locale);
+                comm.Parameters.AddWithValue("cn", CountryName);
+                comm.Parameters.AddWithValue("templ", RegistrationLinkTemplate);
+                comm.Parameters.AddWithValue("ttype", (int)RegistrationURLTemplateMode);
+                comm.Parameters.AddWithValue("hpref", (int)HyphenPref);
+                comm.Parameters.AddWithValue("id", ID);
+            });
+            FlushCache();
         }
 
         public static void FlushCache()

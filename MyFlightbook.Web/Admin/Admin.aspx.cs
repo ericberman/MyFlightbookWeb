@@ -25,7 +25,6 @@ namespace MyFlightbook.Web.Admin
                 case tabID.admUsers:
                     return pf.CanSupport;
                 case tabID.admModels:
-                case tabID.admManufacturers:
                 case tabID.admAirports:
                 case tabID.admMisc:
                     return pf.CanManageData;
@@ -39,240 +38,14 @@ namespace MyFlightbook.Web.Admin
             Profile pf = Profile.GetUser(Page.User.Identity.Name);
             CheckAdmin(pf.CanDoSomeAdmin);
 
-            tabID sidebarTab = tabID.admUsers;
             if (!IsPostBack)
             {
-                string szPage = util.GetStringParam(Request, "t");
-
-                if (!String.IsNullOrEmpty(szPage))
-                {
-                    if (!Enum.TryParse<tabID>(szPage, out sidebarTab))
-                        sidebarTab = tabID.admUsers;
-                }
-
-                CheckAdmin(IsAuthorizedForTab(sidebarTab, pf));
-
-                switch (sidebarTab)
-                {
-                    default:
-                    case tabID.admManufacturers:
-                        mvAdmin.SetActiveView(vwManufacturers);
-                        mvMain.SetActiveView(vwMainManufacturers);
-                        break;
-                    case tabID.admMisc:
-                        mvAdmin.SetActiveView(vwMisc);
-                        mvMain.SetActiveView(vwMainMisc);
-                        DisplayMemStats();
-                        break;
-                    case tabID.admModels:
-                        mvAdmin.SetActiveView(vwModels);
-                        mvMain.SetActiveView(vwMainModels);
-                        RefreshDupeModels();
-                        break;
-                }
-
-                hdnActiveTab.Value = sidebarTab.ToString();
-            }
-            else
-                sidebarTab = (tabID)Enum.Parse(typeof(tabID), hdnActiveTab.Value);
-
-            Master.SelectedTab = sidebarTab;
-        }
-
-        #region models
-        protected void RefreshDupeModels()
-        {
-            SqlDataSourceDupeModels.SelectCommand = String.Format(CultureInfo.InvariantCulture, @"SELECT man.manufacturer, 
-                    cc.CatClass,
-                    CAST(CONCAT(model, CONCAT(' ''', modelname, ''' '), IF(typename='', '', CONCAT('TYPE=', typename)), CONCAT(' - ', idmodel)) AS CHAR) AS 'DisplayName',
-                    m.*
-                FROM models m
-                    INNER JOIN manufacturers man ON m.idmanufacturer = man.idManufacturer
-                    INNER JOIN categoryclass cc ON cc.idCatClass=m.idcategoryclass
-                WHERE UPPER(REPLACE(REPLACE(CONCAT(m.model,CONVERT(m.idcategoryclass, char),m.typename), '-', ''), ' ', '')) IN
-                    (SELECT modelandtype FROM (SELECT model, COUNT(model) AS cModel, UPPER(REPLACE(REPLACE(CONCAT(m2.model,CONVERT(m2.idcategoryclass, char),m2.typename), '-', ''), ' ', '')) AS modelandtype FROM models m2 GROUP BY modelandtype HAVING cModel > 1) as dupes)
-                {0}
-                ORDER BY m.model", ckExcludeSims.Checked ? "HAVING m.fSimOnly = 0" : string.Empty);
-
-            gvDupeModels.DataBind();
-        }
-
-        protected void ckExcludeSims_CheckedChanged(object sender, EventArgs e)
-        {
-            RefreshDupeModels();
-        }
-
-        protected void btnPreview_Click(object sender, EventArgs e)
-        {
-            if (!Page.IsValid)
-                return;
-
-            int idModelToDelete = Convert.ToInt32(cmbModelToDelete.SelectedValue, CultureInfo.InvariantCulture);
-            lblPreview.Text = HttpUtility.HtmlEncode(String.Format(CultureInfo.CurrentCulture, "Model {0} will be deleted\r\nThe following airplanes will be mapped from model {1} to {2}", idModelToDelete, cmbModelToDelete.SelectedValue, cmbModelToMergeInto.SelectedValue));
-
-            pnlPreview.Visible = true;
-
-            gvAirplanesToRemap.DataSource = new UserAircraft(null).GetAircraftForUser(UserAircraft.AircraftRestriction.AllMakeModel, idModelToDelete);
-            gvAirplanesToRemap.DataBind();
-        }
-
-        protected void btnDeleteDupeMake_Click(object sender, EventArgs e)
-        {
-            int idModelToDelete = Convert.ToInt32(cmbModelToDelete.SelectedValue, CultureInfo.InvariantCulture);
-            int idModelToMergeInto = Convert.ToInt32(cmbModelToMergeInto.SelectedValue, CultureInfo.InvariantCulture);
-
-            lblPreview.Text = String.Join("\r\n", MakeModel.AdminMergeDuplicateModels(idModelToDelete, idModelToMergeInto));
-
-            RefreshDupeModels();
-            gvOrphanMakes.DataBind();
-            cmbModelToDelete.DataBind();
-            cmbModelToMergeInto.DataBind();
-            pnlPreview.Visible = false;
-        }
-
-        protected void gvOrphanMakes_RowDeleting(object sender, GridViewDeleteEventArgs e)
-        {
-            if (e != null)
-            {
-                int idModel = Convert.ToInt32(e.Keys[0], CultureInfo.InvariantCulture); // first key is idmodel
-                DBHelper dbh = new DBHelper("DELETE FROM CustCurrencyRef WHERE value=?idmodel AND type=?modelsType");
-                dbh.DoNonQuery((comm) =>
-                {
-                    comm.Parameters.AddWithValue("idmodel", idModel);
-                    comm.Parameters.AddWithValue("modelsType", (int)MyFlightbook.Currency.CustomCurrency.CurrencyRefType.Models);
-                });
-            }
-        }
-
-        private static string NormalizeModelName(string sz)
-        {
-            return sz.Replace(" ", "").Replace("-", "");
-        }
-
-        protected void CustomValidator1_ServerValidate(object source, ServerValidateEventArgs args)
-        {
-            if (args == null)
-                throw new ArgumentNullException(nameof(args));
-            if (cmbModelToMergeInto.SelectedValue == cmbModelToDelete.SelectedValue)
-                args.IsValid = false;
-            MakeModel mmToDelete = new MakeModel(Convert.ToInt32(cmbModelToDelete.SelectedValue, CultureInfo.InvariantCulture));
-            MakeModel mmToKeep = new MakeModel(Convert.ToInt32(cmbModelToMergeInto.SelectedValue, CultureInfo.InvariantCulture));
-            if (String.Compare(NormalizeModelName(mmToDelete.Model), NormalizeModelName(mmToKeep.Model), StringComparison.OrdinalIgnoreCase) != 0)
-                args.IsValid = false;
-        }
-
-        protected void btnRefreshReview_Click(object sender, EventArgs e)
-        {
-            gvReviewTypes.DataSourceID = "sqlDSReviewTypes";
-            gvReviewTypes.DataBind();
-        }
-
-        #endregion
-
-        #region Manufacturers
-        protected void btnPreviewDupeMans_Click(object sender, EventArgs e)
-        {
-            if (!Page.IsValid)
-                return;
-
-            StringBuilder sb = new StringBuilder();
-
-            sb.Append(String.Format(CultureInfo.CurrentCulture, "Manufacturer {0} will be deleted<br />", System.Web.HttpUtility.HtmlEncode(cmbManToKill.SelectedItem.Text)));
-            sb.Append(String.Format(CultureInfo.CurrentCulture, "The following models will be mapped from manufacturer {0} to {1}<br />", System.Web.HttpUtility.HtmlEncode(cmbManToKill.SelectedItem.Text), System.Web.HttpUtility.HtmlEncode(cmbManToKeep.SelectedItem.Text)));
-
-            pnlPreviewDupeMan.Visible = true;
-
-            gvModelsToRemap.DataBind();
-            lblPreviewDupeMan.Text = sb.ToString();
-        }
-
-        protected void btnDeleteDupeMan_Click(object sender, EventArgs e)
-        {
-            StringBuilder sbAudit = new StringBuilder("<br /><br /><b>Audit of changes made:</b><br />");
-
-            DBHelper dbh = new DBHelper(String.Format(CultureInfo.CurrentCulture, "UPDATE models SET idManufacturer={0} WHERE idmanufacturer={1}", cmbManToKeep.SelectedValue, cmbManToKill.SelectedValue));
-            sbAudit.AppendFormat(CultureInfo.CurrentCulture, "Executed this command: {0}<br />", System.Web.HttpUtility.HtmlEncode(dbh.CommandText));
-            if (!dbh.DoNonQuery())
-                throw new MyFlightbookException("Error remapping model: " + dbh.CommandText + "\r\n" + dbh.LastError);
-
-            // Then delete the old manufacturer
-            dbh.CommandText = String.Format(CultureInfo.InvariantCulture, "DELETE FROM manufacturers WHERE idmanufacturer={0}", cmbManToKill.SelectedValue);
-            sbAudit.AppendFormat(CultureInfo.CurrentCulture, "Deleted this manufacturer: {0}<br />", System.Web.HttpUtility.HtmlEncode(dbh.CommandText));
-            if (!dbh.DoNonQuery())
-                throw new MyFlightbookException("Error deleting manufacturer: " + dbh.CommandText + "\r\n" + dbh.LastError);
-
-            lblPreviewDupeMan.Text = sbAudit.ToString();
-
-            gvModelsToRemap.DataBind();
-            gvDupeMan.DataBind();
-            gvOrphanMakes.DataBind();
-            cmbManToKeep.DataBind();
-            cmbManToKill.DataBind();
-            pnlPreviewDupeMan.Visible = false;
-        }
-
-        protected void ValidateDupeMans(object source, ServerValidateEventArgs args)
-        {
-            if (args == null)
-                throw new ArgumentNullException(nameof(args));
-            if (cmbManToKeep.SelectedValue == cmbManToKill.SelectedValue ||
-                cmbManToKeep.SelectedItem == null || cmbManToKill.SelectedItem == null ||
-                cmbManToKill.SelectedItem.Text.Length == 0 || cmbManToKeep.SelectedItem.Text.Length == 0)
-            {
-                args.IsValid = false;
-                return;
+                CheckAdmin(IsAuthorizedForTab(tabID.admMisc, pf));
+                DisplayMemStats();
             }
 
-            string szMan1 = cmbManToKeep.SelectedItem.Text.Substring(cmbManToKeep.SelectedItem.Text.IndexOf(" - ", StringComparison.OrdinalIgnoreCase) + 3);
-            string szMan2 = cmbManToKill.SelectedItem.Text.Substring(cmbManToKill.SelectedItem.Text.IndexOf(" - ", StringComparison.OrdinalIgnoreCase) + 3);
-
-            if (String.Compare(szMan1, szMan2, StringComparison.CurrentCultureIgnoreCase) != 0)
-                args.IsValid = false;
+            Master.SelectedTab = tabID.admMisc;
         }
-
-        protected void btnManAdd_Click(object sender, EventArgs e)
-        {
-            DBHelper dbh = new DBHelper("INSERT INTO manufacturers SET Manufacturer = ?Manufacturer");
-            dbh.DoNonQuery((comm) => { comm.Parameters.AddWithValue("Manufacturer", txtNewManufacturer.Text); });
-            if (dbh.LastError.Length > 0)
-                lblError.Text = dbh.LastError;
-            gvManufacturers.DataBind();
-        }
-
-        protected void ManRowDeleting(object sender, GridViewDeleteEventArgs e)
-        {
-            if (e != null && Convert.ToInt32(e.Values["Number of Models"], CultureInfo.InvariantCulture) != 0)
-                e.Cancel = true;
-            Manufacturer.FlushCache();
-        }
-
-        protected void gvManufacturers_RowDataBound(object sender, GridViewRowEventArgs e)
-        {
-            if (e == null)
-                throw new ArgumentNullException(nameof(e));
-            if ((e.Row.RowState & DataControlRowState.Edit) == DataControlRowState.Edit)
-            {
-                RadioButtonList rbl = (RadioButtonList)e.Row.FindControl("rblDefaultSim");
-                rbl.SelectedValue = DataBinder.Eval(e.Row.DataItem, "DefaultSim").ToString();
-            }
-        }
-
-        protected void ManRowUpdating(object sender, GridViewUpdateEventArgs e)
-        {
-            if (e == null)
-                throw new ArgumentNullException(nameof(e));
-            if (sender == null)
-                throw new ArgumentNullException(nameof(sender));
-
-            GridView gv = (GridView)sender;
-            RadioButtonList rbl = (RadioButtonList)gv.Rows[e.RowIndex].FindControl("rblDefaultSim");
-            sqlDSManufacturers.UpdateParameters["DefaultSim"].DefaultValue = rbl.SelectedValue;
-            sqlDSManufacturers.Update();
-            gv.EditIndex = -1;
-
-            Manufacturer.FlushCache();
-        }
-        #endregion
 
         #region Misc
         protected void DisplayMemStats()
@@ -281,10 +54,7 @@ namespace MyFlightbook.Web.Admin
             foreach (System.Collections.DictionaryEntry entry in HttpRuntime.Cache)
             {
                 string szClass = entry.Value.GetType().ToString();
-                if (d.ContainsKey(szClass))
-                    d[szClass]++;
-                else
-                    d[szClass] = 1;
+                d[szClass] = d.TryGetValue(szClass, out int value) ? ++value : 1;
             }
             gvCacheData.DataSource = d;
             gvCacheData.DataBind();

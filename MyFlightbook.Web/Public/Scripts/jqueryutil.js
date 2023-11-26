@@ -60,3 +60,44 @@ function showModalById(id, szTitle, width) {
 function convertFdUpJsonDate(fdUpDate) {
     return new Date(parseInt(fdUpDate.replace("/Date(", "").replace(")/", "")));
 }
+
+function sortTable(sender, colIndex, sortType, hdnSortIndexID, hdnSortDirID) {
+    var table = $(sender).parents('table');
+    var lastSortIndex = parseInt($("#" + hdnSortIndexID).val());
+    var lastSortDir = $("#" + hdnSortDirID).val();
+
+    var order = "asc";
+
+    if (lastSortIndex == colIndex && lastSortDir == "asc") {
+        order = "desc";
+    }
+
+    $("#" + hdnSortIndexID).val(colIndex);
+    $("#" + hdnSortDirID).val(order);
+
+    table.find("th").each(function () {
+        $(this).removeClass("headerSortAsc").removeClass("headerSortDesc")
+    })
+    $(sender).addClass(order == "asc" ? "headerSortAsc" : "headerSortDesc");
+
+    var sortDir = (order === 'asc') ? 1 : -1;
+    var selector = 'td:nth-child(' + (colIndex + 1) + ')';
+
+    tbody = table.find('tbody');
+    tbody.find('tr').sort(function (a, b) {
+        var vala = $(a).find(selector);
+        var valb = $(b).find(selector);
+
+        if (sortType == "num") {
+            var aint = parseInt(vala.text());
+            var bint = parseInt(valb.text())
+            return sortDir * ((aint < bint) ? -1 : ((aint == bint) ? 0 : 1));
+        } else if (sortType == "date") {
+            var sortKeyA = vala.find("span:hidden").text();
+            var sortKeyB = valb.find("span:hidden").text();
+            return sortDir * (sortKeyA.localeCompare(sortKeyB));
+        } else {
+            return sortDir * (vala.text().localeCompare(valb.text()));
+        }
+    }).appendTo(tbody);
+}

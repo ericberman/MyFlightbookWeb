@@ -216,17 +216,17 @@
         <Roles>SiteAdmin,Support,DataManager</Roles>
       </Item>
       <Item>
-        <Link>~/Admin/Admin.aspx?t=admModels</Link>
+        <Link>~/mvc/AdminAircraft/Models</Link>
         <ID>admModels</ID>
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>
       <Item>
-        <Link>~/Admin/Admin.aspx?t=admManufacturers</Link>
+        <Link>~/mvc/AdminAircraft/Manufacturers</Link>
         <ID>admManufacturers</ID>
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>
       <Item>
-        <Link>~/Admin/AdminAircraft.aspx</Link>
+        <Link>~/mvc/AdminAircraft</Link>
         <ID>admAircraft</ID>
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>

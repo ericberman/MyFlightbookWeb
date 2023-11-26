@@ -619,6 +619,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please provide a name for the manufacturer.
+        /// </summary>
+        internal static string errManufacturerNameRequired {
+            get {
+                return ResourceManager.GetString("errManufacturerNameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Mission/Design/Series &apos;{0}&apos; is too long; please provide one that is fewer than 40 characters in length.
         /// </summary>
         internal static string errMDSTooLong {

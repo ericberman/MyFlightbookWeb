@@ -1,0 +1,53 @@
+﻿@using MyFlightbook
+@using System.Globalization
+@{ 
+    IEnumerable<Aircraft> rgac = ViewBag.rgac;
+    int lastModel = -1;
+}
+<p>Duplicate sims:</p>
+
+@if (!rgac.Any())
+{
+    <p class="success">No potential duplicates found!</p>
+}
+else
+{
+<table class="stickyHeaderTable">
+    <thead>
+        <tr>
+            <th></th>
+            <th class="headerBase gvhDefault gvhCentered">Tail</th>
+            <th class="headerBase gvhDefault gvhCentered">Model</th>
+            <th class="headerBase gvhDefault gvhCentered">Version</th>
+            <th class="headerBase gvhDefault gvhCentered">InstanceType</th>
+            <th class="headerBase gvhDefault gvhCentered"># flights</th>
+            <th class="headerBase gvhDefault gvhCentered"># users</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Aircraft ac in ViewBag.rgac)
+        {
+            // Break up the groups of duplicate sims.
+            if (ac.ModelID != lastModel)
+            {
+                if (lastModel != -1)
+                        {
+                            <tr style="background-color:lightgray;"><td colspan="8"></td></tr>
+                        }
+                lastModel = ac.ModelID;
+            }
+        <tr>
+            <td><a target="_blank" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}&a=1", ac.AircraftID))">@ac.AircraftID</a></td>
+            <td>@ac.TailNumber</td>
+            <td><a target="_blank" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditMake.aspx?id={0}&a=1", ac.ModelID))">@ac.ModelCommonName</a></td>
+            <td>@ac.Version</td>
+            <td>@ac.InstanceTypeDescription</td>
+            <td>@(ac.Stats?.Flights ?? 0)</td>
+            <td>@(ac.Stats?.Users ?? 0)</td>
+            <td><a style="cursor:pointer;" onclick="javascript:keepDupeSim(@ac.AircraftID)">Keep This</a></td>
+        </tr>
+        }
+    </tbody>
+</table>
+}

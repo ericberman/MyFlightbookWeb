@@ -1,0 +1,61 @@
+﻿@using MyFlightbook
+@using System.Globalization
+@{
+    IEnumerable<Aircraft> rgac = ViewBag.rgac;
+}
+@if (!rgac.Any())
+{
+    <p>No pseudo-generic found!</p>
+}
+else
+{
+    <table class="stickyHeaderTable">
+        <thead>
+            <tr>
+                <th class="headerBase gvhDefault gvhCentered">Aircraft</th>
+                <th class="headerBase gvhDefault gvhCentered"># Flights</th>
+                <th class="headerBase gvhDefault gvhCentered"># Users</th>
+                <th class="headerBase gvhDefault gvhCentered">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Aircraft ac in ViewBag.rgac)
+            {
+                string szTailFixed = AircraftUtility.FixedPsuedoTail(ac.TailNumber);
+                string szRegRef = Aircraft.LinkForTailnumberRegistry(szTailFixed);
+                string szdummyID = String.Format(CultureInfo.InvariantCulture, "spn{0}", ac.AircraftID);
+                string szNumFlights = (ac.Stats?.Flights ?? 0).ToString(CultureInfo.CurrentCulture);
+                <tr>
+                    <td><a target="_blank" style="font-weight:bold;" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}&a=1&genCandidate=1", ac.AircraftID))">@ac.TailNumber</a> @ac.ModelCommonName</td>
+                    <td><a style="cursor:pointer" onclick="javascript: viewFlights(@ac.AircraftID, '@ac.TailNumber');">@szNumFlights</a></td>
+                    <td>@(ac.Stats?.Users ?? 0)</td>
+                    <td>
+                        <div class="adm">
+                            <span id="@szdummyID"></span>
+                            @if (!String.IsNullOrEmpty(szRegRef))
+                            {
+                                <a id="lnkViewFixedTail" target="_blank" class="admItem" href="@szRegRef">Registration for @szTailFixed</a>
+                            }
+                            @if (ac.TailNumber.StartsWith("N0", StringComparison.CurrentCultureIgnoreCase) || ac.TailNumber.StartsWith("NN", StringComparison.CurrentCultureIgnoreCase))
+                            {
+                                <a style="cursor:pointer" id="lnkRemoveLeadingN" class="admItem" onclick="javascript:trimLeadingN('@szdummyID',@ac.AircraftID);">Remove Leading N</a>
+                            }
+                            @if (AircraftUtility.HasMixedOorI(ac.TailNumber))
+                            {
+                                <a style="cursor:pointer" id="lnkConvertOandI" class="admItem" onclick="javascript: convertOandI('@szdummyID',@ac.AircraftID);">Convert O/I to 0/1</a>
+                            }
+                            @if (ac.TailNumber.StartsWith("N0", StringComparison.InvariantCultureIgnoreCase))
+                            {
+                            <a style="cursor:pointer" id="lnkN0ToN" class="admItem" onclick="javascript: trimN0('@szdummyID',@ac.AircraftID);">N0 → N</a>
+                            }
+                            <a style="cursor:pointer" id="lnkMigrateGeneric" class="admItem" onclick="javascript:migrateGeneric('@szdummyID', @ac.AircraftID, s => document.getElementById(s).parentElement.parentElement.className = 'handled');">Migrate Generic</a>
+                            <a style="cursor:pointer" id="lnkMigrateSim" class="admItem" onclick="javascript:migrateSim('@szdummyID', @ac.AircraftID, s => document.getElementById(s).parentElement.parentElement.className = 'handled');">Migrate SIM</a>
+                            <a style="cursor:pointer" id="lnkIgnore" class="admItem" onclick="javascript:ignorePseudoGeneric('@szdummyID', @ac.AircraftID);">Ignore</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<div id="pnlFlightContent" style="display:none;" />

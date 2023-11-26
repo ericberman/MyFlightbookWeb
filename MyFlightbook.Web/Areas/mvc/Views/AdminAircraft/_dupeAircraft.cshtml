@@ -1,0 +1,44 @@
+﻿@using MyFlightbook
+@using System.Globalization
+@{ 
+    IEnumerable<Aircraft> rgac = ViewBag.rgac;
+}
+<p>Potential duplicate Aircraft:</p>
+
+@if (!rgac.Any())
+{
+    <p class="success">No potential duplicates found!</p>
+}
+else
+{
+<table class="stickyHeaderTable">
+    <thead>
+        <tr>
+            <th></th>
+            <th class="headerBase gvhDefault gvhCentered">Tail</th>
+            <th class="headerBase gvhDefault gvhCentered">Tail (Normal)</th>
+            <th class="headerBase gvhDefault gvhCentered">Model</th>
+            <th class="headerBase gvhDefault gvhCentered">Version</th>
+            <th class="headerBase gvhDefault gvhCentered">InstanceType</th>
+            <th class="headerBase gvhDefault gvhCentered"># flights</th>
+            <th class="headerBase gvhDefault gvhCentered"># users</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Aircraft ac in ViewBag.rgac)
+        {
+            string szTxtID = String.Format(CultureInfo.InvariantCulture, "txt{0}", ac.AircraftID);
+        <tr>
+            <td><a target="_blank" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}&a=1", ac.AircraftID))">@ac.AircraftID</a></td>
+            <td>@ac.TailNumber</td>
+            <td>@ac.NormalizedTail</td>
+            <td><a target="_blank" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditMake.aspx?id={0}&a=1", ac.ModelID))">@ac.ModelCommonName</a> @ac.ModelID</td>
+            <td><input type="text" value="@ac.Version" id="@szTxtID" /> <a style="cursor:pointer;" onclick="javascript:updateVersion(@ac.AircraftID, $('#@szTxtID')[0].value);">Update</a></td>
+            <td>@ac.InstanceTypeDescription</td>
+            <td>@(ac.Stats?.Flights ?? 0)</td>
+            <td>@(ac.Stats?.Users ?? 0)</td>
+        </tr>
+        }
+    </tbody>
+</table>
+}

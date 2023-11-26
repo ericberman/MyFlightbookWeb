@@ -1,0 +1,45 @@
+﻿@using System.Globalization
+@{ 
+    IEnumerable<MakeModel> rgModels = ViewBag.models;
+    string baseName = ViewBag.name;
+    string hdnSortIndexID = String.Format(CultureInfo.InvariantCulture, "hdnSort{0}Index", baseName);
+    string hdnSortDirID = String.Format(CultureInfo.InvariantCulture, "hdnSort{0}Dir", baseName);
+    int columnIndex = (ViewBag.includeDelete) ? 1 : 0;
+}
+<input type="hidden" id="@hdnSortIndexID" />
+<input type="hidden" id="@hdnSortDirID" />
+<table class="stickyHeaderTable stickyHeaderAlternate">
+    <thead>
+        <tr>
+            @if (ViewBag.includeDelete)
+            {
+                <th></th>
+            }
+            <th class="headerBase gvhDefault gvhLeft" onclick="javascript:sortTable(this, @(columnIndex++), 'num', '@hdnSortIndexID', '@hdnSortDirID');">ID</th>
+            <th class="headerBase gvhDefault gvhLeft" onclick="javascript:sortTable(this, @(columnIndex++), '', '@hdnSortIndexID', '@hdnSortDirID');">Manufacturer</th>
+            <th class="headerBase gvhDefault gvhLeft" onclick="javascript:sortTable(this, @(columnIndex++), '', '@hdnSortIndexID', '@hdnSortDirID');">Model</th>
+            <th class="headerBase gvhDefault gvhLeft" onclick="javascript:sortTable(this, @(columnIndex++), '', '@hdnSortIndexID', '@hdnSortDirID');">Type</th>
+            <th class="headerBase gvhDefault gvhLeft" onclick="javascript:sortTable(this, @(columnIndex++), '', '@hdnSortIndexID', '@hdnSortDirID');">Name</th>
+            <th class="headerBase gvhDefault gvhLeft" onclick="javascript:sortTable(this, @(columnIndex++), '', '@hdnSortIndexID', '@hdnSortDirID');">Category/class</th>
+            <th class="headerBase gvhDefault gvhLeft" onclick="javascript:sortTable(this, @(columnIndex++), '', '@hdnSortIndexID', '@hdnSortDirID');">Allowed types</th>
+            <th>Attributes</th>
+        </tr>
+    </thead>
+    @foreach (MakeModel mm in rgModels)
+    {
+        <tr>
+            @if (ViewBag.IncludeDelete)
+            {
+                <td><img src="@VirtualPathUtility.ToAbsolute("~/images/x.gif")" alt="Delete" title="Delete" onclick="javascript: deleteModel(this, @mm.MakeModelID)" /></td>
+            }
+            <td><a href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditMake.aspx?id={0}&a=1", mm.MakeModelID))">@mm.MakeModelID</a></td>
+            <td>@mm.ManufacturerDisplay</td>
+            <td>@mm.Model</td>
+            <td>@mm.TypeName</td>
+            <td>@mm.ModelName</td>
+            <td>@mm.CategoryClassDisplay</td>
+            <td>@mm.AllowedTypes.ToString()</td>
+            <td>@mm.AttributeListSingleLine</td>
+        </tr>
+    }
+</table>

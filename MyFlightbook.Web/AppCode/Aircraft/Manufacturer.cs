@@ -1,13 +1,14 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2022 MyFlightbook LLC
+ * Copyright (c) 2009-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -32,6 +33,7 @@ namespace MyFlightbook
         /// <summary>
         /// The name of the manufacturer
         /// </summary>
+        [Required]
         public string ManufacturerName { get; set; }
 
         /// <summary>
@@ -152,18 +154,6 @@ namespace MyFlightbook
         }
         #endregion
 
-        /// <summary>
-        /// Gets a list of all manufacturers from the database.  NOT CACHED
-        /// </summary>
-        /// <returns></returns>
-        private static IEnumerable<Manufacturer> AllManufacturers()
-        {
-            DBHelper dbh = new DBHelper("SELECT * FROM Manufacturers ORDER BY manufacturer ASC");
-            List<Manufacturer> lst = new List<Manufacturer>();
-            dbh.ReadRows((comm) => { }, (dr) => { lst.Add(new Manufacturer(dr)); });
-            return lst;
-        }
-
         private const string szCacheKey = "allManufacturers";
 
         /// <summary>
@@ -174,7 +164,9 @@ namespace MyFlightbook
         {
             if (HttpRuntime.Cache != null && HttpRuntime.Cache[szCacheKey] != null)
                 return (IEnumerable<Manufacturer>)HttpRuntime.Cache[szCacheKey];
-            IEnumerable<Manufacturer> lst = AllManufacturers();
+            DBHelper dbh = new DBHelper("SELECT * FROM Manufacturers ORDER BY manufacturer ASC");
+            List<Manufacturer> lst = new List<Manufacturer>();
+            dbh.ReadRows((comm) => { }, (dr) => { lst.Add(new Manufacturer(dr)); });
             HttpRuntime.Cache?.Add(szCacheKey, lst, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(1, 0, 0), System.Web.Caching.CacheItemPriority.Low, null);
             return lst;
         }
@@ -187,6 +179,91 @@ namespace MyFlightbook
         public Boolean FIsValid()
         {
             return ManufacturerName.Trim().Length > 0;
+        }
+    }
+
+    public class AdminManufacturer : Manufacturer
+    {
+        public int ModelCount { get; set; }
+
+        public static IEnumerable<AdminManufacturer> AllManufacturers()
+        {
+            DBHelper dbh = new DBHelper(@"SELECT man.*, COUNT(m.idmodel) AS modelCount
+            FROM manufacturers man
+            LEFT JOIN models m ON m.idmanufacturer=man.idmanufacturer
+            GROUP BY man.idmanufacturer
+            ORDER BY manufacturer ASC");
+            List<AdminManufacturer> lst = new List<AdminManufacturer>();
+            dbh.ReadRows((comm) => { },
+                (dr) => { lst.Add(new AdminManufacturer(dr));});
+            return lst;
+        }
+
+        public static IEnumerable<Manufacturer> DupeManufacturers()
+        {
+            DBHelper dbh = new DBHelper(@"SELECT *, 0 as modelCount
+                FROM manufacturers
+                WHERE manufacturer IN
+                  (SELECT manufacturer FROM manufacturers GROUP BY manufacturer HAVING count(manufacturer) > 1) ORDER BY idmanufacturer");
+
+            List<Manufacturer> lst = new List<Manufacturer>();
+            dbh.ReadRows((comm) => { },
+                (dr) => { lst.Add(new AdminManufacturer(dr)); });
+            return lst;
+        }
+
+        private AdminManufacturer(MySqlDataReader dr) : base(dr)
+        {
+            ModelCount = Convert.ToInt32(dr["modelCount"], CultureInfo.InvariantCulture);
+        }
+
+        public AdminManufacturer(int id)
+        {
+            DBHelper dbh = new DBHelper(@"SELECT man.*, COUNT(m.idmodel) AS modelCount
+                FROM manufacturers man
+                LEFT JOIN models m ON m.idmanufacturer=man.idmanufacturer
+                WHERE man.idmanufacturer=?id
+                GROUP BY man.idmanufacturer
+                ORDER BY manufacturer ASC");
+            dbh.ReadRow((comm) => { comm.Parameters.AddWithValue("id", id); }, 
+                (dr) => { 
+                    InitFromDataReader(dr);
+                    ModelCount = Convert.ToInt32(dr["modelCount"], CultureInfo.InvariantCulture);
+                });
+        }
+
+        public static void Delete(int id)
+        {
+            DBHelper dbh = new DBHelper("DELETE FROM manufacturers WHERE idManufacturer=?idManufacturer");
+            dbh.DoNonQuery((comm) => { comm.Parameters.AddWithValue("idManufacturer", id); });
+        }
+
+        /// <summary>
+        /// Merges a duplicate manufacturer into this one
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="MyFlightbookException"></exception>
+        public void MergeFrom(int idToKill)
+        {
+            if (idToKill == UnsavedID)
+                throw new InvalidOperationException("Can't merge an unsaved manufacturer");
+            if (idToKill == ManufacturerID)
+                throw new InvalidOperationException("Can't merge to self");
+
+            AdminManufacturer am = new AdminManufacturer(idToKill);
+            if (am.ManufacturerName.CompareCurrentCultureIgnoreCase(ManufacturerName) != 0)
+                throw new InvalidOperationException("Names aren't same - is this properly a dupe?");
+            if (am.AllowedTypes != AllowedTypes)
+                throw new InvalidOperationException("Allowed aircraft types are not the same - ambiguous which should win");
+
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.CurrentCulture, "UPDATE models SET idManufacturer={0} WHERE idmanufacturer={1}", ManufacturerID, idToKill));
+            if (!dbh.DoNonQuery())
+                throw new MyFlightbookException("Error remapping model: " + dbh.CommandText + "\r\n" + dbh.LastError);
+
+            // Then delete the old manufacturer
+            Delete(idToKill);
         }
     }
 }

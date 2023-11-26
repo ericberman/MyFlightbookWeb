@@ -1,0 +1,39 @@
+﻿@using MyFlightbook
+@using System.Globalization
+@{
+    IEnumerable<Aircraft> rgac = ViewBag.rgac;
+}
+<p>All sims: @String.Format(CultureInfo.CurrentCulture, Resources.Admin.SimsFoundTemplate, rgac.Count())</p>
+
+@if (!rgac.Any())
+{
+    <p>No sims found!</p>
+}
+else
+{
+    <table class="stickyHeaderTable">
+        <thead>
+            <tr>
+                <th class="headerBase gvhDefault gvhCentered">Tail</th>
+                <th class="headerBase gvhDefault gvhCentered">Model</th>
+                <th class="headerBase gvhDefault gvhCentered">InstanceType</th>
+                <th class="headerBase gvhDefault gvhCentered">Preview Name Change</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Aircraft ac in ViewBag.rgac)
+            {
+                string szNameID = String.Format(CultureInfo.InvariantCulture, "tdName{0}", ac.AircraftID);
+                <tr>
+                    <td><a target="_blank" id="@szNameID" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}&a=1", ac.AircraftID))">@ac.TailNumber</a></td>
+                    <td>@ac.ModelCommonName</td>
+                    <td>@ac.InstanceTypeDescription</td>
+                    <td>
+                        <a style="cursor:pointer;" onclick="javascript: renameSim(@ac.AircraftID, $('#@szNameID')[0], true);">Preview</a>
+                        <a style="cursor:pointer;" onclick="javascript: renameSim(@ac.AircraftID, $('#@szNameID')[0], false);">Rename</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
