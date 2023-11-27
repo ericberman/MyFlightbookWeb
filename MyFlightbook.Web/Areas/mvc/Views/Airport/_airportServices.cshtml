@@ -19,10 +19,13 @@
                     }
                 </td>
             }
-            @if (ViewBag.ShowServices && ap.Country.CompareCurrentCultureIgnoreCase("United States") == 0)
+            @if (ViewBag.ShowServices)
             {
                 <td>
+                    @if (ap.Country.CompareCurrentCultureIgnoreCase("United States") == 0)
+                    {
                     <a href="@String.Format(CultureInfo.InvariantCulture, "https://pirep.io/airports/{0}", ap.Code)" target="_blank">@Resources.LocalizedText.AirportServiceGuide</a>
+                    }
                 </td>
             }
             @if (ViewBag.ShowInfo)
