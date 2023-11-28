@@ -19,7 +19,9 @@ namespace MyFlightbook.Web
             // Code that runs on application startup
             ShuntState.Init();
             System.Web.Mvc.AreaRegistration.RegisterAllAreas();
-            ScriptManager.ScriptResourceMapping.AddDefinition("jquery", new ScriptResourceDefinition { Path = "https://code.jquery.com/jquery-3.6.0.min.js" });
+            ScriptManager.ScriptResourceMapping.AddDefinition("jquery", new ScriptResourceDefinition { Path = VirtualPathUtility.ToAbsolute("~/Scripts/jquery-3.7.1.min.js") });
+            ScriptManager.ScriptResourceMapping.AddDefinition("jqueryui", new ScriptResourceDefinition { Path = VirtualPathUtility.ToAbsolute("~/Scripts/jquery-ui-1.13.2.min.js") });
+            ScriptManager.ScriptResourceMapping.AddDefinition("jqueryUtils", new ScriptResourceDefinition { Path = VirtualPathUtility.ToAbsolute("~/Public/Scripts/jqueryutil.js?v=2") });
             ValidationSettings.UnobtrusiveValidationMode = UnobtrusiveValidationMode.WebForms;
 
             // CoordinateSharp can be very slow - pegging CPU - due to EagerLoading, which matters for celestial computations that we generally don't care about, so just set the default to NOT do eager load.
