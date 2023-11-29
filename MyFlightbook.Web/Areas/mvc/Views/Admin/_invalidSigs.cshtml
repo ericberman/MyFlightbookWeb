@@ -1,0 +1,54 @@
+﻿@using System.Globalization
+@{
+    List<LogbookEntryBase> lstToFix = ViewBag.lstToFix;
+    List<LogbookEntryBase> lstAutoFix = ViewBag.lstAutoFix;
+}
+<p>@ViewBag.progress</p>
+
+<p>Flights with signatures to fix:</p>
+@if (lstToFix.Count == 0)
+{
+    <p class="success">No invalid signatures found!</p>
+}
+else
+{
+    <table class="stickyHeaderTable stickyHeaderAlternate">
+        @foreach (LogbookEntryBase le in lstToFix)
+        {
+                    <tr style="vertical-align:top">
+                        <td><a href="@String.Format(CultureInfo.InvariantCulture, "https://{0}/logbook/member/LogbookNew.aspx/{1}?a=1", Branding.CurrentBrand.HostName, le.FlightID)" target="_blank">@le.FlightID</a></td>
+                        <td>
+                            @le.User<br />
+                            @le.Date.ToShortDateString()<br />
+                            Saved State: @le.CFISignatureState<br />
+                            @le.AdminSignatureSanityCheckState.ToString()
+                        </td>
+                        <td>
+                            Saved: @le.DecryptedFlightHash<br />
+                            Current: @le.DecryptedCurrentHash
+                        </td>
+                    </tr>
+        }
+    </table>
+}
+
+<p>Auto-fixed flights:</p>
+@if (lstAutoFix.Count == 0)
+            {
+                <p>No autofixed signatures found!</p>
+            }
+else
+{
+<table class="stickyHeaderTable stickyHeaderAlternate">
+    @foreach (LogbookEntryBase le in lstAutoFix)
+    {
+        <tr style="vertical-align:top">
+            <td><a href="@String.Format(CultureInfo.InvariantCulture, "https://{0}/logbook/member/LogbookNew.aspx/{1}?a=1", Branding.CurrentBrand.HostName, le.FlightID)" target="_blank">@le.FlightID</a></td>
+            <td>
+                @le.User<br />
+                @le.Date.ToShortDateString()<br />
+            </td>
+        </tr>
+    }
+</table>
+}

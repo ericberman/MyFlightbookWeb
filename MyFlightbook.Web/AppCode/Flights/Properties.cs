@@ -586,7 +586,7 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
             PreviousValues?.Clear();    // not strictly necessary, but prevents a warning about unused PreviousValues, which of course are needed for serialization for the mobile apps
             if (!String.IsNullOrEmpty(szPreviousVals))
             {
-                List<string> lst = new List<string>(szPreviousVals.Split(new char[] { '\t' }, StringSplitOptions.RemoveEmptyEntries));
+                List<string> lst = new List<string>(szPreviousVals.Split(CustomFlightProperty.prevTextValSeparator, StringSplitOptions.RemoveEmptyEntries));
                 lst.Sort();
                 PreviousValues = new Collection<string>(lst);
             }
@@ -1189,6 +1189,8 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
                 return false;
             }
         }
+
+        public static readonly char[] prevTextValSeparator = new char[] { '\t' };
         #endregion
 
         #region Creation
@@ -1224,8 +1226,8 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
                 throw new ArgumentNullException(nameof(dr));
             try
             {
-
-                DateValue = dr["DateValue"] != null && dr["DateValue"].ToString().Length > 0
+                object o = dr["dateValue"];
+                DateValue = o != null && o != DBNull.Value && o.ToString().Length > 0
                     ? DateTime.SpecifyKind(Convert.ToDateTime(dr["DateValue"], CultureInfo.InvariantCulture), DateTimeKind.Utc)
                     : DateTime.MinValue;
 
@@ -1358,6 +1360,37 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
         }
         #endregion
 
+        #region Admin
+        /// <summary>
+        /// Retrieves all of the properties that, for some reason, are empty.  CUSTOMPROPERTYTYPE IS NOT SET for performance
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<CustomFlightProperty> ADMINEmptyProps()
+        {
+            List<CustomFlightProperty> lst = new List<CustomFlightProperty>();
+            DBHelper dbh = new DBHelper(@"SELECT 
+    flightproperties.*,
+    '' AS locformatstring,
+    '' AS loctitle,
+    0 AS type,
+    '' AS sortkey,
+    0 AS flags,
+    0 AS isfavorite,
+    '' AS locdescription,
+    '' AS prevValues
+FROM
+    flightproperties
+WHERE
+    intvalue = 0 AND decvalue = 0.0
+        AND (datevalue IS NULL
+        OR YEAR(datevalue) < 10)
+        AND (stringvalue = '' OR stringvalue IS NULL)");
+            dbh.ReadRows((comm) => { comm.CommandTimeout = 900; },
+                (dr) => { lst.Add(new CustomFlightProperty(dr)); });
+            return lst;
+        }
+        #endregion
+
         /// <summary>
         /// Initializes the value from a string value.  The PropertyType MUST be set.  Throws an exception if there is a problem
         /// </summary>
@@ -1483,7 +1516,7 @@ GROUP BY fp.idPropType;";
             Dictionary<int, string[]> d = new Dictionary<int, string[]>();
 
             dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("user", szUser); },
-                (dr) => { d[Convert.ToInt32(dr["PropTypeID"], CultureInfo.InvariantCulture)] = dr["PrevVals"].ToString().Split(new char[] { '\t' }, StringSplitOptions.RemoveEmptyEntries); });
+                (dr) => { d[Convert.ToInt32(dr["PropTypeID"], CultureInfo.InvariantCulture)] = dr["PrevVals"].ToString().Split(prevTextValSeparator, StringSplitOptions.RemoveEmptyEntries); });
 
             return d;
         }

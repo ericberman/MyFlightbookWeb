@@ -641,7 +641,7 @@ namespace MyFlightbook
 
                 if (available.Contains(DefaultCloudStorage))
                     return DefaultCloudStorage;
-                else if (available.Any())
+                else if (available.Count != 0)
                     return available[0];
                 else 
                     return StorageID.None;

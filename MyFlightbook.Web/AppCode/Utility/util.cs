@@ -210,6 +210,7 @@ namespace MyFlightbook
     public static class util
     {
         private const string sessCultureKey = "currCulture";
+        private static readonly char[] isoLanguageRegionSeparator = new char[] { '-' };
 
         /// <summary>
         /// Set the culture for the duration of the request.
@@ -237,7 +238,7 @@ namespace MyFlightbook
                     try
                     {
                         // iPhone sends fucked up strings like "en-GB-GB" for UK-English.  So try removing the middle string
-                        string[] rgsz = szCulture.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
+                        string[] rgsz = szCulture.Split(isoLanguageRegionSeparator, StringSplitOptions.RemoveEmptyEntries);
                         if (rgsz.Length == 3)
                             SetCulture(String.Format(CultureInfo.InvariantCulture, "{0}-{1}", rgsz[0], rgsz[2]));
                     }
@@ -675,6 +676,8 @@ namespace MyFlightbook
             NotifyAdminEvent("Error on the myflightbook site", szErr, ProfileRoles.maskSiteAdminOnly);
         }
 
+        private static readonly char[] lineSeparator = new char[] { '\r', '\n' };
+
         /// <summary>
         /// Returns email message content with the HTML template applied.  If the content is plain text, it is linkified and newlines are converted to html "p" tags.
         /// </summary>
@@ -696,7 +699,7 @@ namespace MyFlightbook
             }
             else
             {
-                string[] rgLines = content.Linkify(true).Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] rgLines = content.Linkify(true).Split(lineSeparator, StringSplitOptions.RemoveEmptyEntries);
                 return template.Replace("%BODYCONTENT%", String.Format(CultureInfo.InvariantCulture, "<p>{0}</p>", String.Join("</p><p>", rgLines)));
             }
         }
@@ -786,6 +789,18 @@ namespace MyFlightbook
                 (dr) => { al.Add(dr[keyColumn].ToString()); }))
                 return al.ToArray();
             return Array.Empty<string>();
+        }
+
+        public static int FlushCache()
+        {
+            int items = 0;
+            foreach (System.Collections.DictionaryEntry entry in HttpRuntime.Cache)
+            {
+                HttpRuntime.Cache.Remove((string)entry.Key);
+                items++;
+            }
+            GC.Collect();
+            return items;
         }
     }
 

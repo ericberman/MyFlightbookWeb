@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -15,52 +14,14 @@ using System.Web.Mvc;
 
 namespace MyFlightbook.Web.Areas.mvc.Controllers
 {
-    public class AdminAircraftController : Controller
+    public class AdminAircraftController : AdminControllerBase
     {
-        private void CheckAuth()
-        {
-            if (!User.Identity.IsAuthenticated || !MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData)
-                throw new UnauthorizedAccessException("Attempt to access an admin page by an unauthorized user: " + User.Identity.Name);
-        }
-
-        private ActionResult SafeOp(Func<ActionResult> func)
-        {
-            try
-            {
-                CheckAuth();
-
-                return func();
-            }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
-            {
-                Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                Response.TrySkipIisCustomErrors = true;
-                return Content(ex.Message);
-            }
-        }
-
-        private string SafeOp(Func<string> func)
-        {
-            try
-            {
-                CheckAuth();
-
-                return func();
-            }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
-            {
-                Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                Response.TrySkipIisCustomErrors = true;
-                return ex.Message;
-            }
-        }
-
         #region Manufacturers
         [Authorize]
         [HttpPost]
         public ActionResult MergeDupes(int idToKeep, int idToKill)
         {
-            return SafeOp(() => {
+            return SafeOp(ProfileRoles.maskCanManageData, () => {
                 AdminManufacturer am = new AdminManufacturer(idToKeep);
                 am.MergeFrom(idToKill);
                 return Content(string.Empty);
@@ -71,7 +32,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public ActionResult DeleteManufacturer(int id)
         {
-            return SafeOp(() =>
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
             {
                 AdminManufacturer.Delete(id);
                 return Content(string.Empty);
@@ -82,7 +43,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public ActionResult EditManufacturer(int id, string ManufacturerName, int restriction)
         {
-            CheckAuth();
+            CheckAuth(ProfileRoles.maskCanManageData);
 
             Manufacturer man = (id == Manufacturer.UnsavedID) ? new Manufacturer() : new Manufacturer(id);
             man.ManufacturerName = ManufacturerName;
@@ -94,7 +55,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         public ActionResult Manufacturers()
         {
-            CheckAuth();
+            CheckAuth(ProfileRoles.maskCanManageData);
 
             Task.WaitAll(
                 Task.Run(() => { ViewBag.dupeManufacturers = AdminManufacturer.DupeManufacturers(); }),
@@ -110,7 +71,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public ActionResult ReviewTypes()
         {
-            CheckAuth();
+            CheckAuth(ProfileRoles.maskCanManageData);
             ViewBag.models = AdminMakeModel.TypeRatedModels();
             ViewBag.name = "types";
             ViewBag.includeDelete = false;
@@ -121,7 +82,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public ActionResult MergeModels(int idToKeep, int idToKill)
         {
-            return SafeOp(() =>
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
             {
                 if (idToKeep == idToKill)
                     throw new InvalidOperationException("Can't merge to self!");
@@ -145,7 +106,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public ActionResult PreviewMerge(int idToKeep, int idToKill)
         {
-            return SafeOp(() =>
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
             {
                 if (idToKeep == idToKill)
                     throw new InvalidOperationException("Can't merge to self!");
@@ -175,7 +136,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public ActionResult DeleteModel(int idModel)
         {
-            return SafeOp(() =>
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
             {
                 AdminMakeModel.DeleteModel(idModel);
                 return Content(string.Empty);
@@ -186,7 +147,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public ActionResult RefreshDupes(bool fExcludeSims)
         {
-            CheckAuth();
+            CheckAuth(ProfileRoles.maskCanManageData);
             ViewBag.models = AdminMakeModel.PotentialDupes(!fExcludeSims);
             ViewBag.name = "dupes";
             ViewBag.includeDelete = false;
@@ -205,7 +166,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         public ActionResult Models()
         {
-            CheckAuth();
+            CheckAuth(ProfileRoles.maskCanManageData);
 
             Task.WaitAll(
                 Task.Run(() => { ViewBag.modelsThatShouldBeSims = AdminMakeModel.ModelsThatShoulBeSims(); }),
@@ -221,7 +182,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public ActionResult UpdateVersion(int aircraftID, int newVersion)
         {
-            return SafeOp(() =>
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
             {
                 Aircraft ac = new Aircraft(aircraftID);
                 if (ac.AircraftID <= 0)
@@ -237,7 +198,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public ActionResult RefreshDupeAircraft()
         {
-            return SafeOp(() =>
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
             {
                 ViewBag.rgac = AircraftUtility.AdminDupeAircraft();
                 return PartialView("_dupeAircraft");
@@ -248,7 +209,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public ActionResult keepDupeSim(int idAircraft)
         {
-            return SafeOp(() =>
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
             {
                 ViewBag.rgac = AircraftUtility.ResolveDupeSim(idAircraft);
                 return PartialView("_dupeSims");
@@ -259,7 +220,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public ActionResult RefreshDupeSims()
         {
-            return SafeOp(() =>
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
             {
                 ViewBag.rgac = AircraftUtility.AdminDupeSims();
                 return PartialView("_dupeSims");
@@ -270,7 +231,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public string RenameSim(int idAircraft, bool fPreview)
         {
-            return SafeOp(() =>
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
             {
                 Aircraft ac = new Aircraft(idAircraft);
                 string szNewTail = Aircraft.SuggestTail(ac.ModelID, ac.InstanceType).TailNumber;
@@ -287,7 +248,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public ActionResult AllSims()
         {
-            return SafeOp(() =>
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
             {
                 List<Aircraft> lst = new List<Aircraft>((new UserAircraft(User.Identity.Name)).GetAircraftForUser(UserAircraft.AircraftRestriction.AllSims, -1));
                 lst.Sort((ac1, ac2) =>
@@ -307,7 +268,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public ActionResult InvalidAircraft()
         {
-            return SafeOp(() =>
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
             {
                 ViewBag.rgac = AircraftUtility.AdminAllInvalidAircraft();
                 return PartialView("_invalidAircraft");
@@ -318,7 +279,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public ActionResult RefreshOrphans()
         {
-            return SafeOp(() =>
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
             {
                 ViewBag.rgac = AircraftUtility.OrphanedAircraft();
                 return PartialView("_orphanedAircraft");
@@ -329,7 +290,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public ActionResult DeleteOrphans(int idAircraft)
         {
-            return SafeOp(() => {
+            return SafeOp(ProfileRoles.maskCanManageData, () => {
 
                 List<Aircraft> lst = new List<Aircraft>(AircraftUtility.OrphanedAircraft());
                 foreach (Aircraft aircraft in lst)
@@ -349,7 +310,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public ActionResult RefreshPseudoGeneric()
         {
-            return SafeOp(() =>
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
             {
                 List<Aircraft> lst = new List<Aircraft>(AircraftUtility.PseudoGenericAircraft());
                 ViewBag.rgac = lst;
@@ -361,7 +322,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public ActionResult FindAircraft(string tailToFind)
         {
-            return SafeOp(() =>
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
             {
                 ViewBag.rgac = AircraftUtility.AircraftMatchingPattern(tailToFind);
                 return PartialView("_aircraftList");
@@ -372,7 +333,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public string CleanUpMaintenance()
         {
-            return SafeOp(() =>
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
             {
                 return AircraftUtility.CleanUpMaintenance();
             });
@@ -382,7 +343,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public ActionResult RefreshCountryCodes()
         {
-            return SafeOp(() =>
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
             {
                 ViewBag.rgcc = CountryCodePrefix.CountryCodes();
                 return PartialView("_countryCodes");
@@ -393,7 +354,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public ActionResult UpdatecountryCode(int id, string prefix, string countryName, string locale, string registrationLinkTemplate, int templateMode, int hyphenPref)
         {
-            return SafeOp(() =>
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
             {
                 List<CountryCodePrefix> lst = new List<CountryCodePrefix>(CountryCodePrefix.CountryCodes());
                 CountryCodePrefix ccp = lst.Find(c => c.ID == id);
@@ -414,7 +375,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public string FixHyphenation(int id)
         {
-            return SafeOp(() =>
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
             {
                 List<CountryCodePrefix> lst = new List<CountryCodePrefix>(CountryCodePrefix.CountryCodes());
                 CountryCodePrefix ccp = lst.Find(c => c.ID == id);
@@ -426,9 +387,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public string MapModel(AircraftAdminModelMapping amm)
         {
-            return SafeOp(() =>
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
             {
-                CheckAuth();
+                CheckAuth(ProfileRoles.maskCanManageData);
                 amm.CommitChange();
                 return string.Empty;
             });
@@ -439,7 +400,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         public ActionResult Index(HttpPostedFileBase fuMapModels = null)
         {
-            CheckAuth();
+            CheckAuth(ProfileRoles.maskCanManageData);
 
             try
             {

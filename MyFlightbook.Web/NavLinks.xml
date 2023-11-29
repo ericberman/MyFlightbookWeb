@@ -271,7 +271,7 @@
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>
       <Item>
-        <Link>~/Admin/Admin.aspx?t=admMisc</Link>
+        <Link>~/mvc/Admin/Misc</Link>
         <ID>admMisc</ID>
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>

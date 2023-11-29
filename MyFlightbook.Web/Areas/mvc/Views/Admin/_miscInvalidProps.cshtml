@@ -1,0 +1,33 @@
+﻿@using System.Globalization
+<h2>Empty properties</h2>
+@{
+    IEnumerable<CustomFlightProperty> emptyProps = ViewBag.emptyProps ?? Array.Empty<CustomFlightProperty>();
+
+    if (emptyProps.Count() == 0)
+    {
+        <p class="success">No empty properties found!</p>
+    }
+    else
+    {
+        <table class="stickyHeaderTable stickyHeaderAlternate">
+            <thead>
+                <tr>
+                    <td>Flight</td>
+                    <td>PropTypeID</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (CustomFlightProperty cfp in emptyProps)
+                {
+                    <tr>
+                        <td><img src="@VirtualPathUtility.ToAbsolute("~/images/x.gif")" onclick="javascript: deleteEmptyProp(this, @cfp.PropID);" /> <a href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx/{0}?a=1", cfp.FlightID, cfp.PropTypeID))" target="_blank">@cfp.FlightID</a></td>
+                        <td>@cfp.PropTypeID</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+
+
+
