@@ -241,7 +241,7 @@
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>
       <Item>
-        <Link>~/Admin/AdminProperties.aspx</Link>
+        <Link>~/mvc/Admin/Properties</Link>
         <ID>admProperties</ID>
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>

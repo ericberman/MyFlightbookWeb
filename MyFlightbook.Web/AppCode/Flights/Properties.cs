@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.Globalization;
 using System.Linq;
@@ -242,11 +243,13 @@ namespace MyFlightbook
         /// <summary>
         /// ID for the proptype
         /// </summary>
+        [Required]
         public int PropTypeID { get; set; }
 
         /// <summary>
         /// Title for the property
         /// </summary>
+        [Required]
         public string Title { get; set; }
 
         /// <summary>
@@ -254,7 +257,15 @@ namespace MyFlightbook
         /// </summary>
         [JsonIgnore]
         [XmlIgnore]
-        public string ShortTitle { get { return m_shortTitle ?? Title; } }
+        public string ShortTitle
+        {
+            get { return m_shortTitle ?? Title; }
+            set { m_shortTitle = value; }
+        }
+
+        [JsonIgnore]
+        [XmlIgnore]
+        public string NakedShortTitle { get { return m_shortTitle; } }
 
         /// <summary>
         /// Title in sorting order.  Enables things like Block Out or Tach Start to sort before Block In or Tach End.
@@ -269,16 +280,19 @@ namespace MyFlightbook
         /// <summary>
         /// Format string for the property
         /// </summary>
+        [Required]
         public string FormatString { get; set; }
 
         /// <summary>
         /// Type of property
         /// </summary>
+        [Required]
         public CFPPropertyType Type { get; set; }
 
         /// <summary>
         /// Description of the property and how to use it
         /// </summary>
+        [Required]
         public string Description { get; set; }
 
         /// <summary>
@@ -528,6 +542,41 @@ namespace MyFlightbook
         public Boolean IsValid()
         {
             return (PropTypeID != (int) CustomPropertyType.KnownProperties.IDPropInvalid);
+        }
+
+        /// <summary>
+        /// Adds or updates a property.  Adds if proptypeid is KnownProperties.IDPropInvalid.
+        /// Should only ever be called by admin tools
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public int FCommit()
+        {
+            if (String.IsNullOrWhiteSpace(Title))
+                throw new InvalidOperationException("Title is required");
+            if (String.IsNullOrWhiteSpace(FormatString))
+                throw new InvalidOperationException("Format string is required");
+            if (String.IsNullOrEmpty(Description))
+                throw new InvalidOperationException("Description is required");
+
+            string szQ = (PropTypeID == (int) KnownProperties.IDPropInvalid) ?
+                "INSERT INTO custompropertyTypes SET Title=?title, ShortTitle=?shorttitle, SortKey=?sortkey, FormatString=?format, Type=?type, Flags=?flags, Description=?description" :
+                "UPDATE custompropertyTypes SET Title=?title, ShortTitle=?shorttitle, SortKey=?sortkey, FormatString=?format, Type=?type, Flags=?flags, Description=?description WHERE idPropType=?idproptype";
+            DBHelper dbh = new DBHelper(szQ);
+
+            dbh.DoNonQuery((comm) =>
+            {
+                comm.Parameters.AddWithValue("title", Title);
+                comm.Parameters.AddWithValue("shorttitle", ShortTitle ?? string.Empty);
+                comm.Parameters.AddWithValue("sortkey", SortKey ?? string.Empty);
+                comm.Parameters.AddWithValue("format", FormatString);
+                comm.Parameters.AddWithValue("type", (uint)Type);
+                comm.Parameters.AddWithValue("flags", Flags);
+                comm.Parameters.AddWithValue("description", Description);
+                comm.Parameters.AddWithValue("idproptype", (int)PropTypeID);
+            });
+            util.FlushCache();  // flush everything - all user props as well as the global one.
+            return dbh.LastInsertedRowId;
         }
 
         #region Constructors

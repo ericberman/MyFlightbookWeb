@@ -1868,6 +1868,15 @@ table.featureTable {
     vertical-align: middle;
 }
 
+/* Inline edit/read mode for data tables */
+tr div.displayCell, tr.editRow div.editCell {
+    display: block;
+}
+
+tr div.editCell, tr.editRow div.displayCell {
+    display: none;
+}
+
 /* Printing */
 @media print {
     h1 {

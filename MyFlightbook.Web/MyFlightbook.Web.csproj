@@ -421,7 +421,6 @@
     <Content Include="Admin\AdminAirportGeocoder.aspx" />
     <Content Include="Admin\AdminEndorsements.aspx" />
     <Content Include="Admin\AdminImgs.aspx" />
-    <Content Include="Admin\AdminProperties.aspx" />
     <Content Include="Admin\AdminService.asmx" />
     <Content Include="AppCode\Clubs\DayPilotLICENSE.txt" />
     <Content Include="AppCode\oAuthServices\MS-PL LICENSE for DotNetOpenAuth.txt" />
@@ -1534,6 +1533,7 @@
     <Content Include="Areas\mvc\Views\Admin\adminMisc.cshtml" />
     <Content Include="Areas\mvc\Views\Admin\_miscInvalidProps.cshtml" />
     <Content Include="Areas\mvc\Views\Admin\_invalidSigs.cshtml" />
+    <Content Include="Areas\mvc\Views\Admin\adminProps.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.1.js" />
     <Content Include="Scripts\jquery-3.7.1.min.js" />
@@ -1584,13 +1584,6 @@
     </Compile>
     <Compile Include="Admin\AdminPage.cs">
       <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Admin\AdminProperties.aspx.cs">
-      <DependentUpon>AdminProperties.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Admin\AdminProperties.aspx.designer.cs">
-      <DependentUpon>AdminProperties.aspx</DependentUpon>
     </Compile>
     <Compile Include="AppCode\Admin\AdminWebServices.cs">
       <SubType>Component</SubType>

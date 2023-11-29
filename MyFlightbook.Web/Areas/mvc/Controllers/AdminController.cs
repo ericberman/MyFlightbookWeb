@@ -17,6 +17,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
     public class AdminController : AdminControllerBase
     {
         #region Admin Web Services
+        #region Misc - Props
         [HttpPost]
         [Authorize]
         public ActionResult InvalidProps()
@@ -39,7 +40,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 return string.Empty;
             });
         }
+        #endregion
 
+        #region Misc - Signatures
         private const string szSessKeyInvalidSigProgress = "sessSignedflightsAutoFixed";
 
         [HttpPost]
@@ -79,7 +82,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 return PartialView("_invalidSigs");
             });
         }
+        #endregion
 
+        #region Misc - Nightly run
         [HttpPost]
         [Authorize]
         public string KickOffNightlyRun()
@@ -97,7 +102,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 }
             });
         }
+        #endregion
 
+        #region Misc - Cache
         [HttpPost]
         [Authorize]
         public string FlushCache()
@@ -109,10 +116,61 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
         #endregion
 
+        #region Property management
+        [HttpPost]
+        [Authorize]
+        public ActionResult UpdateProperty(int idPropType, string title, string shortTitle, string sortKey, string formatString, string description, uint flags)
+        {
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            {
+                CustomPropertyType cptOrig = CustomPropertyType.GetCustomPropertyType(idPropType);
+                CustomPropertyType cpt = new CustomPropertyType();
+                util.CopyObject(cptOrig, cpt);  // make our modifications on a copy to avoid mucking up live objects in case fcommit fails.
+                cpt.Title = title;
+                cpt.ShortTitle = shortTitle;
+                cpt.SortKey = sortKey;
+                cpt.FormatString = formatString;
+                cpt.Description = description;
+                cpt.Flags = flags;
+                cpt.FCommit();
+                return Json(cpt);
+            });
+        }
+        #endregion
+        #endregion
+
+        #region Full page endpoints
+        [Authorize]
+        [HttpPost]
+        public ActionResult Properties(string txtCustomPropTitle, string txtCustomPropFormat, string txtCustomPropDesc, uint propType, uint propFlags)
+        {
+            CheckAuth(ProfileRoles.maskCanManageData);  // check for ability to do any admin
+            CustomPropertyType cpt = new CustomPropertyType()
+            {
+                Title = txtCustomPropTitle,
+                FormatString = txtCustomPropFormat,
+                Description = txtCustomPropDesc,
+                Type = (CFPPropertyType)propType,
+                Flags = propFlags
+            };
+            cpt.FCommit();
+            ViewBag.propList = CustomPropertyType.GetCustomPropertyTypes();
+            return View("adminProps");
+        }
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult Properties()
+        {
+            CheckAuth(ProfileRoles.maskCanManageData);  // check for ability to do any admin
+            ViewBag.propList = CustomPropertyType.GetCustomPropertyTypes();
+            return View("adminProps");
+        }
+
         [Authorize]
         public ActionResult Misc()
         {
-            CheckAuth(ProfileRoles.maskCanManageData);  // check for ability to do any admin
+            CheckAuth(ProfileRoles.maskCanManageData);
 
             Dictionary<string, int> d = new Dictionary<string, int>();
             foreach (System.Collections.DictionaryEntry entry in HttpRuntime.Cache)
@@ -130,8 +188,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         // GET: mvc/Admin
         public ActionResult Index()
         {
-            CheckAuth(ProfileRoles.maskCanManageData);  // check for ANY admin, just to generate the exception, but otherwise nothing to do here.
+            CheckAuth(ProfileRoles.maskCanManageData);
             return View();
         }
+        #endregion
     }
 }

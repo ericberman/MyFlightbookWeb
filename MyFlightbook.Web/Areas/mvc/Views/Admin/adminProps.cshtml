@@ -1,0 +1,258 @@
+﻿@model CustomPropertyType
+@{
+    ViewBag.Title = "Admin Tools - Properties";
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    ViewBag.defaultTab = tabID.tabAdmin;
+}
+
+<script type="text/javascript">
+    $(function () {
+        $('#newPropForm').keydown(function (e) {
+            if (e.keyCode == 13) {
+                $('#btnAddProp')[0].click();
+                return false;
+            }
+        });
+    });
+
+    function updateFlag(sender, val) {
+        var curFlags = parseInt($("#hdnFlagsAsInt")[0].value);
+        var newVal = parseInt(val);
+        if (sender.checked)
+            curFlags = curFlags | newVal;
+        else
+            curFlags = curFlags & (~newVal);
+        $("#hdnFlagsAsInt")[0].value = curFlags;
+        $("#spanFlagsValue")[0].innerText = curFlags;
+    }
+
+    function cancelEdit() {
+        $("#tableProps > tbody > tr").each(function () {
+            this.style.display = "table-row";
+        })
+        $("#editPropRow").hide();
+    }
+
+    function editProp(jqrow) {
+        cancelEdit();
+        var editRow = $("#editPropRow");
+
+        editRow.find('td:eq(1)')[0].innerText = jqrow.find('td:eq(1)')[0].innerText;
+        editRow.find('input[name="txtTitle"]')[0].value = jqrow.find('td:eq(2)')[0].innerText;
+        editRow.find('input[name="txtShortTitle"]')[0].value = jqrow.find('td:eq(3)')[0].innerText;
+        editRow.find('input[name="txtSortKey"]')[0].value = jqrow.find('td:eq(4)')[0].innerText;
+        editRow.find('input[name="txtFormatString"]')[0].value = jqrow.find('td:eq(5)')[0].innerText;
+        editRow.find('textarea[name="txtDescription"]')[0].value = jqrow.find('td:eq(6)')[0].innerText;
+        editRow.find('td:eq(7)')[0].innerText = jqrow.find('td:eq(7)')[0].innerText;
+        editRow.find('input[name="txtFlags"]')[0].value = jqrow.find('td:eq(8)')[0].innerText;
+        var flags = jqrow.find('td:eq(9)')[0].innerText;
+        editRow.find('td:eq(9)')[0].innerText = (flags == '') ? '0' : flags;
+
+        editRow.insertAfter(jqrow);
+        // Show all rows that might be hidden, then hide the row being edited
+        $("#tableProps > tbody > tr").each(function () {
+            this.style.display = "table-row";
+        })
+        jqrow.hide();
+    }
+
+    function updateProperty(jqobject) {
+        var params = new Object();
+        params.idPropType = jqobject.find('td:eq(1)')[0].innerText;
+        params.title = jqobject.find('input[name="txtTitle"]')[0].value;
+        params.shortTitle = jqobject.find('input[name="txtShortTitle"]')[0].value;
+        params.sortKey = jqobject.find('input[name="txtSortKey"]')[0].value;
+        params.formatString = jqobject.find('input[name="txtFormatString"]')[0].value;
+        params.description = jqobject.find('textarea[name="txtDescription"]')[0].value;
+        var szFlags = jqobject.find('input[name="txtFlags"]')[0].value;
+        params.flags = (szFlags == '') ? 0 : parseInt(szFlags);
+
+        var d = JSON.stringify(params);
+        $.ajax({
+            url: '@Url.Action("UpdateProperty", "Admin")',
+            type: "POST", data: d, dataType: "json", contentType: "application/json",
+            error: function (xhr, status, error) {
+                window.alert(xhr.responseText);
+            },
+            complete: function (response) { },
+            success: function (response) {
+                // get the hidden edit row
+                dataRow = $("#tableProps > tbody > tr:hidden");
+                dataRow.find('td:eq(2)')[0].innerText = response.Title;
+                dataRow.find('td:eq(3)')[0].innerText = (response.ShortTitle == response.Title) ? "" : response.ShortTitle;
+                dataRow.find('td:eq(4)')[0].innerText = (response.SortKey == response.Title) ? "" : response.SortKey;
+                dataRow.find('td:eq(5)')[0].innerText = response.FormatString;
+                dataRow.find('td:eq(6)')[0].innerText = response.Description;
+                dataRow.find('td:eq(8)')[0].innerText = response.Flags;
+                cancelEdit();
+            }
+        });
+    }
+</script>
+
+<a id="formTop"></a>
+<div id="newPropForm">
+    @using (Html.BeginForm("Properties", "Admin", FormMethod.Post))
+    {
+        <table>
+            <tr>
+                <td>Title:</td>
+                <td>
+                    @Html.EditorFor(cpt => cpt.Title, "", "txtCustomPropTitle", new { htmlAttributes = new { @style = "width: 300px;" } })
+                    @Html.ValidationMessageFor(cpt => cpt.Title, "Title is required", new { @class = "error" }, "div")
+                </td>
+            </tr>
+            <tr>
+                <td>Format:</td>
+                <td>
+                    @Html.EditorFor(cpt => cpt.FormatString, "", "txtCustomPropFormat", new { htmlAttributes = new { @style = "width: 300px;" } })
+                    @Html.ValidationMessageFor(cpt => cpt.FormatString, "FormatString is required", new { @class = "error" }, "div")
+                </td>
+            </tr>
+            <tr>
+                <td>Description:</td>
+                <td>
+                    @Html.EditorFor(cpt => cpt.Description, "", "txtCustomPropDesc", new { htmlAttributes = new { @style = "width: 300px;" } })
+                    @Html.ValidationMessageFor(cpt => cpt.Description, "Description is required", new { @class = "error" }, "div")
+                </td>
+            </tr>
+            <tr>
+                <td>Type:</td>
+                <td>
+                    <select id="cmbCustomPropType" name="propType">
+                        <option value="0" selected>Integer</option>
+                        <option value="1">Decimal</option>
+                        <option value="2">Boolean</option>
+                        <option value="3">Date</option>
+                        <option value="4">DateTime</option>
+                        <option value="5">String</option>
+                        <option value="6">Currency</option>
+                    </select>
+                </td>
+            </tr>
+            <tr style="vertical-align:top">
+                <td>Flags:</td>
+                <td>
+                    <div id="spanFlagsValue">0</div>
+                    <input type="hidden" value="0" id="hdnFlagsAsInt" name="propFlags" />
+                    <table>
+                        <tr>
+                            <td><input onclick="javascript:updateFlag(this, 1);" type="checkbox" id="flag1" /><label for="flag1">Is a BFR</label></td>
+                            <td><input onclick="javascript:updateFlag(this, 134217728);" type="checkbox" id="flag134217728" /><label for="flag134217728">Is a landing</label></td>
+                        </tr>
+                        <tr>
+                            <td><input onclick="javascript:updateFlag(this, 2);" type="checkbox" id="flag2" /><label for="flag2">Is a IPC</label></td>
+                            <td><input onclick="javascript:updateFlag(this, 8192);" type="checkbox" id="flag8192" /><label for="flag8192">Don't add to totals</label></td>
+                        </tr>
+                        <tr>
+                            <td><input onclick="javascript:updateFlag(this, 4);" type="checkbox" id="flag4" /><label for="flag4">Unusual Attitude - Descending</label></td>
+                            <td><input onclick="javascript:updateFlag(this, 16384);" type="checkbox" id="flag16384" /><label for="flag16384">Night-time Takeoff</label></td>
+                        </tr>
+                        <tr>
+                            <td><input onclick="javascript:updateFlag(this, 8);" type="checkbox" id="flag8" /><label for="flag8">Unusual Attitude - Ascending</label></td>
+                            <td><input onclick="javascript:updateFlag(this, 65536);" type="checkbox" id="flag65536" /><label for="flag65536">PIC Proficiency Check</label></td>
+                        </tr>
+                        <tr>
+                            <td><input onclick="javascript:updateFlag(this, 16);" type="checkbox" id="flag16" /><label for="flag16">Night Vision - Take-off</label></td>
+                            <td><input onclick="javascript:updateFlag(this, 131072);" type="checkbox" id="flag131072" /><label for="flag131072">Base Check</label></td>
+                        </tr>
+                        <tr>
+                            <td><input onclick="javascript:updateFlag(this, 32);" type="checkbox" id="flag32" /><label for="flag32">Night Vision - Landing</label></td>
+                            <td><input onclick="javascript:updateFlag(this, 262144);" type="checkbox" id="flag262144" /><label for="flag262144">Solo</label></td>
+                        </tr>
+                        <tr>
+                            <td><input onclick="javascript:updateFlag(this, 64);" type="checkbox" id="flag64" /><label for="flag64">Night Vision - Hovering</label></td>
+                            <td><input onclick="javascript:updateFlag(this, 524288);" type="checkbox" id="flag524288" /><label for="flag524288">Glider Ground Launch</label></td>
+                        </tr>
+                        <tr>
+                            <td><input onclick="javascript:updateFlag(this, 128);" type="checkbox" id="flag128" /><label for="flag128">Night Vision - Departure / Arrival</label></td>
+                            <td><input onclick="javascript:updateFlag(this, 1048576);" type="checkbox" id="flag1048576" /><label for="flag1048576">Exclude from MRU</label></td>
+                        </tr>
+                        <tr>
+                            <td><input onclick="javascript:updateFlag(this, 256);" type="checkbox" id="flag256" /><label for="flag256">Night Vision - Transitions</label></td>
+                            <td><input onclick="javascript:updateFlag(this, 2097152);" type="checkbox" id="flag2097152" /><label for="flag2097152">Decimal is not time</label></td>
+                        </tr>
+                        <tr>
+                            <td><input onclick="javascript:updateFlag(this, 512);" type="checkbox" id="flag512" /><label for="flag512">Night Vision - Proficiency Check</label></td>
+                            <td><input onclick="javascript:updateFlag(this, 4194304);" type="checkbox" id="flag4194304" /><label for="flag4194304">UAS Launch</label></td>
+                        </tr>
+                        <tr>
+                            <td><input onclick="javascript:updateFlag(this, 32768);" type="checkbox" id="flag32768" /><label for="flag32768">Night Vision - Night Vision Time</label></td>
+                            <td><input onclick="javascript:updateFlag(this, 8388608);" type="checkbox" id="flag8388608" /><label for="flag8388608">UAS Recovery</label></td>
+                        </tr>
+                        <tr>
+                            <td><input onclick="javascript:updateFlag(this, 1024);" type="checkbox" id="flag1024" /><label for="flag1024">Glider - Instrument Maneuvers</label></td>
+                            <td><input onclick="javascript:updateFlag(this, 16777216);" type="checkbox" id="flag16777216" /><label for="flag16777216">Known property</label></td>
+                        </tr>
+                        <tr>
+                            <td><input onclick="javascript:updateFlag(this, 2048);" type="checkbox" id="flag2048" /><label for="flag2048">Glider - Instrument Maneuvers for passengers</label></td>
+                            <td><input onclick="javascript:updateFlag(this, 33554432);" type="checkbox" id="flag33554432" /><label for="flag33554432">No autocomplete</label></td>
+                        </tr>
+                        <tr>
+                            <td><input onclick="javascript:updateFlag(this, 4096);" type="checkbox" id="flag4096" /><label for="flag4096">Is an approach</label></td>
+                            <td><input onclick="javascript:updateFlag(this, 67108864);" type="checkbox" id="flag67108864" /><label for="flag67108864">Convert to Caps</label></td>
+                        </tr>
+                        <tr>
+                            <td><input onclick="javascript:updateFlag(this, 536870912);" type="checkbox" id="flag536870912" /><label for="flag536870912">Is a precision approach</label></td>
+                            <td><input onclick="javascript:updateFlag(this, 268435456);" type="checkbox" id="flag268435456" /><label for="flag268435456">Initial Caps</label></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <button id="btnAddProp" type="submit">Add a custom property</button>
+    }
+</div>
+
+<input type="hidden" id="hdnLastSortDir" value="asc" />
+<input type="hidden" id="hdnSortIndex" value="1" />
+
+<table class="stickyHeaderTable" id="tableProps">
+    <thead>
+        <tr>
+            <th></th>
+            <th class="headerBase gvhDefault" style="text-align:left" onclick="javascript:sortTable(this, 1, 'num', 'hdnSortIndex', 'hdnLastSortDir');">idPropType</th>
+            <th class="headerBase gvhDefault headerSortAsc" style="text-align:left" onclick="javascript:sortTable(this, 2, '', 'hdnSortIndex', 'hdnLastSortDir');">Title</th>
+            <th class="headerBase gvhDefault" style="text-align:left" onclick="javascript:sortTable(this, 3, '', 'hdnSortIndex', 'hdnLastSortDir');">Short Title</th>
+            <th class="headerBase gvhDefault" style="text-align:left" onclick="javascript:sortTable(this, 4, '', 'hdnSortIndex', 'hdnLastSortDir');">Sort Key</th>
+            <th class="headerBase gvhDefault" style="text-align:left" onclick="javascript:sortTable(this, 5, '', 'hdnSortIndex', 'hdnLastSortDir');">Format String</th>
+            <th class="headerBase gvhDefault" style="text-align:left" onclick="javascript:sortTable(this, 6, '', 'hdnSortIndex', 'hdnLastSortDir');">Description</th>
+            <th class="headerBase gvhDefault" style="text-align:left" onclick="javascript:sortTable(this, 7, 'num', 'hdnSortIndex', 'hdnLastSortDir');">Type</th>
+            <th class="headerBase gvhDefault" style="text-align:left">Flags</th>
+            <th class="headerBase gvhDefault" style="text-align:left"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr id="editPropRow" style="display:none; border: 1px solid black; background-color: lightgray;">
+            <td>
+                <a style="cursor:pointer;" onclick="javascript: cancelEdit();">Cancel</a>
+                <a style="cursor:pointer;" onclick="javascript: updateProperty($(this).parents('tr'));">Update</a>
+            </td>
+            <td></td>
+            <td><input type="text" name="txtTitle" /></td>
+            <td><input type="text" name="txtShortTitle" /></td>
+            <td><input type="text" name="txtSortKey" /></td>
+            <td><input type="text" name="txtFormatString" /></td>
+            <td><textarea rows="5" name="txtDescription"></textarea></td>
+            <td name="cellPropType"></td>
+            <td><input type="number" name="txtFlags" /></td>
+            <td name="cellPropDesc"></td>
+        </tr>
+        @foreach (CustomPropertyType cpt in ViewBag.propList)
+        {
+        <tr>
+            <td><a style="cursor:pointer;" onclick="javascript:editProp($(this).parents('tr'));">Edit</a></td>
+            <td>@cpt.PropTypeID</td>
+            <td>@cpt.Title</td>
+            <td>@cpt.NakedShortTitle</td>
+            <td>@(cpt.SortKey.CompareCurrentCultureIgnoreCase(cpt.Title) == 0 ? string.Empty : cpt.SortKey)</td>
+            <td>@cpt.FormatString</td>
+            <td>@cpt.Description</td>
+            <td>@cpt.Type</td>
+            <td>@cpt.Flags</td>
+            <td>@CustomPropertyType.AdminFlagsDesc(cpt.Type, cpt.Flags)</td>
+        </tr>
+        }
+    </tbody>
+</table>
+
