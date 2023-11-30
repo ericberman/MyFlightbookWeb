@@ -5,13 +5,14 @@ using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
 using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2014-2020 MyFlightbook LLC
+ * Copyright (c) 2014-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1204,9 +1205,9 @@ namespace MyFlightbook.Achievements
         {
             if (context == null)
                 throw new ArgumentNullException(nameof(context));
-            if (context.ContainsKey(Achievement.KeyVisitedAirports))
+            if (context.TryGetValue(Achievement.KeyVisitedAirports, out object value))
             {
-                VisitedAirport[] rgva = (VisitedAirport[])context[Achievement.KeyVisitedAirports];
+                VisitedAirport[] rgva = (VisitedAirport[])value;
 
                 if (rgva != null)
                     foreach (VisitedAirport va in rgva)
@@ -1391,9 +1392,9 @@ namespace MyFlightbook.Achievements
         {
             if (context == null)
                 throw new ArgumentNullException(nameof(context));
-            if (context.ContainsKey(Achievement.KeyVisitedAirports))
+            if (context.TryGetValue(Achievement.KeyVisitedAirports, out object value))
             {
-                VisitedAirport[] rgva = (VisitedAirport[])context[Achievement.KeyVisitedAirports];
+                VisitedAirport[] rgva = (VisitedAirport[])value;
                 HashSet<string> hsContinents = new HashSet<string>();
 
                 if (rgva != null)
@@ -1430,9 +1431,9 @@ namespace MyFlightbook.Achievements
         {
             if (context == null)
                 throw new ArgumentNullException(nameof(context));
-            if (context.ContainsKey(Achievement.KeyVisitedAirports))
+            if (context.TryGetValue(Achievement.KeyVisitedAirports, out object value))
             {
-                VisitedAirport[] rgva = (VisitedAirport[])context[Achievement.KeyVisitedAirports];
+                VisitedAirport[] rgva = (VisitedAirport[])value;
                 HashSet<string> hsCountries = new HashSet<string>();
 
                 if (rgva != null)
@@ -1471,9 +1472,9 @@ namespace MyFlightbook.Achievements
         {
             if (context == null)
                 throw new ArgumentNullException(nameof(context));
-            if (context.ContainsKey(Achievement.KeyVisitedAirports))
+            if (context.TryGetValue(Achievement.KeyVisitedAirports, out object value))
             {
-                VisitedAirport[] rgva = (VisitedAirport[])context[Achievement.KeyVisitedAirports];
+                VisitedAirport[] rgva = (VisitedAirport[])value;
                 HashSet<string> hsAdmin1 = new HashSet<string>();
 
                 if (rgva != null)
@@ -1564,12 +1565,16 @@ namespace MyFlightbook.Achievements
     public class AirportListBadgeData
     {
         public Badge.BadgeID ID { get; set; }
+        [Required]
         public string Name { get; set; }
+        [Required]
+        [MinLength(3)]
         public string AirportsRaw { get; set; }
+
         public string OverlayName { get; set; }
         public AirportList Airports { get; set; }
         public LatLongBox BoundingFrame { get; set; }
-        public Collection<int> Levels { get; private set; }
+        public int[] Levels { get; private set; } = new int[] { 0, 0, 0, 0 };
         public bool BinaryOnly { get; set; }
 
         public AirportListBadgeData()
@@ -1587,38 +1592,35 @@ namespace MyFlightbook.Achievements
             BoundingFrame = Airports.LatLongBox(true).Inflate(0.1); // allow for a little slop
             OverlayName = util.ReadNullableString(dr, "overlayname");
             BinaryOnly = Convert.ToInt32(dr["fBinaryOnly"], CultureInfo.InvariantCulture) != 0;
-            Levels = new Collection<int>(new List<int>() {
+            Levels = new int[] {
                 Convert.ToInt32(dr["thresholdBronze"], CultureInfo.InvariantCulture),
                 Convert.ToInt32(dr["thresholdSilver"], CultureInfo.InvariantCulture),
                 Convert.ToInt32(dr["thresholdGold"], CultureInfo.InvariantCulture),
-                Convert.ToInt32(dr["thresholdPlatinum"], CultureInfo.InvariantCulture) });
+                Convert.ToInt32(dr["thresholdPlatinum"], CultureInfo.InvariantCulture) };
         }
 
         /// <summary>
         /// Adds a new airport-list badge
         /// </summary>
-        /// <param name="name">Name of the badge</param>
-        /// <param name="codes">Airport codes</param>
-        /// <param name="overlay">Name of the overlay PNG</param>
-        /// <param name="fBinary">True if this is a binary (earn/don't earn) property</param>
-        /// <param name="bronze">Threshold for bronze</param>
-        /// <param name="silver">Threshold for silver</param>
-        /// <param name="gold">Threshold for gold</param>
-        /// <param name="platinum">Threshold for platinum</param>
-        public static void Add(string name, string codes, string overlay, bool fBinary, int bronze, int silver, int gold, int platinum)
+        public void Commit()
         {
-            DBHelper dbh = new DBHelper("INSERT INTO airportlistachievement SET name=?name, airportcodes=?airportcodes, overlayname=?overlay, fBinaryOnly=?fbinary, thresholdBronze=?bronze, thresholdSilver=?silver, thresholdGold=?gold, thresholdPlatinum=?platinum");
+            const string szSet = "SET name=?name, airportcodes=?airportcodes, overlayname=?overlay, fBinaryOnly=?fbinary, thresholdBronze=?bronze, thresholdSilver=?silver, thresholdGold=?gold, thresholdPlatinum=?platinum";
+            string szQ = String.Format(CultureInfo.InvariantCulture, (ID == Badge.BadgeID.NOOP) ? "INSERT INTO airportlistachievement {0}" : "UPDATE airportlistachievement {0} WHERE idachievement=?id", szSet);
+
+            DBHelper dbh = new DBHelper(szQ);
             dbh.DoNonQuery((comm) =>
             {
-                comm.Parameters.AddWithValue("name", name);
-                comm.Parameters.AddWithValue("airportcodes", codes);
-                comm.Parameters.AddWithValue("overlay", overlay);
-                comm.Parameters.AddWithValue("fbinary", fBinary ? 1 : 0);
-                comm.Parameters.AddWithValue("bronze", bronze);
-                comm.Parameters.AddWithValue("silver", silver);
-                comm.Parameters.AddWithValue("gold", gold);
-                comm.Parameters.AddWithValue("platinum", platinum);
+                comm.Parameters.AddWithValue("name", Name);
+                comm.Parameters.AddWithValue("airportcodes", AirportsRaw);
+                comm.Parameters.AddWithValue("overlay", OverlayName);
+                comm.Parameters.AddWithValue("fbinary", BinaryOnly ? 1 : 0);
+                comm.Parameters.AddWithValue("bronze", Levels[0]);
+                comm.Parameters.AddWithValue("silver", Levels[1]);
+                comm.Parameters.AddWithValue("gold", Levels[2]);
+                comm.Parameters.AddWithValue("platinum", Levels[3]);
+                comm.Parameters.AddWithValue("id", (int) ID);
             });
+            AirportListBadge.FlushCache();
         }
     }
 
@@ -1659,7 +1661,7 @@ namespace MyFlightbook.Achievements
             HttpRuntime.Cache.Remove(szCacheDataKey);
         }
 
-        protected static List<AirportListBadgeData> BadgeData
+        public static List<AirportListBadgeData> BadgeData
         {
             get
             {

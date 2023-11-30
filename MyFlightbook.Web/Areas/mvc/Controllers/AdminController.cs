@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MyFlightbook.Achievements;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
@@ -137,9 +138,57 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             });
         }
         #endregion
+
+        #region Achievements
+        [Authorize]
+        [HttpPost]
+        public string InvalidateBadgeCache()
+        {
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            {
+                MyFlightbook.Profile.InvalidateAllAchievements();
+                return "Achievements invalidated";
+            });
+        }
+        #endregion
         #endregion
 
         #region Full page endpoints
+        [Authorize]
+        [HttpPost]
+        public ActionResult Achievements(int id, string Name, string AirportsRaw, string overlay, bool? fBinary, int bronze = 0, int silver = 0, int gold = 0, int platinum = 0)
+        {
+            if (Name == null)
+                throw new ArgumentNullException(nameof(Name));
+            if (AirportsRaw == null)
+                throw new ArgumentNullException(nameof(AirportsRaw));
+            CheckAuth(ProfileRoles.maskCanManageData);
+
+            AirportListBadgeData b = new AirportListBadgeData()
+            {
+                ID = (Badge.BadgeID)id,
+                Name = Name,
+                AirportsRaw = AirportsRaw,
+                OverlayName = overlay,
+                BinaryOnly = fBinary ?? false
+            };
+            b.Levels[0] = bronze;
+            b.Levels[1] = silver;
+            b.Levels[2] = gold;
+            b.Levels[3] = platinum;
+            b.Commit();
+            return Redirect("Achievements");
+        }
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult Achievements()
+        {
+            CheckAuth(ProfileRoles.maskCanManageData);
+            ViewBag.airportBadges = AirportListBadge.BadgeData;
+            return View("adminAchievements");
+        }
+
         [Authorize]
         [HttpPost]
         public ActionResult Properties(string txtCustomPropTitle, string txtCustomPropFormat, string txtCustomPropDesc, uint propType, uint propFlags)

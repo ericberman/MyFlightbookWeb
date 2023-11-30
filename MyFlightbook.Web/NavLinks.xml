@@ -256,7 +256,7 @@
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>
       <Item>
-        <Link>~/Admin/AdminAchievements.aspx</Link>
+        <Link>~/mvc/Admin/Achievements</Link>
         <ID>admAchievements</ID>
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>
