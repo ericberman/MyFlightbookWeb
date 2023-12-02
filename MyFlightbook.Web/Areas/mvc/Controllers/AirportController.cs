@@ -24,8 +24,111 @@ using System.Web.Mvc;
 
 namespace MyFlightbook.Web.Areas.mvc.Controllers
 {
-    public class AirportController : Controller
+    public class AirportController : AdminControllerBase
     {
+        #region Admin - Airport Geocoder
+        [Authorize]
+        [HttpPost]
+        public ActionResult GeotTagFromGPX()
+        {
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            {
+                if (Request.Files.Count == 0)
+                    throw new InvalidOperationException("No file uploaded");
+
+                HttpPostedFileBase pf = Request.Files[0];
+
+                AdminAirport.GeoLocateFromGPX(pf.InputStream, out string szAudit, out string szCommands);
+                return Json(new { audit = szAudit, commands = szCommands });
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult GeotTagTable(string queryID, int start, int count)
+        {
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            {
+                IEnumerable<AdminAirport> lst = (IEnumerable<AdminAirport>)Session[queryID] ?? throw new InvalidOperationException("Invalid query ID - possibly expired session?  Try refreshing");
+                ViewBag.queryID = queryID;
+                ViewBag.start = start;
+                ViewBag.end = Math.Min(start + count, lst.Count());
+                ViewBag.rgap = lst;
+                ViewBag.pageSize = 15;
+                ViewBag.resultCount = lst.Count();
+                return PartialView("_airportsNeedingCodingTable");
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult Geocoder(string countryRestriction, bool? fEmptyCountry, string admin1Restriction, bool? fEmptyAdmin1, int startAt, int count)
+        {
+            CheckAuth(ProfileRoles.maskCanManageData);
+            // treat empty country and admin1 as requesting empty (null) values
+            if (String.IsNullOrWhiteSpace(countryRestriction) && String.IsNullOrEmpty(admin1Restriction))
+                fEmptyCountry = fEmptyAdmin1 = true;
+
+            IEnumerable<AdminAirport> lst = AdminAirport.AirportsMatchingGeoReference(fEmptyCountry == null ? countryRestriction : null, fEmptyAdmin1 == null ? admin1Restriction : null, startAt, count);
+            foreach (AdminAirport ap in lst)
+            {
+                if (String.IsNullOrWhiteSpace(ap.Country) || String.IsNullOrEmpty(ap.Admin1))
+                {
+                    IEnumerable<airport> rgNearby = airport.AirportsNearPosition(ap.LatLong.Latitude, ap.LatLong.Longitude, 10, true);
+                    foreach (airport apClosest in rgNearby)
+                    {
+                        if (!String.IsNullOrEmpty(apClosest.Country))
+                        {
+                            ap.NearestTagged = apClosest;
+                            break;
+                        }
+                    }
+                }
+            }
+            string queryID = Guid.NewGuid().ToString();
+            Session[queryID] = lst;
+            ViewBag.queryID = queryID;
+            ViewBag.rgap = lst;
+            ViewBag.end = Math.Min(startAt + count, lst.Count());
+            ViewBag.start = (lst.Count() < count) ? 0 : ViewBag.end;
+
+            ViewBag.countryRestriction = countryRestriction;
+            ViewBag.fEmptyCountry = (fEmptyCountry ?? false) ? "checked" : string.Empty;
+            ViewBag.admin1Restriction = admin1Restriction;
+            ViewBag.fEmptyAdmin1 = (fEmptyAdmin1 ?? false) ? "checked" : string.Empty;
+            ViewBag.count = count;
+
+            GoogleMap googleMap = new GoogleMap("divFoundAirports", GMap_Mode.Dynamic);
+            googleMap.Options.fAutofillPanZoom = googleMap.Options.fAutofillHeliports = true;
+            googleMap.Options.fShowRoute = false;
+            googleMap.SetAirportList(new AirportList(lst));
+            googleMap.Options.fAutofillPanZoom = (fEmptyCountry.HasValue && fEmptyCountry.Value);
+
+            ViewBag.map = googleMap;
+            return View("adminGeocoder");
+        }
+
+        [Authorize]
+        public ActionResult Geocoder()
+        {
+            CheckAuth(ProfileRoles.maskCanManageData);
+
+            ViewBag.start = 0;
+            ViewBag.countryRestriction = string.Empty;
+            ViewBag.fEmptyCountry = string.Empty;
+            ViewBag.admin1Restriction = string.Empty;
+            ViewBag.fEmptyAdmin1 = string.Empty;
+            ViewBag.count = 250;
+
+            GoogleMap googleMap = new GoogleMap("divFoundAirports", GMap_Mode.Dynamic);
+            googleMap.Options.fAutofillPanZoom = googleMap.Options.fAutofillHeliports = true;
+            googleMap.Options.fShowRoute = false;
+
+            ViewBag.map = googleMap;
+            return View("adminGeocoder");
+        }
+        #endregion
+
         #region AirportQuiz
         [ChildActionOnly]
         public ActionResult QuizStatusForAnswer(AirportQuiz q, AirportQuizQuestion question, int answerIndex)

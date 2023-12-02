@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Xml;
 
 /******************************************************
  * 
@@ -881,6 +882,8 @@ namespace MyFlightbook.Airports
         public bool IsPreferred { get; set; }   // generally don't need to actually load this except for admin functions.
 
         public string SourceUserName { get; set; }  // we don't expose UserName in javascript for privacy, but need it for admin dupe detection
+
+        public airport NearestTagged { get; set; } = null;
         #endregion
 
         #region constructors
@@ -1267,6 +1270,131 @@ limit ?start, ?count", szLimit, String.IsNullOrWhiteSpace(dupeSeed) ? "having nu
                 return cAirportsAdded;
             }
         }
+
+        #region Geolocating from GPX
+        protected static void GeoReferenceForPoly(List<LatLong> rgll, string szCountry, string szAdmin, StringBuilder UpdateString, StringBuilder AuditString)
+        {
+            if (rgll == null)
+                throw new ArgumentNullException(nameof(rgll));
+            if (szCountry == null)
+                throw new ArgumentNullException(nameof(szCountry));
+            if (UpdateString == null)
+                throw new ArgumentNullException(nameof(UpdateString));
+            if (AuditString == null)
+                throw new ArgumentNullException(nameof(AuditString));
+
+            if (rgll.Count == 0)
+                throw new InvalidOperationException("No latitude/longitudes in rgll!");
+
+
+            // Get the bounding box.
+            LatLongBox llb = new LatLongBox(rgll.First());
+            foreach (LatLong ll in rgll)
+                llb.ExpandToInclude(ll);
+
+            IEnumerable<airport> rgap = AdminAirport.UntaggedAirportsInBox(llb);
+            GeoRegion geo = new GeoRegion(string.Empty, rgll);
+
+            int cAirports = 0;
+
+            foreach (airport ap in rgap)
+                if (geo.ContainsLocation(ap.LatLong))
+                {
+                    UpdateString.AppendLine(String.Format(CultureInfo.InvariantCulture, "UPDATE airports SET Country='{0}' {1} WHERE type='{2}' AND airportID='{3}';", szCountry, String.IsNullOrWhiteSpace(szAdmin) ? string.Empty : String.Format(CultureInfo.InvariantCulture, ", admin1 = '{0}' ", szAdmin), ap.FacilityTypeCode, ap.Code));
+                    ap.SetLocale(szCountry, szAdmin);
+                    cAirports++;
+                }
+
+            if (cAirports > 0)
+                AuditString.AppendLine(String.Format(CultureInfo.CurrentCulture, "Updated {0} airports for country {1}, region {2}", cAirports, szCountry, szAdmin));
+        }
+
+        public static void GeoLocateFromGPX(Stream content, out string szAudit, out string szCommands)
+        {
+            if (content == null) throw new ArgumentNullException(nameof(content));
+            szAudit = szCommands = string.Empty;
+            StringBuilder AuditString = new StringBuilder();
+            StringBuilder UpdateString = new StringBuilder();
+            string szActiveCountry = string.Empty;
+            string szActiveAdmin1 = string.Empty;
+            string szName = string.Empty;
+            string szVal = string.Empty;
+            bool fCountry = false;
+            LatLong llActive = null;
+            List<LatLong> lstPoly = new List<LatLong>();
+
+            using (XmlReader reader = XmlReader.Create(content))
+            {
+                while (reader.Read())
+                {
+                    switch (reader.NodeType)
+                    {
+                        case XmlNodeType.Element:
+                            switch (reader.Name.ToUpperInvariant())
+                            {
+                                default:
+                                    break;
+                                case "TRKPT":
+                                    llActive = new LatLong(Convert.ToDouble(reader.GetAttribute("lat"), CultureInfo.InvariantCulture), Convert.ToDouble(reader.GetAttribute("lon"), CultureInfo.InvariantCulture));
+                                    break;
+                                case "TRKSEG":
+                                    // We should have all of the metadata
+                                    if (fCountry)
+                                    {
+                                        szActiveCountry = szName;
+                                        szActiveAdmin1 = null;
+                                    }
+                                    else
+                                    {
+                                        szActiveAdmin1 = szName;
+                                        // szActiveCountry should already be set.
+                                    }
+                                    lstPoly.Clear();
+                                    break;
+                            }
+                            break;
+                        case XmlNodeType.Text:
+                            szVal = reader.Value;
+                            break;
+                        case XmlNodeType.EndElement:
+                            switch (reader.Name.ToUpperInvariant())
+                            {
+                                default:
+                                    break;
+                                case "NAME":
+                                    szName = szVal; // Could be a country or an admin region.
+                                    break;
+                                case "OGR:ADMIN":
+                                    szActiveCountry = szVal;    // always the country, in our case
+                                    break;
+                                case "TRKPT":
+                                    lstPoly.Add(llActive);
+                                    llActive = null;
+                                    break;
+                                case "OGR:FEATURECLA":
+                                    fCountry = szVal.StartsWith("Admin-0", StringComparison.CurrentCultureIgnoreCase);
+                                    break;
+                                case "TRKSEG":
+                                    // We've completed one polygon for this region - georeference it
+                                    GeoReferenceForPoly(lstPoly, szActiveCountry, szActiveAdmin1, UpdateString, AuditString);
+                                    break;
+                                case "TRK":
+                                    // We're done with this region
+                                    szName = szActiveAdmin1 = szActiveAdmin1 = string.Empty;
+                                    fCountry = false;
+                                    lstPoly.Clear();
+                                    break;
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            szAudit = AuditString.ToString();
+            szCommands = UpdateString.ToString();
+        }
+        #endregion
     }
 
     /// <summary>

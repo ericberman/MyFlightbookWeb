@@ -417,8 +417,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Admin\AdminAchievements.aspx" />
-    <Content Include="Admin\AdminAirportGeocoder.aspx" />
     <Content Include="Admin\AdminEndorsements.aspx" />
     <Content Include="Admin\AdminImgs.aspx" />
     <Content Include="Admin\AdminService.asmx" />
@@ -1535,6 +1533,8 @@
     <Content Include="Areas\mvc\Views\Admin\_invalidSigs.cshtml" />
     <Content Include="Areas\mvc\Views\Admin\adminProps.cshtml" />
     <Content Include="Areas\mvc\Views\Admin\adminAchievements.cshtml" />
+    <Content Include="Areas\mvc\Views\Airport\adminGeocoder.cshtml" />
+    <Content Include="Areas\mvc\Views\Airport\_airportsNeedingCodingTable.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.1.js" />
     <Content Include="Scripts\jquery-3.7.1.min.js" />
@@ -1555,20 +1555,6 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Admin\AdminAchievements.aspx.cs">
-      <DependentUpon>AdminAchievements.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Admin\AdminAchievements.aspx.designer.cs">
-      <DependentUpon>AdminAchievements.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Admin\AdminAirportGeocoder.aspx.cs">
-      <DependentUpon>AdminAirportGeocoder.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Admin\AdminAirportGeocoder.aspx.designer.cs">
-      <DependentUpon>AdminAirportGeocoder.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Admin\AdminEndorsements.aspx.cs">
       <DependentUpon>AdminEndorsements.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

@@ -164,7 +164,7 @@
 
                     $.ajax(
                         {
-                            url: '<% =ResolveUrl("~/Admin/AdminAirportGeocoder.aspx/AirportImportCommand") %>',
+                            url: '<% =ResolveUrl("~/Admin/AdminService.asmx/AirportImportCommand") %>',
                             type: "POST", data: d, dataType: "json", contentType: "application/json",
                             error: function (xhr, status, error) {
                                 window.alert(xhr.responseJSON.Message);
@@ -286,7 +286,7 @@
                 var d = JSON.stringify(params);
                 $.ajax(
                     {
-                        url: '<% =ResolveUrl("~/Admin/AdminAirportGeocoder.aspx/DeleteDupeUserAirport") %>',
+                        url: '<% =ResolveUrl("~/Admin/AdminService.asmx/DeleteDupeUserAirport") %>',
                         type: "POST", data: d, dataType: "json", contentType: "application/json",
                         error: function (xhr, status, error) {
                             window.alert(xhr.responseJSON.Message);
@@ -303,7 +303,7 @@
                 var d = JSON.stringify(params);
                 $.ajax(
                     {
-                        url: '<% =ResolveUrl("~/Admin/AdminAirportGeocoder.aspx/SetPreferred") %>',
+                        url: '<% =ResolveUrl("~/Admin/AdminService.asmx/SetPreferred") %>',
                         type: "POST", data: d, dataType: "json", contentType: "application/json",
                         error: function (xhr, status, error) {
                             window.alert(xhr.responseJSON.Message);
@@ -319,7 +319,7 @@
                 var d = JSON.stringify(params);
                 $.ajax(
                     {
-                        url: '<% =ResolveUrl("~/Admin/AdminAirportGeocoder.aspx/MakeNative") %>',
+                        url: '<% =ResolveUrl("~/Admin/AdminService.asmx/MakeNative") %>',
                         type: "POST", data: d, dataType: "json", contentType: "application/json",
                         error: function (xhr, status, error) {
                             window.alert(xhr.responseJSON.Message);
@@ -336,7 +336,7 @@
                 var d = JSON.stringify(params);
                 $.ajax(
                     {
-                        url: '<% =ResolveUrl("~/Admin/AdminAirportGeocoder.aspx/MergeWith") %>',
+                        url: '<% =ResolveUrl("~/Admin/AdminService.asmx/MergeWith") %>',
                         type: "POST", data: d, dataType: "json", contentType: "application/json",
                         error: function (xhr, status, error) {
                             window.alert(xhr.responseJSON.Message);
@@ -359,7 +359,7 @@
                 var d = JSON.stringify(params);
                 $.ajax(
                     {
-                        url: '<% =ResolveUrl("~/Admin/AdminAirportGeocoder.aspx/GetDupeAirports") %>',
+                        url: '<% =ResolveUrl("~/Admin/AdminService.asmx/GetDupeAirports") %>',
                         type: "POST", data: d, dataType: "json", contentType: "application/json",
                         error: function (xhr, status, error) {
                             window.alert(xhr.responseJSON.Message);
@@ -441,7 +441,7 @@
             </table>
         </div>
         <h2>Geo coding airports</h2>
-        <p><asp:HyperLink ID="lnkManageGeo" runat="server" Text="Manage Georeferences" NavigateUrl="~/Admin/AdminAirportGeocoder.aspx" /></p>
+        <p><asp:HyperLink ID="lnkManageGeo" runat="server" Text="Manage Georeferences" NavigateUrl="~/mvc/Airport/Geocoder" /></p>
     </asp:Panel>
 </asp:Content>
 <asp:Content ID="Content1" ContentPlaceHolderID="cpMain" runat="Server">

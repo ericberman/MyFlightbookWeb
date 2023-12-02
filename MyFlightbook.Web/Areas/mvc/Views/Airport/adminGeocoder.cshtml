@@ -1,0 +1,187 @@
+﻿
+@{
+    ViewBag.Title = "Admin Tools - Reverse Geocode airports\r\n";
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    ViewBag.defaultTab = tabID.tabAdmin;
+    ViewBag.UseMaps = true;
+}
+<style type="text/css">
+    tr.handled {
+        background-color: lightgreen;
+    }
+</style>
+<script type="text/javascript">
+
+//<![CDATA[
+    function clickAndZoom(point) {
+        getGMap().setCenter(point);
+        getGMap().setZoom(10);
+    }
+
+    function doAutoComplete(term, endpoint, response) {
+        var params = new Object();
+        params.prefixText = term;
+        params.count = 20;
+        var d = JSON.stringify(params);
+        $.ajax({
+            url: "@VirtualPathUtility.ToAbsolute("~/Admin/AdminService.asmx/")" + endpoint,
+            type: "POST", data: d, dataType: "json", contentType: "application/json",
+            error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
+            success: function (r) { response(r.d); }
+        });
+    }
+
+    function autocompleteCountry(o) {
+        o.autocomplete({
+            source: function (request, response) {
+                doAutoComplete(request.term, "SuggestCountries", response);
+            },
+            minLength: 2,
+            classes: { "ui-autocomplete": "AutoExtender AutoExtenderList" }
+        });
+    }
+
+    function autocompleteAdmin1(o) {
+        o.autocomplete({
+            source: function (request, response) {
+                doAutoComplete(request.term, "SuggestAdmin", response);
+            },
+            minLength: 2,
+            classes: { "ui-autocomplete": "AutoExtender AutoExtenderList" }
+        });
+    }
+
+    function getMoreAirports(queryID, start, count) {
+        var params = new Object();
+        params.queryID = queryID;
+        params.start = start;
+        params.count = count;
+        var d = JSON.stringify(params);
+        $.ajax(
+            {
+                url: '@Url.Action("GeotTagTable", "Airport")',
+                type: "POST", data: d, dataType: "html", contentType: "application/json",
+                error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
+                complete: function (response) { },
+                success: function (response) { $("#tblAirportsToReview").html(response); }
+            });
+    }
+
+    $(function () {
+        $('#divSearchForm').keydown(function (e) {
+            if (e.keyCode == 13) {
+                $('#btnViewMore')[0].click();
+                return false;
+            }
+        });
+
+        autocompleteCountry($("#txtCountry"));
+        autocompleteAdmin1($("#txtAdmin1"));
+    });
+
+    function useSuggestion(jqrow, szCode, szTypeCode, szCountry, szAdmin) {
+        var params = new Object();
+        params.szCode = szCode;
+        params.szTypeCode = szTypeCode;
+        params.szCountry = szCountry;
+        params.szAdmin = szAdmin;
+        var d = JSON.stringify(params);
+
+        $.ajax(
+            {
+                url: '@VirtualPathUtility.ToAbsolute("~/Admin/AdminService.asmx/UseGuess")',
+                type: "POST", data: d, dataType: "json", contentType: "application/json",
+                error: function (xhr, status, error) {
+                    window.alert(xhr.responseJSON.Message);
+                },
+                complete: function (response) { },
+                success: function (response) {
+                    jqrow.toggleClass("handled");
+                    jqrow.removeClass("editRow");
+                    jqrow.find('div[name="lblcountry"]').text(szCountry);
+                    jqrow.find('div[name="lbladmin1"]').text(szAdmin);
+                }
+            });
+        return false;
+    }
+
+    function updateAirport(jqrow) {
+        useSuggestion(jqrow, jqrow.find('a[name="code"]').text(), jqrow.find('td[name="typeCode"]').text(), jqrow.find('input[name="txtCountry"]')[0].value, jqrow.find('input[name="txtAdmin1"]')[0].value);
+    }
+//]]>
+</script>
+<h2>Review airport locations</h2>
+<div id="divMapContainer" style="height: 400px; width:100%">
+    @{ Html.RenderAction("MapDiv", "Airport", new { map = ViewBag.Map }); }
+</div>
+
+<h1>Verify airport countries/admin regions</h1>
+<div id="divSearchForm">
+    @using (Html.BeginForm("Geocoder", "Airport", FormMethod.Post))
+    {
+    <div>View airports matching:</div>
+    <table>
+        <tr>
+            <td>Country</td>
+            <td><input type="text" id="txtCountry" name="countryRestriction" value="@ViewBag.countryRestriction" autocomplete="off" /> <input type="checkbox" @ViewBag.fEmptyCountry name="fEmptyCountry" value="true" id="ckNoCountry" /><label for="ckNoCountry">(Missing)</label></td>
+        </tr>
+        <tr>
+            <td>Admin (State/province)</td>
+            <td><input type="text" id="txtAdmin1" name="admin1Restriction" value="@ViewBag.admin1Restriction" autocomplete="off" /> <input type="checkbox" @ViewBag.fEmptyAdmin1 id="ckNoAdmin1" name="fEmptyAdmin1" value="true" /><label for="ckNoAdmin1">(Missing)</label></td>
+        </tr>
+        <tr>
+            <td>Start</td>
+            <td><input type="number" id="decStart" min="0" step="1" value="@ViewBag.start" name="startAt" /></td>
+        </tr>
+        <tr>
+            <td>Limit</td>
+            <td><input type="number" id="decMaxAirports" min="0" step="1" value="@ViewBag.count" name="count" /></td>
+        </tr>
+    </table>
+    <div>
+        <button type="submit">Get Next Set</button>
+    </div>
+    }
+</div>
+<div id="tblAirportsToReview">
+    @if (!String.IsNullOrEmpty(ViewBag.queryID))
+    {
+        <script type="text/javascript">
+            $(function () {
+                getMoreAirports('@ViewBag.queryID', 0, 15);
+            });
+        </script>
+    }
+</div>
+
+@if (true)
+{
+    <script type="text/javascript">
+        function geoTagFromGPX() {
+            $('#imgProgress').toggle();
+            var fileData = $('#fuGPX').prop('files')[0];
+            var formData = new FormData();
+            formData.append('file', fileData);
+            $.ajax(
+                {
+                    url: '@Url.Action("GeotTagFromGPX", "Airport")',
+                    type: "POST", data: formData, dataType: "json", contentType: false, processData : false,
+                    error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                    complete: function (response) { $('#imgProgress').toggle(); },
+                    success: function (response) {
+                        $("#divAudit").text(response.audit);
+                        $("#divCommands").text(response.commands);
+                    }
+                });
+        }
+    </script>
+    <div>&nbsp;</div>
+    <div id="pnlImportGPX" style="display:none">
+        <h1>Geolocate based on GPX</h1>
+        <p>THIS IS HIDDEN BECAUSE IT IS DANGEROUS - ONLY USE ON LOCAL MACHINE WITH LOCAL DATABASE</p>
+        <input type="file" id="fuGPX" name="fuGPX" /> <button type="button" onclick="javascript:geoTagFromGPX();">GeoLocate</button>
+        <div id="imgProgress" style="display:none;"><img src="@VirtualPathUtility.ToAbsolute("~/images/progress.gif")" /></div>
+        <div id="divAudit" style="white-space:pre"></div>
+        <div id="divCommands" style="white-space:pre"></div>
+</div>
+}

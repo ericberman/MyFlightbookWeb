@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Linq;
 using System.ServiceModel;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Script.Services;
 using System.Web.Security;
@@ -549,6 +550,195 @@ namespace MyFlightbook.Web.Ajax
             vr.Refresh(maxSegments);
             return vr;
         }
+
+        #region Geocoding
+        [WebMethod]
+        [ScriptMethod]
+        public string[] SuggestCountries(string prefixText, int count)
+        {
+            if (String.IsNullOrEmpty(prefixText))
+                return Array.Empty<string>();
+            List<string> lst = new List<string>();
+            DBHelper dbh = new DBHelper("SELECT distinct Country from Airports where Country like ?prefix ORDER BY Country ASC LIMIT ?count");
+            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("prefix", "%" + prefixText + "%"); comm.Parameters.AddWithValue("count", count); },
+                (dr) => { lst.Add((string)dr["Country"]); });
+
+            return lst.ToArray();
+        }
+
+        [WebMethod]
+        [ScriptMethod]
+        public string[] SuggestAdmin(string prefixText, int count)
+        {
+            if (String.IsNullOrEmpty(prefixText))
+                return Array.Empty<string>();
+            List<string> lst = new List<string>();
+            DBHelper dbh = new DBHelper("SELECT distinct Admin1 from Airports where Admin1 like ?prefix ORDER BY Admin1 ASC LIMIT ?count");
+            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("prefix", "%" + prefixText + "%"); comm.Parameters.AddWithValue("count", count); },
+                (dr) => { lst.Add((string)dr["Admin1"]); });
+
+            return lst.ToArray();
+        }
+        #endregion
+
+        private static void CheckAirportAdmin()
+        {
+            if (HttpContext.Current == null || HttpContext.Current.User == null || HttpContext.Current.User.Identity == null || !HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+                throw new UnauthorizedAccessException("You must be authenticated to make this call");
+
+            Profile pf = Profile.GetUser(HttpContext.Current.User.Identity.Name);
+            if (!pf.CanManageData)
+                throw new UnauthorizedAccessException("You must be an admin to make this call");
+        }
+
+        #region Airport Import Functions
+        [WebMethod]
+        [ScriptMethod]
+        public void UseGuess(string szCode, string szTypeCode, string szCountry, string szAdmin)
+        {
+            CheckAirportAdmin();
+            if (String.IsNullOrEmpty(szCode))
+                throw new ArgumentNullException(nameof(szCode));
+            List<airport> lst = new List<airport>();
+            lst.AddRange(airport.AirportsMatchingCodes(new string[] { szCode }));
+            lst.RemoveAll(ap1 => ap1.FacilityTypeCode.CompareOrdinalIgnoreCase(szTypeCode) != 0);
+            if (lst.Count != 1)
+                return;
+            lst[0].SetLocale(szCountry, szAdmin);
+        }
+
+        /// <summary>
+        /// Finds potentially duplicate airports for review that can be reviewed to coalesce or mark one as preferred
+        /// </summary>
+        /// <param name="start">Starting point</param>
+        /// <param name="count">Number to return</param>
+        /// <param name="dupeSeed">If provided, limits to dupes near this "seed" airport.</param>
+        /// <returns>Array of airport clusters, where each cluster is a list of airports that looke like aliases of one another</returns>
+        [WebMethod]
+        [ScriptMethod]
+        public IEnumerable<AdminAirport[]> GetDupeAirports(int start, int count, string dupeSeed)
+        {
+            CheckAirportAdmin();
+            return AdminAirport.GetDupeAirports(start, count, dupeSeed);
+        }
+
+        [WebMethod]
+        [ScriptMethod]
+        public bool AirportImportCommand(airportImportCandidate aic, string source, string szCommand)
+        {
+            CheckAirportAdmin();
+
+            if (aic == null)
+                throw new ArgumentNullException(nameof(aic));
+            if (szCommand == null)
+                throw new ArgumentNullException(nameof(szCommand));
+
+            AirportImportRowCommand airc = (AirportImportRowCommand)Enum.Parse(typeof(AirportImportRowCommand), szCommand);
+            AirportImportSource ais = (AirportImportSource)Enum.Parse(typeof(AirportImportSource), source);
+
+            airport ap = null;
+            switch (ais)
+            {
+                case AirportImportSource.FAA:
+                    ap = aic.FAAMatch;
+                    break;
+                case AirportImportSource.ICAO:
+                    ap = aic.ICAOMatch;
+                    break;
+                case AirportImportSource.IATA:
+                    ap = aic.IATAMatch;
+                    break;
+            }
+
+            switch (airc)
+            {
+                case AirportImportRowCommand.FixLocation:
+                    ap.LatLong = aic.LatLong;
+                    ap.FCommit(true, false);
+                    if (!String.IsNullOrWhiteSpace(aic.Country))
+                        ap.SetLocale(aic.Country, aic.Admin1);
+                    break;
+                case AirportImportRowCommand.FixType:
+                    ap.FDelete(true);   // delete the existing one before we update - otherwise REPLACE INTO will not succeed (because we are changing the REPLACE INTO primary key, which includes Type)
+                    ap.FacilityTypeCode = aic.FacilityTypeCode;
+                    ap.FCommit(true, true); // force this to be treated as a new airport
+                    break;
+                case AirportImportRowCommand.Overwrite:
+                case AirportImportRowCommand.AddAirport:
+                    if (airc == AirportImportRowCommand.Overwrite)
+                        ap.FDelete(true);   // delete the existing airport
+
+                    switch (ais)
+                    {
+                        case AirportImportSource.FAA:
+                            aic.Code = aic.FAA;
+                            break;
+                        case AirportImportSource.ICAO:
+                            aic.Code = aic.ICAO;
+                            break;
+                        case AirportImportSource.IATA:
+                            aic.Code = aic.IATA;
+                            break;
+                    }
+                    aic.Code = Regex.Replace(aic.Code, "[^a-zA-Z0-9]", string.Empty);
+                    aic.FCommit(true, true);
+                    if (!String.IsNullOrWhiteSpace(aic.Country))
+                        aic.SetLocale(aic.Country, aic.Admin1);
+                    break;
+            }
+            return true;
+        }
+        #endregion
+
+        #region Duplicate Management
+        /// <summary>
+        /// Deletes a user airport that matches a built-in airport
+        /// </summary>
+        /// <returns>0 if unknown.</returns>
+        [WebMethod(EnableSession = true)]
+        public void DeleteDupeUserAirport(string idDelete, string idMap, string szUser, string szType)
+        {
+            CheckAirportAdmin();
+            AdminAirport.DeleteUserAirport(idDelete, idMap, szUser, szType);
+        }
+
+        /// <summary>
+        /// Sets the preferred flag for an airport
+        /// </summary>
+        [WebMethod(EnableSession = true)]
+        public void SetPreferred(string szCode, string szType, bool fPreferred)
+        {
+            CheckAirportAdmin();
+
+            AdminAirport ap = AdminAirport.AirportWithCodeAndType(szCode, szType) ?? throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Airport {0} (type {1}) not found", szCode, szType));
+            ap.SetPreferred(fPreferred);
+        }
+
+        /// <summary>
+        /// Makes a user-defined airport native (i.e., eliminates the source username; accepted as a "true" airport)
+        /// </summary>
+        [WebMethod(EnableSession = true)]
+        public void MakeNative(string szCode, string szType)
+        {
+            CheckAirportAdmin();
+
+            AdminAirport ap = AdminAirport.AirportWithCodeAndType(szCode, szType) ?? throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Airport {0} (type {1}) not found", szCode, szType));
+            ap.MakeNative();
+        }
+
+        /// <summary>
+        /// Copies the latitude/longitude from the source airport to the target airport.
+        /// </summary>
+        [WebMethod(EnableSession = true)]
+        public void MergeWith(string szCodeTarget, string szTypeTarget, string szCodeSource)
+        {
+            CheckAirportAdmin();
+
+            AdminAirport apTarget = AdminAirport.AirportWithCodeAndType(szCodeTarget, szTypeTarget) ?? throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Target Airport {0} (type {1}) not found", szCodeTarget, szTypeTarget));
+            AdminAirport apSource = AdminAirport.AirportWithCodeAndType(szCodeSource, szTypeTarget) ?? throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Source Airport {0} (type {1}) not found", szCodeSource, szTypeTarget));
+            apTarget.MergeFrom(apSource);
+        }
+        #endregion
         #endregion
     }
 }

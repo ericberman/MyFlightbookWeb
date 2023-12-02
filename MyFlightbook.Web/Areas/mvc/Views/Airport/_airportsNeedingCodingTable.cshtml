@@ -1,0 +1,86 @@
+﻿@using MyFlightbook.Airports
+@using System.Globalization
+@{ 
+    List<AdminAirport> lstAp = new List<AdminAirport>(ViewBag.rgap ?? Array.Empty<AdminAirport>());
+}
+@if (lstAp.Count == 0)
+{
+    <div class="success">No airports found requiring geocoding!</div>
+}
+else
+{
+<div>Showing results @ViewBag.start through @ViewBag.end</div>
+<table class="stickyHeaderTable" id="tableAirportsToCode">
+    <thead>
+        <tr>
+            <th class="headerBase gvhDefault"></th>
+            <th class="headerBase gvhDefault" onclick="javascript:sort">Code</th>
+            <th class="headerBase gvhDefault">Type</th>
+            <th class="headerBase gvhDefault">Name</th>
+            <th class="headerBase gvhDefault">SourceUser</th>
+            <th class="headerBase gvhDefault">Country</th>
+            <th class="headerBase gvhDefault">Admin1</th>
+            <th class="headerBase gvhDefault">Guess</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = ViewBag.start; i < ViewBag.end; i++)
+        {
+            AdminAirport ap = lstAp[i];
+            string idTxtCountry = String.Format(CultureInfo.InvariantCulture, "txtCountry{0}", ap.Code);
+            string idTxtAdmin1 = String.Format(CultureInfo.InvariantCulture, "txtAdmin1{0}", ap.Code);
+            <tr class="@(String.IsNullOrWhiteSpace(ap.Country) ? string.Empty : "handled")">
+                <td>
+                    <div class="displayCell">
+                        <a style="cursor:pointer;" onclick="javascript: $(this).parents('tr').toggleClass('editRow');">Edit</a>
+                    </div>
+                    <div class="editCell">
+                        <a style="cursor:pointer;" onclick="javascript: $(this).parents('tr').toggleClass('editRow');">Cancel</a>
+                        <a style="cursor:pointer;" onclick="javascript: updateAirport($(this).parents('tr'));">Update</a>
+                    </div>
+                </td>
+                <td><a name="code" href="@String.Format(CultureInfo.InvariantCulture, "javascript:clickAndZoom(new google.maps.LatLng({0}, {1}));", ap.LatLong.Latitude, ap.LatLong.Longitude)">@ap.Code</a></td>
+                <td name="typeCode">@ap.FacilityTypeCode</td>
+                <td>@ap.Name</td>
+                <td>@ap.UserName</td>
+                <td>
+                    <div class="displayCell" name="lblcountry">@ap.Country</div>
+                    <div class="editCell"><input type="text" id="@idTxtCountry" name="txtCountry" value="@ap.Country" /></div>
+                </td>
+                <td>
+                    <div class="displayCell" name="lbladmin1">@ap.Admin1</div>
+                    <div class="editCell"><input type="text" id="@idTxtAdmin1" name="txtAdmin1" value="@ap.Admin1" /></div>
+                    <script type="text/javascript">
+                    $(function () {
+                        autocompleteCountry($("#@idTxtCountry"));
+                        autocompleteAdmin1($("#@idTxtAdmin1"));
+                    });
+                    </script>
+                </td>
+                <td>
+                    @if (ap.NearestTagged != null)
+                    {
+                        <a style="cursor:pointer;" onclick="javascript:useSuggestion($(this).parents('tr'), '@ap.Code', '@ap.FacilityTypeCode', '@ap.NearestTagged.Country', '@ap.NearestTagged.Admin1Display');">Use</a>
+                        <span>Country: @ap.NearestTagged.Country Admin1: @ap.NearestTagged.Admin1Display</span>
+                    }
+                </td>
+            </tr>
+        }
+        <tr>
+            <td colspan="8" style="text-align:center;">
+                @if (ViewBag.start > 0)
+                {
+                    <a href="javascript:getMoreAirports('@ViewBag.queryID', 0, @ViewBag.pageSize);">&lt;&lt;&nbsp;&nbsp;</a>
+                    <a href="javascript:getMoreAirports('@ViewBag.queryID', @(ViewBag.start - ViewBag.pageSize), @ViewBag.pageSize);">&lt;&nbsp;</a>
+                }
+                @String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrintedFooterPageCountWithTotals, (ViewBag.start + ViewBag.pageSize) / ViewBag.pageSize, (ViewBag.resultCount + ViewBag.pageSize - 1) / ViewBag.pageSize)&nbsp;
+                @if (ViewBag.start + ViewBag.pageSize < ViewBag.resultCount)
+                {
+                    <a href="javascript:getMoreAirports('@ViewBag.queryID', @(ViewBag.start + ViewBag.pageSize), @ViewBag.pageSize);">&gt;&nbsp;&nbsp;</a>
+                    <a href="javascript:getMoreAirports('@ViewBag.queryID', @((ViewBag.resultCount / ViewBag.pageSize) * ViewBag.pageSize), @ViewBag.pageSize);">&gt;&gt;</a>
+                }
+            </td>
+        </tr>
+    </tbody>
+</table>
+}
