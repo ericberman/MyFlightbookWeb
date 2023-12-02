@@ -85,12 +85,13 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     }
                 }
             }
-            string queryID = Guid.NewGuid().ToString();
+            string queryID = String.Format(CultureInfo.InvariantCulture, "geo{0}-{1}-{2}-{3}-{4}-{5}", countryRestriction, fEmptyCountry.HasValue ? "true" : "null", admin1Restriction, fEmptyAdmin1.HasValue ? "true" : "null", startAt, count);
             Session[queryID] = lst;
             ViewBag.queryID = queryID;
             ViewBag.rgap = lst;
-            ViewBag.end = Math.Min(startAt + count, lst.Count());
-            ViewBag.start = (lst.Count() < count) ? 0 : ViewBag.end;
+            ViewBag.start = 0;  // index WITHIN this set of airports
+            ViewBag.end = lst.Count();  // number of airports actually availalbe within the dataset
+            ViewBag.nextStart = (lst.Count() < count) ? 0 : startAt + count;    // index to start for the next set of results.  Start where this one left off unless we got less than count (indicating exhaustion of list), in which case go back to 0
 
             ViewBag.countryRestriction = countryRestriction;
             ViewBag.fEmptyCountry = (fEmptyCountry ?? false) ? "checked" : string.Empty;
@@ -113,7 +114,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             CheckAuth(ProfileRoles.maskCanManageData);
 
-            ViewBag.start = 0;
+            ViewBag.start = ViewBag.nextStart = 0;
             ViewBag.countryRestriction = string.Empty;
             ViewBag.fEmptyCountry = string.Empty;
             ViewBag.admin1Restriction = string.Empty;
