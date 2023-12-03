@@ -127,7 +127,7 @@ namespace MyFlightbook.MemberPages
             }
         }
 
-        protected double TryParse(string sz, double defValue)
+        protected static double TryParse(string sz, double defValue)
         {
             if (!double.TryParse(sz, NumberStyles.Float | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val))
                 val = defValue;
@@ -490,7 +490,7 @@ namespace MyFlightbook.MemberPages
             Response.Redirect(Request.RawUrl);
         }
 
-        protected bool GetCropRange(LogbookEntryBase le, out int clipMin, out int clipMax)
+        protected static bool GetCropRange(LogbookEntryBase le, out int clipMin, out int clipMax)
         {
             if (le == null)
                 throw new ArgumentNullException(nameof(le));
@@ -562,7 +562,7 @@ namespace MyFlightbook.MemberPages
 
         protected int InitRequestedFlightID()
         {
-            return (Request.PathInfo.Length > 0 && Int32.TryParse(Request.PathInfo.Substring(1), NumberStyles.Integer, CultureInfo.InvariantCulture, out int idflight)) ? idflight : LogbookEntryCore.idFlightNone;
+            return (Request.PathInfo.Length > 0 && Int32.TryParse(Request.PathInfo.Substring(1), NumberStyles.Integer, CultureInfo.InvariantCulture, out int idflight)) ? idflight : util.GetIntParam(Request, "id", LogbookEntryCore.idFlightNone);
         }
         #endregion
     }

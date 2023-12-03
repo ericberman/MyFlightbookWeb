@@ -835,7 +835,6 @@
     <Content Include="Member\EndorseStudent.aspx" />
     <Content Include="Admin\FAQEdit.aspx" />
     <Content Include="Member\FBPost.aspx" />
-    <Content Include="Member\FlightAnalysis.aspx" />
     <Content Include="Member\FlightDetail.aspx" />
     <Content Include="Member\IcalAppt.aspx" />
     <Content Include="Member\ImpAircraft.aspx" />
@@ -2852,13 +2851,6 @@
     </Compile>
     <Compile Include="Member\FBPost.aspx.designer.cs">
       <DependentUpon>FBPost.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Member\FlightAnalysis.aspx.cs">
-      <DependentUpon>FlightAnalysis.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\FlightAnalysis.aspx.designer.cs">
-      <DependentUpon>FlightAnalysis.aspx</DependentUpon>
     </Compile>
     <Compile Include="Member\FlightDetail.aspx.cs">
       <DependentUpon>FlightDetail.aspx</DependentUpon>
