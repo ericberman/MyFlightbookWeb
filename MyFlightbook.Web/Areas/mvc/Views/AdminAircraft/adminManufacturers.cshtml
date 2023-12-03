@@ -92,6 +92,7 @@
 <div style="display:none;" id="divEditManufacturer">
     @using (Html.BeginForm("EditManufacturer", "AdminAircraft", FormMethod.Post))
     {
+        @Html.AntiForgeryToken()
         @model Manufacturer
         <input type="hidden" id="idManToEdit" name="id" />
         <table>

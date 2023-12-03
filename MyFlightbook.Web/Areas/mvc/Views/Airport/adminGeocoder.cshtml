@@ -119,28 +119,29 @@
 <div id="divSearchForm">
     @using (Html.BeginForm("Geocoder", "Airport", FormMethod.Post))
     {
-    <div>View airports matching:</div>
-    <table>
-        <tr>
-            <td>Country</td>
-            <td><input type="text" id="txtCountry" name="countryRestriction" value="@ViewBag.countryRestriction" autocomplete="off" /> <input type="checkbox" @ViewBag.fEmptyCountry name="fEmptyCountry" value="true" id="ckNoCountry" /><label for="ckNoCountry">(Missing)</label></td>
-        </tr>
-        <tr>
-            <td>Admin (State/province)</td>
-            <td><input type="text" id="txtAdmin1" name="admin1Restriction" value="@ViewBag.admin1Restriction" autocomplete="off" /> <input type="checkbox" @ViewBag.fEmptyAdmin1 id="ckNoAdmin1" name="fEmptyAdmin1" value="true" /><label for="ckNoAdmin1">(Missing)</label></td>
-        </tr>
-        <tr>
-            <td>Start</td>
-            <td><input type="number" id="decStart" min="0" step="1" value="@ViewBag.nextStart" name="startAt" /></td>
-        </tr>
-        <tr>
-            <td>Limit</td>
-            <td><input type="number" id="decMaxAirports" min="0" step="1" value="@ViewBag.count" name="count" /></td>
-        </tr>
-    </table>
-    <div>
-        <button type="submit">Get Next Set</button>
-    </div>
+        @Html.AntiForgeryToken()
+        <div>View airports matching:</div>
+        <table>
+            <tr>
+                <td>Country</td>
+                <td><input type="text" id="txtCountry" name="countryRestriction" value="@ViewBag.countryRestriction" autocomplete="off" /> <input type="checkbox" @ViewBag.fEmptyCountry name="fEmptyCountry" value="true" id="ckNoCountry" /><label for="ckNoCountry">(Missing)</label></td>
+            </tr>
+            <tr>
+                <td>Admin (State/province)</td>
+                <td><input type="text" id="txtAdmin1" name="admin1Restriction" value="@ViewBag.admin1Restriction" autocomplete="off" /> <input type="checkbox" @ViewBag.fEmptyAdmin1 id="ckNoAdmin1" name="fEmptyAdmin1" value="true" /><label for="ckNoAdmin1">(Missing)</label></td>
+            </tr>
+            <tr>
+                <td>Start</td>
+                <td><input type="number" id="decStart" min="0" step="1" value="@ViewBag.nextStart" name="startAt" /></td>
+            </tr>
+            <tr>
+                <td>Limit</td>
+                <td><input type="number" id="decMaxAirports" min="0" step="1" value="@ViewBag.count" name="count" /></td>
+            </tr>
+        </table>
+        <div>
+            <button type="submit">Get Next Set</button>
+        </div>
     }
 </div>
 <div id="tblAirportsToReview">

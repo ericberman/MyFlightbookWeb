@@ -94,6 +94,7 @@
 <div id="newPropForm">
     @using (Html.BeginForm("Properties", "Admin", FormMethod.Post))
     {
+        @Html.AntiForgeryToken()
         <table>
             <tr>
                 <td>Title:</td>

@@ -57,6 +57,7 @@
 <div style="display: none;" id="divAchievementForm">
     @using (Html.BeginForm("Achievements", "Admin", FormMethod.Post))
     {
+        @Html.AntiForgeryToken()
     <input type="hidden" id="hdnAchievementID" name="id" value="" />
     <table style="width: 400px">
         <tr>

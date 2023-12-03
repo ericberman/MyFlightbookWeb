@@ -41,6 +41,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult EditManufacturer(int id, string ManufacturerName, int restriction)
         {
             CheckAuth(ProfileRoles.maskCanManageData);
@@ -396,21 +397,32 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
         #endregion
 
-        // GET: mvc/AdminAircraft
         [Authorize]
-        public ActionResult Index(HttpPostedFileBase fuMapModels = null)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Index(HttpPostedFileBase fuMapModels)
         {
             CheckAuth(ProfileRoles.maskCanManageData);
 
             try
             {
-                if (fuMapModels != null && fuMapModels.ContentLength > 0)
-                    ViewBag.modelMapping = new List<AircraftAdminModelMapping>(AircraftAdminModelMapping.MapModels(fuMapModels.InputStream));
+                ViewBag.modelMapping = (fuMapModels?.ContentLength ?? 0) > 0
+                    ? new List<AircraftAdminModelMapping>(AircraftAdminModelMapping.MapModels(fuMapModels.InputStream))
+                    : throw new InvalidOperationException("No content provided");
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException)) 
+            catch (Exception ex) when (!(ex is OutOfMemoryException))
             {
                 ViewBag.modelMapError = ex.Message;
             }
+
+            return View("adminAircraft");
+        }
+
+        // GET: mvc/AdminAircraft
+        [Authorize]
+        public ActionResult Index()
+        {
+            CheckAuth(ProfileRoles.maskCanManageData);
 
             return View("adminAircraft");
         }

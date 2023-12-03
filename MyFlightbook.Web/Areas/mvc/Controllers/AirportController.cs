@@ -62,6 +62,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Geocoder(string countryRestriction, bool? fEmptyCountry, string admin1Restriction, bool? fEmptyAdmin1, int startAt, int count)
         {
             CheckAuth(ProfileRoles.maskCanManageData);

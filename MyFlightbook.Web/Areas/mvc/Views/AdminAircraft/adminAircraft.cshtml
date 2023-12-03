@@ -1,5 +1,4 @@
-﻿@using System.Globalization
-@using Newtonsoft.Json
+﻿@using Newtonsoft.Json
 @{
     ViewBag.Title = "Admin Tools - Aircraft";
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
@@ -8,21 +7,18 @@
 <style type="text/css">
     .adm .admItem {
     }
-
-        .adm .admItem:after {
-            content: " | ";
-        }
-
-        .adm .admItem:last-child:after {
-            content: "";
-        }
-
+    .adm .admItem:after {
+        content: " | ";
+    }
+    .adm .admItem:last-child:after {
+        content: "";
+    }
     .handled {
         background-color: lightgray;
         color: darkgray;
     }
 </style>
-<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/public/Scripts/adminajax.js")" ></script>
+<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/public/Scripts/adminajax.js")"></script>
 <script type="text/javascript">
     function refreshDupeAircraft() {
         $("#divProgress").toggle();
@@ -325,6 +321,7 @@
 <h2>Aircraft</h2>
 @using (Html.BeginForm("", "AdminAircraft", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
+    @Html.AntiForgeryToken()
     <table>
         <tr>
             <td>
@@ -439,8 +436,7 @@
                     <td><a target="_blank" href="@VirtualPathUtility.ToAbsolute(String.Format("~/Member/EditAircraft.aspx?id={0}&a=1", amm.aircraft.AircraftID))">@amm.aircraft.DisplayTailnumber</a></td>
                     <td><a target="_blank" href="@VirtualPathUtility.ToAbsolute(String.Format("~/Member/EditMake.aspx?id={0}&a=1", amm.currentModel.MakeModelID))">@amm.currentModel.MakeModelID</a></td>
                     <td><a target="_blank" href="@VirtualPathUtility.ToAbsolute(String.Format("~/Member/EditMake.aspx?id={0}&a=1", amm.targetModel.MakeModelID))">@amm.targetModel.MakeModelID</a></td>
-                    <td><button type="button" onclick="javascript: mapModel(this, '@(JsonConvert.SerializeObject(amm, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling=NullValueHandling.Ignore }))');" >Map it!</button>
-                    </td>
+                    <td><button type="button" onclick="javascript: mapModel(this, '@(JsonConvert.SerializeObject(amm, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling=NullValueHandling.Ignore }))');">Map it!</button></td>
                 </tr>
             }
         </tbody>

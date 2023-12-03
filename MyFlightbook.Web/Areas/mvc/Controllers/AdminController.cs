@@ -156,6 +156,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Full page endpoints
         [Authorize]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Achievements(int id, string Name, string AirportsRaw, string overlay, bool? fBinary, int bronze = 0, int silver = 0, int gold = 0, int platinum = 0)
         {
             if (Name == null)
@@ -191,6 +192,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Properties(string txtCustomPropTitle, string txtCustomPropFormat, string txtCustomPropDesc, uint propType, uint propFlags)
         {
             CheckAuth(ProfileRoles.maskCanManageData);  // check for ability to do any admin
