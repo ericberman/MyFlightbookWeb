@@ -1,6 +1,5 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" Codebehind="TotalsAndCurrencyEmail.aspx.cs" Async="true" Inherits="MyFlightbook.Subscriptions.TotalsAndCurrencyEmail" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
-<%@ Register src="../Controls/adminStats.ascx" tagname="adminStats" tagprefix="uc1" %>
 <%@ Register src="../Controls/mfbTotalSummary.ascx" tagname="mfbTotalSummary" tagprefix="uc2" %>
 <%@ Register src="../Controls/mfbCurrency.ascx" tagname="mfbCurrency" tagprefix="uc3" %>
 <%@ Register Src="~/Controls/mfbRecentAchievements.ascx" TagPrefix="uc1" TagName="mfbRecentAchievements" %>
