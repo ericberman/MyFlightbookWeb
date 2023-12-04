@@ -417,7 +417,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Admin\AdminEndorsements.aspx" />
     <Content Include="Admin\AdminImgs.aspx" />
     <Content Include="Admin\AdminService.asmx" />
     <Content Include="AppCode\Clubs\DayPilotLICENSE.txt" />
@@ -1534,6 +1533,7 @@
     <Content Include="Areas\mvc\Views\Admin\adminAchievements.cshtml" />
     <Content Include="Areas\mvc\Views\Airport\adminGeocoder.cshtml" />
     <Content Include="Areas\mvc\Views\Airport\_airportsNeedingCodingTable.cshtml" />
+    <Content Include="Areas\mvc\Views\Admin\adminEndorsements.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.1.js" />
     <Content Include="Scripts\jquery-3.7.1.min.js" />
@@ -1554,13 +1554,6 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Admin\AdminEndorsements.aspx.cs">
-      <DependentUpon>AdminEndorsements.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Admin\AdminEndorsements.aspx.designer.cs">
-      <DependentUpon>AdminEndorsements.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Admin\AdminImgs.aspx.cs">
       <DependentUpon>AdminImgs.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

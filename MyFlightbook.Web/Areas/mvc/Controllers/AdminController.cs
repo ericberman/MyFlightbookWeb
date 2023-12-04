@@ -1,4 +1,5 @@
 ﻿using MyFlightbook.Achievements;
+using MyFlightbook.Instruction;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -154,6 +155,32 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #endregion
 
         #region Full page endpoints
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Endorsements(int id, string FARRef, string BodyTemplate, string Title)
+        {
+            EndorsementType et = new EndorsementType()
+            {
+                ID = id,
+                FARReference = FARRef,
+                BodyTemplate = BodyTemplate,
+                Title = Title
+            };
+            et.FCommit();
+            ViewBag.templates = EndorsementType.LoadTemplates();
+            return View("adminEndorsements");
+        }
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult Endorsements()
+        {
+            CheckAuth(ProfileRoles.maskCanManageData);
+            ViewBag.templates = EndorsementType.LoadTemplates();
+            return View("adminEndorsements");
+        }
+
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]

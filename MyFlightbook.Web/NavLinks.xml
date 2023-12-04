@@ -246,7 +246,7 @@
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>
       <Item>
-        <Link>~/Admin/AdminEndorsements.aspx</Link>
+        <Link>~/mvc/Admin/Endorsements</Link>
         <ID>admEndorsements</ID>
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>

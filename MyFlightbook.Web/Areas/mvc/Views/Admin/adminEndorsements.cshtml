@@ -1,0 +1,162 @@
+﻿@using MyFlightbook.Instruction
+@{
+    ViewBag.Title = "Admin Tools - Endorsements\r\n";
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    ViewBag.defaultTab = tabID.tabAdmin;
+
+}
+<script type="text/javascript">
+    $(function () {
+        $('#divEditEndorsement').keydown(function (e) {
+            if (e.keyCode == 13) {
+                $('#btnUpdate')[0].click();
+                return false;
+            }
+        });
+    });
+
+    function updateEndorsement(id, title, farref, templateText) {
+        var szAction = (id < 0) ? "Add Template" : "Update Template";
+        $("#btnUpdate")[0].innerText = szAction;
+        $("#txtEndorsementTitle").val(title);
+        $("#txtEndorsementFAR").val(farref);
+        $("#txtEndorsementTemplate").val(templateText);
+        $("#hdnIDToEdit").val(id);
+        showModalById("divEditEndorsement", szAction, 600);
+        $("#txtEndorsementTitle")[0].focus();
+    }
+
+    function newEndorsement() {
+        updateEndorsement(-1, "", "", "");
+    }
+</script>
+<div id="divEditEndorsement" style="display:none;">
+    <h2><asp:Label id="lblEndorsements" Text=""></asp:Label></h2>
+    <p>To edit: </p>
+    <ul>
+        <li>{x} for a single-line entry with watermark &quot;x&quot;</li>
+        <li>{Freeform} for freeform multi-line text (no watermark prompt)</li>
+        <li>{Date} for the date (prefilled)</li>
+        <li>{Student} for the Student&#39;s name (pre-filled)</li>
+        <li>{x/y/z} for a drop-down of choices x, y, and z</li>
+    </ul>
+    @using (Html.BeginForm("Endorsements", "Admin", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken();
+        @model EndorsementType
+        <input type="hidden" id="hdnIDToEdit" name="id" value="" />
+    <table>
+        <tr>
+            <td>Title:</td>
+            <td>
+                @Html.EditorFor(e => e.Title, new { htmlAttributes = new { @id="txtEndorsementTitle", @name="Title", @style = "width: 400px;" } })
+                @Html.ValidationMessageFor(cpt => cpt.Title, "Title is required", new { @class = "error" }, "div")
+            </td>
+        </tr>
+        <tr>
+            <td>FARRef:</td>
+            <td><input type="text" id="txtEndorsementFAR" name="FARRef" style="width: 400px" /></td>
+        </tr>
+        <tr>
+            <td>Template Text:</td>
+            <td>
+                @Html.TextAreaFor(e => e.BodyTemplate, 4, 60, new { @id = "txtEndorsementTemplate", @name = "BodyTemplate", htmlAttributes = new { @style = "width: 400px;" } })
+                @Html.ValidationMessageFor(cpt => cpt.BodyTemplate, "Template body is required", new { @class = "error" }, "div")
+            </td>
+        </tr>
+    </table>
+    <div style="width: 500px; text-align: center">
+        <button type="button" onclick="javascript: $('#divEditEndorsement').dialog('close');">Cancel</button>
+        <button type="submit" id="btnUpdate">Add EndorsementTemplate</button>
+    </div>
+    }
+</div>
+<h2>Add a new Endorsement</h2>
+<div><button type="button" onclick="newEndorsement();">Add a new endorsement</button></div>
+<h2>Existing Endorsements</h2>
+<input type="hidden" id="hdnSortIndex" value="3" />
+<input type="hidden" id="hdnSortDir" value="ASC" />
+<table border="1" cellpadding="4" cellspacing="0" style="border-collapse: collapse">
+    <thead>
+        <tr style="font-weight:bold;">
+            <th></th>
+            <th>Endorsement Template Data</th>
+            <th>Preview</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (EndorsementType et in ViewBag.templates)
+        {
+            <tr style="vertical-align:top;">
+                <td><a style="cursor: pointer;" onclick="javascript: updateEndorsement(@et.ID, '@et.Title', '@et.FARReference', '@et.BodyTemplate');">Edit</a></td>
+                <td>
+                    <table>
+                        <tr>
+                            <td style="font-weight: bold;">ID:</td>
+                            <td>@et.ID</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold;">Title:</td>
+                            <td>@et.Title</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold;">FAR:</td>
+                            <td>@et.FARReference</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold;">Template:</td>
+                            <td>@et.BodyTemplate</td>
+                        </tr>
+                    </table>
+                </td>
+                <td>
+                    <div class="endorsement endorsementEdit">
+                        <table style="width: 100%">
+                            <tr>
+                                <td colspan="2">
+                                    <input type="text" style="width: 100%" placholder="@Resources.SignOff.EndorsementTitleWatermark" value="@et.Title" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;">@Resources.SignOff.EditEndorsementFARPrompt</td>
+                                <td>@et.FARReference</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <hr />
+                                    <div style="line-height: 180%">
+                                        @Html.Raw(EndorsementType.RenderBody(et, false, null))
+                                    </div>
+                                    <div>
+                                        
+                                    </div>
+                                    <hr />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight:bold">@Resources.SignOff.EditEndorsementDatePrompt</td>
+                                <td><input type="date" value="@DateTime.Now.YMDString()" /></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight:bold;">@Resources.SignOff.EditEndorsementStudentPrompt</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight:bold">@Resources.SignOff.EditEndorsementInstructorPrompt</td>
+                                <td>@MyFlightbook.Profile.GetUser(User.Identity.Name).UserFullName</td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight:bold">@Resources.SignOff.EditEndorsementCFIPrompt</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight:bold">@Resources.SignOff.EditEndorsementExpirationPrompt</td>
+                                <td><input type="date" /></td>
+                            </tr>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
