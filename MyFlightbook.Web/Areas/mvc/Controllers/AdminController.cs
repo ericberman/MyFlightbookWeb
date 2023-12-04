@@ -160,6 +160,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Endorsements(int id, string FARRef, string BodyTemplate, string Title)
         {
+            CheckAuth(ProfileRoles.maskCanManageData);
             EndorsementType et = new EndorsementType()
             {
                 ID = id,
