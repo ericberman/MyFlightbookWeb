@@ -157,6 +157,33 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Full page endpoints
         [Authorize]
         [HttpPost]
+        public ActionResult UpdateFAQ(int idFaq, string Category, string Question, string Answer)
+        {
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            {
+                FAQItem fi = new FAQItem()
+                {
+                    Category = Category,
+                    Question = Question,
+                    Answer = Answer,
+                    idFAQ = idFaq
+                };
+                    fi.Commit();
+                return new EmptyResult();
+            });
+        }
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult FAQ()
+        {
+            CheckAuth(ProfileRoles.maskCanManageData);
+            ViewBag.faqs = FAQItem.AllFAQItems;
+            return View("adminFAQ");
+        }
+
+        [Authorize]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Endorsements(int id, string FARRef, string BodyTemplate, string Title)
         {

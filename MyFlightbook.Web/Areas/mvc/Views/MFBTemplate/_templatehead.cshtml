@@ -65,6 +65,7 @@
 }
 <link rel="shortcut icon" href="/favicon.ico?v2" />
 <link rel="icon" href="/favicon.ico?v2" />
+<link rel="stylesheet" type="text/css" href="@VirtualPathUtility.ToAbsolute("~/Content/jHtmlArea/jHtmlArea.css")" />
 <link href="@VirtualPathUtility.ToAbsolute("~/images/apple-touch-icon.png")" rel="apple-touch-icon" />
 <link rel="stylesheet" href="@VirtualPathUtility.ToAbsolute("~/Content/themes/base/jquery-ui.css")" type="text/css">
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css" />
@@ -92,6 +93,11 @@
 
     .validation-summary-valid {
         display: none;
+    }
+
+    /* for Html editor, which uses a <div class="Body"><iframe ... */
+    div.Body iframe {
+        width: 100%;
     }
 </style>
 

@@ -1,7 +1,9 @@
 ﻿using HtmlAgilityPack;
+using Ganss.Xss;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -9,7 +11,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2020 MyFlightbook LLC
+ * Copyright (c) 2008-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -24,8 +26,11 @@ namespace MyFlightbook
     {
         #region properties
         public int idFAQ { get; set; }
+        [Required]
         public string Category { get; set; }
+        [Required]
         public string Question { get; set; }
+        [Required]
         public string Answer { get; set; }
         public bool IsSelected { get; set; }
         public string AnswerPlainText { get; private set; }
@@ -111,6 +116,36 @@ namespace MyFlightbook
 
             return true;
         }
+
+        public bool Validate(out List<ValidationResult> results)
+        {
+            results = new List<ValidationResult>();
+            return Validator.TryValidateObject(this, new ValidationContext(this), results);
+        }
+
+        public void Commit()
+        {
+            // Sanitize any HTML!!
+            Answer = new HtmlSanitizer().Sanitize(Answer);
+
+            List<ValidationResult> results = new List<ValidationResult>();
+            if (!Validate(out results))
+                throw new InvalidOperationException("Cannot save FAQ.  First reason is: " + results[0].ErrorMessage);
+
+            DBHelper dbh = new DBHelper(idFAQ > 0 ?
+                "UPDATE FAQ SET Category=?Category, Question=?Question, Answer=?Answer WHERE idFAQ=?id" :
+                "INSERT INTO FAQ SET Category=?Category, Question=?Question, Answer=?Answer");
+            if (dbh.DoNonQuery((comm) =>
+            {
+                comm.Parameters.AddWithValue("Category", Category);
+                comm.Parameters.AddWithValue("Question", Question);
+                comm.Parameters.AddWithValue("Answer", Answer);
+                comm.Parameters.AddWithValue("id", idFAQ);
+            }))
+            {
+                FlushFAQCache();
+            }
+        }
     }
 
     /// <summary>
@@ -190,10 +225,10 @@ namespace MyFlightbook
             Dictionary<string, FAQGroup> dict = new Dictionary<string, FAQGroup>();
             foreach (FAQItem fi in lstIn)
             {
-                if (!dict.ContainsKey(fi.Category))
+                if (!dict.TryGetValue(fi.Category, out FAQGroup value))
                     dict[fi.Category] = new FAQGroup(fi.Category, new FAQItem[] { fi });
                 else
-                    dict[fi.Category].m_lstFAQs.Add(fi);
+                    value.m_lstFAQs.Add(fi);
             }
 
             List<FAQGroup> lstResult = new List<FAQGroup>();

@@ -251,7 +251,7 @@
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>
       <Item>
-        <Link>~/Admin/FAQEdit.aspx</Link>
+        <Link>~/mvc/admin/faq</Link>
         <ID>admFAQ</ID>
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>
