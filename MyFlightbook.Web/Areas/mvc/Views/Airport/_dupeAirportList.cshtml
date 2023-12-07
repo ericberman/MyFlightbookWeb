@@ -1,0 +1,10 @@
+﻿<table>
+    @foreach (MyFlightbook.Airports.airport ap in ViewBag.dupes)
+    {
+        <tr style="vertical-align: top; text-align: left">
+            <td style="font-weight: bold">@ap.Code</td>
+            <td>@ap.Name</td>
+            <td>(@ap.FacilityType)</td>
+        </tr>
+    }
+</table>

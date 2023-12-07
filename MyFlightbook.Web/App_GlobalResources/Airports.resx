@@ -360,4 +360,10 @@
   <data name="airportDistanceNote" xml:space="preserve">
     <value>Estimate is based on airport-to-airport distance in the route of your flight or telemetry, if present.</value>
   </data>
+  <data name="confirmDeleteAirport" xml:space="preserve">
+    <value>Are you sure you want to delete this airport/navaid?  This action cannot be undone!</value>
+  </data>
+  <data name="errDuplicateAirportTitle" xml:space="preserve">
+    <value>Possible Duplicate</value>
+  </data>
 </root>

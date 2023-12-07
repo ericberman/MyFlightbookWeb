@@ -1,9 +1,11 @@
-﻿using MyFlightbook.Geography;
+﻿using MyFlightbook.CSV;
+using MyFlightbook.Geography;
 using MyFlightbook.Image;
 using MyFlightbook.Telemetry;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -604,6 +606,59 @@ namespace MyFlightbook.Airports
                     },
                     lstIDs != null && lstIDs.Any());
                 kw.EndKML();
+            }
+        }
+        #endregion
+
+        #region Download
+        /// <summary>
+        /// Gets a byte array to return a downloadable file of visited airports.
+        /// </summary>
+        /// <param name="rgva"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static byte[] DownloadVisitedTable(IEnumerable<VisitedAirport> rgva)
+        {
+            if (rgva == null)
+                throw new ArgumentNullException(nameof(rgva));
+
+            using (DataTable dt = new DataTable())
+            {
+                dt.Locale = CultureInfo.CurrentCulture;
+
+                // add the header columns from the gridview
+                dt.Columns.Add(new DataColumn(Resources.Airports.airportCode, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Airports.airportName, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Airports.airportCountry + "*", typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Airports.airportRegion, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Airports.airportVisits, typeof(int)));
+                dt.Columns.Add(new DataColumn(Resources.Airports.airportEarliestVisit, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Airports.airportLatestVisit, typeof(string)));
+
+                foreach (VisitedAirport va in rgva)
+                {
+                    DataRow dr = dt.NewRow();
+                    dr[0] = va.Code;
+                    dr[1] = va.Airport.Name;
+                    dr[2] = va.Country;
+                    dr[3] = va.Admin1;
+                    dr[4] = va.NumberOfVisits;
+                    dr[5] = va.EarliestVisitDate.ToString("d", CultureInfo.CurrentCulture);
+                    dr[6] = va.LatestVisitDate.ToString("d", CultureInfo.CurrentCulture);
+
+                    dt.Rows.Add(dr);
+                }
+
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    using (StreamWriter sw = new StreamWriter(ms, Encoding.UTF8, 1024))
+                    {
+                        CsvWriter.WriteToStream(sw, dt, true, true);
+                        sw.Write(String.Format(CultureInfo.CurrentCulture, "\r\n\r\n\" *{0}\"", Branding.ReBrand(Resources.Airports.airportCountryDisclaimer)));
+                        sw.Flush();
+                        return ms.ToArray();
+                    }
+                }
             }
         }
         #endregion

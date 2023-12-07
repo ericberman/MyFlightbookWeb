@@ -1,0 +1,34 @@
+﻿@using MyFlightbook.Airports
+@using Newtonsoft.Json
+@using System.Globalization
+@{
+    airport ap = ViewBag.ap;
+    airportImportCandidate.MatchStatus ms = ViewBag.ms;
+    airportImportCandidate aicBase = ViewBag.aicBase;
+    bool fStatusIsOK = airportImportCandidate.StatusIsOK(ms);
+}
+@if (ap != null)
+{
+<div class="@(fStatusIsOK ? string.Empty : "notOK")">
+    <div>@ap.ToString()</div>
+    <div>
+        @String.Format(CultureInfo.InvariantCulture, "Country: {0}, Admin1: {1}",
+                              String.IsNullOrEmpty(ap.Country) ? "(NONE)" : ap.Country,
+                              String.IsNullOrEmpty(ap.Admin1) ? "(NONE)" : ap.Admin1));
+    </div>
+    <div>
+        @if (!fStatusIsOK)
+        {
+            <div>
+                <span style="color: red">@String.Format(CultureInfo.CurrentCulture, Resources.Admin.ImportAirportStatusTemplate, ms.ToString())</span>
+                @if (aicBase != null && ap?.LatLong != null)
+                {
+                    <span> @String.Format(CultureInfo.CurrentCulture, Resources.Admin.ImportAirportDistanceTemplate, aicBase.DistanceFromAirport(ap))</span>
+                }
+            </div>
+        }
+        <div><a href="@String.Format(CultureInfo.InvariantCulture, "javascript:updateForAirport({0});", JsonConvert.SerializeObject(ap, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore }))">@ap.LatLong.ToDegMinSecString()</a></div>
+        <div>@(ap.UserName ?? string.Empty)</div>
+    </div>
+</div>
+}

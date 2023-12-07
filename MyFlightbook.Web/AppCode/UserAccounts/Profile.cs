@@ -52,6 +52,7 @@ namespace MyFlightbook
         public const uint maskCanManageMoney = ((uint)UserRoles.SiteAdmin | (uint)UserRoles.Accountant);
         public const uint maskCanSupport = ((uint)UserRoles.SiteAdmin | (uint)UserRoles.Support | (uint)UserRoles.DataManager); // reporters cannot support
         public const uint maskCanContact = ((uint)UserRoles.SiteAdmin | (uint)UserRoles.Support);
+        public const uint maskUnrestricted = 0xFFFFFFFF;
         #endregion
 
         #region Helper routines for roles

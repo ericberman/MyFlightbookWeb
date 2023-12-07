@@ -843,7 +843,6 @@
     <Content Include="Member\Donate.aspx" />
     <Content Include="Member\Download.aspx" />
     <Content Include="Member\EditAircraft.aspx" />
-    <Content Include="Member\EditAirports.aspx" />
     <Content Include="Member\EditMake.aspx" />
     <Content Include="Member\EditProfile.aspx" />
     <Content Include="Member\EndorseStudent.aspx" />
@@ -1549,6 +1548,11 @@
     <Content Include="Areas\mvc\Views\Airport\_airportsNeedingCodingTable.cshtml" />
     <Content Include="Areas\mvc\Views\Admin\adminEndorsements.cshtml" />
     <Content Include="Areas\mvc\Views\Admin\adminFAQ.cshtml" />
+    <Content Include="Areas\mvc\Views\Airport\addEditAirport.cshtml" />
+    <Content Include="Areas\mvc\Views\Airport\_dupeAirportList.cshtml" />
+    <Content Include="Areas\mvc\Views\Airport\_userAirports.cshtml" />
+    <Content Include="Areas\mvc\Views\Airport\_importResultsTable.cshtml" />
+    <Content Include="Areas\mvc\Views\Airport\_airportImportCandidate.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -2821,13 +2825,6 @@
     </Compile>
     <Compile Include="Member\EditAircraft.aspx.designer.cs">
       <DependentUpon>EditAircraft.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Member\EditAirports.aspx.cs">
-      <DependentUpon>EditAirports.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\EditAirports.aspx.designer.cs">
-      <DependentUpon>EditAirports.aspx</DependentUpon>
     </Compile>
     <Compile Include="Member\EditMake.aspx.cs">
       <DependentUpon>EditMake.aspx</DependentUpon>

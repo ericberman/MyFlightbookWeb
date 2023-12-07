@@ -88,7 +88,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &quot;Distance: {0:f1}NM&lt;br /&gt;&quot;.
+        ///   Looks up a localized string similar to Distance: {0:f1}nm.
         /// </summary>
         internal static string ImportAirportDistanceTemplate {
             get {
@@ -97,7 +97,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &quot;Status: {0}&lt;br /&gt;&quot;.
+        ///   Looks up a localized string similar to Status: {0}.
         /// </summary>
         internal static string ImportAirportStatusTemplate {
             get {

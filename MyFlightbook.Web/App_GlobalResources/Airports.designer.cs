@@ -214,6 +214,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete this airport/navaid?  This action cannot be undone!.
+        /// </summary>
+        internal static string confirmDeleteAirport {
+            get {
+                return ResourceManager.GetString("confirmDeleteAirport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to View in Google Earth.
         /// </summary>
         internal static string DownloadKML {
@@ -390,6 +399,15 @@ namespace Resources {
         internal static string errDupeAirportCreateAnyway {
             get {
                 return ResourceManager.GetString("errDupeAirportCreateAnyway", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Possible Duplicate.
+        /// </summary>
+        internal static string errDuplicateAirportTitle {
+            get {
+                return ResourceManager.GetString("errDuplicateAirportTitle", resourceCulture);
             }
         }
         

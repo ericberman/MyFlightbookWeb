@@ -1,18 +1,15 @@
 ﻿using JouniHeikniemi.Tools.Text;
 using MyFlightbook.Geography;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2022 MyFlightbook LLC
+ * Copyright (c) 2010-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -223,7 +220,7 @@ namespace MyFlightbook.Airports
             return rgsz[icol];
         }
 
-        public static IEnumerable<airportImportCandidate> Candidates(Stream s)
+        public static IEnumerable<airportImportCandidate> Candidates(Stream s, bool fHideKHack)
         {
             if (s == null)
                 throw new ArgumentNullException(nameof(s));
@@ -286,46 +283,22 @@ namespace MyFlightbook.Airports
                     lst.Add(aic);
                 }
 
+                StringBuilder sbCodes = new StringBuilder();
+
+                // update status for each candidate
+                lst.ForEach((aic) =>
+                {
+                    sbCodes.AppendFormat(CultureInfo.InvariantCulture, " {0} ", aic.FAA);
+                    sbCodes.AppendFormat(CultureInfo.InvariantCulture, " {0} ", aic.IATA);
+                    sbCodes.AppendFormat(CultureInfo.InvariantCulture, " {0} ", aic.ICAO);
+                });
+                AirportList al = new AirportList(sbCodes.ToString());
+                lst.ForEach((aic) => { aic.CheckStatus(al); });
+
+                lst.RemoveAll(aic => aic.IsOK || (fHideKHack && aic.IsKHack));
+
                 return lst;
             }
-        }
-
-        public static void PopulateAirport(Control plc, airport ap, MatchStatus ms, airport aicBase)
-        {
-            if (ap == null)
-                return;
-
-            if (plc == null)
-                throw new ArgumentNullException(nameof(plc));
-
-            Panel p = new Panel();
-            plc.Controls.Add(p);
-            p.Controls.Add(new Label() { Text = ap.ToString() });
-            p.Controls.Add(new LiteralControl("<br />"));
-            p.Controls.Add(new Label() { Text = String.Format(CultureInfo.CurrentCulture, "Country: {0}, Admin1: {1}", 
-                String.IsNullOrEmpty(ap.Country) ? "(NONE)" : ap.Country,
-                String.IsNullOrEmpty(ap.Admin1) ? "(NONE)" : ap.Admin1) } );
-            p.Controls.Add(new LiteralControl("<br />"));
-            if (!StatusIsOK(ms))
-            {
-                p.CssClass = "notOK";
-                Label lblStatus = new Label();
-                p.Controls.Add(lblStatus);
-                lblStatus.Text = String.Format(CultureInfo.CurrentCulture, Resources.Admin.ImportAirportStatusTemplate, ms.ToString());
-                lblStatus.ForeColor = System.Drawing.Color.Red;
-                if (aicBase != null && ap.LatLong != null && aicBase.LatLong != null)
-                {
-                    Label lblDist = new Label();
-                    p.Controls.Add(lblDist);
-                    lblDist.Text = String.Format(CultureInfo.CurrentCulture, Resources.Admin.ImportAirportDistanceTemplate, aicBase.DistanceFromAirport(ap));
-                }
-            }
-            HyperLink h = new HyperLink();
-            p.Controls.Add(h);
-            h.Text = ap.LatLong.ToDegMinSecString();
-            h.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:updateForAirport({0});", JsonConvert.SerializeObject(ap, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore }));
-            if (!String.IsNullOrEmpty(ap.UserName))
-                p.Controls.Add(new LiteralControl(String.Format(CultureInfo.InvariantCulture, "<br />{0}<br />", ap.UserName)));
         }
     }
 }

@@ -1,0 +1,551 @@
+﻿@using MyFlightbook.Airports
+@{
+    ViewBag.Title = Resources.Airports.EditAirportsTitle;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    ViewBag.defaultTab = ViewBag.isAdminMode ? tabID.tabAdmin : tabID.tabMaps;
+    ViewBag.UseMaps = true;
+}
+<div>@Resources.Airports.EditAirportsDescription</div>
+<script type="text/javascript">
+    function centerToText() {
+        var lat = parseFloat($("#Latitude")[0].value);
+        var lon = parseFloat($("#Longitude")[0].value);
+        if (!isNaN(lat) && !isNaN(lon) && Math.abs(lat) <= 90.0 && Math.abs(lon) <= 180.0) {
+            var latlngCenter = new google.maps.LatLng(lat, lon);
+            clickForAirport(latlngCenter);
+            zoomForAirport();
+        }
+    }
+
+    function clickAndZoom(point) {
+        clickForAirport(point);
+        getGMap().setCenter(point);
+        getGMap().setZoom(14);
+    }
+
+    function zoomForAirport() {
+        var mfbMap = getMfbMap();
+        if (mfbMap.clickPositionMarker) {
+            mfbMap.gmap.setCenter(mfbMap.clickPositionMarker.getPosition());
+            mfbMap.gmap.setZoom(14);
+        }
+    }
+
+    function updateForAirport(o) {
+        $("#Latitude")[0].value = o.LatLong.Latitude;
+        $("#Longitude")[0].value = o.LatLong.Longitude;
+        $("#Code")[0].value = o.Code;
+        $("#txtFacilityName")[0].value = o.Name;
+        $("#cmbTypeCode").val(o.FacilityTypeCode);
+        clickAndZoom(new google.maps.LatLng(o.LatLong.Latitude, o.LatLong.Longitude));
+    }
+
+    function clickForAirport(point) {
+        if (point != null) {
+            $("#Latitude")[0].value = point.lat();
+            $("#Longitude")[0].value = point.lng();
+            var form = $("#newAirportForm");
+            form.validate();
+            form.validate().element("#Latitude");
+            form.validate().element("#Longitude");
+            getMfbMap().clickMarker(point, $("#txtFacilityName")[0].value, $("#cmbTypeCode").val(), "<a href=\"javascript:zoomForAirport();\">Zoom in</a>");
+        }
+    }
+
+    function refreshUserAirports(fAdmin) {
+        params = new Object();
+        params.fAdmin = fAdmin;
+        var d = JSON.stringify(params);
+        $.ajax(
+            {
+                url: "@Url.Action("UpdateUserAirportList", "Airport")",
+                type: "POST", data: d, dataType: "html", contentType: "application/json",
+                error: function (xhr, status, error) { $("#lblErr").text(xhr.responseText); },
+                complete: function (response) { },
+                success: function (response) { $("#divUserAirports").html(response); }
+            });
+    }
+
+    function deleteAirport(code, typecode, fAdmin) {
+        if (confirm('@Resources.Airports.confirmDeleteAirport')) {
+            params = new Object();
+            params.Code = code;
+            params.TypeCode = typecode;
+            params.fAdmin = fAdmin;
+            var d = JSON.stringify(params);
+            $.ajax({
+                url: "@Url.Action("DeleteAirport", "Airport")",
+                type: "POST", data: d, dataType: "html", contentType: "application/json",
+                error: function (xhr, status, error) { $("#lblErr").text(xhr.responseText); },
+                complete: function (response) { },
+                success: function (response) { $("#divUserAirports").html(response); }
+            });
+        }
+    }
+
+    function addAirport(fForceAdd) {
+        var form = $("#newAirportForm");
+        form.validate();
+        form.validate().element("#Code");
+        form.validate().element("#txtFacilityName");
+        form.validate().element("#Latitude");
+        form.validate().element("#Longitude");
+        var allValid = $("#Code").valid() && $("#txtFacilityName").valid() && $("#Latitude").valid() && $("#Longitude").valid();
+
+        if (!allValid)
+            return;
+
+        params = new Object();
+        params.Code = $("#Code")[0].value;
+        params.FacilityName = $("#txtFacilityName")[0].value;
+        params.TypeCode = $("#cmbTypeCode").val();
+        params.Latitude = parseFloat($("#Latitude")[0].value);
+        params.Longitude = parseFloat($("#Longitude")[0].value);
+        params.fAsAdmin = $("#ckAddAsAdmin")[0].checked;
+        params.fForceAdd = fForceAdd;
+        var d = JSON.stringify(params);
+        $.ajax(
+            {
+                url: "@Url.Action("AddAirport", "Airport")",
+                type: "POST", data: d, dataType: "html", contentType: "application/json",
+                error: function (xhr, status, error) {
+                    $("#lblErr").text(xhr.responseText);
+                },
+                complete: function (response) { },
+                success: function (response) {
+                    $("#lblErr").text("");
+                    if (response == '') {
+                        // success - reload the user's airports and clear the form
+                        $("#Code")[0].value = $("#txtFacilityName")[0].value = $("#Latitude")[0].value = $("#Longitude")[0].value = "";
+                        if ($('#pnlDupeAirport').dialog('isOpen'))
+                            $("#pnlDupeAirport").dialog("close");
+                        refreshUserAirports(@Json.Encode(ViewBag.isAdminMode));
+                    } else {
+                        $("#divDupeAirportsList").html(response);
+                        showModalById("pnlDupeAirport", '@Resources.Airports.errDuplicateAirportTitle', 450);
+                    }
+                }
+            });
+    }
+
+    $(function () {
+        $('#pnlEdit').keydown(function (e) {
+            if (e.keyCode == 13) {
+                $('#btnAdd')[0].click();
+                return false;
+            }
+        });
+
+        centerToText();
+    });
+</script>
+<table style="width:100%">
+    <tr>
+        <td style="max-width:300px; vertical-align: top;">
+            <div id="pnlEdit">
+                @using (Html.BeginForm("Edit", "Airports", FormMethod.Post, new { name = "newAirportForm", id = "newAirportForm" }))
+                {
+                    @model airport
+                    <table>
+                        <tr style="vertical-align: top">
+                            <td>@Resources.Airports.EditAirportsCodePrompt</td>
+                            <td>
+                                <div>
+                                    @Html.EditorFor(ap => ap.Code, new { htmlAttributes = new { @maxlength = 6, @minlength = 2, @pattern = "[a-zA-Z0-9]{2,6}", @placeholder = Resources.Airports.EditAirportsCodePrompt } })
+                                    @Html.ValidationMessageFor(ap => ap.Code, Resources.Airports.errMissingCode, new { @class = "error" }, "div")
+                                </div>
+                                <div class="fineprint">@Resources.Airports.EditAirportSampleCode</div>
+                            </td>
+                        </tr>
+                        <tr style="vertical-align: top">
+                            <td>@Resources.Airports.airportNameShort</td>
+                            <td>
+                                <div>
+                                    @Html.EditorFor(ap => ap.Name, new { htmlAttributes = new { @placeholder = Resources.Airports.wmFriendlyName, @id = "txtFacilityName" } })
+                                    @Html.ValidationMessageFor(ap => ap.Name, Resources.Airports.errMissingFacilityName, new { @class = "error" }, "div")
+                                </div>
+                                <div class="fineprint">@Resources.Airports.EditAirportSampleName</div>
+                            </td>
+                        </tr>
+                        <tr style="vertical-align: top">
+                            <td>@Resources.Airports.EditAirportFacilityType</td>
+                            <td>
+                                <select name="TypeCode" id="cmbTypeCode">
+                                    @foreach (NavAidTypes nat in NavAidTypes.GetKnownTypes())
+                                    {
+                                        <option value="@nat.Code">@nat.Name</option>
+                                    }
+                                </select>
+                            </td>
+                        </tr>
+                        <tr style="vertical-align: top">
+                            <td>@Resources.Airports.airportLatitude</td>
+                            <td>
+                                @Html.EditorFor(ap => ap.Latitude, new { htmlAttributes = new { @onchange = "javascript:centerToText();", @type = "number", @pattern = "\"-?\\d{0,2}(.\\d*)?\"" } })
+                                @Html.ValidationMessageFor(ap => ap.Latitude, Resources.Airports.errLatitudeMissing, new { @class = "error" }, "div")
+                            </td>
+                        </tr>
+                        <tr style="vertical-align: top">
+                            <td>@Resources.Airports.airportLongitude</td>
+                            <td>
+                                <div>
+                                    @Html.EditorFor(ap => ap.Longitude, new { htmlAttributes = new { @onchange = "javascript:centerToText();", @type = "number", @pattern = "-?\\d{0,3}(.\\d*)?" } })
+                                    @Html.ValidationMessageFor(ap => ap.Longitude, Resources.Airports.errLongitudeMissing, new { @class = "error" }, "div")
+                                </div>
+                                <div><span style="font-weight:bold">@Resources.Airports.EditAirportTipHeader</span>&nbsp;@Resources.Airports.EditAirportMapTip</div>
+                            </td>
+                        </tr>
+                        <tr id="rowAdmin" style="@(ViewBag.isAdminMode ? string.Empty : "display:none;")">
+                            <td></td>
+                            <td><input type="checkbox" name="fAsAdmin" id="ckAddAsAdmin" value="true" /><label for="ckAddAsAdmin">Add as admin</label></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><button type="button" onclick="javascript: addAirport(false);">@Resources.Airports.EditAirportAddFacility</button></td>
+                        </tr>
+                        <tr>
+                            <td>
+                            </td>
+                            <td><span id="lblErr" class="error"></span></td>
+                        </tr>
+                    </table>
+                }
+            </div>
+        </td>
+        <td style="vertical-align: top; width: 100%" id="divResultsContainer">
+            <div id="divResultsContainer" style="height: 400px; width:100%; margin-left: 10px; margin-right: 10px;">
+                @{ Html.RenderAction("MapDiv", "Airport", new { map = ViewBag.Map }); }
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="pnlDupeAirport" style="display:none;">
+    <div>
+        <p>@Resources.Airports.errDupeAirport</p>
+        <div style="margin-left:auto; margin-right: auto;" id="divDupeAirportsList">
+        </div>
+        <div style="text-align:center">
+            <button type="button" onclick="javascript:$('#pnlDupeAirport').dialog('close');">@Resources.LocalizedText.Cancel</button>
+            <button type="button" onclick="javascript: addAirport(true);">@Resources.Airports.errDupeAirportCreateAnyway</button>
+        </div>
+    </div>
+</div>
+
+<div id="adminTabs">
+
+    @if (ViewBag.isAdminMode)
+    {
+        <input type="hidden" id="hdnAllowBlast" value="@Json.Encode(ViewBag.allowBlast)" />
+        <style>
+            div.notOK {
+                background-color: lightgray;
+            }
+
+            tr.Handled, tr.Handled div.notOK {
+                background-color: lightgreen;
+            }
+        </style>
+        <script type="text/javascript">
+        function doImport(sender, aic, source, command) {
+
+            // See if the "use map" checkbox is checked
+            // If so, update to those locations.
+            if ($(sender).parents("tr").find("input[name='ckUseMap']")[0].checked) {
+                aic.LatLong.Latitude = parseFloat($("#Latitude")[0].value);
+                aic.LatLong.Longitude = parseFloat($("#Longitude")[0].value);
+            }
+
+            var params = new Object();
+            params.aic = aic;
+            params.source = source;
+            params.szCommand = command;
+            var d = JSON.stringify(params);
+
+            $.ajax(
+                {
+                    url: '@VirtualPathUtility.ToAbsolute("~/Admin/AdminService.asmx/AirportImportCommand")',
+                    type: "POST", data: d, dataType: "json", contentType: "application/json",
+                    error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
+                    complete: function (response) { },
+                    success: function (response) {
+                        $(sender).parents("tr").addClass('Handled');
+                    }
+                });
+            return false;
+        }
+
+        function addFAA(sender, aic,) {
+            return doImport(sender, aic, "FAA", "AddAirport");
+        }
+
+        function addIATA(sender, aic,) {
+            return doImport(sender, aic, "IATA", "AddAirport");
+        }
+        function addICAO(sender, aic,) {
+            return doImport(sender, aic, "ICAO", "AddAirport");
+        }
+
+        function useFAALoc(sender, aic,) {
+            return doImport(sender, aic, "FAA", "FixLocation");
+        }
+        function useFAAType(sender, aic,) {
+            return doImport(sender, aic, "FAA", "FixType");
+        }
+        function useFAAData(sender, aic,) {
+            return doImport(sender, aic, "FAA", "Overwrite");
+        }
+
+        function useICAOLoc(sender, aic,) {
+            return doImport(sender, aic, "ICAO", "FixLocation");
+        }
+
+        function useICAOType(sender, aic,) {
+            return doImport(sender, aic, "ICAO", "FixType");
+        }
+
+        function useICAOData(sender, aic,) {
+            return doImport(sender, aic, "ICAO", "Overwrite");
+        }
+
+        function useIATALoc(sender, aic,) {
+            return doImport(sender, aic, "IATA", "FixLocation");
+        }
+
+        function useIATAType(sender, aic,) {
+            return doImport(sender, aic, "IATA", "FixType");
+        }
+
+        function useIATAData(sender, aic,) {
+            return doImport(sender, aic, "IATA", "Overwrite");
+        }
+
+        function deleteDupeUserAirport(user, codeDelete, codeMap, type, sender) {
+            var params = new Object();
+            params.idDelete = codeDelete;
+            params.idMap = codeMap;
+            params.szUser = user;
+            params.szType = type;
+            var d = JSON.stringify(params);
+            $.ajax(
+                {
+                    url: '@VirtualPathUtility.ToAbsolute("~/Admin/AdminService.asmx/DeleteDupeUserAirport")',
+                    type: "POST", data: d, dataType: "json", contentType: "application/json",
+                    error: function (xhr, status, error) {
+                        window.alert(xhr.responseJSON.Message);
+                    },
+                    complete: function (response) { },
+                    success: function (response) { sender.parentElement.parentElement.style.display = 'none'; }
+                });
+        }
+        function setPreferred(code, type, sender) {
+            var params = new Object();
+            params.szCode = code;
+            params.szType = type;
+            params.fPreferred = sender.checked;
+            var d = JSON.stringify(params);
+            $.ajax(
+                {
+                    url: '@VirtualPathUtility.ToAbsolute("~/Admin/AdminService.asmx/SetPreferred")',
+                    type: "POST", data: d, dataType: "json", contentType: "application/json",
+                    error: function (xhr, status, error) {
+                        window.alert(xhr.responseJSON.Message);
+                    },
+                    complete: function (response) { },
+                    success: function (response) { sender.checked = params.fPreferred; }
+                });
+        }
+        function makeNative(code, type, sender) {
+            var params = new Object();
+            params.szCode = code;
+            params.szType = type;
+            var d = JSON.stringify(params);
+            $.ajax(
+                {
+                    url: '@VirtualPathUtility.ToAbsolute("~/Admin/AdminService.asmx/MakeNative")',
+                    type: "POST", data: d, dataType: "json", contentType: "application/json",
+                    error: function (xhr, status, error) {
+                        window.alert(xhr.responseJSON.Message);
+                    },
+                    complete: function (response) { },
+                    success: function (response) { sender.disabled = true; }
+                });
+        }
+        function mergeWith(codeTarget, typeTarget, codeSource, sender) {
+            var params = new Object();
+            params.szCodeTarget = codeTarget;
+            params.szTypeTarget = typeTarget;
+            params.szCodeSource = codeSource;
+            var d = JSON.stringify(params);
+            $.ajax(
+                {
+                    url: '@VirtualPathUtility.ToAbsolute("~/Admin/AdminService.asmx/MergeWith")',
+                    type: "POST", data: d, dataType: "json", contentType: "application/json",
+                    error: function (xhr, status, error) {
+                        window.alert(xhr.responseJSON.Message);
+                    },
+                    complete: function (response) { },
+                    success: function (response) { sender.disabled = true; }
+                });
+        }
+
+        function getMoreDupes(idRangeStart, idRangeEnd, idTbl, dupeSeed) {
+            var hdnStart = document.getElementById(idRangeStart);
+            var hdnCount = document.getElementById(idRangeEnd);
+            $('#divDupeRange').css({ 'display': 'inline-block' });
+            $('#dupeProgress').css({ 'visibility': 'visible' });
+
+            var params = new Object();
+            params.start = parseInt(hdnStart.value);
+            params.count = parseInt(hdnCount.value);
+            params.dupeSeed = document.getElementById(dupeSeed).value;
+            var d = JSON.stringify(params);
+            $.ajax(
+                {
+                    url: '@VirtualPathUtility.ToAbsolute("~/Admin/AdminService.asmx/GetDupeAirports")',
+                    type: "POST", data: d, dataType: "json", contentType: "application/json",
+                    error: function (xhr, status, error) {
+                        window.alert(xhr.responseJSON.Message);
+                    },
+                    complete: function (response) {
+                        $('#dupeProgress').css({ 'visibility': 'hidden' });
+                    },
+                    success: function (response) {
+                        var r = new Array(), j = -1;
+                        r[++j] = "<thead><th>Airport 1</th><th>Airport 2</th></thead>";
+                        for (var iCluster = 0; iCluster < response.d.length; iCluster++) {
+                            // enumerate all of the combinations in the cluster
+                            var rgAp = response.d[iCluster];
+
+                            // Summarize the clusters
+                            r[++j] = '<tr><td colspan="2" style="background-color: lightgray;"><div>';
+                            r[++j] = "Cluster of " + rgAp.length + " airports: ";
+                            var minLat = rgAp[0].LatLong.Latitude, minLon = rgAp[0].LatLong.Longitude, maxLat = rgAp[0].LatLong.Latitude, maxLon = rgAp[0].LatLong.Longitude;
+                            for (var iap = 0; iap < rgAp.length; iap++) {
+                                var ap = rgAp[iap];
+                                r[++j] = ap.Code + " ";
+                                minLat = Math.min(minLat, ap.LatLong.Latitude);
+                                minLon = Math.min(minLon, ap.LatLong.Longitude);
+                                maxLat = Math.max(maxLat, ap.LatLong.Latitude);
+                                maxLon = Math.max(maxLon, ap.LatLong.Longitude);
+                            }
+                            r[++j] = "</div>ΔLat = " + (maxLat - minLat).toFixed(8) + " ΔLon = " + (maxLon - minLon).toFixed(8) + "</div>";
+
+                            r[++j] = '</td></tr>'
+
+                            for (var i = 0; i < rgAp.length - 1; i++)
+                                for (var k = i + 1; k < rgAp.length; k++) {
+                                    r[++j] = '<tr><td>';
+                                    r[++j] = dupeAirportContent(rgAp[i], rgAp[k]);
+                                    r[++j] = '</td><td>'
+                                    r[++j] = dupeAirportContent(rgAp[k], rgAp[i]);
+                                    r[++j] = '</td></tr>';
+                                }
+                        }
+                        $('#' + idTbl).html(r.join(''));
+                    }
+                });
+        }
+
+        function htmlEncode(value) {
+            return $('<textarea/>').text(value).html();
+        }
+
+        function dupeAirportContent(ap, apAlt) {
+            var r = new Array(), j = -1;
+
+            r[++j] = "<div><a href='javascript:clickAndZoom(new google.maps.LatLng(" + ap.LatLong.Latitude + ", " + ap.LatLong.Longitude + "));'>" + ap.Code + "</a> ";
+            r[++j] = "(" + ap.FacilityTypeCode + ") " + htmlEncode(ap.Name) + " ";
+            if (ap.SourceUserName != '')
+                r[++j] = "(" + htmlEncode(ap.SourceUserName) + ") ";
+            r[++j] = '</div><div><input type="checkbox" ' + (ap.IsPreferred ? 'checked' : '') + ' onclick="javascript:setPreferred(\'' + ap.Code + '\', \'' + ap.FacilityTypeCode + '\', this)" />Preferred ';
+            r[++j] = '<button type="button" onclick="javascript:mergeWith(\'' + ap.Code + '\', \'' + ap.FacilityTypeCode + '\', \'' + apAlt.Code + '\', this);">Merge from ' + apAlt.Code + '</button> ';
+            if (ap.SourceUserName != '')
+                r[++j] = '<button type="button" onclick="javascript:makeNative(\'' + ap.Code + '\', \'' + ap.FacilityTypeCode + '\', this);">Make Native</button> ';
+            r[++j] = "</div>"
+            return r.join('');
+        }
+
+        function importFromFile(bulk) {
+            if (bulk && !confirm('THIS WILL BULK IMPORT WITH NO UNDO!'))
+                return;
+
+            var fileData = $('#fuAirportList').prop('files')[0];
+            var formData = new FormData();
+            formData.append('file', fileData);
+            formData.append("fAllowBlast", $("#hdnAllowBlast")[0].value);
+            $("#imgProgressImport").toggle();
+            $.ajax(
+                {
+                    url: bulk ? '@Url.Action("BulkImportUploadedFile", "Airport")' : '@Url.Action("ImportUploadedFile", "Airport")',
+                    type: "POST", data: formData, dataType: "html", contentType: false, processData: false,
+                    error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                    complete: function (response) { $("#imgProgressImport").toggle(); },
+                    success: function (response) {
+                        $("#pnlImportResults").html(response);
+                    }
+                });
+            return false;
+        }
+        </script>
+        <h1>Admin stuff</h1>
+        <ol>
+            <li><a href="#adminImport">Bulk Import</a></li>
+            <li><a href="#adminReviewDupes">Dupe Airports</a></li>
+            <li><a href="#adminGeoCoding">Geocode</a></li>
+            <li><a href="#divUserAirports">User Airports</a></li>
+        </ol>
+        <div id="adminImport">
+            <h2>Bulk Import Airports</h2>
+            <div>
+                <input type="file" id="fuAirportList" />
+                <button onclick="javascript: importFromFile(false);">Import</button>
+                <button onclick="javascript: importFromFile(true);" style="display:none">Import (no interactive)</button>
+                @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "importTip", tipTextHTML = "MUST be: FAA/IATA/ICAO for airportID, Name, Type, SourceUserName, Latitude, Longitude, Preferred.  SourceUserName and Preferred are optional.  OR OldCode/CurrentCode (bulk only) to backfill old codes.  Country and Admin1 are optional.  If Bulk-import is visible, use only one column for code" }); }
+                <img id="imgProgressImport" src="@VirtualPathUtility.ToAbsolute("~/images/progress.gif")" style="display:none;" />
+            </div>
+            <div id="pnlImportResults">
+
+            </div>
+        </div>
+        <div id="adminReviewDupes">
+            <h2>Review likely duplicate airports</h2>
+            <div>
+                Start at: <input type="text" id="dupeRangeStart" value="0" style="width: 50px;" /> Max: <input type="text" id="dupeRangeCount" value="50" style="width:50px" /> Limit to dupes of: <input type="text" id="txtDupeSeed" style="width:100px;" />
+                <button type="button" onclick="javascript:getMoreDupes('dupeRangeStart', 'dupeRangeCount', 'tblAdminAjaxDupes', 'txtDupeSeed')">Next set of dupes</button>
+            </div>
+            <div><img src='@VirtualPathUtility.ToAbsolute("~/images/progress.gif")' style="visibility: hidden;" id="dupeProgress" /></div>
+            <style type="text/css">
+                table.dupeTable, table.dupeTable th, table.dupeTable td {
+                    border: 1px solid gray;
+                    border-collapse: collapse;
+                }
+            </style>
+            <div id="divDupeRange" style="height:400px; display: none; overflow-y:scroll;">
+                <table id="tblAdminAjaxDupes" class="dupeTable">
+                </table>
+            </div>
+        </div>
+        <div id="adminGeoCoding">
+            <h2>Geo coding airports</h2>
+            <p><a href="@VirtualPathUtility.ToAbsolute("~/mvc/Airport/Geocoder")">Manage Georeferences</a></p>
+        </div>
+    }
+
+    <div id="divUserAirports">
+        @if (ViewBag.isAdminMode)
+        {
+            <img src="@VirtualPathUtility.ToAbsolute("~/images/progress.gif")" />
+            <script type="text/javascript">
+                $(function () {
+                    $("#adminTabs").tabs();
+                    refreshUserAirports(true);
+                });
+            </script>
+        }
+        else
+        {
+            Html.RenderAction("UserAirportList", "Airport", new { fAdmin = ViewBag.isAdminMode });
+        }
+    </div>
+</div>

@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -54,6 +55,7 @@ namespace MyFlightbook.Airports
         /// <summary>
         /// FAA Data code representing the type of the facility (1-2 chars)
         /// </summary>
+        [Required]
         public string FacilityTypeCode { get; set; }
 
         /// <summary>
@@ -64,11 +66,14 @@ namespace MyFlightbook.Airports
         /// <summary>
         /// The IATA or ICAO code for the airport
         /// </summary>
+        [Required]
+        [RegularExpression("[a-zA-Z0-9]{2,6}")]
         public string Code { get; set; }
 
         /// <summary>
         /// The friendly name for the airport
         /// </summary>
+        [Required]
         public string Name { get; set; }
 
         [JsonIgnore]
@@ -107,8 +112,11 @@ namespace MyFlightbook.Airports
 
         /// <summary>
         /// DEPRECATED The airport's latitude (string representation of a decimal number)
+        /// Used only for validation
         /// </summary>
         [JsonIgnore]
+        [Required]
+        [RegularExpression("-?\\d{0,2}(.\\d*)?")]
         public string Latitude
         {
             get { return this.LatLong.LatitudeString; }
@@ -117,8 +125,11 @@ namespace MyFlightbook.Airports
 
         /// <summary>
         /// DEPRECATED The airport's longitude (string representation of a decimal number)
+        /// Used only for validation
         /// </summary>
         [JsonIgnore]
+        [Required]
+        [RegularExpression("-?\\d{0,3}(.\\d*)?")]
         public string Longitude
         {
             get { return this.LatLong.LongitudeString; }
@@ -752,7 +763,7 @@ namespace MyFlightbook.Airports
         /// Is this a valid airport or navaid?
         /// </summary>
         /// <returns>True if this is in a state to be saved</returns>
-        private Boolean FValidate()
+        public bool FValidate()
         {
             ErrorText = string.Empty;
 
@@ -869,6 +880,43 @@ namespace MyFlightbook.Airports
             }
 
             return (ErrorText.Length == 0);
+        }
+
+        /// <summary>
+        /// Deletes an airport by code/type for a given user, if it exists for them
+        /// </summary>
+        /// <param name="Username"></param>
+        /// <param name="Code"></param>
+        /// <param name="TypeCode"></param>
+        /// <param name="fAdmin">If true - and if the user is an admin - deletes an airport that may belong to someone else</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static void DeleteAirportForUser(string Username, string Code, string TypeCode, bool fAdmin)
+        {
+            if (Username == null)
+                throw new ArgumentNullException(nameof(Username));
+            fAdmin = fAdmin && MyFlightbook.Profile.GetUser(Username).CanManageData;
+            List<airport> lst = new List<airport>(airport.AirportsForUser(Username, fAdmin));
+            airport ap = lst.FirstOrDefault(a => a.Code.CompareCurrentCultureIgnoreCase(Code) == 0 && a.FacilityTypeCode.CompareCurrentCultureIgnoreCase(TypeCode) == 0);
+            ap?.FDelete();
+        }
+
+        public void ADMINReviewPotentialDupe(IEnumerable<airport> rgap)
+        {
+            if (rgap == null)
+                throw new ArgumentNullException(nameof(rgap));
+
+            // needs review
+            StringBuilder sb = new StringBuilder();
+            StringBuilder sbViewLink = new StringBuilder();
+            sbViewLink.AppendFormat(CultureInfo.InvariantCulture, "https://{0}{1}?Airports={2}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/mvc/Airport/MapRoute"), Code);
+            sb.AppendFormat(CultureInfo.CurrentCulture, "User: {0}, Airport: {1} ({2}) {3} {4}\r\n\r\nCould match:\r\n", UserName, Code, FacilityTypeCode, Name, LatLong.ToDegMinSecString());
+            foreach (airport a in rgap)
+            {
+                sb.AppendFormat(CultureInfo.CurrentCulture, "{0} - ({1}) {2} {3}\r\n\r\n", a.Code, a.FacilityTypeCode, a.Name, a.LatLong.ToDegMinSecString());
+                sbViewLink.AppendFormat(CultureInfo.InvariantCulture, "+{0}", a.Code);
+            }
+            sb.AppendFormat(CultureInfo.InvariantCulture, "\r\n\r\n{0}\r\n", sbViewLink.ToString());
+            util.NotifyAdminEvent("New airport created - needs review", sb.ToString(), ProfileRoles.maskCanManageData);
         }
     }
 

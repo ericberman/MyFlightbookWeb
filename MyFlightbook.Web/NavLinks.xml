@@ -110,7 +110,7 @@
         <Roles></Roles>
       </Item>
       <Item>
-        <Link>~/Member/EditAirports.aspx</Link>
+        <Link>~/mvc/Airport/Edit</Link>
         <ID>mptAddAirports</ID>
         <Roles></Roles>
       </Item>
@@ -236,7 +236,7 @@
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>
       <Item>
-        <Link>~/Member/EditAirports.aspx?a=1</Link>
+        <Link>~/mvc/Airport/Edit?a=1</Link>
         <ID>admAirports</ID>
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>

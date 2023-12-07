@@ -1,18 +1,14 @@
 ﻿using MyFlightbook.Airports;
-using MyFlightbook.CSV;
 using MyFlightbook.Mapping;
 using MyFlightbook.Telemetry;
 using MyFlightbook.Weather.ADDS;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Web;
 using System.Web.Mvc;
 
 /******************************************************
@@ -26,6 +22,144 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 {
     public class AirportController : AdminControllerBase
     {
+        #region Add/Edit Airports
+        #region Add/Edit web services
+        /// <summary>
+        /// Adds an airport or navaid for the user.  Returns one of 3 things:
+        ///  - An exception, if something goes wrong
+        ///  - An HTML table enumerating potential duplicates, if fForceAdd is false and there are potential dupes
+        ///  - An empty result, which indicates success.
+        /// </summary>
+        /// <param name="Code"></param>
+        /// <param name="FacilityName"></param>
+        /// <param name="TypeCode"></param>
+        /// <param name="Latitude"></param>
+        /// <param name="Longitude"></param>
+        /// <param name="fAsAdmin">Indicates if you are trying to add as an admin (no sourceusername; makes the airport native)</param>
+        /// <param name="fForceAdd">True to ignore potential duplicates</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        [Authorize]
+        [HttpPost]
+        public ActionResult AddAirport(string Code, string FacilityName, string TypeCode, double Latitude, double Longitude, bool fAsAdmin, bool fForceAdd)
+        {
+            return SafeOp(ProfileRoles.maskUnrestricted, () =>
+            {
+                fAsAdmin = fAsAdmin && MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData;
+
+                airport ap = new airport(Code, FacilityName, Latitude, Longitude, TypeCode, string.Empty, 0, fAsAdmin ? string.Empty : User.Identity.Name);
+                if (!ap.FValidate())
+                    throw new InvalidOperationException(ap.ErrorText);
+
+                List<airport> lstDupes = lstDupes = ap.IsPort ? new List<airport>(airport.AirportsNearPosition(ap.LatLong.Latitude, ap.LatLong.Longitude, 20, ap.FacilityTypeCode.CompareCurrentCultureIgnoreCase("H") == 0)) : new List<airport>();
+                lstDupes.RemoveAll(a => !a.IsPort || a.Code.CompareCurrentCultureIgnoreCase(ap.Code) == 0 || a.DistanceFromPosition > 3);
+
+                if (lstDupes.Count != 00 && !fForceAdd)
+                {
+                    ViewBag.dupes = lstDupes;
+                    return PartialView("_dupeAirportList");
+                }
+
+                // if we are here, then the airport is valid and either has no dupes OR is a force add.
+                if (ap.FCommit(fAsAdmin, fAsAdmin))
+                {
+                    if (lstDupes.Count != 0)
+                        ap.ADMINReviewPotentialDupe(lstDupes);
+                    return new EmptyResult();
+                }
+                else
+                    throw new InvalidOperationException(ap.ErrorText);
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult UpdateUserAirportList(bool fAdmin)
+        {
+            fAdmin = fAdmin && MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData;
+
+            return AirportTableForUser(fAdmin);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult DeleteAirport(string Code, string TypeCode, bool fAdmin)
+        {
+            fAdmin = fAdmin && MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData;
+
+            return SafeOp(fAdmin ? ProfileRoles.maskCanManageData : ProfileRoles.maskUnrestricted, () =>
+            {
+                airport.DeleteAirportForUser(User.Identity.Name, Code, TypeCode, fAdmin);
+                return AirportTableForUser(fAdmin);
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult ImportUploadedFile(bool fAllowBlast)
+        {
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            {
+                if (Request.Files.Count == 0)
+                    throw new InvalidOperationException("No file uploaded");
+                List<airportImportCandidate> lst = new List<airportImportCandidate>(airportImportCandidate.Candidates(Request.Files[0].InputStream, util.GetIntParam(Request, "khack", 0) == 0));
+
+                ViewBag.importCandidates = lst;
+                ViewBag.allowBlast = fAllowBlast;
+                return PartialView("_importResultsTable");
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public string BulkImportUploadedFile()
+        {
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            {
+                return String.Format(CultureInfo.CurrentCulture, "{0:#,##0} airports added", AdminAirport.BulkImportAirports(Request.Files[0].InputStream));
+            });
+        }
+        #endregion
+
+        [ChildActionOnly]
+        public ActionResult UserAirportList(bool fAdmin)
+        {
+            return AirportTableForUser(fAdmin);
+        }
+
+        [ChildActionOnly]
+        public ActionResult ImportCandidate(airport ap, airportImportCandidate.MatchStatus ms, airportImportCandidate aicBase)
+        {
+            ViewBag.ap = ap;
+            ViewBag.ms = ms;
+            ViewBag.aicBase = aicBase;
+            return PartialView("_airportImportCandidate");
+        }
+
+        private ActionResult AirportTableForUser(bool fAdmin)
+        {
+            fAdmin = fAdmin && MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData;
+            ViewBag.isAdminMode = fAdmin;
+            ViewBag.userAirports = airport.AirportsForUser(User.Identity.Name, fAdmin);
+            return PartialView("_userAirports");
+        }
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult Edit()
+        {
+            ViewBag.isAdminMode = (util.GetIntParam(Request, "a", 0) != 0) && MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData;
+            GoogleMap googleMap = new GoogleMap("divAirport", GMap_Mode.Dynamic)
+            {
+                ClickHandler = "function (point) {clickForAirport(point.latLng);}"
+            };
+            googleMap.SetAirportList(new AirportList(String.Empty));
+            ViewBag.Map = googleMap;
+            ViewBag.allowBlast = util.GetIntParam(Request, "blast", 0) != 0;
+            return View("addEditAirport");
+        }
+        #endregion
+
         #region Admin - Airport Geocoder
         [Authorize]
         [HttpPost]
@@ -36,9 +170,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (Request.Files.Count == 0)
                     throw new InvalidOperationException("No file uploaded");
 
-                HttpPostedFileBase pf = Request.Files[0];
-
-                AdminAirport.GeoLocateFromGPX(pf.InputStream, out string szAudit, out string szCommands);
+                AdminAirport.GeoLocateFromGPX(Request.Files[0].InputStream, out string szAudit, out string szCommands);
                 return Json(new { audit = szAudit, commands = szCommands });
             });
         }
@@ -262,45 +394,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
             IEnumerable<VisitedAirport> rgva = VisitedAirport.VisitedAirportsForQuery(query);
 
-            using (DataTable dt = new DataTable())
-            {
-                dt.Locale = CultureInfo.CurrentCulture;
-
-                // add the header columns from the gridview
-                dt.Columns.Add(new DataColumn(Resources.Airports.airportCode, typeof(string)));
-                dt.Columns.Add(new DataColumn(Resources.Airports.airportName, typeof(string)));
-                dt.Columns.Add(new DataColumn(Resources.Airports.airportCountry + "*", typeof(string)));
-                dt.Columns.Add(new DataColumn(Resources.Airports.airportRegion, typeof(string)));
-                dt.Columns.Add(new DataColumn(Resources.Airports.airportVisits, typeof(int)));
-                dt.Columns.Add(new DataColumn(Resources.Airports.airportEarliestVisit, typeof(string)));
-                dt.Columns.Add(new DataColumn(Resources.Airports.airportLatestVisit, typeof(string)));
-
-                foreach (VisitedAirport va in rgva)
-                {
-                    DataRow dr = dt.NewRow();
-                    dr[0] = va.Code;
-                    dr[1] = va.Airport.Name;
-                    dr[2] = va.Country;
-                    dr[3] = va.Admin1;
-                    dr[4] = va.NumberOfVisits;
-                    dr[5] = va.EarliestVisitDate.ToString("d", CultureInfo.CurrentCulture);
-                    dr[6] = va.LatestVisitDate.ToString("d", CultureInfo.CurrentCulture);
-
-                    dt.Rows.Add(dr);
-                }
-
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    using (StreamWriter sw = new StreamWriter(ms, Encoding.UTF8, 1024))
-                    {
-                        CsvWriter.WriteToStream(sw, dt, true, true);
-                        sw.Write(String.Format(CultureInfo.CurrentCulture, "\r\n\r\n\" *{0}\"", Branding.ReBrand(Resources.Airports.airportCountryDisclaimer)));
-                        sw.Flush();
-
-                        return File(ms.ToArray(), "text/csv", String.Format(CultureInfo.InvariantCulture, "{0}-Visited-{1}.csv", Branding.CurrentBrand.AppName, DateTime.Now.YMDString()));
-                    }
-                }
-            }
+            return File(VisitedAirport.DownloadVisitedTable(rgva), "text/csv", String.Format(CultureInfo.InvariantCulture, "{0}-Visited-{1}.csv", Branding.CurrentBrand.AppName, DateTime.Now.YMDString()));
         }
 
         private static IEnumerable<AirportList> PathsForQuery(FlightQuery fq, AirportList alMatches, bool fShowRoute)
@@ -449,7 +543,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         public ActionResult GetVisitedRoutesDownload() 
         {
             VisitedRoute vr = (VisitedRoute) Session[sessKeyXMLDownload];
-            return (vr == null) ? (ActionResult) Content("No visited routes to download") : (ActionResult) File(Encoding.UTF8.GetBytes(vr.SerializeXML()), "text/xml", "visitedroutes.xml");
+            return (vr == null) ? (ActionResult) Content("No visited routes to download") : File(vr.SerializeXML().UTF8Bytes(), "text/xml", "visitedroutes.xml");
         }
 
         [HttpPost]
@@ -461,10 +555,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             if (Request.Files.Count == 0)
                 throw new InvalidOperationException("No file uploaded");
 
-            HttpPostedFileBase pf = Request.Files[0];
-
             string sz = string.Empty;
-            using (StreamReader sr = new StreamReader(pf.InputStream))
+            using (StreamReader sr = new StreamReader(Request.Files[0].InputStream))
                 sz = sr.ReadToEnd();
 
             VisitedRoute vr = sz.DeserializeFromXML<VisitedRoute>();

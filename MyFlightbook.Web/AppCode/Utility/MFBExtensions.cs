@@ -710,6 +710,16 @@ namespace MyFlightbook
 
             return String.Join(" ", lst);
         }
+
+        /// <summary>
+        /// Returns the UTF8 byte array for the string.
+        /// </summary>
+        /// <param name="sz"></param>
+        /// <returns></returns>
+        public static byte[] UTF8Bytes(this string sz)
+        {
+            return Encoding.UTF8.GetBytes(sz ?? string.Empty);
+        }
         #endregion
 
         #region Decimal Extensions

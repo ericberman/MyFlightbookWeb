@@ -1,0 +1,129 @@
+﻿@using MyFlightbook.Airports
+@using System.Globalization
+@{
+    IEnumerable<airportImportCandidate> rgaic = ViewBag.importCandidates;
+    const double maxDistanceToFix = 50.0;
+    bool fAllowBlast = ViewBag.allowBlast ?? false;
+    int iRow = 0;
+    if (rgaic.Any())
+    {
+        <div style="width: 100%; overflow-y: scroll; height: 400px;">
+            <table class="stickyHeaderTable">
+                <thead>
+                    <tr>
+                        <th class="headerBase gvhDefault gvhCentered">To Import</th>
+                        <th class="headerBase gvhDefault gvhCentered">FAA</th>
+                        <th class="headerBase gvhDefault gvhCentered">ICAO</th>
+                        <th class="headerBase gvhDefault gvhCentered">IATA</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (airportImportCandidate aic in rgaic)
+                    {
+                        string szAICVarName = String.Format(CultureInfo.InvariantCulture, "aic{0}", iRow);
+                        string szCheckID = String.Format(CultureInfo.InvariantCulture, "ckUseMap{0}", iRow);
+                        iRow++;
+                        <tr style="vertical-align: top; height: 90px; @(aic.IsOK ? "background-color: lightgreen;" : string.Empty)">
+                            <td>
+                                <script type="text/javascript">
+                                var @szAICVarName = @Html.Raw(Json.Encode(aic));
+                                </script>
+                                @if (!String.IsNullOrEmpty(aic.FAA))
+                                {
+                                    <div>FAA: @aic.FAA</div>
+                                }
+                                @if (!String.IsNullOrEmpty(aic.IATA))
+                                {
+                                    <div>IATA: @aic.IATA</div>
+                                }
+                                @if (!String.IsNullOrEmpty(aic.ICAO))
+                                {
+                                    <div>ICAO: @aic.ICAO</div>
+                                }
+                                <div>
+                                    @{ Html.RenderAction("ImportCandidate", "Airport", new { ap = aic, ms = airportImportCandidate.MatchStatus.NotApplicable, aicBase = (airportImportCandidate)null }); }
+                                </div>
+                                <div>
+                                    @if (!String.IsNullOrEmpty(aic.FAA) && (fAllowBlast || aic.FAAMatch == null))
+                                    {
+                                        <button type="button" onclick="javascript: return addFAA(this, @szAICVarName);">Add FAA</button>
+                                    }
+                                    @if (!String.IsNullOrEmpty(aic.IATA) && (fAllowBlast || aic.IATAMatch == null))
+                                    {
+                                        <button type="button" onclick="javascript: return addIATA(this, @szAICVarName);">Add IATA</button>
+                                    }
+                                    @if (!String.IsNullOrEmpty(aic.ICAO) && (fAllowBlast || aic.ICAOMatch == null))
+                                    {
+                                        <button type="button" onclick="javascript: return addICAO(this, @szAICVarName);">Add ICAO</button>
+                                    }
+                                </div>
+                                <div><input type="checkbox" name="ckUseMap" id="@szCheckID" /><label for="@szCheckID">Use map location</label></div>
+                            </td>
+                            <td>
+                                <div>
+                                    @{ Html.RenderAction("ImportCandidate", "Airport", new { ap = aic.FAAMatch, ms = aic.MatchStatusFAA, aicBase = aic }); }
+                                </div>
+                                <div>
+                                    @if ((aic.FAAMatch != null && aic.MatchStatusFAA == airportImportCandidate.MatchStatus.InDBWrongLocation && aic.DistanceFromAirport(aic.FAAMatch) < maxDistanceToFix))
+                                    {
+                                        <button type="button" onclick="javascript: return useFAALoc(this, @szAICVarName);">Update location</button>
+                                    }
+                                    @if ((aic.FAAMatch != null && aic.MatchStatusFAA == airportImportCandidate.MatchStatus.WrongType && aic.DistanceFromAirport(aic.FAAMatch) < maxDistanceToFix))
+                                    {
+                                        <button type="button" onclick="javascript: return useFAAType(this, @szAICVarName);">Update Type</button>
+                                    }
+                                    @if (aic.FAAMatch != null && (aic.MatchStatusFAA == airportImportCandidate.MatchStatus.WrongType || aic.DistanceFromAirport(aic.FAAMatch) >= maxDistanceToFix))
+                                    {
+                                        <button type="button" onclick="javascript: return useFAAData(this, @szAICVarName);">Overwrite</button>
+                                    }
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    @{ Html.RenderAction("ImportCandidate", "Airport", new { ap = aic.ICAOMatch, ms = aic.MatchStatusICAO, aicBase = aic }); }
+                                </div>
+                                <div>
+                                    @if ((aic.ICAOMatch != null && aic.MatchStatusICAO == airportImportCandidate.MatchStatus.InDBWrongLocation && aic.DistanceFromAirport(aic.ICAOMatch) < maxDistanceToFix))
+                                    {
+                                        <button type="button" onclick="javascript: return useICAOLoc(this, @szAICVarName);">Update location</button>
+                                    }
+                                    @if ((aic.ICAOMatch != null && aic.MatchStatusICAO == airportImportCandidate.MatchStatus.WrongType && aic.DistanceFromAirport(aic.ICAOMatch) < maxDistanceToFix))
+                                    {
+                                        <button type="button" onclick="javascript: return useICAOType(this, @szAICVarName);">Update Type</button>
+                                    }
+                                    @if (aic.ICAOMatch != null && (aic.MatchStatusICAO == airportImportCandidate.MatchStatus.WrongType || aic.DistanceFromAirport(aic.ICAOMatch) >= maxDistanceToFix))
+                                    {
+                                        <button type="button" onclick="javascript: return useICAOData(this, @szAICVarName);">Overwrite</button>
+                                    }
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    @{ Html.RenderAction("ImportCandidate", "Airport", new { ap = aic.IATAMatch, ms = aic.MatchStatusIATA, aicBase = aic }); }
+                                </div>
+                                <div>
+                                    @if ((aic.IATAMatch != null && aic.MatchStatusIATA == airportImportCandidate.MatchStatus.InDBWrongLocation && aic.DistanceFromAirport(aic.IATAMatch) < maxDistanceToFix))
+                                    {
+                                        <button type="button" onclick="javascript: return useIATALoc(this, @szAICVarName);">Update location</button>
+                                    }
+                                    @if ((aic.IATAMatch != null && aic.MatchStatusIATA == airportImportCandidate.MatchStatus.WrongType && aic.DistanceFromAirport(aic.IATAMatch) < maxDistanceToFix))
+                                    {
+                                        <button type="button" onclick="javascript: return useIATAType(this, @szAICVarName);">Update Type</button>
+                                    }
+                                    @if (aic.IATAMatch != null && (aic.MatchStatusIATA == airportImportCandidate.MatchStatus.WrongType || aic.DistanceFromAirport(aic.IATAMatch) >= maxDistanceToFix))
+                                    {
+                                        <button type="button" onclick="javascript: return useIATAData(this, @szAICVarName);">Overwrite</button>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <p class="success">No candidates yet!</p>
+    }
+}

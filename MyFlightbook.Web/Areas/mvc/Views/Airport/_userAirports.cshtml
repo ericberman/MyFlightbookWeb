@@ -1,0 +1,48 @@
+﻿@using MyFlightbook.Airports
+@using Newtonsoft.Json
+@using System.Globalization
+@{
+    IEnumerable<airport> rgap = ViewBag.userAirports;
+    string szOverflow = rgap.Count() > 30 ? "overflow: scroll; " : string.Empty;
+}
+@if (rgap.Any())
+{
+    <p>@Resources.Airports.EditAirportsMyAirportsHeader</p>
+    <div style="width: 100%; height: 400px; @szOverflow">
+        <input type="hidden" id="hdnSortIndexUserAirports" value="1" />
+        <input type="hidden" id="hdnSortDirUserAirports" value="asc" />
+        @if (ViewBag.isAdminMode)
+                {
+                    <div>@String.Format(CultureInfo.InvariantCulture, "{0:#,##0} user-defined airports", rgap.Count())</div>
+                }
+        <table class="stickyHeaderTable stickyHeaderAlternate">
+            <thead>
+                <tr>
+                    <th class="headerBase gvhDefault gvhLeft">&nbsp;</th>
+                    <th class="headerBase gvhDefault gvhLeft headerSortAsc" onclick="javascript: sortTable(this, 1, '', 'hdnSortIndexUserAirports', 'hdnSortDirUserAirports');">@Resources.Airports.EditAirportsCodePrompt</th>
+                    <th class="headerBase gvhDefault gvhLeft" onclick="javascript: sortTable(this, 2, '', 'hdnSortIndexUserAirports', 'hdnSortDirUserAirports');">@Resources.Airports.airportName</th>
+                    <th class="headerBase gvhDefault gvhLeft" onclick="javascript: sortTable(this, 3, '', 'hdnSortIndexUserAirports', 'hdnSortDirUserAirports');">@Resources.Airports.EditAirportFacilityType</th>
+                    @if (ViewBag.isAdminMode)
+                    {
+                        <th class="headerBase gvhDefault" onclick="javascript: sortTable(this, 4, '', 'hdnSortIndexUserAirports', 'hdnSortDirUserAirports');">Username</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (airport ap in ViewBag.userAirports)
+                {
+                    <tr>
+                        <td style="width: 20px;"><img src="@VirtualPathUtility.ToAbsolute("~/images/x.gif")" alt="@Resources.Airports.EditAirportsDeleteAirport" title="@Resources.Airports.EditAirportsDeleteAirport" onclick="javascript: deleteAirport('@ap.Code', '@ap.FacilityTypeCode', @Json.Encode(ViewBag.isAdminMode));" /></td>
+                        <td><a href="javascript:updateForAirport(@JsonConvert.SerializeObject(ap, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore }));">@ap.Code</a></td>
+                        <td>@ap.Name</td>
+                        <td>@ap.FacilityType</td>
+                        @if (ViewBag.isAdminMode)
+                        {
+                            <td>@ap.UserName</td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
