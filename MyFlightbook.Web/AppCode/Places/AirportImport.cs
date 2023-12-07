@@ -166,6 +166,8 @@ namespace MyFlightbook.Airports
             }
         }
 
+        private static readonly char[] rgchLatLongSeparator = new char[] { ',', ' ' };
+
         #endregion
 
         public airportImportCandidate() : base()
@@ -263,7 +265,7 @@ namespace MyFlightbook.Airports
                             aic.LatLong = DMSAngle.LatLonFromDMSString(GetCol(rgCols, ic.iColLatLong));
                         else
                         {
-                            string[] rgsz = szLatLong.Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                            string[] rgsz = szLatLong.Split(rgchLatLongSeparator, StringSplitOptions.RemoveEmptyEntries);
                             if (rgsz.Length == 2)
                             {
                                 szLat = rgsz[0];
