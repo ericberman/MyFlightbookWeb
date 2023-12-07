@@ -232,6 +232,11 @@
     </div>
 </div>
 
+@if (ViewBag.isAdminMode)
+{
+    <h1>Admin stuff</h1>
+    <div>&nbsp;</div>
+}
 <div id="adminTabs">
 
     @if (ViewBag.isAdminMode)
@@ -488,7 +493,6 @@
             return false;
         }
         </script>
-        <h1>Admin stuff</h1>
         <ol>
             <li><a href="#adminImport">Bulk Import</a></li>
             <li><a href="#adminReviewDupes">Dupe Airports</a></li>
@@ -538,8 +542,11 @@
             <img src="@VirtualPathUtility.ToAbsolute("~/images/progress.gif")" />
             <script type="text/javascript">
                 $(function () {
-                    $("#adminTabs").tabs();
-                    refreshUserAirports(true);
+                    $("#adminTabs").tabs({
+                        activate: function (e, ui) {
+                            refreshUserAirports(true);
+                        }
+                    });
                 });
             </script>
         }
