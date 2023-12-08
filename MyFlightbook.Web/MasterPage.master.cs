@@ -181,7 +181,7 @@ namespace MyFlightbook.Web
                 lnkPrivacy.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrivacyPolicyHeader, Branding.CurrentBrand.AppName);
 
                 lnkAppleIcon.Href = ResolveUrl("~/images/apple-touch-icon.png");
-                jqueryUIModsCSS.Href = "~/Public/CSS/jqueryuimods.css".ToAbsoluteURL(Request).ToString();
+                jqueryUIModsCSS.Href = "~/Public/CSS/jqueryuimods.css?v=4".ToAbsoluteURL(Request).ToString();
                 cssMain.Href = MFBConstants.BaseStylesheet.ToAbsoluteURL(Request).ToString();    // to enable forced reload
                 cssMobile.Visible = Request.IsMobileSession();
                 cssMobile.Href = ResolveUrl("~/Public/CSS/MobileSheet.css?v=8");
