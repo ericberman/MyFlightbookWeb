@@ -276,7 +276,7 @@
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>
       <Item>
-        <Link>~/Admin/Stats.aspx</Link>
+        <Link>~/mvc/Admin/Stats</Link>
         <ID>admStats</ID>
         <Roles>SiteAdmin,Reporter</Roles>
       </Item>
