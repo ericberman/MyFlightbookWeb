@@ -26,7 +26,7 @@ else
                 string szdummyID = String.Format(CultureInfo.InvariantCulture, "spn{0}", ac.AircraftID);
                 string szNumFlights = (ac.Stats?.Flights ?? 0).ToString(CultureInfo.CurrentCulture);
                 <tr>
-                    <td><a target="_blank" style="font-weight:bold;" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}&a=1&genCandidate=1", ac.AircraftID))">@ac.TailNumber</a> @ac.ModelCommonName</td>
+                    <td><a target="_blank" style="font-weight:bold;" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}&a=1&genCandidate=1", ac.AircraftID))">@ac.TailNumber</a> @ac.LongModelDescription</td>
                     <td><a style="cursor:pointer" onclick="javascript: viewFlights(@ac.AircraftID, '@ac.TailNumber');">@szNumFlights</a></td>
                     <td>@(ac.Stats?.Users ?? 0)</td>
                     <td>
