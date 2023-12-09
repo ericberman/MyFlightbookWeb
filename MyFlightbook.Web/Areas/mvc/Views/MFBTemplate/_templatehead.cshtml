@@ -7,6 +7,10 @@
 
     gtag('config', '@LocalConfig.SettingForKey(Request.IsLocal ? "GoogleAnalyticsGA4Developer" : "GoogleAnalyticsGA4Production")');
 </script>
+@if (ViewBag.BaseRef != null)
+{
+    <base href="@ViewBag.BaseRef" />
+}
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" id="metaViewport" />
 <meta name="verify-v1" content="7D/8Uvt4SqfWiyxmBjdh6ee4Kmr8ckec9yCd8wGU9n0=" />

@@ -349,5 +349,19 @@ ORDER BY f2.numflights ASC;", creationDate == null ? string.Empty : "WHERE u.cre
             return true;
         }
 
+        public static string TrimOldTokensAndAuths()
+        {
+            int i = EventRecorder.ADMINTrimOldItems(EventRecorder.MFBEventID.AuthUser);
+            i += EventRecorder.ADMINTrimOldItems(EventRecorder.MFBEventID.ExpiredToken);
+            return String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:#,##0} items trimmed", i);
+        }
+
+        public static void TrimOldOAuth()
+        {
+            // Clean up old Nonces and cryptokeys
+            new DBHelper("DELETE FROM nonce WHERE timestampUtc < DATE_ADD(Now(), INTERVAL -14 DAY)").DoNonQuery();
+            new DBHelper("DELETE FROM cryptokeys WHERE ExpiresUtc < DATE_ADD(Now(), INTERVAL -14 DAY)").DoNonQuery();
+            new DBHelper("DELETE FROM passwordresetrequests WHERE expiration < DATE_ADD(Now(), INTERVAL -14 DAY)").DoNonQuery();
+        }
     }
 }

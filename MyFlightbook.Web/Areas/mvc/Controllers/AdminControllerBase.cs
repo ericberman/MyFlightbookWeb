@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 /******************************************************
@@ -32,6 +33,23 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 CheckAuth(roleMask);
 
                 return func();
+            }
+            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                Response.TrySkipIisCustomErrors = true;
+                return Content(ex.Message);
+            }
+        }
+
+        protected async Task<ActionResult> SafeOp(uint roleMask, Func<Task<ActionResult>> func)
+        {
+            if (func == null) throw new ArgumentNullException(nameof(func));
+            try
+            {
+                CheckAuth(roleMask);
+
+                return await func();
             }
             catch (Exception ex) when (!(ex is OutOfMemoryException))
             {

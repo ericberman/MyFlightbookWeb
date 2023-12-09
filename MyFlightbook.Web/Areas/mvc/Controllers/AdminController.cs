@@ -1,11 +1,18 @@
 ﻿using MyFlightbook.Achievements;
+using MyFlightbook.Charting;
+using MyFlightbook.Histogram;
 using MyFlightbook.Instruction;
+using MyFlightbook.Web.Admin;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+
 
 /******************************************************
  * 
@@ -152,9 +159,192 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             });
         }
         #endregion
+
+        #region Stats
+        #endregion
+        [Authorize]
+        [HttpPost]
+        public string TrimOldTokensAndAuths()
+        {
+            return SafeOp(ProfileRoles.maskCanReport, () =>
+            {
+                return AdminStats.TrimOldTokensAndAuths();
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public string TrimOldOAuth()
+        {
+            return SafeOp(ProfileRoles.maskCanReport, () =>
+            {
+                AdminStats.TrimOldTokensAndAuths();
+                return string.Empty;
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<ActionResult> FlightsPerUser(string dateRange)
+        {
+            return await SafeOp(ProfileRoles.maskCanReport, async () =>
+            {
+                IEnumerable<FlightsPerUserStats> lstFlightsPerUser = null;
+                DateTime? creationDate = null;
+                if (!String.IsNullOrEmpty(dateRange))
+                    creationDate = DateTime.Now.AddMonths(-Convert.ToInt32(dateRange, CultureInfo.InvariantCulture));
+
+                await Task.Run(() => { lstFlightsPerUser = FlightsPerUserStats.Refresh(creationDate); });
+
+                NumericBucketmanager bmFlightsPerUser = new NumericBucketmanager() { BucketForZero = true, BucketWidth = 100, BucketSelectorName = "FlightCount" };
+                HistogramManager hmFlightsPerUser = new HistogramManager()
+                {
+                    SourceData = lstFlightsPerUser,
+                    SupportedBucketManagers = new BucketManager[] { bmFlightsPerUser },
+                    Values = new HistogramableValue[] { new HistogramableValue("Range", "Flights", HistogramValueTypes.Integer) }
+                };
+
+                GoogleChartData flightsPerUserChart = new GoogleChartData
+                {
+                    Title = "Flights/user",
+                    XDataType = GoogleColumnDataType.@string,
+                    YDataType = GoogleColumnDataType.number,
+                    XLabel = "Flights/User",
+                    YLabel = "Users - All",
+                    SlantAngle = 90,
+                    Width = 1000,
+                    Height = 500,
+                    ChartType = GoogleChartType.ColumnChart,
+                    ContainerID = "flightsPerUserDiv",
+                    TickSpacing = (uint)((lstFlightsPerUser.Count() < 20) ? 1 : (lstFlightsPerUser.Count() < 100 ? 5 : 10))
+                };
+
+                bmFlightsPerUser.ScanData(hmFlightsPerUser);
+
+                using (DataTable dt = bmFlightsPerUser.ToDataTable(hmFlightsPerUser))
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        flightsPerUserChart.XVals.Add((string)dr["DisplayName"]);
+                        flightsPerUserChart.YVals.Add((int)Convert.ToDouble(dr["Flights"], CultureInfo.InvariantCulture));
+                    }
+                }
+                ViewBag.flightsPerUserChart = flightsPerUserChart;
+                return PartialView("_userActivity");
+            });
+        }
         #endregion
 
         #region Full page endpoints
+
+        [HttpGet]
+        public async Task<ActionResult> Stats(bool fForEmail = false)
+        {
+            // Allow local requests, unless you are authenticated AND can report AND not requesting the full page
+            bool fIsLocalAndForEmail = Request.IsLocal && fForEmail;
+            if (!fIsLocalAndForEmail)
+                CheckAuth(ProfileRoles.maskCanReport);
+
+            AdminStats astats = new AdminStats();
+            if (await astats.Refresh(!fForEmail))
+            {
+                ViewBag.stats = astats;
+                ViewBag.emailOnly = fForEmail;
+
+                GoogleChartData newUserChart = new GoogleChartData()
+                {
+                    ChartType = GoogleChartType.LineChart,
+                    XDataType = GoogleColumnDataType.date,
+                    YDataType = GoogleColumnDataType.number,
+                    Y2DataType = GoogleColumnDataType.number,
+                    UseMonthYearDate = true,
+                    Title = "Number of Users",
+                    LegendType = GoogleLegendType.bottom,
+                    TickSpacing = 1,
+                    SlantAngle = 0,
+                    XLabel = "Year/Month",
+                    YLabel = "New Users",
+                    Y2Label = "Cumulative Users",
+                    Width = 800,
+                    Height = 400,
+                    ContainerID = "newUserDiv"
+                };
+                foreach (NewUserStats nus in astats.NewUserStatsMonthly)
+                {
+                    newUserChart.XVals.Add(nus.DisplayPeriod);
+                    newUserChart.YVals.Add(nus.NewUsers);
+                    newUserChart.Y2Vals.Add(nus.RunningTotal);
+                }
+                ViewBag.newUserChart = newUserChart;
+
+                if (!fForEmail)
+                {
+                    GoogleChartData userActivityChart = new GoogleChartData()
+                    {
+                        LegendType = GoogleLegendType.right,
+                        UseMonthYearDate = true,
+                        XDataType = GoogleColumnDataType.date,
+                        Title = "User Activity",
+                        XLabel = "Date of Last Activity",
+                        YLabel = "Users",
+                        SlantAngle = 90,
+                        ChartType = GoogleChartType.LineChart,
+                        Width = 800,
+                        Height = 400,
+                        ContainerID = "userActivityDiv"
+                    };
+                    foreach (UserActivityStats uas in astats.UserActivity)
+                    {
+                        userActivityChart.XVals.Add(uas.Date);
+                        userActivityChart.YVals.Add(uas.Count);
+                    }
+                    ViewBag.activityChart = userActivityChart;
+
+                    GoogleChartData flightsByDateChart = new GoogleChartData()
+                    {
+                        LegendType = GoogleLegendType.bottom,
+                        Title = "Flights recorded / month",
+                        XDataType = GoogleColumnDataType.@string,
+                        YDataType = GoogleColumnDataType.number,
+                        UseMonthYearDate = true,
+                        Y2DataType = GoogleColumnDataType.number,
+                        XLabel = "Flights/Month",
+                        TickSpacing = 36,
+                        YLabel = "Flights",
+                        Y2Label = "Running Total",
+                        SlantAngle = 90,
+                        ChartType = GoogleChartType.LineChart,
+                        Width = 1000,
+                        Height = 500,
+                        ContainerID = "flightsByDateDiv"
+                    };
+                    YearMonthBucketManager bmFlights = new YearMonthBucketManager() { BucketSelectorName = "DateRange" };
+
+                    HistogramManager hmFlightsByDate = new HistogramManager()
+                    {
+                        SourceData = astats.FlightsByDate,
+                        SupportedBucketManagers = new BucketManager[] { bmFlights },
+                        Values = new HistogramableValue[] { new HistogramableValue("DateRange", "Flights", HistogramValueTypes.Time) }
+                    };
+                    bmFlights.ScanData(hmFlightsByDate);
+
+                    using (DataTable dt = bmFlights.ToDataTable(hmFlightsByDate))
+                    {
+                        foreach (DataRow dr in dt.Rows)
+                        {
+                            flightsByDateChart.XVals.Add((string)dr["DisplayName"]);
+                            flightsByDateChart.YVals.Add((int)Convert.ToDouble(dr["Flights"], CultureInfo.InvariantCulture));
+                            flightsByDateChart.Y2Vals.Add((int)Convert.ToDouble(dr["Flights Running Total"], CultureInfo.InvariantCulture));
+                        }
+                    }
+                    ViewBag.flightsByDateChart = flightsByDateChart;
+                }
+                return View("stats");
+            }
+            else
+                return new EmptyResult();
+        }
+
         [Authorize]
         [HttpPost]
         public ActionResult UpdateFAQ(int idFaq, string Category, string Question, string Answer)

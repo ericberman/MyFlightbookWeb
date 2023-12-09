@@ -1,0 +1,34 @@
+﻿@using Newtonsoft.Json
+@using Newtonsoft.Json.Converters
+@using System.Globalization
+@{ 
+    MyFlightbook.Charting.GoogleChartData chart = ViewBag.flightsPerUserChart;
+}
+<div id="@chart.ContainerID" style="display: inline-block; margin: 0 auto !important; height: @(chart.Height.ToString(CultureInfo.InvariantCulture) + "px")">
+</div>
+<script type="text/javascript">
+    var ctd = @Html.Raw(JsonConvert.SerializeObject(chart, new JsonConverter[] { new JavaScriptDateTimeConverter() }));
+    chartsToDraw.push(ctd);
+    var cd = drawGChart(ctd);
+    chartData.push(cd);
+</script>
+<h2>@{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "divUserActivity", labelText = "User Activity" }); } </h2>
+<div id="divUserActivity" style="display:none;">
+    <table class="stickyHeaderTable">
+        <thead>
+            <tr>
+                <th class="headerBase gvhDefault">Range</th>
+                <th class="headerBase gvhDefault">Flights</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < chart.XVals.Count; i++)
+            {
+                <tr>
+                    <td>@chart.XVals[i]</td>
+                    <td>@(((int) chart.YVals[i]).PrettyString())</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

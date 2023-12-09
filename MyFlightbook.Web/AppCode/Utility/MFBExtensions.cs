@@ -294,7 +294,7 @@ namespace MyFlightbook
             // if it appears to be only a naked time and a date for the naked time is provided, use that date.
             if (dtNakedTime != null && sz.Length <= 5 && System.Text.RegularExpressions.Regex.IsMatch(sz, "^\\d{0,2}:\\d{2}$", System.Text.RegularExpressions.RegexOptions.Compiled))
             {
-                string[] rgszHM = sz.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] rgszHM = sz.Split(timeSeparator, StringSplitOptions.RemoveEmptyEntries);
                 if (rgszHM.Length == 2)
                 {
                     if (int.TryParse(rgszHM[0], out int hour) && int.TryParse(rgszHM[1], out int minute))
@@ -457,7 +457,7 @@ namespace MyFlightbook
             if (String.IsNullOrEmpty(sz))
                 return lst;
 
-            string[] rgsz = sz.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] rgsz = sz.Split(commaSeparator, StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i < rgsz.Length; i++)
                 lst.Add(Convert.ToInt32(rgsz[i], CultureInfo.InvariantCulture));
             return lst;
@@ -489,7 +489,7 @@ namespace MyFlightbook
             return sz;
         }
 
-        private static void AddMarkedLines(IList<string> lst, string sz, bool fMarkdown)
+        private static void AddMarkedLines(List<string> lst, string sz, bool fMarkdown)
         {
             if (String.IsNullOrEmpty(sz))
                 return;
@@ -498,7 +498,7 @@ namespace MyFlightbook
 
             if (fMarkdown)
             {
-                string[] rgLines = sz.Split(new string[] { "\r\n", "\r", "\n"  }, StringSplitOptions.None);
+                string[] rgLines = sz.Split(newlineSeparators, StringSplitOptions.None);
                 // Preserve the line breaks by doing the markup in-line
                 for (int i = 0; i < rgLines.Length; i++)
                     rgLines[i] = MarkupNonLinkedText(rgLines[i]);
@@ -693,7 +693,7 @@ namespace MyFlightbook
             if (String.IsNullOrEmpty(sz))
                 return szNew;
 
-            List<string> lst = new List<string>(sz.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
+            List<string> lst = new List<string>(sz.Split(spaceSeparator, StringSplitOptions.RemoveEmptyEntries));
             if (rgReplace != null)
             {
                 foreach (string szReplace in rgReplace)
@@ -796,6 +796,10 @@ namespace MyFlightbook
         }
 
         private static readonly DateTime dtUnixReferenceDate = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+        private static readonly char[] timeSeparator = new char[] { ':' };
+        private static readonly char[] commaSeparator = new char[] { ',' };
+        private static readonly string[] newlineSeparators = new string[] { "\r\n", "\r", "\n"  };
+        private static readonly char[] spaceSeparator = new char[] { ' ' };
 
         /// <summary>
         /// Converts seconds (or milliseconds) since a reference unix date (Jan 1, 1970).  The system will assume seconds unless that's more than 5 days in the future.
@@ -806,6 +810,16 @@ namespace MyFlightbook
         {
             // check for whole seconds - if that yields a date more than 5 days in the future, we can assume milliseconds
             return dtUnixReferenceDate.AddSeconds(dtUnixReferenceDate.AddSeconds(i).CompareTo(DateTime.UtcNow.AddDays(5)) > 0 ? i / 1000 : i);
+        }
+
+        /// <summary>
+        /// Converts the string to a nicely formatted string in the current culture, using thousands separators and at least one digit.
+        /// </summary>
+        /// <param name="i"></param>
+        /// <returns></returns>
+        public static string PrettyString(this int i)
+        {
+            return i.ToString("#,##0", CultureInfo.CurrentCulture);
         }
         #endregion
 
