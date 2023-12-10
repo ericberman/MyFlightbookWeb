@@ -1,6 +1,8 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
+using AWSNotifications;
 using gma.Drawing.ImageInfo;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -10,7 +12,7 @@ using System.Web.Hosting;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2021 MyFlightbook LLC
+ * Copyright (c) 2008-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -212,6 +214,37 @@ namespace MyFlightbook.Image
                     s3.DeleteObject(new DeleteObjectRequest() { BucketName = Bucket, Key = o.Key });
                 });
             }
+        }
+
+        public static IEnumerable<int> ProcessPendingVideos(out string szSummary)
+        {
+            List<SNSNotification> lstPending = new List<SNSNotification>();
+            List<int> lstFlights = new List<int>();
+
+            // Get all pending videos that are more than an hour old and create synthetic SNS notifications for them.
+            DBHelper dbh = new DBHelper("SELECT * FROM pendingvideos pv WHERE submitted < DATE_ADD(Now(), INTERVAL -1 HOUR)");
+            dbh.ReadRows((comm) => { },
+            (dr) =>
+            {
+                AWSETSStateMessage etsNotification = new AWSETSStateMessage() { JobId = (string)dr["jobID"], State = "COMPLETED" };
+                SNSNotification sns = new SNSNotification() { Message = JsonConvert.SerializeObject(etsNotification) };
+                lstPending.Add(sns);
+                lstFlights.Add(Convert.ToInt32(dr["imagekey"], CultureInfo.InvariantCulture));
+            });
+
+            int cPending = lstPending.Count;
+
+            // Now, go through them and create each one.  Should clean up as part of the process.
+            // simply creating the object will do all that is necessary.
+            foreach (SNSNotification sns in lstPending)
+                _ = new MFBImageInfo(sns);
+
+            int cRemaining = 0;
+            dbh.CommandText = "SELECT count(*) AS numRemaining FROM pendingvideos pv WHERE submitted < DATE_ADD(Now(), INTERVAL -1 HOUR)";
+            dbh.ReadRow((comm) => { }, (dr) => { cRemaining = Convert.ToInt32(dr["numRemaining"], CultureInfo.InvariantCulture); });
+
+            szSummary = String.Format(CultureInfo.CurrentCulture, "Found {0} videos orphaned, {1} now remain", cPending, cRemaining);
+            return lstFlights;
         }
     }
 }

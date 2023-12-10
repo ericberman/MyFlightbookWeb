@@ -1,6 +1,7 @@
 ﻿using MyFlightbook.Achievements;
 using MyFlightbook.Charting;
 using MyFlightbook.Histogram;
+using MyFlightbook.Image;
 using MyFlightbook.Instruction;
 using MyFlightbook.Web.Admin;
 using System;
@@ -9,8 +10,10 @@ using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Caching;
 using System.Web.Mvc;
 
 
@@ -161,7 +164,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #endregion
 
         #region Stats
-        #endregion
         [Authorize]
         [HttpPost]
         public string TrimOldTokensAndAuths()
@@ -235,7 +237,212 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
         #endregion
 
+        #region Images
+
+        private static void CacheProgress(string key, StringBuilder sb)
+        {
+            HttpRuntime.Cache.Add(key, sb, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 30, 0), CacheItemPriority.Normal, null);
+        }
+
+        /// <summary>
+        /// For a slow operation, returns the current status, or else an empty string once completed.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost]
+        public string SlowImageOpStatus(string key)
+        {
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            {
+                StringBuilder sb = (StringBuilder)HttpRuntime.Cache[key];
+                return sb?.ToString() ?? string.Empty;
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public string DeleteOrphans()
+        {
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            {
+                string key = Guid.NewGuid().ToString();
+
+                StringBuilder sb = new StringBuilder();
+                CacheProgress(key, sb);
+
+                new Thread(new ThreadStart(() =>
+                {
+                    sb.Append("Deleting orphaned flight images:\r\n");
+                    sb.AppendFormat(CultureInfo.CurrentCulture, "{0}\r\n", MFBImageInfo.ADMINDeleteOrphans(MFBImageInfoBase.ImageClass.Flight));
+                    sb.Append("Deleting orphaned endorsement images:\r\n");
+                    sb.AppendFormat(CultureInfo.CurrentCulture, "{0}\r\n", MFBImageInfo.ADMINDeleteOrphans(MFBImageInfoBase.ImageClass.Endorsement));
+                    sb.Append("Deleting orphaned offline endorsements:\r\n");
+                    sb.AppendFormat(CultureInfo.CurrentCulture, "{0}\r\n", MFBImageInfo.ADMINDeleteOrphans(MFBImageInfoBase.ImageClass.OfflineEndorsement));
+                    sb.Append("Deleting orphaned Aircraft images:\r\n");
+                    sb.AppendFormat(CultureInfo.CurrentCulture, "{0}\r\n", MFBImageInfo.ADMINDeleteOrphans(MFBImageInfoBase.ImageClass.Aircraft));
+                    sb.Append("Deleting orphaned BasicMed images:\r\n");
+                    sb.AppendFormat(CultureInfo.CurrentCulture, "{0}\r\n", MFBImageInfo.ADMINDeleteOrphans(MFBImageInfoBase.ImageClass.BasicMed));
+                    HttpRuntime.Cache.Remove(key); // clear it out to indicate success
+                })).Start();
+                return key;
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public string DeleteDebugS3Images()
+        {
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            {
+                string key = Guid.NewGuid().ToString();
+
+                StringBuilder sb = new StringBuilder();
+                CacheProgress(key, sb);
+
+                new Thread(new ThreadStart(() =>
+                {
+                    sb.AppendLine("Starting to clean S3 debug images...");
+                    AWSImageManagerAdmin.ADMINCleanUpDebug();
+                    HttpRuntime.Cache.Remove(key);
+                })).Start();
+                return key;
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public string SyncImages(MFBImageInfoBase.ImageClass ic, bool fPreviewOnly)
+        {
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            {
+                string key = Guid.NewGuid().ToString();
+
+                MFBImageAdmin imageAdmin = new MFBImageAdmin(ic);
+
+                CacheProgress(key, imageAdmin.Status);
+
+                new Thread(new ThreadStart(() =>
+                {
+                    imageAdmin.Status.AppendFormat(CultureInfo.InvariantCulture, "Starting to sync image class {0} (preview = {1})...\r\n", ic.ToString(), fPreviewOnly.ToString().ToUpperInvariant());
+                    IEnumerable<DirKey> lstDk = DirKey.DirKeyForClass(ic, out string linkTemplate);
+                    imageAdmin.SyncImages(lstDk, fPreviewOnly);
+                    HttpRuntime.Cache.Remove(key);
+                })).Start();
+                return key;
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public string DeleteS3Orphans(MFBImageInfoBase.ImageClass ic, bool fPreviewOnly)
+        {
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            {
+                return SafeOp(ProfileRoles.maskCanManageData, () =>
+                {
+                    string key = Guid.NewGuid().ToString();
+
+                    MFBImageAdmin imageAdmin = new MFBImageAdmin(ic);
+                    CacheProgress(key, imageAdmin.Status);
+
+                    new Thread(new ThreadStart(() =>
+                    {
+                        imageAdmin.Status.AppendFormat(CultureInfo.InvariantCulture, "Starting to delete S3 orphans for image class {0} (preview = {1})...\r\n", ic.ToString(), fPreviewOnly.ToString().ToUpperInvariant());
+                        imageAdmin.DeleteS3Orphans(fPreviewOnly, fIsLiveSite: Branding.CurrentBrand.MatchesHost(Request.Url.Host));
+                        HttpRuntime.Cache.Remove(key);
+                    })).Start();
+                    return key;
+                });
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public string UpdateBrokenImage(MFBImageInfoBase.ImageClass ic, string key, string thumbName, int width, int height)
+        {
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            {
+                if (width == 0)
+                    throw new ArgumentOutOfRangeException(nameof(width), "Can't have zero width");
+                if (height == 0)
+                    throw new ArgumentOutOfRangeException(nameof(height), "Can't have Invalid height");
+                MFBImageInfo mfbii = MFBImageInfo.LoadMFBImageInfo(ic, key, thumbName);
+                mfbii.WidthThumbnail = width;
+                mfbii.HeightThumbnail = height;
+                mfbii.ToDB();
+                return string.Empty;
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public string ProcessPendingVideos()
+        {
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            {
+                PendingVideo.ProcessPendingVideos(out string szSummary);
+                return szSummary;
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult NextImageRowset(int offset, int limit, MFBImageInfoBase.ImageClass imageClass)
+        {
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            {
+                Dictionary<string, MFBImageCollection> dictRows = MFBImageInfo.FromDB(imageClass, offset, limit, out List<string> lstKeys);
+                ViewBag.imagesRows = dictRows;
+                ViewBag.keys = lstKeys;
+                ViewBag.imageClass = imageClass;
+                ViewBag.linkTemplate = MFBImageInfoBase.TemplateForClass(imageClass);
+                return PartialView("_imageRowSet");
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public string MigrateImages(MFBImageInfoBase.ImageClass imageClass, int maxFiles, int maxMB)
+        {
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            {
+                return AWSImageManagerAdmin.MigrateImages(maxMB, maxFiles, imageClass);
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult AircraftForFlightImage(int idFlight)
+        {
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            {
+                LogbookEntry le = new LogbookEntry(idFlight, User.Identity.Name, LogbookEntryCore.LoadTelemetryOption.None, true);
+                return Json(new { href = VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}&a=1", le.AircraftID)), text = le.TailNumDisplay });
+            });
+        }
+        #endregion
+        #endregion
+
         #region Full page endpoints
+
+        [HttpGet]
+        [Authorize]
+        public ActionResult Images(string id = null, int skip = 0)
+        {
+            CheckAuth(ProfileRoles.maskCanManageData);
+            if (String.IsNullOrEmpty(id) || !Enum.TryParse(id, true, out MFBImageInfoBase.ImageClass result))
+            {
+                ViewBag.brokenImages = MFBImageAdmin.BrokenImages();
+                return View("adminImages");
+            } else
+            {
+                ViewBag.imageClass = result;
+                ViewBag.skip = skip;    // set a starting point for images...
+                ViewBag.totalRows = String.Format(CultureInfo.CurrentCulture, Resources.Admin.ImageRowsHeader, new MFBImageAdmin(result).ImageRowCount());
+                return View("adminReviewImages");
+            }
+        }
 
         [HttpGet]
         public async Task<ActionResult> Stats(bool fForEmail = false)

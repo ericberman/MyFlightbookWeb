@@ -231,7 +231,7 @@
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>
       <Item>
-        <Link>~/Admin/AdminImgs.aspx</Link>
+        <Link>~/mvc/Admin/Images</Link>
         <ID>admImages</ID>
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>

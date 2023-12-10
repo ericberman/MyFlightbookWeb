@@ -79,7 +79,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Showing rows {0}-{1} of {2}.
+        ///   Looks up a localized string similar to {0:#,##0} image rows found.
         /// </summary>
         internal static string ImageRowsHeader {
             get {

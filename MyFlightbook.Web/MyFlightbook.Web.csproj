@@ -426,7 +426,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Admin\AdminImgs.aspx" />
     <Content Include="Admin\AdminService.asmx" />
     <Content Include="AppCode\Clubs\DayPilotLICENSE.txt" />
     <Content Include="AppCode\oAuthServices\MS-PL LICENSE for DotNetOpenAuth.txt" />
@@ -832,7 +831,6 @@
     <Content Include="Member\ACSchedule.aspx" />
     <Content Include="Member\AddEndorsement.aspx" />
     <Content Include="Member\AddRelationship.aspx" />
-    <Content Include="Admin\AdminImages.aspx" />
     <Content Include="Member\Aircraft.aspx" />
     <Content Include="Member\Ajax.asmx" />
     <Content Include="Member\BrowseTemplates.aspx" />
@@ -1553,6 +1551,11 @@
     <Content Include="Areas\mvc\Views\Airport\_airportImportCandidate.cshtml" />
     <Content Include="Areas\mvc\Views\Admin\_userActivity.cshtml" />
     <Content Include="Areas\mvc\Views\Admin\stats.cshtml" />
+    <Content Include="Areas\mvc\Views\Admin\adminImages.cshtml" />
+    <Content Include="Areas\mvc\Views\Admin\adminReviewImages.cshtml" />
+    <Content Include="Areas\mvc\Views\Admin\_imageRowSet.cshtml" />
+    <Content Include="Areas\mvc\Views\Image\_imageList.cshtml" />
+    <Content Include="Areas\mvc\Views\Image\_editableImage.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -1577,16 +1580,6 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Admin\AdminImgs.aspx.cs">
-      <DependentUpon>AdminImgs.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Admin\AdminImgs.aspx.designer.cs">
-      <DependentUpon>AdminImgs.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Admin\AdminPage.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
     <Compile Include="AppCode\Admin\AdminWebServices.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -2755,13 +2748,6 @@
     </Compile>
     <Compile Include="Member\AddRelationship.aspx.designer.cs">
       <DependentUpon>AddRelationship.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Admin\AdminImages.aspx.cs">
-      <DependentUpon>AdminImages.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Admin\AdminImages.aspx.designer.cs">
-      <DependentUpon>AdminImages.aspx</DependentUpon>
     </Compile>
     <Compile Include="Member\Aircraft.aspx.cs">
       <DependentUpon>Aircraft.aspx</DependentUpon>

@@ -15,7 +15,7 @@ using System.Web.Mvc;
 
 namespace MyFlightbook.Web.Areas.mvc.Controllers
 {
-    public class ImageController : Controller
+    public class ImageController : AdminControllerBase
     {
         #region image widgets
         [ChildActionOnly]
@@ -32,7 +32,83 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
         #endregion
 
+        #region Web Services
+        [Authorize]
+        [HttpPost]
+        public ActionResult DeleteImage(MFBImageInfoBase.ImageClass ic, string key, string szThumb, bool fAsAdmin = false)
+        {
+            return SafeOp(ProfileRoles.maskUnrestricted, () =>
+            {
+                MFBImageInfo mfbii = MFBImageInfo.LoadMFBImageInfo(ic, key, szThumb);
+
+                // Check ownership.
+                bool fCanActAsAdmin = (fAsAdmin && MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData);
+                if (!fCanActAsAdmin)
+                    ImageAuthorization.ValidateAuth(mfbii, User.Identity.Name, ImageAuthorization.ImageAction.Delete);
+                mfbii.DeleteImage();
+                return new EmptyResult();
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult AnnotateImage(MFBImageInfoBase.ImageClass ic, string key, string szThumb, string newAnnotation, bool fAsAdmin = false)
+        {
+            return SafeOp(ProfileRoles.maskUnrestricted, () =>
+            {
+                MFBImageInfo mfbii = MFBImageInfo.LoadMFBImageInfo(ic, key, szThumb);
+
+                // Check ownership.
+                bool fCanActAsAdmin = (fAsAdmin && MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData);
+                if (!fCanActAsAdmin)
+                    ImageAuthorization.ValidateAuth(mfbii, User.Identity.Name, ImageAuthorization.ImageAction.Annotate);
+
+                mfbii.UpdateAnnotation(newAnnotation);
+                return new EmptyResult();
+            });
+        }
+        #endregion
+
         #region displaying of images
+        [ChildActionOnly]
+        public ActionResult ImageListDisplay(ImageList il, string altText = "", bool fCanDelete = false, bool fCanEdit = false, bool fCanMakeDefault = false, GeoLinkType zoomLinkType = GeoLinkType.None, bool fIsDefault = false, string confirmText = "", string defaultImage = "", string onMakeDefault = "", string onDelete = "", string onAnnotate = "")
+        {
+            if (il == null)
+                throw new ArgumentNullException(nameof(il));
+            ViewBag.rgmfbii = il.ImageArray;
+            ViewBag.altText = altText;
+            ViewBag.fCanDelete = fCanDelete;
+            ViewBag.fCanEdit = fCanEdit;
+            ViewBag.fCanMakeDefault = fCanMakeDefault;
+            ViewBag.zoomLinkType = zoomLinkType;
+            ViewBag.fIsDefault = fIsDefault;
+            ViewBag.confirmText = confirmText;
+            ViewBag.defaultImage = defaultImage;
+            ViewBag.onDelete = onDelete;
+            ViewBag.onAnnotate = onAnnotate;
+            ViewBag.onMakeDefault = onMakeDefault;
+
+            return PartialView("_imageList");
+        }
+
+        [ChildActionOnly]
+        public ActionResult EditableImage(MFBImageInfoBase mfbii, string altText = "", bool fCanDelete = false, bool fCanEdit = false, bool fCanMakeDefault = false, GeoLinkType zoomLinkType = GeoLinkType.None, bool fIsDefault = false, string confirmText = "", string onMakeDefault = "", string onDelete = "", string onAnnotate = "")
+        {
+            ViewBag.mfbii = mfbii;
+
+            ViewBag.altText = altText;
+            ViewBag.fCanDelete = fCanDelete;
+            ViewBag.fCanEdit = fCanEdit;
+            ViewBag.fCanMakeDefault = fCanMakeDefault;
+            ViewBag.zoomLinkType = zoomLinkType;
+            ViewBag.fIsDefault = fIsDefault;
+            ViewBag.confirmText = confirmText;
+            ViewBag.onDelete = onDelete;
+            ViewBag.onAnnotate = onAnnotate;
+            ViewBag.onMakeDefault = onMakeDefault;
+            return PartialView("_editableImage");
+        }
+
         [Authorize]
         public ActionResult PendingImage(string id, int full = 0)
         {

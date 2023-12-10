@@ -124,7 +124,7 @@
     <value>{0} dupes found</value>
   </data>
   <data name="ImageRowsHeader" xml:space="preserve">
-    <value>Showing rows {0}-{1} of {2}</value>
+    <value>{0:#,##0} image rows found</value>
   </data>
   <data name="ImportAirportDistanceTemplate" xml:space="preserve">
     <value>Distance: {0:f1}nm</value>

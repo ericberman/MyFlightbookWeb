@@ -1,0 +1,44 @@
+﻿@using MyFlightbook.Image
+@using System.Globalization
+@{ 
+    Dictionary<string, MFBImageCollection> dictRows = ViewBag.imagesRows;
+    string szTemplate = ViewBag.linkTemplate;
+    IEnumerable<string> lstKeys = ViewBag.keys;
+    MFBImageInfoBase.ImageClass imageClass = ViewBag.imageClass;
+}
+@foreach (string key in lstKeys)
+{
+    <tr>
+        <td>
+            @if (String.IsNullOrEmpty(szTemplate))
+            {
+            @key
+            }
+            else
+            {
+            <a href = "@String.Format(CultureInfo.InvariantCulture, szTemplate, key)" >@key</a>
+            }
+
+            @if (imageClass == MFBImageInfoBase.ImageClass.Flight)
+            {
+                <div>
+                    <a style="cursor:pointer" onclick="javascript:getAircraftForImage(this, '@key');">Get Aircraft</a>
+                    <a name="aircraftLinkResult" href="" target="_blank"></a>
+                </div>
+            }
+        </td>
+        <td>
+            @{ 
+                Html.RenderAction("ImageListDisplay", "Image", new
+                {
+                    il = new ImageList(imageClass, key, dictRows[key].ToArray()),
+                    zoomLinkType = GeoLinkType.ZoomOnGoogleMaps,
+                    fCanEdit = true,
+                    fCanDelete = true,
+                    onDelete = "adminDeleteImage",
+                    onAnnotate = "adminAnnotateImage"
+                });
+            }
+        </td>
+    </tr>
+}

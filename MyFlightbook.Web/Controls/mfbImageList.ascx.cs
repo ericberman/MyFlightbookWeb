@@ -3,14 +3,13 @@ using MyFlightbook.Image;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2022 MyFlightbook LLC
+ * Copyright (c) 2007-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -18,7 +17,7 @@ using System.Web.UI.WebControls;
 public partial class Controls_mfbImageList : System.Web.UI.UserControl
 {
     private ImageList m_imgList;
-    private Controls_mfbEditableImage.GeoLinkType m_LinkType = Controls_mfbEditableImage.GeoLinkType.None;
+    private GeoLinkType m_LinkType = GeoLinkType.None;
 
     public event EventHandler<MFBImageInfoEventArgs> MakeDefault;
 
@@ -108,7 +107,7 @@ public partial class Controls_mfbImageList : System.Web.UI.UserControl
     }
 
 
-    public Controls_mfbEditableImage.GeoLinkType MapLinkType
+    public GeoLinkType MapLinkType
     {
         get { return m_LinkType; }
         set { m_LinkType = value; }

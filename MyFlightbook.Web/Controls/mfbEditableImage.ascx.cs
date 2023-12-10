@@ -19,8 +19,6 @@ public partial class Controls_mfbEditableImage : UserControl
     private string m_szAltTextDefault = "";
     private GeoLinkType m_zoomLinkType = GeoLinkType.None;
 
-    public enum GeoLinkType { None, ZoomOnLocalMap, ZoomOnGoogleMaps };
-
     public event EventHandler<MFBImageInfoEventArgs> ImageDeleted;
     public event EventHandler<MFBImageInfoEventArgs> ImageMadeDefault;
     public event EventHandler<MFBImageInfoEventArgs> ImageModified;

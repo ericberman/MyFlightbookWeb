@@ -21,7 +21,7 @@ namespace MyFlightbook.Web
             System.Web.Mvc.AreaRegistration.RegisterAllAreas();
             ScriptManager.ScriptResourceMapping.AddDefinition("jquery", new ScriptResourceDefinition { Path = VirtualPathUtility.ToAbsolute("~/Scripts/jquery-3.7.1.min.js") });
             ScriptManager.ScriptResourceMapping.AddDefinition("jqueryui", new ScriptResourceDefinition { Path = VirtualPathUtility.ToAbsolute("~/Scripts/jquery-ui-1.13.2.min.js") });
-            ScriptManager.ScriptResourceMapping.AddDefinition("jqueryUtils", new ScriptResourceDefinition { Path = VirtualPathUtility.ToAbsolute("~/Public/Scripts/jqueryutil.js?v=2") });
+            ScriptManager.ScriptResourceMapping.AddDefinition("jqueryUtils", new ScriptResourceDefinition { Path = VirtualPathUtility.ToAbsolute("~/Public/Scripts/jqueryutil.js?v=3") });
             ValidationSettings.UnobtrusiveValidationMode = UnobtrusiveValidationMode.WebForms;
 
             // CoordinateSharp can be very slow - pegging CPU - due to EagerLoading, which matters for celestial computations that we generally don't care about, so just set the default to NOT do eager load.
@@ -48,13 +48,8 @@ namespace MyFlightbook.Web
                 Response.End();
             }
 
-            string szCulture = string.Empty;
-
             if (Request?.UserLanguages != null && Request.UserLanguages.Length > 0)
-            {
-                szCulture = Request.UserLanguages[0];
-                util.SetCulture(szCulture);
-            }
+                util.SetCulture(Request.UserLanguages[0]);
         }
 
         protected void Application_AuthenticateRequest(Object sender, EventArgs e)

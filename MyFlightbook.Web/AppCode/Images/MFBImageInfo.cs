@@ -10,6 +10,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -41,6 +42,9 @@ namespace MyFlightbook.Image
         public const string RegExpVideoFileExtensions = "(avi|wmv|mp4|mov|m4v|m2p|mpeg|mpg|hdmov|flv|avchd|mpeg4|m2t|h264|mp3|wav)$";
         public const string RegExpImageFileExtensions = "(jpg|jpeg|jpe|gif|png|heic)$";
     }
+
+    // Possible links for an image that has a location - on a map on the page, to a new google maps page, or no link
+    public enum GeoLinkType { None, ZoomOnLocalMap, ZoomOnGoogleMaps };
 
     /// <summary>
     /// MFBImageInfo wraps an image or PDF file.  It has the following characteristics:
@@ -362,6 +366,24 @@ namespace MyFlightbook.Image
                 case ImageClass.BasicMed:
                     return VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["BasicMedDir"]);
             }
+        }
+
+        public static string TemplateForClass(ImageClass ic)
+        {
+            switch (ic)
+            {
+                case MFBImageInfoBase.ImageClass.Flight:
+                    return "~/member/logbookNew.aspx/{0}?a=1";
+                case MFBImageInfoBase.ImageClass.Aircraft:
+                    return "~/member/EditAircraft.aspx?a=1&id={0}";
+                default:
+                    return string.Empty;
+            }
+        }
+
+        public static bool CanSortNumeric(ImageClass ic)
+        {
+            return ic != ImageClass.Endorsement && ic != ImageClass.OfflineEndorsement;
         }
 
         /// <summary>
@@ -1134,8 +1156,8 @@ namespace MyFlightbook.Image
 
                     MFBImageCollection lst;
 
-                    if (dictResults.ContainsKey(mfbii.Key))
-                        lst = dictResults[mfbii.Key];
+                    if (dictResults.TryGetValue(mfbii.Key, out MFBImageCollection value))
+                        lst = value;
                     else
                         dictResults[mfbii.Key] = lst = new MFBImageCollection();
                     lst.Add(mfbii);
@@ -1167,8 +1189,8 @@ namespace MyFlightbook.Image
                     MFBImageInfo mfbii = ImageFromDBRow(dr);
                     MFBImageCollection lst;
 
-                    if (dictResults.ContainsKey(mfbii.Key))
-                        lst = dictResults[mfbii.Key];
+                    if (dictResults.TryGetValue(mfbii.Key, out MFBImageCollection value))
+                        lst = value;
                     else
                     {
                         lst = new MFBImageCollection();
@@ -1879,5 +1901,372 @@ namespace MyFlightbook.Image
     public class MFBImageCollection : List<MFBImageInfo>
     {
 
+    }
+
+    /// <summary>
+    /// Class for implementing admin functions on images.
+    /// </summary>
+    public class MFBImageAdmin
+    {
+        #region
+        public StringBuilder Status { get; private set; } = new StringBuilder();
+
+        protected MFBImageInfoBase.ImageClass CurrentSource { get; private set; }
+        #endregion
+
+        public MFBImageAdmin(MFBImageInfoBase.ImageClass src = MFBImageInfoBase.ImageClass.Unknown)
+        {
+            CurrentSource = src;
+        }
+
+        protected void UpdateProgress(int step, int PercentComplete, string Message)
+        {
+            Status.AppendFormat(CultureInfo.CurrentCulture, "Step {0}: {1}% {2}\r\n", step, PercentComplete, Message);
+        }
+
+        /// <summary>
+        /// Returns the # of images for the current image class (database based)
+        /// </summary>
+        /// <returns></returns>
+        public int ImageRowCount()
+        {
+            int cImageRows = 0;
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "SELECT COUNT(DISTINCT imagekey) AS NumRows FROM images WHERE virtpathid={0}", (int)CurrentSource));
+            dbh.ReadRow((comm) => { }, (dr) => { cImageRows = Convert.ToInt32(dr["NumRows"], CultureInfo.InvariantCulture); });
+            return cImageRows;
+        }
+
+        public void DeleteS3Orphans(bool fIsPreview, bool fIsLiveSite)
+        {
+            Status.Clear();
+            // Get a list of all of the images in the DB for this category:
+            UpdateProgress(1, 0, String.Format(CultureInfo.CurrentCulture, "Getting images for {0} from S3", CurrentSource.ToString()));
+
+            AWSImageManagerAdmin.ADMINDeleteS3Orphans(CurrentSource,
+                (cFiles, cBytesTotal, cOrphans, cBytesToFree) =>
+                { UpdateProgress(4, 100, String.Format(CultureInfo.CurrentCulture, "{0} orphaned files ({1:#,##0} bytes) found out of {2} files ({3:#,##0} bytes).", cOrphans, cBytesToFree, cFiles, cBytesTotal)); },
+                () => { UpdateProgress(2, 0, "S3 Enumeration done, getting files from DB"); },
+                (szKey, percent) =>
+                {
+                    UpdateProgress(3, percent, String.Format(CultureInfo.CurrentCulture, "{0}: {1}", fIsPreview ? "PREVIEW" : (fIsLiveSite ? "ACTUAL" : "NOT LIVE SITE"), szKey));
+                    return !fIsPreview && fIsLiveSite;
+                });
+        }
+
+        /// <summary>
+        /// Sync's images between cloudstorage (AWS) and local machine
+        /// </summary>
+        /// <param name="lstDk">List of keys</param>
+        /// <param name="fPreview">True for preview mode only</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public void SyncImages(IEnumerable<DirKey> lstDk, bool fPreview)
+        {
+            if (lstDk == null)
+                throw new ArgumentNullException(nameof(lstDk));
+
+            Status.Clear();
+            DateTime dtStart = DateTime.Now;
+            int cNewImages = 0;
+            int cChangedImages = 0;
+            int cDeletedImages = 0;
+            int cImagesExamined = 0;
+            List<MFBImageInfo> lstMfbiiNewOrChanged = new List<MFBImageInfo>();
+
+            try
+            {
+                // Get a list of all of the images in the DB for this category:
+                UpdateProgress(1, 0, String.Format(CultureInfo.CurrentCulture, "Getting images for {0} from DB", CurrentSource.ToString()));
+                Dictionary<string, MFBImageInfo> dictDBResults = MFBImageInfo.AllImagesForClass(CurrentSource);
+
+                int cDBEntriesToStart = dictDBResults.Count;
+
+                // Get a list of all of the images in this category:
+                int cDirectories = lstDk.Count();
+                int cDirectoriesProcessed = 0;
+                int c5Percent = Math.Max(1, cDirectories / 20);
+
+                UpdateProgress(2, 0, String.Format(CultureInfo.CurrentCulture, "Getting images for {0} ({1} folders)...", CurrentSource.ToString(), cDirectories));
+                ImageList il = new ImageList { Class = CurrentSource };
+                foreach (DirKey dk in lstDk)
+                {
+                    il.Key = dk.Key;
+                    il.Refresh(true);
+                    foreach (MFBImageInfo mfbii in il.ImageArray)
+                    {
+                        MFBImageInfo mfbiiMatch = dictDBResults.TryGetValue(mfbii.PrimaryKey, out MFBImageInfo value) ? value : null;
+                        if (mfbiiMatch == null)
+                        {
+                            // If no match was found, it's a new image
+                            lstMfbiiNewOrChanged.Add(mfbii);
+                            cNewImages++;
+                        }
+                        else
+                        {
+                            bool fCommentChanged = String.Compare(mfbii.Comment, mfbiiMatch.Comment, StringComparison.CurrentCultureIgnoreCase) != 0;
+                            bool fLocChanged = !LatLong.AreEqual(mfbii.Location, mfbiiMatch.Location);
+
+                            // if it's changed, we need to update it.
+                            if (fCommentChanged || fLocChanged)
+                            {
+                                if (mfbii.Location != null && !mfbii.Location.IsValid)
+                                    mfbii.Location = null;
+
+                                UpdateProgress(2, (100 * cDirectoriesProcessed) / cDirectories, String.Format(CultureInfo.CurrentCulture, "Changed {0}:{1}{2}",
+                                    mfbii.PrimaryKey,
+                                    fCommentChanged ? String.Format(CultureInfo.CurrentCulture, "\r\n Comment: {0} => {1}", mfbiiMatch.Comment, mfbii.Comment) : string.Empty,
+                                    fLocChanged ? String.Format(CultureInfo.CurrentCulture, "\r\n Location: {0} => {1}", (mfbiiMatch.Location == null ? "null" : mfbiiMatch.Location.ToString()), (mfbii.Location == null ? "null" : mfbii.Location.ToString())) : string.Empty));
+
+                                lstMfbiiNewOrChanged.Add(mfbii);
+                                cChangedImages++;
+                            }
+
+                            // Now remove it from the list of DB images.
+                            dictDBResults.Remove(mfbii.PrimaryKey);
+                            mfbiiMatch.UnCache();
+                            mfbiiMatch = null;  // save some memory?
+                        }
+                        mfbii.UnCache();
+
+                        cImagesExamined++;
+                    }
+
+                    il.Clear();
+
+                    if (++cDirectoriesProcessed % c5Percent == 0)
+                    {
+                        GC.Collect();
+                        UpdateProgress(2, (100 * cDirectoriesProcessed) / cDirectories, String.Format(CultureInfo.CurrentCulture, "{0} Folders processed, {1} images found", cDirectoriesProcessed, cImagesExamined));
+                    }
+                }
+
+                UpdateProgress(3, 100, String.Format(CultureInfo.CurrentCulture, "Elapsed Time: {0} seconds", DateTime.Now.Subtract(dtStart).TotalSeconds));
+
+                UpdateProgress(4, 0, String.Format(CultureInfo.CurrentCulture, "{0} image files found, {1} images in DB", cImagesExamined, cDBEntriesToStart));
+
+                // Now see if anything got deleted but not from the DB
+                int cImagesToDelete = dictDBResults.Values.Count;
+                if (!fPreview)
+                {
+                    UpdateProgress(5, 0, String.Format(CultureInfo.CurrentCulture, "{0} images found in DB that weren't found as files; deleting these.", cImagesToDelete));
+                    foreach (MFBImageInfo mfbii in dictDBResults.Values)
+                    {
+                        mfbii.DeleteFromDB();
+                        cDeletedImages++;
+
+                        if (cDeletedImages % 100 == 0)
+                            UpdateProgress(5, (100 * cDeletedImages) / cImagesToDelete, String.Format(CultureInfo.CurrentCulture, "Deleted {0} images from DB", cDeletedImages));
+                    }
+
+                    // And finally add new images back
+                    UpdateProgress(6, 0, String.Format(CultureInfo.CurrentCulture, "{0} new and {1} changed images (total of {2}) to be added to/updated in the DB", cNewImages, cChangedImages, lstMfbiiNewOrChanged.Count));
+                    lstMfbiiNewOrChanged.ForEach((mfbii) =>
+                    {
+                        try
+                        {
+                            mfbii.ToDB();
+                        }
+                        catch (Exception ex) when (ex is MyFlightbookException)
+                        {
+                            UpdateProgress(0, 0, String.Format(CultureInfo.InvariantCulture, "<p class=\"error\">Exception sync'ing DB: {0}</p>", ex.Message));
+                        }
+                    });
+                }
+                else
+                {
+                    UpdateProgress(5, 0, String.Format(CultureInfo.CurrentCulture, "{0} images found in DB that weren't found as files; these are:", cImagesToDelete));
+                    foreach (MFBImageInfo mfbii in dictDBResults.Values)
+                        UpdateProgress(5, 0, mfbii.PathThumbnail);
+                    UpdateProgress(6, 0, String.Format(CultureInfo.CurrentCulture, "{0} images found that are new or changed that weren't in DB; these are:", cNewImages + cChangedImages));
+                    lstMfbiiNewOrChanged.ForEach((mfbii) => { UpdateProgress(6, 0, mfbii.PathThumbnail); });
+                }
+
+                UpdateProgress(6, 100, "Finished!");
+            }
+            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            {
+                UpdateProgress(0, 0, String.Format(CultureInfo.InvariantCulture, "<p class=\"error\">Exception sync'ing DB: {0}</p>", ex.Message));
+            }
+        }
+
+        public static IEnumerable<MFBImageInfoBase> BrokenImages()
+        {
+            List<MFBImageInfoBase> lst = new List<MFBImageInfoBase>();
+            DBHelper dbh = new DBHelper("SELECT * FROM images WHERE imageType=1 OR thumbwidth=0 OR thumbheight=0 OR islocal <> 0");
+            dbh.ReadRows((comm) => { }, (dr) => { lst.Add(MFBImageInfo.ImageFromDBRow(dr)); });
+            return lst;
+        }
+    }
+
+    /// <summary>
+    /// Utility class that matches a key with a sort key
+    /// </summary>
+    [Serializable]
+    public class DirKey : IComparable, IEquatable<DirKey>
+    {
+        public string Key { get; set; }
+        public int SortID { get; set; }
+
+        public DirKey() { }
+
+        public static IEnumerable<DirKey> DirKeyForClass(MFBImageInfoBase.ImageClass CurrentSource, out string linkTemplate)
+        {
+            linkTemplate = MFBImageInfoBase.TemplateForClass(CurrentSource);
+            string szBase = MFBImageInfoBase.BasePathFromClass(CurrentSource);
+            List<DirKey> lstDk = new List<DirKey>();
+            bool fNumericKeySort = MFBImageInfoBase.CanSortNumeric(CurrentSource);
+
+            if (!String.IsNullOrEmpty(szBase))
+            {
+                DirectoryInfo dir = new DirectoryInfo(HostingEnvironment.MapPath(szBase));
+                DirectoryInfo[] rgSubDir = dir.GetDirectories();
+                int i = 0;
+                foreach (DirectoryInfo di in rgSubDir)
+                {
+                    // Delete the directory if it is empty
+                    FileInfo[] rgfi = di.GetFiles();
+                    DirectoryInfo[] rgdi = di.GetDirectories();
+
+                    if (rgfi.Length == 0 && rgdi.Length == 0)
+                    {
+                        di.Delete();
+                        continue;
+                    }
+
+                    DirKey dk = new DirKey { Key = di.Name, SortID = fNumericKeySort && int.TryParse(di.Name, out int num) ? num : i };
+                    lstDk.Add(dk);
+                    i++;
+                }
+            }
+            lstDk.Sort();
+            return lstDk;
+        }
+
+        #region IComparable
+        public int CompareTo(object obj)
+        {
+            if (obj == null)
+                throw new ArgumentNullException(nameof(obj));
+            DirKey dk = (DirKey)obj;
+            return this.SortID.CompareTo(dk.SortID);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as DirKey);
+        }
+
+        public bool Equals(DirKey other)
+        {
+            return other != null &&
+                   Key == other.Key &&
+                   SortID == other.SortID;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = 556471408;
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Key);
+                hashCode = hashCode * -1521134295 + SortID.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(DirKey left, DirKey right)
+        {
+            return EqualityComparer<DirKey>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(DirKey left, DirKey right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator <(DirKey left, DirKey right)
+        {
+            return left is null ? right is object : left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(DirKey left, DirKey right)
+        {
+            return left is null || left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(DirKey left, DirKey right)
+        {
+            return left is object && left != null && left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(DirKey left, DirKey right)
+        {
+            return left is null ? right is null : left.CompareTo(right) >= 0;
+        }
+        #endregion
+    }
+
+    /// <summary>
+    /// Static class to encapsulate authorization to modify images.
+    /// Want to keep MFBImageInfo (relatively) clean w.r.t. MyFlightbook classes; this encapsulates the semantic
+    /// knowledge needed for services 
+    /// </summary>
+    public static class ImageAuthorization
+    {
+        public enum ImageAction { Delete, Annotate }
+
+        /// <summary>
+        /// Determines if the specified user is authorized to modify/delete an image
+        /// </summary>
+        /// <param name="mfbii">The image</param>
+        /// <param name="szuser">The user</param>
+        /// <param name="requestedAction">The action that is requested.  We restrict deletion of aircraft images but anybody can update annotation</param>
+        /// <exception cref="UnauthorizedAccessException">Throws UnauthorizedAccessException if user isn't authorized </exception>
+        /// <exception cref="ArgumentNullException"></exception>"
+        public static void ValidateAuth(MFBImageInfo mfbii, string szuser, ImageAction requestedAction)
+        {
+            if (mfbii == null)
+                throw new ArgumentNullException(nameof(mfbii));
+
+            if (String.IsNullOrEmpty(szuser))
+                throw new UnauthorizedAccessException();
+
+            switch (mfbii.Class)
+            {
+                case MFBImageInfoBase.ImageClass.Aircraft:
+                    // Check that the user actually has this aircraft in their account
+                    UserAircraft ua = new UserAircraft(szuser);
+                    Aircraft ac = new Aircraft(Convert.ToInt32(mfbii.Key, CultureInfo.InvariantCulture));
+                    if (!ua.CheckAircraftForUser(ac))
+                        throw new UnauthorizedAccessException();
+
+                    // Further restrict deletion of images if (a) aircraft is shared, or (b) is anonymous.  If it's just you, you're fine.
+                    if (requestedAction == ImageAction.Delete)
+                    {
+                        if (ac.IsAnonymous || new AircraftStats(szuser, ac.AircraftID).Users > 1)
+                            throw new InvalidOperationException(Resources.Aircraft.errDontDeleteImageAnonymous);
+                    }
+                    break;
+                case MFBImageInfoBase.ImageClass.BasicMed:
+                    {
+                        int idBME = Convert.ToInt32(mfbii.Key, CultureInfo.InvariantCulture);
+                        List<MyFlightbook.BasicmedTools.BasicMedEvent> lst = new List<BasicmedTools.BasicMedEvent>(BasicmedTools.BasicMedEvent.EventsForUser(szuser));
+                        if (!lst.Exists(bme => bme.ID == idBME))
+                            throw new UnauthorizedAccessException();
+                    }
+                    break;
+                case MFBImageInfoBase.ImageClass.Endorsement:
+                case MFBImageInfoBase.ImageClass.OfflineEndorsement:
+                    if (szuser.CompareCurrentCultureIgnoreCase(mfbii.Key) != 0)
+                        throw new UnauthorizedAccessException();
+                    break;
+                case MFBImageInfoBase.ImageClass.Flight:
+                    if (!new LogbookEntry().FLoadFromDB(Convert.ToInt32(mfbii.Key, CultureInfo.InvariantCulture), szuser))
+                        throw new UnauthorizedAccessException();
+                    break;
+                case MFBImageInfoBase.ImageClass.Unknown:
+                default:
+                    throw new UnauthorizedAccessException();
+            }
+        }
     }
 }

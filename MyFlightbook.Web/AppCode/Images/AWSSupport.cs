@@ -15,7 +15,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2022 MyFlightbook LLC
+ * Copyright (c) 2008-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -475,9 +475,7 @@ namespace MyFlightbook.Image
                     string szPrimary = MFBImageInfo.PrimaryKeyForValues(ic, szKey, szThumb);
 
                     // if it is found, super - remove it from the dictionary (for performance) and return
-                    if (dictDBResults.ContainsKey(szPrimary))
-                        dictDBResults.Remove(szPrimary);
-                    else
+                    if (!dictDBResults.Remove(szPrimary))
                     {
                         cOrphansFound++;
                         cBytesToFree += o.Size;
@@ -553,6 +551,51 @@ namespace MyFlightbook.Image
             }
 
             return -1;
+        }
+
+        /// <summary>
+        /// Migrates files that are on the server to AWS
+        /// </summary>
+        /// <param name="cMBytesLimit">Maximum bytes to move (could be exceeded a bit) - i.e., stop moving when you are past this</param>
+        /// <param name="cFilesLimit">Maximum files to move</param>
+        /// <param name="imageClass">Image class on which to perform the operation.</param>
+        /// <returns></returns>
+        public static string MigrateImages(int cMBytesLimit, int cFilesLimit, MFBImageInfoBase.ImageClass imageClass)
+        {
+            int cBytesDone = 0;
+            int cFilesDone = 0;
+
+            int cBytesLimit = cMBytesLimit * 1024 * 1024;
+
+            Dictionary<string, MFBImageCollection> images = MFBImageInfo.FromDB(imageClass, true);
+
+            List<string> lstKeys = images.Keys.ToList();
+            if (imageClass == MFBImageInfoBase.ImageClass.Aircraft || imageClass == MFBImageInfoBase.ImageClass.Flight)
+                lstKeys.Sort((sz1, sz2) => { return Convert.ToInt32(sz2, CultureInfo.InvariantCulture) - Convert.ToInt32(sz1, CultureInfo.InvariantCulture); });
+            else
+                lstKeys.Sort();
+
+            // ImageDict
+            foreach (string szKey in lstKeys)
+            {
+                if (cBytesDone > cBytesLimit || cFilesDone >= cFilesLimit)
+                    break;
+                AWSImageManagerAdmin im = new AWSImageManagerAdmin();
+                foreach (MFBImageInfo mfbii in images[szKey])
+                {
+                    int cBytes = im.ADMINMigrateToS3(mfbii);
+                    if (cBytes >= 0)  // migration occured
+                    {
+                        cBytesDone += cBytes;
+                        cFilesDone++;
+                    }
+
+                    if (cBytesDone > cBytesLimit || cFilesDone >= cFilesLimit)
+                        break;
+                }
+            }
+
+            return String.Format(CultureInfo.CurrentCulture, Resources.Admin.MigrateImagesTemplate, cFilesDone, cBytesDone);
         }
     }
 }

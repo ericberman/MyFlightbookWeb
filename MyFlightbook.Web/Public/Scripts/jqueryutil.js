@@ -101,3 +101,51 @@ function sortTable(sender, colIndex, sortType, hdnSortIndexID, hdnSortDirID) {
         }
     }).appendTo(tbody);
 }
+
+/* Image Editing Helpers */
+function editImageComment(sender) {
+    var parent = $(sender).parents("div[name='editImage']")
+    parent.find("[name='statComment']").toggle();
+    parent.find("[name='dynComment']").toggle();
+}
+
+function deleteImage(confirmText, imageclass, key, thumbfile, asAdmin, onComplete) {
+    if (confirmText == '' || confirm(confirmText)) {
+        var params = new Object();
+        params.ic = imageclass;
+        params.key = key;
+        params.szThumb = thumbfile;
+        params.fAsAdmin = asAdmin;
+        var d = JSON.stringify(params);
+        $.ajax({
+            url: '/logbook/mvc/Image/DeleteImage',
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            complete: function (response) { },
+            success: function (response) {
+                if (onComplete)
+                    onComplete(response);
+            }
+        });
+    }
+}
+
+function updateComment(imageclass, key, thumbfile, newComment, asAdmin, onComplete) {
+    var params = new Object();
+    params.ic = imageclass;
+    params.key = key;
+    params.szThumb = thumbfile;
+    params.newAnnotation = newComment;
+    params.fAsAdmin = asAdmin;
+    var d = JSON.stringify(params);
+    $.ajax({
+        url: '/logbook/mvc/Image/AnnotateImage',
+        type: "POST", data: d, dataType: "text", contentType: "application/json",
+        error: function (xhr, status, error) { window.alert(xhr.responseText); },
+        complete: function (response) { },
+        success: function (response) {
+            if (onComplete)
+                onComplete(response);
+        }
+    });
+}

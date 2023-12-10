@@ -1,0 +1,34 @@
+﻿@using MyFlightbook
+@using MyFlightbook.Image
+@{
+    IEnumerable<MFBImageInfo> rgmfbii = ViewBag.rgmfbii;
+    string altText = ViewBag.altText;
+    bool fCanDelete = ViewBag.fCanDelete;
+    bool fCanEdit = ViewBag.fCanEdit;
+    bool fCanMakeDefault = ViewBag.fCanMakeDefault && rgmfbii.Count() > 1;
+    GeoLinkType zoomLinkType = ViewBag.zoomLinkType;
+    bool fIsDefault = ViewBag.fIsDefault;
+    string confirmText = ViewBag.confirmText;
+    string defaultImage = ViewBag.defaultImage ?? string.Empty;
+}
+@foreach (MFBImageInfo mfbii in rgmfbii)
+{
+    <div id="divImg" runat="server" class="ilItem">
+        @{
+            Html.RenderAction("EditableImage", "Image", new
+            {
+                mfbii = mfbii,
+                altText = altText,
+                fCanDelete = fCanDelete,
+                fCanEdit = fCanEdit && (mfbii.ImageType == MFBImageInfo.ImageFileType.JPEG || mfbii.ImageType == MFBImageInfo.ImageFileType.S3VideoMP4),
+                fCanMakeDefault = fCanMakeDefault,
+                zoomLinkType = zoomLinkType,
+                fIsDefault = defaultImage.CompareOrdinalIgnoreCase(mfbii.ThumbnailFile) == 0,
+                confirmText = confirmText,
+                onAnnotate = ViewBag.onAnnotate,
+                onDelete = ViewBag.onDelete,
+                onMakeDefault = ViewBag.onMakeDefault
+            });
+        }
+    </div>
+}

@@ -1,0 +1,104 @@
+﻿@{
+    ViewBag.Title = "Review Images";
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    ViewBag.defaultTab = tabID.tabAdmin;
+}
+<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute(MyFlightbook.Web.Ajax.AdminWebServices.AjaxScriptLink)"></script>
+<script src='@VirtualPathUtility.ToAbsolute("~/public/Scripts/endless-scroll.js")'></script>
+
+<script type="text/javascript">
+    function migrateImages(imageClass, maxMB, maxFiles) {
+        // ajax call to fetch next set of rows
+        var params = new Object();
+        params.imageClass = imageClass;
+        params.maxMB = maxMB;
+        params.maxFiles = maxFiles
+        d = JSON.stringify(params);
+        $.ajax(
+            {
+                url: "@Url.Action("MigrateImages", "Admin")",
+                type: "POST", data: d, dataType: "txt", contentType: "application/json",
+                error: function (xhr, status, error) { alert(xhr.responseText); },
+                complete: function (response) { },
+                success: function (response) {
+                    $("#divMigrateResults")[0].text(response);
+                }
+            });
+    }
+
+    function adminDeleteImage(sender, confirmText, imageClass, key, thumbnail) {
+        deleteImage(confirmText, imageClass, key, thumbnail, true, function (r) {
+            $(sender).parents("div[name='editImage']").hide();
+        });
+    }
+
+    function adminAnnotateImage(sender, imageClass, key, thumbnail, newComment) {
+        updateComment(imageClass, key, thumbnail, newComment, true, function (r) {
+            var parent = $(sender).parents("div[name='editImage']");
+            parent.find("[name='commentLabel']").text(newComment);
+            parent.find("[name='statComment']").show();
+            parent.find("[name='dynComment']").hide();
+        });
+    }
+
+    var params = new Object();
+    params.imageClass = '@ViewBag.imageClass';
+    params.offset = @ViewBag.skip;
+    params.limit = 25;
+
+    function nextRowSet() {
+        // ajax call to fetch next set of rows
+        $.ajax(
+            {
+                url: "@Url.Action("nextImageRowset", "Admin")",
+                type: "POST", data: JSON.stringify(params), dataType: "html", contentType: "application/json",
+                error: function (xhr, status, error) { alert(xhr.responseText); },
+                complete: function (response) { params.offset = params.offset + params.limit; },
+                success: function (response) {
+                    $("#tblImagesBody")[0].innerHTML += response;
+                }
+            });
+    }
+
+    $(document).ready(function () {
+        $(document).endlessScroll(
+            {
+                bottomPixels: 300, fireOnce: true, fireDelay: 2000,
+                callback: function (p) { nextRowSet(); }
+            });
+
+        nextRowSet();
+    });
+
+    function getAircraftForImage(sender, idFlight) {
+        var p = new Object();
+        p.idFlight = idFlight;
+        $.ajax(
+            {
+                url: "@Url.Action("AircraftForFlightImage", "Admin")",
+                type: "POST", data: JSON.stringify(p), dataType: "json", contentType: "application/json",
+                error: function (xhr, status, error) { alert(xhr.responseText); },
+                complete: function (response) { },
+                success: function (response) {
+                    var ele = $(sender);
+                    ele.hide();
+                    var eleAnchor = ele.next();
+                    eleAnchor.text(response.text);
+                    eleAnchor.attr("href", response.href);
+                }
+            });
+    }
+</script>
+<p>
+    Migrate up to: <input id="txtLimitMB" value="100" type="number" step="1" />MB or <input id="txtLimitFiles" value="100" type="number" step="1" /> images.  
+    <button type="button" onclick="javascript: migrateImages('@ViewBag.imageClass', $('#txtLimitMB').val(), $('#txtLimitFiles').val());">Migrate Images</button>
+    <asp:TextBox ID="txtLimitFiles" Text="100" runat="server"></asp:TextBox>
+    <div style="display:none" id="divMigrateProgress"><img src="@VirtualPathUtility.ToAbsolute("~/images/progress.gif")" /></div>
+    <div id="divMigrateResults"></div>
+</p>
+<p><span style="font-weight:bold">@ViewBag.totalRows</span>.  Hint - use "skip=xxx" in the URL to skip the first xxx rows. </p>
+<table class="stickyHeaderTable stickyHeaderAlternate">
+    <tbody id="tblImagesBody">
+    </tbody>
+</table>
+
