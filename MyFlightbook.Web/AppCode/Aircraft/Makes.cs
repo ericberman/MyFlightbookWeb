@@ -516,7 +516,7 @@ WHERE {1}";
                 throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, "Error loading make {0}: {1}", id, dbh.LastError));
         }
 
-        protected MakeModel(MySqlDataReader dr) : this()
+        public MakeModel(MySqlDataReader dr) : this()
         {
             InitFromDataReader(dr);
         }
@@ -1201,10 +1201,11 @@ FROM models
         }
     }
 
+    /// <summary>
+    /// Admin Utility functions for models.  All static functions.
+    /// </summary>
     public class AdminMakeModel : MakeModel
     {
-        private AdminMakeModel(MySqlDataReader dr) : base(dr) { }
-
         /// <summary>
         /// Admin function to merge two duplicate models
         /// </summary>
@@ -1286,7 +1287,7 @@ FROM models
         {
             DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, szSQLSelectTemplate, string.Empty, "manufacturers.defaultSim <> 0 AND models.fSimOnly = 0"));
             List<MakeModel> lst = new List<MakeModel>();
-            dbh.ReadRows((comm) => { }, (dr) => { lst.Add(new AdminMakeModel(dr)); });
+            dbh.ReadRows((comm) => { }, (dr) => { lst.Add(new MakeModel(dr)); });
             return lst;
         }
 
@@ -1294,7 +1295,7 @@ FROM models
         {
             DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, szSQLSelectTemplate, "LEFT JOIN aircraft ac ON models.idmodel=ac.idmodel", "ac.idaircraft IS NULL"));
             List<MakeModel> lst = new List<MakeModel>();
-            dbh.ReadRows((comm) => { }, (dr) => { lst.Add(new AdminMakeModel(dr)); });
+            dbh.ReadRows((comm) => { }, (dr) => { lst.Add(new MakeModel(dr)); });
             return lst;
         }
 
@@ -1302,7 +1303,7 @@ FROM models
         {
             DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, szSQLSelectTemplate, string.Empty, "typename <> '' ORDER BY categoryclass.idcatclass ASC, manufacturers.manufacturer ASC, models.model ASC, models.typename ASC"));
             List<MakeModel> lst = new List<MakeModel>();
-            dbh.ReadRows((comm) => { }, (dr) => { lst.Add(new AdminMakeModel(dr)); });
+            dbh.ReadRows((comm) => { }, (dr) => { lst.Add(new MakeModel(dr)); });
             return lst;
         }
 
@@ -1314,7 +1315,7 @@ FROM models
                     {0}
                 ORDER BY models.model", fIncludeSims ? string.Empty : "HAVING models.fSimOnly = 0")));
             List<MakeModel> lst = new List<MakeModel>();
-            dbh.ReadRows((comm) => { }, (dr) => { lst.Add(new AdminMakeModel(dr)); });
+            dbh.ReadRows((comm) => { }, (dr) => { lst.Add(new MakeModel(dr)); });
             return lst;
         }
 
