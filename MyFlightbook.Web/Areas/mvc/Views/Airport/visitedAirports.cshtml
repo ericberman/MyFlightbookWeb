@@ -116,7 +116,7 @@
                         <td>@va.Airport.Name</td>
                         <td>@va.Country</td>
                         <td>@va.Admin1</td>
-                        <td>@va.NumberOfVisits.ToString("#,##0", CultureInfo.CurrentCulture)</td>
+                        <td>@va.NumberOfVisits.PrettyString()</td>
                         <td>@va.EarliestVisitDate.ToString("d", CultureInfo.CurrentCulture)<span style="display:none">@va.EarliestVisitDate.YMDString()</span></td>
                         <td>@va.LatestVisitDate.ToString("d", CultureInfo.CurrentCulture)<span style="display:none">@va.LatestVisitDate.YMDString()</span></td>
                         <td><a href="@String.Format(CultureInfo.InvariantCulture, "{0}?ap={1}", VirtualPathUtility.ToAbsolute("~/Member/LogbookNew.aspx"), va.Code)">@Resources.Airports.airportViewFlights</a></td>

@@ -68,7 +68,7 @@ namespace MyFlightbook.RatingsProgress
                     default:
                         return Progress.ToString(CultureInfo.CurrentCulture);
                     case MilestoneType.Count:
-                        return String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.ProgressTemplate, Progress.ToString("#,##0", CultureInfo.CurrentCulture), Percentage);
+                        return String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.ProgressTemplate, ((int) Progress).PrettyString(), Percentage);
                     case MilestoneType.Time:
                         return String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.ProgressTemplate, Progress.ToString("#,##0.0", CultureInfo.CurrentCulture), Percentage);
                 }

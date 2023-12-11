@@ -724,10 +724,10 @@ namespace MyFlightbook.Currency
         /// <returns>Human readable description</returns>
         private static string SubDescFromLandings(int cLandings, int cDayLandings, int cNightLandings, int cApproaches)
         {
-            string szLandings = (cLandings == 0) ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, cLandings.ToString("#,##0", CultureInfo.CurrentCulture), (cLandings == 1) ? Resources.Totals.Landing : Resources.Totals.Landings);
-            string szFSDayLandings = (cDayLandings == 0) ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, cDayLandings.ToString("#,##0", CultureInfo.CurrentCulture), Resources.Totals.DayLanding);
-            string szFSNight = (cNightLandings == 0) ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, cNightLandings.ToString("#,##0", CultureInfo.CurrentCulture), Resources.Totals.NightLanding);
-            string szApproaches = (cApproaches == 0) ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, cApproaches.ToString("#,##0", CultureInfo.CurrentCulture), (cApproaches == 1) ? Resources.Totals.Approach : Resources.Totals.Approaches);
+            string szLandings = (cLandings == 0) ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, cLandings.PrettyString(), (cLandings == 1) ? Resources.Totals.Landing : Resources.Totals.Landings);
+            string szFSDayLandings = (cDayLandings == 0) ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, cDayLandings.PrettyString(), Resources.Totals.DayLanding);
+            string szFSNight = (cNightLandings == 0) ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, cNightLandings.PrettyString(), Resources.Totals.NightLanding);
+            string szApproaches = (cApproaches == 0) ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, cApproaches.PrettyString(), (cApproaches == 1) ? Resources.Totals.Approach : Resources.Totals.Approaches);
 
             List<string> lst = new List<string> { szFSDayLandings, szFSNight };
             lst.RemoveAll(sz => String.IsNullOrEmpty(sz));

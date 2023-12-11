@@ -900,7 +900,7 @@ namespace MyFlightbook
             if (o == null || o == System.DBNull.Value)
                 return string.Empty;
             int i = Convert.ToInt32(o, CultureInfo.InvariantCulture);
-            return (i == 0) ? "" : i.ToString("#,##0", CultureInfo.CurrentCulture);
+            return (i == 0) ? "" : i.PrettyString();
         }
 
         /// <summary>

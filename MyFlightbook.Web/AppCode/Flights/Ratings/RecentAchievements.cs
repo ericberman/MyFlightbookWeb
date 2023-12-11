@@ -344,7 +344,7 @@ namespace MyFlightbook.RatingsProgress
                     dtNoFlyStart = Convert.ToDateTime(szKey, CultureInfo.InvariantCulture).AddDays(1);
                 }
 
-                miFlightCount.MatchingEventText = ((int) miFlightCount.Progress).ToString("#,##0", CultureInfo.CurrentCulture);
+                miFlightCount.MatchingEventText = ((int) miFlightCount.Progress).PrettyString();
 
                 miFlyingDates.Progress = FlightDates.Count;
                 int DaysInPeriod = EndDate.Subtract(StartDate).Days + 1;
@@ -363,7 +363,7 @@ namespace MyFlightbook.RatingsProgress
                 // If multiple countries, then we'll say how many countries visited.
                 // Also show most states/provinces/etc. for whichever country has that distinction
                 miCountries.Progress = GeoRegions.Count;
-                miCountries.MatchingEventText = GeoRegions.Count.ToString("#,##0", CultureInfo.CurrentCulture);
+                miCountries.MatchingEventText = GeoRegions.Count.PrettyString();
                 foreach (string country in GeoRegions.Keys)
                 {
                     int cAdmin1 = GeoRegions[country].Count;
