@@ -19,7 +19,8 @@ namespace MyFlightbook.PublicPages
             {
                 // This page is public, so that it doesn't require any authentication, making it easy to set up a scheduled task.
                 // SO, we ONLY allow it from the local machine.
-                if (Request.IsLocal)
+                string szIPThis = System.Net.Dns.GetHostAddresses(Request.Url.Host)[0].ToString();
+                if (String.Compare(Request.UserHostAddress, szIPThis, StringComparison.CurrentCultureIgnoreCase) == 0)
                 {
                     using (System.Net.WebClient wc = new System.Net.WebClient())
                     {
@@ -32,7 +33,7 @@ namespace MyFlightbook.PublicPages
                     }
                 }
                 else
-                    throw new UnauthorizedAccessException(String.Format(CultureInfo.CurrentCulture, "Attempt to hit StatsForMail from other than local machine.  Source: {0}", Request.UserHostAddress));
+                    throw new UnauthorizedAccessException(String.Format(CultureInfo.CurrentCulture, "Attempt to hit StatsForMail from other than local machine.  Source: {0} (this is {1})", Request.UserHostAddress, szIPThis));
             }
         }
     }

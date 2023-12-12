@@ -448,8 +448,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         public async Task<ActionResult> Stats(bool fForEmail = false)
         {
             // Allow local requests, unless you are authenticated AND can report AND not requesting the full page
-            bool fIsLocalAndForEmail = Request.IsLocal && fForEmail;
-            if (!fIsLocalAndForEmail)
+            // Request.islocal doesn't work when we access via dns name, so actually check IP addresses.
+            string szIPThis = System.Net.Dns.GetHostAddresses(Request.Url.Host)[0].ToString();
+            if (!fForEmail || String.Compare(Request.UserHostAddress, szIPThis, StringComparison.CurrentCultureIgnoreCase) != 0)
                 CheckAuth(ProfileRoles.maskCanReport);
 
             AdminStats astats = new AdminStats();
