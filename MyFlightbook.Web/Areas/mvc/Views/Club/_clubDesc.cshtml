@@ -1,0 +1,40 @@
+﻿@using MyFlightbook.Clubs
+@using System.Globalization
+@{
+    Club c = ViewBag.club as Club;
+    bool fLinkToDetails = ViewBag.linkToDetails;
+}
+<div class="clubContainer">
+    <div class="clubDetailsRight">
+        <span style="font-weight:bold;">
+            @if (fLinkToDetails)
+            {
+                <a href="@c.EditLink">@c.Name</a>
+            }
+            else
+            {
+                @c.Name
+            }
+        </span>
+        @if (!String.IsNullOrEmpty(c.HomeAirportCode))
+        {
+            <div><a href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/Airport/MapRoute?sm=1&Airports={0}", c.HomeAirportCode))">@c.HomeAirportCode</a> - @c.HomeAirport?.Name</div>
+        }
+        @if (c.HasContactInfo)
+        {
+            <div>@c.LocationString @c.ContactPhone</div>
+        }
+        @if (!String.IsNullOrEmpty(c.ProvidedLink))
+        {
+            <div><a href="@c.Link" target="_blank">@Resources.Club.LabelClubWebsite</a></div>
+        }
+    </div>
+    <div class="clubDetailsLeft">
+        <div>@Html.Raw(c.Description)&nbsp;</div>
+        @if (fLinkToDetails)
+        {
+            <div style="font-weight:bold"><a href="@c.EditLink">@Resources.Club.LabelViewClubDetails</a></div>
+        }
+    </div>
+    <div style="clear:both"></div>  
+</div>

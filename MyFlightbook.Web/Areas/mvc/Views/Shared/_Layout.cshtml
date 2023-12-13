@@ -38,19 +38,23 @@
                 setImg(src, "imgImgToView", "divViewImg", "imgDismissBtn");
             }
 
-            function toggleItem(targetID) {
+            function toggleItem(targetID, onExpand, onCollapse) {
                 var target = $("#" + targetID);
                 var fIsCollapsed = (target[0].style.display == 'none');
                 target.toggle(400);
+                if (fIsCollapsed && onExpand != null)
+                    onExpand();
+                else if (!fIsCollapsed && onCollapse != null)
+                    onCollapse();
                 return fIsCollapsed;
             }
 
-            function toggleImage(sender, targetID) {
-                sender.src = toggleItem(targetID) ? "@VirtualPathUtility.ToAbsolute("~/images/collapse.png")" : "@VirtualPathUtility.ToAbsolute("~/images/expand.png")";
+            function toggleImage(sender, targetID, onExpand, onCollapse) {
+                sender.src = toggleItem(targetID, onExpand, onCollapse) ? "@VirtualPathUtility.ToAbsolute("~/images/collapse.png")" : "@VirtualPathUtility.ToAbsolute("~/images/expand.png")";
             }
 
-            function toggleLabel(sender, targetID, expandText, collapseText) {
-                sender.innerText = toggleItem(targetID) ? expandText : collapseText;
+            function toggleLabel(sender, targetID, expandText, collapseText, onExpand, onCollapse) {
+                sender.innerText = toggleItem(targetID, onExpand, onCollapse) ? expandText : collapseText;
             }
         </script>
         <div id="divViewImg" style="display:none; overflow: hidden;" class="modalpopup">

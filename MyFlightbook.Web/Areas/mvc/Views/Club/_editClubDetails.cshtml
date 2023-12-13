@@ -1,0 +1,264 @@
+﻿@using System.Globalization
+@using MyFlightbook.Clubs
+@{
+    Club club = ViewBag.club;
+}
+@model Club
+<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/Scripts/jHtmlArea.min.js")"></script>
+
+<script type="text/javascript">
+    function clubFromForm() {
+        var club = new Object();
+        club.ID = $("#hdnClubID").val();
+        club.Name = $("#txtClubName").val();
+        club.Description = $("#htmlDescription").val();
+        club.ProvidedLink = $("#txtURL").val();
+        club.City = $("#txtCity").val();
+        club.StateProvince = $("#txtState").val();
+        club.Country = $("#cmbCountry").val();
+        club.ContactPhone = $("#txtPhone").val();
+        club.HomeAirportCode = $("#txtHomeAirport").val();
+        club.TimeZoneID = $("#cmbTimeZone").val();
+        club.EditingPolicy = $('input[name="editingPolicy"]:checked').val();
+        club.PrependsScheduleWithOwnerName = $("#ckPolicyNamePrefix")[0].checked;
+        club.IsPrivate = $("#ckPolicyPrivate")[0].checked;
+        club.PolicyShowMobileNumbers = $("#ckPolicyShowMobile")[0].checked;
+        club.ShowHeadshots = $("#ckPolicyShowHeadshots")[0].checked;
+        club.ShowMobileNumbers = $("#ckPolicyShowMobile")[0].checked;
+        club.DeleteNotifications = $("#cmbDeleteNotify").val();
+        club.AddModifyNotifications = $("#cmbAddModifyPolicy").val();
+        club.DoubleBookRoleRestriction = $("#cmbDoubleBookPolicy").val();
+
+        return club;
+    }
+
+    function commitClub() {
+        if (!$("#editClubForm").valid())
+            return;
+
+        $("#lblErr").text("");
+        var params = new Object();
+        params.club = clubFromForm();
+        var d = JSON.stringify(params);
+        $.ajax(
+            {
+                url: '@Url.Action("SaveClub", "Club")',
+                type: "POST", data: d, dataType: "text", contentType: "application/json",
+                error: function (xhr, status, error) { $("#lblErr").text(xhr.responseText); },
+                complete: function (response) { },
+                success: function (response) {
+                    // Successful response has a navigation event.
+                    window.location = response;
+                }
+            });
+    }
+
+    function deleteClub() {
+        if (confirm('@Resources.Club.ConfirmClubDelete')) {
+            $("#lblErr").text("");
+            var params = new Object();
+            params.idClub = $("#hdnClubID").val();
+            var d = JSON.stringify(params);
+            $.ajax(
+                {
+                    url: '@Url.Action("DeleteClub", "Club")',
+                    type: "POST", data: d, dataType: "text", contentType: "application/json",
+                    error: function (xhr, status, error) { $("#lblErr").text(xhr.responseText); },
+                    complete: function (response) { },
+                    success: function (response) {
+                        // Successful response has a URL...for now.
+                        window.location = response;
+                    }
+                });
+        }
+    }
+
+    $(function () {
+        $("#htmlDescription").htmlarea({
+            toolbar: [
+                ["html", "bold", "italic", "underline", "strikethrough", "superscript", "subscript", "forecolor"],
+                ["p", "h1", "h2", "orderedList", "unorderedList", "horizontalrule"],
+                ["justifyleft", "justifycenter", "justifyright"],
+                ["link", "unlink"],
+                ["image"]
+            ]
+        });
+
+        $("form[name='editClubForm']").validate({
+            errorClass: "error",
+            errorElement: "div",
+            rules: {
+                clubName: "required",
+                clubTimeZone: "required"
+            },
+            messages: {
+                clubName: "@Resources.Club.errNameRequired",
+                clubTimeZone : "@Resources.Schedule.errNoTimezone"
+            },
+            highlight: function (element, errorClass) {
+                $(element).removeClass(errorClass);
+            }
+        });
+    });
+
+    // Since the html editor is collapsed initially, it gets a width of 0, need to set the width on expand.
+    function htmlEditShown() {
+        $("#htmlDescription").htmlarea("updateHtmlArea");
+        $(".jHtmlArea").css('width', '100%');
+    }
+</script>
+
+<div style="width: 100%; border: 1px solid black; display: none;" id="divEditClub">
+    @using (Html.BeginForm("", "Club", FormMethod.Post, new { name = "editClubForm", id = "editClubForm" }))
+    {
+        <input type="hidden" id="hdnClubID" name="idClub" value="@club.ID" />
+        <table>
+            <tr>
+                <td colspan="2" style="padding:3px">
+                    <div>@Resources.Club.LabelName</div>
+                    <div><input name="clubName" id="txtClubName" style="width: 400px;" type="text" /></div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="padding:3px">
+                    <div>@Resources.Club.LabelDescription</div>
+                    <div><textarea id="htmlDescription" name="clubDesc" style="width: 100%;"></textarea></div>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:400px; padding:3px" colspan="2">
+                    <div>@Resources.Club.LabelURL</div>
+                    <input type="url" value="@club.ProvidedLink" style="width: 400px;" id="txtURL" name="providedLink" />
+                </td>
+            </tr>
+            <tr>
+                <td style="padding:3px">
+                    <div>@Resources.Club.LabelCity</div>
+                    <input type="text" id="txtCity" value="@club.City" name="clubCity" />
+                </td>
+                <td style="padding:3px">
+                    <div>@Resources.Club.LabelStateProvince</div>
+                    <input type="text" id="txtState" value="@club.StateProvince" name="clubState" />
+                </td>
+            </tr>
+            <tr>
+                <td style="padding:3px">
+                    <div>@Resources.Club.LabelCountry</div>
+                    <select name="clubCountry" id="cmbCountry">
+                        @foreach (string country in CountryCodePrefix.UniqueCountries())
+                        {
+                            <option value="@country" @(country.CompareCurrentCultureIgnoreCase(club.Country) == 0 ? "selected" : string.Empty)>@country</option>
+                        }
+                    </select>
+                </td>
+                <td style="padding:3px">
+                    <div>@Resources.Club.LabelPhone</div>
+                    <input type="tel" id="txtPhone" value="@club.ContactPhone" name="clubPhone" />
+                </td>
+            </tr>
+            <tr>
+                <td style="padding:3px">
+                    <div>@Resources.Club.LabelHomeAirport</div>
+                    <input type="text" id="txtHomeAirport" value="@club.HomeAirportCode" placeholder="@Resources.Club.WatermarkFindClubs" pattern="[a-zA-Z0-9]*" name="homeAirportCode" />
+                </td>
+                <td style="padding:3px">
+                    <div>@Resources.Club.LabelTimeZone</div>
+                    <select name="clubTimeZone" id="cmbTimeZone">
+                        <option value="">@Resources.Schedule.ItemEmptyTimezone</option>
+                        @foreach (TimeZoneInfo tz in TimeZoneInfo.GetSystemTimeZones())
+                        {
+                            <option value="@tz.Id" @(tz.Id.CompareCurrentCultureIgnoreCase((club.TimeZone?.Id ?? string.Empty)) == 0 ? "selected" : string.Empty)>@tz.DisplayName</option>
+                        }
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding:3px" colspan="2">
+                    <hr />
+                    <h2>@Resources.Club.LabelPolicy</h2>
+                    <table>
+                        <tr>
+                            <td colspan="2">@Resources.Club.LabelPolicyEditing</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div>
+                                    <input type="radio" id="rbEditAll" name="editingPolicy" value="AllMembers" @(club.EditingPolicy == Club.EditPolicy.AllMembers ? "checked" : string.Empty) />
+                                    <label for="rbEditAll">@Resources.Club.LabelPolicyEditingEveryone</label>
+                                </div>
+                                <div>
+                                    <input type="radio" id="rbEditOwnersAndAdmins" name="editingPolicy" value="OwnersAndAdmins" @(club.EditingPolicy == Club.EditPolicy.OwnersAndAdmins ? "checked" : string.Empty) />
+                                    <label for="rbEditOwnersAndAdmins">@Resources.Club.LabelPolicyEditingAdminAndOwner</label>
+                                </div>
+                                <div>
+                                    <input type="radio" id="rbEditAdminsOnly" name="editingPolicy" value="AdminsOnly" @(club.EditingPolicy == Club.EditPolicy.AdminsOnly ? "checked" : string.Empty) />
+                                    <label for="rbEditAdminsOnly">@Resources.Club.LabelPolicyEditingAdminOnly</label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" id="ckPolicyNamePrefix" name="prependScheduleWithOwner" @(club.PrependsScheduleWithOwnerName ? "checked" : string.Empty) /></td>
+                            <td><label for="ckPolicyNamePrefix">@Resources.Club.LabelPolicyOwnerPrefix</label></td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" id="ckPolicyPrivate" name="isPrivate" @(club.IsPrivate ? "checked" : string.Empty) /></td>
+                            <td><label for="ckPolicyPrivate">@Resources.Club.LabelPolicyClubIsPrivate</label></td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align:top;"><input type="checkbox" name="showMobile" id="ckPolicyShowMobile" @(club.ShowMobileNumbers ? "checked" : string.Empty) /></td>
+                            <td style="vertical-align:top;">
+                                <div><label for="ckPolicyShowMobile" id="lblPolicyShowMobile">@Resources.Club.PolicyShowMobileNumbers</label></div>
+                                <div class="fineprint">@Resources.Club.PolicyShowMobileNumbersHint</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" id="ckPolicyShowHeadshots" name="showHeadshots" @(club.ShowHeadshots ? "checked" : string.Empty) /></td>
+                            <td><label for="ckPolicyShowHeadshots" id="lblPolicyShowHead">@Resources.Club.PolicyShowHeadshots</label></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                @Resources.Club.LabelPolicyDeleteNotification
+                                <select id="cmbDeleteNotify" name="deletePolicy">
+                                    <option value="None" @(club.DeleteNotifications == Club.DeleteNoficiationPolicy.None ? "selected" : string.Empty)>@Resources.Club.PolicyDeleteNotificationNone</option>
+                                    <option value="Admins" @(club.DeleteNotifications == Club.DeleteNoficiationPolicy.Admins ? "selected" : string.Empty)>@Resources.Club.PolicyDeleteNotificationAdmins</option>
+                                    <option value="WholeClub" @(club.DeleteNotifications == Club.DeleteNoficiationPolicy.WholeClub ? "selected" : string.Empty)>@Resources.Club.PolicyDeleteNotificationEveryone</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                @Resources.Club.LabelPolicyAddModifyNotification
+                                <select id="cmbAddModifyPolicy" name="addModifyPolicy">
+                                    <option value="None" @(club.AddModifyNotifications == Club.AddModifyNotificationPolicy.None ? "selected" : string.Empty)>@Resources.Club.PolicyAddModifyNotificationNone</option>
+                                    <option value="Admins" @(club.AddModifyNotifications == Club.AddModifyNotificationPolicy.Admins ? "selected" : string.Empty)>@Resources.Club.PolicyAddModifyNotificationAdmins</option>
+                                    <option value="WholeClub" @(club.AddModifyNotifications == Club.AddModifyNotificationPolicy.WholeClub ? "selected" : string.Empty)>@Resources.Club.PolicyAddModifyNotificationEveryone</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                @Resources.Club.LabelPolicyDoubleBook
+                                <select id="cmbDoubleBookPolicy" name="doubleBookPolicy">
+                                    <option value="None" @(club.DoubleBookRoleRestriction == Club.DoubleBookPolicy.None ? "selected" : string.Empty)>@Resources.Club.PolicyDoubleBookNone</option>
+                                    <option value="Admins" @(club.DoubleBookRoleRestriction == Club.DoubleBookPolicy.Admins ? "selected" : string.Empty)>@Resources.Club.PolicyDoubleBookAdmin</option>
+                                    <option value="WholeClub" @(club.DoubleBookRoleRestriction == Club.DoubleBookPolicy.WholeClub ? "selected" : string.Empty)>@Resources.Club.PolicyDoubleBookAnyone</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align:center;">
+                    <button id="btnSave" type="button" onclick="javascript: commitClub();">@Resources.Club.LabelSave</button>
+                    @if (club.ID > 0 && club.GetMember(User.Identity.Name).RoleInClub == ClubMember.ClubMemberRole.Owner)
+                    {
+                        <button id="btnDelete" type="button" onclick="javascript: deleteClub();">@Resources.Club.DeleteClub</button>
+                    }
+                </td>
+            </tr>
+        </table>
+    }
+    <div id="lblErr" class="error"></div>
+</div>

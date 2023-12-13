@@ -1556,6 +1556,9 @@
     <Content Include="Areas\mvc\Views\Admin\_imageRowSet.cshtml" />
     <Content Include="Areas\mvc\Views\Image\_imageList.cshtml" />
     <Content Include="Areas\mvc\Views\Image\_editableImage.cshtml" />
+    <Content Include="Areas\mvc\Views\Club\clubs.cshtml" />
+    <Content Include="Areas\mvc\Views\Club\_clubDesc.cshtml" />
+    <Content Include="Areas\mvc\Views\Club\_editClubDetails.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -1882,6 +1885,7 @@
     <Compile Include="Areas\mvc\Controllers\AdminUserController.cs" />
     <Compile Include="Areas\mvc\Controllers\AirportController.cs" />
     <Compile Include="Areas\mvc\Controllers\AllMakesController.cs" />
+    <Compile Include="Areas\mvc\Controllers\ClubController.cs" />
     <Compile Include="Areas\mvc\Controllers\DonateController.cs" />
     <Compile Include="Areas\mvc\Controllers\FAQController.cs" />
     <Compile Include="Areas\mvc\Controllers\ImageController.cs" />
@@ -3303,7 +3307,6 @@
     <Content Include="Areas\mvc\Views\Pub\viewFlight.cshtml" />
     <Content Include="Areas\mvc\Views\Internal\_printFooter.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\allClubs.cshtml" />
-    <Content Include="Areas\mvc\Views\Pub\_clubDesc.cshtml" />
     <Content Include="Areas\mvc\Views\Airport\visitedMap.cshtml" />
     <Content Include="Areas\mvc\Views\Search\_searchForm.cshtml" />
     <Content Include="Areas\mvc\Views\Airport\visitedAirports.cshtml" />

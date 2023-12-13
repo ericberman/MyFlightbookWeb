@@ -31,7 +31,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             set { Session[szKeyIsNakedSession] = value; }
         }
 
-        protected string FixLink(string s)
+        private static readonly char[] newlineSeparator = new char[] { '\r', '\n' };
+
+        protected static string FixLink(string s)
         {
             return (s == null || !s.StartsWith("~")) ? s : VirtualPathUtility.ToAbsolute(s);
         }
@@ -108,15 +110,17 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         [ChildActionOnly]
-        public ActionResult RenderExpandoImg(bool fExpanded, string targetID)
+        public ActionResult RenderExpandoImg(bool fExpanded, string targetID, string onExpand = null, string onCollapse = null)
         {
             ViewBag.Expanded = fExpanded;
             ViewBag.TargetID = targetID;
+            ViewBag.onExpand = String.IsNullOrEmpty(onExpand) ? "null" : onExpand;
+            ViewBag.onCollapse = String.IsNullOrEmpty(onCollapse) ? "null" : onCollapse;
             return PartialView("_expandoImg");
         }
 
         [ChildActionOnly]
-        public ActionResult RenderExpandoText(bool fExpanded, string targetID, string expandText = null, string collapseText = null, string labelText = null, string labelClass = null)
+        public ActionResult RenderExpandoText(bool fExpanded, string targetID, string expandText = null, string collapseText = null, string labelText = null, string labelClass = null, string onExpand = null, string onCollapse = null)
         {
             ViewBag.Expanded = fExpanded;
             ViewBag.TargetID = targetID;
@@ -124,6 +128,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.ExpandText = expandText ?? Resources.LocalizedText.ClickToShow;
             ViewBag.labelClass = labelClass ?? string.Empty;
             ViewBag.labelText = labelText ?? string.Empty;
+            ViewBag.onExpand = String.IsNullOrEmpty(onExpand) ? "null" : onExpand;
+            ViewBag.onCollapse = String.IsNullOrEmpty(onCollapse) ? "null" : onCollapse;
             return PartialView("_expandoText");
         }
 
@@ -217,7 +223,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             }
             if (se != null && DateTime.UtcNow.CompareTo(se.EndUtc) < 0)
             {
-                string[] rgLines = se.Body.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] rgLines = se.Body.Split(newlineSeparator, StringSplitOptions.RemoveEmptyEntries);
                 ViewBag.WebinarText = String.Format(CultureInfo.CurrentCulture, "Join \"{0}\" on {1}", (rgLines == null || rgLines.Length == 0) ? string.Empty : rgLines[0], se.LocalStart.ToShortDateString()).Linkify();
                 ViewBag.WebinarDetails = se.Body.Linkify(true);
             }

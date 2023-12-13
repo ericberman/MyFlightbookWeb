@@ -80,5 +80,47 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 return ex.Message;
             }
         }
+
+        /// <summary>
+        /// Performs an operation returning any exception as text (not limited to admin)
+        /// </summary>
+        /// <param name="func"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        protected string SafeOp(Func<string> func)
+        {
+            if (func == null) throw new ArgumentNullException(nameof(func));
+            try
+            {
+                return func();
+            }
+            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                Response.TrySkipIisCustomErrors = true;
+                return ex.Message;
+            }
+        }
+
+        /// <summary>
+        /// Performs an operation returning any exception as text (not limited to admin)
+        /// </summary>
+        /// <param name="func"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        protected ActionResult SafeOp(Func<ActionResult> func)
+        {
+            if (func == null) throw new ArgumentNullException(nameof(func));
+            try
+            {
+                return func();
+            }
+            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                Response.TrySkipIisCustomErrors = true;
+                return Content(ex.Message);
+            }
+        }
     }
 }

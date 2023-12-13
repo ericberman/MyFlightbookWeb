@@ -1,0 +1,90 @@
+﻿@using System.Globalization
+@using MyFlightbook.Payments
+@using MyFlightbook.Clubs
+@{
+    ViewBag.Title = Resources.Club.LabelManageClubs;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    ViewBag.defaultTab = tabID.tabAircraft;
+    ViewBag.UseMaps = true;
+    IEnumerable<Club> rgClubs = ViewBag.ownedClubs;
+}
+<script type="text/javascript">
+    $(function () {
+        $('#pnlFindClubs').keydown(function (e) {
+            if (e.keyCode == 13) {
+                $('#btnFindClubs')[0].click();
+                return false;
+            }
+        });
+    });
+
+    function displayClubDetails(id) {
+        var params = new Object();
+        params.idClub = id;
+        var d = JSON.stringify(params);
+        $.ajax(
+            {
+                url: '@Url.Action("PopulateClub", "Club")',
+                type: "POST", data: d, dataType: "html", contentType: "application/json",
+                error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
+                complete: function (response) { },
+                success: function (response) {
+                    $("#pnlDynamicClubDetails").html(response);
+                    }
+                });
+    }
+</script>
+<h2>@Branding.ReBrand(Resources.Club.ClubDescHeader)</h2>
+<div class="clubDetailsRight" style="background-color:#DDECFF">
+    <p>@ViewBag.clubTrialStatus</p>
+</div>
+<p>@Branding.ReBrand(Resources.Club.ClubDescOverview1)</p>
+<p>@Branding.ReBrand(Resources.Club.ClubDescOverview2Aircraft)</p>
+<p><a target="_blank" href="@VirtualPathUtility.ToAbsolute("~/mvc/pub/ClubManual")">@Branding.ReBrand(Resources.Club.ClubDescLearnMore)</a></p>
+<p>@String.Format(CultureInfo.CurrentCulture, Branding.ReBrand(Resources.Club.CreateClubRestriction), Gratuity.GratuityFromType(Gratuity.GratuityTypes.CreateClub).Threshold)</p>
+@if (ViewBag.clubStatus != Club.ClubStatus.Inactive)
+{
+    <h3>
+        @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "divEditClub", labelText = Resources.Club.LabelCreateClub, onExpand = "htmlEditShown" }); }
+    </h3>
+    Html.RenderAction("EditClub", "Club", new { club = new Club() });
+}
+<div id="pnlYourClubs">
+    <h2>@Resources.Club.HeaderYourClubs</h2>
+    @if (rgClubs.Count() == 0)
+    {
+        <p>@Resources.Club.LabelNoClubs</p>
+    }
+    else
+    {
+        foreach (Club c in rgClubs)
+        {
+            Html.RenderAction("ClubView", "Club", new { club = c, fLinkToDetails = true });
+        }
+    }
+</div>
+<h2>@Resources.Club.LabelFindClubs</h2>
+<div id="pnlFindClubs">
+    @using (Html.BeginForm("", "Club", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <div>@Resources.Club.LabelFindAllTip</div>
+        <input type="text" style="width:200px" name="szAirport" placeholder="@Resources.Club.WatermarkFindClubs" pattern="[ a-zA-Z0-9]+" value="@ViewBag.searchedAirport" />
+        <button id="btnFindClubs" type="submit">@Resources.Club.ButtonFindClubs</button>
+        <div id="lblErr" class="error">@(ViewBag.errorText ?? string.Empty)</div>
+    }
+    <div><a class="fineprint" target="_blank" href="@VirtualPathUtility.ToAbsolute("~/mvc/pub/AllClubs")">@Resources.Club.LabelSeeAllClubs</a></div>
+</div>
+@if (ViewBag.Map != null)
+{
+    <div id="pnlSearchResults">
+        <h2>@Resources.Club.HeaderFoundClubs</h2>
+        <div>@Resources.Club.LabelClickClubForDetails</div>
+        <div id="divMapContainer" style="height: 400px; width:100%">
+            @{ Html.RenderAction("MapDiv", "Airport", new { map = ViewBag.Map }); }
+        </div>
+        <div id="pnlDynamicClubDetails">
+        </div>
+    </div>
+}
+

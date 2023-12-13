@@ -1,10 +1,13 @@
-﻿using MyFlightbook.Airports;
+﻿using Ganss.Xss;
+using MyFlightbook.Airports;
 using MyFlightbook.Currency;
 using MyFlightbook.Instruction;
+using MyFlightbook.Payments;
 using MyFlightbook.Schedule;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.Globalization;
 using System.IO;
@@ -68,6 +71,13 @@ namespace MyFlightbook.Clubs
         /// Inactive = inactive, period, end of story (i.e., paying doesn't reactivate it)
         /// </summary>
         public enum ClubStatus { OK, Promotional, Expired, Inactive }
+
+        #region Authorization
+        public static ClubStatus StatusForUser(string szUser)
+        {
+            return String.IsNullOrEmpty(szUser) ? ClubStatus.Inactive : (EarnedGratuity.UserQualifies(szUser, Gratuity.GratuityTypes.CreateClub) ? ClubStatus.OK : ClubStatus.Promotional);
+        }
+        #endregion
 
         #region properties
         /// <summary>
@@ -172,11 +182,13 @@ namespace MyFlightbook.Clubs
         /// <summary>
         /// Description of the club
         /// </summary>
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string Description {get; set;}
 
         /// <summary>
         /// URL for the club, as provided by the user.  This is NOT stored as a URL because it may not pass syntax muster, and we just want to use it as is.
         /// </summary>
+        [DisplayFormat(ConvertEmptyStringToNull = false)] 
         public string ProvidedLink {get; set;}
 
         /// <summary>
@@ -193,16 +205,19 @@ namespace MyFlightbook.Clubs
         /// <summary>
         /// City where the club is located
         /// </summary>
+        [DisplayFormat(ConvertEmptyStringToNull = false)] 
         public string City {get; set;}
 
         /// <summary>
         /// State or province
         /// </summary>
+        [DisplayFormat(ConvertEmptyStringToNull = false)] 
         public string StateProvince {get; set;}
 
         /// <summary>
         /// Country
         /// </summary>
+        [DisplayFormat(ConvertEmptyStringToNull = false)] 
         public string Country {get; set;}
 
         /// <summary>
@@ -236,11 +251,13 @@ namespace MyFlightbook.Clubs
         /// <summary>
         /// Contact phone number
         /// </summary>
+        [DisplayFormat(ConvertEmptyStringToNull = false)] 
         public string ContactPhone {get; set;}
 
         /// <summary>
         /// Home airport
         /// </summary>
+        [DisplayFormat(ConvertEmptyStringToNull = false)] 
         public string HomeAirportCode {get; set;}
 
         /// <summary>
@@ -252,6 +269,22 @@ namespace MyFlightbook.Clubs
         /// Timezone information for the home airport
         /// </summary>
         public TimeZoneInfo TimeZone { get; set; }
+
+        /// <summary>
+        /// Shortcut to set timezone by ID or quickly get the ID
+        /// </summary>
+        public string TimeZoneID
+        {
+            get { return TimeZone?.Id; }
+            set
+            {
+                try { TimeZone = TimeZoneInfo.FindSystemTimeZoneById(value); }
+                catch (TimeZoneNotFoundException)
+                {
+                    TimeZone = null;
+                }
+            }
+        }
 
         /// <summary>
         /// Most recent error
@@ -485,7 +518,7 @@ namespace MyFlightbook.Clubs
 
         public override string ToString()
         {
-            return String.Format(CultureInfo.InvariantCulture, "{0} ({1})", Name, HomeAirport.Code);
+            return String.Format(CultureInfo.InvariantCulture, "{0} ({1})", Name, HomeAirport?.Code ?? HomeAirportCode ?? string.Empty);
         }
         #endregion
 
@@ -500,6 +533,8 @@ namespace MyFlightbook.Clubs
                     throw new MyFlightbookValidationException(Branding.ReBrand(Status == ClubStatus.Expired ? Resources.Club.errClubPromoExpired : Resources.Club.errClubInactive));
                 if (String.IsNullOrEmpty(Name))
                     throw new MyFlightbookValidationException(Resources.Club.errNameRequired);
+                if (TimeZone == null)
+                    throw new MyFlightbookValidationException(Resources.Schedule.errNoTimezone);
                 if (String.IsNullOrEmpty(Creator))
                     throw new MyFlightbookValidationException("No creator/owner specified for club - how did that happen?");
             }
@@ -517,6 +552,9 @@ namespace MyFlightbook.Clubs
             LastError = string.Empty;
             if (IsValid())
             {
+                // Sanitize any HTML!!
+                Description = new HtmlSanitizer().Sanitize(Description);
+
                 const string szSetCore = @"creator=?szcreator, clubname=?name, clubStatus=?status, clubdesc=?description, clubURL=?url, clubCity=?city, 
                             clubStateProvince=?state, clubCountry=?country, clubContactPhone=?contact, clubHomeAirport=?airport, clubTimeZoneID=?tzID, clubTimeZoneOffset=?tzOffset, policyFlags=?pflag";
 
@@ -952,10 +990,7 @@ namespace MyFlightbook.Clubs
                 throw new UnauthorizedAccessException("You must be signed in");
 
             Profile pf = Profile.GetUser(szUser);
-            Club c = ClubWithID(idClub);
-            if (c == null)
-                throw new InvalidOperationException("No such club with ID " + idClub.ToString(CultureInfo.InvariantCulture));
-
+            Club c = ClubWithID(idClub) ?? throw new InvalidOperationException("No such club with ID " + idClub.ToString(CultureInfo.InvariantCulture));
             if (String.IsNullOrWhiteSpace(szMessage))
                 throw new InvalidOperationException(Resources.Club.errNoContactMessageBody);
 
@@ -1749,9 +1784,7 @@ ORDER BY username asc;"));
                     ClubInsuranceReportItem ciri = d[(string)dr["username"]];
                     int idAircraft = Convert.ToInt32(dr["idaircraft"], CultureInfo.InvariantCulture);
                     decimal timeInAircraft = Convert.ToDecimal(dr["TimeInAircraft"], CultureInfo.InvariantCulture);
-                    Aircraft ac = lstAc.FirstOrDefault(ac2 => ac2.AircraftID == idAircraft);
-                    if (ac == null)
-                        throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Unknown aircraft {0} for club {1} in club report", idAircraft, idClub));
+                    Aircraft ac = lstAc.FirstOrDefault(ac2 => ac2.AircraftID == idAircraft) ?? throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Unknown aircraft {0} for club {1} in club report", idAircraft, idClub));
                     ciri.TotalsByClubAircraft[ac.DisplayTailnumber] = timeInAircraft;
                 });
         }

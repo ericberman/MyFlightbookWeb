@@ -7,10 +7,5 @@
 
     @foreach (Club c in ViewBag.Clubs)
     {
-        <div style="width: 100%; max-width: 600px; padding: 3px;">
-            @{ Html.RenderPartial("_clubDesc", new ViewDataDictionary { { "club", c } }); }
-            <div style="clear:both; width: 100%; padding: 1px;">
-                <hr />
-            </div>
-        </div>
+        Html.RenderAction("ClubView", "Club", new { club =  c });
     }

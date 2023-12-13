@@ -309,6 +309,7 @@ namespace MyFlightbook
         #endregion
 
         static private List<CountryCodePrefix> _cachedCountryCodes;
+        static private List<string> _cachedCountries;
 
         /// <summary>
         /// Returns a cached array of all country codes
@@ -344,6 +345,18 @@ namespace MyFlightbook
                 comm.Parameters.AddWithValue("id", ID);
             });
             FlushCache();
+        }
+
+        public static IEnumerable<string> UniqueCountries()
+        {
+            if (_cachedCountries != null) 
+                
+                return _cachedCountries;
+            List<string> lst = new List<string>();
+            DBHelper dbh = new DBHelper("SELECT DISTINCT(TRIM(LEFT(CountryName, LOCATE('(', CountryName) - 1))) AS Country FROM countrycodes ORDER BY IF(Country='', '', IF(Country='United States', '1', CONCAT('2-', Country))) ASC");
+            dbh.ReadRows((comm) => { }, (dr) => { lst.Add((string)dr["Country"]); });
+            _cachedCountries = lst;
+            return _cachedCountries;
         }
 
         public static void FlushCache()
