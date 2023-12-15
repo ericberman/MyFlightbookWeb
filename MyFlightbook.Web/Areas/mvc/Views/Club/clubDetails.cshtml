@@ -1,0 +1,379 @@
+﻿@using MyFlightbook.Clubs
+@using MyFlightbook.Schedule
+@using System.Globalization
+@{
+    Club club = ViewBag.club;
+    ClubMember cm = ViewBag.cm;
+    bool fIsAdmin = ViewBag.fIsAdmin;
+    ViewBag.Title = club.Name;
+    DateTime dtClub = ScheduledEvent.FromUTC(DateTime.UtcNow, club.TimeZone);
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    ViewBag.defaultTab = tabID.tabAircraft;
+}
+<script src='@VirtualPathUtility.ToAbsolute("~/public/Scripts/daypilot-all.min.js?v=20210821")'></script>
+<script src='@VirtualPathUtility.ToAbsolute("~/public/Scripts/mfbcalendar.js?v=3")'></script>
+<script type="text/javascript">
+    var clubCalendars = [];
+    var clubNavControl;
+
+    function refreshAllCalendars(args) {
+        for (i = 0; i < clubCalendars.length; i++) {
+            var cc = clubCalendars[i];
+            cc.dpCalendar.startDate = args.day;
+            cc.dpCalendar.update();
+            cc.refreshEvents();
+        }
+
+        updateAvailability(@club.ID, cc.dpCalendar.viewType == "days" ? cc.dpCalendar.startDate : cc.dpCalendar.visibleStart(), cc.dpCalendar.viewType == "days" ? 1 : 7)
+    }
+
+    function InitClubNav(cal) {
+        clubCalendars[clubCalendars.length] = cal;
+        if (typeof clubNavControl == 'undefined') {
+            clubNavControl = cal.initNav('pnlCalendarNav');
+            clubNavControl.onTimeRangeSelected = refreshAllCalendars;   // override the default function
+            clubNavControl.select(new DayPilot.Date('@(TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, club.TimeZone).FormatDateZulu())'));
+        }
+    }
+
+    $(function () {
+        $('#pnlDownload').keydown(function (e) {
+            if (e.keyCode == 13) {
+                $('#btnDownloadSchedule')[0].click();
+                return false;
+            }
+        });
+
+        if (clubCalendars.length > 0) {
+            updateAvailability(@club.ID, clubCalendars[0].dpCalendar.visibleStart(), clubCalendars[0].displayMode == "Week" ? 7 : 1);
+            setSummaryScope();
+        }
+
+        @if (club.MemberAircraft.Count() > 1) {
+            @:$("#tabSchedulesContainer").tabs();
+        }
+    });
+
+    function updateAvailability(idClub, dt, days) {
+        if ($("#pnlAvailMap")[0].style.display == "none")
+            return;
+        var params = new Object();
+        params.dtStart = dt;
+        params.clubID = idClub;
+        params.limitAircraft = -1;
+        params.cDays = days;
+        $.ajax(
+            {
+                type: "POST",
+                data: JSON.stringify(params),
+                url: '@VirtualPathUtility.ToAbsolute("~/Member/Ajax.asmx/AvailabilityMap")',
+                dataType: "json",
+                contentType: "application/json",
+                error: function (xhr, status, error) {
+                    window.alert(xhr.responseJSON.Message);
+                },
+                complete: function (response) { },
+                success: function (response) {
+                    $("#pnlAvailMap")[0].innerHTML = response.d;
+                }
+            });
+    }
+
+    function contactClubSend() {
+        var params = new Object();
+        params.idClub = @club.ID;
+        params.szMessage = $("#txtContactClub").val();
+        params.fRequestMembership = $("#ckRequestMembership")[0].checked;
+        var d = JSON.stringify(params);
+        $.ajax(
+            {
+                url: '@Url.Action("ContactClub", "Club")',
+                type: "POST", data: d, dataType: "text", contentType: "application/json",
+                error: function (xhr, status, error) {
+                    window.alert(xhr.responseText);
+                },
+                complete: function (response) { },
+                success: function (response) {
+                    dismissDlg("#divContactClub");
+                    $("#txtContactClub").val("");
+                    $("#ckRequestMembership")[0].checked = false;
+                    $("#lblMessageStatus").show();
+                }
+            });
+    }
+
+    function sendMsgClick(targetUser, szTitle) {
+        $("#hdnTargetUser").val(targetUser);
+        showModalById("divSendMsg", szTitle);
+        $("#txtContactSubject")[0].focus();
+    }
+
+    function sendMsgToUser() {
+        var params = new Object();
+        params.szTarget = $("#hdnTargetUser").val();
+        params.szSubject = $("#txtContactSubject").val();
+        params.szText = $("#txtMsg").val();
+        var d = JSON.stringify(params);
+        $.ajax(
+            {
+                url: '@Url.Action("SendMsgToClubUser", "Club")',
+                type: "POST", data: d, dataType: "text", contentType: "application/json",
+                error: function (xhr, status, error) {
+                    window.alert(xhr.responseText);
+                },
+                complete: function (response) { },
+                success: function (response) {
+                    dismissDlg("#divSendMsg");
+                    $("#txtContactSubject").val("");
+                    $("#hdnTargetUser").val("");
+                    $("#txtMsg").val("");
+                }
+            });
+    }
+
+    function setCalendarMode() {
+        var mode = $("input[name='scheduleMode']:checked").val();
+        clubCalendars.forEach((cal) => {
+            cal.dpCalendar.viewType = mode;
+        });
+        // create a fake args object
+        var o = new Object();
+        o.day = clubCalendars[0].dpCalendar.startDate;
+        o.days = (mode == "Week") ? 7 : 1;
+        o.start = o.day;
+        refreshAllCalendars(o);
+    }
+
+    function setSummaryScope() {
+        var params = new Object();
+        params.idClub = @club.ID;
+        params.resourceName = null;
+        params.fAllUsers = !    $("#ckSummaryScope")[0].checked;
+        var d = JSON.stringify(params);
+        $.ajax(
+            {
+                url: '@VirtualPathUtility.ToAbsolute("~/mvc/club/ScheduleSummary")',
+                type: "POST", data: d, dataType: "html", contentType: "application/json",
+                error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                complete: function (response) { },
+                success: function (response) {
+                    $("#divSchedSummary").html(response);
+                }
+            });
+    }
+
+</script>
+@switch (club.Status)
+{
+    case Club.ClubStatus.Promotional:
+        string szTemplate = (cm?.RoleInClub ?? ClubMember.ClubMemberRole.Member) == ClubMember.ClubMemberRole.Owner ? Resources.Club.clubStatusTrialOwner : Resources.Club.clubStatusTrial;
+        <p style="font-weight:bold">@String.Format(CultureInfo.CurrentCulture, Branding.ReBrand(szTemplate), club.ExpirationDate.Value.ToShortDateString())</p>
+        break;
+    case Club.ClubStatus.Expired:
+    case Club.ClubStatus.Inactive:
+        <p class="error">@Branding.ReBrand(club.Status == Club.ClubStatus.Inactive ? Resources.Club.errClubInactive : Resources.Club.errClubPromoExpired)</p>
+        break;
+    default:
+        break;
+}
+
+@if (cm == null)
+{
+    <div>
+        <div class="calloutSmall calloutBackground shadowed">
+            <p>@Resources.Club.LabelNotAMember</p>
+            <p>@Resources.Club.LabelSendMessage <a href="javascript:showModalById('divContactClub', '@Resources.Club.LabelMessagePrompt', 450);">@Resources.Club.LinkSendMessage</a></p>
+        </div>
+        <div id="divContactClub" style="display:none; width: 450px;">
+            <p><textarea id="txtContactClub" rows="5" cols="20" style="width:400px; margin-left:auto; margin-right:auto;"></textarea></p>
+            <table>
+                <tr style="vertical-align:top;">
+                    <td><input type="checkbox" id="ckRequestMembership" /></td>
+                    <td><label for="ckRequestMembership">@Resources.Club.LabelRequestMembership</label></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align:center">
+                        <button type="button" id="btnCancel" onclick="dismissDlg('#divContactClub'); return false;" />@Resources.LocalizedText.Cancel
+                        <button type="button" id="btnSendMessage" onclick="javascript:contactClubSend(); return false;">@Resources.Club.LabelContactClub</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div style="display:none;" id="lblMessageStatus" class="success">@Resources.Club.StatusMessageSent</div>
+    </div>
+}
+<div id="lblErr" class="error"></div>
+
+<div id="clubAccordion">
+    <h3 id="acpDetails">@Resources.Club.TabClubInfo</h3>
+    <div>
+        @if (cm?.IsManager ?? false)
+        {
+            <div class="calloutSmall calloutBackground shadowed" id="pnlManage" style="text-align:center; font-weight:bold;">
+                <p>@Resources.Club.LabelManageClub <a href="@String.Format(CultureInfo.InvariantCulture, "~/Member/ClubManage.aspx/{0}", club.ID)">@Resources.Club.LabelManageNow</a></p>
+            </div>
+        }
+        @{ Html.RenderAction("ClubView", "Club", new { club = club, fLinkToDetails = false }); }
+        @if (cm != null && !cm.IsManager)
+        {
+            using (Html.BeginForm("LeaveClub", "Club", FormMethod.Post, new {name = "frmLeaveClub", id="frmLeaveClub"}))
+            {
+                @Html.AntiForgeryToken();
+                <input type="hidden" name="idClub" value="@club.ID" />
+                <div><a style="cursor:pointer;" href="javascript:if (confirm('@Resources.Club.errConfirmLeaveClub')) $('#frmLeaveClub')[0].submit();">@Resources.Club.ButtonLeaveClub</a></div>
+            }
+        }
+        <p><a href="@VirtualPathUtility.ToAbsolute("~/mvc/Club?noredir=1")">@Resources.Club.LabelViewAllClubs</a></p>
+    </div>
+    @if (cm != null)
+    {
+        <h3>@Resources.Club.TabClubMembers</h3>
+        <div>
+            <table class="stickyHeaderTable stickyHeaderAlternate" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;"></th>
+                        <th class="headerBase gvhDefault gvhLeft">@Resources.Club.LabelMemberName</th>
+                        <th class="headerBase gvhDefault gvhLeft"></th>
+                        <th class="headerBase gvhDefault gvhLeft">@Resources.Club.LabelMemberRole</th>
+                        <th class="headerBase gvhDefault gvhLeft">@Resources.Club.ClubStatusContact</th>
+                        <th class="headerBase gvhDefault gvhLeft"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (ClubMember m in club.Members)
+                    {
+                        <tr style="vertical-align:middle;">
+                            <td style="width: 60px;"><img src="@(VirtualPathUtility.ToAbsolute(club.ShowHeadshots ? m.HeadShotHRef : "~/Public/tabimages/ProfileTab.png"))" class="roundedImg" style="width: 60px; height:60px;" /></td>
+                            <td>
+                                @if (m.IsInactive)
+                                {
+                                    <span style="font-size: larger; font-style:italic;">
+                                        @m.UserFullName" (@Resources.Club.RoleInactive)
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span style="font-weight: bold; font-size: larger">
+                                        @m.UserFullName
+                                    </span>
+                                }
+                            </td>
+                            <td>
+                                @if (!String.IsNullOrEmpty(m.Certificate))
+                                {
+                                    <span class="clubCFI">@Resources.Club.ClubStatusCFI</span>
+                                }
+                            </td>
+                            <td>@m.DisplayRoleInClub @m.ClubOffice</td>
+                            <td>@m.MobilePhone</td>
+                            <td>
+                                <img src="@VirtualPathUtility.ToAbsolute("~/images/sendflight.png")"
+                                     onclick='javascript:sendMsgClick("@m.UserName", "@String.Format(CultureInfo.CurrentCulture, Resources.Club.LabelContactMember, m.UserFullName)")'
+                                     alt="@Resources.Club.LinkSendMessage" />
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <h3>@Resources.Club.TabClubSchedules</h3>
+        <div>
+            <div>
+                <h2 style="display:inline">@Resources.Club.LabelAircraftSchedules</h2>
+                <span id="lblDownloadCSV" style="vertical-align:middle; float:right;" onclick="javascript: $('#pnlDownload').toggle(400);">
+                    <img id="imgDownloadCSV" src="@VirtualPathUtility.ToAbsolute("~/images/download.png")" style="padding-right: 5px; vertical-align:middle" />
+                    <img id="imgCSVIcon" src="@VirtualPathUtility.ToAbsolute("~/images/csvicon_sm.png")" style="padding-right: 5px; vertical-align:middle;" />
+                    <span style="vertical-align:middle">@Resources.Club.DownloadClubSchedulePrompt</span>
+                </span>
+            </div>
+            <div id="pnlDownload" class="EntryBlock" style="display:none; overflow:hidden; max-width:350px; margin-left: auto; margin-right: auto;">
+                <h3>@Resources.Club.DownloadClubScheduleHeader <span style="font-weight:bold">@club.Name</span></h3>
+                @using (Html.BeginForm("DownloadSchedule", "Club", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="idClub" value="@club.ID" />
+                <table>
+                    <tr style="vertical-align:top;">
+                        <td>@Resources.Club.DownloadClubScheduleFrom</td>
+                        <td><input type="date" id="dateDownloadFrom" value="@DateTime.Now.YMDString()" name="dateDownloadFrom" required /></td>
+                    </tr>
+                    <tr style="vertical-align:top;">
+                        <td>@Resources.Club.DownloadClubScheduleTo"</td>
+                        <td><input type="date" id="dateDownloadTo" value="@DateTime.Now.AddYears(1).YMDString()" name="dateDownloadTo" required /></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><button id="btnDownloadSchedule" type="submit">@Resources.Club.DownloadClubScheduleNow</button></td>
+                    </tr>
+                </table>
+                }
+            </div>
+            <p>
+                <span style="font-weight:bold">@Resources.LocalizedText.Note</span>
+                @String.Format(CultureInfo.CurrentCulture, Resources.Club.TimeZoneDisclaimer, club.TimeZone.StandardName)
+                @Resources.Club.TimeZoneCurrentTime
+                @String.Format(CultureInfo.InvariantCulture, Resources.LocalizedText.LocalizedJoinWithSpace, dtClub.ToShortDateString(), dtClub.ToShortTimeString())
+            </p>
+            <div id="pnlAvailMap" style="overflow:auto; width: 100%">
+            </div>
+            <div style="padding:3px; display:inline-block; width: 220px; vertical-align:top;">
+                <div style="margin: auto">
+                    <div id="pnlCalendarNav"></div>
+                </div>
+                <p></p>
+                <p>
+                    <input type="radio" name="scheduleMode" id="rbScheduleModeDay" checked onchange="javascript: setCalendarMode();" value="days" /><label for="rbScheduleModeDay">@Resources.Schedule.Day</label>
+                    <input type="radio" name="scheduleMode" id="rbScheduleModeWeek" onchange="javascript: setCalendarMode();" value="Week" /><label for="rbScheduleModeDay">@Resources.Schedule.Week</label>
+                </p>
+                <p></p>
+                <p><span style="font-weight:bold">@Resources.Club.LabelUpcomingSchedule</span></p>
+                <div style="border:1px solid black; padding:3px;">
+                    <div id="divSchedSummary"></div>
+                    <p><input type="checkbox" checked id="ckSummaryScope" name="summaryScope" onclick="javascript: setSummaryScope();" /><label for="ckSummaryScope">@Resources.Club.upcomingUser</label></p>
+                </div>
+            </div>
+            <div style="padding:3px; display: inline-block;" id="divCalendar">
+                @if (!club.MemberAircraft.Any())
+                {
+                    @Resources.Club.LabelNoAircraft
+                }
+                else
+                {
+                    Html.RenderAction("EditAppt", "Club", new { defaulttitle = (club.PrependsScheduleWithOwnerName ? MyFlightbook.Profile.GetUser(User.Identity.Name).UserFullName : string.Empty) });
+                    <div id="tabSchedulesContainer">
+                        @if (club.MemberAircraft.Count() > 1)
+                        {
+                            <ul>
+                                @foreach (ClubAircraft ca in club.MemberAircraft)
+                                {
+                                    string szLink = "#aircraft" + ca.AircraftID.ToString();
+                                    <li><a href="@szLink">@ca.DisplayTailnumber</a></li>
+                                }
+                            </ul>
+                        }
+                        @foreach (ClubAircraft ca in club.MemberAircraft)
+                        {
+                            string szId = "aircraft" + ca.AircraftID.ToString();
+                            <div id="@szId" name="@szId">
+                                @{ Html.RenderAction("ResourceSchedule", "Club", new { club = club, ac = ca, resourceHeader = ca.DisplayTailnumberWithModel, resourceID = ca.AircraftID, navInitFunc = "InitClubNav" }); }
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+@{ Html.RenderAction("RenderAccordion", "MFBTemplate", new { containerID = "clubAccordion", active = (cm == null || !club.MemberAircraft.Any()) ? 0 : 2 }); }
+<div id="divSendMsg" style="max-width: 350px; display:none;">
+    <p class="fineprint">@Resources.Club.LabelContactMemberDisclaimer</p>
+    <input type="hidden" id="hdnTargetUser" name="hdnTargetUser" value="" />
+    <div>@Resources.LocalizedText.ContactUsSubject</div>
+    <div><input type="text" required id="txtContactSubject" name="txtContactSubject" style="width: 100%" /></div>
+    <div> <textarea rows="4" style="width: 100%" id="txtMsg" name="txtMsg"></textarea></div>
+    <div style="text-align:center">
+        <button type="button" id="btnSendMsg" onclick="javascript:sendMsgToUser(); return false;">@Resources.LogbookEntry.SendFlightButton</button>
+        <button type="button" id="btnCancelSend" onclick="dismissDlg('#divSendMsg'); return false;">@Resources.LogbookEntry.SendFlightCancel</button>
+    </div>
+</div>

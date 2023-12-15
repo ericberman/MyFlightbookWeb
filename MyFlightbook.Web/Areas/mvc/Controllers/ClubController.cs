@@ -1,6 +1,7 @@
 ﻿using MyFlightbook.Airports;
 using MyFlightbook.Clubs;
 using MyFlightbook.Mapping;
+using MyFlightbook.Schedule;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -21,27 +22,33 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
     {
         #region WebServices
         [HttpPost]
+        [Authorize]
+        public ActionResult SendMsgToClubUser(string szTarget, string szSubject, string szText)
+        {
+            return SafeOp(() =>
+            {
+                Club.ContactMember(User.Identity.Name, szTarget, szSubject, szText);
+                return new EmptyResult();
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult ContactClub(int idClub, string szMessage, bool fRequestMembership)
+        {
+            return SafeOp(() =>
+            {
+                Club.ContactClubAdmins(User.Identity.Name, idClub, szMessage, fRequestMembership);
+                return new EmptyResult();
+            });
+        }
+
+        [HttpPost]
         public ActionResult PopulateClub(int idClub)
         {
             ViewBag.club = Club.ClubWithID(idClub);
             ViewBag.linkToDetails = true;
             return PartialView("_clubDesc");
-        }
-        #endregion
-
-        [ChildActionOnly]
-        public ActionResult ClubView(Club club, bool fLinkToDetails = true)
-        {
-            ViewBag.club = club;
-            ViewBag.linkToDetails = fLinkToDetails;
-            return PartialView("_clubDesc");
-        }
-
-        [ChildActionOnly]
-        public ActionResult EditClub(Club club)
-        {
-            ViewBag.club = club;
-            return PartialView("_editClubDetails");
         }
 
         [HttpPost]
@@ -70,7 +77,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     throw new InvalidOperationException(club.LastError);
 
                 Club.ClearCachedClub(club.ID);   // cache actually doesn't have things like the airport code, so force a reload when we redirect.
-                return VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/ClubDetails.aspx/{0}", club.ID));
+                return VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/club/details/{0}", club.ID));
 
             });
         }
@@ -81,21 +88,127 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             return SafeOp(() =>
             {
-                Club club = Club.ClubWithID(idClub);
-                if (club == null)
-                    throw new InvalidOperationException(Resources.Club.errNoSuchClub);
-                else if (club.GetMember(User.Identity.Name).RoleInClub != ClubMember.ClubMemberRole.Owner)
+                Club club = Club.ClubWithID(idClub) ?? throw new InvalidOperationException(Resources.Club.errNoSuchClub);
+                
+                if (club.GetMember(User.Identity.Name).RoleInClub != ClubMember.ClubMemberRole.Owner)
                     throw new UnauthorizedAccessException(Resources.Club.errNotAuthorizedToManage);
 
-                return club.FDelete() ? VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/ClubDetails.aspx/{0}", club.ID)) : throw new InvalidOperationException(club.LastError);
+                return club.FDelete() ? VirtualPathUtility.ToAbsolute("~/mvc/club/") : throw new InvalidOperationException(club.LastError);
             });
         }
 
-        public ActionResult Details(int id = 0)
+        [HttpPost]
+        [Authorize]
+        public ActionResult ScheduleSummary(int idClub, string resourceName, bool fAllUsers)
+        {
+            return SafeOp(() =>
+            {
+                // Verify that the viewing user is authorized.
+                Club club = Club.ClubWithID(idClub) ?? throw new InvalidOperationException(Resources.Club.errNoSuchClub);
+                if (!club.HasMember(User.Identity.Name))
+                    throw new UnauthorizedAccessException(Resources.Club.errNotAuthorizedToManage);
+
+                ViewBag.idClub = idClub;
+                ViewBag.resourceName = resourceName;
+                ViewBag.userName = fAllUsers ? null : User.Identity.Name;
+                ViewBag.events = club.GetUpcomingEvents(10, resourceName, ViewBag.userName);
+                return PartialView("_schedSummary");
+            });
+        }
+        #endregion
+
+        #region Partials/child actions
+        [ChildActionOnly]
+        public ActionResult ClubView(Club club, bool fLinkToDetails = true)
+        {
+            ViewBag.club = club;
+            ViewBag.linkToDetails = fLinkToDetails;
+            return PartialView("_clubDesc");
+        }
+
+        [ChildActionOnly]
+        public ActionResult EditClub(Club club)
+        {
+            ViewBag.club = club;
+            return PartialView("_editClubDetails");
+        }
+
+        [ChildActionOnly]
+        public ActionResult ResourceSchedule(Club club, ClubAircraft ac, string resourceHeader, int resourceID, bool showNavContainer = false, ScheduleDisplayMode mode = ScheduleDisplayMode.Day, string navInitFunc = "")
+        {
+            ViewBag.club = club;
+            ViewBag.aircraft = ac;
+            ViewBag.resourceHeader = resourceHeader;
+            ViewBag.resourceID = resourceID;
+            ViewBag.showNavContainer = showNavContainer;
+            ViewBag.scheduleMode = mode;
+            ViewBag.navInitFunc = navInitFunc;
+            return PartialView("_clubAircraftSchedule");
+        }
+
+        [ChildActionOnly]
+        public ActionResult EditAppt(string defaultTitle = "")
+        {
+            ViewBag.defaulttitle = defaultTitle;
+            return PartialView("_editAppt");
+        }
+        #endregion
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult LeaveClub(int idClub)
+        {
+            Club club = Club.ClubWithID(idClub) ?? throw new InvalidOperationException(Resources.Club.errNoSuchClub);
+            if (!club.HasMember(User.Identity.Name))
+                throw new UnauthorizedAccessException(Resources.Club.errNotAuthorized);
+
+            ClubMember cm = club.Members.FirstOrDefault(pf => String.Compare(pf.UserName, User.Identity.Name, StringComparison.Ordinal) == 0);
+            if (cm.RoleInClub == ClubMember.ClubMemberRole.Member)
+            {
+                cm.FDeleteClubMembership();
+                return Redirect("~/mvc/Club");
+            } else
+                throw new UnauthorizedAccessException(Resources.Club.errNotAuthorized);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult DownloadSchedule(int idClub, DateTime dateDownloadFrom, DateTime dateDownloadTo)
+        {
+            Club club = Club.ClubWithID(idClub) ?? throw new InvalidOperationException(Resources.Club.errNoSuchClub);
+            if (!club.HasMember(User.Identity.Name))
+                throw new UnauthorizedAccessException(Resources.Club.errNotAuthorizedToManage);
+
+            // if from is after to, then just swap them.
+            if (dateDownloadTo.CompareTo(dateDownloadFrom) < 0)
+                (dateDownloadFrom, dateDownloadTo) = (dateDownloadTo, dateDownloadFrom);
+
+            IEnumerable<ScheduledEvent> rgevents = ScheduledEvent.AppointmentsInTimeRange(dateDownloadFrom.Date, dateDownloadTo.Date, club.ID, club.TimeZone);
+            club.MapAircraftAndUsers(rgevents);  // fix up aircraft, usernames
+            string szFilename = String.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}", Branding.CurrentBrand.AppName, Resources.Club.DownloadClubScheduleFileName, club.Name.Replace(" ", "-"));
+
+            return File(ScheduledEvent.DownloadScheduleTable(rgevents), "text/csv", System.Text.RegularExpressions.Regex.Replace(szFilename, "[^0-9a-zA-Z-]", string.Empty) + ".csv");
+        }
+
+        [HttpGet]
+        [Authorize]
+        public ActionResult Details(int id = 0, int a = 0)
         {
             if (id == 0)
                 return Redirect(string.Empty);
-            return Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/ClubDetails.aspx/{0}", id));
+            Club club = Club.ClubWithID(id);
+            bool fIsAdmin = a != 0 && MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData;
+            ClubMember cm = club.GetMember(User.Identity.Name);
+            if (fIsAdmin && cm == null)
+                cm = new ClubMember(club.ID, User.Identity.Name, ClubMember.ClubMemberRole.Admin);
+
+            ViewBag.club = club;
+            ViewBag.fIsAdmin = fIsAdmin;
+            ViewBag.cm = cm;
+
+            return View("clubDetails");
         }
 
         private IEnumerable<Club> FillClubViewBag()
@@ -160,7 +273,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
             // Exactly one club: redirect unless "noredir=1" is specified.
             return (clubsForUser.Count() == 1 && noredir == 0) ? (ActionResult)
-                Redirect(String.Format(CultureInfo.InvariantCulture, "Club/Details/{0}", clubsForUser.First().ID)) : View("clubs");
+                Redirect(String.Format(CultureInfo.InvariantCulture, "~/mvc/Club/Details/{0}", clubsForUser.First().ID)) : View("clubs");
         }
     }
 }

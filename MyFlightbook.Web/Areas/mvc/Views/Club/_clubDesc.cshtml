@@ -18,7 +18,7 @@
         </span>
         @if (!String.IsNullOrEmpty(c.HomeAirportCode))
         {
-            <div><a href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/Airport/MapRoute?sm=1&Airports={0}", c.HomeAirportCode))">@c.HomeAirportCode</a> - @c.HomeAirport?.Name</div>
+            <div><a href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/Airport/MapRoute?sm=1&Airports={0}", c.HomeAirportCode))">@c.HomeAirportCode</a> - @(c.HomeAirport?.Name ?? string.Empty)</div>
         }
         @if (c.HasContactInfo)
         {

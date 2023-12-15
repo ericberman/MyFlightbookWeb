@@ -237,7 +237,7 @@ namespace MyFlightbook.Clubs
         /// </summary>
         public string EditLink
         {
-            get { return VirtualPathUtility.ToAbsolute("~/Member/ClubDetails.aspx/" + ID.ToString(CultureInfo.InvariantCulture)); }
+            get { return VirtualPathUtility.ToAbsolute("~/mvc/club/details/" + ID.ToString(CultureInfo.InvariantCulture)); }
         }
 
         /// <summary>
@@ -554,6 +554,15 @@ namespace MyFlightbook.Clubs
             {
                 // Sanitize any HTML!!
                 Description = new HtmlSanitizer().Sanitize(Description);
+
+                // Fix up the airport.
+                if (!String.IsNullOrEmpty(HomeAirportCode))
+                {
+                    AirportList al = new AirportList(HomeAirportCode);
+                    List<airport> lst = new List<airport>(al.GetAirportList());
+                    airport ap = lst.FirstOrDefault(a => a.IsPort);
+                    HomeAirportCode = ap?.Code ?? HomeAirportCode ?? string.Empty;
+                }
 
                 const string szSetCore = @"creator=?szcreator, clubname=?name, clubStatus=?status, clubdesc=?description, clubURL=?url, clubCity=?city, 
                             clubStateProvince=?state, clubCountry=?country, clubContactPhone=?contact, clubHomeAirport=?airport, clubTimeZoneID=?tzID, clubTimeZoneOffset=?tzOffset, policyFlags=?pflag";

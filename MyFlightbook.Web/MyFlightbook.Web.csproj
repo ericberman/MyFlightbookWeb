@@ -1559,6 +1559,10 @@
     <Content Include="Areas\mvc\Views\Club\clubs.cshtml" />
     <Content Include="Areas\mvc\Views\Club\_clubDesc.cshtml" />
     <Content Include="Areas\mvc\Views\Club\_editClubDetails.cshtml" />
+    <Content Include="Areas\mvc\Views\Club\clubDetails.cshtml" />
+    <Content Include="Areas\mvc\Views\Club\_schedSummary.cshtml" />
+    <Content Include="Areas\mvc\Views\Club\_clubAircraftSchedule.cshtml" />
+    <Content Include="Areas\mvc\Views\Club\_editAppt.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />

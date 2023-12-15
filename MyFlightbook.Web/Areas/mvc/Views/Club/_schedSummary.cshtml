@@ -1,0 +1,57 @@
+﻿@using System.Globalization
+@using MyFlightbook.Schedule
+@{
+    IEnumerable<ScheduledEvent> rgEvents = ViewBag.events;
+    int idClub = ViewBag.idClub;
+    string resourceName = ViewBag.resourceName;
+    string userName = ViewBag.userName;
+}
+
+@if (!rgEvents.Any())
+{
+    <p>@Resources.Club.errNoUpcomingEvents</p>
+}
+else
+{
+    <table cellpadding="4">
+        @foreach (ScheduledEvent se in rgEvents)
+        {
+            <tr style="vertical-align:top;">
+                <td>
+                    <div style="font-weight:bold; font-size:larger;">@se.LocalStart.ToString("d", CultureInfo.CurrentCulture)</div>
+                    <div>@String.Format(CultureInfo.CurrentCulture, "{0:t} ({1})", se.LocalStart, se.DurationDisplay)</div>
+                    <span style="font-weight:bold">@(String.IsNullOrEmpty(userName) ? se.OwnerProfile.UserFullName : string.Empty)</span>
+                    @((String.IsNullOrEmpty(userName) && String.IsNullOrEmpty(resourceName)) ? " - " : string.Empty)
+                    <span style="font-weight:bold">@(String.IsNullOrEmpty(resourceName) ? se.ResourceAircraft.DisplayTailnumber : string.Empty)</span>
+                    @((!String.IsNullOrEmpty(userName) && !String.IsNullOrEmpty(resourceName)) ? string.Empty : " - ")
+                    @se.Body
+                </td>
+                @if (User.Identity.Name.CompareCurrentCultureIgnoreCase(se.OwningUser) == 0)
+                {
+                    <td>
+                        <div class="popContainer">
+                            <img src="@VirtualPathUtility.ToAbsolute("~/images/MenuChevron.png")" class="popTrigger" />
+                            <div class="popMenuContent popMenuHidden" style="margin-top: -5px; margin-left: -5px">
+                                <div style="line-height: 26px; vertical-align: middle ">
+                                    <a style="padding-right: 4px; cursor:pointer;" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/IcalAppt.aspx?c={0}&sid={1}", idClub, se.ID))">
+                                        <img src="@VirtualPathUtility.ToAbsolute("~/images/download.png")" alt="@Resources.Schedule.DownloadApptICS" /> @Resources.Schedule.DownloadApptICS
+                                    </a>
+                                </div>
+                                <div style="line-height: 26px; vertical-align: middle">
+                                    <a style="padding-right: 4px; cursor: pointer;" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/IcalAppt.aspx?c={0}&sid={1}&fmt=Y", idClub, se.ID))">
+                                        <img src="@VirtualPathUtility.ToAbsolute("~/images/download.png")" alt="@Resources.Schedule.DownloadApptYahoo" /> @Resources.Schedule.DownloadApptYahoo
+                                    </a>
+                                </div>
+                                <div style="line-height: 26px; vertical-align: middle">
+                                    <a style="padding-right: 4px; cursor: pointer;" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/IcalAppt.aspx?c={0}&sid={1}&fmb=G", idClub, se.ID))">
+                                        <img src="@VirtualPathUtility.ToAbsolute("~/images/download.png")" alt="@Resources.Schedule.DownloadApptGoogle" /> @Resources.Schedule.DownloadApptGoogle
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                }
+            </tr>
+        }
+    </table>
+}

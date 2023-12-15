@@ -1,0 +1,137 @@
+﻿@using System.Globalization
+<div style="display:none;" id="divAppt">
+    @using (Html.BeginForm("", "Club", FormMethod.Post, new {name = "editApptForm", id="editApptForm"}))
+    {
+        <div>@Resources.Schedule.EventTitle</div>
+        <div><input type="text" id="txtApptTitle" name="txtApptTitle" placeholder="@Resources.Schedule.EventTitleWatermark" /></div>
+        <div>@Resources.Schedule.EventStart</div>
+        <div>
+            <input type="date" style="width: 120px;" id="dateStart" name="dateEnd" required />
+            <select id="cmbHourStart" name="hourStart">
+                @for (int i = 0; i < 24 * 4; i++)
+                {
+                    DateTime d = new DateTime(2000, 1, 1, i / 4, 15 * (i % 4), 0);
+                    <option value="@((i * 15).ToString(CultureInfo.InvariantCulture))">@d.ToShortTimeString()</option>
+                }
+            </select>
+        </div>
+        <div>@Resources.Schedule.EventEnd</div>
+        <div>
+            <input type="date" style="width: 120px;" id="dateEnd" name="dateEnd" required />
+            <select id="cmbHourEnd" name="hourEnd">
+                @for (int i = 0; i < 24 * 4; i++)
+                {
+                    DateTime d = new DateTime(2000, 1, 1, i / 4, 15 * (i % 4), 0);
+                    <option value="@((i * 15).ToString(CultureInfo.InvariantCulture))">@d.ToShortTimeString()</option>
+                }
+            </select>
+        </div>
+        <div style="text-align: center; margin-top: 5px;">
+            <button type="button" id="btnCancel" onclick="javascript: hideEditor(); return false;">@Resources.Schedule.EventCancel</button>
+            <button type="button" id="btnDeleteAppt">@Resources.Schedule.EventDelete</button>
+            <button type="button" id="btnSaveAppt">@Resources.Schedule.EventSave</button>
+        </div>
+        <input type="hidden" id="hdnApptID" />
+        <input type="hidden" id="hdnResource" />
+    }
+</div>
+<script>
+    $(function () {
+        $('#divAppt').keydown(function (e) {
+            if (e.keyCode == 13) {
+                $('#btnSaveAppt')[0].click();
+                return false;
+            }
+        });
+    });
+
+    function setApptDate(dt, idDate, idHour) {
+        $(idDate)[0].valueAsDate = dt.toDate();
+        var h = parseInt(dt.getHours());
+        var m = parseInt(dt.getMinutes() / 15) * 15;
+        $(idHour).val((h * 60 + m).toString());
+    }
+
+    function getApptDate(idDate, idHour) {
+        var dLocal = new Date($(idDate).val());
+
+        var minutesIntoDay = parseInt($(idHour).val());
+
+        var h = minutesIntoDay / 60;
+        var m = minutesIntoDay % 60;
+        var d = new Date(dLocal.getUTCFullYear(), dLocal.getUTCMonth(), dLocal.getUTCDate(), h, m, 0, 0);
+        dt = new DayPilot.Date(d, true);
+        return dt;
+    }
+
+    function setStartDate(dt) { setApptDate(dt, '#dateStart', '#cmbHourStart'); }
+    function getStartDate() { return getApptDate('#dateStart', '#cmbHourStart'); }
+    function setEndDate(dt) { setApptDate(dt, '#dateEnd', '#cmbHourEnd'); }
+    function getEndDate() { return getApptDate('#dateEnd', '#cmbHourEnd'); }
+
+    function getAppointment() {
+        return new DayPilot.Event({
+            id: $("#hdnApptID").val(),
+            start: getStartDate(),
+            end: getEndDate(),
+            resource: $("#hdnResource").val(),
+            text: $("#txtApptTitle").val()
+        });
+    }
+
+    function hideEditor() {
+        $("#divAppt").dialog("close");
+    }
+
+    function setAppointment(e) {
+        $("#hdnApptID").val(e.data.id);
+        setStartDate(e.data.start);
+        setEndDate(e.data.end);
+        $("#hdnResource").val(e.data.resource);
+        $("#txtApptTitle").val(e.data.text);
+        $("#btnSaveAppt")[0].onclick = function (args) {
+            if (typeof args === 'undefined')
+                args = $.event.fix(window.event);
+            if ($("#editApptForm")[0].checkValidity())
+                e.onSave(args, hideEditor);
+            else
+                $("#editApptForm")[0].reportValidity();
+
+        }
+        $("#btnDeleteAppt")[0].onclick = function (args)
+        {
+            if (typeof args === 'undefined')
+                args = $.event.fix(window.event);
+            var r = window.confirm('@Resources.Schedule.confirmDelete');
+            if (r == true) {
+                e.onDelete(args, hideEditor);
+            }
+            else {
+                args.stopPropagation();
+                args.preventDefault();
+            }
+        }
+    }
+
+    function editAppt(e, isNew) {
+        setAppointment(e);
+        $("#btnDeleteAppt").css("display", isNew ? "none" : "inline");
+        var div = $("#divAppt");
+        div.dialog({ autoOpen: false, closeOnEscape: true, modal: true, title: "@Resources.Club.TitleEditScheduledEvent" });
+        div.dialog("open");
+        div.keyup(function (event) {
+            if (event.which === 13) {
+                $("#btnSaveAppt")[0].click();
+            }
+        });
+        $("#txtApptTitle")[0].focus();
+    }
+
+    function newAppt(e, onSave) {
+        e.onSave = onSave;
+        e.onDelete = function (e) { };
+        if (e.data.text === '')
+            e.data.text = '@(ViewBag.defaultTitle ?? string.Empty)';
+        editAppt(e, true);
+    }
+</script>

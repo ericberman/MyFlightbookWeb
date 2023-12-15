@@ -1,7 +1,9 @@
 ﻿using MyFlightbook.Clubs;
+using MyFlightbook.CSV;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -292,7 +294,7 @@ namespace MyFlightbook.Schedule
             get { return EndUtc.Subtract(StartUtc); }
         }
 
-        public string DurationString(TimeSpan t)
+        public static string DurationString(TimeSpan t)
         {
             if (t.TotalHours == 1)
                 return Resources.Schedule.intervalHour;
@@ -924,6 +926,60 @@ namespace MyFlightbook.Schedule
         }
         #endregion
 
+        #region download
+        public static byte[] DownloadScheduleTable(IEnumerable<ScheduledEvent> rgevents)
+        {
+            if (rgevents == null)
+                throw new ArgumentNullException(nameof(rgevents));
+
+            using (DataTable dt = new DataTable() { Locale = CultureInfo.CurrentCulture })
+            {
+                // add the header columns from the gridview
+                dt.Columns.Add(new DataColumn("Start Date+Time (Local)", typeof(string)));
+                dt.Columns.Add(new DataColumn("End Date+Time (Local)", typeof(string)));
+                dt.Columns.Add(new DataColumn("Start Date+Time (Utc)", typeof(string)));
+                dt.Columns.Add(new DataColumn("End Date+Time (Utc)", typeof(string)));
+                dt.Columns.Add(new DataColumn("Start Date (Local)", typeof(string)));
+                dt.Columns.Add(new DataColumn("End Date (Local)", typeof(string)));
+                dt.Columns.Add(new DataColumn("Start Time (Local)", typeof(string)));
+                dt.Columns.Add(new DataColumn("End Time (Local)", typeof(string)));
+                dt.Columns.Add(new DataColumn("Duration", typeof(string)));
+                dt.Columns.Add(new DataColumn("Aircraft", typeof(string)));
+                dt.Columns.Add(new DataColumn("Club Member", typeof(string)));
+                dt.Columns.Add(new DataColumn("Description", typeof(string)));
+
+                foreach (ScheduledEvent e in rgevents)
+                {
+                    DataRow dr = dt.NewRow();
+
+                    dr[0] = e.LocalStart.ToString("s", CultureInfo.CurrentCulture);
+                    dr[1] = e.LocalEnd.ToString("s", CultureInfo.CurrentCulture);
+                    dr[2] = e.StartUtc.ToString("s", CultureInfo.CurrentCulture);
+                    dr[3] = e.EndUtc.ToString("s", CultureInfo.CurrentCulture);
+                    dr[4] = e.LocalStart.ToString("d", CultureInfo.CurrentCulture);
+                    dr[5] = e.LocalEnd.ToString("d", CultureInfo.CurrentCulture);
+                    dr[6] = e.LocalStart.ToString("t", CultureInfo.CurrentCulture);
+                    dr[7] = e.LocalEnd.ToString("t", CultureInfo.CurrentCulture);
+                    dr[8] = e.DurationDisplay;
+                    dr[9] = e.AircraftDisplay;
+                    dr[10] = e.OwnerName;
+                    dr[11] = e.Body;
+
+                    dt.Rows.Add(dr);
+                }
+
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    using (StreamWriter sw = new StreamWriter(ms, Encoding.UTF8, 1024))
+                    {
+                        CsvWriter.WriteToStream(sw, dt, true, true);
+                        sw.Flush();
+                        return ms.ToArray();
+                    }
+                }
+            }
+        }
+        #endregion
         public override string ToString()
         {
             return String.Format(CultureInfo.InvariantCulture, "{0} - {1}: {2} {3} (tz:{4})", StartUtc.ToString("yyyy-MM-dd hh:mm", CultureInfo.InvariantCulture), EndUtc.ToString("yyyy-MM-dd hh:mm", CultureInfo.InvariantCulture), OwningUser, Body, LocalTimeZone == null ? "(none)" : LocalTimeZone.Id);

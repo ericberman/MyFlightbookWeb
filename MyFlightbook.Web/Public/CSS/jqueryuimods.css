@@ -44,3 +44,9 @@ a.ui-button:active,
 .ui-state-active .ui-icon-background {
     border: #a0a0a0;
 }
+
+.ui-widget-content a, .ui-widget-content a:visited {
+    outline: none;
+    text-decoration: none;
+    color: #4983B7;
+}
