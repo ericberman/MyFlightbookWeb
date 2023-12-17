@@ -308,7 +308,7 @@
                             </select>
                         </td>
                         <td rowspan="2" style="padding-left: 50px">
-                            <a onclick="javascript: $('#hdnFormat').val('kml'); $('#formFlyingReport')[0].submit();">
+                            <a style="cursor:pointer;" onclick="javascript: $('#hdnFormat').val('kml'); $('#formFlyingReport')[0].submit();">
                                 <img src="@VirtualPathUtility.ToAbsolute("~/images/download.png")" style="vertical-align:middle; padding-right: 5px;" />
                                 <img src="@VirtualPathUtility.ToAbsolute("~/images/kmlicon_med.png")" style="vertical-align:middle; padding-right: 5px;" />
                                 <div style="display:inline-block;vertical-align:middle">@Resources.Airports.DownloadKML<br />@Resources.Airports.WarningSlow</div>

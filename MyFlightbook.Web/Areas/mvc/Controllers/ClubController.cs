@@ -197,8 +197,10 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (fAsFile)
                 {
                     string szFilename = String.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}-{3}", Branding.CurrentBrand.AppName, Resources.Club.ClubReportFlying, club.Name.Replace(" ", "-"), DateTime.Now.YMDString());
-                    // TODO: consolidate this regex...
-                    return File(fileFormat.CompareCurrentCultureIgnoreCase("kml") == 0 ? cfr.RefreshKML() : cfr.RefreshCSV(), "text/csv", Regex.Replace(szFilename, "[^0-9a-zA-Z-]", string.Empty) + ".csv");
+                // TODO: consolidate this regex...
+                return fileFormat.CompareCurrentCultureIgnoreCase("kml") == 0 ?
+                    File(cfr.RefreshKML(), "application/vnd.google-earth.kml+xml", Regex.Replace(szFilename, "[^0-9a-zA-Z-]", string.Empty) + ".kml") :
+                    File(cfr.RefreshCSV(), "text/csv", Regex.Replace(szFilename, "[^0-9a-zA-Z-]", string.Empty) + ".csv");
                 }
                 else
                 {
