@@ -1,5 +1,6 @@
 ﻿using Ganss.Xss;
 using MyFlightbook.Airports;
+using MyFlightbook.CSV;
 using MyFlightbook.Currency;
 using MyFlightbook.Instruction;
 using MyFlightbook.Payments;
@@ -9,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
+using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -58,7 +60,7 @@ namespace MyFlightbook.Clubs
 
         public enum DeleteNoficiationPolicy { None = 0x00, Admins = 0x01, WholeClub = 0x02 }
         public enum AddModifyNotificationPolicy { None = 0x00, Admins = 0x01, WholeClub = 0x02 }
-        public enum DoubleBookPolicy { None = 0x00, Admins=0x01, WholeClub = 0x02 }
+        public enum DoubleBookPolicy { None = 0x00, Admins = 0x01, WholeClub = 0x02 }
 
         public enum EditPolicy { AllMembers, OwnersAndAdmins, AdminsOnly }
 
@@ -83,22 +85,22 @@ namespace MyFlightbook.Clubs
         /// <summary>
         /// ID for the club
         /// </summary>
-        public int ID {get; set;}
+        public int ID { get; set; }
 
         /// <summary>
         /// Is this a new club?
         /// </summary>
-        public bool IsNew { get { return ID == ClubIDNew;}}
+        public bool IsNew { get { return ID == ClubIDNew; } }
 
         /// <summary>
         /// Username of the user who created the club
         /// </summary>
-        public string Creator {get; set;}
+        public string Creator { get; set; }
 
         /// <summary>
         /// Date/time that the club was created
         /// </summary>
-        public DateTime CreationDate {get; set;}
+        public DateTime CreationDate { get; set; }
 
         /// <summary>
         /// Nullable date for when the club goes inactive.
@@ -146,7 +148,7 @@ namespace MyFlightbook.Clubs
         /// <returns></returns>
         public static bool StatusCanWrite(ClubStatus status)
         {
-            return StatusIsActive(status); 
+            return StatusIsActive(status);
         }
 
         /// <summary>
@@ -177,19 +179,19 @@ namespace MyFlightbook.Clubs
         /// <summary>
         /// Name of the club
         /// </summary>
-        public string Name {get; set;}
+        public string Name { get; set; }
 
         /// <summary>
         /// Description of the club
         /// </summary>
         [DisplayFormat(ConvertEmptyStringToNull = false)]
-        public string Description {get; set;}
+        public string Description { get; set; }
 
         /// <summary>
         /// URL for the club, as provided by the user.  This is NOT stored as a URL because it may not pass syntax muster, and we just want to use it as is.
         /// </summary>
-        [DisplayFormat(ConvertEmptyStringToNull = false)] 
-        public string ProvidedLink {get; set;}
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string ProvidedLink { get; set; }
 
         /// <summary>
         /// Returns a fixed URL (includes HTTP if needed)
@@ -205,20 +207,20 @@ namespace MyFlightbook.Clubs
         /// <summary>
         /// City where the club is located
         /// </summary>
-        [DisplayFormat(ConvertEmptyStringToNull = false)] 
-        public string City {get; set;}
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string City { get; set; }
 
         /// <summary>
         /// State or province
         /// </summary>
-        [DisplayFormat(ConvertEmptyStringToNull = false)] 
-        public string StateProvince {get; set;}
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string StateProvince { get; set; }
 
         /// <summary>
         /// Country
         /// </summary>
-        [DisplayFormat(ConvertEmptyStringToNull = false)] 
-        public string Country {get; set;}
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string Country { get; set; }
 
         /// <summary>
         /// Display string for location
@@ -251,14 +253,14 @@ namespace MyFlightbook.Clubs
         /// <summary>
         /// Contact phone number
         /// </summary>
-        [DisplayFormat(ConvertEmptyStringToNull = false)] 
-        public string ContactPhone {get; set;}
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string ContactPhone { get; set; }
 
         /// <summary>
         /// Home airport
         /// </summary>
-        [DisplayFormat(ConvertEmptyStringToNull = false)] 
-        public string HomeAirportCode {get; set;}
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string HomeAirportCode { get; set; }
 
         /// <summary>
         /// The club's home airport (can be null)
@@ -289,7 +291,7 @@ namespace MyFlightbook.Clubs
         /// <summary>
         /// Most recent error
         /// </summary>
-        public string LastError {get; set;}
+        public string LastError { get; set; }
 
         private List<ClubAircraft> m_clubAircraft;
         private List<ClubMember> m_clubMembers;
@@ -401,7 +403,7 @@ namespace MyFlightbook.Clubs
         /// Indicates whether or not to show headshots of other club members.
         /// </summary>
         public bool HideHeadshots {
-            get { return (Policy & policyFlagShowHeadshots) == policyFlagShowHeadshots;}
+            get { return (Policy & policyFlagShowHeadshots) == policyFlagShowHeadshots; }
             set { Policy = value ? (Policy | policyFlagShowHeadshots) : (Policy & ~policyFlagShowHeadshots); }
         }
 
@@ -437,7 +439,7 @@ namespace MyFlightbook.Clubs
         /// </summary>
         public DeleteNoficiationPolicy DeleteNotifications
         {
-            get { return (DeleteNoficiationPolicy) ((Policy & policyMaskDeleteNotification) >> policyMaskDeleteShift); }
+            get { return (DeleteNoficiationPolicy)((Policy & policyMaskDeleteNotification) >> policyMaskDeleteShift); }
             set { Policy = (Policy & ~policyMaskDeleteNotification) | (((UInt32)value) << policyMaskDeleteShift); }
         }
 
@@ -476,8 +478,8 @@ namespace MyFlightbook.Clubs
         #region initialization
         public const int ClubIDNew = -1;
 
-	    public Club()
-	    {
+        public Club()
+        {
             ID = ClubIDNew;
             Creator = Name = Description = ProvidedLink = City = StateProvince = Country = ContactPhone = HomeAirportCode = string.Empty;
             CreationDate = DateTime.MinValue;
@@ -588,7 +590,7 @@ namespace MyFlightbook.Clubs
                         comm.Parameters.AddWithValue("airport", HomeAirportCode.LimitTo(45).ToUpperInvariant());
                         comm.Parameters.AddWithValue("idClub", ID);
                         comm.Parameters.AddWithValue("tzID", TimeZone.Id);
-                        comm.Parameters.AddWithValue("tzOffset", (int) TimeZone.BaseUtcOffset.TotalMinutes);
+                        comm.Parameters.AddWithValue("tzOffset", (int)TimeZone.BaseUtcOffset.TotalMinutes);
                         comm.Parameters.AddWithValue("pflag", Policy);
                     });
                 if (fResult)
@@ -631,7 +633,7 @@ namespace MyFlightbook.Clubs
 
         private static string PrivateInactiveRestriction()
         {
-            return String.Format(CultureInfo.InvariantCulture, "(c.policyFlags & {0}) = 0 AND clubStatus NOT IN ({1}, {2})", policyFlagPrivateClub, (int) ClubStatus.Inactive, (int) ClubStatus.Expired);
+            return String.Format(CultureInfo.InvariantCulture, "(c.policyFlags & {0}) = 0 AND clubStatus NOT IN ({1}, {2})", policyFlagPrivateClub, (int)ClubStatus.Inactive, (int)ClubStatus.Expired);
         }
 
         private static string QueryStringWithRestriction(string szRestriction)
@@ -748,7 +750,7 @@ namespace MyFlightbook.Clubs
                 WHERE ca.idaircraft=?idaircraft {1}
                 GROUP BY c.idclub", szUser == null ? string.Empty : "INNER JOIN clubmembers cm ON ca.idclub=cm.idclub", szUser == null ? string.Empty : "AND cm.username=?user");
             DBHelper dbh = new DBHelper(szQ);
-            dbh.ReadRows((comm) => { 
+            dbh.ReadRows((comm) => {
                 comm.Parameters.AddWithValue("idaircraft", idaircraft);
                 comm.Parameters.AddWithValue("user", szUser);
             }, (dr) => { lst.Add(new Club(dr)); });
@@ -774,7 +776,7 @@ namespace MyFlightbook.Clubs
             string szQ = String.Format(CultureInfo.InvariantCulture, szQTemplate, fIncludePrivateAndInactive ? string.Empty : " AND " + PrivateInactiveRestriction());
             DBHelper dbh = new DBHelper(szQ);
             dbh.ReadRows(
-                (comm) => { comm.Parameters.AddWithValue("code", szCode); }, 
+                (comm) => { comm.Parameters.AddWithValue("code", szCode); },
                 (dr) => {
                     Club c = new Club(dr);
                     object o = dr["dist"];
@@ -1038,7 +1040,7 @@ namespace MyFlightbook.Clubs
             }
         }
 
-        public IEnumerable<ScheduledEvent> GetUpcomingEvents(int limit, string resource=null, string owner=null)
+        public IEnumerable<ScheduledEvent> GetUpcomingEvents(int limit, string resource = null, string owner = null)
         {
             List<ScheduledEvent> lst = ScheduledEvent.UpcomingAppointments(ID, TimeZone, limit, resource, owner);
 
@@ -1050,6 +1052,7 @@ namespace MyFlightbook.Clubs
         #endregion
 
         #region Reporting
+        // TODO: Need to remove this, replace with MVC.
         private static void SendReport(ClubMember cm, string szReportName, string szReportPrefix, string controlName)
         {
             if (controlName == null)
@@ -1118,16 +1121,16 @@ namespace MyFlightbook.Clubs
             DateTime startDate = new DateTime(DateTime.Now.AddDays(-1).Year, DateTime.Now.AddDays(-1).Month, 1);
             string szDateMonth = startDate.ToString("MMM yyyy", CultureInfo.CurrentCulture);
 
-            foreach(ClubMember cm in ClubMember.AllClubOfficers())
+            foreach (ClubMember cm in ClubMember.AllClubOfficers())
             {
                 Club club = Club.ClubWithID(cm.ClubID);
                 if (club == null)
                     continue;
 
                 if (cm.IsTreasurer)
-                    SendReport(cm, 
+                    SendReport(cm,
                         String.Format(CultureInfo.CurrentCulture, Resources.Club.ClubReportEmailSubject, szDateMonth, Resources.Club.ClubReportFlying, club.Name),
-                        String.Format(CultureInfo.CurrentCulture, Resources.Club.ClubReportEmailBodyTemplate, Resources.Club.ClubReportFlying, club.Name, szDateMonth), 
+                        String.Format(CultureInfo.CurrentCulture, Resources.Club.ClubReportEmailBodyTemplate, Resources.Club.ClubReportFlying, club.Name, szDateMonth),
                         "~/Controls/ClubControls/FlyingReport.ascx");
 
                 if (cm.IsMaintanenceOfficer)
@@ -1155,7 +1158,7 @@ namespace MyFlightbook.Clubs
         /// <summary>
         /// The role of the member within the club - indicates level of privileges.  LIMITED TO LOWER 8 BITS of the "Role" field in database.  These are mutually exclusive.
         /// </summary>
-        public enum ClubMemberRole {Member, Admin, Owner}
+        public enum ClubMemberRole { Member, Admin, Owner }
 
         private const UInt32 RoleMask = 0xFF;
 
@@ -1286,7 +1289,7 @@ namespace MyFlightbook.Clubs
             IsInactive = ((roleFlags & InactiveMask) != 0);
             JoinedDate = Convert.ToDateTime(dr["joindate"], CultureInfo.InvariantCulture);
             LastError = string.Empty;
-            ClubOffice = (string) util.ReadNullableField(dr, "cluboffice", string.Empty);
+            ClubOffice = (string)util.ReadNullableField(dr, "cluboffice", string.Empty);
         }
         #endregion
 
@@ -1313,10 +1316,10 @@ namespace MyFlightbook.Clubs
             ClubMember cmExisting = members.FirstOrDefault<ClubMember>(cm => cm.UserName.CompareCurrentCulture(UserName) == 0);
 
             // We don't use REPLACE INTO here because doing so loses the original joindate
-            DBHelper dbh = new DBHelper(cmExisting == null ? 
+            DBHelper dbh = new DBHelper(cmExisting == null ?
                 "INSERT INTO clubmembers SET idclub=?id, username=?user, role=?role, joindate=NOW()" :
                 "UPDATE clubmembers SET role=?role, cluboffice=?office WHERE idclub=?id AND username=?user");
-            bool fResult = dbh.DoNonQuery((comm) => 
+            bool fResult = dbh.DoNonQuery((comm) =>
             {
                 comm.Parameters.AddWithValue("id", ClubID);
                 comm.Parameters.AddWithValue("user", UserName);
@@ -1524,7 +1527,7 @@ namespace MyFlightbook.Clubs
         /// NOT SET BY DEFAULT - call RefreshClubAircraftTimes
         /// </summary>
         public decimal HighestRecordedTach { get; set; }
-     
+
         /// <summary>
         /// The last error
         /// </summary>
@@ -1643,7 +1646,7 @@ GROUP BY idaircraft");
                     ClubAircraft ca = lst.First(ca2 => ca2.AircraftID == Convert.ToInt32(dr["idaircraft"], CultureInfo.InvariantCulture));
                     if (ca != null)
                     {
-                        ca.HighestRecordedHobbs = (Decimal) util.ReadNullableField(dr, "MaxHobbs", 0.0M);
+                        ca.HighestRecordedHobbs = (Decimal)util.ReadNullableField(dr, "MaxHobbs", 0.0M);
                         ca.HighestRecordedTach = (Decimal)util.ReadNullableField(dr, "MaxTach", 0.0M);
                     }
                 });
@@ -1826,6 +1829,440 @@ ORDER BY username asc;"));
             return lst;
         }
     }
+
+    public class ClubFlyingReportItem
+    {
+        #region Properties
+        public int FlightID { get; set; }
+        public DateTime FlightDate { get; set; }
+        public string Aircraft { get; set; }
+        public string PilotName { get; set; }
+        public string Route { get; set; }
+        public bool IsInstruction { get; set; }
+        public string FlightRules { get; set; }
+        public int Passengers { get; set; }
+        public decimal TotalTime { get; set; }
+        public decimal HobbsStart { get; set; }
+        public decimal HobbsEnd { get; set; }
+        public decimal TotalHobbs { get; set; }
+        public decimal TachStart { get; set; }
+        public decimal TachEnd { get; set; }
+
+        public decimal TotalTach { get; set; }
+
+        public DateTime? FlightStart { get; set; }
+        public DateTime? FlightEnd { get; set; }
+
+        public decimal TotalFlight { get; set; }
+        public DateTime? EngineStart { get; set; }
+        public DateTime? EngineEnd { get; set; }
+
+        public decimal TotalEngine { get; set; }
+
+        public decimal OilAdded { get; set; }
+        public decimal OilAdded2 { get; set; }
+        public decimal OilLevel { get; set; }
+        public decimal FuelAdded { get; set; }
+        public decimal FuelRemaining { get; set; }
+        public decimal FuelCost { get; set; }
+        #endregion
+
+        protected ClubFlyingReportItem() { }
+
+        /// <summary>
+        /// Generates a flying report for the specified club
+        /// </summary>
+        /// <param name="idClub">ID of the club</param>
+        /// <param name="dateStart">Lower bound of date range</param>
+        /// <param name="dateEnd">Upper bound of date range</param>
+        /// <param name="szUser">If non-empty, only shows flights for this user; otherwise, all club members</param>
+        /// <param name="idAircraft">If positive, only shows flights for this aircraft, otherwise all club aircraft</param>
+        public static IEnumerable<ClubFlyingReportItem> ReportForClub(int idClub, DateTime dateStart, DateTime dateEnd, string szUser, int idAircraft)
+        {
+            const string szQTemplate = @"SELECT f.idflight, f.date AS Date, f.TotalFlightTime AS 'Total Time', f.Route, f.HobbsStart AS 'Hobbs Start', f.HobbsEnd AS 'Hobbs End', u.username AS 'Username', u.Firstname, u.LastName, u.Email, ac.Tailnumber AS 'Aircraft',  
+fp.decValue AS 'Tach Start', fp2.decValue AS 'Tach End',
+f.dtFlightStart AS 'Flight Start', f.dtFlightEnd AS 'Flight End', 
+f.dtEngineStart AS 'Engine Start', f.dtEngineEnd AS 'Engine End',
+IF (YEAR(f.dtFlightEnd) > 1 AND YEAR(f.dtFlightStart) > 1, (UNIX_TIMESTAMP(f.dtFlightEnd)-UNIX_TIMESTAMP(f.dtFlightStart))/3600, 0) AS 'Total Flight',
+IF (YEAR(f.dtEngineEnd) > 1 AND YEAR(f.dtEngineStart) > 1, (UNIX_TIMESTAMP(f.dtEngineEnd)-UNIX_TIMESTAMP(f.dtEngineStart))/3600, 0) AS 'Total Engine',
+GREATEST(CAST(f.HobbsEnd AS decimal(10, 2)) - CAST(f.HobbsStart AS decimal(10,2)), 0) AS 'Total Hobbs', 
+fp2.decValue - fp.decValue AS 'Total Tach',
+fp3.decValue AS 'Oil Added',
+fp4.decValue AS 'Fuel Added',
+fp5.decValue AS 'Fuel Cost',
+fp6.decValue AS 'Oil Level',
+fp7.decValue AS 'Oil Added 2nd',
+fp8.decValue AS 'Fuel Remaining',
+IF(fppart91.StringValue is null, if(fppart121.StringValue is null, if(fppart135.StringValue is null, '', 'Part 131'), 'Part 121'), 'Part 91') AS FlightRules,
+COALESCE(fpPassCount.intValue, 0) as 'Passengers',
+IF(f.dualReceived > 0 OR f.cfi > 0, true, false) AS IsInstruction
+FROM flights f 
+INNER JOIN clubmembers cm ON f.username = cm.username
+INNER JOIN users u ON u.username=cm.username
+INNER JOIN clubs c ON c.idclub=cm.idclub
+INNER JOIN clubaircraft ca ON (ca.idaircraft=f.idaircraft AND c.idclub=ca.idclub)
+INNER JOIN aircraft ac ON (ca.idaircraft=ac.idaircraft AND c.idclub=ca.idclub)
+LEFT JOIN flightproperties fp on (fp.idflight=f.idflight AND fp.idproptype=95)
+LEFT JOIN flightproperties fp2 on (fp2.idflight=f.idflight AND fp2.idproptype=96)
+LEFT JOIN flightproperties fp3 on (fp3.idflight=f.idflight AND fp3.idproptype=365)
+LEFT JOIN flightproperties fp4 on (fp4.idflight=f.idflight AND fp4.idproptype=94)
+LEFT JOIN flightproperties fp5 on (fp5.idflight=f.idflight AND fp5.idproptype=662)
+LEFT JOIN flightproperties fp6 on (fp6.idflight=f.idflight AND fp6.idproptype=650)
+LEFT JOIN flightproperties fp7 on (fp7.idflight=f.idflight AND fp7.idproptype=418)
+LEFT JOIN flightproperties fp8 on (fp8.idflight=f.idflight AND fp8.idproptype=72)
+LEFT JOIN flightproperties fpPassCount on (fpPassCount.idflight=f.idflight and fpPassCount.idproptype=316)
+LEFT JOIN flightproperties fppart91 on (fppart91.idflight=f.idflight AND fppart91.idproptype=155)
+LEFT JOIN flightproperties fppart121 on (fppart121.idflight=f.idflight AND fppart121.idproptype=153)
+LEFT JOIN flightproperties fppart135 on (fppart135.idflight=f.idflight AND fppart135.idproptype=154)
+WHERE
+c.idClub = ?idClub AND
+f.date >= GREATEST(?startDate, cm.joindate, c.creationDate) AND
+f.date <= ?endDate {0} {1}
+ORDER BY f.DATE ASC";
+
+            List<ClubFlyingReportItem> lst = new List<ClubFlyingReportItem>();
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, szQTemplate, String.IsNullOrEmpty(szUser) ? string.Empty : " AND cm.username=?user ", idAircraft <= 0 ? string.Empty : " AND ca.idaircraft=?aircraftid"));
+            dbh.ReadRows((comm) =>
+            {
+                comm.Parameters.AddWithValue("idclub", idClub);
+                comm.Parameters.AddWithValue("startDate", dateStart);
+                comm.Parameters.AddWithValue("endDate", dateEnd);
+                if (!String.IsNullOrEmpty(szUser))
+                    comm.Parameters.AddWithValue("user", szUser);
+                if (idAircraft > 0)
+                    comm.Parameters.AddWithValue("aircraftid", idAircraft);
+            }, (dr) =>
+            {
+                lst.Add(new ClubFlyingReportItem()
+                {
+                    FlightID = Convert.ToInt32(dr["idflight"], CultureInfo.InvariantCulture),
+                    FlightDate = Convert.ToDateTime(dr["Date"], CultureInfo.InvariantCulture),
+                    Aircraft = (string)dr["Aircraft"],
+                    PilotName = new Profile()
+                    {
+                        FirstName = (string)dr["Firstname"],
+                        LastName = (string)dr["LastName"],
+                        Email = (string)dr["Email"]
+                    }.UserFullName,
+                    Route = (string)dr["Route"],
+                    IsInstruction = Convert.ToBoolean(dr["IsInstruction"], CultureInfo.InvariantCulture),
+                    FlightRules = (string)dr["FlightRules"],
+                    Passengers = Convert.ToInt32(dr["Passengers"], CultureInfo.InvariantCulture),
+                    TotalTime = Convert.ToDecimal(dr["Total Time"], CultureInfo.InvariantCulture),
+                    HobbsStart = Convert.ToDecimal(dr["Hobbs Start"], CultureInfo.InvariantCulture),
+                    HobbsEnd = Convert.ToDecimal(dr["Hobbs End"], CultureInfo.InvariantCulture),
+                    TotalHobbs = Convert.ToDecimal(dr["Total Hobbs"], CultureInfo.InvariantCulture),
+                    TachStart = Convert.ToDecimal(util.ReadNullableField(dr, "Tach Start", 0.0M), CultureInfo.InvariantCulture),
+                    TachEnd = Convert.ToDecimal(util.ReadNullableField(dr, "Tach End", 0.0M), CultureInfo.InvariantCulture),
+                    TotalTach = Convert.ToDecimal(util.ReadNullableField(dr, "Total Tach", 0.0M), CultureInfo.InvariantCulture),
+                    FlightStart = (dr["Flight Start"] == System.DBNull.Value) ? (DateTime?)null : Convert.ToDateTime(dr["Flight Start"], CultureInfo.InvariantCulture),
+                    FlightEnd = (dr["Flight End"] == System.DBNull.Value) ? (DateTime?)null : Convert.ToDateTime(dr["Flight End"], CultureInfo.InvariantCulture),
+                    TotalFlight = Convert.ToDecimal(dr["Total Flight"], CultureInfo.InvariantCulture),
+                    EngineStart = (dr["Engine Start"] == System.DBNull.Value) ? (DateTime?)null : Convert.ToDateTime(dr["Engine Start"], CultureInfo.InvariantCulture),
+                    EngineEnd = (dr["Engine End"] == System.DBNull.Value) ? (DateTime?)null : Convert.ToDateTime(dr["Engine End"], CultureInfo.InvariantCulture),
+                    TotalEngine = Convert.ToDecimal(dr["Total Engine"], CultureInfo.InvariantCulture),
+                    OilAdded = Convert.ToDecimal(util.ReadNullableField(dr, "Oil Added", 0.0M), CultureInfo.InvariantCulture),
+                    OilAdded2 = Convert.ToDecimal(util.ReadNullableField(dr, "Oil Added 2nd", 0.0M), CultureInfo.InvariantCulture),
+                    OilLevel = Convert.ToDecimal(util.ReadNullableField(dr, "Oil Level", 0.0M), CultureInfo.InvariantCulture),
+                    FuelAdded = Convert.ToDecimal(util.ReadNullableField(dr, "Fuel Added", 0.0M), CultureInfo.InvariantCulture),
+                    FuelRemaining = Convert.ToDecimal(util.ReadNullableField(dr, "Fuel Remaining", 0.0M), CultureInfo.InvariantCulture),
+                    FuelCost = Convert.ToDecimal(util.ReadNullableField(dr, "Fuel Cost", 0.0M), CultureInfo.InvariantCulture)
+                });
+            });
+
+            return lst;
+        }
+    }
+
+    #region Reporting
+    public abstract class ClubReport
+    {
+        protected int ClubID { get; set; }
+
+        protected ClubReport(int idClub)
+        {
+            ClubID = idClub;
+        }
+
+        protected static byte[] WriteBytes(DataTable dt)
+        {
+            if (dt == null)
+                throw new ArgumentNullException(nameof(dt));
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                using (StreamWriter sw = new StreamWriter(ms, Encoding.UTF8, 1024))
+                {
+                    CsvWriter.WriteToStream(sw, dt, true, true);
+                    sw.Flush();
+                    return ms.ToArray();
+                }
+            }
+        }
+
+        public abstract byte[] RefreshCSV();
+    }
+
+    public class ClubMaintenanceReport : ClubReport
+    {
+        public IEnumerable<ClubAircraft> Items
+        {
+            get
+            {
+                return Club.ClubWithID(ClubID, true).MemberAircraft;
+            }
+        }
+
+        public ClubMaintenanceReport(int idClub) : base(idClub) { }
+
+        public override byte[] RefreshCSV()
+        {
+            IEnumerable<ClubAircraft> rgItems = Items;
+            using (DataTable dt = new DataTable() { Locale = CultureInfo.CurrentCulture })
+            {
+                // add the header columns from the gridview
+                dt.Columns.Add(new DataColumn(Resources.Aircraft.AircraftHeader, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ClubAircraftTime, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceAnnual, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceAnnualDue, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceTransponder, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceTransponderDue, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenancePitotStatic, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenancePitotStaticDue, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceAltimeter, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceAltimeterDue, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceELT, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceELTDue, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceVOR, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceVORDue, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Aircraft.Maintenance100, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Aircraft.Maintenance100Due, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceOil, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceOilDue25, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceOilDue50, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceOilDue100, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceEngine, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceRegistration, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Currency.deadlinesHeaderDeadlines, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportHeaderNotes, typeof(string)));
+
+                foreach (ClubAircraft ca in rgItems)
+                {
+                    DataRow dr = dt.NewRow();
+
+                    dr[0] = ca.DisplayTailnumber;
+                    dr[1] = ca.HighWater.FormatDecimal(false);
+                    dr[2] = (ca.LastAnnual.HasValue() ? ca.LastAnnual.ToShortDateString() : string.Empty);
+                    dr[3] = (ca.Maintenance.NextAnnual.HasValue() ? ca.Maintenance.NextAnnual.ToShortDateString() : string.Empty);
+                    dr[4] = (ca.LastTransponder.HasValue() ? ca.LastTransponder.ToShortDateString() : string.Empty);
+                    dr[5] = (ca.Maintenance.NextTransponder.HasValue() ? ca.Maintenance.NextTransponder.ToShortDateString() : string.Empty);
+                    dr[6] = (ca.LastAnnual.HasValue() ? ca.LastStatic.ToShortDateString() : string.Empty);
+                    dr[7] = (ca.Maintenance.NextStatic.HasValue() ? ca.Maintenance.NextStatic.ToShortDateString() : string.Empty);
+                    dr[8] = (ca.LastAnnual.HasValue() ? ca.LastAltimeter.ToShortDateString() : string.Empty);
+                    dr[9] = (ca.Maintenance.NextAltimeter.HasValue() ? ca.Maintenance.NextAltimeter.ToShortDateString() : string.Empty);
+                    dr[10] = (ca.LastAnnual.HasValue() ? ca.LastELT.ToShortDateString() : string.Empty);
+                    dr[11] = (ca.Maintenance.NextELT.HasValue() ? ca.Maintenance.NextELT.ToShortDateString() : string.Empty);
+                    dr[12] = (ca.LastVOR.HasValue() ? ca.LastVOR.ToShortDateString() : string.Empty);
+                    dr[13] = (ca.Maintenance.NextVOR.HasValue() ? ca.Maintenance.NextVOR.ToShortDateString() : string.Empty);
+                    dr[14] = ca.Last100.FormatDecimal(false);
+                    dr[15] = ca.Maintenance.Next100.FormatDecimal(false);
+                    dr[16] = ca.LastOilChange.FormatDecimal(false);
+                    dr[17] = ca.Maintenance.LastOilChange.FormatDecimal(false);
+                    dr[18] = ca.Maintenance.LastOilChange.FormatDecimal(false);
+                    dr[19] = ca.Maintenance.LastOilChange.FormatDecimal(false);
+                    dr[20] = ca.LastNewEngine.FormatDecimal(false);
+                    dr[21] = (ca.RegistrationDue.HasValue() ? ca.RegistrationDue.ToShortDateString() : string.Empty);
+                    dr[22] = DeadlineCurrency.CoalescedDeadlinesForAircraft(null, ca.AircraftID);
+                    dr[23] = ca.PublicNotes;
+
+                    dt.Rows.Add(dr);
+                }
+
+                return WriteBytes(dt);
+            }
+        }
+    }
+
+    public class ClubInsuranceReport : ClubReport
+    {
+        protected int MonthInterval { get; set; }
+        public ClubInsuranceReport(int idClub, int monthInterval) : base(idClub)
+        {
+            MonthInterval = monthInterval;
+        }
+
+        public IEnumerable<ClubInsuranceReportItem> Items
+        {
+            get { return ClubInsuranceReportItem.ReportForClub(ClubID, MonthInterval); }
+        }
+
+        public override byte[] RefreshCSV()
+        {
+            IEnumerable<ClubInsuranceReportItem> rgItems = Items;
+            using (DataTable dt = new DataTable() { Locale = CultureInfo.CurrentCulture })
+            {
+                // add the header columns from the gridview
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportHeaderPilotName, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportHeaderInsurancePilotStatus, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportHeaderInsuranceFlightsInPeriod, typeof(int)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportHeaderInsuranceLastFlightInClubPlane, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportHeaderInsuranceTotalTime, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportheaderInsuranceComplexTime, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportheaderInsuranceHighPerformance, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportheaderInsuranceTimeInClubAircraft, typeof(string)));
+
+                foreach (ClubInsuranceReportItem item in rgItems)
+                {
+                    DataRow dr = dt.NewRow();
+
+                    dr[0] = item.User.UserFullName;
+                    StringBuilder sbStatus = new StringBuilder();
+                    foreach (CurrencyStatusItem cs in item.PilotStatusItems)
+                        sbStatus.AppendFormat(CultureInfo.CurrentCulture, "{0}: {1}\r\n\r\n", cs.Attribute, cs.Value);
+                    dr[1] = sbStatus.ToString();
+                    dr[2] = item.FlightsInInterval;
+                    dr[3] = item.MostRecentFlight?.ToShortDateString() ?? string.Empty;
+                    dr[4] = item.TotalTime.FormatDecimal(false, true);
+                    dr[5] = item.ComplexTime.FormatDecimal(false, true);
+                    dr[6] = item.HighPerformanceTime.FormatDecimal(false, true);
+
+                    StringBuilder sbAircraftTime = new StringBuilder();
+                    foreach (string key in item.TotalsByClubAircraft.Keys)
+                        sbAircraftTime.AppendFormat(CultureInfo.CurrentCulture, "{0} {1}\r\n\r\n", key, item.TotalsByClubAircraft[key].FormatDecimal(false, true));
+                    dr[7] = sbAircraftTime.ToString();
+
+                    dt.Rows.Add(dr);
+                }
+
+                return WriteBytes(dt);
+            }
+        }
+    }
+
+    public class ClubFlyingReport : ClubReport
+    {
+        protected string User { get; set; }
+        protected int AircraftID { get; set; }
+        protected DateTime StartDate { get; set; }
+        protected DateTime EndDate { get; set; }
+
+        public ClubFlyingReport(int idClub, DateTime dateStart, DateTime dateEnd, string szUser, int idAircraft) : base(idClub)
+        {
+            User = szUser;
+            StartDate = dateStart;
+            EndDate = dateEnd;
+            User = szUser;
+            AircraftID = idAircraft;
+        }
+
+        public IEnumerable<ClubFlyingReportItem> Items
+        {
+            get
+            {
+                return ClubFlyingReportItem.ReportForClub(ClubID, StartDate, EndDate, User, AircraftID);
+            }
+        }
+
+        public byte[] RefreshKML()
+        {
+            List<int> lstIds = new List<int>();
+            foreach (ClubFlyingReportItem cfri in Items)
+                lstIds.Add(cfri.FlightID);
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                if (lstIds.Count == 0)
+                {
+                    using (Telemetry.KMLWriter kw = new Telemetry.KMLWriter(ms))
+                    {
+                        kw.BeginKML();
+                        kw.EndKML();
+                    }
+                }
+                else
+                {
+                    VisitedAirport.AllFlightsAsKML(new FlightQuery(), ms, out string szErr, lstIds);
+                    if (!String.IsNullOrEmpty(szErr))
+                        throw new MyFlightbookException("Error writing KML to stream: " + szErr);
+                }
+                return ms.ToArray();
+            }
+        }
+
+        public override byte[] RefreshCSV()
+        {
+            IEnumerable<ClubFlyingReportItem> rgItems = Items;
+            using (DataTable dt = new DataTable() { Locale = CultureInfo.CurrentCulture })
+            {
+                // add the header columns from the gridview
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportHeaderDate, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportHeaderMonth, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportHeaderAircraft, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportHeaderPilotName, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportHeaderInstruction, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportHeaderFlightRules, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportHeaderPaxCount, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportHeaderRoute, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportHeaderTotalTime, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportHeaderHobbsStart, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportHeaderHobbsEnd, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportHeaderTotalHobbs, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportHeaderTachStart, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportHeaderTachEnd, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportHeaderTotalTach, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportHeaderFlightStart, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportHeaderFlightEnd, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportHeaderTotalFlight, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportHeaderEngineStart, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportHeaderEngineEnd, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportHeaderTotalEngine, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportHeaderOilAdded, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportHeaderOilAdded2ndEngine, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportHeaderOilLevel, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportHeaderFuelAdded, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportHeaderFuelRemaining, typeof(string)));
+                dt.Columns.Add(new DataColumn(Resources.Club.ReportHeaderFuelCost, typeof(string)));
+
+                foreach (ClubFlyingReportItem item in rgItems)
+                {
+                    DataRow dr = dt.NewRow();
+
+                    dr[0] = item.FlightDate.ToShortDateString();
+                    dr[1] = String.Format(CultureInfo.InvariantCulture, "{0}-{1} ({2})", item.FlightDate.Year, item.FlightDate.Month.ToString("00", CultureInfo.InvariantCulture), item.FlightDate.ToString("MMM", CultureInfo.CurrentCulture));
+                    dr[2] = item.Aircraft;
+                    dr[3] = item.PilotName;
+                    dr[4] = (item.IsInstruction ? 1 : 0).FormatBooleanInt();
+                    dr[5] = item.FlightRules;
+                    dr[6] = item.Passengers.FormatInt();
+                    dr[7] = item.Route;
+                    dr[8] = item.TotalTime.FormatDecimal(false);
+                    dr[9] = item.HobbsStart.FormatDecimal(false);
+                    dr[10] = item.HobbsEnd.FormatDecimal(false);
+                    dr[11] = item.TotalHobbs.FormatDecimal(false);
+                    dr[12] = item.TachStart.FormatDecimal(false);
+                    dr[13] = item.TachEnd.FormatDecimal(false);
+                    dr[14] = item.TotalTach.FormatDecimal(false);
+                    dr[15] = item.FlightStart.HasValue ? item.FlightStart.Value.UTCFormattedStringOrEmpty(false) : string.Empty;
+                    dr[16] = item.FlightEnd.HasValue ? item.FlightEnd.Value.UTCFormattedStringOrEmpty(false) : string.Empty; ;
+                    dr[17] = item.TotalFlight.FormatDecimal(false);
+                    dr[18] = item.EngineStart.HasValue ? item.EngineStart.Value.UTCFormattedStringOrEmpty(false) : string.Empty; ;
+                    dr[19] = item.EngineEnd.HasValue ? item.EngineEnd.Value.UTCFormattedStringOrEmpty(false) : string.Empty; ;
+                    dr[20] = item.TotalEngine.FormatDecimal(false);
+                    dr[21] = item.OilAdded.FormatDecimal(false);
+                    dr[22] = item.OilAdded2.FormatDecimal(false);
+                    dr[23] = item.OilLevel.FormatDecimal(false);
+                    dr[24] = item.FuelAdded.FormatDecimal(false);
+                    dr[25] = item.FuelRemaining.FormatDecimal(false);
+                    dr[26] = item.FuelCost == 0 ? string.Empty : item.FuelCost.ToString("C", CultureInfo.CurrentCulture);
+
+                    dt.Rows.Add(dr);
+                }
+
+                return WriteBytes(dt);
+            }
+        }
+    }
+    #endregion
 
     public interface IReportable
     {

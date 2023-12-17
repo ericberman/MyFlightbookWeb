@@ -9,6 +9,8 @@
     DateTime dtClub = ScheduledEvent.FromUTC(DateTime.UtcNow, club.TimeZone);
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
     ViewBag.defaultTab = tabID.tabAircraft;
+    ScheduleDisplayMode defaultMode = SchedulePreferences.DefaultScheduleMode;
+    string defaultScheduleMode = defaultMode.ToString();
 }
 <script src='@VirtualPathUtility.ToAbsolute("~/public/Scripts/daypilot-all.min.js?v=20210821")'></script>
 <script src='@VirtualPathUtility.ToAbsolute("~/public/Scripts/mfbcalendar.js?v=3")'></script>
@@ -210,7 +212,7 @@
         @if (cm?.IsManager ?? false)
         {
             <div class="calloutSmall calloutBackground shadowed" id="pnlManage" style="text-align:center; font-weight:bold;">
-                <p>@Resources.Club.LabelManageClub <a href="@String.Format(CultureInfo.InvariantCulture, "~/Member/ClubManage.aspx/{0}", club.ID)">@Resources.Club.LabelManageNow</a></p>
+                <p>@Resources.Club.LabelManageClub <a href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/club/Manage/{0}", club.ID))">@Resources.Club.LabelManageNow</a></p>
             </div>
         }
         @{ Html.RenderAction("ClubView", "Club", new { club = club, fLinkToDetails = false }); }
@@ -236,7 +238,10 @@
                         <th class="headerBase gvhDefault gvhLeft">@Resources.Club.LabelMemberName</th>
                         <th class="headerBase gvhDefault gvhLeft"></th>
                         <th class="headerBase gvhDefault gvhLeft">@Resources.Club.LabelMemberRole</th>
+                        @if (!club.HideMobileNumbers)
+                        {
                         <th class="headerBase gvhDefault gvhLeft">@Resources.Club.ClubStatusContact</th>
+                        }
                         <th class="headerBase gvhDefault gvhLeft"></th>
                     </tr>
                 </thead>
@@ -266,7 +271,10 @@
                                 }
                             </td>
                             <td>@m.DisplayRoleInClub @m.ClubOffice</td>
+                            @if (!club.HideMobileNumbers)
+                            {
                             <td>@m.MobilePhone</td>
+                            }
                             <td>
                                 <img src="@VirtualPathUtility.ToAbsolute("~/images/sendflight.png")"
                                      onclick='javascript:sendMsgClick("@m.UserName", "@String.Format(CultureInfo.CurrentCulture, Resources.Club.LabelContactMember, m.UserFullName)")'
@@ -323,8 +331,8 @@
                 </div>
                 <p></p>
                 <p>
-                    <input type="radio" name="scheduleMode" id="rbScheduleModeDay" checked onchange="javascript: setCalendarMode();" value="days" /><label for="rbScheduleModeDay">@Resources.Schedule.Day</label>
-                    <input type="radio" name="scheduleMode" id="rbScheduleModeWeek" onchange="javascript: setCalendarMode();" value="Week" /><label for="rbScheduleModeDay">@Resources.Schedule.Week</label>
+                    <input type="radio" name="scheduleMode" id="rbScheduleModeDay" @(defaultScheduleMode.CompareCurrentCulture("Day") == 0 ? "checked" : string.Empty) onchange="javascript: setCalendarMode();" value="days" /><label for="rbScheduleModeDay">@Resources.Schedule.Day</label>
+                    <input type="radio" name="scheduleMode" id="rbScheduleModeWeek" @(defaultScheduleMode.CompareCurrentCulture("Week") == 0 ? "checked" : string.Empty)  onchange="javascript: setCalendarMode();" value="Week" /><label for="rbScheduleModeDay">@Resources.Schedule.Week</label>
                 </p>
                 <p></p>
                 <p><span style="font-weight:bold">@Resources.Club.LabelUpcomingSchedule</span></p>
@@ -356,7 +364,7 @@
                         {
                             string szId = "aircraft" + ca.AircraftID.ToString();
                             <div id="@szId" name="@szId">
-                                @{ Html.RenderAction("ResourceSchedule", "Club", new { club = club, ac = ca, resourceHeader = ca.DisplayTailnumberWithModel, resourceID = ca.AircraftID, navInitFunc = "InitClubNav" }); }
+                                @{ Html.RenderAction("ResourceSchedule", "Club", new { club = club, ac = ca, resourceHeader = ca.DisplayTailnumberWithModel, resourceID = ca.AircraftID, navInitFunc = "InitClubNav", mode = defaultMode }); }
                             </div>
                         }
                     </div>

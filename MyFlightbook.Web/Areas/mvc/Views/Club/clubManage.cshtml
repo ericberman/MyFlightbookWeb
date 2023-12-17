@@ -1,0 +1,397 @@
+﻿@using MyFlightbook.Clubs
+@using System.Globalization
+@{
+    Club club = ViewBag.club;
+    ClubMember cm = ViewBag.cm;
+    IEnumerable<Aircraft> lstCandidateAircraft = ViewBag.candidateAircraft;
+    ViewBag.Title = club.Name;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    ViewBag.defaultTab = tabID.tabAircraft;
+    DateTime defaultStart = ViewBag.defaultStartReport;
+    DateTime defaultEnd = ViewBag.defaultEndReport;
+}
+<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/Scripts/jHtmlArea.min.js")"></script>
+
+<script type="text/javascript">
+    function deleteMember(userName) {
+        if (confirm("@Resources.Club.confirmMemberDelete")) {
+            var params = new Object();
+            params.idClub = @club.ID;
+            params.userName = userName;
+            var d = JSON.stringify(params);
+            $.ajax(
+                {
+                    url: '@Url.Action("DeleteMember", "Club")',
+                    type: "POST", data: d, dataType: "html", contentType: "application/json",
+                    error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                    complete: function (response) { },
+                    success: function (response) { $("#divMemberTable").html(response); }
+                });
+        }
+    }
+
+    function updateMember(userName, sender, roleGroupName) {
+        var params = new Object();
+        params.idClub = @club.ID;
+        params.userName = userName;
+        params.requestedRole = sender.find('input[name="' + roleGroupName + '"]:checked').val();
+        params.isMaintenanceOfficer = sender.find('input[name="isMaint')[0].checked;
+        params.isTreasurer = sender.find('input[name="isTreasurer')[0].checked;
+        params.isInsuranceOfficer = sender.find('input[name="isInsurance')[0].checked;
+        params.isInactive = sender.find('input[name="isInactive')[0].checked;
+        params.officesHeld = sender.find('input[name="txtOffice"]').val();
+        var d = JSON.stringify(params);
+        $.ajax(
+            {
+                url: '@Url.Action("UpdateMember", "Club")',
+                type: "POST", data: d, dataType: "html", contentType: "application/json",
+                error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                complete: function (response) { },
+                success: function (response) { $("#divMemberTable").html(response); }
+            });
+    }
+
+    function updateAircraft(id, sender) {
+        var params = new Object();
+        params.idClub = @club.ID;
+        params.idAircraft = id;
+        params.description = sender.find('textarea').val();
+        params.highWater= sender.find('input[name="highWater"]').val();
+
+        var d = JSON.stringify(params);
+        $.ajax(
+            {
+                url: '@Url.Action("UpdateAircraft", "Club")',
+                type: "POST", data: d, dataType: "html", contentType: "application/json",
+                error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                complete: function (response) { },
+                success: function (response) { $("#divAircraftTable").html(response); }
+            });
+    }
+
+    function addAircraft() {
+        if ($("#formAddAircraft")[0].checkValidity()) {
+            var params = new Object();
+            params.idClub = @club.ID;
+            params.idAircraft = $("#cmbAddAircraft").val();
+            params.description = $("#txtNewAcDescription").val();
+
+            var d = JSON.stringify(params);
+            $.ajax(
+                {
+                    url: '@Url.Action("AddAircraft", "Club")',
+                    type: "POST", data: d, dataType: "html", contentType: "application/json",
+                    error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                    complete: function (response) { },
+                    success: function (response) {
+                        $("#divAircraftTable").html(response);
+                        $("#txtNewAcDescription").val("").htmlarea('updateHtmlArea');
+                    }
+                });
+        } else {
+            $("#formAddAircraft")[0].reportValidity();
+        }
+    }
+
+    function deleteAircraft(id) {
+        if (confirm('@Resources.Club.confirmAircraftDelete')) {
+            var params = new Object();
+            params.idClub = @club.ID;
+            params.idAircraft = id;
+            var d = JSON.stringify(params);
+            $.ajax({
+                url: '@Url.Action("DeleteAircraft", "Club")',
+                type: "POST", data: d, dataType: "html", contentType: "application/json",
+                error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                complete: function (response) { },
+                success: function (response) { $("#divAircraftTable").html(response); }
+            });
+        }
+    }
+
+    function switchEditMode(row) {
+        row.toggleClass("editRow");
+        $(".jHtmlArea").css('width', '100%');
+    }
+
+    function inviteMember() {
+        if ($("#formInvite")[0].checkValidity()) {
+            var params = new Object();
+            params.idClub = @club.ID;
+            params.szEmail = $("#txtMemberEmail").val();
+            var d = JSON.stringify(params);
+            $.ajax({
+                url: '@Url.Action("InviteToClub", "Club")',
+                type: "POST", data: d, dataType: "html", contentType: "application/json",
+                error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                complete: function (response) { },
+                success: function (response) { $("#lblAddMemberSuccess").html(response); $("#txtMemberEmail").val(""); }
+            });
+        }
+        else
+            $("#formInvite")[0].reportValidity();
+    }
+
+    function insuranceReport() {
+        $("#divProgInsReport").show();
+        var params = new Object();
+        params.idClub = @club.ID;
+        params.fAsFile = false;
+        params.monthsInterval = $("#cmbMonthsInsurance").val();
+        var d = JSON.stringify(params);
+
+        $.ajax({
+            url: '@Url.Action("InsuranceReport", "Club")',
+            type: "POST", data: d, dataType: "html", contentType: "application/json",
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            complete: function (response) { $("#divProgInsReport").hide(); },
+            success: function (response) { $("#pnlInsuranceReport").html(response); }
+        });
+    }
+
+    function maintenanceReport() {
+        $("#divProgMaintReport").show();
+        var params = new Object();
+        params.idClub = @club.ID;
+        params.fAsFile = false;
+        var d = JSON.stringify(params);
+        $.ajax({
+            url: '@Url.Action("MaintenanceReport", "Club")',
+            type: "POST", data: d, dataType: "html", contentType: "application/json",
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            complete: function (response) { $("#divProgMaintReport").hide(); },
+            success: function (response) { $("#pnlMaintenanceReport").html(response); }
+        });
+    }
+
+    function flyingReport() {
+        var form = $("#formFlyingReport");
+        if (form[0].checkValidity()) {
+            $("#divProgFlyingReport").show();
+            var params = new Object();
+            params.idClub = @club.ID;
+            params.fAsFile = false;
+            params.dateStart = $("#dateStart").val();
+            params.dateEnd = $("#dateEnd").val();
+            params.reportMember = $("#cmbClubMembers").val();
+            params.reportAircraft = $("#cmbClubAircraft").val();
+            params.format = "";  // doesn't really matter
+            var d = JSON.stringify(params);
+            $.ajax({
+                url: '@Url.Action("FlyingReport", "Club")',
+                type: "POST", data: d, dataType: "html", contentType: "application/json",
+                error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                complete: function (response) { $("#divProgFlyingReport").hide(); },
+                success: function (response) { $("#pnlFlyingReportResult").html(response); }
+            });
+        } else
+            form[0].reportValidity();
+    }
+
+    function makeHTML(ele) {
+        ele.htmlarea({
+            toolbar: [
+                ["html", "bold", "italic", "underline", "strikethrough", "superscript", "subscript", "forecolor"],
+                ["p", "h1", "h2", "orderedList", "unorderedList", "horizontalrule"],
+                ["justifyleft", "justifycenter", "justifyright"],
+                ["link", "unlink"],
+                ["image"]
+            ]
+        });
+    }
+
+    $(() => {
+        makeHTML($("#txtNewAcDescription"));
+        $('#pnlFlyingReport').keydown(function (e) {
+            if (e.keyCode == 13) {
+                $('#btnUpdate')[0].click();
+                return false;
+            }
+        });
+        $('#pnlAddMember').keydown(function (e) {
+            if (e.keyCode == 13) {
+                $('#btnInviteMember')[0].click();
+                return false;
+            }
+        });
+    });
+
+    function onDeleteSuccess(response) {
+        window.location = response;
+    }
+
+    function onSaveSuccess(response) {
+        window.location.reload(true);
+    }
+</script>
+
+<div><img src="@VirtualPathUtility.ToAbsolute("~/images/back.png")" /><a style="vertical-align:middle;" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/Club/Details/{0}", club.ID))">@Resources.Club.LabelReturnToClub</a></div>
+<h2>@String.Format(CultureInfo.CurrentCulture, Resources.Club.LabelManageThisClub, club.Name)</h2>
+@{ Html.RenderAction("ClubView", "Club", new { club = club, fLinkToDetails = false }); }
+
+<div id="clubAccordion">
+    <h3>@Resources.Club.TabClubMembers</h3>
+    <div id="pnlManageMembers">
+        <div id="divMemberTable">
+            @{ Html.RenderAction("MemberList", "Club", new { club = club }); }
+        </div>
+        <div id="lblManageMemberError" CssClass="error"></div>
+        <hr />
+        <div id="pnlAddMember" DefaultButton="btnAddMember">
+            @Resources.Club.LabelInviteMember
+            <br />
+            <span style="font-weight:bold">@Resources.Club.LabelEmailDisclaimer</span>
+            <br />
+            <br />
+            @using (Html.BeginForm("", "Club", FormMethod.Post, new { id = "formInvite", name = "formInvite" }))
+            {
+                <input type="email" id="txtMemberEmail" style="width:300px" required placeholder="@Resources.Club.WatermarkInviteMember" />
+                <button type="button" id="btnInviteMember" onclick="javascript:inviteMember();">@Resources.Club.ButtonInviteMember</button>
+            }
+        </div>
+        <div id="lblAddMemberSuccess" class="success"></div>
+    </div>
+    <h3>@Resources.Club.TabClubAircraft</h3>
+    <div id="pnlManageAircraft">
+        <div id="divAircraftTable">
+            @{ Html.RenderAction("AircraftList", "Club", new { club = club }); }
+        </div>
+        <hr />
+        <div id="pnlAddAircraft">
+            @Resources.Club.LabelAddAircraft
+            @using (Html.BeginForm("", "Club", FormMethod.Post, new { id = "formAddAircraft", name = "formAddAircraft" }))
+            {
+                <select id="cmbAddAircraft" name="aircraftToAdd" required>
+                    @foreach (Aircraft ac in lstCandidateAircraft)
+                    {
+                        <option value="@ac.AircraftID">@ac.DisplayTailnumber</option>
+                    }
+                </select>
+            <p>
+                @Resources.Club.LabelAircraftDescriptionHeader
+                <textarea id="txtNewAcDescription" style="width: 500px" rows="5"></textarea>
+            </p>
+            <p style="text-align:center"><button type="button" onclick="javascript: addAircraft();">@Resources.Club.ButtonAddAircraft</button></p>
+            }
+            <div id="lblManageAircraftError" class="error"></div>
+        </div>
+    </div>
+    <h3>@Resources.Club.TabClubInfo</h3>
+    <div id="pnlManageClub">
+        @{ Html.RenderAction("EditClub", "Club", new { club = club, onDelete = "onDeleteSuccess", onSave = "onSaveSuccess" }); }
+        <div class="success"></div>
+    </div>
+    <h3>@Resources.Club.TabClubReports</h3>
+    <div id="pnlClubReports">
+        <h2>@Resources.Club.ReportPrompt</h2>
+        <h3>@Resources.Club.ReportHeaderFlying</h3>
+
+        <div id="pnlFlyingReport">
+            <p><span style="font-weight:bold;">@Resources.LocalizedText.Note</span> @Resources.Club.ReportPromptDisclaimer</p>
+            @using (Html.BeginForm("FlyingReport", "Club", FormMethod.Post, new { id = "formFlyingReport", name = "formFlyingReport" }))
+            {
+                <input name="idClub" type="hidden" value="@club.ID" />
+                <input name="fAsFile" type="hidden" value="true" />
+                <input name="fileFormat" id="hdnFormat" type="hidden" value="CSV" />
+                <table>
+                    <tr>
+                        <td>@Resources.Club.ReportStartDate</td>
+                        <td><input type="date" id="dateStart" required value="@defaultStart.YMDString()" name="dateStart" /></td>
+                        <td>@Resources.Club.ClubMembersForReport</td>
+                        <td>
+                            <select id="cmbClubMembers" name="reportMember">
+                                <option selected value="">@Resources.Club.AllClubMembers</option>
+                                @foreach (ClubMember m in club.Members)
+                                {
+                                    <option value="@m.UserName">@m.UserFullName</option>
+                                }
+                            </select>
+                        </td>
+                        <td rowspan="2" style="padding-left: 50px">
+                            <a onclick="javascript: $('#hdnFormat').val('kml'); $('#formFlyingReport')[0].submit();">
+                                <img src="@VirtualPathUtility.ToAbsolute("~/images/download.png")" style="vertical-align:middle; padding-right: 5px;" />
+                                <img src="@VirtualPathUtility.ToAbsolute("~/images/kmlicon_med.png")" style="vertical-align:middle; padding-right: 5px;" />
+                                <div style="display:inline-block;vertical-align:middle">@Resources.Airports.DownloadKML<br />@Resources.Airports.WarningSlow</div>
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>@Resources.Club.ReportEndDate</td>
+                        <td><input type="date" id="dateEnd" required value="@defaultEnd.YMDString()" name="dateEnd" /></td>
+                        <td>@Resources.Club.ClubAircraftForReport</td>
+                        <td>
+                            <select id="cmbClubAircraft" name="reportAircraft">
+                                <option value="-1" selected>@Resources.Club.AllClubAircraft</option>
+                                @foreach (ClubAircraft ca in club.MemberAircraft)
+                                {
+                                    <option value="@ca.AircraftID">@ca.DisplayTailnumber</option>
+                                }
+                            </select>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="5">
+                            <button id="btnUpdate" type="button" onclick="javascript: flyingReport();">@Resources.Club.ReportUpdate</button>
+                            <a style="cursor:pointer;" onclick="javascript: $('#hdnFormat').val('csv'); $('#formFlyingReport')[0].submit();">
+                                <img src="@VirtualPathUtility.ToAbsolute("~/images/download.png")" style="vertical-align:middle; padding-right: 5px;" />
+                                <img src="@VirtualPathUtility.ToAbsolute("~/images/csvicon_med.png")" style="vertical-align:middle; padding-right: 5px;" />
+                                @Resources.Club.ReportDownload
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+            }
+        </div>
+        <div style="display:none;" id="divProgFlyingReport"><img src="@VirtualPathUtility.ToAbsolute("~/images/progress.gif")" /></div>
+        <div id="pnlFlyingReportResult" style="overflow-x:auto;"></div>
+        <h3>@Resources.Club.ReportHeaderMaintenance</h3>
+        @using (Html.BeginForm("MaintenanceReport", "Club", FormMethod.Post, new { name = "formMaint", id = "formMaint" }))
+        {
+            <input name="idClub" type="hidden" value="@club.ID" />
+            <input name="fAsFile" type="hidden" value="true" />
+            <div>
+                <button type="button" onclick="javascript: maintenanceReport();">@Resources.Club.ReportUpdate</button>
+                <a style="cursor:pointer;" onclick="javascript: $('#formMaint')[0].submit();">
+                    <img src="@VirtualPathUtility.ToAbsolute("~/images/download.png")" style="vertical-align:middle; padding-right: 5px;" />
+                    <img src="@VirtualPathUtility.ToAbsolute("~/images/csvicon_med.png")" style="vertical-align:middle; padding-right: 5px;" />
+                    @Resources.Club.ReportDownload
+                </a>
+            </div>
+        }
+        <div style="display:none;" id="divProgMaintReport"><img src="@VirtualPathUtility.ToAbsolute("~/images/progress.gif")" /></div>
+        <div id="pnlMaintenanceReport" style="overflow-x:auto;"></div>
+        <h3>@Resources.Club.ReportHeaderInsurance</h3>
+        @using (Html.BeginForm("InsuranceReport", "Club", FormMethod.Post, new { name = "formInsurance", id = "formInsurance" }))
+        {
+            <input name="idClub" type="hidden" value="@club.ID" />
+            <input name="fAsFile" type="hidden" value="true" />
+            <div>
+                @Resources.Club.ReportInsuranceMonths
+                <select id="cmbMonthsInsurance" name="monthsInterval">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6" selected>6</option>
+                    <option value="12">12</option>
+                    <option value="18">18</option>
+                    <option value="24">24</option>
+                </select>
+            </div>
+            <div>
+                <button id="btnInsuranceReport" type="button" onclick="javascript: insuranceReport();">@Resources.Club.ReportUpdate</button>
+                <a style="cursor:pointer;" onclick="javascript: $('#formInsurance')[0].submit();">
+                    <img src="@VirtualPathUtility.ToAbsolute("~/images/download.png")" style="vertical-align:middle; padding-right: 5px;" />
+                    <img src="@VirtualPathUtility.ToAbsolute("~/images/csvicon_med.png")" style="vertical-align:middle; padding-right: 5px;" />
+                    @Resources.Club.ReportDownload
+                </a>
+            </div>
+        }
+        <div style="display:none;" id="divProgInsReport"><img src="@VirtualPathUtility.ToAbsolute("~/images/progress.gif")" /></div>
+        <div id="pnlInsuranceReport" style="overflow-x:auto;"></div>
+    </div>
+</div>
+@{ Html.RenderAction("RenderAccordion", "MFBTemplate", new { containerID = "clubAccordion", active = "false" }); }
+

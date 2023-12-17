@@ -1,0 +1,82 @@
+﻿@using MyFlightbook.Clubs
+@using System.Globalization
+@{
+    Club club = ViewBag.club;
+    int i = 0;
+}
+<table class="stickyHeaderTable stickyHeaderAlternate" style="width: 100%;">
+    <thead>
+        <tr>
+            <th></th>
+            <th style="width: 60px;"></th>
+            <th class="headerBase gvhDefault gvhLeft">@Resources.Club.LabelMemberName</th>
+            <th class="headerBase gvhDefault gvhLeft"></th>
+            <th class="headerBase gvhDefault gvhLeft">@Resources.Club.LabelMemberJoinDate</th>
+            <th class="headerBase gvhDefault gvhLeft">@Resources.Club.LabelMemberRole@{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "roleTip", tipTextHTML = Resources.Club.ClubRolesDescription });}</th>
+            <th class="headerBase gvhDefault gvhLeft">@Resources.Club.ClubStatusContact</th>
+            <th class="headerBase gvhDefault gvhLeft"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (ClubMember m in club.Members)
+        {
+            string idMember = String.Format(CultureInfo.InvariantCulture, "rbMember{0}", i);
+            string idAdmin = String.Format(CultureInfo.InvariantCulture, "idAdmin{0}", i);
+            string idOwner = String.Format(CultureInfo.InvariantCulture, "idOwner{0}", i);
+            string idMaint = String.Format(CultureInfo.InvariantCulture, "idMaint{0}", i);
+            string idTreas = String.Format(CultureInfo.InvariantCulture, "idTreas{0}", i);
+            string idIns = String.Format(CultureInfo.InvariantCulture, "idIns{0}", i);
+            string idInactive = String.Format(CultureInfo.InvariantCulture, "idInact{0}", i);
+            string rbGroupName = String.Format(CultureInfo.InvariantCulture, "clubRole{0}", i++);
+            <tr style="vertical-align:middle;">
+                <td>
+                    <div class="displayCell">
+                        <a style="cursor:pointer;" onclick="javascript: $(this).parents('tr').toggleClass('editRow');">@Resources.LocalizedText.genericEdit</a>
+                    </div>
+                    <div class="editCell">
+                        <a style="cursor:pointer;" onclick="javascript: $(this).parents('tr').toggleClass('editRow');">@Resources.LocalizedText.Cancel</a>
+                        <a style="cursor:pointer;" onclick="javascript: updateMember('@m.UserName', $(this).parents('tr'), '@rbGroupName');">@Resources.LocalizedText.genericUpdate</a>
+                    </div>
+                </td>
+                <td style="width: 60px;"><img src="@(VirtualPathUtility.ToAbsolute(club.ShowHeadshots ? m.HeadShotHRef : "~/Public/tabimages/ProfileTab.png"))" class="roundedImg" style="width: 60px; height:60px;" /></td>
+                <td>
+                    @if (m.IsInactive)
+                    {
+                        <span style="font-size: larger; font-style:italic;">
+                            @m.UserFullName" (@Resources.Club.RoleInactive)
+                        </span>
+                    }
+                    else
+                    {
+                        <span style="font-weight: bold; font-size: larger">
+                            @m.UserFullName
+                        </span>
+                    }
+                </td>
+                <td>
+                    @if (!String.IsNullOrEmpty(m.Certificate))
+                    {
+                        <span class="clubCFI">@Resources.Club.ClubStatusCFI</span>
+                    }
+                </td>
+                <td>@m.JoinedDate.ToShortDateString()</td>
+                <td>
+                    <div class="displayCell">@m.DisplayRoleInClub @m.ClubOffice</div>
+                    <div class="editCell">
+                        <div><input type="radio" id="@idMember" name="@rbGroupName" @(m.RoleInClub == ClubMember.ClubMemberRole.Member ? "checked" : string.Empty) value="Member" /><label for="@idMember">@Resources.Club.RoleMember</label></div>
+                        <div><input type="radio" id="@idAdmin" name="@rbGroupName" @(m.RoleInClub == ClubMember.ClubMemberRole.Admin ? "checked" : string.Empty) value="Admin" /><label for="@idAdmin">@Resources.Club.RoleManager</label></div>
+                        <div><input type="radio" id="@idOwner" name="@rbGroupName" @(m.RoleInClub == ClubMember.ClubMemberRole.Owner ? "checked" : string.Empty) value="Owner" /><label for="@idOwner">@Resources.Club.RoleOwner</label></div>
+                        <div><input type="checkbox" name="isMaint" id="@idMaint" @(m.IsMaintanenceOfficer ? "checked" : string.Empty) /><label for="@idMaint">@Resources.Club.RoleMaintenanceOfficer</label></div>
+                        <div><input type="checkbox" name="isTreasurer" id="@idTreas" @(m.IsTreasurer ? "checked" : string.Empty) /><label for="@idTreas">@Resources.Club.RoleTreasurer</label></div>
+                        <div><input type="checkbox" name="isInsurance" id="@idIns" @(m.IsInsuranceOfficer ? "checked" : string.Empty) /><label for="@idIns">@Resources.Club.RoleInsuranceOfficer</label></div>
+                        <div>@Resources.Club.RoleOfficeHeld <input type="text" name="txtOffice" value="@m.ClubOffice" /></div>
+                        <div><input type="checkbox" name="isInactive" id="@idInactive" @(m.IsInactive ? "checked" : string.Empty) /><label for="@idInactive">@Resources.Club.RoleInactive</label></div>
+                    </div>
+                </td>
+                <td>@m.MobilePhone</td>
+                <td><img src="@VirtualPathUtility.ToAbsolute("~/images/x.gif")" onclick='javascript: deleteMember("@m.UserName");' /></td>
+            </tr>
+        }
+    </tbody>
+</table>
+

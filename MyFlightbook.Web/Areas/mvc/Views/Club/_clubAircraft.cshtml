@@ -1,0 +1,88 @@
+﻿@using MyFlightbook.Clubs
+@using System.Globalization
+@{
+    Club club = ViewBag.club;
+}
+@if (!club.MemberAircraft.Any())
+{
+    <div>@Resources.Club.LabelNoAircraft</div>
+}
+else
+{
+    <table style="width: 100%;">
+        @foreach (ClubAircraft ca in club.MemberAircraft)
+        {
+            string idHTML = String.Format(CultureInfo.InvariantCulture, "html{0}", ca.AircraftID);
+            string idHighWater = String.Format(CultureInfo.InvariantCulture, "hwm{0}", ca.AircraftID);
+            <tr>
+                <td>
+                    <div class="displayCell">
+                        <a style="cursor:pointer;" onclick="javascript: switchEditMode($(this).parents('tr'));">@Resources.LocalizedText.genericEdit</a>
+                    </div>
+                    <div class="editCell">
+                        <a style="cursor:pointer;" onclick="javascript: $(this).parents('tr').toggleClass('editRow');">@Resources.LocalizedText.Cancel</a>
+                        <a style="cursor:pointer;" onclick="javascript: updateAircraft(@ca.AircraftID, $(this).parents('tr'));">@Resources.LocalizedText.genericUpdate</a>
+                    </div>
+                </td>
+                <td>
+                    <div class="displayCell">
+                        <table>
+                            <tr style="vertical-align: top;">
+                                <td style="text-align: center">
+                                    @if (ca.HasSampleImage)
+                                    {
+                                        <img src="@ca.SampleImageThumbnail" onclick="javascript:viewMFBImg('@ca.SampleImageFull')" style="vertical-align:middle" />
+                                        <div>@ca.SampleImageComment</div>
+                                    }
+                                </td>
+                                <td>
+                                    <div style="font-weight: bold;">@ca.DisplayTailnumber</div>
+                                    @Html.Raw(ca.ClubDescription)
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="editCell">
+                        <h3 style="font-weight: bold">@ca.DisplayTailnumber</h3>
+                        <textarea name="acDescription" style="width: 100%;" id="@idHTML" rows="5">@Html.Raw(ca.ClubDescription)</textarea>
+                        <script type="text/javascript">
+                            $(() => {
+                                makeHTML($("#" + "@idHTML"));
+                            });
+                        </script>
+                        <table>
+                            <tr>
+                                <td>
+                                    <div style="font-weight:bold">@Resources.Club.ClubAircraftTime</div>
+                                    <div class="fineprint">@Resources.Club.ClubAircraftTimeDesc</div>
+                                </td>
+                                <td>
+                                    <input type="number" name="highWater" id="@idHighWater" step="0.01" min="0" value="@ca.HighWater.ToString(CultureInfo.InvariantCulture)" />
+                                </td>
+                                <td>
+                                    @if (ca.HighestRecordedHobbs > 0)
+                                    {
+                                        <div>
+                                            <img src="@VirtualPathUtility.ToAbsolute("~/images/cross-fill.png")" alt="@Resources.Club.ClubAircraftTimeCrossFill" title="@Resources.Club.ClubAircraftTimeCrossFill"
+                                                 onclick='javascript:$("#" + "@idHighWater").val(@ca.HighestRecordedHobbs)' />
+                                            @String.Format(CultureInfo.CurrentCulture, Resources.Club.ClubAircraftHighestHobbs, ca.HighestRecordedHobbs)
+                                        </div>
+                                    }
+                                    @if (ca.HighestRecordedTach > 0)
+                                    {
+                                        <div>
+                                            <img src="@VirtualPathUtility.ToAbsolute("~/images/cross-fill.png")" alt="@Resources.Club.ClubAircraftTimeCrossFill" title="@Resources.Club.ClubAircraftTimeCrossFill"
+                                                 onclick='javascript:$("#" + "@idHighWater").val(@ca.HighestRecordedTach)' />
+                                            @String.Format(CultureInfo.CurrentCulture, Resources.Club.ClubAircraftHighestTach, ca.HighestRecordedTach)
+                                        </div>
+                                    }
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </td>
+                <td><img src="@VirtualPathUtility.ToAbsolute("~/images/x.gif")" onclick='javascript: deleteAircraft(@ca.AircraftID);' /></td>
+            </tr>
+        }
+    </table>
+}

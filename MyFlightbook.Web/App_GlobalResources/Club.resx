@@ -806,4 +806,10 @@ Sender Email: {1}</value>
   <data name="RoleInactive" xml:space="preserve">
     <value>Inactive</value>
   </data>
+  <data name="errNoSuchAircraft" xml:space="preserve">
+    <value>Specified aircraft is available in this club!</value>
+  </data>
+  <data name="errNoSuchUser" xml:space="preserve">
+    <value>Specified user is not a member of this club!</value>
+  </data>
 </root>

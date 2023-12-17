@@ -630,6 +630,7 @@ namespace MyFlightbook.Web.Ajax
         [WebMethod(EnableSession = true)]
         public string AvailabilityMap(DateTime dtStart, int clubID, int limitAircraft = Aircraft.idAircraftUnknown, int cDays = 1)
         {
+            SchedulePreferences.DefaultScheduleMode = cDays == 1 ? ScheduleDisplayMode.Day : (cDays == 7 ? ScheduleDisplayMode.Week : ScheduleDisplayMode.Month);
             return ScheduledEvent.AvailabilityMap(dtStart, clubID, limitAircraft, cDays);
         }
         #endregion

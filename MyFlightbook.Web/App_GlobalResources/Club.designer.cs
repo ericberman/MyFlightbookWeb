@@ -698,11 +698,29 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Specified aircraft is available in this club!.
+        /// </summary>
+        internal static string errNoSuchAircraft {
+            get {
+                return ResourceManager.GetString("errNoSuchAircraft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Requested club doesn&apos;t exist..
         /// </summary>
         internal static string errNoSuchClub {
             get {
                 return ResourceManager.GetString("errNoSuchClub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Specified user is not a member of this club!.
+        /// </summary>
+        internal static string errNoSuchUser {
+            get {
+                return ResourceManager.GetString("errNoSuchUser", resourceCulture);
             }
         }
         

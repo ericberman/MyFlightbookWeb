@@ -1,11 +1,13 @@
 ﻿using MyFlightbook.Airports;
 using MyFlightbook.Clubs;
+using MyFlightbook.Instruction;
 using MyFlightbook.Mapping;
 using MyFlightbook.Schedule;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 
@@ -20,7 +22,239 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 {
     public class ClubController : AdminControllerBase
     {
+        const string szCookieLastStart = "clubFlyingLastStart";
+        const string szCookieLastEnd = "clubFlyingLastEnd";
+
         #region WebServices
+        private Club ValidateClubAdmin(int idClub)
+        {
+            Club club = Club.ClubWithID(idClub) ?? throw new InvalidOperationException(Resources.Club.errNoSuchClub);
+
+            if (!club.HasAdmin(User.Identity.Name))
+                throw new UnauthorizedAccessException(Resources.Club.errNotAuthorizedToManage);
+            return club;
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult DeleteMember(int idClub, string userName)
+        {
+            return SafeOp(() =>
+            {
+                Club club = ValidateClubAdmin(idClub);
+
+                ClubMember cm = club.GetMember(userName) ?? throw new InvalidOperationException(Resources.Club.errNoSuchUser);
+                if (cm.RoleInClub == ClubMember.ClubMemberRole.Owner)
+                    throw new InvalidOperationException(Resources.Club.errCannotDeleteOwner);
+                if (!cm.FDeleteClubMembership())
+                    throw new InvalidOperationException(cm.LastError);
+                club.InvalidateMembers();
+
+                ViewBag.club = club;
+                return PartialView("_memberList");
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult UpdateMember(int idClub, string userName, ClubMember.ClubMemberRole requestedRole, bool isMaintenanceOfficer, bool isTreasurer, bool isInsuranceOfficer, string officesHeld, bool isInactive)
+        {
+            return SafeOp(() =>
+            {
+                Club club = ValidateClubAdmin(idClub);
+
+                ClubMember cm = club.GetMember(userName) ?? throw new InvalidOperationException(Resources.Club.errNoSuchUser);
+
+                if (requestedRole == ClubMember.ClubMemberRole.Owner) // that's fine, but we need to un-make any other creators/owners
+                {
+                    ClubMember cmOldOwner = club.Members.FirstOrDefault(pf => pf.RoleInClub == ClubMember.ClubMemberRole.Owner);
+                    if (cmOldOwner != null) //should never happen!
+                    {
+                        cmOldOwner.RoleInClub = ClubMember.ClubMemberRole.Admin;
+                        if (!cmOldOwner.FCommitClubMembership())
+                            throw new MyFlightbookException(cmOldOwner.LastError);
+                    }
+                }
+                else if (cm.RoleInClub == ClubMember.ClubMemberRole.Owner)    // if we're not requesting creator role, but this person currently is creator, then we are demoting - that's a no-no
+                    throw new MyFlightbookException(Resources.Club.errCantDemoteOwner);
+
+                cm.RoleInClub = requestedRole;
+                cm.IsMaintanenceOfficer = isMaintenanceOfficer;
+                cm.IsTreasurer = isTreasurer;
+                cm.IsInsuranceOfficer = isInsuranceOfficer;
+                cm.ClubOffice = officesHeld ?? string.Empty;
+                cm.IsInactive = isInactive;
+                if (!cm.FCommitClubMembership())
+                    throw new MyFlightbookException(cm.LastError);
+
+
+                club.InvalidateMembers();
+
+                ViewBag.club = club;
+                return PartialView("_memberList");
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult UpdateAircraft(int idClub, int idAircraft, string description, decimal highWater)
+        {
+            return SafeOp(() =>
+            {
+                Club club = ValidateClubAdmin(idClub);
+
+                ClubAircraft ca = club.MemberAircraft.FirstOrDefault(ac => ac.AircraftID == idAircraft) ?? throw new InvalidOperationException(Resources.Club.errNoSuchAircraft);
+                ca.ClubDescription = description ?? string.Empty;
+                ca.HighWater = highWater;
+
+                if (!ca.FSaveToClub())
+                    throw new InvalidOperationException(ca.LastError);
+                ViewBag.club = club;
+                ClubAircraft.RefreshClubAircraftTimes(club.ID, club.MemberAircraft);    // make sure high-water marks are set
+                return PartialView("_clubAircraft");
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult DeleteAircraft(int idClub, int idAircraft)
+        {
+            return SafeOp(() =>
+            {
+                Club club = ValidateClubAdmin(idClub);
+
+                ClubAircraft ca = club.MemberAircraft.FirstOrDefault(ac => ac.AircraftID == idAircraft) ?? throw new InvalidOperationException(Resources.Club.errNoSuchAircraft);
+
+                if (!ca.FDeleteFromClub())
+                    throw new InvalidOperationException(ca.LastError);
+
+                club.InvalidateMemberAircraft();
+
+                ViewBag.club = club;
+                return PartialView("_clubAircraft");
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult AddAircraft(int idClub, int idAircraft, string description)
+        {
+            return SafeOp(() =>
+            {
+                Club club = ValidateClubAdmin(idClub);
+
+                // Ensure it's a valid aircraft in the user's account
+                if (new UserAircraft(User.Identity.Name).GetUserAircraftByID(idAircraft) == null)
+                    throw new InvalidOperationException(Resources.Club.errNoSuchAircraft);
+
+                ClubAircraft ca = new ClubAircraft()
+                {
+                    AircraftID = idAircraft,
+                    ClubDescription = description ?? string.Empty,
+                    ClubID = idClub
+                };
+
+                if (!ca.FSaveToClub())
+                    throw new InvalidOperationException(ca.LastError);
+                
+                club.InvalidateMemberAircraft(); // force a reload
+
+                ViewBag.club = club;
+                ClubAircraft.RefreshClubAircraftTimes(club.ID, club.MemberAircraft);    // make sure high-water marks are set
+                return PartialView("_clubAircraft");
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public string InviteToClub(int idClub, string szEmail)
+        {
+            return SafeOp(() =>
+            {
+                Club club = ValidateClubAdmin(idClub);
+                // TODO: We use this regex in a few places; we should consolidate them
+                if (!Regex.IsMatch(szEmail, "\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*"))
+                    throw new ArgumentException(Resources.LocalizedText.ValidationEmailFormat);
+
+                if (club.Status == Club.ClubStatus.Inactive)
+                    throw new InvalidOperationException(Branding.ReBrand(Resources.Club.errClubInactive));
+                if (club.Status == Club.ClubStatus.Expired)
+                    throw new InvalidOperationException(Branding.ReBrand(Resources.Club.errClubPromoExpired));
+
+                new CFIStudentMapRequest(User.Identity.Name, szEmail, CFIStudentMapRequest.RoleType.RoleInviteJoinClub, club).Send();
+                    return String.Format(CultureInfo.CurrentCulture, Resources.Profile.EditProfileRequestHasBeenSent, HttpUtility.HtmlEncode(szEmail));
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult FlyingReport(int idClub, bool fAsFile, DateTime dateStart, DateTime dateEnd, string reportMember, int reportAircraft, string fileFormat)
+        {
+            return SafeOp(() =>
+            {
+                Club club = ValidateClubAdmin(idClub);
+                ClubFlyingReport cfr = new ClubFlyingReport(idClub, dateStart, dateEnd, reportMember, reportAircraft);
+                if (fAsFile)
+                {
+                    string szFilename = String.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}-{3}", Branding.CurrentBrand.AppName, Resources.Club.ClubReportFlying, club.Name.Replace(" ", "-"), DateTime.Now.YMDString());
+                    // TODO: consolidate this regex...
+                    return File(fileFormat.CompareCurrentCultureIgnoreCase("kml") == 0 ? cfr.RefreshKML() : cfr.RefreshCSV(), "text/csv", Regex.Replace(szFilename, "[^0-9a-zA-Z-]", string.Empty) + ".csv");
+                }
+                else
+                {
+                    Response.Cookies[szCookieLastStart].Value = dateStart.Date.YMDString();
+                    Response.Cookies[szCookieLastEnd].Value = dateEnd.Date.YMDString();
+                    Response.Cookies[szCookieLastStart].Expires = Response.Cookies[szCookieLastEnd].Expires = DateTime.Now.AddYears(5);
+
+                    ViewBag.items = cfr.Items;
+                    return PartialView("_clubFlyingReport");
+                }
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult MaintenanceReport(int idClub, bool fAsFile)
+        {
+            return SafeOp(() =>
+            {
+                Club club = ValidateClubAdmin(idClub);
+                ClubMaintenanceReport cmr = new ClubMaintenanceReport(idClub);
+                if (fAsFile)
+                {
+                    string szFilename = String.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}-{3}", Branding.CurrentBrand.AppName, Resources.Club.ClubReportMaintenance, club.Name.Replace(" ", "-"), DateTime.Now.YMDString());
+                    // TODO: consolidate this regex...
+                    return File(cmr.RefreshCSV(), "text/csv", Regex.Replace(szFilename, "[^0-9a-zA-Z-]", string.Empty) + ".csv");
+                }
+                else
+                {
+                    ViewBag.items = cmr.Items;
+                    return PartialView("_clubMaintenanceReport");
+                }
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult InsuranceReport(int idClub, bool fAsFile, int monthsInterval)
+        {
+            return SafeOp(() =>
+            {
+                Club club = ValidateClubAdmin(idClub);
+                ClubInsuranceReport cir = new ClubInsuranceReport(idClub, monthsInterval);
+
+                if (fAsFile)
+                {
+                    string szFilename = String.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}-{3}", Branding.CurrentBrand.AppName, Resources.Club.ClubReportInsurance, club.Name.Replace(" ", "-"), DateTime.Now.YMDString());
+                    return File(cir.RefreshCSV(), "text/csv", Regex.Replace(szFilename, "[^0-9a-zA-Z-]", string.Empty) + ".csv");
+                } else
+                {
+                    ViewBag.items = cir.Items;
+                    return PartialView("_clubInsuranceReport");
+                }
+            });
+        }
+
         [HttpPost]
         [Authorize]
         public ActionResult SendMsgToClubUser(string szTarget, string szSubject, string szText)
@@ -65,12 +299,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 }
                 else
                 {
-                    Club c2 = Club.ClubWithID(club.ID);
-                    if (c2 == null)
-                        throw new InvalidOperationException(Resources.Club.errNoSuchClub);
-                    else if (!c2.HasAdmin(User.Identity.Name))
-                        throw new UnauthorizedAccessException(Resources.Club.errNotAuthorizedToManage);
-                    club.Status = c2.Status;    // ensure we aren't changing status
+                    Club c2 = ValidateClubAdmin(club.ID);
+                    club.Status = c2.Status;    // ensure we aren't changing status of the club
+                    club.Creator = c2.Creator;  // ensure that we have an owner and aren't changing it here.
                 }
 
                 if (!club.FCommit())
@@ -88,8 +319,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             return SafeOp(() =>
             {
-                Club club = Club.ClubWithID(idClub) ?? throw new InvalidOperationException(Resources.Club.errNoSuchClub);
-                
+                Club club = ValidateClubAdmin(idClub);
+
                 if (club.GetMember(User.Identity.Name).RoleInClub != ClubMember.ClubMemberRole.Owner)
                     throw new UnauthorizedAccessException(Resources.Club.errNotAuthorizedToManage);
 
@@ -106,7 +337,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 // Verify that the viewing user is authorized.
                 Club club = Club.ClubWithID(idClub) ?? throw new InvalidOperationException(Resources.Club.errNoSuchClub);
                 if (!club.HasMember(User.Identity.Name))
-                    throw new UnauthorizedAccessException(Resources.Club.errNotAuthorizedToManage);
+                    throw new UnauthorizedAccessException(Resources.Club.errNoSuchUser);
 
                 ViewBag.idClub = idClub;
                 ViewBag.resourceName = resourceName;
@@ -127,9 +358,11 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         [ChildActionOnly]
-        public ActionResult EditClub(Club club)
+        public ActionResult EditClub(Club club, string onSave, string onDelete)
         {
             ViewBag.club = club;
+            ViewBag.onSaveFunc = onSave;
+            ViewBag.onDeleteFunc = onDelete;
             return PartialView("_editClubDetails");
         }
 
@@ -152,6 +385,21 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.defaulttitle = defaultTitle;
             return PartialView("_editAppt");
         }
+
+        [ChildActionOnly]
+        public ActionResult MemberList(Club club)
+        {
+            ViewBag.club = club;
+            return PartialView("_memberList");
+        }
+
+        [ChildActionOnly]
+        public ActionResult AircraftList(Club club)
+        {
+            ViewBag.club = club ?? throw new ArgumentNullException(nameof(club));
+            ClubAircraft.RefreshClubAircraftTimes(club.ID, club.MemberAircraft);    // make sure high-water marks are set
+            return PartialView("_clubAircraft");
+        }
         #endregion
 
         [HttpPost]
@@ -161,7 +409,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             Club club = Club.ClubWithID(idClub) ?? throw new InvalidOperationException(Resources.Club.errNoSuchClub);
             if (!club.HasMember(User.Identity.Name))
-                throw new UnauthorizedAccessException(Resources.Club.errNotAuthorized);
+                throw new UnauthorizedAccessException(Resources.Club.errNoSuchUser);
 
             ClubMember cm = club.Members.FirstOrDefault(pf => String.Compare(pf.UserName, User.Identity.Name, StringComparison.Ordinal) == 0);
             if (cm.RoleInClub == ClubMember.ClubMemberRole.Member)
@@ -179,7 +427,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             Club club = Club.ClubWithID(idClub) ?? throw new InvalidOperationException(Resources.Club.errNoSuchClub);
             if (!club.HasMember(User.Identity.Name))
-                throw new UnauthorizedAccessException(Resources.Club.errNotAuthorizedToManage);
+                throw new UnauthorizedAccessException(Resources.Club.errNoSuchUser);
 
             // if from is after to, then just swap them.
             if (dateDownloadTo.CompareTo(dateDownloadFrom) < 0)
@@ -189,7 +437,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             club.MapAircraftAndUsers(rgevents);  // fix up aircraft, usernames
             string szFilename = String.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}", Branding.CurrentBrand.AppName, Resources.Club.DownloadClubScheduleFileName, club.Name.Replace(" ", "-"));
 
-            return File(ScheduledEvent.DownloadScheduleTable(rgevents), "text/csv", System.Text.RegularExpressions.Regex.Replace(szFilename, "[^0-9a-zA-Z-]", string.Empty) + ".csv");
+            return File(ScheduledEvent.DownloadScheduleTable(rgevents), "text/csv", Regex.Replace(szFilename, "[^0-9a-zA-Z-]", string.Empty) + ".csv");
         }
 
         [HttpGet]
@@ -197,7 +445,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         public ActionResult Details(int id = 0, int a = 0)
         {
             if (id == 0)
-                return Redirect(string.Empty);
+                return Redirect("~/mvc/club");
             Club club = Club.ClubWithID(id);
             bool fIsAdmin = a != 0 && MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData;
             ClubMember cm = club.GetMember(User.Identity.Name);
@@ -209,6 +457,28 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.cm = cm;
 
             return View("clubDetails");
+        }
+
+        [HttpGet]
+        [Authorize]
+        public ActionResult Manage(int id = 0)
+        {
+            if (id == 0)
+                return Redirect("~/mvc/club");
+            Club club = ValidateClubAdmin(id);
+
+            UserAircraft ua = new UserAircraft(User.Identity.Name);
+            List<Aircraft> lst = new List<Aircraft>(ua.GetAircraftForUser());
+            lst.RemoveAll(ac => ac.IsAnonymous || club.MemberAircraft.FirstOrDefault(ca => ca.AircraftID == ac.AircraftID) != null); // remove all anonymous aircraft, or aircraft that are already in the list
+
+            ViewBag.club = club;
+            club.InvalidateMemberAircraft();    // force things like high water marks
+            ViewBag.cm = club.GetMember(User.Identity.Name);
+            ViewBag.candidateAircraft = lst;
+
+            ViewBag.defaultStartReport = Request.Cookies[szCookieLastStart] != null && DateTime.TryParse(Request.Cookies[szCookieLastStart].Value, out DateTime dtStart) ? dtStart: club.CreationDate;
+            ViewBag.defaultEndReport = (Request.Cookies[szCookieLastEnd] != null && DateTime.TryParse(Request.Cookies[szCookieLastEnd].Value, out DateTime dtEnd)) ? dtEnd : DateTime.Now;
+            return View("clubManage");
         }
 
         private IEnumerable<Club> FillClubViewBag()

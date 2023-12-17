@@ -1953,4 +1953,10 @@
   <data name="AirportGameNotFound" xml:space="preserve">
     <value>In-progress quiz not found; please start over.</value>
   </data>
+  <data name="genericEdit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="genericUpdate" xml:space="preserve">
+    <value>Update</value>
+  </data>
 </root>

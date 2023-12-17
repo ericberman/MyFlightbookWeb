@@ -1563,6 +1563,12 @@
     <Content Include="Areas\mvc\Views\Club\_schedSummary.cshtml" />
     <Content Include="Areas\mvc\Views\Club\_clubAircraftSchedule.cshtml" />
     <Content Include="Areas\mvc\Views\Club\_editAppt.cshtml" />
+    <Content Include="Areas\mvc\Views\Club\clubManage.cshtml" />
+    <Content Include="Areas\mvc\Views\Club\_memberList.cshtml" />
+    <Content Include="Areas\mvc\Views\Club\_clubAircraft.cshtml" />
+    <Content Include="Areas\mvc\Views\Club\_clubFlyingReport.cshtml" />
+    <Content Include="Areas\mvc\Views\Club\_clubMaintenanceReport.cshtml" />
+    <Content Include="Areas\mvc\Views\Club\_clubInsuranceReport.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />

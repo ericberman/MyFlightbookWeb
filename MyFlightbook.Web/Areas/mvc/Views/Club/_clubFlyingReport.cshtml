@@ -1,0 +1,76 @@
+﻿@using System.Globalization
+@using MyFlightbook.Clubs
+@if (ViewBag.items.Count == 0)
+{
+    <p>@Resources.Club.ReportNoData</p>
+}
+else
+{
+    <table cellspacing="0" style="border-collapse: collapse">
+        <thead>
+            <tr>
+                <th class="PaddedCell">@Resources.Club.ReportHeaderDate</th>
+                <th class="PaddedCell">@Resources.Club.ReportHeaderMonth</th>
+                <th class="PaddedCell">@Resources.Club.ReportHeaderAircraft</th>
+                <th class="PaddedCell">@Resources.Club.ReportHeaderPilotName</th>
+                <th class="PaddedCell">@Resources.Club.ReportHeaderInstruction</th>
+                <th class="PaddedCell">@Resources.Club.ReportHeaderFlightRules</th>
+                <th class="PaddedCell">@Resources.Club.ReportHeaderPaxCount</th>
+                <th class="PaddedCell">@Resources.Club.ReportHeaderRoute</th>
+                <th class="PaddedCell">@Resources.Club.ReportHeaderTotalTime</th>
+                <th class="PaddedCell">@Resources.Club.ReportHeaderHobbsStart</th>
+                <th class="PaddedCell">@Resources.Club.ReportHeaderHobbsEnd</th>
+                <th class="PaddedCell">@Resources.Club.ReportHeaderTotalHobbs</th>
+                <th class="PaddedCell">@Resources.Club.ReportHeaderTachStart</th>
+                <th class="PaddedCell">@Resources.Club.ReportHeaderTachEnd</th>
+                <th class="PaddedCell">@Resources.Club.ReportHeaderTotalTach</th>
+                <th class="PaddedCell">@Resources.Club.ReportHeaderFlightStart</th>
+                <th class="PaddedCell">@Resources.Club.ReportHeaderFlightEnd</th>
+                <th class="PaddedCell">@Resources.Club.ReportHeaderTotalFlight</th>
+                <th class="PaddedCell">@Resources.Club.ReportHeaderEngineStart</th>
+                <th class="PaddedCell">@Resources.Club.ReportHeaderEngineEnd</th>
+                <th class="PaddedCell">@Resources.Club.ReportHeaderTotalEngine</th>
+                <th class="PaddedCell">@Resources.Club.ReportHeaderOilAdded</th>
+                <th class="PaddedCell">@Resources.Club.ReportHeaderOilAdded2ndEngine</th>
+                <th class="PaddedCell">@Resources.Club.ReportHeaderOilLevel</th>
+                <th class="PaddedCell">@Resources.Club.ReportHeaderFuelAdded</th>
+                <th class="PaddedCell">@Resources.Club.ReportHeaderFuelRemaining</th>
+                <th class="PaddedCell">@Resources.Club.ReportHeaderFuelCost</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (ClubFlyingReportItem cfri in ViewBag.items)
+                {
+                    <tr>
+                        <td class="PaddedCell">@cfri.FlightDate.ToShortDateString()</td>
+                        <td class="PaddedCell">@String.Format(CultureInfo.InvariantCulture, "{0}-{1} ({2})", cfri.FlightDate.Year, cfri.FlightDate.Month.ToString("00", CultureInfo.InvariantCulture), cfri.FlightDate.ToString("MMM", CultureInfo.CurrentCulture))</td>
+                        <td class="PaddedCell">@cfri.Aircraft</td>
+                        <td class="PaddedCell">@cfri.PilotName</td>
+                        <td class="PaddedCell">@((cfri.IsInstruction ? 1 : 0).FormatBooleanInt())</td>
+                        <td class="PaddedCell">@cfri.FlightRules</td>
+                        <td class="PaddedCell">@cfri.Passengers.FormatInt()</td>
+                        <td class="PaddedCell">@cfri.Route</td>
+                        <td class="PaddedCell">@cfri.TotalTime.FormatDecimal(false)</td>
+                        <td class="PaddedCell">@cfri.HobbsStart.FormatDecimal(false)</td>
+                        <td class="PaddedCell">@cfri.HobbsEnd.FormatDecimal(false)</td>
+                        <td class="PaddedCell">@cfri.TotalHobbs.FormatDecimal(false)</td>
+                        <td class="PaddedCell">@cfri.TachStart.FormatDecimal(false)</td>
+                        <td class="PaddedCell">@cfri.TachEnd.FormatDecimal(false)</td>
+                        <td class="PaddedCell">@cfri.TotalTach.FormatDecimal(false)</td>
+                        <td class="PaddedCell">@(cfri.FlightStart.HasValue ? cfri.FlightStart.Value.UTCFormattedStringOrEmpty(false) : string.Empty)</td>
+                        <td class="PaddedCell">@(cfri.FlightEnd.HasValue ? cfri.FlightEnd.Value.UTCFormattedStringOrEmpty(false) : string.Empty)</td>
+                        <td class="PaddedCell">@cfri.TotalFlight.FormatDecimal(false)</td>
+                        <td class="PaddedCell">@(cfri.EngineStart.HasValue ? cfri.EngineStart.Value.UTCFormattedStringOrEmpty(false) : string.Empty)</td>
+                        <td class="PaddedCell">@(cfri.EngineEnd.HasValue ? cfri.EngineEnd.Value.UTCFormattedStringOrEmpty(false) : string.Empty)</td>
+                        <td class="PaddedCell">@cfri.TotalEngine.FormatDecimal(false)</td>
+                        <td class="PaddedCell">@cfri.OilAdded.FormatDecimal(false)</td>
+                        <td class="PaddedCell">@cfri.OilAdded2.FormatDecimal(false)</td>
+                        <td class="PaddedCell">@cfri.OilLevel.FormatDecimal(false)</td>
+                        <td class="PaddedCell">@cfri.FuelAdded.FormatDecimal(false)</td>
+                        <td class="PaddedCell">@cfri.FuelRemaining.FormatDecimal(false)</td>
+                        <td class="PaddedCell">@(cfri.FuelCost == 0 ? string.Empty : cfri.FuelCost.ToString("C", CultureInfo.CurrentCulture))</td>
+                    </tr>
+                }
+        </tbody>
+    </table>
+}

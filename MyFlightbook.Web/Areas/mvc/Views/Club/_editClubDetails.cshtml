@@ -1,7 +1,8 @@
-﻿@using System.Globalization
-@using MyFlightbook.Clubs
+﻿@using MyFlightbook.Clubs
 @{
     Club club = ViewBag.club;
+    string onSaveFunc = ViewBag.onSaveFunc;
+    string onDeleteFunc = ViewBag.onDeleteFunc;
 }
 @model Club
 <script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/Scripts/jHtmlArea.min.js")"></script>
@@ -32,7 +33,7 @@
         return club;
     }
 
-    function commitClub() {
+    function commitClub(onSave) {
         if (!$("#editClubForm").valid())
             return;
 
@@ -47,13 +48,13 @@
                 error: function (xhr, status, error) { $("#lblErr").text(xhr.responseText); },
                 complete: function (response) { },
                 success: function (response) {
-                    // Successful response has a navigation event.
-                    window.location = response;
+                    if (onSave)
+                        onSave(response);
                 }
             });
     }
 
-    function deleteClub() {
+    function deleteClub(onDelete) {
         if (confirm('@Resources.Club.ConfirmClubDelete')) {
             $("#lblErr").text("");
             var params = new Object();
@@ -66,9 +67,9 @@
                     error: function (xhr, status, error) { $("#lblErr").text(xhr.responseText); },
                     complete: function (response) { },
                     success: function (response) {
-                        // Successful response has a URL...for now.
-                        window.location = response;
-                    }
+                        if (onDelete)
+                            onDelete(response);
+                        }
                 });
         }
     }
@@ -108,7 +109,7 @@
     }
 </script>
 
-<div style="width: 100%; border: 1px solid black; display: none;" id="divEditClub">
+<div style="width: 100%;" id="divEditClub">
     @using (Html.BeginForm("", "Club", FormMethod.Post, new { name = "editClubForm", id = "editClubForm" }))
     {
         <input type="hidden" id="hdnClubID" name="idClub" value="@club.ID" />
@@ -116,13 +117,13 @@
             <tr>
                 <td colspan="2" style="padding:3px">
                     <div>@Resources.Club.LabelName</div>
-                    <div><input name="clubName" id="txtClubName" style="width: 400px;" type="text" /></div>
+                    <div><input name="clubName" id="txtClubName" style="width: 400px;" type="text" value="@club.Name" /></div>
                 </td>
             </tr>
             <tr>
                 <td colspan="2" style="padding:3px">
                     <div>@Resources.Club.LabelDescription</div>
-                    <div><textarea id="htmlDescription" name="clubDesc" style="width: 100%;"></textarea></div>
+                    <div><textarea id="htmlDescription" name="clubDesc" style="width: 100%;" value="@club.Description">@Html.Raw(club.Description)</textarea></div>
                 </td>
             </tr>
             <tr>
@@ -251,10 +252,10 @@
             </tr>
             <tr>
                 <td colspan="2" style="text-align:center;">
-                    <button id="btnSave" type="button" onclick="javascript: commitClub();">@Resources.Club.LabelSave</button>
+                    <button id="btnSave" type="button" onclick="javascript: commitClub(@onSaveFunc);">@Resources.Club.LabelSave</button>
                     @if (club.ID > 0 && club.GetMember(User.Identity.Name).RoleInClub == ClubMember.ClubMemberRole.Owner)
                     {
-                        <button id="btnDelete" type="button" onclick="javascript: deleteClub();">@Resources.Club.DeleteClub</button>
+                        <button id="btnDelete" type="button" onclick="javascript: deleteClub(@onDeleteFunc);">@Resources.Club.DeleteClub</button>
                     }
                 </td>
             </tr>

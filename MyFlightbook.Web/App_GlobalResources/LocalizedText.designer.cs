@@ -2524,6 +2524,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Edit.
+        /// </summary>
+        internal static string genericEdit {
+            get {
+                return ResourceManager.GetString("genericEdit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update.
+        /// </summary>
+        internal static string genericUpdate {
+            get {
+                return ResourceManager.GetString("genericUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to AeroTows:&amp;nbsp;{0:#,##0}.
         /// </summary>
         internal static string GliderAeroTows {

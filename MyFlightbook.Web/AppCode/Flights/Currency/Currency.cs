@@ -6,6 +6,8 @@ using System.Configuration;
 using System.Globalization;
 using System.Runtime.Serialization;
 using System.Web;
+using Newtonsoft.Json;
+using System.Xml.Serialization;
 
 /******************************************************
  * 
@@ -197,6 +199,50 @@ namespace MyFlightbook.Currency
         /// </summary>
         [DataMember]
         public FlightQuery Query { get; set; }
+
+        #region default CSS classes
+        [JsonIgnore]
+        [XmlIgnore]
+        public string DefaultClassForStatus
+        {
+            get
+            {
+                switch (Status)
+                {
+                    case CurrencyState.GettingClose:
+                        return "currencynearlydue";
+                    case CurrencyState.NotCurrent:
+                        return "currencyexpired";
+                    case CurrencyState.OK:
+                        return "currencyok";
+                    case CurrencyState.NoDate:
+                        return "currencynodate";
+                }
+                return string.Empty;
+            }
+        }
+
+        public static string CSSForDate(DateTime dt)
+        {
+            if (DateTime.Now.CompareTo(dt) > 0)
+                return "currencyexpired";
+            else if (DateTime.Now.AddDays(30).CompareTo(dt) > 0)
+                return "currencynearlydue";
+            return "currencyok";
+        }
+
+        public static string CSSForValue(decimal current, decimal due, int hoursWarning, int offSet = 0)
+        {
+            if (due > 0)
+                due += offSet;
+
+            if (current > due)
+                return "currencyexpired";
+            else if (current + hoursWarning > due)
+                return "currencynearlydue";
+            return "currencyok";
+        }
+        #endregion
         #endregion
 
         #region Constructors

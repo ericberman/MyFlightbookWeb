@@ -1,0 +1,46 @@
+﻿@using MyFlightbook.Clubs
+@using MyFlightbook.Currency
+<table cellspacing="0" style="border-collapse: collapse">
+    <thead>
+        <tr style="vertical-align:top">
+            <th class="PaddedCell">@Resources.Club.ReportHeaderPilotName</th>
+            <th class="PaddedCell">@Resources.Club.ReportHeaderInsurancePilotStatus</th>
+            <th class="PaddedCell">@Resources.Club.ReportHeaderInsuranceFlightsInPeriod</th>
+            <th class="PaddedCell">@Resources.Club.ReportHeaderInsuranceLastFlightInClubPlane</th>
+            <th class="PaddedCell">@Resources.Club.ReportHeaderInsuranceTotalTime</th>
+            <th class="PaddedCell">@Resources.Club.ReportheaderInsuranceComplexTime</th>
+            <th class="PaddedCell">@Resources.Club.ReportheaderInsuranceHighPerformance</th>
+            <th class="PaddedCell">@Resources.Club.ReportheaderInsuranceTimeInClubAircraft</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (ClubInsuranceReportItem item in ViewBag.items)
+            {
+                <tr style="vertical-align:top;">
+                    <td class="PaddedCell" style="font-weight:bold">@item.User.UserFullName</td>
+                    <td class="PaddedCell">
+                        @foreach (CurrencyStatusItem csi in item.PilotStatusItems)
+                        {
+                            <div><span class="currencylabel">@csi.Attribute</span>: <span class="@csi.DefaultClassForStatus">@csi.Value</span></div>
+                        }
+                    </td>
+                    <td class="PaddedCell" style="width: 1.5cm">@item.FlightsInInterval</td>
+                    <td class="PaddedCell" style="width: 2cm">@(item.MostRecentFlight == null ? string.Empty : item.MostRecentFlight.Value.ToShortDateString())</td>
+                    <td class="PaddedCell" style="width: 1.5cm">@item.TotalTime.FormatDecimal(false)</td>
+                    <td class="PaddedCell" style="width: 1.5cm">@item.ComplexTime.FormatDecimal(false)</td>
+                    <td class="PaddedCell" style="width: 1.5cm">@item.HighPerformanceTime.FormatDecimal(false)</td>
+                    <td class="PaddedCell">
+                        <table cellpadding="4">
+                            @foreach (string key in item.TotalsByClubAircraft.Keys)
+                            {
+                                <tr>
+                                    <td style="font-weight:bold">@key</td>
+                                    <td>@item.TotalsByClubAircraft[key].FormatDecimal(false, true)</td>
+                                </tr>
+                            }
+                        </table>
+                    </td>
+                </tr>
+            }
+    </tbody>
+</table>

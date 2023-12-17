@@ -33,6 +33,10 @@
                     }
                 });
     }
+
+    function onSaveSuccess(response) {
+        window.location = response;
+    }
 </script>
 <h2>@Branding.ReBrand(Resources.Club.ClubDescHeader)</h2>
 <div class="clubDetailsRight" style="background-color:#DDECFF">
@@ -45,9 +49,11 @@
 @if (ViewBag.clubStatus != Club.ClubStatus.Inactive)
 {
     <h3>
-        @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "divEditClub", labelText = Resources.Club.LabelCreateClub, onExpand = "htmlEditShown" }); }
+        @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "pnlEditClub", labelText = Resources.Club.LabelCreateClub, onExpand = "htmlEditShown" }); }
     </h3>
-    Html.RenderAction("EditClub", "Club", new { club = new Club() });
+    <div id="pnlEditClub" style="display: none; border: 1px solid black;">
+        @{ Html.RenderAction("EditClub", "Club", new { club = new Club(), onSave = "onSaveSuccess" }); }
+    </div>
 }
 <div id="pnlYourClubs">
     <h2>@Resources.Club.HeaderYourClubs</h2>

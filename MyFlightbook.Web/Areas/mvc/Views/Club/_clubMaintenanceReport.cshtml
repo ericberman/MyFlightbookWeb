@@ -1,0 +1,70 @@
+﻿@using MyFlightbook.Clubs
+@using MyFlightbook.Currency
+@if (ViewBag.items.Count == 0)
+{
+    <p>@Resources.Club.ReportNoData</p>
+}
+else
+{
+    <table cellspacing="0" style="border-collapse: collapse">
+        <thead>
+            <tr style="vertical-align:top">
+                <th class="PaddedCell">@Resources.Aircraft.AircraftHeader</th>
+                <th class="PaddedCell">@Resources.Club.ClubAircraftTime</th>
+                <th class="PaddedCell">@Resources.Aircraft.MaintenanceAnnual</th>
+                <th class="PaddedCell">@Resources.Aircraft.MaintenanceAnnualDue</th>
+                <th class="PaddedCell">@Resources.Aircraft.MaintenanceTransponder</th>
+                <th class="PaddedCell">@Resources.Aircraft.MaintenanceTransponderDue</th>
+                <th class="PaddedCell">@Resources.Aircraft.MaintenancePitotStatic</th>
+                <th class="PaddedCell">@Resources.Aircraft.MaintenancePitotStaticDue</th>
+                <th class="PaddedCell">@Resources.Aircraft.MaintenanceAltimeter</th>
+                <th class="PaddedCell">@Resources.Aircraft.MaintenanceAltimeterDue</th>
+                <th class="PaddedCell">@Resources.Aircraft.MaintenanceELT</th>
+                <th class="PaddedCell">@Resources.Aircraft.MaintenanceELTDue</th>
+                <th class="PaddedCell">@Resources.Aircraft.MaintenanceVOR</th>
+                <th class="PaddedCell">@Resources.Aircraft.MaintenanceVORDue</th>
+                <th class="PaddedCell">@Resources.Aircraft.Maintenance100</th>
+                <th class="PaddedCell">@Resources.Aircraft.Maintenance100Due</th>
+                <th class="PaddedCell">@Resources.Aircraft.MaintenanceOil</th>
+                <th class="PaddedCell">@Resources.Aircraft.MaintenanceOilDue25</th>
+                <th class="PaddedCell">@Resources.Aircraft.MaintenanceOilDue50</th>
+                <th class="PaddedCell">@Resources.Aircraft.MaintenanceOilDue100</th>
+                <th class="PaddedCell">@Resources.Aircraft.MaintenanceEngine</th>
+                <th class="PaddedCell">@Resources.Aircraft.MaintenanceRegistration</th>
+                <th class="PaddedCell">@Resources.Currency.deadlinesHeaderDeadlines</th>
+                <th class="PaddedCell">@Resources.Club.ReportHeaderNotes</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (ClubAircraft ca in ViewBag.items)
+                {
+                    <tr style="vertical-align: top">
+                        <td class="PaddedCell" style="font-weight:bold;">@ca.DisplayTailnumber</td>
+                        <td class="PaddedCell">@ca.HighWater.FormatDecimal(false)</td>
+                        <td class="PaddedCell">@(ca.LastAnnual.HasValue() ? ca.LastAnnual.ToShortDateString() : string.Empty)</td>
+                        <td class="PaddedCell @CurrencyStatusItem.CSSForDate(ca.Maintenance.NextAnnual)">@(ca.Maintenance.NextAnnual.HasValue() ? ca.Maintenance.NextAnnual.ToShortDateString() : string.Empty)</td>
+                        <td class="PaddedCell">@(ca.LastTransponder.HasValue() ? ca.LastTransponder.ToShortDateString() : string.Empty)</td>
+                        <td class="PaddedCell @CurrencyStatusItem.CSSForDate(ca.Maintenance.NextTransponder)">@(ca.Maintenance.NextTransponder.HasValue() ? ca.Maintenance.NextTransponder.ToShortDateString() : string.Empty)</td>
+                        <td class="PaddedCell">@(ca.LastAnnual.HasValue() ? ca.LastStatic.ToShortDateString() : string.Empty)</td>
+                        <td class="PaddedCell @CurrencyStatusItem.CSSForDate(ca.Maintenance.NextStatic)">@(ca.Maintenance.NextStatic.HasValue() ? ca.Maintenance.NextStatic.ToShortDateString() : string.Empty)</td>
+                        <td class="PaddedCell">@(ca.LastAnnual.HasValue() ? ca.LastAltimeter.ToShortDateString() : string.Empty)</td>
+                        <td class="PaddedCell @CurrencyStatusItem.CSSForDate(ca.Maintenance.NextAltimeter)">@(ca.Maintenance.NextAltimeter.HasValue() ? ca.Maintenance.NextAltimeter.ToShortDateString() : string.Empty)</td>
+                        <td class="PaddedCell">@(ca.LastAnnual.HasValue() ? ca.LastELT.ToShortDateString() : string.Empty)</td>
+                        <td class="PaddedCell @CurrencyStatusItem.CSSForDate(ca.Maintenance.NextELT)">@(ca.Maintenance.NextELT.HasValue() ? ca.Maintenance.NextELT.ToShortDateString() : string.Empty)</td>
+                        <td class="PaddedCell">@(ca.LastVOR.HasValue() ? ca.LastVOR.ToShortDateString() : string.Empty)</td>
+                        <td class="PaddedCell @CurrencyStatusItem.CSSForDate(ca.Maintenance.NextVOR)">@(ca.Maintenance.NextVOR.HasValue() ? ca.Maintenance.NextVOR.ToShortDateString() : string.Empty)</td>
+                        <td class="PaddedCell">@ca.Last100.FormatDecimal(false)</td>
+                        <td class="PaddedCell @CurrencyStatusItem.CSSForValue(ca.HighWater, ca.Maintenance.Next100, 10)">@ca.Maintenance.Next100.FormatDecimal(false)</td>
+                        <td class="PaddedCell">@ca.LastOilChange.FormatDecimal(false)</td>
+                        <td class="PaddedCell @CurrencyStatusItem.CSSForValue(ca.HighWater, ca.LastOilChange, 5, 25)">@((ca.Maintenance.LastOilChange + 25).FormatDecimal(false))</td>
+                        <td class="PaddedCell @CurrencyStatusItem.CSSForValue(ca.HighWater, ca.LastOilChange, 10, 50)">@((ca.Maintenance.LastOilChange + 50).FormatDecimal(false))</td>
+                        <td class="PaddedCell @CurrencyStatusItem.CSSForValue(ca.HighWater, ca.LastOilChange, 15, 100)">@((ca.Maintenance.LastOilChange + 100).FormatDecimal(false))</td>
+                        <td class="PaddedCell">@ca.LastNewEngine.FormatDecimal(false)</td>
+                        <td class="PaddedCell @CurrencyStatusItem.CSSForDate(ca.RegistrationDue)">@(ca.RegistrationDue.HasValue() ? ca.RegistrationDue.ToShortDateString() : string.Empty)</td>
+                        <td class="PaddedCell">@DeadlineCurrency.CoalescedDeadlinesForAircraft(null, ca.AircraftID)</td>
+                        <td class="PaddedCell">@ca.PublicNotes</td>
+                    </tr>
+                }
+        </tbody>
+    </table>
+}
