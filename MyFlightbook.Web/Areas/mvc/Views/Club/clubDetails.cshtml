@@ -110,6 +110,7 @@
 
     function sendMsgToUser() {
         var params = new Object();
+        params.idClub = @club.ID;
         params.szTarget = $("#hdnTargetUser").val();
         params.szSubject = $("#txtContactSubject").val();
         params.szText = $("#txtMsg").val();

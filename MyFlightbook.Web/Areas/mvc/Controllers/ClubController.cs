@@ -315,10 +315,11 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
-        public ActionResult SendMsgToClubUser(string szTarget, string szSubject, string szText)
+        public ActionResult SendMsgToClubUser(int idClub, string szTarget, string szSubject, string szText)
         {
             return SafeOp(() =>
             {
+                ValidateClubMember(idClub);
                 Club.ContactMember(User.Identity.Name, szTarget, szSubject, szText);
                 return new EmptyResult();
             });
