@@ -5,17 +5,17 @@
     bool fLinkToDetails = ViewBag.linkToDetails;
 }
 <div class="clubContainer">
+    <div class="clubHeader">
+        @if (fLinkToDetails)
+        {
+            <a href="@c.EditLink">@c.Name</a>
+        }
+        else
+        {
+            @c.Name
+        }
+    </div>
     <div class="clubDetailsRight">
-        <span style="font-weight:bold;">
-            @if (fLinkToDetails)
-            {
-                <a href="@c.EditLink">@c.Name</a>
-            }
-            else
-            {
-                @c.Name
-            }
-        </span>
         @if (!String.IsNullOrEmpty(c.HomeAirportCode))
         {
             <div><a href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/Airport/MapRoute?sm=1&Airports={0}", c.HomeAirportCode))">@c.HomeAirportCode</a> - @(c.HomeAirport?.Name ?? string.Empty)</div>
@@ -30,11 +30,11 @@
         }
     </div>
     <div class="clubDetailsLeft">
-        <div>@Html.Raw(c.Description)&nbsp;</div>
+        <div>@Html.Raw(c.Description)</div>
         @if (fLinkToDetails)
         {
             <div style="font-weight:bold"><a href="@c.EditLink">@Resources.Club.LabelViewClubDetails</a></div>
         }
     </div>
-    <div style="clear:both"></div>  
+    <div style="clear:both"></div>
 </div>
