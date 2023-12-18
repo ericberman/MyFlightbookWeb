@@ -90,6 +90,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 else if (cm.RoleInClub == ClubMember.ClubMemberRole.Owner)    // if we're not requesting creator role, but this person currently is creator, then we are demoting - that's a no-no
                     throw new MyFlightbookException(Resources.Club.errCantDemoteOwner);
 
+                bool oldInactiveState = cm.IsInactive;
+
                 cm.RoleInClub = requestedRole;
                 cm.IsMaintanenceOfficer = isMaintenanceOfficer;
                 cm.IsTreasurer = isTreasurer;
@@ -99,6 +101,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (!cm.FCommitClubMembership())
                     throw new MyFlightbookException(cm.LastError);
 
+                // Issue #1143: notify target user of being deactivated/activated:
+                if (oldInactiveState != isInactive)
+                    util.NotifyUser(Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.Club.statusChangeSubject, club.Name)), Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.Club.statsuChangeNotificationBody, club.Name, oldInactiveState ? Resources.Club.RoleInactive : Resources.Club.roleActive, isInactive ? Resources.Club.RoleInactive : Resources.Club.roleActive)), new System.Net.Mail.MailAddress(cm.Email, cm.UserFullName), false, false);
 
                 club.InvalidateMembers();
 

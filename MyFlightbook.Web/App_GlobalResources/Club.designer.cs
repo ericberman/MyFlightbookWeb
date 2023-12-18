@@ -1968,6 +1968,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Active.
+        /// </summary>
+        internal static string roleActive {
+            get {
+                return ResourceManager.GetString("roleActive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Inactive.
         /// </summary>
         internal static string RoleInactive {
@@ -2036,6 +2045,24 @@ namespace Resources {
         internal static string RoleTreasurer {
             get {
                 return ResourceManager.GetString("RoleTreasurer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your status in the club {0} on %APP_NAME% has changed from {1} to {2}..
+        /// </summary>
+        internal static string statsuChangeNotificationBody {
+            get {
+                return ResourceManager.GetString("statsuChangeNotificationBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change in your status in the club {0} on %APP_NAME%.
+        /// </summary>
+        internal static string statusChangeSubject {
+            get {
+                return ResourceManager.GetString("statusChangeSubject", resourceCulture);
             }
         }
         

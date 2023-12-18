@@ -815,4 +815,13 @@ Sender Email: {1}</value>
   <data name="errNotAMember" xml:space="preserve">
     <value>You are not a member of this club.</value>
   </data>
+  <data name="roleActive" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="statsuChangeNotificationBody" xml:space="preserve">
+    <value>Your status in the club {0} on %APP_NAME% has changed from {1} to {2}.</value>
+  </data>
+  <data name="statusChangeSubject" xml:space="preserve">
+    <value>Change in your status in the club {0} on %APP_NAME%</value>
+  </data>
 </root>
