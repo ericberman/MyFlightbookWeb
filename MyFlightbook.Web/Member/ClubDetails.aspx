@@ -216,15 +216,15 @@
                                             {
                                                 type: "POST",
                                                 data: JSON.stringify(params),
-                                                url: '<% =ResolveUrl("~/Member/Ajax.asmx/AvailabilityMap") %>',
-                                                dataType: "json",
+                                                url: '<% =ResolveUrl("~/mvc/Club/AvailabilityMap") %>',
+                                                dataType: "html",
                                                 contentType: "application/json",
                                                 error: function (xhr, status, error) {
-                                                    window.alert(xhr.responseJSON.Message);
+                                                    window.alert(xhr.responseText);
                                                 },
                                                 complete: function (response) { },
                                                 success: function (response) {
-                                                    $("#<% =pnlAvailMap.ClientID %>")[0].innerHTML = response.d;
+                                                    $("#<% =pnlAvailMap.ClientID %>").html(response);
                                                 }
                                             });
                                     }

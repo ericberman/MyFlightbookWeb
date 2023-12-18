@@ -25,7 +25,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         const string szCookieLastStart = "clubFlyingLastStart";
         const string szCookieLastEnd = "clubFlyingLastEnd";
 
-        #region WebServices
+        #region Check Authorization
         private Club ValidateClubAdmin(int idClub)
         {
             Club club = Club.ClubWithID(idClub) ?? throw new InvalidOperationException(Resources.Club.errNoSuchClub);
@@ -35,6 +35,18 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return club;
         }
 
+        private Club ValidateClubMember(int idClub)
+        {
+            Club club = Club.ClubWithID(idClub) ?? throw new InvalidOperationException(Resources.Club.errNoSuchClub);
+
+            if (!club.HasMember(User.Identity.Name))
+                throw new UnauthorizedAccessException(Resources.Club.errNotAMember);
+            return club;
+        }
+        #endregion
+
+        #region WebServices
+        #region Manage (admin) functions
         [HttpPost]
         [Authorize]
         public ActionResult DeleteMember(int idClub, string userName)
@@ -259,36 +271,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
-        public ActionResult SendMsgToClubUser(string szTarget, string szSubject, string szText)
-        {
-            return SafeOp(() =>
-            {
-                Club.ContactMember(User.Identity.Name, szTarget, szSubject, szText);
-                return new EmptyResult();
-            });
-        }
-
-        [HttpPost]
-        [Authorize]
-        public ActionResult ContactClub(int idClub, string szMessage, bool fRequestMembership)
-        {
-            return SafeOp(() =>
-            {
-                Club.ContactClubAdmins(User.Identity.Name, idClub, szMessage, fRequestMembership);
-                return new EmptyResult();
-            });
-        }
-
-        [HttpPost]
-        public ActionResult PopulateClub(int idClub)
-        {
-            ViewBag.club = Club.ClubWithID(idClub);
-            ViewBag.linkToDetails = true;
-            return PartialView("_clubDesc");
-        }
-
-        [HttpPost]
-        [Authorize]
         public string SaveClub(Club club)
         {
             return SafeOp(() => {
@@ -329,6 +311,37 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 return club.FDelete() ? VirtualPathUtility.ToAbsolute("~/mvc/club/") : throw new InvalidOperationException(club.LastError);
             });
         }
+        #endregion
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult SendMsgToClubUser(string szTarget, string szSubject, string szText)
+        {
+            return SafeOp(() =>
+            {
+                Club.ContactMember(User.Identity.Name, szTarget, szSubject, szText);
+                return new EmptyResult();
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult ContactClub(int idClub, string szMessage, bool fRequestMembership)
+        {
+            return SafeOp(() =>
+            {
+                Club.ContactClubAdmins(User.Identity.Name, idClub, szMessage, fRequestMembership);
+                return new EmptyResult();
+            });
+        }
+
+        [HttpPost]
+        public ActionResult PopulateClub(int idClub)
+        {
+            ViewBag.club = Club.ClubWithID(idClub);
+            ViewBag.linkToDetails = true;
+            return PartialView("_clubDesc");
+        }
 
         [HttpPost]
         [Authorize]
@@ -337,15 +350,37 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return SafeOp(() =>
             {
                 // Verify that the viewing user is authorized.
-                Club club = Club.ClubWithID(idClub) ?? throw new InvalidOperationException(Resources.Club.errNoSuchClub);
-                if (!club.HasMember(User.Identity.Name))
-                    throw new UnauthorizedAccessException(Resources.Club.errNoSuchUser);
+                Club club = ValidateClubMember(idClub);
 
                 ViewBag.idClub = idClub;
                 ViewBag.resourceName = resourceName;
                 ViewBag.userName = fAllUsers ? null : User.Identity.Name;
                 ViewBag.events = club.GetUpcomingEvents(10, resourceName, ViewBag.userName);
                 return PartialView("_schedSummary");
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult AvailabilityMap(DateTime dtStart, int clubID, int limitAircraft = Aircraft.idAircraftUnknown, int cDays = 1)
+        {
+            return SafeOp(() =>
+            {
+                Club club = ValidateClubMember(clubID);
+                int minutes = cDays == 1 ? 15 : cDays == 2 ? 60 : 180;
+
+                // Sort the aircraft by tail
+                List<Aircraft> lstAc = new List<Aircraft>(club.MemberAircraft);
+                lstAc.Sort((ac1, ac2) => { return String.Compare(ac1.DisplayTailnumber, ac2.DisplayTailnumber, true, CultureInfo.CurrentCulture); });
+                ViewBag.lstAc = lstAc;
+
+                // update the cookie with the preferred range
+                ViewBag.dtStart = dtStart;
+                ViewBag.days = cDays;
+                ViewBag.minutes = minutes;
+                ViewBag.map = ScheduledEvent.ComputeAvailabilityMap(dtStart, club, limitAircraft = Aircraft.idAircraftUnknown, cDays, minutes);
+
+                return PartialView("_availMap");
             });
         }
         #endregion
@@ -409,9 +444,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult LeaveClub(int idClub)
         {
-            Club club = Club.ClubWithID(idClub) ?? throw new InvalidOperationException(Resources.Club.errNoSuchClub);
-            if (!club.HasMember(User.Identity.Name))
-                throw new UnauthorizedAccessException(Resources.Club.errNoSuchUser);
+            Club club = ValidateClubMember(idClub);
 
             ClubMember cm = club.Members.FirstOrDefault(pf => String.Compare(pf.UserName, User.Identity.Name, StringComparison.Ordinal) == 0);
             if (cm.RoleInClub == ClubMember.ClubMemberRole.Member)
@@ -427,9 +460,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DownloadSchedule(int idClub, DateTime dateDownloadFrom, DateTime dateDownloadTo)
         {
-            Club club = Club.ClubWithID(idClub) ?? throw new InvalidOperationException(Resources.Club.errNoSuchClub);
-            if (!club.HasMember(User.Identity.Name))
-                throw new UnauthorizedAccessException(Resources.Club.errNoSuchUser);
+            Club club = ValidateClubMember(idClub);
 
             // if from is after to, then just swap them.
             if (dateDownloadTo.CompareTo(dateDownloadFrom) < 0)

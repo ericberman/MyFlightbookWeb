@@ -410,7 +410,7 @@ namespace MyFlightbook.Web.Ajax
             if (fIsDefault && i == defSize)
                 rgPerms = Array.Empty<int>();
 
-            pf.SetPreferenceForKey(MFBConstants.keyCoreFieldsPermutation, rgPerms, rgPerms == null || !rgPerms.Any());
+            pf.SetPreferenceForKey(MFBConstants.keyCoreFieldsPermutation, rgPerms, rgPerms == null || rgPerms.Length == 0);
         }
 
         private static void SetTotalsMode(Profile pf, string prefValue)
@@ -505,6 +505,9 @@ namespace MyFlightbook.Web.Ajax
         #endregion
 
         #region Property Autocomplete 
+        private static readonly char[] previouslyUsedValsSeparator = new char[] { ';' };
+        private static readonly char[] metarAirportSeparator = new char[] { ' ' };
+
         [WebMethod(EnableSession = true)]
         [System.Web.Script.Services.ScriptMethod]
         public string[] PreviouslyUsedTextProperties(string prefixText, int count, string contextKey)
@@ -514,7 +517,7 @@ namespace MyFlightbook.Web.Ajax
             if (String.IsNullOrEmpty(contextKey) || String.IsNullOrWhiteSpace(prefixText))
                 return rgResultDefault;
 
-            string[] rgsz = contextKey.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] rgsz = contextKey.Split(previouslyUsedValsSeparator, StringSplitOptions.RemoveEmptyEntries);
             if (rgsz.Length != 2 || String.IsNullOrEmpty(rgsz[0]) || string.IsNullOrEmpty(rgsz[1]))
                 return rgResultDefault;
 
@@ -524,7 +527,7 @@ namespace MyFlightbook.Web.Ajax
             // Handle METAR autofill a bit different from other properties: fetch raw metar.
             if (idPropType == (int)CustomPropertyType.KnownProperties.IDPropMetar)
             {
-                string[] rgAirports = prefixText.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] rgAirports = prefixText.Split(metarAirportSeparator, StringSplitOptions.RemoveEmptyEntries);
                 if (rgAirports == null || rgAirports.Length == 0)
                     return rgResultDefault;
 
@@ -625,13 +628,6 @@ namespace MyFlightbook.Web.Ajax
         public string DeleteEvent(string id)
         {
             return ScheduledEvent.DeleteEvent(id);
-        }
-
-        [WebMethod(EnableSession = true)]
-        public string AvailabilityMap(DateTime dtStart, int clubID, int limitAircraft = Aircraft.idAircraftUnknown, int cDays = 1)
-        {
-            SchedulePreferences.DefaultScheduleMode = cDays == 1 ? ScheduleDisplayMode.Day : (cDays == 7 ? ScheduleDisplayMode.Week : ScheduleDisplayMode.Month);
-            return ScheduledEvent.AvailabilityMap(dtStart, clubID, limitAircraft, cDays);
         }
         #endregion
     }

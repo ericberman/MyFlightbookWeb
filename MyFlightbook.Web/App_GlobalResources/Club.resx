@@ -812,4 +812,7 @@ Sender Email: {1}</value>
   <data name="errNoSuchUser" xml:space="preserve">
     <value>Specified user is not a member of this club!</value>
   </data>
+  <data name="errNotAMember" xml:space="preserve">
+    <value>You are not a member of this club.</value>
+  </data>
 </root>

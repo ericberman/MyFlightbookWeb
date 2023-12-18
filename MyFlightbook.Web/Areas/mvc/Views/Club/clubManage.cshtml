@@ -225,7 +225,7 @@
     }
 </script>
 
-<div><img src="@VirtualPathUtility.ToAbsolute("~/images/back.png")" /><a style="vertical-align:middle;" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/Club/Details/{0}", club.ID))">@Resources.Club.LabelReturnToClub</a></div>
+<div><img style="vertical-align:middle;" src="@VirtualPathUtility.ToAbsolute("~/images/back.png")" /><a href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/Club/Details/{0}", club.ID))">@Resources.Club.LabelReturnToClub</a></div>
 <h2>@String.Format(CultureInfo.CurrentCulture, Resources.Club.LabelManageThisClub, club.Name)</h2>
 @{ Html.RenderAction("ClubView", "Club", new { club = club, fLinkToDetails = false }); }
 

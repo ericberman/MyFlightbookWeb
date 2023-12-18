@@ -1,0 +1,53 @@
+﻿@using System.Globalization
+@using System.Text.RegularExpressions
+@{ 
+    DateTime dtStart = ViewBag.dtStart;
+    int cDays = ViewBag.days;
+    IDictionary<int, bool[]> d = ViewBag.map;
+    int minutes = ViewBag.minutes;
+    IEnumerable<Aircraft> lstAc = ViewBag.lstAc;
+
+    int intervalsPerDay = (24 * 60) / minutes;
+    int cellsPerHeader = (minutes < 60) ? (60 / minutes) : Math.Max(intervalsPerDay / 2, 1);
+    int totalIntervals = cDays * intervalsPerDay;
+    DateTime dtStartLocal = new DateTime(dtStart.Year, dtStart.Month, dtStart.Day, 0, 0, 0, DateTimeKind.Local);
+
+    // We want the time minus any minutes, but keep it localized.
+    // see https://learn.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings#UsingSingleSpecifiers for why space
+    // Otherwise, you could end up with a naked "h", which throws an error.
+    string szTimeFormat = Regex.Replace(CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern, ":m+", " ");
+}
+<table class="tblAvailablityMap">
+    <thead>
+        <tr>
+            <th></th>
+            @for (int i = 0; i < cDays; i++)
+            {
+                <th colspan="@intervalsPerDay" class="dateHeader">@dtStartLocal.AddDays(i).ToString("d", CultureInfo.CurrentCulture)</th>
+            }
+        </tr>
+        <tr>
+            <th></th>
+            @for (int iHeaderCol = 0; iHeaderCol < totalIntervals; iHeaderCol += cellsPerHeader)
+            {
+                DateTime dt = dtStartLocal.AddMinutes(iHeaderCol * minutes);
+                <th class="timeHeader" style="vertical-align: top;" colspan="@cellsPerHeader">@(dt.Minute == 0 ? dt.ToString(szTimeFormat, CultureInfo.CurrentCulture).TrimEnd() : string.Empty)</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Aircraft aircraft in lstAc)
+        {
+            if (d.TryGetValue(aircraft.AircraftID, out bool[] map)) // sanity check should never fail!
+                {
+                <tr>
+                    <td class="avmResource">@aircraft.DisplayTailnumber</td>
+                    @for (int i = 0; i < d[aircraft.AircraftID].Length; i++)
+                    {
+                        <td class="@(map[i] ? "avmBusy" : (i % cellsPerHeader == 0) ? "avmAvail" : "avmAvail avmSubHour")"></td>
+                    }
+                </tr>
+                }
+        }
+    </tbody>
+</table>

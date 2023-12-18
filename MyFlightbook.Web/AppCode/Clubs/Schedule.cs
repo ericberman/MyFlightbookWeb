@@ -8,12 +8,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
-using System.Web.UI;
-using System.Web.UI.HtmlControls;
-using System.Web.UI.WebControls;
 
 /******************************************************
  * 
@@ -622,13 +618,16 @@ namespace MyFlightbook.Schedule
         #endregion
 
         #region AvailabilityMap
-        public static IDictionary<int, bool[]> ComputeAvailabilityMap(DateTime dtStart, int clubID, out Club club, int limitAircraft = Aircraft.idAircraftUnknown, int cDays = 1, int minuteInterval = 15)
+        public static IDictionary<int, bool[]> ComputeAvailabilityMap(DateTime dtStart, Club club, int limitAircraft = Aircraft.idAircraftUnknown, int cDays = 1, int minuteInterval = 15)
         {
             if (cDays < 1 || cDays > 7)
                 throw new InvalidOperationException("Can only do 1 to 7 days of availability");
 
             if (minuteInterval <= 0)
                 throw new InvalidOperationException("Invalid minute interval");
+
+            if (club == null)
+                throw new ArgumentNullException(nameof(club));
 
             double IntervalsPerHour = 60.0 / minuteInterval;
             int IntervalsPerDay = (int) (24 * IntervalsPerHour);
@@ -640,8 +639,6 @@ namespace MyFlightbook.Schedule
 
             Dictionary<int, bool[]> d = new Dictionary<int, bool[]>();
 
-            club = Club.ClubWithID(clubID);
-
             foreach (Aircraft ac in club.MemberAircraft)
                 if (limitAircraft == Aircraft.idAircraftUnknown || ac.AircraftID == limitAircraft)
                     d[ac.AircraftID] = new bool[totalIntervals];
@@ -651,7 +648,7 @@ namespace MyFlightbook.Schedule
             DateTime dtStartUtc = ToUTC(dtStartLocal, tzi);
 
             // we need to request the appointments in UTC, even though we will display them in local time.
-            List<ScheduledEvent> lst = AppointmentsInTimeRange(dtStartUtc, dtStartUtc.AddDays(cDays), clubID, tzi);
+            List<ScheduledEvent> lst = AppointmentsInTimeRange(dtStartUtc, dtStartUtc.AddDays(cDays), club.ID, tzi);
 
             foreach (ScheduledEvent e in lst)
             {
@@ -826,103 +823,6 @@ namespace MyFlightbook.Schedule
                 return ex.Message;
             }
             return string.Empty;
-        }
-
-        public static string AvailabilityMap(DateTime dtStart, int clubID, int limitAircraft = Aircraft.idAircraftUnknown, int cDays = 1)
-        {
-            if (!IsValidCaller(clubID, PrivilegeLevel.ReadOnly))
-                return null;
-
-            int minutes = cDays == 1 ? 15 : cDays == 2 ? 60 : 180;
-            int intervalsPerDay = (24 * 60) / minutes;
-            int cellsPerHeader = (minutes < 60) ? (60 / minutes) : Math.Max(intervalsPerDay / 2, 1);
-            int totalIntervals = cDays * intervalsPerDay;
-            IDictionary<int, bool[]> d = ScheduledEvent.ComputeAvailabilityMap(dtStart, clubID, out Club club, limitAircraft = Aircraft.idAircraftUnknown, cDays, minutes);
-            DateTime dtStartLocal = new DateTime(dtStart.Year, dtStart.Month, dtStart.Day, 0, 0, 0, DateTimeKind.Local);
-
-            CultureInfo ciCurrent = util.SessionCulture ?? CultureInfo.CurrentCulture;
-
-            // We have no Page, so things like Page_Load don't get called.
-            // We fix this by faking a page and calling Server.Execute on it.  This sets up the form and - more importantly - causes Page_load to be called on loaded controls.
-            using (Page p = new FormlessPage())
-            {
-                p.Controls.Add(new HtmlForm());
-                using (StringWriter sw1 = new StringWriter(ciCurrent))
-                    HttpContext.Current.Server.Execute(p, sw1, false);
-
-                // Build the map, one day at a time in 15-minute increments.
-
-                // Our map is created - iterate through it now.
-                Table t = new Table() { CssClass = "tblAvailablityMap" };
-                p.Form.Controls.Add(t);
-
-                // Header row
-                // Date first
-                TableHeaderRow thrDate = new TableHeaderRow();
-                t.Rows.Add(thrDate);
-                thrDate.Cells.Add(new TableHeaderCell());  // upper left corner is blank cell
-                // Add days
-                for (int i = 0; i < cDays; i++)
-                {
-                    DateTime dt = dtStartLocal.AddDays(i);
-                    thrDate.Cells.Add(new TableHeaderCell() { Text = dt.ToString("d", ciCurrent), ColumnSpan = intervalsPerDay, CssClass = "dateHeader" });
-                }
-
-                // Now times
-                TableHeaderRow thrTimes = new TableHeaderRow();
-                t.Rows.Add(thrTimes);
-                thrTimes.Cells.Add(new TableHeaderCell());  // upper left corner is blank cell
-
-                // We want the time minus any minutes, but keep it localized.
-                string szTimeFormat = Regex.Replace(ciCurrent.DateTimeFormat.ShortTimePattern, ":m+", string.Empty);
-
-                for (int iHeaderCol = 0; iHeaderCol < totalIntervals; iHeaderCol += cellsPerHeader)
-                {
-                    DateTime dt = dtStartLocal.AddMinutes(iHeaderCol * minutes);
-                    thrTimes.Cells.Add(new TableHeaderCell()
-                    {
-                        Text = (dt.Minute == 0) ? dt.ToString(szTimeFormat, ciCurrent) : String.Empty,
-                        ColumnSpan = cellsPerHeader,
-                        VerticalAlign = VerticalAlign.Bottom,
-                        CssClass = "timeHeader"
-                    });
-                }
-
-                // Sort the aircraft by tail
-                List<Aircraft> lstAc = new List<Aircraft>(club.MemberAircraft);
-                lstAc.Sort((ac1, ac2) => { return String.Compare(ac1.DisplayTailnumber, ac2.DisplayTailnumber, true, ciCurrent); });
-                foreach (Aircraft aircraft in lstAc)
-                {
-                    if (!d.ContainsKey(aircraft.AircraftID))    // sanity check - but should not happen
-                        continue;
-
-                    TableRow trAircraft = new TableRow();
-                    t.Rows.Add(trAircraft);
-                    trAircraft.Cells.Add(new TableCell() { Text = aircraft.DisplayTailnumber, CssClass = "avmResource" });
-
-                    for (int i = 0; i < d[aircraft.AircraftID].Length; i++)
-                    {
-                        bool b = d[aircraft.AircraftID][i];
-                        trAircraft.Cells.Add(new TableCell() { CssClass = b ? "avmBusy" : (i % cellsPerHeader == 0) ? "avmAvail" : "avmAvail avmSubHour" });
-                    }
-                }
-
-                // Now, write it out.
-                StringBuilder sb = new StringBuilder();
-                using (StringWriter sw = new StringWriter(sb, ciCurrent))
-                {
-                    using (HtmlTextWriter htmlTW = new HtmlTextWriter(sw))
-                    {
-                        try
-                        {
-                            t.RenderControl(htmlTW);
-                            return sb.ToString();
-                        }
-                        catch (ArgumentException ex) when (ex is ArgumentOutOfRangeException) { } // don't write bogus or incomplete HTML
-                    }
-                }
-            }
-            return String.Empty;
         }
         #endregion
 

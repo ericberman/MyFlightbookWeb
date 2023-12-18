@@ -734,6 +734,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You are not a member of this club..
+        /// </summary>
+        internal static string errNotAMember {
+            get {
+                return ResourceManager.GetString("errNotAMember", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You are not authorized to view this club.
         /// </summary>
         internal static string errNotAuthorized {
