@@ -1105,7 +1105,7 @@ namespace MyFlightbook
             if (!String.IsNullOrEmpty(szMime))
                 response.ContentType = szMime;
             // Give it a name that is the brand name, user's name, and date.  Convert spaces to dashes, and then strip out ANYTHING that is not alphanumeric or a dash.
-            string szDisposition = String.Format(CultureInfo.InvariantCulture, "attachment;filename={0}.{1}", Regex.Replace(szFileName, "[^0-9a-zA-Z-]", string.Empty), szFileExt);
+            string szDisposition = String.Format(CultureInfo.InvariantCulture, "attachment;filename={0}.{1}", RegexUtility.SafeFileChars.Replace(szFileName, string.Empty), szFileExt);
             response.AddHeader("Content-Disposition", szDisposition);
             response.Write(szContent);
             response.End();
@@ -1119,7 +1119,7 @@ namespace MyFlightbook
             if (!String.IsNullOrEmpty(szMime))
                 response.ContentType = szMime;
             // Give it a name that is the brand name, user's name, and date.  Convert spaces to dashes, and then strip out ANYTHING that is not alphanumeric or a dash.
-            string szDisposition = String.Format(CultureInfo.InvariantCulture, "attachment;filename={0}.{1}", Regex.Replace(szFileName, "[^0-9a-zA-Z-]", string.Empty), szFileExt);
+            string szDisposition = String.Format(CultureInfo.InvariantCulture, "attachment;filename={0}.{1}", RegexUtility.SafeFileChars.Replace(szFileName, string.Empty), szFileExt);
             response.AddHeader("Content-Disposition", szDisposition);
             response.BinaryWrite(System.Text.Encoding.UTF8.GetPreamble());
             response.Write(System.Text.Encoding.UTF8.GetString(rgb));

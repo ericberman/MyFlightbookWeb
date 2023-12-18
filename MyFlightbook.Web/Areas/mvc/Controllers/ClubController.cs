@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 
@@ -189,8 +188,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return SafeOp(() =>
             {
                 Club club = ValidateClubAdmin(idClub);
-                // TODO: We use this regex in a few places; we should consolidate them
-                if (!Regex.IsMatch(szEmail, "\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*"))
+                if (!RegexUtility.Email.IsMatch(szEmail))
                     throw new ArgumentException(Resources.LocalizedText.ValidationEmailFormat);
 
                 if (club.Status == Club.ClubStatus.Inactive)
@@ -214,10 +212,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (fAsFile)
                 {
                     string szFilename = String.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}-{3}", Branding.CurrentBrand.AppName, Resources.Club.ClubReportFlying, club.Name.Replace(" ", "-"), DateTime.Now.YMDString());
-                // TODO: consolidate this regex...
                 return fileFormat.CompareCurrentCultureIgnoreCase("kml") == 0 ?
-                    File(cfr.RefreshKML(), "application/vnd.google-earth.kml+xml", Regex.Replace(szFilename, "[^0-9a-zA-Z-]", string.Empty) + ".kml") :
-                    File(cfr.RefreshCSV(), "text/csv", Regex.Replace(szFilename, "[^0-9a-zA-Z-]", string.Empty) + ".csv");
+                    File(cfr.RefreshKML(), "application/vnd.google-earth.kml+xml", RegexUtility.SafeFileChars.Replace(szFilename, string.Empty) + ".kml") :
+                    File(cfr.RefreshCSV(), "text/csv", RegexUtility.SafeFileChars.Replace(szFilename, string.Empty) + ".csv");
                 }
                 else
                 {
@@ -242,8 +239,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (fAsFile)
                 {
                     string szFilename = String.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}-{3}", Branding.CurrentBrand.AppName, Resources.Club.ClubReportMaintenance, club.Name.Replace(" ", "-"), DateTime.Now.YMDString());
-                    // TODO: consolidate this regex...
-                    return File(cmr.RefreshCSV(), "text/csv", Regex.Replace(szFilename, "[^0-9a-zA-Z-]", string.Empty) + ".csv");
+                    return File(cmr.RefreshCSV(), "text/csv", RegexUtility.SafeFileChars.Replace(szFilename, string.Empty) + ".csv");
                 }
                 else
                 {
@@ -265,7 +261,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (fAsFile)
                 {
                     string szFilename = String.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}-{3}", Branding.CurrentBrand.AppName, Resources.Club.ClubReportInsurance, club.Name.Replace(" ", "-"), DateTime.Now.YMDString());
-                    return File(cir.RefreshCSV(), "text/csv", Regex.Replace(szFilename, "[^0-9a-zA-Z-]", string.Empty) + ".csv");
+                    return File(cir.RefreshCSV(), "text/csv", RegexUtility.SafeFileChars.Replace(szFilename, string.Empty) + ".csv");
                 } else
                 {
                     ViewBag.items = cir.Items;
@@ -476,7 +472,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             club.MapAircraftAndUsers(rgevents);  // fix up aircraft, usernames
             string szFilename = String.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}", Branding.CurrentBrand.AppName, Resources.Club.DownloadClubScheduleFileName, club.Name.Replace(" ", "-"));
 
-            return File(ScheduledEvent.DownloadScheduleTable(rgevents), "text/csv", Regex.Replace(szFilename, "[^0-9a-zA-Z-]", string.Empty) + ".csv");
+            return File(ScheduledEvent.DownloadScheduleTable(rgevents), "text/csv", RegexUtility.SafeFileChars.Replace(szFilename, string.Empty) + ".csv");
         }
 
         [HttpGet]

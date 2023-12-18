@@ -1,15 +1,13 @@
-using MyFlightbook;
 using MyFlightbook.Encryptors;
 using System;
 using System.Globalization;
-using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2021 MyFlightbook LLC
+ * Copyright (c) 2007-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -90,7 +88,7 @@ namespace MyFlightbook.PublicPages
             Response.ContentType = "text/csv";
             // Give it a name that is the brand name, user's name, and date.  Convert spaces to dashes, and then strip out ANYTHING that is not alphanumeric or a dash.
             string szFilename = String.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}", Branding.CurrentBrand.AppName, MyFlightbook.Profile.GetUser(Page.User.Identity.Name).UserFullName, DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)).Replace(" ", "-");
-            string szDisposition = String.Format(CultureInfo.InvariantCulture, "inline;filename={0}.csv", Regex.Replace(szFilename, "[^0-9a-zA-Z-]", ""));
+            string szDisposition = String.Format(CultureInfo.InvariantCulture, "inline;filename={0}.csv", RegexUtility.SafeFileChars.Replace(szFilename, string.Empty));
             Response.AddHeader("Content-Disposition", szDisposition);
             mfbDownload1.ToStream(Response.OutputStream);
             Response.End();

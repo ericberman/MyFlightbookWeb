@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2022 MyFlightbook LLC
+ * Copyright (c) 2013-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -53,7 +53,7 @@ namespace MyFlightbook.RatingsProgress
                 return cfr.XC;
 
             // Mimic
-            string szNormalRoute = Regex.Replace(cfr.Route, "[^a-zA-Z0-9]", " ", RegexOptions.IgnoreCase | RegexOptions.Singleline);
+            string szNormalRoute = RegexUtility.NonAlphaNumeric.Replace(cfr.Route, " ");
             Regex r4x4 = new Regex(String.Format(CultureInfo.InvariantCulture, "^{0}[^a-zA-Z0-9]*{0}$", szNormalRoute.Substring(0, 4)), RegexOptions.IgnoreCase | RegexOptions.Singleline);
             Regex r3x3 = new Regex(String.Format(CultureInfo.InvariantCulture, "^{0}[^a-zA-Z0-9]*{0}$", szNormalRoute.Substring(0, 3)), RegexOptions.IgnoreCase | RegexOptions.Singleline);
 

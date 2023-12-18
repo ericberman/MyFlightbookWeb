@@ -1697,7 +1697,7 @@ namespace MyFlightbook.Image
         private void InitFilePDF(MFBPostedFile myFile)
         {
             // just save the file as-is; we virtualize the thumbnail.
-            string szBase = Regex.Replace(Path.GetFileNameWithoutExtension(myFile.FileName), @"[^a-zA-Z0-9]", string.Empty);
+            string szBase = RegexUtility.NonAlphaNumeric.Replace(Path.GetFileNameWithoutExtension(myFile.FileName), string.Empty);
 
             // Modify szBase until we have something unique - issue #886
             int i = 0;
@@ -1714,7 +1714,7 @@ namespace MyFlightbook.Image
             
             if (Comment.Length > 0)
             {
-                string szCleaned = Regex.Replace(Comment, @"[^a-zA-Z0-9]", string.Empty);
+                string szCleaned = RegexUtility.NonAlphaNumeric.Replace(Comment, string.Empty);
                 if (!string.IsNullOrWhiteSpace(szCleaned))
                     szBase = szCleaned;
             }

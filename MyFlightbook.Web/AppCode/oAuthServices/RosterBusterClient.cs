@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.Net.Http;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -297,12 +296,12 @@ namespace MyFlightbook.OAuth.RosterBuster
 
             // Generate a state variable and store it.
             Guid guid = Guid.NewGuid();
-            string szState = Regex.Replace(guid.ToString(), "[^a-zA-Z0-9]", string.Empty);
+            string szState = RegexUtility.NonAlphaNumeric.Replace(guid.ToString(), string.Empty);
             Profile pf = Profile.GetUser(szUser);
             pf.AssociatedData[szCachedPrefStateKey] = szState;  // save state so we can check it later.
 
             // Build a code_verifier
-            string szCodeVerifier = Regex.Replace(Guid.NewGuid().ToString() + Guid.NewGuid().ToString(), "[^a-zA-Z0-9]", string.Empty);
+            string szCodeVerifier = RegexUtility.NonAlphaNumeric.Replace(Guid.NewGuid().ToString() + Guid.NewGuid().ToString(), string.Empty);
             pf.AssociatedData[szCachedCodeVerifier] = szCodeVerifier;
 
 

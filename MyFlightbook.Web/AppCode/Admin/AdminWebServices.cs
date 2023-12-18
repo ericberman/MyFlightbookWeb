@@ -8,7 +8,6 @@ using System.Globalization;
 using System.Linq;
 using System.ServiceModel;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Script.Services;
 using System.Web.Security;
@@ -680,7 +679,7 @@ namespace MyFlightbook.Web.Ajax
                             aic.Code = aic.IATA;
                             break;
                     }
-                    aic.Code = Regex.Replace(aic.Code, "[^a-zA-Z0-9]", string.Empty);
+                    aic.Code = RegexUtility.NonAlphaNumeric.Replace(aic.Code, string.Empty);
                     aic.FCommit(true, true);
                     if (!String.IsNullOrWhiteSpace(aic.Country))
                         aic.SetLocale(aic.Country, aic.Admin1);

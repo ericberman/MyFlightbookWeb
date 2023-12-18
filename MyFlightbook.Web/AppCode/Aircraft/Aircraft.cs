@@ -1029,7 +1029,7 @@ WHERE
             if (maxCount < 1)
                 maxCount = 10;
 
-            szPrefix = Regex.Replace(szPrefix, "[^a-zA-Z0-9]", string.Empty) + "%";
+            szPrefix = RegexUtility.NonAlphaNumeric.Replace(szPrefix, string.Empty) + "%";
             // Issue #1000: speed up autocomplete; doing query on tailnumber
             DBHelperCommandArgs dba = new DBHelperCommandArgs(String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"], 0, "''", "''", "''", " WHERE aircraft.tailNormal LIKE ?prefix") + String.Format(CultureInfo.InvariantCulture, " LIMIT {0}", maxCount));
             new DBHelper(dba).ReadRows(
@@ -2009,8 +2009,7 @@ WHERE
         public static Aircraft SuggestTail(int idmodel, AircraftInstanceTypes instancetype)
         {
             MakeModel m = new MakeModel(idmodel);
-            Regex r = new Regex("[^a-zA-Z0-9]", RegexOptions.Compiled);
-            string szTailBase = CountryCodePrefix.szSimPrefix + r.Replace(m.Model, string.Empty);
+            string szTailBase = CountryCodePrefix.szSimPrefix + RegexUtility.NonAlphaNumeric.Replace(m.Model, string.Empty);
             if (szTailBase.Length > Aircraft.maxTailLength)
                 szTailBase = szTailBase.Substring(0, Aircraft.maxTailLength);
 

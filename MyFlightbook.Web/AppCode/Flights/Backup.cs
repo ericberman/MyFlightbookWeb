@@ -458,7 +458,7 @@ namespace MyFlightbook
             if (activeBrand == null)
                 throw new ArgumentNullException(nameof(activeBrand));
             string szBaseName = String.Format(CultureInfo.InvariantCulture, "{0}-{1}{2}", activeBrand.AppName, User.UserFullName, User.OverwriteCloudBackup ? string.Empty : String.Format(CultureInfo.InvariantCulture, "-{0}", DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))).Replace(" ", "-");
-            return String.Format(CultureInfo.InvariantCulture, "{0}.csv", System.Text.RegularExpressions.Regex.Replace(szBaseName, "[^0-9a-zA-Z-]", string.Empty));
+            return String.Format(CultureInfo.InvariantCulture, "{0}.csv", RegexUtility.SafeFileChars.Replace(szBaseName, string.Empty));
         }
 
         /// <summary>

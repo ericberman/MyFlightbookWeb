@@ -10,6 +10,7 @@ using System.Net.Http;
 using System.Net.Mail;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.UI;
@@ -861,5 +862,20 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="szUser"></param>
         void ToStream(string szUser, Stream s);
+    }
+
+    /// <summary>
+    /// Container for commonly used (and re-used!) regexes.
+    /// We should add to this over time...
+    /// </summary>
+    public static class RegexUtility
+    {
+        public static readonly Regex Email = new Regex("\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        public static readonly Regex SafeFileChars = new Regex("[^0-9a-zA-Z-]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        public static readonly Regex AlphaNumeric = new Regex("[a-zA-Z0-9]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        public static readonly Regex NonAlphaNumeric = new Regex("[^a-zA-Z0-9]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
     }
 }

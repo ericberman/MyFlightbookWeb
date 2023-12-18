@@ -2245,8 +2245,7 @@ HAVING numaccounts > 1");
             if (String.IsNullOrEmpty(szUser))
                 throw new UserEntityException(String.Format(CultureInfo.CurrentCulture, Resources.Profile.errInvalidEmail, string.Empty), MembershipCreateStatus.InvalidUserName);
 
-            Regex r = new Regex("\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*", RegexOptions.Compiled | RegexOptions.CultureInvariant);
-            Match m = r.Match(szEmail);
+            Match m = RegexUtility.Email.Match(szEmail);
             if (m.Captures.Count != 1 || m.Captures[0].Value.CompareOrdinal(szEmail) != 0)
                 throw new UserEntityException(String.Format(CultureInfo.CurrentCulture, Resources.Profile.errInvalidEmail, szEmail), MembershipCreateStatus.InvalidEmail);
 

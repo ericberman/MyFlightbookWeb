@@ -7,7 +7,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Net.Mail;
 using System.ServiceModel;
 using System.Text.RegularExpressions;
@@ -71,7 +70,7 @@ namespace MyFlightbook.Web.Ajax
             if (String.IsNullOrWhiteSpace(szTargetEmail))
                 throw new ArgumentException(Resources.LocalizedText.ValidationEmailRequired);
 
-            if (!Regex.IsMatch(szTargetEmail, "\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*"))
+            if (!RegexUtility.Email.IsMatch(szTargetEmail))
                 throw new ArgumentException(Resources.LocalizedText.ValidationEmailFormat);
 
             string szUser = HttpContext.Current.User.Identity.Name;
