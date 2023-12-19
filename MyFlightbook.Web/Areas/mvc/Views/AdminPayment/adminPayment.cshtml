@@ -114,19 +114,19 @@
         <table>
             <tr>
                 <td>Date: </td>
-                <td><input type="date" name="txtDate" value="@DateTime.Now.YMDString()" /></td>
+                <td><input type="date" name="txtDate" value="@DateTime.Now.YMDString()" required /></td>
             </tr>
             <tr>
                 <td>Username:</td>
-                <td><input type="text" name="txtTestTransactionUsername" /></td>
+                <td><input type="text" name="txtTestTransactionUsername" required /></td>
             </tr>
             <tr>
                 <td>Amount: </td>
-                <td><input type="number" name="decTestTransactionAmount" step="0.01" /></td>
+                <td><input type="number" name="decTestTransactionAmount" step="0.01" value="0" required /></td>
             </tr>
             <tr>
                 <td>Fee: </td>
-                <td><input type="number" name="decTestTransactionFee" step="0.01" /></td>
+                <td><input type="number" name="decTestTransactionFee" step="0.01" value="0" required /></td>
             </tr>
             <tr>
                 <td>Transaction Type: </td>
