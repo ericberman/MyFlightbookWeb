@@ -997,7 +997,7 @@ namespace MyFlightbook.Schedule
             CalendarSerializer s = new CalendarSerializer();
             CalendarEvent ev = ic.Events.First();
 
-            szFileName = RegexUtility.SafeFileChars.Replace(Branding.ReBrand(String.Format(CultureInfo.InvariantCulture, "{0}-appt", ev.Summary)).Replace(" ", "-"), string.Empty) + ".ics";
+            szFileName = RegexUtility.UnSafeFileChars.Replace(Branding.ReBrand(String.Format(CultureInfo.InvariantCulture, "{0}-appt", ev.Summary)).Replace(" ", "-"), string.Empty) + ".ics";
 
             return Encoding.UTF8.GetBytes(s.SerializeToString(ic));
         }

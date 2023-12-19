@@ -213,8 +213,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 {
                     string szFilename = String.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}-{3}", Branding.CurrentBrand.AppName, Resources.Club.ClubReportFlying, club.Name.Replace(" ", "-"), DateTime.Now.YMDString());
                 return fileFormat.CompareCurrentCultureIgnoreCase("kml") == 0 ?
-                    File(cfr.RefreshKML(), "application/vnd.google-earth.kml+xml", RegexUtility.SafeFileChars.Replace(szFilename, string.Empty) + ".kml") :
-                    File(cfr.RefreshCSV(), "text/csv", RegexUtility.SafeFileChars.Replace(szFilename, string.Empty) + ".csv");
+                    File(cfr.RefreshKML(), "application/vnd.google-earth.kml+xml", RegexUtility.UnSafeFileChars.Replace(szFilename, string.Empty) + ".kml") :
+                    File(cfr.RefreshCSV(), "text/csv", RegexUtility.UnSafeFileChars.Replace(szFilename, string.Empty) + ".csv");
                 }
                 else
                 {
@@ -239,7 +239,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (fAsFile)
                 {
                     string szFilename = String.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}-{3}", Branding.CurrentBrand.AppName, Resources.Club.ClubReportMaintenance, club.Name.Replace(" ", "-"), DateTime.Now.YMDString());
-                    return File(cmr.RefreshCSV(), "text/csv", RegexUtility.SafeFileChars.Replace(szFilename, string.Empty) + ".csv");
+                    return File(cmr.RefreshCSV(), "text/csv", RegexUtility.UnSafeFileChars.Replace(szFilename, string.Empty) + ".csv");
                 }
                 else
                 {
@@ -261,7 +261,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (fAsFile)
                 {
                     string szFilename = String.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}-{3}", Branding.CurrentBrand.AppName, Resources.Club.ClubReportInsurance, club.Name.Replace(" ", "-"), DateTime.Now.YMDString());
-                    return File(cir.RefreshCSV(), "text/csv", RegexUtility.SafeFileChars.Replace(szFilename, string.Empty) + ".csv");
+                    return File(cir.RefreshCSV(), "text/csv", RegexUtility.UnSafeFileChars.Replace(szFilename, string.Empty) + ".csv");
                 } else
                 {
                     ViewBag.items = cir.Items;
@@ -508,7 +508,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             club.MapAircraftAndUsers(rgevents);  // fix up aircraft, usernames
             string szFilename = String.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}", Branding.CurrentBrand.AppName, Resources.Club.DownloadClubScheduleFileName, club.Name.Replace(" ", "-"));
 
-            return File(ScheduledEvent.DownloadScheduleTable(rgevents), "text/csv", RegexUtility.SafeFileChars.Replace(szFilename, string.Empty) + ".csv");
+            return File(ScheduledEvent.DownloadScheduleTable(rgevents), "text/csv", RegexUtility.UnSafeFileChars.Replace(szFilename, string.Empty) + ".csv");
         }
 
         [HttpGet]

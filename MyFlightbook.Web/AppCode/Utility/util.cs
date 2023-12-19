@@ -872,7 +872,10 @@ namespace MyFlightbook
     {
         public static readonly Regex Email = new Regex("\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        public static readonly Regex SafeFileChars = new Regex("[^0-9a-zA-Z-]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        /// <summary>
+        /// Technically, there are LOTS more safe characters, but this keeps things simple by letting you eliminate anything that is not alphanumeric or a hyphen.
+        /// </summary>
+        public static readonly Regex UnSafeFileChars = new Regex("[^0-9a-zA-Z-]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         public static readonly Regex AlphaNumeric = new Regex("[a-zA-Z0-9]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
