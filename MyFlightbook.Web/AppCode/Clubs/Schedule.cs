@@ -1,8 +1,13 @@
-﻿using MyFlightbook.Clubs;
+﻿using Ical.Net;
+using Ical.Net.CalendarComponents;
+using Ical.Net.DataTypes;
+using Ical.Net.Serialization;
+using MyFlightbook.Clubs;
 using MyFlightbook.CSV;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Data;
 using System.Globalization;
 using System.IO;
@@ -878,6 +883,123 @@ namespace MyFlightbook.Schedule
                     }
                 }
             }
+        }
+
+        protected static Ical.Net.Calendar CalendarForEvent(Club c, string sid, string szUser)
+        {
+            if (c == null)
+                throw new ArgumentNullException(nameof(c));
+            if (String.IsNullOrEmpty(szUser))
+                throw new UnauthorizedAccessException("Attempt to download appointment that you don't own");
+
+            Ical.Net.Calendar ic = new Ical.Net.Calendar();
+            ic.Calendar.AddTimeZone(c.TimeZone);
+
+            string szTitle = string.Empty;
+
+            ScheduledEvent se = AppointmentByID(sid, c.TimeZone) ?? throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, "Invalid scheduled event ID: {0}", sid));
+
+            if (!c.HasAdmin(szUser) && szUser.CompareOrdinal(se.OwningUser) != 0)
+                throw new MyFlightbookException("Attempt to download appointment that you don't own!");
+
+            ClubAircraft ca = c.MemberAircraft.FirstOrDefault(ca2 => ca2.AircraftID.ToString(CultureInfo.InvariantCulture).CompareOrdinal(se.ResourceID) == 0);
+
+            szTitle = String.Format(CultureInfo.CurrentCulture, "{0}{1}", ca == null ? string.Empty : String.Format(CultureInfo.CurrentCulture, "{0} - ", ca.DisplayTailnumber), se.Body);
+            CalendarEvent ev = new CalendarEvent()
+            {
+                Uid = se.ID,
+                IsAllDay = false,
+                Start = new CalDateTime(se.StartUtc, TimeZoneInfo.Utc.Id),
+                End = new CalDateTime(se.EndUtc, TimeZoneInfo.Utc.Id),
+                Description = szTitle,
+                Summary = szTitle,
+                Location = c.HomeAirport == null ? c.HomeAirportCode : String.Format(CultureInfo.CurrentCulture, "{0} - {1}", c.HomeAirportCode, c.HomeAirport.Name)
+            };
+            ev.Start.HasTime = ev.End.HasTime = true;  // has time is false if the ultimate time is midnight.
+
+            Alarm a = new Alarm()
+            {
+                Action = AlarmAction.Display,
+                Description = ev.Summary,
+                Trigger = new Trigger()
+                {
+                    DateTime = ev.Start.AddMinutes(-30),
+                    AssociatedObject = ic
+                }
+            };
+            ev.Alarms.Add(a);
+            ic.Calendar.Events.Add(ev);
+            ic.Calendar.Method = "PUBLISH";
+            return ic;
+        }
+
+        private const string szFormatYahoo = "yyyyMMddTHHmm00";
+
+        public static Uri WriteYahoo(Club c, string sid, string szUser, string szHost)
+        {
+            if (c == null)
+                throw new ArgumentNullException(nameof(c));
+            Ical.Net.Calendar ic = CalendarForEvent(c, sid, szUser);
+            CalendarEvent ev = ic.Events.First();
+            UriBuilder uriBuilder = new UriBuilder("https://calendar.yahoo.com/");
+
+            // Use ParseQueryString because that is how you get an HttpValueCollection, on which ToString() works.
+            NameValueCollection nvc = HttpUtility.ParseQueryString(string.Empty);
+
+            // For yahoo, convert to local time zone.
+            DateTime dtStart = TimeZoneInfo.ConvertTimeFromUtc(ev.Start.AsUtc, c.TimeZone);
+            DateTime dtEnd = TimeZoneInfo.ConvertTimeFromUtc(ev.End.AsUtc, c.TimeZone);
+            nvc.Add(new NameValueCollection() {
+                { "v","60" },
+                { "TITLE", ev.Summary },
+                {"VIEW", "d" },
+                { "in_loc", ev.Location },
+                {"st", dtStart.ToString(szFormatYahoo, CultureInfo.InvariantCulture) },
+                {"et", dtEnd.ToString(szFormatYahoo, CultureInfo.InvariantCulture) },
+                {"URL", String.Format(CultureInfo.InvariantCulture, "website:{0}", szHost) },
+                {"DESC", ev.Summary },
+                {"rem1", "30M" }
+            });
+            uriBuilder.Query = nvc.ToString();
+            return uriBuilder.Uri;
+        }
+
+        public static Uri WriteGoogle(Club c, string sid, string szUser, string szHost)
+        {
+            if (c == null)
+                throw new ArgumentNullException(nameof(c));
+            Ical.Net.Calendar ic = CalendarForEvent(c, sid, szUser);
+            CalendarEvent ev = ic.Events.First();
+            UriBuilder uriBuilder = new UriBuilder("https://www.google.com/calendar/event");
+            // Use ParseQueryString because that is how you get an HttpValueCollection, on which ToString() works.
+            NameValueCollection nvc = HttpUtility.ParseQueryString(string.Empty);
+
+            // For google, convert to local time zone.
+            DateTime dtStart = TimeZoneInfo.ConvertTimeFromUtc(ev.Start.AsUtc, c.TimeZone);
+            DateTime dtEnd = TimeZoneInfo.ConvertTimeFromUtc(ev.End.AsUtc, c.TimeZone);
+            nvc.Add(new NameValueCollection() {
+                { "action","TEMPLATE" },
+                { "text", ev.Summary },
+                {"dates", String.Format(CultureInfo.InvariantCulture, "{0}/{1}", dtStart.ToString(szFormatYahoo, CultureInfo.InvariantCulture), dtEnd.ToString(szFormatYahoo, CultureInfo.InvariantCulture)) },
+                {"location", ev.Location },
+                {"trp", "true" },
+                {"sprop", String.Format(CultureInfo.InvariantCulture, "website:{0}", szHost) }
+            });
+            uriBuilder.Query = nvc.ToString();
+            return uriBuilder.Uri;
+        }
+
+        public static byte[] WriteICal(Club c, string sid, string szUser, out string szFileName)
+        {
+            if (c == null)
+                throw new ArgumentNullException(nameof(c));
+            Ical.Net.Calendar ic = CalendarForEvent(c, sid, szUser);
+            CalendarSerializer s = new CalendarSerializer();
+            CalendarEvent ev = ic.Events.First();
+
+            szFileName = RegexUtility.SafeFileChars.Replace(Branding.ReBrand(String.Format(CultureInfo.InvariantCulture, "{0}-appt", ev.Summary)).Replace(" ", "-"), string.Empty) + ".ics";
+
+            return Encoding.UTF8.GetBytes(s.SerializeToString(ic));
         }
         #endregion
         public override string ToString()

@@ -351,14 +351,23 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             return SafeOp(() =>
             {
-                // Verify that the viewing user is authorized.
-                Club club = ValidateClubMember(idClub);
+                return SchedSummaryInternal(idClub, resourceName, fAllUsers);
+            });
+        }
 
-                ViewBag.idClub = idClub;
-                ViewBag.resourceName = resourceName;
-                ViewBag.userName = fAllUsers ? null : User.Identity.Name;
-                ViewBag.events = club.GetUpcomingEvents(10, resourceName, ViewBag.userName);
-                return PartialView("_schedSummary");
+        [HttpPost]
+        [Authorize]
+        public ActionResult SchedulesForAircraft(int idAircraft)
+        {
+            return SafeOp(() =>
+            {
+                List<Club> lstClubs = new List<Club>(Club.ClubsForAircraft(idAircraft, User.Identity.Name));
+                if (lstClubs.Count == 0)
+                    return new EmptyResult();
+
+                ViewBag.rgClubs = lstClubs;
+                ViewBag.idAircraft = idAircraft;
+                return PartialView("_editAircraftViewSchedule");
             });
         }
 
@@ -389,6 +398,19 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         #region Partials/child actions
         [ChildActionOnly]
+        public PartialViewResult SchedSummaryInternal(int idClub, string resourceName, bool fAllUsers)
+        {
+            // Verify that the viewing user is authorized.
+            Club club = ValidateClubMember(idClub);
+
+            ViewBag.idClub = idClub;
+            ViewBag.resourceName = resourceName;
+            ViewBag.userName = fAllUsers ? null : User.Identity.Name;
+            ViewBag.events = club.GetUpcomingEvents(10, resourceName, ViewBag.userName);
+            return PartialView("_schedSummary");
+        }
+
+        [ChildActionOnly]
         public ActionResult ClubView(Club club, bool fLinkToDetails = true)
         {
             ViewBag.club = club;
@@ -406,15 +428,15 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         [ChildActionOnly]
-        public ActionResult ResourceSchedule(Club club, ClubAircraft ac, string resourceHeader, int resourceID, bool showNavContainer = false, ScheduleDisplayMode mode = ScheduleDisplayMode.Day, string navInitFunc = "")
+        public ActionResult ResourceSchedule(Club club, ClubAircraft ac, string resourceHeader, int resourceID, ScheduleDisplayMode mode = ScheduleDisplayMode.Day, string navInitFunc = "", bool fIncludeDetails = false)
         {
             ViewBag.club = club;
             ViewBag.aircraft = ac;
             ViewBag.resourceHeader = resourceHeader;
             ViewBag.resourceID = resourceID;
-            ViewBag.showNavContainer = showNavContainer;
             ViewBag.scheduleMode = mode;
             ViewBag.navInitFunc = navInitFunc;
+            ViewBag.includeDetails = fIncludeDetails;
             return PartialView("_clubAircraftSchedule");
         }
 
@@ -440,6 +462,20 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return PartialView("_clubAircraft");
         }
         #endregion
+
+        [HttpGet]
+        [Authorize]
+        public ActionResult AppointmentDownload(int idClub, string sid, string fmt = "")
+        {
+            Club club = ValidateClubMember(idClub);
+
+            if (fmt.CompareCurrentCultureIgnoreCase("Y") == 0)
+                return Redirect(ScheduledEvent.WriteYahoo(club, sid, User.Identity.Name, Request.Url.Host).ToString());
+            else if (fmt.CompareCurrentCultureIgnoreCase("G") == 0)
+                return Redirect(ScheduledEvent.WriteGoogle(club, sid, User.Identity.Name, Request.Url.Host).ToString());
+            else
+                return File(ScheduledEvent.WriteICal(club, sid, User.Identity.Name, out string szFileName), "text/calendar", szFileName);
+        }
 
         [HttpPost]
         [Authorize]
@@ -473,6 +509,23 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             string szFilename = String.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}", Branding.CurrentBrand.AppName, Resources.Club.DownloadClubScheduleFileName, club.Name.Replace(" ", "-"));
 
             return File(ScheduledEvent.DownloadScheduleTable(rgevents), "text/csv", RegexUtility.SafeFileChars.Replace(szFilename, string.Empty) + ".csv");
+        }
+
+        [HttpGet]
+        [Authorize]
+        public ActionResult ACSchedule(int id = -1)
+        {
+            if (id != Aircraft.idAircraftUnknown && User.Identity.IsAuthenticated && !String.IsNullOrEmpty(User.Identity.Name))
+            {
+                IEnumerable<Club> lstClubsForUserInAircraft = Club.ClubsForAircraft(id, User.Identity.Name);
+                IEnumerable<Club> lstClubsForAircraft = (lstClubsForUserInAircraft.Any() ? Array.Empty<Club>() : Club.ClubsForAircraft(id));
+                ViewBag.rgClubs = lstClubsForUserInAircraft;
+                ViewBag.rgAvailableClubs = lstClubsForAircraft;
+                ViewBag.ac = new Aircraft(id);
+                return View("clubACSchedule");
+            }
+            else
+                throw new UnauthorizedAccessException("Invalid user or aircraft");
         }
 
         [HttpGet]

@@ -5,7 +5,6 @@
 <%@ Register Src="mfbMultiFileUpload.ascx" TagName="mfbMultiFileUpload" TagPrefix="uc3" %>
 <%@ Register Src="mfbMaintainAircraft.ascx" TagName="mfbMaintainAircraft" TagPrefix="uc4" %>
 <%@ Register Src="Expando.ascx" TagName="Expando" TagPrefix="uc6" %>
-<%@ Register Src="mfbEditAppt.ascx" TagName="mfbEditAppt" TagPrefix="uc7" %>
 <%@ Register Src="mfbResourceSchedule.ascx" TagName="mfbResourceSchedule" TagPrefix="uc8" %>
 <%@ Register Src="ClubControls/SchedSummary.ascx" TagName="SchedSummary" TagPrefix="uc9" %>
 <%@ Register Src="~/Controls/mfbTypeInDate.ascx" TagPrefix="uc10" TagName="mfbTypeInDate" %>
@@ -239,29 +238,25 @@
         </uc6:Expando>
     </div>
 
-    <div id="rowClubSchedules" runat="server" visible="false" style="margin-top: 5px">
-        <uc7:mfbEditAppt ID="mfbEditAppt1" runat="server" />
-        <uc6:Expando ID="expandoSchedules" runat="server" HeaderCss="header">
-            <Header>
-                <%=Resources.Aircraft.editAircraftShceduleHeader %>
-            </Header>
-            <Body>
-                <asp:Repeater ID="rptSchedules" runat="server" OnItemDataBound="rptSchedules_ItemDataBound">
-                    <ItemTemplate>
-                        <h3>
-                            <asp:HyperLink ID="lnkClub" NavigateUrl='<%# String.Format("~/Member/ClubDetails.aspx/{0}", Eval("ID")) %>' runat="server"><%# Eval("Name") %></asp:HyperLink></h3>
-                        <div class="upcomingEventSummary">
-                        </div>
-                        <uc8:mfbResourceSchedule ID="schedAircraft" ShowResourceDetails="false" ClubID='<%# Eval("ID") %>' ResourceID="<%# AircraftID.ToString() %>" runat="server">
-                            <SubNavTemplate>
-                                <uc9:SchedSummary ID="schedSummary" runat="server" UserName="<%# Page.User.Identity.Name %>" ResourceName="<%# AircraftID.ToString() %>" ClubID='<%# Eval("ID") %>' />
-                            </SubNavTemplate>
-                        </uc8:mfbResourceSchedule>
-                    </ItemTemplate>
-                </asp:Repeater>
-            </Body>
-        </uc6:Expando>
-    </div>
+    <script type="text/javascript">
+        $(() => {
+            var params = new Object();
+            params.idAircraft = <% =AircraftID %>;
+            $.ajax({
+                type: "POST",
+                data: JSON.stringify(params),
+                url: '<%=VirtualPathUtility.ToAbsolute("~/mvc/club/SchedulesForAircraft") %>',
+                dataType: "html",
+                contentType: "application/json",
+                error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                complete: function (response) { },
+                success: function (response) {
+                    $("#" + "<% =pnlClubSchedulesNew.ClientID %>").html(response);
+                }
+            });
+        });
+    </script>
+    <asp:Panel ID="pnlClubSchedulesNew" runat="server"></asp:Panel>
 
     <div id="rowMaintenance" runat="server" style="margin-top: 5px">
         <uc6:Expando ID="expandoMaintenance" runat="server" HeaderCss="header">

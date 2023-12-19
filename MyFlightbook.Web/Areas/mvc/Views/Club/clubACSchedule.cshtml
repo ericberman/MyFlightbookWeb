@@ -1,0 +1,129 @@
+﻿@using MyFlightbook.Clubs
+@using System.Linq
+@using MyFlightbook.Schedule
+@using System.Globalization
+@{
+    ViewBag.Title = "";
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    IEnumerable<Club> rgClubs = ViewBag.rgClubs;
+    IEnumerable<Club> rgAvailableClubsForaircraft = ViewBag.rgAvailableClubs;
+    Aircraft ac = ViewBag.ac;
+    ViewBag.defaultTab = tabID.tabAircraft;
+}
+<script src='@VirtualPathUtility.ToAbsolute("~/public/Scripts/daypilot-all.min.js?v=20210821")'></script>
+<script src='@VirtualPathUtility.ToAbsolute("~/public/Scripts/mfbcalendar.js?v=3")'></script>
+
+@if (rgClubs.Any())
+{
+<script type="text/javascript">
+    var clubCalendars = [];
+    var clubNavControl;
+
+    function updateDate(d) {
+        // create a new date that is local but looks like this one.
+        var d2 = new Date(d.getTime() + new Date().getTimezoneOffset() * 60000);
+        $("#lblDate").html(d2.toDateString());
+    }
+
+    function refreshAllCalendars(args) {
+        for (i = 0; i < clubCalendars.length; i++) {
+            var cc = clubCalendars[i];
+            cc.dpCalendar.startDate = args.day;
+            cc.dpCalendar.update();
+            updateDate(args.day);
+            $("#pnlChangeDate").hide();
+            cc.refreshEvents();
+        }
+    }
+
+    function InitClubNav(cal) {
+        clubCalendars[clubCalendars.length] = cal;
+        if (typeof clubNavControl == 'undefined') {
+            clubNavControl = cal.initNav('pnlDateSelector');
+            clubNavControl.cellHeight = clubNavControl.cellWidth = 40;
+            clubNavControl.onTimeRangeSelected = refreshAllCalendars;   // override the default function
+            clubNavControl.select(new DayPilot.Date());
+            updateDate(new DayPilot.Date());
+        }
+        return clubNavControl;
+    }
+
+    function incrementDay(i) {
+        clubNavControl.select(clubNavControl.selectionDay.addDays(i));
+    }
+
+    function nextDay() {
+        incrementDay(1);
+    }
+
+    function prevDay() {
+        incrementDay(-1);
+    }
+
+    $(function () {
+        @if (rgClubs.Count() > 1)
+        {
+            @:$("#tabSchedulesContainer").tabs();
+        }
+    });
+</script>
+<div id="pnlChangeDatePop" style="padding:2px; width:100%; background-color:lightgray; line-height: 30px; z-index:100; height:30px; position:fixed; top: 0px; left: 0px; text-align:center;">
+    <span style="font-family:Arial;font-size:16pt; margin-left: 1em; margin-right: 1em; vertical-align:middle; float:left;" onclick="prevDay();">◄</span>
+    <span style="font-weight:bold; font-size: larger; vertical-align:middle">@ac.DisplayTailnumber</span> -
+    <span id="lblDatePicker" onclick="$('#pnlChangeDate').toggle();">
+        <img src="@VirtualPathUtility.ToAbsolute("~/images/CalendarPopup.png")" style="display:inline-block; margin-right: 5px; vertical-align:middle;" />
+        <span style="font-weight:bold;display: inline-block; line-height: normal; vertical-align: middle" id="lblDate"></span>
+    </span>
+    <span style="font-family:Arial;font-size:16pt; margin-left: 1em; margin-right: 1em; float:right; vertical-align:middle" onclick="nextDay();">►</span>
+</div>
+    <div id="pnlChangeDate" class="modalpopup" style="text-align: center; display:none; text-size-adjust: 125%; background-color: white">
+        <div id="pnlDateSelector" style="margin-left: auto; margin-right: auto;"></div>
+    </div>
+
+    <div style="margin-top: 50px;">
+        <div style="padding:3px; display: inline-block;" id="divCalendar">
+            @{ Html.RenderAction("EditAppt", "Club", new { defaulttitle = MyFlightbook.Profile.GetUser(User.Identity.Name).UserFullName }); }
+            <div id="tabSchedulesContainer">
+                @if (rgClubs.Count() > 1)
+                {
+                    <ul>
+                        @foreach (Club club in rgClubs)
+                        {
+                            string szLink = "#club" + club.ID.ToString();
+                            <li><a href="@szLink">@club.Name</a></li>
+                        }
+                    </ul>
+                }
+                @foreach (Club c in rgClubs)
+                {
+                    ClubAircraft ca = c.MemberAircraft.FirstOrDefault(a => a.AircraftID == ac.AircraftID);
+                    string szId = "club" + c.ID.ToString();
+                    <div id="@szId" name="@szId">
+                        @{ Html.RenderAction("ResourceSchedule", "Club", new { club = c, ac = ca, resourceHeader = ca.DisplayTailnumberWithModel, resourceID = ca.AircraftID, navInitFunc = "InitClubNav" }); }
+                    </div>
+                }
+            </div>
+            <div id="divSchedSummary" style="margin-top: 1em;">
+                @foreach (Club c in rgClubs)
+                {
+                    <div style="font-weight: bold;">@c.Name</div>
+                    Html.RenderAction("SchedSummaryInternal", "Club", new { idClub = c.ID, resourcName = string.Empty, fAllUsers = false });
+                }
+            </div>
+        </div>
+    </div>
+}
+else if (rgAvailableClubsForaircraft.Any())
+{
+    <p><span style="font-weight:bold">@ac.DisplayTailnumber</span> - @Resources.Club.errAircraftInClubButNotYou</p>
+    foreach (Club c in rgAvailableClubsForaircraft)
+    {
+        <h3><a href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/Club/Details/{0}", c.ID))">@c.Name</a></h3>
+    }
+}
+else
+{
+    <p><span style="font-weight:bold">@ac.DisplayTailnumber</span> - @Resources.Club.errAircraftNotInClub</p>
+    <p><a href="@VirtualPathUtility.ToAbsolute("~/mvc/Club?noredir=1")">@Resources.Club.LabelCreateClub</a></p>
+}
+

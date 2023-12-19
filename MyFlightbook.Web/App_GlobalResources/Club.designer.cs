@@ -563,6 +563,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This aircraft belongs to the club(s) listed below, but you are not a member.  View details for the club to request membership..
+        /// </summary>
+        internal static string errAircraftInClubButNotYou {
+            get {
+                return ResourceManager.GetString("errAircraftInClubButNotYou", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This aircraft is not in a club..
+        /// </summary>
+        internal static string errAircraftNotInClub {
+            get {
+                return ResourceManager.GetString("errAircraftNotInClub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} is already a member of &quot;{1}&quot;.
         /// </summary>
         internal static string errAlreadyAddedMember {

@@ -6,7 +6,6 @@
     ClubAircraft ac = ViewBag.aircraft;
     string resourceHeader = ViewBag.resourceHeader;
     int resourceID = ViewBag.resourceID;
-    bool fShowNavContainer = ViewBag.showNavContainer;
     ScheduleDisplayMode displayMode = ViewBag.scheduleMode;
     string navInitFunc = ViewBag.navInitFunc;
     string divCalID = String.Format(CultureInfo.InvariantCulture, "divCalendar{0}-{1}", club.ID, resourceID);
@@ -14,25 +13,21 @@
 <div style="font-weight:bold;">@resourceHeader</div>
 <div class="calContainer">
     <div>
-        <div class="calPlaceholder" id="divResourceDetails">
-            <div class="mfbDefault">
-                @if (ac.HasSampleImage)
-                {
-                    <div style="width: 200px; text-align: center; vertical-align: middle;">
-                        <img src="@ac.SampleImageThumbnail" onclick="javascript:viewMFBImg('@ac.SampleImageFull')" />
-                        <div>@ac.SampleImageComment</div>
-                        <br />
-                    </div>
-                }
-                <div>@Html.Raw(ac.ClubDescription)</div>
-                <div>@ac.PublicNotes</div>
-            </div>
-        </div>
-        @if (fShowNavContainer)
+        @if (ViewBag.includeDetails)
         {
-            <div id="pnlNavContainer" class="calNavContainer">
-                <div id="pnlCalendarNav" style="width: 100%;"></div>>
-                <div id="plcSubNav"></div>
+            <div class="calPlaceholder" id="divResourceDetails">
+                <div class="mfbDefault">
+                    @if (ac.HasSampleImage)
+                    {
+                        <div style="width: 200px; text-align: center; vertical-align: middle;">
+                            <img src="@ac.SampleImageThumbnail" onclick="javascript:viewMFBImg('@ac.SampleImageFull')" />
+                            <div>@ac.SampleImageComment</div>
+                            <br />
+                        </div>
+                    }
+                    <div>@Html.Raw(ac.ClubDescription)</div>
+                    <div>@ac.PublicNotes</div>
+                </div>
             </div>
         }
         <div class="calCalContainer">
@@ -49,7 +44,7 @@
     }
     else
     {
-    @:@(navInitFunc)(cal);
+    @:@(navInitFunc)(cal).select(new DayPilot.Date('@TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, club.TimeZone).ToString("u", CultureInfo.InvariantCulture)'));
     }
     cal.refreshEvents();
 </script>

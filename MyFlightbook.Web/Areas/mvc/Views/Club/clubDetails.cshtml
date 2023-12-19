@@ -34,8 +34,8 @@
         if (typeof clubNavControl == 'undefined') {
             clubNavControl = cal.initNav('pnlCalendarNav');
             clubNavControl.onTimeRangeSelected = refreshAllCalendars;   // override the default function
-            clubNavControl.select(new DayPilot.Date('@(TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, club.TimeZone).FormatDateZulu())'));
         }
+        return clubNavControl;
     }
 
     $(function () {
@@ -149,7 +149,7 @@
         var params = new Object();
         params.idClub = @club.ID;
         params.resourceName = null;
-        params.fAllUsers = !    $("#ckSummaryScope")[0].checked;
+        params.fAllUsers = !$("#ckSummaryScope")[0].checked;
         var d = JSON.stringify(params);
         $.ajax(
             {
@@ -363,7 +363,7 @@
                         {
                             string szId = "aircraft" + ca.AircraftID.ToString();
                             <div id="@szId" name="@szId">
-                                @{ Html.RenderAction("ResourceSchedule", "Club", new { club = club, ac = ca, resourceHeader = ca.DisplayTailnumberWithModel, resourceID = ca.AircraftID, navInitFunc = "InitClubNav", mode = defaultMode }); }
+                                @{ Html.RenderAction("ResourceSchedule", "Club", new { club = club, ac = ca, resourceHeader = ca.DisplayTailnumberWithModel, resourceID = ca.AircraftID, navInitFunc = "InitClubNav", mode = defaultMode, fIncludeDetails = true }); }
                             </div>
                         }
                     </div>

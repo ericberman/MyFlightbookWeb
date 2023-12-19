@@ -1,0 +1,75 @@
+﻿@using MyFlightbook.Clubs
+@{
+    IList<Club> rgClubs = ViewBag.rgClubs;
+    int idAircraft = ViewBag.idAircraft;
+}
+<script type="text/javascript">
+    var clubCalendars = [];
+    var clubNavControl;
+
+    function refreshAllCalendars(args) {
+        for (i = 0; i < clubCalendars.length; i++) {
+            var cc = clubCalendars[i];
+            cc.dpCalendar.startDate = args.day;
+            cc.dpCalendar.update();
+            cc.refreshEvents();
+        }
+    }
+
+    function InitClubNav(cal) {
+        clubCalendars[clubCalendars.length] = cal;
+        if (typeof clubNavControl == 'undefined') {
+            clubNavControl = cal.initNav('pnlCalendarNav');
+            clubNavControl.onTimeRangeSelected = refreshAllCalendars;   // override the default function
+        }
+        return clubNavControl;
+    }
+
+    $(function () {
+        @if (rgClubs.Count > 1)
+        {
+            @:$("#tabSchedulesContainer").tabs();
+        }
+    });
+
+</script>
+<h3 class="header">
+    @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "pnlAircraftSchedules", labelText = Resources.Aircraft.editAircraftShceduleHeader }); }
+</h3>
+<div id="pnlAircraftSchedules" style="display: none">
+    <div style="padding:3px; display:inline-block; width: 220px; vertical-align:top;">
+        <div style="margin: auto">
+            <div id="pnlCalendarNav"></div>
+        </div>
+        <div id="divSchedSummary" style="margin-top: 1em;">
+            @foreach (Club c in rgClubs)
+            {
+                <div style="font-weight: bold;">@c.Name</div>
+                Html.RenderAction("ScheduleSummary", "Club", new { idClub = c.ID, resourcName = string.Empty, fAllUsers = false });
+            }
+        </div>
+    </div>
+    <div style="padding:3px; display: inline-block;" id="divCalendar">
+        @{ Html.RenderAction("EditAppt", "Club", new { defaulttitle = MyFlightbook.Profile.GetUser(User.Identity.Name).UserFullName }); }
+        <div id="tabSchedulesContainer">
+            @if (rgClubs.Count > 1)
+            {
+                <ul>
+                    @foreach (Club club in rgClubs)
+                    {
+                        string szLink = "#club" + club.ID.ToString();
+                        <li><a href="@szLink">@club.Name</a></li>
+                    }
+                </ul>
+            }
+            @foreach (Club c in rgClubs)
+            {
+            ClubAircraft ca = c.MemberAircraft.FirstOrDefault(ac => ac.AircraftID == idAircraft);
+            string szId = "club" + c.ID.ToString();
+            <div id="@szId" name="@szId">
+                @{ Html.RenderAction("ResourceSchedule", "Club", new { club = c, ac = ca, resourceHeader = ca.DisplayTailnumberWithModel, resourceID = ca.AircraftID, navInitFunc = "InitClubNav" }); }
+            </div>
+            }
+        </div>
+    </div>
+</div>

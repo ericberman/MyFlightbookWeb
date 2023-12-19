@@ -824,4 +824,10 @@ Sender Email: {1}</value>
   <data name="statusChangeSubject" xml:space="preserve">
     <value>Change in your status in the club {0} on %APP_NAME%</value>
   </data>
+  <data name="errAircraftInClubButNotYou" xml:space="preserve">
+    <value>This aircraft belongs to the club(s) listed below, but you are not a member.  View details for the club to request membership.</value>
+  </data>
+  <data name="errAircraftNotInClub" xml:space="preserve">
+    <value>This aircraft is not in a club.</value>
+  </data>
 </root>

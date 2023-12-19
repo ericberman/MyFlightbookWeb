@@ -33,17 +33,17 @@ else
                             <img src="@VirtualPathUtility.ToAbsolute("~/images/MenuChevron.png")" class="popTrigger" />
                             <div class="popMenuContent popMenuHidden" style="margin-top: -5px; margin-left: -5px">
                                 <div style="line-height: 26px; vertical-align: middle ">
-                                    <a style="padding-right: 4px; cursor:pointer;" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/IcalAppt.aspx?c={0}&sid={1}", idClub, se.ID))">
+                                    <a style="padding-right: 4px; cursor:pointer;" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/Club/AppointmentDownload?idClub={0}&sid={1}", idClub, se.ID))">
                                         <img src="@VirtualPathUtility.ToAbsolute("~/images/download.png")" alt="@Resources.Schedule.DownloadApptICS" /> @Resources.Schedule.DownloadApptICS
                                     </a>
                                 </div>
                                 <div style="line-height: 26px; vertical-align: middle">
-                                    <a style="padding-right: 4px; cursor: pointer;" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/IcalAppt.aspx?c={0}&sid={1}&fmt=Y", idClub, se.ID))">
+                                    <a style="padding-right: 4px; cursor: pointer;" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/Club/AppointmentDownload?idClub={0}&sid={1}&fmt=Y", idClub, se.ID))">
                                         <img src="@VirtualPathUtility.ToAbsolute("~/images/download.png")" alt="@Resources.Schedule.DownloadApptYahoo" /> @Resources.Schedule.DownloadApptYahoo
                                     </a>
                                 </div>
                                 <div style="line-height: 26px; vertical-align: middle">
-                                    <a style="padding-right: 4px; cursor: pointer;" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/IcalAppt.aspx?c={0}&sid={1}&fmb=G", idClub, se.ID))">
+                                    <a style="padding-right: 4px; cursor: pointer;" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/Club/AppointmentDownload?idClub={0}&sid={1}&fmt=G", idClub, se.ID))">
                                         <img src="@VirtualPathUtility.ToAbsolute("~/images/download.png")" alt="@Resources.Schedule.DownloadApptGoogle" /> @Resources.Schedule.DownloadApptGoogle
                                     </a>
                                 </div>

@@ -717,40 +717,13 @@ namespace MyFlightbook.AircraftControls
         protected global::System.Web.UI.WebControls.TextBox txtPrivateNotes;
 
         /// <summary>
-        /// rowClubSchedules control.
+        /// pnlClubSchedulesNew control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl rowClubSchedules;
-
-        /// <summary>
-        /// mfbEditAppt1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Controls_mfbEditAppt mfbEditAppt1;
-
-        /// <summary>
-        /// expandoSchedules control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Controls_Expando expandoSchedules;
-
-        /// <summary>
-        /// rptSchedules control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptSchedules;
+        protected global::System.Web.UI.WebControls.Panel pnlClubSchedulesNew;
 
         /// <summary>
         /// rowMaintenance control.

@@ -39,56 +39,6 @@ namespace MyFlightbook.AircraftControls
             }
         }
 
-        #region Schedule stuff
-        /// <summary>
-        /// Displays any club schedules for this aircraft
-        /// <paramref name="ac">The aircraft</paramref>
-        /// <paramref name="rowClubSchedules">The row to show/hide if there are clubs found</paramref>
-        /// <paramref name="rptSchedules">The repeater control for any clubs</paramref>
-        /// <paramref name="setOwner">An action to take if the club has an owner name prepend policy</paramref>
-        /// </summary>
-        protected void SetUpSchedules(Aircraft ac, Repeater rptSchedules, System.Web.UI.HtmlControls.HtmlControl rowClubSchedules, Action<string> setOwner)
-        {
-            if (ac == null)
-                throw new ArgumentNullException(nameof(ac));
-
-            if (!Page.User.Identity.IsAuthenticated || ac.IsNew)
-                return;
-
-            if (rptSchedules == null)
-                throw new ArgumentNullException(nameof(rptSchedules));
-            if (rowClubSchedules == null)
-                throw new ArgumentNullException(nameof(rowClubSchedules));
-
-            List<MyFlightbook.Clubs.Club> lstClubs = new List<MyFlightbook.Clubs.Club>(MyFlightbook.Clubs.Club.ClubsForAircraft(ac.AircraftID, Page.User.Identity.Name));
-            if (lstClubs.Count > 0)
-            {
-                rowClubSchedules.Visible = true;
-                rptSchedules.DataSource = lstClubs;
-                rptSchedules.DataBind();
-
-                // If *any* club has policy PrependsScheduleWithOwnerName, set the default text for it
-                foreach (MyFlightbook.Clubs.Club c in lstClubs)
-                {
-                    if (c.PrependsScheduleWithOwnerName)
-                    {
-                        setOwner?.Invoke(Profile.GetUser(Page.User.Identity.Name).UserFullName);
-                        break;
-                    }
-                }
-            }
-        }
-
-        protected static void BindSchedules(RepeaterItemEventArgs e)
-        {
-            if (e == null)
-                throw new ArgumentNullException(nameof(e));
-            Controls_mfbResourceSchedule sched = (Controls_mfbResourceSchedule)e.Item.FindControl("schedAircraft");
-            Controls_SchedSummary summ = (Controls_SchedSummary)sched.SubNavContainer.Controls[0].FindControl("schedSummary");
-            summ.Refresh();
-        }
-        #endregion
-
         protected void RedirectForId(int aircraftID)
         {
             System.Text.StringBuilder sb = new System.Text.StringBuilder("~/Member/EditAircraft.aspx?id=" + aircraftID.ToString(CultureInfo.InvariantCulture));
@@ -574,8 +524,6 @@ namespace MyFlightbook.AircraftControls
 
             SetUpAlternativeVersions();
 
-            SetUpSchedules(m_ac, rptSchedules, rowClubSchedules, (string sz) => { mfbEditAppt1.DefaultTitle = sz; });
-
             bool fIsKnown = AdminMode || (!fIsNew && new UserAircraft(Page.User.Identity.Name)[m_ac.AircraftID] != null);
 
             btnAddAircraft.Text = fIsKnown ? Resources.LocalizedText.EditAircraftUpdateAircraft : Resources.LocalizedText.EditAircraftAddAircraft;
@@ -913,13 +861,6 @@ namespace MyFlightbook.AircraftControls
                 Button b = e.Row.FindControl("lnkMergeThis") as Button;
                 b.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:mergeMain(this, {0}, {1}); return false;", ((Aircraft)e.Row.DataItem).AircraftID, m_ac.AircraftID);
             }
-        }
-        #endregion
-
-        #region Schedules
-        protected void rptSchedules_ItemDataBound(object sender, RepeaterItemEventArgs e)
-        {
-            BindSchedules(e);
         }
         #endregion
 
