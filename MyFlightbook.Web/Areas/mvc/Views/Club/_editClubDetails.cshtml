@@ -23,7 +23,6 @@
         club.EditingPolicy = $('input[name="editingPolicy"]:checked').val();
         club.PrependsScheduleWithOwnerName = $("#ckPolicyNamePrefix")[0].checked;
         club.IsPrivate = $("#ckPolicyPrivate")[0].checked;
-        club.PolicyShowMobileNumbers = $("#ckPolicyShowMobile")[0].checked;
         club.ShowHeadshots = $("#ckPolicyShowHeadshots")[0].checked;
         club.ShowMobileNumbers = $("#ckPolicyShowMobile")[0].checked;
         club.DeleteNotifications = $("#cmbDeleteNotify").val();
@@ -129,7 +128,7 @@
             <tr>
                 <td style="width:400px; padding:3px" colspan="2">
                     <div>@Resources.Club.LabelURL</div>
-                    <input type="url" value="@club.Link" style="width: 400px;" id="txtURL" name="providedLink" />
+                    <input type="url" value="@(club.ProvidedLink ?? string.Empty)" placeholder="https://" style="width: 400px;" id="txtURL" name="providedLink" />
                 </td>
             </tr>
             <tr>
