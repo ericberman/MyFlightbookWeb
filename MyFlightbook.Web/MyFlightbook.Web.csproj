@@ -546,13 +546,7 @@
     <Content Include="Controls\AircraftControls\SelectMake.ascx" />
     <Content Include="Controls\AutofillOptionsChooser.ascx" />
     <Content Include="Controls\ChecklistControls\ChecklistItem.ascx" />
-    <Content Include="Controls\ClubControls\ClubAircraftSchedule.ascx" />
-    <Content Include="Controls\ClubControls\FlyingReport.ascx" />
-    <Content Include="Controls\ClubControls\InsuranceReport.ascx" />
-    <Content Include="Controls\ClubControls\MaintenanceReport.ascx" />
-    <Content Include="Controls\ClubControls\SchedSummary.ascx" />
     <Content Include="Controls\ClubControls\TimeZone.ascx" />
-    <Content Include="Controls\ClubControls\ViewClub.ascx" />
     <Content Include="Controls\Expando.ascx" />
     <Content Include="Controls\GoogleAnalytics.ascx" />
     <Content Include="Controls\GoogleChart.ascx" />
@@ -828,16 +822,12 @@
     <Content Include="MasterPage.master" />
     <Content Include="Member\8710Form.aspx" />
     <Content Include="Member\Achievements.aspx" />
-    <Content Include="Member\ACSchedule.aspx" />
     <Content Include="Member\AddEndorsement.aspx" />
     <Content Include="Member\AddRelationship.aspx" />
     <Content Include="Member\Aircraft.aspx" />
     <Content Include="Member\Ajax.asmx" />
     <Content Include="Member\BrowseTemplates.aspx" />
     <Content Include="Member\CheckFlights.aspx" />
-    <Content Include="Member\ClubDetails.aspx" />
-    <Content Include="Member\ClubManage.aspx" />
-    <Content Include="Member\Donate.aspx" />
     <Content Include="Member\Download.aspx" />
     <Content Include="Member\EditAircraft.aspx" />
     <Content Include="Member\EditMake.aspx" />
@@ -845,7 +835,6 @@
     <Content Include="Member\EndorseStudent.aspx" />
     <Content Include="Member\FBPost.aspx" />
     <Content Include="Member\FlightDetail.aspx" />
-    <Content Include="Member\IcalAppt.aspx" />
     <Content Include="Member\ImpAircraft.aspx" />
     <Content Include="Member\ImpAircraftService.aspx" />
     <Content Include="Member\Import.aspx" />
@@ -1416,7 +1405,6 @@
     <Content Include="Public\authredir.aspx" />
     <Content Include="Public\AWS-SNSListener.aspx" />
     <Content Include="Public\CloudAhoyRedir.aspx" />
-    <Content Include="Public\Clubs.aspx" />
     <Content Include="Public\ClubsManual_files\image015.png" />
     <Content Include="Public\ClubsManual_files\image016.png" />
     <Content Include="Public\ClubsManual_files\image017.jpg" />
@@ -2006,54 +1994,12 @@
     <Compile Include="Controls\ChecklistControls\ChecklistItem.ascx.designer.cs">
       <DependentUpon>ChecklistItem.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ClubControls\ClubAircraftSchedule.ascx.cs">
-      <DependentUpon>ClubAircraftSchedule.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\ClubControls\ClubAircraftSchedule.ascx.designer.cs">
-      <DependentUpon>ClubAircraftSchedule.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ClubControls\FlyingReport.ascx.cs">
-      <DependentUpon>FlyingReport.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\ClubControls\FlyingReport.ascx.designer.cs">
-      <DependentUpon>FlyingReport.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ClubControls\InsuranceReport.ascx.cs">
-      <DependentUpon>InsuranceReport.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\ClubControls\InsuranceReport.ascx.designer.cs">
-      <DependentUpon>InsuranceReport.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ClubControls\MaintenanceReport.ascx.cs">
-      <DependentUpon>MaintenanceReport.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\ClubControls\MaintenanceReport.ascx.designer.cs">
-      <DependentUpon>MaintenanceReport.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ClubControls\SchedSummary.ascx.cs">
-      <DependentUpon>SchedSummary.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\ClubControls\SchedSummary.ascx.designer.cs">
-      <DependentUpon>SchedSummary.ascx</DependentUpon>
-    </Compile>
     <Compile Include="Controls\ClubControls\TimeZone.ascx.cs">
       <DependentUpon>TimeZone.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Controls\ClubControls\TimeZone.ascx.designer.cs">
       <DependentUpon>TimeZone.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ClubControls\ViewClub.ascx.cs">
-      <DependentUpon>ViewClub.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\ClubControls\ViewClub.ascx.designer.cs">
-      <DependentUpon>ViewClub.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\Expando.ascx.cs">
       <DependentUpon>Expando.ascx</DependentUpon>
@@ -2745,13 +2691,6 @@
     <Compile Include="Member\Achievements.aspx.designer.cs">
       <DependentUpon>Achievements.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Member\ACSchedule.aspx.cs">
-      <DependentUpon>ACSchedule.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\ACSchedule.aspx.designer.cs">
-      <DependentUpon>ACSchedule.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Member\AddEndorsement.aspx.cs">
       <DependentUpon>AddEndorsement.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2786,27 +2725,6 @@
     </Compile>
     <Compile Include="Member\CheckFlights.aspx.designer.cs">
       <DependentUpon>CheckFlights.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Member\ClubDetails.aspx.cs">
-      <DependentUpon>ClubDetails.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\ClubDetails.aspx.designer.cs">
-      <DependentUpon>ClubDetails.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Member\ClubManage.aspx.cs">
-      <DependentUpon>ClubManage.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\ClubManage.aspx.designer.cs">
-      <DependentUpon>ClubManage.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Member\Donate.aspx.cs">
-      <DependentUpon>Donate.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\Donate.aspx.designer.cs">
-      <DependentUpon>Donate.aspx</DependentUpon>
     </Compile>
     <Compile Include="Member\Download.aspx.cs">
       <DependentUpon>Download.aspx</DependentUpon>
@@ -2856,13 +2774,6 @@
     </Compile>
     <Compile Include="Member\FlightDetail.aspx.designer.cs">
       <DependentUpon>FlightDetail.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Member\IcalAppt.aspx.cs">
-      <DependentUpon>IcalAppt.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\IcalAppt.aspx.designer.cs">
-      <DependentUpon>IcalAppt.aspx</DependentUpon>
     </Compile>
     <Compile Include="Member\ImpAircraft.aspx.cs">
       <DependentUpon>ImpAircraft.aspx</DependentUpon>
@@ -3088,13 +2999,6 @@
     </Compile>
     <Compile Include="Public\CloudAhoyRedir.aspx.designer.cs">
       <DependentUpon>CloudAhoyRedir.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Public\Clubs.aspx.cs">
-      <DependentUpon>Clubs.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\Clubs.aspx.designer.cs">
-      <DependentUpon>Clubs.aspx</DependentUpon>
     </Compile>
     <Compile Include="Public\ContactMe.aspx.cs">
       <DependentUpon>ContactMe.aspx</DependentUpon>
