@@ -1052,11 +1052,8 @@ namespace MyFlightbook.Clubs
         #endregion
 
         #region Reporting
-        // TODO: Need to remove this, replace with MVC.
-        private static void SendReport(ClubMember cm, string szReportName, string szReportPrefix, string controlName)
+        private static void SendReport(ClubMember cm, string szReportName, string szReportPrefix, string szPath)
         {
-            if (controlName == null)
-                throw new ArgumentNullException(nameof(controlName));
             if (cm == null)
                 throw new ArgumentNullException(nameof(cm));
             using (MailMessage msg = new MailMessage())
@@ -1067,51 +1064,26 @@ namespace MyFlightbook.Clubs
                 msg.Subject = szReportName;
                 msg.IsBodyHtml = true;
 
-                StringBuilder sb = new StringBuilder();
-                sb.AppendFormat(CultureInfo.InvariantCulture, @"
-<style type='text/css'>
-.currencyok
-{{
-    font-weight: normal;
-    color: Green;
-}}
-.currencynearlydue
-{{
-    font-weight: bold;
-    color: Blue;
-}}
-.currencyexpired
-{{
-    font-weight: bold;
-    color: Red;
-}}
-
-.currencynodate 
-{{
-    font-weight: bold;
-    color: black;
-}}
-</style>
-<p>{0}<p>", HttpUtility.HtmlEncode(szReportPrefix));
-                using (System.Web.UI.Page p = new FormlessPage())
+                using (System.Net.WebClient wc = new System.Net.WebClient())
                 {
-                    p.Controls.Add(new System.Web.UI.HtmlControls.HtmlForm());
-                    using (System.Web.UI.Control c = p.LoadControl(controlName))
-                    {
-                        if (!(c is IReportable ifr))
-                            throw new MyFlightbookException("Invalid control: " + controlName);
-                        ifr.Refresh(cm.ClubID);
-                        using (StringWriter sw = new StringWriter(sb, CultureInfo.InvariantCulture))
-                        {
-                            using (System.Web.UI.HtmlTextWriter htmlTW = new System.Web.UI.HtmlTextWriter(sw))
-                            {
-                                c.RenderControl(htmlTW);
-                            }
-                        }
-                    }
+                    string szURL = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute(szPath));
+                    byte[] rgdata = wc.DownloadData(szURL);
+                    string szReportBody = Encoding.UTF8.GetString(rgdata);
+                    msg.Body = String.Format(CultureInfo.InvariantCulture, @"
+<html>
+<head>
+<link href=""https://{0}{1}"" rel=""stylesheet"" type=""text/css"" />
+</head>
+<body>
+<p>{2}</p>
+<div>{3}</div>
+</body>", 
+                    Branding.CurrentBrand.HostName, 
+                    VirtualPathUtility.ToAbsolute(MFBConstants.BaseStylesheet), 
+                    HttpUtility.HtmlEncode(szReportPrefix), 
+                    szReportBody);
                 }
 
-                msg.Body = sb.ToString();
                 util.SendMessage(msg);
             }
         }
@@ -1131,19 +1103,19 @@ namespace MyFlightbook.Clubs
                     SendReport(cm,
                         String.Format(CultureInfo.CurrentCulture, Resources.Club.ClubReportEmailSubject, szDateMonth, Resources.Club.ClubReportFlying, club.Name),
                         String.Format(CultureInfo.CurrentCulture, Resources.Club.ClubReportEmailBodyTemplate, Resources.Club.ClubReportFlying, club.Name, szDateMonth),
-                        "~/Controls/ClubControls/FlyingReport.ascx");
+                        String.Format(CultureInfo.InvariantCulture, "~/mvc/club/FlyingReportForEmail?idClub={0}&szUser={1}", club.ID, cm.UserName));
 
                 if (cm.IsMaintanenceOfficer)
                     SendReport(cm,
                         String.Format(CultureInfo.CurrentCulture, Resources.Club.ClubReportEmailSubject, szDateMonth, Resources.Club.ClubReportMaintenance, club.Name),
                         String.Format(CultureInfo.CurrentCulture, Resources.Club.ClubReportEmailBodyTemplate, Resources.Club.ClubReportMaintenance, club.Name, szDateMonth),
-                        "~/Controls/ClubControls/MaintenanceReport.ascx");
+                        String.Format(CultureInfo.InvariantCulture, "~/mvc/club/MaintenanceReportForEmail?idClub={0}&szUser={1}", club.ID, cm.UserName));
 
                 if (cm.IsInsuranceOfficer)
                     SendReport(cm,
                         String.Format(CultureInfo.CurrentCulture, Resources.Club.ClubReportEmailSubject, szDateMonth, Resources.Club.ClubReportInsurance, club.Name),
                         String.Format(CultureInfo.CurrentCulture, Resources.Club.ClubReportEmailBodyTemplate, Resources.Club.ClubReportInsurance, club.Name, szDateMonth),
-                        "~/Controls/ClubControls/InsuranceReport.ascx");
+                        String.Format(CultureInfo.InvariantCulture, "~/mvc/club/InsuranceReportForEmail?idClub={0}&szUser={1}", club.ID, cm.UserName));
             }
         }
         #endregion

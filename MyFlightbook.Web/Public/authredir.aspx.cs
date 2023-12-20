@@ -50,7 +50,7 @@ namespace MyFlightbook.PublicPages
                 case "AIRCRAFTEDIT":
                     return "~/Member/EditAircraft.aspx";
                 case "AIRCRAFTSCHEDULE":
-                    return "~/Member/ACSchedule.aspx";
+                    return "~/mvc/club/ACSchedule";
                 case "FAQ":
                     return "~/mvc/faq";
                 case "REQSIGS":

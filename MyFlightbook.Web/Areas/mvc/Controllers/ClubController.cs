@@ -42,6 +42,21 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 throw new UnauthorizedAccessException(Resources.Club.errNotAMember);
             return club;
         }
+
+        private Club ValidateClubReportForUser(int idClub, string szTargetUser)
+        {
+            // This can ONLY come in requests from the local machine!
+            // see if this is coming from the local machine - reject anything that isn't.
+            string szIPThis = System.Net.Dns.GetHostAddresses(Request.Url.Host)[0].ToString();
+            if (Request.UserHostAddress.CompareCurrentCultureIgnoreCase(szIPThis) != 0)
+                throw new UnauthorizedAccessException(String.Format(CultureInfo.CurrentCulture, "Attempt to view this page from other than local machine: {0}", Request.UserHostAddress ?? "(no host IP)"));
+
+            Club club = Club.ClubWithID(idClub) ?? throw new InvalidOperationException(Resources.Club.errNoSuchClub);
+
+            if (!club.HasAdmin(szTargetUser))
+                throw new UnauthorizedAccessException(Resources.Club.errNotAMember);
+            return club;
+        }
         #endregion
 
         #region WebServices
@@ -463,6 +478,51 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
         #endregion
 
+        #region Admin (monthly) reporting
+        /// <summary>
+        /// Will throw an exception if not called from the local machine, or if the specified user is not authorized
+        /// </summary>
+        /// <param name="idClub"></param>
+        /// <param name="szUser"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public ActionResult FlyingReportForEmail(int idClub, string szUser)
+        {
+            Club _ = ValidateClubReportForUser(idClub, szUser);
+            ViewBag.items = new ClubFlyingReport(idClub, new DateTime(DateTime.Now.AddMonths(-1).Year, DateTime.Now.AddMonths(-1).Month, 1), DateTime.Now, null, -1).Items;
+            return PartialView("_clubFlyingReport");
+        }
+
+        /// <summary>
+        /// Will throw an exception if not called from the local machine, or if the specified user is not authorized
+        /// </summary>
+        /// <param name="idClub"></param>
+        /// <param name="szUser"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public ActionResult MaintenanceReportForEmail(int idClub, string szUser)
+        {
+            Club _ = ValidateClubReportForUser(idClub, szUser);
+            ViewBag.items = new ClubMaintenanceReport(idClub).Items;
+            return PartialView("_clubMaintenanceReport");
+        }
+
+        /// <summary>
+        /// Will throw an exception if not called from the local machine, or if the specified user is not authorized
+        /// </summary>
+        /// <param name="idClub"></param>
+        /// <param name="szUser"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public ActionResult InsuranceReportForEmail(int idClub, string szUser)
+        {
+            Club _ = ValidateClubReportForUser(idClub, szUser);
+            ViewBag.items = new ClubInsuranceReport(idClub, 1).Items;
+            return PartialView("_clubInsuranceReport");
+        }
+
+        #endregion
+
         [HttpGet]
         [Authorize]
         public ActionResult AppointmentDownload(int idClub, string sid, string fmt = "")
@@ -513,15 +573,15 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpGet]
         [Authorize]
-        public ActionResult ACSchedule(int id = -1)
+        public ActionResult ACSchedule(int ac = -1)
         {
-            if (id != Aircraft.idAircraftUnknown && User.Identity.IsAuthenticated && !String.IsNullOrEmpty(User.Identity.Name))
+            if (ac != Aircraft.idAircraftUnknown && User.Identity.IsAuthenticated && !String.IsNullOrEmpty(User.Identity.Name))
             {
-                IEnumerable<Club> lstClubsForUserInAircraft = Club.ClubsForAircraft(id, User.Identity.Name);
-                IEnumerable<Club> lstClubsForAircraft = (lstClubsForUserInAircraft.Any() ? Array.Empty<Club>() : Club.ClubsForAircraft(id));
+                IEnumerable<Club> lstClubsForUserInAircraft = Club.ClubsForAircraft(ac, User.Identity.Name);
+                IEnumerable<Club> lstClubsForAircraft = (lstClubsForUserInAircraft.Any() ? Array.Empty<Club>() : Club.ClubsForAircraft(ac));
                 ViewBag.rgClubs = lstClubsForUserInAircraft;
                 ViewBag.rgAvailableClubs = lstClubsForAircraft;
-                ViewBag.ac = new Aircraft(id);
+                ViewBag.ac = new Aircraft(ac);
                 return View("clubACSchedule");
             }
             else

@@ -88,7 +88,7 @@
         <Roles></Roles>
       </Item>
       <Item>
-        <Link>~/Public/Clubs.aspx</Link>
+        <Link>~/mvc/Club</Link>
         <ID>actMyClubs</ID>
         <Roles></Roles>
       </Item>
