@@ -258,20 +258,20 @@
         </div>
         <hr />
         <div id="pnlAddAircraft">
-            @Resources.Club.LabelAddAircraft
             @using (Html.BeginForm("", "Club", FormMethod.Post, new { id = "formAddAircraft", name = "formAddAircraft" }))
             {
+                @Resources.Club.LabelAddAircraft
                 <select id="cmbAddAircraft" name="aircraftToAdd" required>
                     @foreach (Aircraft ac in lstCandidateAircraft)
                     {
                         <option value="@ac.AircraftID">@ac.DisplayTailnumber</option>
                     }
                 </select>
-            <p>
-                @Resources.Club.LabelAircraftDescriptionHeader
-                <textarea id="txtNewAcDescription" style="width: 500px" rows="5"></textarea>
-            </p>
-            <p style="text-align:center"><button type="button" onclick="javascript: addAircraft();">@Resources.Club.ButtonAddAircraft</button></p>
+                <p>
+                    @Resources.Club.LabelAircraftDescriptionHeader
+                    <textarea id="txtNewAcDescription" style="width: 500px" rows="5"></textarea>
+                </p>
+                <p style="text-align:center"><button type="button" onclick="javascript: addAircraft();">@Resources.Club.ButtonAddAircraft</button></p>
             }
             <div id="lblManageAircraftError" class="error"></div>
         </div>
