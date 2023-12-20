@@ -217,7 +217,7 @@
         @{ Html.RenderAction("ClubView", "Club", new { club = club, fLinkToDetails = false }); }
         @if (cm != null && !cm.IsManager)
         {
-            using (Html.BeginForm("LeaveClub", "Club", FormMethod.Post, new {name = "frmLeaveClub", id="frmLeaveClub"}))
+            using (Html.BeginForm("LeaveClub", "Club", FormMethod.Post, new { name = "frmLeaveClub", id = "frmLeaveClub" }))
             {
                 @Html.AntiForgeryToken();
                 <input type="hidden" name="idClub" value="@club.ID" />
@@ -239,7 +239,7 @@
                         <th class="headerBase gvhDefault gvhLeft">@Resources.Club.LabelMemberRole</th>
                         @if (!club.HideMobileNumbers)
                         {
-                        <th class="headerBase gvhDefault gvhLeft">@Resources.Club.ClubStatusContact</th>
+                            <th class="headerBase gvhDefault gvhLeft">@Resources.Club.ClubStatusContact</th>
                         }
                         <th class="headerBase gvhDefault gvhLeft"></th>
                     </tr>
@@ -272,7 +272,7 @@
                             <td>@m.DisplayRoleInClub @m.ClubOffice</td>
                             @if (!club.HideMobileNumbers)
                             {
-                            <td>@m.MobilePhone</td>
+                                <td>@m.MobilePhone</td>
                             }
                             <td>
                                 <img src="@VirtualPathUtility.ToAbsolute("~/images/sendflight.png")"
@@ -300,20 +300,20 @@
                 {
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="idClub" value="@club.ID" />
-                <table>
-                    <tr style="vertical-align:top;">
-                        <td>@Resources.Club.DownloadClubScheduleFrom</td>
-                        <td><input type="date" id="dateDownloadFrom" value="@DateTime.Now.YMDString()" name="dateDownloadFrom" required /></td>
-                    </tr>
-                    <tr style="vertical-align:top;">
-                        <td>@Resources.Club.DownloadClubScheduleTo"</td>
-                        <td><input type="date" id="dateDownloadTo" value="@DateTime.Now.AddYears(1).YMDString()" name="dateDownloadTo" required /></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td><button id="btnDownloadSchedule" type="submit">@Resources.Club.DownloadClubScheduleNow</button></td>
-                    </tr>
-                </table>
+                    <table>
+                        <tr style="vertical-align:top;">
+                            <td>@Resources.Club.DownloadClubScheduleFrom</td>
+                            <td><input type="date" id="dateDownloadFrom" value="@DateTime.Now.YMDString()" name="dateDownloadFrom" required /></td>
+                        </tr>
+                        <tr style="vertical-align:top;">
+                            <td>@Resources.Club.DownloadClubScheduleTo"</td>
+                            <td><input type="date" id="dateDownloadTo" value="@DateTime.Now.AddYears(1).YMDString()" name="dateDownloadTo" required /></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><button id="btnDownloadSchedule" type="submit">@Resources.Club.DownloadClubScheduleNow</button></td>
+                        </tr>
+                    </table>
                 }
             </div>
             <p>
@@ -331,13 +331,13 @@
                 <p></p>
                 <p>
                     <input type="radio" name="scheduleMode" id="rbScheduleModeDay" @(defaultScheduleMode.CompareCurrentCulture("Day") == 0 ? "checked" : string.Empty) onchange="javascript: setCalendarMode();" value="days" /><label for="rbScheduleModeDay">@Resources.Schedule.Day</label>
-                    <input type="radio" name="scheduleMode" id="rbScheduleModeWeek" @(defaultScheduleMode.CompareCurrentCulture("Week") == 0 ? "checked" : string.Empty)  onchange="javascript: setCalendarMode();" value="Week" /><label for="rbScheduleModeDay">@Resources.Schedule.Week</label>
+                    <input type="radio" name="scheduleMode" id="rbScheduleModeWeek" @(defaultScheduleMode.CompareCurrentCulture("Week") == 0 ? "checked" : string.Empty) onchange="javascript: setCalendarMode();" value="Week" /><label for="rbScheduleModeWeek">@Resources.Schedule.Week</label>
                 </p>
                 <p></p>
                 <p><span style="font-weight:bold">@Resources.Club.LabelUpcomingSchedule</span></p>
-                <div style="border:1px solid black; padding:3px;">
-                    <div id="divSchedSummary"></div>
+                <div>
                     <p><input type="checkbox" checked id="ckSummaryScope" name="summaryScope" onclick="javascript: setSummaryScope();" /><label for="ckSummaryScope">@Resources.Club.upcomingUser</label></p>
+                    <div id="divSchedSummary"></div>
                 </div>
             </div>
             <div style="padding:3px; display: inline-block;" id="divCalendar">
