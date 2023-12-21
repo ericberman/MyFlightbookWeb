@@ -15,73 +15,64 @@ namespace MyFlightbook.PublicPages
 {
     public partial class authredir : Page
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
+        private readonly static Dictionary<string, string> dictRedir = new Dictionary<string, string>()
+        {
+                { "FLIGHTS", "~/Member/LogbookNew.aspx"},
+                { "MINIFLIGHTS", "~/Member/MiniRecents.aspx"},
+                { "PROFILE", "~/Member/EditProfile.aspx/pftPrefs"},
+                { "DONATE", "~/mvc/Donate"},
+                { "ENDORSE", "~/Member/Training.aspx/instEndorsements"},
+                { "PROGRESS", "~/Member/RatingProgress.aspx"},
+                { "BADGES", "~/Member/Achievements.aspx"},
+                { "STUDENTS", "~/Member/Training.aspx/instStudents"},
+                { "STUDENTSFIXED", "~/Member/Training.aspx/instStudents"},
+                { "INSTRUCTORS", "~/Member/Training.aspx/instInstructors"},
+                { "INSTRUCTORSFIXED", "~/Member/Training.aspx/instInstructors"},
+                { "8710", "~/Member/8710Form.aspx"},
+                { "MODELROLLUP", "~/Member/8710Form.aspx/Model"},
+                { "TIMEROLLUP", "~/Member/8710Form.aspx/Time"},
+                { "AIRCRAFTEDIT", "~/Member/EditAircraft.aspx"},
+                { "AIRCRAFTSCHEDULE", "~/mvc/club/ACSchedule"},
+                { "FAQ", "~/mvc/faq"},
+                { "REQSIGS", "~/Member/RequestSigs.aspx"},
+                { "FLIGHTREVIEW", "~/Member/EditProfile.aspx/pftPilotInfo"},
+                { "CERTIFICATES", "~/Member/EditProfile.aspx/pftPilotInfo"},
+                { "MEDICAL", "~/Member/EditProfile.aspx/pftPilotInfo"},
+                { "DEADLINE", "~/Member/EditProfile.aspx/pftPrefs"},
+                { "CUSTOMCURRENCY", "~/Member/EditProfile.aspx/pftPrefs"},
+                { "ACCOUNT", "~/Member/EditProfile.aspx/pftAccount"},
+                { "BIGREDBUTTONS", "~/Member/EditProfile.aspx/pftBigRedButtons"},
+                { "CONTACT", "~/public/ContactMe.aspx"},
+                { "SIGNENTRY", "~/public/SignEntry.aspx"}
+        };
+
+        private readonly static Dictionary<string, string> dictAdditionalParams = new Dictionary<string, string>()
+        {
+            { "PROFILE", "nolocalprefs=yes" },
+            { "FLIGHTREVIEW", "pane=flightreview" },
+            { "CERTIFICATES", "pane=certificates" },
+            { "MEDICAL",  "pane=medical" },
+            { "DEADLINE","pane=deadlines" },
+            { "CUSTOMCURRENCY", "pane=custcurrency" }
+        };
+
         private static string RedirForDest(string szDest, List<string> lstParams)
         {
-            switch (szDest.ToUpperInvariant())
+            string dest = szDest.ToUpperInvariant();
+            if (dictRedir.TryGetValue(dest, out string redir))
             {
-                case "FLIGHTS":
-                    return "~/Member/LogbookNew.aspx";
-                case "MINIFLIGHTS":
-                    return "~/Member/MiniRecents.aspx";
-                case "PROFILE":
-                    lstParams.Add("nolocalprefs=yes");
-                    return "~/Member/EditProfile.aspx/pftPrefs";
-                case "DONATE":
-                    return "~/mvc/Donate";
-                case "ENDORSE":
-                    return "~/Member/Training.aspx/instEndorsements";
-                case "PROGRESS":
-                    return "~/Member/RatingProgress.aspx";
-                case "BADGES":
-                    return "~/Member/Achievements.aspx";
-                case "STUDENTS":
-                case "STUDENTSFIXED":
-                    return "~/Member/Training.aspx/instStudents";
-                case "INSTRUCTORS":
-                case "INSTRUCTORSFIXED":
-                    return "~/Member/Training.aspx/instInstructors";
-                case "8710":
-                    return "~/Member/8710Form.aspx";
-                case "MODELROLLUP":
-                    return "~/Member/8710Form.aspx/Model";
-                case "TIMEROLLUP":
-                    return "~/Member/8710Form.aspx/Time";
-                case "AIRCRAFTEDIT":
-                    return "~/Member/EditAircraft.aspx";
-                case "AIRCRAFTSCHEDULE":
-                    return "~/mvc/club/ACSchedule";
-                case "FAQ":
-                    return "~/mvc/faq";
-                case "REQSIGS":
-                    return "~/Member/RequestSigs.aspx";
-                case "FLIGHTREVIEW":
-                    lstParams.Add("pane=flightreview");
-                    return "~/Member/EditProfile.aspx/pftPilotInfo";
-                case "CERTIFICATES":
-                    lstParams.Add("pane=certificates");
-                    return "~/Member/EditProfile.aspx/pftPilotInfo";
-                case "MEDICAL":
-                    lstParams.Add("pane=medical");
-                    return "~/Member/EditProfile.aspx/pftPilotInfo";
-                case "DEADLINE":
-                    lstParams.Add("pane=deadlines");
-                    return "~/Member/EditProfile.aspx/pftPrefs";
-                case "CUSTOMCURRENCY":
-                    lstParams.Add("pane=custcurrency");
-                    return "~/Member/EditProfile.aspx/pftPrefs";
-                case "ACCOUNT":
-                    return "~/Member/EditProfile.aspx/pftAccount";
-                case "BIGREDBUTTONS":
-                    return "~/Member/EditProfile.aspx/pftBigRedButtons";
-                default:
-                    return string.Empty;
+                if (dictAdditionalParams.TryGetValue(dest, out string szParams))
+                    lstParams.Add(szParams);
+                return redir;
             }
+            return string.Empty;
         }
+
+        private static readonly char[] adminSeparator = new char[] { ':' };
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            string szDestErr = "~/Default.aspx";
+            const string szDestErr = "~/Default.aspx";
 
             string szUser = util.GetStringParam(Request, "u");
             string szPass = util.GetStringParam(Request, "p");
@@ -94,7 +85,7 @@ namespace MyFlightbook.PublicPages
                 Response.Redirect(szDestErr);
 
             // look for admin emulation in the form of 
-            string[] rgUsers = szUser.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] rgUsers = szUser.Split(adminSeparator, StringSplitOptions.RemoveEmptyEntries);
             string szEmulate = string.Empty;
             if (rgUsers != null && rgUsers.Length == 2)
             {
@@ -145,13 +136,7 @@ namespace MyFlightbook.PublicPages
             if (lstParams.Contains("naked=1"))
                 Session["IsNaked"] = true;
 
-            if (szDest.Length == 0)
-                Response.Redirect(szDestErr);
-            else
-            {
-                string szUrlRedir = String.Format(CultureInfo.InvariantCulture, "javascript:window.top.location='{0}?{1}'", ResolveUrl(szDest), String.Join("&", lstParams.ToArray()));
-                Page.ClientScript.RegisterStartupScript(this.GetType(), "StartupRedir", szUrlRedir, true);
-            }
+            Response.Redirect(szDest.Length == 0 ? szDestErr : String.Format(CultureInfo.InvariantCulture, "{0}?{1}", ResolveUrl(szDest), String.Join("&", lstParams)));
         }
     }
 }
