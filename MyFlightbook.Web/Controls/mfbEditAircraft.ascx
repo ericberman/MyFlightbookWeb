@@ -5,8 +5,6 @@
 <%@ Register Src="mfbMultiFileUpload.ascx" TagName="mfbMultiFileUpload" TagPrefix="uc3" %>
 <%@ Register Src="mfbMaintainAircraft.ascx" TagName="mfbMaintainAircraft" TagPrefix="uc4" %>
 <%@ Register Src="Expando.ascx" TagName="Expando" TagPrefix="uc6" %>
-<%@ Register Src="mfbResourceSchedule.ascx" TagName="mfbResourceSchedule" TagPrefix="uc8" %>
-<%@ Register Src="ClubControls/SchedSummary.ascx" TagName="SchedSummary" TagPrefix="uc9" %>
 <%@ Register Src="~/Controls/mfbTypeInDate.ascx" TagPrefix="uc10" TagName="mfbTypeInDate" %>
 <%@ Register Src="~/Controls/mfbHoverImageList.ascx" TagPrefix="uc1" TagName="mfbHoverImageList" %>
 <%@ Register Src="~/Controls/mfbMakeListItem.ascx" TagPrefix="uc1" TagName="mfbMakeListItem" %>

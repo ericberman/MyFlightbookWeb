@@ -602,7 +602,6 @@
     <Content Include="Controls\mfbQueryDescriptor.ascx" />
     <Content Include="Controls\mfbQueryDescriptorItem.ascx" />
     <Content Include="Controls\mfbRecentAchievements.ascx" />
-    <Content Include="Controls\mfbResourceSchedule.ascx" />
     <Content Include="Controls\mfbScribbleSignature.ascx" />
     <Content Include="Controls\mfbSearchAndTotals.ascx" />
     <Content Include="Controls\mfbSearchbox.ascx" />
@@ -2385,13 +2384,6 @@
     </Compile>
     <Compile Include="Controls\mfbRecentAchievements.ascx.designer.cs">
       <DependentUpon>mfbRecentAchievements.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\mfbResourceSchedule.ascx.cs">
-      <DependentUpon>mfbResourceSchedule.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbResourceSchedule.ascx.designer.cs">
-      <DependentUpon>mfbResourceSchedule.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\mfbScribbleSignature.ascx.cs">
       <DependentUpon>mfbScribbleSignature.ascx</DependentUpon>
