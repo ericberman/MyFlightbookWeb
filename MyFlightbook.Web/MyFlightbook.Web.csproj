@@ -571,7 +571,6 @@
     <Content Include="Controls\mfbDownload.ascx" />
     <Content Include="Controls\mfbEditableImage.ascx" />
     <Content Include="Controls\mfbEditAircraft.ascx" />
-    <Content Include="Controls\mfbEditAppt.ascx" />
     <Content Include="Controls\mfbEditEndorsement.ascx" />
     <Content Include="Controls\mfbEditFlight.ascx" />
     <Content Include="Controls\mfbEditMake.ascx" />
@@ -2167,13 +2166,6 @@
     </Compile>
     <Compile Include="Controls\mfbEditAircraft.ascx.designer.cs">
       <DependentUpon>mfbEditAircraft.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\mfbEditAppt.ascx.cs">
-      <DependentUpon>mfbEditAppt.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbEditAppt.ascx.designer.cs">
-      <DependentUpon>mfbEditAppt.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\mfbEditEndorsement.ascx.cs">
       <DependentUpon>mfbEditEndorsement.ascx</DependentUpon>

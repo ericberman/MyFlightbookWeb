@@ -1,10 +1,10 @@
 ﻿/******************************************************
  *
- * Copyright (c) 2015-2021 MyFlightbook LLC
+ * Copyright (c) 2015-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
-function mfbCalendar(rootPath, resourceID, clubID, displayMode, divCalContainer, newApptFunc, editApptFunc, getEditedApptFunc) {
+function mfbCalendar(rootPath, resourceID, clubID, displayMode, divCalContainer, newApptFunc, editApptFunc, getEditedApptFunc, onEditFunc) {
     this.rootPath = rootPath;
     this.resourceID = resourceID;
     this.clubID = clubID;
@@ -13,6 +13,7 @@ function mfbCalendar(rootPath, resourceID, clubID, displayMode, divCalContainer,
     this.newAppointment = newApptFunc;
     this.editApptFunc = editApptFunc;
     this.getApptFunc = getEditedApptFunc;
+    this.onEditFunc = onEditFunc;
     var base = this;
 
     this.initCal = function () {
@@ -164,6 +165,8 @@ function mfbCalendar(rootPath, resourceID, clubID, displayMode, divCalContainer,
                         base.dpCalendar.update();
                         if (onSuccess)
                             onSuccess();
+                        if (base.onEditFunc)
+                            onEditFunc();
                     }
                 }
             });
@@ -184,8 +187,12 @@ function mfbCalendar(rootPath, resourceID, clubID, displayMode, divCalContainer,
                         window.alert(response.d);
                         onError();
                     }
-                    else if (onSuccess)
-                        onSuccess();
+                    else {
+                        if (onSuccess)
+                            onSuccess();
+                        if (base.onEditFunc)
+                            onEditFunc();
+                    }
                 }
             });
     };
@@ -228,6 +235,8 @@ function mfbCalendar(rootPath, resourceID, clubID, displayMode, divCalContainer,
                             base.removeEvent(e.data.id);
                             base.dpCalendar.update();
                             if (onSuccess) onSuccess();
+                            if (base.onEditFunc)
+                                onEditFunc();
                             base.refreshEvents();
                         }
                     }

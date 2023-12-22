@@ -33,7 +33,7 @@
         <div>@Html.Raw(c.Description)</div>
         @if (fLinkToDetails)
         {
-            <div style="font-weight:bold"><a href="@c.EditLink">@Resources.Club.LabelViewClubDetails</a></div>
+            <div style="font-weight:bold;"><a href="@c.EditLink"><img style="vertical-align:middle;" src="@VirtualPathUtility.ToAbsolute("~/images/rightarrow.png")" />@Resources.Club.LabelViewClubDetails</a></div>
         }
     </div>
     <div style="clear:both"></div>

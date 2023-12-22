@@ -443,7 +443,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         [ChildActionOnly]
-        public ActionResult ResourceSchedule(Club club, ClubAircraft ac, string resourceHeader, int resourceID, ScheduleDisplayMode mode = ScheduleDisplayMode.Day, string navInitFunc = "", bool fIncludeDetails = false)
+        public ActionResult ResourceSchedule(Club club, ClubAircraft ac, string resourceHeader, int resourceID, ScheduleDisplayMode mode = ScheduleDisplayMode.Day, string navInitFunc = "", bool fIncludeDetails = false, string onEditFunc = null)
         {
             ViewBag.club = club;
             ViewBag.aircraft = ac;
@@ -452,6 +452,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.scheduleMode = mode;
             ViewBag.navInitFunc = navInitFunc;
             ViewBag.includeDetails = fIncludeDetails;
+            ViewBag.onEditFunc = onEditFunc;
             return PartialView("_clubAircraftSchedule");
         }
 

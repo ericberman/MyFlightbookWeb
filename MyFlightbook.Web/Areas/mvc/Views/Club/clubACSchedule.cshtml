@@ -1,6 +1,5 @@
 ﻿@using MyFlightbook.Clubs
 @using System.Linq
-@using MyFlightbook.Schedule
 @using System.Globalization
 @{
     ViewBag.Title = "";
@@ -11,7 +10,7 @@
     ViewBag.defaultTab = tabID.tabAircraft;
 }
 <script src='@VirtualPathUtility.ToAbsolute("~/public/Scripts/daypilot-all.min.js?v=20210821")'></script>
-<script src='@VirtualPathUtility.ToAbsolute("~/public/Scripts/mfbcalendar.js?v=3")'></script>
+<script src='@VirtualPathUtility.ToAbsolute("~/public/Scripts/mfbcalendar.js?v=4")'></script>
 
 @if (rgClubs.Any())
 {

@@ -11,7 +11,7 @@
 </asp:Content>
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
     <script src='<%= ResolveUrl("~/public/Scripts/daypilot-all.min.js?v=20210821") %>'></script>
-    <script src='<%= ResolveUrl("~/public/Scripts/mfbcalendar.js?v=3") %>'></script>
+    <script src='<%= ResolveUrl("~/public/Scripts/mfbcalendar.js?v=4") %>'></script>
     <div>
         <uc1:mfbEditAircraft id="MfbEditAircraft1" runat="server" OnAircraftUpdated="AircraftUpdated"></uc1:mfbEditAircraft>
     </div>

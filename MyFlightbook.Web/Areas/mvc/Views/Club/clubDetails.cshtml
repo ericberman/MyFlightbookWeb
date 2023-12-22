@@ -13,7 +13,7 @@
     string defaultScheduleMode = defaultMode.ToString();
 }
 <script src='@VirtualPathUtility.ToAbsolute("~/public/Scripts/daypilot-all.min.js?v=20210821")'></script>
-<script src='@VirtualPathUtility.ToAbsolute("~/public/Scripts/mfbcalendar.js?v=3")'></script>
+<script src='@VirtualPathUtility.ToAbsolute("~/public/Scripts/mfbcalendar.js?v=4")'></script>
 <script type="text/javascript">
     var clubCalendars = [];
     var clubNavControl;
@@ -26,7 +26,7 @@
             cc.refreshEvents();
         }
 
-        updateAvailability(@club.ID, cc.dpCalendar.viewType == "days" ? cc.dpCalendar.startDate : cc.dpCalendar.visibleStart(), cc.dpCalendar.viewType == "days" ? 1 : 7)
+        updateAvailability(@club.ID, cc.dpCalendar.viewType == "days" ? cc.dpCalendar.startDate : cc.dpCalendar.visibleStart(), cc.dpCalendar.viewType == "days" ? 1 : 7);
     }
 
     function InitClubNav(cal) {
@@ -161,6 +161,11 @@
                     $("#divSchedSummary").html(response);
                 }
             });
+    }
+
+    function onScheduleChange() {
+        setSummaryScope();
+        updateAvailability(@club.ID, clubCalendars[0].dpCalendar.viewType == "days" ? clubCalendars[0].dpCalendar.startDate : clubCalendars[0].dpCalendar.visibleStart(), clubCalendars[0].dpCalendar.viewType == "days" ? 1 : 7);
     }
 
 </script>
@@ -363,7 +368,7 @@
                         {
                             string szId = "aircraft" + ca.AircraftID.ToString();
                             <div id="@szId" name="@szId">
-                                @{ Html.RenderAction("ResourceSchedule", "Club", new { club = club, ac = ca, resourceHeader = ca.DisplayTailnumberWithModel, resourceID = ca.AircraftID, navInitFunc = "InitClubNav", mode = defaultMode, fIncludeDetails = true }); }
+                                @{ Html.RenderAction("ResourceSchedule", "Club", new { club = club, ac = ca, resourceHeader = ca.DisplayTailnumberWithModel, resourceID = ca.AircraftID, navInitFunc = "InitClubNav", mode = defaultMode, fIncludeDetails = true, onEditFunc = "onScheduleChange" }); }
                             </div>
                         }
                     </div>
