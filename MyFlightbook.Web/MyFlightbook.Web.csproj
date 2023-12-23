@@ -819,7 +819,6 @@
     <Content Include="Logon\ResetPass.aspx" />
     <Content Include="MasterPage.master" />
     <Content Include="Member\8710Form.aspx" />
-    <Content Include="Member\Achievements.aspx" />
     <Content Include="Member\AddEndorsement.aspx" />
     <Content Include="Member\AddRelationship.aspx" />
     <Content Include="Member\Aircraft.aspx" />
@@ -1558,6 +1557,10 @@
     <Content Include="Areas\mvc\Views\Club\_availMap.cshtml" />
     <Content Include="Areas\mvc\Views\Club\_editAircraftViewSchedule.cshtml" />
     <Content Include="Areas\mvc\Views\Club\clubACSchedule.cshtml" />
+    <Content Include="Areas\mvc\Views\Training\achievements.cshtml" />
+    <Content Include="Areas\mvc\Views\Training\_badgeSet.cshtml" />
+    <Content Include="Areas\mvc\Views\Training\_recentAchievements.cshtml" />
+    <Content Include="Areas\mvc\Views\Training\_flyingCalendar.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -1893,6 +1896,7 @@
     <Compile Include="Areas\mvc\Controllers\PubController.cs" />
     <Compile Include="Areas\mvc\Controllers\rbredirectController.cs" />
     <Compile Include="Areas\mvc\Controllers\SearchController.cs" />
+    <Compile Include="Areas\mvc\Controllers\TrainingController.cs" />
     <Compile Include="Areas\mvc\mvcAreaRegistration.cs" />
     <Compile Include="Controls\Prefs\mfbBigRedButtons.ascx.cs">
       <DependentUpon>mfbBigRedButtons.ascx</DependentUpon>
@@ -2667,13 +2671,6 @@
     </Compile>
     <Compile Include="Member\8710Form.aspx.designer.cs">
       <DependentUpon>8710Form.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Member\Achievements.aspx.cs">
-      <DependentUpon>Achievements.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\Achievements.aspx.designer.cs">
-      <DependentUpon>Achievements.aspx</DependentUpon>
     </Compile>
     <Compile Include="Member\AddEndorsement.aspx.cs">
       <DependentUpon>AddEndorsement.aspx</DependentUpon>

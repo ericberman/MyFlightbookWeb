@@ -1,0 +1,29 @@
+﻿@using MyFlightbook.RatingsProgress
+@{
+    RecentAchievements ra = ViewBag.ra;
+}
+<div id="raResults">
+    @if (ra.ComputedMilestones.Count != 0)
+    {
+        <ul>
+            @foreach (RecentAchievementMilestone mi in ra.ComputedMilestones)
+            {
+                <li>
+                    @mi.Title
+                    @if (String.IsNullOrEmpty(mi.TargetLink) || ViewBag.isReadOnly)
+                    {
+                        @mi.MatchingEventText
+                    }
+                    else
+                    {
+                        <a href="@mi.TargetLink">@mi.MatchingEventText</a>
+                    }
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <div>@Resources.LocalizedText.errNoMatchingFlightsFound</div>
+    }
+</div>

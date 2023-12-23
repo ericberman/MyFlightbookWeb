@@ -3503,15 +3503,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &amp;nbsp;.
-        /// </summary>
-        internal static string NonBreakingSpace {
-            get {
-                return ResourceManager.GetString("NonBreakingSpace", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to (None).
         /// </summary>
         internal static string None {

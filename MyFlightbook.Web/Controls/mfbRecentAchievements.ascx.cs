@@ -5,13 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2018-2021 MyFlightbook LLC
+ * Copyright (c) 2018-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -25,15 +22,6 @@ public partial class Controls_mfbRecentAchievements : System.Web.UI.UserControl
     public bool AutoDateRange { get; set; }
 
     /// <summary>
-    /// True to show the calendar of flying
-    /// </summary>
-    public bool ShowCalendar
-    {
-        get { return pnlCal.Visible; }
-        set { pnlCal.Visible = value; }
-    }
-
-    /// <summary>
     /// Number of achievements found
     /// </summary>
     public int AchievementCount { get; private set; }
@@ -44,108 +32,6 @@ public partial class Controls_mfbRecentAchievements : System.Web.UI.UserControl
     public string Summary { get; private set; }
 
     public bool IsReadOnly { get; set; }
-    #endregion
-
-    #region Calendar drawing
-    protected void AddDayCell(TableRow parent, DateTime dt, int value, string cssCell)
-    {
-        if (parent == null)
-            throw new ArgumentNullException(nameof(parent));
-        TableCell tc = new TableCell() { CssClass = cssCell };
-        parent.Cells.Add(tc);
-        tc.Controls.Add(new Label() { Text = dt.Day.ToString(CultureInfo.CurrentCulture), CssClass = "dayOfMonth" });
-
-        if (value == 0)
-            tc.Controls.Add(new Label() { Text = Resources.LocalizedText.NonBreakingSpace, CssClass = "dateContent" });
-        else
-        {
-            FlightQuery fq = new FlightQuery(Page.User.Identity.Name) { DateRange = FlightQuery.DateRanges.Custom, DateMax = dt.Date, DateMin = dt.Date };
-            tc.Controls.Add(new HyperLink()
-            {
-                Text = value.ToString(CultureInfo.CurrentCulture),
-                CssClass = "dateContent dateContentValue",
-                NavigateUrl = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}{2}", Branding.CurrentBrand.HostName, ResolveUrl("~/Member/LogbookNew.aspx?fq="), HttpUtility.UrlEncode(fq.ToBase64CompressedJSONString()))
-            });
-        }
-    }
-
-    protected void AddMonth(DateTime dt, Control parent, RecentAchievements ra)
-    {
-        if (parent == null)
-            throw new ArgumentNullException(nameof(parent));
-        if (ra == null)
-            throw new ArgumentNullException(nameof(ra));
-        DateTime dtDay = new DateTime(dt.Year, dt.Month, 1);
-        DateTime dtNextMonth = dtDay.AddMonths(1);
-
-        while (dtDay.DayOfWeek > CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek)
-            dtDay = dtDay.AddDays(-1);
-
-        Table table = new Table();
-        parent.Controls.Add(table);
-        TableRow trMonth = new TableRow();
-        table.Rows.Add(trMonth);
-        trMonth.Cells.Add(new TableCell() { ColumnSpan = 7, Text = dt.ToString("MMMM - yyyy", CultureInfo.CurrentCulture), CssClass = "monthHeader" });
-
-        table.Rows.Add(new TableRow());
-
-        int iWeek = table.Rows.Count - 1;
-
-        int iDayOfWeek = 0;
-        // Add each of the prior-month days
-        while (dtDay.Day > 1)
-        {
-            AddDayCell(table.Rows[iWeek], dtDay, 0, "adjacentDay");
-            dtDay = dtDay.AddDays(1);
-            iDayOfWeek++;
-        }
-
-        // Now add each of this month's days to the row
-        while (dtDay.CompareTo(dtNextMonth) < 0)
-        {
-            while (iDayOfWeek++ < 7 && dtDay.CompareTo(dtNextMonth) < 0)
-            {
-                int cFlights = ra.FlightCountOnDate(dtDay);
-                AddDayCell(table.Rows[iWeek], dtDay, cFlights, "includedDay");
-                dtDay = dtDay.AddDays(1);
-            }
-
-            if (dtDay.Day == 1 || dtDay.CompareTo(dtNextMonth) >= 0)
-                break;
-
-            if (iDayOfWeek >= 7)
-            {
-                iDayOfWeek = 0;
-                table.Rows.Add(new TableRow());
-                iWeek = table.Rows.Count - 1;
-            }
-        }
-
-        // Now add each of the days of the next month to round things out.
-        while (table.Rows[iWeek].Cells.Count < 7)
-        {
-            AddDayCell(table.Rows[table.Rows.Count - 1], dtDay, 0, "adjacentDay");
-            dtDay = dtDay.AddDays(1);
-        }
-    }
-
-    protected void RefreshCalendar(RecentAchievements ra)
-    {
-        if (ra == null)
-            throw new ArgumentNullException(nameof(ra));
-        DateTime dtMonthStart = new DateTime(ra.StartDate.Year, ra.StartDate.Month, 1);
-        DateTime dtMonthEnd = new DateTime(ra.EndDate.Year, ra.EndDate.Month, 1);
-
-        plcFlyingCalendar.Controls.Add(new Literal() { Text = String.Format(CultureInfo.InvariantCulture, "<h2>{0}</h2>", Resources.Achievements.RecentAchievementsCalendarHeader) });
-
-        for (DateTime dtCurrentMonth = dtMonthStart; dtCurrentMonth.CompareTo(dtMonthEnd) <= 0; dtCurrentMonth = dtCurrentMonth.AddMonths(1))
-        {
-            Panel pMonth = new Panel();
-            plcFlyingCalendar.Controls.Add(pMonth);
-            pMonth.CssClass = "monthContainer";
-            AddMonth(dtCurrentMonth, pMonth, ra);
-        }
-    }
     #endregion
 
     public int Refresh(string szUser, DateTime dtStart, DateTime dtEnd, bool fIncludeBadges)
@@ -175,8 +61,6 @@ public partial class Controls_mfbRecentAchievements : System.Web.UI.UserControl
         }
 
         pnlStatsAndAchievements.Visible = (lstBadges != null && lstBadges.Count > 0) || (c != null && c.Count > 0);
-        if (ShowCalendar)
-            RefreshCalendar(ra);
 
         return AchievementCount;
     }

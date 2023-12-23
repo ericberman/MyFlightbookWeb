@@ -1,0 +1,94 @@
+﻿@using MyFlightbook.RatingsProgress
+@using MyFlightbook.Achievements
+@using System.Globalization
+@{
+    ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.AchievementsForUserHeader, MyFlightbook.Profile.GetUser(User.Identity.Name).UserFullName);
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    ViewBag.defaultTab = tabID.tabTraining;
+
+    IEnumerable<BadgeSet> badgeSets = ViewBag.badgeSets;
+    RecentAchievements ra = ViewBag.ra;
+    string range = ViewBag.range;
+    bool fIncludeCalendar = ViewBag.includeCalendar;
+}
+<script src="@VirtualPathUtility.ToAbsolute("~/public/Scripts/CopyClipboard.js")" type="text/javascript"></script>
+<script type="text/javascript">
+    function refreshRecentAchievements() {
+        if ($("#cmbAchievementDates").val() == "Custom")
+            $("#pnlCustomDates").show();
+        else {
+            $("#pnlCustomDates").hide();
+            $("#formDates")[0].submit();
+        }
+    }
+    function forceRecompute() {
+        $('#hdnForceRecompute').val('true');
+        $('#formDates')[0].submit();
+    }
+</script>
+
+@using (Html.BeginForm("Achievements", "Training", FormMethod.Post, new { name = "formDates", id = "formDates" }))
+{
+    @Html.AntiForgeryToken()
+    <div>
+        <input type="hidden" name="fRecompute" id="hdnForceRecompute" value="false" />
+        <a style="cursor: pointer;" onclick="javascript: forceRecompute();">@Resources.Achievements.btnForceRefresh</a>
+    </div>
+    if (!badgeSets.Any())
+    {
+        <p>@Resources.Achievements.errNoBadgesEarned</p>
+    }
+    else
+    {
+        Html.RenderAction("RenderBadgeSets", "Training", new { badgeSets = badgeSets, fReadOnly = false });
+    }
+
+    <input type="hidden" name="includeCalendar" id="hdnIncludeCalendar" value="@Json.Encode(fIncludeCalendar)" />
+    <h2>
+        <span id="lblRecentAchievementsTitle">@String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentStatsTitle, ra.StartDate, ra.EndDate)</span>
+        <select id="cmbAchievementDates" name="recentAchievementsDateRange" onchange="javascript: refreshRecentAchievements();">
+            <option @(range.CompareCurrentCultureIgnoreCase("AllTime") == 0 ? "selected" : string.Empty) value="AllTime">@Resources.LocalizedText.DatesAll</option>
+            <option @(range.CompareCurrentCultureIgnoreCase("Tailing6Months") == 0 ? "selected" : string.Empty) value="Tailing6Months">@Resources.FlightQuery.DatesPrev6Month</option>>
+            <option @(range.CompareCurrentCultureIgnoreCase("Trailing12Months") == 0 ? "selected" : string.Empty) value="Trailing12Months">@Resources.FlightQuery.DatesPrev12Month</option>>
+            <option @(range.CompareCurrentCultureIgnoreCase("Trailing30") == 0 ? "selected" : string.Empty) value="Trailing30">@Resources.FlightQuery.DatesPrev30Days</option>>
+            <option @(range.CompareCurrentCultureIgnoreCase("Trailing90") == 0 ? "selected" : string.Empty) value="Trailing90">@Resources.FlightQuery.DatesPrev90Days</option>>
+            <option @(range.CompareCurrentCultureIgnoreCase("YTD") == 0 ? "selected" : string.Empty) value="YTD">@Resources.FlightQuery.DatesYearToDate</option>
+            <option @(range.CompareCurrentCultureIgnoreCase("ThisMonth") == 0 ? "selected" : string.Empty) value="ThisMonth">@Resources.FlightQuery.DatesThisMonth</option>>
+            <option @(range.CompareCurrentCultureIgnoreCase("PrevMonth") == 0 ? "selected" : string.Empty) value="PrevMonth">@Resources.FlightQuery.DatesPrevMonth</option>>
+            <option @(range.CompareCurrentCultureIgnoreCase("PrevYear") == 0 ? "selected" : string.Empty) value="PrevYear">@Resources.FlightQuery.DatesPrevYear</option>>
+            <option @(range.CompareCurrentCultureIgnoreCase("Custom") == 0 ? "selected" : string.Empty) value="Custom">@Resources.Achievements.RecentAchievementCustomDates</option>>
+        </select>
+        <img style="vertical-align:text-bottom;" src="@VirtualPathUtility.ToAbsolute("~/images/copyflight.png")" alt="@Resources.LocalizedText.CopyToClipboard" title="@Resources.LocalizedText.CopyToClipboard"
+             onclick="javascript:copyClipboard('lblRecentAchievementsTitle', 'raResults', false, 'lblCopied');return false;" />
+        <span id="lblCopied" class="hintPopup" style="display:none; font-weight:bold; font-size: 10pt; color:black; ">@Resources.LocalizedText.CopiedToClipboard</span>
+    </h2>
+    <div id="pnlCustomDates" style="@(range.CompareCurrentCultureIgnoreCase("Custom") == 0 ? string.Empty : "display:none;")">
+        <table>
+            <tr>
+                <td>@Resources.Achievements.RecentAchievementCustomDateFrom</td>
+                <td><input type="date" id="dateFrom" name="dtStart" value="@(DateTime.Now.EarlierDate(ra.StartDate).YMDString())" /></td>
+            </tr>
+            <tr>
+                <td>@Resources.Achievements.RecentAchievementCustomDateTo</td>
+                <td><input type="date" id="dateTo" name="dtEnd" value="@(DateTime.Now.LaterDate(ra.EndDate).YMDString())" /></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><button type="submit">@Resources.LocalizedText.OK</button></td>
+            </tr>
+        </table>
+    </div>
+}
+<div id="raContainer">
+    @{ Html.RenderAction("RenderRecentAchievements", "Training", new { ra = ra }); }
+</div>
+<div id="pnlCalendar">
+    @if (fIncludeCalendar)
+    {
+        Html.RenderAction("FlyingCalendar", "Training", new { ra = ra });
+    }
+    else
+    {
+        <a style="cursor: pointer" onclick="javascript: $('#hdnIncludeCalendar').val('true'); $('#formDates')[0].submit();">@Resources.Achievements.RecentAchievementsViewCalendar</a>
+    }
+</div>

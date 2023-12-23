@@ -1,0 +1,38 @@
+﻿@using MyFlightbook.Achievements
+@using System.Globalization
+@{ 
+    IEnumerable<BadgeSet> badgeSets = ViewBag.badgeSets;
+}
+@foreach (BadgeSet badgeSet in badgeSets)
+{
+<div>
+    <h2>@badgeSet.CategoryName</h2>
+    @foreach (Badge b in badgeSet.Badges)
+    {
+        <div class="badgeContainer">
+            <div style="position: relative; display: inline;">
+                <img class="badgeImage" src="@VirtualPathUtility.ToAbsolute(b.BadgeImage)" title="@b.BadgeImageAltText" alt="@b.BadgeImageAltText" />
+                @if (!String.IsNullOrEmpty(b.BadgeImageOverlay))
+                {
+                    <img class="badgeOverlay" src="@(String.IsNullOrEmpty(b.BadgeImageOverlay) ? string.Empty : VirtualPathUtility.ToAbsolute(b.BadgeImageOverlay))" />
+                }
+            </div>
+            <div class="badgeName">@b.Name</div>
+            <div class="badgeDetails">
+                @if (b.Level != Badge.AchievementLevel.None)
+                {
+                    if (b.IDFlightEarned == LogbookEntryBase.idFlightNone || ViewBag.fReadOnly)
+                    {
+                        @b.EarnedDateString
+                    }
+                    else
+                    {
+                        <a href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/FlightDetail.aspx/{0}", b.IDFlightEarned))">@b.EarnedDateString</a>
+                    }
+
+                }
+            </div>
+        </div>
+    }
+</div>
+}

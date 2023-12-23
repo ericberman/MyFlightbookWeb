@@ -316,6 +316,64 @@ namespace MyFlightbook.RatingsProgress
             miMostAdmin1sDay = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementMostAdmin1sDayTitle, MilestoneItem.MilestoneType.Count, 2);
         }
 
+        public static RecentAchievements AchievementsForDateRange(string szUser, FlightQuery.DateRanges range, DateTime? dtStart = null, DateTime? dtEnd = null)
+        {
+            if (range == FlightQuery.DateRanges.Custom)
+            {
+                if (dtStart == null || dtEnd == null)
+                    range = FlightQuery.DateRanges.AllTime;
+                else if (dtStart.Value.CompareTo(dtEnd.Value) > 0)
+                    (dtStart, dtEnd) = (dtEnd, dtStart);
+            }
+
+            bool autoDateRange = range == FlightQuery.DateRanges.AllTime;
+
+            DateTime dtMin, dtMax = DateTime.Now;
+
+            switch (range)
+            {
+                default:
+                case FlightQuery.DateRanges.AllTime:
+                    dtMin = DateTime.MaxValue;
+                    dtMax = DateTime.MinValue;
+                    break;
+                case FlightQuery.DateRanges.PrevMonth:
+                    dtMax = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddDays(-1);
+                    dtMin = new DateTime(dtMax.Year, dtMax.Month, 1);
+                    break;
+                case FlightQuery.DateRanges.PrevYear:
+                    dtMin = new DateTime(DateTime.Now.Year - 1, 1, 1);
+                    dtMax = new DateTime(DateTime.Now.Year - 1, 12, 31);
+                    break;
+                case FlightQuery.DateRanges.Tailing6Months:
+                    dtMin = DateTime.Now.AddMonths(-6);
+                    break;
+                case FlightQuery.DateRanges.ThisMonth:
+                    dtMin = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                    break;
+                case FlightQuery.DateRanges.Trailing12Months:
+                    dtMin = DateTime.Now.AddYears(-1);
+                    break;
+                case FlightQuery.DateRanges.Trailing30:
+                    dtMin = DateTime.Now.AddDays(-30);
+                    break;
+                case FlightQuery.DateRanges.Trailing90:
+                    dtMin = DateTime.Now.AddDays(-90);
+                    break;
+                case FlightQuery.DateRanges.YTD:
+                    dtMin = new DateTime(DateTime.Now.Year, 1, 1);
+                    break;
+                case FlightQuery.DateRanges.Custom:
+                    dtMin = dtStart.Value;
+                    dtMax = dtEnd.Value;
+                    break;
+            }
+
+            RecentAchievements ra = new RecentAchievements(dtMin, dtMax) { Username = szUser, AutoDateRange = autoDateRange };
+            _ = ra.ComputedMilestones;  // force a refresh and caching of results
+            return ra;
+        }
+
         public override Collection<MilestoneItem> Milestones
         {
             get

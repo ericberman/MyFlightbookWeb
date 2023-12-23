@@ -172,7 +172,7 @@
         <Roles></Roles>
       </Item>
       <Item>
-        <Link>~/Member/Achievements.aspx</Link>
+        <Link>~/mvc/Training/Achievements</Link>
         <ID>instAchievements</ID>
         <Roles></Roles>
       </Item>
