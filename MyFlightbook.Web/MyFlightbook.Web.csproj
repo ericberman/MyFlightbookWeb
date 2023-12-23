@@ -1384,7 +1384,6 @@
     <Content Include="PlayPen\BulkImportFromTelemetry.aspx" />
     <Content Include="PlayPen\Checklist.aspx" />
     <Content Include="PlayPen\DayNight.aspx" />
-    <Content Include="PlayPen\Default.aspx" />
     <Content Include="PlayPen\DutyPeriodAnalyzer.aspx" />
     <Content Include="PlayPen\iCalConvert.aspx" />
     <Content Include="PlayPen\ImgDbg.aspx" />
@@ -1561,6 +1560,7 @@
     <Content Include="Areas\mvc\Views\Training\_badgeSet.cshtml" />
     <Content Include="Areas\mvc\Views\Training\_recentAchievements.cshtml" />
     <Content Include="Areas\mvc\Views\Training\_flyingCalendar.cshtml" />
+    <Content Include="Areas\mvc\Views\Playpen\Index.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -1893,6 +1893,7 @@
     <Compile Include="Areas\mvc\Controllers\ImageController.cs" />
     <Compile Include="Areas\mvc\Controllers\InternalController.cs" />
     <Compile Include="Areas\mvc\Controllers\MFBTemplateController.cs" />
+    <Compile Include="Areas\mvc\Controllers\PlaypenController.cs" />
     <Compile Include="Areas\mvc\Controllers\PubController.cs" />
     <Compile Include="Areas\mvc\Controllers\rbredirectController.cs" />
     <Compile Include="Areas\mvc\Controllers\SearchController.cs" />
@@ -2909,13 +2910,6 @@
     </Compile>
     <Compile Include="PlayPen\DayNight.aspx.designer.cs">
       <DependentUpon>DayNight.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="PlayPen\Default.aspx.cs">
-      <DependentUpon>Default.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="PlayPen\Default.aspx.designer.cs">
-      <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlayPen\DutyPeriodAnalyzer.aspx.cs">
       <DependentUpon>DutyPeriodAnalyzer.aspx</DependentUpon>
