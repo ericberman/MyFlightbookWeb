@@ -1035,7 +1035,7 @@ namespace MyFlightbook.Clubs
             foreach (ScheduledEvent se in lst)
             {
                 if (int.TryParse(se.ResourceID, out int idAircraft))
-                    se.ResourceAircraft = MemberAircraft.FirstOrDefault(ca => ca.AircraftID == idAircraft);
+                    se.ResourceAircraft = MemberAircraft.FirstOrDefault(ca => ca.AircraftID == idAircraft) ?? new Aircraft(idAircraft); // handle scenario where the aircraft isn't in MemberAircraft (e.g., has been removed from the club)?
                 se.OwnerProfile = Members.FirstOrDefault(cm => String.Compare(cm.UserName, se.OwningUser, StringComparison.Ordinal) == 0);
             }
         }
