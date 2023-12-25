@@ -1987,6 +1987,100 @@ tr div.editCell, tr.editRow div.displayCell {
     color: black;
 }
 
+/* Ajax file upload */
+.fileUploadContainer {
+    border: 1px solid gray;
+    padding: 3px;
+    width: 100%;
+    margin-top: 3pt;
+    margin-bottom: 3pt;
+}
+
+.fileDragTarget {
+    border: 3px dotted #00bcd4;
+    width: 130px;
+    height: 130px;
+    color: #888888;
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    padding: 5px;
+    font-size: 125%;
+}
+
+.fileDragHighlighted {
+    border: 3px solid darkgray;
+}
+
+.fileInQueueContainer {
+    border: 1px solid gray;
+    width: 130px;
+    height: 130px;
+    display: inline-block;
+    vertical-align: middle;
+    padding: 5px;
+    margin-left: 3px;
+    margin-right: 3px;
+    font-size: 100%;
+}
+
+.fileInQueContainerInProgress {
+    color: #888888;
+}
+
+.fileUploadProgressBar {
+    width: 90%;
+    height: 22px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    margin: 5px, 0, 5px, 0;
+}
+
+.fileUploadProgressBar div {
+    height: 100%;
+    color: lightgray;
+    text-align: center;
+    line-height: 22px; /* same as .fileUploadProgressBar height if we want text middle aligned */
+    width: 0;
+    background-color: darkgray;
+    border-radius: 3px;
+}
+
+.fileUploadStatusbar {
+    min-height: 25px;
+    width: 100%;
+    vertical-align: top;
+    overflow: hidden;
+}
+
+.fileUploadFilename {
+    width: 100%;
+    font-weight: bold;
+    text-align: center;
+    text-overflow: ellipsis;
+}
+
+.fileUploadFileSize {
+    width: 100%;
+    font-size: smaller;
+    text-align: center;
+}
+
+.fileUploadAbort {
+    background-color: #A8352F;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    text-align: center;
+    color: #fff;
+    font-size: larger;
+    padding: 4px 15px;
+    cursor: pointer;
+    margin: 5px, auto, 5px, auto;
+    max-width: 60%;
+}
+
 /* Printing */
 @media print {
     h1 {

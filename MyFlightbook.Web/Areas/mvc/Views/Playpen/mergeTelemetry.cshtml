@@ -1,0 +1,35 @@
+﻿@{
+    ViewBag.Title = "Merge Telemetry";
+    ViewBag.defaultTab = tabID.tabUnknown;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+
+<script>
+
+</script>
+<p>Upload the files to merge:</p>
+@using (Html.BeginForm("MergeTelemetry", "PlayPen", FormMethod.Post))
+{
+    <input id="hdnGUID" name="guid" type="hidden" value="" />
+    <div class="error">@(ViewBag.error ?? string.Empty)</div>
+    <button type="submit">Merge to GPX</button>
+}
+
+<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/public/scripts/ajaxUpload.js")"></script>
+
+<div id="dragContainer">
+
+</div>
+<script type="text/javascript">
+    $(() => {
+        ajaxFileUpload($("#dragContainer"), {
+            uploadURL: "@Url.Action("UploadFiles", "PlayPen")",
+            allowedTypes : "csv kml gpx nmea",
+            onUpload: null,
+            dropPrompt : "Drag files to merge here",
+            errTooManyFiles : "@Resources.LocalizedText.fileUploadTooManyFiles",
+            errDisallowedFileType : "@Resources.LocalizedText.fileUploadInvalidType",
+            abortPrompt : "@Resources.LocalizedText.fileUploadAboart"
+        });
+    });
+</script>

@@ -850,6 +850,7 @@
     <Content Include="Member\StartingTotals.aspx" />
     <Content Include="Member\StudentLogbook.aspx" />
     <Content Include="Public\Scripts\adminajax.js" />
+    <Content Include="Public\Scripts\ajaxUpload.js" />
     <Content Include="Public\tmap\airport.svg" />
     <Content Include="Public\tmap\data\data.js" />
     <Content Include="Public\tmap\flags\1x1\ad.svg" />
@@ -1388,7 +1389,6 @@
     <Content Include="PlayPen\iCalConvert.aspx" />
     <Content Include="PlayPen\ImgDbg.aspx" />
     <Content Include="PlayPen\MergeFlights.aspx" />
-    <Content Include="PlayPen\MergeTelemetry.aspx" />
     <Content Include="PlayPen\oAuthClientTest.aspx" />
     <Content Include="Private\SetupNotes.txt" />
     <Content Include="Public\AndroidImages\Android1.png" />
@@ -1561,6 +1561,7 @@
     <Content Include="Areas\mvc\Views\Training\_recentAchievements.cshtml" />
     <Content Include="Areas\mvc\Views\Training\_flyingCalendar.cshtml" />
     <Content Include="Areas\mvc\Views\Playpen\Index.cshtml" />
+    <Content Include="Areas\mvc\Views\Playpen\mergeTelemetry.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -2938,13 +2939,6 @@
     </Compile>
     <Compile Include="PlayPen\MergeFlights.aspx.designer.cs">
       <DependentUpon>MergeFlights.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="PlayPen\MergeTelemetry.aspx.cs">
-      <DependentUpon>MergeTelemetry.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="PlayPen\MergeTelemetry.aspx.designer.cs">
-      <DependentUpon>MergeTelemetry.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlayPen\oAuthClientTest.aspx.cs">
       <DependentUpon>oAuthClientTest.aspx</DependentUpon>

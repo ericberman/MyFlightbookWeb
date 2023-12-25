@@ -1955,4 +1955,16 @@
   <data name="genericUpdate" xml:space="preserve">
     <value>Update</value>
   </data>
+  <data name="fileUploadAboart" xml:space="preserve">
+    <value>Abort</value>
+  </data>
+  <data name="fileUploadInvalidType" xml:space="preserve">
+    <value>File type is not allowed here</value>
+  </data>
+  <data name="fileUploadPromptDefault" xml:space="preserve">
+    <value>Drag a file here</value>
+  </data>
+  <data name="fileUploadTooManyFiles" xml:space="preserve">
+    <value>Too many files to upload at once</value>
+  </data>
 </root>

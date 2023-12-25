@@ -2362,6 +2362,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Abort.
+        /// </summary>
+        internal static string fileUploadAboart {
+            get {
+                return ResourceManager.GetString("fileUploadAboart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add Another....
         /// </summary>
         internal static string FileUploadAddAnother {
@@ -2376,6 +2385,33 @@ namespace Resources {
         internal static string FileUploadComment {
             get {
                 return ResourceManager.GetString("FileUploadComment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File type is not allowed here.
+        /// </summary>
+        internal static string fileUploadInvalidType {
+            get {
+                return ResourceManager.GetString("fileUploadInvalidType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drag a file here.
+        /// </summary>
+        internal static string fileUploadPromptDefault {
+            get {
+                return ResourceManager.GetString("fileUploadPromptDefault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Too many files to upload at once.
+        /// </summary>
+        internal static string fileUploadTooManyFiles {
+            get {
+                return ResourceManager.GetString("fileUploadTooManyFiles", resourceCulture);
             }
         }
         
