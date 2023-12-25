@@ -359,12 +359,12 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region VisitedAirport
         [Authorize]
         [HttpPost]
-        public string EstimateDistance(FlightQuery fq)
+        public string EstimateDistance(FlightQuery fq, bool df = false)
         {
             if (fq == null || fq.UserName.CompareOrdinal(User.Identity.Name) != 0)
                 throw new UnauthorizedAccessException();
 
-            double distance = VisitedAirport.DistanceFlownByUser(fq, util.GetIntParam(Request, "df", 0) != 0, out string szErr);
+            double distance = VisitedAirport.DistanceFlownByUser(fq, df, out string szErr);
 
             return (String.IsNullOrEmpty(szErr)) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.VisitedAirportsDistanceEstimate, distance) : szErr;
         }
@@ -436,7 +436,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [ValidateAntiForgeryToken]
         [HttpPost]
         [Authorize]
-        public ActionResult VisitedAirports(string fqJSON, bool fPropDeleteClicked = false, string propToDelete = null)
+        public ActionResult VisitedAirports(string fqJSON, bool fPropDeleteClicked = false, string propToDelete = null, bool df = false)
         {
             FlightQuery fq = String.IsNullOrEmpty(fqJSON) ? new FlightQuery(User.Identity.Name) : JsonConvert.DeserializeObject<FlightQuery>(fqJSON);
 
@@ -445,6 +445,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
             if (fPropDeleteClicked)
                 fq.ClearRestriction(propToDelete ?? string.Empty);
+            ViewBag.df = df;
 
             return VisitedAirportViewForQuery(fq);
         }
@@ -456,7 +457,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             FlightQuery _fq = String.IsNullOrEmpty(fq) ? new FlightQuery(User.Identity.Name) : FlightQuery.FromBase64CompressedJSON(fq);
             if (_fq.UserName.CompareOrdinal(User.Identity.Name) != 0)
                 throw new UnauthorizedAccessException();
-
+            ViewBag.df = util.GetIntParam(Request, "df", 0) != 0;
             return VisitedAirportViewForQuery(_fq);
         }
         #endregion

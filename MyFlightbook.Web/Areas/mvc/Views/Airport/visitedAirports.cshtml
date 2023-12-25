@@ -44,6 +44,7 @@
     function estimateDistance() {
         var params = new Object();
         params.fq = buildQuery();
+        params.df = $("#hdnDistanceFill")[0].value;
         var d = JSON.stringify(params);
         $("#divEstimatingProgress").toggle();
         $("#lnkEstimateDistance").toggle();
@@ -72,6 +73,7 @@
         <input type="hidden" value="" name="fqJSON" id="hdnQueryForVA" />
         <input type="hidden" value="" name="fPropDeleteClicked" id="hdnQFEClicked" />
         <input type="hidden" value="" name="propToDelete" id="hdnPropToDelete" />
+        <input type="hidden" value="@Json.Encode(ViewBag.df)" name="df" id="hdnDistanceFill" />
         <input type="hidden" value="@util.GetIntParam(Request, "path", 0)" name="path" id="hdnShowPath" />
     }
 </div>
