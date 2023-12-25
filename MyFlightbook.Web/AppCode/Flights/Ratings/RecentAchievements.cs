@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.IO;
 using System.Web;
+using System.Web.UI;
 
 /******************************************************
  * 
@@ -631,6 +633,97 @@ namespace MyFlightbook.RatingsProgress
 
             fs100.ExamineFlight(cfr);
             fs1000.ExamineFlight(cfr);
+        }
+
+        public string FlyingCalendar()
+        {
+            DateTime dtMonthStart = new DateTime(StartDate.Year, StartDate.Month, 1);
+            DateTime dtMonthEnd = new DateTime(EndDate.Year, EndDate.Month, 1);
+            FlightQuery fq = new FlightQuery(Username) { DateRange = FlightQuery.DateRanges.Custom };
+            string szBaseURL = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/Member/LogbookNew.aspx?fq="));
+
+            using (StringWriter sw = new StringWriter(CultureInfo.InvariantCulture))
+            {
+                using (HtmlTextWriter tw = new HtmlTextWriter(sw))
+                {
+                    for (DateTime dtCurrentMonth = dtMonthStart; dtCurrentMonth.CompareTo(dtMonthEnd) <= 0; dtCurrentMonth = dtCurrentMonth.AddMonths(1))
+                    {
+                        DateTime dtDay = dtCurrentMonth;
+                        int cLeadingDays = 0;
+                        int cDaysInMonth = DateTime.DaysInMonth(dtCurrentMonth.Year, dtCurrentMonth.Month);
+                        while (dtDay.DayOfWeek != CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek)
+                        {
+                            dtDay = dtDay.AddDays(-1);
+                            cLeadingDays++;
+                        }
+                        int cWeeks = (cLeadingDays + cDaysInMonth + 6) / 7;
+
+                        tw.AddAttribute("class", "monthContainer");
+                        tw.RenderBeginTag(HtmlTextWriterTag.Div);
+                        tw.RenderBeginTag(HtmlTextWriterTag.Table);
+
+                        // Month header
+                        tw.AddAttribute("colspan", "7");
+                        tw.AddAttribute("class", "monthHeader");
+                        tw.RenderBeginTag(HtmlTextWriterTag.Td);
+                        tw.Write(HttpUtility.HtmlEncode(dtCurrentMonth.ToString("MMMM - yyyy", CultureInfo.CurrentCulture)));
+                        tw.RenderEndTag();  // td for month header
+
+                        for (int i = 0; i < cWeeks; i++)
+                        {
+                            tw.RenderBeginTag(HtmlTextWriterTag.Tr);
+
+                            for (int j = 0; j < 7; j++)
+                            {
+                                tw.AddAttribute("class", dtDay.Month == dtCurrentMonth.Month ? "includedDay" : "adjacentDay");
+                                tw.RenderBeginTag(HtmlTextWriterTag.Td);
+
+                                tw.AddAttribute("class", "dayOfMonth");
+                                tw.RenderBeginTag(HtmlTextWriterTag.Span);
+                                tw.Write(dtDay.Day.ToString(CultureInfo.CurrentCulture));
+                                tw.RenderEndTag();  // span
+
+                                if (dtDay.Month != dtCurrentMonth.Month)
+                                {
+                                    tw.AddAttribute("class", "dateContent");
+                                    tw.RenderBeginTag(HtmlTextWriterTag.Span);
+                                    tw.Write("&nbsp;");
+                                    tw.RenderEndTag(); // span
+                                }
+                                else
+                                {
+                                    int cFlights = FlightCountOnDate(dtDay);
+                                    if (cFlights == 0)
+                                    {
+                                        tw.AddAttribute("class", "dateContent");
+                                        tw.RenderBeginTag(HtmlTextWriterTag.Span);
+                                        tw.Write("&nbsp;");
+                                        tw.RenderEndTag();  // span
+                                    }
+                                    else
+                                    {
+                                        fq.DateMax = fq.DateMin = dtDay.Date;
+                                        tw.AddAttribute("class", "dateContent dateContentValue");
+                                        tw.AddAttribute("href", szBaseURL + HttpUtility.UrlEncode(fq.ToBase64CompressedJSONString()));
+                                        tw.RenderBeginTag(HtmlTextWriterTag.A);
+                                        tw.Write(cFlights.ToString(CultureInfo.CurrentCulture));
+                                        tw.RenderEndTag(); // Anchor
+                                    }
+                                }
+                                dtDay = dtDay.AddDays(1);
+                                tw.RenderEndTag(); // td
+                            }
+
+                            tw.RenderEndTag();  // tr
+                        }
+
+                        tw.RenderEndTag();  // table
+
+                        tw.RenderEndTag();  // monthContainer;
+                    }
+                }
+                return sw.ToString();
+            }
         }
     }
 }

@@ -1559,7 +1559,6 @@
     <Content Include="Areas\mvc\Views\Training\achievements.cshtml" />
     <Content Include="Areas\mvc\Views\Training\_badgeSet.cshtml" />
     <Content Include="Areas\mvc\Views\Training\_recentAchievements.cshtml" />
-    <Content Include="Areas\mvc\Views\Training\_flyingCalendar.cshtml" />
     <Content Include="Areas\mvc\Views\Playpen\Index.cshtml" />
     <Content Include="Areas\mvc\Views\Playpen\mergeTelemetry.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />

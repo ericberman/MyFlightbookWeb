@@ -85,7 +85,8 @@
 <div id="pnlCalendar">
     @if (fIncludeCalendar)
     {
-        Html.RenderAction("FlyingCalendar", "Training", new { ra = ra });
+        <h2>@Resources.Achievements.RecentAchievementsCalendarHeader</h2>
+        @Html.Raw(ra.FlyingCalendar());
     }
     else
     {

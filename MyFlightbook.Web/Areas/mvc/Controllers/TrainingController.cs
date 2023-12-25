@@ -35,13 +35,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.ra = ra;
             return PartialView("_recentAchievements");
         }
-
-        [ChildActionOnly]
-        public ActionResult FlyingCalendar(RecentAchievements ra)
-        {
-            ViewBag.recentAchievements = ra;
-            return PartialView("_flyingCalendar");
-        }
         #endregion
         #endregion
 
