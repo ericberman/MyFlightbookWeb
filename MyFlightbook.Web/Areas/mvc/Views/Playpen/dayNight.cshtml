@@ -1,0 +1,137 @@
+﻿@using MyFlightbook.SolarTools
+@using System.Globalization
+@{
+    ViewBag.defaultTab = tabID.tabMaps;
+    ViewBag.UseMaps = true;
+    ViewBag.Title = "Day/Night Tool";
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+<div style="float:right;">
+    <table style="border: 1px solid black; border-collapse:collapse;">
+        <tr>
+            <td style="font-weight:bold">Key:</td>
+        </tr>
+        <tr>
+            <td style="background-color:white; border:1px solid black;">Day</td>
+        </tr>
+        <tr>
+            <td style="background-color:LightGray; border:1px solid black;">Civil Twilight (sun < 6° below horizon)</td>
+        </tr>
+        <tr>
+            <td style="background-color:BlanchedAlmond; border:1px solid black;">Night (sun > 6° below horizon)</td>
+        </tr>
+        <tr>
+            <td style="background-color:darkgray; border:1px solid black;">Night - 1 hour past sunset to 1 hour before sunrise</td>
+        </tr>
+    </table>
+</div>
+@using (Html.BeginForm("DayNight", "PlayPen", FormMethod.Get))
+{
+    <table id="tblInput">
+        <tr>
+            <td>Latitude:</td>
+            <td><input type="number" step="any" required placeholder="Latitude" value="@ViewBag.latitude" id="txtLat" name="latitude" /></td>
+        </tr>
+        <tr>
+            <td>Longitude:</td>
+            <td><input type="number" step="any" required placeholder="Longitude" value="@ViewBag.longitude" id="txtLon" name="longitude" /></td>
+        </tr>
+        <tr>
+            <td>Airport:<br /><span class="fineprint">(optional)</span></td>
+            <td>
+                <input type="text" placeholder="Airport Code" id="txtAirport" name="airport" />
+                <button id="btnSearch" type="button" onclick="javascript: findAirport();">Search</button>
+                <span id="lblNotFound"></span>
+            </td>
+        </tr>
+        <tr>
+            <td>Date:</td>
+            <td><input type="date" placeholder="Date" value="@DateTime.Now.YMDString()" required id="txtDate" name="date" /></td>
+        </tr>
+    </table>
+    <p><button id="btnSubmit" type="submit">Get Times</button></p>
+}
+<div id="divResultsContainer" style="height: 400px; width:100%">
+    @{ Html.RenderAction("MapDiv", "Airport", new { map = ViewBag.Map }); }
+</div>
+@if (!String.IsNullOrEmpty(ViewBag.dtUTCDisplay))
+{
+    <div>
+        <p>All times are for UTC-DATE: <span style="font-weight:bold">@ViewBag.dtUTCDisplay</span>.  Each cell is the time (UTC) followed by the solar angle (angle of the sun over the horizon).</p>
+        <p>Sunrise (UTC): @ViewBag.sunriseUTC.ToLongTimeString(),  (in *your* local time): <span id="lblSunRise"></span></p>
+        <p>Sunset (UTC): @ViewBag.sunsetUTC.ToLongTimeString(), (in *your* local time): <span id="lblSunSet" Text=""></span></p>
+    </div>
+}
+@if (ViewBag.sunriseUTC != null)
+{
+    DateTime dtUTC = ViewBag.dtUTC;
+    <table>
+        @for (int h = 0; h < 24; h++)
+        {
+            // show 5-minute increments throughout the day
+            <tr>
+                @for (int m = 0; m < 60; m += 5)
+                {
+                    DateTime dt2 = new DateTime(dtUTC.Year, dtUTC.Month, dtUTC.Day, h, m, 0, DateTimeKind.Utc);
+                    SunriseSunsetTimes sst = new SunriseSunsetTimes(dt2, ViewBag.latitude, ViewBag.longitude);
+                    <td style="@(sst.IsFAANight ? "background-color: darkgray" : (sst.IsNight ? (sst.IsFAACivilNight ? "background-color: BlanchedAlmond" : "background-color: lightgray") : string.Empty))">
+                        @String.Format(CultureInfo.CurrentCulture, "{0}, {1:F2}°", dt2.ToString("HH:mm", CultureInfo.InvariantCulture), sst.SolarAngle);
+                    </td>
+                }
+            </tr>
+        }
+    </table>
+}
+
+<script type="text/javascript">
+    //<![CDATA[
+    function findAirport() {
+        var params = new Object();
+        params.szCode = $("#txtAirport").val();
+        var d = JSON.stringify(params);
+        $.ajax({
+            url: '@Url.Action("AirportLookup", "PlayPen")',
+            type: "POST", data: d, dataType: "json", contentType: "application/json",
+            error: function (xhr, status, error) {
+                $("#lblNotFound").text(xhr.responseText);
+            },
+            complete: function (response) { },
+            success: function (response) {
+                $("#txtLat")[0].valueAsNumber = response.Latitude;
+                $("#txtLon")[0].valueAsNumber = response.Longitude;
+            }
+        });
+    }
+
+    function clickForAirport(point) {
+        if (point != null) {
+            $("#txtLat").val(point.lat());
+            $("#txtLon").val(point.lng());
+            getMfbMap().clickMarker(point, 'Clicked Location', 'pin', "<a href=\"javascript:zoomForAirport();\">Zoom in</a>");
+        }
+    }
+
+    function dropPin(p, s) {
+        var gm = getMfbMap();
+        gm.oms.addMarker(gm.addEventMarker(p, s));
+    }
+
+    $(function () {
+        $('#tblInput').keydown(function (e) {
+            if (e.keyCode == 13) {
+                $('#btnSubmit')[0].click();
+                return false;
+            }
+        });
+    });
+
+    @if (ViewBag.sunriseUTC != null)
+    {
+        @:$(document).ready(function() {
+            @:dropPin(nll(@ViewBag.latitude.ToString(System.Globalization.CultureInfo.InvariantCulture), @ViewBag.longitude.ToString(System.Globalization.CultureInfo.InvariantCulture)), 'selected point');
+            @:$('#lblSunRise').text(new Date('@ViewBag.sunriseUTC.ToString("yyyy-MM-ddTHH:mm:ssZ", System.Globalization.CultureInfo.InvariantCulture)').toLocaleTimeString());
+            @:$('#lblSunSet').text(new Date('@ViewBag.sunsetUTC.ToString("yyyy-MM-ddTHH:mm:ssZ", System.Globalization.CultureInfo.InvariantCulture)').toLocaleTimeString());
+        @:});
+    }
+        //]]>
+</script>

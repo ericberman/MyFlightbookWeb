@@ -1382,7 +1382,6 @@
     <Content Include="OAuth\oAuthToken.aspx" />
     <Content Include="PlayPen\BulkImportFromTelemetry.aspx" />
     <Content Include="PlayPen\Checklist.aspx" />
-    <Content Include="PlayPen\DayNight.aspx" />
     <Content Include="PlayPen\DutyPeriodAnalyzer.aspx" />
     <Content Include="PlayPen\iCalConvert.aspx" />
     <Content Include="PlayPen\ImgDbg.aspx" />
@@ -1561,6 +1560,7 @@
     <Content Include="Areas\mvc\Views\Playpen\mergeTelemetry.cshtml" />
     <Content Include="Areas\mvc\Views\Aircraft\browseMakes.cshtml" />
     <Content Include="Areas\mvc\Views\Aircraft\_modelRows.cshtml" />
+    <Content Include="Areas\mvc\Views\Playpen\dayNight.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -2890,13 +2890,6 @@
     </Compile>
     <Compile Include="PlayPen\Checklist.aspx.designer.cs">
       <DependentUpon>Checklist.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="PlayPen\DayNight.aspx.cs">
-      <DependentUpon>DayNight.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="PlayPen\DayNight.aspx.designer.cs">
-      <DependentUpon>DayNight.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlayPen\DutyPeriodAnalyzer.aspx.cs">
       <DependentUpon>DutyPeriodAnalyzer.aspx</DependentUpon>
