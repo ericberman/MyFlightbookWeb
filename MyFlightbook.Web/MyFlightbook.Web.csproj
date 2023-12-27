@@ -594,7 +594,6 @@
     <Content Include="Controls\mfbImportAircraft.ascx" />
     <Content Include="Controls\mfbLogbook.ascx" />
     <Content Include="Controls\mfbMaintainAircraft.ascx" />
-    <Content Include="Controls\mfbMakeListItem.ascx" />
     <Content Include="Controls\mfbMiniFacebook.ascx" />
     <Content Include="Controls\mfbMultiFileUpload.ascx" />
     <Content Include="Controls\mfbPublicFlightItem.ascx" />
@@ -837,7 +836,6 @@
     <Content Include="Member\Import.aspx" />
     <Content Include="Member\ImportTelemetry.aspx" />
     <Content Include="Member\LogbookNew.aspx" />
-    <Content Include="Member\makes.aspx" />
     <Content Include="Member\MiniLogbook.aspx" />
     <Content Include="Member\MiniRecents.aspx" />
     <Content Include="Member\MiniTotals.aspx" />
@@ -1561,6 +1559,8 @@
     <Content Include="Areas\mvc\Views\Training\_recentAchievements.cshtml" />
     <Content Include="Areas\mvc\Views\Playpen\Index.cshtml" />
     <Content Include="Areas\mvc\Views\Playpen\mergeTelemetry.cshtml" />
+    <Content Include="Areas\mvc\Views\Aircraft\browseMakes.cshtml" />
+    <Content Include="Areas\mvc\Views\Aircraft\_modelRows.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -1885,6 +1885,7 @@
     <Compile Include="Areas\mvc\Controllers\AdminPaymentController.cs" />
     <Compile Include="Areas\mvc\Controllers\AdminTelemetryController.cs" />
     <Compile Include="Areas\mvc\Controllers\AdminUserController.cs" />
+    <Compile Include="Areas\mvc\Controllers\AircraftController.cs" />
     <Compile Include="Areas\mvc\Controllers\AirportController.cs" />
     <Compile Include="Areas\mvc\Controllers\AllMakesController.cs" />
     <Compile Include="Areas\mvc\Controllers\ClubController.cs" />
@@ -2332,13 +2333,6 @@
     </Compile>
     <Compile Include="Controls\mfbMaintainAircraft.ascx.designer.cs">
       <DependentUpon>mfbMaintainAircraft.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\mfbMakeListItem.ascx.cs">
-      <DependentUpon>mfbMakeListItem.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbMakeListItem.ascx.designer.cs">
-      <DependentUpon>mfbMakeListItem.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\mfbMiniFacebook.ascx.cs">
       <DependentUpon>mfbMiniFacebook.ascx</DependentUpon>
@@ -2791,13 +2785,6 @@
     </Compile>
     <Compile Include="Member\LogbookNew.aspx.designer.cs">
       <DependentUpon>LogbookNew.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Member\makes.aspx.cs">
-      <DependentUpon>makes.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\makes.aspx.designer.cs">
-      <DependentUpon>makes.aspx</DependentUpon>
     </Compile>
     <Compile Include="Member\MiniLogbook.aspx.cs">
       <DependentUpon>MiniLogbook.aspx</DependentUpon>

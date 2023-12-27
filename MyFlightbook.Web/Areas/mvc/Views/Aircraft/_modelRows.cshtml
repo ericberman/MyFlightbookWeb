@@ -1,0 +1,50 @@
+﻿@using MyFlightbook.Image
+@using System.Globalization
+@{ 
+    IEnumerable<MakeModel> rgMakes = ViewBag.rgMakes;
+    ModelQuery mq = ViewBag.mq;
+    Dictionary<int, IList<MFBImageInfo>> dictSampleImages = ViewBag.imageSamples;
+
+    foreach (MakeModel mm in rgMakes)
+    {
+    <tr style="vertical-align:top;">
+        <td style="width:160px">
+            @if (dictSampleImages.TryGetValue(mm.MakeModelID, out IList<MFBImageInfo> lst) && lst.Count > 0)
+            {
+                <img style="max-width: 150px" src="@VirtualPathUtility.ToAbsolute(lst[0].URLThumbnail)" onclick="javascript: viewMFBImg('@lst[0].URLFullImage'); return false;" />
+            }
+            else
+            {
+                <img title="@Resources.LocalizedText.NoImageTooltip" alt="@Resources.LocalizedText.NoImageTooltip" style="max-width: 150px" src="@VirtualPathUtility.ToAbsolute("~/images/noimage.png")" />
+            }
+        </td>
+        <td style="text-align:left; vertical-align:top;">
+            <span style="@((mq.SortMode == ModelQuery.ModelSortMode.Manufacturer) ? "font-weight: bold; font-size: larger;" : string.Empty)">@mm.ManufacturerDisplay</span>
+        </td>
+        <td>
+            <div>
+                <a style="@((mq.SortMode == ModelQuery.ModelSortMode.ModelName) ? "font-weight: bold; font-size: larger;" : string.Empty)" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditMake.aspx?id={0}", mm.MakeModelID))">
+                    @mm.ModelDisplayNameNoCatclass
+                </a>
+            </div>
+            @if (!String.IsNullOrEmpty(mm.FamilyName))
+            {
+                <div>@ModelQuery.ICAOPrefix @mm.FamilyName</div>
+            }
+            @if (!String.IsNullOrEmpty(mm.ArmyMDS))
+            {
+                <div>@Resources.LocalizedText.EditMakeWatermarkMDS @mm.ArmyMDS</div>
+            }
+        </td>
+        <td>
+            <span style="@((mq.SortMode == ModelQuery.ModelSortMode.CatClass) ? "font-weight: bold; font-size: larger;" : string.Empty)">@mm.CategoryClassDisplay</span>
+            <ul>
+                @foreach (string attribute in mm.AttributeList())
+                {
+                    <li>@attribute</li>
+                }
+            </ul>
+        </td>
+    </tr>
+    }
+}

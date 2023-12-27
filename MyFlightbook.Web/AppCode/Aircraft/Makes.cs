@@ -258,6 +258,52 @@ namespace MyFlightbook
             return lst;
         }
 
+        /// <summary>
+        /// Directly returns sample images from the database.  More efficient than calling SampleAircraft because it will work across multiple models at once.
+        /// The dictionary is keyed on model ID and returns an enumerable (up to limit) of MFBImageInfo's
+        /// </summary>
+        /// <param name="models"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        public static IDictionary<int, IList<MFBImageInfo>> SampleImagesForModels(IEnumerable<MakeModel> models, int limit = 10)
+        {
+            Dictionary<int, IList<MFBImageInfo>> dict = new Dictionary<int, IList<MFBImageInfo>>();
+            if (!(models?.Any() ?? false))
+                return dict;
+
+            List<int> modelIDs = new List<int>();
+            foreach (MakeModel m in models)
+                modelIDs.Add(m.MakeModelID);
+
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, @"SELECT 
+    m.idmodel, i.*
+FROM
+    images i
+        INNER JOIN
+    aircraft ac ON i.ImageKey = ac.idaircraft
+        INNER JOIN
+    models m ON ac.idmodel = m.idmodel
+WHERE
+    i.VirtPathID = 1
+        AND m.idmodel IN ({0})
+ORDER BY model ASC;", string.Join(",", modelIDs)));
+
+            dbh.ReadRows(
+                (comm) => { },
+                (dr) =>
+                {
+                    int modelID = Convert.ToInt32(dr["idmodel"], CultureInfo.InvariantCulture);
+                    if (dict.TryGetValue(modelID, out IList<MFBImageInfo> samples))
+                    {
+                        if (samples.Count < limit)
+                            samples.Add(MFBImageInfo.ImageFromDBRow(dr));
+                    }
+                    else
+                        dict[modelID] = new List<MFBImageInfo> { MFBImageInfo.ImageFromDBRow(dr) };
+                });
+            return dict;
+        }
+
         public MakeModelStats StatsForUser(string szUser)
         {
             MakeModelStats mms = new MakeModelStats();
@@ -1060,6 +1106,22 @@ WHERE {1}";
         /// Should we give a boost to models where the model itself matches?
         /// </summary>
         public bool PreferModelNameMatch { get; set; }
+
+        /// <summary>
+        /// Is this an empty query?
+        /// </summary>
+        public bool IsEmpty
+        {
+            get { return (FullText?.Length ?? 0) + (ManufacturerName?.Length ?? 0) + (ModelName?.Length ?? 0) + (CatClass?.Length ?? 0) + (TypeName?.Length ?? 0) == 0; }
+        }
+
+        /// <summary>
+        /// Is this an advanced query?
+        /// </summary>
+        public bool IsAdvanced
+        {
+            get { return (FullText?.Length ?? 0) == 0 && !IsEmpty; }
+        }
 
         private static readonly char[] searchSeparator = new char[] { ' ' };
         #endregion

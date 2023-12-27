@@ -8,7 +8,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2021 MyFlightbook LLC
+ * Copyright (c) 2015-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -116,7 +116,7 @@ namespace MyFlightbook.MemberPages
 
         protected void MakeUpdated(object sender, EventArgs e)
         {
-            Response.Redirect("makes.aspx");
+            Response.Redirect("~/mvc/Aircraft/Makes");
         }
 
         protected void imgEditAircraftModel_Click(object sender, ImageClickEventArgs e)

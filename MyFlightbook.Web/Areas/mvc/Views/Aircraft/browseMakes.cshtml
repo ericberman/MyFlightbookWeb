@@ -1,0 +1,195 @@
+﻿@using System.Globalization
+@{
+    ViewBag.Title = Resources.Makes.makesHeader;
+    ViewBag.defaultTab = tabID.tabAircraft;
+    ViewBag.UseMaps = true;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    ModelQuery mq = ViewBag.mq;
+}
+<script src='@VirtualPathUtility.ToAbsolute("~/public/Scripts/endless-scroll.js")'></script>
+<script type="text/javascript">
+    var limit = @mq.Limit;
+    var queryJSON = '@Html.Raw(Json.Encode(mq))';
+
+    function getNextSet() {
+        var params = new Object();
+        params.skip = $("#resultsBody").children().length;
+        params.limit = limit;
+        params.sortDir = $("#hdnSortDir").val();
+        params.sortMode = $("#hdnSortKey").val();
+        params.queryJSON = queryJSON;
+        $.ajax(
+            {
+                type: "POST",
+                data: JSON.stringify(params),
+                url: "@Url.Action("MakeRows", "Aircraft")",
+                dataType: "html",
+                contentType: "application/json",
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                complete: function (response) { },
+                success: function (response) {
+                    var body = $("#resultsBody");
+                    body.append(response);
+                    if (body.children().length == 0)
+                        $("#divNoResults").show();
+                    else
+                        $("#tableResult").show();
+                }
+            });
+    }
+
+    $(document).ready(function () {
+        $(document).endlessScroll({
+            bottomPixels: 300,
+            fireOnce: true,
+            fireDelay: 2000,
+            callback: function (p) {
+                // ajax call to fetch next set of rows
+                getNextSet();
+            }
+        });
+
+        $('#vwAdvancedSearch').keydown(function (e) {
+            if (e.keyCode == 13) {
+                $("#btnSearch")[0].click();
+                return false;
+            }
+        });
+
+        @if (ViewBag.getResults)
+        {
+            @:getNextSet();
+            @:setSearchHeaders("@mq.SortMode.ToString()", "@mq.SortDir.ToString()");
+        }
+    });
+
+    function setSearchMode(simple) {
+        if (simple) {
+            $('#vwSimpleSearch').show();
+            $('#vwAdvancedSearch').hide();
+            $('#hdnAdvancedSearch').val("false");
+        }
+        else {
+            $('#vwSimpleSearch').hide();
+            $('#vwAdvancedSearch').show();
+            $('#hdnAdvancedSearch').val("true");
+        }
+        $("input[type=text]").val("");
+    }
+
+    function setSearchHeaders(mode, dir) {
+        $("#trHeaderRow").find("th").removeClass("headerSortAsc").removeClass("headerSortDesc");
+
+        var newClass = (dir == "@ModelQuery.ModelSortDirection.Descending.ToString()") ? "headerSortDesc" : "headerSortAsc";
+
+        if (mode == "@ModelQuery.ModelSortMode.Manufacturer.ToString()")
+            $("#thManufacturer").addClass(newClass);
+        else if (mode == "@ModelQuery.ModelSortMode.ModelName.ToString()")
+            $("#thModel").addClass(newClass);
+        else if (mode == "@ModelQuery.ModelSortMode.CatClass.ToString()")
+            $("#thCatClass").addClass(newClass);
+    }
+
+    function sortModels(key) {
+        var curSortKey = $("#hdnSortKey").val();
+        if (curSortKey == key) {
+            $("#hdnSortDir").val($("#hdnSortDir").val() == "@ModelQuery.ModelSortDirection.Descending.ToString()" ? "@ModelQuery.ModelSortDirection.Ascending.ToString()" : "@ModelQuery.ModelSortDirection.Descending.ToString()");
+        } else {
+            $("#hdnSortDir").val("@ModelQuery.ModelSortDirection.Ascending.ToString()");
+            $("#hdnSortKey").val(key)
+        }
+        $("#resultsBody").html("");
+        setSearchHeaders($("#hdnSortKey").val(), $("#hdnSortDir").val());
+        getNextSet();
+    }
+</script>
+<div class="calloutSmall shadowed" style="vertical-align:middle; width: 90%; display:flex; margin-right: auto; margin-left: auto; margin-bottom: 5pt;">
+    <div style="flex:auto;">
+        <div style="display:inline-block">
+            @using (Html.BeginForm("Makes", "Aircraft", FormMethod.Post, new { name = "frmSearch", id = "frmSearch" }))
+            {
+                <input type="hidden" name="fAdvancedSearch" id="hdnAdvancedSearch" value="@Json.Encode(ViewBag.fAdvanced)" />
+                <input type="hidden" name="sortKey" id="hdnSortKey" value="@mq.SortMode.ToString()" />
+                <input type="hidden" name="sortDir" id="hdnSortDir" value="@mq.SortDir.ToString()" />
+                <div id="vwSimpleSearch" style="@(mq.IsAdvanced ? "display: none;" : string.Empty)">
+                    <div style="vertical-align:top; height: 40px;">
+                        <div style="display:inline-block; vertical-align:middle;">
+                            @{ Html.RenderAction("RenderSearchBox", "MFBTemplate", new { id = "makeSimpleSearch", placeholder = Resources.Makes.searchTip, text = mq.FullText }); }
+                        </div>
+                        <a style="vertical-align: middle; cursor: pointer" onclick="javascript: setSearchMode(false);">@Resources.Makes.makesAdvancedSearch</a>
+                    </div>
+                    <div class="fineprint">@Resources.Makes.searchWildcardTip</div>
+                </div>
+                <div id="vwAdvancedSearch" style="@(mq.IsAdvanced ? string.Empty : "display: none;")">
+                    <table>
+                        <tr>
+                            <td>@Resources.Makes.makesAdvManufacturer</td>
+                            <td><input type="text" id="txtManufacturer" name="manufacturer" placeholder="@Resources.Makes.makesAdvManufacturer" value="@mq.ManufacturerName" /></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                @Resources.Makes.makesAdvModel<br />
+                                <span class="fineprint">@Resources.Makes.makesAdvModelSample</span>
+                            </td>
+                            <td><input type="text" id="txtModel" name="model" placeholder="@Resources.Makes.makesAdvModel" value="@mq.Model" /></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                @Resources.Makes.makesAdvModelName<br />
+                                <span class="fineprint">@Resources.Makes.makesAdvModelNameSample</span>
+                            </td>
+                            <td><input type="text" id="txtModelName" name="modelName" placeholder="@Resources.Makes.makesAdvModelName" value="@mq.ModelName" /> @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "icaoTips", tipTextHtml = Resources.Makes.searchICAOTip }); }</td>
+                        </tr>
+                        <tr>
+                            <td>@Resources.Makes.makesAdvModelType</td>
+                            <td><input type="text" id="txtTypeName" name="typeName" value="@mq.TypeName" placeholder="@Resources.Makes.makesAdvModelType" /></td>
+                        </tr>
+                        <tr>
+                            <td>@Resources.Makes.makesAdvCatClass</td>
+                            <td><input type="text" id="txtCatClass" name="catClass" value="@mq.CatClass" placeholder="@Resources.Makes.makesAdvCatClass" /></td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>
+                                <button id="btnSearch" type="submit">@Resources.Makes.makesSearchMakes</button>
+                            </td>
+                        </tr>
+                    </table>
+                    <a style="vertical-align: middle; cursor: pointer" onclick="javascript: setSearchMode(true);">@Resources.Makes.makesSimpleSearch</a>
+                </div>
+            }
+        </div>
+    </div>
+    <div style="flex:auto; text-align: right;">
+        <div style="display: inline-block">
+            <img src="@VirtualPathUtility.ToAbsolute("~/images/add.png")" style="height: 20px; width: 20px; vertical-align:middle;"  />
+            <a href="@VirtualPathUtility.ToAbsolute("~/Member/EditMake.aspx?id=-1")" style="font-weight: bold">@Resources.Makes.makesAddModel</a>
+        </div>
+    </div>
+</div>
+<input id="hdnQueryJSON" type="hidden" value="@Json.Encode(mq)" />
+<table class="stickyHeaderTable" style="display: none;" id="tableResult">
+    <thead>
+        <tr id="trHeaderRow">
+            <th style="width: 160px;"></th>
+            <th onclick="javascript: sortModels('@ModelQuery.ModelSortMode.Manufacturer.ToString()');" id="thManufacturer" class="headerBase gvhDefault gvhLeft">
+                @Resources.Makes.makesSortManufacturer
+            </th>
+            <th onclick="javascript: sortModels('@ModelQuery.ModelSortMode.ModelName.ToString()');" id="thModel" class="headerBase gvhDefault gvhLeft">
+                @Resources.Makes.makesSortModel
+            </th>
+            <th onclick="javascript: sortModels('@ModelQuery.ModelSortMode.CatClass.ToString()');" id="thCatClass" class="headerBase gvhDefault gvhLeft">
+                @Resources.Makes.makesSortCatClass
+            </th>
+        </tr>
+    </thead>
+    <tbody id="resultsBody">
+    </tbody>
+</table>
+<div style="text-align: center; display: none;" id="divNoResults">@Resources.Makes.makesNoResults</div>
+@if (!ViewBag.getResults)
+{
+    <div style="text-align: center;">@String.Format(CultureInfo.CurrentCulture, Resources.Makes.makesPrompt, MakeModel.ModelCount())</div>
+}

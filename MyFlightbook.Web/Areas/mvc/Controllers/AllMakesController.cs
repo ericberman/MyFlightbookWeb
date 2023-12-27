@@ -4,12 +4,10 @@ using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using MyFlightbook;
-using MyFlightbook.Image;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2022 MyFlightbook LLC
+ * Copyright (c) 2007-2023 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -29,10 +27,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             // Different experience when signed in and when not signed in.
             if (User.Identity.IsAuthenticated && idman == 0)
-            {
-                Response.Redirect(VirtualPathUtility.ToAbsolute("~/Member/Makes.aspx"), true);
-                return null;
-            }
+                return Redirect("~/mvc/Aircraft/Makes");
 
             // No manufacturer specified - show all manufacturers 
             if (idman <= 0)
