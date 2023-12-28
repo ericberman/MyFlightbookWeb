@@ -1530,7 +1530,7 @@ namespace MyFlightbook.Image
                         image.Flop();
                         image.Rotate(90);
                         break;
-                    case OrientationType.LeftBotom:
+                    case OrientationType.LeftBottom:
                         image.Rotate(-90);
                         break;
                     default:
