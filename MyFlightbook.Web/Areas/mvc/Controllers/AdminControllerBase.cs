@@ -16,7 +16,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
     {
         protected void CheckAuth(uint roleMask)
         {
-            if (!User.Identity.IsAuthenticated || (roleMask != ProfileRoles.maskUnrestricted && (((uint) MyFlightbook.Profile.GetUser(User.Identity.Name).Role & roleMask) == 0)))
+            if (!User.Identity.IsAuthenticated || (((uint) MyFlightbook.Profile.GetUser(User.Identity.Name).Role & roleMask) == 0))
                 throw new UnauthorizedAccessException("Attempt to access an admin page by an unauthorized user: " + User.Identity.Name);
         }
 

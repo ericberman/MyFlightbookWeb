@@ -43,7 +43,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public ActionResult AddAirport(string Code, string FacilityName, string TypeCode, double Latitude, double Longitude, bool fAsAdmin, bool fForceAdd)
         {
-            return SafeOp(ProfileRoles.maskUnrestricted, () =>
+            return SafeOp(() =>
             {
                 fAsAdmin = fAsAdmin && MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData;
 
@@ -87,7 +87,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             fAdmin = fAdmin && MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData;
 
-            return SafeOp(fAdmin ? ProfileRoles.maskCanManageData : ProfileRoles.maskUnrestricted, () =>
+            return SafeOp(() =>
             {
                 airport.DeleteAirportForUser(User.Identity.Name, Code, TypeCode, fAdmin);
                 return AirportTableForUser(fAdmin);

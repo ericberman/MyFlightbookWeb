@@ -37,7 +37,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public ActionResult DeleteImage(MFBImageInfoBase.ImageClass ic, string key, string szThumb, bool fAsAdmin = false)
         {
-            return SafeOp(ProfileRoles.maskUnrestricted, () =>
+            return SafeOp(() =>
             {
                 MFBImageInfo mfbii = MFBImageInfo.LoadMFBImageInfo(ic, key, szThumb);
 
@@ -54,7 +54,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public ActionResult AnnotateImage(MFBImageInfoBase.ImageClass ic, string key, string szThumb, string newAnnotation, bool fAsAdmin = false)
         {
-            return SafeOp(ProfileRoles.maskUnrestricted, () =>
+            return SafeOp(() =>
             {
                 MFBImageInfo mfbii = MFBImageInfo.LoadMFBImageInfo(ic, key, szThumb);
 
