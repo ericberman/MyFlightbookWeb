@@ -78,7 +78,10 @@
                 type: "POST", data: d, dataType: "html", contentType: "application/json",
                 error: function (xhr, status, error) { $("#lblErr").text(xhr.responseText); },
                 complete: function (response) { },
-                success: function (response) { $("#divUserAirports").html(response); }
+                success: function (response) {
+                    $("#divUserAirports").html(response);
+                    refreshUserAirports(fAdmin);
+                }
             });
         }
     }
@@ -117,9 +120,9 @@
                     if (response == '') {
                         // success - reload the user's airports and clear the form
                         $("#Code")[0].value = $("#txtFacilityName")[0].value = $("#Latitude")[0].value = $("#Longitude")[0].value = "";
+                        refreshUserAirports(@Json.Encode(ViewBag.isAdminMode));
                         if ($('#pnlDupeAirport').dialog('isOpen'))
                             $("#pnlDupeAirport").dialog("close");
-                        refreshUserAirports(@Json.Encode(ViewBag.isAdminMode));
                     } else {
                         $("#divDupeAirportsList").html(response);
                         showModalById("pnlDupeAirport", '@Resources.Airports.errDuplicateAirportTitle', 450);
