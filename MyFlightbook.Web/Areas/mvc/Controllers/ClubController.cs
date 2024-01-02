@@ -12,7 +12,7 @@ using System.Web.Mvc;
 
 /******************************************************
  * 
- * Copyright (c) 2023 MyFlightbook LLC
+ * Copyright (c) 2023-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -53,7 +53,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
             Club club = Club.ClubWithID(idClub) ?? throw new InvalidOperationException(Resources.Club.errNoSuchClub);
 
-            if (!club.HasAdmin(szTargetUser))
+            ClubMember cm = club.GetMember(szTargetUser);
+            if (!(cm?.IsOfficer ?? false))
                 throw new UnauthorizedAccessException(Resources.Club.errNotAMember);
             return club;
         }

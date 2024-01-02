@@ -21,7 +21,7 @@ using System.Web.Caching;
 
 /******************************************************
  * 
- * Copyright (c) 2014-2023 MyFlightbook LLC
+ * Copyright (c) 2014-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1222,6 +1222,8 @@ namespace MyFlightbook.Clubs
         /// Is this member responsible for insurance?
         /// </summary>
         public bool IsInsuranceOfficer { get; set; }
+
+        public bool IsOfficer { get { return IsTreasurer || IsInsuranceOfficer || IsMaintanenceOfficer; } }
 
         public bool IsInactive { get; set; }
 
