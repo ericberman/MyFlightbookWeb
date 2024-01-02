@@ -1,0 +1,21 @@
+﻿@using MyFlightbook.Image
+@{
+    IEnumerable<MFBImageInfo> rgImages = ViewBag.images;
+    MFBImageInfo mfbii = rgImages?.FirstOrDefault();
+    string defaultImageSrc = mfbii?.URLThumbnail ?? VirtualPathUtility.ToAbsolute("~/images/noimage.png");
+    string defaultTip = (mfbii == null) ? Resources.LocalizedText.NoImageTooltip : string.Empty;
+}
+<div class="hoverListContainer">
+    <img src="@(String.IsNullOrEmpty(defaultImageSrc) ? VirtualPathUtility.ToAbsolute("~/images/noimage.png") : defaultImageSrc)" 
+         alt="@defaultTip" title="@defaultTip" 
+         class="@(ViewBag.imageClasses ?? string.Empty)"
+         style="max-width: 150px;" />
+    @if ((rgImages?.Count() ?? 0) > 1)
+    {
+        <a href="#">
+            <div class="hoverListItems hintPopup">
+                @{ Html.RenderAction("ImageListDisplay", "Image", new { il = new ImageList(rgImages.ToArray()) }); }
+            </div>
+        </a>
+    }
+</div>

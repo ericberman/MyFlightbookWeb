@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.Globalization;
 using System.Linq;
@@ -101,8 +102,8 @@ namespace MyFlightbook
     {
         public const int UnknownModel = -1;
         private string szSampleAircraftIDs = "";
-        static readonly Regex rNormalize = new Regex("[^a-zA-Z0-9 ]*", RegexOptions.Compiled);
-        static readonly Regex rNormalizeNoSpace = new Regex("[^a-zA-Z0-9]*", RegexOptions.Compiled);
+        static readonly Regex rModelNormalize = new Regex("[^a-zA-Z0-9 ]*", RegexOptions.Compiled);
+        static readonly Regex rModelNormalizeNoSpace = new Regex("[^a-zA-Z0-9]*", RegexOptions.Compiled);
 
         /// <summary>
         /// For turbine aircraft, indicates the type of turbine
@@ -348,7 +349,7 @@ ORDER BY model ASC;", string.Join(",", modelIDs)));
         /// <summary>
         /// Display name for manufacturer (read-only; use ManufacturerID for read/write)
         /// </summary>
-        public string ManufacturerDisplay { get; set; }
+        public string ManufacturerDisplay { get; set; } = string.Empty;
 
         /// <summary>
         /// Are all aircraft in this make/model glass cockpit?
@@ -403,22 +404,23 @@ ORDER BY model ASC;", string.Join(",", modelIDs)));
         /// <summary>
         /// The model (e.g., "C-172")
         /// </summary>
+        [Required]
         public string Model { get; set; }
 
         /// <summary>
         /// Friendly name for the model (e.g., "Skyhawk")
         /// </summary>
-        public string ModelName { get; set; }
+        public string ModelName { get; set; } = string.Empty;
 
         /// <summary>
         /// Type name, if any (e.g., "777-200ER")
         /// </summary>
-        public string TypeName { get; set; }
+        public string TypeName { get; set; } = string.Empty;
 
         /// <summary>
         /// Family name - e.g., "PA28" or "C-172"
         /// </summary>
-        public string FamilyName { get; set; }
+        public string FamilyName { get; set; } = string.Empty;
 
         /// <summary>
         /// ID of the category/class
@@ -542,8 +544,10 @@ ORDER BY model ASC;", string.Join(",", modelIDs)));
         /// </summary>
         public MakeModel()
         {
-            MakeModelID = MakeModel.UnknownModel;
+            MakeModelID = UnknownModel;
             CategoryClassID = CategoryClass.CatClassID.ASEL;
+            ArmyMDS = FamilyName = ModelName = FamilyName = TypeName = string.Empty;
+            Is200HP = IsAllGlass = IsAllTAA = IsCertifiedSinglePilot = IsComplex = IsComplex = IsConstantProp = IsHighPerf = IsMotorGlider = IsMultiEngineHelicopter = IsRetract = IsTailWheel = false;
         }
 
         protected const string szSQLSelectTemplate = @"SELECT models.*, categoryclass.CatClass as 'Category/Class', manufacturers.manufacturer 
@@ -576,23 +580,58 @@ WHERE {1}";
         {
             try
             {
+                if (ManufacturerID <= 0)
+                    throw new MyFlightbookValidationException(Resources.Makes.errManufacturerRequired);
+
+                if (String.IsNullOrEmpty(Model))
+                    throw new MyFlightbookValidationException(Resources.Makes.editMakeValModelNameRequired);
+
                 // Category class and manufacturer will throw exceptions if there is an issue.
                 if (CategoryClass.CategoryClassFromID(CategoryClassID) == null || new Manufacturer(ManufacturerID) == null)
                     return false;
 
                 if (ArmyMDS.Length > 40)
-                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.Makes.errMDSTooLong, ArmyMDS));
+                    throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, Resources.Makes.errMDSTooLong, ArmyMDS));
 
                 if (IsCertifiedSinglePilot && (!EngineType.IsTurbine() || String.IsNullOrEmpty(TypeName)))
-                    throw new MyFlightbookException(Resources.Makes.errSinglePilotButNotTypeRated);
+                    throw new MyFlightbookValidationException(Resources.Makes.errSinglePilotButNotTypeRated);
+
+                FamilyName = FamilyName.ToUpperInvariant();
+                if (!RegexUtility.ICAO.IsMatch(FamilyName))
+                    throw new MyFlightbookValidationException(Resources.Makes.errInvalidICAO);
+
+                if (TypeName.CompareCurrentCultureIgnoreCase("yes") == 0)
+                    throw new MyFlightbookValidationException(Resources.Makes.errYesNotValidType);
             }
-            catch (MyFlightbookException ex)
+            catch (Exception ex) when (!(ex is OutOfMemoryException))
             {
                 ErrorString = ex.Message;
                 return false;
             }
 
             return true;
+        }
+
+        public void CommitForUser(string szUser)
+        {
+            if (string.IsNullOrEmpty(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+
+            MakeModel mmExisting = null;
+
+            // If this is a new make, inherit the manufacturer's sim-only status.
+            if (IsNew) // creation event
+                AllowedTypes = (new Manufacturer(ManufacturerID)).AllowedTypes;
+            else
+            {
+                mmExisting = new MakeModel(MakeModelID);
+                // otherwise, if the user isn't an admin, restore the existing allowed types
+                if (!Profile.GetUser(szUser).CanManageData)
+                    AllowedTypes = mmExisting.AllowedTypes;
+            }
+
+            Commit(szUser, IsNew ? string.Empty : mmExisting.ToString());
+
         }
 
         /// <summary>
@@ -626,9 +665,9 @@ WHERE {1}";
             DBHelper dbh = new DBHelper(szQ);
             dbh.DoNonQuery((comm) =>
                 {
-                    comm.Parameters.AddWithValue("Model", Model);
-                    comm.Parameters.AddWithValue("modelName", ModelName);
-                    comm.Parameters.AddWithValue("typeName", TypeName);
+                    comm.Parameters.AddWithValue("Model", Model.LimitTo(44));
+                    comm.Parameters.AddWithValue("modelName", ModelName.LimitTo(44));
+                    comm.Parameters.AddWithValue("typeName", TypeName.LimitTo(44));
                     comm.Parameters.AddWithValue("familyname", FamilyName);
                     comm.Parameters.AddWithValue("idCatClass", (int)CategoryClassID);
                     comm.Parameters.AddWithValue("idManufacturer", ManufacturerID);
@@ -642,7 +681,7 @@ WHERE {1}";
                     comm.Parameters.AddWithValue("IsRetract", IsRetract);
                     comm.Parameters.AddWithValue("HasFlaps", HasFlaps);
                     comm.Parameters.AddWithValue("IsConstantProp", IsConstantProp);
-                    comm.Parameters.AddWithValue("armyMDS", ArmyMDS);
+                    comm.Parameters.AddWithValue("armyMDS", ArmyMDS.LimitTo(44));
                     comm.Parameters.AddWithValue("simOnly", (int)AllowedTypes);
                     comm.Parameters.AddWithValue("motorglider", IsMotorGlider);
                     comm.Parameters.AddWithValue("multiHeli", IsMultiEngineHelicopter);
@@ -654,11 +693,14 @@ WHERE {1}";
             if (MakeModelID == -1)
                 MakeModelID = dbh.LastInsertedRowId;
 
+            // Fix up display, if needed (e.g., for newly added or edited model)
+            if (String.IsNullOrEmpty(ManufacturerDisplay))
+                ManufacturerDisplay = Manufacturer.CachedManufacturers().First(man => man.ManufacturerID == ManufacturerID).ManufacturerName;
+            if (String.IsNullOrEmpty(CategoryClassDisplay))
+                CategoryClassDisplay = CategoryClass.CategoryClassFromID(CategoryClassID).CatClass;
+
             if (MakeModelID != -1)
-            {
-                HttpRuntime.Cache.Remove(CacheKey(MakeModelID));    // remove, then replace.
-                HttpRuntime.Cache.Add(CacheKey(MakeModelID), this, null, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromMinutes(60), System.Web.Caching.CacheItemPriority.Normal, null);
-            }
+                HttpRuntime.Cache.Insert(CacheKey(MakeModelID), this, null, Cache.NoAbsoluteExpiration, TimeSpan.FromMinutes(60), CacheItemPriority.Normal, null);
 
             // use fIsNew because Model.IsNew may have been true and not now.
             string szLinkEditModel = String.Format(CultureInfo.InvariantCulture, "{0}?id={1}", "~/Member/EditMake.aspx".ToAbsoluteURL(HttpContext.Current.Request), MakeModelID);
@@ -706,7 +748,7 @@ WHERE {1}";
             IsMultiEngineHelicopter = Convert.ToBoolean(dr["fMultiHelicopter"], CultureInfo.InvariantCulture);
             IsCertifiedSinglePilot = Convert.ToBoolean(dr["fCertifiedSinglePilot"], CultureInfo.InvariantCulture);
 
-            HttpRuntime.Cache.Add(CacheKey(this.MakeModelID), this, null, DateTime.Now.AddHours(2), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Low, null);
+            HttpRuntime.Cache.Insert(CacheKey(this.MakeModelID), this, null, DateTime.Now.AddHours(2), Cache.NoSlidingExpiration, CacheItemPriority.Low, null);
         }
 
         #region Find/enumerate Models
@@ -770,11 +812,11 @@ WHERE {1}";
             get
             {
                 m_szSearchNormal = m_szSearchNormal ?? String.Format(CultureInfo.CurrentCulture, "{0} {1} {2} {3} {4}",
-                        rNormalizeNoSpace.Replace(Model, string.Empty),
+                        rModelNormalizeNoSpace.Replace(Model, string.Empty),
                         FamilyName,
-                        rNormalizeNoSpace.Replace(ManufacturerDisplay, string.Empty),
-                        rNormalizeNoSpace.Replace(ModelName, string.Empty),
-                        rNormalizeNoSpace.Replace(TypeName, string.Empty)).ToUpperInvariant();
+                        rModelNormalizeNoSpace.Replace(ManufacturerDisplay, string.Empty),
+                        rModelNormalizeNoSpace.Replace(ModelName, string.Empty),
+                        rModelNormalizeNoSpace.Replace(TypeName, string.Empty)).ToUpperInvariant();
                 return m_szSearchNormal;
             }
         }
@@ -784,7 +826,7 @@ WHERE {1}";
         {
             get
             {
-                m_szModelNormal = m_szModelNormal ?? rNormalizeNoSpace.Replace(Model, string.Empty).ToUpperInvariant();
+                m_szModelNormal = m_szModelNormal ?? rModelNormalizeNoSpace.Replace(Model, string.Empty).ToUpperInvariant();
                 return m_szModelNormal;
             }
         }
@@ -854,12 +896,12 @@ WHERE {1}";
         {
             if (mm == null)
                 throw new ArgumentNullException(nameof(mm));
-            string szCompare = rNormalize.Replace(mm.DisplayName, "").ToUpper(CultureInfo.CurrentCulture);
+            string szCompare = rModelNormalize.Replace(mm.DisplayName, "").ToUpper(CultureInfo.CurrentCulture);
 
             // for now, let's see how this works if you just see if the manufacturer name is present AND the (modelname OR model) is present
-            string szManufacturerNormal = rNormalize.Replace(ManufacturerDisplay, "").ToUpper(CultureInfo.CurrentCulture);
-            string szModelNameNormal = rNormalize.Replace(ModelName, "").ToUpper(CultureInfo.CurrentCulture);
-            string szModelNormal = rNormalize.Replace(Model, "").ToUpper(CultureInfo.CurrentCulture);
+            string szManufacturerNormal = rModelNormalize.Replace(ManufacturerDisplay, string.Empty).ToUpper(CultureInfo.CurrentCulture);
+            string szModelNameNormal = rModelNormalize.Replace(ModelName, string.Empty).ToUpper(CultureInfo.CurrentCulture);
+            string szModelNormal = rModelNormalize.Replace(Model, string.Empty).ToUpper(CultureInfo.CurrentCulture);
 
             Boolean fMatchManufacturer = szCompare.Contains(szManufacturerNormal);
             Boolean fMatchModel = (szModelNormal.Length > 0 && szCompare.Contains(szModelNormal));
@@ -949,6 +991,7 @@ WHERE {1}";
         {
             // Get the model attributes
             List<string> lstAttributes = new List<string>();
+
             switch (EngineType)
             {
                 case MakeModel.TurbineLevel.Jet:
@@ -1010,6 +1053,39 @@ WHERE {1}";
                 IEnumerable<string> col = AttributeList();
                 return !col.Any() ? string.Empty : String.Format(CultureInfo.CurrentCulture, "({0})", String.Join(", ", col));
             }
+        }
+
+        public LinkedString UserFlightsTotal(string szUser, MakeModelStats userStats)
+        {
+            if (String.IsNullOrEmpty(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+            if (userStats == null)
+                throw new ArgumentNullException(nameof(userStats));
+
+            FlightQuery fq = new FlightQuery(szUser);
+            fq.MakeList.Add(this);
+            string szStatsLabel = String.Format(CultureInfo.CurrentCulture, Resources.Makes.MakeStatsFlightsCount, userStats.NumFlights, userStats.EarliestFlight.HasValue && userStats.LatestFlight.HasValue ?
+            String.Format(CultureInfo.CurrentCulture, Resources.Makes.MakeStatsFlightsDateRange, userStats.EarliestFlight.Value, userStats.LatestFlight.Value) : string.Empty);
+            return new LinkedString(szStatsLabel, String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?ft=Totals&fq={0}", HttpUtility.UrlEncode(Convert.ToBase64String(fq.ToJSONString().Compress()))));
+        }
+
+        public IEnumerable<LinkedString> AttributeListForUser(IEnumerable<Aircraft> rgac, string szUser, MakeModelStats userStats, AvionicsTechnologyType upgradeType = AvionicsTechnologyType.None, DateTime? upgradeDate = null)
+        {
+            if (String.IsNullOrEmpty(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+
+            List<LinkedString> lstAttribs = new List<LinkedString>();
+            if (!String.IsNullOrEmpty(FamilyName))
+                lstAttribs.Add(new LinkedString(ModelQuery.ICAOPrefix + FamilyName));
+            foreach (string sz in AttributeList(upgradeType, upgradeDate))
+                lstAttribs.Add(new LinkedString(sz));
+            if (rgac?.Any() ?? false)
+            {
+                lstAttribs.Add(new LinkedString(String.Format(CultureInfo.CurrentCulture, Resources.Makes.MakeStatsAircraftCount, rgac.Count())));
+                MakeModelStats stats = userStats ?? StatsForUser(szUser);
+                lstAttribs.Add(UserFlightsTotal(szUser, stats));
+            }
+            return lstAttribs;
         }
     }
     

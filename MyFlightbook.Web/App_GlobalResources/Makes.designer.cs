@@ -313,7 +313,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to On Aug 4, 1997, the FAA definition of high-performance changed from an aircraft with more than 200hp to being an aircraft with an engine of more than 200hp.  So a multi-engine aircraft such as a Piper Seneca, with two engines of 200hp each (for 400hp total), went from being high-performance to not high performance as of that date.&lt;/p&gt;&lt;p&gt;Checking this option will cause flights prior to that date in this model to be treated as high-performance, but not flights after that date..
+        ///   Looks up a localized string similar to On Aug 4, 1997, the FAA definition of high-performance changed from an aircraft with more than 200hp to being an aircraft with an engine of more than 200hp. &lt;br /&gt;&lt;br /&gt;So a multi-engine aircraft such as a Piper Seneca, with two engines of 200hp each (for 400hp total), went from being high-performance to not high performance as of that date.&lt;br /&gt;&lt;br /&gt;Checking this option will cause flights prior to that date in this model to be treated as high-performance, but not flights after that date..
         /// </summary>
         internal static string editMakeHighPerf1997Note {
             get {
@@ -619,11 +619,29 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ICAO/FAA codes may only be up to 4 alphanumeric characters.
+        /// </summary>
+        internal static string errInvalidICAO {
+            get {
+                return ResourceManager.GetString("errInvalidICAO", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please provide a name for the manufacturer.
         /// </summary>
         internal static string errManufacturerNameRequired {
             get {
                 return ResourceManager.GetString("errManufacturerNameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please select a manufacturer from the list.  You can add one if needed..
+        /// </summary>
+        internal static string errManufacturerRequired {
+            get {
+                return ResourceManager.GetString("errManufacturerRequired", resourceCulture);
             }
         }
         

@@ -1,0 +1,426 @@
+﻿@using System.Globalization
+@{
+    int idModel = ViewBag.idModel;
+    MakeModel mm = ViewBag.model;
+    bool fAdmin = ViewBag.fAdmin;
+    bool useArmyCurrency = ViewBag.useArmyCurrency;
+}
+<script type="text/javascript">
+    // <![CDATA[
+    function FIsSeaplane() {
+        var cc = $("#cmbCatClass").val();
+        return cc == "@CategoryClass.CatClassID.ASES" || cc == "@CategoryClass.CatClassID.AMES";
+    }
+
+    function ComplexClicked() {
+        if ($("#ckComplex")[0].checked) {
+            $("#ckFlaps")[0].checked = true;
+            $("#ckConstantProp")[0].checked = true;
+            if (!FIsSeaplane())
+                $("#ckRetract")[0].checked = true;
+        }
+        else {
+            $("#ckFlaps")[0].checked = false;
+            $("#ckConstantProp")[0].checked = false;
+            $("#ckRetract")[0].checked = false;
+        }
+    }
+
+    function ComplexElementClicked() {
+        if ($("#ckFlaps")[0].checked &&
+            $("#ckConstantProp")[0].checked &&
+            (FIsSeaplane() || $("#ckRetract")[0].checked)) {
+            $("#ckComplex")[0].checked = true;
+        }
+        else {
+            $("#ckComplex")[0].checked = false;
+        }
+    }
+
+    function HighPerfClicked() {
+        if (!$("#ckHighPerf")[0].checked)
+            $("#ckLegacyHighPerf")[0].checked = false;
+    }
+
+    function LegacyHighPerfClicked() {
+        if ($("#ckLegacyHighPerf")[0].checked)
+            $("#ckHighPerf")[0].checked = true;
+    }
+
+    function engineChanged() {
+        var engineType = $('input[name="engineType"]:checked').val();
+        if (engineType == '@MakeModel.TurbineLevel.Piston' || engineType == '@MakeModel.TurbineLevel.Electric')
+            $("#divSinglePilotOps").hide();
+        else
+            $("#divSinglePilotOps").show();
+    }
+
+    function manufacturerChanged(newVal) {
+        if (newVal == '' || $("input[name='allowedTypes']").length == 0)
+            return;
+        var params = new Object();
+        params.idMan = newVal;
+        var d = JSON.stringify(params);
+        $.ajax({
+            url: "@Url.Action("GetManufacturerRestriction", "Aircraft")",
+            type: "POST", data: d, dataType: "html", contentType: "application/json",
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            success: function (r) {
+                $("input[name='allowedTypes']")[r].checked = true;
+            }
+        });
+    }
+
+    function addNewManufacturer(name) {
+        if(!$("#frmNewMan").valid())
+            return;
+        var params = new Object();
+        params.name = name;
+        var d = JSON.stringify(params);
+        $.ajax({
+            url: "@Url.Action("AddManufacturer", "Aircraft")",
+            type: "POST", data: d, dataType: "json", contentType: "application/json",
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            success: function (r) {
+                $("#pnlNewMan").dialog('close');
+                // see if the manufacturer matched an existing one; otherwise, append it.
+                if ($("#cmbManufacturer option[value='" + r.ManufacturerID + "']").length == 0) {
+                    var option = new Option(r.ManufacturerName, r.ManufacturerID);
+                    $('#cmbManufacturer').append($(option));
+                }
+                $("#cmbManufacturer").val(r.ManufacturerID);
+            }
+        });
+    }
+
+    function showAddMan() {
+        showModalById('pnlNewMan', '@Resources.Makes.editMakeAddManufacturerPrompt', 400);
+        $("#txtManufacturer")[0].focus();
+    }
+
+    function showIfTrue(id, f) {
+        if (f)
+            $(id).show();
+        else
+            $(id).hide();
+    }
+
+    function catClassChanged(newVal) {
+        if (newVal == "@CategoryClass.CatClassID.AMEL" || newVal == "@CategoryClass.CatClassID.AMES" || newVal == "@CategoryClass.CatClassID.Helicopter")
+            $("#pnlLegacyHighPerf").show();
+        else {
+            $("#pnlLegacyHighPerf").hide();
+            $("#ckLegacyHighPerf")[0].checked = false;
+        }
+
+        showIfTrue("#rowFamily", newVal != "@CategoryClass.CatClassID.GasBalloon" && newVal != "@CategoryClass.CatClassID.HotAirBalloon" && newVal != "@CategoryClass.CatClassID.Glider" && newVal != "@CategoryClass.CatClassID.UnmannedAerialSystem" &&
+            newVal != "@CategoryClass.CatClassID.WeightShiftControlLand" && newVal != "@CategoryClass.CatClassID.WeightShiftControlSea");
+
+        showIfTrue("#divTailwheel", newVal == "@CategoryClass.CatClassID.ASEL" || newVal == "@CategoryClass.CatClassID.AMEL");
+        showIfTrue("#divTMG", newVal == "@CategoryClass.CatClassID.Glider");
+        var fHasEngine = (newVal != "@CategoryClass.CatClassID.Glider" && newVal != "@CategoryClass.CatClassID.GasBalloon" && newVal != "@CategoryClass.CatClassID.HotAirBalloon" && newVal != "@CategoryClass.CatClassID.Airship");
+        showIfTrue("#rowEngineType", fHasEngine);
+        showIfTrue("#pnlHighPerfBlock", fHasEngine);
+        showIfTrue("#divMultiHeli", newVal == "@CategoryClass.CatClassID.Helicopter");
+        $("#ckConstantProp")[0].disabled = $("#ckComplex")[0].disabled = !fHasEngine;
+        if (fHasEngine || newVal == "@CategoryClass.CatClassID.Glider")
+            $("#divComplex").css("display", "inline-block");
+        else
+            $("#divComplex").css("display", "none");
+        if (!fHasEngine) {
+            $("#ckComplex")[0].checked = false;
+            ComplexClicked();
+            $("#rbPiston")[0].checked = true;
+        }
+    }
+
+    function submitForm(bypassCheck) {
+        var form = $("#frmEditMake");
+        form.validate();
+        form.validate().element("#txtFamilyName");
+        if (!form.valid())
+            return false;
+        var f = $("#frmEditMake").serialize();
+        var modelID = parseInt($("#hdnModelID").val());
+
+        if (bypassCheck || modelID > 0) {
+            $.ajax({
+                url: "@Url.Action("CommitModel", "Aircraft")",
+                type: "POST", data: f, dataType: "json", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',   
+                error: function (xhr, status, error) { $("#lblError").text(xhr.responseText); },
+                success: function (r) {
+                    if (@ViewBag.onCommitFunc)
+                    @(ViewBag.onCommitFunc)(r);
+                }
+            });
+        } else {
+            f += "&funcName=viewExistingModel";
+            $.ajax({
+                url: "@Url.Action("CheckDupeModels", "Aircraft")",
+                type: "POST", data: f, dataType: "html", contentType: 'application/x-www-form-urlencoded; charset=UTF-8', 
+                error: function (xhr, status, error) { $("#lblError").text(xhr.responseText); },
+                success: function (r) {
+                    if (r == '')
+                        submitForm(true); // no dupes; call again, but bypass dupe check
+                    else {
+                        $("#pnlConflicts").html(r);
+                        showModalById("pnlDupesFound", '@Resources.Makes.editMakePossibleMatch', 600);
+                    }
+                }
+            });
+        }
+        return false;
+    }
+
+    function viewExistingModel(id) {
+        window.location = "@VirtualPathUtility.ToAbsolute("~/mvc/Aircraft/ViewModel/")" + id;
+    }
+
+    $(() => {
+        defaultButtonForDiv('pnlNewMan', 'btnManOK');
+        defaultButtonForDiv('divEditMakeForm', 'btnCommitModel');
+
+        $("#txtModel").autocomplete({
+            source: function (request, response) {
+                var params = new Object();
+                params.prefixText = request.term;
+                params.count = 20;
+                var d = JSON.stringify(params);
+                $.ajax({
+                    url: "@VirtualPathUtility.ToAbsolute("~/Member/Ajax.asmx/SuggestModels")",
+                    type: "POST", data: d, dataType: "json", contentType: "application/json",
+                    error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
+                    success: function (r) { response(r.d); }
+                });
+            },
+            minLength: 2,
+            classes: { "ui-autocomplete": "AutoExtender AutoExtenderList" }
+        });
+
+        $("#txtType").autocomplete({
+            source: function (request, response) {
+                var params = new Object();
+                params.prefixText = request.term;
+                params.count = 20;
+                var d = JSON.stringify(params);
+                $.ajax({
+                    url: "@VirtualPathUtility.ToAbsolute("~/Member/Ajax.asmx/SuggestModelTypes")",
+                    type: "POST", data: d, dataType: "json", contentType: "application/json",
+                    error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
+                    success: function (r) { response(r.d); }
+                });
+            },
+            minLength: 2,
+            classes: { "ui-autocomplete": "AutoExtender AutoExtenderList" }
+        });
+
+        $.validator.addMethod(
+            "validTypeName",
+            function (value, element) {
+                return value.toUpperCase() != "YES";
+            }, "@Resources.Makes.errYesNotValidType"
+        );
+
+        $("form[name='frmEditMake']").validate({
+            errorClass: "error",
+            errorElement: "div",
+            errorPlacement: function (error, element) {
+                // the parent's next sibling is the explanation text; put this in a div AFTER that.
+                var location = $(element).parent().next();
+                error.insertAfter(location);
+            },
+            rules: {
+                manufacturerName: "required",
+                model: "required",
+                typeName: { validTypeName: true }
+            },
+            messages: {
+                manufacturerName: "@Resources.Makes.errManufacturerNameRequired",
+                model: "@Resources.Makes.editMakeValModelNameRequired",
+                validTypeName: "@Resources.Makes.errYesNotValidType"
+           },
+            highlight: function (element, errorClass) {
+                $(element).removeClass(errorClass);
+            }
+        });
+
+        $("form[name='frmNewMan']").validate({
+            errorClass: "error",
+            errorElement: "div"
+        });
+
+        catClassChanged($("#cmbCatClass").val());   // ensure the correct things are shown for this category/class
+    });
+
+    // ]]>
+</script>
+<div class="noprint" id="divEditMakeForm">
+    @{ Html.RenderPartial("_noteATDFTD"); }
+    @using (Html.BeginForm("EditMake", "Aircraft", FormMethod.Post, new { id = "frmEditMake", name = "frmEditMake" }))
+    {
+        @Html.AntiForgeryToken()
+        <input type="hidden" value="@idModel" id="hdnModelID" name="idmodel" />
+        <div class="vfSection">
+            <div class="vfPrompt">
+                <span id=lblManufacturer>@Resources.Makes.editMakeManufacturerPrompt</span>
+            </div>
+            <div class="vfValue">
+                <select id="cmbManufacturer" name="manufacturer" required onchange="javascript: manufacturerChanged($(this).val());">
+                    <option @(mm.ManufacturerID == Manufacturer.UnsavedID ? "selected" : string.Empty) value="">@Resources.Makes.editMakeSelectMake</option>
+                    @foreach (Manufacturer manufacturer in Manufacturer.CachedManufacturers())
+                    {
+                        <option @(mm.ManufacturerID == manufacturer.ManufacturerID ? "selected" : string.Empty) value="@manufacturer.ManufacturerID">@manufacturer.ManufacturerName</option>
+                    }
+                </select>
+                <a href="javascript:showAddMan();">@Resources.Makes.editMakeAddmanufacturer</a>
+            </div>
+            <div></div>
+        </div>
+        <div class="vfSection">
+            <div class="vfPrompt"><span id=lblModel>@Resources.Makes.editMakeModelID</span></div>
+            <div class="vfValue">
+                <input id="txtModel" name="model" type="text" autofocus required autocomplete="off" placeholder="@Resources.LocalizedText.EditMakeWatermarkModelName" value="@mm.Model" />
+            </div>
+            <div class="vfDescription">
+                <div><span id=lblAboutModel>@Resources.Makes.editMakeModelNote</span></div>
+                <div><span id=lblAboutModel2>@Resources.Makes.editMakeModelNote2</span></div>
+            </div>
+        </div>
+        <div class="vfSection" id="rowFamily" style="@(CategoryClass.HasICAO(mm.CategoryClassID) ? string.Empty : "display : none;")">
+            <div class="vfPrompt">
+                <span id=lblFamilyName>@Resources.Makes.editMakeICAOCode</span>
+                <div class="vfSubDesc"><a href="https://www.icao.int/publications/DOC8643/Pages/Search.aspx" target="_blank">@Resources.Makes.editMakeICAOCodeLookup"</a></div>
+            </div>
+            <div class="vfValue">
+                <input type="text" maxlength="4" pattern="^[a-zA-Z0-9]{0,4}$" id="txtFamilyName" name="familyName" placeholder="@Resources.LocalizedText.EditMakeWatermarkFamily" value="@mm.FamilyName" />
+            </div>
+            <div class="vfDescription">
+                <div class="vfSubDesc">@Resources.LocalizedText.OptionalData</div>
+                <span id=lblFamilyDesc1>@Resources.Makes.editMakeICAOCodeNote</span><br />
+                <span id=lblFamilyDesc2>@Resources.Makes.editMakeICAOCodeNote2</span>
+            </div>
+        </div>
+        <div class="vfSection">
+            <div class="vfPrompt">
+                <span id=lblModelName>@Resources.Makes.editMakeMarketingName</span>
+            </div>
+            <div class="vfValue">
+                <input type="text" id="txtModelMarketingName" name="modelName" placeholder="@Resources.LocalizedText.EditMakeWatermarkCommonName" value="@mm.ModelName" />
+            </div>
+            <div class="vfDescription">
+                <div class="vfSubDesc">@Resources.LocalizedText.OptionalData</div>
+                <span id=lblModelName1>@Resources.Makes.editMakeMarketingName1</span><br />
+                <span id=lblModelNameExample>@Html.Raw(Resources.Makes.editMakeMarketingName2)</span>
+            </div>
+        </div>
+        <div class="vfSection">
+            <div class="vfPrompt">
+                <span id=lblType>@Resources.Makes.editMakeTypeRatingPrompt</span>
+                <div class="vfSubDesc"><a href="https://registry.faa.gov/TypeRatings/">@Resources.Makes.promptLookUpTypes"</a></div>
+            </div>
+            <div class="vfValue">
+                <input type="text" id="txtType" name="typeName" placeholder="@Resources.LocalizedText.EditMakeWatermarkTypeName" value="@mm.TypeName" />
+            </div>
+            <div class="vfDescription">
+                <div><span style="font-weight:bold;">@Resources.Makes.editMakeTypeDesc1</span></div>
+                <div>@Html.Raw(Resources.Makes.editMakeTypeDesc2)</div>
+                <div>@Html.Raw(Resources.Makes.editMakeTypeDesc3)</div>
+            </div>
+        </div>
+        <div class="vfSection" id="rowArmyCurrency" style="@(useArmyCurrency ? string.Empty : "display: none;")">
+            <div class="vfPrompt"><span style="font-weight:bold">@Resources.Makes.editMakeMDS</span></div>
+            <div class="vfValue"><input id="txtArmyMDS" name="armyMDS" value="@mm.ArmyMDS" placeholder="@Resources.LocalizedText.EditMakeWatermarkMDS" /></div>
+            <div class="vfDescription">
+                <div class="vfSubDesc">@Resources.LocalizedText.OptionalData</div>
+                <span id=lblMDS1>@Resources.Makes.editMakeMDSNote1</span><br />
+                <span id=lblMDS2>@Resources.Makes.editMakeMDSNote2</span>
+            </div>
+        </div>
+        <div class="vfSection">
+            <div class="vfPrompt"><span id=lblCatClass>@Resources.Makes.editMakeCategoryClass</span></div>
+            <div class="vfValue">
+                <select id="cmbCatClass" name="catClass" onchange="javascript: catClassChanged($(this).val());">
+                    @foreach (CategoryClass cc in CategoryClass.CategoryClasses())
+                    {
+                        <option @(mm.CategoryClassID == cc.IdCatClass ? "selected" : string.Empty) value="@cc.IdCatClass">@cc.CatClass</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="vfSection">
+            <div class="vfPrompt"><span style="font-weight:bold">@Resources.Makes.editMakeFeatures</span></div>
+            <div>
+                <div style="display:inline-block; vertical-align:top" id="divComplex">
+                    <input type="checkbox" id="ckComplex" name="isComplex" @(mm.IsComplex ? "checked" : string.Empty) onclick="javascript: ComplexClicked();" /><label for="ckComplex">@Resources.Makes.editMakeComplex</label>
+                    <div style="margin-left:20px">
+                        <input type="checkbox" id="ckConstantProp" name="isConstantProp" @(mm.IsConstantProp ? "checked" : string.Empty) onclick="javascript: ComplexElementClicked();" /><label for="ckConstantProp">@Resources.Makes.editMakeCSP</label><br />
+                        <input type="checkbox" id="ckFlaps" name="hasFlaps" @(mm.HasFlaps ? "checked" : string.Empty) onclick="javascript: ComplexElementClicked();" /><label for="ckFlaps">@Resources.Makes.editMakeFlaps</label><br />
+                        <input type="checkbox" id="ckRetract" name="isRetract" @(mm.IsRetract ? "checked" : string.Empty) onclick="javascript: ComplexElementClicked();" /><label for="ckRetract">@Resources.Makes.editMakeRetract</label><br />
+                    </div>
+                </div>
+                <div style="display:inline-block;vertical-align:top">
+                    <div id="divTailwheel"><input type="checkbox" id="ckTailwheel" name="isTailwheel" @(mm.IsTailWheel ? "checked" : string.Empty) /><label for="ckTailwheel">@Resources.Makes.editMakeTailwheel</label></div>
+                    <div id="divTMG" style="@(mm.CategoryClassID == CategoryClass.CatClassID.Glider ? string.Empty : "display : none;")"><input type="checkbox" id="ckTMG" name="isTMG" @(mm.IsMotorGlider ? "checked" : string.Empty) /><label for="ckTMG">@Resources.Makes.editMakeTMG</label></div>
+                    <div id="divMultiHeli" style="@(mm.CategoryClassID == CategoryClass.CatClassID.Helicopter ? string.Empty : "display: none")"><input type="checkbox" id="ckMultiHeli" name="isMultiHeli" @(mm.IsMultiEngineHelicopter ? "checked" : string.Empty) /><label for="ckMultiHeli">@Resources.Makes.editMakeMultiHeli</label></div>
+                    <div id="pnlHighPerfBlock">
+                        <input type="checkbox" id="ckHighPerf" name="isHighPerf" @(mm.PerformanceType == MakeModel.HighPerfType.NotHighPerf ? string.Empty : "checked") onclick="javascript: HighPerfClicked();" /><label for="ckHighPerf">@Resources.Makes.editMakeHighPerf</label>
+                        <span id="pnlLegacyHighPerf" style="@(mm.CategoryClassID == CategoryClass.CatClassID.AMES || mm.CategoryClassID == CategoryClass.CatClassID.AMEL || mm.CategoryClassID == CategoryClass.CatClassID.Helicopter ? string.Empty : "display : none;")">
+                            &nbsp;<input type="checkbox" id="ckLegacyHighPerf" name="isLegacyHighPerf" @(mm.PerformanceType == MakeModel.HighPerfType.Is200HP ? "checked" : string.Empty) onclick="javascript: LegacyHighPerfClicked();" /><label for="ckLegacyHighPerf">@Resources.Makes.editMakeHighPerf1997</label>
+                            @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "highPerfTip", tipTextHTML = Resources.Makes.editMakeHighPerf1997Note }); }
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="pnlAvionicsType" class="vfSection">
+            <div><span style="font-weight:bold">@Resources.Makes.avionicsLabel</span></div>
+            <div><input type="radio" name="avionics" id="rbAvionicsAny" value="@MakeModel.AvionicsTechnologyType.None" @(mm.AvionicsTechnology == MakeModel.AvionicsTechnologyType.None ? "checked" : string.Empty) /><label for="rbAvionicsAny">@Resources.Makes.avionicsAny</label></div>
+            <div><input type="radio" name="avionics" id="rbAvionicsGlass" value="@MakeModel.AvionicsTechnologyType.Glass" @(mm.AvionicsTechnology == MakeModel.AvionicsTechnologyType.Glass ? "checked" : string.Empty) /><label for="rbAvionicsGlass">@Resources.Makes.avionicsGlass</label></div>
+            <div>
+                <input type="radio" name="avionics" id="rbAvionicsTAA" value="@MakeModel.AvionicsTechnologyType.TAA" @(mm.AvionicsTechnology == MakeModel.AvionicsTechnologyType.TAA ? "checked" : string.Empty) /><label for="rbAvionicsTAA">@Resources.Makes.avionicsTAA</label>
+                @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "TAATip", tipTextHTML = Resources.Makes.TAADefinition }); }
+            </div>
+        </div>
+        <div id="divIsSimOnly" class="vfSection" style="@(fAdmin ? string.Empty : "display: none;")">
+            <span style="font-weight:bold">@Resources.Makes.editMakeSimOnly</span>
+            <div><input type="radio" name="allowedTypes" id="rbAnyType" value="@AllowedAircraftTypes.Any" @(mm.AllowedTypes == AllowedAircraftTypes.Any ? "checked" : string.Empty) /><label for="rbAnyType">@Resources.Makes.editMakeSimAny</label></div>
+            <div><input type="radio" name="allowedTypes" id="rbSimOnly" value="@AllowedAircraftTypes.SimulatorOnly" @(mm.AllowedTypes == AllowedAircraftTypes.SimulatorOnly ? "checked" : string.Empty) /><label for="rbSimOnly">@Resources.Makes.editMakeSimSimOnly</label></div>
+            <div><input type="radio" name="allowedTypes" id="rbSimOrGeneric" value="@AllowedAircraftTypes.SimOrAnonymous" @(mm.AllowedTypes == AllowedAircraftTypes.SimOrAnonymous ? "checked" : string.Empty) /><label for="rbSimOrGeneric">@Resources.Makes.editMakeSimSimOrGeneric</label></div>
+        </div>
+        <div id="rowEngineType" class="vfSection">
+            <div class="vfPrompt"><span id=lblEngineType>@Resources.Makes.editMakeEngineType</span></div>
+            <div>
+                <input type="radio" name="engineType" id="rbPiston" value="@MakeModel.TurbineLevel.Piston" onchange="javascript: engineChanged();" @(mm.EngineType == MakeModel.TurbineLevel.Piston ? "checked" : string.Empty) /><label for="rbPiston">@Resources.Makes.editMakeEngineTypePiston</label>
+                <input type="radio" name="engineType" id="rbTurboProp" value="@MakeModel.TurbineLevel.TurboProp" onchange="javascript: engineChanged();" @(mm.EngineType == MakeModel.TurbineLevel.TurboProp ? "checked" : string.Empty) /><label for="rbTurboProp">@Resources.Makes.editMakeEngineTypeTurboProp</label>
+                <input type="radio" name="engineType" id="rbJet" value="@MakeModel.TurbineLevel.Jet" onchange="javascript: engineChanged();" @(mm.EngineType == MakeModel.TurbineLevel.Jet ? "checked" : string.Empty) /><label for="rbJet">@Resources.Makes.editMakeEngineTypeJet</label>
+                <input type="radio" name="engineType" id="rbTurbine" value="@MakeModel.TurbineLevel.UnspecifiedTurbine" onchange="javascript: engineChanged();" @(mm.EngineType == MakeModel.TurbineLevel.UnspecifiedTurbine ? "checked" : string.Empty) /><label for="rbTurbine">@Resources.Makes.editMakeEngineTypeTurbine</label>
+                <input type="radio" name="engineType" id="rbElectric" value="@MakeModel.TurbineLevel.Electric" onchange="javascript: engineChanged();" @(mm.EngineType == MakeModel.TurbineLevel.Electric ? "checked" : string.Empty) /><label for="rbElectric">@Resources.Makes.editMakeEngineTypeElectric</label>
+                <div id="divSinglePilotOps" style="@(mm.EngineType.IsTurbine() ? string.Empty : "display: none;")">
+                    <input type="checkbox" id="ckSinglePilot" name="isSinglePilot" @(mm.IsCertifiedSinglePilot ? "checked" : string.Empty) /><label for="ckSinglePilot">@Resources.Makes.editMakeCertifiedSingle</label>
+                </div>
+            </div>
+        </div>
+        <div><span id="lblError" class="error">@(ViewBag.error ?? string.Empty)</span></div>
+        <div><button type="button" id="btnCommitModel" onclick="javascript: submitForm(@Json.Encode(!mm.IsNew));">@(mm.IsNew ? Resources.LocalizedText.EditMakeAddMake : Resources.LocalizedText.EditMakeUpdateMake)</button></div>
+    }
+ </div>
+
+<div id="pnlNewMan" style="display:none">
+    <div>
+        @using (Html.BeginForm("", "Aircraft", FormMethod.Post, new { id = "frmNewMan", name = "frmNewMan" }))
+        {
+            <input type="text" autofocus id="txtManufacturer" name="newManufacturerName" required />
+            <button id="btnManOK" type="button" onclick="javascript: addNewManufacturer($('#txtManufacturer').val());">@Resources.LocalizedText.OK</button>
+        }
+    </div>
+    <div class="fineprint"><br />@Resources.Makes.addManufacturerTip</div>
+</div>
+<div id="pnlDupesFound" style="display:none" Visible="false">
+    <p>@Resources.Makes.editMakePossibleMatchPrompt</p>
+    <div id="pnlConflicts" style="overflow-y: auto; border: 1px solid gray; width: 90%; margin-left: auto; margin-right: auto; height: 200px;">
+    </div>
+    <p style="text-align:center">
+        <button type="button" onclik="javascript: $('#pnlDupesFound').dialog('close');">@Resources.LocalizedText.Cancel</button>&nbsp;&nbsp;<button type="button" onclick="javascript: $('#pnlDupesFound').dialog('close'); submitForm(true);">@Resources.Makes.editMakePossibleMatchNoneMatch</button>
+    </p>
+</div>
+

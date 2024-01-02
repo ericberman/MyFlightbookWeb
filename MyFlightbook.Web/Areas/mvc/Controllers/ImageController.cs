@@ -109,6 +109,14 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return PartialView("_editableImage");
         }
 
+        [ChildActionOnly]
+        public ActionResult HoverImageList(IEnumerable<MFBImageInfo> rgmfbii, string imageClasses = null)
+        {
+            ViewBag.images = rgmfbii;
+            ViewBag.imageClasses = imageClasses;
+            return PartialView("_hoverImageList");
+        }
+
         [Authorize]
         public ActionResult PendingImage(string id, int full = 0)
         {

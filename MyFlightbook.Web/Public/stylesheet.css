@@ -1987,6 +1987,29 @@ tr div.editCell, tr.editRow div.displayCell {
     color: black;
 }
 
+/* Image hover list */
+.hoverListContainer a div.hoverListItems {
+    display: none;
+    position: relative;
+    max-width: 500px;
+    text-align: left;
+}
+
+.hoverListContainer a {
+    position: absolute;
+    text-decoration: none;
+    color: black;
+    cursor: default;
+    font-weight: normal;
+}
+
+.hoverListContainer:hover a div.hoverListItems {
+    left: -164px;
+    top: -14px;
+    display: block;
+    z-index: 200;
+}
+
 /* Ajax file upload */
 .fileUploadContainer {
     border: 1px solid gray;

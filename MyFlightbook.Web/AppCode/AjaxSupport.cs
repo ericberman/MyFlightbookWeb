@@ -571,26 +571,21 @@ namespace MyFlightbook.Web.Ajax
             if (String.IsNullOrEmpty(prefixText) || string.IsNullOrEmpty(szQ) || prefixText.Length <= 2)
                 return Array.Empty<string>();
 
-            string[] rgsz = util.GetKeysFromDB(String.Format(CultureInfo.InvariantCulture, szQ, util.keyColumn, count), prefixText);
-
-            List<string> responses = new List<string>(count);
-
-            int i = 0;
-            while (responses.Count < count && i < rgsz.Length)
-            {
-                if (rgsz[i].StartsWith(prefixText, StringComparison.CurrentCultureIgnoreCase))
-                    responses.Add(rgsz[i]);
-                i++;
-            }
-
-            return responses.ToArray();
+            return util.GetKeysFromDB(String.Format(CultureInfo.InvariantCulture, szQ, util.keyColumn, count), prefixText);
         }
 
         [WebMethod]
         [System.Web.Script.Services.ScriptMethod]
         public string[] SuggestModels(string prefixText, int count)
         {
-            return DoSuggestion("SELECT model AS {0} FROM models WHERE model LIKE CONCAT(?prefix, '%') ORDER BY model ASC LIMIT {1}", prefixText, count);
+            return DoSuggestion("SELECT DISTINCT model AS {0} FROM models WHERE REPLACE(model, '-', '') LIKE CONCAT(?prefix, '%') ORDER BY model ASC LIMIT {1}", Aircraft.NormalizeTail(prefixText, null), count);
+        }
+
+        [WebMethod]
+        [System.Web.Script.Services.ScriptMethod]
+        public string[] SuggestModelTypes(string prefixText, int count)
+        {
+            return DoSuggestion("SELECT DISTINCT typename AS {0} FROM models WHERE REPLACE(typename, '-', '') LIKE CONCAT(?prefix, '%') ORDER BY model ASC LIMIT {1}", Aircraft.NormalizeTail(prefixText, null), count);
         }
         #endregion
 

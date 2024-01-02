@@ -320,7 +320,7 @@
     <value>..but only until 1997</value>
   </data>
   <data name="editMakeHighPerf1997Note" xml:space="preserve">
-    <value>On Aug 4, 1997, the FAA definition of high-performance changed from an aircraft with more than 200hp to being an aircraft with an engine of more than 200hp.  So a multi-engine aircraft such as a Piper Seneca, with two engines of 200hp each (for 400hp total), went from being high-performance to not high performance as of that date.&lt;/p&gt;&lt;p&gt;Checking this option will cause flights prior to that date in this model to be treated as high-performance, but not flights after that date.</value>
+    <value>On Aug 4, 1997, the FAA definition of high-performance changed from an aircraft with more than 200hp to being an aircraft with an engine of more than 200hp. &lt;br /&gt;&lt;br /&gt;So a multi-engine aircraft such as a Piper Seneca, with two engines of 200hp each (for 400hp total), went from being high-performance to not high performance as of that date.&lt;br /&gt;&lt;br /&gt;Checking this option will cause flights prior to that date in this model to be treated as high-performance, but not flights after that date.</value>
   </data>
   <data name="editMakeICAOCode" xml:space="preserve">
     <value>FAA/ICAO ID:</value>
@@ -474,5 +474,11 @@
   </data>
   <data name="errManufacturerNameRequired" xml:space="preserve">
     <value>Please provide a name for the manufacturer</value>
+  </data>
+  <data name="errManufacturerRequired" xml:space="preserve">
+    <value>Please select a manufacturer from the list.  You can add one if needed.</value>
+  </data>
+  <data name="errInvalidICAO" xml:space="preserve">
+    <value>ICAO/FAA codes may only be up to 4 alphanumeric characters</value>
   </data>
 </root>

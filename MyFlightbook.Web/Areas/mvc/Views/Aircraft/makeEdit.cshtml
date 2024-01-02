@@ -1,0 +1,27 @@
+﻿@using System.Globalization
+@{
+    int idModel = ViewBag.idModel;
+    MakeModel mm = ViewBag.model;
+    bool fAdmin = ViewBag.fAdmin;
+    LinkedString userFlights = ViewBag.userFlights;
+    MakeModelStats stats = ViewBag.userStats;
+
+    ViewBag.Title = (idModel > 0) ? String.Format(CultureInfo.CurrentCulture, Resources.Makes.editMakeHeader, mm.DisplayName) : Resources.Makes.newMakeHeader;
+    ViewBag.defaultTab = tabID.tabAircraft;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript">
+    function modelCommitted(m) {
+        window.location = "@VirtualPathUtility.ToAbsolute("~/mvc/Aircraft/ViewModel/")" + m.MakeModelID;
+    }
+</script>
+@{ Html.RenderAction("ModelEditor", "Aircraft", new { idModel = idModel, onCommitFunc = "modelCommitted" }); }
+
+@if (fAdmin)
+{
+    <div><a target="_blank" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/Aircraft.aspx?a=1&m={0}", idModel))">ADMIN - View Aircraft</a></div>
+}
+@if (stats.NumFlights > 0)
+{
+    <div><a href="@userFlights.Link">@userFlights.Value</a></div>
+}

@@ -1,0 +1,7 @@
+﻿<div class="callout calloutSmall calloutBackground shadowed">
+    <h3>@{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "divATDFTD", labelText = Resources.LocalizedText.ATDFTDNoticeHead }); }</h3>
+    <div style="display: none;" id="divATDFTD">
+        @Html.Raw(Branding.ReBrand(Resources.LocalizedText.ATDFTDNoticeBody))
+    </div>
+</div>
+

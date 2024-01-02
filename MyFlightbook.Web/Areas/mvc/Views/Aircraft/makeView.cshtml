@@ -1,0 +1,53 @@
+﻿@using System.Globalization
+@using MyFlightbook.Image
+@{
+    int idModel = ViewBag.idModel;
+    MakeModel mm = ViewBag.model;
+    bool fAdmin = ViewBag.fAdmin;
+    ViewBag.Title = mm.DisplayName;
+    ViewBag.defaultTab = tabID.tabAircraft;
+    IEnumerable<Aircraft> rgac = ViewBag.userAircraft;
+    MakeModelStats stats = ViewBag.userStats;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+
+<div style="vertical-align:middle">
+    <span style="font-size: larger; font-weight: bold;">@mm.DisplayName</span>
+    <a href="@VirtualPathUtility.ToAbsolute(String.Format("~/mvc/Aircraft/EditModel/{0}", mm.MakeModelID))"><img src="@VirtualPathUtility.ToAbsolute("~/images/pencilsm.png")" title="@Resources.Makes.editModelPrompt" /></a>
+</div>
+<ul>
+    @foreach (LinkedString ls in mm.AttributeListForUser(ViewBag.userAircraft, User.Identity.Name, stats))
+    {
+        <li>
+            @if (String.IsNullOrEmpty(ls.Link))
+            {
+                @ls.Value
+            }
+            else
+            {
+                <a href="@VirtualPathUtility.ToAbsolute(ls.Link)">@ls.Value</a>
+            }
+        </li>
+    }
+    @if (fAdmin)
+    {
+        <li><a target="_blank" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/Aircraft.aspx?a=1&m={0}", idModel))">ADMIN - View Aircraft</a></li>
+    }
+</ul>
+<br />
+<div>
+    @if (rgac.Any())
+    {
+        <script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/public/scripts/aircraftcontext.js?v=1")"></script>
+        <table style="width: 100%;">
+            @foreach (Aircraft ac in rgac)
+            {
+                Html.RenderAction("AircraftListItem", "Aircraft", new { ac = ac });
+            }
+        </table>
+    }
+    else
+    {
+        Html.RenderAction("ImageListDisplay", "Image", new { il = new ImageList(mm.SampleImages(16).ToArray()) });
+    }
+</div>

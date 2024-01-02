@@ -1,0 +1,11 @@
+﻿@using System.Globalization
+<table class="stickyHeaderTable stickyHeaderAlternate">
+    @foreach (MakeModel mm in ViewBag.dupeModels)
+    {
+        <tr style="vertical-align: top;">
+            <td><button type="button" onclick="@(ViewBag.funcName)(@mm.MakeModelID)" >@Resources.Makes.editMakePossibleMatchUseThis</button></td>
+            <td>@mm.ManufacturerDisplay<br />@mm.CategoryClassDisplay</td>
+            <td>@mm.Model @(String.IsNullOrEmpty(mm.ModelName) ? string.Empty : String.Format(CultureInfo.CurrentCulture, "\"{0}\"", mm.ModelName)) @(String.IsNullOrEmpty(mm.TypeName) ? string.Empty : String.Format(CultureInfo.CurrentCulture, " - {0}", mm.TypeName))</td>
+        </tr>
+    }
+</table>
