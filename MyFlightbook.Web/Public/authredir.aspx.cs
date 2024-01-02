@@ -6,7 +6,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2023 MyFlightbook LLC
+ * Copyright (c) 2015-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -22,8 +22,8 @@ namespace MyFlightbook.PublicPages
                 { "PROFILE", "~/Member/EditProfile.aspx/pftPrefs"},
                 { "DONATE", "~/mvc/Donate"},
                 { "ENDORSE", "~/Member/Training.aspx/instEndorsements"},
-                { "PROGRESS", "~/Member/RatingProgress.aspx"},
-                { "BADGES", "~/Member/Achievements.aspx"},
+                { "PROGRESS", "~/Member/RatingProgress.aspx" },
+                { "BADGES", "~/mvc/Training/Achievements" },
                 { "STUDENTS", "~/Member/Training.aspx/instStudents"},
                 { "STUDENTSFIXED", "~/Member/Training.aspx/instStudents"},
                 { "INSTRUCTORS", "~/Member/Training.aspx/instInstructors"},
