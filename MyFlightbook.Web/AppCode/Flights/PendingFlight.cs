@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2023 MyFlightbook LLC
+ * Copyright (c) 2019-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -86,6 +86,18 @@ namespace MyFlightbook
             Aircraft ac = ua[TailNumDisplay];
             if (ac != null)
                 AircraftID = ac.AircraftID;
+            else
+            {
+                // Issue #1156: see if we need to add this aircraft to the user's aircraft list.
+                // For simplicity, we will just add if there is precisely one match, ignoring any model hits.
+                List<Aircraft> rgac = Aircraft.AircraftMatchingTail(TailNumDisplay);
+                if (rgac.Count == 1)
+                {
+                    ac = rgac[0];
+                    AircraftID = ac.AircraftID;
+                    ua.FAddAircraftForUser(ac);
+                }
+            }
         }
         #endregion
 
