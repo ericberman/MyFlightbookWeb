@@ -536,6 +536,7 @@
     <Content Include="Controls\Prefs\mfbFlightColoring.ascx" />
     <Content Include="Controls\Prefs\mfbPropertyBlocklist.ascx" />
     <Content Include="Controls\PrintingLayouts\layout2Page.ascx" />
+    <Content Include="Controls\PrintingLayouts\layoutAirline.ascx" />
     <Content Include="Controls\PrintingLayouts\layoutCondensed.ascx" />
     <Content Include="Controls\PrintingLayouts\LayoutPCAA.ascx" />
     <Content Include="Controls\PrintingLayouts\layoutUASCivi.ascx" />
@@ -846,6 +847,7 @@
     <Content Include="Member\SignFlight.aspx" />
     <Content Include="Member\StartingTotals.aspx" />
     <Content Include="Member\StudentLogbook.aspx" />
+    <Content Include="Public\CSS\printAirline.css" />
     <Content Include="Public\Scripts\adminajax.js" />
     <Content Include="Public\Scripts\ajaxUpload.js" />
     <Content Include="Public\tmap\airport.svg" />
@@ -1934,6 +1936,13 @@
     </Compile>
     <Compile Include="Controls\PrintingLayouts\layout2Page.ascx.designer.cs">
       <DependentUpon>layout2Page.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PrintingLayouts\layoutAirline.ascx.cs">
+      <DependentUpon>layoutAirline.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\PrintingLayouts\layoutAirline.ascx.designer.cs">
+      <DependentUpon>layoutAirline.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\PrintingLayouts\layoutCondensed.ascx.cs">
       <DependentUpon>layoutCondensed.ascx</DependentUpon>

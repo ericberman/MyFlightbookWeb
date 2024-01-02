@@ -2655,6 +2655,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Airline.
+        /// </summary>
+        internal static string PrintFormatAirline {
+            get {
+                return ResourceManager.GetString("PrintFormatAirline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Canada.
         /// </summary>
         internal static string PrintFormatCanada {
@@ -3033,6 +3042,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flt. Engineer.
+        /// </summary>
+        internal static string PrintHeaderFlightEngineer {
+            get {
+                return ResourceManager.GetString("PrintHeaderFlightEngineer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flight #.
+        /// </summary>
+        internal static string PrintHeaderFlightNumber {
+            get {
+                return ResourceManager.GetString("PrintHeaderFlightNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Flight Times.
         /// </summary>
         internal static string PrintHeaderFlightTimes {
@@ -3267,6 +3294,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Multi-Pilot.
+        /// </summary>
+        internal static string PrintHeaderMultiPilot {
+            get {
+                return ResourceManager.GetString("PrintHeaderMultiPilot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Night.
         /// </summary>
         internal static string PrintHeaderNight {
@@ -3393,6 +3429,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Relief.
+        /// </summary>
+        internal static string PrintHeaderReliefPilot {
+            get {
+                return ResourceManager.GetString("PrintHeaderReliefPilot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remarks and Endorsements.
         /// </summary>
         internal static string PrintHeaderRemarks {
@@ -3488,6 +3533,15 @@ namespace Resources {
         internal static string PrintHeaderSpecialCrew {
             get {
                 return ResourceManager.GetString("PrintHeaderSpecialCrew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Takeoffs.
+        /// </summary>
+        internal static string PrintHeaderTakeoffs {
+            get {
+                return ResourceManager.GetString("PrintHeaderTakeoffs", resourceCulture);
             }
         }
         

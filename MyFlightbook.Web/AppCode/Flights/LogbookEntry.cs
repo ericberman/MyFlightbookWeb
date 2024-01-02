@@ -3074,6 +3074,12 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
             }
         }
 
+        public decimal FlightEngineerTime { get { return CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropFlightEngineerTime); } }
+
+        public decimal ReliefPilotTime { get { return CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropReliefPilotTime); } }
+
+        public decimal MultiPilotTime { get { return CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropMultiPilotTime); } }
+
         /// <summary>
         /// EASA layout uses IFR time, not IMC/Simulated, so show IFR time but parenthetically add actual/simulated)
         /// </summary>
@@ -3217,6 +3223,10 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
         public decimal InstrumentFSTDTotal { get; set; }
         public decimal GroundInstructionTotal { get; set; }
         public decimal IFRTimeTotal { get; set; }
+
+        public decimal FlightEngineerTotal { get; set; }
+        public decimal ReliefPilotTotal { get; set; }
+        public decimal MultiPilotTotal { get; set; }
 
         public Collection<decimal> OptionalColumnTotals { get; } = new Collection<decimal>();
 
@@ -3809,6 +3819,10 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                     SoloTotal = SoloTotal.AddMinutes(led.SoloTime, RoundingUnit);
                     GroundInstructionTotal = GroundInstruction.AddMinutes(led.GroundInstruction, RoundingUnit);
                     IFRTimeTotal = IFRTimeTotal.AddMinutes(led.IFRTime, RoundingUnit);
+                    FlightEngineerTotal = FlightEngineerTotal.AddMinutes(led.FlightEngineerTime, RoundingUnit);
+                    ReliefPilotTotal = ReliefPilotTotal.AddMinutes(led.ReliefPilotTime, RoundingUnit);
+                    MultiPilotTotal = MultiPilotTotal.AddMinutes(led.MultiPilotTime, RoundingUnit);
+
                     NightTouchAndGoLandings += led.CustomProperties.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropNightTouchAndGo);
 
                     SelfLaunchTotal += led.SelfLaunches;
@@ -3839,6 +3853,10 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                     SoloTotal = SoloTime.AddMinutes(led.SoloTotal, RoundingUnit);
                     GroundInstructionTotal = GroundInstruction.AddMinutes(led.GroundInstructionTotal, RoundingUnit);
                     IFRTimeTotal = IFRTimeTotal.AddMinutes(led.IFRTimeTotal, RoundingUnit);
+                    FlightEngineerTotal = FlightEngineerTotal.AddMinutes(led.FlightEngineerTotal, RoundingUnit);
+                    ReliefPilotTotal = ReliefPilotTotal.AddMinutes(led.ReliefPilotTotal, RoundingUnit);
+                    MultiPilotTotal = MultiPilotTotal.AddMinutes(led.MultiPilotTotal, RoundingUnit);
+
                     NightTouchAndGoLandings += led.NightTouchAndGoLandings;
 
                     SelfLaunchTotal += led.SelfLaunchTotal;

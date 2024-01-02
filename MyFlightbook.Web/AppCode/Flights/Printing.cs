@@ -39,7 +39,7 @@ namespace MyFlightbook.Printing
         IList<LogbookEntryDisplay> CondenseFlights(IEnumerable<LogbookEntryDisplay> lstIn);
     }
 
-    public enum PrintLayoutType { Native, Portrait, EASA, USA, Canada, SACAA, CASA, NZ, Glider, Condensed, PCAA, UASCivi, TwoPage, Navy }
+    public enum PrintLayoutType { Native, Portrait, EASA, USA, Canada, SACAA, CASA, NZ, Glider, Condensed, PCAA, UASCivi, TwoPage, Navy, Airline }
 
     #region Printing Layout implementations
     public abstract class PrintLayout
@@ -113,6 +113,8 @@ namespace MyFlightbook.Printing
                     return new PrintLayout2Page() { CurrentUser = pf };
                 case PrintLayoutType.Navy:
                     return new PrintLayoutNavy() { CurrentUser = pf };
+                case PrintLayoutType.Airline:
+                    return new PrintLayoutAirline() { CurrentUser = pf };
                 default:
                     throw new ArgumentOutOfRangeException(nameof(plt));
             }
@@ -247,6 +249,31 @@ namespace MyFlightbook.Printing
         public override string ControlPath => "~/Controls/PrintingLayouts/layoutEASAFCL.ascx";
 
         public override string CSSPath { get { return "~/Public/CSS/printEASA.css?v=3"; } }
+    }
+
+    public class PrintLayoutAirline : PrintLayout
+    {
+        public override void Init(PrintingOptions po)
+        {
+            if (po == null)
+                throw new ArgumentNullException(nameof(po));
+        }
+
+        public override int RowHeight(LogbookEntryDisplay le)
+        {
+            if (le == null)
+                throw new ArgumentNullException(nameof(le));
+            // Very rough computation: look at customproperties + comments, shoot for ~50chars/line, 2 lines/flight, so divide by 100
+            return Math.Max(1, (le.RedactedComment.Length + le.CustPropertyDisplay.Length) / 100);
+        }
+
+        public override bool SupportsImages { get { return false; } }
+
+        public override bool SupportsOptionalColumns { get { return true; } }
+
+        public override string ControlPath => "~/Controls/PrintingLayouts/layoutAirline.ascx";
+
+        public override string CSSPath { get { return "~/Public/CSS/printAirline.css?v=3"; } }
     }
 
     public class PrintLayoutCASA : PrintLayout
