@@ -32,7 +32,7 @@
             {
                 <td><img src="@VirtualPathUtility.ToAbsolute("~/images/x.gif")" alt="Delete" title="Delete" onclick="javascript: deleteModel(this, @mm.MakeModelID)" /></td>
             }
-            <td><a href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditMake.aspx?id={0}&a=1", mm.MakeModelID))">@mm.MakeModelID</a></td>
+            <td><a href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/Aircraft/ViewModel/{0}?a=1", mm.MakeModelID))">@mm.MakeModelID</a></td>
             <td>@mm.ManufacturerDisplay</td>
             <td>@mm.Model</td>
             <td>@mm.TypeName</td>

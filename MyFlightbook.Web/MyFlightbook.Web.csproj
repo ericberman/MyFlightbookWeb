@@ -826,7 +826,6 @@
     <Content Include="Member\CheckFlights.aspx" />
     <Content Include="Member\Download.aspx" />
     <Content Include="Member\EditAircraft.aspx" />
-    <Content Include="Member\EditMake.aspx" />
     <Content Include="Member\EditProfile.aspx" />
     <Content Include="Member\EndorseStudent.aspx" />
     <Content Include="Member\FBPost.aspx" />
@@ -2723,13 +2722,6 @@
     </Compile>
     <Compile Include="Member\EditAircraft.aspx.designer.cs">
       <DependentUpon>EditAircraft.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Member\EditMake.aspx.cs">
-      <DependentUpon>EditMake.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\EditMake.aspx.designer.cs">
-      <DependentUpon>EditMake.aspx</DependentUpon>
     </Compile>
     <Compile Include="Member\EditProfile.aspx.cs">
       <DependentUpon>EditProfile.aspx</DependentUpon>

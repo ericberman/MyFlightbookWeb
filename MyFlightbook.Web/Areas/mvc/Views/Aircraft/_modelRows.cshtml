@@ -23,7 +23,7 @@
         </td>
         <td>
             <div>
-                <a style="@((mq.SortMode == ModelQuery.ModelSortMode.ModelName) ? "font-weight: bold; font-size: larger;" : string.Empty)" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditMake.aspx?id={0}", mm.MakeModelID))">
+                <a style="@((mq.SortMode == ModelQuery.ModelSortMode.ModelName) ? "font-weight: bold; font-size: larger;" : string.Empty)" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/Aircraft/ViewModel/{0}", mm.MakeModelID))">
                     @mm.ModelDisplayNameNoCatclass
                 </a>
             </div>

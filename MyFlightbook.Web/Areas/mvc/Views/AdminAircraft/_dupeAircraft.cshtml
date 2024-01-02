@@ -32,7 +32,7 @@ else
             <td><a target="_blank" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}&a=1", ac.AircraftID))">@ac.AircraftID</a></td>
             <td>@ac.TailNumber</td>
             <td>@ac.NormalizedTail</td>
-            <td><a target="_blank" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditMake.aspx?id={0}&a=1", ac.ModelID))">@ac.ModelCommonName</a> @ac.ModelID</td>
+            <td><a target="_blank" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/Aircraft/ViewModel/{0}?a=1", ac.ModelID))">@ac.ModelCommonName</a> @ac.ModelID</td>
             <td><input type="text" value="@ac.Version" id="@szTxtID" /> <a style="cursor:pointer;" onclick="javascript:updateVersion(@ac.AircraftID, $('#@szTxtID')[0].value);">Update</a></td>
             <td>@ac.InstanceTypeDescription</td>
             <td>@(ac.Stats?.Flights ?? 0)</td>

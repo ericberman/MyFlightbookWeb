@@ -28,7 +28,7 @@ else
                 <tr>
                     <td><a target="_blank" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}&a=1", ac.AircraftID))">@ac.AircraftID</a></td>
                     <td>@ac.TailNumber</td>
-                    <td><a target="_blank" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditMake.aspx?id={0}&a=1", ac.ModelID))">@ac.ModelCommonName</a></td>
+                    <td><a target="_blank" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/Aircraft/ViewModel/{0}?a=1", ac.ModelID))">@ac.ModelCommonName</a></td>
                     <td>@ac.Version</td>
                     <td>@ac.InstanceTypeDescription</td>
                     <td><span class="error">@ac.ErrorString</span></td>

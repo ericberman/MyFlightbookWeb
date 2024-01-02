@@ -48,7 +48,7 @@
                 <asp:ListItem Selected="True"
                     Text="<%$ Resources:Aircraft, editAircraftSelectModel %>" Value="-1"></asp:ListItem>
             </asp:DropDownList>
-            <asp:HyperLink ID="lnkNewMake" runat="server" Text="<%$ Resources:Aircraft, editAircraftAddModelPrompt %>" NavigateUrl="~/Member/EditMake.aspx"></asp:HyperLink>
+            <asp:HyperLink ID="lnkNewMake" runat="server" Text="<%$ Resources:Aircraft, editAircraftAddModelPrompt %>" NavigateUrl="~/mvc/Aircraft/ViewModel/-1"></asp:HyperLink>
             <div>
                 <asp:RangeValidator ID="RangeValidator1" runat="server"
                     ControlToValidate="cmbMakeModel" CssClass="error" Display="Dynamic"

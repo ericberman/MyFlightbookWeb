@@ -6,7 +6,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2022 MyFlightbook LLC
+ * Copyright (c) 2009-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -103,7 +103,7 @@ namespace MyFlightbook.AircraftControls
                     mvModelDisplay.SetActiveView(util.GetIntParam(Request, "a", 0) != 0 && MyFlightbook.Profile.GetUser(Page.User.Identity.Name).CanManageData ? vwLinkedModel : vwStaticModel);
                     lblMakeModel.Text = mm.ManufacturerDisplay + Resources.LocalizedText.LocalizedSpace + mm.ModelDisplayName;
                     lnkMakeModel.Text = mm.ManufacturerDisplay + Resources.LocalizedText.LocalizedSpace + mm.ModelDisplayName;
-                    lnkMakeModel.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/EditMake.aspx?id={0}", mm.MakeModelID);
+                    lnkMakeModel.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/mvc/Aircraft/ViewModel/{0}", mm.MakeModelID);
                     UpdateAttributesForModel(mm);
                 }
             }
