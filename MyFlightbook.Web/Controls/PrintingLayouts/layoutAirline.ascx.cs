@@ -38,6 +38,8 @@ namespace MyFlightbook.Printing.Layouts
                 (int) CustomPropertyType.KnownProperties.IDPropPICUS,
                 (int) CustomPropertyType.KnownProperties.IDBlockOut,
                 (int) CustomPropertyType.KnownProperties.IDBlockIn,
+                (int) CustomPropertyType.KnownProperties.IDPropTakeoffAny,
+                (int) CustomPropertyType.KnownProperties.IDPropNightTakeoff,
                 (int) CustomPropertyType.KnownProperties.IDPropFlightEngineerTime,
                 (int) CustomPropertyType.KnownProperties.IDPropReliefPilotTime }, 
                 lep.Flights);
