@@ -67,8 +67,8 @@
             <ItemTemplate>
                 <tr class="bordered" <%# ColorForFlight(Container.DataItem) %>>
                     <td><%# ChangeMarkerForFlight(Container.DataItem) %><%# ((DateTime) Eval("Date")).ToShortDateString() %></td>
-                    <td><%#: Eval("TailNumOrSimDisplay") %></td>
                     <td><%#: Eval("ModelDisplay") %> <%#: Eval("CatClassDisplay") %></td>
+                    <td><%#: Eval("TailNumOrSimDisplay") %></td>
                     <td><%#: Eval("PICName") %></td>
                     <td><%#: Eval("Departure") %></td>
                     <td><%# ((DateTime) Eval("DepartureTime")).UTCFormattedStringOrEmpty(CurrentUser.UsesUTCDateOfFlight).Replace(" ", "<br />") %></td>
