@@ -78,7 +78,7 @@ namespace MyFlightbook
         /// <returns></returns>
         public static string YMDString(this DateTime dt)
         {
-            return dt.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+            return dt.HasValue() ? dt.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) : string.Empty;
         }
 
         /// <summary>

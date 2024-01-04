@@ -5,11 +5,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using System.Text;
+using System.Web;
 using System.Xml.Serialization;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2020 MyFlightbook LLC
+ * Copyright (c) 2019-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -587,7 +589,9 @@ namespace MyFlightbook.Templates
         #region Properties
         public PropertyTemplateGroup Group { get; set; }
 
-        public string GroupName { get { return PropertyTemplate.NameForGroup(Group); } }
+        private string _groupName = null;
+
+        public string GroupName { get { return _groupName ?? (_groupName = PropertyTemplate.NameForGroup(Group)); } }
 
         public IEnumerable<PropertyTemplate> Templates { get; set; }
         #endregion
@@ -695,6 +699,35 @@ namespace MyFlightbook.Templates
             return left is null ? right is null : left.CompareTo(right) >= 0;
         }
         #endregion
+
+        /// <summary>
+        /// This is a hack.
+        /// For some reason, performance of a razor-based context menu for the templates is crazy slow.
+        /// Try generating it here rather than in the .cshtml page
+        /// Assumes a javascript function "toggleTemplate(aircraftID, templateID, isChecked)"
+        /// </summary>
+        /// <param name="ac"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static string TemplateContextMenuForAircraft(IEnumerable<TemplateCollection> templates, Aircraft ac)
+        {
+            if (templates == null || !templates.Any())
+                return string.Empty;
+            if (ac == null)
+                throw new ArgumentNullException(nameof(ac));
+            HashSet<int> hs = ac.DefaultTemplates;
+            StringBuilder sb = new StringBuilder();
+            foreach (TemplateCollection tc in templates)
+            {
+                sb.AppendFormat(CultureInfo.CurrentCulture, "<div style=\"font-weight:bold; font-size: smaller\">{0}</div>", HttpUtility.HtmlEncode(tc.GroupName));
+                foreach (PropertyTemplate pt in tc.Templates)
+                {
+                    sb.AppendFormat(CultureInfo.CurrentCulture, "<div><label><input type=\"checkbox\" {0} onclick=\"javascript: toggleTemplate({1}, {2}, this.checked);\" />{3}</label></div>",
+                        hs.Contains(pt.ID) ? "checked" : string.Empty, ac.AircraftID, pt.ID, HttpUtility.HtmlEncode(pt.Name));
+                }
+            }
+            return sb.ToString();
+        }
     }
 
     [Serializable]

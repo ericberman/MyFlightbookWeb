@@ -3,12 +3,13 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2023 MyFlightbook LLC
+ * Copyright (c) 2009-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -432,5 +433,107 @@ ON DUPLICATE KEY UPDATE flags=?acFlags, privatenotes=?userNotes, defaultimage=?d
 
             return GetAircraftForUser();
         }
+
+        /// <summary>
+        /// Populates a data table with user aircraft data.  Caller owns the data table (responsible for IDisposable), ensuring that it is empty
+        /// Datatable is all string or int to ensure proper formatting for user's culture
+        /// </summary>
+        /// <param name="dt">The data table</param>
+        /// <param name="fRefreshStats">True to refresh stats for the user</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public void ToDataTable(DataTable dt, bool fRefreshStats)
+        {
+            if (dt == null)
+                throw new ArgumentNullException(nameof(dt));
+
+            List<Aircraft> lst = GetAircraftForUserInternal(AircraftRestriction.UserAircraft);
+            if (fRefreshStats)
+                AircraftStats.PopulateStatsForAircraft(lst, User);  // in case not already done.
+
+            dt.Columns.Add(new DataColumn("Aircraft ID", typeof(int)));
+            dt.Columns.Add(new DataColumn("Tail Number", typeof(string)));
+            dt.Columns.Add(new DataColumn("Display Tail Number", typeof(string)));
+            dt.Columns.Add(new DataColumn("Training Device Kind", typeof(string)));
+            dt.Columns.Add(new DataColumn("Category/Class", typeof(string)));
+            dt.Columns.Add(new DataColumn("Manufacturer", typeof(string)));
+            dt.Columns.Add(new DataColumn("Model", typeof(string)));
+            dt.Columns.Add(new DataColumn("Type designation", typeof(string)));
+            dt.Columns.Add(new DataColumn("Model full name", typeof(string)));
+            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceAnnual, typeof(string)));
+            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceAnnualDue, typeof(string)));
+            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceTransponder, typeof(string)));
+            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceTransponderDue, typeof(string)));
+            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenancePitotStatic, typeof(string)));
+            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenancePitotStaticDue, typeof(string)));
+            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceAltimeter, typeof(string)));
+            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceAltimeterDue, typeof(string)));
+            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceELT, typeof(string)));
+            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceELTDue, typeof(string)));
+            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceVOR, typeof(string)));
+            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceVORDue, typeof(string)));
+            dt.Columns.Add(new DataColumn(Resources.Aircraft.Maintenance100, typeof(string)));
+            dt.Columns.Add(new DataColumn(Resources.Aircraft.Maintenance100Due, typeof(string)));
+            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceOil, typeof(string)));
+            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceOilDue25, typeof(string)));
+            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceOilDue50, typeof(string)));
+            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceOilDue100, typeof(string)));
+            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceEngine, typeof(string)));
+            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceRegistration, typeof(string)));
+            dt.Columns.Add(new DataColumn(Resources.Currency.deadlinesHeaderDeadlines, typeof(string)));
+            dt.Columns.Add(new DataColumn("Frequently Used", typeof(string)));
+            dt.Columns.Add(new DataColumn("Public Notes", typeof(string)));
+            dt.Columns.Add(new DataColumn("Private Notes", typeof(string)));
+            dt.Columns.Add(new DataColumn("Flight Count", typeof(int)));
+            dt.Columns.Add(new DataColumn("Hours", typeof(string)));
+            dt.Columns.Add(new DataColumn("First Flight", typeof(string)));
+            dt.Columns.Add(new DataColumn("LastFlight", typeof(string)));
+
+            foreach (Aircraft ac in lst)
+            {
+                DataRow dr = dt.NewRow();
+                MakeModel m = MakeModel.GetModel(ac.ModelID);
+                decimal lastOil = ac.LastOilChange;
+
+                dr[0] = ac.AircraftID;
+                dr[1] = ac.TailNumber;
+                dr[2] = ac.DisplayTailnumber;
+                dr[3] = ac.InstanceTypeDescription;
+                dr[4] = ac.CategoryClassDisplay;
+                dr[5] = m.ManufacturerDisplay;
+                dr[6] = ac.ModelDescription;
+                dr[7] = m.TypeName;
+                dr[8] = m.ModelDisplayNameNoCatclass;
+                dr[9] = ac.LastAnnual.YMDString();
+                dr[10] = ac.Maintenance.NextAnnual.YMDString();
+                dr[11] = ac.LastTransponder.YMDString();
+                dr[12] = ac.Maintenance.NextTransponder.YMDString();
+                dr[13] = ac.LastStatic.YMDString();
+                dr[14] = ac.Maintenance.NextStatic.YMDString();
+                dr[15] = ac.LastAltimeter.YMDString();
+                dr[16] = ac.Maintenance.NextAltimeter.YMDString();
+                dr[17] = ac.LastELT.YMDString();
+                dr[18] = ac.Maintenance.NextELT.YMDString();
+                dr[19] = ac.LastVOR.YMDString();
+                dr[20] = ac.Maintenance.NextVOR.YMDString();
+                dr[21] = ac.Last100.FormatDecimal(false);
+                dr[22] = ac.Maintenance.Next100.FormatDecimal(false);
+                dr[23] = lastOil.FormatDecimal(false);
+                dr[24] = (lastOil > 0 ? lastOil + 25 : 0.0M).FormatDecimal(false);
+                dr[25] = (lastOil > 0 ? lastOil + 50 : 0.0M).FormatDecimal(false);
+                dr[26] = (lastOil > 0 ? lastOil + 100 : 0.0M).FormatDecimal(false);
+                dr[27] = ac.LastNewEngine.FormatDecimal(false);
+                dr[28] = ac.RegistrationDue.YMDString();
+                dr[29] = Currency.DeadlineCurrency.CoalescedDeadlinesForAircraft(User, ac.AircraftID);
+                dr[30] = ac.HideFromSelection ? string.Empty : "yes";
+                dr[31] = ac.PublicNotes;
+                dr[32] = ac.PrivateNotes;
+                dr[33] = ac.Stats.UserFlights;
+                dr[34] = ac.Stats.Hours.FormatDecimal(false);
+                dr[35] = ac.Stats.EarliestDate.HasValue ? ac.Stats.EarliestDate.Value.YMDString() : string.Empty;
+                dr[36] = ac.Stats.LatestDate.HasValue ? ac.Stats.LatestDate.Value.YMDString() : string.Empty;
+                dt.Rows.Add(dr);
+            }
+        }
+
     }
 }

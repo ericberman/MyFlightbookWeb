@@ -1958,22 +1958,6 @@ ORDER BY f.DATE ASC";
             ClubID = idClub;
         }
 
-        protected static byte[] WriteBytes(DataTable dt)
-        {
-            if (dt == null)
-                throw new ArgumentNullException(nameof(dt));
-
-            using (MemoryStream ms = new MemoryStream())
-            {
-                using (StreamWriter sw = new StreamWriter(ms, Encoding.UTF8, 1024))
-                {
-                    CsvWriter.WriteToStream(sw, dt, true, true);
-                    sw.Flush();
-                    return ms.ToArray();
-                }
-            }
-        }
-
         public abstract byte[] RefreshCSV();
     }
 
@@ -2052,7 +2036,7 @@ ORDER BY f.DATE ASC";
                     dt.Rows.Add(dr);
                 }
 
-                return WriteBytes(dt);
+                return CsvWriter.WriteToBytes(dt, true, true);
             }
         }
     }
@@ -2108,7 +2092,7 @@ ORDER BY f.DATE ASC";
                     dt.Rows.Add(dr);
                 }
 
-                return WriteBytes(dt);
+                return CsvWriter.WriteToBytes(dt, true, true);
             }
         }
     }
@@ -2232,7 +2216,7 @@ ORDER BY f.DATE ASC";
                     dt.Rows.Add(dr);
                 }
 
-                return WriteBytes(dt);
+                return CsvWriter.WriteToBytes(dt, true, true);
             }
         }
     }

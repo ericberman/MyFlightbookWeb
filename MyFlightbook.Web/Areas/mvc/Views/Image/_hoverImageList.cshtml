@@ -1,4 +1,5 @@
 ﻿@using MyFlightbook.Image
+@using System.Globalization
 @{
     IEnumerable<MFBImageInfo> rgImages = ViewBag.images;
     MFBImageInfo mfbii = rgImages?.FirstOrDefault();
@@ -14,7 +15,25 @@
     {
         <a href="#">
             <div class="hoverListItems hintPopup">
-                @{ Html.RenderAction("ImageListDisplay", "Image", new { il = new ImageList(rgImages.ToArray()) }); }
+                @foreach (MFBImageInfo img in rgImages)
+                {
+                    // We do this inline here because for big lists like flights/aircraft, it can be slow otherwise for a full editable image - both multiple layers of actionresults and lots of html cruft.
+                    // But we know that we're read-only, no annotations, no nothing, so let's not pull in the full generality.
+                    <div class="ilItem">
+                        @if (img.ImageType == MFBImageInfoBase.ImageFileType.S3VideoMP4)
+                        {
+                        <video width="320" heght="240" controls>
+                            <source src="@img.ResolveFullImage()" type="video/mp4" />
+                            <img src="@img.URLThumbnail" width="@img.WidthThumbnail" height="@img.HeightThumbnail" title="@img.Comment" alt="@img.Comment" />
+                        </video>
+                        }
+                        else
+                        {
+                        <img src="@img.URLThumbnail" width="@img.WidthThumbnail" height="@img.HeightThumbnail" title="@img.Comment" alt="@img.Comment"
+                             onclick="@String.Format(CultureInfo.InvariantCulture, img.ImageType == MFBImageInfoBase.ImageFileType.PDF || img.ImageType == MFBImageInfoBase.ImageFileType.S3PDF ? "javascript:window.location = '{0}';" : "javascript:viewMFBImg('{0}');", VirtualPathUtility.ToAbsolute(img.URLFullImage))" />
+                        }
+                    </div>
+                }
             </div>
         </a>
     }

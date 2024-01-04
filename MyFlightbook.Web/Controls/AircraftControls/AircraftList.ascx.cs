@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2018-2023 MyFlightbook LLC
+ * Copyright (c) 2018-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -44,7 +44,7 @@ namespace MyFlightbook.AircraftControls
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            Page.ClientScript.RegisterClientScriptInclude(GetType(), "AircraftContext", ResolveClientUrl("~/public/Scripts/aircraftcontext.js?v=1"));
+            Page.ClientScript.RegisterClientScriptInclude(GetType(), "AircraftContext", ResolveClientUrl("~/public/Scripts/aircraftcontext.js?v=2"));
         }
 
         public void gvAircraft_OnRowDataBound(Object sender, GridViewRowEventArgs e)

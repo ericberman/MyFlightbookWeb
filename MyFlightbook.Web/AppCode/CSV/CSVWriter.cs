@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Data;
 using System.IO;
+using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2020 MyFlightbook LLC
+ * Copyright (c) 2015-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -22,6 +23,22 @@ namespace MyFlightbook.CSV
             {
                 WriteToStream(writer, table, header, quoteall);
                 return writer.ToString();
+            }
+        }
+
+        public static byte[] WriteToBytes(DataTable dt, bool header, bool quoteall)
+        {
+            if (dt == null)
+                throw new ArgumentNullException(nameof(dt));
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                using (StreamWriter sw = new StreamWriter(ms, Encoding.UTF8, 1024))
+                {
+                    WriteToStream(sw, dt, header, quoteall);
+                    sw.Flush();
+                    return ms.ToArray();
+                }
             }
         }
 

@@ -1,10 +1,20 @@
-﻿using MyFlightbook.Templates;
+﻿using MyFlightbook.CSV;
+using MyFlightbook.Templates;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
+using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+
+/******************************************************
+ * 
+ * Copyright (c) 2023-2024 MyFlightbook LLC
+ * Contact myflightbook-at-gmail.com for more information
+ *
+*******************************************************/
 
 namespace MyFlightbook.Web.Areas.mvc.Controllers
 {
@@ -27,7 +37,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 return PartialView("_modelRows");
             });
         }
-        #endregion
 
         private ViewResult modelBrowser(ModelQuery mq, bool fAdvancedSearch, bool getResults)
         {
@@ -120,6 +129,18 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             });
         }
 
+        [HttpPost]
+        [Authorize]
+        public ActionResult DeleteAircraftForUser(int idAircraft)
+        {
+            return SafeOp(() =>
+            {
+                (new UserAircraft(User.Identity.Name)).FDeleteAircraftforUser(idAircraft);
+                return new EmptyResult();
+            });
+        }
+        #endregion
+
         #region Child actions
         [ChildActionOnly]
         public ActionResult ModelEditor(int idModel, string onCommitfunc)
@@ -135,12 +156,15 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         [ChildActionOnly]
-        public ActionResult AircraftListItem(Aircraft ac, bool fAdminMode = false, string deleteFunc = null, string migrateFunc = null)
+        public ActionResult AircraftListItem(IEnumerable<Aircraft> rgac, bool fAdminMode = false, string deleteFunc = null, string migrateFunc = null)
         {
-            ViewBag.aircraft = ac;
+            ViewBag.aircraft = rgac;
             ViewBag.isAdminMode = fAdminMode;
             ViewBag.deleteFunc = deleteFunc;
             ViewBag.migrateFunc = migrateFunc;
+            IEnumerable<TemplateCollection> tc = TemplateCollection.GroupTemplates(UserPropertyTemplate.TemplatesForUser(User.Identity.Name, false));
+            ViewBag.templates = tc;
+            ViewBag.hasTemplates = tc.Any();
             return PartialView("_aircraftListItem");
         }
         #endregion
@@ -225,10 +249,55 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #endregion // Makes
         #endregion // Endpoints
 
-        // GET: mvc/Aircraft
-        public ActionResult Index()
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DownloadAircraft()
         {
-            return View();
+            UserAircraft ua = new UserAircraft(User.Identity.Name);
+            using (DataTable dt = new DataTable() { Locale = CultureInfo.CurrentCulture }) 
+            {
+                string szFilename = RegexUtility.UnSafeFileChars.Replace(String.Format(CultureInfo.InvariantCulture, "Aircraft-{0}-{1}-{2}", Branding.CurrentBrand.AppName, MyFlightbook.Profile.GetUser(User.Identity.Name).UserFullName, DateTime.Now.YMDString()), string.Empty) + ".csv";
+                ua.ToDataTable(dt, true);
+                return File(CsvWriter.WriteToBytes(dt, true, true), "text/csv", szFilename);
+            }
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult MigrateAircraft(int idSrc, int idTarget)
+        {
+            UserAircraft ua = new UserAircraft(User.Identity.Name);
+            Aircraft acSrc = ua.GetUserAircraftByID(idSrc);
+            Aircraft acTarg = ua.GetUserAircraftByID(idTarget);
+            if (acSrc != null && acTarg != null)
+            {
+                Aircraft.AdminMigrateFlights(User.Identity.Name, acSrc, acTarg);
+                if (Request["fDeleteAfterMigrate"] != null)
+                    ua.FDeleteAircraftforUser(acSrc.AircraftID);
+            }
+            return RedirectToAction("Index");
+        }
+
+        // GET: mvc/Aircraft
+        [Authorize]
+        [HttpGet]
+        public ViewResult Index(AircraftGroup.GroupMode gm = AircraftGroup.GroupMode.Activity, int m = -1, int a = 0)
+        {
+            bool fAdminMode = m > 0 && a != 0 && MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData;
+            UserAircraft ua = new UserAircraft(User.Identity.Name);
+
+            IEnumerable<Aircraft> lst = m > 0 ? ua.GetAircraftForUser(fAdminMode ? UserAircraft.AircraftRestriction.AllMakeModel : UserAircraft.AircraftRestriction.UserAircraft, m) : ua.GetAircraftForUser();
+            foreach (Aircraft ac in lst)
+                ac.PopulateImages();
+            ViewBag.sourceAircraft = lst;
+            if (gm == AircraftGroup.GroupMode.Recency)
+                AircraftStats.PopulateStatsForAircraft(lst, User.Identity.Name);
+            ViewBag.groupedAircraft = AircraftGroup.AssignToGroups(lst, fAdminMode ? AircraftGroup.GroupMode.All : gm);
+            ViewBag.groupMode = gm;
+            ViewBag.fAdminMode = fAdminMode;
+            return View("myAircraft");
         }
     }
 }

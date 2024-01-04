@@ -13,7 +13,7 @@ function toggleFavorite(idAircraft, fIsActive, uri) {
 
     $.ajax(
         {
-            url: uri,
+            url: uri ?? '/logbook/Member/Ajax.asmx/SetActive',
             type: "POST", data: d, dataType: "json", contentType: "application/json",
             async: true,
             error: function (xhr) { window.alert(xhr.responseJSON.Message); },
@@ -37,7 +37,7 @@ function setRole(idAircraft, role, addPICName, ckAddPIC, uri) {
 
     $.ajax(
         {
-            url: uri,
+            url: uri ?? '/logbook/Member/Ajax.asmx/SetRole',
             type: "POST", data: d, dataType: "json", contentType: "application/json",
             async: true,
             error: function (xhr) { window.alert(xhr.responseJSON.Message); },
@@ -54,7 +54,7 @@ function toggleTemplate(idAircraft, idTemplate, fAdd, uri) {
     var d = JSON.stringify(params);
     $.ajax(
         {
-            url: uri,
+            url: uri ?? '/logbook/Member/Ajax.asmx/AddRemoveTemplate',
             type: "POST", data: d, dataType: "json", contentType: "application/json",
             async: true,
             error: function (xhr) { window.alert(xhr.responseJSON.Message); },

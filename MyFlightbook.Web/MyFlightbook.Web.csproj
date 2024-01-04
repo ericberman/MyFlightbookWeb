@@ -1569,7 +1569,7 @@
     <Content Include="Areas\mvc\Views\Aircraft\_dupeModels.cshtml" />
     <Content Include="Areas\mvc\Views\Aircraft\_modelEditor.cshtml" />
     <Content Include="Areas\mvc\Views\Image\_hoverImageList.cshtml" />
-    <Content Include="Areas\mvc\Views\Aircraft\_aircraftContextMenu.cshtml" />
+    <Content Include="Areas\mvc\Views\Aircraft\myAircraft.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />

@@ -16,7 +16,7 @@
     <a href="@VirtualPathUtility.ToAbsolute(String.Format("~/mvc/Aircraft/EditModel/{0}", mm.MakeModelID))"><img src="@VirtualPathUtility.ToAbsolute("~/images/pencilsm.png")" title="@Resources.Makes.editModelPrompt" /></a>
 </div>
 <ul>
-    @foreach (LinkedString ls in mm.AttributeListForUser(ViewBag.userAircraft, User.Identity.Name, stats))
+    @foreach (LinkedString ls in mm.AttributeListForUser(ViewBag.userAircraft, User.Identity.Name, stats, null))
     {
         <li>
             @if (String.IsNullOrEmpty(ls.Link))
@@ -38,13 +38,8 @@
 <div>
     @if (rgac.Any())
     {
-        <script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/public/scripts/aircraftcontext.js?v=1")"></script>
-        <table style="width: 100%;">
-            @foreach (Aircraft ac in rgac)
-            {
-                Html.RenderAction("AircraftListItem", "Aircraft", new { ac = ac });
-            }
-        </table>
+        <script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/public/scripts/aircraftcontext.js?v=2")"></script>
+        Html.RenderAction("AircraftListItem", "Aircraft", new { rgac = rgac });
     }
     else
     {

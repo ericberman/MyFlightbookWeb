@@ -1,0 +1,128 @@
+﻿@using System.Globalization
+@{
+    bool fAdminMode = ViewBag.fAdminMode;
+    IEnumerable<Aircraft> rgac = ViewBag.sourceAircraft;
+    IEnumerable<AircraftGroup> rgGroups = ViewBag.groupedAircraft;
+    AircraftGroup.GroupMode groupingMode = ViewBag.groupMode;
+
+    ViewBag.Title = Resources.LocalizedText.MyAircraftHeader + (fAdminMode ? " - ADMIN MODE (No images or delete)" : string.Empty);
+    ViewBag.defaultTab = tabID.tabAircraft;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/public/scripts/aircraftcontext.js?v=2")"></script>
+<script type="text/javascript">
+    var userAircraft = [
+        @foreach (Aircraft ac in rgac)
+        {
+            @:{ t: '@ac.DisplayTailnumber', id: @ac.AircraftID },
+        }
+    ];
+
+    function deleteAircraft(id) {
+        if (confirm("@Resources.LocalizedText.MyAircraftConfirmDeleteAircraft")) {
+            var params = new Object();
+            params.idAircraft = id;
+            var d = JSON.stringify(params);
+            $.ajax({
+                url: "@Url.Action("DeleteAircraftForUser", "Aircraft")",
+                type: "POST", data: d, dataType: "json", contentType: "application/json",
+                error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                success: function (r) {
+                    window.location.reload();
+                }
+            });
+        }
+    }
+
+    function migrateAircraft(id) {
+        $("#hdnMigSrc").val(id);
+        var cmb = $("#cmbTargetAircraft");
+        cmb.empty();
+        userAircraft.forEach(function (ac, index) {
+            if (ac.id != id) {
+                cmb.append($("<option value='" + ac.id + "'>" + ac.t + "</option>"));
+            } else {
+                $("#migratePrompt").text("@Resources.Aircraft.editAircraftMigratePrompt".replace("{0}", ac.t));
+            }
+        });
+        showModalById('pnlMigrate', '@Resources.Aircraft.editAircraftMigrate', 450);
+    }
+
+    function doMigrate() {
+        if (confirm("@Resources.Aircraft.editAircraftMigrateConfirm")) {
+            $("#frmMigrate")[0].submit();
+        }
+    }
+
+    $(() => {
+         defaultButtonForDiv("pnlMigrate", "btnMigrate");
+     });
+</script>
+<div style="width: 100%;">
+    <p>@Resources.LocalizedText.MyAircraftDesc</p>
+    <div class="calloutSmall shadowed" style="vertical-align:middle; height: 20pt; line-height: 20pt; width: 90%; display:flex; margin-right: auto; margin-left: auto; margin-bottom: 5pt; font-weight:bold;">
+        <a style="flex:auto;" href="@VirtualPathUtility.ToAbsolute("~/Member/EditAircraft.aspx?id=-1")">
+            <img src="@VirtualPathUtility.ToAbsolute("~/images/add.png")" style="margin-right: 15px; margin-left: 0px; vertical-align:middle;" />
+            @Resources.LocalizedText.MyAircraftAddAircraft
+        </a>
+        <a style="flex:auto; text-align:center;" href="@VirtualPathUtility.ToAbsolute("~/Member/ImpAircraft.aspx")">
+            <img src="@VirtualPathUtility.ToAbsolute("~/images/import.png")" style="margin-right: 5px; vertical-align:middle;" />
+            @Resources.Aircraft.ImportTitle
+        </a>
+        @if (!fAdminMode)
+        {
+            using (Html.BeginForm("DownloadAircraft", "Aircraft", FormMethod.Post, new { id = "frmDownloadAircraft", name = "frmDownloadAircraft" }))
+            {
+                @Html.AntiForgeryToken()
+                <a style="flex:auto; text-align: right; cursor: pointer;" onclick="javascript: $('#frmDownloadAircraft')[0].submit();">
+                    <img src="@VirtualPathUtility.ToAbsolute("~/images/download.png")" style="margin-right: 5px; margin-left:5px; vertical-align:middle;" />
+                    <img src="@VirtualPathUtility.ToAbsolute("~/images/csvicon_sm.png")" style="margin-right: 5px; margin-left:5px; vertical-align:middle;" />
+                    @Resources.Aircraft.DownloadCSV
+                </a>
+            }
+        }
+    </div>
+    @using (Html.BeginForm("Index", "Aircraft", FormMethod.Get))
+    {
+        <div style="margin-top: 15pt; margin-bottom: 15pt; text-align:center;">
+            @Resources.Aircraft.ViewAircraftPrompt
+            <select id="cmbAircraftGrouping" name="gm" onchange="this.form.submit();">
+                <option @(groupingMode == AircraftGroup.GroupMode.Activity ? "selected" : string.Empty) value="@AircraftGroup.GroupMode.Activity">@Resources.Aircraft.ViewAircraftActive</option>
+                <option @(groupingMode == AircraftGroup.GroupMode.All ? "selected" : string.Empty) value="@AircraftGroup.GroupMode.All">@Resources.Aircraft.ViewAircraftAll</option>
+                <option @(groupingMode == AircraftGroup.GroupMode.Model ? "selected" : string.Empty) value="@AircraftGroup.GroupMode.Model">@Resources.Aircraft.ViewAircraftModel</option>
+                <option @(groupingMode == AircraftGroup.GroupMode.ICAO ? "selected" : string.Empty) value="@AircraftGroup.GroupMode.ICAO">@Resources.Aircraft.ViewAircraftICAO</option>
+                <option @(groupingMode == AircraftGroup.GroupMode.CategoryClass ? "selected" : string.Empty) value="@AircraftGroup.GroupMode.CategoryClass">@Resources.Aircraft.ViewAircraftCategoryClass</option>
+                <option @(groupingMode == AircraftGroup.GroupMode.Recency ? "selected" : string.Empty) value="@AircraftGroup.GroupMode.Recency">@Resources.Aircraft.ViewAircraftRecency</option>
+            </select>
+            @(rgac.Any() ? String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.MyAircraftAircraftCount, rgac.Count()) : Resources.LocalizedText.MyAircraftNoAircraft)
+        </div>
+    }
+</div>
+<div style="max-width:800px">
+    @foreach (AircraftGroup g in rgGroups)
+    {
+        <h2>@g.GroupTitle <span style="font-size:smaller">@(String.IsNullOrEmpty(g.GroupTitle) ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.MyAircraftAircraftGroupCount, g.MatchingAircraft.Count()))</span></h2>
+        Html.RenderAction("AircraftListItem", "Aircraft", new { rgac = g.MatchingAircraft, fAdminMode = fAdminMode, deleteFunc = "deleteAircraft", migrateFunc = "migrateAircraft" });
+    }
+</div>
+<div id="pnlMigrate" style="display:none;">
+    <div style="max-width: 450px">
+        @using (Html.BeginForm("MigrateAircraft", "Aircraft", FormMethod.Post, new { id = "frmMigrate", name = "frmMigrate" }))
+        {
+            @Html.AntiForgeryToken()
+            <div id="migratePrompt"></div>
+            <div style="margin-left:auto; margin-right: auto;">
+                <div>
+                    <select id="cmbTargetAircraft" name="idTarget">
+                    </select>
+                </div>
+                <div><label><input type="checkbox" id="ckDelAfterMigr" name="fDeleteAfterMigrate" />@Resources.Aircraft.editAircraftRemoveAfterMigrate</label></div>
+            </div>
+            <div style="margin-top: 5px; text-align:center;">
+                <button type="button" id="btnMigrate" onclick="doMigrate();">@Resources.Aircraft.editAircraftMigrateReplace</button>
+            </div>
+            <input type="hidden" id="hdnMigSrc" name="idSrc" value="" />
+        }
+    </div>
+</div>
+

@@ -1069,12 +1069,15 @@ WHERE {1}";
             return new LinkedString(szStatsLabel, String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?ft=Totals&fq={0}", HttpUtility.UrlEncode(Convert.ToBase64String(fq.ToJSONString().Compress()))));
         }
 
-        public IEnumerable<LinkedString> AttributeListForUser(IEnumerable<Aircraft> rgac, string szUser, MakeModelStats userStats, AvionicsTechnologyType upgradeType = AvionicsTechnologyType.None, DateTime? upgradeDate = null)
+        public IEnumerable<LinkedString> AttributeListForUser(IEnumerable<Aircraft> rgac, string szUser, MakeModelStats userStats, AircraftStats acStats, AvionicsTechnologyType upgradeType = AvionicsTechnologyType.None, DateTime? upgradeDate = null)
         {
             if (String.IsNullOrEmpty(szUser))
                 throw new ArgumentNullException(nameof(szUser));
 
             List<LinkedString> lstAttribs = new List<LinkedString>();
+            if (acStats != null)
+                lstAttribs.Add(acStats.UserStatsDisplay);
+
             if (!String.IsNullOrEmpty(FamilyName))
                 lstAttribs.Add(new LinkedString(ModelQuery.ICAOPrefix + FamilyName));
             foreach (string sz in AttributeList(upgradeType, upgradeDate))

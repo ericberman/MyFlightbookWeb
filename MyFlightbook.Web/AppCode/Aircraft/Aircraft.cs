@@ -15,7 +15,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2023 MyFlightbook LLC
+ * Copyright (c) 2009-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1774,16 +1774,16 @@ WHERE
         }
         #endregion
 
-            #region Maintenance management
-            /// <summary>
-            /// Write an entry to the maintenance log for the current airplane if something has changed
-            /// </summary>
-            /// <param name="sz1">The old value</param>
-            /// <param name="sz2">The new value</param>
-            /// <param name="szMessage">The message to log if something has changed</param>
-            /// <param name="szComment">Any additional comments provided by the user</param>
-            /// <returns>A log entry if there is a change to record</returns>
-            private MaintenanceLog LogIfChanged(object o1, object o2, string szMessage, string szComment, string szUser)
+        #region Maintenance management
+        /// <summary>
+        /// Write an entry to the maintenance log for the current airplane if something has changed
+        /// </summary>
+        /// <param name="sz1">The old value</param>
+        /// <param name="sz2">The new value</param>
+        /// <param name="szMessage">The message to log if something has changed</param>
+        /// <param name="szComment">Any additional comments provided by the user</param>
+        /// <returns>A log entry if there is a change to record</returns>
+        private MaintenanceLog LogIfChanged(object o1, object o2, string szMessage, string szComment, string szUser)
         {
             string szNew;
             Boolean fDelete;
@@ -2083,6 +2083,40 @@ WHERE
         public string LinkForTailnumberRegistry()
         {
             return Aircraft.LinkForTailnumberRegistry(TailNumber);
+        }
+        #endregion
+
+        #region UI Utility
+        /// <summary>
+        /// This is a hack.
+        /// For some reason, performance of a razor-based context menu for the templates is crazy slow.
+        /// Try generating it here rather than in the .cshtml page
+        /// Assumes javascript functions setRole and toggleTemplate from adircraftContext.js
+        /// </summary>
+        /// <param name="ac"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public string ContextMenuOptions()
+        {
+            string rblGroup = String.Format(CultureInfo.InvariantCulture, "roleGroup{0}", AircraftID);
+            string idCKAddName = String.Format(CultureInfo.InvariantCulture, "ckAddName{0}", AircraftID);
+            string idRBPIC = String.Format(CultureInfo.InvariantCulture, "rbrolePIC{0}", AircraftID);
+
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendFormat(CultureInfo.InvariantCulture, "<div><label><input type=\"checkbox\" {0} onclick=\"javascript: toggleFavorite({1}, this.checked)\" />{2}</label></div><hr />", HideFromSelection ? string.Empty : "checked", AircraftID, HttpUtility.HtmlEncode(Resources.Aircraft.optionHideFromMainList));
+            sb.AppendFormat(CultureInfo.InvariantCulture, "<div style=\"font-weight:bold;\">{0}</div>", HttpUtility.HtmlEncode(Resources.Aircraft.optionRolePrompt));
+            sb.AppendFormat(CultureInfo.InvariantCulture, "<div><label><input type=\"radio\" name=\"{0}\" {1} onclick=\"javascript: setRole({2}, '{3}', false, $('#{4}')[0])\" />{5}</label></div>", 
+                rblGroup, RoleForPilot == PilotRole.None ? "checked" : string.Empty, AircraftID, PilotRole.None, idCKAddName, HttpUtility.HtmlEncode(Resources.Aircraft.optionRoleNone));
+            sb.AppendFormat(CultureInfo.InvariantCulture, "<div><label><input type=\"radio\" name=\"{0}\" {1} onclick=\"javascript: setRole({2}, '{3}', false, $('#{4}')[0])\" />{5}</label></div>",
+                rblGroup, RoleForPilot == PilotRole.PIC ? "checked" : string.Empty, AircraftID, PilotRole.CFI, idCKAddName, HttpUtility.HtmlEncode(Resources.Aircraft.optionRoleCFI));
+            sb.AppendFormat(CultureInfo.InvariantCulture, "<div><label><input type=\"radio\" name=\"{0}\" id=\"{1}\" {2} onclick=\"javascript: setRole({3}, '{4}', $('#{5}')[0].checked, $('#{5}')[0])\" />{6}</label></div>", 
+                rblGroup,  idRBPIC, RoleForPilot == PilotRole.PIC ? "checked" : string.Empty, AircraftID, PilotRole.PIC, idCKAddName, HttpUtility.HtmlEncode(Resources.Aircraft.optionRolePIC));
+            sb.AppendFormat(CultureInfo.InvariantCulture, "<div style=\"margin-left: 2em;\"><label><input type=\"checkbox\" {0} id=\"{1}\" onclick=\"javascript: $('#{2}')[0].click();\" />{3}</label></div>", CopyPICNameWithCrossfill ? "checked" : string.Empty, idCKAddName, idRBPIC, HttpUtility.HtmlEncode(Resources.Aircraft.optionRolePICName));
+            sb.AppendFormat(CultureInfo.InvariantCulture, "<div><label><input type=\"radio\" name=\"{0}\" {1} onclick=\"javascript: setRole({2}, '{3}', false, $('#{4}')[0])\" />{5}</label></div>",
+                rblGroup, RoleForPilot == PilotRole.SIC ? "checked" : string.Empty, AircraftID, PilotRole.SIC, idCKAddName, HttpUtility.HtmlEncode(Resources.Aircraft.optionRoleSIC));
+
+            return sb.ToString();
         }
         #endregion
     }

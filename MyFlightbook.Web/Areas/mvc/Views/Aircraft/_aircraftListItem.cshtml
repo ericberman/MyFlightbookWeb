@@ -1,71 +1,98 @@
 ﻿@using System.Globalization
-@{ 
-    Aircraft ac = ViewBag.aircraft;
+@using MyFlightbook.Templates
+@{
+    IEnumerable<Aircraft> rgac = ViewBag.aircraft;
     bool IsAdminMode = ViewBag.isAdminMode;
     string deleteFunc = ViewBag.deleteFunc;
-    string migrateFunc = ViewBag.migrateFunc;
+    string urlChevron = VirtualPathUtility.ToAbsolute("~/images/MenuChevron.png");
 }
-<tr>
-    <td class="gvAcImage">
-        @{ Html.RenderAction("HoverImageList", "Image", new { rgmfbii = ac.AircraftImages, imageClasses = ac.HideFromSelection ? "inactiveRow" : "activeRow" }); }
-    </td>
-    <td class="gvAcItem">
-        <div><a style="font-size:larger; font-weight:bold;" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}{1}", ac.AircraftID, IsAdminMode ? "&a=1" : string.Empty))">@ac.DisplayTailnumber</a>
-        - @ac.ModelDescription - @ac.ModelCommonName (@ac.CategoryClassDisplay)
-        </div>
-        @if (!String.IsNullOrEmpty(ac.InstanceTypeDescription))
-        {
-            <div>@ac.InstanceTypeDescription</div>
-        }
-        <div class="@(ac.HideFromSelection ? "inactiveRow" : "activeRow")">
-            <div style="white-space:pre">@Html.Raw(ac.PublicNotes.Linkify())</div>
-            <div style="white-space:pre">@Html.Raw(ac.PrivateNotes.Linkify())</div>
+<table style="width: 100%" cellpadding="5" cellspacing="5">
+    @foreach (Aircraft ac in rgac)
+    {
+        <tr>
             @if (!IsAdminMode)
             {
-                <ul>
-                    @foreach (LinkedString linkedString in MakeModel.GetModel(ac.ModelID).AttributeListForUser(null, User.Identity.Name, null, ac.AvionicsTechnologyUpgrade, ac.GlassUpgradeDate))
+                <td class="gvAcImage">
+                    @{ Html.RenderAction("HoverImageList", "Image", new { rgmfbii = ac.AircraftImages, imageClasses = ac.HideFromSelection ? "inactiveRow" : "activeRow" }); }
+                </td>
+            }
+            <td class="gvAcItem">
+                <div>
+                    <a style="font-size:larger; font-weight:bold;" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}{1}", ac.AircraftID, IsAdminMode ? "&a=1" : string.Empty))">@ac.DisplayTailnumber</a>
+                    - @ac.ModelDescription - @ac.ModelCommonName (@ac.CategoryClassDisplay)
+                </div>
+                <div>@ac.InstanceTypeDescription</div>
+                <div class="@(ac.HideFromSelection ? "inactiveRow" : "activeRow")">
+                    <div style="white-space:pre">@Html.Raw(ac.PublicNotes.Linkify())</div>
+                    <div style="white-space:pre">@Html.Raw(ac.PrivateNotes.Linkify())</div>
+                    @if (!IsAdminMode)
                     {
-                        <li>
-                        @if (String.IsNullOrEmpty(linkedString.Link))
-                        {
-                            @linkedString.Value
-                        }
-                        else
-                        {
-                            <a href="@linkedString.Link">@linkedString.Value</a>
-                        }
-                        </li>
+                        <ul>
+                            @foreach (LinkedString linkedString in MakeModel.GetModel(ac.ModelID).AttributeListForUser(null, User.Identity.Name, null, ac.Stats, ac.AvionicsTechnologyUpgrade, ac.GlassUpgradeDate))
+                            {
+                                <li>
+                                    @if (String.IsNullOrEmpty(linkedString.Link))
+                                    {
+                                        @linkedString.Value
+                                    }
+                                    else
+                                    {
+                                        <a href="@linkedString.Link">@linkedString.Value</a>
+                                    }
+                                </li>
+                            }
+                        </ul>
                     }
-                </ul>
-            }
-        </div>
-        <span class="error"></span>
-    </td>
-    <td class="gvAcInactive">
-        @if (ac.HideFromSelection)
-            {
-                <img src="@VirtualPathUtility.ToAbsolute("~/images/circleslash.png")" alt="@Resources.Aircraft.InactiveAircraftNote" title="@Resources.Aircraft.InactiveAircraftNote" />
-            }
-    </td>
-    <td class="gvContext">
-        @if (IsAdminMode)
-        {
-            string szURL = ac.LinkForTailnumberRegistry();
-            if (!String.IsNullOrEmpty(szURL))
-            {
-                <a href="@szURL" target="_blank">@Resources.Aircraft.editAircraftRegistrationPrompt</a>
-            }
-        }
-        else
-        {
-            Html.RenderPartial("_aircraftContextMenu");
-        }
-    </td>
-    <td class="gvDelete">
-        @if (!String.IsNullOrEmpty(deleteFunc))
-            {
-                <img src="@VirtualPathUtility.ToAbsolute("~/images/x.gif")" alt="@Resources.LocalizedText.MyAircraftDeleteAircraft" title="@Resources.LocalizedText.MyAircraftDeleteAircraft" onclick="javascript: @(deleteFunc)(@ac.AircraftID);" />
-            }
-    </td>
-</tr>
+                </div>
+                <span class="error"></span>
+            </td>
+            <td class="gvAcInactive">
+                @if (ac.HideFromSelection)
+                {
+                    <img src="@VirtualPathUtility.ToAbsolute("~/images/circleslash.png")" alt="@Resources.Aircraft.InactiveAircraftNote" title="@Resources.Aircraft.InactiveAircraftNote" />
+                }
+            </td>
+            <td class="gvContext">
+                @if (IsAdminMode)
+                {
+                    string szURL = ac.LinkForTailnumberRegistry();
+                    if (!String.IsNullOrEmpty(szURL))
+                    {
+                        <a href="@szURL" target="_blank">@Resources.Aircraft.editAircraftRegistrationPrompt</a>
+                    }
+                }
+                else
+                {
+                    string rblGroup = String.Format(CultureInfo.InvariantCulture, "roleGroup{0}", ac.AircraftID);
+                    string idCKAddName = String.Format(CultureInfo.InvariantCulture, "ckAddName{0}", ac.AircraftID);
+                    string idRBPIC = String.Format(CultureInfo.InvariantCulture, "rbrolePIC{0}", ac.AircraftID);
 
+                    <div class="popContainer">
+                        <img src="@urlChevron" class="popTrigger" />
+                        <div class="popMenuContent popMenuHidden" style="margin-top: -5px;">
+                            <h2>@String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.optionHeader, ac.DisplayTailnumber)</h2>
+                            @Html.Raw(ac.ContextMenuOptions())
+                            @if (ViewBag.hasTemplates)
+                            {
+                                <hr />
+                                <h3>@Resources.LogbookEntry.TemplateAircraftHeader</h3>
+                                @Html.Raw(TemplateCollection.TemplateContextMenuForAircraft(ViewBag.templates, ac))
+                            }
+                            @if (!String.IsNullOrEmpty(ViewBag.migrateFunc))
+                            {
+                                <hr />
+                                <div style="margin-left: 20px;"><a style="cursor: pointer;" onclick="javascript:@(ViewBag.migrateFunc)(@ac.AircraftID);">@Resources.Aircraft.editAircraftMigrate</a></div>
+                            }
+                        </div>
+                    </div>                
+                }
+            </td>
+            <td class="gvDelete">
+                @if (!IsAdminMode && !String.IsNullOrEmpty(deleteFunc))
+                {
+                    <img src="@VirtualPathUtility.ToAbsolute("~/images/x.gif")" alt="@Resources.LocalizedText.MyAircraftDeleteAircraft" title="@Resources.LocalizedText.MyAircraftDeleteAircraft" onclick="javascript: @(deleteFunc)(@ac.AircraftID);" />
+                }
+            </td>
+        </tr>
+    }
+</table>

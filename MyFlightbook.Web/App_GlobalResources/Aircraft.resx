@@ -657,7 +657,7 @@
     <value>Are you sure you want to migrate flights?  This CANNOT be undone.</value>
   </data>
   <data name="editAircraftMigratePrompt" xml:space="preserve">
-    <value>Migrate flights in "{0}" to:</value>
+    <value>Migrate flights in {0} to:</value>
   </data>
   <data name="editAircraftMigrateReplace" xml:space="preserve">
     <value>Migrate</value>

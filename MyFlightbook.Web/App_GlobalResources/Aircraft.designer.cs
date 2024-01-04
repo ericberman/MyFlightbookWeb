@@ -614,7 +614,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Migrate flights in &quot;{0}&quot; to:.
+        ///   Looks up a localized string similar to Migrate flights in {0} to:.
         /// </summary>
         internal static string editAircraftMigratePrompt {
             get {
