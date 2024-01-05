@@ -169,6 +169,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Modified (leading/trailing whitespace only).
+        /// </summary>
+        internal static string CompareModifiedWhitespace {
+            get {
+                return ResourceManager.GetString("CompareModifiedWhitespace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You are modifying a flight that has been signed; doing so may invalidate the signature.  Are you sure you want to continue?.
         /// </summary>
         internal static string ConfirmModifySignedFlight {

@@ -4,7 +4,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2020 MyFlightbook LLC
+ * Copyright (c) 2008-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -14,7 +14,7 @@ namespace MyFlightbook
     [Serializable]
     public class PropertyDelta : IComparable, IEquatable<PropertyDelta>
     {
-        public enum ChangeType { Unchanged, Added, Deleted, Modified }
+        public enum ChangeType { Unchanged, Added, Deleted, Modified, ModifiedWhiteSpace }
 
         #region Properties
         /// <summary>
@@ -42,8 +42,10 @@ namespace MyFlightbook
                     return ChangeType.Added;
                 else if (String.IsNullOrEmpty(NewValue) && !String.IsNullOrEmpty(OldValue))
                     return ChangeType.Deleted;
-                else if (NewValue.Trim().CompareCurrentCulture(OldValue.Trim()) == 0)
+                else if (NewValue.CompareCurrentCulture(OldValue) == 0)
                     return ChangeType.Unchanged;
+                else if (NewValue.Trim().CompareCurrentCulture(OldValue.Trim()) == 0)
+                    return ChangeType.ModifiedWhiteSpace;
                 else
                     return ChangeType.Modified;
             }
@@ -89,6 +91,8 @@ namespace MyFlightbook
                     return String.Format(CultureInfo.CurrentCulture, "{0}: {1} ({2})", Resources.LogbookEntry.CompareDeleted, PropName, OldValue);
                 case ChangeType.Modified:
                     return String.Format(CultureInfo.CurrentCulture, "{0}: {1}: {2} ==> {3}", Resources.LogbookEntry.CompareModified, PropName, OldValue, NewValue);
+                case ChangeType.ModifiedWhiteSpace:
+                    return String.Format(CultureInfo.CurrentCulture, "{0}: {1}: {2} ==> {3}", Resources.LogbookEntry.CompareModifiedWhitespace, PropName, OldValue, NewValue);
             }
         }
 

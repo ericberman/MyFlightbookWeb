@@ -1735,4 +1735,7 @@ Proceed with import?</value>
   <data name="CopyFlightLinkTip" xml:space="preserve">
     <value>Copies a link to this flight to the clipboard.  Works best if you share details for the flight; otherwise recipients will see a map of the flight and no other details</value>
   </data>
+  <data name="CompareModifiedWhitespace" xml:space="preserve">
+    <value>Modified (leading/trailing whitespace only)</value>
+  </data>
 </root>
