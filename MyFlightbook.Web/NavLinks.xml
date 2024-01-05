@@ -68,12 +68,12 @@
     </Items>
   </Item>
   <Item>
-    <Link>~/Member/Aircraft.aspx</Link>
+    <Link>~/mvc/Aircraft</Link>
     <ID>tabAircraft</ID>
     <Roles></Roles>
     <Items>
       <Item>
-        <Link>~/Member/Aircraft.aspx</Link>
+        <Link>~/mvc/Aircraft</Link>
         <ID>actMyAircraft</ID>
         <Roles></Roles>
       </Item>

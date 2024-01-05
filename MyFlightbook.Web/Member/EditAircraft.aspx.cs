@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2023 MyFlightbook LLC
+ * Copyright (c) 2015-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -80,7 +80,7 @@ namespace MyFlightbook.Web.Member
         protected void AircraftUpdated(object sender, EventArgs e)
         {
             AircraftUtility.LastTail = MfbEditAircraft1.AircraftID;
-            Response.Redirect(!String.IsNullOrEmpty(hdnReturnURL.Value) ? hdnReturnURL.Value : "Aircraft.aspx");
+            Response.Redirect(!String.IsNullOrEmpty(hdnReturnURL.Value) ? hdnReturnURL.Value : "~/mvc/Aircraft");
         }
 
         protected void valModelSelected_ServerValidate(object source, ServerValidateEventArgs args)

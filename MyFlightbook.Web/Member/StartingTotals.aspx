@@ -80,7 +80,7 @@
                     </li>
                 </ul>
                 <p><asp:HyperLink ID="lnkAircraft" runat="server" Text="Add/Edit/Import Aircraft" 
-                        NavigateUrl="~/Member/Aircraft.aspx" Target="_blank" 
+                        NavigateUrl="~/mvc/Aircraft" Target="_blank" 
                         meta:resourcekey="lnkAircraftResource1"></asp:HyperLink></p>
                 <p><asp:Label ID="lblCurrentAircraft" runat="server" Text="Your aircraft:" Font-Bold="true" 
                         meta:resourcekey="lblCurrentAircraftResource1"></asp:Label> 

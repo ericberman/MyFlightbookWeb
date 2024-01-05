@@ -543,7 +543,6 @@
     <Content Include="Controls\PrintingLayouts\layoutNavy.ascx" />
     <Content Include="Controls\TwoFactorAuth.ascx" />
     <Content Include="Controls\AccountQuestions.ascx" />
-    <Content Include="Controls\AircraftControls\AircraftList.ascx" />
     <Content Include="Controls\AircraftControls\SelectMake.ascx" />
     <Content Include="Controls\AutofillOptionsChooser.ascx" />
     <Content Include="Controls\ChecklistControls\ChecklistItem.ascx" />
@@ -821,7 +820,6 @@
     <Content Include="Member\8710Form.aspx" />
     <Content Include="Member\AddEndorsement.aspx" />
     <Content Include="Member\AddRelationship.aspx" />
-    <Content Include="Member\Aircraft.aspx" />
     <Content Include="Member\Ajax.asmx" />
     <Content Include="Member\BrowseTemplates.aspx" />
     <Content Include="Member\CheckFlights.aspx" />
@@ -1986,13 +1984,6 @@
     <Compile Include="Controls\AccountQuestions.ascx.designer.cs">
       <DependentUpon>AccountQuestions.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Controls\AircraftControls\AircraftList.ascx.cs">
-      <DependentUpon>AircraftList.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\AircraftControls\AircraftList.ascx.designer.cs">
-      <DependentUpon>AircraftList.ascx</DependentUpon>
-    </Compile>
     <Compile Include="Controls\AircraftControls\SelectMake.ascx.cs">
       <DependentUpon>SelectMake.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2696,13 +2687,6 @@
     </Compile>
     <Compile Include="Member\AddRelationship.aspx.designer.cs">
       <DependentUpon>AddRelationship.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Member\Aircraft.aspx.cs">
-      <DependentUpon>Aircraft.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\Aircraft.aspx.designer.cs">
-      <DependentUpon>Aircraft.aspx</DependentUpon>
     </Compile>
     <Compile Include="Member\BrowseTemplates.aspx.cs">
       <DependentUpon>BrowseTemplates.aspx</DependentUpon>

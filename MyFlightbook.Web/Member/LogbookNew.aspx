@@ -242,7 +242,7 @@
                 <td>
                     <asp:Image ID="imgAircraft" runat="server" ImageUrl="~/Public/tabimages/AircraftTab.png" Width="24" AlternateText="<%$ Resources:LocalizedText, WelcomeEnterAircraft %>" />
                 </td>
-                <td><asp:HyperLink ID="lnkAddAircraft" NavigateUrl="~/Member/Aircraft.aspx" runat="server" Text="<%$ Resources:LocalizedText, WelcomeEnterAircraft %>" /><br />
+                <td><asp:HyperLink ID="lnkAddAircraft" NavigateUrl="~/mvc/Aircraft" runat="server" Text="<%$ Resources:LocalizedText, WelcomeEnterAircraft %>" /><br />
                 <% =Resources.LocalizedText.ORSeparator %></td>
             </tr>
             <tr>

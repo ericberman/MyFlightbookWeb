@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2023 MyFlightbook LLC
+ * Copyright (c) 2008-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -698,7 +698,7 @@ namespace MyFlightbook.AircraftControls
             // Check for model change without tail number change on an existing aircraft
             if (!AdminMode && !fIsNew && !fChangedTail && fChangedModel && fOtherUsers && ac.HandlePotentialClone(SelectedModelID, Page.User.Identity.Name))
             {
-                Response.Redirect("~/Member/Aircraft.aspx");
+                Response.Redirect("~/mvc/Aircraft");
                 return;
             }
 
@@ -839,7 +839,7 @@ namespace MyFlightbook.AircraftControls
             Aircraft ac = new Aircraft(idAircraft);
             UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
             ua.ReplaceAircraftForUser(ac, m_ac, fMigrate);
-            Response.Redirect(fMigrate ? String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}", ac.AircraftID) : "~/Member/Aircraft.aspx");
+            Response.Redirect(fMigrate ? String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}", ac.AircraftID) : "~/mvc/Aircraft");
         }
 
         protected void gvAlternativeVersions_RowCommand(object sender, CommandEventArgs e)

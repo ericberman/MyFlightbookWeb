@@ -19,9 +19,9 @@
 
 @if (fAdmin)
 {
-    <div><a target="_blank" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/Aircraft.aspx?a=1&m={0}", idModel))">ADMIN - View Aircraft</a></div>
+    <div><a target="_blank" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/Aircraft?a=1&m={0}", idModel))">ADMIN - View Aircraft</a></div>
 }
 @if (stats.NumFlights > 0)
 {
-    <div><a href="@userFlights.Link">@userFlights.Value</a></div>
+    <div><a href="@VirtualPathUtility.ToAbsolute(userFlights.Link)">@userFlights.Value</a></div>
 }

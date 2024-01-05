@@ -10,7 +10,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2022 MyFlightbook LLC
+ * Copyright (c) 2015-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -180,7 +180,7 @@ public partial class Member_ImpAircraft : MyFlightbook.Web.WizardPage.MFBWizardP
         Matches.ProcessParseResultsForUser(Page.User.Identity.Name);
         if (Matches.AddAllNewAircraftForUser(Page.User.Identity.Name))
         {
-            Response.Redirect("~/Member/Aircraft.aspx");
+            Response.Redirect("~/mvc/Aircraft");
         }
         else
         {
