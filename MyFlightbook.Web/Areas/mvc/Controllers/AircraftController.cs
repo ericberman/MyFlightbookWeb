@@ -159,13 +159,12 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         public ActionResult AircraftListItem(IEnumerable<Aircraft> rgac, bool fAdminMode = false, string deleteFunc = null, string migrateFunc = null)
         {
             ViewBag.aircraft = rgac;
-            ViewBag.isAdminMode = fAdminMode;
             ViewBag.deleteFunc = deleteFunc;
             ViewBag.migrateFunc = migrateFunc;
             IEnumerable<TemplateCollection> tc = TemplateCollection.GroupTemplates(UserPropertyTemplate.TemplatesForUser(User.Identity.Name, false));
             ViewBag.templates = tc;
             ViewBag.hasTemplates = tc.Any();
-            return PartialView("_aircraftListItem");
+            return PartialView(fAdminMode ? "_adminAircraftList" : "_aircraftListItem");
         }
         #endregion
 

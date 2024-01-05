@@ -18,7 +18,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2023 MyFlightbook LLC
+ * Copyright (c) 2008-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -118,6 +118,15 @@ namespace MyFlightbook
         public override string ToString()
         {
             return Value ?? string.Empty;
+        }
+
+        /// <summary>
+        /// Returns the link as either plain text or as an HTML anchor link, with the value HtmlEncoded regardless.
+        /// </summary>
+        /// <returns></returns>
+        public string ToHtmlElement()
+        {
+            return String.IsNullOrEmpty(Link) ? HttpUtility.HtmlEncode(Value) : String.Format(CultureInfo.InvariantCulture, "<a href=\"{0}\">{1}</a>", Link, HttpUtility.HtmlEncode(Value));
         }
     }
 

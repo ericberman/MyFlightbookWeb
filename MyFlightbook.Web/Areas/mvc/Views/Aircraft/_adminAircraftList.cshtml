@@ -1,0 +1,26 @@
+﻿@using System.Globalization
+<table style="width: 100%" cellpadding="5" cellspacing="5">
+    @foreach (Aircraft ac in ViewBag.aircraft)
+    {
+        string szURL = ac.LinkForTailnumberRegistry();
+        <tr>
+            <td class="gvAcItem">
+                <div>
+                    <a style="font-size:larger; font-weight:bold;" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}&a=1", ac.AircraftID))">@ac.DisplayTailnumber</a>
+                    - @ac.ModelDescription - @ac.ModelCommonName (@ac.CategoryClassDisplay)
+                </div>
+                <div>@ac.InstanceTypeDescription</div>
+                <div class="@(ac.HideFromSelection ? "inactiveRow" : "activeRow")">
+                    <div style="white-space:pre">@Html.Raw(ac.PublicNotes.Linkify())</div>
+                    <div style="white-space:pre">@Html.Raw(ac.PrivateNotes.Linkify())</div>
+                </div>
+            </td>
+            <td class="gvContext">
+                @if (!String.IsNullOrEmpty(szURL))
+                {
+                    <a href="@szURL" target="_blank">@Resources.Aircraft.editAircraftRegistrationPrompt</a>
+                }
+            </td>
+        </tr>
+    }
+</table>
