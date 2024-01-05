@@ -10,10 +10,6 @@
                     - @ac.ModelDescription - @ac.ModelCommonName (@ac.CategoryClassDisplay)
                 </div>
                 <div>@ac.InstanceTypeDescription</div>
-                <div class="@(ac.HideFromSelection ? "inactiveRow" : "activeRow")">
-                    <div style="white-space:pre">@Html.Raw(ac.PublicNotes.Linkify())</div>
-                    <div style="white-space:pre">@Html.Raw(ac.PrivateNotes.Linkify())</div>
-                </div>
             </td>
             <td class="gvContext">
                 @if (!String.IsNullOrEmpty(szURL))

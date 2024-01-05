@@ -24,7 +24,7 @@
                     <ul>
                         @foreach (LinkedString linkedString in MakeModel.GetModel(ac.ModelID).AttributeListForUser(null, User.Identity.Name, null, ac.Stats, ac.AvionicsTechnologyUpgrade, ac.GlassUpgradeDate))
                         {
-                            <li>@linkedString.ToHtmlElement()</li>
+                            <li>@Html.Raw(linkedString.ToHtmlElement())</li>
                         }
                     </ul>
                 </div>

@@ -126,7 +126,7 @@ namespace MyFlightbook
         /// <returns></returns>
         public string ToHtmlElement()
         {
-            return String.IsNullOrEmpty(Link) ? HttpUtility.HtmlEncode(Value) : String.Format(CultureInfo.InvariantCulture, "<a href=\"{0}\">{1}</a>", Link, HttpUtility.HtmlEncode(Value));
+            return String.IsNullOrEmpty(Link) ? HttpUtility.HtmlEncode(Value) : String.Format(CultureInfo.InvariantCulture, "<a href=\"{0}\">{1}</a>", VirtualPathUtility.ToAbsolute(Link), HttpUtility.HtmlEncode(Value));
         }
     }
 
