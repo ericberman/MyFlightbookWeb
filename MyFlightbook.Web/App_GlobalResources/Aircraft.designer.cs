@@ -1293,6 +1293,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Full Flight Sim..
+        /// </summary>
+        internal static string InstanceTypeFFS {
+            get {
+                return ResourceManager.GetString("InstanceTypeFFS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to FTD/Sim.
         /// </summary>
         internal static string InstanceTypeFTD {

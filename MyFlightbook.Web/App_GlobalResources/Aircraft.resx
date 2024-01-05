@@ -736,4 +736,7 @@ Do you still want to delete?</value>
   <data name="DeadlineOilChangeTitle" xml:space="preserve">
     <value>Next Oil Change</value>
   </data>
+  <data name="InstanceTypeFFS" xml:space="preserve">
+    <value>Full Flight Sim.</value>
+  </data>
 </root>

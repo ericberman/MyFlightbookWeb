@@ -62,6 +62,7 @@ namespace MyFlightbook
                 case AircraftInstanceTypes.CertifiedATD:
                     return Resources.Aircraft.InstanceTypeATD;
                 case AircraftInstanceTypes.CertifiedIFRAndLandingsSimulator:
+                    return Resources.Aircraft.InstanceTypeFFS;
                 case AircraftInstanceTypes.CertifiedIFRSimulator:
                     return Resources.Aircraft.InstanceTypeFTD;
                 case AircraftInstanceTypes.UncertifiedSimulator:
