@@ -1729,4 +1729,10 @@ Proceed with import?</value>
   <data name="PrintHeaderTakeoffs" xml:space="preserve">
     <value>Takeoffs</value>
   </data>
+  <data name="CopyFlightLink" xml:space="preserve">
+    <value>Copy Link to Flight</value>
+  </data>
+  <data name="CopyFlightLinkTip" xml:space="preserve">
+    <value>Copies a link to this flight to the clipboard.  Works best if you share details for the flight; otherwise recipients will see a map of the flight and no other details</value>
+  </data>
 </root>

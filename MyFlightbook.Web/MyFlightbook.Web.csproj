@@ -594,7 +594,6 @@
     <Content Include="Controls\mfbImportAircraft.ascx" />
     <Content Include="Controls\mfbLogbook.ascx" />
     <Content Include="Controls\mfbMaintainAircraft.ascx" />
-    <Content Include="Controls\mfbMiniFacebook.ascx" />
     <Content Include="Controls\mfbMultiFileUpload.ascx" />
     <Content Include="Controls\mfbPublicFlightItem.ascx" />
     <Content Include="Controls\mfbQueryDescriptor.ascx" />
@@ -615,7 +614,6 @@
     <Content Include="Controls\mfbTimeZone.ascx" />
     <Content Include="Controls\mfbTooltip.ascx" />
     <Content Include="Controls\mfbTotalSummary.ascx" />
-    <Content Include="Controls\mfbTweetThis.ascx" />
     <Content Include="Controls\mfbTypeInDate.ascx" />
     <Content Include="Controls\mfbVideoEntry.ascx" />
     <Content Include="Controls\oAuthAuthorizationManager.ascx" />
@@ -827,7 +825,6 @@
     <Content Include="Member\EditAircraft.aspx" />
     <Content Include="Member\EditProfile.aspx" />
     <Content Include="Member\EndorseStudent.aspx" />
-    <Content Include="Member\FBPost.aspx" />
     <Content Include="Member\FlightDetail.aspx" />
     <Content Include="Member\ImpAircraft.aspx" />
     <Content Include="Member\ImpAircraftService.aspx" />
@@ -2342,13 +2339,6 @@
     <Compile Include="Controls\mfbMaintainAircraft.ascx.designer.cs">
       <DependentUpon>mfbMaintainAircraft.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Controls\mfbMiniFacebook.ascx.cs">
-      <DependentUpon>mfbMiniFacebook.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbMiniFacebook.ascx.designer.cs">
-      <DependentUpon>mfbMiniFacebook.ascx</DependentUpon>
-    </Compile>
     <Compile Include="Controls\mfbMultiFileUpload.ascx.cs">
       <DependentUpon>mfbMultiFileUpload.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2488,13 +2478,6 @@
     </Compile>
     <Compile Include="Controls\mfbTotalSummary.ascx.designer.cs">
       <DependentUpon>mfbTotalSummary.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\mfbTweetThis.ascx.cs">
-      <DependentUpon>mfbTweetThis.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbTweetThis.ascx.designer.cs">
-      <DependentUpon>mfbTweetThis.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\mfbTypeInDate.ascx.cs">
       <DependentUpon>mfbTypeInDate.ascx</DependentUpon>
@@ -2730,13 +2713,6 @@
     </Compile>
     <Compile Include="Member\EndorseStudent.aspx.designer.cs">
       <DependentUpon>EndorseStudent.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Member\FBPost.aspx.cs">
-      <DependentUpon>FBPost.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\FBPost.aspx.designer.cs">
-      <DependentUpon>FBPost.aspx</DependentUpon>
     </Compile>
     <Compile Include="Member\FlightDetail.aspx.cs">
       <DependentUpon>FlightDetail.aspx</DependentUpon>

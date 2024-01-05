@@ -1,11 +1,10 @@
-﻿using MyFlightbook;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2022 MyFlightbook LLC
+ * Copyright (c) 2019-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -61,9 +60,12 @@ namespace MyFlightbook.Controls
                 if (value != null)
                 {
                     FlightID = value.FlightID;
-                    mfbMiniFacebook.FlightEntry = value;
-                    mfbTweetThis.FlightToTweet = value;
                     lnkRequestSignature.Visible = value.CanRequestSig;
+
+                    // Issue #1161 - enable copy from the context menu
+                    Page.ClientScript.RegisterClientScriptInclude("copytoClip", ResolveClientUrl("~/public/Scripts/CopyClipboard.js"));
+                    hdnCopyLink.Value = m_le.SocialMediaItemUri().ToString();
+                    lnkCopyFlightLink.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript: copyClipboard('', '{0}', true, '{1}');", hdnCopyLink.ClientID, lblFlightCopied.ClientID);
 
                     // fix the ID of the delete button to prevent replay attacks
                     string szDelID = String.Format(CultureInfo.InvariantCulture, "lnkDel{0}", value.FlightID);

@@ -178,6 +178,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copy Link to Flight.
+        /// </summary>
+        internal static string CopyFlightLink {
+            get {
+                return ResourceManager.GetString("CopyFlightLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copies a link to this flight to the clipboard.  Works best if you share details for the flight; otherwise recipients will see a map of the flight and no other details.
+        /// </summary>
+        internal static string CopyFlightLinkTip {
+            get {
+                return ResourceManager.GetString("CopyFlightLinkTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Row {0} has too many columns {1} to append to the prior row(s) (had {2} columns so far); will put that on a new row..
         /// </summary>
         internal static string csvAuditAppendedRowTooLong {

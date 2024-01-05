@@ -159,22 +159,31 @@ namespace MyFlightbook.Controls
         protected global::System.Web.UI.WebControls.Label lblRequestSignature;
 
         /// <summary>
-        /// mfbMiniFacebook control.
+        /// lnkCopyFlightLink control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::MyFlightbook.SocialMedia.mfbMiniFacebook mfbMiniFacebook;
+        protected global::System.Web.UI.WebControls.HyperLink lnkCopyFlightLink;
 
         /// <summary>
-        /// mfbTweetThis control.
+        /// imgCopy control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_mfbTweetThis mfbTweetThis;
+        protected global::System.Web.UI.WebControls.Image imgCopy;
+
+        /// <summary>
+        /// lblCopyFlight control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblCopyFlight;
 
         /// <summary>
         /// lnkSendFlight control.
@@ -229,6 +238,24 @@ namespace MyFlightbook.Controls
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lChk;
+
+        /// <summary>
+        /// lblFlightCopied control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblFlightCopied;
+
+        /// <summary>
+        /// hdnCopyLink control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnCopyLink;
 
         /// <summary>
         /// hdnID control.
