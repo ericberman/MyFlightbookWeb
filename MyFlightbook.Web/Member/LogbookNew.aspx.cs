@@ -9,7 +9,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2022 MyFlightbook LLC
+ * Copyright (c) 2017-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -141,8 +141,6 @@ namespace MyFlightbook.MemberPages
         {
             Master.SelectedTab = tabID.tabLogbook;
 
-            mfbChartTotals1.HistogramManager = LogbookEntryDisplay.GetHistogramManager(mfbLogbook1.Data, User.Identity.Name);  // do this every time.
-
             pnlWelcomeNewUser.Visible = false;
             if (!IsPostBack)
             {
@@ -209,6 +207,8 @@ namespace MyFlightbook.MemberPages
                     Session[keySessLastNewFlight] = null;
                 }
             }
+
+            mfbChartTotals1.HistogramManager = LogbookEntryDisplay.GetHistogramManager(mfbLogbook1.Data, User.Identity.Name);  // do this every time, but do it AFTER initialize restriction (done above in !IsPostback) might have been done, to avoid double-hit to the database.
         }
 
         private const string szVSFlightID = "vsFlightID";
@@ -327,8 +327,10 @@ namespace MyFlightbook.MemberPages
         /// <returns></returns>
         private string SanitizedQuery
         {
-            get { return Request.QueryStringWithoutParams(new string[] { "Clone", "Reverse", "Chk" }); }
+            get { return Request.QueryStringWithoutParams(paramsToRemove); }
         }
+
+        private static readonly string[] paramsToRemove = new string[] { "Clone", "Reverse", "Chk" };
 
         protected void mfbEditFlight1_FlightUpdated(object sender, LogbookEventArgs e)
         {

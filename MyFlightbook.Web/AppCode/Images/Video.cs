@@ -9,7 +9,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2023 MyFlightbook LLC
+ * Copyright (c) 2013-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -29,13 +29,15 @@ namespace MyFlightbook.Image
 
         public enum VideoSource { Unknown, YouTube, Vimeo };
 
+        private static readonly char[] paramSeparator = new char[] { '\t' };
+
         private string m_vidURL;
 
         public void InitFromSerializedString(int idFlight, string szSerialized)
         {
             if (szSerialized == null)
                 throw new ArgumentNullException(nameof(szSerialized));
-            string[] rgParams = szSerialized.Split(new char[] { '\t' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] rgParams = szSerialized.Split(paramSeparator, StringSplitOptions.RemoveEmptyEntries);
             if (rgParams.Length < 2 || rgParams.Length > 3)
                 throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, "Invalid serialization for video: {0}", szSerialized));
 
@@ -189,21 +191,6 @@ namespace MyFlightbook.Image
         #region Parsing/display
         private const string vidTemplateYouTube = "<iframe src=\"https://www.youtube.com/embed/{0}\" width=\"{1}\" height=\"{2}\" frameborder=\"0\" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>";
 
-        // Adapted from http://linuxpanda.wordpress.com/2013/07/24/ultimate-best-regex-pattern-to-get-grab-parse-youtube-video-id-from-any-youtube-link-url/
-        private const string szRegExpMatchYouTube = "^(?:http|https)?(?:://)?(?:www\\.)?(?:youtu\\.be/|youtube\\.com(?:/embed/|/v/|/watch?v=|/ytscreeningroom?v=|/feeds/api/videos/|/user\\S*[^\\w\\-\\s]|\\S*[^\\w\\-\\s]))([\\w\\-]{11})[a-z0-9;:@?&%=+/\\$_.-]*";
-
-        // Adapted from http://stackoverflow.com/questions/10488943/easy-way-to-get-vimeo-id-from-a-vimeo-url
-        private const string szRegExpMatchVimeo = "^(?:http|https)(?:://)?(?:www\\.|player\\.)?vimeo.com/(.*)";
-
-        /*
-         these two youtube URLs don't work:
-            "http://www.youtube.com/watch?v=yVpbFMhOAwE&feature=player_embedded", ** doesn't work
-            "http://www.youtube.com/watch?v=6zUVS4kJtrA&feature=c4-overview-vl&list=PLbzoR-pLrL6qucl8-lOnzvhFc2UM1tcZA" ** doesn't work,
-         */
-
-        private readonly Regex rYouTube = new Regex(szRegExpMatchYouTube, RegexOptions.IgnoreCase | RegexOptions.Compiled);
-        private readonly Regex rVimeo = new Regex(szRegExpMatchVimeo, RegexOptions.IgnoreCase | RegexOptions.Compiled);
-
         private bool IsValidYoutubeURL()
         {
             return !String.IsNullOrEmpty(YouTubeID());
@@ -216,12 +203,12 @@ namespace MyFlightbook.Image
 
         private string YouTubeID()
         {
-            return IDFromRegexp(rYouTube);
+            return IDFromRegexp(RegexUtility.YouTubeReference);
         }
 
         private string VimeoID()
         {
-            return IDFromRegexp(rVimeo);
+            return IDFromRegexp(RegexUtility.VimeoReference);
         }
 
         private string IDFromRegexp(Regex r)

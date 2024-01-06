@@ -11,7 +11,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2023 MyFlightbook LLC
+ * Copyright (c) 2012-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -424,6 +424,7 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
         set { ViewState[szVSSelectAllState] = value; }
     }
 
+    private static readonly char[] selectedItemsSeparator = new char[] { ',' };
     protected IEnumerable<int> SelectedItems
     {
         get
@@ -431,7 +432,7 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
             List<int> lst = new List<int>();
             if (!String.IsNullOrWhiteSpace(hdnSelectedItems.Value))
             {
-                string[] rgIDs = hdnSelectedItems.Value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] rgIDs = hdnSelectedItems.Value.Split(selectedItemsSeparator, StringSplitOptions.RemoveEmptyEntries);
                 foreach (string sz in rgIDs)
                     lst.Add(Convert.ToInt32(sz, CultureInfo.InvariantCulture));
             }

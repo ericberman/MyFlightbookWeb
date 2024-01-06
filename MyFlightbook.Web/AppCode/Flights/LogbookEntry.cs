@@ -9,7 +9,6 @@ using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Globalization;
 using System.IO;
@@ -22,7 +21,7 @@ using System.Xml.Serialization;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2023 MyFlightbook LLC
+ * Copyright (c) 2008-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -290,7 +289,7 @@ namespace MyFlightbook
         /// <summary>
         /// Images associated with the flight.  For efficiency, this MUST BE EXPLICITLY POPULATED AND SET.
         /// </summary>
-        public Collection<MFBImageInfo> FlightImages { get; private set; } = new Collection<MFBImageInfo>();
+        public IList<MFBImageInfo> FlightImages { get; protected set; } = new List<MFBImageInfo>();
 
         /// <summary>
         /// Fill FlightImages with images from the flight.
@@ -307,7 +306,7 @@ namespace MyFlightbook
         /// <summary>
         /// Videos associated with the flight.
         /// </summary>
-        public Collection<VideoRef> Videos { get; private set; } = new Collection<VideoRef>();
+        public IList<VideoRef> Videos { get; protected set; } = new List<VideoRef>();
 
         #region Display
         /// <summary>
@@ -900,6 +899,8 @@ namespace MyFlightbook
             return szSig;
         }
 
+        private static readonly string[] propIDSeparator = new string[] { "ID" };
+
         public static LogbookEntry LogbookEntryFromHash(string szHash)
         {
             if (String.IsNullOrEmpty(szHash))
@@ -936,7 +937,7 @@ namespace MyFlightbook
                 Aircraft ac = new Aircraft(le.AircraftID);
                 le.TailNumDisplay = ac.DisplayTailnumber;
 
-                string[] rgProps = gc["props"].Value.Split(new string[] { "ID" }, StringSplitOptions.RemoveEmptyEntries);
+                string[] rgProps = gc["props"].Value.Split(propIDSeparator, StringSplitOptions.RemoveEmptyEntries);
 
                 if (rgProps.Length > 0)
                 {
@@ -2003,12 +2004,7 @@ namespace MyFlightbook
 
                     string szVids = dr["FlightVids"].ToString();
                     if (!String.IsNullOrEmpty(szVids))
-                    {
-                        IEnumerable<VideoRef> rgvr = JsonConvert.DeserializeObject<IEnumerable<VideoRef>>(szVids);
-                        Videos.Clear();
-                        foreach (VideoRef vr in rgvr)
-                            Videos.Add(vr);
-                    }
+                        Videos = JsonConvert.DeserializeObject<List<VideoRef>>(szVids);
 
                     return true;
                 }
@@ -2287,7 +2283,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                 if (_roundingUnit <= 0)
                 {
                     object o = HttpContext.Current?.Session?[MFBConstants.keyMathRoundingUnits];
-                    _roundingUnit = (o == null) ? String.IsNullOrEmpty(User) ? 60 : Profile.GetUser(User).MathRoundingUnit : (int) o;
+                    _roundingUnit = (o == null) ? String.IsNullOrEmpty(User) ? 60 : Profile.GetUser(User).MathRoundingUnit : (int)o;
                 }
                 return _roundingUnit;
             }
@@ -2327,6 +2323,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                 FLoadFromDB(flightID, szUser, lto, fForceLoad);
         }
 
+        private readonly static char[] spaceSeparator = new char[] {' '};
         /// <summary>
         /// Creates a new flight initialized from another user's flight
         /// </summary>
@@ -2341,7 +2338,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                 throw new ArgumentNullException(nameof(szTargetUser));
 
             string sz = new UserAccessEncryptor().Decrypt(szKey);
-            string[] rgSz = sz.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] rgSz = sz.Split(spaceSeparator, StringSplitOptions.RemoveEmptyEntries);
             LogbookEntry leSrc = null;
             try
             {
@@ -3228,12 +3225,12 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
         public decimal ReliefPilotTotal { get; set; }
         public decimal MultiPilotTotal { get; set; }
 
-        public Collection<decimal> OptionalColumnTotals { get; } = new Collection<decimal>();
+        public IList<decimal> OptionalColumnTotals { get; } = new List<decimal>();
 
         /// <summary>
         /// Any additional columns to display.  Use OptionalColumnValue to get the value, or, after using AddFrom, use OptionalColumnTotalValue to retrieve the total
         /// </summary>
-        public Collection<OptionalColumn> OptionalColumns { get; } = new Collection<OptionalColumn>();
+        public IList<OptionalColumn> OptionalColumns { get; } = new List<OptionalColumn>();
 
         public void SetOptionalColumns(IEnumerable<OptionalColumn> rgoc)
         {
@@ -4294,7 +4291,8 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
             }
         }
         #endregion
-    
+
+        private readonly static char[] trainingPrefixSeparators = new char[] { '-', '[' };
         /// <summary>
         /// Helper function for autocompletion of training items in the Comments field
         /// </summary>
@@ -4321,7 +4319,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                 System.Web.HttpRuntime.Cache.Add(szCacheKey, lst, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(1, 0, 0, 0), System.Web.Caching.CacheItemPriority.BelowNormal, null);
             }
 
-            string[] rgszTerms = prefixText.ToUpper(CultureInfo.CurrentCulture).Split(new char[] { '-', '[' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] rgszTerms = prefixText.ToUpper(CultureInfo.CurrentCulture).Split(trainingPrefixSeparators, StringSplitOptions.RemoveEmptyEntries);
             if (rgszTerms.Length == 0)
                 return Array.Empty<string>();
 
