@@ -1,4 +1,5 @@
-﻿using MyFlightbook.Airports;
+﻿using DotNetOpenAuth.Messaging;
+using MyFlightbook.Airports;
 using MyFlightbook.Encryptors;
 using MyFlightbook.Histogram;
 using MyFlightbook.Image;
@@ -9,6 +10,7 @@ using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Globalization;
 using System.IO;
@@ -289,7 +291,7 @@ namespace MyFlightbook
         /// <summary>
         /// Images associated with the flight.  For efficiency, this MUST BE EXPLICITLY POPULATED AND SET.
         /// </summary>
-        public IList<MFBImageInfo> FlightImages { get; protected set; } = new List<MFBImageInfo>();
+        public Collection<MFBImageInfo> FlightImages { get; private set; } = new Collection<MFBImageInfo>();
 
         /// <summary>
         /// Fill FlightImages with images from the flight.
@@ -306,7 +308,7 @@ namespace MyFlightbook
         /// <summary>
         /// Videos associated with the flight.
         /// </summary>
-        public IList<VideoRef> Videos { get; protected set; } = new List<VideoRef>();
+        public Collection<VideoRef> Videos { get; private set; } = new Collection<VideoRef>();
 
         #region Display
         /// <summary>
@@ -2004,7 +2006,10 @@ namespace MyFlightbook
 
                     string szVids = dr["FlightVids"].ToString();
                     if (!String.IsNullOrEmpty(szVids))
-                        Videos = JsonConvert.DeserializeObject<List<VideoRef>>(szVids);
+                    {
+                        Videos.Clear();
+                        Videos.AddRange(JsonConvert.DeserializeObject<VideoRef[]>(szVids));
+                    }
 
                     return true;
                 }
@@ -3225,12 +3230,12 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
         public decimal ReliefPilotTotal { get; set; }
         public decimal MultiPilotTotal { get; set; }
 
-        public IList<decimal> OptionalColumnTotals { get; } = new List<decimal>();
+        public Collection<decimal> OptionalColumnTotals { get; } = new Collection<decimal>();
 
         /// <summary>
         /// Any additional columns to display.  Use OptionalColumnValue to get the value, or, after using AddFrom, use OptionalColumnTotalValue to retrieve the total
         /// </summary>
-        public IList<OptionalColumn> OptionalColumns { get; } = new List<OptionalColumn>();
+        public Collection<OptionalColumn> OptionalColumns { get; } = new Collection<OptionalColumn>();
 
         public void SetOptionalColumns(IEnumerable<OptionalColumn> rgoc)
         {
