@@ -208,7 +208,8 @@ namespace MyFlightbook.MemberPages
                 }
             }
 
-            mfbChartTotals1.HistogramManager = LogbookEntryDisplay.GetHistogramManager(mfbLogbook1.Data, User.Identity.Name);  // do this every time, but do it AFTER initialize restriction (done above in !IsPostback) might have been done, to avoid double-hit to the database.
+            if (mfbChartTotals1.HistogramManager == null)
+                mfbChartTotals1.HistogramManager = LogbookEntryDisplay.GetHistogramManager(mfbLogbook1.Data, User.Identity.Name);  // do this every time, but do it AFTER initialize restriction (done above in !IsPostback) might have been done, to avoid double-hit to the database.
         }
 
         private const string szVSFlightID = "vsFlightID";
@@ -415,6 +416,10 @@ namespace MyFlightbook.MemberPages
         {
             TurnOffLazyLoad(sender);
             mfbChartTotals1.Visible = true;
+
+            if (mfbChartTotals1.HistogramManager == null)
+                mfbChartTotals1.HistogramManager = LogbookEntryDisplay.GetHistogramManager(mfbLogbook1.Data, User.Identity.Name);
+
             mfbChartTotals1.Refresh();
             hdnLastViewedPaneIndex.Value = mfbAccordionProxyExtender1.IndexForProxyID(apcAnalysis.ID).ToString(CultureInfo.InvariantCulture);
         }
