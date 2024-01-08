@@ -261,7 +261,7 @@ namespace MyFlightbook.Airports
                     if (!String.IsNullOrEmpty(szLatLong))
                     {
                         // see if it is decimal; if so, we'll fall through.
-                        if (Regex.IsMatch(szLatLong, "[NEWS]", RegexOptions.IgnoreCase))
+                        if (RegexUtility.CompassDirections.IsMatch(szLatLong))
                             aic.LatLong = DMSAngle.LatLonFromDMSString(GetCol(rgCols, ic.iColLatLong));
                         else
                         {

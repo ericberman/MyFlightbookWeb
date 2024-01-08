@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2021 MyFlightbook LLC
+ * Copyright (c) 2015-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -53,8 +53,8 @@ namespace MyFlightbook.Geography
         {
             try
             {
-                // Try matching on DMS ("22 03' 26.123"S)
-                MatchCollection mc = Regex.Matches(szAngleString, "(\\d{1,3})\\D+([0-5]?\\d)\\D+(\\d+\\.?\\d*)\\D*([NEWS])", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+                // Try matching on DMS like ("22 03' 26.123"S)
+                MatchCollection mc = RegexUtility.DMSNumeric.Matches(szAngleString);
                 if (mc != null && mc.Count > 0 && mc[0].Groups.Count >= 5)
                 {
                     GroupCollection gc = mc[0].Groups;
@@ -65,7 +65,7 @@ namespace MyFlightbook.Geography
                     return;
                 }
                 // Else, try matching on decimal ("22.5483 S 27.863E")
-                mc = Regex.Matches(szAngleString, "(\\d{0,3}([,.]\\d+)?)\\D*([NEWS])", RegexOptions.Compiled);
+                mc = RegexUtility.DMSDecimal.Matches(szAngleString);
                 if (mc != null && mc.Count > 0 && mc[0].Groups.Count >= 3)
                 {
                     GroupCollection gc = mc[0].Groups;
@@ -78,7 +78,7 @@ namespace MyFlightbook.Geography
                     }
                 }
                 // Else, try matching on decimal ("W122.23.15")
-                mc = Regex.Matches(szAngleString, "([NEWSnews])[ .]?(\\d{0,3})[ .]?(\\d{0,2})[ .]?(\\d{0,2})",  RegexOptions.Compiled);
+                mc = RegexUtility.DMSDotted.Matches(szAngleString);
                 if (mc != null && mc.Count > 0 && mc[0].Groups.Count >= 4)
                 {
                     GroupCollection gc = mc[0].Groups;
@@ -89,7 +89,7 @@ namespace MyFlightbook.Geography
                     return;
                 }
                 // Finally, try matching on degrees and minutes ("48°01.3358")
-                mc = Regex.Matches(szAngleString, "-?(\\d+)°(\\d+([.,]\\d+)?)", RegexOptions.Compiled);
+                mc = RegexUtility.DMSDegrees.Matches(szAngleString);
                 if (mc != null && mc.Count > 0 && mc[0].Groups.Count >= 3)
                 {
                     GroupCollection gc = mc[0].Groups;
@@ -116,8 +116,7 @@ namespace MyFlightbook.Geography
         /// <returns>Null if there is a problem.</returns>
         static public LatLong LatLonFromDMSString(string sz)
         {
-            Regex r = new Regex("([^a-zA-Z]+[NS]) *([^a-zA-Z]+[EW])", RegexOptions.IgnoreCase);
-            MatchCollection mc = r.Matches(sz);
+            MatchCollection mc = RegexUtility.DMSLatLong.Matches(sz);
             if (mc != null && mc.Count > 0 && mc[0].Groups.Count >= 2)
                 return new LatLong((new DMSAngle(mc[0].Groups[1].Value)).Value, (new DMSAngle(mc[0].Groups[2].Value)).Value);
             else if (CoordinateSharp.MilitaryGridReferenceSystem.TryParse(sz, out CoordinateSharp.MilitaryGridReferenceSystem mgrs))

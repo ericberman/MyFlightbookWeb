@@ -2843,7 +2843,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
             {
                 AddFrom(le);
                 Comment = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, Comment, le.Comment);
-                string[] newAirports = Regex.Split(le.Route, "\\W", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                string[] newAirports = RegexUtility.Words.Split(le.Route);
                 foreach (string airport in newAirports)
                     if (!Route.TrimEnd().EndsWith(airport, StringComparison.CurrentCultureIgnoreCase))
                         Route = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, Route, airport);
@@ -4439,7 +4439,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                 {
                 try
                 {
-                    if (Regex.IsMatch(sz, "^[0-9a-fA-F]{6}$"))
+                    if (RegexUtility.HexRGB.IsMatch(sz))
                         sz = "#" + sz;
                     return System.Drawing.ColorTranslator.FromHtml(sz);
                 }

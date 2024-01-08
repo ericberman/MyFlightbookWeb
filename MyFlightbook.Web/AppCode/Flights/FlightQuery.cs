@@ -1109,7 +1109,7 @@ namespace MyFlightbook
 
             if (!String.IsNullOrWhiteSpace(ModelName))
             {
-                string[] rgModelFragment = Regex.Split(ModelName, "[^a-zA-Z0-9:]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                string[] rgModelFragment = RegexUtility.ModelFragmentBoundary.Split(ModelName);
                 int i = 0;
                 StringBuilder sbModelName = new StringBuilder();
                 foreach (string sz in rgModelFragment)
@@ -1787,7 +1787,7 @@ namespace MyFlightbook
             if (MakeList.Any() && MakeList.FirstOrDefault(mm => le.ModelID == mm.MakeModelID) == null)
                 return false;
 
-            string[] rgModelFragment = Regex.Split(ModelName, "[^a-zA-Z0-9:]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            string[] rgModelFragment = RegexUtility.ModelFragmentBoundary.Split(ModelName);
             foreach (string sz in rgModelFragment)
             {
                 string szSearch = sz.Trim().ToUpper(CultureInfo.CurrentCulture);

@@ -16,7 +16,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2023 MyFlightbook LLC
+ * Copyright (c) 2010-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -471,7 +471,7 @@ namespace MyFlightbook.Instruction
             string szRestriction = string.Empty;
             List<MySqlParameter> lstParams = new List<MySqlParameter>();
 
-            string[] rgTerms = (szSearch == null) ? Array.Empty<string>() : Regex.Split(szSearch, "\\s", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            string[] rgTerms = (szSearch == null) ? Array.Empty<string>() : RegexUtility.WhiteSpace.Split(szSearch);
 
             if (rgTerms != null && rgTerms.Length > 0)
             {

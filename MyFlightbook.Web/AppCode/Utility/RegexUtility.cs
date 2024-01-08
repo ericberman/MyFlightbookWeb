@@ -78,7 +78,7 @@ namespace MyFlightbook
         ///  - ABCD-ABCD
         ///  - ABCDE-ABCDE
         /// </summary>
-        public static Regex LocalFlight { get { return mLocalFlight ?? (mLocalFlight = new Regex("^([0-9a-zA-Z]{3,5})([^0-9a-zA-Z]+\\1)?$")); } }
+        public static Regex LocalFlight { get { return mLocalFlight ?? (mLocalFlight = new Regex("^([0-9a-zA-Z]{3,5})([^0-9a-zA-Z]+\\1)?$", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
 
         private static Regex mApproach = null;
         /// <summary>
@@ -120,5 +120,72 @@ namespace MyFlightbook
 
         private static Regex mMFBIIBackwardsCompatHack = null;
         public static Regex MFBIIBackwardsCompatHack { get { return mMFBIIBackwardsCompatHack ?? (mMFBIIBackwardsCompatHack = new Regex("(.*/)([^/]+)/?$", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
+
+        private static Regex mWhiteSpace = null;
+
+        /// <summary>
+        /// Whitespace (useful for splitting on whitespace)
+        /// </summary>
+        public static Regex WhiteSpace { get { return mWhiteSpace ?? (mWhiteSpace = new Regex("\\s", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
+
+        private static Regex mWords = null; 
+
+        /// <summary>
+        /// Words - non-word characters (useful for splitting routes into airports)
+        /// </summary>
+        public static Regex Words { get { return mWords ?? (mWords = new Regex("\\W", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
+
+        private static Regex mHexRGB = null;
+
+        /// <summary>
+        /// Matches a 6-digit hex number (i.e., RGB)
+        /// </summary>
+        public static Regex HexRGB { get { return mHexRGB ?? (mHexRGB = new Regex("^[0-9a-fA-F]{6}$", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
+
+        private static Regex mModelFragementBoundary = null;
+
+        /// <summary>
+        /// Used for splitting model names for model searching - splits at non-alpha but preserves colons.
+        /// </summary>
+        public static Regex ModelFragmentBoundary { get { return mModelFragementBoundary ?? (mModelFragementBoundary = new Regex("[^a-zA-Z0-9:]", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
+
+        private static Regex mDMSBasic = null;
+
+        /// <summary>
+        /// Matches a degree-minute-second latitude/longitude string
+        /// </summary>
+        public static Regex DMSLatLong { get { return mDMSBasic ?? (mDMSBasic = new Regex("([^a-zA-Z]+[NS]) *([^a-zA-Z]+[EW])", RegexOptions.IgnoreCase | RegexOptions.Compiled)); } }
+
+        private static Regex mCompassDirections = null;
+
+        /// <summary>
+        /// Matches potential compass directions (N, E, W, and S)
+        /// </summary>
+        public static Regex CompassDirections { get { return mCompassDirections ?? (mCompassDirections = new Regex("[NEWS]", RegexOptions.IgnoreCase | RegexOptions.Compiled)); } }
+
+        private static Regex mDMSNumeric = null;
+        private static Regex mDMSDecimal = null;
+        private static Regex mDMSDotted = null;
+        private static Regex mDMSDegrees = null;
+
+        /// <summary>
+        /// Matches a degree-minute-second latitude/longitude string using apostrophes in the format of "22 03' 26.123"S
+        /// </summary>
+        public static Regex DMSNumeric { get { return mDMSNumeric ?? (mDMSNumeric = new Regex("(\\d{1,3})\\D+([0-5]?\\d)\\D+(\\d+\\.?\\d*)\\D*([NEWS])", RegexOptions.IgnoreCase | RegexOptions.Compiled)); } }
+
+        /// <summary>
+        /// Matches a decimal degree-minute-second latitude/longitude string, e.g., "22.5483 S 27.863E"
+        /// </summary>
+        public static Regex DMSDecimal { get { return mDMSDecimal ?? (mDMSDecimal = new Regex("(\\d{0,3}([,.]\\d+)?)\\D*([NEWS])", RegexOptions.IgnoreCase | RegexOptions.Compiled)); } }
+
+        /// <summary>
+        /// Matches a decimal string preceded by compass direction, e.g., "W122.23.15"
+        /// </summary>
+        public static Regex DMSDotted { get { return mDMSDotted ?? (mDMSDotted = new Regex("([NEWSnews])[ .]?(\\d{0,3})[ .]?(\\d{0,2})[ .]?(\\d{0,2})", RegexOptions.IgnoreCase | RegexOptions.Compiled)); } }
+
+        /// <summary>
+        /// Matches a degree-minute-second string that uses the degree sign, e.g., 48°01.3358"
+        /// </summary>
+        public static Regex DMSDegrees { get { return mDMSDegrees ?? (mDMSDegrees = new Regex("-?(\\d+)°(\\d+([.,]\\d+)?)", RegexOptions.IgnoreCase | RegexOptions.Compiled)); } }
     }
 }

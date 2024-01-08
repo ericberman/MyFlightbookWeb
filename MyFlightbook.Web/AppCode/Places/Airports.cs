@@ -16,7 +16,7 @@ using System.Xml;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2023 MyFlightbook LLC
+ * Copyright (c) 2010-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -501,7 +501,7 @@ namespace MyFlightbook.Airports
             if (szSearchText == null || String.IsNullOrEmpty(szSearchText.Trim()))
                 return lstAp;
 
-            string[] rgSearchTerms = Regex.Split(szSearchText, "\\s");
+            string[] rgSearchTerms = RegexUtility.WhiteSpace.Split(szSearchText);
 
             DBHelper dbh = new DBHelper();
             dbh.ReadRows(
