@@ -1,13 +1,11 @@
-﻿using MyFlightbook.Airports;
-using MyFlightbook.Currency;
+﻿using MyFlightbook.Currency;
 using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2023 MyFlightbook LLC
+ * Copyright (c) 2013-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -39,9 +37,8 @@ namespace MyFlightbook.RatingsProgress
         /// <summary>
         /// Determines the amount of part 135 cross-country time in this flight.
         /// Part 135 time is cross country if it goes from airport A to airport B
-        /// We mimic the FlightQuery definition of non-local here, which looks at the length of the route field and verifies that it matches neither
         /// ABCD-ABCD or ABC-ABC.  (If it's simply ABC or simply ABCD, then it fails the length test)
-        /// If it is non-local, then we use MAX(total time, cross-country).
+        /// If it is non-local, then we use MAX(total time, cross-country), otherwise we use the logged XC time.
         /// </summary>
         /// <param name="cfr">The flight</param>
         /// <returns>The amount of cross-country time to contribute</returns>
@@ -49,15 +46,9 @@ namespace MyFlightbook.RatingsProgress
         {
             if (cfr == null)
                 return 0.0M;
-            if (cfr.Route == null || cfr.Route.Length <= airport.maxCodeLength)
-                return cfr.XC;
 
-            // Mimic
-            string szNormalRoute = RegexUtility.NonAlphaNumeric.Replace(cfr.Route, " ");
-            Regex r4x4 = new Regex(String.Format(CultureInfo.InvariantCulture, "^{0}[^a-zA-Z0-9]*{0}$", szNormalRoute.Substring(0, 4)), RegexOptions.IgnoreCase | RegexOptions.Singleline);
-            Regex r3x3 = new Regex(String.Format(CultureInfo.InvariantCulture, "^{0}[^a-zA-Z0-9]*{0}$", szNormalRoute.Substring(0, 3)), RegexOptions.IgnoreCase | RegexOptions.Singleline);
-
-            return (r4x4.IsMatch(cfr.Route) || r3x3.IsMatch(cfr.Route)) ? cfr.XC : Math.Max(cfr.XC, cfr.Total);
+            // short route is always local - just record the XC time reported.
+            return (RegexUtility.LocalFlight.IsMatch(cfr.Route ?? string.Empty)) ? cfr.XC : Math.Max(cfr.XC, cfr.Total);
         }
     }
 

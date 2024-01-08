@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2020 MyFlightbook LLC
+ * Copyright (c) 2008-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -62,15 +62,13 @@ namespace MyFlightbook
         #endregion
 
         #region Creation and parsing
-        private static readonly Regex regApproach = new Regex("\\b(?<count>\\d{1,2})[-.:/ ]?(?<desc>[-a-zA-Z/]{3,}?(?:-[abcxyzABCXYZ])?)[-.:/ ]?(?:RWY)?(?<rwy>[0-3]?\\d[LRC]?)[-.:/ @](?<airport>[a-zA-Z0-9]{3,4})\\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
         public static IEnumerable<ApproachDescription> ExtractApproaches(string szSource)
         {
             List<ApproachDescription> lst = new List<ApproachDescription>();
 
             if (szSource != null)
             {
-                MatchCollection mc = regApproach.Matches(szSource);
+                MatchCollection mc = RegexUtility.ApproachDescription.Matches(szSource);
                 foreach (Match m in mc)
                     lst.Add(new ApproachDescription(m));
             }
@@ -83,7 +81,7 @@ namespace MyFlightbook
             if (szSource == null)
                 return string.Empty;
 
-            return regApproach.Replace(szSource, (m) => { return String.Format(CultureInfo.InvariantCulture, "<span title='{0}' style=\"display:inline-block; border-bottom: 1px dotted #000; \">{1}</span>", new ApproachDescription(m).ToString(), m.Groups[0].Value); });
+            return RegexUtility.ApproachDescription.Replace(szSource, (m) => { return String.Format(CultureInfo.InvariantCulture, "<span title='{0}' style=\"display:inline-block; border-bottom: 1px dotted #000; \">{1}</span>", new ApproachDescription(m).ToString(), m.Groups[0].Value); });
         }
         #endregion
 

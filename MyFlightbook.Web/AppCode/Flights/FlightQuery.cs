@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2022 MyFlightbook LLC
+ * Copyright (c) 2009-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1738,8 +1738,6 @@ namespace MyFlightbook
             return !AircraftList.Any() || (AircraftList.FirstOrDefault(ac => ac.AircraftID == le.AircraftID) != null);
         }
 
-        private static readonly Regex rLocal = new Regex("^([a-zA-Z0-9]{3,4})([^a-zA-Z0-9]+\\1)?$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
         public bool IsAirportMatch(LogbookEntryCore le)
         {
             if (le == null)
@@ -1754,11 +1752,11 @@ namespace MyFlightbook
                 case FlightDistance.AllFlights:
                     break;
                 case FlightDistance.LocalOnly:
-                    if (!rLocal.IsMatch(szRoute))
+                    if (!RegexUtility.LocalFlight.IsMatch(szRoute))
                         return false;
                     break;
                 case FlightDistance.NonLocalOnly:
-                    if (rLocal.IsMatch(szRoute))
+                    if (RegexUtility.LocalFlight.IsMatch(szRoute))
                         return false;
                     break;
                 default:
