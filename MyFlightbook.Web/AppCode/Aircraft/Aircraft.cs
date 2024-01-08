@@ -3162,7 +3162,6 @@ ORDER BY f.date DESC LIMIT 10) tach", (int)CustomPropertyType.KnownProperties.ID
         }
         #endregion
 
-        static readonly private Regex rNormalize = new Regex("[^a-zA-Z0-9]*", RegexOptions.Compiled);
         private readonly AircraftInstance[] m_rgAircraftInstances;
         #endregion
 
@@ -3183,7 +3182,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int)CustomPropertyType.KnownProperties.ID
             if (String.IsNullOrEmpty(szTail) || (fRequireModel && String.IsNullOrEmpty(szModelGiven)))
                 throw new MyFlightbookException(Resources.Aircraft.ImportNotValidCSV);
 
-            string szTailNormal = rNormalize.Replace(szTail, string.Empty);
+            string szTailNormal = RegexUtility.NonAlphaNumeric.Replace(szTail, string.Empty);
 
             /* Ignore this if 
              * a) (sim or anonymous) AND there is already a matchrow containing this tail AND model OR
@@ -3358,7 +3357,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int)CustomPropertyType.KnownProperties.ID
             foreach (AircraftImportMatchRow mr in MatchResults)
             {
                 // check if this aircraft is ALREADY in the user's profile
-                mr.BestMatchAircraft = lstUserAircraft.Find(ac => String.Compare(rNormalize.Replace(ac.TailNumber, string.Empty), rNormalize.Replace(mr.TailNumber, string.Empty), StringComparison.CurrentCultureIgnoreCase) == 0);
+                mr.BestMatchAircraft = lstUserAircraft.Find(ac => String.Compare(RegexUtility.NonAlphaNumeric.Replace(ac.TailNumber, string.Empty), RegexUtility.NonAlphaNumeric.Replace(mr.TailNumber, string.Empty), StringComparison.CurrentCultureIgnoreCase) == 0);
                 if (mr.BestMatchAircraft != null)
                 {
                     SetModelMatch(mr, AircraftImportMatchRow.MatchState.MatchedInProfile);
@@ -3381,7 +3380,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int)CustomPropertyType.KnownProperties.ID
                 }
 
                 // If not in the profile, see if it is in the list of ALL aircraft
-                List<Aircraft> lstExistingMatches = lstAllAircraft.FindAll(ac => String.Compare(rNormalize.Replace(ac.TailNumber, string.Empty), rNormalize.Replace(mr.TailNumber, string.Empty), StringComparison.OrdinalIgnoreCase) == 0);
+                List<Aircraft> lstExistingMatches = lstAllAircraft.FindAll(ac => String.Compare(RegexUtility.NonAlphaNumeric.Replace(ac.TailNumber, string.Empty), RegexUtility.NonAlphaNumeric.Replace(mr.TailNumber, string.Empty), StringComparison.OrdinalIgnoreCase) == 0);
                 if (lstExistingMatches != null && lstExistingMatches.Count > 0)
                 {
                     lstMatchesToDelete.Add(mr);

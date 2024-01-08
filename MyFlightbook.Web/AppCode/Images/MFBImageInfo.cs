@@ -21,7 +21,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2023 MyFlightbook LLC
+ * Copyright (c) 2008-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -126,9 +126,7 @@ namespace MyFlightbook.Image
 
                 // Hack for backwards compatibility with mobile devices still using virtual path vs. imageclass.
                 // Try to parse this into a virtual path and a key
-                Regex r = new Regex("(.*/)([^/]+)/?$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-                Match m = r.Match(value);
+                Match m = RegexUtility.MFBIIBackwardsCompatHack.Match(value);
                 if (m.Groups.Count > 2)
                 {
                     this.Class = ClassFromVirtPath(m.Groups[1].Value);

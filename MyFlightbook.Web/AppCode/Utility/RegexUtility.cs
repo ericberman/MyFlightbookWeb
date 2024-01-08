@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Globalization;
+using System.Text.RegularExpressions;
+using System.Windows.Media.Media3D;
 
 /******************************************************
  * 
@@ -83,5 +85,40 @@ namespace MyFlightbook
         /// Approach description - of the form 3-ILS-YRWY16L@KABC
         /// </summary>
         public static Regex ApproachDescription { get { return mApproach ?? (mApproach = new Regex("\\b(?<count>\\d{1,2})[-.:/ ]?(?<desc>[-a-zA-Z/]{3,}?(?:-[abcxyzABCXYZ])?)[-.:/ ]?(?:RWY)?(?<rwy>[0-3]?\\d[LRC]?)[-.:/ @](?<airport>[a-zA-Z0-9]{3,4})\\b", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
+
+        private static Regex mFlightHash = null;
+        /// <summary>
+        /// Read a logbookentry (flight) from its flight hash
+        /// </summary>
+        public static Regex FlightHash { get { return mFlightHash ?? (mFlightHash = new Regex("^ID(?<ID>\\d+)DT(?<Date>[0-9-]+)AC(?<Aircraft>\\d+)A(?<Approaches>\\d+)H(?<Hold>[01])L(?<Landings>\\d+)NL(?<NightLandings>\\d+)XC(?<XC>[0-9.]+)N(?<Night>[0-9.]+)SI(?<SimInst>[0-9.]+)IM(?<IMC>[0-9.]+)GS(?<GroundSim>[0-9.]+)DU(?<Dual>[0-9.]+)CF(?<CFI>[0-9.]+)SI(?<SIC>[0-9.]+)PI(?<PIC>[0-9.]+)TT(?<Total>[0-9.]+)PR(?<props>.*)CC(?<CatClassOver>\\d+)CM(?<Comments>.*)$", RegexOptions.Compiled | RegexOptions.Singleline)); } }
+
+        private static Regex mFlightHashProps = null;
+        /// <summary>
+        /// When reading a flight from its hash, the props also need to be decrypted
+        /// </summary>
+        public static Regex FlightHashProps { get { return mFlightHashProps ?? (mFlightHashProps = new Regex("(?<PropID>\\d+)V(?<Value>.+)", RegexOptions.Compiled)); } }
+
+        private static Regex mAdminSignatureSanity = null;
+
+        /// <summary>
+        /// Internal regex for an old signature bug
+        /// </summary>
+        public static Regex AdminSignatureSanity { get { return mAdminSignatureSanity ?? (mAdminSignatureSanity = new Regex("^(.*)(XC[0-9., ]+N[0-9., ]+SI[0-9., ]+IM[0-9., ]+GS[0-9., ]+DU[0-9., ]+CF[0-9., ]+SI[0-9., ]+PI[0-9., ]+TT[0-9., ]+)(.*)$", RegexOptions.Compiled)); } }
+
+        private static Regex mVORCheck = null;
+
+        /// <summary>
+        /// If someone puts "VORCHK" (whole word) into the comments for a flight, we find it and record that a VOR check was done in the maintenance for the aircraft
+        /// </summary>
+        public static Regex VORCheck { get { return mVORCheck ?? (mVORCheck = new Regex("\\bVORCHK[^a-zA-Z0-9]*(\\S+)", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
+
+        private static Regex mPPH = null;
+        /// <summary>
+        /// #PPH:12.34# indicates a price-per-hour of 12.34 (units undefined)
+        /// </summary>
+        public static Regex PPH { get { return mPPH ?? (mPPH = new Regex("#PPH:(?<rate>\\d+(?:[.,]\\d+)?)#", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled)); } }
+
+        private static Regex mMFBIIBackwardsCompatHack = null;
+        public static Regex MFBIIBackwardsCompatHack { get { return mMFBIIBackwardsCompatHack ?? (mMFBIIBackwardsCompatHack = new Regex("(.*/)([^/]+)/?$", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
     }
 }

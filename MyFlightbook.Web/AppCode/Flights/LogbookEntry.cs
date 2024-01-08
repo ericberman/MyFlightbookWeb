@@ -908,11 +908,9 @@ namespace MyFlightbook
             if (String.IsNullOrEmpty(szHash))
                 throw new ArgumentNullException(nameof(szHash));
 
-            Regex rFlight = new Regex("^ID(?<ID>\\d+)DT(?<Date>[0-9-]+)AC(?<Aircraft>\\d+)A(?<Approaches>\\d+)H(?<Hold>[01])L(?<Landings>\\d+)NL(?<NightLandings>\\d+)XC(?<XC>[0-9.]+)N(?<Night>[0-9.]+)SI(?<SimInst>[0-9.]+)IM(?<IMC>[0-9.]+)GS(?<GroundSim>[0-9.]+)DU(?<Dual>[0-9.]+)CF(?<CFI>[0-9.]+)SI(?<SIC>[0-9.]+)PI(?<PIC>[0-9.]+)TT(?<Total>[0-9.]+)PR(?<props>.*)CC(?<CatClassOver>\\d+)CM(?<Comments>.*)$", RegexOptions.Compiled | RegexOptions.Singleline);
-
             LogbookEntry le = new LogbookEntry();
 
-            MatchCollection mc = rFlight.Matches(szHash);
+            MatchCollection mc = RegexUtility.FlightHash.Matches(szHash);
             if (mc.Count == 1)
             {
                 GroupCollection gc = mc[0].Groups;
@@ -943,11 +941,10 @@ namespace MyFlightbook
 
                 if (rgProps.Length > 0)
                 {
-                    Regex rProp = new Regex("(?<PropID>\\d+)V(?<Value>.+)", RegexOptions.Compiled);
                     List<CustomFlightProperty> lst = new List<CustomFlightProperty>();
                     foreach (string szProp in rgProps)
                     {
-                        MatchCollection mProp = rProp.Matches(szProp);
+                        MatchCollection mProp = RegexUtility.FlightHashProps.Matches(szProp);
                         if (mProp.Count > 0)
                         {
                             GroupCollection gcProp = mProp[0].Groups;
@@ -1073,9 +1070,8 @@ namespace MyFlightbook
                 // This bug should no longer appear because we are now always using invariant culture.
                 // This assumes that the signature hash template above has not changed.  It shouldn't!
                 // NOTE: It DOESN'T MATTER the current state - we could be valid or invalid.
-                Regex r = new Regex("^(.*)(XC[0-9., ]+N[0-9., ]+SI[0-9., ]+IM[0-9., ]+GS[0-9., ]+DU[0-9., ]+CF[0-9., ]+SI[0-9., ]+PI[0-9., ]+TT[0-9., ]+)(.*)$", RegexOptions.Compiled);
-                Match mCurrent = r.Match(szCurrentHash);
-                Match mNew = r.Match(szFlightHash);
+                Match mCurrent = RegexUtility.AdminSignatureSanity.Match(szCurrentHash);
+                Match mNew = RegexUtility.AdminSignatureSanity.Match(szFlightHash);
                 if (mCurrent.Captures.Count == 1 && mNew.Captures.Count == 1 &&   // should always match
                     mCurrent.Groups.Count == 4 && mNew.Groups.Count == 4)
                 {
@@ -1691,12 +1687,10 @@ namespace MyFlightbook
             });
         }
 
-        private static readonly Regex rVORCheck = new Regex("\\bVORCHK[^a-zA-Z0-9]*(\\S+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
         private void AddVORCheck()
         {
             // Issue #985: look for VOR update
-            MatchCollection mc = rVORCheck.Matches(Comment);
+            MatchCollection mc = RegexUtility.VORCheck.Matches(Comment);
             if (mc != null && mc.Count == 1)
             {
                 Aircraft ac = new Aircraft(AircraftID);
@@ -2655,15 +2649,13 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
             }
         }
 
-        private readonly static Regex rPPH = new Regex("#PPH:(?<rate>\\d+(?:[.,]\\d+)?)#", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
-
         private void AutofillCostOfFlight()
         {
             Aircraft ac = new UserAircraft(User).GetUserAircraftByID(AircraftID);
             if (ac == null || ac.PrivateNotes == null)
                 return;
 
-            MatchCollection mc = rPPH.Matches(ac.PrivateNotes);
+            MatchCollection mc = RegexUtility.PPH.Matches(ac.PrivateNotes);
             if (mc.Count > 0 && mc[0].Groups["rate"] != null && decimal.TryParse(mc[0].Groups["rate"].Value, NumberStyles.Float, CultureInfo.CurrentCulture, out decimal rate))
             {
                 // Find the best value of elapsed time to use.  Hobbs, else tach, else total
