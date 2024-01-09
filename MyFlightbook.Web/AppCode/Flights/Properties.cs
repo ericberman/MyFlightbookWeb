@@ -15,7 +15,7 @@ using System.Xml.Serialization;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2023 MyFlightbook LLC
+ * Copyright (c) 2008-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -150,6 +150,7 @@ namespace MyFlightbook
             IDPropTaxiTime = 464,
             IDPropCarrierTouchAndGo = 468,
             IDPropCarrierArrestedLanding = 469,
+            IDPropFlightAttendant = 501,
             IDPropScheduledDeparture = 502,     // Not flagged as a known property
             IDPropScheduledArrival = 503,       // Not flagged as a known property
             IDPropHighAltitudeLandings = 504,
@@ -187,6 +188,8 @@ namespace MyFlightbook
             IDPropLessonEnd = 669,
             IDPropEnhancedVisionApproach = 670,
             IDProp6155SICCheck = 677,
+            IDPropCaptainName = 682,
+            IDPropFirstOfficerName = 683,
             IDPropSpecialAuthorizationApproach = 695,
             IDProp125291IPC = 699,
             IDProp125287Competency = 700,

@@ -12,7 +12,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2022-2023 MyFlightbook LLC
+ * Copyright (c) 2022-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -131,6 +131,25 @@ namespace MyFlightbook.OAuth.RosterBuster
             get { return type.CompareCurrentCultureIgnoreCase("flight") == 0; }
         }
 
+        private readonly static char[] commaSeparator = new char[] { ',' };
+
+        private void AddCrew(List<CustomFlightProperty> lst)
+        {
+            // Issue #1165 - if skywest, then crew is captain, first officer, flightattendent's.
+            if ("SKW".CompareCurrentCultureIgnoreCase(airline?.ICAO ?? string.Empty) == 0)
+            {
+                string[] rgNames = (flight.crew ?? string.Empty).Split(commaSeparator, StringSplitOptions.RemoveEmptyEntries);
+                if (rgNames.Length > 0)
+                    lst.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropCaptainName, rgNames[0]));
+                if (rgNames.Length > 1)
+                    lst.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFirstOfficerName, rgNames[1]));
+                if (rgNames.Length > 2)
+                    lst.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightAttendant, rgNames[2]));
+            }
+            else
+                lst.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropCrew1, flight.crew));
+        }
+
         public override LogbookEntry ToLogbookEntry()
         {
             if (!IsFlight)
@@ -162,13 +181,11 @@ namespace MyFlightbook.OAuth.RosterBuster
             if (!String.IsNullOrEmpty(flightnum))
                 flightnum = (airline.IATA ?? string.Empty) + flightnum;
 
-            pf.CustomProperties.SetItems(new CustomFlightProperty[]
-            {
-                cfpBlockOut, 
-                cfpBlockIn,
-                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightNumber, flightnum),
-                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropCrew1, flight.crew),
-            });
+            List<CustomFlightProperty> lst = new List<CustomFlightProperty>() { cfpBlockOut, cfpBlockIn, CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightNumber, flightnum) };
+
+            AddCrew(lst);
+
+            pf.CustomProperties.SetItems(lst);
 
             return pf;
         }
