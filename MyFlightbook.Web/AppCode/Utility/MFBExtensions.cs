@@ -15,7 +15,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2023 MyFlightbook LLC
+ * Copyright (c) 2008-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -292,7 +292,7 @@ namespace MyFlightbook
                 throw new ArgumentNullException(nameof(sz));
 
             // if it appears to be only a naked time and a date for the naked time is provided, use that date.
-            if (dtNakedTime != null && sz.Length <= 5 && System.Text.RegularExpressions.Regex.IsMatch(sz, "^\\d{0,2}:\\d{2}$", System.Text.RegularExpressions.RegexOptions.Compiled))
+            if (dtNakedTime != null && sz.Length <= 5 && RegexUtility.NakedTime.IsMatch(sz))
             {
                 string[] rgszHM = sz.Split(timeSeparator, StringSplitOptions.RemoveEmptyEntries);
                 if (rgszHM.Length == 2)

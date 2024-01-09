@@ -187,5 +187,28 @@ namespace MyFlightbook
         /// Matches a degree-minute-second string that uses the degree sign, e.g., 48°01.3358"
         /// </summary>
         public static Regex DMSDegrees { get { return mDMSDegrees ?? (mDMSDegrees = new Regex("-?(\\d+)°(\\d+([.,]\\d+)?)", RegexOptions.IgnoreCase | RegexOptions.Compiled)); } }
+
+        private static Regex mNakedTime = null;
+
+        /// <summary>
+        /// Matches a naked time - e.g., 11:32, 23:27, or :51.
+        /// </summary>
+        public static Regex NakedTime { get { return mNakedTime ?? (mNakedTime = new Regex("^([012]?\\d)?:\\d{2}$", RegexOptions.IgnoreCase | RegexOptions.Compiled)); } }
+
+        #region Admin Regexes
+        static private Regex mPseudoSim = null;
+        public static Regex ADMINPseudoSim { get { return mPseudoSim ?? (mPseudoSim = new Regex("N[a-zA-Z-]+([0-9].*)", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
+
+        static private Regex mZeroOneOI = null;
+
+        public static Regex ADMINZeroOrIConfusion { get { return mZeroOneOI ?? (mZeroOneOI = new Regex("^N.*[oOiI].*", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
+
+        static private Regex mPseudoCertifiedSim = null;
+
+        public static Regex ADMINPseudoCertifiedSim { get { return mPseudoCertifiedSim ?? (mPseudoCertifiedSim = new Regex("FS|SIM|FTD|REDB|FRAS|ELIT|CAE|ALSIM|FLIG|SAFE|PREC|TRUF|FMX|MENT|FAA", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
+
+        static private Regex mPseudoFFS = null;
+        public static Regex AdminPseudoFFS { get { return mPseudoFFS ?? (mPseudoFFS = new Regex("(D-?SIM)|FFS", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
+        #endregion
     }
 }

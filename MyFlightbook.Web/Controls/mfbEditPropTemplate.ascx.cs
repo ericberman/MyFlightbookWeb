@@ -3,13 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2023 MyFlightbook LLC
+ * Copyright (c) 2019-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -244,7 +243,7 @@ namespace MyFlightbook.Templates.Controls
                 return true;
 
             text = text.ToUpper(CultureInfo.CurrentCulture);
-            string[] words = Regex.Split(searchProps.SearchText.ToUpper(CultureInfo.CurrentCulture), "\\s", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            string[] words = RegexUtility.WhiteSpace.Split(searchProps.SearchText.ToUpper(CultureInfo.CurrentCulture));
 
             foreach (string word in words)
             {

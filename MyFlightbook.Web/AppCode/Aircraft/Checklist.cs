@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2018-2020 MyFlightbook LLC
+ * Copyright (c) 2018-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -41,13 +41,16 @@ namespace MyFlightbook.Checklists
             return String.Format(CultureInfo.CurrentCulture, "{0} {1}", Content ?? string.Empty, Response ?? string.Empty);
         }
 
-        private static readonly Regex regexPrefix = new Regex("^(?<prefix>Skin|Tab|-{1,2}|\\*{1,2}|\\[(?: |[eEbB][+-])?])?(?<content>.*)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static Regex regexPrefix = null;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         public static ChecklistRow ParseRowType(string szRow)
         {
             if (String.IsNullOrEmpty(szRow))
                 throw new ArgumentNullException(nameof(szRow));
+
+            if (regexPrefix == null)
+                regexPrefix = new Regex("^(?<prefix>Skin|Tab|-{1,2}|\\*{1,2}|\\[(?: |[eEbB][+-])?])?(?<content>.*)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
             MatchCollection mc = regexPrefix.Matches(szRow.Trim());
 

@@ -2455,19 +2455,16 @@ ORDER BY tailnumber ASC");
             return lstAc;
         }
 
-        static readonly Regex regexPseudoSim = new Regex("N[a-zA-Z-]+([0-9].*)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        static readonly Regex regexOOrI = new Regex("^N.*[oOiI].*", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
         public static string FixedPsuedoTail(string szTail)
         {
             if (String.IsNullOrEmpty(szTail))
                 return szTail;
 
-            GroupCollection gc = regexPseudoSim.Match(szTail).Groups;
+            GroupCollection gc = RegexUtility.ADMINPseudoSim.Match(szTail).Groups;
             string szTailnumFixed = szTail;
             if (gc != null && gc.Count > 1)
                 szTailnumFixed = String.Format(CultureInfo.InvariantCulture, "N{0}", gc[1].Value);
-            else if (regexOOrI.IsMatch(szTail))
+            else if (RegexUtility.ADMINZeroOrIConfusion.IsMatch(szTail))
                 szTailnumFixed = szTail.ToUpper(CultureInfo.CurrentCulture).Replace('I', '1').Replace('O', '0');
             else if (szTailnumFixed.StartsWith("N0", StringComparison.CurrentCultureIgnoreCase))
                 szTailnumFixed = "N" + szTailnumFixed.Substring(2);
@@ -2477,7 +2474,7 @@ ORDER BY tailnumber ASC");
 
         public static bool HasMixedOorI(string szTail)
         {
-            return regexOOrI.IsMatch(szTail ?? string.Empty);
+            return RegexUtility.ADMINZeroOrIConfusion.IsMatch(szTail ?? string.Empty);
         }
 
         public static void UpdateVersionForAircraft(Aircraft aircraft, int newVersion)
@@ -2541,9 +2538,9 @@ WHERE (tailnumber LIKE 'SIM%' OR tailnumber LIKE '#%' OR InstanceType <> 1) ";
             szTail = szTail.ToUpper(CultureInfo.CurrentCulture).Replace("-", string.Empty);
             if (szTail.Contains("ATD"))
                 return AircraftInstanceTypes.CertifiedATD;
-            else if (Regex.IsMatch(szTail, "(D-?SIM)|FFS"))
+            else if (RegexUtility.AdminPseudoFFS.IsMatch(szTail))
                 return AircraftInstanceTypes.CertifiedIFRAndLandingsSimulator;
-            else if (Regex.IsMatch(szTail, "FS|SIM|FTD|REDB|FRAS|ELIT|CAE|ALSIM|FLIG|SAFE|PREC|TRUF|FMX|MENT|FAA"))
+            else if (RegexUtility.ADMINPseudoCertifiedSim.IsMatch(szTail))
                 return AircraftInstanceTypes.CertifiedIFRSimulator;
             else
                 return AircraftInstanceTypes.RealAircraft;

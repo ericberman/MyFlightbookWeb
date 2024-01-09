@@ -1,17 +1,16 @@
-﻿using HtmlAgilityPack;
-using Ganss.Xss;
+﻿using Ganss.Xss;
+using HtmlAgilityPack;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2023 MyFlightbook LLC
+ * Copyright (c) 2008-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -206,7 +205,7 @@ namespace MyFlightbook
             if (String.IsNullOrWhiteSpace(szSearch))
                 return CategorizedFAQs;
 
-            string[] words = Regex.Split(szSearch.ToUpper(CultureInfo.CurrentCulture), "\\s");
+            string[] words = RegexUtility.WhiteSpace.Split(szSearch.ToUpper(CultureInfo.CurrentCulture));
             List<FAQItem> lst = new List<FAQItem>(FAQItem.CachedFAQItems);
             lst.RemoveAll(fi => !fi.ContainsWords(words));
             return CategorizeFAQItems(lst);
