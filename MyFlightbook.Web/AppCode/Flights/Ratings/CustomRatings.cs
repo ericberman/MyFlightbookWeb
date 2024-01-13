@@ -1,4 +1,5 @@
-﻿using MyFlightbook.Airports;
+﻿using ImageMagick;
+using MyFlightbook.Airports;
 using MyFlightbook.Currency;
 using MyFlightbook.Histogram;
 using Newtonsoft.Json;
@@ -11,7 +12,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2022 MyFlightbook LLC
+ * Copyright (c) 2022-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -99,7 +100,7 @@ namespace MyFlightbook.RatingsProgress
     /// A specific custom rating - encapsulates a bunch of customratingprogressitems (milestone items)
     /// </summary>
     [Serializable]
-    public class CustomRatingProgress : MilestoneProgress
+    public class CustomRatingProgress : MilestoneProgress, IComparable<CustomRatingProgress>
     {
         #region Properties
         public IEnumerable<CustomRatingProgressItem> ProgressItems { get; set; } = Array.Empty<CustomRatingProgressItem>();
@@ -164,6 +165,107 @@ namespace MyFlightbook.RatingsProgress
             }
 
             return rgProgressForUser;
+        }
+
+        private static List<CustomRatingProgress> RatingsWithNamedRating(string szUser, string szTitle, out CustomRatingProgress crp)
+        {
+            string szSearch = szTitle.Trim();
+            List<CustomRatingProgress> lst = new List<CustomRatingProgress>(CustomRatingsForUser(szUser));
+            crp = lst.FirstOrDefault(c => c.Title.Trim().CompareCurrentCulture(szSearch) == 0);
+            return lst;
+        }
+
+        /// <summary>
+        /// Deletes the named custom rating progress for the specified user.
+        /// </summary>
+        /// <param name="szName"></param>
+        /// <param name="szUser"></param>
+        /// <returns>An enumerable of the remaining custom ratings progress</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static IEnumerable<CustomRatingProgress> DeleteRatingForUser(string szTitle, string szUser)
+        {
+            if (String.IsNullOrEmpty(szTitle))
+                throw new ArgumentNullException(nameof(szTitle));
+            if (String.IsNullOrEmpty(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+
+            List<CustomRatingProgress> lst = new List<CustomRatingProgress>(CustomRatingsForUser(szUser));
+            lst.RemoveAll(crp => crp.Title.CompareCurrentCulture(szTitle) == 0);
+            CommitRatingsForUser(szUser, lst);
+            return lst;
+        }
+
+        /// <summary>
+        /// Creates a rating for the user
+        /// </summary>
+        /// <param name="szTitle">REQUIRED - title.  This is what will be looked up (in case of an update) or used (for a new rating)</param>
+        /// <param name="szFAR">Regulatory reference</param>
+        /// <param name="szDisclaimer"></param>
+        /// <param name="szUser">REQUIRED - username</param>
+        /// <param name="szNewTitle">Optional - if presented, this will be the NEW title.  Ignored if szTitle was not found.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static IEnumerable<CustomRatingProgress> UpdateRatingForUser(string szUser, string szTitle, string szFAR, string szDisclaimer, string szNewTitle = null)
+        {
+            if (String.IsNullOrWhiteSpace(szTitle))
+                throw new ArgumentNullException(nameof(szTitle));
+            if (String.IsNullOrEmpty(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+
+            List<CustomRatingProgress> lst = RatingsWithNamedRating(szUser, szTitle, out CustomRatingProgress crp);
+            if (crp == null)
+                lst.Add(new CustomRatingProgress() { Title = szTitle, FARLink = szFAR ?? string.Empty, GeneralDisclaimer = szDisclaimer ?? string.Empty });
+            else
+            {
+                crp.Title = szNewTitle ?? szTitle;
+                crp.FARLink = szFAR ?? string.Empty;
+                crp.GeneralDisclaimer = szDisclaimer ?? string.Empty;
+            }
+            lst.Sort();
+            CommitRatingsForUser(szUser, lst);
+            return lst;
+        }
+
+        public static CustomRatingProgress AddMilestoneForRating(string szUser, string szProgress, string szTitle, string szFARRef, string szNote, decimal threshold, string queryName, string fieldName, string fieldFrendlyName)
+        {
+            if (String.IsNullOrEmpty(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+            if (String.IsNullOrEmpty(szProgress))
+                throw new ArgumentNullException(nameof(szProgress));
+            if (threshold <= 0)
+                throw new ArgumentOutOfRangeException(nameof(threshold), Resources.MilestoneProgress.CustomProgressNewMilestoneThresholdRequired);
+
+            IEnumerable<CustomRatingProgress> lst = RatingsWithNamedRating(szUser, szProgress, out CustomRatingProgress crp);
+            crp.AddMilestoneItem(new CustomRatingProgressItem()
+            {
+                Title = szTitle,
+                FARRef = szFARRef,
+                Note = szNote,
+                Threshold = threshold,
+                QueryName = queryName,
+                FieldName = fieldName,
+                FieldFriendlyName = fieldFrendlyName
+            });
+            CommitRatingsForUser(szUser, lst);
+            return crp;
+        }
+
+        public static CustomRatingProgress DeleteMilestoneForRating(string szUser, string szProgress, int milestoneIndex)
+        {
+            if (String.IsNullOrEmpty(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+            if (String.IsNullOrEmpty(szProgress))
+                throw new ArgumentNullException(nameof(szProgress));
+
+            IEnumerable<CustomRatingProgress> lst = RatingsWithNamedRating(szUser, szProgress, out CustomRatingProgress crp);
+            crp.RemoveMilestoneAt(milestoneIndex);
+            CommitRatingsForUser(szUser, lst);
+            return crp;
+        }
+
+        public static CustomRatingProgress CustomRatingWithName(string szTitle, string szUser)
+        {
+            return CustomRatingsForUser(szUser).FirstOrDefault(crp => crp.Title.CompareCurrentCulture(szTitle) == 0);
         }
 
         public static void CommitRatingsForUser(string szUser, IEnumerable<CustomRatingProgress> rgIn)
@@ -236,6 +338,13 @@ namespace MyFlightbook.RatingsProgress
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             throw new NotImplementedException();
+        }
+
+        public int CompareTo(CustomRatingProgress other)
+        {
+            if (other == null) 
+                throw new ArgumentNullException(nameof(other));
+            return this.Title.CompareTo(other.Title);
         }
     }
 }

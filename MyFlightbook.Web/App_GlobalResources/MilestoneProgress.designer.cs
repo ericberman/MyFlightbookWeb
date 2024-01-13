@@ -169,7 +169,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to *100* hours of *night* flight time.
+        ///   Looks up a localized string similar to *100* hours of *night* *flight time*.
         /// </summary>
         internal static string ATPMinNightTime {
             get {
@@ -2680,7 +2680,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to *40* hours of flight time.
+        ///   Looks up a localized string similar to *40* hours of *flight time*.
         /// </summary>
         internal static string MinTime {
             get {

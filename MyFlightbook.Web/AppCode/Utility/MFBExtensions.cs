@@ -823,6 +823,28 @@ namespace MyFlightbook
         }
         #endregion
 
+        #region Boolean extensions
+        /// <summary>
+        /// For HTML checkboxes and such - returns "checked" if true
+        /// </summary>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static string ToChecked(this bool b)
+        {
+            return b ? "checked" : string.Empty;
+        }
+
+        /// <summary>
+        /// For HTML select and such - returns "selected" if true.
+        /// </summary>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static string ToSelected(this bool b)
+        {
+            return b ? "selected" : string.Empty;
+        }
+        #endregion
+
         #region object Extensions
         #region Format objects from database to strings
         /// <summary>

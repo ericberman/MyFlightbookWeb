@@ -1,0 +1,64 @@
+﻿@using System.Globalization
+@using MyFlightbook.RatingsProgress
+@{
+    MilestoneProgress mp = ViewBag.mp;
+    string szHeader = ViewBag.header;
+    int i = 0;
+}
+<div class="printonly" style="text-align:center;">
+    <h2>@szHeader</h2>
+</div>
+<div id="pnlOverallProgress">
+    <div style="font-weight:bold">@mp.ProgressSummary</div>
+    <span style="font-weight:bold">@Resources.LocalizedText.Note</span>
+    <span id="lblOverallProgressDisclaimer" class="fineprint">@Html.Raw(Branding.ReBrand(Resources.MilestoneProgress.OverallProgressDisclaimer))</span>
+    <p><div class="fineprint">@Html.Raw(mp.GeneralDisclaimer.Linkify())</div></p>
+</div>
+<table cellpadding="3" cellspacing="3">
+    @foreach (MilestoneItem mi in mp.ComputedMilestones)
+    {
+        string idDetails = String.Format(CultureInfo.InvariantCulture, "detailsRow{0}", i++);
+        int cappedPercentage = (int)Math.Min(mi.Percentage, 100);
+        <tr class="progressRow">
+            <td><div class="checkedBox">@(mi.IsSatisfied ? "✔" : string.Empty)</div></td>
+            <td>
+                <div>
+                    <span style="font-weight:bold">@Html.Raw(mi.FARRef.Linkify(false))</span> - @Html.Raw(mi.Title.Linkify(true)) <span style="font-weight:bold">@mi.ExpirationNote</span>
+                    @if (mi.HasDetails)
+                    {
+                        Html.RenderAction("RenderExpandoImg", "MFBTemplate", new { fExpanded = false, targetID = idDetails });
+                    }
+                </div>
+                @if (!String.IsNullOrEmpty(mi.Note))
+                {
+                    <div class="fineprint"><span style="font-weight:bold;">@Resources.MilestoneProgress.NoteHeader</span> <span style="font-style:italic">@Html.Raw(mi.Note.Linkify(true))</span></div>
+                }
+                @if (!String.IsNullOrEmpty(mi.Details))
+                {
+                <div id="@idDetails" style="display:none;">
+                    <span style="white-space:pre-line">@Html.Raw(mi.Details.Linkify())</span>
+                </div>
+                }
+                @if (mi.Type == MilestoneItem.MilestoneType.AchieveOnce)
+                {
+                    if (mi.IsSatisfied)
+                    {
+                        <span style="font-weight:bold">@Resources.MilestoneProgress.CompletedHeader</span>
+                        <a href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/pub/ViewFlight/{0}", mi.MatchingEventID))" target="_blank">@mi.MatchingEventText</a>
+                    }
+                    else
+                    {
+                        <span style="font-weight:bold;">@Resources.MilestoneProgress.NotMet</span>
+                    }
+                }
+                else
+                {
+                    <div class="progress">
+                        <div class="percent"><span id="lblProgress">@mi.ProgressDisplay</span></div>
+                        <div class="bar" style="@String.Format(CultureInfo.InvariantCulture, "width: {0}%; background-color: {1}", cappedPercentage, cappedPercentage < 100 ? "#CCCCCC" : "limegreen")">&nbsp;</div>
+                    </div>
+                }
+            </td>
+        </tr>
+    }
+</table>

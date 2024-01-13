@@ -10,7 +10,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2023 MyFlightbook LLC
+ * Copyright (c) 2013-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -302,7 +302,7 @@ namespace MyFlightbook.RatingsProgress
         {
             get
             {
-                if (!lstRows.Any())
+                if (lstRows.Count == 0)
                     return string.Empty;
 
                 StringBuilder sb = new StringBuilder(Resources.MilestoneProgress.DetailFlightsIgnored);
@@ -318,7 +318,7 @@ namespace MyFlightbook.RatingsProgress
             }
         }
 
-        public override bool HasDetails { get { return lstRows.Any(); } }
+        public override bool HasDetails { get { return lstRows.Count != 0; } }
 
         #endregion
 
@@ -544,6 +544,24 @@ namespace MyFlightbook.RatingsProgress
         }
 
         /// <summary>
+        /// Returns a human readable summary of the number of progress items met
+        /// </summary>
+        /// <returns></returns>
+        [Newtonsoft.Json.JsonIgnore]
+        public string ProgressSummary
+        {
+            get
+            {
+                int cMilestones = ComputedMilestones.Count;
+                int cMetMilestones = 0;
+                foreach (MilestoneItem mi in ComputedMilestones)
+                    if (mi.IsSatisfied)
+                        cMetMilestones++;
+                return String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.OverallProgressTemplate, cMetMilestones, cMilestones);
+            }
+        }
+
+        /// <summary>
         /// Determines if the category/class matches the rating being sought
         /// </summary>
         /// <param name="ccid">The category/class</param>
@@ -715,6 +733,34 @@ namespace MyFlightbook.RatingsProgress
                 new CustomRatingsGroup(szUser)  // Custom milestones
             };
             return lst;
+        }
+
+        /// <summary>
+        /// Returns AvailableProgressItems as a dictionary for convenience.
+        /// </summary>
+        /// <param name="szUser"></param>
+        /// <returns></returns>
+        public static IDictionary<string, IEnumerable<string>> AvailablePrgressItemsDictionary(string szUser)
+        {
+            Dictionary<string, IEnumerable<string>> d = new Dictionary<string, IEnumerable<string>>();
+            foreach (MilestoneGroup mg in AvailableProgressItems(szUser))
+            {
+                List<string> lst = new List<string>();
+                foreach (MilestoneProgress mp in mg.Milestones)
+                    lst.Add(mp.Title);
+                d[mg.GroupName] = lst;
+            }
+            return d;
+        }
+
+        public static MilestoneProgress RatingProgressForGroup(string szGroup, string szRating, string szTargetUser)
+        {
+            IEnumerable<MilestoneGroup> rggroups = AvailableProgressItems(szTargetUser);
+            MilestoneGroup mg = rggroups.FirstOrDefault(m => m.GroupName.CompareCurrentCultureIgnoreCase(szGroup) == 0);
+            MilestoneProgress mp = mg?.Milestones.FirstOrDefault(m2 => m2.Title.CompareCurrentCultureIgnoreCase(szRating) == 0);
+            if (mp != null)
+                mp.Username = szTargetUser;
+            return mp;
         }
 
         /// <summary>

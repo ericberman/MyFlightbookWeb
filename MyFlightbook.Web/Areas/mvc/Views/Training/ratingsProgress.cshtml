@@ -1,0 +1,340 @@
+﻿@using MyFlightbook.RatingsProgress
+@using Newtonsoft.Json
+@using MyFlightbook.Histogram
+@using MyFlightbook
+@using System.Globalization
+@{
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    ViewBag.defaultTab = tabID.tabTraining;
+    string targetUser = ViewBag.targetUser;
+    string selectedGroup = ViewBag.selectedGroup;
+    string selectedRating = ViewBag.selectedRating;
+    bool fShowAddEdit = targetUser.CompareCurrentCulture(User.Identity.Name) == 0 && selectedGroup.CompareCurrentCulture(Resources.MilestoneProgress.CustomProgressSection) == 0;
+    IDictionary<string, IEnumerable<string>> milestones = ViewBag.milestones;
+    IEnumerable<CustomRatingProgress> customRatings = ViewBag.customRatings;
+    List<HistogramableValue> lstMilestoneFields = ViewBag.milestoneFields;
+    IEnumerable<CannedQuery> rgQueries = ViewBag.cannedQueries;
+}
+<script type="text/javascript">
+    var milestones = @Html.Raw(JsonConvert.SerializeObject(milestones));
+
+    function groupSelected() {
+        var cmbRatings = $("#cmbRatings");
+        cmbRatings.find('option').not(':first').remove();
+        cmbRatings.prop("selectedIndex", 0);
+        var selectedGroup = $("#cmbMilestoneGroup").val();
+        if (selectedGroup != "") {
+            milestones[selectedGroup].forEach((mpName) => {
+                cmbRatings.append($('<option>', { value : mpName, text : mpName }));
+            });
+        }
+        if (cmbRatings.val() == "")
+            $("#divProgressResults").html("");
+
+        if (selectedGroup == "@Resources.MilestoneProgress.CustomProgressSection")
+            $("#pnlAddEdit").show();
+        else
+            $("#pnlAddEdit").hide();
+    }
+
+    function ratingSelected() {
+        var selectedRating = $("#cmbRatings").val();
+        if (selectedRating == "")
+            $("#divProgressResults").html("");
+        else {
+            var f = $("#frmPickRating").serialize();
+            $.ajax({
+                url: "@Url.Action("ProgressAgainstRating", "Training")",
+                type: "POST", data: f, dataType: "html", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                success: function (r) {
+                    $("#divProgressResults").html(r);
+                }
+            });
+        }
+    }
+
+    function refreshCustomRatings() {
+        milestones["@Resources.MilestoneProgress.CustomProgressSection"] = $("#divCustomRatings").find('div[name="oldTitle"]').map(function () {
+            return $.trim($(this).text());
+        }).get();
+        groupSelected();    // force a refresh of available ratings
+        $("#divProgressResults").html("");
+    }
+
+    function addCustomRating() {
+        var form = $("#frmNewRating");
+        if (form.valid()) {
+            var f = form.serialize();
+            $.ajax({
+                url: "@Url.Action("AddCustomProgress", "Training")",
+                type: "POST", data: f, dataType: "html", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                success: function (r) {
+                    $("#divCustomRatings").html(r);
+                    $("#txtNewTitle").val("");
+                    $("#txtNewDisclaimer").val("");
+                    refreshCustomRatings();
+                }
+            });
+        }
+    }
+
+    function updateCustomRating(row) {
+        $("#hdnRatingToDelete").val(row.find('div[name="oldTitle"]').text());
+        $("#hdnNewName").val(row.find("input[name='newTitle']").val());
+        $("#hdnNewDisclaimer").val(row.find("input[name='newDisc']").val());
+        var form = $("#frmExistingRatings");
+        var f = form.serialize();
+        $.ajax({
+            url: "@Url.Action("UpdateCustomProgress", "Training")",
+            type: "POST", data: f, dataType: "html", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            success: function (r) {
+                $("#divCustomRatings").html(r);
+                refreshCustomRatings();
+            }
+        });
+    }
+
+    function deleteCustomRating(title) {
+        if (confirm("@Resources.MilestoneProgress.CustomProgressDeleteConfirm")) {
+            $("#hdnRatingToDelete").val(title);
+            var form = $("#frmExistingRatings");
+            var f = form.serialize();
+            $.ajax({
+                url: "@Url.Action("DeleteCustomProgress", "Training")",
+                type: "POST", data: f, dataType: "html", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                success: function (r) {
+                    $("#divCustomRatings").html(r);
+                    refreshCustomRatings();
+                }
+            });
+        }
+    }
+
+    function showCustom(title, dlgTitle) {
+        var params = new Object();
+        params.szTitle = title;
+        var d = JSON.stringify(params);
+        $.ajax({
+            url: "@Url.Action("MilestonesForCustomRating", "Training")",
+            type: "POST", data: d, dataType: "html", contentType: "application/json",
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            success: function (r) {
+                $("#existingMilestones").html(r);
+                $("#hdnRatingName").val(title);
+                showModalById('pnlAddMilestones', dlgTitle, 550);
+                $("#txtMiFARRef")[0].focus();
+            }
+        });
+    }
+
+    function addMilestoneItem() {
+        var form = $("#frmManageMilestones");
+        $("#hdnSelectedFieldDisplay").val($("#cmbFields option:selected").text())
+        if (form.valid()) {
+            var f = form.serialize();
+            $.ajax({
+                url: "@Url.Action("AddMilestoneForRating", "Training")",
+                type: "POST", data: f, dataType: "html", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                success: function (r) {
+                    $("#existingMilestones").html(r);
+                    form.find("input[type='text']").val("");
+                    form.find("input[type='number']").val("");
+                    $("#cmbQueries").prop("selectedIndex", 0);
+                    $("#cmbFields").prop("selectedIndex", 0);
+                    $("#txtMiFARRef")[0].focus();
+                }
+            });
+        }
+    }
+
+    function deleteMilestoneItem(index) {
+        if (confirm('@Resources.MilestoneProgress.CustomProgressDeleteMilestone')) {
+            $("#hdnMilestoneIndex").val(index);
+            var form = $("#frmManageMilestones");
+            var f = form.serialize();
+            $.ajax({
+                url: "@Url.Action("DeleteMilestoneForRating", "Training")",
+                type: "POST", data: f, dataType: "html", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                success: function (r) {
+                    $("#existingMilestones").html(r);
+                }
+            });
+        }
+    }
+
+    $(function () {
+        defaultButtonForDiv("pnlAddRating", "btnAddNew");
+        defaultButtonForDiv("pnlAddMilestones", "btnAddMilestone");
+        @if (fShowAddEdit)
+            {
+            @:$("#pnlAddEdit").show();
+            }
+
+        $("form[name='frmManageMilestones']").validate({
+            errorClass: "error",
+            errorElement: "div",
+            rules: {
+                miFARRef: "required",
+                miTitle: "required",
+                miThreshold: "required"
+            },
+            messages: {
+                miFARRef: "@Resources.MilestoneProgress.CustomProgressNewMilestoneFARRefRequired",
+                miTitle: "@Resources.MilestoneProgress.CustomProgressNewMilestoneTitleRequired",
+                miThreshold: "@Resources.MilestoneProgress.CustomProgressNewMilestoneThresholdRequired"
+            }
+        });
+
+        $("form[name='frmNewRating']").validate({
+            errorClass: "error",
+            errorElement: "div",
+            rules: {
+                ratingName: "required"
+            },
+            messages: {
+                ratingName: "@Resources.MilestoneProgress.CustomProgressTitleRequired"
+            },
+            errorPlacement: function (error, element) {
+                // the parent's next sibling is the explanation text; put this in a div AFTER that.
+                var location = $(element).parent();
+                error.insertAfter(location);
+            }
+        });
+    });
+</script>
+<div class="noprint">
+    @using (Html.BeginForm("", "Training", FormMethod.Post, new { id = "frmPickRating", name = "frmPickRating" }))
+    {
+        @Html.AntiForgeryToken();
+        <input type="hidden" value="@targetUser" name="targetUser" id="hdnTargetUser" />
+    <p>
+        <select id="cmbMilestoneGroup" name="groupName" onchange="javascript: groupSelected();">
+            <option selected value="">@Resources.MilestoneProgress.PromptRatingGroup</option>
+            @foreach (string groupName in milestones.Keys)
+            {
+                <option value="@groupName" @((groupName.CompareCurrentCulture(selectedGroup) == 0).ToSelected()) >@groupName</option>
+            }
+        </select>
+    </p>
+    <p>
+        <select id="cmbRatings" name="ratingName" onchange="javascript: ratingSelected();">
+            <option selected value="">@Resources.MilestoneProgress.PromptRatingItem</option>
+            @{ 
+                if (!String.IsNullOrEmpty(selectedGroup))
+                {
+                    foreach (string ratingName in milestones[selectedGroup])
+                    {
+                        <option value="@ratingName" @((ratingName.CompareCurrentCulture(selectedRating) == 0).ToSelected()) >@ratingName</option>
+                    }
+                }
+            }
+        </select>
+    </p>
+    }
+</div>
+@if (targetUser.CompareOrdinal(User.Identity.Name) == 0)
+{
+<div id="pnlAddEdit" class="noprint" style="background-color:lightgray; border: 1px solid black; border-radius:5px; padding:5px; margin: 3px; display: none;">
+    @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "divAddNewRating", labelText = Resources.MilestoneProgress.CustomProgressCreate }); }
+    <div id="divAddNewRating" style="display:none;">
+        <h2>@Resources.MilestoneProgress.CustomProgressAddNewRating</h2>
+        @using (Html.BeginForm("", "Training", FormMethod.Post, new { id = "frmNewRating", name = "frmNewRating" }))
+        {
+            @Html.AntiForgeryToken()
+            <div id="pnlAddRating">
+                <div>
+                    <input type="text" id="txtNewTitle" name="ratingName" placeholder="@Resources.MilestoneProgress.CustomProgressTitlePrompt" required />
+                    <input type="text" id="txtNewDisclaimer" name="ratingDisclaimer" placeholder="@Resources.MilestoneProgress.CustomProgressGenDisclaimerPrompt" />
+                    <button id="btnAddNew" type="button" onclick="javascript: addCustomRating();">@Resources.MilestoneProgress.CustomProgressAddNewRating</button>
+                </div>
+            </div>
+        }
+        @using (Html.BeginForm("", "Training", FormMethod.Post, new { id = "frmExistingRatings", name = "frmExistingRatings" }))
+        {
+            @Html.AntiForgeryToken();
+            <input type="hidden" id="hdnRatingToDelete" name="ratingName" />
+            <input type="hidden" id="hdnNewName" name="newName" />
+            <input type="hidden" id="hdnNewDisclaimer" name="newDisclaimer" />
+            <div id="divCustomRatings">
+                @{ Html.RenderPartial("_customRatingList"); }
+            </div>
+        }
+    <div id="pnlAddMilestones" style="display:none;">
+        @using (Html.BeginForm("", "Training", FormMethod.Post, new { id = "frmManageMilestones", name = "frmManageMilestones" }))
+        {
+            @Html.AntiForgeryToken();
+            <input type="hidden" id="hdnRatingName" name="ratingName" />
+            <input type="hidden" id="hdnSelectedFieldDisplay" name="miFieldFriendly" />
+            <table>
+                <tr>
+                    <td>@Resources.MilestoneProgress.CustomProgressNewMilestoneFARRef</td>
+                    <td><input type="text" id="txtMiFARRef" required name="miFARRef" autofocus /></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><span class="fineprint">@Resources.MilestoneProgress.CustomProgressNewMilestoneFARRefNote<br />&nbsp;</span></td>
+                </tr>
+                <tr>
+                    <td>@Resources.MilestoneProgress.CustomProgressNewMilestoneTitle</td>
+                    <td><input type="text" id="txtMiTitle" required name="miTitle" /></td>
+                </tr>
+                <tr><td colspan="2"><span class="fineprint">@Resources.MilestoneProgress.CustomProgressNewMilestoneTitleTip<br />&nbsp;</span></td></tr>
+                <tr>
+                    <td>@Resources.MilestoneProgress.CustomProgressItemNewMilestoneNote</td>
+                    <td><input type="text" id="txtMiNote" name="miNote" /></td>
+                </tr>
+                <tr><td colspan="2" class="fineprint">@Resources.MilestoneProgress.CustomProgressItemNewMilestoneNoteTip<br />&nbsp;</td></tr>
+                <tr>
+                    <td>@Resources.MilestoneProgress.CustomProgressNewMilestoneValue</td>
+                    <td>
+                        <select id="cmbFields" name="miField" required>
+                            @foreach (HistogramableValue hv in lstMilestoneFields)
+                            {
+                                <option value="@hv.DataField">@hv.DataName</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>@Resources.MilestoneProgress.CustomProgressNewMilestoneThreshold</td>
+                    <td><input type="number" id="decThreshold" step="0.01" min="1" max="10000" required name="miThreshold" /></td>
+                </tr>
+                <tr>
+                    <td>@Resources.MilestoneProgress.CustomProgressNewMilestoneQuery</td>
+                    <td>
+                        <select id="cmbQueries" name="queryName">
+                            <option selected value="">@Resources.MilestoneProgress.CustomProgressNewMilestoneAllFlightsQuery</option>
+                            @foreach (CannedQuery cq in rgQueries)
+                            {
+                                <option value="@cq.QueryName">@cq.QueryName</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><button id="btnAddMilestone" type="button" onclick="javascript: addMilestoneItem();">@Resources.MilestoneProgress.CustomProgressNewMilestoneAdd</button></td>
+                </tr>
+            </table>
+            <input type="hidden" id="hdnMilestoneIndex" name="milestoneIndex" />
+            <hr />
+            <h3>@Resources.MilestoneProgress.CustomProgressExistingMilestones</h3>
+            <div id="existingMilestones">
+
+            </div>
+        }
+    </div>
+    </div>
+</div>
+}
+<div id="divProgressResults">
+    @if (!String.IsNullOrEmpty(selectedRating))
+    { 
+        Html.RenderAction("RenderProgressForRating", "Training", new { szGroup = selectedGroup, szRating = selectedRating, targetUser = targetUser });
+    }
+</div>

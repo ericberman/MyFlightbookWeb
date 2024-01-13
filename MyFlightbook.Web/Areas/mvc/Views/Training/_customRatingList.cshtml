@@ -1,0 +1,48 @@
+﻿@using MyFlightbook.RatingsProgress
+@using System.Globalization
+@{
+    IEnumerable<CustomRatingProgress> customRatings = ViewBag.customRatings;
+}
+@if (!customRatings.Any())
+{
+    <p>@Resources.MilestoneProgress.CustomProgressNoneFound</p>
+}
+else
+{
+    <table class="stickyHeaderTable">
+        <thead>
+            <tr><th colspan="5"></th></tr>
+        </thead>
+        @foreach (CustomRatingProgress crp in customRatings)
+        {
+            <tr>
+                <td>
+                    <div class="displayCell">
+                        <a style="cursor:pointer;" onclick="javascript: $(this).parents('tr').toggleClass('editRow');">@Resources.LocalizedText.genericEdit</a>
+                    </div>
+                    <div class="editCell">
+                        <a style="cursor:pointer;" onclick="javascript: $(this).parents('tr').toggleClass('editRow');">@Resources.LocalizedText.Cancel</a>
+                        <a style="cursor:pointer;" onclick="javascript: updateCustomRating($(this).parents('tr'));">@Resources.LocalizedText.genericUpdate</a>
+                    </div>
+                </td>
+                <td>
+                    <div class="displayCell" name="oldTitle">@crp.Title</div>
+                    <div class="editCell">
+                        <input type="text" placeholder="@Resources.MilestoneProgress.CustomProgressTitlePrompt" name="newTitle" value="@crp.Title" />
+                    </div>
+                </td>
+                <td>
+                    <div class="displayCell">@crp.GeneralDisclaimer</div>
+                    <div class="editCell">
+                        <input type="text" placeholder="@Resources.MilestoneProgress.CustomProgressGenDisclaimerPrompt" name="newDisc" value="@crp.GeneralDisclaimer" />
+                    </div>
+                </td>
+                <td>
+                    <a style="cursor:pointer" onclick="javascript: showCustom(@Json.Encode(crp.Title), $(this).next().text());">@Resources.MilestoneProgress.CustomProgressNewMilestoneEditMilestones</a>
+                    <span style="display:none">@String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CustomProgressMilestonesForCustomRating, crp.Title)</span>
+                </td>
+                <td><img src="@VirtualPathUtility.ToAbsolute("~/images/x.gif")" alt="@Resources.MilestoneProgress.CustomProgressDelete" title="@Resources.MilestoneProgress.CustomProgressDelete" onclick="javascript: deleteCustomRating(@Json.Encode(crp.Title));" /></td>
+            </tr>
+        }
+    </table>
+}

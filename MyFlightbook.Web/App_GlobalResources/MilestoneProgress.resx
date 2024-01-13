@@ -142,7 +142,7 @@
     <value>*3* hours of *flight training* in *{0}* within *2 calendar months* prior to exam</value>
   </data>
   <data name="MinTime" xml:space="preserve">
-    <value>*40* hours of flight time</value>
+    <value>*40* hours of *flight time*</value>
   </data>
   <data name="MinTraining" xml:space="preserve">
     <value>*{0}* hours of *flight training* (dual)</value>
@@ -536,7 +536,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <value>*200* hours of flight in *helicopters*</value>
   </data>
   <data name="ATPMinNightTime" xml:space="preserve">
-    <value>*100* hours of *night* flight time</value>
+    <value>*100* hours of *night* *flight time*</value>
   </data>
   <data name="ATPMinTime" xml:space="preserve">
     <value>*{0:#,##0}* hours of total time</value>

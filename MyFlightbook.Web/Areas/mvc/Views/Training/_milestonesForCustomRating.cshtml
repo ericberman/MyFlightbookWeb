@@ -1,0 +1,23 @@
+﻿@using MyFlightbook.RatingsProgress
+@{ 
+    CustomRatingProgress crp = ViewBag.crp;
+    int i = 0;
+}
+@if (crp.Milestones.Count == 0)
+{
+    <div style="font-style:italic;">@Resources.MilestoneProgress.CustomProgressNoItemsFound</div>
+}
+else
+{
+    <table>
+        @foreach (MilestoneItem mi in crp.Milestones)
+        {
+            <tr>
+                <td>@Html.Raw(mi.ToString().Linkify(true))</td>
+                <td><img src="@VirtualPathUtility.ToAbsolute("~/images/x.gif")" title="@Resources.MilestoneProgress.CustomProgressDeleteMilestone" alt="@Resources.MilestoneProgress.CustomProgressDeleteMilestone" onclick="javascript: deleteMilestoneItem(@(i++));" /></td>
+            </tr>
+        }
+    </table>
+}
+
+
