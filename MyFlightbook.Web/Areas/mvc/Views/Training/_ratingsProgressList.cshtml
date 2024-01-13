@@ -14,14 +14,14 @@
     <span id="lblOverallProgressDisclaimer" class="fineprint">@Html.Raw(Branding.ReBrand(Resources.MilestoneProgress.OverallProgressDisclaimer))</span>
     <p><div class="fineprint">@Html.Raw(mp.GeneralDisclaimer.Linkify())</div></p>
 </div>
-<table cellpadding="3" cellspacing="3">
+<table cellpadding="3" cellspacing="3" width="100%">
     @foreach (MilestoneItem mi in mp.ComputedMilestones)
     {
         string idDetails = String.Format(CultureInfo.InvariantCulture, "detailsRow{0}", i++);
         int cappedPercentage = (int)Math.Min(mi.Percentage, 100);
         <tr class="progressRow">
             <td><div class="checkedBox">@(mi.IsSatisfied ? "✔" : string.Empty)</div></td>
-            <td>
+            <td style="min-width: 280px">
                 <div>
                     <span style="font-weight:bold">@Html.Raw(mi.FARRef.Linkify(false))</span> - @Html.Raw(mi.Title.Linkify(true)) <span style="font-weight:bold">@mi.ExpirationNote</span>
                     @if (mi.HasDetails)

@@ -836,7 +836,6 @@
     <Content Include="Member\MiniTotals.aspx" />
     <Content Include="Member\oAuthAuthorize.aspx" />
     <Content Include="Member\PrintView.aspx" />
-    <Content Include="Member\RatingProgress.aspx" />
     <Content Include="Member\RequestSigs.aspx" />
     <Content Include="Member\ReviewPendingFlights.aspx" />
     <Content Include="Member\SignFlight.aspx" />
@@ -2795,13 +2794,6 @@
     </Compile>
     <Compile Include="Member\PrintView.aspx.designer.cs">
       <DependentUpon>PrintView.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Member\RatingProgress.aspx.cs">
-      <DependentUpon>RatingProgress.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\RatingProgress.aspx.designer.cs">
-      <DependentUpon>RatingProgress.aspx</DependentUpon>
     </Compile>
     <Compile Include="Member\RequestSigs.aspx.cs">
       <DependentUpon>RequestSigs.aspx</DependentUpon>

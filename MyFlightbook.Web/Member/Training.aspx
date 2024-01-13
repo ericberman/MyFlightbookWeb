@@ -112,7 +112,7 @@
                             <ItemTemplate>
                                 <asp:Panel ID="pnlViewProgress" runat="server" style="border-left: 1px solid black; padding-left:8px; margin-left:8px;" Visible='<%# Eval("CanViewLogbook") %>' >
                                     <asp:HyperLink ID="lnkViewProgress" runat="server"  Text="<%$ Resources:MilestoneProgress, ViewStudentProgress %>"
-                                       NavigateUrl='<%# String.Format("~/Member/RatingProgress.aspx?user={0}", Eval("Username")) %>' />
+                                       NavigateUrl='<%# String.Format("~/mvc/Training/RatingsProgress?user={0}", Eval("Username")) %>' />
                                 </asp:Panel>
                             </ItemTemplate>
                             <ItemStyle VerticalAlign="Top" />

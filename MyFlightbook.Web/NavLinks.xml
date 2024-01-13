@@ -152,7 +152,7 @@
         <Roles></Roles>
       </Item>
       <Item>
-        <Link>~/Member/Ratingprogress.aspx</Link>
+        <Link>~/mvc/Training/RatingsProgress</Link>
         <ID>instProgressTowardsMilestones</ID>
         <Roles></Roles>
       </Item>

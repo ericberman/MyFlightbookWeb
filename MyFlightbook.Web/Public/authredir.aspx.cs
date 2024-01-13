@@ -22,7 +22,7 @@ namespace MyFlightbook.PublicPages
                 { "PROFILE", "~/Member/EditProfile.aspx/pftPrefs"},
                 { "DONATE", "~/mvc/Donate"},
                 { "ENDORSE", "~/Member/Training.aspx/instEndorsements"},
-                { "PROGRESS", "~/Member/RatingProgress.aspx" },
+                { "PROGRESS", "~/mvc/Training/RatingsProgress" },
                 { "BADGES", "~/mvc/Training/Achievements" },
                 { "STUDENTS", "~/Member/Training.aspx/instStudents"},
                 { "STUDENTSFIXED", "~/Member/Training.aspx/instStudents"},
