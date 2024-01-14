@@ -137,6 +137,16 @@ namespace MyFlightbook
 
         private static Regex mHexRGB = null;
 
+
+        static private Regex mIpadAndroid = null;
+        /// <summary>
+        /// Determines if 
+        /// </summary>
+        public static Regex IPadOrAndroid
+        {
+            get { return mIpadAndroid ?? (mIpadAndroid = new Regex("(IPAD|ANDROID)", RegexOptions.Compiled | RegexOptions.IgnoreCase)); }
+        }
+
         /// <summary>
         /// Matches a 6-digit hex number (i.e., RGB)
         /// </summary>

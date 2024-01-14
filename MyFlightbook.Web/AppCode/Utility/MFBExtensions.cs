@@ -1072,7 +1072,7 @@ namespace MyFlightbook
             if (r == null || String.IsNullOrEmpty(r.UserAgent))
                 return false;
 
-            return (IsMobileDevice(r) || r.UserAgent.ToUpperInvariant().Contains("IPAD") || r.UserAgent.ToUpperInvariant().Contains("ANDROID"));
+            return IsMobileDevice(r) || RegexUtility.IPadOrAndroid.IsMatch(r.UserAgent);
         }
 
         /// <summary>
