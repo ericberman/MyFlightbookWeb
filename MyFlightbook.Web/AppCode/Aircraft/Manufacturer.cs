@@ -3,12 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
-using System.Text.RegularExpressions;
 using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2023 MyFlightbook LLC
+ * Copyright (c) 2009-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -65,7 +64,6 @@ namespace MyFlightbook
             FLoad("WHERE idmanufacturer=?idMan", new MySqlParameter("idMan", id));
         }
 
-        static readonly Regex rGeneric = new Regex("GROUND|VARIOUS|UNKNOWN|MISC|MISCELLANEOUS|OTHER|NONE", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         const string szGeneric = "Generic";
 
         /// <summary>
@@ -76,7 +74,7 @@ namespace MyFlightbook
         {
             // Issue #295
             // check for variations on generic manufacturers; if so, map it to Generic.
-            if (rGeneric.IsMatch(szName))
+            if (RegexUtility.FakeManufacturer.IsMatch(szName))
                 szName = szGeneric;
 
             ManufacturerName = szName;

@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-using System.Text.RegularExpressions;
-using System.Windows.Media.Media3D;
+﻿using System.Text.RegularExpressions;
 
 /******************************************************
  * 
@@ -18,6 +16,7 @@ namespace MyFlightbook
     /// </summary>
     public static class RegexUtility
     {
+        #region General Purpose
         private static Regex mEmail = null;
         /// <summary>
         /// Regex for an email address
@@ -42,12 +41,22 @@ namespace MyFlightbook
         /// </summary>
         public static Regex NonAlphaNumeric { get { return mNonAlphanumeric ?? (mNonAlphanumeric = new Regex("[^a-zA-Z0-9]", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
 
-        private static Regex mICAO = null;
-        /// <summary>
-        /// ICAO codes are 1-4 alphanumeric characters
-        /// </summary>
-        public static Regex ICAO { get { return mICAO ?? (mICAO = new Regex("^[a-zA-Z0-9]{0,4}$", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
+        private static Regex mWhiteSpace = null;
 
+        /// <summary>
+        /// Whitespace (useful for splitting on whitespace)
+        /// </summary>
+        public static Regex WhiteSpace { get { return mWhiteSpace ?? (mWhiteSpace = new Regex("\\s", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
+
+        private static Regex mWords = null;
+
+        /// <summary>
+        /// Words - non-word characters (useful for splitting routes into airports)
+        /// </summary>
+        public static Regex Words { get { return mWords ?? (mWords = new Regex("\\W", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
+        #endregion
+
+        #region Images
         // Adapted from http://linuxpanda.wordpress.com/2013/07/24/ultimate-best-regex-pattern-to-get-grab-parse-youtube-video-id-from-any-youtube-link-url/
         // Note: these two youtube URLs don't work:
         // "http://www.youtube.com/watch?v=yVpbFMhOAwE&feature=player_embedded", ** doesn't work
@@ -67,6 +76,11 @@ namespace MyFlightbook
         /// </summary>
         public static Regex VimeoReference { get { return mVimeo ?? (mVimeo = new Regex(szRegExpMatchVimeo, RegexOptions.IgnoreCase | RegexOptions.Compiled)); } }
 
+        private static Regex mMFBIIBackwardsCompatHack = null;
+        public static Regex MFBIIBackwardsCompatHack { get { return mMFBIIBackwardsCompatHack ?? (mMFBIIBackwardsCompatHack = new Regex("(.*/)([^/]+)/?$", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
+        #endregion
+
+        #region Flights
         private static Regex mLocalFlight = null;
         /// <summary>
         /// Determines if this flight looks like a local flight.  A-B is not local, but A is local, as is A-A.  ("-" can be any non-alpha)
@@ -98,45 +112,12 @@ namespace MyFlightbook
         /// </summary>
         public static Regex FlightHashProps { get { return mFlightHashProps ?? (mFlightHashProps = new Regex("(?<PropID>\\d+)V(?<Value>.+)", RegexOptions.Compiled)); } }
 
-        private static Regex mAdminSignatureSanity = null;
-
-        /// <summary>
-        /// Internal regex for an old signature bug
-        /// </summary>
-        public static Regex AdminSignatureSanity { get { return mAdminSignatureSanity ?? (mAdminSignatureSanity = new Regex("^(.*)(XC[0-9., ]+N[0-9., ]+SI[0-9., ]+IM[0-9., ]+GS[0-9., ]+DU[0-9., ]+CF[0-9., ]+SI[0-9., ]+PI[0-9., ]+TT[0-9., ]+)(.*)$", RegexOptions.Compiled)); } }
-
-        private static Regex mVORCheck = null;
-
-        /// <summary>
-        /// If someone puts "VORCHK" (whole word) into the comments for a flight, we find it and record that a VOR check was done in the maintenance for the aircraft
-        /// </summary>
-        public static Regex VORCheck { get { return mVORCheck ?? (mVORCheck = new Regex("\\bVORCHK[^a-zA-Z0-9]*(\\S+)", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
-
         private static Regex mPPH = null;
         /// <summary>
         /// #PPH:12.34# indicates a price-per-hour of 12.34 (units undefined)
         /// </summary>
         public static Regex PPH { get { return mPPH ?? (mPPH = new Regex("#PPH:(?<rate>\\d+(?:[.,]\\d+)?)#", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled)); } }
-
-        private static Regex mMFBIIBackwardsCompatHack = null;
-        public static Regex MFBIIBackwardsCompatHack { get { return mMFBIIBackwardsCompatHack ?? (mMFBIIBackwardsCompatHack = new Regex("(.*/)([^/]+)/?$", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
-
-        private static Regex mWhiteSpace = null;
-
-        /// <summary>
-        /// Whitespace (useful for splitting on whitespace)
-        /// </summary>
-        public static Regex WhiteSpace { get { return mWhiteSpace ?? (mWhiteSpace = new Regex("\\s", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
-
-        private static Regex mWords = null; 
-
-        /// <summary>
-        /// Words - non-word characters (useful for splitting routes into airports)
-        /// </summary>
-        public static Regex Words { get { return mWords ?? (mWords = new Regex("\\W", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
-
-        private static Regex mHexRGB = null;
-
+        #endregion
 
         static private Regex mIpadAndroid = null;
         /// <summary>
@@ -147,20 +128,37 @@ namespace MyFlightbook
             get { return mIpadAndroid ?? (mIpadAndroid = new Regex("(IPAD|ANDROID)", RegexOptions.Compiled | RegexOptions.IgnoreCase)); }
         }
 
+        private static Regex mHexRGB = null;
         /// <summary>
         /// Matches a 6-digit hex number (i.e., RGB)
         /// </summary>
         public static Regex HexRGB { get { return mHexRGB ?? (mHexRGB = new Regex("^[0-9a-fA-F]{6}$", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
 
-        private static Regex mModelFragementBoundary = null;
+        #region Aircraft, models, and manufacturers
+        private static Regex mICAO = null;
+        /// <summary>
+        /// ICAO codes are 1-4 alphanumeric characters
+        /// </summary>
+        public static Regex ICAO { get { return mICAO ?? (mICAO = new Regex("^[a-zA-Z0-9]{0,4}$", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
+        private static Regex mVORCheck = null;
 
         /// <summary>
-        /// Used for splitting model names for model searching - splits at non-alpha but preserves colons.
+        /// If someone puts "VORCHK" (whole word) into the comments for a flight, we find it and record that a VOR check was done in the maintenance for the aircraft
+        /// </summary>
+        public static Regex VORCheck { get { return mVORCheck ?? (mVORCheck = new Regex("\\bVORCHK[^a-zA-Z0-9]*(\\S+)", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
+
+        private static Regex mModelFragementBoundary = null;
+        /// <summary>
+        /// Used for splitting model names for model searching - splits at non-alpha but preserves colons (so that "ICAO:xxxx" works)
         /// </summary>
         public static Regex ModelFragmentBoundary { get { return mModelFragementBoundary ?? (mModelFragementBoundary = new Regex("[^a-zA-Z0-9:]", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
 
-        private static Regex mDMSBasic = null;
+        private static Regex mPseudoManufacturer = null;
+        public static Regex FakeManufacturer { get { return mPseudoManufacturer ?? (mPseudoManufacturer = new Regex("GROUND|VARIOUS|UNKNOWN|MISC|MISCELLANEOUS|OTHER|NONE", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
+        #endregion
 
+        #region latitudes/longitude
+        private static Regex mDMSBasic = null;
         /// <summary>
         /// Matches a degree-minute-second latitude/longitude string
         /// </summary>
@@ -197,13 +195,15 @@ namespace MyFlightbook
         /// Matches a degree-minute-second string that uses the degree sign, e.g., 48°01.3358"
         /// </summary>
         public static Regex DMSDegrees { get { return mDMSDegrees ?? (mDMSDegrees = new Regex("-?(\\d+)°(\\d+([.,]\\d+)?)", RegexOptions.IgnoreCase | RegexOptions.Compiled)); } }
+        #endregion
 
+        #region Import
         private static Regex mNakedTime = null;
-
         /// <summary>
         /// Matches a naked time - e.g., 11:32, 23:27, or :51.
         /// </summary>
         public static Regex NakedTime { get { return mNakedTime ?? (mNakedTime = new Regex("^([012]?\\d)?:\\d{2}$", RegexOptions.IgnoreCase | RegexOptions.Compiled)); } }
+        #endregion
 
         #region Admin Regexes
         static private Regex mPseudoSim = null;
@@ -219,6 +219,12 @@ namespace MyFlightbook
 
         static private Regex mPseudoFFS = null;
         public static Regex AdminPseudoFFS { get { return mPseudoFFS ?? (mPseudoFFS = new Regex("(D-?SIM)|FFS", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
+
+        private static Regex mAdminSignatureSanity = null;
+        /// <summary>
+        /// Internal regex for an old signature bug
+        /// </summary>
+        public static Regex AdminSignatureSanity { get { return mAdminSignatureSanity ?? (mAdminSignatureSanity = new Regex("^(.*)(XC[0-9., ]+N[0-9., ]+SI[0-9., ]+IM[0-9., ]+GS[0-9., ]+DU[0-9., ]+CF[0-9., ]+SI[0-9., ]+PI[0-9., ]+TT[0-9., ]+)(.*)$", RegexOptions.Compiled)); } }
         #endregion
     }
 }
