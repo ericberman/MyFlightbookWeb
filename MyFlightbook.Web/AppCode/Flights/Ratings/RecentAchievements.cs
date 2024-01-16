@@ -10,7 +10,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2018-2023 MyFlightbook LLC
+ * Copyright (c) 2018-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -388,20 +388,24 @@ namespace MyFlightbook.RatingsProgress
                 }
 
                 // No fly streak is trickier - you need to measure the flights you didn't see!
-                DateTime dtNoFlyStart = StartDate;
-                List<string> lstFlightDays = new List<string>(FlightDates.Keys) { EndDate.AddDays(1).YMDString() };
-                lstFlightDays.Sort();
-                foreach (string szKey in lstFlightDays)
+                // issue #1169
+                if (StartDate.HasValue() && EndDate.HasValue())
                 {
-                    DateTime dt = Convert.ToDateTime(szKey, CultureInfo.InvariantCulture).AddDays(-1);
-                    int cDaysNoFly = dt.Subtract(dtNoFlyStart).Days + 1;
-                    if (cDaysNoFly > miLongestNoFlyStreak.Progress)  // biggest missing stretch so far...
+                    DateTime dtNoFlyStart = StartDate;
+                    List<string> lstFlightDays = new List<string>(FlightDates.Keys) { EndDate.AddDays(1).YMDString() };
+                    lstFlightDays.Sort();
+                    foreach (string szKey in lstFlightDays)
                     {
-                        miLongestNoFlyStreak.Progress = cDaysNoFly;
-                        miLongestNoFlyStreak.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementsNoFlyingStreak, cDaysNoFly, dtNoFlyStart, dt);
-                        miLongestNoFlyStreak.Query = new FlightQuery(Username) { DateRange = FlightQuery.DateRanges.Custom, DateMin = dtNoFlyStart, DateMax = dt };
+                        DateTime dt = Convert.ToDateTime(szKey, CultureInfo.InvariantCulture).AddDays(-1);
+                        int cDaysNoFly = dt.Subtract(dtNoFlyStart).Days + 1;
+                        if (cDaysNoFly > miLongestNoFlyStreak.Progress)  // biggest missing stretch so far...
+                        {
+                            miLongestNoFlyStreak.Progress = cDaysNoFly;
+                            miLongestNoFlyStreak.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementsNoFlyingStreak, cDaysNoFly, dtNoFlyStart, dt);
+                            miLongestNoFlyStreak.Query = new FlightQuery(Username) { DateRange = FlightQuery.DateRanges.Custom, DateMin = dtNoFlyStart, DateMax = dt };
+                        }
+                        dtNoFlyStart = Convert.ToDateTime(szKey, CultureInfo.InvariantCulture).AddDays(1);
                     }
-                    dtNoFlyStart = Convert.ToDateTime(szKey, CultureInfo.InvariantCulture).AddDays(1);
                 }
 
                 miFlightCount.MatchingEventText = ((int) miFlightCount.Progress).PrettyString();
