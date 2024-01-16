@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Globalization;
+using System.Text.RegularExpressions;
 
 /******************************************************
  * 
@@ -54,6 +56,32 @@ namespace MyFlightbook
         /// Words - non-word characters (useful for splitting routes into airports)
         /// </summary>
         public static Regex Words { get { return mWords ?? (mWords = new Regex("\\W", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
+        #endregion
+
+        #region FlightQuery
+        private static Regex mQuotedExpressions = null;
+        private static Regex mMergeOR = null;
+        private static Regex mTrailingDate = null;
+        private static Regex mSpecificField = null;
+        public const string szPrefixLimitComments = "CMT";
+        public const string szPrefixLimitRoute = "RTE";
+
+        /// <summary>
+        /// Returns quoted phrases, with an optional negation.  Negation group is "negated", the phrase is "phrase"
+        /// </summary>
+        public static Regex QueryQuotedExpressions { get { return mQuotedExpressions ?? (mQuotedExpressions = new Regex("(?<negated>-?)\"(?<phrase>[^\"]*)\"", RegexOptions.Compiled)); } }
+        public static Regex QueryMergeOR { get { return mMergeOR ?? (mMergeOR = new Regex("\\sOR\\s", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
+
+        /// <summary>
+        /// Matches TrailingxxxD|CM|M|W.  "quantity" contains the digits, "rangetype" contains the unit
+        /// </summary>
+        public static Regex QueryTrailingDate { get { return mTrailingDate ?? (mTrailingDate = new Regex("\\bTrailing:(?<quantity>\\d{1,3}?)(?<rangetype>D|CM|M|W)\\b", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
+
+        /// <summary>
+        /// Matches a query on a specific field (CMT or RTE). "field" contains the desired field, "value" its value.
+        /// </summary>
+        public static Regex QuerySpecificField { get { return mSpecificField ?? (mSpecificField = new Regex(String.Format(CultureInfo.InvariantCulture, "\\b(?<field>{0}|{1})=(?<value>\\S*)", szPrefixLimitComments, szPrefixLimitRoute), RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
+
         #endregion
 
         #region Images
@@ -119,6 +147,7 @@ namespace MyFlightbook
         public static Regex PPH { get { return mPPH ?? (mPPH = new Regex("#PPH:(?<rate>\\d+(?:[.,]\\d+)?)#", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled)); } }
         #endregion
 
+        #region Misc
         static private Regex mIpadAndroid = null;
         /// <summary>
         /// Determines if 
@@ -133,6 +162,7 @@ namespace MyFlightbook
         /// Matches a 6-digit hex number (i.e., RGB)
         /// </summary>
         public static Regex HexRGB { get { return mHexRGB ?? (mHexRGB = new Regex("^[0-9a-fA-F]{6}$", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
+        #endregion
 
         #region Aircraft, models, and manufacturers
         private static Regex mICAO = null;

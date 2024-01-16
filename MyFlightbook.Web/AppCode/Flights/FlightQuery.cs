@@ -851,16 +851,6 @@ namespace MyFlightbook
             }
         }
 
-        protected static Regex rQuotedExpressions { get; } = new Regex("(?<negated>-?)\"(?<phrase>[^\"]*)\"", RegexOptions.Compiled);
-        protected static Regex rSplitWords { get; } = new Regex("\\s");
-        protected static Regex rMergeOR { get; } = new Regex("\\sOR\\s", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        protected static Regex rTrailing { get; } = new Regex("\\bTrailing:(?<quantity>\\d{1,3}?)(?<rangetype>D|CM|M|W)\\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-        protected const string szPrefixLimitComments = "CMT";
-        protected const string szPrefixLimitRoute = "RTE";
-
-        protected static Regex rSpecific { get; } = new Regex(String.Format(CultureInfo.InvariantCulture, "\\b(?<field>{0}|{1})=(?<value>\\S*)", szPrefixLimitComments, szPrefixLimitRoute), RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
         private void UpdateGeneralText(StringBuilder sbQuery)
         {
             if (String.IsNullOrWhiteSpace(GeneralText))
@@ -886,7 +876,7 @@ namespace MyFlightbook
             */
 
             // First, look for trailing ##.  If we find this, we will then strip it out.
-            MatchCollection mcTrailing = rTrailing.Matches(GeneralText);
+            MatchCollection mcTrailing = RegexUtility.QueryTrailingDate.Matches(GeneralText);
             if (mcTrailing.Count > 0)
             {
                 string szType = mcTrailing[0].Groups["rangetype"].Value;
@@ -911,17 +901,17 @@ namespace MyFlightbook
                     }
 
                     // Now remove this from GeneralText because we're not actually searching for the text.
-                    GeneralText = rTrailing.Replace(GeneralText, string.Empty);
+                    GeneralText = RegexUtility.QueryTrailingDate.Replace(GeneralText, string.Empty);
                 }
             }
 
             // Convert " OR " pattern with "|" so that it survives string split at word boundaries; we'll separate them later
-            string szMerged = rMergeOR.Replace(GeneralText.Trim(), "|");
+            string szMerged = RegexUtility.QueryMergeOR.Replace(GeneralText.Trim(), "|");
             if (String.IsNullOrEmpty(szMerged)) // we could have removed Trailing:## from the search string and now be left with nothing.
                 return;
 
             // Extract out the quoted expressions first
-            MatchCollection quoted = rQuotedExpressions.Matches(szMerged);
+            MatchCollection quoted = RegexUtility.QueryQuotedExpressions.Matches(szMerged);
             foreach (Match m in quoted)
             {
                 if (m.Groups["phrase"].Value.Trim().Length > 0)
@@ -930,7 +920,7 @@ namespace MyFlightbook
             }
 
             // Split what is left
-            lstSearchTerms.AddRange(rSplitWords.Split(szMerged));
+            lstSearchTerms.AddRange(RegexUtility.WhiteSpace.Split(szMerged));
 
             const string szFreeText = "CONCAT_WS(' ', ModelDisplay, TailNumber, Route, Comments, CustomProperties, CFIComment, CFIName, AircraftPrivateNotes)";
 
@@ -958,21 +948,21 @@ namespace MyFlightbook
                         string szParam = "SearchWord" + (iWord++).ToString(CultureInfo.InvariantCulture);
 
                         // Issue #802 - Quick hack to direct a specific query to comment or route
-                        MatchCollection mcSpecific = rSpecific.Matches(szPhrase);
+                        MatchCollection mcSpecific = RegexUtility.QuerySpecificField.Matches(szPhrase);
                         if (mcSpecific.Count > 0)    // user is requesting a specific match on a specific field
                         {
                             Match m = mcSpecific[0];
                             string szField = string.Empty;
                             switch (m.Groups["field"].Value.ToUpperInvariant())
                             {
-                                case szPrefixLimitComments:
+                                case RegexUtility.szPrefixLimitComments:
                                     szField = "Comments";
                                     break;
-                                case szPrefixLimitRoute:
+                                case RegexUtility.szPrefixLimitRoute:
                                     szField = "Route";
                                     break;
                                 default:
-                                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Unknown prefix '{0}' matched rspecific", m.Groups["field"].Value));
+                                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Unknown prefix '{0}' matched RegexUtility.QuerySpecificField", m.Groups["field"].Value));
                             }
 
                             // CMT= or RTE= means empty
@@ -1961,7 +1951,7 @@ namespace MyFlightbook
             string szGeneral = GeneralText; // so that we can modify this without modifying the underlying query.
 
             // First, look for trailing ##.
-            MatchCollection mcTrailing = rTrailing.Matches(szGeneral);
+            MatchCollection mcTrailing = RegexUtility.QueryTrailingDate.Matches(szGeneral);
             if (mcTrailing.Count > 0)
             {
                 string szType = mcTrailing[0].Groups["rangetype"].Value;
@@ -1988,12 +1978,12 @@ namespace MyFlightbook
                     }
 
                     // Now remove this from szGeneral because we're not actually searching for the text.
-                    szGeneral = rTrailing.Replace(szGeneral, string.Empty);
+                    szGeneral = RegexUtility.QueryTrailingDate.Replace(szGeneral, string.Empty);
                 }
             }
 
             // Convert " OR " pattern with "|" so that it survives string split at word boundaries; we'll separate them later
-            string szMerged = rMergeOR.Replace(szGeneral.Trim().ToUpper(CultureInfo.CurrentCulture), "|");
+            string szMerged = RegexUtility.QueryMergeOR.Replace(szGeneral.Trim().ToUpper(CultureInfo.CurrentCulture), "|");
             if (String.IsNullOrWhiteSpace(szMerged)) // we could have removed Trailing:## from the search string and now be left with nothing.
                 return true;
 
@@ -2006,7 +1996,7 @@ namespace MyFlightbook
             List<string> lstSearchTerms = new List<string>();
 
             // Extract out the quoted expressions first
-            MatchCollection quoted = rQuotedExpressions.Matches(szMerged);
+            MatchCollection quoted = RegexUtility.QueryQuotedExpressions.Matches(szMerged);
             foreach (Match m in quoted)
             {
                 if (m.Groups["phrase"].Value.Trim().Length > 0)
@@ -2015,7 +2005,7 @@ namespace MyFlightbook
             }
 
             // Split what is left
-            lstSearchTerms.AddRange(rSplitWords.Split(szMerged));
+            lstSearchTerms.AddRange(RegexUtility.WhiteSpace.Split(szMerged));
 
             foreach (string term in lstSearchTerms)
             {
@@ -2063,7 +2053,7 @@ namespace MyFlightbook
                 return false;
 
             // Issue #802 - Quick hack to direct a specific query to comment or route
-            MatchCollection mcSpecific = rSpecific.Matches(szPhrase);
+            MatchCollection mcSpecific = RegexUtility.QuerySpecificField.Matches(szPhrase);
             if (mcSpecific.Count > 0)    // user is requesting a specific match on a specific field
             {
                 GroupCollection gc = mcSpecific[0].Groups;
@@ -2073,14 +2063,14 @@ namespace MyFlightbook
                 string szTest;
                 switch (gc["field"].Value.ToUpperInvariant())
                 {
-                    case szPrefixLimitComments:
+                    case RegexUtility.szPrefixLimitComments:
                         szTest = le.Comment;
                         break;
-                    case szPrefixLimitRoute:
+                    case RegexUtility.szPrefixLimitRoute:
                         szTest = le.Route;
                         break;
                     default:
-                        throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Unknown prefix '{0}' matched rspecific", gc["field"].Value));
+                        throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Unknown prefix '{0}' matched RegexUtility.QuerySpecificField", gc["field"].Value));
                 }
                 return Regex.IsMatch(szTest.Trim(), rMatch, RegexOptions.IgnoreCase);
             }
