@@ -5,22 +5,62 @@
 <div id="raResults">
     @if (ra.ComputedMilestones.Count != 0)
     {
-        <ul>
+        <style type="text/css">
+            .raContainerTile {
+                display: inline-block;
+                width: 180px;
+                height: 180px;
+                border: 3px solid lightgray;
+                border-radius: 12px;
+                margin: 5px;
+                padding: 3pt;
+                vertical-align: top;
+            }
+            .raContainerTileContent {
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+                width: 100%;
+                justify-content: space-between;
+                text-align: center;
+            }
+            .raTileIcon {
+                width: 40pt;
+                height: 40pt;
+            }
+            .raStatHeader {
+                font-weight: bold;
+                font-size: 120%;
+            }
+            .raStatResult {
+                font-weight: bold;
+                font-size: 120%;
+            }
+        </style>
+
+        <div style="margin-left: auto; margin-right: auto;">
             @foreach (RecentAchievementMilestone mi in ra.ComputedMilestones)
             {
-                <li>
-                    @mi.Title
-                    @if (String.IsNullOrEmpty(mi.TargetLink) || ViewBag.isReadOnly)
-                    {
-                        @mi.MatchingEventText
-                    }
-                    else
-                    {
-                        <a href="@mi.TargetLink">@mi.MatchingEventText</a>
-                    }
-                </li>
+            <div class="raContainerTile">
+                <div class="raContainerTileContent">
+                    <div style="text-align:center">
+                        <div><img src="@mi.CategoryImage" class="raTileIcon" /></div>
+                        <div class="raStatHeader">@mi.Title</div>
+                    </div>
+                    <div class="raStatResult">
+                        @if (String.IsNullOrEmpty(mi.TargetLink) || ViewBag.isReadOnly)
+                        {
+                            @mi.MatchingEventText
+                        }
+                        else
+                        {
+                            <a href="@mi.TargetLink">@mi.MatchingEventText</a>
+                        }
+                    </div>
+                </div>
+            </div>
             }
-        </ul>
+        </div>
     }
     else
     {

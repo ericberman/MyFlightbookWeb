@@ -17,9 +17,33 @@ using System.Web.UI;
 
 namespace MyFlightbook.RatingsProgress
 {
+    public enum RecentAchievementCategory { Trends, Aircraft, Geography, Time }
+
     public class RecentAchievementMilestone : MilestoneItem
     {
         public FlightQuery Query { get; set; }
+
+        public RecentAchievementCategory Category { get; set; } = RecentAchievementCategory.Trends;
+
+        public string CategoryImage
+        {
+            get
+            {
+                switch (Category)
+                {
+                    case RecentAchievementCategory.Trends:
+                        return VirtualPathUtility.ToAbsolute("~/Images/BadgeOverlays/trend.svg");
+                    case RecentAchievementCategory.Aircraft:
+                        return VirtualPathUtility.ToAbsolute("~/Images/BadgeOverlays/aircraft.svg");
+                    case RecentAchievementCategory.Geography:
+                        return VirtualPathUtility.ToAbsolute("~/Images/BadgeOverlays/globe.svg");
+                    case RecentAchievementCategory.Time:
+                        return VirtualPathUtility.ToAbsolute("~/Images/BadgeOverlays/calendar.svg");
+                    default:
+                        return null;
+                }
+            }
+        }
 
         public string QueryLinkTemplate { get; set; }
 
@@ -300,22 +324,22 @@ namespace MyFlightbook.RatingsProgress
             EndDate = dtEnd.Date;
 
             miFlightCount = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsFlightsLogged, MilestoneItem.MilestoneType.Count, 1);
-            miLongestStreak = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementFlyingStreakTitle, MilestoneItem.MilestoneType.Count, 1);
-            miLongestNoFlyStreak = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsNoFlyingStreakTitle, MilestoneItem.MilestoneType.Count, 1);
-            miFlyingDates = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsFlyingDayCountTitle, MilestoneItem.MilestoneType.Count, 1);
-            miMostFlightsInDay = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementMostFlightsInDayTitle, MilestoneItem.MilestoneType.Count, 2);
-            miMostLandingsInDay = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementMostLandingsInDayTitle, MilestoneItem.MilestoneType.Count, 2);
-            miLongestFlight = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsLongestFlightTitle, MilestoneItem.MilestoneType.AchieveOnce, 1);
-            miFurthestFlight = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsFurthestFlightTitle, MilestoneItem.MilestoneType.AchieveOnce, 1);
-            miAircraft = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsDistinctAircraftTitle, MilestoneItem.MilestoneType.Count, 1);
-            miModels = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsDistinctModelsTitle, MilestoneItem.MilestoneType.Count, 1);
-            miAirports = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsAirportsVisitedTitle, MilestoneItem.MilestoneType.Count, 1) { QueryLinkTemplate = "~/mvc/Airport/VisitedAirports?fq={0}" };
-            miMostAirportsFlight = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsAirportsOnFlightTitle, MilestoneItem.MilestoneType.AchieveOnce, 1);
-            miCountries = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsCountriesVisited, MilestoneItem.MilestoneType.Count, 2);
-            miAdmin1 = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsAdmin1Visited, MilestoneItem.MilestoneType.Count, 2);
-            miMostAirportsDay = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementMostAirportsInDayTitle, MilestoneItem.MilestoneType.Count, 2);
-            miMostCountriesDay = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementMostCountriesDayTitle, MilestoneItem.MilestoneType.Count, 2);
-            miMostAdmin1sDay = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementMostAdmin1sDayTitle, MilestoneItem.MilestoneType.Count, 2);
+            miLongestStreak = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementFlyingStreakTitle, MilestoneItem.MilestoneType.Count, 1) { Category = RecentAchievementCategory.Time };
+            miLongestNoFlyStreak = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsNoFlyingStreakTitle, MilestoneItem.MilestoneType.Count, 1) { Category = RecentAchievementCategory.Time };
+            miFlyingDates = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsFlyingDayCountTitle, MilestoneItem.MilestoneType.Count, 1) { Category = RecentAchievementCategory.Time }; ;
+            miMostFlightsInDay = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementMostFlightsInDayTitle, MilestoneItem.MilestoneType.Count, 2) { Category = RecentAchievementCategory.Time }; ;
+            miMostLandingsInDay = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementMostLandingsInDayTitle, MilestoneItem.MilestoneType.Count, 2) { Category = RecentAchievementCategory.Time }; ;
+            miLongestFlight = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsLongestFlightTitle, MilestoneItem.MilestoneType.AchieveOnce, 1) { Category = RecentAchievementCategory.Geography }; ;
+            miFurthestFlight = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsFurthestFlightTitle, MilestoneItem.MilestoneType.AchieveOnce, 1) { Category = RecentAchievementCategory.Geography }; ;
+            miAircraft = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsDistinctAircraftTitle, MilestoneItem.MilestoneType.Count, 1) { Category = RecentAchievementCategory.Aircraft }; ;
+            miModels = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsDistinctModelsTitle, MilestoneItem.MilestoneType.Count, 1) { Category = RecentAchievementCategory.Aircraft }; ;
+            miAirports = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsAirportsVisitedTitle, MilestoneItem.MilestoneType.Count, 1) { QueryLinkTemplate = "~/mvc/Airport/VisitedAirports?fq={0}" , Category = RecentAchievementCategory.Geography }; ;
+            miMostAirportsFlight = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsAirportsOnFlightTitle, MilestoneItem.MilestoneType.AchieveOnce, 1) { Category = RecentAchievementCategory.Geography }; ;
+            miCountries = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsCountriesVisited, MilestoneItem.MilestoneType.Count, 2) { Category = RecentAchievementCategory.Geography }; ;
+            miAdmin1 = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsAdmin1Visited, MilestoneItem.MilestoneType.Count, 2) { Category = RecentAchievementCategory.Geography }; ;
+            miMostAirportsDay = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementMostAirportsInDayTitle, MilestoneItem.MilestoneType.Count, 2) { Category = RecentAchievementCategory.Geography }; ;
+            miMostCountriesDay = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementMostCountriesDayTitle, MilestoneItem.MilestoneType.Count, 2) { Category = RecentAchievementCategory.Geography }; ;
+            miMostAdmin1sDay = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementMostAdmin1sDayTitle, MilestoneItem.MilestoneType.Count, 2) { Category = RecentAchievementCategory.Geography }; ;
         }
 
         public static RecentAchievements AchievementsForDateRange(string szUser, FlightQuery.DateRanges range, DateTime? dtStart = null, DateTime? dtEnd = null)
@@ -457,10 +481,10 @@ namespace MyFlightbook.RatingsProgress
                     miAdmin1,
                     miMostCountriesDay,
                     miMostAdmin1sDay,
-                    miAircraft,
-                    miModels,
                     fs100.ToMilestone(Username),
-                    fs1000.ToMilestone(Username)
+                    fs1000.ToMilestone(Username),
+                    miAircraft,
+                    miModels
                 };
 
                 l.RemoveAll(mi => !mi.IsSatisfied);

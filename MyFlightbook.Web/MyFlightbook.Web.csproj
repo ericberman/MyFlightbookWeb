@@ -645,6 +645,10 @@
     <Content Include="images\AppleAppStore.svg" />
     <Content Include="images\audio.png" />
     <Content Include="images\back.png" />
+    <Content Include="images\BadgeOverlays\aircraft.svg" />
+    <Content Include="images\BadgeOverlays\calendar.svg" />
+    <Content Include="images\BadgeOverlays\globe.svg" />
+    <Content Include="images\BadgeOverlays\trend.svg" />
     <Content Include="images\flightimportsample.png" />
     <Content Include="images\fulldeflection.png" />
     <Content Include="images\globe.png" />
