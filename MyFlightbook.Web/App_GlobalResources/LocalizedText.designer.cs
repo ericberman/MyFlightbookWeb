@@ -4556,6 +4556,33 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Email Address.
+        /// </summary>
+        internal static string PromptEnterEmail {
+            get {
+                return ResourceManager.GetString("PromptEnterEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drag images here.
+        /// </summary>
+        internal static string PromptImageDropZoneImageOnly {
+            get {
+                return ResourceManager.GetString("PromptImageDropZoneImageOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drag images or PDF files here.
+        /// </summary>
+        internal static string PromptImageDropZoneWithPDF {
+            get {
+                return ResourceManager.GetString("PromptImageDropZoneWithPDF", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You have requested a new password on %APP_NAME%.
         ///
         ///To reset your password, please visit &lt;% RESET_LINK %&gt;  

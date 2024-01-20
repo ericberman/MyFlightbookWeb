@@ -3,7 +3,7 @@ using System.IO;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2020 MyFlightbook LLC
+ * Copyright (c) 2008-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -63,7 +63,7 @@ namespace MyFlightbook.Image
             {
                 using (Stream st = new MemoryStream(rgbSignature))
                 {
-                    using (Stream stDst = new MemoryStream())
+                    using (MemoryStream stDst = new MemoryStream())
                     {
                         // This is a PNG, so no need to handle temp files/conversion.
                         using (System.Drawing.Image image = MFBImageInfo.DrawingCompatibleImageFromStream(st))

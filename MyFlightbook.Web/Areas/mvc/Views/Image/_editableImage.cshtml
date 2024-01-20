@@ -69,9 +69,9 @@
     <div name="statComment" style="max-width: @(isVideo ? "320px" : (mfbii.WidthThumbnail > 0 ? mfbii.WidthThumbnail : "200px")); text-align:center;" >
         <span name="commentLabel">@mfbii.Comment</span>
     </div>
-    <div name="dynComment" DefaultButton="btnUpdateComments" style="display:none">
+    <div name="dynComment" style="display:none">
         <div style="padding:5px;">
-            <input type="text" style="width:130px" value="@mfbii.Comment" name="txtComment" />
+            <input type="text" style="width:130px" value="@mfbii.Comment" name="txtImgComment" />
             <button type="button" onclick="javascript:@(onAnnotate)(this, '@mfbii.Class', '@mfbii.Key', '@mfbii.ThumbnailFile', $(this).prev().val())">@Resources.LocalizedText.OK</button>
         </div>
     </div>

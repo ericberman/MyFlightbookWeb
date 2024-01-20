@@ -67,6 +67,18 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 return new EmptyResult();
             });
         }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult ImagesForClassAndKey(MFBImageInfoBase.ImageClass imageClass, string szKey, string altText = "", bool fCanDelete = false, bool fCanEdit = false, bool fCanMakeDefault = false, GeoLinkType zoomLinkType = GeoLinkType.None, bool fIsDefault = false, string confirmText = "", string defaultImage = "", string onMakeDefault = "", string onDelete = "", string onAnnotate = "", bool fIncludeDocs = false)
+        {
+            return SafeOp(() =>
+            {
+                ImageList il = new ImageList(imageClass, szKey);
+                il.Refresh(fIncludeDocs);
+                return ImageListDisplay(il, altText, fCanDelete, fCanEdit, fCanMakeDefault, zoomLinkType, fIsDefault, confirmText = "", defaultImage, onMakeDefault, onDelete, onAnnotate);
+            });
+        }
         #endregion
 
         #region displaying of images

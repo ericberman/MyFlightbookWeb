@@ -94,7 +94,7 @@ namespace MyFlightbook
                 {
                     case CFIStudentMapRequest.RoleType.RoleCFI:
                     case CFIStudentMapRequest.RoleType.RoleStudent:
-                        Response.Redirect("~/Member/Training.aspx/" + (m_smr.Requestedrole == CFIStudentMapRequest.RoleType.RoleCFI ? tabID.instStudents.ToString() : tabID.instInstructors.ToString()));
+                        Response.Redirect("~/mvc/training/" + (m_smr.Requestedrole == CFIStudentMapRequest.RoleType.RoleCFI ? "students" : "instructors"));
                         break;
                     case CFIStudentMapRequest.RoleType.RoleInviteJoinClub:
                         {

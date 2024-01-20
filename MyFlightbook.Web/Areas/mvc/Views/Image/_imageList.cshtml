@@ -32,3 +32,14 @@
         }
     </div>
 }
+
+<script type="text/javascript">
+    $(() => {
+        $("input[name='txtImgComment']").keydown(function (e) {
+            if (e.keyCode == 13) {
+                $(this).next()[0].click();
+                return false;
+            }
+        });
+    });
+</script>

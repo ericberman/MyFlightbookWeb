@@ -9,7 +9,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2021 MyFlightbook LLC
+ * Copyright (c) 2008-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -38,6 +38,16 @@ namespace MyFlightbook.Image
             ContentLength = pf.ContentLength;
         }
 
+        public MFBPostedFile(HttpPostedFileBase pf) : this()
+        {
+            if (pf == null)
+                throw new ArgumentNullException(nameof(pf));
+            WriteStreamToTempFile(pf.InputStream);
+            FileID = FileName = pf.FileName;
+
+            ContentType = pf.ContentType;
+            ContentLength = pf.ContentLength;
+        }
         public MFBPostedFile(Stream s, string fileName, string contentType, int contentLength) : this()
         {
             if (s == null)

@@ -1,0 +1,268 @@
+﻿@using System.Globalization
+@using MyFlightbook.Image
+@using MyFlightbook.Instruction
+@{
+    CFIStudentMap sm = ViewBag.instructorMap;
+    Dictionary<string, IEnumerable<LogbookEntry>> pendingFlightsToSign = ViewBag.pendingFlightMap;
+    Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+    byte[] rgbDefaultScribble = CFIStudentMap.DefaultScribbleForInstructor(pf);
+    ViewBag.defaultTab = tabID.tabTraining;
+    ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.Profile.TrainingHeader, pf.UserFullName);
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/public/scripts/ajaxUpload.js")"></script>
+<script type="text/javascript">
+    function deleteStudent(sender, username) {
+        if (confirm('@Resources.Profile.EditProfileDeleteStudentConfirmation')) {
+            $("#txtStudentUsername").val(username);
+            var f = $("#frmStudents").serialize();
+            $.ajax({
+                url: '@Url.Action("DeleteStudent", "Training")',
+                type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                complete: function (response) { },
+                success: function (response) {
+                    $(sender).closest("tr").hide();
+                }
+            });
+        }
+    }
+
+    function ignoreFlightToSign(sender, username, idFlight) {
+        $("#txtStudentUsername").val(username);
+        $("#txtIdFlight").val(idFlight);
+        var f = $("#frmStudents").serialize();
+        $.ajax({
+            url: '@Url.Action("DeletePendingSignatureRequestForStudent", "Training")',
+            type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            complete: function (response) { },
+            success: function (response) {
+                $(sender).closest("tr").hide();
+            }
+        });
+    }
+
+    function addStudent() {
+        var form = $("#frmAddStudent");
+        if (form.valid()) {
+            var f = form.serialize();
+            $.ajax({
+                url: "@Url.Action("InviteStudent", "Training")",
+                type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                error: function (xhr, status, error) { alert(xhr.responseText); },
+                success: function (r) {
+                    $("#lblAddStudentSuccess").html(r);
+                    $("#txtStudentEmail").val("");
+                    $("#pnlCertificate").hide();
+                }
+            });
+        }
+    }
+
+    function deleteOfflineEndorsement(sender, confirmText, imageClass, key, thumbnail) {
+        deleteImage(confirmText, imageClass, key, thumbnail, true, function (r) {
+            $(sender).parents("div[name='editImage']").hide();
+        });
+    }
+
+    function updateOfflineEndorsement(sender, imageClass, key, thumbnail, newComment) {
+        updateComment(imageClass, key, thumbnail, newComment, true, function (r) {
+            var parent = $(sender).parents("div[name='editImage']");
+            parent.find("[name='commentLabel']").text(newComment);
+            parent.find("[name='statComment']").show();
+            parent.find("[name='dynComment']").hide();
+        });
+    }
+
+    function toggleEditDefaultScribble() {
+        $("#vwCurrentSig").toggle();
+        $("#vwNewSig").toggle();
+    }
+
+    function saveScribble() {
+        $("#frmSaveScribble")[0].submit();
+    }
+
+    $(() => {
+        defaultButtonForDiv("pnlAddStudent", "btnAddStudent");
+
+        $("#frmAddStudent").validate({
+            errorClass: "error",
+            errorElement: "div",
+            errorPlacement: function (error, element) {
+                // the parent's next sibling is the explanation text; put this in a div AFTER that.
+                var location = $(element).parent();
+                error.insertAfter(location);
+            },
+            rules: {
+                studentEmail: "required"
+            },
+            messages: {
+                studentEmail: "@Resources.LocalizedText.ValidationEmailRequired"
+            }
+        });
+
+        ajaxFileUpload($("#divUploadEndorsements"), {
+            uploadURL: "@Url.Action("UploadOfflineEndorsement", "Training")",
+            allowedTypes: "@MyFlightbook.Image.FileExtensions.AllowedExtensionsForTypes(true, true, false)",
+            onUpload: function () {
+                var params = new Object();
+                params.imageClass = "@MFBImageInfo.ImageClass.OfflineEndorsement";
+                params.szKey = "@User.Identity.Name";
+                params.fCanEdit = true;
+                params.fCanDelete = true;
+                params.fIncludeDocs = true;
+                params.onDelete = "deleteOfflineEndorsement";
+                params.onAnnotate = "updateOfflineEndorsement";
+                var d = JSON.stringify(params);
+                $.ajax({
+                    url: '@Url.Action("ImagesForClassAndKey", "Image")',
+                    type: "POST", data: d, dataType: "html", contentType: "application/json",
+                    error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                    complete: function (response) { },
+                    success: function (response) {
+                        $("#divOfflineEndorsementList").html(response);
+                        $(".fileInQueueContainer").hide();
+                    }
+                });
+            },
+            dropPrompt: "@Resources.LocalizedText.PromptImageDropZoneWithPDF",
+            errTooManyFiles: "@Resources.LocalizedText.fileUploadTooManyFiles",
+            errDisallowedFileType: "@Resources.LocalizedText.fileUploadInvalidType",
+            abortPrompt: "@Resources.LocalizedText.fileUploadAboart"
+        });
+    });
+</script>
+<h2>@Branding.ReBrand(Resources.LocalizedText.StudentsMemberPrompt)</h2>
+@if (!sm.Students.Any())
+{
+    <ul><li style="font-weight:bold;">@Branding.ReBrand(Resources.LocalizedText.StudentsMemberNoneFound)</li></ul>
+}
+else
+{
+    using (Html.BeginForm("", "Training", FormMethod.Post, new { id = "frmStudents", name = "frmStudents" }))
+    {
+        <input type="hidden" id="txtStudentUsername" name="studentName" />
+        <input type="hidden" id="txtIdFlight" name="idFlight" />
+        @Html.AntiForgeryToken()
+    }
+    <table style="border-collapse: collapse" cellpadding="3">
+        @foreach (InstructorStudent student in sm.Students)
+        {
+            IEnumerable<LogbookEntry> pendingFlights = pendingFlightsToSign[student.UserName];
+            <tr style="vertical-align:top;">
+                <td>
+                    <img src="@VirtualPathUtility.ToAbsolute("~/images/x.gif")" alt="@Resources.Profile.EditProfileDeleteStudentTooltip" title="@Resources.Profile.EditProfileDeleteStudentTooltip"
+                         onclick="javascript: deleteStudent(this, '@student.UserName');" />
+                </td>
+                <td style="font-weight:bold;">@student.UserFullName</td>
+                <td>&nbsp;&nbsp;&nbsp;</td>
+                <td><a href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EndorseStudent.aspx/{0}", student.UserName))">@Resources.SignOff.EndorsementsViewAdd</a></td>
+                <td>
+                    @if (student.CanViewLogbook)
+                    {
+                        <div style="border-left: 1px solid black; padding-left:8px; margin-left:8px;">
+                            <a href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/StudentLogbook.aspx?student={0}", student.UserName))">@Resources.SignOff.ViewStudentLogbook</a>
+                        </div>
+                    }
+                </td>
+                <td>
+                    @if (student.CanViewLogbook)
+                    {
+                        <div id="pnlViewProgress" style="border-left: 1px solid black; padding-left:8px; margin-left:8px;">
+                            <a href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/Training/RatingsProgress?user={0}", student.UserName))">@Resources.MilestoneProgress.ViewStudentProgress</a>
+                        </div>
+                    }
+                </td>
+            </tr>
+            if (pendingFlights.Any())
+            {
+                <tr>
+                    <td colspan="3"></td>
+                    <td colspan="3">
+                        <div>@Resources.SignOff.SignFlightsToBeSignedHeader</div>
+                        <table>
+                            @foreach (LogbookEntry le in pendingFlights)
+                            {
+                                <tr>
+                                    <td>
+                                        <img src="@VirtualPathUtility.ToAbsolute("~/images/x.gif")" alt="@Resources.SignOff.SignFlightIgnore" title="@Resources.SignOff.SignFlightIgnore"
+                                             onclick="javascript: ignoreFlightToSign(this, '@student.UserName', @le.FlightID);" />
+                                    </td>
+                                    <td><a href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/SignFlight.aspx?idFlight={0}&ret={1}", le.FlightID, HttpUtility.UrlEncode(Request.Url.PathAndQuery)))">@le.DisplayString</a></td>
+                                </tr>
+                            }
+                        </table>
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+    <p>
+        <a href="@VirtualPathUtility.ToAbsolute("~/Member/EndorseStudent.aspx/")">@Resources.SignOff.EndorsementsViewAll</a>
+    </p>
+}
+<div id="pnlAddStudent" style="margin-top: 36pt; margin-bottom: 36pt;">
+    @using (Html.BeginForm("", "Training", FormMethod.Post, new { id = "frmAddStudent", name = "frmAddStudent" }))
+    {
+        <p>@Resources.SignOff.RoleAddStudentPrompt</p>
+        <p style="font-weight: bold;">@Resources.SignOff.RoleAddEmailDisclaimer</p>
+        <div id="pnlCertificate" style="@(String.IsNullOrEmpty(pf.Certificate) ? string.Empty : "display: none;")">
+            @Html.AntiForgeryToken()
+            <input id="txtCertificate" value="@pf.Certificate" type="text" name="pilotCertificate" required placeholder="@Resources.Preferences.PilotInfoCertificateCFIWatermark" />
+            @Resources.Preferences.PilotInfoCFIExpiration
+            <input type="date" value="@(pf.CertificateExpiration.HasValue() ? pf.CertificateExpiration.YMDString() : string.Empty)" name="pilotCertificateExpiration" />
+        </div>
+        <div>&nbsp;</div>
+        <div>
+            <input type="email" required name="studentEmail" placeholder="@Resources.LocalizedText.PromptEnterEmail" id="txtStudentEmail" />
+            <button id="btnAddStudent" type="button" onclick="javascript: addStudent();">@Resources.SignOff.RoleAddStudent</button>
+        </div>
+    }
+    <div id="lblAddStudentSuccess" class="success"></div>
+</div>
+<div id="pnlSignature" style="margin-top: 36pt; margin-bottom: 36pt;">
+    <h2>@Resources.LocalizedText.StudentSigningDefaultScribbleHeader</h2>
+    <p>@Resources.LocalizedText.StudentSigningDefaultScribblePrompt</p>
+    @using (Html.BeginForm("SaveDefaultScribble", "Training", FormMethod.Post, new { id = "frmSaveScribble", name = "frmSaveScribble" }))
+    {
+        @Html.AntiForgeryToken();
+        <div id="vwCurrentSig">
+            <img id="imgCurrSig" src="@((rgbDefaultScribble?.Length ?? 0) == 0 ? string.Empty : ScribbleImage.DataLinkForByteArray(rgbDefaultScribble))" />
+            <div><a style="cursor: pointer" onclick="javascript: toggleEditDefaultScribble();">@((rgbDefaultScribble?.Length ?? 0) == 0 ? Resources.LocalizedText.StudentSigningDefaultScribbleAdd : Resources.LocalizedText.StudentSigningDefaultScribbleEdit)</a></div>
+        </div>
+        <div id="vwNewSig" style="display: none;">
+            <div id="newScribble" style="display:inline-block;">
+                @{ Html.RenderAction("RenderScribble", "Training", new { cancelFunc = "toggleEditDefaultScribble", saveFunc = "saveScribble", colorRef = "#888888", watermarkRef = VirtualPathUtility.ToAbsolute("~/images/rubberstamp.png") }); }
+            </div>
+            <div style="display:inline-block; vertical-align:top; padding: 4px;">
+                <img src="@VirtualPathUtility.ToAbsolute("~/images/rubberstamp.png")" alt="@Resources.LocalizedText.StudentSigningDefaultScribbleIcon" title="@Resources.LocalizedText.StudentSigningDefaultScribbleIcon" />
+            </div>
+            <div style="display:inline-block; vertical-align:top; max-width:300px; padding: 4px">
+                @Resources.LocalizedText.StudentSigningDefaultScribblePrompt2
+            </div>
+        </div>
+    }
+</div>
+<h2>@Branding.ReBrand(Resources.LocalizedText.StudentsNonMemberPrompt)</h2>
+<p>@Branding.ReBrand(Resources.LocalizedText.StudentsNonMemberDescription)</p>
+<p><a href="@VirtualPathUtility.ToAbsolute("~/Member/EndorseStudent.aspx/?extern=1")">@Resources.SignOff.EndorseAddOfflineHeader</a></p>
+<div id="divUploadEndorsements">
+
+</div>
+<div id="divOfflineEndorsementList">
+    @{
+        ImageList il = new ImageList(MFBImageInfo.ImageClass.OfflineEndorsement, pf.UserName);
+        il.Refresh(true);
+        Html.RenderAction("ImageListDisplay", "Image", new
+        {
+            il = il,
+            zoomLinkType = GeoLinkType.None,
+            fCanEdit = true,
+            fCanDelete = true,
+            onDelete = "deleteOfflineEndorsement",
+            onAnnotate = "updateOfflineEndorsement"
+        });
+    }
+</div>

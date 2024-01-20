@@ -1967,4 +1967,13 @@
   <data name="fileUploadTooManyFiles" xml:space="preserve">
     <value>Too many files to upload at once</value>
   </data>
+  <data name="PromptEnterEmail" xml:space="preserve">
+    <value>Email Address</value>
+  </data>
+  <data name="PromptImageDropZoneImageOnly" xml:space="preserve">
+    <value>Drag images here</value>
+  </data>
+  <data name="PromptImageDropZoneWithPDF" xml:space="preserve">
+    <value>Drag images or PDF files here</value>
+  </data>
 </root>

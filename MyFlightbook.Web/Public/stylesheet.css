@@ -2014,21 +2014,25 @@ tr div.editCell, tr.editRow div.displayCell {
 .fileUploadContainer {
     border: 1px solid gray;
     padding: 3px;
-    width: 100%;
+    display: inline-block;
     margin-top: 3pt;
     margin-bottom: 3pt;
 }
 
 .fileDragTarget {
+    vertical-align: top;
     border: 3px dotted #00bcd4;
+    border-radius: 8pt;
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    text-align: center;
     width: 130px;
     height: 130px;
     color: #888888;
-    display: inline-block;
-    text-align: center;
-    vertical-align: middle;
     padding: 5px;
     font-size: 125%;
+    font-weight: bold;
 }
 
 .fileDragHighlighted {
@@ -2036,15 +2040,21 @@ tr div.editCell, tr.editRow div.displayCell {
 }
 
 .fileInQueueContainer {
+    vertical-align: top;
     border: 1px solid gray;
+    border-radius: 8pt;
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    text-align: center;
     width: 130px;
     height: 130px;
-    display: inline-block;
-    vertical-align: middle;
     padding: 5px;
+    font-size: 100%;
     margin-left: 3px;
     margin-right: 3px;
-    font-size: 100%;
+    margin-top: 2px;
+    margin-bottom: 2px;
 }
 
 .fileInQueContainerInProgress {

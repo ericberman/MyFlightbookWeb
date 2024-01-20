@@ -41,6 +41,19 @@ namespace MyFlightbook.Image
         public const string VidInProgress = ".vid";
         public const string RegExpVideoFileExtensions = "(avi|wmv|mp4|mov|m4v|m2p|mpeg|mpg|hdmov|flv|avchd|mpeg4|m2t|h264|mp3|wav)$";
         public const string RegExpImageFileExtensions = "(jpg|jpeg|jpe|gif|png|heic)$";
+
+        /// <summary>
+        /// Returns a space-separated list of allowable file extensions for the given image types
+        /// </summary>
+        /// <param name="fImages"></param>
+        /// <param name="fPDF"></param>
+        /// <param name="fVideos"></param>
+        /// <returns></returns>
+        public static string AllowedExtensionsForTypes(bool fImages, bool fPDF, bool fVideos)
+        {
+            string sz = (fImages ? RegExpImageFileExtensions : string.Empty) + (fPDF ? PDF : string.Empty) + (fVideos ? RegExpVideoFileExtensions : string.Empty);
+            return RegexUtility.NonAlphaNumeric.Replace(sz, " ").Trim();
+        }
     }
 
     // Possible links for an image that has a location - on a map on the page, to a new google maps page, or no link

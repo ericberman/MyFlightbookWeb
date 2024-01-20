@@ -12,7 +12,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2023 MyFlightbook LLC
+ * Copyright (c) 2010-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -153,9 +153,13 @@ namespace MyFlightbook.MemberPages
                 // Redirect for any of those
                 case tabID.instEndorsements:
                 case tabID.instSignFlights:
-                case tabID.instStudents:
-                case tabID.instInstructors:
                     Response.Redirect(Request.Url.PathAndQuery.Replace("EditProfile.aspx", String.Format(CultureInfo.InvariantCulture, "Training.aspx/{0}", szPref)).Replace(String.Format(CultureInfo.InvariantCulture, "pref={0}", szPref), string.Empty).Replace("?&", "?"));
+                    break;
+                case tabID.instStudents:
+                    Response.Redirect("~/mvc/Training/Students");
+                    break;
+                case tabID.instInstructors:
+                    Response.Redirect("~/mvc/Training/Instructors");
                     break;
                 case tabID.pftDonate:
                     Response.Redirect("~/mvc/donate" + Request.Url.Query);

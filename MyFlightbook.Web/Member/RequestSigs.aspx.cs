@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2023 MyFlightbook LLC
+ * Copyright (c) 2015-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -58,7 +58,7 @@ namespace MyFlightbook.Instruction
             }
             if (lstFlights.Count == 0)
             {
-                lstFlights =new List<LogbookEntryDisplay>(LogbookEntryDisplay.GetFlightsForQuery(LogbookEntryDisplay.QueryCommand(new FlightQuery(User.Identity.Name)), User.Identity.Name, "Date", SortDirection.Descending, false, false));
+                lstFlights =new List<LogbookEntryDisplay>(LogbookEntryDisplay.GetFlightsForQuery(LogbookEntryBase.QueryCommand(new FlightQuery(User.Identity.Name)), User.Identity.Name, "Date", SortDirection.Descending, false, false));
                 lstFlights.RemoveAll(le => !le.CanRequestSig);
             }
 
@@ -174,7 +174,7 @@ namespace MyFlightbook.Instruction
                     }
             }
             else
-                pfCFI = MyFlightbook.Profile.GetUser(cmbInstructors.SelectedValue);
+                pfCFI = Profile.GetUser(cmbInstructors.SelectedValue);
 
             if (fIsNewCFI)
                 szCFIEmail = txtCFIEmail.Text;
@@ -194,22 +194,22 @@ namespace MyFlightbook.Instruction
             }
             else
             {
-                Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+                Profile pf = Profile.GetUser(User.Identity.Name);
                 using (MailMessage msg = new MailMessage())
                 {
-                    msg.From = new MailAddress(Branding.CurrentBrand.EmailAddress, String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.SignOff.EmailSenderAddress, Branding.CurrentBrand.AppName, pf.UserFullName));
+                    msg.From = new MailAddress(Branding.CurrentBrand.EmailAddress, String.Format(CultureInfo.CurrentCulture, Resources.SignOff.EmailSenderAddress, Branding.CurrentBrand.AppName, pf.UserFullName));
                     msg.ReplyToList.Add(new MailAddress(pf.Email, pf.UserFullName));
                     msg.To.Add(new MailAddress(pfCFI.Email, pfCFI.UserFullName));
-                    msg.Subject = String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.SignOff.SignRequestSubject, pf.UserFullName, Branding.CurrentBrand.AppName);
+                    msg.Subject = String.Format(CultureInfo.CurrentCulture, Resources.SignOff.SignRequestSubject, pf.UserFullName, Branding.CurrentBrand.AppName);
 
-                    string szURL = String.Format(System.Globalization.CultureInfo.InvariantCulture, "https://{0}{1}/{2}", Request.Url.Host, ResolveUrl("~/Member/Training.aspx"), tabID.instStudents.ToString());
+                    string szURL = "~/mvc/training/students".ToAbsoluteURL(Request).ToString();
 
                     util.PopulateMessageContentWithTemplate(msg, Resources.SignOff.SignInvitationExisting.Replace("<% SignPendingFlightsLink %>", szURL).Replace("<% Requestor %>", pf.UserFullName));
                     util.SendMessage(msg);
                 }
             }
 
-            Response.Redirect(String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/Member/Training.aspx/{0}", tabID.instSignFlights));
+            Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/Training.aspx/{0}", tabID.instSignFlights));
         }
 
         protected void wzRequestSigs_NextButtonClick(object sender, WizardNavigationEventArgs e)

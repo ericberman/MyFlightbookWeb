@@ -48,7 +48,7 @@ public partial class Public_Home : System.Web.UI.Page
                 new AppAreaDescriptor(Resources.Tabs.TabLogbook, "~/Member/LogbookNew.aspx", Branding.ReBrand(Resources.Profile.appDescriptionLogbook), tabID.tabLogbook),
                 new AppAreaDescriptor(Resources.Tabs.TabAircraft, "~/mvc/Aircraft", Branding.ReBrand(Resources.Profile.appDescriptionAircraft), tabID.tabAircraft),
                 new AppAreaDescriptor(Resources.Tabs.TabAirports, "~/mvc/Airport/MapRoute", Branding.ReBrand(Resources.Profile.appDescriptionAirports), tabID.tabMaps),
-                new AppAreaDescriptor(Resources.Tabs.TabInstruction, "~/Member/Training.aspx", Branding.ReBrand(Resources.Profile.appDescriptionTraining), tabID.tabTraining),
+                new AppAreaDescriptor(Resources.Tabs.TabInstruction, "~/mvc/training/", Branding.ReBrand(Resources.Profile.appDescriptionTraining), tabID.tabTraining),
                 new AppAreaDescriptor(Resources.Tabs.TabProfile, "~/Member/EditProfile.aspx", Branding.ReBrand(Resources.Profile.appDescriptionProfile), tabID.tabProfile)
             };
             rptFeatures.DataSource = lst;

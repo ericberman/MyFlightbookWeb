@@ -1,0 +1,109 @@
+﻿@using System.Globalization
+@using MyFlightbook.Instruction
+@{
+    CFIStudentMap sm = ViewBag.instructorMap;
+    ViewBag.defaultTab = tabID.tabTraining;
+    ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.TitleTraining, Branding.CurrentBrand.AppName);
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript">
+    function deleteInstructor(sender, uname) {
+        if (confirm('@Resources.Profile.EditProfileDeleteCFIConfirmation')) {
+            $("#hdnInstructor").val(uname);
+            var f = $("#frmInstructorManage").serialize();
+            $.ajax({
+                url: "@Url.Action("DeleteInstructor", "Training")",
+                type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                error: function (xhr, status, error) { alert(xhr.responseText); },
+                success: function (r) {
+                    $(sender).parents("tr").hide();
+                }
+            });
+        }
+    }
+
+    function setInstructorPermissions(sender, uname) {
+        var ckAdd = $(sender).parents('td').find("input[name='ckAdd']")[0];
+        var ckView= $(sender).parents('td').find("input[name='ckView']")[0];
+
+        if (ckView.checked)
+            ckAdd.disabled = false;
+        else {
+            ckAdd.checked = false;
+            ckAdd.disabled = true;
+        }
+
+        $("#hdnInstructor").val(uname);
+        $("#hdnCanView").val(ckView.checked);
+        $("#hdnCanAdd").val(ckAdd.checked);
+        var f = $("#frmInstructorManage").serialize();
+        $.ajax({
+            url: "@Url.Action("UpdateInstructorPermissions", "Training")",
+            type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            error: function (xhr, status, error) { alert(xhr.responseText); },
+            success: function (r) { }
+        });
+    }
+
+    function addInstructor() {
+        var f = $("#frmAddInstructor").serialize();
+        $.ajax({
+            url: "@Url.Action("InviteInstructor", "Training")",
+            type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            error: function (xhr, status, error) { alert(xhr.responseText); },
+            success: function (r) {
+                $("#lblAddInstructorResult").html(r);
+                $("#txtInstructorEmail").val("");
+            }
+        });
+    }
+
+    $(() => {
+        defaultButtonForDiv("pnlAddInstructor", "btnAddInstructor");
+    });
+</script>
+<h2>@Resources.SignOff.RoleYourInstructors</h2>
+@using (Html.BeginForm("", "Training", FormMethod.Post, new { id = "frmInstructorManage", name = "frmInstructorManage" }))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="username" id="hdnInstructor" />
+    <input type="hidden" name="canView" id="hdnCanView" />
+    <input type="hidden" name="canAdd" id="hdnCanAdd" />
+}
+@if (sm.Instructors.Any())
+{
+    <table cellpadding="3" style="border-collapse: collapse;">
+        @foreach (InstructorStudent instructor in sm.Instructors)
+        {
+            <tr>
+                <td><img src="@VirtualPathUtility.ToAbsolute("~/images/x.gif")" alt="@Resources.Profile.EditProfileDeleteCFITooltip" title="@Resources.Profile.EditProfileDeleteCFITooltip"
+                         onclick="javascript: deleteInstructor(this, '@instructor.UserName');" />
+                </td>
+                <td style="font-weight: bold;">@instructor.UserFullName</td>
+                <td>
+                    <label><input type="checkbox" name="ckView" @(instructor.CanViewLogbook.ToChecked()) onchange="javascript: setInstructorPermissions(this, '@instructor.UserName');" />@Resources.SignOff.RoleAllowLogbook</label>
+                    <label><input type="checkbox" name="ckAdd" @(instructor.CanViewLogbook ? string.Empty : "disabled") @(instructor.CanAddLogbook.ToChecked()) onchange="javascript: setInstructorPermissions(this, '@instructor.UserName');" />@Resources.SignOff.RoleAllowAddFlights</label>
+                </td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <div class="success">@Resources.SignOff.RoleNoInstructors</div>
+}
+<div id="pnlAddInstructor">
+    <div>&nbsp;</div>
+    <div>@Resources.SignOff.RoleAddInstructorPrompt</div>
+    <div style="font-weight:bold">@Resources.SignOff.RoleAddEmailDisclaimer</div>
+    <div>
+        @using (Html.BeginForm("", "Training", FormMethod.Post, new { id = "frmAddInstructor", name = "frmAddInstructor" }))
+        {
+            @Html.AntiForgeryToken()
+            <input type="email" required name="instructorEmail" id="txtInstructorEmail" placeholder="@Resources.LocalizedText.PromptEnterEmail" />
+            <button type="button" onclick="javascript: addInstructor();" id="btnAddInstructor">@Resources.SignOff.RoleAddInstructor</button>
+            <div id="lblAddInstructorResult" class="success"></div>
+        }
+    </div>
+</div>
+
