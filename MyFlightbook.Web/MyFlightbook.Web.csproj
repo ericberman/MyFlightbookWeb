@@ -1569,6 +1569,9 @@
     <Content Include="Areas\mvc\Views\Training\_milestonesForCustomRating.cshtml" />
     <Content Include="Areas\mvc\Views\Training\_ratingsProgressList.cshtml" />
     <Content Include="Areas\mvc\Views\Training\_customRatingList.cshtml" />
+    <Content Include="Areas\mvc\Views\Training\instructors.cshtml" />
+    <Content Include="Areas\mvc\Views\Training\students.cshtml" />
+    <Content Include="Areas\mvc\Views\Training\_scribbleSignature.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />

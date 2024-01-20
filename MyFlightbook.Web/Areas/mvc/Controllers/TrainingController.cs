@@ -1,10 +1,12 @@
 ﻿using MyFlightbook.Achievements;
 using MyFlightbook.Histogram;
+using MyFlightbook.Image;
 using MyFlightbook.Instruction;
 using MyFlightbook.RatingsProgress;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
@@ -20,6 +22,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
     public class TrainingController : AdminControllerBase
     {
         #region Webservices
+        #region Ratings Progress
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
@@ -113,6 +116,133 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
         #endregion
 
+        #region Instructor management
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteInstructor()
+        {
+            return SafeOp(() =>
+            {
+                CFIStudentMap sm = new CFIStudentMap(User.Identity.Name);
+                sm.RemoveInstructor(Request["username"]);
+                return new EmptyResult();
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult UpdateInstructorPermissions()
+        {
+            return SafeOp(() =>
+            {
+                CFIStudentMap sm = new CFIStudentMap(User.Identity.Name);
+                string szInstructor = Request["username"];
+                bool canView = Convert.ToBoolean(Request["canView"], CultureInfo.InvariantCulture);
+                bool canAdd = Convert.ToBoolean(Request["canAdd"], CultureInfo.InvariantCulture);
+                InstructorStudent i = sm.Instructors.FirstOrDefault(inst => inst.UserName.CompareCurrentCulture(szInstructor) == 0);
+                i.CanViewLogbook = canView;
+                i.CanAddLogbook = canAdd;
+                sm.SetCFIPermissions(i);
+
+                return new EmptyResult();
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult InviteInstructor()
+        {
+            return SafeOp(() =>
+            {
+                string instructorEmail = Request["instructorEmail"];
+                if (!RegexUtility.Email.IsMatch(instructorEmail))
+                    throw new InvalidOperationException(Resources.LocalizedText.ValidationEmailFormat);
+
+                CFIStudentMap sm = new CFIStudentMap(User.Identity.Name);
+                CFIStudentMapRequest smr = sm.GetRequest(CFIStudentMapRequest.RoleType.RoleCFI, instructorEmail);
+                smr.Send();
+
+                return Content(String.Format(CultureInfo.CurrentCulture, Resources.Profile.EditProfileRequestHasBeenSent, HttpUtility.HtmlEncode(instructorEmail)));
+            });
+        }
+        #endregion
+
+        #region Student Management
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult InviteStudent()
+        {
+            return SafeOp(() =>
+            {
+                Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+                string szNewCert = Request["pilotCertificate"];
+                string szExpiration = Request["pilotCertificateExpiration"];
+                string szStudentEmail = Request["studentEmail"];
+                if (!RegexUtility.Email.IsMatch(szStudentEmail))
+                    throw new InvalidOperationException(Resources.LocalizedText.ValidationEmailFormat);
+                if (String.IsNullOrEmpty(pf.Certificate) && !String.IsNullOrEmpty(szNewCert))
+                {
+                    pf.Certificate = szNewCert.LimitTo(30);
+                    pf.CertificateExpiration = String.IsNullOrEmpty(szExpiration) ? DateTime.MinValue : DateTime.Parse(szExpiration, CultureInfo.InvariantCulture);
+                    pf.FCommit();
+                }
+                CFIStudentMapRequest smr = new CFIStudentMap(User.Identity.Name).GetRequest(CFIStudentMapRequest.RoleType.RoleStudent, szStudentEmail);
+                smr.Send();
+                return Content(String.Format(CultureInfo.CurrentCulture, Resources.Profile.EditProfileRequestHasBeenSent, HttpUtility.HtmlEncode(szStudentEmail)));
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteStudent()
+        {
+            return SafeOp(() =>
+            {
+                new CFIStudentMap(User.Identity.Name).RemoveStudent(Request["studentName"]);
+                return new EmptyResult();
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeletePendingSignatureRequestForStudent()
+        {
+            return SafeOp(() =>
+            {
+                // Validate
+                LogbookEntry le = new LogbookEntry(Convert.ToInt32(Request["idFlight"], CultureInfo.InvariantCulture), Request["studentName"]);
+                if (le.FlightID <= 0) // flight doesn't exist or isn't owned by that student.
+                    throw new UnauthorizedAccessException(le.ErrorString);
+                le.ClearPendingSignature();
+                return new EmptyResult();
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult UploadOfflineEndorsement()
+        {
+            return SafeOp(() =>
+            {
+                if (Request.Files.Count == 0)
+                    throw new InvalidOperationException("No file uploaded");
+
+                for (int i = 0; i < Request.Files.Count; i++)
+                {
+                    MFBImageInfo _ = new MFBImageInfo(MFBImageInfoBase.ImageClass.OfflineEndorsement, User.Identity.Name, new MFBPostedFile(Request.Files[i]), string.Empty, null);
+                }
+                return new EmptyResult();
+            });
+        }
+        #endregion
+        #endregion
+
         #region Partial views/child views
         #region Achievements, badges, and calendar
         [ChildActionOnly]
@@ -133,7 +263,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #endregion
 
         #region Ratings Progress
-        #endregion
         [ChildActionOnly]
         public ActionResult RenderProgressForRating(string szGroup, string szRating, string targetUser)
         {
@@ -152,6 +281,19 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.headerText = String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.RatingProgressPrintHeaderTemplate, mp.Title, MyFlightbook.Profile.GetUser(targetUser).UserFullName, DateTime.Now.Date.ToShortDateString());
             return PartialView("_ratingsProgressList");
         }
+        #endregion
+
+        #region endorsements
+        [ChildActionOnly]
+        public ActionResult RenderScribble(string saveFunc = null, string cancelFunc = null, string colorRef = "#0000ff", string watermarkRef = null)
+        {
+            ViewBag.watermarkRef = watermarkRef ?? string.Empty;
+            ViewBag.colorRef = colorRef;
+            ViewBag.saveFunc = saveFunc;
+            ViewBag.cancelFunc = cancelFunc;
+            return PartialView("_scribbleSignature");
+        }
+        #endregion
         #endregion
 
         #region Visible endpoints
@@ -220,10 +362,46 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
         #endregion
 
-        // GET: mvc/Training
+        #region Instructor/Student management
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult SaveDefaultScribble()
+        {
+            string base64Data = Request["hdnSigData"];
+            byte[] rgbSig = String.IsNullOrEmpty(base64Data) ? Array.Empty<byte>() : ScribbleImage.FromDataLinkURL(base64Data);
+            CFIStudentMap.SetDefaultScribbleForInstructor(MyFlightbook.Profile.GetUser(User.Identity.Name), rgbSig);
+            return Redirect("./Students");
+        }
+
+        [HttpGet]
+        [Authorize]
+        public ActionResult Students()
+        {
+            CFIStudentMap sm = new CFIStudentMap(User.Identity.Name);
+            Dictionary<string, IEnumerable<LogbookEntry>> d = new Dictionary<string, IEnumerable<LogbookEntry>>();
+            Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+            foreach (InstructorStudent student in sm.Students)
+                d[student.UserName] = LogbookEntryBase.PendingSignaturesForStudent(pf, student);
+            ViewBag.pendingFlightMap = d;
+            ViewBag.instructorMap = sm;
+            return View("students");
+        }
+
+        [HttpGet]
+        [Authorize]
+        public ActionResult Instructors()
+        {
+            ViewBag.instructorMap = new CFIStudentMap(User.Identity.Name);
+            return View("instructors");
+        }
+        #endregion
+
+        [HttpGet]
+        [Authorize]
         public ActionResult Index()
         {
-            return View();
+            return Redirect("./Instructors");
         }
         #endregion
     }

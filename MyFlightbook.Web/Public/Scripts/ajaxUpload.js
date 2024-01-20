@@ -1,6 +1,6 @@
 ﻿/******************************************************
  *
- * Copyright(c) 2023 MyFlightbook LLC
+ * Copyright(c) 2023-2024 MyFlightbook LLC
  * Contact myflightbook - at - gmail.com for more information
  * Code here adapted from https://hayageek.com/drag-and-drop-file-upload-jquery/ - thanks!
  *
