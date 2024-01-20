@@ -100,7 +100,7 @@ else
         @using (Html.BeginForm("", "Training", FormMethod.Post, new { id = "frmAddInstructor", name = "frmAddInstructor" }))
         {
             @Html.AntiForgeryToken()
-            <input type="email" required name="instructorEmail" id="txtInstructorEmail" />
+            <input type="email" required name="instructorEmail" id="txtInstructorEmail" placeholder="@Resources.LocalizedText.PromptEnterEmail" />
             <button type="button" onclick="javascript: addInstructor();" id="btnAddInstructor">@Resources.SignOff.RoleAddInstructor</button>
             <div id="lblAddInstructorResult" class="success"></div>
         }

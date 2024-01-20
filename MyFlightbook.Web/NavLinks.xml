@@ -127,17 +127,17 @@
     </Items>
   </Item>
   <Item>
-    <Link>~/Member/Training.aspx/instInstructors</Link>
+    <Link>~/mvc/Training/Instructors</Link>
     <ID>tabTraining</ID>
     <Roles></Roles>
     <Items>
       <Item>
-        <Link>~/Member/Training.aspx/instInstructors</Link>
+        <Link>~/mvc/Training/Instructors</Link>
         <ID>instInstructors</ID>
         <Roles></Roles>
       </Item>
       <Item>
-        <Link>~/Member/Training.aspx/instStudents</Link>
+        <Link>~/mvc/Training/Students</Link>
         <ID>instStudents</ID>
         <Roles></Roles>
       </Item>
