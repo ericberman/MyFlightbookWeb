@@ -12,7 +12,7 @@ using System.Web.Mvc;
 
 /******************************************************
  * 
- * Copyright (c) 2023 MyFlightbook LLC
+ * Copyright (c) 2023-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -130,7 +130,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     }
                 }
 
-                return Content(Guid.NewGuid().ToString());
+                return Content("~/images/kmlicon_med.png".ToAbsolute());
             });
 
         }

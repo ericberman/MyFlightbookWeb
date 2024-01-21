@@ -2080,6 +2080,15 @@ tr div.editCell, tr.editRow div.displayCell {
     border-radius: 3px;
 }
 
+.fileUploadResult {
+    width: 100%;
+}
+
+.fileUploadResult img {
+    max-width: 120px;
+    max-height: 80px;
+}
+
 .fileUploadStatusbar {
     min-height: 25px;
     width: 100%;

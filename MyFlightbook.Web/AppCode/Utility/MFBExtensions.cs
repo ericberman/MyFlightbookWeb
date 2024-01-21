@@ -644,6 +644,16 @@ namespace MyFlightbook
         }
 
         /// <summary>
+        /// Converts the string to an absolute url, NOT including scheme and host
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public static string ToAbsolute(this string s)
+        {
+            return VirtualPathUtility.ToAbsolute(s);
+        }
+
+        /// <summary>
         /// Returns the string as a fully resolved absolute url, including scheme and host
         /// </summary>
         /// <param name="s">The relative URL</param>

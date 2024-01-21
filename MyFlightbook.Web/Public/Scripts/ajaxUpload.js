@@ -48,6 +48,7 @@ function ajaxFileUpload(container, options) {
             error: function (xhr, status, error) { window.alert(xhr.responseText); },
             complete: function (response) {
                 status.setProgress(100);
+                status.setThumbnail(response.responseText);
                 processQueue();
             },
             success: function (data) {
@@ -83,6 +84,12 @@ function ajaxFileUpload(container, options) {
                 this.abort.hide();
                 this.progressBar.hide();
                 this.uploadContainer.removeClass("fileInQueContainerInProgress");
+            }
+        }
+
+        this.setThumbnail = function (href) {
+            if (href != '') {
+                $("<div class='fileUploadResult'><img src='" + href + "' /></div>").insertBefore(this.filename);
             }
         }
         this.setAbort = function (jqxhr) {

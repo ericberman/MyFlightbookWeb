@@ -233,11 +233,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (Request.Files.Count == 0)
                     throw new InvalidOperationException("No file uploaded");
 
-                for (int i = 0; i < Request.Files.Count; i++)
-                {
-                    MFBImageInfo _ = new MFBImageInfo(MFBImageInfoBase.ImageClass.OfflineEndorsement, User.Identity.Name, new MFBPostedFile(Request.Files[i]), string.Empty, null);
-                }
-                return new EmptyResult();
+                MFBImageInfo mfbii = new MFBImageInfo(MFBImageInfoBase.ImageClass.OfflineEndorsement, User.Identity.Name, new MFBPostedFile(Request.Files[0]), string.Empty, null);
+                return Content(mfbii.URLThumbnail);
             });
         }
         #endregion
