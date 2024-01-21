@@ -1,0 +1,47 @@
+﻿@using System.Globalization
+@using MyFlightbook.Instruction
+@{
+    IEnumerable<LogbookEntry> pendingFlightsToSign = ViewBag.flightsPendingSignature;
+    Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+    ViewBag.defaultTab = tabID.tabTraining;
+    ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.Profile.TrainingHeader, pf.UserFullName);
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript">
+    function deletePendingSig(sender, idFlight) {
+        $("#txtIdFlight").val(idFlight);
+        var f = $("#frmDeleteSigRequest").serialize();
+        $.ajax({
+            url: '@Url.Action("DeletePendingSignatureRequestForStudent", "Training")',
+            type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            complete: function (response) { },
+            success: function (response) {
+                $(sender).closest("tr").hide();
+            }
+        });
+    }
+</script>
+<div style="display: none;">
+    @using (Html.BeginForm("", "Training", FormMethod.Post, new { id = "frmDeleteSigRequest", name = "frmDeleteSigRequest" }))
+    {
+        @Html.AntiForgeryToken();
+        <input type="hidden" id="txtStudentUsername" name="studentName" value="@User.Identity.Name" />
+        <input type="hidden" id="txtIdFlight" name="idFlight" />
+    }
+</div>
+<h2>@Resources.SignOff.RequestSignatures</h2>
+<p>@Resources.SignOff.RequestSignaturesPrompt&nbsp; <a style="font-weight: bold;" href="@("~/Member/RequestSigs.aspx".ToAbsolute())">@Resources.SignOff.RequestSignatures</a></p>
+@if (pendingFlightsToSign.Any())
+{
+    <div style="font-weight:bold;">@Resources.SignOff.SignFlightsToBeSignedHeader</div>
+    <table cellpadding="3">
+        @foreach (LogbookEntry le in pendingFlightsToSign)
+        {
+            <tr>
+                <td><img src="@("~/images/x.gif".ToAbsolute())" alt="@Resources.SignOff.SignFlightIgnore" title="@Resources.SignOff.SignFlightIgnore" onclick="javascript:deletePendingSig(this, @le.FlightID)" /> @le.DisplayString</td>
+                <td style="font-style:italic">(@le.CFIName)</td>
+            </tr>
+        }
+    </table>
+}

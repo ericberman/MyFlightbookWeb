@@ -394,6 +394,17 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
         #endregion
 
+        #region Request Signatures
+        [HttpGet]
+        [Authorize]
+        public ActionResult RequestSigs()
+        {
+            Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+            ViewBag.flightsPendingSignature = LogbookEntryBase.PendingSignaturesForStudent(null, pf);
+            return View("requestSigs");
+        }
+        #endregion
+
         [HttpGet]
         [Authorize]
         public ActionResult Index()

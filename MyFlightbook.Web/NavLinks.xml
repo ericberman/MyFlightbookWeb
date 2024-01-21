@@ -142,7 +142,7 @@
         <Roles></Roles>
       </Item>
       <Item>
-        <Link>~/Member/Training.aspx/instSignFlights</Link>
+        <Link>~/mvc/Training/RequestSigs</Link>
         <ID>instSignFlights</ID>
         <Roles></Roles>
       </Item>
