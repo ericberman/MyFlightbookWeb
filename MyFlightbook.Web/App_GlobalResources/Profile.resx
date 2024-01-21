@@ -734,4 +734,7 @@
   <data name="AuthTokenExpiredPassword" xml:space="preserve">
     <value>Your password has changed since this authorization was issued.  Please sign out and in again with the new password.</value>
   </data>
+  <data name="EmailMonthlySubjectYearInReview" xml:space="preserve">
+    <value>Your flying totals for {0} and a review of {1}!</value>
+  </data>
 </root>

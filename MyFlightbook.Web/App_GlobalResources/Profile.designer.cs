@@ -943,6 +943,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your flying totals for {0} and a review of {1}!.
+        /// </summary>
+        internal static string EmailMonthlySubjectYearInReview {
+            get {
+                return ResourceManager.GetString("EmailMonthlySubjectYearInReview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unsubscribe from all subscribed email..
         /// </summary>
         internal static string EmailQuickUnsubscribeLink {
@@ -1432,7 +1441,7 @@ namespace Resources {
         ///    &lt;li&gt;View your flights on a map&lt;/li&gt;
         ///	&lt;li&gt;And much more...&lt;/li&gt;
         ///&lt;/ul&gt;
-        ///&lt;p style=&quot;font-size: medium&quot;&gt;&lt;a href=&quot;http://%APP_URL%% [rest of string was truncated]&quot;;.
+        ///&lt;p style=&quot;font-size: medium&quot;&gt;&lt;a href=&quot;https://%APP_URL% [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string NewAccountPromo {
             get {
@@ -1861,15 +1870,11 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  &lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;
-        ///&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
-        ///&lt;head&gt;
-        ///    &lt;title&gt;Verify Email on %APP_NAME%&lt;/title&gt;
-        ///    &lt;link href=&quot;http://%APP_URL%%APP_ROOT%/Public/StyleSheet.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;
-        ///&lt;/head&gt;
-        ///&lt;body style=&quot;font-family: Arial; font-size: 9pt; margin-left: auto; margin-right: auto; min-width: 300px;&quot;&gt;
-        ///    &lt;p&gt;
-        ///        &lt;img alt=&quot;%APP_NAME% Logo&quot; src=&quot;https://%APP_URL%%A [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to &lt;p&gt;%APP_NAME% is asking you to verify that you are the owner of the email address &lt;% email %&gt;.&lt;/p&gt;
+        ///&lt;p&gt;
+        ///    Please click on &lt;a href=&quot;&lt;% confirmaddress %&gt;&quot;&gt;this link&lt;/a&gt; to confirm your address.  This link is valid for one hour.
+        ///&lt;/p&gt;
+        ///.
         /// </summary>
         internal static string VerifyEmail {
             get {

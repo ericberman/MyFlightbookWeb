@@ -12,7 +12,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2023 MyFlightbook LLC
+ * Copyright (c) 2009-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -249,9 +249,15 @@ namespace MyFlightbook.Subscriptions
             {
                 lstUsersToSend = new List<Profile>(Profile.UsersWithSubscriptions(EmailSubscription.FlagForType(SubscriptionType.MonthlyTotals), DateTime.Now.AddDays(1)));
 
+                // Issue #1168 - if Jan 1 mail, be clear that this includes year in review!
+                DateTime dtLastMonth = DateTime.Now.AddMonths(-1);
+                string szSubject = (DateTime.Now.Month == 1) ?
+                    String.Format(CultureInfo.CurrentCulture, Resources.Profile.EmailMonthlySubjectYearInReview, dtLastMonth.ToString("MMMM", CultureInfo.InvariantCulture), dtLastMonth.Year) :
+                    String.Format(CultureInfo.CurrentCulture, Resources.Profile.EmailMonthlySubject, dtLastMonth.ToString("MMMM", CultureInfo.InvariantCulture));
+
                 // We don't update the last-email sent on this because this email is asynchronous - i.e., not dependent on any other mail that was sent.
                 foreach (Profile pf in lstUsersToSend)
-                    SendMailForUser(pf, String.Format(CultureInfo.CurrentCulture, Resources.Profile.EmailMonthlySubject, DateTime.Now.AddMonths(-1).ToString("MMMM", CultureInfo.InvariantCulture)), "monthly");
+                    SendMailForUser(pf, szSubject, "monthly");
             }
 
             // Do a pending flights reminder - every week or so
