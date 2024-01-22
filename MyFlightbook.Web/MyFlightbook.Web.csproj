@@ -1598,6 +1598,7 @@
     <Content Include="Shunt.aspx" />
     <Content Include="Support\2023-01-21 - Issue1050 FK for UserAircraft.sql" />
     <Content Include="Support\2023-10-24 - google adsense keys.txt" />
+    <Content Include="Support\2024-01-21 - endorsement hide rather than delete.txt" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>

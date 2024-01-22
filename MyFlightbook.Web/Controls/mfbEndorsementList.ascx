@@ -43,16 +43,4 @@
         <asp:Label ID="lblNoEndorsements" runat="server" Text="<%$ Resources:Signoff, NoExistingEndorsements %>"></asp:Label>
     </EmptyDataTemplate>
 </asp:GridView>
-<asp:GridView ID="gvDownload" runat="server" AutoGenerateColumns="false">
-    <Columns>
-        <asp:BoundField DataField="Date" HeaderText="<%$ Resources:Signoff, EditEndorsementDatePrompt %>" DataFormatString="{0:d}" />
-        <asp:BoundField DataField="FullTitleAndFar" HeaderText="<%$ Resources:Signoff, DownloadEndorsementFARRef %>" />
-        <asp:BoundField DataField="EndorsementText" HeaderText="<%$ Resources:Signoff, DownloadEndorsementText %>" />
-        <asp:BoundField DataField="CreationDate" HeaderText="<%$ Resources:Signoff, EditEndorsementDateCreatedPrompt %>" DataFormatString="{0:d}" />
-        <asp:BoundField DataField="StudentDisplayName" HeaderText="<%$ Resources:Signoff, EditEndorsementStudentPrompt %>" />
-        <asp:BoundField DataField="CFIDisplayName" HeaderText="<%$ Resources:Signoff, EditEndorsementInstructorPrompt %>" />
-        <asp:BoundField DataField="CFICertificate" HeaderText="<%$ Resources:Signoff, EditEndorsementCFIPrompt %>" />
-        <asp:BoundField DataField="CFIExpirationDate" HeaderText="<%$ Resources:Signoff, EditEndorsementExpirationPrompt %>" DataFormatString="{0:d}" />
-    </Columns>
-</asp:GridView>
 <asp:Label ID="lblErr" runat="server" Text="" EnableViewState="false" CssClass="error"></asp:Label>

@@ -1,10 +1,12 @@
 ﻿using MyFlightbook.Clubs;
+using MyFlightbook.CSV;
 using MyFlightbook.Encryptors;
 using MyFlightbook.Image;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Net.Mail;
@@ -127,6 +129,11 @@ namespace MyFlightbook.Instruction
         public DateTime Date { get; set; }
 
         /// <summary>
+        /// Date that the endorsement was deleted by the student, if deleted.
+        /// </summary>
+        public DateTime? DateDeleted { get; set; }
+
+        /// <summary>
         /// The timestamp of the date's creation
         /// </summary>
         public DateTime CreationDate { get; set; }
@@ -215,6 +222,7 @@ namespace MyFlightbook.Instruction
             ID = Convert.ToInt32(dr["id"], CultureInfo.InvariantCulture);
             InstructorName = dr["CFI"].ToString();
             Date = Convert.ToDateTime(dr["Date"], CultureInfo.InvariantCulture);
+            DateDeleted = dr["DateDeleted"] == DBNull.Value ? null : (DateTime?)Convert.ToDateTime(dr["DateDeleted"], CultureInfo.InvariantCulture);
             CreationDate = Convert.ToDateTime(util.ReadNullableField(dr, "DateCreated", DateTime.MinValue), CultureInfo.InvariantCulture);
             CFIExpirationDate = Convert.ToDateTime(dr["CFIExpiration"], CultureInfo.InvariantCulture);
             EndorsementText = dr["Endorsement"].ToString();
@@ -275,7 +283,7 @@ namespace MyFlightbook.Instruction
 
         public void FCommit()
         {
-            string szQ = (this.ID < 0) ? "INSERT INTO endorsements SET CFI=?cfi, CFIFullName=?cfifullname, Student=?Student, StudentType=?studentType, Date=?dt, DateCreated=Now(), CFINum=?cfiNumber, CFIExpiration=?dtExp, Endorsement=?bodytext, Title=?title, FARRef=?farref, DigitizedSignature=?digsig " :
+            string szQ = (this.ID < 0) ? "INSERT INTO endorsements SET CFI=?cfi, CFIFullName=?cfifullname, Student=?Student, StudentType=?studentType, Date=?dt, DateCreated=Now(), DateDeleted=NULL, CFINum=?cfiNumber, CFIExpiration=?dtExp, Endorsement=?bodytext, Title=?title, FARRef=?farref, DigitizedSignature=?digsig " :
                 "UPDATE endorsements SET CFI=?cfi, Student=?Student, StudentType=?studentType, Date=?dt, CFINum=?cfiNumber, CFIExpiration=?dtExp, Endorsement=?bodytext, Title=?title, FARRef=?farref, DigitizedSignature=?digsig WHERE ID=?id";
 
             Validate();
@@ -305,11 +313,11 @@ namespace MyFlightbook.Instruction
         }
 
         /// <summary>
-        /// Delete the specified endorsement.  Note that this ONLY WORKS for StudentType = External
+        /// Delete the specified endorsement.  
         /// </summary>
         public void FDelete()
         {
-            DBHelper dbh = new DBHelper("DELETE FROM endorsements WHERE StudentType=?st AND ID=?id");
+            DBHelper dbh = new DBHelper("UPDATE endorsements SET DateDeleted=Now() WHERE StudentType=?st AND ID=?id");
             dbh.DoNonQuery((cmd) =>
             {
                 cmd.Parameters.AddWithValue("id", this.ID);
@@ -322,19 +330,25 @@ namespace MyFlightbook.Instruction
         /// </summary>
         /// <param name="szInstructor">The username of the instructor, or null/empty for all records for the student</param>
         /// <param name="szStudent">The username of the student, or null/empty for all records for the instructor</param>
+        /// <param name="fIncludeDeleted">True to include deleted endorsements</param>
+        /// <param name="sortDirection">Sort direction</param>
+        /// <param name="sortKey">Sort key</param>
         /// <returns>An array of Endorsement objects representing the associated users</returns>
-        public static IEnumerable<Endorsement> EndorsementsForUser(string szStudent, string szInstructor, SortDirection sortDirection = SortDirection.Descending, EndorsementSortKey sortKey = EndorsementSortKey.Date)
+        public static IEnumerable<Endorsement> EndorsementsForUser(string szStudent, string szInstructor, SortDirection sortDirection = SortDirection.Descending, EndorsementSortKey sortKey = EndorsementSortKey.Date, bool fIncludeDeleted = false)
         {
-            Boolean fStudent = !String.IsNullOrEmpty(szStudent);
-            Boolean fInstructor = !String.IsNullOrEmpty(szInstructor);
-
-            if (!fStudent && !fInstructor)
+            if (String.IsNullOrEmpty(szStudent) && String.IsNullOrEmpty(szInstructor))
                 throw new MyFlightbookException(Resources.SignOff.errNoStudentOrInstructor);
 
-            string szQStudent = (fStudent ? "Student=?student" : "");
-            string szQInstructor = (fInstructor ? "CFI=?cfi" : "");
+            List<string> lstConditions = new List<string>();
+            if (!String.IsNullOrEmpty(szStudent))
+                lstConditions.Add("Student=?student");
+            if (!String.IsNullOrEmpty(szInstructor))
+                lstConditions.Add("CFI=?cfi");
+            if (!fIncludeDeleted)
+                lstConditions.Add("DateDeleted IS NULL");
 
-            string szRestrict = (fStudent ? szQStudent : "") + (fStudent && fInstructor ? " AND " : "") + (fInstructor ? szQInstructor : "");
+            string szRestrict = String.Join(" AND ", lstConditions);
+
             List<Endorsement> lst = new List<Endorsement>();
             DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "SELECT *, LENGTH(DigitizedSignature) AS FileSize FROM Endorsements WHERE {0} ORDER BY {1} {2}",
                 szRestrict,
@@ -370,12 +384,217 @@ namespace MyFlightbook.Instruction
             return lst;
         }
 
+        /// <summary>
+        /// Populates a data table from the set of endorsements
+        /// </summary>
+        /// <param name="rgEndorsements"></param>
+        /// <param name="dt"></param>
+        public static void EndorsementsToDataTable(IEnumerable<Endorsement> rgEndorsements, DataTable dt)
+        {
+            if (rgEndorsements == null)
+                throw new ArgumentNullException(nameof(rgEndorsements));
+
+            dt.Columns.Add(new DataColumn(Resources.SignOff.EditEndorsementDatePrompt, typeof(string)));
+            dt.Columns.Add(new DataColumn(Resources.SignOff.DownloadEndorsementFARRef, typeof(string)));
+            dt.Columns.Add(new DataColumn(Resources.SignOff.DownloadEndorsementText, typeof(string)));
+            dt.Columns.Add(new DataColumn(Resources.SignOff.EditEndorsementDateCreatedPrompt, typeof(string)));
+            dt.Columns.Add(new DataColumn(Resources.SignOff.EditEndorsementStudentPrompt, typeof(string)));
+            dt.Columns.Add(new DataColumn(Resources.SignOff.EditEndorsementInstructorPrompt, typeof(string)));
+            dt.Columns.Add(new DataColumn(Resources.SignOff.EditEndorsementCFIPrompt, typeof(string)));
+            dt.Columns.Add(new DataColumn(Resources.SignOff.EditEndorsementExpirationPrompt, typeof(string)));
+            dt.Columns.Add(new DataColumn(Resources.LocalizedText.Note, typeof(string)));
+
+            foreach (Endorsement e in rgEndorsements)
+            {
+                DataRow dr = dt.NewRow();
+
+                dr[0] = e.Date.YMDString();
+                dr[1] = e.FullTitleAndFar;
+                dr[2] = e.EndorsementText;
+                dr[3] = e.CreationDate.YMDString();
+                dr[4] = e.StudentDisplayName;
+                dr[5] = e.CFIDisplayName;
+                dr[6] = e.CFICertificate;
+                dr[7] = e.CFIExpirationDate.YMDString();
+                dr[8] = e.DateDeleted.HasValue ? String.Format(CultureInfo.CurrentCulture, Resources.SignOff.EndorsementDeleted, e.DateDeleted.Value) : string.Empty;
+
+                dt.Rows.Add(dr);
+            }
+        }
+
         public static Endorsement EndorsementWithID(int id)
         {
             DBHelper dbh = new DBHelper("SELECT *, LENGTH(DigitizedSignature) AS FileSize FROM Endorsements WHERE id=?idEndorsement");
             Endorsement en = null;
             dbh.ReadRow((comm) => { comm.Parameters.AddWithValue("idEndorsement", id); }, (dr) => { en = new Endorsement(dr); });
             return en;
+        }
+
+        /// <summary>
+        /// Renders the endorsement to HTML.  We render explicitly so that writing to a ZIP - which may have neither page context nor HttpContext.Current - can work.
+        /// </summary>
+        /// <param name="tw"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public void RenderHTML(HtmlTextWriter tw)
+        {
+            if (tw == null)
+                throw new ArgumentNullException(nameof(tw));
+
+            tw.AddAttribute("style", "padding: 5px;");
+            tw.RenderBeginTag(HtmlTextWriterTag.Div);
+
+            tw.AddAttribute("class", "endorsement");
+            tw.RenderBeginTag(HtmlTextWriterTag.Table);
+            if (IsExternalEndorsement)
+            {
+                // disclaimer
+                tw.RenderBeginTag(HtmlTextWriterTag.Tr);
+                tw.AddAttribute("style", "font-weight: bold; background-color:darkgray; color:white");
+                tw.AddAttribute("colspan", "2");
+                tw.RenderBeginTag(HtmlTextWriterTag.Td);
+                tw.InnerWriter.Write(Branding.ReBrand(Resources.SignOff.ExternalEndorsementDisclaimer));
+                tw.RenderEndTag(); // td
+                tw.RenderEndTag(); // tr
+            }
+
+            if (DateDeleted != null)
+            {
+                tw.RenderBeginTag(HtmlTextWriterTag.Tr);
+                tw.AddAttribute("style", "font-weight: bold; background-color:darkgray; color:red");
+                tw.AddAttribute("colspan", "2");
+                tw.RenderBeginTag(HtmlTextWriterTag.Td);
+                tw.InnerWriter.Write(String.Format(CultureInfo.CurrentCulture, Resources.SignOff.EndorsementDeleted, DateDeleted.Value));
+                tw.RenderEndTag();  // td
+                tw.RenderEndTag();  // tr
+            }
+
+            // Body text
+            tw.RenderBeginTag(HtmlTextWriterTag.Tr);
+            tw.AddAttribute("colspan", "2");
+            tw.RenderBeginTag(HtmlTextWriterTag.Td);
+            if (!HasDigitizedSig)
+            {
+                tw.AddAttribute("style", "float:right; margin: 3px;");
+                tw.AddAttribute("title", Resources.SignOff.EndorsementValid);
+                tw.AddAttribute("alt", Resources.SignOff.EndorsementValid);
+                tw.RenderBeginTag(HtmlTextWriterTag.Div);
+                tw.AddAttribute("src", String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/images/sigok.png")));
+                tw.RenderBeginTag(HtmlTextWriterTag.Img);
+                tw.RenderEndTag();  // img
+                tw.RenderEndTag();  // div
+            }
+
+            // Text and FAR row
+            tw.AddAttribute("style", "font-weight:bold;");
+            tw.RenderBeginTag(HtmlTextWriterTag.Div);
+            tw.InnerWriter.Write(FullTitleAndFar);
+            tw.RenderEndTag();  // div
+
+            tw.RenderBeginTag(HtmlTextWriterTag.Hr);
+            tw.RenderEndTag();  // hr
+
+            tw.InnerWriter.Write(EndorsementText);
+
+            tw.RenderBeginTag(HtmlTextWriterTag.Hr);
+            tw.RenderEndTag();  // hr
+
+            tw.RenderEndTag(); // td
+            tw.RenderEndTag(); // row
+
+            // Date row
+            tw.RenderBeginTag(HtmlTextWriterTag.Tr);
+            tw.AddAttribute("style", "font-weight: bold;");
+            tw.RenderBeginTag(HtmlTextWriterTag.Td);
+            tw.InnerWriter.Write(Resources.SignOff.EditEndorsementDatePrompt);
+            tw.RenderEndTag();  // td
+            tw.RenderBeginTag(HtmlTextWriterTag.Td);
+            tw.InnerWriter.Write(Date.ToShortDateString());
+            tw.RenderEndTag();  // td
+            tw.RenderEndTag();  // trw
+
+            // if dates are off row
+            if (CreationDate.Date.CompareTo(Date.Date) != 0)
+            {
+                tw.RenderBeginTag(HtmlTextWriterTag.Tr);
+                tw.AddAttribute("style", "font-weight: bold;");
+                tw.RenderBeginTag(HtmlTextWriterTag.Td);
+                tw.InnerWriter.Write(Resources.SignOff.EditEndorsementDateCreatedPrompt);
+                tw.RenderEndTag();  // td
+
+                if (CreationDate.Date.Subtract(Date).Days > 10)
+                    tw.AddAttribute("style", "font-weight: bold;");
+                tw.RenderBeginTag(HtmlTextWriterTag.Td);
+                tw.InnerWriter.Write(CreationDate.ToShortDateString());
+                tw.InnerWriter.Write(" (UTC)");
+                tw.RenderEndTag();  // td
+
+                tw.RenderEndTag();  // tr
+            }
+
+            // Student name row
+            tw.RenderBeginTag(HtmlTextWriterTag.Tr);
+            tw.AddAttribute("style", "font-weight: bold");
+            tw.RenderBeginTag(HtmlTextWriterTag.Td);
+            tw.InnerWriter.Write(Resources.SignOff.EditEndorsementStudentPrompt);
+            tw.RenderEndTag();  // td
+
+            tw.RenderBeginTag(HtmlTextWriterTag.Td);
+            tw.InnerWriter.Write(StudentDisplayName);
+            tw.RenderEndTag();  // td
+            tw.RenderEndTag();  // tr
+
+            // CFI Display nam row
+            tw.RenderBeginTag(HtmlTextWriterTag.Tr);
+            tw.AddAttribute("style", "font-weight: bold");
+            tw.RenderBeginTag(HtmlTextWriterTag.Td);
+            tw.InnerWriter.Write(Resources.SignOff.EditEndorsementInstructorPrompt);
+            tw.RenderEndTag();  // td
+
+            tw.RenderBeginTag(HtmlTextWriterTag.Td);
+            tw.InnerWriter.Write(CFIDisplayName);
+            tw.RenderEndTag();  // td
+            tw.RenderEndTag();  // tr
+
+            // CFI Certificate Row
+            tw.RenderBeginTag(HtmlTextWriterTag.Tr);
+            tw.AddAttribute("style", "font-weight: bold");
+            tw.RenderBeginTag(HtmlTextWriterTag.Td);
+            tw.InnerWriter.Write(Resources.SignOff.EditEndorsementCFIPrompt);
+            tw.RenderEndTag();  // td
+
+            tw.RenderBeginTag(HtmlTextWriterTag.Td);
+            tw.InnerWriter.Write(CFICertificate);
+            tw.RenderEndTag();  // td
+
+            tw.RenderEndTag();  // tr
+
+            // CFI Certificate Expiration Row
+            tw.RenderBeginTag(HtmlTextWriterTag.Tr);
+            tw.AddAttribute("style", "font-weight: bold");
+            tw.RenderBeginTag(HtmlTextWriterTag.Td);
+            tw.InnerWriter.Write(Resources.SignOff.EditEndorsementExpirationPrompt);
+            tw.RenderEndTag();  // td
+            tw.RenderBeginTag(HtmlTextWriterTag.Td);
+            tw.InnerWriter.Write(CFIExpirationDate.HasValue() ? CFIExpirationDate.ToShortDateString() : Resources.SignOff.EndorsementNoDate);
+            tw.RenderEndTag();  // td
+            tw.RenderEndTag();  // tr
+
+            // Digitized Signature row
+            if (HasDigitizedSig)
+            {
+                tw.RenderBeginTag(HtmlTextWriterTag.Tr);
+                tw.AddAttribute("colspan", "2");
+                tw.RenderBeginTag(HtmlTextWriterTag.Td);
+                tw.AddAttribute("src", DigitizedSigLink);
+                tw.RenderBeginTag(HtmlTextWriterTag.Img);
+                tw.RenderEndTag();  // td
+                tw.RenderEndTag();  // img
+                tw.RenderEndTag();  // tr
+            }
+
+            tw.RenderEndTag();  // table
+
+            tw.RenderEndTag();  // div
         }
     }
 
@@ -820,7 +1039,7 @@ namespace MyFlightbook.Instruction
         /// </summary>
         /// <param name="fStudents">True to return students of the current user, false for instructors</param>
         /// <returns>An array of Profile objects representing the associated users</returns>
-        private IEnumerable<InstructorStudent> GetAssociatedUsers(Boolean fStudents)
+        private List<InstructorStudent> GetAssociatedUsers(Boolean fStudents)
         {
             if (User.Length == 0)
                 throw new MyFlightbookException("No user specified for GetAssociatedUsers");

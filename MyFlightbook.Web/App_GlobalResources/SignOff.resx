@@ -572,4 +572,7 @@
   <data name="SignFlightCopyPendingNote" xml:space="preserve">
     <value>Review/Edit before adding to your logbook</value>
   </data>
+  <data name="EndorsementDeleted" xml:space="preserve">
+    <value>Endorsement was deleted by the student on {0:d}</value>
+  </data>
 </root>

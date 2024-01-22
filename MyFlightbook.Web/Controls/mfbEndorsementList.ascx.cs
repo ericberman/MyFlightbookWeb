@@ -1,13 +1,16 @@
-﻿using System;
+﻿using MyFlightbook.CSV;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2023 MyFlightbook LLC
+ * Copyright (c) 2010-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -87,7 +90,7 @@ namespace MyFlightbook.Instruction
         /// <returns># of endorsements bound</returns>
         public int RefreshEndorsements()
         {
-            IEnumerable<Endorsement> rg = Endorsement.RemoveEndorsementsByInstructor(Endorsement.EndorsementsForUser(Student, Instructor, CurSortDirection, CurSortKey), ExcludeInstructor);
+            IEnumerable<Endorsement> rg = Endorsement.RemoveEndorsementsByInstructor(Endorsement.EndorsementsForUser(Student, Instructor, CurSortDirection, CurSortKey, !String.IsNullOrEmpty(Instructor)), ExcludeInstructor);
 
             gvExistingEndorsements.DataSource = rg;
             gvExistingEndorsements.DataBind();
@@ -140,10 +143,7 @@ namespace MyFlightbook.Instruction
                 {
                     List<Endorsement> rgEndorsements = new List<Endorsement>(Endorsement.EndorsementsForUser(null, Page.User.Identity.Name));
 
-                    Endorsement en = rgEndorsements.FirstOrDefault(en2 => en2.ID == id);
-                    if (en == null)
-                        throw new MyFlightbookException("ID of endorsement to delete is not found in owners endorsements");
-
+                    Endorsement en = rgEndorsements.FirstOrDefault(en2 => en2.ID == id) ?? throw new MyFlightbookException("ID of endorsement to delete is not found in owners endorsements");
                     if (en.StudentType == Endorsement.StudentTypes.Member)
                         throw new MyFlightbookException(Resources.SignOff.errCantDeleteMemberEndorsement);
 
@@ -153,11 +153,7 @@ namespace MyFlightbook.Instruction
                 else if (e.CommandName.CompareOrdinalIgnoreCase("_DeleteOwned") == 0 && !String.IsNullOrEmpty(e.CommandArgument.ToString()))
                 {
                     List<Endorsement> rgEndorsements = new List<Endorsement>(Endorsement.EndorsementsForUser(Page.User.Identity.Name, null));
-                    Endorsement en = rgEndorsements.FirstOrDefault(en2 => en2.ID == id);
-
-                    if (en == null)
-                        throw new MyFlightbookException("Can't find endorsement with ID=" + id.ToString(CultureInfo.InvariantCulture));
-
+                    Endorsement en = rgEndorsements.FirstOrDefault(en2 => en2.ID == id) ?? throw new MyFlightbookException("Can't find endorsement with ID=" + id.ToString(CultureInfo.InvariantCulture));
                     if (en.StudentType == Endorsement.StudentTypes.External)
                         throw new MyFlightbookException("Can't delete external endorsement with ID=" + id.ToString(CultureInfo.InvariantCulture));
 
@@ -166,11 +162,7 @@ namespace MyFlightbook.Instruction
                 }
                 else if (e.CommandName.CompareOrdinalIgnoreCase("_Copy") == 0 && !String.IsNullOrEmpty(e.CommandArgument.ToString()))
                 {
-                    Endorsement en = Endorsement.EndorsementWithID(Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture));
-
-                    if (en == null)
-                        throw new MyFlightbookException("Can't find endorsement with ID=" + id.ToString(CultureInfo.InvariantCulture));
-
+                    Endorsement en = Endorsement.EndorsementWithID(Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture)) ?? throw new MyFlightbookException("Can't find endorsement with ID=" + id.ToString(CultureInfo.InvariantCulture));
                     if (en.StudentType == Endorsement.StudentTypes.External)
                         throw new MyFlightbookException("Can't copy external endorsement with ID=" + id.ToString(CultureInfo.InvariantCulture));
 
@@ -185,15 +177,21 @@ namespace MyFlightbook.Instruction
 
         protected void lnkDownload_Click(object sender, EventArgs e)
         {
-            gvDownload.DataSource = Endorsement.EndorsementsForUser(Student, Instructor, CurSortDirection, CurSortKey);
-            gvDownload.DataBind();
-            Response.ContentType = "text/csv";
-            // Give it a name that is the brand name, user's name, and date.  Convert spaces to dashes, and then strip out ANYTHING that is not alphanumeric or a dash.
-            string szFilename = String.Format(CultureInfo.CurrentCulture, "{0}-{1}-{2}", Branding.CurrentBrand.AppName, Resources.SignOff.DownloadEndorsementsFilename, String.IsNullOrEmpty(Student) ? Resources.SignOff.DownloadEndorsementsAllStudents : MyFlightbook.Profile.GetUser(Student).UserFullName);
-            string szDisposition = String.Format(CultureInfo.InvariantCulture, "attachment;filename={0}.csv", RegexUtility.UnSafeFileChars.Replace(szFilename, string.Empty));
-            Response.AddHeader("Content-Disposition", szDisposition);
-            gvDownload.ToCSV(Response.OutputStream);
-            Response.End();
+            using (DataTable dt = new DataTable() { Locale = CultureInfo.CurrentCulture})
+            {
+                Endorsement.EndorsementsToDataTable(Endorsement.EndorsementsForUser(Student, Instructor, CurSortDirection, CurSortKey, !String.IsNullOrEmpty(Instructor)), dt);
+
+                // Give it a name that is the brand name, user's name, and date.  Convert spaces to dashes, and then strip out ANYTHING that is not alphanumeric or a dash.
+                Response.ContentType = "text/csv";
+                string szFilename = String.Format(CultureInfo.CurrentCulture, "{0}-{1}-{2}", Branding.CurrentBrand.AppName, Resources.SignOff.DownloadEndorsementsFilename, String.IsNullOrEmpty(Student) ? Resources.SignOff.DownloadEndorsementsAllStudents : Profile.GetUser(Student).UserFullName);
+                string szDisposition = String.Format(CultureInfo.InvariantCulture, "attachment;filename={0}.csv", RegexUtility.UnSafeFileChars.Replace(szFilename, string.Empty));
+                Response.AddHeader("Content-Disposition", szDisposition);
+                using (StreamWriter sw = new StreamWriter(Response.OutputStream))
+                {
+                    CsvWriter.WriteToStream(sw, dt, true, true);
+                }
+                Response.End();
+            }
         }
 
         protected void lnkSortDate_Click(object sender, EventArgs e)

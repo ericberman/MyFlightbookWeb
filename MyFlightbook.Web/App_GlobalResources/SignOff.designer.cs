@@ -340,6 +340,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Endorsement was deleted by the student on {0:d}.
+        /// </summary>
+        internal static string EndorsementDeleted {
+            get {
+                return ResourceManager.GetString("EndorsementDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fill in the template:.
         /// </summary>
         internal static string EndorsementEditTemplate {

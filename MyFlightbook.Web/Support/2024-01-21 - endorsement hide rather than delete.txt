@@ -1,0 +1,2 @@
+﻿ALTER TABLE `logbook`.`endorsements` 
+ADD COLUMN `DateDeleted` DATETIME NULL DEFAULT NULL COMMENT 'If deleted by the student, the date of the deletion' AFTER `DateCreated`;
