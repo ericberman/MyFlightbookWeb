@@ -387,12 +387,14 @@ namespace MyFlightbook.Instruction
         /// <summary>
         /// Populates a data table from the set of endorsements
         /// </summary>
-        /// <param name="rgEndorsements"></param>
-        /// <param name="dt"></param>
+        /// <param name="rgEndorsements">The endorsements that provide the data</param>
+        /// <param name="dt">The data table to populate; the caller is responsible for disposing.</param>
         public static void EndorsementsToDataTable(IEnumerable<Endorsement> rgEndorsements, DataTable dt)
         {
             if (rgEndorsements == null)
                 throw new ArgumentNullException(nameof(rgEndorsements));
+            if (dt == null)
+                throw new ArgumentNullException(nameof(dt));
 
             dt.Columns.Add(new DataColumn(Resources.SignOff.EditEndorsementDatePrompt, typeof(string)));
             dt.Columns.Add(new DataColumn(Resources.SignOff.DownloadEndorsementFARRef, typeof(string)));

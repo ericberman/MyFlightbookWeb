@@ -19,7 +19,7 @@ using System.Web.UI.HtmlControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2023 MyFlightbook LLC
+ * Copyright (c) 2008-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -236,7 +236,7 @@ namespace MyFlightbook
                 }
             }
 
-            if (le.Videos.Any())
+            if (le.Videos.Count != 0)
             {
                 foreach (VideoRef v in le.Videos)
                     WriteVideo(tw, v);
@@ -277,21 +277,10 @@ namespace MyFlightbook
         private static void WriteDigitalEndorsements(HtmlTextWriter tw, string szUser)
         {
             IEnumerable<Endorsement> rgEndorsements = Endorsement.EndorsementsForUser(szUser, null);
-            if (rgEndorsements.Any())
+            foreach (Endorsement en in rgEndorsements)
             {
-                using (Page p = new FormlessPage())
-                {
-                    p.Controls.Add(new HtmlForm());
-
-                    using (Control c = p.LoadControl("~/Controls/mfbEndorsement.ascx"))
-                    {
-                        foreach (Endorsement en in rgEndorsements)
-                        {
-                            try { ((IEndorsementListUpdate)c).RenderHTML(en, tw); }
-                            catch (Exception ex) when (!(ex is OutOfMemoryException)) { }  // don't write bogus or incomplete HTML
-                        }
-                    }
-                }
+                try { en.RenderHTML(tw); }
+                catch (Exception ex) when (!(ex is OutOfMemoryException)) { }  // don't write bogus or incomplete HTML
             }
         }
 
@@ -342,8 +331,8 @@ namespace MyFlightbook
                     {
                         int idFlight = Convert.ToInt32(dr["idflight"], CultureInfo.InvariantCulture);
                         Collection<MFBImageInfo> lstMFBii;
-                        if (dImages.ContainsKey(idFlight))
-                            lstMFBii = dImages[idFlight];
+                        if (dImages.TryGetValue(idFlight, out Collection<MFBImageInfo> value))
+                            lstMFBii = value;
                         else
                             dImages[idFlight] = lstMFBii = new Collection<MFBImageInfo>();
                         lstMFBii.Add(MFBImageInfo.ImageFromDBRow(dr));
@@ -370,7 +359,7 @@ namespace MyFlightbook
                             le.FlightImages.Add(mfbii);
 
                         // skip any flights here that don't have images, videos, or telemetry
-                        if (le.FlightImages.Count > 0 || le.Videos.Any() || le.HasFlightData)
+                        if (le.FlightImages.Count > 0 || le.Videos.Count != 0 || le.HasFlightData)
                             WriteFlightInfo(tw, zip, le);
                         iRow++;
                     });

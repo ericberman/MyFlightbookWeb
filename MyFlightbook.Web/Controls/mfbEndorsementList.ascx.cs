@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
 /******************************************************
@@ -118,15 +119,24 @@ namespace MyFlightbook.Instruction
                 lnkDownload.Visible = !String.IsNullOrEmpty(Instructor) && gvExistingEndorsements.DataSource != null && gvExistingEndorsements.Rows.Count > 0;
             }
         }
+
         protected void gvExistingEndorsements_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             if (e != null && e.Row.RowType == DataControlRowType.DataRow)
             {
                 Endorsement endorsement = (Endorsement)e.Row.DataItem;
-                Controls_mfbEndorsement mfbEndorsement = (Controls_mfbEndorsement)e.Row.FindControl("mfbEndorsement1");
-                mfbEndorsement.SetEndorsement(endorsement);
+                HtmlGenericControl div = (HtmlGenericControl)e.Row.FindControl("endorsementContainer");
+                using (StringWriter sw = new StringWriter(CultureInfo.InvariantCulture))
+                {
+                    using (HtmlTextWriter tw = new HtmlTextWriter(sw))
+                    {
+                        endorsement.RenderHTML(tw);
+                    }
+                    div.InnerHtml = sw.ToString();
+                }
             }
         }
+
         protected void gvExistingEndorsements_RowCommand(object sender, CommandEventArgs e)
         {
             if (e == null || String.IsNullOrEmpty(e.CommandArgument.ToString()))

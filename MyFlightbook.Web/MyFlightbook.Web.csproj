@@ -577,7 +577,6 @@
     <Content Include="Controls\mfbEditProp.ascx" />
     <Content Include="Controls\mfbEditPropSet.ascx" />
     <Content Include="Controls\mfbEditPropTemplate.ascx" />
-    <Content Include="Controls\mfbEndorsement.ascx" />
     <Content Include="Controls\mfbEndorsementList.ascx" />
     <Content Include="Controls\mfbFacebookFan.ascx" />
     <Content Include="Controls\mfbFileUpload.ascx" />
@@ -2232,13 +2231,6 @@
     </Compile>
     <Compile Include="Controls\mfbEditPropTemplate.ascx.designer.cs">
       <DependentUpon>mfbEditPropTemplate.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\mfbEndorsement.ascx.cs">
-      <DependentUpon>mfbEndorsement.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbEndorsement.ascx.designer.cs">
-      <DependentUpon>mfbEndorsement.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\mfbEndorsementList.ascx.cs">
       <DependentUpon>mfbEndorsementList.ascx</DependentUpon>

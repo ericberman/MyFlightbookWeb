@@ -1,6 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbEndorsementList.ascx.cs" Inherits="MyFlightbook.Instruction.mfbEndorsementList" %>
 <%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="asp" %>
-<%@ Register src="mfbEndorsement.ascx" tagname="mfbEndorsement" tagprefix="uc1" %>
 <asp:HiddenField ID="hdnCurSort" runat="server" Value="Date" />
 <asp:HiddenField ID="hdnCurSortDir" runat="server" Value="Descending" />
 <asp:LinkButton ID="lnkDownload" runat="server" style="vertical-align:middle" OnClick="lnkDownload_Click">
@@ -15,7 +14,7 @@
                 <asp:Label ID="lblSort" runat="server" Font-Bold="false" Text="<%$ Resources:SignOff, EndorsementSort %>" />&nbsp;&nbsp;&nbsp;<asp:LinkButton ID="lnkSortDate" CausesValidation="false" runat="server" Text="<%$ Resources:SignOff, EndorsementSortDate %>" OnClick="lnkSortDate_Click" />&nbsp;&nbsp;&nbsp;<asp:LinkButton ID="lnkSortTitle" runat="server" CausesValidation="false" Text="<%$ Resources:SignOff, EndorsementSortTitle %>" OnClick="lnkSortTitle_Click" />
             </HeaderTemplate>
             <ItemTemplate>
-                <uc1:mfbEndorsement ID="mfbEndorsement1" runat="server" />
+                <div id="endorsementContainer" runat="server"></div>
             </ItemTemplate>
         </asp:TemplateField>
         <asp:TemplateField >
