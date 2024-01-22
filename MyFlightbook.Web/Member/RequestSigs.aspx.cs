@@ -209,7 +209,7 @@ namespace MyFlightbook.Instruction
                 }
             }
 
-            Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/Training.aspx/{0}", tabID.instSignFlights));
+            Response.Redirect("~/mvc/Training/RequestSigs");
         }
 
         protected void wzRequestSigs_NextButtonClick(object sender, WizardNavigationEventArgs e)

@@ -83,8 +83,8 @@ function sortTable(sender, colIndex, sortType, hdnSortIndexID, hdnSortDirID) {
     var sortDir = (order === 'asc') ? 1 : -1;
     var selector = 'td:nth-child(' + (colIndex + 1) + ')';
 
-    tbody = table.find('tbody');
-    tbody.find('tr').sort(function (a, b) {
+    var tbody = table.children('tbody');
+    tbody.children('tr').sort(function (a, b) {
         var vala = $(a).find(selector);
         var valb = $(b).find(selector);
 

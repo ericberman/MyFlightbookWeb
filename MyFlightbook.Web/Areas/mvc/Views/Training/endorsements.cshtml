@@ -1,0 +1,104 @@
+﻿@using MyFlightbook.Instruction
+@using MyFlightbook.Image
+@using System.Globalization
+@{
+    Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+    IEnumerable<Endorsement> endorsements = ViewBag.endorsements;
+    ViewBag.defaultTab = tabID.tabTraining;
+    bool printView = ViewBag.printView;
+    ImageList il = ViewBag.imageList;
+    ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.Profile.TrainingHeader, pf.UserFullName);
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/public/scripts/ajaxUpload.js?v=2")"></script>
+<script type="text/javascript">
+    function deleteOfflineEndorsement(sender, confirmText, imageClass, key, thumbnail) {
+        deleteImage(confirmText, imageClass, key, thumbnail, true, function (r) {
+            $(sender).parents("div[name='editImage']").hide();
+        });
+    }
+
+    function updateOfflineEndorsement(sender, imageClass, key, thumbnail, newComment) {
+        updateComment(imageClass, key, thumbnail, newComment, true, function (r) {
+            var parent = $(sender).parents("div[name='editImage']");
+            parent.find("[name='commentLabel']").text(newComment);
+            parent.find("[name='statComment']").show();
+            parent.find("[name='dynComment']").hide();
+        });
+    }
+
+    $(() => {
+                ajaxFileUpload($("#divUploadEndorsements"), {
+            uploadURL: "@Url.Action("UploadEndorsement", "Training")",
+            allowedTypes: "@MyFlightbook.Image.FileExtensions.AllowedExtensionsForTypes(true, true, false)",
+            onUpload: function () {
+                var params = new Object();
+                params.imageClass = "@MFBImageInfo.ImageClass.Endorsement";
+                params.szKey = "@User.Identity.Name";
+                params.fCanEdit = true;
+                params.fCanDelete = true;
+                params.fIncludeDocs = true;
+                params.onDelete = "deleteOfflineEndorsement";
+                params.onAnnotate = "updateOfflineEndorsement";
+                var d = JSON.stringify(params);
+                $.ajax({
+                    url: '@Url.Action("ImagesForClassAndKey", "Image")',
+                    type: "POST", data: d, dataType: "html", contentType: "application/json",
+                    error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                    complete: function (response) { },
+                    success: function (response) {
+                        $("#divEndorsementList").html(response);
+                        $(".fileInQueueContainer").hide();
+                    }
+                });
+            },
+            dropPrompt: "@Resources.LocalizedText.UploadImages",
+            errTooManyFiles: "@Resources.LocalizedText.fileUploadTooManyFiles",
+            errDisallowedFileType: "@Resources.LocalizedText.fileUploadInvalidType",
+            abortPrompt: "@Resources.LocalizedText.fileUploadAboart"
+        });
+    });
+</script>
+@if (!printView)
+{
+<div style="float:right"><a target="_blank" href="@String.Format(CultureInfo.InvariantCulture, "{0}?naked=1&print=1", Request.Url.AbsolutePath)">@Resources.SignOff.EndorsementsPrintView</a></div>
+}
+<h2>@Resources.SignOff.EndorsementsYourEndorsements</h2>
+<p><a target="_blank" href="@("~/mvc/faq?q=23#23".ToAbsolute())">@Resources.SignOff.DigitalEndorsementDisclaimer</a></p>
+<div>
+    @{ Html.RenderAction("RenderEndorsements", "Training", new { endorsements = endorsements, fCanDelete = true, fCanSort = true, fCanCopy = false }); }
+</div>
+<p><a href="@("~/Member/AddEndorsement.aspx".ToAbsolute())" target="_blank">@Resources.SignOff.EndorsementsAddEndorsement</a></p>
+<div class="noprint">
+    <h2>@Resources.SignOff.EndorsementScannedImagesHeader</h2>
+    <p>@Resources.SignOff.EndorsementsScannedImagesDescription</p>
+    <div>
+        <span style="font-weight:bold;">@Resources.LocalizedText.Note</span> @Resources.SignOff.EditEndorsementDisclaimer
+    </div>
+    <div id="divUploadEndorsements" style="@(printView ? "display: none;" : string.Empty)">
+    </div>
+</div>
+@if (printView)
+{
+    foreach (MFBImageInfo mfbii in il.ImageArray)
+    {
+        <img style="max-width:100%" alt="@mfbii.Comment" src="@mfbii.URLFullImage" />
+        <p style="text-align:center">@mfbii.Comment</p>
+    }
+}
+else
+{
+    <div id="divEndorsementList">
+        @{
+            Html.RenderAction("ImageListDisplay", "Image", new
+            {
+                il = il,
+                zoomLinkType = GeoLinkType.None,
+                fCanEdit = true,
+                fCanDelete = true,
+                onDelete = "deleteOfflineEndorsement",
+                onAnnotate = "updateOfflineEndorsement"
+            });
+        }
+    </div>
+}

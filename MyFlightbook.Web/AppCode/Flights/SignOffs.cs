@@ -598,6 +598,18 @@ namespace MyFlightbook.Instruction
 
             tw.RenderEndTag();  // div
         }
+
+        public string RenderHTML()
+        {
+            using (StringWriter sw = new StringWriter())
+            {
+                using (Html32TextWriter tw = new Html32TextWriter(sw))
+                {
+                    RenderHTML(tw);
+                    return sw.ToString();
+                }
+            }
+        }
     }
 
     /// <summary>

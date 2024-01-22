@@ -1,10 +1,12 @@
 ﻿using MyFlightbook.Achievements;
+using MyFlightbook.CSV;
 using MyFlightbook.Histogram;
 using MyFlightbook.Image;
 using MyFlightbook.Instruction;
 using MyFlightbook.RatingsProgress;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Web;
@@ -238,6 +240,57 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             });
         }
         #endregion
+
+        #region Endorsements
+        [HttpPost]
+        [Authorize]
+        public ActionResult UploadEndorsement()
+        {
+            return SafeOp(() =>
+            {
+                if (Request.Files.Count == 0)
+                    throw new InvalidOperationException("No file uploaded");
+
+                MFBImageInfo mfbii = new MFBImageInfo(MFBImageInfoBase.ImageClass.Endorsement, User.Identity.Name, new MFBPostedFile(Request.Files[0]), string.Empty, null);
+                return Content(mfbii.URLThumbnail);
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteExternalEndorsement(int id)
+        {
+            return SafeOp(() =>
+            {
+                List<Endorsement> rgEndorsements = new List<Endorsement>(Endorsement.EndorsementsForUser(null, User.Identity.Name));
+
+                Endorsement en = rgEndorsements.FirstOrDefault(en2 => en2.ID == id) ?? throw new MyFlightbookException("ID of endorsement to delete is not found in owners endorsements");
+                if (en.StudentType == Endorsement.StudentTypes.Member)
+                    throw new MyFlightbookException(Resources.SignOff.errCantDeleteMemberEndorsement);
+
+                en.FDelete();
+                return new EmptyResult();
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteOwnedEndorsement(int id)
+        {
+            return SafeOp(() =>
+            {
+                List<Endorsement> rgEndorsements = new List<Endorsement>(Endorsement.EndorsementsForUser(User.Identity.Name, null));
+                Endorsement en = rgEndorsements.FirstOrDefault(en2 => en2.ID == id) ?? throw new MyFlightbookException("Can't find endorsement with ID=" + id.ToString(CultureInfo.InvariantCulture));
+                if (en.StudentType == Endorsement.StudentTypes.External)
+                    throw new MyFlightbookException("Can't delete external endorsement with ID=" + id.ToString(CultureInfo.InvariantCulture));
+
+                en.FDelete();
+                return new EmptyResult();
+            });
+        }
+        #endregion
         #endregion
 
         #region Partial views/child views
@@ -289,6 +342,17 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.saveFunc = saveFunc;
             ViewBag.cancelFunc = cancelFunc;
             return PartialView("_scribbleSignature");
+        }
+
+        [ChildActionOnly]
+        public ActionResult RenderEndorsements(IEnumerable<Endorsement> endorsements, bool fCanDelete = false, bool fCanSort = false, bool fCanDownload = false, string onCopy = "")
+        {
+            ViewBag.endorsements = endorsements;
+            ViewBag.canDelete = fCanDelete;
+            ViewBag.onCopy = onCopy;
+            ViewBag.canSort = fCanSort;
+            ViewBag.canDownload = endorsements.Any() && fCanDownload;
+            return PartialView("_endorsementList");
         }
         #endregion
         #endregion
@@ -402,6 +466,40 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
             ViewBag.flightsPendingSignature = LogbookEntryBase.PendingSignaturesForStudent(null, pf);
             return View("requestSigs");
+        }
+        #endregion
+
+        #region Endorsements
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult DownloadEndorsements()
+        {
+            IEnumerable<Endorsement> endorsements = Endorsement.EndorsementsForUser(User.Identity.Name, string.Empty, System.Web.UI.WebControls.SortDirection.Descending, EndorsementSortKey.Date);
+            using (DataTable dt = new DataTable() { Locale = CultureInfo.CurrentCulture })
+            {
+                Endorsement.EndorsementsToDataTable(endorsements, dt);
+                string szFilename = String.Format(CultureInfo.CurrentCulture, "{0}-{1}-{2}", Branding.CurrentBrand.AppName, Resources.SignOff.DownloadEndorsementsFilename, String.IsNullOrEmpty(User.Identity.Name) ? Resources.SignOff.DownloadEndorsementsAllStudents : MyFlightbook.Profile.GetUser(User.Identity.Name).UserFullName);
+                return File(CsvWriter.WriteToBytes(dt, true, true), "text/csv", RegexUtility.NonAlphaNumeric.Replace(szFilename, string.Empty));
+            }
+        }
+
+        [HttpGet]
+        [Authorize]
+        public ActionResult Endorsements(int print = 0)
+        {
+            bool fPrintView = print != 0;
+            ViewBag.printView = fPrintView;
+
+            ImageList il = new ImageList(MFBImageInfoBase.ImageClass.Endorsement, User.Identity.Name);
+            il.Refresh(true);
+            ViewBag.imageList = il;
+
+            ViewBag.student = User.Identity.Name;
+            ViewBag.instructor = string.Empty;
+
+            ViewBag.endorsements = Endorsement.EndorsementsForUser(User.Identity.Name, string.Empty, System.Web.UI.WebControls.SortDirection.Descending, EndorsementSortKey.Date);
+            return View("endorsements");
         }
         #endregion
 

@@ -147,7 +147,7 @@
         <Roles></Roles>
       </Item>
       <Item>
-        <Link>~/Member/Training.aspx/instEndorsements</Link>
+        <Link>~/mvc/Training/Endorsements</Link>
         <ID>instEndorsements</ID>
         <Roles></Roles>
       </Item>

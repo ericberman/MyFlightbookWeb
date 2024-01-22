@@ -8,7 +8,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2018-2020 MyFlightbook LLC
+ * Copyright (c) 2018-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -125,7 +125,7 @@ public partial class Member_AddEndorsement : System.Web.UI.Page
         try
         {
             e.Endorsement.FCommit();
-            Response.Redirect("~/Member/Training.aspx/instEndorsements");
+            Response.Redirect("~/mvc/Training/Endorsements");
         }
         catch (MyFlightbookException ex)
         {

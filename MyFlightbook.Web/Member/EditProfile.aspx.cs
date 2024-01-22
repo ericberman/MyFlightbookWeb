@@ -152,8 +152,10 @@ namespace MyFlightbook.MemberPages
                 // Backwards compatibility: we moved instructors/students/endorsements/signing to InstStudent, but may still be requested here.
                 // Redirect for any of those
                 case tabID.instEndorsements:
+                    Response.Redirect("~/mvc/Training/Endorsements");
+                    break;
                 case tabID.instSignFlights:
-                    Response.Redirect(Request.Url.PathAndQuery.Replace("EditProfile.aspx", String.Format(CultureInfo.InvariantCulture, "Training.aspx/{0}", szPref)).Replace(String.Format(CultureInfo.InvariantCulture, "pref={0}", szPref), string.Empty).Replace("?&", "?"));
+                    Response.Redirect("~/mvc/Training/RequestSigs");
                     break;
                 case tabID.instStudents:
                     Response.Redirect("~/mvc/Training/Students");

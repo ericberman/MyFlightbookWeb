@@ -21,7 +21,7 @@ namespace MyFlightbook.PublicPages
                 { "MINIFLIGHTS", "~/Member/MiniRecents.aspx"},
                 { "PROFILE", "~/Member/EditProfile.aspx/pftPrefs"},
                 { "DONATE", "~/mvc/Donate"},
-                { "ENDORSE", "~/Member/Training.aspx/instEndorsements"},
+                { "ENDORSE", "~/mvc/Training/Endorsements"},
                 { "PROGRESS", "~/mvc/Training/RatingsProgress" },
                 { "BADGES", "~/mvc/Training/Achievements" },
                 { "STUDENTS", "~/mvc/training/students" },

@@ -1375,7 +1375,6 @@
     <Content Include="Public\tmap\src\world-states-provinces.svg" />
     <Content Include="Public\tmap\src\world-states.svg" />
     <Content Include="Public\tmap\stylesheets\demo.css" />
-    <Content Include="Member\Training.aspx" />
     <Content Include="NavLinks.xml" />
     <Content Include="OAuth\oAuthToken.aspx" />
     <Content Include="PlayPen\BulkImportFromTelemetry.aspx" />
@@ -1576,6 +1575,8 @@
     <Content Include="Areas\mvc\Views\Training\students.cshtml" />
     <Content Include="Areas\mvc\Views\Training\_scribbleSignature.cshtml" />
     <Content Include="Areas\mvc\Views\Training\requestSigs.cshtml" />
+    <Content Include="Areas\mvc\Views\Training\endorsements.cshtml" />
+    <Content Include="Areas\mvc\Views\Training\_endorsementList.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -2830,13 +2831,6 @@
     </Compile>
     <Compile Include="Member\StudentLogbook.aspx.designer.cs">
       <DependentUpon>StudentLogbook.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Member\Training.aspx.cs">
-      <DependentUpon>Training.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\Training.aspx.designer.cs">
-      <DependentUpon>Training.aspx</DependentUpon>
     </Compile>
     <Compile Include="OAuth\oAuthToken.aspx.cs">
       <DependentUpon>oAuthToken.aspx</DependentUpon>

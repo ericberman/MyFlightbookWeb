@@ -1,0 +1,105 @@
+﻿@using MyFlightbook.Instruction
+@{
+    bool canDelete = ViewBag.canDelete;
+    bool canSort = ViewBag.canSort;
+    bool canDownload = ViewBag.canDownload;
+    string onCopy = ViewBag.onCopy;
+    IEnumerable<Endorsement> endorsements = ViewBag.endorsements;
+}
+<script type="text/javascript">
+    function deleteExternalEndorsement(sender, id) {
+        if (confirm('@Resources.SignOff.ExternalEndorsementConfirmDelete')) {
+            $("#hdnEndorsementToDelete").val(id);
+            var f = $("#frmDelete").serialize();
+            $.ajax({
+                url: '@Url.Action("DeleteExternalEndorsement", "Training")',
+                type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                complete: function (response) { },
+                success: function (response) {
+                    $(sender).parents('tr').hide();
+                }
+            });
+        }
+    }
+
+    function deleteOwnedEndorsement(sender, id) {
+        if (confirm('@Resources.SignOff.OwnedEndorsementConfirmDelete')) {
+            $("#hdnEndorsementToDelete").val(id);
+            var f = $("#frmDelete").serialize();
+            $.ajax({
+                url: '@Url.Action("DeleteOwnedEndorsement", "Training")',
+                type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                complete: function (response) { },
+                success: function (response) {
+                    $(sender).parents('tr').hide();
+                }
+            });
+        }
+    }
+</script>
+@using (Html.BeginForm("", "Training", FormMethod.Post, new { id = "frmDelete", name = "frmDelete" }))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="hdnEndorsementToDelete" name="id" />
+}
+<input type="hidden" id="hdnCurSort" value="0" />
+<input type="hidden" id="hdnCurSortDir" value="desc" />
+@if (canDownload)
+{
+    using (Html.BeginForm("DownloadEndorsements", "Training", FormMethod.Post, new { id = "frmDownloadEndorsements", name = "frmDownloadEndorsements" }))
+    {
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="userName" value="@User.Identity.Name" />
+    <a style="cursor: pointer; vertical-align: middle;" onclick="javascript: $('#frmDownloadEndorsements')[0].submit()">
+        <img src="@("~/images/download.png".ToAbsolute())" style="padding-right: 5px; vertical-align: middle;" />
+        <img src="@("~/images/csvicon_sm.png".ToAbsolute())" style="padding-right: 5px; vertical-align: middle;" />
+        @Resources.SignOff.DownloadCSVEndorsements
+    </a>
+    }
+}
+@if (endorsements.Any())
+{
+    <table>
+        <thead>
+            <tr>
+                <th style="display:none;"></th>
+                <th style="display:none;"></th>
+                <th class="headerBase gvcCentered headerSortDesc" style="width: 45%" onclick="javascript: sortTable(this, 0, '', 'hdnCurSort', 'hdnCurSortDir');">@Resources.SignOff.EndorsementSortDate</th>
+                <th class="headerBase gvcCentered" style="width: 45%" onclick="javascript: sortTable(this, 1, '', 'hdnCurSort', 'hdnCurSortDir');">@Resources.SignOff.EndorsementSortTitle</th>
+                <th style="display:none;"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Endorsement e in endorsements)
+            {
+                <tr>
+                    <td style="display:none;">@e.Date.YMDString()</td>
+                    <td style="display:none;">@e.Title</td>
+                    <td colspan="2" style="width: 90%;">@Html.Raw(e.RenderHTML())</td>
+                    <td class="noprint">
+                        @if (e.IsExternalEndorsement)
+                        {
+                            <img src="@("~/images/x.gif".ToAbsolute())" alt="@Resources.SignOff.OwnedEndorsementDeleteTooltip" title="@Resources.SignOff.OwnedEndorsementDeleteTooltip" onclick="javascript: deleteEndorsement(this, @e.ID);" />
+                        }
+                        @if (canDelete && e.StudentName.CompareCurrentCultureIgnoreCase(User.Identity.Name) == 0)
+                        {
+                            <img src="@("~/images/x.gif".ToAbsolute())" alt="@Resources.SignOff.OwnedEndorsementDeleteTooltip" title="@Resources.SignOff.OwnedEndorsementDeleteTooltip" onclick="javascript: deleteOwnedEndorsement(this, @e.ID);" />
+                        }
+                        @if (!String.IsNullOrEmpty(onCopy) && e.IsMemberEndorsement && e.StudentName.CompareCurrentCultureIgnoreCase(User.Identity.Name) == 0)
+                        {
+                            <img src="@("~/images/copyflight.png".ToAbsolute())" alt="@Resources.SignOff.CopyEndorsement" title="@Resources.SignOff.CopyEndorsement" onclick="javascript: @(onCopy)(@e.ID);" />
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div>@Resources.SignOff.NoExistingEndorsements</div>
+}
+<div id="lblErr" class="error"></div>
+
