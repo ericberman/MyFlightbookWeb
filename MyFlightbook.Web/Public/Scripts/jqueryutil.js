@@ -106,7 +106,10 @@ function sortTable(sender, colIndex, sortType, hdnSortIndexID, hdnSortDirID) {
 function editImageComment(sender) {
     var parent = $(sender).parents("div[name='editImage']")
     parent.find("[name='statComment']").toggle();
-    parent.find("[name='dynComment']").toggle();
+    var container = parent.find("[name='dynComment']");
+    container.toggle();
+    if (container.is(":visible"))
+        container.find("[name='txtImgComment']")[0].focus();
 }
 
 function deleteImage(confirmText, imageclass, key, thumbfile, asAdmin, onComplete) {
