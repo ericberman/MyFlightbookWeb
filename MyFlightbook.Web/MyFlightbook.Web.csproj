@@ -571,13 +571,11 @@
     <Content Include="Controls\mfbDownload.ascx" />
     <Content Include="Controls\mfbEditableImage.ascx" />
     <Content Include="Controls\mfbEditAircraft.ascx" />
-    <Content Include="Controls\mfbEditEndorsement.ascx" />
     <Content Include="Controls\mfbEditFlight.ascx" />
     <Content Include="Controls\mfbEditMake.ascx" />
     <Content Include="Controls\mfbEditProp.ascx" />
     <Content Include="Controls\mfbEditPropSet.ascx" />
     <Content Include="Controls\mfbEditPropTemplate.ascx" />
-    <Content Include="Controls\mfbEndorsementList.ascx" />
     <Content Include="Controls\mfbFacebookFan.ascx" />
     <Content Include="Controls\mfbFileUpload.ascx" />
     <Content Include="Controls\mfbFlightContextMenu.ascx" />
@@ -819,7 +817,6 @@
     <Content Include="Logon\ResetPass.aspx" />
     <Content Include="MasterPage.master" />
     <Content Include="Member\8710Form.aspx" />
-    <Content Include="Member\AddEndorsement.aspx" />
     <Content Include="Member\AddRelationship.aspx" />
     <Content Include="Member\Ajax.asmx" />
     <Content Include="Member\BrowseTemplates.aspx" />
@@ -827,7 +824,6 @@
     <Content Include="Member\Download.aspx" />
     <Content Include="Member\EditAircraft.aspx" />
     <Content Include="Member\EditProfile.aspx" />
-    <Content Include="Member\EndorseStudent.aspx" />
     <Content Include="Member\FlightDetail.aspx" />
     <Content Include="Member\ImpAircraft.aspx" />
     <Content Include="Member\ImpAircraftService.aspx" />
@@ -2195,13 +2191,6 @@
     <Compile Include="Controls\mfbEditAircraft.ascx.designer.cs">
       <DependentUpon>mfbEditAircraft.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Controls\mfbEditEndorsement.ascx.cs">
-      <DependentUpon>mfbEditEndorsement.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbEditEndorsement.ascx.designer.cs">
-      <DependentUpon>mfbEditEndorsement.ascx</DependentUpon>
-    </Compile>
     <Compile Include="Controls\mfbEditFlight.ascx.cs">
       <DependentUpon>mfbEditFlight.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2236,13 +2225,6 @@
     </Compile>
     <Compile Include="Controls\mfbEditPropTemplate.ascx.designer.cs">
       <DependentUpon>mfbEditPropTemplate.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\mfbEndorsementList.ascx.cs">
-      <DependentUpon>mfbEndorsementList.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbEndorsementList.ascx.designer.cs">
-      <DependentUpon>mfbEndorsementList.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\mfbFacebookFan.ascx.cs">
       <DependentUpon>mfbFacebookFan.ascx</DependentUpon>
@@ -2668,13 +2650,6 @@
     <Compile Include="Member\8710Form.aspx.designer.cs">
       <DependentUpon>8710Form.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Member\AddEndorsement.aspx.cs">
-      <DependentUpon>AddEndorsement.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\AddEndorsement.aspx.designer.cs">
-      <DependentUpon>AddEndorsement.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Member\AddRelationship.aspx.cs">
       <DependentUpon>AddRelationship.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2716,13 +2691,6 @@
     </Compile>
     <Compile Include="Member\EditProfile.aspx.designer.cs">
       <DependentUpon>EditProfile.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Member\EndorseStudent.aspx.cs">
-      <DependentUpon>EndorseStudent.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\EndorseStudent.aspx.designer.cs">
-      <DependentUpon>EndorseStudent.aspx</DependentUpon>
     </Compile>
     <Compile Include="Member\FlightDetail.aspx.cs">
       <DependentUpon>FlightDetail.aspx</DependentUpon>
@@ -3296,7 +3264,6 @@
     <Content Include="Logon\App_LocalResources\ResetPass.aspx.resx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Member\App_LocalResources\ACSchedule.aspx.resx" />
     <Content Include="Member\App_LocalResources\ImpAircraft.aspx.resx" />
     <Content Include="Member\App_LocalResources\MiniLogbook.aspx.resx" />
     <Content Include="Member\App_LocalResources\oAuthAuthorize.aspx.resx" />
