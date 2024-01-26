@@ -1,5 +1,4 @@
 ﻿using MyFlightbook.Clubs;
-using MyFlightbook.CSV;
 using MyFlightbook.Encryptors;
 using MyFlightbook.Image;
 using MySql.Data.MySqlClient;
@@ -252,6 +251,9 @@ namespace MyFlightbook.Instruction
         {
             if (StudentName.Length == 0)
                 throw new MyFlightbookException(Resources.SignOff.errNoStudent);
+
+            if (Date.CompareTo(DateTime.Now.AddDays(1).Date) > 0)
+                throw new MyFlightbookException(Resources.SignOff.errNoPostDating);
 
             if (GetDigitizedSig() == null || GetDigitizedSig().Length == 0)
             {
@@ -632,6 +634,8 @@ namespace MyFlightbook.Instruction
 
     public class EndorsementType
     {
+        public const int IDCustomTemplate = 1;
+
         #region Properties
         /// <summary>
         /// The ID of the endorsement type
@@ -755,9 +759,8 @@ namespace MyFlightbook.Instruction
         private static void NewTextBox(HtmlTextWriter tw, string id, string szDefault, Boolean fMultiline, Boolean fRequired, string szName)
         {
             if (fRequired)
-                tw.AddAttribute("required", string.Empty);
-            tw.AddAttribute(HtmlTextWriterAttribute.Name, id);
-            tw.AddAttribute(HtmlTextWriterAttribute.Id, id);
+                tw.AddAttribute("required", "required");
+            tw.AddAttribute(HtmlTextWriterAttribute.Name, szName);
 
             if (fMultiline)
             {
@@ -768,6 +771,7 @@ namespace MyFlightbook.Instruction
             else
             {
                 tw.AddAttribute("placeholder", HttpUtility.HtmlEncode(szName));
+                tw.AddAttribute("type", "text");
                 tw.AddAttribute(HtmlTextWriterAttribute.Value, HttpUtility.HtmlEncode(szDefault));
                 tw.RenderBeginTag(HtmlTextWriterTag.Input);
             }
@@ -781,6 +785,8 @@ namespace MyFlightbook.Instruction
             htmlTW.Write(HttpUtility.HtmlEncode(text));
             htmlTW.RenderEndTag();
         }
+
+        public const string FreeFormTextControlName = "Free-form text";
 
         /// <summary>
         /// Renders the endorsement template to HTML, converting bracketed items into appropriate HTML 5 inputs and enforcing validation
@@ -801,8 +807,7 @@ namespace MyFlightbook.Instruction
                 using (HtmlTextWriter htmlTW = new HtmlTextWriter(sw))
                 {
                     // Find each of the substitutions
-                    Regex r = new Regex("\\{[^}]*\\}");
-                    MatchCollection matches = r.Matches(et.BodyTemplate);
+                    MatchCollection matches = RegexUtility.EndorsementTemplateField.Matches(et.BodyTemplate);
 
                     int cursor = 0;
                     foreach (Match m in matches)
@@ -819,8 +824,8 @@ namespace MyFlightbook.Instruction
                         {
                             case "{Date}":
                                 htmlTW.AddAttribute(HtmlTextWriterAttribute.Type, "date");
+                                htmlTW.AddAttribute("required", "required");
                                 htmlTW.AddAttribute(HtmlTextWriterAttribute.Name, idNewControl);
-                                htmlTW.AddAttribute(HtmlTextWriterAttribute.Id, idNewControl);
                                 htmlTW.AddAttribute(HtmlTextWriterAttribute.Value, DateTime.Now.YMDString());
                                 htmlTW.AddAttribute("placeholder", DateTime.Now.YMDString());
                                 htmlTW.AddAttribute(HtmlTextWriterAttribute.Style, "border: 1px solid black;");
@@ -828,7 +833,7 @@ namespace MyFlightbook.Instruction
                                 htmlTW.RenderEndTag();
                                 break;
                             case "{FreeForm}":
-                                NewTextBox(htmlTW, idNewControl, string.Empty, true, !fPreviewMode, "Free-form text");
+                                NewTextBox(htmlTW, idNewControl, string.Empty, true, !fPreviewMode, FreeFormTextControlName);
                                 break;
                             case "{Student}":
                                 NewTextBox(htmlTW, idNewControl, targetUser == null ? Resources.SignOff.EditEndorsementStudentNamePrompt : targetUser.UserFullName, false, !fPreviewMode, Resources.SignOff.EditEndorsementStudentNamePrompt);
@@ -842,6 +847,7 @@ namespace MyFlightbook.Instruction
                                         string[] rgItems = szMatchInner.Split('/');
                                         htmlTW.RenderBeginTag(HtmlTextWriterTag.Select);
                                         htmlTW.AddAttribute(HtmlTextWriterAttribute.Name, idNewControl);
+                                        htmlTW.AddAttribute("required", "required");
                                         htmlTW.AddAttribute(HtmlTextWriterAttribute.Style, "border: 1px solid black;");
                                         foreach (string szItem in rgItems)
                                         {

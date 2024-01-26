@@ -11,6 +11,7 @@ using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using static MyFlightbook.Instruction.Endorsement;
 
 /******************************************************
  * 
@@ -244,14 +245,14 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Endorsements
         [HttpPost]
         [Authorize]
-        public ActionResult UploadEndorsement()
+        public ActionResult UploadEndorsement(string szKey = null)
         {
             return SafeOp(() =>
             {
                 if (Request.Files.Count == 0)
                     throw new InvalidOperationException("No file uploaded");
 
-                MFBImageInfo mfbii = new MFBImageInfo(MFBImageInfoBase.ImageClass.Endorsement, User.Identity.Name, new MFBPostedFile(Request.Files[0]), string.Empty, null);
+                MFBImageInfo mfbii = new MFBImageInfo(MFBImageInfoBase.ImageClass.Endorsement, szKey ?? User.Identity.Name, new MFBPostedFile(Request.Files[0]), string.Empty, null);
                 return Content(mfbii.URLThumbnail);
             });
         }
@@ -263,10 +264,10 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             return SafeOp(() =>
             {
-                List<Endorsement> rgEndorsements = new List<Endorsement>(Endorsement.EndorsementsForUser(null, User.Identity.Name));
+                List<Endorsement> rgEndorsements = new List<Endorsement>(EndorsementsForUser(null, User.Identity.Name));
 
                 Endorsement en = rgEndorsements.FirstOrDefault(en2 => en2.ID == id) ?? throw new MyFlightbookException("ID of endorsement to delete is not found in owners endorsements");
-                if (en.StudentType == Endorsement.StudentTypes.Member)
+                if (en.StudentType == StudentTypes.Member)
                     throw new MyFlightbookException(Resources.SignOff.errCantDeleteMemberEndorsement);
 
                 en.FDelete();
@@ -281,13 +282,115 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             return SafeOp(() =>
             {
-                List<Endorsement> rgEndorsements = new List<Endorsement>(Endorsement.EndorsementsForUser(User.Identity.Name, null));
+                List<Endorsement> rgEndorsements = new List<Endorsement>(EndorsementsForUser(User.Identity.Name, null));
                 Endorsement en = rgEndorsements.FirstOrDefault(en2 => en2.ID == id) ?? throw new MyFlightbookException("Can't find endorsement with ID=" + id.ToString(CultureInfo.InvariantCulture));
-                if (en.StudentType == Endorsement.StudentTypes.External)
+                if (en.StudentType == StudentTypes.External)
                     throw new MyFlightbookException("Can't delete external endorsement with ID=" + id.ToString(CultureInfo.InvariantCulture));
+                if (en.StudentType == StudentTypes.Member && en.StudentName.CompareCurrentCulture(User.Identity.Name) != 0)
+                    throw new UnauthorizedAccessException();
 
                 en.FDelete();
                 return new EmptyResult();
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult GetEndorsementTemplate(string sourceUser, string targetUser, int idTemplate, StudentTypes studentType, EndorsementMode mode, int idSrc = -1)
+        {
+            return SafeOp(() =>
+            {
+                return RenderEndorsementBody(sourceUser, targetUser, idTemplate, studentType, mode, idSrc);
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult AddEndorsementForStudent()
+        {
+            return SafeOp(() =>
+            {
+                Endorsement endorsement;
+
+                if (!Enum.TryParse(Request["endorsementMode"], out EndorsementMode mode))
+                    throw new InvalidOperationException("Invalid endorsement mode");
+
+                DateTime? dtCFIExp = null;
+                if (DateTime.TryParse(Request["cfiCertExpiration"], CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime cfiExp))
+                    dtCFIExp = cfiExp;
+
+                switch (mode)
+                {
+                    default:
+                    case EndorsementMode.InstructorOfflineStudent:
+                    case EndorsementMode.InstructorPushAuthenticated:
+                        {
+                            Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+                            endorsement = new Endorsement(User.Identity.Name) { CFICertificate = pf.Certificate, CFIExpirationDate = pf.CertificateExpiration };
+                            if (!pf.CertificateExpiration.HasValue() && dtCFIExp.HasValue)
+                            {
+                                endorsement.CFIExpirationDate = pf.CertificateExpiration = cfiExp.Date;
+                                pf.FCommit();   // save it to the profile.
+                            }
+                        }
+                        break;
+                    case EndorsementMode.StudentPullAdHoc:
+                        endorsement = new Endorsement(string.Empty) { CFICachedName = Request["cfiName"], CFICertificate = Request["cfiCert"], CFIExpirationDate = dtCFIExp ?? DateTime.MinValue };
+                        string base64Data = Request["hdnSigData"];
+                        byte[] rgbSig = String.IsNullOrEmpty(base64Data) ? null : ScribbleImage.FromDataLinkURL(base64Data);
+
+                        endorsement.SetDigitizedSig(rgbSig);
+                        if (endorsement.GetDigitizedSig() == null)
+                            throw new InvalidOperationException(Resources.SignOff.errScribbleRequired);
+                        break;
+                    case EndorsementMode.StudentPullAuthenticated:
+                        Profile pfSource = MyFlightbook.Profile.GetUser(Request["sourceUser"]);
+                        if (pfSource == null || !System.Web.Security.Membership.ValidateUser(pfSource.UserName, Request["instructorPass"]))
+                            throw new UnauthorizedAccessException(Resources.SignOff.errInstructorBadPassword);
+
+                        endorsement = new Endorsement(pfSource.UserName) { CFICertificate = pfSource.Certificate, CFIExpirationDate = pfSource.CertificateExpiration };
+                        break;
+                }
+
+                endorsement.Date = DateTime.Parse(Request["endorsementDate"], CultureInfo.CurrentCulture);
+                endorsement.EndorsementText = Request["compiledBody"];
+                endorsement.StudentType = (StudentTypes)Enum.Parse(typeof(StudentTypes), Request["studentType"]);
+                endorsement.StudentName = Request["studentName"];
+                endorsement.Title = Request["endorsementTitle"];
+                endorsement.FARReference = Request["endorsementFAR"];
+                endorsement.FCommit();
+
+                return new EmptyResult();
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult TemplatesMatchingTerm(string searchText)
+        {
+            return SafeOp(() =>
+            {
+                List<EndorsementType> lst = new List<EndorsementType>(EndorsementType.LoadTemplates(searchText));
+                if (lst.Count == 0) // if nothing found, use the custom template
+                    lst.Add(EndorsementType.GetEndorsementByID(1));
+                return Json(lst);
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult EndorsementEditorForUserAddEndorsement()
+        {
+            return SafeOp(() =>
+            {
+                string instructor = Request["selectedInstructor"];
+                if (String.IsNullOrEmpty(instructor) && Request["acceptSelfSign"] == null)
+                    throw new UnauthorizedAccessException(Resources.SignOff.errAcceptDisclaimer);
+
+                EndorsementMode mode = String.IsNullOrEmpty(instructor) ? EndorsementMode.StudentPullAdHoc : EndorsementMode.StudentPullAuthenticated;
+                return RenderEndorsementEditor(instructor, User.Identity.Name, StudentTypes.Member, mode);
             });
         }
         #endregion
@@ -345,14 +448,46 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         [ChildActionOnly]
-        public ActionResult RenderEndorsements(IEnumerable<Endorsement> endorsements, bool fCanDelete = false, bool fCanSort = false, bool fCanDownload = false, string onCopy = "")
+        public ActionResult RenderEndorsements(IEnumerable<Endorsement> endorsements, string userName, bool fCanDelete = false, bool fCanSort = false, bool fCanDownload = false, string onCopy = "")
         {
             ViewBag.endorsements = endorsements;
             ViewBag.canDelete = fCanDelete;
             ViewBag.onCopy = onCopy;
             ViewBag.canSort = fCanSort;
             ViewBag.canDownload = endorsements.Any() && fCanDownload;
+            ViewBag.userName = userName;
             return PartialView("_endorsementList");
+        }
+
+        [ChildActionOnly]
+        public ActionResult RenderEndorsementEditor(string sourceUser, string targetUser, StudentTypes studentType, EndorsementMode mode, string searchText = "")
+        {
+            ViewBag.sourceUser = sourceUser;
+            ViewBag.targetUser = targetUser;
+            ViewBag.studentType = studentType;
+            ViewBag.mode = mode;
+            ViewBag.query = searchText;
+
+            List<EndorsementType> lst = new List<EndorsementType>(EndorsementType.LoadTemplates(searchText));
+            if (lst.Count == 0) // if nothing found, use the custom template
+                lst.Add(EndorsementType.GetEndorsementByID(1));
+
+            ViewBag.templates = lst;
+
+            return PartialView("_editEndorsement");
+        }
+
+        [ChildActionOnly]
+        public ActionResult RenderEndorsementBody(string sourceUser, string targetUser, int idTemplate, StudentTypes studentType, EndorsementMode mode, int idSrc = -1)
+        {
+            ViewBag.template = EndorsementType.GetEndorsementByID((idSrc > 0 || idTemplate < 0) ? EndorsementType.IDCustomTemplate : idTemplate);
+            Endorsement e = (idSrc > 0) ? EndorsementWithID(idSrc) : null;
+            ViewBag.source = (studentType == StudentTypes.External || ((e?.StudentName) ?? string.Empty).CompareCurrentCulture(targetUser) == 0) ? e : null;  // don't allow copy from someone else's endorsement.
+            ViewBag.targetUser = targetUser;
+            ViewBag.sourceUser = sourceUser;
+            ViewBag.studentType = studentType;
+            ViewBag.mode = mode;
+            return PartialView("_editableEndorsement");
         }
         #endregion
         #endregion
@@ -473,15 +608,39 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public ActionResult DownloadEndorsements()
+        public ActionResult DownloadEndorsements(string userName = null)
         {
-            IEnumerable<Endorsement> endorsements = Endorsement.EndorsementsForUser(User.Identity.Name, string.Empty, System.Web.UI.WebControls.SortDirection.Descending, EndorsementSortKey.Date);
+            IEnumerable<Endorsement> endorsements = EndorsementsForUser(userName, User.Identity.Name, System.Web.UI.WebControls.SortDirection.Descending, EndorsementSortKey.Date, true);
             using (DataTable dt = new DataTable() { Locale = CultureInfo.CurrentCulture })
             {
-                Endorsement.EndorsementsToDataTable(endorsements, dt);
-                string szFilename = String.Format(CultureInfo.CurrentCulture, "{0}-{1}-{2}", Branding.CurrentBrand.AppName, Resources.SignOff.DownloadEndorsementsFilename, String.IsNullOrEmpty(User.Identity.Name) ? Resources.SignOff.DownloadEndorsementsAllStudents : MyFlightbook.Profile.GetUser(User.Identity.Name).UserFullName);
-                return File(CsvWriter.WriteToBytes(dt, true, true), "text/csv", RegexUtility.NonAlphaNumeric.Replace(szFilename, string.Empty));
+                EndorsementsToDataTable(endorsements, dt);
+                string szFilename = RegexUtility.UnSafeFileChars.Replace(String.Format(CultureInfo.CurrentCulture, "{0}-{1}-{2}", Branding.CurrentBrand.AppName, Resources.SignOff.DownloadEndorsementsFilename, String.IsNullOrEmpty(userName) ? Resources.SignOff.DownloadEndorsementsAllStudents : MyFlightbook.Profile.GetUser(userName).UserFullName), string.Empty) + ".csv";
+                return File(CsvWriter.WriteToBytes(dt, true, true), "text/csv", szFilename);
             }
+        }
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult AddEndorsement()
+        {
+            ViewBag.instructorMap = new CFIStudentMap(User.Identity.Name);
+            ViewBag.endorsements = EndorsementsForUser(User.Identity.Name, string.Empty);
+            return View("addEndorsement");
+        }
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult EndorseStudent(string student, int @extern = 0)
+        {
+            ViewBag.studentType = @extern != 0 ? StudentTypes.External : StudentTypes.Member;
+            ViewBag.targetUser = student;
+            ViewBag.endorsements = EndorsementsForUser(student, User.Identity.Name, fIncludeDeleted: true);
+            ViewBag.nonOwnedEndorsements = string.IsNullOrEmpty(student) ? Array.Empty<Endorsement>() : RemoveEndorsementsByInstructor(EndorsementsForUser(student, null), User.Identity.Name);
+            InstructorStudent instrStudent = (CFIStudentMap.GetInstructorStudent(new CFIStudentMap(User.Identity.Name).Students, student));
+            ViewBag.canViewStudent = instrStudent?.CanViewLogbook ?? false;
+            ViewBag.canEditStudent = instrStudent?.CanAddLogbook ?? false;
+
+            return View("endorseStudent");
         }
 
         [HttpGet]
@@ -498,7 +657,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.student = User.Identity.Name;
             ViewBag.instructor = string.Empty;
 
-            ViewBag.endorsements = Endorsement.EndorsementsForUser(User.Identity.Name, string.Empty, System.Web.UI.WebControls.SortDirection.Descending, EndorsementSortKey.Date);
+            ViewBag.endorsements = EndorsementsForUser(User.Identity.Name, string.Empty, System.Web.UI.WebControls.SortDirection.Descending, EndorsementSortKey.Date);
             return View("endorsements");
         }
         #endregion

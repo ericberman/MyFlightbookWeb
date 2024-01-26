@@ -10,7 +10,7 @@
     ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.Profile.TrainingHeader, pf.UserFullName);
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
 }
-<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/public/scripts/ajaxUpload.js?v=2")"></script>
+<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/public/scripts/ajaxUpload.js?v=3")"></script>
 <script type="text/javascript">
     function deleteStudent(sender, username) {
         if (confirm('@Resources.Profile.EditProfileDeleteStudentConfirmation')) {
@@ -161,7 +161,7 @@
                         </td>
                         <td style="font-weight:bold;">@student.UserFullName</td>
                         <td>&nbsp;&nbsp;&nbsp;</td>
-                        <td><a href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EndorseStudent.aspx/{0}", student.UserName))">@Resources.SignOff.EndorsementsViewAdd</a></td>
+                        <td><a href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/training/EndorseStudent?student={0}", student.UserName))">@Resources.SignOff.EndorsementsViewAdd</a></td>
                         <td>
                             @if (student.CanViewLogbook)
                             {
@@ -203,7 +203,7 @@
                 }
             </table>
             <p>
-                <img src="@("~/images/rightarrow.png".ToAbsolute())" style="vertical-align:middle;" /><a href="@VirtualPathUtility.ToAbsolute("~/Member/EndorseStudent.aspx/")">@Resources.SignOff.EndorsementsViewAll</a>
+                <img src="@("~/images/rightarrow.png".ToAbsolute())" style="vertical-align:middle;" /><a href="@VirtualPathUtility.ToAbsolute("~/mvc/training/EndorseStudent")">@Resources.SignOff.EndorsementsViewAll</a>
             </p>
         }
         <div id="pnlAddStudent" style="margin-top: 36pt; margin-bottom: 36pt;">
@@ -229,7 +229,7 @@
     <h3>@Branding.ReBrand(Resources.LocalizedText.StudentsNonMemberPrompt)</h3>
     <div>
         <p>@Branding.ReBrand(Resources.LocalizedText.StudentsNonMemberDescription)</p>
-        <p><a href="@VirtualPathUtility.ToAbsolute("~/Member/EndorseStudent.aspx/?extern=1")">@Resources.SignOff.EndorseAddOfflineHeader</a></p>
+        <p><a href="@VirtualPathUtility.ToAbsolute("~/mvc/Training/EndorseStudent/?extern=1")">@Resources.SignOff.EndorseAddOfflineHeader</a></p>
         <div id="divUploadEndorsements">
 
         </div>

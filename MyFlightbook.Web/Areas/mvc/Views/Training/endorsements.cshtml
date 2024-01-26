@@ -10,7 +10,7 @@
     ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.Profile.TrainingHeader, pf.UserFullName);
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
 }
-<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/public/scripts/ajaxUpload.js?v=2")"></script>
+<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/public/scripts/ajaxUpload.js?v=3")"></script>
 <script type="text/javascript">
     function deleteOfflineEndorsement(sender, confirmText, imageClass, key, thumbnail) {
         deleteImage(confirmText, imageClass, key, thumbnail, true, function (r) {
@@ -28,7 +28,7 @@
     }
 
     $(() => {
-                ajaxFileUpload($("#divUploadEndorsements"), {
+        ajaxFileUpload($("#divUploadEndorsements"), {
             uploadURL: "@Url.Action("UploadEndorsement", "Training")",
             allowedTypes: "@MyFlightbook.Image.FileExtensions.AllowedExtensionsForTypes(true, true, false)",
             onUpload: function () {
@@ -61,15 +61,16 @@
 </script>
 @if (!printView)
 {
-<div style="float:right"><a target="_blank" href="@String.Format(CultureInfo.InvariantCulture, "{0}?naked=1&print=1", Request.Url.AbsolutePath)">@Resources.SignOff.EndorsementsPrintView</a></div>
+    <div style="float:right"><a target="_blank" href="@String.Format(CultureInfo.InvariantCulture, "{0}?naked=1&print=1", Request.Url.AbsolutePath)">@Resources.SignOff.EndorsementsPrintView</a></div>
 }
 <h2>@Resources.SignOff.EndorsementsYourEndorsements</h2>
 <p><a target="_blank" href="@("~/mvc/faq?q=23#23".ToAbsolute())">@Resources.SignOff.DigitalEndorsementDisclaimer</a></p>
 <div>
-    @{ Html.RenderAction("RenderEndorsements", "Training", new { endorsements = endorsements, fCanDelete = true, fCanSort = true, fCanCopy = false }); }
+    @{ Html.RenderAction("RenderEndorsements", "Training", new { endorsements = endorsements, fCanDelete = true, fCanSort = true, fCanCopy = false, userName = User.Identity.Name }); }
 </div>
-<p><a href="@("~/Member/AddEndorsement.aspx".ToAbsolute())" target="_blank">@Resources.SignOff.EndorsementsAddEndorsement</a></p>
 <div class="noprint">
+    <p><img src="@("~/images/add.png".ToAbsolute())" style="vertical-align:middle;" /> <a href="@("~/mvc/Training/AddEndorsement".ToAbsolute())">@Resources.SignOff.EndorsementsAddEndorsement</a></p>
+    <hr />
     <h2>@Resources.SignOff.EndorsementScannedImagesHeader</h2>
     <p>@Resources.SignOff.EndorsementsScannedImagesDescription</p>
     <div>

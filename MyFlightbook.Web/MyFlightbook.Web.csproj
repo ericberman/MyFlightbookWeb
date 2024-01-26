@@ -1577,6 +1577,10 @@
     <Content Include="Areas\mvc\Views\Training\requestSigs.cshtml" />
     <Content Include="Areas\mvc\Views\Training\endorsements.cshtml" />
     <Content Include="Areas\mvc\Views\Training\_endorsementList.cshtml" />
+    <Content Include="Areas\mvc\Views\Training\endorseStudent.cshtml" />
+    <Content Include="Areas\mvc\Views\Training\_editEndorsement.cshtml" />
+    <Content Include="Areas\mvc\Views\Training\_editableEndorsement.cshtml" />
+    <Content Include="Areas\mvc\Views\Training\addEndorsement.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />

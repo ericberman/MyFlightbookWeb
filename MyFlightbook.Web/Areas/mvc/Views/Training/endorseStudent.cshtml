@@ -1,0 +1,95 @@
+﻿@using System.Globalization
+@using MyFlightbook.Image
+@using MyFlightbook.Instruction
+@{
+    string szTargetUser = ViewBag.targetUser;
+    MyFlightbook.Profile pfStudent = MyFlightbook.Profile.GetUser(szTargetUser);
+    Endorsement.StudentTypes studentType = ViewBag.studentType;
+    IEnumerable<Endorsement> endorsements = ViewBag.endorsements;
+    IEnumerable<Endorsement> nonOwnedEndorsements = ViewBag.nonOwnedEndorsements;
+    bool canViewStudent = ViewBag.canViewStudent;
+    bool canEditStudent = ViewBag.canEditStudent;
+    ViewBag.defaultTab = tabID.tabTraining;
+    ViewBag.Title = String.IsNullOrEmpty(szTargetUser) ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.Profile.EndorsementsHeader, pfStudent.UserFullName);
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/public/scripts/ajaxUpload.js?v=3")"></script>
+<script type="text/javascript">
+    $(() => {
+        ajaxFileUpload($("#divUploadEndorsements"), {
+            additionalParams: [{ name: "szKey", value: "@szTargetUser" }],
+            uploadURL: "@Url.Action("UploadEndorsement", "Training")",
+            allowedTypes: "@MyFlightbook.Image.FileExtensions.AllowedExtensionsForTypes(true, true, false)",
+            onUpload: function () {
+                var params = new Object();
+                params.imageClass = "@MFBImageInfo.ImageClass.Endorsement";
+                params.szKey = "@szTargetUser";
+                params.fCanEdit = false;
+                params.fCanDelete = false;
+                params.fIncludeDocs = true;
+                var d = JSON.stringify(params);
+                $.ajax({
+                    url: '@Url.Action("ImagesForClassAndKey", "Image")',
+                    type: "POST", data: d, dataType: "html", contentType: "application/json",
+                    error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                    complete: function (response) { },
+                    success: function (response) {
+                        $("#divOfflineEndorsementList").html(response);
+                        $(".fileInQueueContainer").hide();
+                    }
+                });
+            },
+            dropPrompt: "@Resources.LocalizedText.PromptImageDropZoneWithPDF",
+            errTooManyFiles: "@Resources.LocalizedText.fileUploadTooManyFiles",
+            errDisallowedFileType: "@Resources.LocalizedText.fileUploadInvalidType",
+            abortPrompt: "@Resources.LocalizedText.fileUploadAboart"
+        });
+    });
+</script>
+@if (!String.IsNullOrEmpty(szTargetUser) || studentType == Endorsement.StudentTypes.External)
+{
+    Html.RenderAction("RenderEndorsementEditor", "Training", new
+    {
+        sourceUser = User.Identity.Name,
+        targetUser = szTargetUser,
+        studentType = studentType,
+        mode = (studentType == Endorsement.StudentTypes.Member ? EndorsementMode.InstructorPushAuthenticated : EndorsementMode.InstructorOfflineStudent)
+    }); ;
+}
+<div id="pnlExistingEndorsements">
+    <br />
+    @if (!String.IsNullOrEmpty(szTargetUser))
+    {
+    <h2>@String.Format(CultureInfo.CurrentCulture, Resources.Profile.EndorsementsExistingEndorsementHeader, pfStudent.UserFullName)</h2>
+    }
+    <p>
+        <a target="_blank" href="@("~/mvc/faq?q=23#23".ToAbsolute())">@Resources.SignOff.DigitalEndorsementDisclaimer</a>
+        @{ Html.RenderAction("RenderEndorsements", "Training", new { endorsements = endorsements, fCanDelete = false, fCanSort = true, fCanDownload = true, onCopy = (studentType == Endorsement.StudentTypes.External || !String.IsNullOrEmpty(szTargetUser)) ? "copyEndorsement" : string.Empty, userName = szTargetUser }); }
+</div>
+@if (canViewStudent)
+{
+    if (nonOwnedEndorsements.Any())
+    {
+        <br />
+        <hr />
+        <h2>@String.Format(CultureInfo.CurrentCulture, Resources.Profile.EndorsementsNotOwnedEndorsementHeader, szTargetUser)</h2>
+        Html.RenderAction("RenderEndorsements", "Training", new { endorsements = nonOwnedEndorsements, fCanDelete = false, fCanSort = true, onCopy = string.Empty, userName = szTargetUser });
+    }
+    if (canEditStudent)
+    {
+        <div id="divUploadEndorsements"></div>
+    }
+    <div id="divOfflineEndorsementList">
+        @{
+            ImageList il = new ImageList(MFBImageInfo.ImageClass.Endorsement, szTargetUser);
+            il.Refresh(true);
+            Html.RenderAction("ImageListDisplay", "Image", new
+            {
+                il = il,
+                zoomLinkType = GeoLinkType.None,
+                fCanEdit = false,
+                fCanDelete = false
+            });
+        }
+    </div>
+}

@@ -1,0 +1,121 @@
+﻿@using System.Globalization
+@using MyFlightbook.Instruction
+@{
+    string targetUser = ViewBag.targetUser;
+    string sourceUser = ViewBag.sourceUser;
+    MyFlightbook.Profile pfTargetUser = MyFlightbook.Profile.GetUser(targetUser);
+    MyFlightbook.Profile pfSourceUser = MyFlightbook.Profile.GetUser(sourceUser);
+    EndorsementType template = ViewBag.template;
+    Endorsement.StudentTypes studentType = ViewBag.studentType;
+    EndorsementMode mode = ViewBag.mode;
+    List<EndorsementType> templates = ViewBag.templates;
+}
+<script type="text/javascript">
+    function templateSelected(idTemplate, idSrc) {
+        var params = new Object();
+        params.sourceUser = "@sourceUser";
+        params.targetUser = "@targetUser";
+        params.idTemplate = idTemplate;
+        params.idSrc = idSrc;
+        params.studentType = "@studentType";
+        params.mode = "@mode";
+        var d = JSON.stringify(params);
+        $.ajax({
+            url: '@Url.Action("GetEndorsementTemplate", "Training")',
+            type: "POST", data: d, dataType: "html", contentType: "application/json",
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            complete: function (response) { },
+            success: function (response) {
+                $("#divNewEndorsement").html(response);
+            }
+        });
+    }
+
+    function copyEndorsement(id) {
+        templateSelected(@EndorsementType.IDCustomTemplate, id);
+    }
+
+    function findEndorsements(idTxt) {
+        var params = new Object();
+        params.searchText = idTxt.value;
+        var d = JSON.stringify(params);
+        $.ajax({
+            url: '@Url.Action("TemplatesMatchingTerm", "Training")',
+            type: "POST", data: d, dataType: "json", contentType: "application/json",
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            complete: function (response) { },
+            success: function (response) {
+                var cmb = $("#cmbTemplates");
+                cmb.empty();
+                response.forEach(template => {
+                    cmb.append($("<option value=" + template.ID + ">" + template.FullTitle + "</option>"));
+                });
+                templateSelected(cmb[0].value, -1);
+            }
+        });
+        return false;
+    }
+
+    function submitEndorsement() {
+        var form = $("#frmEditEndorsement");
+        // Hack - For some reason, I can't get jquery validate to do the custom rule for validating the scribble
+        // So check for an empty sig explicitly.
+        $("#lblSigErr").text("");
+        if ($("#signatureCanvas").is(":visible") && $("#hdnSigData").val() == "") {
+            $("#lblSigErr").text("@Resources.SignOff.errScribbleRequired");
+            return;
+        }
+        if (form.valid()) {
+            var body = "";
+
+            $('#templateBody').children().each(function () {
+                body += (this.tagName == "SPAN") ? this.innerText : this.value;
+            });
+            $("#hdnCompiledBody").val(body);
+
+            var f = form.serialize();
+            $.ajax({
+                url: "@Url.Action("AddEndorsementForStudent", "training")",
+                type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                success: function (r) {
+                    window.location = window.location;
+                }
+            });
+        }
+    }
+</script>
+<div id="pnlEndorsement">
+    @if (!String.IsNullOrEmpty(pfTargetUser.UserFullName))
+    {
+    <h2>@String.Format(CultureInfo.CurrentCulture, Resources.Profile.EndorsementsNewEndorsementHeader, pfTargetUser.UserFullName)</h2>
+    }
+    <p>
+        <span style="font-weight: bold">@Resources.LocalizedText.Note</span>
+        @Resources.Profile.EndorsementDisclaimer
+        <a target="_blank" href="@("~/mvc/pub/CFISigs".ToAbsolute())">@Resources.SignOff.CFISigsLinkLabel</a>
+    </p>
+    <h2>@Resources.SignOff.EndorsementPickTemplate</h2>
+    <div>
+        <div style="display:inline-block; vertical-align:middle;">
+            @using (Html.BeginForm("EndorseStudent", "Training", FormMethod.Get))
+            {
+                Html.RenderAction("RenderSearchBox", "MFBTemplate", new { id = "srchEndorsements", placeholder = Resources.SignOff.EndorsementsSearchPrompt, onEnterScript="findEndorsements" });
+                <input type="hidden" value="@targetUser" name="student" />
+            }
+        </div>
+        <div style="display:inline-block; vertical-align:middle;">
+            <select name="template" id="cmbTemplates" onchange="javascript: templateSelected(this.value, -1);">
+                @foreach (EndorsementType et in templates)
+                {
+                    <option value="@et.ID">@et.FullTitle</option>
+                }
+            </select>
+        </div>
+        <p>@Resources.Profile.EndorsementRequestPrompt <a href="@("~/Public/ContactMe.aspx".ToAbsolute())">@Resources.Profile.EndorsementRequest</a></p>
+    </div>
+    <h2>@Resources.SignOff.EndorsementEditTemplate</h2>
+    <div id="divNewEndorsement">
+        @{ Html.RenderAction("RenderEndorsementBody", "Training", new { sourceUser = sourceUser, targetUser = targetUser, idTemplate = @EndorsementType.IDCustomTemplate, studentType = studentType, mode = mode }); }
+    </div>
+</div>

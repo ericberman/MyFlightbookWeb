@@ -1,0 +1,69 @@
+﻿@using MyFlightbook.Instruction
+@{
+    CFIStudentMap sm = ViewBag.instructorMap;
+    ViewBag.defaultTab = tabID.tabTraining;
+    ViewBag.Title = @Resources.SignOff.EditEndorsementAddEndorsement;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript">
+    function selectInstructor(value, confirmed) {
+        $("#lblErr").text("");
+        if (value == "") {
+            if (!confirmed) {
+                if ($("#vwAcceptTerms").is(":visible")) {
+                    $("#lblErr").text("@Resources.SignOff.errAcceptDisclaimer");
+                } else {
+                    $("#vwPickInstructor").hide();
+                    $("#vwAcceptTerms").show();
+                    $("#ckAccept")[0].checked = false;
+                }
+                return;
+            }
+        }
+
+        var form = $("#frmSelectInstr");
+        var f = form.serialize();
+        $.ajax({
+            url: "@Url.Action("EndorsementEditorForUserAddEndorsement", "Training")",
+            type: "POST", data: f, dataType: "html", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            success: function (r) {
+                $("#vwEndorse").html(r);
+                $("#vwPickInstructor").hide();
+                $("#vwAcceptTerms").hide();
+            }
+        });
+    }
+</script>
+<h2>@Resources.SignOff.EditEndorsementAddEndorsement</h2>
+@using (Html.BeginForm("", "Training", FormMethod.Post, new { id = "frmSelectInstr", name = "frmSelectInstr" }))
+{
+    <div id="vwPickInstructor" style="display: @(sm.Instructors.Any() ? "block" : "none")">
+        @Resources.SignOff.ChooseInstructorsPrompt
+        <select id="cmbInstructors" name="selectedInstructor" onchange="javascript: selectInstructor(this.value, false);">
+            <option selected value="">@Resources.SignOff.NewInstructor</option>
+            @foreach (InstructorStudent inst in sm.Instructors)
+            {
+                <option value="@inst.UserName">@inst.UserFullName</option>
+            }
+        </select>
+        <button type="button" onclick="javascript: selectInstructor($('#cmbInstructors').val(), false);">@Resources.LocalizedText.NextPrompt</button>
+    </div>
+    <div id="vwAcceptTerms" style="display: @(sm.Instructors.Any() ? "none" : "block")">
+        <p>@Branding.ReBrand(Resources.SignOff.SignDisclaimerAgreement1)</p>
+        <p style="font-weight:bold">@Branding.ReBrand(Resources.SignOff.SignDisclaimerAgreement2)</p>
+        <p><label><input type="checkbox" name="acceptSelfSign" id="ckAccept" />@Resources.SignOff.SignAcceptResponsibility</label></p>
+        <p style="text-align:center"><button type="button" onclick="javascript: selectInstructor($('#cmbInstructors').val(), $('#ckAccept')[0].checked);">@Resources.LocalizedText.NextPrompt</button></p>
+    </div>
+    @Html.AntiForgeryToken();
+}
+<div id="vwEndorse">
+
+</div>
+<div class="error" id="lblErr"></div>
+<div style="margin-top: 18pt;">&nbsp;</div>
+<hr />
+<h2>@Resources.SignOff.EndorsementsYourEndorsements</h2>
+<div>
+    @{ Html.RenderAction("RenderEndorsements", "Training", new { endorsements = ViewBag.endorsements, fCanDelete = true, fCanSort = true, fCanCopy = false, userName = User.Identity.Name }); }
+</div>

@@ -162,6 +162,9 @@ namespace MyFlightbook
         /// Matches a 6-digit hex number (i.e., RGB)
         /// </summary>
         public static Regex HexRGB { get { return mHexRGB ?? (mHexRGB = new Regex("^[0-9a-fA-F]{6}$", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
+
+        private static Regex mEndorsementTemplateField = null;
+        public static Regex EndorsementTemplateField { get { return mEndorsementTemplateField ?? (mEndorsementTemplateField = new Regex("\\{[^}]*\\}", RegexOptions.Compiled)); } }
         #endregion
 
         #region Aircraft, models, and manufacturers

@@ -130,6 +130,12 @@ function ajaxFileUpload(container, options) {
         }
         for (var i = 0; i < files.length; i++) {
             var fd = new FormData();
+            if (options.additionalParams) {
+                options.additionalParams.forEach(param => {
+                    fd.append(param.name, param.value);
+                });
+            }
+
             fd.append('file', files[i]);
             var status = new createStatusbar(obj); //Using this we can set progress.
             status.setFileNameSize(files[i].name, files[i].size);

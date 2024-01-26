@@ -4,6 +4,7 @@
     bool canSort = ViewBag.canSort;
     bool canDownload = ViewBag.canDownload;
     string onCopy = ViewBag.onCopy;
+    string szStudent = ViewBag.userName;
     IEnumerable<Endorsement> endorsements = ViewBag.endorsements;
 }
 <script type="text/javascript">
@@ -51,7 +52,7 @@
     using (Html.BeginForm("DownloadEndorsements", "Training", FormMethod.Post, new { id = "frmDownloadEndorsements", name = "frmDownloadEndorsements" }))
     {
     @Html.AntiForgeryToken()
-    <input type="hidden" name="userName" value="@User.Identity.Name" />
+    <input type="hidden" name="userName" value="@szStudent" />
     <a style="cursor: pointer; vertical-align: middle;" onclick="javascript: $('#frmDownloadEndorsements')[0].submit()">
         <img src="@("~/images/download.png".ToAbsolute())" style="padding-right: 5px; vertical-align: middle;" />
         <img src="@("~/images/csvicon_sm.png".ToAbsolute())" style="padding-right: 5px; vertical-align: middle;" />
@@ -79,15 +80,15 @@
                     <td style="display:none;">@e.Title</td>
                     <td colspan="2" style="width: 90%;">@Html.Raw(e.RenderHTML())</td>
                     <td class="noprint">
-                        @if (e.IsExternalEndorsement)
+                        @if (e.IsExternalEndorsement && e.DateDeleted == null)
                         {
-                            <img src="@("~/images/x.gif".ToAbsolute())" alt="@Resources.SignOff.OwnedEndorsementDeleteTooltip" title="@Resources.SignOff.OwnedEndorsementDeleteTooltip" onclick="javascript: deleteEndorsement(this, @e.ID);" />
+                            <img src="@("~/images/x.gif".ToAbsolute())" alt="@Resources.SignOff.ExternalEndorsementDeleteTooltip" title="@Resources.SignOff.ExternalEndorsementDeleteTooltip" onclick="javascript: deleteExternalEndorsement(this, @e.ID);" />
                         }
                         @if (canDelete && e.StudentName.CompareCurrentCultureIgnoreCase(User.Identity.Name) == 0)
                         {
                             <img src="@("~/images/x.gif".ToAbsolute())" alt="@Resources.SignOff.OwnedEndorsementDeleteTooltip" title="@Resources.SignOff.OwnedEndorsementDeleteTooltip" onclick="javascript: deleteOwnedEndorsement(this, @e.ID);" />
                         }
-                        @if (!String.IsNullOrEmpty(onCopy) && e.IsMemberEndorsement && e.StudentName.CompareCurrentCultureIgnoreCase(User.Identity.Name) == 0)
+                        @if (!String.IsNullOrEmpty(onCopy) && (e.IsExternalEndorsement || (e.IsMemberEndorsement && e.StudentName.CompareCurrentCultureIgnoreCase(User.Identity.Name) != 0)))
                         {
                             <img src="@("~/images/copyflight.png".ToAbsolute())" alt="@Resources.SignOff.CopyEndorsement" title="@Resources.SignOff.CopyEndorsement" onclick="javascript: @(onCopy)(@e.ID);" />
                         }
