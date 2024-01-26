@@ -456,7 +456,7 @@ namespace MyFlightbook.Instruction
                 tw.AddAttribute("style", "font-weight: bold; background-color:darkgray; color:white");
                 tw.AddAttribute("colspan", "2");
                 tw.RenderBeginTag(HtmlTextWriterTag.Td);
-                tw.InnerWriter.Write(Branding.ReBrand(Resources.SignOff.ExternalEndorsementDisclaimer));
+                tw.Write(Branding.ReBrand(Resources.SignOff.ExternalEndorsementDisclaimer));
                 tw.RenderEndTag(); // td
                 tw.RenderEndTag(); // tr
             }
@@ -467,7 +467,7 @@ namespace MyFlightbook.Instruction
                 tw.AddAttribute("style", "font-weight: bold; background-color:darkgray; color:red");
                 tw.AddAttribute("colspan", "2");
                 tw.RenderBeginTag(HtmlTextWriterTag.Td);
-                tw.InnerWriter.Write(String.Format(CultureInfo.CurrentCulture, Resources.SignOff.EndorsementDeleted, DateDeleted.Value));
+                tw.Write(String.Format(CultureInfo.CurrentCulture, Resources.SignOff.EndorsementDeleted, DateDeleted.Value));
                 tw.RenderEndTag();  // td
                 tw.RenderEndTag();  // tr
             }
@@ -491,13 +491,13 @@ namespace MyFlightbook.Instruction
             // Text and FAR row
             tw.AddAttribute("style", "font-weight:bold;");
             tw.RenderBeginTag(HtmlTextWriterTag.Div);
-            tw.InnerWriter.Write(FullTitleAndFar);
+            tw.Write(HttpUtility.HtmlEncode(FullTitleAndFar));
             tw.RenderEndTag();  // div
 
             tw.RenderBeginTag(HtmlTextWriterTag.Hr);
             tw.RenderEndTag();  // hr
 
-            tw.InnerWriter.Write(EndorsementText);
+            tw.Write(HttpUtility.HtmlEncode(EndorsementText));
 
             tw.RenderBeginTag(HtmlTextWriterTag.Hr);
             tw.RenderEndTag();  // hr
@@ -509,10 +509,10 @@ namespace MyFlightbook.Instruction
             tw.RenderBeginTag(HtmlTextWriterTag.Tr);
             tw.AddAttribute("style", "font-weight: bold;");
             tw.RenderBeginTag(HtmlTextWriterTag.Td);
-            tw.InnerWriter.Write(Resources.SignOff.EditEndorsementDatePrompt);
+            tw.Write(Resources.SignOff.EditEndorsementDatePrompt);
             tw.RenderEndTag();  // td
             tw.RenderBeginTag(HtmlTextWriterTag.Td);
-            tw.InnerWriter.Write(Date.ToShortDateString());
+            tw.Write(Date.ToShortDateString());
             tw.RenderEndTag();  // td
             tw.RenderEndTag();  // trw
 
@@ -522,14 +522,14 @@ namespace MyFlightbook.Instruction
                 tw.RenderBeginTag(HtmlTextWriterTag.Tr);
                 tw.AddAttribute("style", "font-weight: bold;");
                 tw.RenderBeginTag(HtmlTextWriterTag.Td);
-                tw.InnerWriter.Write(Resources.SignOff.EditEndorsementDateCreatedPrompt);
+                tw.Write(Resources.SignOff.EditEndorsementDateCreatedPrompt);
                 tw.RenderEndTag();  // td
 
                 if (CreationDate.Date.Subtract(Date).Days > 10)
                     tw.AddAttribute("style", "font-weight: bold;");
                 tw.RenderBeginTag(HtmlTextWriterTag.Td);
-                tw.InnerWriter.Write(CreationDate.ToShortDateString());
-                tw.InnerWriter.Write(" (UTC)");
+                tw.Write(CreationDate.ToShortDateString());
+                tw.Write(" (UTC)");
                 tw.RenderEndTag();  // td
 
                 tw.RenderEndTag();  // tr
@@ -539,11 +539,11 @@ namespace MyFlightbook.Instruction
             tw.RenderBeginTag(HtmlTextWriterTag.Tr);
             tw.AddAttribute("style", "font-weight: bold");
             tw.RenderBeginTag(HtmlTextWriterTag.Td);
-            tw.InnerWriter.Write(Resources.SignOff.EditEndorsementStudentPrompt);
+            tw.Write(Resources.SignOff.EditEndorsementStudentPrompt);
             tw.RenderEndTag();  // td
 
             tw.RenderBeginTag(HtmlTextWriterTag.Td);
-            tw.InnerWriter.Write(StudentDisplayName);
+            tw.Write(HttpUtility.HtmlEncode(StudentDisplayName));
             tw.RenderEndTag();  // td
             tw.RenderEndTag();  // tr
 
@@ -551,11 +551,11 @@ namespace MyFlightbook.Instruction
             tw.RenderBeginTag(HtmlTextWriterTag.Tr);
             tw.AddAttribute("style", "font-weight: bold");
             tw.RenderBeginTag(HtmlTextWriterTag.Td);
-            tw.InnerWriter.Write(Resources.SignOff.EditEndorsementInstructorPrompt);
+            tw.Write(Resources.SignOff.EditEndorsementInstructorPrompt);
             tw.RenderEndTag();  // td
 
             tw.RenderBeginTag(HtmlTextWriterTag.Td);
-            tw.InnerWriter.Write(CFIDisplayName);
+            tw.Write(HttpUtility.HtmlEncode(CFIDisplayName));
             tw.RenderEndTag();  // td
             tw.RenderEndTag();  // tr
 
@@ -563,11 +563,11 @@ namespace MyFlightbook.Instruction
             tw.RenderBeginTag(HtmlTextWriterTag.Tr);
             tw.AddAttribute("style", "font-weight: bold");
             tw.RenderBeginTag(HtmlTextWriterTag.Td);
-            tw.InnerWriter.Write(Resources.SignOff.EditEndorsementCFIPrompt);
+            tw.Write(Resources.SignOff.EditEndorsementCFIPrompt);
             tw.RenderEndTag();  // td
 
             tw.RenderBeginTag(HtmlTextWriterTag.Td);
-            tw.InnerWriter.Write(CFICertificate);
+            tw.Write(HttpUtility.HtmlEncode(CFICertificate));
             tw.RenderEndTag();  // td
 
             tw.RenderEndTag();  // tr
@@ -576,10 +576,10 @@ namespace MyFlightbook.Instruction
             tw.RenderBeginTag(HtmlTextWriterTag.Tr);
             tw.AddAttribute("style", "font-weight: bold");
             tw.RenderBeginTag(HtmlTextWriterTag.Td);
-            tw.InnerWriter.Write(Resources.SignOff.EditEndorsementExpirationPrompt);
+            tw.Write(Resources.SignOff.EditEndorsementExpirationPrompt);
             tw.RenderEndTag();  // td
             tw.RenderBeginTag(HtmlTextWriterTag.Td);
-            tw.InnerWriter.Write(CFIExpirationDate.HasValue() ? CFIExpirationDate.ToShortDateString() : Resources.SignOff.EndorsementNoDate);
+            tw.Write(CFIExpirationDate.HasValue() ? CFIExpirationDate.ToShortDateString() : Resources.SignOff.EndorsementNoDate);
             tw.RenderEndTag();  // td
             tw.RenderEndTag();  // tr
 
@@ -756,7 +756,7 @@ namespace MyFlightbook.Instruction
             return null;
         }
 
-        private static void NewTextBox(HtmlTextWriter tw, string id, string szDefault, Boolean fMultiline, Boolean fRequired, string szName)
+        private static void NewTextBox(HtmlTextWriter tw, string szDefault, Boolean fMultiline, Boolean fRequired, string szName)
         {
             if (fRequired)
                 tw.AddAttribute("required", "required");
@@ -833,10 +833,10 @@ namespace MyFlightbook.Instruction
                                 htmlTW.RenderEndTag();
                                 break;
                             case "{FreeForm}":
-                                NewTextBox(htmlTW, idNewControl, string.Empty, true, !fPreviewMode, FreeFormTextControlName);
+                                NewTextBox(htmlTW, string.Empty, true, !fPreviewMode, FreeFormTextControlName);
                                 break;
                             case "{Student}":
-                                NewTextBox(htmlTW, idNewControl, targetUser == null ? Resources.SignOff.EditEndorsementStudentNamePrompt : targetUser.UserFullName, false, !fPreviewMode, Resources.SignOff.EditEndorsementStudentNamePrompt);
+                                NewTextBox(htmlTW, targetUser == null ? Resources.SignOff.EditEndorsementStudentNamePrompt : targetUser.UserFullName, false, !fPreviewMode, Resources.SignOff.EditEndorsementStudentNamePrompt);
                                 break;
                             default:
                                 // straight textbox, unless it is strings separated by slashes, in which case it's a drop-down
@@ -860,7 +860,7 @@ namespace MyFlightbook.Instruction
                                         htmlTW.RenderEndTag();
                                     }
                                     else
-                                        NewTextBox(htmlTW, idNewControl, String.Empty, false, !fPreviewMode, szMatchInner);
+                                        NewTextBox(htmlTW, String.Empty, false, !fPreviewMode, szMatchInner);
                                 }
                                 break;
                         }

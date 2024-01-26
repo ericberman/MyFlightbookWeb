@@ -69,7 +69,7 @@
             var body = "";
 
             $('#templateBody').children().each(function () {
-                body += (this.tagName == "SPAN") ? this.innerText : this.value;
+                body += (this.tagName == "SPAN" || this.tagName == "DIV") ? this.innerText : this.value;
             });
             $("#hdnCompiledBody").val(body);
 
