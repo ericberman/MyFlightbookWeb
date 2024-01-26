@@ -501,13 +501,13 @@ namespace MyFlightbook.Printing
         protected global::System.Web.UI.WebControls.Panel pnlEndorsements;
 
         /// <summary>
-        /// mfbEndorsementList control.
+        /// gvEndorsements control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::MyFlightbook.Instruction.mfbEndorsementList mfbEndorsementList;
+        protected global::System.Web.UI.WebControls.GridView gvEndorsements;
 
         /// <summary>
         /// rptImages control.

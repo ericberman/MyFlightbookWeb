@@ -5,7 +5,6 @@
 <%@ Register src="../Controls/mfbSearchForm.ascx" tagname="mfbSearchForm" tagprefix="uc3" %>
 <%@ Register src="../Controls/PrintOptions.ascx" tagname="PrintOptions" tagprefix="uc5" %>
 <%@ Register Src="~/Controls/mfbQueryDescriptor.ascx" TagPrefix="uc2" TagName="mfbQueryDescriptor" %>
-<%@ Register Src="~/Controls/mfbEndorsementList.ascx" TagPrefix="uc1" TagName="mfbEndorsementList" %>
 <%@ Register Src="~/Controls/mfbDecimalEdit.ascx" TagPrefix="uc1" TagName="mfbDecimalEdit" %>
 <%@ Register Src="~/Controls/SponsoredAd.ascx" TagPrefix="uc1" TagName="SponsoredAd" %>
 <%@ Register Src="~/Controls/mfbTotalsByTimePeriod.ascx" TagPrefix="uc1" TagName="mfbTotalsByTimePeriod" %>
@@ -217,7 +216,15 @@
             <asp:PlaceHolder ID="plcLayout" runat="server" EnableViewState="false"></asp:PlaceHolder>
         </div>
         <asp:Panel ID="pnlEndorsements" runat="server" style="page-break-before:always;">
-            <uc1:mfbEndorsementList runat="server" ID="mfbEndorsementList" ShowSort="false" ShowDelete="false" />
+            <asp:GridView ID="gvEndorsements" runat="server" AutoGenerateColumns="false" BorderStyle="None" ShowHeader="false" GridLines="None">
+                <Columns>
+                    <asp:TemplateField>
+                        <ItemTemplate>
+                            <%# ((MyFlightbook.Instruction.Endorsement)Container.DataItem).RenderHTML() %>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                </Columns>
+            </asp:GridView>
             <asp:Repeater ID="rptImages" runat="server">
                 <ItemTemplate>
                     <div style="margin-bottom: 5px; page-break-inside:avoid;"><asp:Image ID="imgEndorsement" runat="server" style="max-width:100%" ImageUrl='<%# Eval("URLFullImage") %>' /></div>

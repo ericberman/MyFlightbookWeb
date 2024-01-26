@@ -11,7 +11,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2022 MyFlightbook LLC
+ * Copyright (c) 2013-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -60,7 +60,7 @@ namespace MyFlightbook.Printing
             }).ToString();
         }
 
-        protected string ReturnLink(FlightQuery fq)
+        protected static string ReturnLink(FlightQuery fq)
         {
             if (fq == null)
                 throw new ArgumentNullException(nameof(fq));
@@ -270,9 +270,8 @@ namespace MyFlightbook.Printing
 
         private void InitializeEndorsements()
         {
-            // Set up endorsements
-            mfbEndorsementList.Student = CurrentUser.UserName;
-            mfbEndorsementList.RefreshEndorsements();
+            gvEndorsements.DataSource = Endorsement.EndorsementsForUser(CurrentUser.UserName, null);
+            gvEndorsements.DataBind();
             ImageList il = new ImageList(MFBImageInfo.ImageClass.Endorsement, CurrentUser.UserName);
             il.Refresh(fIncludeDocs: false, fIncludeVids: false);
             rptImages.DataSource = il.ImageArray;
