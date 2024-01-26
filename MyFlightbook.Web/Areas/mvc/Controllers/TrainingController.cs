@@ -581,6 +581,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 d[student.UserName] = LogbookEntryBase.PendingSignaturesForStudent(pf, student);
             ViewBag.pendingFlightMap = d;
             ViewBag.instructorMap = sm;
+            List<Endorsement> lst = new List<Endorsement>(EndorsementsForUser(null, User.Identity.Name));
+            lst.RemoveAll(e => e.StudentType == StudentTypes.Member);
+            ViewBag.externalEndorsements = lst;
             return View("students");
         }
 

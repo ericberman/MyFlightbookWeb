@@ -229,7 +229,10 @@
     <h3>@Branding.ReBrand(Resources.LocalizedText.StudentsNonMemberPrompt)</h3>
     <div>
         <p>@Branding.ReBrand(Resources.LocalizedText.StudentsNonMemberDescription)</p>
-        <p><a href="@VirtualPathUtility.ToAbsolute("~/mvc/Training/EndorseStudent/?extern=1")">@Resources.SignOff.EndorseAddOfflineHeader</a></p>
+        <p><img src="@("~/images/add.png".ToAbsolute())" style="vertical-align:middle;" /> <a href="@VirtualPathUtility.ToAbsolute("~/mvc/Training/EndorseStudent/?extern=1")">@Resources.SignOff.EndorseAddOfflineHeader</a></p>
+        <div id="externalEndorsements">
+            @{ Html.RenderAction("RenderEndorsements", "Training", new { endorsements = ViewBag.externalEndorsements, fCanDownload = true, fCanDelete = true, fCanSort = true, onCopy = string.Empty, userName = string.Empty }); }
+        </div>
         <div id="divUploadEndorsements">
 
         </div>
