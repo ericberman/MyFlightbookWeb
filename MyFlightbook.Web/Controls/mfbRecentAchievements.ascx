@@ -7,7 +7,7 @@
         height: 180px;
         border: 3px solid lightgray;
         border-radius: 12px;
-        margin: 5px;
+        margin: 10pt;
         padding: 3pt;
         vertical-align: top;
     }
@@ -24,7 +24,6 @@
         height: 40pt;
     }
     .raStatHeader {
-        font-weight: bold;
         font-size: 120%;
     }
     .raStatResult {

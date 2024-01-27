@@ -55,7 +55,7 @@
 
 #headerSearchBox, #headerLoginStatus {
     font-size: 9pt;
-    margin-top: 3pt;
+    margin-top: 5pt;
 }
 
 .headerHeadSht, img.headerHeadSht:hover, img.headerHeadSht {
@@ -83,7 +83,10 @@
 
 /* Menu bar - see http://www.cssportal.com/css3-menu-generator/; customized from there */
 #menu-bar {
-    margin: 0;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 2px;
+    margin-bottom: 5px;
     text-align: left;
     padding: 0px 0px 0px 0px;
     height: 34px;

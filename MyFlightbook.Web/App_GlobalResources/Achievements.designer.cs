@@ -781,7 +781,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Most states/provinces/regions visited in a single day:.
+        ///   Looks up a localized string similar to Most States / Provinces / Regions visited in a single day:.
         /// </summary>
         internal static string RecentAchievementMostAdmin1sDayTitle {
             get {
@@ -862,7 +862,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to States/Provinces/Regions Visited:.
+        ///   Looks up a localized string similar to States / Provinces / Regions Visited:.
         /// </summary>
         internal static string RecentAchievementsAdmin1Visited {
             get {

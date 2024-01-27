@@ -1,6 +1,6 @@
 ﻿/******************************************************
  * 
- * Copyright (c) 2007-2023 MyFlightbook LLC
+ * Copyright (c) 2007-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -34,7 +34,7 @@
 /* Basic HTML */
 .mfbDefault {
     font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    font-size: 9pt;
+    font-size: 10pt;
     /* max-width: 1400px; */
     margin-left: auto;
     margin-right: auto;
@@ -47,7 +47,7 @@
 
 BODY, body {
     font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    font-size: 9pt;
+    font-size: 10pt;
     margin-left: auto;
     margin-right: auto;
     margin-top: 0px;
@@ -64,7 +64,7 @@ TABLE, table {
 
 H1
 {
-    font-size: 18px;
+    font-size: 14pt;
     font-weight: bold;
     color: black;
     width: 100%;
@@ -79,19 +79,19 @@ H1
 
 H2
 {
-    font-size: 14px;
+    font-size: 12pt;
     font-weight: bold;
     color: #4983B7;
 }
 H3
 {
-    font-size: 12px;
+    font-size: 10pt;
     font-weight: bold;
     color: Black;
 }
 H4
 {
-    font-size: 11px;
+    font-size: 10pt;
     font-weight: normal;
     color: Black;
 }
@@ -233,37 +233,37 @@ input[type=text],input[type=password], input[type=number],input[type=email], tex
 .currencylabel
 {
     font-weight: normal;
-    font-size: 12px;
+    font-size: 10pt;
 }
 .currencygap
 {
     font-weight: normal;
-    font-size: 9px;
+    font-size: 8pt;
 }
 .currencyok
 {
     font-weight: normal;
     color: Green;
-    font-size: 11px;
+    font-size: 10pt;
 }
 .currencynearlydue
 {
     font-weight: bold;
     color: Blue;
-    font-size: 11px;
+    font-size: 10pt;
 }
 .currencyexpired
 {
     font-weight: bold;
     color: Red;
-    font-size: 11px;
+    font-size: 10pt;
 }
 
 .currencynodate 
 {
     font-weight: bold;
     color: black;
-    font-size: 11px;
+    font-size: 10pt;
 }
 
 /* Signature status */
@@ -936,21 +936,21 @@ a img
 {
     font-weight:normal;
     color:Gray;
-    font-size: 14px;
+    font-size: 14pt;
 }
 
 .wizStepInProgress
 {
     font-weight:bold;
     color:#4983B7;
-    font-size: 14px;
+    font-size: 14pt;
 }
 
 .wizStepFuture
 {
     font-weight:normal;
     color:Black;
-    font-size: 14px;
+    font-size: 14pt;
 }
 
 /* next steps bullet */
@@ -990,6 +990,7 @@ ul.nextStep li {
 .footerItem li {
     list-style-type:none;
     display:block;
+    padding-bottom: 4pt;
 }
 
 .footerContainer hr {
