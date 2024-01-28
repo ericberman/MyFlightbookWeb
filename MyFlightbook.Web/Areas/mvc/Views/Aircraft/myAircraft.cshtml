@@ -25,7 +25,7 @@
             var d = JSON.stringify(params);
             $.ajax({
                 url: "@Url.Action("DeleteAircraftForUser", "Aircraft")",
-                type: "POST", data: d, dataType: "json", contentType: "application/json",
+                type: "POST", data: d, dataType: "text", contentType: "application/json",
                 error: function (xhr, status, error) { window.alert(xhr.responseText); },
                 success: function (r) {
                     window.location.reload();
