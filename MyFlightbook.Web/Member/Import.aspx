@@ -321,9 +321,9 @@
             <table style="text-align:left;">
                 <tr>
                     <td style="max-width:200px;">
-                        <h3>
+                        <span style="font-weight: bold;">
                             <% =Branding.ReBrand(Resources.LogbookEntry.ImportAculogHeader) %>
-                        </h3>
+                        </span>
                         <% =Branding.ReBrand(Resources.LogbookEntry.ImportAculogPromo).Linkify() %>
                     </td>
                     <td>
