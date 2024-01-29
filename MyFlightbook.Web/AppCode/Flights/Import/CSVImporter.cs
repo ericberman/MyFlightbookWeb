@@ -12,7 +12,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2023 MyFlightbook LLC
+ * Copyright (c) 2008-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1166,12 +1166,8 @@ namespace MyFlightbook.ImportFlights
             return true;
         }
 
-        public bool InitWithBytes(byte[] rgb, string szUser, Action<LogbookEntryCore, int> rowOK, Action<LogbookEntryCore, string, int> rowHasError, bool fAutofill)
+        public bool InitWithBytes(byte[] rgb, string szUser, Action<LogbookEntryCore, int> rowOK, Action<LogbookEntryCore, string, int> rowHasError, AutoFillOptions afo)
         {
-            AutoFillOptions afo = fAutofill ? AutoFillOptions.DefaultOptionsForUser(szUser) : null;
-            if (afo != null)
-                afo.IncludeHeliports = true;
-
             using (MemoryStream ms2 = new MemoryStream(rgb))
             {
                 return FInitFromStream(ms2, szUser, rowOK, rowHasError, afo);

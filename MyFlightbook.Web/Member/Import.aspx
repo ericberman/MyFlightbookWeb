@@ -64,11 +64,23 @@
                 <div>
                     <table>
                         <tr style="vertical-align:top">
-                            <td><asp:CheckBox ID="ckAutofill" runat="server" /></td>
+                            <td><asp:RadioButton ID="rbAutofillNone" runat="server" GroupName="rbAutofill" Checked="true" /></td>
+                            <td><asp:Label ID="Label2" runat="server" Text="<%$ Resources:LogbookEntry, ImportWizardAutofillNone %>" AssociatedControlID="rbAutofillNone"></asp:Label></td>
+                        </tr>
+                        <tr style="vertical-align:top">
+                            <td><asp:RadioButton ID="rbAutofillUtc" runat="server" GroupName="rbAutofill" /></td>
                             <td>
-                                <asp:Label ID="lblAutofillLabel" runat="server"  Text="<%$ Resources:LogbookEntry, ImportWizardAutofillPrompt %>" AssociatedControlID="ckAutofill"></asp:Label><br />
-                                <asp:Label ID="lblNoteAutofill" runat="server" Text="<%$ Resources:LocalizedText, Note %>" CssClass="fineprint" Font-Bold="true" AssociatedControlID="ckAutofill"></asp:Label>
-                                <asp:Label ID="locAutofill" runat="server" Text="<%$ Resources:LogbookEntry, ImportWizardAutofillNote %>" CssClass="fineprint" AssociatedControlID="ckAutofill"></asp:Label>
+                                <asp:Label ID="Label5" runat="server"  Text="<%$ Resources:LogbookEntry, ImportWizardAutofillPrompt %>" AssociatedControlID="rbAutofillUtc"></asp:Label><br />
+                                <asp:Label ID="Label6" runat="server" Text="<%$ Resources:LocalizedText, Note %>" CssClass="fineprint" Font-Bold="true" AssociatedControlID="rbAutofillUtc"></asp:Label>
+                                <asp:Label ID="Label7" runat="server" Text="<%$ Resources:LogbookEntry, ImportWizardAutofillNote %>" CssClass="fineprint" AssociatedControlID="rbAutofillUtc"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr style="vertical-align:top">
+                            <td><asp:RadioButton ID="rbAutofillLocal" runat="server" GroupName="rbAutofill" /></td>
+                            <td>
+                                <asp:Label ID="lblAutofillLabel" runat="server"  Text="<%$ Resources:LogbookEntry, ImportWizardAutofillTryLocal %>" AssociatedControlID="rbAutofillLocal"></asp:Label><br />
+                                <asp:Label ID="lblNoteAutofill" runat="server" Text="<%$ Resources:LocalizedText, Note %>" CssClass="fineprint" Font-Bold="true" AssociatedControlID="rbAutofillLocal"></asp:Label>
+                                <asp:Label ID="locAutofill" runat="server" Text="<%$ Resources:LogbookEntry, ImportWizardAutofillTryLocalNote %>" CssClass="fineprint" AssociatedControlID="rbAutofillLocal"></asp:Label>
                             </td>
                         </tr>
                     </table>

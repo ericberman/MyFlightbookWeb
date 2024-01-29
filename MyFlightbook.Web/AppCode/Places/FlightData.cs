@@ -1,9 +1,12 @@
-﻿using MyFlightbook.Airports;
+﻿using GeoTimeZone;
+using MyFlightbook.Airports;
 using MyFlightbook.CSV;
 using MyFlightbook.Geography;
 using MyFlightbook.SolarTools;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
+using NodaTime;
+using NodaTime.Extensions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,7 +22,7 @@ using System.Xml;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2023 MyFlightbook LLC
+ * Copyright (c) 2010-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -305,15 +308,16 @@ namespace MyFlightbook.Telemetry
         #region Constructors
         public AutoFillOptions()
         {
-            TimeZoneOffset = 0;
-            AutoFillTotal = AutoFillTotalOption.HobbsTime;
-            AutoFillHobbs = AutoFillHobbsOption.EngineTime;
-            Night = NightCritera.EndOfCivilTwilight;
-            NightLanding = NightLandingCriteria.SunsetPlus60;
-            CrossCountryThreshold = DefaultCrossCountryDistance;
-            TakeOffSpeed = DefaultTakeoffSpeedKts;
-            LandingSpeed = DefaultLandingSpeedKts;
-            AutoSynthesizePath = true;
+        }
+
+        /// <summary>
+        /// returns a new autofill options from another one.
+        /// </summary>
+        /// <param name="afoSrc"></param>
+        public AutoFillOptions(AutoFillOptions afoSrc) : this()
+        {
+            if (afoSrc != null)
+                util.CopyObject(afoSrc, this);
         }
 
         /// <summary>
@@ -376,27 +380,27 @@ namespace MyFlightbook.Telemetry
         /// <summary>
         /// timezone offset from UTC, in minutes
         /// </summary>
-        public int TimeZoneOffset { get; set; }
+        public int TimeZoneOffset { get; set; } = 0;
 
         /// <summary>
         /// AutoTotal options
         /// </summary>
-        public AutoFillTotalOption AutoFillTotal { get; set; }
+        public AutoFillTotalOption AutoFillTotal { get; set; } = AutoFillTotalOption.HobbsTime;
 
         /// <summary>
         /// AutoHobbs options
         /// </summary>
-        public AutoFillHobbsOption AutoFillHobbs { get; set; }
+        public AutoFillHobbsOption AutoFillHobbs { get; set; } = AutoFillHobbsOption.EngineTime;
 
         /// <summary>
         /// By what criteria do we begin accumulating night flight?
         /// </summary>
-        public NightCritera Night { get; set; }
+        public NightCritera Night { get; set; } = NightCritera.EndOfCivilTwilight;
 
         /// <summary>
         /// By what criteria do we log a night landing?
         /// </summary>
-        public NightLandingCriteria NightLanding { get; set; }
+        public NightLandingCriteria NightLanding { get; set; } = NightLandingCriteria.SunsetPlus60;
 
         /// <summary>
         /// Return the time offset (in minutes) relative to sunset to use for IsWithinNightOffset
@@ -424,22 +428,22 @@ namespace MyFlightbook.Telemetry
         /// <summary>
         /// Threshold for cross-country flight
         /// </summary>
-        public double CrossCountryThreshold { get; set; }
+        public double CrossCountryThreshold { get; set; } = DefaultCrossCountryDistance;
 
         /// <summary>
         /// Speed above which the aircraft is assumed to be flying
         /// </summary>
-        public double TakeOffSpeed { get; set; }
+        public double TakeOffSpeed { get; set; } = DefaultTakeoffSpeedKts;
 
         /// <summary>
         /// Speed below which the aircraft is assumed to be taxiing or stopped
         /// </summary>
-        public double LandingSpeed { get; set; }
+        public double LandingSpeed { get; set; } = DefaultLandingSpeedKts;
 
         /// <summary>
         /// Include heliports in autodetection?
         /// </summary>
-        public bool IncludeHeliports { get; set; }
+        public bool IncludeHeliports { get; set; } = false;
 
         /// <summary>
         /// True to plow ahead and continue even if errors are encountered.
@@ -450,12 +454,17 @@ namespace MyFlightbook.Telemetry
         /// Indicates if a path should be synthesized if not present (needed to estimate night time, for example)
         /// True by default.
         /// </summary>
-        public bool AutoSynthesizePath { get; set; }
+        public bool AutoSynthesizePath { get; set; } = true;
 
         /// <summary>
         /// Indicates whether auto-fill times should be rounded to the nearest 10th of an hour
         /// </summary>
-        public bool RoundToTenth { get; set; }
+        public bool RoundToTenth { get; set; } = false;
+
+        /// <summary>
+        /// Indicates whether to try to convert times to UTC time based on lat/long
+        /// </summary>
+        public bool TryLocal { get; set; } = false;
         #endregion
 
         #region testing for night, night landings
@@ -1556,7 +1565,32 @@ namespace MyFlightbook.Telemetry
             }
         }
 
-        private string GenerateSyntheticPath(LogbookEntry le)
+        /// <summary>
+        /// Form https://tkit.dev/2018/04/05/converting-to-and-from-local-time-in-c-net-with-noda-time/
+        /// Converts a local-time DateTime to UTC DateTime based on the specified
+        /// timezone. The returned object will be of UTC DateTimeKind. To be used
+        /// when we want to know what's the UTC representation of the time somewhere
+        /// in the world.
+        /// </summary>
+        /// <param name="dateTime">Local DateTime as UTC or Unspecified DateTimeKind.</param>
+        /// <param name="timezone">Timezone name (in TZDB format).</param>
+        /// <returns>UTC DateTime as UTC DateTimeKind.</returns>
+        private static DateTime UtcFromZone(DateTime dateTime, string timezone)
+        {
+            if (dateTime.Kind == DateTimeKind.Local)
+                throw new ArgumentException("Expected non-local kind of DateTime");
+
+            var zone = DateTimeZoneProviders.Tzdb[timezone];
+            LocalDateTime asLocal = dateTime.ToLocalDateTime();
+            ZonedDateTime asZoned = asLocal.InZoneLeniently(zone);
+            Instant instant = asZoned.ToInstant();
+            ZonedDateTime asZonedInUtc = instant.InUtc();
+            DateTime utc = asZonedInUtc.ToDateTimeUtc();
+
+            return utc;
+        }
+
+        private string GenerateSyntheticPath(LogbookEntry le, AutoFillOptions opt)
         {
             string result = string.Empty;
             if (le != null && String.IsNullOrEmpty(le.FlightData))
@@ -1574,6 +1608,37 @@ namespace MyFlightbook.Telemetry
                     {
                         LatLong ll1 = rgap[0].LatLong;
                         LatLong ll2 = rgap[1].LatLong;
+
+                        if (opt.TryLocal)
+                        {
+#pragma warning disable CA1031 // Do not catch general exception types
+                            // Issue #1172
+                            // We are assuming here that dtStart/dtEnd are in UTC (which they MUST be for any math to work.
+                            // But if fTryConvertLocal is true, we assume they are in local time.  In which case, we need to:
+                            //  * find the timezone based on the latitude/longitude
+                            //  * convert it (for purposes of this path) to UTC using system timezone functions
+                            // If this fails for EITHER time, then just treat them both as UTC
+                            // Note that the TryLocal option is NOT displayed to the user EXCEPT on import.  Why?
+                            // Because it mucks up display of the engine/block times, which are entered in either UTC or in the user's preferred timezone
+                            // but do NOT mix local times.  So it just makes a mess of things.  We are simplifying here by only allowing
+                            // local time conversion when importing from a file.
+                            try
+                            {
+                                TimeZoneResult szIANATimeZone1 = TimeZoneLookup.GetTimeZone(ll1.Latitude, ll1.Longitude);
+                                TimeZoneResult szIANATimeZone2 = TimeZoneLookup.GetTimeZone(ll2.Latitude, ll2.Longitude);
+
+                                // OK, now we have the timezones, create pseudo-local times:
+                                DateTime dtStartLocal = DateTime.SpecifyKind(dtStart, DateTimeKind.Unspecified);
+                                DateTime dtEndLocal = DateTime.SpecifyKind(dtEnd, DateTimeKind.Unspecified);
+
+                                // Update engine start/end regardless since we're going to recompute those.
+                                // Even if we started from block, we'll leave block unchanged.
+                                le.EngineStart = dtStart = UtcFromZone(dtStartLocal, szIANATimeZone1.Result);
+                                le.EngineEnd = dtEnd = UtcFromZone(dtEndLocal, szIANATimeZone2.Result);
+                            }
+                            catch { }
+#pragma warning restore CA1031 // Do not catch general exception types
+                        }
 
                         IEnumerable<Position> rgPos = Position.SynthesizePath(ll1, dtStart, ll2, dtEnd);
                         SpeedUnits = SpeedUnitTypes.MetersPerSecond;    // SynthesizePath uses meters/s.
@@ -1608,7 +1673,7 @@ namespace MyFlightbook.Telemetry
             // see if we can synthesize a path.  If so, save it as GPX
             if (String.IsNullOrEmpty(le.FlightData) && opt.AutoSynthesizePath)
             {
-                le.FlightData = GenerateSyntheticPath(le);
+                le.FlightData = GenerateSyntheticPath(le, opt);
                 le.Telemetry.MetaData.Clear();  // ensure no cropping.
                 fSyntheticPath = !String.IsNullOrEmpty(le.FlightData);
             }

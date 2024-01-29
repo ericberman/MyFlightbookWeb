@@ -1251,7 +1251,7 @@ Proceed with import?</value>
     <value>All flight/engine/block times MUST be UTC for auto-fill computations to work; do not check this box if you are using local times.</value>
   </data>
   <data name="ImportWizardAutofillPrompt" xml:space="preserve">
-    <value>Try to autofill fields like night, cross-country, landings, or total flight time, if not already provided.</value>
+    <value>Autofill fields like night, cross-country, landings, or total flight time.  ALL TIMES ARE UTC</value>
   </data>
   <data name="ImportWizardFinishButton" xml:space="preserve">
     <value>Import</value>
@@ -1737,5 +1737,14 @@ Proceed with import?</value>
   </data>
   <data name="CompareModifiedWhitespace" xml:space="preserve">
     <value>Modified (leading/trailing whitespace only)</value>
+  </data>
+  <data name="ImportWizardAutofillNone" xml:space="preserve">
+    <value>Import data as-is</value>
+  </data>
+  <data name="ImportWizardAutofillTryLocal" xml:space="preserve">
+    <value>Autofill fields like night, cross-country, landings, or total flight time, attempting to convert from local time.</value>
+  </data>
+  <data name="ImportWizardAutofillTryLocalNote" xml:space="preserve">
+    <value>Times will be converted to UTC where possible, but this is not a reliable process and may yield unexpected results.  See the FAQ for more information.</value>
   </data>
 </root>

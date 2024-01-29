@@ -2,17 +2,17 @@ using DotNetOpenAuth.OAuth2;
 using MyFlightbook.OAuth.CloudAhoy;
 using MyFlightbook.OAuth.Leon;
 using MyFlightbook.OAuth.RosterBuster;
+using MyFlightbook.Telemetry;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Threading.Tasks;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2021 MyFlightbook LLC
+ * Copyright (c) 2007-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -138,9 +138,9 @@ namespace MyFlightbook.ImportFlights
             {
                 int iRow = e.Item.ItemIndex + 1;
 
-                if (ErrorContext.ContainsKey(iRow))
+                if (ErrorContext.TryGetValue(iRow, out string errVal))
                 {
-                    ((Label)e.Item.FindControl("lblRawRow")).Text = ErrorContext[iRow];
+                    ((Label)e.Item.FindControl("lblRawRow")).Text = errVal;
                     e.Item.FindControl("rowError").Visible = true;
                     ((System.Web.UI.HtmlControls.HtmlTableRow)e.Item.FindControl("rowFlight")).Attributes["class"] = "error";
                 }
@@ -286,7 +286,23 @@ namespace MyFlightbook.ImportFlights
 
             ErrorContext.Clear();
             CSVImporter csvimporter = CurrentImporter = new CSVImporter(mfbImportAircraft1.ModelMapping);
-            csvimporter.InitWithBytes(CurrentCSVSource, User.Identity.Name, AddSuccessRow, AddErrorRow, ckAutofill.Checked);
+
+            // Issue #1172 - support for local times.
+
+            // make a copy of the autofill options so that we don't muck up user's settings in memory
+            AutoFillOptions afo = rbAutofillNone.Checked ? null : new AutoFillOptions(AutoFillOptions.DefaultOptionsForUser(User.Identity.Name));
+            if (afo != null)
+            {
+                if (afo != null)
+                    afo.IncludeHeliports = true;
+
+                if (rbAutofillLocal.Checked)
+                {
+                    afo.TryLocal = true;
+                    afo.AutoFillTotal = AutoFillOptions.AutoFillTotalOption.EngineTime; // we will rewrite engine times, but not block times.
+                }
+            }
+            csvimporter.InitWithBytes(CurrentCSVSource, User.Identity.Name, AddSuccessRow, AddErrorRow, afo);
 
             if (csvimporter.FlightsToImport == null || !String.IsNullOrEmpty(csvimporter.ErrorMessage))
             {

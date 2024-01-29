@@ -150,6 +150,9 @@
     <Reference Include="Dropbox.Api, Version=6.37.0.0, Culture=neutral, PublicKeyToken=310f0e82fbb45d01, processorArchitecture=MSIL">
       <HintPath>..\packages\Dropbox.Api.6.37.0\lib\netstandard2.0\Dropbox.Api.dll</HintPath>
     </Reference>
+    <Reference Include="GeoTimeZone, Version=5.3.0.0, Culture=neutral, PublicKeyToken=e20ab7d0d9479841, processorArchitecture=MSIL">
+      <HintPath>..\packages\GeoTimeZone.5.3.0\lib\net462\GeoTimeZone.dll</HintPath>
+    </Reference>
     <Reference Include="Google.Authenticator, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\GoogleAuthenticator.3.1.1\lib\net462\Google.Authenticator.dll</HintPath>
     </Reference>

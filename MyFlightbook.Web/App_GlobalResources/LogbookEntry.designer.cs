@@ -2115,6 +2115,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Import data as-is.
+        /// </summary>
+        internal static string ImportWizardAutofillNone {
+            get {
+                return ResourceManager.GetString("ImportWizardAutofillNone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All flight/engine/block times MUST be UTC for auto-fill computations to work; do not check this box if you are using local times..
         /// </summary>
         internal static string ImportWizardAutofillNote {
@@ -2124,11 +2133,29 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Try to autofill fields like night, cross-country, landings, or total flight time, if not already provided..
+        ///   Looks up a localized string similar to Autofill fields like night, cross-country, landings, or total flight time.  ALL TIMES ARE UTC.
         /// </summary>
         internal static string ImportWizardAutofillPrompt {
             get {
                 return ResourceManager.GetString("ImportWizardAutofillPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Autofill fields like night, cross-country, landings, or total flight time, attempting to convert from local time..
+        /// </summary>
+        internal static string ImportWizardAutofillTryLocal {
+            get {
+                return ResourceManager.GetString("ImportWizardAutofillTryLocal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Times will be converted to UTC where possible, but this is not a reliable process and may yield unexpected results.  See the FAQ for more information..
+        /// </summary>
+        internal static string ImportWizardAutofillTryLocalNote {
+            get {
+                return ResourceManager.GetString("ImportWizardAutofillTryLocalNote", resourceCulture);
             }
         }
         
