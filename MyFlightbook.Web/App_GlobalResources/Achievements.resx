@@ -328,31 +328,31 @@
     <value>{0:#,##0.0} hours on {1:d}</value>
   </data>
   <data name="RecentAchievementFlyingStreakTitle" xml:space="preserve">
-    <value>Longest streak of consecutive flying days:</value>
+    <value>Longest streak of consecutive flying days</value>
   </data>
   <data name="RecentAchievementMostFlightsInDayTitle" xml:space="preserve">
-    <value>Most flights on a single day:</value>
+    <value>Most flights on a single day</value>
   </data>
   <data name="RecentAchievementsAirportsOnFlightTitle" xml:space="preserve">
-    <value>Most airports in a single flight:</value>
+    <value>Most airports in a single flight</value>
   </data>
   <data name="RecentAchievementsAirportsVisitedTitle" xml:space="preserve">
-    <value>Distinct airports visited:</value>
+    <value>Distinct airports visited</value>
   </data>
   <data name="RecentAchievementsDistinctAircraftTitle" xml:space="preserve">
-    <value>Distinct aircraft flown:</value>
+    <value>Distinct aircraft flown</value>
   </data>
   <data name="RecentAchievementsDistinctModelsTitle" xml:space="preserve">
-    <value>Distinct models flown:</value>
+    <value>Distinct models flown</value>
   </data>
   <data name="RecentAchievementsFlyingDayCountTitle" xml:space="preserve">
-    <value>Total days flown:</value>
+    <value>Total days flown</value>
   </data>
   <data name="RecentAchievementsFurthestFlightTitle" xml:space="preserve">
-    <value>Furthest flight:</value>
+    <value>Furthest flight</value>
   </data>
   <data name="RecentAchievementsLongestFlightTitle" xml:space="preserve">
-    <value>Longest flight:</value>
+    <value>Longest flight</value>
   </data>
   <data name="RecentAchievementsTitle" xml:space="preserve">
     <value>Flying stats and achievements for {0:d} to {1:d}</value>
@@ -394,16 +394,16 @@
     <value>{0} landings on {1:d}</value>
   </data>
   <data name="RecentAchievementMostLandingsInDayTitle" xml:space="preserve">
-    <value>Most landings on a single day:</value>
+    <value>Most landings on a single day</value>
   </data>
   <data name="RecentAchievementsNoFlyingStreak" xml:space="preserve">
     <value>{0:#,##0} days from {1:d} to {2:d}</value>
   </data>
   <data name="RecentAchievementsNoFlyingStreakTitle" xml:space="preserve">
-    <value>Longest streak of consecutive NON-flying days:</value>
+    <value>Longest streak of consecutive NON-flying days</value>
   </data>
   <data name="RecentAchievementsFlightsLogged" xml:space="preserve">
-    <value>Flights logged: </value>
+    <value>Flights logged</value>
   </data>
   <data name="NameNumberCountries" xml:space="preserve">
     <value>Flown in {0:#,##0} countries!</value>
@@ -424,16 +424,16 @@
     <value>Flown in {0:#,##0} US states/territories!</value>
   </data>
   <data name="RecentAchievementsAdmin1Visited" xml:space="preserve">
-    <value>States / Provinces / Regions Visited:</value>
+    <value>States / Provinces / Regions Visited</value>
   </data>
   <data name="RecentAchievementsCountriesVisited" xml:space="preserve">
-    <value>Countries Visited:</value>
+    <value>Countries Visited</value>
   </data>
   <data name="FastestHrs" xml:space="preserve">
     <value>{1:#,##0} days {2:d} to {3:d}</value>
   </data>
   <data name="FastestHrsBase" xml:space="preserve">
-    <value>Fastest accumulation of {0:#,##0} hours: </value>
+    <value>Fastest accumulation of {0:#,##0} hours</value>
   </data>
   <data name="FastestHrsNotAchieved" xml:space="preserve">
     <value>(not achieved)</value>
@@ -442,22 +442,28 @@
     <value>{0:#,##0} on {1:d}</value>
   </data>
   <data name="RecentAchievementMostAdmin1sDayTitle" xml:space="preserve">
-    <value>Most States / Provinces / Regions visited in a single day:</value>
+    <value>Most States / Provinces / Regions visited in a single day</value>
   </data>
   <data name="RecentAchievementMostAirportsInDay" xml:space="preserve">
     <value>{0:#,##0} airports on {1:d}</value>
   </data>
   <data name="RecentAchievementMostAirportsInDayTitle" xml:space="preserve">
-    <value>Most airports visited in a single day:</value>
+    <value>Most airports visited in a single day</value>
   </data>
   <data name="RecentAchievementMostCountriesDay" xml:space="preserve">
     <value>{0:#,##0} on {1:d}</value>
   </data>
   <data name="RecentAchievementMostCountriesDayTitle" xml:space="preserve">
-    <value>Most countries visited in a single day:</value>
+    <value>Most countries visited in a single day</value>
   </data>
   <data name="RecentAchievementsAdmin1VisitedDisplay" xml:space="preserve">
     <value>{0:#,##0} ({1})</value>
     <comment>e.g., "32 (United States)"</comment>
+  </data>
+  <data name="RecentAchievementsMostHoursInDay" xml:space="preserve">
+    <value>{0:#,##0.0#} on {1:d}</value>
+  </data>
+  <data name="RecentAchievementsMostHoursInDayTitle" xml:space="preserve">
+    <value>Most hours logged in a single day</value>
   </data>
 </root>

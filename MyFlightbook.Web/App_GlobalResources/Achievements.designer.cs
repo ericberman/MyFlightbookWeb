@@ -196,7 +196,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fastest accumulation of {0:#,##0} hours: .
+        ///   Looks up a localized string similar to Fastest accumulation of {0:#,##0} hours.
         /// </summary>
         internal static string FastestHrsBase {
             get {
@@ -763,7 +763,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Longest streak of consecutive flying days:.
+        ///   Looks up a localized string similar to Longest streak of consecutive flying days.
         /// </summary>
         internal static string RecentAchievementFlyingStreakTitle {
             get {
@@ -781,7 +781,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Most States / Provinces / Regions visited in a single day:.
+        ///   Looks up a localized string similar to Most States / Provinces / Regions visited in a single day.
         /// </summary>
         internal static string RecentAchievementMostAdmin1sDayTitle {
             get {
@@ -799,7 +799,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Most airports visited in a single day:.
+        ///   Looks up a localized string similar to Most airports visited in a single day.
         /// </summary>
         internal static string RecentAchievementMostAirportsInDayTitle {
             get {
@@ -817,7 +817,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Most countries visited in a single day:.
+        ///   Looks up a localized string similar to Most countries visited in a single day.
         /// </summary>
         internal static string RecentAchievementMostCountriesDayTitle {
             get {
@@ -835,7 +835,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Most flights on a single day:.
+        ///   Looks up a localized string similar to Most flights on a single day.
         /// </summary>
         internal static string RecentAchievementMostFlightsInDayTitle {
             get {
@@ -853,7 +853,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Most landings on a single day:.
+        ///   Looks up a localized string similar to Most landings on a single day.
         /// </summary>
         internal static string RecentAchievementMostLandingsInDayTitle {
             get {
@@ -862,7 +862,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to States / Provinces / Regions Visited:.
+        ///   Looks up a localized string similar to States / Provinces / Regions Visited.
         /// </summary>
         internal static string RecentAchievementsAdmin1Visited {
             get {
@@ -889,7 +889,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Most airports in a single flight:.
+        ///   Looks up a localized string similar to Most airports in a single flight.
         /// </summary>
         internal static string RecentAchievementsAirportsOnFlightTitle {
             get {
@@ -907,7 +907,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Distinct airports visited:.
+        ///   Looks up a localized string similar to Distinct airports visited.
         /// </summary>
         internal static string RecentAchievementsAirportsVisitedTitle {
             get {
@@ -925,7 +925,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Countries Visited:.
+        ///   Looks up a localized string similar to Countries Visited.
         /// </summary>
         internal static string RecentAchievementsCountriesVisited {
             get {
@@ -943,7 +943,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Distinct aircraft flown:.
+        ///   Looks up a localized string similar to Distinct aircraft flown.
         /// </summary>
         internal static string RecentAchievementsDistinctAircraftTitle {
             get {
@@ -970,7 +970,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Distinct models flown:.
+        ///   Looks up a localized string similar to Distinct models flown.
         /// </summary>
         internal static string RecentAchievementsDistinctModelsTitle {
             get {
@@ -979,7 +979,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Flights logged: .
+        ///   Looks up a localized string similar to Flights logged.
         /// </summary>
         internal static string RecentAchievementsFlightsLogged {
             get {
@@ -997,7 +997,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Total days flown:.
+        ///   Looks up a localized string similar to Total days flown.
         /// </summary>
         internal static string RecentAchievementsFlyingDayCountTitle {
             get {
@@ -1015,7 +1015,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Furthest flight:.
+        ///   Looks up a localized string similar to Furthest flight.
         /// </summary>
         internal static string RecentAchievementsFurthestFlightTitle {
             get {
@@ -1033,11 +1033,29 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Longest flight:.
+        ///   Looks up a localized string similar to Longest flight.
         /// </summary>
         internal static string RecentAchievementsLongestFlightTitle {
             get {
                 return ResourceManager.GetString("RecentAchievementsLongestFlightTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0:#,##0.0#} on {1:d}.
+        /// </summary>
+        internal static string RecentAchievementsMostHoursInDay {
+            get {
+                return ResourceManager.GetString("RecentAchievementsMostHoursInDay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Most hours logged in a single day.
+        /// </summary>
+        internal static string RecentAchievementsMostHoursInDayTitle {
+            get {
+                return ResourceManager.GetString("RecentAchievementsMostHoursInDayTitle", resourceCulture);
             }
         }
         
@@ -1051,7 +1069,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Longest streak of consecutive NON-flying days:.
+        ///   Looks up a localized string similar to Longest streak of consecutive NON-flying days.
         /// </summary>
         internal static string RecentAchievementsNoFlyingStreakTitle {
             get {

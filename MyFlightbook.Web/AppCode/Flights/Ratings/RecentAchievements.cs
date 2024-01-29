@@ -182,9 +182,10 @@ namespace MyFlightbook.RatingsProgress
         /// </summary>
         public bool AutoDateRange { get; set; }
 
-        // # of distinct dates with flights, flights per day
+        // # of distinct dates with flights, flights, hours per day
         protected Dictionary<string, int> FlightDates { get; private set; } = new Dictionary<string, int>();
         protected Dictionary<string, int> FlightLandings { get; private set; } = new Dictionary<string, int>();
+        protected Dictionary<string, decimal> FlightHours { get; private set; } = new Dictionary<string, decimal>();
 
         /// <summary>
         /// Airports visited on a flight.
@@ -192,6 +193,7 @@ namespace MyFlightbook.RatingsProgress
         protected Dictionary<string, string> AirportsByDate { get; private set; } = new Dictionary<string, string>();
         protected int MaxFlightsPerDay { get; set; }
         protected int MaxLandingsPerDay { get; set; }
+        protected decimal MaxHoursPerDay { get; set; }
 
         /// <summary>
         /// Total Number of flights
@@ -241,6 +243,11 @@ namespace MyFlightbook.RatingsProgress
         /// Most flights in a day
         /// </summary>
         protected RecentAchievementMilestone miMostFlightsInDay { get; set; }
+
+        /// <summary>
+        /// Most hours in a day
+        /// </summary>
+        protected RecentAchievementMilestone miMostHoursInDay { get; set; }
 
         /// <summary>
         /// Most landings in a day
@@ -328,6 +335,7 @@ namespace MyFlightbook.RatingsProgress
             miLongestNoFlyStreak = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsNoFlyingStreakTitle, MilestoneItem.MilestoneType.Count, 1) { Category = RecentAchievementCategory.Time };
             miFlyingDates = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsFlyingDayCountTitle, MilestoneItem.MilestoneType.Count, 1) { Category = RecentAchievementCategory.Time }; ;
             miMostFlightsInDay = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementMostFlightsInDayTitle, MilestoneItem.MilestoneType.Count, 2) { Category = RecentAchievementCategory.Time }; ;
+            miMostHoursInDay = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsMostHoursInDayTitle, MilestoneItem.MilestoneType.Time, 2) { Category = RecentAchievementCategory.Time };
             miMostLandingsInDay = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementMostLandingsInDayTitle, MilestoneItem.MilestoneType.Count, 2) { Category = RecentAchievementCategory.Time }; ;
             miLongestFlight = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsLongestFlightTitle, MilestoneItem.MilestoneType.AchieveOnce, 1) { Category = RecentAchievementCategory.Geography }; ;
             miFurthestFlight = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsFurthestFlightTitle, MilestoneItem.MilestoneType.AchieveOnce, 1) { Category = RecentAchievementCategory.Geography }; ;
@@ -339,7 +347,7 @@ namespace MyFlightbook.RatingsProgress
             miAdmin1 = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsAdmin1Visited, MilestoneItem.MilestoneType.Count, 2) { Category = RecentAchievementCategory.Geography }; ;
             miMostAirportsDay = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementMostAirportsInDayTitle, MilestoneItem.MilestoneType.Count, 2) { Category = RecentAchievementCategory.Geography }; ;
             miMostCountriesDay = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementMostCountriesDayTitle, MilestoneItem.MilestoneType.Count, 2) { Category = RecentAchievementCategory.Geography }; ;
-            miMostAdmin1sDay = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementMostAdmin1sDayTitle, MilestoneItem.MilestoneType.Count, 2) { Category = RecentAchievementCategory.Geography }; ;
+            miMostAdmin1sDay = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementMostAdmin1sDayTitle, MilestoneItem.MilestoneType.Count, 2) { Category = RecentAchievementCategory.Geography };
         }
 
         public static RecentAchievements AchievementsForDateRange(string szUser, FlightQuery.DateRanges range, DateTime? dtStart = null, DateTime? dtEnd = null)
@@ -471,6 +479,7 @@ namespace MyFlightbook.RatingsProgress
                     miLongestStreak,
                     miLongestNoFlyStreak,
                     miMostFlightsInDay,
+                    miMostHoursInDay,
                     miMostLandingsInDay,
                     miLongestFlight,
                     miFurthestFlight,
@@ -588,6 +597,15 @@ namespace MyFlightbook.RatingsProgress
                 miMostLandingsInDay.Progress = cLandings;
                 miMostLandingsInDay.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementMostLandingsInDay, cLandings, cfr.dtFlight);
                 miMostLandingsInDay.Query = new FlightQuery(Username) { DateRange = FlightQuery.DateRanges.Custom, DateMin = cfr.dtFlight, DateMax = cfr.dtFlight };
+            }
+
+            decimal hours = FlightHours[szDateKey] = FlightHours.TryGetValue(szDateKey, out decimal flightHours) ? flightHours + cfr.Total : cfr.Total;
+            if (hours > MaxHoursPerDay && hours <= 24)
+            {
+                MaxHoursPerDay = hours;
+                miMostHoursInDay.Progress = hours;
+                miMostHoursInDay.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementsMostHoursInDay, hours, cfr.dtFlight);
+                miMostHoursInDay.Query = new FlightQuery(Username) { DateRange = FlightQuery.DateRanges.Custom, DateMin = cfr.dtFlight, DateMax = cfr.dtFlight };
             }
 
             // Longest flight
