@@ -539,26 +539,8 @@ namespace MyFlightbook.RatingsProgress
             return hsThisFlight.Count;
         }
 
-        public override void ExamineFlight(ExaminerFlightRow cfr)
+        private void ExamineStreaks(DateTime dtFlight)
         {
-            if (cfr == null)
-                throw new ArgumentNullException(nameof(cfr));
-            DateTime dtFlight = cfr.dtFlight.Date;
-
-            if (AutoDateRange)
-            {
-                StartDate = StartDate.EarlierDate(dtFlight);
-                EndDate = EndDate.LaterDate(dtFlight);
-            }
-
-            // ignore anything not in a real aircraft or outside of our date range
-            if (!cfr.fIsRealAircraft || dtFlight.CompareTo(StartDate) < 0 || dtFlight.CompareTo(EndDate) > 0)
-                return;
-
-            miFlightCount.AddEvent(1);
-
-            string szDateKey = dtFlight.YMDString();
-
             // Initialize the current streak, if needed
             if (FirstDayOfCurrentStreak == null || LastDayOfCurrentStreak == null)
                 FirstDayOfCurrentStreak = LastDayOfCurrentStreak = dtFlight;
@@ -575,7 +557,10 @@ namespace MyFlightbook.RatingsProgress
                 FirstFlyingDayOfStreak = FirstDayOfCurrentStreak;
                 LastFlyingDayOfStreak = LastDayOfCurrentStreak;
             }
-                  
+        }
+
+        private void ExamineExtremes(string szDateKey, ExaminerFlightRow cfr)
+        {
             // Distinct flights on dates
             FlightDates[szDateKey] = FlightDates.TryGetValue(szDateKey, out int value) ? value + 1 : 1;
 
@@ -614,8 +599,32 @@ namespace MyFlightbook.RatingsProgress
                 LongestFlightLength = cfr.Total;
                 miLongestFlight.Progress = 1;
                 miLongestFlight.MatchingEventID = cfr.flightID;
-                miLongestFlight.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementsLongestFlight, cfr.Total, dtFlight);
+                miLongestFlight.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementsLongestFlight, cfr.Total, cfr.dtFlight);
             }
+        }
+
+        public override void ExamineFlight(ExaminerFlightRow cfr)
+        {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
+            DateTime dtFlight = cfr.dtFlight.Date;
+
+            if (AutoDateRange)
+            {
+                StartDate = StartDate.EarlierDate(dtFlight);
+                EndDate = EndDate.LaterDate(dtFlight);
+            }
+
+            // ignore anything not in a real aircraft or outside of our date range
+            if (!cfr.fIsRealAircraft || dtFlight.CompareTo(StartDate) < 0 || dtFlight.CompareTo(EndDate) > 0)
+                return;
+
+            miFlightCount.AddEvent(1);
+
+            string szDateKey = dtFlight.YMDString();
+
+            ExamineStreaks(dtFlight);
+            ExamineExtremes(szDateKey, cfr);
 
             // Distinct aircraft/models
             DistinctAircraft.Add(cfr.idAircraft);
