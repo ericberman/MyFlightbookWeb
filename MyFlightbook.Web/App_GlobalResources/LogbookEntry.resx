@@ -1248,7 +1248,7 @@ Proceed with import?</value>
     <value>All flight aircraft were found in your account!  You can proceed to preview.</value>
   </data>
   <data name="ImportWizardAutofillNote" xml:space="preserve">
-    <value>All flight/engine/block times MUST be UTC for auto-fill computations to work; do not check this box if you are using local times.</value>
+    <value>*All* flight/engine/block times MUST be UTC for auto-fill computations to work; *do not check this box if you are using local times.*</value>
   </data>
   <data name="ImportWizardAutofillPrompt" xml:space="preserve">
     <value>Autofill fields like night, cross-country, landings, or total flight time.  ALL TIMES ARE UTC</value>
@@ -1745,6 +1745,6 @@ Proceed with import?</value>
     <value>Autofill fields like night, cross-country, landings, or total flight time, attempting to convert from local time.</value>
   </data>
   <data name="ImportWizardAutofillTryLocalNote" xml:space="preserve">
-    <value>Times will be converted to UTC where possible, but this is not a reliable process and may yield unexpected results.  See the FAQ for more information.</value>
+    <value>Times will be converted to UTC where possible, but this is not a reliable process and may yield unexpected results.  See the [FAQ](https://myflightbook.com/logbook/mvc/faq?q=44#44) for more information.</value>
   </data>
 </root>

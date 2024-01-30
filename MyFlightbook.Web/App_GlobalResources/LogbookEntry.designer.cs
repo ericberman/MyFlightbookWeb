@@ -1913,10 +1913,11 @@ namespace Resources {
         ///   Looks up a localized string similar to  &lt;p&gt;
         ///    %APP_NAME% can import flights, whether from a spreadsheet that you create or as an export from other logbook programs. &lt;/p&gt;
         ///&lt;p&gt;
-        ///    Your file it &lt;span style=&quot;font-weight:bold&quot;&gt;must&lt;/span&gt; be in the form of a &lt;a href=&apos;https://en.wikipedia.org/wiki/Comma-separated_values&apos; style=&quot;font-weight:bold;&quot; target=&apos;_blank\&apos;&gt;CSV&lt;/a&gt; (spreadsheet) file.
+        ///    Your file &lt;span style=&quot;font-weight:bold&quot;&gt;must&lt;/span&gt; be in the form of a &lt;a href=&apos;https://en.wikipedia.org/wiki/Comma-separated_values&apos; style=&quot;font-weight:bold;&quot; target=&apos;_blank\&apos;&gt;CSV&lt;/a&gt; (spreadsheet) file, which 
+        ///    all major spreadsheets can read/write.
         ///&lt;/p&gt;
         ///&lt;ul&gt;
-        ///    &lt;li&gt;The &lt;span style=&quot;font-weight:bold&quot;&gt;first&lt;/span&gt; row of the table (spreadsheet) must be the set of headers that identify which column is wh [rest of string was truncated]&quot;;.
+        ///    &lt;li&gt;The &lt;span style=&quot;font-weight:bold&quot;&gt;first&lt;/span&gt; row of the table (spreadsheet) must be the [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ImportOverview {
             get {
@@ -2124,7 +2125,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to All flight/engine/block times MUST be UTC for auto-fill computations to work; do not check this box if you are using local times..
+        ///   Looks up a localized string similar to *All* flight/engine/block times MUST be UTC for auto-fill computations to work; *do not check this box if you are using local times.*.
         /// </summary>
         internal static string ImportWizardAutofillNote {
             get {
@@ -2151,7 +2152,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Times will be converted to UTC where possible, but this is not a reliable process and may yield unexpected results.  See the FAQ for more information..
+        ///   Looks up a localized string similar to Times will be converted to UTC where possible, but this is not a reliable process and may yield unexpected results.  See the [FAQ](https://myflightbook.com/logbook/mvc/faq?q=44#44) for more information..
         /// </summary>
         internal static string ImportWizardAutofillTryLocalNote {
             get {

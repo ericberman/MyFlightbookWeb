@@ -72,7 +72,7 @@
                             <td>
                                 <asp:Label ID="Label5" runat="server"  Text="<%$ Resources:LogbookEntry, ImportWizardAutofillPrompt %>" AssociatedControlID="rbAutofillUtc"></asp:Label><br />
                                 <asp:Label ID="Label6" runat="server" Text="<%$ Resources:LocalizedText, Note %>" CssClass="fineprint" Font-Bold="true" AssociatedControlID="rbAutofillUtc"></asp:Label>
-                                <asp:Label ID="Label7" runat="server" Text="<%$ Resources:LogbookEntry, ImportWizardAutofillNote %>" CssClass="fineprint" AssociatedControlID="rbAutofillUtc"></asp:Label>
+                                <% =Resources.LogbookEntry.ImportWizardAutofillNote.Linkify() %>
                             </td>
                         </tr>
                         <tr style="vertical-align:top">
@@ -80,7 +80,7 @@
                             <td>
                                 <asp:Label ID="lblAutofillLabel" runat="server"  Text="<%$ Resources:LogbookEntry, ImportWizardAutofillTryLocal %>" AssociatedControlID="rbAutofillLocal"></asp:Label><br />
                                 <asp:Label ID="lblNoteAutofill" runat="server" Text="<%$ Resources:LocalizedText, Note %>" CssClass="fineprint" Font-Bold="true" AssociatedControlID="rbAutofillLocal"></asp:Label>
-                                <asp:Label ID="locAutofill" runat="server" Text="<%$ Resources:LogbookEntry, ImportWizardAutofillTryLocalNote %>" CssClass="fineprint" AssociatedControlID="rbAutofillLocal"></asp:Label>
+                                <% =Resources.LogbookEntry.ImportWizardAutofillTryLocalNote.Linkify() %>
                             </td>
                         </tr>
                     </table>
