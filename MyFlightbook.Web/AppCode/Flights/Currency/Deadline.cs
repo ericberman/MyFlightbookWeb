@@ -5,7 +5,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2023 MyFlightbook LLC
+ * Copyright (c) 2007-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -368,15 +368,12 @@ FROM
         INNER JOIN
     maintenancelog ml ON ua.username = ml.user
         INNER JOIN
-    deadlines d ON (ml.idaircraft = d.aircraftID
-        AND d.username IS NULL)
+    deadlines d ON ua.idaircraft = d.aircraftid
         INNER JOIN
-    aircraft ac ON d.aircraftID = ac.idaircraft
-	LEFT JOIN flights f on (f.username=?user and f.idaircraft=d.aircraftid)
+    aircraft ac ON ua.idaircraft = ac.idaircraft
+	LEFT JOIN flights f on (f.username=ua.username and f.idaircraft=ua.idaircraft)
 	LEFT JOIN flightproperties fp on (fp.idproptype=96 and fp.idflight=f.idflight)
-WHERE
-    ua.username = ?user
-        AND (ua.Flags & 0x0008) = 0
+WHERE ua.username = ?user AND d.username is null AND (ua.Flags & 0x0008) = 0
 GROUP BY d.iddeadlines";
 
             List<DeadlineCurrency> lst = new List<DeadlineCurrency>();

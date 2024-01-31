@@ -4,7 +4,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2021-2023 MyFlightbook LLC
+ * Copyright (c) 2021-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -51,7 +51,7 @@ namespace MyFlightbook.Currency
         {
             if (cfr == null)
                 throw new ArgumentNullException(nameof(cfr));
-            if (cfr.FlightProps.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropPilotMonitoring) || cfr.Night == 0.0M || !cfr.fIsCertifiedLanding)
+            if (cfr.FlightProps.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropPilotMonitoring) || !cfr.fIsCertifiedLanding)
                 return;
 
             int cNightTouchAndGo = cfr.FlightProps.TotalCountForPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTouchAndGo);
