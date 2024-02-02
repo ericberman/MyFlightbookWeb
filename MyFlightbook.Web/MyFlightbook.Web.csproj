@@ -1495,7 +1495,6 @@
     <Content Include="Public\tabimages\ProfileTab.png" />
     <Content Include="Public\tabimages\TrainingTab.png" />
     <Content Include="Public\TotalsAndCurrencyEmail.aspx" />
-    <Content Include="Public\Unsubscribe.aspx" />
     <Content Include="Public\UploadAirplanePicture.aspx" />
     <Content Include="Public\UploadEndorsement.aspx" />
     <Content Include="Public\UploadPicture.aspx" />
@@ -1580,6 +1579,7 @@
     <Content Include="Areas\mvc\Views\Training\_editEndorsement.cshtml" />
     <Content Include="Areas\mvc\Views\Training\_editableEndorsement.cshtml" />
     <Content Include="Areas\mvc\Views\Training\addEndorsement.cshtml" />
+    <Content Include="Areas\mvc\Views\Pub\unsubscribe.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -2969,13 +2969,6 @@
     </Compile>
     <Compile Include="Public\TotalsAndCurrencyEmail.aspx.designer.cs">
       <DependentUpon>TotalsAndCurrencyEmail.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Public\Unsubscribe.aspx.cs">
-      <DependentUpon>Unsubscribe.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\Unsubscribe.aspx.designer.cs">
-      <DependentUpon>Unsubscribe.aspx</DependentUpon>
     </Compile>
     <Compile Include="Public\UploadAirplanePicture.aspx.cs">
       <DependentUpon>UploadAirplanePicture.aspx</DependentUpon>

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using MyFlightbook.Encryptors;
 
 /******************************************************
  * 
@@ -608,7 +609,7 @@ namespace MyFlightbook.Subscriptions
         {
             Encryptors.AdminAuthEncryptor enc = new Encryptors.AdminAuthEncryptor();
 
-            String szURL = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?k={2}&u={3}&p={4}", ActiveBrand.HostName, VirtualPathUtility.ToAbsolute("~/public/TotalsAndcurrencyEmail.aspx"), HttpUtility.UrlEncode(enc.Encrypt(DateTime.Now.ToString("s", CultureInfo.InvariantCulture))), HttpUtility.UrlEncode(pf.UserName), HttpUtility.UrlEncode(szParam));
+            string szURL = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?k={2}&u={3}&p={4}", ActiveBrand.HostName, VirtualPathUtility.ToAbsolute("~/public/TotalsAndcurrencyEmail.aspx"), HttpUtility.UrlEncode(enc.Encrypt(DateTime.Now.ToString("s", CultureInfo.InvariantCulture))), HttpUtility.UrlEncode(pf.UserName), HttpUtility.UrlEncode(szParam));
             try
             {
                 using (System.Net.WebClient wc = new System.Net.WebClient())
@@ -617,7 +618,7 @@ namespace MyFlightbook.Subscriptions
                     string szContent = System.Text.UTF8Encoding.UTF8.GetString(rgdata);
                     if (szContent.Contains("-- SuccessToken --"))
                     {
-                        util.NotifyUser(szSubject, System.Text.UTF8Encoding.UTF8.GetString(rgdata), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, true);
+                        util.NotifyUser(szSubject, System.Text.UTF8Encoding.UTF8.GetString(rgdata), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, true, String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?u={2}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/mvc/pub/unsubscribe"), HttpUtility.UrlEncode(new UserAccessEncryptor().Encrypt(pf.UserName))));
                         return true;
                     }
                 }

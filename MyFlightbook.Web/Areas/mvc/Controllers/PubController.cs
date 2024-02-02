@@ -1,5 +1,6 @@
 ﻿using MyFlightbook.Airports;
 using MyFlightbook.Clubs;
+using MyFlightbook.Encryptors;
 using MyFlightbook.Image;
 using MyFlightbook.Mapping;
 using MyFlightbook.Telemetry;
@@ -13,7 +14,7 @@ using System.Web.Mvc;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2023 MyFlightbook LLC
+ * Copyright (c) 2007-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -164,6 +165,29 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return View("ViewFlight");
         }
         #endregion
+
+        public ActionResult Unsubscribe(string u)
+        {
+            ViewBag.isError = false;
+            try
+            {
+                if (String.IsNullOrEmpty(u))
+                    throw new MyFlightbookException(Resources.Profile.errUnsubscribeNoEmail);
+                string szUser = new UserAccessEncryptor().Decrypt(u);
+                if (String.IsNullOrEmpty(szUser))
+                    throw new MyFlightbookException(Resources.Profile.errUnsubscribeNoEmail);
+                Profile pf = MyFlightbook.Profile.GetUser(szUser) ?? throw new MyFlightbookException(Resources.Profile.errUnsubscribeNotFound);
+                pf.Subscriptions = 0;
+                pf.FCommit();
+                ViewBag.unsubscribeResult = String.Format(CultureInfo.CurrentCulture, Resources.Profile.UnsubscribeSuccessful, pf.Email);
+            }
+            catch (MyFlightbookException ex)
+            {
+                ViewBag.isError = true;
+                ViewBag.unsubscribeResult = ex.Message;
+            }
+            return View("unsubscribe");
+        }
 
         public ActionResult PropertyTable()
         {

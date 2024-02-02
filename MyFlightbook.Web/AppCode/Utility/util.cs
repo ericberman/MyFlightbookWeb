@@ -1,4 +1,3 @@
-using Dropbox.Api.TeamLog;
 using MyFlightbook.CSV;
 using MySql.Data.MySqlClient;
 using System;
@@ -11,7 +10,6 @@ using System.Net.Http;
 using System.Net.Mail;
 using System.Reflection;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.UI;
@@ -609,7 +607,8 @@ namespace MyFlightbook
         /// <param name="fIsHTML">True if the content of the message is HTML</param>
         /// <param name="brand">The branding to use</param>
         /// <param name="RoleMask">The roles to whom this should go (if admin)</param>
-        static private void NotifyUser(string szSubject, string szMessage, MailAddress maUser, bool fCcAdmins, bool fIsHTML, Brand brand, uint RoleMask)
+        /// <param name="unsubscribeLink">If present, will provide one-click unsubscribe in the headers</param>
+        static private void NotifyUser(string szSubject, string szMessage, MailAddress maUser, bool fCcAdmins, bool fIsHTML, Brand brand, uint RoleMask, string unsubscribeLink = null)
         {
             if (brand == null)
                 brand = Branding.CurrentBrand;
@@ -628,6 +627,12 @@ namespace MyFlightbook
                         msg.IsBodyHtml = fIsHTML || szMessage.Contains("<!DOCTYPE");
 
                         msg.From = new MailAddress(brand.EmailAddress, brand.AppName);
+
+                        if (!String.IsNullOrEmpty(unsubscribeLink))
+                        {
+                            msg.Headers.Add("List-Unsubscribe", String.Format(CultureInfo.InvariantCulture, "<{0}>", unsubscribeLink));
+                            msg.Headers.Add("List-Unsubscribe-Post", "List-Unsubscribe=One-Click");
+                        }
 
                         if (maUser != null)
                             msg.To.Add(maUser);
@@ -652,9 +657,9 @@ namespace MyFlightbook
         /// <param name="maUser">The address of the recipient</param>
         /// <param name="fCcAdmins">True if you want Admins CC'd; false if not</param>
         /// <param name="fIsHTML">True if the content of the message is HTML</param>
-        static public void NotifyUser(string szSubject, string szMessage, MailAddress maUser, bool fCcAdmins, bool fIsHTML)
+        static public void NotifyUser(string szSubject, string szMessage, MailAddress maUser, bool fCcAdmins, bool fIsHTML, string unsubscribeLink = null)
         {
-            NotifyUser(szSubject, szMessage, maUser, fCcAdmins, fIsHTML, Branding.CurrentBrand, fCcAdmins ? ProfileRoles.maskCanSupport : 0);
+            NotifyUser(szSubject, szMessage, maUser, fCcAdmins, fIsHTML, Branding.CurrentBrand, fCcAdmins ? ProfileRoles.maskCanSupport : 0, unsubscribeLink);
         }
 
         /// <summary>

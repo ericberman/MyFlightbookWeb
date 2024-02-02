@@ -11,7 +11,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2023 MyFlightbook LLC
+ * Copyright (c) 2012-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -138,7 +138,7 @@ namespace MyFlightbook.Subscriptions
 
                 // Fix up the unsubscribe link.
                 lnkUnsubscribe.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}/{2}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx"), tabID.pftPrefs.ToString());
-                lnkQuickUnsubscribe.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?u={2}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/Public/Unsubscribe.aspx"), HttpUtility.UrlEncode(new UserAccessEncryptor().Encrypt(Username)));
+                lnkQuickUnsubscribe.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?u={2}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/mvc/pub/unsubscribe"), HttpUtility.UrlEncode(new UserAccessEncryptor().Encrypt(Username)));
 
                 bool fAnnual = (DateTime.Now.Month == 1 && DateTime.Now.Day == 1);  // if it's January 1, show prior year; else show YTD
                 TimeRollup tr = new TimeRollup(Username, null) { IncludeLast7Days = !fMonthlySummary, IncludeMonthToDate = !fMonthlySummary, IncludePreviousMonth = true, IncludePreviousYear = true, IncludeYearToDate = !fAnnual, IncludeTrailing12 = !fAnnual };

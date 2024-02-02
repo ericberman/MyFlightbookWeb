@@ -1,0 +1,9 @@
+﻿@{
+    ViewBag.Title = Resources.Profile.UnsubscribeHeader;
+    ViewBag.defaultTab = tabID.tabHome;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+
+<div class="@(ViewBag.isError ? "error" : "success")">
+    @ViewBag.unsubscribeResult
+</div>
