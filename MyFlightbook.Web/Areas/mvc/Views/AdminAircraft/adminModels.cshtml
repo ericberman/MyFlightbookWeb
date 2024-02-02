@@ -37,9 +37,10 @@
             },
             complete: function (response) { },
             success: function (response) {
-                $(sender).parents('tr').toggle();
+                $(sender).parents('tr').remove();
             }
         });
+        return false;
     }
 
     function refreshDupes() {

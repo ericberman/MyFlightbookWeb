@@ -24,28 +24,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         [HttpPost]
-        [Authorize]
-        public ActionResult dupeUsers()
-        {
-            if (!MyFlightbook.Profile.GetUser(User.Identity.Name).CanSupport)
-                throw new UnauthorizedAccessException();
-
-            ViewBag.DupeUsers = ProfileAdmin.ADMINDuplicateUsers();
-            return PartialView("_dupeUsers");
-        }
-
-        [HttpPost]
-        [Authorize]
-        public ActionResult lockedUsers()
-        {
-            if (!MyFlightbook.Profile.GetUser(User.Identity.Name).CanSupport)
-                throw new UnauthorizedAccessException();
-
-            ViewBag.LockedUsers = ProfileAdmin.ADMINLockedUsers();
-            return PartialView("_lockedUsers");
-        }
-
-        [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
         public ActionResult Impersonate(string szUserPKID)
@@ -69,6 +47,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             if (!MyFlightbook.Profile.GetUser(User.Identity.Name).CanSupport)
                 throw new UnauthorizedAccessException("Attempt to access an admin page by an unauthorized user: " +  User.Identity.Name);
 
+            ViewBag.DupeUsers = ProfileAdmin.ADMINDuplicateUsers();
+            ViewBag.LockedUsers = ProfileAdmin.ADMINLockedUsers();
             return View("adminUser");
         }
     }

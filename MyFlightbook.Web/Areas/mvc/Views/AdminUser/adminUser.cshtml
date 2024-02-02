@@ -9,7 +9,7 @@
 
 <script type="text/javascript">
     function findUsers(szSearch) {
-        $("#userTableResult").html("<img src='@VirtualPathUtility.ToAbsolute("~/images/ajax-loader.gif")' />");
+        $("#prgFindUser").toggle();
         var params = new Object();
         params.szSearch = szSearch;
         var d = JSON.stringify(params);
@@ -21,10 +21,8 @@
                     $("#userTableResult").html("");
                     window.alert(xhr.responseJSON.Message);
                 },
-                complete: function (response) { },
-                success: function (response) {
-                    $("#userTableResult").html(response);
-                }
+                complete: function (response) { $("#prgFindUser").toggle(); },
+                success: function (response) { $("#userTableResult").html(response); }
             });
         return false;
     }
@@ -36,35 +34,6 @@
                 return false;
             }
         });
-    });
-
-    $(function () {
-        var params = new Object();
-        var d = JSON.stringify(params);
-        $.ajax(
-            {
-                url: '@Url.Action("lockedUsers", "adminUser")',
-                type: "POST", data: d, dataType: "html", contentType: "application/json",
-                error: function (xhr, status, error) {
-                    window.alert(xhr.responseJSON.Message);
-                },
-                complete: function (response) { },
-                success: function (response) {
-                    $("#lockedUserContainer").html(response);
-                }
-            });
-        $.ajax(
-            {
-                url: '@Url.Action("dupeUsers", "adminUser")',
-                type: "POST", data: d, dataType: "html", contentType: "application/json",
-                error: function (xhr, status, error) {
-                    window.alert(xhr.responseJSON.Message);
-                },
-                complete: function (response) { },
-                success: function (response) {
-                    $("#dupeUserContainer").html(response);
-                }
-            });
     });
 
     function impersonate(szUser) {
@@ -106,6 +75,7 @@
 <div>
     Find User: <input type="text" placeholder="(name, email, or username)" id="txtFindUsers" style="width: 250px" />
     <input type="button" id="btnFindUsers" value="Find" onclick="javascript:findUsers(document.getElementById('txtFindUsers').value);" />
+    <img src='@("~/images/progress.gif".ToAbsolute())' style="max-width: 16px; max-height: 16px; vertical-align: middle; display: none;" id="prgFindUser" />
 
     @using (Html.BeginForm("Impersonate", "AdminUser", FormMethod.Post))
     {
@@ -119,9 +89,58 @@
 </div>
 <br /><br />
 <h3>Duplicate Users:</h3>
-<div id="dupeUserContainer"><img style="max-height: 16px; max-width: 16px;" src="@VirtualPathUtility.ToAbsolute("~/images/progress.gif")" />Checking for duplicate users...</div>
+<div id="dupeUserContainer">
+    @if (ViewBag.DupeUsers.Count != 0)
+    {
+        <ul>
+            @foreach (string szUser in ViewBag.DupeUsers)
+            {
+                <li>@szUser</li>
+            }
+        </ul>
+    }
+    else
+    {
+        <div>(No duplicates found)</div>
+    }
+</div>
 <h3>Locked Users:</h3>
-<div id="lockedUserContainer"><img style="max-height: 16px; max-width: 16px;"  src="@VirtualPathUtility.ToAbsolute("~/images/progress.gif")" />Checking for locked users...</div>
+<div id="lockedUserContainer">
+    @if (ViewBag.LockedUsers.Count != 0)
+    {
+        <table class="stickyHeaderTable">
+            <thead>
+                <tr>
+                    <th class="gvhDefault"></th>
+                    <th class="gvhDefault">Username</th>
+                    <th class="gvhDefault">Email</th>
+                    <th class="gvhDefault">Last Locked Out</th>
+                    <th class="gvhDefault"># Failed PW</th>
+                    <th class="gvhDefault">Failed PW Window Start</th>
+                    <th class="gvhDefault"># Failed Q/A</th>
+                    <th class="gvhDefault">Failed QA Window Start</th>
+                </tr>
+            </thead>
+            @foreach (ProfileAdmin pf in ViewBag.LockedUsers)
+            {
+                <tr>
+                    <td><input type="button" onclick="javascript: unlockUser(this, '@pf.UserName'); return false;" value="Unlock" /></td>
+                    <td>@pf.UserName</td>
+                    <td>@pf.Email</td>
+                    <td>@pf.LastLockedDate.FormatDateZulu()</td>
+                    <td>@pf.FailedPasswordAttemptCount.ToString(System.Globalization.CultureInfo.CurrentCulture)</td>
+                    <td>@pf.FailedPasswordAttemptWindow.FormatDateZulu()</td>
+                    <td>@pf.FailedQAAttemptCount.ToString(System.Globalization.CultureInfo.CurrentCulture)</td>
+                    <td>@pf.FailedQAAttemptWindow.FormatDateZulu()</td>
+                </tr>
+            }
+        </table>
+    }
+    else
+    {
+        <div>(No locked users)</div>
+    }
+</div>
 
 <div id="sendMessageDiv" style="display:none;">
     <input type="hidden" id="hdnRecipient" name="szPKID" />

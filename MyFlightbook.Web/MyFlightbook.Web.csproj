@@ -3078,9 +3078,7 @@
     <Content Include="Areas\mvc\Views\MFBTemplate\_searchbox.cshtml" />
     <Content Include="Areas\mvc\Views\MFBTemplate\_accordion.cshtml" />
     <Content Include="Areas\mvc\Views\AdminUser\adminUser.cshtml" />
-    <Content Include="Areas\mvc\Views\AdminUser\_lockedUsers.cshtml" />
     <Content Include="Areas\mvc\Views\AdminUser\_foundUsers.cshtml" />
-    <Content Include="Areas\mvc\Views\AdminUser\_dupeUsers.cshtml" />
     <Content Include="Areas\mvc\Views\AdminPayment\adminPayment.cshtml" />
     <Content Include="Areas\mvc\Views\MFBTemplate\_expandoImg.cshtml" />
     <Content Include="Areas\mvc\Views\MFBTemplate\_expandoText.cshtml" />
