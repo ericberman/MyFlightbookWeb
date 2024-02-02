@@ -31,7 +31,7 @@
                 </div>
                 @if (!String.IsNullOrEmpty(mi.Note))
                 {
-                    <div class="fineprint"><span style="font-weight:bold;">@Resources.MilestoneProgress.NoteHeader</span> <span style="font-style:italic">@Html.Raw(mi.Note.Linkify(true))</span></div>
+                    <div class="fineprint"><span style="font-weight:bold;">@Resources.MilestoneProgress.NoteHeader</span> <span style="font-style:italic">@Html.Raw(Branding.ReBrand(mi.Note).Linkify(true))</span></div>
                 }
                 @if (!String.IsNullOrEmpty(mi.Details))
                 {

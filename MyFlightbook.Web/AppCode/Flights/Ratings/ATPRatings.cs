@@ -5,7 +5,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2023 MyFlightbook LLC
+ * Copyright (c) 2013-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -145,7 +145,7 @@ namespace MyFlightbook.RatingsProgress
 
             // Remainder must be done in a real aircraft and it must be in an airplane.  
             // Not clear if the night takeoffs/landings need to be in a real aircraft / airplane, but I'll require it to be safe.
-            if (fIsAirplane)
+            if (fIsAirplane || cfr.idCatClassOverride == CategoryClass.CatClassID.PoweredLift)
             {
                 miMinPIC.AddEvent(cfr.PIC);
                 miMinPICXC.AddEvent(Math.Min(cfr.PIC, cfr.XC));

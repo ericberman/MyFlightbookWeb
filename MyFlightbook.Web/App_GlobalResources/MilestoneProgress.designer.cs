@@ -268,7 +268,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SIC time while performing the duties of PIC under the supervision of a PIC is allowed by the regulations but is not included here..
+        ///   Looks up a localized string similar to SIC time while performing the duties of PIC under the supervision of a PIC is allowed by the regulations but is not included here.  Also, per 61.159(a)(5)(ii), horizontal flight time in a powered lift may also be credited subject to 61.73; %APP_NAME% includes this if found, but may *overstate* your experience because it does not distinguish horizontal flight time nor does it know if you comply with 61.73..
         /// </summary>
         internal static string ATPPICTimeNote {
             get {
