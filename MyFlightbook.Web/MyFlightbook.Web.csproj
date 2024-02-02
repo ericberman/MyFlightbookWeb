@@ -1692,6 +1692,7 @@
     <Compile Include="AppCode\Flights\Ratings\RecentAchievements.cs" />
     <Compile Include="AppCode\Flights\Ratings\RecreationalRatings.cs" />
     <Compile Include="AppCode\Flights\Ratings\SportRatings.cs" />
+    <Compile Include="AppCode\Flights\FlightResult.cs" />
     <Compile Include="AppCode\Flights\SignOffs.cs" />
     <Compile Include="AppCode\Flights\StartingFlight.cs" />
     <Compile Include="AppCode\Flights\Totals.cs" />

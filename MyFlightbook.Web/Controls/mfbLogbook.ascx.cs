@@ -21,10 +21,25 @@ public partial class Controls_MFBLogbookBase : UserControl
     const string szFQViewStateKeyPrefix = "FQ";
     const string szKeyLastSortExpr = "LastSort";
     const string szKeylastSortDir = "LastSortDir";
+    const string szKeyCurrentRange = "currRange";
+    private const string szKeyAllowsPaging = "allowsPaging";
     private Profile m_pfPilot;
     private Profile m_pfUser;
 
     #region Properties that DON'T Depend on controls on the page
+    /// <summary>
+    /// Specifies whether or not paging should be offered
+    /// </summary>
+    protected bool AllowPaging
+    {
+        get
+        {
+            object o = ViewState[szKeyAllowsPaging];
+            return o == null || (bool)o;
+        }
+        set { ViewState[szKeyAllowsPaging] = value; }
+    }
+
     private string RestrictionVSKey { get { return szFQViewStateKeyPrefix + ID; } }
 
     /// <summary>
@@ -53,8 +68,6 @@ public partial class Controls_MFBLogbookBase : UserControl
         get { return !String.IsNullOrEmpty((string)ViewState[szViewStateSuppressImages]); }
         set { ViewState[szViewStateSuppressImages] = value ? value.ToString(CultureInfo.InvariantCulture) : string.Empty; }
     }
-    public IEnumerable<LogbookEntryDisplay> DirectData { get; set; }
-
     private const string keyVSUser = "logbookUser";
     /// <summary>
     /// Specifies the user for whom we are displaying results.
@@ -70,29 +83,37 @@ public partial class Controls_MFBLogbookBase : UserControl
     /// </summary>
     protected List<Aircraft> AircraftForUser { get; } = new List<Aircraft>();
 
-    protected Boolean HasPrevSort
+    protected string LastSortExpr
     {
-        get { return ViewState[szKeylastSortDir + ID] != null && ViewState[szKeyLastSortExpr + ID] != null; }
-    }
-
-    public string LastSortExpr
-    {
-        get
-        {
-            object o = ViewState[szKeyLastSortExpr + ID];
-            return (o == null) ? string.Empty : o.ToString();
-        }
+        get {
+            string o = (string) ViewState[szKeyLastSortExpr + ID];
+            return String.IsNullOrEmpty(o) ? LogbookEntry.DefaultSortKey : o; }
         set { ViewState[szKeyLastSortExpr + ID] = value; }
     }
 
-    public SortDirection LastSortDir
+    protected SortDirection LastSortDir
     {
-        get
-        {
+        get {
             object o = ViewState[szKeylastSortDir + ID];
             return (o == null) ? LogbookEntry.DefaultSortDir : (SortDirection)o;
         }
         set { ViewState[szKeylastSortDir + ID] = value; }
+    }
+
+    protected FlightResultManager CurrentResultManager
+    {
+        get { return FlightResultManager.FlightResultManagerForUser(User); }
+    }
+
+    public FlightResult CurrentResult
+    {
+        get { return CurrentResultManager.ResultsForQuery(Restriction); }
+    }
+
+    protected FlightResultRange CurrentRange
+    {
+        get { return (FlightResultRange)ViewState[szKeyCurrentRange]; }
+        set { ViewState[szKeyCurrentRange] = value; }
     }
 
     #region URL templates for clickable items.
@@ -148,15 +169,14 @@ public partial class Controls_MFBLogbookBase : UserControl
     public string DetailsParam { get; set; }
     #endregion
 
-
-    protected MyFlightbook.Profile Pilot
+    protected Profile Pilot
     {
-        get { return m_pfPilot ?? (m_pfPilot = MyFlightbook.Profile.GetUser(this.User)); }
+        get { return m_pfPilot ?? (m_pfPilot = Profile.GetUser(this.User)); }
     }
 
-    protected MyFlightbook.Profile Viewer
+    protected Profile Viewer
     {
-        get { return m_pfUser ?? (m_pfUser = MyFlightbook.Profile.GetUser(Page.User.Identity.Name)); }
+        get { return m_pfUser ?? (m_pfUser = Profile.GetUser(Page.User.Identity.Name)); }
     }
 
     protected bool IsViewingOwnFlights
@@ -176,81 +196,18 @@ public partial class Controls_MFBLogbookBase : UserControl
 
     public bool IsReadOnly { get; set; }
 
-    protected bool ShowModifiedFlights { get; set; }
-
     #region Data
-    protected bool CacheFlushed { get; set; }
-
     /// <summary>
     /// Avoid redundant binding by checking in Page_Load if we've already bound by some other event.  Still can find ourselves binding twice here and there, but shouldn't happen by simply loading the page.
     /// </summary>
     protected bool HasBeenBound { get; set; }
 
     /// <summary>
-    /// key to access the logbook data within the session state
-    /// </summary>
-    protected string CacheKey
-    {
-        get
-        {
-            return Page.User.Identity.Name + "mfbLogbookAscx";
-        }
-    }
-
-    protected void FlushCache()
-    {
-        Cache.Remove(CacheKey);
-        CacheFlushed = true;
-    }
-
-    /// <summary>
-    /// Caches flights striped by query and user.  So we'll cache all recent queries for this user, flushCache can will simultaneously flush ALL cached results for this user.
-    /// I.e., each user has ONE cache object, which contains MULTIPLE results, striped by query.
-    /// </summary>
-    protected IEnumerable<LogbookEntryDisplay> CachedData
-    {
-        get
-        {
-            Dictionary<string, IEnumerable<LogbookEntryDisplay>> cachedValues = (Dictionary<string, IEnumerable<LogbookEntryDisplay>>)Cache[CacheKey];
-            if (cachedValues != null)
-            {
-                string key = Restriction.ToJSONString();
-                return (cachedValues.TryGetValue(key, out IEnumerable<LogbookEntryDisplay> value)) ? value : null;
-            }
-            return null;
-        }
-        set
-        {
-            Dictionary<string, IEnumerable<LogbookEntryDisplay>> cachedValues = (Dictionary<string, IEnumerable<LogbookEntryDisplay>>)Cache[CacheKey] ?? new Dictionary<string, IEnumerable<LogbookEntryDisplay>>();
-            cachedValues[Restriction.ToJSONString()] = value;
-            Cache.Add(CacheKey, cachedValues, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, 10, 0), System.Web.Caching.CacheItemPriority.Normal, null);
-        }
-    }
-
-    /// <summary>
     /// Returns the data, from the cache or via database call if cache misses, or DirectData if that's what's available
     /// </summary>
     public IEnumerable<LogbookEntryDisplay> Data
     {
-        get
-        {
-            if (DirectData != null)
-                return DirectData;
-
-            IEnumerable<LogbookEntryDisplay> lst = CachedData;
-            if (lst == null)
-            {
-                if (String.IsNullOrEmpty(this.User))
-                    this.User = Page.User.Identity.Name;
-
-                Profile pfUser = MyFlightbook.Profile.GetUser(this.User);
-                ShowModifiedFlights = pfUser.PreferenceExists(MFBConstants.keyTrackOriginal);
-
-                lst = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntryDisplay.QueryCommand(Restriction), this.User, LastSortExpr, LastSortDir, Viewer.UsesHHMM, pfUser.UsesUTCDateOfFlight);
-                CachedData = lst;
-            }
-            return lst;
-        }
+        get { return CurrentResult.Flights; }
     }
     #endregion
 
@@ -277,10 +234,7 @@ public partial class Controls_MFBLogbookBase : UserControl
     /// </summary>
     protected string EditContextParams(int PageIndex)
     {
-        System.Collections.Specialized.NameValueCollection dictParams = new System.Collections.Specialized.NameValueCollection();
-        // Add the existing keys first - since we may overwrite them below!
-        foreach (string szKey in Request.QueryString.Keys)
-            dictParams[szKey] = Request.QueryString[szKey];
+        var dictParams = HttpUtility.ParseQueryString(Request.Url.Query);
 
         // Issue #458: clone and reverse are getting duplicated and the & is getting url encoded, so even edits look like clones
         dictParams.Remove("Clone");
@@ -288,22 +242,15 @@ public partial class Controls_MFBLogbookBase : UserControl
 
         if (!Restriction.IsDefault)
             dictParams["fq"] = Restriction.ToBase64CompressedJSONString();
-        if (HasPrevSort)
-        {
-            if (!String.IsNullOrEmpty(LastSortExpr))
-                dictParams["se"] = LastSortExpr;
-            if (LastSortDir != SortDirection.Descending || !String.IsNullOrEmpty(LastSortExpr))
-                dictParams["so"] = LastSortDir.ToString();
-        }
+        if (LastSortExpr.CompareCurrentCultureIgnoreCase(LogbookEntry.DefaultSortKey) != 0)
+            dictParams["se"] = LastSortExpr;
+        if (LastSortDir != LogbookEntry.DefaultSortDir)
+            dictParams["so"] = LastSortDir.ToString();
+
         if (PageIndex != 0)
             dictParams["pg"] = PageIndex.ToString(CultureInfo.InvariantCulture);
 
-        System.Text.StringBuilder sb = new System.Text.StringBuilder();
-
-        foreach (string szkey in dictParams)
-            sb.AppendFormat(CultureInfo.InvariantCulture, "{0}{1}={2}", sb.Length == 0 ? string.Empty : "&", szkey, HttpUtility.UrlEncode(dictParams[szkey]));
-
-        return sb.ToString();
+        return dictParams.ToString();
     }
 
     #region Badges
@@ -362,7 +309,6 @@ public partial class Controls_MFBLogbookBase : UserControl
 
 public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
 {
-    const string szKeyAllowsPaging = "allowsPaging";
     const string szKeyMiniMode = "minimode";
     private Boolean m_fMiniMode;
     private readonly Dictionary<int, string> m_dictAircraftHoverIDs = new Dictionary<int, string>();
@@ -382,23 +328,6 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
                 gvFlightLogs.Columns[iCol].Visible = !m_fMiniMode;
             ViewState[szKeyMiniMode] = m_fMiniMode = value;
         }
-    }
-
-    /// <summary>
-    /// Provides access to the gridview so that things like page size, etc., can be specified.
-    /// </summary>
-    public GridView GridView
-    {
-        get { return gvFlightLogs; }
-    }
-
-    /// <summary>
-    /// Specifies whether or not paging should be offered
-    /// </summary>
-    public Boolean AllowPaging
-    {
-        get { return gvFlightLogs.AllowPaging; }
-        set { ViewState[szKeyAllowsPaging] = gvFlightLogs.AllowPaging = value; }
     }
 
     /// <summary>
@@ -447,45 +376,19 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
     protected HashSet<int> BoundItems { get; private set; }
 
     /// <summary>
-    /// Finds the ID's of the flights immediately adjacent to the specified flight ID in the list (given its current sort order and restriction)
-    /// </summary>
-    /// <param name="idFlight">The ID of the flight whose neighbors are being sought</param>
-    /// <param name="idPrev">The ID (if any) of the previous flight in the list</param>
-    /// <param name="idNext">The ID (if any) of the next flight in the list.</param>
-    public void GetNeighbors(int idFlight, out int idPrev, out int idNext)
-    {
-        idPrev = idNext = LogbookEntry.idFlightNone;
-
-        if (!(Data is List<LogbookEntryDisplay> lst))
-            return;
-
-        int index = lst.FindIndex(led => led.FlightID == idFlight);
-
-        if (index > 0)
-            idNext = lst[index - 1].FlightID;
-        if (index < lst.Count - 1)
-            idPrev = lst[index + 1].FlightID;
-    }
-
-    /// <summary>
     /// Ensure that the specified flight is in view, if it is in the list of flights.
     /// </summary>
     /// <param name="idFlight"></param>
     public void ScrollToFlight(int idFlight)
     {
-        if (!(Data is List<LogbookEntryDisplay> lst))
-            return;
-
-        int index = lst.FindIndex(led => led.FlightID == idFlight);
-
-        if (index >= 0 && index < lst.Count)
-            gvFlightLogs.PageIndex = (index / gvFlightLogs.PageSize);
+        BindData(CurrentResult.RangeContainingFlight(PageSize, idFlight).PageNum);
     }
 
     #region Display Options
     const string szCookieCompact = "mfbLogbookDisplayCompact";
     const string szCookieImages = "mfbLogbookDisplayImages";
-    const string szCookiesFlightsPerPage = "mfbLogbookDisplayFlightsPerPage";
+    private const string szCookiesFlightsPerPage = "mfbLogbookDisplayFlightsPerPage";
+    private const int defaultFlightsPerPage = 25;
 
     private bool m_isCompact;
     private bool m_showImagesInline;
@@ -502,11 +405,19 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
         set { Viewer.SetPreferenceForKey(szCookieImages, m_showImagesInline = value, value == false); }
     }
 
+    /// <summary>
+    /// # of flights per page to show in paged mode
+    /// </summary>
     protected int FlightsPerPage
     {
-        get { return gvFlightLogs.PageSize; }
-        set { Viewer.SetPreferenceForKey(szCookiesFlightsPerPage, gvFlightLogs.PageSize = value, value == 0 || value == 25); }
+        get { return Viewer.GetPreferenceForKey(szCookiesFlightsPerPage, defaultFlightsPerPage); }
+        set { Viewer.SetPreferenceForKey(szCookiesFlightsPerPage, value, value == 0 || value == defaultFlightsPerPage); }
     }
+
+    /// <summary>
+    /// Page size: 0 (show all) if no paging, else flights per page
+    /// </summary>
+    protected int PageSize { get { return AllowPaging ? FlightsPerPage : 0; } }
     #endregion
     #endregion
 
@@ -527,26 +438,43 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
         return i;
     }
 
-    protected void BindData(IEnumerable<LogbookEntryDisplay> lst = null)
+    protected void Page_PreRender(object sender, EventArgs e)
+    {
+        // take care of last minute things to ensure that everything is in order.
+        UpdatePagerRow();
+
+        decPage.Text = (CurrentRange.PageNum + 1).ToString(CultureInfo.InvariantCulture);
+
+        // Get the correct headers for the current sort
+        foreach (DataControlField dcf in gvFlightLogs.Columns)
+            dcf.HeaderStyle.CssClass = "headerBase" + ((dcf.SortExpression.CompareCurrentCultureIgnoreCase(LastSortExpr) == 0) ? (LastSortDir == SortDirection.Ascending ? " headerSortAsc" : " headerSortDesc") : string.Empty) + (dcf.SortExpression.CompareCurrentCultureIgnoreCase("Date") == 0 ? " gvhLeft" : " gvhCentered");
+    }
+
+    protected void BindData(int defaultPage)
     {
         // Reset the cache for aircraft hover
         m_dictAircraftHoverIDs.Clear();
 
-        if (lst != null)
-            gvFlightLogs.DataSource = lst;
+        FlightResult fr = CurrentResult;
+        CurrentRange = fr.GetResultRange(PageSize, FlightRangeType.Page, LastSortExpr, LastSortDir, defaultPage);
 
         AircraftForUser.Clear();
         AircraftForUser.AddRange(new UserAircraft(User).GetAircraftForUser());
         BoundItems = new HashSet<int>();
         colorQueryMap = null;   // fetch on each databind
+        gvFlightLogs.DataSource = fr.FlightsInRange(CurrentRange);
         gvFlightLogs.DataBind();
         HasBeenBound = true;
     }
 
+    protected void BindData()
+    {
+        BindData(CurrentRange?.PageNum ?? 0);
+    }
+
     public void RefreshNumFlights()
     {
-        IEnumerable<LogbookEntryDisplay> flights = CachedData;  // should always be non-null, but...
-        int cFlights = flights == null ? 0 : flights.Count();
+        int cFlights = CurrentResult.FlightCount;
         pnlHeader.Visible = cFlights > 0;
         lblNumFlights.Text = cFlights == 1 ? Resources.LogbookEntry.NumberOfFlightsOne : String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.NumberOfFlights, cFlights);
     }
@@ -558,11 +486,9 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
     {
         // Reset any cached paging/sorting
         LastSortDir = LogbookEntry.DefaultSortDir;
-        LastSortExpr = string.Empty;
-        gvFlightLogs.PageIndex = 0;
+        LastSortExpr = LogbookEntry.DefaultSortKey;
 
-        FlushCache();
-        BindData(Data);
+        BindData(0);
         RefreshNumFlights();
     }
 
@@ -580,9 +506,6 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
         if (Request.Cookies[szCookieImages] != null)
             ShowImagesInline = m_showImagesInline; // force save to profile
         Response.Cookies[szCookieCompact].Expires = Response.Cookies[szCookieImages].Expires = Response.Cookies[szCookiesFlightsPerPage].Expires = DateTime.Now.AddDays(-1);
-
-        int defPageSize = (int)Viewer.GetPreferenceForKey<int>(szCookiesFlightsPerPage);
-        gvFlightLogs.PageSize = (defPageSize == 0) ? 25 : defPageSize;
     }
 
     protected void Page_Load(object sender, EventArgs e)
@@ -591,10 +514,7 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
             User = Page.User.Identity.Name;
 
         if (ViewState[szKeyMiniMode] != null)
-            MiniMode = (Boolean)ViewState[szKeyMiniMode];
-
-        if (ViewState[szKeyAllowsPaging] != null)
-            AllowPaging = Convert.ToBoolean(ViewState[szKeyAllowsPaging], CultureInfo.InvariantCulture);
+            MiniMode = (bool)ViewState[szKeyMiniMode];
 
         // need to do bind to the data every time or else the comments and images (dynamically added) disappear.
         // We also don't want to overuse viewstate - can get quite big quite quickly.
@@ -605,63 +525,51 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
             lblAddress.Text = Pilot.Address;
             pnlAddress.Visible = Pilot.Address.Trim().Length > 0;
 
-            if (!CacheFlushed)
-                FlushCache();
-
             // Customer-facing utility function: if you add "dupesOnly=1" to the URL, we add a custom restriction that limits flights to ONLY flights that look like potential duplicates
             if (util.GetIntParam(Request, "dupesOnly", 0) != 0)
             {
-                Restriction.EnumeratedFlights = LogbookEntry.DupeCandidatesForUser(Restriction.UserName);
-                FlushCache();
+                Restriction.EnumeratedFlights = LogbookEntryBase.DupeCandidatesForUser(Restriction.UserName);
                 HasBeenBound = false;
             }
 
             ckCompactView.Checked = m_isCompact;
             ckIncludeImages.Checked = m_showImagesInline;
-            rblShowInPages.Checked = gvFlightLogs.AllowPaging;
+            rblShowInPages.Checked = AllowPaging;
             rblShowAll.Checked = !rblShowInPages.Checked;
             ckSelectFlights.Visible = IsViewingOwnFlights;
 
-            decPageSize.IntValue = gvFlightLogs.PageSize;
+            decPageSize.IntValue = FlightsPerPage;
             decPageSize.EditBox.MaxLength = 2;
 
             // Refresh state from params.  
             // fq is handled at the host level.
             string szLastSort = util.GetStringParam(Request, "so");
             if (!String.IsNullOrEmpty(szLastSort) && Enum.TryParse<SortDirection>(szLastSort, true, out SortDirection sortDirection))
+            {
                 LastSortDir = sortDirection;
+                HasBeenBound = false;
+            }
             string szSortExpr = util.GetStringParam(Request, "se");
             if (!String.IsNullOrEmpty(szSortExpr))
+            {
                 LastSortExpr = szSortExpr;
-            gvFlightLogs.PageIndex = util.GetIntParam(Request, "pg", gvFlightLogs.PageIndex);
+                HasBeenBound = false;
+            }
 
-            if (!String.IsNullOrEmpty(LastSortExpr) || gvFlightLogs.PageIndex > 0)
-                SortGridview(gvFlightLogs, Data as List<LogbookEntryDisplay>);
+            int curPage = util.GetIntParam(Request, "pg", 0);
+            // Ensure we have the correct requested sort and page.  Note that this will also preheat the cache.
+            CurrentRange = CurrentResult.GetResultRange(PageSize, FlightRangeType.Page, LastSortExpr, LastSortDir, curPage);
         }
 
-        if (!HasBeenBound && !String.IsNullOrEmpty(User))
-            BindData(Data);
+        if (!HasBeenBound)
+            BindData();
 
-        // Issue #972: gridview databind performance BLOWS once we get over a few hundred rows, so disable update panel if more than, say, 500 rows
-        if (Data.Count() > 500)
+        // Issue #972: gridview databind performance BLOWS once we get over a few hundred rows, so disable update panel if more than, say, 300 rows in the resulting databind (should only be an issue if allow paging is off)
+        if (CurrentResult.FlightCount > 300)
             updLogbook.Triggers.Add(new PostBackTrigger() { ControlID = rblShowAll.ID });
 
         gvFlightLogs.Columns[FindColumn(gvFlightLogs, Resources.LogbookEntry.FieldCFI)].Visible = Pilot.IsInstructor && !MiniMode;
         gvFlightLogs.Columns[FindColumn(gvFlightLogs, Resources.LogbookEntry.FieldSIC)].Visible = Pilot.TracksSecondInCommandTime && !MiniMode;
-    }
-
-    protected void SortGridview(GridView gv, List<LogbookEntryDisplay> lst)
-    {
-        if (!String.IsNullOrEmpty(LastSortExpr))
-        {
-            if (gv == null)
-                throw new ArgumentNullException(nameof(gv));
-            foreach (DataControlField dcf in gv.Columns)
-                dcf.HeaderStyle.CssClass = "headerBase" + ((dcf.SortExpression.CompareCurrentCultureIgnoreCase(LastSortExpr) == 0) ? (LastSortDir == SortDirection.Ascending ? " headerSortAsc" : " headerSortDesc") : string.Empty) + (dcf.SortExpression.CompareCurrentCultureIgnoreCase("Date") == 0 ? " gvhLeft" : " gvhCentered");
-        }
-
-        LogbookEntryDisplay.SortLogbook(lst, LastSortExpr, LastSortDir);
-        BindData(lst);
     }
 
     protected void gvFlightLogs_Sorting(Object sender, GridViewSortEventArgs e)
@@ -671,45 +579,20 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
         if (e == null)
             throw new ArgumentNullException(nameof(e));
 
-        GridView gv = (GridView)sender;
-        List<LogbookEntryDisplay> lst = (List<LogbookEntryDisplay>)gv.DataSource;
+        FlightResult fr = CurrentResult;
 
-        if (lst != null)
-        {
-            if (HasPrevSort)
-            {
-                string PrevSortExpr = LastSortExpr;
-                SortDirection PrevSortDir = LastSortDir;
-
-                if (PrevSortExpr == e.SortExpression)
-                    e.SortDirection = (PrevSortDir == SortDirection.Ascending) ? SortDirection.Descending : SortDirection.Ascending;
-            }
-
-            LastSortExpr = e.SortExpression;
-            LastSortDir = e.SortDirection;
-
-            SortGridview(gv, lst);
-        }
-    }
-
-    protected void gridView_PageIndexChanging(object sender, GridViewPageEventArgs e)
-    {
-        if (e == null)
-            throw new ArgumentNullException(nameof(e));
-        if (sender == null)
-            throw new ArgumentNullException(nameof(sender));
-        GridView gv = (GridView)sender;
-        gv.PageIndex = e.NewPageIndex;
+        fr.SortFlights(e.SortExpression);
+        LastSortExpr = fr.CurrentSortKey;
+        LastSortDir = fr.CurrentSortDir;
         BindData();
     }
-
     #region Gridview RowDatabound Helpers
     private void SetUpContextMenuForRow(LogbookEntryDisplay le, GridViewRow row)
     {
         // Wire up the drop-menu.  We have to do this here because it is an iNamingContainer and can't access the gridviewrow
         MyFlightbook.Controls.mfbFlightContextMenu cm = (MyFlightbook.Controls.mfbFlightContextMenu)row.FindControl("popmenu1").FindControl("mfbfcm");
 
-        string szEditContext = EditContextParams(gvFlightLogs.PageIndex);
+        string szEditContext = EditContextParams(CurrentRange?.PageNum ?? 0);
 
         cm.EditTargetFormatString = (EditPageUrlFormatString == null) ? string.Empty : (EditPageUrlFormatString + (String.IsNullOrEmpty(szEditContext) ? string.Empty : (EditPageUrlFormatString.Contains("?") ? "&" : "?" + szEditContext)));
         cm.Flight = le;
@@ -733,7 +616,7 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
             // Flight images
             mfbIl.Key = le.FlightID.ToString(CultureInfo.InvariantCulture);
             mfbIl.Refresh();
-            if (!le.FlightImages.Any()) // populate images, so that flight coloring can work
+            if (le.FlightImages.Count == 0) // populate images, so that flight coloring can work
                 foreach (MyFlightbook.Image.MFBImageInfo mfbii in mfbIl.Images.ImageArray)
                     le.FlightImages.Add(mfbii);
 
@@ -749,7 +632,7 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
 
             // And aircraft
             // for efficiency, see if we've already done this tail number; re-use if already done
-            if (!m_dictAircraftHoverIDs.ContainsKey(le.AircraftID))
+            if (!m_dictAircraftHoverIDs.TryGetValue(le.AircraftID, out string hoverID))
             {
                 if (ac != null)
                     mfbilAircraft.DefaultImage = ac.DefaultImage;
@@ -759,12 +642,13 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
 
                 // cache the attributes string - there's a bit of computation involved in it.
                 string szAttributes = ((Label)row.FindControl("lblModelAttributes")).Text.EscapeHTML();
+                hoverID = szInstTypeDescription + " " + szAttributes + mfbilAircraft.AsHTMLTable();
 
                 // and the image table.
-                m_dictAircraftHoverIDs[le.AircraftID] = szInstTypeDescription + " " + szAttributes + mfbilAircraft.AsHTMLTable();
+                m_dictAircraftHoverIDs[le.AircraftID] = hoverID;
             }
 
-            row.FindControl("plcTail").Controls.Add(new LiteralControl(m_dictAircraftHoverIDs[le.AircraftID]));
+            row.FindControl("plcTail").Controls.Add(new LiteralControl(hoverID));
         }
     }
 
@@ -800,7 +684,7 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
                 }
                 break;
             case LogbookEntryCore.SignatureState.None:
-                if (ShowModifiedFlights && le.HasFlightHash)
+                if (Profile.GetUser(User).PreferenceExists(MFBConstants.keyTrackOriginal) && le.HasFlightHash)
                 {
                     Repeater rptMods = (Repeater)row.FindControl("rptMods");
                     IEnumerable<object> lst = le.DiffsSinceSigned(Viewer.UsesHHMM);
@@ -858,35 +742,10 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
             lnk.Visible = fShow;
     }
 
-    protected void UpdatePagerRow(TableRow gvr)
-    {
-        if (gvr == null)
-            return;
-
-        Label lbl = (Label)gvr.FindControl("lblPage");
-        lbl.Text = gvFlightLogs.PageCount.ToString(CultureInfo.CurrentCulture);
-
-        TextBox decCurPage = (TextBox)gvr.FindControl("decPage");
-        decCurPage.Text = (gvFlightLogs.PageIndex + 1).ToString(CultureInfo.CurrentCulture);
-
-        Control lnkFirst = gvr.Cells[0].FindControl("lnkFirst");
-        Control lnkPrev = gvr.Cells[0].FindControl("lnkPrev");
-        Control lnkNext = gvr.Cells[0].FindControl("lnkNext");
-        Control lnkLast = gvr.Cells[0].FindControl("lnkLast");
-
-        ShowButton(lnkFirst, gvFlightLogs.PageIndex > 0);
-        ShowButton(lnkPrev, gvFlightLogs.PageIndex > 0);
-        ShowButton(lnkNext, gvFlightLogs.PageIndex < gvFlightLogs.PageCount - 1);
-        ShowButton(lnkLast, gvFlightLogs.PageIndex < gvFlightLogs.PageCount - 1);
-    }
-
     protected void gvFlightLogs_DataBound(Object sender, EventArgs e)
     {
         if (gvFlightLogs == null)
             return;
-
-        UpdatePagerRow(gvFlightLogs.TopPagerRow);
-        UpdatePagerRow(gvFlightLogs.BottomPagerRow);
 
         // This will enable printing to work properly.
         if (AllowPaging == false && gvFlightLogs.HeaderRow != null && gvFlightLogs.FooterRow != null)
@@ -915,7 +774,7 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
 
     protected void lnkShowAll_Click(object sender, EventArgs e)
     {
-        ViewState[szKeyAllowsPaging] = AllowPaging = false;
+        AllowPaging = false;
         BindData();
     }
 
@@ -930,7 +789,7 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
 
     protected void lnkShowInPages_Click(object sender, EventArgs e)
     {
-        ViewState[szKeyAllowsPaging] = AllowPaging = true;
+        AllowPaging = true;
         BindData();
     }
 
@@ -991,6 +850,19 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
     }
     #endregion
 
+    #region Paging
+    protected void UpdatePagerRow()
+    {
+        FlightResultRange range = CurrentRange;
+        pnlPager.Visible = AllowPaging && range.PageCount > 1;
+
+        lblPage.Text = CurrentRange.PageCount.ToString(CultureInfo.CurrentCulture);
+        ShowButton(lnkFirst, range.PageNum > 0);
+        ShowButton(lnkPrev, range.PageNum > 0);
+        ShowButton(lnkNext, range.PageNum < range.PageCount - 1);
+        ShowButton(lnkLast, range.PageNum < range.PageCount - 1);
+    }
+
     /// <summary>
     /// Let the user type in a page, a date, or a year to jump quickly to that page/date/year
     /// </summary>
@@ -998,55 +870,40 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
     /// <param name="e"></param>
     protected void btnSetPage_Click(object sender, EventArgs e)
     {
-        TextBox decPageNum = (TextBox)gvFlightLogs.BottomPagerRow.FindControl("decPage");
-
-        bool fParsesAsInt = Int32.TryParse(decPageNum.Text, out int iPage);
-
-        bool fIsYear = fParsesAsInt && iPage > 1900 && iPage < 2200;
-
-        // See if a date works
-        bool fParsesAsDate = DateTime.TryParse(decPageNum.Text, out DateTime dtAttempted);
-        int yearAttempted = fIsYear ? iPage : 0;
-        if (fIsYear || fParsesAsDate)
-        {
-            int distance = Int32.MaxValue;
-            int iRowMatch = 0;
-
-            // Find the entry with the date or year closest to the typed date.
-            List<LogbookEntryDisplay> lst = (List<LogbookEntryDisplay>)gvFlightLogs.DataSource;
-            for (int iRow = 0; iRow < lst.Count; iRow++)
-            {
-                DateTime dtEntry = lst[iRow].Date;
-
-                int distThis = (fIsYear) ? Math.Abs(dtEntry.Year - yearAttempted) : (int)Math.Abs(dtEntry.Subtract(dtAttempted).TotalDays);
-
-                if (distThis < distance)
-                {
-                    distance = distThis;
-                    iRowMatch = iRow;
-                }
-            }
-
-            iPage = iRowMatch / gvFlightLogs.PageSize;
-        }
-        else
-            iPage--;    // since we need to be 0 based
-
-        if (iPage < gvFlightLogs.PageCount && iPage >= 0)
-        {
-            gvFlightLogs.PageIndex = iPage;
-            BindData();
-        }
-
-        decPageNum.Text = (gvFlightLogs.PageIndex + 1).ToString(CultureInfo.CurrentCulture);
+        FlightResult fr = CurrentResult;
+        int pageNum = fr.GetResultRange(PageSize, FlightRangeType.Search, LastSortExpr, LastSortDir, query: decPage.Text).PageNum;
+        // GetResultRange could have changed the sort order.  E.g., a date requires that the list be sorted by date.
+        LastSortExpr = fr.CurrentSortKey;
+        LastSortDir = fr.CurrentSortDir;
+        BindData(pageNum);
     }
+
+    protected void lnkFirst_Click(object sender, EventArgs e)
+    {
+        BindData(CurrentResult.GetResultRange(PageSize, FlightRangeType.First, LastSortExpr, LastSortDir).PageNum);
+    }
+
+    protected void lnkPrev_Click(object sender, EventArgs e)
+    {
+        BindData(CurrentResult.GetResultRange(PageSize, FlightRangeType.Prev, LastSortExpr, LastSortDir, CurrentRange.PageNum).PageNum);
+    }
+
+    protected void lnkNext_Click(object sender, EventArgs e)
+    {
+        BindData(CurrentResult.GetResultRange(PageSize, FlightRangeType.Next, LastSortExpr, LastSortDir, CurrentRange.PageNum).PageNum);
+    }
+
+    protected void lnkLast_Click(object sender, EventArgs e)
+    {
+        BindData(CurrentResult.GetResultRange(PageSize, FlightRangeType.Last, LastSortExpr, LastSortDir).PageNum);
+    }
+    #endregion
 
     #region Context menu operations
     protected void DeleteFlight(int id)
     {
-        LogbookEntryDisplay.FDeleteEntry(id, this.User);
-        FlushCache();
-        BindData(Data);
+        LogbookEntryBase.FDeleteEntry(id, this.User);   // this will invalidate flight results.
+        BindData();
         RefreshNumFlights();
         ItemDeleted?.Invoke(this, new LogbookEventArgs(id));
     }
@@ -1075,8 +932,7 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
                 try
                 {
                     le.RevokeSignature(Page.User.Identity.Name);
-                    FlushCache();
-                    BindData(Data);
+                    BindData();
                 }
                 catch (InvalidOperationException ex)
                 {

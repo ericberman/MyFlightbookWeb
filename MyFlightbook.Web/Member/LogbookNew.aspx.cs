@@ -133,6 +133,7 @@ namespace MyFlightbook.MemberPages
             InitAircraftModelRestriction(util.GetStringParam(Request, "tn"), util.GetStringParam(Request, "mn"), util.GetStringParam(Request, "icao"), util.GetStringParam(Request, "cc"));
 
             mfbSearchForm1.Restriction = Restriction;
+            Restriction.Refresh();
 
             Refresh();
         }
@@ -273,7 +274,7 @@ namespace MyFlightbook.MemberPages
 
             if (!IsNewFlight)
             {
-                mfbLogbook1.GetNeighbors(FlightID, out int prevFlightID, out int nextFlightID);
+                mfbLogbook1.CurrentResult.GetNeighbors(FlightID, out int prevFlightID, out int nextFlightID);
                 mfbEditFlight1.SetPrevFlight(prevFlightID);
                 mfbEditFlight1.SetNextFlight(nextFlightID);
             }

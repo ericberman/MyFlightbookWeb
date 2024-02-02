@@ -1637,6 +1637,9 @@ namespace MyFlightbook
             // Flights have changed, so aircraft stats are invalid.
             new UserAircraft(szUser).FlushStatsForUser();
 
+            // And flight results are invalid
+            FlightResultManager.InvalidateForUser(szUser);
+
             return true;
         }
 
@@ -1901,6 +1904,9 @@ namespace MyFlightbook
 
             // Flights have changed, so aircraft stats are invalid.
             new UserAircraft(User).FlushStatsForUser();
+
+            // And since flights have changed, ensure we have no flight results hanging around
+            FlightResultManager.InvalidateForUser(User);
 
             return (ErrorString.Length == 0);
         }
@@ -3760,8 +3766,8 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                 return 0;
             decimal total = 0;
             foreach (int idcatclass in rgCats)
-                if (dictCatClassTotals.ContainsKey(idcatclass))
-                    total += dictCatClassTotals[idcatclass];
+                if (dictCatClassTotals.TryGetValue(idcatclass, out decimal value))
+                    total += value;
             return total;
         }
 

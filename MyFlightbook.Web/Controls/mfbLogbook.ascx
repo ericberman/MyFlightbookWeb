@@ -90,13 +90,11 @@
         <div style="margin-left: 5px; margin-right: 5px">
             <asp:GridView ID="gvFlightLogs" runat="server" AutoGenerateColumns="False" BorderStyle="None"
             CellPadding="3" DataKeyNames="FlightID" AllowSorting="True" CssClass="lbTable"
-            ShowHeader="true" ShowFooter="true" UseAccessibleHeader="true" AllowPaging="True"
+            ShowHeader="true" ShowFooter="true" 
             OnRowDataBound="gvFlightLogs_RowDataBound" EnableViewState="false" 
-            PagerSettings-Mode="NumericFirstLast"
             GridLines="None" OnDataBound="gvFlightLogs_DataBound" 
-            OnSorting="gvFlightLogs_Sorting" 
-            OnRowCommand="gvFlightLogs_RowCommand"
-            OnPageIndexChanging="gridView_PageIndexChanging">
+            OnSorting="gvFlightLogs_Sorting"
+            OnRowCommand="gvFlightLogs_RowCommand">
             <Columns>
                 <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldFlight %>" SortExpression="Date">
                     <HeaderStyle CssClass="headerBase headerSortDesc gvhLeft" />
@@ -376,24 +374,22 @@
             <PagerStyle CssClass="gvhCentered" />
             <AlternatingRowStyle CssClass="logbookAlternateRow" />
             <RowStyle CssClass="logbookRow" />
-            <PagerTemplate>
-                <asp:Panel ID="pnlPager" runat="server" DefaultButton="btnSetPage" style="font-weight:bold; padding: 5px;">
-                    <asp:LinkButton ID="lnkFirst" CommandArgument="First" CommandName="Page" runat="server" Text="<<" CausesValidation="false"></asp:LinkButton>&nbsp;&nbsp;
-                    <asp:LinkButton ID="lnkPrev" CommandArgument="Prev" CommandName="Page" runat="server" Text="<" CausesValidation="false" ></asp:LinkButton>&nbsp;&nbsp;
-                    <asp:Label ID="lblCurPagePrompt" runat="server" Text="<%$ Resources:LogbookEntry, LogbookPagePrompt %>" Visible="false"></asp:Label> 
-                    <asp:TextBox ID="decPage" runat="server" Width="50px" BorderColor="LightGray" BorderStyle="Solid" BorderWidth="1"></asp:TextBox>
-                    <div style="display:inline-block; font-weight:normal"><uc5:mfbTooltip runat="server" ID="mfbTooltip" BodyContent="<%$ Resources:LogbookEntry, LogbookPagerTip %>" /></div>
-                    <asp:Label ID="lblTotalPagePrompt" runat="server" Text="<%$ Resources:LogbookEntry, LogbookPageTotalPagePrompt %>" Visible="false"></asp:Label> <asp:Label ID="lblPage" runat="server" Text="{0}"></asp:Label>
-                    <asp:Button ID="btnSetPage" runat="server" Text="<%$ Resources:LogbookEntry, LogbookGoToPage %>" onclick="btnSetPage_Click" style="display:none;" />&nbsp;&nbsp;
-                    <asp:LinkButton ID="lnkNext" CommandArgument="Next" CommandName="Page"  runat="server" Text=">" CausesValidation="false" ></asp:LinkButton>&nbsp;&nbsp;
-                    <asp:LinkButton ID="lnkLast" CommandArgument="Last" CommandName="Page"  runat="server" Text=">>" CausesValidation="false" ></asp:LinkButton>
-                </asp:Panel>
-            </PagerTemplate>
             <HeaderStyle CssClass="gvhDefault" />
             <EmptyDataTemplate>
                 <p><%=Resources.LogbookEntry.EmptyLogbook %></p>
             </EmptyDataTemplate>
         </asp:GridView>
+        <asp:Panel ID="pnlPager" runat="server" CssClass="lbTable noprint" DefaultButton="btnSetPage" style="font-weight:bold; padding: 5px; width: 100%; text-align: center;">
+            <asp:LinkButton ID="lnkFirst" OnClick="lnkFirst_Click" runat="server" Text="<<" CausesValidation="false" />&nbsp;&nbsp;
+            <asp:LinkButton ID="lnkPrev" OnClick="lnkPrev_Click" runat="server" Text="<" CausesValidation="false" />&nbsp;&nbsp;
+            <asp:Label ID="lblCurPagePrompt" runat="server" Text="<%$ Resources:LogbookEntry, LogbookPagePrompt %>" Visible="false" /> 
+            <asp:TextBox ID="decPage" runat="server" Width="50px" BorderColor="LightGray" BorderStyle="Solid" BorderWidth="1" />
+            <span style="font-weight:normal"><uc5:mfbTooltip runat="server" ID="mfbTooltip" BodyContent="<%$ Resources:LogbookEntry, LogbookPagerTip %>" /></span>
+            <asp:Label ID="lblTotalPagePrompt" runat="server" Text="<%$ Resources:LogbookEntry, LogbookPageTotalPagePrompt %>" Visible="false"></asp:Label> <asp:Label ID="lblPage" runat="server" Text="{0}" />
+            <asp:Button ID="btnSetPage" runat="server" Text="<%$ Resources:LogbookEntry, LogbookGoToPage %>" onclick="btnSetPage_Click" style="display:none;" />&nbsp;&nbsp;
+            <asp:LinkButton ID="lnkNext" OnClick="lnkNext_Click" runat="server" Text=">" CausesValidation="false" />&nbsp;&nbsp;
+            <asp:LinkButton ID="lnkLast" OnClick="lnkLast_Click" runat="server" Text=">>" CausesValidation="false" />
+        </asp:Panel>
         </div>
         <uc1:mfbSendFlight runat="server" id="mfbSendFlight" />
         <uc1:mfbImageList ID="mfbilAircraft" runat="server" Columns="2" CanEdit="false" ImageClass="Aircraft" IncludeDocs="false" MaxImage="2" Visible="false" />
