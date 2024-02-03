@@ -51,7 +51,7 @@ public partial class Controls_MFBLogbookBase : UserControl
         {
             string key = RestrictionVSKey;
             if (ViewState[key] == null)
-                ViewState[key] = new FlightQuery(String.IsNullOrEmpty(User) ? Page.User.Identity.Name : this.User);
+                ViewState[key] = new FlightQuery(User);
             return (FlightQuery)ViewState[key];
         }
         set { ViewState[RestrictionVSKey] = value; }
@@ -74,7 +74,7 @@ public partial class Controls_MFBLogbookBase : UserControl
     /// </summary>
     public string User
     {
-        get { return (string)ViewState[keyVSUser]; }
+        get { return (string)ViewState[keyVSUser] ?? Page.User.Identity.Name; }
         set { ViewState[keyVSUser] = value; }
     }
 
