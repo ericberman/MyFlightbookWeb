@@ -649,6 +649,7 @@
     <Content Include="images\BadgeOverlays\calendar.svg" />
     <Content Include="images\BadgeOverlays\globe.svg" />
     <Content Include="images\BadgeOverlays\trend.svg" />
+    <Content Include="images\Collapsed.png" />
     <Content Include="images\flightimportsample.png" />
     <Content Include="images\fulldeflection.png" />
     <Content Include="images\globe.png" />

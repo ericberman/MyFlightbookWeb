@@ -180,6 +180,10 @@ table.stickyHeaderTable td:first-child {
     border-left: 1px solid #444444;
 }
 
+table.stickyHeaderTable.stickyHeaderAlternate tr:nth-child(even) {
+    background-color: unset;
+}
+
 /* Wizard steps */
 .wizStepCompleted {
     color: #686868;

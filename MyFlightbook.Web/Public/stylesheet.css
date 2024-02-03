@@ -77,11 +77,10 @@ H1
     box-sizing: border-box; /* Opera/IE 8+ */
 }
 
-H2
-{
+H2 {
     font-size: 12pt;
     font-weight: bold;
-    color: #4983B7;
+    color: #767676;
 }
 H3
 {
@@ -454,12 +453,12 @@ td.totalsByTimeCell:nth-child(even), td.totalsDateRange:nth-child(even) {
 }
 
 /* Accordian AJAX */
-.accordianHeader{
+.accordianHeader {
     font-weight: bold;
     line-height: 24pt;
-    background-color: lightgray;
-    padding: 3px;
-    margin-top: 4px;
+    background-color: #e8e8e8;
+    padding: 4px 4px 4px 10px;
+    margin-top: 8px;
     border: 1px solid gray;
     border-radius: 7px;
 }
@@ -467,9 +466,9 @@ td.totalsByTimeCell:nth-child(even), td.totalsDateRange:nth-child(even) {
 .accordianHeaderSelected {
     font-weight: bold;
     line-height: 24pt;
-    background-color : darkgray;
-    padding: 3px;
-    margin-top: 4px;
+    background-color: darkgray;
+    padding: 4px 4px 4px 10px;
+    margin-top: 8px;
     border-top: 1px solid gray;
     border-left: 1px solid gray;
     border-right: 1px solid gray;
@@ -510,7 +509,7 @@ td.totalsByTimeCell:nth-child(even), td.totalsDateRange:nth-child(even) {
 }
 
 .accordionMenuContent {
-    padding: 4px;
+    padding: 4px 4px 4px 10px;
     background-color: white;
     position: static;
     border: black 1px solid;
@@ -578,7 +577,7 @@ td.totalsByTimeCell:nth-child(even), td.totalsDateRange:nth-child(even) {
 /* Accordion from jQuery-UI */
 .ui-accordion, .ui-accordion h3 {
     font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    font-size: 9pt !important;
+    font-size: 10pt !important;
     color: black;
 }
 
@@ -593,16 +592,17 @@ td.totalsByTimeCell:nth-child(even), td.totalsDateRange:nth-child(even) {
 
 .ui-accordion .ui-accordion-header {
     background: none;
-    background-color: lightgray;
-    margin-top: 4px;
-    padding: 3px;
+    background-color: #e8e8e8;
+    margin-top: 8px;
+    padding: 4px 4px 4px 10px;
 }
 
 .ui-accordion .ui-accordion-header-active {
     background: none;
     background-color: darkgray;
-    margin-top: 4px;
-    padding: 3px;
+    border-bottom: none;
+    margin-top: 8px;
+    padding: 4px 4px 4px 10px;
 }
 
 .ui-accordion-content, ui-accordion-content p {
