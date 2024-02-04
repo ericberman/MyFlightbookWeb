@@ -46,7 +46,7 @@ namespace MyFlightbook
         public const string keyPathColor = "prefPathColor";     // key for the color when showing a path on a map
         public const int DefaultMaintenanceWindow = 90;
         public const string keyPrefFlatHierarchy = "UsesFlatCloudStorageFileHierarchy";    // indicates that cloud storage should be done in a flat hierarchy rather than by month.
-        private const int StyleSheetVer = 52;
+        private const int StyleSheetVer = 53;
 
         public static string BaseStylesheet
         {

@@ -203,10 +203,7 @@ namespace MyFlightbook
             if (idFlight <= 0)
                 throw new ArgumentOutOfRangeException(nameof(idFlight));
 
-            int index = FlightsList.FindIndex(led => led.FlightID == idFlight);
-
-            if (index < 0)
-                throw new KeyNotFoundException("Flight was not found!"); 
+            int index = Math.Max(0, FlightsList.FindIndex(led => led.FlightID == idFlight));
 
             return pageSize <= 0 ? RangeForPage(0, pageSize) : RangeForPage(index / pageSize, pageSize);
         }
