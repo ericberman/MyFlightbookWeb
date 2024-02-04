@@ -88,7 +88,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 8710 (IACRA).
+        ///   Looks up a localized string similar to 8710/IACRA.
         /// </summary>
         internal static string CommonReports8710 {
             get {
