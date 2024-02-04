@@ -1747,4 +1747,13 @@ Proceed with import?</value>
   <data name="ImportWizardAutofillTryLocalNote" xml:space="preserve">
     <value>Times will be converted to UTC where possible, but this is not a reliable process and may yield unexpected results.  See the [FAQ](https://myflightbook.com/logbook/mvc/faq?q=44#44) for more information.</value>
   </data>
+  <data name="FieldFlightEngineer" xml:space="preserve">
+    <value>Flight&lt;br /&gt;Eng.</value>
+  </data>
+  <data name="FieldLastFlight" xml:space="preserve">
+    <value>Last Flight</value>
+  </data>
+  <data name="FieldMilitary" xml:space="preserve">
+    <value>Military</value>
+  </data>
 </root>

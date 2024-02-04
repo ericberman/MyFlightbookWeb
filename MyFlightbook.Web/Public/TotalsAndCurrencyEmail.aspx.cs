@@ -133,7 +133,7 @@ namespace MyFlightbook.Subscriptions
                 lblThankyou.Text = Branding.ReBrand(Resources.LocalizedText.DonateThankYouTitle);
                 lblSolicitDonation.Text = Branding.ReBrand(Resources.LocalizedText.DonatePrompt);
                 lnkDonateNow.Text = Branding.ReBrand(Resources.LocalizedText.DonateSolicitation);
-                lnkDonateNow.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftDonate"));
+                lnkDonateNow.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/mvc/donate"));
                 mvDonations.SetActiveView(Payment.TotalPaidSinceDate(DateTime.Now.AddYears(-1), Username) > 0 ? vwThankyou : vwPleaseGive);
 
                 // Fix up the unsubscribe link.
@@ -143,7 +143,7 @@ namespace MyFlightbook.Subscriptions
                 bool fAnnual = (DateTime.Now.Month == 1 && DateTime.Now.Day == 1);  // if it's January 1, show prior year; else show YTD
                 TimeRollup tr = new TimeRollup(Username, null) { IncludeLast7Days = !fMonthlySummary, IncludeMonthToDate = !fMonthlySummary, IncludePreviousMonth = true, IncludePreviousYear = true, IncludeYearToDate = !fAnnual, IncludeTrailing12 = !fAnnual };
                 tr.Bind();
-                mfbTotalsByTimePeriod.RefreshTable(tr, true);
+                litTotalsByTime.Text = tr.RenderHTML(pf.UsesHHMM, true);
 
                 if (fAnnual)
                     mfbRecentAchievements.Refresh(Username, new DateTime(DateTime.Now.Year - 1, 1, 1), new DateTime(DateTime.Now.Year - 1, 12, 31), true);

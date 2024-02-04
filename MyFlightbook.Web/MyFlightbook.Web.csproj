@@ -562,7 +562,6 @@
     <Content Include="Controls\mfbBadgeSet.ascx" />
     <Content Include="Controls\mfbBasicMedManager.ascx" />
     <Content Include="Controls\mfbChartTotals.ascx" />
-    <Content Include="Controls\mfbTotalsByTimePeriod.ascx" />
     <Content Include="Controls\Prefs\mfbCloudAhoy.ascx" />
     <Content Include="Controls\mfbCurrency.ascx" />
     <Content Include="Controls\mfbCustCurrency.ascx" />
@@ -820,7 +819,6 @@
     <Content Include="Logon\newuser.aspx" />
     <Content Include="Logon\ResetPass.aspx" />
     <Content Include="MasterPage.master" />
-    <Content Include="Member\8710Form.aspx" />
     <Content Include="Member\AddRelationship.aspx" />
     <Content Include="Member\Ajax.asmx" />
     <Content Include="Member\BrowseTemplates.aspx" />
@@ -845,6 +843,7 @@
     <Content Include="Member\StartingTotals.aspx" />
     <Content Include="Member\StudentLogbook.aspx" />
     <Content Include="Public\CSS\printAirline.css" />
+    <Content Include="Public\Scripts\accordionproxy.js" />
     <Content Include="Public\Scripts\adminajax.js" />
     <Content Include="Public\Scripts\ajaxUpload.js" />
     <Content Include="Public\tmap\airport.svg" />
@@ -1581,6 +1580,7 @@
     <Content Include="Areas\mvc\Views\Training\_editableEndorsement.cshtml" />
     <Content Include="Areas\mvc\Views\Training\addEndorsement.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\unsubscribe.cshtml" />
+    <Content Include="Areas\mvc\Views\Training\reports.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -2112,13 +2112,6 @@
     <Compile Include="Controls\mfbChartTotals.ascx.designer.cs">
       <DependentUpon>mfbChartTotals.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Controls\mfbTotalsByTimePeriod.ascx.cs">
-      <DependentUpon>mfbTotalsByTimePeriod.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbTotalsByTimePeriod.ascx.designer.cs">
-      <DependentUpon>mfbTotalsByTimePeriod.ascx</DependentUpon>
-    </Compile>
     <Compile Include="Controls\Prefs\mfbCloudAhoy.ascx.cs">
       <DependentUpon>mfbCloudAhoy.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2647,13 +2640,6 @@
     </Compile>
     <Compile Include="MasterPage.master.designer.cs">
       <DependentUpon>MasterPage.master</DependentUpon>
-    </Compile>
-    <Compile Include="Member\8710Form.aspx.cs">
-      <DependentUpon>8710Form.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\8710Form.aspx.designer.cs">
-      <DependentUpon>8710Form.aspx</DependentUpon>
     </Compile>
     <Compile Include="Member\AddRelationship.aspx.cs">
       <DependentUpon>AddRelationship.aspx</DependentUpon>
@@ -3268,6 +3254,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\mvc\Data\" />
+    <Folder Include="Areas\mvc\Views\Flights\" />
     <Folder Include="Areas\mvc\Views\MFBFooter\" />
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="Public\OpenSource\" />

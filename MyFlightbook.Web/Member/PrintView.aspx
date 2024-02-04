@@ -7,7 +7,6 @@
 <%@ Register Src="~/Controls/mfbQueryDescriptor.ascx" TagPrefix="uc2" TagName="mfbQueryDescriptor" %>
 <%@ Register Src="~/Controls/mfbDecimalEdit.ascx" TagPrefix="uc1" TagName="mfbDecimalEdit" %>
 <%@ Register Src="~/Controls/SponsoredAd.ascx" TagPrefix="uc1" TagName="SponsoredAd" %>
-<%@ Register Src="~/Controls/mfbTotalsByTimePeriod.ascx" TagPrefix="uc1" TagName="mfbTotalsByTimePeriod" %>
 <%@ Register Src="~/Controls/mfbTotalSummary.ascx" TagPrefix="uc1" TagName="mfbTotalSummary" %>
 
 
@@ -235,7 +234,7 @@
             <h2><asp:Label ID="lblTotalsHeader" runat="server" /></h2>
             <asp:MultiView ID="mvTotals" runat="server" ActiveViewIndex="0">
                 <asp:View ID="vwFullTotals" runat="server">
-                    <uc1:mfbTotalsByTimePeriod runat="server" ID="mfbTotalsByTime" />
+                    <asp:Literal runat="server" ID="litTotalsByTime"></asp:Literal>
                 </asp:View>
                 <asp:View ID="vwCompactTotals" runat="server">
                     <uc1:mfbTotalSummary runat="server" ID="mfbTotalSummary" DefaultGroupMode="true" />

@@ -901,6 +901,21 @@ a img
     font-size:8pt;
 }
 
+table.rollupReport {
+    font-size: 8pt;
+    border-collapse: collapse;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+/* Model rollup - emphasize the bottom row */
+table.modelRollup tbody tr:last-child {
+    font-weight: bold;
+    border-top-style: double;
+}
+
 /* Logbook gridview header */
 .headerBase {
     font-weight: normal;

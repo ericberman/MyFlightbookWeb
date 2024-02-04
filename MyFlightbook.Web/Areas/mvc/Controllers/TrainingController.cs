@@ -529,7 +529,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpGet]
         [Authorize]
-        public ActionResult RatingsProgress(string user = null, string a = null)
+        public ActionResult RatingsProgress(string user = null)
         {
             // If a user is passed in, use them IFF we are an instructor with appropriate privileges.
             // Admins should just emulate the user to view progress; this is a (minor) change from the old .aspx implementation
@@ -662,6 +662,40 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
             ViewBag.endorsements = EndorsementsForUser(User.Identity.Name, string.Empty, System.Web.UI.WebControls.SortDirection.Descending, EndorsementSortKey.Date);
             return View("endorsements");
+        }
+        #endregion
+
+        #region Reports (8710 and rollups)
+        private ViewResult PopulateReports(string id = null, string fqJSON = null, bool fPropDeleteClicked = false, string propToDelete = null)
+        {
+            FlightQuery fq = String.IsNullOrEmpty(fqJSON) ? new FlightQuery(User.Identity.Name) : FlightQuery.FromJSON(fqJSON);
+
+            if (fq.UserName.CompareOrdinal(User.Identity.Name) != 0)
+                throw new UnauthorizedAccessException();
+
+            if (fPropDeleteClicked)
+                fq.ClearRestriction(propToDelete ?? string.Empty);
+
+            object o = Session[MFBConstants.keyMathRoundingUnits];
+            ViewBag.reports = Currency.TrainingReportsForUser.ReportsForUser(fq, o == null ? MyFlightbook.Profile.GetUser(fq.UserName).MathRoundingUnit : (int)o);
+            ViewBag.query = fq;
+            ViewBag.defaultPane = id;
+            return View("reports");
+        }
+
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        [Authorize]
+        public ActionResult Reports(string id = null, string fqJSON = null, bool fPropDeleteClicked = false, string propToDelete = null)
+        {
+            return PopulateReports(id, fqJSON, fPropDeleteClicked, propToDelete);
+        }
+
+        [HttpGet]
+        [Authorize]
+        public ActionResult Reports(string id = null)
+        {
+            return PopulateReports(id);
         }
         #endregion
 

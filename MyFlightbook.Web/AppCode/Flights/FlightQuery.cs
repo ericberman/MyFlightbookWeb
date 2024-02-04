@@ -610,7 +610,7 @@ namespace MyFlightbook
             return Convert.ToBase64String(ToCompressedJSONString());
         }
 
-        protected static FlightQuery FromJSON(string szJSON)
+        public static FlightQuery FromJSON(string szJSON)
         {
             return JsonConvert.DeserializeObject<FlightQuery>(szJSON, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore });
         }

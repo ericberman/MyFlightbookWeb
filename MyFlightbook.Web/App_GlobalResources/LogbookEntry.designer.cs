@@ -1015,6 +1015,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flight&lt;br /&gt;Eng..
+        /// </summary>
+        internal static string FieldFlightEngineer {
+            get {
+                return ResourceManager.GetString("FieldFlightEngineer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Flight Start.
         /// </summary>
         internal static string FieldFlightStart {
@@ -1101,6 +1110,24 @@ namespace Resources {
         internal static string FieldLanding {
             get {
                 return ResourceManager.GetString("FieldLanding", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last Flight.
+        /// </summary>
+        internal static string FieldLastFlight {
+            get {
+                return ResourceManager.GetString("FieldLastFlight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Military.
+        /// </summary>
+        internal static string FieldMilitary {
+            get {
+                return ResourceManager.GetString("FieldMilitary", resourceCulture);
             }
         }
         

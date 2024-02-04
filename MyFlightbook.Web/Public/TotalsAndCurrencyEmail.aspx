@@ -3,7 +3,6 @@
 <%@ Register src="../Controls/mfbTotalSummary.ascx" tagname="mfbTotalSummary" tagprefix="uc2" %>
 <%@ Register src="../Controls/mfbCurrency.ascx" tagname="mfbCurrency" tagprefix="uc3" %>
 <%@ Register Src="~/Controls/mfbRecentAchievements.ascx" TagPrefix="uc1" TagName="mfbRecentAchievements" %>
-<%@ Register Src="~/Controls/mfbTotalsByTimePeriod.ascx" TagPrefix="uc1" TagName="mfbTotalsByTimePeriod" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -45,7 +44,7 @@
     </asp:Panel>
     <asp:Panel ID="pnlTotals" runat="server" Visible="false" EnableViewState="false">
         <h2><asp:Label ID="lblTotal" runat="server" Text=""></asp:Label></h2>
-        <uc1:mfbTotalsByTimePeriod runat="server" id="mfbTotalsByTimePeriod" />
+        <asp:Literal runat="server" ID="litTotalsByTime"></asp:Literal>
         <h2><asp:Label ID="lblRecentAchievementsTitle" runat="server"></asp:Label></h2>
         <uc1:mfbRecentAchievements runat="server" ID="mfbRecentAchievements" />
     </asp:Panel>

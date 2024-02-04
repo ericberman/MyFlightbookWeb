@@ -3,12 +3,15 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
+using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2023 MyFlightbook LLC
+ * Copyright (c) 2007-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -751,7 +754,7 @@ namespace MyFlightbook.Currency
                 foreach (CatClassFeatureRow ccfr in lstRawRows)
                 {
                     string szTitle = pf.TotalsGroupingMode == TotalsGrouping.CatClass ? ccfr.CatClassDisplay : (pf.TotalsGroupingMode == TotalsGrouping.Model ? ccfr.ModelDisplay : ccfr.FamilyDisplay);
-                    dModelCount[szTitle] = dModelCount.ContainsKey(szTitle) ? dModelCount[szTitle] + 1 : 0;
+                    dModelCount[szTitle] = dModelCount.TryGetValue(szTitle, out int modelCount) ? modelCount + 1 : 0;
                 }
 
                 // Now do a second pass, actually accumulating the totals
@@ -760,7 +763,7 @@ namespace MyFlightbook.Currency
                     string szDesc = SubDescFromLandings(ccfr.Landings, ccfr.FSDayLandings, ccfr.FSNightLandings, ccfr.Approaches);
 
                     // keep track of the subtotal.
-                    CatClassTotal cct = htCct.ContainsKey(ccfr.CatClass) ? htCct[ccfr.CatClass] : null;
+                    CatClassTotal cct = htCct.TryGetValue(ccfr.CatClass, out CatClassTotal value) ? value : null;
                     if (cct == null)
                         htCct[ccfr.CatClass] = cct = new CatClassTotal(ccfr.CatClass, ccfr.CCID);
                     cct.AddTotals(ccfr.Total, ccfr.Landings, ccfr.FSDayLandings, ccfr.FSNightLandings, ccfr.Approaches);
@@ -1378,9 +1381,10 @@ namespace MyFlightbook.Currency
 
         public FlightQuery Query { get; set; }
 
-        public bool SuppliedQueryHasDates { get; private set; }        
+        public bool SuppliedQueryHasDates { get; private set; }
         #endregion
 
+        #region Object Creation
         public TimeRollup() { }
 
         public TimeRollup(string szUser, FlightQuery fq) : this()
@@ -1388,6 +1392,22 @@ namespace MyFlightbook.Currency
             User = szUser;
             Query = fq;
         }
+
+        /// <summary>
+        /// Returns a new time rollup with default inclusions for the query
+        /// </summary>
+        /// <param name="fq"></param>
+        public TimeRollup(FlightQuery fq) : this(fq?.UserName, fq)
+        {
+            bool fNewYearsDay = DateTime.Now.Day == 1 && DateTime.Now.Month == 1;
+            IncludeMonthToDate = DateTime.Now.Day > 1;
+            IncludePreviousMonth = true;
+            IncludePreviousYear = true;
+            IncludeTrailing90 = true;
+            IncludeTrailing12 = !fNewYearsDay;
+            IncludeYearToDate = !fNewYearsDay;
+        }
+        #endregion
 
         private static IDictionary<string, TotalsItem> TotalsForQuery(FlightQuery fq, bool fBind, IDictionary<string, TotalsItem> d)
         {
@@ -1406,7 +1426,159 @@ namespace MyFlightbook.Currency
             return d;
         }
 
-        public void Bind()
+        #region Rendering
+        private static void AddTextCellToRow(HtmlTextWriter tw, string szContent, bool fInclude = true, string cssClass = null)
+        {
+            if (fInclude)
+            {
+                if (cssClass != null)
+                    tw.AddAttribute("class", cssClass);
+                tw.RenderBeginTag(HtmlTextWriterTag.Td);
+                tw.WriteEncodedText(szContent);
+                tw.RenderEndTag();
+            }
+        }
+
+        private static decimal AddCellForTotalsItem(HtmlTextWriter tw, TotalsItem ti, bool fInclude, bool linkQuery, bool fUseHHMM)
+        {
+            if (!fInclude)
+                return 0.0M;
+
+            tw.AddAttribute("class", "totalsByTimeCell");
+            tw.RenderBeginTag(HtmlTextWriterTag.Td);
+
+            if (ti != null)
+            {
+                string szText = HttpUtility.HtmlEncode(ti.ValueString(fUseHHMM));
+
+                // Otherwise, add the cell to the table, following the design in mfbTotalSummary
+                // Link the *value* here, not the description, since we will have multiple columns
+                // Add the values div (panel) to the totals box
+                if (ti.Query == null || !linkQuery)
+                    tw.Write(szText);
+                else
+                {
+                    tw.AddAttribute("href", String.Format(CultureInfo.InvariantCulture, "https://{0}{1}",
+                                                        Branding.CurrentBrand.HostName,
+                                                        VirtualPathUtility.ToAbsolute("~/Member/LogbookNew.aspx?fq=" + HttpUtility.UrlEncode(ti.Query.ToBase64CompressedJSONString()))));
+                    tw.RenderBeginTag(HtmlTextWriterTag.A);
+                    tw.WriteEncodedText(szText);
+                    tw.RenderEndTag();
+                }
+                tw.RenderBeginTag(HtmlTextWriterTag.Div);
+                    tw.AddAttribute("class", "fineprint");
+                    tw.RenderBeginTag(HtmlTextWriterTag.Span);
+                    tw.WriteEncodedText(ti.SubDescription);
+                    tw.RenderEndTag(); // span
+                tw.RenderEndTag(); // div
+            }
+            tw.RenderEndTag();  // td
+
+            return ti?.Value ?? 0.0M;    // Indicate if we actually had a non-zero value.  A row of all empty cells or zero cells should be deleted.
+        }
+
+        /// <summary>
+        /// Renders the rollup to HTML.  This form is too complicated for a gridview
+        /// </summary>
+        /// <param name="fLinkQuery">True to link to queries for items</param>
+        /// <param name="fUseHHMM">True to use HHMM</param>
+        public string RenderHTML(bool fUseHHMM, bool fLinkQuery)
+        {
+            // Determine which columns we'll show
+            int ColumnCount = 2;   // All time is always shown, as are its labels (in adjacent table column)
+            if (IncludeLast7Days &= Last7.Any())
+                ColumnCount++;
+            if (IncludeMonthToDate &= MonthToDate.Any())
+                ColumnCount++;
+            if (IncludePreviousMonth &= PrevMonth.Any())
+                ColumnCount++;
+            if (IncludeTrailing90 &= Trailing90.Any())
+                ColumnCount++;
+            if (IncludeTrailing12 &= Trailing12.Any())
+                ColumnCount++;
+            if (IncludeTrailing24 &= Trailing24.Any())
+                ColumnCount++;
+            if (IncludePreviousYear &= PrevYear.Any())
+                ColumnCount++;
+            if (IncludeYearToDate &= YTD.Any())
+                ColumnCount++;
+
+            using (StringWriter sw = new StringWriter())
+            {
+                using (Html32TextWriter tw = new Html32TextWriter(sw))
+                {
+                    if (!allTotals.Any())
+                    {
+                        tw.RenderBeginTag(HtmlTextWriterTag.P);
+                        tw.Write(Resources.Totals.NoTotals);
+                        tw.RenderEndTag();
+                    } else
+                    {
+                        string szPreviousMonth = DateTime.Now.AddCalendarMonths(-1).ToString("MMM yyyy", CultureInfo.CurrentCulture);
+                        string szPreviousYear = (DateTime.Now.Year - 1).ToString(CultureInfo.CurrentCulture);
+
+                        tw.AddAttribute("class", "totalsByTimeTable");
+                        tw.RenderBeginTag(HtmlTextWriterTag.Table);
+
+                        foreach (TotalsItemCollection tic in allTotals)
+                        {
+                            tw.AddAttribute("class", "totalsGroupHeaderRow");
+                            tw.RenderBeginTag(HtmlTextWriterTag.Tr);
+                            tw.AddAttribute("colspan", ColumnCount.ToString(CultureInfo.InvariantCulture));
+                                tw.RenderBeginTag(HtmlTextWriterTag.Td);
+                                tw.WriteEncodedText(tic.GroupName);
+                                tw.RenderEndTag();  // TD - group name
+                            tw.RenderEndTag();  // TR - header row
+
+                            tw.AddAttribute("class", "totalsGroupDateRanges");
+                            tw.RenderBeginTag(HtmlTextWriterTag.Tr);
+                                const string cssDateRange = "totalsDateRange";
+                                AddTextCellToRow(tw, string.Empty, true); // no header above the total description itself.
+                                AddTextCellToRow(tw, SuppliedQueryHasDates ? string.Empty : Resources.FlightQuery.DatesAll, true, cssDateRange);
+                                AddTextCellToRow(tw, Resources.Profile.EmailWeeklyTotalsLabel, IncludeLast7Days, cssDateRange);
+                                AddTextCellToRow(tw, Resources.FlightQuery.DatesThisMonth, IncludeMonthToDate, cssDateRange);
+                                AddTextCellToRow(tw, szPreviousMonth, IncludePreviousMonth, cssDateRange);
+                                AddTextCellToRow(tw, Resources.FlightQuery.DatesYearToDate, IncludeYearToDate, cssDateRange);
+                                AddTextCellToRow(tw, Resources.FlightQuery.DatesPrev90Days, IncludeTrailing90, cssDateRange);
+                                AddTextCellToRow(tw, Resources.FlightQuery.DatesPrev12Month, IncludeTrailing12, cssDateRange);
+                                AddTextCellToRow(tw, Resources.FlightQuery.DatesPrev24Month, IncludeTrailing24, cssDateRange);
+                                AddTextCellToRow(tw, szPreviousYear, IncludePreviousYear, cssDateRange);
+                            tw.RenderEndTag();  // tr
+
+                            foreach (TotalsItem ti in tic.Items)
+                            {
+                                if (ti.Value != 0)
+                                {
+                                    tw.AddAttribute("class", "totalsGroupRow");
+                                    tw.RenderBeginTag(HtmlTextWriterTag.Tr);
+
+                                        // Add the description
+                                        tw.RenderBeginTag(HtmlTextWriterTag.Td);
+                                        tw.WriteEncodedText(ti.Description);
+                                        tw.RenderEndTag();
+
+                                        AddCellForTotalsItem(tw, ti, true, fLinkQuery, fUseHHMM);
+                                        AddCellForTotalsItem(tw, Last7.TryGetValue(ti.Description, out TotalsItem last7Value) ? last7Value : null, IncludeLast7Days, fLinkQuery, fUseHHMM);
+                                        AddCellForTotalsItem(tw, MonthToDate.TryGetValue(ti.Description, out TotalsItem monthValue) ? last7Value : null, IncludeMonthToDate, fLinkQuery, fUseHHMM);
+                                        AddCellForTotalsItem(tw, PrevMonth.TryGetValue(ti.Description, out TotalsItem prevMonthValue) ? prevMonthValue : null, IncludePreviousMonth, fLinkQuery, fUseHHMM);
+                                        AddCellForTotalsItem(tw, YTD.TryGetValue(ti.Description, out TotalsItem ytdValue) ? ytdValue : null, IncludeYearToDate, fLinkQuery, fUseHHMM);
+                                        AddCellForTotalsItem(tw, Trailing90.TryGetValue(ti.Description, out TotalsItem t90Value) ? t90Value : null, IncludeTrailing90, fLinkQuery, fUseHHMM);
+                                        AddCellForTotalsItem(tw, Trailing12.TryGetValue(ti.Description, out TotalsItem t12Value) ? t12Value : null, IncludeTrailing12, fLinkQuery, fUseHHMM);
+                                        AddCellForTotalsItem(tw, Trailing24.TryGetValue(ti.Description, out TotalsItem t24Value) ? t24Value : null, IncludeTrailing24, fLinkQuery, fUseHHMM);
+                                        AddCellForTotalsItem(tw, PrevYear.TryGetValue(ti.Description, out TotalsItem pYearValue) ? pYearValue : null, IncludePreviousYear, fLinkQuery, fUseHHMM);
+                                    tw.RenderEndTag();  // tr
+                                }
+                            }
+                        }
+                        tw.RenderEndTag();  // table
+                    }
+                    return sw.ToString();
+                }
+            }
+        }
+        #endregion
+
+        public TimeRollup Bind()
         {
             if (String.IsNullOrEmpty(User))
                 throw new ArgumentNullException(nameof(User));
@@ -1444,6 +1616,59 @@ namespace MyFlightbook.Currency
                 );
 
             allTotals = TotalsItemCollection.AsGroups(ut.Totals);
+            return this;
+        }
+    }
+
+
+    /// <summary>
+    /// Gathers a set of reports for the user all at once (asynchronously, but you don't need to be async)
+    ///  * 8710 report (and class totals dictionary)
+    ///  * Rollup By Model
+    ///  * Rollup By Time
+    ///  * FlightResult (i.e., the flights for the query)
+    /// </summary>
+    public class TrainingReportsForUser
+    {
+        public IDictionary<string, IList<Form8710ClassTotal>> ClassTotalsFor8710 { get; private set; }
+
+        public IEnumerable<Form8710Row> Report8710 { get; private set; }
+
+        public IEnumerable<ModelRollupRow> ReportByModel { get; private set; }
+
+        public TimeRollup ReportByTime { get; private set; }
+
+        public static TrainingReportsForUser ReportsForUser(FlightQuery fq, int roundingUnit)
+        {
+            if (fq == null)
+                throw new ArgumentNullException(nameof(fq));
+            if (String.IsNullOrEmpty(fq.UserName))
+                throw new ArgumentOutOfRangeException(nameof(fq), "Username must be provided");
+
+            fq.Refresh();
+
+            DBHelperCommandArgs args = new DBHelperCommandArgs() { Timeout = 120 };
+            args.AddFrom(fq.QueryParameters());
+            args.AddWithValue("qf", roundingUnit);
+
+            TrainingReportsForUser trfu = new TrainingReportsForUser();
+            TimeRollup tr = new TimeRollup(fq);
+
+            // get the various reports.  This can be a bit slow, so do all of the queries in parallel asynchronously.
+            try
+            {
+                Task.WaitAll(
+                    Task.Run(() => { trfu.ClassTotalsFor8710 = Form8710ClassTotal.ClassTotalsForQuery(fq, args); }),
+                    Task.Run(() => { trfu.Report8710 = Form8710Row.Form8710ForQuery(fq, args); }),
+                    Task.Run(() => { trfu.ReportByModel = ModelRollupRow.ModelRollupForQuery(fq, args); }),
+                    Task.Run(() => { trfu.ReportByTime = tr.Bind(); })
+                );
+            }
+            catch (MySqlException ex)
+            {
+                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Error getting 8710 data for user {0}: {1}", fq.UserName, ex.Message), ex, fq.UserName);
+            }
+            return trfu;
         }
     }
 }

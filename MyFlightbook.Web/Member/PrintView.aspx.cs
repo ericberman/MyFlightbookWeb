@@ -265,7 +265,7 @@ namespace MyFlightbook.Printing
             if (PrintOptions.Sections.CompactTotals)
                 RefreshCompactTotals(fq);
             else
-                mfbTotalsByTime.RefreshTable(TotalsRollup, false);
+                litTotalsByTime.Text = TotalsRollup.RenderHTML(CurrentUser.UsesHHMM, false);
         }
 
         private void InitializeEndorsements()
@@ -316,7 +316,7 @@ namespace MyFlightbook.Printing
                 imgLogo.ImageUrl = Branding.CurrentBrand.LogoHRef;
             }
             else
-                mfbTotalsByTime.RefreshTable(TotalsRollup, false);    // should ALWAYS pick up from the viewstate
+                litTotalsByTime.Text = TotalsRollup.RenderHTML(CurrentUser.UsesHHMM, false);  // should ALWAYS pick up from the viewstate
 
             rowCustomPage.Style["display"] = (PDFOptions.PageSize)Enum.Parse(typeof(PDFOptions.PageSize), cmbPageSize.SelectedValue) == PDFOptions.PageSize.Custom ? "block" : "none";
         }
@@ -343,7 +343,7 @@ namespace MyFlightbook.Printing
             RefreshLogbookData();
             TotalsRollup = null;    // clear the old rollup
             TotalsRollup = RollupForQuery(fq);
-            mfbTotalsByTime.RefreshTable(TotalsRollup, false);
+            litTotalsByTime.Text = TotalsRollup.RenderHTML(CurrentUser.UsesHHMM, false);
             mvSearch.SetActiveView(vwDescriptor);
             lnkReturnToFlights.NavigateUrl = ReturnLink(mfbSearchForm1.Restriction);
         }

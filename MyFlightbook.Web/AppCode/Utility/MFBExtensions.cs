@@ -935,6 +935,48 @@ namespace MyFlightbook
             return (i == 0) ? "" : i.PrettyString();
         }
 
+        public static string FormatMulti(this decimal[] values, bool fUseHHMM, string separator = " / ")
+        {
+            if (values == null)
+                return string.Empty;
+
+            bool fHasValue = false;
+
+            List<string> lst = new List<string>();
+            foreach (object value in values)
+            {
+                if (value == null || value == DBNull.Value)
+                    continue;
+
+                decimal d = Convert.ToDecimal(value, CultureInfo.InvariantCulture);
+                lst.Add(d == 0.0M ? "0" : d.FormatDecimal(fUseHHMM));
+                fHasValue = fHasValue || d != 0.0M;
+            }
+
+            return fHasValue ? String.Join(separator, lst) : string.Empty;
+        }
+
+        public static string FormatMulti(this int[] values, string separator = " / ")
+        {
+            if (values == null)
+                return string.Empty;
+
+            bool fHasValue = false;
+
+            List<string> lst = new List<string>();
+            foreach (object value in values)
+            {
+                if (value == null)
+                    continue;
+
+                int i = Convert.ToInt32(value, CultureInfo.InvariantCulture);
+                lst.Add(i == 0 ? "0" : i.FormatInt());
+                fHasValue = fHasValue || i != 0;
+            }
+
+            return fHasValue ? String.Join(separator, lst) : string.Empty;
+        }
+
         /// <summary>
         /// Format the object as a short date string
         /// </summary>
