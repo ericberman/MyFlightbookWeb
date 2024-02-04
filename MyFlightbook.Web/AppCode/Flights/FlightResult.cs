@@ -200,9 +200,6 @@ namespace MyFlightbook
         /// <exception cref="KeyNotFoundException"></exception>
         public FlightResultRange RangeContainingFlight(int pageSize, int idFlight)
         {
-            if (idFlight <= 0)
-                throw new ArgumentOutOfRangeException(nameof(idFlight));
-
             int index = Math.Max(0, FlightsList.FindIndex(led => led.FlightID == idFlight));
 
             return pageSize <= 0 ? RangeForPage(0, pageSize) : RangeForPage(index / pageSize, pageSize);
