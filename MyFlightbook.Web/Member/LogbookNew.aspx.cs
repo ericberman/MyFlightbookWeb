@@ -255,7 +255,7 @@ namespace MyFlightbook.MemberPages
         protected void Refresh()
         {
             bool fRestrictionIsDefault = Restriction.IsDefault;
-            mfbLogbook1.DetailsParam = fRestrictionIsDefault ? string.Empty : "fq=" + HttpUtility.UrlEncode(Restriction.ToBase64CompressedJSONString());
+            mfbLogbook1.DetailsParam = fRestrictionIsDefault ? string.Empty : "fq=" + Restriction.ToBase64CompressedJSONString();
             mfbLogbook1.User = Page.User.Identity.Name;
             mfbLogbook1.Restriction = Restriction;
             mfbLogbook1.RefreshData();

@@ -64,7 +64,7 @@ namespace MyFlightbook.Printing
         {
             if (fq == null)
                 throw new ArgumentNullException(nameof(fq));
-            return String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?fq={0}", HttpUtility.UrlEncode(fq.ToBase64CompressedJSONString()));
+            return String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?fq={0}", fq.ToBase64CompressedJSONString());
         }
         #endregion
 
@@ -72,7 +72,7 @@ namespace MyFlightbook.Printing
         {
             PrintOptions = String.IsNullOrEmpty(sz)
                 ? new PrintingOptions()
-                : JsonConvert.DeserializeObject<PrintingOptions>(Convert.FromBase64String(sz).Uncompress());
+                : JsonConvert.DeserializeObject<PrintingOptions>(sz.FromSafeParameter());
         }
 
 
@@ -169,7 +169,7 @@ namespace MyFlightbook.Printing
                 Master.HasFooter = Master.HasHeader = false;
                 if (!mfbSearchForm1.Restriction.IsDefault)
                     TabContainer1.ActiveTab = tpFilter;
-                lnkReturnToFlights.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?fq={0}", szFQParam);
+                lnkReturnToFlights.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?fq={0}", fq.ToBase64CompressedJSONString());
             }
         }
 
@@ -399,7 +399,7 @@ namespace MyFlightbook.Printing
                 throw new ArgumentNullException(nameof(fic));
             mfbSearchForm1.Restriction = mfbSearchForm1.Restriction.ClearRestriction(fic.FilterItem);
             FilterResults(sender, new FlightQueryEventArgs(mfbSearchForm1.Restriction));
-            lnkReturnToFlights.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?fq={0}", HttpUtility.UrlEncode(mfbSearchForm1.Restriction.ToBase64CompressedJSONString()));
+            lnkReturnToFlights.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?fq={0}", mfbSearchForm1.Restriction.ToBase64CompressedJSONString());
         }
 
         protected void lnkDownloadPDF_Click(object sender, EventArgs e)

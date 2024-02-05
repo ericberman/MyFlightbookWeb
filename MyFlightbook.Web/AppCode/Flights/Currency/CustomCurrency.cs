@@ -8,7 +8,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2023 MyFlightbook LLC
+ * Copyright (c) 2007-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -940,7 +940,7 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
         /// <returns>The newly generated flightquery.  Don't forget to refresh it!</returns>
         public string FlightQueryJSON
         {
-            get { return System.Web.HttpUtility.UrlEncode(Query.ToBase64CompressedJSONString()); }
+            get { return Query.ToBase64CompressedJSONString(); }
         }
         #region Criteria Matching
         private bool MatchesModel(int idModel)

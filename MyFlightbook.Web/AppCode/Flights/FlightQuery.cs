@@ -603,11 +603,12 @@ namespace MyFlightbook
         }
 
         /// <summary>
-        /// Returns the base64 encoded compressed JSON representation of the query
+        /// Returns the base64 encoded compressed JSON representation of the query.  This SHOULD be URL safe.
         /// </summary>
         public string ToBase64CompressedJSONString()
         {
-            return Convert.ToBase64String(ToCompressedJSONString());
+            // Issue #1181 - base64 encode introduces "+" and "/" which are not URL safe, and urlencode doesn't encode "+" to %2B! 
+            return ToJSONString().ToSafeParameter();
         }
 
         public static FlightQuery FromJSON(string szJSON)
@@ -622,7 +623,10 @@ namespace MyFlightbook
 
         public static FlightQuery FromBase64CompressedJSON(string sz)
         {
-            return FromCompressedJSON(Convert.FromBase64String(sz));
+            if (sz == null)
+                throw new ArgumentNullException(nameof(sz));
+            // Issue #1181 - base64 encode introduces "+" and "/" which are not URL safe, and urlencode doesn't encode "+" to %2B! 
+            return FromJSON(sz.FromSafeParameter());
         }
         #endregion
 

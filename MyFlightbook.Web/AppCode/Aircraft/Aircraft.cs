@@ -278,7 +278,7 @@ ORDER BY ac.instancetype ASC");
                                                     Resources.Aircraft.AircraftStatsDate, 
                                                     EarliestDate.Value.ToShortDateString(), LatestDate.Value.ToShortDateString()) : 
                                             string.Empty) + szTotalHours,
-                    String.IsNullOrEmpty(User) ? null : String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?ft=Totals&fq={0}", HttpUtility.UrlEncode(new FlightQuery() { UserName = User, AircraftIDList = new int[] { AircraftID } }.ToBase64CompressedJSONString())));
+                    String.IsNullOrEmpty(User) ? null : String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?ft=Totals&fq={0}", new FlightQuery() { UserName = User, AircraftIDList = new int[] { AircraftID } }.ToBase64CompressedJSONString()));
                 }
             }
         }

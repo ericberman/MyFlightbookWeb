@@ -605,7 +605,7 @@ namespace MyFlightbook.Instruction
         {
             using (StringWriter sw = new StringWriter())
             {
-                using (Html32TextWriter tw = new Html32TextWriter(sw))
+                using (HtmlTextWriter tw = new HtmlTextWriter(sw))
                 {
                     RenderHTML(tw);
                     return sw.ToString();

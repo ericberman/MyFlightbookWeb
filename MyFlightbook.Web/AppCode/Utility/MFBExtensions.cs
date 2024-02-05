@@ -426,6 +426,46 @@ namespace MyFlightbook
             }
         }
 
+        /// <summary>
+        /// Convert to base 64, but using "-" and "_" in place of "+" and "/" for URL safety, especially since HttpUtility.URLEncode doesn't properly handle these (e.g., "+" is left alone, so it becomes a space when read)
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <returns></returns>
+        public static string ToSafeBase64(this byte[] bytes)
+        {
+            return Convert.ToBase64String(bytes).Replace('=', '.').Replace('+', '-').Replace('/', '_');
+        }
+
+        /// <summary>
+        /// Convert from base 64, but substituting "+" and "/" in place of "-" and "/"; i.e., must be paired with ToSafeBase64
+        /// </summary>
+        /// <param name="sz"></param>
+        /// <returns></returns>
+        public static byte[] FromSafeBase64(this string sz)
+        {
+            return Convert.FromBase64String((sz ?? string.Empty).Replace('.', '=').Replace('-', '+').Replace('_', '/'));
+        }
+
+        /// <summary>
+        /// Compresses a string and converts it to base 64 in a manner that does NOT require URL encoding so that it can be passed as a parameter in a URL
+        /// </summary>
+        /// <param name="sz"></param>
+        /// <returns></returns>
+        public static string ToSafeParameter(this string sz)
+        {
+            return sz?.Compress().ToSafeBase64() ?? string.Empty;
+        }
+
+        /// <summary>
+        /// Reads a string that has been compressed and encoded with ToSafeParameter
+        /// </summary>
+        /// <param name="sz"></param>
+        /// <returns></returns>
+        public static string FromSafeParameter(this string sz)
+        {
+            return sz?.FromSafeBase64().Uncompress() ?? string.Empty;
+        }
+
         public static int CompareCurrentCultureIgnoreCase(this string sz, string sz2)
         {
             return String.Compare(sz, sz2, StringComparison.CurrentCultureIgnoreCase);

@@ -12,7 +12,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2023 MyFlightbook LLC
+ * Copyright (c) 2008-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -626,7 +626,7 @@ namespace MyFlightbook.Printing
 
             UriBuilder uriBuilder = new UriBuilder("~/Member/PrintView.aspx".ToAbsoluteURL(scheme, hostName));
             NameValueCollection nvc = HttpUtility.ParseQueryString(string.Empty);
-            nvc["po"] = Convert.ToBase64String(JsonConvert.SerializeObject(po, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore }).Compress());
+            nvc["po"] = JsonConvert.SerializeObject(po, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore }).ToSafeParameter();
             nvc["fq"] = fq.ToBase64CompressedJSONString();
             addParams?.Invoke(nvc);
             uriBuilder.Query = nvc.ToString();

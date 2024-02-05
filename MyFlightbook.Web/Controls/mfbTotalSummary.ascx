@@ -12,7 +12,7 @@
                                      NavigateUrl='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}://{1}{2}", 
                                     Request.IsSecureConnection ? "https" : "http", 
                                     Branding.CurrentBrand.HostName, 
-                                    ResolveUrl("~/Member/LogbookNew.aspx?fq=" + HttpUtility.UrlEncode(Convert.ToBase64String(Eval("JSONSerializedQuery").ToString().Compress())))) %>'
+                                    ResolveUrl("~/Member/LogbookNew.aspx?fq=" + ((string) Eval("JSONSerializedQuery")).ToSafeParameter())) %>'
                                      Target="_blank" ></asp:HyperLink>
                             </asp:View>
                             <asp:View ID="vwUnlinked" runat="server">
@@ -50,7 +50,7 @@
                                                 NavigateUrl='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}://{1}{2}", 
                                             Request.IsSecureConnection ? "https" : "http", 
                                             Branding.CurrentBrand.HostName, 
-                                            ResolveUrl("~/Member/LogbookNew.aspx?fq=" + HttpUtility.UrlEncode(Convert.ToBase64String(Eval("JSONSerializedQuery").ToString().Compress())))) %>'
+                                            ResolveUrl("~/Member/LogbookNew.aspx?fq=" + ((string)Eval("JSONSerializedQuery")).ToSafeParameter())) %>'
                                                 Target="_blank" ></asp:HyperLink>
                                     </asp:View>
                                     <asp:View ID="vwUnlinked" runat="server">

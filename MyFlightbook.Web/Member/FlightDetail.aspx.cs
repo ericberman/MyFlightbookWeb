@@ -13,7 +13,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2023 MyFlightbook LLC
+ * Copyright (c) 2017-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -41,7 +41,7 @@ namespace MyFlightbook.MemberPages
 
         protected string LinkForFlight(int idFlight)
         {
-            return String.Format(CultureInfo.InvariantCulture, "~/Member/FlightDetail.aspx/{0}{1}", idFlight, Restriction == null || Restriction.IsDefault ? string.Empty : "?fq=" + HttpUtility.UrlEncode(Restriction.ToBase64CompressedJSONString()));
+            return String.Format(CultureInfo.InvariantCulture, "~/Member/FlightDetail.aspx/{0}{1}", idFlight, Restriction == null || Restriction.IsDefault ? string.Empty : "?fq=" + Restriction.ToBase64CompressedJSONString());
         }
 
         private Profile m_pfUser;
@@ -809,7 +809,7 @@ namespace MyFlightbook.MemberPages
                 }
 
                 if (Restriction != null && !Restriction.IsDefault)
-                    mfbFlightContextMenu.EditTargetFormatString = mfbFlightContextMenu.EditTargetFormatString + "?fq=" + HttpUtility.UrlEncode(Restriction.ToBase64CompressedJSONString());
+                    mfbFlightContextMenu.EditTargetFormatString = mfbFlightContextMenu.EditTargetFormatString + "?fq=" + Restriction.ToBase64CompressedJSONString();
                 mfbFlightContextMenu.Flight = CurrentFlight;
 
                 cmbAltUnits.SelectedValue = ((int)fd.AltitudeUnits).ToString(CultureInfo.InvariantCulture);

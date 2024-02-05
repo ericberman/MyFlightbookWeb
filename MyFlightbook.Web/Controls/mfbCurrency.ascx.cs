@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2023 MyFlightbook LLC
+ * Copyright (c) 2007-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -153,7 +153,7 @@ public partial class Controls_mfbCurrency : System.Web.UI.UserControl
             MultiView mv = (MultiView) e.Row.FindControl("mvTitle");
             mv.ActiveViewIndex = fLink ? 1 : 0;
             if (fLink)
-                ((HyperLink)e.Row.FindControl("lnkTitle")).NavigateUrl = csi.AssociatedResourceLink ?? String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?fq={2}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/Member/LogbookNew.aspx"), csi.Query == null ? string.Empty : HttpUtility.UrlEncode(csi.Query.ToBase64CompressedJSONString()));
+                ((HyperLink)e.Row.FindControl("lnkTitle")).NavigateUrl = csi.AssociatedResourceLink ?? String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?fq={2}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/Member/LogbookNew.aspx"), csi.Query == null ? string.Empty : csi.Query.ToBase64CompressedJSONString());
 
             if (UseInlineFormatting)
             {

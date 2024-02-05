@@ -815,7 +815,7 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
     {
         IsInSelectMode = false;
         Restriction.EnumeratedFlights = SelectedItems;
-        Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/Logbooknew.aspx?fq={0}", HttpUtility.UrlEncode(Restriction.ToBase64CompressedJSONString())));
+        Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/Logbooknew.aspx?fq={0}", Restriction.ToBase64CompressedJSONString()));
     }
 
     protected void lnkInvertSelected_Click(object sender, EventArgs e)

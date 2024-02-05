@@ -231,8 +231,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             mq.Limit = 25;
 
             string szJSon = JsonConvert.SerializeObject(mq, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore });
-            string szQ = Convert.ToBase64String(szJSon.Compress());
-            return Redirect(String.Format(CultureInfo.InvariantCulture, "~/mvc/Aircraft/Makes?q={0}", HttpUtility.UrlEncode(szQ)));
+            return Redirect(String.Format(CultureInfo.InvariantCulture, "~/mvc/Aircraft/Makes?q={0}", szJSon.ToSafeParameter()));
         }
 
         [HttpGet]
@@ -241,7 +240,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             if (q == null)
                 return modelBrowser(new ModelQuery() { SortDir = ModelQuery.ModelSortDirection.Ascending, SortMode = ModelQuery.ModelSortMode.ModelName }, false, false);
 
-            ModelQuery mq = JsonConvert.DeserializeObject<ModelQuery>(Convert.FromBase64String(q).Uncompress(), new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate });
+            ModelQuery mq = JsonConvert.DeserializeObject<ModelQuery>(q.FromSafeParameter(), new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate });
 
             return modelBrowser(mq, mq.IsAdvanced, true);
         }

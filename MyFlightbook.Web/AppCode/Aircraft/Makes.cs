@@ -1066,7 +1066,7 @@ WHERE {1}";
             fq.MakeList.Add(this);
             string szStatsLabel = String.Format(CultureInfo.CurrentCulture, Resources.Makes.MakeStatsFlightsCount, userStats.NumFlights, userStats.EarliestFlight.HasValue && userStats.LatestFlight.HasValue ?
             String.Format(CultureInfo.CurrentCulture, Resources.Makes.MakeStatsFlightsDateRange, userStats.EarliestFlight.Value, userStats.LatestFlight.Value) : string.Empty);
-            return new LinkedString(szStatsLabel, String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?ft=Totals&fq={0}", HttpUtility.UrlEncode(Convert.ToBase64String(fq.ToJSONString().Compress()))));
+            return new LinkedString(szStatsLabel, String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?ft=Totals&fq={0}", fq.ToBase64CompressedJSONString()));
         }
 
         public IEnumerable<LinkedString> AttributeListForUser(IEnumerable<Aircraft> rgac, string szUser, MakeModelStats userStats, AircraftStats acStats, AvionicsTechnologyType upgradeType = AvionicsTechnologyType.None, DateTime? upgradeDate = null)

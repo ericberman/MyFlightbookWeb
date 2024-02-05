@@ -59,7 +59,7 @@ namespace MyFlightbook.RatingsProgress
                 if (MatchingEventID > 0)    // links to a specific flight
                     return VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/FlightDetail.aspx/{0}", MatchingEventID));
                 else if (Query != null)
-                    return VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, QueryLinkTemplate, HttpUtility.UrlEncode(Query.ToBase64CompressedJSONString())));
+                    return VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, QueryLinkTemplate, Query.ToBase64CompressedJSONString()));
 
                 return string.Empty;
             }
@@ -759,7 +759,7 @@ namespace MyFlightbook.RatingsProgress
                                     {
                                         fq.DateMax = fq.DateMin = dtDay.Date;
                                         tw.AddAttribute("class", "dateContent dateContentValue");
-                                        tw.AddAttribute("href", szBaseURL + HttpUtility.UrlEncode(fq.ToBase64CompressedJSONString()));
+                                        tw.AddAttribute("href", szBaseURL + fq.ToBase64CompressedJSONString());
                                         tw.RenderBeginTag(HtmlTextWriterTag.A);
                                         tw.Write(cFlights.ToString(CultureInfo.CurrentCulture));
                                         tw.RenderEndTag(); // Anchor

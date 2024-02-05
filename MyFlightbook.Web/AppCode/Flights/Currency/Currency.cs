@@ -11,7 +11,7 @@ using System.Xml.Serialization;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2023 MyFlightbook LLC
+ * Copyright (c) 2007-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -156,7 +156,7 @@ namespace MyFlightbook.Currency
                     default:
                     case CurrencyGroups.None:
                     case CurrencyGroups.FlightExperience:
-                        return Query == null ? null : String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?fq={0}", HttpUtility.UrlEncode(Query.ToBase64CompressedJSONString()));
+                        return Query == null ? null : String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?fq={0}", Query.ToBase64CompressedJSONString());
                     case CurrencyGroups.FlightReview:
                         szResult = VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftPilotInfo?pane=flightreview");
                         break;
@@ -174,7 +174,7 @@ namespace MyFlightbook.Currency
                         szResult = VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftPrefs?pane=deadlines");
                         break;
                     case CurrencyGroups.CustomCurrency:
-                        szResult = VirtualPathUtility.ToAbsolute(Query == null ? "~/Member/EditProfile.aspx/pftPrefs?pane=custcurrency" : String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?ft=Totals&fq={0}", HttpUtility.UrlEncode(Query.ToBase64CompressedJSONString())));
+                        szResult = VirtualPathUtility.ToAbsolute(Query == null ? "~/Member/EditProfile.aspx/pftPrefs?pane=custcurrency" : String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?ft=Totals&fq={0}", Query.ToBase64CompressedJSONString()));
                         break;
                 }
 
