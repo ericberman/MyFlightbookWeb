@@ -819,7 +819,6 @@
     <Content Include="Logon\newuser.aspx" />
     <Content Include="Logon\ResetPass.aspx" />
     <Content Include="MasterPage.master" />
-    <Content Include="Member\AddRelationship.aspx" />
     <Content Include="Member\Ajax.asmx" />
     <Content Include="Member\BrowseTemplates.aspx" />
     <Content Include="Member\CheckFlights.aspx" />
@@ -1581,6 +1580,7 @@
     <Content Include="Areas\mvc\Views\Training\addEndorsement.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\unsubscribe.cshtml" />
     <Content Include="Areas\mvc\Views\Training\reports.cshtml" />
+    <Content Include="Areas\mvc\Views\Training\addRelationship.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -2640,13 +2640,6 @@
     </Compile>
     <Compile Include="MasterPage.master.designer.cs">
       <DependentUpon>MasterPage.master</DependentUpon>
-    </Compile>
-    <Compile Include="Member\AddRelationship.aspx.cs">
-      <DependentUpon>AddRelationship.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\AddRelationship.aspx.designer.cs">
-      <DependentUpon>AddRelationship.aspx</DependentUpon>
     </Compile>
     <Compile Include="Member\BrowseTemplates.aspx.cs">
       <DependentUpon>BrowseTemplates.aspx</DependentUpon>

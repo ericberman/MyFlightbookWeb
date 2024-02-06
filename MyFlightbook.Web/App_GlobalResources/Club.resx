@@ -163,10 +163,10 @@
     <value>Website for the club/FBO:</value>
   </data>
   <data name="AddMemberFromInvitation" xml:space="preserve">
-    <value>You have been invited to join the club/FBO "{0}".  Do you wish to join?</value>
+    <value>You have been invited to join the club/FBO *{0}*.  Do you wish to join?</value>
   </data>
   <data name="AddMemberFromRequest" xml:space="preserve">
-    <value>{0} has requested to join the club/FBO "{1}".  Do you approve?</value>
+    <value>{0} has requested to join the club/FBO *{1}*.  Do you approve?</value>
   </data>
   <data name="ButtonAddAircraft" xml:space="preserve">
     <value>Add</value>

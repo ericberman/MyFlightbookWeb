@@ -571,11 +571,11 @@
     <value>Please confirm relationship</value>
   </data>
   <data name="AddRelationshipRequestInstructor" xml:space="preserve">
-    <value>Another pilot on {0}, &lt;span style="font-weight:bold"&gt;{1}&lt;/span&gt; has asked you to confirm that you are an instructor of theirs</value>
+    <value>Another pilot on {0}, *{1}*, has asked you to confirm that you are an instructor of theirs</value>
   </data>
   <data name="AddRelationshipRequestStudent" xml:space="preserve">
-    <value>Another pilot on {0}, &lt;span style="font-weight:bold"&gt;{1}&lt;/span&gt; has asked you to confirm that you are a student of theirs.</value>
-    <comment>{0} is the product name.  Leave the &lt;span&gt; stuff; it makes the requestor's name ({1}) boldface</comment>
+    <value>Another pilot on {0}, *{1}*, has asked you to confirm that you are a student of theirs.</value>
+    <comment>{0} is the product name, {1} is the user's name</comment>
   </data>
   <data name="LogbookForUserHeader" xml:space="preserve">
     <value>Logbook for {0}</value>

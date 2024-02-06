@@ -247,7 +247,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Another pilot on {0}, &lt;span style=&quot;font-weight:bold&quot;&gt;{1}&lt;/span&gt; has asked you to confirm that you are an instructor of theirs.
+        ///   Looks up a localized string similar to Another pilot on {0}, *{1}*, has asked you to confirm that you are an instructor of theirs.
         /// </summary>
         internal static string AddRelationshipRequestInstructor {
             get {
@@ -256,7 +256,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Another pilot on {0}, &lt;span style=&quot;font-weight:bold&quot;&gt;{1}&lt;/span&gt; has asked you to confirm that you are a student of theirs..
+        ///   Looks up a localized string similar to Another pilot on {0}, *{1}*, has asked you to confirm that you are a student of theirs..
         /// </summary>
         internal static string AddRelationshipRequestStudent {
             get {

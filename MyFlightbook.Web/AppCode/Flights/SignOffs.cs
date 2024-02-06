@@ -961,9 +961,10 @@ namespace MyFlightbook.Instruction
         /// Initializes the request from an encrypted string
         /// </summary>
         /// <param name="szRequest">The encrypted request string</param>
-        public void DecryptRequest(string szRequest)
+        public CFIStudentMapRequest DecryptRequest(string szRequest)
         {
             InitFromString(new PeerRequestEncryptor().Decrypt(szRequest));
+            return this;
         }
 
         /// <summary>
@@ -1011,12 +1012,118 @@ namespace MyFlightbook.Instruction
                         throw new MyFlightbookException("Invalid role");
                 }
 
-                string szCallBackUrl = String.Format(CultureInfo.InvariantCulture,"https://{0}{1}/Member/AddRelationship.aspx?req={2}", HttpContext.Current.Request.Url.Host, HttpContext.Current.Request.ApplicationPath, HttpContext.Current.Server.UrlEncode(EncryptRequest()));
+                string szCallBackUrl = String.Format(CultureInfo.InvariantCulture,"{0}?req={1}", "~/mvc/Training/AddRelationship".ToAbsoluteURL(HttpContext.Current.Request), HttpContext.Current.Server.UrlEncode(EncryptRequest()));
 
                 string szRequestor = String.Format(CultureInfo.CurrentCulture, "{0} ({1})", pf.UserFullName, pf.Email);
 
                 util.PopulateMessageContentWithTemplate(msg, szTemplate.Replace("<% Requestor %>", szRequestor).Replace("<% Role %>", szRole).Replace("<% ConfirmRoleLink %>", szCallBackUrl).Replace("<% ClubName %>", ClubToJoin == null ? string.Empty : ClubToJoin.Name));
                 util.SendMessage(msg);
+            }
+        }
+
+        /// <summary>
+        /// Processes an incoming request parameter on a relationship add request for the specified user
+        /// </summary>
+        /// <param name="szReq">The encrypted request parameter</param>
+        /// <param name="szUser">The target user</param>
+        /// <returns>A description of the request, if valid</returns>
+        /// <exception cref="MyFlightbookValidationException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static string ProcessRequestParameter(string szReq, string szUser)
+        {
+            if (String.IsNullOrEmpty(szReq))
+                throw new MyFlightbookValidationException(Resources.LocalizedText.AddRelationshipErrInvalidRequest);
+            if (String.IsNullOrEmpty(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+
+            CFIStudentMapRequest m_smr = new CFIStudentMapRequest();
+            m_smr.DecryptRequest(szReq);
+            string szResult = String.Empty;
+
+            Profile pfRequestor = Profile.GetUser(m_smr.RequestingUser);
+            if (!pfRequestor.IsValid())
+                throw new MyFlightbookValidationException(Resources.LocalizedText.AddRelationshipErrInvalidUser);
+
+            Profile pfCurrent = Profile.GetUser(szUser);
+            if (pfCurrent.Email.CompareCurrentCultureIgnoreCase(m_smr.TargetUser) != 0 && !pfCurrent.IsVerifiedEmail(m_smr.TargetUser))
+                throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.AddRelationshipErrNotTargetUser, m_smr.TargetUser, pfCurrent.Email));
+
+            CFIStudentMap m_sm = new CFIStudentMap(szUser);
+
+            switch (m_smr.Requestedrole)
+            {
+                case RoleType.RoleStudent:
+                    szResult = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.AddRelationshipRequestStudent, Branding.CurrentBrand.AppName, pfRequestor.UserFullName);
+                    if (m_sm.IsStudentOf(m_smr.RequestingUser))
+                        throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.AddRelationshipErrAlreadyStudent, pfRequestor.UserFullName));
+                    break;
+                case RoleType.RoleCFI:
+                    szResult = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.AddRelationshipRequestInstructor, Branding.CurrentBrand.AppName, pfRequestor.UserFullName);
+                    if (m_sm.IsInstructorOf(m_smr.RequestingUser))
+                        throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.AddRelationshipErrAlreadyInstructor, pfRequestor.UserFullName));
+                    break;
+                case RoleType.RoleInviteJoinClub:
+                    if (m_smr.ClubToJoin == null)
+                        throw new MyFlightbookValidationException(Resources.Club.errNoClubInRequest);
+                    if (m_smr.ClubToJoin.HasMember(pfCurrent.UserName))
+                        throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, Resources.Club.errAlreadyMember, m_smr.ClubToJoin.Name));
+                    szResult = String.Format(CultureInfo.CurrentCulture, Resources.Club.AddMemberFromInvitation, m_smr.ClubToJoin.Name);
+                    break;
+                case RoleType.RoleRequestJoinClub:
+                    if (m_smr.ClubToJoin == null)
+                        throw new MyFlightbookValidationException(Resources.Club.errNoClubInRequest);
+                    if (m_smr.ClubToJoin.HasMember(pfRequestor.UserName))
+                        throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, Resources.Club.errAlreadyAddedMember, pfRequestor.UserFullName, m_smr.ClubToJoin.Name));
+                    szResult = String.Format(CultureInfo.CurrentCulture, Resources.Club.AddMemberFromRequest, HttpUtility.HtmlEncode(pfRequestor.UserFullName), m_smr.ClubToJoin.Name);
+                    break;
+            }
+            return szResult;
+        }
+
+        /// <summary>
+        /// Carries out the request for the specified user
+        /// </summary>
+        /// <param name="szReq">The encrypted request</param>
+        /// <param name="szUser">The target user</param>
+        /// <returns>A destination for redirect</returns>
+        public static string ExecuteRequestForUser(string szReq, string szUser)
+        {
+            if (String.IsNullOrEmpty(szReq))
+                throw new MyFlightbookValidationException(Resources.LocalizedText.AddRelationshipErrInvalidRequest);
+            if (String.IsNullOrEmpty(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+
+            CFIStudentMap m_sm = new CFIStudentMap(szUser);
+            CFIStudentMapRequest m_smr = new CFIStudentMapRequest();
+            m_smr.DecryptRequest(szReq);
+            m_sm.ExecuteRequest(m_smr);
+
+            switch (m_smr.Requestedrole)
+            {
+                case RoleType.RoleCFI:
+                case RoleType.RoleStudent:
+                    return "~/mvc/training/" + (m_smr.Requestedrole == RoleType.RoleCFI ? "students" : "instructors");
+                case RoleType.RoleInviteJoinClub:
+                    {
+                        // Let the requestor know that the invitation has been accepted.
+                        Profile pfTarget = Profile.GetUser(m_smr.TargetUser.Contains("@") ? System.Web.Security.Membership.GetUserNameByEmail(m_smr.TargetUser) : m_smr.TargetUser);
+                        string szSubject = String.Format(CultureInfo.CurrentCulture, Resources.Club.AddMemberInvitationAccepted, m_smr.ClubToJoin.Name);
+                        string szBody = Branding.ReBrand(Resources.Club.ClubInvitationAccepted).Replace("<% ClubName %>", m_smr.ClubToJoin.Name).Replace("<% ClubInvitee %>", pfTarget.UserFullName);
+                        foreach (ClubMember cm in ClubMember.AdminsForClub(m_smr.ClubToJoin.ID))
+                            util.NotifyUser(szSubject, szBody.Replace("<% FullName %>", cm.UserFullName), new MailAddress(cm.Email, cm.UserFullName), false, false);
+                        return String.Format(CultureInfo.InvariantCulture, "~/mvc/club/details/{0}", m_smr.ClubToJoin.ID);
+                    }
+                case RoleType.RoleRequestJoinClub:
+                    {
+                        // Let the requestor know that the request has been approved.
+                        Profile pfRequestor = Profile.GetUser(m_smr.RequestingUser);
+                        string szSubject = String.Format(CultureInfo.CurrentCulture, Resources.Club.AddMemberRequestAccepted, m_smr.ClubToJoin.Name);
+                        string szBody = Branding.ReBrand(Resources.Club.ClubRequestAccepted).Replace("<% ClubName %>", m_smr.ClubToJoin.Name).Replace("<% FullName %>", pfRequestor.UserFullName);
+                        util.NotifyUser(szSubject, szBody, new MailAddress(pfRequestor.Email, pfRequestor.UserFullName), false, false);
+                        return String.Format(CultureInfo.InvariantCulture, "~/mvc/club/details/{0}", m_smr.ClubToJoin.ID);
+                    }
+                default:
+                    throw new MyFlightbookValidationException("Unknown role requested: " + m_smr.Requestedrole.ToString());
             }
         }
     }

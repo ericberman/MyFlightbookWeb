@@ -594,6 +594,43 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.instructorMap = new CFIStudentMap(User.Identity.Name);
             return View("instructors");
         }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult ConfirmRelationship()
+        {
+            if (Request["btnCancel"] != null)
+                return Redirect("~/Default.aspx");
+            else
+            {
+                try
+                {
+                    return Redirect(CFIStudentMapRequest.ExecuteRequestForUser(Request["req"], User.Identity.Name));
+                }
+                catch (Exception ex) when (!(ex is OutOfMemoryException))
+                {
+                    ViewBag.error = ex.Message;
+                    return View("addRelationship");
+                }
+            }
+        }
+
+        [HttpGet]
+        [Authorize]
+        public ActionResult AddRelationship(string req)
+        {
+            ViewBag.req = req;
+            try
+            {
+                ViewBag.requestPrompt = CFIStudentMapRequest.ProcessRequestParameter(req, User.Identity.Name);
+            } 
+            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            {
+                ViewBag.error = ex.Message;
+            }
+            return View("addRelationship");
+        }
         #endregion
 
         #region Request Signatures

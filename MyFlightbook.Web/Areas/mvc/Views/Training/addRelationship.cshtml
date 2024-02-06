@@ -1,0 +1,26 @@
+﻿@using MyFlightbook.Instruction
+@using System.Globalization
+@{
+    CFIStudentMap sm = ViewBag.instructorMap;
+    ViewBag.defaultTab = tabID.tabTraining;
+    ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.TitleProfile, Branding.CurrentBrand.AppName);
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+<h2>@Resources.LocalizedText.AddRelationshipHeader</h2>
+@if (!String.IsNullOrEmpty(ViewBag.error))
+{
+    <div class="error">@ViewBag.error</div>
+}
+else
+{
+    using (Html.BeginForm("ConfirmRelationship", "Training", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken();
+        <p>@Html.Raw(((string) ViewBag.requestPrompt).Linkify())</p>
+        <p>@Resources.LocalizedText.AddRelationshipConfirmPrompt</p>
+        <input type="hidden" name="req" value="@ViewBag.req" />
+        <button value="Confirm" name="btnConfirm" type="submit">@Resources.LocalizedText.AddRelationshipConfirmYes</button>
+        <span>&nbsp; &nbsp; &nbsp; </span>
+        <button value="Cancel" name="btnCancel" type="submit">@Resources.LocalizedText.AddRelationshipConfirmNo</button>
+    }
+}

@@ -61,7 +61,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You have been invited to join the club/FBO &quot;{0}&quot;.  Do you wish to join?.
+        ///   Looks up a localized string similar to You have been invited to join the club/FBO *{0}*.  Do you wish to join?.
         /// </summary>
         internal static string AddMemberFromInvitation {
             get {
@@ -70,7 +70,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} has requested to join the club/FBO &quot;{1}&quot;.  Do you approve?.
+        ///   Looks up a localized string similar to {0} has requested to join the club/FBO *{1}*.  Do you approve?.
         /// </summary>
         internal static string AddMemberFromRequest {
             get {
