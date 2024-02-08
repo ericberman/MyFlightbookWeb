@@ -179,11 +179,13 @@ namespace MyFlightbook
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         private FlightResultRange RangeForPage(int page, int pageSize)
         {
-            if (page < 0 || page >= PageCount(pageSize))
-                throw new ArgumentOutOfRangeException(nameof(page));
-
             if (pageSize <= 0)
                 return new FlightResultRange() { StartIndex = 0, Count = FlightsList.Count, PageCount = 1, PageNum = 0 };
+
+            int cPages = PageCount(pageSize);
+
+            // keep page between 0 and cPages - 1
+            page = Math.Min(Math.Max(page, 0), cPages - 1);
 
             FlightResultRange range = new FlightResultRange() { StartIndex = page * pageSize, PageNum = page, PageCount = PageCount(pageSize) };
             range.Count = Math.Min(range.StartIndex + pageSize, FlightsList.Count) - range.StartIndex;
