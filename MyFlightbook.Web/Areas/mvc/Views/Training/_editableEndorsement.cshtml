@@ -12,7 +12,12 @@
 }
 <script type="text/javascript">
     $(() => {
-        defaultButtonForDiv("pnlEditEndorsement", "btnAddEndorsement");
+        $('#pnlEditEndorsement').find("input").keydown(function (e) {
+            if (e.keyCode == 13) {
+                $('#btnAddEndorsement')[0].click();
+                return false;
+            }
+        });
 
         $("#frmEditEndorsement").validate({
             errorClass: "error",
