@@ -1,7 +1,6 @@
 <%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Async="true"
     Codebehind="Download.aspx.cs" Inherits="MyFlightbook.MemberPages.Download" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
-<%@ Register Src="../Controls/mfbLogbook.ascx" TagName="mfbLogbook" TagPrefix="uc6" %>
 <%@ Register Src="../Controls/mfbSimpleTotals.ascx" TagName="mfbSimpleTotals" TagPrefix="uc3" %>
 <%@ Register Src="../Controls/mfbCurrency.ascx" TagName="mfbCurrency" TagPrefix="uc2" %>
 <%@ Register Src="../Controls/mfbSearchAndTotals.ascx" TagName="mfbSearchAndTotals"

@@ -1,6 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbSearchForm.ascx.cs" Inherits="Controls_mfbSearchForm" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
-<%@ Register Src="mfbLogbook.ascx" TagName="mfbLogbook" TagPrefix="uc2" %>
 <%@ Register src="mfbTotalSummary.ascx" tagname="mfbTotalSummary" tagprefix="uc3" %>
 <%@ Register src="mfbTypeInDate.ascx" tagname="mfbTypeInDate" tagprefix="uc4" %>
 <%@ Register Src="~/Controls/popmenu.ascx" TagPrefix="uc2" TagName="popmenu" %>
