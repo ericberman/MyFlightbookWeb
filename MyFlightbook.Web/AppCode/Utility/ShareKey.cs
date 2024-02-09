@@ -5,7 +5,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2020-2022 MyFlightbook LLC
+ * Copyright (c) 2020-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -64,7 +64,7 @@ namespace MyFlightbook.Web.Sharing
 
         public string ShareLink
         {
-            get { return String.Format(CultureInfo.InvariantCulture, "https://{0}/{1}{2}g={3}", Branding.CurrentBrand.HostName, System.Web.VirtualPathUtility.ToAbsolute(m_baseLink), (m_baseLink.Contains("?") ? "&" : "?"), ID); }
+            get { return String.Format(CultureInfo.InvariantCulture, "https://{0}{1}{2}g={3}", Branding.CurrentBrand.HostName, System.Web.VirtualPathUtility.ToAbsolute(m_baseLink), (m_baseLink.Contains("?") ? "&" : "?"), ID); }
         }
 
         private UInt32 privFlags { get; set; }
@@ -101,7 +101,7 @@ namespace MyFlightbook.Web.Sharing
 
         /// <summary>
         /// Returns the number of privileges that have been granted
-        /// (Ha!  Actually need a count-bits implementation!
+        /// (Ha!  Actually need a count-bits implementation!)
         /// </summary>
         public int PrivilegeCount
         {
