@@ -845,19 +845,19 @@ namespace MyFlightbook.Instruction
                                     if (szMatchInner.Contains("/"))
                                     {
                                         string[] rgItems = szMatchInner.Split('/');
-                                        htmlTW.RenderBeginTag(HtmlTextWriterTag.Select);
                                         htmlTW.AddAttribute(HtmlTextWriterAttribute.Name, idNewControl);
                                         htmlTW.AddAttribute("required", "required");
                                         htmlTW.AddAttribute(HtmlTextWriterAttribute.Style, "border: 1px solid black;");
+                                        htmlTW.RenderBeginTag(HtmlTextWriterTag.Select);
                                         foreach (string szItem in rgItems)
                                         {
                                             string sz = HttpUtility.HtmlEncode(szItem);
-                                            htmlTW.RenderBeginTag(HtmlTextWriterTag.Option);
                                             htmlTW.AddAttribute(HtmlTextWriterAttribute.Value, sz);
-                                            htmlTW.Write(sz);
+                                            htmlTW.RenderBeginTag(HtmlTextWriterTag.Option);
+                                            htmlTW.WriteEncodedText(sz);
                                             htmlTW.RenderEndTag();
                                         }
-                                        htmlTW.RenderEndTag();
+                                        htmlTW.RenderEndTag();  // select
                                     }
                                     else
                                         NewTextBox(htmlTW, String.Empty, false, !fPreviewMode, szMatchInner);
