@@ -823,7 +823,9 @@ namespace MyFlightbook
         public static DateTime DateFromUnixSeconds(this double i)
         {
             // check for whole seconds - if that yields a date more than 5 days in the future, we can assume milliseconds
-            return dtUnixReferenceDate.AddSeconds(dtUnixReferenceDate.AddSeconds(i).CompareTo(DateTime.UtcNow.AddDays(5)) > 0 ? i / 1000 : i);
+            // Since this can be out of range for datetime, compare to Jan 1 2100 first; that's an easy "milliseconds" call.
+            // Jan 1 2100 is 4102444800000
+            return dtUnixReferenceDate.AddSeconds(i > 4102444800 || dtUnixReferenceDate.AddSeconds(i).CompareTo(DateTime.UtcNow.AddDays(5)) > 0 ? i / 1000 : i);
         }
         #endregion
 
