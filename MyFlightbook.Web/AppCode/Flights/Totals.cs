@@ -1559,7 +1559,7 @@ namespace MyFlightbook.Currency
 
                                         AddCellForTotalsItem(tw, ti, true, fLinkQuery, fUseHHMM);
                                         AddCellForTotalsItem(tw, Last7.TryGetValue(ti.Description, out TotalsItem last7Value) ? last7Value : null, IncludeLast7Days, fLinkQuery, fUseHHMM);
-                                        AddCellForTotalsItem(tw, MonthToDate.TryGetValue(ti.Description, out TotalsItem monthValue) ? last7Value : null, IncludeMonthToDate, fLinkQuery, fUseHHMM);
+                                        AddCellForTotalsItem(tw, MonthToDate.TryGetValue(ti.Description, out TotalsItem monthValue) ? monthValue : null, IncludeMonthToDate, fLinkQuery, fUseHHMM);
                                         AddCellForTotalsItem(tw, PrevMonth.TryGetValue(ti.Description, out TotalsItem prevMonthValue) ? prevMonthValue : null, IncludePreviousMonth, fLinkQuery, fUseHHMM);
                                         AddCellForTotalsItem(tw, YTD.TryGetValue(ti.Description, out TotalsItem ytdValue) ? ytdValue : null, IncludeYearToDate, fLinkQuery, fUseHHMM);
                                         AddCellForTotalsItem(tw, Trailing90.TryGetValue(ti.Description, out TotalsItem t90Value) ? t90Value : null, IncludeTrailing90, fLinkQuery, fUseHHMM);
