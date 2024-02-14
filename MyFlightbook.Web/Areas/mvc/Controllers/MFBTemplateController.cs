@@ -8,7 +8,7 @@ using System.Web.Security;
 
 /******************************************************
     * 
-    * Copyright (c) 2022-2023 MyFlightbook LLC
+    * Copyright (c) 2022-2024 MyFlightbook LLC
     * Contact myflightbook-at-gmail.com for more information
     *
    *******************************************************/
@@ -42,7 +42,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public ActionResult Search(string searchText)
         {
-            Response.Redirect(VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/Logbooknew.aspx?s={0}", HttpUtility.HtmlEncode(searchText))));
+            Response.Redirect(VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/Logbooknew.aspx?s={0}", HttpUtility.UrlEncode(searchText))));
             return null;
         }
 
