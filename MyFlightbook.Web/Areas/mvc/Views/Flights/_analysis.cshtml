@@ -1,0 +1,67 @@
+﻿@using MyFlightbook.Histogram
+@using MyFlightbook.Web.Sharing
+@{
+    bool fCanDownload = ViewBag.canDownload ?? false;
+    bool fUseHHMM = ViewBag.useHHMM;
+    bool linkItems = ViewBag.linkItems;
+    FlightQuery fq = ViewBag.query;
+    HistogramManager hm = ViewBag.hm;
+    ShareKey sk = ViewBag.sk;
+}
+<script type="text/javascript">
+    function chartDataChanged() {
+        var form = $("#frmAnalysis");
+        var f = form.serialize();
+        $("#analysisProgress").show();
+        $.ajax({
+            url: "@Url.Action("UpdateChartForData", "Flights")",
+            type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            complete: function () { $("#analysisProgress").hide(); },
+            success: function (r) {
+                $("#analysisResults").html(r);
+                drawCharts();
+            }
+        });
+    }
+</script>
+<div style="padding: 5px;">
+    @using (Html.BeginForm("DownloadFlyingStats", "Flights", FormMethod.Post, new { id = "frmAnalysis", name = "frmAnalysis" }))
+    {
+        if (fCanDownload)
+        {
+            <div style="float:right">
+                <a style="vertical-align: middle" href="#" onclick="javascript: $('#frmAnalysis')[0].submit();">
+                    <img src="@("~/images/download.png".ToAbsolute())" style="padding-right: 5px; vertical-align:middle" />
+                    <img src="@("~/images/csvicon_sm.png".ToAbsolute())" style="padding-right: 5px; vertical-align:middle" />
+                    <span style="vertical-align:middle">@Resources.LocalizedText.DownloadFlyingStats</span>
+                </a>
+            </div>
+        }
+        <div style="text-align: center">
+            <input type="hidden" name="fUseHHMM" value="@Json.Encode(fUseHHMM)" />
+            <input type="hidden" name="fqJSON" value="@fq.ToJSONString()" />
+            <input type="hidden" name="fLinkItems" value="@Json.Encode(linkItems)" />
+            <input type="hidden" name="skID" value="@(sk?.ID ?? string.Empty)" />
+            @Html.AntiForgeryToken()
+            @Resources.LocalizedText.ChartTotalsHeader
+            <select id="cmbFieldToView" onchange="javascript: chartDataChanged();" name="fieldToGraph">
+                @foreach (HistogramableValue hv in hm.Values)
+                {
+                    <option value="@hv.DataField">@hv.DataName</option>
+                }
+            </select>
+            @Resources.LocalizedText.ChartTotalsGroupPrompt
+            <select id="cmbGroupingField" onchange="javascript: chartDataChanged();" name="selectedBucket">
+                @foreach (BucketManager bm in hm.SupportedBucketManagers)
+                {
+                    <option value="@bm.DisplayName">@bm.DisplayName</option>
+                }
+            </select>
+            <label><input type="checkbox" id="ckIncludeAverage" name="fIncludeAverage" onchange="javascript: chartDataChanged();" />@Resources.LocalizedText.AnalysisShowAverages</label>
+            <div style="display: inline-block; width: 12pt; height: 12pt;"><img src="@("~/images/progress.gif".ToAbsolute())" id="analysisProgress" style="display: none; width: 12pt; height: 12pt;" /></div>
+        </div>
+    }
+    <div id="analysisResults">
+    </div>
+</div>

@@ -1,0 +1,64 @@
+﻿@using System.Globalization
+@using MyFlightbook.Histogram
+@using Newtonsoft.Json
+@using Newtonsoft.Json.Converters
+@{
+    IEnumerable<MonthsOfYearData> yearlySummary = ViewBag.yearlySummary;
+    bool fUseHHMM = ViewBag.fUseHHMM;
+    bool fLink = ViewBag.linkItems;
+    BucketManager bm = ViewBag.bm;
+    HistogramManager hm = ViewBag.hm;
+    HistogramableValue hv = ViewBag.hv;
+}
+<div style="margin-left:auto; margin-right:auto; width:750px" id="divTrends">
+    <div id="@ViewBag.ChartData.ContainerID" style="display: inline-block; margin: 0 auto !important; height: @(ViewBag.ChartData.Height.ToString(CultureInfo.InvariantCulture) + "px")">
+    </div>
+    <script type="text/javascript">
+    chartsToDraw.push(@Html.Raw(JsonConvert.SerializeObject(ViewBag.ChartData, new JsonConverter[] { new JavaScriptDateTimeConverter() })));
+    </script>
+</div>
+<p>@Html.Raw(Resources.LocalizedText.ChartTotalsMouseHint1)
+    <span style="font-weight:bold; text-decoration:underline;" onclick="javascript: $('#divRawData').toggle(400);">@Resources.LocalizedText.ChartTotalsMouseHintClickHere</span>
+    @Resources.LocalizedText.ChartTotalsMouseHint2
+</p>
+
+<div style="display: none; overflow-x: auto;" id="divRawData" ?>
+    @Html.Raw(ViewBag.rawData)
+</div>
+@if (yearlySummary.Any())
+{
+    <table style="font-size: smaller; margin-left: auto; margin-right: auto; border-collapse: collapse;" cellpadding="3" cellspacing="0">
+        <thead>
+            <tr>
+                <th></th>
+                @for (int i = 0; i < 12; i++) 
+                { 
+                    <th>@CultureInfo.CurrentCulture.DateTimeFormat.AbbreviatedMonthNames[i]</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (MonthsOfYearData moyd in yearlySummary)
+            {
+                <tr style="text-align: right">
+                    <td class="PaddedCell" style="font-weight: bold;">@moyd.Year.ToString(CultureInfo.CurrentCulture)</td>
+                    @for (int month = 1; month <= 12; month++)
+                    {
+                        Bucket b = moyd.ValueForMonth(month);
+                        string szTitle = b == null ? string.Empty : BucketManager.FormatForType(b.Values[hv.DataField], hv.DataType, fUseHHMM, false);
+                        <td class="PaddedCell">
+                            @if (fLink && !String.IsNullOrEmpty(b?.HRef))
+                            {
+                                <a href="@b.HRef.ToAbsolute()" target="_blank">@szTitle</a>
+                            }
+                            else
+                            {
+                                @szTitle
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+}

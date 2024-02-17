@@ -1,0 +1,300 @@
+﻿@using System.Globalization
+@using MyFlightbook
+@using MyFlightbook.Web.Sharing
+@{
+    FlightResult fr = ViewBag.flightResults;
+    FlightQuery query = ViewBag.query;
+
+    bool readOnly = ViewBag.readOnly;
+
+    Profile pfTarget = ViewBag.pfTarget;
+    Profile pfViewer = ViewBag.pfViewer;
+    bool fTracksOriginal = pfTarget.PreferenceExists(MFBConstants.keyTrackOriginal);
+    bool isCompact = pfViewer.GetPreferenceForKey(MFBConstants.keyPrefCompact, false);
+    bool inlineImages = pfViewer.GetPreferenceForKey(MFBConstants.keyPrefInlineImages, false);
+    int flightsPerPage = pfViewer.GetPreferenceForKey(MFBConstants.keyPrefFlightsPerPage, MFBConstants.DefaultFlightsPerPage);
+
+    FlightResultRange currentRange = ViewBag.currentRange ?? fr.GetResultRange(flightsPerPage, FlightRangeType.First, fr.CurrentSortKey, fr.CurrentSortDir);
+
+    ShareKey sk = ViewBag.sk;
+}
+<script src="@("~/public/Scripts/CopyClipboard.js".ToAbsolute())"></script>
+<script type="text/javascript">
+    var currentRange = @Html.Raw(Json.Encode(currentRange));
+    var rgIds = new Set();
+
+    function togglePaged(sender, fPaged) {
+        $("#hdnPageSize").val(fPaged ? $("#decFlightsPerPage").val() : -1);
+        navigateToPage(1);
+    }
+
+    function updateViewPrefs() {
+        var pagerForm = $("#frmUpdatePref");
+        var f = pagerForm.serialize();
+        $.ajax({
+            url: "@Url.Action("UpdateDisplayPrefsForUser", "Flights")",
+            type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            complete: function () { },
+            success: function (r) {
+                refreshCurrentPage();
+            }
+        });
+    }
+
+    function toggleCompact(sender) {
+        $("#hdnUseCompact").val(sender.checked);
+        updateViewPrefs();
+    }
+
+    function toggleImages(sender) {
+        $("#hdnUseInlineImages").val(sender.checked);
+        updateViewPrefs();
+    }
+
+    function setSelectMode(f) {
+        var menus = $("div[name='fltContext']");
+        var selectBoxes = $("input[name='selFlight']");
+        var selectAll = $("#ckSelectAll");
+        var divMulti = $("#divMulti");
+        $("#ckSelectMode").prop("checked", f);
+        if (f) {
+            menus.hide();
+            selectBoxes.show();
+            selectAll.show();
+            divMulti.show();
+        } else {
+            menus.show();
+            selectBoxes.hide();
+            selectBoxes.prop("checked", false);
+            selectAll.hide();
+            divMulti.hide();
+            rgIds.clear();
+            $("#hdnSelectedFlights").val("");
+        }
+    }
+
+    function toggleSelectedFlight(sender) {
+        if (sender.checked)
+            rgIds.add(sender.value);
+        else
+            rgIds.delete(sender.value);
+    }
+
+    function refreshSelectedFlights() {
+        rgIds.clear();
+        $("input[name='selFlight']").each(function () {
+            if (this.checked)
+                rgIds.add(this.value);
+            else
+                rgIds.delete(this.value);
+        });
+    }
+
+    function toggleSelectAll(sender) {
+        $("input[name='selFlight']").prop("checked", sender.checked);
+        refreshSelectedFlights();
+    }
+
+    function invertSelection() {
+        $("input[name='selFlight']").each(function () {
+            this.checked = !this.checked;
+        });
+        refreshSelectedFlights();
+    }
+
+    function deleteFlights() {
+        if (confirm('@Resources.LogbookEntry.LogbookConfirmDeleteFlights')) {
+            $("#hdnFlightsToDelete").val(Array.from(rgIds).join());
+            deleteSelectedFlights();
+        }
+    }
+
+    function deleteFlight(id, desc) {
+        if (confirm('@Resources.LogbookEntry.LogbookConfirmDelete'.replace("{0}", '\r\n\r\n').replace("{1}", desc))) {
+            $("#hdnFlightsToDelete").val(id);
+            deleteSelectedFlights();
+        }
+    }
+
+    function deleteSelectedFlights() {
+        var f = $("#frmDeleteFlights").serialize();
+        $.ajax({
+            url: "@Url.Action("DeleteFlightForUser", "Flights")",
+            type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            complete: function () { },
+            success: function (r) {
+                window.location = window.location;  // reload the whole page
+            }
+        });
+    }
+
+    function requestSigs() {
+        window.location = "@("~/Member/RequestSigs.aspx".ToAbsolute() + "?id=")" + Array.from(rgIds).join();
+    }
+
+    function restrictSelected() {
+        $("#hdnSelectedFlights").val(Array.from(rgIds).join());
+        refreshCurrentPage();
+    }
+
+    function setPageSize(sender, num) {
+        $("#hdnDefaultPageSize").val(num);
+        $("#hdnPageSize").val(num);
+        $(sender).closest('.ui-dialog-content').dialog('close');
+        updateViewPrefs();
+    }
+
+    function headerClicked(sortField) {
+        var hdnSort = $("#hdnSortExpr");
+        var hdnSortDir = $("#hdnSortDir");
+        const ascDir = "@SortDirection.Ascending";
+        const descDir = "@SortDirection.Descending";
+
+        hdnSortDir.val(sortField == hdnSort.val() && hdnSortDir.val() == ascDir ? descDir : ascDir);
+        hdnSort.val(sortField);
+        refreshCurrentPage();
+    }
+
+    function refreshCurrentPage() {
+        navigateToTarget($("#hdnPageRequest").val());
+    }
+
+    function navigateToPage(page) {
+        $("#hdnPageRequest").val(page);
+        navigateToTarget();
+    }
+
+    function navigateToTarget(target) {
+        $("#prgPager").show();
+        var pagerForm = $("#frmPager");
+        var f = pagerForm.serialize();
+        $.ajax({
+            url: "@Url.Action("GetFlightsForResult", "Flights")",
+            type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            complete: function () {
+                setSelectMode(false);
+            },
+            success: function (r) {
+                $("#divFlights").html(r);
+            }
+        });
+    }
+
+    $(() => {
+        defaultButtonForDiv("pnlFlightsPerPage", "btnSetPageSize");
+    });
+</script>
+<div class="printonly">
+    <div>@pfTarget.UserFullName</div>
+    <div style="white-space:pre-wrap">@pfTarget.Address.Trim()</div>
+</div>
+<div id="pnlHeader" class="noprint">
+    @(fr.FlightCount == 1 ? Resources.LogbookEntry.NumberOfFlightsOne : (fr.FlightCount > 1 ? String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.NumberOfFlights, fr.FlightCount) : string.Empty))
+    @if (User.Identity.IsAuthenticated && !readOnly)
+    {
+        <div style="display: inline-block" class="popContainer">
+            <img src="@VirtualPathUtility.ToAbsolute("~/images/MenuChevron.png")" class="popTrigger" />
+            <div class="popMenuContent popMenuHidden" style="margin-top: -5px; margin-left: -5px">
+                <div>
+                    <label><input type="radio" checked name="rblPagingGroup" onchange="javascript: togglePaged(this, true);" id="rbShowInPages" />@Resources.LogbookEntry.LogbookShowInPages</label>
+                    <a style="cursor:pointer;" onclick="javascript:showModalById('pnlFlightsPerPage', '@Resources.LogbookEntry.LogbookFlightsPerPagePrompt');">@Resources.LogbookEntry.LogbookFlightsPerPagePrompt</a>
+                </div>
+                <div><label><input type="radio" name="rblPagingGroup" onchange="javascript: togglePaged(this, false);" id="rbShowAll" />@Resources.LogbookEntry.LogbookShowAll</label></div>
+
+                <div><label><input type="checkbox" onchange="javascript: toggleCompact(this);" @isCompact.ToChecked() />@Resources.LogbookEntry.LogbookCompactView</label></div>
+                <div><label><input type="checkbox" onchange="javascript: toggleImages(this);" @inlineImages.ToChecked() />@Resources.LogbookEntry.LogbookIncludeImages</label></div>
+                @if (!readOnly)
+                {
+                    <div><label><input type="checkbox" id="ckSelectMode" onchange="javascript: setSelectMode(this.checked);" />@Resources.LogbookEntry.LogbookSelectFlights</label></div>
+                    <div id="divMulti" style="display:none;">
+                        <div>
+                            <a style="cursor: pointer" onclick="javascript: deleteFlights();">
+                                <img src="@("~/images/x.gif".ToAbsolute())" style="padding-right: 10px;" alt="@Resources.LogbookEntry.LogbookDeleteMultipleTooltip" title="@Resources.LogbookEntry.LogbookDeleteMultipleTooltip" />
+                                @Resources.LogbookEntry.LogbookDeleteMultipleTooltip
+                            </a>
+                        </div>
+                        <div>
+                            <a style="cursor: pointer" onclick="javascript: requestSigs();">
+                                <img src="@("~/images/signaturesm.png".ToAbsolute())" style="padding-right: 4px;" alt="@Resources.SignOff.RequestSignatures" title="@Resources.SignOff.RequestSignatures" />
+                                @Resources.SignOff.RequestSignatures
+                            </a>
+                        </div>
+                        <div>
+                            <a style="cursor: pointer" onclick="javascript: restrictSelected();">
+                                <img src="@("~/images/search.png".ToAbsolute())" style="padding-right: 4px; height:20px; width:20px;" alt="@Resources.LogbookEntry.LogbookSearchSelected" title="@Resources.LogbookEntry.LogbookSearchSelected" />
+                                @Resources.LogbookEntry.LogbookSearchSelected
+                            </a>
+                        </div>
+                        <div>
+                            <a style="cursor: pointer" onclick="javascript: invertSelection();">
+                                <img src="@("~/images/invertsel.png".ToAbsolute())" style="padding-right: 4px; height:20px; width:20px;" alt="@Resources.LogbookEntry.InvertSelection" title="@Resources.LogbookEntry.InvertSelection" />
+                                @Resources.LogbookEntry.InvertSelection
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+<div id="pnlFlightsPerPage" style="display:none">
+    @Resources.LogbookEntry.LogbookFlightsPerPage <input type="number" id="decFlightsPerPage" value="@flightsPerPage" style="width: 4em;" step="1" min="1" max="99" />
+    <button type="button" id="btnSetPageSize" onclick="javascript: setPageSize(this, $('#decFlightsPerPage').val());">@Resources.LocalizedText.OK</button>
+</div>
+<div style="margin-left: 5px; margin-right: 5px" id="divFlights">
+    @{ Html.RenderAction("LogbookTableContentsForResults", "Flights", new
+        {
+            fq = query,
+            targetUser = pfTarget.UserName,
+            viewingUser = pfViewer.UserName,
+            readOnly = readOnly,
+            pageSize = flightsPerPage,
+            fr = fr,
+            sk = sk,
+            currentRange = currentRange
+        });
+    }
+</div>
+@using (Html.BeginForm("", "Flights", FormMethod.Post, new { id = "frmUpdatePref", name = "frmUpdatePref" }))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="hdnUseCompact" name="fCompact" value="@Json.Encode(isCompact)" />
+    <input type="hidden" id="hdnUseInlineImages" name="fInlineImages" value="@Json.Encode(inlineImages)" />
+    <input type="hidden" id="hdnDefaultPageSize" name="defaultPageSize" value="@flightsPerPage" />
+}
+@using (Html.BeginForm("", "Flights", FormMethod.Post, new { id = "frmPager", name = "frmPager" }))
+{
+    <input type="hidden" name="pageRequest" id="hdnPageRequest" value="@(currentRange.PageNum + 1)" />
+    <input type="hidden" name="targetUser" value="@pfTarget.UserName" />
+    <input type="hidden" name="viewingUser" value="@pfViewer.UserName" />
+    <input type="hidden" name="sortExpr" id="hdnSortExpr" value="@fr.CurrentSortKey" />
+    <input type="hidden" name="sortDir" id="hdnSortDir" value="@fr.CurrentSortDir" />
+    <input type="hidden" name="pageSize" id="hdnPageSize" value="@flightsPerPage" />
+    <input type="hidden" name="fqJSON" value="@query.ToJSONString()" />
+    <input type="hidden" name="readOnly" value="@Json.Encode(readOnly)" />
+    <input type="hidden" name="skID" value="@(sk?.ID ?? string.Empty)" />
+    <input type="hidden" name="selectedFlights" id="hdnSelectedFlights" value="" />
+    @Html.AntiForgeryToken()
+}
+@using (Html.BeginForm("", "Flights", FormMethod.Post, new { id = "frmDeleteFlights", name = "frmDeleteFlights" }))
+{
+    <input type="hidden" name="rgFlights" id="hdnFlightsToDelete" />
+    @Html.AntiForgeryToken();
+}
+<table style="width:100%" class="printonly">
+    <tr>
+        <td style="width:70%">@pfTarget.UserFullName</td>
+        <td>@pfTarget.LicenseDisplay</td>
+    </tr>
+    <tr>
+        <td>@Resources.LogbookEntry.LogbookCertification</td>
+        <td>@pfTarget.CFIDisplay</td>
+    </tr>
+</table>
+@if (!readOnly)
+{
+    Html.RenderPartial("_sendFlight");
+}

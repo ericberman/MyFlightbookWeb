@@ -12,7 +12,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2014-2023 MyFlightbook LLC
+ * Copyright (c) 2014-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -872,6 +872,26 @@ namespace MyFlightbook.Achievements
             return left is null ? right is null : left.CompareTo(right) >= 0;
         }
         #endregion
+
+        /// <summary>
+        /// Groups badges by flight
+        /// </summary>
+        /// <param name="rgBadges">A set of badges</param>
+        /// <returns>A dictionary of badge enumerations.</returns>
+        public static IDictionary<int, IList<Badge>> BadgesByFlight(IEnumerable<Badge> rgBadges)
+        {
+            Dictionary<int, IList<Badge>> d = new Dictionary<int, IList<Badge>>();
+            foreach (Badge b in (rgBadges ?? Array.Empty<Badge>()))
+                {
+                if (b.IDFlightEarned == LogbookEntryBase.idFlightNone)
+                    continue;
+                if (d.TryGetValue(b.IDFlightEarned, out IList<Badge> lst))
+                    lst.Add(b);
+                else
+                    d[b.IDFlightEarned] = new List<Badge>() { b };
+            }
+            return d;
+        }
     }
 
     #region Concrete Badge Classes

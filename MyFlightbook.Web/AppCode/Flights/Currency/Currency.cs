@@ -156,7 +156,7 @@ namespace MyFlightbook.Currency
                     default:
                     case CurrencyGroups.None:
                     case CurrencyGroups.FlightExperience:
-                        return Query == null ? null : String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?fq={0}", Query.ToBase64CompressedJSONString());
+                        return Query == null ? null : VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?fq={0}", Query.ToBase64CompressedJSONString()));
                     case CurrencyGroups.FlightReview:
                         szResult = VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftPilotInfo?pane=flightreview");
                         break;

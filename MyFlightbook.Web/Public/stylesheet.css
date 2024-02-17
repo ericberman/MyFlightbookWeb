@@ -97,7 +97,7 @@ H4
 
 /* Centered body */
 .centeredBody {
-    max-width: 1200px;
+    max-width: 1400px;
     margin-left:auto; 
     margin-right: auto;
 }
@@ -452,6 +452,22 @@ td.totalsByTimeCell:nth-child(even), td.totalsDateRange:nth-child(even) {
     border-bottom: none;
 }
 
+/* Charting */
+.ttip {
+    padding: 2px;
+}
+
+.dataVal {
+    font-weight: bold;
+}
+
+.dataRank {
+}
+
+.dataBucket {
+    font-weight: bold;
+}
+
 /* Accordian AJAX */
 .accordianHeader {
     font-weight: bold;
@@ -522,6 +538,8 @@ td.totalsByTimeCell:nth-child(even), td.totalsDateRange:nth-child(even) {
 
 .accordionMenuControllerUnselected {
     display:inline-block;
+    font-size: smaller;
+    line-height: 18pt;
     padding:3px;
     width:80px;
     margin: 2px;
@@ -540,9 +558,11 @@ td.totalsByTimeCell:nth-child(even), td.totalsDateRange:nth-child(even) {
 }
 
 .accordionMenuControllerSelected {
-    display:inline-block;
-    padding:3px;
-    width:80px;
+    display: inline-block;
+    font-size: smaller;
+    line-height: 18pt;
+    padding: 3px;
+    width: 80px;
     margin: 2px;
     border-bottom: 1px solid gray;
     border-left: 1px solid gray;
@@ -719,7 +739,7 @@ td.totalsByTimeCell:nth-child(even), td.totalsDateRange:nth-child(even) {
     height: 100%;
     width: 100%;
     min-width: 280px;
-    max-width: 1200px;
+    max-width: 1400px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -1707,6 +1727,10 @@ h3.numberedStep {
     border-collapse: separate !important;
     border-spacing: 0px;
 }
+.lbTable th {
+    cursor: pointer;
+}
+
 .gvhDefault {
     text-align: left;
     vertical-align: bottom;
@@ -1774,6 +1798,15 @@ tr.gvhDefault th:nth-last-child(2), tr.gvhDefault th:last-child {
 .gvDelete {
     vertical-align:top;
     width: 13px;
+}
+
+/* Flight Context menu */
+.flightContextMenu div {
+    line-height: 26px;
+}
+.flightContextMenu img {
+    padding-right: 4px;
+    vertical-align: middle;
 }
 
 /* Sticky-header tables (not gridview) */
@@ -2155,6 +2188,7 @@ tr div.editCell, tr.editRow div.displayCell {
    .noprint, .sidebarContainer, .footerContainer {display:none; border:none;}
    .logbookRow {vertical-align:top; border:1px solid lightgray; page-break-inside:avoid;}
    .logbookAlternateRow {vertical-align:top; background:#EEEEEE; border:1px solid lightgray;page-break-inside:avoid;}
+   tr.logbookRowEven:nth-child(even) { background: #EEEEEE; }
    tr.logbookRow td, tr.logbookAlternateRow td {border: 1px solid lightgray; }
    .hintPopup {
     border: none;
@@ -2195,6 +2229,9 @@ tr div.editCell, tr.editRow div.displayCell {
     .printonly {display:none;}
     .logbookRow, .logbookAlternateRow {
         vertical-align: top;
+    }
+    tr.logbookRowEven:nth-child(even) {
+        background: #EEEEEE;
     }
     .logbookAlternateRow {
         background-color: #eeeeee;

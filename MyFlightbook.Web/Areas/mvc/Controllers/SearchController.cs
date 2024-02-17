@@ -4,7 +4,7 @@ using System.Web.Mvc;
 
 /******************************************************
     * 
-    * Copyright (c) 2022-2023 MyFlightbook LLC
+    * Copyright (c) 2022-2024 MyFlightbook LLC
     * Contact myflightbook-at-gmail.com for more information
     *
    *******************************************************/
@@ -59,9 +59,11 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
         #endregion
 
-        [Authorize]
         public ActionResult SearchForm(FlightQuery fq, string onClientSearch, string onClientReset)
         {
+            if (fq == null && !User.Identity.IsAuthenticated)
+                throw new UnauthorizedAccessException();
+
             ViewBag.query = fq ?? new FlightQuery(User.Identity.Name);
 
             // Sort the aircraft so that everything NOT in the query is not shown by default.
@@ -83,8 +85,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
             ViewBag.models = MakeModel.ModelsForAircraft(lstAc);
             ViewBag.categoryClasses = CategoryClass.CategoryClasses();
-            ViewBag.properties = CustomPropertyType.AllPreviouslyUsedPropsForUser(User.Identity.Name);
-            ViewBag.cannedQueries = CannedQuery.QueriesForUser(User.Identity.Name);
+            ViewBag.properties = CustomPropertyType.AllPreviouslyUsedPropsForUser(fq.UserName);
+            ViewBag.cannedQueries = CannedQuery.QueriesForUser(fq.UserName);
             ViewBag.onClientSearch = onClientSearch;
             ViewBag.onClientReset = onClientReset;
             return PartialView("_searchForm");

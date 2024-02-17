@@ -1,0 +1,40 @@
+﻿@using System.Globalization
+@{
+    LogbookEntry le = ViewBag.le;
+    string idCopy = String.Format(CultureInfo.InvariantCulture, "lblCopied{0}", le.FlightID);
+    string idCopySrc = String.Format(CultureInfo.InvariantCulture, "hdnCopySrc{0}", le.FlightID);
+    string szEdit = String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx/{0}", le.FlightID).ToAbsolute();
+    string szJoin = szEdit.Contains("?") ? "&" : "?";
+    string szCheck = szEdit + szJoin + "Chk=1";
+    string szClone = szEdit + szJoin + "Clone=1";
+    string szCloneReverse = szEdit + szJoin + "Clone=1&Reverse=1";
+    string szRequestSigs = String.Format(CultureInfo.InvariantCulture, "~/Member/RequestSigs.aspx?id={0}", le.FlightID).ToAbsolute();
+}
+<div class="flightContextMenu">
+    <div>
+        <a href="@szEdit"><img src="@("~/images/pencilsm.png".ToAbsolute())" />@Resources.LogbookEntry.PublicFlightEditThisFlight</a>
+    </div>
+    <div>
+        <a style="cursor: pointer;" onclick="javascript: deleteFlight(@le.FlightID, '@le.ToShortString()');"><img style="padding-right: 10px" src="@("~/images/x.gif".ToAbsolute())" alt="@Resources.LogbookEntry.LogbookDeleteTooltip" title="@Resources.LogbookEntry.LogbookDeleteTooltip" />@Resources.LogbookEntry.LogbookDeleteTooltip</a>
+    </div>
+    <div>
+        <a href="@szClone"><img src="@("~/images/copyflight.png".ToAbsolute())" alt="@Resources.LogbookEntry.RepeatFlight" />@Resources.LogbookEntry.RepeatFlight</a>
+    </div>
+    <div>
+        <a href="@szCloneReverse"><img src="@("~/images/copyflightreverse.png".ToAbsolute())" alt="@Resources.LogbookEntry.RepeatReverseFlight" />@Resources.LogbookEntry.RepeatReverseFlight</a>
+    </div>
+    <div>
+        <a href="@szRequestSigs"><img src="@("~/images/signaturesm.png".ToAbsolute())" alt="@Resources.SignOff.RequestSignature" />@Resources.SignOff.RequestSignature</a>
+    </div>
+    <div>
+        <a onclick="@String.Format(CultureInfo.InvariantCulture, "javascript: copyClipboard('', '{0}', true, '{1}');", idCopySrc, idCopy)" title="@Resources.LogbookEntry.CopyFlightLinkTip"><img src="@("~/images/copyflight.png".ToAbsolute())" alt="@Resources.LogbookEntry.CopyFlightLinkTip" />@Resources.LogbookEntry.CopyFlightLink</a>
+    </div>
+    <div>
+        <a style="cursor: pointer;" onclick="javascript: sendFlight(@le.FlightID);"><img src="@("~/images/sendflight.png".ToAbsolute())" alt="@Resources.LogbookEntry.SendFlight" />@Resources.LogbookEntry.SendFlight</a>
+    </div>
+    <div>
+        <a href="@szCheck"><img src="@("~/images/CheckFlights.png".ToAbsolute())" style="width: 20px;" />@Resources.FlightLint.TitleCheckThisFlightShort</a>
+    </div>
+    <input type="hidden" id="@idCopySrc" value="@le.SocialMediaItemUri().ToString()" />
+    <span class="hintPopup" id="@idCopy" style="display:none; font-weight:bold; font-size: 10pt; color:black;">@Resources.LocalizedText.CopiedToClipboard</span>
+</div>

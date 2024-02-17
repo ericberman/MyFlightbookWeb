@@ -20,20 +20,6 @@
     </div>
     <asp:Panel ID="pnlChart" runat="server">
         <div style="margin-left:auto; margin-right:auto; width:750px">
-            <style type="text/css">
-                .ttip {
-                    padding: 2px;
-                }
-                .dataVal {
-                    font-weight: bold;
-                }
-                .dataRank {
-
-                }
-                .dataBucket {
-                    font-weight: bold;
-                }
-            </style>
             <uc3:GoogleChart ID="gcTrends" Height="340" AverageFormatString="<%$ Resources:LocalizedText, AnalysisAverageFormatString %>" ChartType="ColumnChart" Chart2Type="line" SlantAngle="90" LegendType="bottom" XDataType="date" YDataType="number" Y2DataType="number" runat="server" />
         </div>
         <p>

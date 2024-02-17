@@ -1,0 +1,311 @@
+﻿@using System.Globalization
+@using MyFlightbook
+@using MyFlightbook.Achievements
+@using MyFlightbook.Image
+@using MyFlightbook.Web.Sharing
+@{
+    FlightResult fr = ViewBag.flightResults;
+    FlightQuery query = ViewBag.query;
+    bool readOnly = ViewBag.readOnly;
+
+    Profile pfTarget = ViewBag.pfTarget;
+    Profile pfViewer = ViewBag.pfViewer;
+    bool fTracksOriginal = pfTarget.PreferenceExists(MFBConstants.keyTrackOriginal);
+    bool isCompact = pfViewer.GetPreferenceForKey(MFBConstants.keyPrefCompact, false);
+    bool inlineImages = pfViewer.GetPreferenceForKey(MFBConstants.keyPrefInlineImages, false);
+    int flightsPerPage = pfViewer.GetPreferenceForKey(MFBConstants.keyPrefFlightsPerPage, MFBConstants.DefaultFlightsPerPage);
+
+    bool isViewingOwnFlights = pfTarget.UserName.CompareOrdinal(pfViewer.UserName) == 0 && !readOnly;
+
+    FlightResultRange currentRange = ViewBag.currentRange;
+    IDictionary<int, IList<Badge>> dictBadges = (pfTarget.AchievementStatus == Achievement.ComputeStatus.UpToDate) ? Badge.BadgesByFlight(pfTarget.CachedBadges) : new Dictionary<int, IList<Badge>>();
+    UserAircraft ua = new UserAircraft(pfTarget.UserName);
+    IEnumerable<CannedQuery> colorQueryMap = FlightColor.QueriesToColor(pfTarget.UserName);
+    ShareKey sk = ViewBag.sk;
+    HashSet<int> hsSelected = ViewBag.selectedFlights;
+}
+<script type="text/javascript">
+    $(() => {
+        defaultButtonForDiv("pnlPager", "btnSetPage");
+    });
+</script>
+@if (fr.FlightCount == 0)
+{
+    <div>@Resources.LogbookEntry.EmptyLogbook</div>
+}
+else
+{
+    <table cellpadding="3" cellspacing="0" class="lbTable" style="border:none; border-collapse: collapse;">
+        <thead>
+            <tr class="gvhDefault">
+                <th class="headerBase gvhLeft @fr.CssForSort("Date")" onclick="javascript: headerClicked('Date');">@Resources.LogbookEntry.FieldFlight</th>
+                <th class="headerBase gvhCentered @fr.CssForSort("TailNumDisplay")" onclick="javascript: headerClicked('TailNumDisplay');">@Resources.LogbookEntry.FieldTail</th>
+                <th class="headerBase gvhCentered @fr.CssForSort("CatClassDisplay")" onclick="javascript: headerClicked('CatClassDisplay');">@Html.Raw(Resources.LogbookEntry.FieldCatClassType)</th>
+                <th class="headerBase gvhCentered @fr.CssForSort("Approaches")" onclick="javascript: headerClicked('Approaches');">@Resources.LogbookEntry.PrintHeaderApproaches</th>
+                <th class="headerBase gvhCentered @fr.CssForSort("fHoldingProcedures")" onclick="javascript: headerClicked('fHoldingProcedures');">@Resources.LogbookEntry.FieldHold</th>
+                <th class="headerBase gvhCentered @fr.CssForSort("Landings")" onclick="javascript: headerClicked('Landings');">
+                    @Resources.LogbookEntry.PrintHeaderLandingsShort
+                    @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "landingHeader", tipTextHTML = Resources.LogbookEntry.LogbookLandingKey }); }
+                </th>
+                <th class="headerBase gvhCentered @fr.CssForSort("CrossCountry")" onclick="javascript: headerClicked('CrossCountry');">@Resources.LogbookEntry.FieldXCountry</th>
+                <th class="headerBase gvhCentered @fr.CssForSort("Nighttime")" onclick="javascript: headerClicked('Nighttime');">@Resources.LogbookEntry.FieldNight</th>
+                <th class="headerBase gvhCentered @fr.CssForSort("SimulatedIFR")" onclick="javascript: headerClicked('SimulatedIFR');">@Html.Raw(Resources.LogbookEntry.FieldSimIMC)</th>
+                <th class="headerBase gvhCentered @fr.CssForSort("IMC")" onclick="javascript: headerClicked('IMC');">@Resources.LogbookEntry.FieldIMC</th>
+                <th class="headerBase gvhCentered @fr.CssForSort("GroundSim")" onclick="javascript: headerClicked('GroundSim');">@Html.Raw(Resources.LogbookEntry.FieldGroundSim)</th>
+                <th class="headerBase gvhCentered @fr.CssForSort("Dual")" onclick="javascript: headerClicked('Dual');">@Resources.LogbookEntry.FieldDual</th>
+                @if (pfTarget.IsInstructor)
+                {
+                    <th class="headerBase gvhCentered @fr.CssForSort("CFI")" onclick="javascript: headerClicked('CFI');">@Resources.LogbookEntry.FieldCFI</th>
+                }
+                @if (pfTarget.TracksSecondInCommandTime)
+                {
+                    <th class="headerBase gvhCentered @fr.CssForSort("SIC")" onclick="javascript: headerClicked('SIC');">@Resources.LogbookEntry.FieldSIC</th>
+                }
+                <th class="headerBase gvhCentered @fr.CssForSort("PIC")" onclick="javascript: headerClicked('PIC');">@Resources.LogbookEntry.FieldPIC</th>
+                <th class="headerBase gvhCentered @fr.CssForSort("TotalFlightTime")" onclick="javascript: headerClicked('TotalFlightTime');">@Resources.LogbookEntry.FieldTotal</th>
+                <th class="headerBase gvhCentered">
+                    <input type="checkbox" onchange="javascript: toggleSelectAll(this);" style="display: none;" id="ckSelectAll" />
+                </th>
+                <th class="headerBase gvhCentered"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (LogbookEntryDisplay led in fr.FlightsInRange(currentRange))
+            {
+                string szExpandoID = String.Format(CultureInfo.InvariantCulture, "expando{0}", led.FlightID);
+                Aircraft ac = ua[led.AircraftID];
+                if (ac.AircraftImages.Count == 0)
+                {
+                    ac.PopulateImages();
+                }
+                if (led.FlightImages.Count == 0)
+                {
+                    led.PopulateImages();
+                }
+                string szBackColor = string.Empty;
+                foreach (CannedQuery cq in colorQueryMap)
+                {
+                    if (cq.MatchesFlight(led))
+                    {
+                        szBackColor = String.Format(CultureInfo.InvariantCulture, "background-color: #{0}", cq.ColorString);
+                        break;
+                    }
+                }
+                bool showCollapsed = isCompact && led.CanCollapse(pfViewer.DisplayTimesByDefault);
+                <tr class="logbookRow logbookRowEven" style="@szBackColor">
+                    <td class="gvcLeft">
+                        <div class="noprint" style="float:right; background-color: transparent !important">
+                            @if (dictBadges.TryGetValue(led.FlightID, out IList<Badge> badges))
+                            {
+                                foreach (Badge b in badges)
+                                {
+                                    <img class="imgMiddle" src="@("~/images/Badge-sm.png".ToAbsolute())" title="@b.Name" alt="@b.Name" />
+                                }
+                            }
+                            @if (led.FlightImages.Count > 0 && !inlineImages)
+                            {
+                                <img src="@VirtualPathUtility.ToAbsolute("~/Images/camera.png")" class="popTrigger" alt="@Resources.LogbookEntry.LogbookFlightHasPicturesTooltip" title="@Resources.LogbookEntry.LogbookFlightHasPicturesTooltip" />
+                                <div class="popMenuContent popMenuHidden hintPopup">
+                                    @foreach (MFBImageInfo img in led.FlightImages)
+                                    {
+                                        <div class="ilItem">
+                                            @if (img.ImageType == MFBImageInfoBase.ImageFileType.S3VideoMP4)
+                                            {
+                                                <video width="320" heght="240" controls>
+                                                    <source src="@img.ResolveFullImage()" type="video/mp4" />
+                                                    <img src="@img.URLThumbnail" width="@img.WidthThumbnail" height="@img.HeightThumbnail" title="@img.Comment" alt="@img.Comment" />
+                                                </video>
+                                            }
+                                            else
+                                            {
+                                                <img src="@img.URLThumbnail" width="@img.WidthThumbnail" height="@img.HeightThumbnail" title="@img.Comment" alt="@img.Comment"
+                                                     onclick="@String.Format(CultureInfo.InvariantCulture, img.ImageType == MFBImageInfoBase.ImageFileType.PDF || img.ImageType == MFBImageInfoBase.ImageFileType.S3PDF ? "javascript:window.location = '{0}';" : "javascript:viewMFBImg('{0}');", VirtualPathUtility.ToAbsolute(img.URLFullImage))" />
+                                            }
+                                            <div>@img.Comment</div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            @if (led.HasFlightData)
+                            {
+                                <a href="@String.Format(CultureInfo.InvariantCulture, "~/Member/FlightDetail.aspx/{0}?tabID=Chart", led.FlightID).ToAbsolute()" style="background-color: transparent !important;">
+                                    <img src="@("~/images/Clip.png".ToAbsolute())" class="imgMiddle" alt="@Resources.LogbookEntry.LogbookFlightHasTelemetry" title="@Resources.LogbookEntry.LogbookFlightHasTelemetry" />
+                                </a>
+                            }
+                        </div>
+                        <div>
+                            <a style="font-weight: bold; font-size: larger" href="@String.Format(CultureInfo.InvariantCulture, readOnly ? "~/mvc/pub/ViewFlight/{0}" : "~/Member/FlightDetail.aspx/{0}?tabID=Chart", led.FlightID).ToAbsolute()">@led.Date.ToShortDateString()</a>
+                            <a style="font-weight:bold;" href="@String.Format(CultureInfo.InvariantCulture, "~/mvc/pub/ViewFlight/{0}", led.FlightID).ToAbsolute()">@led.Route</a>
+                            <span style="clear:left; white-space: pre-line;" dir="auto">@Html.Raw(led.CommentWithReplacedApproaches)</span>
+                            @if (showCollapsed)
+                            {
+                                <img src="@("~/images/expand.png".ToAbsolute())" onclick="javascript: toggleImage(this, '@szExpandoID', null, null);" />
+                            }
+                        <div id="@szExpandoID" style="@(showCollapsed ? "display: none;" : string.Empty)">
+                            @if (pfViewer.DisplayTimesByDefault)
+                            {
+                                <div id="pnlEngineTime">@led.EngineTimeDisplay</div>
+                                <div id="pnlFlightTime">@led.FlightTimeDisplay</div>
+                                <div id="pnlHobbs">@led.HobbsDisplay</div>
+                            }
+                            @foreach (string s in led.PropertiesWithReplacedApproaches)
+                            {
+                                <div>@s</div>
+                            }
+                            @if (led.CFISignatureState != LogbookEntryCore.SignatureState.None)
+                            {
+                                <div style="display: inline-block; vertical-align:middle;" class="signatureBlock">
+                                    <table>
+                                        <tr>
+                                            <td style="vertical-align:middle">
+                                                <a href="@(led.HasDigitizedSig ? String.Format(CultureInfo.InvariantCulture, "~/mvc/Image/FlightSig/{0}", led.FlightID).ToAbsolute() : string.Empty)" class="popTrigger">
+                                                    <img class="imgMiddle" src="@((led.HasValidSig ? "~/Images/sigok.png" : "~/Images/siginvalid.png").ToAbsolute())" alt="@led.SignatureStateDescription" title="@led.SignatureStateDescription" />
+                                                </a>
+                                                @if (led.HasDigitizedSig)
+                                                {
+                                                    <div id="pnlSigState" class="popMenuContent popMenuHidden hintPopup">
+                                                        <img src="@String.Format(CultureInfo.InvariantCulture, "~/mvc/Image/FlightSig/{0}", led.FlightID).ToAbsolute()" />
+                                                    </div>
+                                                }
+                                            </td>
+                                            <td style="vertical-align:middle">
+                                                <div class="@(led.HasValidSig ? "signatureValid" : "signatureInvalid")">
+                                                    <div>@led.SignatureMainLine</div>
+                                                    <div>@led.SignatureCommentLine</div>
+                                                </div>
+                                                @if (!led.HasValidSig)
+                                                {
+                                                    <span style="font-weight: bold;" class="signatureInvalid">@Resources.SignOff.FlightSignatureInvalid</span>
+                                                    @Html.Raw(led.DiffsAsHTMLList(pfViewer.UsesHHMM));
+                                                }
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            }
+                            else if (fTracksOriginal && led.HasFlightHash)
+                            {
+                                <div class="signatureBlock">
+                                    <div>@Resources.LogbookEntry.FlightModified</div>
+                                    @Html.Raw(led.DiffsAsHTMLList(pfViewer.UsesHHMM))
+                                </div>
+                            }
+                        </div>
+                            <div>
+                                @if (inlineImages)
+                                {
+                                    foreach (MFBImageInfo img in led.FlightImages)
+                                    {
+                                        <div class="ilItem">
+                                            @if (img.ImageType == MFBImageInfoBase.ImageFileType.S3VideoMP4)
+                                            {
+                                                <video width="320" heght="240" controls>
+                                                    <source src="@img.ResolveFullImage()" type="video/mp4" />
+                                                    <img src="@img.URLThumbnail" width="@img.WidthThumbnail" height="@img.HeightThumbnail" title="@img.Comment" alt="@img.Comment" />
+                                                </video>
+                                            }
+                                            else
+                                            {
+                                                <img src="@img.URLThumbnail" width="@img.WidthThumbnail" height="@img.HeightThumbnail" title="@img.Comment" alt="@img.Comment"
+                                                     onclick="@String.Format(CultureInfo.InvariantCulture, img.ImageType == MFBImageInfoBase.ImageFileType.PDF || img.ImageType == MFBImageInfoBase.ImageFileType.S3PDF ? "javascript:window.location = '{0}';" : "javascript:viewMFBImg('{0}');", VirtualPathUtility.ToAbsolute(img.URLFullImage))" />
+                                            }
+                                            <div>@img.Comment</div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                            <div class="error">@led.ErrorString</div>
+                        </div>
+                    </td>
+                    <td class="gvcCentered">
+                        <a class="popTrigger" href="@String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}", led.AircraftID).ToAbsolute()">@led.TailNumDisplay</a>
+                        <div class="popMenuContent popMenuHidden hintPopup" style="margin-top: -60px; margin-left: 50px">
+                            <div style="text-align: center">@led.ModelDisplay @led.CatClassDisplay</div>
+                            @foreach (MFBImageInfo img in ac.AircraftImages)
+                            {
+                                if (img.ImageType == MFBImageInfoBase.ImageFileType.JPEG)
+                                {
+                                    <div class="ilItem">
+                                        <img src="@img.URLThumbnail" width="@img.WidthThumbnail" height="@img.HeightThumbnail" title="@img.Comment" alt="@img.Comment"
+                                             onclick="@String.Format(CultureInfo.InvariantCulture, img.ImageType == MFBImageInfoBase.ImageFileType.PDF || img.ImageType == MFBImageInfoBase.ImageFileType.S3PDF ? "javascript:window.location = '{0}';" : "javascript:viewMFBImg('{0}');", VirtualPathUtility.ToAbsolute(img.URLFullImage))" />
+                                        <div>@img.Comment</div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                        <div class="printonly">
+                            <div>@led.ModelDisplay</div>
+                            <div>@AircraftInstance.ShortNameForInstanceType(ac.InstanceType)</div>
+                        </div>
+                    </td>
+                    <td class="gvcCentered">
+                        @if (led.IsOverridden)
+                        {
+                            <span class="ExceptionData" title="@Resources.LogbookEntry.LogbookAltCatClassTooltip">@led.CatClassDisplay</span>
+                        }
+                        else
+                        {
+                            <span>@led.CatClassDisplay</span>
+                        }
+                        <div class="printonly">@MakeModel.GetModel(led.ModelID).AttributeListSingleLine</div>
+                    </td>
+                    <td class="gvcCentered">@led.Approaches.FormatInt()</td>
+                    <td class="gvcCentered largeBold">@Html.Raw(led.fHoldingProcedures.FormatBoolean())</td>
+                    <td class="gvcCentered">@led.LandingDisplay</td>
+                    <td class="gvcRight">@led.CrossCountry.FormatDecimal(pfViewer.UsesHHMM)</td>
+                    <td class="gvcRight">@led.Nighttime.FormatDecimal(pfViewer.UsesHHMM)</td>
+                    <td class="gvcRight">@led.SimulatedIFR.FormatDecimal(pfViewer.UsesHHMM)</td>
+                    <td class="gvcRight">@led.IMC.FormatDecimal(pfViewer.UsesHHMM)</td>
+                    <td class="gvcRight">@led.GroundSim.FormatDecimal(pfViewer.UsesHHMM)</td>
+                    <td class="gvcRight">@led.Dual.FormatDecimal(pfViewer.UsesHHMM)</td>
+                    @if (pfTarget.IsInstructor)
+                    {
+                        <td class="gvcRight">@led.CFI.FormatDecimal(pfViewer.UsesHHMM)</td>
+                    }
+                    @if (pfTarget.TracksSecondInCommandTime)
+                    {
+                        <td class="gvcRight">@led.SIC.FormatDecimal(pfViewer.UsesHHMM)</td>
+                    }
+                    <td class="gvcRight">@led.PIC.FormatDecimal(pfViewer.UsesHHMM)</td>
+                    <td class="gvcRight">@led.TotalFlightTime.FormatDecimal(pfViewer.UsesHHMM)</td>
+                    <td class="noprint">
+                        @if (isViewingOwnFlights && !readOnly)
+                        {
+                            <div name="fltContext">
+                                <img src="@VirtualPathUtility.ToAbsolute("~/images/MenuChevron.png")" class="popTrigger" />
+                                <div class="popMenuContent popMenuHidden" style="margin-top: -20px; margin-left: -180px">
+                                    @{ Html.RenderAction("FlightContextMenu", "Flights", new { le = led }); }
+                                </div>
+                            </div>
+                            <input type="checkbox" name="selFlight" value="@led.FlightID" onchange="javascript: toggleSelectedFlight(this);" style="display:none;" />
+                        }
+                    </td>
+                    <td class="noprint">
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    if (currentRange.PageCount > 1)
+    {
+    <div id="pnlPager" CssClass="lbTable noprint" DefaultButton="btnSetPage" style="font-weight:bold; padding: 5px; width: 100%; text-align: center;">
+            @if (currentRange.PageNum > 0)
+            {
+                <a style="cursor:pointer;" onclick="javascript: navigateToPage(1);">&lt;&lt;</a>
+                <a style="cursor:pointer;" onclick="javascript: navigateToPage(@currentRange.PageNum);">&lt;</a>
+            }
+            <input type="text" style="width: 8em; border: 1px solid lightgray;" id="decPage" value="@(currentRange.PageNum + 1)" name="pageRequest" />
+            @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "pagerTip", tipTextHTML = Resources.LogbookEntry.LogbookPagerTip }); }
+            <span style="font-weight: bold">@currentRange.PageCount</span>
+            <button type="button" onclick="javascript: navigateToPage($('#decPage').val());" style="display: none;" id="btnSetPage"></button>
+            @if (currentRange.PageNum < currentRange.PageCount - 1)
+            {
+                <a style="cursor:pointer;" onclick="javascript: navigateToPage(@(currentRange.PageNum + 2));">&gt;</a>
+                <a style="cursor:pointer;" onclick="javascript: navigateToPage(@currentRange.PageCount);">&gt;&gt;</a>
+            }
+            <img src="@("~/images/progress.gif".ToAbsolute())" style="display:none; height: 12pt; width: 12pt;" id="prgPager" />
+    </div>
+    }
+}
+

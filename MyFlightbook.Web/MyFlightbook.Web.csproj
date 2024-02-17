@@ -1581,6 +1581,17 @@
     <Content Include="Areas\mvc\Views\Pub\unsubscribe.cshtml" />
     <Content Include="Areas\mvc\Views\Training\reports.cshtml" />
     <Content Include="Areas\mvc\Views\Training\addRelationship.cshtml" />
+    <Content Include="Areas\mvc\Views\Flights\sharedLogbook.cshtml" />
+    <Content Include="Areas\mvc\Views\Airport\_visitedAirportTable.cshtml" />
+    <Content Include="Areas\mvc\Views\Flights\_currency.cshtml" />
+    <Content Include="Areas\mvc\Views\Flights\_totals.cshtml" />
+    <Content Include="Areas\mvc\Views\Flights\_analysis.cshtml" />
+    <Content Include="Areas\mvc\Views\Flights\_analysisTable.cshtml" />
+    <Content Include="Areas\mvc\Views\Flights\_analysisResult.cshtml" />
+    <Content Include="Areas\mvc\Views\Flights\_logbookTable.cshtml" />
+    <Content Include="Areas\mvc\Views\Flights\_logbookTableContents.cshtml" />
+    <Content Include="Areas\mvc\Views\Flights\_flightContextMenu.cshtml" />
+    <Content Include="Areas\mvc\Views\Flights\_sendFlight.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -1914,6 +1925,7 @@
     <Compile Include="Areas\mvc\Controllers\ClubController.cs" />
     <Compile Include="Areas\mvc\Controllers\DonateController.cs" />
     <Compile Include="Areas\mvc\Controllers\FAQController.cs" />
+    <Compile Include="Areas\mvc\Controllers\FlightsController.cs" />
     <Compile Include="Areas\mvc\Controllers\ImageController.cs" />
     <Compile Include="Areas\mvc\Controllers\InternalController.cs" />
     <Compile Include="Areas\mvc\Controllers\MFBTemplateController.cs" />
@@ -3247,7 +3259,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\mvc\Data\" />
-    <Folder Include="Areas\mvc\Views\Flights\" />
     <Folder Include="Areas\mvc\Views\MFBFooter\" />
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="Public\OpenSource\" />

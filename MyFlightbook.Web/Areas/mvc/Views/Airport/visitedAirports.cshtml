@@ -44,7 +44,7 @@
     function estimateDistance() {
         var params = new Object();
         params.fq = buildQuery();
-        params.df = $("#hdnDistanceFill")[0].value;
+        params.df = false;
         var d = JSON.stringify(params);
         $("#divEstimatingProgress").toggle();
         $("#lnkEstimateDistance").toggle();
@@ -73,7 +73,6 @@
         <input type="hidden" value="" name="fqJSON" id="hdnQueryForVA" />
         <input type="hidden" value="" name="fPropDeleteClicked" id="hdnQFEClicked" />
         <input type="hidden" value="" name="propToDelete" id="hdnPropToDelete" />
-        <input type="hidden" value="@Json.Encode(ViewBag.df)" name="df" id="hdnDistanceFill" />
         <input type="hidden" value="@util.GetIntParam(Request, "path", 0)" name="path" id="hdnShowPath" />
     }
 </div>
@@ -89,44 +88,7 @@
         <button onclick="javascript: toggleSearch();">@Resources.LocalizedText.ChangeQuery</button>
         @{ Html.RenderAction("QueryDescription", "Search", new { fq = fq, onClientClick = "qfeClicked" }); }
     </div>
-    <div id="visitedResults" style="height: 300px; overflow-x: hidden; overflow-y:scroll;">
-        <table class="stickyHeaderTable stickyHeaderAlternate" id="visitedTable">
-            <thead>
-                <tr style="vertical-align:top;">
-                    <th class="headerBase headerSortAsc" style="text-align:left" onclick="javascript:sortTable(this,  0, '', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.Airports.airportCode</th>
-                    <th class="headerBase" style="text-align:left" onclick="javascript:sortTable(this, 1, '', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.Airports.airportName</th>
-                    <th class="headerBase" style="text-align:left" onclick="javascript:sortTable(this, 2, '', 'hdnSortIndex', 'hdnLastSortDir');">
-                        @Resources.Airports.airportCountry<span style="font-weight:normal; text-align:left;">
-                            @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "countryTips", tipTextHTML = Branding.ReBrand(Resources.Airports.airportCountryDisclaimer) });}
-                        </span>
-                    </th>
-                    <th class="headerBase" style="text-align:left" onclick="javascript:sortTable(this, 3, '', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.Airports.airportRegion</th>
-                    <th class="headerBase" style="text-align:left" onclick="javascript:sortTable(this, 4, 'num', 'hdnSortIndex', 'hdnLastSortDir');">
-                        @Resources.Airports.airportVisits
-                        @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "visitsTip", tipTextHTML = Resources.Airports.vistedAirportsCountTip }); }
-                    </th>
-                    <th class="headerBase" style="text-align:left" onclick="javascript:sortTable(this, 5, 'date', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.Airports.airportEarliestVisit</th>
-                    <th class="headerBase" style="text-align:left" onclick="javascript:sortTable(this, 6, 'date', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.Airports.airportLatestVisit</th>
-                    <th class="headerBase" style="text-align:left"></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (VisitedAirport va in rgva)
-                {
-                    <tr>
-                        <td><a href="@String.Format(CultureInfo.InvariantCulture, "javascript:getMfbMap().gmap.setCenter(new google.maps.LatLng({0}, {1}));getMfbMap().gmap.setZoom(14);", va.Airport.LatLong.Latitude, va.Airport.LatLong.Longitude)">@va.Code</a></td>
-                        <td>@va.Airport.Name</td>
-                        <td>@va.Country</td>
-                        <td>@va.Admin1</td>
-                        <td>@va.NumberOfVisits.PrettyString()</td>
-                        <td>@va.EarliestVisitDate.ToString("d", CultureInfo.CurrentCulture)<span style="display:none">@va.EarliestVisitDate.YMDString()</span></td>
-                        <td>@va.LatestVisitDate.ToString("d", CultureInfo.CurrentCulture)<span style="display:none">@va.LatestVisitDate.YMDString()</span></td>
-                        <td><a href="@String.Format(CultureInfo.InvariantCulture, "{0}?ap={1}", VirtualPathUtility.ToAbsolute("~/Member/LogbookNew.aspx"), va.Code)">@Resources.Airports.airportViewFlights</a></td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+    @{ Html.RenderAction("VisitedAirportTable", "Airport", new { rgva = rgva }); }
     <input type="hidden" id="hdnLastSortDir" value="asc" />
     <input type="hidden" id="hdnSortIndex" value="0" />
     <br />

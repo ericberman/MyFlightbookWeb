@@ -144,6 +144,13 @@ namespace MyFlightbook
             SortFlights(sortKey, sortDir);
         }
 
+        public string CssForSort(string sortKey)
+        {
+            if (sortKey == null)
+                throw new ArgumentNullException(nameof(sortKey));
+            return sortKey.CompareCurrentCultureIgnoreCase(CurrentSortKey) == 0 ? (CurrentSortDir == SortDirection.Ascending ? "headerSortAsc" : "headerSortDesc") : string.Empty;
+        }
+
         /// <summary>
         /// Sorts the list on the specified key and direction.
         /// </summary>

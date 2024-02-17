@@ -1,0 +1,84 @@
+﻿@using System.Globalization
+@using MyFlightbook.Currency
+@{ 
+    IEnumerable<CurrencyStatusItem> rgcsi = ViewBag.rgcsi;
+    bool fUseInlineFormatting = ViewBag.useInlineFormatting ?? false;
+    bool fLinkItems = ViewBag.linkItems;
+}
+@if (fUseInlineFormatting)
+{
+    <style type="text/css">
+        /* Currency status */
+        .currencylabel {
+            font-weight: normal;
+            font-size: 10pt;
+        }
+
+        .currencygap {
+            font-weight: normal;
+            font-size: 8pt;
+        }
+
+        .currencyok {
+            font-weight: normal;
+            color: Green;
+            font-size: 10pt;
+        }
+
+        .currencynearlydue {
+            font-weight: bold;
+            color: Blue;
+            font-size: 10pt;
+        }
+
+        .currencyexpired {
+            font-weight: bold;
+            color: Red;
+            font-size: 10pt;
+        }
+
+        .currencynodate {
+            font-weight: bold;
+            color: black;
+            font-size: 10pt;
+        }
+
+        .fineprint {
+            font-weight: normal;
+            font-size: smaller;
+            text-indent: 0;
+            text-align: left;
+        }
+    </style>
+}
+<div class="=fineprint"><a target="_blank" href="@("~/mvc/pub/CurrencyNotes".ToAbsoluteURL(Request.Url.Scheme, Branding.CurrentBrand.HostName, Request.Url.Port).ToString())">@Resources.Currency.DisclaimerLink</a></div>
+@if (rgcsi.Any())
+{
+    <table cellpadding="2" cellspacing="1">
+        <tbody>
+            @foreach (CurrencyStatusItem csi in rgcsi)
+            {
+                <tr>
+                    <td class="currencylabel">
+                        @if (fLinkItems && !String.IsNullOrEmpty(csi.AssociatedResourceLink))
+                        {
+                            <a target="_blank" href="@(csi.AssociatedResourceLink ?? String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?fq={2}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/Member/LogbookNew.aspx"), csi.Query == null ? string.Empty : csi.Query.ToBase64CompressedJSONString()))">@csi.Attribute</a>
+                        }
+                        else
+                        {
+                            @csi.Attribute
+                        }
+                    </td>
+                    <td>
+                        <div class="@csi.DefaultClassForStatus">@csi.Value</div>
+                        <div class="currencygap">@csi.Discrepancy</div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>@Resources.Currency.NoStatus</p>
+}

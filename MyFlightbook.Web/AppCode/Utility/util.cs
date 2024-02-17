@@ -45,8 +45,15 @@ namespace MyFlightbook
         public const string keyRouteColor = "prefRouteColor";   // key for the color when showing routes on a map
         public const string keyPathColor = "prefPathColor";     // key for the color when showing a path on a map
         public const int DefaultMaintenanceWindow = 90;
+
+        // Logbook preferences
         public const string keyPrefFlatHierarchy = "UsesFlatCloudStorageFileHierarchy";    // indicates that cloud storage should be done in a flat hierarchy rather than by month.
-        private const int StyleSheetVer = 54;
+        public const string keyPrefCompact = "mfbLogbookDisplayCompact";
+        public const string keyPrefInlineImages = "mfbLogbookDisplayImages";
+        public const string keyPrefFlightsPerPage = "mfbLogbookDisplayFlightsPerPage";
+        public const int DefaultFlightsPerPage = 25;
+
+        private const int StyleSheetVer = 55;
 
         public static string BaseStylesheet
         {

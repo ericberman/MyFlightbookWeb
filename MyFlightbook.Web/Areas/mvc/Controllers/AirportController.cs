@@ -2,6 +2,7 @@
 using MyFlightbook.Mapping;
 using MyFlightbook.Telemetry;
 using MyFlightbook.Weather.ADDS;
+using MyFlightbook.Web.Sharing;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ using System.Web.Mvc;
 
 /******************************************************
  * 
- * Copyright (c) 2023 MyFlightbook LLC
+ * Copyright (c) 2023-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -136,7 +137,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return PartialView("_airportImportCandidate");
         }
 
-        private ActionResult AirportTableForUser(bool fAdmin)
+        private PartialViewResult AirportTableForUser(bool fAdmin)
         {
             fAdmin = fAdmin && MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData;
             ViewBag.isAdminMode = fAdmin;
@@ -369,12 +370,24 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return (String.IsNullOrEmpty(szErr)) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.VisitedAirportsDistanceEstimate, distance) : szErr;
         }
 
-        [Authorize]
-        public ActionResult DownloadKML(string fq)
+        private void CheckCanViewData(FlightQuery fq, string skID = null)
+        {
+            // Can view airport data if:
+            // a) Authenticated AND your data OR
+            if (User.Identity.IsAuthenticated && fq.UserName.CompareOrdinal(User.Identity.Name) == 0)
+                return;
+
+            // b) valid sharekey that gives visited airports AND matches the query's user.
+            ShareKey sk = skID == null ? null : ShareKey.ShareKeyWithID(skID);
+            if (sk == null || !sk.CanViewVisitedAirports || sk.Username.CompareOrdinal(fq.UserName) != 0)
+                throw new UnauthorizedAccessException("You aren't authorized to view this data");
+        }
+
+        public ActionResult DownloadKML(string fq, string id = null)
         {
             FlightQuery query = FlightQuery.FromBase64CompressedJSON(fq);
-            if (query.UserName.CompareOrdinal(User.Identity.Name) != 0)
-                throw new UnauthorizedAccessException();
+
+            CheckCanViewData(query, id);
 
             using (MemoryStream ms = new MemoryStream())
             {
@@ -385,16 +398,22 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             }
         }
 
-        [Authorize]
-        public ActionResult DownloadVisited(string fq)
+        public ActionResult DownloadVisited(string fq, string id = null)
         {
             FlightQuery query = FlightQuery.FromBase64CompressedJSON(fq);
-            if (query.UserName.CompareOrdinal(User.Identity.Name) != 0)
-                throw new UnauthorizedAccessException();
+            CheckCanViewData(query, id);
 
             IEnumerable<VisitedAirport> rgva = VisitedAirport.VisitedAirportsForQuery(query);
 
             return File(VisitedAirport.DownloadVisitedTable(rgva), "text/csv", String.Format(CultureInfo.InvariantCulture, "{0}-Visited-{1}.csv", Branding.CurrentBrand.AppName, DateTime.Now.YMDString()));
+        }
+
+        [ChildActionOnly]
+        public PartialViewResult VisitedAirportTable(IEnumerable<VisitedAirport> rgva, bool fAllowSearch = true)
+        {
+            ViewBag.rgva = rgva;
+            ViewBag.fAllowSearch = fAllowSearch;
+            return PartialView("_visitedAirportTable");
         }
 
         private static IEnumerable<AirportList> PathsForQuery(FlightQuery fq, AirportList alMatches, bool fShowRoute)

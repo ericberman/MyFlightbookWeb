@@ -1062,6 +1062,24 @@ namespace MyFlightbook.Currency
                 }
             }
         }
+
+        private const string szCookieDefaultTotalsMode = "cookieDefaultTotalsMode2";
+        private const string szFlatCookieValue = "flat";
+        /// <summary>
+        /// Default group mode for totals.  True for grouped, false for flat.
+        /// </summary>
+        public bool DefaultGroupModeForUser
+        {
+            get
+            {
+                string szPref = Profile.GetUser(Username).GetPreferenceForKey<string>(szCookieDefaultTotalsMode) ?? string.Empty;
+                return szPref.CompareCurrentCultureIgnoreCase(szFlatCookieValue) != 0;
+            }
+            set
+            {
+                Profile.GetUser(Username).SetPreferenceForKey(szCookieDefaultTotalsMode, value ? null : szFlatCookieValue);
+            }
+        }
     }
 
     public class Form8710Row

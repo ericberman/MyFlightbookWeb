@@ -59,15 +59,6 @@ public partial class Controls_MFBLogbookBase : UserControl
 
     protected IEnumerable<CannedQuery> colorQueryMap { get; set; }
 
-    private const string szViewStateSuppressImages = "vsSI";
-    /// <summary>
-    /// True for this to be "print view": suppresses images
-    /// </summary>
-    public Boolean SuppressImages
-    {
-        get { return !String.IsNullOrEmpty((string)ViewState[szViewStateSuppressImages]); }
-        set { ViewState[szViewStateSuppressImages] = value ? value.ToString(CultureInfo.InvariantCulture) : string.Empty; }
-    }
     private const string keyVSUser = "logbookUser";
     /// <summary>
     /// Specifies the user for whom we are displaying results.
@@ -254,9 +245,9 @@ public partial class Controls_MFBLogbookBase : UserControl
     }
 
     #region Badges
-    private Dictionary<int, List<Badge>> m_cachedBadges;
+    private IDictionary<int, IList<Badge>> m_cachedBadges;
 
-    private Dictionary<int, List<Badge>> CachedBadgesByFlight
+    private IDictionary<int, IList<Badge>> CachedBadgesByFlight
     {
         get
         {
@@ -264,21 +255,8 @@ public partial class Controls_MFBLogbookBase : UserControl
                 return m_cachedBadges;
 
             // Set up cache of badges.
-            m_cachedBadges = new Dictionary<int, List<Badge>>();
+            m_cachedBadges = Badge.BadgesByFlight(Pilot.CachedBadges);
 
-            IEnumerable<Badge> cachedBadges = Pilot.CachedBadges;
-            if (cachedBadges != null)
-            {
-                foreach (Badge b in cachedBadges)
-                {
-                    if (b.IDFlightEarned == LogbookEntry.idFlightNone)
-                        continue;
-                    if (m_cachedBadges.TryGetValue(b.IDFlightEarned, out List<Badge> lst))
-                        lst.Add(b);
-                    else
-                        m_cachedBadges[b.IDFlightEarned] = new List<Badge>() { b };
-                }
-            }
             return m_cachedBadges;
         }
     }
@@ -293,7 +271,7 @@ public partial class Controls_MFBLogbookBase : UserControl
         if (Pilot != null && Pilot.AchievementStatus == Achievement.ComputeStatus.UpToDate)
         {
             Repeater rptBadges = (Repeater)row.FindControl("rptBadges");
-            if (CachedBadgesByFlight.TryGetValue(le.FlightID, out List<Badge> value))
+            if (CachedBadgesByFlight.TryGetValue(le.FlightID, out IList<Badge> value))
             {
                 IEnumerable<Badge> badges = value;
                 if (badges != null)
@@ -385,10 +363,6 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
     }
 
     #region Display Options
-    const string szCookieCompact = "mfbLogbookDisplayCompact";
-    const string szCookieImages = "mfbLogbookDisplayImages";
-    private const string szCookiesFlightsPerPage = "mfbLogbookDisplayFlightsPerPage";
-    private const int defaultFlightsPerPage = 25;
 
     private bool m_isCompact;
     private bool m_showImagesInline;
@@ -396,13 +370,13 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
     protected bool IsCompact
     {
         get { return m_isCompact; }
-        set { Viewer.SetPreferenceForKey(szCookieCompact, m_isCompact = value, value == false); }
+        set { Viewer.SetPreferenceForKey(MFBConstants.keyPrefCompact, m_isCompact = value, value == false); }
     }
 
     protected bool ShowImagesInline
     {
         get { return m_showImagesInline; }
-        set { Viewer.SetPreferenceForKey(szCookieImages, m_showImagesInline = value, value == false); }
+        set { Viewer.SetPreferenceForKey(MFBConstants.keyPrefInlineImages, m_showImagesInline = value, value == false); }
     }
 
     /// <summary>
@@ -410,8 +384,8 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
     /// </summary>
     protected int FlightsPerPage
     {
-        get { return Viewer.GetPreferenceForKey(szCookiesFlightsPerPage, defaultFlightsPerPage); }
-        set { Viewer.SetPreferenceForKey(szCookiesFlightsPerPage, value, value == 0 || value == defaultFlightsPerPage); }
+        get { return Viewer.GetPreferenceForKey(MFBConstants.keyPrefFlightsPerPage, MFBConstants.DefaultFlightsPerPage); }
+        set { Viewer.SetPreferenceForKey(MFBConstants.keyPrefFlightsPerPage, value, value == 0 || value == MFBConstants.DefaultFlightsPerPage); }
     }
 
     /// <summary>
@@ -497,15 +471,15 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
         // Set display options
         // Compact and inline images default to cookies, if not explicitly set in database; otherwise
         // Pagesize only uses database
-        m_isCompact = Viewer.PreferenceExists(szCookieCompact) ? Viewer.GetPreferenceForKey<bool>(szCookieCompact) : (Request.Cookies[szCookieCompact] != null && bool.TryParse(Request.Cookies[szCookieCompact].Value, out bool f) && f);
-        m_showImagesInline = Viewer.PreferenceExists(szCookieCompact) ? Viewer.GetPreferenceForKey<bool>(szCookieImages) : (Request.Cookies[szCookieImages] != null && bool.TryParse(Request.Cookies[szCookieImages].Value, out bool f2) && f2);
+        m_isCompact = Viewer.PreferenceExists(MFBConstants.keyPrefCompact) ? Viewer.GetPreferenceForKey<bool>(MFBConstants.keyPrefCompact) : (Request.Cookies[MFBConstants.keyPrefCompact] != null && bool.TryParse(Request.Cookies[MFBConstants.keyPrefCompact].Value, out bool f) && f);
+        m_showImagesInline = Viewer.PreferenceExists(MFBConstants.keyPrefCompact) ? Viewer.GetPreferenceForKey<bool>(MFBConstants.keyPrefInlineImages) : (Request.Cookies[MFBConstants.keyPrefInlineImages] != null && bool.TryParse(Request.Cookies[MFBConstants.keyPrefInlineImages].Value, out bool f2) && f2);
 
         // Clear the cookies so that from now one we will only use the database preference
-        if (Request.Cookies[szCookieCompact] != null)
+        if (Request.Cookies[MFBConstants.keyPrefCompact] != null)
             IsCompact = m_isCompact;    // force save to profile
-        if (Request.Cookies[szCookieImages] != null)
+        if (Request.Cookies[MFBConstants.keyPrefInlineImages] != null)
             ShowImagesInline = m_showImagesInline; // force save to profile
-        Response.Cookies[szCookieCompact].Expires = Response.Cookies[szCookieImages].Expires = Response.Cookies[szCookiesFlightsPerPage].Expires = DateTime.Now.AddDays(-1);
+        Response.Cookies[MFBConstants.keyPrefCompact].Expires = Response.Cookies[MFBConstants.keyPrefInlineImages].Expires = Response.Cookies[MFBConstants.keyPrefFlightsPerPage].Expires = DateTime.Now.AddDays(-1);
     }
 
     protected void Page_Load(object sender, EventArgs e)
@@ -611,45 +585,42 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
     {
         // Bind to images.
         Controls_mfbImageList mfbIl = (Controls_mfbImageList)row.FindControl("mfbilFlights");
-        if (!SuppressImages)
+        // Flight images
+        mfbIl.Key = le.FlightID.ToString(CultureInfo.InvariantCulture);
+        mfbIl.Refresh();
+        if (le.FlightImages.Count == 0) // populate images, so that flight coloring can work
+            foreach (MyFlightbook.Image.MFBImageInfo mfbii in mfbIl.Images.ImageArray)
+                le.FlightImages.Add(mfbii);
+
+        // wire up images
+        if (mfbIl.Images.ImageArray.Count > 0 || le.Videos.Count > 0)
+            row.FindControl("pnlImagesHover").Visible = true;
+        else
+            row.FindControl("pnlFlightImages").Visible = false;
+
+        Aircraft ac = AircraftForUser.Find(a => a.AircraftID == le.AircraftID);
+        string szInstTypeDescription = ac == null ? string.Empty : AircraftInstance.ShortNameForInstanceType(ac.InstanceType);
+        ((Label)row.FindControl("lblInstanceTypeDesc")).Text = szInstTypeDescription;
+
+        // And aircraft
+        // for efficiency, see if we've already done this tail number; re-use if already done
+        if (!m_dictAircraftHoverIDs.TryGetValue(le.AircraftID, out string hoverID))
         {
-            // Flight images
-            mfbIl.Key = le.FlightID.ToString(CultureInfo.InvariantCulture);
-            mfbIl.Refresh();
-            if (le.FlightImages.Count == 0) // populate images, so that flight coloring can work
-                foreach (MyFlightbook.Image.MFBImageInfo mfbii in mfbIl.Images.ImageArray)
-                    le.FlightImages.Add(mfbii);
+            if (ac != null)
+                mfbilAircraft.DefaultImage = ac.DefaultImage;
 
-            // wire up images
-            if (mfbIl.Images.ImageArray.Count > 0 || le.Videos.Count > 0)
-                row.FindControl("pnlImagesHover").Visible = true;
-            else
-                row.FindControl("pnlFlightImages").Visible = false;
+            mfbilAircraft.Key = le.AircraftID.ToString(CultureInfo.InvariantCulture);
+            mfbilAircraft.Refresh();
 
-            Aircraft ac = AircraftForUser.Find(a => a.AircraftID == le.AircraftID);
-            string szInstTypeDescription = ac == null ? string.Empty : AircraftInstance.ShortNameForInstanceType(ac.InstanceType);
-            ((Label)row.FindControl("lblInstanceTypeDesc")).Text = szInstTypeDescription;
+            // cache the attributes string - there's a bit of computation involved in it.
+            string szAttributes = ((Label)row.FindControl("lblModelAttributes")).Text.EscapeHTML();
+            hoverID = szInstTypeDescription + " " + szAttributes + mfbilAircraft.AsHTMLTable();
 
-            // And aircraft
-            // for efficiency, see if we've already done this tail number; re-use if already done
-            if (!m_dictAircraftHoverIDs.TryGetValue(le.AircraftID, out string hoverID))
-            {
-                if (ac != null)
-                    mfbilAircraft.DefaultImage = ac.DefaultImage;
-
-                mfbilAircraft.Key = le.AircraftID.ToString(CultureInfo.InvariantCulture);
-                mfbilAircraft.Refresh();
-
-                // cache the attributes string - there's a bit of computation involved in it.
-                string szAttributes = ((Label)row.FindControl("lblModelAttributes")).Text.EscapeHTML();
-                hoverID = szInstTypeDescription + " " + szAttributes + mfbilAircraft.AsHTMLTable();
-
-                // and the image table.
-                m_dictAircraftHoverIDs[le.AircraftID] = hoverID;
-            }
-
-            row.FindControl("plcTail").Controls.Add(new LiteralControl(hoverID));
+            // and the image table.
+            m_dictAircraftHoverIDs[le.AircraftID] = hoverID;
         }
+
+        row.FindControl("plcTail").Controls.Add(new LiteralControl(hoverID));
     }
 
     private static void SetStyleForRow(LogbookEntryDisplay le, GridViewRow row)

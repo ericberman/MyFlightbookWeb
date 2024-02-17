@@ -52,9 +52,9 @@ namespace MyFlightbook.Web.Sharing
             get { return LastAccess == null || !LastAccess.HasValue ? Resources.LocalizedText.ShareKeyLastAccessNever : LastAccess.Value.ToShortDateString(); }
         }
 
-        private string m_baseLink = "~/Public/ViewSharedLogbook.aspx";
+        private string m_baseLink = "~/mvc/flights/sharedlogbook";
         /// <summary>
-        /// The base URL for the link.  By default is "~/Public/ViewSharedLogbook.aspx"
+        /// The base URL for the link.  By default is "~/mvc/flights/sharedlogbook"
         /// </summary>
         public string BaseLink
         {

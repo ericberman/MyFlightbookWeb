@@ -1615,32 +1615,37 @@ namespace MyFlightbook
             if (dbh.LastError.Length > 0)
                 throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, "Error attempting to delete flight: {0} parameters - (flightID = {1} user = {2}): {3}", dbh.CommandText, id, szUser, dbh.LastError));
 
-            Profile.GetUser(szUser).SetAchievementStatus(MyFlightbook.Achievements.Achievement.ComputeStatus.NeedsComputing);
-
-            // Now delete any associated images.
-            try
+            if (dbh.AffectedRowCount > 0)
             {
-                ImageList il = new ImageList(MFBImageInfo.ImageClass.Flight, id.ToString(CultureInfo.InvariantCulture));
-                il.Refresh(true);
-                foreach (MFBImageInfo mfbii in il.ImageArray)
-                    mfbii.DeleteImage();
+                Profile.GetUser(szUser).SetAchievementStatus(MyFlightbook.Achievements.Achievement.ComputeStatus.NeedsComputing);
 
-                DirectoryInfo di = new DirectoryInfo(System.Web.Hosting.HostingEnvironment.MapPath(il.VirtPath));
-                di.Delete(true);
+                // Now delete any associated images.
+                try
+                {
+                    ImageList il = new ImageList(MFBImageInfo.ImageClass.Flight, id.ToString(CultureInfo.InvariantCulture));
+                    il.Refresh(true);
+                    foreach (MFBImageInfo mfbii in il.ImageArray)
+                        mfbii.DeleteImage();
+
+                    DirectoryInfo di = new DirectoryInfo(System.Web.Hosting.HostingEnvironment.MapPath(il.VirtPath));
+                    di.Delete(true);
+                }
+                catch (Exception ex) when (!(ex is OutOfMemoryException))
+                { }
+
+                // And any associated telemetry
+                TelemetryReference.DeleteFile(id);
+
+                // Flights have changed, so aircraft stats are invalid.
+                new UserAircraft(szUser).FlushStatsForUser();
+
+                // And flight results are invalid
+                FlightResultManager.InvalidateForUser(szUser);
+
+                return true;
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
-            { }
-
-            // And any associated telemetry
-            TelemetryReference.DeleteFile(id);
-
-            // Flights have changed, so aircraft stats are invalid.
-            new UserAircraft(szUser).FlushStatsForUser();
-
-            // And flight results are invalid
-            FlightResultManager.InvalidateForUser(szUser);
-
-            return true;
+            else
+                return false;
         }
 
         /// <summary>
@@ -2503,6 +2508,19 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
             }
             else
                 return Array.Empty<PropertyDelta>();
+        }
+
+        public string DiffsAsHTMLList(bool fUseHHMM)
+        {
+            IEnumerable<PropertyDelta> diffs = DiffsSinceSigned(fUseHHMM);
+            if (!diffs.Any())
+                return string.Empty;
+
+            StringBuilder sb = new StringBuilder("<ul>");
+            foreach (PropertyDelta delta in diffs)
+                sb.AppendFormat(CultureInfo.InvariantCulture, "<li style=\"white-space: pre-wrap\">{0}</li>", HttpUtility.HtmlEncode(delta.ToString()));
+            sb.Append("</ul>");
+            return sb.ToString();
         }
         #endregion
 

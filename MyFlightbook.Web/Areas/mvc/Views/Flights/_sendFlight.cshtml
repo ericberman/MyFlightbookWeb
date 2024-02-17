@@ -1,0 +1,101 @@
+﻿
+<script type="text/javascript">
+    function sendFlight(idFlight) {
+        $("#sendFlightDate").text("");
+        $("#sendFlightTail").text("");
+        $("#sendFlightRoute").text("");
+        $("#sendFlightComment").text("");
+        var params = new Object();
+        params.idFlight = idFlight;
+        params.fIncludeImages = false;
+        params.fIncludeTelemetry = false;
+        $("#hdnFlightToSend").val(idFlight); // make sure that's up-to-date.
+        var d = JSON.stringify(params);
+        $.ajax(
+            {
+                url: '@("~/Member/Ajax.asmx/GetFlight".ToAbsolute())',
+                type: "POST", data: d, dataType: "json", contentType: "application/json",
+                error: function (xhr, status, error) {
+                    window.alert(xhr.responseJSON.Message);
+                },
+                complete: function (response) { },
+                success: function (response) {
+                    popSendFormForFlight(response.d);
+                }
+            });
+    }
+
+    function popSendFormForFlight(le) {
+        // Bind the relevant fields above
+        $("#sendFlightDate").text(convertFdUpJsonDate(le.Date).toLocaleDateString());
+        $("#sendFlightTail").text(le.TailNumDisplay);
+        $("#sendFlightRoute").text(le.Route);
+        $("#sendFlightComment").text(le.Comment);
+
+        var div = $("#divSendFlightPop");
+        div.dialog({ autoOpen: false, closeOnEscape: true, width: 530, modal: true, title: "@Resources.LogbookEntry.SendFlightPrompt" });
+        div.dialog("open");
+        $("#txtSendFlightEmail")[0].focus();
+    }
+
+    function sendFlightSubmit() {
+        var params = new Object();
+        params.idFlight = $("#hdnFlightToSend").val();
+        params.szTargetEmail = $("#txtSendFlightEmail").val();
+        params.szMessage = $("#txtSendFlightMessage").val();
+        params.szSendPageTarget = $("#hdnFlightSendToTarget").val();
+        var d = JSON.stringify(params);
+        $.ajax(
+            {
+                url: '@("~/Member/Ajax.asmx/sendFlight".ToAbsolute())',
+                type: "POST", data: d, dataType: "json", contentType: "application/json",
+                error: function (xhr, status, error) {
+                    window.alert(xhr.responseJSON.Message);
+                },
+                complete: function (response) { },
+                success: function (response) {
+                    dismissDlg("#divSendFlightPop");
+                }
+            });
+    }
+</script>
+<div id="divSendFlightPop" style="display:none">
+    <input type="hidden" id="hdnFlightToSend" value="" />
+    <input type="hidden" id="hdnFlightSendToTarget" name="szSendPageTarget" value="~/Member/LogbookNew.aspx" />
+    <table>
+        <tr>
+            <td>@Resources.LogbookEntry.SendFlightEmailPrompt</td>
+            <td><input type="text" id="txtSendFlightEmail" /></td>
+        </tr>
+        <tr>
+            <td style="vertical-align:top">@Resources.LogbookEntry.SendFlightMessagePrompt</td>
+            <td><textarea id="txtSendFlightMessage" rows="3"></textarea></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <table>
+                    <tr style="vertical-align:top">
+                        <td style="font-weight: bold">@Resources.LogbookEntry.PublicFlightDate</td>
+                        <td><span id="sendFlightDate"></span></td>
+                    </tr>
+                    <tr style="vertical-align:top">
+                        <td style="font-weight: bold">@Resources.LogbookEntry.PublicFlightAircraft</td>
+                        <td><span id="sendFlightTail"></span></td>
+                    </tr>
+                    <tr style="vertical-align:top">
+                        <td style="font-weight: bold">@Resources.LogbookEntry.PublicFlightRoute</td>
+                        <td><span id="sendFlightRoute"></span></td>
+                    </tr>
+                    <tr style="vertical-align:top">
+                        <td style="font-weight: bold">@Resources.LogbookEntry.PublicFlightComments</td>
+                        <td><span id="sendFlightComment"></span></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <div style="text-align:center">
+        <button type="button" id="btnSendFlight" onclick="javascript: sendFlightSubmit();">@Resources.LogbookEntry.SendFlightButton</button>
+    </div>
+</div>

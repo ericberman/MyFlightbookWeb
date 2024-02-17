@@ -1,13 +1,17 @@
-﻿using System;
+﻿using MyFlightbook.Charting;
+using MyFlightbook.CSV;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Web;
+using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2023 MyFlightbook LLC
+ * Copyright (c) 2008-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -90,6 +94,105 @@ namespace MyFlightbook.Histogram
         public IEnumerable<IHistogramable> SourceData { get; set; }
 
         public IDictionary<string, object> Context { get; private set; } = new Dictionary<string, object>();
+        #endregion
+
+        #region Charting
+        /// <summary>
+        /// Populates google chart data with the data from this histogram manager.
+        /// </summary>
+        /// <param name="gcd">The google chart data</param>
+        /// <param name="selectedBucket">Bucket to use for grouping</param>
+        /// <param name="fieldToGraph">The field to graph</param>
+        /// <param name="fUseHHMM">Whether or not to format in hhmm</param>
+        /// <param name="fIncludeAverage">Whether or not to include the average</param>
+        /// <returns>The bucket manager that populated the data</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        public BucketManager PopulateChart(GoogleChartData gcd, string selectedBucket, string fieldToGraph, bool fUseHHMM, bool fIncludeAverage = false)
+        {
+            if (gcd == null)
+                throw new ArgumentNullException(nameof(gcd));
+            BucketManager bm = SupportedBucketManagers.FirstOrDefault(b => b.DisplayName.CompareOrdinal(selectedBucket) == 0);
+            HistogramableValue hv = Values.FirstOrDefault(h => h.DataField.CompareOrdinal(fieldToGraph) == 0);
+
+            if (bm == null)
+                throw new InvalidOperationException("Unknown bucket for grouping: " + selectedBucket);
+            if (hv == null)
+                throw new InvalidOperationException("unknown data field to graph: " + fieldToGraph);
+
+            gcd.XLabel = fieldToGraph;
+
+            bm.ScanData(this);
+
+            // check for daily with less than a year
+            if (bm is DailyBucketManager dbm && dbm.MaxDate.CompareTo(dbm.MinDate) > 0 && dbm.MaxDate.Subtract(dbm.MinDate).TotalDays > 365)
+            {
+                bm = new WeeklyBucketManager();
+                bm.ScanData(this);
+            }
+
+            if (bm is DateBucketManager datebm)
+            {
+                gcd.XDatePattern = datebm.DateFormat;
+                gcd.XDataType = GoogleColumnDataType.date;
+            }
+            else
+            {
+                gcd.XDatePattern = "{0}";
+                gcd.XDataType = GoogleColumnDataType.@string;
+            }
+
+            int count = 0;
+            double average = 0;
+
+            foreach (Bucket b in bm.Buckets)
+            {
+                gcd.XVals.Add(gcd.XDataType == GoogleColumnDataType.@string ? b.DisplayName : b.OrdinalValue);
+                gcd.YVals.Add(b.Values[hv.DataField]);
+                if (!b.ExcludeFromAverage)
+                {
+                    average += b.Values[hv.DataField];
+                    count++;
+                }
+
+                if (b.HasRunningTotals)
+                    gcd.Y2Vals.Add(b.RunningTotals[hv.DataField]);
+
+                string RankAndPercent = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ChartTotalsRankAndPercentOfTotals, b.Ranks[hv.DataField], bm.Buckets.Count(), b.PercentOfTotal[hv.DataField]);
+                // Add a tooltip for the item.
+                gcd.Tooltips.Add(String.Format(CultureInfo.CurrentCulture, "<div class='ttip'><div class='dataVal'>{0}</div><div>{1}: <span class='dataVal'>{2}</span></div><div>{3}</div></div>",
+                    HttpUtility.HtmlEncode(b.DisplayName),
+                    HttpUtility.HtmlEncode(hv.DataName),
+                    HttpUtility.HtmlEncode(BucketManager.FormatForType(b.Values[hv.DataField], hv.DataType, fUseHHMM)),
+                    HttpUtility.HtmlEncode(RankAndPercent)));
+            }
+
+            if (gcd.ShowAverage = (fIncludeAverage && count > 0))
+                gcd.AverageValue = average / count;
+
+            string szLabel = "{0}";
+            {
+                switch (hv.DataType)
+                {
+                    case HistogramValueTypes.Integer:
+                        szLabel = Resources.LocalizedText.ChartTotalsNumOfX;
+                        break;
+                    case HistogramValueTypes.Time:
+                        szLabel = Resources.LocalizedText.ChartTotalsHoursOfX;
+                        break;
+                    case HistogramValueTypes.Decimal:
+                    case HistogramValueTypes.Currency:
+                        szLabel = Resources.LocalizedText.ChartTotalsAmountOfX;
+                        break;
+                }
+            }
+            gcd.YLabel = String.Format(CultureInfo.CurrentCulture, szLabel, hv.DataName);
+            gcd.Y2Label = Resources.LocalizedText.ChartRunningTotal;
+
+            gcd.ClickHandlerJS = bm.ChartJScript;
+
+            return bm;
+        }
         #endregion
     }
 
@@ -410,6 +513,104 @@ namespace MyFlightbook.Histogram
                 dt.Columns.RemoveAt(emptyColumns[iCol]);
 
             return dt;
+        }
+
+        /// <summary>
+        /// Writes out the data to CSV
+        /// </summary>
+        /// <param name="hm"></param>
+        /// <returns></returns>
+        public string RenderCSV(HistogramManager hm)
+        {
+            using (DataTable dt = ToDataTable(hm))
+            {
+                // Remove the HREF column, rename the DisplayName column
+                dt.Columns.Remove(ColumnNameHRef);
+                dt.Columns[ColumnNameDisplayName].ColumnName = DisplayName;
+                return CsvWriter.WriteToString(dt, true, true);
+            }
+        }
+
+        /// <summary>
+        /// Renders the table as HTML (higher performance than using cshtml or even aspx).
+        /// </summary>
+        /// <param name="hm"></param>
+        /// <param name="fLink"></param>
+        /// <returns></returns>
+        public string RenderHTML(HistogramManager hm, bool fLink)
+        {
+            using (DataTable dt = ToDataTable(hm))
+            {
+                using (StringWriter sw = new StringWriter())
+                {
+                    using (HtmlTextWriter tw = new HtmlTextWriter(sw))
+                    {
+                        tw.AddAttribute("callpadding", "3");
+                        tw.AddAttribute("style", "font-size: 8pt; border-collapse: collapse;");
+                        tw.RenderBeginTag(HtmlTextWriterTag.Table);
+
+                        tw.RenderBeginTag(HtmlTextWriterTag.Thead);
+                        tw.RenderBeginTag(HtmlTextWriterTag.Tr);
+
+                        tw.AddAttribute("class", "PaddedCell");
+                        tw.RenderBeginTag(HtmlTextWriterTag.Th);
+                        tw.WriteEncodedText(DisplayName);
+                        tw.RenderEndTag();  // th
+
+                        foreach (DataColumn dc in dt.Columns)
+                        {
+                            if (dc.ColumnName.CompareCurrentCultureIgnoreCase(BucketManager.ColumnNameHRef) != 0 && dc.ColumnName.CompareCurrentCultureIgnoreCase(BucketManager.ColumnNameDisplayName) != 0)
+                            {
+                                tw.AddAttribute("class", "PaddedCell");
+                                tw.RenderBeginTag(HtmlTextWriterTag.Th);
+                                tw.WriteEncodedText(dc.ColumnName);
+                                tw.RenderEndTag();
+                            }
+                        }
+
+                        tw.RenderEndTag();  // tr
+                        tw.RenderEndTag();  // thead
+
+                        tw.RenderBeginTag(HtmlTextWriterTag.Tbody);
+
+                        foreach (DataRow dr in dt.Rows)
+                        {
+                            tw.RenderBeginTag(HtmlTextWriterTag.Tr);
+
+                            tw.AddAttribute("class", "PaddedCell");
+                            tw.RenderBeginTag(HtmlTextWriterTag.Td);
+                            if(fLink && !String.IsNullOrEmpty(BaseHRef))
+                            {
+                                tw.AddAttribute("target", "_blank");
+                                tw.AddAttribute("href", dr[ColumnNameHRef].ToString().ToAbsolute());
+                                tw.RenderBeginTag(HtmlTextWriterTag.A);
+                                tw.WriteEncodedText(dr[ColumnNameDisplayName].ToString());
+                                tw.RenderEndTag();
+                            }
+                            else
+                                tw.WriteEncodedText(dr[ColumnNameDisplayName].ToString());
+                            tw.RenderEndTag();  // td
+
+                            foreach (DataColumn dc in dt.Columns)
+                            {
+                                if (dc.ColumnName.CompareCurrentCultureIgnoreCase(ColumnNameHRef) != 0 && dc.ColumnName.CompareCurrentCultureIgnoreCase(ColumnNameDisplayName) != 0)
+                                {
+                                    tw.AddAttribute("class", "PaddedCell");
+                                    tw.RenderBeginTag(HtmlTextWriterTag.Td);
+                                    tw.WriteEncodedText(dr[dc.ColumnName].ToString());
+                                    tw.RenderEndTag();
+                                }
+                            }
+
+                            tw.RenderEndTag();  // tr
+                        }
+
+                        tw.RenderEndTag();  // tbody
+                        tw.RenderEndTag();  // table
+                    }
+                    return sw.ToString();
+                }
+            }
         }
 
         internal class RankedValue 
