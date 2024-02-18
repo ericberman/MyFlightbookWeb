@@ -1498,7 +1498,6 @@
     <Content Include="Public\UploadEndorsement.aspx" />
     <Content Include="Public\UploadPicture.aspx" />
     <Content Include="Public\ViewPublicFlight.aspx" />
-    <Content Include="Public\ViewSharedLogbook.aspx" />
     <Content Include="Public\WebService.asmx" />
     <Content Include="Areas\mvc\Views\AdminAircraft\_modelsTable.cshtml" />
     <Content Include="Areas\mvc\Views\AdminAircraft\_mergeModelsPreview.cshtml" />
@@ -1586,7 +1585,6 @@
     <Content Include="Areas\mvc\Views\Flights\_currency.cshtml" />
     <Content Include="Areas\mvc\Views\Flights\_totals.cshtml" />
     <Content Include="Areas\mvc\Views\Flights\_analysis.cshtml" />
-    <Content Include="Areas\mvc\Views\Flights\_analysisTable.cshtml" />
     <Content Include="Areas\mvc\Views\Flights\_analysisResult.cshtml" />
     <Content Include="Areas\mvc\Views\Flights\_logbookTable.cshtml" />
     <Content Include="Areas\mvc\Views\Flights\_logbookTableContents.cshtml" />
@@ -2989,13 +2987,6 @@
     </Compile>
     <Compile Include="Public\ViewPublicFlight.aspx.designer.cs">
       <DependentUpon>ViewPublicFlight.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Public\ViewSharedLogbook.aspx.cs">
-      <DependentUpon>ViewSharedLogbook.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\ViewSharedLogbook.aspx.designer.cs">
-      <DependentUpon>ViewSharedLogbook.aspx</DependentUpon>
     </Compile>
     <Compile Include="Secure\login.aspx.cs">
       <DependentUpon>login.aspx</DependentUpon>
