@@ -5,7 +5,7 @@ using System.Web.UI;
 
 /******************************************************
     * 
-    * Copyright (c) 2015-2023 MyFlightbook LLC
+    * Copyright (c) 2015-2024 MyFlightbook LLC
     * Contact myflightbook-at-gmail.com for more information
     *
    *******************************************************/
@@ -90,6 +90,14 @@ namespace MyFlightbook.Web
 
             if (Context.Request.IsLocal)
                 return;
+
+            if (myError is UnauthorizedAccessException)
+            {
+                Context.ClearError();
+                Response.Redirect("~/HTTP403.htm");
+                Response.End();
+                return;
+            }
 
             if ((myError is HttpException err && err.GetHttpCode() == 404))
                 return;
