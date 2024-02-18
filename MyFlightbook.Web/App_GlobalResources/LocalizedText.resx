@@ -1976,4 +1976,10 @@
   <data name="PromptImageDropZoneWithPDF" xml:space="preserve">
     <value>Drag images or PDF files here</value>
   </data>
+  <data name="ContentBlocked" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Content.en\ContentBlocked.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="errContentBlockedTitle" xml:space="preserve">
+    <value>Content Blocked</value>
+  </data>
 </root>

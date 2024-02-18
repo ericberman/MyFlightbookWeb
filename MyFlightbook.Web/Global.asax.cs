@@ -83,7 +83,7 @@ namespace MyFlightbook.Web
             if (myError is HttpRequestValidationException)
             {
                 Context.ClearError();
-                Response.Redirect("~/SecurityError.aspx");
+                Response.Redirect("~/mvc/pub/DangerousRequest");
                 Response.End();
                 return;
             }

@@ -274,6 +274,14 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return View("about");
         }
 
+        public ActionResult DangerousRequest()
+        {
+            ViewBag.defaultTab = tabID.tabUnknown;
+            ViewBag.Title = Resources.LocalizedText.errContentBlockedTitle;
+            ViewBag.HTMLContent = Resources.LocalizedText.ContentBlocked;
+            return View("_localizedContent");
+        }
+
         // GET: mvc/Pub - shouldn't ever call.
         public ActionResult Index()
         {

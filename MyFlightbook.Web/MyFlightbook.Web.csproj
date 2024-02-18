@@ -438,6 +438,7 @@
     <Content Include="App_GlobalResources\Content.en\ClubsManual.htm" />
     <Content Include="App_GlobalResources\Content.en\ClubRolesDescription.htm" />
     <Content Include="App_GlobalResources\Content.en\CFISigs.htm" />
+    <Content Include="App_GlobalResources\Content.en\ContentBlocked.htm" />
     <Content Include="App_GlobalResources\Content.en\CurrencyDisclaimer.htm" />
     <Content Include="App_GlobalResources\Content.en\DeadlineDescription.htm" />
     <Content Include="App_GlobalResources\Content.en\Email\AccountLocked.txt" />
@@ -1607,7 +1608,6 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Secure\login.aspx" />
-    <Content Include="SecurityError.aspx" />
     <Content Include="Shunt.aspx" />
     <Content Include="Support\2023-01-21 - Issue1050 FK for UserAircraft.sql" />
     <Content Include="Support\2023-10-24 - google adsense keys.txt" />
@@ -2994,13 +2994,6 @@
     </Compile>
     <Compile Include="Secure\login.aspx.designer.cs">
       <DependentUpon>login.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="SecurityError.aspx.cs">
-      <DependentUpon>SecurityError.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="SecurityError.aspx.designer.cs">
-      <DependentUpon>SecurityError.aspx</DependentUpon>
     </Compile>
     <Compile Include="Shunt.aspx.cs">
       <DependentUpon>Shunt.aspx</DependentUpon>

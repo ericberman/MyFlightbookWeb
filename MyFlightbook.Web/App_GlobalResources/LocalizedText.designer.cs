@@ -1483,6 +1483,16 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;p&gt;For security reasons, certain characters such as &quot;&amp;lt;&quot; may not be used in certain content.&lt;/p&gt;
+        ///&lt;p&gt;Please &lt;a href=&quot;javascript:history.go(-1)&quot;&gt;go back to the page you were just on&lt;/a&gt; and try again.&lt;/p&gt;.
+        /// </summary>
+        internal static string ContentBlocked {
+            get {
+                return ResourceManager.GetString("ContentBlocked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This site uses cookies to maintain your authentication state, remember preferences, analyze traffic, and provide limited advertisement..
         /// </summary>
         internal static string CookieNotice {
@@ -2181,6 +2191,15 @@ namespace Resources {
         internal static string EndorsementAltText {
             get {
                 return ResourceManager.GetString("EndorsementAltText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Content Blocked.
+        /// </summary>
+        internal static string errContentBlockedTitle {
+            get {
+                return ResourceManager.GetString("errContentBlockedTitle", resourceCulture);
             }
         }
         
