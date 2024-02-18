@@ -1,0 +1,48 @@
+﻿@{
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    ViewBag.defaultTab = tabID.tabHome;
+}
+<script src='@("~/public/Scripts/endless-scroll.js".ToAbsolute())'></script>
+<script type="text/javascript">
+    var params = new Object();
+    params.skip = 0;
+    params.pageSize = 15;
+    params.uid = "@ViewBag.uid";
+
+    function fetchNextSet() {
+        // ajax call to fetch next set of rows
+        $.ajax(
+            {
+                type: "POST",
+                data: JSON.stringify(params),
+                url: '@Url.Action("PublicFlightRows", "Flights")',
+                dataType: "html",
+                contentType: "application/json",
+                error: function (response) { alert(response.responseText); },
+                complete: function (response) {
+                    params.skip = parseInt(params.skip) + parseInt(params.pageSize);
+                    $("#divProgress").hide();
+                },
+                success: function (response) {
+                    $("#tblFlights").append(response);
+                }
+            }
+        );
+    }
+
+    $(() => {
+        $(document).endlessScroll(
+            {
+                bottomPixels: 300,
+                fireOnce: true,
+                fireDelay: 2000,
+                callback: function (p) { fetchNextSet(); }
+            }
+        );
+
+        fetchNextSet();
+    });
+</script>
+<div id="divProgress" style="width: 100%; text-align: center;"><img src="@("~/images/progress.gif".ToAbsolute())" /></div>
+<table cellpadding="5" id="tblFlights">
+</table>

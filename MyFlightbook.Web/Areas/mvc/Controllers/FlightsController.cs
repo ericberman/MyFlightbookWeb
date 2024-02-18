@@ -2,6 +2,8 @@
 using MyFlightbook.Airports;
 using MyFlightbook.Charting;
 using MyFlightbook.Currency;
+using MyFlightbook.Encryptors;
+using MyFlightbook.FlightStatistics;
 using MyFlightbook.Histogram;
 using MyFlightbook.Instruction;
 using MyFlightbook.Mapping;
@@ -102,6 +104,35 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 int pageSize = Math.Min(Math.Max(defaultPageSize, 1), 99);
                 pf.SetPreferenceForKey(MFBConstants.keyPrefFlightsPerPage, pageSize, pageSize == MFBConstants.DefaultFlightsPerPage);
                 return new EmptyResult();
+            });
+        }
+
+        [HttpPost]
+        public ActionResult PublicFlightRows(string uid, int skip, int pageSize)
+        {
+            return SafeOp(() =>
+            {
+                string szUser = String.IsNullOrEmpty(uid) ? string.Empty : new SharedDataEncryptor(MFBConstants.keyEncryptMyFlights).Decrypt(uid);
+                IEnumerable<LogbookEntry> rgle = Array.Empty<LogbookEntry>();
+                if (String.IsNullOrEmpty(szUser))
+                {
+                    List<LogbookEntry> lst = new List<LogbookEntry>(FlightStats.GetFlightStats().RecentPublicFlights);
+                    if (skip > 0)
+                        lst.RemoveRange(0, Math.Min(skip, lst.Count));
+                    if (lst.Count > pageSize)
+                        lst.RemoveRange(pageSize, lst.Count - pageSize);
+                    rgle = lst;
+                }
+                else
+                    rgle = LogbookEntryBase.GetPublicFlightsForUser(szUser, skip, pageSize);
+
+                // Not skipping any, but still no flights found - there must not be any flights!
+                // just report an error
+                if (skip == 0 && !rgle.Any())
+                    throw new InvalidOperationException(Resources.LogbookEntry.PublicFlightNoneFound);
+
+                ViewBag.flights = rgle;
+                return PartialView("_publicFlights");
             });
         }
         #endregion
@@ -375,6 +406,20 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
         #endregion
 
+        #region Public flights
+        [HttpGet]
+        public ActionResult MyFlights(string uid = null)
+        {
+            string szUser = String.IsNullOrEmpty(uid) ? string.Empty : new SharedDataEncryptor(MFBConstants.keyEncryptMyFlights).Decrypt(uid);
+
+            Profile pf = MyFlightbook.Profile.GetUser(szUser);
+            ViewBag.Title = String.IsNullOrEmpty(pf.UserName) ?
+                Branding.ReBrand(Resources.LogbookEntry.PublicFlightPageHeaderAll) :
+                String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.PublicFlightPageHeader, pf.UserFullName);
+            ViewBag.uid = uid;
+            return View("myFlights");
+        }
+        #endregion
         // GET: mvc/Flights
         public ActionResult Index()
         {

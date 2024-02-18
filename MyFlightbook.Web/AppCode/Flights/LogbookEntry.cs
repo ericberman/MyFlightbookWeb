@@ -4394,20 +4394,6 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
     }
 
     /// <summary>
-    /// An HTML row for a flight (used in MyFlights.aspx).
-    /// </summary>
-    [Serializable]
-    public class FlightRow
-    {
-        public FlightRow()
-        {
-        }
-
-        public string HTMLRowText { get; set; }
-        public string FBDivID { get; set; }
-    }
-
-    /// <summary>
     /// Class to encapsulate coloring of flights based on keyword matching
     /// </summary>
     [Serializable]

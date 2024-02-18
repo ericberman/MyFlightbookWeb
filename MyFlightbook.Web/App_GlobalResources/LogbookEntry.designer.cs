@@ -3925,6 +3925,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Shared flights taken by %APP_NAME% users.
+        /// </summary>
+        internal static string PublicFlightPageHeaderAll {
+            get {
+                return ResourceManager.GetString("PublicFlightPageHeaderAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pilot:.
         /// </summary>
         internal static string PublicFlightPilotName {

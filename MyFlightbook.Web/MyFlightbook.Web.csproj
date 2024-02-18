@@ -595,7 +595,6 @@
     <Content Include="Controls\mfbLogbook.ascx" />
     <Content Include="Controls\mfbMaintainAircraft.ascx" />
     <Content Include="Controls\mfbMultiFileUpload.ascx" />
-    <Content Include="Controls\mfbPublicFlightItem.ascx" />
     <Content Include="Controls\mfbQueryDescriptor.ascx" />
     <Content Include="Controls\mfbQueryDescriptorItem.ascx" />
     <Content Include="Controls\mfbRecentAchievements.ascx" />
@@ -1462,7 +1461,6 @@
     <Content Include="Public\iPhoneImages\iPhone6.png" />
     <Content Include="Public\iPhoneImages\iPhone7.png" />
     <Content Include="Public\iPhoneImages\iPhone8.png" />
-    <Content Include="Public\MyFlights.aspx" />
     <Content Include="Public\LeonRedir.aspx" />
     <Content Include="Public\OneDriveRedir.aspx" />
     <Content Include="Public\PaypalIPNListener.aspx" />
@@ -1591,6 +1589,8 @@
     <Content Include="Areas\mvc\Views\Flights\_logbookTableContents.cshtml" />
     <Content Include="Areas\mvc\Views\Flights\_flightContextMenu.cshtml" />
     <Content Include="Areas\mvc\Views\Flights\_sendFlight.cshtml" />
+    <Content Include="Areas\mvc\Views\Flights\myFlights.cshtml" />
+    <Content Include="Areas\mvc\Views\Flights\_publicFlights.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -2346,13 +2346,6 @@
     <Compile Include="Controls\mfbMultiFileUpload.ascx.designer.cs">
       <DependentUpon>mfbMultiFileUpload.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Controls\mfbPublicFlightItem.ascx.cs">
-      <DependentUpon>mfbPublicFlightItem.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbPublicFlightItem.ascx.designer.cs">
-      <DependentUpon>mfbPublicFlightItem.ascx</DependentUpon>
-    </Compile>
     <Compile Include="Controls\mfbQueryDescriptor.ascx.cs">
       <DependentUpon>mfbQueryDescriptor.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2903,13 +2896,6 @@
     </Compile>
     <Compile Include="Public\Export.aspx.designer.cs">
       <DependentUpon>Export.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Public\MyFlights.aspx.cs">
-      <DependentUpon>MyFlights.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\MyFlights.aspx.designer.cs">
-      <DependentUpon>MyFlights.aspx</DependentUpon>
     </Compile>
     <Compile Include="Public\LeonRedir.aspx.cs">
       <DependentUpon>LeonRedir.aspx</DependentUpon>

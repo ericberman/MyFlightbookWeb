@@ -1756,4 +1756,7 @@ Proceed with import?</value>
   <data name="FieldMilitary" xml:space="preserve">
     <value>Military</value>
   </data>
+  <data name="PublicFlightPageHeaderAll" xml:space="preserve">
+    <value>Shared flights taken by %APP_NAME% users</value>
+  </data>
 </root>
