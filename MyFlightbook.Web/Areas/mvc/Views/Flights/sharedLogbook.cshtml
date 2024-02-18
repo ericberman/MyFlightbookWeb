@@ -45,6 +45,7 @@
         var params = new Object();
         params.fq = buildQuery();
         params.df = $("#hdnDistanceFill")[0].value;
+        params.skID = '@sk.ID';
         var d = JSON.stringify(params);
         $("#divEstimatingProgress").toggle();
         $("#lnkEstimateDistance").toggle();
@@ -53,7 +54,7 @@
             url: '@Url.Action("EstimateDistance", "Airport")',
             type: "POST", data: d, dataType: "text", contentType: "application/json",
             error: function (xhr, status, error) {
-                window.alert(error);
+                window.alert(xhr.responseText);
             },
             complete: function (response) {
                 $("#divEstimatingProgress").toggle();
@@ -195,54 +196,41 @@
     <div id="targetAirports" style="display:none">
         <p style="font-weight:bold;">@String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.VisitedAirportsNumAirports, rgva.Count())</p>
         @{ Html.RenderAction("VisitedAirportTable", "Airport", new { rgva = rgva, fAllowSearch = false }); }
-        <table style="width:100%">
-            <tr style="vertical-align: top;">
-                <td style="width:25%; padding: 3px;">
-                    <div ID="pnlDownload" runat="server">
-                        <a href="@("~/mvc/Airport/DownloadVisited?".ToAbsolute() + String.Format(CultureInfo.InvariantCulture, "fq={0}&id={1}", fq.ToBase64CompressedJSONString(), HttpUtility.UrlEncode(sk.ID)))">
-                            <img src="@VirtualPathUtility.ToAbsolute("~/images/download.png")" style="padding-right: 5px; vertical-align: middle" />
-                            <img src="@VirtualPathUtility.ToAbsolute("~/images/csvicon_med.png")" style="padding-right: 5px; vertical-align: middle" />
-                            @Resources.Airports.DownloadVisited
-                        </a>
-                    </div>
-                </td>
-                <td style="width:25%; padding: 3px;">
-                    <div ID="pnlDownload" runat="server">
-                        <a href="@("~/mvc/Airport/DownloadKML?".ToAbsolute() + String.Format(CultureInfo.InvariantCulture, "fq={0}&id={1}", fq.ToBase64CompressedJSONString(), HttpUtility.UrlEncode(sk.ID)))">
-                            <img src="@VirtualPathUtility.ToAbsolute("~/images/download.png")" style="padding-right: 5px; vertical-align: middle" />
-                            <img src="@VirtualPathUtility.ToAbsolute("~/images/kmlicon_med.png")" style="padding-right: 5px; vertical-align: middle" />
-                            <div style="display:inline-block;vertical-align:middle">@Resources.Airports.DownloadKML<br />@Resources.Airports.WarningSlow</div>
-                        </a>
-                    </div>
-                </td>
-                <td style="width:25%; padding: 3px;">
-                    <div>
-                        <a href="javascript:estimateDistance();" id="lnkEstimateDistance">
-                            <img src="@VirtualPathUtility.ToAbsolute("~/images/ruler.png")" style="padding-right: 5px; vertical-align: middle" />
-                            <div style="display:inline-block;vertical-align:middle">@Resources.Airports.EstimateDistance</div>
-                        </a>
-                        <span id="divEstimatingProgress" style="display:none">
-                            @Resources.Airports.visitedAirportComputing
-                            <img src="@VirtualPathUtility.ToAbsolute("~/images/progress.gif")" style="width: 12pt; height: 12pt;" />
-                        </span>
-                        <div id="divDistanceEstimateResult" style="display:none">
-                            <span id="lblDistanceEstimate" style="font-weight:bold"></span>
-                            <br />
-                            <span style="font-weight:bold;">@Resources.LocalizedText.Note</span>
-                            @Resources.Airports.airportDistanceNote
-                        </div>
-                        <div id="lblErr" class="error"></div>
-                    </div>
-                </td>
-                <td style="width:25%; padding: 3px;">
-                    <a style="cursor:pointer;">
-                        <img src="@VirtualPathUtility.ToAbsolute("~/images/globe.png")" style="margin-right: 4px; vertical-align: middle;" />
-                        <span style="vertical-align: middle">@{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "divRegions", labelText = Resources.Airports.ViewRegions }); }</span>
+        <div style="display: flex; justify-content: space-around;">
+            <div style="flex-grow: 1; width: 120px; display: inline-block; text-align: center; ">
+                <a href="@("~/mvc/Airport/DownloadVisited?".ToAbsolute() + String.Format(CultureInfo.InvariantCulture, "fq={0}&id={1}", fq.ToBase64CompressedJSONString(), HttpUtility.UrlEncode(sk.ID)))">
+                    <img src="@VirtualPathUtility.ToAbsolute("~/images/download.png")" style="padding-right: 5px; vertical-align: middle" />
+                    <img src="@VirtualPathUtility.ToAbsolute("~/images/csvicon_med.png")" style="padding-right: 5px; vertical-align: middle" />
+                    @Resources.Airports.DownloadVisited
+                </a>
+            </div>
+            <div style="flex-grow: 1; width: 120px; display: inline-block; text-align: center;">
+                <div>
+                    <a href="javascript:estimateDistance();" id="lnkEstimateDistance">
+                        <img src="@VirtualPathUtility.ToAbsolute("~/images/ruler.png")" style="padding-right: 5px; vertical-align: middle" />
+                        <div style="display:inline-block;vertical-align:middle">@Resources.Airports.EstimateDistance</div>
                     </a>
-                    @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "countryTips2", tipTextHTML = Branding.ReBrand(Resources.Airports.airportCountryDisclaimer) }); }
-                </td>
-            </tr>
-        </table>
+                    <span id="divEstimatingProgress" style="display:none">
+                        @Resources.Airports.visitedAirportComputing
+                        <img src="@VirtualPathUtility.ToAbsolute("~/images/progress.gif")" style="width: 12pt; height: 12pt;" />
+                    </span>
+                    <div id="divDistanceEstimateResult" style="display:none">
+                        <span id="lblDistanceEstimate" style="font-weight:bold"></span>
+                        <br />
+                        <span style="font-weight:bold;">@Resources.LocalizedText.Note</span>
+                        @Resources.Airports.airportDistanceNote
+                    </div>
+                    <div id="lblErr" class="error"></div>
+                </div>
+            </div>
+            <div style="flex-grow: 1; width: 120px; display: inline-block; text-align: center; ">
+                <a style="cursor:pointer;">
+                    <img src="@VirtualPathUtility.ToAbsolute("~/images/globe.png")" style="margin-right: 4px; vertical-align: middle;" />
+                    <span style="vertical-align: middle">@{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "divRegions", labelText = Resources.Airports.ViewRegions }); }</span>
+                </a>
+                @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "countryTips2", tipTextHTML = Branding.ReBrand(Resources.Airports.airportCountryDisclaimer) }); }
+            </div>
+        </div>
         <div id="divRegions" style="display:none;">
             @if (regions.Any())
             {

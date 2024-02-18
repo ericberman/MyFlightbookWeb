@@ -53,7 +53,7 @@
                 url: '@Url.Action("EstimateDistance", "Airport")',
                 type: "POST", data: d, dataType: "text", contentType: "application/json",
                 error: function (xhr, status, error) {
-                    window.alert(error);
+                    window.alert(xhr.responseText);
                 },
                 complete: function (response) {
                     $("#divEstimatingProgress").toggle();
@@ -95,13 +95,11 @@
     <table style="width:100%">
         <tr style="vertical-align: top;">
             <td style="width:25%; padding: 3px;">
-                <div ID="pnlDownload" runat="server">
-                    <a href="DownloadVisited?fq=@Html.Raw(HttpUtility.UrlEncode(fq.ToBase64CompressedJSONString()))">
-                        <img src="@VirtualPathUtility.ToAbsolute("~/images/download.png")" style="padding-right: 5px; vertical-align: middle" />
-                        <img src="@VirtualPathUtility.ToAbsolute("~/images/csvicon_med.png")" style="padding-right: 5px; vertical-align: middle" />
-                        @Resources.Airports.DownloadVisited
-                    </a>
-                </div>
+                <a href="DownloadVisited?fq=@Html.Raw(HttpUtility.UrlEncode(fq.ToBase64CompressedJSONString()))">
+                    <img src="@VirtualPathUtility.ToAbsolute("~/images/download.png")" style="padding-right: 5px; vertical-align: middle" />
+                    <img src="@VirtualPathUtility.ToAbsolute("~/images/csvicon_med.png")" style="padding-right: 5px; vertical-align: middle" />
+                    @Resources.Airports.DownloadVisited
+                </a>
             </td>
             <td style="width:25%; padding: 3px;">
                 <a href="DownloadKML?fq=@Html.Raw(HttpUtility.UrlEncode(fq.ToBase64CompressedJSONString()))">

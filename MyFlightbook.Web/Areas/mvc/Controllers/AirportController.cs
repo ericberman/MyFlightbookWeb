@@ -358,16 +358,20 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #endregion
 
         #region VisitedAirport
-        [Authorize]
         [HttpPost]
-        public string EstimateDistance(FlightQuery fq, bool df = false)
+        public string EstimateDistance(FlightQuery fq, bool df = false, string skID = null)
         {
-            if (fq == null || fq.UserName.CompareOrdinal(User.Identity.Name) != 0)
-                throw new UnauthorizedAccessException();
+            return SafeOp(() =>
+            {
+                if (fq == null)
+                    throw new ArgumentNullException(nameof(fq));
 
-            double distance = VisitedAirport.DistanceFlownByUser(fq, df, out string szErr);
+                CheckCanViewData(fq, skID);
 
-            return (String.IsNullOrEmpty(szErr)) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.VisitedAirportsDistanceEstimate, distance) : szErr;
+                double distance = VisitedAirport.DistanceFlownByUser(fq, df, out string szErr);
+
+                return (String.IsNullOrEmpty(szErr)) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.VisitedAirportsDistanceEstimate, distance) : szErr;
+            });
         }
 
         private void CheckCanViewData(FlightQuery fq, string skID = null)
