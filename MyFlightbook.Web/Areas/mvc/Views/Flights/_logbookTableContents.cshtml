@@ -150,7 +150,7 @@ else
                             }
                             @foreach (string s in led.PropertiesWithReplacedApproaches)
                             {
-                                <div>@s</div>
+                                <div>@Html.Raw(s)</div>
                             }
                             @if (led.CFISignatureState != LogbookEntryCore.SignatureState.None)
                             {
