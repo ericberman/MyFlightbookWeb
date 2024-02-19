@@ -15,7 +15,7 @@
         $("#analysisProgress").show();
         $.ajax({
             url: "@Url.Action("UpdateChartForData", "Flights")",
-            type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            type: "POST", data: f, dataType: "html", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
             error: function (xhr, status, error) { window.alert(xhr.responseText); },
             complete: function () { $("#analysisProgress").hide(); },
             success: function (r) {

@@ -93,6 +93,28 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        public ActionResult GetTotalsForUser(string userName, string viewingUser = null, bool linkItems = true, bool grouped = true, FlightQuery fq = null)
+        {
+            return SafeOp(() =>
+            {
+                CheckCanViewFlights(userName, viewingUser);
+                return TotalsForUser(null, userName, linkItems, grouped, fq);
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult GetCurrencyForUser(string userName, string viewingUser, bool linkItems = true, bool useInlineFormatting = false)
+        {
+            return SafeOp(() =>
+            {
+                CheckCanViewFlights(userName, viewingUser);
+                return CurrencyForUser(null, userName, linkItems, useInlineFormatting);
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public ActionResult UpdateDisplayPrefsForUser(bool fCompact, bool fInlineImages, int defaultPageSize)
         {
