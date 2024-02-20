@@ -135,7 +135,7 @@ namespace MyFlightbook.MemberPages
             mfbSearchForm1.Restriction = Restriction;
             Restriction.Refresh();
 
-            Refresh();
+            Refresh(util.GetIntParam(Request, "pg", 0));
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -252,13 +252,13 @@ namespace MyFlightbook.MemberPages
             lnkPrintView.NavigateUrl = PrintingOptions.PermaLink(Restriction, po, Request.Url.Host, Request.Url.Scheme).ToString();
         }
 
-        protected void Refresh()
+        protected void Refresh(int pg = 0)
         {
             bool fRestrictionIsDefault = Restriction.IsDefault;
             mfbLogbook1.DetailsParam = fRestrictionIsDefault ? string.Empty : "fq=" + Restriction.ToBase64CompressedJSONString();
             mfbLogbook1.User = Page.User.Identity.Name;
             mfbLogbook1.Restriction = Restriction;
-            mfbLogbook1.RefreshData();
+            mfbLogbook1.RefreshData(pg);
             if (mfbChartTotals1.Visible)
             {
                 mfbChartTotals1.HistogramManager = LogbookEntryDisplay.GetHistogramManager(mfbLogbook1.Data, Restriction.UserName);

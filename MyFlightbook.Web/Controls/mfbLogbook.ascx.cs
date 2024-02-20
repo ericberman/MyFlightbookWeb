@@ -456,13 +456,13 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
     /// <summary>
     /// Publicly visible force-refresh method.  ALWAYS bypasses the cache and uses provided data or hits the database
     /// </summary>
-    public void RefreshData()
+    public void RefreshData(int pageNum = 0)
     {
         // Reset any cached paging/sorting
         LastSortDir = LogbookEntry.DefaultSortDir;
         LastSortExpr = LogbookEntry.DefaultSortKey;
 
-        BindData(0);
+        BindData(pageNum);
         RefreshNumFlights();
     }
 
