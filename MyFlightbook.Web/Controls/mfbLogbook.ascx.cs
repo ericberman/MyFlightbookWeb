@@ -532,10 +532,10 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
 
             int curPage = util.GetIntParam(Request, "pg", 0);
             // Ensure we have the correct requested sort and page.  Note that this will also preheat the cache.
-            CurrentRange = CurrentResult.GetResultRange(PageSize, FlightRangeType.Page, LastSortExpr, LastSortDir, curPage);
+            if (!HasBeenBound || CurrentRange.PageNum != curPage)
+                BindData(curPage);
         }
-
-        if (!HasBeenBound)
+        else if (!HasBeenBound)
             BindData();
 
         // Issue #972: gridview databind performance BLOWS once we get over a few hundred rows, so disable update panel if more than, say, 300 rows in the resulting databind (should only be an issue if allow paging is off)
