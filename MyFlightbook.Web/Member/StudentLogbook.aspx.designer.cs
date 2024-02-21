@@ -42,76 +42,13 @@ namespace MyFlightbook.Instruction
         protected global::System.Web.UI.WebControls.HyperLink lnkReturn;
 
         /// <summary>
-        /// mfbAccordionProxyExtender control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Controls_mfbAccordionProxyExtender mfbAccordionProxyExtender;
-
-        /// <summary>
-        /// pnlAccordionMenuContainer control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlAccordionMenuContainer;
-
-        /// <summary>
         /// apcNewFlight control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_mfbAccordionProxyControl apcNewFlight;
-
-        /// <summary>
-        /// apcFilter control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Controls_mfbAccordionProxyControl apcFilter;
-
-        /// <summary>
-        /// apcTotals control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Controls_mfbAccordionProxyControl apcTotals;
-
-        /// <summary>
-        /// apcCurrency control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Controls_mfbAccordionProxyControl apcCurrency;
-
-        /// <summary>
-        /// apcAnalysis control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Controls_mfbAccordionProxyControl apcAnalysis;
-
-        /// <summary>
-        /// apcPrintView control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Controls_mfbAccordionProxyControl apcPrintView;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl apcNewFlight;
 
         /// <summary>
         /// pnlFilter control.
@@ -132,24 +69,6 @@ namespace MyFlightbook.Instruction
         protected global::Controls_mfbQueryDescriptor mfbQueryDescriptor;
 
         /// <summary>
-        /// AccordionCtrl control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.Accordion AccordionCtrl;
-
-        /// <summary>
-        /// acpPaneNew control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.AccordionPane acpPaneNew;
-
-        /// <summary>
         /// mfbEditFlight control.
         /// </summary>
         /// <remarks>
@@ -157,15 +76,6 @@ namespace MyFlightbook.Instruction
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::MyFlightbook.Controls.FlightEditing.mfbEditFlight mfbEditFlight;
-
-        /// <summary>
-        /// acpPaneFilter control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.AccordionPane acpPaneFilter;
 
         /// <summary>
         /// mfbSearchForm control.
@@ -177,15 +87,6 @@ namespace MyFlightbook.Instruction
         protected global::Controls_mfbSearchForm mfbSearchForm;
 
         /// <summary>
-        /// acpPaneTotals control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.AccordionPane acpPaneTotals;
-
-        /// <summary>
         /// mfbTotalSummary control.
         /// </summary>
         /// <remarks>
@@ -193,15 +94,6 @@ namespace MyFlightbook.Instruction
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::MyFlightbook.Currency.mfbTotalSummary mfbTotalSummary;
-
-        /// <summary>
-        /// acpPaneCurrency control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.AccordionPane acpPaneCurrency;
 
         /// <summary>
         /// mfbCurrency1 control.
@@ -213,31 +105,22 @@ namespace MyFlightbook.Instruction
         protected global::Controls_mfbCurrency mfbCurrency1;
 
         /// <summary>
-        /// acpPaneAnalysis control.
+        /// GoogleChart control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::AjaxControlToolkit.AccordionPane acpPaneAnalysis;
+        protected global::MyFlightbook.Charting.Controls_GoogleChart GoogleChart;
 
         /// <summary>
-        /// mfbChartTotals control.
+        /// imgAnalysisInProgress control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::MyFlightbook.Charting.mfbChartTotals mfbChartTotals;
-
-        /// <summary>
-        /// acpPrint control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.AccordionPane acpPrint;
+        protected global::System.Web.UI.WebControls.Image imgAnalysisInProgress;
 
         /// <summary>
         /// ckIncludeCoverSheet control.

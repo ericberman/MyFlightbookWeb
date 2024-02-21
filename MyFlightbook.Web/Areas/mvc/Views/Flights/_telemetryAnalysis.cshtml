@@ -1,0 +1,155 @@
+﻿@using MyFlightbook.Telemetry
+@{ 
+    int minIndex = ViewBag.minIndex;
+    int maxIndex = ViewBag.maxIndex;
+    int idFlight = ViewBag.idFlight;
+    IEnumerable<KnownColumn> lstXCols = ViewBag.xCols;
+    IEnumerable<KnownColumn> lstYCols = ViewBag.yCols;
+    string defaultX = ViewBag.defaultX;
+    bool fHasCrop = ViewBag.hasCrop;
+}
+<script type="text/javascript">
+    function chartDataChanged() {
+        var params = new Object();
+        params.idFlight = @idFlight;
+        params.xData = $("#cmbXAxis").val();
+        params.yData = $("#cmbYAxis1").val();
+        params.y2Data = $("#cmbYAxis2").val();
+        params.y1Scale = $('input[name="rblX1Conv"]:checked').val();
+        params.y2Scale = $('input[name="rblX2Conv"]:checked').val();
+        $("#analysisProgress").show();
+        $.ajax({
+            url: "@Url.Action("UpdateTelemetryChart", "Flights")",
+            type: "POST", data: JSON.stringify(params), dataType: "html", contentType: 'application/json',
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            complete: function () { $("#analysisProgress").hide(); },
+            success: function (r) {
+                $("#analysisResults").html(r);
+                drawCharts();
+            }
+        });
+    }
+
+    var minIndex = 0;
+    var maxIndex = 0;
+
+    function resetCrop() {
+        var params = new Object();
+        params.idFlight = @idFlight;
+        $.ajax({
+            url: "@Url.Action("ResetCropForFlight", "Flights")",
+            type: "POST", data: JSON.stringify(params), dataType: "html", contentType: 'application/json',
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            complete: function () { },
+            success: function (r) {
+                window.location.reload();
+            }
+        });
+    }
+
+    function applyCrop() {
+        var params = new Object();
+        params.idFlight = @idFlight;
+        params.start = minIndex;
+        params.end = maxIndex;
+        $.ajax({
+            url: "@Url.Action("ApplyCropForFlight", "Flights")",
+            type: "POST", data: JSON.stringify(params), dataType: "html", contentType: 'application/json',
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            complete: function () { },
+            success: function (r) {
+                window.location.reload();
+            }
+        });
+    }
+
+    $(() => {
+        $("#slider-range").slider({
+            range: true,
+            min: @minIndex,
+            max: @maxIndex,
+            values: [@minIndex, @maxIndex],
+            slide: function (event, ui) {
+                minIndex = ui.values[0];
+                maxIndex = ui.values[1];
+                $("#dragStatus")[0].innerText = chartData[0].getFormattedValue(minIndex, 0) + " - " + chartData[0].getFormattedValue(maxIndex, 0);
+            }
+        });
+    });
+</script>
+<div style="width: 90%; margin-left: 5%; margin-right: 5%;">
+    <div style="display: inline-block; float: left">
+        <div>@Resources.LogbookEntry.flightDetailsDataToChart</div>
+        <select name="yAxis1Data" id="cmbYAxis1" onchange="javascript: chartDataChanged();">
+            @foreach (KnownColumn kc in lstYCols)
+            {
+                <option value="@kc.Column">@kc.FriendlyName</option>
+            }
+        </select>
+        <img src="@VirtualPathUtility.ToAbsolute("~/images/MenuChevron.png")" class="popTrigger" />
+        <div class="popMenuContent popMenuHidden" style="margin-top: -5px; margin-left: -5px">
+            <div><label><input onchange="javascript: chartDataChanged();" checked type="radio" value="1" name="rblX1Conv">@Resources.FlightData.ConversionNone</label></div>
+            <div><label><input onchange="javascript: chartDataChanged();" type="radio" value="3.28084" name="rblX1Conv">@Resources.FlightData.ConversionMToFt</label></div>
+            <div><label><input onchange="javascript: chartDataChanged();" type="radio" value="0.3048" name="rblX1Conv">@Resources.FlightData.ConversionFtToM</label></div>
+            <div><label><input onchange="javascript: chartDataChanged();" type="radio" value="1.15078" name="rblX1Conv">@Resources.FlightData.ConversionKtsToMph</label></div>
+            <div><label><input onchange="javascript: chartDataChanged();" type="radio" value="1.852" name="rblX1Conv">@Resources.FlightData.ConverstionKtsToKmh</label></div>
+            <div><label><input onchange="javascript: chartDataChanged();" type="radio" value="1.94384" name="rblX1Conv">@Resources.FlightData.ConversionMSToKts</label></div>
+            <div><label><input onchange="javascript: chartDataChanged();" type="radio" value="3.6" name="rblX1Conv">@Resources.FlightData.ConversionMSToKmh</label></div>
+            <div><label><input onchange="javascript: chartDataChanged();" type="radio" value="2.23694" name="rblX1Conv">@Resources.FlightData.ConverstionMSToMph</label></div>
+            <div><label><input onchange="javascript: chartDataChanged();" type="radio" value="0.868976" name="rblX1Conv">@Resources.FlightData.ConversionMphToKts</label></div>
+            <div><label><input onchange="javascript: chartDataChanged();" type="radio" value="1.60934" name="rblX1Conv">@Resources.FlightData.ConversionMphToKmh</label></div>
+        </div>
+    </div>
+    <div style="display: inline-block; float:right;">
+        <div>@Resources.LogbookEntry.flightDetailsDataToChart</div>
+        <div style="display: inline-block; width: 12pt; height: 12pt;"><img id="analysisProgress" src="@("~/images/progress.gif".ToAbsolute())" style="display: none; width: 10pt; height: 10pt;" /></div>
+        <select name="yAxis2Data" id="cmbYAxis2" onchange="javascript: chartDataChanged();">
+            <option value="" selected>@Resources.FlightData.GraphNoData</option>
+            @foreach (KnownColumn kc in lstYCols)
+            {
+                <option value="@kc.Column">@kc.FriendlyName</option>
+            }
+        </select>
+        <img src="@VirtualPathUtility.ToAbsolute("~/images/MenuChevron.png")" class="popTrigger" />
+        <div class="popMenuContent popMenuHidden" style="margin-top: -5px; margin-left: -5px">
+            <div><label><input onchange="javascript: chartDataChanged();" checked type="radio" value="1" name="rblX2Conv">@Resources.FlightData.ConversionNone</label></div>
+            <div><label><input onchange="javascript: chartDataChanged();" type="radio" value="3.28084" name="rblX2Conv">@Resources.FlightData.ConversionMToFt</label></div>
+            <div><label><input onchange="javascript: chartDataChanged();" type="radio" value="0.3048" name="rblX2Conv">@Resources.FlightData.ConversionFtToM</label></div>
+            <div><label><input onchange="javascript: chartDataChanged();" type="radio" value="1.15078" name="rblX2Conv">@Resources.FlightData.ConversionKtsToMph</label></div>
+            <div><label><input onchange="javascript: chartDataChanged();" type="radio" value="1.852" name="rblX2Conv">@Resources.FlightData.ConverstionKtsToKmh</label></div>
+            <div><label><input onchange="javascript: chartDataChanged();" type="radio" value="1.94384" name="rblX2Conv">@Resources.FlightData.ConversionMSToKts</label></div>
+            <div><label><input onchange="javascript: chartDataChanged();" type="radio" value="3.6" name="rblX2Conv">@Resources.FlightData.ConversionMSToKmh</label></div>
+            <div><label><input onchange="javascript: chartDataChanged();" type="radio" value="2.23694" name="rblX2Conv">@Resources.FlightData.ConverstionMSToMph</label></div>
+            <div><label><input onchange="javascript: chartDataChanged();" type="radio" value="0.868976" name="rblX2Conv">@Resources.FlightData.ConversionMphToKts</label></div>
+            <div><label><input onchange="javascript: chartDataChanged();" type="radio" value="1.60934" name="rblX2Conv">@Resources.FlightData.ConversionMphToKmh</label></div>
+        </div>
+    </div>
+    <div style="text-align:center">
+        <div style="display: inline-block;">
+            <div>@Resources.LogbookEntry.flightDetailsXAxis</div>
+            <select name="xAxisData" id="cmbXAxis" onchange="javascript: chartDataChanged();">
+                @foreach (KnownColumn kc in lstXCols)
+                {
+                    <option @((kc.Column.CompareCurrentCultureIgnoreCase(defaultX) == 0).ToSelected()) value="@kc.Column">@kc.FriendlyName</option>
+                }
+            </select>
+        </div>
+        <h3>@Resources.FlightData.TelemetryCropPrompt @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "divCropTelemetry " });}</h3>
+        <div id="divCropTelemetry" style="display:none;">
+            <div id="slider-range" style="width:800px; margin-left:auto; margin-right:auto; display:@(fHasCrop ? "none" : "block");"></div>
+            <div style="margin-left:auto; margin-right:auto; margin-top: 4px; margin-bottom: 4px;">
+                <span id="dragStatus" style="font-size: smaller;">@(fHasCrop ? Resources.FlightData.TelemetryCropIsApplied : Resources.FlightData.TelemetryCropNoCrop)</span>
+                @if (fHasCrop)
+                {
+                    <a href="#" onclick="javascript: resetCrop();">@Resources.FlightData.TelemetryCropReset</a>
+                }
+                else
+                {
+                    <a href="#" onclick="javascript: applyCrop();">@Resources.FlightData.TelemetryCropCommit</a>
+                }
+            </div>
+        </div>
+    </div>
+    <div id="analysisResults">
+    </div>
+</div>

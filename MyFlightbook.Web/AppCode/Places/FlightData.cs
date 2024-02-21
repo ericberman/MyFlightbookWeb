@@ -1,8 +1,10 @@
 ﻿using GeoTimeZone;
 using MyFlightbook.Airports;
+using MyFlightbook.Charting;
 using MyFlightbook.CSV;
 using MyFlightbook.Geography;
 using MyFlightbook.SolarTools;
+using MyFlightbook.Weather.ADDS;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using NodaTime;
@@ -18,6 +20,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Web.UI;
 using System.Xml;
 
 /******************************************************
@@ -268,9 +271,9 @@ namespace MyFlightbook.Telemetry
             }
 
             string szKey = sz == null ? string.Empty : sz.ToUpper(CultureInfo.CurrentCulture);
-            if (String.IsNullOrEmpty(sz) || !dict.ContainsKey(szKey))
+            if (String.IsNullOrEmpty(sz) || !dict.TryGetValue(szKey, out KnownColumn value))
                 return new KnownColumn(sz, sz, KnownColumnTypes.ctString);
-            return dict[szKey];
+            return value;
         }
         #endregion
 
@@ -774,6 +777,239 @@ namespace MyFlightbook.Telemetry
 
                 Rows.Add(drNew);
             }
+        }
+
+        protected LatLong LatLongForRow(DataRow dr, out string htmlDesc)
+        {
+            if (dr == null)
+                throw new ArgumentNullException(nameof(dr));
+            htmlDesc = string.Empty;
+            if (HasLatLongInfo)
+            {
+                List<string> lstDesc = new List<string>();
+
+                double lat = 0.0, lon = 0.0;
+                LatLong ll = null;
+
+                foreach (DataColumn dc in Columns)
+                {
+                    bool fLat = (dc.ColumnName.CompareOrdinalIgnoreCase(KnownColumnNames.LAT) == 0);
+                    bool fLon = (dc.ColumnName.CompareOrdinalIgnoreCase(KnownColumnNames.LON) == 0);
+                    bool fPos = (dc.ColumnName.CompareOrdinalIgnoreCase(KnownColumnNames.POS) == 0);
+
+                    if (fLat)
+                        lat = Convert.ToDouble(dr[KnownColumnNames.LAT], CultureInfo.InvariantCulture);
+
+                    if (fLon)
+                        lon = Convert.ToDouble(dr[KnownColumnNames.LON], CultureInfo.InvariantCulture);
+
+                    if (fPos)
+                        ll = (LatLong)dr[KnownColumnNames.POS];
+
+                    if (!(fLat || fLon || fPos))
+                    {
+                        object o = dr[dc.ColumnName];
+                        if (o != null)
+                        {
+                            string sz = o.ToString();
+                            if (!String.IsNullOrEmpty(sz))
+                                lstDesc.Add(String.Format(CultureInfo.InvariantCulture, "{0}: {1}<br />", dc.ColumnName, sz));
+                        }
+                    }
+                }
+                if (ll == null && (lat != 0.0 || lon != 0.0))
+                    ll = new LatLong(lat, lon);
+
+                if (ll != null)
+                {
+                    htmlDesc = String.Join("<br />", lstDesc);
+                    return ll;
+                }
+            }
+
+            return null;
+        }
+
+        public string RenderHtmlTable()
+        {
+            bool HasLatLong = HasLatLongInfo;
+            string pinRef = "~/images/pushpinsm.png".ToAbsolute();
+            bool hasPosition = Columns.Contains(KnownColumnNames.POS);
+            using (StringWriter sw = new StringWriter())
+            {
+                using (HtmlTextWriter tw = new HtmlTextWriter(sw))
+                {
+                    tw.AddAttribute("cellpadding", "3");
+                    tw.AddAttribute("border", "1");
+                    tw.AddAttribute("style", "border-collapse: collapse;");
+                    tw.RenderBeginTag(HtmlTextWriterTag.Table);
+                    tw.RenderBeginTag(HtmlTextWriterTag.Thead);
+                    tw.RenderBeginTag(HtmlTextWriterTag.Tr);
+
+                    tw.RenderBeginTag(HtmlTextWriterTag.Th);
+                    tw.RenderEndTag();
+
+                    if (hasPosition)
+                    {
+                        tw.RenderBeginTag(HtmlTextWriterTag.Th);
+                        tw.WriteEncodedText(Resources.LogbookEntry.flightDetailsPositionHeader);
+                        tw.RenderEndTag();
+                    }
+                    foreach (DataColumn dc in Columns)
+                    {
+                        tw.RenderBeginTag(HtmlTextWriterTag.Th);
+                        tw.WriteEncodedText(dc.ColumnName);
+                        tw.RenderEndTag();
+                    }
+                    tw.RenderEndTag();  // tr
+                    tw.RenderEndTag();  // thead
+
+                    tw.RenderBeginTag(HtmlTextWriterTag.Tbody);
+                    foreach (DataRow dr in Rows)
+                    {
+                        string rowDesc = null;
+                        LatLong ll = HasLatLong ? LatLongForRow(dr, out rowDesc) : null;
+                        tw.RenderBeginTag(HtmlTextWriterTag.Tr);
+
+                        tw.RenderBeginTag(HtmlTextWriterTag.Td);
+                        if (ll != null)
+                        {
+                            string szZoom = String.Format(CultureInfo.InvariantCulture, "javascript:getMfbMap().gmap.setCenter(new google.maps.LatLng({0}, {1}));getMfbMap().gmap.setZoom(14);", ll.Latitude, ll.Longitude);
+                            string szDrop = String.Format(CultureInfo.InvariantCulture, "javascript:dropPin(new google.maps.LatLng({0}, {1}), '{2}');", ll.Latitude, ll.Longitude, rowDesc);
+                            string szTip = String.Format(CultureInfo.CurrentCulture, Resources.FlightData.GraphDropPinTip, ll.ToString());
+
+                            tw.AddAttribute("src", pinRef);
+                            tw.AddAttribute("style", "height: 20px;");
+                            tw.AddAttribute("onclick", szDrop);
+                            tw.AddAttribute("title", szTip);
+                            tw.RenderBeginTag(HtmlTextWriterTag.Img);
+                            tw.RenderEndTag();
+
+                            tw.AddAttribute("style", "cursor: pointer;");
+                            tw.AddAttribute("onclick", szZoom);
+                            tw.RenderBeginTag(HtmlTextWriterTag.A);
+                            tw.WriteEncodedText(Resources.FlightData.ZoomIn);
+                            tw.RenderEndTag();
+                        }
+                        tw.RenderEndTag();
+
+                        if (hasPosition)
+                        {
+                            tw.AddAttribute("style", "text-align: left");
+                            tw.RenderBeginTag(HtmlTextWriterTag.Td);
+                            tw.WriteEncodedText(ll.ToDegMinSecString());
+                            tw.RenderEndTag();
+                        }
+
+                        foreach (DataColumn dc in Columns)
+                        {
+                            tw.RenderBeginTag(HtmlTextWriterTag.Td);
+                            tw.WriteEncodedText(dr[dc.ColumnName].ToString());
+                            tw.RenderEndTag();
+                        }
+
+                        tw.RenderEndTag();  // tr
+                    }
+                    tw.RenderEndTag();  // tbody
+                    tw.RenderEndTag();  // table
+                }
+                return sw.ToString();
+            }
+        }
+
+        public IEnumerable<KnownColumn> YValCandidates
+        {
+            get
+            {
+                List<KnownColumn> lstYCols = new List<KnownColumn>();
+                foreach (DataColumn dc in Columns)
+                {
+                    KnownColumn kc = KnownColumn.GetKnownColumn(dc.Caption);
+                    if (kc.Type == KnownColumnTypes.ctDec || kc.Type == KnownColumnTypes.ctFloat || kc.Type == KnownColumnTypes.ctInt)
+                        lstYCols.Add(kc);
+                }
+                return lstYCols;
+            }
+        }
+
+        public IEnumerable<KnownColumn> XValCandidates
+        {
+            get
+            {
+                List<KnownColumn> lstXCols = new List<KnownColumn>();
+                foreach (DataColumn dc in Columns)
+                {
+                    KnownColumn kc = KnownColumn.GetKnownColumn(dc.Caption);
+                    if (kc.Type.CanGraph())
+                        lstXCols.Add(kc);
+                }
+                return lstXCols;
+            }
+        }
+
+        public void PopulateGoogleChart(GoogleChartData gcData, string xAxis, string yAxis1, string yAxis2, double y1Scale, double y2Scale, out double max, out double min, out double max2, out double min2)
+        {
+            if (gcData == null)
+                throw new ArgumentNullException(nameof(gcData));
+
+            max = double.MinValue;
+            min = double.MaxValue;
+            max2 = double.MinValue;
+            min2 = double.MaxValue;
+
+            if (yAxis1 == null || yAxis2 == null || xAxis == null)
+                return;
+
+            KnownColumn kcX = KnownColumn.GetKnownColumn(xAxis);
+            KnownColumn kcY1 = KnownColumn.GetKnownColumn(yAxis1);
+            KnownColumn kcY2 = KnownColumn.GetKnownColumn(yAxis2);
+            gcData.XLabel = kcX.FriendlyName;
+            gcData.YLabel = kcY1.FriendlyName;
+            gcData.Y2Label = kcY2.FriendlyName;
+
+            gcData.Clear();
+
+            gcData.XDataType = GoogleChartData.GoogleTypeFromKnownColumnType(kcX.Type);
+            gcData.YDataType = GoogleChartData.GoogleTypeFromKnownColumnType(kcY1.Type);
+            gcData.Y2DataType = GoogleChartData.GoogleTypeFromKnownColumnType(kcY2.Type);
+
+            if (HasLatLongInfo)
+                gcData.ClickHandlerJS = String.Format(CultureInfo.InvariantCulture, "function(row, column, xvalue, value) {{ dropPin(MFBMapsOnPage[0].pathArray[row], xvalue + ': ' + ((column == 1) ? '{0}' : '{1}') + ' = ' + value); }}", yAxis1, yAxis2);
+
+            foreach (DataRow dr in Rows)
+            {
+                object obj = dr[xAxis];
+                DateTime? date = obj as DateTime?;    // Treat local dates as pseudo-UTC so that they display correctly.
+                gcData.XVals.Add(date == null ? obj : DateTime.SpecifyKind(date.Value, DateTimeKind.Utc));
+
+                if (!String.IsNullOrEmpty(yAxis1))
+                {
+                    object o = dr[yAxis1];
+                    if (gcData.YDataType == GoogleColumnDataType.number)
+                    {
+                        double d = Convert.ToDouble(o, CultureInfo.InvariantCulture);
+                        d = double.IsNaN(d) ? 0 : d * y1Scale;
+                        max = Math.Max(max, d);
+                        min = Math.Min(min, d);
+                        o = d;
+                    }
+                    gcData.YVals.Add(o);
+                }
+                if (yAxis2.Length > 0 && yAxis2 != yAxis1)
+                {
+                    object o = dr[yAxis2];
+                    if (gcData.Y2DataType == GoogleColumnDataType.number)
+                    {
+                        double d = Convert.ToDouble(o, CultureInfo.InvariantCulture);
+                        d = double.IsNaN(d) ? 0 : d * y2Scale;
+                        max2 = Math.Max(max2, d);
+                        min2 = Math.Min(min2, d);
+                        o = d;
+                    }
+                    gcData.Y2Vals.Add(o);
+                }
+            }
+            gcData.TickSpacing = 1; // Math.Max(1, m_fd.Data.Rows.Count / 20);
         }
     }
 

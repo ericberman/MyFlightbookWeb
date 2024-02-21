@@ -2225,6 +2225,60 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                 dbh.DoNonQuery((comm) => { comm.Parameters.AddWithValue("id", FlightID); });
             }
         }
+
+        #region cropping
+        public bool GetCropRange(out int clipMin, out int clipMax)
+        {
+            clipMin = 0;
+            clipMax = 0;
+
+            if (Telemetry == null || !Telemetry.MetaData.HasData)
+                return false;
+            if (Telemetry.MetaData.DataStart.HasValue)
+                clipMin = Telemetry.MetaData.DataStart.Value;
+            if (Telemetry.MetaData.DataEnd.HasValue)
+                clipMax = Telemetry.MetaData.DataEnd.Value;
+            return true;
+        }
+
+        public void ResetCrop()
+        {
+            TelemetryReference tr = Telemetry;
+            tr.MetaData.DataEnd = tr.MetaData.DataStart = null;
+            using (FlightData fd = new FlightData())
+            {
+                fd.ParseFlightData(this);
+                tr.RecalcGoogleData(fd);
+            }
+            tr.Commit();
+        }
+
+        public void CropInRange(int start, int end)
+        {
+            using (FlightData fd = new FlightData())
+            {
+                fd.ParseFlightData(this);
+                int dataPointCount = fd.Data.Rows.Count;
+
+                int dataStart = Math.Max(Math.Min(dataPointCount - 1, start), 0);
+                int dataEnd = Math.Min(Math.Max(end, start + 1), dataPointCount - 1);
+
+                if (dataEnd <= dataStart)
+                    dataEnd = dataStart + 1;
+
+                if ((dataStart == 0 && dataEnd == 0) || dataEnd >= dataPointCount)
+                {
+                    ResetCrop();
+                    return;
+                }
+                TelemetryReference tr = Telemetry;
+                tr.MetaData.DataStart = dataStart;
+                tr.MetaData.DataEnd = dataEnd;
+                tr.RecalcGoogleData(fd);
+                tr.Commit();
+            }
+        }
+        #endregion
         #endregion
     }
 

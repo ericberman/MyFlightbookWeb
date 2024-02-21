@@ -6,7 +6,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2023 MyFlightbook LLC
+ * Copyright (c) 2015-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -33,6 +33,7 @@ namespace MyFlightbook.Instruction
         protected void Page_Load(object sender, EventArgs e)
         {
             Master.SelectedTab = tabID.tabTraining;
+            Page.ClientScript.RegisterClientScriptInclude("accordionExtender", ResolveClientUrl("~/public/Scripts/accordionproxy.js"));
 
             if (!IsPostBack)
             {
@@ -40,40 +41,37 @@ namespace MyFlightbook.Instruction
                 string szStudent = util.GetStringParam(Request, "student");
                 CFIStudentMap sm = new CFIStudentMap(Page.User.Identity.Name);
                 InstructorStudent student = CFIStudentMap.GetInstructorStudent(sm.Students, szStudent);
-                if (student == null)
-                    lblErr.Text = Resources.SignOff.ViewStudentNoSuchStudent;
-                else
+
+                // Verify that the student exists and that we can view their logbook
+                if (!(student?.CanViewLogbook ?? false))
+                    throw new UnauthorizedAccessException();
+
+                string szFQ = util.GetStringParam(Request, "fq");
+                Restriction = String.IsNullOrEmpty(szFQ) ? new FlightQuery(student.UserName) : FlightQuery.FromBase64CompressedJSON(szFQ);
+
+                if (Restriction.UserName.CompareOrdinal(student.UserName) != 0)
+                    throw new UnauthorizedAccessException();
+
+                // If we're here, we are authorized
+                lblHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.SignOff.ViewStudentLogbookHeader, HttpUtility.HtmlEncode(student.UserFullName));
+                hdnStudent.Value = student.UserName;
+
+                if (mfbLogbook1.CanResignValidFlights = student.CanAddLogbook)
                 {
-                    if (!student.CanViewLogbook)
-                        lblErr.Text = Master.Title = Resources.SignOff.ViewStudentLogbookUnauthorized;
-                    else
-                    {
-                        // If we're here, we are authorized
-                        lblHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.SignOff.ViewStudentLogbookHeader, HttpUtility.HtmlEncode(student.UserFullName));
-                        hdnStudent.Value = student.UserName;
-                        Restriction = new FlightQuery(student.UserName);
-
-                        if (mfbLogbook1.CanResignValidFlights = student.CanAddLogbook)
-                        {
-                            mfbEditFlight.FlightUser = student.UserName;
-                            mfbEditFlight.SetUpNewOrEdit(LogbookEntryBase.idFlightNew);
-                        }
-                        else
-                            apcNewFlight.Container.Style["display"] = "none";
-
-                        if (!String.IsNullOrEmpty(hdnStudent.Value))
-                            UpdateForUser(hdnStudent.Value);
-
-                        mfbSearchForm.Username = student.UserName;
-                        ResolvePrintLink();
-                    }
+                    mfbEditFlight.FlightUser = student.UserName;
+                    mfbEditFlight.SetUpNewOrEdit(LogbookEntryCore.idFlightNew);
                 }
+                else
+                    apcNewFlight.Style["display"] = "none";
+
+                if (!String.IsNullOrEmpty(hdnStudent.Value))
+                    UpdateForUser(hdnStudent.Value);
+
+                mfbSearchForm.Username = student.UserName;
+                ResolvePrintLink();
 
                 pnlLogbook.Visible = (lblErr.Text.Length == 0);
             }
-
-            if (pnlLogbook.Visible && mfbChartTotals.Visible)
-                mfbChartTotals.HistogramManager = LogbookEntryDisplay.GetHistogramManager(mfbLogbook1.Data, hdnStudent.Value);   // do this every time, since charttotals doesn't persist its data.
         }
 
         protected void UpdateForUser(string szUser)
@@ -85,8 +83,6 @@ namespace MyFlightbook.Instruction
             bool fRestrictionIsDefault = r.IsDefault;
             mfbQueryDescriptor.DataSource = fRestrictionIsDefault ? null : r;
             mfbQueryDescriptor.DataBind();
-            apcFilter.LabelControl.Font.Bold = !fRestrictionIsDefault;
-            apcFilter.IsEnhanced = !fRestrictionIsDefault;
             pnlFilter.Visible = !fRestrictionIsDefault;
             mfbLogbook1.RefreshData();
         }
@@ -95,15 +91,6 @@ namespace MyFlightbook.Instruction
         {
             Restriction = mfbSearchForm.Restriction;
             UpdateForUser(hdnStudent.Value);
-            AccordionCtrl.SelectedIndex = -1;
-            apcAnalysis.LazyLoad = true;
-            mfbChartTotals.Visible = false;
-            int idx = mfbAccordionProxyExtender.IndexForProxyID(apcAnalysis.ID);
-            if (idx == AccordionCtrl.SelectedIndex)
-                AccordionCtrl.SelectedIndex = -1;
-            mfbAccordionProxyExtender.SetJavascriptForControl(apcAnalysis, false, idx);
-            mfbChartTotals.HistogramManager = LogbookEntryDisplay.GetHistogramManager(mfbLogbook1.Data, hdnStudent.Value);
-            mfbChartTotals.Refresh();
             ResolvePrintLink();
         }
 
@@ -123,18 +110,6 @@ namespace MyFlightbook.Instruction
                 throw new ArgumentNullException(nameof(fic));
             mfbSearchForm.Restriction = Restriction.ClearRestriction(fic.FilterItem);
             UpdateQuery();
-        }
-
-        protected void apcAnalysis_ControlClicked(object sender, EventArgs e)
-        {
-            apcAnalysis.LazyLoad = false;
-            int idx = mfbAccordionProxyExtender.IndexForProxyID(apcAnalysis.ID);
-            mfbAccordionProxyExtender.SetJavascriptForControl(apcAnalysis, true, idx);
-            AccordionCtrl.SelectedIndex = idx;
-
-            mfbChartTotals.Visible = true;
-            mfbChartTotals.HistogramManager = LogbookEntryDisplay.GetHistogramManager(mfbLogbook1.Data, hdnStudent.Value);
-            mfbChartTotals.Refresh();
         }
 
         protected void mfbEditFlight_FlightWillBeSaved(object sender, LogbookEventArgs e)
@@ -158,7 +133,6 @@ namespace MyFlightbook.Instruction
         protected void mfbEditFlight_FlightUpdated(object sender, LogbookEventArgs e)
         {
             mfbEditFlight.SetUpNewOrEdit(LogbookEntryBase.idFlightNew);
-            AccordionCtrl.SelectedIndex = -1;
             mfbLogbook1.RefreshData();
         }
 

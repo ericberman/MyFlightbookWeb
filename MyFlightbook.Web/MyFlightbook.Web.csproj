@@ -556,8 +556,6 @@
     <Content Include="Controls\GoogleChart.ascx" />
     <Content Include="Controls\imageSlider.ascx" />
     <Content Include="Controls\METAR.ascx" />
-    <Content Include="Controls\mfbAccordionProxyControl.ascx" />
-    <Content Include="Controls\mfbAccordionProxyExtender.ascx" />
     <Content Include="Controls\mfbAirportServices.ascx" />
     <Content Include="Controls\mfbATDFTD.ascx" />
     <Content Include="Controls\mfbBadgeSet.ascx" />
@@ -1477,7 +1475,6 @@
     <Content Include="Public\Scripts\jquery.fitvids.js" />
     <Content Include="Public\Scripts\jqueryutil.js" />
     <Content Include="Public\Scripts\listdrag.js" />
-    <Content Include="Public\Scripts\mfbAccordionProxy.js" />
     <Content Include="Public\Scripts\mfbcalendar.js" />
     <Content Include="Public\Scripts\oms.min.js" />
     <Content Include="Public\Scripts\Signature.js" />
@@ -1591,6 +1588,8 @@
     <Content Include="Areas\mvc\Views\Flights\_sendFlight.cshtml" />
     <Content Include="Areas\mvc\Views\Flights\myFlights.cshtml" />
     <Content Include="Areas\mvc\Views\Flights\_publicFlights.cshtml" />
+    <Content Include="Areas\mvc\Views\Flights\_telemetryAnalysis.cshtml" />
+    <Content Include="Areas\mvc\Views\Flights\_telemetryAnalysisResult.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -2072,20 +2071,6 @@
     </Compile>
     <Compile Include="Controls\METAR.ascx.designer.cs">
       <DependentUpon>METAR.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\mfbAccordionProxyControl.ascx.cs">
-      <DependentUpon>mfbAccordionProxyControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbAccordionProxyControl.ascx.designer.cs">
-      <DependentUpon>mfbAccordionProxyControl.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\mfbAccordionProxyExtender.ascx.cs">
-      <DependentUpon>mfbAccordionProxyExtender.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbAccordionProxyExtender.ascx.designer.cs">
-      <DependentUpon>mfbAccordionProxyExtender.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\mfbAirportServices.ascx.cs">
       <DependentUpon>mfbAirportServices.ascx</DependentUpon>

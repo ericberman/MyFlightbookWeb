@@ -1,4 +1,5 @@
-﻿using MyFlightbook.Printing;
+﻿using MyFlightbook.Currency;
+using MyFlightbook.Printing;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,19 @@ namespace MyFlightbook.MemberPages
         private const string szParamIDFlight = "idFlight";
 
         public enum FlightsTab { None, Add, Search, Totals, Currency, Analysis, Printing, More }
+
+        protected FlightsTab DefaultTab
+        {
+            get { return (FlightsTab)Enum.Parse(typeof(FlightsTab), hdnLastViewedPane.Value); }
+            set { hdnLastViewedPane.Value = value.ToString(); }
+        }
+
+        protected string DefaultPane
+        {
+            get { return "apc" + DefaultTab.ToString(); }
+        }
+
+        protected bool GroupedTotals {  get { return new UserTotals() { Username = Page.User.Identity.Name }.DefaultGroupModeForUser; } }
 
         private const string keySessLastNewFlight = "sessNewFlightID";
 
@@ -46,8 +60,13 @@ namespace MyFlightbook.MemberPages
                 try
                 {
                     Restriction = FlightQuery.FromBase64CompressedJSON(szFQParam);
+                    if (Restriction.UserName.CompareOrdinal(User.Identity.Name) != 0)
+                        throw new UnauthorizedAccessException();
                 }
-                catch (Exception ex) when (ex is ArgumentNullException || ex is FormatException || ex is JsonSerializationException || ex is JsonException) { }
+                catch (Exception ex) when (ex is ArgumentNullException || ex is FormatException || ex is JsonSerializationException || ex is JsonException || ex is UnauthorizedAccessException) 
+                {
+                    Restriction = new FlightQuery(User.Identity.Name);
+                }
             }
             else
                 Restriction = new FlightQuery(Page.User.Identity.Name);
@@ -141,6 +160,7 @@ namespace MyFlightbook.MemberPages
         protected void Page_Load(object sender, EventArgs e)
         {
             Master.SelectedTab = tabID.tabLogbook;
+            Page.ClientScript.RegisterClientScriptInclude("accordionExtender", ResolveClientUrl("~/public/Scripts/accordionproxy.js"));
 
             pnlWelcomeNewUser.Visible = false;
             if (!IsPostBack)
@@ -151,36 +171,18 @@ namespace MyFlightbook.MemberPages
                     pnlWelcomeNewUser.Visible = true;
                 }
 
-                rblTotalsMode.SelectedValue = mfbTotalSummary1.DefaultGroupMode.ToString(CultureInfo.InvariantCulture);
+                rblTotalsMode.SelectedValue = GroupedTotals.ToString();
 
-                // Handle a requested tab - turning of lazy load as needed
-                string szReqTab = util.GetStringParam(Request, "ft");
-                if (!String.IsNullOrEmpty(szReqTab))
-                {
-                    if (Enum.TryParse<FlightsTab>(szReqTab, out FlightsTab ft))
-                    {
-                        AccordionCtrl.SelectedIndex = (int)ft - 1;
-                        switch (ft)
-                        {
-                            case FlightsTab.Currency:
-                                apcCurrency_ControlClicked(apcCurrency, null);
-                                break;
-                            case FlightsTab.Totals:
-                                apcTotals_ControlClicked(apcTotals, null);
-                                break;
-                            case FlightsTab.Analysis:
-                                apcAnalysis_ControlClicked(apcAnalysis, null);
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                }
+                DefaultTab = FlightsTab.None;   // default value;
 
-                int idFlight = util.GetIntParam(Request, szParamIDFlight, LogbookEntry.idFlightNew);
+                // Handle a requested tab
+                if (Enum.TryParse(util.GetStringParam(Request, "ft") ?? string.Empty, out FlightsTab ft))
+                    DefaultTab = ft;
+
+                int idFlight = util.GetIntParam(Request, szParamIDFlight, LogbookEntryCore.idFlightNew);
 
                 // Redirect to the non-querystring based page so that Ajax file upload works
-                if (idFlight != LogbookEntry.idFlightNew)
+                if (idFlight != LogbookEntryCore.idFlightNew)
                 {
                     string szNew = Request.Url.PathAndQuery.Replace(".aspx", String.Format(CultureInfo.InvariantCulture, ".aspx/{0}", idFlight)).Replace(String.Format(CultureInfo.InvariantCulture, "{0}={1}", szParamIDFlight, idFlight), string.Empty).Replace("?&", "?");
                     Response.Redirect(szNew, true);
@@ -195,10 +197,10 @@ namespace MyFlightbook.MemberPages
                 InitializeRestriction();
 
                 // Expand the New Flight box if we're editing an existing flight
-                if (idFlight != LogbookEntry.idFlightNew || !String.IsNullOrEmpty(util.GetStringParam(Request, "src")))
-                    AccordionCtrl.SelectedIndex = 0;
+                if (idFlight != LogbookEntryCore.idFlightNew || !String.IsNullOrEmpty(util.GetStringParam(Request, "src")))
+                    DefaultTab = FlightsTab.Add;
 
-                string szTitle = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, MyFlightbook.Profile.GetUser(User.Identity.Name).UserFullName);
+                string szTitle = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, Profile.GetUser(User.Identity.Name).UserFullName);
                 lblUserName.Text = Master.Title = HttpUtility.HtmlEncode(szTitle);
 
                 // See if we just entered a new flight and scroll to it as needed
@@ -208,22 +210,19 @@ namespace MyFlightbook.MemberPages
                     Session[keySessLastNewFlight] = null;
                 }
             }
-
-            if (mfbChartTotals1.HistogramManager == null)
-                mfbChartTotals1.HistogramManager = LogbookEntryDisplay.GetHistogramManager(mfbLogbook1.Data, User.Identity.Name);  // do this every time, but do it AFTER initialize restriction (done above in !IsPostback) might have been done, to avoid double-hit to the database.
         }
 
         private const string szVSFlightID = "vsFlightID";
 
         protected int FlightID
         {
-            get { return ViewState[szVSFlightID] == null ? LogbookEntry.idFlightNone : (int)ViewState[szVSFlightID]; }
+            get { return ViewState[szVSFlightID] == null ? LogbookEntryCore.idFlightNone : (int)ViewState[szVSFlightID]; }
             set { ViewState[szVSFlightID] = value; }
         }
 
         protected bool IsNewFlight
         {
-            get { return FlightID == LogbookEntry.idFlightNew; }
+            get { return FlightID == LogbookEntryCore.idFlightNew; }
         }
 
         protected void SetUpForFlight(int idFlight)
@@ -231,7 +230,8 @@ namespace MyFlightbook.MemberPages
             FlightID = idFlight;
             mfbEditFlight1.SetUpNewOrEdit(idFlight);
             mfbEditFlight1.CanCancel = !IsNewFlight;
-            pnlAccordionMenuContainer.Visible = mfbLogbook1.Visible = pnlFilter.Visible = IsNewFlight;
+            // TODO: why was this here? */
+            /* pnlAccordionMenuContainer.Visible = */ mfbLogbook1.Visible = pnlFilter.Visible = IsNewFlight;
         }
 
         protected void ResolvePrintLink()
@@ -259,18 +259,9 @@ namespace MyFlightbook.MemberPages
             mfbLogbook1.User = Page.User.Identity.Name;
             mfbLogbook1.Restriction = Restriction;
             mfbLogbook1.RefreshData();
-            if (mfbChartTotals1.Visible)
-            {
-                mfbChartTotals1.HistogramManager = LogbookEntryDisplay.GetHistogramManager(mfbLogbook1.Data, Restriction.UserName);
-                mfbChartTotals1.Refresh();
-            }
-            if (mfbTotalSummary1.Visible)
-                mfbTotalSummary1.CustomRestriction = Restriction;
             ResolvePrintLink();
             pnlFilter.Visible = !fRestrictionIsDefault && IsNewFlight;
             mfbQueryDescriptor1.DataSource = fRestrictionIsDefault ? null : Restriction;
-            apcFilter.LabelControl.Font.Bold = !fRestrictionIsDefault;
-            apcFilter.IsEnhanced = !fRestrictionIsDefault;
 
             if (!IsNewFlight)
             {
@@ -286,23 +277,6 @@ namespace MyFlightbook.MemberPages
         {
             Restriction = mfbSearchForm1.Restriction;
             Refresh();
-            AccordionCtrl.SelectedIndex = -1;
-
-            if (Int32.TryParse(hdnLastViewedPaneIndex.Value, out int idxLast))
-            {
-                if (idxLast == mfbAccordionProxyExtender1.IndexForProxyID(apcTotals.ID))
-                {
-                    apcTotals_ControlClicked(apcTotals, null);
-                    AccordionCtrl.SelectedIndex = idxLast;
-                }
-                else if (idxLast == mfbAccordionProxyExtender1.IndexForProxyID(apcAnalysis.ID))
-                {
-                    apcAnalysis_ControlClicked(apcAnalysis, null);
-                    AccordionCtrl.SelectedIndex = idxLast;
-                }
-                else if (idxLast == mfbAccordionProxyExtender1.IndexForProxyID(apcPrintView.ID))
-                    AccordionCtrl.SelectedIndex = idxLast;
-            }
         }
 
         protected void mfbQueryDescriptor1_QueryUpdated(object sender, FilterItemClickedEventArgs fic)
@@ -342,7 +316,7 @@ namespace MyFlightbook.MemberPages
             // if we had been editing a flight do a redirect so we have a clean URL
             // OR if there are pending redirects, do them.
             // Otherwise, just clean the page.
-            if (e.IDNextFlight != LogbookEntry.idFlightNone)
+            if (e.IDNextFlight != LogbookEntryCore.idFlightNone)
                 Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx/{0}{1}", e.IDNextFlight, SanitizedQuery), true);
             else
             {
@@ -366,79 +340,9 @@ namespace MyFlightbook.MemberPages
 
             if (bool.TryParse(rblTotalsMode.SelectedValue, out bool fGrouped))
             {
-                mfbTotalSummary1.DefaultGroupMode = fGrouped;
-                mfbTotalSummary1.IsGrouped = fGrouped;
+                new UserTotals() { Username = Page.User.Identity.Name }.DefaultGroupModeForUser = fGrouped;
+                DefaultTab = FlightsTab.Totals;
             }
-        }
-
-        #region lazy loading of tab content
-        protected void TurnOffLazyLoad(object o)
-        {
-            if (o == null)
-                throw new ArgumentNullException(nameof(o));
-            Controls_mfbAccordionProxyControl apc = (Controls_mfbAccordionProxyControl)o;
-            apc.LazyLoad = false;
-            int idx = mfbAccordionProxyExtender1.IndexForProxyID(apc.ID);
-            mfbAccordionProxyExtender1.SetJavascriptForControl(apc, true, idx);
-            AccordionCtrl.SelectedIndex = idx;
-        }
-
-        protected void TurnOnLazyLoad(Controls_mfbAccordionProxyControl apc, Action act)
-        {
-            if (apc == null)
-                throw new ArgumentNullException(nameof(apc));
-            int idx = mfbAccordionProxyExtender1.IndexForProxyID(apc.ID);
-            if (idx == AccordionCtrl.SelectedIndex)
-                act?.Invoke();
-            else
-            {
-                apc.LazyLoad = true;
-                mfbAccordionProxyExtender1.SetJavascriptForControl(apc, idx == AccordionCtrl.SelectedIndex, idx);
-            }
-        }
-
-        protected int IndexForPane(AjaxControlToolkit.AccordionPane p)
-        {
-            for (int i = 0; i < AccordionCtrl.Panes.Count; i++)
-                if (AccordionCtrl.Panes[i] == p)
-                    return i;
-            return -1;
-        }
-
-        protected void apcTotals_ControlClicked(object sender, EventArgs e)
-        {
-            TurnOffLazyLoad(sender);
-            mfbTotalSummary1.Visible = true;
-            mfbTotalSummary1.CustomRestriction = Restriction;
-            hdnLastViewedPaneIndex.Value = mfbAccordionProxyExtender1.IndexForProxyID(apcTotals.ID).ToString(CultureInfo.InvariantCulture);
-        }
-
-        protected void apcAnalysis_ControlClicked(object sender, EventArgs e)
-        {
-            TurnOffLazyLoad(sender);
-            mfbChartTotals1.Visible = true;
-
-            if (mfbChartTotals1.HistogramManager == null)
-                mfbChartTotals1.HistogramManager = LogbookEntryDisplay.GetHistogramManager(mfbLogbook1.Data, User.Identity.Name);
-
-            mfbChartTotals1.Refresh();
-            hdnLastViewedPaneIndex.Value = mfbAccordionProxyExtender1.IndexForProxyID(apcAnalysis.ID).ToString(CultureInfo.InvariantCulture);
-        }
-        #endregion
-
-        protected void apcCurrency_ControlClicked(object sender, EventArgs e)
-        {
-            TurnOffLazyLoad(sender);
-            mfbCurrency1.Visible = true;
-            mfbCurrency1.RefreshCurrencyTable();
-        }
-
-        protected void mfbLogbook1_ItemDeleted(object sender, LogbookEventArgs e)
-        {
-            // Turn on lazy load for any items that could be affected by the deletion, or else refresh them if already visible.
-            TurnOnLazyLoad(apcTotals, () => { mfbTotalSummary1.CustomRestriction = Restriction; });
-            TurnOnLazyLoad(apcCurrency, () => { mfbCurrency1.RefreshCurrencyTable(); });
-            TurnOnLazyLoad(apcAnalysis, () => { mfbChartTotals1.Refresh(); });
         }
     }
 }

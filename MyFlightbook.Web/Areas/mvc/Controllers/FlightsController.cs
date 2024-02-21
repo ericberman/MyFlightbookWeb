@@ -8,6 +8,7 @@ using MyFlightbook.Histogram;
 using MyFlightbook.Instruction;
 using MyFlightbook.Mapping;
 using MyFlightbook.RatingsProgress;
+using MyFlightbook.Telemetry;
 using MyFlightbook.Web.Sharing;
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
     public class FlightsController : AdminControllerBase
     {
         #region Web Services
+        #region Logbook analysis charting
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult UpdateChartForData(string fqJSON, string selectedBucket, string fieldToGraph, bool fUseHHMM, bool fLinkItems = true, string skID = null)
@@ -47,6 +49,122 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 return ChartForData(hm, selectedBucket, fieldToGraph, fUseHHMM, Request["fIncludeAverage"] != null, fLinkItems);
             });
         }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult GetAnalysisForUser(FlightQuery fq, bool fLinkItems = true)
+        {
+            return SafeOp(() =>
+            {
+                if (fq == null)
+                    throw new ArgumentNullException(nameof(fq));
+                CheckCanViewFlights(fq.UserName, User.Identity.Name);
+
+                return AnalysisForUser(LogbookEntryDisplay.GetHistogramManager(FlightResultManager.FlightResultManagerForUser(fq.UserName).ResultsForQuery(fq).Flights, fq.UserName), fq, fLinkItems, fLinkItems);
+            });
+        }
+        #endregion
+
+        #region Telemetry analysis charting
+        [HttpPost]
+        [Authorize]
+        public ActionResult UpdateTelemetryChart(int idFlight, string xData, string yData, string y2Data, double y1Scale, double y2Scale)
+        {
+            return SafeOp(() =>
+            {
+                LogbookEntry le = new LogbookEntry(idFlight, User.Identity.Name, LogbookEntryCore.LoadTelemetryOption.LoadAll);
+                if (le.LastError != LogbookEntryCore.ErrorCode.None)
+                    throw new UnauthorizedAccessException(le.ErrorString);
+
+                using (FlightData fd = new FlightData())
+                {
+                    if (!fd.ParseFlightData(le))
+                    {
+                        throw new InvalidOperationException(fd.ErrorString);
+                    }
+                    GoogleChartData gcd = new GoogleChartData()
+                    {
+                        SlantAngle = 0,
+                        Height = 500,
+                        Width = 800,
+                        Title = string.Empty,
+                        LegendType = GoogleLegendType.bottom,
+                        XDataType = GoogleColumnDataType.date,
+                        YDataType = GoogleColumnDataType.number,
+                        Y2DataType = GoogleColumnDataType.number,
+                        ContainerID = "chartAnalysis"
+                    };
+                    fd.Data.PopulateGoogleChart(gcd, xData, yData, y2Data, y1Scale, y2Scale, out double max, out double min, out double max2, out double min2);
+                    ViewBag.ChartData = gcd;
+                    ViewBag.maxY = max > double.MinValue && !String.IsNullOrEmpty(gcd.YLabel) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ChartMaxX, gcd.YLabel, max) : string.Empty;
+                    ViewBag.minY = min < double.MaxValue && !String.IsNullOrEmpty(gcd.YLabel) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ChartMinX, gcd.YLabel, min) : string.Empty;
+                    ViewBag.maxY2 = max2 > double.MinValue && !String.IsNullOrEmpty(gcd.Y2Label) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ChartMaxX, gcd.Y2Label, max2) : string.Empty;
+                    ViewBag.minY2 = min2 < double.MaxValue && !String.IsNullOrEmpty(gcd.Y2Label) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ChartMinX, gcd.Y2Label, min2) : string.Empty;
+                    return PartialView("_telemetryAnalysisResult");
+                }
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult GetTelemetryAnalysisForUser(int idFlight)
+        {
+            return SafeOp(() =>
+            {
+                LogbookEntry le = new LogbookEntry(idFlight, User.Identity.Name, LogbookEntryCore.LoadTelemetryOption.LoadAll);
+                if (le.LastError != LogbookEntryCore.ErrorCode.None)
+                    throw new UnauthorizedAccessException(le.ErrorString);
+
+                using (FlightData fd = new FlightData())
+                {
+                    if (!fd.ParseFlightData(le))
+                    {
+                        throw new InvalidOperationException(fd.ErrorString);
+                    }
+                    ViewBag.defaultX = fd.Data.Columns.Contains("DATE") ? "DATE" : (fd.Data.Columns.Contains("TIME") ? "TIME" : (fd.Data.Columns.Contains("SAMPLE") ? "SAMPLE" : ""));
+                    ViewBag.minIndex = 0;
+                    ViewBag.maxIndex = Math.Max(fd.Data.Rows.Count - 1, 0);
+
+                    ViewBag.yCols = fd.Data.YValCandidates;
+                    ViewBag.xCols = fd.Data.XValCandidates;
+                    ViewBag.idFlight = idFlight;
+                    ViewBag.hasCrop = le.GetCropRange(out int _, out int _);
+
+                    return PartialView("_telemetryAnalysis");
+                }
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult ApplyCropForFlight(int idFlight, int start, int end)
+        {
+            return SafeOp(() =>
+            {
+                LogbookEntry le = new LogbookEntry(idFlight, User.Identity.Name, LogbookEntryCore.LoadTelemetryOption.LoadAll);
+                if (le.LastError != LogbookEntryCore.ErrorCode.None)
+                    throw new UnauthorizedAccessException(le.ErrorString);
+
+                le.CropInRange(start, end);
+                return new EmptyResult();
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult ResetCropForFlight(int idFlight)
+        {
+            return SafeOp(() =>
+            {
+                LogbookEntry le = new LogbookEntry(idFlight, User.Identity.Name, LogbookEntryCore.LoadTelemetryOption.LoadAll);
+                if (le.LastError != LogbookEntryCore.ErrorCode.None)
+                    throw new UnauthorizedAccessException(le.ErrorString);
+
+                le.ResetCrop();
+                return new EmptyResult();
+            });
+        }
+        #endregion
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -66,16 +184,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult GetFlightsForResult(string fqJSON, 
-            string targetUser, 
-            string viewingUser, 
-            string sortExpr, 
-            SortDirection sortDir, 
-            string pageRequest, 
-            int pageSize, 
-            bool readOnly,
-            string skID = null,
-            string selectedFlights = null)
+        public ActionResult GetFlightsForResult(string fqJSON, string targetUser, string viewingUser, string sortExpr, SortDirection sortDir, string pageRequest, int pageSize, bool readOnly, string skID = null, string selectedFlights = null)
         {
             return SafeOp(() =>
             {
@@ -110,6 +219,28 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             {
                 CheckCanViewFlights(userName, viewingUser);
                 return CurrencyForUser(null, userName, linkItems, useInlineFormatting);
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult RawTelemetryAsTable(int idFlight)
+        {
+            return SafeOp(() =>
+            {
+                LogbookEntry le = new LogbookEntry(idFlight, User.Identity.Name, LogbookEntryCore.LoadTelemetryOption.LoadAll);
+                if (le.LastError != LogbookEntryCore.ErrorCode.None)
+                    throw new UnauthorizedAccessException(le.ErrorString);
+
+                using (FlightData fd = new FlightData())
+                {
+                    if (!fd.ParseFlightData(le))
+                    {
+                        throw new InvalidOperationException(fd.ErrorString);
+                    }
+                    TelemetryDataTable tdt = fd.Data;
+                    return Content(tdt.RenderHtmlTable(), "text/html");
+                }
             });
         }
 
@@ -352,7 +483,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             HistogramManager hm = LogbookEntryDisplay.GetHistogramManager(FlightResultManager.FlightResultManagerForUser(fq.UserName).ResultsForQuery(fq).Flights, fq.UserName);
             BucketManager bm = hm.SupportedBucketManagers.FirstOrDefault(b => b.DisplayName.CompareOrdinal(selectedBucket) == 0);
             bm.ScanData(hm);
-            string szFilename = String.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}-{3}", Branding.CurrentBrand.AppName, Resources.LocalizedText.DownloadFlyingStatsFilename, MyFlightbook.Profile.GetUser(User.Identity.Name).UserFullName, DateTime.Now.YMDString().Replace(" ", "-"));
+            string szFilename = String.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}-{3}", Branding.CurrentBrand.AppName, Resources.LocalizedText.DownloadFlyingStatsFilename, MyFlightbook.Profile.GetUser(fq.UserName).UserFullName, DateTime.Now.YMDString().Replace(" ", "-"));
             return File(Encoding.UTF8.GetBytes(bm.RenderCSV(hm)), "text/csv", RegexUtility.UnSafeFileChars.Replace(szFilename, string.Empty) + ".csv");
         }
 

@@ -60,11 +60,14 @@ namespace MyFlightbook.Printing
             }).ToString();
         }
 
-        protected static string ReturnLink(FlightQuery fq)
+        protected string ReturnLink(FlightQuery fq)
         {
             if (fq == null)
                 throw new ArgumentNullException(nameof(fq));
-            return String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?fq={0}", fq.ToBase64CompressedJSONString());
+
+            return (fq.UserName.CompareOrdinal(User.Identity.Name) == 0) ?
+                String.Format(CultureInfo.InvariantCulture,  "~/Member/LogbookNew.aspx?fq={0}", fq.ToBase64CompressedJSONString()) : 
+                String.Format(CultureInfo.InvariantCulture,  "~/Member/StudentLogbook.aspx?fq={0}&student={1}", fq.ToBase64CompressedJSONString(), HttpUtility.UrlEncode(fq.UserName));
         }
         #endregion
 
@@ -169,7 +172,7 @@ namespace MyFlightbook.Printing
                 Master.HasFooter = Master.HasHeader = false;
                 if (!mfbSearchForm1.Restriction.IsDefault)
                     TabContainer1.ActiveTab = tpFilter;
-                lnkReturnToFlights.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?fq={0}", fq.ToBase64CompressedJSONString());
+                lnkReturnToFlights.NavigateUrl = ReturnLink(fq);
             }
         }
 
@@ -332,7 +335,7 @@ namespace MyFlightbook.Printing
                 throw new ArgumentNullException(nameof(e));
             mfbSearchForm1.Restriction = e.Query;
             mvSearch.SetActiveView(vwDescriptor);
-            lnkReturnToFlights.NavigateUrl = "~/Member/LogbookNew.aspx";
+            lnkReturnToFlights.NavigateUrl = ReturnLink(e.Query);
         }
 
         protected void FilterResults(object sender, FlightQueryEventArgs e)
@@ -399,7 +402,7 @@ namespace MyFlightbook.Printing
                 throw new ArgumentNullException(nameof(fic));
             mfbSearchForm1.Restriction = mfbSearchForm1.Restriction.ClearRestriction(fic.FilterItem);
             FilterResults(sender, new FlightQueryEventArgs(mfbSearchForm1.Restriction));
-            lnkReturnToFlights.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?fq={0}", mfbSearchForm1.Restriction.ToBase64CompressedJSONString());
+            lnkReturnToFlights.NavigateUrl = ReturnLink(mfbSearchForm1.Restriction);
         }
 
         protected void lnkDownloadPDF_Click(object sender, EventArgs e)

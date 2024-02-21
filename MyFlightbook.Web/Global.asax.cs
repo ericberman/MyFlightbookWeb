@@ -91,7 +91,7 @@ namespace MyFlightbook.Web
             if (Context.Request.IsLocal)
                 return;
 
-            if (myError is UnauthorizedAccessException)
+            if (myError is UnauthorizedAccessException || (myError.InnerException != null && myError.InnerException is UnauthorizedAccessException))
             {
                 Context.ClearError();
                 Response.Redirect("~/HTTP403.htm");

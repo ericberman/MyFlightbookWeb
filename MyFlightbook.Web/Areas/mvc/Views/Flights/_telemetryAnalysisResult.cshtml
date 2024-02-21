@@ -1,0 +1,15 @@
+﻿@using System.Globalization
+@using Newtonsoft.Json
+@using Newtonsoft.Json.Converters
+<div style="margin-left:auto; margin-right:auto; width:750px" id="divTrends">
+    <div id="@ViewBag.ChartData.ContainerID" style="display: inline-block; margin: 0 auto !important; height: @(ViewBag.ChartData.Height.ToString(CultureInfo.InvariantCulture) + "px")">
+    </div>
+    <script type="text/javascript">
+        chartsToDraw.push(@Html.Raw(JsonConvert.SerializeObject(ViewBag.ChartData, new JsonConverter[] { new JavaScriptDateTimeConverter() })));
+    </script>
+</div>
+<div style="width: 100%; text-align: center;">
+    @ViewBag.minY @ViewBag.maxY @ViewBag.minY2 @ViewBag.maxY2
+</div>
+
+
