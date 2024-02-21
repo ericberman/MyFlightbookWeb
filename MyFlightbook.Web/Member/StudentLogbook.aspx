@@ -6,12 +6,9 @@
 <%@ Register Src="~/Controls/mfbTotalSummary.ascx" TagPrefix="uc1" TagName="mfbTotalSummary" %>
 <%@ Register Src="~/Controls/mfbSearchForm.ascx" TagPrefix="uc1" TagName="mfbSearchForm" %>
 <%@ Register Src="~/Controls/mfbQueryDescriptor.ascx" TagPrefix="uc1" TagName="mfbQueryDescriptor" %>
-<%@ Register Src="~/Controls/mfbChartTotals.ascx" TagPrefix="uc1" TagName="mfbChartTotals" %>
 <%@ Register Src="~/Controls/mfbEditFlight.ascx" TagPrefix="uc1" TagName="mfbEditFlight" %>
 <%@ Register Src="~/Controls/mfbDownload.ascx" TagPrefix="uc1" TagName="mfbDownload" %>
 <%@ Register Src="~/Controls/GoogleChart.ascx" TagPrefix="uc1" TagName="GoogleChart" %>
-
-
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
     <asp:Label ID="lblHeader" runat="server" Text=""></asp:Label>
 </asp:Content>
