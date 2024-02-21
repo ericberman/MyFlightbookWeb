@@ -25,7 +25,7 @@ namespace MyFlightbook.MemberPages
 
         protected FlightsTab DefaultTab
         {
-            get { return (FlightsTab)Enum.Parse(typeof(FlightsTab), hdnLastViewedPane.Value); }
+            get { return Enum.TryParse(hdnLastViewedPane.Value, out FlightsTab ft) ? ft : FlightsTab.None; }
             set { hdnLastViewedPane.Value = value.ToString(); }
         }
 
