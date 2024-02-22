@@ -1501,7 +1501,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to *{0:#,##0}* hours of *simulated IFR training* in *{1}*.
+        ///   Looks up a localized string similar to *{0:#,##0.#}* hours of *simulated IFR training* in *{1}*.
         /// </summary>
         internal static string CommMinSimIMCInCategory {
             get {

@@ -235,7 +235,7 @@
     <value>*{0:#,##0}* hours of *simulated IFR training*</value>
   </data>
   <data name="CommMinSimIMCInCategory" xml:space="preserve">
-    <value>*{0:#,##0}* hours of *simulated IFR training* in *{1}*</value>
+    <value>*{0:#,##0.#}* hours of *simulated IFR training* in *{1}*</value>
   </data>
   <data name="CommMinTime" xml:space="preserve">
     <value>*{0:#,##0}* hours of flight time as a pilot.</value>
