@@ -5,32 +5,29 @@
             <li><a href="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.About].LinkRef">@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.About].Name</a></li>
             <li><a href="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Privacy].LinkRef">@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Privacy].Name</a></li>
             <li><a href="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Terms].LinkRef">@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Terms].Name</a></li>
-            <li><a href="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Developers].LinkRef">@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Developers].Name</a></li>
         </ul>
     </div>
     <div class="footerItem">
         <ul>
+            <li><a href="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Developers].LinkRef">@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Developers].Name</a></li>
             <li><a href="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Contact].LinkRef">@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Contact].Name</a></li>
             <li><a href="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.FAQ].LinkRef">@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.FAQ].Name</a></li>
-            @{
-                if (ViewBag.FooterLinks.ContainsKey(MyFlightbook.Brand.FooterLinkKey.Videos) && ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Videos].IsVisible)
-                {
-                        <li><a href="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Videos].LinkRef">@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Videos].Name</a></li>
-                }
-                if (ViewBag.FooterLinks.ContainsKey(MyFlightbook.Brand.FooterLinkKey.Blog) && ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Blog].IsVisible)
-                {
-                        <li><a href="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Blog].LinkRef">@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Blog].Name</a></li>
-                }
-            }
         </ul>
     </div>
     <div class="footerItem">
-        <ul><li><a href="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Mobile].LinkRef">@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Mobile].Name</a></li></ul>
-        <div style="margin-top:3px; margin-bottom:6px;" id="divSSLSeal" runat="server" visible="<%# Request.IsSecureConnection %>">
-            <span id="siteseal">
-                <script async src="https://seal.godaddy.com/getSeal?sealID=MbSEyzG679EfYseNolHmMeTjb9SSTum9qZBBZbXTqqb8vBPbEJNZtpY0EX4b"></script>
-            </span>
-        </div>
+        <ul>
+            <li><a href="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Mobile].LinkRef">@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Mobile].Name</a></li>
+            @{
+                if (ViewBag.FooterLinks.ContainsKey(MyFlightbook.Brand.FooterLinkKey.Videos) && ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Videos].IsVisible)
+                {
+                    <li><a href="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Videos].LinkRef">@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Videos].Name</a></li>
+                }
+                if (ViewBag.FooterLinks.ContainsKey(MyFlightbook.Brand.FooterLinkKey.Blog) && ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Blog].IsVisible)
+                {
+                    <li><a href="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Blog].LinkRef">@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Blog].Name</a></li>
+                }
+            }
+        </ul>
     </div>
     <div class="footerItem">
         <ul>

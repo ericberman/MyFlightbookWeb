@@ -87,6 +87,15 @@ namespace MyFlightbook.Controls
         protected global::System.Web.UI.WebControls.HyperLink lnkFAQ;
 
         /// <summary>
+        /// lnkPDA control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink lnkPDA;
+
+        /// <summary>
         /// lnkVideos control.
         /// </summary>
         /// <remarks>
@@ -103,24 +112,6 @@ namespace MyFlightbook.Controls
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink lnkBlog;
-
-        /// <summary>
-        /// lnkPDA control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink lnkPDA;
-
-        /// <summary>
-        /// divSSLSeal control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divSSLSeal;
 
         /// <summary>
         /// lnkFacebook control.
