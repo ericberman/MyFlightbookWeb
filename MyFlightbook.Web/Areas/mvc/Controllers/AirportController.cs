@@ -528,7 +528,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.IsStatic = isStatic;
             ViewBag.gmapDivID = gmapDivID;
 
-            List<airport> lst = new List<airport>(airports ?? Array.Empty<airport>());
+            // Dedupe and remove everything that isn't an airport.
+            List<airport> lst = new List<airport>(new AirportList(airports ?? Array.Empty<airport>()).UniqueAirports);
             lst.RemoveAll(ap => !ap.IsPort);
             lst.Sort();
             ViewBag.airports = lst;

@@ -295,7 +295,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;br /&gt;Error in row {0}: {1}.
+        ///   Looks up a localized string similar to Error in row {0}: {1}.
         /// </summary>
         internal static string errInRow {
             get {
@@ -372,9 +372,9 @@ namespace Resources {
         ///        %APP_NAME% can understand many popular GPS-track formats, including:
         ///    &lt;/p&gt;
         ///    &lt;ul&gt;
-        ///        &lt;li&gt;&lt;a href=&quot;http://en.wikipedia.org/wiki/Kml&quot; Target=&quot;_blank&quot;&gt;KML&lt;/a&gt;&lt;/li&gt;
-        ///        &lt;li&gt;&lt;a href=&quot;http://en.wikipedia.org/wiki/GPS_eXchange_Format&quot; target=&quot;_blank&quot;&gt;GPX&lt;/a&gt;&lt;/li&gt;
-        ///		&lt;li&gt;&lt;a href=&quot;https://aerofiles.readthedocs.i [rest of string was truncated]&quot;;.
+        ///        &lt;li&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Kml&quot; Target=&quot;_blank&quot;&gt;KML&lt;/a&gt;&lt;/li&gt;
+        ///        &lt;li&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/GPS_eXchange_Format&quot; target=&quot;_blank&quot;&gt;GPX&lt;/a&gt;&lt;/li&gt;
+        ///		&lt;li&gt;&lt;a href=&quot;https://aerofiles.readthedocs [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string FlightDataKey {
             get {

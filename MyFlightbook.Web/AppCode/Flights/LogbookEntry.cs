@@ -17,6 +17,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.UI.WebControls;
 using System.Xml.Serialization;
@@ -2369,6 +2370,26 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
         }
         #endregion
         #endregion IPostable
+
+        #region CloudAhoy
+        /// <summary>
+        /// Pushes the flight to cloudahow
+        /// </summary>
+        /// <param name="speedUnits"></param>
+        /// <param name="altUnits"></param>
+        /// <param name="fSandbox"></param>
+        /// <returns></returns>
+        public async Task<bool> PushToCloudAhoy(FlightData.SpeedUnitTypes speedUnits, FlightData.AltitudeUnitTypes altUnits, bool fSandbox)
+        {
+            using (FlightData fd = new FlightData())
+            {
+                fd.ParseFlightData(this);
+                fd.AltitudeUnits = altUnits;
+                fd.SpeedUnits = speedUnits;
+                return await OAuth.CloudAhoy.CloudAhoyClient.PushCloudAhoyFlight(User, this, fd, fSandbox).ConfigureAwait(false);
+            }
+        }
+        #endregion
 
         #region Constructors
         public LogbookEntry() : base() { }

@@ -1586,7 +1586,7 @@ Proceed with import?</value>
     <value>Original Format</value>
   </data>
   <data name="flightDetailsErrorsFound" xml:space="preserve">
-    <value>Errors were found in loading flight data</value>
+    <value>Errors were found loading flight data</value>
   </data>
   <data name="flightDetailsPositionHeader" xml:space="preserve">
     <value>Position</value>

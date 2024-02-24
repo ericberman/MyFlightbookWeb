@@ -356,7 +356,7 @@
             <asp:Localize ID="locErrorsFound" runat="server" Text="<%$ Resources:LogbookEntry, flightDetailsErrorsFound %>" />
             <asp:Label ID="lblShowerrors" CssClass="error" runat="server" />
         </span>
-        <asp:Panel ID="pnlErrorDetail" runat="server" Style="height: 0px; overflow: hidden">
+        <asp:Panel ID="pnlErrorDetail" runat="server" Style="height: 0px; white-space: pre-line; overflow: hidden">
             <asp:Label ID="lblErr" runat="server" />
             <ajaxToolkit:CollapsiblePanelExtender
                 ID="CollapsiblePanelExtender1" runat="server" Collapsed="True" TargetControlID="pnlErrorDetail"

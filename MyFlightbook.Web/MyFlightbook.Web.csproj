@@ -1589,6 +1589,8 @@
     <Content Include="Areas\mvc\Views\Flights\_publicFlights.cshtml" />
     <Content Include="Areas\mvc\Views\Flights\_telemetryAnalysis.cshtml" />
     <Content Include="Areas\mvc\Views\Flights\_telemetryAnalysisResult.cshtml" />
+    <Content Include="Areas\mvc\Views\Flights\flightDetails.cshtml" />
+    <Content Include="Areas\mvc\Views\Flights\_signatureBlock.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />

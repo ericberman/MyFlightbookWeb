@@ -1,0 +1,55 @@
+﻿@using System.Globalization
+@{
+    LogbookEntryDisplay led = ViewBag.led;
+    bool fUseHHMM = ViewBag.fUseHHMM;
+    bool fInteractive = ViewBag.fInteractive;
+}
+@if (led.CFISignatureState != LogbookEntryCore.SignatureState.None)
+{
+    <div style="display: inline-block; vertical-align:middle;" class="signatureBlock">
+        <div style="display: inline-block; vertical-align: middle;">
+            <table>
+                <tr>
+                    <td style="vertical-align:middle">
+                        @if (fInteractive)
+                        {
+                            <a href="@(led.HasDigitizedSig ? String.Format(CultureInfo.InvariantCulture, "~/mvc/Image/FlightSig/{0}", led.FlightID).ToAbsolute() : string.Empty)" class="popTrigger">
+                                <img class="imgMiddle" src="@((led.HasValidSig ? "~/Images/sigok.png" : "~/Images/siginvalid.png").ToAbsolute())" alt="@led.SignatureStateDescription" title="@led.SignatureStateDescription" />
+                            </a>
+                            if (led.HasDigitizedSig)
+                            {
+                                <div id="pnlSigState" class="popMenuContent popMenuHidden hintPopup">
+                                    <img src="@String.Format(CultureInfo.InvariantCulture, "~/mvc/Image/FlightSig/{0}", led.FlightID).ToAbsolute()" />
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <img class="imgMiddle" src="@((led.HasValidSig ? "~/Images/sigok.png" : "~/Images/siginvalid.png").ToAbsolute())" alt="@led.SignatureStateDescription" title="@led.SignatureStateDescription" />
+                        }
+                    </td>
+                    <td style="vertical-align:middle">
+                        <div class="@(led.HasValidSig ? "signatureValid" : "signatureInvalid")">
+                            <div>@led.SignatureMainLine</div>
+                            <div>@led.SignatureCommentLine</div>
+                        </div>
+                        @if (!led.HasValidSig)
+                        {
+                            <span style="font-weight: bold;" class="signatureInvalid">@Resources.SignOff.FlightSignatureInvalid</span>
+                            if (fInteractive)
+                            {
+                                @Html.Raw(led.DiffsAsHTMLList(fUseHHMM));
+                            }
+                        }
+                    </td>
+                </tr>
+            </table>
+        </div>
+        @if (!fInteractive && led.HasDigitizedSig)
+        {
+            <div class="signatureBlockSig">
+                <img src="@String.Format(CultureInfo.InvariantCulture, "~/mvc/Image/FlightSig/{0}", led.FlightID).ToAbsolute()" style="width: 140px;" />
+            </div>
+        }
+    </div>
+}

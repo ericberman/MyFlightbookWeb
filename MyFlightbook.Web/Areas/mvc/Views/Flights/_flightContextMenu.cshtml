@@ -27,7 +27,7 @@
         <a href="@szRequestSigs"><img src="@("~/images/signaturesm.png".ToAbsolute())" alt="@Resources.SignOff.RequestSignature" />@Resources.SignOff.RequestSignature</a>
     </div>
     <div>
-        <a onclick="@String.Format(CultureInfo.InvariantCulture, "javascript: copyClipboard('', '{0}', true, '{1}');", idCopySrc, idCopy)" title="@Resources.LogbookEntry.CopyFlightLinkTip"><img src="@("~/images/copyflight.png".ToAbsolute())" alt="@Resources.LogbookEntry.CopyFlightLinkTip" />@Resources.LogbookEntry.CopyFlightLink</a>
+        <a href="#" onclick="@String.Format(CultureInfo.InvariantCulture, "javascript: copyClipboard('', '{0}', true, '{1}');", idCopySrc, idCopy)" title="@Resources.LogbookEntry.CopyFlightLinkTip"><img src="@("~/images/copyflight.png".ToAbsolute())" alt="@Resources.LogbookEntry.CopyFlightLinkTip" />@Resources.LogbookEntry.CopyFlightLink</a>
     </div>
     <div>
         <a style="cursor: pointer;" onclick="javascript: sendFlight(@le.FlightID);"><img src="@("~/images/sendflight.png".ToAbsolute())" alt="@Resources.LogbookEntry.SendFlight" />@Resources.LogbookEntry.SendFlight</a>

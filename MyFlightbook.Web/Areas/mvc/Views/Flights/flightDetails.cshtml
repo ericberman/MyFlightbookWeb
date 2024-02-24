@@ -1,0 +1,401 @@
+﻿@using MyFlightbook.Achievements
+@using MyFlightbook.Airports
+@using MyFlightbook.Image
+@using MyFlightbook.Mapping
+@using MyFlightbook.Telemetry
+@using System.Globalization
+@{
+    ViewBag.Title = Resources.LogbookEntry.FlightDetailsHeader;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    ViewBag.UseMaps = true;
+    ViewBag.UseCharting = true;
+    ViewBag.defaultTab = tabID.tabLogbook;
+
+    LogbookEntryDisplay led = ViewBag.led;
+    FlightQuery fq = ViewBag.fq;
+    string nextLink = ViewBag.nextDest;
+    string prevLink = ViewBag.prevDest;
+    bool fUseHHMM = ViewBag.useHHMM;
+    ListsFromRoutesResults lfrr = ViewBag.lfrr;
+    DataSourceType dst = DataSourceType.DataSourceTypeFromFileType(led.Telemetry.TelemetryType);
+    MyFlightbook.Profile pf = ViewBag.pf;
+    GoogleMap map = ViewBag.map;
+
+    IEnumerable<BadgeSet> badgeSets = BadgeSet.BadgeSetsFromBadges(new List<Badge>(pf.CachedBadges ?? Array.Empty<Badge>()).FindAll(b => b.IDFlightEarned == led.FlightID));
+    Aircraft ac = new UserAircraft(led.User)[led.AircraftID];
+    ac.PopulateImages();
+}
+<script src="@("~/public/Scripts/CopyClipboard.js".ToAbsolute())"></script>
+<script type="text/javascript" src="@("~/Public/Scripts/accordionproxy.js".ToAbsolute())"></script>
+<script type="text/javascript">
+    function dropPin(p, s) {
+        var gm = getMfbMap();
+        gm.oms.addMarker(gm.addEventMarker(p, s));
+    }
+
+    function qfeClicked(propName) {
+        $("#hdnQFEClicked").val(true);
+        $("#hdnPropToDelete").val(propName);
+        $("#frmDetails").submit();
+        return false;
+    }
+
+    function sendToCloudAhoy() {
+        $("#imgCloudAhoyProgress").show();
+        var f = $("#frmDownload").serialize();
+        $.ajax({
+            url: "@Url.Action("PushToCloudahoy", "Flights")",
+            type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            complete: function () { $("#imgCloudAhoyProgress").hide(); },
+            success: function (r) {
+                $("#pnlCloudAhoySuccess").show();
+            }
+        });
+    }
+
+    function deleteFlight(id, desc) {
+        if (confirm('@Resources.LogbookEntry.LogbookConfirmDelete'.replace("{0}", '\r\n\r\n').replace("{1}", desc))) {
+            $("#hdnFlightsToDelete").val(id);
+            var f = $("#frmDeleteFlights").serialize();
+            $.ajax({
+                url: "@Url.Action("DeleteFlightForUser", "Flights")",
+                type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                complete: function () { },
+                success: function (r) {
+                    window.location = "@("~/member/logbooknew.aspx".ToAbsolute())";
+                }
+            });
+        }
+    }
+
+    var fChartLoaded = false;
+    var fRawDataLoaded = false;
+
+    var proxyControl = null;
+    $(() => {
+        proxyControl = new accordionProxy($("#accordionproxycontainer"), {
+            defaultPane: "apc" + "@ViewBag.defaultPane",
+            proxies: [
+                { idButton: "apcFlight", idTarget: "targetDetailsFlight" },
+                { idButton: "apcAircraft", idTarget: "targetDetailsAircraft" },
+                {
+                    idButton: "apcChart", idTarget: "targetDetailsChart", onclick: function () {
+                        if (!fChartLoaded) {
+                            var params = new Object();
+                            params.idFlight = @led.FlightID;
+                            $.ajax({
+                                url: "@Url.Action("GetTelemetryAnalysisForUser", "Flights")",
+                                type: "POST", data: JSON.stringify(params), dataType: "html", contentType: 'application/json',
+                                error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                                complete: function () { },
+                                success: function (r) {
+                                    fChartLoaded = true;
+                                    $("#analysisContainer").html(r);
+                                    chartDataChanged();
+                                }
+                            });
+                        }
+                    }
+                },
+                {
+                    idButton: "apcRaw", idTarget: "targetDetailsRaw", onclick: function () {
+                        if (!fRawDataLoaded) {
+                            var params = new Object();
+                            params.idFlight = @led.FlightID;
+                            $.ajax({
+                                url: '@Url.Action("RawTelemetryAsTable", "Flights")',
+                                type: "POST", data: JSON.stringify(params), dataType: "html", contentType: "application/json",
+                                error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                                complete: function (response) { },
+                                success: function (response) {
+                                    $("#divRawData").html(response);
+                                }
+                            });
+                        }
+                    }
+                },
+                { idButton: "apcDownload", idTarget: "targetDetailsDownload" }
+            ]
+        });
+    });
+</script>
+<div>
+    <a href="@ViewBag.returnLink"><img src="@("~/images/back.png".ToAbsolute())" /> @ViewBag.returnLinkText</a>
+</div>
+<p>@Resources.LogbookEntry.FlightDetailsDesc <a href="@("~/mvc/pub/FlightDataKey".ToAbsolute())" target="_blank">@Resources.LogbookEntry.FlightDetailsLearnAboutTelemetry</a></p>
+<div class="detailsHeaderBar shadowed">
+    <table style="width:100%">
+        <tr style="vertical-align:middle">
+            <td>
+                @if (!String.IsNullOrEmpty(nextLink))
+                {
+                    <a style="font-size: 20pt; font-family: Arial;" href="@nextLink">@Resources.LogbookEntry.PreviousFlight</a>
+                }
+            </td>
+            <td>
+                <p>
+                    <span style="font-weight: bold; font-size: larger">@led.Date.ToShortDateString()</span> @led.TailNumDisplay
+                    <span class="@(led.IsOverridden ? "ExceptionData" : string.Empty)" title="@(led.IsOverridden ? Resources.LogbookEntry.LogbookAltCatClassTooltip : string.Empty)">(@led.CatClassDisplay)</span>
+                    <span style="font-weight: bold;">@led.Route.ToUpper(CultureInfo.CurrentCulture)</span>
+                    <span style="white-space:pre-line" dir="auto">@Html.Raw(led.CommentWithReplacedApproaches)</span>
+                </p>
+                @if (!fq.IsDefault)
+                {
+                    <div id="searchSummary">
+                        @Resources.LocalizedText.ResultsFiltered
+                        @{ Html.RenderAction("QueryDescription", "Search", new { fq = fq, onClientClick = "qfeClicked" }); }
+                    </div>
+                }
+            </td>
+            <td>
+                @if (!String.IsNullOrEmpty(prevLink))
+                {
+                    <a style="font-size: 20pt; font-family: Arial;" href="@prevLink">@Resources.LogbookEntry.NextFlight</a>
+                }
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="accordionproxycontainer">
+    <div id="apcFlight">@Resources.Tabs.AnalysisFlight</div>
+    <div id="apcAircraft">@Resources.Tabs.AnalysisAircraft</div>
+    <div id="apcChart" style="@(led.HasFlightData ? string.Empty : "display: none;")">@Resources.Tabs.AnalysisChart </div>
+    <div id="apcRaw" style="@(led.HasFlightData ? string.Empty : "display: none;")">@Resources.Tabs.AnalysisRaw </div>
+    <div id="apcDownload" style="@(led.HasFlightData ? string.Empty : "display: none;")">@Resources.Tabs.AnalysisDownload </div>
+    <div style="display: inline-block">
+        <img src="@VirtualPathUtility.ToAbsolute("~/images/MenuChevron.png")" class="popTrigger" />
+        <div class="popMenuContent popMenuHidden" style="margin-top: -5pt; margin-left: -120px; text-align: left;">
+            @{ Html.RenderAction("FlightContextMenu", "Flights", new { le = led }); }
+        </div>
+    </div>
+</div>
+@{ Html.RenderPartial("_sendFlight"); }
+<div id="targetDetailsFlight" style="display:none;">
+    <div class="detailsSection">
+        <table>
+            <tr>
+                <td style="padding: 3px; font-weight: bold">@Resources.LogbookEntry.FieldApproaches</td>
+                <td style="padding: 3px; min-width: 1cm">@led.Approaches.FormatInt() </td>
+                <td style="padding: 3px; font-weight: bold">@Resources.LogbookEntry.FieldHold</td>
+                <td style="padding: 3px; min-width: 1cm">@led.fHoldingProcedures.FormatBoolean() </td>
+                <td style="padding: 3px; font-weight: bold">@Resources.LogbookEntry.FieldLanding</td>
+                <td style="padding: 3px; min-width: 1cm">@led.Landings.FormatInt() </td>
+                <td style="padding: 3px; font-weight: bold">@Resources.LogbookEntry.FieldDayLandings</td>
+                <td style="padding: 3px; min-width: 1cm">@led.FullStopLandings.FormatInt() </td>
+                <td style="padding: 3px; font-weight: bold">@Resources.LogbookEntry.FieldNightLandings</td>
+                <td style="padding: 3px; min-width: 1cm">@led.NightLandings.FormatInt() </td>
+            </tr>
+            <tr>
+                <td style="padding: 3px; font-weight: bold">@Resources.LogbookEntry.FieldXCountry</td>
+                <td style="padding: 3px">@led.CrossCountry.FormatDecimal(fUseHHMM)</td>
+                <td style="padding: 3px; font-weight: bold">@Resources.LogbookEntry.FieldNight</td>
+                <td style="padding: 3px">@led.Nighttime.FormatDecimal(fUseHHMM)</td>
+                <td style="padding: 3px; font-weight: bold">@Resources.Totals.SimIMC</td>
+                <td style="padding: 3px">@led.SimulatedIFR.FormatDecimal(fUseHHMM)</td>
+                <td style="padding: 3px; font-weight: bold">@Resources.LogbookEntry.FieldIMC</td>
+                <td style="padding: 3px">@led.IMC.FormatDecimal(fUseHHMM)</td>
+                <td style="padding: 3px; font-weight: bold">@Resources.Totals.Ground</td>
+                <td style="padding: 3px">@led.GroundSim.FormatDecimal(fUseHHMM)</td>
+            </tr>
+            <tr>
+                <td style="font-weight: bold">@Resources.LogbookEntry.FieldDual</td>
+                <td>@led.Dual.FormatDecimal(fUseHHMM)</td>
+                <td style="font-weight: bold">@Resources.LogbookEntry.FieldCFI</td>
+                <td>@led.CFI.FormatDecimal(fUseHHMM)</td>
+                <td style="font-weight: bold">@Resources.LogbookEntry.FieldSIC</td>
+                <td>@led.SIC.FormatDecimal(fUseHHMM)</td>
+                <td style="font-weight: bold">@Resources.LogbookEntry.FieldPIC</td>
+                <td>@led.PIC.FormatDecimal(fUseHHMM)</td>
+                <td style="font-weight: bold">@Resources.LogbookEntry.FieldTotal</td>
+                <td>@led.TotalFlightTime.FormatDecimal(fUseHHMM)</td>
+            </tr>
+        </table>
+        @foreach (string s in led.PropertiesWithReplacedApproaches)
+        {
+            <div>@Html.Raw(s)</div>
+        }
+        <div>@led.EngineTimeDisplay</div>
+        <div>@led.FlightTimeDisplay</div>
+        <div>@led.HobbsDisplay</div>
+    </div>
+    @if (led.CFISignatureState != LogbookEntryCore.SignatureState.None)
+    {
+        <div class="detailsSection">
+            @{ Html.RenderAction("SignatureBlock", "Flights", new { led = led, fUseHHMM = fUseHHMM, fInteractive = false }); }
+        </div>
+    }
+    @if (lfrr.MasterList.GetNormalizedAirports().Length > 0)
+    {
+        <div class="detailsSection">
+            <h3>@led.Route.ToUpper(CultureInfo.CurrentCulture)</h3>
+            @{ Html.RenderAction("AirportServicesTable", "Airport", new
+                {
+                    airports = lfrr.MasterList.GetNormalizedAirports(),
+                    isStatic = map.MapMode == GMap_Mode.Static,
+                    gmapDivID = ViewBag.Map.Options.divContainer,
+                });
+            }
+            <p>@ViewBag.distanceDisplay</p>
+            <p>@{ Html.RenderAction("GetMetar", "Airport", new { id = "divMetar", szAirports = led.Route }); }</p>
+        </div>
+    }
+    <div style="text-align:center">
+        @{ Html.RenderAction("ImageListDisplay", "Image", new { il = new ImageList(led.FlightImages.ToArray()), zoomLinkType = GeoLinkType.ZoomOnLocalMap }); }
+    </div>
+    <div style="margin-left:auto;margin-right:auto; width:640px;">
+        @foreach (VideoRef vr in led.Videos)
+        {
+            <div>
+                <div>@Html.Raw(vr.EmbedHTML())</div>
+                <p><a href="@vr.VideoReference" target="_blank">@vr.DisplayString</a></p>
+            </div>
+        }
+    </div>
+    @{ Html.RenderAction("RenderBadgeSets", "Training", new { badgeSets = badgeSets, fReadOnly = false }); }
+</div>
+<div id="targetDetailsAircraft" style="display:none;">
+    <table>
+        <tr>
+            <td style="padding: 3px">
+                @{ Html.RenderAction("HoverImageList", "Image", new { rgmfbii = ac.AircraftImages, imageClasses = "activeRow" }); }
+            </td>
+            <td style="padding: 3px">
+                <div>
+                    <a style="font-size: larger; font-weight: bold;" href="@String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}", ac.AircraftID).ToAbsolute()">@ac.DisplayTailnumber</a> - @ac.ModelDescription - @ac.ModelCommonName (@ac.CategoryClassDisplay)
+                </div>
+                <div>@ac.InstanceTypeDescription</div>
+                <div class="activeRow">
+                    <div style="white-space: pre">@Html.Raw(ac.PublicNotes.Linkify())</div>
+                    <div style="white-space: pre">@Html.Raw(ac.PrivateNotes.Linkify())</div>
+                </div>
+                <ul>
+                    @foreach (string s in MakeModel.GetModel(ac.ModelID).AttributeList())
+                    {
+                        <li>@s</li>
+                    }
+                </ul>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="targetDetailsChart" style="display: none;">
+    <div id="analysisContainer">
+        <div style="text-align: center;"><img id="imgAnalysisInProgress" src="@("~/images/progress.gif".ToAbsolute())" /></div>
+    </div>
+</div>
+<div id="targetDetailsRaw" style="display:none;">
+    <div style="width: 90%; text-align: center; margin-left: 5%; margin-right: 5%; background-color: #DDDDDD; border: solid 1px gray; height: 400px; overflow: auto;">
+        <div id="divRawData">
+            <img src="@("~/images/progress.gif".ToAbsolute())" />
+        </div>
+    </div>
+</div>
+<div id="targetDetailsDownload" style="display:none;">
+    @using (Html.BeginForm("DownloadTelemetry", "Flights", FormMethod.Post, new { id = "frmDownload", name = "frmDownload" }))
+    {
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="idFlight" value="@led.FlightID" />
+        <input type="hidden" name="asAdmin" value="@(((bool) ViewBag.fIsAdmin) ? "true" : "false")" />
+        <table style="margin-left:auto; margin-right:auto;">
+            <tr>
+                <td>@Resources.FlightData.FlightDataOriginalFormat</td>
+                <td>@dst.DisplayName</td>
+            </tr>
+            <tr>
+                <td>@Resources.LogbookEntry.flightDetailsDownloadAsPrompt</td>
+                <td>
+                    <select name="downloadFormat" id="cmbFormat">
+                        <option selected value="Original">@Resources.LogbookEntry.flightDetailsDownloadOriginal</option>
+                        <option value="CSV">@Resources.LogbookEntry.flightDetailsDownloadCSV</option>
+                        @if (led.HasFlightData && map.MapMode == GMap_Mode.Dynamic)
+                        {
+                            <option value="KML">@Resources.LogbookEntry.flightDetailsDownloadKML</option>
+                            <option value="GPX">@Resources.LogbookEntry.flightDetailsDownloadGPX</option>
+                        }
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>@Resources.LogbookEntry.flightDetailsSpeedUnitsPrompt</td>
+                <td>
+                    <select id="cmbSpeedUnits" name="speedUnits" @(dst.CanSpecifyUnitsForTelemetry ? string.Empty : "disabled")>
+                        <option selected value="Knots">@Resources.LogbookEntry.flightDetailsSpeedUnitKts</option>
+                        <option value="MilesPerHour">@Resources.LogbookEntry.flightDetailsSpeedUnitMPH</option>
+                        <option value="KmPerHour">@Resources.LogbookEntry.flightDetailsSpeedUnitKmH</option>
+                        <option value="MetersPerSecond">@Resources.LogbookEntry.flightDetailsSpeedUnitMPS</option>
+                        <option value="FeetPerSecond">@Resources.LogbookEntry.flightDetailsSpeedUnitFPS</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>@Resources.LogbookEntry.flightDetailsAltUnitsPrompt</td>
+                <td>
+                    <select id="cmbAltUnits" name="altUnits" @(dst.CanSpecifyUnitsForTelemetry ? string.Empty : "disabled")>
+                        <option selected value="Feet">@Resources.LogbookEntry.flightDetailsAltUnitFeet</option>
+                        <option value="Meters">@Resources.LogbookEntry.flightDetailsAltUnitMeters</option>
+                    </select>
+                </td>
+            </tr>
+            <tr><td>&nbsp;</td><td></td></tr>
+            <tr>
+                <td></td>
+                <td>
+                    <button id="btnDownload" type="submit">@Resources.LogbookEntry.flightDetailsDownloadButton</button>
+                    @if (!String.IsNullOrEmpty(pf.CloudAhoyToken?.AccessToken))
+                    {
+                        <span>&nbsp;&nbsp;&nbsp;</span>
+                        <a href="#" onclick="javascript: sendToCloudAhoy(); false;">
+                            <img id="imgClopudAhoy" style="padding-right: 10px" src="@("~/images/cloudahoy-sm.png".ToAbsolute())" alt="@Resources.LogbookEntry.SendToCloudAhoy" title="@Resources.LogbookEntry.SendToCloudAhoy" />
+                            @Resources.LogbookEntry.SendToCloudAhoy
+                            <img src="@("~/images/progress.gif".ToAbsolute())" style="display:none; height: 12pt;" id="imgCloudAhoyProgress" />
+                        </a>
+                        <div id="pnlCloudAhoySuccess" style="display:none;">
+                            <span class"success">@Resources.LogbookEntry.SendToCloudAhoySuccess </span>
+                            <ul class="nextStep">
+                                <li><a href="https://www.cloudahoy.com/flights" target="_blank">@Resources.LogbookEntry.SendToCloudAhoyView</a></li>
+                            </ul>
+                        </div>
+                    }
+                </td>
+            </tr>
+        </table>
+    }
+</div>
+@if (!String.IsNullOrEmpty(ViewBag.pathError))
+{
+    <div class="callout" style="width: 90%; margin-left: 5%; margin-right: 5%; text-align: center;">
+        <span style="text-align: center; font-weight: bold">@Resources.LogbookEntry.flightDetailsErrorsFound</span>
+        @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "pnlErrorDetail" }); }
+        <div id="pnlErrorDetail" style="display: none; white-space:pre-line;">
+            @ViewBag.pathError
+        </div>
+    </div>
+}
+<div style="width: 80%; margin-left: 10%; margin-right: 10%;">
+    @if (map.MapMode == GMap_Mode.Dynamic)
+    {
+        <div>
+            <a href="#" onclick="javascript:mfbMapForContainerID('@ViewBag.Map.Options.divContainer').ZoomOut(); return false;">@Resources.Airports.MapZoomOut</a>
+            &nbsp;|&nbsp;
+            <a href="#" onclick="javascript: window.location.reload(); return false;">@Resources.LogbookEntry.flightDetailsClearMarkers</a>
+        </div>
+    }
+    <div id="divResultsContainer" style="height: 400px; width:100%">
+        @{ Html.RenderAction("MapDiv", "Airport", new { map = ViewBag.Map }); }
+    </div>
+    <script type="text/javascript">
+        $("#divResultsContainer").resizable();
+    </script>
+</div>
+@using (Html.BeginForm("", "Flights", FormMethod.Post, new { id = "frmDeleteFlights", name = "frmDeleteFlights" }))
+{
+    <input type="hidden" name="rgFlights" id="hdnFlightsToDelete" />
+    @Html.AntiForgeryToken();
+}
+<form id="frmDetails" name="frmDetails" method="post" target="_top" action="@Request.Url.OriginalString">
+    @Html.AntiForgeryToken()
+    <input type="hidden" value="" name="fPropDeleteClicked" id="hdnQFEClicked" />
+    <input type="hidden" value="" name="propToDelete" id="hdnPropToDelete" />
+</form>

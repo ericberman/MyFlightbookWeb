@@ -215,6 +215,22 @@ namespace MyFlightbook
         }
 
         /// <summary>
+        /// Returns the ID's of next/previous flight to the specified flight, or idFlightNone if not found or at end of list.
+        /// </summary>
+        /// <param name="idFlight">The flight to find</param>
+        /// <returns>An enumerable of 2 ids.  The first is the "previous" flight or idFlightNone, the 2nd is the "next" flight or idFlightNone</returns>
+        public int[] NeighborsOfFlight(int idFlight)
+        {
+            int[] result = new int[] { LogbookEntryCore.idFlightNone, LogbookEntryCore.idFlightNone };
+            int index = FlightsList.FindIndex(led => led.FlightID == idFlight);
+            if (index > 0)
+                result[0] = FlightsList[index - 1].FlightID;
+            if (index < FlightsList.Count - 1)
+                result[1] = FlightsList[index  + 1].FlightID;
+            return result;
+        }
+
+        /// <summary>
         /// Finds the ID's of the flights immediately adjacent to the specified flight ID in the list (given its current sort order and restriction)
         /// </summary>
         /// <param name="idFlight">The ID of the flight whose neighbors are being sought</param>

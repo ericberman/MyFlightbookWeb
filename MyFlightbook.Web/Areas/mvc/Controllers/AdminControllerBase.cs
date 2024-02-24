@@ -5,7 +5,7 @@ using System.Web.Mvc;
 
 /******************************************************
  * 
- * Copyright (c) 2023 MyFlightbook LLC
+ * Copyright (c) 2023-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -114,6 +114,28 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             try
             {
                 return func();
+            }
+            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                Response.TrySkipIisCustomErrors = true;
+                return Content(ex.Message);
+            }
+        }
+
+
+        /// <summary>
+        /// Performs an async operation returning any exception as ActionResult (not limited to admin)
+        /// </summary>
+        /// <param name="func"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        protected async Task<ActionResult> SafeOp(Func<Task<ActionResult>> func)
+        {
+            if (func == null) throw new ArgumentNullException(nameof(func));
+            try
+            {
+                return await func();
             }
             catch (Exception ex) when (!(ex is OutOfMemoryException))
             {
