@@ -17,7 +17,7 @@
                             <asp:Label ID="lblDateEarned" runat="server" Text='<%# Eval("EarnedDateString") %>'></asp:Label>
                         </asp:View>
                         <asp:View ID="vwAchievedWithFlight" runat="server">
-                            <asp:HyperLink ID="lnkFlightEarned" Text='<%# Eval("EarnedDateString") %>' runat="server" NavigateUrl='<%# VirtualPathUtility.ToAbsolute(String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/Member/FlightDetail.aspx/{0}", Eval("IDFlightEarned"))) %>'></asp:HyperLink>
+                            <asp:HyperLink ID="lnkFlightEarned" Text='<%# Eval("EarnedDateString") %>' runat="server" NavigateUrl='<%# VirtualPathUtility.ToAbsolute(String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/mvc/flights/details/{0}", Eval("IDFlightEarned"))) %>'></asp:HyperLink>
                         </asp:View>
                     </asp:MultiView>
                 </div>

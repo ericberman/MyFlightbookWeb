@@ -27,7 +27,7 @@
                     }
                     else
                     {
-                        <a href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/FlightDetail.aspx/{0}", b.IDFlightEarned))">@b.EarnedDateString</a>
+                        <a href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/flights/details/{0}", b.IDFlightEarned))">@b.EarnedDateString</a>
                     }
 
                 }

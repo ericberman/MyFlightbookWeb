@@ -298,8 +298,8 @@
     </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="cpMain" Runat="Server">
-    <uc1:mfbLogbook ID="mfbLogbook1" runat="server" DetailsPageUrlFormatString="~/Member/FlightDetail.aspx/{0}"
-         EditPageUrlFormatString="~/Member/LogbookNew.aspx/{0}" AnalysisPageUrlFormatString="~/Member/FlightDetail.aspx/{0}?tabID=Chart" SendPageTarget="~/Member/LogbookNew.aspx" />
+    <uc1:mfbLogbook ID="mfbLogbook1" runat="server" DetailsPageUrlFormatString="~/mvc/flights/details/{0}"
+         EditPageUrlFormatString="~/Member/LogbookNew.aspx/{0}" AnalysisPageUrlFormatString="~/mvc/flights/details/{0}?tabID=Chart" SendPageTarget="~/Member/LogbookNew.aspx" />
     <asp:Panel ID="pnlWelcomeNewUser" runat="server" style="display:none;">
         <p><%=Resources.LocalizedText.WelcomeThanks %></p>
         <p><%=Resources.LocalizedText.WelcomeNextSteps %></p>

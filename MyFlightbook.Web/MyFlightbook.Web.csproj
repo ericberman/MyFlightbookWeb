@@ -583,10 +583,8 @@
     <Content Include="Controls\mfbFlightProperties.ascx" />
     <Content Include="Controls\mfbFooter.ascx" />
     <Content Include="Controls\mfbGoogleAdSense.ascx" />
-    <Content Include="Controls\mfbGoogleMapManager.ascx" />
     <Content Include="Controls\mfbHeader.ascx" />
     <Content Include="Controls\mfbHoverImageList.ascx" />
-    <Content Include="Controls\mfbHtmlEdit.ascx" />
     <Content Include="Controls\mfbImageList.ascx" />
     <Content Include="Controls\mfbImportAircraft.ascx" />
     <Content Include="Controls\mfbLogbook.ascx" />
@@ -822,7 +820,6 @@
     <Content Include="Member\Download.aspx" />
     <Content Include="Member\EditAircraft.aspx" />
     <Content Include="Member\EditProfile.aspx" />
-    <Content Include="Member\FlightDetail.aspx" />
     <Content Include="Member\ImpAircraft.aspx" />
     <Content Include="Member\ImpAircraftService.aspx" />
     <Content Include="Member\Import.aspx" />
@@ -2262,13 +2259,6 @@
     <Compile Include="Controls\mfbGoogleAdSense.ascx.designer.cs">
       <DependentUpon>mfbGoogleAdSense.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Controls\mfbGoogleMapManager.ascx.cs">
-      <DependentUpon>mfbGoogleMapManager.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbGoogleMapManager.ascx.designer.cs">
-      <DependentUpon>mfbGoogleMapManager.ascx</DependentUpon>
-    </Compile>
     <Compile Include="Controls\mfbHeader.ascx.cs">
       <DependentUpon>mfbHeader.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2282,13 +2272,6 @@
     </Compile>
     <Compile Include="Controls\mfbHoverImageList.ascx.designer.cs">
       <DependentUpon>mfbHoverImageList.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\mfbHtmlEdit.ascx.cs">
-      <DependentUpon>mfbHtmlEdit.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbHtmlEdit.ascx.designer.cs">
-      <DependentUpon>mfbHtmlEdit.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\mfbImageList.ascx.cs">
       <DependentUpon>mfbImageList.ascx</DependentUpon>
@@ -2657,13 +2640,6 @@
     </Compile>
     <Compile Include="Member\EditProfile.aspx.designer.cs">
       <DependentUpon>EditProfile.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Member\FlightDetail.aspx.cs">
-      <DependentUpon>FlightDetail.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\FlightDetail.aspx.designer.cs">
-      <DependentUpon>FlightDetail.aspx</DependentUpon>
     </Compile>
     <Compile Include="Member\ImpAircraft.aspx.cs">
       <DependentUpon>ImpAircraft.aspx</DependentUpon>
