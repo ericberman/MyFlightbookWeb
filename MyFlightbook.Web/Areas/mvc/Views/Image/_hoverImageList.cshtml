@@ -5,11 +5,13 @@
     MFBImageInfo mfbii = rgImages?.FirstOrDefault();
     string defaultImageSrc = mfbii?.URLThumbnail ?? VirtualPathUtility.ToAbsolute("~/images/noimage.png");
     string defaultTip = (mfbii == null) ? Resources.LocalizedText.NoImageTooltip : string.Empty;
+    string szBaseScript = mfbii == null ? string.Empty : String.Format(CultureInfo.InvariantCulture, mfbii.ImageType == MFBImageInfoBase.ImageFileType.PDF || mfbii.ImageType == MFBImageInfoBase.ImageFileType.S3PDF ? "javascript:window.location = '{0}';" : "javascript:viewMFBImg('{0}');", VirtualPathUtility.ToAbsolute(mfbii.URLFullImage));
 }
 <div class="hoverListContainer">
     <img src="@(String.IsNullOrEmpty(defaultImageSrc) ? VirtualPathUtility.ToAbsolute("~/images/noimage.png") : defaultImageSrc)" 
          alt="@defaultTip" title="@defaultTip" 
          class="@(ViewBag.imageClasses ?? string.Empty)"
+         onclick="@szBaseScript"
          style="max-width: 150px;" />
     @if ((rgImages?.Count() ?? 0) > 1)
     {
