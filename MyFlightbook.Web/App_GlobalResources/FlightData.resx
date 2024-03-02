@@ -139,7 +139,7 @@
     <value>Error parsing GPX data - no known information found!</value>
   </data>
   <data name="errInRow" xml:space="preserve">
-    <value>&lt;br /&gt;Error in row {0}: {1}</value>
+    <value>Error in row {0}: {1}</value>
   </data>
   <data name="errNoKMLTrack" xml:space="preserve">
     <value>No known KML track data found.</value>

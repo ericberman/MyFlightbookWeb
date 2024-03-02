@@ -1,4 +1,5 @@
-﻿using MyFlightbook.Achievements;
+﻿using Amazon.S3.Model.Internal.MarshallTransformations;
+using MyFlightbook.Achievements;
 using MyFlightbook.Airports;
 using MyFlightbook.Charting;
 using MyFlightbook.Currency;
@@ -72,9 +73,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             return SafeOp(() =>
             {
-                LogbookEntry le = new LogbookEntry(idFlight, User.Identity.Name, LogbookEntryCore.LoadTelemetryOption.LoadAll);
-                if (le.LastError != LogbookEntryCore.ErrorCode.None)
-                    throw new UnauthorizedAccessException(le.ErrorString);
+                LogbookEntry le = GetFlightToView(idFlight, false);
 
                 using (FlightData fd = new FlightData())
                 {
@@ -111,9 +110,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             return SafeOp(() =>
             {
-                LogbookEntry le = new LogbookEntry(idFlight, User.Identity.Name, LogbookEntryCore.LoadTelemetryOption.LoadAll);
-                if (le.LastError != LogbookEntryCore.ErrorCode.None)
-                    throw new UnauthorizedAccessException(le.ErrorString);
+                LogbookEntry le = GetFlightToView(idFlight, false);
 
                 using (FlightData fd = new FlightData())
                 {
@@ -228,7 +225,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             return SafeOp(() =>
             {
-                LogbookEntry le = new LogbookEntry(idFlight, User.Identity.Name, LogbookEntryCore.LoadTelemetryOption.LoadAll);
+                LogbookEntry le = GetFlightToView(idFlight, false);
                 if (le.LastError != LogbookEntryCore.ErrorCode.None)
                     throw new UnauthorizedAccessException(le.ErrorString);
 
@@ -286,6 +283,21 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
                 ViewBag.flights = rgle;
                 return PartialView("_publicFlights");
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async System.Threading.Tasks.Task<ActionResult> PushToCloudahoy(int idFlight, FlightData.SpeedUnitTypes speedUnits, FlightData.AltitudeUnitTypes altUnits)
+        {
+            return await SafeOp(async () =>
+            {
+                LogbookEntryDisplay led = new LogbookEntryDisplay(idFlight, User.Identity.Name, LogbookEntryCore.LoadTelemetryOption.LoadAll);
+                if (led.LastError != LogbookEntryCore.ErrorCode.None)
+                    throw new UnauthorizedAccessException();
+                bool f = await led.PushToCloudAhoy(speedUnits, altUnits, !Branding.CurrentBrand.MatchesHost(Request.Url.Host));
+                return new EmptyResult();
             });
         }
         #endregion
@@ -384,6 +396,15 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #endregion
 
         #region Flights Table and context menu
+        [ChildActionOnly]
+        public ActionResult SignatureBlock(LogbookEntryDisplay led, bool fUseHHMM, bool fInteractive = false)
+        {
+            ViewBag.led = led;
+            ViewBag.fUseHHMM = fUseHHMM;
+            ViewBag.fInteractive = fInteractive;
+            return PartialView("_signatureBlock");
+        }
+
         [ChildActionOnly]
         public ActionResult FlightContextMenu(LogbookEntry le)
         {
@@ -565,7 +586,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             string szUser = String.IsNullOrEmpty(uid) ? string.Empty : new SharedDataEncryptor(MFBConstants.keyEncryptMyFlights).Decrypt(uid);
 
-            Profile pf = MyFlightbook.Profile.GetUser(szUser);
+            Profile pf = MyFlightbook.Profile.GetUser(szUser) ?? throw new UnauthorizedAccessException();
             ViewBag.Title = String.IsNullOrEmpty(pf.UserName) ?
                 Branding.ReBrand(Resources.LogbookEntry.PublicFlightPageHeaderAll) :
                 String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.PublicFlightPageHeader, pf.UserFullName);
@@ -573,6 +594,132 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return View("myFlights");
         }
         #endregion
+
+        #region Flight Details
+        #region Details helpers
+        private LogbookEntryDisplay GetFlightToView(int idFlight, bool fAdminMode)
+        {
+            bool fIsAdmin = fAdminMode && MyFlightbook.Profile.GetUser(User.Identity.Name).CanSupport;
+
+            // Check to see if the requested flight belongs to the current user, or if they're authorized.
+            string szFlightOwner = LogbookEntryBase.OwnerForFlight(idFlight);
+            if (String.IsNullOrEmpty(szFlightOwner))
+                throw new UnauthorizedAccessException(Resources.LogbookEntry.errNoSuchFlight);
+
+            // Can view if we are an admin or if we own the flight
+            if (!fIsAdmin && szFlightOwner.CompareCurrentCulture(User.Identity.Name) != 0)
+                CheckCanViewFlights(szFlightOwner, User.Identity.Name);
+
+            // If we're here, we can view the flight
+            return new LogbookEntryDisplay(idFlight, szFlightOwner, LogbookEntryCore.LoadTelemetryOption.LoadAll);
+        }
+
+        private FlightQuery ProcessDetailsQuery(string szFlightOwner, string fqCompressedJSON, bool fPropDeleteClicked, string propToDelete)
+        {
+            FlightQuery query = String.IsNullOrEmpty(fqCompressedJSON) ? new FlightQuery(szFlightOwner) : FlightQuery.FromBase64CompressedJSON(fqCompressedJSON);
+            if (query.UserName.CompareCurrentCulture(szFlightOwner) != 0)
+                query = new FlightQuery(szFlightOwner);
+
+            if (fPropDeleteClicked)
+                query.ClearRestriction(propToDelete ?? string.Empty);
+
+            query.Refresh();
+            ViewBag.fq = query;
+            return query;
+        }
+
+        private void ProcessDetailsFlightDataAndMap(LogbookEntry le)
+        {
+            using (FlightData fd = new FlightData())
+            {
+                if (fd.NeedsComputing)
+                {
+                    if (!fd.ParseFlightData(le))
+                        ViewBag.pathError = fd.ErrorString;
+                }
+
+                ListsFromRoutesResults lfrr = AirportList.ListsFromRoutes(le.Route);
+                ViewBag.lfrr = lfrr;
+                GoogleMap gmap = new GoogleMap("divMapDetails", fd.HasLatLongInfo && fd.Data.Rows.Count > 1 ? GMap_Mode.Dynamic : GMap_Mode.Static)
+                {
+                    Airports = lfrr.Result,
+                    Path = fd.GetPath(),
+                    Images = le.FlightImages
+                };
+                gmap.Options.fShowMarkers = true;
+                gmap.Options.fShowRoute = true;
+                ViewBag.Map = gmap;
+                ViewBag.distanceDisplay = le.GetPathDistanceDescription(fd.ComputePathDistance());
+            }
+        }
+        private FileContentResult DownloadTelemetryForFlight(LogbookEntry le, DownloadFormat downloadFormat, FlightData.SpeedUnitTypes speedUnits = FlightData.SpeedUnitTypes.Knots, FlightData.AltitudeUnitTypes altUnits = FlightData.AltitudeUnitTypes.Feet)
+        {
+            using (FlightData fd = new FlightData())
+            {
+                byte[] rgb = fd.WriteToFormat(le, downloadFormat, speedUnits, altUnits, out DataSourceType dst);
+                string szFileName = RegexUtility.UnSafeFileChars.Replace(String.Format(CultureInfo.InvariantCulture, "Data{0}-{1}-{2}", Branding.CurrentBrand.AppName, MyFlightbook.Profile.GetUser(le.User).UserFullName, le.Date.YMDString()), string.Empty) + "." + dst.DefaultExtension;
+                return File(rgb, dst.Mimetype, szFileName);
+
+            }
+        }
+        #endregion
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DownloadTelemetry(int idFlight, DownloadFormat downloadFormat, FlightData.SpeedUnitTypes speedUnits, FlightData.AltitudeUnitTypes altUnits, bool asAdmin)
+        {
+            return DownloadTelemetryForFlight(GetFlightToView(idFlight, asAdmin), downloadFormat, speedUnits, altUnits);
+        }
+
+        [Authorize]
+        public ActionResult Details(int id = -1, string fq = null, int a = 0, int d = 0, string tabID = null, bool fPropDeleteClicked = false, string propToDelete = null)
+        {
+            if (id <= 0)
+                throw new UnauthorizedAccessException();
+
+            bool fIsAdmin = a != 0 && MyFlightbook.Profile.GetUser(User.Identity.Name).CanSupport;
+            ViewBag.fIsAdmin = fIsAdmin;
+            // GetFlightToView will throw if we're not authorized
+            LogbookEntryDisplay led = GetFlightToView(id, fIsAdmin);
+            led.PopulateImages(true);
+            ViewBag.led = led;
+            string szFlightOwner = led.User;
+
+            // d = direct download - always in original format
+            if (d != 0)
+                return DownloadTelemetryForFlight(led, DownloadFormat.Original);
+
+            Profile pfFlightOwner = MyFlightbook.Profile.GetUser(szFlightOwner);
+            ViewBag.useHHMM = MyFlightbook.Profile.GetUser(User.Identity.Name).UsesHHMM;
+            ViewBag.pf = pfFlightOwner;
+
+            // Set up the return link
+            bool isViewingStudent = !fIsAdmin && szFlightOwner.CompareCurrentCulture(User.Identity.Name) != 0;
+            ViewBag.returnLink = isViewingStudent ?
+                String.Format(CultureInfo.InvariantCulture, "~/Member/StudentLogbook.aspx?student={0}", szFlightOwner).ToAbsolute() :
+                "~/Member/LogbookNew.aspx".ToAbsolute();
+            ViewBag.returnLinkText = isViewingStudent ?
+                String.Format(CultureInfo.CurrentCulture, Resources.Profile.ReturnToStudent, pfFlightOwner.UserFullName) :
+                Resources.LogbookEntry.flightDetailsReturnToLogbook;
+
+            // Set up the query, possibly from the passed query, possibly handling any deleted items.
+            FlightQuery query = ProcessDetailsQuery(szFlightOwner, fq, fPropDeleteClicked, propToDelete);
+            string fqNew = query.ToBase64CompressedJSONString();
+
+            // Get neighbors - this will also preheat the cache
+            int[] neighbors = FlightResultManager.FlightResultManagerForUser(szFlightOwner).ResultsForQuery(query).NeighborsOfFlight(id);
+            ViewBag.prevDest = neighbors[0] > 0 ? String.Format(CultureInfo.InvariantCulture, "~/mvc/flights/details/{0}?fq={1}{2}", neighbors[0], fqNew, a == 0 ? string.Empty : "&a=1").ToAbsolute() : string.Empty;
+            ViewBag.nextDest = neighbors[1] > 0 ? String.Format(CultureInfo.InvariantCulture, "~/mvc/flights/details/{0}?fq={1}{2}", neighbors[1], fqNew, a == 0 ? string.Empty : "&a=1").ToAbsolute() : string.Empty;
+
+            ViewBag.defaultPane = tabID ?? "Flight";
+
+            ProcessDetailsFlightDataAndMap(led);
+
+            return View("flightDetails");
+        }
+        #endregion
+
         // GET: mvc/Flights
         public ActionResult Index()
         {

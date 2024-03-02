@@ -180,8 +180,8 @@
     </div>
     <asp:Label ID="lblErr" CssClass="error" runat="server" Text=""></asp:Label>
     <asp:Panel ID="pnlLogbook" runat="server">
-        <uc3:mfbLogbook ID="mfbLogbook1" runat="server" DetailsPageUrlFormatString="~/Member/FlightDetail.aspx/{0}"
-         EditPageUrlFormatString="~/Member/FlightDetail.aspx/{0}" AnalysisPageUrlFormatString="~/Member/FlightDetail.aspx/{0}?tabID=Chart"  />
+        <uc3:mfbLogbook ID="mfbLogbook1" runat="server" DetailsPageUrlFormatString="~/mvc/flights/details/{0}"
+         EditPageUrlFormatString="~/mvc/flights/details/{0}" AnalysisPageUrlFormatString="~/mvc/flights/details/{0}?tabID=Chart"  />
     </asp:Panel>
     <asp:HiddenField ID="hdnStudent" runat="server" />
 </asp:Content>

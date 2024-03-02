@@ -5,11 +5,13 @@
     MFBImageInfo mfbii = rgImages?.FirstOrDefault();
     string defaultImageSrc = mfbii?.URLThumbnail ?? VirtualPathUtility.ToAbsolute("~/images/noimage.png");
     string defaultTip = (mfbii == null) ? Resources.LocalizedText.NoImageTooltip : string.Empty;
+    string szBaseScript = mfbii == null ? string.Empty : String.Format(CultureInfo.InvariantCulture, mfbii.ImageType == MFBImageInfoBase.ImageFileType.PDF || mfbii.ImageType == MFBImageInfoBase.ImageFileType.S3PDF ? "javascript:window.location = '{0}';" : "javascript:viewMFBImg('{0}');", VirtualPathUtility.ToAbsolute(mfbii.URLFullImage));
 }
 <div class="hoverListContainer">
     <img src="@(String.IsNullOrEmpty(defaultImageSrc) ? VirtualPathUtility.ToAbsolute("~/images/noimage.png") : defaultImageSrc)" 
          alt="@defaultTip" title="@defaultTip" 
          class="@(ViewBag.imageClasses ?? string.Empty)"
+         onclick="@szBaseScript"
          style="max-width: 150px;" />
     @if ((rgImages?.Count() ?? 0) > 1)
     {
@@ -17,21 +19,25 @@
             <div class="hoverListItems hintPopup">
                 @foreach (MFBImageInfo img in rgImages)
                 {
+                    bool isVideo = img.ImageType == MFBImageInfoBase.ImageFileType.S3VideoMP4;
                     // We do this inline here because for big lists like flights/aircraft, it can be slow otherwise for a full editable image - both multiple layers of actionresults and lots of html cruft.
                     // But we know that we're read-only, no annotations, no nothing, so let's not pull in the full generality.
                     <div class="ilItem">
-                        @if (img.ImageType == MFBImageInfoBase.ImageFileType.S3VideoMP4)
+                        @if (isVideo)
                         {
-                        <video width="320" heght="240" controls>
-                            <source src="@img.ResolveFullImage()" type="video/mp4" />
-                            <img src="@img.URLThumbnail" width="@img.WidthThumbnail" height="@img.HeightThumbnail" title="@img.Comment" alt="@img.Comment" />
-                        </video>
+                            <video width="320" heght="240" controls>
+                                <source src="@img.ResolveFullImage()" type="video/mp4" />
+                                <img src="@img.URLThumbnail" width="@img.WidthThumbnail" height="@img.HeightThumbnail" title="@img.Comment" alt="@img.Comment" />
+                            </video>
                         }
                         else
                         {
-                        <img src="@img.URLThumbnail" width="@img.WidthThumbnail" height="@img.HeightThumbnail" title="@img.Comment" alt="@img.Comment"
-                             onclick="@String.Format(CultureInfo.InvariantCulture, img.ImageType == MFBImageInfoBase.ImageFileType.PDF || img.ImageType == MFBImageInfoBase.ImageFileType.S3PDF ? "javascript:window.location = '{0}';" : "javascript:viewMFBImg('{0}');", VirtualPathUtility.ToAbsolute(img.URLFullImage))" />
+                            <img src="@img.URLThumbnail" width="@img.WidthThumbnail" height="@img.HeightThumbnail" title="@img.Comment" alt="@img.Comment"
+                                 onclick="@String.Format(CultureInfo.InvariantCulture, img.ImageType == MFBImageInfoBase.ImageFileType.PDF || img.ImageType == MFBImageInfoBase.ImageFileType.S3PDF ? "javascript:window.location = '{0}';" : "javascript:viewMFBImg('{0}');", VirtualPathUtility.ToAbsolute(img.URLFullImage))" />
                         }
+                        <div name="statComment" style="max-width: @(isVideo ? "320px" : (mfbii.WidthThumbnail > 0 ? mfbii.WidthThumbnail : "200px")); text-align:center;">
+                            <span name="commentLabel">@img.Comment</span>
+                        </div>
                     </div>
                 }
             </div>

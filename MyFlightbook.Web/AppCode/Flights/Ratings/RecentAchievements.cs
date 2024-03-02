@@ -57,7 +57,7 @@ namespace MyFlightbook.RatingsProgress
             get
             {
                 if (MatchingEventID > 0)    // links to a specific flight
-                    return VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/FlightDetail.aspx/{0}", MatchingEventID));
+                    return VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/flights/details/{0}", MatchingEventID));
                 else if (Query != null)
                     return VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, QueryLinkTemplate, Query.ToBase64CompressedJSONString()));
 

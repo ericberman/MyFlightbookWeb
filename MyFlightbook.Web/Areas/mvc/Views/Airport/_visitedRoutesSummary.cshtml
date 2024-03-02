@@ -21,7 +21,7 @@
             @if (fs.MatchingFlight != null)
             {
             <td>@fs.MatchingFlight.User</td>
-            <td><a href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/FlightDetail.aspx/{0}?a=1", fs.MatchingFlight.FlightID))" target="_blank">@fs.MatchingFlight.FlightID.ToString(CultureInfo.InvariantCulture)</a></td>
+            <td><a href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/flights/details/{0}?a=1", fs.MatchingFlight.FlightID))" target="_blank">@fs.MatchingFlight.FlightID.ToString(CultureInfo.InvariantCulture)</a></td>
             <td>@fs.MatchingFlight.Route</td>
             <td>
                 @fs.MatchingFlight.Comment

@@ -1393,7 +1393,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Errors were found in loading flight data.
+        ///   Looks up a localized string similar to Errors were found loading flight data.
         /// </summary>
         internal static string flightDetailsErrorsFound {
             get {

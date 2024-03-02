@@ -4,7 +4,6 @@ using MyFlightbook.Charting;
 using MyFlightbook.CSV;
 using MyFlightbook.Geography;
 using MyFlightbook.SolarTools;
-using MyFlightbook.Weather.ADDS;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using NodaTime;
@@ -545,6 +544,8 @@ namespace MyFlightbook.Telemetry
         }
     }
 
+    public enum DownloadFormat { Original, CSV, KML, GPX };
+
     public class DataSourceType
     {
         public enum FileType { None, CSV, XML, KML, GPX, Text, NMEA, IGC, Airbly };
@@ -664,6 +665,26 @@ namespace MyFlightbook.Telemetry
                 // Must be CSV or plain text
                 // no good way to distinguish CSV from text, at least that I know of.
                 return DataSourceTypeFromFileType(FileType.CSV);
+            }
+        }
+
+        /// <summary>
+        /// Can you specify units for the telemetry?  E.g., CSV has ambiguous units, so you can specify them, but KML/GPX units are baked in
+        /// </summary>
+        public bool CanSpecifyUnitsForTelemetry
+        {
+            get
+            {
+                switch (Type)
+                {
+                    case DataSourceType.FileType.GPX:
+                    case DataSourceType.FileType.KML:
+                    case DataSourceType.FileType.NMEA:
+                    case DataSourceType.FileType.IGC:
+                        return false;
+                    default:
+                        return true;
+                }
             }
         }
     }
@@ -1311,13 +1332,59 @@ namespace MyFlightbook.Telemetry
 
         #endregion // properties
 
+        #region Object Creation
         public FlightData()
         {
             m_szError = string.Empty;
             m_dt = new TelemetryDataTable();
             FlightID = 0;
-            AltitudeUnits = FlightData.AltitudeUnitTypes.Feet;
-            SpeedUnits = FlightData.SpeedUnitTypes.Knots;
+            AltitudeUnits = AltitudeUnitTypes.Feet;
+            SpeedUnits = SpeedUnitTypes.Knots;
+        }
+        #endregion
+
+        public byte[] WriteToFormat(LogbookEntryBase le, DownloadFormat format, SpeedUnitTypes speedUnits, AltitudeUnitTypes altUnits, out DataSourceType dst)
+        {
+            if (le == null)
+                throw new ArgumentNullException(nameof(le));
+
+            dst = DataSourceType.BestGuessTypeFromText(le.FlightData);
+
+            // short circuit original for efficiency
+            if (format == DownloadFormat.Original) {
+                return Encoding.UTF8.GetBytes(le.FlightData);
+            }
+
+            if (NeedsComputing)
+                ParseFlightData(le);
+            FlightID = le.FlightID;
+            AltitudeUnits = altUnits;
+            SpeedUnits = speedUnits;
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                switch (format)
+                {
+                    case DownloadFormat.Original:
+                        break;
+                    case DownloadFormat.CSV:
+                        dst = DataSourceType.DataSourceTypeFromFileType(DataSourceType.FileType.CSV);
+                        using (StreamWriter sw = new StreamWriter(ms, Encoding.UTF8))
+                        {
+                            CsvWriter.WriteToStream(sw, Data, true, true);
+                        }
+                        break;
+                    case DownloadFormat.KML:
+                        dst = DataSourceType.DataSourceTypeFromFileType(DataSourceType.FileType.KML);
+                        WriteKMLData(ms);
+                        break;
+                    case DownloadFormat.GPX:
+                        dst = DataSourceType.DataSourceTypeFromFileType(DataSourceType.FileType.GPX);
+                        WriteGPXData(ms);
+                        break;
+                }
+                return ms.ToArray();
+            }
         }
 
         /// <summary>
@@ -1582,7 +1649,7 @@ namespace MyFlightbook.Telemetry
         {
             if (le == null)
                 throw new ArgumentNullException(nameof(le));
-            return ParseFlightData(le.FlightData, le.Telemetry.MetaData);
+            return ParseFlightData(le.FlightData ?? string.Empty, le.Telemetry.MetaData);
         }
         #endregion
 
