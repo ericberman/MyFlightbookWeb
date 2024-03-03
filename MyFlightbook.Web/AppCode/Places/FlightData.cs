@@ -1358,8 +1358,11 @@ namespace MyFlightbook.Telemetry
             if (NeedsComputing)
                 ParseFlightData(le);
             FlightID = le.FlightID;
-            AltitudeUnits = altUnits;
-            SpeedUnits = speedUnits;
+            if (dst.CanSpecifyUnitsForTelemetry)
+            {
+                AltitudeUnits = altUnits;
+                SpeedUnits = speedUnits;
+            }
 
             using (MemoryStream ms = new MemoryStream())
             {
