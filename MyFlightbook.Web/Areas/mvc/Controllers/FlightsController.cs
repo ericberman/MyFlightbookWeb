@@ -1,5 +1,4 @@
-﻿using Amazon.S3.Model.Internal.MarshallTransformations;
-using MyFlightbook.Achievements;
+﻿using MyFlightbook.Achievements;
 using MyFlightbook.Airports;
 using MyFlightbook.Charting;
 using MyFlightbook.Currency;
@@ -118,7 +117,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     {
                         throw new InvalidOperationException(fd.ErrorString);
                     }
-                    ViewBag.defaultX = fd.Data.Columns.Contains("DATE") ? "DATE" : (fd.Data.Columns.Contains("TIME") ? "TIME" : (fd.Data.Columns.Contains("SAMPLE") ? "SAMPLE" : ""));
+                    ViewBag.defaultX = fd.Data.Columns.Contains("UTC DATETIME") ? "UTC DATETIME" : (fd.Data.Columns.Contains("DATE") ? "DATE" : (fd.Data.Columns.Contains("TIME") ? "TIME" : (fd.Data.Columns.Contains("SAMPLE") ? "SAMPLE" : "")));
                     ViewBag.minIndex = 0;
                     ViewBag.maxIndex = Math.Max(fd.Data.Rows.Count - 1, 0);
 

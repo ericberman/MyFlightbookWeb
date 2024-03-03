@@ -997,11 +997,20 @@ namespace MyFlightbook.Telemetry
             if (HasLatLongInfo)
                 gcData.ClickHandlerJS = String.Format(CultureInfo.InvariantCulture, "function(row, column, xvalue, value) {{ dropPin(MFBMapsOnPage[0].pathArray[row], xvalue + ': ' + ((column == 1) ? '{0}' : '{1}') + ' = ' + value); }}", yAxis1, yAxis2);
 
+            int tzOffsetColumn = Columns.IndexOf("TZOFFSET");
+
             foreach (DataRow dr in Rows)
             {
-                object obj = dr[xAxis];
-                DateTime? date = obj as DateTime?;    // Treat local dates as pseudo-UTC so that they display correctly.
-                gcData.XVals.Add(date == null ? obj : DateTime.SpecifyKind(date.Value, DateTimeKind.Utc));
+                if (gcData.XDataType == GoogleColumnDataType.date || gcData.XDataType == GoogleColumnDataType.datetime)
+                {
+                    // Convert it to UTC if it's not already in UTC AND if we have a column that tells us the UTC value
+                    DateTime dt = (DateTime) dr[xAxis];
+                    if (tzOffsetColumn >= 0 && dt.Kind == DateTimeKind.Unspecified)
+                        dt = DateTime.SpecifyKind(dt.AddMinutes((int)dr[tzOffsetColumn]), DateTimeKind.Utc);
+                    gcData.XVals.Add(dt);
+                }
+                else
+                    gcData.XVals.Add(dr[xAxis]);
 
                 if (!String.IsNullOrEmpty(yAxis1))
                 {
