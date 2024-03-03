@@ -43,13 +43,22 @@
 @if (ViewBag.UseMaps)
 {
     <script type="text/javascript">
-        var mapLibsReady = 0;   // Has mapping fully loaded?
+        async function initMap() {
+            // Request needed libraries.
+            const { Map, InfoWindow } = await google.maps.importLibrary("maps");
+            const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+        }
+
+        // var mapLibsReady = 0;   // Has mapping fully loaded?
         var mapInitFuncs = [];  // init functions (closures) to call once mapping is loaded.
 
-        function onGMapLoaded() {
+        async function onGMapLoaded() {
+            /*
             // Need BOTH spiderfier AND googlemaps to be ready before we can continue
             if (++mapLibsReady < 2)
                 return;
+                */
+            await initMap();
             for (var i = 0; i < mapInitFuncs.length; i++) {
                 mapInitFuncs[i]();
             }
@@ -59,9 +68,16 @@
             mapInitFuncs.push(func);
         }
     </script>
-    <script src="@VirtualPathUtility.ToAbsolute("~/Public/Scripts/GMapScript.js?v=14")" type="text/javascript"></script>
-    <script defer src="@("https://maps.googleapis.com/maps/api/js?callback=onGMapLoaded&key=" + HttpUtility.HtmlEncode(MyFlightbook.SocialMedia.GooglePlusConstants.MapsKey))"></script>
-    <script defer src="@(VirtualPathUtility.ToAbsolute("~/Public/Scripts/oms.min.js?v=9&spiderfier_callback=onGMapLoaded"))"></script>
+    <script src="@VirtualPathUtility.ToAbsolute("~/Public/Scripts/GMapScript.js?v=15")" type="text/javascript"></script>
+    <script>
+        (g => { var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__", m = document, b = window; b = b[c] || (b[c] = {}); var d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams, u = () => h || (h = new Promise(async (f, n) => { await (a = m.createElement("script")); e.set("libraries", [...r] + ""); for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]); e.set("callback", c + ".maps." + q); a.src = `https://maps.${c}apis.com/maps/api/js?` + e; d[q] = f; a.onerror = () => h = n(Error(p + " could not load.")); a.nonce = m.querySelector("script[nonce]")?.nonce || ""; m.head.append(a) })); d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n)) })({
+            key: "@MyFlightbook.SocialMedia.GooglePlusConstants.MapsKey",
+            v: "weekly",
+            // Use the 'v' parameter to indicate the version to use (weekly, beta, alpha, etc.).
+            // Add other bootstrap parameters as needed, using camel case.
+        });
+    </script>
+    <script src="@(VirtualPathUtility.ToAbsolute("~/Public/Scripts/oms.min.js?v=9&spiderfier_callback=onGMapLoaded"))"></script>
 }
 
 @if (ViewBag.IsIOSOrAndroid)

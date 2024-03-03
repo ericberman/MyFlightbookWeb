@@ -12,7 +12,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2023 MyFlightbook LLC
+ * Copyright (c) 2015-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -235,6 +235,11 @@ namespace MyFlightbook.Mapping
         /// ID for the map
         /// </summary>
         public string id { get; set; }
+
+        /// <summary>
+        /// Google Map ID
+        /// </summary>
+        public string MapID { get; set; }
 
         /// <summary>
         /// Name of the element containing the map
