@@ -544,10 +544,14 @@
         {
             <img src="@VirtualPathUtility.ToAbsolute("~/images/progress.gif")" />
             <script type="text/javascript">
+                var hasLoaded = false;
                 $(function () {
                     $("#adminTabs").tabs({
                         activate: function (e, ui) {
-                            refreshUserAirports(true);
+                            if (ui.newPanel[0].id == "divUserAirports" && !hasLoaded) {
+                                refreshUserAirports(true);
+                                hasLoaded = true;
+                            }
                         }
                     });
                 });
