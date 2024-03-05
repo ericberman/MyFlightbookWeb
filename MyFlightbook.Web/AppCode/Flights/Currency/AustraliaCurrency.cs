@@ -85,7 +85,7 @@ namespace MyFlightbook.Currency
             CompositeCurrencyState = fcComposite.CurrentState;
             CompositeDiscrepancy = fcComposite.DiscrepancyString;
             CompositeExpiration = fcComposite.ExpirationDate;
-            Query.EnumeratedFlights = relevantFlights;
+            Query.EnumeratedFlights = new HashSet<int>(relevantFlights);
         }
     }
 

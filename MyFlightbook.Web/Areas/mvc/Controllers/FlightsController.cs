@@ -187,7 +187,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 FlightQuery fq = FlightQuery.FromJSON(fqJSON);
                 if (!String.IsNullOrEmpty(selectedFlights))
                 {
-                    fq.EnumeratedFlights = selectedFlights.ToInts();
+                    fq.EnumeratedFlights = new HashSet<int>(selectedFlights.ToInts());
                     fq.Refresh();
                 }
                 FlightResult fr = FlightResultManager.FlightResultManagerForUser(targetUser).ResultsForQuery(fq);

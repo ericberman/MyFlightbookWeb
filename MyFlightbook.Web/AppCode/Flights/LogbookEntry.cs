@@ -2149,7 +2149,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
             User = szUserName;    // in case we don't actually load anything, we should at least set this so that subsequent saves do the right thing.
             if (idRow > 0)
             {
-                FlightQuery fq = new FlightQuery(string.Empty) { EnumeratedFlights = new int[] { idRow } };
+                FlightQuery fq = new FlightQuery(string.Empty) { EnumeratedFlights = new HashSet<int>(new int[] { idRow }) };
                 DBHelper dbh = new DBHelper(QueryCommand(fq, 0, 1, false, lto));
 
                 bool fRowFound = false;

@@ -104,7 +104,7 @@ namespace MyFlightbook
         /// Any additional enumeration of specific flight IDs.  NOT sent over the wire.
         /// </summary>
         [System.Xml.Serialization.XmlIgnore]
-        public IEnumerable<int> EnumeratedFlights { get; set; } = Array.Empty<int>();
+        public HashSet<int> EnumeratedFlights { get; set; } = new HashSet<int>();
 
         /// <summary>
         /// Flight Characteristics - AND?  OR?  NOT?  Default is AND ("ALL")

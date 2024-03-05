@@ -502,7 +502,7 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
             // Customer-facing utility function: if you add "dupesOnly=1" to the URL, we add a custom restriction that limits flights to ONLY flights that look like potential duplicates
             if (util.GetIntParam(Request, "dupesOnly", 0) != 0)
             {
-                Restriction.EnumeratedFlights = LogbookEntryBase.DupeCandidatesForUser(Restriction.UserName);
+                Restriction.EnumeratedFlights = new HashSet<int>(LogbookEntryBase.DupeCandidatesForUser(Restriction.UserName));
                 HasBeenBound = false;
             }
 
@@ -785,7 +785,7 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
     protected void lnkRestrictSelected_Click(object sender, EventArgs e)
     {
         IsInSelectMode = false;
-        Restriction.EnumeratedFlights = SelectedItems;
+        Restriction.EnumeratedFlights = new HashSet<int>(SelectedItems);
         Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/Logbooknew.aspx?fq={0}", Restriction.ToBase64CompressedJSONString()));
     }
 

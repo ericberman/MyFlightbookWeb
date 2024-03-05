@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2018-2021 MyFlightbook LLC
+ * Copyright (c) 2018-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -63,7 +63,7 @@ namespace MyFlightbook.Playpen
                 List<int> lst = new List<int>();
                 foreach (string szID in lstIds)
                     lst.Add(Convert.ToInt32(szID, CultureInfo.InvariantCulture));
-                FlightQuery fq = new FlightQuery(User.Identity.Name) { EnumeratedFlights = lst };
+                FlightQuery fq = new FlightQuery(User.Identity.Name) { EnumeratedFlights = new HashSet<int>(lst) };
                 return fq;
             }
         }

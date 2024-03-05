@@ -15,7 +15,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2023 MyFlightbook LLC
+ * Copyright (c) 2010-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -570,7 +570,7 @@ namespace MyFlightbook.Airports
                 throw new MyFlightbookException("Don't get all flights as KML for an empty user!!");
 
             if (lstIDs != null)
-                fq.EnumeratedFlights = lstIDs;
+                fq.EnumeratedFlights = new HashSet<int>(lstIDs);
 
             // Get the master airport list
             AirportList alMaster = AllFlightsAndNavaids(fq);
