@@ -28,7 +28,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Ratings Progress
         [HttpPost]
         [Authorize]
-        [ValidateAntiForgeryToken]
         public ActionResult ProgressAgainstRating()
         {
             return SafeOp(() =>
