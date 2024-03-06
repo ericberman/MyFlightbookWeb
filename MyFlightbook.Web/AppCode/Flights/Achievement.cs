@@ -363,6 +363,19 @@ namespace MyFlightbook.Achievements
             NumberOfStatesMexico,
 
             Antarctica = BadgeCategory.Miscellaneous,
+            FlightsInJanuary,
+            FlightsInFebruary,
+            FlightsInMarch,
+            FlightsInApril,
+            FlightsInMay,
+            FlightsInJune,
+            FlightsInJuly,
+            FlightsInAugust,
+            FlightsInSeptember,
+            FlightsInOctober,
+            FlightsInNovember,
+            FlightsInDecember,
+            FlightsInYear,
 
             AirportList00 = BadgeCategory.AirportList,
             AirportList01, AirportList02, AirportList03, AirportList04, AirportList05, AirportList06, AirportList07, AirportList08, AirportList09, AirportList10,
@@ -738,6 +751,20 @@ namespace MyFlightbook.Achievements
 
                     // Miscellaneous
                     new FlightOfThePenguin(),
+                    // Flights-in-month
+                    new FlightsInMonth(1),
+                    new FlightsInMonth(2),
+                    new FlightsInMonth(3),
+                    new FlightsInMonth(4),
+                    new FlightsInMonth(5),
+                    new FlightsInMonth(6),
+                    new FlightsInMonth(7),
+                    new FlightsInMonth(8),
+                    new FlightsInMonth(9),
+                    new FlightsInMonth(10),
+                    new FlightsInMonth(11),
+                    new FlightsInMonth(12),
+                    new MultiLevelBadgeFlightDaysInYear(),
 
                     // Multi-level badges (counts)
                     new MultiLevelBadgeNumberFlights(),
@@ -1066,7 +1093,85 @@ namespace MyFlightbook.Achievements
         }
     }
 
+    /// <summary>
+    /// Issue #1191 : Badge for flying on every day of a month (with a special one on leap year February)
+    /// </summary>
+    [Serializable]
+    public class FlightsInMonth : Badge
+    {
+        private int _month;
 
+        private static BadgeID IDForMonth(int month)
+        {
+            return (Badge.BadgeID)(month - 1 + (int)Badge.BadgeID.FlightsInJanuary);
+        }
+
+        public int Month
+        {
+            get { return _month; }
+            set
+            {
+                _month = value;
+                ID = IDForMonth(value);
+            }
+        }
+
+        private bool fHoldOutForLeapMonth = false;
+
+        public FlightsInMonth() { }
+
+        public FlightsInMonth(int month) : base(IDForMonth(month), string.Empty) 
+        {
+            Month = month;
+        }
+
+        private readonly Dictionary<int, HashSet<int>> dFlights = new Dictionary<int, HashSet<int>>();
+
+        public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context)
+        {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
+            if (cfr.dtFlight.Month != Month || (Level == AchievementLevel.Achieved && !fHoldOutForLeapMonth))
+                return; // we've met this - nothing more to do
+
+            HashSet<int> flights = dFlights.TryGetValue(cfr.dtFlight.Year, out HashSet<int> hs) ? hs : (dFlights[cfr.dtFlight.Year] = new HashSet<int>());
+            flights.Add(cfr.dtFlight.Day);  // using a hashset handles multiple flights on a single day.
+
+            // check if we completed a month
+            // February is special: 
+            int daysInMonth = DateTime.DaysInMonth(cfr.dtFlight.Year, cfr.dtFlight.Month);
+            if (flights.Count == daysInMonth)
+            {
+                // it's not a match if we achieved this already, UNLESS we are holding out for a leap month
+                // fHoldOutForLeapMonth is only ever set for February, so we don't need to double check it here. 
+                // 4 possibilities for Feb (fHoldOutForLeapMonth only ever gets set for Feb):
+                // a) Saw a 28 day Feb, we are seeing a new 28-day feb: return; nothing to do
+                // b) Saw a 28 day Feb, we are seeing a 29-day feb: contrinue on!
+                // c) Saw a 29 day Feb, this is a 28 day Feb: return
+                // d) Saw a 29 day Feb, we are seeing a new 29 day Feb: return
+                if (Level == AchievementLevel.Achieved && (!fHoldOutForLeapMonth || daysInMonth == 28))
+                    return;
+
+                Level = AchievementLevel.Achieved;
+                DateEarned = cfr.dtFlight;
+                IDFlightEarned = cfr.flightID;
+                if (Month == 2)
+                    fHoldOutForLeapMonth = (daysInMonth == 28);
+            }
+        }
+
+        public override string Name
+        {
+            get
+            {
+                // Set the name to indicate whether we have met the month or a leap month!
+                return Level == AchievementLevel.None ?
+                    base.Name : (DateEarned.Month == 2 && DateEarned.Day == 29 ? Resources.Achievements.AchievementAllDaysInMonthLeapYear :
+                    String.Format(CultureInfo.InvariantCulture, Resources.Achievements.AchievementAllDaysInMonth, CultureInfo.CurrentCulture.DateTimeFormat.MonthNames[DateEarned.Month - 1]));
+            }
+            set => base.Name = value;
+        }
+    }
     #endregion
 
     #region Multi-level badges based on integer counts
@@ -1125,6 +1230,58 @@ namespace MyFlightbook.Achievements
     }
 
     #region Concrete Multi-level badges
+    /// <summary>
+    /// Issue #1191: Badge for flying lots of days in a year
+    /// </summary>
+    [Serializable]
+    public class MultiLevelBadgeFlightDaysInYear : MultiLevelCountBadgeBase
+    {
+        private readonly Dictionary<int, HashSet<int>> dFlights = new Dictionary<int, HashSet<int>>();
+        private readonly Dictionary<int, ExaminerFlightRow> dLastMatch = new Dictionary<int, ExaminerFlightRow>();
+
+        public MultiLevelBadgeFlightDaysInYear() : base(BadgeID.FlightsInYear, Resources.Achievements.nameDaysInYear, 250, 300, 350, 360) { }
+
+        public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context)
+        {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
+
+            HashSet<int> flights = dFlights.TryGetValue(cfr.dtFlight.Year, out HashSet<int> hs) ? hs : (dFlights[cfr.dtFlight.Year] = new HashSet<int>());
+            int cFlights = flights.Count;
+            flights.Add(cfr.dtFlight.DayOfYear);
+            if (flights.Count > cFlights)   // it incremented - save the flight ID that incremented it
+                dLastMatch[cfr.dtFlight.Year] = cfr;
+        }
+
+        public override void PostFlight(IDictionary<string, object> context)
+        {
+            Level = AchievementLevel.None;  // default
+            // find the highest value
+            List<int> lstYears = new List<int>(dFlights.Keys);
+            lstYears.Sort();
+            int highestDays = 0;
+            ExaminerFlightRow cfr = null;
+            foreach (int key in lstYears)
+            {
+                if (dFlights[key].Count > highestDays)
+                {
+                    highestDays = dFlights[key].Count;
+                    cfr = dLastMatch[key];
+                }
+            }
+
+            for (int i = 0; i < Levels.Count; i++)
+            {
+                if (highestDays >= Levels[i])
+                {
+                    Level = (AchievementLevel)((int)AchievementLevel.Bronze + i);
+                    IDFlightEarned = cfr.flightID;
+                    DateEarned = cfr.dtFlight;
+                }
+            }
+        }
+    }
+
     /// <summary>
     /// Multi-level badge for number of flights.
     /// </summary>
