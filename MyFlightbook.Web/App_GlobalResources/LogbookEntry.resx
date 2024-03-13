@@ -1759,4 +1759,19 @@ Proceed with import?</value>
   <data name="PublicFlightPageHeaderAll" xml:space="preserve">
     <value>Shared flights taken by %APP_NAME% users</value>
   </data>
+  <data name="PrintFormatHongKong" xml:space="preserve">
+    <value>Hong Kong</value>
+  </data>
+  <data name="PrintHeaderNumberOf" xml:space="preserve">
+    <value># of</value>
+  </data>
+  <data name="PrintHeaderP1US" xml:space="preserve">
+    <value>P1(U/S)</value>
+  </data>
+  <data name="PrintHeaderP2X" xml:space="preserve">
+    <value>P2/P2X</value>
+  </data>
+  <data name="PrintHeaderPUT" xml:space="preserve">
+    <value>P/UT</value>
+  </data>
 </root>

@@ -542,6 +542,7 @@
     <Content Include="Controls\PrintingLayouts\layout2Page.ascx" />
     <Content Include="Controls\PrintingLayouts\layoutAirline.ascx" />
     <Content Include="Controls\PrintingLayouts\layoutCondensed.ascx" />
+    <Content Include="Controls\PrintingLayouts\layoutHongKong.ascx" />
     <Content Include="Controls\PrintingLayouts\LayoutPCAA.ascx" />
     <Content Include="Controls\PrintingLayouts\layoutUASCivi.ascx" />
     <Content Include="Controls\PrintingLayouts\layoutNavy.ascx" />
@@ -836,6 +837,7 @@
     <Content Include="Member\StartingTotals.aspx" />
     <Content Include="Member\StudentLogbook.aspx" />
     <Content Include="Public\CSS\printAirline.css" />
+    <Content Include="Public\CSS\printHongKong.css" />
     <Content Include="Public\Scripts\accordionproxy.js" />
     <Content Include="Public\Scripts\adminajax.js" />
     <Content Include="Public\Scripts\ajaxUpload.js" />
@@ -1971,6 +1973,13 @@
     </Compile>
     <Compile Include="Controls\PrintingLayouts\layoutCondensed.ascx.designer.cs">
       <DependentUpon>layoutCondensed.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PrintingLayouts\layoutHongKong.ascx.cs">
+      <DependentUpon>layoutHongKong.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\PrintingLayouts\layoutHongKong.ascx.designer.cs">
+      <DependentUpon>layoutHongKong.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\PrintingLayouts\LayoutPCAA.ascx.cs">
       <DependentUpon>LayoutPCAA.ascx</DependentUpon>
