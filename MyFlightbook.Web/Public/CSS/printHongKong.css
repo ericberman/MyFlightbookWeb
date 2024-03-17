@@ -1,0 +1,122 @@
+﻿/******************************************************
+ * 
+ * Copyright (c) 2024 MyFlightbook LLC
+ * Contact myflightbook-at-gmail.com for more information
+ *
+*******************************************************/
+
+tr.bordered {
+    page-break-inside: avoid;
+}
+
+tr.bordered td, tr.bordered th {
+    padding: 3px;
+    page-break-inside: avoid;
+    border: 1px solid;
+}
+
+td.centered {
+    text-align: center;
+}
+
+tr.bordered td {
+    font-size: smaller;
+}
+
+tr.borderedBold th {
+    padding: 3px;
+    border: 1px solid;
+    page-break-inside: avoid;
+    font-weight: bold;
+    text-align: center;
+}
+
+tr.subtotal td {
+    padding: 2px;
+    border: 1px solid;
+    page-break-inside: avoid;
+    font-size: smaller;
+    font-weight: bold;
+}
+
+    tr.subtotal td.subtotalLabel {
+        border: none;
+    }
+
+.headerBig {
+    text-align: center;
+    font-weight: bold;
+    font-size: smaller;
+}
+
+.headerSmall {
+    text-align: center;
+    font-size: smaller;
+    font-weight: normal;
+}
+
+@media screen {
+    tr.bordered, tr.bordered th, tr.bordered td.nightCol, tr.bordered th.nightCol, td.nightCol, tr.subtotal td, tr.borderedBold th, .topThick, tr.bordered td, tr.bordered th, .pageTable, .thickRight, .thickLeft {
+        border-color: #888888;
+    }
+
+    th {
+        color: #856134;
+    }
+
+    tr.bordered td, tr.bordered th {
+        border: 1px solid #888888;
+    }
+
+        tr.bordered td.thickRight, tr.bordered th.thickRight {
+            border-left: 1px solid #888888;
+            border-top: 1px solid #888888;
+            border-bottom: 1px solid #888888;
+            border-right: 2px solid #888888;
+        }
+
+    .thickLeft {
+        border-left: 2px solid #888888;
+    }
+
+    .thickRight {
+        border-right: 2px solid #888888;
+    }
+
+    .topThick {
+        border-top: 2px solid #888888;
+    }
+
+    tr.bordered:nth-child(odd) td {
+        background-color: lemonchiffon;
+    }
+}
+
+@media print {
+    tr.bordered, tr.bordered th, tr.bordered td.nightCol, tr.bordered th.nightCol, td.nightCol, tr.subtotal td, tr.borderedBold th, .topThick, tr.bordered td, tr.bordered th, .pageTable, .thickRight, .thickLeft {
+        border-color: black;
+    }
+
+    th {
+        color: black;
+    }
+
+    tr.bordered td.thickRight, tr.bordered th.thickRight {
+        border-left: 1px solid black;
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+        border-right: 2px solid black;
+    }
+
+    .thickLeft {
+        border-left: 2px solid black;
+    }
+
+    .thickRight {
+        border-right: 2px solid black;
+    }
+
+    .topThick {
+        border-top: 2px solid black;
+    }
+}

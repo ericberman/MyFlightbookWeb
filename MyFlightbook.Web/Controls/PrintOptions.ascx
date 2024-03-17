@@ -21,6 +21,7 @@
         <asp:ListItem Value="TwoPage" Text="<%$ Resources:LogbookEntry, PrintFormat2Page %>"></asp:ListItem>
         <asp:ListItem Value="Navy" Text="<%$ Resources:LogbookEntry, PrintFormatNavy %>"></asp:ListItem>
         <asp:ListItem Value="Airline" Text="<%$ Resources:LogbookEntry, PrintFormatAirline %>"></asp:ListItem>
+        <asp:ListItem Value="HongKong" Text="<%$ Resources:LogbookEntry, PrintFormatHongKong %>"></asp:ListItem>
     </asp:DropDownList>
     <asp:Panel ID="pnlIncludeImages" runat="server">
         <asp:CheckBox ID="ckIncludeImages" runat="server" Text="<%$ Resources:LocalizedText, PrintViewIncludeImages %>" AutoPostBack="True" OnCheckedChanged="ckIncludeImages_CheckedChanged" />

@@ -1,5 +1,4 @@
-﻿using Amazon.S3.Model.Internal.MarshallTransformations;
-using MyFlightbook.Achievements;
+﻿using MyFlightbook.Achievements;
 using MyFlightbook.Airports;
 using MyFlightbook.Charting;
 using MyFlightbook.Currency;
@@ -118,7 +117,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     {
                         throw new InvalidOperationException(fd.ErrorString);
                     }
-                    ViewBag.defaultX = fd.Data.Columns.Contains("DATE") ? "DATE" : (fd.Data.Columns.Contains("TIME") ? "TIME" : (fd.Data.Columns.Contains("SAMPLE") ? "SAMPLE" : ""));
+                    ViewBag.defaultX = fd.Data.Columns.Contains("UTC DATETIME") ? "UTC DATETIME" : (fd.Data.Columns.Contains("DATE") ? "DATE" : (fd.Data.Columns.Contains("TIME") ? "TIME" : (fd.Data.Columns.Contains("SAMPLE") ? "SAMPLE" : "")));
                     ViewBag.minIndex = 0;
                     ViewBag.maxIndex = Math.Max(fd.Data.Rows.Count - 1, 0);
 
@@ -188,7 +187,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 FlightQuery fq = FlightQuery.FromJSON(fqJSON);
                 if (!String.IsNullOrEmpty(selectedFlights))
                 {
-                    fq.EnumeratedFlights = selectedFlights.ToInts();
+                    fq.EnumeratedFlights = new HashSet<int>(selectedFlights.ToInts());
                     fq.Refresh();
                 }
                 FlightResult fr = FlightResultManager.FlightResultManagerForUser(targetUser).ResultsForQuery(fq);
@@ -667,7 +666,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DownloadTelemetry(int idFlight, DownloadFormat downloadFormat, FlightData.SpeedUnitTypes speedUnits, FlightData.AltitudeUnitTypes altUnits, bool asAdmin)
+        public ActionResult DownloadTelemetry(int idFlight, DownloadFormat downloadFormat, FlightData.SpeedUnitTypes speedUnits = FlightData.SpeedUnitTypes.MetersPerSecond, FlightData.AltitudeUnitTypes altUnits = FlightData.AltitudeUnitTypes.Meters, bool asAdmin = false)
         {
             return DownloadTelemetryForFlight(GetFlightToView(idFlight, asAdmin), downloadFormat, speedUnits, altUnits);
         }

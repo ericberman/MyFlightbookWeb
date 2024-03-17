@@ -130,7 +130,7 @@ namespace MyFlightbook.Instruction
                 List<int> lst = new List<int>();
                 foreach (string szID in lstIds)
                     lst.Add(Convert.ToInt32(szID, CultureInfo.InvariantCulture));
-                FlightQuery fq = new FlightQuery(User.Identity.Name) { EnumeratedFlights = lst };
+                FlightQuery fq = new FlightQuery(User.Identity.Name) { EnumeratedFlights = new HashSet<int>(lst) };
                 DBHelper dbh = new DBHelper(LogbookEntry.QueryCommand(fq));
                 List<LogbookEntry> lstFlights = new List<LogbookEntry>();
                 dbh.ReadRows(

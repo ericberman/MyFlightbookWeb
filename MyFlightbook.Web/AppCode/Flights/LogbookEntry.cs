@@ -2149,7 +2149,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
             User = szUserName;    // in case we don't actually load anything, we should at least set this so that subsequent saves do the right thing.
             if (idRow > 0)
             {
-                FlightQuery fq = new FlightQuery(string.Empty) { EnumeratedFlights = new int[] { idRow } };
+                FlightQuery fq = new FlightQuery(string.Empty) { EnumeratedFlights = new HashSet<int>(new int[] { idRow }) };
                 DBHelper dbh = new DBHelper(QueryCommand(fq, 0, 1, false, lto));
 
                 bool fRowFound = false;
@@ -3171,6 +3171,10 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
 
         public decimal ReliefPilotTime { get { return CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropReliefPilotTime); } }
 
+        public decimal P2XDayTime { get { return CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropP2xDay); } }
+
+        public decimal P2XNightTime { get { return CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropP2xNight); } }
+
         public decimal MultiPilotTime { get { return CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropMultiPilotTime); } }
 
         /// <summary>
@@ -3320,6 +3324,10 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
         public decimal FlightEngineerTotal { get; set; }
         public decimal ReliefPilotTotal { get; set; }
         public decimal MultiPilotTotal { get; set; }
+
+        public decimal P2XDayTotal { get; set; }
+
+        public decimal P2XNightTotal { get; set; }
 
         public Collection<decimal> OptionalColumnTotals { get; } = new Collection<decimal>();
 
@@ -3915,6 +3923,8 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                     FlightEngineerTotal = FlightEngineerTotal.AddMinutes(led.FlightEngineerTime, RoundingUnit);
                     ReliefPilotTotal = ReliefPilotTotal.AddMinutes(led.ReliefPilotTime, RoundingUnit);
                     MultiPilotTotal = MultiPilotTotal.AddMinutes(led.MultiPilotTime, RoundingUnit);
+                    P2XDayTotal = P2XDayTotal.AddMinutes(led.P2XDayTime, RoundingUnit);
+                    P2XNightTotal = P2XNightTotal.AddMinutes(led.P2XNightTime, RoundingUnit);
 
                     NightTouchAndGoLandings += led.CustomProperties.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropNightTouchAndGo);
 
@@ -3949,6 +3959,8 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                     FlightEngineerTotal = FlightEngineerTotal.AddMinutes(led.FlightEngineerTotal, RoundingUnit);
                     ReliefPilotTotal = ReliefPilotTotal.AddMinutes(led.ReliefPilotTotal, RoundingUnit);
                     MultiPilotTotal = MultiPilotTotal.AddMinutes(led.MultiPilotTotal, RoundingUnit);
+                    P2XDayTotal = P2XDayTotal.AddMinutes(led.P2XDayTotal, RoundingUnit);
+                    P2XNightTotal = P2XNightTotal.AddMinutes(led.P2XNightTotal, RoundingUnit);
 
                     NightTouchAndGoLandings += led.NightTouchAndGoLandings;
 

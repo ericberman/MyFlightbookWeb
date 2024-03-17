@@ -61,6 +61,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flew every day in the month of {0}.
+        /// </summary>
+        internal static string AchievementAllDaysInMonth {
+            get {
+                return ResourceManager.GetString("AchievementAllDaysInMonth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flew every day in February leap year!.
+        /// </summary>
+        internal static string AchievementAllDaysInMonthLeapYear {
+            get {
+                return ResourceManager.GetString("AchievementAllDaysInMonthLeapYear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Badge for this achievement.
         /// </summary>
         internal static string badgeTitleAchieved {
@@ -354,6 +372,15 @@ namespace Resources {
         internal static string nameContinents {
             get {
                 return ResourceManager.GetString("nameContinents", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flew {0} days in a single calendar year!.
+        /// </summary>
+        internal static string nameDaysInYear {
+            get {
+                return ResourceManager.GetString("nameDaysInYear", resourceCulture);
             }
         }
         

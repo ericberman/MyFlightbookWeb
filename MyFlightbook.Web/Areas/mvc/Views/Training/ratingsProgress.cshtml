@@ -211,31 +211,30 @@
 <div class="noprint">
     @using (Html.BeginForm("", "Training", FormMethod.Post, new { id = "frmPickRating", name = "frmPickRating" }))
     {
-        @Html.AntiForgeryToken();
         <input type="hidden" value="@targetUser" name="targetUser" id="hdnTargetUser" />
-    <p>
-        <select id="cmbMilestoneGroup" name="groupName" onchange="javascript: groupSelected();">
-            <option selected value="">@Resources.MilestoneProgress.PromptRatingGroup</option>
-            @foreach (string groupName in milestones.Keys)
-            {
-                <option value="@groupName" @((groupName.CompareCurrentCulture(selectedGroup) == 0).ToSelected()) >@groupName</option>
-            }
-        </select>
-    </p>
-    <p>
-        <select id="cmbRatings" name="ratingName" onchange="javascript: ratingSelected();">
-            <option selected value="">@Resources.MilestoneProgress.PromptRatingItem</option>
-            @{ 
-                if (!String.IsNullOrEmpty(selectedGroup))
+        <p>
+            <select id="cmbMilestoneGroup" name="groupName" onchange="javascript: groupSelected();">
+                <option selected value="">@Resources.MilestoneProgress.PromptRatingGroup</option>
+                @foreach (string groupName in milestones.Keys)
                 {
-                    foreach (string ratingName in milestones[selectedGroup])
+                    <option value="@groupName" @((groupName.CompareCurrentCulture(selectedGroup) == 0).ToSelected()) >@groupName</option>
+                }
+            </select>
+        </p>
+        <p>
+            <select id="cmbRatings" name="ratingName" onchange="javascript: ratingSelected();">
+                <option selected value="">@Resources.MilestoneProgress.PromptRatingItem</option>
+                @{ 
+                    if (!String.IsNullOrEmpty(selectedGroup))
                     {
-                        <option value="@ratingName" @((ratingName.CompareCurrentCulture(selectedRating) == 0).ToSelected()) >@ratingName</option>
+                        foreach (string ratingName in milestones[selectedGroup])
+                        {
+                            <option value="@ratingName" @((ratingName.CompareCurrentCulture(selectedRating) == 0).ToSelected()) >@ratingName</option>
+                        }
                     }
                 }
-            }
-        </select>
-    </p>
+            </select>
+        </p>
     }
 </div>
 @if (targetUser.CompareOrdinal(User.Identity.Name) == 0)

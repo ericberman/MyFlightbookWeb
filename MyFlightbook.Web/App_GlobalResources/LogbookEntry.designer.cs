@@ -2791,6 +2791,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hong Kong.
+        /// </summary>
+        internal static string PrintFormatHongKong {
+            get {
+                return ResourceManager.GetString("PrintFormatHongKong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to MyFlightbook.
         /// </summary>
         internal static string PrintFormatNative {
@@ -3394,6 +3403,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to # of.
+        /// </summary>
+        internal static string PrintHeaderNumberOf {
+            get {
+                return ResourceManager.GetString("PrintHeaderNumberOf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to P2 / P3.
         /// </summary>
         internal static string PrintHeaderOtherNames {
@@ -3421,11 +3439,29 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to P1(U/S).
+        /// </summary>
+        internal static string PrintHeaderP1US {
+            get {
+                return ResourceManager.GetString("PrintHeaderP1US", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to P2.
         /// </summary>
         internal static string PrintHeaderP2 {
             get {
                 return ResourceManager.GetString("PrintHeaderP2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to P2/P2X.
+        /// </summary>
+        internal static string PrintHeaderP2X {
+            get {
+                return ResourceManager.GetString("PrintHeaderP2X", resourceCulture);
             }
         }
         
@@ -3498,6 +3534,15 @@ namespace Resources {
         internal static string PrintHeaderPlace {
             get {
                 return ResourceManager.GetString("PrintHeaderPlace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to P/UT.
+        /// </summary>
+        internal static string PrintHeaderPUT {
+            get {
+                return ResourceManager.GetString("PrintHeaderPUT", resourceCulture);
             }
         }
         

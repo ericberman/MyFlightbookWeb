@@ -466,4 +466,13 @@
   <data name="RecentAchievementsMostHoursInDayTitle" xml:space="preserve">
     <value>Most hours logged in a single day</value>
   </data>
+  <data name="AchievementAllDaysInMonth" xml:space="preserve">
+    <value>Flew every day in the month of {0}</value>
+  </data>
+  <data name="AchievementAllDaysInMonthLeapYear" xml:space="preserve">
+    <value>Flew every day in February leap year!</value>
+  </data>
+  <data name="nameDaysInYear" xml:space="preserve">
+    <value>Flew {0} days in a single calendar year!</value>
+  </data>
 </root>

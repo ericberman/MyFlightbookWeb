@@ -28,7 +28,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Ratings Progress
         [HttpPost]
         [Authorize]
-        [ValidateAntiForgeryToken]
         public ActionResult ProgressAgainstRating()
         {
             return SafeOp(() =>
@@ -674,7 +673,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             ViewBag.studentType = @extern != 0 ? StudentTypes.External : StudentTypes.Member;
             ViewBag.targetUser = student;
-            ViewBag.endorsements = EndorsementsForUser(student, User.Identity.Name, fIncludeDeleted: true);
+            ViewBag.endorsements = EndorsementsForUser(student, User.Identity.Name, fIncludeDeleted: @extern == 0); // issue # 1196 - don't include deleted external endorsements.
             ViewBag.nonOwnedEndorsements = string.IsNullOrEmpty(student) ? Array.Empty<Endorsement>() : RemoveEndorsementsByInstructor(EndorsementsForUser(student, null), User.Identity.Name);
             InstructorStudent instrStudent = (CFIStudentMap.GetInstructorStudent(new CFIStudentMap(User.Identity.Name).Students, student));
             ViewBag.canViewStudent = instrStudent?.CanViewLogbook ?? false;

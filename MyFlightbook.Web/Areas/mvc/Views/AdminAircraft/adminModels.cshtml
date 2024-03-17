@@ -37,7 +37,7 @@
             },
             complete: function (response) { },
             success: function (response) {
-                $(sender).parents('tr').remove();
+                $(sender).closest('tr').remove();
             }
         });
         return false;
@@ -97,55 +97,74 @@
             }
         });
     }
+
+    $(() => {
+        $("#adminTabs").tabs();
+    });
 </script>
-<h2>Makes/models that should be sims:</h2>
-@if (rgShouldBeSims == null || rgShouldBeSims.Count() == 0)
-{
-    <div class="success">(No suspect makes/models found)</div>
-}
-else
-{
-    Html.RenderAction("ModelTable", "AdminAircraft", new { rgModels = rgShouldBeSims, name = "simcandidates", fIncludeDelete = false });
-}
-
-<h2>Orphaned makes/models (i.e., no airplanes using them):</h2>
-@if (rgOrphans == null || rgOrphans.Count() == 0)
-{
-    <div class="success">(No orphaned makes/models found)</div>
-}
-else
-{
-    Html.RenderAction("ModelTable", "AdminAircraft", new { rgModels = rgOrphans, name = "orphans", fIncludeDelete = true });
-}
-<h2>Review Type Designations</h2>
-<div id="divTypes">
-    <button type="button" onclick="refreshTypes();">Refresh</button>
-</div>
-<h2>Models that are potential dupes:</h2>
-<p><input type="checkbox" id="ckExcludeSims" onclick="javascript: refreshDupes();" /><label for="ckExcludeSims">Exclude Sims (i.e., real aircraft only)</label> <img src="@VirtualPathUtility.ToAbsolute("~/images/progress.gif")" style="display: none;" id="imgDupePrg" /></p>
-<p>
-    Keep
-    <select id="ddModelToKeep">
-        @foreach (MakeModel m in rgDupes)
+<div id="adminTabs">
+    <ul>
+        <li><a href="#orphanModels">Orphans</a></li>
+        <li><a href="#invalidModels">Invalid Models</a></li>
+        <li><a href="#typeModels">Types</a></li>
+        <li><a href="#dupeModels">Potential Dupes</a></li>
+    </ul>
+    <div id="invalidModels">
+        <h2>Makes/models that should be sims:</h2>
+        @if (rgShouldBeSims == null || rgShouldBeSims.Count() == 0)
         {
-            <option value="@m.MakeModelID">@m.ModelDisplayNameNoCatclass - @m.MakeModelID</option>
+            <div class="success">(No suspect makes/models found)</div>
         }
-    </select>
-    And kill
-    <select id="ddModelToKill">
-        @foreach (MakeModel m in rgDupes)
+        else
         {
-            <option value="@m.MakeModelID">@m.ModelDisplayNameNoCatclass - @m.MakeModelID</option>
+            Html.RenderAction("ModelTable", "AdminAircraft", new { rgModels = rgShouldBeSims, name = "simcandidates", fIncludeDelete = false });
         }
-    </select>
-    (will be deleted) 
-    <button type="button" onclick="javascript: previewDupes();">Preview</button>
-</p>
-<div id="divMergePreview">
+    </div>
+    <div id="orphanModels">
+        <h2>Orphaned makes/models (i.e., no airplanes using them):</h2>
+        @if (rgOrphans == null || rgOrphans.Count() == 0)
+        {
+            <div class="success">(No orphaned makes/models found)</div>
+        }
+        else
+        {
+            Html.RenderAction("ModelTable", "AdminAircraft", new { rgModels = rgOrphans, name = "orphans", fIncludeDelete = true });
+        }
+    </div>
+    <div id="typeModels">
+        <h2>Review Type Designations</h2>
+        <div id="divTypes">
+            <button type="button" onclick="refreshTypes();">Refresh</button>
+        </div>
+    </div>
+    <div id="dupeModels">
+        <h2>Models that are potential dupes:</h2>
+        <p><input type="checkbox" id="ckExcludeSims" onclick="javascript: refreshDupes();" /><label for="ckExcludeSims">Exclude Sims (i.e., real aircraft only)</label> <img src="@VirtualPathUtility.ToAbsolute("~/images/progress.gif")" style="display: none;" id="imgDupePrg" /></p>
+        <p>
+            Keep
+            <select id="ddModelToKeep">
+                @foreach (MakeModel m in rgDupes)
+                {
+                    <option value="@m.MakeModelID">@m.ModelDisplayNameNoCatclass - @m.MakeModelID</option>
+                }
+            </select>
+            And kill
+            <select id="ddModelToKill">
+                @foreach (MakeModel m in rgDupes)
+                {
+                    <option value="@m.MakeModelID">@m.ModelDisplayNameNoCatclass - @m.MakeModelID</option>
+                }
+            </select>
+            (will be deleted)
+            <button type="button" onclick="javascript: previewDupes();">Preview</button>
+        </p>
+        <div id="divMergePreview" style="white-space: pre-line">
 
-</div>
+        </div>
 
-<div>&nbsp;</div>
-<div id="divDupes">
-    @{ Html.RenderAction("ModelTable", "AdminAircraft", new { rgModels = rgDupes, name = "dupes", fIncludeDelete = false }); }
+        <div>&nbsp;</div>
+        <div id="divDupes">
+            @{ Html.RenderAction("ModelTable", "AdminAircraft", new { rgModels = rgDupes, name = "dupes", fIncludeDelete = false }); }
+        </div>
+    </div>
 </div>

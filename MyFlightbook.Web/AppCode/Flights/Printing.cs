@@ -39,7 +39,7 @@ namespace MyFlightbook.Printing
         IList<LogbookEntryDisplay> CondenseFlights(IEnumerable<LogbookEntryDisplay> lstIn);
     }
 
-    public enum PrintLayoutType { Native, Portrait, EASA, USA, Canada, SACAA, CASA, NZ, Glider, Condensed, PCAA, UASCivi, TwoPage, Navy, Airline }
+    public enum PrintLayoutType { Native, Portrait, EASA, USA, Canada, SACAA, CASA, NZ, Glider, Condensed, PCAA, UASCivi, TwoPage, Navy, Airline, HongKong }
 
     #region Printing Layout implementations
     public abstract class PrintLayout
@@ -115,6 +115,8 @@ namespace MyFlightbook.Printing
                     return new PrintLayoutNavy() { CurrentUser = pf };
                 case PrintLayoutType.Airline:
                     return new PrintLayoutAirline() { CurrentUser = pf };
+                case PrintLayoutType.HongKong:
+                    return new PrintLayoutHongKong() { CurrentUser = pf };
                 default:
                     throw new ArgumentOutOfRangeException(nameof(plt));
             }
@@ -423,6 +425,25 @@ namespace MyFlightbook.Printing
         public override string ControlPath => "~/Controls/PrintingLayouts/layoutPCAA.ascx";
 
         public override string CSSPath { get { return "~/Public/CSS/printPCAA.css?v=3"; } }
+    }
+
+    public class PrintLayoutHongKong : PrintLayout
+    {
+        public override int RowHeight(LogbookEntryDisplay le)
+        {
+            if (le == null)
+                throw new ArgumentNullException(nameof(le));
+            // Very rough computation: look at customproperties + comments, shoot for ~50chars/line, 2 lines/flight, so divide by 100
+            return Math.Max(1, (le.RedactedComment.Length + le.CustPropertyDisplay.Length) / 100);
+        }
+
+        public override bool SupportsImages { get { return true; } }
+
+        public override bool SupportsOptionalColumns { get { return true; } }
+
+        public override string ControlPath => "~/Controls/PrintingLayouts/layoutHongKong.ascx";
+
+        public override string CSSPath { get { return "~/Public/CSS/printHongKong.css?v=3"; } }
     }
 
     public class PrintLayoutUASCivi : PrintLayout
