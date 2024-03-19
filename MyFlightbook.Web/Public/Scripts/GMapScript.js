@@ -39,7 +39,7 @@ function MFBClubMarker(latitude, longitude, name, id, onclickhandler) {
 }
 
 function nll(lat, lng) {
-    return new google.maps.LatLng(lat,lng);
+    return { lat: lat, lng: lng };
 }
 
 function MFBMarker() {
@@ -152,7 +152,6 @@ function MFBMap()
         google.maps.event.addListenerOnce(this.gmap, 'idle', function () {
             // do something only the first time the map is loaded
             // When overlappingmarkerspiderfier works again, this is where we would load it
-            /*
             mfbMap.oms = new OverlappingMarkerSpiderfier(mfbMap.gmap, { markersWontMove: true, markersWontHide: true, keepSpiderfied: true, legWeight: 3, basicFormatEvents: true });
             mfbMap.oms.addListener('click', function (marker, _event) {
                 if (marker.clickHandleOverride)
@@ -163,7 +162,6 @@ function MFBMap()
             });
             mfbMap.oms.addListener('unspiderfy', function (_markers) {
             });
-            */
 
             mfbMap.ShowOverlays();
             mfbMap.ZoomOut();
@@ -265,7 +263,7 @@ function MFBMap()
     };
    
     this.addEventMarker = function (point, s) {
-        return this.createNavaidMarker(point, s, null, this.id);
+        this.oms.trackMarker(this.createNavaidMarker(point, s, null, this.id));
     };
     
     this.addListenerFunction = function (s) {
@@ -298,7 +296,7 @@ function MFBMap()
             this.rgMarkers = new Array();
         this.rgMarkers.push(mfbmarker.marker);
 
-        mfbmarker.marker.addListener("click", ({ domEvent, latLng }) => {
+        mfbmarker.marker.addListener("spider_click", ({ domEvent, latLng }) => {
             const { target } = domEvent;
             if (mfbmarker.mfbMap.infoWindow)
                 mfbmarker.mfbMap.infoWindow.close();
@@ -311,9 +309,9 @@ function MFBMap()
 
     this.iconForType = function (sz) {
         if (sz === "pin")
-            return { url: "https://myflightbook.com/logbook/images/pushpinsm.png", size: new google.maps.Size(30, 30), origin: new google.maps.Point(0, 0), anchor: new google.maps.Point(12, -10), scaledSize: new google.maps.Size(20, 20) };
+            return { url: "https://myflightbook.com/logbook/images/pushpinsm.png", size: new google.maps.Size(30, 30), origin: new google.maps.Point(0, 0), anchor: new google.maps.Point(12, -3), scaledSize: new google.maps.Size(24, 24) };
         else if (sz === "Airport" || sz === "Heliport" || sz === "Seaport" || sz === "A" || sz === "H" || sz === "S")
-            return { url: 'https://myflightbook.com/logbook/images/airport.png', size: new google.maps.Size(12, 12), origin: new google.maps.Point(0, 0), anchor: new google.maps.Point(0, 10), scaledSize: new google.maps.Point(6, 6) };
+            return { url: 'https://myflightbook.com/logbook/images/airport.png', size: new google.maps.Size(12, 12), origin: new google.maps.Point(0, 0), anchor: new google.maps.Point(0, 10), scaledSize: new google.maps.Point(10, 10) };
         else if (sz.length > 0)
             return { url: "https://myflightbook.com/logbook/images/tower.png", size: new google.maps.Size(16, 16), origin: new google.maps.Point(0, 0), anchor: new google.maps.Point(0, 6), scaledSize: new google.maps.Point(8, 8) };
         else
@@ -380,7 +378,7 @@ function MFBMap()
                         var key = airportList[j].Code + airportList[j].Type;
                         if (!airports[key]) {
                             airports[key] = point;
-                            this.createNavaidMarker(point, airportList[j].Code + " - " + airportList[j].Name, airportList[j], this.id);
+                            this.oms.trackMarker(this.createNavaidMarker(point, airportList[j].Code + " - " + airportList[j].Name, airportList[j], this.id));
                         }
                         points.push(point);
                     }
@@ -405,14 +403,15 @@ function MFBMap()
                     this.rgMarkers = new Array();
                 this.rgMarkers.push(mfbmarker.marker);
 
-                mfbmarker.marker.addListener("click", c.handleClick);
+                mfbmarker.marker.addListener("spider_click", c.handleClick);
+				this.oms.trackMarker(mfbmarker.marker);
             }
         }
 
         if (this.rgImages.length > 0 && this.fShowMarkers) {
             for (i = 0; i < this.rgImages.length; i++) {
                 point = new google.maps.LatLng(this.rgImages[i].latitude, this.rgImages[i].longitude);
-                this.createImageMarker(point, i, this.id);
+                this.oms.trackMarker(this.createImageMarker(point, i, this.id));
             }
         }
 
@@ -464,10 +463,10 @@ function MFBNewMapOptions(mfbMapOptions, rgPath)
     // for size efficiency, patharray is an array of 2-element arrays, latitude followed by longitude - no point sending down data labels over the wire
     // it's stored in an external array with the variable name passed down; this allows it to be used by other javascript as well.
     if (rgPath) {
-        mfbNewMap.pathArray = [];
+            mfbNewMap.pathArray = [];
         rgPath.forEach((ll, _) => {
-            mfbNewMap.pathArray.push(nll(ll[0], ll[1]));
-        });
+                mfbNewMap.pathArray.push(nll(ll[0], ll[1]));
+            });
     }
     if (mfbMapOptions.defaultZoom)
         mfbNewMap.defaultZoom = mfbMapOptions.defaultZoom;
