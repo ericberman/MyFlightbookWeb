@@ -19,7 +19,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2023 MyFlightbook LLC
+ * Copyright (c) 2016-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -241,7 +241,7 @@ namespace MyFlightbook.CloudStorage
         private string RootFolderID { get; set; }
 
         public GoogleDrive(Profile pf = null)
-            : base("GoogleDriveAccessID", "GoogleDriveClientSecret", "https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent", "https://www.googleapis.com/oauth2/v4/token", new string[] { "https://www.googleapis.com/auth/drive.appdata", "https://www.googleapis.com/auth/drive.file" })
+            : base("GoogleDriveAccessID", "GoogleDriveClientSecret", "https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent", "https://www.googleapis.com/oauth2/v4/token", new string[] { "https://www.googleapis.com/auth/drive.file" })
         {
             AuthParam = szParamGDriveAuth;
             // Issue #1067: put everything under a single root
