@@ -704,19 +704,6 @@ namespace MyFlightbook.Clubs
         }
 
         /// <summary>
-        /// Loads all clubs created by a given user
-        /// </summary>
-        /// <param name="szUser">The username</param>
-        /// <returns>A list of clubs</returns>
-        public static IEnumerable<Club> ClubsCreatedByUser(string szUser)
-        {
-            List<Club> lst = new List<Club>();
-            DBHelper dbh = new DBHelper(QueryStringWithRestriction("creator=?user"));
-            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("user", szUser); }, (dr) => { lst.Add(new Club(dr)); });
-            return lst;
-        }
-
-        /// <summary>
         /// Return all clubs for the user, regardless of role with the club.
         /// </summary>
         /// <param name="szUser">Username</param>

@@ -1,4 +1,5 @@
-﻿using MySql.Data.MySqlClient;
+﻿using MyFlightbook.Clubs;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,7 +11,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2023 MyFlightbook LLC
+ * Copyright (c) 2013-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -195,7 +196,7 @@ namespace MyFlightbook.Payments
         #endregion
 
         #region Getting transaction records
-        private static IEnumerable<Payment> RecordsForQuery(string szQ, Action<MySqlCommand> initCommand)
+        private static List<Payment> RecordsForQuery(string szQ, Action<MySqlCommand> initCommand)
         {
             DBHelper dbh = new DBHelper(szQ);
             List<Payment> lst = new List<Payment>();
@@ -224,7 +225,7 @@ namespace MyFlightbook.Payments
                 lstRestrictions.Add(String.Format(CultureInfo.InvariantCulture, "TransactionType IN ({0})", String.Join(", ", ints)));
             }
 
-            string szWHERE = lstRestrictions.Any() ? String.Format(CultureInfo.InvariantCulture, " WHERE {0}", String.Join(" AND ", lstRestrictions)) : string.Empty;
+            string szWHERE = lstRestrictions.Count != 0 ? String.Format(CultureInfo.InvariantCulture, " WHERE {0}", String.Join(" AND ", lstRestrictions)) : string.Empty;
 
             string szLimit = string.Empty;
             if (limit > 0)
@@ -640,10 +641,11 @@ ORDER BY Amount ASC");
 
             base.GratuityWasEarned(eg);
 
-            foreach (Clubs.Club c in Clubs.Club.ClubsCreatedByUser(eg.Username))
+            foreach (Club c in Club.AllClubsForUser(eg.Username))
             {
-                if (c.Status == Clubs.Club.ClubStatus.Promotional || c.Status == Clubs.Club.ClubStatus.Expired)
-                    c.ChangeStatus(Clubs.Club.ClubStatus.OK);
+                bool fIsOwner = c.Creator.CompareCurrentCultureIgnoreCase(eg.Username) == 0 || (c.GetMember(eg.Username)?.RoleInClub ?? ClubMember.ClubMemberRole.Member) == ClubMember.ClubMemberRole.Owner;
+                if (fIsOwner && (c.Status == Club.ClubStatus.Promotional || c.Status == Club.ClubStatus.Expired))
+                    c.ChangeStatus(Club.ClubStatus.OK);
             }
         }
     }
