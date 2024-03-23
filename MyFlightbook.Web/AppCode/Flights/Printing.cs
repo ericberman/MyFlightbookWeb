@@ -200,7 +200,7 @@ namespace MyFlightbook.Printing
     {
         public override bool SupportsImages { get { return false; } }
 
-        public override bool SupportsOptionalColumns { get { return false; } }
+        public override bool SupportsOptionalColumns { get { return true; } }
 
         public override string ControlPath => "~/Controls/PrintingLayouts/layoutGlider.ascx";
 

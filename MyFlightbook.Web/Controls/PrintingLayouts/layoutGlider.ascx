@@ -21,6 +21,10 @@
                 <th class="headerSmall" rowspan="2" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderGliderLandings %></th>
 
                 <th class="headerBig" rowspan="2"><% =Resources.LogbookEntry.PrintHeaderGroundTrainingReceived %></th>
+                <th class="headerBig" rowspan="2" style="width:1cm" runat="server" id="optColumn1" Visible="<%# ShowOptionalColumn(0) %>"><div><%# OptionalColumnName(0) %></div></th>
+                <th class="headerBig" rowspan="2" style="width:1cm" runat="server" id="optColumn2" Visible="<%# ShowOptionalColumn(1) %>"><div><%# OptionalColumnName(1) %></div></th>
+                <th class="headerBig" rowspan="2" style="width:1cm" runat="server" id="optColumn3" Visible="<%# ShowOptionalColumn(2) %>"><div><%# OptionalColumnName(2) %></div></th>
+                <th class="headerBig" rowspan="2" style="width:1cm" runat="server" id="optColumn4" Visible="<%# ShowOptionalColumn(3) %>"><div><%# OptionalColumnName(3) %></div></th>
                 <th class="headerSmall" colspan="<% =4 + (CurrentUser.IsInstructor ? 1 : 0) %>"><% =Resources.LogbookEntry.PrintHeaderPilotFunction2 %></th>
                 <th class="headerBig" rowspan="2"><%=Resources.LogbookEntry.PrintHeaderRemarks %></th>
             </tr>
@@ -57,6 +61,11 @@
 
                     <td><%# Eval("Landings") %></td>
                     <td><%# Eval("GroundInstruction").FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                    <td runat="server" id="td1" visible="<%# ShowOptionalColumn(0) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(0) %></div></td>
+                    <td runat="server" id="td2" visible="<%# ShowOptionalColumn(1) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(1) %></div></td>
+                    <td runat="server" id="td3" visible="<%# ShowOptionalColumn(2) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(2) %></div></td>
+                    <td runat="server" id="td4" visible="<%# ShowOptionalColumn(3) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(3) %></div></td>
+
                     <td><%# Eval("Dual").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                     <td><%# Eval("SoloTime").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                     <td><%# Eval("PIC").FormatDecimal(CurrentUser.UsesHHMM) %></td>
@@ -84,6 +93,10 @@
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).SelfLaunchTotal.FormatInt() %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).LandingsTotal.FormatInt() %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).GroundInstructionTotal.FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                            <td runat="server" id="tdoptColumnTotal1" visible="<%# ShowOptionalColumn(0) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnTotalDisplayValue(0, CurrentUser.UsesHHMM) %></div></td>
+                            <td runat="server" id="tdoptColumnTotal2" visible="<%# ShowOptionalColumn(1) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnTotalDisplayValue(1, CurrentUser.UsesHHMM) %></div></td>
+                            <td runat="server" id="tdoptColumnTotal3" visible="<%# ShowOptionalColumn(2) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnTotalDisplayValue(2, CurrentUser.UsesHHMM) %></div></td>
+                            <td runat="server" id="tdoptColumnTotal4" visible="<%# ShowOptionalColumn(3) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnTotalDisplayValue(3, CurrentUser.UsesHHMM) %></div></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).Dual.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).SoloTotal.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).PIC.FormatDecimal(CurrentUser.UsesHHMM) %></td>
