@@ -53,11 +53,6 @@
         var mapInitFuncs = [];  // init functions (closures) to call once mapping is loaded.
 
         async function onGMapLoaded() {
-            /*
-            // Need BOTH spiderfier AND googlemaps to be ready before we can continue
-            if (++mapLibsReady < 2)
-                return;
-                */
             await initMap();
             for (var i = 0; i < mapInitFuncs.length; i++) {
                 mapInitFuncs[i]();
