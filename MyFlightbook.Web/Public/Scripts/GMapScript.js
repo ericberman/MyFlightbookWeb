@@ -1,6 +1,6 @@
 ﻿/******************************************************
  * 
- * Copyright (c) 2015-2023 MyFlightbook LLC
+ * Copyright (c) 2015-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -39,22 +39,13 @@ function MFBClubMarker(latitude, longitude, name, id, onclickhandler) {
 }
 
 function nll(lat, lng) {
-    return new google.maps.LatLng(lat,lng);
+    return { lat: lat, lng: lng };
 }
 
 function MFBMarker() {
     this.marker = null;
     this.bodyHTML = null;
     this.mfbMap = null;
-}
-
-function displayInfoWindow(mfbmarker)
-{
-    if (mfbmarker.mfbMap.infoWindow)
-        mfbmarker.mfbMap.infoWindow.close();
-        
-    mfbmarker.mfbMap.infoWindow = new google.maps.InfoWindow({content: mfbmarker.bodyHTML, maxWidth: 250});
-    mfbmarker.mfbMap.infoWindow.open(mfbmarker.mfbMap.gmap, mfbmarker.marker);
 }
 
 var MFBMapsOnPage = new Array();
@@ -151,24 +142,30 @@ function MFBMap()
     this.routeColor = "#0000FF";
     this.pathColor = "#FF0000";
     this.overlays = [];
+    this.gMapID = '';
     
     this.NewMap = function () {
         this.center = new google.maps.LatLng(this.defaultLat, this.defaultLong);
-        var options = { zoom: this.zoom, center: this.center, mapTypeId: this.mapType };
+        var options = { zoom: this.zoom, center: this.center, mapTypeId: this.mapType, mapId: this.gMapID, scrollwheel: true, disableDoubleClickZoom: false };
         this.gmap = new google.maps.Map(document.getElementById(this.divContainer), options);
-        this.oms = new OverlappingMarkerSpiderfier(this.gmap, { markersWontMove: true, markersWontHide: true, keepSpiderfied: true, legWeight: 3 });
-        this.oms.addListener('click', function (marker, _event) {
-            if (marker.clickHandleOverride)
-                marker.clickHandleOverride();
-        });
+        var mfbMap = this;
+        google.maps.event.addListenerOnce(this.gmap, 'idle', function () {
+            // do something only the first time the map is loaded
+            // When overlappingmarkerspiderfier works again, this is where we would load it
+            mfbMap.oms = new OverlappingMarkerSpiderfier(mfbMap.gmap, { markersWontMove: true, markersWontHide: true, keepSpiderfied: true, legWeight: 3, basicFormatEvents: true });
+            mfbMap.oms.addListener('click', function (marker, _event) {
+                if (marker.clickHandleOverride)
+                    marker.clickHandleOverride();
+            });
 
-        this.oms.addListener('spiderfy', function (_markers) {
-        });
-        this.oms.addListener('unspiderfy', function (_markers) {
-        });
+            mfbMap.oms.addListener('spiderfy', function (_markers) {
+            });
+            mfbMap.oms.addListener('unspiderfy', function (_markers) {
+            });
 
-        options = { scrollwheel: true, disableDoubleClickZoom: false };
-        this.gmap.setOptions(options);
+            mfbMap.ShowOverlays();
+            mfbMap.ZoomOut();
+        });
 
         var zoomControl = document.createElement('div');
         zoomControl.index = 1;
@@ -190,9 +187,6 @@ function MFBMap()
         controlUI.addEventListener('click', function () { toggleZoom(mapID); });
 
         this.gmap.controls[google.maps.ControlPosition.TOP_RIGHT].push(zoomControl);
-
-        this.ShowOverlays();
-        this.ZoomOut();
 
         google.maps.event.addListener(this.gmap, 'dragend', this.autofillPanZoom);
         google.maps.event.addListener(this.gmap, 'zoom_changed', this.autofillPanZoom);
@@ -269,7 +263,7 @@ function MFBMap()
     };
    
     this.addEventMarker = function (point, s) {
-        return this.createNavaidMarker(point, s, null, this.id);
+        this.oms.trackMarker(this.createNavaidMarker(point, s, null, this.id));
     };
     
     this.addListenerFunction = function (s) {
@@ -289,7 +283,12 @@ function MFBMap()
     
     this.createMarker = function (point, name, icon, szHtml) {
         var mfbmarker = new MFBMarker();
-        mfbmarker.marker = new google.maps.Marker({ position: point, clickable: true, icon: icon, map: this.gmap, title: name });
+        var iconElement = document.createElement('img');
+        iconElement.src = icon.url;
+        iconElement.style.width = icon.scaledSize.width + "px";
+        iconElement.style.height = icon.scaledSize.height + "px";
+        iconElement.style.transform = "translate(" + icon.anchor.x + "px, " + icon.anchor.y + "px)";
+        mfbmarker.marker = new google.maps.marker.AdvancedMarkerElement({ position: point, content: iconElement, map: this.gmap, title: name });
         mfbmarker.bodyHTML = '<div style="min-width:250px;">' + szHtml + '</div>';
         mfbmarker.mfbMap = this;
 
@@ -297,21 +296,24 @@ function MFBMap()
             this.rgMarkers = new Array();
         this.rgMarkers.push(mfbmarker.marker);
 
-        // instead of adding the listener to google.maps.event, add the clickhandler to the marker so that the spiderfier will work.
-        mfbmarker.marker.clickHandleOverride = function () { displayInfoWindow(mfbmarker); };
+        mfbmarker.marker.addListener("spider_click", ({ domEvent, latLng }) => {
+            const { target } = domEvent;
+            if (mfbmarker.mfbMap.infoWindow)
+                mfbmarker.mfbMap.infoWindow.close();
 
+            mfbmarker.mfbMap.infoWindow = new google.maps.InfoWindow({ content: mfbmarker.bodyHTML });
+            mfbmarker.mfbMap.infoWindow.open(mfbmarker.mfbMap.gmap, mfbmarker.marker);
+        });
         return mfbmarker.marker;
     };
 
     this.iconForType = function (sz) {
         if (sz === "pin")
-            return "https://myflightbook.com/logbook/images/pushpin.png";
+            return { url: "https://myflightbook.com/logbook/images/pushpinsm.png", size: new google.maps.Size(30, 30), origin: new google.maps.Point(0, 0), anchor: new google.maps.Point(12, -3), scaledSize: new google.maps.Size(24, 24) };
         else if (sz === "Airport" || sz === "Heliport" || sz === "Seaport" || sz === "A" || sz === "H" || sz === "S")
-            return new google.maps.MarkerImage('https://myflightbook.com/logbook/images/airport.png', null, null, new google.maps.Point(6, 6));
-        else if (sz === "Photograph")
-            return new google.maps.MarkerImage('https://myflightbook.com/logbook/images/cameramarker.png', null, null, new google.maps.Point(19, 19));
+            return { url: 'https://myflightbook.com/logbook/images/airport.png', size: new google.maps.Size(12, 12), origin: new google.maps.Point(0, 0), anchor: new google.maps.Point(0, 10), scaledSize: new google.maps.Point(10, 10) };
         else if (sz.length > 0)
-            return new google.maps.MarkerImage('https://myflightbook.com/logbook/images/tower.png', null, null, new google.maps.Point(8, 8));
+            return { url: "https://myflightbook.com/logbook/images/tower.png", size: new google.maps.Size(16, 16), origin: new google.maps.Point(0, 0), anchor: new google.maps.Point(0, 6), scaledSize: new google.maps.Point(8, 8) };
         else
             return '';
     };
@@ -343,14 +345,13 @@ function MFBMap()
     this.createImageMarker = function (point, i, mapID) {
         var szImg = "<a href=\"" + this.rgImages[i].hrefFull + "\" target=\"_blank\"><img src=\"" + this.rgImages[i].hrefThumb + "\"></a>";
         var szZoom = "<a href=\"javascript:gmapForMapID('" + mapID + "').showImage(" + i + ")\">Zoom in</a>";
-        var szDiv = "<div>" + szZoom + "<br />" + szImg + "<br /><p>" + this.rgImages[i].comment + "</p></div>";
+        var szDiv = "<div style='text-align: center'>" + szZoom + "<br />" + szImg + "<br /><p>" + this.rgImages[i].comment + "</p></div>";
         var szName = "Photograph";
         var img = this.rgImages[i];
         var icon = { url: this.rgImages[i].hrefThumb, scaledSize: new google.maps.Size(img.width, img.height), anchor: new google.maps.Point(img.width / 2, img.height / 2) };
         return this.createMarker(point, szName, icon, szDiv);
     };
     
-    // edit airports functionality    
     this.clickMarker = function (point, name, type, szHtml) {
         if (this.clickPositionMarker)
             this.clickPositionMarker.setMap(null);
@@ -394,7 +395,7 @@ function MFBMap()
                 point = new google.maps.LatLng(c.latitude, c.longitude);
 
                 var mfbmarker = new MFBMarker();
-                mfbmarker.marker = new google.maps.Marker({ position: point, clickable: true, icon: '', map: this.gmap, title: c.name });
+                mfbmarker.marker = new google.maps.marker.AdvancedMarkerElement({ position: point, map: this.gmap, title: c.name });
                 mfbmarker.bodyHTML = '';
                 mfbmarker.mfbMap = this;
 
@@ -402,9 +403,8 @@ function MFBMap()
                     this.rgMarkers = new Array();
                 this.rgMarkers.push(mfbmarker.marker);
 
-                // Instead of adding the clickhandler to google.maps.event, add it to the spiderfier.
-                mfbmarker.marker.clickHandleOverride = c.handleClick;
-                this.oms.trackMarker(mfbmarker.marker);
+                mfbmarker.marker.addListener("spider_click", c.handleClick);
+				this.oms.trackMarker(mfbmarker.marker);
             }
         }
 
@@ -463,10 +463,10 @@ function MFBNewMapOptions(mfbMapOptions, rgPath)
     // for size efficiency, patharray is an array of 2-element arrays, latitude followed by longitude - no point sending down data labels over the wire
     // it's stored in an external array with the variable name passed down; this allows it to be used by other javascript as well.
     if (rgPath) {
-        mfbNewMap.pathArray = [];
+            mfbNewMap.pathArray = [];
         rgPath.forEach((ll, _) => {
-            mfbNewMap.pathArray.push(nll(ll[0], ll[1]));
-        });
+                mfbNewMap.pathArray.push(nll(ll[0], ll[1]));
+            });
     }
     if (mfbMapOptions.defaultZoom)
         mfbNewMap.defaultZoom = mfbMapOptions.defaultZoom;
@@ -497,6 +497,7 @@ function MFBNewMapOptions(mfbMapOptions, rgPath)
     mfbNewMap.fAutoZoom = mfbMapOptions.fAutoZoom;
     mfbNewMap.fAutofillPanZoom = mfbMapOptions.fAutofillPanZoom;
     mfbNewMap.fAutofillHeliports = mfbMapOptions.fAutofillHeliports;
+    mfbNewMap.gMapID = mfbMapOptions.MapID;
         
     return mfbNewMap;        
 }        

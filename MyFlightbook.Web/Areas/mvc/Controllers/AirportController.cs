@@ -695,6 +695,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
             ViewBag.Map = map;
             map.Options.PathVarName = map.Options.id + "Path";
+            map.Options.MapID = LocalConfig.SettingForKey("GoogleMapID");
             return PartialView("_mapContainer");
         }
 
