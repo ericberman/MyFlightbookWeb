@@ -19,8 +19,8 @@
                 </div>
                 <div>@ac.InstanceTypeDescription</div>
                 <div class="@(ac.HideFromSelection ? "inactiveRow" : "activeRow")">
-                    <div style="white-space:pre">@Html.Raw(ac.PublicNotes.Linkify())</div>
-                    <div style="white-space:pre">@Html.Raw(ac.PrivateNotes.Linkify())</div>
+                    <div style="white-space:pre-line">@Html.Raw(ac.PublicNotes.Linkify())</div>
+                    <div style="white-space:pre-line">@Html.Raw(ac.PrivateNotes.Linkify())</div>
                     <ul>
                         @foreach (LinkedString linkedString in MakeModel.GetModel(ac.ModelID).AttributeListForUser(null, User.Identity.Name, null, ac.Stats, ac.AvionicsTechnologyUpgrade, ac.GlassUpgradeDate))
                         {

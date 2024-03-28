@@ -1778,7 +1778,7 @@ tr.gvhDefault th:nth-last-child(2), tr.gvhDefault th:last-child {
 .gvAcImage {
     text-align: center;
     width: 160px;
-    vertical-align: middle;
+    vertical-align: top;
 }
 
 .gvAcItem {
