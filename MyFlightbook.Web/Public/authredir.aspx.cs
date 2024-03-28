@@ -93,7 +93,11 @@ namespace MyFlightbook.PublicPages
                 szUser = rgUsers[1];
             }
 
-            szUser = Membership.GetUserNameByEmail(szUser);
+            // Issue #1204: Apple isn't properly url-encoding a "+" sign as %2B, so it comes through as a space.  But it's perfectly legal in an email address.
+            string szUserName = Membership.GetUserNameByEmail(szUser);
+            if (String.IsNullOrEmpty(szUserName) && szUser.Contains(" "))
+                szUserName = Membership.GetUserNameByEmail(szUser.Replace(' ', '+'));
+            szUser = szUserName;
 
             if (Membership.ValidateUser(szUser, szPass))
             {
