@@ -223,7 +223,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Per FAR [61.160(e) and (f)](https://www.law.cornell.edu/cfr/text/14/61.160), the cross-country limit here is 200 hours if you have 1500 total hours or are applying under 61.160(a), (b), or (c).
+        ///   Looks up a localized string similar to Per FAR [61.160(e) and (f)](https://www.law.cornell.edu/cfr/text/14/61.160), the cross-country limit here is 200 hours if you have 1500 total hours or are applying under 61.160(a)-(d).
         /// </summary>
         internal static string ATPMinXCTimeNoteRestricted {
             get {

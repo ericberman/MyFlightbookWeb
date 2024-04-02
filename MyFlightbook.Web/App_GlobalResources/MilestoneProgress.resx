@@ -960,7 +960,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <value>Per 141 Appendix D (4)(c), you may be entitled to credit time in a simulator or FTD, depending on the certification level of the device.  Time in training devices is NOT included here.</value>
   </data>
   <data name="ATPMinXCTimeNoteRestricted" xml:space="preserve">
-    <value>Per FAR [61.160(e) and (f)](https://www.law.cornell.edu/cfr/text/14/61.160), the cross-country limit here is 200 hours if you have 1500 total hours or are applying under 61.160(a), (b), or (c)</value>
+    <value>Per FAR [61.160(e) and (f)](https://www.law.cornell.edu/cfr/text/14/61.160), the cross-country limit here is 200 hours if you have 1500 total hours or are applying under 61.160(a)-(d)</value>
   </data>
   <data name="ATPMinXCTimeRestricted" xml:space="preserve">
     <value>*200* hours of *cross-country* flight time</value>
