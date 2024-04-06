@@ -54,31 +54,38 @@ and the application should be called "logbook" and point to the /logbook branch.
  * AuthorizedWebServiceClients - Comma separated list of authorized clients of the web services
  * AWSAccessKey - Access key for Amazon Web services
  * AWSSecretKey - Secret for Amazon Web Services
- * CloudAhoyID - ID for CloudAhoy oAuth
- * CloudAhoySecret - Secret for CloudAhoy oAuth
+ * CloudAhoyID - oAuth ID for CloudAhoy oAuth
+ * CloudAhoySecret - oAuth secret for CloudAhoy oAuth
  * DebugDomains - Identifies local domains (e.g., http://localhost) from which oAuth requests may originate
  * DropboxAccessID - Access key for Dropbox
  * DropboxClientSecret - Secret for Dropbox
  * ETSPipelineID - Amazon Elastic Transcoder ID for processing videos
  * ETSPipelineIDDebug - Amazon Elastic Transcoder ID for processing videos from a debug/development website
  * ETSPipelineIDStaging - Amazon Elastic Transcoder ID for processing videos from staging website
- * FacebookAccessID - Access key for Facebook
- * FacebookClientSecret - Secret for Facebook
+ * FacebookAccessID - Access key for Facebook (Obsolete)
+ * FacebookClientSecret - Secret for Facebook (Obsolete)
  * facebookAppId - ID for MyFlightbook app on Facebook
- * GoogleAnalyticsDeveloper - ID for google analytics on developer machines
- * GoogleAnalyticsProduction - ID for google analytics on production environment.
- * GoogleDriveAccessID - Access key for Google Drive
- * GoogleDriveClientSecret - Secret for Google Drive
+ * GoogleAnalyticsDeveloper - ID for google analytics on developer machines (Obsolete)
+ * GoogleAnalyticsProduction - ID for google analytics on production environment. (Obsolete)
+ * GoogleAnalyticsGA4Developer - ID for current Google Analytics GA4 on developer machine
+ * GoogleAnalyticsGA4Production - ID for current Google Analytics GA4 on production environment
+ * GoogleDriveAccessID - oAuth ID for Google Drive
+ * GoogleDriveClientSecret - oAuth secret for Google Drive
+ * GoogleMapID - ID for google maps (required to use AdvancedMarkerElement)
  * GoogleMapsKey - Key for using Google maps. Get your own
- * GooglePlusAccessID - Access key for Google Plus
- * GooglePlusAPIKey - API key for Google Plus
- * GooglePlusClientSecret - Secret for Google Plus
- * OneDriveAccessID - Access Key for OneDrive
- * OneDriveClientSecret - Secret for OneDrive
+ * GooglePlusAccessID - Access key for Google Plus (Obsolete)
+ * GooglePlusAPIKey - API key for Google Plus (Obsolete)
+ * GooglePlusClientSecret - Secret for Google Plus (Obsolete)
+ * LeonClientID - oAuth ID for Leon Scheduling System
+ * LeonClientSecret - oAuth secret for Leon Scheduling System
+ * OneDriveAccessID - oAuth ID for OneDrive
+ * OneDriveClientSecret - oAuth secret for OneDrive
  * PeerRequestEncryptorKey - Key used for encrypting/decrypting requests between peer users
  * SharedDataEncryptorKey - Key used to encrypt access to data being shared with the world
- * TwitterAccessID - Access key for Twitter
- * TwitterClientSecret - Secret for Twitter
+ * rbClientID - oAuth ID for RosterBuster (production)
+ * rbClientDIDDev - oAuth ID for RosterBuster (development)
+ * TwitterAccessID - oAuth ID for Twitter (obsolete)
+ * TwitterClientSecret - Secret for Twitter (Obsolete)
  * UseAWSS3 - Set to "yes" to migrate images to S3. Best to leave this "no" for local debugging
  * UserAccessEncryptorKey - Used to share flights
  * UserPasswordHashKey - Hash key used when storing hashed passwords in the database
