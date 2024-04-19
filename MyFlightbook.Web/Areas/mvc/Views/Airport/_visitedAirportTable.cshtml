@@ -5,20 +5,20 @@
     <table class="stickyHeaderTable stickyHeaderAlternate" id="visitedTable">
         <thead>
             <tr style="vertical-align:top;">
-                <th class="headerBase headerSortAsc" style="text-align:left" onclick="javascript:sortTable(this,  0, '', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.Airports.airportCode</th>
-                <th class="headerBase" style="text-align:left" onclick="javascript:sortTable(this, 1, '', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.Airports.airportName</th>
-                <th class="headerBase" style="text-align:left" onclick="javascript:sortTable(this, 2, '', 'hdnSortIndex', 'hdnLastSortDir');">
+                <th class="headerBase headerSortAsc" style="text-align:left; cursor:pointer;" onclick="javascript:sortTable(this,  0, '', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.Airports.airportCode</th>
+                <th class="headerBase" style="text-align: left; cursor: pointer;" onclick="javascript:sortTable(this, 1, '', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.Airports.airportName</th>
+                <th class="headerBase" style="text-align: left; cursor: pointer;" onclick="javascript:sortTable(this, 2, '', 'hdnSortIndex', 'hdnLastSortDir');">
                     @Resources.Airports.airportCountry<span style="font-weight:normal; text-align:left;">
                         @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "countryTips", tipTextHTML = Branding.ReBrand(Resources.Airports.airportCountryDisclaimer) });}
                     </span>
                 </th>
-                <th class="headerBase" style="text-align:left" onclick="javascript:sortTable(this, 3, '', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.Airports.airportRegion</th>
-                <th class="headerBase" style="text-align:left" onclick="javascript:sortTable(this, 4, 'num', 'hdnSortIndex', 'hdnLastSortDir');">
+                <th class="headerBase" style="text-align: left; cursor: pointer;" onclick="javascript:sortTable(this, 3, '', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.Airports.airportRegion</th>
+                <th class="headerBase" style="text-align: left; cursor: pointer;" onclick="javascript:sortTable(this, 4, 'num', 'hdnSortIndex', 'hdnLastSortDir');">
                     @Resources.Airports.airportVisits
                     @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "visitsTip", tipTextHTML = Resources.Airports.vistedAirportsCountTip }); }
                 </th>
-                <th class="headerBase" style="text-align:left" onclick="javascript:sortTable(this, 5, 'date', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.Airports.airportEarliestVisit</th>
-                <th class="headerBase" style="text-align:left" onclick="javascript:sortTable(this, 6, 'date', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.Airports.airportLatestVisit</th>
+                <th class="headerBase" style="text-align: left; cursor: pointer;" onclick="javascript:sortTable(this, 5, 'date', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.Airports.airportEarliestVisit</th>
+                <th class="headerBase" style="text-align: left; cursor: pointer;" onclick="javascript:sortTable(this, 6, 'date', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.Airports.airportLatestVisit</th>
                 @if (ViewBag.fAllowSearch)
                 {
                 <th class="headerBase" style="text-align:left"></th>
@@ -33,7 +33,7 @@
                     <td>@va.Airport.Name</td>
                     <td>@va.Country</td>
                     <td>@va.Admin1</td>
-                    <td>@va.NumberOfVisits.PrettyString()</td>
+                    <td>@va.NumberOfVisits.PrettyString()<span style="display:none;">@va.NumberOfVisits.ToString(CultureInfo.InvariantCulture)</span></td>
                     <td>@va.EarliestVisitDate.ToString("d", CultureInfo.CurrentCulture)<span style="display:none">@va.EarliestVisitDate.YMDString()</span></td>
                     <td>@va.LatestVisitDate.ToString("d", CultureInfo.CurrentCulture)<span style="display:none">@va.LatestVisitDate.YMDString()</span></td>
                     @if (ViewBag.fAllowSearch)

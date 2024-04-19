@@ -89,12 +89,14 @@ function sortTable(sender, colIndex, sortType, hdnSortIndexID, hdnSortDirID) {
         var valb = $(b).find(selector);
 
         if (sortType == "num") {
-            var aint = parseInt(vala.text());
-            var bint = parseInt(valb.text())
+            var aNormal = vala.find("span:hidden").first();
+            var bNormal = valb.find("span:hidden").first();
+            var aint = parseFloat((aNormal.length > 0 ? aNormal : vala).text());
+            var bint = parseFloat((bNormal.length > 0 ? bNormal : valb).text());
             return sortDir * ((aint < bint) ? -1 : ((aint == bint) ? 0 : 1));
         } else if (sortType == "date") {
-            var sortKeyA = vala.find("span:hidden").text();
-            var sortKeyB = valb.find("span:hidden").text();
+            var sortKeyA = vala.find("span:hidden").first().text();
+            var sortKeyB = valb.find("span:hidden").first().text();
             return sortDir * (sortKeyA.localeCompare(sortKeyB));
         } else {
             return sortDir * (vala.text().localeCompare(valb.text()));
