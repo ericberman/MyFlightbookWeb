@@ -7,7 +7,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2020-2023 MyFlightbook LLC
+ * Copyright (c) 2020-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -385,7 +385,7 @@ namespace MyFlightbook.Lint
             AddConditionalIssue(le.PIC.ToMinutes() > totalMinutes, LintOptions.TimeIssues, Resources.FlightLint.warningTimesPICGreaterThanTotal);
             int picus = le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropPICUS).ToMinutes();
             AddConditionalIssue(totalMinutes > 0 && le.PIC.ToMinutes() + le.SIC.ToMinutes() + le.CFI.ToMinutes() + le.Dual.ToMinutes() + picus == 0, LintOptions.TimeIssues, Resources.FlightLint.warningTotalTimeButNoOtherTime);
-
+            
             CustomFlightProperty cfpSolo = le.CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropSolo);
             if (cfpSolo != null)
             {
@@ -406,6 +406,9 @@ namespace MyFlightbook.Lint
                     cfp.DecValue.ToMinutes() > totalMinutes, 
                     LintOptions.TimeIssues, String.Format(CultureInfo.CurrentCulture, Resources.FlightLint.warningPropertyGreaterThanTotal, cfp.PropertyType.Title));
             }
+
+            decimal dayFlight = le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropDayFlight);
+            AddConditionalIssue(dayFlight > 0 && dayFlight.ToMinutes() != le.TotalFlightTime.ToMinutes() - le.Nighttime.ToMinutes(), LintOptions.TimeIssues, Resources.FlightLint.warningDayFlightInconsistent);
 
             AddConditionalIssue(le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropSinglePilot) && le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropMultiPilotTime),
                 LintOptions.TimeIssues, Resources.FlightLint.warningBothSingleAndMultiPilotFound);

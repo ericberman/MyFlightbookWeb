@@ -263,6 +263,9 @@
   <data name="warningDateTimeInvalidBlock" xml:space="preserve">
     <value>Block out time is after block in time.</value>
   </data>
+  <data name="warningDayFlightInconsistent" xml:space="preserve">
+    <value>Day flight + Night Flight does not equal the total time of the flight.  Day flight should equal Total minus Night (and is thus redundant to log), but if you choose to explicitly log it, make sure the math works.</value>
+  </data>
   <data name="warningDualLoggedButNoCFIName" xml:space="preserve">
     <value>Flight indicates that instruction was received, but the instructor's name cannot be determined (flight is not signed and no "Instructor Name" property found)</value>
   </data>

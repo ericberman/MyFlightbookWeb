@@ -123,6 +123,7 @@ namespace MyFlightbook
             IDPropPICUS = 279,
             IDPropTestPilotTime = 282,
             IDPropInstructorOnBoard = 288,
+            IDPropDayFlight = 308,
             IDPropPassengerCount = 316,         // Not flagged as a known property
             IDPropMaximumAltitude = 321,
             IDPropFlightDutyTimeStart = 332,

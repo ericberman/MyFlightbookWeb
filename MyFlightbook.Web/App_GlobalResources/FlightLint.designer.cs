@@ -493,6 +493,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Day flight + Night Flight does not equal the total time of the flight.  Day flight should equal Total minus Night (and is thus redundant to log), but if you choose to explicitly log it, make sure the math works..
+        /// </summary>
+        internal static string warningDayFlightInconsistent {
+            get {
+                return ResourceManager.GetString("warningDayFlightInconsistent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Flight indicates that instruction was received, but the instructor&apos;s name cannot be determined (flight is not signed and no &quot;Instructor Name&quot; property found).
         /// </summary>
         internal static string warningDualLoggedButNoCFIName {
