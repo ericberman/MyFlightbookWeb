@@ -13,7 +13,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2021 MyFlightbook LLC
+ * Copyright (c) 2015-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -92,9 +92,10 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
         CurrentPageState = ps;
     }
 
+    private readonly string[] scopesDelimiter = new string[] { " " };
     protected IEnumerable<string> Scopes
     {
-        get { return txtScope.Text.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries); }
+        get { return txtScope.Text.Split(scopesDelimiter, StringSplitOptions.RemoveEmptyEntries); }
     }
 
     protected Uri RedirURL
@@ -187,10 +188,7 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
         {
             ToSession();
             WebServerClient consumer = new WebServerClient(Description(), CurrentPageState.ClientID, CurrentPageState.ClientSecret) { ClientCredentialApplicator = ClientCredentialApplicator.PostParameter(CurrentPageState.ClientSecret) };
-            IAuthorizationState grantedAccess = consumer.ProcessUserAuthorization(new HttpRequestWrapper(Request));
-
-            if (grantedAccess == null)
-                throw new MyFlightbook.MyFlightbookValidationException("Null access token returned - invalid authorization passed?");
+            IAuthorizationState grantedAccess = consumer.ProcessUserAuthorization(new HttpRequestWrapper(Request)) ?? throw new MyFlightbook.MyFlightbookValidationException("Null access token returned - invalid authorization passed?");
             SetTokenDisplay(grantedAccess);
         }
         catch (MyFlightbook.MyFlightbookValidationException ex)
@@ -373,6 +371,10 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
                 response.Content.CopyToAsync(Page.Response.OutputStream).Wait();
                 Page.Response.Flush();
 
+                // See http://stackoverflow.com/questions/20988445/how-to-avoid-response-end-thread-was-being-aborted-exception-during-the-exce for the reason for the next two lines.
+                Page.Response.SuppressContent = true;  // Gets or sets a value indicating whether to send HTTP content to the client.
+                HttpContext.Current.ApplicationInstance.CompleteRequest(); // Causes ASP.NET to bypass all events and filtering in the HTTP pipeline chain of execution and directly execute the EndRequest event.
+
                 return szError;
             }
             catch (System.Threading.ThreadAbortException ex)
@@ -385,9 +387,6 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
             }
         });
         lblErr.Text = error;
-        // See http://stackoverflow.com/questions/20988445/how-to-avoid-response-end-thread-was-being-aborted-exception-during-the-exce for the reason for the next two lines.
-        Page.Response.SuppressContent = true;  // Gets or sets a value indicating whether to send HTTP content to the client.
-        HttpContext.Current.ApplicationInstance.CompleteRequest(); // Causes ASP.NET to bypass all events and filtering in the HTTP pipeline chain of execution and directly execute the EndRequest event.
     }
 
     protected async void btnPostResource_Click(object sender, EventArgs e)

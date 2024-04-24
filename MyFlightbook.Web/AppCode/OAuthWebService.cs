@@ -18,7 +18,7 @@ using System.Web.Services;
 
 /******************************************************
  * 
- * Copyright (c) 2018-2021 MyFlightbook LLC
+ * Copyright (c) 2018-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -522,13 +522,8 @@ namespace OAuthAuthorizationServer.Services
             if (ShuntState.IsShunted)
                 throw new MyFlightbookException(ShuntState.ShuntMessage);
 
-            System.Web.UI.HtmlControls.HtmlInputFile imgPicture = (System.Web.UI.HtmlControls.HtmlInputFile)FindControl("imgPicture");
-            if (imgPicture == null)
-                throw new MyFlightbookException("No control named 'imgPicture' found!");
-
+            System.Web.UI.HtmlControls.HtmlInputFile imgPicture = (System.Web.UI.HtmlControls.HtmlInputFile)FindControl("imgPicture") ?? throw new MyFlightbookException("No control named 'imgPicture' found!");
             string szErr = "OK";
-
-            string szUser = string.Empty;
             string szAuth = Request.Form["txtAuthToken"];
             try
             {
@@ -545,7 +540,7 @@ namespace OAuthAuthorizationServer.Services
                     }
                 }
 
-                szUser = MFBWebService.GetEncryptedUser(szAuth);
+                string szUser = MFBWebService.GetEncryptedUser(szAuth);
 
                 if (string.IsNullOrEmpty(szUser))
                     throw new MyFlightbookException(Resources.WebService.errBadAuth);

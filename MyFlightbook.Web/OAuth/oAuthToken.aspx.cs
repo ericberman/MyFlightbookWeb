@@ -8,14 +8,13 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2020 MyFlightbook LLC
+ * Copyright (c) 2015-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
 public partial class OAuth_oAuthToken : System.Web.UI.Page
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Scope = "member", Target = "Member_oAuthToken.#Page_Load(System.Object,System.EventArgs)")]
     protected void Page_Load(object sender, EventArgs e)
     {
         try
@@ -48,11 +47,12 @@ public partial class OAuth_oAuthToken : System.Web.UI.Page
                 }
             }
         }
-        catch (Exception ex)
+        catch (Exception ex) when (!(ex is OutOfMemoryException))
         {
             Response.Clear();
             Response.ContentType = "text/plain";
             Response.StatusCode = (int) HttpStatusCode.InternalServerError;
+            Response.TrySkipIisCustomErrors = true;
             Response.ContentEncoding = System.Text.Encoding.UTF8;
             Response.Write("Error: " + ex.Message + "\r\n");
             Response.Write(ex.ToStringDescriptive() + "\r\n");
