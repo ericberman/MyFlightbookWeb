@@ -87,6 +87,7 @@ else
                 {
                     if (cq.MatchesFlight(led))
                     {
+                        // Break on a match, doing these in order - this needs to be deterministic
                         szBackColor = String.Format(CultureInfo.InvariantCulture, "background-color: #{0}", cq.ColorString);
                         break;
                     }

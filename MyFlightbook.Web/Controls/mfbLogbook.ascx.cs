@@ -700,6 +700,7 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
             {
                 if (cq.MatchesFlight(le))
                 {
+                    // Important: Preserve the break-on-first match behavior so that this is deterministic
                     e.Row.BackColor = FlightColor.TryParseColor(cq.ColorString);
                     break;
                 }

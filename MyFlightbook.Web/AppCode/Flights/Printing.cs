@@ -1397,6 +1397,7 @@ namespace MyFlightbook.Printing
             {
                 if (cq.MatchesFlight(led))
                 {
+                    // Important - always match on the first matching query
                     c = FlightColor.TryParseColor(cq.ColorString);
                     break;
                 }

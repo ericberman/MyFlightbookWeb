@@ -1533,6 +1533,7 @@ namespace MyFlightbook
             else
                 lst = new List<CannedQuery>();
 
+            // Important - preserve "ORDER BY name ASC" so that multiple canned queries can work for flight coloring.
             DBHelperCommandArgs dba = new DBHelperCommandArgs("SELECT * FROM storedQueries WHERE username=?uname ORDER BY name ASC");
             dba.AddWithValue("uname", szUser);
             DBHelper dbh = new DBHelper(dba);
