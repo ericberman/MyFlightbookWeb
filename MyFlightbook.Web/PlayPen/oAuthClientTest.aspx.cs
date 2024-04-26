@@ -373,7 +373,6 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
 
                 // See http://stackoverflow.com/questions/20988445/how-to-avoid-response-end-thread-was-being-aborted-exception-during-the-exce for the reason for the next two lines.
                 Page.Response.SuppressContent = true;  // Gets or sets a value indicating whether to send HTTP content to the client.
-                HttpContext.Current.ApplicationInstance.CompleteRequest(); // Causes ASP.NET to bypass all events and filtering in the HTTP pipeline chain of execution and directly execute the EndRequest event.
 
                 return szError;
             }
@@ -386,6 +385,7 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
                 return String.Format(CultureInfo.InvariantCulture, "{0} --> {1}", ex.Message, szError);
             }
         });
+        HttpContext.Current.ApplicationInstance.CompleteRequest(); // Causes ASP.NET to bypass all events and filtering in the HTTP pipeline chain of execution and directly execute the EndRequest event.
         lblErr.Text = error;
     }
 
