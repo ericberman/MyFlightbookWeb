@@ -706,6 +706,19 @@ namespace MyFlightbook
             return s.ToAbsoluteURL(Request.Url.Scheme, Request.Url.Host, Request.Url.Port);
         }
 
+        /// <summary>
+        /// Returns the string as a fully resolved absolute url, including scheme and host
+        /// </summary>
+        /// <param name="s">The relative URL</param>
+        /// <param name="Request">The request</param>
+        /// <returns>A fully resolved absolute URL</returns>
+        public static Uri ToAbsoluteURL(this string s, HttpRequestBase Request)
+        {
+            if (Request == null)
+                throw new ArgumentNullException(nameof(Request));
+            return s.ToAbsoluteURL(Request.Url.Scheme, Request.Url.Host, Request.Url.Port);
+        }
+
         public static Uri ToAbsoluteURL(this string s, string scheme, string host, int port = 80)
         {
             if (scheme == null)

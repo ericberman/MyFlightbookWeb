@@ -1,10 +1,12 @@
 ﻿using DotNetOpenAuth.OAuth2;
 using Newtonsoft.Json;
+using OAuthAuthorizationServer.Code;
 using OAuthAuthorizationServer.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -60,7 +62,19 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
     {
         PageState ps = CurrentPageState;
         if (ps == null)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                IEnumerable<MFBOauth2Client> clients = MFBOauth2Client.GetClientsForUser(User.Identity.Name);
+                if (clients.Any())
+                {
+                    MFBOauth2Client defaultClient = clients.First();
+                    txtClientID.Text = defaultClient.ClientIdentifier;
+                    txtClientSecret.Text = defaultClient.ClientSecret;
+                }
+            }
             return;
+        }
 
         txtAuthURL.Text = ps.AuthURL.ToString();
         txtTokenURL.Text = ps.TokenURL.ToString();

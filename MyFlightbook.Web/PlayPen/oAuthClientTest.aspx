@@ -16,7 +16,7 @@
         <tr>
             <td>Client Secret:</td>
             <td>
-                <asp:TextBox ID="txtClientSecret" runat="server" Width="400px"></asp:TextBox>
+                <asp:TextBox ID="txtClientSecret"  runat="server" Width="400px" type="Password"></asp:TextBox>
                 <asp:RequiredFieldValidator ID="reqClientSecret" runat="server" ErrorMessage="Client secret is required for authorization" ControlToValidate="txtClientSecret"  CssClass="error" Display="Dynamic"></asp:RequiredFieldValidator>
             </td>
         </tr>
