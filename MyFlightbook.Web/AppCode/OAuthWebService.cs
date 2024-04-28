@@ -170,13 +170,14 @@ namespace OAuthAuthorizationServer.Services
         /// </summary>
         /// <param name="szRequest"></param>
         /// <returns></returns>
-        private static OAuthServiceID ServiceFromString(string szRequest)
+        private static OAuthServiceID? RequestedService(HttpRequestBase request, string requestedService = null)
         {
+            string szRequest = requestedService ?? (String.IsNullOrEmpty(request.PathInfo) ? request["action"] ?? string.Empty : request.PathInfo);
             if (szRequest.StartsWith("/", StringComparison.CurrentCultureIgnoreCase))
                 szRequest = szRequest.Substring(1);
 
             if (String.IsNullOrEmpty(szRequest))
-                return OAuthServiceID.none;
+                return null;
 
             return (OAuthServiceID)Enum.Parse(typeof(OAuthServiceID), szRequest);
         }
@@ -189,7 +190,10 @@ namespace OAuthAuthorizationServer.Services
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         protected MFBOAuthScope ScopeForService()
         {
-            switch (ServiceCall)
+            if (ServiceCall == null)
+                throw new InvalidOperationException("Can't evaluate scope without specifying a service call");
+
+            switch (ServiceCall.Value)
             {
                 case OAuthServiceID.AddAircraftForUser:
                 case OAuthServiceID.DeleteAircraftForUser:
@@ -277,7 +281,7 @@ namespace OAuthAuthorizationServer.Services
         /// <summary>
         /// The function that is being requested
         /// </summary>
-        protected OAuthServiceID ServiceCall { get; set; }
+        protected OAuthServiceID? ServiceCall { get; set; }
 
         /// <summary>
         /// A pseudo authtoken generated from the OAuth token.
@@ -326,10 +330,10 @@ namespace OAuthAuthorizationServer.Services
         #endregion
 
         #region Constructor
-        public OAuthServiceCall(HttpRequest request)
+        public OAuthServiceCall(HttpRequest request, string requestedService = null)
         {
             OriginalRequest = request ?? throw new ArgumentNullException(nameof(request));
-            ServiceCall = ServiceFromString(request.PathInfo);
+            ServiceCall = RequestedService(new HttpRequestWrapper(request), requestedService);
             ResponseCallback = util.GetStringParam(request, "callback");
             ResultFormat = (util.GetIntParam(request, "json", 0) != 0) ? (String.IsNullOrEmpty(ResponseCallback) ? OutputFormat.JSON : OutputFormat.JSONP) : OutputFormat.XML;
 
@@ -390,7 +394,7 @@ namespace OAuthAuthorizationServer.Services
             LogbookEntry le = (szFormat.CompareCurrentCultureIgnoreCase("LTP") == 0) ?
                 JsonConvert.DeserializeObject<LogTenPro>(GetRequiredParam("flight"), new JsonConverter[] { new MFBDateTimeConverter() }).ToLogbookEntry() :
                 GetRequiredParam<LogbookEntry>("le");
-            WriteObject(s, mfbSvc.CommitFlightWithOptions(GeneratedAuthToken, le, GetRequiredParam<PostingOptions>("po")));
+            WriteObject(s, mfbSvc.CommitFlightWithOptions(GeneratedAuthToken, le, null));
         }
         #endregion
 
@@ -403,6 +407,9 @@ namespace OAuthAuthorizationServer.Services
         {
             if (s == null)
                 throw new ArgumentNullException(nameof(s));
+
+            if (ServiceCall == null)
+                throw new InvalidOperationException("No service call was requested");
 
             CheckAuth();
 
@@ -501,7 +508,7 @@ namespace OAuthAuthorizationServer.Services
         #endregion
 
         #region Request Handling
-        public static void ProcessRequest()
+        public static void ProcessRequest(string requestedService = null)
         {
             HttpRequest Request = HttpContext.Current.Request;
             HttpResponse Response = HttpContext.Current.Response;
@@ -511,7 +518,8 @@ namespace OAuthAuthorizationServer.Services
                 if (!Request.IsSecureConnection)
                     throw new HttpException((int)HttpStatusCode.Forbidden, "Authorization requests MUST be on a secure channel");
 
-                if (String.IsNullOrEmpty(Request.PathInfo))
+                OAuthServiceID? serviceID = RequestedService(new HttpRequestWrapper(Request), requestedService);
+                if (serviceID == null)
                 {
                     AuthorizationServer authorizationServer = new AuthorizationServer(new OAuth2AuthorizationServer());
                     OutgoingWebResponse wr = authorizationServer.HandleTokenRequest();
@@ -524,7 +532,7 @@ namespace OAuthAuthorizationServer.Services
                 }
                 else
                 {
-                    using (OAuthServiceCall service = new OAuthServiceCall(Request))
+                    using (OAuthServiceCall service = new OAuthServiceCall(Request, requestedService))
                     {
                         Response.Clear();
                         Response.ContentType = service.ContentType;

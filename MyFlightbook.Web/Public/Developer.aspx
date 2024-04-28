@@ -24,6 +24,7 @@
     <h2><% =Branding.ReBrand("Integrating with %APP_NAME%") %></h2>
     <p><% =Branding.ReBrand("%APP_NAME% supports the oAuth2 protocol.") %>  You can learn more about this on the <a href="https://github.com/ericberman/MyFlightbookWeb/wiki">MyFlightbook wiki.</a></p>
     <p>To integrate your service, you must implement oAuth.  You can then call make calls to the web service on behalf of the user</p>
+    <p>There is an <a href="../mvc/PlayPen/ClientTestBed">oAuth testbed</a> in the <a href="../mvc/PlayPen">playpen</a> (where widgets and tools that aren't officially supported live) that you can use to test this out.</p>
     <asp:MultiView ID="mvServices" runat="server" ActiveViewIndex="0">
         <asp:View ID="vwAuthenticated" runat="server">
             <div style="background-color:lightgray; border: 1px solid black; border-radius:5px; padding:5px; margin: 3px;">

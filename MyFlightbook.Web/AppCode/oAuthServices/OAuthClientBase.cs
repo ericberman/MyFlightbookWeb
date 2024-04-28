@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2022 MyFlightbook LLC
+ * Copyright (c) 2019-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -68,12 +69,12 @@ namespace MyFlightbook.OAuth
         /// <summary>
         /// The oAuth2 AppKey (from LocalConfig)
         /// </summary>
-        protected string AppKey { get { return LocalConfig.SettingForKey(m_AppKey); } }
+        protected virtual string AppKey { get { return LocalConfig.SettingForKey(m_AppKey); } }
 
         /// <summary>
         /// The oAuth2 AppSecret (from LocalConfig)
         /// </summary>
-        protected string AppSecret { get { return LocalConfig.SettingForKey(m_AppSecret); } }
+        protected virtual string AppSecret { get { return LocalConfig.SettingForKey(m_AppSecret); } }
 
         /// <summary>
         /// The authorization state (i.e., oAuth Credentials) for this
@@ -208,7 +209,7 @@ namespace MyFlightbook.OAuth
         /// </summary>
         /// <returns>True if the update happened and was successful</returns>
         /// <exception cref="DotNetOpenAuth.Messaging.ProtocolException"
-        protected async Task<bool> RefreshAccessToken()
+        public async Task<bool> RefreshAccessToken()
         {
             return await Task.Run<bool>(() =>
             {
@@ -223,17 +224,79 @@ namespace MyFlightbook.OAuth
         }
 
         /// <summary>
-        /// Convert an authorization token for an access token.
+        /// Convert an authorization token for an access token, using DotNetOpenAuth
         /// </summary>
         /// <param name="Request">The http request</param>
         /// <returns>The granted access token</returns>
-        public virtual IAuthorizationState ConvertToken(HttpRequest Request)
+        public virtual IAuthorizationState ConvertToken(HttpRequestBase Request)
         {
             WebServerClient consumer = new WebServerClient(Description(), AppKey, AppSecret)
             {
                 ClientCredentialApplicator = ClientCredentialApplicator.PostParameter(AppSecret)
             };
-            return consumer.ProcessUserAuthorization(new HttpRequestWrapper(Request));
+            return consumer.ProcessUserAuthorization(Request);
+        }
+
+        /// <summary>
+        /// Convert an authorization token for an access token, using DotNetOpenAuth
+        /// </summary>
+        /// <param name="Request">The http request</param>
+        /// <returns>The granted access token</returns>
+        public virtual IAuthorizationState ConvertToken(HttpRequest Request)
+        {
+            return ConvertToken(new HttpRequestWrapper(Request));
+        }
+
+        /// <summary>
+        /// Convert an authorization token for an access token, bypassing DotNetOpenAuth (which surprisingly sometimes doesn't work; see https://github.com/ericberman/MyFlightbookWeb/issues/178 and https://github.com/DotNetOpenAuth/DotNetOpenAuth/issues/312
+        /// </summary>
+        /// <param name="Request">The http request</param>
+        /// <returns>The granted access token</returns>
+        public async Task<IAuthorizationState> ConvertToken(string redirEndpoint, string code)
+        {
+            if (String.IsNullOrEmpty(redirEndpoint))
+                throw new ArgumentNullException(nameof(redirEndpoint));
+            if (String.IsNullOrEmpty(code))
+                throw new ArgumentNullException(nameof(code));
+
+            Dictionary<string, string> dContent = new Dictionary<string, string>()
+            {
+                { "client_id" , AppKey},
+                { "client_secret", AppSecret},
+                { "redirect_uri", redirEndpoint },
+                { "grant_type", "authorization_code" },
+                { "code", code }
+            };
+
+            using (FormUrlEncodedContent c = new FormUrlEncodedContent(dContent))
+            {
+                string result = (string)await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri(oAuth2TokenEndpoint), null, HttpMethod.Post, c, (response) =>
+                {
+                    string szResult = response.Content.ReadAsStringAsync().Result;
+                    response.EnsureSuccessStatusCode();
+                    return szResult;
+                });
+
+                if (String.IsNullOrEmpty(result))
+                    throw new MyFlightbookValidationException("Null access token returned - invalid authorization passed?");
+
+                // JSonConvert can't deserialize space-delimited scopes into a hashset, so we need to do that manually.  Uggh.
+                Dictionary<string, string> d = JsonConvert.DeserializeObject<Dictionary<string, string>>(result);
+
+                AuthorizationState authstate = new AuthorizationState(d.TryGetValue("scope", out string sc) ? OAuthUtilities.SplitScopes(sc) : null)
+                {
+                    AccessToken = d.TryGetValue("access_token", out string acctok) ? acctok : string.Empty,
+                    AccessTokenIssueDateUtc = DateTime.UtcNow
+                };
+                if (d.TryGetValue("expires_in", out string value))
+                {
+                    if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int exp))
+                        authstate.AccessTokenExpirationUtc = DateTime.UtcNow.AddSeconds(exp);
+                }
+                authstate.RefreshToken = d.TryGetValue("refresh_token", out string reftok) ? reftok : string.Empty;
+                authstate.Callback = String.IsNullOrEmpty(redirEndpoint) ? null : new Uri(redirEndpoint);
+                return authstate;
+            }
         }
 
         /// <summary>
@@ -248,6 +311,32 @@ namespace MyFlightbook.OAuth
                 var hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(codeVerifier));
                 return Convert.ToBase64String(hash).TrimEnd(new char[] { '=' }).Replace('+', '-').Replace('/', '_');
             }
+        }
+    }
+
+    public class OAuth2AdHocClient : OAuthClientBase
+    {
+        private readonly string _clientID;
+        private readonly string _clientSecret;
+        private readonly string _redirEndpoint;
+
+        #region properties
+        protected override string AppKey { get { return _clientID; } }
+
+        protected override string AppSecret { get { return _clientSecret; } }
+
+        public string clientID { get { return AppKey; } }
+
+        public string clientSecret { get { return AppSecret; } }
+
+        public string redirectEndpoint { get { return _redirEndpoint; } }
+        #endregion
+
+        public OAuth2AdHocClient(string clientID, string clientSecret, string authEndpoint, string tokenEndpoint, string redirEndpoint, string[] scopes = null) : base(string.Empty, string.Empty, authEndpoint, tokenEndpoint, scopes)
+        {
+            _clientID = clientID;
+            _clientSecret = clientSecret;
+            _redirEndpoint = redirEndpoint;
         }
     }
 }

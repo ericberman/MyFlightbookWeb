@@ -182,6 +182,7 @@ namespace MyFlightbook.CloudStorage
             if (Request == null)
                 throw new ArgumentNullException(nameof(Request));
 
+            // TODO: We should make this code async and replace it with a call to the async convert token code.
             HttpWebRequest hr = (HttpWebRequest)HttpWebRequest.Create(new Uri(oAuth2TokenEndpoint));
             hr.Method = "POST";
             hr.ContentType = "application/x-www-form-urlencoded";

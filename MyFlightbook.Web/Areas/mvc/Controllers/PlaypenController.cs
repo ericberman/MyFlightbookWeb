@@ -1,12 +1,19 @@
-﻿using MyFlightbook.Airports;
+﻿using DotNetOpenAuth.OAuth2;
+using MyFlightbook.Airports;
 using MyFlightbook.Geography;
 using MyFlightbook.Mapping;
+using MyFlightbook.OAuth;
 using MyFlightbook.SolarTools;
 using MyFlightbook.Telemetry;
+using OAuthAuthorizationServer.Code;
+using OAuthAuthorizationServer.Services;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -165,6 +172,103 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 return View("mergeTelemetry");
             }
         }
+        #endregion
+
+        #region oAuthClientTest
+        private const string sessionKeyOAuthClient = "oauthClient";
+
+        protected OAuth2AdHocClient CurrentClient
+        {
+            get
+            {
+                OAuth2AdHocClient client = (OAuth2AdHocClient)Session[sessionKeyOAuthClient];
+                if (client == null)
+                {
+                    MFBOauth2Client defaultClient = null;
+                    if (User.Identity.IsAuthenticated && String.IsNullOrEmpty(Request["clientID"]))
+                    {
+                        IEnumerable<MFBOauth2Client> clients = MFBOauth2Client.GetClientsForUser(User.Identity.Name);
+                        if (clients.Any())
+                            defaultClient = clients.First();
+                    }
+
+                    string clientID = Request["clientID"] ?? defaultClient?.ClientIdentifier ?? string.Empty;
+                    string clientSecret = Request["clientSecret"] ?? defaultClient?.ClientSecret ?? string.Empty;
+                    string authURL = Request["authTarget"] ?? "~/member/oAuthAuthorize.aspx".ToAbsoluteURL(Request).ToString();
+                    string tokenURL = Request["tokenTarget"] ?? "~/OAuth/oAuthToken.aspx".ToAbsoluteURL(Request).ToString();
+                    string redirectURL = Request["targetRedir"] ?? Request.Url.GetLeftPart(UriPartial.Path);
+                    string scope = Request["scopes"] ?? "currency totals addflight readflight addaircraft readaircraft visited namedqueries images";
+                    Session[sessionKeyOAuthClient] = client = new OAuth2AdHocClient(clientID, clientSecret, authURL, tokenURL, redirectURL, OAuthUtilities.SplitScopes(scope).ToArray());
+                }
+                return client;
+            }
+            set { Session[sessionKeyOAuthClient] = value; }
+        }
+
+        protected void InitViewBag()
+        {
+            ViewBag.client = CurrentClient;
+            ViewBag.resourceURL = Request["txtResourceURL"] ?? "~/mvc/playpen/OAuthResource".ToAbsoluteURL(Request).ToString();
+            ViewBag.authorization = Request["code"] ?? string.Empty;
+            ViewBag.State = Request["state"] ?? string.Empty;
+            ViewBag.error = Request["error"] ?? string.Empty;
+        }
+
+        public ActionResult ClientTestBed()
+        {
+            if (Request["clear"] !=  null)
+            {
+                CurrentClient = null;
+                return Redirect("ClientTestBed");
+            }
+            InitViewBag();
+            return View("oAuthClientTest");
+        }
+
+        public async Task<ActionResult> OAuthAuthorize(string targetRedir)
+        {
+            OAuth2AdHocClient adhocClient = CurrentClient;
+
+            // Use ParseQueryString because that is how you get an HttpValueCollection, on which ToString() works.
+            NameValueCollection nvc = HttpUtility.ParseQueryString(string.Empty);
+            nvc["code"] = Request["code"] ?? string.Empty;
+            nvc["state"] = Request["state"] ?? string.Empty;
+
+            string submitter = Request["submit"];
+
+            try
+            {
+                if (submitter.CompareCurrentCultureIgnoreCase("authorize") == 0)
+                {
+                    adhocClient.Authorize(new Uri(targetRedir));
+                    return null;
+                }
+                else if (submitter.CompareCurrentCultureIgnoreCase("token") == 0)
+                {
+                    adhocClient.AuthState = await adhocClient.ConvertToken(targetRedir, Request["code"]);
+                    return Redirect("ClientTestBed");
+                }
+                else if (submitter.CompareCurrentCultureIgnoreCase("refresh") == 0)
+                {
+                    bool _ = await adhocClient.RefreshAccessToken();
+                    return Redirect("ClientTestBed");
+                }
+            }
+            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            {
+                nvc["error"] = ex.Message;
+                return Redirect(String.Format(CultureInfo.InvariantCulture, "ClientTestBed?{0}", nvc.ToString()));
+            }
+
+            return null;
+        }
+
+        public ActionResult OAuthResource(string id)
+        {
+            OAuthServiceCall.ProcessRequest(id);
+            return null;
+        }
+
         #endregion
 
         // GET: mvc/Playpen

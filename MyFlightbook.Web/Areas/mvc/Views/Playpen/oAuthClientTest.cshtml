@@ -1,0 +1,416 @@
+﻿@using Newtonsoft.Json
+@{
+    ViewBag.Title = "oAuth Client Test Bed";
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    MyFlightbook.OAuth.OAuth2AdHocClient currentClient = ViewBag.client;
+}
+<script type="text/javascript">
+    function getResource(method) {
+        var form = $("form[name='frmResource']");
+        if (form.valid()) {
+            var action = $("#cmbResourceAction").val();
+            var custData = "";
+            if (action == "none") {
+                action = $("#txtCustomVerb").val();
+                custData = $("#txtCustomData").val();
+            }
+            var fUploadImage = (action == "UploadImage");
+            var target = (fUploadImage ? $("#txtImgUploadURL").val() : $("#txtResourceURL").val()) + "/" + action;
+
+            // hack to avoid multiple idFlights or redundant "id"
+            if (fUploadImage) {
+                $("#decFlightID").removeAttr("name");
+                $("#decImageFlightID").attr("name", "idFlight");
+                $("#hdnUseAircraftID").attr("name", "id");
+            } else {
+                $("#decFlightID").attr("name", "idFlight");
+                $("#decImageFlightID").removeAttr("name");
+                $("#hdnUseAircraftID").removeAttr("name");
+            }
+
+            if (method == "GET") {
+                $("#hdnAccessToken").attr("name", "access_token");  // need to pass the access token in the URL
+                form.attr("action", target);
+                form.submit();
+            } else {
+                $("#hdnAccessToken").removeAttr("name");  // access token is in the header, no need to pass it redundantly
+                $.ajax({
+                    url: target,
+                    type: "POST",
+                    data: fUploadImage ? new FormData(form[0]) : form.serialize(),
+                    dataType: "text",
+                    contentType: fUploadImage ? false : 'application/x-www-form-urlencoded; charset=UTF-8',
+                    processData: !fUploadImage,
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('Authorization', 'Bearer ' + $("#hdnAccessToken").val());
+                    },
+                    error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                    complete: function () { },
+                    success: function (r) {
+                        $("#divPostResults").text(r);
+                    }
+                });
+            }
+        }
+    }
+
+    function refreshToken() {
+        $("#btnRefresh").click();
+    }
+
+    $(function () {
+        $("form[name='frmAuthorize']").validate({
+            errorClass: "error",
+            errorElement: "div",
+            rules: {
+                txtClientID: "required",
+                txtClientSecret: "required",
+                txtScope: "required",
+                txtTokenURL: "required"
+            },
+            messages: {
+                txtClientID: "Client ID is required for authorization",
+                txtClientSecret: "Client secret is required for authorization",
+                txtScope: "At least some scopes are required for authorization",
+                txtTokenURL: "A token endpoint (URL) is required"
+            }
+        });
+        $("form[name='frmResource']").validate({
+            errorClass: "error",
+            errorElement: "div",
+            rules: {
+                txtResourceURL: "required"
+            },
+            messages: {
+                txtResourceURL: "The URL for resources is required"
+            }
+        });
+    });
+
+    function showResource(sender) {
+        var value = sender.value;
+        $("#resourceViews").children(".detailsSection").hide();
+        // Now show the correct one
+        switch (sender.value) {
+            case "addFlight":
+            case "CommitFlightWithOptions":
+            case "CreatePendingFlight":
+            case "UpdatePendingFlight":
+            case "CommitPendingFlight":
+                $(".detailsSection[name='addFlight']").show();
+                break;
+            case "currency":
+            case "VisitedAirports":
+            case "AircraftForUser":
+            case "AvailablePropertyTypesForUser":
+            case "MakesAndModels":
+            case "PendingFlightsForUser":
+                break;
+            case "FlightPathForFlight":
+            case "FlightPathForFlightGPX":
+            case "DeleteLogbookEntry":
+            case "PropertiesForFlight":
+                $(".detailsSection[name='flightID']").show();
+                break;
+            case "DeletePendingFlight":
+                $(".detailsSection[name='pendingID']").show();
+                break;
+            case "AddAircraftForUser":
+                $(".detailsSection[name='addAircraft']").show();
+                break;
+            case "totals":
+            case "TotalsForUserWithQuery":
+                $(".detailsSection[name='flightsWithQueryAndOffset']").show();
+                $("#rowOffset").hide();
+                $("#rowLimit").hide();
+                break;
+            case "FlightsWithQueryAndOffset":
+                $(".detailsSection[name='flightsWithQueryAndOffset']").show();
+                $("#rowOffset").show();
+                $("#rowLimit").show();
+                break;
+            case "UploadImage":
+                $(".detailsSection[name='uploadImage']").show();
+                break;
+            case "none":
+            default:
+                $(".detailsSection[name='none']").show();
+                break;
+        }
+    }
+</script>
+@using (Html.BeginForm("OAuthAuthorize", "PlayPen", FormMethod.Post, new { id = "frmAuthorize", name = "frmAuthorize" }))
+{
+    <table>
+        <tr>
+            <td>Client ID:</td>
+            <td><input id="txtClientID" name="clientID" style="width: 400px;" type="text" required value="@currentClient.clientID" /></td>
+        </tr>
+        <tr>
+            <td>Client Secret:</td>
+            <td><input id="txtClientSecret" name="clientSecret" style="width: 400px;" type="password" value="@currentClient.clientSecret" required /></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <h2>1) Authorization</h2>
+                <p>Pass your client ID to the the authorization URL (below).  The user signs in and authorizes the app to have the requested permissions</p>
+                <p>The user is then redirected back to the Ridirect URL (below), along with an authorization, which can be used to get a token.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>Authorization URL:</td>
+            <td><input id="txtAuthURL" name="authTarget" style="width: 400px;" required value="@currentClient.oAuth2AuthorizeEndpoint" /></td>
+        </tr>
+        <tr>
+            <td>Redirect URL:</td>
+            <td><input id="txtRedirectURL" name="targetRedir" style="width: 400px;" value="@currentClient.redirectEndpoint" required /></td>
+        </tr>
+        <tr>
+            <td style="vertical-align:top">Scope:</td>
+            <td><input id="txtScope" name="scopes" style="width: 400px;" value="@String.Join(" ", currentClient.Scopes)" /></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button type="submit" name="submit" value="authorize">Get Authorization</button></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <h2>2) Convert the authorization into an authtoken</h2>
+                <p>The authorization proves that the user gave your app permission, but the authorization is not secure because it was visible in the user's browser and if hijacked could be used by others</p>
+                <p>
+                    So now you convert it to a secure oAuth authtoken by passing that authorization back to the server - over a secure server-to-server channel (i.e., from your app, not using the browser)
+                    along with your client ID and secret, using the Token URL below.
+                </p>
+                <p>The presence of the client ID and secret prove that your app is your app.  If successful, an authtoken is returned.</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="vertical-align:top">Token URL</td>
+            <td>
+                <input id="txtTokenURL" name="tokenTarget" style="width: 400px;" required value="@currentClient.oAuth2TokenEndpoint" />
+                <input type="hidden" name="code" id="hdnAuthorization" value="@ViewBag.Authorization" />
+                <input type="hidden" name="state" id="hdnState" value="@ViewBag.State" />
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <button type="submit" name="submit" value="token">Get Token</button>
+                <button type="submit" name="submit" value="refresh" id="btnRefresh" style="display:none;"></button>
+            </td>
+        </tr>
+    </table>
+}
+@using (Html.BeginForm("OAuthResource", "PlayPen", FormMethod.Get, new { id = "frmResource", name = "frmResource", enctype= "multipart/form-data" }))
+{
+    <table>
+        <tr>
+            <td colspan="2">
+                <h2>3. Use the authtoken to interact with the server</h2>
+                <p>You can use "POST" for any of the actions, GET for only some of them (that don't require things like file upload)</p>
+                <p>You can request results in either XML or JSON</p>
+            </td>
+        </tr>
+        <tr style="vertical-align:top">
+            <td style="vertical-align:top">
+                <div>Resource URL:</div>
+                <div class="fineprint">(minus verb, other data)</div>
+            </td>
+            <td><input id="txtResourceURL" name="targetResource" value="@ViewBag.resourceURL" style="width: 400px;" required /></td>
+        </tr>
+        <tr style="vertical-align:top">
+            <td>Resource Action:</td>
+            <td>
+                <select id="cmbResourceAction" onchange="showResource(this);">
+                    <option selected value="none">(Custom - GET only)</option>
+                    <option value="currency" >Currency</option>
+                    <option value="totals" >Totals</option>
+                    <option value="VisitedAirports" >Visited Airports</option>
+                    <option value="AddAircraftForUser" >Add Aircraft</option>
+                    <option value="AircraftForUser" >Aircraft for user</option>
+                    <option value="MakesAndModels" >Makes / Models</option>
+                    <option value="CommitFlightWithOptions" >Add flight (POST only)</option>
+                    <option value="CreatePendingFlight" >Add pending flight (POST only)</option>
+                    <option value="PendingFlightsForUser" >View pending flights</option>
+                    <option value="UpdatePendingFlight" >Update pending flight (POST only)</option>
+                    <option value="DeletePendingFlight" >Delete a pending flight</option>
+                    <option value="CommitPendingFlight" >Commit a pending flight to logbook (POST only)</option>
+                    <option value="FlightsWithQueryAndOffset" >View flights (POST only)</option>
+                    <option value="FlightPathForFlight" >Flight Path for flight</option>
+                    <option value="FlightPathForFlightGPX" >Flight Path (GPX) for flight</option>
+                    <option value="DeleteLogbookEntry" >Delete Flight</option>
+                    <option value="AvailablePropertyTypesForUser" >Properties for user</option>
+                    <option value="GetNamedQueries" >Get Named Queries</option>
+                    <option value="UploadImage" >Upload an image (POST only)</option>
+                </select>
+                <label><input type="checkbox" id="ckJSON" name="json" value="1" />Request JSON data (default is XML)</label>
+                <input type="hidden" name="access_token" id="hdnAccessToken" value="@(currentClient?.AuthState?.AccessToken ?? string.Empty)" />
+                <div>For JSONP, provide a callback name (&callback=...): <input id="txtCallBack" name="callback" /></div>
+                <div id="resourceViews">
+                    <div class="detailsSection" name="none">
+                        <table>
+                            <tr style="vertical-align:top">
+                                <td>Verb:</td>
+                                <td><input id="txtCustomVerb" /></td>
+                            </tr>
+                            <tr style="vertical-align:top">
+                                <td><div>Additional URL data:</div><div class="fineprint">(will NOT be URL encoded)</div></td>
+                                <td><input id="txtCustomData" /></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="detailsSection" name="flightsWithQueryAndOffset" style="display:none;">
+                        <table>
+                            <tr>
+                                <td>(Optional): JSON-ified Flight Query:</td>
+                                <td><textarea id="txtFlightQuery" name="fq" style="width: 200px" rows="5">{}</textarea></td>
+                            </tr>
+                            <tr id="rowOffset">
+                                <td>Offset:</td>
+                                <td><input type="number" step="1" value="0" name="offset" id="decOffset" /></td>
+                            </tr>
+                            <tr id="rowLimit">
+                                <td>Limit:</td>
+                                <td><input type="number" step="1" value="0" name="maxCount" id="decLimit" /></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="detailsSection" name="addAircraft" style="display:none">
+                        <table>
+                            <tr>
+                                <td>Tail Number:</td>
+                                <td><input id="txtTail" name="szTail" /></td>
+                            </tr>
+                            <tr>
+                                <td>Model ID:</td>
+                                <td><input type="number" id="decModelID" name="idModel" step="1" value="0" /></td>
+                            </tr>
+                            <tr>
+                                <td>Instance type ID:</td>
+                                <td><input id="txtInstanceType" name="idInstanceType" /></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="detailsSection" name="noParam" style="display:none">
+                    </div>
+                    <div class="detailsSection" name="addFlight" style="display:none;">
+                        <table>
+                            <tr style="vertical-align:top">
+                                <td>Flight data JSON-ified:</td>
+                                <td><textarea id="txtFlightToAdd" name="le" style="width: 200px" rows="5"></textarea></td>
+                            </tr>
+                            <tr style="vertical-align:top">
+                                <td>Format:</td>
+                                <td>
+                                    <select id="cmbFlightFormat" name="format">
+                                        <option value="0" selected>Native</option>
+                                        <option value="1">LogTen Pro</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="detailsSection" name="flightID" style="display:none;">
+                        Flight ID: <input id="decFlightID" name="idFlight" value="0" step="1" type="number" />
+                    </div>
+                    <div class="detailsSection" name="pendingID" style="display: none;">
+                        Pending Flight ID: <input id="txtPendingID" name="idpending" />
+                    </div>
+                    <div class="detailsSection" name="uploadImage" style="display:none;">
+                        <table>
+                            <tr>
+                                <td>File to upload</td>
+                                <td><input type="file" id="fuImage" name="imgPicture" /></td>
+                            </tr>
+                            <tr>
+                                <td>Comment:</td>
+                                <td><input id="txtImgComment" name="txtComment" /></td>
+                            </tr>
+                            <tr>
+                                <td>Latitude<br />(Optional)</td>
+                                <td><input type="number" id="decImgLat" value="0" name="txtLat" /></td>
+                            </tr>
+                            <tr>
+                                <td>Longitude<br />(Optional)</td>
+                                <td><input type="number" id="decImgLon" value="0" name="txtLon" /></td>
+                            </tr>
+                            <tr>
+                                <td>Additional params</td>
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td>Param Name</td>
+                                            <td>Param Value</td>
+                                        </tr>
+                                        <tr>
+                                            <td>FlightID:</td>
+                                            <td><input id="decImageFlightID" name="idFlight" type="number" step="1" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td>AircraftID:</td>
+                                            <td>
+                                                <input id="txtImageParam2" name="txtAircraft" type="number" step="1" />
+                                                <input type="hidden" id="hdnUseAircraftID" value="1" />
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Target page</td>
+                                <td><input id="txtImgUploadURL" name="txtImgUploadURL" style="width: 100%;" value="@("~/public/UploadPicture.aspx".ToAbsoluteURL(Request))" /></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>State</td>
+            <td>
+                <input id="txtState" name="txtState" style="width: 400px;" value="@ViewBag.state" />
+            </td>
+        </tr>
+    </table>
+}
+<button type="button" onclick="javascript: getResource('GET');">Get Resource (GET)</button>&nbsp;
+<button type="button" onclick="javascript: getResource('POST');">Get Resource (POST)</button>&nbsp;
+<button type="button" onclick="javascript: window.location = '@Request.Url.GetLeftPart(UriPartial.Path)' + '?clear=1';">Clear State</button>&nbsp;
+<button type="button" onclick="javascript: refreshToken();">Refresh Token</button>&nbsp;
+<div><span id="lblErr" class="error">@ViewBag.error</span></div>
+<div style="padding:5px; background-color:lightgray; border:1px solid black; border-radius: 4px; margin: 5px;">
+    @{  Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "divOutputResults", labelText = "Output/Result:" }); }
+    <div id="divOutputResults" style="display: none; word-wrap:break-word;">
+        <table border="1" style="border-collapse:collapse; overflow: hidden; table-layout:fixed; width: 100%;">
+            <thead>
+                <tr>
+                    <td style="text-align: center; font-weight: bold">Key</td>
+                    <td style="text-align: center; font-weight: bold">Value</td>
+                </tr>
+            </thead>
+            @foreach (string szKey in Request.Params.Keys)
+            {
+                <tr>
+                    <td>@szKey</td>
+                    <td>@Request.Params[szKey]</td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+<div>
+    <table style="width: 100%; word-wrap: break-word;">
+        <tr style="vertical-align:top;">
+            <td style="width: 100px;">Authorization result:</td>
+            <td>@ViewBag.authorization</td>
+        </tr>
+        <tr style="vertical-align:top;">
+            <td style="width: 100px;">Token result:</td>
+            <td style="word-break: break-word; white-space: pre-line;">@JsonConvert.SerializeObject(currentClient.AuthState, Formatting.Indented)</td>
+        </tr>
+        <tr style="vertical-align:top;">
+            <td style="width: 100px;">POST result:</td>
+            <td><div id="divPostResults"></div></td>
+        </tr>
+    </table>
+</div>

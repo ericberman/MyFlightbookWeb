@@ -1377,7 +1377,6 @@
     <Content Include="PlayPen\iCalConvert.aspx" />
     <Content Include="PlayPen\ImgDbg.aspx" />
     <Content Include="PlayPen\MergeFlights.aspx" />
-    <Content Include="PlayPen\oAuthClientTest.aspx" />
     <Content Include="Private\SetupNotes.txt" />
     <Content Include="Public\AndroidImages\Android1.png" />
     <Content Include="Public\AndroidImages\Android2.png" />
@@ -1590,6 +1589,7 @@
     <Content Include="Areas\mvc\Views\Flights\_telemetryAnalysisResult.cshtml" />
     <Content Include="Areas\mvc\Views\Flights\flightDetails.cshtml" />
     <Content Include="Areas\mvc\Views\Flights\_signatureBlock.cshtml" />
+    <Content Include="Areas\mvc\Views\Playpen\oAuthClientTest.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -2803,13 +2803,6 @@
     </Compile>
     <Compile Include="PlayPen\MergeFlights.aspx.designer.cs">
       <DependentUpon>MergeFlights.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="PlayPen\oAuthClientTest.aspx.cs">
-      <DependentUpon>oAuthClientTest.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="PlayPen\oAuthClientTest.aspx.designer.cs">
-      <DependentUpon>oAuthClientTest.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Public\authredir.aspx.cs">
