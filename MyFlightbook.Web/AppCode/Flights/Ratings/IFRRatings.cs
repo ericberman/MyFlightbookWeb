@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2023 MyFlightbook LLC
+ * Copyright (c) 2013-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -222,7 +222,7 @@ namespace MyFlightbook.RatingsProgress
 
 
                 decimal simTimeToCredit = Math.Max(
-                    Math.Min(MaxSimTime, miFTDFFSTime.Progress + Math.Max(miAATDIMCTime.Progress, miBATDIMCTime.Progress)), // limits atd time + ftd time to 20hrs
+                    Math.Min(MaxSimTime, miFTDFFSTime.Progress + miAATDIMCTime.Progress + miBATDIMCTime.Progress),           // limits atd time + ftd time to 20hrs
                     Math.Min(MaxFTDTime, miFTDFFSTime.Progress));                                                          // if maxFTD time is > 20, allows that FTD time to be applied.
 
                 // Don't pollute the IMC time (keep this getter idempotent), so add the sim time to actual time in a "netIMC" object
