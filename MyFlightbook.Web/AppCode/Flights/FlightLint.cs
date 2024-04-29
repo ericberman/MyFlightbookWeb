@@ -358,7 +358,7 @@ namespace MyFlightbook.Lint
             int basetime = le.PIC.ToMinutes() + le.SIC.ToMinutes() + le.Dual.ToMinutes();
             int picus = le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropPICUS).ToMinutes();
             int totalMinutes = le.TotalFlightTime.ToMinutes();
-            AddConditionalIssue(basetime != totalMinutes && basetime + picus != totalMinutes, LintOptions.PICSICDualMath, Resources.FlightLint.warningPICSICDualBroken);
+            AddConditionalIssue(currentAircraft.InstanceType == AircraftInstanceTypes.RealAircraft && basetime != totalMinutes && basetime + picus != totalMinutes, LintOptions.PICSICDualMath, Resources.FlightLint.warningPICSICDualBroken);
         }
 
         private readonly static HashSet<int> hsExcludedTimeProps = new HashSet<int>() {
