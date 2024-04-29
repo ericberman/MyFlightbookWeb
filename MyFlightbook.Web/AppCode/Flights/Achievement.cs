@@ -1134,6 +1134,7 @@ namespace MyFlightbook.Achievements
                     {
                         Level = AchievementLevel.Achieved;
                         DateEarned = cfr.dtFlight;
+                        IDFlightEarned = cfr.flightID;
                         break;
                     }
                 }
