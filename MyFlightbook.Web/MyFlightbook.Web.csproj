@@ -642,6 +642,7 @@
     <Content Include="images\back.png" />
     <Content Include="images\BadgeOverlays\aircraft.svg" />
     <Content Include="images\BadgeOverlays\calendar.svg" />
+    <Content Include="images\BadgeOverlays\eclipse.png" />
     <Content Include="images\BadgeOverlays\globe.svg" />
     <Content Include="images\BadgeOverlays\trend.svg" />
     <Content Include="images\Collapsed.png" />

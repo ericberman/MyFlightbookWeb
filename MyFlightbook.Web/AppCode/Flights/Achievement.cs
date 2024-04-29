@@ -376,6 +376,7 @@ namespace MyFlightbook.Achievements
             FlightsInNovember,
             FlightsInDecember,
             FlightsInYear,
+            EclipseChaser2024,
 
             AirportList00 = BadgeCategory.AirportList,
             AirportList01, AirportList02, AirportList03, AirportList04, AirportList05, AirportList06, AirportList07, AirportList08, AirportList09, AirportList10,
@@ -751,6 +752,7 @@ namespace MyFlightbook.Achievements
 
                     // Miscellaneous
                     new FlightOfThePenguin(),
+                    new EclipseChaser2024(),
                     // Flights-in-month
                     new FlightsInMonth(1),
                     new FlightsInMonth(2),
@@ -1087,6 +1089,52 @@ namespace MyFlightbook.Achievements
                         Level = AchievementLevel.Achieved;
                         DateEarned = va.EarliestVisitDate;
                         IDFlightEarned = va.FlightIDOfFirstVisit;
+                    }
+                }
+            }
+        }
+    }
+
+
+    [Serializable]
+    public class EclipseChaser2024 : Badge
+    {
+        private const string szEclipseAirports = @"0B7 0G7 1E8 1H1 1I1 21M 39B 3B1 44B 4B6 4B7 4C4 52B 59B 5B1 60B 6B0 6B9 70B 78B 83B 85B 87B 8B0 B06 B16 B21 CYSL K03 K16 KART KBML KBTV KCAR KCDA KEFK KERR KFSO KFZY KGTB KHUL KLKP KLRG KMAL KMLT KMPV KMSS KMVL KOGS KPBG KPQI KPTD KRME KSLK KSYR M57 1I8 5I4 6I4 8I3 C40 I72 KMZZ KTYQ 0G7 1D4 1G0 1G1 1G3 1G5 2D1 2G1 3D8 3G3 3G4 3T7 3W2 3W9 3X5 4G1 4G2 4G3 4G8 4N2 5A1 5D9 5G0 5G7 6D7 6G1 7D8 7D9 7G0 7G8 7W5 8G1 8G2 9G0 9G3 9G5 9G6 01G 03G 12G 14G 15G 16G 17G 41N 56D 62D 85N 88D 89D 92G D23 D51 D52 D59 D79 D88 D91 I64 KAKR KBJJ KBKL KBQR KBUF KCAK KCGF KCLE KDFI KDKK KDSV KERI KFDY KFZI KGKJ KGQQ KGVQ KHTF KHZY KIAG KIUA KJHW KLNN KLPR KMFD KMNN KOLE KOWX KPCW KPEO KPOV KROC KSDC KTDZ KTOL KYNG N56 P15 R47 S24 0G7 1D4 1G0 07F 1F7 20T 2F7 30F 3F9 3T8 4F7 4O4 50F 5M8 68F 6F1 73F 76F 7F3 7F5 7F7 7M3 80F 8F5 90F 9F0 9F1 9F9 9S1 F00 F41 F44 F46 F51 F53 F69 KACT KADS KCNW KCPT KCRS KDAL KDEQ KDFW KFTW KFWS KGDJ KGKY KGOP KGPM KGVT KHHW KHOT KHQZ KINJ KJDD KJWY KJXI KLBR KLNC KLXY KMNZ KOSA KPRX KPWG KRBD KSLR KTKI KTRL KTXK KTYR M18 M77 T13 T14 T15 T31 T37 T48 T56 T80 10X 1T7 20R 23R 2G5 2KL 2TX 3R9 49R 5C1 5T9 81R KAQO KBBD KBMQ KCVB KCZT KDLF KDRT KDZB KECU KEDC KERV KGRK KGTU KHDO KILE KJCT KLZZ KRYW KTPL KUVA T35 T70 T74 T82 T92 T94 0D7 0I2 1H8 1I3 1WF 2R2 38I 3EV 3FK 3I3 3I7 3R8 4I3 4I9 5I4 6CM 6G4 6I4 78I 7I2 7I4 7L8 I17 I20 I22 I34 I42 I44 I54 I61 I67 I68 I72 I73 I74 I80 I83 I91 I95 I99 KAID KAJG KAOH KAXV KBAK KBFR KBMG KCEV KCFJ KCQA KCUL KDAY KDCY KDLZ KEDJ KEHR KEVV KEYE KFFO KFRH KGDK KGEZ KGFD KGPC KHAO KHBE KHFY KHLB KHNB KHUF KIND KLWV KMGY KMIE KMQJ KMRT KMWO KOSU KOVO KOXD KPLD KRID KRSV KSCA KSER KSGH KSIV KUMP KUWL KUYF KVES KVNW O74 1H2 2T2 H57 H88 H96 HSB KENL KFAM KFOA KFWC KMDH KMVN KMWA KOLY KPCD KPJY KSAR KSLO 12A 2A2 32A 34M 37M 37T 3M0 42A 42M 4A5 4M2 4M9 6M2 7M2 7M3 7M5 7M6 7M7 7M8 7M9 8M2 H35 KADF KARG KBDQ KBPK KBVX KCCA KCGI KCHQ KCIR KCVK KCXW KDXE KEIW KFLP KGDA KHBZ KJBR KLIT KMAW KMEZ KMPJ KORK KPAH KPGR KPOF KPYN KRKR KRUE KSIK KSRC KSUZ KTKX KTWT KUNO M19 M27 M30 M60 M70 M74 M78 M85 MO5 X33";
+
+        private static AirportList _al = null;
+
+        private static AirportList eclipseAirports
+        {
+            get
+            {
+                if (_al == null)
+                    _al = new AirportList(szEclipseAirports);
+
+                return _al;
+            }
+        }
+
+        private static readonly DateTime dtEclipse = new DateTime(2024, 04, 08);
+
+        public override string BadgeImageOverlay { get { return "~/Images/BadgeOverlays/eclipse.png".ToAbsolute(); } }
+
+        public EclipseChaser2024() : base(BadgeID.EclipseChaser2024, Resources.Achievements.name2024EclipseChaser) { }
+
+        public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context)
+        {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
+            if (cfr.dtFlight.Date.CompareTo(dtEclipse.Date) == 0 && cfr.fIsRealAircraft && !IsAchieved)
+            {
+                AirportList eclipseMaster = eclipseAirports;
+                AirportList al = new AirportList(cfr.Route);
+                foreach (airport ap in al.UniqueAirports)
+                {
+                    if (ap.IsPort && eclipseMaster.GetAirportByCode(ap.Code) != null)
+                    {
+                        Level = AchievementLevel.Achieved;
+                        DateEarned = cfr.dtFlight;
+                        break;
                     }
                 }
             }

@@ -475,4 +475,7 @@
   <data name="nameDaysInYear" xml:space="preserve">
     <value>Flew {0} days in a single calendar year!</value>
   </data>
+  <data name="name2024EclipseChaser" xml:space="preserve">
+    <value>2024 Eclipse Chaser</value>
+  </data>
 </root>
