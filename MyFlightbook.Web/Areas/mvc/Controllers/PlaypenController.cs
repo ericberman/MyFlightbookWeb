@@ -194,8 +194,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
                     string clientID = Request["clientID"] ?? defaultClient?.ClientIdentifier ?? string.Empty;
                     string clientSecret = Request["clientSecret"] ?? defaultClient?.ClientSecret ?? string.Empty;
-                    string authURL = Request["authTarget"] ?? "~/member/oAuthAuthorize.aspx".ToAbsoluteURL(Request).ToString();
-                    string tokenURL = Request["tokenTarget"] ?? "~/OAuth/oAuthToken.aspx".ToAbsoluteURL(Request).ToString();
+                    string authURL = Request["authTarget"] ?? "~/mvc/oAuth/Authorize".ToAbsoluteURL(Request).ToString();
+                    string tokenURL = Request["tokenTarget"] ?? "~/mvc/oAuth/OAuthToken".ToAbsoluteURL(Request).ToString();
                     string redirectURL = Request["targetRedir"] ?? Request.Url.GetLeftPart(UriPartial.Path);
                     string scope = Request["scopes"] ?? "currency totals addflight readflight addaircraft readaircraft visited namedqueries images";
                     Session[sessionKeyOAuthClient] = client = new OAuth2AdHocClient(clientID, clientSecret, authURL, tokenURL, redirectURL, OAuthUtilities.SplitScopes(scope).ToArray());
@@ -208,7 +208,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         protected void InitViewBag()
         {
             ViewBag.client = CurrentClient;
-            ViewBag.resourceURL = Request["txtResourceURL"] ?? "~/mvc/playpen/OAuthResource".ToAbsoluteURL(Request).ToString();
+            ViewBag.resourceURL = Request["txtResourceURL"] ?? "~/mvc/oAuth/OAuthResource".ToAbsoluteURL(Request).ToString();
             ViewBag.authorization = Request["code"] ?? string.Empty;
             ViewBag.State = Request["state"] ?? string.Empty;
             ViewBag.error = Request["error"] ?? string.Empty;

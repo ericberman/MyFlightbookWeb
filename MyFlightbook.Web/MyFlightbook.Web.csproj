@@ -830,7 +830,6 @@
     <Content Include="Member\MiniLogbook.aspx" />
     <Content Include="Member\MiniRecents.aspx" />
     <Content Include="Member\MiniTotals.aspx" />
-    <Content Include="Member\oAuthAuthorize.aspx" />
     <Content Include="Member\PrintView.aspx" />
     <Content Include="Member\RequestSigs.aspx" />
     <Content Include="Member\ReviewPendingFlights.aspx" />
@@ -1591,6 +1590,7 @@
     <Content Include="Areas\mvc\Views\Flights\flightDetails.cshtml" />
     <Content Include="Areas\mvc\Views\Flights\_signatureBlock.cshtml" />
     <Content Include="Areas\mvc\Views\Playpen\oAuthClientTest.cshtml" />
+    <Content Include="Areas\mvc\Views\oAuth\authorize.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -1927,6 +1927,7 @@
     <Compile Include="Areas\mvc\Controllers\ImageController.cs" />
     <Compile Include="Areas\mvc\Controllers\InternalController.cs" />
     <Compile Include="Areas\mvc\Controllers\MFBTemplateController.cs" />
+    <Compile Include="Areas\mvc\Controllers\oAuthController.cs" />
     <Compile Include="Areas\mvc\Controllers\PlaypenController.cs" />
     <Compile Include="Areas\mvc\Controllers\PubController.cs" />
     <Compile Include="Areas\mvc\Controllers\rbredirectController.cs" />
@@ -2707,13 +2708,6 @@
     <Compile Include="Member\MiniTotals.aspx.designer.cs">
       <DependentUpon>MiniTotals.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Member\oAuthAuthorize.aspx.cs">
-      <DependentUpon>oAuthAuthorize.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\oAuthAuthorize.aspx.designer.cs">
-      <DependentUpon>oAuthAuthorize.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Member\PrintView.aspx.cs">
       <DependentUpon>PrintView.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3181,7 +3175,6 @@
   <ItemGroup>
     <Content Include="Member\App_LocalResources\ImpAircraft.aspx.resx" />
     <Content Include="Member\App_LocalResources\MiniLogbook.aspx.resx" />
-    <Content Include="Member\App_LocalResources\oAuthAuthorize.aspx.resx" />
     <Content Include="Member\App_LocalResources\RequestSigs.aspx.resx" />
     <Content Include="Member\App_LocalResources\StartingTotals.aspx.resx" />
   </ItemGroup>

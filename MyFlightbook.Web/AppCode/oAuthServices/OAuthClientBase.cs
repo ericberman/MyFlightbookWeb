@@ -283,6 +283,10 @@ namespace MyFlightbook.OAuth
                 // JSonConvert can't deserialize space-delimited scopes into a hashset, so we need to do that manually.  Uggh.
                 Dictionary<string, string> d = JsonConvert.DeserializeObject<Dictionary<string, string>>(result);
 
+                // REPORT Error - often it's if the URL we are redirecting to doesn't match the referrer, then it fails.  
+                if (d.TryGetValue("error", out string error) && !String.IsNullOrEmpty(error))
+                    throw new MyFlightbookValidationException(error);
+
                 AuthorizationState authstate = new AuthorizationState(d.TryGetValue("scope", out string sc) ? OAuthUtilities.SplitScopes(sc) : null)
                 {
                     AccessToken = d.TryGetValue("access_token", out string acctok) ? acctok : string.Empty,

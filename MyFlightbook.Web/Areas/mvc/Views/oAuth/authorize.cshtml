@@ -1,0 +1,43 @@
+﻿
+@{
+    ViewBag.Title = Resources.oAuth.oAuthAuthorizeTitle;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    IEnumerable<string> lstScopes = ViewBag.scopesList;
+
+}
+@if (!String.IsNullOrEmpty(ViewBag.error))
+{
+    <div class="error">@ViewBag.error</div>
+}
+else
+{
+    using (Html.BeginForm("CommitAuth", "oAuth", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <p>@Resources.oAuth.oAuthAuthPrompt</p>
+        <p style="font-weight: bold;">@ViewBag.clientName</p>
+        <p>@Resources.oAuth.oAuthRequestedPermissions</p>
+        if (lstScopes.Any())
+        {
+            <ul>
+                @foreach (string scope in lstScopes)
+                {
+                    <li>@scope</li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>@Resources.oAuth.oAuthNoScopesDefined</p>
+        }
+        <p>
+            <button type="submit" name="authAction" value="authorize">@Resources.LogbookEntry.PropertyYes</button>
+            <button type="submit" name="authAction" value="reject">@Resources.LogbookEntry.PropertyNo</button>
+        </p>
+        <input type="hidden" name="client_id" value="@(Request["client_id"] ?? string.Empty)" />
+        <input type="hidden" name="redirect_uri" value="@(Request["redirect_uri"] ?? string.Empty)" />
+        <input type="hidden" name="state" value="@(Request["state"] ?? string.Empty)" />
+        <input type="hidden" name="scope" value="@(Request["scope"] ?? string.Empty)" />
+        <input type="hidden" name="response_type" value="@(Request["response_type"] ?? string.Empty)" />
+    }
+}

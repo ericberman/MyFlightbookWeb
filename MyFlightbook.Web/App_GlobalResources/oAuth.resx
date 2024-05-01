@@ -156,4 +156,10 @@
   <data name="namedqueriesScopeDescription" xml:space="preserve">
     <value>Create, view, and update named queries</value>
   </data>
+  <data name="oAuthAuthorizeTitle" xml:space="preserve">
+    <value>Authorize Application</value>
+  </data>
+  <data name="oAuthAuthPrompt" xml:space="preserve">
+    <value>The application below has requested access to your data.  Do you want to give it access?</value>
+  </data>
 </root>

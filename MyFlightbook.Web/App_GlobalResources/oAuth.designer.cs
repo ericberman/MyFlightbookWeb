@@ -106,6 +106,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Authorize Application.
+        /// </summary>
+        internal static string oAuthAuthorizeTitle {
+            get {
+                return ResourceManager.GetString("oAuthAuthorizeTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The application below has requested access to your data.  Do you want to give it access?.
+        /// </summary>
+        internal static string oAuthAuthPrompt {
+            get {
+                return ResourceManager.GetString("oAuthAuthPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You have authorized the following applications to access your data:.
         /// </summary>
         internal static string oAuthedAppsListHeader {
