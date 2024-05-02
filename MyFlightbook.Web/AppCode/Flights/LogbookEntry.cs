@@ -2534,8 +2534,8 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
 
             PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldXCountry, CrossCountry.FormatDecimal(fUseHHMM), le.CrossCountry.FormatDecimal(fUseHHMM), lst);
             PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldNight, Nighttime.FormatDecimal(fUseHHMM), le.Nighttime.FormatDecimal(fUseHHMM), lst);
-            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldSimIMCFull, IMC.FormatDecimal(fUseHHMM), le.IMC.FormatDecimal(fUseHHMM), lst);
-            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldIMC, SimulatedIFR.FormatDecimal(fUseHHMM), le.SimulatedIFR.FormatDecimal(fUseHHMM), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldIMC, IMC.FormatDecimal(fUseHHMM), le.IMC.FormatDecimal(fUseHHMM), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldSimIMCFull, SimulatedIFR.FormatDecimal(fUseHHMM), le.SimulatedIFR.FormatDecimal(fUseHHMM), lst);
             PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldGroundSimFull, GroundSim.FormatDecimal(fUseHHMM), le.GroundSim.FormatDecimal(fUseHHMM), lst);
             PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldDual, Dual.FormatDecimal(fUseHHMM), le.Dual.FormatDecimal(fUseHHMM), lst);
             PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldSIC, SIC.FormatDecimal(fUseHHMM), le.SIC.FormatDecimal(fUseHHMM), lst);
