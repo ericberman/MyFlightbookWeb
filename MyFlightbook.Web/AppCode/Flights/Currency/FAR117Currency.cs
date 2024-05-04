@@ -5,7 +5,7 @@ using System.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2023 MyFlightbook LLC
+ * Copyright (c) 2007-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -497,10 +497,13 @@ namespace MyFlightbook.Currency
 
             base.ExamineFlight(cfr);    // will set CurrentEDP
 
+            if (IncludeAllFlights && cfr.FlightProps.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropPart91))
+                return;
+
             EffectiveDutyPeriod edp = CurrentEDP;
 
             // Add in flight times if 
-            // (a) we include all flights OR
+            // (a) we include all flights AND NOT vanilla part 91 OR
             // (b) we don't include all flights but we have a currently active duty period, OR
             // (c) this flight has some duty period specified
             if (IncludeAllFlights || HasIndeterminateEDP || edp.Specification != DutySpecification.None)

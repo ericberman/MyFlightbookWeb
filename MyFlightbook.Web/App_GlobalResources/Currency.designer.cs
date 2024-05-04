@@ -79,7 +79,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to All flights contribute to Part 117 limits.
+        ///   Looks up a localized string similar to All flights contribute to Part 117 limits (except those with the &quot;Part 91 Flight&quot; property indicated).
         /// </summary>
         internal static string Currency117AllFlights {
             get {

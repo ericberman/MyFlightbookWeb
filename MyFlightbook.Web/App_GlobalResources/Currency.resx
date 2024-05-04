@@ -668,7 +668,7 @@
     <value>hours of night flight</value>
   </data>
   <data name="Currency117AllFlights" xml:space="preserve">
-    <value>All flights contribute to Part 117 limits</value>
+    <value>All flights contribute to Part 117 limits (except those with the "Part 91 Flight" property indicated)</value>
   </data>
   <data name="Currency117OnlyDutyTimeFlights" xml:space="preserve">
     <value>Only flights with or between specified duty start/end apply to Part 117 limits</value>
