@@ -21,8 +21,8 @@
 
                     <th class="headerBig thickRight" colspan="3"><%=Resources.LogbookEntry.PrintHeaderNumberOf %></th>
 
-                    <th class="headerBig thickRight" colspan="4"><% =Resources.LogbookEntry.PrintHeaderDay %></th>
-                    <th class="headerBig thickRight" colspan="4"><% =Resources.LogbookEntry.PrintHeaderNight %></th>
+                    <th class="headerBig thickRight" colspan="5"><% =Resources.LogbookEntry.PrintHeaderDay %></th>
+                    <th class="headerBig thickRight" colspan="5"><% =Resources.LogbookEntry.PrintHeaderNight %></th>
 
                     <th class="headerBig" rowspan="3" style="width:1cm" runat="server" id="optColumn1" Visible="<%# ShowOptionalColumn(0) %>"><div><%# OptionalColumnName(0) %></div></th>
                     <th class="headerBig" rowspan="3" style="width:1cm" runat="server" id="optColumn2" Visible="<%# ShowOptionalColumn(1) %>"><div><%# OptionalColumnName(1) %></div></th>
@@ -48,11 +48,13 @@
 
                     <th class="headerSmall" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderP1 %></th>
                     <th class="headerSmall" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderP1US %></th>
+                    <th class="headerSmall" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderP2 %></th>
                     <th class="headerSmall" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderP2X %></th>
                     <th class="headerSmall thickRight" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderPUT %></th>
 
                     <th class="headerSmall" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderP1 %></th>
                     <th class="headerSmall" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderP1US %></th>
+                    <th class="headerSmall" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderP2 %></th>
                     <th class="headerSmall" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderP2X %></th>
                     <th class="headerSmall thickRight" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderPUT %></th>
 
@@ -81,11 +83,13 @@
 
                         <td class="centered"><%# Math.Max(((decimal)Eval("PIC")) - ((decimal)Eval("Nighttime")), 0.0M).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                         <td class="centered"><%# Math.Max(((decimal)Eval("PICUSTime")) - ((decimal)Eval("Nighttime")), 0.0M).FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                        <td class="centered"><%# Math.Max(((decimal)Eval("SIC")) - ((decimal)Eval("Nighttime")), 0.0M).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                         <td class="centered"><%# ((decimal) (Eval("P2XDayTime"))).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                         <td class="centered thickRight"><%# Math.Max(((decimal)Eval("Dual")) - ((decimal)Eval("Nighttime")), 0.0M).FormatDecimal(CurrentUser.UsesHHMM) %></td>
 
                         <td class="centered"><%# Math.Min(((decimal)Eval("PIC")), ((decimal)Eval("Nighttime"))).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                         <td class="centered"><%# Math.Min(((decimal)Eval("PICUSTime")), ((decimal)Eval("Nighttime"))).FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                        <td class="centered thickRight"><%# Math.Min(((decimal)Eval("SIC")), ((decimal)Eval("Nighttime"))).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                         <td class="centered"><%# ((decimal) (Eval("P2XNightTime"))).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                         <td class="centered thickRight"><%# Math.Min(((decimal)Eval("Dual")), ((decimal)Eval("Nighttime"))).FormatDecimal(CurrentUser.UsesHHMM) %></td>
 
@@ -137,11 +141,13 @@
 
                                 <td><%# Math.Max(((LogbookEntryDisplay) Container.DataItem).PIC - ((LogbookEntryDisplay) Container.DataItem).NightPICTotal, 0).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td class="thickRight"><%# (((LogbookEntryDisplay) Container.DataItem).PICUSTotal - ((LogbookEntryDisplay) Container.DataItem).NightPICUSTotal).FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                                <td><%# Math.Max(((LogbookEntryDisplay) Container.DataItem).SIC - ((LogbookEntryDisplay) Container.DataItem).NightSICTotal, 0).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td><%# ((decimal) (Eval("P2XDayTotal"))).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td><%# Math.Max(((LogbookEntryDisplay) Container.DataItem).Dual - ((LogbookEntryDisplay) Container.DataItem).NightDualTotal, 0).FormatDecimal(CurrentUser.UsesHHMM) %></td>
 
                                 <td><%# ((LogbookEntryDisplay) Container.DataItem).NightPICTotal.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td class="thickRight"><%# ((LogbookEntryDisplay) Container.DataItem).NightPICUSTotal.FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                                <td><%# ((LogbookEntryDisplay) Container.DataItem).NightSICTotal.FormatDecimal(CurrentUser.UsesHHMM).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td><%# ((decimal) (Eval("P2XNightTotal"))).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td><%# ((LogbookEntryDisplay) Container.DataItem).NightDualTotal.FormatDecimal(CurrentUser.UsesHHMM) %></td>
 

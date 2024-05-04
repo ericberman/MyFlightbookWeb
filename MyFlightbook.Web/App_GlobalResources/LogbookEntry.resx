@@ -1769,7 +1769,7 @@ Proceed with import?</value>
     <value>P1(U/S)</value>
   </data>
   <data name="PrintHeaderP2X" xml:space="preserve">
-    <value>P2/P2X</value>
+    <value>P2X</value>
   </data>
   <data name="PrintHeaderPUT" xml:space="preserve">
     <value>P/UT</value>

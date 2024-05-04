@@ -3457,7 +3457,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to P2/P2X.
+        ///   Looks up a localized string similar to P2X.
         /// </summary>
         internal static string PrintHeaderP2X {
             get {
