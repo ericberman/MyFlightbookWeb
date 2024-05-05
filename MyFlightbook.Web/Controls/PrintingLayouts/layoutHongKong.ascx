@@ -147,7 +147,7 @@
 
                                 <td><%# ((LogbookEntryDisplay) Container.DataItem).NightPICTotal.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td class="thickRight"><%# ((LogbookEntryDisplay) Container.DataItem).NightPICUSTotal.FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                                <td><%# ((LogbookEntryDisplay) Container.DataItem).NightSICTotal.FormatDecimal(CurrentUser.UsesHHMM).FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                                <td><%# ((LogbookEntryDisplay) Container.DataItem).NightSICTotal.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td><%# ((decimal) (Eval("P2XNightTotal"))).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td><%# ((LogbookEntryDisplay) Container.DataItem).NightDualTotal.FormatDecimal(CurrentUser.UsesHHMM) %></td>
 
