@@ -6,7 +6,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2023 MyFlightbook LLC
+ * Copyright (c) 2016-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -218,6 +218,15 @@ namespace MyFlightbook.Printing
                 new ListItem(OptionalColumn.TitleForType(OptionalColumnType.HotAirBalloon), OptionalColumnType.HotAirBalloon.ToString()),
                 new ListItem(OptionalColumn.TitleForType(OptionalColumnType.GasBalloon), OptionalColumnType.GasBalloon.ToString()),
                 new ListItem(OptionalColumn.TitleForType(OptionalColumnType.UAS), OptionalColumnType.UAS.ToString()),
+                new ListItem(Resources.LocalizedText.DropDownListSeparator, string.Empty),
+                new ListItem(OptionalColumn.TitleForType(OptionalColumnType.XCInstruction), OptionalColumnType.XCInstruction.ToString()),
+                new ListItem(OptionalColumn.TitleForType(OptionalColumnType.XCSolo), OptionalColumnType.XCSolo.ToString()),
+                new ListItem(OptionalColumn.TitleForType(OptionalColumnType.XCSIC), OptionalColumnType.XCSIC.ToString()),
+                new ListItem(OptionalColumn.TitleForType(OptionalColumnType.XCPIC), OptionalColumnType.XCPIC.ToString()),
+                new ListItem(OptionalColumn.TitleForType(OptionalColumnType.NightInstruction), OptionalColumnType.NightInstruction.ToString()),
+                new ListItem(OptionalColumn.TitleForType(OptionalColumnType.NightSolo), OptionalColumnType.NightSolo.ToString()),
+                new ListItem(OptionalColumn.TitleForType(OptionalColumnType.NightSIC), OptionalColumnType.NightSIC.ToString()),
+                new ListItem(OptionalColumn.TitleForType(OptionalColumnType.NightPIC), OptionalColumnType.NightPIC.ToString()),
             };
             if (rgcptUserOptionalColumns.Count > 0)
                 lstOptionalColumnDropdowns.Add(new ListItem(Resources.LocalizedText.DropDownListSeparator, string.Empty));

@@ -133,6 +133,78 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Night Dual.
+        /// </summary>
+        internal static string ComboNightInstruction {
+            get {
+                return ResourceManager.GetString("ComboNightInstruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Night PIC.
+        /// </summary>
+        internal static string ComboNightPIC {
+            get {
+                return ResourceManager.GetString("ComboNightPIC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Night SIC.
+        /// </summary>
+        internal static string ComboNightSIC {
+            get {
+                return ResourceManager.GetString("ComboNightSIC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Night Solo.
+        /// </summary>
+        internal static string ComboNightSolo {
+            get {
+                return ResourceManager.GetString("ComboNightSolo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XC Dual.
+        /// </summary>
+        internal static string ComboXCInstruction {
+            get {
+                return ResourceManager.GetString("ComboXCInstruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XC PIC.
+        /// </summary>
+        internal static string ComboXCPIC {
+            get {
+                return ResourceManager.GetString("ComboXCPIC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XC SIC.
+        /// </summary>
+        internal static string ComboXCSIC {
+            get {
+                return ResourceManager.GetString("ComboXCSIC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XC Solo.
+        /// </summary>
+        internal static string ComboXCSolo {
+            get {
+                return ResourceManager.GetString("ComboXCSolo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Added.
         /// </summary>
         internal static string CompareAdded {

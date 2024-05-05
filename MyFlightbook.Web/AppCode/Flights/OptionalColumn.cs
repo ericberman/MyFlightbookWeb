@@ -1,23 +1,21 @@
-﻿using Amazon.Runtime.Internal.Transform;
-using MyFlightbook;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2023 MyFlightbook LLC
+ * Copyright (c) 2008-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
-namespace MyFlightbook
+namespace MyFlightbook.Printing
 {
 
     /// <summary>
     /// Specifies the kind of additional columns that can be displayed for printing.
     /// </summary>
-    public enum OptionalColumnType { None, Complex, Retract, Tailwheel, HighPerf, TAA, Turbine, Jet, TurboProp, ATD, FTD, FFS, ASEL, ASES, AMEL, AMES, Helicopter, Glider, CustomProp, CrossCountry, Gyroplane, HotAirBalloon, GasBalloon, UAS, TurbinePIC, TurbineSIC }
+    public enum OptionalColumnType { None, Complex, Retract, Tailwheel, HighPerf, TAA, Turbine, Jet, TurboProp, ATD, FTD, FFS, ASEL, ASES, AMEL, AMES, Helicopter, Glider, CustomProp, CrossCountry, Gyroplane, HotAirBalloon, GasBalloon, UAS, TurbinePIC, TurbineSIC, XCInstruction, XCSolo, XCPIC, XCSIC, NightInstruction, NightSolo, NightPIC, NightSIC }
 
     public enum OptionalColumnValueType { Decimal, Integer, Time }
 
@@ -113,6 +111,14 @@ namespace MyFlightbook
             { OptionalColumnType.FTD, OptionalColumnType.FTD.ToString() },
             { OptionalColumnType.FFS, OptionalColumnType.FFS.ToString() },
             { OptionalColumnType.CrossCountry, Resources.LogbookEntry.PrintHeaderCrossCountry },
+            { OptionalColumnType.XCInstruction, Resources.LogbookEntry.ComboXCInstruction },
+            { OptionalColumnType.XCSolo, Resources.LogbookEntry.ComboXCSolo },
+            { OptionalColumnType.XCPIC, Resources.LogbookEntry.ComboXCPIC},
+            { OptionalColumnType.XCSIC, Resources.LogbookEntry.ComboXCSIC },
+            { OptionalColumnType.NightInstruction, Resources.LogbookEntry.ComboNightInstruction },
+            { OptionalColumnType.NightSolo, Resources.LogbookEntry.ComboNightSolo },
+            { OptionalColumnType.NightPIC, Resources.LogbookEntry.ComboNightPIC},
+            { OptionalColumnType.NightSIC, Resources.LogbookEntry.ComboNightSIC },
         };
 
         public static string TitleForType(OptionalColumnType type)

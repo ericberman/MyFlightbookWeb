@@ -4,6 +4,7 @@ using MyFlightbook.Encryptors;
 using MyFlightbook.Histogram;
 using MyFlightbook.Image;
 using MyFlightbook.Instruction;
+using MyFlightbook.Printing;
 using MyFlightbook.SocialMedia;
 using MyFlightbook.Telemetry;
 using MySql.Data.MySqlClient;
@@ -3303,10 +3304,15 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
         public decimal SoloTotal { get; set; }
         public decimal PICUSTotal { get; set; }
         public decimal NightDualTotal { get; set; }
+
+        public decimal NightSoloTotal { get; set; }
         public decimal NightPICTotal { get; set; }
         public decimal NightPICUSTotal { get; set; }
         public decimal NightSICTotal { get; set; }
         public decimal XCDualTotal { get; set; }
+
+        public decimal XCSoloTotal { get; set; }
+
         public decimal XCPICTotal { get; set; }
 
         public decimal XCSICTotal { get; set; }
@@ -3803,10 +3809,12 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
         private void AddComboTotalsFromEntry(LogbookEntry le, LogbookEntryDisplay led)
         {
             NightDualTotal = NightDualTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, le.Dual) : led.NightDualTotal, RoundingUnit);
+            NightSoloTotal = NightSoloTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropSolo)) : led.NightSoloTotal, RoundingUnit);
             NightPICTotal = NightPICTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, le.PIC) : led.NightPICTotal, RoundingUnit);
             NightSICTotal = NightSICTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, le.SIC) : led.NightSICTotal, RoundingUnit);
             XCDualTotal = XCDualTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.CrossCountry, le.Dual) : led.XCDualTotal, RoundingUnit);
             XCNightDualTotal = XCNightDualTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, Math.Min(le.CrossCountry, le.Dual)) : led.XCNightDualTotal, RoundingUnit);
+            XCSoloTotal = XCSoloTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.CrossCountry, le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropSolo)) : led.XCSoloTotal, RoundingUnit);
             XCPICTotal = XCPICTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.CrossCountry, le.PIC) : led.XCPICTotal, RoundingUnit);
             XCSICTotal = XCSICTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.CrossCountry, le.SIC) : led.XCSICTotal, RoundingUnit);
             XCNightPICTotal = XCNightPICTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, Math.Min(le.CrossCountry, le.PIC)) : led.XCNightPICTotal, RoundingUnit);
@@ -4118,6 +4126,22 @@ f1.dtFlightEnd <=> f2.dtFlightEnd ");
                     return OptionalColumnGroundSimIfType(AircraftInstanceTypes.CertifiedIFRAndLandingsSimulator);
                 case OptionalColumnType.CustomProp:
                     return OptionalColumnPropertyTotal(oc);
+                case OptionalColumnType.NightInstruction:
+                    return Math.Min(Nighttime, Dual);
+                case OptionalColumnType.NightSolo:
+                    return Math.Min(Nighttime, CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropSolo));
+                case OptionalColumnType.NightSIC:
+                    return Math.Min(Nighttime, SIC);
+                case OptionalColumnType.NightPIC:
+                    return Math.Min(Nighttime, PIC);
+                case OptionalColumnType.XCInstruction:
+                    return Math.Min(CrossCountry, Dual);
+                case OptionalColumnType.XCSolo:
+                    return Math.Min(CrossCountry, CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropSolo));
+                case OptionalColumnType.XCPIC:
+                    return Math.Min(CrossCountry, PIC);
+                case OptionalColumnType.XCSIC:
+                    return Math.Min(CrossCountry, SIC);
                 default:
                     return 0.0M;
             }

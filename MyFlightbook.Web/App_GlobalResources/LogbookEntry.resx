@@ -1774,4 +1774,28 @@ Proceed with import?</value>
   <data name="PrintHeaderPUT" xml:space="preserve">
     <value>P/UT</value>
   </data>
+  <data name="ComboNightInstruction" xml:space="preserve">
+    <value>Night Dual</value>
+  </data>
+  <data name="ComboNightPIC" xml:space="preserve">
+    <value>Night PIC</value>
+  </data>
+  <data name="ComboNightSIC" xml:space="preserve">
+    <value>Night SIC</value>
+  </data>
+  <data name="ComboNightSolo" xml:space="preserve">
+    <value>Night Solo</value>
+  </data>
+  <data name="ComboXCInstruction" xml:space="preserve">
+    <value>XC Dual</value>
+  </data>
+  <data name="ComboXCPIC" xml:space="preserve">
+    <value>XC PIC</value>
+  </data>
+  <data name="ComboXCSIC" xml:space="preserve">
+    <value>XC SIC</value>
+  </data>
+  <data name="ComboXCSolo" xml:space="preserve">
+    <value>XC Solo</value>
+  </data>
 </root>
