@@ -3,7 +3,7 @@
 <%@ Register Src="~/Controls/PrintingLayouts/pageFooter.ascx" TagPrefix="uc1" TagName="pageFooter" %>
 <%@ Register Src="~/Controls/mfbSignature.ascx" TagPrefix="uc1" TagName="mfbSignature" %>
 <%@ Register Src="~/Controls/mfbImageList.ascx" TagPrefix="uc1" TagName="mfbImageList" %>
-
+<%@ Import namespace="MyFlightbook.Printing" %>
 
 <asp:Repeater ID="rptPages" runat="server" OnItemDataBound="rptPages_ItemDataBound">
 <ItemTemplate>
