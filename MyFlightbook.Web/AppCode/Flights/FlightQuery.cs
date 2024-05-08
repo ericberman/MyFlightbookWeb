@@ -1881,8 +1881,8 @@ namespace MyFlightbook
             List<bool> lst = new List<bool>();
             AddResultIfCondition(lst, IsTailwheel, mm.IsTailWheel); 
             AddResultIfCondition(lst, IsHighPerformance, mm.IsHighPerf || (mm.Is200HP && le.Date.CompareTo(Convert.ToDateTime(MakeModel.Date200hpHighPerformanceCutoverDate, CultureInfo.InvariantCulture)) < 0));
-            AddResultIfCondition(lst, IsGlass, mm.AvionicsTechnology != MakeModel.AvionicsTechnologyType.None || (ac.AvionicsTechnologyUpgrade != MakeModel.AvionicsTechnologyType.None && (ac.GlassUpgradeDate.HasValue && le.Date.CompareTo(ac.GlassUpgradeDate) >= 0)));
-            AddResultIfCondition(lst, IsTechnicallyAdvanced, mm.AvionicsTechnology == MakeModel.AvionicsTechnologyType.TAA || (ac.AvionicsTechnologyUpgrade == MakeModel.AvionicsTechnologyType.TAA && (ac.GlassUpgradeDate.HasValue && le.Date.CompareTo(ac.GlassUpgradeDate) >= 0)));
+            AddResultIfCondition(lst, IsGlass, mm.AvionicsTechnology != MakeModel.AvionicsTechnologyType.None || (ac.AvionicsTechnologyUpgrade != MakeModel.AvionicsTechnologyType.None && le.Date.CompareTo(ac.GlassUpgradeDate ?? DateTime.MinValue) >= 0));
+            AddResultIfCondition(lst, IsTechnicallyAdvanced, mm.AvionicsTechnology == MakeModel.AvionicsTechnologyType.TAA || (ac.AvionicsTechnologyUpgrade == MakeModel.AvionicsTechnologyType.TAA && le.Date.CompareTo(ac.GlassUpgradeDate ?? DateTime.MinValue) >= 0));
             AddResultIfCondition(lst, IsComplex, mm.IsComplex);
             AddResultIfCondition(lst,IsMotorglider, mm.IsMotorGlider);
             AddResultIfCondition(lst, IsMultiEngineHeli, mm.IsMultiEngineHelicopter);
