@@ -14,7 +14,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2022 MyFlightbook LLC
+ * Copyright (c) 2022-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -33,6 +33,8 @@ namespace MyFlightbook.OAuth.Leon
 
         private string SubDomain { get; set; } = "man"; // default subdomain
 
+        private static readonly string[] leonScopes = new string[] { /* "GRAPHQL_FLIGHT", "GRAPHQL_FLIGHT_EDIT", "GRAPHQL_FLIGHT_PERMITS_EDIT", "GRAPHQL_FLIGHT_WATCH_EDIT", "GRAPHQL_FLIGHT_WATCH", "GRAPHQL_SCHEDULE_ORDER_SEE", "GRAPHQL_RESERVATION_SEE" */ "LOGBOOK" };
+
         public static bool UseSandbox(string host)
         {
             if (host == null)
@@ -44,7 +46,7 @@ namespace MyFlightbook.OAuth.Leon
             "LeonClientSecret",
             String.Format(CultureInfo.InvariantCulture, "https://{0}.{1}/oauth2/code/authorize/", subDomain, fUseSandbox ? leonDevHost : leonLiveHost),
             String.Format(CultureInfo.InvariantCulture, "https://{0}.{1}/oauth2/code/token/", subDomain, fUseSandbox ? leonDevHost : leonLiveHost),
-            new string[] { /* "GRAPHQL_FLIGHT", "GRAPHQL_FLIGHT_EDIT", "GRAPHQL_FLIGHT_PERMITS_EDIT", "GRAPHQL_FLIGHT_WATCH_EDIT", "GRAPHQL_FLIGHT_WATCH", "GRAPHQL_SCHEDULE_ORDER_SEE", "GRAPHQL_RESERVATION_SEE" */ "LOGBOOK" })
+            leonScopes)
         {
             SubDomain = subDomain;
             FlightsEndpoint = String.Format(CultureInfo.InvariantCulture, "https://{0}.{1}/api/graphql/", SubDomain, fUseSandbox ? leonDevHost : leonLiveHost);

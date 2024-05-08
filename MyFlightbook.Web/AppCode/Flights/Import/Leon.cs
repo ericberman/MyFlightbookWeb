@@ -7,7 +7,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2022-2023 MyFlightbook LLC
+ * Copyright (c) 2022-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -65,6 +65,16 @@ namespace MyFlightbook.ImportFlights.Leon
 
         [JsonProperty("data")]
         public LeonFlightData Data { get; set; }
+    }
+
+    [Serializable]
+    public class JourneyLogApproachCount
+    {
+        [JsonProperty("approach")]
+        public string ApproachDescription { get; set; } = string.Empty;
+
+        [JsonProperty("count")]
+        public int ApproachCount { get; set; }
     }
 
     [Serializable]
@@ -169,7 +179,7 @@ namespace MyFlightbook.ImportFlights.Leon
         public int NightLandingCount { get; set; }
 
         [JsonProperty("approachList")]
-        public string[] ApproachList { get; set; } = Array.Empty<string>();
+        public JourneyLogApproachCount[] ApproachList { get; set; } = Array.Empty<JourneyLogApproachCount>();
 
         [JsonProperty("approachTypeList")]
         public Dictionary<string, string>[] ApproachTypeList { get; set; } = Array.Empty<Dictionary<string, string>>();
