@@ -53,7 +53,7 @@ namespace MyFlightbook
         public const string keyPrefFlightsPerPage = "mfbLogbookDisplayFlightsPerPage";
         public const int DefaultFlightsPerPage = 25;
 
-        private const int StyleSheetVer = 55;
+        private const int StyleSheetVer = 56;
 
         public static string BaseStylesheet
         {

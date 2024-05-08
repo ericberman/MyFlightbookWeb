@@ -137,6 +137,10 @@ namespace MyFlightbook.PublicPages
                 if (szKey != "u" && szKey != "p" && szKey != "d")
                     lstParams.Add(String.Format(CultureInfo.InvariantCulture, "{0}={1}", szKey, Request.Params[szKey]));
 
+            // Issue #1223 - if night mode isn't set, explicitly turn it off
+            if (Request["night"] == null)
+                lstParams.Add("night=no");
+
             if (lstParams.Contains("naked=1"))
                 Session["IsNaked"] = true;
 

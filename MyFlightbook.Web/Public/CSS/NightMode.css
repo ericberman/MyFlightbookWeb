@@ -23,6 +23,10 @@ p, div, h2, h3, topTab, a.topTab, a.topTab:visited, #menu-bar .topTab, #menu-bar
     color: white;
 }
 
+.calendar_default_rowheader_inner div {
+    color: #263238;
+}
+
 .topForm, .sidebarRight, .noprint {
     background-color: #263238 !important;
     color: white;
