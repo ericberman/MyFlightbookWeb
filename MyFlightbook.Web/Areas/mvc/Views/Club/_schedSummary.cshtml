@@ -22,7 +22,7 @@ else
                     <div>@String.Format(CultureInfo.CurrentCulture, "{0:t} ({1})", se.LocalStart, se.DurationDisplay)</div>
                     <span style="font-weight:bold">@(String.IsNullOrEmpty(userName) ? se.OwnerProfile.UserFullName : string.Empty)</span>
                     @((String.IsNullOrEmpty(userName) && String.IsNullOrEmpty(resourceName)) ? " - " : string.Empty)
-                    <span style="font-weight:bold">@(String.IsNullOrEmpty(resourceName) ? se.ResourceAircraft.DisplayTailnumber : string.Empty)</span>
+                    <span style="font-weight:bold">@(String.IsNullOrEmpty(resourceName) ? se.ResourceAircraft?.DisplayTailnumber ?? string.Empty : string.Empty)</span>
                     @((!String.IsNullOrEmpty(userName) && !String.IsNullOrEmpty(resourceName)) ? string.Empty : " - ")
                     @se.Body
                 </td>
