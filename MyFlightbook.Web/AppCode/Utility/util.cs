@@ -31,7 +31,6 @@ namespace MyFlightbook
         public const string keyIsImpersonating = "IsImpersonating";
         public const string keyOriginalID = "OriginalID";
         public const string keyNewUser = "IsNewUser";
-        public const string keyEncryptMyFlights = "MyFlightsKey";
         public const string keyCookiePrivacy = "cookiesAccepted";
         public const string keyTFASettings = "prefTFASettings"; // any 2-factor authentication settings.
         public const string keyDecimalSettings = "prefDecimalDisplay";  // adaptive, single, or double digit precision
@@ -52,6 +51,8 @@ namespace MyFlightbook
         public const string keyPrefInlineImages = "mfbLogbookDisplayImages";
         public const string keyPrefFlightsPerPage = "mfbLogbookDisplayFlightsPerPage";
         public const int DefaultFlightsPerPage = 25;
+
+        public const string keySessLastNewFlight = "sessNewFlightID";
 
         private const int StyleSheetVer = 56;
 

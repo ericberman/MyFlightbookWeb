@@ -15,7 +15,7 @@
     int flightsPerPage = pfViewer.GetPreferenceForKey(MFBConstants.keyPrefFlightsPerPage, MFBConstants.DefaultFlightsPerPage);
 
     FlightResultRange currentRange = ViewBag.currentRange ?? fr.GetResultRange(flightsPerPage, FlightRangeType.First, fr.CurrentSortKey, fr.CurrentSortDir);
-
+    bool miniMode = ViewBag.miniMode;
     ShareKey sk = ViewBag.sk;
 }
 <script src="@("~/public/Scripts/CopyClipboard.js".ToAbsolute())"></script>
@@ -254,7 +254,8 @@
             pageSize = flightsPerPage,
             fr = fr,
             sk = sk,
-            currentRange = currentRange
+            currentRange = currentRange,
+            miniMode = miniMode
         });
     }
 </div>
@@ -277,6 +278,7 @@
     <input type="hidden" name="readOnly" value="@Json.Encode(readOnly)" />
     <input type="hidden" name="skID" value="@(sk?.ID ?? string.Empty)" />
     <input type="hidden" name="selectedFlights" id="hdnSelectedFlights" value="" />
+    <input type="hidden" name="miniMode" id="hdnMiniMode" value="@Json.Encode(miniMode)" />
     @Html.AntiForgeryToken()
 }
 @using (Html.BeginForm("", "Flights", FormMethod.Post, new { id = "frmDeleteFlights", name = "frmDeleteFlights" }))

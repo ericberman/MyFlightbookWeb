@@ -1,6 +1,5 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Async="true" Codebehind="PrintView.aspx.cs" Inherits="MyFlightbook.Printing.PrintView" Title="" culture="auto"  %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
-<%@ Register Src="../Controls/mfbLogbook.ascx" TagName="mfbLogbook" TagPrefix="uc6" %>
 <%@ Register src="../Controls/mfbTotalSummary.ascx" tagname="mfbTotalSummary" tagprefix="uc2" %>
 <%@ Register src="../Controls/mfbSearchForm.ascx" tagname="mfbSearchForm" tagprefix="uc3" %>
 <%@ Register src="../Controls/PrintOptions.ascx" tagname="PrintOptions" tagprefix="uc5" %>

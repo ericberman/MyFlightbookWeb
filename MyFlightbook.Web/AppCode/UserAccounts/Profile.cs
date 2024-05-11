@@ -1525,6 +1525,8 @@ namespace MyFlightbook
             return true;
         }
 
+        private const string keyEncryptMyFlights = "MyFlightsKey";
+
         /// <summary>
         /// Return a URL to this user's public flights.
         /// </summary>
@@ -1532,8 +1534,15 @@ namespace MyFlightbook
         /// <returns>A URL to the user's public flights</returns>
         public Uri PublicFlightsURL(string szHost)
         {
-            SharedDataEncryptor enc = new SharedDataEncryptor(MFBConstants.keyEncryptMyFlights);
+            SharedDataEncryptor enc = new SharedDataEncryptor(keyEncryptMyFlights);
             return new Uri(String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?uid={2}", szHost, VirtualPathUtility.ToAbsolute("~/mvc/flights/myflights"), HttpUtility.UrlEncode(enc.Encrypt(this.UserName))));
+        }
+
+        public static string EncryptedUserName(string uid)
+        {
+            if (String.IsNullOrEmpty(uid))
+                return null;
+            return new SharedDataEncryptor(keyEncryptMyFlights).Decrypt(uid);
         }
 
         #region verified Email
@@ -1609,7 +1618,7 @@ namespace MyFlightbook
                 return false;
             }
 
-            string[] rgParts = szDecoded.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] rgParts = szDecoded.SplitSpaces();
             if (rgParts.Length != 3 ||
                 rgParts[1].CompareTo(UserName) != 0 ||
                 !Int64.TryParse(rgParts[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out long ticks)) 
@@ -1939,7 +1948,7 @@ namespace MyFlightbook
         /// </summary>
         public static IEnumerable<string> SuggestedSecurityQuestions
         {
-            get { return Resources.LocalizedText.AccountQuestionSamplesList.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries); }
+            get { return Resources.LocalizedText.AccountQuestionSamplesList.SplitNewlines(); }
         }
 
         /// <summary>
@@ -2077,7 +2086,7 @@ HAVING numaccounts > 1");
             if (String.IsNullOrEmpty(szSearch))
                 return lst;
 
-            string[] rgWords = szSearch.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] rgWords = szSearch.SplitSpaces();
 
             if (rgWords.Length == 0)
                 return lst;

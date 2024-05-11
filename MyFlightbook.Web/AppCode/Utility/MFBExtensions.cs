@@ -783,6 +783,16 @@ namespace MyFlightbook
         {
             return Encoding.UTF8.GetBytes(sz ?? string.Empty);
         }
+
+        public static string[] SplitSpaces(this string sz)
+        {
+            return (sz ?? string.Empty).Split(spaceSeparator, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        public static string[] SplitNewlines(this string sz)
+        {
+            return (sz ?? string.Empty).Split(newlineSeparators, StringSplitOptions.RemoveEmptyEntries);
+        }
         #endregion
 
         #region Decimal Extensions

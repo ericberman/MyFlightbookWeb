@@ -530,9 +530,9 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
                 HasBeenBound = false;
             }
 
-            int curPage = util.GetIntParam(Request, "pg", 0);
+            int curPage = util.GetIntParam(Request, "pg", -1);
             // Ensure we have the correct requested sort and page.  Note that this will also preheat the cache.
-            if (!HasBeenBound || CurrentRange.PageNum != curPage)
+            if (curPage >= 0 && (!HasBeenBound || CurrentRange.PageNum != curPage))
                 BindData(curPage);
         }
         else if (!HasBeenBound)

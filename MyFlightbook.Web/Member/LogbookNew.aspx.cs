@@ -36,8 +36,6 @@ namespace MyFlightbook.MemberPages
 
         protected bool GroupedTotals {  get { return new UserTotals() { Username = Page.User.Identity.Name }.DefaultGroupModeForUser; } }
 
-        private const string keySessLastNewFlight = "sessNewFlightID";
-
         private const string keyVSRestriction = "vsCurrentRestriction";
         protected FlightQuery Restriction
         {
@@ -204,10 +202,10 @@ namespace MyFlightbook.MemberPages
                 lblUserName.Text = Master.Title = HttpUtility.HtmlEncode(szTitle);
 
                 // See if we just entered a new flight and scroll to it as needed
-                if (Session[keySessLastNewFlight] != null)
+                if (Session[MFBConstants.keySessLastNewFlight] != null)
                 {
-                    mfbLogbook1.ScrollToFlight((int)Session[keySessLastNewFlight]);
-                    Session[keySessLastNewFlight] = null;
+                    mfbLogbook1.ScrollToFlight((int)Session[MFBConstants.keySessLastNewFlight]);
+                    Session[MFBConstants.keySessLastNewFlight] = null;
                 }
             }
         }
@@ -322,7 +320,7 @@ namespace MyFlightbook.MemberPages
             {
                 // If this is a new flight, put its assigned ID into the session so that we can scroll to it.
                 if (IsNewFlight)
-                    Session[keySessLastNewFlight] = e.FlightID;
+                    Session[MFBConstants.keySessLastNewFlight] = e.FlightID;
                 Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx{0}", SanitizedQuery), true);
             }
         }

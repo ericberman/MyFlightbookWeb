@@ -8,8 +8,6 @@
     Profile pf = MyFlightbook.Profile.GetUser(sk.Username);
     ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, pf.UserFullName);
     FlightQuery fq = ViewBag.query;
-    IEnumerable<BadgeSet> badgeSets = ViewBag.badgeSets;
-    RecentAchievements ra = ViewBag.ra;
     IEnumerable<VisitedAirport> rgva = ViewBag.rgva;
     IEnumerable<VisitedRegion> regions = ViewBag.regions;
     bool fIsDefaultQuery = fq.IsDefault;
@@ -178,6 +176,9 @@
 }
 @if (sk.CanViewAchievements)
 {
+    IEnumerable<BadgeSet>badgeSets = BadgeSet.BadgeSetsFromBadges(new Achievement(sk.Username).BadgesForUser());
+    RecentAchievements ra = RecentAchievements.AchievementsForDateRange(sk.Username, FlightQuery.DateRanges.AllTime);
+
     <div id="targetAchievements" style="display:none">
         @if (!badgeSets.Any())
         {

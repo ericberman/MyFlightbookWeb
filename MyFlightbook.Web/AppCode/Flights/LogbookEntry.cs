@@ -1,6 +1,7 @@
 ﻿using DotNetOpenAuth.Messaging;
 using MyFlightbook.Airports;
 using MyFlightbook.Encryptors;
+using MyFlightbook.FlightStatistics;
 using MyFlightbook.Histogram;
 using MyFlightbook.Image;
 using MyFlightbook.Instruction;
@@ -2042,12 +2043,18 @@ namespace MyFlightbook
         /// <summary>
         /// Returns the public flights for a user
         /// </summary>
-        /// <param name="szUser">The username</param>
+        /// <param name="szUser">The username; if empty, then recent public flights across users are returned</param>
         /// <param name="limit">Maximum # of entries to return</param>
         /// <param name="offset">The offset to the first entry to return</param>
-        /// <returns>An array of logbook entries</returns>
-        public static LogbookEntry[] GetPublicFlightsForUser(string szUser, int offset, int limit)
+        /// <returns>An Enumerable of logbook entries</returns>
+        public static IEnumerable<LogbookEntry> GetPublicFlightsForUser(string szUser, int offset, int limit)
         {
+            if (String.IsNullOrEmpty(szUser))
+            {
+                List<LogbookEntry> lst = new List<LogbookEntry>(FlightStats.GetFlightStats().RecentPublicFlights);
+                return lst.GetRange(Math.Min(offset, lst.Count), Math.Min(limit, Math.Max(lst.Count - offset, 0)));
+            }
+
             FlightQuery fq = new FlightQuery(szUser) { IsPublic = true };
             DBHelper dbh = new DBHelper(QueryCommand(fq, offset, limit));
 
@@ -2057,7 +2064,7 @@ namespace MyFlightbook
                 (dr) => { lstFlights.Add(new LogbookEntry(dr, szUser)); }
             );
 
-            return lstFlights.ToArray();
+            return lstFlights;
         }
         #endregion
 
@@ -2100,9 +2107,7 @@ namespace MyFlightbook
 
             DBHelper dbh = new DBHelper(@" SELECT DISTINCT f1.idflight 
 FROM flights f1 INNER JOIN flights f2 ON
-f1.username=f2.username 
-WHERE f1.username = ?uName AND
-f1.username=f2.username and
+f1.username=f2.username  AND
 f1.date = f2.date AND
 f1.idflight <> f2.idflight AND 
 f1.idaircraft = f2.idaircraft AND
@@ -2122,10 +2127,11 @@ f1.SIC = f2.SIC AND
 f1.totalFlightTime = f2.totalFlightTime AND
 f1.hobbsStart = f2.hobbsStart AND
 f1.hobbsEnd = f2.hobbsEnd AND
-f1.dtEngineStart <=> f2.dtEngineStart AND
-f1.dtEngineEnd <=> f2.dtEngineEnd AND
-f1.dtFlightStart <=> f2.dtFlightStart AND
-f1.dtFlightEnd <=> f2.dtFlightEnd ");
+DATE_FORMAT(f1.dtEngineStart, '%Y%m%d-%k%i') <=> DATE_FORMAT(f2.dtEngineStart, '%Y%m%d-%k%i') AND
+DATE_FORMAT(f1.dtEngineEnd, '%Y%m%d-%k%i') <=> DATE_FORMAT(f2.dtEngineEnd, '%Y%m%d-%k%i') AND
+DATE_FORMAT(f1.dtFlightStart, '%Y%m%d-%k%i') <=> DATE_FORMAT(f2.dtFlightStart, '%Y%m%d-%k%i') AND
+DATE_FORMAT(f1.dtFlightEnd, '%Y%m%d-%k%i') <=> DATE_FORMAT(f2.dtFlightEnd, '%Y%m%d-%k%i')
+WHERE f1.username = ?uName ");
             dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("uName", szUser); },
                 (dr) => { lst.Add(Convert.ToInt32(dr["idFlight"], CultureInfo.InvariantCulture)); });
             return lst;

@@ -1,20 +1,14 @@
-﻿using MyFlightbook.Achievements;
-using MyFlightbook.Airports;
+﻿using MyFlightbook.Airports;
 using MyFlightbook.Charting;
 using MyFlightbook.Currency;
-using MyFlightbook.Encryptors;
-using MyFlightbook.FlightStatistics;
 using MyFlightbook.Histogram;
-using MyFlightbook.Instruction;
 using MyFlightbook.Mapping;
-using MyFlightbook.RatingsProgress;
 using MyFlightbook.Telemetry;
 using MyFlightbook.Web.Sharing;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
 
@@ -180,7 +174,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult GetFlightsForResult(string fqJSON, string targetUser, string viewingUser, string sortExpr, SortDirection sortDir, string pageRequest, int pageSize, bool readOnly, string skID = null, string selectedFlights = null)
+        public ActionResult GetFlightsForResult(string fqJSON, string targetUser, string viewingUser, string sortExpr, SortDirection sortDir, string pageRequest, int pageSize, bool readOnly, string skID = null, string selectedFlights = null, bool miniMode = false)
         {
             return SafeOp(() =>
             {
@@ -192,7 +186,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 }
                 FlightResult fr = FlightResultManager.FlightResultManagerForUser(targetUser).ResultsForQuery(fq);
                 FlightResultRange range = fr.GetResultRange(pageSize, FlightRangeType.Search, sortExpr, sortDir, 0, pageRequest);
-                return LogbookTableContentsForResults(fq, targetUser, viewingUser, readOnly, fr, range, ShareKey.ShareKeyWithID(skID));
+                return LogbookTableContentsForResults(fq, targetUser, viewingUser, readOnly, fr, range, ShareKey.ShareKeyWithID(skID), miniMode);
             });
         }
 
@@ -261,19 +255,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             return SafeOp(() =>
             {
-                string szUser = String.IsNullOrEmpty(uid) ? string.Empty : new SharedDataEncryptor(MFBConstants.keyEncryptMyFlights).Decrypt(uid);
-                IEnumerable<LogbookEntry> rgle = Array.Empty<LogbookEntry>();
-                if (String.IsNullOrEmpty(szUser))
-                {
-                    List<LogbookEntry> lst = new List<LogbookEntry>(FlightStats.GetFlightStats().RecentPublicFlights);
-                    if (skip > 0)
-                        lst.RemoveRange(0, Math.Min(skip, lst.Count));
-                    if (lst.Count > pageSize)
-                        lst.RemoveRange(pageSize, lst.Count - pageSize);
-                    rgle = lst;
-                }
-                else
-                    rgle = LogbookEntryBase.GetPublicFlightsForUser(szUser, skip, pageSize);
+                string szUser = MyFlightbook.Profile.EncryptedUserName(uid);
+                IEnumerable<LogbookEntry> rgle = LogbookEntryBase.GetPublicFlightsForUser(szUser, skip, pageSize);
 
                 // Not skipping any, but still no flights found - there must not be any flights!
                 // just report an error
@@ -411,37 +394,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return PartialView("_flightContextMenu");
         }
 
-        private void CheckCanViewFlights(string targetUser, string viewingUser, ShareKey sk = null)
-        {
-            if (String.IsNullOrEmpty(targetUser))
-                throw new ArgumentNullException(nameof(targetUser));
-
-            // three allowed conditions:
-            // a) Viewing user (Authenticated or not!) has a valid sharekey for the user and can view THAT USER's flights.  This is the only unauthenticated access allowed
-            if ((sk?.CanViewFlights ?? false) && (sk?.Username ?? string.Empty).CompareOrdinal(targetUser) == 0)
-                return;
-
-            if (User.Identity.IsAuthenticated)
-            {
-                // Viewing user should ALWAYS be the authenticated user; null just means "use the logged user
-                viewingUser = viewingUser ?? User.Identity.Name;
-
-                if (viewingUser.CompareOrdinal(User.Identity.Name) != 0)
-                    throw new UnauthorizedAccessException("Supplied viewing user is different from the authenticated user - that should never happen!");
-
-                // b) Authenticated, viewing user is target user
-                if (targetUser.CompareOrdinal(viewingUser) == 0)
-                    return;
-
-                // c) Authenticated, viewing user is an instructor of target user and user has given permission to view logbook
-                if (CFIStudentMap.GetInstructorStudent(new CFIStudentMap(viewingUser).Students, targetUser)?.CanViewLogbook ?? false)
-                    return;
-            }
-
-            // Otherwise, we're unauthenticated
-            throw new UnauthorizedAccessException("Not authorized to view this user's logbook data");
-        }
-
         [ChildActionOnly]
         public ActionResult LogbookTableContentsForResults(
             FlightQuery fq,
@@ -450,7 +402,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             bool readOnly,
             FlightResult fr,
             FlightResultRange currentRange,
-            ShareKey sk = null
+            ShareKey sk = null,
+            bool miniMode = false
             )
         {
             ViewBag.query = fq ?? throw new ArgumentNullException(nameof(fq));
@@ -466,6 +419,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
             ViewBag.currentRange = currentRange ?? throw new ArgumentNullException(nameof(currentRange));
             ViewBag.sk = sk;
+            ViewBag.miniMode = miniMode;
             return PartialView("_logbookTableContents");
         }
 
@@ -476,17 +430,40 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             bool readOnly = false,
             FlightResult fr = null, 
             ShareKey sk = null, 
-            FlightResultRange currentRange = null)
+            FlightResultRange currentRange = null,
+            bool miniMode = false)
         {
-            ViewBag.query = fq ?? throw new ArgumentNullException(nameof(fq));
-
             ViewBag.readOnly = readOnly;
             Profile pfTarget = MyFlightbook.Profile.GetUser(targetUser ?? throw new ArgumentNullException(nameof(targetUser)));
             ViewBag.pfTarget = pfTarget;
             ViewBag.pfViewer = User.Identity.IsAuthenticated ? MyFlightbook.Profile.GetUser(User.Identity.Name) : pfTarget;
+            if (util.GetIntParam(Request, "dupesOnly", 0) != 0)
+            {
+                fq = new FlightQuery(targetUser) {
+                    EnumeratedFlights = new HashSet<int>(LogbookEntryBase.DupeCandidatesForUser(targetUser)) };
+                // force a reset of the cached results since we're changing the query
+                currentRange = null;
+                fr = null;
+            }
+
+            ViewBag.query = fq ?? throw new ArgumentNullException(nameof(fq));
+
+            ViewBag.flightResults = (fr = fr ?? FlightResultManager.FlightResultManagerForUser(targetUser).ResultsForQuery(fq));
+            // See if we just entered a new flight and scroll to it as needed
+            int flightsPerPage = pfTarget.GetPreferenceForKey(MFBConstants.keyPrefFlightsPerPage, MFBConstants.DefaultFlightsPerPage);
+            if (Session[MFBConstants.keySessLastNewFlight] != null)
+            {
+                currentRange = fr.RangeContainingFlight(flightsPerPage, (int)Session[MFBConstants.keySessLastNewFlight]);
+                Session[MFBConstants.keySessLastNewFlight] = null;
+            } else if (currentRange == null)
+            {
+                string sortExpr = Request["se"] ?? fr.CurrentSortKey;
+                SortDirection sortDir = Enum.TryParse(Request["so"], out SortDirection sd) ? sd : fr.CurrentSortDir;
+                currentRange = fr.GetResultRange(flightsPerPage, int.TryParse(Request["pg"], NumberStyles.Integer, CultureInfo.CurrentCulture, out int page) ? FlightRangeType.Page : FlightRangeType.First, sortExpr, sortDir, page);
+            }
             ViewBag.currentRange = currentRange;
             ViewBag.sk = sk;
-            ViewBag.flightResults = fr ?? FlightResultManager.FlightResultManagerForUser(targetUser).ResultsForQuery(fq);
+            ViewBag.miniMode = miniMode;
             return PartialView("_logbookTable");
         }
         #endregion
@@ -504,7 +481,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             BucketManager bm = hm.SupportedBucketManagers.FirstOrDefault(b => b.DisplayName.CompareOrdinal(selectedBucket) == 0);
             bm.ScanData(hm);
             string szFilename = String.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}-{3}", Branding.CurrentBrand.AppName, Resources.LocalizedText.DownloadFlyingStatsFilename, MyFlightbook.Profile.GetUser(fq.UserName).UserFullName, DateTime.Now.YMDString().Replace(" ", "-"));
-            return File(Encoding.UTF8.GetBytes(bm.RenderCSV(hm)), "text/csv", RegexUtility.UnSafeFileChars.Replace(szFilename, string.Empty) + ".csv");
+            return File(bm.RenderCSV(hm).UTF8Bytes(), "text/csv", RegexUtility.UnSafeFileChars.Replace(szFilename, string.Empty) + ".csv");
         }
 
         private ViewResult SharedLogbookForQuery(string g, FlightQuery fq = null, bool fPropDeleteClicked = false, string propToDelete = null)
@@ -525,12 +502,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
             if (fPropDeleteClicked)
                 fq.ClearRestriction(propToDelete ?? string.Empty);
-
-            if (sk.CanViewAchievements)
-            {
-                ViewBag.badgeSets = BadgeSet.BadgeSetsFromBadges(new Achievement(sk.Username).BadgesForUser());
-                ViewBag.ra = RecentAchievements.AchievementsForDateRange(sk.Username, FlightQuery.DateRanges.AllTime);
-            }
 
             if (sk.CanViewVisitedAirports)
             {
@@ -583,7 +554,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpGet]
         public ActionResult MyFlights(string uid = null)
         {
-            string szUser = String.IsNullOrEmpty(uid) ? string.Empty : new SharedDataEncryptor(MFBConstants.keyEncryptMyFlights).Decrypt(uid);
+            string szUser = MyFlightbook.Profile.EncryptedUserName(uid);
 
             Profile pf = MyFlightbook.Profile.GetUser(szUser) ?? throw new UnauthorizedAccessException();
             ViewBag.Title = String.IsNullOrEmpty(pf.UserName) ?
@@ -716,6 +687,18 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ProcessDetailsFlightDataAndMap(led);
 
             return View("flightDetails");
+        }
+        #endregion
+
+        #region Mini mode
+        [Authorize]
+        public ActionResult MiniRecents()
+        {
+            ViewBag.pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+            FlightQuery fq = new FlightQuery(User.Identity.Name);
+            ViewBag.fq = fq;
+            ViewBag.flightResults = FlightResultManager.FlightResultManagerForUser(User.Identity.Name).ResultsForQuery(fq);
+            return View("miniRecents");
         }
         #endregion
 
