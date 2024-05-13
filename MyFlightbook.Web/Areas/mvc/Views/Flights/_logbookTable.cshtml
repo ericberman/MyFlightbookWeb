@@ -103,6 +103,21 @@
         refreshSelectedFlights();
     }
 
+    function revokeSig(idFlight) {
+        $("#hdnFlightToRevokeSig").val(idFlight);
+        var f = $("#frmRevokeSig").serialize();
+        $.ajax({
+            url: "@Url.Action("RevokeSig", "Flights")",
+            type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            complete: function () { },
+            success: function (r) {
+                window.location = window.location;  // reload the whole page
+            }
+        });
+    }
+
+
     function deleteFlights() {
         if (confirm('@Resources.LogbookEntry.LogbookConfirmDeleteFlights')) {
             $("#hdnFlightsToDelete").val(Array.from(rgIds).join());
@@ -285,6 +300,12 @@
 {
     <input type="hidden" name="rgFlights" id="hdnFlightsToDelete" />
     @Html.AntiForgeryToken();
+}
+@using (Html.BeginForm("", "Flights", FormMethod.Post, new { id = "frmRevokeSig", name = "frmRevokeSig" }))
+{
+    @Html.AntiForgeryToken();
+    <input type="hidden" name="idSignedFlight" id="hdnFlightToRevokeSig" />
+    <input type="hidden" name="signedFlightOwner" id="hdnTargetUserToRevokeSig" value="@pfTarget.UserName" />
 }
 <table style="width:100%" class="printonly">
     <tr>

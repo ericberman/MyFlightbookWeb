@@ -4,18 +4,19 @@
     Profile pf = ViewBag.pf;
     FlightResult fr = ViewBag.flightResults;
     FlightResultRange currentRange = ViewBag.currentRange;
-    ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, System.Web.HttpUtility.HtmlEncode(pf.PreferredGreeting));
+    ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, pf.UserFullName);
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
 }
 <div>
     @{ Html.RenderAction("LogbookTableForResults", "Flights", new
         {
-            targetUser = User.Identity.Name,
+            targetUser = pf.UserName,
             fq = ViewBag.fq,
             fr = fr,
             miniMode = true,
             currentRange = currentRange
-        }); ; }
+        }); ;
+    }
 </div>
 
 

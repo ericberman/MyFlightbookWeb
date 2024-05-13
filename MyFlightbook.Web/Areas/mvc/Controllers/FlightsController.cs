@@ -175,6 +175,24 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
+        public ActionResult RevokeSig(int idSignedFlight, string signedFlightOwner)
+        {
+            return SafeOp(() =>
+            {
+                LogbookEntry le = new LogbookEntry();
+                if (le.FLoadFromDB(idSignedFlight, signedFlightOwner))
+                {
+                    le.RevokeSignature(User.Identity.Name);
+                    return new EmptyResult();
+                }
+                else
+                    throw new UnauthorizedAccessException();
+            });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult GetFlightsForResult(string fqJSON, string targetUser, string viewingUser, string sortExpr, SortDirection sortDir, string pageRequest, int pageSize, bool readOnly, string skID = null, string selectedFlights = null, bool miniMode = false)
         {
             return SafeOp(() =>
@@ -411,7 +429,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.query = fq ?? throw new ArgumentNullException(nameof(fq));
             ViewBag.flightResults = fr ?? throw new ArgumentNullException(nameof(fr));
 
-            CheckCanViewFlights(targetUser, User.Identity.Name, sk);
+            ViewBag.student = CheckCanViewFlights(targetUser, User.Identity.Name, sk);
 
             ViewBag.readOnly = readOnly;
 
@@ -463,6 +481,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             Profile pfTarget = MyFlightbook.Profile.GetUser(targetUser ?? throw new ArgumentNullException(nameof(targetUser)));
             ViewBag.pfTarget = pfTarget;
             ViewBag.pfViewer = User.Identity.IsAuthenticated ? MyFlightbook.Profile.GetUser(User.Identity.Name) : pfTarget;
+
             if (util.GetIntParam(Request, "dupesOnly", 0) != 0)
             {
                 fq = new FlightQuery(targetUser) {

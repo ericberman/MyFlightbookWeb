@@ -29,14 +29,16 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         /// <summary>
-        /// Determines if the viewing user has access to view flight data for the specified target user
+        /// Determines if the viewing user has access to view flight data for the specified target user.
+        /// If unauthorized for any reason, an exception is thrown
         /// </summary>
         /// <param name="targetUser">User whose data is being accessed</param>
         /// <param name="viewingUser">Viewing user (should be User.identity.name, but null is a shortcut for that)</param>
         /// <param name="sk">An optional sharekey that may provide access</param>
+        /// <returns>The student profile, if appropriate, or null.  Null doesn't mean unauthorized, it just means it's not a student relationship!</returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="UnauthorizedAccessException"></exception>
-        protected void CheckCanViewFlights(string targetUser, string viewingUser, ShareKey sk = null)
+        protected InstructorStudent CheckCanViewFlights(string targetUser, string viewingUser, ShareKey sk = null)
         {
             if (String.IsNullOrEmpty(targetUser))
                 throw new ArgumentNullException(nameof(targetUser));
@@ -44,7 +46,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             // three allowed conditions:
             // a) Viewing user (Authenticated or not!) has a valid sharekey for the user and can view THAT USER's flights.  This is the only unauthenticated access allowed
             if ((sk?.CanViewFlights ?? false) && (sk?.Username ?? string.Empty).CompareOrdinal(targetUser) == 0)
-                return;
+                return null;
 
             if (User.Identity.IsAuthenticated)
             {
@@ -56,11 +58,12 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
                 // b) Authenticated, viewing user is target user
                 if (targetUser.CompareOrdinal(viewingUser) == 0)
-                    return;
+                    return null;
 
                 // c) Authenticated, viewing user is an instructor of target user and user has given permission to view logbook
-                if (CFIStudentMap.GetInstructorStudent(new CFIStudentMap(viewingUser).Students, targetUser)?.CanViewLogbook ?? false)
-                    return;
+                InstructorStudent csm = CFIStudentMap.GetInstructorStudent(new CFIStudentMap(viewingUser).Students, targetUser);
+                if (csm?.CanViewLogbook ?? false)
+                    return csm;
             }
 
             // Otherwise, we're unauthenticated
