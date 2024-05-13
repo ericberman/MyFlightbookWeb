@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
 
@@ -388,9 +389,10 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         [ChildActionOnly]
-        public ActionResult FlightContextMenu(LogbookEntry le)
+        public ActionResult FlightContextMenu(LogbookEntry le, string contextParams)
         {
             ViewBag.le = le ?? throw new ArgumentNullException(nameof(le));
+            ViewBag.contextParams = contextParams ?? string.Empty;
             return PartialView("_flightContextMenu");
         }
 
@@ -420,6 +422,30 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.currentRange = currentRange ?? throw new ArgumentNullException(nameof(currentRange));
             ViewBag.sk = sk;
             ViewBag.miniMode = miniMode;
+
+            // Add parameters to the edit link to preserve context on return
+            var dictParams = HttpUtility.ParseQueryString(Request.Url.Query);
+
+            // Issue #458: clone and reverse are getting duplicated and the & is getting url encoded, so even edits look like clones
+            dictParams.Remove("Clone");
+            dictParams.Remove("Reverse");
+
+            // clear out any others that may be defaulted
+            dictParams.Remove("fq");
+            dictParams.Remove("se");
+            dictParams.Remove("so");
+            dictParams.Remove("pg");
+
+            if (!fq.IsDefault)
+                dictParams["fq"] = fq.ToBase64CompressedJSONString();
+            if (fr.CurrentSortKey.CompareCurrentCultureIgnoreCase(LogbookEntry.DefaultSortKey) != 0)
+                dictParams["se"] = fr.CurrentSortKey;
+            if (fr.CurrentSortDir!= LogbookEntry.DefaultSortDir)
+                dictParams["so"] = fr.CurrentSortDir.ToString();
+            if (currentRange.PageNum != 0)
+                dictParams["pg"] = currentRange.PageNum.ToString(CultureInfo.InvariantCulture);
+            ViewBag.contextParams = dictParams.ToString();
+
             return PartialView("_logbookTableContents");
         }
 

@@ -142,7 +142,7 @@ else
                             }
                         </div>
                         <div>
-                            <a style="font-weight: bold; font-size: larger" href="@String.Format(CultureInfo.InvariantCulture, readOnly ? "~/mvc/pub/ViewFlight/{0}" : "~/mvc/flights/detail/{0}?tabID=Chart", led.FlightID).ToAbsolute()">@led.Date.ToShortDateString()</a>
+                            <a style="font-weight: bold; font-size: larger" href="@(readOnly ? String.Format(CultureInfo.InvariantCulture, "~/mvc/pub/ViewFlight/{0}", led.FlightID).ToAbsolute() : String.Format(CultureInfo.InvariantCulture, "~/mvc/flights/details/{0}?{1}", led.FlightID, (string) ViewBag.contextParams).ToAbsolute())">@led.Date.ToShortDateString()</a>
                             <a style="font-weight:bold;" href="@String.Format(CultureInfo.InvariantCulture, "~/mvc/pub/ViewFlight/{0}", led.FlightID).ToAbsolute()">@led.Route</a>
                             <span style="clear:left; white-space: pre-line;" dir="auto">@Html.Raw(led.CommentWithReplacedApproaches)</span>
                             @if (showCollapsed)
@@ -258,7 +258,7 @@ else
                             <div name="fltContext">
                                 <img src="@VirtualPathUtility.ToAbsolute("~/images/MenuChevron.png")" class="popTrigger" />
                                 <div class="popMenuContent popMenuHidden" style="margin-top: -20px; margin-left: -180px">
-                                    @{ Html.RenderAction("FlightContextMenu", "Flights", new { le = led }); }
+                                    @{ Html.RenderAction("FlightContextMenu", "Flights", new { le = led, contextParams = ViewBag.contextParams }); }
                                 </div>
                             </div>
                             <input type="checkbox" name="selFlight" value="@led.FlightID" onchange="javascript: toggleSelectedFlight(this);" style="display:none;" />
