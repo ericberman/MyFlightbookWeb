@@ -828,7 +828,6 @@
     <Content Include="Member\ImportTelemetry.aspx" />
     <Content Include="Member\LogbookNew.aspx" />
     <Content Include="Member\MiniLogbook.aspx" />
-    <Content Include="Member\MiniRecents.aspx" />
     <Content Include="Member\MiniTotals.aspx" />
     <Content Include="Member\PrintView.aspx" />
     <Content Include="Member\RequestSigs.aspx" />
@@ -2694,13 +2693,6 @@
     </Compile>
     <Compile Include="Member\MiniLogbook.aspx.designer.cs">
       <DependentUpon>MiniLogbook.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Member\MiniRecents.aspx.cs">
-      <DependentUpon>MiniRecents.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\MiniRecents.aspx.designer.cs">
-      <DependentUpon>MiniRecents.aspx</DependentUpon>
     </Compile>
     <Compile Include="Member\MiniTotals.aspx.cs">
       <DependentUpon>MiniTotals.aspx</DependentUpon>

@@ -18,7 +18,7 @@ namespace MyFlightbook.PublicPages
         private readonly static Dictionary<string, string> dictRedir = new Dictionary<string, string>()
         {
                 { "FLIGHTS", "~/Member/LogbookNew.aspx"},
-                { "MINIFLIGHTS", "~/Member/MiniRecents.aspx"},
+                { "MINIFLIGHTS", "~/mvc/flights/minirecents"},
                 { "PROFILE", "~/Member/EditProfile.aspx/pftPrefs"},
                 { "DONATE", "~/mvc/Donate"},
                 { "ENDORSE", "~/mvc/Training/Endorsements"},
