@@ -2968,11 +2968,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  %APP_NAME% cannot determine with 100% reliability that a given milestone has been met; some inference is often required.  In addition, various substitutions or credits may be applicable based on information beyond what %APP_NAME% can determine, so your personal requirements may differ from what is listed here.
-        ///&lt;br /&gt;
-        ///&lt;a href=&quot;https://www.law.cornell.edu/cfr/text/14/61.63&quot; target=&quot;_blank&quot;&gt;FAR 61.63&lt;/a&gt; may also render some or all of these milestones moot.
-        ///&lt;br /&gt;
-        ///YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURIN [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to  %APP_NAME% cannot determine with 100% reliability that a given milestone has been met; some inference is often required.  In addition, various substitutions or credits may be applicable based on information beyond what %APP_NAME% can determine, so your personal requirements may differ from what is listed here.  Furthermore, note that many ratings require that the training hours required for that rating be done specifically in pursuit of that rating; e.g., training spent on a Private PIlot certificate may no [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string OverallProgressDisclaimer {
             get {

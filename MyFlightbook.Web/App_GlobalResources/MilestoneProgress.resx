@@ -328,7 +328,7 @@
     <value>[61.65(g)](https://www.law.cornell.edu/cfr/text/14/61.65) allows fewer hours than this if you are applying for a combined private pilot/instrument rating certificate.</value>
   </data>
   <data name="OverallProgressDisclaimer" xml:space="preserve">
-    <value>%APP_NAME% cannot determine with 100% reliability that a given milestone has been met; some inference is often required.  In addition, various substitutions or credits may be applicable based on information beyond what %APP_NAME% can determine, so your personal requirements may differ from what is listed here.
+    <value>%APP_NAME% cannot determine with 100% reliability that a given milestone has been met; some inference is often required.  In addition, various substitutions or credits may be applicable based on information beyond what %APP_NAME% can determine, so your personal requirements may differ from what is listed here.  Furthermore, note that many ratings require that the training hours required for that rating be done specifically in pursuit of that rating; e.g., training spent on a Private PIlot certificate may not apply towards a Commercial certificate.  %APP_NAME% cannot reliably distinguish this training, so be sure that you have actually met the minimum requirements.
 &lt;br /&gt;
 &lt;a href="https://www.law.cornell.edu/cfr/text/14/61.63" target="_blank"&gt;FAR 61.63&lt;/a&gt; may also render some or all of these milestones moot.
 &lt;br /&gt;
