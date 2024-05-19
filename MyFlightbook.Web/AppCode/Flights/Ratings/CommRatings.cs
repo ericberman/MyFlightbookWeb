@@ -6,7 +6,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2022 MyFlightbook LLC
+ * Copyright (c) 2013-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1183,7 +1183,8 @@ namespace MyFlightbook.RatingsProgress
             if (cfr.Night > 0 && cfr.IMC == 0)      // exclude flights with IMC because it is supposed to be VFR conditions.
             {
                 miSoloNight.AddEvent(cfr.Night);
-                miSoloNightLandings.AddEvent(cfr.cFullStopNightLandings);
+                // Part 141 - interestingly - does NOT 
+                miSoloNightLandings.AddEvent(cfr.cFullStopNightLandings + cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropNightTouchAndGo));
                 miSoloNightTakeoffs.AddEvent(nightTakeoffs);
             }
         }
