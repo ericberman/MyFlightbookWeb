@@ -113,8 +113,11 @@
             $("#ckLegacyHighPerf")[0].checked = false;
         }
 
-        showIfTrue("#rowFamily", newVal != "@CategoryClass.CatClassID.GasBalloon" && newVal != "@CategoryClass.CatClassID.HotAirBalloon" && newVal != "@CategoryClass.CatClassID.Glider" && newVal != "@CategoryClass.CatClassID.UnmannedAerialSystem" &&
-            newVal != "@CategoryClass.CatClassID.WeightShiftControlLand" && newVal != "@CategoryClass.CatClassID.WeightShiftControlSea");
+        var fHasICAO = newVal != "@CategoryClass.CatClassID.GasBalloon" && newVal != "@CategoryClass.CatClassID.HotAirBalloon" && newVal != "@CategoryClass.CatClassID.Glider" && newVal != "@CategoryClass.CatClassID.UnmannedAerialSystem" &&
+            newVal != "@CategoryClass.CatClassID.WeightShiftControlLand" && newVal != "@CategoryClass.CatClassID.WeightShiftControlSea";
+        showIfTrue("#rowFamily", fHasICAO);
+        if (!fHasICAO)
+            $("#txtFamilyName").val("");
 
         showIfTrue("#divTailwheel", newVal == "@CategoryClass.CatClassID.ASEL" || newVal == "@CategoryClass.CatClassID.AMEL");
         showIfTrue("#divTMG", newVal == "@CategoryClass.CatClassID.Glider");
@@ -146,7 +149,7 @@
         if (bypassCheck || modelID > 0) {
             $.ajax({
                 url: "@Url.Action("CommitModel", "Aircraft")",
-                type: "POST", data: f, dataType: "json", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',   
+                type: "POST", data: f, dataType: "json", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
                 error: function (xhr, status, error) { $("#lblError").text(xhr.responseText); },
                 success: function (r) {
                     if (@ViewBag.onCommitFunc)
@@ -157,7 +160,7 @@
             f += "&funcName=viewExistingModel";
             $.ajax({
                 url: "@Url.Action("CheckDupeModels", "Aircraft")",
-                type: "POST", data: f, dataType: "html", contentType: 'application/x-www-form-urlencoded; charset=UTF-8', 
+                type: "POST", data: f, dataType: "html", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
                 error: function (xhr, status, error) { $("#lblError").text(xhr.responseText); },
                 success: function (r) {
                     if (r == '')
