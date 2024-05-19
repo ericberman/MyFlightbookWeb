@@ -979,6 +979,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flight has more full-stop day, full-stop-night, and night touch-and-go landings than total landings.  These are all landings, and they are mutually exclusive..
+        /// </summary>
+        internal static string warningTooManyDescribedLandings {
+            get {
+                return ResourceManager.GetString("warningTooManyDescribedLandings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Flight indicates total time, but no PIC, SIC, Instructor, or Dual time noted.  If you were just a passenger or deadheading, leave the total time blank (zero); otherwise any time you log will accrue to your total time..
         /// </summary>
         internal static string warningTotalTimeButNoOtherTime {

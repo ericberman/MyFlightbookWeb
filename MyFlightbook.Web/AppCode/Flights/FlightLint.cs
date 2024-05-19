@@ -583,6 +583,8 @@ namespace MyFlightbook.Lint
             }
 
             AddConditionalIssue(le.Landings + le.Approaches > 0 && le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropPilotMonitoring), LintOptions.MiscIssues, Resources.FlightLint.warningOperationsLoggedWhileMonitoring);
+            // Issue #1227 - check for too many described landings
+            AddConditionalIssue(le.FullStopLandings + le.NightLandings + le.CustomProperties.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropNightTouchAndGo) > le.Landings, LintOptions.MiscIssues, Resources.FlightLint.warningTooManyDescribedLandings);
 
             int maxDescribedLandings = 0;
             le.CustomProperties.ForEachEvent((cfp) => { if (cfp.PropertyType.IsLanding) maxDescribedLandings = Math.Max(maxDescribedLandings, cfp.IntValue); });
