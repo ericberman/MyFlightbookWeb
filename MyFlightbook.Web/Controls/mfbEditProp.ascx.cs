@@ -4,7 +4,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2023 MyFlightbook LLC
+ * Copyright (c) 2013-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -100,17 +100,17 @@ namespace MyFlightbook.Controls.FlightEditing
                     break;
                 case CFPPropertyType.cfpInteger:
                     mfbDecEdit.IntValue = fp.IntValue;
-                    mfbDecEdit.EditingMode = Controls_mfbDecimalEdit.EditMode.Integer;
+                    mfbDecEdit.EditingMode = EditMode.Integer;
                     mvProp.SetActiveView(vwDecimal);
                     break;
                 case CFPPropertyType.cfpDecimal:
                     mvProp.SetActiveView(vwDecimal);    // need to do this before setting the cross-fill image to visible
                     // Set the cross-fill source before setting the editing mode.
-                    mfbDecEdit.EditingMode = (!fp.PropertyType.IsBasicDecimal && Profile.GetUser(Page.User.Identity.Name).UsesHHMM ? Controls_mfbDecimalEdit.EditMode.HHMMFormat : Controls_mfbDecimalEdit.EditMode.Decimal);
+                    mfbDecEdit.EditingMode = (!fp.PropertyType.IsBasicDecimal && Profile.GetUser(Page.User.Identity.Name).UsesHHMM ? EditMode.HHMMFormat : EditMode.Decimal);
                     mfbDecEdit.Value = fp.DecValue;
                     break;
                 case CFPPropertyType.cfpCurrency:
-                    mfbDecEdit.EditingMode = Controls_mfbDecimalEdit.EditMode.Currency;
+                    mfbDecEdit.EditingMode = EditMode.Currency;
                     mfbDecEdit.Value = fp.DecValue;
                     mvProp.SetActiveView(vwDecimal);
                     break;

@@ -67,6 +67,8 @@ namespace MyFlightbook
         }
     }
 
+    public enum EditMode { Integer, Decimal, Currency, HHMMFormat };
+
     public static class ShuntState
     {
         private const string keyIsShunted = "IsShunted";

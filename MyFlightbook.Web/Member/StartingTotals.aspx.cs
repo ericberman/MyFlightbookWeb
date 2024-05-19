@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2021 MyFlightbook LLC
+ * Copyright (c) 2012-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -276,7 +276,7 @@ namespace MyFlightbook.MemberPages
                     Controls_mfbDecimalEdit dc = (Controls_mfbDecimalEdit)LoadControl("~/Controls/mfbDecimalEdit.ascx");
                     dc.ID = IDForCell(iRow, iCol);
                     tc2.Controls.Add(dc);
-                    dc.EditingMode = fHHMM ? Controls_mfbDecimalEdit.EditMode.HHMMFormat : Controls_mfbDecimalEdit.EditMode.Decimal;
+                    dc.EditingMode = fHHMM ? EditMode.HHMMFormat : EditMode.Decimal;
                     iCol++;
                 }
 

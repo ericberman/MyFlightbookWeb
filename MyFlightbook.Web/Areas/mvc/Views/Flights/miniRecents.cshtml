@@ -5,6 +5,7 @@
     FlightResult fr = ViewBag.flightResults;
     FlightResultRange currentRange = ViewBag.currentRange;
     ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, pf.UserFullName);
+    ViewBag.defaultTab = tabID.tabLogbook;
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
 }
 <div>

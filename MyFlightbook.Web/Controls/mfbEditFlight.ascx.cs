@@ -13,7 +13,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2023 MyFlightbook LLC
+ * Copyright (c) 2007-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -504,7 +504,7 @@ namespace MyFlightbook.Controls.FlightEditing
 
             // Use the desired editing mode.
             MyFlightbook.Profile pf = MyFlightbook.Profile.GetUser(Page.User.Identity.Name);
-            Controls_mfbDecimalEdit.EditMode em = pf.UsesHHMM ? Controls_mfbDecimalEdit.EditMode.HHMMFormat : Controls_mfbDecimalEdit.EditMode.Decimal;
+            EditMode em = pf.UsesHHMM ? EditMode.HHMMFormat : EditMode.Decimal;
             decCFI.EditingMode = decDual.EditingMode = decGrndSim.EditingMode = decIMC.EditingMode =
                 decNight.EditingMode = decPIC.EditingMode = decSIC.EditingMode = decSimulatedIFR.EditingMode =
                 decTotal.EditingMode = decXC.EditingMode = em;

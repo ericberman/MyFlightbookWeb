@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2020 MyFlightbook LLC
+ * Copyright (c) 2017-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -140,7 +140,7 @@ public partial class Controls_mfbCustCurrency : System.Web.UI.UserControl
         // clear the form
         txtRuleName.Text = string.Empty;
         cmbEventTypes.SelectedIndex = 0;
-        decMinEvents.EditingMode = Controls_mfbDecimalEdit.EditMode.Integer;
+        decMinEvents.EditingMode = EditMode.Integer;
         decMinEvents.Value = 0;
         txtTimeFrame.Text = txtAirport.Text = txtContainedText.Text = string.Empty;
         cmbMonthsDays.SelectedIndex = 0;
@@ -176,12 +176,12 @@ public partial class Controls_mfbCustCurrency : System.Web.UI.UserControl
         cmbLimitType.SelectedValue = cc.CurrencyLimitType.ToString();
         if (cc.EventType.IsIntegerOnly())
         {
-            decMinEvents.EditingMode = Controls_mfbDecimalEdit.EditMode.Integer;
+            decMinEvents.EditingMode = EditMode.Integer;
             decMinEvents.IntValue = (int) cc.RequiredEvents;
         }
         else
         {
-            decMinEvents.EditingMode = Controls_mfbDecimalEdit.EditMode.Decimal;
+            decMinEvents.EditingMode = EditMode.Decimal;
             decMinEvents.Value = cc.RequiredEvents;
         }
 
@@ -289,12 +289,12 @@ public partial class Controls_mfbCustCurrency : System.Web.UI.UserControl
         CustomCurrency.CustomCurrencyEventType ccet = (CustomCurrency.CustomCurrencyEventType)Convert.ToInt32(cmbEventTypes.SelectedValue, CultureInfo.InvariantCulture);
         decimal val = decMinEvents.Value;
         if (ccet.IsIntegerOnly()) {
-            decMinEvents.EditingMode = Controls_mfbDecimalEdit.EditMode.Integer;
+            decMinEvents.EditingMode = EditMode.Integer;
             decMinEvents.IntValue = (int)val;
         }
         else
         {
-            decMinEvents.EditingMode = Controls_mfbDecimalEdit.EditMode.Decimal;
+            decMinEvents.EditingMode = EditMode.Decimal;
             decMinEvents.Value = val;
         }
     }

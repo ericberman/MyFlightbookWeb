@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2020 MyFlightbook LLC
+ * Copyright (c) 2010-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -81,15 +81,15 @@ public partial class Controls_mfbFlightProperties : System.Web.UI.UserControl
         {
             case CFPPropertyType.cfpInteger:
                 mfbDecEdit.Visible = true;
-                mfbDecEdit.EditingMode = Controls_mfbDecimalEdit.EditMode.Integer;
+                mfbDecEdit.EditingMode = EditMode.Integer;
                 break;
             case CFPPropertyType.cfpDecimal:
                 mfbDecEdit.Visible = true;
-                mfbDecEdit.EditingMode = MyFlightbook.Profile.GetUser(Page.User.Identity.Name).UsesHHMM ? Controls_mfbDecimalEdit.EditMode.HHMMFormat : Controls_mfbDecimalEdit.EditMode.Decimal;
+                mfbDecEdit.EditingMode = MyFlightbook.Profile.GetUser(Page.User.Identity.Name).UsesHHMM ? EditMode.HHMMFormat : EditMode.Decimal;
                 break;
             case CFPPropertyType.cfpCurrency:
                 mfbDecEdit.Visible = true;
-                mfbDecEdit.EditingMode = Controls_mfbDecimalEdit.EditMode.Currency;
+                mfbDecEdit.EditingMode = EditMode.Currency;
                 break;
             case CFPPropertyType.cfpBoolean:
                 break;

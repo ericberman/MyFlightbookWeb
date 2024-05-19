@@ -5,15 +5,13 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2021 MyFlightbook LLC
+ * Copyright (c) 2009-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
 public partial class Controls_mfbDecimalEdit : System.Web.UI.UserControl
 {
-    public enum EditMode { Integer, Decimal, Currency, HHMMFormat };
-
     private const string WaterMarkInteger = "0";
     private const string WaterMarkDecimal = "0.0";
     private const string WaterMarkCurrency = "0.00";
