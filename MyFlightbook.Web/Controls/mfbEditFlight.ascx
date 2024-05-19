@@ -326,6 +326,24 @@
         </ul>
     </asp:Panel>
     <asp:Panel ID="pnlAdminFixSignature" runat="server" Visible="false">
+        <script type="text/javascript">
+            function adminFixSignature(forceValid) {
+                var params = new Object();
+                params.idFlight = <%= FlightID %>;
+                params.fForceValid = forceValid;
+                var d = JSON.stringify(params);
+                $.ajax(
+                    {
+                        url: '<%= VirtualPathUtility.ToAbsolute("~/Admin/AdminService.asmx/FixSignature") %>',
+                        type: "POST", data: d, dataType: "json", contentType: "application/json",
+                        error: function (xhr, status, error) {
+                            window.alert(xhr.responseJSON.Message);
+                        },
+                        complete: function (response) { },
+                        success: function (response) { window.location = window.location; }
+                    });
+            }
+        </script>
         <table>
             <tr>
                 <td>Saved State:</td>
@@ -344,11 +362,11 @@
                 <td><asp:Label ID="lblSigCurrentHash" runat="server" /></td>
             </tr>
             <tr>
-                <td><asp:Button ID="btnAdminFixSignature" runat="server" Text="Fix Signature" OnClick="btnAdminFixSignature_Click" /></td>
+                <td><button type="button" onclick="javascript: adminFixSignature(false);">Fix Signature</button></td>
                 <td>(Set the state to match reality)</td>
             </tr>
             <tr>
-                <td><asp:Button ID="btnAdminForceValid" runat="server" Text="Force Valid" OnClick="btnAdminForceValid_Click" /></td>
+                <td> <button type="button" onclick="javascript: adminFixSignature(true);">Force Valid</button></td>
                 <td>(Recompute the flight hash based on current values to force it to be valid)</td>
             </tr>
         </table>

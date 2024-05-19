@@ -15,7 +15,7 @@ using System.Web.Services;
 
 /******************************************************
  * 
- * Copyright (c) 2022-2023 MyFlightbook LLC
+ * Copyright (c) 2022-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -738,6 +738,27 @@ namespace MyFlightbook.Web.Ajax
             apTarget.MergeFrom(apSource);
         }
         #endregion
+        #endregion
+
+        #region Flights webmethods
+        private static void CheckFlightsAdmin()
+        {
+            if (!(HttpContext.Current?.User?.Identity?.IsAuthenticated ?? false) || String.IsNullOrEmpty(HttpContext.Current?.User?.Identity?.Name))
+                throw new UnauthorizedAccessException("You must be authenticated to make this call");
+
+            Profile pf = Profile.GetUser(HttpContext.Current.User.Identity.Name);
+            if (!pf.CanSupport)
+                throw new UnauthorizedAccessException("You must be an admin to make this call");
+        }
+
+        [WebMethod(EnableSession = true)]
+        public void FixSignature(int idFlight, bool fForceValid)
+        {
+            CheckFlightsAdmin();
+            LogbookEntry le = new LogbookEntry();
+            le.FLoadFromDB(idFlight, User.Identity.Name, LogbookEntryCore.LoadTelemetryOption.None, true);
+            le.AdminSignatureSanityFix(fForceValid);
+        }
         #endregion
     }
 }

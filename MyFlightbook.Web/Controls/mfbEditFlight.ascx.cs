@@ -190,7 +190,7 @@ namespace MyFlightbook.Controls.FlightEditing
         const string keyLastSelectedAircraft = "vsLastAircraft";
 
         #region Properties
-        private int FlightID
+        protected int FlightID
         {
             get { return Convert.ToInt32(hdnItem.Value, CultureInfo.InvariantCulture); }
             set { hdnItem.Value = value.ToString(CultureInfo.InvariantCulture); }
@@ -889,24 +889,6 @@ namespace MyFlightbook.Controls.FlightEditing
         {
             FlightEditCanceled?.Invoke(this, e);
         }
-
-        #region Admin tools for signatures
-        protected void btnAdminForceValid_Click(object sender, EventArgs e)
-        {
-            LogbookEntry le = new LogbookEntry();
-            le.FLoadFromDB(FlightID, FlightUser, LogbookEntry.LoadTelemetryOption.None, true);
-            le.AdminSignatureSanityFix(true);
-            Response.Redirect(Request.Url.OriginalString);
-        }
-
-        protected void btnAdminFixSignature_Click(object sender, EventArgs e)
-        {
-            LogbookEntry le = new LogbookEntry();
-            le.FLoadFromDB(FlightID, FlightUser, LogbookEntry.LoadTelemetryOption.None, true);
-            le.AdminSignatureSanityFix(false);
-            Response.Redirect(Request.Url.OriginalString);
-        }
-        #endregion
 
         protected void cmbAircraft_SelectedIndexChanged(object sender, EventArgs e)
         {
