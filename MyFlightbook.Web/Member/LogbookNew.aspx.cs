@@ -228,8 +228,8 @@ namespace MyFlightbook.MemberPages
             FlightID = idFlight;
             mfbEditFlight1.SetUpNewOrEdit(idFlight);
             mfbEditFlight1.CanCancel = !IsNewFlight;
-            // TODO: why was this here? */
-            /* pnlAccordionMenuContainer.Visible = */ mfbLogbook1.Visible = pnlFilter.Visible = IsNewFlight;
+            pnlAccordionProxy.Style["display"] = IsNewFlight ? "block" : "none";
+            mfbLogbook1.Visible = pnlFilter.Visible = IsNewFlight;
         }
 
         protected void ResolvePrintLink()

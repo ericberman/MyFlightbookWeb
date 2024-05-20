@@ -33,6 +33,15 @@ namespace MyFlightbook.MemberPages
         protected global::System.Web.UI.WebControls.HiddenField hdnLastViewedPane;
 
         /// <summary>
+        /// pnlAccordionProxy control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlAccordionProxy;
+
+        /// <summary>
         /// pnlFilter control.
         /// </summary>
         /// <remarks>

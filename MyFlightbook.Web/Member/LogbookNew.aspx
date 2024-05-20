@@ -148,15 +148,17 @@
 
         });
     </script>
-    <div id="accordionproxycontainer">
-        <div id="apcAdd"><% =Resources.LocalizedText.LogTabNewFlight %></div>
-        <div id="apcSearch"><% =Resources.LocalizedText.LogTabFilter %></div>
-        <div id="apcTotals"><% =Resources.LocalizedText.LogTabTotals %></div>
-        <div id="apcCurrency"><% =Resources.LocalizedText.LogTabCurrency %></div>
-        <div id="apcAnalysis"><% =Resources.LocalizedText.LogTabAnalysis %></div>
-        <div id="apcPrinting"><% =Resources.LocalizedText.LogTabPrint %></div>
-        <div id="apcMore"><% =Resources.LocalizedText.LogTabMore %></div>
-    </div>
+    <asp:Panel ID="pnlAccordionProxy" runat="server">
+        <div id="accordionproxycontainer">
+            <div id="apcAdd"><% =Resources.LocalizedText.LogTabNewFlight %></div>
+            <div id="apcSearch"><% =Resources.LocalizedText.LogTabFilter %></div>
+            <div id="apcTotals"><% =Resources.LocalizedText.LogTabTotals %></div>
+            <div id="apcCurrency"><% =Resources.LocalizedText.LogTabCurrency %></div>
+            <div id="apcAnalysis"><% =Resources.LocalizedText.LogTabAnalysis %></div>
+            <div id="apcPrinting"><% =Resources.LocalizedText.LogTabPrint %></div>
+            <div id="apcMore"><% =Resources.LocalizedText.LogTabMore %></div>
+        </div>
+    </asp:Panel>
     <asp:Panel ID="pnlFilter" runat="server" CssClass="filterApplied" >
         <div style="display:inline-block;"><%=Resources.LocalizedText.ResultsFiltered %></div>
             <uc7:mfbQueryDescriptor ID="mfbQueryDescriptor1" runat="server" OnQueryUpdated="mfbQueryDescriptor1_QueryUpdated" />
