@@ -34,10 +34,7 @@ namespace MyFlightbook.Web.Ajax
     {
         public static string AjaxScriptLink
         {
-            get
-            {
-                return "~/public/Scripts/adminajax.js?v=1";
-            }
+            get { return "~/public/Scripts/adminajax.js?v=2".ToAbsolute(); }
         }
 
         public AdminWebServices()

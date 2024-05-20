@@ -7,18 +7,18 @@
 <style type="text/css">
     .adm .admItem {
     }
-    .adm .admItem:after {
-        content: " | ";
-    }
-    .adm .admItem:last-child:after {
-        content: "";
-    }
+        .adm .admItem:after {
+            content: " | ";
+        }
+        .adm .admItem:last-child:after {
+            content: "";
+        }
     .handled {
         background-color: lightgray;
         color: darkgray;
     }
 </style>
-<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/public/Scripts/adminajax.js")"></script>
+<script type="text/javascript" src="@MyFlightbook.Web.Ajax.AdminWebServices.AjaxScriptLink"></script>
 <script type="text/javascript">
     function refreshDupeAircraft() {
         $("#divProgress").toggle();
