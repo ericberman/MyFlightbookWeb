@@ -20,6 +20,7 @@
     DataSourceType dst = DataSourceType.DataSourceTypeFromFileType(led.Telemetry.TelemetryType);
     MyFlightbook.Profile pf = ViewBag.pf;
     GoogleMap map = ViewBag.map;
+    bool isAdmin = ViewBag.fIsAdmin;
 
     IEnumerable<BadgeSet> badgeSets = BadgeSet.BadgeSetsFromBadges(new List<Badge>(pf.CachedBadges ?? Array.Empty<Badge>()).FindAll(b => b.IDFlightEarned == led.FlightID));
     Aircraft ac = new UserAircraft(led.User)[led.AircraftID];
@@ -85,6 +86,7 @@
                         if (!fChartLoaded) {
                             var params = new Object();
                             params.idFlight = @led.FlightID;
+                            params.fAsAdmin = @(isAdmin.ToString().ToLowerInvariant());
                             $.ajax({
                                 url: "@Url.Action("GetTelemetryAnalysisForUser", "Flights")",
                                 type: "POST", data: JSON.stringify(params), dataType: "html", contentType: 'application/json',

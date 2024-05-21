@@ -63,11 +63,12 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Telemetry analysis charting
         [HttpPost]
         [Authorize]
-        public ActionResult UpdateTelemetryChart(int idFlight, string xData, string yData, string y2Data, double y1Scale, double y2Scale)
+        public ActionResult UpdateTelemetryChart(int idFlight, string xData, string yData, string y2Data, double y1Scale, double y2Scale, bool fAsAdmin)
         {
             return SafeOp(() =>
             {
-                LogbookEntry le = GetFlightToView(idFlight, false);
+                // Anyone can *say* they're admin, so treat the flag above as a request.  Trust but verify
+                LogbookEntry le = GetFlightToView(idFlight, fAsAdmin);
 
                 using (FlightData fd = new FlightData())
                 {
@@ -100,11 +101,12 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
-        public ActionResult GetTelemetryAnalysisForUser(int idFlight)
+        public ActionResult GetTelemetryAnalysisForUser(int idFlight, bool fAsAdmin)
         {
             return SafeOp(() =>
             {
-                LogbookEntry le = GetFlightToView(idFlight, false);
+                // Anyone can *say* they're admin, so treat the flag above as a request.  Trust but verify
+                LogbookEntry le = GetFlightToView(idFlight, fAsAdmin);
 
                 using (FlightData fd = new FlightData())
                 {
@@ -120,6 +122,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     ViewBag.xCols = fd.Data.XValCandidates;
                     ViewBag.idFlight = idFlight;
                     ViewBag.hasCrop = le.GetCropRange(out int _, out int _);
+                    ViewBag.fAsAdmin = fAsAdmin;
 
                     return PartialView("_telemetryAnalysis");
                 }
@@ -614,6 +617,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Details helpers
         private LogbookEntryDisplay GetFlightToView(int idFlight, bool fAdminMode)
         {
+            // Anyone can *say* they're admin, so treat the flag above as a request.  Trust but verify
             bool fIsAdmin = fAdminMode && MyFlightbook.Profile.GetUser(User.Identity.Name).CanSupport;
 
             // Check to see if the requested flight belongs to the current user, or if they're authorized.

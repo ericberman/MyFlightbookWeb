@@ -17,6 +17,7 @@
         params.y2Data = $("#cmbYAxis2").val();
         params.y1Scale = $('input[name="rblX1Conv"]:checked').val();
         params.y2Scale = $('input[name="rblX2Conv"]:checked').val();
+        params.fAsAdmin = @(ViewBag.fAsAdmin.ToString().ToLowerInvariant());
         $("#analysisProgress").show();
         $.ajax({
             url: "@Url.Action("UpdateTelemetryChart", "Flights")",
