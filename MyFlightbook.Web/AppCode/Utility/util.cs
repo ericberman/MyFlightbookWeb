@@ -54,7 +54,7 @@ namespace MyFlightbook
 
         public const string keySessLastNewFlight = "sessNewFlightID";
 
-        private const int StyleSheetVer = 56;
+        private const int StyleSheetVer = 57;
 
         public static string BaseStylesheet
         {

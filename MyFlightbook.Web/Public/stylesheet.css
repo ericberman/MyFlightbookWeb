@@ -102,10 +102,14 @@ H4
     margin-right: auto;
 }
 
-input[type=text],input[type=password], input[type=number],input[type=email], textarea {
+input[type=text], input[type=password], input[type=number], input[type=email], input[type=date], textarea {
     border-radius: 5px;
     border: 1px solid #a0a0a0;
     padding: 2px;
+}
+
+input[type=text], input[type=password], input[type=number], input[type=email], input[type=date], textarea, select {
+    font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 /* Data entry form */
