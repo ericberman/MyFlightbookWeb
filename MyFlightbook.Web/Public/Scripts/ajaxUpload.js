@@ -57,6 +57,41 @@ function ajaxFileUpload(container, options) {
         }));
     }
 
+    document.onpaste = function (event, throbberID) {
+        var items = (event.clipboardData || event.originalEvent.clipboardData).items;
+        var blob = null;
+        var inputs = ['input', 'textarea'];
+        var activeElement = document.activeElement;
+        if (activeElement && inputs.indexOf(activeElement.tagName.toLowerCase()) !== -1 && items[0].type.indexOf("text") === 0)
+            return;   // let default behavior work.
+        for (var i = 0; i < items.length; i++) {
+            if (items[i].type.indexOf("image") === 0) {
+                blob = items[i].getAsFile();
+                if (blob !== null) {
+                    if (!checkFileType(blob.name))  // don't allow paste if type is not allowed.
+                        return;
+                    $(throbberID).show();
+                    var reader = new FileReader();
+                    reader.onload = function (event) {
+                        var fd = new FormData();
+                        if (options.additionalParams) {
+                            options.additionalParams.forEach(param => {
+                                fd.append(param.name, param.value);
+                            });
+                        }
+                        fd.append('file', blob);
+                        var status = new createStatusbar(container);
+                        status.setFileNameSize(blob.name, blob.size);
+                        queuedFiles.push({ s: status, f: fd });
+                        processQueue();
+                    };
+                    reader.readAsDataURL(blob);
+                    return; // no need to keep cycling through items.
+                }
+            }
+        }
+    }
+
     function createStatusbar(obj) {
         this.uploadContainer = $("<div class='fileInQueueContainer fileInQueContainerInProgress'></div>").appendTo(container);
         this.statusbar = $("<div class='fileUploadStatusbar'></div>").appendTo(this.uploadContainer);

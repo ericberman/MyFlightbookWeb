@@ -10,7 +10,7 @@
     ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.Profile.TrainingHeader, pf.UserFullName);
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
 }
-<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/public/scripts/ajaxUpload.js?v=3")"></script>
+<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/Public/Scripts/ajaxUpload.js?v=4")"></script>
 <script type="text/javascript">
     function deleteOfflineEndorsement(sender, confirmText, imageClass, key, thumbnail) {
         deleteImage(confirmText, imageClass, key, thumbnail, true, function (r) {
