@@ -1,6 +1,6 @@
 ﻿/******************************************************
  *
- * Copyright(c) 2022-2023 MyFlightbook LLC
+ * Copyright(c) 2022-2024 MyFlightbook LLC
  * Contact myflightbook - at - gmail.com for more information
  *
 *******************************************************/
@@ -290,3 +290,19 @@ function endowClubCreation(sender, szUserPKID) {
     return false;
 }
 
+function adminFixSignature(idFlight, forceValid) {
+    var params = new Object();
+    params.idFlight = idFlight;
+    params.fForceValid = forceValid;
+    var d = JSON.stringify(params);
+    $.ajax(
+        {
+            url: '/logbook/Admin/AdminService.asmx/FixSignature',
+            type: "POST", data: d, dataType: "json", contentType: "application/json",
+            error: function (xhr, status, error) {
+                window.alert(xhr.responseJSON.Message);
+            },
+            complete: function (response) { },
+            success: function (response) { window.location = window.location; }
+        });
+}
