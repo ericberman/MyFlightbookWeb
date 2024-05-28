@@ -533,7 +533,7 @@
     <value>Tweet this</value>
   </data>
   <data name="TypeInDateInvalidDate" xml:space="preserve">
-    <value>&lt;br /&gt;Please enter a valid date.&lt;br /&gt;</value>
+    <value>Please enter a valid date.</value>
   </data>
   <data name="PasswordStrengthStrings" xml:space="preserve">
     <value>Weak;OK;Good;Excellent</value>

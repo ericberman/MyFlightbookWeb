@@ -5331,7 +5331,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;br /&gt;Please enter a valid date.&lt;br /&gt;.
+        ///   Looks up a localized string similar to Please enter a valid date..
         /// </summary>
         internal static string TypeInDateInvalidDate {
             get {
