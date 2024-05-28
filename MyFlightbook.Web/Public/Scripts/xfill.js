@@ -1,6 +1,6 @@
 ﻿/******************************************************
  *
- * Copyright (c) 2021-2022 MyFlightbook LLC
+ * Copyright (c) 2021-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -129,4 +129,17 @@ function getTaxiFill(baseUrl) {
                 }
             });
     }
+}
+
+function setNowUTC(target, url) {
+    var params = new Object();
+    var d = JSON.stringify(params);
+    $.ajax(
+        {
+            url: url,
+            type: "POST", data: d, dataType: "json", contentType: "application/json",
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            complete: function (response) { },
+            success: function (response) { $("#" + target).val(response.d); }
+        });
 }
