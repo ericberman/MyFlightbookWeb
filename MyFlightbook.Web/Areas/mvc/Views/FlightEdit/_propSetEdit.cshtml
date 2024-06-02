@@ -1,0 +1,64 @@
+﻿@using MyFlightbook.Templates
+@{ 
+    IEnumerable<PropertyTemplate> userTemplates = ViewBag.userTemplates;
+    IEnumerable<TemplateCollection> groupedTemplates = ViewBag.groupedTemplates;
+    IEnumerable<CustomFlightProperty> activeProperties = ViewBag.propList;
+    IEnumerable<CustomPropertyType> remainingProps = ViewBag.remainingProps;
+    HashSet<int> hsActiveTemplates = ViewBag.activeTemplateIDs;
+    TimeZoneInfo timeZone = ViewBag.timeZone;
+} 
+<script type="text/javascript">
+    $(() => { CacheItems($("#cmbPropsToAdd")[0]); });
+</script>
+<div style="margin-bottom: 3px;">
+    <input type="hidden" id="hdnPropTuples" name="flightPropTuples" />
+    <div>
+        <span class="itemlabel">@Resources.LogbookEntry.propAdditionalPropertiesPrompt</span>
+        <span class="fineprint">(<a href="@("~/Public/ContactMe.aspx".ToAbsolute())" target="_blank">@Resources.LogbookEntry.NewPropertyPrompt1</a> @Resources.LogbookEntry.NewPropertyPrompt2)</span>
+    </div>
+    <table>
+        <tr style="vertical-align:top">
+            <td><img src="@("~/images/Search.png".ToAbsolute())" onclick="javascript:toggleSearchBox();" /></td>
+            <td>
+                <div id="divPropFilter" style="display: none;">
+                    <input type="text" id="txtFilter" style="width: 100px;" onkeyup="javascript: FilterItems(this, 'cmbPropsToAdd', 'lblFilterMessage', '@Resources.LogbookEntry.PropertiesFound');" />
+                    <div class="fineprint" id="lblFilterMessage"></div>
+                </div>
+            </td>
+            <td>
+                <select id="cmbPropsToAdd" onchange="javascript: updateTemplates(parseInt(this.value), @Json.Encode(ViewBag.fHHMM));">
+                    <option value="-1">@Resources.LogbookEntry.propSelectAdditionalProperty</option>
+                    @foreach (CustomPropertyType cpt in remainingProps)
+                    {
+                        <option value="@cpt.PropTypeID">@cpt.Title</option>
+                    }
+                </select>
+            </td>
+            <td>
+                @if (groupedTemplates.Count() != 1 || groupedTemplates.ElementAt(0).Group != PropertyTemplateGroup.Automatic)
+                {
+                    <img src="@VirtualPathUtility.ToAbsolute("~/images/MenuChevron.png")" class="popTrigger" />
+                    <div class="popMenuContent popMenuHidden" style="margin-top: -8pt; margin-left: 0px">
+                        @foreach (TemplateCollection tc in groupedTemplates)
+                        {
+                            <div style="font-weight:bold; font-size: smaller">@tc.GroupName</div>
+                            foreach (PropertyTemplate pt in tc.Templates)
+                            {
+                            <div><label><input type="checkbox" @hsActiveTemplates.Contains(pt.ID).ToChecked() name="activeTemplateIDs" value="@pt.ID" onchange="javascript: updateTemplates(-1, @Json.Encode(ViewBag.fHHMM));" />@pt.Name</label></div>
+                            }
+                        }
+                    </div>
+                }
+               <span id="pnlUpdatePropProgress" style="display:none; vertical-align: top;"><img src="@("~/images/progress.gif".ToAbsolute())" style="height: 14pt; width: 14pt;" /></span>
+            <td>
+        </tr>
+    </table>
+</div>
+
+<div id="pnlProps" class="propItemContainer" style="overflow:auto;">
+@foreach (CustomFlightProperty fp in activeProperties)
+{
+    Html.RenderAction("PropEdit", "FlightEdit", new { fp = fp, fHHMM = ViewBag.fHHMM, timeZone = timeZone });
+}
+</div>
+

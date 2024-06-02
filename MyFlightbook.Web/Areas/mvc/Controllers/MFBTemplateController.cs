@@ -133,6 +133,71 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return PartialView("_expandoText");
         }
 
+        private PartialViewResult RenderNumericFieldInternal(EditMode mode, string id, string name, decimal value, bool fRequired, CrossFillDescriptor cfd)
+        {
+            ViewBag.value = value;
+            switch (mode)
+            {
+                case EditMode.Decimal:
+                case EditMode.Currency:
+                    ViewBag.placeholder = 0.FormatDecimal(false, true);
+                    ViewBag.textValue = (value == 0.0M) ? string.Empty : value.ToString("0.0#", CultureInfo.CurrentCulture);
+                    ViewBag.regexp = String.Format(CultureInfo.InvariantCulture, "^\\d*({0}\\d*)?$", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
+                    ViewBag.inputMode = "decimal";
+                    break;
+                case EditMode.Integer:
+                    ViewBag.placeholder = 0.ToString(CultureInfo.CurrentCulture);
+                    ViewBag.textValue = (value == 0.0M) ? string.Empty : value.FormatInt();
+                    ViewBag.regexp = "^\\d*$";
+                    ViewBag.inputMode = "numeric";
+                    break;
+                case EditMode.HHMMFormat:
+                    ViewBag.placeholder = 0.FormatDecimal(true, true);
+                    ViewBag.textValue = (value == 0.0M) ? string.Empty : value.FormatDecimal(true);
+                    ViewBag.regexp = "^\\d*(:[0-5][\\d])?$";
+                    ViewBag.inputMode = "text";
+                    break;
+            }
+            ViewBag.cfd = cfd;
+            ViewBag.fRequired = fRequired ? "required" : string.Empty;
+            ViewBag.id = id;
+            ViewBag.name = name;
+            return PartialView("_decimalEdit");
+        }
+
+        [ChildActionOnly]
+        public ActionResult RenderIntegerField(string id, string name, int value = 0, bool fRequired = false, CrossFillDescriptor cfd = null)
+        {
+            return RenderNumericFieldInternal(EditMode.Integer, id, name, (decimal)value, fRequired, cfd);
+        }
+
+        [ChildActionOnly]
+        public ActionResult RenderDecimalField(EditMode mode, string id, string name, decimal value = 0.0M, bool fRequired = false, CrossFillDescriptor cfd = null)
+        {
+            return RenderNumericFieldInternal(mode, id, name, value, fRequired, cfd);
+        }
+
+        [ChildActionOnly]
+        public ActionResult RenderDateTimeField(string id, string name, DateTime value, TimeZoneInfo timeZone, bool fAllowNakedTime = true)
+        {
+            ViewBag.id = id;
+            ViewBag.name = name;
+            ViewBag.value = value;
+            ViewBag.timeZone = timeZone;
+            ViewBag.fAllowNakedTime = fAllowNakedTime;
+            return PartialView("_dateTime");
+        }
+
+        [ChildActionOnly]
+        public ActionResult RenderDateField(string id, string name, DateTime value, bool fRequired = false)
+        {
+            ViewBag.id = id; 
+            ViewBag.name = name; 
+            ViewBag.value = value; 
+            ViewBag.fRequired = fRequired; 
+            return PartialView("_dateEdit");
+        }
+
         [ChildActionOnly]
         public ActionResult RenderGoogleAd(bool fVertical)
         {

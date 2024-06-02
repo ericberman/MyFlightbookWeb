@@ -1,0 +1,342 @@
+﻿@using MyFlightbook
+@using MyFlightbook.Image
+@using System.Globalization
+@using System.Web
+@{
+    LogbookEntry le = ViewBag.le;
+    PendingFlight pf = ViewBag.pf;
+    MyFlightbook.Profile pfTarget = ViewBag.pfTarget;
+    MyFlightbook.Profile pfViewer = ViewBag.pfViewer;
+    IEnumerable<Aircraft> rgAircraft = ViewBag.rgAircraft;
+    bool fHHMM = pfViewer.UsesHHMM;
+    bool fAddStudent = ViewBag.fAddStudent;
+    TimeZoneInfo defaultTZ = pfViewer.PreferredTimeZone;
+    bool fCanDoVideo = MyFlightbook.Payments.EarnedGratuity.UserQualifies(pfViewer.UserName, MyFlightbook.Payments.Gratuity.GratuityTypes.Videos);
+    string szPixBlockLabel = fCanDoVideo ? Resources.LogbookEntry.HeaderImagesVideosForFlight : Resources.LogbookEntry.HeaderImagesForFlight;
+}
+<script type="text/javascript">
+    $(() => {
+        ajaxFileUpload($("#divUploadFlightImages"), {
+            uploadURL: "@Url.Action(String.Format(CultureInfo.InvariantCulture, "UploadFlightImages/{0}", le.FlightID), "FlightEdit")",
+            allowedTypes: "@MyFlightbook.Image.FileExtensions.AllowedExtensionsForTypes(true, true, fCanDoVideo)",
+            additionalParams: [{ name: "szKey", value: @le.FlightID}, { name: "fCanDoVideo", value: @Json.Encode(fCanDoVideo) }],
+            onUpload: function () {
+                var params = new Object();
+                params.imageClass = "@MFBImageInfo.ImageClass.Flight";
+                params.szKey = "@le.FlightID";
+                params.fCanEdit = true;
+                params.fCanDelete = true;
+                params.fIncludeDocs = true;
+                params.onDelete = "deleteFlightImage";
+                params.onAnnotate = "updateFlightImage";
+                var d = JSON.stringify(params);
+                $.ajax({
+                    url: '@Url.Action("ImagesForClassAndKey", "Image")',
+                    type: "POST", data: d, dataType: "html", contentType: "application/json",
+                    error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                    complete: function (response) { },
+                    success: function (response) {
+                        $("#divFlightImages").html(response);
+                        $(".fileInQueueContainer").hide();
+                    }
+                });
+            },
+            dropPrompt: "@Resources.LocalizedText.UploadImages",
+            errTooManyFiles: "@Resources.LocalizedText.fileUploadTooManyFiles",
+            errDisallowedFileType: "@Resources.LocalizedText.fileUploadInvalidType",
+            abortPrompt: "@Resources.LocalizedText.fileUploadAboart"
+        });
+    });
+</script>
+<div class="flightinfoblock">
+    <div class="header">@Resources.LogbookEntry.HeaderGeneral</div>
+    <div class="itemtime">
+        <div class="itemlabel">@Resources.LogbookEntry.FieldDateOfFlight</div>
+        <div class="itemdata">
+            @{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "txtDate", name = "flightDate", value = le.Date }); }
+        </div>
+    </div>
+    <div class="itemtime">
+        <div class="itemlabel">@Resources.Aircraft.AircraftHeader <a href="#" onclick="javascript: addAircraft('@String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id=-1&Ret={0}", HttpUtility.UrlEncode(Request.Url.PathAndQuery)).ToAbsolute()'); return false;">@Resources.LogbookEntry.EditFlightAddAircraft</a></div>
+        <div class="itemdata">
+            <input type="hidden" id="hdnLastTail" value="@le.AircraftID" />
+            <select id="cmbAircraft" name="flightAircraft" required style="width: @(Request.IsMobileDevice() ? "130px" : "90%;")" onchange="javascript: aircraftSelected(this, @Json.Encode(fHHMM))">
+                @{
+                    int cAircraft = 0;
+                    foreach (Aircraft ac in rgAircraft)
+                    {
+                        bool fIncludeByDefault = !ac.HideFromSelection || ac.AircraftID == le.AircraftID;
+                        if (fIncludeByDefault)
+                        {
+                            cAircraft++;
+                        }
+                        <option value="@ac.AircraftID" @((ac.AircraftID == le.AircraftID).ToSelected()) class="@(fIncludeByDefault ? string.Empty : "inactiveAircraft")">@ac.DisplayTailnumberWithModel</option>
+                    }
+                    if (cAircraft < rgAircraft.Count())
+                    {
+                        <option value="" class="showAllAircraft">@Resources.Aircraft.PromptShowAllAircraft</option>
+                    }
+                }
+            </select>
+            <div>
+                <span class="fineprint" onclick="javascript: toggleLabel(this, 'pnlAltCatClass', '@Resources.LocalizedText.ClickToShowAlternateCatClass', '@Resources.LocalizedText.ClickToHideAlternateCatClass', null, null)">@(le.CatClassOverride > 0 ? Resources.LocalizedText.ClickToHideAlternateCatClass : Resources.LocalizedText.ClickToShowAlternateCatClass)</span>@{
+                    Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "altCatClass", tipTextHTML = Resources.LogbookEntry.EditFlightAltCatclassTooltip });
+                }
+            </div>
+            <div id="pnlAltCatClass" class="flightinfoitem" style="@(le.CatClassOverride > 0 ? string.Empty : "display: none;")">
+                <select id="cmbCatClasses" name="flightCatClassOverride">
+                    <option style="padding-bottom: 4pt;" @((le.CatClassOverride == 0).ToSelected()) value="0">@Resources.LogbookEntry.EditFlightDefaultCatClass</option>
+                    @foreach (CategoryClass cc in CategoryClass.CategoryClasses())
+                    {
+                        <option value="@cc.IDCatClassAsInt" @((le.CatClassOverride == cc.IDCatClassAsInt).ToSelected())>@cc.CatClass</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="itemtime">
+        <div class="itemlabel">@Resources.LogbookEntry.FieldRoute @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "tipMapNavaid", tipTextHTML = Resources.Airports.MapNavaidTip }); }</div>
+        <div class="itemdata"><input id="txtRoute" name="flightRoute" style="font-size: small; width: @(Request.IsMobileDevice() ? "130px" : "90%;")" type="text" value="@le.Route" /></div>
+    </div>
+    <div class="itemtime">
+        <div class="itemlabel">@Resources.LogbookEntry.FieldComments</div>
+        <div class="itemdata">
+            <div style="position:relative; display:inline-block">
+                <textarea rows="2" name="flightComments" id="txtComments" style="font-size: small; width: @(Request.IsMobileDevice() ? "130px" : "90%;")">@le.Comment</textarea>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="timesblock">
+    <div class="header">@Resources.LogbookEntry.HeaderApproachesLandings</div>
+    <div class="itemtimeleft">
+        <div id="divApproaches" class="itemlabel">@Resources.LogbookEntry.FieldApproaches @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "tipApproaches", tipTextHTML = Resources.LogbookEntry.EditFlightApproachTooltip }); }</div>
+        <div class="itemdata">@{ Html.RenderAction("RenderIntegerField", "MFBTemplate", new { id = "fieldApproaches", name = "flightApproaches", value = le.Approaches }); }&nbsp;<label><input type="checkbox" id="ckHold" name="flightHold" @(le.fHoldingProcedures.ToChecked()) value="true" />@Resources.LogbookEntry.FieldHold</label></div>
+    </div>
+    <div class="itemtimeright">
+        <div id="divLandings" class="itemlabel">@Resources.LogbookEntry.FieldTotalLandings</div>
+        <div class="itemdata">@{ Html.RenderAction("RenderIntegerField", "MFBTemplate", new { id = "fieldLandings", name = "flightLandings", value = le.Landings }); }</div>
+    </div>
+    <div class="itemtimeright">
+        <div>
+            <div class="itemlabel">@Resources.LogbookEntry.FieldFSDayLandings</div>
+            <div class="itemdata">@{ Html.RenderAction("RenderIntegerField", "MFBTemplate", new { id = "fieldFSDayLandings", name = "flightFSDayLandings", value = le.FullStopLandings, cfd = new CrossFillDescriptor(Resources.LocalizedText.CrossfillPromptLandings, "getTotalFillFunc('fieldLandings')") }); }</div>
+        </div>
+    </div>
+    <div class="itemtimeright">
+        <div>
+            <div class="itemlabel">@Resources.LogbookEntry.FieldFSNightLandings</div>
+            <div class="itemdata">@{ Html.RenderAction("RenderIntegerField", "MFBTemplate", new { id = "fieldNightLandings", name = "flightFSNightLandings", value = le.NightLandings, cfd = new CrossFillDescriptor(Resources.LocalizedText.CrossfillPromptLandings, "getTotalFillFunc('fieldLandings')") }); }</div>
+        </div>
+    </div>
+</div>
+<div class="timesblock">
+    <div class="header">@Resources.LogbookEntry.HeaderTimes</div>
+    @{
+        IEnumerable<int> rgFields = pfTarget.GetPreferenceForKey<int[]>(MFBConstants.keyCoreFieldsPermutation);
+        if (!(rgFields?.Any() ?? false))
+        {
+            List<int> defaultFields = new List<int>() { 0, 1, 2, 3, 4, 5, 8, 9 };
+            if (pfTarget.IsInstructor)
+            {
+                defaultFields.Insert(6, 6);
+            }
+            if (pfTarget.TracksSecondInCommandTime)
+            {
+                defaultFields.Insert(7, 7);
+            }
+            rgFields = defaultFields;
+        }
+
+        string xFillSource = rgFields.Contains(9) ? "fieldTotal" : string.Empty;  // set to the name of Totals, IF totals is present
+                                                                                  // Set up core fields for permutation.
+        object[] rgFieldData = new object[] {
+                    new { id = "fieldXC", name= "flightXC", value = le.CrossCountry, label = Resources.LogbookEntry.FieldCrossCountry, cssClass = "itemtimeleft", xFillSource = xFillSource, fHHMM = fHHMM },
+                    new { id = "fieldNight", name= "flightNight", value = le.Nighttime, label = Resources.LogbookEntry.FieldNight, cssClass = "itemtimeright", xFillSource = xFillSource, fHHMM = fHHMM },
+                    new { id = "fieldSimIMC", name= "flightSimIMC", value = le.SimulatedIFR, label = Resources.LogbookEntry.FieldSimIMCFull, cssClass = "itemtimeleft", xFillSource = xFillSource, fHHMM = fHHMM },
+                    new { id = "fieldIMC", name= "flightIMC", value = le.IMC, label = Resources.LogbookEntry.FieldIMC, cssClass = "itemtimeright", xFillSource = xFillSource, fHHMM = fHHMM  },
+                    new { id = "fieldGroundSim", name= "flightGroundSim", value = le.GroundSim, label = Resources.LogbookEntry.FieldGroundSimFull, cssClass = "itemtimeleft", xFillSource = xFillSource, fHHMM = fHHMM },
+                    new { id = "fieldDual", name= "flightDual", value = le.Dual, label = Resources.LogbookEntry.FieldDual, cssClass = "itemtimeright", xFillSource = xFillSource, fHHMM = fHHMM },
+                    new { id = "fieldCFI", name= "flightCFI", value = le.CFI, label = Resources.LogbookEntry.FieldCFI, cssClass = "itemtimeleft", xFillSource = xFillSource, fHHMM = fHHMM },
+                    new { id = "fieldSIC", name= "flightSIC", value = le.SIC, label = Resources.LogbookEntry.FieldSIC, cssClass = "itemtimeright", xFillSource = xFillSource, fHHMM = fHHMM },
+                    new { id = "fieldPIC", name= "flightPIC", value = le.PIC, label = Resources.LogbookEntry.FieldPIC, cssClass = "itemtimeleft", xFillSource = xFillSource, fHHMM = fHHMM  },
+                    new { id = "fieldTotal", name= "flightTotal", value = le.TotalFlightTime, label = Resources.LogbookEntry.FieldTotalFull, cssClass = "itemtimeright", xFillSource = string.Empty, fHHMM = fHHMM }
+                };
+
+        HashSet<int> hsUndisplayed = new HashSet<int>() { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+        foreach (int i in rgFields)
+        {
+            hsUndisplayed.Remove(i);
+            Html.RenderAction("CoreField", "FlightEdit", rgFieldData[i]);
+        }
+        // Now add in any other fields that may have values but weren't displayed above
+        foreach (int i in hsUndisplayed)
+        {
+            if (((dynamic)rgFieldData[i]).value > 0.0M)
+            {
+                Html.RenderAction("CoreField", "FlightEdit", rgFieldData[i]);
+            }
+        }
+    }
+</div>
+<div class="fullblock" id="divPropSet">
+    @{ Html.RenderAction("PropSetEditor", "FlightEdit", new { szTargetUser = pfTarget.UserName, rgfp = le.CustomProperties, stripDefault = false, activeProps = Array.Empty<int>(), activeTemplates = ViewBag.activeTemplates, idAircraft = le.AircraftID, fHHMM = fHHMM, fAddStudent = fAddStudent, timeZone = defaultTZ }); }
+</div>
+<div id="pnlFlightDetailsContainer" class="fullblock">
+    <div class="header">
+        @Resources.LogbookEntry.HeaderTimesAndTelemetry
+        @{
+            bool fExpanded = pfTarget.DisplayTimesByDefault || le.HobbsEnd > 0.0M || le.HobbsStart > 0.0M || le.EngineStart.HasValue() || le.EngineEnd.HasValue() || le.FlightStart.HasValue() || le.FlightEnd.HasValue() || le.HasFlightData;
+            Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = fExpanded, targetID = "pnlFlightDetails" });
+        }
+    </div>
+    <div id="pnlFlightDetails">
+        <div ID="pnlHobbs" class="flightinfoitem">
+            <table>
+                <tr class="itemlabel"><td colspan="2" style="font-weight:bold">@Resources.LogbookEntry.Hobbs</td></tr>
+                <tr>
+                    <td><span class="itemlabel">@Resources.LogbookEntry.ShortStart</span></td>
+                    <td>@{ Html.RenderAction("RenderDecimalField", "MFBTemplate", new { mode = EditMode.Decimal, id = "fieldHobbsStart", name = "flightHobbsStart", value = le.HobbsStart, cfd = new CrossFillDescriptor(Resources.LogbookEntry.HobbsCrossfillTip, String.Format(CultureInfo.InvariantCulture, "getHobbsFill(currentlySelectedAircraft, '{0}')", "~/Member/Ajax.asmx".ToAbsolute())) }); }</td>
+                </tr>
+                <tr>
+                    <td class="itemlabel">@Resources.LogbookEntry.ShortEnd</td>
+                    <td>@{ Html.RenderAction("RenderDecimalField", "MFBTemplate", new { mode = EditMode.Decimal, id = "fieldHobbsEnd", name = "flightHobbsEnd", value = le.HobbsEnd, cfd = (CrossFillDescriptor)null }); }</td>
+                </tr>
+            </table>
+        </div>
+        <div ID="pnlEngine" class="flightinfoitem">
+            <table style="vertical-align:baseline">
+                <tr class="itemlabel"><td colspan="2" style="font-weight:bold" title="@defaultTZ.DisplayName">@Resources.LogbookEntry.FieldEngineUTC.IndicateUTCOrCustomTimeZone(defaultTZ)</td></tr>
+                <tr>
+                    <td><span class="itemlabel">@Resources.LogbookEntry.ShortStart</span></td>
+                    <td>@{ Html.RenderAction("RenderDateTimeField", "MFBTemplate", new { id = "fieldEngineStart", name = "flightEngineStart", value = le.EngineStart, timeZone = defaultTZ }); }</td>
+                </tr>
+                <tr>
+                    <td><span class="itemlabel">@Resources.LogbookEntry.ShortEnd</span></td>
+                    <td>@{ Html.RenderAction("RenderDateTimeField", "MFBTemplate", new { id = "fieldEngineEnd", name = "flightEngineEnd", value = le.EngineEnd, timeZone = defaultTZ }); }</td>
+                </tr>
+            </table>
+        </div>
+        <div ID="pnlFlight" class="flightinfoitem">
+            <table>
+                <tr class="itemlabel"><td colspan="2" style="font-weight:bold" title="@defaultTZ.DisplayName">@Resources.LogbookEntry.FieldFlightUTC.IndicateUTCOrCustomTimeZone(defaultTZ)</td></tr>
+                <tr>
+                    <td><span class="itemlabel">@Resources.LogbookEntry.ShortStart</span></td>
+                    <td>@{ Html.RenderAction("RenderDateTimeField", "MFBTemplate", new { id = "fieldFlightStart", name = "flightFlightStart", value = le.FlightStart, timeZone = defaultTZ }); }</td>
+                </tr>
+                <tr>
+                    <td><span class="itemlabel">@Resources.LogbookEntry.ShortEnd</span></td>
+                    <td>@{ Html.RenderAction("RenderDateTimeField", "MFBTemplate", new { id = "fieldFlightEnd", name = "flightFlightEnd", value = le.FlightEnd, timeZone = defaultTZ }); }</td>
+                </tr>
+            </table>
+            <script type="text/javascript">
+                $(function () {
+                    addXFillMap('fStart', 'fieldFlightStart');
+                    addXFillMap('fEnd', 'fieldFlightEnd');
+                    addXFillMap('total', 'fieldTotal')
+                });
+            </script>
+        </div>
+        <div style="clear:both;"></div>
+        <div ID="pnlFlightData" class="flightinfoitem">
+            <table>
+                <tr class="itemlabel">
+                    <td><span style="font-weight:bold">@Resources.LogbookEntry.FieldTelemetry</span> <a class="fineprint" href="@("~/mvc/pub/FlightDataKey".ToAbsolute())" target="_blank">@Resources.LogbookEntry.FieldTelemetryLearnMore</a></td>
+                    <td>
+                        <input type="file" id="fieldUploadTelemetry" name="flightTelemetry" style="@(le.HasFlightData ? "display: none;" : string.Empty)" />
+                        @if (le.HasFlightData)
+                        {
+                            if (!le.IsNewFlight)
+                            {
+                                <a target="_blank" href="@String.Format(CultureInfo.InvariantCulture, "~/mvc/flights/details/{0}", le.FlightID).ToAbsolute()">
+                                    <image src="@("~/images/Clip.png".ToAbsolute())" title="@Resources.LogbookEntry.FlightHasDataTooltip" alt="@Resources.LogbookEntry.FlightHasDataTooltip" /> @Resources.LogbookEntry.FlightHasData
+                                </a>
+                            }
+                            else
+                            {
+                                <image src="@("~/images/Clip.png".ToAbsolute())" title="@Resources.LogbookEntry.FlightHasDataTooltip" alt="@Resources.LogbookEntry.FlightHasDataTooltip" /> @Resources.LogbookEntry.FlightHasData
+                            }
+                            <span id="spnExistingData">
+                                <a href="#" onclick="javascript: $('#spnExistingData').hide(); $('#fieldUploadTelemetry').show(); return false;">@Resources.LogbookEntry.TelemetryAttachNew</a>&nbsp;&nbsp;
+                                <image src="@("~/images/x.gif".ToAbsolute())" style="vertical-align: bottom" alt="@Resources.LogbookEntry.TelemetryDelete" title="@Resources.LogbookEntry.TelemetryDelete" onclick="javascript: if (confirm('@Resources.LocalizedText.FlightInfoConfirmDelete')) deleteTelemetry();" />
+                            </span>
+                            if (!String.IsNullOrEmpty(pf?.FlightData))
+                            {
+                            <input type="hidden" name="flightPendingTelemetry" value="@Convert.ToBase64String(pf.FlightData.Compress())" />
+                            }
+                        }
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div style="clear:both;"></div>
+        <div ID="pnlAutoFill" class="flightinfoitem">
+            <table>
+                <tr class="itemlabel">
+                    <td style="max-width: 600px">
+                        <span style="font-weight: bold">@Resources.LogbookEntry.AutoFillPrompt</span>
+                        @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "afTip", tipTextHTML = Resources.LogbookEntry.AutoFillDescription });}
+                    </td>
+                    <td><button type="button" onclick="javascript: autoFill(); return false;">@Resources.LogbookEntry.AutoFill</button></td>
+                    <td>
+                        <img src="@VirtualPathUtility.ToAbsolute("~/images/MenuChevron.png")" class="popTrigger" />
+                        <div class="popMenuContent popMenuHidden" style="margin-top: -8pt; margin-left: 0px">
+                            @{ Html.RenderAction("AutoFillOptionsEditor", "Prefs", new { szUser = pfViewer.UserName }); }
+                        </div>
+                        <img src="@("~/images/progress.gif".ToAbsolute())" style="display:none; width: 14pt; height: 14pt;" id="imgAutofillPrg" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<div id="pnlPictures" class="fullblock">
+    <div class="header">@szPixBlockLabel <span class="fineprint">@Resources.LocalizedText.ImageDisclaimer</span></div>
+    @if (pfViewer.PreferenceExists(MyFlightbook.CloudStorage.GooglePhoto.PrefKeyAuthToken))
+    {
+        <input type="hidden" name="gPhotoClickIndex" id="hdnGPhotoClickedItem" value="" />
+        <input type="hidden" id="hdnGPhotoLastDate" value="" />
+        <div style="float: left; vertical-align:middle; margin-top: 15px; margin-right: 8px; width: 30px">
+            <image style="width: 100%;" src="https://ssl.gstatic.com/social/photosui/images/logo/favicon_alldp.ico" onclick="javascript: getGooglePhoto($('#txtDate').val(), '');" title="@Resources.LocalizedText.GooglePhotosViewImages" alt="@Resources.LocalizedText.GooglePhotosViewImages" />
+            <div><img src="@("~/images/progress.gif".ToAbsolute())" style="display:none; width: 14pt; height: 14pt;" id="imgGPhotoProg" /></div>
+        </div>
+    }
+
+    <div id="divUploadFlightImages"></div>
+
+    <div id="divFlightImages">
+        @{
+            Html.RenderAction("ImageListDisplay", "Image", new
+            {
+                il = new ImageList(le.FlightImages.ToArray()),
+                zoomLinkType = GeoLinkType.None,
+                fCanEdit = true,
+                fCanDelete = true,
+                onDelete = "deleteFlightImage",
+                onAnnotate = "updateFlightImage"
+            });
+        }
+    </div>
+
+    <div id="divGooglePhotoResult">
+    </div>
+    <div id="pnlEmbeddedVideo">
+        @{ Html.RenderAction("EmbeddedVideos", "FlightEdit", new { le = le, fCanDoVideo = fCanDoVideo }); }
+    </div>
+</div>
+<div id="pnlPublic" class="fullblock">
+    <div class="header">@Resources.LogbookEntry.HeaderSharing</div>
+    <p>
+        <span style="vertical-align:middle">
+            <label class="itemLabel" style="vertical-align:middle;">
+                <input type="checkbox" id="ckPublic" name="flightPublic" @le.fIsPublic.ToChecked() />
+                <img src="@("~/images/mfbicon.png".ToAbsolute())" alt="@Resources.LogbookEntry.EditFlightShareDetails" style="vertical-align:middle;" />
+                @Resources.LogbookEntry.EditFlightShareDetailsPrompt
+            </label>
+            @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "tipPublic", tipTextHTML = string.Empty, tipTextSrcID = "tipSharingDesc" }); }
+        </span>
+    </p>
+    <span style="display: none;" id="tipSharingDesc">@Html.Raw(Resources.LocalizedText.SharingDescription)</span>
+</div>
+

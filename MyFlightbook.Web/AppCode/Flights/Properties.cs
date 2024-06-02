@@ -976,6 +976,11 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
         /// </summary>
         public string ScriptRef { get; set; }
 
+        public CrossFillDescriptor()
+        {
+            Tip = ScriptRef = string.Empty;
+        }
+
         public CrossFillDescriptor(string tip, string scriptref)
         {
             Tip = tip;
@@ -1012,7 +1017,16 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
         public string ValueString { get; set; }
         #endregion
 
-        public CustomFlightProperty ToProperty(int idFlight)
+        /// <summary>
+        /// Converts a simpleflightproperty to a CustomFlightProperty
+        /// </summary>
+        /// <param name="idFlight">The ID of the flight to which the property is attached</param>
+        /// <param name="ci">If provided, the culture to parse in.  If null, invariant culture is used.</param>
+        /// <param name="defaultDate">The default date to use if a naked time is encountered</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="MyFlightbookException"></exception>
+        public CustomFlightProperty ToProperty(int idFlight, CultureInfo ci, DateTime? defaultDate)
         {
             if (PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropInvalid)
                 throw new InvalidOperationException("No property type specified");
@@ -1020,26 +1034,30 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
             CustomPropertyType cpt = CustomPropertyType.GetCustomPropertyType(PropTypeID) ?? throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Unable to find custom property type with idproptype {0}", PropTypeID));
             CustomFlightProperty cfp = new CustomFlightProperty(cpt) { PropID = this.PropID, FlightID = idFlight };
 
+            ci = ci ?? CultureInfo.InvariantCulture;    // if null, use invariant culture
             // Set the value from the string
-            switch (cpt.Type)
+            if (!String.IsNullOrEmpty(ValueString))
             {
-                case CFPPropertyType.cfpBoolean:
-                    cfp.BoolValue = Convert.ToBoolean(ValueString, CultureInfo.InvariantCulture);
-                    break;
-                case CFPPropertyType.cfpCurrency:
-                case CFPPropertyType.cfpDecimal:
-                    cfp.DecValue = Convert.ToDecimal(ValueString, CultureInfo.InvariantCulture);
-                    break;
-                case CFPPropertyType.cfpDate:
-                case CFPPropertyType.cfpDateTime:
-                    cfp.DateValue = DateTime.SpecifyKind(Convert.ToDateTime(ValueString, CultureInfo.InvariantCulture), DateTimeKind.Utc);
-                    break;
-                case CFPPropertyType.cfpInteger:
-                    cfp.IntValue = Convert.ToInt32(ValueString, CultureInfo.InvariantCulture);
-                    break;
-                case CFPPropertyType.cfpString:
-                    cfp.TextValue = (cpt.IsAllCaps) ? ValueString.ToUpper(CultureInfo.CurrentCulture) : ValueString;
-                    break;
+                switch (cpt.Type)
+                {
+                    case CFPPropertyType.cfpBoolean:
+                        cfp.BoolValue = Convert.ToBoolean(ValueString, ci);
+                        break;
+                    case CFPPropertyType.cfpCurrency:
+                    case CFPPropertyType.cfpDecimal:
+                        cfp.DecValue = (ci != CultureInfo.InvariantCulture) ? ValueString.SafeParseDecimal() : Convert.ToDecimal(ValueString, CultureInfo.InvariantCulture);
+                        break;
+                    case CFPPropertyType.cfpDate:
+                    case CFPPropertyType.cfpDateTime:
+                        cfp.DateValue = ValueString.ParseUTCDateTime(defaultDate);
+                        break;
+                    case CFPPropertyType.cfpInteger:
+                        cfp.IntValue = Convert.ToInt32(ValueString, ci);
+                        break;
+                    case CFPPropertyType.cfpString:
+                        cfp.TextValue = cpt.IsAllCaps ? ValueString.ToUpper(ci) : ValueString;
+                        break;
+                }
             }
 
             return cfp;
@@ -1198,6 +1216,16 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
         }
 
         /// <summary>
+        /// Convenience method, since PropertyType is read-only (and we don't want to serialize it).
+        /// </summary>
+        /// <param name="cpt"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public void SetPropertyType(CustomPropertyType cpt)
+        {
+            m_cpt = cpt ?? throw new ArgumentNullException(nameof(cpt));
+        }
+
+        /// <summary>
         /// Is this a new/unsaved property?
         /// </summary>
         [Newtonsoft.Json.JsonIgnore]
@@ -1256,7 +1284,7 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
             IntValue = 0;
             DecValue = 0.0M;
             BoolValue = false;
-            FlightID = LogbookEntry.idFlightNone;
+            FlightID = LogbookEntryCore.idFlightNone;
             PropID = idCustomFlightPropertyNew;
             PropTypeID = (int)CustomPropertyType.KnownProperties.IDPropInvalid;
         }
@@ -1311,8 +1339,10 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
         /// </summary>
         /// <param name="szJSON">The JSON to parse</param>
         /// <param name="idFlight">The flight for which this is associated</param>
+        /// <param name="ci">Culture for parsing text.  If null, invariant culture will be used</param>
+        /// <param name="dtDefault">The default date time to use, if a naked time is found.</param>
         /// <returns>An array of fully-formed customflightproperties</returns>
-        public static IEnumerable<CustomFlightProperty> PropertiesFromJSONTuples(string szJSON, int idFlight)
+        public static IEnumerable<CustomFlightProperty> PropertiesFromJSONTuples(string szJSON, int idFlight, DateTime? dtDefault = null, CultureInfo ci = null)
         {
             if (String.IsNullOrEmpty(szJSON))
                 return Array.Empty<CustomFlightProperty>();
@@ -1320,7 +1350,7 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
             SimpleFlightProperty[] rgsfp = JsonConvert.DeserializeObject<SimpleFlightProperty[]>(szJSON);
             List<CustomFlightProperty> result = new List<CustomFlightProperty>(rgsfp.Length);
             foreach (SimpleFlightProperty sfp in rgsfp)
-                result.Add(sfp.ToProperty(idFlight));
+                result.Add(sfp.ToProperty(idFlight, ci, dtDefault));
 
             // tuples are not sorted - sort them.
             result.Sort();

@@ -1,0 +1,17 @@
+﻿@using MyFlightbook.Lint
+@{ 
+    IEnumerable<FlightIssue> flightIssues = ViewBag.flightIssues;
+}
+@if (flightIssues.Any())
+{
+    <ul>
+        @foreach (FlightIssue fi in flightIssues)
+        {
+            <li>@fi.IssueDescription</li>
+        }
+    </ul>
+}
+else
+{
+    <p>@Resources.FlightLint.CheckFlightsNoIssuesFound</p>
+}

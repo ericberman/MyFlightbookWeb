@@ -305,6 +305,36 @@ namespace MyFlightbook
             ImageList il = new ImageList(MFBImageInfo.ImageClass.Flight, FlightID.ToString(CultureInfo.InvariantCulture));
             il.Refresh(true, null, !fOnlyImages);
             FlightImages = il.ImageArray;
+
+            // If this is a new flight, pull in any pending flight images
+            if (IsNewFlight)
+            {
+                Collection<MFBImageInfo> rg = new Collection<MFBImageInfo>();
+                rg.AddRange(FlightImages);
+                rg.AddRange(MFBPendingImage.PendingImagesInSession());
+                FlightImages = rg;
+            }
+        }
+
+        /// <summary>
+        /// Determines if the image type is supported for flights
+        /// </summary>
+        /// <param name="ic">The image class</param>
+        /// <param name="fCanDoVideo">True to include videos</param>
+        /// <returns></returns>
+        public static bool ValidateFileType(MFBImageInfoBase.ImageFileType ic, bool fCanDoVideo)
+        {
+            switch (ic)
+            {
+                default:
+                case MFBImageInfoBase.ImageFileType.Unknown:
+                    return false;
+                case MFBImageInfoBase.ImageFileType.JPEG:   // Image is always OK.
+                case MFBImageInfoBase.ImageFileType.PDF:
+                    return true;
+                case MFBImageInfoBase.ImageFileType.S3VideoMP4:
+                    return fCanDoVideo;
+            }
         }
         #endregion
 

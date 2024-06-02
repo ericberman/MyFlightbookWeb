@@ -1,0 +1,10 @@
+﻿@using System.Globalization
+@{ 
+    string id = ViewBag.id;
+    string name = ViewBag.name;
+    DateTime value = ViewBag.value;
+    TimeZoneInfo tz = ViewBag.timeZone;
+}
+<input type="text" placeholder="@(CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern + " HH:mm")" pattern="@(ViewBag.fAllowNakedTime ? RegexUtility.RegexPatternForDateTimeOptionalDate : RegexUtility.RegexPatternForDateTimeRequiredDate)" style="max-width: 75%" id="@id" name="@name" value="@TimeZoneInfo.ConvertTimeFromUtc(value, tz).UTCFormattedStringOrEmpty(false)" />
+<span class="fineprint">(<a href="javascript:setNowUTC('@id', '@("~/Member/Ajax.asmx/NowInUTC".ToAbsolute())');">@Resources.LocalizedText.DateTimeNow</a>)</span>
+

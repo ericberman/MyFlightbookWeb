@@ -1,0 +1,71 @@
+﻿@using System.Globalization
+@{
+    CustomFlightProperty fp = ViewBag.fp;
+    string tipID = String.Format(CultureInfo.InvariantCulture, "cptTip{0}", fp.PropTypeID);
+    string propValID = String.Format(CultureInfo.InvariantCulture, "pv{0}", fp.PropTypeID);
+    bool fHHMM = ViewBag.fHHMM;
+    CrossFillDescriptor cfd = ViewBag.xfillDescriptor;
+    TimeZoneInfo timeZone = ViewBag.timeZone;
+    string propTitle = fp.PropertyType.Title;
+    string propTT = string.Empty;
+    string description = fp.PropertyType.Description;
+    // Update the label and tooltip for the correct timezone
+    if (fp.PropertyType.Type == CFPPropertyType.cfpDateTime)
+    {
+        // Block in/out doesn't say "UTC", but it is in preferred timezone.
+        propTitle = fp.PropertyType.Title + ((fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDBlockIn || fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDBlockOut) ? " (UTC)" : string.Empty);
+
+        // Now convert it for display
+        propTitle = propTitle.IndicateUTCOrCustomTimeZone(timeZone);
+        if (timeZone.Id.CompareOrdinal(TimeZoneInfo.Utc.Id) != 0)
+        {
+            propTT = timeZone.DisplayName;
+            description = description.Replace("(UTC)", timeZone.DisplayName);
+        }
+    }
+}
+<div class="propItemFlow">
+    <span class="itemlabel" style="font-size: smaller;" title="@propTT">@propTitle</span> @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = tipID, tipTextHtml = description }); }
+<div>
+    <input type="hidden" value="@fp.PropID" />
+    <input type="hidden" value="@fp.PropTypeID" />
+    @{
+        switch (fp.PropertyType.Type)
+        {
+            case CFPPropertyType.cfpInteger:
+                Html.RenderAction("RenderIntegerField", "MFBTemplate", new { id = propValID, name = string.Empty, value = fp.IntValue, cfd = cfd });
+                break;
+            case CFPPropertyType.cfpDecimal:
+                Html.RenderAction("RenderDecimalField", "MFBTemplate", new { mode = fHHMM && !fp.PropertyType.IsBasicDecimal ? EditMode.HHMMFormat : EditMode.Decimal, id = propValID, name = string.Empty, value = fp.DecValue, cfd = cfd });
+                break;
+            case CFPPropertyType.cfpCurrency:
+                Html.RenderAction("RenderDecimalField", "MFBTemplate", new { mode = EditMode.Decimal, id = propValID, name = string.Empty, value = fp.DecValue, cfd = cfd });
+                break;
+            case CFPPropertyType.cfpBoolean:
+                {
+                    <input type="checkbox" @fp.BoolValue.ToChecked() id="@propValID" />
+                }
+                break;
+            case CFPPropertyType.cfpDate:
+                {
+                    <input type="date" value="@fp.DateValue.YMDString()" id="@propValID" />
+                }
+                break;
+            case CFPPropertyType.cfpDateTime:
+                { Html.RenderAction("RenderDateTimeField", "MFBTemplate", new { id = propValID, name = "propDateTime", value = fp.DateValue, timeZone = timeZone }); }
+                break;
+            case CFPPropertyType.cfpString:
+                {
+                    <input type="text" style="width: 100%;" id="@propValID" value="@fp.TextValue" />
+                    if (!fp.PropertyType.IsNoAutocomplete)
+                    {
+                        <script type="text/javascript">
+                    $("@("#" + propValID)").autocomplete({ source: @Html.Raw(Json.Encode(fp.PropertyType.PreviousValues)), minLength: 2, classes: { "ui-autocomplete": "AutoExtender AutoExtenderList" } });
+                        </script>
+                    }
+                }
+                break;
+        }
+    }
+</div>
+</div>

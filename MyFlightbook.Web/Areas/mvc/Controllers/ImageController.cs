@@ -1,14 +1,18 @@
-﻿using MyFlightbook.Clubs;
+﻿using MyFlightbook.CloudStorage;
+using MyFlightbook.Clubs;
 using MyFlightbook.Image;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 /******************************************************
  * 
- * Copyright (c) 2023 MyFlightbook LLC
+ * Copyright (c) 2023-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -39,13 +43,21 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             return SafeOp(() =>
             {
-                MFBImageInfo mfbii = MFBImageInfo.LoadMFBImageInfo(ic, key, szThumb);
+                // First check if this is a pending image
+                // No need to do admin check on something that has yet to actually be committed
+                MFBPendingImage pf = new List<MFBPendingImage>(MFBPendingImage.PendingImagesInSession(Session)).FirstOrDefault(mfbpf => mfbpf.ThumbnailFile.CompareOrdinal(szThumb) == 0);
+                if (pf != null)
+                    pf.DeleteImage();
+                else
+                {
+                    MFBImageInfo mfbii = MFBImageInfo.LoadMFBImageInfo(ic, key, szThumb);
 
-                // Check ownership.
-                bool fCanActAsAdmin = (fAsAdmin && MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData);
-                if (!fCanActAsAdmin)
-                    ImageAuthorization.ValidateAuth(mfbii, User.Identity.Name, ImageAuthorization.ImageAction.Delete);
-                mfbii.DeleteImage();
+                    // Check ownership.
+                    bool fCanActAsAdmin = (fAsAdmin && MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData);
+                    if (!fCanActAsAdmin)
+                        ImageAuthorization.ValidateAuth(mfbii, User.Identity.Name, ImageAuthorization.ImageAction.Delete);
+                    mfbii.DeleteImage();
+                }
                 return new EmptyResult();
             });
         }
@@ -56,14 +68,22 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             return SafeOp(() =>
             {
-                MFBImageInfo mfbii = MFBImageInfo.LoadMFBImageInfo(ic, key, szThumb);
+                // First check if this is a pending image
+                // No need to do admin check on something that has yet to actually be committed
+                MFBPendingImage pf = new List<MFBPendingImage>(MFBPendingImage.PendingImagesInSession(Session)).FirstOrDefault(mfbpf => mfbpf.ThumbnailFile.CompareOrdinal(szThumb) == 0);
+                if (pf != null)
+                    pf.UpdateAnnotation(newAnnotation);
+                else
+                {
+                    MFBImageInfo mfbii = MFBImageInfo.LoadMFBImageInfo(ic, key, szThumb);
 
-                // Check ownership.
-                bool fCanActAsAdmin = (fAsAdmin && MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData);
-                if (!fCanActAsAdmin)
-                    ImageAuthorization.ValidateAuth(mfbii, User.Identity.Name, ImageAuthorization.ImageAction.Annotate);
+                    // Check ownership.
+                    bool fCanActAsAdmin = (fAsAdmin && MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData);
+                    if (!fCanActAsAdmin)
+                        ImageAuthorization.ValidateAuth(mfbii, User.Identity.Name, ImageAuthorization.ImageAction.Annotate);
 
-                mfbii.UpdateAnnotation(newAnnotation);
+                    mfbii.UpdateAnnotation(newAnnotation);
+                }
                 return new EmptyResult();
             });
         }
@@ -74,9 +94,41 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             return SafeOp(() =>
             {
-                ImageList il = new ImageList(imageClass, szKey);
-                il.Refresh(fIncludeDocs);
+                ImageList il = null;
+                // Pending Images are special - find them in the session object
+                if ((imageClass == MFBImageInfoBase.ImageClass.Flight || imageClass == MFBImageInfoBase.ImageClass.Aircraft) && szKey.CompareOrdinal((-1).ToString(CultureInfo.InvariantCulture)) == 0)
+                    il = new ImageList(MFBPendingImage.PendingImagesInSession(Session).ToArray()) { Class = imageClass };
+                else
+                {
+                    il = new ImageList(imageClass, szKey);
+                    il.Refresh(fIncludeDocs);
+                }
                 return ImageListDisplay(il, altText, fCanDelete, fCanEdit, fCanMakeDefault, zoomLinkType, fIsDefault, confirmText = "", defaultImage, onMakeDefault, onDelete, onAnnotate);
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public Task<ActionResult> GetGooglePhotos(string date, string dtLast, string lastResponseJSON)
+        {
+            return SafeOp(async () =>
+            {
+                Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+                if (!pf.PreferenceExists(GooglePhoto.PrefKeyAuthToken))
+                    throw new UnauthorizedAccessException();
+
+                if (DateTime.TryParse(date, out DateTime dt))
+                {
+                    GoogleMediaResponse gmr = (date.CompareOrdinal(dtLast ?? string.Empty) != 0 || string.IsNullOrEmpty(lastResponseJSON)) ? new GoogleMediaResponse() : JsonConvert.DeserializeObject<GoogleMediaResponse>(lastResponseJSON);
+
+                    bool fCanDoVideo = Payments.EarnedGratuity.UserQualifies(User.Identity.Name, Payments.Gratuity.GratuityTypes.Videos);
+                    gmr = await GooglePhoto.AppendImagesForDate(pf, dt, fCanDoVideo, gmr);
+                    ViewBag.gmr = gmr;
+                    ViewBag.date = date;
+                    return PartialView("_googlePhoto");
+                }
+                else
+                    throw new InvalidOperationException("\"" + date + "\" is not a valid date");
             });
         }
         #endregion

@@ -1,0 +1,236 @@
+﻿@using MyFlightbook
+@using System.Globalization
+@using System.Web
+@{
+    LogbookEntry le = ViewBag.le;
+    PendingFlight pf = ViewBag.pf;
+    Profile pfViewer = ViewBag.pfViewer;
+    Profile pfTarget = ViewBag.pfTarget;
+    bool fHHMM = pfViewer.UsesHHMM;
+    string onCancel = ViewBag.onCancel;
+    string nextFlightHref = ViewBag.nextFlightHref;
+    string prevFlightHref = ViewBag.prevFlightHref;
+    bool fAdminMode = ViewBag.fAdminMode;
+    IEnumerable<MyFlightbook.Lint.FlightIssue> flightIssues = ViewBag.flightIssues;
+}
+<style type="text/css">
+    .inactiveAircraft {
+        display: none;
+    }
+
+    .showAllAircraft {
+        font-style: italic;
+    }
+</style>
+<script type="text/javascript" src="@("~/Public/Scripts/autoinsert.js?v=3".ToAbsolute())"></script>
+<script type="text/javascript" src="@("~/Public/Scripts/xfill.js?v=4".ToAbsolute())"></script>
+<script type="text/javascript" src="@("~/Public/Scripts/DropDownFilter.js?v=3".ToAbsolute())"></script>
+<script type="text/javascript" src="@("~/Public/Scripts/ajaxUpload.js?v=4".ToAbsolute())"></script>
+<script type="text/javascript" src="@("~/Public/Scripts/flightedit.js?v=1".ToAbsolute())"></script>
+@if (fAdminMode)
+{
+    <script type="text/javascript" src="@("~/Public/Scripts/adminajax.js?v=4".ToAbsolute())"></script>
+}
+
+<script type="text/javascript">
+    function commitFlight(f) {
+        postFlightWithAction(f, @ViewBag.onSave);
+    }
+
+    function commitFlightAndNext(f) {
+        postFlightWithAction(f, function () { window.location = '@nextFlightHref'; });
+    }
+
+    function commitFlightAndPrev(f) {
+        postFlightWithAction(f, function () { window.location = '@prevFlightHref'; });
+    }
+
+    function savePending(f) {
+        postFlightWithAction(f, function () { @(String.IsNullOrEmpty(ViewBag.onSave) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "{0}();", ViewBag.onSave)) }, 'text', '@Url.Action("CommitFlightAsPending", "FlightEdit")');
+    }
+
+    function checkFlight(f) {
+        postFlightWithAction(f, function (r) {
+            $("#divLintResults").html(r);
+            $("#pnlFlightLint").show();
+        }, "html", '@Url.Action("CheckFlight", "FlightEdit")');
+    }
+
+    function confirmModifySigned() {
+        return (@((le.CFISignatureState != LogbookEntryCore.SignatureState.Valid).ToString().ToLowerInvariant()) || confirm("@Resources.LogbookEntry.ConfirmModifySignedFlight"));
+    }
+
+    // Validation
+    function validateForm() {
+        var f = $("#frmEditFlight");
+        f.validate({
+            errorClass: "error",
+            errorElement: "div",
+            errorPlacement: function (error, element) {
+                error.insertAfter($(element));
+            },
+            rules: {
+                flightDate: {
+                    required: true
+                },
+                flightAircraft: "required",
+                flightLandings: { fsLandings: true },
+            },
+            messages: {
+                flightDate: {
+                    required: "@Resources.LocalizedText.TypeInDateInvalidDate",
+                    validDate: "@Resources.LogbookEntry.errFutureDate",
+                },
+                flightAircraft: "@Resources.LogbookEntry.errAircraftRequired",
+                flightLandings: "@Resources.LogbookEntry.errTooManyFSLandings",
+            },
+            highlight: function (element, errorClass) {
+                $(element).removeClass(errorClass);
+            }
+        });
+        return f;
+    }
+
+    $(() => {
+        defaultButtonForDiv('pnlFlightContainer', 'btnAddFlight');
+        autoInsert($("#txtComments")[0], "@("~/Member/Ajax.asmx/SuggestTraining".ToAbsolute())", '[');
+        defaultButtonForDiv('pnlNewVideo', 'btnAddNewVideo');
+        $("#hdnTZOffset").val(-(new Date()).getTimezoneOffset());
+
+        validateForm();
+
+        $.validator.addMethod("pattern", function (value, element, param) {
+            if (this.optional(element)) {
+                return true;
+            }
+            if (typeof param === "string") {
+                param = new RegExp("^(?:" + param + ")$");
+            }
+            return param.test(value);
+        }, "Invalid format.");
+
+        $.validator.addMethod('fsLandings', function (value, element, param) {
+            return this.optional(element) || parseInt(value) >= parseInt($("#fieldFSDayLandings").val() || "0") + parseInt($("#fieldNightLandings").val() || "0");
+        }, '@Resources.LogbookEntry.errTooManyFSLandings');
+    });
+</script>
+@using (Html.BeginForm("SubmitFlight", "FlightEdit", FormMethod.Post, new { id = "frmEditFlight", name = "frmEditFlight" }))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="hdnIDFlight" name="idFlight" value="@le.FlightID" />
+    <input type="hidden" id="hdnIDPending" name="idPending" value="@(pf?.PendingID ?? string.Empty)" />
+    <input type="hidden" id="hdnTargetUser" name="szTargetUser" value="@pfTarget.UserName" />
+    <input type="hidden" id="hdnAdminMode" name="fAsAdmin" value="@fAdminMode.ToString().ToLowerInvariant()" />
+    <input type="hidden" id="hdnTZOffset" name="tzOffset" value="0" />
+    <div id="pnlFlightContainer">
+        <div id="pnlFlightEditorBody">
+            @{ Html.RenderAction("FlightEditorBody", "FlightEdit", new { le = le, pf = pf, pfTarget = pfTarget, pfViewer = pfViewer }); }
+        </div>
+
+        <div id="pnlFlightLint" class="hintPopup" style="width: 80%; margin-top: 3px; margin-left: auto; margin-right: auto; display: none;">
+            <div style="float:right"><a href="#" onclick="javascript: $('#pnlFlightLint').hide(); return false;">@Resources.LocalizedText.Close</a></div>
+            <div id="divLintResults">
+                @if (flightIssues != null)
+                {
+                    Html.RenderAction("FlightIssues", "FlightEdit", new { flightIssues = flightIssues });
+                    <script type="text/javascript">
+                        $(() => {
+                            $("#pnlFlightLint").show();
+                        });
+                    </script>
+                }
+            </div>
+        </div>
+
+        <div id="pnlSubmit" class="fullblock">
+            <div style="float:right"><img src="@("~/images/CheckFlights.png".ToAbsolute())" title="@Resources.FlightLint.TitleCheckThisFlight" alt="@Resources.FlightLint.TitleCheckThisFlight" href="#" onclick="javascript: submitForm(checkFlight); return false;" /></div>
+            <table style="margin-left:auto; margin-right: auto;">
+                <tr style="vertical-align:top;">
+                    <td>
+                        @if (!String.IsNullOrEmpty(onCancel))
+                        {
+                            <button onclick="javscript: @(onCancel)(); return false;">@Resources.LogbookEntry.EditFlightInlineCancel</button>
+                        }
+                        <button type="button" id="btnAddFlight" onclick="javascript: submitForm(commitFlight, confirmModifySigned);">@(le.IsNewFlight ? Resources.LogbookEntry.EditFlightAddFlight : Resources.LogbookEntry.EditFlightUpdateFlight)</button>
+                    </td>
+                    <td>
+                        @if (!String.IsNullOrEmpty(nextFlightHref) || !String.IsNullOrEmpty(prevFlightHref) || le.IsNewFlight)
+                        {
+                            <img src="@VirtualPathUtility.ToAbsolute("~/images/MenuChevron.png")" class="popTrigger" />
+                            <div class="popMenuContent popMenuHidden" style="margin-top: -8pt; margin-left: 0px">
+                                @if (le.IsNewFlight && pf == null)
+                                {
+                                    <div style="margin: 3px;"><a href="#" onclick="javascript: submitForm(savePending); return false;">@Resources.LogbookEntry.EditFlightAddPending</a></div>
+                                }
+                                else
+                                {
+                                    if (!String.IsNullOrEmpty(nextFlightHref))
+                                    {
+                                        string szPrompt = pf == null ? Resources.LogbookEntry.EditFlightUpdateFlightNext : Resources.LogbookEntry.EditFlightAddFlightNext;
+                                        <div style="margin: 3px;"><span style="font-size: larger; font-family: Arial; visibility: hidden;">@Resources.LogbookEntry.PreviousFlight</span>&nbsp;<a href="#" onclick="javascript: submitForm(commitFlightAndNext, confirmModifySigned); return false;">@szPrompt</a>&nbsp;<span style="font-size: larger; font-family: Arial">@Resources.LogbookEntry.NextFlight</span></div>
+                                    }
+                                    if (!String.IsNullOrEmpty(prevFlightHref))
+                                    {
+                                        string szPrompt = pf == null ? Resources.LogbookEntry.EditFlightUpdateFlightPrev : Resources.LogbookEntry.EditFlightAddFlightPrev;
+                                        <div style="margin: 3px;"><span style="font-size: larger; font-family: Arial;">@Resources.LogbookEntry.PreviousFlight</span>&nbsp;<a href="#" onclick="javascript: submitForm(commitFlightAndPrev, confirmModifySigned); return false;">@szPrompt</a></div>
+                                    }
+                                    if (pf != null)
+                                    {
+                                        <div style="margin: 3px;"><span style="font-size: larger; font-family: Arial; visibility: hidden">@Resources.LogbookEntry.PreviousFlight</span>&nbsp;<a href="#" onclick="javascript: submitForm(savePending); return false;">@Resources.LogbookEntry.EditFlightUpdatePendingFlight</a></div>
+                                    }
+                                }
+                            </div>
+                        }
+                    </td>
+                </tr>
+            </table>
+            <div class="error" id="lblFlightError">@le.ErrorString</div>
+        </div>
+
+        @if (!le.IsNewFlight && le.HasFlightHash)
+        {
+            IEnumerable<PropertyDelta> changes = le.DiffsSinceSigned(pfViewer.UsesHHMM);
+            <ul>
+                @foreach (PropertyDelta pd in changes)
+                {
+                    <li style="white-space:pre-wrap">@pd.ToString()</li>
+                }
+            </ul>
+        }
+
+        @if (fAdminMode)
+        {
+            LogbookEntryBase.SignatureSanityCheckState sscs = le.AdminSignatureSanityCheckState;
+
+            <div>
+                <table>
+                    <tr>
+                        <td>Saved State:</td>
+                        <td>@le.CFISignatureState.ToString()</td>
+                    </tr>
+                    <tr>
+                        <td>Sanity check:</td>
+                        <td>@sscs.ToString()</td>
+                    </tr>
+                    <tr style="vertical-align:top; background-color: #E8E8E8">
+                        <td>Saved Hash:</td>
+                        <td>@le.DecryptedFlightHash</td>
+                    </tr>
+                    <tr style="vertical-align:top;">
+                        <td>Current Hash:</td>
+                        <td>@le.DecryptedCurrentHash</td>
+                    </tr>
+                    <tr>
+                        <td><button type="button" onclick="javascript: adminFixSignature(@le.FlightID, false);">Fix Signature</button></td>
+                        <td>(Set the state to match reality)</td>
+                    </tr>
+                    <tr>
+                        <td><button type="button" onclick="javascript: adminFixSignature(@le.FlightID, true);">Force Valid</button></td>
+                        <td>(Recompute the flight hash based on current values to force it to be valid)</td>
+                    </tr>
+                </table>
+            </div>
+        }
+
+    </div>
+}

@@ -13,6 +13,8 @@
     string onMakeDefault = ViewBag.onMakeDefault;
     string onDelete = ViewBag.onDelete;
     string onAnnotate = ViewBag.onAnnotate;
+    string thumbWidth = mfbii.WidthThumbnail > 0 ? String.Format(CultureInfo.InvariantCulture, "width=\"{0}\"", mfbii.WidthThumbnail) : string.Empty;
+    string thumbHeight = mfbii.WidthThumbnail > 0 ? String.Format(CultureInfo.InvariantCulture, "height=\"{0}\"", mfbii.HeightThumbnail) : string.Empty;
 }
 <div name="editImage">
     <div>
@@ -20,13 +22,13 @@
         {
             <video width="320" heght="240" controls>
                 <source src="@mfbii.ResolveFullImage()" type="video/mp4" />
-                <img src="@mfbii.URLThumbnail" width="@mfbii.WidthThumbnail" height="@mfbii.HeightThumbnail" title="@(String.IsNullOrEmpty(altText) ? mfbii.Comment : altText)" alt="@(String.IsNullOrEmpty(altText) ? mfbii.Comment : altText)" />
+                <img src="@mfbii.URLThumbnail" @thumbWidth @thumbHeight title="@(String.IsNullOrEmpty(altText) ? mfbii.Comment : altText)" alt="@(String.IsNullOrEmpty(altText) ? mfbii.Comment : altText)" />
             </video>
         }
         else
             {
-               <img src="@mfbii.URLThumbnail" width="@mfbii.WidthThumbnail" height="@mfbii.HeightThumbnail" title="@(String.IsNullOrEmpty(altText) ? mfbii.Comment : altText)" alt="@(String.IsNullOrEmpty(altText) ? mfbii.Comment : altText)"
-                    onclick="@String.Format(CultureInfo.InvariantCulture, mfbii.ImageType == MFBImageInfoBase.ImageFileType.PDF || mfbii.ImageType == MFBImageInfoBase.ImageFileType.S3PDF ? "javascript:window.location = '{0}';" : "javascript:viewMFBImg('{0}');", VirtualPathUtility.ToAbsolute(mfbii.URLFullImage))" />
+               <img src="@mfbii.URLThumbnail"  @thumbWidth @thumbHeight title="@(String.IsNullOrEmpty(altText) ? mfbii.Comment : altText)" alt="@(String.IsNullOrEmpty(altText) ? mfbii.Comment : altText)"
+                    onclick="@(String.IsNullOrEmpty(mfbii.URLFullImage) ? string.Empty : String.Format(CultureInfo.InvariantCulture, mfbii.ImageType == MFBImageInfoBase.ImageFileType.PDF || mfbii.ImageType == MFBImageInfoBase.ImageFileType.S3PDF ? "javascript:window.location = '{0}';" : "javascript:viewMFBImg('{0}');", VirtualPathUtility.ToAbsolute(mfbii.URLFullImage)))" />
             }
         <div class="imageMenu">
             @if (fCanDelete && !String.IsNullOrEmpty(onDelete))

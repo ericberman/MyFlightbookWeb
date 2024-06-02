@@ -1,0 +1,80 @@
+﻿@using System.Globalization
+@using MyFlightbook.Telemetry
+@{
+    AutoFillOptions afo = ViewBag.afo;
+}
+<script type="text/javascript">
+    function updateAutofillPrefs() {
+        var afo = new Object();
+        afo.TakeoffSpeed = $("input[name='afoSpeed']:checked").val();
+        afo.IncludeHeliports = $("#ckIncludeHeliports")[0].checked;
+        afo.AutoSynthesizePath = $("#ckEstimateNight")[0].checked;
+        afo.RoundToTenth = $("#ckRoundNearest10th")[0].checked;
+        afo.Night = $("input[name='afoNightDef']:checked").val();
+        afo.NightLanding = $("input[name='afoNightLanding']:checked").val();
+
+        var d = JSON.stringify(afo);
+        $.ajax({
+            url: '@Url.Action("SetAutofillOptions", "Prefs")',
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            complete: function (response) { },
+            success: function (response) { }
+        });
+    }
+</script>
+<div>
+    <div style="float:left; padding:3px">
+        <table>
+            <tr>
+                <td colspan="2">
+                    <div>@Resources.LocalizedText.AutofillOptionTakeoffSpeed</div>
+                    <table>
+                        @for (int i = 0; i < AutoFillOptions.DefaultSpeeds.Count / 2; i++)
+                        {
+                            int speed1 = AutoFillOptions.DefaultSpeeds[i];
+                            int speed2 = AutoFillOptions.DefaultSpeeds[i + AutoFillOptions.DefaultSpeeds.Count / 2];
+                            <tr>
+                                <td><label><input type="radio" name="afoSpeed" value="@speed1" @((afo.TakeOffSpeed == speed1).ToChecked()) onclick="javascript: updateAutofillPrefs();" />@speed1.ToString(CultureInfo.CurrentCulture)</label></td>
+                                <td><label><input type="radio" name="afoSpeed" value="@speed2" @((afo.TakeOffSpeed == speed2).ToChecked()) onclick="javascript: updateAutofillPrefs();" />@speed2.ToString(CultureInfo.CurrentCulture)</label></td>
+                            </tr>
+                        }
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" @(afo.IncludeHeliports.ToChecked()) onchange="javascript: updateAutofillPrefs();" id="ckIncludeHeliports" /></td>
+                <td>
+                    <div>
+                        <label for="ckIncludeHeliports">@Resources.LocalizedText.AutofillOptionIncludeHeliports</label>
+                        @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "tipAFHeli", tipTextHTML = Resources.LocalizedText.AutofillOptionsIncludeHeliportsTip }); }
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" id="ckEstimateNight" @(afo.AutoSynthesizePath.ToChecked()) onchange="javascript: updateAutofillPrefs()" /></td>
+                <td>
+                    <div>
+                        <label for="ckEstimateNight">@Resources.LocalizedText.AutofillOptionEstimateNight</label>
+                        @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "tipAFNightEst", tipTextHTML = Resources.LocalizedText.AutofillOptionEstimateNightTip }); }
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" id="ckRoundNearest10th" @(afo.RoundToTenth.ToChecked()) onchange="javascript: updateAutofillPrefs()" /></td>
+                <td><label for="ckRoundNearest10th">@Resources.LocalizedText.AutofillOptionRound10th</label></td>
+            </tr>
+        </table>
+    </div>
+    <div style="float:left; padding:3px; margin-left: 3px; border-left: 1px solid black">
+        <div>@Resources.LocalizedText.AutoFillOptionNightDefinition</div>
+        <div><label><input type="radio" name="afoNightDef" @((afo.Night == AutoFillOptions.NightCritera.EndOfCivilTwilight).ToChecked()) onclick="javascript: updateAutofillPrefs();" value="EndOfCivilTwilight">@Resources.LocalizedText.AutoFillOptionNightDefinitionTwilight</label></div>
+        <div><label><input type="radio" name="afoNightDef" @((afo.Night == AutoFillOptions.NightCritera.Sunset).ToChecked()) onclick="javascript: updateAutofillPrefs();" value="Sunset">@Resources.LocalizedText.AutoFillOptionNightDefinitionSunset</label></div>
+        <div><label><input type="radio" name="afoNightDef" @((afo.Night == AutoFillOptions.NightCritera.SunsetPlus15).ToChecked()) onclick="javascript: updateAutofillPrefs();" value="SunsetPlus15">@Resources.LocalizedText.AutoFillOptionNightDefinitionSunsetPlus15</label></div>
+        <div><label><input type="radio" name="afoNightDef" @((afo.Night == AutoFillOptions.NightCritera.SunsetPlus30).ToChecked()) onclick="javascript: updateAutofillPrefs();" value="SunsetPlus30">@Resources.LocalizedText.AutoFillOptionNightDefinitionSunsetPlus30</label></div>
+        <div><label><input type="radio" name="afoNightDef" @((afo.Night == AutoFillOptions.NightCritera.SunsetPlus60).ToChecked()) onclick="javascript: updateAutofillPrefs();" value="SunsetPlus60">@Resources.LocalizedText.AutoFillOptionNightDefinitionSunsetPlus60</label></div>
+        <div>@Resources.LocalizedText.AutoFillOptionNightLandingDefinition</div>
+        <div><label><input type="radio" name="afoNightLanding" @((afo.NightLanding == AutoFillOptions.NightLandingCriteria.SunsetPlus60).ToChecked()) onclick="javascript: updateAutofillPrefs();" value="SunsetPlus60">@Resources.LocalizedText.AutoFillOptionNightLandingDefinitionSunsetPlus1Hour</label></div>
+        <div><label><input type="radio" name="afoNightLanding" @((afo.NightLanding == AutoFillOptions.NightLandingCriteria.Night).ToChecked()) onclick="javascript: updateAutofillPrefs();" value="Night">@Resources.LocalizedText.AutoFillOptionNightLandingDefinitionNight</label></div>
+    </div>
+</div>

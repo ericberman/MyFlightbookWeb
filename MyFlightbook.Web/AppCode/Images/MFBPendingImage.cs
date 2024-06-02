@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2022 MyFlightbook LLC
+ * Copyright (c) 2008-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -44,9 +45,9 @@ namespace MyFlightbook.Image
                     return string.Empty;
 
                 if (ImageType == ImageFileType.JPEG)
-                    return String.Format(CultureInfo.InvariantCulture, "~/mvc/Image/PendingImage/{0}", HttpUtility.UrlEncode(SessionKey));
+                    return String.Format(CultureInfo.InvariantCulture, "~/mvc/Image/PendingImage/{0}", HttpUtility.UrlEncode(SessionKey)).ToAbsolute();
                 else if (ImageType == ImageFileType.S3VideoMP4)
-                    return "~/images/pendingvideo.png";
+                    return "~/images/pendingvideo.png".ToAbsolute();
                 else
                     return base.URLThumbnail;
             }
@@ -68,7 +69,7 @@ namespace MyFlightbook.Image
                     case ImageFileType.JPEG:
                     case ImageFileType.S3PDF:   // should never happen for a pending image...
                     case ImageFileType.PDF:
-                        return String.Format(CultureInfo.InvariantCulture, "~/mvc/Image/PendingImage/{0}?full=1", HttpUtility.UrlEncode(SessionKey));
+                        return String.Format(CultureInfo.InvariantCulture, "~/mvc/Image/PendingImage/{0}?full=1", HttpUtility.UrlEncode(SessionKey)).ToAbsolute();
                     case ImageFileType.S3VideoMP4:
                         return string.Empty;    // nothing to click on, at least not yet.
                     default:
@@ -100,8 +101,32 @@ namespace MyFlightbook.Image
             Init();
             PostedFile = mfbpf ?? throw new ArgumentNullException(nameof(mfbpf));
             ImageType = ImageTypeFromFile(mfbpf);
-            ThumbnailFile = MFBImageInfo.ThumbnailPrefix + mfbpf.FileID;
+            ThumbnailFile = ThumbnailPrefix + mfbpf.FileID;
             SessionKey = szSessKey;
+            if (ImageTypeFromFile(mfbpf) == ImageFileType.PDF)
+                Comment = mfbpf.FileName;
+        }
+        #endregion
+
+        #region Caching of in-memory objects
+        public static IEnumerable<MFBPendingImage> PendingImagesInSession(HttpSessionStateBase session = null)
+        {
+            if (session == null)
+            {
+                if (HttpContext.Current?.Session == null)
+                    return Array.Empty<MFBPendingImage>();
+                session = new HttpSessionStateWrapper(HttpContext.Current.Session);
+            }
+
+            List<MFBPendingImage> lst = new List<MFBPendingImage>();
+            foreach (string szSessKey in session.Keys)
+            {
+                    MFBPendingImage pi = session[szSessKey] as MFBPendingImage;
+                    if (pi != null)
+                        lst.Add(pi);
+            }
+
+            return lst;
         }
         #endregion
 
@@ -109,7 +134,7 @@ namespace MyFlightbook.Image
         /// Persists the pending image, returning the resulting MFBImageInfo object.
         /// </summary>
         /// <returns>The newly created MFBImageInfo object</returns>
-        public MFBImageInfo Commit(MFBImageInfo.ImageClass ic, string szKey)
+        public MFBImageInfo Commit(ImageClass ic, string szKey)
         {
             return new MFBImageInfo(ic, szKey, PostedFile, Comment, Location);
         }
@@ -122,8 +147,8 @@ namespace MyFlightbook.Image
             PostedFile?.CleanUp();
             PostedFile = null;
             ThumbnailFile = string.Empty;
-            if (SessionKey != null && HttpContext.Current != null && HttpContext.Current.Session != null)
-                HttpContext.Current.Session[SessionKey] = null;
+            if (SessionKey != null && HttpContext.Current?.Session?[SessionKey] != null)
+                HttpContext.Current.Session.Remove(SessionKey);
         }
 
         public override void UpdateAnnotation(string szText)

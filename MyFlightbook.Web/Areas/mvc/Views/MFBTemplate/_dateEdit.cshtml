@@ -1,0 +1,27 @@
+﻿@{
+    string id = ViewBag.id;
+    string name = ViewBag.name;
+    DateTime dt = ViewBag.value;
+    bool fHasValue = dt.HasValue();
+    string requiredAttr = ViewBag.fRequired ? "required" : string.Empty;
+}
+@if (Request.IsMobileDeviceOrTablet())
+{
+    <input type="date" name="@name" id="@id" @requiredAttr value="@(fHasValue ? dt.YMDString() : string.Empty)" />
+}
+else
+{
+    <input type="text" name="@name" id="@id" @requiredAttr pattern="^@RegexUtility.RegexPatternForShortDate$" value="@(fHasValue ? dt.ToShortDateString() : string.Empty)" />
+    <script>
+        $(() => {
+            $("#@id").datepicker({
+                changeMonth: true,
+                changeYear: true,
+                showOtherMonths: true,
+                selectOtherMonths: true,
+                dateFormat: '@RegexUtility.ShortDatePatternToHtmlFormatString'
+            });
+        });
+    </script>
+}
+

@@ -1,0 +1,43 @@
+﻿@using MyFlightbook
+@using MyFlightbook.Image
+@{
+    LogbookEntry le = ViewBag.le;
+    bool fCanDoVideo = ViewBag.fCanDoVideo;
+}
+
+@if (fCanDoVideo)
+{
+    <div>
+        @Resources.LocalizedText.videoHeader
+        @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "pnlNewVideo" }); }
+    </div>
+    <div id="pnlNewVideo" style="display:none;">
+        <p class="fineprint">@Resources.LocalizedText.videoOverview</p>
+        <div><input type="text" style="width: 450px;" placeholder="@Resources.LocalizedText.videoPrompt" id="txtVideoToEmbed" name="flightNewVideoRef" /></div>
+        <div><input type="text" placeholder="@Resources.LocalizedText.videoCommentPrompt" id="txtVideoComment" name="flightNewVideoComment" /></div>
+        <div><button id="btnAddNewVideo" onclick="javascript: addVideoRef($('#txtVideoComment').val(), $('#txtVideoToEmbed').val()); return false;">@Resources.LocalizedText.videoAdd</button></div>
+        <div class="fineprint">@Resources.LocalizedText.videoDisclaimer</div>
+        <div><span class="error" id="lblVideoError"></span></div>
+    </div>
+}
+<div id="pnlvideos">
+    <input type="hidden" id="hdnVidoRefs" name="flightVideosJSON" value="@Json.Encode(le.Videos)" />
+    <input type="hidden" id="hdnVidToDelete" name="flightVideoToDelete" />
+    @foreach (VideoRef vr in le.Videos)
+    {
+        <div style="display: inline-block">
+            <table>
+                <tr><td>@Html.Raw(vr.EmbedHTML())</td></tr>
+                <tr>
+                    <td style="text-align: center">
+                        @if (User.Identity.Name.CompareOrdinal(le.User) == 0)
+                        {
+                            <img src="@("~/images/x.gif".ToAbsolute())" style="vertical-align: middle;" onclick="javascript: deleteVideoRef(@vr.ID);" alt="@Resources.LogbookEntry.LogbookDeleteVideoTooltip" title="@Resources.LogbookEntry.LogbookDeleteVideoTooltip" />
+                        }
+                        <a href="@vr.VideoReference" target="_blank">@vr.DisplayString</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    }
+</div>

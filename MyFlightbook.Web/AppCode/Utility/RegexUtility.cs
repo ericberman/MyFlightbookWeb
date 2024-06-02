@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
@@ -230,12 +231,128 @@ namespace MyFlightbook
         public static Regex DMSDegrees { get { return mDMSDegrees ?? (mDMSDegrees = new Regex("-?(\\d+)°(\\d+([.,]\\d+)?)", RegexOptions.IgnoreCase | RegexOptions.Compiled)); } }
         #endregion
 
+        #region Dates/Times
+        private static Regex mRegexDay = null;
+        private static Regex mRegexMonth = null;
+        private static Regex mRegexYear = null;
+        private static Regex mRegexDateSep = null;
+
+        private static readonly Dictionary<string, string> dictRegexForFormat = new Dictionary<string, string>();
+
+        private static Regex regexDay
+        {
+            get
+            {
+                if (mRegexDay == null)
+                    mRegexDay = new Regex("[dD]+", RegexOptions.Compiled);
+                return mRegexDay;
+            }
+        }
+
+        private static Regex regexMonth
+        {
+            get
+            {
+                if (mRegexMonth == null)
+                    mRegexMonth = new Regex("[mM]+", RegexOptions.Compiled);
+                return mRegexMonth;
+            }
+        }
+
+        private static Regex regexYear
+        {
+            get
+            {
+                if (mRegexYear == null)
+                    mRegexYear = new Regex("[yY]+", RegexOptions.Compiled);
+
+                return mRegexYear;
+            }
+        }
+
+        /// <summary>
+        /// dots and slashes need to be escaped in a date, so find them to replace with escaped values.
+        /// </summary>
+        private static Regex regexDateSep
+        {
+            get
+            {
+                if (mRegexDateSep == null)
+                    mRegexDateSep = new Regex("([./])", RegexOptions.Compiled);
+
+                return mRegexDateSep;
+            }
+        }
+
+        private const string regexPatternYMD = "\\d{2,4}-[01]?\\d-[0123]?\\d";
+
+        /// <summary>
+        /// Returns a regex pattern that can be put into an HTML Input field to validate a short date
+        /// The result is cached (on the short date pattern) for fast retrieval
+        /// ALWAYS allows for yyyy-mm-dd in addition to a localized date (m/d/y, d/m/y, etc.)
+        /// </summary>
+        public static string RegexPatternForShortDate
+        {
+            get
+            {
+                string szDateFormat = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern;
+                if (dictRegexForFormat.TryGetValue(szDateFormat, out string regex))
+                    return regex;
+
+                string locRegex = regexDateSep.Replace(regexYear.Replace(regexMonth.Replace(regexDay.Replace(szDateFormat, "[0-3]?[0-9]"), "[0-1]?[0-9]"), "\\d{2,4}"), "\\$1");
+                string result = String.Format(CultureInfo.InvariantCulture, "({0}|{1})", regexPatternYMD, locRegex);
+                dictRegexForFormat[szDateFormat] = result;
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Returns the current short date pattern as a format specifier usable by things like jqueryui datepicker (i.e., see https://api.jqueryui.com/datepicker/#utility-formatDate
+        /// Converts days to "d" (no leading 0), months to m (no leading 0) and years to "yy" (4 digit year).
+        /// </summary>
+        public static string ShortDatePatternToHtmlFormatString
+        {
+            get
+            {
+                return regexDay.Replace(regexMonth.Replace(regexYear.Replace(CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern, "yy"), "m"), "d");
+            }
+        }
+
+        /// <summary>
+        /// Returns a regex pattern that can be put into an HTML input field to validate a short date + hours and minutes time.
+        /// The result is cached (on the short date pattern) for fast retrieval
+        /// This allows for an OPTIONAL date component.
+        /// This also ALWAYS allows for yyyy-mm-dd
+        /// </summary>
+        public static string RegexPatternForDateTimeOptionalDate
+        {
+            get
+            {
+                return String.Format(CultureInfo.InvariantCulture, "^({0} )?[0-2]?\\d:[0-5]\\d$", RegexPatternForShortDate);
+            }
+        }
+
+        /// <summary>
+        /// Returns a regex pattern that can be put into an HTML input field to validate a short date + hours and minutes time.
+        /// The result is cached (on the short date pattern) for fast retrieval
+        /// This allows for an OPTIONAL date component.
+        /// This also ALWAYS allows for yyyy-mm-dd
+        /// </summary>
+        public static string RegexPatternForDateTimeRequiredDate
+        {
+            get
+            {
+                return String.Format(CultureInfo.InvariantCulture, "^{0} [0-2]?\\d:[0-5]\\d$", RegexPatternForShortDate);
+            }
+        }
+        #endregion
+
         #region Import
         private static Regex mNakedTime = null;
         /// <summary>
         /// Matches a naked time - e.g., 11:32, 23:27, or :51.
         /// </summary>
-        public static Regex NakedTime { get { return mNakedTime ?? (mNakedTime = new Regex("^([012]?\\d)?:\\d{2}$", RegexOptions.IgnoreCase | RegexOptions.Compiled)); } }
+        public static Regex NakedTime { get { return mNakedTime ?? (mNakedTime = new Regex("^\\s*([012]?\\d)?:\\d{2}\\s*$", RegexOptions.IgnoreCase | RegexOptions.Compiled)); } }
         #endregion
 
         #region Admin Regexes

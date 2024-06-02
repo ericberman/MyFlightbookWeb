@@ -15,6 +15,7 @@ using System.Configuration;
 using System.Data;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -2058,6 +2059,39 @@ namespace MyFlightbook.Telemetry
                 le.FlightData = string.Empty;
         }
         #endregion
+    
+        /// <summary>
+        /// Reads the provided stream and returns either it's string representation or, if a zip, the first file in the zip
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
+        public static string ReadFromStream(Stream s)
+        {
+            if (s == null)
+                return string.Empty;
+
+            try
+            {
+                using (ZipArchive zipArchive = new ZipArchive(s, ZipArchiveMode.Read))
+                {
+                    foreach (ZipArchiveEntry entry in zipArchive.Entries)
+                    {
+                        using (StreamReader sr = new StreamReader(entry.Open()))
+                        {
+                            return sr.ReadToEnd();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex) when (ex is IOException || ex is ArgumentException || ex is InvalidDataException)
+            {
+                using (StreamReader sr = new StreamReader(s))
+                {
+                    return sr.ReadToEnd();
+                }
+            }
+            return string.Empty;
+        }
     }
 
     [Serializable]

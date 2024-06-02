@@ -164,6 +164,79 @@ namespace MyFlightbook.Templates
                     return string.Empty;
             }
         }
+
+
+        /// <summary>
+        /// Modifies the passed-in list to include templates appropriate for the specified aircraft
+        /// </summary>
+        /// <param name="szTargetUser">The user</param>
+        /// <param name="idAircraft">the aircraft</param>
+        /// <param name="rgptID">Incoming list of property id's.  Anonymous/sim properties may be removed as part of this</param>
+        /// <returns></returns>
+        public static IEnumerable<int> RefreshForAicraft(string szTargetUser, int idAircraft, IEnumerable<int> rgptID)
+        {
+            List<int> lst = new List<int>(rgptID);
+
+            lst.RemoveAll(ptid => ptid == (int)KnownTemplateIDs.ID_ANON || ptid == (int)KnownTemplateIDs.ID_SIM);
+
+            Aircraft ac = new UserAircraft(szTargetUser)[idAircraft];
+            if (ac != null)
+                lst.AddRange(ac.DefaultTemplates);
+
+            if ((ac?.InstanceType ?? AircraftInstanceTypes.RealAircraft) != AircraftInstanceTypes.RealAircraft)
+                lst.Add((int)KnownTemplateIDs.ID_SIM);
+            else if (ac?.IsAnonymous ?? false)
+                lst.Add((int)KnownTemplateIDs.ID_ANON);
+            return lst;
+        }
+
+        /// <summary>
+        /// Returns the default set of templates for a given user/aircraft combination
+        /// </summary>
+        /// <param name="szTargetUser">The user</param>
+        /// <param name="idAircraft">Optional aircraft to be used; pass idAircraftUnknown if not known</param>
+        /// <param name="fAddStudent">True if it's an instructor editing a student (gets the student template</param>
+        /// <returns>A list of active templates</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static IEnumerable<PropertyTemplate> DefaultPropTemplatesForUser(string szTargetUser, int idAircraft, bool fAddStudent)
+        {
+            List<PropertyTemplate> lst = new List<PropertyTemplate>();
+
+            if (String.IsNullOrEmpty(szTargetUser))
+                throw new ArgumentNullException(nameof(szTargetUser));
+
+            // Get any default templates
+            List<PropertyTemplate> rgpt = new List<PropertyTemplate>(UserPropertyTemplate.TemplatesForUser(szTargetUser, true));
+            lst.AddRange(rgpt.FindAll(pt => pt.IsDefault));
+
+            // get any that are default for the aircraft
+            Aircraft ac = new UserAircraft(szTargetUser)[idAircraft];
+            if (ac != null)
+                lst.AddRange(rgpt.FindAll(pt => ac.DefaultTemplates.Contains(pt.ID)));
+
+            // If nothing added at this point, add the MRU template
+            if (lst.Count == 0)
+                lst.Add(new MRUPropertyTemplate(szTargetUser));
+
+            // Now add any that are default for the aircraft
+            if ((ac?.InstanceType ?? AircraftInstanceTypes.RealAircraft) != AircraftInstanceTypes.RealAircraft)
+                lst.Add(new SimPropertyTemplate());
+            else if (ac?.IsAnonymous ?? false)
+                lst.Add(new AnonymousPropertyTemplate());
+
+            if (fAddStudent)
+                lst.Add(new StudentPropertyTemplate());
+
+            return lst;
+        }
+
+        public static IEnumerable<PropertyTemplate> TemplatesFromIDs(IEnumerable<PropertyTemplate> lstIn, IEnumerable<int> lstIDs)
+        {
+            if (lstIn == null) throw new ArgumentNullException(nameof(lstIn));
+            if (lstIDs == null) throw new ArgumentNullException(nameof(lstIDs));
+            HashSet<int> hs = new HashSet<int>(lstIDs);
+            return new List<PropertyTemplate>(lstIn).FindAll(pt => lstIDs.Contains(pt.ID));
+        }
         #endregion
 
         public override string ToString()

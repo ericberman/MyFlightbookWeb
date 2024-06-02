@@ -167,6 +167,23 @@ namespace MyFlightbook
 
             return TimeZoneInfo.ConvertTimeFromUtc(dt, tzi).UTCDateFormatString();
         }
+
+        public static DateTime ConvertFromTimezone(this DateTime dt, TimeZoneInfo tz)
+        {
+            if (tz == null)
+                throw new ArgumentNullException(nameof(tz));
+
+            switch (dt.Kind)
+            {
+                default:
+                case DateTimeKind.Unspecified:
+                    return TimeZoneInfo.ConvertTimeToUtc(dt, tz);
+                case DateTimeKind.Utc:
+                    return dt;
+                case DateTimeKind.Local:
+                    return TimeZoneInfo.ConvertTimeToUtc(DateTime.SpecifyKind(dt, DateTimeKind.Unspecified), tz);
+            }
+        }
         #endregion
 
         #region String Extensions
@@ -285,8 +302,9 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="sz">The string</param>
         /// <param name="dtNakedTime">A date time, or just a time.</param>
-        /// <returns>The parsed date, if possible, otherwise minvalue</returns>
-        static public DateTime ParseUTCDateTime(this string sz, DateTime? dtNakedTime = null)
+        /// <param name="timeZone">The time zone the date was expressed in, UTC is assumed if not provided.</param>
+        /// <returns>The parsed date, in UTC, if possible, otherwise minvalue</returns>
+        static public DateTime ParseUTCDateTime(this string sz, DateTime? dtNakedTime = null, TimeZoneInfo timeZone = null)
         {
             if (sz == null)
                 throw new ArgumentNullException(nameof(sz));
@@ -303,7 +321,11 @@ namespace MyFlightbook
             }
 
             if (DateTime.TryParse(sz, CultureInfo.CurrentCulture, DateTimeStyles.AdjustToUniversal | DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.AssumeUniversal, out DateTime d))
+            {
+                if (timeZone != null && d.HasValue())
+                    d = DateTime.SpecifyKind(d, DateTimeKind.Local).ConvertFromTimezone(timeZone);
                 return d;
+            }
 
             return DateTime.MinValue;
         }
@@ -1145,7 +1167,7 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="r">The HTTPRequest object</param>
         /// <returns>True if it's known</returns>
-        public static bool IsMobileDevice(this HttpRequest r)
+        public static bool IsMobileDevice(this HttpRequestBase r)
         {
             if (r == null || r.UserAgent == null)
                 return false;
@@ -1163,12 +1185,17 @@ namespace MyFlightbook
               s.Contains("PORTABLE"));
         }
 
+        public static bool IsMobileDevice(this HttpRequest r)
+        {
+            return IsMobileDevice(new HttpRequestWrapper(r));
+        }
+
         /// <summary>
         /// Determines if this is a mobile session.  Pays attention to cookies and session state
         /// </summary>
         /// <param name="r">The HTTPRequest object</param>
         /// <returns>True if we should be treating this as a mobile session</returns>
-        public static bool IsMobileSession(this HttpRequest r)
+        public static bool IsMobileSession(this HttpRequestBase r)
         {
             if (r == null) 
                 return false;
@@ -1178,18 +1205,28 @@ namespace MyFlightbook
                    (sess != null && sess[MFBConstants.keyLite] != null && sess[MFBConstants.keyLite].ToString() == bool.TrueString);
         }
 
+        public static bool IsMobileSession(this HttpRequest r)
+        {
+            return IsMobileSession(new HttpRequestWrapper(r));
+        }
+
 
         /// <summary>
         /// IsMobileDevice OR iPad OR Android
         /// </summary>
         /// <param name="r">The HTTPRequest object</param>
         /// <returns>True if it's a mobile device or a tablet</returns>
-        public static Boolean IsMobileDeviceOrTablet(this HttpRequest r)
+        public static bool IsMobileDeviceOrTablet(this HttpRequestBase r)
         {
             if (r == null || String.IsNullOrEmpty(r.UserAgent))
                 return false;
 
             return IsMobileDevice(r) || RegexUtility.IPadOrAndroid.IsMatch(r.UserAgent);
+        }
+
+        public static bool IsMobileDeviceOrTablet(this HttpRequest r)
+        {
+            return IsMobileDeviceOrTablet(new HttpRequestWrapper(r));
         }
 
         /// <summary>

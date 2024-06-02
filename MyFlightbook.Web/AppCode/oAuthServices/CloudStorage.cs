@@ -1,5 +1,6 @@
 ﻿using DotNetOpenAuth.OAuth2;
 using Dropbox.Api;
+using MyFlightbook.Geography;
 using MyFlightbook.Image;
 using MyFlightbook.OAuth;
 using Newtonsoft.Json;
@@ -214,9 +215,9 @@ namespace MyFlightbook.CloudStorage
                         AccessToken = d.TryGetValue("access_token", out string acctok) ? acctok : string.Empty,
                         AccessTokenIssueDateUtc = DateTime.UtcNow
                     };
-                    if (d.ContainsKey("expires_in"))
+                    if (d.TryGetValue("expires_in", out string value))
                     {
-                        if (int.TryParse(d["expires_in"], NumberStyles.Integer, CultureInfo.InvariantCulture, out int exp))
+                        if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int exp))
                             authstate.AccessTokenExpirationUtc = DateTime.UtcNow.AddSeconds(exp);
                     }
                     authstate.RefreshToken = d.TryGetValue("refresh_token", out string reftok) ? reftok : string.Empty;
@@ -241,8 +242,10 @@ namespace MyFlightbook.CloudStorage
         // The google ID of the root folder where we place files.
         private string RootFolderID { get; set; }
 
+        private readonly static string[] driveScopes = new string[] { "https://www.googleapis.com/auth/drive.file" };
+
         public GoogleDrive(Profile pf = null)
-            : base("GoogleDriveAccessID", "GoogleDriveClientSecret", "https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent", "https://www.googleapis.com/oauth2/v4/token", new string[] { "https://www.googleapis.com/auth/drive.file" })
+            : base("GoogleDriveAccessID", "GoogleDriveClientSecret", "https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent", "https://www.googleapis.com/oauth2/v4/token", driveScopes)
         {
             AuthParam = szParamGDriveAuth;
             // Issue #1067: put everything under a single root
@@ -374,7 +377,7 @@ namespace MyFlightbook.CloudStorage
                     else
                     {
                         Dictionary<string, GoogleDriveError> d = String.IsNullOrEmpty(szResult) ? null : JsonConvert.DeserializeObject<Dictionary<string, GoogleDriveError>>(szResult);
-                        GoogleDriveError gde = (d == null || !d.ContainsKey("error")) ? null : d["error"];
+                        GoogleDriveError gde = (d == null || !d.TryGetValue("error", out GoogleDriveError value)) ? null : value;
                         if (gde == null || gde.errors.Count == 0)
                             throw new MyFlightbookException(response.ReasonPhrase);
                         else
@@ -408,6 +411,8 @@ namespace MyFlightbook.CloudStorage
                 throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Error from Google Drive: {0} {1} {2}", error.error, error.error_description, error.error_link), ex);
         }
 
+        private static readonly char[] backslashes = new char[] { '\\' };
+
         /// <summary>
         /// Puts a file as a stream using the REST API documented at https://developers.google.com/drive/v3/web/manage-uploads#multipart
         /// </summary>
@@ -440,7 +445,7 @@ namespace MyFlightbook.CloudStorage
             ms.Seek(0, SeekOrigin.Begin);   // write out the whole stream.  UploadAsync appears to pick up from the current location, which is the end-of-file after writing to a ZIP.
 
             if (String.IsNullOrEmpty(RootFolderID))
-                RootFolderID = await GetLeafFolderForPath(RootPath.Split(new char[] { '\\' }, StringSplitOptions.RemoveEmptyEntries));
+                RootFolderID = await GetLeafFolderForPath(RootPath.Split(backslashes, StringSplitOptions.RemoveEmptyEntries));
 
             // CSV loses its extension when uploaded because we map it to a google spreadsheet.  So if it's CSV AND we are patching an existing file, drop the extension so that we ov
             // update the existing file if it is present.  If CSV, strip the extension
@@ -522,7 +527,7 @@ namespace MyFlightbook.CloudStorage
                                             throw new MyFlightbookException("Unknown error in GoogleDrive.PutFile", ex);
 
                                         Dictionary<string, GoogleDriveError> d = String.IsNullOrEmpty(szResult) ? null : JsonConvert.DeserializeObject<Dictionary<string, GoogleDriveError>>(szResult);
-                                        GoogleDriveError gde = (d == null || !d.ContainsKey("error")) ? null : d["error"];
+                                        GoogleDriveError gde = (d == null || !d.TryGetValue("error", out GoogleDriveError value)) ? null : value;
 
                                         bool fHasReason = gde != null && gde.errors != null && gde.errors.Count > 0 && gde.errors[0].reason != null;
                                         if (fHasReason)
@@ -738,9 +743,10 @@ namespace MyFlightbook.CloudStorage
         public const string TokenSessionKey = "sessionkeyforonedrive";
         public const string szParam1DriveAuth = "1dOAuth";
         private const int MinFileSizeResumable = 4000000;   // files that are 4MB+ require a resumable upload.
+        private static readonly string[] _scopes = new string[] { "onedrive.appfolder", "wl.basic", "onedrive.readwrite", "wl.offline_access" };
 
         public OneDrive(Profile pf = null) 
-            : base("OneDriveAccessID", "OneDriveClientSecret", "https://login.live.com/oauth20_authorize.srf", "https://login.live.com/oauth20_token.srf", new string[] { "onedrive.appfolder", "wl.basic", "onedrive.readwrite", "wl.offline_access" })
+            : base("OneDriveAccessID", "OneDriveClientSecret", "https://login.live.com/oauth20_authorize.srf", "https://login.live.com/oauth20_token.srf", _scopes)
         {
             RootPath = UserUsesFlatHierarchy(pf) ? Branding.CurrentBrand.AppName + "/" : String.Format(CultureInfo.InvariantCulture, "{0}/{1}/{2}/", Branding.CurrentBrand.AppName, DateTime.Now.ToString("yyyy", CultureInfo.CurrentCulture), DateTime.Now.ToString("MM-MMMM", CultureInfo.CurrentCulture));
             CurrentUser = pf;
@@ -887,10 +893,11 @@ namespace MyFlightbook.CloudStorage
     {
         public enum TokenStatus { None, oAuth1, oAuth2 }
         public const string szParamDropboxAuth = "dbOAuth";
+        private static readonly string[] _scopes = new string[] { "files.content.write", "files.content.read", "files.metadata.write", "files.metadata.read" };
 
         public MFBDropbox(Profile pf = null)
             : base("DropboxAccessID", "DropboxClientSecret", "https://www.dropbox.com/oauth2/authorize?token_access_type=offline", "https://api.dropboxapi.com/oauth2/token", 
-                  new string[] { "files.content.write", "files.content.read", "files.metadata.write", "files.metadata.read" }, "https://api.dropboxapi.com/2/auth/token/from_oauth1", "https://api.dropboxapi.com/2/auth/token/revoke")
+                  _scopes, "https://api.dropboxapi.com/2/auth/token/from_oauth1", "https://api.dropboxapi.com/2/auth/token/revoke")
         {
             CurrentUser = pf;
             RootPath = UserUsesFlatHierarchy(pf) ? "/" : String.Format(CultureInfo.InvariantCulture, "/{0}/{1}/", DateTime.Now.ToString("yyyy", CultureInfo.CurrentCulture), DateTime.Now.ToString("MM-MMMM", CultureInfo.CurrentCulture));
@@ -1182,8 +1189,9 @@ namespace MyFlightbook.CloudStorage
     {
         public const string szParamGPhotoAuth = "gPhotoOAuth";
         public const string PrefKeyAuthToken = "googlePhotoAuthToken";
+        private static readonly string[] _gDriveScopes = new string[] { "https://www.googleapis.com/auth/photoslibrary.readonly" };
 
-        public GooglePhoto(Profile pf = null) : base("GoogleDriveAccessID", "GoogleDriveClientSecret", "https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent", "https://www.googleapis.com/oauth2/v4/token", new string[] { "https://www.googleapis.com/auth/photoslibrary.readonly" })
+        public GooglePhoto(Profile pf = null) : base("GoogleDriveAccessID", "GoogleDriveClientSecret", "https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent", "https://www.googleapis.com/oauth2/v4/token", _gDriveScopes)
         {
             AuthParam = szParamGPhotoAuth;
             CurrentUser = pf;
@@ -1244,7 +1252,7 @@ namespace MyFlightbook.CloudStorage
                                 throw new MyFlightbookException("Unknown error in GetImagesForDate", ex);
 
                             Dictionary<string, GoogleDriveError> d = String.IsNullOrEmpty(szResult) ? null : JsonConvert.DeserializeObject<Dictionary<string, GoogleDriveError>>(szResult);
-                            GoogleDriveError gde = (d == null || !d.ContainsKey("error")) ? null : d["error"];
+                            GoogleDriveError gde = (d == null || !d.TryGetValue("error", out GoogleDriveError value)) ? null : value;
 
                             throw new MyFlightbookException(response.ReasonPhrase + " " + (szResult ?? string.Empty));
                         }
@@ -1258,6 +1266,31 @@ namespace MyFlightbook.CloudStorage
             GoogleMediaResponse result = JsonConvert.DeserializeObject<GoogleMediaResponse>(szResult);
 
             return (priorResponse == null) ? result : priorResponse.AddResponse(result);
+        }
+
+        public static MFBPendingImage AddToFlight(LogbookEntry le, int clickedIndex, string gmrJSON, string key)
+        {
+            if (String.IsNullOrEmpty(gmrJSON))
+                throw new ArgumentNullException(nameof(gmrJSON));
+            GoogleMediaResponse gmr = JsonConvert.DeserializeObject<GoogleMediaResponse>(gmrJSON);
+
+            GoogleMediaItem clickedItem = gmr.mediaItems.ElementAt(clickedIndex);
+
+            MFBPostedFile pf = gmr.ImportImage(clickedItem.productUrl) ?? throw new InvalidOperationException("Unable to import image");
+
+            MFBPendingImage pi = new MFBPendingImage(pf, key);
+
+            // Geo tag, if  possible
+            if (clickedItem.mediaMetadata.CreationTime.HasValue && (le?.HasFlightData ?? false))
+            {
+                using (Telemetry.FlightData fd = new Telemetry.FlightData())
+                {
+                    if (fd.ParseFlightData(le.FlightData) && fd.HasDateTime && fd.HasLatLongInfo)
+                        pi.Location = Position.Interpolate(clickedItem.mediaMetadata.CreationTime.Value, fd.GetTrajectory());
+                }
+            }
+
+            return pi;
         }
     }
     #endregion

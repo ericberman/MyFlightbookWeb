@@ -1,0 +1,8 @@
+﻿@{
+    CrossFillDescriptor cfd = ViewBag.cfd;
+}
+<input type="text" style="width: 4em;" pattern="@(ViewBag.regexp)" id="@ViewBag.id" name="@ViewBag.name" value="@ViewBag.textValue" @ViewBag.fRequired placeholder="@ViewBag.placeholder" inputmode="@ViewBag.inputMode" />
+@if (!String.IsNullOrEmpty(cfd?.ScriptRef))
+{
+    <img src="@("~/images/cross-fill.png".ToAbsolute())" alt="@cfd.Tip" title="@cfd.Tip" onclick="javascript:setXFillValue('@ViewBag.id', @Html.Raw(cfd.ScriptRef));" />
+}
