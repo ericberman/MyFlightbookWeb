@@ -594,7 +594,14 @@
                                 }
 
                                 function resetPermutations() {
-                                    setPermutations([]);
+                                    var perms = new Array(0, 1, 2, 3, 4, 5);
+                                    if ($('#' + '<% =ckTrackCFITime.ClientID %>')[0].checked)
+                                        perms.push(6);
+                                    if ($('#' + '<% =ckSIC.ClientID %>')[0].checked)
+                                        perms.push(7);
+                                    perms.push(8);
+                                    perms.push(9);
+                                    setPermutations(perms);
                                 }
                             </script>
                             <h3><asp:Label ID="lblCustCore" runat="server" Text="<%$ Resources:Preferences, PrefSectNewFlightCustomization %>" /></h3>
