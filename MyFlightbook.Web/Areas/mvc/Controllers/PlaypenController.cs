@@ -240,6 +240,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             {
                 if (submitter.CompareCurrentCultureIgnoreCase("authorize") == 0)
                 {
+                    // Issue #1237 - Refresh the client anew here to pick up new scopes, etc.
+                    CurrentClient = null;           // clear the current client
+                    adhocClient = CurrentClient;    // recreate it from the form.
                     adhocClient.Authorize(new Uri(targetRedir));
                     return null;
                 }
