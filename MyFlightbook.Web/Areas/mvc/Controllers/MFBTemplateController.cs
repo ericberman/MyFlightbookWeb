@@ -142,7 +142,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 case EditMode.Currency:
                     ViewBag.placeholder = 0.FormatDecimal(false, true);
                     ViewBag.textValue = (value == 0.0M) ? string.Empty : value.ToString("0.0#", CultureInfo.CurrentCulture);
-                    ViewBag.regexp = String.Format(CultureInfo.InvariantCulture, "^\\d*({0}\\d*)?$", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
+                    ViewBag.regexp = String.Format(CultureInfo.InvariantCulture, "^\\d*([{0}]\\d*)?$", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
                     ViewBag.inputMode = "decimal";
                     break;
                 case EditMode.Integer:

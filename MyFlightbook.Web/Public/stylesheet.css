@@ -227,9 +227,38 @@ input[type=text], input[type=password], input[type=number], input[type=email], i
     color: Red;
 }
 
-.emphasis
-{
-    font-weight:bold;
+.errorCallout {
+    position: absolute;
+    z-index: 1000;
+    border: 1px solid red;
+    padding: 5px;
+    color: red;
+    background-color: white;
+    border-radius: 5pt;
+    box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
+    margin-top: 4pt;
+}
+
+.errorCallout .notch {
+    position: absolute;
+    top: -10px;
+    left: 5px;
+    margin: 0;
+    border-top: 0;
+    border-right: 10px solid transparent;
+    border-left: 10px solid transparent;
+    border-bottom: 10px solid red;
+    padding: 0;
+    width: 0;
+    height: 0;
+}
+
+input[type=text].errorItem, input[type=password].errorItem, input[type=number].errorItem, input[type=email].errorItem, input[type=date].errorItem, textarea.errorItem, select.errorItem {
+    border-color: red;
+}
+
+.emphasis {
+    font-weight: bold;
 }
 
 /* Currency status */

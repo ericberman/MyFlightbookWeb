@@ -139,6 +139,10 @@ input[type=text].noselect:focus {
     background-color: #444444;
 }
 
+.errorCallout {
+    background-color: #444444;
+}
+
 td.totalsByTimeCell:nth-child(even), td.totalsByTimeCell:nth-child(even), td.totalsDateRange:nth-child(even), .PaddedCell:nth-child(even) {
     background-color: #263238;
 }
