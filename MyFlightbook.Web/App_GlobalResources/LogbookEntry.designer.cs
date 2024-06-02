@@ -61,6 +61,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fills in the elapsed flight time as determined by flight start to flight end.
+        /// </summary>
+        internal static string AirborneCrossFillTip {
+            get {
+                return ResourceManager.GetString("AirborneCrossFillTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} {1} approach.
         /// </summary>
         internal static string ApproachDescApproach {

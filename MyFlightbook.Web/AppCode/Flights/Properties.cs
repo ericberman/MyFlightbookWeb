@@ -174,6 +174,7 @@ namespace MyFlightbook
             IDPropMonitoredNightTakeoffs = 565,
             IDPropMilitaryFirstPilot = 575,
             IDPropFMSApproaches = 583,
+            IDPropAirborneTime = 592,
             IDPropNVUnaided = 593,
             IDPropMilitaryPIC = 603,
             IDPropAdditionalFlightRemarks = 607, // Not flagged as a known property

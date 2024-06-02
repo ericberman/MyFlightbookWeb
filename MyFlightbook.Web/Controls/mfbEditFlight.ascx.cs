@@ -174,6 +174,8 @@ namespace MyFlightbook.Controls.FlightEditing
                     args.XFillDescriptor = new CrossFillDescriptor(Resources.LogbookEntry.TachCrossfillTip, String.Format(CultureInfo.InvariantCulture, "getTachFill(currentlySelectedAircraft, '{0}')", ResolveClientUrl("~/Member/Ajax.asmx")));
                 else if (args.PropertyType.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTaxiTime)
                     args.XFillDescriptor = new CrossFillDescriptor(Resources.LogbookEntry.TaxiCrossFillTip, String.Format(CultureInfo.InvariantCulture, "getTaxiFill('{0}')", ResolveClientUrl("~/Member/Ajax.asmx")));
+                else if (args.PropertyType.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropAirborneTime)
+                    args.XFillDescriptor = new CrossFillDescriptor(Resources.LogbookEntry.AirborneCrossFillTip, String.Format(CultureInfo.InvariantCulture, "getAirborneFill('{0}')", ResolveClientUrl("~/Member/Ajax.asmx")));
                 else if (!args.PropertyType.IsBasicDecimal)
                     args.XFillDescriptor = new CrossFillDescriptor(Resources.LocalizedText.CrossfillPrompt, CrossFillTotalScript);
             }

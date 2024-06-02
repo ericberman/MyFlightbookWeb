@@ -1798,4 +1798,7 @@ Proceed with import?</value>
   <data name="ComboXCSolo" xml:space="preserve">
     <value>XC Solo</value>
   </data>
+  <data name="AirborneCrossFillTip" xml:space="preserve">
+    <value>Fills in the elapsed flight time as determined by flight start to flight end</value>
+  </data>
 </root>

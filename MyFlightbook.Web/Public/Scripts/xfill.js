@@ -100,14 +100,6 @@ function getHobbsFill(currentlySelectedAircraft, baseUrl) {
 
 function getTaxiFill(baseUrl) {
     return function (onResult) {
-        if (!currentlySelectedAircraft)
-            return;
-
-        var id = currentlySelectedAircraft();
-
-        if (id === null || id === '')
-            return;
-
         var params = new Object();
         params.fsStart = $('#' + getXFillElement('fStart'))[0].value;
         params.fsEnd = $('#' + getXFillElement('fEnd'))[0].value;
@@ -116,6 +108,30 @@ function getTaxiFill(baseUrl) {
         $.ajax(
             {
                 url: baseUrl + '/TaxiTime',
+                type: "POST", data: d, dataType: "json", contentType: "application/json",
+                error: function (xhr, status, error) {
+                    window.alert(xhr.responseJSON.Message);
+                    if (onError !== null)
+                        onError();
+                },
+                complete: function () { },
+                success: function (response) {
+                    if (response.d != '')
+                        onResult(response.d);
+                }
+            });
+    }
+}
+
+function getAirborneFill(baseUrl) {
+    return function (onResult) {
+        var params = new Object();
+        params.fsStart = $('#' + getXFillElement('fStart'))[0].value;
+        params.fsEnd = $('#' + getXFillElement('fEnd'))[0].value;
+        var d = JSON.stringify(params);
+        $.ajax(
+            {
+                url: baseUrl + '/AirborneTime',
                 type: "POST", data: d, dataType: "json", contentType: "application/json",
                 error: function (xhr, status, error) {
                     window.alert(xhr.responseJSON.Message);

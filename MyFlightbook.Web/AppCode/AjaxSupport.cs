@@ -15,7 +15,7 @@ using System.Web.Services;
 
 /******************************************************
  * 
- * Copyright (c) 2022-2023 MyFlightbook LLC
+ * Copyright (c) 2022-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -325,8 +325,24 @@ namespace MyFlightbook.Web.Ajax
 
             decimal elapsedFlight = (dtFEnd.HasValue() && dtFStart.HasValue() && dtFEnd.CompareTo(dtFStart) > 0) ? (decimal)dtFEnd.Subtract(dtFStart).TotalHours : 0;
 
-            decimal taxi = totalTime - elapsedFlight;
+            decimal taxi = Math.Max(totalTime - elapsedFlight, 0);
             return taxi.FormatDecimal(fUseHHMM);
+        }
+
+        [WebMethod(EnableSession = true)]
+        public string AirborneTime(string fsStart, string fsEnd)
+        {
+            CheckAuth();
+            System.Threading.Thread.CurrentThread.CurrentCulture = util.SessionCulture ?? CultureInfo.CurrentCulture;
+
+            bool fUseHHMM = Profile.GetUser(HttpContext.Current.User.Identity.Name).UsesHHMM;
+
+            DateTime dtFStart = fsStart.SafeParseDate(DateTime.MinValue);
+            DateTime dtFEnd = fsEnd.SafeParseDate(DateTime.MinValue);
+
+            decimal elapsedFlight = (dtFEnd.HasValue() && dtFStart.HasValue() && dtFEnd.CompareTo(dtFStart) > 0) ? (decimal)dtFEnd.Subtract(dtFStart).TotalHours : 0;
+
+            return Math.Max(elapsedFlight, 0).FormatDecimal(fUseHHMM);
         }
         #endregion
 
