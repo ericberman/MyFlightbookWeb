@@ -6,6 +6,9 @@
     IEnumerable<CustomPropertyType> remainingProps = ViewBag.remainingProps;
     HashSet<int> hsActiveTemplates = ViewBag.activeTemplateIDs;
     TimeZoneInfo timeZone = ViewBag.timeZone;
+    int activePropCount = activeProperties.Count();
+    const int maxProps = 25;
+    int i = 0;
 } 
 <script type="text/javascript">
     $(() => { CacheItems($("#cmbPropsToAdd")[0]); });
@@ -55,10 +58,16 @@
     </table>
 </div>
 
-<div id="pnlProps" class="propItemContainer" style="overflow:auto;">
-@foreach (CustomFlightProperty fp in activeProperties)
-{
-    Html.RenderAction("PropEdit", "FlightEdit", new { fp = fp, fHHMM = ViewBag.fHHMM, timeZone = timeZone });
+<span id="pnlProps">
+@{
+    foreach (CustomFlightProperty fp in activeProperties)
+    {
+        Html.RenderAction("PropEdit", "FlightEdit", new { fp = fp, fHHMM = ViewBag.fHHMM, timeZone = timeZone, fHidden = i++ >= maxProps });
+    }
+    if (activePropCount > maxProps)
+    {
+        <span style="font-weight: bold;"><a href="#" onclick="javascript: $('#pnlProps').children('.propItemFlow').show(); $(this).hide(); return false;">@Resources.LogbookEntry.SearchAllProperties</a></span>
+    }
 }
 </div>
 

@@ -24,7 +24,7 @@
         }
     }
 }
-<div class="propItemFlow">
+<div class="propItemFlow" @(ViewBag.hideByDefault ? Html.Raw("style=\"display: none;\"") : string.Empty))>
     <span class="itemlabel" style="font-size: smaller;" title="@propTT">@propTitle</span> @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = tipID, tipTextHtml = description }); }
 <div>
     <input type="hidden" value="@fp.PropID" />

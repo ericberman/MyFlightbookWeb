@@ -594,7 +594,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         [ChildActionOnly]
-        public ActionResult PropEdit(CustomFlightProperty fp, bool fHHMM, TimeZoneInfo timeZone)
+        public ActionResult PropEdit(CustomFlightProperty fp, bool fHHMM, TimeZoneInfo timeZone, bool fHidden = false)
         {
             ViewBag.fp = fp ?? throw new ArgumentNullException(nameof(fp));
             ViewBag.fHHMM = fHHMM;
@@ -620,6 +620,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 else if (!fp.PropertyType.IsBasicDecimal)
                     ViewBag.xfillDescriptor = new CrossFillDescriptor(Resources.LocalizedText.CrossfillPrompt, "getTotalFillFunc('fieldTotal')");
             }
+            ViewBag.hideByDefault = fHidden;
 
             return PartialView("_propEdit");
         }
