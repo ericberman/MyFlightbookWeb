@@ -136,7 +136,7 @@ namespace MyFlightbook
                             EmailAddress = "noreply@mg.myflightbook.com",
                             FacebookFeed = "https://www.facebook.com/MyFlightbook",
                             // TwitterFeed = "https://twitter.com/MyFlightbook",
-                            SwagRef = "https://www.cafepress.com/myflightbookswagshop",
+                            SwagRef = "https://www.cafepress.com/shop/MyFlightbookSwagShop/products?designId=134274099",
                             BlogAddress = "https://myflightbookblog.blogspot.com/",
                             VideoRef = "https://www.youtube.com/channel/UC6oqJL-aLMEagSyV0AKkIoQ?view_as=subscriber",
                             AWSBucket = "mfbimages",
