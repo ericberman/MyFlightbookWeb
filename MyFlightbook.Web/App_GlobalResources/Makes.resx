@@ -347,7 +347,7 @@
     <value>E.g., &amp;quot;Skyhawk&amp;quot; for a C-172, but blank for a Boeing 737</value>
   </data>
   <data name="editMakeMDS" xml:space="preserve">
-    <value>Mission/Design/Series:</value>
+    <value>Mission / Design / Series:</value>
   </data>
   <data name="editMakeMDSNote1" xml:space="preserve">
     <value>All aircraft with a common MDS will contribute to AR 95-1 currency for that group</value>

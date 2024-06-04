@@ -394,7 +394,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mission/Design/Series:.
+        ///   Looks up a localized string similar to Mission / Design / Series:.
         /// </summary>
         internal static string editMakeMDS {
             get {
