@@ -62,7 +62,6 @@ namespace MyFlightbook
             foreach (CustomFlightProperty cfp in this.CustomProperties)
                 cfp.InitPropertyType(new CustomPropertyType[] { CustomPropertyType.GetCustomPropertyType(cfp.PropTypeID) });
             // Also fix up any missing tail mappings - aircraft may have been added to the user's account since we last saved this pending flight
-            MapTail();
         }
 
         public PendingFlight(LogbookEntryBase le) : this()
@@ -109,13 +108,46 @@ namespace MyFlightbook
         /// <returns>An enumerable of flights</returns>
         static public IEnumerable<PendingFlight> PendingFlightsForUser(string szUser)
         {
+            UserAircraft ua = new UserAircraft(szUser);
+            List<PendingFlight> flightsToMap = new List<PendingFlight>();
+            HashSet<string> missingAircraft = new HashSet<string>();
+
             List<PendingFlight> lst = new List<PendingFlight>();
             DBHelper dbh = new DBHelper("SELECT * FROM pendingflights WHERE username=?user");
             dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("user", szUser); },
-                (dr) => { lst.Add(new PendingFlight(dr)); });
+                (dr) =>
+                {
+                    PendingFlight pf = new PendingFlight(dr);
+                    // Issue #1241: for performance, delay all aircraft addition to the end
+                    Aircraft ac = ua[pf.TailNumDisplay];
+                    if (ac == null)
+                    {
+                        // Normalize the tail
+                        pf.TailNumDisplay = RegexUtility.NonAlphaNumeric.Replace(pf.TailNumDisplay, string.Empty);
+                        missingAircraft.Add(pf.TailNumDisplay);
+                        flightsToMap.Add(pf);
+                    }
+                    else
+                        pf.AircraftID = ac.AircraftID;
+                    lst.Add(pf);
+                });
+
+            // Fix up any missing aircraft.  For performance we do a single AircraftTailListQuery, which finds all of them at once.
+            IEnumerable<Aircraft> rgac = (missingAircraft.Count == 0) ? (IEnumerable<Aircraft>) Array.Empty<Aircraft>() : Aircraft.AircraftByTailListQuery(missingAircraft);
+            foreach (Aircraft ac in rgac)
+                ua.FAddAircraftForUser(ac);
+
+            Dictionary<string, int> d = new Dictionary<string, int>();
+            IEnumerable<Aircraft> userAircraft = ua.GetAircraftForUser();   // make a single call
+            foreach (Aircraft ac in userAircraft)
+                d[ac.NormalizedTail] = ac.AircraftID;
+
+            // Now map those missing aircraft
+            foreach (PendingFlight pf in flightsToMap)
+                pf.AircraftID = d.TryGetValue(pf.TailNumDisplay, out int acid) ? acid : Aircraft.idAircraftUnknown;
 
             // Sort by date, desc
-            lst.Sort((l1, l2) => { return LogbookEntryCore.CompareFlights(l1, l2, "Date", System.Web.UI.WebControls.SortDirection.Descending); });
+            lst.Sort((l1, l2) => { return CompareFlights(l1, l2, "Date", System.Web.UI.WebControls.SortDirection.Descending); });
             return lst;
         }
 
