@@ -123,7 +123,7 @@ namespace MyFlightbook
                     if (ac == null)
                     {
                         // Normalize the tail
-                        pf.TailNumDisplay = RegexUtility.NonAlphaNumeric.Replace(pf.TailNumDisplay, string.Empty);
+                        pf.TailNumDisplay = Aircraft.NormalizeTail(pf.TailNumDisplay);
                         missingAircraft.Add(pf.TailNumDisplay);
                         flightsToMap.Add(pf);
                     }
