@@ -290,6 +290,8 @@ namespace MyFlightbook.Telemetry
         public enum NightCritera { EndOfCivilTwilight, Sunset, SunsetPlus15, SunsetPlus30, SunsetPlus60 };
         public enum NightLandingCriteria { SunsetPlus60, Night};
 
+        public enum TimeConversionCriteria { None, Local, Preferred }
+
         public const int DefaultCrossCountryDistance = 50;
         public const int DefaultTakeoffSpeedKts = 70;
         public const int DefaultLandingSpeedKts = 55;
@@ -467,7 +469,17 @@ namespace MyFlightbook.Telemetry
         /// <summary>
         /// Indicates whether to try to convert times to UTC time based on lat/long
         /// </summary>
+        [Obsolete("Use TimeConversion Instead")]
         public bool TryLocal { get; set; } = false;
+
+        /// <summary>
+        /// How should times be interpreted?  UTC?  Local time?  Or in the user's preferred time zone (using PreferredTimeZone).
+        /// </summary>
+        [JsonIgnore]
+        public TimeConversionCriteria TimeConversion { get; set; } = TimeConversionCriteria.None;
+
+        [JsonIgnore]
+        public TimeZoneInfo PreferredTimeZone { get; set; }
         #endregion
 
         #region testing for night, night landings
@@ -1925,9 +1937,8 @@ namespace MyFlightbook.Telemetry
                         LatLong ll1 = rgap[0].LatLong;
                         LatLong ll2 = rgap[1].LatLong;
 
-                        if (opt.TryLocal)
+                        if (opt.TimeConversion == AutoFillOptions.TimeConversionCriteria.Local)
                         {
-#pragma warning disable CA1031 // Do not catch general exception types
                             // Issue #1172
                             // We are assuming here that dtStart/dtEnd are in UTC (which they MUST be for any math to work.
                             // But if fTryConvertLocal is true, we assume they are in local time.  In which case, we need to:
@@ -1952,8 +1963,19 @@ namespace MyFlightbook.Telemetry
                                 le.EngineStart = dtStart = UtcFromZone(dtStartLocal, szIANATimeZone1.Result);
                                 le.EngineEnd = dtEnd = UtcFromZone(dtEndLocal, szIANATimeZone2.Result);
                             }
-                            catch { }
-#pragma warning restore CA1031 // Do not catch general exception types
+                            catch (Exception ex) when (!(ex is OutOfMemoryException)) { }
+                        } else if (opt.TimeConversion == AutoFillOptions.TimeConversionCriteria.Preferred)
+                        {
+                            if (opt.PreferredTimeZone == null)
+                                throw new InvalidOperationException("Autofill with user's preferred timezone is requested, but no time zone was provided");
+                            // OK, now we have the timezones, create pseudo-local times:
+                            DateTime dtStartLocal = DateTime.SpecifyKind(dtStart, DateTimeKind.Unspecified);
+                            DateTime dtEndLocal = DateTime.SpecifyKind(dtEnd, DateTimeKind.Unspecified);
+
+                            // Update engine start/end regardless since we're going to recompute those.
+                            // Even if we started from block, we'll leave block unchanged.
+                            le.EngineStart = dtStart = DateTime.SpecifyKind(dtStartLocal, DateTimeKind.Local).ConvertFromTimezone(opt.PreferredTimeZone);
+                            le.EngineEnd = dtEnd = DateTime.SpecifyKind(dtEndLocal, DateTimeKind.Local).ConvertFromTimezone(opt.PreferredTimeZone);
                         }
 
                         IEnumerable<Position> rgPos = Position.SynthesizePath(ll1, dtStart, ll2, dtEnd);

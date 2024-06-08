@@ -1251,7 +1251,7 @@ Proceed with import?</value>
     <value>*All* flight/engine/block times MUST be UTC for auto-fill computations to work; *do not check this box if you are using local times.*</value>
   </data>
   <data name="ImportWizardAutofillPrompt" xml:space="preserve">
-    <value>Autofill fields like night, cross-country, landings, or total flight time.  ALL TIMES ARE UTC</value>
+    <value>... all times are *UTC*</value>
   </data>
   <data name="ImportWizardFinishButton" xml:space="preserve">
     <value>Import</value>
@@ -1742,7 +1742,7 @@ Proceed with import?</value>
     <value>Import data as-is</value>
   </data>
   <data name="ImportWizardAutofillTryLocal" xml:space="preserve">
-    <value>Autofill fields like night, cross-country, landings, or total flight time, attempting to convert from local time.</value>
+    <value>...all times are  *local* time at the *start* and *end* airport</value>
   </data>
   <data name="ImportWizardAutofillTryLocalNote" xml:space="preserve">
     <value>Times will be converted to UTC where possible, but this is not a reliable process and may yield unexpected results.  See the [FAQ](https://myflightbook.com/logbook/mvc/faq?q=44#44) for more information.</value>
@@ -1800,5 +1800,11 @@ Proceed with import?</value>
   </data>
   <data name="AirborneCrossFillTip" xml:space="preserve">
     <value>Fills in the elapsed flight time as determined by flight start to flight end</value>
+  </data>
+  <data name="ImportWizardAutofillTryPreferred" xml:space="preserve">
+    <value>...all times are in your *preferred timezone.*  Your preferred timezone is: *{0}*.</value>
+  </data>
+  <data name="ImportWizardAutofillPromptPart1" xml:space="preserve">
+    <value>Autofill fields like night, cross-country, landings, or total flight time, assuming that...</value>
   </data>
 </root>
