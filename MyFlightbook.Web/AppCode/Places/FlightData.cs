@@ -475,6 +475,7 @@ namespace MyFlightbook.Telemetry
         /// <summary>
         /// How should times be interpreted?  UTC?  Local time?  Or in the user's preferred time zone (using PreferredTimeZone).
         /// </summary>
+        [JsonIgnore]
         public TimeConversionCriteria TimeConversion { get; set; } = TimeConversionCriteria.None;
 
         [JsonIgnore]
