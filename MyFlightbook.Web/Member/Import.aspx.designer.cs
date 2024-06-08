@@ -168,15 +168,6 @@ namespace MyFlightbook.ImportFlights
         protected global::System.Web.UI.WebControls.Label Label5;
 
         /// <summary>
-        /// Label6 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label6;
-
-        /// <summary>
         /// rbAutofillLocal control.
         /// </summary>
         /// <remarks>
@@ -202,6 +193,24 @@ namespace MyFlightbook.ImportFlights
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblNoteAutofill;
+
+        /// <summary>
+        /// rbAutofillPreferred control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButton rbAutofillPreferred;
+
+        /// <summary>
+        /// lblAutofillPreferred control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblAutofillPreferred;
 
         /// <summary>
         /// lblFileRequired control.

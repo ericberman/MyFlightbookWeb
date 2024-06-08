@@ -2242,7 +2242,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Autofill fields like night, cross-country, landings, or total flight time.  ALL TIMES ARE UTC.
+        ///   Looks up a localized string similar to ... all times are *UTC*.
         /// </summary>
         internal static string ImportWizardAutofillPrompt {
             get {
@@ -2251,7 +2251,16 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Autofill fields like night, cross-country, landings, or total flight time, attempting to convert from local time..
+        ///   Looks up a localized string similar to Autofill fields like night, cross-country, landings, or total flight time, assuming that....
+        /// </summary>
+        internal static string ImportWizardAutofillPromptPart1 {
+            get {
+                return ResourceManager.GetString("ImportWizardAutofillPromptPart1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ...all times are  *local* time at the *start* and *end* airport.
         /// </summary>
         internal static string ImportWizardAutofillTryLocal {
             get {
@@ -2265,6 +2274,15 @@ namespace Resources {
         internal static string ImportWizardAutofillTryLocalNote {
             get {
                 return ResourceManager.GetString("ImportWizardAutofillTryLocalNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ...all times are in your *preferred timezone.*  Your preferred timezone is: *{0}*..
+        /// </summary>
+        internal static string ImportWizardAutofillTryPreferred {
+            get {
+                return ResourceManager.GetString("ImportWizardAutofillTryPreferred", resourceCulture);
             }
         }
         

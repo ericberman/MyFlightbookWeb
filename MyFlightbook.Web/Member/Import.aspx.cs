@@ -80,6 +80,7 @@ namespace MyFlightbook.ImportFlights
             Title = Resources.LogbookEntry.ImportFlightsPageTitle;
             Profile pf = Profile.GetUser(User.Identity.Name);
             UseHHMM = pf.UsesHHMM;
+            
 
             if (!IsPostBack)
             {
@@ -92,6 +93,7 @@ namespace MyFlightbook.ImportFlights
                     if (dt.HasValue)
                         rbFromDate.Date = dt.Value;
                 }
+                lblAutofillPreferred.Text = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.ImportWizardAutofillTryPreferred, pf.PreferredTimeZone.DisplayName).Linkify();
             }
         }
 
@@ -293,14 +295,12 @@ namespace MyFlightbook.ImportFlights
             AutoFillOptions afo = rbAutofillNone.Checked ? null : new AutoFillOptions(AutoFillOptions.DefaultOptionsForUser(User.Identity.Name));
             if (afo != null)
             {
-                if (afo != null)
-                    afo.IncludeHeliports = true;
-
-                if (rbAutofillLocal.Checked)
-                {
-                    afo.TryLocal = true;
+                afo.IncludeHeliports = true;
+                afo.TimeConversion = (rbAutofillUtc.Checked ? AutoFillOptions.TimeConversionCriteria.None : (rbAutofillLocal.Checked ? AutoFillOptions.TimeConversionCriteria.Local : AutoFillOptions.TimeConversionCriteria.Preferred));
+                if (afo.TimeConversion != AutoFillOptions.TimeConversionCriteria.None)
                     afo.AutoFillTotal = AutoFillOptions.AutoFillTotalOption.EngineTime; // we will rewrite engine times, but not block times.
-                }
+                if (afo.TimeConversion == AutoFillOptions.TimeConversionCriteria.Preferred)
+                    afo.PreferredTimeZone = Profile.GetUser(User.Identity.Name).PreferredTimeZone;
             }
             csvimporter.InitWithBytes(CurrentCSVSource, User.Identity.Name, AddSuccessRow, AddErrorRow, afo);
 
