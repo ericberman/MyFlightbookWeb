@@ -1,3 +1,0 @@
-﻿INSERT INTO `logbook`.`localconfig` (`keyName`, `keyValue`) VALUES ('GoogleAdClient', '');
-INSERT INTO `logbook`.`localconfig` (`keyName`, `keyValue`) VALUES ('GoogleAdHorizontalSlot', '');
-INSERT INTO `logbook`.`localconfig` (`keyName`, `keyValue`) VALUES ('GoogleAdVerticalSlot', '');
