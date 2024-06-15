@@ -826,7 +826,7 @@
                     </cc1:AccordionPane>
                     <cc1:AccordionPane ID="acpCloudAhoy" runat="server">
                         <Header>
-                            <asp:Localize ID="locCloudAhoy" runat="server" Text="<%$ Resources:Preferences, CloudAhoyName %>" />
+                            <asp:Localize ID="locCloudAhoy" runat="server" Text="<%$ Resources:Preferences, DebriefHeader %>" />
                         </Header>
                         <Content>
                             <uc1:mfbCloudAhoy runat="server" id="mfbCloudAhoy" />

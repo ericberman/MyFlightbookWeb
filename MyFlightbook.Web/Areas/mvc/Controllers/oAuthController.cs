@@ -1,12 +1,11 @@
-﻿using DotNetOpenAuth.OAuth2;
-using Newtonsoft.Json;
+﻿using DotNetOpenAuth.Messaging;
+using DotNetOpenAuth.OAuth2;
 using DotNetOpenAuth.OAuth2.Messages;
-using DotNetOpenAuth.Messaging;
+using MyFlightbook.OAuth.CloudAhoy;
 using OAuthAuthorizationServer.Code;
 using OAuthAuthorizationServer.Services;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
@@ -120,6 +119,15 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             OAuthServiceCall.ProcessRequest(id);
             return new EmptyResult();
+        }
+
+        [Authorize]
+        public ActionResult FlyStoRedir()
+        {
+            Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+            pf.SetPreferenceForKey(FlyStoClient.AccessTokenPrefKey, new FlyStoClient().ConvertToken(Request));
+            pf.FCommit();
+            return Redirect("~/Member/EditProfile.aspx/pftPrefs?pane=debrief");
         }
 
         // GET: mvc/oAuth

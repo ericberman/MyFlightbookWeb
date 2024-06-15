@@ -247,10 +247,38 @@ namespace MyFlightbook.OAuth
             return ConvertToken(new HttpRequestWrapper(Request));
         }
 
+        private IAuthorizationState ParseAuthResponse(string result, string redirEndpoint)
+        {
+            if (String.IsNullOrEmpty(result))
+                throw new MyFlightbookValidationException("Null access token returned - invalid authorization passed?");
+
+            // JSonConvert can't deserialize space-delimited scopes into a hashset, so we need to do that manually.  Uggh.
+            Dictionary<string, string> d = JsonConvert.DeserializeObject<Dictionary<string, string>>(result);
+
+            // REPORT Error - often it's if the URL we are redirecting to doesn't match the referrer, then it fails.  
+            if (d.TryGetValue("error", out string error) && !String.IsNullOrEmpty(error))
+                throw new MyFlightbookValidationException(error);
+
+            AuthorizationState authstate = new AuthorizationState(d.TryGetValue("scope", out string sc) ? OAuthUtilities.SplitScopes(sc) : null)
+            {
+                AccessToken = d.TryGetValue("access_token", out string acctok) ? acctok : string.Empty,
+                AccessTokenIssueDateUtc = DateTime.UtcNow
+            };
+            if (d.TryGetValue("expires_in", out string value))
+            {
+                if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int exp))
+                    authstate.AccessTokenExpirationUtc = DateTime.UtcNow.AddSeconds(exp);
+            }
+            authstate.RefreshToken = d.TryGetValue("refresh_token", out string reftok) ? reftok : string.Empty;
+            authstate.Callback = String.IsNullOrEmpty(redirEndpoint) ? null : new Uri(redirEndpoint);
+            return authstate;
+        }
+
         /// <summary>
         /// Convert an authorization token for an access token, bypassing DotNetOpenAuth (which surprisingly sometimes doesn't work; see https://github.com/ericberman/MyFlightbookWeb/issues/178 and https://github.com/DotNetOpenAuth/DotNetOpenAuth/issues/312
         /// </summary>
-        /// <param name="Request">The http request</param>
+        /// <param name="code">The code returned from the authorization step</param>
+        /// <param name="redirEndpoint">The redirect Uri used originally</param>
         /// <returns>The granted access token</returns>
         public async Task<IAuthorizationState> ConvertToken(string redirEndpoint, string code)
         {
@@ -277,29 +305,43 @@ namespace MyFlightbook.OAuth
                     return szResult;
                 });
 
-                if (String.IsNullOrEmpty(result))
-                    throw new MyFlightbookValidationException("Null access token returned - invalid authorization passed?");
+                return ParseAuthResponse(result, redirEndpoint);
+            }
+        }
 
-                // JSonConvert can't deserialize space-delimited scopes into a hashset, so we need to do that manually.  Uggh.
-                Dictionary<string, string> d = JsonConvert.DeserializeObject<Dictionary<string, string>>(result);
+        /// <summary>
+        /// Convert an authorization token for an access token, bypassing DotNetOpenAuth (which surprisingly sometimes doesn't work); this includes the redirect URI
+        /// </summary>
+        /// <param name="redirEndpoint">The redirect endpoint from the original request</param>
+        /// <param name="refreshToken">The refresh token</param>
+        /// <param name="refreshEndpoint">The endpoint for the refresh; if null, uses the token conversion endpoint</param>
+        /// <returns>The granted access token</returns>
+        public async Task<IAuthorizationState> RefreshAccessToken(string refreshToken, string redirEndpoint, string refreshEndpoint = null)
+        {
+            if (String.IsNullOrEmpty(redirEndpoint))
+                throw new ArgumentNullException(nameof(redirEndpoint));
+            if (String.IsNullOrEmpty(refreshToken))
+                throw new ArgumentNullException(nameof(refreshToken));
 
-                // REPORT Error - often it's if the URL we are redirecting to doesn't match the referrer, then it fails.  
-                if (d.TryGetValue("error", out string error) && !String.IsNullOrEmpty(error))
-                    throw new MyFlightbookValidationException(error);
+            Dictionary<string, string> dContent = new Dictionary<string, string>()
+            {
+                { "client_id" , AppKey},
+                { "client_secret", AppSecret},
+                { "redirect_uri", redirEndpoint },
+                { "grant_type", "refresh_token" },
+                { "refresh_token", refreshToken }
+            };
 
-                AuthorizationState authstate = new AuthorizationState(d.TryGetValue("scope", out string sc) ? OAuthUtilities.SplitScopes(sc) : null)
+            using (FormUrlEncodedContent c = new FormUrlEncodedContent(dContent))
+            {
+                string result = (string)await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri(refreshEndpoint ?? oAuth2TokenEndpoint), null, HttpMethod.Post, c, (response) =>
                 {
-                    AccessToken = d.TryGetValue("access_token", out string acctok) ? acctok : string.Empty,
-                    AccessTokenIssueDateUtc = DateTime.UtcNow
-                };
-                if (d.TryGetValue("expires_in", out string value))
-                {
-                    if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int exp))
-                        authstate.AccessTokenExpirationUtc = DateTime.UtcNow.AddSeconds(exp);
-                }
-                authstate.RefreshToken = d.TryGetValue("refresh_token", out string reftok) ? reftok : string.Empty;
-                authstate.Callback = String.IsNullOrEmpty(redirEndpoint) ? null : new Uri(redirEndpoint);
-                return authstate;
+                    string szResult = response.Content.ReadAsStringAsync().Result;
+                    response.EnsureSuccessStatusCode();
+                    return szResult;
+                });
+
+                return ParseAuthResponse(result, redirEndpoint);
             }
         }
 
@@ -308,12 +350,15 @@ namespace MyFlightbook.OAuth
         /// </summary>
         /// <param name="codeVerifier"></param>
         /// <returns></returns>
+
+        private static readonly char[] trimChars = new char[] { '=' };
+
         protected static string GenerateCodeChallenge(string codeVerifier)
         {
             using (var sha256 = SHA256.Create())
             {
                 var hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(codeVerifier));
-                return Convert.ToBase64String(hash).TrimEnd(new char[] { '=' }).Replace('+', '-').Replace('/', '_');
+                return Convert.ToBase64String(hash).TrimEnd(trimChars).Replace('+', '-').Replace('/', '_');
             }
         }
     }

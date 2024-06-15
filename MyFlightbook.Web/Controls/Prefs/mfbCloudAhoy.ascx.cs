@@ -6,7 +6,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2020 MyFlightbook LLC
+ * Copyright (c) 2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -24,6 +24,11 @@ namespace MyFlightbook.Web.Controls.Prefs
                 lnkAuthCloudAhoy.Text = Branding.ReBrand(Resources.Profile.AuthorizeCloudAhoy);
                 lnkDeAuthCloudAhoy.Text = Branding.ReBrand(Resources.Profile.DeAuthCloudAhoy);
                 locCloudAhoyIsAuthed.Text = Branding.ReBrand(Resources.Profile.CloudAhoyIsAuthed);
+
+                mvFlySto.SetActiveView(pf.PreferenceExists(FlyStoClient.AccessTokenPrefKey) ? vsDeAuthFlySto : vwAuthFlySto);
+                lnkAuthFlySto.Text = Branding.ReBrand(Resources.Profile.AuthorizeFlySto);
+                lnkDeAuthFlySto.Text = Branding.ReBrand(Resources.Profile.DeAuthFlySto);
+                locFlyStoIsAuthed.Text = Branding.ReBrand(Resources.Profile.FlyStoIsAuthed);
             }
         }
 
@@ -38,6 +43,18 @@ namespace MyFlightbook.Web.Controls.Prefs
             pf.CloudAhoyToken = null;
             pf.FCommit();
             mvCloudAhoy.SetActiveView(vwAuthCloudAhoy);
+        }
+
+        protected void lnkAuthFlySto_Click(object sender, EventArgs e)
+        {
+            new FlyStoClient().Authorize("~/mvc/oauth/flystoredir".ToAbsoluteURL(Request));
+        }
+
+        protected void lnkDeAuthFlySto_Click(object sender, EventArgs e)
+        {
+            Profile pf = Profile.GetUser(Page.User.Identity.Name);
+            pf.SetPreferenceForKey(FlyStoClient.AccessTokenPrefKey, null, true);
+            mvFlySto.SetActiveView(vwAuthFlySto);
         }
     }
 }

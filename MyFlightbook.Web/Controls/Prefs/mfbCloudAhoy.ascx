@@ -14,4 +14,18 @@
             </asp:MultiView>
         </td>
     </tr>
+    <tr>
+        <td><asp:Image ID="Image1" runat="server" ImageUrl="~/images/flysto.png" AlternateText="FlySto" ToolTip="FlySto" Height="28" /></td>
+        <td>
+            <asp:MultiView ID="mvFlySto" runat="server">
+                <asp:View ID="vwAuthFlySto" runat="server">
+                    <p><asp:LinkButton ID="lnkAuthFlySto" runat="server" OnClick="lnkAuthFlySto_Click" /></p>
+                </asp:View>
+                <asp:View ID="vsDeAuthFlySto" runat="server">
+                    <p><asp:Localize ID="locFlyStoIsAuthed" runat="server"></asp:Localize></p>
+                    <p><asp:LinkButton ID="lnkDeAuthFlySto" runat="server" OnClick="lnkDeAuthFlySto_Click" /></p>
+                </asp:View>
+            </asp:MultiView>
+        </td>
+    </tr>
 </table>

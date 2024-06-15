@@ -4,7 +4,7 @@ using System;
 
 /******************************************************
  * 
- * Copyright (c) 2019 MyFlightbook LLC
+ * Copyright (c) 2019-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -19,6 +19,6 @@ public partial class Public_CloudAhoyRedir : System.Web.UI.Page
             pf.CloudAhoyToken = new CloudAhoyClient(!Branding.CurrentBrand.MatchesHost(Request.Url.Host)).ConvertToken(Request);
             pf.FCommit();
         }
-        Response.Redirect("~/Member/EditProfile.aspx/pftPrefs?pane=cloudahoy");
+        Response.Redirect("~/Member/EditProfile.aspx/pftPrefs?pane=debrief");
     }
 }

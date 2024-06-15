@@ -4482,6 +4482,33 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Send to FlySto.
+        /// </summary>
+        internal static string SendToFlySto {
+            get {
+                return ResourceManager.GetString("SendToFlySto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flight sent to FlySto.
+        /// </summary>
+        internal static string SendToFlyStoSuccess {
+            get {
+                return ResourceManager.GetString("SendToFlyStoSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View on FlySto.
+        /// </summary>
+        internal static string SendToFlyStoView {
+            get {
+                return ResourceManager.GetString("SendToFlyStoView", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to End.
         /// </summary>
         internal static string ShortEnd {

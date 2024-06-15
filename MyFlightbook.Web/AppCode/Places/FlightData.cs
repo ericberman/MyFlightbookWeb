@@ -1562,7 +1562,7 @@ namespace MyFlightbook.Telemetry
             }
         }
 
-        public void WriteGPXData(Stream s, IEnumerable<Position> positions = null, bool hasTime = false, bool hasAlt = false, bool hasSpeed = false)
+        public void WriteGPXData(Stream s, IEnumerable<Position> positions = null, bool hasTime = false, bool hasAlt = false, bool hasSpeed = false, IDictionary<string, string> dictMeta = null)
         {
             Position[] rgPos = positions == null ? GetTrajectory() : positions.ToArray();
 
@@ -1586,6 +1586,17 @@ namespace MyFlightbook.Telemetry
                     gpx.WriteStartElement("gpx", "http://www.topografix.com/GPX/1/1");
                     gpx.WriteAttributeString("creator", "http://myflightbook.com");
                     gpx.WriteAttributeString("version", "1.1");
+
+                    if (dictMeta != null)
+                    {
+                        gpx.WriteStartElement("metadata");
+                        foreach (string key in dictMeta.Keys)
+                        {
+                            gpx.WriteElementString(key, dictMeta[key]);
+                        }
+                        gpx.WriteEndElement();  // metadata
+                    }
+
                     gpx.WriteStartElement("trk");
                     gpx.WriteStartElement("name");
                     gpx.WriteEndElement();

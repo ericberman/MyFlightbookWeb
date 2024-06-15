@@ -439,6 +439,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Authorize %APP_NAME% to work with FlySto.
+        /// </summary>
+        internal static string AuthorizeFlySto {
+            get {
+                return ResourceManager.GetString("AuthorizeFlySto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Authorize %APP_NAME% to save backups to your Google Drive account.
         /// </summary>
         internal static string AuthorizeGDrive {
@@ -777,6 +786,15 @@ namespace Resources {
         internal static string DeAuthDropbox {
             get {
                 return ResourceManager.GetString("DeAuthDropbox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deauthorize %APP_NAME% on FlySto.
+        /// </summary>
+        internal static string DeAuthFlySto {
+            get {
+                return ResourceManager.GetString("DeAuthFlySto", resourceCulture);
             }
         }
         
@@ -1407,6 +1425,15 @@ namespace Resources {
         internal static string errUnsubscribeNotFound {
             get {
                 return ResourceManager.GetString("errUnsubscribeNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have authorized %APP_NAME% to work with FlySto.
+        /// </summary>
+        internal static string FlyStoIsAuthed {
+            get {
+                return ResourceManager.GetString("FlyStoIsAuthed", resourceCulture);
             }
         }
         

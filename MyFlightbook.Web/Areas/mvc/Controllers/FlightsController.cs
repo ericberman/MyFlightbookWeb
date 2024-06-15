@@ -304,6 +304,21 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 return new EmptyResult();
             });
         }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async System.Threading.Tasks.Task<ActionResult> PushToFlySto(int idFlight, FlightData.SpeedUnitTypes speedUnits = FlightData.SpeedUnitTypes.MetersPerSecond, FlightData.AltitudeUnitTypes altUnits = FlightData.AltitudeUnitTypes.Meters)
+        {
+            return await SafeOp(async () =>
+            {
+                LogbookEntryDisplay led = new LogbookEntryDisplay(idFlight, User.Identity.Name, LogbookEntryCore.LoadTelemetryOption.LoadAll);
+                if (led.LastError != LogbookEntryCore.ErrorCode.None)
+                    throw new UnauthorizedAccessException();
+                string szLogID = await led.PushToFlySto(speedUnits, altUnits);
+                return Content(String.IsNullOrEmpty(szLogID) ? "https://www.flysto.net" : String.Format(CultureInfo.InvariantCulture, "https://www.flysto.net/logs/{0}", szLogID));
+            });
+        }
         #endregion
 
         #region Child views

@@ -180,6 +180,9 @@
   <data name="CustCurrencyDescription" xml:space="preserve">
     <value>You can define your own currency rules (can be useful for FBO or insurance rules)</value>
   </data>
+  <data name="DebriefHeader" xml:space="preserve">
+    <value>Debriefing Services</value>
+  </data>
   <data name="DecimalPref1Decimal" xml:space="preserve">
     <value>Decimal, 1 digit after decimal</value>
   </data>

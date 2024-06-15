@@ -4,6 +4,7 @@
 @using MyFlightbook.Mapping
 @using MyFlightbook.Telemetry
 @using System.Globalization
+@using MyFlightbook.OAuth.CloudAhoy
 @{
     ViewBag.Title = Resources.LogbookEntry.FlightDetailsHeader;
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
@@ -51,6 +52,21 @@
             complete: function () { $("#imgCloudAhoyProgress").hide(); },
             success: function (r) {
                 $("#pnlCloudAhoySuccess").show();
+            }
+        });
+    }
+
+    function sendToFlySto() {
+        $("#imgFlyStoProgress").show();
+        var f = $("#frmDownload").serialize();
+        $.ajax({
+            url: "@Url.Action("PushToFlySto", "Flights")",
+            type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            complete: function () { $("#imgFlyStoProgress").hide(); },
+            success: function (r) {
+                $("#lnkViewOnFlySto").prop("href", r);
+                $("#pnlFlyStoSuccess").show();
             }
         });
     }
@@ -344,22 +360,38 @@
             <tr>
                 <td></td>
                 <td>
-                    <button id="btnDownload" type="submit">@Resources.LogbookEntry.flightDetailsDownloadButton</button>
+                    <button id="btnDownload" type="submit" style="vertical-align: middle;">@Resources.LogbookEntry.flightDetailsDownloadButton</button>
                     @if (!String.IsNullOrEmpty(pf.CloudAhoyToken?.AccessToken))
                     {
-                        <span>&nbsp;&nbsp;&nbsp;</span>
-                        <a href="#" onclick="javascript: sendToCloudAhoy(); false;">
-                            <img id="imgClopudAhoy" style="padding-right: 10px" src="@("~/images/cloudahoy-sm.png".ToAbsolute())" alt="@Resources.LogbookEntry.SendToCloudAhoy" title="@Resources.LogbookEntry.SendToCloudAhoy" />
-                            @Resources.LogbookEntry.SendToCloudAhoy
-                            <img src="@("~/images/progress.gif".ToAbsolute())" style="display:none; height: 12pt;" id="imgCloudAhoyProgress" />
-                        </a>
-                        <div id="pnlCloudAhoySuccess" style="display:none;">
-                            <span class"success">@Resources.LogbookEntry.SendToCloudAhoySuccess </span>
-                            <ul class="nextStep">
-                                <li><a href="https://www.cloudahoy.com/flights" target="_blank">@Resources.LogbookEntry.SendToCloudAhoyView</a></li>
-                            </ul>
-                        </div>
+                        <img id="imgClopudAhoy" style="margin-right: .5em; vertical-align: middle; margin-left: 2em;" src="@("~/images/cloudahoy-sm.png".ToAbsolute())" alt="@Resources.LogbookEntry.SendToCloudAhoy" title="@Resources.LogbookEntry.SendToCloudAhoy" />
+                        <a href="#" onclick="javascript: sendToCloudAhoy(); return false;" style="vertical-align: middle;">@Resources.LogbookEntry.SendToCloudAhoy</a>
+                        <img src="@("~/images/progress.gif".ToAbsolute())" style="display:none; height: 12pt; vertical-align: middle;" id="imgCloudAhoyProgress" />
                     }
+                    @if (pf.PreferenceExists(FlyStoClient.AccessTokenPrefKey))
+                    {
+                        <img id="imgFlySto" style="height: 20px; vertical-align: middle; margin-left: 2em;" src="@("~/images/flysto-sm.png".ToAbsolute())" alt="@Resources.LogbookEntry.SendToFlySto" title="@Resources.LogbookEntry.SendToFlySto" />
+                        <a href="#" onclick="javascript: sendToFlySto(); return false;" style="vertical-align: middle;">@Resources.LogbookEntry.SendToFlySto</a>
+                        <img src="@("~/images/progress.gif".ToAbsolute())" style="display:none; height: 12pt; vertical-align: middle;" id="imgFlyStoProgress" />
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <div id="pnlCloudAhoySuccess" style="display:none;">
+                        <hr />
+                        <span class"success">@Resources.LogbookEntry.SendToCloudAhoySuccess </span>
+                        <ul class="nextStep">
+                            <li><a href="https://www.cloudahoy.com/flights" target="_blank">@Resources.LogbookEntry.SendToCloudAhoyView</a></li>
+                        </ul>
+                    </div>
+                    <div id="pnlFlyStoSuccess" style="display:none;">
+                        <hr />
+                        <span class"success">@Resources.LogbookEntry.SendToFlyStoSuccess </span>
+                        <ul class="nextStep">
+                            <li><a href="https://www.flysto.net/" id="lnkViewOnFlySto" target="_blank">@Resources.LogbookEntry.SendToFlyStoView</a></li>
+                        </ul>
+                    </div>
                 </td>
             </tr>
         </table>

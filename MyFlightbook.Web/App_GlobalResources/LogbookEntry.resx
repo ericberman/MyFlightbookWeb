@@ -1807,4 +1807,13 @@ Proceed with import?</value>
   <data name="ImportWizardAutofillPromptPart1" xml:space="preserve">
     <value>Autofill fields like night, cross-country, landings, or total flight time, assuming that...</value>
   </data>
+  <data name="SendToFlySto" xml:space="preserve">
+    <value>Send to FlySto</value>
+  </data>
+  <data name="SendToFlyStoSuccess" xml:space="preserve">
+    <value>Flight sent to FlySto</value>
+  </data>
+  <data name="SendToFlyStoView" xml:space="preserve">
+    <value>View on FlySto</value>
+  </data>
 </root>

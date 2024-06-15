@@ -1,4 +1,5 @@
-﻿using DotNetOpenAuth.OAuth2;
+﻿using AjaxControlToolkit;
+using DotNetOpenAuth.OAuth2;
 using HtmlAgilityPack;
 using MyFlightbook.ImportFlights.CloudAhoy;
 using MyFlightbook.Telemetry;
@@ -8,15 +9,17 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2021 MyFlightbook LLC
+ * Copyright (c) 2019-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -51,6 +54,127 @@ namespace MyFlightbook.OAuth.CloudAhoy
         }
     }
 
+    [Serializable]
+    internal class FlyStoClientPushResponse
+    {
+        public string fileID { get; set; }
+    }
+
+    [Serializable]
+    internal class FlyStoStatusResponse
+    {
+        public bool processed { get; set; }
+        public string[] logs { get; set; }
+    }
+
+    public class FlyStoClient: OAuthClientBase
+    {
+        private const string uploadEndpoint = "https://www.flysto.net/public-api/log-upload";
+        private const string statusEndpointTemplate = "https://www.flysto.net/public-api/log-files/{0}";
+
+        public const string AccessTokenPrefKey = "FlyStoAccessToken";
+
+        public FlyStoClient() : base("FlyStoAccessID", "FlyStoClientSecret", "https://www.flysto.net/oauth/authorize", "https://www.flysto.net/oauth/token") { }
+
+        protected FlyStoClient(IAuthorizationState authstate) : this()
+        {
+            AuthState = authstate;
+        }
+
+        public static async Task<FlyStoClient> RefreshedClientForUser(string szUsername)
+        {
+            if (String.IsNullOrEmpty(szUsername))
+                throw new ArgumentNullException(nameof(szUsername));
+
+            Profile pf = Profile.GetUser(szUsername);
+
+            FlyStoClient fsc = new FlyStoClient(pf.GetPreferenceForKey<AuthorizationState>(AccessTokenPrefKey));
+            if (fsc.AuthState == null)
+                throw new UnauthorizedAccessException("No FlySto Authorization State");
+
+            if (!fsc.CheckAccessToken() && !String.IsNullOrEmpty(fsc.AuthState.RefreshToken))
+            {
+                fsc.AuthState = await fsc.RefreshAccessToken(fsc.AuthState.RefreshToken, fsc.AuthState.Callback.ToString());
+                pf.SetPreferenceForKey(AccessTokenPrefKey, fsc.AuthState);
+            }
+
+            return fsc;
+        }
+
+        public async Task<string> LogIDFromFileID(string fileID)
+        {
+            if (String.IsNullOrEmpty(fileID))
+                throw new ArgumentNullException(nameof(fileID));
+
+            string statusEndpoint = String.Format(CultureInfo.InvariantCulture, statusEndpointTemplate, fileID);
+
+            return (string)await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri(statusEndpoint), AuthState.AccessToken, HttpMethod.Get, (response) =>
+            {
+                string result = string.Empty;
+                try
+                {
+                    result = response.Content.ReadAsStringAsync().Result;
+                    response.EnsureSuccessStatusCode();
+                    FlyStoStatusResponse fsr = JsonConvert.DeserializeObject<FlyStoStatusResponse>(result);
+                    return fsr.processed && fsr.logs.Length > 0 ? fsr.logs[0] : string.Empty;
+                }
+                catch (Exception ex) when (!(ex is OutOfMemoryException))
+                {
+                    // any error means processing has not finished - just return an empty string
+                    return string.Empty;
+                }
+            });
+        }
+
+        public async Task<string> PushGPX(LogbookEntry le, FlightData fd)
+        {
+            if (le == null)
+                throw new ArgumentNullException(nameof(le));
+            if (fd == null)
+                throw new ArgumentNullException(nameof(fd));
+
+            string result = string.Empty;
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                using (ZipArchive zip = new ZipArchive(ms, ZipArchiveMode.Create, true))
+                {
+                    ZipArchiveEntry zipArchiveEntry = zip.CreateEntry("path.gpx");
+
+                    using (Stream entryStream = zipArchiveEntry.Open())
+                    {
+                        using (StreamWriter swGPX = new StreamWriter(entryStream))
+                        {
+                            swGPX.Write(le.TelemetryAsGPX());
+                        }
+                    }
+                }
+
+                using (ByteArrayContent bac = new ByteArrayContent(ms.ToArray()))
+                {
+                    bac.Headers.ContentType = new MediaTypeHeaderValue("application/x-zip");
+                    bac.Headers.ContentDisposition = (new ContentDispositionHeaderValue("form-data") { Name = "path.zip", FileName = "path.zip" });
+
+                    string szResult = (string)await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri(uploadEndpoint), AuthState.AccessToken, bac, (response) =>
+                    {
+                        try
+                        {
+                            result = response.Content.ReadAsStringAsync().Result;
+                            response.EnsureSuccessStatusCode();
+                            return JsonConvert.DeserializeObject<FlyStoClientPushResponse>(result).fileID;
+                        }
+                        catch (HttpRequestException ex)
+                        {
+                            throw new MyFlightbookException(ex.Message + " " + response.ReasonPhrase + " " + result, ex);
+                        }
+                    });
+
+                    return szResult;
+                }
+            }
+        }
+    }
+
     /// <summary>
     /// CloudAhow class
     /// </summary>
@@ -61,11 +185,13 @@ namespace MyFlightbook.OAuth.CloudAhoy
 
         private string FlightsEndpoint { get; set; }
 
+        private static readonly string[] scopes = new string[] { "flights:read",  "flights:import" };
+
         public CloudAhoyClient(bool fUseSandbox = false) : base("CloudAhoyID",
             "CloudAhoySecret",
             String.Format(CultureInfo.InvariantCulture, "https://{0}/integration/v1/auth", fUseSandbox ? cloudAhoyDebugHost : cloudAhoyLiveHost),
             String.Format(CultureInfo.InvariantCulture, "https://{0}/integration/v1/token", fUseSandbox ? cloudAhoyDebugHost : cloudAhoyLiveHost),
-            new string[] { "flights:read",  "flights:import" })
+            scopes)
         {
             FlightsEndpoint = String.Format(CultureInfo.InvariantCulture, "https://{0}/integration/v1/flights", fUseSandbox ? cloudAhoyDebugHost : cloudAhoyLiveHost);
         }

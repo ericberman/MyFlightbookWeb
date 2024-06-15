@@ -5,6 +5,7 @@ using MyFlightbook.FlightStatistics;
 using MyFlightbook.Histogram;
 using MyFlightbook.Image;
 using MyFlightbook.Instruction;
+using MyFlightbook.OAuth.CloudAhoy;
 using MyFlightbook.Printing;
 using MyFlightbook.SocialMedia;
 using MyFlightbook.Telemetry;
@@ -2428,6 +2429,29 @@ WHERE f1.username = ?uName ");
         }
         #endregion
 
+        #region FlySto
+        /// <summary>
+        /// Pushes the flight to FlySto
+        /// </summary>
+        /// <param name="speedUnits"></param>
+        /// <param name="altUnits"></param>
+        /// <param name="fSandbox"></param>
+        /// <returns>The log ID of the resulting flight</returns>
+        public async Task<string> PushToFlySto(FlightData.SpeedUnitTypes speedUnits, FlightData.AltitudeUnitTypes altUnits)
+        {
+            using (FlightData fd = new FlightData())
+            {
+                fd.ParseFlightData(this);
+                fd.AltitudeUnits = altUnits;
+                fd.SpeedUnits = speedUnits;
+                FlyStoClient fsc = await FlyStoClient.RefreshedClientForUser(User).ConfigureAwait(false);
+                string fileID = await fsc.PushGPX(this, fd).ConfigureAwait(false);
+                System.Threading.Thread.Sleep(2000); // wait 2 seconds for processing.
+                return await fsc.LogIDFromFileID(fileID).ConfigureAwait(false);
+            }
+        }
+        #endregion
+
         #region Constructors
         public LogbookEntry() : base() { }
 
@@ -3074,6 +3098,15 @@ WHERE f1.username = ?uName ");
             if (String.IsNullOrEmpty(FlightData))
                 return string.Empty;
 
+            Aircraft ac = new Aircraft(AircraftID);
+            MakeModel mm = MakeModel.GetModel(ac.ModelID);
+            Dictionary<string, string> dictMeta = new Dictionary<string, string>()
+            {
+                {"tailnumber", TailNumDisplay },
+                {"model", ModelDisplay },
+                {"modelicao", mm.FamilyName }
+            };
+
             using (FlightData fd = new FlightData())
             {
                 using (MemoryStream ms = new MemoryStream())
@@ -3082,7 +3115,11 @@ WHERE f1.username = ?uName ");
                     {
                         MemoryStream bs = sr.BaseStream as MemoryStream;
                         if (fd.ParseFlightData(this) && fd.HasLatLongInfo)
-                            fd.WriteGPXData(bs);
+                        {
+                            if (fd.DataType == DataSourceType.FileType.GPX)
+                                return FlightData;
+                            fd.WriteGPXData(bs, dictMeta: dictMeta);
+                        }
                         bs.Seek(0, SeekOrigin.Begin);
                         return sr.ReadToEnd();
                     }

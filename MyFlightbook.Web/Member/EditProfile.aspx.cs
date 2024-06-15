@@ -397,6 +397,7 @@ namespace MyFlightbook.MemberPages
                         acpTarget = acpCustomCurrencies;
                         break;
                     case "cloudahoy":
+                    case "debrief":
                         acpTarget = acpCloudAhoy;
                         break;
                     case "props":

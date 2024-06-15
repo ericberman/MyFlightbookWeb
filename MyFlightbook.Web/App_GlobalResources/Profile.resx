@@ -737,4 +737,13 @@
   <data name="EmailMonthlySubjectYearInReview" xml:space="preserve">
     <value>Your flying totals for {0} and a review of {1}!</value>
   </data>
+  <data name="AuthorizeFlySto" xml:space="preserve">
+    <value>Authorize %APP_NAME% to work with FlySto</value>
+  </data>
+  <data name="DeAuthFlySto" xml:space="preserve">
+    <value>Deauthorize %APP_NAME% on FlySto</value>
+  </data>
+  <data name="FlyStoIsAuthed" xml:space="preserve">
+    <value>You have authorized %APP_NAME% to work with FlySto</value>
+  </data>
 </root>

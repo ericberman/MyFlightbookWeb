@@ -644,6 +644,8 @@
     <Content Include="images\BadgeOverlays\trend.svg" />
     <Content Include="images\Collapsed.png" />
     <Content Include="images\flightimportsample.png" />
+    <Content Include="images\flysto-sm.png" />
+    <Content Include="images\flysto.png" />
     <Content Include="images\fulldeflection.png" />
     <Content Include="images\globe.png" />
     <Content Include="images\inop.png" />
@@ -1620,6 +1622,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Secure\login.aspx" />
     <Content Include="Shunt.aspx" />
+    <Content Include="Support\2024-06-14 - AddFlysto.sql" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>

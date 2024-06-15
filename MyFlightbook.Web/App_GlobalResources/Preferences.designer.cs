@@ -250,6 +250,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Debriefing Services.
+        /// </summary>
+        internal static string DebriefHeader {
+            get {
+                return ResourceManager.GetString("DebriefHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Decimal, 1 digit after decimal.
         /// </summary>
         internal static string DecimalPref1Decimal {
