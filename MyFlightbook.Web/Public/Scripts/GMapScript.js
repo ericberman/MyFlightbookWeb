@@ -301,8 +301,11 @@ function MFBMap()
             if (mfbmarker.mfbMap.infoWindow)
                 mfbmarker.mfbMap.infoWindow.close();
 
-            mfbmarker.mfbMap.infoWindow = new google.maps.InfoWindow({ content: mfbmarker.bodyHTML });
+            mfbmarker.mfbMap.infoWindow = new google.maps.InfoWindow({ content: mfbmarker.bodyHTML, headerDisabled: true  });
             mfbmarker.mfbMap.infoWindow.open(mfbmarker.mfbMap.gmap, mfbmarker.marker);
+            google.maps.event.addListener(mfbmarker.mfbMap.gmap, "click", function (event) {
+                mfbmarker.mfbMap.infoWindow.close();
+            });
         });
         return mfbmarker.marker;
     };
