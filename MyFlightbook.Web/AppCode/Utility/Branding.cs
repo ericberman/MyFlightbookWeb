@@ -5,7 +5,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2023 MyFlightbook LLC
+ * Copyright (c) 2012-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -47,6 +47,11 @@ namespace MyFlightbook
         /// The URL for the logo for the app (upper corner)
         /// </summary>
         public string LogoHRef { get; private set; }
+
+        /// <summary>
+        /// The URL for the icon for a browser tab
+        /// </summary>
+        public string IconHRef { get; private set; }
 
         /// <summary>
         /// The Email address used for mail that gets sent from the app
@@ -132,6 +137,7 @@ namespace MyFlightbook
                             HostName = "myflightbook.com",
                             Root = "/logbook",
                             LogoHRef = "~/Images/mfblogonew.png",
+                            IconHRef = "~/Images/favicon.png",
                             StyleSheet = string.Empty,
                             EmailAddress = "noreply@mg.myflightbook.com",
                             FacebookFeed = "https://www.facebook.com/MyFlightbook",
@@ -147,6 +153,7 @@ namespace MyFlightbook
                             AppName = "MFBStaging",
                             HostName = "staging.myflightbook.com",
                             Root = "/logbook",
+                            IconHRef = "~/Images/favicon-stg.png",
                             LogoHRef = "~/Images/myflightbooknewstaging.png",
                             StyleSheet = "~/Public/CSS/staging.css",
                             EmailAddress = "noreply@mg.myflightbook.com",
@@ -158,6 +165,7 @@ namespace MyFlightbook
                             AppName = string.Empty,
                             HostName = "myflightbook.com",
                             Root = "/logbook",
+                            IconHRef = string.Empty,
                             LogoHRef = string.Empty,
                             StyleSheet = string.Empty,
                             EmailAddress = "noreply@mg.myflightbook.com",

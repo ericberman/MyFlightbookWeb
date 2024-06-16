@@ -643,6 +643,9 @@
     <Content Include="images\BadgeOverlays\globe.svg" />
     <Content Include="images\BadgeOverlays\trend.svg" />
     <Content Include="images\Collapsed.png" />
+    <Content Include="images\favicon-dev.png" />
+    <Content Include="images\favicon-stg.png" />
+    <Content Include="images\favicon.png" />
     <Content Include="images\flightimportsample.png" />
     <Content Include="images\flysto-sm.png" />
     <Content Include="images\flysto.png" />

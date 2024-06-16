@@ -7,7 +7,7 @@ using System.Web.UI.HtmlControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2023 MyFlightbook LLC
+ * Copyright (c) 2007-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -185,6 +185,7 @@ namespace MyFlightbook.Web
                 cssMain.Href = MFBConstants.BaseStylesheet.ToAbsoluteURL(Request).ToString();    // to enable forced reload
                 cssMobile.Visible = Request.IsMobileSession();
                 cssMobile.Href = ResolveUrl("~/Public/CSS/MobileSheet.css?v=8");
+                lnkfavicon.Href = ResolveUrl(Request.IsLocal ? "~/Images/favicon-dev.png" : Branding.CurrentBrand.IconHRef);
                 string szStyle = Branding.CurrentBrand.StyleSheet;
                 if (szStyle.Length > 0)
                 {
