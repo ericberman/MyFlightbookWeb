@@ -5,7 +5,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2022 MyFlightbook LLC
+ * Copyright (c) 2007-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -14,7 +14,7 @@ namespace MyFlightbook.Controls
 {
     public partial class mfbFooter : UserControl
     {
-        protected IDictionary<Brand.FooterLinkKey, BrandLink> Links { get; set; }
+        protected IReadOnlyDictionary<Brand.FooterLinkKey, BrandLink> Links { get; set; }
 
         private void BindLink(Brand.FooterLinkKey k, HyperLink l)
         {

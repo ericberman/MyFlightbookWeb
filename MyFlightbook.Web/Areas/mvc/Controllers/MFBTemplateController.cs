@@ -234,7 +234,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             if (IsNaked)
                 return Content(string.Empty);
 
-            IDictionary<Brand.FooterLinkKey, BrandLink> d;
+            IReadOnlyDictionary<Brand.FooterLinkKey, BrandLink> d;
             ViewBag.FooterLinks = d = Branding.CurrentBrand.FooterLinks();
 
             // Fix up any relative links

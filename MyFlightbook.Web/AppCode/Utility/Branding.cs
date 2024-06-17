@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Web;
 
 /******************************************************
@@ -105,6 +104,47 @@ namespace MyFlightbook
             AppName = HostName = Root = LogoHRef = EmailAddress = FacebookFeed = TwitterFeed = StyleSheet = BlogAddress = VideoRef = SwagRef = AWSBucket = AWSETSPipelineConfigKey = string.Empty;
         }
 
+        #region cached footer links
+        // Because the set of potential links and their branding doesn't change from request to request (other than RSS), only do the rebranding once and use that as a base to return later
+        private IReadOnlyDictionary<FooterLinkKey, BrandLink> _defFooterLinksMobile = null;
+        private IDictionary<FooterLinkKey, BrandLink> _defFooterLinksFull = null;
+
+        private IReadOnlyDictionary<FooterLinkKey, BrandLink> DefaultFooterLinksMobile
+        {
+            get
+            {
+                if (_defFooterLinksMobile == null)
+                    _defFooterLinksMobile = new Dictionary<FooterLinkKey, BrandLink>()
+                { { FooterLinkKey.Classic, new BrandLink() { Name = Resources.LocalizedText.footerClassicView, LinkRef = "~/Default.aspx?m=no" } } };
+                return _defFooterLinksMobile;
+            }
+        }
+
+        private IDictionary<FooterLinkKey, BrandLink> DefaultFooterLinks
+        {
+            get
+            {
+                if (_defFooterLinksFull == null)
+                    _defFooterLinksFull = new Dictionary<FooterLinkKey, BrandLink>()
+                    {
+                        { FooterLinkKey.About, new BrandLink() { Name = Branding.ReBrand(Resources.LocalizedText.AboutTitle, this), LinkRef = "~/mvc/pub/about"} },
+                        { FooterLinkKey.Privacy, new BrandLink() { Name = Resources.LocalizedText.footerPrivacy, LinkRef = "~/mvc/pub/Privacy"} },
+                        { FooterLinkKey.Terms, new BrandLink() {Name = Resources.LocalizedText.footerTerms, LinkRef = "~/mvc/pub/TandC" } },
+                        { FooterLinkKey.Developers, new BrandLink() {Name = Resources.LocalizedText.footerDevelopers, LinkRef = "~/Public/Developer.aspx" } },
+                        { FooterLinkKey.Contact, new BrandLink() {Name = Resources.LocalizedText.footerContact, LinkRef = "~/Public/ContactMe.aspx" } },
+                        { FooterLinkKey.FAQ, new BrandLink() {Name = Resources.LocalizedText.footerFAQ, LinkRef = "~/mvc/faq" } },
+                        { FooterLinkKey.Videos, new BrandLink() {Name = Resources.LocalizedText.footerVideos, OpenInNewPage=true, LinkRef = VideoRef } },
+                        { FooterLinkKey.Blog , new BrandLink() { Name=Resources.LocalizedText.footerBlog, OpenInNewPage = true, LinkRef = BlogAddress } },
+                        { FooterLinkKey.Mobile, new BrandLink() {Name = Resources.LocalizedText.footerMobileAccess, LinkRef = "~/DefaultMini.aspx" } },
+                        { FooterLinkKey.Facebook, new BrandLink() {Name = Branding.ReBrand(Resources.LocalizedText.FollowOnFacebook, this), OpenInNewPage = true, LinkRef = FacebookFeed, ImageRef = "~/images/f_logo_20.png" } },
+                        { FooterLinkKey.Twitter, new BrandLink() { Name = Branding.ReBrand(Resources.LocalizedText.FollowOnTwitter, this), OpenInNewPage = true, LinkRef = TwitterFeed, ImageRef = "~/images/twitter_round_20.png" } },
+                        { FooterLinkKey.Swag, new BrandLink() {Name = Branding.ReBrand(Resources.LocalizedText.BuySwag, this), OpenInNewPage = true, LinkRef = SwagRef } }
+                    };
+                return new Dictionary<FooterLinkKey, BrandLink>(_defFooterLinksFull);
+            }
+        }
+        #endregion
+
         private const string szPrefixToIgnore = "www.";
 
         /// <summary>
@@ -122,61 +162,50 @@ namespace MyFlightbook
             return String.Compare(HostName, szHost, StringComparison.OrdinalIgnoreCase) == 0;
         }
 
-        static private Collection<Brand> _knownBrands;
-
-        static public Collection<Brand> KnownBrands
+        static internal readonly List<Brand> KnownBrands = new List<Brand>()
         {
-            get
+            new Brand(BrandID.brandMyFlightbook)
             {
-                if (_knownBrands == null)
-                {
-                    _knownBrands = new Collection<Brand> {
-                        new Brand(BrandID.brandMyFlightbook)
-                        {
-                            AppName = "MyFlightbook",
-                            HostName = "myflightbook.com",
-                            Root = "/logbook",
-                            LogoHRef = "~/Images/mfblogonew.png",
-                            IconHRef = "~/Images/favicon.png",
-                            StyleSheet = string.Empty,
-                            EmailAddress = "noreply@mg.myflightbook.com",
-                            FacebookFeed = "https://www.facebook.com/MyFlightbook",
-                            // TwitterFeed = "https://twitter.com/MyFlightbook",
-                            SwagRef = "https://www.cafepress.com/shop/MyFlightbookSwagShop/products?designId=134274099",
-                            BlogAddress = "https://myflightbookblog.blogspot.com/",
-                            VideoRef = "https://www.youtube.com/channel/UC6oqJL-aLMEagSyV0AKkIoQ?view_as=subscriber",
-                            AWSBucket = "mfbimages",
-                            AWSETSPipelineConfigKey = "ETSPipelineID"
-                        },
-                        new Brand(BrandID.brandMyFlightbookStaging)
-                        {
-                            AppName = "MFBStaging",
-                            HostName = "staging.myflightbook.com",
-                            Root = "/logbook",
-                            IconHRef = "~/Images/favicon-stg.png",
-                            LogoHRef = "~/Images/myflightbooknewstaging.png",
-                            StyleSheet = "~/Public/CSS/staging.css",
-                            EmailAddress = "noreply@mg.myflightbook.com",
-                            AWSBucket = "mfb-staging",
-                            AWSETSPipelineConfigKey = "ETSPipelineIDStaging"
-                        },
-                        new Brand(BrandID.brandNone)
-                        {
-                            AppName = string.Empty,
-                            HostName = "myflightbook.com",
-                            Root = "/logbook",
-                            IconHRef = string.Empty,
-                            LogoHRef = string.Empty,
-                            StyleSheet = string.Empty,
-                            EmailAddress = "noreply@mg.myflightbook.com",
-                            AWSBucket = "mfbimages",
-                            AWSETSPipelineConfigKey = "ETSPipelineID"
-                        }
-                    };
-                }
-                return _knownBrands;
+                AppName = "MyFlightbook",
+                HostName = "myflightbook.com",
+                Root = "/logbook",
+                LogoHRef = "~/Images/mfblogonew.png",
+                IconHRef = "~/Images/favicon.png",
+                StyleSheet = string.Empty,
+                EmailAddress = "noreply@mg.myflightbook.com",
+                FacebookFeed = "https://www.facebook.com/MyFlightbook",
+                // TwitterFeed = "https://twitter.com/MyFlightbook",
+                SwagRef = "https://www.cafepress.com/shop/MyFlightbookSwagShop/products?designId=134274099",
+                BlogAddress = "https://myflightbookblog.blogspot.com/",
+                VideoRef = "https://www.youtube.com/channel/UC6oqJL-aLMEagSyV0AKkIoQ?view_as=subscriber",
+                AWSBucket = "mfbimages",
+                AWSETSPipelineConfigKey = "ETSPipelineID"
+            },
+            new Brand(BrandID.brandMyFlightbookStaging)
+            {
+                AppName = "MFBStaging",
+                HostName = "staging.myflightbook.com",
+                Root = "/logbook",
+                IconHRef = "~/Images/favicon-stg.png",
+                LogoHRef = "~/Images/myflightbooknewstaging.png",
+                StyleSheet = "~/Public/CSS/staging.css",
+                EmailAddress = "noreply@mg.myflightbook.com",
+                AWSBucket = "mfb-staging",
+                AWSETSPipelineConfigKey = "ETSPipelineIDStaging"
+            },
+            new Brand(BrandID.brandNone)
+            {
+                AppName = string.Empty,
+                HostName = "myflightbook.com",
+                Root = "/logbook",
+                IconHRef = string.Empty,
+                LogoHRef = string.Empty,
+                StyleSheet = string.Empty,
+                EmailAddress = "noreply@mg.myflightbook.com",
+                AWSBucket = "mfbimages",
+                AWSETSPipelineConfigKey = "ETSPipelineID"
             }
-        }
+        };
 
         public enum FooterLinkKey
         {
@@ -188,35 +217,18 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="szUser"></param>
         /// <returns></returns>
-        public IDictionary<FooterLinkKey, BrandLink> FooterLinks()
+        public IReadOnlyDictionary<FooterLinkKey, BrandLink> FooterLinks()
         {
             // only one brand link in mobile layout
             if (HttpContext.Current != null && HttpContext.Current.Request.IsMobileSession())
-                return new Dictionary<FooterLinkKey, BrandLink>()
-                {
-                    { FooterLinkKey.Classic, new BrandLink() { Name = Resources.LocalizedText.footerClassicView, LinkRef = "~/Default.aspx?m=no" } },
-                };
+                return DefaultFooterLinksMobile;
 
-            Dictionary<FooterLinkKey, BrandLink> d = new Dictionary<FooterLinkKey, BrandLink>()
-            {
-                { FooterLinkKey.About, new BrandLink() { Name = Branding.ReBrand(Resources.LocalizedText.AboutTitle), LinkRef = "~/mvc/pub/about"} },
-                { FooterLinkKey.Privacy, new BrandLink() { Name = Resources.LocalizedText.footerPrivacy, LinkRef = "~/mvc/pub/Privacy"} },
-                { FooterLinkKey.Terms, new BrandLink() {Name = Resources.LocalizedText.footerTerms, LinkRef = "~/mvc/pub/TandC" } },
-                { FooterLinkKey.Developers, new BrandLink() {Name = Resources.LocalizedText.footerDevelopers, LinkRef = "~/Public/Developer.aspx" } },
-                { FooterLinkKey.Contact, new BrandLink() {Name = Resources.LocalizedText.footerContact, LinkRef = "~/Public/ContactMe.aspx" } },
-                { FooterLinkKey.FAQ, new BrandLink() {Name = Resources.LocalizedText.footerFAQ, LinkRef = "~/mvc/faq" } },
-                { FooterLinkKey.Videos, new BrandLink() {Name = Resources.LocalizedText.footerVideos, OpenInNewPage=true, LinkRef = VideoRef } },
-                { FooterLinkKey.Blog , new BrandLink() { Name=Resources.LocalizedText.footerBlog, OpenInNewPage = true, LinkRef = BlogAddress } },
-                { FooterLinkKey.Mobile, new BrandLink() {Name = Resources.LocalizedText.footerMobileAccess, LinkRef = "~/DefaultMini.aspx" } },
-                { FooterLinkKey.Facebook, new BrandLink() {Name = Branding.ReBrand(Resources.LocalizedText.FollowOnFacebook), OpenInNewPage = true, LinkRef = FacebookFeed, ImageRef = "~/images/f_logo_20.png" } },
-                { FooterLinkKey.Twitter, new BrandLink() { Name = Branding.ReBrand(Resources.LocalizedText.FollowOnTwitter), OpenInNewPage = true, LinkRef = TwitterFeed, ImageRef = "~/images/twitter_round_20.png" } },
-                { FooterLinkKey.Swag, new BrandLink() {Name = Branding.ReBrand(Resources.LocalizedText.BuySwag), OpenInNewPage = true, LinkRef = SwagRef } }
-            };
+            IDictionary<FooterLinkKey, BrandLink> d = DefaultFooterLinks;
 
             string szUser = HttpContext.Current?.User?.Identity?.Name;
 
             // only offer RSS feed on a secure, authenticated connection.
-            if (!String.IsNullOrWhiteSpace(szUser) && HttpContext.Current != null && HttpContext.Current.Request != null && HttpContext.Current.Request.IsAuthenticated && HttpContext.Current.Request.IsSecureConnection)
+            if (!String.IsNullOrWhiteSpace(szUser) && (HttpContext.Current?.Request?.IsAuthenticated ?? false) && HttpContext.Current.Request.IsSecureConnection)
             {
                 Encryptors.SharedDataEncryptor ec = new Encryptors.SharedDataEncryptor("mfb");
                 string szEncrypted = ec.Encrypt(szUser);
@@ -229,7 +241,7 @@ namespace MyFlightbook
                 d[FooterLinkKey.RSS] = l;
             }
 
-            return d;
+            return (IReadOnlyDictionary<FooterLinkKey, BrandLink>) d;
         }
     }
 
