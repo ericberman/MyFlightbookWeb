@@ -1,0 +1,93 @@
+﻿@using System.Globalization
+@{
+    MyFlightbook.Profile viewer = ViewBag.viewer;
+    IEnumerable<PendingFlight> rgpf = ViewBag.pendingFlights;
+    int pageSize = ViewBag.pageSize;
+    int offset = ViewBag.offset;
+    int curPage = ViewBag.curPage;
+    int numPages = ViewBag.numPages;
+}
+<table class="lbTable" id="tblPending">
+    <thead>
+        <tr class="gvhDefault" style="vertical-align: bottom">
+            <th class="headerBase headerSortDesc gvhLeft" style="text-align: left;" onclick="javascript: sortTable(this, 0, 'date', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.LogbookEntry.FieldFlight</th>
+            <th class="headerBase gvhCentered" onclick="javascript: sortTable(this, 1, '', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.LogbookEntry.FieldTail</th>
+            <th class="headerBase gvhCentered" onclick="javascript: sortTable(this, 2, 'num', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.LogbookEntry.PrintHeaderApproaches</th>
+            <th class="headerBase gvhCentered" onclick="javascript: sortTable(this, 3, '', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.LogbookEntry.FieldHold</th>
+            <th class="headerBase gvhCentered" onclick="javascript: sortTable(this, 4, 'num', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.LogbookEntry.PrintHeaderLandingsShort</th>
+            <th class="headerBase gvhCentered" onclick="javascript: sortTable(this, 5, 'num', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.LogbookEntry.FieldXCountry</th>
+            <th class="headerBase gvhCentered" onclick="javascript: sortTable(this, 6, 'num', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.LogbookEntry.FieldNight</th>
+            <th class="headerBase gvhCentered" onclick="javascript: sortTable(this, 7, 'num', 'hdnSortIndex', 'hdnLastSortDir');">@Html.Raw(Resources.LogbookEntry.FieldSimIMC)</th>
+            <th class="headerBase gvhCentered" onclick="javascript: sortTable(this, 8, 'num', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.LogbookEntry.FieldIMC</th>
+            <th class="headerBase gvhCentered" onclick="javascript: sortTable(this, 9, 'num', 'hdnSortIndex', 'hdnLastSortDir');">@Html.Raw(Resources.LogbookEntry.FieldGroundSim)</th>
+            <th class="headerBase gvhCentered" onclick="javascript: sortTable(this, 10, 'num', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.LogbookEntry.FieldDual</th>
+            <th class="headerBase gvhCentered" onclick="javascript: sortTable(this, 11, 'num', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.LogbookEntry.FieldCFI</th>
+            <th class="headerBase gvhCentered" onclick="javascript: sortTable(this, 12, 'num', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.LogbookEntry.FieldSIC</th>
+            <th class="headerBase gvhCentered" onclick="javascript: sortTable(this, 13, 'num', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.LogbookEntry.FieldPIC</th>
+            <th class="headerBase gvhCentered" onclick="javascript: sortTable(this, 14, 'num', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.LogbookEntry.FieldTotal</th>
+            <th class="noprint"></th>
+            <th class="noprint"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (PendingFlight pf in rgpf)
+        {
+            <tr class="logbookRow logbookRowEven">
+                <td class="gvcLeft">
+                    <span style="display:none">@pf.Date.YMDString()</span>
+                    <div>
+                        <a href="@String.Format(CultureInfo.InvariantCulture, "{0}/{1}", "~/mvc/FlightEdit/PendingFlights".ToAbsolute(), pf.PendingID)" style="font-weight: bold; font-size: larger">@pf.Date.ToShortDateString()</a>
+                        <span style="font-weight: bold">@pf.Route</span>
+                        <div style="clear: left; white-space: pre-line;" dir="auto">@Html.Raw(ApproachDescription.ReplaceApproaches(pf.Comment.Linkify()))</div>
+                    </div>
+                    <div>
+                        @if (viewer.DisplayTimesByDefault)
+                        {
+                            <div>@LogbookEntryDisplay.FormatEngineTime(pf.EngineStart, pf.EngineEnd, viewer.UsesUTCDateOfFlight, viewer.UsesHHMM)</div>
+                            <div>@LogbookEntryDisplay.FormatFlightTime(pf.FlightStart, pf.FlightEnd, viewer.UsesUTCDateOfFlight, viewer.UsesHHMM)</div>
+                            <div>@LogbookEntryDisplay.FormatHobbs(pf.HobbsStart, pf.HobbsEnd)</div>
+                        }
+                    </div>
+                    <div>
+                        @foreach (string s in CustomFlightProperty.PropDisplayAsList(pf.CustomProperties, viewer.UsesHHMM, true, true))
+                        {
+                            <div>@s</div>
+                        }
+                    </div>
+                </td>
+                <td class="gvcCentered">@pf.TailNumDisplay</td>
+                <td class="gvcCentered">@pf.Approaches.FormatInt()<span style="display:none">@pf.Approaches.ToString(CultureInfo.InvariantCulture)</span></td>
+                <td class="gvcCentered">@Html.Raw(pf.fHoldingProcedures.FormatBoolean())</td>
+                <td class="gvcCentered">@LogbookEntryDisplay.LandingDisplayForFlight(pf)<span style="display:none">@pf.Landings.ToString(CultureInfo.InvariantCulture)</span></td>
+                <td class="gvcCentered">@pf.CrossCountry.FormatDecimal(viewer.UsesHHMM)<span style="display:none">@pf.CrossCountry.ToString(CultureInfo.InvariantCulture)</span></td>
+                <td class="gvcCentered">@pf.Nighttime.FormatDecimal(viewer.UsesHHMM)<span style="display:none">@pf.Nighttime.ToString(CultureInfo.InvariantCulture)</span></td>
+                <td class="gvcCentered">@pf.SimulatedIFR.FormatDecimal(viewer.UsesHHMM)<span style="display:none">@pf.SimulatedIFR.ToString(CultureInfo.InvariantCulture)</span></td>
+                <td class="gvcCentered">@pf.IMC.FormatDecimal(viewer.UsesHHMM)<span style="display:none">@pf.IMC.ToString(CultureInfo.InvariantCulture)</span></td>
+                <td class="gvcCentered">@pf.GroundSim.FormatDecimal(viewer.UsesHHMM)<span style="display:none">@pf.GroundSim.ToString(CultureInfo.InvariantCulture)</span></td>
+                <td class="gvcCentered">@pf.Dual.FormatDecimal(viewer.UsesHHMM)<span style="display:none">@pf.Dual.ToString(CultureInfo.InvariantCulture)</span></td>
+                <td class="gvcCentered">@pf.CFI.FormatDecimal(viewer.UsesHHMM)<span style="display:none">@pf.CFI.ToString(CultureInfo.InvariantCulture)</span></td>
+                <td class="gvcCentered">@pf.SIC.FormatDecimal(viewer.UsesHHMM)<span style="display:none">@pf.SIC.ToString(CultureInfo.InvariantCulture)</span></td>
+                <td class="gvcCentered">@pf.PIC.FormatDecimal(viewer.UsesHHMM)<span style="display:none">@pf.PIC.ToString(CultureInfo.InvariantCulture)</span></td>
+                <td class="gvcCentered">@pf.TotalFlightTime.FormatDecimal(viewer.UsesHHMM)<span style="display:none">@pf.TotalFlightTime.ToString(CultureInfo.InvariantCulture)</span></td>
+                <td class="noprint"></td>
+                <td class="noprint"><img src="@("~/images/x.gif".ToAbsolute())" style="padding-right: 10px;" alt="@Resources.LogbookEntry.LogbookDeleteTooltip" title="@Resources.LogbookEntry.LogbookDeleteTooltip" onclick="javascript: deletePendingFlight('@pf.PendingID');" /></td>
+            </tr>
+        }
+    </tbody>
+</table>
+@if (numPages > 1)
+{
+    <div id="pnlPager" CssClass="lbTable noprint" DefaultButton="btnSetPage" style="padding: 5px; width: 100%; text-align: center;">
+        @if (curPage > 0)
+        {
+            <a href="#" onclick="javascript: navigateToPage(0, @pageSize); return false;">&lt;&lt;</a>
+            <a href="#" onclick="javascript: navigateToPage(@(curPage - 1), @pageSize); return false;">&lt;</a>
+        }
+        @String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrintedFooterPageCountWithTotals, curPage + 1, numPages )
+        @if (curPage < numPages - 1)
+        {
+            <a href="#" onclick="javascript: navigateToPage(@(curPage + 1), @pageSize); return false;">&gt;</a>
+            <a href="#" onclick="javascript: navigateToPage(@(numPages - 1), @pageSize); return false;">&gt;&gt;</a>
+        }
+    </div>
+}

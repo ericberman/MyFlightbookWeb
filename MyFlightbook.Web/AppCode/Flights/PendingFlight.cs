@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Web;
 
 /******************************************************
  * 
@@ -101,16 +102,50 @@ namespace MyFlightbook
         #endregion
 
         #region Database
+        #region Caching
+        private const string szCacheKeyPrefix = "pendingFlights";
+
+        static private string CacheKeyForUser(string szUser)
+        {
+            return szCacheKeyPrefix + szUser;
+        }
+
+        static private void CacheForUser(string szUser, IEnumerable<PendingFlight> flights)
+        {
+            if (String.IsNullOrEmpty(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+
+            if (flights == null)
+                HttpContext.Current?.Cache?.Remove(CacheKeyForUser(szUser));
+            else
+                HttpContext.Current?.Cache?.Add(CacheKeyForUser(szUser), flights, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), System.Web.Caching.CacheItemPriority.Default, null);
+        }
+
+        static private IEnumerable<PendingFlight> CachedFlightsForUser(string szUser)
+        {
+            if (String.IsNullOrEmpty(szUser)) 
+                throw new ArgumentNullException(nameof(szUser));
+            return (IEnumerable<PendingFlight>)HttpContext.Current?.Cache[CacheKeyForUser(szUser)];
+        }
+        #endregion
+
         /// <summary>
-        /// Get any pending flights for the specified user
+        /// Get any pending flights for the specified user.  Results are cached.
         /// </summary>
         /// <param name="szUser">username for whom to retrieve flights</param>
         /// <returns>An enumerable of flights</returns>
         static public IEnumerable<PendingFlight> PendingFlightsForUser(string szUser)
         {
+            if (String.IsNullOrEmpty(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+
             UserAircraft ua = new UserAircraft(szUser);
             List<PendingFlight> flightsToMap = new List<PendingFlight>();
             HashSet<string> missingAircraft = new HashSet<string>();
+
+            IEnumerable<PendingFlight> cached = CachedFlightsForUser(szUser);
+            if (cached != null)
+                return cached;
 
             List<PendingFlight> lst = new List<PendingFlight>();
             DBHelper dbh = new DBHelper("SELECT * FROM pendingflights WHERE username=?user");
@@ -148,6 +183,7 @@ namespace MyFlightbook
 
             // Sort by date, desc
             lst.Sort((l1, l2) => { return CompareFlights(l1, l2, "Date", System.Web.UI.WebControls.SortDirection.Descending); });
+            CacheForUser(szUser, lst);
             return lst;
         }
 
@@ -166,22 +202,13 @@ namespace MyFlightbook
             return d;
         }
 
-        /// <summary>
-        /// Deletes the pending flight from the pending flights table
-        /// </summary>
-        /// <param name="id">The id of the flight to delete</param>
-        static public void DeletePendingFlight(string id)
-        {
-            DBHelper dbh = new DBHelper("DELETE FROM pendingflights WHERE id=?idflight");
-            dbh.DoNonQuery((comm) => { comm.Parameters.AddWithValue("idflight", id); });
-        }
-
         static public void DeletePendingFlightsForUser(string szUser)
         {
             if (String.IsNullOrEmpty(szUser))
                 throw new ArgumentNullException(nameof(szUser));
             DBHelper dbh = new DBHelper("DELETE FROM pendingflights WHERE username=?uname");
             dbh.DoNonQuery((comm) => { comm.Parameters.AddWithValue("uname", szUser); });
+            CacheForUser(szUser, null); // flush the cache
         }
 
         /// <summary>
@@ -189,7 +216,11 @@ namespace MyFlightbook
         /// </summary>
         public void Delete()
         {
-            DeletePendingFlight(this.PendingID);
+            if (String.IsNullOrEmpty(User))
+                throw new InvalidOperationException("User is empty for this object");
+            DBHelper dbh = new DBHelper("DELETE FROM pendingflights WHERE id=?idflight");
+            dbh.DoNonQuery((comm) => { comm.Parameters.AddWithValue("idflight", PendingID); });
+            CacheForUser(User, null); // flush the cache
         }
 
         /// <summary>
@@ -219,6 +250,7 @@ namespace MyFlightbook
                 comm.Parameters.AddWithValue("json", szJSON);
                 comm.Parameters.AddWithValue("idflight", PendingID);
             });
+            CacheForUser(User, null);
         }
 
         /// <summary>
@@ -230,7 +262,7 @@ namespace MyFlightbook
         public override bool FCommit(bool fUpdateFlightData = false, bool fUpdateSignature = false)
         {
             if (FlightID >= 0)
-                FlightID = LogbookEntry.idFlightNew;    // might have been 0 to go up/down the wire.
+                FlightID = idFlightNew;    // might have been 0 to go up/down the wire.
             bool fSuccess = base.FCommit(fUpdateFlightData, fUpdateSignature);
             if (fSuccess)
                 Delete();

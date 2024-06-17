@@ -251,18 +251,11 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
-        public ActionResult UpdatePropset(string szTargetUser, string propTuples, bool fHHMM, int[] activeTemplateIDs, bool fStripDefault, int idFlight, string dtDefault, int idAircraft = Aircraft.idAircraftUnknown)
+        public ActionResult PendingFlightsInRange(int offset, int pageSize)
         {
             return SafeOp(() =>
             {
-                // check that the current user can edit the target user's flights.
-                if (!(CheckCanViewFlights(szTargetUser, User.Identity.Name)?.CanAddLogbook ?? true))
-                    throw new UnauthorizedAccessException();
-
-                TimeZoneInfo tz = MyFlightbook.Profile.GetUser(User.Identity.Name).PreferredTimeZone;
-
-                IEnumerable<PropertyTemplate> userTemplates = UserPropertyTemplate.TemplatesForUser(szTargetUser, true);
-                return PropSetEditor(szTargetUser, CustomFlightProperty.PropertiesFromJSONTuples(propTuples, idFlight, DateTime.Parse(dtDefault, CultureInfo.CurrentCulture, DateTimeStyles.None), CultureInfo.CurrentCulture), fHHMM, PropertyTemplate.TemplatesFromIDs(userTemplates, PropertyTemplate.RefreshForAicraft(szTargetUser, idAircraft, activeTemplateIDs ?? Array.Empty<int>())), tz, fStripDefault);
+                return PendingFlightsTable(offset, pageSize);
             });
         }
         #endregion
@@ -284,6 +277,24 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (le.IsNewFlight && !(le is PendingFlight))
                     Session[keySessionInProgress] = le;
                 return new EmptyResult();
+            });
+        }
+
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult UpdatePropset(string szTargetUser, string propTuples, bool fHHMM, int[] activeTemplateIDs, bool fStripDefault, int idFlight, string dtDefault, int idAircraft = Aircraft.idAircraftUnknown)
+        {
+            return SafeOp(() =>
+            {
+                // check that the current user can edit the target user's flights.
+                if (!(CheckCanViewFlights(szTargetUser, User.Identity.Name)?.CanAddLogbook ?? true))
+                    throw new UnauthorizedAccessException();
+
+                TimeZoneInfo tz = MyFlightbook.Profile.GetUser(User.Identity.Name).PreferredTimeZone;
+
+                IEnumerable<PropertyTemplate> userTemplates = UserPropertyTemplate.TemplatesForUser(szTargetUser, true);
+                return PropSetEditor(szTargetUser, CustomFlightProperty.PropertiesFromJSONTuples(propTuples, idFlight, DateTime.Parse(dtDefault, CultureInfo.CurrentCulture, DateTimeStyles.None), CultureInfo.CurrentCulture), fHHMM, PropertyTemplate.TemplatesFromIDs(userTemplates, PropertyTemplate.RefreshForAicraft(szTargetUser, idAircraft, activeTemplateIDs ?? Array.Empty<int>())), tz, fStripDefault);
             });
         }
         #endregion
@@ -637,6 +648,19 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.fHHMM = fHHMM;
             return PartialView("_coreField");
         }
+
+        [ChildActionOnly]
+        public ActionResult PendingFlightsTable(int offset, int pageSize)
+        {
+            List<PendingFlight> lst = new List<PendingFlight>(PendingFlight.PendingFlightsForUser(User.Identity.Name));
+            ViewBag.pendingFlights = lst.GetRange(offset, Math.Min(pageSize, lst.Count - offset));
+            ViewBag.pageSize = pageSize;
+            ViewBag.offset = offset;
+            ViewBag.curPage = (offset / pageSize);
+            ViewBag.numPages = (lst.Count / pageSize) + 1;
+            ViewBag.viewer = MyFlightbook.Profile.GetUser(User.Identity.Name);
+            return PartialView("_pendingFlightTable");
+        }
         #endregion
 
         #region Visible Endpoints
@@ -667,6 +691,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     return RedirectToAction("PendingFlights", new { id = string.Empty });
             }
             ViewBag.onSave = "flightSaved";
+            ViewBag.pageSize = 25;
             return View("reviewPending");
         }
 

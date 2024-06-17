@@ -1607,6 +1607,7 @@
     <Content Include="Areas\mvc\Views\FlightEdit\_videoRefs.cshtml" />
     <Content Include="Areas\mvc\Views\Image\_googlePhoto.cshtml" />
     <Content Include="Areas\mvc\Views\MFBTemplate\_dateEdit.cshtml" />
+    <Content Include="Areas\mvc\Views\FlightEdit\_pendingFlightTable.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
