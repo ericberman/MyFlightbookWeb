@@ -11,6 +11,7 @@ using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
@@ -770,7 +771,7 @@ namespace MyFlightbook
         /// <summary>
         /// Convenience dictionary of associated data for other that want to piggy back on Profile caching.
         /// </summary>
-        public IDictionary<string, object> AssociatedData { get; private set; } = new Dictionary<string, object>();
+        public IDictionary<string, object> AssociatedData { get; private set; } = new ConcurrentDictionary<string, object>();
         #endregion
 
         /// <summary>
