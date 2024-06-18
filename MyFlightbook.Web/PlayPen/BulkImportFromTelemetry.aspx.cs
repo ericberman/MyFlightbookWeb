@@ -6,7 +6,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2020 MyFlightbook LLC
+ * Copyright (c) 2020-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -71,6 +71,6 @@ public partial class BulkImportFromTelemetry : MyFlightbook.Web.WizardPage.MFBWi
 
     protected void wzFlightsFromTelemetry_FinishButtonClick(object sender, WizardNavigationEventArgs e)
     {
-        Response.Redirect("~/Member/ReviewPendingFlights.aspx");
+        Response.Redirect("~/mvc/flightedit/pending");
     }
 }

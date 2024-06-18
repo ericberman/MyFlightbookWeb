@@ -475,7 +475,7 @@ namespace MyFlightbook.ImportFlights
             if (String.IsNullOrEmpty(szResult))
             {
                 // Avoid a "Thread was being aborted" (ThreadAbortException).
-                Response.Redirect("~/Member/ReviewPendingFlights.aspx", false);
+                Response.Redirect("~/mvc/flightedit/pending", false);
                 Context.ApplicationInstance.CompleteRequest();
             }
             else
@@ -508,7 +508,7 @@ namespace MyFlightbook.ImportFlights
 
                 // If we are here, then any flights were imported - redirect to review them.
                 // Avoid a "Thread was being aborted" (ThreadAbortException).
-                Response.Redirect("~/Member/ReviewPendingFlights.aspx", false);
+                Response.Redirect("~/mvc/flightedit/pending", false);
                 Context.ApplicationInstance.CompleteRequest();
             }
             catch (Exception ex) when (!(ex is OutOfMemoryException))
@@ -552,7 +552,7 @@ namespace MyFlightbook.ImportFlights
                 bool fResult = await rbc.GetFlights(Page.User.Identity.Name, from, to);
                 // If we are here, then any flights were imported - redirect to review them.
                 // Avoid a "Thread was being aborted" (ThreadAbortException).
-                Response.Redirect("~/Member/ReviewPendingFlights.aspx", false);
+                Response.Redirect("~/mvc/flightedit/pending", false);
                 Context.ApplicationInstance.CompleteRequest();
                 
             }

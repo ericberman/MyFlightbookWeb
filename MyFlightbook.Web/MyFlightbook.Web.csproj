@@ -833,7 +833,6 @@
     <Content Include="Member\MiniTotals.aspx" />
     <Content Include="Member\PrintView.aspx" />
     <Content Include="Member\RequestSigs.aspx" />
-    <Content Include="Member\ReviewPendingFlights.aspx" />
     <Content Include="Member\SignFlight.aspx" />
     <Content Include="Member\StartingTotals.aspx" />
     <Content Include="Member\StudentLogbook.aspx" />
@@ -2731,13 +2730,6 @@
     </Compile>
     <Compile Include="Member\RequestSigs.aspx.designer.cs">
       <DependentUpon>RequestSigs.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Member\ReviewPendingFlights.aspx.cs">
-      <DependentUpon>ReviewPendingFlights.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\ReviewPendingFlights.aspx.designer.cs">
-      <DependentUpon>ReviewPendingFlights.aspx</DependentUpon>
     </Compile>
     <Compile Include="Member\SignFlight.aspx.cs">
       <DependentUpon>SignFlight.aspx</DependentUpon>

@@ -41,12 +41,12 @@
     }
 
     function cancelEdit() {
-        window.location = '@("~/mvc/FlightEdit/PendingFlights".ToAbsolute())';
+        window.location = '@("~/mvc/FlightEdit/Pending".ToAbsolute())';
         return false;
     }
 
     function flightSaved() {
-        window.location = '@("~/mvc/FlightEdit/PendingFlights".ToAbsolute())';
+        window.location = '@("~/mvc/FlightEdit/Pending".ToAbsolute())';
         return false;
     }
 
@@ -92,7 +92,7 @@ else
         <input type="hidden" id="hdnLastSortDir" value="desc" />
         <input type="hidden" id="hdnSortIndex" value="0" />
         <p>
-            @String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.NumberOfFlights, rgpf.Count())          <img src="@("~/images/progress.gif".ToAbsolute())" style="display:none; height: 12pt; width: 12pt;" id="prgPager" />
+            @(rgpf.Count() == 1 ? Resources.LogbookEntry.NumberOfFlightsOne : String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.NumberOfFlights, rgpf.Count())) <img src="@("~/images/progress.gif".ToAbsolute())" style="display:none; height: 12pt; width: 12pt;" id="prgPager" />
         </p>
         <div id="divPendingTable"></div>
         <p><a href="" style="cursor:pointer" onclick="javascript: deleteAllPendingFlights();">@Resources.LogbookEntry.ReviewPendingFlightsDelete</a></p>

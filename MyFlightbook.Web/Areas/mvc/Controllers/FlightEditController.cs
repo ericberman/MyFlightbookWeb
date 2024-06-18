@@ -665,7 +665,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         #region Visible Endpoints
         [Authorize]
-        public ActionResult PendingFlights(string id = null)
+        public ActionResult Pending(string id = null)
         {
             ViewBag.viewer = MyFlightbook.Profile.GetUser(User.Identity.Name);
             List<PendingFlight> lst = new List<PendingFlight>(PendingFlight.PendingFlightsForUser(User.Identity.Name));

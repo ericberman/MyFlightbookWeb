@@ -36,7 +36,7 @@
                 <td class="gvcLeft">
                     <span style="display:none">@pf.Date.YMDString()</span>
                     <div>
-                        <a href="@String.Format(CultureInfo.InvariantCulture, "{0}/{1}", "~/mvc/FlightEdit/PendingFlights".ToAbsolute(), pf.PendingID)" style="font-weight: bold; font-size: larger">@pf.Date.ToShortDateString()</a>
+                        <a href="@Url.Action("Pending", "FlightEdit", new { id = pf.PendingID })" style="font-weight: bold; font-size: larger">@pf.Date.ToShortDateString()</a>
                         <span style="font-weight: bold">@pf.Route</span>
                         <div style="clear: left; white-space: pre-line;" dir="auto">@Html.Raw(ApproachDescription.ReplaceApproaches(pf.Comment.Linkify()))</div>
                     </div>

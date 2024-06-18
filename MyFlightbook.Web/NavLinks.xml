@@ -61,7 +61,7 @@
         <Roles></Roles>
       </Item>
       <Item>
-        <Link>~/Member/ReviewPendingFlights.aspx</Link>
+        <Link>~/mvc/flightedit/pending</Link>
         <ID>lbtPending</ID>
         <Roles></Roles>
       </Item>
