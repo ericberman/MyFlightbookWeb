@@ -6,25 +6,28 @@
     int offset = ViewBag.offset;
     int curPage = ViewBag.curPage;
     int numPages = ViewBag.numPages;
+    string sortField = ViewBag.sortField;
+    System.Web.UI.WebControls.SortDirection sortDir = ViewBag.sortDir;
+    System.Func<string, string> sortCss = (h) => { return h.CompareCurrentCulture(sortField) == 0 ? (sortDir == System.Web.UI.WebControls.SortDirection.Ascending ? "headerSortAsc" : "headerSortDesc") : string.Empty; };
 }
 <table class="lbTable" id="tblPending">
     <thead>
         <tr class="gvhDefault" style="vertical-align: bottom">
-            <th class="headerBase headerSortDesc gvhLeft" style="text-align: left;" onclick="javascript: sortTable(this, 0, 'date', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.LogbookEntry.FieldFlight</th>
-            <th class="headerBase gvhCentered" onclick="javascript: sortTable(this, 1, '', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.LogbookEntry.FieldTail</th>
-            <th class="headerBase gvhCentered" onclick="javascript: sortTable(this, 2, 'num', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.LogbookEntry.PrintHeaderApproaches</th>
-            <th class="headerBase gvhCentered" onclick="javascript: sortTable(this, 3, '', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.LogbookEntry.FieldHold</th>
-            <th class="headerBase gvhCentered" onclick="javascript: sortTable(this, 4, 'num', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.LogbookEntry.PrintHeaderLandingsShort</th>
-            <th class="headerBase gvhCentered" onclick="javascript: sortTable(this, 5, 'num', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.LogbookEntry.FieldXCountry</th>
-            <th class="headerBase gvhCentered" onclick="javascript: sortTable(this, 6, 'num', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.LogbookEntry.FieldNight</th>
-            <th class="headerBase gvhCentered" onclick="javascript: sortTable(this, 7, 'num', 'hdnSortIndex', 'hdnLastSortDir');">@Html.Raw(Resources.LogbookEntry.FieldSimIMC)</th>
-            <th class="headerBase gvhCentered" onclick="javascript: sortTable(this, 8, 'num', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.LogbookEntry.FieldIMC</th>
-            <th class="headerBase gvhCentered" onclick="javascript: sortTable(this, 9, 'num', 'hdnSortIndex', 'hdnLastSortDir');">@Html.Raw(Resources.LogbookEntry.FieldGroundSim)</th>
-            <th class="headerBase gvhCentered" onclick="javascript: sortTable(this, 10, 'num', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.LogbookEntry.FieldDual</th>
-            <th class="headerBase gvhCentered" onclick="javascript: sortTable(this, 11, 'num', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.LogbookEntry.FieldCFI</th>
-            <th class="headerBase gvhCentered" onclick="javascript: sortTable(this, 12, 'num', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.LogbookEntry.FieldSIC</th>
-            <th class="headerBase gvhCentered" onclick="javascript: sortTable(this, 13, 'num', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.LogbookEntry.FieldPIC</th>
-            <th class="headerBase gvhCentered" onclick="javascript: sortTable(this, 14, 'num', 'hdnSortIndex', 'hdnLastSortDir');">@Resources.LogbookEntry.FieldTotal</th>
+            <th class="headerBase gvhLeft @sortCss("Date")" onclick="javascript: navigateToPage(@curPage, @pageSize, 'Date');">@Resources.LogbookEntry.FieldFlight</th>
+            <th class="headerBase gvhCentered @sortCss("TailNumDisplay")" onclick="javascript: navigateToPage(@curPage, @pageSize, 'TailNumDisplay');">@Resources.LogbookEntry.FieldTail</th>
+            <th class="headerBase gvhCentered @sortCss("Approaches")" onclick="javascript: navigateToPage(@curPage, @pageSize, 'Approaches');">@Resources.LogbookEntry.PrintHeaderApproaches</th>
+            <th class="headerBase gvhCentered @sortCss("fHoldingProcedures")" onclick="javascript: navigateToPage(@curPage, @pageSize, 'fHoldingProcedures');">@Resources.LogbookEntry.FieldHold</th>
+            <th class="headerBase gvhCentered @sortCss("Landings")" onclick="javascript: navigateToPage(@curPage, @pageSize, 'Landings');">@Resources.LogbookEntry.PrintHeaderLandingsShort</th>
+            <th class="headerBase gvhCentered @sortCss("CrossCountry")" onclick="javascript: navigateToPage(@curPage, @pageSize, 'CrossCountry');">@Resources.LogbookEntry.FieldXCountry</th>
+            <th class="headerBase gvhCentered @sortCss("Nighttime")" onclick="javascript: navigateToPage(@curPage, @pageSize, 'Nighttime');">@Resources.LogbookEntry.FieldNight</th>
+            <th class="headerBase gvhCentered @sortCss("SimulatedIFR")" onclick="javascript: navigateToPage(@curPage, @pageSize, 'SimulatedIFR');">@Html.Raw(Resources.LogbookEntry.FieldSimIMC)</th>
+            <th class="headerBase gvhCentered @sortCss("IMC")" onclick="javascript: navigateToPage(@curPage, @pageSize, 'IMC');">@Resources.LogbookEntry.FieldIMC</th>
+            <th class="headerBase gvhCentered @sortCss("GroundSim")" onclick="javascript: navigateToPage(@curPage, @pageSize, 'GroundSim');">@Html.Raw(Resources.LogbookEntry.FieldGroundSim)</th>
+            <th class="headerBase gvhCentered @sortCss("Dual")" onclick="javascript: navigateToPage(@curPage, @pageSize, 'Dual');">@Resources.LogbookEntry.FieldDual</th>
+            <th class="headerBase gvhCentered @sortCss("CFI")" onclick="javascript: navigateToPage(@curPage, @pageSize, 'CFI');">@Resources.LogbookEntry.FieldCFI</th>
+            <th class="headerBase gvhCentered @sortCss("SIC")" onclick="javascript: navigateToPage(@curPage, @pageSize, 'SIC');">@Resources.LogbookEntry.FieldSIC</th>
+            <th class="headerBase gvhCentered @sortCss("PIC")" onclick="javascript: navigateToPage(@curPage, @pageSize, 'PIC');">@Resources.LogbookEntry.FieldPIC</th>
+            <th class="headerBase gvhCentered @sortCss("TotalFlightTime")" onclick="javascript: navigateToPage(@curPage, @pageSize, 'TotalFlightTime');">@Resources.LogbookEntry.FieldTotal</th>
             <th class="noprint"></th>
             <th class="noprint"></th>
         </tr>

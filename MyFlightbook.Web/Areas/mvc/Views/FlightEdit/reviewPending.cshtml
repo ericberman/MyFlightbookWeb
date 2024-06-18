@@ -50,10 +50,18 @@
         return false;
     }
 
-    function navigateToPage(page, pageSize) {
+    function navigateToPage(page, pageSize, sortField) {
         var params = new Object();
         params.offset = page * pageSize;
         params.pageSize = pageSize;
+
+        var hdnsortField = $("#hdnSortField");
+        var hdnsortdir = $("#hdnLastSortDir");
+        hdnsortdir.val(sortField == hdnsortField.val() && hdnsortdir.val() == "Descending" ? "Ascending" : "Descending");
+        hdnsortField.val(sortField);
+        params.sortField = hdnsortField.val();
+        params.sortDirection = hdnsortdir.val();
+            
         $("#prgPager").show();
         $.ajax({
             url: "@Url.Action("PendingFlightsInRange", "FlightEdit")",
@@ -68,7 +76,7 @@
 
     @if (rgpf.Any())
     {
-    @:$(() => { navigateToPage(0, @pageSize); });
+    @:$(() => { navigateToPage(0, @pageSize, "Date"); });
     }
 </script>
 @if (pfSelected != null)
@@ -89,8 +97,8 @@ else
     }
     else
     {
-        <input type="hidden" id="hdnLastSortDir" value="desc" />
-        <input type="hidden" id="hdnSortIndex" value="0" />
+        <input type="hidden" id="hdnLastSortDir" value="Ascending" />
+        <input type="hidden" id="hdnSortField" value="Date" />
         <p>
             @(rgpf.Count() == 1 ? Resources.LogbookEntry.NumberOfFlightsOne : String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.NumberOfFlights, rgpf.Count())) <img src="@("~/images/progress.gif".ToAbsolute())" style="display:none; height: 12pt; width: 12pt;" id="prgPager" />
         </p>

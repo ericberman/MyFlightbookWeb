@@ -10,6 +10,7 @@ using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
 
 /******************************************************
  * 
@@ -251,11 +252,11 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
-        public ActionResult PendingFlightsInRange(int offset, int pageSize)
+        public ActionResult PendingFlightsInRange(int offset, int pageSize, string sortField, SortDirection sortDirection)
         {
             return SafeOp(() =>
-            {
-                return PendingFlightsTable(offset, pageSize);
+            { 
+                return PendingFlightsTable(offset, pageSize, sortField, sortDirection);
             });
         }
         #endregion
@@ -650,15 +651,19 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         [ChildActionOnly]
-        public ActionResult PendingFlightsTable(int offset, int pageSize)
+        public ActionResult PendingFlightsTable(int offset, int pageSize, string sortField, SortDirection sortDir)
         {
             List<PendingFlight> lst = new List<PendingFlight>(PendingFlight.PendingFlightsForUser(User.Identity.Name));
+            lst.Sort((l1, l2) => { return LogbookEntry.CompareFlights(l1, l2, sortField, sortDir); });
+
             ViewBag.pendingFlights = lst.GetRange(offset, Math.Min(pageSize, lst.Count - offset));
             ViewBag.pageSize = pageSize;
             ViewBag.offset = offset;
             ViewBag.curPage = (offset / pageSize);
             ViewBag.numPages = (lst.Count / pageSize) + 1;
             ViewBag.viewer = MyFlightbook.Profile.GetUser(User.Identity.Name);
+            ViewBag.sortField = sortField;
+            ViewBag.sortDir = sortDir;
             return PartialView("_pendingFlightTable");
         }
         #endregion
