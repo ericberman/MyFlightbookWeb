@@ -12,7 +12,7 @@
     ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText._8710FormForUserHeader, pf.UserFullName);
     TrainingReportsForUser reports = ViewBag.reports;
 }
-<script type="text/javascript" src="@("~/public/scripts/accordionproxy.js".ToAbsolute())"></script>
+<script type="text/javascript" src="@("~/public/scripts/accordionproxy.js?v=1".ToAbsolute())"></script>
 <script type="text/javascript">
     function doSearch(fq) {
         $("#hdnQuery").val(JSON.stringify(fq));
@@ -54,7 +54,7 @@
         <input type="hidden" value="" name="propToDelete" id="hdnPropToDelete" />
     }
 </div>
-<div id="accordionproxycontainer">
+<div id="accordionproxycontainer" style="display:none;">
     <div id="apcFilter">@Resources.LocalizedText.LogTabFilter</div>
     <div id="apc8710">@Resources.Totals.CommonReports8710</div>
     <div id="apcModel">@Resources.Totals.CommonReportsAirline</div>

@@ -21,7 +21,7 @@
     ViewBag.UseCharting = true;
     ViewBag.defaultTab = tabID.tabHome;
 }
-<script type="text/javascript" src="~/Public/Scripts/accordionproxy.js"></script>
+<script type="text/javascript" src="~/Public/Scripts/accordionproxy.js?v=1"></script>
 <script type="text/javascript">
     function doSearch(fq) {
         $("#hdnQuery").val(JSON.stringify(fq));
@@ -115,7 +115,7 @@
         <input type="hidden" value="" name="propToDelete" id="hdnPropToDelete" />
     }
 </div>
-<div id="accordionproxycontainer">
+<div id="accordionproxycontainer" style="display:none;">
     <div id="apcFilter">@Resources.LocalizedText.LogTabFilter</div>
     @if (sk.CanViewTotals)
     {

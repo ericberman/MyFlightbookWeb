@@ -149,7 +149,7 @@
         });
     </script>
     <asp:Panel ID="pnlAccordionProxy" runat="server">
-        <div id="accordionproxycontainer">
+        <div id="accordionproxycontainer" style="display:none;">
             <div id="apcAdd"><% =Resources.LocalizedText.LogTabNewFlight %></div>
             <div id="apcSearch"><% =Resources.LocalizedText.LogTabFilter %></div>
             <div id="apcTotals"><% =Resources.LocalizedText.LogTabTotals %></div>

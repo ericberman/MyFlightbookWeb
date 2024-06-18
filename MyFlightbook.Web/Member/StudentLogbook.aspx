@@ -95,7 +95,7 @@
     <div style="padding:5px">
         <asp:Image ID="ib" ImageAlign="AbsMiddle" ImageUrl="~/images/back.png" runat="server" /><asp:HyperLink ID="lnkReturn" runat="server" NavigateUrl="~/mvc/training/students" Text="<%$ Resources:Profile, ReturnToProfile %>"></asp:HyperLink>
     </div>
-    <div id="accordionproxycontainer">
+    <div id="accordionproxycontainer" style="display:none;">
         <div id="apcNewFlight" runat="server"><% =Resources.LocalizedText.LogTabNewFlight %></div>
         <div id="apcFilter"><% =Resources.LocalizedText.LogTabFilter %></div>
         <div id="apcTotals"><% =Resources.LocalizedText.LogTabTotals %></div>

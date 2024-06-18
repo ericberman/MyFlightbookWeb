@@ -28,7 +28,7 @@
     ac.PopulateImages();
 }
 <script src="@("~/public/Scripts/CopyClipboard.js".ToAbsolute())"></script>
-<script type="text/javascript" src="@("~/Public/Scripts/accordionproxy.js".ToAbsolute())"></script>
+<script type="text/javascript" src="@("~/Public/Scripts/accordionproxy.js?v=1".ToAbsolute())"></script>
 <script type="text/javascript">
     function dropPin(p, s) {
         var gm = getMfbMap();
@@ -176,7 +176,7 @@
         </tr>
     </table>
 </div>
-<div id="accordionproxycontainer">
+<div id="accordionproxycontainer" style="display:none;">
     <div id="apcFlight">@Resources.Tabs.AnalysisFlight</div>
     <div id="apcAircraft">@Resources.Tabs.AnalysisAircraft</div>
     <div id="apcChart" style="@(led.HasFlightData ? string.Empty : "display: none;")">@Resources.Tabs.AnalysisChart </div>

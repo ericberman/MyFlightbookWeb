@@ -84,4 +84,6 @@ function accordionProxy(container, options) {
         if (options.defaultPane == proxy.idButton)
             this.toggleProxy(proxy, this);
     });
+
+    container.show();
 }

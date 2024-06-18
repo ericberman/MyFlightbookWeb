@@ -158,7 +158,7 @@ namespace MyFlightbook.MemberPages
         protected void Page_Load(object sender, EventArgs e)
         {
             Master.SelectedTab = tabID.tabLogbook;
-            Page.ClientScript.RegisterClientScriptInclude("accordionExtender", ResolveClientUrl("~/public/Scripts/accordionproxy.js"));
+            Page.ClientScript.RegisterClientScriptInclude("accordionExtender", ResolveClientUrl("~/public/Scripts/accordionproxy.js?v=1"));
 
             pnlWelcomeNewUser.Visible = false;
             if (!IsPostBack)

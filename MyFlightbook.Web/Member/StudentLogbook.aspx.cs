@@ -33,7 +33,7 @@ namespace MyFlightbook.Instruction
         protected void Page_Load(object sender, EventArgs e)
         {
             Master.SelectedTab = tabID.tabTraining;
-            Page.ClientScript.RegisterClientScriptInclude("accordionExtender", ResolveClientUrl("~/public/Scripts/accordionproxy.js"));
+            Page.ClientScript.RegisterClientScriptInclude("accordionExtender", ResolveClientUrl("~/public/Scripts/accordionproxy.js?v=1"));
 
             if (!IsPostBack)
             {
