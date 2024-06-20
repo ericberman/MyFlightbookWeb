@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2020 MyFlightbook LLC
+ * Copyright (c) 2017-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -92,7 +92,7 @@ public partial class Controls_mfbDeadlines : UserControl
             UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
             List<Aircraft> lstDeadlineAircraft = new List<Aircraft>(ua.GetAircraftForUser());
             lstDeadlineAircraft.RemoveAll(ac => ac.InstanceType != AircraftInstanceTypes.RealAircraft);
-            lstDeadlineAircraft.RemoveAll(ac => ac.HideFromSelection);
+            lstDeadlineAircraft.RemoveAll(ac => ac.HideFromSelection && ac.AircraftID != AircraftID);
             cmbDeadlineAircraft.DataSource = lstDeadlineAircraft;
             cmbDeadlineAircraft.DataBind();
             decRegenInterval.EditBox.Attributes["onfocus"] = String.Format(CultureInfo.InvariantCulture, "javascript:document.getElementById('{0}').checked = true;", rbRegenInterval.ClientID);
@@ -242,7 +242,8 @@ public partial class Controls_mfbDeadlines : UserControl
         txtDeadlineName.Text = string.Empty;
         mfbDeadlineDate.Date = DateTime.MinValue;
         decDueHours.Value = decRegenInterval.IntValue = 0;
-        ckDeadlineUseHours.Visible = false;
+        ckDeadlineUseHours.Checked = false;
+        ckDeadlineUseHours.Visible = AircraftID > 0;
         rbRegenManual.Checked = true;
         cpeDeadlines.ClientState = "true";
     }
