@@ -61,7 +61,7 @@
         hdnsortField.val(sortField);
         params.sortField = hdnsortField.val();
         params.sortDirection = hdnsortdir.val();
-            
+
         $("#prgPager").show();
         $.ajax({
             url: "@Url.Action("PendingFlightsInRange", "FlightEdit")",
@@ -72,11 +72,6 @@
                 $("#divPendingTable").html(r);
             }
         });
-    }
-
-    @if (rgpf.Any())
-    {
-    @:$(() => { navigateToPage(0, @pageSize, "Date"); });
     }
 </script>
 @if (pfSelected != null)
@@ -97,6 +92,9 @@ else
     }
     else
     {
+<script type="text/javascript">
+        $(() => { navigateToPage(0, @pageSize, "Date"); });
+</script>
         <input type="hidden" id="hdnLastSortDir" value="Ascending" />
         <input type="hidden" id="hdnSortField" value="Date" />
         <p>
