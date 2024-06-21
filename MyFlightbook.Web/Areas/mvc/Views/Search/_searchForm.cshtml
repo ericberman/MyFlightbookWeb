@@ -166,7 +166,7 @@
     }
 
     var rgCanned = [];
-    @foreach(CannedQuery cq in ViewBag.cannedQueries)
+    @foreach (CannedQuery cq in ViewBag.cannedQueries)
     {
         @: rgCanned.push(@Html.Raw(cq.ToJSONString()));
     }
@@ -488,7 +488,10 @@
         <div style="text-align:center; width: 100%; vertical-align:middle;">
             <button id="btnReset" onclick="javascript: reset();@(ViewBag.onClientReset)(buildQuery());">@Resources.FlightQuery.SearchReset</button>
             <button id="btnSearch" onclick="@(ViewBag.onClientSearch)(buildQuery());">@Resources.FlightQuery.SearchFindNow</button>
+            @if (fq.UserName.CompareOrdinal(User.Identity.Name) == 0)
+            {
             <a style="cursor:pointer;" onclick="javascript: showModalById('divCanned', '@Resources.FlightQuery.SaveQueryManage', 400); $('#txtQueryName').focus();">@Resources.FlightQuery.SaveQueryManage</a>
+            }
         </div>
         <div id="divCanned" style="display:none">
             <div>@Resources.FlightQuery.SaveQueryNamePrompt</div>
