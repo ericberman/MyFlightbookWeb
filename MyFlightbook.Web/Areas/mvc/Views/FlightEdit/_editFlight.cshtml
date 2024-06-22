@@ -163,7 +163,7 @@
         </div>
 
         <div id="pnlSubmit" class="fullblock">
-            <div style="float:right"><img src="@("~/images/CheckFlights.png".ToAbsolute())" title="@Resources.FlightLint.TitleCheckThisFlight" alt="@Resources.FlightLint.TitleCheckThisFlight" href="#" onclick="javascript: submitForm(checkFlight); return false;" /></div>
+            <div style="float:right"><img src="@("~/images/CheckFlights.png".ToAbsolute())" title="@Resources.FlightLint.TitleCheckThisFlight" alt="@Resources.FlightLint.TitleCheckThisFlight" href="#" onclick="javascript: sbmtFlightFrm(checkFlight); return false;" /></div>
             <table style="margin-left:auto; margin-right: auto;">
                 <tr style="vertical-align:top;">
                     <td>
@@ -171,7 +171,7 @@
                         {
                             <button onclick="javscript: @(onCancel)(); return false;">@Resources.LogbookEntry.EditFlightInlineCancel</button>
                         }
-                        <button type="button" id="btnAddFlight" onclick="javascript: submitForm(commitFlight, confirmModifySigned);">@(le.IsNewFlight ? Resources.LogbookEntry.EditFlightAddFlight : Resources.LogbookEntry.EditFlightUpdateFlight)</button>
+                        <button type="button" id="btnAddFlight" onclick="javascript: sbmtFlightFrm(commitFlight, confirmModifySigned);">@(le.IsNewFlight ? Resources.LogbookEntry.EditFlightAddFlight : Resources.LogbookEntry.EditFlightUpdateFlight)</button>
                     </td>
                     <td>
                         @if (!String.IsNullOrEmpty(nextFlightHref) || !String.IsNullOrEmpty(prevFlightHref) || le.IsNewFlight)
@@ -180,23 +180,23 @@
                             <div class="popMenuContent popMenuHidden" style="margin-top: -8pt; margin-left: 0px">
                                 @if (le.IsNewFlight && pf == null)
                                 {
-                                    <div style="margin: 3px;"><a href="#" onclick="javascript: submitForm(savePending); return false;">@Resources.LogbookEntry.EditFlightAddPending</a></div>
+                                    <div style="margin: 3px;"><a href="#" onclick="javascript: sbmtFlightFrm(savePending); return false;">@Resources.LogbookEntry.EditFlightAddPending</a></div>
                                 }
                                 else
                                 {
                                     if (!String.IsNullOrEmpty(nextFlightHref))
                                     {
                                         string szPrompt = pf == null ? Resources.LogbookEntry.EditFlightUpdateFlightNext : Resources.LogbookEntry.EditFlightAddFlightNext;
-                                        <div style="margin: 3px;"><span style="font-size: larger; font-family: Arial; visibility: hidden;">@Resources.LogbookEntry.PreviousFlight</span>&nbsp;<a href="#" onclick="javascript: submitForm(commitFlightAndNext, confirmModifySigned); return false;">@szPrompt</a>&nbsp;<span style="font-size: larger; font-family: Arial">@Resources.LogbookEntry.NextFlight</span></div>
+                                        <div style="margin: 3px;"><span style="font-size: larger; font-family: Arial; visibility: hidden;">@Resources.LogbookEntry.PreviousFlight</span>&nbsp;<a href="#" onclick="javascript: sbmtFlightFrm(commitFlightAndNext, confirmModifySigned); return false;">@szPrompt</a>&nbsp;<span style="font-size: larger; font-family: Arial">@Resources.LogbookEntry.NextFlight</span></div>
                                     }
                                     if (!String.IsNullOrEmpty(prevFlightHref))
                                     {
                                         string szPrompt = pf == null ? Resources.LogbookEntry.EditFlightUpdateFlightPrev : Resources.LogbookEntry.EditFlightAddFlightPrev;
-                                        <div style="margin: 3px;"><span style="font-size: larger; font-family: Arial;">@Resources.LogbookEntry.PreviousFlight</span>&nbsp;<a href="#" onclick="javascript: submitForm(commitFlightAndPrev, confirmModifySigned); return false;">@szPrompt</a></div>
+                                        <div style="margin: 3px;"><span style="font-size: larger; font-family: Arial;">@Resources.LogbookEntry.PreviousFlight</span>&nbsp;<a href="#" onclick="javascript: sbmtFlightFrm(commitFlightAndPrev, confirmModifySigned); return false;">@szPrompt</a></div>
                                     }
                                     if (pf != null)
                                     {
-                                        <div style="margin: 3px;"><span style="font-size: larger; font-family: Arial; visibility: hidden">@Resources.LogbookEntry.PreviousFlight</span>&nbsp;<a href="#" onclick="javascript: submitForm(savePending); return false;">@Resources.LogbookEntry.EditFlightUpdatePendingFlight</a></div>
+                                        <div style="margin: 3px;"><span style="font-size: larger; font-family: Arial; visibility: hidden">@Resources.LogbookEntry.PreviousFlight</span>&nbsp;<a href="#" onclick="javascript: sbmtFlightFrm(savePending); return false;">@Resources.LogbookEntry.EditFlightUpdatePendingFlight</a></div>
                                     }
                                 }
                             </div>

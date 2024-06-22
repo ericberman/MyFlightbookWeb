@@ -227,7 +227,7 @@ function postFlightWithAction(f, onSuccess, resultType, url) {
     });
 }
 
-function submitForm(requestedAction, confirmFunc) {
+function sbmtFlightFrm(requestedAction, confirmFunc) {
     document.activeElement.blur();
     var f = validateForm();
 
@@ -239,7 +239,7 @@ function submitForm(requestedAction, confirmFunc) {
     return false;
 }
 
-function submitFormNoValidate(requestedAction) {
+function sbmtFlightFrmNoValidate(requestedAction) {
     var f = $("#frmEditFlight");
     updatePropertyTuples(-1);
     requestedAction(new FormData(f[0]));
