@@ -925,6 +925,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You are not authorized to save to this logbook.
+        /// </summary>
+        internal static string errNotAuthorizedToSaveToLogbook {
+            get {
+                return ResourceManager.GetString("errNotAuthorizedToSaveToLogbook", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You are not authorized to view this user&apos;s logbook data.
+        /// </summary>
+        internal static string errNotAuthorizedToViewLogbook {
+            get {
+                return ResourceManager.GetString("errNotAuthorizedToViewLogbook", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Route field is too long.
         /// </summary>
         internal static string errRouteTooLong {

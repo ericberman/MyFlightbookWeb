@@ -1,0 +1,83 @@
+﻿@using MyFlightbook.Printing
+@using System.Collections.Specialized
+@{ 
+    NameValueCollection nvc = ViewBag.paramList;
+    FlightQuery fq = ViewBag.query;
+    PrintingOptions po = ViewBag.po;
+    Action<NameValueCollection> fillNVC = (n) => { foreach (string k in nvc.Keys) { n[k] = nvc[k]; } };
+    bool includeFlightsSection = ViewBag.includeFlightsSection;
+    string onChangeFunc = String.IsNullOrEmpty(ViewBag.onChange) ? "updateLinkToPrintView" : ViewBag.onChange;
+}
+<script type="text/javascript">
+    function updateLinkToPrintView(sects) {
+        var lnk = $("#lnkPrintView")[0];
+        var params = new Object();
+        params.szExisting = lnk.href;
+        params.ps = sects;
+
+        $.ajax(
+            {
+                url: '@("~/Member/Ajax.asmx/PrintLink".ToAbsolute())',
+                type: "POST", data: JSON.stringify(params), dataType: "json", contentType: "application/json",
+                error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
+                success: function (response) { lnk.href = response.d }
+            });
+    }
+
+    $(() => {
+        printingSections("divPrefPrintingSections", {
+            onChangeFunc: @onChangeFunc,
+            includeFlightsSection: @Json.Encode(includeFlightsSection)
+        });
+    });
+</script>
+<div style="padding:5px; margin-left: auto; margin-right:auto; text-align:left; width: 50%" id="divPrefPrintingSections">
+    <h3>@Resources.LocalizedText.PrintViewTabFilter</h3>
+    <table>
+        <tr>
+            <td><input type="checkbox" @po.Sections.IncludeCoverPage.ToChecked() id="ckPrintSectionsCoverSheet" /></td>
+            <td><label for="ckPrintSectionsCoverSheet">@Resources.LocalizedText.PrintViewIncludeCoverSheet</label></td>
+        </tr>
+        @if (includeFlightsSection)
+        {
+            <tr>
+                <td><input type="checkbox" @po.Sections.IncludeFlights.ToChecked() id="ckPrintSectionFlights" /></td>
+                <td><label for="ckPrintSectionFlights">@Resources.LocalizedText.PrintViewSelectedFlightsLabel</label></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>TODO - put query descriptor and change option here</td>
+            </tr>
+        }
+        <tr>
+            <td>
+                <input type="checkbox" @po.Sections.IncludeTotals.ToChecked() id="ckPrintSectionTotals" />
+            </td>
+            <td>
+                <label for="ckPrintSectionTotals">@Resources.LocalizedText.PrintViewIncludeTotals</label>
+                <input type="checkbox" @po.Sections.CompactTotals.ToChecked() id="ckPrintSectionCompactTotals" />
+                <label for="ckPrintSectionCompactTotals">@Resources.LocalizedText.PrintViewTotalsCompact</label>
+                <span class="fineprint">@Resources.LocalizedText.PrintViewTotalsCompactNote</span>
+            </td>
+        </tr>
+        <tr>
+            <td style="vertical-align:top;">
+                <input type="checkbox" @((po.Sections.Endorsements != PrintingSections.EndorsementsLevel.None).ToChecked()) id="ckPrintSectionEndorsements" />
+            </td>
+            <td>
+                <div>
+                    <label for="ckPrintSectionEndorsements">@Resources.LocalizedText.PrintViewIncludeEndorsements</label>
+                    <input type="checkbox" @((po.Sections.Endorsements == PrintingSections.EndorsementsLevel.DigitalAndPhotos).ToChecked()) id="ckPrintSectionEndorsementImages" />
+                    <label for="ckPrintSectionEndorsementImages">@Resources.LocalizedText.PrintViewIncludeJPEGEndorsements</label>
+                </div>
+                <div class="fineprint">@Resources.LocalizedText.PrintViewNoEmbeddedPDFsNote</div>
+            </td>
+        </tr>
+    </table>
+    @if (String.IsNullOrEmpty(ViewBag.onChange))
+    {
+    <ul class="nextStep">
+        <li><a id="lnkPrintView" target="_blank" href="@PrintingOptions.PermaLink(fq, po, Request.Url.Host, Request.Url.Scheme, fillNVC)">@Resources.LocalizedText.OpenPrintView</a></li>
+    </ul>
+    }
+</div>

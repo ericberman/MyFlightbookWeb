@@ -117,6 +117,11 @@
         });
     }
 
+    function signFlight(baseRef) {
+        var url = new URL(baseRef);
+        url.searchParams.append("ret", location.pathname + location.search);
+        window.location = url.href;
+    }
 
     function deleteFlights() {
         if (confirm('@Resources.LogbookEntry.LogbookConfirmDeleteFlights')) {
@@ -208,7 +213,7 @@
 </div>
 <div id="pnlHeader" class="noprint">
     @(fr.FlightCount == 1 ? Resources.LogbookEntry.NumberOfFlightsOne : (fr.FlightCount > 1 ? String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.NumberOfFlights, fr.FlightCount) : string.Empty))
-    @if (User.Identity.IsAuthenticated && !readOnly)
+    @if (User.Identity.IsAuthenticated)
     {
         <div style="display: inline-block" class="popContainer">
             <img src="@VirtualPathUtility.ToAbsolute("~/images/MenuChevron.png")" class="popTrigger" />

@@ -1,5 +1,6 @@
 ﻿using MyFlightbook.BasicmedTools;
 using MyFlightbook.CloudStorage;
+using MyFlightbook.CSV;
 using MyFlightbook.Currency;
 using MyFlightbook.Image;
 using MyFlightbook.Instruction;
@@ -7,7 +8,7 @@ using MyFlightbook.Telemetry;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Data;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
@@ -16,6 +17,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
 
 /******************************************************
  * 
@@ -29,15 +31,15 @@ namespace MyFlightbook
     /// <summary>
     /// Provides services for backing up data for a given user
     /// </summary>
-    public class LogbookBackup
+    public abstract class LogbookBackupBase
     {
         #region Properties
-        private Profile User { get; set; }
+        protected Profile User { get; set; }
 
         public bool IncludeImages { get; set; } = true;
         #endregion
 
-        public LogbookBackup(Profile user, bool fIncludeIMages = true)
+        protected LogbookBackupBase(Profile user, bool fIncludeIMages = true)
         {
             User = user ?? throw new ArgumentNullException(nameof(user));
             IncludeImages = fIncludeIMages;
@@ -133,7 +135,7 @@ namespace MyFlightbook
                     WriteKeyValue(tw, szkey, szValue, true);
             }
 
-            IEnumerable<IDictionary<string, object>> flightreviews = (IEnumerable<IDictionary<string, object>>) d["Flight Reviews"];
+            IEnumerable<IDictionary<string, object>> flightreviews = (IEnumerable<IDictionary<string, object>>)d["Flight Reviews"];
             if (flightreviews.Any())
             {
                 tw.RenderBeginTag(HtmlTextWriterTag.H2);
@@ -318,7 +320,7 @@ namespace MyFlightbook
 
             // We'll get images from the DB rather than slamming the disk
             // this is a bit of a hack, but limits our queries
-            Dictionary<int, Collection<MFBImageInfo>> dImages = new Dictionary<int, Collection<MFBImageInfo>>();
+            Dictionary<int, List<MFBImageInfo>> dImages = new Dictionary<int, List<MFBImageInfo>>();
             if (IncludeImages)
             {
                 const string szQ = @"SELECT f.idflight, img.*
@@ -330,11 +332,11 @@ namespace MyFlightbook
                     (dr) =>
                     {
                         int idFlight = Convert.ToInt32(dr["idflight"], CultureInfo.InvariantCulture);
-                        Collection<MFBImageInfo> lstMFBii;
-                        if (dImages.TryGetValue(idFlight, out Collection<MFBImageInfo> value))
+                        List<MFBImageInfo> lstMFBii;
+                        if (dImages.TryGetValue(idFlight, out List<MFBImageInfo> value))
                             lstMFBii = value;
                         else
-                            dImages[idFlight] = lstMFBii = new Collection<MFBImageInfo>();
+                            dImages[idFlight] = lstMFBii = new List<MFBImageInfo>();
                         lstMFBii.Add(MFBImageInfo.ImageFromDBRow(dr));
                     });
             }
@@ -354,7 +356,7 @@ namespace MyFlightbook
                     {
                         LogbookEntry le = new LogbookEntry(dr, szUser, LogbookEntry.LoadTelemetryOption.LoadAll);
                         le.FlightImages.Clear();
-                        IEnumerable<MFBImageInfo> rgmfbii = (dImages.TryGetValue(le.FlightID, out Collection<MFBImageInfo> value)) ? value : new Collection<MFBImageInfo>();
+                        IEnumerable<MFBImageInfo> rgmfbii = (dImages.TryGetValue(le.FlightID, out List<MFBImageInfo> value)) ? value : new List<MFBImageInfo>();
                         foreach (MFBImageInfo mfbii in rgmfbii)
                             le.FlightImages.Add(mfbii);
 
@@ -406,7 +408,7 @@ namespace MyFlightbook
 
                         // Write out flight images and Telemetry
                         WriteFlightImagesForUser(tw, szUserFullName, User.UserName, zip);
-                        
+
                         tw.RenderEndTag();  // Body
                         tw.RenderEndTag();  // Html
                     }
@@ -434,7 +436,7 @@ namespace MyFlightbook
                 p.Controls.Add(new HtmlForm());
                 using (Control c = p.LoadControl("~/Controls/mfbDownload.ascx"))
                 {
-                    ((IDownloadableAsData) c).ToStream(User.UserName, s);
+                    ((IDownloadableAsData)c).ToStream(User.UserName, s);
                 }
             }
         }
@@ -442,12 +444,188 @@ namespace MyFlightbook
         /// <summary>
         /// The name for the backup file
         /// </summary>
-        public string BackupFilename(Brand activeBrand)
+        public string BackupFilename(Brand activeBrand = null)
         {
-            if (activeBrand == null)
-                throw new ArgumentNullException(nameof(activeBrand));
+            activeBrand = activeBrand ?? Branding.CurrentBrand;
             string szBaseName = String.Format(CultureInfo.InvariantCulture, "{0}-{1}{2}", activeBrand.AppName, User.UserFullName, User.OverwriteCloudBackup ? string.Empty : String.Format(CultureInfo.InvariantCulture, "-{0}", DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))).Replace(" ", "-");
             return String.Format(CultureInfo.InvariantCulture, "{0}.csv", RegexUtility.UnSafeFileChars.Replace(szBaseName, string.Empty));
+        }
+
+        /// <summary>
+        /// Returns the bytearray of writing the logbook data out as a CSV file.  Does NOT use an ascx control
+        /// </summary>
+        /// <returns>A byte array of a CSV representation</returns>
+        public byte[] LogbookDataForBackup()
+        {
+            UserAircraft ua = new UserAircraft(User.UserName);
+            // See whether or not to show catclassoverride column
+
+            bool fShowAltCatClass = false;
+            IEnumerable<LogbookEntryDisplay> rgle = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntryDisplay.QueryCommand(new FlightQuery(User.UserName)), User.UserName, "Date", SortDirection.Descending, false, false);
+            foreach (LogbookEntryDisplay le in rgle)
+                fShowAltCatClass |= le.IsOverridden;
+
+            // Generate the set of properties used by the user
+            HashSet<CustomPropertyType> hscpt = new HashSet<CustomPropertyType>();
+            foreach (LogbookEntryBase le in rgle)
+            {
+                foreach (CustomFlightProperty cfp in le.CustomProperties)
+                {
+                    if (!hscpt.Contains(cfp.PropertyType))
+                        hscpt.Add(cfp.PropertyType);
+                }
+            }
+            // Now sort that alphabetically
+            List<CustomPropertyType> lst = new List<CustomPropertyType>(hscpt);
+            lst.Sort((cpt1, cpt2) => { return cpt1.Title.CompareCurrentCultureIgnoreCase(cpt2.Title); });
+
+            DecimalFormat df = User.PreferenceExists(MFBConstants.keyDecimalSettings) ? User.GetPreferenceForKey<DecimalFormat>(MFBConstants.keyDecimalSettings) : DecimalFormat.Adaptive;
+
+            using (DataTable dt = new DataTable() { Locale = CultureInfo.CurrentCulture })
+            {
+                if (HttpContext.Current?.Session != null)
+                    HttpContext.Current.Session[MFBConstants.keyDecimalSettings] = DecimalFormat.Adaptive;
+
+                #region Add Headers
+                // add the header columns 
+                dt.Columns.Add(new DataColumn("Date", typeof(string)));
+                dt.Columns.Add(new DataColumn("Flight ID", typeof(string)));
+                dt.Columns.Add(new DataColumn("Model", typeof(string)));
+                dt.Columns.Add(new DataColumn("ICAO Model", typeof(string)));
+                dt.Columns.Add(new DataColumn("Tail Number", typeof(string)));
+                dt.Columns.Add(new DataColumn("Display Tail", typeof(string)));
+                dt.Columns.Add(new DataColumn("Aircraft ID", typeof(string)));
+                dt.Columns.Add(new DataColumn("Category/Class", typeof(string)));
+                if (fShowAltCatClass)
+                    dt.Columns.Add(new DataColumn("Alternate Cat/Class", typeof(string)));
+                dt.Columns.Add(new DataColumn("Approaches", typeof(string)));
+                dt.Columns.Add(new DataColumn("Hold", typeof(string)));
+                dt.Columns.Add(new DataColumn("Landings", typeof(string)));
+                dt.Columns.Add(new DataColumn("FS Night Landings", typeof(string)));
+                dt.Columns.Add(new DataColumn("FS Day Landings", typeof(string)));
+                dt.Columns.Add(new DataColumn("X-Country", typeof(string)));
+                dt.Columns.Add(new DataColumn("Night", typeof(string)));
+                dt.Columns.Add(new DataColumn("IMC", typeof(string)));
+                dt.Columns.Add(new DataColumn("Simulated Instrument", typeof(string)));
+                dt.Columns.Add(new DataColumn("Ground Simulator", typeof(string)));
+                dt.Columns.Add(new DataColumn("Dual Received", typeof(string)));
+                dt.Columns.Add(new DataColumn("CFI", typeof(string)));
+                dt.Columns.Add(new DataColumn("SIC", typeof(string)));
+                dt.Columns.Add(new DataColumn("PIC", typeof(string)));
+                dt.Columns.Add(new DataColumn("Total Flight Time", typeof(string)));
+                dt.Columns.Add(new DataColumn("CFI Time (HH:MM)", typeof(string)));
+                dt.Columns.Add(new DataColumn("SIC Time (HH:MM)", typeof(string)));
+                dt.Columns.Add(new DataColumn("PIC (HH:MM)", typeof(string)));
+                dt.Columns.Add(new DataColumn("Total Flight Time (HH:MM)", typeof(string)));
+                dt.Columns.Add(new DataColumn("Route", typeof(string)));
+                dt.Columns.Add(new DataColumn("Flight Properties", typeof(string)));
+                dt.Columns.Add(new DataColumn("Comments", typeof(string)));
+                dt.Columns.Add(new DataColumn("Hobbs Start", typeof(string)));
+                dt.Columns.Add(new DataColumn("Hobbs End", typeof(string)));
+                dt.Columns.Add(new DataColumn("Engine Start", typeof(string)));
+                dt.Columns.Add(new DataColumn("Engine End", typeof(string)));
+                dt.Columns.Add(new DataColumn("Engine Time", typeof(string)));
+                dt.Columns.Add(new DataColumn("Flight Start", typeof(string)));
+                dt.Columns.Add(new DataColumn("Flight End", typeof(string)));
+                dt.Columns.Add(new DataColumn("Flying Time", typeof(string)));
+                dt.Columns.Add(new DataColumn("Complex", typeof(string)));
+                dt.Columns.Add(new DataColumn("Controllable pitch prop", typeof(string)));
+                dt.Columns.Add(new DataColumn("Flaps", typeof(string)));
+                dt.Columns.Add(new DataColumn("Retract", typeof(string)));
+                dt.Columns.Add(new DataColumn("Tailwheel", typeof(string)));
+                dt.Columns.Add(new DataColumn("High Performance", typeof(string)));
+                dt.Columns.Add(new DataColumn("Turbine", typeof(string)));
+                dt.Columns.Add(new DataColumn("TAA", typeof(string)));
+                dt.Columns.Add(new DataColumn("Signature State", typeof(string)));
+                dt.Columns.Add(new DataColumn("Date of Signature", typeof(string)));
+                dt.Columns.Add(new DataColumn("CFI Comment", typeof(string)));
+                dt.Columns.Add(new DataColumn("CFI Certificate", typeof(string)));
+                dt.Columns.Add(new DataColumn("CFI Name", typeof(string)));
+                dt.Columns.Add(new DataColumn("CFI Email", typeof(string)));
+                dt.Columns.Add(new DataColumn("CFI Expiration", typeof(string)));
+                dt.Columns.Add(new DataColumn("Public", typeof(string)));
+                #endregion
+
+                foreach (CustomPropertyType cpt in lst)
+                    dt.Columns.Add(new DataColumn(cpt.Title, typeof(string)));
+
+                foreach (LogbookEntryDisplay le in rgle)
+                {
+                    Aircraft ac = ua[le.AircraftID];
+                    MakeModel mm = MakeModel.GetModel(ac.ModelID);
+                    DataRow dr = dt.NewRow();
+                    #region Add the details of the row
+                    int i = 0;
+                    dr[i++] = le.Date.YMDString();
+                    dr[i++] = le.FlightID.ToString(CultureInfo.InvariantCulture);
+                    dr[i++] = le.ModelDisplay;
+                    dr[i++] = le.FamilyName;
+                    dr[i++] = ac.TailNumber;
+                    dr[i++] = ac.DisplayTailnumber;
+                    dr[i++] = ac.AircraftID.ToString(CultureInfo.InvariantCulture);
+                    dr[i++] = le.CatClassDisplay;
+                    if (fShowAltCatClass)
+                        dr[i++] = le.IsOverridden ? le.CatClassOverride.ToString(CultureInfo.InvariantCulture) : string.Empty;
+                    dr[i++] = le.Approaches.ToString(CultureInfo.InvariantCulture);
+                    dr[i++] = le.fHoldingProcedures.FormatBooleanInt();
+                    dr[i++] = le.Landings.ToString(CultureInfo.InvariantCulture);
+                    dr[i++] = le.NightLandings.ToString(CultureInfo.InvariantCulture);
+                    dr[i++] = le.FullStopLandings.ToString(CultureInfo.InvariantCulture);
+                    dr[i++] = le.CrossCountry.FormatDecimal(false);
+                    dr[i++] = le.Nighttime.FormatDecimal(false);
+                    dr[i++] = le.IMC.FormatDecimal(false);
+                    dr[i++] = le.SimulatedIFR.FormatDecimal(false);
+                    dr[i++] = le.GroundSim.FormatDecimal(false);
+                    dr[i++] = le.Dual.FormatDecimal(false);
+                    dr[i++] = le.CFI.FormatDecimal(false);
+                    dr[i++] = le.SIC.FormatDecimal(false);
+                    dr[i++] = le.PIC.FormatDecimal(false);
+                    dr[i++] = le.TotalFlightTime.FormatDecimal(false);
+                    dr[i++] = le.CFI.FormatDecimal(true);
+                    dr[i++] = le.SIC.FormatDecimal(true);
+                    dr[i++] = le.PIC.FormatDecimal(true);
+                    dr[i++] = le.TotalFlightTime.FormatDecimal(true);
+                    dr[i++] = le.Route.Trim();
+                    dr[i++] = CustomFlightProperty.PropListDisplay(le.CustomProperties, fShowAltCatClass, "; ");
+                    dr[i++] = le.Comment.Trim();
+                    dr[i++] = le.HobbsStart.ToString(CultureInfo.CurrentCulture);
+                    dr[i++] = le.HobbsEnd.ToString(CultureInfo.CurrentCulture);
+                    dr[i++] = le.EngineStart.FormatDateZulu();
+                    dr[i++] = le.EngineEnd.FormatDateZulu();
+                    dr[i++] = LogbookEntryDisplay.FormatTimeSpan(le.EngineStart, le.EngineEnd);
+                    dr[i++] = le.FlightStart.FormatDateZulu();
+                    dr[i++] = le.FlightEnd.FormatDateZulu();
+                    dr[i++] = LogbookEntryDisplay.FormatTimeSpan(le.FlightStart, le.FlightEnd);
+                    dr[i++] = mm.IsComplex.FormatBooleanInt();
+                    dr[i++] = mm.IsConstantProp.FormatBooleanInt();
+                    dr[i++] = mm.HasFlaps.FormatBooleanInt();
+                    dr[i++] = mm.IsRetract.FormatBooleanInt();
+                    dr[i++] = mm.IsTailWheel.FormatBooleanInt();
+                    dr[i++] = mm.IsHighPerf.FormatBooleanInt();
+                    dr[i++] = mm.EngineType == MakeModel.TurbineLevel.Piston || mm.EngineType == MakeModel.TurbineLevel.Electric ? string.Empty : 1.FormatBooleanInt();
+                    dr[i++] = (mm.AvionicsTechnology == MakeModel.AvionicsTechnologyType.TAA || (ac != null && (ac.AvionicsTechnologyUpgrade == MakeModel.AvionicsTechnologyType.TAA && (!ac.GlassUpgradeDate.HasValue || le.Date.CompareTo(ac.GlassUpgradeDate.Value) >= 0)))).FormatBooleanInt();
+                    dr[i++] = le.CFISignatureState.FormatSignatureState();
+                    dr[i++] = le.CFISignatureDate.FormatOptionalInvariantDate();
+                    dr[i++] = le.CFIComments;
+                    dr[i++] = le.CFICertificate;
+                    dr[i++] = le.CFIName;
+                    dr[i++] = le.CFIEmail;
+                    dr[i++] = le.CFIExpiration.FormatOptionalInvariantDate();
+                    dr[i++] = le.fIsPublic.FormatBooleanInt();
+
+                    // Whew!  Now add the properties that exists, for each column
+                    foreach (CustomPropertyType cpt in lst)
+                        dr[i++] = le.CustomProperties[cpt.PropTypeID]?.ValueString;
+                    #endregion
+
+                    dt.Rows.Add(dr);
+                }
+
+                if (HttpContext.Current?.Session != null)
+                    HttpContext.Current.Session[MFBConstants.keyDecimalSettings] = df;
+
+                return CsvWriter.WriteToBytes(dt, true, true);
+            }
         }
 
         /// <summary>
@@ -459,6 +637,11 @@ namespace MyFlightbook
                 throw new ArgumentNullException(nameof(activeBrand));
             return Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, "%APP_NAME% Images{0}.zip", fDateStamp ? " " + DateTime.Now.YMDString() : string.Empty), activeBrand);
         }
+    }
+
+    class LogbookBackup : LogbookBackupBase 
+    {
+        public LogbookBackup(Profile user, bool fIncludeIMages = true) : base(user, fIncludeIMages) { }
 
         #region cloud storage instances
         #region Dropbox

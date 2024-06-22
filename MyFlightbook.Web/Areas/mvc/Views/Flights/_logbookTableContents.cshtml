@@ -18,9 +18,7 @@
 
     bool isViewingOwnFlights = pfTarget.UserName.CompareOrdinal(pfViewer.UserName) == 0 && !readOnly;
     bool fAllowMenu = !readOnly && isViewingOwnFlights;
-    bool fAllowSign = !readOnly && !isViewingOwnFlights;
-
-    string szRet = System.Web.HttpUtility.UrlEncode(Request.Url.PathAndQuery);
+    bool fAllowSign = readOnly && !isViewingOwnFlights && student != null;
 
     FlightResultRange currentRange = ViewBag.currentRange;
     IDictionary<int, IList<Badge>> dictBadges = (pfTarget.AchievementStatus == Achievement.ComputeStatus.UpToDate) ? Badge.BadgesByFlight(pfTarget.CachedBadges) : new Dictionary<int, IList<Badge>>();
@@ -271,7 +269,7 @@ else
                         {
                             if (led.CFISignatureState != LogbookEntryCore.SignatureState.Valid)
                             {
-                                <a href="@String.Format("~/Member/SignFlight.aspx?idFlight={0}&ret={1}", led.FlightID, szRet).ToAbsolute()">
+                                <a href="#" onclick="javascript: signFlight('@String.Format(CultureInfo.InvariantCulture, "~/Member/SignFlight.aspx?idFlight={0}", led.FlightID).ToAbsoluteURL(Request)'); return false;">
                                     <img src="@("~/images/signaturesm.png".ToAbsolute())" style="margin-right: 3px;" alt="@((led.CFISignatureState == LogbookEntry.SignatureState.Invalid) ? Resources.SignOff.LogbookResign : Resources.SignOff.LogbookSign)" title="@((led.CFISignatureState == LogbookEntry.SignatureState.Invalid) ? Resources.SignOff.LogbookResign : Resources.SignOff.LogbookSign)" />
                                 </a>
                             }

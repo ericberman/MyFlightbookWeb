@@ -152,7 +152,7 @@
         </asp:TemplateField>
         <asp:TemplateField HeaderText="Engine Time">
             <ItemTemplate>
-                <asp:Label ID="lblEngineTime" runat="server" Text='<%# FormatTimeSpan(Eval("EngineStart"), Eval("EngineEnd")) %>'></asp:Label>
+                <asp:Label ID="lblEngineTime" runat="server" Text='<%# LogbookEntryDisplay.FormatTimeSpan(Eval("EngineStart"), Eval("EngineEnd")) %>'></asp:Label>
             </ItemTemplate>
         </asp:TemplateField>
         <asp:TemplateField HeaderText="Flight Start">
@@ -167,7 +167,7 @@
         </asp:TemplateField>
         <asp:TemplateField HeaderText="Flying Time">
             <ItemTemplate>
-                <asp:Label ID="lblFlightTime" runat="server" Text='<%# FormatTimeSpan(Eval("FlightStart"), Eval("FlightEnd")) %>'></asp:Label>
+                <asp:Label ID="lblFlightTime" runat="server" Text='<%# LogbookEntryDisplay.FormatTimeSpan(Eval("FlightStart"), Eval("FlightEnd")) %>'></asp:Label>
             </ItemTemplate>
         </asp:TemplateField>
         <asp:TemplateField HeaderText="Complex">

@@ -23,12 +23,6 @@ namespace MyFlightbook
 
         private const string szVSQuery = "viewStateQuery";
 
-        public FlightQuery Restriction
-        {
-            get { return (FlightQuery)ViewState[szVSQuery] ?? new FlightQuery(User); }
-            set { ViewState[szVSQuery] = value; }
-        }
-
         /// <summary>
         /// Controls whether or not the option to download a PDF file is offered
         /// </summary>
@@ -59,23 +53,6 @@ namespace MyFlightbook
 
         protected Dictionary<int, Aircraft> AircraftForUser { get; } = new Dictionary<int, Aircraft>();
 
-        protected static string FormatTimeSpan(object o1, object o2)
-        {
-            if (!(o1 is DateTime && o2 is DateTime))
-                return string.Empty;
-
-            DateTime dt1 = (DateTime)o1;
-            DateTime dt2 = (DateTime)o2;
-
-            if (dt1.HasValue() && dt2.HasValue())
-            {
-                double cHours = dt2.Subtract(dt1).TotalHours;
-                return (cHours > 0) ? String.Format(CultureInfo.CurrentCulture, "{0:#.##}", cHours) : string.Empty;
-            }
-            else
-                return string.Empty;
-        }
-
         public void UpdateData()
         {
             if (User.Length > 0)
@@ -85,7 +62,7 @@ namespace MyFlightbook
                 foreach (Aircraft ac in rgac)
                     AircraftForUser[ac.AircraftID] = ac;
 
-                IEnumerable<LogbookEntryDisplay> rgle = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntryDisplay.QueryCommand(Restriction), User, "Date", SortDirection.Descending, false, false);
+                IEnumerable<LogbookEntryDisplay> rgle = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntryBase.QueryCommand(new FlightQuery(User)), User, "Date", SortDirection.Descending, false, false);
                 gvFlightLogs.DataSource = rgle;
 
                 // See whether or not to show catclassoverride column

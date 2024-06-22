@@ -1,0 +1,136 @@
+﻿@using System.Collections.Specialized
+@using System.Globalization
+@using MyFlightbook
+@{
+    Profile pfViewer = ViewBag.viewer;
+    InstructorStudent pfTarget = ViewBag.targetUser;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    NameValueCollection nvc = HttpUtility.ParseQueryString("");
+    nvc["u"] = pfTarget.UserName;
+    FlightQuery fq = ViewBag.query;
+    bool fIsDefaultQuery = fq.IsDefault;
+
+    ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.SignOff.ViewStudentLogbookHeader, HttpUtility.HtmlEncode(pfTarget.UserFullName)); ;
+    ViewBag.UseCharting = true;
+    ViewBag.defaultTab = tabID.tabTraining;
+}
+<script type="text/javascript" src="~/Public/Scripts/accordionproxy.js?v=1"></script>
+<script type="text/javascript" src="~/Public/Scripts/printing.js?v=1"></script>
+<script type="text/javascript">
+    function doSearch(fq) {
+        $("#hdnQuery").val(JSON.stringify(fq));
+        $("#hdnQFEClicked").val(false);
+        $("#hdnPropToDelete").val("");
+        $("#frmUpdateQuery").submit();
+        return false;
+    }
+
+    function qfeClicked(propName) {
+        $("#hdnQuery").val(JSON.stringify(buildQuery()));
+        $("#hdnQFEClicked").val(true);
+        $("#hdnPropToDelete").val(propName);
+        $("#frmUpdateQuery").submit();
+        return false;
+    }
+
+    function onSave() {
+        window.location = window.location;
+    }
+
+    $(() => {
+        var fAnalysisLoaded = false;
+
+        function analysisFirstClick() {
+            if (!fAnalysisLoaded)
+                chartDataChanged();
+            fAnalysisLoaded = true;
+        }
+
+        proxyControl = new accordionProxy($("#accordionproxycontainer"), {
+            defaultPane: "",
+            proxies: [
+                @if (pfTarget.CanAddLogbook)
+                {
+                    @:{ idButton: "apcNewFlight", idTarget: "targetNewFlight" },
+                }
+                { idButton: "apcFilter", idTarget: "targetFilter", isEnhanced: @Json.Encode(!fIsDefaultQuery) },
+                { idButton: "apcTotals", idTarget: "targetTotals" },
+                { idButton: "apcCurrency", idTarget: "targetCurrency" },
+                { idButton: "apcAnalysis", idTarget: "targetAnalysis", onclick: function () { analysisFirstClick(); } },
+                { idButton: "apcPrinting", idTarget: "targetPrintView" }
+            ]
+        });
+    })
+</script>
+<div style="padding:5px">
+    <img style="vertical-align:middle" src="@("~/images/back.png".ToAbsolute())" /><a href="@("~/mvc/training/students".ToAbsolute())">@Resources.Profile.ReturnToProfile</a>
+</div>
+<div style="display:none;">
+    @using (Html.BeginForm("StudentLogbook", "Flights", new { student = pfTarget.UserName }, FormMethod.Post, new { id = "frmUpdateQuery", name = "frmUpdateQuery" }))
+    {
+        @Html.AntiForgeryToken();
+        <input type="hidden" value="@ViewBag.defaultPane" name="id" />
+        <input type="hidden" name="fqShared" id="hdnQuery" value="" />
+        <input type="hidden" value="@Json.Encode(ViewBag.df)" name="df" id="hdnDistanceFill" />
+        <input type="hidden" value="" name="fPropDeleteClicked" id="hdnQFEClicked" />
+        <input type="hidden" value="" name="propToDelete" id="hdnPropToDelete" />
+    }
+</div>
+<div id="accordionproxycontainer" style="display: none;">
+    @if (pfTarget.CanAddLogbook)
+    {
+        <div id="apcNewFlight">@Resources.LocalizedText.LogTabNewFlight</div>
+    }
+    <div id="apcFilter">@Resources.LocalizedText.LogTabFilter</div>
+    <div id="apcTotals">@Resources.LocalizedText.LogTabTotals</div>
+    <div id="apcCurrency">@Resources.LocalizedText.LogTabCurrency</div>
+    <div id="apcAnalysis">@Resources.LocalizedText.LogTabAnalysis</div>
+    <div id="apcPrinting">@Resources.LocalizedText.LogTabPrint</div>
+</div>
+@if (!fIsDefaultQuery)
+{
+    <div id="searchSummary" class="filterApplied">
+        @Resources.LocalizedText.ResultsFiltered
+        @{ Html.RenderAction("QueryDescription", "Search", new { fq = fq, onClientClick = "qfeClicked" }); }
+        <script type="text/javascript">
+            $(() => {
+                proxyControl.setEnhanced("apcFilter", true);
+            });
+        </script>
+    </div>
+}
+@if (pfTarget.CanAddLogbook)
+{
+    <div id="targetNewFlight" style="display: none">
+        @{ Html.RenderAction("FlightEditor", "FlightEdit", new { targetUser = pfTarget.UserName, le = (LogbookEntry)null, onSave = "onSave" }); }
+    </div>
+}
+<div id="targetFilter" style="display: none">
+    @{ Html.RenderAction("SearchForm", "Search", new { fq = fq, onClientSearch = "doSearch", onClientReset = "doSearch" }); }
+</div>
+<div id="targetTotals" style="display: none">
+    @{ Html.RenderAction("TotalsForUser", "Flights", new { rgti = ViewBag.rgti, userName = pfTarget.UserName, linkItems = false, grouped = ViewBag.grouped, fq = fq }); }
+</div>
+<div id="targetCurrency" style="display: none">
+    @{ Html.RenderAction("CurrencyForUser", "Flights", new { rgcsi = ViewBag.rgcsi, userName = pfTarget.UserName, linkItems = false }); }
+</div>
+<div id="targetAnalysis" style="display: none">
+    @{ Html.RenderAction("AnalysisForUser", "Flights", new { hm = ViewBag.hm, fq = fq, linkItems = false, sk = (string)null, canDownload = true }); }
+</div>
+<div id="targetPrintView" style="display: none">
+    @{ Html.RenderAction("PrintPrefsSections", "Print", new { paramList = nvc, fq = fq, includeFlightsSection = false, po = (MyFlightbook.Printing.PrintingOptions)null }); }
+    <div style="text-align: center; width: 100%;">
+        @using (Html.BeginForm("DownloadLogbookForUser", "Flights", FormMethod.Post, new { id = "frmDownloadCSV", name = "frmDownloadCSV" }))
+        {
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="szUserName" value="@pfTarget.UserName" />
+            <img src="@("~/images/download.png".ToAbsolute())" style="padding-right: 5px; vertical-align: middle;" />
+            <img src="@("~/images/csvicon_sm.png".ToAbsolute())" style="padding-right: 5px; vertical-align: middle;" />
+            <a href="#" onclick="javascript: $('#frmDownloadCSV')[0].submit(); return false;" style="vertical-align:middle">@Resources.LocalizedText.DownloadFlyingStats</a>
+        }
+    </div>
+</div>
+
+<div>
+    @{ Html.RenderAction("LogbookTableForResults", "Flights", new { fr = ViewBag.flightResult, readOnly = true, targetUser = pfTarget.UserName, sk = (string)null, fq = fq, currentRange = (FlightResultRange)null }); }
+</div>

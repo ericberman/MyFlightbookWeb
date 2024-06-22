@@ -21,7 +21,7 @@ using System.Web.UI.WebControls;
 
 namespace MyFlightbook.Web.Areas.mvc.Controllers
 {
-    public class FlightEditController : AdminControllerBase
+    public class FlightEditController : FlightControllerBase
     {
         #region Web Services
         #region Commit
@@ -56,6 +56,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return SafeOp(() =>
             {
                 PendingFlight pf = new PendingFlight(LogbookEntryFromForm());
+
                 Aircraft ac = new Aircraft(pf.AircraftID);
                 pf.TailNumDisplay = ac.DisplayTailnumber;
                 pf.ModelDisplay = ac.ModelDescription;
@@ -306,24 +307,26 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         const string keyLastEntryDate = "LastEntryDate";
         const string keySessionInProgress = "InProgressFlight";
 
+        /// <summary>
+        /// Initializes a logbookentry from the form, checking that the viewer has SAVE permissions on the flight.
+        /// All other errors/exceptions (besides authorization) are in the errorstring!
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="UnauthorizedAccessException">If the viewing user is not authorized to EDIT the flight, they are unauthorized</exception>
         private LogbookEntry LogbookEntryFromForm()
         {
             string pendingID = Request["idPending"];
             LogbookEntry le = String.IsNullOrEmpty(pendingID) ? new LogbookEntry() : new PendingFlight(pendingID);
+            le.FlightID = util.GetIntParam(Request, "idFlight", LogbookEntryCore.idFlightNew);
+            le.User = Request["szTargetUser"] ?? User.Identity.Name;
+            le.ErrorString = string.Empty;  // clear this out.
+
+            // Check that you can save - and if it's an instructor/student, further check that it's a new flight.
+            if (CheckCanSaveFlight(le.User) != null && !le.IsNewFlight)
+                throw new UnauthorizedAccessException(Resources.LogbookEntry.errNotAuthorizedToSaveToLogbook);
 
             try
             {
-                string targetUser = Request["szTargetUser"] ?? User.Identity.Name;
-                InstructorStudent inst = CheckCanViewFlights(targetUser, User.Identity.Name);
-
-                le.User = targetUser;
-
-                le.FlightID = util.GetIntParam(Request, "idFlight", LogbookEntry.idFlightNew);
-                if (inst != null && le.FlightID > 0)
-                    throw new UnauthorizedAccessException("Instructors can add - but not edit - existing flights");
-
-                le.ErrorString = string.Empty;  // clear this out.
-
                 // Core fields
                 le.Date = DateTime.Parse(Request["flightDate"], CultureInfo.CurrentCulture).Date;
 

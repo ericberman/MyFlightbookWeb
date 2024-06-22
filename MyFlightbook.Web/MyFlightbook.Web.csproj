@@ -842,6 +842,7 @@
     <Content Include="Public\Scripts\adminajax.js" />
     <Content Include="Public\Scripts\ajaxUpload.js" />
     <Content Include="Public\Scripts\flightedit.js" />
+    <Content Include="Public\Scripts\printing.js" />
     <Content Include="Public\tmap\airport.svg" />
     <Content Include="Public\tmap\data\data.js" />
     <Content Include="Public\tmap\flags\1x1\ad.svg" />
@@ -1607,6 +1608,8 @@
     <Content Include="Areas\mvc\Views\Image\_googlePhoto.cshtml" />
     <Content Include="Areas\mvc\Views\MFBTemplate\_dateEdit.cshtml" />
     <Content Include="Areas\mvc\Views\FlightEdit\_pendingFlightTable.cshtml" />
+    <Content Include="Areas\mvc\Views\Print\_printPrefsSections.cshtml" />
+    <Content Include="Areas\mvc\Views\Flights\studentlogbook.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -1927,6 +1930,7 @@
     </Compile>
     <Compile Include="Areas\mvc\Controllers\AdminAircraftController.cs" />
     <Compile Include="Areas\mvc\Controllers\AdminController.cs" />
+    <Compile Include="Areas\mvc\Controllers\FlightControllerBase.cs" />
     <Compile Include="Areas\mvc\Controllers\AdminControllerBase.cs" />
     <Compile Include="Areas\mvc\Controllers\AdminPaymentController.cs" />
     <Compile Include="Areas\mvc\Controllers\AdminTelemetryController.cs" />
@@ -1945,6 +1949,7 @@
     <Compile Include="Areas\mvc\Controllers\oAuthController.cs" />
     <Compile Include="Areas\mvc\Controllers\PlaypenController.cs" />
     <Compile Include="Areas\mvc\Controllers\PrefsController.cs" />
+    <Compile Include="Areas\mvc\Controllers\PrintController.cs" />
     <Compile Include="Areas\mvc\Controllers\PubController.cs" />
     <Compile Include="Areas\mvc\Controllers\rbredirectController.cs" />
     <Compile Include="Areas\mvc\Controllers\SearchController.cs" />

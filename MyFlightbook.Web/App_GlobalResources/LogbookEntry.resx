@@ -1816,4 +1816,10 @@ Proceed with import?</value>
   <data name="SendToFlyStoView" xml:space="preserve">
     <value>View on FlySto</value>
   </data>
+  <data name="errNotAuthorizedToViewLogbook" xml:space="preserve">
+    <value>You are not authorized to view this user's logbook data</value>
+  </data>
+  <data name="errNotAuthorizedToSaveToLogbook" xml:space="preserve">
+    <value>You are not authorized to save to this logbook</value>
+  </data>
 </root>

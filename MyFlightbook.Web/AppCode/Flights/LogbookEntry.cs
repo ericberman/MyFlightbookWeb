@@ -3521,6 +3521,23 @@ WHERE f1.username = ?uName ");
             get { return FormatHobbs(HobbsStart, HobbsEnd); }
         }
 
+        public static string FormatTimeSpan(object o1, object o2)
+        {
+            if (!(o1 is DateTime && o2 is DateTime))
+                return string.Empty;
+
+            DateTime dt1 = (DateTime)o1;
+            DateTime dt2 = (DateTime)o2;
+
+            if (dt1.HasValue() && dt2.HasValue())
+            {
+                double cHours = dt2.Subtract(dt1).TotalHours;
+                return (cHours > 0) ? String.Format(CultureInfo.CurrentCulture, "{0:#.##}", cHours) : string.Empty;
+            }
+            else
+                return string.Empty;
+        }
+
         public static string FormatFlightTime(DateTime FlightStart, DateTime FlightEnd, bool UseUTCDates, bool UseHHMM)
         {
             if (FlightStart.HasValue() || FlightEnd.HasValue())
@@ -4262,12 +4279,12 @@ WHERE f1.username = ?uName ");
         #endregion
         #endregion
 
+        #region IHistogramable support
         private enum HistogramFieldNames
         {
-            TotalFlightTime, PIC, SIC, CFI, Approaches,Landings, FSDayLandings, FSNightLandings, Dual, Night, SimulatedIMC, IMC, InstrumentTime, XC, GroundSim, Flights, FlightDays
+            TotalFlightTime, PIC, SIC, CFI, Approaches, Landings, FSDayLandings, FSNightLandings, Dual, Night, SimulatedIMC, IMC, InstrumentTime, XC, GroundSim, Flights, FlightDays
         }
 
-        #region IHistogramable support
         /// <summary>
         /// Returns a set of things other than properties that can be summed, including display names
         /// </summary>
@@ -4496,51 +4513,6 @@ WHERE f1.username = ?uName ");
             }
         }
         #endregion
-
-        private readonly static char[] trainingPrefixSeparators = new char[] { '-', '[' };
-        /// <summary>
-        /// Helper function for autocompletion of training items in the Comments field
-        /// </summary>
-        /// <param name="prefixText"></param>
-        /// <param name="count"></param>
-        /// <returns></returns>
-        public static string[] SuggestTraining(string prefixText, int count)
-        {
-            const string szCacheKey = "keyTrainingAutocomplete";
-
-            if (String.IsNullOrEmpty(prefixText))
-                return Array.Empty<string>();
-
-            // Don't do anything if the cache is null - bad things afoot!
-            if (System.Web.HttpRuntime.Cache == null)
-                return Array.Empty<string>();
-
-            List<string> lst = (List<string>)System.Web.HttpRuntime.Cache[szCacheKey];
-            if (lst == null)
-            {
-                lst = new List<string>();
-                DBHelper dbh = new DBHelper("SELECT * FROM trainingitems");
-                dbh.ReadRows((comm) => { }, (dr) => { lst.Add(String.Format(CultureInfo.CurrentCulture, "[{0}]", dr["task"])); });
-                System.Web.HttpRuntime.Cache.Add(szCacheKey, lst, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(1, 0, 0, 0), System.Web.Caching.CacheItemPriority.BelowNormal, null);
-            }
-
-            string[] rgszTerms = prefixText.ToUpper(CultureInfo.CurrentCulture).Split(trainingPrefixSeparators, StringSplitOptions.RemoveEmptyEntries);
-            if (rgszTerms.Length == 0)
-                return Array.Empty<string>();
-
-            List<string> lstResult = lst.FindAll((sz) =>
-            {
-                foreach (string szTerm in rgszTerms)
-                    if (!sz.ToUpper(CultureInfo.CurrentCulture).Contains(szTerm))
-                        return false;
-                return true;
-            });
-
-            if (lstResult.Count > count)
-                lstResult.RemoveRange(count, lstResult.Count - count);
-
-            return lstResult.ToArray();
-        }
     }
 
     /// <summary>

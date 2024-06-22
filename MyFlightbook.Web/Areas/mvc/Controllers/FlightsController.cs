@@ -28,7 +28,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
     ///  * Currency
     ///  * Analysis
     /// </summary>
-    public class FlightsController : AdminControllerBase
+    public class FlightsController : FlightControllerBase
     {
         #region Web Services
         #region Logbook analysis charting
@@ -610,6 +610,57 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             // fq here is in the URL so it is base64compressed json
             return SharedLogbookForQuery(g, fq == null ? null : FlightQuery.FromBase64CompressedJSON(fq));
+        }
+        #endregion
+
+        #region Student Logbook
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult DownloadLogbookForUser(string szUserName)
+        {
+            // for now, only allow owner or instructor to call this - i.e., no skID
+            if (string.IsNullOrEmpty(szUserName))
+                throw new ArgumentNullException(nameof(szUserName));
+            Profile student = CheckCanViewFlights(szUserName, User.Identity.Name) ?? throw new UnauthorizedAccessException(Resources.LogbookEntry.errNotAuthorizedToViewLogbook);
+            LogbookBackup lb = new LogbookBackup(student);
+            return File(lb.LogbookDataForBackup(), "text/csv", lb.BackupFilename());
+        }
+
+        private ViewResult StudentLogbookForQuery(string student, FlightQuery fq = null, bool fPropDeleteClicked = false, string propToDelete = null)
+        {
+            if (String.IsNullOrEmpty(student))
+                throw new UnauthorizedAccessException();
+
+            ViewBag.targetUser = CheckCanViewFlights(student, User.Identity.Name) ?? throw new UnauthorizedAccessException(Resources.LogbookEntry.errNotAuthorizedToViewLogbook);
+            ViewBag.viewer = MyFlightbook.Profile.GetUser(User.Identity.Name);
+            fq = fq ?? new FlightQuery(student);
+            fq.Refresh();
+            if (fPropDeleteClicked)
+                fq.ClearRestriction(propToDelete ?? string.Empty);
+
+            ViewBag.query = fq;
+            ViewBag.rgcsi = CurrencyStatusItem.GetCurrencyItemsForUser(student);
+            UserTotals ut = new UserTotals(student, fq, true);
+            ut.DataBind();
+            ViewBag.rgti = ut.Totals;
+            ViewBag.grouped = ut.DefaultGroupModeForUser;
+
+            return View("studentlogbook");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public ActionResult StudentLogbook(string student, string fqShared, bool fPropDeleteClicked = false, string propToDelete = null)
+        {
+            return StudentLogbookForQuery(student, String.IsNullOrEmpty(fqShared) ? null : FlightQuery.FromJSON(fqShared), fPropDeleteClicked, propToDelete);
+        }
+
+        [Authorize]
+        public ActionResult StudentLogbook(string student) 
+        {
+            return StudentLogbookForQuery(student);
         }
         #endregion
 
