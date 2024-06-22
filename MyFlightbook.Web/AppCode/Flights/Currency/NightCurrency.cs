@@ -3,7 +3,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2021 MyFlightbook LLC
+ * Copyright (c) 2007-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -153,26 +153,29 @@ namespace MyFlightbook.Currency
             if (!cfr.fIsCertifiedLanding)
                 return;
 
-            // 61.57(e) only applies if turbine and type rated.  Everything else must be in certified landing, or turbine airplane, or not type rated, or not in the type for this aircraft
-            bool fIsMatchingType = !String.IsNullOrEmpty(TypeDesignator) && cfr.szType.CompareCurrentCultureIgnoreCase(cfr.szType) == 0 && CategoryClass.IsAirplane(cfr.idCatClassOverride) && cfr.turbineLevel.IsTurbine() && !cfr.fIsCertifiedSinglePilot;
-            NightCurrencyOptions nco = fIsMatchingType ? (cfr.fIsRealAircraft ? NightCurrencyOptions.FAR6157eAirplane : NightCurrencyOptions.FAR6157eSim) : NightCurrencyOptions.FAR6157bOnly;
+            bool fIsAppropriateTurbine = CategoryClass.IsAirplane(cfr.idCatClassOverride) && cfr.turbineLevel.IsTurbine() && !cfr.fIsCertifiedSinglePilot && !String.IsNullOrEmpty(TypeDesignator);
 
             // 61.57(e)(4)(i/ii)(A) - 1500 hrs - comes into play after finalize
 
-            // 61.57(e)(4)(i/ii)(C) - 15 hours in this type in the last 90 days.  Only if in an actual aircraft, since it doesn't seem to allow sim time.
+            // 61.57(e)(4)(i/ii)(B) - Meets 61.57(a), computed below
+
+            // 61.57(e)(4)(i/ii)(C) - 15 hours in *this* type in the last 90 days.  Only if in an actual aircraft, since it doesn't seem to allow sim time.
             // Do this first because we'll exclude others if you were pilot monitoring
-            if (nco == NightCurrencyOptions.FAR6157eAirplane)
+            if (cfr.fIsRealAircraft && fIsAppropriateTurbine && cfr.szType.CompareCurrentCultureIgnoreCase(TypeDesignator ?? string.Empty) == 0)
                 m_fc6157TimeInType.AddRecentFlightEvents(cfr.dtFlight, cfr.Total);
 
             if (!cfr.FlightProps.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropPilotMonitoring))
             {
-                // we need to subtract out monitored landings, or ignore all if you were monitoring for the whole flight
+                // we need to subtract out monitored landings
                 int cMonitoredLandings = cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropMonitoredNightLandings);
                 int cMonitoredTakeoffs = cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropMonitoredNightTakeoffs);
                 int cNightLandings = cfr.cFullStopNightLandings + (AllowTouchAndGo ? cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropNightTouchAndGo) : 0);
 
                 // 61.57(e)(4)(i/ii)(B) - passenger currency in this type
                 m_fc6157Passenger.ExamineFlight(cfr);
+
+                // 61.57(e) only applies if turbine and type rated.  Everything else must be in certified landing, or turbine airplane, or not type rated, or not in the type for this aircraft
+                NightCurrencyOptions nco = fIsAppropriateTurbine ? (cfr.fIsRealAircraft ? NightCurrencyOptions.FAR6157eAirplane : NightCurrencyOptions.FAR6157eSim) : NightCurrencyOptions.FAR6157bOnly;
 
                 // 61.57(b), 61.57(e)(4)(i/ii)(D) - Night takeoffs/landings
                 if (cNightLandings > 0)
