@@ -557,11 +557,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             if (activeTemplates == null)
                 throw new ArgumentNullException(nameof(activeTemplates));
 
-            IEnumerable<PropertyTemplate> userTemplates = UserPropertyTemplate.TemplatesForUser(szTargetUser, true);
-            IEnumerable<TemplateCollection> groupedTemplates = TemplateCollection.GroupTemplates(userTemplates);
-            ViewBag.userTemplates = userTemplates;
-            ViewBag.groupedTemplates = groupedTemplates;
-
             // create a merged template either the currently active templates, if any, otherwise the default templates for the user/aircraft
             HashSet<int> hsSelectedTemplates = new HashSet<int>();
             foreach (PropertyTemplate pt in activeTemplates)
@@ -571,7 +566,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             List<CustomFlightProperty> Properties = new List<CustomFlightProperty>(rgfp);
             List<CustomPropertyType> lstRemainingProps = new List<CustomPropertyType>();
             List<CustomFlightProperty> ActiveProperties = new List<CustomFlightProperty>();
-            List<int> ActivePropTypes = new List<int>();
 
             CustomPropertyType[] rgCptAll = CustomPropertyType.GetCustomPropertyTypes(szTargetUser);
 
@@ -595,11 +589,11 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 {
                     fp.SetPropertyType(cpt);    // make sure to pick up things like autocompletion
                     ActiveProperties.Add(fp);
-                    ActivePropTypes.Add(fp.PropTypeID);
                 }
             }
-
             ActiveProperties.Sort((cfp1, cfp2) => { return cfp1.PropertyType.SortKey.CompareCurrentCultureIgnoreCase(cfp2.PropertyType.SortKey); });
+
+            ViewBag.groupedTemplates = TemplateCollection.GroupTemplates(UserPropertyTemplate.TemplatesForUser(szTargetUser, true));
             ViewBag.propList = ActiveProperties;
             ViewBag.activeTemplateIDs = hsSelectedTemplates;
             ViewBag.remainingProps = lstRemainingProps;

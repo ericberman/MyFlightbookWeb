@@ -1,6 +1,5 @@
 ﻿@using MyFlightbook.Templates
 @{ 
-    IEnumerable<PropertyTemplate> userTemplates = ViewBag.userTemplates;
     IEnumerable<TemplateCollection> groupedTemplates = ViewBag.groupedTemplates;
     IEnumerable<CustomFlightProperty> activeProperties = ViewBag.propList;
     IEnumerable<CustomPropertyType> remainingProps = ViewBag.remainingProps;
@@ -58,7 +57,7 @@
     </table>
 </div>
 
-<span id="pnlProps">
+<div id="pnlProps">
 @{
     foreach (CustomFlightProperty fp in activeProperties)
     {
