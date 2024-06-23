@@ -36,7 +36,7 @@
         <Roles></Roles>
       </Item>
       <Item>
-        <Link>~/Member/Download.aspx</Link>
+        <Link>~/mvc/flights/download</Link>
         <ID>lbtDownload</ID>
         <Roles></Roles>
       </Item>

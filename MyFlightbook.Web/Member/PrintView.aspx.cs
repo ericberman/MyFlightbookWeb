@@ -67,7 +67,7 @@ namespace MyFlightbook.Printing
 
             return (fq.UserName.CompareOrdinal(User.Identity.Name) == 0) ?
                 String.Format(CultureInfo.InvariantCulture,  "~/Member/LogbookNew.aspx?fq={0}", fq.ToBase64CompressedJSONString()) : 
-                String.Format(CultureInfo.InvariantCulture,  "~/Member/StudentLogbook.aspx?fq={0}&student={1}", fq.ToBase64CompressedJSONString(), HttpUtility.UrlEncode(fq.UserName));
+                String.Format(CultureInfo.InvariantCulture,  "~/mvc/flights/StudentLogbook?fq={0}&student={1}", fq.ToBase64CompressedJSONString(), HttpUtility.UrlEncode(fq.UserName));
         }
         #endregion
 

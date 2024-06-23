@@ -12,6 +12,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
+using static Dropbox.Api.Paper.UserOnPaperDocFilter;
 
 /******************************************************
  * 
@@ -661,6 +662,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.targetUser = CheckCanViewFlights(student, User.Identity.Name) ?? throw new UnauthorizedAccessException(Resources.LogbookEntry.errNotAuthorizedToViewLogbook);
             ViewBag.viewer = MyFlightbook.Profile.GetUser(User.Identity.Name);
             fq = fq ?? new FlightQuery(student);
+            if (fq.UserName.CompareOrdinalIgnoreCase(student) != 0)
+                throw new UnauthorizedAccessException();
             fq.Refresh();
             if (fPropDeleteClicked)
                 fq.ClearRestriction(propToDelete ?? string.Empty);
@@ -684,9 +687,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         [Authorize]
-        public ActionResult StudentLogbook(string student) 
+        public ActionResult StudentLogbook(string student, string fq = null) 
         {
-            return StudentLogbookForQuery(student);
+            return StudentLogbookForQuery(student, String.IsNullOrEmpty(fq) ? null : FlightQuery.FromBase64CompressedJSON(fq));
         }
         #endregion
 
@@ -808,7 +811,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             // Set up the return link
             bool isViewingStudent = !fIsAdmin && szFlightOwner.CompareCurrentCulture(User.Identity.Name) != 0;
             ViewBag.returnLink = isViewingStudent ?
-                String.Format(CultureInfo.InvariantCulture, "~/Member/StudentLogbook.aspx?student={0}", szFlightOwner).ToAbsolute() :
+                String.Format(CultureInfo.InvariantCulture, "~/mvc/flights/studentlogbook?student={0}", szFlightOwner).ToAbsolute() :
                 "~/Member/LogbookNew.aspx".ToAbsolute();
             ViewBag.returnLinkText = isViewingStudent ?
                 String.Format(CultureInfo.CurrentCulture, Resources.Profile.ReturnToStudent, pfFlightOwner.UserFullName) :

@@ -566,7 +566,6 @@
     <Content Include="Controls\mfbDeadlines.ascx" />
     <Content Include="Controls\mfbDecimalEdit.ascx" />
     <Content Include="Controls\Prefs\mfbCloudStorage.ascx" />
-    <Content Include="Controls\mfbDownload.ascx" />
     <Content Include="Controls\mfbEditableImage.ascx" />
     <Content Include="Controls\mfbEditAircraft.ascx" />
     <Content Include="Controls\mfbEditFlight.ascx" />
@@ -821,7 +820,6 @@
     <Content Include="Member\Ajax.asmx" />
     <Content Include="Member\BrowseTemplates.aspx" />
     <Content Include="Member\CheckFlights.aspx" />
-    <Content Include="Member\Download.aspx" />
     <Content Include="Member\EditAircraft.aspx" />
     <Content Include="Member\EditProfile.aspx" />
     <Content Include="Member\ImpAircraft.aspx" />
@@ -835,10 +833,8 @@
     <Content Include="Member\RequestSigs.aspx" />
     <Content Include="Member\SignFlight.aspx" />
     <Content Include="Member\StartingTotals.aspx" />
-    <Content Include="Member\StudentLogbook.aspx" />
     <Content Include="Public\CSS\printAirline.css" />
     <Content Include="Public\CSS\printHongKong.css" />
-    <Content Include="Public\Export.aspx" />
     <Content Include="Public\Scripts\accordionproxy.js" />
     <Content Include="Public\Scripts\adminajax.js" />
     <Content Include="Public\Scripts\ajaxUpload.js" />
@@ -2188,13 +2184,6 @@
     <Compile Include="Controls\Prefs\mfbCloudStorage.ascx.designer.cs">
       <DependentUpon>mfbCloudStorage.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Controls\mfbDownload.ascx.cs">
-      <DependentUpon>mfbDownload.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbDownload.ascx.designer.cs">
-      <DependentUpon>mfbDownload.ascx</DependentUpon>
-    </Compile>
     <Compile Include="Controls\mfbEditableImage.ascx.cs">
       <DependentUpon>mfbEditableImage.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2654,13 +2643,6 @@
     <Compile Include="Member\CheckFlights.aspx.designer.cs">
       <DependentUpon>CheckFlights.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Member\Download.aspx.cs">
-      <DependentUpon>Download.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\Download.aspx.designer.cs">
-      <DependentUpon>Download.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Member\EditAircraft.aspx.cs">
       <DependentUpon>EditAircraft.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2751,13 +2733,6 @@
     </Compile>
     <Compile Include="Member\StartingTotals.aspx.designer.cs">
       <DependentUpon>StartingTotals.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Member\StudentLogbook.aspx.cs">
-      <DependentUpon>StudentLogbook.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\StudentLogbook.aspx.designer.cs">
-      <DependentUpon>StudentLogbook.aspx</DependentUpon>
     </Compile>
     <Compile Include="OAuth\oAuthToken.aspx.cs">
       <DependentUpon>oAuthToken.aspx</DependentUpon>
@@ -2850,12 +2825,6 @@
     </Compile>
     <Compile Include="Public\Developer.aspx.designer.cs">
       <DependentUpon>Developer.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Public\Export.aspx.cs">
-      <DependentUpon>Export.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Public\Export.aspx.designer.cs">
-      <DependentUpon>Export.aspx</DependentUpon>
     </Compile>
     <Compile Include="Public\LeonRedir.aspx.cs">
       <DependentUpon>LeonRedir.aspx</DependentUpon>
