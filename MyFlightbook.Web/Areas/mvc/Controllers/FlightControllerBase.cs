@@ -1,6 +1,7 @@
 ﻿using MyFlightbook.Instruction;
 using MyFlightbook.Web.Sharing;
 using System;
+using System.Web.Security;
 
 /******************************************************
  * 
@@ -100,6 +101,20 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
             // Otherwise, we're unauthenticated
             throw new UnauthorizedAccessException(Resources.LogbookEntry.errNotAuthorizedToSaveToLogbook);
+        }
+
+        protected static void ValidateUser(string user, string pass, out string fixedUser)
+        {
+            if (String.IsNullOrEmpty(user) || string.IsNullOrEmpty(pass))
+                throw new UnauthorizedAccessException(Resources.LogbookEntry.errNotAuthorizedToViewLogbook);
+
+            if (user.Contains("@"))
+                user = Membership.GetUserNameByEmail(user);
+
+            if (UserEntity.ValidateUser(user, pass).Length == 0)
+                throw new UnauthorizedAccessException(Resources.LogbookEntry.errNotAuthorizedToViewLogbook);
+
+            fixedUser = user;
         }
         #endregion
     }

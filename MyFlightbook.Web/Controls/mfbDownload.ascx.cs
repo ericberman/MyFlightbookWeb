@@ -14,7 +14,7 @@ using System.Web.UI.WebControls;
 
 namespace MyFlightbook
 {
-    public partial class mfbDownload : System.Web.UI.UserControl, IDownloadableAsData
+    public partial class mfbDownload : System.Web.UI.UserControl
     {
         /// <summary>
         /// The username to download.  Caller must validate authorization.

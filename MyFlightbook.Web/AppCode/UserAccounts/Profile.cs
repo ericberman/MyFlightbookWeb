@@ -929,7 +929,7 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="sz">The JSON string</param>
         /// <returns>The authorization state, or null if sz is null</returns>
-        private static IAuthorizationState AuthStateFromString(string sz)
+        private static AuthorizationState AuthStateFromString(string sz)
         {
             if (String.IsNullOrEmpty(sz))
                 return null;
@@ -1750,7 +1750,7 @@ namespace MyFlightbook
         {
             try
             {
-                Profile pf = Profile.GetUser(mu.UserName);
+                Profile pf = GetUser(mu.UserName);
                 using (MailMessage msg = new MailMessage())
                 {
                     Brand brand = Branding.CurrentBrand;
@@ -1762,7 +1762,7 @@ namespace MyFlightbook
                     LogbookBackup lb = new LogbookBackup(pf) { IncludeImages = false };
                     using (FileStream fs = new FileStream(Path.GetTempFileName(), FileMode.Open, FileAccess.ReadWrite, FileShare.Read, Int16.MaxValue, FileOptions.DeleteOnClose))
                     {
-                        lb.LogbookDataForBackup(fs);
+                        lb.WriteLogbookCSVToStream(fs);
                         fs.Seek(0, SeekOrigin.Begin);
                         msg.Attachments.Add(new Attachment(fs, lb.BackupFilename(brand), "text/csv"));
                         util.SendMessage(msg);

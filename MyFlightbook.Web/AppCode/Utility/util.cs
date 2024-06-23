@@ -876,16 +876,4 @@ namespace MyFlightbook
             return string.Empty;
         }
     }
-
-    /// <summary>
-    /// Retrieves data from a control that is rendered on a formless page; format of the data is defined by the control (could be text, html, csv, xml, etc.) - just returns raw bytes.
-    /// </summary>
-    public interface IDownloadableAsData
-    {
-        /// <summary>
-        /// Refresh however you need to refresh for the given user.
-        /// </summary>
-        /// <param name="szUser"></param>
-        void ToStream(string szUser, Stream s);
-    }
 }

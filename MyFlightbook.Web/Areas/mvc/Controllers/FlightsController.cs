@@ -160,6 +160,32 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
         #endregion
 
+        #region Download/Backup
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async System.Threading.Tasks.Task<ActionResult> SaveToCloud()
+        {
+            return await SafeOp(async () =>
+            {
+                string szResult = string.Empty;
+                if (Enum.TryParse(Request["saveCloud"] ?? string.Empty, true, out CloudStorage.StorageID sid))
+                {
+                    bool fIncludeImages = Request["includeImages"] != null;
+                    LogbookBackup lb = new LogbookBackup(User.Identity.Name, fIncludeImages);
+                    szResult = await lb.BackupToCloudService(sid, fIncludeImages);
+                }
+                else
+                    throw new InvalidOperationException("Invalid cloud storage identifier: " + Request["saveCloud"] ?? string.Empty);
+
+                if (!String.IsNullOrEmpty(szResult))
+                    throw new InvalidOperationException(szResult);
+
+                return new EmptyResult();
+            });
+        }
+        #endregion
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -624,7 +650,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 throw new ArgumentNullException(nameof(szUserName));
             Profile student = CheckCanViewFlights(szUserName, User.Identity.Name) ?? throw new UnauthorizedAccessException(Resources.LogbookEntry.errNotAuthorizedToViewLogbook);
             LogbookBackup lb = new LogbookBackup(student);
-            return File(lb.LogbookDataForBackup(), "text/csv", lb.BackupFilename());
+            return File(lb.WriteLogbookCSVToBytes(), "text/csv", lb.BackupFilename());
         }
 
         private ViewResult StudentLogbookForQuery(string student, FlightQuery fq = null, bool fPropDeleteClicked = false, string propToDelete = null)
@@ -814,6 +840,40 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.fq = fq;
             ViewBag.flightResults = FlightResultManager.FlightResultManagerForUser(User.Identity.Name).ResultsForQuery(fq);
             return View("miniRecents");
+        }
+        #endregion
+
+        #region Backup and Export
+        public ActionResult Export(string user, string pass, int csv = 0)
+        {
+            if (!Request.IsSecureConnection)
+                throw new UnauthorizedAccessException("Attempt to call export on an insecure connection");
+
+            // ValidateUser will throw an exception if unauthorized
+            ValidateUser(user, pass, out string fixedUser);
+            LogbookBackup lb = new LogbookBackup(fixedUser);
+            ViewBag.logbookBackup = lb;
+            return (csv == 0) ? View("export") : (ActionResult) File(lb.WriteLogbookCSVToBytes(), "text/csv", lb.BackupFilename());
+        }
+
+        [Authorize]
+        public ActionResult DownloadCSV()
+        {
+            LogbookBackup lb = new LogbookBackup(User.Identity.Name);
+            return File(lb.WriteLogbookCSVToBytes(), "text/csv", lb.BackupFilename());
+        }
+
+        [Authorize]
+        public ActionResult DownloadImages()
+        {
+            LogbookBackup lb = new LogbookBackup(User.Identity.Name);
+            return File(lb.WriteZipOfImagesToBytes(), "text/csv", LogbookBackup.BackupImagesFilename(fDateStamp: true));
+        }
+
+        [Authorize]
+        public ActionResult Download()
+        {
+            return View("download");
         }
         #endregion
 

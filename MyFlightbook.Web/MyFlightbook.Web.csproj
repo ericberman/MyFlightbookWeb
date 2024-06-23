@@ -838,6 +838,7 @@
     <Content Include="Member\StudentLogbook.aspx" />
     <Content Include="Public\CSS\printAirline.css" />
     <Content Include="Public\CSS\printHongKong.css" />
+    <Content Include="Public\Export.aspx" />
     <Content Include="Public\Scripts\accordionproxy.js" />
     <Content Include="Public\Scripts\adminajax.js" />
     <Content Include="Public\Scripts\ajaxUpload.js" />
@@ -1425,7 +1426,6 @@
     <Content Include="Public\DayPilot-LICENSE.txt" />
     <Content Include="Public\DayPilot-NOTICE.txt" />
     <Content Include="Public\Developer.aspx" />
-    <Content Include="Public\Export.aspx" />
     <Content Include="Public\iPadImages\Full\iPad1.png" />
     <Content Include="Public\iPadImages\Full\iPad2.png" />
     <Content Include="Public\iPadImages\Full\iPad3.png" />
@@ -1610,6 +1610,8 @@
     <Content Include="Areas\mvc\Views\FlightEdit\_pendingFlightTable.cshtml" />
     <Content Include="Areas\mvc\Views\Print\_printPrefsSections.cshtml" />
     <Content Include="Areas\mvc\Views\Flights\studentlogbook.cshtml" />
+    <Content Include="Areas\mvc\Views\Flights\export.cshtml" />
+    <Content Include="Areas\mvc\Views\Flights\download.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -2851,7 +2853,6 @@
     </Compile>
     <Compile Include="Public\Export.aspx.cs">
       <DependentUpon>Export.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Public\Export.aspx.designer.cs">
       <DependentUpon>Export.aspx</DependentUpon>

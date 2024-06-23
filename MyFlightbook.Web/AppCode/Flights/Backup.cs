@@ -13,10 +13,10 @@ using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.UI;
-using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
 /******************************************************
@@ -380,8 +380,6 @@ namespace MyFlightbook
         {
             if (ms == null)
                 throw new ArgumentNullException(nameof(ms));
-            if (activeBrand == null)
-                activeBrand = Branding.CurrentBrand;
 
             using (ZipArchive zip = new ZipArchive(ms, ZipArchiveMode.Create, true))
             {
@@ -392,7 +390,7 @@ namespace MyFlightbook
                         string szUserFullName = User.UserFullName;
 
                         // Write header tags.  This leaves an open body tag and an open html tag.
-                        WriteHtmlHeaders(tw, Branding.ReBrand("https://%APP_URL%%APP_ROOT%/public/stylesheet.css", activeBrand), szUserFullName);
+                        WriteHtmlHeaders(tw, Branding.ReBrand("https://%APP_URL%%APP_ROOT%/public/stylesheet.css", activeBrand ?? Branding.CurrentBrand), szUserFullName);
 
                         // Write out pilot information
                         WritePilotInformation(tw, User);
@@ -426,18 +424,12 @@ namespace MyFlightbook
             }
         }
 
-        public void LogbookDataForBackup(Stream s)
+        public byte[] WriteZipOfImagesToBytes()
         {
-            if (s == null)
-                throw new ArgumentNullException(nameof(s));
-
-            using (Page p = new FormlessPage())
+            using (MemoryStream ms = new MemoryStream())
             {
-                p.Controls.Add(new HtmlForm());
-                using (Control c = p.LoadControl("~/Controls/mfbDownload.ascx"))
-                {
-                    ((IDownloadableAsData)c).ToStream(User.UserName, s);
-                }
+                WriteZipOfImagesToStream(ms, Branding.CurrentBrand);
+                return ms.ToArray();
             }
         }
 
@@ -452,11 +444,14 @@ namespace MyFlightbook
         }
 
         /// <summary>
-        /// Returns the bytearray of writing the logbook data out as a CSV file.  Does NOT use an ascx control
+        /// Writes a logbook's CSV to a data table and calls the requested action
+        /// <paramref name="action">The action to call</paramref>
         /// </summary>
-        /// <returns>A byte array of a CSV representation</returns>
-        public byte[] LogbookDataForBackup()
+        public void WriteLogbookCSVToDataTable(Action<DataTable> action)
         {
+            if (action == null)
+                throw new ArgumentNullException(nameof(action));
+
             UserAircraft ua = new UserAircraft(User.UserName);
             // See whether or not to show catclassoverride column
 
@@ -624,24 +619,105 @@ namespace MyFlightbook
                 if (HttpContext.Current?.Session != null)
                     HttpContext.Current.Session[MFBConstants.keyDecimalSettings] = df;
 
-                return CsvWriter.WriteToBytes(dt, true, true);
+                action(dt);
+            }
+        }
+
+        /// <summary>
+        /// Writes a logbook's CSV to the specified stream
+        /// </summary>
+        /// <param name="s">The stream to write to</param>
+        public void WriteLogbookCSVToStream(Stream s)
+        {
+            using (TextWriter tw = new StreamWriter(s, Encoding.UTF8, 1024, true /* leave the underlying stream open */))
+            {
+                WriteLogbookCSVToDataTable((dt) =>
+                {
+                    CsvWriter.WriteToStream(tw, dt, true, true);
+                });
+            }
+        }
+
+        /// <summary>
+        /// Writes a logbook's CSV to the specified stream
+        /// </summary>
+        public byte[] WriteLogbookCSVToBytes()
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                WriteLogbookCSVToStream(ms);
+                return ms.ToArray();
+            }
+        }
+
+        public string WriteLogbookCSVToHtml()
+        {
+            using (StringWriter sw = new StringWriter(CultureInfo.CurrentCulture))
+            {
+                using (HtmlTextWriter tw = new HtmlTextWriter(sw))
+                {
+                    WriteLogbookCSVToDataTable((dt) =>
+                    {
+                        tw.AddAttribute("cellpadding", "3");
+                        tw.AddAttribute("cellspacing", "0");
+                        tw.AddAttribute("rules", "all");
+                        tw.AddAttribute("border", "1");
+                        tw.AddAttribute("style", "font-size: 8pt; border-collapse: collapse;");
+                        tw.RenderBeginTag(HtmlTextWriterTag.Table);
+
+                        tw.RenderBeginTag(HtmlTextWriterTag.Thead);
+                        tw.RenderBeginTag(HtmlTextWriterTag.Tr);
+
+                        foreach (DataColumn dc in dt.Columns)
+                        {
+                            tw.AddAttribute("class", "PaddedCell");
+                            tw.RenderBeginTag(HtmlTextWriterTag.Th);
+                            tw.WriteEncodedText(dc.ColumnName);
+                            tw.RenderEndTag();
+                        }
+
+                        tw.RenderEndTag();  // tr
+                        tw.RenderEndTag();  // thead
+
+                        tw.RenderBeginTag(HtmlTextWriterTag.Tbody);
+
+                        foreach (DataRow dr in dt.Rows)
+                        {
+                            tw.RenderBeginTag(HtmlTextWriterTag.Tr);
+
+                            foreach (DataColumn dc in dt.Columns)
+                            {
+                                tw.AddAttribute("class", "PaddedCell");
+                                tw.RenderBeginTag(HtmlTextWriterTag.Td);
+                                tw.WriteEncodedText(dr[dc.ColumnName].ToString());
+                                tw.RenderEndTag();
+                            }
+
+                            tw.RenderEndTag();  // tr
+                        }
+
+                        tw.RenderEndTag();  // tbody
+                        tw.RenderEndTag();  // table
+                    });
+                    return sw.ToString();
+                }
             }
         }
 
         /// <summary>
         /// The name for the images file
         /// </summary>
-        public static string BackupImagesFilename(Brand activeBrand, bool fDateStamp = false)
+        public static string BackupImagesFilename(Brand activeBrand = null, bool fDateStamp = false)
         {
-            if (activeBrand == null)
-                throw new ArgumentNullException(nameof(activeBrand));
-            return Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, "%APP_NAME% Images{0}.zip", fDateStamp ? " " + DateTime.Now.YMDString() : string.Empty), activeBrand);
+            return Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, "%APP_NAME% Images{0}.zip", fDateStamp ? " " + DateTime.Now.YMDString() : string.Empty), activeBrand ?? Branding.CurrentBrand);
         }
     }
 
-    class LogbookBackup : LogbookBackupBase 
+    public class LogbookBackup : LogbookBackupBase
     {
         public LogbookBackup(Profile user, bool fIncludeIMages = true) : base(user, fIncludeIMages) { }
+
+        public LogbookBackup(string user, bool fIncludeIMages = true) : this(Profile.GetUser(user), fIncludeIMages) { }
 
         #region cloud storage instances
         #region Dropbox
@@ -689,9 +765,39 @@ namespace MyFlightbook
 
             using (FileStream fs = new FileStream(Path.GetTempFileName(), FileMode.Open, FileAccess.ReadWrite, FileShare.None, Int16.MaxValue, FileOptions.DeleteOnClose))
             {
-                LogbookDataForBackup(fs);
+                WriteLogbookCSVToStream(fs);
                 Dropbox.Api.Files.FileMetadata result = await new MFBDropbox(User).PutFile(BackupFilename(activeBrand), fs).ConfigureAwait(true);
                 return result;
+            }
+        }
+
+        /// <summary>
+        /// Backs up to dropbox, returning any error.  Empty error = success
+        /// </summary>
+        /// <param name="fIncludeImages"></param>
+        /// <param name="activeBrand"></param>
+        /// <returns></returns>
+        public async Task<string> BackupDropbox(bool fIncludeImages, Brand activeBrand = null)
+        {
+            try
+            {
+                if (await new MFBDropbox(User).ValidateDropboxToken().ConfigureAwait(false) == MFBDropbox.TokenStatus.None)
+                    return Resources.Profile.errNotConfiguredDropBox;
+
+                Dropbox.Api.Files.FileMetadata result = await BackupToDropbox().ConfigureAwait(false);
+
+                if (fIncludeImages)
+                    result = await BackupImagesToDropbox(activeBrand ?? Branding.CurrentBrand).ConfigureAwait(false);
+
+                return string.Empty;
+            }
+            catch (Dropbox.Api.ApiException<Dropbox.Api.Files.UploadError> ex)
+            {
+                return (ex.ErrorResponse.IsPath && ex.ErrorResponse.AsPath != null && ex.ErrorResponse.AsPath.Value.Reason.IsInsufficientSpace) ? Resources.LocalizedText.DropboxErrorOutOfSpace : ex.Message;
+            }
+            catch (Exception ex) when (ex is Dropbox.Api.ApiException<Dropbox.Api.Auth.TokenFromOAuth1Error> || ex is Dropbox.Api.AuthException || ex is Dropbox.Api.BadInputException || ex is Dropbox.Api.HttpException || ex is UnauthorizedAccessException || ex is MyFlightbookException)
+            {
+                return ex.Message;
             }
         }
         #endregion
@@ -744,8 +850,38 @@ namespace MyFlightbook
 
             using (FileStream fs = new FileStream(Path.GetTempFileName(), FileMode.Open, FileAccess.ReadWrite, FileShare.None, Int16.MaxValue, FileOptions.DeleteOnClose))
             {
-                    LogbookDataForBackup(fs);
-                    return await od.PutFileDirect(BackupFilename(activeBrand), fs, "text/csv").ConfigureAwait(true);
+                WriteLogbookCSVToStream(fs);
+                return await od.PutFileDirect(BackupFilename(activeBrand), fs, "text/csv").ConfigureAwait(true);
+            }
+        }
+
+        /// <summary>
+        /// Backs up to one drive, returning any error.  Empty error = success
+        /// </summary>
+        /// <param name="fIncludeImages"></param>
+        /// <param name="activeBrand"></param>
+        /// <returns></returns>
+        public async Task<string> BackupOneDrive(bool fIncludeImages, Brand activeBrand = null)
+        {
+            if (String.IsNullOrEmpty(User.OneDriveAccessToken?.RefreshToken))
+                return Resources.Profile.errNotConfiguredOneDrive;
+            try
+            {
+                OneDrive od = new OneDrive(User);
+                await BackupToOneDrive(od, activeBrand ?? Branding.CurrentBrand).ConfigureAwait(false);
+
+                if (fIncludeImages)
+                    await BackupImagesToOneDrive(od, activeBrand ?? Branding.CurrentBrand).ConfigureAwait(false);
+
+                // if we are here we were successful, so save the updated refresh token
+                User.OneDriveAccessToken = od.AuthState;
+                User.FCommit();
+
+                return string.Empty;
+            }
+            catch (Exception ex) when (ex is OneDriveMFBException || ex is MyFlightbookException || !(ex is OutOfMemoryException))
+            {
+                return ex.Message;
             }
         }
         #endregion
@@ -798,11 +934,63 @@ namespace MyFlightbook
 
             using (FileStream fs = new FileStream(Path.GetTempFileName(), FileMode.Open, FileAccess.ReadWrite, FileShare.None, Int16.MaxValue, FileOptions.DeleteOnClose))
             {
-                LogbookDataForBackup(fs);
+                WriteLogbookCSVToStream(fs);
                 return await gd.PutFile(BackupFilename(activeBrand), fs, "text/csv").ConfigureAwait(true);
+            }
+        }
+
+        /// <summary>
+        /// Backs up to GoogleDrive, returning any error.  Empty string = success
+        /// </summary>
+        /// <param name="fIncludeImages"></param>
+        /// <param name="activeBrand"></param>
+        /// <returns></returns>
+        public async Task<string> BackupGoogleDrive(bool fIncludeImages, Brand activeBrand = null)
+        {
+            if (String.IsNullOrEmpty(User.GoogleDriveAccessToken?.RefreshToken))
+                return Resources.Profile.errNotConfiguredGoogleDrive;
+
+            try
+            {
+                GoogleDrive gd = new GoogleDrive(User);
+
+                await BackupToGoogleDrive(gd, activeBrand ?? Branding.CurrentBrand).ConfigureAwait(false);
+
+                if (fIncludeImages)
+                    await BackupImagesToGoogleDrive(gd, activeBrand ?? Branding.CurrentBrand).ConfigureAwait(false);
+
+                // if we are here we were successful, so save the updated refresh token
+                User.GoogleDriveAccessToken = gd.AuthState;
+                User.FCommit();
+
+                return string.Empty;
+            }
+            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            {
+                return ex.Message;
             }
         }
         #endregion
         #endregion
+
+        public async Task<string> BackupToCloudService(StorageID sid, bool fIncludeImages)
+        {
+            string szResult = string.Empty;
+            switch (sid)
+            {
+                case StorageID.Dropbox:
+                    szResult = await BackupDropbox(fIncludeImages);
+                    break;
+                case StorageID.OneDrive:
+                    szResult = await BackupOneDrive(fIncludeImages);
+                    break;
+                case StorageID.GoogleDrive:
+                    szResult = await BackupGoogleDrive(fIncludeImages);
+                    break;
+                default:
+                    throw new InvalidOperationException("Unknown cloud service: " + sid.ToString());
+            }
+            return szResult;
+        }
     }
 }

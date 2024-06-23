@@ -1,0 +1,111 @@
+﻿@using System.Globalization
+@using MyFlightbook.CloudStorage
+@{
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = Resources.LocalizedText.DownloadHeader;
+    ViewBag.defaultTab = tabID.tabLogbook;
+    MyFlightbook.Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+}
+<script type="text/javascript">
+    function downloadToCloud(sender) {
+        $("#lblCloudSuccess").hide();
+        $("#lblCloudFailure").text("");
+        $("#divProgress").show();
+        $("#hdnCloudSvc").val(sender.value);
+        var f = $("#frmSaveCloud").serialize();
+        $.ajax({
+            url: '@Url.Action("SaveToCloud", "Flights")',
+            type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            error: function (xhr, status, error) { $("#lblCloudFailure").text(xhr.responseText); },
+            complete: function (response) { $("#divProgress").hide(); },
+            success: function (response) { $("#lblCloudSuccess").show(); }
+        });
+    }
+</script>
+<div style="width:600px; margin-left: auto; margin-right: auto">
+    <p>@Resources.LocalizedText.DownloadYourData</p>
+        <table>
+            <tr style="vertical-align: top; padding: 3px">
+                <td style="width:50%">
+                    <div style="vertical-align:middle;">
+                        <a href="@("~/Public/MyFlightbook backup.xls".ToAbsolute())">
+                            <img src="@("~/images/download.png".ToAbsolute())" style="vertical-align: middle; padding-right: 5px;" />
+                            <img src="@("~/images/xlicon_med.png".ToAbsolute())" style="vertical-align: middle; padding-right: 5px;" />
+                            @Resources.LocalizedText.DownloadLogbookExcel
+                        </a>
+                    </div>
+                </td>
+                <td>@Resources.LocalizedText.DownloadLogbookExcelDesc</td>
+            </tr>
+            <tr><td style="vertical-align: middle; font-weight: bold; text-align: center;" colspan="2"><hr />@Resources.LocalizedText.DownloadLogbookSeparator</td></tr>
+            <tr style="vertical-align: top; padding: 3px">
+                <td>
+                    <div style="vertical-align:middle;">
+                        <a href="@Url.Action("DownloadCSV", "Flights")">
+                            <img src="@("~/images/download.png".ToAbsolute())" style="vertical-align: middle; padding-right: 5px;" />
+                            <img src="@("~/images/csvicon_med.png".ToAbsolute())" style="vertical-align: middle; padding-right: 5px;" />
+                            @Resources.LocalizedText.DownloadLogbookCSV
+                        </a>
+                    </div>
+                </td>
+                <td>@Resources.LocalizedText.DownloadLogbookCSVDesc</td>
+            </tr>
+            <tr style="vertical-align: top; padding: 3px;">
+                <td>
+                    <div>&nbsp;</div>
+                    <div style="vertical-align:middle;">
+                        <a href="@Url.Action("DownloadImages", "Flights")">
+                            <img src="@("~/images/download.png".ToAbsolute())" style="vertical-align: middle; padding-right: 5px;" />
+                            <img src="@("~/images/zip_med.png".ToAbsolute())" style="vertical-align: middle; padding-right: 5px;" />
+                            @Resources.LocalizedText.ImagesBackupPrompt
+                        </a>
+                    </div>
+                </td>
+                <td><br />@Resources.LocalizedText.DownloadLogbookZIPDesc</td>
+            </tr>
+            <tr><td style="vertical-align: middle; font-weight: bold; text-align: center;" colspan="2"><hr />@Resources.LocalizedText.DownloadLogbookSeparator</td></tr>
+            <tr style="vertical-align: top; padding: 3px">
+                <td>
+                    @using (Html.BeginForm("", "Flights", FormMethod.Post, new { id = "frmSaveCloud", name = "frmSaveCloud" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="saveCloud" id="hdnCloudSvc" />
+                        <div>
+                            <button style="vertical-align: middle" type="button" @(String.IsNullOrEmpty(pf.DropboxAccessToken) ? "disabled" : string.Empty) onclick="javascript: downloadToCloud(this); return false;" value="@StorageID.Dropbox">@Resources.LocalizedText.DownloadSaveToCloud</button>
+                            <img src="@("~/images/dropbox-logos_dropbox-logotype-blue.png".ToAbsolute())" style="vertical-align:middle; width: 150px;" />
+                        </div>
+                        <div>
+                            <button style="vertical-align: middle" type="button" @(String.IsNullOrEmpty(pf.GoogleDriveAccessToken?.AccessToken) ? "disabled" : string.Empty) onclick="javascript: downloadToCloud(this); return false;" value="@StorageID.GoogleDrive">@Resources.LocalizedText.DownloadSaveToCloud</button>
+                            <img src="@("~/images/google-drive-logo-lockup.png".ToAbsolute())" style="vertical-align:middle; width: 150px;" />
+                        </div>
+                        <div>
+                            <button style="vertical-align: middle" type="button" @(String.IsNullOrEmpty(pf.OneDriveAccessToken?.AccessToken) ? "disabled" : string.Empty) onclick="javascript: downloadToCloud(this); return false;" value="@StorageID.OneDrive">@Resources.LocalizedText.DownloadSaveToCloud</button>
+                            <img src="@("~/images/OneDrive_rgb_Blue2728.png".ToAbsolute())" style="vertical-align:middle; width: 150px;" />
+                        </div>
+                        <div>
+                            <label><input type="checkbox" id="ckIncludeImages" name="includeImages" />@Resources.LocalizedText.ImagesBackupDropboxPrompt</label>@{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "imgTip", tipTextHTML = Resources.LocalizedText.ImagesBackupFineprint }); }
+                        </div>
+                        <div id="divProgress" style="display: none;"><img src="@("~/images/ajax-loader.gif".ToAbsolute())" /></div>
+                        <div id="lblCloudSuccess" class="success" style="display:none">@Resources.LocalizedText.CloudStorageSuccess</div>
+                        <div id="lblCloudFailure" class="error"></div>
+                    }
+                </td>
+                <td>
+                    <p>@Resources.LocalizedText.CloudDownloadDescription</p>
+                    <p><a href="@("~/Member/EditProfile.aspx/pftPrefs?pane=backup".ToAbsolute())">@Resources.LocalizedText.CloudStorageClickToConfigure</a></p>
+                    <p><span style="font-weight: bold">@Resources.LocalizedText.Note</span> @Branding.ReBrand(Resources.LocalizedText.CloudStorageDonate)</p>
+                </td>
+            </tr>
+            <tr><td style="vertical-align: middle; font-weight: bold; text-align: center;" colspan="2"><hr />@Resources.LocalizedText.DownloadLogbookSeparator</td></tr>
+            <tr>
+                <td>
+                    <a href="@("~/Member/Printview.aspx".ToAbsolute())">
+                        <img src="@("~/images/download.png".ToAbsolute())" style="padding-right: 5px; vertical-align: middle" />
+                        <img src="@("~/images/pdficon_med.png".ToAbsolute())" style="padding-right: 5px; vertical-align: middle" />
+                        @Resources.LocalizedText.DownloadAsPDF
+                    </a>
+                </td>
+                <td>@Resources.LocalizedText.DownloadPDFDescription</td>
+            </tr>
+        </table>
+</div>
