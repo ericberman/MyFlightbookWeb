@@ -125,7 +125,6 @@ function deleteFlightImage(sender, confirmText, imageClass, key, thumbnail) {
         $(sender).parents("div[name='editImage']").hide();
     });
 }
-
 function updateFlightImage(sender, imageClass, key, thumbnail, newComment) {
     updateComment(imageClass, key, thumbnail, newComment, true, function (r) {
         var parent = $(sender).parents("div[name='editImage']");
@@ -215,6 +214,7 @@ function showError(e) {
     err.text(e);
     err.show();
 }
+
 function postFlightWithAction(f, onSuccess, resultType, url) {
     $.ajax({
         url: url || "/logbook/mvc/flightedit/CommitFlight",
@@ -258,3 +258,34 @@ function addAircraft(target) {
     });
 }
 
+// Approach helper
+function populateApproachHelper(containerID, cmbType, cmbTypeSuffix, cmbRnwy, cmbRnwySuffix, txtApt, txtRte) {
+    for (i = 1; i <= 36; i++) {
+        cmbRnwy.append($("<option />").val(i).text(i));
+    }
+
+    ['', 'L', 'C', 'R'].forEach((s) => cmbRnwySuffix.append($("<option />").val(s).text(s)));
+
+    ['', '-A', '-B', '-C', '-D', '-V', '-W', '-X', '-Y', '-Z'].forEach((s) => cmbTypeSuffix.append($("<option />").val(s).text(s)));
+
+    ['CONTACT', 'COPTER', 'GCA', 'GLS', 'ILS', 'ILS (Cat I)', 'ILS (Cat II)', 'ILS (Cat III)', 'ILS/PRM',
+        'JPLAS', 'LAAS', 'LDA', 'LOC', 'LOC-BC', 'MLS', 'NDB', 'OSAP', 'PAR', 'RNAV/GPS', 'SDF', 'SRA/ASR',
+        'TACAN', 'TYPE1', 'TYPE2', 'TYPE3', 'TYPE4', 'TYPEA', 'TYPEB', 'VISUAL', 'VOR', 'VOR/DME', 'VOR/DME-ARC'].forEach((s) =>
+            cmbType.append($("<option />").val(s).text(s)));
+
+    txtApt.autocomplete({
+        minLength: 2,
+        classes: { "ui-autocomplete": "AutoExtender AutoExtenderList" },
+        appendTo: containerID,
+        source: function (request, response) {
+            var words = txtRte.val().toUpperCase().match(/\w+/g) ?? [];
+            var term = request.term.toUpperCase();
+            var result = words.filter((s) => s.startsWith(term));
+            response(result);
+        }
+    });
+}
+
+function addAppchDesc() {
+    sbmtFlightFrm((f) => { postFlightWithAction(f, function (r) { $("#pnlFlightEditorBody").html(r); }, "html", '/logbook/mvc/FlightEdit/AddApproachDesc'); });
+}

@@ -282,6 +282,33 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             });
         }
 
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AddApproachDesc()
+        {
+            return SafeOp(() =>
+            {
+                LogbookEntry le = LogbookEntryFromForm();
+
+                int appchCount = util.GetIntParam(Request, "appchHelpCount", 0);
+                // Form the string to append
+                string szAppchDesc = new ApproachDescription(appchCount, Request["appchHelpType"], Request["appchHelpRwy"], Request["appchHelpApt"]).ToCanonicalString();
+
+                if (Request["appchHelpAdd"] != null)
+                    le.Approaches += appchCount;
+
+                CustomFlightProperty cfp = le.CustomProperties.GetEventWithTypeIDOrNew(CustomPropertyType.KnownProperties.IDPropApproachName);
+                cfp.TextValue = (cfp.TextValue + Resources.LocalizedText.LocalizedSpace + new ApproachDescription(appchCount, Request["appchHelpType"] + Request["appchHelpTypeSfx"], Request["appchHelpRwy"] + Request["appchHelpRwySfx"], Request["appchHelpApt"]).ToCanonicalString()).Trim();
+                le.CustomProperties.Add(cfp);
+
+                Profile pfTarget = MyFlightbook.Profile.GetUser(Request["szTargetUser"]);
+                Profile pfViewer = MyFlightbook.Profile.GetUser(User.Identity.Name);
+
+                return FlightEditorBody(pfTarget, pfViewer, le, le as PendingFlight);
+            });
+        }
+
 
         [Authorize]
         [HttpPost]

@@ -1822,4 +1822,25 @@ Proceed with import?</value>
   <data name="errNotAuthorizedToSaveToLogbook" xml:space="preserve">
     <value>You are not authorized to save to this logbook</value>
   </data>
+  <data name="AddAppchAdd" xml:space="preserve">
+    <value>Add Approach Description</value>
+  </data>
+  <data name="AddAppchAirport" xml:space="preserve">
+    <value>Airport:</value>
+  </data>
+  <data name="AddAppchHeader" xml:space="preserve">
+    <value>Details for instrument approaches:</value>
+  </data>
+  <data name="AddAppchIncrement" xml:space="preserve">
+    <value>Add to total approach count</value>
+  </data>
+  <data name="AddAppchNum" xml:space="preserve">
+    <value># Approaches:</value>
+  </data>
+  <data name="AddAppchRunway" xml:space="preserve">
+    <value>Runway:</value>
+  </data>
+  <data name="AddAppchType" xml:space="preserve">
+    <value>Type:</value>
+  </data>
 </root>

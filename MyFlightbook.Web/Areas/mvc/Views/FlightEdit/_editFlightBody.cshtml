@@ -46,6 +46,9 @@
             errDisallowedFileType: "@Resources.LocalizedText.fileUploadInvalidType",
             abortPrompt: "@Resources.LocalizedText.fileUploadAboart"
         });
+
+        populateApproachHelper("#divAddAppch", $("#appchType"), $("#appchSuffix"), $("#appchRnwyNum"), $("#appchRnwySuffix"), $("#appchApt"), $("#txtRoute"));
+        defaultButtonForDiv("divAddAppch", "btnAddAppchDesc");
     });
 </script>
 <div class="flightinfoblock">
@@ -111,7 +114,36 @@
     <div class="header">@Resources.LogbookEntry.HeaderApproachesLandings</div>
     <div class="itemtimeleft">
         <div id="divApproaches" class="itemlabel">@Resources.LogbookEntry.FieldApproaches @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "tipApproaches", tipTextHTML = Resources.LogbookEntry.EditFlightApproachTooltip }); }</div>
-        <div class="itemdata">@{ Html.RenderAction("RenderIntegerField", "MFBTemplate", new { id = "fieldApproaches", name = "flightApproaches", value = le.Approaches }); }&nbsp;<label><input type="checkbox" id="ckHold" name="flightHold" @(le.fHoldingProcedures.ToChecked()) value="true" />@Resources.LogbookEntry.FieldHold</label></div>
+        <div class="itemdata">
+            @{ Html.RenderAction("RenderIntegerField", "MFBTemplate", new { id = "fieldApproaches", name = "flightApproaches", value = le.Approaches }); }&nbsp;@{ Html.RenderAction("RenderExpandoImg", "MFBTemplate", new { fExpanded = false, targetID = "divAddAppch" }); }&nbsp;<label><input type="checkbox" id="ckHold" name="flightHold" @(le.fHoldingProcedures.ToChecked()) value="true" />@Resources.LogbookEntry.FieldHold</label>
+        </div>
+        <div id="divAddAppch" class="calloutSmall calloutBackground" style="display: none; position: absolute; z-index: 200; max-width: 300px;">
+            <h3>@Resources.LogbookEntry.AddAppchHeader</h3>
+            <table>
+                <tr style="vertical-align: top;">
+                    <td>@Resources.LogbookEntry.AddAppchNum</td>
+                    <td>
+                        <div>@{ Html.RenderAction("RenderIntegerField", "MFBTemplate", new { id = "appchNum", name = "appchHelpCount", value = 1 }); }</div>
+                        <div><label><input type="checkbox" id="ckIncrApproaches" name="appchHelpAdd" />@Resources.LogbookEntry.AddAppchIncrement</label></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>@Resources.LogbookEntry.AddAppchType</td>
+                    <td><select id="appchType" name="appchHelpType"></select> <select id="appchSuffix" name="appchHelpTypeSfx"></select></td>
+                </tr>
+                <tr>
+                    <td>@Resources.LogbookEntry.AddAppchRunway</td>
+                    <td><select id="appchRnwyNum" name="appchHelpRwy"></select> <select id="appchRnwySuffix" name="appchHelpRwySfx"></select></td>
+                </tr>
+                <tr>
+                    <td>@Resources.LogbookEntry.AddAppchAirport</td>
+                    <td><input type="text" id="appchApt" name="appchHelpApt" /></td>
+                </tr>
+            </table>
+            <div style="width: 100%; text-align: center">
+                <button type="button" id="btnAddAppchDesc" onclick="javascript: addAppchDesc();">@Resources.LogbookEntry.AddAppchAdd</button>
+            </div>
+        </div>
     </div>
     <div class="itemtimeright">
         <div id="divLandings" class="itemlabel">@Resources.LogbookEntry.FieldTotalLandings</div>
@@ -263,7 +295,7 @@
                             </span>
                             if (!String.IsNullOrEmpty(pf?.FlightData))
                             {
-                            <input type="hidden" name="flightPendingTelemetry" value="@Convert.ToBase64String(pf.FlightData.Compress())" />
+                                <input type="hidden" name="flightPendingTelemetry" value="@Convert.ToBase64String(pf.FlightData.Compress())" />
                             }
                         }
                     </td>

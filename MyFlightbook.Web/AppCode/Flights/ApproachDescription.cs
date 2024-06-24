@@ -59,6 +59,14 @@ namespace MyFlightbook
             Runway = m.Groups["rwy"].Value;
             AirportCode = m.Groups["airport"].Value;
         }
+
+        public ApproachDescription(int count, string desc, string runway, string code)
+        {
+            Count = count;
+            Description = desc;
+            Runway = runway;
+            AirportCode = code;
+        }
         #endregion
 
         #region Creation and parsing

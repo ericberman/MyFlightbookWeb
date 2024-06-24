@@ -61,6 +61,69 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add Approach Description.
+        /// </summary>
+        internal static string AddAppchAdd {
+            get {
+                return ResourceManager.GetString("AddAppchAdd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Airport:.
+        /// </summary>
+        internal static string AddAppchAirport {
+            get {
+                return ResourceManager.GetString("AddAppchAirport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Details for instrument approaches:.
+        /// </summary>
+        internal static string AddAppchHeader {
+            get {
+                return ResourceManager.GetString("AddAppchHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add to total approach count.
+        /// </summary>
+        internal static string AddAppchIncrement {
+            get {
+                return ResourceManager.GetString("AddAppchIncrement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to # Approaches:.
+        /// </summary>
+        internal static string AddAppchNum {
+            get {
+                return ResourceManager.GetString("AddAppchNum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Runway:.
+        /// </summary>
+        internal static string AddAppchRunway {
+            get {
+                return ResourceManager.GetString("AddAppchRunway", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type:.
+        /// </summary>
+        internal static string AddAppchType {
+            get {
+                return ResourceManager.GetString("AddAppchType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fills in the elapsed flight time as determined by flight start to flight end.
         /// </summary>
         internal static string AirborneCrossFillTip {
