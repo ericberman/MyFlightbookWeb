@@ -1363,6 +1363,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sign this flight.
+        /// </summary>
+        internal static string SignThisFlight {
+            get {
+                return ResourceManager.GetString("SignThisFlight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Student Comment: {0}.  My notes: {1}.
         /// </summary>
         internal static string StudentNameTemplate {

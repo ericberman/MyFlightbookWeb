@@ -10,6 +10,7 @@
     string szClone = szEdit + szJoin + "Clone=1";
     string szCloneReverse = szEdit + szJoin + "Clone=1&Reverse=1";
     string szRequestSigs = String.Format(CultureInfo.InvariantCulture, "~/Member/RequestSigs.aspx?id={0}", le.FlightID).ToAbsolute();
+    string szSignThis = String.Format(CultureInfo.InvariantCulture, "~/Public/SignEntry.aspx?idFlight={0}", le.FlightID).ToAbsolute();
 }
 <div class="flightContextMenu">
     <div>
@@ -24,9 +25,15 @@
     <div>
         <a href="@szCloneReverse"><img src="@("~/images/copyflightreverse.png".ToAbsolute())" alt="@Resources.LogbookEntry.RepeatReverseFlight" />@Resources.LogbookEntry.RepeatReverseFlight</a>
     </div>
+    @if (le.CFISignatureState != LogbookEntryCore.SignatureState.Valid)
+    {
     <div>
         <a href="@szRequestSigs"><img src="@("~/images/signaturesm.png".ToAbsolute())" alt="@Resources.SignOff.RequestSignature" />@Resources.SignOff.RequestSignature</a>
     </div>
+    <div>
+        <a href="@szSignThis"><img src="@("~/images/signaturesm.png".ToAbsolute())" />@Resources.SignOff.SignThisFlight</a>
+    </div>
+    }
     <div>
         <a href="#" onclick="@String.Format(CultureInfo.InvariantCulture, "javascript: copyClipboard('', '{0}', true, '{1}');", idCopySrc, idCopy)" title="@Resources.LogbookEntry.CopyFlightLinkTip"><img src="@("~/images/copyflight.png".ToAbsolute())" alt="@Resources.LogbookEntry.CopyFlightLinkTip" />@Resources.LogbookEntry.CopyFlightLink</a>
     </div>

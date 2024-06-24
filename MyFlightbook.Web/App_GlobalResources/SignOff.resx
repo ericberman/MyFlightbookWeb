@@ -575,4 +575,7 @@
   <data name="EndorsementDeleted" xml:space="preserve">
     <value>Endorsement was deleted by the student on {0:d}</value>
   </data>
+  <data name="SignThisFlight" xml:space="preserve">
+    <value>Sign this flight</value>
+  </data>
 </root>
