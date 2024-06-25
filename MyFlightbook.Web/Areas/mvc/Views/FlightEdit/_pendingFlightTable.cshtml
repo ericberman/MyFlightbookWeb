@@ -54,7 +54,7 @@
                     <div>
                         @foreach (string s in CustomFlightProperty.PropDisplayAsList(pf.CustomProperties, viewer.UsesHHMM, true, true))
                         {
-                            <div>@s</div>
+                            <div>@Html.Raw(s)</div>
                         }
                     </div>
                 </td>
