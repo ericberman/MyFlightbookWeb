@@ -1,0 +1,73 @@
+﻿@using MyFlightbook.Telemetry
+@{
+    ViewBag.Title = Resources.FlightData.ImportHeaderBulkUpload;
+    ViewBag.defaultTab = tabID.tabLogbook;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    IEnumerable<TelemetryMatchResult> results = ViewBag.results;
+    Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+    TimeZoneInfo tzi = pf.PreferredTimeZone;
+}
+<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/Public/Scripts/ajaxUpload.js?v=4")"></script>
+<h2>@Resources.FlightData.ImportHeaderBulkUpload</h2>
+<div>@Resources.FlightData.ImportBulkUploadDescription</div>
+@using (Html.BeginForm("ImportTelemetry", "PlayPen", FormMethod.Post))
+{
+    <div>
+        <select name="importTimeZone" id="cmbTimeZone">
+            <option value="">@Resources.Schedule.ItemEmptyTimezone</option>
+            @foreach (TimeZoneInfo tz in TimeZoneInfo.GetSystemTimeZones())
+            {
+                <option value="@tz.Id" @(tz.Id.CompareCurrentCultureIgnoreCase((tzi.Id ?? string.Empty)) == 0 ? "selected" : string.Empty)>@tz.DisplayName</option>
+            }
+        </select>
+    </div>
+    <img src="@("~/images/progress.gif".ToAbsolute())" style="display:none" id="imgUploadProgress" />
+    <div id="dragContainer">
+
+    </div>
+    <script type="text/javascript">
+    $(() => {
+        ajaxFileUpload($("#dragContainer"), {
+            uploadURL: "@Url.Action("UploadTelemetryToImport", "PlayPen")",
+            allowedTypes : "csv kml gpx nmea",
+            onUpload: function () { $("#btnImport")[0].click(); },
+            dropPrompt : "Drag files to match here",
+            errTooManyFiles : "@Resources.LocalizedText.fileUploadTooManyFiles",
+            errDisallowedFileType : "@Resources.LocalizedText.fileUploadInvalidType",
+            abortPrompt : "@Resources.LocalizedText.fileUploadAboart"
+        });
+    });
+    </script>
+    <div id="divResults">
+        @if (results?.Any() ?? false)
+        {
+            <table cellspacing="0" style="border-collapse: collapse">
+                <thead>
+                    <tr>
+                        <th class="PaddedCell">FileName</th>
+                        <th class="PaddedCell">Date</th>
+                        <th class="PaddedCell">Status</th>
+                        <th class="PaddedCell">Matching Flight</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (TelemetryMatchResult tmr in results)
+                    {
+                        <tr style="vertical-align: top">
+                            <td class="PaddedCell">@tmr.TelemetryFileName</td>
+                            <td class="PaddedCell">@tmr.DateDisplay</td>
+                            <td class="PaddedCell @tmr.CssClass">@tmr.Status</td>
+                            <td class="PaddedCell">
+                                @if (tmr.Success)
+                                {
+                                    <a href="@tmr.MatchHREF.ToAbsolute()" target="_blank">@tmr.MatchedFlightDescription</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+    <button type="submit" style="display: none;" id="btnImport"></button>
+}

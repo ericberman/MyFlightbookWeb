@@ -13,6 +13,7 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -171,6 +172,62 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 HasAlt = HasTime = HasSpeed = true;
                 return View("mergeTelemetry");
             }
+        }
+        #endregion
+
+        #region Import from telemetry
+        private const string SessionKeyFiles = "telemImportFiles";
+
+        [HttpPost]
+        [Authorize]
+        public async Task<ActionResult> UploadTelemetryToImport()
+        {
+            return await SafeOp(async () =>
+            {
+                if (Session[SessionKeyFiles] == null)
+                    Session[SessionKeyFiles] = new Dictionary<string, string>();
+
+                // read the contents of the file
+                byte[] data = new byte[Request.Files[0].ContentLength];
+                int _ = await Request.Files[0].InputStream.ReadAsync(data, 0, data.Length);
+
+                ((Dictionary<string, string>)Session[SessionKeyFiles])[Request.Files[0].FileName] = System.Text.Encoding.UTF8.GetString(data);
+                return Content("~/images/mapmarker.png".ToAbsolute());
+            });
+        }
+
+        [Authorize]
+        public ActionResult ImportTelemetry(string importTimeZone = null)
+        {
+            if (importTimeZone != null && Request.HttpMethod == "POST" && Session[SessionKeyFiles] != null)
+            {
+                TimeZoneInfo tz = TimeZoneInfo.FindSystemTimeZoneById(importTimeZone);
+                List<TelemetryMatchResult> lst = new List<TelemetryMatchResult>();
+                Dictionary<string, string> d = (Dictionary<string, string>)Session[SessionKeyFiles];
+                foreach (string fname in d.Keys)
+                {
+                    TelemetryMatchResult tmr = new TelemetryMatchResult() { TelemetryFileName = fname };
+                    if (tz != null)
+                        tmr.TimeZoneOffset = tz.BaseUtcOffset.TotalHours;
+
+                    DateTime? dtFallback = null;
+                    MatchCollection mc = RegexUtility.RegexYMDDate.Matches(fname);
+                    if (mc != null && mc.Count > 0 && mc[0].Groups.Count > 0)
+                    {
+                        if (DateTime.TryParse(mc[0].Groups[0].Value, out DateTime dt))
+                        {
+                            dtFallback = dt;
+                            tmr.TimeZoneOffset = 0; // do it all in local time.
+                        }
+                    }
+
+                    tmr.MatchToFlight(d[fname], User.Identity.Name, dtFallback);
+                    lst.Add(tmr);
+                }
+                ViewBag.results = lst;
+            }
+            Session[SessionKeyFiles] = null;  // clear this out regardless
+            return View("bulkImportTelemetry");
         }
         #endregion
 

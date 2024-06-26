@@ -825,7 +825,6 @@
     <Content Include="Member\ImpAircraft.aspx" />
     <Content Include="Member\ImpAircraftService.aspx" />
     <Content Include="Member\Import.aspx" />
-    <Content Include="Member\ImportTelemetry.aspx" />
     <Content Include="Member\LogbookNew.aspx" />
     <Content Include="Member\MiniLogbook.aspx" />
     <Content Include="Member\MiniTotals.aspx" />
@@ -1608,6 +1607,7 @@
     <Content Include="Areas\mvc\Views\Flights\studentlogbook.cshtml" />
     <Content Include="Areas\mvc\Views\Flights\export.cshtml" />
     <Content Include="Areas\mvc\Views\Flights\download.cshtml" />
+    <Content Include="Areas\mvc\Views\Playpen\bulkImportTelemetry.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -2677,13 +2677,6 @@
     </Compile>
     <Compile Include="Member\Import.aspx.designer.cs">
       <DependentUpon>Import.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Member\ImportTelemetry.aspx.cs">
-      <DependentUpon>ImportTelemetry.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\ImportTelemetry.aspx.designer.cs">
-      <DependentUpon>ImportTelemetry.aspx</DependentUpon>
     </Compile>
     <Compile Include="Member\LogbookNew.aspx.cs">
       <DependentUpon>LogbookNew.aspx</DependentUpon>

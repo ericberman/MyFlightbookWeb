@@ -236,6 +236,7 @@ namespace MyFlightbook
         private static Regex mRegexMonth = null;
         private static Regex mRegexYear = null;
         private static Regex mRegexDateSep = null;
+        private static Regex mRegexYMD = null;
 
         private static readonly Dictionary<string, string> dictRegexForFormat = new Dictionary<string, string>();
 
@@ -343,6 +344,19 @@ namespace MyFlightbook
             get
             {
                 return String.Format(CultureInfo.InvariantCulture, "^{0} [0-2]?\\d:[0-5]\\d$", RegexPatternForShortDate);
+            }
+        }
+
+        /// <summary>
+        /// Returns a regex that detects a YMD pattern at the start of the string.
+        /// </summary>
+        public static Regex RegexYMDDate
+        {
+            get
+            {
+                if (mRegexYMD == null)
+                    mRegexYMD = new Regex("^(?:19|20)\\d{2}[. _-]?[01]?\\d[. _-]?[012]?\\d", RegexOptions.Compiled);
+                return mRegexYMD;
             }
         }
         #endregion
