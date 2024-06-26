@@ -163,3 +163,76 @@ function defaultButtonForDiv(idDiv, idButton) {
         }
     });
 }
+
+/*
+Create a wizard using the specified container.  This should be a div element, it's contained span's are the headers.
+These should correspond 1:1 with subsequent divs, which are the steps of the wizard.
+Options are:
+    * headerContainer is the jquery div for the steps
+    * stepsContainer is the jquery container for a div containing the steps.
+    * navContainer is the jquery container of a div containing the navigation
+    * initialStep is the index of the first step to be shown.
+    * nextTitle is the title for a next button
+    * backTitle is the title for a back button
+    * finishTitle is the title for a Finish button
+    * onStepChange is a function called when changing between the old step and a new step; return false to prevent the step change.
+    * onFinish is a function called (no arguments) when finish is clicked.
+*/
+function wizardizeContainer(opt) {
+    this.setStep = function (step) {
+        var steps = opt.headerContainer.children("span");
+        var stepCount = steps.length;
+        opt.headerContainer.children("span").each(function (idx) {
+            $(this).removeClass("wizStepInProgress");
+            $(this).removeClass("wizStepFuture");
+            $(this).removeClass("wizStepCompleted");
+            if (idx < step)
+                $(this).addClass("wizStepCompleted");
+            else if (idx == step)
+                $(this).addClass("wizStepInProgress");
+            else
+                $(this).addClass("wizStepFuture");
+        });
+
+        opt.stepsContainer.children("div").each(function (idx) {
+            if (idx == step)
+                $(this).show();
+            else
+                $(this).hide();
+        });
+
+        if (step == stepCount - 1) {
+            opt.nextButton.hide();
+            opt.finishButton.show();
+        }
+        else {
+            opt.nextButton.show();
+            opt.finishButton.hide();
+        }
+
+        if (step == 0)
+            opt.prevButton.hide();
+        else
+            opt.prevButton.show();
+
+        opt.initialStep = step;
+    }
+
+    opt.nextButton.on("click", function () {
+        if (opt.onStepChange === undefined || opt.onStepChange(opt.initialStep, opt.initialStep + 1))
+            setStep(opt.initialStep + 1);
+    });
+    opt.prevButton.on("click", function () {
+        if (opt.onStepChange === undefined || opt.onStepChange(opt.initialStep, opt.initialStep - 1))
+            setStep(opt.initialStep - 1);
+    });
+
+    opt.finishButton.on("click", function () {
+        if (opt.onFinish !== undefined)
+            opt.onFinish();
+    });
+
+    this.setStep(opt.initialStep);
+
+    return this;
+}

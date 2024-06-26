@@ -24,8 +24,11 @@ function ajaxFileUpload(container, options) {
     }
 
     function sendFileToServer(formData, status) {
-        var extraData = {}; //Extra Data.
-        status.setAbort( $.ajax({
+        // Allow for additional data, if needed.
+        if (options.onPreSend !== undefined)
+            options.onPreSend(formData);
+
+        status.setAbort($.ajax({
             xhr: function () {
                 var xhrobj = $.ajaxSettings.xhr();
                 if (xhrobj.upload) {

@@ -1,0 +1,68 @@
+﻿
+@{
+    ViewBag.Title = Resources.LocalizedText.BulkCreateFlightsFromTelemetryTitle;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+    ViewBag.defaultTab = tabID.tabLogbook;
+
+}
+<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/Public/Scripts/ajaxUpload.js?v=5")"></script>
+<script type="text/javascript">
+    var wiz = null;
+    $(() => {
+        wiz = wizardizeContainer({
+            headerContainer: $("#wizardHead"),
+            stepsContainer: $("#wizardSteps"),
+            navContainer: $("#wizNav"),
+            initialStep: 0,
+            nextButton: $("#btnWizNext"),
+            prevButton: $("#btnWizPrev"),
+            finishButton: $("#btnWizFinish"),
+            onStepChange: function (oldStep, newStep) {
+                return true;
+            },
+            onFinish: function () {
+                window.location = "@("~/mvc/flightedit/pending".ToAbsolute())";
+            }
+        });
+
+        ajaxFileUpload($("#dragContainer"), {
+            uploadURL: "@Url.Action("CreateFlightFromTelemetry", "PlayPen")",
+            allowedTypes: "csv kml gpx nmea",
+            onUpload: function () { window.location = "@("~/mvc/flightedit/pending".ToAbsolute())"; },
+            dropPrompt: "Drag files to match here",
+            errTooManyFiles: "@Resources.LocalizedText.fileUploadTooManyFiles",
+            errDisallowedFileType: "@Resources.LocalizedText.fileUploadInvalidType",
+            abortPrompt: "@Resources.LocalizedText.fileUploadAboart",
+            onPreSend: function (fd) { }
+        });
+    });
+</script>
+<div>
+    <p>@Resources.LocalizedText.BulkCreateFlightsFromTelemetryTitleDesc1</p>
+    <p>@Resources.LocalizedText.BulkCreateFlightsFromTelemetryTitleDesc2</p>
+</div>
+<div id="wizardHead">
+    <span>Step 1: Choose Settings&nbsp;&nbsp;</span>
+    <span>Step 2: Upload Telemetry</span>
+</div>
+<div id="wizardSteps" style="margin-top: 10pt;">
+    <div>
+        <div>
+            <div>
+                @{ Html.RenderAction("AutoFillOptionsEditor", "Prefs", new { szUser = User.Identity.Name }); }
+            </div>
+            <div style="width: 100%; clear: both;">&nbsp;</div>
+        </div>
+    </div>
+    <div style="display: none;">
+        <div id="dragContainer">
+
+        </div>
+    </div>
+</div>
+<div id="wizNav" style="width: 100%; text-align: center;">
+    <button type="button" id="btnWizPrev" style="display:none;">@Resources.LocalizedText.PreviousPrompt</button>
+    <button type="button" id="btnWizNext">@Resources.LocalizedText.NextPrompt</button>
+    <button type="button" id="btnWizFinish" style="display:none;">@Resources.LocalizedText.BulkCreateFlightsFromTelemetryTitleFinish</button>
+</div>

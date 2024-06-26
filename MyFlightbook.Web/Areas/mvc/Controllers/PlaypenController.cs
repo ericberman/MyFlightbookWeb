@@ -17,6 +17,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using static MyFlightbook.Telemetry.AutoFillOptions;
 
 /******************************************************
  * 
@@ -228,6 +229,52 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             }
             Session[SessionKeyFiles] = null;  // clear this out regardless
             return View("bulkImportTelemetry");
+        }
+        #endregion
+
+        #region Bulk Create From Telemetry
+        [HttpPost]
+        [Authorize]
+        public async Task<ActionResult> CreateFlightFromTelemetry()
+        {
+            return await SafeOp(async () =>
+            {
+                PendingFlight pf = new PendingFlight() { User = User.Identity.Name };
+                // read the contents of the file
+                byte[] data = new byte[Request.Files[0].ContentLength];
+                int _ = await Request.Files[0].InputStream.ReadAsync(data, 0, data.Length);
+                string szOriginal = pf.FlightData = System.Text.Encoding.UTF8.GetString(data);
+                AutoFillOptions afo = AutoFillOptions.DefaultOptionsForUser(User.Identity.Name);
+
+                if (Enum.TryParse(Request["tzPref"] ?? "None", out TimeConversionCriteria tzc))
+                {
+                    afo.TimeConversion = tzc;
+                    afo.AutoFillTotal = AutoFillTotalOption.EngineTime;
+                    if (tzc == TimeConversionCriteria.Preferred)
+                        afo.PreferredTimeZone = MyFlightbook.Profile.GetUser(User.Identity.Name).PreferredTimeZone;
+                }
+
+                using (FlightData fd = new FlightData())
+                {
+                    fd.AutoFill(pf, afo);
+
+                    pf.FlightData = string.Empty;
+                    LogbookEntry leEmpty = new PendingFlight() { User = User.Identity.Name, FlightData = string.Empty };
+                    if (!pf.IsEqualTo(leEmpty))
+                    {
+                        pf.TailNumDisplay = fd.TailNumber ?? string.Empty;
+                        pf.FlightData = szOriginal;
+                        pf.Commit();
+                    }
+                }
+                return Content("~/images/mapmarker.png".ToAbsolute());
+            });
+        }
+
+        [Authorize]
+        public ActionResult ImportFromTelemetry()
+        {
+            return View("bulkImportFromTelemetry");
         }
         #endregion
 

@@ -1369,7 +1369,6 @@
     <Content Include="Public\tmap\stylesheets\demo.css" />
     <Content Include="NavLinks.xml" />
     <Content Include="OAuth\oAuthToken.aspx" />
-    <Content Include="PlayPen\BulkImportFromTelemetry.aspx" />
     <Content Include="PlayPen\Checklist.aspx" />
     <Content Include="PlayPen\DutyPeriodAnalyzer.aspx" />
     <Content Include="PlayPen\iCalConvert.aspx" />
@@ -1608,6 +1607,7 @@
     <Content Include="Areas\mvc\Views\Flights\export.cshtml" />
     <Content Include="Areas\mvc\Views\Flights\download.cshtml" />
     <Content Include="Areas\mvc\Views\Playpen\bulkImportTelemetry.cshtml" />
+    <Content Include="Areas\mvc\Views\Playpen\bulkImportFromTelemetry.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -2733,13 +2733,6 @@
     </Compile>
     <Compile Include="OAuth\oAuthToken.aspx.designer.cs">
       <DependentUpon>oAuthToken.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="PlayPen\BulkImportFromTelemetry.aspx.cs">
-      <DependentUpon>BulkImportFromTelemetry.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="PlayPen\BulkImportFromTelemetry.aspx.designer.cs">
-      <DependentUpon>BulkImportFromTelemetry.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlayPen\Checklist.aspx.cs">
       <DependentUpon>Checklist.aspx</DependentUpon>
