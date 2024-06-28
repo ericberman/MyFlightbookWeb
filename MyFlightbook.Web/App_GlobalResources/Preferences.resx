@@ -551,25 +551,25 @@
     <value>The UTC date at the time of departure</value>
   </data>
   <data name="ScheduledServiceFlightCrewViewAuthorize" xml:space="preserve">
-    <value>Authorize %APP_NAME% on FlightCrewView</value>
+    <value>Authorize %APP_NAME% on Flight Crew View</value>
   </data>
   <data name="ScheduleServiceFlightCrewViewAuthorized" xml:space="preserve">
-    <value>You have authorized %APP_NAME% to pull flights from FlightCrewView</value>
+    <value>You have authorized %APP_NAME% to pull flights from Flight Crew View</value>
   </data>
   <data name="ScheduleServiceFlightCrewViewDeAuth" xml:space="preserve">
-    <value>Deauthorize %APP_NAME% on FlightCrewView</value>
+    <value>Deauthorize %APP_NAME% on Flight Crew View</value>
   </data>
   <data name="ScheduleServiceFlightCrewViewDesc" xml:space="preserve">
-    <value>Trusted by over 20,000 pilots and flight attendants, FlightCrewView makes it easy to view your flying schedule.</value>
+    <value>Trusted by over 20,000 pilots and flight attendants, Flight Crew View makes it easy to view your flying schedule.</value>
   </data>
   <data name="ScheduleServiceFlightCrewViewManage" xml:space="preserve">
-    <value>Configure %APP_NAME% for FlightCrewView and download the app</value>
+    <value>Configure %APP_NAME% for Flight Crew View and download the app</value>
   </data>
   <data name="ScheduleServiceFlightCrewViewName" xml:space="preserve">
-    <value>FlightCrewView</value>
+    <value>Flight Crew View</value>
   </data>
   <data name="ScheduleServiceFlightCrewViewNotAuthorized" xml:space="preserve">
-    <value>You have not authorized %APP_NAME% to pull flights from FlightCrewView</value>
+    <value>You have not authorized %APP_NAME% to pull flights from Flight Crew View</value>
   </data>
   <data name="ScheduleServiceHeader" xml:space="preserve">
     <value>Airline Scheduling Systems</value>

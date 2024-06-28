@@ -1850,6 +1850,6 @@ Proceed with import?</value>
     <value>Import Now</value>
   </data>
   <data name="FlightCrewViewImportHeader" xml:space="preserve">
-    <value>Import from FlightCrewView</value>
+    <value>Import from Flight Crew View</value>
   </data>
 </root>

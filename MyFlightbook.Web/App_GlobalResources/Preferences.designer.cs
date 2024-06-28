@@ -1357,7 +1357,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Authorize %APP_NAME% on FlightCrewView.
+        ///   Looks up a localized string similar to Authorize %APP_NAME% on Flight Crew View.
         /// </summary>
         internal static string ScheduledServiceFlightCrewViewAuthorize {
             get {
@@ -1366,7 +1366,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You have authorized %APP_NAME% to pull flights from FlightCrewView.
+        ///   Looks up a localized string similar to You have authorized %APP_NAME% to pull flights from Flight Crew View.
         /// </summary>
         internal static string ScheduleServiceFlightCrewViewAuthorized {
             get {
@@ -1375,7 +1375,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Deauthorize %APP_NAME% on FlightCrewView.
+        ///   Looks up a localized string similar to Deauthorize %APP_NAME% on Flight Crew View.
         /// </summary>
         internal static string ScheduleServiceFlightCrewViewDeAuth {
             get {
@@ -1384,7 +1384,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Trusted by over 20,000 pilots and flight attendants, FlightCrewView makes it easy to view your flying schedule..
+        ///   Looks up a localized string similar to Trusted by over 20,000 pilots and flight attendants, Flight Crew View makes it easy to view your flying schedule..
         /// </summary>
         internal static string ScheduleServiceFlightCrewViewDesc {
             get {
@@ -1393,7 +1393,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configure %APP_NAME% for FlightCrewView and download the app.
+        ///   Looks up a localized string similar to Configure %APP_NAME% for Flight Crew View and download the app.
         /// </summary>
         internal static string ScheduleServiceFlightCrewViewManage {
             get {
@@ -1402,7 +1402,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to FlightCrewView.
+        ///   Looks up a localized string similar to Flight Crew View.
         /// </summary>
         internal static string ScheduleServiceFlightCrewViewName {
             get {
@@ -1411,7 +1411,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You have not authorized %APP_NAME% to pull flights from FlightCrewView.
+        ///   Looks up a localized string similar to You have not authorized %APP_NAME% to pull flights from Flight Crew View.
         /// </summary>
         internal static string ScheduleServiceFlightCrewViewNotAuthorized {
             get {

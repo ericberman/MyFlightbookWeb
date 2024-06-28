@@ -1456,7 +1456,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Import from FlightCrewView.
+        ///   Looks up a localized string similar to Import from Flight Crew View.
         /// </summary>
         internal static string FlightCrewViewImportHeader {
             get {
