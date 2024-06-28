@@ -1,8 +1,6 @@
-using DotNetOpenAuth.OAuth2;
-using MyFlightbook.OAuth.CloudAhoy;
+using MyFlightbook.OAuth.FlightCrewView;
 using MyFlightbook.OAuth.Leon;
 using MyFlightbook.OAuth.RosterBuster;
-using MyFlightbook.OAuth.FlightCrewView;
 using MyFlightbook.Telemetry;
 using System;
 using System.Collections.Generic;
@@ -478,7 +476,8 @@ namespace MyFlightbook.ImportFlights
             if (mfbCloudAhoyEndDate.Date.HasValue())
                 dtEnd = mfbCloudAhoyEndDate.Date;
 
-            string szResult = await CloudAhoyClient.ImportCloudAhoyFlights(Page.User.Identity.Name, !Branding.CurrentBrand.MatchesHost(Request.Url.Host), dtStart, dtEnd).ConfigureAwait(true);
+            PendingFlight.FlushCacheForUser(User.Identity.Name);    // Flush while still on the main thread with an http context
+            string szResult = await PendingFlight.ImportCloudAhoy(User.Identity.Name, !Branding.CurrentBrand.MatchesHost(Request.Url.Host), dtStart, dtEnd);
             if (String.IsNullOrEmpty(szResult))
             {
                 // Avoid a "Thread was being aborted" (ThreadAbortException).
@@ -486,19 +485,11 @@ namespace MyFlightbook.ImportFlights
                 Context.ApplicationInstance.CompleteRequest();
             }
             else
-            {
                 lblCloudAhoyErr.Text = HttpUtility.HtmlEncode(szResult);
-            }
         }
 
         protected async void btnImportLeonFlights_Click(object sender, EventArgs e)
         {
-            Profile pf = Profile.GetUser(Page.User.Identity.Name);
-            IAuthorizationState authstate = pf.GetPreferenceForKey<AuthorizationState>(LeonClient.TokenPrefKey);
-            string leonSubDomain = pf.GetPreferenceForKey<string>(LeonClient.SubDomainPrefKey);
-
-            LeonClient c = new LeonClient(authstate, leonSubDomain, LeonClient.UseSandbox(Request.Url.Host));
-            bool fNeedsRefresh = !c.CheckAccessToken();
             DateTime? from = null;
             DateTime? to = null;
 
@@ -507,46 +498,21 @@ namespace MyFlightbook.ImportFlights
             if (dtLeonTo.Date.HasValue())
                 to = dtLeonTo.Date;
 
-            try
+            PendingFlight.FlushCacheForUser(User.Identity.Name);    // Flush while still on the main thread with an http context
+            string szResult = await PendingFlight.ImportLeon(User.Identity.Name, Request.Url.Host, from, to);
+            if (String.IsNullOrEmpty(szResult))
             {
-                PendingFlight.FlushCacheForUser(User.Identity.Name);
-                await c.ImportFlights(Page.User.Identity.Name, from, to);
-                if (fNeedsRefresh)
-                    pf.SetPreferenceForKey(LeonClient.TokenPrefKey, c.AuthState, c.AuthState == null);
-
                 // If we are here, then any flights were imported - redirect to review them.
                 // Avoid a "Thread was being aborted" (ThreadAbortException).
                 Response.Redirect("~/mvc/flightedit/pending", false);
                 Context.ApplicationInstance.CompleteRequest();
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
-            {
-                lblLeonErr.Text = HttpUtility.HtmlEncode(ex.Message);
-            }
+            else
+                lblLeonErr.Text = HttpUtility.HtmlEncode(szResult);
         }
 
         protected async void btnImportRosterBuster_Click(object sender, EventArgs e)
         {
-            Profile pf = Profile.GetUser(Page.User.Identity.Name);
-            IAuthorizationState authstate = pf.GetPreferenceForKey<AuthorizationState>(RosterBusterClient.TokenPrefKey);
-
-            RosterBusterClient rbc = new RosterBusterClient(authstate, Request.Url.Host);
-
-            if (!rbc.CheckAccessToken())
-            {
-                try
-                {
-                    IAuthorizationState newAuth = await rbc.RefreshToken();
-                    pf.SetPreferenceForKey(RosterBusterClient.TokenPrefKey, newAuth);
-                }
-                catch (UnauthorizedAccessException)
-                {
-                    lblRosterBusterErrror.Text = Branding.ReBrand(Resources.LogbookEntry.RosterBusterRefreshFailed);
-                    pf.SetPreferenceForKey(RosterBusterClient.TokenPrefKey, null, true);
-                    return;
-                }
-            }
-
             DateTime? from = null;
             DateTime? to = null;
 
@@ -555,39 +521,30 @@ namespace MyFlightbook.ImportFlights
             if (rbToDate.Date.HasValue())
                 to = rbToDate.Date;
 
-            try
+            PendingFlight.FlushCacheForUser(User.Identity.Name);    // Flush while still on the main thread with an http context
+            string szResult = await PendingFlight.ImportRosterBuster(User.Identity.Name, Request.Url.Host, from, to);
+            if (String.IsNullOrEmpty(szResult))
             {
-                PendingFlight.FlushCacheForUser(User.Identity.Name);
-                bool fResult = await rbc.GetFlights(Page.User.Identity.Name, from, to);
                 // If we are here, then any flights were imported - redirect to review them.
                 // Avoid a "Thread was being aborted" (ThreadAbortException).
                 Response.Redirect("~/mvc/flightedit/pending", false);
                 Context.ApplicationInstance.CompleteRequest();
                 
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
-            {
-                lblRosterBusterErrror.Text = HttpUtility.HtmlEncode(ex.Message + (ex.InnerException == null ? string.Empty : ex.InnerException.Message));
-            }
+            else
+                lblRosterBusterErrror.Text = HttpUtility.HtmlEncode(szResult);
         }
 
         protected async void btnImportFlightCrewView_Click(object sender, EventArgs e)
         {
-            Profile pf = Profile.GetUser(User.Identity.Name);
-            try
+            PendingFlight.FlushCacheForUser(User.Identity.Name);    // Flush while still on the main thread with an http context
+            string szResult = await PendingFlight.ImportFlightCrewView(User.Identity.Name, fcvFromDate.Date);
+            if (String.IsNullOrEmpty(szResult)) 
             {
-                if (pf.PreferenceExists(FlightCrewViewClient.AccessTokenPrefKey))
-                {
-                    PendingFlight.FlushCacheForUser(User.Identity.Name);
-                    IEnumerable<PendingFlight> _ = (await (await FlightCrewViewClient.RefreshedClientForUser(User.Identity.Name)).FlightsFromDate(User.Identity.Name, fcvFromDate.Date));
                     Response.Redirect("~/mvc/flightedit/pending", false);
                     Context.ApplicationInstance.CompleteRequest();
-                }
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
-            {
-                lblFCViewError.Text = ex.Message;
-            }
+            lblFCViewError.Text = szResult;
         }
     }
 }

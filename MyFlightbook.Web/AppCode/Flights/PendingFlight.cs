@@ -1,7 +1,13 @@
-﻿using MySql.Data.MySqlClient;
+﻿using DotNetOpenAuth.OAuth2;
+using MyFlightbook.OAuth.CloudAhoy;
+using MyFlightbook.OAuth.FlightCrewView;
+using MyFlightbook.OAuth.Leon;
+using MyFlightbook.OAuth.RosterBuster;
+using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web;
 
 /******************************************************
@@ -272,6 +278,93 @@ namespace MyFlightbook
             if (fSuccess)
                 Delete();
             return fSuccess;
+        }
+        #endregion
+
+        #region Import from oAuth sources
+        public static async Task<string> ImportCloudAhoy(string szUser, bool fSandbox, DateTime? dtFrom, DateTime? dtTo)
+        {
+            if (string.IsNullOrEmpty(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+            return await CloudAhoyClient.ImportCloudAhoyFlights(szUser, fSandbox, dtFrom, dtTo).ConfigureAwait(true);
+        }
+
+        public static async Task<string> ImportLeon(string szUser, string currentHost, DateTime? dtFrom, DateTime? dtTo)
+        {
+            if (string.IsNullOrEmpty(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+            try
+            {
+                Profile pf = Profile.GetUser(szUser);
+                IAuthorizationState authstate = pf.GetPreferenceForKey<AuthorizationState>(LeonClient.TokenPrefKey);
+                string leonSubDomain = pf.GetPreferenceForKey<string>(LeonClient.SubDomainPrefKey);
+                LeonClient c = new LeonClient(authstate, leonSubDomain, LeonClient.UseSandbox(currentHost));
+                bool fNeedsRefresh = !c.CheckAccessToken();
+
+                await c.ImportFlights(szUser, dtFrom, dtTo);
+                if (fNeedsRefresh)
+                    pf.SetPreferenceForKey(LeonClient.TokenPrefKey, c.AuthState, c.AuthState == null);
+
+                return string.Empty;    // no issues!
+            }
+            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            {
+                return ex.Message;
+            }
+        }
+
+        public static async Task<string> ImportRosterBuster(string szUser, string currentHost, DateTime? dtFrom, DateTime? dtTo)
+        {
+            if (string.IsNullOrEmpty(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+
+            Profile pf = Profile.GetUser(szUser);
+            IAuthorizationState authstate = pf.GetPreferenceForKey<AuthorizationState>(RosterBusterClient.TokenPrefKey);
+
+            RosterBusterClient rbc = new RosterBusterClient(authstate, currentHost);
+
+            if (!rbc.CheckAccessToken())
+            {
+                try
+                {
+                    IAuthorizationState newAuth = await rbc.RefreshToken();
+                    pf.SetPreferenceForKey(RosterBusterClient.TokenPrefKey, newAuth);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    pf.SetPreferenceForKey(RosterBusterClient.TokenPrefKey, null, true);
+                    return Branding.ReBrand(Resources.LogbookEntry.RosterBusterRefreshFailed);
+                }
+            }
+
+            try
+            {
+                bool _ = await rbc.GetFlights(szUser, dtFrom, dtTo);
+                return string.Empty;
+            }
+            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            {
+                return HttpUtility.HtmlEncode(ex.Message + (ex.InnerException == null ? string.Empty : ex.InnerException.Message));
+            }
+        }
+
+        public static async Task<string> ImportFlightCrewView(string szUser, DateTime? dtFrom)
+        {
+            if (string.IsNullOrEmpty(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+            Profile pf = Profile.GetUser(szUser);
+            if (!pf.PreferenceExists(FlightCrewViewClient.AccessTokenPrefKey))
+                throw new UnauthorizedAccessException();
+
+            try
+            {
+                IEnumerable<PendingFlight> _ = (await (await FlightCrewViewClient.RefreshedClientForUser(szUser)).FlightsFromDate(szUser, dtFrom ?? DateTime.MinValue));
+                return string.Empty;
+            }
+            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            {
+                return ex.Message;
+            }
         }
         #endregion
     }
