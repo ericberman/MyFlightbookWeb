@@ -58,7 +58,7 @@
         var hdnsortField = $("#hdnSortField");
         var hdnsortdir = $("#hdnLastSortDir");
         hdnsortdir.val(sortField == hdnsortField.val() && hdnsortdir.val() == "Descending" ? "Ascending" : "Descending");
-        hdnsortField.val(sortField);
+        hdnsortField.val(sortField ?? hdnsortField.val());
         params.sortField = hdnsortField.val();
         params.sortDirection = hdnsortdir.val();
 
