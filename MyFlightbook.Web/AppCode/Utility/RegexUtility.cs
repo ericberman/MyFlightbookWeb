@@ -237,6 +237,7 @@ namespace MyFlightbook
         private static Regex mRegexYear = null;
         private static Regex mRegexDateSep = null;
         private static Regex mRegexYMD = null;
+        private static Regex mRegexHHMM = null;
 
         private static readonly Dictionary<string, string> dictRegexForFormat = new Dictionary<string, string>();
 
@@ -270,6 +271,17 @@ namespace MyFlightbook
                 return mRegexYear;
             }
         }
+
+        public static Regex regexHHMM
+        {
+            get
+            {
+                if (mRegexHHMM == null)
+                    mRegexHHMM = new Regex("^(?<hour>\\d{2}):?(?<minute>\\d{2})$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                return mRegexHHMM;
+            }
+        }
+
 
         /// <summary>
         /// dots and slashes need to be escaped in a date, so find them to replace with escaped values.

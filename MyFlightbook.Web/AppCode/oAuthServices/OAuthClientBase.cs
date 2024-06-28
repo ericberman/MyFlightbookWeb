@@ -247,7 +247,7 @@ namespace MyFlightbook.OAuth
             return ConvertToken(new HttpRequestWrapper(Request));
         }
 
-        private IAuthorizationState ParseAuthResponse(string result, string redirEndpoint)
+        private static AuthorizationState ParseAuthResponse(string result, string redirEndpoint)
         {
             if (String.IsNullOrEmpty(result))
                 throw new MyFlightbookValidationException("Null access token returned - invalid authorization passed?");
@@ -308,6 +308,62 @@ namespace MyFlightbook.OAuth
                 return ParseAuthResponse(result, redirEndpoint);
             }
         }
+
+        public async Task<bool> RevokeToken()
+        {
+            if (string.IsNullOrEmpty(oAuthTokenDisableEndpoint) || string.IsNullOrEmpty(AuthState.RefreshToken))
+                return true;    // nothing to do.
+
+            // Refresh if needed, before revoking.
+            if (!CheckAccessToken() && !String.IsNullOrEmpty(AuthState.RefreshToken))
+                AuthState = await RefreshAccessToken(AuthState.RefreshToken, AuthState.Callback.ToString());
+
+            Dictionary<string, string> dContent = new Dictionary<string, string>()
+            {
+                { "refreshToken" , AuthState.RefreshToken }
+            };
+
+            using (FormUrlEncodedContent c = new FormUrlEncodedContent(dContent))
+            {
+                string result = (string)await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri(oAuthTokenDisableEndpoint), AuthState.AccessToken, HttpMethod.Post, c, (response) =>
+                {
+                    string szResult = response.Content.ReadAsStringAsync().Result;
+                    response.EnsureSuccessStatusCode();
+                    return szResult;
+                });
+
+                return true;
+            }
+        }
+
+        public async Task<bool> RevokeTokeBasicAuth()
+        {
+            if (string.IsNullOrEmpty(oAuthTokenDisableEndpoint) || string.IsNullOrEmpty(AuthState.RefreshToken))
+                return true;    // nothing to do.
+
+            Dictionary<string, string> dContent = new Dictionary<string, string>()
+            {
+                { "refreshToken" , AuthState.RefreshToken }
+            };
+
+            Dictionary<string, string> dHeaders = new Dictionary<string, string>()
+            {
+                { "Authorization", String.Format(CultureInfo.InvariantCulture, "Basic {0}", Convert.ToBase64String(Encoding.UTF8.GetBytes(String.Format(CultureInfo.InvariantCulture, "{0}:{1}", AppKey, AppSecret)))) }
+            };
+
+            using (FormUrlEncodedContent c = new FormUrlEncodedContent(dContent))
+            {
+                string result = (string)await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri(oAuthTokenDisableEndpoint), null, HttpMethod.Post, c, (response) =>
+                {
+                    string szResult = response.Content.ReadAsStringAsync().Result;
+                    response.EnsureSuccessStatusCode();
+                    return szResult;
+                }, dHeaders);
+
+                return true;
+            }
+        }
+
 
         /// <summary>
         /// Convert an authorization token for an access token, bypassing DotNetOpenAuth (which surprisingly sometimes doesn't work); this includes the redirect URI

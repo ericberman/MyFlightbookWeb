@@ -1843,4 +1843,13 @@ Proceed with import?</value>
   <data name="AddAppchType" xml:space="preserve">
     <value>Type:</value>
   </data>
+  <data name="FlightCrewViewImportFlightsDescription" xml:space="preserve">
+    <value>Your flights will be added to Pending Flights, where you can review/edit them before adding them to your logbook</value>
+  </data>
+  <data name="FlightCrewViewImportFlightsNow" xml:space="preserve">
+    <value>Import Now</value>
+  </data>
+  <data name="FlightCrewViewImportHeader" xml:space="preserve">
+    <value>Import from FlightCrewView</value>
+  </data>
 </root>

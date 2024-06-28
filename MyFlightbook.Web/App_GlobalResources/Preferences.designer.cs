@@ -1357,6 +1357,69 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Authorize %APP_NAME% on FlightCrewView.
+        /// </summary>
+        internal static string ScheduledServiceFlightCrewViewAuthorize {
+            get {
+                return ResourceManager.GetString("ScheduledServiceFlightCrewViewAuthorize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have authorized %APP_NAME% to pull flights from FlightCrewView.
+        /// </summary>
+        internal static string ScheduleServiceFlightCrewViewAuthorized {
+            get {
+                return ResourceManager.GetString("ScheduleServiceFlightCrewViewAuthorized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deauthorize %APP_NAME% on FlightCrewView.
+        /// </summary>
+        internal static string ScheduleServiceFlightCrewViewDeAuth {
+            get {
+                return ResourceManager.GetString("ScheduleServiceFlightCrewViewDeAuth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trusted by over 20,000 pilots and flight attendants, FlightCrewView makes it easy to view your flying schedule..
+        /// </summary>
+        internal static string ScheduleServiceFlightCrewViewDesc {
+            get {
+                return ResourceManager.GetString("ScheduleServiceFlightCrewViewDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configure %APP_NAME% for FlightCrewView and download the app.
+        /// </summary>
+        internal static string ScheduleServiceFlightCrewViewManage {
+            get {
+                return ResourceManager.GetString("ScheduleServiceFlightCrewViewManage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FlightCrewView.
+        /// </summary>
+        internal static string ScheduleServiceFlightCrewViewName {
+            get {
+                return ResourceManager.GetString("ScheduleServiceFlightCrewViewName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have not authorized %APP_NAME% to pull flights from FlightCrewView.
+        /// </summary>
+        internal static string ScheduleServiceFlightCrewViewNotAuthorized {
+            get {
+                return ResourceManager.GetString("ScheduleServiceFlightCrewViewNotAuthorized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Airline Scheduling Systems.
         /// </summary>
         internal static string ScheduleServiceHeader {

@@ -672,6 +672,60 @@ namespace MyFlightbook.ImportFlights
         protected global::System.Web.UI.WebControls.Image imgRBLogo;
 
         /// <summary>
+        /// pnlModalFlightCrewView control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlModalFlightCrewView;
+
+        /// <summary>
+        /// fcvFromDate control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Controls_mfbTypeInDate fcvFromDate;
+
+        /// <summary>
+        /// btnImportFlightCrewView control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnImportFlightCrewView;
+
+        /// <summary>
+        /// lblFCViewError control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblFCViewError;
+
+        /// <summary>
+        /// pnlFlightCrewView control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlFlightCrewView;
+
+        /// <summary>
+        /// imgFlightCrew control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Image imgFlightCrew;
+
+        /// <summary>
         /// pnlModalCloudAhoy control.
         /// </summary>
         /// <remarks>

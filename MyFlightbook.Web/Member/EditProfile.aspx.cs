@@ -403,6 +403,9 @@ namespace MyFlightbook.MemberPages
                     case "props":
                         acpTarget = acpProperties;
                         break;
+                    case "sched":
+                        acpTarget = acpSchedulers;
+                        break;
                     default:
                         break;
                 }

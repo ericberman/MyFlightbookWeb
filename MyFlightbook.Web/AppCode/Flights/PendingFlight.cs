@@ -110,6 +110,11 @@ namespace MyFlightbook
             return szCacheKeyPrefix + szUser;
         }
 
+        static public void FlushCacheForUser(string szUser)
+        {
+            CacheForUser(szUser, null);
+        }
+
         static private void CacheForUser(string szUser, IEnumerable<PendingFlight> flights)
         {
             if (String.IsNullOrEmpty(szUser))
@@ -208,7 +213,7 @@ namespace MyFlightbook
                 throw new ArgumentNullException(nameof(szUser));
             DBHelper dbh = new DBHelper("DELETE FROM pendingflights WHERE username=?uname");
             dbh.DoNonQuery((comm) => { comm.Parameters.AddWithValue("uname", szUser); });
-            CacheForUser(szUser, null); // flush the cache
+            FlushCacheForUser(szUser); // flush the cache
         }
 
         /// <summary>
@@ -220,7 +225,7 @@ namespace MyFlightbook
                 throw new InvalidOperationException("User is empty for this object");
             DBHelper dbh = new DBHelper("DELETE FROM pendingflights WHERE id=?idflight");
             dbh.DoNonQuery((comm) => { comm.Parameters.AddWithValue("idflight", PendingID); });
-            CacheForUser(User, null); // flush the cache
+            FlushCacheForUser(User); // flush the cache
         }
 
         /// <summary>
@@ -250,7 +255,7 @@ namespace MyFlightbook
                 comm.Parameters.AddWithValue("json", szJSON);
                 comm.Parameters.AddWithValue("idflight", PendingID);
             });
-            CacheForUser(User, null);
+            FlushCacheForUser(User);
         }
 
         /// <summary>

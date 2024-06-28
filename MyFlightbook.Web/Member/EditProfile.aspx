@@ -839,7 +839,15 @@
                         <Content>
                             <table style="border-spacing: 10px; border-collapse: separate;">
                                 <tr>
-                                    <td style="width:100px;"><img src='<% =VirtualPathUtility.ToAbsolute("~/images/LeonLogo.svg") %>' /></td>
+                                    <td style="width:100px; text-align: center;"><img src='<% =VirtualPathUtility.ToAbsolute("~/images/flightcrewview.png") %>' /></td>
+                                    <td style="vertical-align:top">
+                                        <h2><%=Resources.Preferences.ScheduleServiceFlightCrewViewName %></h2>
+                                        <p><%=Resources.Preferences.ScheduleServiceFlightCrewViewDesc %></p>
+                                        <asp:HyperLink ID="lnkSetUpFlightCrewView" runat="server" NavigateUrl="~/mvc/oauth/ManageFlightCrewView"><% =Branding.ReBrand(Resources.Preferences.ScheduleServiceFlightCrewViewManage) %></asp:HyperLink>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width:100px; text-align: center;"><img src='<% =VirtualPathUtility.ToAbsolute("~/images/LeonLogo.svg") %>' /></td>
                                     <td style="vertical-align:top">
                                         <h2><%=Resources.Preferences.ScheduleServiceLeonName %></h2>
                                         <p><%=Resources.Preferences.ScheduleServiceLeonDesc %></p>
@@ -847,7 +855,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="width:100px;"><img style="width:100px" src='<% =VirtualPathUtility.ToAbsolute("~/images/rb_logo.png") %>' /></td>
+                                    <td style="width:100px; text-align: center;"><img style="width:100px" src='<% =VirtualPathUtility.ToAbsolute("~/images/rb_logo.png") %>' /></td>
                                     <td style="vertical-align:top;">
                                         <h2><%=Resources.Preferences.ScheduleServiceRBName %></h2>
                                         <p><%=Resources.Preferences.ScheduleServiceRBDesc %></p>

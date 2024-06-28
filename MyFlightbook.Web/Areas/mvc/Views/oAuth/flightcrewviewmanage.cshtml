@@ -1,0 +1,33 @@
+﻿@using MyFlightbook.OAuth.FlightCrewView
+@{
+    ViewBag.Title = Resources.Preferences.ScheduleServiceFlightCrewViewName;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    ViewBag.defaultTab = tabID.tabProfile;
+    MyFlightbook.Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+}
+<img style="max-width: 2cm; max-height: 2cm; vertical-align:top; margin-right: 3em; margin-bottom: 1em; float:left;" src="@VirtualPathUtility.ToAbsolute("~/images/flightcrewview.png")" />
+
+@using (Html.BeginForm("ManageFlightCrewView", "oAuth", FormMethod.Post, new { id = "frmDeauth", name = "frmDeauth" }))
+{
+    @Html.AntiForgeryToken();
+    if (pf.PreferenceExists(FlightCrewViewClient.AccessTokenPrefKey))
+    {
+        <h3>@Branding.ReBrand(Resources.Preferences.ScheduleServiceFlightCrewViewAuthorized)</h3>
+        <input type="hidden" value="deAuth" name="action" />
+        <a href="#" onclick="javascript: $('#frmDeauth')[0].submit();">@Branding.ReBrand(Resources.Preferences.ScheduleServiceFlightCrewViewDeAuth)</a>
+    }
+    else
+    {
+        <input type="hidden" value="auth" name="action" />
+        <h3>@Branding.ReBrand(Resources.Preferences.ScheduleServiceFlightCrewViewNotAuthorized)</h3>
+        <a href="#" onclick="javascript: $('#frmDeauth')[0].submit();">@Branding.ReBrand(Resources.Preferences.ScheduledServiceFlightCrewViewAuthorize)</a>
+    }
+}
+<div style="clear: both;">
+    <a href="https://apps.apple.com/us/app/flight-crew-view/id999316238" target="_blank" >
+        <img decoding="async" width="300" height="100" src="https://flightcrewview.com/wp-content/uploads/2020/09/Download_on_the_App_Store_300.png" alt="" style="width: 167px; height: 50px;" />
+    </a>
+    <a href="https://play.google.com/store/apps/details?id=com.robert.fcView&#038;hl=en_US" target="_blank" >
+        <img loading="lazy" decoding="async" width="300" height="89" src="https://flightcrewview.com/wp-content/uploads/2020/09/google-play-badge-300.png" alt="" style="width: 167px; height: 50px;" />
+    </a>
+</div>

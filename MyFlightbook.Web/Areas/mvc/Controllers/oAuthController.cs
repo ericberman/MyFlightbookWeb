@@ -2,11 +2,14 @@
 using DotNetOpenAuth.OAuth2;
 using DotNetOpenAuth.OAuth2.Messages;
 using MyFlightbook.OAuth.CloudAhoy;
+using MyFlightbook.OAuth.FlightCrewView;
 using OAuthAuthorizationServer.Code;
 using OAuthAuthorizationServer.Services;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -121,14 +124,55 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return new EmptyResult();
         }
 
+        #region FlySto
         [Authorize]
         public ActionResult FlyStoRedir()
         {
             Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
             pf.SetPreferenceForKey(FlyStoClient.AccessTokenPrefKey, new FlyStoClient().ConvertToken(Request));
-            pf.FCommit();
             return Redirect("~/Member/EditProfile.aspx/pftPrefs?pane=debrief");
         }
+        #endregion
+
+        #region FlightCrewView
+
+        [Authorize]
+        public async Task<ActionResult> FlightCrewViewRedir()
+        {
+            Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+            IAuthorizationState auth = await new FlightCrewViewClient().ConvertToken(String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Request.Url.Host, "~/mvc/oauth/flightcrewviewredir".ToAbsolute()), Request["code"]);
+            pf.SetPreferenceForKey(FlightCrewViewClient.AccessTokenPrefKey, auth);
+            return Redirect("~/mvc/oauth/ManageFlightCrewView");
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ManageFlightCrewView(string action)
+        {
+            if (action.CompareOrdinal("deAuth") == 0)
+            {
+                Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+                if (pf.PreferenceExists(FlightCrewViewClient.AccessTokenPrefKey) && await new FlightCrewViewClient(pf.GetPreferenceForKey<AuthorizationState>(FlightCrewViewClient.AccessTokenPrefKey)).RevokeTokeBasicAuth())
+                {
+                    pf.SetPreferenceForKey(FlightCrewViewClient.AccessTokenPrefKey, null, true);
+                }
+                return Redirect("ManageFlightCrewView");
+            }
+            else if (action.CompareOrdinal("auth") == 0)
+            {
+                new FlightCrewViewClient().Authorize("~/mvc/oauth/flightcrewviewredir".ToAbsoluteURL(Request));
+                return new EmptyResult();
+            }
+            throw new InvalidOperationException("Unknown action: " + action);
+        }
+
+        [Authorize]
+        public ActionResult ManageFlightCrewView()
+        {
+            return View("flightcrewviewmanage");
+        }
+        #endregion
 
         // GET: mvc/oAuth
         public ActionResult Index()

@@ -1,0 +1,2 @@
+﻿INSERT INTO `logbook`.`localconfig` (`keyName`, `keyValue`) VALUES ('FlightCrewViewClientID', '');
+INSERT INTO `logbook`.`localconfig` (`keyName`, `keyValue`) VALUES ('FlightCrewViewClientSecret', '');

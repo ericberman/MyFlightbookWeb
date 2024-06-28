@@ -645,6 +645,7 @@
     <Content Include="images\favicon-dev.png" />
     <Content Include="images\favicon-stg.png" />
     <Content Include="images\favicon.png" />
+    <Content Include="images\flightcrewview.png" />
     <Content Include="images\flightimportsample.png" />
     <Content Include="images\flysto-sm.png" />
     <Content Include="images\flysto.png" />
@@ -1608,6 +1609,7 @@
     <Content Include="Areas\mvc\Views\Flights\download.cshtml" />
     <Content Include="Areas\mvc\Views\Playpen\bulkImportTelemetry.cshtml" />
     <Content Include="Areas\mvc\Views\Playpen\bulkImportFromTelemetry.cshtml" />
+    <Content Include="Areas\mvc\Views\oAuth\flightcrewviewmanage.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -1627,6 +1629,7 @@
     <Content Include="Secure\login.aspx" />
     <Content Include="Shunt.aspx" />
     <Content Include="Support\2024-06-14 - AddFlysto.sql" />
+    <Content Include="Support\2024-06-27 - AddFlightCrewView.txt" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -1688,6 +1691,7 @@
     <Compile Include="AppCode\Flights\Import\ExternalFormat.cs" />
     <Compile Include="AppCode\Flights\Import\FFDO.cs" />
     <Compile Include="AppCode\Flights\Import\FlicaExport.cs" />
+    <Compile Include="AppCode\Flights\Import\FlightCrewView.cs" />
     <Compile Include="AppCode\Flights\Import\ForeFlight.cs" />
     <Compile Include="AppCode\Flights\Import\Leon.cs" />
     <Compile Include="AppCode\Flights\Import\LogTenPro.cs" />
@@ -1737,6 +1741,7 @@
     <Compile Include="AppCode\oAuthServices\AWSNotifications.cs" />
     <Compile Include="AppCode\oAuthServices\CloudAhoyClient.cs" />
     <Compile Include="AppCode\oAuthServices\CloudStorage.cs" />
+    <Compile Include="AppCode\oAuthServices\FlightCrewViewClient.cs" />
     <Compile Include="AppCode\oAuthServices\LeonClient.cs" />
     <Compile Include="AppCode\oAuthServices\OAuth2AuthorizationServer.cs" />
     <Compile Include="AppCode\oAuthServices\OAuthClientBase.cs" />

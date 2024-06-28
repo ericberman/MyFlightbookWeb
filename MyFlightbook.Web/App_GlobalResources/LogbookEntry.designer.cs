@@ -1438,6 +1438,33 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your flights will be added to Pending Flights, where you can review/edit them before adding them to your logbook.
+        /// </summary>
+        internal static string FlightCrewViewImportFlightsDescription {
+            get {
+                return ResourceManager.GetString("FlightCrewViewImportFlightsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import Now.
+        /// </summary>
+        internal static string FlightCrewViewImportFlightsNow {
+            get {
+                return ResourceManager.GetString("FlightCrewViewImportFlightsNow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import from FlightCrewView.
+        /// </summary>
+        internal static string FlightCrewViewImportHeader {
+            get {
+                return ResourceManager.GetString("FlightCrewViewImportHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Feet.
         /// </summary>
         internal static string flightDetailsAltUnitFeet {

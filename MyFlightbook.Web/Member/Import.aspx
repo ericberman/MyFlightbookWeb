@@ -252,15 +252,7 @@
             <div>
                 <asp:Label ID="lblRosterBusterErrror" EnableViewState="false" runat="server" CssClass="error"  />
             </div>
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
+            <br /><br /><br /><br /><br /><br /><br /><br /><br />
         </asp:Panel>
         <asp:Panel ID="pnlRosterBuster" runat="server" Visible="false" CssClass="calloutSmall calloutSponsor shadowed">
             <asp:Image ID="imgRBLogo" runat="server" ImageUrl="~/images/rb_logo.png" style="max-width: 2cm; max-height: 2cm; margin-right: 3em; margin-bottom: 1em; vertical-align:middle;" />
@@ -275,7 +267,37 @@
                 });
             </script>
         </asp:Panel>
-
+        <asp:Panel ID="pnlModalFlightCrewView" runat="server" DefaultButton="btnImportFlightCrewView" style="display:none; min-height: 300px;">
+            <div style="text-align:left"><% =Resources.LogbookEntry.FlightCrewViewImportFlightsDescription %></div>
+            <table style="margin-left: auto; margin-right: auto;">
+                <tr style="vertical-align:top">
+                    <td style="text-align:left"><% =Resources.LogbookEntry.RosterBusterFromDate %><br /><% =Resources.LogbookEntry.ImportCloudAhoyOptional %></td>
+                    <td style="text-align:left">
+                        <uc1:mfbTypeInDate runat="server" ID="fcvFromDate" DefaultType="None" />
+                    </td>
+                </tr>
+            </table>
+            <div style="text-align:center">
+                <asp:Button ID="btnImportFlightCrewView" runat="server" Text="<%$ Resources:LogbookEntry, FlightCrewViewImportFlightsNow %>" OnClick="btnImportFlightCrewView_Click" />
+            </div>
+            <div>
+                <asp:Label ID="lblFCViewError" EnableViewState="false" runat="server" CssClass="error"  />
+            </div>
+            <br /><br /><br /><br /><br /><br /><br /><br /><br />
+        </asp:Panel>
+        <asp:Panel ID="pnlFlightCrewView" runat="server" Visible="false" CssClass="calloutSmall calloutSponsor shadowed">
+            <asp:Image ID="imgFlightCrew" runat="server" ImageUrl="~/images/flightcrewview.png" style="max-width: 2cm; max-height: 2cm; margin-right: 3em; margin-bottom: 1em; vertical-align:middle;" />
+            <a style="font-weight:bold; vertical-align: middle;" href="javascript:showFlightCrewView();"><%=Resources.LogbookEntry.FlightCrewViewImportHeader %></a>
+            <script type="text/javascript">
+                function showFlightCrewView() {
+                    showModalById('<%=pnlModalFlightCrewView.ClientID %>', '<%=Resources.LogbookEntry.FlightCrewViewImportHeader %>', 350);
+                }
+                $(function () {
+                    if (document.getElementById('<% =lblFCViewError.ClientID %>').innerText.length > 0)
+                        showFlightCrewView();
+                });
+            </script>
+        </asp:Panel>
         <asp:Panel ID="pnlModalCloudAhoy" runat="server" DefaultButton="btnImportCloudAhoy" style="display:none">
             <asp:Label ID="lblCloudAhoyPromptDates" runat="server" Font-Bold="true" Text="<%$ Resources:LogbookEntry, ImportCloudAhoyDatePrompt %>" />
             <table>

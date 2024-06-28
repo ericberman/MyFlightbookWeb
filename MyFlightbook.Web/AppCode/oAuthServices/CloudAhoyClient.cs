@@ -1,5 +1,4 @@
-﻿using AjaxControlToolkit;
-using DotNetOpenAuth.OAuth2;
+﻿using DotNetOpenAuth.OAuth2;
 using HtmlAgilityPack;
 using MyFlightbook.ImportFlights.CloudAhoy;
 using MyFlightbook.Telemetry;
