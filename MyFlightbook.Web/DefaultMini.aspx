@@ -9,10 +9,10 @@
         meta:resourcekey="locDefaultMiniPromptResource1"></asp:Localize>
     <ul>
         <li><asp:HyperLink ID="lnkNewFlight" runat="server" 
-                NavigateUrl="~/Member/MiniLogbook.aspx" Text="Enter a flight" 
+                NavigateUrl="~/mvc/flights/minilogbook" Text="Enter a flight" 
                 meta:resourcekey="lnkNewFlightResource1"></asp:HyperLink><br /></li>
         <li><asp:HyperLink ID="lnkViewTotals" runat="server" 
-                NavigateUrl="~/Member/MiniTotals.aspx" Text="View Totals and Currency" 
+                NavigateUrl="~/mvc/flights/minitotals" Text="View Totals and Currency" 
                 meta:resourcekey="lnkViewTotalsResource1"></asp:HyperLink><br /></li>
         <li><asp:HyperLink ID="lnkViewAircraft" runat="server" 
                 NavigateUrl="~/mvc/Aircraft" Text="View Aircraft" 

@@ -591,7 +591,6 @@
     <Content Include="Controls\mfbQueryDescriptorItem.ascx" />
     <Content Include="Controls\mfbRecentAchievements.ascx" />
     <Content Include="Controls\mfbScribbleSignature.ascx" />
-    <Content Include="Controls\mfbSearchAndTotals.ascx" />
     <Content Include="Controls\mfbSearchbox.ascx" />
     <Content Include="Controls\mfbSearchForm.ascx" />
     <Content Include="Controls\mfbSelectTemplates.ascx" />
@@ -827,8 +826,6 @@
     <Content Include="Member\ImpAircraftService.aspx" />
     <Content Include="Member\Import.aspx" />
     <Content Include="Member\LogbookNew.aspx" />
-    <Content Include="Member\MiniLogbook.aspx" />
-    <Content Include="Member\MiniTotals.aspx" />
     <Content Include="Member\PrintView.aspx" />
     <Content Include="Member\RequestSigs.aspx" />
     <Content Include="Member\SignFlight.aspx" />
@@ -1613,6 +1610,7 @@
     <Content Include="Areas\mvc\Views\CheckFlight\checkFlights.cshtml" />
     <Content Include="Areas\mvc\Views\CheckFlight\_checkFlightTable.cshtml" />
     <Content Include="Areas\mvc\Views\Flights\miniTotals.cshtml" />
+    <Content Include="Areas\mvc\Views\Flights\miniLogbook.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -2368,13 +2366,6 @@
     <Compile Include="Controls\mfbScribbleSignature.ascx.designer.cs">
       <DependentUpon>mfbScribbleSignature.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Controls\mfbSearchAndTotals.ascx.cs">
-      <DependentUpon>mfbSearchAndTotals.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbSearchAndTotals.ascx.designer.cs">
-      <DependentUpon>mfbSearchAndTotals.ascx</DependentUpon>
-    </Compile>
     <Compile Include="Controls\mfbSearchbox.ascx.cs">
       <DependentUpon>mfbSearchbox.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2693,20 +2684,6 @@
     </Compile>
     <Compile Include="Member\LogbookNew.aspx.designer.cs">
       <DependentUpon>LogbookNew.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Member\MiniLogbook.aspx.cs">
-      <DependentUpon>MiniLogbook.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\MiniLogbook.aspx.designer.cs">
-      <DependentUpon>MiniLogbook.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Member\MiniTotals.aspx.cs">
-      <DependentUpon>MiniTotals.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\MiniTotals.aspx.designer.cs">
-      <DependentUpon>MiniTotals.aspx</DependentUpon>
     </Compile>
     <Compile Include="Member\PrintView.aspx.cs">
       <DependentUpon>PrintView.aspx</DependentUpon>

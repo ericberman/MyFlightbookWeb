@@ -859,6 +859,13 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.rgcsi = CurrencyStatusItem.GetCurrencyItemsForUser(User.Identity.Name);
             return View("miniTotals");
         }
+
+        [Authorize]
+        public ActionResult MiniLogbook()
+        {
+            util.SetMobile(true);
+            return View("miniLogbook");
+        }
         #endregion
 
         #region Backup and Export

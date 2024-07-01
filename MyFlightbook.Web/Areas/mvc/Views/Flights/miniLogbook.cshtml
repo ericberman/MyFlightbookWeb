@@ -1,0 +1,15 @@
+﻿@using MyFlightbook
+@using System.Globalization
+@{
+    ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, MyFlightbook.Profile.GetUser(User.Identity.Name).PreferredGreeting);
+    ViewBag.defaultTab = tabID.tabLogbook;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript">
+    function onSave() {
+        window.location = "@("~/defaultmini.aspx".ToAbsolute())";
+    }
+</script>
+@{ Html.RenderAction("FlightEditor", "FlightEdit", new { targetUser = User.Identity.Name, le = (LogbookEntry)null, onSave = "onSave" }); }
+
+
