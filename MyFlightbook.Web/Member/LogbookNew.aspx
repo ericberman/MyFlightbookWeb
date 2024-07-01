@@ -268,7 +268,7 @@
                     <asp:Image ID="imgCheckFlights" runat="server" ImageUrl="~/images/CheckFlights.png" AlternateText="<%$ Resources:FlightLint, TitleCheckFlights %>" />
                 </td>
                 <td>
-                    <asp:HyperLink ID="lnkCheckFlights" Font-Bold="true" runat="server" Text="<%$ Resources:FlightLint, TitleCheckFlights %>" NavigateUrl="~/Member/CheckFlights.aspx"></asp:HyperLink>
+                    <asp:HyperLink ID="lnkCheckFlights" Font-Bold="true" runat="server" Text="<%$ Resources:FlightLint, TitleCheckFlights %>" NavigateUrl="~/mvc/checkflight"></asp:HyperLink>
                 </td>
                 <td>
                     <% =Branding.ReBrand(Resources.FlightLint.CheckFlightsShortDescription) %>

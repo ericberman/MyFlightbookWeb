@@ -51,7 +51,7 @@
         <Roles></Roles>
       </Item>
       <Item>
-        <Link>~/Member/CheckFlights.aspx</Link>
+        <Link>~/mvc/checkflight</Link>
         <ID>lbtCheckFlights</ID>
         <Roles></Roles>
       </Item>

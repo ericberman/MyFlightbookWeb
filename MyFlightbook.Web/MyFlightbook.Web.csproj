@@ -819,7 +819,6 @@
     <Content Include="MasterPage.master" />
     <Content Include="Member\Ajax.asmx" />
     <Content Include="Member\BrowseTemplates.aspx" />
-    <Content Include="Member\CheckFlights.aspx" />
     <Content Include="Member\EditAircraft.aspx" />
     <Content Include="Member\EditProfile.aspx" />
     <Content Include="Member\ImpAircraft.aspx" />
@@ -2636,13 +2635,6 @@
     <Compile Include="Member\BrowseTemplates.aspx.designer.cs">
       <DependentUpon>BrowseTemplates.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Member\CheckFlights.aspx.cs">
-      <DependentUpon>CheckFlights.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\CheckFlights.aspx.designer.cs">
-      <DependentUpon>CheckFlights.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Member\EditAircraft.aspx.cs">
       <DependentUpon>EditAircraft.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3123,7 +3115,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Member\App_LocalResources\ImpAircraft.aspx.resx" />
-    <Content Include="Member\App_LocalResources\MiniLogbook.aspx.resx" />
     <Content Include="Member\App_LocalResources\RequestSigs.aspx.resx" />
     <Content Include="Member\App_LocalResources\StartingTotals.aspx.resx" />
   </ItemGroup>
