@@ -185,6 +185,7 @@ namespace MyFlightbook
             IDPropSequence = 630,
             IDPropMilitaryAircraftCommander = 659,
             IDPropMultiPilotTime = 664,
+            IDPropRunwaysUsed = 651,
             IDPropXCMoreThan100nm = 665,
             IDPropLessonStart = 668,
             IDPropLessonEnd = 669,

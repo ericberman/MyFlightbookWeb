@@ -119,7 +119,8 @@ namespace MyFlightbook.ImportFlights
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropDeadhead, is_deadhead != 0),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropCaptainName, captain?.DisplayName ?? string.Empty),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFirstOfficerName, firstOfficer?.DisplayName ?? string.Empty),
-                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropAdditionalCrew, String.Join(" ", lstOtherCrew))
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropAdditionalCrew, String.Join(" ", lstOtherCrew)),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropRunwaysUsed, String.Join(" ", new string[] { dep_runway, arr_runway }))
             });
 
             return le;
