@@ -7,6 +7,7 @@
     PendingFlight pf = ViewBag.pf;
     MyFlightbook.Profile pfTarget = ViewBag.pfTarget;
     MyFlightbook.Profile pfViewer = ViewBag.pfViewer;
+    bool fViewingOwn = pfTarget.UserName.CompareCurrentCultureIgnoreCase(pfViewer.UserName) == 0;
     IEnumerable<Aircraft> rgAircraft = ViewBag.rgAircraft;
     bool fHHMM = pfViewer.UsesHHMM;
     bool fAddStudent = ViewBag.fAddStudent;
@@ -223,7 +224,7 @@
             Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = fExpanded, targetID = "pnlFlightDetails" });
         }
     </div>
-    <div id="pnlFlightDetails">
+    <div id="pnlFlightDetails" style="@(fExpanded ? string.Empty : "display: none;")">
         <div ID="pnlHobbs" class="flightinfoitem">
             <table>
                 <tr class="itemlabel"><td colspan="2" style="font-weight:bold">@Resources.LogbookEntry.Hobbs</td></tr>
@@ -323,7 +324,7 @@
         </div>
     </div>
 </div>
-<div id="pnlPictures" class="fullblock">
+<div id="pnlPictures" class="fullblock" style="@(fViewingOwn ? string.Empty : "display: none;")">
     <div class="header">@szPixBlockLabel <span class="fineprint">@Resources.LocalizedText.ImageDisclaimer</span></div>
     @if (pfViewer.PreferenceExists(MyFlightbook.CloudStorage.GooglePhoto.PrefKeyAuthToken))
     {
@@ -357,7 +358,7 @@
         @{ Html.RenderAction("EmbeddedVideos", "FlightEdit", new { le = le, fCanDoVideo = fCanDoVideo }); }
     </div>
 </div>
-<div id="pnlPublic" class="fullblock">
+<div id="pnlPublic" class="fullblock" style="@(fViewingOwn ? string.Empty : "display: none;")">
     <div class="header">@Resources.LogbookEntry.HeaderSharing</div>
     <p>
         <span style="vertical-align:middle">
