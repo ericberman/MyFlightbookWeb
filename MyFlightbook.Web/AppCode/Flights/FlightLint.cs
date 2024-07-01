@@ -77,6 +77,15 @@ namespace MyFlightbook.Lint
     {
         public const string IgnoreMarker = "\u2006";    // six-per-em space; a very thin space.  See https://en.wikipedia.org/wiki/Whitespace_character
 
+        public static void SetIgnoreFlagForFlight(LogbookEntryCore le, bool fIgnore)
+        {
+            if (le == null)
+                throw new ArgumentNullException(nameof(le));
+
+            le.Route = String.Format(CultureInfo.CurrentCulture, "{0}{1}", le.Route.Trim(), fIgnore ? IgnoreMarker : string.Empty);
+            FlightResultManager.InvalidateForUser(le.User);
+        }
+
         #region properties
         protected UserAircraft userAircraft { get; set; }
 

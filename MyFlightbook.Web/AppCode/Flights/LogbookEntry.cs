@@ -1249,9 +1249,21 @@ namespace MyFlightbook
         /// Determines if the named CFI can edit this flight (i.e., if it is pending a signature, or if he has already signed it)
         /// </summary>
         /// <param name="szCFIUsername">The username of the CFI</param>
+        /// <param name="fForceRefresh">True to reload the CFIUsername, email, and signaturestate from the database</param>
         /// <returns>True if they can edit it</returns>
-        public bool CanEditThisFlight(string szCFIUsername)
+        public bool CanEditThisFlight(string szCFIUsername, bool fForceRefresh = false)
         {
+            if (fForceRefresh)
+            {
+                DBHelper dbh = new DBHelper("SELECT CFIUsername, SignatureState, CFIEmail FROM flights WHERE idflight=?idFlight");
+                dbh.ReadRow((comm) => { comm.Parameters.AddWithValue("idFlight", FlightID); },
+                    (dr) =>
+                    {
+                        CFIUsername = (string)util.ReadNullableField(dr, "CFIUserName", null);
+                        CFIEmail = (string)util.ReadNullableField(dr, "CFIEmail", null);
+                        CFISignatureState = (SignatureState)Convert.ToInt32(dr["SignatureState"], CultureInfo.InvariantCulture);
+                    });
+            }
             return (this.CFISignatureState != SignatureState.Valid && this.CFIUsername != null && !String.IsNullOrEmpty(szCFIUsername) && String.Compare(this.CFIUsername, szCFIUsername, StringComparison.OrdinalIgnoreCase) == 0);
         }
 

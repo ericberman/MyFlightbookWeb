@@ -1,0 +1,48 @@
+﻿@using MyFlightbook.Lint
+@using System.Globalization
+@{
+    IEnumerable<FlightWithIssues> rgle = ViewBag.checkedFlights;
+    int cFlightsChecked = ViewBag.flightsChecked ?? 0;
+}
+<span id="checkFlightsStats">@String.Format(CultureInfo.CurrentCulture, Resources.FlightLint.SummaryFlightsFound, cFlightsChecked, rgle.Count())</span>
+@if (rgle.Any())
+{
+    <table class="lbTable" cellpadding="3" cellspacing="0" style="border: none; border-collapse: collapse;">
+        <thead>
+            <tr class="gvhDefault">
+                <th class="headerBase gvhDefault gvhCentered" style="vertical-align: top;">&nbsp;</th>
+                <th class="headerBase gvhDefault gvhCentered" style="vertical-align: top;">@Resources.FlightLint.ignoreForFlight@{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "tipIgnore", tipTextHTML = Resources.FlightLint.ignoreForFlightTooltip }); }</th>
+                <th class="noprint"></th>
+                <th class="noprint"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (FlightWithIssues f in rgle)
+            {
+                <tr class="logbookRow logbookRowEven">
+                    <td>
+                        <a href="#" style="font-size: larger; font-weight: bold;" onclick="javascript: editFlight(@f.Flight.FlightID); return false;">@f.Flight.Date.ToShortDateString()</a>
+                        <span style="font-size: larger; font-weight: bold;">@f.Flight.TailNumDisplay</span>
+                        <span style="font-weight: bold">@f.Flight.Route</span>
+                        @Html.Raw(f.Flight.Comment.Linkify())
+                        <ul>
+                            @foreach (FlightIssue fi in f.Issues)
+                            {
+                                <li>@fi.IssueDescription</li>
+                            }
+                        </ul>
+                    </td>
+                    <td class="gvcCentered">
+                        <input type="checkbox" @f.Flight.Route.EndsWith(FlightLint.IgnoreMarker, StringComparison.CurrentCultureIgnoreCase).ToChecked() onclick="javascript: toggleIgnore(this, @f.Flight.FlightID);" />
+                    </td>
+                    <td class="noprint"></td>
+                    <td class="noprint"></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>@Resources.FlightLint.CheckFlightsNoIssuesFound</p>
+}

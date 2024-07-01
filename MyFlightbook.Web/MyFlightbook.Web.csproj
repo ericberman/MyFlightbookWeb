@@ -1610,6 +1610,8 @@
     <Content Include="Areas\mvc\Views\Playpen\bulkImportTelemetry.cshtml" />
     <Content Include="Areas\mvc\Views\Playpen\bulkImportFromTelemetry.cshtml" />
     <Content Include="Areas\mvc\Views\oAuth\flightcrewviewmanage.cshtml" />
+    <Content Include="Areas\mvc\Views\CheckFlight\checkFlights.cshtml" />
+    <Content Include="Areas\mvc\Views\CheckFlight\_checkFlightTable.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -1933,6 +1935,7 @@
     </Compile>
     <Compile Include="Areas\mvc\Controllers\AdminAircraftController.cs" />
     <Compile Include="Areas\mvc\Controllers\AdminController.cs" />
+    <Compile Include="Areas\mvc\Controllers\CheckFlightController.cs" />
     <Compile Include="Areas\mvc\Controllers\FlightControllerBase.cs" />
     <Compile Include="Areas\mvc\Controllers\AdminControllerBase.cs" />
     <Compile Include="Areas\mvc\Controllers\AdminPaymentController.cs" />

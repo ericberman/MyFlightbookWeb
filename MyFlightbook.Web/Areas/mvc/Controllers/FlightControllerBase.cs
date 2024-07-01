@@ -72,17 +72,19 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         /// 3 allowed conditions:
         ///  a) It's your flight
         ///  b) you're an admin AND "a=1" is in the request
-        ///  c) You are an instructor with "CanAddLogbook" privileges
-        ///  Note: does NOT check if instructor is UPDATING a flight, simply for writing access.
+        ///  c) You are an instructor with "CanAddLogbook" privileges for a new flight, or with a pending signature request for an existing flight.
         /// </summary>
         /// <returns>The student profile, if appropriate, or null.  Null doesn't mean unauthorized, it just means it's not a student relationship!</returns>
         /// <param name="targetUser">Name of the target use</param>
+        /// <param name="le">The logbook entry to edit/save</param>
         /// <exception cref="UnauthorizedAccessException"></exception>
 
-        protected InstructorStudent CheckCanSaveFlight(string targetUser)
+        protected InstructorStudent CheckCanSaveFlight(string targetUser, LogbookEntry le)
         {
             if (String.IsNullOrEmpty(targetUser))
                 throw new ArgumentNullException(nameof(targetUser));
+            if (le == null)
+                throw new ArgumentNullException(nameof(le));
 
             // Admin can save flights IF "a=1" is in the request
             if (User.Identity.IsAuthenticated)
@@ -94,8 +96,13 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (pfviewer.CanSupport && util.GetIntParam(Request, "a", 0) == 1)
                     return null;
 
+                // Instructor's can only:
+                // a) ADD a NEW flight (pending or regular) IF they have "can add" privileges OR
+                // b) EDIT an EXISTING flight (not pending, obviously) that is not currently validly signed AND which is awaiting a signature from THIS instructor
                 InstructorStudent instructorStudent = CheckCanViewFlights(targetUser, User.Identity.Name);
-                if (instructorStudent?.CanAddLogbook ?? false)
+                if (le.IsNewFlight && (instructorStudent?.CanAddLogbook ?? false))
+                    return instructorStudent;
+                if (!le.IsNewFlight && le.CanEditThisFlight(User.Identity.Name, true))
                     return instructorStudent;
             }
 

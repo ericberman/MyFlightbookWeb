@@ -262,8 +262,21 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
         #endregion
 
-        #region Misc
+        [Authorize]
+        [HttpPost]
+        public ActionResult FlightEditorForFlight(int idFlight, string targetUser = null, string nextFlightHref = null, string prevFlightHref = null, string onCancel = null, string onSave = null, int chk = 0)
+        {
+            return SafeOp(() =>
+            {
+                targetUser = targetUser ?? User.Identity.Name;
+                LogbookEntry le = new LogbookEntry();
+                if (!le.FLoadFromDB(idFlight, targetUser))
+                    throw new UnauthorizedAccessException(le.ErrorString);
+                return FlightEditor(targetUser, le, false, nextFlightHref, prevFlightHref, onCancel, onSave, chk);
+            });
+        }
 
+        #region Misc
         /// <summary>
         /// Saves the current flight into the session state so that when we come back we can re-constitute it.  Does NOT work for a pending flight - only actual flights that aren't yet saved.
         /// </summary>
@@ -349,8 +362,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             le.ErrorString = string.Empty;  // clear this out.
 
             // Check that you can save - and if it's an instructor/student, further check that it's a new flight.
-            if (CheckCanSaveFlight(le.User) != null && !le.IsNewFlight)
-                throw new UnauthorizedAccessException(Resources.LogbookEntry.errNotAuthorizedToSaveToLogbook);
+            CheckCanSaveFlight(le.User, le);
 
             try
             {
@@ -514,7 +526,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         [ChildActionOnly]
-        public ActionResult FlightEditor(string targetUser, LogbookEntry le = null, bool fAsAdmin = false, string nextFlightHref = null, string prevFlightHref = null, string onCancel = null, string onSave = null)
+        public ActionResult FlightEditor(string targetUser, LogbookEntry le = null, bool fAsAdmin = false, string nextFlightHref = null, string prevFlightHref = null, string onCancel = null, string onSave = null, int chk = 0)
         {
             if (String.IsNullOrEmpty(targetUser))
                 throw new UnauthorizedAccessException();
@@ -525,6 +537,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             // If this is a new flight and we have an existing flight in progress, pick that one up instead.
             if (le.IsNewFlight && pf == null &&  Session[keySessionInProgress] != null)
                 le = (LogbookEntry)Session[keySessionInProgress];
+
+            CheckCanSaveFlight(targetUser, le);
 
             Session.Remove(keySessionInProgress);   // clear it regardless.
 
@@ -546,7 +560,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.onCancel = onCancel;
             ViewBag.onSave = onSave;
 
-            ViewBag.flightIssues = (util.GetIntParam(Request, "chk", 0) != 0 && Request.HttpMethod.CompareCurrentCultureIgnoreCase("get") == 0) ? (new FlightLint().CheckFlights(new LogbookEntryBase[] { le }, le.User, FlightLint.DefaultOptionsForLocale).FirstOrDefault()?.Issues ?? Array.Empty<FlightIssue>()) : null;
+            ViewBag.flightIssues = (chk != 0) ? (new FlightLint().CheckFlights(new LogbookEntryBase[] { le }, le.User, FlightLint.DefaultOptionsForLocale).FirstOrDefault()?.Issues ?? Array.Empty<FlightIssue>()) : null;
 
             if (le.IsNewFlight && pf == null)
             {

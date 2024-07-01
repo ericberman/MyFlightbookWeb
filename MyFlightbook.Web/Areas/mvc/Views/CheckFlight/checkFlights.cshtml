@@ -1,0 +1,177 @@
+﻿@using System.Globalization
+@using MyFlightbook.Lint
+@{
+    ViewBag.Title = Resources.FlightLint.TitleCheckFlights;
+    ViewBag.defaultTab = tabID.tabLogbook;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    DateTime? dtLastCheck = ViewBag.lastCheck;
+}
+<script type="text/javascript">
+    function onDateAutofill() {
+        document.getElementById('#mfbDateLastCheck').value = $("#hdnLastDateChecked").val();
+    }
+
+    function getSelectedOptions() {
+        var val = 0;
+        val |= $("#ckAirports")[0].checked ? @((uint) LintOptions.AirportIssues) : 0;
+        val |= $("#ckDateTime")[0].checked ? @((uint) LintOptions.DateTimeIssues) : 0;
+        val |= $("#ckIFR")[0].checked ? @((uint) LintOptions.IFRIssues) : 0;
+        val |= $("#ckMisc")[0].checked ? @((uint) LintOptions.MiscIssues) : 0;
+        val |= $("#ckPICSICDualMath")[0].checked ? @((uint) LintOptions.PICSICDualMath) : 0;
+        val |= $("#ckSim")[0].checked ? @((uint) LintOptions.SimIssues) : 0;
+        val |= $("#ckTimes")[0].checked ? @((uint) LintOptions.TimeIssues) : 0;
+        val |= $("#ckXC")[0].checked ? @((uint) LintOptions.XCIssues) : 0;
+        val |= $("#ckIgnored")[0].checked ? @((uint) LintOptions.IncludeIgnored) : 0;
+        return val;
+    }
+
+    function setSelectedOptions(options) {
+        $("#ckAirports")[0].checked = ((options & @((uint) LintOptions.AirportIssues)) != 0);
+        $("#ckDateTime")[0].checked = ((options & @((uint) LintOptions.DateTimeIssues)) != 0);
+        $("#ckIFR")[0].checked = ((options & @((uint) LintOptions.IFRIssues)) != 0);
+        $("#ckMisc")[0].checked = ((options & @((uint) LintOptions.MiscIssues)) != 0);
+        $("#ckPICSICDualMath")[0].checked = ((options & @((uint) LintOptions.PICSICDualMath)) != 0);
+        $("#ckSim")[0].checked = ((options & @((uint) LintOptions.SimIssues)) != 0);
+        $("#ckTimes")[0].checked = ((options & @((uint) LintOptions.TimeIssues)) != 0);
+        $("#ckXC")[0].checked = ((options & @((uint) LintOptions.XCIssues)) != 0);
+        $("#ckIgnored")[0].checked = ((options & @((uint) LintOptions.IncludeIgnored)) != 0);
+    }
+
+    $(() => {
+        setSelectedOptions(@FlightLint.DefaultOptionsForLocale);
+    });
+
+    function toggleAll(sender) {
+        $("#divOptions").find(":checkbox").prop("checked", sender.checked);
+    }
+
+    function refreshFlights() {
+        var params = new Object();
+        params.dtSince = $("#mfbDateLastCheck").val();
+        params.options = getSelectedOptions();
+        var progress = $("#imgCkFlightsPrg");
+        var issueList = $("#divIssueList");
+        var lblErr = $("#lblErr");
+        var statsResult = $("#divStatsResult");
+        statsResult.text("");
+        issueList.html("");
+        lblErr.text("");
+        progress.show();
+        $.ajax(
+            {
+                url: '@Url.Action("CheckFlights", "CheckFlight")',
+                type: "POST", data: JSON.stringify(params), dataType: "html", contentType: 'application/json',
+                error: function (xhr, status, error) { lblErr.text(xhr.responseText); },
+                complete: function (response) { progress.hide(); },
+                success: function (response) {
+                    issueList.html(response);
+                    $("#checkFlightsStats").appendTo(statsResult);
+                }
+            });
+    }
+
+    function toggleIgnore(sender, idFlight) {
+        $("#hdnFlightID").val(idFlight);
+        $("#hdnIgnore").val(sender.checked);
+        $.ajax(
+            {
+                url: '@Url.Action("ToggleIgnore", "CheckFlight")',
+                type: "POST", data: $("#frmIgnoreFlight").serialize(), dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                complete: function (response) { },
+                success: function (response) { }
+            });
+    }
+
+    function showEditor() {
+        $("#divIssueList").hide();
+        $("#pnlMainForm").hide();
+        $("#flightEditor").html("");
+        $("#flightEditor").show();
+    }
+
+    function hideEditor() {
+        $("#divIssueList").show();
+        $("#pnlMainForm").show();
+        $("#flightEditor").html("");
+        $("#flightEditor").hide();
+    }
+
+    function onEditCanceled() {
+        hideEditor();
+    }
+
+    function onEditSaved() {
+        hideEditor();
+        refreshFlights();
+    }
+
+    function editFlight(idFlight) {
+        showEditor();
+        var progress = $("#imgCkFlightsPrg");
+        progress.show();
+        var params = new Object();
+        params.idFlight = idFlight;
+        params.onCancel = "onEditCanceled";
+        params.onSave = "onEditSaved";
+        params.chk = 1;
+        $.ajax({
+            url: '@Url.Action("FlightEditorForFlight", "FlightEdit")',
+            type: "POST", data: JSON.stringify(params), dataType: "html", contentType: "application/json",
+            error: function (xhr, status, error) { $("#lblErr").text(xhr.responseText); },
+            complete: function (response) { progress.hide(); },
+            success: function (response) {
+                $("#flightEditor").html(response);
+            }
+        });
+    }
+</script>
+@using (Html.BeginForm("", "Flights", FormMethod.Post, new { id = "frmIgnoreFlight", name = "frmIgnoreFlight" }))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="hdnFlightID" name="idFlight" value="-1" />
+    <input type="hidden" id="hdnIgnore" name="fIgnore" value="false" />
+
+    <h2>
+        @Resources.FlightLint.TitleCheckFlights <img id="imgCkFlightsPrg" src="@("~/images/progress.gif".ToAbsolute())" style="display:none; height: 14pt; width: 14pt;" />
+    </h2>
+    <div id="pnlMainForm" DefaultButton="btnCheckAll">
+        <p>@Resources.FlightLint.CheckFlightsDescription1</p>
+        <p>@Branding.ReBrand(Resources.FlightLint.CheckFlightsCategoriesHeader)</p>
+        <div style="margin-left: 3em;">
+            <div><label><input type="checkbox" id="ckAll" onclick="javascript: toggleAll(this)" />@Resources.LocalizedText.SelectAll</label></div>
+            <div id="divOptions">
+                <div><label><input type="checkbox" id="ckSim" />@Resources.FlightLint.LintCategorySim</label>@{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "mfbTooltip", tipTextHTML = Resources.FlightLint.LintCategorySimTip }); }</div>
+                <div><label><input type="checkbox" id="ckIFR" />@Resources.FlightLint.LintCategoryIFR</label>@{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "mfbTooltip1", tipTextHTML = Resources.FlightLint.LintCategoryIFRTip }); }</div>
+                <div><label><input type="checkbox" id="ckAirports" />@Resources.FlightLint.LintCategoryAirports</label>@{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "mfbTooltip2", tipTextHTML = Resources.FlightLint.LintCategoryAirportsTip }); }</div>
+                <div><label><input type="checkbox" id="ckXC" />@Resources.FlightLint.LintCategoryCrossCountry</label>@{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "mfbTooltip3", tipTextHTML = Resources.FlightLint.LintCategoryCrossCountryTip }); }</div>
+                <div><label><input type="checkbox" id="ckPICSICDualMath" />@Resources.FlightLint.LintCategoryPICSICDualMath</label>@{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "mfbTooltip4", tipTextHTML = Resources.FlightLint.LintCategoryPICSICDualMathTip }); }</div>
+                <div><label><input type="checkbox" id="ckTimes" />@Resources.FlightLint.LintCategoryTimes</label>@{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "mfbTooltip5", tipTextHTML = Resources.FlightLint.LintCategoryTimesTip }); }</div>
+                <div><label><input type="checkbox" id="ckDateTime" />@Resources.FlightLint.LintCategoryDateTime</label>@{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "mfbTooltip6", tipTextHTML = Resources.FlightLint.LintCategoryDateTimeTip }); }</div>
+                <div><label><input type="checkbox" id="ckMisc" />@Resources.FlightLint.LintCategoryMisc</label>@{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "mfbTooltip7", tipTextHTML = Resources.FlightLint.LintCategoryMiscTip }); }</div>
+            </div>
+            <div style="margin-top: 10pt;">
+                @Resources.FlightLint.PromptOnlyCheckNewFlights
+                @{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "mfbDateLastCheck", name = "lastCheck", value = DateTime.MinValue }); }
+                @if (dtLastCheck.HasValue)
+                {
+                    <img src="@("~/images/cross-fill.png".ToAbsolute())" onclick="javascript: onDateAutofill(); return false;" title="@Resources.FlightLint.PromptCopyLastCheckDate" alt="@Resources.FlightLint.PromptCopyLastCheckDate" />
+                    @String.Format(CultureInfo.CurrentCulture, Resources.FlightLint.PromptLastCheckDate, dtLastCheck)
+                    <input type="hidden" value="@(dtLastCheck.HasValue ? dtLastCheck.Value.ToString("d", CultureInfo.CurrentCulture) : string.Empty)" id="hdnLastDateChecked" />
+                }
+                <div><label><input type="checkbox" id="ckIgnored" />@Resources.FlightLint.LintCategoryIgoredFlights</label>@{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "mfbTooltip8", tipTextHTML = Resources.FlightLint.LintCategoryIgnoredTip }); }</div>
+            </div>
+        </div>
+        <p>
+            <button type="button" onclick="javascript: refreshFlights();">@Resources.FlightLint.CheckFlightsBegin</button>
+            <span id="divStatsResult"></span>
+        </p>
+    </div>
+    <div class="error" id="lblErr"></div>
+}
+<div id="divIssueList">
+</div>
+<div id="flightEditor" style="display:none;">
+</div>
+
+
