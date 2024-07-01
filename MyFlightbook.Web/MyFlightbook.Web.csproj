@@ -1612,6 +1612,7 @@
     <Content Include="Areas\mvc\Views\oAuth\flightcrewviewmanage.cshtml" />
     <Content Include="Areas\mvc\Views\CheckFlight\checkFlights.cshtml" />
     <Content Include="Areas\mvc\Views\CheckFlight\_checkFlightTable.cshtml" />
+    <Content Include="Areas\mvc\Views\Flights\miniTotals.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />

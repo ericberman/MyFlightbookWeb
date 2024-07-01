@@ -4,7 +4,7 @@
     Profile pf = ViewBag.pf;
     FlightResult fr = ViewBag.flightResults;
     FlightResultRange currentRange = ViewBag.currentRange;
-    ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, pf.UserFullName);
+    ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, pf.PreferredGreeting);
     ViewBag.defaultTab = tabID.tabLogbook;
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
 }
@@ -16,7 +16,7 @@
             fr = fr,
             miniMode = true,
             currentRange = currentRange
-        }); ;
+        });
     }
 </div>
 

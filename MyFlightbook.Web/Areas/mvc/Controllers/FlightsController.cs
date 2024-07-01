@@ -837,11 +837,27 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         public ActionResult MiniRecents()
         {
+            util.SetMobile(true);
             ViewBag.pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
             FlightQuery fq = new FlightQuery(User.Identity.Name);
             ViewBag.fq = fq;
             ViewBag.flightResults = FlightResultManager.FlightResultManagerForUser(User.Identity.Name).ResultsForQuery(fq);
             return View("miniRecents");
+        }
+
+        [Authorize]
+        public ActionResult MiniTotals()
+        {
+            util.SetMobile(true);
+            ViewBag.pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+            FlightQuery fq = new FlightQuery(User.Identity.Name);
+            ViewBag.fq = fq;
+            UserTotals ut = new UserTotals(User.Identity.Name, fq, true);
+            ut.DataBind();
+            ViewBag.rgti = ut.Totals;
+            ViewBag.grouped = ut.DefaultGroupModeForUser;
+            ViewBag.rgcsi = CurrencyStatusItem.GetCurrencyItemsForUser(User.Identity.Name);
+            return View("miniTotals");
         }
         #endregion
 

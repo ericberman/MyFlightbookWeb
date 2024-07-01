@@ -1,0 +1,47 @@
+﻿@using MyFlightbook
+@using System.Globalization
+@{
+    Profile pf = ViewBag.pf;
+    FlightQuery fq = ViewBag.fq;
+    ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, pf.PreferredGreeting);
+    ViewBag.defaultTab = tabID.tabLogbook;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+@{ Html.RenderAction("CurrencyForUser", "Flights", new { rgcsi = ViewBag.rgcsi, userName = pf.UserName, linkItems = true }); }
+<div>&nbsp;</div>
+<div>
+    <script type="text/javascript">
+    var currentQuery = @Html.Raw(Json.Encode(fq));
+
+        function updateTotals(sender) {
+            $("#prgTotals").show();
+            var params = new Object();
+            params.userName = "@User.Identity.Name";
+            params.linkItems = true;
+            params.grouped = @Json.Encode(ViewBag.grouped);
+            currentQuery.DateRange = parseInt(sender.value);
+            params.fq = currentQuery;
+            $.ajax({
+                url: '@Url.Action("GetTotalsForUser", "Flights")',
+                type: "POST", data: JSON.stringify(params), dataType: "html", contentType: 'application/json',
+                error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                complete: function () { $("#prgTotals").hide(); },
+                success: function (r) { $("#divTotalsResults").html(r); }
+            });
+        }
+    </script>
+    @Resources.LocalizedText.LogTabTotals
+    <select id="cmbDateRange" name="totalsDates" onchange="javascript: updateTotals(this);">
+        <option value="0" selected>@Resources.LocalizedText.DatesAll</option>
+        <option value="4">@Resources.LocalizedText.DatesThisMonth</option>
+        <option value="5">@Resources.LocalizedText.DatesPrevMonth</option>
+        <option value="1">@Resources.LocalizedText.DatesYearToDate</option>
+        <option value="2">@Resources.LocalizedText.DatesPrev6Month</option>
+        <option value="3">@Resources.LocalizedText.DatesPrev12Month</option>
+    </select>
+    <img src="@("~/images/progress.gif".ToAbsolute())" style="display: none; height: 12pt; width: 12pt;" id="prgTotals" />
+</div>
+<div id="divTotalsResults">
+    @{ Html.RenderAction("TotalsForUser", "Flights", new { rgti = ViewBag.rgti, userName = pf.UserName, linkItems = true, grouped = ViewBag.grouped, fq = fq }); }
+</div>
+
