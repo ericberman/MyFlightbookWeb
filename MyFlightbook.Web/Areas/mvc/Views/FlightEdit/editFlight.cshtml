@@ -1,0 +1,18 @@
+﻿@using System.Globalization
+@using MyFlightbook
+@{
+    ViewBag.Title = "editFlight";
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    Profile pf = ViewBag.pf;
+    bool fAsAdmin = ViewBag.fAsAdmin;
+    ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, pf.UserFullName);
+    ViewBag.defaultTab = tabID.tabLogbook;
+    LogbookEntry le = ViewBag.le;
+
+}
+<script type="text/javascript">
+        function onComplete() {
+            window.location = "@Html.Raw(ViewBag.returnURL)";
+        }
+</script>
+@{ Html.RenderAction("FlightEditor", "FlightEdit", new { targetUser = le.User, fAsAdmin = fAsAdmin, le = le, onCancel = "onComplete", onSave = "onComplete", nextFlightHref = ViewBag.nextFlightHref, prevFlightHref = ViewBag.prevFlightHref }); }

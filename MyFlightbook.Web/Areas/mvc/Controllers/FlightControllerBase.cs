@@ -1,7 +1,10 @@
 ﻿using MyFlightbook.Instruction;
 using MyFlightbook.Web.Sharing;
 using System;
+using System.Globalization;
+using System.Web;
 using System.Web.Security;
+using System.Web.UI.WebControls;
 
 /******************************************************
  * 
@@ -122,6 +125,83 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 throw new UnauthorizedAccessException(Resources.LogbookEntry.errNotAuthorizedToViewLogbook);
 
             fixedUser = user;
+        }
+        #endregion
+
+        #region Context management
+        /// <summary>
+        /// Builds the and returns the query string for any status parameters that we may want to preserve,
+        /// such as the active query, the active sort, and the page number that we came from
+        /// </summary>
+        /// <param name="fq"></param>
+        /// <param name="fr"></param>
+        /// <param name="range"></param>
+        /// <returns></returns>
+        protected string GetContextParams(FlightQuery fq, FlightResult fr, FlightResultRange range)
+        {
+            // Add parameters to the edit link to preserve context on return
+            var dictParams = HttpUtility.ParseQueryString(Request.Url.Query);
+
+            // Issue #458: clone and reverse are getting duplicated and the & is getting url encoded, so even edits look like clones
+            dictParams.Remove("Clone");
+            dictParams.Remove("Reverse");
+            dictParams.Remove("src");
+            dictParams.Remove("chk");
+            dictParams.Remove("a");
+
+            // clear out any others that may be defaulted
+            dictParams.Remove("fq");
+            dictParams.Remove("se");
+            dictParams.Remove("so");
+            dictParams.Remove("pg");
+
+            // and add back from the 4 above as needed
+            if (fq != null && !fq.IsDefault)
+                dictParams["fq"] = fq.ToBase64CompressedJSONString();
+            if (fr != null)
+            {
+                if (fr.CurrentSortKey.CompareCurrentCultureIgnoreCase(LogbookEntry.DefaultSortKey) != 0)
+                    dictParams["se"] = fr.CurrentSortKey;
+                if (fr.CurrentSortDir != LogbookEntry.DefaultSortDir)
+                    dictParams["so"] = fr.CurrentSortDir.ToString();
+            }
+            if ((range?.PageNum ?? 0) != 0)
+                dictParams["pg"] = range.PageNum.ToString(CultureInfo.InvariantCulture);
+            return dictParams.ToString();
+        }
+
+        /// <summary>
+        /// Sets up - as appropriate, the next/previous flight for the specified flight with the specified query.
+        /// </summary>
+        /// <param name="q"></param>
+        /// <param name="idFlight"></param>
+        /// <returns></returns>
+        protected string SetUpNextPrevious(FlightQuery q, int idFlight, Profile pf)
+        {
+            FlightResult fr = FlightResultManager.FlightResultManagerForUser(User.Identity.Name).ResultsForQuery(q);
+            string sortExpr = Request["se"] ?? fr.CurrentSortKey;
+            SortDirection sortDir = Enum.TryParse(Request["so"], out SortDirection sd) ? sd : fr.CurrentSortDir;
+
+            int flightsPerPage = FlightsPerPageForUser(pf);
+            string szParam = GetContextParams(q, fr, fr.GetResultRange(flightsPerPage, int.TryParse(Request["pg"], out int page) ? FlightRangeType.Page : FlightRangeType.First, sortExpr, sortDir, page));
+            if (!String.IsNullOrEmpty(szParam))
+                szParam = "?" + szParam;
+
+            // Find any next/previous values
+            // "idflightplus1" is the *previous* flight for a descending date search...
+            int _ = fr.IndexOfFlightID(idFlight, out int idFlightPlus1, out int idFlightMinus1);
+
+            if (idFlightMinus1 > 0)
+                ViewBag.nextFlightHref = String.Format(CultureInfo.InvariantCulture, "~/mvc/FlightEdit/flight/{0}", idFlightMinus1.ToString(CultureInfo.InvariantCulture)).ToAbsolute() + szParam;
+            if (idFlightPlus1 > 0)
+                ViewBag.prevFlightHref = String.Format(CultureInfo.InvariantCulture, "~/mvc/FlightEdit/flight/{0}", idFlightPlus1.ToString(CultureInfo.InvariantCulture)).ToAbsolute() + szParam;
+
+            return szParam;
+        }
+
+        protected static int FlightsPerPageForUser(Profile pf)
+        {
+            return pf?.GetPreferenceForKey(MFBConstants.keyPrefFlightsPerPage, MFBConstants.DefaultFlightsPerPage) ?? MFBConstants.DefaultFlightsPerPage;
         }
         #endregion
     }

@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
 
@@ -484,29 +483,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.currentRange = currentRange ?? throw new ArgumentNullException(nameof(currentRange));
             ViewBag.sk = sk;
             ViewBag.miniMode = miniMode;
-
-            // Add parameters to the edit link to preserve context on return
-            var dictParams = HttpUtility.ParseQueryString(Request.Url.Query);
-
-            // Issue #458: clone and reverse are getting duplicated and the & is getting url encoded, so even edits look like clones
-            dictParams.Remove("Clone");
-            dictParams.Remove("Reverse");
-
-            // clear out any others that may be defaulted
-            dictParams.Remove("fq");
-            dictParams.Remove("se");
-            dictParams.Remove("so");
-            dictParams.Remove("pg");
-
-            if (!fq.IsDefault)
-                dictParams["fq"] = fq.ToBase64CompressedJSONString();
-            if (fr.CurrentSortKey.CompareCurrentCultureIgnoreCase(LogbookEntry.DefaultSortKey) != 0)
-                dictParams["se"] = fr.CurrentSortKey;
-            if (fr.CurrentSortDir!= LogbookEntry.DefaultSortDir)
-                dictParams["so"] = fr.CurrentSortDir.ToString();
-            if (currentRange.PageNum != 0)
-                dictParams["pg"] = currentRange.PageNum.ToString(CultureInfo.InvariantCulture);
-            ViewBag.contextParams = dictParams.ToString();
+            ViewBag.contextParams = GetContextParams(fq, fr, currentRange);
 
             return PartialView("_logbookTableContents");
         }
@@ -539,7 +516,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
             ViewBag.flightResults = (fr = fr ?? FlightResultManager.FlightResultManagerForUser(targetUser).ResultsForQuery(fq));
             // See if we just entered a new flight and scroll to it as needed
-            int flightsPerPage = pfTarget.GetPreferenceForKey(MFBConstants.keyPrefFlightsPerPage, MFBConstants.DefaultFlightsPerPage);
+            int flightsPerPage = FlightsPerPageForUser(pfTarget);
             if (Session[MFBConstants.keySessLastNewFlight] != null)
             {
                 currentRange = fr.RangeContainingFlight(flightsPerPage, (int)Session[MFBConstants.keySessLastNewFlight]);
@@ -548,7 +525,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             {
                 string sortExpr = Request["se"] ?? fr.CurrentSortKey;
                 SortDirection sortDir = Enum.TryParse(Request["so"], out SortDirection sd) ? sd : fr.CurrentSortDir;
-                currentRange = fr.GetResultRange(flightsPerPage, int.TryParse(Request["pg"], NumberStyles.Integer, CultureInfo.CurrentCulture, out int page) ? FlightRangeType.Page : FlightRangeType.First, sortExpr, sortDir, page);
+                currentRange = fr.GetResultRange(flightsPerPage, int.TryParse(Request["pg"], out int page) ? FlightRangeType.Page : FlightRangeType.First, sortExpr, sortDir, page);
             }
             ViewBag.currentRange = currentRange;
             ViewBag.sk = sk;
@@ -903,10 +880,44 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #endregion
 
         // GET: mvc/Flights
-        public ActionResult Index()
+        #region Main Logbook
+        private ViewResult MainLogbookInternal(FlightQuery fq, bool fPropDeleteClicked = false, string propToDelete = null)
         {
-            throw new NotImplementedException();
+            if (fq == null)
+                throw new ArgumentNullException(nameof(fq));
+
+            if (fq.UserName.CompareOrdinal(User.Identity.Name) != 0)
+                throw new UnauthorizedAccessException("invalid query - incorrect username");
+
+            fq.Refresh();
+            if (fPropDeleteClicked)
+                fq.ClearRestriction(propToDelete ?? string.Empty);
+
+            ViewBag.fq = fq;
+            ViewBag.flightResult = FlightResultManager.FlightResultManagerForUser(User.Identity.Name).ResultsForQuery(fq);
+            ViewBag.grouped = new UserTotals(User.Identity.Name, fq, true).DefaultGroupModeForUser;
+
+            return View("logbook");
+
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public ActionResult Index(string fq, bool fPropDeleteClicked = false, string propToDelete = null)
+        {
+            return MainLogbookInternal(FlightQuery.FromJSON(fq), fPropDeleteClicked, propToDelete);
+        }
+
+        [Authorize]
+        public ActionResult Index(string fq = null)
+        {
+            FlightQuery q = String.IsNullOrEmpty(fq) ? new FlightQuery(User.Identity.Name) : FlightQuery.FromBase64CompressedJSON(fq);
+            // update based on any passed parameters
+            q.InitPassedQueryItems(Request["s"], Request["ap"], util.GetIntParam(Request, "y", -1), util.GetIntParam(Request, "m", -1), util.GetIntParam(Request, "w", -1), util.GetIntParam(Request, "d", -1), Request["tn"], Request["mn"], Request["icao"], Request["cc"]);
+            return MainLogbookInternal(q);
+        }
+        #endregion
         #endregion
     }
 }

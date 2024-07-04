@@ -21,8 +21,6 @@ namespace MyFlightbook.MemberPages
     {
         private const string szParamIDFlight = "idFlight";
 
-        public enum FlightsTab { None, Add, Search, Totals, Currency, Analysis, Printing, More }
-
         protected FlightsTab DefaultTab
         {
             get { return Enum.TryParse(hdnLastViewedPane.Value, out FlightsTab ft) ? ft : FlightsTab.None; }

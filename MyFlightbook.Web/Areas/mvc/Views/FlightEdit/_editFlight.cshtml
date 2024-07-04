@@ -38,11 +38,11 @@
     }
 
     function commitFlightAndNext(f) {
-        postFlightWithAction(f, function () { window.location = '@nextFlightHref'; });
+        postFlightWithAction(f, function () { window.location = '@Html.Raw(nextFlightHref)'; });
     }
 
     function commitFlightAndPrev(f) {
-        postFlightWithAction(f, function () { window.location = '@prevFlightHref'; });
+        postFlightWithAction(f, function () { window.location = '@Html.Raw(prevFlightHref)'; });
     }
 
     function savePending(f) {
@@ -140,7 +140,7 @@
     <input type="hidden" id="hdnIDFlight" name="idFlight" value="@le.FlightID" />
     <input type="hidden" id="hdnIDPending" name="idPending" value="@(pf?.PendingID ?? string.Empty)" />
     <input type="hidden" id="hdnTargetUser" name="szTargetUser" value="@pfTarget.UserName" />
-    <input type="hidden" id="hdnAdminMode" name="fAsAdmin" value="@fAdminMode.ToString().ToLowerInvariant()" />
+    <input type="hidden" id="hdnAdminMode" name="a" value="@((fAdminMode ? 1 : 0).ToString())" />
     <input type="hidden" id="hdnTZOffset" name="tzOffset" value="0" />
     <div id="pnlFlightContainer">
         <div id="pnlFlightEditorBody">

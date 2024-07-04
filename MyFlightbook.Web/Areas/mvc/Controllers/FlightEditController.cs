@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
 
@@ -40,9 +39,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
                 if (!CommitFlight(le) || !String.IsNullOrEmpty(le.ErrorString))
                     throw new InvalidOperationException(le.ErrorString);
-
-                // Badge computation may be wrong
-                MyFlightbook.Profile.GetUser(le.User).SetAchievementStatus(Achievements.Achievement.ComputeStatus.NeedsComputing);
 
                 return new EmptyResult();
             });
@@ -343,7 +339,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #endregion
 
         #region utilities
-        const string keyCookieLastEndingHobbs = "LastHobbs";
+        const string keyLastEndingHobbs = "LastHobbs";
+        const string keyLastEndingTach = "LastTach";
         const string keyLastEntryDate = "LastEntryDate";
         const string keySessionInProgress = "InProgressFlight";
 
@@ -449,8 +446,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 bool fIsNew = le.IsNewFlight;
                 if (fIsNew)
                 {
-                    if (le.HobbsEnd > 0)
-                        Response.Cookies.Add(new HttpCookie(keyCookieLastEndingHobbs, le.HobbsEnd.ToString(CultureInfo.InvariantCulture)));
+                    Session[keyLastEndingHobbs] = le.HobbsEnd;
+                    Session[keyLastEndingTach] = le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropTachEnd);
                     Session[keyLastEntryDate] = le.Date; // new flight - save the date
                 }
 
@@ -462,6 +459,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
                         if (fIsNew)
                         {
+                            // this should now have a flight ID - save this so that we can scroll to it.
+                            Session[MFBConstants.keySessLastNewFlight] = le.FlightID;
+
                             // process pending images, if this was a new flight
                             foreach (MFBPendingImage pendingImage in MFBPendingImage.PendingImagesInSession(Session))
                             {
@@ -565,14 +565,18 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             if (le.IsNewFlight && pf == null)
             {
                 // Set the starting hobbs - if a new flight - to the ending hobbs of the last flight, if present
-                if (decimal.TryParse(Request.Cookies[keyCookieLastEndingHobbs]?.Value ?? string.Empty, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal hobbsEnd))
-                    le.HobbsStart = hobbsEnd;
+                le.HobbsStart = ((decimal?)Session[keyLastEndingHobbs]) ?? 0.0M;
+                le.CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropTachStart, ((decimal?)Session[keyLastEndingTach]) ?? 0.0M));
 
                 // If the user has entered another flight this session, default to that date rather than today
                 if (Session[keyLastEntryDate] != null)
                     le.Date = (DateTime)Session[keyLastEntryDate];
+
+                // Now that we've used these values, clear them
+                Session.Remove(keyLastEndingHobbs);
+                Session.Remove(keyLastEndingTach);
+                Session.Remove(keyLastEntryDate);
             }
-            Response.Cookies[keyCookieLastEndingHobbs].Expires = DateTime.Now.AddDays(-1);   // clear it regardless
 
             return PartialView("_editFlight");
         }
@@ -710,8 +714,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         public ActionResult Pending(string id = null)
         {
-            ViewBag.viewer = MyFlightbook.Profile.GetUser(User.Identity.Name);
-            List<PendingFlight> lst = new List<PendingFlight>(PendingFlight.PendingFlightsForUser(User.Identity.Name));
+            Profile viewer = MyFlightbook.Profile.GetUser(User.Identity.Name);
+            ViewBag.viewer =viewer;
+            List <PendingFlight> lst = new List<PendingFlight>(PendingFlight.PendingFlightsForUser(User.Identity.Name));
             ViewBag.pendingFlights = lst;
             if (!String.IsNullOrEmpty(id))
             {
@@ -734,14 +739,74 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     return RedirectToAction("PendingFlights", new { id = string.Empty });
             }
             ViewBag.onSave = "flightSaved";
-            ViewBag.pageSize = 25;
+            ViewBag.pageSize = FlightsPerPageForUser(viewer);
             return View("reviewPending");
         }
 
         // GET: mvc/FlightEdit
+        public ActionResult Flight(string id, string fq = null, int clone = -1, int reverse = -1, string src = "", int a = 0)
+        {
+            Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+            FlightQuery q = String.IsNullOrEmpty(fq) ? new FlightQuery(User.Identity.Name) : FlightQuery.FromBase64CompressedJSON(fq);
+            if (q.UserName.CompareOrdinal(User.Identity.Name) != 0)
+                throw new UnauthorizedAccessException("invalid query - incorrect username");
+
+            LogbookEntry le = null;
+            int idFlight = LogbookEntryCore.idFlightNone;
+
+            // Three scenarios:
+            // a) src= parameter provided and no id parameter provided - initialize from that
+            // b) Otherwise, if a valid id is provided, initialize from that.
+            // c) Otherwise, just create a new flight.
+            if (!String.IsNullOrEmpty(src) && String.IsNullOrEmpty(id))
+            {
+                LogbookEntry leSrc = LogbookEntry.FromShareKey(src, User.Identity.Name);
+
+                if (leSrc.FlightID == LogbookEntryCore.idFlightNone || !String.IsNullOrEmpty(leSrc.ErrorString))
+                    throw new UnauthorizedAccessException("Invalid source key");
+
+                le = leSrc.Clone(le);
+                le.User = User.Identity.Name; // for safety.
+
+                // clear out any role like PIC/SIC that likely doesn't carry over to the target pilot.
+                le.CFI = le.Dual = le.PIC = le.SIC = 0.0M;
+
+                if (le.AircraftID != Aircraft.idAircraftUnknown)
+                {
+                    // Add this aircraft to the user's profile if needed
+                    UserAircraft ua = new UserAircraft(User.Identity.Name);
+                    Aircraft ac = new Aircraft(le.AircraftID);
+                    if (!ua.CheckAircraftForUser(ac))
+                        ua.FAddAircraftForUser(ac);
+                }
+            } else if (int.TryParse(id, out idFlight) && idFlight > 0) {
+                // force load it - we will check in the flight editor if we have permission to edit it
+                le = new LogbookEntry(idFlight, User.Identity.Name, fForceLoad: true);
+
+                if (clone != -1)
+                {
+                    le = le.Clone(null, reverse != -1);
+                    le.Date = DateTime.Now;
+                    le.HobbsEnd = le.HobbsStart = 0;
+                    le.EngineEnd = le.EngineStart = le.FlightStart = le.FlightEnd = DateTime.MinValue;
+                    le.FlightData = null;
+                }
+
+                le.PopulateImages();
+            }
+            else
+                le = new LogbookEntry() { User =  User.Identity.Name };
+            
+            ViewBag.returnURL = "~/mvc/flights".ToAbsolute() + SetUpNextPrevious(q, idFlight, pf);
+            ViewBag.pf = pf;
+            ViewBag.fAsAdmin = (a != 0 && pf.CanSupport);
+            ViewBag.le = le;
+            return View("editFlight");
+        }
+
         public ActionResult Index()
         {
-            throw new NotImplementedException();
+            return Flight(string.Empty);
         }
         #endregion
     }

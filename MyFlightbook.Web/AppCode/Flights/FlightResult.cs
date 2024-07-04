@@ -162,6 +162,21 @@ namespace MyFlightbook
             CurrentSortKey = sortKey;
             CurrentSortDir = sortDir;
         }
+
+        /// <summary>
+        /// Find the flight with the given index in the results.
+        /// </summary>
+        /// <param name="idFlight"></param>
+        /// <param name="idFlightMinus1">The id of the flight at index minus 1</param>
+        /// <param name="idFlightPlus1">The id of the flight at index plus 1</param>
+        /// <returns>The index of the found flight, if any</returns>
+        public int IndexOfFlightID(int idFlight, out int idFlightPlus1, out int idFlightMinus1)
+        {
+            int index = FlightsList.FindIndex(le => le.FlightID == idFlight);
+            idFlightPlus1 = (index >= 0 && index < FlightsList.Count - 1) ? FlightsList[index + 1].FlightID : LogbookEntryCore.idFlightNone;
+            idFlightMinus1 = (index > 0) ? FlightsList[index - 1].FlightID : LogbookEntryCore.idFlightNone;
+            return index;
+        }
         #endregion
 
         #region Range and page management

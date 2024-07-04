@@ -35,6 +35,11 @@ using System.Xml.Serialization;
 namespace MyFlightbook
 {
     /// <summary>
+    /// Panes on the main logbook page
+    /// </summary>
+    public enum FlightsTab { None, Add, Search, Totals, Currency, Analysis, Printing, More }
+
+    /// <summary>
     /// Base class for a logbook entry, including validation.
     /// </summary>
     [Serializable]

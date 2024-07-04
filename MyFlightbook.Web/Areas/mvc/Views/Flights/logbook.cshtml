@@ -1,0 +1,254 @@
+﻿@using System.Globalization
+@using MyFlightbook
+@{
+    Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    FlightQuery fq = ViewBag.fq;
+    bool fIsDefaultQuery = fq.IsDefault;
+
+    ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, pf.UserFullName);
+    ViewBag.UseCharting = true;
+    ViewBag.defaultTab = tabID.tabLogbook;
+    LogbookEntryDisplay le = ViewBag.le;
+
+    FlightsTab ft = (Enum.TryParse(util.GetStringParam(Request, "ft") ?? string.Empty, out FlightsTab f)) ? f : FlightsTab.None;
+    string defPane = string.Empty;
+    switch (ft)
+    {
+        case FlightsTab.None:
+            break;
+        case FlightsTab.Add:
+            defPane = "apcNewFlight";
+            break;
+        case FlightsTab.Search:
+            defPane = "apcFilter";
+            break;
+        case FlightsTab.Totals:
+            defPane = "apcTotals";
+            break;
+        case FlightsTab.Currency:
+            defPane = "apcCurrency";
+            break;
+        case FlightsTab.Analysis:
+            defPane = "apcAnalysis";
+            break;
+        case FlightsTab.Printing:
+            defPane = "apcPrinting";
+            break;
+        case FlightsTab.More:
+            defPane = "apcMore";
+            break;
+    }
+}
+<script type="text/javascript" src="~/Public/Scripts/accordionproxy.js?v=1"></script>
+<script type="text/javascript" src="~/Public/Scripts/printing.js?v=1"></script>
+<script type="text/javascript">
+function doSearch(fq) {
+    $("#hdnQuery").val(JSON.stringify(fq));
+    $("#hdnQFEClicked").val(false);
+    $("#hdnPropToDelete").val("");
+    $("#frmUpdateQuery").submit();
+    return false;
+}
+
+function qfeClicked(propName) {
+    $("#hdnQuery").val(JSON.stringify(buildQuery()));
+    $("#hdnQFEClicked").val(true);
+    $("#hdnPropToDelete").val(propName);
+    $("#frmUpdateQuery").submit();
+    return false;
+}
+
+function onSave() {
+    window.location = window.location;
+}
+
+$(() => {
+    var fAnalysisLoaded = false;
+    var fTotalsLoaded = false;
+    var fCurrencyLoaded = false;
+    var currentQuery = @Html.Raw(fq.ToJSONString());
+
+    proxyControl = new accordionProxy($("#accordionproxycontainer"), {
+        defaultPane: "@defPane",
+        proxies: [
+            { idButton: "apcNewFlight", idTarget: "targetNewFlight" },
+            { idButton: "apcFilter", idTarget: "targetFilter", isEnhanced: @Json.Encode(!fIsDefaultQuery) },
+            {
+                idButton: "apcTotals", idTarget: "targetTotals", onclick: function () {
+                    if (!fTotalsLoaded) {
+                        var params = new Object();
+                        params.userName = "@User.Identity.Name";
+                        params.linkItems = true;
+                        params.grouped = @Json.Encode(ViewBag.grouped);
+                        params.fq = currentQuery;
+                        $.ajax({
+                            url: "@Url.Action("GetTotalsForUser", "Flights")",
+                            type: "POST", data: JSON.stringify(params), dataType: "html", contentType: 'application/json',
+                            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                            complete: function () { },
+                            success: function (r) {
+                                fTotalsLoaded = true;
+                                $("#targetTotals").html(r);
+                            }
+                        });
+                    }
+                }
+            },
+            {
+                idButton: "apcCurrency", idTarget: "targetCurrency", onclick: function() {
+                    if (!fCurrencyLoaded) {
+                        var params = new Object();
+                        params.userName = "@User.Identity.Name";
+                        params.linkItems = true;
+                        $.ajax({
+                            url: "@Url.Action("GetCurrencyForUser", "Flights")",
+                            type: "POST", data: JSON.stringify(params), dataType: "html", contentType: 'application/json',
+                            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                            complete: function () { },
+                            success: function (r) {
+                                fCurrencyLoaded = true;
+                                $("#targetCurrency").html(r);
+                            }
+                            });
+}
+                    } },
+            {
+                idButton: "apcAnalysis", idTarget: "targetAnalysis", onclick: function () {
+                    if (!fAnalysisLoaded) {
+                        var params = new Object();
+                        params.fq = currentQuery;
+                        $.ajax({
+                            url: "@Url.Action("GetAnalysisForUser", "Flights")",
+                            type: "POST", data: JSON.stringify(params), dataType: "html", contentType: 'application/json',
+                            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                            complete: function () { },
+                            success: function (r) {
+                                fAnalysisLoaded = true;
+                                $("#targetAnalysis").html(r);
+                                chartDataChanged();
+                            }
+                        });
+                    }
+                }
+            },
+            { idButton: "apcPrinting", idTarget: "targetPrintView" },
+            { idButton: "apcMore", idTarget: "targetMore" }
+        ]
+    });
+});
+</script>
+<div style="display:none;">
+    @using (Html.BeginForm("Index", "Flights", new { }, FormMethod.Post, new { id = "frmUpdateQuery", name = "frmUpdateQuery" }))
+    {
+        @Html.AntiForgeryToken();
+        <input type="hidden" value="@ViewBag.defaultPane" name="id" />
+        <input type="hidden" name="fq" id="hdnQuery" value="" />
+        <input type="hidden" value="@Json.Encode(ViewBag.df)" name="df" id="hdnDistanceFill" />
+        <input type="hidden" value="" name="fPropDeleteClicked" id="hdnQFEClicked" />
+        <input type="hidden" value="" name="propToDelete" id="hdnPropToDelete" />
+    }
+</div>
+<div id="accordionproxycontainer" style="display: none;">
+    <div id="apcNewFlight">@Resources.LocalizedText.LogTabNewFlight</div>
+    <div id="apcFilter">@Resources.LocalizedText.LogTabFilter</div>
+    <div id="apcTotals">@Resources.LocalizedText.LogTabTotals</div>
+    <div id="apcCurrency">@Resources.LocalizedText.LogTabCurrency</div>
+    <div id="apcAnalysis">@Resources.LocalizedText.LogTabAnalysis</div>
+    <div id="apcPrinting">@Resources.LocalizedText.LogTabPrint</div>
+    <div id="apcMore">@Resources.LocalizedText.LogTabMore</div>
+</div>
+@if (!fIsDefaultQuery)
+{
+    <div id="searchSummary" class="filterApplied">
+        @Resources.LocalizedText.ResultsFiltered
+        @{ Html.RenderAction("QueryDescription", "Search", new { fq = fq, onClientClick = "qfeClicked" }); }
+        <script type="text/javascript">
+            $(() => {
+                proxyControl.setEnhanced("apcFilter", true);
+            });
+        </script>
+    </div>
+}
+<div id="targetNewFlight" style="display: none">
+    @{ Html.RenderAction("FlightEditor", "FlightEdit", new { targetUser = pf.UserName, le = (LogbookEntry)null, onSave = "onSave" }); }
+</div>
+<div id="targetFilter" style="display: none">
+    @{ Html.RenderAction("SearchForm", "Search", new { fq = fq, onClientSearch = "doSearch", onClientReset = "doSearch" }); }
+</div>
+<div id="targetTotals" style="display: none">
+    <div style="text-align: center;"><img src="@("~/images/progress.gif".ToAbsolute())" /></div>
+</div>
+<div id="targetCurrency" style="display: none">
+    <div style="text-align: center;"><img src="@("~/images/progress.gif".ToAbsolute())" /></div>
+</div>
+<div id="targetAnalysis" style="display: none">
+    <div style="text-align: center;"><img src="@("~/images/progress.gif".ToAbsolute())" /></div>
+</div>
+<div id="targetPrintView" style="display: none">
+    @{ Html.RenderAction("PrintPrefsSections", "Print", new { fq = fq, includeFlightsSection = false, po = (MyFlightbook.Printing.PrintingOptions)null }); }
+</div>
+<div id="targetMore" style="display: none;">
+    <table style="border-spacing: 10px;">
+        <tr>
+            <td style="text-align:center;"><img src="@("~/images/download.png".ToAbsolute())" alt="@Resources.Tabs.LogbookDownload" /></td>
+            <td><a id="lnkDownload" style="font-weight: bold;" href="@("~/mvc/flights/download".ToAbsolute())">@Resources.Tabs.LogbookDownload</a></td>
+            <td>@Resources.LocalizedText.LogbookDownloadDescription</td>
+        </tr>
+        <tr>
+            <td style="text-align:center;"><img src="@("~/images/import.png".ToAbsolute())" alt="@Resources.Tabs.LogbookImport" /></td>
+            <td><a id="lnkImport" style="font-weight: bold;" href="@("~/Member/Import.aspx".ToAbsolute())">@Resources.Tabs.LogbookImport</a></td>
+            <td>@Branding.ReBrand(Resources.LocalizedText.LogbookImportDescription)</td>
+        </tr>
+        <tr>
+            <td style="text-align:center;"><img src="@("~/images/CheckFlights.png".ToAbsolute())" alt="@Resources.FlightLint.TitleCheckFlights" /></td>
+            <td><a id="lnkCheckFlights" style="font-weight: bold;" href="@("~/mvc/checkflight".ToAbsolute())">@Resources.FlightLint.TitleCheckFlights</a></td>
+            <td>@Branding.ReBrand(Resources.FlightLint.CheckFlightsShortDescription)</td>
+        </tr>
+        <tr>
+            <td style="text-align:center;"><img src="@("~/images/startingtotals.png".ToAbsolute())" alt="@Resources.LocalizedText.StartingTotalsLink" /></td>
+            <td><a id="lnkStartingTotals" style="font-weight: bold;" href="@("~/Member/StartingTotals.aspx".ToAbsolute())">@Resources.LocalizedText.StartingTotalsLink</a></td>
+            <td>@Branding.ReBrand(Resources.LocalizedText.LogbookStartingTotalsDescription)</td>
+        </tr>
+        <tr>
+            <td style="text-align:center;"><img src="@("~/images/pendingflights.png".ToAbsolute())" alt="@Resources.LocalizedText.PendingFlightsLink" /></td>
+            <td><a id="lnkPendingFlights" style="font-weight: bold;" href="@("~/mvc/flightedit/pending".ToAbsolute())">@Resources.LocalizedText.PendingFlightsLink</a></td>
+            <td>@Branding.ReBrand(Resources.LocalizedText.LogbookPendingFlightsDescription)</td>
+        </tr>
+    </table>
+</div>
+<div>
+    @{ Html.RenderAction("LogbookTableForResults", "Flights", new { fr = ViewBag.flightResult, readOnly = false, targetUser = pf.UserName, sk = (string)null, fq = fq, currentRange = (FlightResultRange)null }); }
+</div>
+@if (Request.Cookies[MFBConstants.keyNewUser] != null && !String.IsNullOrEmpty(Request.Cookies[MFBConstants.keyNewUser].Value) || util.GetIntParam(Request, "sw", 0) != 0 && Request.HttpMethod.CompareCurrentCultureIgnoreCase("GET") == 0)
+{
+    Response.Cookies[MFBConstants.keyNewUser].Expires = DateTime.Now.AddDays(-1);
+    <script type="text/javascript">
+        $(() => {
+            showModalById('pnlWelcomeNewUser', '@Resources.LocalizedText.WelcomeHeader', '320');
+        });
+    </script>
+    <div id="pnlWelcomeNewUser" style="display:none;">
+        <p>@Resources.LocalizedText.WelcomeThanks</p>
+        <p>@Resources.LocalizedText.WelcomeNextSteps</p>
+        <table style="border-spacing: 10px;">
+            <tr>
+                <td><img src="@("~/Public/tabimages/logbookTab.png".ToAbsolute())" style="width: 24px;" alt="@Resources.LocalizedText.WelcomeEnterFlights" /></td>
+                <td>@Resources.LocalizedText.WelcomeEnterFlights<br />@Resources.LocalizedText.ORSeparator</td>
+            </tr>
+            <tr>
+                <td><img src="@("~/Public/tabimages/AircraftTab.png".ToAbsolute())" style="width: 24px;" alt="@Resources.LocalizedText.WelcomeEnterAircraft" /></td>
+                <td><a href="@("~/mvc/Aircraft".ToAbsolute())">@Resources.LocalizedText.WelcomeEnterAircraft</a><br />@Resources.LocalizedText.ORSeparator</td>
+            </tr>
+            <tr>
+                <td><img src="@("~/images/import.png".ToAbsolute())" alt="@Resources.LocalizedText.WelcomeImportFlights" /></td>
+                <td><a href="@("~/Member/Import.aspx".ToAbsolute())" >@Resources.LocalizedText.WelcomeImportFlights</a><br />@Resources.LocalizedText.ORSeparator</td>
+            </tr>
+            <tr>
+                <td><img src="@("~/images/startingtotals.png".ToAbsolute())" alt="@Resources.LocalizedText.WelcomeSetStartingTotals" /></td>
+                <td><a href="@("~/Member/StartingTotals.aspx".ToAbsolute())">@Resources.LocalizedText.WelcomeSetStartingTotals</a></td>
+            </tr>
+        </table>
+        <div style="text-align:center"><button type="button" onclick="javascript: dismissDlg('#' + 'pnlWelcomeNewUser'); return false;">@Resources.LocalizedText.Close</button></div>
+    </div>
+}

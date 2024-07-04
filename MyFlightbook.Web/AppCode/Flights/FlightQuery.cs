@@ -573,7 +573,7 @@ namespace MyFlightbook
                 fqNew.MakeIDList = null;
             if (fqNew.TypeNames == null || fqNew.TypeNames.Count == 0)
                 fqNew.TypeNames = null;
-            if (fqNew.EnumeratedFlights == null || !fqNew.EnumeratedFlights.Any())
+            if (fqNew.EnumeratedFlights == null || fqNew.EnumeratedFlights.Count == 0)
                 fqNew.EnumeratedFlights = null;
 
             if (fqNew.PropertyTypes == null || fqNew.PropertyTypes.Count == 0)
@@ -931,7 +931,7 @@ namespace MyFlightbook
             int iWord = 0;
             foreach (string term in lstSearchTerms)
             {
-                string[] phrases = term.Split(new char[] { '|', '"' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] phrases = term.Split(phraseSeparator, StringSplitOptions.RemoveEmptyEntries);
 
                 if (phrases.Length == 0)    // naked "|", perhaps?
                     continue;
@@ -995,7 +995,7 @@ namespace MyFlightbook
 
         private void UpdateAircraft(StringBuilder sbQuery)
         {
-            if (AircraftList.Any())
+            if (AircraftList.Count != 0)
             {
                 List<string> lstIds = new List<string>();
                 List<string> lstDescriptors = new List<string>();
@@ -1007,7 +1007,7 @@ namespace MyFlightbook
                 }
 
                 // issue #908 - not sure how this happens, but it has happened.
-                if (!lstIds.Any())
+                if (lstIds.Count == 0)
                     throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Aircraft list in FlightQuery has {0} item(s), id list has {1}.", AircraftList.Count, lstIds.Count));
 
                 AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, "flights.idaircraft IN ({0}) ", String.Join(", ", lstIds)));
@@ -1079,6 +1079,7 @@ namespace MyFlightbook
         }
 
         protected const string szICAOPrefix = "ICAO:";
+        protected static readonly char[] phraseSeparator = new char[] { '|', '"' };
 
         private void UpdateModels(StringBuilder sbQuery)
         {
@@ -1086,7 +1087,7 @@ namespace MyFlightbook
             string szModelsTextQuery = string.Empty;
             string szModelsTypeQuery = string.Empty;
 
-            if (MakeList.Any())
+            if (MakeList.Count != 0)
             {
                 List<string> lstIds = new List<string>();
                 List<string> lstDesc = new List<string>();
@@ -1364,7 +1365,7 @@ namespace MyFlightbook
 
         private void UpdateEnumeratedFlights(StringBuilder sbQuery)
         {
-            if (EnumeratedFlights != null && EnumeratedFlights.Any())
+            if (EnumeratedFlights != null && EnumeratedFlights.Count != 0)
             {
                 AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, " (flights.idFlight IN ({0})) ", String.Join(", ", EnumeratedFlights)));
                 Filters.Add(new QueryFilterItem(Resources.FlightQuery.EnumeratedFlights, string.Empty, "EnumeratedFlights"));
@@ -1452,6 +1453,113 @@ namespace MyFlightbook
 
             return this;
         }
+
+        #region Initialization from url query parameters
+        private void InitPassedQueryText(string s)
+        {
+            if (!String.IsNullOrWhiteSpace(s))
+                GeneralText = s;
+        }
+
+        private void InitPassedAirport(string ap)
+        {
+            if (!String.IsNullOrWhiteSpace(ap))
+            {
+                AirportList.Clear();
+                AddAirports(Airports.AirportList.NormalizeAirportList(ap));
+            }
+        }
+
+        private void InitPassedDates(int y, int m, int w, int d)
+        {
+            if (y > 1900)
+            {
+                if (m >= 0 && m < 12)
+                {
+                    DateTime dtStart = new DateTime(y, m + 1, d > 0 ? d : 1);
+                    DateTime dtEnd = (d > 0) ? (w > 0 ? dtStart.AddDays(6) : dtStart) : dtStart.AddMonths(1).AddDays(-1);
+                    DateRange = DateRanges.Custom;
+                    DateMin = dtStart;
+                    DateMax = dtEnd;
+                }
+                else
+                {
+                    DateRange = DateRanges.Custom;
+                    DateMin = new DateTime(y, 1, 1);
+                    DateMax = new DateTime(y, 12, 31);
+                }
+            }
+        }
+
+        private void InitPassedAircraft(string tn, string mn, string icao)
+        {
+            // Add the tail number, model, or ICAO as needed.
+            if (!String.IsNullOrEmpty(tn) || !String.IsNullOrEmpty(mn) || !String.IsNullOrEmpty(icao))
+            {
+                UserAircraft ua = new UserAircraft(UserName);
+                List<Aircraft> lstac = new List<Aircraft>();
+                HashSet<int> lstmm = new HashSet<int>();
+                tn = tn ?? string.Empty;
+                mn = mn ?? string.Empty;
+                icao = icao ?? string.Empty;
+
+                foreach (Aircraft ac in ua.GetAircraftForUser())
+                {
+                    if (ac.DisplayTailnumber.CompareCurrentCultureIgnoreCase(tn) == 0)
+                        lstac.Add(ac);
+
+                    MakeModel mm = MakeModel.GetModel(ac.ModelID);
+                    if (!lstmm.Contains(mm.MakeModelID) &&
+                        ((!String.IsNullOrEmpty(mn) && mm.Model.CompareCurrentCultureIgnoreCase(mn) == 0) ||
+                        (!String.IsNullOrEmpty(icao) && mm.FamilyName.CompareCurrentCultureIgnoreCase(icao) == 0)))
+                        lstmm.Add(mm.MakeModelID);
+                }
+                if (lstac.Count > 0)
+                {
+                    AirportList.Clear();
+                    AddAircraft(lstac);
+                }
+                if (lstmm.Count > 0)
+                {
+                    MakeList.Clear();
+                    AddModels(lstmm);
+                }
+            }
+        }
+
+        private void InitPassedCatClass(string szCc)
+        {
+            if (!String.IsNullOrEmpty(szCc))
+            {
+                foreach (CategoryClass catclass in CategoryClass.CategoryClasses())
+                    if (catclass.CatClass.CompareCurrentCultureIgnoreCase(szCc) == 0)
+                        AddCatClass(catclass);
+            }
+        }
+
+        /// <summary>
+        /// Initializes/updates the query based on passed parameters
+        /// </summary>
+        /// <param name="s">General search term</param>
+        /// <param name="ap">Airport query (set of airports)</param>
+        /// <param name="y">year, -1 for none</param>
+        /// <param name="m">month, -1 for none</param>
+        /// <param name="w">week, -1 for none</param>
+        /// <param name="d">day, -1 for none</param>
+        /// <param name="tn">Tail number</param>
+        /// <param name="mn">Model name</param>
+        /// <param name="icao">ICAO name</param>
+        /// <param name="cc">Category class</param>
+        public void InitPassedQueryItems(string s, string ap, int y, int m, int w, int d, string tn, string mn, string icao, string cc)
+        {
+            InitPassedQueryText(s);
+            InitPassedAirport(ap);
+            InitPassedDates(y, m, w, d);
+            InitPassedAircraft(tn, mn, icao);
+            InitPassedCatClass(cc);
+            Refresh();
+        }
+        #endregion
     }
 
     /// <summary>
@@ -1667,7 +1775,7 @@ namespace MyFlightbook
         private static bool TestConditionsForConjunction(GroupConjunction groupConjunction, List<bool> lst)
         {
             // empty list is always a match
-            if (lst == null || !lst.Any())
+            if (lst == null || lst.Count == 0)
                 return true;
 
             // count the number of true elements
@@ -1730,14 +1838,14 @@ namespace MyFlightbook
 
         private bool IsAircraftMatch(LogbookEntryCore le)
         {
-            return !AircraftList.Any() || (AircraftList.FirstOrDefault(ac => ac.AircraftID == le.AircraftID) != null);
+            return AircraftList.Count == 0 || (AircraftList.FirstOrDefault(ac => ac.AircraftID == le.AircraftID) != null);
         }
 
         public bool IsAirportMatch(LogbookEntryCore le)
         {
             if (le == null)
                 throw new ArgumentNullException(nameof(le));
-            if (String.IsNullOrWhiteSpace(le.Route) && (Distance != FlightDistance.AllFlights || AirportList.Any()))
+            if (String.IsNullOrWhiteSpace(le.Route) && (Distance != FlightDistance.AllFlights || AirportList.Count != 0))
                 return false;
 
             string szRoute = le.Route.ToUpper(CultureInfo.CurrentCulture).Trim();
@@ -1779,7 +1887,7 @@ namespace MyFlightbook
 
         private bool IsModelMatch(LogbookEntryDisplay le)
         {
-            if (MakeList.Any() && MakeList.FirstOrDefault(mm => le.ModelID == mm.MakeModelID) == null)
+            if (MakeList.Count != 0 && MakeList.FirstOrDefault(mm => le.ModelID == mm.MakeModelID) == null)
                 return false;
 
             string[] rgModelFragment = RegexUtility.ModelFragmentBoundary.Split(ModelName);
@@ -1800,7 +1908,7 @@ namespace MyFlightbook
                 }
             }
 
-            if (TypeNames.Any())
+            if (TypeNames.Count != 0)
             {
                 // Need to get the actual model to do this.
                 MakeModel mm = MakeModel.GetModel(le.ModelID);
@@ -1897,7 +2005,7 @@ namespace MyFlightbook
                 return false;
 
             // Do category class here, since we have aircraft already loaded
-            if (CatClasses != null && CatClasses.Any() && !CatClasses.Contains(CategoryClass.CategoryClassFromID(le.IsOverridden ? (CategoryClass.CatClassID)le.CatClassOverride : mm.CategoryClassID)))
+            if (CatClasses != null && CatClasses.Count != 0 && !CatClasses.Contains(CategoryClass.CategoryClassFromID(le.IsOverridden ? (CategoryClass.CatClassID)le.CatClassOverride : mm.CategoryClassID)))
                 return false;
 
             return true;
@@ -1925,14 +2033,14 @@ namespace MyFlightbook
             AddResultIfCondition(lst, IsPublic, le.fIsPublic);
             AddResultIfCondition(lst, IsSigned, le.CFISignatureState != LogbookEntryCore.SignatureState.None);
             AddResultIfCondition(lst, HasTelemetry, le.HasFlightData);
-            AddResultIfCondition(lst, HasImages, le.FlightImages.Any());
+            AddResultIfCondition(lst, HasImages, le.FlightImages.Count != 0);
 
             return TestConditionsForConjunction(FlightCharacteristicsConjunction, lst);
         }
 
         private bool IsPropertiesMatch(LogbookEntryCore le)
         {
-            if (PropertyTypes == null || !PropertyTypes.Any())
+            if (PropertyTypes == null || PropertyTypes.Count == 0)
                 return true;
 
             List<bool> lst = new List<bool>();
@@ -1944,7 +2052,7 @@ namespace MyFlightbook
 
         private bool IsEnumerated(LogbookEntryCore le)
         {
-            return (EnumeratedFlights == null || !EnumeratedFlights.Any() || EnumeratedFlights.Contains(le.FlightID));
+            return (EnumeratedFlights == null || EnumeratedFlights.Count == 0 || EnumeratedFlights.Contains(le.FlightID));
         }
 
         private bool IsGeneralTextMatch(LogbookEntryDisplay le)
@@ -2014,9 +2122,9 @@ namespace MyFlightbook
 
             foreach (string term in lstSearchTerms)
             {
-                string[] phrases = term.Split(new char[] { '|', '"' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] phrases = term.Split(phraseSeparator, StringSplitOptions.RemoveEmptyEntries);
 
-                if (!phrases.Any())    // naked "|", perhaps?
+                if (phrases.Length == 0)    // naked "|", perhaps?
                     continue;
                 else
                 {
