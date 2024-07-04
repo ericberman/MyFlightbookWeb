@@ -294,9 +294,9 @@
                                 <a href="#" onclick="javascript: $('#spnExistingData').hide(); $('#fieldUploadTelemetry').show(); return false;">@Resources.LogbookEntry.TelemetryAttachNew</a>&nbsp;&nbsp;
                                 <image src="@("~/images/x.gif".ToAbsolute())" style="vertical-align: bottom" alt="@Resources.LogbookEntry.TelemetryDelete" title="@Resources.LogbookEntry.TelemetryDelete" onclick="javascript: if (confirm('@Resources.LocalizedText.FlightInfoConfirmDelete')) deleteTelemetry();" />
                             </span>
-                            if (!String.IsNullOrEmpty(pf?.FlightData))
+                            if (!String.IsNullOrEmpty(le?.FlightData))
                             {
-                                <input type="hidden" name="flightPendingTelemetry" value="@Convert.ToBase64String(pf.FlightData.Compress())" />
+                                <input type="hidden" name="flightPendingTelemetry" value="@Convert.ToBase64String(le.FlightData.Compress())" />
                             }
                         }
                     </td>
