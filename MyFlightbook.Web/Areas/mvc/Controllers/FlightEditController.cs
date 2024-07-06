@@ -466,6 +466,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                             foreach (MFBPendingImage pendingImage in MFBPendingImage.PendingImagesInSession(Session))
                             {
                                 pendingImage.Commit(MFBImageInfoBase.ImageClass.Flight, le.FlightID.ToString(CultureInfo.InvariantCulture));
+                                pendingImage.DeleteImage();     // clean it up!
                             }
                         }
 
@@ -559,6 +560,10 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.fAdminMode = !String.IsNullOrEmpty(Request["a"]) && pfViewer.CanSupport;
             ViewBag.onCancel = onCancel;
             ViewBag.onSave = onSave;
+
+            // Pull in any pending images
+            if (le.IsNewFlight)
+                le.PopulateImages();
 
             ViewBag.flightIssues = (chk != 0) ? (new FlightLint().CheckFlights(new LogbookEntryBase[] { le }, le.User, FlightLint.DefaultOptionsForLocale).FirstOrDefault()?.Issues ?? Array.Empty<FlightIssue>()) : null;
 
@@ -724,8 +729,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (i >= 0)
                 {
                     PendingFlight pf = lst[i];
-                    // Pull in any pending images
-                    pf.PopulateImages();
 
                     // since flights are in descending chronological order, the one that is earlier in the list is the "next" flight, the one that is later in the list is "previous"
                     if (i > 0)
