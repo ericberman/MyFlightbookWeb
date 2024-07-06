@@ -337,20 +337,21 @@
         </div>
     }
 
-    <div id="divUploadFlightImages"></div>
-
-    <div id="divFlightImages">
-        @{
-            Html.RenderAction("ImageListDisplay", "Image", new
-            {
-                il = new ImageList(le.FlightImages.ToArray()),
-                zoomLinkType = GeoLinkType.None,
-                fCanEdit = true,
-                fCanDelete = true,
-                onDelete = "deleteFlightImage",
-                onAnnotate = "updateFlightImage"
-            });
-        }
+    <div>
+        <div id="divUploadFlightImages" style="display: inline-block;"></div>
+        <div id="divFlightImages" style="display: inline;">
+            @{
+                Html.RenderAction("ImageListDisplay", "Image", new
+                {
+                    il = new ImageList(le.FlightImages.ToArray()),
+                    zoomLinkType = GeoLinkType.None,
+                    fCanEdit = true,
+                    fCanDelete = true,
+                    onDelete = "deleteFlightImage",
+                    onAnnotate = "updateFlightImage"
+                });
+            }
+        </div>
     </div>
 
     <div id="divGooglePhotoResult">
