@@ -1921,7 +1921,7 @@ ORDER BY f.Date Desc";
     }
 
     [Serializable]
-    public class CustomPropertyCollection : IEnumerable<CustomFlightProperty>
+    public class CustomPropertyCollection : ICollection<CustomFlightProperty>
     {
         #region Properties
         private readonly Dictionary<int, CustomFlightProperty> m_dictProps;
@@ -1930,6 +1930,8 @@ ORDER BY f.Date Desc";
         {
             get { return m_dictProps.Count; }
         }
+
+        bool ICollection<CustomFlightProperty>.IsReadOnly => false;
         #endregion
 
         #region Constructors
@@ -1953,7 +1955,7 @@ ORDER BY f.Date Desc";
         }
         #endregion
 
-        #region IEnumerable
+        #region ICollection
         public IEnumerator<CustomFlightProperty> GetEnumerator()
         {
             return m_dictProps.Values.GetEnumerator();
@@ -1962,6 +1964,34 @@ ORDER BY f.Date Desc";
         IEnumerator IEnumerable.GetEnumerator()
         {
             return m_dictProps.Values.GetEnumerator();
+        }
+
+        bool ICollection<CustomFlightProperty>.Contains(CustomFlightProperty item)
+        {
+            return m_dictProps.ContainsKey(item.PropTypeID);
+        }
+
+        void ICollection<CustomFlightProperty>.CopyTo(CustomFlightProperty[] array, int arrayIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        bool ICollection<CustomFlightProperty>.Remove(CustomFlightProperty item)
+        {
+            return RemoveItem(item.PropTypeID);
+        }
+
+        /// <summary>
+        /// Adds the specified item, replacing it if it already exists.  If null, it will be ignored.  If default value, it will be removed.
+        /// </summary>
+        /// <param name="item"></param>
+        public void Add(CustomFlightProperty item)
+        {
+            if (item == null)
+                return;
+            m_dictProps[item.PropTypeID] = item;
+            if (item.IsDefaultValue)
+                m_dictProps.Remove(item.PropTypeID);
         }
         #endregion
 
@@ -2117,19 +2147,6 @@ ORDER BY f.Date Desc";
 
         #region Adding/removing items
         /// <summary>
-        /// Adds the specified item, replacing it if it already exists.  If null, it will be ignored.  If default value, it will be removed.
-        /// </summary>
-        /// <param name="cfp"></param>
-        public void Add(CustomFlightProperty cfp)
-        {
-            if (cfp == null)
-                return;
-            m_dictProps[cfp.PropTypeID] = cfp;
-            if (cfp.IsDefaultValue)
-                m_dictProps.Remove(cfp.PropTypeID);
-        }
-
-        /// <summary>
         /// Adds the specified fliht properties.  Default properties are stripped.
         /// </summary>
         /// <param name="rgcfp"></param>
@@ -2165,18 +2182,18 @@ ORDER BY f.Date Desc";
         /// Removes the specified known property, if present.
         /// </summary>
         /// <param name="id"></param>
-        public void RemoveItem(CustomPropertyType.KnownProperties id)
+        public bool RemoveItem(CustomPropertyType.KnownProperties id)
         {
-            RemoveItem((int)id);
+            return RemoveItem((int)id);
         }
 
         /// <summary>
         /// Removes the specified known property by proptype ID, if present.
         /// </summary>
         /// <param name="idPropType"></param>
-        public void RemoveItem(int idPropType)
+        public bool RemoveItem(int idPropType)
         {
-            m_dictProps.Remove(idPropType);
+            return m_dictProps.Remove(idPropType);
         }
         #endregion
     }
