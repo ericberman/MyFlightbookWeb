@@ -4377,7 +4377,7 @@ WHERE f1.username = ?uName ");
             if (!pf.IsInstructor)
                 lstValues.RemoveAll(hv => hv.DataField.CompareOrdinal("CFI") == 0);
 
-            const string szBaseHref = "~/Member/LogbookNew.aspx";
+            const string szBaseHref = "~/mvc/flights";
 
             List<BucketManager> lstStrings = new List<BucketManager>()
             {

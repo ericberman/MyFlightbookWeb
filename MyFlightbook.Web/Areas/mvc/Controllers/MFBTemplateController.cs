@@ -42,7 +42,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public ActionResult Search(string searchText)
         {
-            Response.Redirect(VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/Logbooknew.aspx?s={0}", HttpUtility.UrlEncode(searchText))));
+            Response.Redirect(VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/flights?s={0}", HttpUtility.UrlEncode(searchText))));
             return null;
         }
 

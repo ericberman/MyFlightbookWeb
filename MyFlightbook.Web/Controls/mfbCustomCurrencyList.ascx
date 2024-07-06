@@ -29,7 +29,7 @@
         </asp:TemplateField>
         <asp:TemplateField>
             <ItemTemplate>
-                <asp:HyperLink ID="lnkNav" runat="server" Text='<%#: Eval("DisplayName") %>' Target="_blank" NavigateUrl='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/member/logbooknew.aspx?fq={0}", Eval("FlightQueryJSON")) %>' />
+                <asp:HyperLink ID="lnkNav" runat="server" Text='<%#: Eval("DisplayName") %>' Target="_blank" NavigateUrl='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/mvc/flights?fq={0}", Eval("FlightQueryJSON")) %>' />
             </ItemTemplate>
             <ItemStyle Font-Bold="True" VerticalAlign="Top" />
         </asp:TemplateField>

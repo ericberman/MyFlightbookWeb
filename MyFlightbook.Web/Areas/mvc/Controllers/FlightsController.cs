@@ -788,7 +788,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             bool isViewingStudent = !fIsAdmin && szFlightOwner.CompareCurrentCulture(User.Identity.Name) != 0;
             ViewBag.returnLink = isViewingStudent ?
                 String.Format(CultureInfo.InvariantCulture, "~/mvc/flights/studentlogbook?student={0}", szFlightOwner).ToAbsolute() :
-                "~/Member/LogbookNew.aspx".ToAbsolute();
+                "~/mvc/flights".ToAbsolute();
             ViewBag.returnLinkText = isViewingStudent ?
                 String.Format(CultureInfo.CurrentCulture, Resources.Profile.ReturnToStudent, pfFlightOwner.UserFullName) :
                 Resources.LogbookEntry.flightDetailsReturnToLogbook;

@@ -1478,7 +1478,7 @@ namespace MyFlightbook.Currency
                 {
                     tw.AddAttribute("href", String.Format(CultureInfo.InvariantCulture, "https://{0}{1}",
                                                         Branding.CurrentBrand.HostName,
-                                                        VirtualPathUtility.ToAbsolute("~/Member/LogbookNew.aspx?fq=" + ti.Query.ToBase64CompressedJSONString())));
+                                                        VirtualPathUtility.ToAbsolute("~/mvc/flights?fq=" + ti.Query.ToBase64CompressedJSONString())));
                     tw.RenderBeginTag(HtmlTextWriterTag.A);
                     tw.WriteEncodedText(szText);
                     tw.RenderEndTag();

@@ -6,32 +6,32 @@
     <Roles></Roles>
   </Item>
   <Item>
-    <Link>~/Member/LogbookNew.aspx</Link>
+    <Link>~/mvc/flights</Link>
     <ID>tabLogbook</ID>
     <Roles></Roles>
     <Items>
       <Item>
-        <Link>~/Member/LogbookNew.aspx?ft=Add</Link>
+        <Link>~/mvc/flights?ft=Add</Link>
         <ID>lbtAddNew</ID>
         <Roles></Roles>
       </Item>
       <Item>
-        <Link>~/Member/LogbookNew.aspx?ft=Search</Link>
+        <Link>~/mvc/flights?ft=Search</Link>
         <ID>lbtFindFlights</ID>
         <Roles></Roles>
       </Item>
       <Item>
-        <Link>~/Member/LogbookNew.aspx?ft=Totals</Link>
+        <Link>~/mvc/flights?ft=Totals</Link>
         <ID>lbtTotals</ID>
         <Roles></Roles>
       </Item>
       <Item>
-        <Link>~/Member/LogbookNew.aspx?ft=Currency</Link>
+        <Link>~/mvc/flights?ft=Currency</Link>
         <ID>lbtCurrency</ID>
         <Roles></Roles>
       </Item>
       <Item>
-        <Link>~/Member/LogbookNew.aspx?ft=Analysis</Link>
+        <Link>~/mvc/flights?ft=Analysis</Link>
         <ID>lbtTrends</ID>
         <Roles></Roles>
       </Item>
@@ -56,7 +56,7 @@
         <Roles></Roles>
       </Item>
       <Item>
-        <Link>~/Member/LogbookNew.aspx?ft=Printing</Link>
+        <Link>~/mvc/flights?ft=Printing</Link>
         <ID>lbtPrintView</ID>
         <Roles></Roles>
       </Item>

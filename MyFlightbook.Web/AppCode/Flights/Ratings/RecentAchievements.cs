@@ -49,7 +49,7 @@ namespace MyFlightbook.RatingsProgress
 
         public RecentAchievementMilestone(string szTitle, MilestoneType type, int threshold) : base(szTitle, string.Empty, string.Empty, type, threshold)
         {
-            QueryLinkTemplate = "~/Member/LogbookNew.aspx?fq={0}";
+            QueryLinkTemplate = "~/mvc/flights?fq={0}";
         }
 
         public string TargetLink
@@ -695,7 +695,7 @@ namespace MyFlightbook.RatingsProgress
             DateTime dtMonthStart = new DateTime(StartDate.Year, StartDate.Month, 1);
             DateTime dtMonthEnd = new DateTime(EndDate.Year, EndDate.Month, 1);
             FlightQuery fq = new FlightQuery(Username) { DateRange = FlightQuery.DateRanges.Custom };
-            string szBaseURL = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/Member/LogbookNew.aspx?fq="));
+            string szBaseURL = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/mvc/flights?fq="));
 
             using (StringWriter sw = new StringWriter(CultureInfo.InvariantCulture))
             {

@@ -157,7 +157,7 @@ namespace MyFlightbook.Web.Ajax
                         dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("id", idAircraft); },
                             (dr) =>
                             {
-                                sb.AppendFormat(CultureInfo.CurrentCulture, @"<tr style=""vertical-align: top;""><td><a target=""_blank"" href=""{0}"">{1}</a></td>", VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx/{0}?a=1", dr["idFlight"])), Convert.ToDateTime(dr["date"], CultureInfo.InvariantCulture).ToShortDateString());
+                                sb.AppendFormat(CultureInfo.CurrentCulture, @"<tr style=""vertical-align: top;""><td><a target=""_blank"" href=""{0}"">{1}</a></td>", VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/flightedit/flight/{0}?a=1", dr["idFlight"])), Convert.ToDateTime(dr["date"], CultureInfo.InvariantCulture).ToShortDateString());
                                 sb.AppendFormat(CultureInfo.CurrentCulture, @"<td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td>", (string)dr["username"], String.Format(CultureInfo.CurrentCulture, "{0:F2}", dr["groundSim"]), String.Format(CultureInfo.CurrentCulture, "{0:F2}", dr["totalFlightTime"]), (string)dr["sigState"]);
                                 sb.AppendLine("</tr>");
                             });

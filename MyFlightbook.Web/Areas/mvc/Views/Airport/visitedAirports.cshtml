@@ -142,10 +142,10 @@
             foreach (VisitedRegion vr in regions)
             {
                 <div style="display:inline-block; vertical-align: top; margin-left: 8px; margin-right: 8px;">
-                    <div><a style="font-weight:bold;" href="@VirtualPathUtility.ToAbsolute(String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?ap={0}", vr.JoinedCodes))">@vr.Name</a></div>
+                    <div><a style="font-weight:bold;" href="@VirtualPathUtility.ToAbsolute(String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/mvc/flights?ap={0}", vr.JoinedCodes))">@vr.Name</a></div>
                     @foreach (VisitedRegion admin1 in vr.SubRegions)
                     {
-                        <div><a href="@VirtualPathUtility.ToAbsolute(String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?ap={0}", admin1.JoinedCodes))">@admin1.Name</a></div>
+                        <div><a href="@VirtualPathUtility.ToAbsolute(String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/mvc/flights?ap={0}", admin1.JoinedCodes))">@admin1.Name</a></div>
                     }
                 </div>
             }

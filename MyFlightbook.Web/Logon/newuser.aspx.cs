@@ -5,7 +5,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2023 MyFlightbook LLC
+ * Copyright (c) 2007-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -60,7 +60,7 @@ namespace MyFlightbook.LogonPages
 
             // Redirect to the next page, but only if it is relative (for security)
             string szURLNext = util.GetStringParam(Request, "ReturnUrl");
-            Response.Redirect(!String.IsNullOrEmpty(szURLNext) && Uri.IsWellFormedUriString(szURLNext, UriKind.Relative) ? szURLNext : "~/Member/LogbookNew.aspx");
+            Response.Redirect(!String.IsNullOrEmpty(szURLNext) && Uri.IsWellFormedUriString(szURLNext, UriKind.Relative) ? szURLNext : "~/mvc/flights");
         }
     }
 }

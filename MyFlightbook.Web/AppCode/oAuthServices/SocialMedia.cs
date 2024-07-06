@@ -5,7 +5,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2023 MyFlightbook LLC
+ * Copyright (c) 2015-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -38,7 +38,7 @@ namespace MyFlightbook.SocialMedia
         {
             if (szEncodedShareKey == null)
                 throw new ArgumentNullException(nameof(szEncodedShareKey));
-            return String.Format(CultureInfo.InvariantCulture, "{0}?src={1}", szTarget ?? "~/Member/LogbookNew.aspx", HttpUtility.UrlEncode(szEncodedShareKey)).ToAbsoluteURL("https", szHost ?? Branding.CurrentBrand.HostName);
+            return String.Format(CultureInfo.InvariantCulture, "{0}?src={1}", szTarget ?? "~/mvc/flightedit/flight", HttpUtility.UrlEncode(szEncodedShareKey)).ToAbsoluteURL("https", szHost ?? Branding.CurrentBrand.HostName);
         }
     }
 

@@ -23,7 +23,7 @@ else if (fGrouped)
                 <div>
                     @if (fLinked && ti.Query != null)
                     {
-                        <div><a href="@String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?fq={2}", Branding.CurrentBrand.HostName, "~/Member/LogbookNew.aspx".ToAbsolute(), ti.JSONSerializedQuery.ToSafeParameter())" target="_blank">@ti.Description</a></div>
+                        <div><a href="@String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?fq={2}", Branding.CurrentBrand.HostName, "~/mvc/flights".ToAbsolute(), ti.JSONSerializedQuery.ToSafeParameter())" target="_blank">@ti.Description</a></div>
                     }
                     else
                     {
@@ -48,7 +48,7 @@ else
                     <td style="text-align: left;">
                         @if (fLinked && ti.Query != null)
                         {
-                            <div><a href="@String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?fq={2}", Branding.CurrentBrand.HostName, "~/Member/LogbookNew.aspx".ToAbsolute(), ti.JSONSerializedQuery.ToSafeParameter())" target="_blank">@ti.Description</a></div>
+                            <div><a href="@String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?fq={2}", Branding.CurrentBrand.HostName, "~/mvc/flights".ToAbsolute(), ti.JSONSerializedQuery.ToSafeParameter())" target="_blank">@ti.Description</a></div>
                         }
                         else
                         {

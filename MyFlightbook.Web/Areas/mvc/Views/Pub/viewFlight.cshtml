@@ -69,7 +69,7 @@
             <span style="white-space:pre-line;">@Html.Raw(le.Comment.Linkify())</span>
             @if (User.Identity.Name.CompareOrdinal(le.User) == 0)
             {
-                <a href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx/{0}", le.FlightID))"><img src="@VirtualPathUtility.ToAbsolute("~/images/pencilsm.png")" title="@Resources.LogbookEntry.PublicFlightEditThisFlight" alt="@Resources.LogbookEntry.PublicFlightEditThisFlight" /></a>
+                <a href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/flightedit/flight/{0}", le.FlightID))"><img src="@VirtualPathUtility.ToAbsolute("~/images/pencilsm.png")" title="@Resources.LogbookEntry.PublicFlightEditThisFlight" alt="@Resources.LogbookEntry.PublicFlightEditThisFlight" /></a>
             }
         </div>
     }

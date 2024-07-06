@@ -7,7 +7,7 @@ using System.Web.UI.HtmlControls;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2022 MyFlightbook LLC
+ * Copyright (c) 2009-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -87,7 +87,7 @@ namespace MyFlightbook.Controls
 
         protected void btnSearch_Click(object sender, EventArgs e)
         {
-            Response.Redirect("~/Member/LogbookNew.aspx?s=" + HttpUtility.UrlEncode(mfbSearchbox.SearchText));
+            Response.Redirect("~/mvc/flights?s=" + HttpUtility.UrlEncode(mfbSearchbox.SearchText));
         }
 
         public void Refresh()

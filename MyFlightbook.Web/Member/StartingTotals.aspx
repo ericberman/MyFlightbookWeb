@@ -15,7 +15,7 @@
         onactivestepchanged="wizStartingTotals_ActiveStepChanged" 
         onfinishbuttonclick="wizStartingTotals_FinishButtonClick" 
         DisplaySideBar="False" 
-        FinishDestinationPageUrl="~/Member/LogbookNew.aspx?ft=Totals" 
+        FinishDestinationPageUrl="~/mvc/flights?ft=Totals" 
         meta:resourcekey="wizStartingTotalsResource1" ActiveStepIndex="0" Width="100%">
         <HeaderTemplate>
             <div style="width:100%">
@@ -182,11 +182,11 @@
             </asp:WizardStep>
         </WizardSteps>
     </asp:Wizard>
-    <div style="margin-left:auto; margin-right:auto; max-width: 500px;">
+    <div style="margin-left:auto; margin-right:auto; max-width: 600px;">
         <asp:Panel ID="pnlAcuLog" runat="server"  CssClass="calloutSmall calloutSponsor shadowed" style="text-align:left;">
             <table>
                 <tr>
-                    <td style="max-width:200px;">
+                    <td style="max-width:300px;">
                         <h3><% =Branding.ReBrand(Resources.LogbookEntry.ImportAculogHeader) %></h3>
                         <% =Branding.ReBrand(Resources.LogbookEntry.ImportAculogPromo).Linkify() %>
                     </td>

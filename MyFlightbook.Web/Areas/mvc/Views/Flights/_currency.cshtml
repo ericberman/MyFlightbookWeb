@@ -62,7 +62,7 @@
                     <td class="currencylabel">
                         @if (fLinkItems && !String.IsNullOrEmpty(csi.AssociatedResourceLink))
                         {
-                            <a target="_blank" href="@(csi.AssociatedResourceLink ?? String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?fq={2}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/Member/LogbookNew.aspx"), csi.Query == null ? string.Empty : csi.Query.ToBase64CompressedJSONString()))">@csi.Attribute</a>
+                            <a target="_blank" href="@(csi.AssociatedResourceLink ?? String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?fq={2}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/mvc/flights"), csi.Query == null ? string.Empty : csi.Query.ToBase64CompressedJSONString()))">@csi.Attribute</a>
                         }
                         else
                         {

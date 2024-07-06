@@ -10,7 +10,7 @@
 <asp:content id="Content1" contentplaceholderid="cpTopForm" runat="Server">
     <asp:Panel ID="pnlCreateUser" runat="server" 
         meta:resourcekey="pnlCreateUserResource1">
-        <asp:CreateUserWizard ID="CreateUserWizard1" runat="server" ContinueDestinationPageUrl="~/Member/LogbookNew.aspx"
+        <asp:CreateUserWizard ID="CreateUserWizard1" runat="server" ContinueDestinationPageUrl="~/mvc/flights"
             EmailRegularExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"
             MembershipProvider="MySqlMembershipProvider" 
             CreateUserButtonText="Create Account" OnCreatedUser="UserCreated"

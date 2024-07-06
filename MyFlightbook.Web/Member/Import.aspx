@@ -370,7 +370,7 @@
             </asp:Repeater>
         </ul>
         <ul class="nextStep">
-            <li><asp:HyperLink ID="lnkDone" runat="server" NavigateUrl="~/Member/LogbookNew.aspx" Text="<%$ Resources:LogbookEntry, ImportViewImportedFlights %>" /></li>
+            <li><asp:HyperLink ID="lnkDone" runat="server" NavigateUrl="~/mvc/flights" Text="<%$ Resources:LogbookEntry, ImportViewImportedFlights %>" /></li>
             <li runat="server" visible="false" id="reviewPending"><asp:HyperLink ID="lnkPending" runat="server" NavigateUrl="~/mvc/flightedit/pending" Text="<%$ Resources:LogbookEntry, ImportViewImportedFlightsPending %>" /></li>
         </ul>
     </asp:Panel>

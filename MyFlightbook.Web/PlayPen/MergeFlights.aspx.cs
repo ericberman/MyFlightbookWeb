@@ -127,7 +127,7 @@ namespace MyFlightbook.Playpen
                 le.PopulateImages();
 
             target.MergeFrom(lst);
-            Response.Redirect("~/Member/LogbookNew.aspx");
+            Response.Redirect("~/mvc/flights");
         }
 
         protected void wzMerge_NextButtonClick(object sender, WizardNavigationEventArgs e)

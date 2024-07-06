@@ -16,7 +16,7 @@
             }
             else
             {
-            <a href = "@String.Format(CultureInfo.InvariantCulture, szTemplate, key)" >@key</a>
+            <a href = "@String.Format(CultureInfo.InvariantCulture, szTemplate, key).ToAbsolute()" >@key</a>
             }
 
             @if (imageClass == MFBImageInfoBase.ImageClass.Flight)

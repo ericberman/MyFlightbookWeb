@@ -38,7 +38,7 @@
                     <td>@va.LatestVisitDate.ToString("d", CultureInfo.CurrentCulture)<span style="display:none">@va.LatestVisitDate.YMDString()</span></td>
                     @if (ViewBag.fAllowSearch)
                     {
-                        <td><a href="@String.Format(CultureInfo.InvariantCulture, "{0}?ap={1}", VirtualPathUtility.ToAbsolute("~/Member/LogbookNew.aspx"), va.Code)">@Resources.Airports.airportViewFlights</a></td>
+                        <td><a href="@String.Format(CultureInfo.InvariantCulture, "{0}?ap={1}", VirtualPathUtility.ToAbsolute("~/mvc/flights"), va.Code)">@Resources.Airports.airportViewFlights</a></td>
 
                     }
                 </tr>

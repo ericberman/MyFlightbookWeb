@@ -1,7 +1,7 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbSendFlight.ascx.cs" Inherits="MyFlightbook.Controls.mfbSendFlight" %>
 <div id="divSendFlightPop" style="display:none">
     <asp:HiddenField ID="hdnFlightToSend" runat="server" />
-    <asp:HiddenField ID="hdnFlightSendToTarget" runat="server" Value="~/Member/LogbookNew.aspx" />
+    <asp:HiddenField ID="hdnFlightSendToTarget" runat="server" Value="~/mvc/flightedit/flight" />
     <table>
         <tr>
             <td>

@@ -205,7 +205,7 @@
                 <asp:GridView ID="gvBFR" runat="server" AutoGenerateColumns="False" 
                     GridLines="None" ShowHeader="False" CellPadding="5">
                     <Columns>
-                        <asp:HyperLinkField DataNavigateUrlFields="FlightID" DataNavigateUrlFormatString="~/Member/LogbookNew.aspx/{0}" DataTextField="Date" DataTextFormatString="{0:d}" />
+                        <asp:HyperLinkField DataNavigateUrlFields="FlightID" DataNavigateUrlFormatString="~/mvc/flightedit/flight/{0}" DataTextField="Date" DataTextFormatString="{0:d}" />
                         <asp:BoundField DataField="DisplayString" />
                     </Columns>
                     <EmptyDataTemplate>
@@ -228,7 +228,7 @@
                     GridLines="None" ShowHeader="False" CellPadding="5">
                     <Columns>
                         <asp:HyperLinkField DataNavigateUrlFields="FlightID" DataTextField="Date" DataTextFormatString="{0:d}" 
-                            DataNavigateUrlFormatString="~/Member/LogbookNew.aspx/{0}" />
+                            DataNavigateUrlFormatString="~/mvc/flightedit/flight/{0}" />
                         <asp:BoundField DataField="DisplayString" DataFormatString="{0}" />
                     </Columns>
                     <EmptyDataTemplate>

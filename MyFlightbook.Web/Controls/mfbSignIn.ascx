@@ -5,7 +5,7 @@
     <div style="display:inline-block; margin:5px; vertical-align:top">
         <asp:Login ID="ctlSignIn" runat="server"
             CreateUserText=""
-            CreateUserUrl="~/Logon/newuser.aspx" DestinationPageUrl="~/Member/LogbookNew.aspx"
+            CreateUserUrl="~/Logon/newuser.aspx" DestinationPageUrl="~/mvc/flights"
             LoginButtonText=""
             MembershipProvider="MySqlMembershipProvider" PasswordRecoveryText=""
             PasswordRecoveryUrl="~/Logon/ResetPass.aspx" TitleText="" OnLoggedIn="ctlSignIn_LoggedIn"

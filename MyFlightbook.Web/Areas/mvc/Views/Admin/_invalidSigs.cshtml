@@ -16,7 +16,7 @@ else
         @foreach (LogbookEntryBase le in lstToFix)
         {
                     <tr style="vertical-align:top">
-                        <td><a href="@String.Format(CultureInfo.InvariantCulture, "https://{0}/logbook/member/LogbookNew.aspx/{1}?a=1", Branding.CurrentBrand.HostName, le.FlightID)" target="_blank">@le.FlightID</a></td>
+                        <td><a href="@String.Format(CultureInfo.InvariantCulture, "https://{0}/logbook/mvc/flightedit/flight/{1}?a=1", Branding.CurrentBrand.HostName, le.FlightID)" target="_blank">@le.FlightID</a></td>
                         <td>
                             @le.User<br />
                             @le.Date.ToShortDateString()<br />
@@ -43,7 +43,7 @@ else
     @foreach (LogbookEntryBase le in lstAutoFix)
     {
         <tr style="vertical-align:top">
-            <td><a href="@String.Format(CultureInfo.InvariantCulture, "https://{0}/logbook/member/LogbookNew.aspx/{1}?a=1", Branding.CurrentBrand.HostName, le.FlightID)" target="_blank">@le.FlightID</a></td>
+            <td><a href="@String.Format(CultureInfo.InvariantCulture, "https://{0}/logbook/mvc/flightedit/flight/{1}?a=1", Branding.CurrentBrand.HostName, le.FlightID)" target="_blank">@le.FlightID</a></td>
             <td>
                 @le.User<br />
                 @le.Date.ToShortDateString()<br />
