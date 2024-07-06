@@ -69,7 +69,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         // GET: mvc/CheckFlight
         public ActionResult Index()
         {
-            string szLastCheck = Request.Cookies[szCookieLastCheck].Value;
+            string szLastCheck = Request.Cookies[szCookieLastCheck]?.Value ?? String.Empty;
             if (DateTime.TryParse(szLastCheck, out DateTime dtLastCheck))
                 ViewBag.lastCheck = dtLastCheck;
             return View("checkFlights");
