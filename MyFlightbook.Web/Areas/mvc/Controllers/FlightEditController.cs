@@ -786,10 +786,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (clone != -1)
                 {
                     le = le.Clone(null, reverse != -1);
-                    le.Date = DateTime.Now;
-                    le.HobbsEnd = le.HobbsStart = 0;
-                    le.EngineEnd = le.EngineStart = le.FlightStart = le.FlightEnd = DateTime.MinValue;
-                    le.FlightData = null;
+                    le.CleanNewClone();
                 }
 
                 le.PopulateImages();

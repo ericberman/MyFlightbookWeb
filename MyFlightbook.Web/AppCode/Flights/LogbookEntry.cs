@@ -1569,6 +1569,21 @@ namespace MyFlightbook
         #endregion
         #endregion
 
+        private static readonly CustomPropertyType.KnownProperties[] mPropsToCleanOnRepeat = new CustomPropertyType.KnownProperties[] { CustomPropertyType.KnownProperties.IDBlockIn, CustomPropertyType.KnownProperties.IDBlockOut, CustomPropertyType.KnownProperties.IDPropTachEnd, CustomPropertyType.KnownProperties.IDPropTachStart };
+        /// <summary>
+        /// if the newly cloned flight is intended as a repeat (vs. a share), then a bunch of values are nonsensical to preserve.  Remove those.
+        /// </summary>
+        public void CleanNewClone()
+        {
+            Date = DateTime.Now;
+            HobbsEnd = HobbsStart = 0;
+            EngineEnd = EngineStart = FlightStart = FlightEnd = DateTime.MinValue;
+            // Remove common properties that are unlikely to be repeated on a new flight
+            foreach (CustomPropertyType.KnownProperties kp in mPropsToCleanOnRepeat)
+                CustomProperties.RemoveItem(kp);
+            FlightData = null;
+        }
+
         /// <summary>
         /// Clones the current flight as a new flight
         /// </summary>
