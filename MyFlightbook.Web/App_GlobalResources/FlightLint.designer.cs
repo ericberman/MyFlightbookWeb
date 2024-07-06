@@ -655,6 +655,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Primary + Secondary time doesn&apos;t equal Total Time.
+        /// </summary>
+        internal static string warningMilitaryTimeUnaccounted {
+            get {
+                return ResourceManager.GetString("warningMilitaryTimeUnaccounted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This flight appears to be identical to the previous flight; accidental duplicate?.
         /// </summary>
         internal static string warningMiscDuplicateFlight {

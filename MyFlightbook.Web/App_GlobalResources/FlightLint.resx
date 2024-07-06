@@ -317,6 +317,9 @@
   <data name="warningIFRNoSafetyPilot" xml:space="preserve">
     <value>Simulated instrument in a real aircraft is indicated, but no safety pilot is specified.  Be sure to indicate the name of the safety pilot!</value>
   </data>
+  <data name="warningMilitaryTimeUnaccounted" xml:space="preserve">
+    <value>Primary + Secondary time doesn't equal Total Time</value>
+  </data>
   <data name="warningMiscDuplicateFlight" xml:space="preserve">
     <value>This flight appears to be identical to the previous flight; accidental duplicate?</value>
   </data>

@@ -426,6 +426,9 @@ namespace MyFlightbook.Lint
             CustomFlightProperty cfpTachEnd = le.CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropTachEnd);
             AddConditionalIssue(cfpTachStart != null && cfpTachEnd != null && cfpTachEnd.DecValue < cfpTachStart.DecValue, LintOptions.TimeIssues, Resources.FlightLint.warningTachEndBeforeTachStart);
 
+            int militaryTimeMinutes = le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropMilitaryPrimaryTime).ToMinutes() + le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropMilitarySecondaryTime).ToMinutes();
+            AddConditionalIssue(militaryTimeMinutes > 0 && militaryTimeMinutes != totalMinutes, LintOptions.TimeIssues, Resources.FlightLint.warningMilitaryTimeUnaccounted);
+
             if (le.TotalFlightTime > 0)
             {
                 // Look for block time or engine time that varies significantly from total time UNLESS hobbs is present; if so, compare hobbs to that.  Ditto tach, if tach is of by more than 30%.
