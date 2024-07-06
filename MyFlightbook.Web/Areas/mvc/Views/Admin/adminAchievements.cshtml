@@ -40,7 +40,7 @@
 
     function addNew() {
         $("#btnAddAirportAchievement")[0].innerHTML = "Add";
-        $("#divAchievementForm").find("input").val("");
+        $("#divAchievementForm").find("input:not([type='hidden'])").val("");
         $("#ckBinary")[0].checked = false;
         $("#ckBinary")[0].value = "true";
         $("#hdnAchievementID")[0].value = "0";
