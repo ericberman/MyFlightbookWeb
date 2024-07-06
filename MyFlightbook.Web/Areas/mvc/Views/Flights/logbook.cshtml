@@ -5,6 +5,7 @@
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
     FlightQuery fq = ViewBag.fq;
     bool fIsDefaultQuery = fq.IsDefault;
+    bool groupedMode = ViewBag.grouped;
 
     ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, pf.UserFullName);
     ViewBag.UseCharting = true;
@@ -43,100 +44,106 @@
 <script type="text/javascript" src="~/Public/Scripts/accordionproxy.js?v=1"></script>
 <script type="text/javascript" src="~/Public/Scripts/printing.js?v=1"></script>
 <script type="text/javascript">
-function doSearch(fq) {
-    $("#hdnQuery").val(JSON.stringify(fq));
-    $("#hdnQFEClicked").val(false);
-    $("#hdnPropToDelete").val("");
-    $("#frmUpdateQuery").submit();
-    return false;
-}
+    function doSearch(fq) {
+        $("#hdnQuery").val(JSON.stringify(fq));
+        $("#hdnQFEClicked").val(false);
+        $("#hdnPropToDelete").val("");
+        $("#frmUpdateQuery").submit();
+        return false;
+    }
 
-function qfeClicked(propName) {
-    $("#hdnQuery").val(JSON.stringify(buildQuery()));
-    $("#hdnQFEClicked").val(true);
-    $("#hdnPropToDelete").val(propName);
-    $("#frmUpdateQuery").submit();
-    return false;
-}
+    function qfeClicked(propName) {
+        $("#hdnQuery").val(JSON.stringify(buildQuery()));
+        $("#hdnQFEClicked").val(true);
+        $("#hdnPropToDelete").val(propName);
+        $("#frmUpdateQuery").submit();
+        return false;
+    }
 
-function onSave() {
-    window.location = window.location;
-}
+    function onSave() {
+        window.location = window.location;
+    }
 
-$(() => {
+    var currentQuery = @Html.Raw(fq.ToJSONString());
+
     var fAnalysisLoaded = false;
     var fTotalsLoaded = false;
     var fCurrencyLoaded = false;
-    var currentQuery = @Html.Raw(fq.ToJSONString());
 
-    proxyControl = new accordionProxy($("#accordionproxycontainer"), {
-        defaultPane: "@defPane",
-        proxies: [
-            { idButton: "apcNewFlight", idTarget: "targetNewFlight" },
-            { idButton: "apcFilter", idTarget: "targetFilter", isEnhanced: @Json.Encode(!fIsDefaultQuery) },
-            {
-                idButton: "apcTotals", idTarget: "targetTotals", onclick: function () {
-                    if (!fTotalsLoaded) {
-                        var params = new Object();
-                        params.userName = "@User.Identity.Name";
-                        params.linkItems = true;
-                        params.grouped = @Json.Encode(ViewBag.grouped);
-                        params.fq = currentQuery;
-                        $.ajax({
-                            url: "@Url.Action("GetTotalsForUser", "Flights")",
-                            type: "POST", data: JSON.stringify(params), dataType: "html", contentType: 'application/json',
-                            error: function (xhr, status, error) { window.alert(xhr.responseText); },
-                            complete: function () { },
-                            success: function (r) {
-                                fTotalsLoaded = true;
-                                $("#targetTotals").html(r);
-                            }
-                        });
+    function updateTotals(updatePref) {
+        var params = new Object();
+        params.userName = "@User.Identity.Name";
+        params.linkItems = true;
+        params.grouped = $("input[name='totalsMode']:checked").val();
+        params.fq = currentQuery;
+        params.fUpdatePref = updatePref;
+        $.ajax({
+            url: "@Url.Action("GetTotalsForUser", "Flights")",
+            type: "POST", data: JSON.stringify(params), dataType: "html", contentType: 'application/json',
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            complete: function () { },
+            success: function (r) {
+                fTotalsLoaded = true;
+                $("#totalsContainer").html(r);
+            }
+        });
+    }
+
+    $(() => {
+        proxyControl = new accordionProxy($("#accordionproxycontainer"), {
+            defaultPane: "@defPane",
+            proxies: [
+                { idButton: "apcNewFlight", idTarget: "targetNewFlight" },
+                { idButton: "apcFilter", idTarget: "targetFilter", isEnhanced: @Json.Encode(!fIsDefaultQuery) },
+                {
+                    idButton: "apcTotals", idTarget: "targetTotals", onclick: function () {
+                        if (!fTotalsLoaded)
+                            updateTotals(false);
                     }
-                }
-            },
-            {
-                idButton: "apcCurrency", idTarget: "targetCurrency", onclick: function() {
-                    if (!fCurrencyLoaded) {
-                        var params = new Object();
-                        params.userName = "@User.Identity.Name";
-                        params.linkItems = true;
-                        $.ajax({
-                            url: "@Url.Action("GetCurrencyForUser", "Flights")",
-                            type: "POST", data: JSON.stringify(params), dataType: "html", contentType: 'application/json',
-                            error: function (xhr, status, error) { window.alert(xhr.responseText); },
-                            complete: function () { },
-                            success: function (r) {
-                                fCurrencyLoaded = true;
-                                $("#targetCurrency").html(r);
-                            }
+                },
+                {
+                    idButton: "apcCurrency", idTarget: "targetCurrency", onclick: function () {
+                        if (!fCurrencyLoaded) {
+                            var params = new Object();
+                            params.userName = "@User.Identity.Name";
+                            params.linkItems = true;
+                            $.ajax({
+                                url: "@Url.Action("GetCurrencyForUser", "Flights")",
+                                type: "POST", data: JSON.stringify(params), dataType: "html", contentType: 'application/json',
+                                error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                                complete: function () { },
+                                success: function (r) {
+                                    fCurrencyLoaded = true;
+                                    $("#targetCurrency").html(r);
+                                }
                             });
-}
-                    } },
-            {
-                idButton: "apcAnalysis", idTarget: "targetAnalysis", onclick: function () {
-                    if (!fAnalysisLoaded) {
-                        var params = new Object();
-                        params.fq = currentQuery;
-                        $.ajax({
-                            url: "@Url.Action("GetAnalysisForUser", "Flights")",
-                            type: "POST", data: JSON.stringify(params), dataType: "html", contentType: 'application/json',
-                            error: function (xhr, status, error) { window.alert(xhr.responseText); },
-                            complete: function () { },
-                            success: function (r) {
-                                fAnalysisLoaded = true;
-                                $("#targetAnalysis").html(r);
-                                chartDataChanged();
-                            }
-                        });
+                        }
                     }
-                }
-            },
-            { idButton: "apcPrinting", idTarget: "targetPrintView" },
-            { idButton: "apcMore", idTarget: "targetMore" }
-        ]
+                },
+                {
+                    idButton: "apcAnalysis", idTarget: "targetAnalysis", onclick: function () {
+                        if (!fAnalysisLoaded) {
+                            var params = new Object();
+                            params.fq = currentQuery;
+                            $.ajax({
+                                url: "@Url.Action("GetAnalysisForUser", "Flights")",
+                                type: "POST", data: JSON.stringify(params), dataType: "html", contentType: 'application/json',
+                                error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                                complete: function () { },
+                                success: function (r) {
+                                    fAnalysisLoaded = true;
+                                    $("#targetAnalysis").html(r);
+                                    chartDataChanged();
+                                }
+                            });
+                        }
+                    }
+                },
+                { idButton: "apcPrinting", idTarget: "targetPrintView" },
+                { idButton: "apcMore", idTarget: "targetMore" }
+            ]
+        });
     });
-});
 </script>
 <div style="display:none;">
     @using (Html.BeginForm("Index", "Flights", new { }, FormMethod.Post, new { id = "frmUpdateQuery", name = "frmUpdateQuery" }))
@@ -177,7 +184,18 @@ $(() => {
     @{ Html.RenderAction("SearchForm", "Search", new { fq = fq, onClientSearch = "doSearch", onClientReset = "doSearch" }); }
 </div>
 <div id="targetTotals" style="display: none">
-    <div style="text-align: center;"><img src="@("~/images/progress.gif".ToAbsolute())" /></div>
+    <div style="float:right;">
+        <div class="popContainer">
+            <img src="@VirtualPathUtility.ToAbsolute("~/images/MenuChevron.png")" class="popTrigger" />
+            <div class="popMenuContent popMenuHidden" style="margin-top: -5px; margin-left: -5px">
+                <div><label><input type="radio" id="rbFlat" name="totalsMode" @((!groupedMode).ToChecked()) value="false" onchange="javascript: updateTotals(true);" />@Resources.Totals.TotalsModeFlat</label></div>
+                <div><label><input type="radio" id="rbGrouped" name="totalsMode" @((groupedMode).ToChecked()) value="true" onchange="javascript: updateTotals(true);" />@Resources.Totals.TotalsModeGrouped</label></div>
+            </div>
+        </div>
+    </div>
+    <div id="totalsContainer">
+        <div style="text-align: center;"><img src="@("~/images/progress.gif".ToAbsolute())" /></div>
+    </div>
 </div>
 <div id="targetCurrency" style="display: none">
     <div style="text-align: center;"><img src="@("~/images/progress.gif".ToAbsolute())" /></div>
@@ -224,9 +242,9 @@ $(() => {
 {
     Response.Cookies[MFBConstants.keyNewUser].Expires = DateTime.Now.AddDays(-1);
     <script type="text/javascript">
-        $(() => {
-            showModalById('pnlWelcomeNewUser', '@Resources.LocalizedText.WelcomeHeader', '320');
-        });
+$(() => {
+    showModalById('pnlWelcomeNewUser', '@Resources.LocalizedText.WelcomeHeader', '320');
+});
     </script>
     <div id="pnlWelcomeNewUser" style="display:none;">
         <p>@Resources.LocalizedText.WelcomeThanks</p>
@@ -242,7 +260,7 @@ $(() => {
             </tr>
             <tr>
                 <td><img src="@("~/images/import.png".ToAbsolute())" alt="@Resources.LocalizedText.WelcomeImportFlights" /></td>
-                <td><a href="@("~/Member/Import.aspx".ToAbsolute())" >@Resources.LocalizedText.WelcomeImportFlights</a><br />@Resources.LocalizedText.ORSeparator</td>
+                <td><a href="@("~/Member/Import.aspx".ToAbsolute())">@Resources.LocalizedText.WelcomeImportFlights</a><br />@Resources.LocalizedText.ORSeparator</td>
             </tr>
             <tr>
                 <td><img src="@("~/images/startingtotals.png".ToAbsolute())" alt="@Resources.LocalizedText.WelcomeSetStartingTotals" /></td>

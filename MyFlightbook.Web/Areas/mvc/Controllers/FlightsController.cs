@@ -239,11 +239,14 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
-        public ActionResult GetTotalsForUser(string userName, string viewingUser = null, bool linkItems = true, bool grouped = true, FlightQuery fq = null)
+        public ActionResult GetTotalsForUser(string userName, string viewingUser = null, bool linkItems = true, bool grouped = true, FlightQuery fq = null, bool fUpdatePref = false)
         {
             return SafeOp(() =>
             {
                 CheckCanViewFlights(userName, viewingUser);
+                UserTotals ut = new UserTotals() { Username = userName };
+                if (fUpdatePref && ut.DefaultGroupModeForUser != grouped)
+                    ut.DefaultGroupModeForUser = grouped;
                 return TotalsForUser(null, userName, linkItems, grouped, fq);
             });
         }
