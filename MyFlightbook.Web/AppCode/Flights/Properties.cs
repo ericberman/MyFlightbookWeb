@@ -1973,7 +1973,7 @@ ORDER BY f.Date Desc";
 
         void ICollection<CustomFlightProperty>.CopyTo(CustomFlightProperty[] array, int arrayIndex)
         {
-            throw new NotImplementedException();
+            m_dictProps.Values.CopyTo(array, arrayIndex);
         }
 
         bool ICollection<CustomFlightProperty>.Remove(CustomFlightProperty item)
