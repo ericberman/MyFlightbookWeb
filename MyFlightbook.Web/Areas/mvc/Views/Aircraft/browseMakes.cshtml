@@ -39,29 +39,8 @@
             });
     }
 
-    $(document).ready(function () {
-        $(document).endlessScroll({
-            bottomPixels: 300,
-            fireOnce: true,
-            fireDelay: 2000,
-            callback: function (p) {
-                // ajax call to fetch next set of rows
-                getNextSet();
-            }
-        });
-
-        $('#vwAdvancedSearch').keydown(function (e) {
-            if (e.keyCode == 13) {
-                $("#btnSearch")[0].click();
-                return false;
-            }
-        });
-
-        @if (ViewBag.getResults)
-        {
-            @:getNextSet();
-            @:setSearchHeaders("@mq.SortMode.ToString()", "@mq.SortDir.ToString()");
-        }
+    $(() => {
+        defaultButtonForDiv("vwAdvancedSearch", "btnSearch");
     });
 
     function setSearchMode(simple) {
@@ -104,6 +83,24 @@
         getNextSet();
     }
 </script>
+@if (ViewBag.getResults)
+{
+    <script type="text/javascript">
+        $(() => {
+            $(document).endlessScroll({
+                bottomPixels: 300,
+                fireOnce: true,
+                fireDelay: 2000,
+                callback: function (p) {
+                    // ajax call to fetch next set of rows
+                    getNextSet();
+                }
+            });
+            getNextSet();
+            setSearchHeaders("@mq.SortMode.ToString()", "@mq.SortDir.ToString()");
+        });
+    </script>
+}
 <div class="calloutSmall shadowed" style="vertical-align:middle; width: 90%; display:flex; margin-right: auto; margin-left: auto; margin-bottom: 5pt;">
     <div style="flex:auto;">
         <div style="display:inline-block">
