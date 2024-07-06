@@ -8,6 +8,7 @@
     MyFlightbook.Profile pfTarget = ViewBag.pfTarget;
     MyFlightbook.Profile pfViewer = ViewBag.pfViewer;
     bool fViewingOwn = pfTarget.UserName.CompareCurrentCultureIgnoreCase(pfViewer.UserName) == 0;
+    bool fAdmin = !fViewingOwn && pfViewer.CanSupport && (Request["a"] ?? string.Empty).CompareCurrentCultureIgnoreCase("1") == 0;
     IEnumerable<Aircraft> rgAircraft = ViewBag.rgAircraft;
     bool fHHMM = pfViewer.UsesHHMM;
     bool fAddStudent = ViewBag.fAddStudent;
@@ -324,7 +325,7 @@
         </div>
     </div>
 </div>
-<div id="pnlPictures" class="fullblock" style="@(fViewingOwn ? string.Empty : "display: none;")">
+<div id="pnlPictures" class="fullblock" style="@(fViewingOwn || fAdmin ? string.Empty : "display: none;")">
     <div class="header">@szPixBlockLabel <span class="fineprint">@Resources.LocalizedText.ImageDisclaimer</span></div>
     @if (pfViewer.PreferenceExists(MyFlightbook.CloudStorage.GooglePhoto.PrefKeyAuthToken))
     {
@@ -358,7 +359,7 @@
         @{ Html.RenderAction("EmbeddedVideos", "FlightEdit", new { le = le, fCanDoVideo = fCanDoVideo }); }
     </div>
 </div>
-<div id="pnlPublic" class="fullblock" style="@(fViewingOwn ? string.Empty : "display: none;")">
+<div id="pnlPublic" class="fullblock" style="@(fViewingOwn || fAdmin ? string.Empty : "display: none;")">
     <div class="header">@Resources.LogbookEntry.HeaderSharing</div>
     <p>
         <span style="vertical-align:middle">

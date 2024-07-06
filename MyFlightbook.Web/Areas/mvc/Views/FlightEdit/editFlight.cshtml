@@ -15,4 +15,6 @@
             window.location = "@Html.Raw(ViewBag.returnURL)";
         }
 </script>
+<div class="accordionMenuContent">
 @{ Html.RenderAction("FlightEditor", "FlightEdit", new { targetUser = le.User, fAsAdmin = fAsAdmin, le = le, onCancel = "onComplete", onSave = "onComplete", nextFlightHref = ViewBag.nextFlightHref, prevFlightHref = ViewBag.prevFlightHref }); }
+</div>
