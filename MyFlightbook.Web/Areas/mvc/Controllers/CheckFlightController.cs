@@ -67,6 +67,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         // GET: mvc/CheckFlight
+        [Authorize]
         public ActionResult Index()
         {
             string szLastCheck = Request.Cookies[szCookieLastCheck]?.Value ?? String.Empty;
