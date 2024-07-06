@@ -400,7 +400,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 le.FlightStart = Request["flightFlightStart"].ParseUTCDateTime(le.Date, tz);
                 le.FlightEnd = Request["flightFlightEnd"].ParseUTCDateTime(le.Date, tz);
 
-                le.CustomProperties = new CustomPropertyCollection(CustomFlightProperty.PropertiesFromJSONTuples(Request["flightPropTuples"], le.FlightID, le.Date, CultureInfo.CurrentCulture));
+                le.CustomProperties = new CustomPropertyCollection(CustomFlightProperty.PropertiesFromJSONTuples(Request["flightPropTuples"], le.FlightID, le.Date, CultureInfo.CurrentCulture), true);
 
                 // Each of the custom properties that is a date-time has been expressed in user's preferred timezone; need to convert to UTC
                 foreach (CustomFlightProperty cfp in le.CustomProperties)

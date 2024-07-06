@@ -1941,13 +1941,14 @@ ORDER BY f.Date Desc";
         /// <summary>
         /// Creates a property collection initialized from the specified properties.  Null and default values are ignored, the last of any duplicate will survive.
         /// </summary>
-        /// <param name="rgcfp"></param>
-        public CustomPropertyCollection(IEnumerable<CustomFlightProperty> rgcfp) : this()
+        /// <param name="rgcfp">The inbound set of properties</param>
+        /// <param name="fIncludeExisting">If true, includes default values if they are existing properties (so that they can be deleted later).</param>
+        public CustomPropertyCollection(IEnumerable<CustomFlightProperty> rgcfp, bool fIncludeExisting = false) : this()
         {
             if (rgcfp == null)
                 return;
             foreach (CustomFlightProperty cfp in rgcfp)
-                if (cfp != null && !cfp.IsDefaultValue)
+                if (cfp != null && (!cfp.IsDefaultValue || (fIncludeExisting && cfp.IsExisting)))
                     m_dictProps[cfp.PropTypeID] = cfp;
         }
         #endregion

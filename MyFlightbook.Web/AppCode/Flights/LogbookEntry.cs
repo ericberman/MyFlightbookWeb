@@ -1769,11 +1769,19 @@ namespace MyFlightbook
 
         private void CommitProperties()
         {
+            // Make sure we're not saving anything on a new flight
+            if (FlightID < 0)
+                throw new InvalidOperationException("Committing properties on a new flight - how is this possible?");
             // save the custom properties.
             foreach (CustomFlightProperty cfp in CustomProperties)
-            {
+            { 
                 cfp.FlightID = FlightID;
-                cfp.FCommit();
+
+                // Issue #1258: Delete any default values.
+                if (cfp.IsDefaultValue)
+                    cfp.DeleteProperty();
+                else
+                    cfp.FCommit();
 
                 // If you add a property that you haven't used before, flush the local cache of properties.
                 if (!cfp.PropertyType.IsFavorite)
