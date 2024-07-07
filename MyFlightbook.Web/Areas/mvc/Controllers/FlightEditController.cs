@@ -747,6 +747,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         // GET: mvc/FlightEdit
+        [Authorize]
         public ActionResult Flight(string id, string fq = null, int clone = -1, int reverse = -1, string src = "", int a = 0)
         {
             Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
@@ -804,6 +805,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return View("editFlight");
         }
 
+        [Authorize]
         public ActionResult Index()
         {
             return Flight(string.Empty);
