@@ -2926,6 +2926,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The flights below might be appropriate to add to your logbook.
+        /// </summary>
+        internal static string PendingFlightsNoticeDesc {
+            get {
+                return ResourceManager.GetString("PendingFlightsNoticeDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have pending flights.
+        /// </summary>
+        internal static string PendingFlightsNoticeHeader {
+            get {
+                return ResourceManager.GetString("PendingFlightsNoticeHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ◄.
         /// </summary>
         internal static string PreviousFlight {

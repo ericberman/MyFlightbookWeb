@@ -289,3 +289,68 @@ function populateApproachHelper(containerID, cmbType, cmbTypeSuffix, cmbRnwy, cm
 function addAppchDesc() {
     sbmtFlightFrm((f) => { postFlightWithAction(f, function (r) { $("#pnlFlightEditorBody").html(r); }, "html", '/logbook/mvc/FlightEdit/AddApproachDesc'); });
 }
+
+// Pending flights
+function deletePendingFlight(pfID) {
+    $("#hdnPendingID").val(pfID);
+    var f = $("#frmActPending").serialize();
+    $.ajax({
+        url: '/logbook/mvc/flightedit/deletependingflight',
+        type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+        error: function (xhr, status, error) { window.alert(xhr.responseText); },
+        complete: function () { },
+        success: function () {
+            window.location = window.location;
+        }
+    });
+    return false;
+}
+
+function deleteAllPendingFlights() {
+    $("#hdnPendingID").val('');
+    var f = $("#frmActPending").serialize();
+    $.ajax({
+        url: '/logbook/mvc/flightedit/DeleteAllPendingFlights',
+        type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+        error: function (xhr, status, error) { window.alert(xhr.responseText); },
+        complete: function () { },
+        success: function () {
+            window.location = window.location;
+        }
+    });
+    return false;
+}
+
+function cancelEdit() {
+    window.location = '/logbook/mvc/FlightEdit/Pending';
+    return false;
+}
+
+function flightSaved() {
+    window.location = '/logbook/mvc/FlightEdit/Pending';
+    return false;
+}
+
+function navigateToPendingPage(page, pageSize, sortField) {
+    var params = new Object();
+    params.offset = page * pageSize;
+    params.pageSize = pageSize;
+
+    var hdnsortField = $("#hdnPendingSortField");
+    var hdnsortdir = $("#hdnLastPendingSortDir");
+    hdnsortdir.val(sortField == hdnsortField.val() && hdnsortdir.val() == "Descending" ? "Ascending" : "Descending");
+    hdnsortField.val(sortField ?? hdnsortField.val());
+    params.sortField = hdnsortField.val();
+    params.sortDirection = hdnsortdir.val();
+
+    $("#prgPendingPager").show();
+    $.ajax({
+        url: '/logbook/mvc/flightedit/pendingflightsinrange',
+        type: "POST", data: JSON.stringify(params), dataType: "html", contentType: "application/json",
+        error: function (xhr, status, error) { window.alert(xhr.responseText); },
+        complete: function () { $("#prgPendingPager").hide(); },
+        success: function (r) {
+            $("#divPendingTable").html(r);
+        }
+    });
+}

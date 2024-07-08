@@ -1852,4 +1852,10 @@ Proceed with import?</value>
   <data name="FlightCrewViewImportHeader" xml:space="preserve">
     <value>Import from Flight Crew View</value>
   </data>
+  <data name="PendingFlightsNoticeDesc" xml:space="preserve">
+    <value>The flights below might be appropriate to add to your logbook</value>
+  </data>
+  <data name="PendingFlightsNoticeHeader" xml:space="preserve">
+    <value>You have pending flights</value>
+  </data>
 </root>

@@ -14,6 +14,7 @@
 
     FlightsTab ft = (Enum.TryParse(util.GetStringParam(Request, "ft") ?? string.Empty, out FlightsTab f)) ? f : FlightsTab.None;
     string defPane = string.Empty;
+    IEnumerable<PendingFlight> lstPf = ViewBag.pending;
     switch (ft)
     {
         case FlightsTab.None:
@@ -175,6 +176,27 @@
                 proxyControl.setEnhanced("apcFilter", true);
             });
         </script>
+    </div>
+}
+@if (lstPf.Any())
+{
+    <div class="calloutSmall">
+        <h2>@Resources.LogbookEntry.PendingFlightsNoticeHeader</h2>
+        <p>@Resources.LogbookEntry.PendingFlightsNoticeDesc</p>
+        <div id="divPendingTable"></div>
+        @using (Html.BeginForm("", "FlightEdit", FormMethod.Post, new { id = "frmActPending", name = "frmActPending" }))
+        {
+            <input type="hidden" name="pfID" id="hdnPendingID" value="" />
+            <input type="hidden" id="hdnLastPendingSortDir" value="Descending" />
+            <input type="hidden" id="hdnPendingSortField" value="Date" />
+            @Html.AntiForgeryToken()
+        }
+        <script type="text/javascript">
+            $(() => { navigateToPendingPage(0, 3, "Date") })
+        </script>
+        <ul class="nextStep">
+            <li><a href="@("~/mvc/flightedit/pending".ToAbsolute())">@Resources.LogbookEntry.ImportViewImportedFlightsPending</a></li>
+        </ul>
     </div>
 }
 <div id="targetNewFlight" style="display: none">

@@ -705,7 +705,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         public ActionResult PendingFlightsTable(int offset, int pageSize, string sortField, SortDirection sortDir)
         {
             List<PendingFlight> lst = new List<PendingFlight>(PendingFlight.PendingFlightsForUser(User.Identity.Name));
-            lst.Sort((l1, l2) => { return LogbookEntry.CompareFlights(l1, l2, sortField, sortDir); });
+            lst.Sort((l1, l2) => { return LogbookEntryCore.CompareFlights(l1, l2, sortField, sortDir); });
 
             ViewBag.pendingFlights = lst.GetRange(offset, Math.Min(pageSize, lst.Count - offset));
             ViewBag.pageSize = pageSize;

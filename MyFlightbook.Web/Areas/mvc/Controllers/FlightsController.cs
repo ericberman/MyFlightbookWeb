@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
 
@@ -884,7 +885,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         // GET: mvc/Flights
         #region Main Logbook
-        private ViewResult MainLogbookInternal(FlightQuery fq, bool fPropDeleteClicked = false, string propToDelete = null)
+        private async Task<ViewResult> MainLogbookInternal(FlightQuery fq, bool fPropDeleteClicked = false, string propToDelete = null)
         {
             if (fq == null)
                 throw new ArgumentNullException(nameof(fq));
@@ -897,28 +898,35 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 fq.ClearRestriction(propToDelete ?? string.Empty);
 
             ViewBag.fq = fq;
-            ViewBag.flightResult = FlightResultManager.FlightResultManagerForUser(User.Identity.Name).ResultsForQuery(fq);
             ViewBag.grouped = new UserTotals(User.Identity.Name, fq, true).DefaultGroupModeForUser;
+            List<PendingFlight> lst;
+            await Task.WhenAll(new Task[] {
+                Task.Run(() => { ViewBag.flightResult = FlightResultManager.FlightResultManagerForUser(User.Identity.Name).ResultsForQuery(fq); }),
+                Task.Run(() => {
+                    lst = new List<PendingFlight>(PendingFlight.PendingFlightsForUser(User.Identity.Name));
+                    lst.Sort((l1, l2) => { return LogbookEntryCore.CompareFlights(l1, l2, "Date", SortDirection.Ascending); });
+                    ViewBag.pending = lst.Count > 0 && lst[0].Date.Date.CompareTo(DateTime.Now.Date) <= 0 ? (IEnumerable<PendingFlight>) lst : Array.Empty<PendingFlight>();
+                    })
+            });
 
             return View("logbook");
-
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public ActionResult Index(string fq, bool fPropDeleteClicked = false, string propToDelete = null)
+        public async Task<ActionResult> Index(string fq, bool fPropDeleteClicked = false, string propToDelete = null)
         {
-            return MainLogbookInternal(FlightQuery.FromJSON(fq), fPropDeleteClicked, propToDelete);
+            return await MainLogbookInternal(FlightQuery.FromJSON(fq), fPropDeleteClicked, propToDelete);
         }
 
         [Authorize]
-        public ActionResult Index(string fq = null)
+        public async Task<ActionResult> Index(string fq = null)
         {
             FlightQuery q = String.IsNullOrEmpty(fq) ? new FlightQuery(User.Identity.Name) : FlightQuery.FromBase64CompressedJSON(fq);
             // update based on any passed parameters
             q.InitPassedQueryItems(Request["s"], Request["ap"], util.GetIntParam(Request, "y", -1), util.GetIntParam(Request, "m", -1), util.GetIntParam(Request, "w", -1), util.GetIntParam(Request, "d", -1), Request["tn"], Request["mn"], Request["icao"], Request["cc"]);
-            return MainLogbookInternal(q);
+            return await MainLogbookInternal(q);
         }
         #endregion
         #endregion

@@ -13,21 +13,21 @@
 <table class="lbTable" id="tblPending">
     <thead>
         <tr class="gvhDefault" style="vertical-align: bottom">
-            <th class="headerBase gvhLeft @sortCss("Date")" onclick="javascript: navigateToPage(@curPage, @pageSize, 'Date');">@Resources.LogbookEntry.FieldFlight</th>
-            <th class="headerBase gvhCentered @sortCss("TailNumDisplay")" onclick="javascript: navigateToPage(@curPage, @pageSize, 'TailNumDisplay');">@Resources.LogbookEntry.FieldTail</th>
-            <th class="headerBase gvhCentered @sortCss("Approaches")" onclick="javascript: navigateToPage(@curPage, @pageSize, 'Approaches');">@Resources.LogbookEntry.PrintHeaderApproaches</th>
-            <th class="headerBase gvhCentered @sortCss("fHoldingProcedures")" onclick="javascript: navigateToPage(@curPage, @pageSize, 'fHoldingProcedures');">@Resources.LogbookEntry.FieldHold</th>
-            <th class="headerBase gvhCentered @sortCss("Landings")" onclick="javascript: navigateToPage(@curPage, @pageSize, 'Landings');">@Resources.LogbookEntry.PrintHeaderLandingsShort</th>
-            <th class="headerBase gvhCentered @sortCss("CrossCountry")" onclick="javascript: navigateToPage(@curPage, @pageSize, 'CrossCountry');">@Resources.LogbookEntry.FieldXCountry</th>
-            <th class="headerBase gvhCentered @sortCss("Nighttime")" onclick="javascript: navigateToPage(@curPage, @pageSize, 'Nighttime');">@Resources.LogbookEntry.FieldNight</th>
-            <th class="headerBase gvhCentered @sortCss("SimulatedIFR")" onclick="javascript: navigateToPage(@curPage, @pageSize, 'SimulatedIFR');">@Html.Raw(Resources.LogbookEntry.FieldSimIMC)</th>
-            <th class="headerBase gvhCentered @sortCss("IMC")" onclick="javascript: navigateToPage(@curPage, @pageSize, 'IMC');">@Resources.LogbookEntry.FieldIMC</th>
-            <th class="headerBase gvhCentered @sortCss("GroundSim")" onclick="javascript: navigateToPage(@curPage, @pageSize, 'GroundSim');">@Html.Raw(Resources.LogbookEntry.FieldGroundSim)</th>
-            <th class="headerBase gvhCentered @sortCss("Dual")" onclick="javascript: navigateToPage(@curPage, @pageSize, 'Dual');">@Resources.LogbookEntry.FieldDual</th>
-            <th class="headerBase gvhCentered @sortCss("CFI")" onclick="javascript: navigateToPage(@curPage, @pageSize, 'CFI');">@Resources.LogbookEntry.FieldCFI</th>
-            <th class="headerBase gvhCentered @sortCss("SIC")" onclick="javascript: navigateToPage(@curPage, @pageSize, 'SIC');">@Resources.LogbookEntry.FieldSIC</th>
-            <th class="headerBase gvhCentered @sortCss("PIC")" onclick="javascript: navigateToPage(@curPage, @pageSize, 'PIC');">@Resources.LogbookEntry.FieldPIC</th>
-            <th class="headerBase gvhCentered @sortCss("TotalFlightTime")" onclick="javascript: navigateToPage(@curPage, @pageSize, 'TotalFlightTime');">@Resources.LogbookEntry.FieldTotal</th>
+            <th class="headerBase gvhLeft @sortCss("Date")" onclick="javascript: navigateToPendingPage(@curPage, @pageSize, 'Date');">@Resources.LogbookEntry.FieldFlight</th>
+            <th class="headerBase gvhCentered @sortCss("TailNumDisplay")" onclick="javascript: navigateToPendingPage(@curPage, @pageSize, 'TailNumDisplay');">@Resources.LogbookEntry.FieldTail</th>
+            <th class="headerBase gvhCentered @sortCss("Approaches")" onclick="javascript: navigateToPendingPage(@curPage, @pageSize, 'Approaches');">@Resources.LogbookEntry.PrintHeaderApproaches</th>
+            <th class="headerBase gvhCentered @sortCss("fHoldingProcedures")" onclick="javascript: navigateToPendingPage(@curPage, @pageSize, 'fHoldingProcedures');">@Resources.LogbookEntry.FieldHold</th>
+            <th class="headerBase gvhCentered @sortCss("Landings")" onclick="javascript: navigateToPendingPage(@curPage, @pageSize, 'Landings');">@Resources.LogbookEntry.PrintHeaderLandingsShort</th>
+            <th class="headerBase gvhCentered @sortCss("CrossCountry")" onclick="javascript: navigateToPendingPage(@curPage, @pageSize, 'CrossCountry');">@Resources.LogbookEntry.FieldXCountry</th>
+            <th class="headerBase gvhCentered @sortCss("Nighttime")" onclick="javascript: navigateToPendingPage(@curPage, @pageSize, 'Nighttime');">@Resources.LogbookEntry.FieldNight</th>
+            <th class="headerBase gvhCentered @sortCss("SimulatedIFR")" onclick="javascript: navigateToPendingPage(@curPage, @pageSize, 'SimulatedIFR');">@Html.Raw(Resources.LogbookEntry.FieldSimIMC)</th>
+            <th class="headerBase gvhCentered @sortCss("IMC")" onclick="javascript: navigateToPendingPage(@curPage, @pageSize, 'IMC');">@Resources.LogbookEntry.FieldIMC</th>
+            <th class="headerBase gvhCentered @sortCss("GroundSim")" onclick="javascript: navigateToPendingPage(@curPage, @pageSize, 'GroundSim');">@Html.Raw(Resources.LogbookEntry.FieldGroundSim)</th>
+            <th class="headerBase gvhCentered @sortCss("Dual")" onclick="javascript: navigateToPendingPage(@curPage, @pageSize, 'Dual');">@Resources.LogbookEntry.FieldDual</th>
+            <th class="headerBase gvhCentered @sortCss("CFI")" onclick="javascript: navigateToPendingPage(@curPage, @pageSize, 'CFI');">@Resources.LogbookEntry.FieldCFI</th>
+            <th class="headerBase gvhCentered @sortCss("SIC")" onclick="javascript: navigateToPendingPage(@curPage, @pageSize, 'SIC');">@Resources.LogbookEntry.FieldSIC</th>
+            <th class="headerBase gvhCentered @sortCss("PIC")" onclick="javascript: navigateToPendingPage(@curPage, @pageSize, 'PIC');">@Resources.LogbookEntry.FieldPIC</th>
+            <th class="headerBase gvhCentered @sortCss("TotalFlightTime")" onclick="javascript: navigateToPendingPage(@curPage, @pageSize, 'TotalFlightTime');">@Resources.LogbookEntry.FieldTotal</th>
             <th class="noprint"></th>
             <th class="noprint"></th>
         </tr>
@@ -83,14 +83,14 @@
     <div id="pnlPager" CssClass="lbTable noprint" DefaultButton="btnSetPage" style="padding: 5px; width: 100%; text-align: center;">
         @if (curPage > 0)
         {
-            <a href="#" onclick="javascript: navigateToPage(0, @pageSize); return false;">&lt;&lt;</a>
-            <a href="#" onclick="javascript: navigateToPage(@(curPage - 1), @pageSize); return false;">&lt;</a>
+            <a href="#" onclick="javascript: navigateToPendingPage(0, @pageSize); return false;">&lt;&lt;</a>
+            <a href="#" onclick="javascript: navigateToPendingPage(@(curPage - 1), @pageSize); return false;">&lt;</a>
         }
         @String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrintedFooterPageCountWithTotals, curPage + 1, numPages )
         @if (curPage < numPages - 1)
         {
-            <a href="#" onclick="javascript: navigateToPage(@(curPage + 1), @pageSize); return false;">&gt;</a>
-            <a href="#" onclick="javascript: navigateToPage(@(numPages - 1), @pageSize); return false;">&gt;&gt;</a>
+            <a href="#" onclick="javascript: navigateToPendingPage(@(curPage + 1), @pageSize); return false;">&gt;</a>
+            <a href="#" onclick="javascript: navigateToPendingPage(@(numPages - 1), @pageSize); return false;">&gt;&gt;</a>
         }
     </div>
 }
