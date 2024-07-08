@@ -17,7 +17,7 @@
     }
 </style>
 <script type="text/javascript">
-    $(function () {
+    $(() => {
         $('#pnlSearch').keydown(function (e) {
             if (e.keyCode == 13) {
                 $('#btnSearch')[0].click();
@@ -30,6 +30,9 @@
                 return false;
             }
         });
+
+        $("#mfbTIDateFrom").on("change", () => { setCustomDates(true); });
+        $("#mfbTIDateTo").on("change", () => { setCustomDates(true); });
     });
 
     function clutter(sender, targetID) {
@@ -109,7 +112,7 @@
 
 
         fq.CatClasses = [];
-        $("#divCatClass").find('input[type=checkbox]').each(function () {
+        $("#divCCList").find('input[type=checkbox]').each(function () {
             if (this.checked) {
                 // create a pseudo-catclass
                 var cc = new Object();
@@ -244,8 +247,9 @@
                 <tr>
                     <td colspan="2">
                         <input type="radio" name="DateRange" value="Custom" @(fq.DateRange == FlightQuery.DateRanges.Custom ? "checked" : string.Empty) id="rbCustom" /><label for="rbCustom">@Resources.FlightQuery.DatesFrom</label>
-                        <input type="date" id="mfbTIDateFrom" onchange="javascript: setCustomDates(true);" value="@(fq.DateMin.HasValue() ? fq.DateMin.YMDString() : string.Empty)" />
-                        <label for="mfbTIDateFrom">@Resources.FlightQuery.DatesTo</label><input type="date" value="@(fq.DateMax.HasValue() ? fq.DateMax.YMDString() : string.Empty)" id="mfbTIDateTo" onchange="javascript: setCustomDates(true);" />
+                        @{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "mfbTIDateFrom", value = fq.DateMin, name = string.Empty }); }
+                        <label for="mfbTIDateTo">@Resources.FlightQuery.DatesTo</label>
+                        @{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "mfbTIDateTo", value = fq.DateMin, name = string.Empty }); }
                     </td>
                 </tr>
             </table>
