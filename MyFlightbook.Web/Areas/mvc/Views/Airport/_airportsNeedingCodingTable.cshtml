@@ -60,7 +60,7 @@ else
                 <td>
                     @if (ap.NearestTagged != null)
                     {
-                        <a style="cursor:pointer;" onclick="javascript:useSuggestion($(this).parents('tr'), '@ap.Code', '@ap.FacilityTypeCode', '@ap.NearestTagged.Country', '@ap.NearestTagged.Admin1Display');">Use</a>
+                        <a style="cursor:pointer;" onclick="javascript:useSuggestion($(this).parents('tr'), '@ap.Code', '@ap.FacilityTypeCode', '@HttpUtility.JavaScriptStringEncode(ap.NearestTagged.Country)', '@HttpUtility.JavaScriptStringEncode(ap.NearestTagged.Admin1Display)');">Use</a>
                         <span>Country: @ap.NearestTagged.Country Admin1: @ap.NearestTagged.Admin1Display</span>
                     }
                 </td>
