@@ -234,8 +234,13 @@ namespace MyFlightbook.Templates
         {
             if (lstIn == null) throw new ArgumentNullException(nameof(lstIn));
             if (lstIDs == null) throw new ArgumentNullException(nameof(lstIDs));
+
+            // Issue #1262: check that EITHER we have a template applied (explicitly selected, default) OR we have MRU selected
             HashSet<int> hs = new HashSet<int>(lstIDs);
-            return new List<PropertyTemplate>(lstIn).FindAll(pt => lstIDs.Contains(pt.ID));
+            if (!hs.Contains((int) KnownTemplateIDs.ID_MRU) && hs.FirstOrDefault(i => i > 0) == 0)
+                hs.Add((int) KnownTemplateIDs.ID_MRU);
+
+            return new List<PropertyTemplate>(lstIn).FindAll(pt => hs.Contains(pt.ID));
         }
         #endregion
 

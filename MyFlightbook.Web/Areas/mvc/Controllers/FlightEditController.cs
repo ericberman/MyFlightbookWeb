@@ -331,8 +331,12 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
                 TimeZoneInfo tz = MyFlightbook.Profile.GetUser(User.Identity.Name).PreferredTimeZone;
 
+                // remove MRU; it will come back per issue #1262 in templatesfromiDs, if it is needed.
+                HashSet<int> hsActive = new HashSet<int>(activeTemplateIDs ?? Array.Empty<int>());
+                hsActive.Remove((int) KnownTemplateIDs.ID_MRU);
+
                 IEnumerable<PropertyTemplate> userTemplates = UserPropertyTemplate.TemplatesForUser(szTargetUser, true);
-                return PropSetEditor(szTargetUser, CustomFlightProperty.PropertiesFromJSONTuples(propTuples, idFlight, DateTime.Parse(dtDefault, CultureInfo.CurrentCulture, DateTimeStyles.None), CultureInfo.CurrentCulture), fHHMM, PropertyTemplate.TemplatesFromIDs(userTemplates, PropertyTemplate.RefreshForAicraft(szTargetUser, idAircraft, activeTemplateIDs ?? Array.Empty<int>())), tz, fStripDefault);
+                return PropSetEditor(szTargetUser, CustomFlightProperty.PropertiesFromJSONTuples(propTuples, idFlight, DateTime.Parse(dtDefault, CultureInfo.CurrentCulture, DateTimeStyles.None), CultureInfo.CurrentCulture), fHHMM, PropertyTemplate.TemplatesFromIDs(userTemplates, PropertyTemplate.RefreshForAicraft(szTargetUser, idAircraft, hsActive)), tz, fStripDefault);
             });
         }
         #endregion
