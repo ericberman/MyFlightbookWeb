@@ -2118,6 +2118,22 @@ tr div.editCell, tr.editRow div.displayCell {
     font-weight: bold;
 }
 
+.fileDragTargetSmall {
+    vertical-align: top;
+    border: 3px dotted #00bcd4;
+    border-radius: 8pt;
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    text-align: center;
+    width: 8em;
+    height: 28pt;
+    color: #888888;
+    padding: 5px;
+    font-size: 125%;
+    font-weight: bold;
+}
+
 .fileDragHighlighted {
     border: 3px solid darkgray;
 }

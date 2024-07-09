@@ -46,7 +46,25 @@
             dropPrompt: "@Resources.LocalizedText.UploadImages",
             errTooManyFiles: "@Resources.LocalizedText.fileUploadTooManyFiles",
             errDisallowedFileType: "@Resources.LocalizedText.fileUploadInvalidType",
-            abortPrompt: "@Resources.LocalizedText.fileUploadAboart"
+            abortPrompt: "@Resources.LocalizedText.fileUploadAbort"
+        });
+
+        ajaxFileUpload($("#divUploadTelemetry"), {
+            uploadURL: "@Url.Action("UploadTelemetry", "FlightEdit")",
+            allowedTypes: "kml gpx csv txt xml nmea igc",
+            dragTargetClass: "fileDragTargetSmall",
+            additionalParams: [],
+            maxFiles: 1,
+            onUpload: function () { },
+            onFileUploaded: function (status, result) {
+                $(".fileInQueueContainer").hide();
+                $("#hdnFieldCompressedTelemetry").val(result);
+                $("#divExistingTelemetry").show();
+            },
+            dropPrompt: "@Resources.LogbookEntry.DragTelemetryPrompt",
+            errTooManyFiles: "@Resources.LocalizedText.fileUploadTooManyFiles",
+            errDisallowedFileType: "@Resources.LocalizedText.fileUploadInvalidType",
+            abortPrompt: "@Resources.LocalizedText.fileUploadAbort"
         });
 
         populateApproachHelper("#divAddAppch", $("#appchType"), $("#appchSuffix"), $("#appchRnwyNum"), $("#appchRnwySuffix"), $("#appchApt"), $("#txtRoute"));
@@ -218,7 +236,7 @@
         }
     </div>
     <div id="pnlFlightDetails" style="@(fExpanded ? string.Empty : "display: none;")">
-        <div ID="pnlHobbs" class="flightinfoitem">
+        <div id="pnlHobbs" class="flightinfoitem">
             <table>
                 <tr class="itemlabel"><td colspan="2" style="font-weight:bold">@Resources.LogbookEntry.Hobbs</td></tr>
                 <tr>
@@ -231,7 +249,7 @@
                 </tr>
             </table>
         </div>
-        <div ID="pnlEngine" class="flightinfoitem">
+        <div id="pnlEngine" class="flightinfoitem">
             <table style="vertical-align:baseline">
                 <tr class="itemlabel"><td colspan="2" style="font-weight:bold" title="@defaultTZ.DisplayName">@Resources.LogbookEntry.FieldEngineUTC.IndicateUTCOrCustomTimeZone(defaultTZ)</td></tr>
                 <tr>
@@ -244,7 +262,7 @@
                 </tr>
             </table>
         </div>
-        <div ID="pnlFlight" class="flightinfoitem">
+        <div id="pnlFlight" class="flightinfoitem">
             <table>
                 <tr class="itemlabel"><td colspan="2" style="font-weight:bold" title="@defaultTZ.DisplayName">@Resources.LogbookEntry.FieldFlightUTC.IndicateUTCOrCustomTimeZone(defaultTZ)</td></tr>
                 <tr>
@@ -264,40 +282,32 @@
                 });
             </script>
         </div>
-        <div style="clear:both;"></div>
-        <div ID="pnlFlightData" class="flightinfoitem">
-            <table>
-                <tr class="itemlabel">
-                    <td><span style="font-weight:bold">@Resources.LogbookEntry.FieldTelemetry</span> <a class="fineprint" href="@("~/mvc/pub/FlightDataKey".ToAbsolute())" target="_blank">@Resources.LogbookEntry.FieldTelemetryLearnMore</a></td>
-                    <td>
-                        <input type="file" id="fieldUploadTelemetry" name="flightTelemetry" style="@(le.HasFlightData ? "display: none;" : string.Empty)" />
-                        @if (le.HasFlightData)
-                        {
-                            if (!le.IsNewFlight)
+        <div id="pnlFlightData" class="flightinfoitem">
+            <div class="itemlabel">
+                <div><span style="font-weight:bold">@Resources.LogbookEntry.FieldTelemetry</span> <a class="fineprint" href="@("~/mvc/pub/FlightDataKey".ToAbsolute())" target="_blank">@Resources.LogbookEntry.FieldTelemetryLearnMore</a></div>
+                <div style="display: flex; align-items: center;">
+                    <div id="divUploadTelemetry" style="display:inline-block;"></div>
+                    <div style="display: inline-block; ">
+                        <div id="divExistingTelemetry" style="@(le.HasFlightData ? string.Empty : "display: none;")">
+                            @if (!le.IsNewFlight)
                             {
                                 <a target="_blank" href="@String.Format(CultureInfo.InvariantCulture, "~/mvc/flights/details/{0}", le.FlightID).ToAbsolute()">
-                                    <image src="@("~/images/Clip.png".ToAbsolute())" title="@Resources.LogbookEntry.FlightHasDataTooltip" alt="@Resources.LogbookEntry.FlightHasDataTooltip" /> @Resources.LogbookEntry.FlightHasData
+                                    <image style="vertical-align:middle;" src="@("~/images/MapMarker.png".ToAbsolute())" title="@Resources.LogbookEntry.FlightHasDataTooltip" alt="@Resources.LogbookEntry.FlightHasDataTooltip" /> @Resources.LogbookEntry.FlightHasData
                                 </a>
                             }
                             else
                             {
-                                <image src="@("~/images/Clip.png".ToAbsolute())" title="@Resources.LogbookEntry.FlightHasDataTooltip" alt="@Resources.LogbookEntry.FlightHasDataTooltip" /> @Resources.LogbookEntry.FlightHasData
+                                <image style="vertical-align:middle;" src="@("~/images/MapMarker.png".ToAbsolute())" title="@Resources.LogbookEntry.FlightHasDataTooltip" alt="@Resources.LogbookEntry.FlightHasDataTooltip" /> @Resources.LogbookEntry.FlightHasData
                             }
-                            <span id="spnExistingData">
-                                <a href="#" onclick="javascript: $('#spnExistingData').hide(); $('#fieldUploadTelemetry').show(); return false;">@Resources.LogbookEntry.TelemetryAttachNew</a>&nbsp;&nbsp;
-                                <image src="@("~/images/x.gif".ToAbsolute())" style="vertical-align: bottom" alt="@Resources.LogbookEntry.TelemetryDelete" title="@Resources.LogbookEntry.TelemetryDelete" onclick="javascript: if (confirm('@Resources.LocalizedText.FlightInfoConfirmDelete')) deleteTelemetry();" />
-                            </span>
-                            if (!String.IsNullOrEmpty(le?.FlightData))
-                            {
-                                <input type="hidden" name="flightPendingTelemetry" value="@Convert.ToBase64String(le.FlightData.Compress())" />
-                            }
-                        }
-                    </td>
-                </tr>
-            </table>
+                            <image src="@("~/images/x.gif".ToAbsolute())" style="vertical-align: middle" alt="@Resources.LogbookEntry.TelemetryDelete" title="@Resources.LogbookEntry.TelemetryDelete" onclick="javascript: if (confirm('@Resources.LocalizedText.FlightInfoConfirmDelete')) deleteTelemetry();" />
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" name="flightPendingTelemetry" id="hdnFieldCompressedTelemetry" value="@(String.IsNullOrEmpty(le.FlightData) ? string.Empty : Convert.ToBase64String(le.FlightData.Compress()))" />
+            </div>
         </div>
         <div style="clear:both;"></div>
-        <div ID="pnlAutoFill" class="flightinfoitem">
+        <div id="pnlAutoFill" class="flightinfoitem">
             <table>
                 <tr class="itemlabel">
                     <td style="max-width: 600px">

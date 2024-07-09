@@ -439,6 +439,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Upload Telemetry.
+        /// </summary>
+        internal static string DragTelemetryPrompt {
+            get {
+                return ResourceManager.GetString("DragTelemetryPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to (Add...).
         /// </summary>
         internal static string EditFlightAddAircraft {

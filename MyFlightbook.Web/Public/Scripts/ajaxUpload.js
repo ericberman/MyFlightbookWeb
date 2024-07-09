@@ -6,6 +6,22 @@
  *
 *******************************************************/
 
+
+/*
+    Options you can specify:
+     - allowedTypes - space separated list of extensions
+     - abortPrompt - prompt to abort an upload
+     - errTooManyFiles - error message if two many files
+     - dropPrompt - prompt for the box
+     - dragTargetClass - CSS class name for drop target
+     - dragHighlightClass - CSS class name for drop target on hover
+     - maxFiles - max # of files
+     - onPresend - do something with form data before sending
+     - additionalParams - array of additional parameters (object with name and value) that get sent on the upload
+     - uploadUrl - where to upload
+     - onFileUpload - called with the status and response text after each file is sent
+     - onUpload - called when all files are uploaded
+*/
 function ajaxFileUpload(container, options) {
     this.options = options;
     this.container = container;
@@ -51,7 +67,10 @@ function ajaxFileUpload(container, options) {
             error: function (xhr, status, error) { window.alert(xhr.responseText); },
             complete: function (response) {
                 status.setProgress(100);
-                status.setThumbnail(response.responseText);
+                if (options.onFileUploaded)
+                    options.onFileUploaded(status, response.responseText);
+                else 
+                    status.setThumbnail(response.responseText);
                 processQueue();
             },
             success: function (data) {
@@ -188,18 +207,18 @@ function ajaxFileUpload(container, options) {
         var obj = $("<div></div>");
         obj.appendTo(container);
         obj.text(options.dropPrompt ?? "Drag files here");
-        obj.addClass("fileDragTarget");
+        obj.addClass(options.dragTargetClass ?? "fileDragTarget");
 
         obj.on('dragenter', function (e) {
             e.stopPropagation();
             e.preventDefault();
-            $(this).addClass("fileDragHighlighted");
+            $(this).addClass(options.dragHighlightClass ?? "fileDragHighlighted");
         });
 
         obj.on('dragleave', function (e) {
             e.stopPropagation();
             e.preventDefault();
-            $(this).removeClass("fileDragHighlighted");
+            $(this).removeClass(options.dragHighlightClass ?? "fileDragHighlighted");
         });
 
         obj.on('dragover', function (e) {
@@ -209,7 +228,7 @@ function ajaxFileUpload(container, options) {
 
         obj.on('drop', function (e) {
             e.preventDefault();
-            $(this).removeClass("fileDragHighlighted");
+            $(this).removeClass(options.dragHighlightClass ?? "fileDragHighlighted");
             var files = e.originalEvent.dataTransfer.files;
             //We need to send dropped files to Server
             handleFileUpload(files, container);

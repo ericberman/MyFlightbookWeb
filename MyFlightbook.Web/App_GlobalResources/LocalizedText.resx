@@ -1955,7 +1955,7 @@
   <data name="genericUpdate" xml:space="preserve">
     <value>Update</value>
   </data>
-  <data name="fileUploadAboart" xml:space="preserve">
+  <data name="fileUploadAbort" xml:space="preserve">
     <value>Abort</value>
   </data>
   <data name="fileUploadInvalidType" xml:space="preserve">

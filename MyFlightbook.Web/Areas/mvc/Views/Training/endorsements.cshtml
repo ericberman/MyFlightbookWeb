@@ -10,7 +10,7 @@
     ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.Profile.TrainingHeader, pf.UserFullName);
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
 }
-<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/Public/Scripts/ajaxUpload.js?v=5")"></script>
+<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/Public/Scripts/ajaxUpload.js?v=6")"></script>
 <script type="text/javascript">
     function deleteOfflineEndorsement(sender, confirmText, imageClass, key, thumbnail) {
         deleteImage(confirmText, imageClass, key, thumbnail, true, function (r) {
@@ -55,7 +55,7 @@
             dropPrompt: "@Resources.LocalizedText.UploadImages",
             errTooManyFiles: "@Resources.LocalizedText.fileUploadTooManyFiles",
             errDisallowedFileType: "@Resources.LocalizedText.fileUploadInvalidType",
-            abortPrompt: "@Resources.LocalizedText.fileUploadAboart"
+            abortPrompt: "@Resources.LocalizedText.fileUploadAbort"
         });
     });
 </script>

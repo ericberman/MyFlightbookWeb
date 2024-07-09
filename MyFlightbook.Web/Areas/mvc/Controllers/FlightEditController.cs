@@ -10,7 +10,6 @@ using System.Globalization;
 using System.Linq;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
-using System.Windows.Documents;
 
 /******************************************************
  * 
@@ -129,6 +128,23 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 Profile pfViewer = MyFlightbook.Profile.GetUser(User.Identity.Name);
 
                 return FlightEditorBody(pfTarget, pfViewer, le, le as PendingFlight);
+            });
+        }
+
+        /// <summary>
+        /// Reads the provided telemetry and returns a base64 encoded compressed version to store in the hidden field
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        [Authorize]
+        [HttpPost]
+        public ActionResult UploadTelemetry()
+        {
+            return SafeOp(() =>
+            {
+                if (Request.Files.Count == 0)
+                    throw new InvalidOperationException("No telemetry provided");
+                return Content(Convert.ToBase64String(FlightData.ReadFromStream(Request.Files[0]?.InputStream).Compress()));
             });
         }
         #endregion
@@ -427,9 +443,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 string cachedFlightData = (Request["flightPendingTelemetry"] ?? string.Empty);
                 if (!String.IsNullOrEmpty(cachedFlightData))
                     le.FlightData = Convert.FromBase64String(cachedFlightData).Uncompress();
-                // But if new data is explicitly provided, overwrite that:
-                if ((Request.Files["flightTelemetry"]?.ContentLength ?? 0) > 0)
-                    le.FlightData = FlightData.ReadFromStream(Request.Files["flightTelemetry"]?.InputStream);
 
                 IEnumerable<VideoRef> videoRefs = JsonConvert.DeserializeObject<VideoRef[]>(Request["flightVideosJSON"]);
                 le.Videos.Clear();

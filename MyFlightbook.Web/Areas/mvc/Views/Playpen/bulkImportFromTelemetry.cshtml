@@ -6,7 +6,7 @@
     ViewBag.defaultTab = tabID.tabLogbook;
 
 }
-<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/Public/Scripts/ajaxUpload.js?v=5")"></script>
+<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/Public/Scripts/ajaxUpload.js?v=6")"></script>
 <script type="text/javascript">
     var wiz = null;
     $(() => {
@@ -33,7 +33,7 @@
             dropPrompt: "Drag files to match here",
             errTooManyFiles: "@Resources.LocalizedText.fileUploadTooManyFiles",
             errDisallowedFileType: "@Resources.LocalizedText.fileUploadInvalidType",
-            abortPrompt: "@Resources.LocalizedText.fileUploadAboart",
+            abortPrompt: "@Resources.LocalizedText.fileUploadAbort",
             onPreSend: function (fd) { }
         });
     });

@@ -2383,9 +2383,9 @@ namespace Resources {
         /// <summary>
         ///   Looks up a localized string similar to Abort.
         /// </summary>
-        internal static string fileUploadAboart {
+        internal static string fileUploadAbort {
             get {
-                return ResourceManager.GetString("fileUploadAboart", resourceCulture);
+                return ResourceManager.GetString("fileUploadAbort", resourceCulture);
             }
         }
         

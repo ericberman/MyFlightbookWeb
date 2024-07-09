@@ -1858,4 +1858,7 @@ Proceed with import?</value>
   <data name="PendingFlightsNoticeHeader" xml:space="preserve">
     <value>You have pending flights</value>
   </data>
+  <data name="DragTelemetryPrompt" xml:space="preserve">
+    <value>Upload Telemetry</value>
+  </data>
 </root>
