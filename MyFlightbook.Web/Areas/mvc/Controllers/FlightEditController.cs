@@ -10,6 +10,7 @@ using System.Globalization;
 using System.Linq;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
+using System.Windows.Documents;
 
 /******************************************************
  * 
@@ -255,6 +256,15 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             { 
                 return PendingFlightsTable(offset, pageSize, sortField, sortDirection);
             });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult PendingFlightsReminder()
+        {
+            List<PendingFlight> lst = new List<PendingFlight>(PendingFlight.PendingFlightsForUser(User.Identity.Name));
+            lst.Sort((l1, l2) => { return LogbookEntryCore.CompareFlights(l1, l2, "Date", SortDirection.Ascending); });
+            return lst.Count > 0 && lst[0].Date.Date.CompareTo(DateTime.Now.Date) <= 0 ? PendingFlightsTable(0, 3, "Date", SortDirection.Ascending) : new EmptyResult();
         }
         #endregion
 

@@ -14,7 +14,6 @@
 
     FlightsTab ft = (Enum.TryParse(util.GetStringParam(Request, "ft") ?? string.Empty, out FlightsTab f)) ? f : FlightsTab.None;
     string defPane = string.Empty;
-    IEnumerable<PendingFlight> lstPf = ViewBag.pending;
     switch (ft)
     {
         case FlightsTab.None:
@@ -91,6 +90,17 @@
     }
 
     $(() => {
+        $.ajax({
+            url: "@Url.Action("PendingFlightsReminder", "FlightEdit")",
+            type: "POST", data: JSON.stringify(new Object()), dataType: "html", contentType: 'application/json',
+            success: function (r) {
+                if (r.length > 0) {
+                    $("#divPendingReminder").show();
+                    $("#divPendingTable").html(r);
+                }
+            }
+        });
+
         proxyControl = new accordionProxy($("#accordionproxycontainer"), {
             defaultPane: "@defPane",
             proxies: [
@@ -157,6 +167,24 @@
         <input type="hidden" value="" name="propToDelete" id="hdnPropToDelete" />
     }
 </div>
+<div class="calloutSmall" id="divPendingReminder" style="display:none;">
+    <div style="float:right"><a href="#" onclick="javascript: $('#divPendingReminder').hide(); return false;">@Resources.LocalizedText.Close</a></div>
+    <div>
+        <h2 style="display: inline;">@Resources.LogbookEntry.PendingFlightsNoticeHeader</h2>
+        @Resources.LogbookEntry.PendingFlightsNoticeDesc
+    </div>
+    <ul class="nextStep">
+        <li><a href="@("~/mvc/flightedit/pending".ToAbsolute())">@Resources.LogbookEntry.ImportViewImportedFlightsPending</a></li>
+    </ul>
+    <div id="divPendingTable"></div>
+    @using (Html.BeginForm("", "FlightEdit", FormMethod.Post, new { id = "frmActPending", name = "frmActPending" }))
+    {
+        <input type="hidden" name="pfID" id="hdnPendingID" value="" />
+        <input type="hidden" id="hdnLastPendingSortDir" value="Descending" />
+        <input type="hidden" id="hdnPendingSortField" value="Date" />
+        @Html.AntiForgeryToken()
+    }
+</div>
 <div id="accordionproxycontainer" style="display: none;">
     <div id="apcNewFlight">@Resources.LocalizedText.LogTabNewFlight</div>
     <div id="apcFilter">@Resources.LocalizedText.LogTabFilter</div>
@@ -176,27 +204,6 @@
                 proxyControl.setEnhanced("apcFilter", true);
             });
         </script>
-    </div>
-}
-@if (lstPf.Any())
-{
-    <div class="calloutSmall">
-        <h2>@Resources.LogbookEntry.PendingFlightsNoticeHeader</h2>
-        <p>@Resources.LogbookEntry.PendingFlightsNoticeDesc</p>
-        <div id="divPendingTable"></div>
-        @using (Html.BeginForm("", "FlightEdit", FormMethod.Post, new { id = "frmActPending", name = "frmActPending" }))
-        {
-            <input type="hidden" name="pfID" id="hdnPendingID" value="" />
-            <input type="hidden" id="hdnLastPendingSortDir" value="Descending" />
-            <input type="hidden" id="hdnPendingSortField" value="Date" />
-            @Html.AntiForgeryToken()
-        }
-        <script type="text/javascript">
-            $(() => { navigateToPendingPage(0, 3, "Date") })
-        </script>
-        <ul class="nextStep">
-            <li><a href="@("~/mvc/flightedit/pending".ToAbsolute())">@Resources.LogbookEntry.ImportViewImportedFlightsPending</a></li>
-        </ul>
     </div>
 }
 <div id="targetNewFlight" style="display: none">
