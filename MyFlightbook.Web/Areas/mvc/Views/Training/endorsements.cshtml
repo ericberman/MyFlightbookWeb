@@ -68,28 +68,31 @@
 <div>
     @{ Html.RenderAction("RenderEndorsements", "Training", new { endorsements = endorsements, fCanDelete = true, fCanSort = true, fCanCopy = false, userName = User.Identity.Name }); }
 </div>
-<div class="noprint">
-    <p><img src="@("~/images/add.png".ToAbsolute())" style="vertical-align:middle;" /> <a href="@("~/mvc/Training/AddEndorsement".ToAbsolute())">@Resources.SignOff.EndorsementsAddEndorsement</a></p>
-    <hr />
-    <h2>@Resources.SignOff.EndorsementScannedImagesHeader</h2>
-    <p>@Resources.SignOff.EndorsementsScannedImagesDescription</p>
-    <div>
-        <span style="font-weight:bold;">@Resources.LocalizedText.Note</span> @Resources.SignOff.EditEndorsementDisclaimer
-    </div>
-    <div id="divUploadEndorsements" style="@(printView ? "display: none;" : string.Empty)">
-    </div>
-</div>
 @if (printView)
 {
     foreach (MFBImageInfo mfbii in il.ImageArray)
     {
-        <img style="max-width:100%" alt="@mfbii.Comment" src="@mfbii.URLFullImage" />
-        <p style="text-align:center">@mfbii.Comment</p>
+        <div>
+            <img style="max-width:100%" alt="@mfbii.Comment" src="@mfbii.URLFullImage" />
+            <p style="text-align:center">@mfbii.Comment</p>
+        </div>
     }
 }
 else
 {
-    <div id="divEndorsementList">
+    <div class="noprint">
+        <p><img src="@("~/images/add.png".ToAbsolute())" style="vertical-align:middle;" /> <a href="@("~/mvc/Training/AddEndorsement".ToAbsolute())">@Resources.SignOff.EndorsementsAddEndorsement</a></p>
+        <hr />
+        <h2>@Resources.SignOff.EndorsementScannedImagesHeader</h2>
+        <p>@Resources.SignOff.EndorsementsScannedImagesDescription</p>
+        <div>
+            <span style="font-weight:bold;">@Resources.LocalizedText.Note</span> @Resources.SignOff.EditEndorsementDisclaimer
+        </div>
+    </div>
+    <div style="display: inline-block">
+        <div class="noprint" id="divUploadEndorsements"></div>
+    </div>
+    <div id="divEndorsementList" style="display: inline;">
         @{
             Html.RenderAction("ImageListDisplay", "Image", new
             {
