@@ -170,15 +170,7 @@
         IEnumerable<int> rgFields = pfTarget.GetPreferenceForKey<int[]>(MFBConstants.keyCoreFieldsPermutation);
         if (!(rgFields?.Any() ?? false))
         {
-            List<int> defaultFields = new List<int>() { 0, 1, 2, 3, 4, 5, 8, 9 };
-            if (pfTarget.IsInstructor)
-            {
-                defaultFields.Insert(6, 6);
-            }
-            if (pfTarget.TracksSecondInCommandTime)
-            {
-                defaultFields.Insert(7, 7);
-            }
+            List<int> defaultFields = new List<int>() { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             rgFields = defaultFields;
         }
 
