@@ -72,10 +72,13 @@
 {
     foreach (MFBImageInfo mfbii in il.ImageArray)
     {
-        <div>
-            <img style="max-width:100%" alt="@mfbii.Comment" src="@mfbii.URLFullImage" />
-            <p style="text-align:center">@mfbii.Comment</p>
-        </div>
+        if (mfbii.ImageType == MFBImageInfoBase.ImageFileType.JPEG)
+        {
+            <div>
+                <img style="max-width:100%" alt="@mfbii.Comment" src="@mfbii.URLFullImage" />
+                <p style="text-align:center">@mfbii.Comment</p>
+            </div>
+        }
     }
 }
 else
