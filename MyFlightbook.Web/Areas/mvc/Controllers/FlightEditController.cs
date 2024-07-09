@@ -570,11 +570,14 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
             Session.Remove(keySessionInProgress);   // clear it regardless.
 
-            // If no aircraft ID provided, try using the last tail, if present, otherwise take the first one from their aircraft list.
+            // If no aircraft ID provided, try using the last tail, if present, otherwise take the first one from their aircraft list that isn't hidden.
             if (le.AircraftID <= 0)
                 le.AircraftID = AircraftUtility.LastTail;
             if (le.AircraftID <= 0)
-                le.AircraftID = new UserAircraft(targetUser).GetAircraftForUser().FirstOrDefault()?.AircraftID ?? Aircraft.idAircraftUnknown;
+            {
+                List<Aircraft> lst = new List<Aircraft>(new UserAircraft(targetUser).GetAircraftForUser());
+                le.AircraftID = lst.First(ac => !ac.HideFromSelection)?.AircraftID ?? (lst.Count > 0 ? lst[0].AircraftID : Aircraft.idAircraftUnknown);
+            }
 
             ViewBag.pf = pf;
             ViewBag.le = le;
