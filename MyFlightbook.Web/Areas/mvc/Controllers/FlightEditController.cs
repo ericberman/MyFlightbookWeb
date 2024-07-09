@@ -482,7 +482,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 {
                     if (le.FCommit(le.HasFlightData))
                     {
-                        AircraftUtility.LastTail = le.AircraftID;
+                        if (le.User.CompareCurrentCultureIgnoreCase(User.Identity.Name) == 0)
+                            AircraftUtility.LastTail = le.AircraftID;
 
                         if (fIsNew)
                         {
@@ -576,7 +577,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             if (le.AircraftID <= 0)
             {
                 List<Aircraft> lst = new List<Aircraft>(new UserAircraft(targetUser).GetAircraftForUser());
-                le.AircraftID = lst.First(ac => !ac.HideFromSelection)?.AircraftID ?? (lst.Count > 0 ? lst[0].AircraftID : Aircraft.idAircraftUnknown);
+                le.AircraftID = lst.FirstOrDefault(ac => !ac.HideFromSelection)?.AircraftID ?? (lst.Count > 0 ? lst[0].AircraftID : Aircraft.idAircraftUnknown);
             }
 
             ViewBag.pf = pf;
