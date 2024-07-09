@@ -164,7 +164,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async System.Threading.Tasks.Task<ActionResult> SaveToCloud()
+        public async Task<ActionResult> SaveToCloud()
         {
             return await SafeOp(async () =>
             {
@@ -322,7 +322,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async System.Threading.Tasks.Task<ActionResult> PushToCloudahoy(int idFlight, FlightData.SpeedUnitTypes speedUnits = FlightData.SpeedUnitTypes.MetersPerSecond, FlightData.AltitudeUnitTypes altUnits = FlightData.AltitudeUnitTypes.Meters)
+        public async Task<ActionResult> PushToCloudahoy(int idFlight, FlightData.SpeedUnitTypes speedUnits = FlightData.SpeedUnitTypes.MetersPerSecond, FlightData.AltitudeUnitTypes altUnits = FlightData.AltitudeUnitTypes.Meters)
         {
             return await SafeOp(async () =>
             {
@@ -337,7 +337,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async System.Threading.Tasks.Task<ActionResult> PushToFlySto(int idFlight, FlightData.SpeedUnitTypes speedUnits = FlightData.SpeedUnitTypes.MetersPerSecond, FlightData.AltitudeUnitTypes altUnits = FlightData.AltitudeUnitTypes.Meters)
+        public async Task<ActionResult> PushToFlySto(int idFlight, FlightData.SpeedUnitTypes speedUnits = FlightData.SpeedUnitTypes.MetersPerSecond, FlightData.AltitudeUnitTypes altUnits = FlightData.AltitudeUnitTypes.Meters)
         {
             return await SafeOp(async () =>
             {
@@ -885,7 +885,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         // GET: mvc/Flights
         #region Main Logbook
-        private async Task<ViewResult> MainLogbookInternal(FlightQuery fq, bool fPropDeleteClicked = false, string propToDelete = null)
+        private ViewResult MainLogbookInternal(FlightQuery fq, bool fPropDeleteClicked = false, string propToDelete = null)
         {
             if (fq == null)
                 throw new ArgumentNullException(nameof(fq));
@@ -899,34 +899,25 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
             ViewBag.fq = fq;
             ViewBag.grouped = new UserTotals(User.Identity.Name, fq, true).DefaultGroupModeForUser;
-            List<PendingFlight> lst;
-            await Task.WhenAll(new Task[] {
-                Task.Run(() => { ViewBag.flightResult = FlightResultManager.FlightResultManagerForUser(User.Identity.Name).ResultsForQuery(fq); }),
-                Task.Run(() => {
-                    lst = new List<PendingFlight>(PendingFlight.PendingFlightsForUser(User.Identity.Name));
-                    lst.Sort((l1, l2) => { return LogbookEntryCore.CompareFlights(l1, l2, "Date", SortDirection.Ascending); });
-                    ViewBag.pending = lst.Count > 0 && lst[0].Date.Date.CompareTo(DateTime.Now.Date) <= 0 ? (IEnumerable<PendingFlight>) lst : Array.Empty<PendingFlight>();
-                    })
-            });
-
+            ViewBag.flightResult = FlightResultManager.FlightResultManagerForUser(User.Identity.Name).ResultsForQuery(fq);
             return View("logbook");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<ActionResult> Index(string fq, bool fPropDeleteClicked = false, string propToDelete = null)
+        public ActionResult Index(string fq, bool fPropDeleteClicked = false, string propToDelete = null)
         {
-            return await MainLogbookInternal(FlightQuery.FromJSON(fq), fPropDeleteClicked, propToDelete);
+            return MainLogbookInternal(FlightQuery.FromJSON(fq), fPropDeleteClicked, propToDelete);
         }
 
         [Authorize]
-        public async Task<ActionResult> Index(string fq = null)
+        public ActionResult Index(string fq = null)
         {
             FlightQuery q = String.IsNullOrEmpty(fq) ? new FlightQuery(User.Identity.Name) : FlightQuery.FromBase64CompressedJSON(fq);
             // update based on any passed parameters
             q.InitPassedQueryItems(Request["s"], Request["ap"], util.GetIntParam(Request, "y", -1), util.GetIntParam(Request, "m", -1), util.GetIntParam(Request, "w", -1), util.GetIntParam(Request, "d", -1), Request["tn"], Request["mn"], Request["icao"], Request["cc"]);
-            return await MainLogbookInternal(q);
+            return MainLogbookInternal(q);
         }
         #endregion
         #endregion
