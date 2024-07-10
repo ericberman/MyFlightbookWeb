@@ -147,7 +147,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     break;
                 case EditMode.Integer:
                     ViewBag.placeholder = 0.ToString(CultureInfo.CurrentCulture);
-                    ViewBag.textValue = (value == 0.0M) ? string.Empty : value.FormatInt();
+                    ViewBag.textValue = (value == 0.0M) ? string.Empty : value.ToString("0", CultureInfo.CurrentCulture);
                     ViewBag.regexp = "^\\d*$";
                     ViewBag.inputMode = "numeric";
                     break;

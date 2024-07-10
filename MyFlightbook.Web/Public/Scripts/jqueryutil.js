@@ -157,7 +157,7 @@ function updateComment(imageclass, key, thumbfile, newComment, asAdmin, onComple
 
 function defaultButtonForDiv(idDiv, idButton) {
     $('#' + idDiv).keydown(function (e) {
-        if (e.keyCode == 13) {
+        if (e.keyCode == 13 && e.target.tagName.toLowerCase() !== 'textarea') {
             $('#' + idButton)[0].click();
             return false;
         }
