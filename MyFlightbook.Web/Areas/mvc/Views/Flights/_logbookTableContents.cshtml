@@ -152,9 +152,9 @@ else
                             <div id="@szExpandoID" style="@(showCollapsed ? "display: none;" : string.Empty)">
                                 @if (pfViewer.DisplayTimesByDefault)
                                 {
-                                    <div id="pnlEngineTime">@led.EngineTimeDisplay</div>
-                                    <div id="pnlFlightTime">@led.FlightTimeDisplay</div>
-                                    <div id="pnlHobbs">@led.HobbsDisplay</div>
+                                    <div>@led.EngineTimeDisplay</div>
+                                    <div>@led.FlightTimeDisplay</div>
+                                    <div>@led.HobbsDisplay</div>
                                 }
                                 @foreach (string s in led.PropertiesWithReplacedApproaches)
                                 {

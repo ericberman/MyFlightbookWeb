@@ -236,7 +236,7 @@
         }
     </div>
     <div id="pnlFlightDetails" style="@(fExpanded ? string.Empty : "display: none;")">
-        <div id="pnlHobbs" class="flightinfoitem">
+        <div class="flightinfoitem">
             <table>
                 <tr class="itemlabel"><td colspan="2" style="font-weight:bold">@Resources.LogbookEntry.Hobbs</td></tr>
                 <tr>
@@ -249,7 +249,7 @@
                 </tr>
             </table>
         </div>
-        <div id="pnlEngine" class="flightinfoitem">
+        <div class="flightinfoitem">
             <table style="vertical-align:baseline">
                 <tr class="itemlabel"><td colspan="2" style="font-weight:bold" title="@defaultTZ.DisplayName">@Resources.LogbookEntry.FieldEngineUTC.IndicateUTCOrCustomTimeZone(defaultTZ)</td></tr>
                 <tr>
@@ -262,7 +262,7 @@
                 </tr>
             </table>
         </div>
-        <div id="pnlFlight" class="flightinfoitem">
+        <div class="flightinfoitem">
             <table>
                 <tr class="itemlabel"><td colspan="2" style="font-weight:bold" title="@defaultTZ.DisplayName">@Resources.LogbookEntry.FieldFlightUTC.IndicateUTCOrCustomTimeZone(defaultTZ)</td></tr>
                 <tr>
