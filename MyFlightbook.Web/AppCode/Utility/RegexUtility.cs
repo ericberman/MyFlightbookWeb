@@ -312,7 +312,7 @@ namespace MyFlightbook
                 if (dictRegexForFormat.TryGetValue(szDateFormat, out string regex))
                     return regex;
 
-                string locRegex = regexDateSep.Replace(regexYear.Replace(regexMonth.Replace(regexDay.Replace(szDateFormat, "[0-3]?[0-9]"), "[0-1]?[0-9]"), "\\d{2,4}"), "\\$1");
+                string locRegex = regexDateSep.Replace(regexYear.Replace(regexMonth.Replace(regexDay.Replace(szDateFormat, "[0-3]?[0-9]"), "[0-1]?[0-9]"), "\\d{2}(?:\\d{2})?"), "\\$1");
                 string result = String.Format(CultureInfo.InvariantCulture, "({0}|{1})", regexPatternYMD, locRegex);
                 dictRegexForFormat[szDateFormat] = result;
                 return result;

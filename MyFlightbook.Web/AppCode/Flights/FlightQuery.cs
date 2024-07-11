@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml.Serialization;
 
 /******************************************************
  * 
@@ -206,6 +207,28 @@ namespace MyFlightbook
         /// Latest date for matching flights.
         /// </summary>
         public DateTime DateMax { get; set; }
+
+        [XmlIgnore]
+        /// <summary>
+        /// Convenience property for possibly problematic Min dates from javascript; fails silently.  E.g., 15/15/24 becomes MinValue
+        /// DO NOT USE IN CODE - this is strictly to allow JSON serialization to work even with garbage dates
+        /// </summary>
+        public string DateMinStr
+        {
+            get { return DateMin.HasValue() ? DateMin.ToShortDateString() : string.Empty; }
+            set { DateMin = DateTime.TryParse(value, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime dt) ? dt : DateTime.MinValue; }
+        }
+
+        [XmlIgnore]
+        /// <summary>
+        /// Convenience property for possibly problematic Max dates from javascript; fails silently.  E.g., 15/15/24 becomes MinValue
+        /// DO NOT USE IN CODE - this is strictly to allow JSON serialization to work even with garbage dates
+        /// </summary>
+        public string DateMaxStr
+        {
+            get { return DateMax.HasValue() ? DateMax.ToShortDateString() : string.Empty; }
+            set { DateMax = DateTime.TryParse(value, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime dt) ? dt : DateTime.MinValue; }
+        }
 
         /// <summary>
         /// General (unspecified) text

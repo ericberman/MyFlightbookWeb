@@ -33,6 +33,49 @@
 
         $("#mfbTIDateFrom").on("change", () => { setCustomDates(true); });
         $("#mfbTIDateTo").on("change", () => { setCustomDates(true); });
+
+        $.validator.addMethod("shortDatePattern", function (value, element, param) {
+            return (this.optional(element) || new RegExp(element.pattern).test(value));
+        }, "@Resources.LocalizedText.TypeInDateInvalidDate");
+
+        $("#frmSearchForm").validate({
+            errorClass: "errorCallout",
+            errorElement: "div",
+            errorPlacement: function (error, element) {
+                error.insertAfter($(element));
+                if (!error.find(".notch").length) {
+                    error.prepend($("<b class='notch'></b>"));
+                }
+            },
+            rules: {
+                typeInDateField: {
+                    shortDatePattern: true
+                }
+            },
+            messages: {
+                typeInDateField: "@Resources.LocalizedText.TypeInDateInvalidDate"
+            },
+            showErrors: function (errorMap, errorList) {
+                // First remove existing notches
+                this.errorList.forEach(function (error) {
+                    $(error.element).next(".errorCallout").find(".notch").remove();
+                });
+
+                // Call the default showErrors method to display errors
+                this.defaultShowErrors();
+
+                // Add the notch again
+                this.errorList.forEach(function (error) {
+                    $(error.element).next(".errorCallout").prepend($("<b class='notch'></b>"));
+                });
+            },
+            highlight: function (element, errorClass) {
+                $(element).addClass("errorItem");
+            },
+            unhighlight: function (element, errorClass) {
+                $(element).removeClass("errorItem");
+            }
+        });
     });
 
     function clutter(sender, targetID) {
@@ -71,13 +114,13 @@
         fq.QueryName = $('#txtQueryName').val();
         fq.DateRange = $('input[name="DateRange"]:checked').val();
         if (fq.DateRange == "Custom") {
-            fq.DateMin = $('#mfbTIDateFrom').val();
-            fq.DateMax = $('#mfbTIDateTo').val();
+            fq.DateMinStr = $('#mfbTIDateFrom').val();
+            fq.DateMaxStr = $('#mfbTIDateTo').val();
 
-            if (fq.DateMin == "")
-                fq.DateMin = "0001-01-01";
-            if (fq.DateMax == "")
-                fq.DateMax = "0001-01-01";
+            if (fq.DateMinStr == "")
+                fq.DateMinStr = "0001-01-01";
+            if (fq.DateMaxStr == "")
+                fq.DateMaxStr = "0001-01-01";
         }
         fq.GeneralText = $('#txtRestrict').val();
         const reAirports = /!?@@?[a-zA-Z0-9]+!?/g;
@@ -139,7 +182,7 @@
         fq.HasSIC = $("#ckSIC")[0].checked;
         fq.HasPIC = $("#ckPIC")[0].checked;
         fq.HasTotalTime = $("#ckTotal")[0].checked;
-        fq.IsPublic = $("#ckPublic")[0].checked;
+        fq.IsPublic = $("#ckFlightIsPublic")[0].checked;
         fq.HasTelemetry = $("#ckHasTelemetry")[0].checked;
         fq.HasImages = $("#ckHasImages")[0].checked;
         fq.IsSigned = $("#ckIsSigned")[0].checked;
@@ -164,7 +207,7 @@
         // Preserve any type names.
         var typeNames = $("#hdnTypeNames")[0].value;
         fq.TypeNames = JSON.parse(typeNames == "" ? "[]" : typeNames);
-                
+
         return fq;
     }
 
@@ -193,7 +236,30 @@
             });
     }
 
+        function doClientReset() {
+        reset();
+        @(ViewBag.onClientReset)(buildQuery());
+        return false;
+    }
+
+    function doClientSearch() {
+        if (!$("#frmSearchForm").valid())
+            return false;
+        @(ViewBag.onClientSearch)(buildQuery());
+        return false;
+    }
+
+    function showCanned() {
+        if (!$("#frmSearchForm").valid())
+            return false;
+        showModalById('divCanned', '@Resources.FlightQuery.SaveQueryManage', 400);
+        $('#txtQueryName').focus();
+        return false;
+    }
+
     function saveAndSearch() {
+        if (!$("#frmSearchForm").valid())
+            return false;
         var queryName = $("#txtQueryName").val();
         var fq = buildQuery();
         saveQuery(fq, queryName);
@@ -202,6 +268,8 @@
     }
 
     function saveQuery(cq, name) {
+        if (!$("#frmSearchForm").valid())
+            return false;
         if (name == '' || name === undefined)   // no op if not named
             return;
 
@@ -210,16 +278,17 @@
             cq.QueryName = name;
         params.cq = cq;
         var d = JSON.stringify(params);
-        $.ajax(
-            {
-        url: '@Url.Action("AddCannedQuery", "Search")',
-                type: "POST", data: d, dataType: "text", contentType: "application/json",
-                error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
-                complete: function (response) { },
-                success: function (response) { }
+        $.ajax({
+            url: '@Url.Action("AddCannedQuery", "Search")',
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
+            error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
+            complete: function (response) { },
+            success: function (response) { }
         });
-}
+    }
 </script>
+@using (Html.BeginForm(string.Empty, "Search", FormMethod.Post, new { id = "frmSearchForm", name = "frmSearchForm" }))
+{
 <div id="pnlSearch">
     <input type="hidden" value="@fq.UserName" id="hdnUser" />
     <input type="hidden" value="@JsonConvert.SerializeObject(fq.TypeNames)" id="hdnTypeNames" />
@@ -247,9 +316,9 @@
                 <tr>
                     <td colspan="2">
                         <input type="radio" name="DateRange" value="Custom" @(fq.DateRange == FlightQuery.DateRanges.Custom ? "checked" : string.Empty) id="rbCustom" /><label for="rbCustom">@Resources.FlightQuery.DatesFrom</label>
-                        @{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "mfbTIDateFrom", value = fq.DateMin, name = string.Empty }); }
+                        <div style="display: inline-block;">@{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "mfbTIDateFrom", value = fq.DateMin, name = "typeInDateField" }); }</div>
                         <label for="mfbTIDateTo">@Resources.FlightQuery.DatesTo</label>
-                        @{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "mfbTIDateTo", value = fq.DateMin, name = string.Empty }); }
+                        <div style="display: inline-block;">@{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "mfbTIDateTo", value = fq.DateMin, name = "typeInDateField" }); }</div>
                     </td>
                 </tr>
             </table>
@@ -449,7 +518,7 @@
                         <input type="checkbox" id="ckTotal" @(fq.HasTotalTime ? "checked" : string.Empty) /><label for="ckTotal">@Resources.FlightQuery.FlightFeatureTotalTime</label>
                     </td>
                     <td>
-                        <input type="checkbox" id="ckPublic" @(fq.IsPublic ? "checked" : string.Empty) /><label for="ckPublic">@Resources.FlightQuery.FlightFeaturePublic</label>
+                        <input type="checkbox" id="ckFlightIsPublic" @(fq.IsPublic ? "checked" : string.Empty) /><label for="ckFlightIsPublic">@Resources.FlightQuery.FlightFeaturePublic</label>
                     </td>
                     <td>
                         <input type="checkbox" id="ckHasTelemetry" @(fq.HasTelemetry ? "checked" : string.Empty) /><label for="ckHasTelemetry">@Resources.FlightQuery.FlightFeatureTelemetryShort</label>
@@ -490,18 +559,18 @@
             </div>
         </div>
         <div style="text-align:center; width: 100%; vertical-align:middle;">
-            <button id="btnReset" onclick="javascript: reset();@(ViewBag.onClientReset)(buildQuery());">@Resources.FlightQuery.SearchReset</button>
-            <button id="btnSearch" onclick="@(ViewBag.onClientSearch)(buildQuery());">@Resources.FlightQuery.SearchFindNow</button>
+            <button id="btnReset" type="button" onclick="javascript: return doClientReset();">@Resources.FlightQuery.SearchReset</button>
+            <button id="btnSearch" type="button" onclick="javascript: return doClientSearch()">@Resources.FlightQuery.SearchFindNow</button>
             @if (fq.UserName.CompareOrdinal(User.Identity.Name) == 0)
             {
-            <a style="cursor:pointer;" onclick="javascript: showModalById('divCanned', '@Resources.FlightQuery.SaveQueryManage', 400); $('#txtQueryName').focus();">@Resources.FlightQuery.SaveQueryManage</a>
+            <a href="#" onclick="javascript: return showCanned();">@Resources.FlightQuery.SaveQueryManage</a>
             }
         </div>
         <div id="divCanned" style="display:none">
             <div>@Resources.FlightQuery.SaveQueryNamePrompt</div>
             <div>
                 <input type="text" id="txtQueryName" />
-                <button type="button" id="btnSearchNamed" onclick="javascript:saveAndSearch();">@Resources.FlightQuery.SaveQueryPrompt</button>
+                <button type="button" id="btnSearchNamed" onclick="javascript: saveAndSearch(); return false;">@Resources.FlightQuery.SaveQueryPrompt</button>
             </div>
             <hr />
             @if (ViewBag.cannedQueries.Count > 0)
@@ -519,3 +588,4 @@
         </div>
     </div>
 </div>
+}
