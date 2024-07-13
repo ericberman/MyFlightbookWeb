@@ -83,7 +83,7 @@
         <div class="itemlabel">@Resources.Aircraft.AircraftHeader <a href="#" onclick="javascript: addAircraft('@String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id=-1&Ret={0}", HttpUtility.UrlEncode(Request.Url.PathAndQuery)).ToAbsolute()'); return false;">@Resources.LogbookEntry.EditFlightAddAircraft</a></div>
         <div class="itemdata">
             <input type="hidden" id="hdnLastTail" value="@le.AircraftID" />
-            <select id="cmbAircraft" name="flightAircraft" required style="width: @(Request.IsMobileDevice() ? "130px" : "90%;")" onchange="javascript: aircraftSelected(this, @Json.Encode(fHHMM))">
+            <select id="cmbAircraft" name="flightAircraft" required style="width: @(Request.IsMobileDevice() ? "130px" : "90%;")" onchange="javascript: aircraftSelected(this, @Json.Encode(fHHMM), allAircraft)">
                 @{
                     int cAircraft = 0;
                     foreach (Aircraft ac in rgAircraft)
@@ -92,8 +92,8 @@
                         if (fIncludeByDefault)
                         {
                             cAircraft++;
+                            <option value="@ac.AircraftID" @((ac.AircraftID == le.AircraftID).ToSelected())>@ac.DisplayTailnumberWithModel</option>
                         }
-                        <option value="@ac.AircraftID" @((ac.AircraftID == le.AircraftID).ToSelected()) class="@(fIncludeByDefault ? string.Empty : "inactiveAircraft")">@ac.DisplayTailnumberWithModel</option>
                     }
                     if (cAircraft < rgAircraft.Count())
                     {

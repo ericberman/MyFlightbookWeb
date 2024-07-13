@@ -12,12 +12,15 @@
     string prevFlightHref = ViewBag.prevFlightHref;
     bool fAdminMode = ViewBag.fAdminMode;
     IEnumerable<MyFlightbook.Lint.FlightIssue> flightIssues = ViewBag.flightIssues;
+    List<Aircraft> rgAircraft = ViewBag.rgAircraft;
+
+    List<dynamic> allAircraft = new List<dynamic>();
+    foreach (Aircraft ac in rgAircraft)
+    {
+        allAircraft.Add(new { d = ac.DisplayTailnumberWithModel, v = ac.AircraftID });
+    }
 }
 <style type="text/css">
-    .inactiveAircraft {
-        display: none;
-    }
-
     .showAllAircraft {
         font-style: italic;
     }
@@ -26,7 +29,7 @@
 <script type="text/javascript" src="@("~/Public/Scripts/xfill.js?v=4".ToAbsolute())"></script>
 <script type="text/javascript" src="@("~/Public/Scripts/DropDownFilter.js?v=3".ToAbsolute())"></script>
 <script type="text/javascript" src="@("~/Public/Scripts/ajaxUpload.js?v=6".ToAbsolute())"></script>
-<script type="text/javascript" src="@("~/Public/Scripts/flightedit.js?v=2".ToAbsolute())"></script>
+<script type="text/javascript" src="@("~/Public/Scripts/flightedit.js?v=3".ToAbsolute())"></script>
 @if (fAdminMode)
 {
     <script type="text/javascript" src="@("~/Public/Scripts/adminajax.js?v=4".ToAbsolute())"></script>
@@ -55,6 +58,8 @@
             $("#pnlFlightLint").show();
         }, "html", '@Url.Action("CheckFlight", "FlightEdit")');
     }
+
+    var allAircraft = @Html.Raw(Json.Encode(allAircraft));
 
     function confirmModifySigned() {
         return (@((le.CFISignatureState != LogbookEntryCore.SignatureState.Valid).ToString().ToLowerInvariant()) || confirm("@Resources.LogbookEntry.ConfirmModifySignedFlight"));

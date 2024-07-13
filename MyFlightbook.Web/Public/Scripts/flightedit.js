@@ -35,13 +35,18 @@ function updateTemplates(newPropTypeID, fHHMM) {
     });
 }
 
-function aircraftSelected(sender, fHHMM) {
+function aircraftSelected(sender, fHHMM, allAircraft) {
     var lastTail = $("#hdnLastTail");
-    var cmbAircraft = $("#cmbAircraft");
-    if ($(sender).val() == "") {
+    var cmbAircraft = $(sender);
+    if (cmbAircraft.val() == "") {
         var lastID = lastTail.val();
-        $("#cmbAircraft option.inactiveAircraft").show();
-        $("#cmbAircraft option.showAllAircraft").hide();
+        cmbAircraft.find("option").remove();
+        allAircraft.forEach((ac) => {
+            var opt = $("<option></option>");
+            opt.val(ac.v);
+            opt.text(ac.d);
+            cmbAircraft.append(opt);
+        });
         if (lastID == '' || lastID == '-1')
             cmbAircraft.prop("selectedIndex", 0);
         else
