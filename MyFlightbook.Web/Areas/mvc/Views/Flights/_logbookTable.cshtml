@@ -151,7 +151,7 @@
     }
 
     function requestSigs() {
-        window.location = "@("~/Member/RequestSigs.aspx".ToAbsolute() + "?id=")" + Array.from(rgIds).join();
+        window.location = "@("~/mvc/Training/RequestSigs".ToAbsolute() + "?ids=")" + Array.from(rgIds).join();
     }
 
     function restrictSelected() {
@@ -231,25 +231,25 @@
                     <div><label><input type="checkbox" id="ckSelectMode" onchange="javascript: setSelectMode(this.checked);" />@Resources.LogbookEntry.LogbookSelectFlights</label></div>
                     <div id="divMulti" style="display:none;">
                         <div>
-                            <a style="cursor: pointer" onclick="javascript: deleteFlights();">
+                            <a href="#" onclick="javascript: deleteFlights(); return false;">
                                 <img src="@("~/images/x.gif".ToAbsolute())" style="padding-right: 10px;" alt="@Resources.LogbookEntry.LogbookDeleteMultipleTooltip" title="@Resources.LogbookEntry.LogbookDeleteMultipleTooltip" />
                                 @Resources.LogbookEntry.LogbookDeleteMultipleTooltip
                             </a>
                         </div>
                         <div>
-                            <a style="cursor: pointer" onclick="javascript: requestSigs();">
+                            <a href="#" onclick="javascript: requestSigs(); return false;">
                                 <img src="@("~/images/signaturesm.png".ToAbsolute())" style="padding-right: 4px;" alt="@Resources.SignOff.RequestSignatures" title="@Resources.SignOff.RequestSignatures" />
                                 @Resources.SignOff.RequestSignatures
                             </a>
                         </div>
                         <div>
-                            <a style="cursor: pointer" onclick="javascript: restrictSelected();">
+                            <a href="#" onclick="javascript: restrictSelected(); return false;">
                                 <img src="@("~/images/search.png".ToAbsolute())" style="padding-right: 4px; height:20px; width:20px;" alt="@Resources.LogbookEntry.LogbookSearchSelected" title="@Resources.LogbookEntry.LogbookSearchSelected" />
                                 @Resources.LogbookEntry.LogbookSearchSelected
                             </a>
                         </div>
                         <div>
-                            <a style="cursor: pointer" onclick="javascript: invertSelection();">
+                            <a href="#" onclick="javascript: invertSelection(); return false;">
                                 <img src="@("~/images/invertsel.png".ToAbsolute())" style="padding-right: 4px; height:20px; width:20px;" alt="@Resources.LogbookEntry.InvertSelection" title="@Resources.LogbookEntry.InvertSelection" />
                                 @Resources.LogbookEntry.InvertSelection
                             </a>

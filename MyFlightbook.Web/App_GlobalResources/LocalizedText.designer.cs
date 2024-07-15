@@ -2453,6 +2453,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Finish.
+        /// </summary>
+        internal static string FinishPrompt {
+            get {
+                return ResourceManager.GetString("FinishPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to delete this data?  This cannot be undone!.
         /// </summary>
         internal static string FlightInfoConfirmDelete {
@@ -4598,6 +4607,15 @@ namespace Resources {
         internal static string PromptImageDropZoneWithPDF {
             get {
                 return ResourceManager.GetString("PromptImageDropZoneWithPDF", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send Request.
+        /// </summary>
+        internal static string RequestSigsFinish {
+            get {
+                return ResourceManager.GetString("RequestSigsFinish", resourceCulture);
             }
         }
         

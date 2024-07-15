@@ -633,12 +633,31 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #endregion
 
         #region Request Signatures
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult RequestSigs(string[] idFlight, string instructor, string instrEmail)
+        {
+            InstructorStudent.RequestSigs(String.Join(",", idFlight).ToInts(), User.Identity.Name, instructor, instrEmail);
+            return Redirect("~/mvc/Training/RequestSigs");
+        }
+
         [HttpGet]
         [Authorize]
-        public ActionResult RequestSigs()
+        public ActionResult RequestSigs(string ids = null)
         {
             Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
-            ViewBag.flightsPendingSignature = LogbookEntryBase.PendingSignaturesForStudent(null, pf);
+            ViewBag.ids = ids;
+            if (ViewBag.reviewPending = ids == null)
+                ViewBag.flightsPendingSignature = LogbookEntryBase.PendingSignaturesForStudent(null, pf);
+            else
+            {
+                List<LogbookEntryDisplay> lst = LogbookEntryDisplay.GetEnumeratedFlightsForUser(User.Identity.Name, ids.ToInts());
+                lst.RemoveAll(le => !le.CanRequestSig);
+                ViewBag.flights = lst;
+                ViewBag.instructors = new CFIStudentMap(User.Identity.Name);
+            }
+
             return View("requestSigs");
         }
         #endregion

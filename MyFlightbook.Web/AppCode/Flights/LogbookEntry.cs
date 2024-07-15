@@ -3905,6 +3905,20 @@ WHERE f1.username = ?uName ");
         }
 
         /// <summary>
+        /// Helper utility to get selected flights (by ID) for a given user
+        /// </summary>
+        /// <param name="szUser">The username for the user who must ownt the flights</param>
+        /// <param name="flightIDs"></param>
+        /// <returns>The set of flights; if null, returns all flights</returns>
+        public static List<LogbookEntryDisplay> GetEnumeratedFlightsForUser(string szUser, IEnumerable<int> flightIDs)
+        {
+            if (String.IsNullOrEmpty(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+            FlightQuery fq = new FlightQuery(szUser) { EnumeratedFlights = new HashSet<int>(flightIDs ?? Array.Empty<int>()) };
+            return new List<LogbookEntryDisplay>(LogbookEntryDisplay.GetFlightsForQuery(LogbookEntryBase.QueryCommand(fq), szUser, "Date", SortDirection.Descending, false, false));
+        }
+
+        /// <summary>
         /// Sorts the list using the specified property name and reflection
         /// </summary>
         /// <param name="lst">A list of LogbookEntry objects</param>

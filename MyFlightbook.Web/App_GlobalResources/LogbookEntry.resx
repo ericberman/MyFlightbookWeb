@@ -1861,4 +1861,37 @@ Proceed with import?</value>
   <data name="DragTelemetryPrompt" xml:space="preserve">
     <value>Upload Telemetry</value>
   </data>
+  <data name="RequestSigsDisclaimer" xml:space="preserve">
+    <value>%APP_NAME% provides facilities for an instructor to sign a logbook on another pilot's behalf, with that pilot's permission. While every attempt is made to ensure the integrity of this process, it has not been vetted by the FAA or other similar agencies, and may therefore not be acceptible to these agencies.</value>
+  </data>
+  <data name="RequestSigsErrNoSelection" xml:space="preserve">
+    <value>Please select at least one flight to be signed</value>
+  </data>
+  <data name="RequestSigsFinishPrompt" xml:space="preserve">
+    <value>When you finish, the following request will be sent:</value>
+  </data>
+  <data name="RequestSigsFlightsToSignLabel" xml:space="preserve">
+    <value>Flights to sign:</value>
+  </data>
+  <data name="RequestSigsSelectFlightsPrompt" xml:space="preserve">
+    <value>Select the flight(s) that you want to have signed.</value>
+  </data>
+  <data name="RequestSigsStep1" xml:space="preserve">
+    <value>1. Select Flights</value>
+  </data>
+  <data name="RequestSigsStep2" xml:space="preserve">
+    <value>2. Pick the Instructor</value>
+  </data>
+  <data name="RequestSigsStep3" xml:space="preserve">
+    <value>3. Send the request</value>
+  </data>
+  <data name="RequestSigsErrCantSelfSign" xml:space="preserve">
+    <value>You can't sign your own flights!</value>
+  </data>
+  <data name="RequestSigsErrNoEmail" xml:space="preserve">
+    <value>Please enter a valid e-mail address</value>
+  </data>
+  <data name="RequestSigsLearnMore" xml:space="preserve">
+    <value>Learn more...</value>
+  </data>
 </root>

@@ -1982,4 +1982,10 @@
   <data name="errContentBlockedTitle" xml:space="preserve">
     <value>Content Blocked</value>
   </data>
+  <data name="FinishPrompt" xml:space="preserve">
+    <value>Finish</value>
+  </data>
+  <data name="RequestSigsFinish" xml:space="preserve">
+    <value>Send Request</value>
+  </data>
 </root>

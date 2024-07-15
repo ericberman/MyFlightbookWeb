@@ -1,7 +1,7 @@
 ﻿@using System.Globalization
 @using MyFlightbook.Instruction
 @{
-    IEnumerable<LogbookEntry> pendingFlightsToSign = ViewBag.flightsPendingSignature;
+    bool reviewPending = ViewBag.reviewPending;
     Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
     ViewBag.defaultTab = tabID.tabTraining;
     ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.Profile.TrainingHeader, pf.UserFullName);
@@ -22,26 +22,208 @@
         });
     }
 </script>
-<div style="display: none;">
-    @using (Html.BeginForm("", "Training", FormMethod.Post, new { id = "frmDeleteSigRequest", name = "frmDeleteSigRequest" }))
-    {
-        @Html.AntiForgeryToken();
-        <input type="hidden" id="txtStudentUsername" name="studentName" value="@User.Identity.Name" />
-        <input type="hidden" id="txtIdFlight" name="idFlight" />
-    }
-</div>
-<h2>@Resources.SignOff.RequestSignatures</h2>
-<p>@Resources.SignOff.RequestSignaturesPrompt&nbsp; <a style="font-weight: bold;" href="@("~/Member/RequestSigs.aspx".ToAbsolute())">@Resources.SignOff.RequestSignatures</a></p>
-@if (pendingFlightsToSign.Any())
+@if (reviewPending)
 {
-    <div style="font-weight:bold;">@Resources.SignOff.SignFlightsToBeSignedHeader</div>
-    <table cellpadding="3">
-        @foreach (LogbookEntry le in pendingFlightsToSign)
+    IEnumerable<LogbookEntry> pendingFlightsToSign = ViewBag.flightsPendingSignature;
+    <div style="display: none;">
+        @using (Html.BeginForm("", "Training", FormMethod.Post, new { id = "frmDeleteSigRequest", name = "frmDeleteSigRequest" }))
         {
-            <tr>
-                <td><img src="@("~/images/x.gif".ToAbsolute())" alt="@Resources.SignOff.SignFlightIgnore" title="@Resources.SignOff.SignFlightIgnore" onclick="javascript:deletePendingSig(this, @le.FlightID)" /> @le.DisplayString</td>
-                <td style="font-style:italic">(@le.CFIName)</td>
-            </tr>
+            @Html.AntiForgeryToken();
+            <input type="hidden" id="txtStudentUsername" name="studentName" value="@User.Identity.Name" />
+            <input type="hidden" id="txtIdFlight" name="idFlight" />
         }
-    </table>
+    </div>
+    <h2>@Resources.SignOff.RequestSignatures</h2>
+    <p>@Resources.SignOff.RequestSignaturesPrompt&nbsp; <a style="font-weight: bold;" href="@("~/mvc/Training/RequestSigs?ids=".ToAbsolute())">@Resources.SignOff.RequestSignatures</a></p>
+    if (pendingFlightsToSign.Any())
+    {
+        <div style="font-weight:bold;">@Resources.SignOff.SignFlightsToBeSignedHeader</div>
+        <table cellpadding="3">
+            @foreach (LogbookEntry le in pendingFlightsToSign)
+            {
+                <tr>
+                    <td><img src="@("~/images/x.gif".ToAbsolute())" alt="@Resources.SignOff.SignFlightIgnore" title="@Resources.SignOff.SignFlightIgnore" onclick="javascript:deletePendingSig(this, @le.FlightID)" /> @le.DisplayString</td>
+                    <td style="font-style:italic">(@le.CFIName)</td>
+                </tr>
+            }
+        </table>
+    }
+}
+else
+{
+    string ids = ViewBag.ids;
+    HashSet<int> requestedFlights = new HashSet<int>(ids?.ToInts() ?? Array.Empty<int>());
+    FlightQuery fq = new FlightQuery(User.Identity.Name) { EnumeratedFlights = requestedFlights };
+
+    List<LogbookEntryDisplay> lstFlightsToChoose = ViewBag.flights;
+
+    // See if there's an obvious best-guess instructor name and return that.
+    HashSet<string> hs = new HashSet<string>();
+    foreach (LogbookEntryBase le in lstFlightsToChoose)
+    {
+        hs.Add(le.CustomProperties.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropInstructorName));
+    }
+    hs.RemoveWhere(s => String.IsNullOrEmpty(s));   // SHOULD be a no-op.
+    string likelyInstructorName = hs.FirstOrDefault() ?? string.Empty;
+
+    CFIStudentMap sm = ViewBag.instructors;
+
+<script type="text/javascript">
+    var wiz = null;
+    $(() => {
+        wiz = wizardizeContainer({
+            headerContainer: $("#wizardHead"),
+            stepsContainer: $("#wizardSteps"),
+            navContainer: $("#wizNav"),
+            initialStep: 0,
+            nextButton: $("#btnWizNext"),
+            prevButton: $("#btnWizPrev"),
+            finishButton: $("#btnWizFinish"),
+            onStepChange: function (oldStep, newStep) {
+                if (newStep = 2) {
+                    var cmbInstr = $("#cmbInstructor");
+                    $("#cellInstrName").text(cmbInstr.val() == "" ? $("#txtEmail").val() : cmbInstr.find("option:selected").text());
+                }
+                return $("#frmSelectFlightsToSign").valid();
+            },
+            onFinish: function () {
+                window.location = "@("~/mvc/flightedit/pending".ToAbsolute())";
+            }
+        });
+
+        $.validator.addMethod('notOwnEmail', function (value, element, param) {
+            return value.toUpperCase() != '@pf.Email'.toUpperCase();
+        }, '@Resources.LogbookEntry.RequestSigsErrCantSelfSign');
+
+        $.validator.addMethod('requiredIfNoOther', function (value, element, param) {
+            return $("#cmbInstructor").val() != "" || value != "";
+        }, '@Resources.LogbookEntry.RequestSigsErrNoEmail');
+
+        $("#frmSelectFlightsToSign").validate({
+            errorClass: "error",
+            errorElement: "div",
+            errorPlacement: function (error, element) {
+                error.insertAfter($("#wizardSteps"));
+            },
+            rules: {
+                idFlight: {
+                    required: true,
+                    minlength: 1
+                },
+                instrEmail: {
+                    notOwnEmail: true,
+                    requiredIfNoOther: true
+                }
+            },
+            messages: {
+                idFlight: "@Resources.LogbookEntry.RequestSigsErrNoSelection",
+                instrEmail: {
+                    notOwnEmail: "@Resources.LogbookEntry.RequestSigsErrCantSelfSign",
+                    requiredIfNoOther: "@Resources.LogbookEntry.RequestSigsErrNoEmail"
+                }
+            },
+            highlight: function (element, errorClass) {
+                $(element).addClass("errorItem");
+            },
+            unhighlight: function (element, errorClass) {
+                $(element).removeClass("errorItem");
+            }
+        });
+
+        updatePreview();
+        instructorChanged($("#cmbInstructor")[0]);
+    });
+
+    function updatePreview() {
+        var prv = $("#cellPreview");
+        prv.html("");
+        var checkedFlights = $("input[name='idFlight']:checked").each(function () {
+            prv.append($(this).parent().next().html())
+        });
+    }
+
+    function instructorChanged(sender) {
+        if (sender.value == "")
+            $("#rowEmail").show();
+        else
+            $("#rowEmail").hide();
+    }
+</script>
+    using (Html.BeginForm("RequestSigs", "Training", FormMethod.Post, new { id = "frmSelectFlightsToSign", name = "frmSelectFlightsToSign" }))
+    {
+    @Html.AntiForgeryToken()
+    <div id="wizardHead">
+        <span>@Resources.LogbookEntry.RequestSigsStep1&nbsp;&nbsp;</span>
+        <span>@Resources.LogbookEntry.RequestSigsStep2</span>
+        <span>@Resources.LogbookEntry.RequestSigsStep3</span>
+    </div>
+    <div id="wizardSteps" style="margin-top: 10pt;">
+        <div>
+            <h3>@Resources.LogbookEntry.RequestSigsSelectFlightsPrompt</h3>
+            <div style="height: 150pt; overflow-y: auto;">
+                <table cellpadding="4" class="lbTable">
+                    @foreach (LogbookEntryDisplay led in lstFlightsToChoose)
+                    {
+                        <tr class="logbookRow logbookRowEven">
+                            <td><input type="checkbox" value="@led.FlightID" @(requestedFlights.Contains(led.FlightID).ToChecked()) name="idFlight" onchange="javascript: updatePreview();" /></td>
+                            <td>
+                                <div>
+                                    <span style="font-weight: bold; font-size: larger;">@led.Date.ToShortDateString()</span>
+                                    <span style="font-weight: bold;">@led.TailNumDisplay</span>
+                                    <span style="font-style: italic">@led.Route</span>
+                                    @led.Comment
+                                </div>
+                            </td>
+                            <td>@led.CustomProperties.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropInstructorName)</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+        <div style="display: none;">
+            <table>
+                <tr>
+                    <td>@Resources.SignOff.ChooseInstructorsPrompt</td>
+                    <td>
+                        <select id="cmbInstructor" name="instructor" onchange="javascript: instructorChanged(this);">
+                            <option value="" @String.IsNullOrEmpty(likelyInstructorName).ToSelected() >@Resources.SignOff.NewInstructor</option>
+                            @foreach (InstructorStudent instructor in sm.Instructors)
+                            {
+                                <option value="@instructor.UserName" @((instructor.UserFullName.CompareCurrentCultureIgnoreCase(likelyInstructorName) == 0).ToSelected())>@instructor.UserFullName</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+                <tr id="rowEmail" style="@(String.IsNullOrEmpty(likelyInstructorName) ? string.Empty : "display: none;")">
+                    <td>@Resources.SignOff.CFIEmail</td>
+                    <td><input type="email" name="instrEmail" id="txtEmail" /></td>
+                </tr>
+            </table>
+        </div>
+        <div style="display:none;">
+            <div>@Resources.LogbookEntry.RequestSigsFinishPrompt</div>
+            <table cellpadding="4" class="lbTable">
+                <tr style="vertical-align: top;">
+                    <td style="font-weight: bold;">@Resources.SignOff.EditEndorsementInstructorPrompt</td>
+                    <td id="cellInstrName"></td>
+                </tr>
+                <tr style="vertical-align: top;">
+                    <td style="font-weight: bold;">@Resources.LogbookEntry.RequestSigsFlightsToSignLabel</td>
+                    <td id="cellPreview">
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div id="wizNav" style="width: 100%; text-align: center;">
+        <button type="button" id="btnWizPrev" style="display:none;">@Resources.LocalizedText.PreviousPrompt</button>
+        <button type="button" id="btnWizNext">@Resources.LocalizedText.NextPrompt</button>
+        <button type="submit" id="btnWizFinish" style="display:none;">@Resources.LocalizedText.RequestSigsFinish</button>
+    </div>
+
+    <p>
+        <span style="font-weight: bold;">@Resources.LocalizedText.Note</span> <span class="fineprint">@Branding.ReBrand(Resources.LogbookEntry.RequestSigsDisclaimer)</span>
+        <a href="@("~/mvc/pub/CFISigs".ToAbsolute())">@Resources.LogbookEntry.RequestSigsLearnMore</a>
+    </p>
+    }
 }

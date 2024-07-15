@@ -9,7 +9,7 @@
     string szCheck = szEdit + szJoin + "Chk=1";
     string szClone = szEdit + szJoin + "Clone=1";
     string szCloneReverse = szEdit + szJoin + "Clone=1&Reverse=1";
-    string szRequestSigs = String.Format(CultureInfo.InvariantCulture, "~/Member/RequestSigs.aspx?id={0}", le.FlightID).ToAbsolute();
+    string szRequestSigs = String.Format(CultureInfo.InvariantCulture, "~/mvc/Training/RequestSigs?ids={0}", le.FlightID).ToAbsolute();
     string szSignThis = String.Format(CultureInfo.InvariantCulture, "~/Public/SignEntry.aspx?idFlight={0}", le.FlightID).ToAbsolute();
 }
 <div class="flightContextMenu">

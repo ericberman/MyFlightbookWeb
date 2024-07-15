@@ -6,6 +6,7 @@ using MyFlightbook.CloudStorage;
 using MyFlightbook.Currency;
 using MyFlightbook.Encryptors;
 using MyFlightbook.Image;
+using MyFlightbook.Instruction;
 using MyFlightbook.Telemetry;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
@@ -2412,6 +2413,77 @@ HAVING numaccounts > 1");
             uint perms = Convert.ToUInt32(dr["CanViewStudent"], CultureInfo.InvariantCulture);
             CanViewLogbook = (perms & (uint) PermissionMask.ViewLogbook) != 0;
             CanAddLogbook = (perms & (uint)PermissionMask.AddLogbook) != 0;
+        }
+
+        /// <summary>
+        /// Requests that the specified instructor sign the specified flights for the specified user.
+        /// Instructor can be identified by their username (instructor) OR, if not in the system, their email.
+        /// If email, then they will be simply invited to be an instructor
+        /// </summary>
+        /// <param name="ids">The id's of the flights to sign</param>
+        /// <param name="instructor">Username of the instructor, if known</param>
+        /// <param name="instrEmail">email of the instructor, if known</param>
+        /// <param name="student">Username of the requestor</param>
+        public static void RequestSigs(IEnumerable<int> ids, string student, string instructor, string instrEmail)
+        {
+            if (String.IsNullOrEmpty(student))
+                throw new ArgumentNullException(nameof(student));
+            if (!(ids?.Any() ?? false))
+                throw new InvalidOperationException("Attempt to request signatures without specifying any flights!");
+
+            Profile pfCFI = null;
+
+            string szCFIUsername = String.Empty;
+            string szCFIEmail = String.Empty;
+
+            bool fIsNewCFI = String.IsNullOrEmpty(instructor);
+
+            // Check In case the named email is already an instructor.
+            CFIStudentMap sm = new CFIStudentMap(student);
+            if (fIsNewCFI && sm.IsStudentOf(instrEmail))
+            {
+                fIsNewCFI = false;
+                pfCFI = sm.Instructors.FirstOrDefault(ins => ins.Email.CompareCurrentCultureIgnoreCase(instrEmail) == 0);
+            }
+            else
+                pfCFI = GetUser(instructor);
+
+            if (fIsNewCFI)
+                szCFIEmail = instrEmail;
+            else
+                szCFIUsername = pfCFI.UserName;
+
+            // check if we already know the email
+            List<LogbookEntryDisplay> lst = LogbookEntryDisplay.GetEnumeratedFlightsForUser(student, ids);
+
+            if (lst.Count == 0)
+                throw new InvalidOperationException("None of specified flights to sign were found in the student's logbook!");
+
+            foreach (LogbookEntry le in lst)
+                le.RequestSignature(szCFIUsername, szCFIEmail);
+
+            // Now send the email
+            if (fIsNewCFI)
+            {
+                CFIStudentMapRequest smr = sm.GetRequest(CFIStudentMapRequest.RoleType.RoleCFI, szCFIEmail);
+                smr.Send();
+            }
+            else
+            {
+                Profile pf = Profile.GetUser(student);
+                using (MailMessage msg = new MailMessage())
+                {
+                    msg.From = new MailAddress(Branding.CurrentBrand.EmailAddress, String.Format(CultureInfo.CurrentCulture, Resources.SignOff.EmailSenderAddress, Branding.CurrentBrand.AppName, pf.UserFullName));
+                    msg.ReplyToList.Add(new MailAddress(pf.Email, pf.UserFullName));
+                    msg.To.Add(new MailAddress(pfCFI.Email, pfCFI.UserFullName));
+                    msg.Subject = String.Format(CultureInfo.CurrentCulture, Resources.SignOff.SignRequestSubject, pf.UserFullName, Branding.CurrentBrand.AppName);
+
+                    string szURL = "~/mvc/training/students".ToAbsoluteURL("https", Branding.CurrentBrand.HostName).ToString();
+
+                    util.PopulateMessageContentWithTemplate(msg, Resources.SignOff.SignInvitationExisting.Replace("<% SignPendingFlightsLink %>", szURL).Replace("<% Requestor %>", pf.UserFullName));
+                    util.SendMessage(msg);
+                }
+            }
         }
     }
 }

@@ -34,7 +34,7 @@ namespace MyFlightbook.PublicPages
                 { "AIRCRAFTEDIT", "~/Member/EditAircraft.aspx"},
                 { "AIRCRAFTSCHEDULE", "~/mvc/club/ACSchedule"},
                 { "FAQ", "~/mvc/faq"},
-                { "REQSIGS", "~/Member/RequestSigs.aspx"},
+                { "REQSIGS", "~/mvc/Training/RequestSigs"},
                 { "FLIGHTREVIEW", "~/Member/EditProfile.aspx/pftPilotInfo"},
                 { "CERTIFICATES", "~/Member/EditProfile.aspx/pftPilotInfo"},
                 { "MEDICAL", "~/Member/EditProfile.aspx/pftPilotInfo"},

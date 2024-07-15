@@ -4321,6 +4321,105 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to %APP_NAME% provides facilities for an instructor to sign a logbook on another pilot&apos;s behalf, with that pilot&apos;s permission. While every attempt is made to ensure the integrity of this process, it has not been vetted by the FAA or other similar agencies, and may therefore not be acceptible to these agencies..
+        /// </summary>
+        internal static string RequestSigsDisclaimer {
+            get {
+                return ResourceManager.GetString("RequestSigsDisclaimer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can&apos;t sign your own flights!.
+        /// </summary>
+        internal static string RequestSigsErrCantSelfSign {
+            get {
+                return ResourceManager.GetString("RequestSigsErrCantSelfSign", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a valid e-mail address.
+        /// </summary>
+        internal static string RequestSigsErrNoEmail {
+            get {
+                return ResourceManager.GetString("RequestSigsErrNoEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please select at least one flight to be signed.
+        /// </summary>
+        internal static string RequestSigsErrNoSelection {
+            get {
+                return ResourceManager.GetString("RequestSigsErrNoSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When you finish, the following request will be sent:.
+        /// </summary>
+        internal static string RequestSigsFinishPrompt {
+            get {
+                return ResourceManager.GetString("RequestSigsFinishPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flights to sign:.
+        /// </summary>
+        internal static string RequestSigsFlightsToSignLabel {
+            get {
+                return ResourceManager.GetString("RequestSigsFlightsToSignLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Learn more....
+        /// </summary>
+        internal static string RequestSigsLearnMore {
+            get {
+                return ResourceManager.GetString("RequestSigsLearnMore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select the flight(s) that you want to have signed..
+        /// </summary>
+        internal static string RequestSigsSelectFlightsPrompt {
+            get {
+                return ResourceManager.GetString("RequestSigsSelectFlightsPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1. Select Flights.
+        /// </summary>
+        internal static string RequestSigsStep1 {
+            get {
+                return ResourceManager.GetString("RequestSigsStep1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 2. Pick the Instructor.
+        /// </summary>
+        internal static string RequestSigsStep2 {
+            get {
+                return ResourceManager.GetString("RequestSigsStep2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 3. Send the request.
+        /// </summary>
+        internal static string RequestSigsStep3 {
+            get {
+                return ResourceManager.GetString("RequestSigsStep3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete all pending flights.
         /// </summary>
         internal static string ReviewPendingFlightsDelete {

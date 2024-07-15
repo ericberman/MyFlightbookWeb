@@ -342,7 +342,7 @@
                     <ItemTemplate>
                         <uc7:popmenu ID="popmenu1" runat="server" Visible="<%# IsViewingOwnFlights && !IsInSelectMode && !IsReadOnly %>" OffsetX="-180" OffsetY="-20">
                             <MenuContent>
-                                <uc1:mfbFlightContextMenu runat="server" ID="mfbfcm" SignTargetFormatString="~/Member/RequestSigs.aspx?id={0}" OnDeleteFlight="mfbFlightContextMenu_DeleteFlight" />
+                                <uc1:mfbFlightContextMenu runat="server" ID="mfbfcm" SignTargetFormatString="~/mvc/Training/RequestSigs?ids={0}" OnDeleteFlight="mfbFlightContextMenu_DeleteFlight" />
                             </MenuContent>
                         </uc7:popmenu>
                         <asp:CheckBox ID="ckSelected" runat="server" Visible="<%# IsViewingOwnFlights && IsInSelectMode %>" Checked='<%# IsViewingOwnFlights && IsInSelectMode && SelectedItems.Contains((int) Eval("FlightID")) %>' />

@@ -804,7 +804,7 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
     protected void lnkReqSigs_Click(object sender, EventArgs e)
     {
         IsInSelectMode = false;
-        Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/RequestSigs.aspx?id={0}", String.Join(",", SelectedItems)));
+        Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/mvc/Training/RequestSigs?ids={0}", String.Join(",", SelectedItems)));
     }
 
     protected void ckSelectAll_CheckedChanged(object sender, EventArgs e)

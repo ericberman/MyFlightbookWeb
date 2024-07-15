@@ -521,7 +521,10 @@ namespace MyFlightbook
 
             string[] rgsz = sz.Split(commaSeparator, StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i < rgsz.Length; i++)
-                lst.Add(Convert.ToInt32(rgsz[i], CultureInfo.InvariantCulture));
+            {
+                if (int.TryParse(rgsz[i], NumberStyles.Integer, CultureInfo.InvariantCulture, out int val))
+                    lst.Add(val);
+            }
             return lst;
         }
         #endregion
