@@ -382,7 +382,8 @@ namespace MyFlightbook.Printing
                 plcLayout.Controls.Clear();
                 plcLayout.Controls.Add(LoadControl(PrintLayout.LayoutForType(PrintOptions1.Options.Layout).ControlPath));
                 IPrintingTemplate pt = plcLayout.Controls[0] as IPrintingTemplate;
-                IList<LogbookEntryDisplay> lstFlights = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntryBase.QueryCommand(fq, fAsc: true), CurrentUser.UserName, string.Empty, SortDirection.Ascending, CurrentUser.UsesHHMM, CurrentUser.UsesUTCDateOfFlight);
+                FlightResult fr = FlightResultManager.FlightResultManagerForUser(CurrentUser.UserName).ResultsForQuery(fq);
+                IList<LogbookEntryDisplay> lstFlights = fr.FlightsInRange(fr.GetResultRange(0, FlightRangeType.First, "Date", SortDirection.Ascending)) as IList<LogbookEntryDisplay>;
                 PrintLayout pl = LogbookPrintedPage.LayoutLogbook(CurrentUser, lstFlights, pt, po, SuppressFooter);
                 Master.PrintingCSS = pl.CSSPath.ToAbsoluteURL(Request).ToString();
             }
