@@ -3,7 +3,6 @@ using MyFlightbook.Image;
 using MyFlightbook.Lint;
 using MyFlightbook.Telemetry;
 using MyFlightbook.Templates;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -444,7 +443,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (!String.IsNullOrEmpty(cachedFlightData))
                     le.FlightData = Convert.FromBase64String(cachedFlightData).Uncompress();
 
-                IEnumerable<VideoRef> videoRefs = JsonConvert.DeserializeObject<VideoRef[]>(Request["flightVideosJSON"]);
+                IEnumerable<VideoRef> videoRefs = VideoRef.FromJSON(Request["flightVideosJSON"]);
                 le.Videos.Clear();
                 foreach (VideoRef vr in videoRefs)
                     le.Videos.Add(vr);

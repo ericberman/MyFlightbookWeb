@@ -1,5 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net;
@@ -72,6 +74,13 @@ namespace MyFlightbook.Image
             FlightID = idFlight;
             VideoReference = szVidRef;
             Comment = szComment;
+        }
+
+        public static IEnumerable<VideoRef> FromJSON(string sz)
+        {
+            if (string.IsNullOrEmpty(sz))
+                throw new ArgumentNullException(nameof(sz));
+            return JsonConvert.DeserializeObject<VideoRef[]>(sz);
         }
         #endregion
 
