@@ -826,7 +826,6 @@
     <Content Include="Member\Import.aspx" />
     <Content Include="Member\LogbookNew.aspx" />
     <Content Include="Member\PrintView.aspx" />
-    <Content Include="Member\RequestSigs.aspx" />
     <Content Include="Member\SignFlight.aspx" />
     <Content Include="Member\StartingTotals.aspx" />
     <Content Include="Public\CSS\printAirline.css" />
@@ -2686,13 +2685,6 @@
     <Compile Include="Member\PrintView.aspx.designer.cs">
       <DependentUpon>PrintView.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Member\RequestSigs.aspx.cs">
-      <DependentUpon>RequestSigs.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\RequestSigs.aspx.designer.cs">
-      <DependentUpon>RequestSigs.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Member\SignFlight.aspx.cs">
       <DependentUpon>SignFlight.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3117,7 +3109,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Member\App_LocalResources\ImpAircraft.aspx.resx" />
-    <Content Include="Member\App_LocalResources\RequestSigs.aspx.resx" />
     <Content Include="Member\App_LocalResources\StartingTotals.aspx.resx" />
   </ItemGroup>
   <ItemGroup>
