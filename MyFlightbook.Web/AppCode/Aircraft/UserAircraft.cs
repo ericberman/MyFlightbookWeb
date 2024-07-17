@@ -69,9 +69,9 @@ namespace MyFlightbook
             if (String.IsNullOrEmpty(User) && restriction == AircraftRestriction.UserAircraft)
                 return new List<Aircraft>();
 
-            List<Aircraft> rgAircraft = CachedAircraft;
+            List<Aircraft> rgAircraft = null;
 
-            if (rgAircraft != null && restriction == AircraftRestriction.UserAircraft) // don't cache in admin mode
+            if (restriction == AircraftRestriction.UserAircraft && (rgAircraft = CachedAircraft) != null) // don't cache in admin mode
                 return rgAircraft;
 
             string szRestrict = "";

@@ -81,7 +81,7 @@ else
             {
                 string szExpandoID = String.Format(CultureInfo.InvariantCulture, "expando{0}", led.FlightID);
                 Aircraft ac = ua[led.AircraftID];
-                if (ac.AircraftImages.Count == 0)
+                if (!ac.ImagesHaveBeenFilled)
                 {
                     ac.PopulateImages();
                 }

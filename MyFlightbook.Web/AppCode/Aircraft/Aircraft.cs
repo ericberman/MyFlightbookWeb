@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Xml.Serialization;
 
 /******************************************************
  * 
@@ -630,13 +631,21 @@ WHERE
         public string SampleImageComment { get { return HasSampleImage ? AircraftImages[0].Comment : string.Empty; } }
 
         /// <summary>
+        /// Indicates that images have already been populated, in case you don't want to populate again.
+        /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
+        [XmlIgnore]
+        public bool ImagesHaveBeenFilled { get; set; } = false;
+
+        /// <summary>
         /// Fill AircraftImages with images from the flight.
         /// </summary>
         public void PopulateImages()
         {
-            ImageList il = new ImageList(MFBImageInfo.ImageClass.Aircraft, AircraftID.ToString(CultureInfo.InvariantCulture));
+            ImageList il = new ImageList(MFBImageInfoBase.ImageClass.Aircraft, AircraftID.ToString(CultureInfo.InvariantCulture));
             il.Refresh(true, DefaultImage);
             rgImages = il.ImageArray;
+            ImagesHaveBeenFilled = true;
         }
         #endregion
 
