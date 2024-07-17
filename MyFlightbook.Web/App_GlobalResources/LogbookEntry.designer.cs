@@ -4384,6 +4384,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You have no unsigned flights.
+        /// </summary>
+        internal static string RequestSigsNoFlights {
+            get {
+                return ResourceManager.GetString("RequestSigsNoFlights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select the flight(s) that you want to have signed..
         /// </summary>
         internal static string RequestSigsSelectFlightsPrompt {

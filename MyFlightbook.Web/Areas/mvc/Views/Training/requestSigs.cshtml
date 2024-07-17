@@ -160,25 +160,32 @@ else
     <div id="wizardSteps" style="margin-top: 10pt;">
         <div>
             <h3>@Resources.LogbookEntry.RequestSigsSelectFlightsPrompt</h3>
-            <div style="height: 150pt; overflow-y: auto;">
-                <table cellpadding="4" class="lbTable">
-                    @foreach (LogbookEntryDisplay led in lstFlightsToChoose)
-                    {
-                        <tr class="logbookRow logbookRowEven">
-                            <td><input type="checkbox" value="@led.FlightID" @(requestedFlights.Contains(led.FlightID).ToChecked()) name="idFlight" onchange="javascript: updatePreview();" /></td>
-                            <td>
-                                <div>
-                                    <span style="font-weight: bold; font-size: larger;">@led.Date.ToShortDateString()</span>
-                                    <span style="font-weight: bold;">@led.TailNumDisplay</span>
-                                    <span style="font-style: italic">@led.Route</span>
-                                    @led.Comment
-                                </div>
-                            </td>
-                            <td>@led.CustomProperties.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropInstructorName)</td>
-                        </tr>
-                    }
-                </table>
-            </div>
+            @if (lstFlightsToChoose.Count == 0)
+            {
+                <div>@Resources.LogbookEntry.RequestSigsNoFlights</div>
+            }
+            else
+            {
+                <div style="height: 150pt; overflow-y: auto;">
+                    <table cellpadding="4" class="lbTable">
+                        @foreach (LogbookEntryDisplay led in lstFlightsToChoose)
+                        {
+                            <tr class="logbookRow logbookRowEven">
+                                <td><input type="checkbox" value="@led.FlightID" @(requestedFlights.Contains(led.FlightID).ToChecked()) name="idFlight" onchange="javascript: updatePreview();" /></td>
+                                <td>
+                                    <div>
+                                        <span style="font-weight: bold; font-size: larger;">@led.Date.ToShortDateString()</span>
+                                        <span style="font-weight: bold;">@led.TailNumDisplay</span>
+                                        <span style="font-style: italic">@led.Route</span>
+                                        @led.Comment
+                                    </div>
+                                </td>
+                                <td>@led.CustomProperties.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropInstructorName)</td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            }
         </div>
         <div style="display: none;">
             <table>
@@ -215,9 +222,9 @@ else
             </table>
         </div>
     </div>
-    <div id="wizNav" style="width: 100%; text-align: center;">
+    <div id="wizNav" style="width: 100%; text-align: center; margin-top: 8pt;">
         <button type="button" id="btnWizPrev" style="display:none;">@Resources.LocalizedText.PreviousPrompt</button>
-        <button type="button" id="btnWizNext">@Resources.LocalizedText.NextPrompt</button>
+        <button type="button" id="btnWizNext" @(lstFlightsToChoose.Count == 0 ? "disabled" : string.Empty)>@Resources.LocalizedText.NextPrompt</button>
         <button type="submit" id="btnWizFinish" style="display:none;">@Resources.LocalizedText.RequestSigsFinish</button>
     </div>
 

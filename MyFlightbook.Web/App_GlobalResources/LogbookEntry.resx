@@ -1894,4 +1894,7 @@ Proceed with import?</value>
   <data name="RequestSigsLearnMore" xml:space="preserve">
     <value>Learn more...</value>
   </data>
+  <data name="RequestSigsNoFlights" xml:space="preserve">
+    <value>You have no unsigned flights</value>
+  </data>
 </root>
