@@ -52,6 +52,10 @@ function aircraftSelected(sender, fHHMM, allAircraft) {
         else
             cmbAircraft.val(lastID);
     } else {
+        // Issue #1269 - remove all active templates
+        $("input[name='activeTemplateIDs']:checked").each(function (index, element) {
+            element.checked = false;
+        });
         updateTemplates(-1, fHHMM);
     }
     lastTail.val(cmbAircraft.val());
