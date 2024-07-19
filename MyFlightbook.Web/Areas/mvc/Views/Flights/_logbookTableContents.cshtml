@@ -22,7 +22,7 @@
 
     FlightResultRange currentRange = ViewBag.currentRange;
     IDictionary<int, IList<Badge>> dictBadges = (pfTarget.AchievementStatus == Achievement.ComputeStatus.UpToDate) ? Badge.BadgesByFlight(pfTarget.CachedBadges) : new Dictionary<int, IList<Badge>>();
-    UserAircraft ua = new UserAircraft(pfTarget.UserName);
+    Dictionary<int, Aircraft> dictAircraft = ViewBag.dictAircraft;
     IEnumerable<CannedQuery> colorQueryMap = FlightColor.QueriesToColor(pfTarget.UserName);
     ShareKey sk = ViewBag.sk;
     HashSet<int> hsSelected = ViewBag.selectedFlights;
@@ -80,11 +80,7 @@ else
             @foreach (LogbookEntryDisplay led in fr.FlightsInRange(currentRange))
             {
                 string szExpandoID = String.Format(CultureInfo.InvariantCulture, "expando{0}", led.FlightID);
-                Aircraft ac = ua[led.AircraftID];
-                if (!ac.ImagesHaveBeenFilled)
-                {
-                    ac.PopulateImages();
-                }
+                Aircraft ac = dictAircraft[led.AircraftID];
                 if (led.FlightImages.Count == 0)
                 {
                     led.PopulateImages();

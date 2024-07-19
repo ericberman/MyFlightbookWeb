@@ -485,6 +485,32 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.pfViewer = MyFlightbook.Profile.GetUser(viewingUser);
 
             ViewBag.currentRange = currentRange ?? throw new ArgumentNullException(nameof(currentRange));
+
+            // Issue #1268 Diagnostic: we are sometimes failing when getting an aircraft by ID
+            // Populate aircraft here rather than in the view, and send an alert if things are amiss, with diagnostics that might (hopefully?) help figure out what's going wrong
+            // TODO: Remove (most of) this code when we figure it out.  This is a decently fast way to ensure we've populated aircraft images, though, so keep that?
+            UserAircraft ua = new UserAircraft(pfTarget.UserName);
+            Dictionary<int, Aircraft> dictAircraft = new Dictionary<int, Aircraft>();
+            foreach (LogbookEntry le in fr.FlightsInRange(currentRange))
+            {
+                if (!dictAircraft.ContainsKey(le.AircraftID))
+                {
+                    Aircraft ac = ua[le.AircraftID];
+                    if (ac == null) // this should never, ever happen, but per issue #1269 it is!!
+                    {
+                        util.NotifyAdminEvent("Issue #1268 - aircraft used in flight is not in useraircraft!!!", String.Format(CultureInfo.CurrentCulture, "User: {0}, idFlight: {1}, idAircraft: {2} ({3}), useraircraftCount = {4}", fq.UserName, le.FlightID, le.AircraftID, le.TailNumDisplay ?? string.Empty, ua.GetAircraftForUser().Count()), ProfileRoles.maskSiteAdminOnly);
+                        // we've reported the issue - now invalidate the cache and try again
+                        ua.InvalidateCache();
+                        ac = ua[le.AircraftID];
+                    }
+
+                    if (!ac.ImagesHaveBeenFilled)
+                        ac.PopulateImages();
+                    dictAircraft[le.AircraftID] = ac;
+                }
+            }
+            ViewBag.dictAircraft = dictAircraft;
+
             ViewBag.sk = sk;
             ViewBag.miniMode = miniMode;
             ViewBag.contextParams = GetContextParams(fq, fr, currentRange);
