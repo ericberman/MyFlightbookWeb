@@ -473,7 +473,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             bool miniMode = false
             )
         {
-            ViewBag.query = fq ?? throw new ArgumentNullException(nameof(fq));
+            ViewBag.query = fq ?? throw new ArgumentNullException(nameof(fq), "Flight query passed to content for results is null!");
             ViewBag.flightResults = fr ?? throw new ArgumentNullException(nameof(fr));
 
             ViewBag.student = CheckCanViewFlights(targetUser, User.Identity.Name, sk);
@@ -496,12 +496,27 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (!dictAircraft.ContainsKey(le.AircraftID))
                 {
                     Aircraft ac = ua[le.AircraftID];
-                    if (ac == null) // this should never, ever happen, but per issue #1269 it is!!
+                    if (ac == null) // this should never, ever happen, but per issue #1268 it is!!
                     {
-                        util.NotifyAdminEvent("Issue #1268 - aircraft used in flight is not in useraircraft!!!", String.Format(CultureInfo.CurrentCulture, "User: {0}, idFlight: {1}, idAircraft: {2} ({3}), useraircraftCount = {4}", fq.UserName, le.FlightID, le.AircraftID, le.TailNumDisplay ?? string.Empty, ua.GetAircraftForUser().Count()), ProfileRoles.maskSiteAdminOnly);
-                        // we've reported the issue - now invalidate the cache and try again
+                        int oldCount = ua.Count;
+                        // try again - in case it's a simple cache miss.  Then notify.
                         ua.InvalidateCache();
+                        int newCount = ua.Count;
                         ac = ua[le.AircraftID];
+                        if (ac == null) 
+                        {
+                            // yikes!  Wasn't just a cache miss - try loading it from database, adding it if that succeeds
+                            ac = new Aircraft(le.AircraftID);
+                            if (ac.AircraftID != le.AircraftID)
+                                util.NotifyAdminEvent("Issue #1268 - aircraft used in flight does not exist!!!", String.Format(CultureInfo.CurrentCulture, "User: {0}, idFlight: {1}, idAircraft: {2} ({3} - {4}), useraircraftCount was {5}, now {6}", fq.UserName, le.FlightID, le.AircraftID, le.TailNumDisplay ?? string.Empty, le.ModelDisplay ?? string.Empty, oldCount, newCount), ProfileRoles.maskSiteAdminOnly);
+                            else
+                            {
+                                ua.FAddAircraftForUser(new Aircraft(le.AircraftID));
+                                util.NotifyAdminEvent("Issue #1268 - aircraft used in flight is not in useraircraft - now added to user's profile!!!", String.Format(CultureInfo.CurrentCulture, "User: {0}, idFlight: {1}, idAircraft: {2} ({3} - {4}), useraircraftCount was {5}, now {6}", fq.UserName, le.FlightID, le.AircraftID, le.TailNumDisplay ?? string.Empty, le.ModelDisplay ?? string.Empty, oldCount, newCount), ProfileRoles.maskSiteAdminOnly);
+                            }
+                        }
+                        else
+                            util.NotifyAdminEvent("Issue #1268 - aircraft used in flight is not in useraircraft!!!", String.Format(CultureInfo.CurrentCulture, "User: {0}, idFlight: {1}, idAircraft: {2} ({3} - {4}), useraircraftCount was {5}, now {6}", fq.UserName, le.FlightID, le.AircraftID, le.TailNumDisplay ?? string.Empty, le.ModelDisplay ?? string.Empty, oldCount, newCount), ProfileRoles.maskSiteAdminOnly);
                     }
 
                     if (!ac.ImagesHaveBeenFilled)
