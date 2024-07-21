@@ -345,7 +345,8 @@ ON DUPLICATE KEY UPDATE flags=?acFlags, privatenotes=?userNotes, defaultimage=?d
                     lstAc.Add(acOld);
                 CachedAircraft = lstAc;   // we'll nullify the cache below.
                 
-                LogbookEntry.UpdateFlightAircraftForUser(this.User, acOld.AircraftID, acNew.AircraftID);
+                LogbookEntryBase.UpdateFlightAircraftForUser(User, acOld.AircraftID, acNew.AircraftID);
+                FlushStatsForUser();
 
                 // Migrate any custom currencies associated with the aircraft
                 foreach (CustomCurrency cc in CustomCurrency.CustomCurrenciesForUser(User))

@@ -486,9 +486,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
             ViewBag.currentRange = currentRange ?? throw new ArgumentNullException(nameof(currentRange));
 
-            // Issue #1268 Diagnostic: we are sometimes failing when getting an aircraft by ID
-            // Populate aircraft here rather than in the view, and send an alert if things are amiss, with diagnostics that might (hopefully?) help figure out what's going wrong
-            // TODO: Remove (most of) this code when we figure it out.  This is a decently fast way to ensure we've populated aircraft images, though, so keep that?
             UserAircraft ua = new UserAircraft(pfTarget.UserName);
             Dictionary<int, Aircraft> dictAircraft = new Dictionary<int, Aircraft>();
             foreach (LogbookEntry le in fr.FlightsInRange(currentRange))
@@ -496,6 +493,10 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (!dictAircraft.ContainsKey(le.AircraftID))
                 {
                     Aircraft ac = ua[le.AircraftID];
+                    /*
+                    // Issue #1268 Diagnostic: we are sometimes failing when getting an aircraft by ID
+                    // Populate aircraft here rather than in the view, and send an alert if things are amiss, with diagnostics that might (hopefully?) help figure out what's going wrong
+                    // TODO: Remove (most of) this code when we figure it out.  This is a decently fast way to ensure we've populated aircraft images, though, so keep that?
                     if (ac == null) // this should never, ever happen, but per issue #1268 it is!!
                     {
                         int oldCount = ua.Count;
@@ -518,6 +519,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                         else
                             util.NotifyAdminEvent("Issue #1268 - aircraft used in flight is not in useraircraft!!!", String.Format(CultureInfo.CurrentCulture, "User: {0}, idFlight: {1}, idAircraft: {2} ({3} - {4}), useraircraftCount was {5}, now {6}", fq.UserName, le.FlightID, le.AircraftID, le.TailNumDisplay ?? string.Empty, le.ModelDisplay ?? string.Empty, oldCount, newCount), ProfileRoles.maskSiteAdminOnly);
                     }
+                    */
 
                     if (!ac.ImagesHaveBeenFilled)
                         ac.PopulateImages();

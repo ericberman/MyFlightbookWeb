@@ -1718,6 +1718,7 @@ WHERE
                 comm.Parameters.AddWithValue("targ", acTarget.AircraftID);
                 comm.Parameters.AddWithValue("src", acSrc.AircraftID);
             });
+            FlightResultManager.InvalidateForUser(szUser);
             return dbh.AffectedRowCount;
         }
 

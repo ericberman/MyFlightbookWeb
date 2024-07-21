@@ -1039,6 +1039,7 @@ namespace MyFlightbook
                 comm.Parameters.AddWithValue("fhash", FlightHash);
                 comm.Parameters.AddWithValue("idflight", FlightID);
             });
+            FlightResultManager.InvalidateForUser(User);
 
             return String.IsNullOrEmpty(dbh.LastError);
         }
@@ -1745,6 +1746,9 @@ namespace MyFlightbook
                 comm.Parameters.AddWithValue("idOld", idAircraftOld);
                 comm.Parameters.AddWithValue("user", szUser);
             });
+
+            // Issue #1268 - Any flight results are now invalid.  Flush the cache
+            FlightResultManager.InvalidateForUser(szUser);
         }
 
         /// <summary>
@@ -1979,7 +1983,7 @@ namespace MyFlightbook
                 }
             }
 
-            FlightStatistics.FlightStats.RefreshForFlight(this);
+            FlightStats.RefreshForFlight(this);
 
             // Flights have changed, so aircraft stats are invalid.
             new UserAircraft(User).FlushStatsForUser();
