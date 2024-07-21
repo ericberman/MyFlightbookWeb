@@ -215,6 +215,10 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             {
                 LogbookEntry le = LogbookEntryFromForm();
 
+                // load the flight data if needed
+                if (!le.IsNewFlight && String.IsNullOrEmpty(le.FlightData))
+                    le.FlightData = new LogbookEntry(le.FlightID, le.User, LogbookEntryCore.LoadTelemetryOption.LoadAll).FlightData;
+
                 string szKey = "googlePhoto_" + DateTime.Now.Ticks.ToString(CultureInfo.InvariantCulture);
 
                 MFBPendingImage pi = MFBPendingImage.FromGooglePhoto(le.FlightData, Convert.ToInt32(Request["gPhotoClickIndex"], CultureInfo.InvariantCulture), Request["gmrJSON"], szKey);
