@@ -1,6 +1,5 @@
 ﻿using DotNetOpenAuth.OAuth2;
 using Dropbox.Api;
-using MyFlightbook.Geography;
 using MyFlightbook.Image;
 using MyFlightbook.OAuth;
 using Newtonsoft.Json;
@@ -1266,31 +1265,6 @@ namespace MyFlightbook.CloudStorage
             GoogleMediaResponse result = JsonConvert.DeserializeObject<GoogleMediaResponse>(szResult);
 
             return (priorResponse == null) ? result : priorResponse.AddResponse(result);
-        }
-
-        public static MFBPendingImage AddToFlight(LogbookEntry le, int clickedIndex, string gmrJSON, string key)
-        {
-            if (String.IsNullOrEmpty(gmrJSON))
-                throw new ArgumentNullException(nameof(gmrJSON));
-            GoogleMediaResponse gmr = JsonConvert.DeserializeObject<GoogleMediaResponse>(gmrJSON);
-
-            GoogleMediaItem clickedItem = gmr.mediaItems.ElementAt(clickedIndex);
-
-            MFBPostedFile pf = gmr.ImportImage(clickedItem.productUrl) ?? throw new InvalidOperationException("Unable to import image");
-
-            MFBPendingImage pi = new MFBPendingImage(pf, key);
-
-            // Geo tag, if  possible
-            if (clickedItem.mediaMetadata.CreationTime.HasValue && (le?.HasFlightData ?? false))
-            {
-                using (Telemetry.FlightData fd = new Telemetry.FlightData())
-                {
-                    if (fd.ParseFlightData(le.FlightData) && fd.HasDateTime && fd.HasLatLongInfo)
-                        pi.Location = Position.Interpolate(clickedItem.mediaMetadata.CreationTime.Value, fd.GetTrajectory());
-                }
-            }
-
-            return pi;
         }
     }
     #endregion

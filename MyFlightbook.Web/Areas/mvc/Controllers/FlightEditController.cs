@@ -1,5 +1,4 @@
-﻿using MyFlightbook.CloudStorage;
-using MyFlightbook.Image;
+﻿using MyFlightbook.Image;
 using MyFlightbook.Lint;
 using MyFlightbook.Telemetry;
 using MyFlightbook.Templates;
@@ -218,7 +217,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
                 string szKey = "googlePhoto_" + DateTime.Now.Ticks.ToString(CultureInfo.InvariantCulture);
 
-                MFBPendingImage pi = GooglePhoto.AddToFlight(le, Convert.ToInt32(Request["gPhotoClickIndex"], CultureInfo.InvariantCulture), Request["gmrJSON"], szKey);
+                MFBPendingImage pi = MFBPendingImage.FromGooglePhoto(le.FlightData, Convert.ToInt32(Request["gPhotoClickIndex"], CultureInfo.InvariantCulture), Request["gmrJSON"], szKey);
 
                 if (le.IsNewFlight)
                     Session[szKey] = pi;

@@ -1,6 +1,10 @@
-﻿using System;
+﻿using MyFlightbook.CloudStorage;
+using MyFlightbook.Geography;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Web;
 
 /******************************************************
@@ -154,6 +158,29 @@ namespace MyFlightbook.Image
         public override void UpdateAnnotation(string szText)
         {
             Comment = szText;
+        }
+
+        public static MFBPendingImage FromGooglePhoto(string flightData, int clickedIndex, string gmrJSON, string key)
+        {
+            if (String.IsNullOrEmpty(gmrJSON))
+                throw new ArgumentNullException(nameof(gmrJSON));
+            GoogleMediaResponse gmr = JsonConvert.DeserializeObject<GoogleMediaResponse>(gmrJSON);
+
+            GoogleMediaItem clickedItem = gmr.mediaItems.ElementAt(clickedIndex);
+            MFBPostedFile pf = gmr.ImportImage(clickedItem.productUrl) ?? throw new InvalidOperationException("Unable to import image");
+            MFBPendingImage pi = new MFBPendingImage(pf, key);
+
+            // Geo tag, if  possible
+            if (clickedItem.mediaMetadata.CreationTime.HasValue && !String.IsNullOrEmpty(flightData))
+            {
+                using (Telemetry.FlightData fd = new Telemetry.FlightData())
+                {
+                    if (fd.ParseFlightData(flightData) && fd.HasDateTime && fd.HasLatLongInfo)
+                        pi.Location = Position.Interpolate(clickedItem.mediaMetadata.CreationTime.Value, fd.GetTrajectory());
+                }
+            }
+
+            return pi;
         }
     }
 }
