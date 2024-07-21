@@ -34,6 +34,8 @@ namespace MyFlightbook.Printing.Layouts
             StripRedundantOrExcludedProperties(new int[] { (int)CustomPropertyType.KnownProperties.IDPropStudentName, 
                 (int) CustomPropertyType.KnownProperties.IDPropNameOfPIC, 
                 (int) CustomPropertyType.KnownProperties.IDPropNameOfSIC,
+                (int) CustomPropertyType.KnownProperties.IDPropCaptainName,
+                (int) CustomPropertyType.KnownProperties.IDPropFirstOfficerName,
                 (int) CustomPropertyType.KnownProperties.IDPropNightTakeoff }, lep.Flights);
 
             Repeater rpt = (Repeater)e.Item.FindControl("rptFlight");

@@ -4,7 +4,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2021 MyFlightbook LLC
+ * Copyright (c) 2016-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -30,7 +30,10 @@ namespace MyFlightbook.Printing.Layouts
                 throw new ArgumentNullException(nameof(e));
 
             LogbookPrintedPage lep = (LogbookPrintedPage)e.Item.DataItem;
-            StripRedundantOrExcludedProperties(new int[] { (int)CustomPropertyType.KnownProperties.IDPropNameOfPIC }, lep.Flights);
+            StripRedundantOrExcludedProperties(new int[] {
+                (int) CustomPropertyType.KnownProperties.IDPropCaptainName,
+                (int) CustomPropertyType.KnownProperties.IDPropNameOfPIC 
+            }, lep.Flights);
 
             Repeater rpt = (Repeater)e.Item.FindControl("rptFlight");
             rpt.DataSource = lep.Flights;

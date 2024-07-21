@@ -10,9 +10,9 @@
         <thead>
             <tr class="bordered">
                 <th class="headerSmall" rowspan="3"><% =Resources.LogbookEntry.PrintHeaderDate %></th>
-                <th class="headerSmall" rowspan="2" colspan="2"><% =Resources.LogbookEntry.PrintHeaderAircraft %></th>
-                <th rowspan="3" class="headerBig"><%=Resources.LogbookEntry.PrintHeaderPICName %></th>
-                <th class="headerSmall" rowspan="2" colspan="4"><% =Resources.LogbookEntry.PrintHeaderRoute %></th>
+                <th class="headerBig" rowspan="2" colspan="2"><% =Resources.LogbookEntry.PrintHeaderAircraft %></th>
+                <th rowspan="3" class="headerSmall"><%=Resources.LogbookEntry.PrintHeaderPICName %></th>
+                <th class="headerBig" rowspan="2" colspan="4"><% =Resources.LogbookEntry.PrintHeaderRoute %></th>
                 <th class="headerSmall" rowspan="3"><% =Resources.LogbookEntry.PrintHeaderFlightNumber %></th>
                 <th class="headerSmall" rowspan="3"><% =Resources.LogbookEntry.PrintHeaderTotalTime %></th>
                 <th class="headerSmall" rowspan="3"><% =Resources.LogbookEntry.PrintHeaderMultiPilot %></th>

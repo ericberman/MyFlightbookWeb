@@ -3238,7 +3238,12 @@ WHERE f1.username = ?uName ");
         /// </summary>
         public string PICName
         {
-            get { return CustomProperties.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropNameOfPIC); }
+            get 
+            {
+                string szPIC = CustomProperties.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropNameOfPIC);
+                string szCaptain = CustomProperties.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropCaptainName);
+                return (szPIC.CompareCurrentCultureIgnoreCase(szCaptain) == 0) ? szPIC : String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, szPIC, szCaptain).Trim();
+            }
         }
 
         /// <summary>
@@ -3246,7 +3251,12 @@ WHERE f1.username = ?uName ");
         /// </summary>
         public string SICName
         {
-            get { return CustomProperties.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropNameOfSIC); }
+            get 
+            { 
+                string szSIC = CustomProperties.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropNameOfSIC);
+                string szFirstOfficer = CustomProperties.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropFirstOfficerName);
+                return  (szSIC.CompareCurrentCultureIgnoreCase(szFirstOfficer) == 0) ? szSIC : String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, szSIC, szFirstOfficer).Trim();
+            }
         }
 
         /// <summary>

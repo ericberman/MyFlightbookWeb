@@ -32,6 +32,7 @@ namespace MyFlightbook.Printing.Layouts
             LogbookPrintedPage lep = (LogbookPrintedPage)e.Item.DataItem;
             StripRedundantOrExcludedProperties(new int[] { 
                 (int)CustomPropertyType.KnownProperties.IDPropNameOfPIC, 
+                (int) CustomPropertyType.KnownProperties.IDPropCaptainName,
                 (int) CustomPropertyType.KnownProperties.IDPropFlightNumber, 
                 (int) CustomPropertyType.KnownProperties.IDPropMultiPilotTime, 
                 (int) CustomPropertyType.KnownProperties.IDPropSolo, 
