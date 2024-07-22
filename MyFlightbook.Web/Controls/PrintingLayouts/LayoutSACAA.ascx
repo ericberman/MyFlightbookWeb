@@ -108,11 +108,10 @@
                     <asp:Repeater ID="rptSubtotals" runat="server">
                         <ItemTemplate>
                             <%# (Container.ItemIndex != 0) ? "<tr class=\"subtotal\">" : string.Empty %>
-                            <td colspan="2"><%# ((LogbookEntryDisplay) Container.DataItem).CatClassDisplay %></td>
+                            <td colspan="3"><%# ((LogbookEntryDisplay) Container.DataItem).CatClassDisplay %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).InstrumentAircraftTotal.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).InstrumentFSTDTotal.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).CFI.FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                            <td></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).GroundSim.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             <td><%# Math.Max(((LogbookEntryDisplay) Container.DataItem).Dual - ((LogbookEntryDisplay) Container.DataItem).NightDualTotal, 0).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             <td><%# Math.Max(((LogbookEntryDisplay) Container.DataItem).PIC - ((LogbookEntryDisplay) Container.DataItem).NightPICTotal, 0).FormatDecimal(CurrentUser.UsesHHMM) %></td>
@@ -125,7 +124,6 @@
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).NetDayLandings %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).NetNightLandings %></td>
                             <td></td>
-                            <td class="subtotalLabel"></td>
                             <%# (Container.ItemIndex != 0) ? "</tr>" : string.Empty %>
                         </ItemTemplate>
                     </asp:Repeater>
