@@ -318,7 +318,7 @@
                         <input type="radio" name="DateRange" value="Custom" @(fq.DateRange == FlightQuery.DateRanges.Custom ? "checked" : string.Empty) id="rbCustom" /><label for="rbCustom">@Resources.FlightQuery.DatesFrom</label>
                         <div style="display: inline-block;">@{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "mfbTIDateFrom", value = fq.DateMin, name = "typeInDateField" }); }</div>
                         <label for="mfbTIDateTo">@Resources.FlightQuery.DatesTo</label>
-                        <div style="display: inline-block;">@{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "mfbTIDateTo", value = fq.DateMin, name = "typeInDateField" }); }</div>
+                        <div style="display: inline-block;">@{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "mfbTIDateTo", value = fq.DateMax, name = "typeInDateField" }); }</div>
                     </td>
                 </tr>
             </table>
