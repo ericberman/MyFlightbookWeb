@@ -145,29 +145,33 @@ else
                             {
                                 <img src="@("~/images/expand.png".ToAbsolute())" onclick="javascript: toggleImage(this, '@szExpandoID', null, null);" />
                             }
-                            <div id="@szExpandoID" style="@(showCollapsed ? "display: none;" : string.Empty)">
-                                @if (pfViewer.DisplayTimesByDefault)
-                                {
-                                    <div>@led.EngineTimeDisplay</div>
-                                    <div>@led.FlightTimeDisplay</div>
-                                    <div>@led.HobbsDisplay</div>
-                                }
-                                @foreach (string s in led.PropertiesWithReplacedApproaches)
-                                {
-                                    <div>@Html.Raw(s)</div>
-                                }
-                                @if (led.CFISignatureState != LogbookEntryCore.SignatureState.None)
-                                {
-                                    Html.RenderAction("SignatureBlock", "Flights", new { led = led, fUseHHMM = pfViewer.UsesHHMM, fInteractive = true });
-                                }
-                                else if (fTracksOriginal && led.HasFlightHash)
+                        <div id="@szExpandoID" style="@(showCollapsed ? "display: none;" : string.Empty)">
+                            @if (pfViewer.DisplayTimesByDefault)
+                            {
+                                <div>@led.EngineTimeDisplay</div>
+                                <div>@led.FlightTimeDisplay</div>
+                                <div>@led.HobbsDisplay</div>
+                            }
+                            @foreach (string s in led.PropertiesWithReplacedApproaches)
+                            {
+                                <div>@Html.Raw(s)</div>
+                            }
+                            @if (led.CFISignatureState != LogbookEntryCore.SignatureState.None)
+                            {
+                                Html.RenderAction("SignatureBlock", "Flights", new { led = led, fUseHHMM = pfViewer.UsesHHMM, fInteractive = true });
+                            }
+                            else if (fTracksOriginal && led.HasFlightHash)
+                            {
+                                string szDiffs = led.DiffsAsHTMLList(pfViewer.UsesHHMM);
+                                if (!String.IsNullOrEmpty(szDiffs))
                                 {
                                     <div class="signatureBlock">
                                         <div>@Resources.LogbookEntry.FlightModified</div>
-                                        @Html.Raw(led.DiffsAsHTMLList(pfViewer.UsesHHMM))
+                                        @Html.Raw(szDiffs)
                                     </div>
                                 }
-                            </div>
+                            }
+                        </div>
                             <div>
                                 @if (inlineImages)
                                 {
