@@ -838,7 +838,7 @@
                         </Header>
                         <Content>
                             <table style="border-spacing: 10px; border-collapse: separate;">
-                                <tr runat="server" visible="false">
+                                <tr>
                                     <td style="width:100px; text-align: center;"><img src='<% =VirtualPathUtility.ToAbsolute("~/images/flightcrewview.png") %>' /></td>
                                     <td style="vertical-align:top">
                                         <h2><%=Resources.Preferences.ScheduleServiceFlightCrewViewName %></h2>
