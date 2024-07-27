@@ -348,7 +348,7 @@ namespace MyFlightbook
             }
         }
 
-        public static async Task<string> ImportFlightCrewView(string szUser, DateTime? dtFrom)
+        public static async Task<string> ImportFlightCrewView(string szUser, DateTime? dtFrom, DateTime? dtTo)
         {
             if (string.IsNullOrEmpty(szUser))
                 throw new ArgumentNullException(nameof(szUser));
@@ -358,7 +358,7 @@ namespace MyFlightbook
 
             try
             {
-                IEnumerable<PendingFlight> _ = (await (await FlightCrewViewClient.RefreshedClientForUser(szUser)).FlightsFromDate(szUser, dtFrom ?? DateTime.MinValue));
+                IEnumerable<PendingFlight> _ = (await (await FlightCrewViewClient.RefreshedClientForUser(szUser)).FlightsFromDate(szUser, dtFrom, dtTo));
                 return string.Empty;
             }
             catch (Exception ex) when (!(ex is OutOfMemoryException))

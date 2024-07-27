@@ -538,7 +538,7 @@ namespace MyFlightbook.ImportFlights
         protected async void btnImportFlightCrewView_Click(object sender, EventArgs e)
         {
             PendingFlight.FlushCacheForUser(User.Identity.Name);    // Flush while still on the main thread with an http context
-            string szResult = await PendingFlight.ImportFlightCrewView(User.Identity.Name, fcvFromDate.Date);
+            string szResult = await PendingFlight.ImportFlightCrewView(User.Identity.Name, fcvFromDate.Date, fcvToDate.Date);
             if (String.IsNullOrEmpty(szResult)) 
             {
                     Response.Redirect("~/mvc/flightedit/pending", false);

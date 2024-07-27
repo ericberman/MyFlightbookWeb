@@ -3,6 +3,7 @@ using MyFlightbook.ImportFlights;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Globalization;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -54,9 +55,14 @@ namespace MyFlightbook.OAuth.FlightCrewView
             return fcv;
         }
 
-        public async Task<IEnumerable<PendingFlight>> FlightsFromDate(string szUser, DateTime dt)
+        public async Task<IEnumerable<PendingFlight>> FlightsFromDate(string szUser, DateTime? dtFrom, DateTime? dtTo)
         {
-            string endpoint = String.Format(CultureInfo.InvariantCulture, "{0}?start_datetime_utc={1}", flightsEndpoint, HttpUtility.UrlEncode(dt.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)));
+            NameValueCollection nvc = HttpUtility.ParseQueryString(string.Empty);
+            if (dtFrom.HasValue && dtFrom.Value.HasValue())
+                nvc["start_datetime_utc"] = dtFrom.Value.Date.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+            if (dtTo.HasValue && dtTo.Value.HasValue())
+                nvc["end_datetime_utc"] = dtTo.Value.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + " 23:59:59";
+            string endpoint = String.Format(CultureInfo.InvariantCulture, "{0}?{1}", flightsEndpoint, nvc.ToString());
 
             return (IEnumerable<PendingFlight>)await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri(endpoint), AuthState.AccessToken, HttpMethod.Get, null, (response) =>
             {
