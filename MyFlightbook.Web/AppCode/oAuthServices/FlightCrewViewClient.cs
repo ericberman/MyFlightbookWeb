@@ -1,5 +1,6 @@
 ﻿using DotNetOpenAuth.OAuth2;
 using MyFlightbook.ImportFlights;
+using MyFlightbook.Telemetry;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -76,6 +77,17 @@ namespace MyFlightbook.OAuth.FlightCrewView
                 {
                     PendingFlight pf = fcvf.ToLogbookEntry() as PendingFlight;
                     pf.User = szUser;
+
+                    pf.MapTail();   // Map the display tail to a user aircraft.
+
+                    // Date is likely UTC at this point because it comes from a UTC value like departure time.
+                    // Autofill will reset it to match the first (pseudo) time stamp, using the AutoFillOptions offset, but that's
+                    // generally a bad offset to use because that's global, not based on the departure airport.
+                    DateTime dtSave = pf.Date;
+                    using (FlightData fd = new FlightData())
+                        fd.AutoFill(pf, AutoFillOptions.DefaultOptionsForUser(szUser));
+                    pf.Date = dtSave;
+
                     lst.Add(pf);
                     pf.Commit();
                 }
