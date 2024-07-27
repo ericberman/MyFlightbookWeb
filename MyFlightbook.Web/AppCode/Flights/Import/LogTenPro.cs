@@ -8,7 +8,7 @@ using System.IO;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2023 MyFlightbook LLC
+ * Copyright (c) 2017-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -796,9 +796,7 @@ namespace MyFlightbook.ImportFlights
                 FullStopLandings = Math.Max(flight_fullStops - flight_nightLandings, 0),
                 NightLandings = flight_nightLandings,
                 fHoldingProcedures = flight_holds != 0,
-                Comment = JoinStrings(new string[] { flight_remarks,
-                flight_selectedApproach1, flight_selectedApproach2, flight_selectedApproach3, flight_selectedApproach4, flight_selectedApproach5, flight_selectedApproach6, flight_selectedApproach7, flight_selectedApproach8, flight_selectedApproach9, flight_selectedApproach10,
-                flight_customNote1, flight_customNote2, flight_customNote3, flight_customNote4, flight_customNote5 }),
+                Comment = JoinStrings(new string[] { flight_remarks, flight_customNote1, flight_customNote2, flight_customNote3, flight_customNote4, flight_customNote5 }),
                 ModelDisplay = aircraftType_model,
 
                 TailNumDisplay = (String.IsNullOrEmpty(aircraft_aircraftID) ? ((flight_simulator > 0) ? CountryCodePrefix.SimCountry.Prefix : CountryCodePrefix.AnonymousCountry.Prefix) : aircraft_aircraftID),
@@ -820,6 +818,7 @@ namespace MyFlightbook.ImportFlights
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropTachStart, flight_tachStart),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropTachEnd, flight_tachStop),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropSolo, flight_solo),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropApproachName, JoinStrings(new string[] {flight_selectedApproach1, flight_selectedApproach2, flight_selectedApproach3, flight_selectedApproach4, flight_selectedApproach5, flight_selectedApproach6, flight_selectedApproach7, flight_selectedApproach8, flight_selectedApproach9, flight_selectedApproach10 })),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNVGoggleTime, flight_nightVisionGoggle),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropWaterLandings, flight_waterLandings),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropWaterTakeoffs, flight_waterTakeoffs),
