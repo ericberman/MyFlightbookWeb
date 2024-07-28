@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 /******************************************************
@@ -107,6 +106,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 IsRetract = Request["isRetract"] != null,
                 IsTailWheel = Request["isTailwheel"] != null,
                 IsMultiEngineHelicopter = Request["isMulti"] != null,
+                IsMotorGlider = Request["isTMG"] != null,
                 PerformanceType = fHighPerfChecked ? (f200Checked ? MakeModel.HighPerfType.Is200HP : MakeModel.HighPerfType.HighPerf) : MakeModel.HighPerfType.NotHighPerf,
                 AvionicsTechnology = Enum.TryParse(Request["avionics"], true, out MakeModel.AvionicsTechnologyType type) ? type : throw new InvalidCastException("Unknown Avionics"),
                 EngineType = Enum.TryParse(Request["engineType"], true, out MakeModel.TurbineLevel enginetype) ? enginetype : throw new InvalidCastException("invalid engine type"),
