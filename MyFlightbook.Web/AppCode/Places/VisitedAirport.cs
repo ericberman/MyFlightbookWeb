@@ -498,7 +498,7 @@ namespace MyFlightbook.Airports
             if (action == null)
                 throw new ArgumentNullException(nameof(action));
 
-            DBHelper dbh = new DBHelper(LogbookEntry.QueryCommand(fq, lto: lto));
+            DBHelper dbh = new DBHelper(LogbookEntryBase.QueryCommand(fq, fAsc: true, lto: lto));
             dbh.ReadRows(
                 (comm) => { },
                 (dr) =>
