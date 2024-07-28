@@ -191,7 +191,8 @@ else
                 return true;
             if (element.required && !new RegExp(element.pattern).test(value))
                 return false;
-            var curDate = $(element).datepicker('getDate');
+            var datePicker = $(element);
+            var curDate = datePicker.is('[type="date"]') ? Date.parse(datePicker.val()) : datePicker.datepicker('getDate');
             return curDate >= new Date();
         }, "@Resources.LocalizedText.TypeInDateInvalidDate");
 
