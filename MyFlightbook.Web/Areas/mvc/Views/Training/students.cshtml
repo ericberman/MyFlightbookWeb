@@ -193,7 +193,7 @@
                                                 <img src="@VirtualPathUtility.ToAbsolute("~/images/x.gif")" alt="@Resources.SignOff.SignFlightIgnore" title="@Resources.SignOff.SignFlightIgnore"
                                                      onclick="javascript: ignoreFlightToSign(this, '@student.UserName', @le.FlightID);" />
                                             </td>
-                                            <td><a href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/SignFlight.aspx?idFlight={0}&ret={1}", le.FlightID, HttpUtility.UrlEncode(Request.Url.PathAndQuery)))">@le.DisplayString</a></td>
+                                            <td><a href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/flightedit/sign/{0}?ret={1}", le.FlightID, HttpUtility.UrlEncode(Request.Url.PathAndQuery)))">@le.DisplayString</a></td>
                                         </tr>
                                     }
                                 </table>

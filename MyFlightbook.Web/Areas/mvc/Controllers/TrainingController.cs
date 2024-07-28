@@ -638,7 +638,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult RequestSigs(string[] idFlight, string instructor, string instrEmail)
         {
-            InstructorStudent.RequestSigs(String.Join(",", idFlight).ToInts(), User.Identity.Name, instructor, instrEmail);
+            if ((idFlight?.Length ?? 0) > 0)
+                InstructorStudent.RequestSigs(String.Join(",", idFlight).ToInts(), User.Identity.Name, instructor, instrEmail);
             return Redirect("~/mvc/Training/RequestSigs");
         }
 

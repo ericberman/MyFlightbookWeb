@@ -80,5 +80,15 @@ namespace MyFlightbook.Image
             return rgbSignature;
 
         }
+
+        /// <summary>
+        /// Helper utility to go straight from a string to a byte array, if it is a datalink URL
+        /// </summary>
+        /// <param name="szLink"></param>
+        /// <returns></returns>
+        public static byte[] DataURLBytes(this string szLink)
+        {
+            return FromDataLinkURL(szLink ?? string.Empty);
+        }
     }
 }

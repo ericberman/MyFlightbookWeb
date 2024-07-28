@@ -1465,6 +1465,44 @@ namespace MyFlightbook
                     ProfileRoles.maskSiteAdminOnly);
         }
 
+        /// <summary>
+        /// Returns a dictionary with the most recently signed flight by each instructor that is an ad-hoc signer.
+        /// </summary>
+        /// <param name="szUser">The student's username</param>
+        /// <returns>A dictionary of instructor/flight entries.</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static IDictionary<string, LogbookEntry> PreviouslySignedAdhocFlightsForUser(string szUser)
+        {
+            if (szUser == null)
+                throw new ArgumentNullException(nameof(szUser));
+
+            FlightQuery fq = new FlightQuery(szUser) { IsSigned = true };
+            DBHelper dbh = new DBHelper(QueryCommand(fq));
+            Dictionary<string, LogbookEntry> d = new Dictionary<string, LogbookEntry>();
+            dbh.ReadRows(
+                (comm) => { },
+                (dr) =>
+                {
+                    LogbookEntry le = new LogbookEntry(dr, szUser);
+                    // Add it to the dictionary if:
+                    // a) It has a digitized signature (i.e., scribble)
+                    // b) it isn't already in there, or
+                    // c) this flight has a later CFI expiration than the one we found (overwriting it).
+                    if (le.HasDigitizedSig)
+                    {
+                        string szKey = le.CFIName.ToUpper(CultureInfo.CurrentCulture);
+                        if (!d.TryGetValue(szKey, out LogbookEntry lePrev))
+                            d[szKey] = le;
+                        else
+                        {
+                            if (lePrev.CFIExpiration.CompareTo(le.CFIExpiration) < 0)
+                                d[szKey] = le;
+                        }
+                    }
+                });
+            return d;
+        }
+
         #region PendingSignatures
         /// <summary>
         /// Gets a list of all unsigned flights waiting for signatures by the CFI from the named student

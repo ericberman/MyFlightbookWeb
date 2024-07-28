@@ -248,7 +248,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             {
                 PendingFlight pf = (PendingFlight.PendingFlightsForUser(User.Identity.Name)).FirstOrDefault(pf2 => pf2.PendingID.CompareOrdinal(pfID) == 0);
                 if (pf == null || pf.User.CompareOrdinal(User.Identity.Name) != 0)
-                    throw new MyFlightbookException(Resources.WebService.errFlightNotYours);
+                    throw new UnauthorizedAccessException(Resources.WebService.errFlightNotYours);
                 pf.Delete();
                 return new EmptyResult();
             });
@@ -504,7 +504,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                         MyFlightbook.Profile.GetUser(le.User).SetAchievementStatus(Achievements.Achievement.ComputeStatus.NeedsComputing);
                     }
                 }
-                catch (MyFlightbookException ex)
+                catch (Exception ex) when (!(ex is OutOfMemoryException))
                 {
                     le.ErrorString = !String.IsNullOrEmpty(le.ErrorString) ? le.ErrorString : ex?.InnerException.Message ?? ex.Message;
                 }
@@ -750,6 +750,167 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #endregion
 
         #region Visible Endpoints
+        #region sign flights
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult SignFlightForUser(int idFlight, string cfiComments, string cfiUserName, string cfiPass = null, string cfiName = null, string cfiEmail = null, string cfiCert = null, string cfiExpiration = null, string ret = null, string hdnSigData = null)
+        {
+            try
+            {
+                // always do a full force load
+                LogbookEntry le = new LogbookEntry(idFlight, User.Identity.Name, fForceLoad: true);
+
+                bool fATP = Request["ckATP"] != null;
+                bool fIsGroundOrATP = fATP || le.IsGroundOnly;
+                bool fSIC = Request["ckSIC"] != null;
+
+                DateTime dtExp = DateTime.TryParse(cfiExpiration, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime dt) ? dt : DateTime.MinValue;
+
+                if (String.IsNullOrWhiteSpace(cfiUserName)) // empty user name is aka "ad-hoc"
+                    le.SignFlightAdHoc(cfiName, cfiEmail, cfiCert, dtExp, cfiComments, hdnSigData.DataURLBytes(), fSIC | fIsGroundOrATP);
+                else
+                {
+                    string szPendingSigUsername = le.PendingSignatureUserName();
+
+                    Profile pfSigner = MyFlightbook.Profile.GetUser(cfiUserName);
+
+                    // invalid user passed or self signing.
+                    if (String.IsNullOrEmpty(pfSigner.UserName) || pfSigner.UserName.CompareOrdinal(le.User) == 0)
+                        throw new UnauthorizedAccessException();
+
+                    bool fIsUserProfile = le.User.CompareOrdinal(User.Identity.Name) == 0;
+
+                    // If we are signed in as the owning user, validate the signer's authenticity
+                    if (fIsUserProfile && !System.Web.Security.Membership.ValidateUser(cfiUserName, cfiPass))
+                        throw new UnauthorizedAccessException(Resources.SignOff.errIncorrectPasswordForSigning);
+
+                    string szError = String.Empty;
+                    bool needProfileRefresh = !pfSigner.CanSignFlights(out szError, le.IsGroundOnly);
+                    if (needProfileRefresh)
+                    {
+                        pfSigner.Certificate = cfiCert;
+                        pfSigner.CertificateExpiration = dtExp;
+                    }
+
+                    // Do ANOTHER check to see if you can sign - setting these above may have fixed the problem.
+                    if (!pfSigner.CanSignFlights(out szError, fIsGroundOrATP))
+                        throw new UnauthorizedAccessException(szError);
+
+                    // If we are here, then we were successful - update the profile if it needed it
+                    if (needProfileRefresh)
+                        pfSigner.FCommit();
+                    
+                    // Do the actual signing
+                    le.SetPendingSignature(pfSigner.UserName);  // indicate that we are authorized to sign this flight - this will NOT be persisted.
+                    le.SignFlightAuthenticated(pfSigner.UserName, cfiComments, fIsGroundOrATP);
+
+                    // Preserve the CFI's preferences for copying flights
+                    string copyToInstructor = Request["fCopyFlight"] == null ? string.Empty : (Request["copyOpt"] ?? string.Empty);  // will be empty, "live", or "pending"
+                    int cpd = copyToInstructor.CompareCurrentCultureIgnoreCase("Pending") == 0 ? 1 : (copyToInstructor.CompareCurrentCultureIgnoreCase("Live") == 0 ? 2 : 0);
+                    pfSigner.SetPreferenceForKey(MFBConstants.keyPrefCopyFlightToCFI, cpd, cpd == 0);
+
+                    // Copy the flight to the CFI's logbook if needed.
+                    // We modify a new copy of the flight; this avoids modifying this.Flight, but ensures we get every property
+                    if (cpd != 0)
+                        // Issue #593 Load any telemetry, if necessary
+                        new LogbookEntry(le.FlightID, le.User, LogbookEntryCore.LoadTelemetryOption.LoadAll).CopyToInstructor(pfSigner.UserName, cfiComments, cpd == 1);
+
+                    if ((Request["btnSubmit"] ?? string.Empty).CompareCurrentCultureIgnoreCase("submitNext") == 0)
+                    {
+                        List<LogbookEntryBase> lst = new List<LogbookEntryBase>(LogbookEntryBase.PendingSignaturesForStudent(pfSigner, MyFlightbook.Profile.GetUser(le.User)));
+                        if (lst.Count > 0)
+                            return RedirectToAction("Sign", ControllerContext.RouteData.Values["controller"].ToString(), new { id = lst[0].FlightID, ret = ret });
+                    }
+                }
+            }
+            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            {
+                ViewBag.error = ex.Message;
+                ViewBag.cfiComments = cfiComments; // preserve the comments for next try
+                return SignInternal(idFlight, cfiUserName, cfiEmail, cfiName, cfiCert, cfiExpiration, ret);
+            }
+
+            // if we are here, we are done - go to the return url, if provided; otherwise, just show "success".
+            return SafeRedirect(ret, Url.Action("Sign", ControllerContext.RouteData.Values["controller"].ToString(), new { id = idFlight, success=1}));
+        }
+
+        private ActionResult SignInternal(int id, string cfiUser = null, string cfiEmail = null, string cfiName = null, string cfiCert = null, string cfiExpiration = null, string ret = null)
+        {
+            LogbookEntry le = new LogbookEntry(Convert.ToInt32(id, CultureInfo.InvariantCulture), User.Identity.Name, fForceLoad: true);
+            ViewBag.le = le;
+            // Remember the return URL, but only if it is relative (for security)
+            ViewBag.retUrl = SafeRedirectParam(ret, string.Empty);
+
+            Profile pfSigner = (String.IsNullOrEmpty(cfiUser) || cfiUser.CompareOrdinal(User.Identity.Name) == 0) ? null : MyFlightbook.Profile.GetUser(cfiUser);
+
+            // Scenario #1: we are not the owner of the flight.  MUST be an instructor of the student or otherwise authorized to do an authenticated signature
+            if (le.User.CompareOrdinal(User.Identity.Name) != 0)
+            {
+                if (!le.CanSignThisFlight(User.Identity.Name, out string error))
+                    throw new UnauthorizedAccessException(error);
+                // If we are here, we are authorized to sign; fall through
+                pfSigner = MyFlightbook.Profile.GetUser(User.Identity.Name);
+            }
+            else
+            {
+                // here we are signed in as the owner of the flight.  MIGHT need to pick an instructor
+                // We have an instructor if (a) pfSigner is non-null, or if (b) an email is provided.
+                // Otherwise, we MUST display UI to pick an instructor.
+                if (pfSigner == null && cfiEmail == null)
+                {
+                    // this is our own flight, need to select an instructor first, though.
+                    ViewBag.fPickSigner = true;
+                    ViewBag.pfTarget = MyFlightbook.Profile.GetUser(User.Identity.Name);
+                    return View("signFlight");
+                }
+            }
+
+            // If we are here, we are OK to offer signing
+            ViewBag.fPickSigner = false;
+            ViewBag.pfTarget = MyFlightbook.Profile.GetUser(User.Identity.Name);
+
+            ViewBag.pfSigner = pfSigner;
+
+            ViewBag.cfiName = pfSigner?.UserFullName ?? cfiName ?? string.Empty;
+            ViewBag.cfiEmail = pfSigner?.Email ?? cfiEmail ?? string.Empty;
+            ViewBag.cfiCert = pfSigner?.Certificate ?? cfiCert ?? string.Empty;
+            ViewBag.cfiExpiration = pfSigner?.CertificateExpiration ?? (DateTime.TryParse(cfiExpiration, out DateTime dt) ? dt : DateTime.MinValue);
+
+            return View("signFlight");
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ActionName("Sign")]
+        [ValidateAntiForgeryToken]
+        public ActionResult SignPost(int id, string cfiUser = null, string cfiEmail = null, string cfiName = null, string cfiCert = null, string cfiExpiration = null, string ret = null)
+        {
+            return SignInternal(id, cfiUser, cfiEmail, cfiName, cfiCert, cfiExpiration, ret);
+        }
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult Sign(int id, string ret = null)
+        {
+            return SignInternal(id, ret: ret);
+        }
+
+        /// <summary>
+        /// Endpoint that is really just backwards compatibility for mobile apps, which pass "?idFlight=" instead of "/id".
+        /// </summary>
+        /// <param name="idFlight"></param>
+        /// <param name="ret"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpGet]
+        public ActionResult SignMobile(int idFlight, string ret = null)
+        {
+            return Redirect(Url.Action("Sign", ControllerContext.RouteData.Values["controller"].ToString(), new { id = idFlight, ret = ret }));
+        }
+        #endregion
+
+        #region Pending Flights
         [Authorize]
         public ActionResult Pending(string id = null)
         {
@@ -779,7 +940,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.pageSize = FlightsPerPageForUser(viewer);
             return View("reviewPending");
         }
+        #endregion
 
+        #region edit a specific flight
         // GET: mvc/FlightEdit
         [Authorize]
         public ActionResult Flight(string id, string fq = null, int clone = -1, int reverse = -1, string src = "", int a = 0)
@@ -844,6 +1007,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             return Flight(string.Empty);
         }
+        #endregion
         #endregion
     }
 }

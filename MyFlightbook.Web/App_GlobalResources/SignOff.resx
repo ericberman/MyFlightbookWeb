@@ -296,7 +296,7 @@
     <value>The flight has been successfully signed</value>
   </data>
   <data name="SignReEnterPassword" xml:space="preserve">
-    <value>Please enter the password for CFI {0}:</value>
+    <value>Password for instructor {0}:</value>
     <comment>{0} is the name of the CFI</comment>
   </data>
   <data name="SignedFlightDisclaimer" xml:space="preserve">

@@ -52,9 +52,12 @@ namespace MyFlightbook
         public const string keyPrefFlightsPerPage = "mfbLogbookDisplayFlightsPerPage";
         public const int DefaultFlightsPerPage = 25;
 
+        // Signing preferences
+        public const string keyPrefCopyFlightToCFI = "copySignedFlights";
+
         public const string keySessLastNewFlight = "sessNewFlightID";
 
-        private const int StyleSheetVer = 59;
+        private const int StyleSheetVer = 60;
 
         public static string BaseStylesheet
         {

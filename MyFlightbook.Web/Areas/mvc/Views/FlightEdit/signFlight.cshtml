@@ -1,0 +1,336 @@
+﻿@using System.Globalization
+@using MyFlightbook.Instruction
+@{
+    ViewBag.defaultTab = tabID.tabLogbook;
+    LogbookEntry le = ViewBag.le;
+    Profile pfTarget = ViewBag.pfTarget;
+    Profile pfSigner = ViewBag.pfSigner;
+    bool fPickSigner = ViewBag.fPickSigner;
+    string szReturnURL = ViewBag.retUrl;
+
+    bool fAdhoc = String.IsNullOrEmpty(pfSigner?.UserName);
+    bool fValidCFIInfo = pfSigner?.CanSignFlights(out string _, le.IsGroundOnly) ?? false;
+    Aircraft ac = new Aircraft(le.AircraftID);
+    MakeModel m = MakeModel.GetModel(ac.ModelID);
+    bool fSICEndorsementEligible = le.SIC > 0 && (m.CategoryClassID == CategoryClass.CatClassID.AMEL || m.EngineType.IsTurbine());
+    int copyPref = (int)(pfSigner?.GetPreferenceForKey(MFBConstants.keyPrefCopyFlightToCFI) ?? 0);
+    bool showNext = !fAdhoc && pfSigner.UserName.CompareCurrentCulture(User.Identity.Name) == 0 && le != null && LogbookEntryBase.PendingSignaturesForStudent(pfSigner, MyFlightbook.Profile.GetUser(le.User)).Count() > 1;
+    ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.SignOff.SignFlightHeader, pfTarget.UserFullName);
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+@if (Request["success"] != null)
+{
+    <div class="success">@Resources.SignOff.SigningSuccess</div>
+}
+else if (fPickSigner)
+{
+    <script type="text/javascript">
+        function selectInstructor(userName) {
+            $("#hdnCFIUser").val(userName);
+            $("#hdnCFIEmail").val('');
+            $("#frmPickInstr")[0].submit();
+        }
+
+        function selectAdHocInstructor(name, cert, email, expiration) {
+            $("#hdnCFIUser").val('');
+            $("#hdnCFIName").val(name);
+            $("#hdnCFICert").val(cert);
+            $("#hdnCFIEmail").val(email);
+            $("#hdnCFIExp").val(expiration);
+            $("#vwPickInstructor").hide();
+            $("#vwAcceptTerms").show();
+        }
+
+        function pickInstructor() {
+            $("#vwPickInstructor").show();
+            $("#vwAcceptTerms").hide();
+            $("#ckAcceptNoSelfSign")[0].checked = false;
+        }
+
+        $(() => {
+            $("#frmPickInstr").validate({
+                errorClass: "error",
+                errorElement: "div",
+                errorPlacement: function (error, element) {
+                    error.insertAfter($("#vwAcceptTerms"));
+                },
+                rules: {
+                    ckNoSelfSign: {
+                        required: true,
+                        minlength: 1
+                    }
+                },
+                messages: {
+                    ckNoSelfSign: "@Resources.SignOff.errAcceptDisclaimer"
+                },
+                highlight: function (element, errorClass) {
+                    $(element).addClass("errorItem");
+                },
+                unhighlight: function (element, errorClass) {
+                    $(element).removeClass("errorItem");
+                }
+            });
+
+        });
+    </script>
+
+    using (Html.BeginForm("Sign", "FlightEdit", FormMethod.Post, new { id = "frmPickInstr", name = "frmPickInstr" }))
+    {
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="id" id="hdnFlightID" value="@le.FlightID" />
+        <input type="hidden" name="cfiUser" id="hdnCFIUser" />
+        <input type="hidden" name="cfiName" id="hdnCFIName" />
+        <input type="hidden" name="cfiCert" id="hdnCFICert" />
+        <input type="hidden" name="cfiEmail" id="hdnCFIEmail" />
+        <input type="hidden" name="cfiExpiration" id="hdnCFIExp" />
+        <input type="hidden" name="ret" value="@szReturnURL" />
+        <div id="vwPickInstructor">
+            <div>@Resources.SignOff.ChooseInstructorsPrompt</div>
+            @{
+                IEnumerable<InstructorStudent> instructors = new CFIStudentMap(User.Identity.Name).Instructors;
+                IDictionary<string, LogbookEntry> adHocInstructors = LogbookEntryBase.PreviouslySignedAdhocFlightsForUser(pfTarget.UserName);
+                List<string> adHocNames = new List<string>(adHocInstructors.Keys);
+                adHocNames.Sort();
+
+                foreach (InstructorStudent instructor in instructors)
+                {
+                    <div class="signFlightInstructorChoice">
+                        <img src="@("~/images/signaturesm.png".ToAbsolute())" style="visibility:hidden" />
+                        <a href="#" onclick="javascript: selectInstructor('@instructor.UserName'); return false;">@instructor.UserFullName</a>
+                    </div>
+                }
+                foreach (string name in adHocNames)
+                {
+                    LogbookEntry leLastSigned = adHocInstructors[name];
+                    string cfiName = adHocInstructors[name].CFIName;
+                    <div class="signFlightInstructorChoice">
+                        <img src="@("~/images/signaturesm.png".ToAbsolute())" alt="@Resources.SignOff.AdHocSignatureTooltip" title="@Resources.SignOff.AdHocSignatureTooltip" />
+                        <a href="#" onclick="javascript: selectAdHocInstructor('@cfiName', '@leLastSigned.CFICertificate', '@leLastSigned.CFIEmail', '@(leLastSigned.CFIExpiration.HasValue() ? leLastSigned.CFIExpiration.YMDString() : string.Empty)'); return false;">@cfiName</a>
+                    </div>
+                }
+            }
+            <div class="signFlightInstructorChoice">
+                <img src="@("~/images/signaturesm.png".ToAbsolute())" alt="@Resources.SignOff.AdHocSignatureTooltip" title="@Resources.SignOff.AdHocSignatureTooltip" />
+                <a href="#" onclick="javascript: selectAdHocInstructor('', '', '', ''); return false;">@Resources.SignOff.NewInstructor</a>
+            </div>
+        </div>
+        <div id="vwAcceptTerms" style="display:none;">
+            <p>@Branding.ReBrand(Resources.SignOff.SignDisclaimerAgreement1)</p>
+            <p style="font-weight:bold">@Branding.ReBrand(Resources.SignOff.SignDisclaimerAgreement2)</p>
+            <p><label><input type="checkbox" id="ckAcceptNoSelfSign" name="ckNoSelfSign" />@Resources.SignOff.SignAcceptResponsibility</label></p>
+            <p style="text-align:center"><button type="button" onclick="javascript: pickInstructor(); return false">@Resources.LocalizedText.PreviousPrompt</button> <button type="submit">@Resources.LocalizedText.NextPrompt</button></p>
+        </div>
+    }
+}
+else
+{
+    <script type="text/javascript" src="@("~/Public/Scripts/autoinsert.js?v=3".ToAbsolute())"></script>
+    <script type="text/javascript" src="@("~/Public/Scripts/xfill.js?v=4".ToAbsolute())"></script>
+    <script type="text/javascript" src="@("~/Public/Scripts/DropDownFilter.js?v=3".ToAbsolute())"></script>
+    <script type="text/javascript" src="@("~/Public/Scripts/ajaxUpload.js?v=6".ToAbsolute())"></script>
+    <script type="text/javascript" src="@("~/Public/Scripts/flightedit.js?v=4".ToAbsolute())"></script>
+
+    <script type="text/javascript">
+        function returnToFlight() {
+            $("#vwEditFlight").html("");
+            $("#divSignFlight").show();
+        }
+
+        function flightUpdated() {
+            var params = new Object();
+            params.idFlight = @le.FlightID;
+            $.ajax({
+                url: '@Url.Action("CompactViewToSign", "Flights")',
+                type: "POST", data: JSON.stringify(params), dataType: "html", contentType: "application/json",
+                error: function (xhr, status, error) { $("#lblErr").text(xhr.responseText); },
+                complete: function (response) { },
+                success: function (response) {
+                    $("#divFlightSummary").html(response);
+                    returnToFlight();
+                }
+            });
+        }
+
+        function editStudentFlight(idFlight) {
+            $("#divSignFlight").hide();
+            var params = new Object();
+            params.idFlight = idFlight;
+            params.targetUser = '@le.User';
+            params.onCancel = 'returnToFlight';
+            params.onSave = 'flightUpdated';
+            $.ajax({
+                url: '@Url.Action("FlightEditorForFlight", "FlightEdit")',
+                type: "POST", data: JSON.stringify(params), dataType: "html", contentType: "application/json",
+                error: function (xhr, status, error) { $("#lblErr").text(xhr.responseText); },
+                complete: function (response) { },
+                success: function (response) { $("#vwEditFlight").html(response); }
+            });
+        }
+
+    function updateDateState(sender) {
+        if (sender.checked) {
+            $("#txtCFIExpiration").val("");
+            $("#txtCFIExpiration").hide();
+        }
+        else
+            $("#txtCFIExpiration").show();
+    }
+
+    function changeSICMode(sender) {
+        $("#txtComments").val(sender.checked ? "@(fSICEndorsementEligible ? @Resources.SignOff.AC135_43SICSignoffTemplate.Replace("[SIC]", MyFlightbook.Profile.GetUser(le.User).UserFullName).Replace("[Route]", String.IsNullOrWhiteSpace(le.Route) ? Resources.SignOff.AC135_43NoRoute : le.Route).Replace("[Date]", le.Date.ToShortDateString()) : string.Empty)" : "");
+        updateCharCount();
+    }
+
+    function updateCharCount() {
+        $('#lblCharCount').text($("#txtComments").val().length + '/250');
+    }
+
+    $(() => {
+        $.validator.addMethod("validDate", function (value, element, param) {
+            if (!element.required && element.value == "")
+                return true;
+            if (element.required && !new RegExp(element.pattern).test(value))
+                return false;
+            var curDate = $(element).datepicker('getDate');
+            return curDate >= new Date();
+        }, "@Resources.LocalizedText.TypeInDateInvalidDate");
+
+        $.validator.addMethod("validateSig", function (value, element, param) {
+            return !$("#signatureCanvas").is(":visible") || $("#hdnSigData").val() != "";
+        }, "@Resources.SignOff.errScribbleRequired");
+
+        $("#frmSignFlight").validate({
+            errorClass: "errorCallout",
+            errorElement: "div",
+            errorPlacement: function (error, element) {
+                error.insertAfter($(element));
+                if (!error.find(".notch").length) {
+                    error.prepend($("<b class='notch'></b>"));
+                }
+            },
+            ignore: ":hidden:not('#hdnSigData')",
+            rules: {
+                cfiName: "required",
+                cfiEmail: "required",
+                cfiCert: "required",
+                hdnSigData: "required",
+                cfiExpiration: { @(le.IsGroundOnly ? string.Empty : "required : true,") validDate: true }
+            },
+            messages: {
+                cfiName: "@Resources.SignOff.errProvideNameToSign",
+                cfiEmail: {
+                    required: "@Resources.SignOff.errEmailMissing",
+                    pattern: "@Resources.SignOff.errInvalidEmail"
+                },
+                cfiCert: "@Resources.SignOff.errMissingCertificate",
+                cfiExpiration: "@Resources.SignOff.errCertificateExpired",
+                cfiPass: "@Resources.SignOff.errPasswordRequiredForSigning",
+                hdnSigData: "@Resources.SignOff.errScribbleRequired"
+            },
+            showErrors: function (errorMap, errorList) {
+                // First remove existing notches
+                this.errorList.forEach(function (error) {
+                    $(error.element).next(".errorCallout").find(".notch").remove();
+                });
+
+                // Call the default showErrors method to display errors
+                this.defaultShowErrors();
+
+                // Add the notch again
+                this.errorList.forEach(function (error) {
+                    $(error.element).next(".errorCallout").prepend($("<b class='notch'></b>"));
+                });
+            },
+            highlight: function (element, errorClass) {
+                $(element).addClass("errorItem");
+            },
+            unhighlight: function (element, errorClass) {
+                $(element).removeClass("errorItem");
+            }
+        });
+
+        $("#txtCFIExpiration").width(280);
+        $("#txtCFIExpiration").attr("required", @Json.Encode(!le.IsGroundOnly));
+    });
+    </script>
+    <p><span style="font-weight: bold;">@Resources.LocalizedText.Note</span> <span class="fineprint">@Branding.ReBrand(Resources.SignOff.SignedFlightDisclaimer)</span></p>
+    <div id="divSignFlight">
+        <div class="signFlightFlightToSign" id="divFlightSummary">
+            @{ Html.RenderAction("ReadOnlyFlightPreview", "Flights", new { idFlight = le.FlightID }); }
+        </div>
+        <div class="signFlightSignatureBlock">
+            <h2 style="display: flex; flex-direction: row; align-items: center;"><img src="@("~/images/sigok.png".ToAbsolute())" style="margin-right: .5em;" /> @Resources.SignOff.SignFlightAffirmation @(pfSigner?.UserFullName ?? string.Empty)</h2>
+            @using (Html.BeginForm("SignFlightForUser", "FlightEdit", FormMethod.Post, new { id = "frmSignFlight", name = "frmSignFlight" }))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="idFlight" value="@le.FlightID" />
+                <input type="hidden" name="ret" value="@szReturnURL" />
+                <input type="hidden" name="cfiUserName" value="@(pfSigner?.UserName ?? string.Empty)" />
+                if (fAdhoc)
+                {
+                    <div style="font-weight: bold;">@Resources.SignOff.EditEndorsementInstructorPrompt</div>
+                    <div><input type="text" style="width: 280px;" id="txtCFIName" name="cfiName" value="@ViewBag.cfiName" required /></div>
+                    <div style="font-weight: bold;">@Resources.SignOff.CFIEmail</div>
+                    <div><input type="email" style="width: 280px;" id="txtCFIEmail" name="cfiEmail" value="@ViewBag.cfiEmail" required /></div>
+                }
+                if (fAdhoc || !fValidCFIInfo)
+                {
+                    <div><span style="font-weight: bold;">@Resources.SignOff.EditEndorsementCFIPrompt</span> @(fAdhoc || !fValidCFIInfo ? string.Empty : ViewBag.cfiCert)</div>
+                    <div><input type="text" required style="width: 280px;" id="txtCFICert" name="cfiCert" value="@ViewBag.cfiCert" /></div>
+                    <div><span style="font-weight: bold;">@Resources.SignOff.EditEndorsementExpirationPrompt</span><label><input type="checkbox" id="ckATP" name="ckATP" onchange="javascript: updateDateState(this);" />@Resources.SignOff.SignFlightATP</label></div>
+                    <div>@{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "txtCFIExpiration", name = "cfiExpiration", value = ViewBag.cfiExpiration }); }</div>
+                }
+                else
+                {
+                    <div style="font-weight: bold;">@Resources.SignOff.EditEndorsementCFIPrompt @ViewBag.cfiCert</div>
+                    <div><span style="font-weight: bold;">@Resources.SignOff.EditEndorsementExpirationPrompt</span> @(ViewBag.cfiExpiration?.ToShortDateString() ?? string.Empty)</div>
+                }
+                if (!String.IsNullOrEmpty(pfSigner?.UserName ?? string.Empty) && pfSigner.UserName.CompareCurrentCulture(User.Identity.Name) != 0)
+                {
+                    <div style="font-weight: bold;">@String.Format(CultureInfo.CurrentCulture, Resources.SignOff.SignReEnterPassword, pfSigner.PreferredGreeting)</div>
+                    <input type="password" required id="txtPassConfirm" name="cfiPass" style="width: 280px;" autocomplete="off" data-1p-ignore data-bwignore data-lpignore="true" data-form-type="other" />
+                }
+                <div style="width: 280px;"><span style="font-weight: bold;">@Resources.SignOff.CFIComments</span> <span class="fineprint" style="float:right" id="lblCharCount">0/250</span></div>
+                if (fSICEndorsementEligible)
+                {
+                    <div><label><input type="checkbox" name="ckSIC" onchange="javascript: changeSICMode(this);" />@Resources.SignOff.PromptUseAC13543ForSIC</label></div>
+                }
+                <div id="vwEditComments"><textarea id="txtComments" name="cfiComments" rows="3" style="width: 280px;" oninput="javascript: updateCharCount();" maxlength="250">@(ViewBag.cfiComments ?? string.Empty)</textarea></div>
+                if (fAdhoc)
+                {
+                    <div style="font-weight: bold;">@Resources.SignOff.PromptSignature</div>
+                    <div id="newScribble" style="display:inline-block;">
+                        @{ Html.RenderAction("RenderScribble", "Training", new { colorRef = "#0000ff" }); }
+                    </div>
+                }
+                else
+                {
+                    <div><label><input type="checkbox" id="ckCopyFlight" name="fCopyFlight" value="" onchange="javascript: $('#divCfiCopyOpt').toggle();" @((copyPref != 0).ToChecked()) />@String.Format(CultureInfo.CurrentCulture, Resources.SignOff.SignFlightCopy, pfSigner.UserFullName)</label></div>
+                    <div id="divCfiCopyOpt" style="@(copyPref == 0 ? "display: none;" : string.Empty)">
+                        <div>
+                            <div style="display:inline-block; vertical-align: top;"><input type="radio" id="rbCopyPending" name="copyOpt" @((copyPref != 2).ToChecked()) value="pending" /></div>
+                            <div style="display: inline-block">
+                                <label for="rbCopyPending">@Resources.SignOff.SignFlightCopyPending</label><br />
+                                <label for="rbCopyPending" class="fineprint">@Resources.SignOff.SignFlightCopyPendingNote</label>
+                            </div>
+                        </div>
+                        <div><label><input type="radio" name="copyOpt" value="live" @((copyPref == 2).ToChecked()) />@Resources.SignOff.SignFlightCopyLive</label></div>
+                    </div>
+                }
+                <div style="text-align:center; margin-top: 20pt;">
+                    @if (!String.IsNullOrEmpty(szReturnURL))
+                    {
+                        <button type="button" onclick="javascript: window.location = '@szReturnURL';">@Resources.SignOff.CancelSignFlight</button>
+                    }
+                    <button type="submit" name="btnSubmit" value="submit">@Resources.SignOff.SignFlight</button>
+                    @if (showNext)
+                    {
+                        <button type="submit" name="btnSubmit" value="submitNext">@Resources.SignOff.SignFlightAndNext</button>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+    <div id="vwEditFlight"></div>
+    <div id="lblErr" class="error">@(ViewBag.error ?? string.Empty)</div>
+}

@@ -1345,7 +1345,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please enter the password for CFI {0}:.
+        ///   Looks up a localized string similar to Password for instructor {0}:.
         /// </summary>
         internal static string SignReEnterPassword {
             get {

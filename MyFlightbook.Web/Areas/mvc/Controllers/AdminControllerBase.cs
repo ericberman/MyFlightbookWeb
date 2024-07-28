@@ -151,5 +151,30 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             }
         }
         #endregion
+
+        #region Utilities for redirecting based on passed query parameters
+        /// <summary>
+        /// Determines if a specified url fragment passed as a parameter is "safe" to return to: specifically, it's not empty, and it's relative (so it stays on this site).
+        /// If safe, redirects to it; otherwise, redirects to the fallback
+        /// </summary>
+        /// <param name="retHref">The "Return" parameter</param>
+        /// <param name="hrefFallback">The fallback redirect</param>
+        /// <returns></returns>
+        protected ActionResult SafeRedirect(string retHref, string hrefFallback)
+        {
+            return Redirect(SafeRedirectParam(retHref, hrefFallback));
+        }
+
+        /// <summary>
+        /// Returns a safe-to-use relative URI string from possibly user-tainted data (e.g.., a query string)
+        /// </summary>
+        /// <param name="href">The passed parameter</param>
+        /// <param name="hrefFallback">An optional fallback to use, if the parameter is unsafe</param>
+        /// <returns>The passed href if it is strictly relative, otherwise the hrefFallBack, if provided, else an empty string</returns>
+        protected static string SafeRedirectParam(string href, string hrefFallback = null)
+        {
+            return !String.IsNullOrWhiteSpace(href) && Uri.IsWellFormedUriString(href, UriKind.Relative) ? href : hrefFallback ?? string.Empty;
+        }
+        #endregion
     }
 }

@@ -43,7 +43,7 @@ namespace MyFlightbook.PublicPages
                 { "ACCOUNT", "~/Member/EditProfile.aspx/pftAccount"},
                 { "BIGREDBUTTONS", "~/Member/EditProfile.aspx/pftBigRedButtons"},
                 { "CONTACT", "~/public/ContactMe.aspx"},
-                { "SIGNENTRY", "~/public/SignEntry.aspx"}
+                { "SIGNENTRY", "~/mvc/flightedit/SignMobile"}
         };
 
         private readonly static Dictionary<string, string> dictAdditionalParams = new Dictionary<string, string>()

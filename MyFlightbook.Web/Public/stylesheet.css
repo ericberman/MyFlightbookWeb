@@ -237,6 +237,7 @@ input[type=text], input[type=password], input[type=number], input[type=email], i
     border-radius: 5pt;
     box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
     margin-top: 4pt;
+    margin-left: 1.5em;
 }
 
 .errorCallout .notch {

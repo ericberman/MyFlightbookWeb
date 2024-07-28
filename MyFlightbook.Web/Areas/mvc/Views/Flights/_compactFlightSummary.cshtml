@@ -1,0 +1,74 @@
+﻿@{ 
+    LogbookEntry le = ViewBag.le;
+    MyFlightbook.Profile CurrentUser = MyFlightbook.Profile.GetUser(User.Identity.Name);
+
+    // Only allow editing if the CFI is:
+    // a) authenticated (i.e., not ad-hoc signing)
+    // b) signed in (no need for a password)
+    // c) named on the flight (i.e., the flight is awaiting this CFI's signature or has previously signed it)
+    bool fAllowEdit = User.Identity.IsAuthenticated && User.Identity.Name.CompareOrdinal(le.User) != 0 && le.CanEditThisFlight(User.Identity.Name);
+}
+<table>
+    <tr style="vertical-align: text-top">
+        <td colspan="4">
+            <div><span style="font-weight: bold; font-size:larger">@le.Date.ToShortDateString() @le.TailNumDisplay</span> (@le.CatClassDisplay @le.ModelDisplay)</div>
+            <div><span style="font-weight:bold;">@le.Route</span> @le.Comment</div>
+        </td>
+    </tr>
+    <tr style="vertical-align: text-top">
+        <td><span style="font-weight: bold">@Resources.LogbookEntry.FieldLanding</span></td>
+        <td>@le.Landings.FormatInt()</td>
+        <td><span style="font-weight: bold">@Resources.LogbookEntry.FieldNightLandings</span></td>
+        <td>@le.NightLandings.FormatInt()</td>
+    </tr>
+    <tr style="vertical-align: text-top">
+        <td><span style="font-weight: bold">@Resources.LogbookEntry.FieldApproaches</span></td>
+        <td>@le.Approaches.FormatInt()</td>
+        <td><span style="font-weight: bold">@Resources.LogbookEntry.FieldHold</span></td>
+        <td>@le.fHoldingProcedures.FormatBoolean()</td>
+    </tr>
+    <tr style="vertical-align: text-top">
+        <td><span style="font-weight: bold">@Resources.LogbookEntry.FieldXCountry</span></td>
+        <td>@le.CrossCountry.FormatDecimal(CurrentUser.UsesHHMM)</td>
+        <td><span style="font-weight: bold">@Resources.LogbookEntry.FieldNight</span></td>
+        <td>@le.Nighttime.FormatDecimal(CurrentUser.UsesHHMM)</td>
+    </tr>
+    <tr style="vertical-align: text-top">
+        <td><span style="font-weight: bold">@Resources.LogbookEntry.FieldSimIMCFull</span></td>
+        <td>@le.SimulatedIFR.FormatDecimal(CurrentUser.UsesHHMM)</td>
+        <td><span style="font-weight: bold">@Resources.LogbookEntry.FieldIMC</span></td>
+        <td>@le.IMC.FormatDecimal(CurrentUser.UsesHHMM)</td>
+    </tr>
+    <tr style="vertical-align: text-top">
+        <td><span style="font-weight: bold">@Resources.LogbookEntry.FieldGroundSimFull</span></td>
+        <td>@le.GroundSim.FormatDecimal(CurrentUser.UsesHHMM)</td>
+        <td><span style="font-weight: bold">@Resources.LogbookEntry.FieldDual</span></td>
+        <td>@le.Dual.FormatDecimal(CurrentUser.UsesHHMM)</td>
+    </tr>
+    <tr style="vertical-align: text-top">
+        <td><span style="font-weight: bold">@Resources.LogbookEntry.FieldCFI</span></td>
+        <td>@le.CFI.FormatDecimal(CurrentUser.UsesHHMM)</td>
+        <td><span style="font-weight: bold">@Resources.LogbookEntry.FieldSIC</span></td>
+        <td>@le.SIC.FormatDecimal(CurrentUser.UsesHHMM)</td>
+    </tr>
+    <tr style="vertical-align: text-top">
+        <td><span style="font-weight: bold">@Resources.LogbookEntry.FieldPIC</span></td>
+        <td>@le.PIC.FormatDecimal(CurrentUser.UsesHHMM)</td>
+        <td><span style="font-weight: bold">@Resources.LogbookEntry.FieldTotal</span></td>
+        <td>@le.TotalFlightTime.FormatDecimal(CurrentUser.UsesHHMM)</td>
+    </tr>
+    <tr style="vertical-align: text-top">
+        <td colspan="4">
+            @foreach (CustomFlightProperty cfp in le.CustomProperties)
+            {
+                <div>@(CurrentUser.UsesHHMM ? cfp.DisplayStringHHMM : cfp.DisplayString)</div>
+            }
+        </td>
+    </tr>
+    @if (fAllowEdit)
+    {
+        <tr style="vertical-align: text-top">
+            <td colspan="4"><a href="#" onclick="javascript: editStudentFlight(@le.FlightID); return false;"><img src="@("~/images/pencilsm.png".ToAbsolute())" style="padding-right: 4px;" /> @Resources.SignOff.InstructorEditFlightPrompt</a></td>
+        </tr>
+    }
+</table>

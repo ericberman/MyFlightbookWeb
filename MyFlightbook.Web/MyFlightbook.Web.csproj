@@ -1611,6 +1611,8 @@
     <Content Include="Areas\mvc\Views\Flights\miniLogbook.cshtml" />
     <Content Include="Areas\mvc\Views\Flights\logbook.cshtml" />
     <Content Include="Areas\mvc\Views\FlightEdit\editFlight.cshtml" />
+    <Content Include="Areas\mvc\Views\Flights\_compactFlightSummary.cshtml" />
+    <Content Include="Areas\mvc\Views\FlightEdit\signFlight.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />

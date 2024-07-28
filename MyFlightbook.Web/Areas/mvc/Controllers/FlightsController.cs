@@ -187,6 +187,16 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #endregion
 
         [HttpPost]
+        [Authorize]
+        public ActionResult CompactViewToSign(int idFlight)
+        {
+            return SafeOp(() =>
+            {
+                return ReadOnlyFlightPreview(idFlight);
+            });
+        }
+
+        [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
         public ActionResult DeleteFlightForUser(string rgFlights)
@@ -580,6 +590,13 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return PartialView("_logbookTable");
         }
         #endregion
+
+        [ChildActionOnly]
+        public ActionResult ReadOnlyFlightPreview(int idFlight)
+        {
+            ViewBag.le = GetFlightToView(idFlight, false);
+            return PartialView("_compactFlightSummary");
+        }
         #endregion
 
         #region Visible Endpoints

@@ -269,7 +269,7 @@ else
                         {
                             if (led.CFISignatureState != LogbookEntryCore.SignatureState.Valid)
                             {
-                                <a href="#" onclick="javascript: signFlight('@String.Format(CultureInfo.InvariantCulture, "~/Member/SignFlight.aspx?idFlight={0}", led.FlightID).ToAbsoluteURL(Request)'); return false;">
+                                <a href="#" onclick="javascript: signFlight('@String.Format(CultureInfo.InvariantCulture, "~/mvc/flightedit/Sign/{0}?ret={1}", led.FlightID, HttpUtility.UrlEncode(Request.Url.PathAndQuery)).ToAbsoluteURL(Request)'); return false;">
                                     <img src="@("~/images/signaturesm.png".ToAbsolute())" style="margin-right: 3px;" alt="@((led.CFISignatureState == LogbookEntry.SignatureState.Invalid) ? Resources.SignOff.LogbookResign : Resources.SignOff.LogbookSign)" title="@((led.CFISignatureState == LogbookEntry.SignatureState.Invalid) ? Resources.SignOff.LogbookResign : Resources.SignOff.LogbookSign)" />
                                 </a>
                             }
