@@ -594,7 +594,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [ChildActionOnly]
         public ActionResult ReadOnlyFlightPreview(int idFlight)
         {
-            ViewBag.le = GetFlightToView(idFlight, false);
+            ViewBag.le = GetFlightToView(idFlight, false, true);
             return PartialView("_compactFlightSummary");
         }
         #endregion
@@ -750,22 +750,30 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         #region Flight Details
         #region Details helpers
-        private LogbookEntryDisplay GetFlightToView(int idFlight, bool fAdminMode)
+        private LogbookEntryDisplay GetFlightToView(int idFlight, bool fAdminMode, bool fAsSigner = false)
         {
             // Anyone can *say* they're admin, so treat the flag above as a request.  Trust but verify
             bool fIsAdmin = fAdminMode && MyFlightbook.Profile.GetUser(User.Identity.Name).CanSupport;
 
             // Check to see if the requested flight belongs to the current user, or if they're authorized.
-            string szFlightOwner = LogbookEntryBase.OwnerForFlight(idFlight);
-            if (String.IsNullOrEmpty(szFlightOwner))
+            LogbookEntryDisplay le = new LogbookEntryDisplay(idFlight, User.Identity.Name, LogbookEntryCore.LoadTelemetryOption.LoadAll, true);
+            if (le.IsNewFlight)
                 throw new UnauthorizedAccessException(Resources.LogbookEntry.errNoSuchFlight);
 
             // Can view if we are an admin or if we own the flight
-            if (!fIsAdmin && szFlightOwner.CompareCurrentCulture(User.Identity.Name) != 0)
-                CheckCanViewFlights(szFlightOwner, User.Identity.Name);
+            if (!fIsAdmin && le.User.CompareCurrentCulture(User.Identity.Name) != 0)
+            {
+                if (fAsSigner)
+                {
+                    if (!le.CanSignThisFlight(User.Identity.Name, out string err))
+                        throw new UnauthorizedAccessException(err);
+                } 
+                else
+                    CheckCanViewFlights(le.User, User.Identity.Name);
+            }
 
             // If we're here, we can view the flight
-            return new LogbookEntryDisplay(idFlight, szFlightOwner, LogbookEntryCore.LoadTelemetryOption.LoadAll);
+            return le;
         }
 
         private FlightQuery ProcessDetailsQuery(string szFlightOwner, string fqCompressedJSON, bool fPropDeleteClicked, string propToDelete)
