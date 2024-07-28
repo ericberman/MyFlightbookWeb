@@ -348,11 +348,10 @@
             <div id="divACList">
                 @foreach (Aircraft ac in ViewBag.aircraft)
                 {
-                    string szID = String.Format(CultureInfo.InvariantCulture, "ckAc{0}", ac.AircraftID);
                     bool fDecluttered = ac.HideFromSelection && !fq.AircraftList.Contains(ac);
 
                     <div class="@(fDecluttered ? "decluttered" : "alwaysVisible")" style="width:17%;">
-                        <input type="checkbox" name="cklAircraft" id="@szID" value="@ac.AircraftID" @(fq.AircraftList.Contains(ac) ? "checked" : string.Empty) /><label for="@szID">@ac.TailNumber</label>
+                        <label><input type="checkbox" name="cklAircraft" value="@ac.AircraftID" @(fq.AircraftList.Contains(ac) ? "checked" : string.Empty) />@ac.DisplayTailnumber</label>
                     </div>
                 }
             </div>
