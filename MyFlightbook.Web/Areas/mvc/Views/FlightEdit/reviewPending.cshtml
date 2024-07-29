@@ -39,6 +39,6 @@ else
             @(rgpf.Count() == 1 ? Resources.LogbookEntry.NumberOfFlightsOne : String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.NumberOfFlights, rgpf.Count())) <img src="@("~/images/progress.gif".ToAbsolute())" style="display:none; height: 12pt; width: 12pt;" id="prgPendingPager" />
         </p>
         <div id="divPendingTable"></div>
-        <p><a href="" style="cursor:pointer" onclick="javascript: deleteAllPendingFlights();">@Resources.LogbookEntry.ReviewPendingFlightsDelete</a></p>
+        <p><a href="#" onclick="javascript: return deleteAllPendingFlights();">@Resources.LogbookEntry.ReviewPendingFlightsDelete</a></p>
     }
 }
