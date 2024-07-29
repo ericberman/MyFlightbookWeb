@@ -91,10 +91,24 @@ else if (fPickSigner)
                 IDictionary<string, LogbookEntry> adHocInstructors = LogbookEntryBase.PreviouslySignedAdhocFlightsForUser(pfTarget.UserName);
                 List<string> adHocNames = new List<string>(adHocInstructors.Keys);
                 adHocNames.Sort();
+                DateTime dtNow = DateTime.Now.Date;
+                int cExpired = instructors.Count(inst => inst.CertificateExpiration.CompareTo(dtNow) < 0) + adHocInstructors.Values.Count(l => l.CFIExpiration.CompareTo(dtNow) < 0);
+                int cInstructors = instructors.Count() + adHocNames.Count;
+                bool fShowMore = cExpired > 0 && cExpired < cInstructors;
+
+                if (fShowMore)
+                {
+                    <style type="text/css">
+                        .expiredCert {
+                            display: none;
+                        }
+                    </style>
+                }
 
                 foreach (InstructorStudent instructor in instructors)
                 {
-                    <div class="signFlightInstructorChoice">
+                    bool fExpired = instructor.CertificateExpiration.CompareTo(dtNow) < 0;
+                    <div class="signFlightInstructorChoice @(fExpired ? "expiredCert" : string.Empty)">
                         <img src="@("~/images/signaturesm.png".ToAbsolute())" style="visibility:hidden" />
                         <a href="#" onclick="javascript: selectInstructor('@instructor.UserName'); return false;">@instructor.UserFullName</a>
                     </div>
@@ -102,8 +116,9 @@ else if (fPickSigner)
                 foreach (string name in adHocNames)
                 {
                     LogbookEntry leLastSigned = adHocInstructors[name];
+                    bool fExpired = leLastSigned.CFIExpiration.CompareTo(dtNow) < 0;
                     string cfiName = adHocInstructors[name].CFIName;
-                    <div class="signFlightInstructorChoice">
+                    <div class="signFlightInstructorChoice @(fExpired ? "expiredCert" : string.Empty)">
                         <img src="@("~/images/signaturesm.png".ToAbsolute())" alt="@Resources.SignOff.AdHocSignatureTooltip" title="@Resources.SignOff.AdHocSignatureTooltip" />
                         <a href="#" onclick="javascript: selectAdHocInstructor('@cfiName', '@leLastSigned.CFICertificate', '@leLastSigned.CFIEmail', '@(leLastSigned.CFIExpiration.HasValue() ? leLastSigned.CFIExpiration.YMDString() : string.Empty)'); return false;">@cfiName</a>
                     </div>
@@ -113,6 +128,10 @@ else if (fPickSigner)
                 <img src="@("~/images/signaturesm.png".ToAbsolute())" alt="@Resources.SignOff.AdHocSignatureTooltip" title="@Resources.SignOff.AdHocSignatureTooltip" />
                 <a href="#" onclick="javascript: selectAdHocInstructor('', '', '', ''); return false;">@Resources.SignOff.NewInstructor</a>
             </div>
+            @if (fShowMore)
+            {
+                <div style="font-weight: bold; margin-top: 18pt;" id="divShowAllInstructors"><a href="#" onclick="javascript: $('.expiredCert').show(); $(this).hide(); return false;">@Resources.LogbookEntry.SearchAllProperties</a></div>
+            }
         </div>
         <div id="vwAcceptTerms" style="display:none;">
             <p>@Branding.ReBrand(Resources.SignOff.SignDisclaimerAgreement1)</p>

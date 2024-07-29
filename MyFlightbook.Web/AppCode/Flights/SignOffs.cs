@@ -476,7 +476,7 @@ namespace MyFlightbook.Instruction
             tw.RenderBeginTag(HtmlTextWriterTag.Tr);
             tw.AddAttribute("colspan", "2");
             tw.RenderBeginTag(HtmlTextWriterTag.Td);
-            if (!HasDigitizedSig)
+            if (!IsAdHocEndorsement)
             {
                 tw.AddAttribute("style", "float:right; margin: 3px;");
                 tw.AddAttribute("title", Resources.SignOff.EndorsementValid);

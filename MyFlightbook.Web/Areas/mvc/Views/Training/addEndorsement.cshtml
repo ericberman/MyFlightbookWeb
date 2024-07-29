@@ -6,8 +6,18 @@
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
 }
 <script type="text/javascript">
+    function selectAdHocInstructor(name, cert, email, expiration) {
+        $("#hdnCfiName").val(name);
+        $("#hdnCfiCert").val(cert);
+        $("#hdnCfiEmail").val(email);
+        $("#hdnCfiExpiration").val(expiration);
+        $("#ckAccept")[0].checked = false;
+        selectInstructor('', false);
+    }
+
     function selectInstructor(value, confirmed) {
         $("#lblErr").text("");
+        $("#hdnCfiUsername").val(value);
         if (value == "") {
             if (!confirmed) {
                 if ($("#vwAcceptTerms").is(":visible")) {
@@ -19,6 +29,8 @@
                 }
                 return;
             }
+            else
+                $("#ckAccept")[0].checked = true;
         }
 
         var form = $("#frmSelectInstr");
@@ -35,25 +47,67 @@
         });
     }
 </script>
-<h2>@Resources.SignOff.EditEndorsementAddEndorsement</h2>
 @using (Html.BeginForm("", "Training", FormMethod.Post, new { id = "frmSelectInstr", name = "frmSelectInstr" }))
 {
     <div id="vwPickInstructor" style="display: @(sm.Instructors.Any() ? "block" : "none")">
         @Resources.SignOff.ChooseInstructorsPrompt
-        <select id="cmbInstructors" name="selectedInstructor" onchange="javascript: selectInstructor(this.value, false);">
-            <option selected value="">@Resources.SignOff.NewInstructor</option>
-            @foreach (InstructorStudent inst in sm.Instructors)
+        <input type="hidden" id="hdnCfiName" name="cfiName" />
+        <input type="hidden" id="hdnCfiCert" name="cfiCert" />
+        <input type="hidden" id="hdnCfiEmail" name="cfiEmail" />
+        <input type="hidden" id="hdnCfiExpiration" name="cfiExpiration" />
+        <input type="hidden" id="hdnCfiUsername" name="selectedInstructor" />
+        @{
+            IEnumerable<InstructorStudent> instructors = new CFIStudentMap(User.Identity.Name).Instructors;
+            IDictionary<string, LogbookEntry> adHocInstructors = LogbookEntryBase.PreviouslySignedAdhocFlightsForUser(User.Identity.Name);
+            List<string> adHocNames = new List<string>(adHocInstructors.Keys);
+            adHocNames.Sort();
+            DateTime dtNow = DateTime.Now.Date;
+            int cExpired = instructors.Count(inst => inst.CertificateExpiration.CompareTo(dtNow) < 0) + adHocInstructors.Values.Count(l => l.CFIExpiration.CompareTo(dtNow) < 0);
+            int cInstructors = instructors.Count() + adHocNames.Count;
+            bool fShowMore = cExpired > 0 && cExpired < cInstructors;
+
+            if (fShowMore)
             {
-                <option value="@inst.UserName">@inst.UserFullName</option>
+                <style type="text/css">
+                    .expiredCert {
+                        display: none;
+                    }
+                </style>
             }
-        </select>
-        <button type="button" onclick="javascript: selectInstructor($('#cmbInstructors').val(), false);">@Resources.LocalizedText.NextPrompt</button>
+
+            foreach (InstructorStudent instructor in instructors)
+            {
+                bool fExpired = instructor.CertificateExpiration.CompareTo(dtNow) < 0;
+                <div class="signFlightInstructorChoice @(fExpired ? "expiredCert" : string.Empty)">
+                    <img src="@("~/images/signaturesm.png".ToAbsolute())" style="visibility:hidden" />
+                    <a href="#" onclick="javascript: selectInstructor('@instructor.UserName', true); return false;">@instructor.UserFullName</a>
+                </div>
+            }
+            foreach (string name in adHocNames)
+            {
+                LogbookEntry leLastSigned = adHocInstructors[name];
+                bool fExpired = leLastSigned.CFIExpiration.CompareTo(dtNow) < 0;
+                string cfiName = adHocInstructors[name].CFIName;
+                <div class="signFlightInstructorChoice @(fExpired ? "expiredCert" : string.Empty)">
+                    <img src="@("~/images/signaturesm.png".ToAbsolute())" alt="@Resources.SignOff.AdHocSignatureTooltip" title="@Resources.SignOff.AdHocSignatureTooltip" />
+                    <a href="#" onclick="javascript: selectAdHocInstructor('@cfiName', '@leLastSigned.CFICertificate', '@leLastSigned.CFIEmail', '@(leLastSigned.CFIExpiration.HasValue() ? leLastSigned.CFIExpiration.YMDString() : string.Empty)'); return false;">@cfiName</a>
+                </div>
+            }
+            <div class="signFlightInstructorChoice">
+                <img src="@("~/images/signaturesm.png".ToAbsolute())" alt="@Resources.SignOff.AdHocSignatureTooltip" title="@Resources.SignOff.AdHocSignatureTooltip" />
+                <a href="#" onclick="javascript: selectAdHocInstructor('', '', '', ''); return false;">@Resources.SignOff.NewInstructor</a>
+            </div>
+            if (fShowMore)
+            {
+                <div style="font-weight: bold; margin-top: 18pt;" id="divShowAllInstructors"><a href="#" onclick="javascript: $('.expiredCert').show(); $(this).hide(); return false;">@Resources.LogbookEntry.SearchAllProperties</a></div>
+            }
+        }
     </div>
     <div id="vwAcceptTerms" style="display: @(sm.Instructors.Any() ? "none" : "block")">
         <p>@Branding.ReBrand(Resources.SignOff.SignDisclaimerAgreement1)</p>
         <p style="font-weight:bold">@Branding.ReBrand(Resources.SignOff.SignDisclaimerAgreement2)</p>
         <p><label><input type="checkbox" name="acceptSelfSign" id="ckAccept" />@Resources.SignOff.SignAcceptResponsibility</label></p>
-        <p style="text-align:center"><button type="button" onclick="javascript: selectInstructor($('#cmbInstructors').val(), $('#ckAccept')[0].checked);">@Resources.LocalizedText.NextPrompt</button></p>
+        <p style="text-align:center"><button type="button" onclick="javascript: selectInstructor('', $('#ckAccept')[0].checked);">@Resources.LocalizedText.NextPrompt</button></p>
     </div>
     @Html.AntiForgeryToken();
 }

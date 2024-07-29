@@ -4,11 +4,11 @@
     string targetUser = ViewBag.targetUser;
     string sourceUser = ViewBag.sourceUser;
     MyFlightbook.Profile pfTargetUser = MyFlightbook.Profile.GetUser(targetUser);
-    MyFlightbook.Profile pfSourceUser = MyFlightbook.Profile.GetUser(sourceUser);
+    EndorsementMode mode = ViewBag.mode;
+    MyFlightbook.Profile pfSourceUser = (mode == EndorsementMode.StudentPullAdHoc) ? null : MyFlightbook.Profile.GetUser(sourceUser);
     EndorsementType template = ViewBag.template;
     Endorsement source = ViewBag.source;
     Endorsement.StudentTypes studentType = ViewBag.studentType;
-    EndorsementMode mode = ViewBag.mode;
 }
 <script type="text/javascript">
     $(() => {
@@ -102,7 +102,7 @@
                 </td>
             </tr>
             <tr style="@(mode == EndorsementMode.StudentPullAuthenticated ? string.Empty : "display: none;")">
-                <td style="font-weight: bold">@String.Format(CultureInfo.CurrentCulture, Resources.SignOff.SignReEnterPassword, pfSourceUser.UserFullName)</td>
+                <td style="font-weight: bold">@String.Format(CultureInfo.CurrentCulture, Resources.SignOff.SignReEnterPassword, pfSourceUser?.UserFullName ?? string.Empty)</td>
                 <td><input type="password" name="instructorPass" required /></td>
             </tr>
             <tr>
@@ -110,7 +110,7 @@
                 <td>
                     @if (mode == EndorsementMode.StudentPullAdHoc)
                     {
-                        <input type="text" required name="cfiName" value="@(pfSourceUser?.UserFullName ?? string.Empty)" />
+                        <input type="text" required name="cfiName" value="@(pfSourceUser?.UserFullName ?? Request["cfiName"] ?? string.Empty)" />
                     }
                     else
                     {
@@ -124,7 +124,7 @@
                 <td>
                     @if (mode == EndorsementMode.StudentPullAdHoc)
                     {
-                    <input type="text" required name="cfiCert" value="@(pfSourceUser?.Certificate ?? string.Empty)" />
+                    <input type="text" required name="cfiCert" value="@(pfSourceUser?.Certificate ?? Request["cfiCert"] ?? string.Empty)" />
                     }
                     else
                     {
@@ -138,7 +138,7 @@
                 <td>
                     @if (mode == EndorsementMode.StudentPullAdHoc)
                     {
-                        <input type="date" name="cfiCertExpiration" value="@(pfSourceUser?.CertificateExpiration == null ? string.Empty : pfSourceUser.CertificateExpiration.YMDString())" />
+                        <input type="date" name="cfiCertExpiration" value="@(pfSourceUser?.CertificateExpiration.YMDString() ?? (DateTime.TryParse(Request["cfiExpiration"] ?? string.Empty, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime dtExp) ? dtExp.YMDString() : string.Empty))" />
                     }
                     else
                     {
