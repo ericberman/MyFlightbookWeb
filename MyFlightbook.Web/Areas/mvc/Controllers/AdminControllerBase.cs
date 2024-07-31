@@ -21,6 +21,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         /// <exception cref="UnauthorizedAccessException"></exception>
         protected void CheckAuth(uint roleMask)
         {
+            if (ShuntState.IsShunted)
+                throw new MyFlightbookException(ShuntState.ShuntMessage);
+
             if (!User.Identity.IsAuthenticated || (((uint)MyFlightbook.Profile.GetUser(User.Identity.Name).Role & roleMask) == 0))
                 throw new UnauthorizedAccessException("Attempt to access an admin page by an unauthorized user: " + User.Identity.Name);
         }
@@ -98,6 +101,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             if (func == null) throw new ArgumentNullException(nameof(func));
             try
             {
+                if (ShuntState.IsShunted)
+                    throw new MyFlightbookException(ShuntState.ShuntMessage);
                 return func();
             }
             catch (Exception ex) when (!(ex is OutOfMemoryException))
@@ -119,6 +124,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             if (func == null) throw new ArgumentNullException(nameof(func));
             try
             {
+                if (ShuntState.IsShunted)
+                    throw new MyFlightbookException(ShuntState.ShuntMessage);
                 return func();
             }
             catch (Exception ex) when (!(ex is OutOfMemoryException))
@@ -141,6 +148,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             if (func == null) throw new ArgumentNullException(nameof(func));
             try
             {
+                if (ShuntState.IsShunted)
+                    throw new MyFlightbookException(ShuntState.ShuntMessage);
                 return await func();
             }
             catch (Exception ex) when (!(ex is OutOfMemoryException))
