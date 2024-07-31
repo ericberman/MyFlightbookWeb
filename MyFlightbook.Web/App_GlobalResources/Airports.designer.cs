@@ -538,6 +538,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The codes &quot;ZZZZ&quot; and &quot;AFIL&quot; are reserved; please use a different code..
+        /// </summary>
+        internal static string errReservedCode {
+            get {
+                return ResourceManager.GetString("errReservedCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to TBD is not a valid airport code - it means &quot;To Be Determined!&quot;.
         /// </summary>
         internal static string errTBDIsInvalidCode {

@@ -789,6 +789,9 @@ namespace MyFlightbook.Airports
                 if (!LatLong.IsValid)
                     throw new MyFlightbookException(LatLong.ValidationError);
 
+                if (Code.CompareCurrentCultureIgnoreCase("ZZZZ") == 0 || Code.CompareCurrentCultureIgnoreCase("AFIL") == 0)
+                    throw new MyFlightbookException(Resources.Airports.errReservedCode);
+
                 NavAidTypes[] rgNavAidTypes = NavAidTypes.GetKnownTypes();
                 Boolean fIsKnownType = false;
                 foreach (NavAidTypes navaidtype in rgNavAidTypes)

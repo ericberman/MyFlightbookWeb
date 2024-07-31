@@ -366,4 +366,7 @@
   <data name="errDuplicateAirportTitle" xml:space="preserve">
     <value>Possible Duplicate</value>
   </data>
+  <data name="errReservedCode" xml:space="preserve">
+    <value>The codes "ZZZZ" and "AFIL" are reserved; please use a different code.</value>
+  </data>
 </root>
