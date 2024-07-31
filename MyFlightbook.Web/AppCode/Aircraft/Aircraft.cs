@@ -1091,7 +1091,7 @@ WHERE
                     comm.Parameters.AddWithValue("tailnumber", TailNumber);
                     comm.Parameters.AddWithValue("tailNormal", rNormalChars.Replace(TailNumber, string.Empty));
                     comm.Parameters.AddWithValue("idmodel", ModelID);
-                    comm.Parameters.AddWithValue("InstanceType", InstanceTypeID);
+                    comm.Parameters.AddWithValue("instanceType", InstanceTypeID);
                     comm.Parameters.AddWithValue("HasGlass", IsGlass);
                     comm.Parameters.AddWithValue("glassUpgradeDate", GlassUpgradeDate);
                     comm.Parameters.AddWithValue("IsTaa", IsTAA);
