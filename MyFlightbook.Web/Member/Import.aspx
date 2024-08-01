@@ -271,11 +271,11 @@
             <div style="text-align:left"><% =Resources.LogbookEntry.FlightCrewViewImportFlightsDescription %></div>
             <table style="margin-left: auto; margin-right: auto;">
                 <tr style="vertical-align:top">
-                    <td style="text-align:left"><% =Resources.LogbookEntry.RosterBusterFromDate %><br /><% =Resources.LogbookEntry.ImportCloudAhoyOptional %></td>
+                    <td style="text-align:left"><% =Resources.FlightQuery.DatesFrom %><br /><% =Resources.LogbookEntry.ImportCloudAhoyOptional %></td>
                     <td style="text-align:left"><uc1:mfbTypeInDate runat="server" ID="fcvFromDate" DefaultType="None" /></td>
                 </tr>
                 <tr style="vertical-align:top">
-                    <td style="text-align:left"><% =Resources.LogbookEntry.RosterBusterToDate %><br /><% =Resources.LogbookEntry.ImportCloudAhoyOptional %></td>
+                    <td style="text-align:left"><% =Resources.FlightQuery.DatesTo %><br /><% =Resources.LogbookEntry.ImportCloudAhoyOptional %></td>
                     <td style="text-align:left"><uc1:mfbTypeInDate runat="server" ID="fcvToDate" DefaultType="None" /></td>
                 </tr>
             </table>

@@ -60,9 +60,9 @@ namespace MyFlightbook.OAuth.FlightCrewView
         {
             NameValueCollection nvc = HttpUtility.ParseQueryString(string.Empty);
             if (dtFrom.HasValue && dtFrom.Value.HasValue())
-                nvc["start_datetime_utc"] = dtFrom.Value.Date.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+                nvc["start_datetime_local"] = dtFrom.Value.Date.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
             if (dtTo.HasValue && dtTo.Value.HasValue())
-                nvc["end_datetime_utc"] = dtTo.Value.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + " 23:59:59";
+                nvc["end_datetime_local"] = dtTo.Value.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + " 23:59:59";
             string endpoint = String.Format(CultureInfo.InvariantCulture, "{0}?{1}", flightsEndpoint, nvc.ToString());
 
             return (IEnumerable<PendingFlight>)await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri(endpoint), AuthState.AccessToken, HttpMethod.Get, null, (response) =>
