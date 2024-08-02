@@ -176,6 +176,59 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
         #endregion
 
+        #region MergeFlights
+        private HashSet<int> ValidateFlightsToMerge(string idFlight)
+        {
+            HashSet<int> lst = new HashSet<int>(idFlight.ToInts());
+            IEnumerable<LogbookEntryDisplay> entries = LogbookEntryDisplay.GetEnumeratedFlightsForUser(User.Identity.Name, lst);
+            if (entries.Count() < 2)
+                throw new InvalidOperationException("Need at least two flights");
+            HashSet<int> idAircraft = new HashSet<int>();
+            foreach (LogbookEntryDisplay entry in entries)
+                idAircraft.Add(entry.AircraftID);
+            if (idAircraft.Count != 1)
+                throw new InvalidOperationException("Merge flights must all use the same aircraft");
+
+            return lst;
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        [ActionName("MergeFlights")]
+        public ActionResult MergeFlightsPostback()
+        {
+            FlightQuery fq = new FlightQuery(User.Identity.Name) { EnumeratedFlights = ValidateFlightsToMerge(Request["idFlight"]) };
+            List<LogbookEntry> lst = new List<LogbookEntry>();
+
+            // Need to use LogbookEntry, not LogbookEntryDisplay, since you can't commit LogbookEntryDisplay
+            // Also need to do ascending so 1st element is target.
+            DBHelper dbh = new DBHelper(LogbookEntry.QueryCommand(fq, -1, -1, true, LogbookEntry.LoadTelemetryOption.LoadAll));
+            dbh.ReadRows((comm) => { },
+                (dr) =>
+                {
+                    LogbookEntry le = new LogbookEntry(dr, fq.UserName, LogbookEntryCore.LoadTelemetryOption.LoadAll); // Note: this has no telemetry
+                    le.PopulateImages();
+                    lst.Add(le);
+                });
+
+            LogbookEntry target = lst[0];
+            lst.RemoveAt(0);
+            foreach (LogbookEntry le in lst)
+                le.PopulateImages();
+
+            target.MergeFrom(lst);
+            return Redirect("~/mvc/Flights");
+        }
+
+        [HttpGet]
+        [Authorize]
+        public ActionResult MergeFlights()
+        {
+            return View("mergeFlights");
+        }
+        #endregion
+
         #region Import from telemetry
         private const string SessionKeyFiles = "telemImportFiles";
 

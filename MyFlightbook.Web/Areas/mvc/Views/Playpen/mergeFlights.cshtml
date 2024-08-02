@@ -1,0 +1,149 @@
+﻿@{
+    ViewBag.defaultTab = tabID.tabLogbook;
+    ViewBag.UseMaps = true;
+    ViewBag.Title = "Merge Flights";
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    IList<LogbookEntryDisplay> lstFlights = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntryDisplay.QueryCommand(new FlightQuery(User.Identity.Name)), User.Identity.Name, "Date", System.Web.UI.WebControls.SortDirection.Descending, false, false);
+}
+<script type="text/javascript">
+    var wiz = null;
+    $(() => {
+        wiz = wizardizeContainer({
+            headerContainer: $("#wizardHead"),
+            stepsContainer: $("#wizardSteps"),
+            navContainer: $("#wizNav"),
+            initialStep: 0,
+            nextButton: $("#btnWizNext"),
+            prevButton: $("#btnWizPrev"),
+            finishButton: $("#btnWizFinish"),
+            onStepChange: function (oldStep, newStep) {
+                if (newStep == 1) {
+                    if ($("#frmMergeFlights").valid()) {
+                        $("#hdnSelected").val($.map($("input[name='idFlight']:checked"), function (n, i) {
+                            return n.value;
+                        }).join(','));
+                        var f = $("#frmMergeFlights").serialize();
+                        $.ajax({
+                            url: "@Url.Action("GetFlightsForResult", "Flights")",
+                            type: "POST", data: f, dataType: "html", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                            success: function (r) {
+                                $("#flightPreview").html(r);
+                            }
+                        });
+                    } else
+                        return false;
+                }
+                return true;
+            },
+            onFinish: function () {
+                window.location = "@("~/mvc/flightedit/pending".ToAbsolute())";
+            }
+        });
+
+        $.validator.addMethod('singleAircraft', function (value, element, param) {
+            var idAircraft = "";
+            var valid = true;
+            $("input[name='idFlight']:checked").each(function () {
+                var hdnAcId = $(this).next().val();
+                if (idAircraft == "")
+                    idAircraft = hdnAcId;
+                else if (idAircraft != hdnAcId)
+                    valid = false;
+            });
+            return valid;
+        }, 'You can only merge flights that have the same aircraft');
+
+        $("#frmMergeFlights").validate({
+            errorClass: "error",
+            errorElement: "div",
+            errorPlacement: function (error, element) {
+                error.insertAfter($("#wizardSteps"));
+            },
+            rules: {
+                idFlight: {
+                    required: true,
+                    minlength: 2,
+                    singleAircraft: true
+                }
+            },
+            messages: {
+                idFlight: {
+                    minlength: "Please select at least 2 flights to merge",
+                    singleAircraft: "You can only merge flights that have the same aircraft"
+                }
+            },
+            highlight: function (element, errorClass) {
+                $(element).addClass("errorItem");
+            },
+            unhighlight: function (element, errorClass) {
+                $(element).removeClass("errorItem");
+            }
+        });
+    });
+</script>
+<div id="wizardHead">
+    <span>Select Flights&nbsp;&nbsp;</span>
+    <span>Preview and Finish</span>
+</div>
+
+@using (Html.BeginForm("MergeFlights", "PlayPen", FormMethod.Post, new { id = "frmMergeFlights", name = "frmMergeFlights" }))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="fqJSON" value="@(new FlightQuery(User.Identity.Name).ToJSONString())" />
+    <input type="hidden" name="targetUser" value="@User.Identity.Name" />
+    <input type="hidden" name="viewingUser" value="@User.Identity.Name" />
+    <input type="hidden" name="sortExpr" value="Date" />
+    <input type="hidden" name="sortDir" value="@System.Web.UI.WebControls.SortDirection.Descending.ToString()" />
+    <input type="hidden" name="pageRequest" value="" />
+    <input type="hidden" name="pageSize" value="25" />
+    <input type="hidden" name="readOnly" value="@Json.Encode(true)" />
+    <input type="hidden" name="selectedFlights" id="hdnSelected" />
+    <input type="hidden" name="skID" value="" />
+    <div id="wizardSteps" style="margin-top: 10pt;">
+        <div style="width:100%">
+            <p>Select the flights to merge</p>
+            <p><strong>NOTE:</strong></p>
+            <ul>
+                <li>All flights will be merged into the earliest one, and the other flights <strong>will be deleted</strong></li>
+                <li>Flights can only be merged if they are in the same aircraft</li>
+                <li>Images will be preserved.</li>
+                <li>Telemetry be preserved, but it will be a "least common denominator". <strong>This could be destructive if they do not share a common format!</strong></li>
+                <li>Values from later flights <strong>will overwrite values</strong> from earlier flights where they cannot be added.</li>
+            </ul>
+            <div id="pnlFlights" style="overflow: auto; height: 200px">
+                <table class="stickyHeaderTable stickyHeaderAlternate">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Aircraft</th>
+                            <th>Route</th>
+                            <th>Comments</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (LogbookEntry le in lstFlights)
+                        {
+                            <tr>
+                                <td><input type="checkbox" name="idFlight" value="@le.FlightID" /><input type="hidden" name="idAircraft" value="@le.AircraftID" /></td>
+                                <td style="font-weight:bold;">@le.Date.ToShortDateString()</td>
+                                <td>@le.TailNumDisplay</td>
+                                <td style="font-style: italic;">@le.Route</td>
+                                <td>@le.Comment</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div style="width: 100%; display: none;">
+            <p>The following flights will be merged into one flight:</p>
+            <div id="flightPreview"></div>
+        </div>
+    </div>
+    <div id="wizNav" style="width: 100%; text-align: center; margin-top: 8pt;">
+        <button type="button" id="btnWizPrev" style="display:none;">@Resources.LocalizedText.PreviousPrompt</button>
+        <button type="button" id="btnWizNext">@Resources.LocalizedText.NextPrompt</button>
+        <button type="submit" id="btnWizFinish" style="display:none;">@Resources.LocalizedText.FinishPrompt</button>
+    </div>}
+
