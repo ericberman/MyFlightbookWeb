@@ -569,14 +569,12 @@
     <Content Include="Controls\mfbEditPropTemplate.ascx" />
     <Content Include="Controls\mfbFacebookFan.ascx" />
     <Content Include="Controls\mfbFileUpload.ascx" />
-    <Content Include="Controls\mfbFlightContextMenu.ascx" />
     <Content Include="Controls\mfbFooter.ascx" />
     <Content Include="Controls\mfbGoogleAdSense.ascx" />
     <Content Include="Controls\mfbHeader.ascx" />
     <Content Include="Controls\mfbHoverImageList.ascx" />
     <Content Include="Controls\mfbImageList.ascx" />
     <Content Include="Controls\mfbImportAircraft.ascx" />
-    <Content Include="Controls\mfbLogbook.ascx" />
     <Content Include="Controls\mfbMaintainAircraft.ascx" />
     <Content Include="Controls\mfbMultiFileUpload.ascx" />
     <Content Include="Controls\mfbQueryDescriptor.ascx" />
@@ -586,7 +584,6 @@
     <Content Include="Controls\mfbSearchbox.ascx" />
     <Content Include="Controls\mfbSearchForm.ascx" />
     <Content Include="Controls\mfbSelectTemplates.ascx" />
-    <Content Include="Controls\mfbSendFlight.ascx" />
     <Content Include="Controls\mfbShareKeys.ascx" />
     <Content Include="Controls\mfbSignature.ascx" />
     <Content Include="Controls\mfbSignIn.ascx" />
@@ -2200,13 +2197,6 @@
     <Compile Include="Controls\mfbFileUpload.ascx.designer.cs">
       <DependentUpon>mfbFileUpload.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Controls\mfbFlightContextMenu.ascx.cs">
-      <DependentUpon>mfbFlightContextMenu.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbFlightContextMenu.ascx.designer.cs">
-      <DependentUpon>mfbFlightContextMenu.ascx</DependentUpon>
-    </Compile>
     <Compile Include="Controls\mfbFooter.ascx.cs">
       <DependentUpon>mfbFooter.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2248,13 +2238,6 @@
     </Compile>
     <Compile Include="Controls\mfbImportAircraft.ascx.designer.cs">
       <DependentUpon>mfbImportAircraft.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\mfbLogbook.ascx.cs">
-      <DependentUpon>mfbLogbook.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbLogbook.ascx.designer.cs">
-      <DependentUpon>mfbLogbook.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\mfbMaintainAircraft.ascx.cs">
       <DependentUpon>mfbMaintainAircraft.ascx</DependentUpon>
@@ -2318,13 +2301,6 @@
     </Compile>
     <Compile Include="Controls\mfbSelectTemplates.ascx.designer.cs">
       <DependentUpon>mfbSelectTemplates.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\mfbSendFlight.ascx.cs">
-      <DependentUpon>mfbSendFlight.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbSendFlight.ascx.designer.cs">
-      <DependentUpon>mfbSendFlight.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\mfbShareKeys.ascx.cs">
       <DependentUpon>mfbShareKeys.ascx</DependentUpon>
