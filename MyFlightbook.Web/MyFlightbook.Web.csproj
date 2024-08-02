@@ -551,10 +551,7 @@
     <Content Include="Controls\ClubControls\TimeZone.ascx" />
     <Content Include="Controls\Expando.ascx" />
     <Content Include="Controls\GoogleAnalytics.ascx" />
-    <Content Include="Controls\GoogleChart.ascx" />
     <Content Include="Controls\imageSlider.ascx" />
-    <Content Include="Controls\METAR.ascx" />
-    <Content Include="Controls\mfbAirportServices.ascx" />
     <Content Include="Controls\mfbATDFTD.ascx" />
     <Content Include="Controls\mfbBadgeSet.ascx" />
     <Content Include="Controls\mfbBasicMedManager.ascx" />
@@ -568,16 +565,11 @@
     <Content Include="Controls\Prefs\mfbCloudStorage.ascx" />
     <Content Include="Controls\mfbEditableImage.ascx" />
     <Content Include="Controls\mfbEditAircraft.ascx" />
-    <Content Include="Controls\mfbEditFlight.ascx" />
     <Content Include="Controls\mfbEditMake.ascx" />
-    <Content Include="Controls\mfbEditProp.ascx" />
-    <Content Include="Controls\mfbEditPropSet.ascx" />
     <Content Include="Controls\mfbEditPropTemplate.ascx" />
     <Content Include="Controls\mfbFacebookFan.ascx" />
     <Content Include="Controls\mfbFileUpload.ascx" />
     <Content Include="Controls\mfbFlightContextMenu.ascx" />
-    <Content Include="Controls\mfbFlightInfo.ascx" />
-    <Content Include="Controls\mfbFlightProperties.ascx" />
     <Content Include="Controls\mfbFooter.ascx" />
     <Content Include="Controls\mfbGoogleAdSense.ascx" />
     <Content Include="Controls\mfbHeader.ascx" />
@@ -597,15 +589,12 @@
     <Content Include="Controls\mfbSendFlight.ascx" />
     <Content Include="Controls\mfbShareKeys.ascx" />
     <Content Include="Controls\mfbSignature.ascx" />
-    <Content Include="Controls\mfbSignFlight.ascx" />
     <Content Include="Controls\mfbSignIn.ascx" />
-    <Content Include="Controls\mfbSimpleTotals.ascx" />
     <Content Include="Controls\mfbSubscriptionManager.ascx" />
     <Content Include="Controls\mfbTimeZone.ascx" />
     <Content Include="Controls\mfbTooltip.ascx" />
     <Content Include="Controls\mfbTotalSummary.ascx" />
     <Content Include="Controls\mfbTypeInDate.ascx" />
-    <Content Include="Controls\mfbVideoEntry.ascx" />
     <Content Include="Controls\oAuthAuthorizationManager.ascx" />
     <Content Include="Controls\popmenu.ascx" />
     <Content Include="Controls\Prefs\mfbPilotInfo.ascx" />
@@ -824,9 +813,7 @@
     <Content Include="Member\ImpAircraft.aspx" />
     <Content Include="Member\ImpAircraftService.aspx" />
     <Content Include="Member\Import.aspx" />
-    <Content Include="Member\LogbookNew.aspx" />
     <Content Include="Member\PrintView.aspx" />
-    <Content Include="Member\SignFlight.aspx" />
     <Content Include="Member\StartingTotals.aspx" />
     <Content Include="Public\CSS\printAirline.css" />
     <Content Include="Public\CSS\printHongKong.css" />
@@ -1469,7 +1456,6 @@
     <Content Include="Public\Scripts\Signature.js" />
     <Content Include="Public\Scripts\todataurl-png.js" />
     <Content Include="Public\Scripts\xfill.js" />
-    <Content Include="Public\SignEntry.aspx" />
     <Content Include="Public\StatsForMail.aspx" />
     <Content Include="Public\stylesheet.css" />
     <Content Include="Public\tabimages\AdminTab.png" />
@@ -2088,33 +2074,12 @@
     <Compile Include="Controls\GoogleAnalytics.ascx.designer.cs">
       <DependentUpon>GoogleAnalytics.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Controls\GoogleChart.ascx.cs">
-      <DependentUpon>GoogleChart.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\GoogleChart.ascx.designer.cs">
-      <DependentUpon>GoogleChart.ascx</DependentUpon>
-    </Compile>
     <Compile Include="Controls\imageSlider.ascx.cs">
       <DependentUpon>imageSlider.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Controls\imageSlider.ascx.designer.cs">
       <DependentUpon>imageSlider.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\METAR.ascx.cs">
-      <DependentUpon>METAR.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\METAR.ascx.designer.cs">
-      <DependentUpon>METAR.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\mfbAirportServices.ascx.cs">
-      <DependentUpon>mfbAirportServices.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbAirportServices.ascx.designer.cs">
-      <DependentUpon>mfbAirportServices.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\mfbATDFTD.ascx.cs">
       <DependentUpon>mfbATDFTD.ascx</DependentUpon>
@@ -2207,33 +2172,12 @@
     <Compile Include="Controls\mfbEditAircraft.ascx.designer.cs">
       <DependentUpon>mfbEditAircraft.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Controls\mfbEditFlight.ascx.cs">
-      <DependentUpon>mfbEditFlight.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbEditFlight.ascx.designer.cs">
-      <DependentUpon>mfbEditFlight.ascx</DependentUpon>
-    </Compile>
     <Compile Include="Controls\mfbEditMake.ascx.cs">
       <DependentUpon>mfbEditMake.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Controls\mfbEditMake.ascx.designer.cs">
       <DependentUpon>mfbEditMake.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\mfbEditProp.ascx.cs">
-      <DependentUpon>mfbEditProp.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbEditProp.ascx.designer.cs">
-      <DependentUpon>mfbEditProp.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\mfbEditPropSet.ascx.cs">
-      <DependentUpon>mfbEditPropSet.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbEditPropSet.ascx.designer.cs">
-      <DependentUpon>mfbEditPropSet.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\mfbEditPropTemplate.ascx.cs">
       <DependentUpon>mfbEditPropTemplate.ascx</DependentUpon>
@@ -2262,20 +2206,6 @@
     </Compile>
     <Compile Include="Controls\mfbFlightContextMenu.ascx.designer.cs">
       <DependentUpon>mfbFlightContextMenu.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\mfbFlightInfo.ascx.cs">
-      <DependentUpon>mfbFlightInfo.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbFlightInfo.ascx.designer.cs">
-      <DependentUpon>mfbFlightInfo.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\mfbFlightProperties.ascx.cs">
-      <DependentUpon>mfbFlightProperties.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbFlightProperties.ascx.designer.cs">
-      <DependentUpon>mfbFlightProperties.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\mfbFooter.ascx.cs">
       <DependentUpon>mfbFooter.ascx</DependentUpon>
@@ -2410,26 +2340,12 @@
     <Compile Include="Controls\mfbSignature.ascx.designer.cs">
       <DependentUpon>mfbSignature.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Controls\mfbSignFlight.ascx.cs">
-      <DependentUpon>mfbSignFlight.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbSignFlight.ascx.designer.cs">
-      <DependentUpon>mfbSignFlight.ascx</DependentUpon>
-    </Compile>
     <Compile Include="Controls\mfbSignIn.ascx.cs">
       <DependentUpon>mfbSignIn.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Controls\mfbSignIn.ascx.designer.cs">
       <DependentUpon>mfbSignIn.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\mfbSimpleTotals.ascx.cs">
-      <DependentUpon>mfbSimpleTotals.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbSimpleTotals.ascx.designer.cs">
-      <DependentUpon>mfbSimpleTotals.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\mfbSubscriptionManager.ascx.cs">
       <DependentUpon>mfbSubscriptionManager.ascx</DependentUpon>
@@ -2465,13 +2381,6 @@
     </Compile>
     <Compile Include="Controls\mfbTypeInDate.ascx.designer.cs">
       <DependentUpon>mfbTypeInDate.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\mfbVideoEntry.ascx.cs">
-      <DependentUpon>mfbVideoEntry.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbVideoEntry.ascx.designer.cs">
-      <DependentUpon>mfbVideoEntry.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\oAuthAuthorizationManager.ascx.cs">
       <DependentUpon>oAuthAuthorizationManager.ascx</DependentUpon>
@@ -2673,26 +2582,12 @@
     <Compile Include="Member\Import.aspx.designer.cs">
       <DependentUpon>Import.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Member\LogbookNew.aspx.cs">
-      <DependentUpon>LogbookNew.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\LogbookNew.aspx.designer.cs">
-      <DependentUpon>LogbookNew.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Member\PrintView.aspx.cs">
       <DependentUpon>PrintView.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Member\PrintView.aspx.designer.cs">
       <DependentUpon>PrintView.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Member\SignFlight.aspx.cs">
-      <DependentUpon>SignFlight.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\SignFlight.aspx.designer.cs">
-      <DependentUpon>SignFlight.aspx</DependentUpon>
     </Compile>
     <Compile Include="Member\StartingTotals.aspx.cs">
       <DependentUpon>StartingTotals.aspx</DependentUpon>
@@ -2813,13 +2708,6 @@
     </Compile>
     <Compile Include="Public\RSSCurrency.aspx.designer.cs">
       <DependentUpon>RSSCurrency.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Public\SignEntry.aspx.cs">
-      <DependentUpon>SignEntry.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\SignEntry.aspx.designer.cs">
-      <DependentUpon>SignEntry.aspx</DependentUpon>
     </Compile>
     <Compile Include="Public\StatsForMail.aspx.cs">
       <DependentUpon>StatsForMail.aspx</DependentUpon>
