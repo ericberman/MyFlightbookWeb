@@ -1451,8 +1451,8 @@ FROM models
         public static IEnumerable<MakeModel> PotentialDupes(bool fIncludeSims)
         {
             DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, szSQLSelectTemplate, string.Empty,
-                String.Format(CultureInfo.InvariantCulture, @"UPPER(REPLACE(REPLACE(CONCAT(models.model,CONVERT(models.idcategoryclass, char),models.typename), '-', ''), ' ', '')) IN
-                    (SELECT modelandtype FROM (SELECT model, COUNT(model) AS cModel, UPPER(REPLACE(REPLACE(CONCAT(m2.model,CONVERT(m2.idcategoryclass, char),m2.typename), '-', ''), ' ', '')) AS modelandtype FROM models m2 GROUP BY modelandtype HAVING cModel > 1) AS dupes)
+                String.Format(CultureInfo.InvariantCulture, @"UPPER(REPLACE(REPLACE(CONCAT(models.model, models.idcategoryclass,models.typename), '-', ''), ' ', '')) IN
+                    (SELECT modelandtype FROM (SELECT model, COUNT(model) AS cModel, UPPER(REPLACE(REPLACE(CONCAT(m2.model,m2.idcategoryclass,m2.typename), '-', ''), ' ', '')) AS modelandtype FROM models m2 GROUP BY modelandtype HAVING cModel > 1) AS dupes)
                     {0}
                 ORDER BY models.model", fIncludeSims ? string.Empty : "HAVING models.fSimOnly = 0")));
             List<MakeModel> lst = new List<MakeModel>();
