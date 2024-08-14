@@ -1,0 +1,167 @@
+﻿@using System.Globalization
+@using MyFlightbook.Templates
+@{
+    MyFlightbook.Profile pf = ViewBag.pf;
+    UserPropertyTemplate pt = new UserPropertyTemplate(ViewBag.idTemplate);
+    IEnumerable<CustomPropertyType> allProps = CustomPropertyType.GetCustomPropertyTypes(null, false);
+    string containerID = ViewBag.containerID;
+    bool fCopy = ViewBag.fCopy;
+}
+<script type="text/javascript">
+    var propDrag = new listDraggerNew({
+        divLeft: $("#divAvailablePropsForTemplate"),
+        divRight: $("#divCurrentPropsInTemplate"),
+        onDropLeft: function (item, val) {
+            item.children("input[type='hidden']").removeAttr("name");
+        },
+        onDropRight: function (item, val) {
+            item.children("input[type='hidden']").attr("name", "propTemplateIncludedIDs");
+        }
+    });
+
+    function submitPropTemplate() {
+        propsEd.commitPropTemplate($("#frmEditPropTemplate"),
+            function (e) {
+                $("#lblErr").text(e);
+            },
+            function () {
+                window.location = '@("~/mvc/prefs?pane=props".ToAbsolute())';
+            }
+        );
+    }
+
+    $(() => {
+        $.validator.addMethod('hasProps', function (value, element, param) {
+            return $("#divCurrentPropsInTemplate").children().length > 0;
+        }, '@Resources.LogbookEntry.errTemplateNoProperties');
+
+        var f = $("#frmEditPropTemplate");
+        f.validate({
+            ignore: "",
+            errorClass: "errorCallout",
+            errorElement: "div",
+            errorPlacement: function (error, element) {
+                error.insertAfter($(element));
+                if (!error.find(".notch").length) {
+                    error.prepend($("<b class='notch'></b>"));
+                }
+            },
+            rules: {
+                propTemplateName: "required",
+                valPropsSelected: {
+                    hasProps: true
+                }
+            },
+            messages: {
+                propTemplateName: '@Resources.LogbookEntry.errTemplateNoName',
+                valPropsSelected: '@Resources.LogbookEntry.errTemplateNoProperties'
+            },
+            showErrors: function (errorMap, errorList) {
+                // First remove existing notches
+                this.errorList.forEach(function (error) {
+                    $(error.element).next(".errorCallout").find(".notch").remove();
+                });
+
+                // Call the default showErrors method to display errors
+                this.defaultShowErrors();
+
+                // Add the notch again
+                this.errorList.forEach(function (error) {
+                    $(error.element).next(".errorCallout").prepend($("<b class='notch'></b>"));
+                });
+            },
+            highlight: function (element, errorClass) {
+                $(element).addClass("errorItem");
+            },
+            unhighlight: function (element, errorClass) {
+                $(element).removeClass("errorItem");
+            }
+        });
+        $("#txtTemplateName")[0].focus();
+        defaultButtonForDiv('divTemplateEditorBody', 'btnCommitPropertyTemplate');
+        $("#srchPropTemplatetxt").on("keyup", function (sender) {
+            FilterProps(this, "divAvailablePropsForTemplate", "lblFilteredPropsForTemplateLabel", "@Resources.LogbookEntry.PropertiesFound");
+        });
+    });
+</script>
+<div id="divTemplateEditorBody">
+    @using (Html.BeginForm("", "Prefs", FormMethod.Post, new { id = "frmEditPropTemplate", name = "frmEditPropTemplate" }))
+    {
+        <input type="hidden" name="propTemplateID" value="@(fCopy ? (int) KnownTemplateIDs.ID_NEW : pt.ID)" />
+        <input type="hidden" name="propTemplateOriginalOwner" value="@(pt.OriginalOwner ?? string.Empty)" />
+        <input type="hidden" name="propTemplateDefault" value="@Json.Encode(pt.IsDefault)" />
+        <input type="hidden" name="propTemplatePublic" value="@Json.Encode(pt.IsPublic)" />
+        <div>
+            <div style="display: inline-block; min-width: 20em;">
+                <div>@Resources.LogbookEntry.TemplateNamePrompt</div>
+                <div><input type="text" placeholder="@Resources.LogbookEntry.TemplateNameWatermark" style="width: 100%;" required name="propTemplateName" id="txtTemplateName" value="@(fCopy ? String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.TemplateCopyTemplate, pt.Name) : pt.Name)" /></div>
+            </div>
+            <div style="display: inline-block; margin-left: 5pt; margin-right: 5pt;">
+                <div>@Resources.LogbookEntry.TemplateCategoryPrompt</div>
+                <div>
+                    <select id="cmbTemplateCategories" name="propTemplateCategory">
+                        @foreach (PropertyTemplateGroup ptg in (PropertyTemplateGroup[])Enum.GetValues(typeof(PropertyTemplateGroup)))
+                        {
+                            if (ptg != PropertyTemplateGroup.Automatic)
+                            {
+                                <option @((((int)ptg) == pt.GroupAsInt).ToSelected()) value="@ptg.ToString()">@PropertyTemplate.NameForGroup(ptg)</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div>@Resources.LogbookEntry.TemplateDescriptionPrompt</div>
+        <div><textarea rows="3" style="width: 100%;" name="propTemplateDescription" id="txtTemplateDescription">@pt.Description</textarea></div>
+        <div>
+            <div style="display: inline-block; vertical-align: top;">
+                <div>@Resources.LogbookEntry.TemplatePropertiesPrompt</div>
+                <div class="fineprint">@Resources.LogbookEntry.TemplatePropertiesPromptHint</div>
+            </div>
+            <div style="display: inline-block; margin-left: 5pt; margin-right: 5pt; vertical-align: top;">
+                <div>@{Html.RenderAction("RenderSearchBox", "MFBTemplate", new { id = "srchPropTemplate", placeholder = Resources.LogbookEntry.TemplateFindPropertiesWatermark }); }</div>
+                <div><span id="lblFilteredPropsForTemplateLabel" class="fineprint" /></div>
+            </div>
+        </div>
+        <table style="width: 100%;">
+            <tr>
+                <td style="width: 50%;">@Resources.LogbookEntry.TemplatePropertiesPromptSource</td>
+                <td style="width: 50%;">@Resources.LogbookEntry.TemplatePropertiesPromptTarget</td>
+            </tr>
+            <tr>
+                <td>
+                    <div id="divAvailablePropsForTemplate">
+                        @foreach (CustomPropertyType cpt in allProps)
+                        {
+                            if (!pt.ContainsProperty(cpt.PropTypeID))
+                            {
+                                <span id="@String.Format(CultureInfo.InvariantCulture, "blockListProp{0}", cpt.PropTypeID)">@cpt.Title<input type="hidden" value="@cpt.PropTypeID" /></span>
+                            }
+                        }
+                    </div>
+                </td>
+                <td>
+                    <div id="divCurrentPropsInTemplate">
+                        @foreach (CustomPropertyType cpt in allProps)
+                        {
+                            if (pt.ContainsProperty(cpt.PropTypeID))
+                            {
+                                <span id="@String.Format(CultureInfo.InvariantCulture, "blockListProp{0}", cpt.PropTypeID)">@cpt.Title<input type="hidden" name="propTemplateIncludedIDs" value="@cpt.PropTypeID" /></span>
+                            }
+                        }
+                    </div>
+                    <input type="text" style="display: none;" name="valPropsSelected" />
+                </td>
+            </tr>
+        </table>
+        <div style="width: 100%; text-align: center; margin-top: 5pt;">
+            @if (!String.IsNullOrEmpty(containerID))
+            {
+                <button type="button" onclick="javascript: $('#@containerID').dialog('close');">@Resources.LocalizedText.Cancel</button>
+            }
+            &nbsp;&nbsp;
+            <button type="button" id="btnCommitPropertyTemplate" onclick="javascript: submitPropTemplate();">@Resources.LogbookEntry.TemplateCreate</button>
+        </div>
+        <div class="error" id="lblErr">@(ViewBag.error ?? string.Empty)</div>
+    }
+</div>

@@ -351,6 +351,18 @@ GROUP BY d.iddeadlines";
         }
 
         /// <summary>
+        /// Returns a specific deadline for a user.  Returns null if not found.
+        /// </summary>
+        /// <param name="szUser">The user</param>
+        /// <param name="id">The id of the deadline</param>
+        /// <returns></returns>
+        public static DeadlineCurrency DeadlineForUser(string szUser, int id)
+        {
+            List<DeadlineCurrency> lst = DeadlinesForUser(szUser, fIncludeSharedDeadlines: true) as List<DeadlineCurrency>;
+            return lst.Find(dc => dc.ID == id);
+        }
+
+        /// <summary>
         /// Retrieves all deadlines that are owned by aircraft that the user maintains.  
         /// I.e., shared aircraft deadlines for which (a) the user has recorded SOME maintenance on the aircraft and (b) the aircraft is active.
         /// </summary>

@@ -1,0 +1,70 @@
+﻿@using MyFlightbook.Currency
+@{ 
+    MyFlightbook.Profile m_pf = ViewBag.pf;
+    int defMaintWindow = m_pf.GetPreferenceForKey(MFBConstants.keyWindowAircraftMaintenance, MFBConstants.DefaultMaintenanceWindow);
+}
+<script type="text/javascript">
+    var tcEditor = new prefsFlightEntryEditor("@("~/Member/Ajax.asmx/setLocalPref".ToAbsolute())", {});
+</script>
+<h3>@Resources.Currency.CurrencyTotalsDisplayHeader</h3>
+<div><label><input type="radio" id="rbTotalsModeCatClass" name="rbTotalsMode" onclick="javascript: tcEditor.setLocalPref('TotalsMode', 'CatClass');" @((m_pf.TotalsGroupingMode == MyFlightbook.Currency.TotalsGrouping.CatClass).ToChecked()) />@Resources.Currency.CurrencyOptionsGroupCatClass</label></div>
+<div><label><input type="radio" id="rbTotalsModeModel" name="rbTotalsMode" onclick="javascript: tcEditor.setLocalPref('TotalsMode', 'Model');" @((m_pf.TotalsGroupingMode == MyFlightbook.Currency.TotalsGrouping.Model).ToChecked()) />@Resources.Currency.CurrencyOptionsGroupModel</label></div>
+<div><label><input type="radio" id="rbTotalsModeICAO" name="rbTotalsMode" onclick="javascript: tcEditor.setLocalPref('TotalsMode', 'Family');" @((m_pf.TotalsGroupingMode == MyFlightbook.Currency.TotalsGrouping.Family).ToChecked()) />@Resources.Currency.CurrencyOptionsGroupICAO</label></div>
+<div><label><input type="checkbox" id="ckIncludeModelFeatureTotals" @((!m_pf.SuppressModelFeatureTotals).ToChecked()) onclick="javascript: tcEditor.setLocalPrefChecked('totalsIncludeMF', this);" />@Resources.Currency.CurrencyOptionsTotalsModelFeatures</label></div>
+<h3>@Resources.Currency.CurrencyPrefsHeader</h3>
+<div>
+    @Resources.Currency.CurrencyOptionsJurisdiction
+    <div><label><input type="radio" id="rbFAARules" name="currJurisd" onclick="javascript: tcEditor.setLocalPref('CurrencyJurisdiction', 'FAA');" @((m_pf.CurrencyJurisdiction == MyFlightbook.Currency.CurrencyJurisdiction.FAA).ToChecked()) />@Resources.Currency.CurrencyOptionsUseFAA</label></div>
+    <div><label><input type="radio" id="rbCanadianRules" name="currJurisd" onclick="javascript: tcEditor.setLocalPref('CurrencyJurisdiction', 'Canada');" @((m_pf.CurrencyJurisdiction == MyFlightbook.Currency.CurrencyJurisdiction.Canada).ToChecked()) />@Resources.Currency.CurrencyOptionsUseCanada</label></div>
+    <div>
+        <label><input type="radio" id="rbEASARules" name="currJurisd" onclick="javascript: tcEditor.setLocalPref('CurrencyJurisdiction', 'EASA');" @((m_pf.CurrencyJurisdiction == MyFlightbook.Currency.CurrencyJurisdiction.EASA).ToChecked()) />@Resources.Currency.CurrencyOptionsUseEASA</label>
+        <span class="fineprint"><a target="_blank" href="@("~/mvc/pub/CurrencyNotes#EASA".ToAbsolute())">@Resources.Currency.CurrencyOptionsNotesRef</a></span>
+    </div>
+    <div><label><input type="radio" id="rbAustraliaRules" name="currJurisd" onclick="javascript: tcEditor.setLocalPref('CurrencyJurisdiction', 'Australia');" @((m_pf.CurrencyJurisdiction == MyFlightbook.Currency.CurrencyJurisdiction.Australia).ToChecked()) />@Resources.Currency.CurrencyOptionsUseCASA</label></div>
+</div>
+<br />
+<div><label><input type="radio" id="rbCurrencyModeCatClass" name="currencyMode" onclick="javascript: tcEditor.setLocalPref('usePerModelCurrency', 'false');" @((!m_pf.UsesPerModelCurrency).ToChecked()) />@Resources.Currency.CurrencyOptionsByCatClass</label></div>
+<div><label><input type="radio" id="rbCurrencyModeModel" name="currencyMode" onclick="javascript: tcEditor.setLocalPref('usePerModelCurrency', 'true');" @(m_pf.UsesPerModelCurrency.ToChecked()) />@Resources.Currency.CurrencyOptionsByModel</label></div>
+<br />
+<div><label><input type="checkbox" id="ckAllowNightTouchAndGo"  onclick="javascript: tcEditor.setLocalPrefChecked('allowNightTouchAndGo', this);" @(m_pf.AllowNightTouchAndGoes.ToChecked()) />@Resources.Currency.CurrencyOptionsNightTouchAndGo</label>
+    @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "nightTandGTip", tipTextHTML = Resources.Currency.CurrencyOptionNoteNightTouchAndGo });}
+</div>
+<div>
+    <label><input type="checkbox" id="ckDayLandingsForDayCurrency" onclick="javascript: tcEditor.setLocalPrefChecked('onlyDayLandingsForDayCurrency', this);" @(m_pf.OnlyDayLandingsForDayCurrency.ToChecked()) />@Resources.Currency.CurrencyOptionsDayLandings</label>
+    @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "dayLandingsTip", tipTextHTML = Resources.Currency.CurrencyOptionNoteDayLandings });}
+</div>
+
+<h3>@Resources.Preferences.PrefCurrencyDisplay</h3>
+<div><label><input type="checkbox" id="ckUseArmyCurrency"  onclick="javascript: tcEditor.setLocalPrefChecked('useArmyCurrency', this);" @(m_pf.UsesArmyCurrency.ToChecked()) />@Resources.Currency.CurrencyOptionsArmyCurreny</label></div>
+<div><label><input type="checkbox" id="ckUse117DutyTime"  onclick="javascript: tcEditor.setLocalPrefChecked('use117DutyTime', this);" @(m_pf.UsesFAR117DutyTime.ToChecked()) />@Resources.Currency.CurrencyOptionsFAR117DutyTime</label></div>
+<div style="margin-left:2em;">
+    <div><label><input type="radio" id="rb117OnlyDutyTimeFlights" name="117Flights" onclick="javascript: tcEditor.setLocalPref('use117DutyAllFlights', 'false');" @(m_pf.UsesFAR117DutyTimeAllFlights.ToChecked()) />@Resources.Currency.Currency117OnlyDutyTimeFlights</label></div>
+    <div><label><input type="radio" id="rb117AllFlights" name="117Flights" onclick="javascript: tcEditor.setLocalPref('use117DutyAllFlights', 'true');" @((!m_pf.UsesFAR117DutyTimeAllFlights).ToChecked()) />@Resources.Currency.Currency117AllFlights</label></div>
+</div>
+<div id="div135DutyTime" style="display:none;">
+    <label><input type="checkbox" id="ckUse135DutyTime"  onclick="javascript: tcEditor.setLocalPrefChecked('use135DutyTime', this);" @(m_pf.UsesFAR135DutyTime.ToChecked()) />@Resources.Currency.CurrencyOptions135DutyTime</label>
+</div>
+<div><label><input type="checkbox" id="ckUse1252xxCurrency"  onclick="javascript: tcEditor.setLocalPrefChecked('use1252Currency', this);" @m_pf.UsesFAR1252xxCurrency.ToChecked() />@Resources.Currency.CurrencyOptions1252xx</label></div>
+<div><label><input type="checkbox" id="ckUse13529xCurrency"  onclick="javascript: tcEditor.setLocalPrefChecked('useFAR13529xCurrency', this);" @m_pf.UsesFAR13529xCurrency.ToChecked() />@Resources.Currency.CurrencyOptions13529x</label></div>
+<div><label><input type="checkbox" id="ckUse13526xCurrency"  onclick="javascript: tcEditor.setLocalPrefChecked('useFAR13526xCurrency', this);" @m_pf.UsesFAR13526xCurrency.ToChecked() />@Resources.Currency.CurrencyOptions13526x</label></div>
+<div><label><input type="checkbox" id="ckUse61217Currency"  onclick="javascript: tcEditor.setLocalPrefChecked('useFAR61217Currency', this);" @m_pf.UsesFAR61217Currency.ToChecked() />@Resources.Currency.Part61217Option</label></div>
+<h3>@Resources.Preferences.PrefCurrencyClutterControl</h3>
+<p>
+    @Resources.Currency.CurrencyOptionsExpiredCurrency
+    <select id="cmbExpiredCurrency" onchange="javascript: tcEditor.setLocalPrefValue('currencyExpiration', this);">
+        @foreach (CurrencyExpiration.Expiration exp in Enum.GetValues(typeof(CurrencyExpiration.Expiration)))
+        {
+            <option value="@exp.ToString()" @((m_pf.CurrencyExpiration == exp).ToSelected())>@CurrencyExpiration.ExpirationLabel(exp)</option>
+        }
+    </select>
+</p>
+<p>
+    @Resources.Currency.CurrencyOptionsAircraftMaintenance
+    <select id="cmbAircraftMaintWindow" onchange="javascript: tcEditor.setLocalPrefValue('maintWindow', this);">
+        <<option value="-1" @((defMaintWindow == -1).ToSelected())>@Resources.Currency.CurrencyOptionsAircraftMaintenanceAlways</option>
+        <<option value="180" @((defMaintWindow == 180).ToSelected())>@Resources.Currency.CurrencyOptionsAircraftMaintenance180Days</option>
+        <<option value="120" @((defMaintWindow == 120).ToSelected())>@Resources.Currency.CurrencyOptionsAircraftMaintenance120Days</option>
+        <<option value="90" @((defMaintWindow == 90).ToSelected())>@Resources.Currency.CurrencyOptionsAircraftMaintenance90Days</option>
+        <<option value="30" @((defMaintWindow == 30).ToSelected())>@Resources.Currency.CurrencyOptionsAircraftMaintenance30Days</option>
+    </select>
+</p>

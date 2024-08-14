@@ -1,0 +1,116 @@
+﻿@using System.Globalization
+@{
+    MyFlightbook.Profile m_pf = ViewBag.pf;
+    DecimalFormat df = m_pf.PreferenceExists(MFBConstants.keyDecimalSettings) ? m_pf.GetPreferenceForKey<DecimalFormat>(MFBConstants.keyDecimalSettings) : DecimalFormat.Adaptive;
+    string preferredTimeZoneID = m_pf.PreferredTimeZone?.Id ?? MyFlightbook.Schedule.ScheduledEvent.TimeZoneForOffset(TimeSpan.FromMinutes(0)).Id;
+}
+<script type="text/javascript">
+    var pe;
+    $(() => {
+        pe = new prefsFlightEntryEditor("@("~/Member/Ajax.asmx/SetLocalPref".ToAbsolute())", {
+            divUnused: "divUnusedFields",
+            divCoreFields: "divCoreFields",
+            hdnPermutations: "hdnPermutation",
+            ckSIC: "ckTrackSIC",
+            ckCFI: "ckTrackCFI",
+            defaultFields: $("#coreFieldsContainer").children("span")
+        });
+        pe.initPermutations(@Json.Encode(m_pf.GetPreferenceForKey<IEnumerable<int>>(MFBConstants.keyCoreFieldsPermutation) ?? Array.Empty<int>()));
+    });
+</script>
+<h2>@Resources.Preferences.DecimalPrefPrompt</h2>
+<table>
+    <tr>
+        <td colspan="2"></td>
+        <td style="font-style:italic;">&nbsp;@Resources.Preferences.DecimalPrefSample1</td>
+        <td style="font-style:italic;">&nbsp;@Resources.Preferences.DecimalPrefSample2</td>
+    </tr>
+    <tr>
+        <td><input type="radio" id="rbDecimalAdaptive" name="decimalPref" @((!m_pf.UsesHHMM && df == DecimalFormat.Adaptive).ToChecked()) onclick="pe.setLocalPref('decimal', 'Adaptive');" /></td>
+        <td><label for="rbDecimalAdaptive">@Resources.Preferences.DecimalPrefAdaptive</label></td>
+        <td style="text-align:center">@((70.0M / 60.0M).ToString("#,##0.0#", System.Globalization.CultureInfo.CurrentCulture))</td>
+        <td style="text-align:center;">@((72.0 / 60.0).ToString("#,##0.0#", System.Globalization.CultureInfo.CurrentCulture))</td>
+    </tr>
+    <tr>
+        <td><input type="radio" id="rbDecimal1" name="decimalPref" onclick="pe.setLocalPref('decimal', 'OneDecimal');" @((!m_pf.UsesHHMM && df == DecimalFormat.OneDecimal).ToChecked()) /></td>
+        <td><label for="rbDecimal1">@Resources.Preferences.DecimalPref1Decimal</label></td>
+        <td style="text-align:center;">@((70.0M / 60.0M).ToString("#,##0.0", System.Globalization.CultureInfo.CurrentCulture))</td>
+        <td style="text-align:center;">@((72.0 / 60.0).ToString("#,##0.0", System.Globalization.CultureInfo.CurrentCulture))</td>
+    </tr>
+    <tr>
+        <td><input type="radio" id="rbDecimal2" name="decimalPref" onclick="pe.setLocalPref('decimal', 'TwoDecimal');" @((!m_pf.UsesHHMM && df == DecimalFormat.TwoDecimal).ToChecked()) /></td>
+        <td><label for="rbDecimal2">@Resources.Preferences.DecimalPref2Decimal</label></td>
+        <td style="text-align:center;">@((70.0M / 60.0M).ToString("#,##0.00", System.Globalization.CultureInfo.CurrentCulture))</td>
+        <td style="text-align:center;">@((72.0 / 60.0).ToString("#,##0.00", System.Globalization.CultureInfo.CurrentCulture))</td>
+    </tr>
+    <tr>
+        <td><input type="radio" id="rbDecimalHHMM" name="decimalPref" onclick="pe.setLocalPref('decimal', 'HHMM');" @(m_pf.UsesHHMM.ToChecked()) /></td>
+        <td><label for="rbDecimalHHMM">@Resources.Preferences.DecimalPrefHHMM</label></td>
+        <td style="text-align:center;">@((70.0M / 60.0M).FormatDecimal(true))</td>
+        <td style="text-align:center;">@((72.0 / 60.0).FormatDecimal(true))</td>
+    </tr>
+</table>
+<div>
+    <h2 style="display:inline;">@Resources.Preferences.PrefMathPrecisionHeader</h2>
+    <a href="@("~/mvc/faq?q=72#72".ToAbsolute())">@Resources.Preferences.PrefMathPrecisionNote</a>
+</div>
+<div>
+    <label><input type="radio" name="rbgMathPrecision" onclick="pe.setLocalPref('rounding', '60');" @((m_pf.MathRoundingUnit == 60).ToChecked()) />@Resources.Preferences.PrefMathPrecisionMinutes</label>
+    <label><input type="radio" name="rbgMathPrecision" onclick="pe.setLocalPref('rounding', '100');" @((m_pf.MathRoundingUnit == 100).ToChecked()) />@Resources.Preferences.PrefMathPrecisionHundredths</label>
+</div>
+<h2>@Resources.Preferences.PrefSectNewFlightTimeZone</h2>
+<div>&nbsp;&nbsp;<span class="fineprint">@Resources.Preferences.PrefSectNewFlightTimeZoneTip</span></div>
+<div>
+    &nbsp;&nbsp;
+    <select id="cmbTimeZones" required onchange="javascript:pe.setLocalPrefValue('timezone', this);">
+        <option value="" @String.IsNullOrEmpty(preferredTimeZoneID).ToSelected()>@Resources.Schedule.ItemEmptyTimezone</option>
+        @foreach (TimeZoneInfo tzi in TimeZoneInfo.GetSystemTimeZones())
+        {
+            <option value="@tzi.Id" @((preferredTimeZoneID.CompareCurrentCultureIgnoreCase(tzi.Id) == 0).ToSelected())>@tzi.DisplayName</option>
+        }
+    </select>
+</div>
+
+<h2>@Resources.Preferences.PrefSectNewFlightTimeZonePrompt</h2>
+<div><label><input type="radio" name="rbgDateEntryTZ" Text="" onclick="pe.setLocalPref('dateofflighttz', 'local');" @((!m_pf.UsesUTCDateOfFlight).ToChecked()) />@Resources.Preferences.PrefSectNewFlightTimeZoneLocal</label></div>
+<div><label><input type="radio" name="rbgDateEntryTZ" Text="" onclick="pe.setLocalPref('dateofflighttz', 'utc');" @m_pf.UsesUTCDateOfFlight.ToChecked() />@Resources.Preferences.PrefSectNewFlightTimeZoneUTC</label></div>
+<h2>@Resources.Preferences.PrefSectFlightEntryDataToInclude</h2>
+<div><label><input type="checkbox" id="ckTrackCFI" @m_pf.IsInstructor.ToChecked() onclick="pe.setLocalPrefChecked('usecfi', this);" />@Resources.Preferences.PrefSectNewFlightShowCFI</label></div>
+<div><label><input type="checkbox" id="ckTrackSIC" @m_pf.TracksSecondInCommandTime.ToChecked() onclick="pe.setLocalPrefChecked('usesic', this);" />@Resources.Preferences.PrefSectNewFlightShowSIC</label></div>
+<div><label><input type="checkbox" @m_pf.DisplayTimesByDefault.ToChecked() onclick="pe.setLocalPrefChecked('tracktimes', this);" />@Resources.Preferences.PrefSectNewFlightShowTimes</label></div>
+<h2>@Resources.Preferences.PrefSectFlightMisc</h2>
+<div><label><input type="checkbox" onclick="pe.setLocalPrefChecked('trackoriginal', this);" />@Resources.Preferences.PrefSaveOriginalFlight</label>@{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "tipTrackOriginal", tipTextHtml = Resources.Preferences.PrefSaveOriginalFlightDesc }); }</div>
+
+<h2>@Resources.Preferences.PrefSectNewFlightCustomization</h2>
+<p>@Resources.Preferences.PrefSectNewFlightCustomizationTip</p>
+<div>@Resources.Preferences.PrefBlockListInstructions</div>
+<div id="coreFieldsContainer">
+    <span id="dragCoreXC">@Resources.LogbookEntry.FieldCrossCountry</span>
+    <span id="dragCoreNight">@Resources.LogbookEntry.FieldNight</span>
+    <span id="dragCoreSimIMC">@Resources.LogbookEntry.FieldSimIMCFull</span>
+    <span id="dragCoreIMC">@Resources.LogbookEntry.FieldIMC</span>
+    <span id="dragCoreGroundSim">@Resources.LogbookEntry.FieldGroundSimFull</span>
+    <span id="dragCoreDual">@Resources.LogbookEntry.FieldDual</span>
+    <span id="dragCoreCFI">@Resources.LogbookEntry.FieldCFI</span>
+    <span id="dragCoreSIC">@Resources.LogbookEntry.FieldSIC</span>
+    <span id="dragCorePIC">@Resources.LogbookEntry.FieldPIC</span>
+    <span id="dragCoreTotal">@Resources.LogbookEntry.FieldTotalFull</span>
+</div>
+<table style="margin-left: auto; margin-right: auto;">
+    <tr>
+        <td>@Resources.Preferences.PrefBlockListShow</td>
+        <td>@Resources.Preferences.PrefBlockListHide</td>
+    </tr>
+    <tr>
+        <td style="width:50%">
+            <div id="divCoreFields"></div>
+        </td>
+        <td style="width:50%">
+            <div id="divUnusedFields"></div>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2"><button type="button" onclick="javascript:pe.resetPermutations();">@Resources.Preferences.PrefSectNewFlightCustReset</button></td>
+    </tr>
+</table>
+<input type="hidden" id="hdnPermutation" value="" />

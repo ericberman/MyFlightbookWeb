@@ -196,7 +196,7 @@
     <value>Hours and minutes (HH:MM)</value>
   </data>
   <data name="DecimalPrefPrompt" xml:space="preserve">
-    <value>Format for times:</value>
+    <value>Format for times</value>
   </data>
   <data name="DecimalPrefSample1" xml:space="preserve">
     <value>70 Minutes displays as...</value>
@@ -246,6 +246,9 @@
   <data name="FlightColoringDescriptionLearnMore" xml:space="preserve">
     <value>Learn more about saving searches</value>
   </data>
+  <data name="FlightColoringDoNotColor" xml:space="preserve">
+    <value>No color</value>
+  </data>
   <data name="FlightColoringFlightsHeader" xml:space="preserve">
     <value>Color flights that match saved searches</value>
   </data>
@@ -264,6 +267,9 @@
   <data name="FlightColoringSample" xml:space="preserve">
     <value>Sample (Click to change)</value>
   </data>
+  <data name="FlightColoringSampleNoClick" xml:space="preserve">
+    <value>Sample</value>
+  </data>
   <data name="HeaderCustomCurrency" xml:space="preserve">
     <value>Custom Currency Rules</value>
   </data>
@@ -277,7 +283,7 @@
     <value>Features and Preferences</value>
   </data>
   <data name="HeaderOAuthApps" xml:space="preserve">
-    <value>Authorized Applications</value>
+    <value>Authorized Apps</value>
   </data>
   <data name="HeaderPropsAndTemplates" xml:space="preserve">
     <value>Flight Properties and Templates</value>
@@ -469,6 +475,12 @@
   <data name="PilotInfoRatingsPrompt" xml:space="preserve">
     <value>These are your ratings, as determined from checkrides in your logbook. As such, the list may be incomplete.</value>
   </data>
+  <data name="PrefAddCustomCurrency" xml:space="preserve">
+    <value>Create a new currency rule</value>
+  </data>
+  <data name="PrefAddDeadline" xml:space="preserve">
+    <value>Create a new deadline</value>
+  </data>
   <data name="PrefBlockListDesc" xml:space="preserve">
     <value>Properties that you have used on previous flights are automatically shown for new flights.  To reduce clutter, though, you can choose to not display some by default.</value>
   </data>
@@ -490,6 +502,12 @@
   <data name="PrefCurrencyTotalsSectionHeader" xml:space="preserve">
     <value>Currency/Totals</value>
   </data>
+  <data name="PrefDeadlineUseHours" xml:space="preserve">
+    <value>Deadline is determined using aircraft hours, not a date</value>
+  </data>
+  <data name="PrefEditCurrencyTitle" xml:space="preserve">
+    <value>Edit Currency Rule</value>
+  </data>
   <data name="PrefMathPrecisionHeader" xml:space="preserve">
     <value>When summing times</value>
   </data>
@@ -509,7 +527,7 @@
     <value>Using this option allows you to view the edits that have been made to a flight entry since it was first saved.  See the FAQ for more information.</value>
   </data>
   <data name="PrefSectFlightEntryDataToInclude" xml:space="preserve">
-    <value>Display the following in tables of your flights:</value>
+    <value>Display the following in tables of your flights</value>
   </data>
   <data name="PrefSectFlightEntryHeader" xml:space="preserve">
     <value>Flight Entry and Display</value>
@@ -542,13 +560,16 @@
     <value>The local date at the point/time of departure</value>
   </data>
   <data name="PrefSectNewFlightTimeZonePrompt" xml:space="preserve">
-    <value>Interpret the date of flight as:</value>
+    <value>Interpret the date of flight as</value>
   </data>
   <data name="PrefSectNewFlightTimeZoneTip" xml:space="preserve">
     <value>Use this if you prefer to enter times in your local timezone; all times will be converted to and displayed as UTC</value>
   </data>
   <data name="PrefSectNewFlightTimeZoneUTC" xml:space="preserve">
     <value>The UTC date at the time of departure</value>
+  </data>
+  <data name="PrefUpdateDeadline" xml:space="preserve">
+    <value>Update Deadline</value>
   </data>
   <data name="ScheduledServiceFlightCrewViewAuthorize" xml:space="preserve">
     <value>Authorize %APP_NAME% on Flight Crew View</value>
@@ -598,7 +619,13 @@
   <data name="ScheduleServiceRBScanQRCode" xml:space="preserve">
     <value>Scan the QR code below to download the RosterBuster app to your iOS or Android device</value>
   </data>
+  <data name="SharingCreateShareLink" xml:space="preserve">
+    <value>Create Link</value>
+  </data>
   <data name="SharingShareFlightsDisclaimer" xml:space="preserve">
     <value>This will ONLY show flights for which you have allowed details to be visible.</value>
+  </data>
+  <data name="SharingShareKeyNameHint" xml:space="preserve">
+    <value>Suggestion: use the name of the recipient</value>
   </data>
 </root>

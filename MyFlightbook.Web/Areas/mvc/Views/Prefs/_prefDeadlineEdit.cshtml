@@ -1,0 +1,131 @@
+﻿@using MyFlightbook.Currency
+@{
+    MyFlightbook.Profile m_pf = ViewBag.pf;
+    int idDeadline = ViewBag.idDeadline;
+    DeadlineCurrency dc = DeadlineCurrency.DeadlineForUser(User.Identity.Name, idDeadline) ?? new DeadlineCurrency();
+    bool fShared = ViewBag.fShared;
+    if (fShared)
+    {
+        dc.AircraftID = ViewBag.idAircraft;
+    }
+    UserAircraft ua = new UserAircraft(User.Identity.Name);
+}
+<script type="text/javascript">
+    $(() => {
+        defaultButtonForDiv('divDeadline', 'btnAddDeadline');
+        $("#txtDeadlineName")[0].focus();
+
+        var f = $("#frmEditDeadline");
+        f.validate({
+            errorClass: "errorCallout",
+            errorElement: "div",
+            errorPlacement: function (error, element) {
+                error.insertAfter($(element));
+                if (!error.find(".notch").length) {
+                    error.prepend($("<b class='notch'></b>"));
+                }
+            },
+            rules: {
+                deadlineName: "required",
+                deadlineNewDate: "required"
+            },
+            messages: {
+                deadlineName: '@Resources.Currency.errDeadlineNoName',
+                deadlineNewDate: "@Resources.Currency.errDeadlineNoDate"
+            },
+            showErrors: function (errorMap, errorList) {
+                // First remove existing notches
+                this.errorList.forEach(function (error) {
+                    $(error.element).next(".errorCallout").find(".notch").remove();
+                });
+
+                // Call the default showErrors method to display errors
+                this.defaultShowErrors();
+
+                // Add the notch again
+                this.errorList.forEach(function (error) {
+                    $(error.element).next(".errorCallout").prepend($("<b class='notch'></b>"));
+                });
+            },
+            highlight: function (element, errorClass) {
+                $(element).addClass("errorItem");
+            },
+            unhighlight: function (element, errorClass) {
+                $(element).removeClass("errorItem");
+            }
+        });
+    });
+</script>
+<style type="text/css">
+    .deadlineDateType {
+        @(dc.UsesHours ? "display: none;" : string.Empty)
+    }
+    .deadlineHourType {
+        @(dc.UsesHours ? string.Empty : "display: none;")
+    }
+</style>
+
+@using (Html.BeginForm("", "Prefs", FormMethod.Post, new { id = "frmEditDeadline", name = "frmEditDeadline" }))
+{
+    @Html.AntiForgeryToken();
+    <input type="hidden" name="idDeadline" value="@dc.ID" />
+    <input type="hidden" name="deadlineShared" value="@Json.Encode(fShared)" />
+    <div id="divDeadline">
+        <p>@Resources.Currency.DeadlineName</p>
+        <div><input type="text" id="txtDeadlineName" placeholder="@Resources.Currency.DeadlineName" required name="deadlineName" value="@dc.Name" /></div>
+        <div style="@(fShared ? "display: none" : string.Empty)">
+            <p>
+                @Resources.Currency.DeadlineAssociatedAircraft <span class="fineprint">@Resources.Currency.DeadlineAssociatedAircraftOptional</span>
+                <select id="cmbDeadlineAircraft" name="deadlineAircraftID" onchange="javascript: dlEditor.aircraftSelected(this, 'divDeadline', 'ckDeadlineUseHours');">
+                    <option value="" @((dc.AircraftID <= 0).ToSelected())>@Resources.LocalizedText.None</option>
+                    @foreach (Aircraft ac in ua.GetAircraftForUser())
+                    {
+                        if (ac.InstanceType == AircraftInstanceTypes.RealAircraft && (!ac.HideFromSelection || ac.AircraftID == dc.AircraftID))
+                        {
+                            <option value="@ac.AircraftID" @((dc.AircraftID == ac.AircraftID).ToSelected())>@ac.TailNumber</option>
+                        }
+                    }
+                </select>
+                <label id="lblUseHours" style="@(dc.AircraftID > 0 ? string.Empty : "display: none;")"><input type="checkbox" @dc.UsesHours.ToChecked() id="ckDeadlineUseHours" name="deadlineUsesHours" onchange="javascript: dlEditor.setUseHours(this.checked, 'divDeadline');" />@Resources.Preferences.PrefDeadlineUseHours</label>
+        </div>
+        <p>@Resources.Currency.DeadlineDueDate</p>
+        <div>
+            <div class="deadlineDateType" id="divShowDeadlineDate">
+                @{ Html.RenderAction("RenderDateField", "MFBTemplate", new { name = "deadlineNewDate", id = "dtDeadlineNewDate", required = true, value = dc.Expiration.LaterDate(DateTime.Now) }); }
+            </div>
+            <div class="deadlineHourType" id="divShowDeadlineHours">
+                <input type="number" step="0.1" name="deadlineNewHours" required style="width: 7em;" min="1" value="@dc.AircraftHours" />
+            </div>
+        </div>
+        <p>@Resources.Currency.DeadlineRegen</p>
+        <div>
+            <div>@Resources.Currency.DeadlineRegenAction</div>
+            <table>
+                <tr style="vertical-align:middle">
+                    <td style="vertical-align:top"><input type="radio" name="deadlineRegenType" value="None" @((dc.RegenType == DeadlineCurrency.RegenUnit.None).ToChecked()) id="rbRegenManual" /></td>
+                    <td style="vertical-align:top"><label for="rbRegenManual">@Resources.Currency.DeadlineExtendManually</label></td>
+                </tr>
+                <tr style="vertical-align:middle">
+                    <td style="vertical-align:top"><input type="radio" name="deadlineRegenType" value="" @((dc.RegenType != DeadlineCurrency.RegenUnit.None).ToChecked()) id="rbRegenInterval" /></td>
+                    <td style="vertical-align:top">
+                        <label for="rbRegenInterval">@Resources.Currency.DeadlineExtendDeadline</label>
+                        <div style="display: inline;"><input type="number" step="1" id="decDeadlineRegenInterval" name="deadlineRegenInterval" onfocus="javascript: $('#rbRegenInterval')[0].click();" value="@dc.RegenSpan" style="width: 5em;" /></div>
+                        <span class="deadlineDateType" id="divTimeIntervals">
+                            <select name="deadlineRegenRange">
+                                <option @((dc.RegenType == DeadlineCurrency.RegenUnit.Days).ToChecked()) value="Days">@Resources.Currency.DeadlineDays</option>
+                                <option @((dc.RegenType == DeadlineCurrency.RegenUnit.CalendarMonths).ToChecked()) value="CalendarMonths">@Resources.Currency.DeadlineCalendarMonths</option>
+                            </select>
+                        </span>
+                        <span class="deadlineHourType" id="divHoursIntervals">
+                            @Resources.Currency.DeadlineHours <span class="fineprint">@Resources.Currency.DeadlineHoursTip</span>
+                        </span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div style="text-align: center;">
+            <button type="button" onclick="javascript: dlEditor.cancelDeadlineEdit();">@Resources.LocalizedText.Cancel</button>
+            <button type="button" id="btnAddDeadline" onclick="javascript: dlEditor.submitDeadline($('#frmEditDeadline'));">@Resources.Currency.CustomCurrencyAddRule</button>
+        </div>
+    </div>
+}

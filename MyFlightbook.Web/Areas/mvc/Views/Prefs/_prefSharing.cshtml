@@ -1,0 +1,167 @@
+﻿@using System.Globalization
+@using MyFlightbook.Web.Sharing
+@using MyFlightbook.CloudStorage
+@{ 
+    MyFlightbook.Profile m_pf = ViewBag.pf;
+    IEnumerable<ShareKey> lstKeys = ShareKey.ShareKeysForUser(m_pf.UserName);
+}
+<script type="text/javascript">
+    $(() => {
+        defaultButtonForDiv('divDeadline', 'btnCreateShareLink');
+        $("#txtShareLinkName")[0].focus();
+
+        $.validator.addMethod("validShareKey", function (value, element, param) {
+            return $("#frmCreateShareKey").find("input[type='checkbox']").is(":checked");
+        }, "@Resources.LocalizedText.ShareKeyValidationNoPrivileges");
+
+        var f = $("#frmCreateShareKey");
+        f.validate({
+            errorClass: "errorCallout",
+            errorElement: "div",
+            errorPlacement: function (error, element) {
+                error.insertAfter($(element));
+                if (!error.find(".notch").length) {
+                    error.prepend($("<b class='notch'></b>"));
+                }
+            },
+            rules: {
+                prefShareLinkName: "required",
+                prefShareLinkFlights: { validShareKey : true }
+            },
+            messages: {
+                prefShareLinkName: '@Resources.Currency.errDeadlineNoName',
+                prefShareLinkFlights: '@Resources.LocalizedText.ShareKeyValidationNoPrivileges'
+            },
+            showErrors: function (errorMap, errorList) {
+                // First remove existing notches
+                this.errorList.forEach(function (error) {
+                    $(error.element).next(".errorCallout").find(".notch").remove();
+                });
+
+                // Call the default showErrors method to display errors
+                this.defaultShowErrors();
+
+                // Add the notch again
+                this.errorList.forEach(function (error) {
+                    $(error.element).next(".errorCallout").prepend($("<b class='notch'></b>"));
+                });
+            },
+            highlight: function (element, errorClass) {
+                $(element).addClass("errorItem");
+            },
+            unhighlight: function (element, errorClass) {
+                $(element).removeClass("errorItem");
+            }
+        });
+    });
+
+    var skEditor = new sharingEditor("@("~/mvc/Prefs/".ToAbsolute())", {
+        deleteConfirmation: "@Resources.LocalizedText.ShareKeyDeleteConfirm",
+        errorID: "skUpdateError"
+    });
+</script>
+<div class="prefSectionRow">
+    <h2>@Resources.Preferences.HeaderSharePublicFlights</h2>
+    <p>@Resources.LocalizedText.SharePublicFlightsDescription</p>
+    <p>@Resources.Preferences.SharingShareFlightsDisclaimer</p>
+    <p>
+        <input type="text" style="width: 300px;" readonly value="@m_pf.PublicFlightsURL(Request.Url.Host).AbsoluteUri" id="txtPrefSharingMyFlights" />
+        <img src="@("~/images/copyflight.png".ToAbsolute())" style="vertical-align:text-bottom;" onclick="javascript:copyClipboard(null, 'txtPrefSharingMyFlights', true, 'lblPrefMyFlightsCopied');return false;" alt="@Resources.LocalizedText.CopyToClipboard" title="@Resources.LocalizedText.CopyToClipboard" />
+        <span id="lblPrefMyFlightsCopied" class="hintPopup" style="display:none; font-weight:bold; font-size: 10pt;">@Resources.LocalizedText.CopiedToClipboard</span>
+    </p>
+</div>
+<div class="prefSectionRow">
+    <h2>@Resources.LocalizedText.ShareLogbookPrompt1</h2>
+    <p>@Resources.LocalizedText.ShareLogbookPrompt2</p>
+    <div id="divCreateShareKey">
+        @using (Html.BeginForm("CreateShareKey", "Prefs", FormMethod.Post, new { id = "frmCreateShareKey", name = "frmCreateShareKey" }))
+        {
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="prefShareLinkID" value="" />
+            <div style="display: inline;" id="divShareKeyName"><input type="text" id="txtShareLinkName" placeholder="@Resources.LocalizedText.ShareKeyNamePrompt" required name="prefShareLinkName" /></div>
+            <div style="display: inline;" id="divShareKeyPerms">
+                <label><input type="checkbox" id="ckShareLinkFlights" checked name="prefShareLinkFlights">@Resources.LocalizedText.ShareKeyPermissionViewFlights</label>
+                <label><input type="checkbox" id="ckShareLinkTotals" checked name="prefShareLinkTotals">@Resources.LocalizedText.ShareKeyPermissionViewTotals</label>
+                <label><input type="checkbox" id="ckShareLinkCurrency" checked name="prefShareLinkCurrency">@Resources.LocalizedText.ShareKeyPermissionViewCurrency</label>
+                <label><input type="checkbox" id="ckShareLinkAchievements" checked name="prefShareLinkAchievements">@Resources.LocalizedText.ShareKeyPermissionViewAchievements</label>
+                <label><input type="checkbox" id="ckShareLinkAirports" checked name="prefShareLinkAirports">@Resources.LocalizedText.ShareKeyPermissionViewAirports</label>
+            </div>
+            <button type="submit" id="btnCreateShareLink">@Resources.Preferences.SharingCreateShareLink</button>
+        }
+    </div>
+    <div class="fineprint">@Resources.Preferences.SharingShareKeyNameHint</div>
+    @if (lstKeys.Any())
+    {
+        <table cellpadding="3">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th>@Resources.LocalizedText.ShareKeyPermissionViewFlights</th>
+                    <th>@Resources.LocalizedText.ShareKeyPermissionViewTotals</th>
+                    <th>@Resources.LocalizedText.ShareKeyPermissionViewCurrency</th>
+                    <th>@Resources.LocalizedText.ShareKeyPermissionViewAchievements</th>
+                    <th>@Resources.LocalizedText.ShareKeyPermissionViewAirports</th>
+                    <th>@Resources.LocalizedText.ShareKeyLastAccessHeader</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (ShareKey sk in lstKeys)
+                {
+                    string idTxtLink = String.Format(CultureInfo.InvariantCulture, "txtShareLnk{0}", sk.ID);
+                    string idtxtTip = String.Format(CultureInfo.InvariantCulture, "txtShareTip{0}", sk.ID);
+                    <tr>
+                        <td style=""><img src="@("~/images/x.gif".ToAbsolute())" alt="@Resources.Currency.CustomCurrencyDeleteTooltip" onclick="javascript: skEditor.deleteShareKey($(this).closest('tr'), '@sk.ID');" title="@Resources.Currency.CustomCurrencyDeleteTooltip" /></td>
+                        <td style="font-weight: bold;">@sk.Name</td>
+                        <td style="text-align: center"><input type="checkbox" disabled @sk.CanViewFlights.ToChecked() name="skCanViewFlights"></td>
+                        <td style="text-align: center"><input type="checkbox" disabled @sk.CanViewTotals.ToChecked() name="skCanViewTotals"></td>
+                        <td style="text-align: center"><input type="checkbox" disabled @sk.CanViewCurrency.ToChecked() name="skCanViewCurrency"></td>
+                        <td style="text-align: center"><input type="checkbox" disabled @sk.CanViewAchievements.ToChecked() name="skCanViewAchievements"></td>
+                        <td style="text-align: center"><input type="checkbox" disabled @sk.CanViewVisitedAirports.ToChecked() name="skCanViewAirports"></td>
+                        <td>@sk.LastAccessDisplay</td>
+                        <td>
+                            <input readonly style="width: 200px;" value="@sk.ShareLink" id="@idTxtLink" />
+                            <img src="@("~/images/copyflight.png".ToAbsolute())" onclick="javascript:copyClipboard(null, '@idTxtLink', true, '@idtxtTip');return false;" alt="@Resources.LocalizedText.CopyToClipboard" title="@Resources.LocalizedText.CopyToClipboard" />
+                        </td>
+                        <td>
+                            <div class="shareKeyStatic">
+                                <img src="@("~/images/pencilsm.png".ToAbsolute())" onclick="skEditor.setEditMode($(this).closest('tr'), true);" />
+                            </div>
+                            <div class="shareKeyEdit" style="display:none;">
+                                <a href="#" onclick="javascript: skEditor.setEditMode($(this).closest('tr'), false); skEditor.setPermissions($(this).closest('tr'), @Json.Encode(sk.CanViewFlights), @Json.Encode(sk.CanViewTotals), @Json.Encode(sk.CanViewCurrency), @Json.Encode(sk.CanViewAchievements), @Json.Encode(sk.CanViewVisitedAirports)); return false;">@Resources.LocalizedText.Cancel</a>
+                                <a href="#" onclick="javascript: skEditor.updateShareKey($(this).closest('tr'), '@sk.ID'); return false;">@Resources.LocalizedText.genericUpdate</a>
+                            </div>
+                        </td>
+                        <td><span id="@idtxtTip" class="hintPopup" style="display:none; font-weight:bold; font-size: 10pt;">@Resources.LocalizedText.CopiedToClipboard</span></td>
+                </tr>
+                }
+            </tbody>
+        </table>
+        <div class="error" id="skUpdateError">@(Request["shareKeyErr"] ?? string.Empty)</div>
+    }
+    else
+    {
+        <ul><li style="font-style: italic;">@Resources.LocalizedText.ShareKeyNoKeysFound</li></ul>
+    }
+</div>
+<div class="prefSectionRow">
+    <h2>@Resources.LocalizedText.PrefSharingGooglePhotos</h2>
+    <p>@Branding.ReBrand(Resources.LocalizedText.PrefSharingGooglePhotosDesc)</p>
+    <div>
+        <img src="https://ssl.gstatic.com/social/photosui/images/logo/favicon_alldp.ico" style="float:left; margin-right: 5px; max-width: 30px;" />
+        <div>
+            @if (m_pf.PreferenceExists(GooglePhoto.PrefKeyAuthToken))
+            {
+                <div>@Branding.ReBrand(Resources.LocalizedText.PrefSharingGooglePhotosEnabled)</div>
+                <div><a href="@("~/mvc/oauth/DeAuthorizeGPhoto".ToAbsolute())">@Branding.ReBrand(Resources.LocalizedText.PrefSharingGooglePhotosDisable)</a></div>
+            }
+            else
+            {
+                <a href="@("~/mvc/oauth/AuthorizeGPhoto".ToAbsolute())">@Branding.ReBrand(Resources.LocalizedText.PrefSharingGooglePhotosAuthorize)</a>
+            }
+        </div>
+    </div>
+    <div class="error">@(Request["oauthErr"] ?? string.Empty)</div>
+</div>

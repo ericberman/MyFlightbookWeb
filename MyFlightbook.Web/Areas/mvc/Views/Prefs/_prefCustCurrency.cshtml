@@ -1,0 +1,30 @@
+﻿<script type="text/javascript">
+    var ccEditor = new prefsCustCurrencyEditor("@("~/mvc/Prefs/".ToAbsolute())", {
+        deleteConfirmation: "@Resources.Currency.CustomCurrencyDeleteConfirmation",
+        onCancel: cancelEditCustCurrency,
+        onCommit: custCurrencyCommitted,
+        onEdit: function (r) {
+            $("#divListCustCurrencies").hide();
+            $("#divEditCustCurrency").show();
+            $("#divEditCustCurrency").html(r);
+        },
+        errorID: "lblCustCurErr"
+    });
+
+    function cancelEditCustCurrency() {
+        $("#divListCustCurrencies").show();
+        $("#divEditCustCurrency").hide();
+        $("#divEditCustCurrency").html("");
+    }
+
+    function custCurrencyCommitted() {
+        cancelEditCustCurrency();
+        ccEditor.getCustCurrencyList($("#divListCustCurrencies"));
+    }
+
+</script>
+<div id="divListCustCurrencies">
+    @{ Html.RenderPartial("_prefCustCurrencyList"); }
+</div>
+<div id="divEditCustCurrency"></div>
+<div class="error" id="lblCustCurErr"></div>

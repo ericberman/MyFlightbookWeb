@@ -1,0 +1,152 @@
+﻿@using System.Globalization
+@using MyFlightbook.Templates
+@{
+    MyFlightbook.Profile m_pf = ViewBag.pf;
+    List<CustomPropertyType> lstAllUsed = new List<CustomPropertyType>(CustomPropertyType.GetCustomPropertyTypes(m_pf.UserName, false)).FindAll(cpt => cpt.IsFavorite);
+    List<CustomPropertyType> lstBlockList = new List<CustomPropertyType>(CustomPropertyType.GetCustomPropertyTypes(m_pf.BlocklistedProperties));
+    lstBlockList.Sort((cpt1, cpt2) => { return cpt1.SortKey.CompareCurrentCultureIgnoreCase(cpt2.SortKey); });
+    List<TemplateCollection> rgtc = new List<TemplateCollection>(TemplateCollection.GroupTemplates(UserPropertyTemplate.TemplatesForUser(m_pf.UserName)));
+    rgtc.RemoveAll(tc => tc.Group == PropertyTemplateGroup.Automatic);
+}
+<script type="text/javascript" src="@("~/Public/Scripts/listDragNew.js".ToAbsolute())"></script>
+<script type="text/javascript" src="@("~/Public/Scripts/DropDownFilter.js?v=3".ToAbsolute())"></script>
+<script type="text/javascript">
+    var propsEd = new prefsPropsTemplateEditor("@("~/mvc/Prefs/".ToAbsolute())", {});
+    $(() => {
+        var lstDrag = new listDraggerNew({
+            divLeft: $("#divPropsToShow"),
+            divRight: $("#divPropsToBlock"),
+            onDropLeft: function (item, val) {
+                propsEd.editBlockedProperty(val, true);
+            },
+            onDropRight: function (item, val) {
+                propsEd.editBlockedProperty(val, false);
+            }
+        });
+    });
+
+    function deleteTemplate(sender, id, confirmText) {
+        $("#hdnTemplateID").val(id);
+        propsEd.deletePropTemplate($("#frmDeleteTemplate"), confirmText, function (e) {
+            window.alert(e);
+        }, function () {
+            $(sender).closest('tr').hide();
+        });
+    }
+</script>
+<div class="prefSectionRow">
+    <h2>@Resources.LogbookEntry.PropertiesHeader</h2>
+    <p>@Resources.Preferences.PrefBlockListDesc</p>
+    <p>@Resources.Preferences.PrefBlockListInstructions</p>
+    <table style="margin-left: auto; margin-right: auto;">
+        <tr>
+            <td style="width:50%">@Resources.Preferences.PrefBlockListShow</td>
+            <td style="width:50%">@Resources.Preferences.PrefBlockListHide</td>
+        </tr>
+        <tr>
+            <td style="width:50%">
+                <div id="divPropsToShow">
+                    @foreach (CustomPropertyType cpt in lstAllUsed)
+                    {
+                        <span id="@String.Format(CultureInfo.InvariantCulture, "blockListProp{0}", cpt.PropTypeID)">@cpt.Title<input type="hidden" value="@cpt.PropTypeID" /></span>
+                    }
+                </div>
+            </td>
+            <td style="width:50%">
+                <div id="divPropsToBlock">
+                    @foreach (CustomPropertyType cpt in lstBlockList)
+                    {
+                        <span id="@String.Format(CultureInfo.InvariantCulture, "blockListProp{0}", cpt.PropTypeID)">@cpt.Title<input type="hidden" value="@cpt.PropTypeID" /></span>
+                    }
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<h2>@Resources.LogbookEntry.TemplateHeader</h2>
+<p>@Branding.ReBrand(Resources.LogbookEntry.TemplateDescription) <a style="font-weight:bold;" target="_blank" href="https://myflightbookblog.blogspot.com/2019/06/flight-templates.html">@Resources.LogbookEntry.TemplatesLearnMore</a></p>
+<p>@Branding.ReBrand(Resources.LogbookEntry.TemplateDescription2)</p>
+<p>
+    <a href="@("~/mvc/prefs/BrowseTemplates".ToAbsolute())" style="font-weight: bold;">@Resources.LogbookEntry.TemplateBrowseTemplates</a> @Resources.LocalizedText.ORSeparator
+    <a href="#" onclick="javascript: propsEd.editTemplate('divEditPropTemplate', @((int) KnownTemplateIDs.ID_NEW), false); return false;">
+        <img src="@VirtualPathUtility.ToAbsolute("~/images/add.png")" style="vertical-align: middle;" />&nbsp;&nbsp;@Resources.LogbookEntry.TemplateClickToCreate
+    </a>
+</p>
+<div id="divEditPropTemplate">
+</div>
+@using (Html.BeginForm("", "Prefs", FormMethod.Post, new { id = "frmDeleteTemplate" }))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="hdnTemplateID" name="idTemplate" />
+}
+
+@if (rgtc.Count == 0)
+{
+    <ul><li style="font-style: italic">@Resources.LogbookEntry.TemplateNoneAvailable</li></ul>
+}
+else
+{
+    <table>
+        <tr style="vertical-align:bottom">
+            <td></td>
+            <td style="padding: 3px; text-align:center; font-weight: bold; -webkit-transform: rotate(315deg); -moz-transform: rotate(315deg);-o-transform: rotate(315deg);-ms-transform: rotate(315deg);transform: rotate(315deg);">
+                @Resources.LogbookEntry.TemplateShare&nbsp;&nbsp;
+            </td>
+            <td style="padding: 3px; text-align:center; font-weight: bold; -webkit-transform: rotate(315deg); -moz-transform: rotate(315deg);-o-transform: rotate(315deg);-ms-transform: rotate(315deg);transform: rotate(315deg);">
+                @Resources.LogbookEntry.TemplateDefaultHeader
+            </td>
+            <td></td>
+            <td></td>
+        </tr>
+        @foreach (TemplateCollection tc in rgtc)
+        {
+            <tr>
+                <td colspan="5" style="border-bottom: 1px solid gray; margin-top: 3px; text-align:center; font-weight: bold; font-size: larger;">@tc.GroupName</td>
+            </tr>
+            foreach (UserPropertyTemplate pt in tc.Templates)
+            {
+                <tr>
+                    <td style="padding: 3px;">
+                        <div>
+                            <span style="font-weight:bold; font-size:larger">@pt.Name</span>
+                            <span>@Html.Raw(pt.Description.Linkify(true))</span>
+                        </div>
+                        <div class="fineprint" style="font-style:italic; color: #555555; margin-left: 2em">@String.Join(" ● ", pt.PropertyNames)</div>
+                    </td>
+                    <td style="padding: 3px; text-align:center;">
+                        @if (pt.IsMutable)
+                        {
+                            <input type="checkbox" @pt.IsPublic.ToChecked() onchange="javascript: propsEd.setPropTemplateFlags(@pt.ID, this.checked, $(this).parent().next().children()[0].checked);" title="@Resources.LogbookEntry.TemplateShare" />
+                        }
+                    </td>
+                    <td style="padding: 3px; text-align:center;">
+                        @if (pt.IsMutable)
+                        {
+                            <input type="checkbox" @pt.IsDefault.ToChecked() onchange="javascript: propsEd.setPropTemplateFlags(@pt.ID, $(this).parent().prev().children()[0].checked, this.checked);" title="@Resources.LogbookEntry.TemplateDefaultTooltip" />
+                        }
+                    </td>
+                    <td style="padding: 3px;">
+                        <img src="@VirtualPathUtility.ToAbsolute("~/images/MenuChevron.png")" class="popTrigger" />
+                        <div class="popMenuContent popMenuHidden" style="margin-top: -8pt; margin-left: 0px">
+                            <div style="line-height: 26px;">
+                                <a href="#" onclick="javascript: propsEd.editTemplate('divEditPropTemplate', @pt.ID, false);  return false;">
+                                    <img src="@("~/images/pencilsm.png".ToAbsolute())" style="padding-right:4px;">@Resources.LogbookEntry.TemplateEditTip
+                                </a>
+                            </div>
+                            <div style="line-height: 26px;">
+                                <a href="#" onclick="javascript: deleteTemplate(this, @pt.ID, '@String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.TemplateDeleteConfirm, pt.Name)');  return false;">
+                                    <img src="@("~/images/x.gif".ToAbsolute())" style="padding-right:10px;">@Resources.LogbookEntry.TemplateDeleteTip
+                                </a>
+                            </div>
+                            <div style="line-height: 26px;">
+                                <a href="#" onclick="javascript: propsEd.editTemplate('divEditPropTemplate', @pt.ID, true); return false;">
+                                    <img src="@("~/images/copyflight.png".ToAbsolute())" style="padding-right:4px;">@Resources.LogbookEntry.TemplateCopy
+                                </a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+}

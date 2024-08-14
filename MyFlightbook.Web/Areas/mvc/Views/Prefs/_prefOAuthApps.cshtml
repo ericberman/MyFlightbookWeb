@@ -1,0 +1,42 @@
+﻿@using OAuthAuthorizationServer.Code
+@using OAuthAuthorizationServer.Services
+@{ 
+    IEnumerable<MFBOauthClientAuth> lstAuths = MFBOauthClientAuth.GrantedAuthsForUser(User.Identity.Name);
+}
+@if (lstAuths.Any())
+{
+    <div>
+        <script type="text/javascript">
+            var oaClientPrefs = new oAuthAppsEditor("@("~/mvc/oAuth/".ToAbsolute())");
+        </script>
+        <table cellpadding="10" cellspacing="10">
+            @foreach (MFBOauthClientAuth client in lstAuths)
+            {
+                IEnumerable<string> lstScopes = MFBOauthServer.ScopeDescriptions(MFBOauthServer.ScopesFromString(client.Scope));
+                <tr>
+                    <td style="vertical-align: top; font-weight: bold;">@client.ClientName</td>
+                    <td style="vertical-align: top;">
+                        @if (lstScopes.Any())
+                        {
+                            <ul>
+                                @foreach (string scope in lstScopes)
+                                {
+                                    <li>@scope</li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            @Resources.oAuth.oAuthNoScopesDefined
+                        }
+                    </td>
+                    <td style="vertical-align: top;"><img src="@("~/images/x.gif".ToAbsolute())" onclick="javascript: oaClientPrefs.deleteClient($(this).closest('tr'), '@client.ClientId'); return false;" /></td>
+                </tr>
+            }
+        </table>
+    </div>
+}
+else 
+{
+    <p>@Resources.oAuth.oAuthNoApplicationsFound</p>
+}

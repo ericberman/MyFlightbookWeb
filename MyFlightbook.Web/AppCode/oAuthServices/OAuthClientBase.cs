@@ -135,7 +135,7 @@ namespace MyFlightbook.OAuth
             Client().RequestUserAuthorization(Scopes, szCallbackUri);
         }
 
-        protected static Uri RedirectUri(HttpRequest request, string basepath, string param)
+        protected static Uri RedirectUri(HttpRequestBase request, string basepath, string param)
         {
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
@@ -150,9 +150,19 @@ namespace MyFlightbook.OAuth
                 param));
         }
 
-        public void Authorize(HttpRequest request, string basepath, string param)
+        protected static Uri RedirectUri(HttpRequest request, string basepath, string param)
+        {
+            return RedirectUri(new HttpRequestWrapper(request), basepath, param);
+        }
+
+        public void Authorize(HttpRequestBase request, string basepath, string param)
         {
             Authorize(RedirectUri(request, basepath, param));
+        }
+
+        public void Authorize(HttpRequest request, string basepath, string param)
+        {
+            Authorize(RedirectUri(new HttpRequestWrapper(request), basepath, param));
         }
 
         /// <summary>

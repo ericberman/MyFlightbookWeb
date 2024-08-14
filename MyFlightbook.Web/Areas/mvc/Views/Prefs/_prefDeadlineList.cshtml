@@ -1,0 +1,59 @@
+﻿@using MyFlightbook.Currency
+@using System.Globalization
+@{
+    // TODO: When we migrate Aircraft edit page to MVC, will need to pull in the aircraft from the viewbag.
+    IEnumerable<DeadlineCurrency> rgdc = DeadlineCurrency.DeadlinesForUser(User.Identity.Name, Aircraft.idAircraftUnknown, true);
+}
+<div>
+    @Html.Raw(Resources.Currency.DeadlineDescription)
+    @if (rgdc.Any())
+    {
+        using (Html.BeginForm("", "Prefs", FormMethod.Post, new { id = "frmDeadlineList", name = "frmDeadlineList" }))
+        {
+            @Html.AntiForgeryToken();
+            <input type="hidden" name="idDeadline" id="hdnDeadlineID" />
+        }
+        <table cellpadding="3">
+            @foreach (DeadlineCurrency dc in rgdc)
+            {
+                <tr>
+                    <td style="vertical-align:top;"><img src="@("~/images/x.gif".ToAbsolute())" alt="@Resources.Currency.CustomCurrencyDeleteTooltip" onclick="javascript: $('#hdnDeadlineID').val(@dc.ID); dlEditor.deleteDeadline(this, $('#frmDeadlineList'));" title="@Resources.Currency.CustomCurrencyDeleteTooltip" /></td>
+                    <td>
+                        <div><span style="font-weight: bold">@dc.DisplayName</span> @dc.ExpirationDisplay</div>
+                        <div class="fineprint staticDeadlineView">@dc.RegenDescription</div>
+                        <div style="display: none;" class="editDeadlineView">
+                            @using (Html.BeginForm("", "Pref", FormMethod.Post))
+                            {
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="idDeadline" value="@dc.ID" />
+                                <span>@dc.RegenPrompt</span>
+                                if (dc.UsesHours)
+                                {
+                                    <input type="number" step="0.1" name="deadlineNewHours" style="width: 7em;" required min="1" value="@dc.AircraftHours" />
+                                }
+                                else
+                                {
+                                    Html.RenderAction("RenderDateField", "MFBTemplate", new { name = "deadlineNewDate", id = String.Format(CultureInfo.InvariantCulture, "dtDeadlineNewDate{0}", dc.ID), value = dc.Expiration.LaterDate(DateTime.Now) });
+                                }
+                            }
+                        </div>
+                    </td>
+                    <td style="vertical-align:top;" class="staticDeadlineView"><img src="@("~/images/pencilsm.png".ToAbsolute())" onclick="javascript: dlEditor.setEditMode($(this).closest('tr'), true);" alt="@Resources.Preferences.PrefUpdateDeadline" title="@Resources.Preferences.PrefUpdateDeadline" /></td>
+                    <td style="display: none;" class="editDeadlineView">
+                        <a href="#" onclick="javascript: dlEditor.setEditMode($(this).closest('tr'), false); return false;">@Resources.LocalizedText.Cancel</a>
+                        <a href="#" onclick="javascript: dlEditor.updateDeadline($(this).closest('tr'), @dc.ID); return false;">@Resources.LocalizedText.genericUpdate</a>
+                    </td>
+                </tr>
+            }
+        </table>
+    }
+    else
+    {
+        <ul><li><span style="font-style:italic">@Resources.Currency.deadlinesNoDeadlinesDefined</span></li></ul>
+    }
+</div>
+<div>
+    <a href="#" onclick="javascript: dlEditor.editDeadline(this, -1); return false;" style="display: flex; align-items: center;">
+        <img src="@VirtualPathUtility.ToAbsolute("~/images/add.png")" alt="@Resources.Preferences.PrefAddDeadline" />&nbsp;&nbsp;@Resources.Preferences.PrefAddDeadline
+    </a>
+</div>

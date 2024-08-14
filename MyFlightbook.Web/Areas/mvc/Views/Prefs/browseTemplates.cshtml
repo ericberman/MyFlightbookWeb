@@ -1,0 +1,77 @@
+﻿@using MyFlightbook.Templates
+@using System.Globalization
+@{
+    Profile m_pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+    ViewBag.Title = Resources.LogbookEntry.TemplateBrowseTemplatesheader;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    ViewBag.defaultTab = tabID.tabProfile;
+    IEnumerable<PropertyTemplate> userPropertyTemplates = UserPropertyTemplate.TemplatesForUser(User.Identity.Name);
+    IEnumerable<PropertyTemplate> publicTemplates = UserPropertyTemplate.PublicTemplates();
+    IEnumerable<TemplateCollection> groupedTemplates = TemplateCollection.GroupTemplates(publicTemplates);
+}
+<script type="text/javascript">
+    function addTemplate(sender, idTemplate, confirmText) {
+        if (confirmText == "" || confirm(confirmText)) {
+            var params = new Object();
+            params.idTemplate = idTemplate;
+            var d = JSON.stringify(params);
+            $.ajax({
+                url: "@("~/mvc/prefs/AddPublicTemplate".ToAbsolute())",
+                type: "POST", data: d, dataType: "html", contentType: "application/json",
+                error: function (xhr, status, error) {
+                    window.alert(xhr.responseText);
+                },
+                success: function () {
+                    $(sender).parent().text("@Resources.LogbookEntry.TemplateConsumed");
+                }
+            });
+        }
+    }
+</script>
+<p><img style="vertical-align: middle;" src="@("~/images/back.png".ToAbsolute())" /><a href="@("~/mvc/prefs?pane=props".ToAbsolute())">@Resources.LogbookEntry.TemplateBrowseReturn</a></p>
+<p>@Branding.ReBrand(Resources.LogbookEntry.TemplateBrowseHeaderDescription)</p>
+<p>@Resources.LogbookEntry.TemplateBrowseHeaderDescription2</p>
+@if (!groupedTemplates.Any())
+{
+    <ul><li style="font-style: italic;">@Resources.LogbookEntry.TemplateNoneAvailable</li></ul>
+}
+else
+{
+    <table cellpadding="3" style="width: 100%;">
+        @foreach (TemplateCollection tc in groupedTemplates)
+        {
+            <tr>
+                <td colspan="3">
+                    <div style="border-bottom: 1px solid gray; margin-top: 3px; text-align:center; font-weight:bold; font-size: larger;">@tc.GroupName</div>
+                </td>
+            </tr>
+            foreach (UserPropertyTemplate pt in tc.Templates)
+            {
+                bool fOwned = pt.Owner.CompareCurrentCultureIgnoreCase(User.Identity.Name) == 0;
+                <tr>
+                    <td>&nbsp;</td>
+                    <td style="vertical-align: top;">
+                        <div>
+                            <span style="font-weight:bold; font-size: larger">@pt.Name</span>
+                            <span>@Html.Raw(pt.Description.Linkify(true))</span>
+                        </div>
+                        <div class="fineprint" style="font-style:italic; color: #555555; margin-left: 2em">@String.Join(" ● ", pt.PropertyNames)</div>
+                    </td>
+                    <td style="text-align: center;">
+                        @if (pt.Owner.CompareCurrentCultureIgnoreCase(User.Identity.Name) == 0)
+                        {
+                            <span style="font-size: larger; font-weight: bold">@Resources.LogbookEntry.TemplateYours</span>
+                        }
+                        else
+                        {
+                            string szConfirm = userPropertyTemplates.FirstOrDefault(ptUser => ptUser.Group == pt.Group && ptUser.Name.CompareCurrentCultureIgnoreCase(pt.Name) == 0) == null
+                                ? string.Empty :
+                                String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.TemplateBrowseAddPublicOverwrite, pt.Name);
+                            <a href="#" onclick="javascript: addTemplate(this, @pt.ID, '@szConfirm'); return false;"><img src="@VirtualPathUtility.ToAbsolute("~/images/add.png")" style="vertical-align:middle;" alt="@Resources.LogbookEntry.TemplateBrowseAddPublic" title="@Resources.LogbookEntry.TemplateBrowseAddPublic" /></a>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+}

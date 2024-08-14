@@ -1,0 +1,31 @@
+﻿<script type="text/javascript">
+    var dlEditor = new prefsDeadlineEditor("@("~/mvc/Prefs/".ToAbsolute())", {
+        deleteConfirmation: "@Resources.Currency.deadlineDeleteConfirmation",
+        onCancel: cancelEditDeadeline,
+        onCommit: deadlineCommitted,
+        onEdit: function (r) {
+            $("#divListDeadlines").hide();
+            $("#divEditDeadline").show();
+            $("#divEditDeadline").html(r);
+        },
+        errorID: "lblDeadlineErr"
+    });
+
+    function cancelEditDeadeline() {
+        $("#divListDeadlines").show();
+        $("#divEditDeadline").hide();
+        $("#divEditDeadline").html("");
+        $("#lblDeadlineErr").text("");
+    }
+
+    function deadlineCommitted() {
+        cancelEditDeadeline();
+        dlEditor.getDeadlineList($("#divListDeadlines"));
+    }
+
+</script>
+<div id="divListDeadlines">
+    @{ Html.RenderPartial("_prefDeadlineList"); }
+</div>
+<div id="divEditDeadline"></div>
+<div class="error" id="lblDeadlineErr"></div>

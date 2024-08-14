@@ -1,0 +1,82 @@
+﻿@using System.Globalization
+@using MyFlightbook.CloudStorage
+@{
+    MyFlightbook.Profile m_pf = ViewBag.pf;
+    List<StorageID> lstCloud = new List<StorageID>(m_pf.AvailableCloudProviders);
+}
+<div class="prefSectionRow">
+    <p>@Branding.ReBrand(Resources.Profile.AboutCloudStorage)</p>
+    <table>
+        <tr style="vertical-align:middle">
+            <td style="width:180px">
+                <!-- This comes from https://www.dropbox.com/developers/reference/branding, per their guidelines -->
+                <img src="@("~/images/dropbox-logos_dropbox-logotype-blue.png".ToAbsolute())" alt="@Resources.Preferences.CloudStorageDropboxName" style="width: 180px;" />
+            </td>
+            <td>
+                @if (lstCloud.Contains(StorageID.Dropbox))
+                {
+                    <p>@Branding.ReBrand(Resources.Profile.DropboxIsAuthed)</p>
+                    <a href="@("~/mvc/oAuth/DeAuthorizeDropbox".ToAbsolute())">@Branding.ReBrand(Resources.Profile.DeAuthDropbox)</a>
+                }
+                else
+                {
+                    <a href="@("~/mvc/oAuth/AuthorizeDropbox".ToAbsolute())">@Branding.ReBrand(Resources.Profile.AuthorizeDropbox)</a>
+                }
+            </td>
+        </tr>
+        <tr style="vertical-align:middle" id="rowGDrive">
+            <td style="width:180px">
+                <!-- This comes from https://developers.google.com/drive/v2/web/branding, per their guidelines -->
+                <img src="@("~/images/google-drive-logo-lockup.png".ToAbsolute())" alt="@Resources.Preferences.CloudStorageGoogleDriveName" style="width: 180px;" />
+            </td>
+            <td>
+                @if (lstCloud.Contains(StorageID.GoogleDrive))
+                {
+                    <p>@Branding.ReBrand(Resources.Profile.GDriveIsAuthed)</p>
+                    <a href="@("~/mvc/oAuth/DeAuthorizeGDrive".ToAbsolute())">@Branding.ReBrand(Resources.Profile.DeAuthGDrive)</a>
+                }
+                else
+                {
+                    <a href="@("~/mvc/oAuth/AuthorizeGDrive".ToAbsolute())">@Branding.ReBrand(Resources.Profile.AuthorizeGDrive)</a>
+                }
+            </td>
+        </tr>
+        <tr style="vertical-align:middle" id="rowOneDrive">
+            <td style="width:180px">
+                <!-- This comes from https://msdn.microsoft.com/en-us/onedrive/dn673556.aspx, per their guidelines -->
+                <img src="@("~/images/OneDrive_rgb_Blue2728.png".ToAbsolute())" alt="@Resources.Preferences.CloudStorageOneDriveName" style="width: 180px;" />
+            </td>
+            <td>
+                @if (lstCloud.Contains(StorageID.OneDrive))
+                {
+                    <p>@Branding.ReBrand(Resources.Profile.OneDriveIsAuthed)</p>
+                    <a href="@("~/mvc/oAuth/DeAuthorizeOneDrive".ToAbsolute())">@Branding.ReBrand(Resources.Profile.DeAuthOneDrive)</a>
+                }
+                else
+                {
+                    <a href="@("~/mvc/oAuth/AuthorizeOneDrive".ToAbsolute())">@Branding.ReBrand(Resources.Profile.AuthorizeOneDrive)</a>
+                }
+            </td>
+        </tr>
+    </table>
+    <div class="error">@(Request["cloudErr"] ?? string.Empty)</div>
+</div>
+@using (Html.BeginForm("UpdateCloudPrefs", "oAuth", FormMethod.Post, new { id = "frmUpdateCloudPrefs" }))
+{
+    @Html.AntiForgeryToken()
+    <div><label><input type="radio" name="prefCloudOverwrite" @((!m_pf.OverwriteCloudBackup).ToChecked()) value="append" onchange="javascript: $('#frmUpdateCloudPrefs').submit();" />@Resources.Preferences.CloudStorageAppendDate</label></div>
+    <div><label><input type="radio" name="prefCloudOverwrite" @(m_pf.OverwriteCloudBackup.ToChecked()) value="overwrite" onchange="javascript: $('#frmUpdateCloudPrefs').submit();" />@Resources.Preferences.CloudStorageOverwrite</label></div>
+    <div><label><input type="checkbox" name="prefCloudGroup" @((!CloudStorageBase.UserUsesFlatHierarchy(m_pf)).ToChecked()) onchange="javascript: $('#frmUpdateCloudPrefs').submit();" />@Resources.Preferences.CloudStorageGroupByMonth</label></div>
+    <div style="@(lstCloud.Count > 1 ? string.Empty : "display: none;")">
+        <hr />
+        <div>
+            @Resources.Preferences.CloudStoragePickDefault
+            <select name="prefCloudDefault" onchange="javascript: $('#frmUpdateCloudPrefs').submit();">
+                @foreach (StorageID sid in lstCloud)
+                {
+                    <option value="@sid.ToString()" @((m_pf.BestCloudStorage == sid).ToSelected())>@CloudStorageBase.CloudStorageName(sid)</option>
+                }
+            </select>
+        </div>
+    </div>
+}

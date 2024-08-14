@@ -1,0 +1,27 @@
+﻿<table style="border-spacing: 10px; border-collapse: separate;">
+    <tr>
+        <td style="width:100px; text-align: center;"><img src='@("~/images/flightcrewview.png".ToAbsolute())' /></td>
+        <td style="vertical-align:top">
+            <h2>@Resources.Preferences.ScheduleServiceFlightCrewViewName</h2>
+            <p>@Resources.Preferences.ScheduleServiceFlightCrewViewDesc</p>
+            <a href="@("~/mvc/oauth/ManageFlightCrewView".ToAbsolute())">@Branding.ReBrand(Resources.Preferences.ScheduleServiceFlightCrewViewManage)</a>
+        </td>
+    </tr>
+    <tr>
+        <td style="width:100px; text-align: center;"><img src='@("~/images/LeonLogo.svg".ToAbsolute())' /></td>
+        <td style="vertical-align:top">
+            <h2>@Resources.Preferences.ScheduleServiceLeonName</h2>
+            <p>@Resources.Preferences.ScheduleServiceLeonDesc</p>
+            <a href="@("~/Public/LeonRedir.aspx".ToAbsolute())">@Branding.ReBrand(Resources.Preferences.ScheduleServiceLeonManage)</a>
+        </td>
+    </tr>
+    <tr>
+        <td style="width:100px; text-align: center;"><img style="width:100px" src='@("~/images/rb_logo.png".ToAbsolute())' /></td>
+        <td style="vertical-align:top;">
+            <h2>@Resources.Preferences.ScheduleServiceRBName</h2>
+            <p>@Resources.Preferences.ScheduleServiceRBDesc</p>
+            <a href="@("~/mvc/rbredirect".ToAbsolute())">@Branding.ReBrand(Resources.Preferences.ScheduleServiceRBManage)</a>
+        </td>
+    </tr>
+</table>
+

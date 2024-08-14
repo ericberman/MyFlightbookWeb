@@ -1,0 +1,39 @@
+﻿@using MyFlightbook.Currency
+@using System.Globalization
+@{
+    IEnumerable<CustomCurrency> rgcc = CustomCurrency.CustomCurrenciesForUser(User.Identity.Name);
+}
+<div>
+    @Resources.Preferences.CustCurrencyDescription
+    @if (rgcc.Any())
+    {
+        using (Html.BeginForm("", "Prefs", FormMethod.Post, new { id = "frmCustCurrency", name = "frmCustCurrency"}))
+        {
+            @Html.AntiForgeryToken();
+            <input type="hidden" name="idCustCurrency" id="hdnCustCurrencyID" />
+        }
+        <table cellpadding="3">
+            @foreach (CustomCurrency cc in rgcc)
+            {
+                <tr>
+                    <td style="vertical-align:top;">
+                        <img src="@("~/images/x.gif".ToAbsolute())" alt="@Resources.Currency.CustomCurrencyDeleteTooltip" onclick="javascript: $('#hdnCustCurrencyID').val(@cc.ID); ccEditor.deleteCustCurrency(this, $('#frmCustCurrency'));" title="@Resources.Currency.CustomCurrencyDeleteTooltip" />
+                    </td>
+                    <td style="vertical-align:top;"><a target="_blank" style="font-weight:bold;" href="@String.Format(CultureInfo.InvariantCulture, "~/mvc/flights?fq={0}", cc.FlightQueryJSON).ToAbsolute()">@cc.DisplayName</a></td>
+                    <td style="vertical-align:top;">@cc.DisplayString</td>
+                    <td style="vertical-align:top;"><label><input type="checkbox" @cc.IsActive.ToChecked() onchange="javascript: ccEditor.setActiveCustCurrency(this, @cc.ID);" />@Resources.Currency.CustomCurrencyIsActive</label>
+                    <td style="vertical-align:top;"><img src="@("~/images/pencilsm.png".ToAbsolute())" onclick="javascript: ccEditor.editCustCurrency(this, @cc.ID);" alt="@Resources.Preferences.PrefEditCurrencyTitle" title="@Resources.Preferences.PrefEditCurrencyTitle" /></td>
+                </tr>
+            }
+        </table>
+    }
+    else
+    {
+        <ul><li><span style="font-style:italic">@Resources.Currency.CustomCurrencyNoneDefined</span></li></ul>
+    }
+</div>
+<div>
+    <a href="#" onclick="javascript: ccEditor.editCustCurrency(this, -1); return false;" style="display: flex; align-items: center;">
+        <img src="@VirtualPathUtility.ToAbsolute("~/images/add.png")" alt="@Resources.Preferences.PrefAddCustomCurrency" />&nbsp;&nbsp;@Resources.Preferences.PrefAddCustomCurrency
+    </a>
+</div>

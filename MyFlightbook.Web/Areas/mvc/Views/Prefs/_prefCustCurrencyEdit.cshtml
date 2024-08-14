@@ -1,0 +1,216 @@
+﻿@using System.Globalization
+@using MyFlightbook.Currency
+@{
+    MyFlightbook.Profile m_pf = ViewBag.pf;
+    int ccid = ViewBag.idCustCurrency;
+    CustomCurrency cc = CustomCurrency.CustomCurrencyForUser(User.Identity.Name, ccid) ?? new CustomCurrency() { UserName = User.Identity.Name };
+    List<int> lstIntTypes = new List<int>();
+    List<dynamic> lstCurrencyEvents = new List<dynamic>();
+    foreach (CustomCurrency.CustomCurrencyEventType value in Enum.GetValues(typeof(CustomCurrency.CustomCurrencyEventType)))
+    {
+        bool isInt = value.IsIntegerOnly();
+        lstCurrencyEvents.Add(new { value = (int)value, isInt = isInt, title = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(CustomCurrency.EventTypeLabel(1, (CustomCurrency.CustomCurrencyEventType)value)), });
+        if (isInt)
+        {
+            lstIntTypes.Add((int)value);
+        }
+    }
+    lstCurrencyEvents.Sort(delegate (dynamic a, dynamic b) { return String.Compare(a.title, b.title, true); });
+
+    List<dynamic> lstTimeSpanTypes = new List<dynamic>();
+    List<int> lstAlignedTypes = new List<int>();
+    foreach (TimespanType tst in Enum.GetValues(typeof(TimespanType)))
+    {
+        bool isAligned = tst.IsAligned();
+        lstTimeSpanTypes.Add(new { title = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(tst.DisplayString()), value = (int)tst, isAligned = isAligned });
+        if (isAligned)
+        {
+            lstAlignedTypes.Add((int)tst);
+        }
+    }
+    UserAircraft ua = new UserAircraft(User.Identity.Name);
+    IEnumerable<Aircraft> lstAc = ua.GetAircraftForUser();
+    IEnumerable<MakeModel> lstMakes = MakeModel.ModelsForAircraft(lstAc);
+    IEnumerable<CategoryClass> rgCatClass = CategoryClass.CategoryClasses();
+    // Get the categories (as opposed to catclass); this is something of a hack, but it avoids an extra DB call
+    Dictionary<string, string> dictCategories = new Dictionary<string, string>();
+    foreach (CategoryClass catclass in rgCatClass) {
+        dictCategories[catclass.Category] = catclass.Category;
+    }
+    List<string> lstCategories = new List<string>(dictCategories.Keys);
+    lstCategories.Sort();
+
+    HashSet<int> hsPropsChecked = new HashSet<int>(cc.PropertyRestriction ?? Array.Empty<int>());
+    List<CustomPropertyType> lstCpt = new List<CustomPropertyType>(CustomPropertyType.GetCustomPropertyTypes(User.Identity.Name));
+}
+<script type="text/javascript">
+    var intEventTypes = new Set(@Html.Raw(Json.Encode(lstIntTypes)));
+    var alignedTimeSpans = new Set(@Html.Raw(Json.Encode(lstAlignedTypes)));
+
+    function setAligned(sender) {
+        var txtTimeFrame = $("#txtTimeFrame");
+        if (alignedTimeSpans.has(parseInt(sender.value))) {
+            txtTimeFrame.val("");
+            txtTimeFrame.prop("disabled", true);
+            txtTimeFrame.prop("required", false);
+        } else {
+            txtTimeFrame.prop("disabled", false);
+            txtTimeFrame.prop("required", true);
+        }
+    }
+
+    function setInteger(sender) {
+        var decMinEvents = $("#decMinEvents");
+        if (intEventTypes.has(parseInt(sender.value))) {
+            decMinEvents.attr("step", "1");
+        } else {
+            decMinEvents.attr("step", "0.01");
+        }
+    }
+
+    $(() => {
+        defaultButtonForDiv('pnlCustCurrency', 'btnAddCurrencyRule');
+        $("#txtRuleName")[0].focus();
+
+        var f = $("#frmEditCustCurrency");
+        f.validate({
+            ignore: "",
+            errorClass: "errorCallout",
+            errorElement: "div",
+            errorPlacement: function (error, element) {
+                error.insertAfter($(element));
+                if (!error.find(".notch").length) {
+                    error.prepend($("<b class='notch'></b>"));
+                }
+            },
+            rules: {
+                custCurrencyName: { required: true},
+                custCurrencyEventType: { required: true },
+                custCurrencyTimeFrame: {required: true }
+            },
+            messages: {
+                custCurrencyName: { required: '@Resources.Currency.CustomCurrencyErrNeedName' },
+                custCurrencyEventType: { required: "@Resources.Currency.errCustomCurrencyNoEvent" },
+                custCurrencyTimeFrame: { required: "@Resources.Currency.CustomCurrencyErrInvalidTimeFrame" }
+            },
+            showErrors: function (errorMap, errorList) {
+                // First remove existing notches
+                this.errorList.forEach(function (error) {
+                    $(error.element).next(".errorCallout").find(".notch").remove();
+                });
+
+                // Call the default showErrors method to display errors
+                this.defaultShowErrors();
+
+                // Add the notch again
+                this.errorList.forEach(function (error) {
+                    $(error.element).next(".errorCallout").prepend($("<b class='notch'></b>"));
+                });
+            },
+            highlight: function (element, errorClass) {
+                $(element).addClass("errorItem");
+            },
+            unhighlight: function (element, errorClass) {
+                $(element).removeClass("errorItem");
+            }
+        });
+    });
+</script>
+@using (Html.BeginForm("", "Prefs", FormMethod.Post, new { id = "frmEditCustCurrency", name = "frmEditCustCurrency" }))
+{
+    <input type="hidden" name="custCurrencyID" value="@cc.ID" />
+    @Html.AntiForgeryToken()
+<div id="pnlCustCurrency">
+    <p>@Resources.Currency.CustomCurrencyNamePrompt</p>
+    <div><input type="text" id="txtRuleName" style="width: 300px;" placeholder="@Resources.Currency.CustomCurrencyWatermarkName" value="@cc.DisplayName" required name="custCurrencyName" maxlength="40" /></div>
+    <p>@Resources.Currency.CustomCurrencyPerformPrompt</p>
+    <div>
+        <select id="cmbLimitType" name="custCurrencyLimitType">
+            <option value="Minimum" @((cc.CurrencyLimitType == CustomCurrency.LimitType.Minimum).ToSelected())>@Resources.Currency.CustomCurrencyMinEventsPrompt</option>
+            <option value="Maximum" @((cc.CurrencyLimitType == CustomCurrency.LimitType.Maximum).ToSelected())>@Resources.Currency.CustomCurrencyMaxEventsPrompt</option>
+        </select>
+        <div style="display: inline-block"><input type="number" style="width: 4em;" step="@(cc.EventType.IsIntegerOnly() ? "1" : "0.01")" min="@(cc.EventType.IsIntegerOnly() ? "1" : "0.01")" max="2000" name="custCurrencyMinEvents" id="decMinEvents" 
+                                        value="@(cc.EventType.IsIntegerOnly() ? ((int) cc.RequiredEvents).ToString(CultureInfo.InvariantCulture) : cc.RequiredEvents.ToString("#.##", CultureInfo.InvariantCulture))" /></div>
+        <div style="display: inline-block">
+            <select id="cmbEventTypes" name="custCurrencyEventType" required onchange="javascript: setInteger(this);">
+                <option value="" @((((int)cc.ID) < 0).ToSelected())>@Resources.Currency.CustomCurrencySelectEvent</option>
+                @foreach (dynamic d in lstCurrencyEvents)
+                {
+                    <option value="@d.value" @((cc.ID > 0 && (int)cc.EventType == (int)d.value).ToSelected())>@d.title</option>
+                }
+            </select>
+        </div>
+    </div>
+    <p>@Resources.Currency.CustomCurrencyPrecedingPrompt</p>
+    <div>
+        <input type="number" id="txtTimeFrame" name="custCurrencyTimeFrame" style="width: 4em" @((cc.CurrencyTimespanType.IsAligned() ? "disabled" : string.Empty))
+                value="@(cc.CurrencyTimespanType.IsAligned() ? 0 : cc.ExpirationSpan)" step="1" placeholder="0", min="1" max="1000" />
+        <select id="cmbMonthDays" name="custCurrencyMonthsDays" required onchange="javascript: setAligned(this);">
+            @foreach (dynamic d in lstTimeSpanTypes)
+            {
+            <option value="@d.value" @(((int)d.value == (int)cc.CurrencyTimespanType).ToSelected())>@d.title</option>
+            }
+        </select>
+    </div>
+    <h3>@Resources.Currency.CustomCurrencyRestrictPrompt</h3>
+    <p>@Resources.Currency.CustomCurrencyRestrictModels @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "custCurrMultiSelectTip", tipTextHTML = Resources.Currency.CustomCurrencyMultipleSelectHint }); }</p>
+    <div>
+        <select style="width: 300px;" multiple size="4" name="custCurrencyModels">
+            @foreach (MakeModel mm in lstMakes)
+            {
+                <option value="@mm.MakeModelID" @(cc.ModelsRestriction.Contains(mm.MakeModelID).ToSelected())>@mm.DisplayName</option>
+            }
+        </select>
+    </div>
+    <p>@Resources.Currency.CustomCurrencyRestrictAircraft @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "custCurrMultiSelectTip2", tipTextHTML = Resources.Currency.CustomCurrencyMultipleSelectHint }); }</p>
+    <div>
+        <select style="width: 300px;" multiple size="4" name="custCurrencyAircraft">
+            @foreach (Aircraft ac in lstAc)
+            {
+                <option value="@ac.AircraftID" @(cc.AircraftRestriction.Contains(ac.AircraftID).ToSelected())>@ac.LongDescription</option>
+            }
+        </select>
+    </div>
+    <p>@Resources.Currency.CustomCurrencyRestrictCategory</p>
+    <div>
+        <select name="custCurrencyCategory" style="width: 300px;">
+            <option value="" @String.IsNullOrEmpty(cc.CategoryRestriction).ToSelected()>@Resources.Currency.CustomCurrencyRestrictAny</option>
+            @foreach (string category in lstCategories)
+            {
+                <option value="@category" @((cc.CategoryRestriction.CompareCurrentCultureIgnoreCase(category) == 0).ToSelected())>@category</option>
+            }
+        </select>
+    </div>
+    <p>@Resources.Currency.CustomCurrencyRestrictCatClass</p>
+    <div>
+        <select name="custCurrencyCatClass" style="width: 300px;">
+            <option value="" @((((int)cc.CatClassRestriction) <= 0).ToSelected()) >@Resources.Currency.CustomCurrencyRestrictAny</option>
+            @foreach (CategoryClass catclass in rgCatClass)
+            {
+                <option value="@catclass.IDCatClassAsInt" @((cc.CatClassRestriction == catclass.IdCatClass).ToSelected())>@catclass.CatClass</option>
+            }
+        </select>
+    </div>
+    <p>@Resources.Currency.CustomCurrencyRestrictAirports</p>
+    <div><input type="text" name="custCurrencyAirport" value="@cc.AirportRestriction" style="width: 300px;" /></div>
+    <p>@Resources.Currency.CustomCurrencyRestrictText</p>
+    <div><input type="text" name="custCurrencyText" value="@cc.TextRestriction" style="width: 300px;" /></div>
+    <p>@Resources.Currency.CustomCurrencyRestrictProperties @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "custCurrMultiSelectTip3", tipTextHTML = Resources.Currency.CustomCurrencyMultipleSelectHint }); } </p>
+    <div>
+        <select style="width: 300px;" multiple size="4" name="custCurrencyProps">
+            @foreach (CustomPropertyType cpt in lstCpt)
+            {
+                bool fChecked = hsPropsChecked.Contains(cpt.PropTypeID);
+                if (cpt.IsFavorite || fChecked)
+                {
+                    <option value="@cpt.PropTypeID" @fChecked.ToSelected()>@cpt.Title</option>
+                }
+            }
+        </select>
+    </div>
+    <div style="text-align: center;">
+        <button type="button" onclick="javascript: ccEditor.cancelCustCurrencyEdit();">@Resources.LocalizedText.Cancel</button> 
+        <button type="button" id="btnAddCurrencyRule" onclick="javascript: ccEditor.submitCustCurrency($('#frmEditCustCurrency'));">@Resources.Currency.CustomCurrencyAddRule</button>
+    </div>
+</div>
+}

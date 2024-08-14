@@ -177,7 +177,7 @@ namespace MyFlightbook.CloudStorage
 
         protected GoogleOAuthBase(string szAppKeyKey, string szAppSecretKey, string szOAuth2AuthEndpoint, string szOAuth2TokenEndpoint, string[] scopes = null, string szUpgradeEndpoint = null, string szDisableEndpoint = null) : base(szAppKeyKey, szAppSecretKey, szOAuth2AuthEndpoint, szOAuth2TokenEndpoint, scopes, szUpgradeEndpoint, szDisableEndpoint) { }
 
-        public override IAuthorizationState ConvertToken(HttpRequest Request)
+        public override IAuthorizationState ConvertToken(HttpRequestBase Request)
         {
             if (Request == null)
                 throw new ArgumentNullException(nameof(Request));
@@ -224,6 +224,11 @@ namespace MyFlightbook.CloudStorage
                     return authstate;
                 }
             }
+        }
+
+        public override IAuthorizationState ConvertToken(HttpRequest Request)
+        {
+            return ConvertToken(new HttpRequestWrapper(Request));
         }
     }
 

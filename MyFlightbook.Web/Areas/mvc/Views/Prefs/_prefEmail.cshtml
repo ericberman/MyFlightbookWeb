@@ -1,0 +1,28 @@
+﻿@using MyFlightbook.Payments
+@using MyFlightbook.Subscriptions
+@{
+    MyFlightbook.Profile m_pf = ViewBag.pf;
+    EmailSubscriptionManager esm = new EmailSubscriptionManager(m_pf.Subscriptions);
+    bool canHaveCurrency = EarnedGratuity.UserQualifies(User.Identity.Name, Gratuity.GratuityTypes.CurrencyAlerts);
+}
+<script type="text/javascript">
+    var emailEditor = new prefsFlightEntryEditor("@("~/Member/Ajax.asmx/setLocalPref".ToAbsolute())", {});
+</script>
+<div>
+    <label><input type="checkbox" id="ckCurrencyWeekly" @esm.HasSubscription(SubscriptionType.Currency).ToChecked() onclick="javascript: emailEditor.setLocalPrefChecked('emailCurrencyWeekly', this);" />@Resources.Profile.EmailCurrencyName</label>
+    <table style="margin-left: 2em;">
+        <tr>
+            <td><input type="checkbox" @esm.HasSubscription(SubscriptionType.Expiration).ToChecked() @(canHaveCurrency ? string.Empty : "disabled") id="ckCurrencyExpiring" onchange="javascript: emailEditor.setLocalPrefChecked('emailCurrencyExpiring', this);" /></td>
+            <td><label for="ckCurrencyExpiring">@Resources.Profile.EmailCurrencyExpiration </label></td>
+        </tr>
+        @if (!canHaveCurrency)
+        {
+        <tr id="rowPromo">
+            <td></td>
+            <td><span style="font-weight: bold;">@Resources.LocalizedText.Note</span>&nbsp;@Branding.ReBrand(Resources.Profile.EmailCurrencyExpirationPromotion)</td>
+        </tr>
+        }
+    </table>
+</div>
+<div><label><input type="checkbox" id="ckTotalsWeekly" @esm.HasSubscription(SubscriptionType.Totals).ToChecked() onclick="javascript: emailEditor.setLocalPrefChecked('emailTotalsWeekly', this);" />@Resources.Profile.EmailTotalsName</label></div>
+<div><label><input type="checkbox" id="ckMonthly" @esm.HasSubscription(SubscriptionType.MonthlyTotals).ToChecked() onclick="javascript: emailEditor.setLocalPrefChecked('emailTotalsMonthly', this);" />@Resources.Profile.EmailMonthlyName</label></div>

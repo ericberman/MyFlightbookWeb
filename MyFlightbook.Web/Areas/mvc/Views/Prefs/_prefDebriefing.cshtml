@@ -1,0 +1,35 @@
+﻿@using MyFlightbook.OAuth.CloudAhoy
+@{
+    MyFlightbook.Profile m_pf = ViewBag.pf;
+}
+<table>
+    <tr style="vertical-align: middle;">
+        <td><img src="@("~/images/CloudAhoyTrans.png".ToAbsolute())" alt="@Resources.Preferences.CloudAhoyName" title="@Resources.Preferences.CloudAhoyName" /></td>
+        <td>
+            @if (m_pf.CloudAhoyToken == null)
+            {
+                <p><a href="@("~/mvc/oAuth/AuthorizeCloudAhoy".ToAbsolute())">@Branding.ReBrand(Resources.Profile.AuthorizeCloudAhoy)</a></p>
+            }
+            else
+            {
+                <p>@Branding.ReBrand(Resources.Profile.CloudAhoyIsAuthed)</p>
+                <p><a href="@("~/mvc/oAuth/DeAuthorizeCloudAhoy".ToAbsolute())">@Branding.ReBrand(Resources.Profile.DeAuthCloudAhoy)</a></p>
+            }
+        </td>
+    </tr>
+    <tr style="vertical-align: middle;">
+        <td><img src="@("~/images/flysto.png".ToAbsolute())" alt="FlySto" title="FlySto" Height="28" /></td>
+        <td>
+            @if (!m_pf.PreferenceExists(FlyStoClient.AccessTokenPrefKey))
+            {
+                <p><a href="@("~/mvc/oAuth/AuthorizeFlySto".ToAbsolute())">@Branding.ReBrand(Resources.Profile.AuthorizeFlySto)</a></p>
+            }
+            else
+            {
+                <p>@Branding.ReBrand(Resources.Profile.FlyStoIsAuthed)</p>
+                <p><a href="@("~/mvc/oAuth/DeAuthorizeFlySto".ToAbsolute())">@Branding.ReBrand(Resources.Profile.DeAuthFlySto)</a></p>
+            }
+        </td>
+    </tr>
+</table>
+<div class="error">@(Request["debriefErr"] ?? string.Empty)</div>

@@ -579,6 +579,22 @@ namespace MyFlightbook.Currency
             return lst;
         }
 
+        static public CustomCurrency CustomCurrencyForUser(string szUser, int id)
+        {
+            CustomCurrency cc = null;
+            DBHelper dbh = new DBHelper(ConfigurationManager.AppSettings["CustomCurrencyForUserQuery"]);
+            if (!dbh.ReadRows(
+                (comm) => { comm.Parameters.AddWithValue("uname", szUser); },
+                (dr) => {
+                    CustomCurrency ccT = new CustomCurrency(dr);
+                    if (ccT.ID == id)
+                        cc = ccT;
+                }))
+                throw new MyFlightbookException("Exception in CustomCurrenciesForUser - setup: " + dbh.LastError);
+
+            return cc;
+        }
+
         #region Overrides to support aligned currencies
         public override CurrencyState CurrentState
         {

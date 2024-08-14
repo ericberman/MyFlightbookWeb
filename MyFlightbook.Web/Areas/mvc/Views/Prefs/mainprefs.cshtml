@@ -1,0 +1,73 @@
+﻿@using System.Globalization
+@{
+    Profile m_pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+    ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.Profile.EditProfileHeader, HttpUtility.HtmlEncode(m_pf.UserFullName));
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    ViewBag.defaultTab = tabID.tabProfile;
+    string requestedPane = Request["pane"] ?? string.Empty;
+}
+<h2>@Resources.Preferences.HeaderFeatures</h2>
+<script src="@("~/Public/Scripts/prefs.js?v=1".ToAbsolute())" type="text/javascript"></script>
+<script src="@("~/Public/Scripts/CopyClipboard.js".ToAbsolute())"></script>
+@{ Html.RenderAction("RenderAccordion", "MFBTemplate", new { containerID = "prefsAccordion", active = "false" }); }
+<div id="prefsAccordion">
+    <h3 id="flightentry">@Resources.Preferences.PrefSectFlightEntryHeader</h3>
+    <div class="prefSectionRow">
+        @{ Html.RenderPartial("_prefFlightEntry"); }
+    </div>
+    <h3 id="flightcoloring">@Resources.Preferences.FlightColoringHeader</h3>
+    <div>
+        @{ Html.RenderPartial("_prefFlightColoring"); }
+    </div>
+    <h3 id="props">@Resources.Preferences.HeaderPropsAndTemplates</h3>
+    <div>
+        @{ Html.RenderPartial("_prefPropsTemplates"); }
+    </div>
+    <h3 id="currencytotals">@Resources.Preferences.PrefCurrencyTotalsSectionHeader</h3>
+    <div>
+        @{ Html.RenderPartial("_prefTotalsCurrency"); }
+    </div>
+    <h3 id="email">@Resources.Preferences.HeaderEmail</h3>
+    <div>
+        @{ Html.RenderPartial("_prefEmail"); }
+    </div>
+    <h3 id="custcurrency">@Resources.Preferences.HeaderCustomCurrency</h3>
+    <div>
+        @{ Html.RenderPartial("_prefCustCurrency"); }
+    </div>
+    <h3 id="deadlines">@Resources.Preferences.HeaderCustomDeadlines</h3>
+    <div>
+        @{ Html.RenderPartial("_prefDeadline"); }
+    </div>
+    <h3 id="social">@Resources.LocalizedText.PrefSharingHeader</h3>
+    <div>
+        @{ Html.RenderPartial("_prefSharing"); }
+    </div>
+    <h3 id="backup">@Resources.Preferences.CloudStorageHeader</h3>
+    <div>
+        @{ Html.RenderPartial("_prefCloudBackup"); }
+    </div>
+    <h3 id="debrief">@Resources.Preferences.DebriefHeader</h3>
+    <div>
+        @{ Html.RenderPartial("_prefDebriefing"); }
+    </div>
+    <h3 id="sched">@Resources.Preferences.ScheduleServiceHeader</h3>
+    <div>
+        @{ Html.RenderPartial("_prefAirlineScheduling"); }
+    </div>
+    <h3 id="oauth">@Resources.Preferences.HeaderOAuthApps</h3>
+    <div>
+        @{ Html.RenderPartial("_prefOAuthApps"); }
+    </div>
+</div>
+<script type="text/javascript">
+    $(() => {
+        var i = 0;
+        var container = $("#prefsAccordion");
+        container.children("h3").each(function() {
+            if (this.id == "@requestedPane")
+               container.accordion("option", "active", i);
+            i++;
+        });
+    });
+</script>

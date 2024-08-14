@@ -1,0 +1,59 @@
+﻿@using System.Globalization
+@using MyFlightbook.Mapping
+@{
+    MyFlightbook.Profile m_pf = ViewBag.pf;
+    IEnumerable<CannedQuery> Queries = CannedQuery.QueriesForUser(m_pf.UserName);
+    foreach (CannedQuery cq in Queries)
+    {
+        cq.Refresh();
+    }
+    string defPathColor = m_pf.GetPreferenceForKey<string>(MFBConstants.keyPathColor, MFBGoogleMapOptions.DefaultPathColor);
+    string defRouteColor = m_pf.GetPreferenceForKey<string>(MFBConstants.keyRouteColor, MFBGoogleMapOptions.DefaultRouteColor);
+    int iQuery = 0;
+}
+<script type="text/javascript">
+    var fce = new prefsFlightColorEditor("@("~/Member/Ajax.asmx".ToAbsolute())", { pathSampleID : "lblPathSample", routeSampleID : "lblRteSample", defPathColor : "@MFBGoogleMapOptions.DefaultPathColor", defRouteColor : "@MFBGoogleMapOptions.DefaultRouteColor"});
+</script>
+<div style="margin-left: 5px; margin-bottom: 10px">
+    <h2>@Resources.Preferences.FlightColoringFlightsHeader</h2>
+    <p>@Resources.Preferences.FlightColoringDescription <a href="https://myflightbookblog.blogspot.com/2021/03/saved-searches-and-flight-coloring.html" target="_blank">@Resources.Preferences.FlightColoringDescriptionLearnMore</a></p>
+    @if (Queries.Any())
+    {
+        <table cellpadding="5">
+            @foreach (CannedQuery cq in Queries)
+            {
+                string rbIDNoColor = String.Format(CultureInfo.InvariantCulture, "rbNoColor{0}", iQuery);
+                string rbIDColor = String.Format(CultureInfo.InvariantCulture, "rbColor{0}", iQuery);
+                string rbName = String.Format(CultureInfo.InvariantCulture, "rbColor{0}", iQuery++);
+                <tr style="vertical-align: top;">
+                    <td style="vertical-align: top;">
+                        <div style="font-weight: bold; padding: 2pt; margin-top: 1pt; @(String.IsNullOrEmpty(cq.ColorString) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "background-color: #{0};", cq.ColorString))" name="sample">@cq.QueryName</div> 
+                        <div style="padding: 2pt;" class="fineprint">@cq.Description</div></td>
+                    <td style="vertical-align: top; min-width: 12em;">
+                        <input type="radio" id="@rbIDColor" name="@rbName" @((!String.IsNullOrEmpty(cq.ColorString)).ToChecked()) onclick="javascript: fce.setColor($(this).next()[0]);" />
+                        <input type="color" value="@(String.IsNullOrEmpty(cq.ColorString) ? "#CCEEFF" : "#" + cq.ColorString)" onchange="javascript: $('@String.Format(CultureInfo.InvariantCulture, "#{0}", rbIDColor)')[0].click(); fce.setColor(this);" />
+                        <input type="radio" id="@rbIDNoColor" name="@rbName" @(String.IsNullOrEmpty(cq.ColorString).ToChecked()) onclick="javascript: fce.clearColor(this);" />
+                        <label for="@rbIDNoColor">@Resources.Preferences.FlightColoringDoNotColor</label>
+                        <input type="hidden" value="@cq.QueryName" />
+                    </td>
+                </tr>
+            }
+        </table>
+    }
+    else
+    {
+        <p>@Resources.Preferences.FlightColoringNoSaveQueries <a href="https://myflightbookblog.blogspot.com/2021/03/saved-searches-and-flight-coloring.html" target="_blank">@Resources.Preferences.FlightColoringLearnMore</a></p>
+    }
+    <h2>@Resources.Preferences.MapColorsHeader</h2>
+    <table cellpadding="3">
+        <tr>
+            <td>@Resources.Preferences.MapColorRoute</td>
+            <td><input type="color" value="@defRouteColor" id="lblRteSample" onchange="javascript: fce.setMapColors();" /></td>
+        </tr>
+        <tr>
+            <td>@Resources.Preferences.MapColorPath</td>
+            <td><input type="color" value="@defPathColor" id="lblPathSample" onchange="javascript: fce.setMapColors();" /></td>
+        </tr>
+    </table>
+    <div><a href="#" onclick="javascript: fce.resetMapColors(this); return false;">@Resources.Preferences.MapColorsReset</a></div>
+</div>

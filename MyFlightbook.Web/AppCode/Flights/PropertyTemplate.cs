@@ -539,6 +539,22 @@ namespace MyFlightbook.Templates
             });
             InvalidateCache();
         }
+
+        public void DeleteForUser(string username)
+        {
+            // Remove this from any aircraft templates that it may be associated with
+            UserAircraft ua = new UserAircraft(username);
+            IEnumerable<Aircraft> rgac = ua.GetAircraftForUser();
+            foreach (Aircraft ac in rgac)
+            {
+                if (ac.DefaultTemplates.Contains(ID))
+                {
+                    ac.DefaultTemplates.Remove(ID);
+                    ua.FAddAircraftForUser(ac);
+                }
+            }
+            Delete();
+        }
         #endregion
     }
 

@@ -295,7 +295,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Format for times:.
+        ///   Looks up a localized string similar to Format for times.
         /// </summary>
         internal static string DecimalPrefPrompt {
             get {
@@ -448,6 +448,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No color.
+        /// </summary>
+        internal static string FlightColoringDoNotColor {
+            get {
+                return ResourceManager.GetString("FlightColoringDoNotColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Color flights that match saved searches.
         /// </summary>
         internal static string FlightColoringFlightsHeader {
@@ -502,6 +511,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sample.
+        /// </summary>
+        internal static string FlightColoringSampleNoClick {
+            get {
+                return ResourceManager.GetString("FlightColoringSampleNoClick", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Custom Currency Rules.
         /// </summary>
         internal static string HeaderCustomCurrency {
@@ -538,7 +556,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Authorized Applications.
+        ///   Looks up a localized string similar to Authorized Apps.
         /// </summary>
         internal static string HeaderOAuthApps {
             get {
@@ -1114,6 +1132,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create a new currency rule.
+        /// </summary>
+        internal static string PrefAddCustomCurrency {
+            get {
+                return ResourceManager.GetString("PrefAddCustomCurrency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create a new deadline.
+        /// </summary>
+        internal static string PrefAddDeadline {
+            get {
+                return ResourceManager.GetString("PrefAddDeadline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Properties that you have used on previous flights are automatically shown for new flights.  To reduce clutter, though, you can choose to not display some by default..
         /// </summary>
         internal static string PrefBlockListDesc {
@@ -1177,6 +1213,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Deadline is determined using aircraft hours, not a date.
+        /// </summary>
+        internal static string PrefDeadlineUseHours {
+            get {
+                return ResourceManager.GetString("PrefDeadlineUseHours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Currency Rule.
+        /// </summary>
+        internal static string PrefEditCurrencyTitle {
+            get {
+                return ResourceManager.GetString("PrefEditCurrencyTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to When summing times.
         /// </summary>
         internal static string PrefMathPrecisionHeader {
@@ -1231,7 +1285,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Display the following in tables of your flights:.
+        ///   Looks up a localized string similar to Display the following in tables of your flights.
         /// </summary>
         internal static string PrefSectFlightEntryDataToInclude {
             get {
@@ -1330,7 +1384,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Interpret the date of flight as:.
+        ///   Looks up a localized string similar to Interpret the date of flight as.
         /// </summary>
         internal static string PrefSectNewFlightTimeZonePrompt {
             get {
@@ -1353,6 +1407,15 @@ namespace Resources {
         internal static string PrefSectNewFlightTimeZoneUTC {
             get {
                 return ResourceManager.GetString("PrefSectNewFlightTimeZoneUTC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Deadline.
+        /// </summary>
+        internal static string PrefUpdateDeadline {
+            get {
+                return ResourceManager.GetString("PrefUpdateDeadline", resourceCulture);
             }
         }
         
@@ -1501,11 +1564,29 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create Link.
+        /// </summary>
+        internal static string SharingCreateShareLink {
+            get {
+                return ResourceManager.GetString("SharingCreateShareLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This will ONLY show flights for which you have allowed details to be visible..
         /// </summary>
         internal static string SharingShareFlightsDisclaimer {
             get {
                 return ResourceManager.GetString("SharingShareFlightsDisclaimer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Suggestion: use the name of the recipient.
+        /// </summary>
+        internal static string SharingShareKeyNameHint {
+            get {
+                return ResourceManager.GetString("SharingShareKeyNameHint", resourceCulture);
             }
         }
     }

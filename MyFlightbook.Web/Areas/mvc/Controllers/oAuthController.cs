@@ -1,8 +1,10 @@
 ﻿using DotNetOpenAuth.Messaging;
 using DotNetOpenAuth.OAuth2;
 using DotNetOpenAuth.OAuth2.Messages;
+using MyFlightbook.CloudStorage;
 using MyFlightbook.OAuth.CloudAhoy;
 using MyFlightbook.OAuth.FlightCrewView;
+using Newtonsoft.Json;
 using OAuthAuthorizationServer.Code;
 using OAuthAuthorizationServer.Services;
 using System;
@@ -21,7 +23,7 @@ using System.Web.Mvc;
 *******************************************************/
 namespace MyFlightbook.Web.Areas.mvc.Controllers
 {
-    public class oAuthController : Controller
+    public class oAuthController : AdminControllerBase
     {
         [Authorize]
         [HttpGet]
@@ -124,16 +126,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return new EmptyResult();
         }
 
-        #region FlySto
-        [Authorize]
-        public ActionResult FlyStoRedir()
-        {
-            Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
-            pf.SetPreferenceForKey(FlyStoClient.AccessTokenPrefKey, new FlyStoClient().ConvertToken(Request));
-            return Redirect("~/Member/EditProfile.aspx/pftPrefs?pane=debrief");
-        }
-        #endregion
-
         #region FlightCrewView
 
         [Authorize]
@@ -171,6 +163,242 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         public ActionResult ManageFlightCrewView()
         {
             return View("flightcrewviewmanage");
+        }
+        #endregion
+
+        #region Google Photos
+        [Authorize]
+        public ActionResult AuthorizeGPhoto()
+        {
+            new GooglePhoto().Authorize(String.Format(CultureInfo.InvariantCulture, "~/mvc/oAuth/GooglePhotoRedir?{0}=1", GooglePhoto.szParamGPhotoAuth).ToAbsoluteURL(Request));
+            return new EmptyResult();
+        }
+
+        [Authorize]
+        public ActionResult DeAuthorizeGPhoto()
+        {
+            MyFlightbook.Profile.GetUser(User.Identity.Name).SetPreferenceForKey(GooglePhoto.PrefKeyAuthToken, null, true);
+            return Redirect("~/mvc/prefs?pane=social");
+        }
+
+        [Authorize]
+        public ActionResult GooglePhotoRedir()
+        {
+            string szErr = util.GetStringParam(Request, "error");
+            if (String.IsNullOrEmpty(szErr))
+            {
+                IAuthorizationState token = new GooglePhoto().ConvertToken(Request);
+                string szTokenJSON = JsonConvert.SerializeObject(token);
+                MyFlightbook.Profile.GetUser(User.Identity.Name).SetPreferenceForKey(GooglePhoto.PrefKeyAuthToken, szTokenJSON);
+            }
+            var nvc = HttpUtility.ParseQueryString(string.Empty);
+            nvc["pane"] = "social";
+            if (!String.IsNullOrEmpty(szErr))
+                nvc["oauthErr"] = szErr;
+            return Redirect(String.Format(CultureInfo.InvariantCulture, "~/mvc/prefs?{0}", nvc.ToString()));
+        }
+        #endregion
+
+        #region Cloud Storage
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult UpdateCloudPrefs()
+        {
+            Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+            pf.OverwriteCloudBackup = Request["prefCloudOverwrite"].CompareCurrentCultureIgnoreCase("overwrite") == 0;
+            if (Enum.TryParse(Request["prefCloudDefault"], out StorageID sid))
+                pf.DefaultCloudStorage = sid;
+            pf.FCommit();
+            CloudStorageBase.SetUsesFlatHierarchy(pf, Request["prefCloudGroup"] == null);
+
+            return Redirect("~/mvc/prefs?pane=backup");
+        }
+
+        #region Dropbox
+        [Authorize]
+        public ActionResult DeAuthorizeDropbox()
+        {
+            Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+            pf.DropboxAccessToken = null;
+            pf.FCommit();
+            return Redirect("~/mvc/prefs?pane=backup");
+        }
+
+        [Authorize]
+        public ActionResult AuthorizeDropbox()
+        {
+            new MFBDropbox().Authorize(Request, "~/mvc/oAuth/DropboxRedir".ToAbsolute(), MFBDropbox.szParamDropboxAuth);
+            return new EmptyResult();
+        }
+
+        [Authorize]
+        public ActionResult DropboxRedir()
+        {
+            string szErr = util.GetStringParam(Request, "error");
+            var nvc = HttpUtility.ParseQueryString(string.Empty);
+            if (String.IsNullOrEmpty(szErr))
+            {
+                Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+                pf.DropboxAccessToken = JsonConvert.SerializeObject(new MFBDropbox().ConvertToken(Request));
+                pf.FCommit();
+            }
+            else
+            {
+                nvc["cloudErr"] = szErr;
+            }
+            return Redirect("~/mvc/prefs?pane=backup&" + nvc.ToString());
+        }
+        #endregion
+
+        #region GoogleDrive
+        [Authorize]
+        public ActionResult DeAuthorizeGDrive()
+        {
+            Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+            pf.GoogleDriveAccessToken = null;
+            pf.FCommit();
+            return Redirect("~/mvc/prefs?pane=backup");
+        }
+
+        [Authorize]
+        public ActionResult AuthorizeGDrive()
+        {
+            new GoogleDrive().Authorize(Request, "~/mvc/oAuth/GDriveRedir".ToAbsolute(), GoogleDrive.szParamGDriveAuth);
+            return new EmptyResult();
+        }
+
+        [Authorize]
+        public ActionResult GDriveRedir()
+        {
+            string szErr = util.GetStringParam(Request, "error");
+            var nvc = HttpUtility.ParseQueryString(string.Empty);
+            if (String.IsNullOrEmpty(szErr))
+            {
+                Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+                if (String.IsNullOrEmpty(util.GetStringParam(Request, "error")))
+                {
+                    pf.GoogleDriveAccessToken = new GoogleDrive().ConvertToken(Request);
+                    pf.FCommit();
+                }
+            }
+            else
+            {
+                nvc["cloudErr"] = szErr;
+            }
+            return Redirect("~/mvc/prefs?pane=backup&" + nvc.ToString());
+        }
+        #endregion
+
+        #region OneDrive
+        [Authorize]
+        public ActionResult DeAuthorizeOneDrive()
+        {
+            Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+            pf.OneDriveAccessToken = null;
+            pf.FCommit();
+            return Redirect("~/mvc/prefs?pane=backup");
+        }
+
+        [Authorize]
+        public ActionResult AuthorizeOneDrive()
+        {
+            // Note - can configure onedrive redir at https://apps.dev.microsoft.com/#/application/sapi/{applicationID}
+            new OneDrive().Authorize("~/mvc/oauth/onedriveredir".ToAbsoluteURL(Request));
+            return new EmptyResult();
+        }
+
+        [Authorize]
+        public ActionResult OneDriveRedir()
+        {
+            string szErr = util.GetStringParam(Request, "error");
+            var nvc = HttpUtility.ParseQueryString(string.Empty);
+            if (String.IsNullOrEmpty(szErr))
+            {
+                Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+                pf.OneDriveAccessToken = new OneDrive().ConvertToken(Request);
+                pf.FCommit();
+            }
+            else
+            {
+                nvc["cloudErr"] = szErr;
+            }
+            return Redirect("~/mvc/prefs?pane=backup&" + nvc.ToString());
+        }
+        #endregion
+        #endregion
+
+        #region Debriefing
+        #region CloudAhoy
+        [Authorize]
+        public ActionResult AuthorizeCloudAhoy()
+        {
+            new CloudAhoyClient(!Branding.CurrentBrand.MatchesHost(Request.Url.Host)).Authorize("~/mvc/oAuth/CloudAhoyRedir".ToAbsoluteURL(Request));
+            return new EmptyResult();
+        }
+
+        [Authorize]
+        public ActionResult DeAuthorizeCloudAhoy()
+        {
+            Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+            pf.CloudAhoyToken = null;
+            pf.FCommit();
+            return Redirect("~/mvc/prefs?pane=debrief");
+        }
+
+        [Authorize]
+        public ActionResult CloudAhoyRedir()
+        {
+            var nvc = HttpUtility.ParseQueryString(string.Empty);
+            if (String.IsNullOrEmpty(Request["error"]))
+            {
+                Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+                pf.CloudAhoyToken = new CloudAhoyClient(!Branding.CurrentBrand.MatchesHost(Request.Url.Host)).ConvertToken(Request);
+                pf.FCommit();
+            }
+            else
+                nvc["debriefErr"] = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, Request["error"], Request["error_description"] ?? string.Empty);
+
+            return Redirect("~/mvc/prefs?pane=debrief" + (nvc.Count > 0 ? "&" + nvc.ToString() : string.Empty));
+        }
+        #endregion
+
+        #region FlySto
+        [Authorize]
+        public ActionResult AuthorizeFlySto()
+        {
+            new FlyStoClient().Authorize("~/mvc/oauth/flystoredir".ToAbsoluteURL(Request));
+            return new EmptyResult();
+        }
+
+        [Authorize]
+        public ActionResult DeAuthorizeFlySto()
+        {
+            Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+            pf.SetPreferenceForKey(FlyStoClient.AccessTokenPrefKey, null, true);
+            return Redirect("~/mvc/prefs?pane=debrief");
+        }
+
+        [Authorize]
+        public ActionResult FlyStoRedir()
+        {
+            Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+            pf.SetPreferenceForKey(FlyStoClient.AccessTokenPrefKey, new FlyStoClient().ConvertToken(Request));
+            return Redirect("~/mvc/prefs?pane=debrief");
+        }
+        #endregion
+        #endregion
+
+        #region Client apps
+        [Authorize]
+        [HttpPost]
+        public ActionResult DeAuthClient(string idClient)
+        {
+            return SafeOp(() =>
+            {
+                MFBOauthClientAuth.RevokeAuthorization(User.Identity.Name, idClient);
+                return new EmptyResult();
+            });
         }
         #endregion
 
