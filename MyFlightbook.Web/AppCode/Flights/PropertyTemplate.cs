@@ -237,8 +237,16 @@ namespace MyFlightbook.Templates
 
             // Issue #1262: check that EITHER we have a template applied (explicitly selected, default) OR we have MRU selected
             HashSet<int> hs = new HashSet<int>(lstIDs);
-            if (!hs.Contains((int) KnownTemplateIDs.ID_MRU) && hs.FirstOrDefault(i => i > 0) == 0)
-                hs.Add((int) KnownTemplateIDs.ID_MRU);
+            if (!hs.Contains((int)KnownTemplateIDs.ID_MRU) && hs.FirstOrDefault(i => i > 0) == 0)
+            {
+                List<PropertyTemplate> lstDefault = new List<PropertyTemplate>(lstIn).FindAll(pt => pt.IsDefault);
+                if (lstDefault.Count == 0)
+                    hs.Add((int)KnownTemplateIDs.ID_MRU);
+                else
+                    // Issue #1284 - need to use default templates too!
+                    foreach (PropertyTemplate pt in lstDefault)
+                        hs.Add(pt.ID);
+            }
 
             return new List<PropertyTemplate>(lstIn).FindAll(pt => hs.Contains(pt.ID));
         }
