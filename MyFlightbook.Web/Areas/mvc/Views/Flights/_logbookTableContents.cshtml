@@ -27,6 +27,10 @@
     ShareKey sk = ViewBag.sk;
     HashSet<int> hsSelected = ViewBag.selectedFlights;
     bool miniMode = ViewBag.miniMode;
+    HashSet<int> hsPropExclusion = new HashSet<int>()
+    {
+        (int) CustomPropertyType.KnownProperties.IDPropFlightNumber
+    };
 }
 <script type="text/javascript">
     $(() => {
@@ -139,6 +143,7 @@ else
                         </div>
                         <div>
                             <a style="font-weight: bold; font-size: larger" href="@(readOnly ? String.Format(CultureInfo.InvariantCulture, "~/mvc/pub/ViewFlight/{0}", led.FlightID).ToAbsolute() : String.Format(CultureInfo.InvariantCulture, "~/mvc/flights/details/{0}?{1}", led.FlightID, (string) ViewBag.contextParams).ToAbsolute())">@led.Date.ToShortDateString()</a>
+                            <span style="font-weight: bold; font-size: larger;">@led.CustomProperties.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropFlightNumber)</span>
                             <a style="font-weight:bold;" href="@String.Format(CultureInfo.InvariantCulture, "~/mvc/pub/ViewFlight/{0}", led.FlightID).ToAbsolute()">@led.Route</a>
                             <span style="clear:left; white-space: pre-line;" dir="auto">@Html.Raw(led.CommentWithReplacedApproaches)</span>
                             @if (showCollapsed)
@@ -152,7 +157,7 @@ else
                                 <div>@led.FlightTimeDisplay</div>
                                 <div>@led.HobbsDisplay</div>
                             }
-                            @foreach (string s in led.PropertiesWithReplacedApproaches)
+                            @foreach (string s in CustomFlightProperty.PropDisplayAsList(led.CustomProperties, led.UseHHMM, true, true, hsPropExclusion))
                             {
                                 <div>@Html.Raw(s)</div>
                             }

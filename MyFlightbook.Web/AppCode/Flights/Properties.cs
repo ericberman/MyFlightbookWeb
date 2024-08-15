@@ -1671,7 +1671,7 @@ GROUP BY fp.idPropType;";
         /// <param name="fLinkify">True to highlight links</param>
         /// <param name="fReplaceApproaches">True to highlight approaches</param>
         /// <returns></returns>
-        public static IEnumerable<string> PropDisplayAsList(IEnumerable<CustomFlightProperty> rgprops, bool fUseHHMM, bool fLinkify = false, bool fReplaceApproaches = false)
+        public static IEnumerable<string> PropDisplayAsList(IEnumerable<CustomFlightProperty> rgprops, bool fUseHHMM, bool fLinkify = false, bool fReplaceApproaches = false, HashSet<int> hsExclusion = null) 
         {
             List<string> lst = new List<string>();
 
@@ -1682,6 +1682,8 @@ GROUP BY fp.idPropType;";
             Dictionary<int, string> d = ComputeTotals(rgprops, fUseHHMM);
             foreach (CustomFlightProperty cfp in rgprops)
             {
+                if (hsExclusion?.Contains(cfp.PropTypeID) ?? false)
+                    continue;
                 // if this has been coalesced into the dictionary, use that; otherwise, use the display string.
                 string sz = d.TryGetValue(cfp.PropTypeID, out string value) ? value : (fUseHHMM ? cfp.DisplayStringHHMM : cfp.DisplayString);
                 if (String.IsNullOrEmpty(sz))
