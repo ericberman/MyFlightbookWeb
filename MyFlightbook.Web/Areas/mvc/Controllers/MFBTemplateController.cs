@@ -46,11 +46,11 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return null;
         }
 
-        [ValidateAntiForgeryToken]
         [HttpPost]
         public ActionResult SignOut()
         {
-            FormsAuthentication.SignOut();
+            if (User.Identity.IsAuthenticated)
+                FormsAuthentication.SignOut();
             Response.Redirect(VirtualPathUtility.ToAbsolute("~/Secure/login.aspx"));
             return null;
         }

@@ -31,7 +31,6 @@
                                 </script>
                                 @using (Html.BeginForm("SignOut", "MFBTemplate", FormMethod.Post))
                                 {
-                                    @Html.AntiForgeryToken();
                                     <div id="signOutRow"><a href="javascript:signOut();">@Resources.LocalizedText.LoginStatusSignOut</a></div>
                                     <input type="submit" style="display:none;" id="signOut" />
                                 }
