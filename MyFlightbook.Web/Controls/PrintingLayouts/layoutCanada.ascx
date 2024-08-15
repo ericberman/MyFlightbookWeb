@@ -9,58 +9,57 @@
         <uc1:pageHeader runat="server" ID="pageHeader" UserName="<%# CurrentUser.UserName %>" />
         <table class="pageTable">
             <thead class="header bordered">
-            <tr class="bordered">
-                <th class="headerBig" style="width:10ch; border-right: 2px solid black;" rowspan="3"><% =Resources.LogbookEntry.PrintHeaderDate %></th>
-                <th class="headerBig" style="width:1.2cm; border-right: 2px solid black;" colspan="2"><% =Resources.LogbookEntry.PrintHeaderAircraft %></th>
-                <th class="headerBig" style="width:1cm" rowspan="3"><% =Resources.LogbookEntry.PrintHeaderPICName %></th>
-                <th class="headerBig" style="width:1cm; border-right: 2px solid black;" rowspan="3"><% =Resources.LogbookEntry.PrintHeaderCoPilotOrStudent %></th>
-                <th class="headerBig" colspan="2" rowspan="2" style="border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderRoute %></th>
-                <th class="headerBig" rowspan="3" style="border-right: 2px solid black;"><%=Resources.LogbookEntry.PrintHeaderRemarks %></th>
-                <th class="headerBig" colspan="<%# CurrentUser.TracksSecondInCommandTime ? 3 :2 %>" rowspan="2" style="border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderDay %></th>
-                <th class="headerBig" colspan="<%# CurrentUser.TracksSecondInCommandTime ? 3 :2 %>"rowspan="2" style="border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderNight %></th>
-                <th class="headerBig" colspan="4" style="border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderInstrumentTime %></th>
-                <th class="headerBig" runat="server" id="headerXC" colspan="<%# CurrentUser.TracksSecondInCommandTime ? 6 : 4 %>" style="border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderCrossCountry %></th>
-                <th class="headerBig" style="width:1cm; border-right: 2px solid black;" rowspan="3" runat="server" id="headerCFI" visible="<%# CurrentUser.IsInstructor %>"><% =Resources.LogbookEntry.FieldCFI %></th>
-                <th class="headerBig" style="width:1cm; border-right: 2px solid black;" rowspan="3" runat="server" id="headerSIC" visible="<%# CurrentUser.TracksSecondInCommandTime %>"><% =Resources.LogbookEntry.FieldSIC %></th>
-                <th class="headerBig" colspan="2" rowspan="2" style="border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderTakeoffsLandings %></th>
-                <th class="headerBig" rowspan="3" style="width:1cm" runat="server" id="optColumn1" Visible="<%# ShowOptionalColumn(0) %>"><div><%# OptionalColumnName(0) %></div></th>
-                <th class="headerBig" rowspan="3" style="width:1cm" runat="server" id="optColumn2" Visible="<%# ShowOptionalColumn(1) %>"><div><%# OptionalColumnName(1) %></div></th>
-                <th class="headerBig" rowspan="3" style="width:1cm" runat="server" id="optColumn3" Visible="<%# ShowOptionalColumn(2) %>"><div><%# OptionalColumnName(2) %></div></th>
-                <th class="headerBig" rowspan="3" style="width:1cm" runat="server" id="optColumn4" Visible="<%# ShowOptionalColumn(3) %>"><div><%# OptionalColumnName(3) %></div></th>
-                <th class="headerBig" rowspan="3" style="width:1cm"><%=Resources.LogbookEntry.PrintHeaderTotalTime %></th>
-            </tr>
-            <tr class="bordered">
-                <th class="headerSmall oddRow" rowspan="2"><% =Resources.LogbookEntry.PrintHeaderModel %></th>
-                <th class="headerSmall oddRow" rowspan="2" style="border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderRegistration %></th>
+                <tr class="bordered">
+                    <th class="headerBig" style="width:10ch; border-right: 2px solid black;" rowspan="3"><% =Resources.LogbookEntry.PrintHeaderDate %></th>
+                    <th class="headerBig" style="width:1.2cm; border-right: 2px solid black;" colspan="2"><% =Resources.LogbookEntry.PrintHeaderAircraft %></th>
+                    <th class="headerBig" style="width:1cm" rowspan="3"><% =Resources.LogbookEntry.PrintHeaderPICName %></th>
+                    <th class="headerBig" style="width:1cm; border-right: 2px solid black;" rowspan="3"><% =Resources.LogbookEntry.PrintHeaderCoPilotOrStudent %></th>
+                    <th class="headerBig" colspan="2" rowspan="2" style="border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderRoute %></th>
+                    <th class="headerBig" rowspan="3" style="border-right: 2px solid black;"><%=Resources.LogbookEntry.PrintHeaderRemarks %></th>
+                    <th class="headerBig" colspan="<%# CurrentUser.TracksSecondInCommandTime ? 3 :2 %>" rowspan="2" style="border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderDay %></th>
+                    <th class="headerBig" colspan="<%# CurrentUser.TracksSecondInCommandTime ? 3 :2 %>"rowspan="2" style="border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderNight %></th>
+                    <th class="headerBig" colspan="4" style="border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderInstrumentTime %></th>
+                    <th class="headerBig" runat="server" id="headerXC" colspan="<%# CurrentUser.TracksSecondInCommandTime ? 6 : 4 %>" style="border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderCrossCountry %></th>
+                    <th class="headerBig" style="width:1cm; border-right: 2px solid black;" rowspan="3" runat="server" id="headerCFI" visible="<%# CurrentUser.IsInstructor %>"><% =Resources.LogbookEntry.FieldCFI %></th>
+                    <th class="headerBig" colspan="2" rowspan="2" style="border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderTakeoffsLandings %></th>
+                    <th class="headerBig" rowspan="3" style="width:1cm" runat="server" id="optColumn1" Visible="<%# ShowOptionalColumn(0) %>"><div><%# OptionalColumnName(0) %></div></th>
+                    <th class="headerBig" rowspan="3" style="width:1cm" runat="server" id="optColumn2" Visible="<%# ShowOptionalColumn(1) %>"><div><%# OptionalColumnName(1) %></div></th>
+                    <th class="headerBig" rowspan="3" style="width:1cm" runat="server" id="optColumn3" Visible="<%# ShowOptionalColumn(2) %>"><div><%# OptionalColumnName(2) %></div></th>
+                    <th class="headerBig" rowspan="3" style="width:1cm" runat="server" id="optColumn4" Visible="<%# ShowOptionalColumn(3) %>"><div><%# OptionalColumnName(3) %></div></th>
+                    <th class="headerBig" rowspan="3" style="width:1cm"><%=Resources.LogbookEntry.PrintHeaderTotalTime %></th>
+                </tr>
+                <tr class="bordered">
+                    <th class="headerSmall oddRow" rowspan="2"><% =Resources.LogbookEntry.PrintHeaderModel %></th>
+                    <th class="headerSmall oddRow" rowspan="2" style="border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderRegistration %></th>
 
-                <th class="headerSmall oddRow" style="width:1cm" rowspan="2"><% =Resources.LogbookEntry.FieldIMC %></th>
-                <th class="headerSmall oddRow" style="width:1cm" rowspan="2"><% =Resources.LogbookEntry.FieldSimIMC %></th>
-                <th class="headerSmall oddRow" style="width:1cm" rowspan="2"><% =Resources.LogbookEntry.FieldGroundSim %></th>
-                <th class="headerSmall oddRow" style="width:1cm; border-right: 2px solid black;" rowspan="2"><%=Resources.LogbookEntry.PrintHeaderApproaches %></th>
-                <th class="headerSmall oddRow" style="border-right: 2px solid black;" colspan="<%# CurrentUser.TracksSecondInCommandTime ? 3 :2 %>"><% =Resources.LogbookEntry.PrintHeaderDay %></th>
-                <th class="headerSmall oddRow" style="border-right: 2px solid black;" colspan="<%# CurrentUser.TracksSecondInCommandTime ? 3 : 2 %>"><% =Resources.LogbookEntry.PrintHeaderNight %></th>
-            </tr>
-            <tr class="bordered">
-                <th class="headerSmall oddRow" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderFrom %></th>
-                <th class="headerSmall oddRow" style="width:1cm; border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderTo %></th>
+                    <th class="headerSmall oddRow" style="width:1cm" rowspan="2"><% =Resources.LogbookEntry.FieldIMC %></th>
+                    <th class="headerSmall oddRow" style="width:1cm" rowspan="2"><% =Resources.LogbookEntry.FieldSimIMC %></th>
+                    <th class="headerSmall oddRow" style="width:1cm" rowspan="2"><% =Resources.LogbookEntry.FieldGroundSim %></th>
+                    <th class="headerSmall oddRow" style="width:1cm; border-right: 2px solid black;" rowspan="2"><%=Resources.LogbookEntry.PrintHeaderApproaches %></th>
+                    <th class="headerSmall oddRow" style="border-right: 2px solid black;" colspan="<%# CurrentUser.TracksSecondInCommandTime ? 3 :2 %>"><% =Resources.LogbookEntry.PrintHeaderDay %></th>
+                    <th class="headerSmall oddRow" style="border-right: 2px solid black;" colspan="<%# CurrentUser.TracksSecondInCommandTime ? 3 : 2 %>"><% =Resources.LogbookEntry.PrintHeaderNight %></th>
+                </tr>
+                <tr class="bordered">
+                    <th class="headerSmall oddRow" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderFrom %></th>
+                    <th class="headerSmall oddRow" style="width:1cm; border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderTo %></th>
 
-                <th class="headerSmall oddRow" style="width:1cm"><% =Resources.LogbookEntry.FieldDual %></th>
-                <th class="headerSmall oddRow" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderPIC2 %></th>
-                <th class="headerSmall oddRow" style="width:1cm; border-right: 2px solid black;" runat="server" visible="<%# CurrentUser.TracksSecondInCommandTime %>"><% =Resources.LogbookEntry.FieldSIC %></th>
+                    <th class="headerSmall oddRow" style="width:1cm"><% =Resources.LogbookEntry.FieldDual %></th>
+                    <th class="headerSmall oddRow" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderPIC2 %></th>
+                    <th class="headerSmall oddRow" style="width:1cm; border-right: 2px solid black;" runat="server" visible="<%# CurrentUser.TracksSecondInCommandTime %>"><% =Resources.LogbookEntry.FieldSIC %></th>
 
-                <th class="headerSmall oddRow" style="width:1cm"><% =Resources.LogbookEntry.FieldDual %></th>
-                <th class="headerSmall oddRow" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderPIC2 %></th>
-                <th class="headerSmall oddRow" style="width:1cm; border-right: 2px solid black;" runat="server" visible="<%# CurrentUser.TracksSecondInCommandTime %>"><% =Resources.LogbookEntry.FieldSIC %></th>
+                    <th class="headerSmall oddRow" style="width:1cm"><% =Resources.LogbookEntry.FieldDual %></th>
+                    <th class="headerSmall oddRow" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderPIC2 %></th>
+                    <th class="headerSmall oddRow" style="width:1cm; border-right: 2px solid black;" runat="server" visible="<%# CurrentUser.TracksSecondInCommandTime %>"><% =Resources.LogbookEntry.FieldSIC %></th>
 
-                <th class="headerSmall oddRow" style="width:1cm"><% =Resources.LogbookEntry.FieldDual %></th>
-                <th class="headerSmall oddRow" style="width:1cm;" runat="server" visible="<%# CurrentUser.TracksSecondInCommandTime %>"><% =Resources.LogbookEntry.FieldSIC %></th>
-                <th class="headerSmall oddRow" style="width:1cm; border-right: 2px solid black"><% =Resources.LogbookEntry.PrintHeaderPIC2 %></th>
-                <th class="headerSmall oddRow" style="width:1cm"><% =Resources.LogbookEntry.FieldDual %></th>
-                <th class="headerSmall oddRow" style="width:1cm;" runat="server" visible="<%# CurrentUser.TracksSecondInCommandTime %>"><% =Resources.LogbookEntry.FieldSIC %></th>
-                <th class="headerSmall oddRow" style="width:1cm; border-right: 2px solid black"><% =Resources.LogbookEntry.PrintHeaderPIC2 %></th>
-                <th class="headerSmall oddRow"><% =Resources.LogbookEntry.PrintHeaderDay %></th>
-                <th class="headerSmall oddRow" style="border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderNight %></th>
-            </tr>
+                    <th class="headerSmall oddRow" style="width:1cm"><% =Resources.LogbookEntry.FieldDual %></th>
+                    <th class="headerSmall oddRow" style="width:1cm;" runat="server" visible="<%# CurrentUser.TracksSecondInCommandTime %>"><% =Resources.LogbookEntry.FieldSIC %></th>
+                    <th class="headerSmall oddRow" style="width:1cm; border-right: 2px solid black"><% =Resources.LogbookEntry.PrintHeaderPIC2 %></th>
+                    <th class="headerSmall oddRow" style="width:1cm"><% =Resources.LogbookEntry.FieldDual %></th>
+                    <th class="headerSmall oddRow" style="width:1cm;" runat="server" visible="<%# CurrentUser.TracksSecondInCommandTime %>"><% =Resources.LogbookEntry.FieldSIC %></th>
+                    <th class="headerSmall oddRow" style="width:1cm; border-right: 2px solid black"><% =Resources.LogbookEntry.PrintHeaderPIC2 %></th>
+                    <th class="headerSmall oddRow"><% =Resources.LogbookEntry.PrintHeaderDay %></th>
+                    <th class="headerSmall oddRow" style="border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderNight %></th>
+                </tr>
             </thead>
             <asp:Repeater ID="rptFlight" runat="server" OnItemDataBound="rptFlight_ItemDataBound">
                 <ItemTemplate>
@@ -111,7 +110,6 @@
                         <td runat="server" visible="<%# CurrentUser.TracksSecondInCommandTime %>"><%# Math.Min(((decimal)Eval("SIC")), (decimal)Eval("NightXC")).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                         <td style="border-right: 2px solid black;"><%# Math.Min(((decimal)Eval("PIC")), (decimal)Eval("NightXC")).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                         <td runat="server" visible='<%# CurrentUser.IsInstructor %>' style="border-right: 2px solid black;"><%# ((decimal)Eval("CFI")).FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                        <td runat="server" visible='<%# CurrentUser.TracksSecondInCommandTime %>' style="border-right: 2px solid black;"><%# ((decimal)Eval("SIC")).FormatDecimal(CurrentUser.UsesHHMM) %></td>
 
                         <td class="centered"><%# FormatTakeoffs((int) Eval("DayTakeoffs")) %> <%# FormatLandings(Math.Max((int) Eval("NetDayLandings"), 0)) %></td>
                         <td class="centered" style="border-right: 2px solid black;"><%# FormatTakeoffs((int) Eval("NightTakeoffs")) %> <%# FormatLandings((int) Eval("NetNightLandings")) %></td>
@@ -155,7 +153,6 @@
                                 <td style="border-right: 2px solid black;"><%# ((LogbookEntryDisplay) Container.DataItem).XCNightPICTotal.FormatDecimal(CurrentUser.UsesHHMM) %></td>
 
                                 <td runat="server" style="border-right: 2px solid black;" id="CFISubtotal" visible='<%# CurrentUser.IsInstructor %>'><%# ((LogbookEntryDisplay) Container.DataItem).CFI.FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                                <td runat="server" style="border-right: 2px solid black;" id="SICSubtotal" visible='<%# CurrentUser.TracksSecondInCommandTime %>'><%# ((LogbookEntryDisplay) Container.DataItem).SIC.FormatDecimal(CurrentUser.UsesHHMM) %></td>
 
                                 <td class="centered"><%# FormatTakeoffs((int) Eval("DayTakeoffTotal")) %> <%# FormatLandings((int) Eval("LandingsTotal") - (int) Eval("NightLandings") - (int) Eval("NightTouchAndGoLandings")) %></td>
                                 <td class="centered" style="border-right: 2px solid black;"><%# FormatTakeoffs((int) Eval("NightTakeoffTotal")) %> <%# FormatLandings((int) Eval("NightLandings") + (int) Eval("NightTouchAndGoLandings")) %></td>
