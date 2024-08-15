@@ -66,6 +66,9 @@
         foreach (Club c in rgClubs)
         {
             Html.RenderAction("ClubView", "Club", new { club = c, fLinkToDetails = true });
+            <div class="clubContainer">
+                @{ Html.RenderAction("SchedSummaryInternal", "Club", new { idClub = c.ID, resourceName = (string)null, fAllUsers = false }); }
+            </div>
         }
     }
 </div>
