@@ -189,7 +189,7 @@
         <Roles></Roles>
       </Item>
       <Item>
-        <Link>~/Member/EditProfile.aspx/pftPrefs</Link>
+        <Link>~/mvc/prefs</Link>
         <ID>pftPrefs</ID>
         <Roles></Roles>
       </Item>

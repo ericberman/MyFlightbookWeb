@@ -171,10 +171,10 @@ namespace MyFlightbook.Currency
                         szResult = VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftPilotInfo?pane=medical");
                         break;
                     case CurrencyGroups.Deadline:
-                        szResult = VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftPrefs?pane=deadlines");
+                        szResult = VirtualPathUtility.ToAbsolute("~/mvc/prefs?pane=deadlines");
                         break;
                     case CurrencyGroups.CustomCurrency:
-                        szResult = VirtualPathUtility.ToAbsolute(Query == null ? "~/Member/EditProfile.aspx/pftPrefs?pane=custcurrency" : String.Format(CultureInfo.InvariantCulture, "~/mvc/flights?ft=Totals&fq={0}", Query.ToBase64CompressedJSONString()));
+                        szResult = VirtualPathUtility.ToAbsolute(Query == null ? "~/mvc/prefs?pane=custcurrency" : String.Format(CultureInfo.InvariantCulture, "~/mvc/flights?ft=Totals&fq={0}", Query.ToBase64CompressedJSONString()));
                         break;
                 }
 
