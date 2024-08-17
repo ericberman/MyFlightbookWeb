@@ -71,7 +71,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         private void AddProfileToViewBag(Profile pf)
         {
             ViewBag.HeadShot = VirtualPathUtility.ToAbsolute(pf.HeadShotHRef);
-            ViewBag.Greeting = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LoginStatusWelcome, HttpUtility.HtmlEncode(pf.PreferredGreeting));
+            ViewBag.Greeting = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LoginStatusWelcome, pf.PreferredGreeting);
             ViewBag.MemberDate = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MemberSinceShort, pf.CreationDate);
             ViewBag.LastLogin = (pf.LastLogon.HasValue()) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MemberLastLogonShort, pf.LastLogon) : String.Empty;
             ViewBag.LastActivity = pf.LastActivity.Date.CompareTo(pf.LastLogon.Date) != 0 ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MemberLastActivityShort, pf.LastActivity) : String.Empty;
