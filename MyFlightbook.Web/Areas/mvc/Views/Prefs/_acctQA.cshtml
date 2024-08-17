@@ -1,0 +1,79 @@
+﻿@using System.Globalization
+@{
+    Profile m_pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+}
+<script type="text/javascript">
+    $(() => {
+        defaultButtonForDiv('divAcctQA', 'btnUpdateAccountQA');
+
+        var form = $("#frmUpdateQA");
+        form.validate({
+            ignore: "",
+            errorClass: "errorCallout",
+            errorElement: "div",
+            errorPlacement: function (error, element) {
+                error.insertAfter($(element));
+                if (!error.find(".notch").length) {
+                    error.prepend($("<b class='notch'></b>"));
+                }
+            },
+            rules: {
+                accountQACurrentPass: { required: true },
+                accountQAAnswer: { required: true },
+                accountQAQuestionCustom: { required: true, maxlength: 80 }
+            },
+            messages: {
+                accountQACurrentPass: { required: "@Resources.Preferences.errAccountQAPasswordRequired" },
+                accountQAAnswer: { required: "@Resources.Preferences.errAccountQAAnswerMissing" },
+                accountQAQuestionCustom: {required: "@Resources.LocalizedText.AccountQuestionRequired" }
+            },
+            showErrors: function (errorMap, errorList) {
+                // First remove existing notches
+                this.errorList.forEach(function (error) {
+                    $(error.element).next(".errorCallout").find(".notch").remove();
+                });
+
+                // Call the default showErrors method to display errors
+                this.defaultShowErrors();
+
+                // Add the notch again
+                this.errorList.forEach(function (error) {
+                    $(error.element).next(".errorCallout").prepend($("<b class='notch'></b>"));
+                });
+            },
+            highlight: function (element, errorClass) {
+                $(element).addClass("errorItem");
+            },
+            unhighlight: function (element, errorClass) {
+                $(element).removeClass("errorItem");
+            }
+        });
+    });
+</script>
+<div id="divAcctQA">
+    <div>@Html.Raw(Resources.LocalizedText.AccountQuestionHint)</div>
+    @using (Html.BeginForm("", "Prefs", FormMethod.Post, new { id = "frmUpdateQA", name = "frmUpdateQA" }))
+    {
+        @Html.AntiForgeryToken()
+        <h3>@Resources.Preferences.AccountQAPasswordPrompt</h3>
+        <div><input type="password" required name="accountQACurrentPass" required /></div>
+        <h3>@Resources.Preferences.AccountQACurrentQuestion</h3>
+        <div style="font-weight:bold">@m_pf.SecurityQuestion</div>
+        <h3>@Resources.Preferences.AccountQANewQuestion</h3>
+        <div>
+            <select id="accountQAPreparedQuestions" onchange="javascript: if (this.value == '') $('#txtAccountQAQuestionCustom').show(); else $('#txtAccountQAQuestionCustom').hide(); $('#txtAccountQAQuestionCustom').val(this.value); return false;">
+                <option value="">@Resources.Preferences.AccountQAMakeUpOwn</option>
+                @foreach (string sz in MyFlightbook.ProfileAdmin.SuggestedSecurityQuestions)
+                {
+                    <option value="@sz">@sz</option>
+                }
+            </select>
+        </div>
+        <p><input type="text" style="width: 400px" required name="accountQAQuestionCustom" id="txtAccountQAQuestionCustom" maxlength="80" /></p>
+        <h3>@Resources.Preferences.AccountQANewAnswer</h3>
+        <div><input type="text" style="width: 400px;" required name="accountQAAnswer" /></div>
+        <h3><button type="button" id="btnUpdateAccountQA" onclick="javascript: acctEditor.changeQA($('#frmUpdateQA'), $('#lblQAChangeResult')); return false;">@Resources.Preferences.AccountQAChange</button></h3>
+        <div id="lblQAChangeResult"></div>
+    }
+</div>
+

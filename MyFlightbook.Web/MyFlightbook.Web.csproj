@@ -812,12 +812,14 @@
     <Content Include="Member\Import.aspx" />
     <Content Include="Member\PrintView.aspx" />
     <Content Include="Member\StartingTotals.aspx" />
+    <Content Include="Public\CSS\jquery.passwordRequirements.css" />
     <Content Include="Public\CSS\printAirline.css" />
     <Content Include="Public\CSS\printHongKong.css" />
     <Content Include="Public\Scripts\accordionproxy.js" />
     <Content Include="Public\Scripts\adminajax.js" />
     <Content Include="Public\Scripts\ajaxUpload.js" />
     <Content Include="Public\Scripts\flightedit.js" />
+    <Content Include="Public\Scripts\jquery.passwordRequirements.min.js" />
     <Content Include="Public\Scripts\listDragNew.js" />
     <Content Include="Public\Scripts\prefs.js" />
     <Content Include="Public\Scripts\printing.js" />
@@ -1617,6 +1619,13 @@
     <Content Include="Areas\mvc\Views\Prefs\_prefDebriefing.cshtml" />
     <Content Include="Areas\mvc\Views\Prefs\_prefAirlineScheduling.cshtml" />
     <Content Include="Areas\mvc\Views\Prefs\_prefOAuthApps.cshtml" />
+    <Content Include="Areas\mvc\Views\Prefs\mainAccount.cshtml" />
+    <Content Include="Areas\mvc\Views\Prefs\_acctNameEmail.cshtml" />
+    <Content Include="Areas\mvc\Views\Prefs\_acctPassword.cshtml" />
+    <Content Include="Areas\mvc\Views\Prefs\_acctQA.cshtml" />
+    <Content Include="Areas\mvc\Views\Prefs\_acct2FA.cshtml" />
+    <Content Include="Areas\mvc\Views\Prefs\_acctRedButtons.cshtml" />
+    <Content Include="Areas\mvc\Views\Auth\_tfaGuard.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -1940,6 +1949,7 @@
     </Compile>
     <Compile Include="Areas\mvc\Controllers\AdminAircraftController.cs" />
     <Compile Include="Areas\mvc\Controllers\AdminController.cs" />
+    <Compile Include="Areas\mvc\Controllers\AuthController.cs" />
     <Compile Include="Areas\mvc\Controllers\CheckFlightController.cs" />
     <Compile Include="Areas\mvc\Controllers\FlightControllerBase.cs" />
     <Compile Include="Areas\mvc\Controllers\AdminControllerBase.cs" />

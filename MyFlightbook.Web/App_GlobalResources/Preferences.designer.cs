@@ -61,6 +61,33 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Two-factor authentication has been disabled.
+        /// </summary>
+        internal static string Account2FADisabled {
+            get {
+                return ResourceManager.GetString("Account2FADisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Two-factor authentication has been enabled.
+        /// </summary>
+        internal static string Account2FAEnabled {
+            get {
+                return ResourceManager.GetString("Account2FAEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to That image for a head shot is too large.  Please try using a smaller image..
+        /// </summary>
+        internal static string AccountHeadshotTooBig {
+            get {
+                return ResourceManager.GetString("AccountHeadshotTooBig", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Change Password.
         /// </summary>
         internal static string AccountPasswordChange {
@@ -129,6 +156,15 @@ namespace Resources {
         internal static string AccountQACurrentQuestion {
             get {
                 return ResourceManager.GetString("AccountQACurrentQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Make up your own secret question).
+        /// </summary>
+        internal static string AccountQAMakeUpOwn {
+            get {
+                return ResourceManager.GetString("AccountQAMakeUpOwn", resourceCulture);
             }
         }
         

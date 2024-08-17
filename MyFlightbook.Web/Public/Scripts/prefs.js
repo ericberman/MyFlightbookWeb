@@ -654,3 +654,132 @@ function oAuthAppsEditor(baseEndpoint) {
         });
     }
 }
+
+/*
+ Creates a prefs editor for editing/managing user accounts.
+  * baseEndpoint - resolved base for the webservices calls here
+  * options - 
+    * passwordStrengthStrings : semicolon separated strings for password strength.
+*/
+function accountEditor(baseEndpoint, options) {
+    this.formWithResult = function (form, resultContainer, method) {
+        resultContainer.text("");
+        if (form.valid()) {
+            var f = form.serialize();
+            $.ajax({
+                url: baseEndpoint + method,
+                type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                error: function (xhr, status, error) {
+                    resultContainer.text(xhr.responseText);
+                    resultContainer.attr("class", "error");
+                },
+                success: function (r) {
+                    resultContainer.text(r);
+                    resultContainer.attr("class", "success");
+                }
+            });
+        }
+    }
+
+    this.updatePass = function (form, resultContainer) {
+        this.formWithResult(form, resultContainer, "UpdatePassword");
+    }
+
+    this.changeQA = function (form, resultContainer) {
+        this.formWithResult(form, resultContainer, "UpdateQA");
+    }
+
+    this.disable2fa = function(form, resultContainer) {
+        this.formWithResult(form, resultContainer, "Disable2fa");
+    }
+
+    this.setUp2fa = function(form, resultContainer) {
+        this.formWithResult(form, resultContainer, "Enable2fa");
+    }
+
+    this.verifyEmail = function (email) {
+        var params = new Object();
+        params.email = email;
+        var d = JSON.stringify(params);
+        $.ajax({
+            url: baseEndpoint + "SendVerificationEmail",
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
+            error: function (xhr, status, error) {
+                window.alert(xhr.responseText);
+            }
+        });
+    }
+    this.deleteHeadShot = function (imgHeadShot) {
+        var params = new Object();
+        var d = JSON.stringify(params);
+        $.ajax({
+            url: baseEndpoint + "DeleteHeadShot",
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
+            error: function (xhr, status, error) {
+                window.alert(xhr.responseText);
+            },
+            success: function (r) {
+                imgHeadShot.attr("src", r);
+                $("#imgHdSht").attr("src", r);
+            }
+        });
+    }
+
+    this.addAlias = function (form, resultContainer) {
+        if (form.valid()) {
+            var f = form.serialize();
+            $.ajax({
+                url: baseEndpoint + "AddAlias",
+                type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                error: function (xhr, status, error) { onError(xhr.responseText); },
+                success: function (r) {
+                    resultContainer.text(r);
+                }
+            });
+        }
+    }
+
+    this.deleteAlias = function (sender, form, confirmText) {
+        if (confirm(confirmText)) {
+            var f = form.serialize();
+            $.ajax({
+                url: baseEndpoint + "DeleteAlias",
+                type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                error: function (xhr, status, error) { onError(xhr.responseText); },
+                success: function () {
+                    $(sender).closest("tr").hide();
+                }
+            });
+        }
+    }
+
+    this.updateNameEmail = function (resultContainer, form) {
+        this.formWithResult(form, resultContainer, "UpdateNameEmail");
+    }
+
+    this.deleteUnusedAircraft = function (form, resultContainer) {
+        this.formWithResult(form, resultContainer, "DeleteUnusedAircraft");
+    }
+
+    this.deleteFlights = function (confirmText, form, resultContainer) {
+        if (confirm(confirmText))
+            this.formWithResult(form, resultContainer, "DeleteFlights");
+    }
+
+    this.closeAccount = function (confirmText, form, resultContainer) {
+        if (confirm(confirmText)) {
+            var f = form.serialize();
+            $.ajax({
+                url: baseEndpoint + "CloseAccount",
+                type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                error: function (xhr, status, error) {
+                    resultContainer.text(xhr.responseText);
+                    resultContainer.attr("class", "error");
+                },
+                success: function (r) {
+                    window.location = r;
+                }
+            });
+        }
+    }
+}

@@ -1122,6 +1122,19 @@ namespace MyFlightbook
             return "Profile" + szUser.ToUpper(CultureInfo.InvariantCulture);
         }
 
+        public bool CheckCanUseEmail(string email)
+        {
+            if (email == null)
+                throw new ArgumentNullException(nameof(email));
+
+            // Obviously, you can use your email
+            if (email.CompareCurrentCultureIgnoreCase(OriginalEmail) == 0)
+                return true;
+
+            // Changing email address is fine IF you're not stepping on another user.
+            return String.IsNullOrEmpty(Membership.GetUserNameByEmail(email)); // i.e., there exists a user with this email address already
+        }
+
         /// <summary>
         /// Checks whether the profile is in a valid state for saving
         /// </summary>
@@ -1135,14 +1148,7 @@ namespace MyFlightbook
             if (PKID.Length == 0 || String.Compare(PKID, OriginalPKID, StringComparison.Ordinal) != 0)
                 return false;
 
-            // Changing email address is fine IF you're not stepping on another user.
-            if (String.Compare(Email, OriginalEmail, StringComparison.OrdinalIgnoreCase) != 0)
-            {
-                if (Membership.GetUserNameByEmail(Email).Length > 0) // i.e., there exists a user with this email address already
-                    return false;
-            }
-
-            return true;
+            return CheckCanUseEmail(Email);
         }
 
         private static readonly object cachelock = new object();
@@ -1358,6 +1364,9 @@ namespace MyFlightbook
             LastName = szNewLast;
             Email = szNewEmail ?? throw new ArgumentNullException(nameof(szNewEmail));
             Address = szNewAddress;
+
+            if (!IsValid())
+                return;
 
             FCommit();
 

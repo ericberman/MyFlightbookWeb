@@ -1,10 +1,12 @@
 ﻿using MyFlightbook.Currency;
+using MyFlightbook.Image;
 using MyFlightbook.Telemetry;
 using MyFlightbook.Templates;
 using MyFlightbook.Web.Sharing;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 
@@ -354,6 +356,218 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             });
         }
         #endregion
+
+        #region Account Options
+        #region name and email
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult UpdateNameEmail(string accountFirstName, string accountLastName, string accountEmail, string accountAddress, string accountDOB, string accountGreeting, string accountMobilePhone)
+        {
+            return SafeOp(() =>
+            {
+                if (accountFirstName == null)
+                    throw new ArgumentNullException(nameof(accountFirstName));
+                if (accountLastName == null)
+                    throw new ArgumentNullException(nameof(accountLastName));
+                if (accountEmail == null)
+                    throw new ArgumentNullException(nameof(accountEmail));
+                if (accountAddress == null)
+                    throw new ArgumentNullException(nameof(accountAddress));
+                if (accountDOB == null)
+                    throw new ArgumentNullException(nameof(accountDOB));
+                if (accountGreeting == null)
+                    throw new ArgumentNullException(nameof(accountGreeting));
+                if (accountMobilePhone == null)
+                    throw new ArgumentNullException(nameof(accountMobilePhone));
+
+                Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name, true);
+
+                if (!pf.CheckCanUseEmail(accountEmail))
+                    throw new InvalidOperationException(Resources.Profile.errEmailInUse2);
+                ViewBag.requestedPane = "account";
+                ViewBag.pf = pf;
+                pf.ChangeNameAndEmail(accountFirstName.Trim(), accountLastName.Trim(), accountEmail.Trim(), accountAddress.Trim());
+                pf.DateOfBirth = DateTime.TryParse(accountDOB, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime dob) ? dob : (DateTime?)null;
+                string preferredGreeting = accountGreeting.Trim();
+                pf.PreferredGreeting = preferredGreeting.CompareCurrentCultureIgnoreCase(pf.FirstName) == 0 ? string.Empty : preferredGreeting;
+                pf.MobilePhone = accountMobilePhone.Trim();
+                pf.FCommit();
+                return Content(Resources.Profile.accountPersonalInfoSuccess);
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult SendVerificationEmail(string email)
+        {
+            return SafeOp(() =>
+            {
+                Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name, true);
+                pf.SendVerificationEmail(email, "~/mvc/prefs/account".ToAbsoluteURL(Request).ToString() + "?ve={0}");
+                return new EmptyResult();
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult SetHeadShot()
+        {
+            return SafeOp(() =>
+            {
+                Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name, true);
+
+                if (Request.Files.Count == 0)
+                    throw new InvalidOperationException("No file uploaded");
+
+                Stream s = Request.Files[0].InputStream;
+                byte[] rgb = s == null ? Array.Empty<byte>() : MFBImageInfo.ScaledImage(s, 90, 90);
+                if (rgb != null && rgb.Length > 0)
+                {
+                    if (rgb.Length > 65000)
+                        throw new InvalidOperationException(Resources.Preferences.AccountHeadshotTooBig);
+                    pf.HeadShot = rgb;
+                    pf.FCommit();
+                }
+                return Content(pf.HeadShotHRef.ToAbsolute());
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult DeleteHeadShot()
+        {
+            return SafeOp(() =>
+            {
+                Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name, true);
+                pf.HeadShot = null;
+                pf.FCommit();
+                return Content(pf.HeadShotHRef);
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult AddAlias(string accountAlias)
+        {
+            return SafeOp(() =>
+            {
+                Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name, true);
+                pf.SendVerificationEmail(accountAlias, "~/mvc/prefs/account".ToAbsoluteURL(Request).ToString() + "?ve={0}");
+                return Content(Resources.Profile.accountVerifyEmailSent);
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteAlias(string accountAliasToDelete)
+        {
+            return SafeOp(() =>
+            {
+                Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name, true);
+                pf.DeleteVerifiedEmail(accountAliasToDelete);
+                return new EmptyResult();
+            });
+        }
+        #endregion
+
+        #region Password and Q&A
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult UpdatePassword(string accountCurPass, string accountNewPass, string accountNewPass2)
+        {
+            return SafeOp(() =>
+            {
+                Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name, true);
+                if (accountNewPass.CompareCurrentCulture(accountNewPass2) != 0) // should never happen - validation should have caught this.
+                    throw new MyFlightbookException(Resources.Profile.errPasswordsDontMatch);
+                pf.ChangePassword(accountCurPass, accountNewPass);
+                return Content(Resources.Preferences.AccountPasswordSuccess);
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult UpdateQA(string accountQACurrentPass, string accountQAQuestionCustom, string accountQAAnswer)
+        {
+            return SafeOp(() =>
+            {
+                Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name, true);
+                pf.ChangeQAndA(accountQACurrentPass, accountQAQuestionCustom, accountQAAnswer);
+                return Content(Resources.Preferences.AccountQAChangeSuccess);
+            });
+        }
+        #endregion
+
+        #region two-factor Auth
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult Disable2fa()
+        {
+            return SafeOp(() =>
+            {
+                Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name, true);
+                pf.SetPreferenceForKey(MFBConstants.keyTFASettings, null, true);
+                return Content(Resources.Preferences.Account2FADisabled);
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult Enable2fa(string seed, string verification)
+        {
+            return SafeOp(() =>
+            {
+                Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name, true);
+                SetUp2FA(pf, seed, verification);
+                return Content(Resources.Preferences.Account2FAEnabled);
+            });
+        }
+        #endregion
+
+        #region Big Red buttons
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteUnusedAircraft()
+        {
+            return SafeOp(() =>
+            {
+                int i = ProfileAdmin.DeleteUnusedAircraftForUser(User.Identity.Name);
+                return Content(String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileBulkDeleteAircraftDeleted, i));
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteFlights()
+        {
+            return SafeOp(() =>
+            {
+                ProfileAdmin.DeleteFlightsForUser(User.Identity.Name);
+                return Content(Resources.Profile.ProfileDeleteFlightsCompleted);
+            });
+        }
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult CloseAccount()
+        {
+            return SafeOp(() =>
+            {
+                ProfileAdmin.DeleteEntireUser(User.Identity.Name);
+                return Content("~".ToAbsolute());
+            });
+        }
+        #endregion
+        #endregion
         #endregion
 
         #region child actions
@@ -408,6 +622,29 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             ViewBag.pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
             return View("browseTemplates");
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ActionName("Account")]
+        public ActionResult AccountWithTFA(string tfaCode)
+        {
+            Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+            ViewBag.pf = pf;
+            if (ViewBag.collectTFA = !Check2FA(pf, tfaCode))
+                ViewBag.tfaErr = Resources.Profile.TFACodeFailed;
+            return View("mainAccount");
+        }
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult Account()
+        {
+            Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+            ViewBag.pf = pf;
+            ViewBag.collectTFA = !Check2FA(pf, string.Empty);
+            return View("mainAccount");
         }
     }
 }

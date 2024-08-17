@@ -12,7 +12,8 @@
      - allowedTypes - space separated list of extensions
      - abortPrompt - prompt to abort an upload
      - errTooManyFiles - error message if two many files
-     - dropPrompt - prompt for the box
+     - promptID - the id of the prompt html.  If used, dropPrompt is ignored.
+     - dropPrompt - prompt for the box; used if promptID is not supplied
      - dragTargetClass - CSS class name for drop target
      - dragHighlightClass - CSS class name for drop target on hover
      - maxFiles - max # of files
@@ -206,7 +207,11 @@ function ajaxFileUpload(container, options) {
 
         var obj = $("<div></div>");
         obj.appendTo(container);
-        obj.text(options.dropPrompt ?? "Drag files here");
+        if ((options.promptID ?? "").length > 0)
+            $("#" + options.promptID).appendTo(obj);
+        else
+            obj.text(options.dropPrompt ?? "Drag files here");
+
         obj.addClass(options.dragTargetClass ?? "fileDragTarget");
 
         obj.on('dragenter', function (e) {

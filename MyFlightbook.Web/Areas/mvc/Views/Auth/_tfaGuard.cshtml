@@ -1,0 +1,60 @@
+﻿<script type="text/javascript">
+    $(() => {
+        defaultButtonForDiv("divGuard2fa", "btnVerifyCode");
+        $("#txtTfaCode")[0].focus();
+
+        $.validator.addMethod("regex2fa", function (value, element) {
+            return this.optional(element) || /^[0-9]{6}$/.test(value);
+        }, "@Resources.Profile.TFAErrCodeFormat");
+
+        var form = $("#frm2faGuard");
+        form.validate({
+            errorClass: "errorCallout",
+            errorElement: "div",
+            errorPlacement: function (error, element) {
+                error.insertAfter($(element));
+                if (!error.find(".notch").length) {
+                    error.prepend($("<b class='notch'></b>"));
+                }
+            },
+            rules: {
+                tfaCode: { required: true, regex2fa: true, minlength: 6, maxlength: 6 }
+            },
+            messages: {
+                tfaCode: { required: '@Resources.Profile.TFARequired', regex2fa: '@Resources.Profile.TFAErrCodeFormat', minlength: '@Resources.Profile.TFAErrCodeFormat', maxlength: '@Resources.Profile.TFAErrCodeFormat' }
+            },
+            showErrors: function (errorMap, errorList) {
+                // First remove existing notches
+                this.errorList.forEach(function (error) {
+                    $(error.element).next(".errorCallout").find(".notch").remove();
+                });
+
+                // Call the default showErrors method to display errors
+                this.defaultShowErrors();
+
+                // Add the notch again
+                this.errorList.forEach(function (error) {
+                    $(error.element).next(".errorCallout").prepend($("<b class='notch'></b>"));
+                });
+            },
+            highlight: function (element, errorClass) {
+                $(element).addClass("errorItem");
+            },
+            unhighlight: function (element, errorClass) {
+                $(element).removeClass("errorItem");
+            }
+        });
+    });
+</script>
+<p>@Resources.Profile.TFARequired</p>
+<p>@Resources.Profile.TFAUseYourApp</p>
+@using (Html.BeginForm("GuardDestination", "Auth", FormMethod.Post, new { id = "frm2faGuard", name = "frm2faGuard" }))
+{
+    @Html.AntiForgeryToken()
+    <div id="divGuard2fa">
+        <input type="hidden" name="ret" value="@ViewBag.returnRef" />
+        <input type="text" maxlength="6" pattern="^[0-9]{6}$" required data-1p-ignore name="tfaCode" id="txtTfaCode" />
+        <button type="button" id="btnVerifyCode" onclick="javascript: if ($('#frm2faGuard').valid()) { (@ViewBag.onSubmit)($(this).prev().val()); }; return false;">@Resources.Profile.TFAValidateCode</button>
+    </div>
+    <div class="error" id="twoFactorErr">@(ViewBag.tfaErr ?? string.Empty)</div>
+}

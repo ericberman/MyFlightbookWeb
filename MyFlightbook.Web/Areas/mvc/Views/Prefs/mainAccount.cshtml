@@ -1,0 +1,68 @@
+﻿@using System.Globalization
+@{
+    Profile m_pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+    ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.Profile.EditProfileHeader, HttpUtility.HtmlEncode(m_pf.UserFullName));
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    ViewBag.defaultTab = tabID.tabProfile;
+    string requestedPane = Request["pane"] ?? ViewBag.requestedPane ?? "account";
+}
+<h2>@Resources.Profile.accountHeader</h2>
+<script src="@("~/Public/Scripts/prefs.js?v=2".ToAbsolute())" type="text/javascript"></script>
+<script src="@("~/Public/Scripts/CopyClipboard.js".ToAbsolute())"></script>
+<script type="text/javascript" src="@("~/Public/Scripts/ajaxUpload.js?v=7".ToAbsolute())"></script>
+<script type="text/javascript">
+    var acctEditor = new accountEditor("@("~/mvc/Prefs/".ToAbsolute())", {
+    });
+
+    function submitTFA(code) {
+        $("#hdnTFACode").val(code);
+        $("#frmSubmitTFA").submit();
+    }
+</script>
+@if (ViewBag.collectTFA)
+{
+    Html.RenderAction("TwoFactorAuthGuard", "Auth", new { onSubmit = "submitTFA", tfaErr = ViewBag.tfaErr });
+    using (Html.BeginForm("Account", "Prefs", FormMethod.Post, new { id = "frmSubmitTFA", name = "frmSubmitTFA" }))
+    {
+        <input type="hidden" name="tfaCode" id="hdnTFACode" />
+        @Html.AntiForgeryToken();
+    }
+}
+else
+{
+    <p>@String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MemberSince, m_pf.CreationDate)</p>
+    Html.RenderAction("RenderAccordion", "MFBTemplate", new { containerID = "prefsAccordion", active = "false" });
+    <div id="prefsAccordion">
+        <h3 id="account">@Resources.Tabs.ProfileName</h3>
+        <div>
+            @{ Html.RenderPartial("_acctNameEmail"); }
+        </div>
+        <h3 id="password">@Resources.Tabs.ProfilePassword</h3>
+        <div>
+            @{ Html.RenderPartial("_acctPassword"); }
+        </div>
+        <h3 id="qa">@Resources.Tabs.ProfileQA</h3>
+        <div>
+            @{ Html.RenderPartial("_acctQA"); }
+        </div>
+        <h3 id="2fa">@Resources.Profile.TFAHeader</h3>
+        <div>
+            @{ Html.RenderPartial("_acct2FA"); }
+        </div>
+        <h3 id="redbuttons">@Resources.Profile.ProfileDeleteHeader</h3>
+        <div>
+            @{ Html.RenderPartial("_acctRedButtons"); }
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(() => {
+            var i = 0;
+            var container = $("#prefsAccordion");
+            container.children("h3").each(function () {
+                if (this.id == "@requestedPane")
+                    container.accordion("option", "active", i);
+                i++;
+            });
+        });
+    </script>
+}

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Google.Authenticator;
+using System;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -183,6 +184,52 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         protected static string SafeRedirectParam(string href, string hrefFallback = null)
         {
             return !String.IsNullOrWhiteSpace(href) && Uri.IsWellFormedUriString(href, UriKind.Relative) ? href : hrefFallback ?? string.Empty;
+        }
+        #endregion
+
+        #region Utilities for guarding with 2 factor auth
+
+        /// <summary>
+        /// Checks to see if the provided code passes 2fa or is unnecessary.  Throws an exception if it's not a valid code
+        /// </summary>
+        /// <param name="pf"></param>
+        /// <param name="code"></param>
+        protected static bool Check2FA(Profile pf, string code)
+        {
+            if (pf == null)
+                throw new ArgumentNullException(nameof(pf));
+            if (pf.PreferenceExists(MFBConstants.keyTFASettings))
+            {
+                TwoFactorAuthenticator tfa = new TwoFactorAuthenticator();
+                if (!tfa.ValidateTwoFactorPIN(pf.GetPreferenceForKey(MFBConstants.keyTFASettings) as string, code, new TimeSpan(0, 2, 0)))
+                {
+                    // TFA is required but a correct value was not passed
+                    System.Threading.Thread.Sleep(1000); // pause for a second to thwart dictionary attacks.
+                    return false;
+                }
+            }
+            // 2fa not set up or was correctly provided.
+            return true;
+        }
+
+        protected static void SetUp2FA(Profile pf, string seed, string verification)
+        {
+            if (pf == null)
+                throw new ArgumentNullException(nameof(pf));
+
+            if (pf.PreferenceExists(MFBConstants.keyTFASettings))
+                throw new InvalidOperationException("2 factor authentication already set up for user " + pf.UserName);
+
+            if (String.IsNullOrWhiteSpace(verification))
+                throw new InvalidOperationException(Resources.Profile.TFAErrCodeFormat);
+            if (String.IsNullOrWhiteSpace(seed))
+                throw new InvalidOperationException("No seed provided - how?");
+
+            TwoFactorAuthenticator tfa = new TwoFactorAuthenticator();
+            if (!tfa.ValidateTwoFactorPIN(seed, verification, new TimeSpan(0, 2, 0)))
+                throw new InvalidOperationException(Resources.Profile.TFACodeFailed);
+
+            pf.SetPreferenceForKey(MFBConstants.keyTFASettings, seed);
         }
         #endregion
     }

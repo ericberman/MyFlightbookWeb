@@ -1,0 +1,249 @@
+﻿@using System.Globalization
+@{
+    Profile m_pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+    string szPreferredGreeting = m_pf.PreferredGreeting.Trim();
+    IEnumerable<string> lstAlternateEmails = m_pf.AlternateEmailsForUser();
+    string szEmailVerify = util.GetStringParam(Request, "ve");
+    string szVerifyError = string.Empty;
+    string verifiedEmail = string.Empty;
+    bool emailVerified;
+    if (emailVerified = !String.IsNullOrEmpty(szEmailVerify) && m_pf.VerifyEmail(szEmailVerify, out verifiedEmail, out szVerifyError))
+    {
+        m_pf.AddVerifiedEmail(verifiedEmail);
+    }
+}
+<script type="text/javascript">
+    $(() => {
+        defaultButtonForDiv('acctEditName', 'btnUpdateName');
+        defaultButtonForDiv('acctAddAlias', 'btnAddAlias');
+
+        var form = $("#frmUpdateName");
+        form.validate({
+            errorClass: "errorCallout",
+            errorElement: "div",
+            errorPlacement: function (error, element) {
+                error.insertAfter($(element));
+                if (!error.find(".notch").length) {
+                    error.prepend($("<b class='notch'></b>"));
+                }
+            },
+            rules: {
+                accountEmail: {
+                    required: true,
+                    email: true
+                },
+                accountEmail2: {
+                    required: true,
+                    email: true,
+                    equalTo: "#txtAccountEmail"
+                }
+            },
+            messages: {
+                accountEmail: {
+                    required: "@Resources.Profile.errEmailMissing",
+                    pattern: "@Resources.Profile.errEmailRequired"
+                },
+                accountEmail2: {
+                    required: "@Resources.Profile.errEmailMissing",
+                    pattern: "@Resources.Profile.errEmailRequired",
+                    equalTo: "@Resources.Profile.err2ndEmailRequired"
+                }
+            },
+            showErrors: function (errorMap, errorList) {
+                // First remove existing notches
+                this.errorList.forEach(function (error) {
+                    $(error.element).next(".errorCallout").find(".notch").remove();
+                });
+
+                // Call the default showErrors method to display errors
+                this.defaultShowErrors();
+
+                // Add the notch again
+                this.errorList.forEach(function (error) {
+                    $(error.element).next(".errorCallout").prepend($("<b class='notch'></b>"));
+                });
+            },
+            highlight: function (element, errorClass) {
+                $(element).addClass("errorItem");
+            },
+            unhighlight: function (element, errorClass) {
+                $(element).removeClass("errorItem");
+            }
+        });
+
+        form = $("#frmAddAlias");
+        form.validate({
+            errorClass: "errorCallout",
+            errorElement: "div",
+            errorPlacement: function (error, element) {
+                error.insertAfter($(element));
+                if (!error.find(".notch").length) {
+                    error.prepend($("<b class='notch'></b>"));
+                }
+            },
+            rules: {
+                accountAlias: {
+                    required: true,
+                    email: true
+                }
+            },
+            messages: {
+                accountAlias: {
+                    required: "@Resources.Profile.errEmailMissing",
+                    email: "@Resources.Profile.errEmailRequired"
+                }
+            },
+            showErrors: function (errorMap, errorList) {
+                // First remove existing notches
+                this.errorList.forEach(function (error) {
+                    $(error.element).next(".errorCallout").find(".notch").remove();
+                });
+
+                // Call the default showErrors method to display errors
+                this.defaultShowErrors();
+
+                // Add the notch again
+                this.errorList.forEach(function (error) {
+                    $(error.element).next(".errorCallout").prepend($("<b class='notch'></b>"));
+                });
+            },
+            highlight: function (element, errorClass) {
+                $(element).addClass("errorItem");
+            },
+            unhighlight: function (element, errorClass) {
+                $(element).removeClass("errorItem");
+            }
+        });
+
+        ajaxFileUpload($("#divUploadHeadshot"), {
+            uploadURL: "@Url.Action("SetHeadShot", "Prefs")",
+            allowedTypes: "@MyFlightbook.Image.FileExtensions.AllowedExtensionsForTypes(true, false, false)",
+            dragTargetClass: "fileDragTarget",
+            additionalParams: [],
+            maxFiles: 1,
+            onUpload: function () {
+                $(".fileInQueueContainer").hide();
+                $("#imgAccountHeadShot").attr("src", "@String.Format(CultureInfo.InvariantCulture, "~/mvc/Image/ViewUser?id={0}", User.Identity.Name, DateTime.Now.Ticks).ToAbsolute()" + "&t=" + (new Date()).getTime());
+                $("#imgHdSht").attr("src", "@String.Format(CultureInfo.InvariantCulture, "~/mvc/Image/ViewUser?id={0}", User.Identity.Name, DateTime.Now.Ticks).ToAbsolute()" + "&t=" + (new Date()).getTime());
+            },
+            promptID: "imgAccountHeadShot",
+            dropPrompt: "@Resources.LocalizedText.UploadImages",
+            errTooManyFiles: "@Resources.LocalizedText.fileUploadTooManyFiles",
+            errDisallowedFileType: "@Resources.LocalizedText.fileUploadInvalidType",
+            abortPrompt: "@Resources.LocalizedText.fileUploadAbort"
+        });
+    });
+</script>
+<style type="text/css">
+    .fileDragTarget {
+        width: 130px;
+        height: 130px;
+        padding: 8px;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+<div id="acctStaticName">
+    <div style="font-weight: bold;">@(szPreferredGreeting.CompareCurrentCultureIgnoreCase(m_pf.UserFirstName.Trim()) == 0 ? m_pf.UserFullName : String.Format(CultureInfo.CurrentCulture, "{0} ({1})", m_pf.UserFullName, szPreferredGreeting))</div>
+    <div>
+        @m_pf.Email
+        @if (m_pf.IsVerifiedEmail(m_pf.Email))
+        {
+            <span title="@Resources.Profile.accountVerifyEmailValid" style="color: green; font-weight: bold;">✔</span>
+        }
+    </div>
+    <div style="white-space:pre-wrap">@(m_pf.Address ?? string.Empty)</div>
+    @if (lstAlternateEmails.Any())
+    {
+        <p>
+            @Resources.Profile.accountEmailAliasesHeader
+            @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "tipEmailAliases", tipTextHtml = Resources.Profile.accountEmailAliasWhy }); }
+            <ul>
+                @foreach (string szEmail in lstAlternateEmails)
+                {
+                    <li>@szEmail</li>
+                }
+            </ul>
+        </p>
+    }
+    <div><button type="button" onclick="javascript: $('#acctStaticName').hide(); $('#acctEditName').show(); return false;">@Resources.Profile.ChangeNameEmail</button></div>
+    @if (emailVerified)
+    {
+        if (String.IsNullOrEmpty(szVerifyError))
+        {
+            <div class="success">@String.Format(CultureInfo.CurrentCulture, Resources.Profile.accountVerifyValidated, verifiedEmail)</div>
+        }
+        else
+        {
+            <div class="error">@szVerifyError</div>
+        }
+    }
+</div>
+<div id="acctEditName" style="display: none;">
+    @using (Html.BeginForm("", "Prefs", FormMethod.Post, new { id = "frmUpdateName", name = "frmUpdateName" }))
+    {
+        @Html.AntiForgeryToken()
+        <h3>@Resources.Profile.accountEmailPrompt</h3>
+        <div>
+            <input type="email" required id="txtAccountEmail" name="accountEmail" value="@m_pf.Email" style="width: 300px;" />
+            @if (!m_pf.IsVerifiedEmail(m_pf.Email))
+            {
+                <a href="#" onclick="javascript: acctEditor.verifyEmail($('#txtAccountEmail').val()); $('#lblVerificationSent').show(); return false;">@Resources.Profile.accountVerifyEmailPrompt</a>
+                { Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "tipWhyVerifyEmail", tipTextHTML = Resources.Profile.accountVerifyWhy }); }
+            }
+        </div>
+        <div id="lblVerificationSent" style="display:none;" class="success">@Resources.Profile.accountVerifyEmailSent</div>
+        <h3>@Resources.Profile.accountRetypeEmailPrompt</h3>
+        <div><input type="email" required id="txtAccountEmail2" name="accountEmail2" value="@m_pf.Email" data-1p-ignore style="width: 300px;" /></div>
+        <h3>@Resources.Profile.accountFirstNamePrompt</h3>
+        <div><input type="text" id="txtAccountFirstName" name="accountFirstName" oninput="javascript: $('#txtAccountGreeting').attr('placeholder', this.value);" value="@m_pf.FirstName" style="width: 300px;" /></div>
+        <h3>@Resources.Profile.accountLastNamePrompt</h3>
+        <div><input type="text" id="txtAccountLastName" name="accountLastName" value="@m_pf.LastName" style="width: 300px;" /></div>
+        <h3>@Resources.Profile.accountPreferredGreetingPrompt</h3>
+        <div><input type="text" id="txtAccountGreeting" placeholder="@m_pf.FirstName" name="accountGreeting" value="@(szPreferredGreeting.CompareCurrentCulture(m_pf.FirstName) == 0 ? string.Empty : szPreferredGreeting)" style="width: 300px;" /></div>
+        <div class="fineprint">@Resources.Profile.accountPreferredGreetingNote</div>
+        <h3>@Resources.Profile.accountMailingAddressPrompt</h3>
+        <div><textarea rows="4" id="txtAccountAddress" style="width: 300px;" name="accountAddress">@m_pf.Address</textarea></div>
+        <div class="fineprint">@Resources.Profile.accountMailingAddressPromptNote</div>
+        <h3>@Resources.Profile.accountDateOfBirth</h3>
+        <div>@{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "dtAccountDOB", name = "accountDOB", value = m_pf.DateOfBirth ?? DateTime.MinValue }); }</div>
+        <div class="fineprint">@Resources.Profile.accountDateOfBirthPromptNote</div>
+        <h3>@Resources.Profile.accountCellPhone</h3>
+        <div><input type="tel" id="txtMobilePhone" name="accountMobilePhone" style="width: 300px;" value="@m_pf.MobilePhone" /></div>
+        <div class="fineprint">@Resources.Profile.accountCellPhoneHint</div>
+
+        <h3><button id="btnUpdateName" type="button" onclick="javascript: acctEditor.updateNameEmail($('#updateNameResult'), $('#frmUpdateName')); return false;">@Resources.Profile.saveChanges</button></h3>
+        <div id="updateNameResult"></div>
+    }
+    <h3>@Resources.Profile.accountHeadShot</h3>
+    <div>
+        <img class="roundedImg" id="imgAccountHeadShot" style="width: 80px; height: 80px;" src="@m_pf.HeadShotHRef.ToAbsolute()" />
+        <div id="divUploadHeadshot" style="display:inline-block;"></div>
+        &nbsp;<img id="imgDelHdSht" style="vertical-align:middle;" src="@("~/images/x.gif".ToAbsolute())" onclick="javascript: acctEditor.deleteHeadShot($('#imgAccountHeadShot')); return false;" />
+    </div>
+    <div class="fineprint">@Resources.Profile.accountHeadShotHint</div>
+    <h3>@Resources.Profile.accountEmailAddAlias @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "tipWhyEmailAlias", tipTextHTML = Resources.Profile.accountEmailAliasWhy }); }</h3>
+    <div name="acctAddAlias">
+        @using (Html.BeginForm("AddAlias", "Prefs", FormMethod.Post, new { id = "frmAddAlias", name = "frmAddAlias" }))
+        {
+            @Html.AntiForgeryToken()
+            <input type="email" required id="txtAccountAlias" name="accountAlias" />
+            <button type="button" id="btnAddAlias" onclick="javascript: acctEditor.addAlias($('#frmAddAlias'), $('#divAddAliasResult')); return false;">@Resources.Profile.accountVerifyEmailPrompt</button>
+            <div id="divAddAliasResult" class="success"></div>
+        }
+    </div>
+    @using (Html.BeginForm("DelAlias", "Prefs", FormMethod.Post, new { id = "frmDelAlias", name = "frmDelAlias" }))
+    {
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="accountAliasToDelete" id="hdnAcctAliasToDelete" />
+    }
+    <table cellpadding="3">
+        @foreach (string szEmail in m_pf.AlternateEmailsForUser())
+        {
+            <tr>
+                <td><img src="@("~/images/x.gif".ToAbsolute())" onclick="javascript: $('#hdnAcctAliasToDelete').val('@szEmail'); acctEditor.deleteAlias(this, $('#frmDelAlias'), '@Resources.Profile.accountEmailAliasDeleteConfirm'); return false;" alt="@Resources.Profile.accountEmailAliasDelete" title="@Resources.Currency.CustomCurrencyDeleteTooltip" /></td>
+                <td>@szEmail <span style="color: green; font-weight: bold;" title="@Resources.Profile.accountVerifyEmailValid">✔</span></td>
+            </tr>
+        }
+    </table>
+</div>

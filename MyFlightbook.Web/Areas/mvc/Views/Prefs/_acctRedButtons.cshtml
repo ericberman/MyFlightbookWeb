@@ -1,0 +1,19 @@
+﻿<script type="text/javascript">
+    $(() => {
+        $("#frmBigRedButtons").validate();
+    })
+</script>
+<div>
+    @using (Html.BeginForm("", "Prefs", FormMethod.Post, new { id = "frmBigRedButtons", name = "frmBigRedButtons" }))
+    {
+        @Html.AntiForgeryToken()
+        <div>@Resources.Profile.BigRedButtonsHeader</div>
+        <p>@Resources.Profile.ProfileBulkDeleteAircraftPrompt</p>
+        <div><button type="button" name="bigRedDeleteUnusedAircraft" id="btnDeleteUnusedAircraft" style="font-weight: bold; color: red;" onclick="javascript: acctEditor.deleteUnusedAircraft($('#frmBigRedButtons'), $('#lblBigRedButtonResult')); return false;">@Resources.Profile.ProfileBulkDeleteAircraft</button></div>
+        <p>@Resources.Profile.ProfileBulkDeleteFlightsPrompt</p>
+        <div><button type="button" name="bigRedDeleteFlights" id="btnDeleteFlights" style="font-weight: bold; color: red;" onclick="javascript: acctEditor.deleteFlights('@Resources.Profile.ProfileBulkDeleteConfirm', $('#frmBigRedButtons'), $('#lblBigRedButtonResult')); return false;">@Resources.Profile.ProfileBulkDeleteFlights</button></div>
+        <p>@Resources.Profile.ProfileDeleteAccountPrompt</p>
+        <div><button type="button" name="bigRedDeleteAccount" id="btnCloseAccount" style="font-weight: bold; color: red;" onclick="javascript: acctEditor.closeAccount('@Resources.Profile.ProfileDeleteAccountConfirm', $('#frmBigRedButtons'), $('#lblBigRedButtonResult')); return false;">@Resources.Profile.ProfileDeleteAccount</button></div>
+        <p id="lblBigRedButtonResult"></p>
+    }
+</div>

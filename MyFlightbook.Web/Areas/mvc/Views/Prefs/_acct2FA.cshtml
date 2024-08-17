@@ -1,0 +1,94 @@
+﻿@using System.Globalization
+@using Google.Authenticator
+@{
+    Profile m_pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+    string tfaAuthCode = m_pf.GetPreferenceForKey(MFBConstants.keyTFASettings) as string;
+    Guid guid = Guid.NewGuid();
+    String uniqueUserKey = guid.ToString().Replace("-", string.Empty).Substring(0, 10);
+
+    TwoFactorAuthenticator tfa = new TwoFactorAuthenticator();
+    SetupCode setupInfo = tfa.GenerateSetupCode(Branding.CurrentBrand.AppName, m_pf.Email, uniqueUserKey, false, 3);
+}
+<script type="text/javascript">
+    $(() => {
+        defaultButtonForDiv("vwAddTFA", "btnVerify2faCodeSetup");
+        $("#txtAccount2faCodeSetup")[0].focus();
+
+       $.validator.addMethod("regex2fa", function (value, element) {
+           return this.optional(element) || /^[0-9]{6}$/.test(value);
+       }, "@Resources.Profile.TFAErrCodeFormat");
+
+       var form = $("#frm2faGuard");
+       form.validate({
+           errorClass: "errorCallout",
+           errorElement: "div",
+           errorPlacement: function (error, element) {
+               error.insertAfter($(element));
+               if (!error.find(".notch").length) {
+                   error.prepend($("<b class='notch'></b>"));
+               }
+           },
+           rules: {
+               verification: { required: true, regex2fa: true, minlength: 6, maxlength: 6 }
+           },
+           messages: {
+               verification : { required: '@Resources.Profile.TFARequired', regex2fa: '@Resources.Profile.TFAErrCodeFormat', minlength: '@Resources.Profile.TFAErrCodeFormat', maxlength: '@Resources.Profile.TFAErrCodeFormat' }
+           },
+           showErrors: function (errorMap, errorList) {
+               // First remove existing notches
+               this.errorList.forEach(function (error) {
+                   $(error.element).next(".errorCallout").find(".notch").remove();
+               });
+
+               // Call the default showErrors method to display errors
+               this.defaultShowErrors();
+
+               // Add the notch again
+               this.errorList.forEach(function (error) {
+                   $(error.element).next(".errorCallout").prepend($("<b class='notch'></b>"));
+               });
+           },
+           highlight: function (element, errorClass) {
+               $(element).addClass("errorItem");
+           },
+           unhighlight: function (element, errorClass) {
+               $(element).removeClass("errorItem");
+           }
+       });
+    });
+</script>
+<div>
+    <div id="divAccount2faNotSetUp" style="@(String.IsNullOrEmpty(tfaAuthCode) ? string.Empty : "display: none;")">
+        <p>@Resources.Profile.TFAOverview <a target="_blank" href="https://en.wikipedia.org/wiki/Multi-factor_authentication">@Resources.Profile.TFALearnMore</a></p>
+        <p>@Branding.ReBrand(Resources.Profile.TFAUseGA)</p>
+        <a href="#" style="font-weight: bold" onclick="javascript: $('#vwAddTFA').show(); $('#divAccount2faNotSetUp').hide(); return false;">@Resources.Profile.TFAEnable</a>
+    </div>
+    <div id="vwTFAActive" style="@(String.IsNullOrEmpty(tfaAuthCode) ? "display: none" : string.Empty)">
+        <p>@Resources.Profile.TFAIsSetUp</p>
+        @using (Html.BeginForm("", "Prefs", FormMethod.Post, new { id = "frmDisable2fa", name = "frmDisable2fa" }))
+        {
+            @Html.AntiForgeryToken()
+            <p><a href="#" onclick="javascript: acctEditor.disable2fa($('#frmDisable2fa'), $('#disable2faResult')); return false;">@Resources.Profile.TFADisable</a></p>
+        }
+        <div id="disable2faResult"></div>
+    </div>
+    <div id="vwAddTFA" style="display: none;">
+        <p><span style="font-size:larger; font-weight:bold">1.&nbsp</span>@Resources.Profile.TFADownloadGoogleAuthenticator</p>
+        <p><span style="font-size:larger; font-weight:bold">2.&nbsp</span>@Resources.Profile.TFASaveSecretKey</p>
+        <p><span style="font-size:larger; font-weight:bold">3.&nbsp</span>@Resources.Profile.TFATwoOptionsPrompt</p>
+        <div style="text-align:center">
+            <div>@Resources.Profile.TFASecretKeyPrompt <span style="font-weight: bold;">@setupInfo.ManualEntryKey</span></div>
+            <img id="imgQR" src="@setupInfo.QrCodeSetupImageUrl" />
+        </div>
+        <p><span style="font-size:larger; font-weight:bold">4.&nbsp</span>@Resources.Profile.TFAValidateCodePrompt</p>
+        @using (Html.BeginForm("", "Prefs", FormMethod.Post, new { id = "frmEnable2FA", name = "frmEnable2FA" }))
+        {
+            @Html.AntiForgeryToken()
+            <input type="hidden" value="@uniqueUserKey" name="seed" />
+            <input type="text" maxlength="6" pattern="^[0-9]{6}$" required data-1p-ignore id="txtAccount2faCodeSetup" name="verification" />
+            <button type="button" id="btnVerify2faCodeSetup" onclick="javascript: acctEditor.setUp2fa($('#frmEnable2FA'), $('#enable2faResult')); return false;">@Resources.Profile.TFAValidateCode</button>
+        }
+        <div id="enable2faResult"></div>
+    </div>
+</div>
+
