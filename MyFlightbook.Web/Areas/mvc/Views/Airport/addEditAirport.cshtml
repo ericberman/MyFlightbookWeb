@@ -26,7 +26,7 @@
     function zoomForAirport() {
         var mfbMap = getMfbMap();
         if (mfbMap.clickPositionMarker) {
-            mfbMap.gmap.setCenter(mfbMap.clickPositionMarker.getPosition());
+            mfbMap.gmap.setCenter(mfbMap.clickPositionMarker.position);
             mfbMap.gmap.setZoom(14);
         }
     }
