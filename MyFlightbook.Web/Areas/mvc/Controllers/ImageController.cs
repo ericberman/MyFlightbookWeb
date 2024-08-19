@@ -96,7 +96,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             {
                 ImageList il = null;
                 // Pending Images are special - find them in the session object
-                if ((imageClass == MFBImageInfoBase.ImageClass.Flight || imageClass == MFBImageInfoBase.ImageClass.Aircraft) && szKey.CompareOrdinal((-1).ToString(CultureInfo.InvariantCulture)) == 0)
+                if ((imageClass == MFBImageInfoBase.ImageClass.Flight || imageClass == MFBImageInfoBase.ImageClass.Aircraft || imageClass == MFBImageInfoBase.ImageClass.BasicMed) && szKey.CompareOrdinal((-1).ToString(CultureInfo.InvariantCulture)) == 0)
                     il = new ImageList(MFBPendingImage.PendingImagesInSession(Session).ToArray()) { Class = imageClass };
                 else
                 {

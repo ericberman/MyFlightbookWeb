@@ -1,4 +1,5 @@
-﻿using MyFlightbook.Currency;
+﻿using MyFlightbook.BasicmedTools;
+using MyFlightbook.Currency;
 using MyFlightbook.Image;
 using MyFlightbook.Telemetry;
 using MyFlightbook.Templates;
@@ -568,6 +569,146 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
         #endregion
         #endregion
+
+        #region Pilot Info Options
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult UpdatePilotCertificates(string pilotInfoCertificate, string pilotInfoCertificateCFI, string pilotInfoCFIExp, string pilotInfoEnglishProficiency)
+        {
+            return SafeOp(() =>
+            {
+                Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+                pf.License = pilotInfoCertificate;
+                pf.Certificate = pilotInfoCertificateCFI.LimitTo(30);
+                pf.CertificateExpiration = DateTime.TryParse(pilotInfoCFIExp, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime dtCFIExp) ? dtCFIExp : DateTime.MinValue;
+                pf.EnglishProficiencyExpiration = DateTime.TryParse(pilotInfoEnglishProficiency, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime dtEnglish) ? dtEnglish : DateTime.MinValue;
+                pf.FCommit();
+                return Content(Resources.Profile.ProfilePilotInfoCertificatesUpdated);
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult UpdatePilotMedical(string pilotInfoMedicalDate, int pilotInfoMedicalDuration, MedicalType pilotInfoMedicalType, string pilotInfoDateOfBirth, string pilotInfoMedicalNotes, bool pilotInfoUseICAOMedical)
+        {
+            return SafeOp(() =>
+            {
+                Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+
+                DateTime dtMedical = DateTime.TryParse(pilotInfoMedicalDate, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime dtmed) ? dtmed : pf.LastMedical;
+                DateTime dob = DateTime.TryParse(pilotInfoDateOfBirth, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime dtdob) ? dtdob : pf.DateOfBirth ?? DateTime.MinValue;
+
+                pf.LastMedical = dtMedical;
+                pf.MonthsToMedical = pilotInfoMedicalDuration;
+                pf.UsesICAOMedical = pilotInfoUseICAOMedical;
+                // Type of medical, notes, and date of birth are all set synchronously and will commit.
+                ProfileCurrency _ = new ProfileCurrency(pf) { TypeOfMedical = pilotInfoMedicalType };
+                pf.SetPreferenceForKey(MFBConstants.keyMedicalNotes, pilotInfoMedicalNotes, String.IsNullOrWhiteSpace(pilotInfoMedicalNotes));
+                pf.DateOfBirth = dob;
+
+                return Content(Resources.Preferences.PilotInfoMedicalUpdated);
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult MedicalExpirationDates(string pilotInfoMedicalDate, int pilotInfoMedicalDuration, MedicalType pilotInfoMedicalType, string pilotInfoDateOfBirth, string pilotInfoMedicalNotes, bool pilotInfoUseICAOMedical)
+        {
+            return SafeOp(() =>
+            {
+                DateTime dtMedical = DateTime.TryParse(pilotInfoMedicalDate, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime dtmed) ? dtmed : DateTime.MinValue;
+                DateTime dob = DateTime.TryParse(pilotInfoDateOfBirth, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime dtdob) ? dtdob : DateTime.MinValue;
+                return NextMedicalForConditions(dtMedical, pilotInfoMedicalDuration, pilotInfoMedicalType, dob, pilotInfoUseICAOMedical);
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult AddBasicMedEvent(string basicMedDate, BasicMedEvent.BasicMedEventType basicMedType, string basicMedDesc)
+        {
+            return SafeOp(() =>
+            {
+                BasicMedEvent bme = new BasicMedEvent(basicMedType, User.Identity.Name)
+                {
+                    EventDate = DateTime.TryParse(basicMedDate, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime dt) ? dt : DateTime.MinValue,
+                    Description = basicMedDesc
+                };
+                if (!bme.IsValid())
+                    throw new InvalidOperationException(bme.LastError);
+
+                bme.Commit();
+                // process pending images, if this was a new pending image
+                foreach (MFBPendingImage pendingImage in MFBPendingImage.PendingImagesInSession(Session))
+                {
+                    if (pendingImage.ImageType == MFBImageInfoBase.ImageFileType.JPEG || pendingImage.ImageType == MFBImageInfoBase.ImageFileType.PDF)
+                    {
+                        pendingImage.Commit(MFBImageInfoBase.ImageClass.BasicMed, bme.ID.ToString(CultureInfo.InvariantCulture));
+                        pendingImage.DeleteImage();
+                    }
+                }
+
+                return Content("~/mvc/Prefs/pilotinfo?pane=basicmed".ToAbsolute());
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult BasicMedEventList()
+        {
+            return SafeOp(() =>
+            {
+                return PartialView("_pilotInfoBasicMedEvents");
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteBasicMedEvent(int idBasicMed)
+        {
+            return SafeOp(() =>
+            {
+                BasicMedEvent bme = BasicMedEvent.EventsForUser(User.Identity.Name).FirstOrDefault<BasicMedEvent>(bme2 => bme2.ID == idBasicMed) ?? throw new UnauthorizedAccessException();
+                bme.Delete();
+                return PartialView("_pilotInfoBasicMedEvents");
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult UploadBasicMedImages(int szKey)
+        {
+            return SafeOp(() =>
+            {
+                if (Request.Files.Count == 0)
+                    throw new InvalidOperationException("No file uploaded");
+
+                MFBPostedFile pf = new MFBPostedFile(Request.Files[0]);
+                string szID = String.Format(CultureInfo.InvariantCulture, "{0}-pendingImage-{1}-{2}", MFBImageInfoBase.ImageClass.BasicMed.ToString(), (pf.FileName ?? string.Empty).Replace(".", "_"), pf.GetHashCode());
+                MFBPendingImage pi = new MFBPendingImage(pf, szID);
+
+                switch (MFBImageInfo.ImageTypeFromFile(pf))
+                {
+                    default:
+                        return new EmptyResult();
+                    case MFBImageInfoBase.ImageFileType.JPEG:
+                    case MFBImageInfoBase.ImageFileType.PDF:
+                        break;
+                }
+
+                if (szKey > 0)
+                    pi?.Commit(MFBImageInfoBase.ImageClass.BasicMed, szKey.ToString(CultureInfo.InvariantCulture));
+                else if (pi?.IsValid ?? false)
+                    Session[szID] = pi;
+
+                return Content(pi.URLThumbnail.ToAbsolute());
+            });
+        }
+        #endregion
         #endregion
 
         #region child actions
@@ -580,6 +721,15 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
             ViewBag.afo = AutoFillOptions.DefaultOptionsForUser(szUser);
             return PartialView("_autofillOptions");
+        }
+        #endregion
+
+        #region Basicmed and medical
+        [ChildActionOnly]
+        public ActionResult NextMedicalForConditions(DateTime dtMedical, int monthsToMedical, MedicalType mt, DateTime? dob, bool fUseICAOMedical)
+        {
+            ViewBag.rgcs = ProfileCurrency.MedicalStatus(dtMedical, monthsToMedical, mt, dob, fUseICAOMedical);
+            return PartialView("_pilotInfoNextMedical");
         }
         #endregion
         #endregion
@@ -645,6 +795,13 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.pf = pf;
             ViewBag.collectTFA = !Check2FA(pf, string.Empty);
             return View("mainAccount");
+        }
+
+        [Authorize]
+        public ActionResult PilotInfo()
+        {
+            ViewBag.pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+            return View("mainPilotInfo");
         }
     }
 }

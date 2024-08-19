@@ -196,6 +196,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete this image or PDF?  It CANNOT be undone!.
+        /// </summary>
+        internal static string BasicMedConfirmDeleteImage {
+            get {
+                return ResourceManager.GetString("BasicMedConfirmDeleteImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CloudAhoy.
         /// </summary>
         internal static string CloudAhoyName {

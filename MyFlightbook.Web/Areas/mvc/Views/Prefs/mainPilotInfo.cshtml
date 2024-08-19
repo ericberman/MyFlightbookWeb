@@ -1,0 +1,432 @@
+﻿@using MyFlightbook.Achievements
+@using MyFlightbook.BasicmedTools
+@using MyFlightbook.Currency
+@using MyFlightbook.Image
+@using System.Globalization
+@{
+    Profile m_pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+    ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.Profile.EditProfileHeader, m_pf.UserFullName);
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    ViewBag.defaultTab = tabID.tabProfile;
+    ProfileCurrency pc = new ProfileCurrency(m_pf);
+    string requestedPane = (Request["pane"] ?? (string) ViewBag.requestedPane ?? "medical").ToLower();
+    IEnumerable<ProfileEvent> rgIPCs = ProfileEvent.GetIPCEvents(User.Identity.Name);
+    IEnumerable<ProfileEvent> rgBFRs = ProfileEvent.GetBFREvents(User.Identity.Name, pc.LastBFREvent);
+    UserRatings ur = new UserRatings(User.Identity.Name);
+    MedicalType mt = pc.TypeOfMedical;
+
+    Dictionary<string, bool> dMedicalTypeBDayReqs = new Dictionary<string, bool>();
+    foreach (MedicalType mt2 in Enum.GetValues(typeof(MedicalType)))
+    {
+        dMedicalTypeBDayReqs[mt2.ToString()] = ProfileCurrency.RequiresBirthdate(mt2);
+    }
+
+    // Pick up any pending images for a new basic med
+    ImageList il = new ImageList(MFBImageInfoBase.ImageClass.BasicMed, (-1).ToString(CultureInfo.InvariantCulture));
+    il.Refresh();
+}
+<script src="@("~/Public/Scripts/prefs.js?v=3".ToAbsolute())" type="text/javascript"></script>
+<script src="@("~/Public/Scripts/CopyClipboard.js".ToAbsolute())"></script>
+<script type="text/javascript" src="@("~/Public/Scripts/ajaxUpload.js?v=7".ToAbsolute())"></script>
+<script type="text/javascript">
+    var piEditor = new pilotEditor("@("~/mvc/Prefs/".ToAbsolute())", {
+        medicalBDayMap: @Html.Raw(Json.Encode(dMedicalTypeBDayReqs)),
+        idNextMedicalContainer: "pnlNextMedical",
+        idBasicMedListContainer: "divPilotInfoBasicMedList"
+    });
+
+    $(() => {
+        defaultButtonForDiv("divPilotInfoMedical", "btnPilotInfoUpdateMedical");
+        defaultButtonForDiv("divBasicMed", "btnUpdateBasicMed");
+
+        $.validator.addMethod(
+            "validDOBRequired",
+            function (value, element) {
+                // all is good if we have no medical (by definition doesn't require DOB), a medical type that doesn't require a birthday, or if we have a DOB
+                return $("#txtPilotInfoMedicalDate").val() == "" || !piEditor.requiresBirthday($('#cmbPilotInfoMedicalType').val()) || $("#txtPilotInfoDateOfBirth").val() != "";
+            }, "@Resources.Preferences.MedicalDOBRequired"
+        );
+
+
+        $.validator.addMethod(
+            "validDurationRequired",
+            function (value, element) {
+                // If you have a date for a medical, you must also provide a duration
+                return $("#txtPilotInfoMedicalDate").val() == "" || parseInt($("#cmbPilotInfoMedicalDuration").val()) > 0;
+            }, "@Resources.Preferences.PilotInfoMedicalDurationRequired"
+        );
+
+        var f = $("#frmMedical");
+        f.validate({
+            errorClass: "errorCallout",
+            errorElement: "div",
+            errorPlacement: function (error, element) {
+                error.insertAfter($(element));
+                if (!error.find(".notch").length) {
+                    error.prepend($("<b class='notch'></b>"));
+                }
+            },
+            rules: {
+                pilotInfoDateOfBirth: { validDOBRequired: true },
+                pilotInfoMedicalDuration: { validDurationRequired: true }
+            },
+            messages: {
+                validDOBRequired: "@Resources.Preferences.MedicalDOBRequired",
+                validDurationRequired: "@Resources.Preferences.PilotInfoMedicalDurationRequired"
+            },
+            showErrors: function (errorMap, errorList) {
+                // First remove existing notches
+                this.errorList.forEach(function (error) {
+                    $(error.element).next(".errorCallout").find(".notch").remove();
+                });
+
+                // Call the default showErrors method to display errors
+                this.defaultShowErrors();
+
+                // Add the notch again
+                this.errorList.forEach(function (error) {
+                    $(error.element).next(".errorCallout").prepend($("<b class='notch'></b>"));
+                });
+            },
+            highlight: function (element, errorClass) {
+                $(element).addClass("errorItem");
+            },
+            unhighlight: function (element, errorClass) {
+                $(element).removeClass("errorItem");
+            }
+        });
+
+        f = $("#frmAddBasicMed");
+        f.validate({
+            errorClass: "errorCallout",
+            errorElement: "div",
+            errorPlacement: function (error, element) {
+                error.insertAfter($(element));
+                if (!error.find(".notch").length) {
+                    error.prepend($("<b class='notch'></b>"));
+                }
+            },
+            rules: {
+                basicMedDate: { required: true }
+            },
+            messages: {
+                basicMedDate: "@Resources.Profile.BasicMedErrNoDate"
+            },
+            showErrors: function (errorMap, errorList) {
+                // First remove existing notches
+                this.errorList.forEach(function (error) {
+                    $(error.element).next(".errorCallout").find(".notch").remove();
+                });
+
+                // Call the default showErrors method to display errors
+                this.defaultShowErrors();
+
+                // Add the notch again
+                this.errorList.forEach(function (error) {
+                    $(error.element).next(".errorCallout").prepend($("<b class='notch'></b>"));
+                });
+            },
+            highlight: function (element, errorClass) {
+                $(element).addClass("errorItem");
+            },
+            unhighlight: function (element, errorClass) {
+                $(element).removeClass("errorItem");
+            }
+        });
+
+        fileUploadTarget("#pilotInfoBasicMedDocs", -1, "#pilotInfoBasicMedPendingImgs");
+        $("#txtPilotInfoDateOfBirth").on("blur", function () { piEditor.updateNextMedical($("#frmMedical")); });
+        $("#txtPilotInfoMedicalDate").on("blur", function () { piEditor.updateNextMedical($("#frmMedical")); });
+    });
+
+    function updateForMedicalType() {
+        var medicalType = $("#cmbPilotInfoMedicalType").val();
+        if (piEditor.requiresBirthday(medicalType))
+            $("#rowPilotInfoDOB").show();
+        else
+            $("#rowPilotInfoDOB").hide();
+
+        if (medicalType == "@MedicalType.Other.ToString()")
+            $("#rowPilotInfoOtherMedical").show();
+        else
+            $("#rowPilotInfoOtherMedical").hide();
+        piEditor.updateNextMedical($("#frmMedical"));
+    }
+
+    function deleteBasicMedImage(sender, confirmText, imageClass, key, thumbnail) {
+        deleteImage(confirmText, imageClass, key, thumbnail, true, function (r) {
+            $(sender).parents("div[name='editImage']").hide();
+        });
+    }
+    function updateBasicMedImage(sender, imageClass, key, thumbnail, newComment) {
+        updateComment(imageClass, key, thumbnail, newComment, true, function (r) {
+            var parent = $(sender).parents("div[name='editImage']");
+            parent.find("[name='commentLabel']").text(newComment);
+            parent.find("[name='statComment']").show();
+            parent.find("[name='dynComment']").hide();
+        });
+    }
+
+    function fileUploadTarget(target, key, resultContainerID) {
+        ajaxFileUpload($(target), {
+            uploadURL: "@Url.Action("UploadBasicMedImages", "Prefs")",
+            additionalParams: [{ name: "szKey", value: key }, { name: "fCanDoVideo", value: false }],
+            allowedTypes: "@MyFlightbook.Image.FileExtensions.AllowedExtensionsForTypes(true, true, false)",
+            onUpload: function () {
+                var params = new Object();
+                params.imageClass = "@MFBImageInfo.ImageClass.BasicMed";
+                params.szKey = key;
+                params.fCanEdit = true;
+                params.fCanDelete = true;
+                params.fIncludeDocs = true;
+                params.onDelete = "deleteBasicMedImage";
+                params.onAnnotate = "updateBasicMedImage";
+                var d = JSON.stringify(params);
+                $.ajax({
+                    url: '@Url.Action("ImagesForClassAndKey", "Image")',
+                    type: "POST", data: d, dataType: "html", contentType: "application/json",
+                    error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                    complete: function (response) { },
+                    success: function (response) {
+                        $(resultContainerID).html(response);
+                        $(".fileInQueueContainer").hide();
+                    }
+                });
+            },
+            dropPrompt: "@Resources.LocalizedText.UploadImages",
+            errTooManyFiles: "@Resources.LocalizedText.fileUploadTooManyFiles",
+            errDisallowedFileType: "@Resources.LocalizedText.fileUploadInvalidType",
+            abortPrompt: "@Resources.LocalizedText.fileUploadAbort"
+        });
+    }
+</script>
+
+<h2>@Resources.Preferences.PilotInfoHeader</h2>
+@{ Html.RenderAction("RenderAccordion", "MFBTemplate", new { containerID = "prefsAccordion", active = "false" }); }
+<div id="prefsAccordion">
+    <h3 id="medical">@Resources.Preferences.PilotInfoMedical</h3>
+    <div>
+        <div id="divPilotInfoMedical">
+            <h2 id="pnlNextMedical">
+                @{ Html.RenderAction("NextMedicalForConditions", "Prefs", new
+                    {
+                        dtMedical = m_pf.LastMedical,
+                        monthsToMedical = m_pf.MonthsToMedical,
+                        mt = mt,
+                        dob = (m_pf.DateOfBirth?.YMDString() ?? string.Empty),
+                        fUseICAOMedical = m_pf.UsesICAOMedical
+                    });}
+            </h2>
+            @using (Html.BeginForm("", "Prefs", FormMethod.Post, new { id = "frmMedical", name = "frmMedical" }))
+            {
+                @Html.AntiForgeryToken()
+                <h3>@Resources.Preferences.PilotInfoLastMedical @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "mfbEASAMedicalTip", tipTextHTML = Branding.ReBrand(Resources.Preferences.MedicalEASATip) }); }</h3>
+                <div>@{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "txtPilotInfoMedicalDate", name = "pilotInfoMedicalDate", value = m_pf.LastMedical }); }</div>
+                <h3>@Resources.Preferences.MedicalTypePrompt</h3>
+                <div>
+                    <select id="cmbPilotInfoMedicalType" name="pilotInfoMedicalType" onchange="javascript: updateForMedicalType();">
+                        <option @((mt == MedicalType.Other).ToSelected()) value="@MedicalType.Other.ToString()">@Resources.Preferences.MedicalTypeOther</option>
+                        <option @((mt == MedicalType.FAA1stClass).ToSelected()) value="@MedicalType.FAA1stClass.ToString()">@Resources.Preferences.MedicalTypeFAA1stClass</option>
+                        <option @((mt == MedicalType.FAA2ndClass).ToSelected()) value="@MedicalType.FAA2ndClass.ToString()">@Resources.Preferences.MedicalTypeFAA2ndClass</option>
+                        <option @((mt == MedicalType.FAA3rdClass).ToSelected()) value="@MedicalType.FAA3rdClass.ToString()">@Resources.Preferences.MedicalTypeFAA3rdClass</option>
+                        <option @((mt == MedicalType.EASA1stClass).ToSelected()) value="@MedicalType.EASA1stClass.ToString()">@Resources.Preferences.MedicalTypeEASA1stClass</option>
+                        <option @((mt == MedicalType.EASA2ndClass).ToSelected()) value="@MedicalType.EASA2ndClass.ToString()">@Resources.Preferences.MedicalTypeEASA2ndClass</option>
+                        <option @((mt == MedicalType.EASALAPL).ToSelected()) value="@MedicalType.EASALAPL.ToString()">@Resources.Preferences.MedicalTypeEASALAPL</option>
+                        <option @((mt == MedicalType.CASAClass1).ToSelected()) value="@MedicalType.CASAClass1.ToString()">@Resources.Preferences.MedicalTypeCasaClass1</option>
+                        <option @((mt == MedicalType.CASAClass2).ToSelected()) value="@MedicalType.CASAClass2.ToString()">@Resources.Preferences.MedicalTypeCasaClass2</option>
+                        <option @((mt == MedicalType.CanadaPPL).ToSelected()) value="@MedicalType.CanadaPPL.ToString()">@Resources.Preferences.MedicalTypeCanadaPPL</option>
+                        <option @((mt == MedicalType.CanadaGlider).ToSelected()) value="@MedicalType.CanadaGlider.ToString()">@Resources.Preferences.MedicalTypeCanadaGlider</option>
+                        <option @((mt == MedicalType.CanadaCommercial).ToSelected()) value="@MedicalType.CanadaCommercial.ToString()">@Resources.Preferences.MedicalTypeCanadaCommercial</option>
+                    </select>
+                </div>
+                <div style="vertical-align:top; @(mt == MedicalType.Other ? string.Empty : "display: none;")" id="rowPilotInfoOtherMedical">
+                    <h3>@Resources.Preferences.PilotInfoMedicalDuration</h3>
+                    <div>
+                        <div>
+                            <select id="cmbPilotInfoMedicalDuration" name="pilotInfoMedicalDuration" onchange="javascript: updateForMedicalType();">
+                                <option @((m_pf.MonthsToMedical == 0).ToSelected()) value="0">@Resources.Preferences.PilotInfoMedicalUnspecified</option>
+                                <option @((m_pf.MonthsToMedical == 6).ToSelected()) value="6">@Resources.Preferences.PilotInfoMedical6Months</option>
+                                <option @((m_pf.MonthsToMedical == 12).ToSelected()) value="12">@Resources.Preferences.PilotInfoMedical12Months</option>
+                                <option @((m_pf.MonthsToMedical == 24).ToSelected()) value="24">@Resources.Preferences.PilotInfoMedical24Months</option>
+                                <option @((m_pf.MonthsToMedical == 36).ToSelected()) value="36">@Resources.Preferences.PilotInfoMedical36Months</option>
+                                <option @((m_pf.MonthsToMedical == 48).ToSelected()) value="48">@Resources.Preferences.PilotInfoMedical48Months</option>
+                                <option @((m_pf.MonthsToMedical == 60).ToSelected()) value="60">@Resources.Preferences.PilotInfoMedical60Months</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label><input type="radio" name="pilotInfoUseICAOMedical" value="false" selected @((!m_pf.UsesICAOMedical).ToChecked()) onchange="javascript: piEditor.updateNextMedical($('#frmMedical')); " />@Resources.Preferences.PilotInfoMedicalFAARules</label>
+                            <label><input type="radio" name="pilotInfoUseICAOMedical" value="true" @m_pf.UsesICAOMedical.ToChecked() onchange="javascript: piEditor.updateNextMedical($('#frmMedical')); " />@Resources.Preferences.PilotInfoMedicalICAORules</label>
+                        </div>
+                    </div>
+                </div>
+                <div id="rowPilotInfoDOB" style="display: @(ProfileCurrency.RequiresBirthdate(mt) ? string.Empty : "display: none;")">
+                    <h3>@Resources.Profile.accountDateOfBirth</h3>
+                    <div>
+                        @{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "txtPilotInfoDateOfBirth", name = "pilotInfoDateOfBirth", value = m_pf.DateOfBirth ?? DateTime.MinValue }); }
+                        <div>@Resources.Preferences.PIlotInfoMedicalDOBNote</div>
+                    </div>
+                </div>
+                <h3>@Resources.Preferences.PilotInfoMedicalNotes</h3>
+                <div>
+                    <textarea id="textMedicalNotes" name="pilotInfoMedicalNotes" rows="4" style="min-width: 300px">@m_pf.GetPreferenceForKey(MFBConstants.keyMedicalNotes, string.Empty)</textarea>
+                    <div class="fineprint">@Resources.Preferences.PilotInfoMedicalNotesDescription</div>
+                </div>
+                <div>
+                    <div><button type="button" id="btnPilotInfoUpdateMedical" onclick="javascript: piEditor.updateMedical($('#frmMedical'), $('#lblPilotInfoMedicalUpdateResult'));">@Resources.Preferences.PilotInfoMedicalUpdate</button></div>
+                    <div id="lblPilotInfoMedicalUpdateResult"></div>
+                </div>
+            }
+        </div>
+    </div>
+    <h3 id="basicmed">@Resources.Profile.BasicMedHeader</h3>
+    <div>
+        <p>@Resources.Profile.BasicMedDescription</p>
+        <ol style="list-style-type:lower-alpha">
+            <li>@Resources.Profile.BasicMedDescriptionA</li>
+            <li>@Resources.Profile.BasicMedDescriptionB</li>
+            <li>@Resources.Profile.BasicMedDescriptionC</li>
+        </ol>
+        <p style="font-weight: bold;">@{Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "pnlAddBasicMedEvent", expandText = Resources.Profile.BasicMedAddEventPrompt }); }</p>
+        <div id="pnlAddBasicMedEvent" style="display: none;">
+            @using (Html.BeginForm("", "Prefs", FormMethod.Post, new { id = "frmAddBasicMed", name = "frmAddBasicMed" }))
+            {
+                <div id="divPilotInfoBasicMed">
+                    @Html.AntiForgeryToken()
+                    <h3>@Resources.Profile.BasicMedEventDate</h3>
+                    <div>@{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "txtBasicMedEventDate", name = "basicMedDate", value = DateTime.Now }); }</div>
+                    <h3>@Resources.Profile.BasicMedEventActivity</h3>
+                    <div>
+                        <label><input type="radio" name="basicMedType" value="@BasicMedEvent.BasicMedEventType.AeromedicalCourse.ToString()" checked />@Resources.Profile.BasicMedMedicalCourse</label>
+                        <label><input type="radio" name="basicMedType" value="@BasicMedEvent.BasicMedEventType.PhysicianVisit.ToString()" />@Resources.Profile.BasicMedPhysicianVisit</label>
+                    </div>
+                    <h3>@Resources.Profile.BasicMedEventDescription</h3>
+                    <div><textarea id="txtBasicMedNotes" name="basicMedDesc" rows="3"></textarea></div>
+                    <h3>@Resources.Profile.BasicMedAttachDocumentation</h3>
+                    <div>
+                        <div id="pilotInfoBasicMedDocs" style="display: inline-block;"></div>
+                        <div id="pilotInfoBasicMedPendingImgs" style="display: inline;">
+                            @{ Html.RenderAction("ImageListDisplay", "Image", new
+                                {
+                                    il = new ImageList(MFBImageInfoBase.ImageClass.BasicMed, User.Identity.Name, il.ImageArray.ToArray()),
+                                    zoomLinkType = GeoLinkType.None,
+                                    fCanEdit = true,
+                                    fCanDelete = true,
+                                    onDelete = "deleteBasicMedImage",
+                                    onAnnotate = "updateBasicMedImage"
+                                });
+                            }
+                        </div>
+                    </div>
+                    <h3><button type="button" onclick="javascript: piEditor.addBasicMedEvent($('#frmAddBasicMed'), $('#lblBasicMedUpdateResult')); return false;" id="btnUpdateBasicMed">@Resources.Profile.BasicMedAddEvent</button></h3>
+                    <div id="lblBasicMedUpdateResult"></div>
+                </div>
+            }
+        </div>
+        <div id="divPilotInfoBasicMedList">
+            @{ Html.RenderPartial("_pilotInfoBasicMedEvents"); }
+        </div>
+    </div>
+    <h3 id="certs">@Resources.Profile.ProfilePilotInfoCertificates</h3>
+    <div>
+        <div id="pnlCertificates" DefaultButton="btnUpdatePilotInfo">
+            <h3>@Resources.Preferences.PilotInfoRatings</h3>
+            <p>@Resources.Preferences.PilotInfoRatingsPrompt</p>
+            <div>
+                @if (ur.Licenses.Any())
+                {
+                    <table cellpadding="5">
+                        @foreach (PilotLicense pl in ur.Licenses)
+                        {
+                            <tr>
+                                <td style="vertical-align: top; font-weight: bold;">@pl.LicenseName</td>
+                                <td style="vertical-align: top;">
+                                    @foreach (string priv in pl.Privileges)
+                                    {
+                                        <div>@priv</div>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                }
+                else
+                {
+                    <p>@Resources.Preferences.PilotInfoNoCheckrides</p>
+                }
+            </div>
+            @using (Html.BeginForm("", "Prefs", FormMethod.Post, new { id = "frmPilotCertInfo", name = "frmPilotCertInfo" }))
+            {
+                @Html.AntiForgeryToken()
+                <h3>@Resources.Preferences.PilotInfoCertificatePrompt</h3>
+                <div><input id="txtLicense" name="pilotInfoCertificate" placeholder="@Resources.Preferences.PilotInfoCertificateWatermark" value="@m_pf.License" /></div>
+                <div class="fineprint">@Resources.Preferences.PilotInfoLicenseFinePrint</div>
+                <h3>@Resources.Preferences.PilotInfoInstructorCertificatePrompt</h3>
+                <div>
+                    <input id="txtCertificate" name="pilotInfoCertificateCFI" placeholder="@Resources.Preferences.PilotInfoCertificateCFIWatermark" value="@m_pf.Certificate" /> &nbsp;
+                    @Resources.Preferences.PilotInfoCFIExpiration
+                    @{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "txtPilotInfoCFIExp", name = "pilotInfoCFIExp", value = m_pf.CertificateExpiration }); }
+                </div>
+                <div class="fineprint">@Resources.Preferences.PilotInfoCFIExpirationNote</div>
+                <h3>@Resources.Preferences.PilotInfoEnglishProficiencyExpiration</h3>
+                <div>@{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "txtPilotInfoEnglishProficiency", name = "pilotInfoEnglishProficiency", value = m_pf.EnglishProficiencyExpiration }); }</div>
+
+                <h3><button type="button" onclick="javascript: piEditor.updatePilotCertificate($('#frmPilotCertInfo'), $('#lblPilotInfoUpdated')); return false;">@Resources.Profile.ProfilePilotInfoCertificatesUpdate</button></h3>
+                <div id="lblPilotInfoUpdated"></div>
+            }
+        </div>
+    </div>
+    <h3 id="flightreviews">@Resources.Preferences.PilotInfoBFRs</h3>
+    <div>
+        <p>@Resources.Preferences.PilotInfoBFRNotes</p>
+        @if (rgBFRs.Any())
+        {
+            <table cellpadding="5">
+                @foreach (ProfileEvent pe in rgBFRs)
+                {
+                    <tr>
+                        <td><a href="@(String.Format(CultureInfo.InvariantCulture, "~/mvc/flightedit/flight/{0}", pe.FlightID).ToAbsolute())">@pe.Date.ToShortDateString()</a></td>
+                        <td>@pe.DisplayString</td>
+                    </tr>
+                }
+            </table>
+            <p>
+                @Resources.Currency.NextFlightReview <span style="font-weight:bold;">@ProfileCurrency.NextBFR(rgBFRs.First().Date).ToShortDateString().</span>
+            </p>
+        }
+        else
+        {
+            <p>@Resources.Preferences.PilotInfoNoBFRFound</p>
+        }
+    </div>
+    <h3 id="ipcs">@Resources.Preferences.PilotInfoIPCHeader</h3>
+    <div>
+        <p>@Resources.Preferences.PilotInfoIPCHelp</p>
+        @if (rgIPCs.Any())
+        {
+            <table cellpadding="5">
+                @foreach (ProfileEvent pe in rgIPCs)
+                {
+                    <tr>
+                        <td><a href="@(String.Format(CultureInfo.InvariantCulture, "~/mvc/flightedit/flight/{0}", pe.FlightID).ToAbsolute())">@pe.Date.ToShortDateString()</a></td>
+                        <td>@pe.DisplayString</td>
+                    </tr>
+                }
+            </table>
+        }
+        else
+        {
+            <p>@Resources.Preferences.PilotInfoIPCNoneFound</p>
+        }
+    </div>
+</div>
+<script type="text/javascript">
+    $(() => {
+        var i = 0;
+        var container = $("#prefsAccordion");
+        container.children("h3").each(function () {
+            if (this.id == "@requestedPane")
+                container.accordion("option", "active", i);
+            i++;
+        });
+    });
+</script>

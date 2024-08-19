@@ -1626,6 +1626,9 @@
     <Content Include="Areas\mvc\Views\Prefs\_acct2FA.cshtml" />
     <Content Include="Areas\mvc\Views\Prefs\_acctRedButtons.cshtml" />
     <Content Include="Areas\mvc\Views\Auth\_tfaGuard.cshtml" />
+    <Content Include="Areas\mvc\Views\Prefs\mainPilotInfo.cshtml" />
+    <Content Include="Areas\mvc\Views\Prefs\_pilotInfoNextMedical.cshtml" />
+    <Content Include="Areas\mvc\Views\Prefs\_pilotInfoBasicMedEvents.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />

@@ -1,0 +1,56 @@
+﻿@using MyFlightbook.BasicmedTools
+@using MyFlightbook.Image
+@using System.Globalization
+@{
+    IEnumerable<BasicMedEvent> rgBasicMed = BasicMedEvent.EventsForUser(User.Identity.Name);
+    ImageList il = new ImageList(MFBImageInfoBase.ImageClass.BasicMed, string.Empty);
+}
+@if (rgBasicMed.Any())
+{
+    using (Html.BeginForm("", "Prefs", FormMethod.Post, new { id = "frmDeleteBME", name = "frmDeleteBME" }))
+    {
+        <input type="hidden" name="idBasicMed" id="hdnBasicMed" />
+        @Html.AntiForgeryToken()
+    }
+    foreach (BasicMedEvent bme in rgBasicMed)
+    {
+        string idImgDragDropBM = String.Format(CultureInfo.InvariantCulture, "divDropBasicMedImg{0}", bme.ID);
+        string idDivImgListBM = String.Format(CultureInfo.InvariantCulture, "divLstBasicMedImg{0}", bme.ID);
+        il.Key = bme.ID.ToString(CultureInfo.InvariantCulture);
+        il.Refresh();
+        bme.Images = il.ImageArray;
+        <div class="endorsement" style="padding: 3pt; margin-top: 8pt; margin-bottom: 8pt; margin-left: auto; margin-right: auto; width: 80%">
+            <div>
+                <img src="@("~/images/x.gif".ToAbsolute())" onclick="javascript: $('#hdnBasicMed').val(@bme.ID); piEditor.deleteBasicMedEvent($('#frmDeleteBME'), '@Resources.Profile.BasicMedConfirmDelete'); return false;" title="@Resources.Profile.BasicMedDeleteTooltip" alt="@Resources.Profile.BasicMedDeleteTooltip" />
+                <span style="font-weight:bold; font-size: large;">@bme.EventDate.ToShortDateString() - @bme.EventTypeDescription</span>
+                <span style="font-size: larger;">(@Resources.Profile.BasicMedExpiration <span style="font-weight:bold">@bme.ExpirationDate.ToShortDateString()</span>)</span>
+            </div>
+            <div>@bme.Description</div>
+            <div>
+                <span id="@idImgDragDropBM"></span>
+                <script type="text/javascript">
+                    $(() => {
+                        fileUploadTarget("#@idImgDragDropBM", "@bme.ID.ToString(CultureInfo.InvariantCulture)", "#@idDivImgListBM");
+                    });
+                </script>
+                <span id="@idDivImgListBM">
+                    @{ Html.RenderAction("ImageListDisplay", "Image", new
+                        {
+                            il = new ImageList(MFBImageInfoBase.ImageClass.BasicMed, User.Identity.Name, bme.Images.ToArray()),
+                            zoomLinkType = GeoLinkType.None,
+                            fCanEdit = true,
+                            fCanDelete = true,
+                            confirmText = Resources.Preferences.BasicMedConfirmDeleteImage,
+                            onDelete = "deleteBasicMedImage",
+                            onAnnotate = "updateBasicMedImage"
+                        });
+                    }
+                </span>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <ul><li>@Resources.Profile.BasicMedNoEvents</li></ul>
+}

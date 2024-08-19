@@ -1,0 +1,18 @@
+﻿@using MyFlightbook.Currency
+@foreach (CurrencyStatusItem csi in ViewBag.rgcs)
+{
+    string css = string.Empty;
+    switch (csi.Status)
+    {
+        case CurrencyState.GettingClose:
+            css = "currencynearlydue";
+            break;
+        case CurrencyState.NotCurrent:
+            css = "currencyexpired";
+            break;
+        case CurrencyState.OK:
+            css = "currencyok";
+            break;
+    }
+    <div>@csi.Attribute <span class="@css" style="font-weight: bold">@csi.Value</span></div>
+}

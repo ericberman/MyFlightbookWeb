@@ -783,3 +783,114 @@ function accountEditor(baseEndpoint, options) {
         }
     }
 }
+
+/*
+Creates a prefs editor for editing/managing medical and basicmed stuff
+ * baseEndpoint - resolved base for the webservices calls here
+ * options - 
+   * medicalBDayMap - a dictionary mapping medical types to whether or not they need birthdays
+   * idNextMedicalContainer - the identifier of the container for "next medical due" list.
+*/
+function pilotEditor(baseEndpoint, options) {
+    this.formWithResult = function (form, resultContainer, method, onSuccess) {
+        resultContainer.text("");
+        if (form.valid()) {
+            var f = form.serialize();
+            $.ajax({
+                url: baseEndpoint + method,
+                type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                error: function (xhr, status, error) {
+                    resultContainer.text(xhr.responseText);
+                    resultContainer.attr("class", "error");
+                },
+                success: function (r) {
+                    resultContainer.text(r);
+                    resultContainer.attr("class", "success");
+                    if (onSuccess) {
+                        onSuccess();
+                    }
+                }
+            });
+        }
+    };
+
+    this.updatePilotCertificate = function (form, resultContainer) {
+        this.formWithResult(form, resultContainer, "UpdatePilotCertificates");
+    };
+
+    this.requiresBirthday = function(mt) {
+        return options.medicalBDayMap[mt];
+    };
+
+    this.updateNextMedical = function (form) {
+        if (form.valid()) {
+            var f = form.serialize();
+            $.ajax({
+                url: baseEndpoint + "MedicalExpirationDates",
+                type: "POST", data: f, dataType: "html", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                error: function (xhr, status, error) {
+                    window.alert(xhr.responseText);
+                },
+                success: function (r) {
+                    $("#" + options.idNextMedicalContainer).html(r);
+                }
+            });
+        }
+    };
+
+    this.updateMedical = function (form, resultContainer) {
+        var pthis = this;
+        this.formWithResult(form, resultContainer, "UpdatePilotMedical", function () {
+            pthis.updateNextMedical(form);
+        });
+    };
+
+    this.refreshBasicMedList = function () {
+        var params = new Object();
+        var d = JSON.stringify(params);
+        $.ajax({
+            url: baseEndpoint + "BasicMedEventList",
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
+            error: function (xhr, status, error) {
+                $("#" + options.errorID).text(xhr.responseText);
+            },
+            success: function (r) {
+                $("#" + options.idBasicMedListContainer).html(r);
+            }
+        });
+    }
+
+    this.deleteBasicMedEvent = function (form, confirmation) {
+        if (confirm(confirmation)) {
+            var f = form.serialize();
+            $.ajax({
+                url: baseEndpoint + "DeleteBasicMedEvent",
+                type: "POST", data: f, dataType: "html", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                error: function (xhr, status, error) {
+                    window.alert(xhr.responseText);
+                },
+                success: function (r) {
+                    $("#" + options.idBasicMedListContainer).html(r);
+                }
+            });
+        }
+    }
+
+    this.addBasicMedEvent = function(form, errContainer) {
+        errContainer.text("");
+        if (form.valid()) {
+            var f = form.serialize();
+            $.ajax({
+                url: baseEndpoint + "AddBasicMedEvent",
+                type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                error: function (xhr, status, error) {
+                    errContainer.text(xhr.responseText);
+                    errContainer.attr("class", "error");
+                },
+                success: function (r) {
+                    window.location = r;
+                }
+            });
+        }
+    }
+}
