@@ -48,11 +48,11 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 // Viewing user should ALWAYS be the authenticated user; null just means "use the logged user
                 viewingUser = viewingUser ?? User.Identity.Name;
 
-                if (viewingUser.CompareOrdinal(User.Identity.Name) != 0)
+                if (viewingUser.CompareOrdinalIgnoreCase(User.Identity.Name) != 0)
                     throw new UnauthorizedAccessException("Supplied viewing user is different from the authenticated user - that should never happen!");
 
                 // a) Authenticated, viewing user is target user
-                if (targetUser.CompareOrdinal(viewingUser) == 0)
+                if (targetUser.CompareOrdinalIgnoreCase(viewingUser) == 0)
                     return null;
 
                 // b) Admin acting as such
@@ -92,7 +92,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             // Admin can save flights IF "a=1" is in the request
             if (User.Identity.IsAuthenticated)
             {
-                if (targetUser.CompareOrdinal(User.Identity.Name) == 0)
+                if (targetUser.CompareOrdinalIgnoreCase(User.Identity.Name) == 0)
                     return null; // all good!
 
                 Profile pfviewer = MyFlightbook.Profile.GetUser(User.Identity.Name);
