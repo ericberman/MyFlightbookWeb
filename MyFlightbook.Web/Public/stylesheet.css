@@ -2109,6 +2109,7 @@ tr div.editCell, tr.editRow div.displayCell {
     border-radius: 8pt;
     display: inline-flex;
     flex-direction: row;
+    justify-content: center;
     align-items: center;
     text-align: center;
     width: 130px;
@@ -2125,6 +2126,7 @@ tr div.editCell, tr.editRow div.displayCell {
     border-radius: 8pt;
     display: inline-flex;
     flex-direction: row;
+    justify-content: center;
     align-items: center;
     text-align: center;
     width: 8em;
