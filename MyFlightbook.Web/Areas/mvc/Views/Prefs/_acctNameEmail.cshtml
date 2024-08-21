@@ -17,17 +17,8 @@
         defaultButtonForDiv('acctEditName', 'btnUpdateName');
         defaultButtonForDiv('acctAddAlias', 'btnAddAlias');
 
-        var form = $("#frmUpdateName");
-        form.validate({
-            errorClass: "errorCallout",
-            errorElement: "div",
-            errorPlacement: function (error, element) {
-                error.insertAfter($(element));
-                if (!error.find(".notch").length) {
-                    error.prepend($("<b class='notch'></b>"));
-                }
-            },
-            rules: {
+        validateForm($("#frmUpdateName"),
+            {
                 accountEmail: {
                     required: true,
                     email: true
@@ -38,7 +29,7 @@
                     equalTo: "#txtAccountEmail"
                 }
             },
-            messages: {
+            {
                 accountEmail: {
                     required: "@Resources.Profile.errEmailMissing",
                     pattern: "@Resources.Profile.errEmailRequired"
@@ -48,72 +39,9 @@
                     pattern: "@Resources.Profile.errEmailRequired",
                     equalTo: "@Resources.Profile.err2ndEmailRequired"
                 }
-            },
-            showErrors: function (errorMap, errorList) {
-                // First remove existing notches
-                this.errorList.forEach(function (error) {
-                    $(error.element).next(".errorCallout").find(".notch").remove();
-                });
+            });
 
-                // Call the default showErrors method to display errors
-                this.defaultShowErrors();
-
-                // Add the notch again
-                this.errorList.forEach(function (error) {
-                    $(error.element).next(".errorCallout").prepend($("<b class='notch'></b>"));
-                });
-            },
-            highlight: function (element, errorClass) {
-                $(element).addClass("errorItem");
-            },
-            unhighlight: function (element, errorClass) {
-                $(element).removeClass("errorItem");
-            }
-        });
-
-        form = $("#frmAddAlias");
-        form.validate({
-            errorClass: "errorCallout",
-            errorElement: "div",
-            errorPlacement: function (error, element) {
-                error.insertAfter($(element));
-                if (!error.find(".notch").length) {
-                    error.prepend($("<b class='notch'></b>"));
-                }
-            },
-            rules: {
-                accountAlias: {
-                    required: true,
-                    email: true
-                }
-            },
-            messages: {
-                accountAlias: {
-                    required: "@Resources.Profile.errEmailMissing",
-                    email: "@Resources.Profile.errEmailRequired"
-                }
-            },
-            showErrors: function (errorMap, errorList) {
-                // First remove existing notches
-                this.errorList.forEach(function (error) {
-                    $(error.element).next(".errorCallout").find(".notch").remove();
-                });
-
-                // Call the default showErrors method to display errors
-                this.defaultShowErrors();
-
-                // Add the notch again
-                this.errorList.forEach(function (error) {
-                    $(error.element).next(".errorCallout").prepend($("<b class='notch'></b>"));
-                });
-            },
-            highlight: function (element, errorClass) {
-                $(element).addClass("errorItem");
-            },
-            unhighlight: function (element, errorClass) {
-                $(element).removeClass("errorItem");
-            }
-        });
+        validateForm($("#frmAddAlias"), { accountAlias: { required: true, email: true } }, { accountAlias: { required: "@Resources.Profile.errEmailMissing", email: "@Resources.Profile.errEmailRequired" } });
 
         ajaxFileUpload($("#divUploadHeadshot"), {
             uploadURL: "@Url.Action("SetHeadShot", "Prefs")",

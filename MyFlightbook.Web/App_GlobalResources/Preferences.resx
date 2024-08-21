@@ -523,6 +523,9 @@
   <data name="PrefEditCurrencyTitle" xml:space="preserve">
     <value>Edit Currency Rule</value>
   </data>
+  <data name="PrefErrNoShareKeyName" xml:space="preserve">
+    <value>Please provide a name for this link</value>
+  </data>
   <data name="PrefMathPrecisionHeader" xml:space="preserve">
     <value>When summing times</value>
   </data>

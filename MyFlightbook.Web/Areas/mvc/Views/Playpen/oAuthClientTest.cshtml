@@ -59,32 +59,10 @@
     }
 
     $(function () {
-        $("form[name='frmAuthorize']").validate({
-            errorClass: "error",
-            errorElement: "div",
-            rules: {
-                txtClientID: "required",
-                txtClientSecret: "required",
-                txtScope: "required",
-                txtTokenURL: "required"
-            },
-            messages: {
-                txtClientID: "Client ID is required for authorization",
-                txtClientSecret: "Client secret is required for authorization",
-                txtScope: "At least some scopes are required for authorization",
-                txtTokenURL: "A token endpoint (URL) is required"
-            }
-        });
-        $("form[name='frmResource']").validate({
-            errorClass: "error",
-            errorElement: "div",
-            rules: {
-                txtResourceURL: "required"
-            },
-            messages: {
-                txtResourceURL: "The URL for resources is required"
-            }
-        });
+        validateForm($("form[name='frmAuthorize']"),
+            { txtClientID: "required", txtClientSecret: "required", txtScope: "required", txtTokenURL: "required" },
+            { txtClientID: "Client ID is required for authorization", txtClientSecret: "Client secret is required for authorization", txtScope: "At least some scopes are required for authorization", txtTokenURL: "A token endpoint (URL) is required" });
+        validateForm($("form[name='frmResource']"), { txtResourceURL: "required" }, { txtResourceURL: "The URL for resources is required" });
     });
 
     function showResource(sender) {

@@ -72,48 +72,7 @@
         defaultButtonForDiv('pnlCustCurrency', 'btnAddCurrencyRule');
         $("#txtRuleName")[0].focus();
 
-        var f = $("#frmEditCustCurrency");
-        f.validate({
-            ignore: "",
-            errorClass: "errorCallout",
-            errorElement: "div",
-            errorPlacement: function (error, element) {
-                error.insertAfter($(element));
-                if (!error.find(".notch").length) {
-                    error.prepend($("<b class='notch'></b>"));
-                }
-            },
-            rules: {
-                custCurrencyName: { required: true},
-                custCurrencyEventType: { required: true },
-                custCurrencyTimeFrame: {required: true }
-            },
-            messages: {
-                custCurrencyName: { required: '@Resources.Currency.CustomCurrencyErrNeedName' },
-                custCurrencyEventType: { required: "@Resources.Currency.errCustomCurrencyNoEvent" },
-                custCurrencyTimeFrame: { required: "@Resources.Currency.CustomCurrencyErrInvalidTimeFrame" }
-            },
-            showErrors: function (errorMap, errorList) {
-                // First remove existing notches
-                this.errorList.forEach(function (error) {
-                    $(error.element).next(".errorCallout").find(".notch").remove();
-                });
-
-                // Call the default showErrors method to display errors
-                this.defaultShowErrors();
-
-                // Add the notch again
-                this.errorList.forEach(function (error) {
-                    $(error.element).next(".errorCallout").prepend($("<b class='notch'></b>"));
-                });
-            },
-            highlight: function (element, errorClass) {
-                $(element).addClass("errorItem");
-            },
-            unhighlight: function (element, errorClass) {
-                $(element).removeClass("errorItem");
-            }
-        });
+        validateForm($("#frmEditCustCurrency"), { custCurrencyName: { required: true }, custCurrencyEventType: { required: true }, custCurrencyTimeFrame: { required: true } }, { custCurrencyName: { required: '@Resources.Currency.CustomCurrencyErrNeedName' }, custCurrencyEventType: { required: "@Resources.Currency.errCustomCurrencyNoEvent" }, custCurrencyTimeFrame: { required: "@Resources.Currency.CustomCurrencyErrInvalidTimeFrame" } });
     });
 </script>
 @using (Html.BeginForm("", "Prefs", FormMethod.Post, new { id = "frmEditCustCurrency", name = "frmEditCustCurrency" }))

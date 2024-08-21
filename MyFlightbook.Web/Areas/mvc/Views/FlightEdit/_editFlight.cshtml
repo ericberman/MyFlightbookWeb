@@ -29,7 +29,7 @@
 <script type="text/javascript" src="@("~/Public/Scripts/xfill.js?v=4".ToAbsolute())"></script>
 <script type="text/javascript" src="@("~/Public/Scripts/DropDownFilter.js?v=3".ToAbsolute())"></script>
 <script type="text/javascript" src="@("~/Public/Scripts/ajaxUpload.js?v=7".ToAbsolute())"></script>
-<script type="text/javascript" src="@("~/Public/Scripts/flightedit.js?v=4".ToAbsolute())"></script>
+<script type="text/javascript" src="@("~/Public/Scripts/flightedit.js?v=5".ToAbsolute())"></script>
 @if (fAdminMode)
 {
     <script type="text/javascript" src="@("~/Public/Scripts/adminajax.js?v=4".ToAbsolute())"></script>
@@ -65,64 +65,12 @@
         return (@((le.CFISignatureState != LogbookEntryCore.SignatureState.Valid).ToString().ToLowerInvariant()) || confirm("@Resources.LogbookEntry.ConfirmModifySignedFlight"));
     }
 
-    // Validation
-    function validateForm() {
-        var f = $("#frmEditFlight");
-        f.validate({
-            errorClass: "errorCallout",
-            errorElement: "div",
-            errorPlacement: function (error, element) {
-                error.insertAfter($(element));
-                if (!error.find(".notch").length) {
-                    error.prepend($("<b class='notch'></b>"));
-                }
-            },
-            rules: {
-                flightDate: {
-                    required: true
-                },
-                flightAircraft: "required",
-                flightLandings: { fsLandings: true },
-            },
-            messages: {
-                flightDate: {
-                    required: "@Resources.LocalizedText.TypeInDateInvalidDate",
-                    validDate: "@Resources.LogbookEntry.errFutureDate",
-                },
-                flightAircraft: "@Resources.LogbookEntry.errAircraftRequired",
-                flightLandings: "@Resources.LogbookEntry.errTooManyFSLandings",
-            },
-            showErrors: function (errorMap, errorList) {
-                // First remove existing notches
-                this.errorList.forEach(function (error) {
-                    $(error.element).next(".errorCallout").find(".notch").remove();
-                });
-
-                // Call the default showErrors method to display errors
-                this.defaultShowErrors();
-
-                // Add the notch again
-                this.errorList.forEach(function (error) {
-                    $(error.element).next(".errorCallout").prepend($("<b class='notch'></b>"));
-                });
-            },
-            highlight: function (element, errorClass) {
-                $(element).addClass("errorItem");
-            },
-            unhighlight: function (element, errorClass) {
-                $(element).removeClass("errorItem");
-            }
-        });
-        return f;
-    }
-
     $(() => {
         defaultButtonForDiv('pnlFlightContainer', 'btnAddFlight');
         autoInsert($("#txtComments")[0], "@("~/Member/Ajax.asmx/SuggestTraining".ToAbsolute())", '[');
         defaultButtonForDiv('pnlNewVideo', 'btnAddNewVideo');
         $("#hdnTZOffset").val(-(new Date()).getTimezoneOffset());
 
-        validateForm();
 
         $.validator.addMethod("pattern", function (value, element, param) {
             if (this.optional(element)) {
@@ -137,6 +85,22 @@
         $.validator.addMethod('fsLandings', function (value, element, param) {
             return this.optional(element) || parseInt(value) >= parseInt($("#fieldFSDayLandings").val() || "0") + parseInt($("#fieldNightLandings").val() || "0");
         }, '@Resources.LogbookEntry.errTooManyFSLandings');
+
+        validateForm($("#frmEditFlight"), {
+            flightDate: {
+                required: true
+            },
+            flightAircraft: "required",
+            flightLandings: { fsLandings: true },
+        },
+            {
+                flightDate: {
+                    required: "@Resources.LocalizedText.TypeInDateInvalidDate",
+                    validDate: "@Resources.LogbookEntry.errFutureDate",
+                },
+                flightAircraft: "@Resources.LogbookEntry.errAircraftRequired",
+                flightLandings: "@Resources.LogbookEntry.errTooManyFSLandings",
+            });
     });
 </script>
 @using (Html.BeginForm("SubmitFlight", "FlightEdit", FormMethod.Post, new { id = "frmEditFlight", name = "frmEditFlight" }))

@@ -236,3 +236,38 @@ function wizardizeContainer(opt) {
 
     return this;
 }
+
+function validateForm(f, rules, messages) {
+    return f.validate({
+        errorClass: "errorCallout",
+        errorElement: "div",
+        errorPlacement: function (error, element) {
+            error.insertAfter($(element));
+            if (!error.find(".notch").length) {
+                error.prepend($("<b class='notch'></b>"));
+            }
+        },
+        rules: rules,
+        messages: messages,
+        showErrors: function (errorMap, errorList) {
+            // First remove existing notches
+            this.errorList.forEach(function (error) {
+                $(error.element).next(".errorCallout").find(".notch").remove();
+            });
+
+            // Call the default showErrors method to display errors
+            this.defaultShowErrors();
+
+            // Add the notch again
+            this.errorList.forEach(function (error) {
+                $(error.element).next(".errorCallout").prepend($("<b class='notch'></b>"));
+            });
+        },
+        highlight: function (element, errorClass) {
+            $(element).addClass("errorItem");
+        },
+        unhighlight: function (element, errorClass) {
+            $(element).removeClass("errorItem");
+        }
+    });
+}

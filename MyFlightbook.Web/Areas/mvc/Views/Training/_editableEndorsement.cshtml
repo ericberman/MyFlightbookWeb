@@ -12,28 +12,19 @@
 }
 <script type="text/javascript">
     $(() => {
-        $('#pnlEditEndorsement').find("input").keydown(function (e) {
-            if (e.keyCode == 13) {
-                $('#btnAddEndorsement')[0].click();
-                return false;
-            }
-        });
+        defaultButtonForDiv('pnlEditEndorsement', 'btnAddEndorsement');
 
-        $("#frmEditEndorsement").validate({
-            errorClass: "error",
-            errorElement: "div",
-            errorPlacement: function (error, element) {
-                error.insertAfter($(element));
-            },
-            rules: {
+        var v = validateForm($("#frmEditEndorsement"),
+            {
                 endorsementTitle: "required",
                 instructorPass: "required",
                 endorsementDate: "required",
                 instructorPass: "required",
                 cfiName: "required",
                 cfiCert: "required",
+                hdnSigData: "required"
             },
-            messages: {
+            {
                 endorsementTitle: "@Resources.SignOff.errTitleRequired",
                 endorsementDate: {
                     max: "@Resources.SignOff.errNoPostDating",
@@ -42,11 +33,12 @@
                 instructorPass: "@Resources.SignOff.errInstructorPasswordRequiredToEndorse",
                 cfiName: "@Resources.SignOff.errNoInstructor",
                 cfiCert: "@Resources.SignOff.errNeedCertificate",
-            },
-            highlight: function (element, errorClass) {
-                $(element).removeClass(errorClass);
-            }
-        });
+                hdnSigData: "@Resources.SignOff.errScribbleRequired"
+            });
+        @if (mode == EndorsementMode.StudentPullAdHoc)
+        {
+            @:v.settings.ignore = ":hidden:not('#hdnSigData')";
+        }
     });
 </script>
 <div id="pnlEditEndorsement" class="endorsement endorsementEdit">

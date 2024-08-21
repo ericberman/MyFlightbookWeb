@@ -102,7 +102,7 @@ function toggleSearchBox() {
 
 // Video references
 function deleteVideoRef(id) {
-    var f = validateForm();
+    var f = $("#frmEditFlight");
     $("#hdnVidToDelete").val(id);
     $.ajax({
         url: '/logbook/mvc/flightedit/DeleteVideoRef',
@@ -116,7 +116,7 @@ function deleteVideoRef(id) {
 }
 
 function addVideoRef(szComment, szVidRef) {
-    var f = validateForm();
+    var f = $("#frmEditFlight");
     $.ajax({
         url: '/logbook/mvc/flightedit/AddVideoRef',
         type: "POST", data: new FormData(f[0]), dataType: "html", contentType: false, processData: false,
@@ -144,7 +144,7 @@ function updateFlightImage(sender, imageClass, key, thumbnail, newComment) {
 }
 
 function addGoogleItem(sender, idx) {
-    var f = validateForm();
+    var f = $("#frmEditFlight");
     if (f.valid()) {
         $("#hdnGPhotoClickedItem").val(idx);
         updatePropertyTuples(-1);
@@ -185,7 +185,7 @@ function getGooglePhoto(date, lastResponse) {
 
 // Telemetry and autofill
 function deleteTelemetry() {
-    var f = validateForm();
+    var f = $("#frmEditFlight");
     if (f.valid()) {
         updatePropertyTuples(-1);
         $.ajax({
@@ -201,7 +201,7 @@ function deleteTelemetry() {
 }
 
 function autoFill() {
-    var f = validateForm();
+    var f = $("#frmEditFlight");
     if (f.valid()) {
         updatePropertyTuples(-1);
         $("#imgAutofillPrg").show();
@@ -238,7 +238,7 @@ function postFlightWithAction(f, onSuccess, resultType, url) {
 
 function sbmtFlightFrm(requestedAction, confirmFunc) {
     document.activeElement.blur();
-    var f = validateForm();
+    var f = $("#frmEditFlight");
 
     if (f.valid() && (confirmFunc === undefined || confirmFunc())) {
         // Properties are not named and need to be distilled, so put them into a tuples list.

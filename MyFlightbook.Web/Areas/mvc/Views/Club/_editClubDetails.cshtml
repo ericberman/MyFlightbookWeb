@@ -84,20 +84,12 @@
             ]
         });
 
-        $("form[name='editClubForm']").validate({
-            errorClass: "error",
-            errorElement: "div",
-            rules: {
-                clubName: "required",
-                clubTimeZone: "required"
-            },
-            messages: {
-                clubName: "@Resources.Club.errNameRequired",
-                clubTimeZone : "@Resources.Schedule.errNoTimezone"
-            },
-            highlight: function (element, errorClass) {
-                $(element).removeClass(errorClass);
-            }
+        validateForm($("form[name='editClubForm']"), {
+            clubName: "required",
+            clubTimeZone: "required"
+        }, {
+            clubName: "@Resources.Club.errNameRequired",
+            clubTimeZone: "@Resources.Schedule.errNoTimezone"
         });
     });
 

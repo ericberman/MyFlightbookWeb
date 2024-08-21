@@ -1276,6 +1276,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please provide a name for this link.
+        /// </summary>
+        internal static string PrefErrNoShareKeyName {
+            get {
+                return ResourceManager.GetString("PrefErrNoShareKeyName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to When summing times.
         /// </summary>
         internal static string PrefMathPrecisionHeader {

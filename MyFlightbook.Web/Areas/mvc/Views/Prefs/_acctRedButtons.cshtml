@@ -1,9 +1,4 @@
-﻿<script type="text/javascript">
-    $(() => {
-        $("#frmBigRedButtons").validate();
-    })
-</script>
-<div>
+﻿<div>
     @using (Html.BeginForm("", "Prefs", FormMethod.Post, new { id = "frmBigRedButtons", name = "frmBigRedButtons" }))
     {
         @Html.AntiForgeryToken()

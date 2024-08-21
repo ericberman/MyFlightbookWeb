@@ -56,83 +56,15 @@
             }, "@Resources.Preferences.PilotInfoMedicalDurationRequired"
         );
 
-        var f = $("#frmMedical");
-        f.validate({
-            errorClass: "errorCallout",
-            errorElement: "div",
-            errorPlacement: function (error, element) {
-                error.insertAfter($(element));
-                if (!error.find(".notch").length) {
-                    error.prepend($("<b class='notch'></b>"));
-                }
-            },
-            rules: {
-                pilotInfoDateOfBirth: { validDOBRequired: true },
-                pilotInfoMedicalDuration: { validDurationRequired: true }
-            },
-            messages: {
-                validDOBRequired: "@Resources.Preferences.MedicalDOBRequired",
-                validDurationRequired: "@Resources.Preferences.PilotInfoMedicalDurationRequired"
-            },
-            showErrors: function (errorMap, errorList) {
-                // First remove existing notches
-                this.errorList.forEach(function (error) {
-                    $(error.element).next(".errorCallout").find(".notch").remove();
-                });
-
-                // Call the default showErrors method to display errors
-                this.defaultShowErrors();
-
-                // Add the notch again
-                this.errorList.forEach(function (error) {
-                    $(error.element).next(".errorCallout").prepend($("<b class='notch'></b>"));
-                });
-            },
-            highlight: function (element, errorClass) {
-                $(element).addClass("errorItem");
-            },
-            unhighlight: function (element, errorClass) {
-                $(element).removeClass("errorItem");
-            }
+        validateForm($("#frmMedical"), {
+            pilotInfoDateOfBirth: { validDOBRequired: true },
+            pilotInfoMedicalDuration: { validDurationRequired: true }
+        }, {
+            validDOBRequired: "@Resources.Preferences.MedicalDOBRequired",
+            validDurationRequired: "@Resources.Preferences.PilotInfoMedicalDurationRequired"
         });
 
-        f = $("#frmAddBasicMed");
-        f.validate({
-            errorClass: "errorCallout",
-            errorElement: "div",
-            errorPlacement: function (error, element) {
-                error.insertAfter($(element));
-                if (!error.find(".notch").length) {
-                    error.prepend($("<b class='notch'></b>"));
-                }
-            },
-            rules: {
-                basicMedDate: { required: true }
-            },
-            messages: {
-                basicMedDate: "@Resources.Profile.BasicMedErrNoDate"
-            },
-            showErrors: function (errorMap, errorList) {
-                // First remove existing notches
-                this.errorList.forEach(function (error) {
-                    $(error.element).next(".errorCallout").find(".notch").remove();
-                });
-
-                // Call the default showErrors method to display errors
-                this.defaultShowErrors();
-
-                // Add the notch again
-                this.errorList.forEach(function (error) {
-                    $(error.element).next(".errorCallout").prepend($("<b class='notch'></b>"));
-                });
-            },
-            highlight: function (element, errorClass) {
-                $(element).addClass("errorItem");
-            },
-            unhighlight: function (element, errorClass) {
-                $(element).removeClass("errorItem");
-            }
-        });
+        validateForm($("#frmAddBasicMed"), { basicMedDate: { required: true } }, { basicMedDate: "@Resources.Profile.BasicMedErrNoDate" });
 
         fileUploadTarget("#pilotInfoBasicMedDocs", -1, "#pilotInfoBasicMedPendingImgs");
         $("#txtPilotInfoDateOfBirth").on("blur", function () { piEditor.updateNextMedical($("#frmMedical")); });

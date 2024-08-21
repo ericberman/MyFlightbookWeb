@@ -48,29 +48,7 @@ else if (fPickSigner)
         }
 
         $(() => {
-            $("#frmPickInstr").validate({
-                errorClass: "error",
-                errorElement: "div",
-                errorPlacement: function (error, element) {
-                    error.insertAfter($("#vwAcceptTerms"));
-                },
-                rules: {
-                    ckNoSelfSign: {
-                        required: true,
-                        minlength: 1
-                    }
-                },
-                messages: {
-                    ckNoSelfSign: "@Resources.SignOff.errAcceptDisclaimer"
-                },
-                highlight: function (element, errorClass) {
-                    $(element).addClass("errorItem");
-                },
-                unhighlight: function (element, errorClass) {
-                    $(element).removeClass("errorItem");
-                }
-            });
-
+            validateForm($("#frmPickInstr"), { ckNoSelfSign: { required: true, minlength: 1 } }, { ckNoSelfSign: "@Resources.SignOff.errAcceptDisclaimer" });
         });
     </script>
 
@@ -147,7 +125,7 @@ else
     <script type="text/javascript" src="@("~/Public/Scripts/xfill.js?v=4".ToAbsolute())"></script>
     <script type="text/javascript" src="@("~/Public/Scripts/DropDownFilter.js?v=3".ToAbsolute())"></script>
     <script type="text/javascript" src="@("~/Public/Scripts/ajaxUpload.js?v=7".ToAbsolute())"></script>
-    <script type="text/javascript" src="@("~/Public/Scripts/flightedit.js?v=4".ToAbsolute())"></script>
+    <script type="text/javascript" src="@("~/Public/Scripts/flightedit.js?v=5".ToAbsolute())"></script>
 
     <script type="text/javascript">
         function returnToFlight() {
@@ -186,57 +164,46 @@ else
             });
         }
 
-    function updateDateState(sender) {
-        if (sender.checked) {
-            $("#txtCFIExpiration").val("");
-            $("#txtCFIExpiration").hide();
+        function updateDateState(sender) {
+            if (sender.checked) {
+                $("#txtCFIExpiration").val("");
+                $("#txtCFIExpiration").hide();
+            }
+            else
+                $("#txtCFIExpiration").show();
         }
-        else
-            $("#txtCFIExpiration").show();
-    }
 
-    function changeSICMode(sender) {
-        $("#txtComments").val(sender.checked ? "@(fSICEndorsementEligible ? @Resources.SignOff.AC135_43SICSignoffTemplate.Replace("[SIC]", MyFlightbook.Profile.GetUser(le.User).UserFullName).Replace("[Route]", String.IsNullOrWhiteSpace(le.Route) ? Resources.SignOff.AC135_43NoRoute : le.Route).Replace("[Date]", le.Date.ToShortDateString()) : string.Empty)" : "");
-        updateCharCount();
-    }
+        function changeSICMode(sender) {
+            $("#txtComments").val(sender.checked ? "@(fSICEndorsementEligible ? @Resources.SignOff.AC135_43SICSignoffTemplate.Replace("[SIC]", MyFlightbook.Profile.GetUser(le.User).UserFullName).Replace("[Route]", String.IsNullOrWhiteSpace(le.Route) ? Resources.SignOff.AC135_43NoRoute : le.Route).Replace("[Date]", le.Date.ToShortDateString()) : string.Empty)" : "");
+            updateCharCount();
+        }
 
-    function updateCharCount() {
-        $('#lblCharCount').text($("#txtComments").val().length + '/250');
-    }
+        function updateCharCount() {
+            $('#lblCharCount').text($("#txtComments").val().length + '/250');
+        }
 
-    $(() => {
-        $.validator.addMethod("validDate", function (value, element, param) {
-            if (!element.required && element.value == "")
-                return true;
-            if (element.required && !new RegExp(element.pattern).test(value))
-                return false;
-            var datePicker = $(element);
-            var curDate = datePicker.is('[type="date"]') ? Date.parse(datePicker.val()) : datePicker.datepicker('getDate');
-            return curDate >= new Date();
-        }, "@Resources.LocalizedText.TypeInDateInvalidDate");
+        $(() => {
+            $.validator.addMethod("validDate", function (value, element, param) {
+                if (!element.required && element.value == "")
+                    return true;
+                if (element.required && !new RegExp(element.pattern).test(value))
+                    return false;
+                var datePicker = $(element);
+                var curDate = datePicker.is('[type="date"]') ? Date.parse(datePicker.val()) : datePicker.datepicker('getDate');
+                return curDate >= new Date();
+            }, "@Resources.LocalizedText.TypeInDateInvalidDate");
 
-        $.validator.addMethod("validateSig", function (value, element, param) {
-            return !$("#signatureCanvas").is(":visible") || $("#hdnSigData").val() != "";
-        }, "@Resources.SignOff.errScribbleRequired");
+            $.validator.addMethod("validateSig", function (value, element, param) {
+                return !$("#signatureCanvas").is(":visible") || $("#hdnSigData").val() != "";
+            }, "@Resources.SignOff.errScribbleRequired");
 
-        $("#frmSignFlight").validate({
-            errorClass: "errorCallout",
-            errorElement: "div",
-            errorPlacement: function (error, element) {
-                error.insertAfter($(element));
-                if (!error.find(".notch").length) {
-                    error.prepend($("<b class='notch'></b>"));
-                }
-            },
-            ignore: ":hidden:not('#hdnSigData')",
-            rules: {
+            var v = validateForm($("#frmSignFlight"), {
                 cfiName: "required",
                 cfiEmail: "required",
                 cfiCert: "required",
                 hdnSigData: "required",
                 cfiExpiration: { @(le.IsGroundOnly ? string.Empty : "required : true,") validDate: true }
-            },
-            messages: {
+            }, {
                 cfiName: "@Resources.SignOff.errProvideNameToSign",
                 cfiEmail: {
                     required: "@Resources.SignOff.errEmailMissing",
@@ -246,32 +213,12 @@ else
                 cfiExpiration: "@Resources.SignOff.errCertificateExpired",
                 cfiPass: "@Resources.SignOff.errPasswordRequiredForSigning",
                 hdnSigData: "@Resources.SignOff.errScribbleRequired"
-            },
-            showErrors: function (errorMap, errorList) {
-                // First remove existing notches
-                this.errorList.forEach(function (error) {
-                    $(error.element).next(".errorCallout").find(".notch").remove();
-                });
+            });
+            v.settings.ignore = ":hidden:not('#hdnSigData')";
 
-                // Call the default showErrors method to display errors
-                this.defaultShowErrors();
-
-                // Add the notch again
-                this.errorList.forEach(function (error) {
-                    $(error.element).next(".errorCallout").prepend($("<b class='notch'></b>"));
-                });
-            },
-            highlight: function (element, errorClass) {
-                $(element).addClass("errorItem");
-            },
-            unhighlight: function (element, errorClass) {
-                $(element).removeClass("errorItem");
-            }
+            $("#txtCFIExpiration").width(280);
+            $("#txtCFIExpiration").attr("required", @Json.Encode(!le.IsGroundOnly));
         });
-
-        $("#txtCFIExpiration").width(280);
-        $("#txtCFIExpiration").attr("required", @Json.Encode(!le.IsGroundOnly));
-    });
     </script>
     <p><span style="font-weight: bold;">@Resources.LocalizedText.Note</span> <span class="fineprint">@Branding.ReBrand(Resources.SignOff.SignedFlightDisclaimer)</span></p>
     <div id="divSignFlight">

@@ -58,13 +58,7 @@
 
     function submitEndorsement() {
         var form = $("#frmEditEndorsement");
-        // Hack - For some reason, I can't get jquery validate to do the custom rule for validating the scribble
-        // So check for an empty sig explicitly.
-        $("#lblSigErr").text("");
-        if ($("#signatureCanvas").is(":visible") && $("#hdnSigData").val() == "") {
-            $("#lblSigErr").text("@Resources.SignOff.errScribbleRequired");
-            return;
-        }
+
         if (form.valid()) {
             var body = "";
 

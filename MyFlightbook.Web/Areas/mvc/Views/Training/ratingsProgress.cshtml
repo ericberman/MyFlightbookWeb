@@ -176,36 +176,9 @@
             @:$("#pnlAddEdit").show();
             }
 
-        $("form[name='frmManageMilestones']").validate({
-            errorClass: "error",
-            errorElement: "div",
-            rules: {
-                miFARRef: "required",
-                miTitle: "required",
-                miThreshold: "required"
-            },
-            messages: {
-                miFARRef: "@Resources.MilestoneProgress.CustomProgressNewMilestoneFARRefRequired",
-                miTitle: "@Resources.MilestoneProgress.CustomProgressNewMilestoneTitleRequired",
-                miThreshold: "@Resources.MilestoneProgress.CustomProgressNewMilestoneThresholdRequired"
-            }
-        });
+        validateForm($("form[name='frmManageMilestones']"), { miFARRef: "required", miTitle: "required", miThreshold: "required" }, { miFARRef: "@Resources.MilestoneProgress.CustomProgressNewMilestoneFARRefRequired", miTitle: "@Resources.MilestoneProgress.CustomProgressNewMilestoneTitleRequired", miThreshold: "@Resources.MilestoneProgress.CustomProgressNewMilestoneThresholdRequired" });
 
-        $("form[name='frmNewRating']").validate({
-            errorClass: "error",
-            errorElement: "div",
-            rules: {
-                ratingName: "required"
-            },
-            messages: {
-                ratingName: "@Resources.MilestoneProgress.CustomProgressTitleRequired"
-            },
-            errorPlacement: function (error, element) {
-                // the parent's next sibling is the explanation text; put this in a div AFTER that.
-                var location = $(element).parent();
-                error.insertAfter(location);
-            }
-        });
+        validateForm($("form[name='frmNewRating']"), { ratingName: "required" }, { ratingName: "@Resources.MilestoneProgress.CustomProgressTitleRequired" });
     });
 </script>
 <div class="noprint">

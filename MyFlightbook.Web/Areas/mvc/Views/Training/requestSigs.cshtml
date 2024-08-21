@@ -99,36 +99,8 @@ else
             return $("#cmbInstructor").val() != "" || value != "";
         }, '@Resources.LogbookEntry.RequestSigsErrNoEmail');
 
-        $("#frmSelectFlightsToSign").validate({
-            errorClass: "error",
-            errorElement: "div",
-            errorPlacement: function (error, element) {
-                error.insertAfter($("#wizardSteps"));
-            },
-            rules: {
-                idFlight: {
-                    required: true,
-                    minlength: 1
-                },
-                instrEmail: {
-                    notOwnEmail: true,
-                    requiredIfNoOther: true
-                }
-            },
-            messages: {
-                idFlight: "@Resources.LogbookEntry.RequestSigsErrNoSelection",
-                instrEmail: {
-                    notOwnEmail: "@Resources.LogbookEntry.RequestSigsErrCantSelfSign",
-                    requiredIfNoOther: "@Resources.LogbookEntry.RequestSigsErrNoEmail"
-                }
-            },
-            highlight: function (element, errorClass) {
-                $(element).addClass("errorItem");
-            },
-            unhighlight: function (element, errorClass) {
-                $(element).removeClass("errorItem");
-            }
-        });
+        validateForm($("#frmSelectFlightsToSign"), { idFlight: { required: true, minlength: 1 }, instrEmail: { notOwnEmail: true, requiredIfNoOther: true } },
+            { idFlight: "@Resources.LogbookEntry.RequestSigsErrNoSelection", instrEmail: { notOwnEmail: "@Resources.LogbookEntry.RequestSigsErrCantSelfSign", requiredIfNoOther: "@Resources.LogbookEntry.RequestSigsErrNoEmail" } });
 
         updatePreview();
         instructorChanged($("#cmbInstructor")[0]);
