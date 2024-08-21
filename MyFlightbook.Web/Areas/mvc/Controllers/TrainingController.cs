@@ -99,7 +99,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return SafeOp(() =>
             {
                 ViewBag.crp = CustomRatingProgress.AddMilestoneForRating(User.Identity.Name, Request["ratingName"], Request["miTitle"],
-                    Request["miFARRef"], Request["miNote"], Convert.ToInt32(Request["miThreshold"], CultureInfo.InvariantCulture),
+                    Request["miFARRef"], Request["miNote"], Convert.ToDecimal(Request["miThreshold"], CultureInfo.InvariantCulture),
                     Request["queryName"], Request["miField"], Request["miFieldFriendly"]);
                 return PartialView("_milestonesForCustomRating");
             });
