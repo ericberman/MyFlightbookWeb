@@ -1635,7 +1635,12 @@ namespace MyFlightbook
                 le = new LogbookEntry();
 
             util.CopyObject(this, le);
-            le.FlightID = LogbookEntry.idFlightNew;
+            le.FlightID = LogbookEntryCore.idFlightNew;
+            // Issue #1295 - clones should be unsigned.
+            le.CFISignatureDate = le.CFIExpiration = DateTime.MinValue;
+            le.CFIComments = le.CFICertificate = le.CFIEmail = le.CFIName = null;
+            le.CFISignatureState = SignatureState.None;
+            le.DigitizedSignature = null;
 
             // CustomProperties need to be copied separately; the copyobject above copies by reference below the top object
             List<CustomFlightProperty> lstCFP = new List<CustomFlightProperty>();
