@@ -23,49 +23,70 @@
             description = description.Replace("(UTC)", timeZone.DisplayName);
         }
     }
+
+    string idCptTitle = String.Format(CultureInfo.InvariantCulture, "cptTitleLbl{0}", fp.PropTypeID);
+    string idCptTip = String.Format(CultureInfo.InvariantCulture, "cptTitleTip{0}", fp.PropTypeID);
 }
-<div class="propItemFlow" @(ViewBag.hideByDefault ? Html.Raw("style=\"display: none;\"") : string.Empty))>
-    <span class="itemlabel" style="font-size: smaller;" title="@propTT">@propTitle</span> @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = tipID, tipTextHtml = description }); }
-<div>
-    <input type="hidden" value="@fp.PropID" />
-    <input type="hidden" value="@fp.PropTypeID" />
-    @{
-        switch (fp.PropertyType.Type)
+<div class="propItemFlow" style="@(ViewBag.hideByDefault ? Html.Raw("display: none;") : string.Empty)">
+    <div style="display: none;" id="@idCptTip">
+        <p style="font-weight:bold;">@fp.PropertyType.Title</p>
+        <p>@description</p>
+        @if (!string.IsNullOrEmpty(propTT))
         {
-            case CFPPropertyType.cfpInteger:
-                Html.RenderAction("RenderIntegerField", "MFBTemplate", new { id = propValID, name = string.Empty, value = fp.IntValue, cfd = cfd });
-                break;
-            case CFPPropertyType.cfpDecimal:
-                Html.RenderAction("RenderDecimalField", "MFBTemplate", new { mode = fHHMM && !fp.PropertyType.IsBasicDecimal ? EditMode.HHMMFormat : EditMode.Decimal, id = propValID, name = string.Empty, value = fp.DecValue, cfd = cfd });
-                break;
-            case CFPPropertyType.cfpCurrency:
-                Html.RenderAction("RenderDecimalField", "MFBTemplate", new { mode = EditMode.Decimal, id = propValID, name = string.Empty, value = fp.DecValue, cfd = cfd });
-                break;
-            case CFPPropertyType.cfpBoolean:
-                {
-                    <input type="checkbox" @fp.BoolValue.ToChecked() id="@propValID" />
-                }
-                break;
-            case CFPPropertyType.cfpDate:
-                {
-                    <input type="date" value="@fp.DateValue.YMDString()" id="@propValID" />
-                }
-                break;
-            case CFPPropertyType.cfpDateTime:
-                { Html.RenderAction("RenderDateTimeField", "MFBTemplate", new { id = propValID, name = "propDateTime", value = fp.DateValue, timeZone = timeZone }); }
-                break;
-            case CFPPropertyType.cfpString:
-                {
-                    <input type="text" style="width: 100%;" id="@propValID" value="@fp.TextValue" />
-                    if (!fp.PropertyType.IsNoAutocomplete)
-                    {
-                        <script type="text/javascript">
-                    $("@("#" + propValID)").autocomplete({ source: @Html.Raw(Json.Encode(fp.PropertyType.PreviousValues)), minLength: 2, classes: { "ui-autocomplete": "AutoExtender AutoExtenderList" } });
-                        </script>
-                    }
-                }
-                break;
+            <p style="font-weight: bold;">@propTT</p>
         }
-    }
+    </div>
+    <div style="overflow: hidden; text-overflow: ellipsis; white-space:nowrap; width: 100%"  >
+        <span class="itemlabel" style="font-size: smaller;" title="" id="@idCptTitle">@propTitle</span>
+    </div>
+    <div>
+        <input type="hidden" value="@fp.PropID" />
+        <input type="hidden" value="@fp.PropTypeID" />
+        @{
+            switch (fp.PropertyType.Type)
+            {
+                case CFPPropertyType.cfpInteger:
+                    Html.RenderAction("RenderIntegerField", "MFBTemplate", new { id = propValID, name = string.Empty, value = fp.IntValue, cfd = cfd });
+                    break;
+                case CFPPropertyType.cfpDecimal:
+                    Html.RenderAction("RenderDecimalField", "MFBTemplate", new { mode = fHHMM && !fp.PropertyType.IsBasicDecimal ? EditMode.HHMMFormat : EditMode.Decimal, id = propValID, name = string.Empty, value = fp.DecValue, cfd = cfd });
+                    break;
+                case CFPPropertyType.cfpCurrency:
+                    Html.RenderAction("RenderDecimalField", "MFBTemplate", new { mode = EditMode.Decimal, id = propValID, name = string.Empty, value = fp.DecValue, cfd = cfd });
+                    break;
+                case CFPPropertyType.cfpBoolean:
+                    {
+                        <input type="checkbox" @fp.BoolValue.ToChecked() id="@propValID" />
+                    }
+                    break;
+                case CFPPropertyType.cfpDate:
+                    {
+                        <input type="date" value="@fp.DateValue.YMDString()" id="@propValID" />
+                    }
+                    break;
+                case CFPPropertyType.cfpDateTime:
+                    { Html.RenderAction("RenderDateTimeField", "MFBTemplate", new { id = propValID, name = "propDateTime", value = fp.DateValue, timeZone = timeZone }); }
+                    break;
+                case CFPPropertyType.cfpString:
+                    {
+                        <input type="text" style="width: 100%;" id="@propValID" value="@fp.TextValue" />
+                        if (!fp.PropertyType.IsNoAutocomplete)
+                        {
+                            <script type="text/javascript">
+                    $("@("#" + propValID)").autocomplete({ source: @Html.Raw(Json.Encode(fp.PropertyType.PreviousValues)), minLength: 2, classes: { "ui-autocomplete": "AutoExtender AutoExtenderList" } });
+                            </script>
+                        }
+                    }
+                    break;
+            }
+        }
+    </div>
 </div>
-</div>
+<script type="text/javascript">
+    $(() => {
+        $("#@idCptTitle").tooltip({
+            classes: { "ui-tooltip": "hintPopup itemlabel" },
+            content: $("#@idCptTip").html()
+        });
+    });
+</script>
