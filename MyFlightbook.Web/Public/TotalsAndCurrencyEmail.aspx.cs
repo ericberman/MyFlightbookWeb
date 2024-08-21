@@ -137,7 +137,7 @@ namespace MyFlightbook.Subscriptions
                 mvDonations.SetActiveView(Payment.TotalPaidSinceDate(DateTime.Now.AddYears(-1), Username) > 0 ? vwThankyou : vwPleaseGive);
 
                 // Fix up the unsubscribe link.
-                lnkUnsubscribe.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}/{2}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx"), tabID.pftPrefs.ToString());
+                lnkUnsubscribe.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}/{2}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/mvc/prefs"), tabID.pftPrefs.ToString());
                 lnkQuickUnsubscribe.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?u={2}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/mvc/pub/unsubscribe"), HttpUtility.UrlEncode(new UserAccessEncryptor().Encrypt(Username)));
 
                 bool fAnnual = (DateTime.Now.Month == 1 && DateTime.Now.Day == 1);  // if it's January 1, show prior year; else show YTD

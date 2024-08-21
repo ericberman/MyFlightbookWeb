@@ -179,12 +179,12 @@
     </Items>
   </Item>
   <Item>
-    <Link>~/Member/EditProfile.aspx</Link>
+    <Link>~/mvc/prefs</Link>
     <ID>tabProfile</ID>
     <Roles></Roles>
     <Items>
       <Item>
-        <Link>~/Member/EditProfile.aspx/pftAccount</Link>
+        <Link>~/mvc/prefs/account</Link>
         <ID>pftAccount</ID>
         <Roles></Roles>
       </Item>
@@ -194,7 +194,7 @@
         <Roles></Roles>
       </Item>
       <Item>
-        <Link>~/Member/EditProfile.aspx/pftPilotInfo</Link>
+        <Link>~/mvc/prefs/pilotinfo</Link>
         <ID>pftPilotInfo</ID>
         <Roles></Roles>
       </Item>

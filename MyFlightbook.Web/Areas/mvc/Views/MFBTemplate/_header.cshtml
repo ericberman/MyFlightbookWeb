@@ -42,7 +42,7 @@
                             if (User.Identity.IsAuthenticated)
                             {
                                 <div style="padding: 2px; margin-top: 2px; width: 180px"><span style="vertical-align:middle">@ViewBag.Greeting</span></div>
-                                <div style="padding:2px; font-weight: bold;"><a href="@VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftDonate")">@Branding.ReBrand(Resources.LocalizedText.DonateSolicitation)</a></div>
+                                <div style="padding:2px; font-weight: bold;"><a href="@VirtualPathUtility.ToAbsolute("~/mvc/Donate")">@Branding.ReBrand(Resources.LocalizedText.DonateSolicitation)</a></div>
                             }
                             else
                             {

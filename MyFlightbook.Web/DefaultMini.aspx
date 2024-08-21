@@ -21,7 +21,7 @@
                 NavigateUrl="~/mvc/flights/minirecents" Text="View recent flights" 
                 meta:resourcekey="lnkRecentFlightsResource1"></asp:HyperLink><br /></li>
         <li><asp:HyperLink ID="lnkProfile" runat="server" 
-                NavigateUrl="~/Member/EditProfile.aspx" Text="Edit your Profile" 
+                NavigateUrl="~/mvc/prefs" Text="Edit your Profile" 
                 meta:resourcekey="lnkProfileResource1"></asp:HyperLink><br /></li>
     </ul>
 </asp:content>

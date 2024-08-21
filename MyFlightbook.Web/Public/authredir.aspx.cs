@@ -35,13 +35,13 @@ namespace MyFlightbook.PublicPages
                 { "AIRCRAFTSCHEDULE", "~/mvc/club/ACSchedule"},
                 { "FAQ", "~/mvc/faq"},
                 { "REQSIGS", "~/mvc/Training/RequestSigs"},
-                { "FLIGHTREVIEW", "~/Member/EditProfile.aspx/pftPilotInfo"},
-                { "CERTIFICATES", "~/Member/EditProfile.aspx/pftPilotInfo"},
-                { "MEDICAL", "~/Member/EditProfile.aspx/pftPilotInfo"},
+                { "FLIGHTREVIEW", "~/mvc/prefs/pilotinfo"},
+                { "CERTIFICATES", "~/mvc/prefs/pilotinfo"},
+                { "MEDICAL", "~/mvc/prefs/pilotinfo"},
                 { "DEADLINE", "~/mvc/prefs"},
                 { "CUSTOMCURRENCY", "~/mvc/prefs"},
-                { "ACCOUNT", "~/Member/EditProfile.aspx/pftAccount"},
-                { "BIGREDBUTTONS", "~/Member/EditProfile.aspx/pftBigRedButtons"},
+                { "ACCOUNT", "~/mvc/prefs/account"},
+                { "BIGREDBUTTONS", "~/mvc/prefs/account"},
                 { "CONTACT", "~/public/ContactMe.aspx"},
                 { "SIGNENTRY", "~/mvc/flightedit/SignMobile"}
         };
@@ -49,11 +49,12 @@ namespace MyFlightbook.PublicPages
         private readonly static Dictionary<string, string> dictAdditionalParams = new Dictionary<string, string>()
         {
             { "PROFILE", "nolocalprefs=yes" },
-            { "FLIGHTREVIEW", "pane=flightreview" },
-            { "CERTIFICATES", "pane=certificates" },
+            { "FLIGHTREVIEW", "pane=flightreviews" },
+            { "CERTIFICATES", "pane=certs" },
             { "MEDICAL",  "pane=medical" },
             { "DEADLINE","pane=deadlines" },
-            { "CUSTOMCURRENCY", "pane=custcurrency" }
+            { "CUSTOMCURRENCY", "pane=custcurrency" },
+            { "BIGREDBUTTONS", "pane=redbuttons" }
         };
 
         private static string RedirForDest(string szDest, List<string> lstParams)
