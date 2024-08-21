@@ -151,13 +151,12 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteVideoRef()
+        public ActionResult DeleteVideoRef(int flightVideoToDelete)
         {
             return SafeOp(() =>
             {
                 LogbookEntry le = LogbookEntryFromForm();
-                int idVideoToDelete = Convert.ToInt32(Request["flightVideoToDelete"], CultureInfo.InvariantCulture);
-                VideoRef v = le.Videos.FirstOrDefault(vr => vr.ID == idVideoToDelete) ?? throw new InvalidOperationException("Video not found!");
+                VideoRef v = le.Videos.FirstOrDefault(vr => vr.ID == flightVideoToDelete) ?? throw new InvalidOperationException("Video not found!");
                 le.Videos.Remove(v);
                 v.Delete();
                 return EmbeddedVideos(le, true);
@@ -167,13 +166,13 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AddVideoRef()
+        public ActionResult AddVideoRef(string flightNewVideoRef, string flightNewVideoComment)
         {
             return SafeOp(() =>
             {
                 LogbookEntry le = LogbookEntryFromForm();
 
-                VideoRef vr = new VideoRef(le.FlightID, Request["flightNewVideoRef"], Request["flightNewVideoComment"]);
+                VideoRef vr = new VideoRef(le.FlightID, flightNewVideoRef, flightNewVideoComment);
                 if (!vr.IsValid)
                     throw new InvalidOperationException(vr.ErrorString);
                 le.Videos.Add(vr);
