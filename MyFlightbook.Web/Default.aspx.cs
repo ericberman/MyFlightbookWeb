@@ -49,7 +49,7 @@ public partial class Public_Home : System.Web.UI.Page
                 new AppAreaDescriptor(Resources.Tabs.TabAircraft, "~/mvc/Aircraft", Branding.ReBrand(Resources.Profile.appDescriptionAircraft), tabID.tabAircraft),
                 new AppAreaDescriptor(Resources.Tabs.TabAirports, "~/mvc/Airport/MapRoute", Branding.ReBrand(Resources.Profile.appDescriptionAirports), tabID.tabMaps),
                 new AppAreaDescriptor(Resources.Tabs.TabInstruction, "~/mvc/training/", Branding.ReBrand(Resources.Profile.appDescriptionTraining), tabID.tabTraining),
-                new AppAreaDescriptor(Resources.Tabs.TabProfile, "~/Member/EditProfile.aspx", Branding.ReBrand(Resources.Profile.appDescriptionProfile), tabID.tabProfile)
+                new AppAreaDescriptor(Resources.Tabs.TabProfile, "~/mvc/prefs", Branding.ReBrand(Resources.Profile.appDescriptionProfile), tabID.tabProfile)
             };
             rptFeatures.DataSource = lst;
             rptFeatures.DataBind();

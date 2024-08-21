@@ -158,17 +158,17 @@ namespace MyFlightbook.Currency
                     case CurrencyGroups.FlightExperience:
                         return Query == null ? null : VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/flights?fq={0}", Query.ToBase64CompressedJSONString()));
                     case CurrencyGroups.FlightReview:
-                        szResult = VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftPilotInfo?pane=flightreview");
+                        szResult = VirtualPathUtility.ToAbsolute("~/mvc/prefs/pilotinfo?pane=flightreviews");
                         break;
                     case CurrencyGroups.Aircraft:
                     case CurrencyGroups.AircraftDeadline:
                         szResult = VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}", AssociatedResourceID));
                         break;
                     case CurrencyGroups.Certificates:
-                        szResult = VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftPilotInfo?pane=certificates");
+                        szResult = VirtualPathUtility.ToAbsolute("~/mvc/prefs/pilotinfo?pane=certs");
                         break;
                     case CurrencyGroups.Medical:
-                        szResult = VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftPilotInfo?pane=medical");
+                        szResult = VirtualPathUtility.ToAbsolute("~/mvc/prefs/pilotinfo?pane=medical");
                         break;
                     case CurrencyGroups.Deadline:
                         szResult = VirtualPathUtility.ToAbsolute("~/mvc/prefs?pane=deadlines");

@@ -30,7 +30,7 @@
                             <asp:MultiView ID="mvWelcome" runat="server">
                                 <asp:View ID="vwWelcomeAuth" runat="server">
                                     <div style="padding: 2px; margin-top: 2px; width: 180px"><asp:Label ID="lblUser" runat="server" style="vertical-align:middle;" /></div>
-                                    <div style="padding:2px; font-weight: bold;"><asp:HyperLink ID="lnkDonate" runat="server" NavigateUrl="~/Member/EditProfile.aspx/pftDonate" /></div>
+                                    <div style="padding:2px; font-weight: bold;"><asp:HyperLink ID="lnkDonate" runat="server" NavigateUrl="~/mvc/Donate" /></div>
                                 </asp:View>
                                 <asp:View ID="vwWelcomeNotAuth" runat="server">
                                     <asp:LoginStatus ID="LoginStatus1" runat="server" LogoutPageUrl="~/secure/login.aspx" LoginText="<%$ Resources:LocalizedText, LoginStatusSignIn %>" LogoutText="<%$ Resources:LocalizedText, LoginStatusSignOut %>" LogoutAction="RedirectToLoginPage" />
