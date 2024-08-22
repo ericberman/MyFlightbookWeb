@@ -923,6 +923,79 @@ namespace MyFlightbook
             get { return GetPreferenceForKey(MFBConstants.keyMathRoundingUnits, 60); }
             set { SetPreferenceForKey(MFBConstants.keyMathRoundingUnits, value, value == 60); }
         }
+
+        /// <summary>
+        /// Show hobbs by default in the times and telemetry section?
+        /// </summary>
+        [System.Runtime.Serialization.IgnoreDataMemberAttribute]
+        public bool UseHobbs
+        {
+            get { return GetPreferenceForKey(MFBConstants.keyPrefHobbsDefault, true); }
+            set { SetPreferenceForKey(MFBConstants.keyPrefHobbsDefault, value, value == true); }
+        }
+
+        /// <summary>
+        /// Show tach by default in the times and telemetry section?
+        /// </summary>
+        [System.Runtime.Serialization.IgnoreDataMemberAttribute]
+        public bool UseTach
+        {
+            get { return GetPreferenceForKey(MFBConstants.keyPrefTachDefault, false); }
+            set { SetPreferenceForKey(MFBConstants.keyPrefTachDefault, value, value == false); }
+        }
+
+        /// <summary>
+        /// Show block by default in the times and telemetry section?
+        /// </summary>
+        [System.Runtime.Serialization.IgnoreDataMemberAttribute]
+        public bool UseBlock
+        {
+            get { return GetPreferenceForKey(MFBConstants.keyPrefBlockDefault, false); }
+            set { SetPreferenceForKey(MFBConstants.keyPrefBlockDefault, value, value == false); }
+        }
+
+        /// <summary>
+        /// Show engine time by default in the times and telemetry section?
+        /// </summary>
+        [System.Runtime.Serialization.IgnoreDataMemberAttribute]
+        public bool UseEngine
+        {
+            get { return GetPreferenceForKey(MFBConstants.keyPrefEngineDefault, true); }
+            set { SetPreferenceForKey(MFBConstants.keyPrefEngineDefault, value, value == true); }
+        }
+
+        /// <summary>
+        /// Show flight start/stop by default in the times and telemetry section?
+        /// </summary>
+        [System.Runtime.Serialization.IgnoreDataMemberAttribute]
+        public bool UseFlight
+        {
+            get { return GetPreferenceForKey(MFBConstants.keyPrefFlightsDefault, true); }
+            set { SetPreferenceForKey(MFBConstants.keyPrefFlightsDefault, value, value == true); }
+        }
+
+        /// <summary>
+        /// Which properties should be hoisted from the properties section to the times-and-telemetry section?
+        /// </summary>
+        [System.Runtime.Serialization.IgnoreDataMemberAttribute]
+        public HashSet<int> HoistedProps
+        {
+            get
+            {
+                HashSet<int> result = new HashSet<int>();
+                if (UseTach)
+                {
+                    result.Add((int)CustomPropertyType.KnownProperties.IDPropTachStart);
+                    result.Add((int)CustomPropertyType.KnownProperties.IDPropTachEnd);
+                }
+                if (UseBlock)
+                {
+                    result.Add((int)CustomPropertyType.KnownProperties.IDBlockOut);
+                    result.Add((int)CustomPropertyType.KnownProperties.IDBlockIn);
+                }
+                return result;
+            }
+        }
         #endregion
 
         /// <summary>

@@ -8,6 +8,7 @@
     int activePropCount = activeProperties.Count();
     const int maxProps = 25;
     int i = 0;
+    HashSet<int> hoistedProps = MyFlightbook.Profile.GetUser(User.Identity.Name).HoistedProps;
 } 
 <script type="text/javascript">
     $(() => { CacheItems($("#cmbPropsToAdd")[0]); });
@@ -32,7 +33,10 @@
                     <option value="-1">@Resources.LogbookEntry.propSelectAdditionalProperty</option>
                     @foreach (CustomPropertyType cpt in remainingProps)
                     {
-                        <option value="@cpt.PropTypeID">@cpt.Title</option>
+                        if (!hoistedProps.Contains(cpt.PropTypeID))
+                        {
+                            <option value="@cpt.PropTypeID">@cpt.Title</option>
+                        }
                     }
                 </select>
             </td>
@@ -61,7 +65,10 @@
 @{
     foreach (CustomFlightProperty fp in activeProperties)
     {
-        Html.RenderAction("PropEdit", "FlightEdit", new { fp = fp, fHHMM = ViewBag.fHHMM, timeZone = timeZone, fHidden = i++ >= maxProps });
+        if (!hoistedProps.Contains(fp.PropTypeID))
+        {
+            Html.RenderAction("PropEdit", "FlightEdit", new { fp = fp, fHHMM = ViewBag.fHHMM, timeZone = timeZone, fHidden = i++ >= maxProps });
+        }
     }
     if (activePropCount > maxProps)
     {

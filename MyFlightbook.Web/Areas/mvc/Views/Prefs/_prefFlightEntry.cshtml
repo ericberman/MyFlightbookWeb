@@ -1,8 +1,10 @@
 ﻿@using System.Globalization
+@using MyFlightbook.Telemetry
 @{
     MyFlightbook.Profile m_pf = ViewBag.pf;
     DecimalFormat df = m_pf.PreferenceExists(MFBConstants.keyDecimalSettings) ? m_pf.GetPreferenceForKey<DecimalFormat>(MFBConstants.keyDecimalSettings) : DecimalFormat.Adaptive;
     string preferredTimeZoneID = m_pf.PreferredTimeZone?.Id ?? MyFlightbook.Schedule.ScheduledEvent.TimeZoneForOffset(TimeSpan.FromMinutes(0)).Id;
+    AutoFillOptions afo = AutoFillOptions.DefaultOptionsForUser(User.Identity.Name);
 }
 <script type="text/javascript">
     var pe;
@@ -13,7 +15,8 @@
             hdnPermutations: "hdnPermutation",
             ckSIC: "ckTrackSIC",
             ckCFI: "ckTrackCFI",
-            defaultFields: $("#coreFieldsContainer").children("span")
+            defaultFields: $("#coreFieldsContainer").children("span"),
+            autofillEndpoint: "@Url.Action("SetAutofillOptions", "Prefs")"
         });
         pe.initPermutations(@Json.Encode(m_pf.GetPreferenceForKey<IEnumerable<int>>(MFBConstants.keyCoreFieldsPermutation) ?? Array.Empty<int>()));
     });
@@ -78,8 +81,6 @@
 <div><label><input type="checkbox" id="ckTrackCFI" @m_pf.IsInstructor.ToChecked() onclick="pe.setLocalPrefChecked('usecfi', this);" />@Resources.Preferences.PrefSectNewFlightShowCFI</label></div>
 <div><label><input type="checkbox" id="ckTrackSIC" @m_pf.TracksSecondInCommandTime.ToChecked() onclick="pe.setLocalPrefChecked('usesic', this);" />@Resources.Preferences.PrefSectNewFlightShowSIC</label></div>
 <div><label><input type="checkbox" @m_pf.DisplayTimesByDefault.ToChecked() onclick="pe.setLocalPrefChecked('tracktimes', this);" />@Resources.Preferences.PrefSectNewFlightShowTimes</label></div>
-<h2>@Resources.Preferences.PrefSectFlightMisc</h2>
-<div><label><input type="checkbox" onclick="pe.setLocalPrefChecked('trackoriginal', this);" />@Resources.Preferences.PrefSaveOriginalFlight</label>@{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "tipTrackOriginal", tipTextHtml = Resources.Preferences.PrefSaveOriginalFlightDesc }); }</div>
 
 <h2>@Resources.Preferences.PrefSectNewFlightCustomization</h2>
 <p>@Resources.Preferences.PrefSectNewFlightCustomizationTip</p>
@@ -114,3 +115,46 @@
     </tr>
 </table>
 <input type="hidden" id="hdnPermutation" value="" />
+<h2>@Resources.Preferences.PrefSectDefaultTimes</h2>
+<div>
+    <label><input name="cockpitHobbs" type="checkbox" @m_pf.UseHobbs.ToChecked() onchange="pe.setLocalPrefChecked('usehobbs', this);" />@Resources.Preferences.PrefCockpitHobbs</label>
+    <label><input name="cockpitTach" type="checkbox" @m_pf.UseTach.ToChecked() onchange="pe.setLocalPrefChecked('usetach', this);" />@Resources.Preferences.PrefCockpitTach</label>
+    <label><input name="cockpitBlock" type="checkbox" @m_pf.UseBlock.ToChecked() onchange="pe.setLocalPrefChecked('useblock', this);" />@Resources.Preferences.PrefCockpitBlock</label>
+    <label><input name="cockpitEngine" type="checkbox" @m_pf.UseEngine.ToChecked() onchange="pe.setLocalPrefChecked('useengine', this);" />@Resources.Preferences.PrefCockpitEngine</label>
+    <label><input name="cockpitFlight" type="checkbox" @m_pf.UseFlight.ToChecked() onchange="pe.setLocalPrefChecked('useflight', this);" />@Resources.Preferences.PrefCockpitFlight</label>
+</div>
+<h2>@Resources.Preferences.PrefSectAutofill</h2>
+<div>
+    <div>
+        @Resources.LocalizedText.AutofillOptionTakeoffSpeed
+        <select name="afoSpeed" onchange="javascript: pe.updateAutofillPrefs()">
+            @for (int i = 0; i < AutoFillOptions.DefaultSpeeds.Count; i++)
+            {
+                int speed = AutoFillOptions.DefaultSpeeds[i];
+                <option value="@AutoFillOptions.DefaultSpeeds[i]" @((afo.TakeOffSpeed == speed).ToSelected())>@(speed.ToString(CultureInfo.CurrentCulture))kts</option>
+            }
+        </select>
+    </div>
+    <div><label><input id="ckIncludeHeliports" type="checkbox" @(afo.IncludeHeliports.ToChecked()) onchange="javascript: pe.updateAutofillPrefs();" />@Resources.LocalizedText.AutofillOptionIncludeHeliports</label> @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "tipAFHeli", tipTextHTML = Resources.LocalizedText.AutofillOptionsIncludeHeliportsTip }); }</div>
+    <div><label><input id="ckEstimateNight" type="checkbox" @(afo.AutoSynthesizePath.ToChecked()) onchange="javascript: pe.updateAutofillPrefs()" />@Resources.LocalizedText.AutofillOptionEstimateNight</label> @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "tipAFNightEst", tipTextHTML = Resources.LocalizedText.AutofillOptionEstimateNightTip }); }</div>
+    <div><label><input id="ckRoundNearest10th" type="checkbox" @(afo.RoundToTenth.ToChecked()) onchange="javascript: pe.updateAutofillPrefs()" />@Resources.LocalizedText.AutofillOptionRound10th</label></div>
+    <p>
+        @Resources.LocalizedText.AutoFillOptionNightDefinition
+        <select name="afoNightDef" onchange="javascript: pe.updateAutofillPrefs();">
+            <option @((afo.Night == AutoFillOptions.NightCritera.EndOfCivilTwilight).ToSelected()) value="EndOfCivilTwilight">@Resources.LocalizedText.AutoFillOptionNightDefinitionTwilight</option>
+            <option @((afo.Night == AutoFillOptions.NightCritera.Sunset).ToSelected()) value="Sunset">@Resources.LocalizedText.AutoFillOptionNightDefinitionSunset</option>
+            <option @((afo.Night == AutoFillOptions.NightCritera.SunsetPlus15).ToSelected()) value="SunsetPlus15">@Resources.LocalizedText.AutoFillOptionNightDefinitionSunsetPlus15</option>
+            <option @((afo.Night == AutoFillOptions.NightCritera.SunsetPlus30).ToSelected()) value="SunsetPlus30">@Resources.LocalizedText.AutoFillOptionNightDefinitionSunsetPlus30</option>
+            <option @((afo.Night == AutoFillOptions.NightCritera.SunsetPlus60).ToSelected()) value="SunsetPlus60">@Resources.LocalizedText.AutoFillOptionNightDefinitionSunsetPlus60</option>
+        </select>
+    </p>
+    <p>
+        @Resources.LocalizedText.AutoFillOptionNightLandingDefinition
+        <select name="afoNightLanding" onchange="javascript: pe.updateAutofillPrefs();">
+            <option @((afo.NightLanding == AutoFillOptions.NightLandingCriteria.SunsetPlus60).ToSelected()) value="SunsetPlus60">@Resources.LocalizedText.AutoFillOptionNightLandingDefinitionSunsetPlus1Hour</option>
+            <option @((afo.NightLanding == AutoFillOptions.NightLandingCriteria.Night).ToSelected()) value="Night">@Resources.LocalizedText.AutoFillOptionNightLandingDefinitionNight</option>
+        </select>
+    </p>
+</div>
+<h2>@Resources.Preferences.PrefSectFlightMisc</h2>
+<div><label><input type="checkbox" @(m_pf.PreferenceExists(MFBConstants.keyTrackOriginal).ToChecked()) onclick="pe.setLocalPrefChecked('trackoriginal', this);" />@Resources.Preferences.PrefSaveOriginalFlight</label> @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "tipTrackOriginal", tipTextHtml = Resources.Preferences.PrefSaveOriginalFlightDesc }); }</div>

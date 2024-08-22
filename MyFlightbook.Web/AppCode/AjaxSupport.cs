@@ -520,7 +520,12 @@ namespace MyFlightbook.Web.Ajax
             { "ALLOWNIGHTTOUCHANDGO" , (pf, prefValue, fIsSet) => { pf.AllowNightTouchAndGoes = fIsSet; } },
             { "ONLYDAYLANDINGSFORDAYCURRENCY" , (pf, prefValue, fIsSet) => { pf.OnlyDayLandingsForDayCurrency = fIsSet; } },
             { "USEPERMODELCURRENCY" , (pf, prefValue, fIsSet) => { pf.UsesPerModelCurrency = fIsSet; } },
-            { "MAINTWINDOW", (pf, prefValue, fIsSet) => { SetMaintenanceWindow(pf, prefValue); } }
+            { "MAINTWINDOW", (pf, prefValue, fIsSet) => { SetMaintenanceWindow(pf, prefValue); } },
+            { "USEHOBBS", (pf, prefValue, fIsSet) => { pf.UseHobbs = fIsSet; } },
+            { "USETACH", (pf, prefValue, fIsSet) => { pf.UseTach = fIsSet; } },
+            { "USEBLOCK", (pf, prefValue, fIsSet) => { pf.UseBlock = fIsSet; } },
+            { "USEENGINE", (pf, prefValue, fIsSet) => { pf.UseEngine = fIsSet; } },
+            { "USEFLIGHT", (pf, prefValue, fIsSet) => { pf.UseFlight = fIsSet; } }
         };
         #endregion
 

@@ -15,6 +15,10 @@
     TimeZoneInfo defaultTZ = pfViewer.PreferredTimeZone;
     bool fCanDoVideo = MyFlightbook.Payments.EarnedGratuity.UserQualifies(pfViewer.UserName, MyFlightbook.Payments.Gratuity.GratuityTypes.Videos);
     string szPixBlockLabel = fCanDoVideo ? Resources.LogbookEntry.HeaderImagesVideosForFlight : Resources.LogbookEntry.HeaderImagesForFlight;
+    CustomFlightProperty fpTachStart = le.CustomProperties[CustomPropertyType.KnownProperties.IDPropTachStart] ?? new CustomFlightProperty(CustomPropertyType.GetCustomPropertyType((int)CustomPropertyType.KnownProperties.IDPropTachStart));
+    CustomFlightProperty fpTachEnd = le.CustomProperties[CustomPropertyType.KnownProperties.IDPropTachEnd] ?? new CustomFlightProperty(CustomPropertyType.GetCustomPropertyType((int)CustomPropertyType.KnownProperties.IDPropTachEnd));
+    CustomFlightProperty fpBlockOut = le.CustomProperties[CustomPropertyType.KnownProperties.IDBlockOut] ?? new CustomFlightProperty(CustomPropertyType.GetCustomPropertyType((int)CustomPropertyType.KnownProperties.IDBlockOut));
+    CustomFlightProperty fpBlockIn = le.CustomProperties[CustomPropertyType.KnownProperties.IDBlockIn] ?? new CustomFlightProperty(CustomPropertyType.GetCustomPropertyType((int)CustomPropertyType.KnownProperties.IDBlockIn));
 }
 <script type="text/javascript">
     $(() => {
@@ -236,52 +240,82 @@
         }
     </div>
     <div id="pnlFlightDetails" style="@(fExpanded ? string.Empty : "display: none;")">
-        <div class="flightinfoitem">
-            <table>
-                <tr class="itemlabel"><td colspan="2" style="font-weight:bold">@Resources.LogbookEntry.Hobbs</td></tr>
-                <tr>
-                    <td><span class="itemlabel">@Resources.LogbookEntry.ShortStart</span></td>
-                    <td>@{ Html.RenderAction("RenderDecimalField", "MFBTemplate", new { mode = EditMode.Decimal, id = "fieldHobbsStart", name = "flightHobbsStart", value = le.HobbsStart, cfd = new CrossFillDescriptor(Resources.LogbookEntry.HobbsCrossfillTip, String.Format(CultureInfo.InvariantCulture, "getHobbsFill(currentlySelectedAircraft, '{0}')", "~/Member/Ajax.asmx".ToAbsolute())) }); }</td>
-                </tr>
-                <tr>
-                    <td class="itemlabel">@Resources.LogbookEntry.ShortEnd</td>
-                    <td>@{ Html.RenderAction("RenderDecimalField", "MFBTemplate", new { mode = EditMode.Decimal, id = "fieldHobbsEnd", name = "flightHobbsEnd", value = le.HobbsEnd, cfd = (CrossFillDescriptor)null }); }</td>
-                </tr>
-            </table>
+        @if (pfTarget.UseTach)
+        {
+            <div class="flightinfoitem" style="margin-right: 1em;">
+                <div>@{ Html.RenderAction("PropEdit", "FlightEdit", new { fp = fpTachStart, fHHMM = fHHMM, timeZone = defaultTZ, fHidden = false }); }</div>
+                <div>@{ Html.RenderAction("PropEdit", "FlightEdit", new { fp = fpTachEnd, fHHMM = fHHMM, timeZone = defaultTZ, fHidden = false }); }</div>
+            </div>
+        }
+        <div class="flightinfoitem" style="margin-right: 1em; @(pfTarget.UseHobbs || le.HobbsStart + le.HobbsEnd > 0 ? string.Empty : "display: none;")">
+            <div><span class="itemlabel" style="font-size: smaller;">@Resources.LogbookEntry.HobbsStartShort</span></div>
+            <div>@{ Html.RenderAction("RenderDecimalField", "MFBTemplate", new { mode = EditMode.Decimal, id = "fieldHobbsStart", name = "flightHobbsStart", value = le.HobbsStart, cfd = new CrossFillDescriptor(Resources.LogbookEntry.HobbsCrossfillTip, String.Format(CultureInfo.InvariantCulture, "getHobbsFill(currentlySelectedAircraft, '{0}')", "~/Member/Ajax.asmx".ToAbsolute())) }); }</div>
+            <div class="itemlabel" style="font-size: smaller;">@Resources.LogbookEntry.HobbsEndShort</div>
+            <div>@{ Html.RenderAction("RenderDecimalField", "MFBTemplate", new { mode = EditMode.Decimal, id = "fieldHobbsEnd", name = "flightHobbsEnd", value = le.HobbsEnd, cfd = (CrossFillDescriptor)null }); }</div>
         </div>
-        <div class="flightinfoitem">
-            <table style="vertical-align:baseline">
-                <tr class="itemlabel"><td colspan="2" style="font-weight:bold" title="@defaultTZ.DisplayName">@Resources.LogbookEntry.FieldEngineUTC.IndicateUTCOrCustomTimeZone(defaultTZ)</td></tr>
-                <tr>
-                    <td><span class="itemlabel">@Resources.LogbookEntry.ShortStart</span></td>
-                    <td>@{ Html.RenderAction("RenderDateTimeField", "MFBTemplate", new { id = "fieldEngineStart", name = "flightEngineStart", value = le.EngineStart, timeZone = defaultTZ }); }</td>
-                </tr>
-                <tr>
-                    <td><span class="itemlabel">@Resources.LogbookEntry.ShortEnd</span></td>
-                    <td>@{ Html.RenderAction("RenderDateTimeField", "MFBTemplate", new { id = "fieldEngineEnd", name = "flightEngineEnd", value = le.EngineEnd, timeZone = defaultTZ }); }</td>
-                </tr>
-            </table>
+        <div class="flightinfoitem" style="margin-right: 1em; @(pfTarget.UseEngine || le.EngineStart.HasValue() || le.EngineEnd.HasValue() ? string.Empty : "display: none;")">
+            <div style="display: none;" id="lblEngineStartTip">
+                <p style="font-weight: bold;">@Resources.LogbookEntry.EngineStartShort.IndicateUTCOrCustomTimeZone(defaultTZ)</p>
+                <p style="font-weight: bold;">@defaultTZ</p>
+            </div>
+            <div style="display: none;" id="lblEngineEndTip">
+                <p style="font-weight: bold;">@Resources.LogbookEntry.EngineEndShort.IndicateUTCOrCustomTimeZone(defaultTZ)</p>
+                <p style="font-weight: bold;">@defaultTZ</p>
+            </div>
+            <div><span class="itemlabel" id="lblEngineStart" style="font-size: smaller;" title="">@Resources.LogbookEntry.EngineStartShort.IndicateUTCOrCustomTimeZone(defaultTZ)</span></div>
+            <div>@{ Html.RenderAction("RenderDateTimeField", "MFBTemplate", new { id = "fieldEngineStart", name = "flightEngineStart", value = le.EngineStart, timeZone = defaultTZ }); }</div>
+            <div><span class="itemlabel" id="lblEngineEnd" style="font-size: smaller;" title="">@Resources.LogbookEntry.EngineEndShort.IndicateUTCOrCustomTimeZone(defaultTZ)</span></div>
+            <div>@{ Html.RenderAction("RenderDateTimeField", "MFBTemplate", new { id = "fieldEngineEnd", name = "flightEngineEnd", value = le.EngineEnd, timeZone = defaultTZ }); }</div>
         </div>
-        <div class="flightinfoitem">
-            <table>
-                <tr class="itemlabel"><td colspan="2" style="font-weight:bold" title="@defaultTZ.DisplayName">@Resources.LogbookEntry.FieldFlightUTC.IndicateUTCOrCustomTimeZone(defaultTZ)</td></tr>
-                <tr>
-                    <td><span class="itemlabel">@Resources.LogbookEntry.ShortStart</span></td>
-                    <td>@{ Html.RenderAction("RenderDateTimeField", "MFBTemplate", new { id = "fieldFlightStart", name = "flightFlightStart", value = le.FlightStart, timeZone = defaultTZ }); }</td>
-                </tr>
-                <tr>
-                    <td><span class="itemlabel">@Resources.LogbookEntry.ShortEnd</span></td>
-                    <td>@{ Html.RenderAction("RenderDateTimeField", "MFBTemplate", new { id = "fieldFlightEnd", name = "flightFlightEnd", value = le.FlightEnd, timeZone = defaultTZ }); }</td>
-                </tr>
-            </table>
-            <script type="text/javascript">
-                $(function () {
-                    addXFillMap('fStart', 'fieldFlightStart');
-                    addXFillMap('fEnd', 'fieldFlightEnd');
-                    addXFillMap('total', 'fieldTotal')
+        @if (pfTarget.UseBlock)
+        {
+            <div class="flightinfoitem" style="margin-right: 1em;">
+                <div>@{ Html.RenderAction("PropEdit", "FlightEdit", new { fp = fpBlockOut, fHHMM = fHHMM, timeZone = defaultTZ, fHidden = false }); }</div>
+                <div>@{ Html.RenderAction("PropEdit", "FlightEdit", new { fp = fpBlockIn, fHHMM = fHHMM, timeZone = defaultTZ, fHidden = false }); }</div>
+            </div>
+        }
+        <div class="flightinfoitem" id="lblFlightStart" style="margin-right: 1em; @(pfTarget.UseFlight || le.FlightStart.HasValue() || le.FlightEnd.HasValue() ? string.Empty : "display: none;")">
+            <div style="display: none;" id="lblFlightStartTip">
+                <p style="font-weight: bold;">@Resources.LogbookEntry.FlightStartShort.IndicateUTCOrCustomTimeZone(defaultTZ)</p>
+                <p style="font-weight: bold;">@defaultTZ</p>
+            </div>
+            <div style="display: none;" id="lblFlightEndTip">
+                <p style="font-weight: bold;">@Resources.LogbookEntry.FlightEndShort.IndicateUTCOrCustomTimeZone(defaultTZ)</p>
+                <p style="font-weight: bold;">@defaultTZ</p>
+            </div>
+            <div><span class="itemlabel" id="lblFlightStart" style="font-size: smaller;" title="">@Resources.LogbookEntry.FlightStartShort.IndicateUTCOrCustomTimeZone(defaultTZ)</span></div>
+            <div>@{ Html.RenderAction("RenderDateTimeField", "MFBTemplate", new { id = "fieldFlightStart", name = "flightFlightStart", value = le.FlightStart, timeZone = defaultTZ }); }</div>
+            <div><span class="itemlabel" id="lblFlightEnd" style="font-size: smaller;" title="">@Resources.LogbookEntry.FlightEndShort.IndicateUTCOrCustomTimeZone(defaultTZ)</span></div>
+            <div>@{ Html.RenderAction("RenderDateTimeField", "MFBTemplate", new { id = "fieldFlightEnd", name = "flightFlightEnd", value = le.FlightEnd, timeZone = defaultTZ }); }</div>
+        </div>
+        <script type="text/javascript">
+            $(() => {
+                addXFillMap('fStart', 'fieldFlightStart');
+                addXFillMap('fEnd', 'fieldFlightEnd');
+                addXFillMap('total', 'fieldTotal')
+
+                $("#lblEngineStart").tooltip({
+                    classes: { "ui-tooltip": "hintPopup itemlabel" },
+                    content: $("#lblEngineStartTip").html()
+
                 });
-            </script>
-        </div>
+                $("#lblEngineEnd").tooltip({
+                    classes: { "ui-tooltip": "hintPopup itemlabel" },
+                    content: $("#lblEngineEndTip").html()
+
+                });
+                $("#lblFlightStart").tooltip({
+                    classes: { "ui-tooltip": "hintPopup itemlabel" },
+                    content: $("#lblFlightStartTip").html()
+
+                });
+                $("#lblFlightEnd").tooltip({
+                    classes: { "ui-tooltip": "hintPopup itemlabel" },
+                    content: $("#lblFlightEndTip").html()
+
+                });
+            });
+        </script>
         <div id="pnlFlightData" class="flightinfoitem">
             <div class="itemlabel">
                 <div><span style="font-weight:bold">@Resources.LogbookEntry.FieldTelemetry</span> <a class="fineprint" href="@("~/mvc/pub/FlightDataKey".ToAbsolute())" target="_blank">@Resources.LogbookEntry.FieldTelemetryLearnMore</a></div>

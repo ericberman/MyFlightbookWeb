@@ -508,6 +508,21 @@
   <data name="PrefBlockListShow" xml:space="preserve">
     <value>Show these...</value>
   </data>
+  <data name="PrefCockpitBlock" xml:space="preserve">
+    <value>Block Out/In</value>
+  </data>
+  <data name="PrefCockpitEngine" xml:space="preserve">
+    <value>Engine Start/Stop</value>
+  </data>
+  <data name="PrefCockpitFlight" xml:space="preserve">
+    <value>Flight Start/Stop</value>
+  </data>
+  <data name="PrefCockpitHobbs" xml:space="preserve">
+    <value>Hobbs Start/Stop</value>
+  </data>
+  <data name="PrefCockpitTach" xml:space="preserve">
+    <value>Tach Start/Stop</value>
+  </data>
   <data name="PrefCurrencyClutterControl" xml:space="preserve">
     <value>Clutter control</value>
   </data>
@@ -543,6 +558,12 @@
   </data>
   <data name="PrefSaveOriginalFlightDesc" xml:space="preserve">
     <value>Using this option allows you to view the edits that have been made to a flight entry since it was first saved.  See the FAQ for more information.</value>
+  </data>
+  <data name="PrefSectAutofill" xml:space="preserve">
+    <value>Autofill Options</value>
+  </data>
+  <data name="PrefSectDefaultTimes" xml:space="preserve">
+    <value>"Times and Telemetry" fields</value>
   </data>
   <data name="PrefSectFlightEntryDataToInclude" xml:space="preserve">
     <value>Display the following in tables of your flights</value>

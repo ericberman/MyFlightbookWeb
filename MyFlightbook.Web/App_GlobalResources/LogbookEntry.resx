@@ -1897,4 +1897,22 @@ Proceed with import?</value>
   <data name="RequestSigsNoFlights" xml:space="preserve">
     <value>You have no unsigned flights</value>
   </data>
+  <data name="EngineEndShort" xml:space="preserve">
+    <value>Engine End (UTC)</value>
+  </data>
+  <data name="EngineStartShort" xml:space="preserve">
+    <value>Engine Start (UTC)</value>
+  </data>
+  <data name="FlightEndShort" xml:space="preserve">
+    <value>Flight End (UTC)</value>
+  </data>
+  <data name="FlightStartShort" xml:space="preserve">
+    <value>Flight Start (UTC)</value>
+  </data>
+  <data name="HobbsEndShort" xml:space="preserve">
+    <value>Hobbs End</value>
+  </data>
+  <data name="HobbsStartShort" xml:space="preserve">
+    <value>Hobbs Start</value>
+  </data>
 </root>

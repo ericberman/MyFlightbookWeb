@@ -67,7 +67,7 @@ function currentlySelectedAircraft() {
 
 function updatePropertyTuples(newPropTypeID) {
     var props = [];
-    $("#pnlProps div.propItemFlow").each(function (index, element) {
+    $("div.propItemFlow").each(function (index, element) {
         var inputs = $(element).find("input");
         var prop = new Object();
         prop.PropID = inputs[0].value;

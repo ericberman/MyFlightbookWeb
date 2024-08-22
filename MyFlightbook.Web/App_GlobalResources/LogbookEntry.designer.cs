@@ -673,6 +673,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Engine End (UTC).
+        /// </summary>
+        internal static string EngineEndShort {
+            get {
+                return ResourceManager.GetString("EngineEndShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Engine Start (UTC).
+        /// </summary>
+        internal static string EngineStartShort {
+            get {
+                return ResourceManager.GetString("EngineStartShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please select an aircraft, or click &quot;Add&quot; to add a new one.
         /// </summary>
         internal static string errAircraftRequired {
@@ -1762,6 +1780,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flight End (UTC).
+        /// </summary>
+        internal static string FlightEndShort {
+            get {
+                return ResourceManager.GetString("FlightEndShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This flight has associated data.
         /// </summary>
         internal static string FlightHasData {
@@ -1803,6 +1830,15 @@ namespace Resources {
         internal static string FlightModifiedMarker {
             get {
                 return ResourceManager.GetString("FlightModifiedMarker", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flight Start (UTC).
+        /// </summary>
+        internal static string FlightStartShort {
+            get {
+                return ResourceManager.GetString("FlightStartShort", resourceCulture);
             }
         }
         
@@ -1897,11 +1933,29 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hobbs End.
+        /// </summary>
+        internal static string HobbsEndShort {
+            get {
+                return ResourceManager.GetString("HobbsEndShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Starting Hobbs.
         /// </summary>
         internal static string HobbsStart {
             get {
                 return ResourceManager.GetString("HobbsStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hobbs Start.
+        /// </summary>
+        internal static string HobbsStartShort {
+            get {
+                return ResourceManager.GetString("HobbsStartShort", resourceCulture);
             }
         }
         

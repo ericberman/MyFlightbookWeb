@@ -36,6 +36,11 @@ namespace MyFlightbook
         public const string keyDecimalSettings = "prefDecimalDisplay";  // adaptive, single, or double digit precision
         public const string keyMathRoundingUnits = "prefMath";   // whether to use decimal math (36-second precision) or minute math (60-second precision) when adding
         public const string keyPrefLastUsedLocale = "prefLastUsedLocale";   // most recently used locale, if not en-us
+        public const string keyPrefHobbsDefault = "prefUseHobbs";
+        public const string keyPrefTachDefault = "prefUseTach";
+        public const string keyPrefBlockDefault = "prefUseBlock";
+        public const string keyPrefEngineDefault = "prefUseEngine";
+        public const string keyPrefFlightsDefault = "prefUseFlight";
         public const string USCulture = "en-us";
         public const string keyMedicalNotes = "prefMedicalNotes";   // any notes on your medical
         public const string keyCoreFieldsPermutation = "prefCoreFields";    // permutation of the core fields
@@ -830,53 +835,6 @@ namespace MyFlightbook
             }
             GC.Collect();
             return items;
-        }
-    }
-
-    // Hack from http://stackoverflow.com/questions/976524/issues-rendering-usercontrol-using-server-execute-in-an-asmx-web-service
-    // This lets us load up a control without having an actual page environment and get its HTML
-    // Important for infinite scroll, which must produce HTML without a page context.
-    public class FormlessPage : Page
-    {
-        public override void VerifyRenderingInServerForm(Control control)
-        {
-        }
-
-        public static string RenderControlsToHTML(Action<FormlessPage> addControlsToPage, Action<HtmlTextWriter> renderToStream)
-        {
-            if (addControlsToPage == null)
-                throw new ArgumentNullException(nameof(addControlsToPage));
-            if (renderToStream == null)
-                throw new ArgumentNullException(nameof(renderToStream));
-
-            // We have no Page, so things like Page_Load don't get called.
-            // We fix this by faking a page and calling Server.Execute on it.  This sets up the form and - more importantly - causes Page_load to be called on loaded controls.
-            using (FormlessPage p = new FormlessPage())
-            {
-                p.Controls.Add(new System.Web.UI.HtmlControls.HtmlForm());
-                using (StringWriter sw1 = new StringWriter(CultureInfo.CurrentCulture))
-                    HttpContext.Current.Server.Execute(p, sw1, false);
-
-                // Add the controls to the page
-                addControlsToPage(p);
-
-                // Now, write it out.
-                StringBuilder sb = new StringBuilder();
-                using (StringWriter sw = new StringWriter(sb, CultureInfo.CurrentCulture))
-                {
-                    using (HtmlTextWriter htmlTW = new HtmlTextWriter(sw))
-                    {
-                        try
-                        {
-                            renderToStream(htmlTW);
-                            return sb.ToString();
-                        }
-                        catch (ArgumentException ex) when (ex is ArgumentOutOfRangeException) { } // don't write bogus or incomplete HTML
-                    }
-                }
-            }
-
-            return string.Empty;
         }
     }
 }

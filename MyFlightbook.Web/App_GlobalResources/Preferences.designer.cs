@@ -1231,6 +1231,51 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Block Out/In.
+        /// </summary>
+        internal static string PrefCockpitBlock {
+            get {
+                return ResourceManager.GetString("PrefCockpitBlock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Engine Start/Stop.
+        /// </summary>
+        internal static string PrefCockpitEngine {
+            get {
+                return ResourceManager.GetString("PrefCockpitEngine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flight Start/Stop.
+        /// </summary>
+        internal static string PrefCockpitFlight {
+            get {
+                return ResourceManager.GetString("PrefCockpitFlight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hobbs Start/Stop.
+        /// </summary>
+        internal static string PrefCockpitHobbs {
+            get {
+                return ResourceManager.GetString("PrefCockpitHobbs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tach Start/Stop.
+        /// </summary>
+        internal static string PrefCockpitTach {
+            get {
+                return ResourceManager.GetString("PrefCockpitTach", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Clutter control.
         /// </summary>
         internal static string PrefCurrencyClutterControl {
@@ -1335,6 +1380,24 @@ namespace Resources {
         internal static string PrefSaveOriginalFlightDesc {
             get {
                 return ResourceManager.GetString("PrefSaveOriginalFlightDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Autofill Options.
+        /// </summary>
+        internal static string PrefSectAutofill {
+            get {
+                return ResourceManager.GetString("PrefSectAutofill", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;Times and Telemetry&quot; fields.
+        /// </summary>
+        internal static string PrefSectDefaultTimes {
+            get {
+                return ResourceManager.GetString("PrefSectDefaultTimes", resourceCulture);
             }
         }
         

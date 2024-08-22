@@ -16,6 +16,7 @@
      * ckSIC - the id of the checkbox that indicates whether the SIC field is shown
      * ckCFI - the id of the checkbox that indicates whether the Insturctor field is shown
      * defaultFields - a jquery object with the set of all core fields
+     * autofillEndpoint - the endpoint for saving autofill options
    * 
    * NOTE: many of the ids are hadcoded at this point.
 */
@@ -37,6 +38,26 @@ function prefsFlightEntryEditor(localPrefEndPoint, options) {
             success: function () { }
         });
     }
+
+    this.updateAutofillPrefs = function() {
+        var afo = new Object();
+        afo.TakeoffSpeed = $("select[name='afoSpeed']").val();
+        afo.IncludeHeliports = $("#ckIncludeHeliports")[0].checked;
+        afo.AutoSynthesizePath = $("#ckEstimateNight")[0].checked;
+        afo.RoundToTenth = $("#ckRoundNearest10th")[0].checked;
+        afo.Night = $("select[name='afoNightDef']").val();
+        afo.NightLanding = $("select[name='afoNightLanding']").val();
+
+        var d = JSON.stringify(afo);
+        $.ajax({
+            url: options.autofillEndpoint,
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            complete: function (response) { },
+            success: function (response) { }
+        });
+    }
+
     this.setLocalPrefValue = function(name, sender) {
         this.setLocalPref(name, sender.value);
     }
