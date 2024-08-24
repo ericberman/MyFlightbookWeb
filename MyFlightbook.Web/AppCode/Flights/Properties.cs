@@ -151,6 +151,7 @@ namespace MyFlightbook
             IDPropTaxiTime = 464,
             IDPropCarrierTouchAndGo = 468,
             IDPropCarrierArrestedLanding = 469,
+            IDPropReliefCrewNames = 500,
             IDPropFlightAttendant = 501,
             IDPropScheduledDeparture = 502,     // Not flagged as a known property
             IDPropScheduledArrival = 503,       // Not flagged as a known property

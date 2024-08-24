@@ -98,14 +98,17 @@ namespace MyFlightbook.ImportFlights
             };
 
             List<string> lstOtherCrew = new List<string>();
+            List<string> lstFOs = new List<string>();
+            List<string> lstROs = new List<string>();
             FlightCrewViewCrew captain = null;
-            FlightCrewViewCrew firstOfficer = null;
             foreach (FlightCrewViewCrew c in crew_list)
             {
                 if ((c.position?.CompareCurrentCultureIgnoreCase("CA") ?? 1) == 0)
                     captain = c;
                 else if ((c.position?.CompareCurrentCultureIgnoreCase("FO") ?? 1) == 0)
-                    firstOfficer = c;
+                    lstFOs.Add(c.ToString());
+                else if ((c.position?.CompareCurrentCultureIgnoreCase("RO") ?? 1) == 0)
+                    lstROs.Add(c.ToString());
                 else
                     lstOtherCrew.Add(c.ToString());
             }
@@ -118,7 +121,8 @@ namespace MyFlightbook.ImportFlights
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropScheduledArrival, (DateTime) (scheduled_in_utc ?? DateTime.MinValue), true),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropDeadhead, is_deadhead != 0),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropCaptainName, captain?.DisplayName ?? string.Empty),
-                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFirstOfficerName, firstOfficer?.DisplayName ?? string.Empty),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFirstOfficerName, String.Join(" ", lstFOs)),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropReliefCrewNames, String.Join(" ", lstROs)),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropAdditionalCrew, String.Join(" ", lstOtherCrew)),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropRunwaysUsed, String.Join(" ", new string[] { dep_runway, arr_runway }))
             });
