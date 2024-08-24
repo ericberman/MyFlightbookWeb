@@ -25,6 +25,7 @@
     using (Html.BeginForm("Account", "Prefs", FormMethod.Post, new { id = "frmSubmitTFA", name = "frmSubmitTFA" }))
     {
         <input type="hidden" name="tfaCode" id="hdnTFACode" />
+        <input type="hidden" name="pane" value="@requestedPane" />
         @Html.AntiForgeryToken();
     }
 }
