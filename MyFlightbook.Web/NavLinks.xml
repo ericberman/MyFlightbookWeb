@@ -179,7 +179,7 @@
     </Items>
   </Item>
   <Item>
-    <Link>~/mvc/prefs</Link>
+    <Link>~/mvc/prefs/account</Link>
     <ID>tabProfile</ID>
     <Roles></Roles>
     <Items>
