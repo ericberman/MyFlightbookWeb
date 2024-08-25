@@ -3796,7 +3796,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Part 141 - Commerical, Airplane, Multi Engine Land.
+        ///   Looks up a localized string similar to Part 141 - Commercial, Airplane, Multi Engine Land.
         /// </summary>
         internal static string Title141CommercialMultiEngineLand {
             get {
@@ -3805,7 +3805,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Part 141 - Commerical, Airplane, Multi Engine Sea.
+        ///   Looks up a localized string similar to Part 141 - Commercial, Airplane, Multi Engine Sea.
         /// </summary>
         internal static string Title141CommercialMultiEngineSea {
             get {
@@ -3814,7 +3814,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Part 141 - Commerical, Airplane, Single Engine Land.
+        ///   Looks up a localized string similar to Part 141 - Commercial, Airplane, Single Engine Land.
         /// </summary>
         internal static string Title141CommercialSingleEngineLand {
             get {
