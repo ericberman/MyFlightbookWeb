@@ -20,7 +20,7 @@ namespace MyFlightbook.Web
             ShuntState.Init();
             System.Web.Mvc.AreaRegistration.RegisterAllAreas();
             ScriptManager.ScriptResourceMapping.AddDefinition("jquery", new ScriptResourceDefinition { Path = VirtualPathUtility.ToAbsolute("~/Scripts/jquery-3.7.1.min.js") });
-            ScriptManager.ScriptResourceMapping.AddDefinition("jqueryui", new ScriptResourceDefinition { Path = VirtualPathUtility.ToAbsolute("~/Scripts/jquery-ui-1.13.2.min.js") });
+            ScriptManager.ScriptResourceMapping.AddDefinition("jqueryui", new ScriptResourceDefinition { Path = VirtualPathUtility.ToAbsolute("~/Scripts/jquery-ui-1.13.3.min.js") });
             ScriptManager.ScriptResourceMapping.AddDefinition("jqueryUtils", new ScriptResourceDefinition { Path = VirtualPathUtility.ToAbsolute("~/Public/Scripts/jqueryutil.js?v=10") });
             ValidationSettings.UnobtrusiveValidationMode = UnobtrusiveValidationMode.WebForms;
 
