@@ -84,7 +84,7 @@ namespace MyFlightbook.ImportFlights
          * So, for example, the comments field has "Comments" as the highest priority column; if that is not found, then "Remarks" will be used next, and so forth.
         */
         private readonly static string[] colFlightID = { "Flight ID" };
-        private readonly static string[] colDate = { "Date", "FLT_DATE", "Date Flown", "flight_date", "PILOTLOG_DATE" };
+        private readonly static string[] colDate = { "Date", "FLT_DATE", "Date Flown", "flight_date" };
         private readonly static string[] colTail = { "Tail Number", "Registration", "Tail", "Ident", "SERIAL_NUM", "ACFT", "Aircraft ID", "Aircraft Ident", "Reg", "Reg.", "AIRCRAFT REGISTRATION", "aircraft_registration", "tailNo", "aircraft_tail_number", "Tail #", "Tail No.", "AC_REG" };
         private readonly static string[] colAircraftID = { "Aircraft ID" };
         private readonly static string[] colTotal = { "Total Flight Time", "Total Time", "TotalDuration", "Total Duration", "Flt Time", "Block", "HRS", "TIME FLOWN", "FltTime", "Total", "total_time", "totalFlightTime", "flight_time", "total_flight_time", "Duration", "Flight Time", "Blk Hrs", "Blk" };

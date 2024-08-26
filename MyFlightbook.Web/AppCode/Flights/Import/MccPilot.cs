@@ -1,13 +1,12 @@
 ﻿using MyFlightbook.CSV;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2022 MyFlightbook LLC
+ * Copyright (c) 2019-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -90,28 +89,6 @@ namespace MyFlightbook.ImportFlights
         }
 
         public MccPilot(DataRow dr) : base(dr) { }
-
-        private static string FormattedPilotInfo(string name, string phone, string email, string ID)
-        {
-            if (String.IsNullOrEmpty(name))
-                return string.Empty;
-
-            string phone_email = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, phone, email).Trim();
-            if (!String.IsNullOrWhiteSpace(ID))
-                phone_email = String.Format(CultureInfo.CurrentCulture, "{0} ID: {1}", phone_email, ID).Trim();
-
-            return String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, name, String.IsNullOrWhiteSpace(phone_email) ? string.Empty : String.Format(CultureInfo.CurrentCulture, " ({0})", phone_email)).Trim();
-        }
-
-        private static decimal FromMinutes(int minutes)
-        {
-            return Math.Round(((decimal) minutes) / 60.0M, 2);
-        }
-
-        private static DateTime DateOrEmpty(DateTime dt)
-        {
-            return (dt.Hour == 0 && dt.Minute == 0) ? DateTime.MinValue : dt;
-        }
 
         public override LogbookEntry ToLogbookEntry()
         {

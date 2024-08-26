@@ -141,6 +141,18 @@ namespace MyFlightbook.ImportFlights
             }
             return sb.ToString().Trim();
         }
+
+        public static string FormattedPilotInfo(string name, string phone = "", string email = "", string ID = "")
+        {
+            if (String.IsNullOrEmpty(name))
+                return string.Empty;
+
+            string phone_email = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, phone, email).Trim();
+            if (!String.IsNullOrWhiteSpace(ID))
+                phone_email = String.Format(CultureInfo.CurrentCulture, "{0} ID: {1}", phone_email, ID).Trim();
+
+            return String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, name, String.IsNullOrWhiteSpace(phone_email) ? string.Empty : String.Format(CultureInfo.CurrentCulture, " ({0})", phone_email)).Trim();
+        }
         #endregion
 
         #region Times
@@ -170,6 +182,16 @@ namespace MyFlightbook.ImportFlights
                 dtToFix = dtToFix.AddDays(1);
 
             return dtToFix;
+        }
+
+        protected static DateTime DateOrEmpty(DateTime dt)
+        {
+            return (dt.Hour == 0 && dt.Minute == 0) ? DateTime.MinValue : dt;
+        }
+
+        protected static decimal FromMinutes(int minutes)
+        {
+            return Math.Round(((decimal)minutes) / 60.0M, 2);
         }
         #endregion
         #endregion
@@ -265,7 +287,7 @@ namespace MyFlightbook.ImportFlights
 
     public abstract class ExternalFormatImporter
     {
-        private readonly static ExternalFormatImporter[] rgFormatters = { new LogTenProImporter(), new ForeFlightImporter(), new eLogSiteImporter(), new MccPilotImporter(), new CrewTracImporter(), new RosterBusterImporter(), new CrewLog(), new TASCImporter(), new AASchedulerImporter(), new eCrew(), new FFDOImporter(), new FlicaExportImporter() };
+        private readonly static ExternalFormatImporter[] rgFormatters = { new LogTenProImporter(), new ForeFlightImporter(), new eLogSiteImporter(), new MccPilotImporter(), new CrewLoungeImporter(), new CrewTracImporter(), new RosterBusterImporter(), new CrewLog(), new TASCImporter(), new AASchedulerImporter(), new eCrew(), new FFDOImporter(), new FlicaExportImporter() };
 
         /// <summary>
         /// Creates a converted CSV file from the data table.

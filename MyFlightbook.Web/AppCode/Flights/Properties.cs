@@ -181,6 +181,7 @@ namespace MyFlightbook
             IDPropAdditionalFlightRemarks = 607, // Not flagged as a known property
             IDPropDutyStart = 608,
             IDPropDutyEnd = 609,
+            IDPropOperatorName = 615,
             IDPropFuelAtStart = 622,
             IDPropNightRating = 623,
             IDPropSequence = 630,
@@ -199,6 +200,7 @@ namespace MyFlightbook
             IDProp125287Competency = 700,
             IDProp125287Knowledge = 701,
             IDPropRole = 718,
+            IDPropCrew4 = 754,
             IDPropXCMoreThan400nm = 770,
             IDPropXCNoLanding = 781,
             IDPropNightIMC = 793,
