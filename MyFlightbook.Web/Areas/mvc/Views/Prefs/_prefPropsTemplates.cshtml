@@ -87,12 +87,12 @@
 else
 {
     <table>
-        <tr style="vertical-align:bottom">
+        <tr style="vertical-align:bottom; margin-top: 18pt;">
             <td></td>
-            <td style="padding: 3px; text-align:center; font-weight: bold; -webkit-transform: rotate(315deg); -moz-transform: rotate(315deg);-o-transform: rotate(315deg);-ms-transform: rotate(315deg);transform: rotate(315deg);">
+            <td style="padding: 3px; width: 8em; text-align:center; font-weight: bold; -webkit-transform: rotate(315deg); -moz-transform: rotate(315deg);-o-transform: rotate(315deg);-ms-transform: rotate(315deg);transform: rotate(315deg);">
                 @Resources.LogbookEntry.TemplateShare&nbsp;&nbsp;
             </td>
-            <td style="padding: 3px; text-align:center; font-weight: bold; -webkit-transform: rotate(315deg); -moz-transform: rotate(315deg);-o-transform: rotate(315deg);-ms-transform: rotate(315deg);transform: rotate(315deg);">
+            <td style="padding: 3px; width: 8em; text-align: center; font-weight: bold; -webkit-transform: rotate(315deg); -moz-transform: rotate(315deg); -o-transform: rotate(315deg); -ms-transform: rotate(315deg); transform: rotate(315deg);">
                 @Resources.LogbookEntry.TemplateDefaultHeader
             </td>
             <td></td>
@@ -100,8 +100,8 @@ else
         </tr>
         @foreach (TemplateCollection tc in rgtc)
         {
-            <tr>
-                <td colspan="5" style="border-bottom: 1px solid gray; margin-top: 3px; text-align:center; font-weight: bold; font-size: larger;">@tc.GroupName</td>
+            <tr style="height: 28pt; ">
+                <td colspan="5" style="vertical-align: bottom; border-bottom: 1px solid gray; text-align: left; font-weight: bold; font-size: larger;">@tc.GroupName</td>
             </tr>
             foreach (UserPropertyTemplate pt in tc.Templates)
             {
