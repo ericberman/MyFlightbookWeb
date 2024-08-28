@@ -1913,6 +1913,8 @@ namespace MyFlightbook
                 DeleteUserImages(dbh);
 
                 DeleteUserFlights(dbh);
+                // Issue #1300 - clear the cache after clearing flights
+                FlightResultManager.InvalidateForUser(mu.UserName);
 
                 PendingFlight.DeletePendingFlightsForUser(mu.UserName);
 
