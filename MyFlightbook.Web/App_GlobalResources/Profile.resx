@@ -253,7 +253,7 @@
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="NewAccountPromo" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Content.en\NewAccountPromo.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>Content.en\NewAccountPromo.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;iso-8859-1</value>
   </data>
   <data name="AccountIsLockedSubject" xml:space="preserve">
     <value>{0} - Account is locked</value>
@@ -328,6 +328,9 @@
   </data>
   <data name="errNotConfiguredDropBox" xml:space="preserve">
     <value>You are not configured for Dropbox.  Please set this up in your preferences (under Profile)</value>
+  </data>
+  <data name="errNotConfiguredBox" xml:space="preserve">
+    <value>You are not configured for Box.  Please set this up in your preferences (under Profile)</value>
   </data>
   <data name="CFILicenseTemplate" xml:space="preserve">
     <value>CFI/CFII/GI Certificate: {0} (Expiration: {1})</value>
@@ -745,5 +748,14 @@
   </data>
   <data name="FlyStoIsAuthed" xml:space="preserve">
     <value>You have authorized %APP_NAME% to work with FlySto</value>
+  </data>
+  <data name="AuthorizeBox" xml:space="preserve">
+    <value>Authorize %APP_NAME% to save backups to your Box account</value>
+  </data>
+  <data name="DeAuthBox" xml:space="preserve">
+    <value>De-authorize %APP_NAME% to save backups to your Box account</value>
+  </data>
+  <data name="BoxIsAuthed" xml:space="preserve">
+    <value>You have authorized %APP_NAME% to save backups to your Box account.</value>
   </data>
 </root>

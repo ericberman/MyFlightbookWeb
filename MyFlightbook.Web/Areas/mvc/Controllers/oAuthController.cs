@@ -251,6 +251,40 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
         #endregion
 
+        #region Box
+        [Authorize]
+        public ActionResult DeAuthorizeBox()
+        {
+            Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+            pf.SetPreferenceForKey(BoxDrive.PrefKeyBoxAuthToken, null, true);
+            return Redirect("~/mvc/prefs?pane=backup");
+        }
+
+        [Authorize]
+        public ActionResult AuthorizeBox()
+        {
+            new BoxDrive().Authorize("~/mvc/oAuth/BoxRedir".ToAbsoluteURL(Request));
+            return new EmptyResult();
+        }
+
+        [Authorize]
+        public ActionResult BoxRedir()
+        {
+            string szErr = util.GetStringParam(Request, "error");
+            var nvc = HttpUtility.ParseQueryString(string.Empty);
+            if (String.IsNullOrEmpty(szErr))
+            {
+                Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+                pf.SetPreferenceForKey(BoxDrive.PrefKeyBoxAuthToken, new BoxDrive().ConvertToken(Request));
+            }
+            else
+            {
+                nvc["cloudErr"] = szErr;
+            }
+            return Redirect("~/mvc/prefs?pane=backup&" + nvc.ToString());
+        }
+        #endregion
+
         #region GoogleDrive
         [Authorize]
         public ActionResult DeAuthorizeGDrive()

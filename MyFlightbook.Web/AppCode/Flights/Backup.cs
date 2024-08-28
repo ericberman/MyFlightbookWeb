@@ -802,6 +802,56 @@ namespace MyFlightbook
         }
         #endregion
 
+        #region Box
+        public async Task<string> BackupToBox(Brand activeBrand = null)
+        {
+            if (activeBrand == null)
+                activeBrand = Branding.CurrentBrand;
+
+            if (!User.PreferenceExists(BoxDrive.PrefKeyBoxAuthToken))
+                throw new MyFlightbookException(Resources.Profile.errNotConfiguredBox);
+
+            using (FileStream fs = new FileStream(Path.GetTempFileName(), FileMode.Open, FileAccess.ReadWrite, FileShare.None, Int16.MaxValue, FileOptions.DeleteOnClose))
+            {
+                WriteLogbookCSVToStream(fs);
+                return (string)await new BoxDrive(User).PutFile(BackupFilename(activeBrand), fs).ConfigureAwait(true);
+            }
+        }
+
+        public async Task<string> BackupImagesToBox(Brand activeBrand = null)
+        {
+            if (activeBrand == null)
+                activeBrand = Branding.CurrentBrand;
+
+            if (!User.PreferenceExists(BoxDrive.PrefKeyBoxAuthToken))
+                throw new MyFlightbookException(Resources.Profile.errNotConfiguredBox);
+
+            using (FileStream fs = new FileStream(Path.GetTempFileName(), FileMode.Open, FileAccess.ReadWrite, FileShare.None, Int16.MaxValue, FileOptions.DeleteOnClose))
+            {
+                WriteZipOfImagesToStream(fs, activeBrand);
+                return (string)await new BoxDrive(User).PutFile(BackupImagesFilename(activeBrand), fs).ConfigureAwait(true);
+            }
+        }
+        public async Task<string> BackupBox(bool fIncludeImages, Brand activeBrand = null)
+        {
+            try
+            {
+                BoxDrive bd = new BoxDrive(User);
+
+                string result = await BackupToBox(activeBrand).ConfigureAwait(false);
+
+                if (fIncludeImages)
+                    result = await BackupImagesToBox(activeBrand ?? Branding.CurrentBrand).ConfigureAwait(false);
+
+                return result;
+            }
+            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            {
+                return ex.Message;
+            }
+        }
+        #endregion
+
         #region OneDrive
         /// <summary>
         /// Saves a zip of the user's images to OneDrive, if configured.
@@ -986,6 +1036,9 @@ namespace MyFlightbook
                     break;
                 case StorageID.GoogleDrive:
                     szResult = await BackupGoogleDrive(fIncludeImages);
+                    break;
+                case StorageID.Box:
+                    szResult = await BackupBox(fIncludeImages);
                     break;
                 default:
                     throw new InvalidOperationException("Unknown cloud service: " + sid.ToString());

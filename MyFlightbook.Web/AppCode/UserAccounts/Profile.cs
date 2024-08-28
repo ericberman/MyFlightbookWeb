@@ -613,43 +613,6 @@ namespace MyFlightbook
         /// The default cloud storage provider to use, if multiple are specified.
         /// </summary>
         public StorageID DefaultCloudStorage { get; set; }
-
-        /// <summary>
-        /// Returns the available cloud providers for this user, in priority order
-        /// </summary>
-        public IEnumerable<StorageID> AvailableCloudProviders
-        {
-            get
-            {
-                List<StorageID> lst = new List<StorageID>();
-
-                if (!String.IsNullOrEmpty(DropboxAccessToken))
-                    lst.Add(StorageID.Dropbox);
-                if (OneDriveAccessToken != null && OneDriveAccessToken.RefreshToken != null)
-                    lst.Add(StorageID.OneDrive);
-                if (GoogleDriveAccessToken != null && GoogleDriveAccessToken.RefreshToken != null)
-                    lst.Add(StorageID.GoogleDrive);
-                return lst;
-            }
-        }
-
-        /// <summary>
-        /// What is the best Cloud Storage to use?  Uses the preferred one ("DefaultCloudStoratge") if possible, else uses the first one found.
-        /// </summary>
-        public StorageID BestCloudStorage
-        {
-            get
-            {
-                List<StorageID> available = new List<StorageID>(AvailableCloudProviders);
-
-                if (available.Contains(DefaultCloudStorage))
-                    return DefaultCloudStorage;
-                else if (available.Count != 0)
-                    return available[0];
-                else 
-                    return StorageID.None;
-            }
-        }
         #endregion
 
         /// <summary>
@@ -994,6 +957,44 @@ namespace MyFlightbook
                     result.Add((int)CustomPropertyType.KnownProperties.IDBlockIn);
                 }
                 return result;
+            }
+        }
+
+        /// <summary>
+        /// Returns the available cloud providers for this user, in priority order
+        /// </summary>
+        public IEnumerable<StorageID> AvailableCloudProviders
+        {
+            get
+            {
+                List<StorageID> lst = new List<StorageID>();
+
+                if (!String.IsNullOrEmpty(DropboxAccessToken))
+                    lst.Add(StorageID.Dropbox);
+                if (OneDriveAccessToken != null && OneDriveAccessToken.RefreshToken != null)
+                    lst.Add(StorageID.OneDrive);
+                if (GoogleDriveAccessToken != null && GoogleDriveAccessToken.RefreshToken != null)
+                    lst.Add(StorageID.GoogleDrive);
+                if (PreferenceExists(BoxDrive.PrefKeyBoxAuthToken))
+                    lst.Add(StorageID.Box);
+                return lst;
+            }
+        }
+        /// <summary>
+        /// What is the best Cloud Storage to use?  Uses the preferred one ("DefaultCloudStoratge") if possible, else uses the first one found.
+        /// </summary>
+        public StorageID BestCloudStorage
+        {
+            get
+            {
+                List<StorageID> available = new List<StorageID>(AvailableCloudProviders);
+
+                if (available.Contains(DefaultCloudStorage))
+                    return DefaultCloudStorage;
+                else if (available.Count != 0)
+                    return available[0];
+                else
+                    return StorageID.None;
             }
         }
         #endregion

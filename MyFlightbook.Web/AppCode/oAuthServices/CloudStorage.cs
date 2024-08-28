@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -29,7 +30,7 @@ namespace MyFlightbook.CloudStorage
     /// <summary>
     /// Specifies the default cloud storage to use for a given user if they've authorized more than one.
     /// </summary>
-    public enum StorageID { None, Dropbox, GoogleDrive, OneDrive }
+    public enum StorageID { None, Dropbox, GoogleDrive, OneDrive, Box }
 
     /// <summary>
     /// Base class for cloud storage
@@ -59,6 +60,8 @@ namespace MyFlightbook.CloudStorage
                     return Resources.LocalizedText.CloudStorageGDrive;
                 case StorageID.OneDrive:
                     return Resources.LocalizedText.CloudStorageOneDrive;
+                case StorageID.Box:
+                    return Resources.LocalizedText.CloudStorageBox;
                 case StorageID.None:
                 default:
                     return string.Empty;
@@ -571,6 +574,303 @@ namespace MyFlightbook.CloudStorage
             }
 
             return result;
+        }
+    }
+    #endregion
+
+    #region Box
+    public class BoxDrive : CloudStorageBase
+    {
+        // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
+        [Serializable]
+        public class BoxItem
+        {
+            public string id { get; set; }
+            public string etag { get; set; }
+            public string type { get; set; }
+            public string sequence_id { get; set; }
+            public string name { get; set; }
+        }
+
+        [Serializable]
+        public class BoxEntriesResponse
+        {
+            public BoxEntry[] entries { get; set; }
+            public int limit { get; set; }
+            public int offset { get; set; }
+            public string next_marker { get; set; } = string.Empty;
+            public string prev_marker { get; set; } = string.Empty;
+            int total_count { get; set; }
+            BoxOrder[] order { get; set; } = Array.Empty<BoxOrder>();
+        }
+
+        [Serializable]
+        public class BoxOrder
+        {
+            public string by { get; set; } = string.Empty;
+            public string direction { get; set; } = "ASC";
+        }
+
+        [Serializable]
+        public class BoxUser
+        {
+            public string id { get; set; }
+            public string type { get; set; }
+            public string name { get; set; }
+            public string login { get; set; }
+        }
+
+        [Serializable]
+        public class BoxEntry : BoxItem
+        {
+            public string sha1 { get; set; }
+            public string description { get; set; }
+            public int size { get; set; }
+            public DateTime? created_at { get; set; }
+            public DateTime? modified_at { get; set; }
+            public DateTime? trashed_at { get; set; }
+            public DateTime? purged_at { get; set; }
+            public DateTime? content_created_at { get; set; }
+            public DateTime? content_modified_at { get; set; }
+            public BoxUser created_by { get; set; }
+            public BoxUser modified_by { get; set; }
+            public BoxUser owned_by { get; set; }
+            public BoxEntry parent { get; set; }
+            public string item_status { get; set; }
+            public string version_number { get; set; }
+            public int comment_count { get; set; }
+            public BoxItemPermissions permissions { get; set; }
+            public List<string> tags { get; set; }
+            public string extension { get; set; }
+            public bool is_package { get; set; }
+            public bool is_accessible_via_shared_link { get; set; }
+            public List<string> allowed_invitee_roles { get; set; }
+            public bool is_externally_owned { get; set; }
+            public bool has_collaborations { get; set; }
+            public DateTime? expires_at { get; set; }
+            public string uploader_display_name { get; set; }
+            public DateTime? disposition_at { get; set; }
+            public List<string> shared_link_permission_options { get; set; }
+        }
+
+        [Serializable]
+        public class BoxItemPermissions
+        {
+            public bool can_download { get; set; }
+            public bool can_preview { get; set; }
+            public bool can_edit { get; set; }
+            public bool can_delete { get; set; }
+            public bool can_invite_collaborator { get; set; }
+            public bool can_rename { get; set; }
+            public bool can_set_share_access { get; set; }
+            public bool can_share { get; set; }
+            public bool can_annotate { get; set; }
+            public bool can_comment { get; set; }
+            public bool can_upload { get; set; }
+            public bool can_view_annotations_all { get; set; }
+            public bool can_view_annotations_self { get; set; }
+        }
+
+        [Serializable]
+        public class BoxResponseError
+        {
+            public string type { get; set; } = string.Empty;
+            public string status { get; set; } = string.Empty;
+            public string code { get; set; } = string.Empty;
+#pragma warning disable CA1056 // URI-like properties should not be strings
+            public string help_url { get; set; } = string.Empty;
+#pragma warning restore CA1056 // URI-like properties should not be strings
+            public string message { get; set; } = string.Empty;
+            public string request_id { get; set; } = string.Empty;
+        }
+
+        public class BoxResponseException : Exception
+        {
+            public BoxResponseError BoxError { get; private set; }
+
+            public BoxResponseException(BoxResponseError err = null, Exception exception = null) : base(err?.message ?? string.Empty, exception) { BoxError = err; }
+        }
+
+        [Serializable]
+        public class BoxUploadSessionEndpoints
+        {
+            public string abort { get; set; }
+            public string commit { get; set; }
+            public string list_parts { get; set; }
+            public string log_event { get; set; }
+            public string status { get; set; }
+            public string upload_part { get; set; }
+        }
+
+        [Serializable]
+        public class BoxUploadSession
+        {
+            public string id { get; set; }
+            public string type { get; set; }
+            public int num_parts_processed { get; set; }
+            public int part_size { get; set; }
+            public DateTime? session_expires_at { get; set; }
+            public int total_parts { get; set; }
+            public BoxUploadSessionEndpoints session_endpoints { get; set; }
+        }
+
+        public const string PrefKeyBoxAuthToken = "BoxAuthToken";
+
+        public BoxDrive(Profile pf = null) : base("BoxClientID", "BoxClientSecret", "https://account.box.com/api/oauth2/authorize", "https://api.box.com/oauth2/token", Array.Empty<string>(), null, null)
+        {
+            RootPath = UserUsesFlatHierarchy(pf) ? Branding.CurrentBrand.AppName + "/" : String.Format(CultureInfo.InvariantCulture, "{0}/{1}/{2}/", Branding.CurrentBrand.AppName, DateTime.Now.ToString("yyyy", CultureInfo.CurrentCulture), DateTime.Now.ToString("MM-MMMM", CultureInfo.CurrentCulture));
+            CurrentUser = pf;
+            AuthState = pf?.GetPreferenceForKey<AuthorizationState>(PrefKeyBoxAuthToken);
+        }
+
+        private async Task<BoxUploadSession> GetResumableSession(string file_name, long file_size, string folder_id)
+        {
+            using (StringContent metadata = new StringContent(JsonConvert.SerializeObject(new { file_name = file_name, file_size = file_size, folder_id = folder_id })))
+            {
+                return (BoxUploadSession)await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri("https://upload.box.com/api/2.0/files/upload_sessions"), AuthState.AccessToken, HttpMethod.Get, metadata, (response) =>
+                {
+                    string szResult = null;
+                    try
+                    {
+                        szResult = response.Content.ReadAsStringAsync().Result;
+                        response.EnsureSuccessStatusCode();
+                        return JsonConvert.DeserializeObject<BoxUploadSession>(szResult);
+                    }
+                    catch (HttpRequestException ex)
+                    {
+                        BoxResponseError b = String.IsNullOrEmpty(szResult) ? null : JsonConvert.DeserializeObject<BoxResponseError>(szResult);
+                        throw new BoxResponseException(b, ex);
+                    }
+                });
+            }
+        }
+
+        public async Task<string> PutFile(string szFileName, Stream ms)
+        {
+            if (ms == null)
+                throw new ArgumentNullException(nameof(ms));
+
+            if (CurrentUser != null && !CheckAccessToken())
+            {
+                AuthState = await RefreshAccessToken(AuthState.RefreshToken, AuthState.Callback.ToString()).ConfigureAwait(false);
+                CurrentUser.SetPreferenceForKey(PrefKeyBoxAuthToken, AuthState);
+                CurrentUser.FCommit();
+            }
+
+            IEnumerable<string> segments = UserUsesFlatHierarchy(CurrentUser) ? new string[] { Branding.CurrentBrand.AppName } : new string[] { Branding.CurrentBrand.AppName, DateTime.Now.Year.ToString(CultureInfo.CurrentCulture), DateTime.Now.ToString("MM-MMMM", CultureInfo.CurrentCulture) };
+            string parent = await CreatePath(segments);
+            ms.Seek(0, SeekOrigin.Begin);
+
+            // see if this item already exists - that determines if we're doing an upload or an update
+            BoxItem existingItem = await FindItem(szFileName, parent, false);
+            string szEndpoint = existingItem == null ? "https://upload.box.com/api/2.0/files/content" : String.Format(CultureInfo.InvariantCulture, "https://upload.box.com/api/2.0/files/{0}/content", existingItem.id);
+
+            // TODO: consider using chunked uploads.  But that's only for >50mb, should be very very rare...
+
+            using (MultipartFormDataContent form = new MultipartFormDataContent())
+            {
+                using (StreamContent streamcontent = new StreamContent(ms))
+                {
+                    // streamcontent.Headers.ContentType = new MediaTypeHeaderValue(szMimeType);
+                    // streamcontent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data") { Name = "file", FileName = szFileName };
+                    form.Add(streamcontent, "file", szFileName);
+                    using (StringContent metadata = new StringContent(JsonConvert.SerializeObject(new { name = szFileName, parent = new { id = parent } })))
+                    {
+                        // metadata.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data") { Name = "attributes" };
+                        form.Add(metadata, "attributes");
+
+                        return (string)await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri(szEndpoint), AuthState.AccessToken, HttpMethod.Post, form, (response) =>
+                        {
+                            string szResult = string.Empty;
+                            try
+                            {
+                                szResult = response.Content.ReadAsStringAsync().Result;
+                                response.EnsureSuccessStatusCode();
+                                // success!
+                                return string.Empty;
+                            }
+                            catch (HttpRequestException ex)
+                            {
+                                if (response == null || String.IsNullOrEmpty(szResult))
+                                    throw new MyFlightbookException("Unknown error in Box.putfile - " + response.ReasonPhrase, ex);
+                                else
+                                    throw new BoxResponseException(JsonConvert.DeserializeObject<BoxResponseError>(szResult), ex);
+                            }
+                        });
+                    }
+                }
+            }
+        }
+
+        private async Task<BoxItem> FindItem(string resourceName, string parent, bool fFolder)
+        {
+            string resourceType = fFolder ? "folder" : "file";
+            NameValueCollection nvc = HttpUtility.ParseQueryString(string.Empty);
+            nvc["type"] = resourceType;
+            nvc["ancestor_folder_ids"] = parent;
+            nvc["query"] = resourceName;
+            return (BoxItem)await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri(String.Format(CultureInfo.InvariantCulture, "https://api.box.com/2.0/search?{0}", nvc.ToString())), AuthState.AccessToken, HttpMethod.Get, (response) =>
+            {
+                string szResult = null;
+                try
+                {
+                    szResult = response.Content.ReadAsStringAsync().Result;
+                    response.EnsureSuccessStatusCode();
+                    BoxEntriesResponse boxResponse = JsonConvert.DeserializeObject<BoxEntriesResponse>(szResult);
+                    List<BoxEntry> entryList = new List<BoxEntry>(boxResponse.entries);
+                    return entryList.FirstOrDefault(bi => bi.type.CompareCurrentCultureIgnoreCase(resourceType) == 0 && bi.name.CompareCurrentCultureIgnoreCase(resourceName) == 0 && bi.parent.id.CompareCurrentCultureIgnoreCase(parent) == 0);
+                }
+                catch (HttpRequestException ex)
+                {
+                    BoxResponseError b = String.IsNullOrEmpty(szResult) ? null : JsonConvert.DeserializeObject<BoxResponseError>(szResult);
+                    // Check for not found - that's not really an exception; just means we may need to create the folder.
+                    if (b.status.CompareCurrentCultureIgnoreCase("404") == 0 || b.code.CompareCurrentCultureIgnoreCase("not_found") == 0)
+                        return null;
+                    throw new BoxResponseException(b, ex);
+                }
+            });
+        }
+
+        private async Task<BoxItem> CreateFolder(string folder, string parent)
+        {
+            using (StringContent metadata = new StringContent(JsonConvert.SerializeObject(new { name = folder, parent = new { id = parent } })))
+            {
+                metadata.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                return (BoxItem)await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri("https://api.box.com/2.0/folders"), AuthState.AccessToken, HttpMethod.Post, metadata, (response) =>
+                {
+                    string szResult = null;
+                    try
+                    {
+                        szResult = response.Content.ReadAsStringAsync().Result;
+                        response.EnsureSuccessStatusCode();
+                        return JsonConvert.DeserializeObject<BoxEntry>(szResult);
+                    }
+
+                    catch (HttpRequestException ex)
+                    {
+                        if (response == null || String.IsNullOrEmpty(szResult))
+                            throw new MyFlightbookException("Unknown error in Box.putfile - " + response.ReasonPhrase, ex);
+                        else
+                            throw new BoxResponseException(JsonConvert.DeserializeObject<BoxResponseError>(szResult), ex);
+                    }
+                });
+            }
+        }
+
+        private async Task<string> CreatePath(IEnumerable<string> segments)
+        {
+            if (segments == null)
+                throw new ArgumentNullException(nameof(segments));
+
+            string parentID = "0";
+
+            // Start at the root
+            foreach (string segment in segments)
+            {
+                BoxItem bi = await FindItem(segment, parentID, true) ?? await CreateFolder(segment, parentID);
+                parentID = bi.id;
+            }
+            return parentID;
         }
     }
     #endregion

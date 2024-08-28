@@ -263,23 +263,26 @@ namespace MyFlightbook.OAuth
                 throw new MyFlightbookValidationException("Null access token returned - invalid authorization passed?");
 
             // JSonConvert can't deserialize space-delimited scopes into a hashset, so we need to do that manually.  Uggh.
-            Dictionary<string, string> d = JsonConvert.DeserializeObject<Dictionary<string, string>>(result);
+            dynamic d = JsonConvert.DeserializeObject<dynamic>(result);
 
             // REPORT Error - often it's if the URL we are redirecting to doesn't match the referrer, then it fails.  
-            if (d.TryGetValue("error", out string error) && !String.IsNullOrEmpty(error))
-                throw new MyFlightbookValidationException(error);
+            if (!String.IsNullOrEmpty(d.error ?? string.Empty))
+                throw new MyFlightbookValidationException(d.error);
 
-            AuthorizationState authstate = new AuthorizationState(d.TryGetValue("scope", out string sc) ? OAuthUtilities.SplitScopes(sc) : null)
+            string scopes = d.scope;
+            AuthorizationState authstate = new AuthorizationState(scopes != null ? OAuthUtilities.SplitScopes(scopes) : null)
             {
-                AccessToken = d.TryGetValue("access_token", out string acctok) ? acctok : string.Empty,
+                AccessToken = (string) d.access_token ?? string.Empty,
                 AccessTokenIssueDateUtc = DateTime.UtcNow
             };
-            if (d.TryGetValue("expires_in", out string value))
+
+            string expires_in = d.expires_in;
+            if (expires_in != null)
             {
-                if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int exp))
+                if (int.TryParse(expires_in, NumberStyles.Integer, CultureInfo.InvariantCulture, out int exp))
                     authstate.AccessTokenExpirationUtc = DateTime.UtcNow.AddSeconds(exp);
             }
-            authstate.RefreshToken = d.TryGetValue("refresh_token", out string reftok) ? reftok : string.Empty;
+            authstate.RefreshToken = d.refresh_token ?? string.Empty;
             authstate.Callback = String.IsNullOrEmpty(redirEndpoint) ? null : new Uri(redirEndpoint);
             return authstate;
         }
