@@ -145,8 +145,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             if (action.CompareOrdinal("deAuth") == 0)
             {
                 Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
-                if (pf.PreferenceExists(FlightCrewViewClient.AccessTokenPrefKey) && await new FlightCrewViewClient(pf.GetPreferenceForKey<AuthorizationState>(FlightCrewViewClient.AccessTokenPrefKey)).RevokeTokeBasicAuth())
+                if (pf.PreferenceExists(FlightCrewViewClient.AccessTokenPrefKey))
                 {
+                    var _ = await new FlightCrewViewClient(pf.GetPreferenceForKey<AuthorizationState>(FlightCrewViewClient.AccessTokenPrefKey)).RevokeTokeBasicAuth();
                     pf.SetPreferenceForKey(FlightCrewViewClient.AccessTokenPrefKey, null, true);
                 }
                 return Redirect("ManageFlightCrewView");
