@@ -141,6 +141,35 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dear {0}:
+        ///
+        ///The backup of your logbook on %APP_NAME% to Box was not successful.  
+        ///
+        ///The error message was:
+        ///   {1}
+        ///
+        ///{2}
+        ///
+        ///Please contact us using the &quot;Contact Us&quot; link on the website at https://%APP_URL% if you have any questions about this.
+        ///
+        ///Thank-you..
+        /// </summary>
+        internal static string BoxFailure {
+            get {
+                return ResourceManager.GetString("BoxFailure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to %APP_NAME% - Backup failed to Box.
+        /// </summary>
+        internal static string BoxFailureSubject {
+            get {
+                return ResourceManager.GetString("BoxFailureSubject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You have changed your email address from *{0}* to *{1}*.
         ///
         ///If this was not your intent, please visit [%APP_NAME%](https://%APP_URL%) and change your e-mail as appropriate.
@@ -161,7 +190,7 @@ namespace Resources {
         ///
         ///&lt;p&gt;Please note that your password is case sensitive!&lt;/p&gt;
         ///
-        ///&lt;p&gt;We also STRONGLY recommend that you change this password after signing in.  You can do this &lt;a href=&quot;https://%APP_URL%%APP_ROOT%/Member/EditProfile.aspx/pftAccount&quot;&gt;viewing your  [rest of string was truncated]&quot;;.
+        ///&lt;p&gt;We also STRONGLY recommend that you change this password after signing in.  You can do this &lt;a href=&quot;https://%APP_URL%%APP_ROOT%/mvc/prefs/account&quot;&gt;viewing your account&lt;/a&gt;.&lt;/p&gt;        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ChangePassEmail {
             get {
@@ -172,9 +201,11 @@ namespace Resources {
         /// <summary>
         ///   Looks up a localized string similar to Thank-you for contacting %APP_NAME%.
         ///
-        ///We usually respond to requests within a few hours.  
+        ///I usually respond to requests within a few hours.  
         ///
-        ///However, I will be traveling with intermittant Internet access from June 25 - July 17, so it may be a few days before you get a response in that timeframe.  The FAQ on the site addresses many common questions; please give that a try.
+        ///However, I will be traveling with intermittant Internet access from April 4-22, so I will be slower than usual to reply.  I&apos;ll be checking in daily, and can handle simple requests like account access issues pretty easily, but if you have a more involved question, it may be at the back end of that window before I can reply.
+        ///
+        ///The FAQ on the site addresses many common questions; please give that a try.
         ///.
         /// </summary>
         internal static string ContactMeResponse {
@@ -208,7 +239,9 @@ namespace Resources {
         ///
         ///Please consider continuing your support for %APP_NAME% with a new donation, and your backups will resume.
         ///
-        ///You can view your donation history and make a new donation at [%APP_NAME%](https://%APP_URL%%APP_ROOT%/Member/EditProfile.aspx/p [rest of string was truncated]&quot;;.
+        ///You can view your donation history and make a new donation at [%APP_NAME%](https://%APP_URL%%APP_ROOT%/mvc/Donate).
+        ///
+        ///Thanks ag [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string DropboxExpired {
             get {
@@ -217,7 +250,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  Dear {0}:
+        ///   Looks up a localized string similar to Dear {0}:
         ///
         ///Thank-you very much for your previous donation to %APP_NAME%.  Your support is very greatly appreciated, and helps to keep the service free!
         ///
@@ -225,7 +258,8 @@ namespace Resources {
         ///
         ///Please consider continuing your support for %APP_NAME% with a new donation, and your backups will continue uninterrupted.
         ///
-        ///You can view your donation history and make a new donation at [%APP_NAME%](https://%APP_URL%%APP_ROOT%/Member/EditProfile.aspx/pftDon [rest of string was truncated]&quot;;.
+        ///You can view your donation history and make a new donation at [%APP_NAME%](https://%APP_URL%%APP_ROOT%/Member/mvc/Donate)
+        ///.
         /// </summary>
         internal static string DropboxExpiring {
             get {
@@ -263,7 +297,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  Dear {0}:
+        ///   Looks up a localized string similar to Dear {0}:
         ///
         ///Thank-you very much for your previous donation to %APP_NAME%.  Your support is very greatly appreciated, and helps to keep the service free!
         ///
@@ -271,7 +305,8 @@ namespace Resources {
         ///
         ///Please consider continuing your support for %APP_NAME% with a new donation, and your eternal gratitude will resume.
         ///
-        ///You can view your donation history and make a new donation at [%APP_NAME%](https://%APP_URL%%APP_ROOT%/Member/EditProfile.aspx/pftD [rest of string was truncated]&quot;;.
+        ///You can view your donation history and make a new donation at [%APP_NAME%](https://%APP_URL%%APP_ROOT%/Member/mvc/Donate).
+        ///.
         /// </summary>
         internal static string EternalGratitudeExpired {
             get {
@@ -288,7 +323,7 @@ namespace Resources {
         ///
         ///Please consider continuing your support for %APP_NAME% with a new donation, and will continue to receive eternal gratitude for another year.
         ///
-        ///You can view your donation history and make a new donation at [%APP_NAME%](https://%APP_URL%%APP_ROOT%/Member/EditProfile.aspx/pftDonate).
+        ///You can view your donation history and make a new donation at [%APP_NAME%](https://%APP_URL%%APP_ROOT%/Member/mvc/Donate).
         ///
         ///.
         /// </summary>

@@ -421,6 +421,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Authorize %APP_NAME% to save backups to your Box account.
+        /// </summary>
+        internal static string AuthorizeBox {
+            get {
+                return ResourceManager.GetString("AuthorizeBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Authorize %APP_NAME% to work with CloudAhoy.
         /// </summary>
         internal static string AuthorizeCloudAhoy {
@@ -709,6 +718,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You have authorized %APP_NAME% to save backups to your Box account..
+        /// </summary>
+        internal static string BoxIsAuthed {
+            get {
+                return ResourceManager.GetString("BoxIsAuthed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to (unknown).
         /// </summary>
         internal static string CFIExpirationUnknown {
@@ -768,6 +786,15 @@ namespace Resources {
         internal static string dateOfBirthFormat {
             get {
                 return ResourceManager.GetString("dateOfBirthFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to De-authorize %APP_NAME% to save backups to your Box account.
+        /// </summary>
+        internal static string DeAuthBox {
+            get {
+                return ResourceManager.GetString("DeAuthBox", resourceCulture);
             }
         }
         
@@ -1344,6 +1371,15 @@ namespace Resources {
         internal static string errNotAuthorizedToEndorse {
             get {
                 return ResourceManager.GetString("errNotAuthorizedToEndorse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You are not configured for Box.  Please set this up in your preferences (under Profile).
+        /// </summary>
+        internal static string errNotConfiguredBox {
+            get {
+                return ResourceManager.GetString("errNotConfiguredBox", resourceCulture);
             }
         }
         

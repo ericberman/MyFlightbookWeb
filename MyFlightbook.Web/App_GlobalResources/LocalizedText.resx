@@ -667,7 +667,7 @@
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="MobileAppPromo" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Content.en\MobileAppPromo.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>Content.en\MobileAppPromo.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;iso-8859-1</value>
   </data>
   <data name="MobileAppSampleImageAltText" xml:space="preserve">
     <value>Mobile App Screenshot</value>
@@ -1314,7 +1314,7 @@
     <value>Week of {0}</value>
   </data>
   <data name="Privacy" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>content.en\privacy.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>content.en\privacy.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;iso-8859-1</value>
   </data>
   <data name="TermsAndConditions" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>content.en\termsandconditions.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
@@ -1914,13 +1914,13 @@
     <value>Discounted Ground School Coupon</value>
   </data>
   <data name="CFISigs" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Content.en\CFISigs.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>Content.en\CFISigs.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;iso-8859-1</value>
   </data>
   <data name="CFISigsTitle" xml:space="preserve">
     <value>1 Endorsements and Signed Flights</value>
   </data>
   <data name="ClubsManual" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Content.en\ClubsManual.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>Content.en\ClubsManual.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;iso-8859-1</value>
   </data>
   <data name="ClubsManualTitle" xml:space="preserve">
     <value>Overview of Clubs on MyFlightbook</value>
@@ -1987,5 +1987,8 @@
   </data>
   <data name="RequestSigsFinish" xml:space="preserve">
     <value>Send Request</value>
+  </data>
+  <data name="CloudStorageBox" xml:space="preserve">
+    <value>Box</value>
   </data>
 </root>
