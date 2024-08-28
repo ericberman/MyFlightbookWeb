@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using MyFlightbook.Encryptors;
+using static MyFlightbook.CloudStorage.BoxDrive;
 
 /******************************************************
  * 
@@ -426,6 +427,33 @@ namespace MyFlightbook.Subscriptions
             return true;
         }
 
+        private async Task<bool> BackupBox(LogbookBackup lb, Profile pf, StringBuilder sb, StringBuilder sbFailures)
+        {
+            string result = string.Empty;
+            try
+            {
+                result = await lb.BackupBox(true).ConfigureAwait(false);
+                sb.AppendFormat(CultureInfo.CurrentCulture, "Box: user {0} Logbooked backed up for user {0}", pf.UserName);
+            }
+            catch (BoxResponseException ex)
+            {
+                util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.BoxFailureSubject, ActiveBrand),
+                    Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.BoxFailure, pf.PreferredGreeting, ex.BoxError?.message ?? ex.Message), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
+                sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Box FAILED for user {0}: {1} {2}\r\n\r\n{3}\r\n\r\n", pf.UserName, ex.BoxError?.message ?? ex.Message, ex.BoxError.code ?? "(no code)", ex.BoxError?.status ?? "(no status)");
+            }
+            catch (MyFlightbookException ex)
+            {
+                util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.BoxFailureSubject, ActiveBrand),
+                    Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.BoxFailure, pf.PreferredGreeting, ex.Message, string.Empty), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
+                sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Box FAILED for user: {0}: {1} {2}\r\n\r\n", pf.UserName, ex.GetType().ToString(), ex.Message);
+            }
+            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            {
+                sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Box FAILED for user (Unknown Exception), no notification sent {0}: {1} {2}\r\n\r\n{3}\r\n\r\n", pf.UserName, ex.GetType().ToString(), ex.Message, ex.StackTrace);
+            }
+            return String.IsNullOrEmpty(result);
+        }
+
         private async Task<bool> BackupGoogleDrive(LogbookBackup lb, Profile pf, StringBuilder sb, StringBuilder sbFailures)
         {
             try
@@ -517,6 +545,9 @@ namespace MyFlightbook.Subscriptions
                                 break;
                             case StorageID.GoogleDrive:
                                 await BackupGoogleDrive(lb, pf, sb, sbFailures).ConfigureAwait(false);
+                                break;
+                            case StorageID.Box:
+                                await BackupBox(lb, pf, sb, sbFailures).ConfigureAwait(false);
                                 break;
                             default:
                                 break;

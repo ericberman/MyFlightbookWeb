@@ -65,6 +65,7 @@
             <td>
                 @if (lstCloud.Contains(StorageID.Box))
                 {
+                    // SVG above is used per https://developer.box.com/platform/appendix/branding-guidelines/
                     <p>@Branding.ReBrand(Resources.Profile.BoxIsAuthed)</p>
                     <a href="@("~/mvc/oAuth/DeAuthorizeBox".ToAbsolute())">@Branding.ReBrand(Resources.Profile.DeAuthBox)</a>
                 }

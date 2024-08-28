@@ -146,7 +146,7 @@
     <value>content.en\email\donationthankyou.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="DropboxExpired" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>content.en\email\dropboxexpired.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>content.en\email\dropboxexpired.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;iso-8859-1</value>
   </data>
   <data name="DropboxExpiring" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>content.en\email\dropboxexpiring.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
@@ -176,13 +176,16 @@
     <value>%APP_NAME% - Backup failed to GoogleDrive</value>
   </data>
   <data name="HTMLTemplate" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Content.en\Email\HTMLTemplate.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>Content.en\Email\HTMLTemplate.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;iso-8859-1</value>
   </data>
   <data name="OneDriveFailure" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>content.en\email\onedrivefailure.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="OneDriveFailureSubject" xml:space="preserve">
     <value>%APP_NAME% - Backup failed to OneDrive</value>
+  </data>
+  <data name="BoxFailureSubject" xml:space="preserve">
+    <value>%APP_NAME% - Backup failed to Box</value>
   </data>
   <data name="PasswordChanged" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>content.en\email\passwordchanged.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
@@ -192,5 +195,19 @@
   </data>
   <data name="WelcomeEmail" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>content.en\email\welcomeemail.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="BoxFailure" xml:space="preserve">
+    <value>Dear {0}:
+
+The backup of your logbook on %APP_NAME% to Box was not successful.  
+
+The error message was:
+   {1}
+
+{2}
+
+Please contact us using the "Contact Us" link on the website at https://%APP_URL% if you have any questions about this.
+
+Thank-you.</value>
   </data>
 </root>

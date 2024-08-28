@@ -1,10 +1,10 @@
-﻿@using System.Globalization
-@using MyFlightbook.CloudStorage
+﻿@using MyFlightbook.CloudStorage
 @{
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
     ViewBag.Title = Resources.LocalizedText.DownloadHeader;
     ViewBag.defaultTab = tabID.tabLogbook;
     MyFlightbook.Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+    // SVG for box below is used per https://developer.box.com/platform/appendix/branding-guidelines/
 }
 <script type="text/javascript">
     function downloadToCloud(sender) {

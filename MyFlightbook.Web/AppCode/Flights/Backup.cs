@@ -834,21 +834,14 @@ namespace MyFlightbook
         }
         public async Task<string> BackupBox(bool fIncludeImages, Brand activeBrand = null)
         {
-            try
-            {
-                BoxDrive bd = new BoxDrive(User);
+            BoxDrive bd = new BoxDrive(User);
 
-                string result = await BackupToBox(activeBrand).ConfigureAwait(false);
+            string result = await BackupToBox(activeBrand).ConfigureAwait(false);
 
-                if (fIncludeImages)
-                    result = await BackupImagesToBox(activeBrand ?? Branding.CurrentBrand).ConfigureAwait(false);
+            if (fIncludeImages)
+                result = await BackupImagesToBox(activeBrand ?? Branding.CurrentBrand).ConfigureAwait(false);
 
-                return result;
-            }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
-            {
-                return ex.Message;
-            }
+            return result;
         }
         #endregion
 
