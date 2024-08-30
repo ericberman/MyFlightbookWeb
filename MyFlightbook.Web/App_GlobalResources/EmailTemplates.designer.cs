@@ -258,7 +258,7 @@ namespace Resources {
         ///
         ///Please consider continuing your support for %APP_NAME% with a new donation, and your backups will continue uninterrupted.
         ///
-        ///You can view your donation history and make a new donation at [%APP_NAME%](https://%APP_URL%%APP_ROOT%/Member/mvc/Donate)
+        ///You can view your donation history and make a new donation at [%APP_NAME%](https://%APP_URL%%APP_ROOT%/mvc/Donate)
         ///.
         /// </summary>
         internal static string DropboxExpiring {
@@ -305,7 +305,7 @@ namespace Resources {
         ///
         ///Please consider continuing your support for %APP_NAME% with a new donation, and your eternal gratitude will resume.
         ///
-        ///You can view your donation history and make a new donation at [%APP_NAME%](https://%APP_URL%%APP_ROOT%/Member/mvc/Donate).
+        ///You can view your donation history and make a new donation at [%APP_NAME%](https://%APP_URL%%APP_ROOT%/mvc/Donate).
         ///.
         /// </summary>
         internal static string EternalGratitudeExpired {
@@ -323,7 +323,7 @@ namespace Resources {
         ///
         ///Please consider continuing your support for %APP_NAME% with a new donation, and will continue to receive eternal gratitude for another year.
         ///
-        ///You can view your donation history and make a new donation at [%APP_NAME%](https://%APP_URL%%APP_ROOT%/Member/mvc/Donate).
+        ///You can view your donation history and make a new donation at [%APP_NAME%](https://%APP_URL%%APP_ROOT%/mvc/Donate).
         ///
         ///.
         /// </summary>
