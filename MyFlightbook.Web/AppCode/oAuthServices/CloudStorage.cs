@@ -15,6 +15,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Runtime.Serialization;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -714,6 +715,21 @@ namespace MyFlightbook.CloudStorage
             public BoxUploadSessionEndpoints session_endpoints { get; set; }
         }
 
+        [Serializable]
+        public class BoxUploadPartDescription
+        {
+            public long offset { get; set; }
+            public string part_id { get; set; }
+            public string sha1 { get; set; }
+            public long size { get; set; }
+        }
+
+        [Serializable]
+        public class BoxUploadPartResponse
+        {
+            public BoxUploadPartDescription part { get; set; }
+        }
+
         public const string PrefKeyBoxAuthToken = "BoxAuthToken";
 
         public BoxDrive(Profile pf = null) : base("BoxClientID", "BoxClientSecret", "https://account.box.com/api/oauth2/authorize", "https://api.box.com/oauth2/token", Array.Empty<string>(), null, null)
@@ -723,11 +739,14 @@ namespace MyFlightbook.CloudStorage
             AuthState = pf?.GetPreferenceForKey<AuthorizationState>(PrefKeyBoxAuthToken);
         }
 
-        private async Task<BoxUploadSession> GetResumableSession(string file_name, long file_size, string folder_id)
+        private async Task<BoxUploadSession> GetResumableSession(string file_name, long file_size, string folder_id, BoxItem existingItem)
         {
-            using (StringContent metadata = new StringContent(JsonConvert.SerializeObject(new { file_name = file_name, file_size = file_size, folder_id = folder_id })))
+            string szEndpoint = existingItem == null ? "https://upload.box.com/api/2.0/files/upload_sessions" : String.Format(CultureInfo.InvariantCulture, "https://upload.box.com/api/2.0/files/{0}/upload_sessions", existingItem.id);
+            string objJSON = existingItem == null ? JsonConvert.SerializeObject(new { file_name, file_size, folder_id }) : JsonConvert.SerializeObject(new { file_size });
+            using (StringContent metadata = new StringContent(objJSON))
             {
-                return (BoxUploadSession)await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri("https://upload.box.com/api/2.0/files/upload_sessions"), AuthState.AccessToken, HttpMethod.Get, metadata, (response) =>
+                metadata.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                return (BoxUploadSession)await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri(szEndpoint), AuthState.AccessToken, HttpMethod.Post, metadata, (response) =>
                 {
                     string szResult = null;
                     try
@@ -742,6 +761,89 @@ namespace MyFlightbook.CloudStorage
                         throw new BoxResponseException(b, ex);
                     }
                 });
+            }
+        }
+
+        private const int chunkThreshold = 20000000; // size above which we will do chunked uploads
+
+        private async Task<string> PutFileChunked(string szFileName, Stream ms, string parent, BoxItem existingItem)
+        {
+            long totalBytes = ms.Length;
+            int startingByte = 0;
+
+            BoxUploadSession bus = await GetResumableSession(szFileName, totalBytes, parent, existingItem);
+
+            List<BoxUploadPartDescription> lstParts = new List<BoxUploadPartDescription>();
+
+            using (var sha1 = SHA1.Create())
+            {
+                ms.Seek(0, SeekOrigin.Begin);
+
+                bool fContinue = true;
+                Uri uploadEndpoint = new Uri(bus.session_endpoints.upload_part);
+                while (fContinue)
+                {
+                    int chunkSize = Math.Min((int)totalBytes - startingByte, bus.part_size);
+                    byte[] uploadChunk = new byte[chunkSize];
+                    int cBytes = ms.Read(uploadChunk, 0, chunkSize);
+
+                    using (ByteArrayContent bac = new ByteArrayContent(uploadChunk))
+                    {
+                        bac.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                        bac.Headers.ContentRange = new ContentRangeHeaderValue(startingByte, startingByte + cBytes - 1, totalBytes);
+                        bac.Headers.Add("digest", "sha=" + Convert.ToBase64String(sha1.ComputeHash(uploadChunk, 0, cBytes)));
+                        fContinue = (bool)await SharedHttpClient.GetResponseForAuthenticatedUri(uploadEndpoint, AuthState.AccessToken, HttpMethod.Put, bac, (response) =>
+                        {
+                            string szResult = string.Empty;
+                            try
+                            {
+                                szResult = response.Content.ReadAsStringAsync().Result;
+                                response.EnsureSuccessStatusCode();
+                                // success!
+                                BoxUploadPartResponse partResponse = JsonConvert.DeserializeObject<BoxUploadPartResponse>(szResult);
+                                lstParts.Add(partResponse.part);
+                                startingByte += cBytes;
+                                return (totalBytes - startingByte) > 0;
+                            }
+                            catch (HttpRequestException ex)
+                            {
+                                if (response == null || String.IsNullOrEmpty(szResult))
+                                    throw new MyFlightbookException("Unknown error in Box.put file chunked - " + response.ReasonPhrase, ex);
+                                else
+                                    throw new BoxResponseException(JsonConvert.DeserializeObject<BoxResponseError>(szResult), ex);
+                            }
+                        });
+                    }
+                }
+
+                ms.Seek(0, SeekOrigin.Begin);
+                string shaFull = "sha=" + Convert.ToBase64String(sha1.ComputeHash(ms));
+
+                string szParts = JsonConvert.SerializeObject(new { parts = lstParts });
+                // Finally commit the session
+                using (StringContent sc = new StringContent(szParts))
+                {
+                    sc.Headers.Add("digest", shaFull);
+                    sc.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                    return (string)await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri(bus.session_endpoints.commit), AuthState.AccessToken, HttpMethod.Post, sc, (response) =>
+                    {
+                        string szResult = string.Empty;
+                        try
+                        {
+                            szResult = response.Content.ReadAsStringAsync().Result;
+                            response.EnsureSuccessStatusCode();
+                            // success!
+                            return string.Empty;
+                        }
+                        catch (HttpRequestException ex)
+                        {
+                            if (response == null || String.IsNullOrEmpty(szResult))
+                                throw new MyFlightbookException("Unknown error in Box.commit file chunked - " + response.ReasonPhrase, ex);
+                            else
+                                throw new BoxResponseException(JsonConvert.DeserializeObject<BoxResponseError>(szResult), ex);
+                        }
+                    });
+                }
             }
         }
 
@@ -763,20 +865,18 @@ namespace MyFlightbook.CloudStorage
 
             // see if this item already exists - that determines if we're doing an upload or an update
             BoxItem existingItem = await FindItem(szFileName, parent, false);
+
+            if (ms.Length > chunkThreshold)
+                return await PutFileChunked(szFileName, ms, parent, existingItem);
+
             string szEndpoint = existingItem == null ? "https://upload.box.com/api/2.0/files/content" : String.Format(CultureInfo.InvariantCulture, "https://upload.box.com/api/2.0/files/{0}/content", existingItem.id);
-
-            // TODO: consider using chunked uploads.  But that's only for >50mb, should be very very rare...
-
             using (MultipartFormDataContent form = new MultipartFormDataContent())
             {
                 using (StreamContent streamcontent = new StreamContent(ms))
                 {
-                    // streamcontent.Headers.ContentType = new MediaTypeHeaderValue(szMimeType);
-                    // streamcontent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data") { Name = "file", FileName = szFileName };
                     form.Add(streamcontent, "file", szFileName);
                     using (StringContent metadata = new StringContent(JsonConvert.SerializeObject(new { name = szFileName, parent = new { id = parent } })))
                     {
-                        // metadata.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data") { Name = "attributes" };
                         form.Add(metadata, "attributes");
 
                         return (string)await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri(szEndpoint), AuthState.AccessToken, HttpMethod.Post, form, (response) =>
