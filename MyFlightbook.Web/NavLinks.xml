@@ -46,7 +46,7 @@
         <Roles></Roles>
       </Item>
       <Item>
-        <Link>~/Member/StartingTotals.aspx</Link>
+        <Link>~/mvc/import/startingtotals</Link>
         <ID>lbtStartingTotals</ID>
         <Roles></Roles>
       </Item>

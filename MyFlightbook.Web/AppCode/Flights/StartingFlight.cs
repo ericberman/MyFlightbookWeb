@@ -1,11 +1,14 @@
-﻿using System;
-using System.Globalization;
+﻿using MyFlightbook.Currency;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2020 MyFlightbook LLC
+ * Copyright (c) 2015-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -52,7 +55,120 @@ namespace MyFlightbook.StartingFlights
 
         public override string ToString()
         {
-            return String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}: Total: {1}", RepresentativeAircraft.ToString(), TotalFlightTime);
+            return String.Format(CultureInfo.InvariantCulture, "{0}: Total: {1}", RepresentativeAircraft.ToString(), TotalFlightTime);
+        }
+
+        /// <summary>
+        /// Deserialize a starting flight that is represented as an sequence of strings.  MUST be
+        ///  - 1st string: the ID of the aircraft
+        ///  - 2nd string: the PIC time
+        ///  - 3rd string: the SIC time
+        ///  - 4th string: the CFI time
+        ///  - 5th string: the Total time
+        /// </summary>
+        /// <param name="rgrow">The array of strings</param>
+        /// <param name="lstRa">A</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        private static StartingFlight DeserializeStartingFlightRow(string[] rgrow, DateTime date, string userName, List<RepresentativeAircraft> lstRa)
+        {
+            if (rgrow == null)
+                throw new ArgumentNullException(nameof(rgrow));
+            if (rgrow.Length != 5)
+                throw new InvalidOperationException("Each row needs exactly 5 elements");
+            int idAircraft = Convert.ToInt32(rgrow[0], CultureInfo.InvariantCulture);
+            return new StartingFlight(userName, lstRa.FirstOrDefault(ra => ra.ExampleAircraft.AircraftID == idAircraft))
+            {
+                PIC = rgrow[1].SafeParseDecimal(),
+                SIC = rgrow[2].SafeParseDecimal(),
+                CFI = rgrow[3].SafeParseDecimal(),
+                TotalFlightTime = rgrow[4].SafeParseDecimal(),
+                Date = date
+            };
+        }
+
+        /// <summary>
+        /// Deserializes a JSON-encoded array of string arrays into a set of starting flights.
+        /// Each string array in the big array MUST be 5 elements:
+        ///  - 1st string: the ID of the aircraft
+        ///  - 2nd string: the PIC time
+        ///  - 3rd string: the SIC time
+        ///  - 4th string: the CFI time
+        ///  - 5th string: the Total time
+        /// </summary>
+        /// <param name="StartingTotalRows">The jsonified array</param>
+        /// <param name="userName"></param>
+        /// <param name="mode"></param>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        public static IEnumerable<StartingFlight> DeserializeStartingFlights(string StartingTotalRows, string userName, RepresentativeAircraft.RepresentativeTypeMode mode, DateTime date)
+        {
+            if (String.IsNullOrEmpty(StartingTotalRows))
+                throw new ArgumentNullException(nameof(StartingTotalRows));
+            if (string.IsNullOrEmpty(userName)) 
+                throw new ArgumentNullException(nameof(userName));
+            if (!date.HasValue())
+                throw new InvalidOperationException("Date must have a value");
+
+            // Get the representative aircraft for this mode for quick access in creating the flights.
+            List<RepresentativeAircraft> lstRa = RepresentativeAircraft.RepresentativeAircraftForUser(userName, mode);
+
+            string[][] rows = JsonConvert.DeserializeObject<string[][]>(StartingTotalRows);
+            List<StartingFlight> lst = new List<StartingFlight>();
+            foreach (string[] rgrow in rows)
+                lst.Add(DeserializeStartingFlightRow(rgrow, date, userName, lstRa));
+            return lst;
+        }
+
+        public static void CommitStartingFlights(IEnumerable<StartingFlight> lst)
+        {
+            if (lst == null)
+                throw new ArgumentNullException(nameof(lst));
+            foreach (StartingFlight sf in lst)
+            {
+                if (sf.PIC + sf.SIC + sf.CFI + sf.TotalFlightTime > 0)
+                    sf.FCommit();
+            }
+        }
+
+        public static void DeleteStartingFlights(IEnumerable<StartingFlight> lst, string szUser)
+        {
+            if (lst == null)
+                throw new ArgumentNullException(nameof(lst));
+            foreach (StartingFlight sf in lst)
+                if (!sf.IsNewFlight)
+                {
+                    FDeleteEntry(sf.FlightID, szUser);
+                    sf.FlightID = idFlightNew;
+                }
+        }
+
+        /// <summary>
+        /// Returns a 2-element array of totals-list items, the first doesn't include the set of starting flights, and the second one does.
+        /// </summary>
+        /// <param name="flights"></param>
+        /// <param name="szUser"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static IEnumerable<TotalsItem>[] BeforeAndAfterTotalsForUser(IEnumerable<StartingFlight> flights, string szUser)
+        {
+            if (szUser == null)
+                throw new ArgumentNullException(nameof(szUser));
+            if (flights == null)
+                throw new ArgumentNullException(nameof(flights));
+            List<IEnumerable<TotalsItem>>  lstResult = new List<IEnumerable<TotalsItem>>();
+            UserTotals ut = new UserTotals(szUser, new FlightQuery(szUser), true);
+            // get the "before" totals
+            ut.DataBind();
+            lstResult.Add(ut.Totals.ToArray());
+
+            // get the "after" totals
+            CommitStartingFlights(flights);
+            ut.DataBind();
+            lstResult.Add(ut.Totals.ToArray());
+            DeleteStartingFlights(flights, szUser);
+            return lstResult.ToArray();
         }
     }
 
@@ -142,7 +258,7 @@ ORDER BY catclasstype ASC, Capabilities ASC, ModelSignature DESC
 
         public override string ToString()
         {
-            return String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}: {1} ({2}). {3}", Name, ExampleAircraft.TailNumber, ExampleAircraft.ModelCommonName, Descriptor);
+            return String.Format(CultureInfo.InvariantCulture, "{0}: {1} ({2}). {3}", Name, ExampleAircraft.TailNumber, ExampleAircraft.ModelCommonName, Descriptor);
         }
 
         public static List<RepresentativeAircraft> RepresentativeAircraftForUser(string szUser, RepresentativeTypeMode mode)

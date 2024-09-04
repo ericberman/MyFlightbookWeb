@@ -254,7 +254,7 @@
         </tr>
         <tr>
             <td style="text-align:center;"><img src="@("~/images/startingtotals.png".ToAbsolute())" alt="@Resources.LocalizedText.StartingTotalsLink" /></td>
-            <td><a id="lnkStartingTotals" style="font-weight: bold;" href="@("~/Member/StartingTotals.aspx".ToAbsolute())">@Resources.LocalizedText.StartingTotalsLink</a></td>
+            <td><a id="lnkStartingTotals" style="font-weight: bold;" href="@("~/mvc/import/startingtotals".ToAbsolute())">@Resources.LocalizedText.StartingTotalsLink</a></td>
             <td>@Branding.ReBrand(Resources.LocalizedText.LogbookStartingTotalsDescription)</td>
         </tr>
         <tr>
@@ -281,19 +281,22 @@ $(() => {
         <table style="border-spacing: 10px;">
             <tr>
                 <td><img src="@("~/Public/tabimages/logbookTab.png".ToAbsolute())" style="width: 24px;" alt="@Resources.LocalizedText.WelcomeEnterFlights" /></td>
-                <td>@Resources.LocalizedText.WelcomeEnterFlights<br />@Resources.LocalizedText.ORSeparator</td>
+                <td>@Resources.LocalizedText.WelcomeEnterFlights</td>
             </tr>
+            <tr><td colspan="2" style="font-weight: bold; text-align: center">@Resources.LocalizedText.ORSeparator</td></tr>
             <tr>
                 <td><img src="@("~/Public/tabimages/AircraftTab.png".ToAbsolute())" style="width: 24px;" alt="@Resources.LocalizedText.WelcomeEnterAircraft" /></td>
-                <td><a href="@("~/mvc/Aircraft".ToAbsolute())">@Resources.LocalizedText.WelcomeEnterAircraft</a><br />@Resources.LocalizedText.ORSeparator</td>
+                <td><a href="@("~/mvc/Aircraft".ToAbsolute())">@Resources.LocalizedText.WelcomeEnterAircraft</a></td>
             </tr>
+            <tr><td colspan="2" style="font-weight: bold; text-align: center">@Resources.LocalizedText.ORSeparator</td></tr>
             <tr>
                 <td><img src="@("~/images/import.png".ToAbsolute())" alt="@Resources.LocalizedText.WelcomeImportFlights" /></td>
-                <td><a href="@("~/Member/Import.aspx".ToAbsolute())">@Resources.LocalizedText.WelcomeImportFlights</a><br />@Resources.LocalizedText.ORSeparator</td>
+                <td><a href="@("~/Member/Import.aspx".ToAbsolute())">@Resources.LocalizedText.WelcomeImportFlights</a></td>
             </tr>
+            <tr><td colspan="2" style="font-weight: bold; text-align: center">@Resources.LocalizedText.ORSeparator</td></tr>
             <tr>
                 <td><img src="@("~/images/startingtotals.png".ToAbsolute())" alt="@Resources.LocalizedText.WelcomeSetStartingTotals" /></td>
-                <td><a href="@("~/Member/StartingTotals.aspx".ToAbsolute())">@Resources.LocalizedText.WelcomeSetStartingTotals</a></td>
+                <td><a href="@("~/mvc/import/startingtotals".ToAbsolute())">@Resources.LocalizedText.WelcomeSetStartingTotals</a></td>
             </tr>
         </table>
         <div style="text-align:center"><button type="button" onclick="javascript: dismissDlg('#' + 'pnlWelcomeNewUser'); return false;">@Resources.LocalizedText.Close</button></div>

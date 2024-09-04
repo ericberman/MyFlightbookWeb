@@ -352,7 +352,7 @@
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="ImportTableDescription" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Content.en\ImportTableDescription.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>Content.en\ImportTableDescription.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;iso-8859-1</value>
   </data>
   <data name="importTableHeader" xml:space="preserve">
     <value>{0} - Setting up to import</value>
@@ -1914,5 +1914,101 @@ Proceed with import?</value>
   </data>
   <data name="HobbsStartShort" xml:space="preserve">
     <value>Hobbs Start</value>
+  </data>
+  <data name="StartingTotalsTitle" xml:space="preserve">
+    <value>Starting Totals</value>
+  </data>
+  <data name="StartingTotalsStep1" xml:space="preserve">
+    <value>1. Overview</value>
+  </data>
+  <data name="StartingTotalsStep2" xml:space="preserve">
+    <value>2. Get Aircraft Ready</value>
+  </data>
+  <data name="StartingTotalsStep3" xml:space="preserve">
+    <value>3. Options</value>
+  </data>
+  <data name="StartingTotalsStep4" xml:space="preserve">
+    <value>4. Specify Times</value>
+  </data>
+  <data name="StartingTotalsStep5" xml:space="preserve">
+    <value>5. Preview &amp; Finish</value>
+  </data>
+  <data name="StartingTotalsOverview1" xml:space="preserve">
+    <value>Have a paper logbook with all of your historical flights? While it's best to get them all in the system, that can be a lot of work.</value>
+  </data>
+  <data name="StartingTotalsOverview2" xml:space="preserve">
+    <value>You can instead initialize your logbook with starting flights that represent your flying totals to date, so that your totals are up to date.</value>
+  </data>
+  <data name="StartingTotalsOverviewWhyStartingFlights" xml:space="preserve">
+    <value>Why use starting flights instead of just using starting values?</value>
+  </data>
+  <data name="StartingTotalsInputAircraft" xml:space="preserve">
+    <value>First, make sure that all of the aircraft that you've flown are in your account</value>
+  </data>
+  <data name="StartingTotalsInputAircraft1" xml:space="preserve">
+    <value>You don't need every aircraft, but you should have at least one that represents each type of total you would like to represent in your totals.</value>
+  </data>
+  <data name="StartingTotalsInputAircraft2" xml:space="preserve">
+    <value>For example, if all of your flying is in single-engine aircraft, one of the C-172's that you've flown may be sufficient.</value>
+  </data>
+  <data name="StartingTotalsInputAircraft3" xml:space="preserve">
+    <value>There is also a special set of generic aircraft in the system by the pseudo manufacturer "Generic", which can be useful for lumping together common characteristics without picking a specific model. E.g., "Generic - ASEL" can be used to represent single-engine piston time that is not complex/retract/tailwheel, or "Generic - AMEL Turbine" for multi-engine turbine time.</value>
+  </data>
+  <data name="StartingTotalsInputAircraft4" xml:space="preserve">
+    <value>If you have flown Boeing 747's and Bell R-22 helicopters, though, you probably want to capture those totals separately, so make sure that one of the 747's and one of the R-22's is in your list.</value>
+  </data>
+  <data name="StartingTotalsInputAircraft5" xml:space="preserve">
+    <value>If you don't remember the tailnumber of an aircraft, or if you have flown many different aircraft of a particular model (such as an airline pilot might do), you may wish to create "anonymous" aircraft. These aircraft have no specific tailnumber.</value>
+  </data>
+  <data name="StartingTotalsAddEditAircraft" xml:space="preserve">
+    <value>Add/Edit/Import Aircraft</value>
+  </data>
+  <data name="StartingTotalsYouAircraftPrompt" xml:space="preserve">
+    <value>Your Aircraft</value>
+  </data>
+  <data name="StartingTotalsNoAircraft" xml:space="preserve">
+    <value>You do not currently have any aircraft set up for your account!</value>
+  </data>
+  <data name="StartingTotalsPickDate" xml:space="preserve">
+    <value>Pick a date to use for the starting flights.  Good dates to choose are either (a) the date of your first flight, or (b) the date of the last flight in your logbook.</value>
+  </data>
+  <data name="StartingTotalsGranularity" xml:space="preserve">
+    <value>How would you like to enter your totals?</value>
+  </data>
+  <data name="StartingTotalsDetailSimple" xml:space="preserve">
+    <value>Simple</value>
+  </data>
+  <data name="StartingTotalsDetailMedium" xml:space="preserve">
+    <value>Medium</value>
+  </data>
+  <data name="StartingTotalsDetailDetailed" xml:space="preserve">
+    <value>Detailed</value>
+  </data>
+  <data name="StartingTotalsDetailSimpleDesc" xml:space="preserve">
+    <value>Enter starting totals by category/class and, if appropriate, type.  This is the simplest to do, but is also the coarsest approximation of various categories of flying time.</value>
+  </data>
+  <data name="StartingTotalsDetailMediumDesc" xml:space="preserve">
+    <value>Enter starting totals by category/class/type, but also by aircraft capabilities. For example, you can break out retract or high-performance time. This is more work than simple, but will provide a better approximation of your flying totals.</value>
+  </data>
+  <data name="StartingTotalsDetailDetailedDesc" xml:space="preserve">
+    <value>Enter starting totals based on time in each model of aircraft you have flown. This is the most complex, but will also provide the best approximation of your flying totals.</value>
+  </data>
+  <data name="StartingTotalsTimesPrompt" xml:space="preserve">
+    <value>Fill in your times below</value>
+  </data>
+  <data name="StartingTotalsTimesNote" xml:space="preserve">
+    <value>For simplicity, this focuses on the top-level totals. After you create your starting totals, you will have "Catch-up" flights which you can edit to include whatever additional details you like.</value>
+  </data>
+  <data name="StartingTotalsNoAircraftForTimes" xml:space="preserve">
+    <value>No aircraft (other than training devices) are set up in your account.  To enter totals, please add some of the aircraft that you have flown.</value>
+  </data>
+  <data name="StartingTotalsPreviewBefore" xml:space="preserve">
+    <value>Totals BEFORE changes are made</value>
+  </data>
+  <data name="StartingTotalsPreviewAfter" xml:space="preserve">
+    <value>Totals AFTER changes are made</value>
+  </data>
+  <data name="StartingTotalsPreviewLegend" xml:space="preserve">
+    <value>Totals that will change based on your selection are highlighted below</value>
   </data>
 </root>

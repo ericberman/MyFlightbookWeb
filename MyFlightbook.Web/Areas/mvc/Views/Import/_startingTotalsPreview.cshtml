@@ -1,0 +1,36 @@
+﻿@using MyFlightbook.Currency
+@{
+    IEnumerable<TotalsItem> rgBefore = ViewBag.beforeTotals;
+    IEnumerable<TotalsItem> rgAfter = ViewBag.afterTotals;
+    bool fUseHHMM = MyFlightbook.Profile.GetUser(User.Identity.Name).UsesHHMM;
+
+    if ((rgBefore?.Any() ?? false) && (rgAfter?.Any() ?? false))
+    {
+        <p>@Resources.LogbookEntry.StartingTotalsPreviewLegend</p>
+        <table class="stickyHeaderTable">
+            <thead>
+                <tr>
+                    <th class="headerBase gvhDefault gvhLeft"></th>
+                    <th class="headerBase gvhDefault gvhLeft">@Resources.LogbookEntry.StartingTotalsPreviewBefore</th>
+                    <th class="headerBase gvhDefault gvhLeft">@Resources.LogbookEntry.StartingTotalsPreviewAfter</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (TotalsItem ti in rgAfter)
+                {
+                    TotalsItem tiBefore = rgBefore.FirstOrDefault(ti2 => ti2.Description.CompareCurrentCultureIgnoreCase(ti.Description) == 0);
+                    <tr>
+                        <td style="font-weight: bold;">@ti.Description</td>
+                        <td>@(tiBefore?.ValueString(fUseHHMM) ?? string.Empty)</td>
+                        <td style="@((tiBefore?.Value ?? 0) == ti.Value ? string.Empty : "background-color: yellow; font-weight: bold;")">@ti.ValueString(fUseHHMM)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>@Resources.LogbookEntry.StartingTotalsNoAircraftForTimes</p>
+    }
+}
+

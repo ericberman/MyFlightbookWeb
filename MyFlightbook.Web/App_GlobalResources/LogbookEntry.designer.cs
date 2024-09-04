@@ -4860,6 +4860,294 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add/Edit/Import Aircraft.
+        /// </summary>
+        internal static string StartingTotalsAddEditAircraft {
+            get {
+                return ResourceManager.GetString("StartingTotalsAddEditAircraft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Detailed.
+        /// </summary>
+        internal static string StartingTotalsDetailDetailed {
+            get {
+                return ResourceManager.GetString("StartingTotalsDetailDetailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter starting totals based on time in each model of aircraft you have flown. This is the most complex, but will also provide the best approximation of your flying totals..
+        /// </summary>
+        internal static string StartingTotalsDetailDetailedDesc {
+            get {
+                return ResourceManager.GetString("StartingTotalsDetailDetailedDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Medium.
+        /// </summary>
+        internal static string StartingTotalsDetailMedium {
+            get {
+                return ResourceManager.GetString("StartingTotalsDetailMedium", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter starting totals by category/class/type, but also by aircraft capabilities. For example, you can break out retract or high-performance time. This is more work than simple, but will provide a better approximation of your flying totals..
+        /// </summary>
+        internal static string StartingTotalsDetailMediumDesc {
+            get {
+                return ResourceManager.GetString("StartingTotalsDetailMediumDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Simple.
+        /// </summary>
+        internal static string StartingTotalsDetailSimple {
+            get {
+                return ResourceManager.GetString("StartingTotalsDetailSimple", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter starting totals by category/class and, if appropriate, type.  This is the simplest to do, but is also the coarsest approximation of various categories of flying time..
+        /// </summary>
+        internal static string StartingTotalsDetailSimpleDesc {
+            get {
+                return ResourceManager.GetString("StartingTotalsDetailSimpleDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to How would you like to enter your totals?.
+        /// </summary>
+        internal static string StartingTotalsGranularity {
+            get {
+                return ResourceManager.GetString("StartingTotalsGranularity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First, make sure that all of the aircraft that you&apos;ve flown are in your account.
+        /// </summary>
+        internal static string StartingTotalsInputAircraft {
+            get {
+                return ResourceManager.GetString("StartingTotalsInputAircraft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You don&apos;t need every aircraft, but you should have at least one that represents each type of total you would like to represent in your totals..
+        /// </summary>
+        internal static string StartingTotalsInputAircraft1 {
+            get {
+                return ResourceManager.GetString("StartingTotalsInputAircraft1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For example, if all of your flying is in single-engine aircraft, one of the C-172&apos;s that you&apos;ve flown may be sufficient..
+        /// </summary>
+        internal static string StartingTotalsInputAircraft2 {
+            get {
+                return ResourceManager.GetString("StartingTotalsInputAircraft2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is also a special set of generic aircraft in the system by the pseudo manufacturer &quot;Generic&quot;, which can be useful for lumping together common characteristics without picking a specific model. E.g., &quot;Generic - ASEL&quot; can be used to represent single-engine piston time that is not complex/retract/tailwheel, or &quot;Generic - AMEL Turbine&quot; for multi-engine turbine time..
+        /// </summary>
+        internal static string StartingTotalsInputAircraft3 {
+            get {
+                return ResourceManager.GetString("StartingTotalsInputAircraft3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you have flown Boeing 747&apos;s and Bell R-22 helicopters, though, you probably want to capture those totals separately, so make sure that one of the 747&apos;s and one of the R-22&apos;s is in your list..
+        /// </summary>
+        internal static string StartingTotalsInputAircraft4 {
+            get {
+                return ResourceManager.GetString("StartingTotalsInputAircraft4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you don&apos;t remember the tailnumber of an aircraft, or if you have flown many different aircraft of a particular model (such as an airline pilot might do), you may wish to create &quot;anonymous&quot; aircraft. These aircraft have no specific tailnumber..
+        /// </summary>
+        internal static string StartingTotalsInputAircraft5 {
+            get {
+                return ResourceManager.GetString("StartingTotalsInputAircraft5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You do not currently have any aircraft set up for your account!.
+        /// </summary>
+        internal static string StartingTotalsNoAircraft {
+            get {
+                return ResourceManager.GetString("StartingTotalsNoAircraft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No aircraft (other than training devices) are set up in your account.  To enter totals, please add some of the aircraft that you have flown..
+        /// </summary>
+        internal static string StartingTotalsNoAircraftForTimes {
+            get {
+                return ResourceManager.GetString("StartingTotalsNoAircraftForTimes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Have a paper logbook with all of your historical flights? While it&apos;s best to get them all in the system, that can be a lot of work..
+        /// </summary>
+        internal static string StartingTotalsOverview1 {
+            get {
+                return ResourceManager.GetString("StartingTotalsOverview1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can instead initialize your logbook with starting flights that represent your flying totals to date, so that your totals are up to date..
+        /// </summary>
+        internal static string StartingTotalsOverview2 {
+            get {
+                return ResourceManager.GetString("StartingTotalsOverview2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Why use starting flights instead of just using starting values?.
+        /// </summary>
+        internal static string StartingTotalsOverviewWhyStartingFlights {
+            get {
+                return ResourceManager.GetString("StartingTotalsOverviewWhyStartingFlights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pick a date to use for the starting flights.  Good dates to choose are either (a) the date of your first flight, or (b) the date of the last flight in your logbook..
+        /// </summary>
+        internal static string StartingTotalsPickDate {
+            get {
+                return ResourceManager.GetString("StartingTotalsPickDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Totals AFTER changes are made.
+        /// </summary>
+        internal static string StartingTotalsPreviewAfter {
+            get {
+                return ResourceManager.GetString("StartingTotalsPreviewAfter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Totals BEFORE changes are made.
+        /// </summary>
+        internal static string StartingTotalsPreviewBefore {
+            get {
+                return ResourceManager.GetString("StartingTotalsPreviewBefore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Totals that will change based on your selection are highlighted below.
+        /// </summary>
+        internal static string StartingTotalsPreviewLegend {
+            get {
+                return ResourceManager.GetString("StartingTotalsPreviewLegend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1. Overview.
+        /// </summary>
+        internal static string StartingTotalsStep1 {
+            get {
+                return ResourceManager.GetString("StartingTotalsStep1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 2. Get Aircraft Ready.
+        /// </summary>
+        internal static string StartingTotalsStep2 {
+            get {
+                return ResourceManager.GetString("StartingTotalsStep2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 3. Options.
+        /// </summary>
+        internal static string StartingTotalsStep3 {
+            get {
+                return ResourceManager.GetString("StartingTotalsStep3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 4. Specify Times.
+        /// </summary>
+        internal static string StartingTotalsStep4 {
+            get {
+                return ResourceManager.GetString("StartingTotalsStep4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 5. Preview &amp; Finish.
+        /// </summary>
+        internal static string StartingTotalsStep5 {
+            get {
+                return ResourceManager.GetString("StartingTotalsStep5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For simplicity, this focuses on the top-level totals. After you create your starting totals, you will have &quot;Catch-up&quot; flights which you can edit to include whatever additional details you like..
+        /// </summary>
+        internal static string StartingTotalsTimesNote {
+            get {
+                return ResourceManager.GetString("StartingTotalsTimesNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fill in your times below.
+        /// </summary>
+        internal static string StartingTotalsTimesPrompt {
+            get {
+                return ResourceManager.GetString("StartingTotalsTimesPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Starting Totals.
+        /// </summary>
+        internal static string StartingTotalsTitle {
+            get {
+                return ResourceManager.GetString("StartingTotalsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your Aircraft.
+        /// </summary>
+        internal static string StartingTotalsYouAircraftPrompt {
+            get {
+                return ResourceManager.GetString("StartingTotalsYouAircraftPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Totals this page:.
         /// </summary>
         internal static string SubtotalComment {

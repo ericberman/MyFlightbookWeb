@@ -1,4 +1,5 @@
 ﻿using MyFlightbook.Schedule;
+using MyFlightbook.SponsoredAds;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -78,6 +79,13 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         #region shared Partial views
+        [ChildActionOnly]
+        public ActionResult RenderSponsoredAd(int id)
+        {
+            ViewBag.sponsoredAd = SponsoredAd.GetAd(id) ?? new SponsoredAd();
+            return PartialView("_sponsoredAd");
+        }
+
         [ChildActionOnly]
         public ActionResult RenderTooltip(string tipID, string tipTextHTML, string tipTextSrcID = "", string tipPrompt = "[?]")
         {

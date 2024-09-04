@@ -1,0 +1,11 @@
+﻿@using MyFlightbook.SponsoredAds
+@using System.Globalization
+@{
+    SponsoredAd ad = ViewBag.sponsoredAd;
+    ad.AddImpression();
+}
+<div style="padding: 5px;">
+    <div class="fineprint" style="text-align:center">@Resources.LocalizedText.SponsoredAdHeader</div>
+    <a href="@String.Format(CultureInfo.InvariantCulture, "~/mvc/internal/AdTracker/{0}", ad.ID).ToAbsolute()" target="_blank"><img src="@ad.ImagePath.ToAbsolute()" /></a>
+</div>
+

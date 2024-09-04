@@ -792,7 +792,6 @@
     <Content Include="Member\ImpAircraftService.aspx" />
     <Content Include="Member\Import.aspx" />
     <Content Include="Member\PrintView.aspx" />
-    <Content Include="Member\StartingTotals.aspx" />
     <Content Include="Public\CSS\jquery.passwordRequirements.css" />
     <Content Include="Public\CSS\printAirline.css" />
     <Content Include="Public\CSS\printHongKong.css" />
@@ -1608,6 +1607,10 @@
     <Content Include="Areas\mvc\Views\Prefs\mainPilotInfo.cshtml" />
     <Content Include="Areas\mvc\Views\Prefs\_pilotInfoNextMedical.cshtml" />
     <Content Include="Areas\mvc\Views\Prefs\_pilotInfoBasicMedEvents.cshtml" />
+    <Content Include="Areas\mvc\Views\Import\startingTotals.cshtml" />
+    <Content Include="Areas\mvc\Views\MFBTemplate\_sponsoredAd.cshtml" />
+    <Content Include="Areas\mvc\Views\Import\_startingTotalsForm.cshtml" />
+    <Content Include="Areas\mvc\Views\Import\_startingTotalsPreview.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -1948,6 +1951,7 @@
     <Compile Include="Areas\mvc\Controllers\FlightEditController.cs" />
     <Compile Include="Areas\mvc\Controllers\FlightsController.cs" />
     <Compile Include="Areas\mvc\Controllers\ImageController.cs" />
+    <Compile Include="Areas\mvc\Controllers\ImportController.cs" />
     <Compile Include="Areas\mvc\Controllers\InternalController.cs" />
     <Compile Include="Areas\mvc\Controllers\MFBTemplateController.cs" />
     <Compile Include="Areas\mvc\Controllers\oAuthController.cs" />
@@ -2446,13 +2450,6 @@
     <Compile Include="Member\PrintView.aspx.designer.cs">
       <DependentUpon>PrintView.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Member\StartingTotals.aspx.cs">
-      <DependentUpon>StartingTotals.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\StartingTotals.aspx.designer.cs">
-      <DependentUpon>StartingTotals.aspx</DependentUpon>
-    </Compile>
     <Compile Include="OAuth\oAuthToken.aspx.cs">
       <DependentUpon>oAuthToken.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2835,7 +2832,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Member\App_LocalResources\ImpAircraft.aspx.resx" />
-    <Content Include="Member\App_LocalResources\StartingTotals.aspx.resx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\mvc\Data\" />

@@ -1,0 +1,181 @@
+﻿@using System.Globalization
+@using MyFlightbook.StartingFlights
+@{
+    ViewBag.defaultTab = tabID.tabLogbook;
+    ViewBag.Title = Resources.LogbookEntry.StartingTotalsTitle;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    IEnumerable<Aircraft> rgac = new UserAircraft(User.Identity.Name).GetAircraftForUser();
+}
+<script type="text/javascript">
+    function serializeProposedTimes() {
+        var rows = [];
+        $("#startingTotalsForm tbody > tr").each(function () {
+            var rowVal = [];
+            var row = $(this);
+            rowVal.push(row.find("input[name='ra']").val());
+            rowVal.push(row.find("input[name='decPIC']").val());
+            rowVal.push(row.find("input[name='decSIC']").val());
+            rowVal.push(row.find("input[name='decCFI']").val());
+            rowVal.push(row.find("input[name='decTotal']").val());
+            rows.push(rowVal);
+        });
+        $("#hdnSerializedRows").val(JSON.stringify(rows));
+    }
+
+    function previewProposedTimes() {
+        serializeProposedTimes();
+        $.ajax({
+            url: "@Url.Action("PreviewStartingTotals", "Import")",
+            type: "POST", data: $("#frmStartingTotals").serialize(), dataType: "html", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            error: function (xhr, status, error) {
+                window.alert(xhr.responseText);
+            },
+            success: function (r) {
+                $("#startingTotalsPreview").html(r);
+            }
+        });
+    }
+
+    function submitProposedTimes() {
+        serializeProposedTimes();
+        $.ajax({
+            url: "@Url.Action("CommitStartingTotals", "Import")",
+            type: "POST", data: $("#frmStartingTotals").serialize(), dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            error: function (xhr, status, error) {
+                window.alert(xhr.responseText);
+            },
+            success: function () {
+                window.location = "@("~/mvc/flights?ft=Totals".ToAbsolute()))";
+            }
+        });
+    }
+
+    function getFormForMode() {
+        var params = new Object();
+        params.mode = $("input[name='mode']:checked").val();
+        $.ajax({
+            url: '@Url.Action("StartingTotalsFormForMode", "Import")',
+            type: "POST", data: JSON.stringify(params), dataType: "html", contentType: "application/json",
+            error: function (xhr, status, error) { $("#divFormErr").text(xhr.responseText); },
+            complete: function (response) { },
+            success: function (response) {
+                $("#startingTotalsForm").html(response);
+            }
+        });
+    }
+
+    var wiz = null;
+    $(() => {
+        wiz = wizardizeContainer({
+            headerContainer: $("#wizardHead"),
+            stepsContainer: $("#wizardSteps"),
+            navContainer: $("#wizNav"),
+            initialStep: 0,
+            nextButton: $("#btnWizNext"),
+            prevButton: $("#btnWizPrev"),
+            finishButton: $("#btnWizFinish"),
+            onStepChange: function (oldStep, newStep) {
+                $("#btnWizNext").prop("disabled", newStep >= 1 && @Json.Encode(!rgac.Any()));
+                if (newStep == 3)
+                    getFormForMode();
+                else if (newStep == 4)
+                    previewProposedTimes();
+                else if (newStep == 5)
+                    submitProposedTimes();
+                return true;
+            },
+            onFinish: function () {
+                window.location = submitProposedTimes();
+            }
+        });
+    });
+</script>
+<div id="wizardHead">
+    <span>@Resources.LogbookEntry.StartingTotalsStep1&nbsp; </span>
+    <span>@Resources.LogbookEntry.StartingTotalsStep2&nbsp; </span>
+    <span>@Resources.LogbookEntry.StartingTotalsStep3&nbsp; </span>
+    <span>@Resources.LogbookEntry.StartingTotalsStep4&nbsp; </span>
+    <span>@Resources.LogbookEntry.StartingTotalsStep5&nbsp; </span>
+</div>
+<div id="wizardSteps" style="margin-top: 10pt;">
+    <div>
+        <p>@Resources.LogbookEntry.StartingTotalsOverview1</p>
+        <p>@Resources.LogbookEntry.StartingTotalsOverview2</p>
+        <p>
+            <span style="font-weight: bold;">@Resources.LogbookEntry.StartingTotalsOverviewWhyStartingFlights</span>
+            @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "divWhyStarting" });}
+        </p>
+        <div id="divWhyStarting" style="display: none;">@Html.Raw(Branding.ReBrand(Resources.LocalizedText.WhyStartingFlights))</div>
+    </div>
+    <div style="display: none;">
+        <p>@Resources.LogbookEntry.StartingTotalsInputAircraft</p>
+        <ul>
+            <li>
+                <p>@Resources.LogbookEntry.StartingTotalsInputAircraft1</p>
+                <p>@Resources.LogbookEntry.StartingTotalsInputAircraft2</p>
+            </li>
+            <li><p>@Resources.LogbookEntry.StartingTotalsInputAircraft3</p></li>
+            <li><p>@Resources.LogbookEntry.StartingTotalsInputAircraft4</p></li>
+            <li><p>@Resources.LogbookEntry.StartingTotalsInputAircraft5</p></li>
+        </ul>
+        <p><a href="@("~/mvc/Aircraft".ToAbsolute())">@Resources.LogbookEntry.StartingTotalsAddEditAircraft</a></p>
+        <p>
+            <span style="font-weight: bold;">@Resources.LogbookEntry.StartingTotalsYouAircraftPrompt</span>
+            @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = !rgac.Any(), targetID = "divStartingAircraft" });}
+        </p>
+        <div id="divStartingAircraft" style="@(rgac.Any() ? "display: none;" : string.Empty)">
+            @if(rgac.Any())
+            {
+                foreach (Aircraft ac in rgac)
+                {
+                    <p><span style="font-weight: bold;">@ac.TailNumber</span> @ac.ModelDescription - @ac.ModelCommonName @ac.InstanceTypeDescription  </p>
+                }
+            }
+            else
+            {
+                <p style="font-weight: bold;">@Resources.LogbookEntry.StartingTotalsNoAircraft</p>
+            }
+        </div>
+    </div>
+    <div style="display: none;">
+        @using (Html.BeginForm("", "Import", FormMethod.Post, new { name = "frmStartingTotals", id = "frmStartingTotals" }))
+        {
+            @Html.AntiForgeryToken()
+            <input type="hidden" value="" id="hdnSerializedRows" name="startingTotalRows" />
+            <p>@Resources.LogbookEntry.StartingTotalsPickDate</p>
+            <p>@{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "txtStartingTotalsDate", name = "startingTotalDate", value = DateTime.Now.Date.AddYears(-1) });}</p>
+            <p>@Resources.LogbookEntry.StartingTotalsGranularity</p>
+            <p><label><input type="radio" name="mode" checked value="@RepresentativeAircraft.RepresentativeTypeMode.CatClassType" /><span style="font-weight: bold;">@Resources.LogbookEntry.StartingTotalsDetailSimple</span> @Resources.LogbookEntry.StartingTotalsDetailSimpleDesc</label></p>
+            <p><label><input type="radio" name="mode" value="@RepresentativeAircraft.RepresentativeTypeMode.CatClassCapabilities" /><span style="font-weight: bold;">@Resources.LogbookEntry.StartingTotalsDetailMedium</span> @Resources.LogbookEntry.StartingTotalsDetailMediumDesc</label></p>
+            <p><label><input type="radio" name="mode" value="@RepresentativeAircraft.RepresentativeTypeMode.ByModel" /><span style="font-weight: bold;">@Resources.LogbookEntry.StartingTotalsDetailDetailed</span> @Resources.LogbookEntry.StartingTotalsDetailDetailedDesc</label></p>
+        }
+    </div>
+    <div style="display: none;">
+        <p><span style="font-weight: bold;">@Resources.LogbookEntry.StartingTotalsTimesPrompt</span> @Resources.LogbookEntry.StartingTotalsTimesNote</p>
+        <div class="error" id="divFormErr"></div>
+        <div id="startingTotalsForm"><img src="@("~/images/progress.gif".ToAbsolute())" /></div>
+    </div>
+    <div style="display: none;">
+        <div id="startingTotalsPreview"></div>
+    </div>
+</div>
+<div id="wizNav" style="width: 100%; text-align: center; margin-top: 18pt;">
+    <button type="button" id="btnWizPrev" style="display:none;">@Resources.LocalizedText.PreviousPrompt</button>
+    <button type="button" id="btnWizNext">@Resources.LocalizedText.NextPrompt</button>
+    <button type="button" id="btnWizFinish" style="display:none;">@Resources.LocalizedText.FinishPrompt</button>
+</div>
+<div style="margin-left:auto; margin-right:auto; margin-top: 28pt; max-width: 600px;">
+    <div id="pnlAcuLog" class="calloutSmall calloutSponsor shadowed" style="text-align:left;">
+        <table>
+            <tr>
+                <td style="max-width:300px;">
+                    <h3>@Branding.ReBrand(Resources.LogbookEntry.ImportAculogHeader)</h3>
+                    @Html.Raw(Branding.ReBrand(Resources.LogbookEntry.ImportAculogPromo).Linkify())
+                </td>
+                <td>
+                    @{ Html.RenderAction("RenderSponsoredAd", "MFBTemplate", new { id = 2 });}
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

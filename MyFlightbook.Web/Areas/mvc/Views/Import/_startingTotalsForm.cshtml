@@ -1,0 +1,68 @@
+﻿@using System.Globalization
+@using MyFlightbook.StartingFlights
+@{
+    IEnumerable<StartingFlight> rgsf = ViewBag.startingFlights;
+    bool fHHMM = MyFlightbook.Profile.GetUser(User.Identity.Name).UsesHHMM;
+    RepresentativeAircraft.RepresentativeTypeMode mode = ViewBag.mode;
+
+    if (rgsf.Any())
+    {
+        <table class="stickyHeaderTable stickyHeaderAlternate">
+            <thead>
+                <tr>
+                    <th class="headerBase gvhDefault gvhLeft"></th>
+                    <th class="headerBase gvhDefault gvhLeft">@Resources.LogbookEntry.FieldPIC</th>
+                    <th class="headerBase gvhDefault gvhLeft">@Resources.LogbookEntry.FieldSIC</th>
+                    <th class="headerBase gvhDefault gvhLeft">@Resources.LogbookEntry.FieldCFI</th>
+                    <th class="headerBase gvhDefault gvhLeft">@Resources.LogbookEntry.FieldTotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (StartingFlight sf in rgsf)
+                {
+                    string szPrimary = string.Empty;
+                    string szSecondary = string.Empty;
+                    switch (mode)
+                    {
+                        case RepresentativeAircraft.RepresentativeTypeMode.CatClassType:
+                            szPrimary = sf.RepresentativeAircraft.Name;
+                            szSecondary = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.StartingFlightAircraftExample, sf.RepresentativeAircraft.ExampleAircraft.ModelDescription);
+                            break;
+                        case RepresentativeAircraft.RepresentativeTypeMode.CatClassCapabilities:
+                            szPrimary = sf.RepresentativeAircraft.Name + (String.IsNullOrEmpty(sf.RepresentativeAircraft.Descriptor) ? string.Empty : String.Format(CultureInfo.InvariantCulture, Resources.LocalizedText.LocalizedParentheticalWithSpace, sf.RepresentativeAircraft.Descriptor));
+                            szSecondary = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.StartingFlightAircraftExample, sf.RepresentativeAircraft.ExampleAircraft.ModelCommonName);
+                            break;
+                        case RepresentativeAircraft.RepresentativeTypeMode.ByModel:
+                            szPrimary = sf.RepresentativeAircraft.ExampleAircraft.ModelCommonName;
+                            szSecondary = sf.RepresentativeAircraft.ExampleAircraft.ModelDescription;
+                            break;
+                    }
+                    <tr>
+                        <td>
+                            <div style="font-weight: bold;">@szPrimary</div>
+                            <div class="fineprint">@szSecondary</div>
+                            <input type="hidden" value="@sf.RepresentativeAircraft.ExampleAircraft.AircraftID" name="ra" />
+                        </td>
+                        <td>
+                            @{ Html.RenderAction("RenderDecimalField", "MFBTemplate", new { mode = fHHMM ? EditMode.HHMMFormat : EditMode.Decimal, name = "decPIC" });}
+                        </td>
+                        <td>
+                            @{ Html.RenderAction("RenderDecimalField", "MFBTemplate", new { mode = fHHMM ? EditMode.HHMMFormat : EditMode.Decimal, name = "decSIC" });}
+                        </td>
+                        <td>
+                            @{ Html.RenderAction("RenderDecimalField", "MFBTemplate", new { mode = fHHMM ? EditMode.HHMMFormat : EditMode.Decimal, name = "decCFI" });}
+                        </td>
+                        <td>
+                            @{ Html.RenderAction("RenderDecimalField", "MFBTemplate", new { mode = fHHMM ? EditMode.HHMMFormat : EditMode.Decimal, name = "decTotal" });}
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>@Resources.LogbookEntry.StartingTotalsNoAircraftForTimes</p>
+    }
+}
+
