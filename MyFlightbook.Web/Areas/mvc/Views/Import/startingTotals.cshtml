@@ -76,7 +76,7 @@
             finishButton: $("#btnWizFinish"),
             onStepChange: function (oldStep, newStep) {
                 $("#btnWizNext").prop("disabled", newStep >= 1 && @Json.Encode(!rgac.Any()));
-                if (newStep == 3)
+                if (newStep == 3 && oldStep == 2)
                     getFormForMode();
                 else if (newStep == 4)
                     previewProposedTimes();
