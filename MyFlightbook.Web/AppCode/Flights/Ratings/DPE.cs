@@ -5,7 +5,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2023 MyFlightbook LLC
+ * Copyright (c) 2013-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -40,7 +40,13 @@ namespace MyFlightbook.RatingsProgress
                 new DPECommASES(),
                 new DPECommAMES(),
                 new DPECommHelicopter(),
-                new DPECommGlider()
+                new DPECommGlider(),
+                new DPEASELPPL800095C(),
+                new DPEAMELPPL800095C(),
+                new DPEASESPPL800095C(),
+                new DPEAMESPPL800095C(),
+                new DPEHelicopter800095C(),
+                new DPEGyroplane800095C()
                 };
             }
         }
@@ -48,12 +54,16 @@ namespace MyFlightbook.RatingsProgress
 
     /// <summary>
     /// Progress towards becoming a DPE.  
-    /// See www.faa.gov/other_visit/aviation_industry/designees_delegations/resources/forms/media/8710-9.pdf or
-    /// http://www.faa.gov/documentLibrary/media/Order/Order_8900_2A_CHG_1-3.pdf
+    /// See FAA order 800095C or 8900.2C for more information.
     /// </summary>
     [Serializable]
     internal abstract class DPEBase : MilestoneProgress
     {
+        protected const string baseFAR800095C = "Order 8000.95C";
+        protected const string baseFAR89002C = "Order 8900.2C";
+        protected const string href800095C = "https://www.faa.gov/regulations_policies/orders_notices/index.cfm/go/document.information/documentID/1042133";
+        protected const string href89002C = "https://www.faa.gov/regulations_policies/orders_notices/index.cfm/go/document.information/documentid/1033969";
+
         internal class DPEThresholds
         {
             public int PIC { get; set; }
@@ -85,12 +95,12 @@ namespace MyFlightbook.RatingsProgress
         protected MilestoneItem miCFIITime { get; set; }
         protected MilestoneItem miCFIITimeInCategory { get; set; }
 
-        public DPEBase(DPEThresholds dpet, CategoryClass.CatClassID ccid, string szFarRef)
+        public DPEBase(DPEThresholds dpet, CategoryClass.CatClassID ccid, string szFarRef, string baseFAR, string farLink)
         {
             if (dpet == null)
                 throw new ArgumentNullException(nameof(dpet));
-            BaseFAR = "Order 8900.2A";
-            FARLink = "https://www.faa.gov/documentLibrary/media/Order/Order_8900_2A_CHG_1-3.pdf";
+            BaseFAR = baseFAR;
+            FARLink = farLink;
             string szResolved = ResolvedFAR(szFarRef);
             catClass = CategoryClass.CategoryClassFromID(ccid);
             string szCatClass = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, catClass.Category, catClass.Class);
@@ -166,7 +176,7 @@ namespace MyFlightbook.RatingsProgress
     [Serializable]
     internal abstract class DPEAirplaneBasePPL : DPEBase
     {
-        public DPEAirplaneBasePPL(CategoryClass.CatClassID ccid, string szTitle) : base(new DPEThresholds() { PIC = 2000, PICCategory = 1000, PICClass = 300, PICNight = 100, PICPastYear = 300, CFICategory = 500, CFIClass = 100 }, ccid, " Figure 7-2A")
+        public DPEAirplaneBasePPL(CategoryClass.CatClassID ccid, string szTitle) : base(new DPEThresholds() { PIC = 2000, PICCategory = 1000, PICClass = 300, PICNight = 100, PICPastYear = 300, CFICategory = 500, CFIClass = 100 }, ccid, " Figure 7-2A", baseFAR89002C, href89002C)
         {
             Title = szTitle;
         }
@@ -212,13 +222,51 @@ namespace MyFlightbook.RatingsProgress
             GeneralDisclaimer = Resources.MilestoneProgress.DPEMultiHelicopterDisclaimer;
         }
     }
+
+    [Serializable]
+    internal abstract class DPEAirplaneBasePPL800095C : DPEBase
+    {
+        public DPEAirplaneBasePPL800095C(CategoryClass.CatClassID ccid, string szTitle) : base(new DPEThresholds() { PIC = 2000, PICCategory = 1500, PICClass = 500, PICNight = 100, PICComplexTime = 200, PICPastYear = 100, CFICategory = 500, CFIClass = 100 }, ccid, " Table 3-5", baseFAR800095C, href800095C)
+        {
+            GeneralDisclaimer = Resources.MilestoneProgress.DPEAirplane800095CDisclaimer;
+            Title = szTitle;
+        }
+
+        public override Collection<MilestoneItem> Milestones
+        {
+            get { return new Collection<MilestoneItem>() { miPIC, miPICCategory, miPICClass, miPICNight, miPICComplexTime, miPICPastYear, miCFICategory, miCFIClass }; }
+        }
+    }
+
+    [Serializable]
+    internal class DPEASELPPL800095C : DPEAirplaneBasePPL800095C {
+        public DPEASELPPL800095C() : base(CategoryClass.CatClassID.ASEL, Resources.MilestoneProgress.TitleDPEPPLCOMM800095CASEL) { }
+    }
+
+    [Serializable]
+    internal class DPEAMELPPL800095C : DPEAirplaneBasePPL800095C
+    {
+        public DPEAMELPPL800095C() : base(CategoryClass.CatClassID.AMEL, Resources.MilestoneProgress.TitleDPEPPLCOMM800095CAMEL) { }
+    }
+
+    [Serializable]
+    internal class DPEASESPPL800095C : DPEAirplaneBasePPL800095C
+    {
+        public DPEASESPPL800095C() : base(CategoryClass.CatClassID.ASES, Resources.MilestoneProgress.TitleDPEPPLCOMM800095CASES) { }
+    }
+
+    [Serializable]
+    internal class DPEAMESPPL800095C : DPEAirplaneBasePPL800095C
+    {
+        public DPEAMESPPL800095C() : base(CategoryClass.CatClassID.AMES, Resources.MilestoneProgress.TitleDPEPPLCOMM800095CAMES) { }
+    }
     #endregion
 
     #region Rotorcraft PPL
     [Serializable]
     internal abstract class DPERotorcraftBasePPL : DPEBase
     {
-        public DPERotorcraftBasePPL(CategoryClass.CatClassID ccid, string szTitle) : base(new DPEThresholds() { PIC = 1000, PICCategory = 500, PICClass = (ccid == CategoryClass.CatClassID.Gyroplane ? 150 : 250), PICPastYear = 100, CFIClass = 200 }, ccid, " Figure 7-2A")
+        public DPERotorcraftBasePPL(CategoryClass.CatClassID ccid, string szTitle) : base(new DPEThresholds() { PIC = 1000, PICCategory = 500, PICClass = (ccid == CategoryClass.CatClassID.Gyroplane ? 150 : 250), PICPastYear = 100, CFIClass = 200 }, ccid, " Figure 7-2A", baseFAR89002C, href89002C)
         {
             GeneralDisclaimer = Resources.MilestoneProgress.DPEMultiHelicopterDisclaimer;
             Title = szTitle;
@@ -247,13 +295,41 @@ namespace MyFlightbook.RatingsProgress
     {
         public DPEGyrpolanePPL() : base(CategoryClass.CatClassID.Gyroplane, Resources.MilestoneProgress.TitleDPEPPLGyroplane) { }
     }
+
+    [Serializable]
+    internal abstract class DPERotorcraft800095CBase : DPEBase
+    {
+        public DPERotorcraft800095CBase(CategoryClass.CatClassID ccid, string szTitle) : base(new DPEThresholds() { PIC = 2000, PICCategory = 500, PICClass = (ccid == CategoryClass.CatClassID.Gyroplane ? 150 : 250), PICPastYear = 100, CFIClass = ccid == CategoryClass.CatClassID.Gyroplane ? 200 : 250 }, ccid, " Table 3-5", baseFAR800095C, href800095C)
+        {
+            GeneralDisclaimer = Resources.MilestoneProgress.DPERotorcraft800095CDisclaimer;
+            Title = szTitle;
+
+        }
+
+        public override Collection<MilestoneItem> Milestones
+        {
+            get { return new Collection<MilestoneItem>() { miPIC, miPICCategory, miPICClass, miPICPastYear, miCFIClass }; }
+        }
+    }
+
+    [Serializable]
+    internal class DPEHelicopter800095C : DPERotorcraft800095CBase
+    {
+        public DPEHelicopter800095C() : base(CategoryClass.CatClassID.Helicopter, Resources.MilestoneProgress.TitleDPEPPLCOMM800095CHelicopter) { }
+    }
+
+    [Serializable]
+    internal class DPEGyroplane800095C : DPERotorcraft800095CBase
+    {
+        public DPEGyroplane800095C() : base(CategoryClass.CatClassID.Gyroplane, Resources.MilestoneProgress.TitleDPEPPLCOMM800095CGyroplane) { }
+    }
     #endregion
 
     [Serializable]
     internal class DPEGliderPPL : DPEBase
     {
 
-        public DPEGliderPPL() : base(new DPEThresholds() { PIC = 500, PICClass = 200, PICPastYear = 10, PICFlightsInClassPriorYear = 10, CFIClass = 100 }, CategoryClass.CatClassID.Glider, " Figure 7-2A")
+        public DPEGliderPPL() : base(new DPEThresholds() { PIC = 500, PICClass = 200, PICPastYear = 10, PICFlightsInClassPriorYear = 10, CFIClass = 100 }, CategoryClass.CatClassID.Glider, " Figure 7-2A", baseFAR89002C, href89002C)
         {
             Title = Resources.MilestoneProgress.TitleDPEPPLGlider;
         }
@@ -276,7 +352,7 @@ namespace MyFlightbook.RatingsProgress
     [Serializable]
     internal abstract class DPEAirplaneCommBase : DPEBase
     {
-        public DPEAirplaneCommBase(CategoryClass.CatClassID ccid, string szTitle) : base(new DPEThresholds() { PIC = 2000, PICCategory = 1000, PICClass = 500, PICNight = 100, PICComplexTime = 200, PICInstrumentTime = 100, PICPastYear = 300, CFICategory =500, CFIClass= 100, CFIITime = 250, CFIITimeInCategory = 200 }, ccid, " Figure 7-3A")
+        public DPEAirplaneCommBase(CategoryClass.CatClassID ccid, string szTitle) : base(new DPEThresholds() { PIC = 2000, PICCategory = 1000, PICClass = 500, PICNight = 100, PICComplexTime = 200, PICInstrumentTime = 100, PICPastYear = 300, CFICategory =500, CFIClass= 100, CFIITime = 250, CFIITimeInCategory = 200 }, ccid, " Figure 7-3A", baseFAR89002C, href89002C)
         {
             Title = szTitle;
             GeneralDisclaimer = Resources.MilestoneProgress.DPECommInstrumentDisclaimer;
@@ -318,7 +394,7 @@ namespace MyFlightbook.RatingsProgress
     [Serializable]
     internal class DPECommHelicopter : DPEBase
     {
-        internal DPECommHelicopter() : base(new DPEThresholds() { PIC = 2000, PICClass = 500, PICInstrumentTime = 100, PICPastYear = 100, CFIClass = 250, CFIITimeInCategory = 50 }, CategoryClass.CatClassID.Helicopter, " Figure 7-3A")
+        internal DPECommHelicopter() : base(new DPEThresholds() { PIC = 2000, PICClass = 500, PICInstrumentTime = 100, PICPastYear = 100, CFIClass = 250, CFIITimeInCategory = 50 }, CategoryClass.CatClassID.Helicopter, " Figure 7-3A", baseFAR89002C, href89002C)
         {
             Title = Resources.MilestoneProgress.TitleDPECommHelicopter;
             GeneralDisclaimer = Resources.MilestoneProgress.DPECommInstrumentDisclaimer + Resources.LocalizedText.LocalizedSpace + Resources.MilestoneProgress.DPEMultiHelicopterDisclaimer;
@@ -334,7 +410,7 @@ namespace MyFlightbook.RatingsProgress
     [Serializable]
     internal class DPECommGlider : DPEBase
     {
-        internal DPECommGlider() : base(new DPEThresholds() { PIC = 500, PICClass = 250, PICPastYear = 20, PICFlightsInClassPriorYear = 50, CFIClass = 100 }, CategoryClass.CatClassID.Glider, " Figure 7-2B")
+        internal DPECommGlider() : base(new DPEThresholds() { PIC = 500, PICClass = 250, PICPastYear = 20, PICFlightsInClassPriorYear = 50, CFIClass = 100 }, CategoryClass.CatClassID.Glider, " Figure 7-2B", baseFAR89002C, href89002C)
         {
             Title = Resources.MilestoneProgress.TitleDPECommGlider;
         }
