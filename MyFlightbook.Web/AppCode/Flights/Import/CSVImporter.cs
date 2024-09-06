@@ -87,7 +87,7 @@ namespace MyFlightbook.ImportFlights
         private readonly static string[] colDate = { "Date", "FLT_DATE", "Date Flown", "flight_date" };
         private readonly static string[] colTail = { "Tail Number", "Registration", "Tail", "Ident", "SERIAL_NUM", "ACFT", "Aircraft ID", "Aircraft Ident", "Reg", "Reg.", "AIRCRAFT REGISTRATION", "aircraft_registration", "tailNo", "aircraft_tail_number", "Tail #", "Tail No.", "AC_REG" };
         private readonly static string[] colAircraftID = { "Aircraft ID" };
-        private readonly static string[] colTotal = { "Total Flight Time", "Total Time", "TotalDuration", "Total Duration", "Flt Time", "Block", "HRS", "TIME FLOWN", "FltTime", "Total", "total_time", "totalFlightTime", "flight_time", "total_flight_time", "Duration", "Flight Time", "Blk Hrs", "Blk" };
+        private readonly static string[] colTotal = { "Total Flight Time", "Total Time", "TotalDuration", "Total Duration", "Flt Time", "Block", "HRS", "TIME FLOWN", "FltTime", "Total", "total_time", "totalFlightTime", "flight_time", "total_flight_time", "Duration", "Flight Time", "Blk Hrs", "Blk", "Duration of Flight" };
         private readonly static string[] colApproaches = { "Approaches", "NumApproaches", "Inst App (D/N)", "Inst App", "IAP", "APPROACHES & TYPE", "instrumentApproaches", "Approaches Instrument", "Num App..", "Num App.", "IFR Appr" };
         private readonly static string[] colHold = { "Hold", "Holds", "Holding", "Holding Patterns", "nbr_hold", "HLD" };
         private readonly static string[] colLandings = { "Landings", "LAND_STD", "Lnd" };
@@ -105,7 +105,7 @@ namespace MyFlightbook.ImportFlights
         private readonly static string[] colRoute = { "Route", "flight_route", "Via", "ROUTE OF FLIGHT", "LOC_INTM", "Route of Flight Via", "Enroute", "Dept-Dest" };
         private readonly static string[] colFrom = { "From", "flight_from", "Departure", "Origin", "LOC_FROM", "DepPlace", "departure_airport_name", "departure_airport", "departureAirport", "Route of Flight From", "ADEP", "AF_DEP" };
         private readonly static string[] colTo = { "To", "flight_to", "Arrival", "Dest", "Destination", "LOC_TO", "ArrPlace", "arrival_airport_name", "arrival_airport", "arrivalAirport", "Route of Flight To", "ADES", "AF_ARR" };
-        private readonly static string[] colComment = { "Comments", "Remarks", "remarks_and_endorsements", "Comment", "Remark" };
+        private readonly static string[] colComment = { "Comments", "Remarks", "remarks_and_endorsements", "Comment", "Remark", "Notes" };
         private readonly static string[] colCatClassOverride = { "Alternate Cat/Class", "Cat/Class Override", "CatClassOverride" };
         private readonly static string[] colEngineStart = { "Engine Start", "Depart" };
         private readonly static string[] colEngineEnd = { "Engine End", "Arrive" };
