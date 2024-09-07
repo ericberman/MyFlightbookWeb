@@ -30,12 +30,19 @@ else
     }
     else
     {
-<script type="text/javascript">
+        <script type="text/javascript">
         $(() => { navigateToPendingPage(0, @pageSize, "Date"); });
-</script>
+        </script>
         <input type="hidden" id="hdnLastPendingSortDir" value="Ascending" />
         <input type="hidden" id="hdnPendingSortField" value="Date" />
         <p>
+            <div style="float:right;">
+                <a style="vertical-align: middle" href="@Url.Action("DownloadPendingCSV", "Flights")">
+                    <img src="@("~/images/download.png".ToAbsolute())" style="padding-right: 5px; vertical-align:middle" />
+                    <img src="@("~/images/csvicon_sm.png".ToAbsolute())" style="padding-right: 5px; vertical-align:middle" />
+                    <span style="vertical-align:middle">@Resources.LocalizedText.DownloadLogbookCSV</span>
+                </a>
+            </div>
             @(rgpf.Count() == 1 ? Resources.LogbookEntry.NumberOfFlightsOne : String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.NumberOfFlights, rgpf.Count())) <img src="@("~/images/progress.gif".ToAbsolute())" style="display:none; height: 12pt; width: 12pt;" id="prgPendingPager" />
         </p>
         <div id="divPendingTable"></div>

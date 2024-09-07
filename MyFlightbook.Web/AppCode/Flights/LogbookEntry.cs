@@ -80,6 +80,16 @@ namespace MyFlightbook
         public int CatClassOverride { get; set; }
 
         /// <summary>
+        /// Utility method for checking if the category/class is overridden; not needed for LogbookEntryDisplay, but needed here for pending flights or anything else that relies on LogbookEntry class
+        /// </summary>
+        /// <param name="mm">If present, provides a more accurate answer by verifying that the specified catclass is actually different from the model's cat class</param>
+        /// <returns></returns>
+        public bool IsOverridenCatClass(MakeModel mm)
+        {
+            return CatClassOverride > 0 && (int)(mm?.CategoryClassID ?? 0) != CatClassOverride;
+        }
+
+        /// <summary>
         /// Number of night-time full-stop landings
         /// </summary>
         public int NightLandings { get; set; }

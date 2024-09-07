@@ -422,6 +422,11 @@ ORDER BY model ASC;", string.Join(",", modelIDs)));
         /// </summary>
         public string FamilyName { get; set; } = string.Empty;
 
+        public string FamilyDisplay
+        {
+            get { return String.IsNullOrEmpty(FamilyName) ? Model : FamilyName; }
+        }
+
         /// <summary>
         /// ID of the category/class
         /// </summary>

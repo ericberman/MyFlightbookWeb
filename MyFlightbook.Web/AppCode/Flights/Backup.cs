@@ -37,12 +37,15 @@ namespace MyFlightbook
         protected Profile User { get; set; }
 
         public bool IncludeImages { get; set; } = true;
+
+        private IEnumerable<LogbookEntry> entriesToUse { get; set; }
         #endregion
 
-        protected LogbookBackupBase(Profile user, bool fIncludeIMages = true)
+        protected LogbookBackupBase(Profile user, bool fIncludeIMages, IEnumerable<LogbookEntry> flightsToUse)
         {
             User = user ?? throw new ArgumentNullException(nameof(user));
             IncludeImages = fIncludeIMages;
+            entriesToUse = flightsToUse;
         }
 
         #region ZipFileHelpers
@@ -435,12 +438,81 @@ namespace MyFlightbook
 
         /// <summary>
         /// The name for the backup file
+        /// <paramref name="activeBrand">The active brand, current brand if null</paramref>
+        /// <paramref name="suffix">Any additional suffix to the file name</paramref>
         /// </summary>
-        public string BackupFilename(Brand activeBrand = null)
+        public string BackupFilename(Brand activeBrand = null, string suffix = null)
         {
             activeBrand = activeBrand ?? Branding.CurrentBrand;
             string szBaseName = String.Format(CultureInfo.InvariantCulture, "{0}-{1}{2}", activeBrand.AppName, User.UserFullName, User.OverwriteCloudBackup ? string.Empty : String.Format(CultureInfo.InvariantCulture, "-{0}", DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))).Replace(" ", "-");
-            return String.Format(CultureInfo.InvariantCulture, "{0}.csv", RegexUtility.UnSafeFileChars.Replace(szBaseName, string.Empty));
+            return String.Format(CultureInfo.InvariantCulture, "{0}{1}.csv", RegexUtility.UnSafeFileChars.Replace(szBaseName, string.Empty), RegexUtility.UnSafeFileChars.Replace(suffix ?? string.Empty, string.Empty));
+        }
+
+        private static void PrepCSVDataTable(DataTable dt, bool fShowAltCatClass, IEnumerable<CustomPropertyType> lst)
+        {
+            if (HttpContext.Current?.Session != null)
+                HttpContext.Current.Session[MFBConstants.keyDecimalSettings] = DecimalFormat.Adaptive;
+
+            // add the header columns 
+            dt.Columns.Add(new DataColumn("Date", typeof(string)));
+            dt.Columns.Add(new DataColumn("Flight ID", typeof(string)));
+            dt.Columns.Add(new DataColumn("Model", typeof(string)));
+            dt.Columns.Add(new DataColumn("ICAO Model", typeof(string)));
+            dt.Columns.Add(new DataColumn("Tail Number", typeof(string)));
+            dt.Columns.Add(new DataColumn("Display Tail", typeof(string)));
+            dt.Columns.Add(new DataColumn("Aircraft ID", typeof(string)));
+            dt.Columns.Add(new DataColumn("Category/Class", typeof(string)));
+            if (fShowAltCatClass)
+                dt.Columns.Add(new DataColumn("Alternate Cat/Class", typeof(string)));
+            dt.Columns.Add(new DataColumn("Approaches", typeof(string)));
+            dt.Columns.Add(new DataColumn("Hold", typeof(string)));
+            dt.Columns.Add(new DataColumn("Landings", typeof(string)));
+            dt.Columns.Add(new DataColumn("FS Night Landings", typeof(string)));
+            dt.Columns.Add(new DataColumn("FS Day Landings", typeof(string)));
+            dt.Columns.Add(new DataColumn("X-Country", typeof(string)));
+            dt.Columns.Add(new DataColumn("Night", typeof(string)));
+            dt.Columns.Add(new DataColumn("IMC", typeof(string)));
+            dt.Columns.Add(new DataColumn("Simulated Instrument", typeof(string)));
+            dt.Columns.Add(new DataColumn("Ground Simulator", typeof(string)));
+            dt.Columns.Add(new DataColumn("Dual Received", typeof(string)));
+            dt.Columns.Add(new DataColumn("CFI", typeof(string)));
+            dt.Columns.Add(new DataColumn("SIC", typeof(string)));
+            dt.Columns.Add(new DataColumn("PIC", typeof(string)));
+            dt.Columns.Add(new DataColumn("Total Flight Time", typeof(string)));
+            dt.Columns.Add(new DataColumn("CFI Time (HH:MM)", typeof(string)));
+            dt.Columns.Add(new DataColumn("SIC Time (HH:MM)", typeof(string)));
+            dt.Columns.Add(new DataColumn("PIC (HH:MM)", typeof(string)));
+            dt.Columns.Add(new DataColumn("Total Flight Time (HH:MM)", typeof(string)));
+            dt.Columns.Add(new DataColumn("Route", typeof(string)));
+            dt.Columns.Add(new DataColumn("Flight Properties", typeof(string)));
+            dt.Columns.Add(new DataColumn("Comments", typeof(string)));
+            dt.Columns.Add(new DataColumn("Hobbs Start", typeof(string)));
+            dt.Columns.Add(new DataColumn("Hobbs End", typeof(string)));
+            dt.Columns.Add(new DataColumn("Engine Start", typeof(string)));
+            dt.Columns.Add(new DataColumn("Engine End", typeof(string)));
+            dt.Columns.Add(new DataColumn("Engine Time", typeof(string)));
+            dt.Columns.Add(new DataColumn("Flight Start", typeof(string)));
+            dt.Columns.Add(new DataColumn("Flight End", typeof(string)));
+            dt.Columns.Add(new DataColumn("Flying Time", typeof(string)));
+            dt.Columns.Add(new DataColumn("Complex", typeof(string)));
+            dt.Columns.Add(new DataColumn("Controllable pitch prop", typeof(string)));
+            dt.Columns.Add(new DataColumn("Flaps", typeof(string)));
+            dt.Columns.Add(new DataColumn("Retract", typeof(string)));
+            dt.Columns.Add(new DataColumn("Tailwheel", typeof(string)));
+            dt.Columns.Add(new DataColumn("High Performance", typeof(string)));
+            dt.Columns.Add(new DataColumn("Turbine", typeof(string)));
+            dt.Columns.Add(new DataColumn("TAA", typeof(string)));
+            dt.Columns.Add(new DataColumn("Signature State", typeof(string)));
+            dt.Columns.Add(new DataColumn("Date of Signature", typeof(string)));
+            dt.Columns.Add(new DataColumn("CFI Comment", typeof(string)));
+            dt.Columns.Add(new DataColumn("CFI Certificate", typeof(string)));
+            dt.Columns.Add(new DataColumn("CFI Name", typeof(string)));
+            dt.Columns.Add(new DataColumn("CFI Email", typeof(string)));
+            dt.Columns.Add(new DataColumn("CFI Expiration", typeof(string)));
+            dt.Columns.Add(new DataColumn("Public", typeof(string)));
+
+            foreach (CustomPropertyType cpt in lst)
+                dt.Columns.Add(new DataColumn(cpt.Title, typeof(string)));
         }
 
         /// <summary>
@@ -456,20 +528,18 @@ namespace MyFlightbook
             // See whether or not to show catclassoverride column
 
             bool fShowAltCatClass = false;
-            IEnumerable<LogbookEntryDisplay> rgle = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntryDisplay.QueryCommand(new FlightQuery(User.UserName)), User.UserName, "Date", SortDirection.Descending, false, false);
-            foreach (LogbookEntryDisplay le in rgle)
-                fShowAltCatClass |= le.IsOverridden;
+            IEnumerable<LogbookEntry> rgle = entriesToUse ?? LogbookEntryDisplay.GetFlightsForQuery(LogbookEntry.QueryCommand(new FlightQuery(User.UserName)), User.UserName, "Date", SortDirection.Descending, false, false);
+            foreach (LogbookEntry le in rgle)
+                fShowAltCatClass |= le.IsOverridenCatClass(null);
 
             // Generate the set of properties used by the user
             HashSet<CustomPropertyType> hscpt = new HashSet<CustomPropertyType>();
-            foreach (LogbookEntryBase le in rgle)
+            foreach (LogbookEntry le in rgle)
             {
                 foreach (CustomFlightProperty cfp in le.CustomProperties)
-                {
-                    if (!hscpt.Contains(cfp.PropertyType))
-                        hscpt.Add(cfp.PropertyType);
-                }
+                    hscpt.Add(cfp.PropertyType);
             }
+
             // Now sort that alphabetically
             List<CustomPropertyType> lst = new List<CustomPropertyType>(hscpt);
             lst.Sort((cpt1, cpt2) => { return cpt1.Title.CompareCurrentCultureIgnoreCase(cpt2.Title); });
@@ -478,75 +548,11 @@ namespace MyFlightbook
 
             using (DataTable dt = new DataTable() { Locale = CultureInfo.CurrentCulture })
             {
-                if (HttpContext.Current?.Session != null)
-                    HttpContext.Current.Session[MFBConstants.keyDecimalSettings] = DecimalFormat.Adaptive;
+                PrepCSVDataTable(dt, fShowAltCatClass, lst);
 
-                #region Add Headers
-                // add the header columns 
-                dt.Columns.Add(new DataColumn("Date", typeof(string)));
-                dt.Columns.Add(new DataColumn("Flight ID", typeof(string)));
-                dt.Columns.Add(new DataColumn("Model", typeof(string)));
-                dt.Columns.Add(new DataColumn("ICAO Model", typeof(string)));
-                dt.Columns.Add(new DataColumn("Tail Number", typeof(string)));
-                dt.Columns.Add(new DataColumn("Display Tail", typeof(string)));
-                dt.Columns.Add(new DataColumn("Aircraft ID", typeof(string)));
-                dt.Columns.Add(new DataColumn("Category/Class", typeof(string)));
-                if (fShowAltCatClass)
-                    dt.Columns.Add(new DataColumn("Alternate Cat/Class", typeof(string)));
-                dt.Columns.Add(new DataColumn("Approaches", typeof(string)));
-                dt.Columns.Add(new DataColumn("Hold", typeof(string)));
-                dt.Columns.Add(new DataColumn("Landings", typeof(string)));
-                dt.Columns.Add(new DataColumn("FS Night Landings", typeof(string)));
-                dt.Columns.Add(new DataColumn("FS Day Landings", typeof(string)));
-                dt.Columns.Add(new DataColumn("X-Country", typeof(string)));
-                dt.Columns.Add(new DataColumn("Night", typeof(string)));
-                dt.Columns.Add(new DataColumn("IMC", typeof(string)));
-                dt.Columns.Add(new DataColumn("Simulated Instrument", typeof(string)));
-                dt.Columns.Add(new DataColumn("Ground Simulator", typeof(string)));
-                dt.Columns.Add(new DataColumn("Dual Received", typeof(string)));
-                dt.Columns.Add(new DataColumn("CFI", typeof(string)));
-                dt.Columns.Add(new DataColumn("SIC", typeof(string)));
-                dt.Columns.Add(new DataColumn("PIC", typeof(string)));
-                dt.Columns.Add(new DataColumn("Total Flight Time", typeof(string)));
-                dt.Columns.Add(new DataColumn("CFI Time (HH:MM)", typeof(string)));
-                dt.Columns.Add(new DataColumn("SIC Time (HH:MM)", typeof(string)));
-                dt.Columns.Add(new DataColumn("PIC (HH:MM)", typeof(string)));
-                dt.Columns.Add(new DataColumn("Total Flight Time (HH:MM)", typeof(string)));
-                dt.Columns.Add(new DataColumn("Route", typeof(string)));
-                dt.Columns.Add(new DataColumn("Flight Properties", typeof(string)));
-                dt.Columns.Add(new DataColumn("Comments", typeof(string)));
-                dt.Columns.Add(new DataColumn("Hobbs Start", typeof(string)));
-                dt.Columns.Add(new DataColumn("Hobbs End", typeof(string)));
-                dt.Columns.Add(new DataColumn("Engine Start", typeof(string)));
-                dt.Columns.Add(new DataColumn("Engine End", typeof(string)));
-                dt.Columns.Add(new DataColumn("Engine Time", typeof(string)));
-                dt.Columns.Add(new DataColumn("Flight Start", typeof(string)));
-                dt.Columns.Add(new DataColumn("Flight End", typeof(string)));
-                dt.Columns.Add(new DataColumn("Flying Time", typeof(string)));
-                dt.Columns.Add(new DataColumn("Complex", typeof(string)));
-                dt.Columns.Add(new DataColumn("Controllable pitch prop", typeof(string)));
-                dt.Columns.Add(new DataColumn("Flaps", typeof(string)));
-                dt.Columns.Add(new DataColumn("Retract", typeof(string)));
-                dt.Columns.Add(new DataColumn("Tailwheel", typeof(string)));
-                dt.Columns.Add(new DataColumn("High Performance", typeof(string)));
-                dt.Columns.Add(new DataColumn("Turbine", typeof(string)));
-                dt.Columns.Add(new DataColumn("TAA", typeof(string)));
-                dt.Columns.Add(new DataColumn("Signature State", typeof(string)));
-                dt.Columns.Add(new DataColumn("Date of Signature", typeof(string)));
-                dt.Columns.Add(new DataColumn("CFI Comment", typeof(string)));
-                dt.Columns.Add(new DataColumn("CFI Certificate", typeof(string)));
-                dt.Columns.Add(new DataColumn("CFI Name", typeof(string)));
-                dt.Columns.Add(new DataColumn("CFI Email", typeof(string)));
-                dt.Columns.Add(new DataColumn("CFI Expiration", typeof(string)));
-                dt.Columns.Add(new DataColumn("Public", typeof(string)));
-                #endregion
-
-                foreach (CustomPropertyType cpt in lst)
-                    dt.Columns.Add(new DataColumn(cpt.Title, typeof(string)));
-
-                foreach (LogbookEntryDisplay le in rgle)
+                foreach (LogbookEntry le in rgle)
                 {
-                    Aircraft ac = ua[le.AircraftID];
+                    Aircraft ac = ua[le.AircraftID] ?? new Aircraft();
                     MakeModel mm = MakeModel.GetModel(ac.ModelID);
                     DataRow dr = dt.NewRow();
                     #region Add the details of the row
@@ -554,13 +560,13 @@ namespace MyFlightbook
                     dr[i++] = le.Date.YMDString();
                     dr[i++] = le.FlightID.ToString(CultureInfo.InvariantCulture);
                     dr[i++] = le.ModelDisplay;
-                    dr[i++] = le.FamilyName;
+                    dr[i++] = mm.FamilyDisplay;
                     dr[i++] = ac.TailNumber;
                     dr[i++] = ac.DisplayTailnumber;
                     dr[i++] = ac.AircraftID.ToString(CultureInfo.InvariantCulture);
                     dr[i++] = le.CatClassDisplay;
                     if (fShowAltCatClass)
-                        dr[i++] = le.IsOverridden ? le.CatClassOverride.ToString(CultureInfo.InvariantCulture) : string.Empty;
+                        dr[i++] = le.IsOverridenCatClass(mm) ? le.CatClassOverride.ToString(CultureInfo.InvariantCulture) : string.Empty;
                     dr[i++] = le.Approaches.ToString(CultureInfo.InvariantCulture);
                     dr[i++] = le.fHoldingProcedures.FormatBooleanInt();
                     dr[i++] = le.Landings.ToString(CultureInfo.InvariantCulture);
@@ -715,9 +721,9 @@ namespace MyFlightbook
 
     public class LogbookBackup : LogbookBackupBase
     {
-        public LogbookBackup(Profile user, bool fIncludeIMages = true) : base(user, fIncludeIMages) { }
+        public LogbookBackup(Profile user, bool fIncludeIMages = true, IEnumerable<LogbookEntry> flightsToUse = null) : base(user, fIncludeIMages, flightsToUse) { }
 
-        public LogbookBackup(string user, bool fIncludeIMages = true) : this(Profile.GetUser(user), fIncludeIMages) { }
+        public LogbookBackup(string user, bool fIncludeIMages = true, IEnumerable<LogbookEntry> flightsToUse = null) : this(Profile.GetUser(user), fIncludeIMages, flightsToUse) { }
 
         #region cloud storage instances
         #region Dropbox
@@ -1018,25 +1024,19 @@ namespace MyFlightbook
 
         public async Task<string> BackupToCloudService(StorageID sid, bool fIncludeImages)
         {
-            string szResult = string.Empty;
             switch (sid)
             {
                 case StorageID.Dropbox:
-                    szResult = await BackupDropbox(fIncludeImages);
-                    break;
+                    return await BackupDropbox(fIncludeImages);
                 case StorageID.OneDrive:
-                    szResult = await BackupOneDrive(fIncludeImages);
-                    break;
+                    return await BackupOneDrive(fIncludeImages);
                 case StorageID.GoogleDrive:
-                    szResult = await BackupGoogleDrive(fIncludeImages);
-                    break;
+                    return await BackupGoogleDrive(fIncludeImages);
                 case StorageID.Box:
-                    szResult = await BackupBox(fIncludeImages);
-                    break;
+                    return await BackupBox(fIncludeImages);
                 default:
                     throw new InvalidOperationException("Unknown cloud service: " + sid.ToString());
             }
-            return szResult;
         }
     }
 }

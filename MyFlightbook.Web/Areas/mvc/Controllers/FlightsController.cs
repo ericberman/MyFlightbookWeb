@@ -938,6 +938,13 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         [Authorize]
+        public ActionResult DownloadPendingCSV()
+        {
+            LogbookBackup lb = new LogbookBackup(User.Identity.Name, false, PendingFlight.PendingFlightsForUser(User.Identity.Name));
+            return File(lb.WriteLogbookCSVToBytes(), "text/csv", lb.BackupFilename(suffix: "-" + Resources.Tabs.LogbookPending));
+        }
+
+        [Authorize]
         public ActionResult DownloadImages()
         {
             LogbookBackup lb = new LogbookBackup(User.Identity.Name);
