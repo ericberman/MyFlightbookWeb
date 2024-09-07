@@ -10,7 +10,9 @@ using OAuthAuthorizationServer.Services;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq.Expressions;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -147,7 +149,11 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
                 if (pf.PreferenceExists(FlightCrewViewClient.AccessTokenPrefKey))
                 {
-                    var _ = await new FlightCrewViewClient(pf.GetPreferenceForKey<AuthorizationState>(FlightCrewViewClient.AccessTokenPrefKey)).RevokeTokeBasicAuth();
+                    try
+                    {
+                        var _ = await new FlightCrewViewClient(pf.GetPreferenceForKey<AuthorizationState>(FlightCrewViewClient.AccessTokenPrefKey)).RevokeTokeBasicAuth();
+                    }
+                    catch (HttpRequestException) { }
                     pf.SetPreferenceForKey(FlightCrewViewClient.AccessTokenPrefKey, null, true);
                 }
                 return Redirect("ManageFlightCrewView");
