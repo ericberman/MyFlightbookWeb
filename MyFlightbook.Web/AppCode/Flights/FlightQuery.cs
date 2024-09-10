@@ -1975,28 +1975,19 @@ namespace MyFlightbook
                     case EngineTypeRestriction.AllEngines:
                         return true;
                     case EngineTypeRestriction.AnyTurbine:
-                        if (mm.EngineType != MakeModel.TurbineLevel.Jet && mm.EngineType != MakeModel.TurbineLevel.UnspecifiedTurbine && mm.EngineType != MakeModel.TurbineLevel.TurboProp)
-                            return false;
-                        break;
+                        return mm.EngineType == MakeModel.TurbineLevel.Jet || mm.EngineType == MakeModel.TurbineLevel.UnspecifiedTurbine || mm.EngineType == MakeModel.TurbineLevel.TurboProp;
                     case EngineTypeRestriction.Piston:
-                        if (mm.EngineType != MakeModel.TurbineLevel.Piston)
-                            return false;
-                        break;
+                        return mm.EngineType == MakeModel.TurbineLevel.Piston;
                     case EngineTypeRestriction.Turboprop:
-                        if (mm.EngineType != MakeModel.TurbineLevel.TurboProp)
-                            return false;
-                        break;
+                        return mm.EngineType == MakeModel.TurbineLevel.TurboProp;
                     case EngineTypeRestriction.Jet:
-                        if (mm.EngineType != MakeModel.TurbineLevel.Jet)
-                            return false;
-                        break;
+                        return mm.EngineType == MakeModel.TurbineLevel.Jet;
                     case EngineTypeRestriction.Electric:
-                        if (mm.EngineType != MakeModel.TurbineLevel.Electric)
-                            return false;
-                        break;
+                        return mm.EngineType == MakeModel.TurbineLevel.Electric;
                 }
             }
-            return true;
+            else
+                return EngineType == EngineTypeRestriction.AllEngines;  // if unpowered, then it's not a match unless "allengines" is specified; issue #1305
         }
 
         private bool IsAircraftCharacteristicsMatch(LogbookEntryDisplay le)
