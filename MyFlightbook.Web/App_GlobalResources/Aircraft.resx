@@ -739,4 +739,136 @@ Do you still want to delete?</value>
   <data name="InstanceTypeFFS" xml:space="preserve">
     <value>Full Flight Sim.</value>
   </data>
+  <data name="ImportAircraftTitle" xml:space="preserve">
+    <value>Import Aircraft</value>
+  </data>
+  <data name="ImportAircraftStep1" xml:space="preserve">
+    <value>1. Select a file to import</value>
+  </data>
+  <data name="ImportAircraftStep2" xml:space="preserve">
+    <value>2. Match to Existing aircraft</value>
+  </data>
+  <data name="ImportAircraftStep3" xml:space="preserve">
+    <value>3. Add new aircraft</value>
+  </data>
+  <data name="ImportAircraftDataFormatPrompt" xml:space="preserve">
+    <value>Data Format</value>
+  </data>
+  <data name="ImportAircraftDataFormatBody" xml:space="preserve">
+    <value>Your data must be a [CSV file](https://en.wikipedia.org/wiki/Comma-separated_values) (which you can create with Excel, for example):</value>
+  </data>
+  <data name="ImportAircraftHeaderRowDesc" xml:space="preserve">
+    <value>The *first* row of the data must be a header row, identifying which column is which, and it *must* have at least the required fields from the following table</value>
+  </data>
+  <data name="ImportAircraftHeaderTail" xml:space="preserve">
+    <value>Tail Number</value>
+  </data>
+  <data name="ImportAircraftHeaderModel" xml:space="preserve">
+    <value>Model</value>
+  </data>
+  <data name="ImportAircraftSimTip" xml:space="preserve">
+    <value>For simulators/training devices, you can simply use the tailnumber "SIM"; a tailnumber will be assigned.</value>
+  </data>
+  <data name="ImportAircraftAnonTip" xml:space="preserve">
+    <value>For anonymous aircraft (i.e., no tailnumber), use "#". This is useful if you fly many different aircraft of a given model, such as an airline pilot might do.</value>
+  </data>
+  <data name="ImportAircraftHeaderTailDesc" xml:space="preserve">
+    <value>This column contains the registration (tail number) for each aircraft, INCLUDING the country code (e.g., "N" for the US).</value>
+  </data>
+  <data name="ImportAircraftHeaderModelDesc" xml:space="preserve">
+    <value>This column contains the model identifier for the aircraft. E.g., "C-172", "Dreamliner", or "A-320". We will try to match it to an existing make/model based on name and/or ICAO code, and you will have the chance to review/adjust this before import.</value>
+  </data>
+  <data name="ImportAircraftAnyOrder" xml:space="preserve">
+    <value>The columns can be in any order; if there are additional columns, they will be ignored</value>
+  </data>
+  <data name="ImportAircraftHeaderActive" xml:space="preserve">
+    <value>Frequently Used</value>
+  </data>
+  <data name="ImportAircraftHeaderActiveDesc" xml:space="preserve">
+    <value>If this column is present, then a value of "yes" makes the aircraft active in your account, "no" or empty makes it inactive.</value>
+  </data>
+  <data name="ImportAircraftSamplePrompt" xml:space="preserve">
+    <value>A sample CSV table to import a Cessna 172 and a Boeing 777 might look like this:</value>
+  </data>
+  <data name="ImportAircraftSampleExcel" xml:space="preserve">
+    <value>In Excel:</value>
+  </data>
+  <data name="ImportAircraftSampleTextEditor" xml:space="preserve">
+    <value>In a text editor:</value>
+  </data>
+  <data name="ImportAircraftExcelAlt" xml:space="preserve">
+    <value>Image of sample import sheet in Excel</value>
+  </data>
+  <data name="ImportAircraftBatchTip" xml:space="preserve">
+    <value>You can import aircraft in batches, if you like - import a few aircraft now, and come back later and you can pick up where you left off.</value>
+  </data>
+  <data name="ImportAircraftPreviewTip" xml:space="preserve">
+    <value>You can preview all aircraft and make changes as needed before anything is imported.</value>
+  </data>
+  <data name="ImportAircraftFileDropPrompt" xml:space="preserve">
+    <value>Upload a CSV file</value>
+  </data>
+  <data name="ImportAircraftMatchSummary" xml:space="preserve">
+    <value>The following has been found in the file you uploaded; nothing has been imported yet:</value>
+  </data>
+  <data name="AircraftImportMatchInProfile" xml:space="preserve">
+    <value>Aircraft that are already in your profile:</value>
+  </data>
+  <data name="AircraftImportMatchInSystem" xml:space="preserve">
+    <value>Aircraft that are in the system but not yet in your profile:</value>
+  </data>
+  <data name="ImportAircraftMatchNew" xml:space="preserve">
+    <value>Aircraft that are not yet in the system:</value>
+  </data>
+  <data name="ImportAircraftMatchExistingNote1" xml:space="preserve">
+    <value>The aircraft below matched to aircraft that are already in the system; some may already be in your profile.</value>
+  </data>
+  <data name="ImportAircraftMatchExistingNote2" xml:space="preserve">
+    <value>You can review them to make sure they match your expectations and add them individually, or you can import them all at once.</value>
+  </data>
+  <data name="ImportAircraftTailReassignNote" xml:space="preserve">
+    <value>Aircraft tailnumbers are sometimes re-assigned.  You may see the same tailnumber across multiple aircraft below, or you may see your tailnumber on an aircraft that is different from what you expect.</value>
+  </data>
+  <data name="ImportAircraftContactUsForChange" xml:space="preserve">
+    <value>Please contact us if you need a change to an aircraft.</value>
+  </data>
+  <data name="ImportAircraftAddAll" xml:space="preserve">
+    <value>Add all of the aircraft below to my profile</value>
+  </data>
+  <data name="ImportAircraftUnmatchedHeader" xml:space="preserve">
+    <value>The aircraft below did not match any existing aircraft.</value>
+  </data>
+  <data name="ImportAircraftUmmatchedHeader2" xml:space="preserve">
+    <value>Each of the models you specified in your spreadsheet is matched to one in the system.  *Please check each of these* to ensure that they are mapped to the correct make/model.  You can fix it up at any time, but it is easiest to catch this now.</value>
+  </data>
+  <data name="ImportAircraftEditTip" xml:space="preserve">
+    <value>Click "Edit" next to each aircraft to make changes.</value>
+  </data>
+  <data name="ImportAircraftAddModelTip" xml:space="preserve">
+    <value>There are many models of aircraft in the system, but if you don't see yours, you can add it.</value>
+  </data>
+  <data name="ImportAircraftFinishTip" xml:space="preserve">
+    <value>When you press "Finish", all of the aircraft below that don't have errors will be imported. You can come back later and re-import if necessary. *If you have a lot of aircraft, this can be slow; please be patient!*</value>
+  </data>
+  <data name="ImportAircraftHeaderRequired" xml:space="preserve">
+    <value>(Required)</value>
+  </data>
+  <data name="ImportAircraftHeaderPrivateNote" xml:space="preserve">
+    <value>Private Notes</value>
+  </data>
+  <data name="ImportAircraftHeaderPrivateNoteDesc" xml:space="preserve">
+    <value>Includes any notes about this aircraft that are private to you (not visible to other pilots who fly that aircraft).  Private notes are searched when searching for flights (public notes are not), so this can be a good place to make up your own keywords (e.g., "#DEICE" for a de-iced aircraft) if you want to be able to search on that.</value>
+  </data>
+  <data name="ImportAircraftHeaderAircraftID" xml:space="preserve">
+    <value>Aircraft ID</value>
+  </data>
+  <data name="ImportAircraftHeaderAircraftIDDesc" xml:space="preserve">
+    <value>Indicates the internal numerical identifier for an aircraft.  This is useful to disambiguate if there are multiple aircraft with the same tail.  Note that you cannot assign this - it is assigned by the system; this is really only useful for round-trip bulk edits.</value>
+  </data>
+  <data name="ImportAircraftExistingMatchHeader" xml:space="preserve">
+    <value>These aircraft match existing aircraft</value>
+  </data>
+  <data name="ImportAircraftNewAircraftHeader" xml:space="preserve">
+    <value>These aircraft are new</value>
+  </data>
 </root>

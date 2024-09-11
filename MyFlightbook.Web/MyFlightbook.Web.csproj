@@ -799,6 +799,7 @@
     <Content Include="Public\Scripts\adminajax.js" />
     <Content Include="Public\Scripts\ajaxUpload.js" />
     <Content Include="Public\Scripts\flightedit.js" />
+    <Content Include="Public\Scripts\import.js" />
     <Content Include="Public\Scripts\jquery.passwordRequirements.min.js" />
     <Content Include="Public\Scripts\listDragNew.js" />
     <Content Include="Public\Scripts\prefs.js" />
@@ -1611,6 +1612,9 @@
     <Content Include="Areas\mvc\Views\MFBTemplate\_sponsoredAd.cshtml" />
     <Content Include="Areas\mvc\Views\Import\_startingTotalsForm.cshtml" />
     <Content Include="Areas\mvc\Views\Import\_startingTotalsPreview.cshtml" />
+    <Content Include="Areas\mvc\Views\Import\importAircraft.cshtml" />
+    <Content Include="Areas\mvc\Views\Import\_aircraftImportReviewExisting.cshtml" />
+    <Content Include="Areas\mvc\Views\Import\_aircraftImportList.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -2831,7 +2835,9 @@
     <Content Include="Logon\App_LocalResources\ResetPass.aspx.resx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Member\App_LocalResources\ImpAircraft.aspx.resx" />
+    <Content Include="Member\App_LocalResources\ImpAircraft.aspx.resx">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\mvc\Data\" />

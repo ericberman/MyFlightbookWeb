@@ -160,6 +160,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Aircraft that are already in your profile:.
+        /// </summary>
+        internal static string AircraftImportMatchInProfile {
+            get {
+                return ResourceManager.GetString("AircraftImportMatchInProfile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Aircraft that are in the system but not yet in your profile:.
+        /// </summary>
+        internal static string AircraftImportMatchInSystem {
+            get {
+                return ResourceManager.GetString("AircraftImportMatchInSystem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Real aircraft, Anonymous (no tail number).
         /// </summary>
         internal static string AircraftInstanceRealAnonymous {
@@ -1068,6 +1086,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add all of the aircraft below to my profile.
+        /// </summary>
+        internal static string ImportAircraftAddAll {
+            get {
+                return ResourceManager.GetString("ImportAircraftAddAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Aircraft Added.
         /// </summary>
         internal static string ImportAircraftAdded {
@@ -1082,6 +1109,375 @@ namespace Resources {
         internal static string ImportAircraftAdding {
             get {
                 return ResourceManager.GetString("ImportAircraftAdding", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are many models of aircraft in the system, but if you don&apos;t see yours, you can add it..
+        /// </summary>
+        internal static string ImportAircraftAddModelTip {
+            get {
+                return ResourceManager.GetString("ImportAircraftAddModelTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For anonymous aircraft (i.e., no tailnumber), use &quot;#&quot;. This is useful if you fly many different aircraft of a given model, such as an airline pilot might do..
+        /// </summary>
+        internal static string ImportAircraftAnonTip {
+            get {
+                return ResourceManager.GetString("ImportAircraftAnonTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The columns can be in any order; if there are additional columns, they will be ignored.
+        /// </summary>
+        internal static string ImportAircraftAnyOrder {
+            get {
+                return ResourceManager.GetString("ImportAircraftAnyOrder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can import aircraft in batches, if you like - import a few aircraft now, and come back later and you can pick up where you left off..
+        /// </summary>
+        internal static string ImportAircraftBatchTip {
+            get {
+                return ResourceManager.GetString("ImportAircraftBatchTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please contact us if you need a change to an aircraft..
+        /// </summary>
+        internal static string ImportAircraftContactUsForChange {
+            get {
+                return ResourceManager.GetString("ImportAircraftContactUsForChange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your data must be a [CSV file](https://en.wikipedia.org/wiki/Comma-separated_values) (which you can create with Excel, for example):.
+        /// </summary>
+        internal static string ImportAircraftDataFormatBody {
+            get {
+                return ResourceManager.GetString("ImportAircraftDataFormatBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data Format.
+        /// </summary>
+        internal static string ImportAircraftDataFormatPrompt {
+            get {
+                return ResourceManager.GetString("ImportAircraftDataFormatPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click &quot;Edit&quot; next to each aircraft to make changes..
+        /// </summary>
+        internal static string ImportAircraftEditTip {
+            get {
+                return ResourceManager.GetString("ImportAircraftEditTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Image of sample import sheet in Excel.
+        /// </summary>
+        internal static string ImportAircraftExcelAlt {
+            get {
+                return ResourceManager.GetString("ImportAircraftExcelAlt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to These aircraft match existing aircraft.
+        /// </summary>
+        internal static string ImportAircraftExistingMatchHeader {
+            get {
+                return ResourceManager.GetString("ImportAircraftExistingMatchHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upload a CSV file.
+        /// </summary>
+        internal static string ImportAircraftFileDropPrompt {
+            get {
+                return ResourceManager.GetString("ImportAircraftFileDropPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When you press &quot;Finish&quot;, all of the aircraft below that don&apos;t have errors will be imported. You can come back later and re-import if necessary. *If you have a lot of aircraft, this can be slow; please be patient!*.
+        /// </summary>
+        internal static string ImportAircraftFinishTip {
+            get {
+                return ResourceManager.GetString("ImportAircraftFinishTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Frequently Used.
+        /// </summary>
+        internal static string ImportAircraftHeaderActive {
+            get {
+                return ResourceManager.GetString("ImportAircraftHeaderActive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If this column is present, then a value of &quot;yes&quot; makes the aircraft active in your account, &quot;no&quot; or empty makes it inactive..
+        /// </summary>
+        internal static string ImportAircraftHeaderActiveDesc {
+            get {
+                return ResourceManager.GetString("ImportAircraftHeaderActiveDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Aircraft ID.
+        /// </summary>
+        internal static string ImportAircraftHeaderAircraftID {
+            get {
+                return ResourceManager.GetString("ImportAircraftHeaderAircraftID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indicates the internal numerical identifier for an aircraft.  This is useful to disambiguate if there are multiple aircraft with the same tail.  Note that you cannot assign this - it is assigned by the system; this is really only useful for round-trip bulk edits..
+        /// </summary>
+        internal static string ImportAircraftHeaderAircraftIDDesc {
+            get {
+                return ResourceManager.GetString("ImportAircraftHeaderAircraftIDDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Model.
+        /// </summary>
+        internal static string ImportAircraftHeaderModel {
+            get {
+                return ResourceManager.GetString("ImportAircraftHeaderModel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This column contains the model identifier for the aircraft. E.g., &quot;C-172&quot;, &quot;Dreamliner&quot;, or &quot;A-320&quot;. We will try to match it to an existing make/model based on name and/or ICAO code, and you will have the chance to review/adjust this before import..
+        /// </summary>
+        internal static string ImportAircraftHeaderModelDesc {
+            get {
+                return ResourceManager.GetString("ImportAircraftHeaderModelDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Private Notes.
+        /// </summary>
+        internal static string ImportAircraftHeaderPrivateNote {
+            get {
+                return ResourceManager.GetString("ImportAircraftHeaderPrivateNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Includes any notes about this aircraft that are private to you (not visible to other pilots who fly that aircraft).  Private notes are searched when searching for flights (public notes are not), so this can be a good place to make up your own keywords (e.g., &quot;#DEICE&quot; for a de-iced aircraft) if you want to be able to search on that..
+        /// </summary>
+        internal static string ImportAircraftHeaderPrivateNoteDesc {
+            get {
+                return ResourceManager.GetString("ImportAircraftHeaderPrivateNoteDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Required).
+        /// </summary>
+        internal static string ImportAircraftHeaderRequired {
+            get {
+                return ResourceManager.GetString("ImportAircraftHeaderRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The *first* row of the data must be a header row, identifying which column is which, and it *must* have at least the required fields from the following table.
+        /// </summary>
+        internal static string ImportAircraftHeaderRowDesc {
+            get {
+                return ResourceManager.GetString("ImportAircraftHeaderRowDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tail Number.
+        /// </summary>
+        internal static string ImportAircraftHeaderTail {
+            get {
+                return ResourceManager.GetString("ImportAircraftHeaderTail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This column contains the registration (tail number) for each aircraft, INCLUDING the country code (e.g., &quot;N&quot; for the US)..
+        /// </summary>
+        internal static string ImportAircraftHeaderTailDesc {
+            get {
+                return ResourceManager.GetString("ImportAircraftHeaderTailDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The aircraft below matched to aircraft that are already in the system; some may already be in your profile..
+        /// </summary>
+        internal static string ImportAircraftMatchExistingNote1 {
+            get {
+                return ResourceManager.GetString("ImportAircraftMatchExistingNote1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can review them to make sure they match your expectations and add them individually, or you can import them all at once..
+        /// </summary>
+        internal static string ImportAircraftMatchExistingNote2 {
+            get {
+                return ResourceManager.GetString("ImportAircraftMatchExistingNote2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Aircraft that are not yet in the system:.
+        /// </summary>
+        internal static string ImportAircraftMatchNew {
+            get {
+                return ResourceManager.GetString("ImportAircraftMatchNew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The following has been found in the file you uploaded; nothing has been imported yet:.
+        /// </summary>
+        internal static string ImportAircraftMatchSummary {
+            get {
+                return ResourceManager.GetString("ImportAircraftMatchSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to These aircraft are new.
+        /// </summary>
+        internal static string ImportAircraftNewAircraftHeader {
+            get {
+                return ResourceManager.GetString("ImportAircraftNewAircraftHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can preview all aircraft and make changes as needed before anything is imported..
+        /// </summary>
+        internal static string ImportAircraftPreviewTip {
+            get {
+                return ResourceManager.GetString("ImportAircraftPreviewTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In Excel:.
+        /// </summary>
+        internal static string ImportAircraftSampleExcel {
+            get {
+                return ResourceManager.GetString("ImportAircraftSampleExcel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A sample CSV table to import a Cessna 172 and a Boeing 777 might look like this:.
+        /// </summary>
+        internal static string ImportAircraftSamplePrompt {
+            get {
+                return ResourceManager.GetString("ImportAircraftSamplePrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In a text editor:.
+        /// </summary>
+        internal static string ImportAircraftSampleTextEditor {
+            get {
+                return ResourceManager.GetString("ImportAircraftSampleTextEditor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For simulators/training devices, you can simply use the tailnumber &quot;SIM&quot;; a tailnumber will be assigned..
+        /// </summary>
+        internal static string ImportAircraftSimTip {
+            get {
+                return ResourceManager.GetString("ImportAircraftSimTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1. Select a file to import.
+        /// </summary>
+        internal static string ImportAircraftStep1 {
+            get {
+                return ResourceManager.GetString("ImportAircraftStep1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 2. Match to Existing aircraft.
+        /// </summary>
+        internal static string ImportAircraftStep2 {
+            get {
+                return ResourceManager.GetString("ImportAircraftStep2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 3. Add new aircraft.
+        /// </summary>
+        internal static string ImportAircraftStep3 {
+            get {
+                return ResourceManager.GetString("ImportAircraftStep3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Aircraft tailnumbers are sometimes re-assigned.  You may see the same tailnumber across multiple aircraft below, or you may see your tailnumber on an aircraft that is different from what you expect..
+        /// </summary>
+        internal static string ImportAircraftTailReassignNote {
+            get {
+                return ResourceManager.GetString("ImportAircraftTailReassignNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import Aircraft.
+        /// </summary>
+        internal static string ImportAircraftTitle {
+            get {
+                return ResourceManager.GetString("ImportAircraftTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Each of the models you specified in your spreadsheet is matched to one in the system.  *Please check each of these* to ensure that they are mapped to the correct make/model.  You can fix it up at any time, but it is easiest to catch this now..
+        /// </summary>
+        internal static string ImportAircraftUmmatchedHeader2 {
+            get {
+                return ResourceManager.GetString("ImportAircraftUmmatchedHeader2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The aircraft below did not match any existing aircraft..
+        /// </summary>
+        internal static string ImportAircraftUnmatchedHeader {
+            get {
+                return ResourceManager.GetString("ImportAircraftUnmatchedHeader", resourceCulture);
             }
         }
         

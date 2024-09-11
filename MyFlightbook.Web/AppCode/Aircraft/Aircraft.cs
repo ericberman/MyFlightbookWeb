@@ -2133,6 +2133,22 @@ WHERE
     }
 
     /// <summary>
+    /// Encapsulates the data provided during import for a given aircraft to import:
+    ///  - the tail number
+    ///  - the free-form text model as given
+    ///  - the id of the model
+    ///  - the integer-based instance type of the model
+    /// </summary>
+    [Serializable]
+    public class AircraftImportSpec
+    {
+        public string TailNum { get; set; } = "";
+        public string ProposedModel { get; set; } = "";
+        public int ModelID { get; set; } = MakeModel.UnknownModel;
+        public int InstanceType { get; set; } = (int)AircraftInstanceTypes.RealAircraft;
+    }
+
+    /// <summary>
     /// Contains utility and admin functions for working with aircraft.
     /// </summary>
     public static class AircraftUtility
@@ -2702,6 +2718,151 @@ ORDER BY f.date DESC LIMIT 10) tach", (int)CustomPropertyType.KnownProperties.ID
             return val;
 
         }
+
+        #region Import WebMethods
+        /// <summary>
+        /// Adds the specified aircraft (by ID) to the specified user's account.
+        /// </summary>
+        /// <param name="szUser"></param>
+        /// <param name="aircraftID"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static void AddExistingAircraftForUser(string szUser, int aircraftID)
+        {
+            if (String.IsNullOrWhiteSpace(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+
+            UserAircraft ua = new UserAircraft(szUser);
+            Aircraft ac = new Aircraft(aircraftID);
+            if (ac.AircraftID == Aircraft.idAircraftUnknown)
+                return;
+            ua.FAddAircraftForUser(ac);
+        }
+
+        /// <summary>
+        /// Adds a new aircraft to the user's account
+        /// </summary>
+        /// <param name="szUser">The user's username</param>
+        /// <param name="spec">The specification for the new aircraft</param>
+        /// <param name="d">A mapping dictionary, between the model specified and the matched model</param>
+        /// <returns>An updated model mapping</returns>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="MyFlightbookValidationException"></exception>
+        public static IDictionary<string, MakeModel> AddNewAircraft(string szUser, AircraftImportSpec spec, IDictionary<string, MakeModel> d)
+        {
+            if (spec == null)
+                throw new ArgumentNullException(nameof(spec));
+            if (string.IsNullOrEmpty(spec.TailNum))
+                throw new ArgumentException("Missing tail in AddNewAircraft");
+
+            if (String.IsNullOrWhiteSpace(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+
+            Dictionary<string, MakeModel> dModelMapping = (Dictionary<string, MakeModel>)(d ?? new Dictionary<string, MakeModel>());
+
+            Aircraft ac = new Aircraft() { TailNumber = spec.TailNum, ModelID = spec.ModelID, InstanceTypeID = spec.InstanceType };
+
+            // Issue #296: allow sims to come through without a sim prefix; we can fix it at AddNewAircraft time.
+            AircraftInstance aic = Array.Find(AircraftInstance.GetInstanceTypes(), it => it.InstanceTypeInt == spec.InstanceType);
+            string szSpecifiedTail = spec.TailNum;
+            bool fIsNamedSim = !aic.IsRealAircraft && !spec.TailNum.ToUpper(CultureInfo.CurrentCulture).StartsWith(CountryCodePrefix.SimCountry.Prefix.ToUpper(CultureInfo.CurrentCulture), StringComparison.CurrentCultureIgnoreCase);
+            if (fIsNamedSim)
+                ac.TailNumber = CountryCodePrefix.SimCountry.Prefix;
+
+            if (ac.FixTailAndValidate())
+            {
+                ac.CommitForUser(szUser);
+
+                UserAircraft ua = new UserAircraft(szUser);
+                if (fIsNamedSim)
+                    ac.PrivateNotes = String.Format(CultureInfo.InvariantCulture, "{0} #ALT{1}#", ac.PrivateNotes ?? string.Empty, szSpecifiedTail);
+
+                ua.FAddAircraftForUser(ac);
+                ua.InvalidateCache();
+
+                if (!String.IsNullOrEmpty(spec.ProposedModel))
+                    dModelMapping[spec.ProposedModel] = MakeModel.GetModel(spec.ModelID);
+            }
+            else
+                throw new MyFlightbookValidationException(ac.ErrorString);
+
+            return dModelMapping;
+        }
+
+        /// <summary>
+        /// Adds a new aircraft to the user's account
+        /// </summary>
+        /// <param name="szUser">The user's username</param>
+        /// <param name="szTail">Desired tailnumber</param>
+        /// <param name="idModel">Model for the aircraft</param>
+        /// <param name="instanceType">Instance type for the aircraft</param>
+        /// <param name="szModelGiven">Model as given for the aircraft</param>
+        /// <param name="szJsonMapping">A mapping dictionary, if present, in JSON between model string and matched model</param>
+        /// <returns>An updated model mapping, as a JSON string</returns>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="MyFlightbookValidationException"></exception>
+        public static string AddNewAircraft(string szUser, string szTail, int idModel, int instanceType, string szModelGiven, string szJsonMapping)
+        {
+            IDictionary<string, MakeModel> dModelMapping = String.IsNullOrEmpty(szJsonMapping) ? new Dictionary<string, MakeModel>() : JsonConvert.DeserializeObject<Dictionary<string, MakeModel>>(szJsonMapping);
+
+            dModelMapping = AddNewAircraft(szUser, new AircraftImportSpec() { TailNum = szTail, ModelID = idModel, InstanceType = instanceType, ProposedModel = szModelGiven }, dModelMapping);
+            return JsonConvert.SerializeObject(dModelMapping);
+        }
+
+        /// <summary>
+        /// Validates
+        /// </summary>
+        /// <param name="szUser">The username</param>
+        /// <param name="szTail">Tail number for the aircraft</param>
+        /// <param name="idModel">Model for the aircraft</param>
+        /// <param name="instanceType">Instance type for the aircraft</param>
+        /// <returns>Any error - empty indicates success</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        public static string ValidateAircraft(string szUser, string szTail, int idModel, int instanceType)
+        {
+            if (String.IsNullOrWhiteSpace(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+
+            if (string.IsNullOrEmpty(szTail))
+                throw new ArgumentException("Empty tail in ValidateAircraft");
+
+            // Issue #296: allow sims to come through without a sim prefix; we can fix it at AddNewAircraft time.
+            AircraftInstance aic = Array.Find(AircraftInstance.GetInstanceTypes(), it => it.InstanceTypeInt == instanceType);
+            if (!aic.IsRealAircraft && !szTail.ToUpper(CultureInfo.CurrentCulture).StartsWith(CountryCodePrefix.SimCountry.Prefix.ToUpper(CultureInfo.CurrentCulture), StringComparison.CurrentCultureIgnoreCase))
+                szTail = CountryCodePrefix.SimCountry.Prefix;
+
+            Aircraft ac = new Aircraft() { TailNumber = szTail, ModelID = idModel, InstanceTypeID = instanceType };
+
+            ac.FixTailAndValidate();
+            return ac.ErrorString;
+        }
+
+        /// <summary>
+        /// Suggests completions for the specified prefix text
+        /// </summary>
+        /// <param name="szUser">The user's name</param>
+        /// <param name="prefixText">Prefix text</param>
+        /// <param name="count">Max # of results to return</param>
+        /// <returns>Matching completions</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static IEnumerable<IDictionary<string, object>> SuggestFullModelsWithTargets(string szUser, string prefixText, int count)
+        {
+            if (String.IsNullOrWhiteSpace(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+
+            if (String.IsNullOrEmpty(prefixText))
+                return Array.Empty<IDictionary<string, object>>();
+
+            ModelQuery modelQuery = new ModelQuery() { FullText = prefixText.Replace("-", "*"), PreferModelNameMatch = true, Skip = 0, Limit = count };
+            List<Dictionary<string, object>> lst = new List<Dictionary<string, object>>();
+            foreach (MakeModel mm in MakeModel.MatchingMakes(modelQuery))
+                lst.Add(new Dictionary<string, object>() { { "label", mm.DisplayName }, { "value", mm.MakeModelID } });
+            return lst;
+        }
+        #endregion
+
     }
 
     /// <summary>
@@ -3454,7 +3615,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int)CustomPropertyType.KnownProperties.ID
             UserAircraft ua = new UserAircraft(szUser);
             foreach (AircraftImportMatchRow mr in _matchResults)
             {
-                if (mr.State == AircraftImportMatchRow.MatchState.MatchedExisting && mr.BestMatchAircraft.Version == 0) // only take the 0th version when doing a bulk import.  TODO: Is this right?  We show alternatives!
+                if (mr.State == AircraftImportMatchRow.MatchState.MatchedExisting && mr.BestMatchAircraft.Version == 0) // only take the 0th version when doing a bulk import.
                 {
                     ua.FAddAircraftForUser(mr.BestMatchAircraft);
                     mr.State = AircraftImportMatchRow.MatchState.MatchedInProfile;

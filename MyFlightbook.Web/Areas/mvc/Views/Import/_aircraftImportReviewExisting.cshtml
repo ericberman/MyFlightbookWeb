@@ -1,0 +1,29 @@
+﻿@using System.Globalization
+@{
+    AircraftImportParseContext context = ViewBag.context;
+}
+<p>@Resources.Aircraft.ImportAircraftMatchSummary</p>
+<table style="margin-left:50px" cellpadding="5">
+    <tr>
+        <td>@Resources.Aircraft.AircraftImportMatchInProfile</td>
+        <td style="font-weight: bold">@context.MatchResults.Count(mr => mr.State == AircraftImportMatchRow.MatchState.MatchedInProfile || mr.State == AircraftImportMatchRow.MatchState.JustAdded).ToString("#,##0", CultureInfo.CurrentCulture)</td>
+    </tr>
+    <tr>
+        <td>@Resources.Aircraft.AircraftImportMatchInSystem</td>
+        <td style="font-weight: bold;">@context.MatchResults.Count(mr => mr.State == AircraftImportMatchRow.MatchState.MatchedExisting).ToString("#,##0", CultureInfo.CurrentCulture)</td>
+    </tr>
+    <tr>
+        <td>@Resources.Aircraft.ImportAircraftMatchNew</td>
+        <td style="font-weight: bold;">@context.MatchResults.Count(mr => mr.State == AircraftImportMatchRow.MatchState.UnMatched).ToString("#,##0", CultureInfo.CurrentCulture)</td>
+    </tr>
+</table>
+<p>@Resources.Aircraft.ImportAircraftMatchExistingNote1</p>
+<p>@Resources.Aircraft.ImportAircraftMatchExistingNote2</p>
+<p>
+    <span style="font-weight: bold;">@Resources.LocalizedText.Note</span>
+    @Resources.Aircraft.ImportAircraftTailReassignNote
+    <a href="@("~/public/contactme.aspx".ToAbsolute())" target="_blank">@Resources.Aircraft.ImportAircraftContactUsForChange</a>
+</p>
+<p><button type="button" onclick="javascript: importAircraft.addAllExisting(this, 'pnlAddingAircraft', function () { $('#btnWizNext')[0].click(); });">@Resources.Aircraft.ImportAircraftAddAll</button></p>
+<h2>@Resources.Aircraft.ImportAircraftExistingMatchHeader</h2>
+@{ Html.RenderAction("AircraftReview", "Import", new { rgCandidates = context.AllMatched }); }

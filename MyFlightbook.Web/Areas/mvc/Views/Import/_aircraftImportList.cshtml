@@ -1,0 +1,168 @@
+﻿@using System.Globalization
+@{
+    IEnumerable<AircraftImportMatchRow> rgCandidates = ViewBag.rgCandidates;
+
+    if (rgCandidates.Any())
+    {
+        <table class="stickyHeaderTable">
+            <thead>
+                <tr>
+                    <th class="gvhDefault gvhLeft">@Resources.Aircraft.ImportHeaderSpecifiedAircraft</th>
+                    <th class="gvhDefault gvhLeft">@Resources.Aircraft.ImportHeaderBestMatchModel</th>
+                    <th class="gvhDefault gvhLeft"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (AircraftImportMatchRow mr in rgCandidates)
+                {
+                    string hrefRegistration = Aircraft.LinkForTailnumberRegistry(mr.TailNumber);
+                    <tr style="vertical-align: top; height: 24pt;">
+                        <td>
+                            @if (String.IsNullOrEmpty(hrefRegistration))
+                            {
+                                <span style="font-weight: bold;">@mr.TailNumber</span>
+                            }
+                            else
+                            {
+                                <a href="@hrefRegistration" target="_blank" style="font-weight:bold;">@mr.TailNumber</a>
+                            }
+                            <span style="font-weight: bold;">@((mr.BestMatchAircraft != null && mr.BestMatchAircraft.Version > 0) ? Resources.Aircraft.ImportAlternateVersion : string.Empty)</span> - 
+                            @mr.ModelGiven
+                        </td>
+                        @switch (mr.State)
+                        {
+                            case AircraftImportMatchRow.MatchState.JustAdded:
+                            case AircraftImportMatchRow.MatchState.MatchedInProfile:
+                                <td><div style="font-weight:bold;">@mr.SpecifiedModelDisplay</div></td>
+                                <td>
+                                    @if (mr.State == AircraftImportMatchRow.MatchState.JustAdded)
+                                    {
+                                        <span class="ok" style="font-weight: bold;">@Resources.Aircraft.ImportAircraftAdded</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="success">@Resources.Aircraft.ImportAlreadyInProfile</span>
+                                    }
+                                </td>
+                                break;
+                            case AircraftImportMatchRow.MatchState.MatchedExisting:
+                                <td><div style="font-weight:bold;">@mr.SpecifiedModelDisplay</div></td>
+                                <td>
+                                    <button type="button" onclick="importAircraft.addExistingAircraft(this, @mr.BestMatchAircraft.AircraftID, 'pnlAddingAircraft');">@Resources.Aircraft.ImportExistingAircraft</button>
+                                    <div class="ok" style="font-weight:bold;"></div>
+                                </td>
+                                break;
+                            case AircraftImportMatchRow.MatchState.UnMatched:
+                                <td class="updateMakeCell">
+                                    <div>
+                                        <span style="font-weight:bold;" class="staticModelDisplay">@mr.SpecifiedModelDisplay</span>
+                                        <img src="@("~/images/pencilsm.png".ToAbsolute())" onclick="javascript: toggleEdit(this);" />
+                                    </div>
+                                    <div class="displayCell"><div style="font-size:smaller" class="staticInstanceDisplay">@mr.InstanceTypeDescriptionDisplay</div></div>
+                                    <div class="editCell">
+                                        <div>@Resources.Aircraft.ImportModel</div>
+                                        <div>
+                                            <input type="text" style="width:250px; font-size: 8pt;" placeholder="@Resources.Makes.searchTip" name="importModel" />
+                                            <input type="hidden" value="@(mr?.BestMatchAircraft?.ModelID.ToString(CultureInfo.InvariantCulture) ?? MakeModel.UnknownModel.ToString(CultureInfo.InvariantCulture))" name="importModelID" />
+                                            <input type="hidden" value="@mr.TailNumber" name="importTail" />
+                                            <input type="hidden" value="@mr.ModelGiven" name="importModelGiven" />
+                                        </div>
+                                        <div>@Resources.Aircraft.ImportKind</div>
+                                        <div>
+                                            <select name="instanceType" onchange="javascript: validate(this);">
+                                                @foreach (AircraftInstance type in AircraftInstance.GetInstanceTypes())
+                                                {
+                                                    <option value="@type.InstanceTypeInt.ToString(CultureInfo.InvariantCulture)" @((mr.BestMatchAircraft.InstanceTypeID == type.InstanceTypeInt).ToSelected())>@type.DisplayName</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                        <div class="error">@(mr?.BestMatchAircraft?.ErrorString ?? string.Empty)</div>
+                                </td>
+                                <td>
+                                    <button type="button" name="btnAddNew" onclick="javascript: addNewAircraft(this);" @(String.IsNullOrEmpty(mr?.BestMatchAircraft?.ErrorString) ? string.Empty : "disabled") >@Resources.Aircraft.ImportAddNewAircraft</button>
+                                </td>
+                                break;
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>@Resources.Aircraft.ImportNoAircraftFound</p>
+    }
+}
+
+<div id="pnlAddingAircraft" style="display:none; width: 230px; text-align:center; padding: 20px;">
+    <h3>@Resources.Aircraft.ImportAircraftAdding</h3>
+    <div><img src="@("~/images/ajax-loader.gif".ToAbsolute())" /></div>
+</div>
+
+<script type="text/javascript">
+    function toggleEdit(sender) {
+        var r = $(sender).closest('tr');
+        r.find('.editCell').toggle();
+        r.find('.displayCell').toggle();
+    }
+
+    function validate(sender) {
+        r = $(sender).closest("tr");
+        importAircraft.validateProposedAircraft(r.find("input[name='importTail']").val(), r.find("input[name='importModelID']").val(), r.find("select[name='instanceType']").val(), function () {
+            var txtModelDesc = r.find("input[name='importModel']");
+            var modelDesc = r.find("input[name='importModel']").val();
+            if (modelDesc != "")
+                r.find("span.staticModelDisplay").text(modelDesc);
+            txtModelDesc.val("");
+            r.find("div.staticInstanceDisplay").text(r.find("select[name='instanceType'] option:checked").text());
+            r.find('.editCell').hide();
+            r.find('.displayCell').show();
+            r.find("div.error").text("");
+            r.find("button[name='btnAddNew']").prop("disabled", false);
+        }, function (err) {
+            r.find("div.error").text(err);
+            r.find("button[name='btnAddNew']").prop("disabled", true);
+        });
+    }
+
+    function newAircraftSpec(container) {
+        var r = $(container).closest("tr");
+        return {
+            TailNum : r.find("input[name='importTail']").val(),
+            InstanceType : r.find("select[name='instanceType']").val(),
+            ModelID: r.find("input[name='importModelID']").val(),
+            ProposedModel: r.find("input[name='importModelGiven']").val()
+        };
+    }
+
+    function addNewAircraft(sender) {
+        importAircraft.addNew(sender, newAircraftSpec(sender), function (s) {
+            $(s).parent().html($("<div class='success'>" + '@Resources.Aircraft.ImportAircraftAdded' + "</div>"));
+        });
+    }
+
+    function addAllNewAircraft(onSuccess) {
+        var params = [];
+        $("td.updateMakeCell").each(function () {
+            params.push(newAircraftSpec(this));
+        });
+        importAircraft.addAllNew("pnlAddingAircraft", params, function () {
+            $("#divImportNewAircraft td.updateMakeCell div.error").filter(function (i, v) {
+                return $(v).text() == "";
+            }).each(function () { $(this).closest("tr").remove(); });
+
+            onSuccess($("td.updateMakeCell div.error").text() == "");
+        });
+    }
+
+    $(() => {
+        importAircraft.modelEditorAutocomplete("@Url.Action("SuggestFullModelsWithTargets", "Import")", function (event, ui) {
+            var target = $(event.target);
+            target.val(ui.item.label);
+            target.parent().find("input[name='importModelID']").val(ui.item.value);
+            validate(event.target);
+            return false;
+        });
+    });
+</script>

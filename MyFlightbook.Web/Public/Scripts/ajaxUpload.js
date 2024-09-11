@@ -22,6 +22,7 @@
      - uploadUrl - where to upload
      - onFileUpload - called with the status and response text after each file is sent
      - onUpload - called when all files are uploaded
+     - onErr - called on an error; otherwise a window alert is presented
 */
 function ajaxFileUpload(container, options) {
     this.options = options;
@@ -65,7 +66,12 @@ function ajaxFileUpload(container, options) {
             url: options.uploadURL, type: "POST", contentType: false, processData: false,
             cache: false,
             data: formData,
-            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            error: function (xhr, status, error) {
+                if (options.onErr)
+                    options.onErr(xhr.responseText);
+                else
+                    window.alert(xhr.responseText);
+            },
             complete: function (response) {
                 status.setProgress(100);
                 if (options.onFileUploaded)

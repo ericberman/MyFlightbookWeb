@@ -1,0 +1,179 @@
+﻿@using System.Globalization
+@{
+    ViewBag.Title = Resources.Aircraft.ImportAircraftTitle;
+    ViewBag.defaultTab = tabID.tabAircraft;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript" src="@("~/Public/Scripts/import.js".ToAbsolute())"></script>
+<script type="text/javascript" src="@("~/Public/Scripts/ajaxUpload.js?v=8".ToAbsolute())"></script>
+<script type="text/javascript">
+    function modelCommitted(m) {
+        $(".expandoATD")[0].click();
+    }
+
+    var importAircraft = new aircraftImportEditor("@("~/mvc/Import".ToAbsolute())", {
+        summaryContainer: "divImportSummary",
+        unmatchedContainer: "divImportNewAircraft"
+    });
+
+    var wiz = null;
+    $(() => {
+        wiz = wizardizeContainer({
+            headerContainer: $("#wizardHead"),
+            stepsContainer: $("#wizardSteps"),
+            navContainer: $("#wizNav"),
+            initialStep: 0,
+            nextButton: $("#btnWizNext"),
+            prevButton: $("#btnWizPrev"),
+            finishButton: $("#btnWizFinish"),
+            onStepChange: function (oldStep, newStep) {
+                if (oldStep == 0 && newStep == 1)
+                    importAircraft.renderSummary();
+                else if (oldStep == 1 && newStep == 2)
+                    importAircraft.renderUnmatched();
+                return true;
+            },
+            onFinish: function () {
+                addAllNewAircraft(function (allImported) {
+                    if (allImported)
+                        window.location = "@("~/mvc/Aircraft".ToAbsolute())";
+                    else {
+                        $("#lblImportFinishErr").text("@Resources.Aircraft.errImportFixErrors");
+                    }                        
+                });
+            }
+        });
+
+        ajaxFileUpload($("#divUploadAircraftCSV"), {
+            uploadURL: "@Url.Action("UploadAircraftCSV", "Import")",
+            allowedTypes: "csv",
+            dragTargetClass: "fileDragTarget",
+            additionalParams: [],
+            maxFiles: 1,
+            onFileUploaded: function (status, responsetext) {
+                $(".fileInQueueContainer").hide();
+                importAircraft.aircraftParseContext = JSON.parse(responsetext);
+                $("#btnWizNext").prop("disabled", false);
+                $("#btnWizNext")[0].click();
+            },
+            onErr: function (err) { $("#lblUploadErr").text(err); },
+            dropPrompt: "@Resources.Aircraft.ImportAircraftFileDropPrompt",
+            errTooManyFiles: "@Resources.LocalizedText.fileUploadTooManyFiles",
+            errDisallowedFileType: "@Resources.LocalizedText.fileUploadInvalidType",
+            abortPrompt: "@Resources.LocalizedText.fileUploadAbort"
+        });
+    });
+</script>
+<div id="wizardHead">
+    <span>@Resources.Aircraft.ImportAircraftStep1&nbsp; </span>
+    <span>@Resources.Aircraft.ImportAircraftStep2&nbsp; </span>
+    <span>@Resources.Aircraft.ImportAircraftStep3&nbsp; </span>
+</div>
+<div id="wizardSteps" style="margin-top: 10pt;">
+    <div id="wzStep1">
+        <h3>@Resources.Aircraft.ImportAircraftDataFormatPrompt</h3>
+        <p>@Html.Raw(Resources.Aircraft.ImportAircraftDataFormatBody.Linkify())</p>
+        <p>@Html.Raw(Resources.Aircraft.ImportAircraftHeaderRowDesc.Linkify())</p>
+        <table class="stickyHeaderTable stickyHeaderAlternate" style="max-width: 90%; margin-left: auto; margin-right: auto;">
+            <thead><tr><th></th><th></th></tr></thead>
+            <tbody>
+                <tr style="vertical-align:top">
+                    <td>
+                        <div style="font-weight: bold;">@Resources.Aircraft.ImportAircraftHeaderTail</div>
+                        <div>@Resources.Aircraft.ImportAircraftHeaderRequired</div>
+                    </td>
+                    <td>
+                        @Resources.Aircraft.ImportAircraftHeaderTailDesc
+                        <ul>
+                            <li>@Resources.Aircraft.ImportAircraftSimTip</li>
+                            <li>@Resources.Aircraft.ImportAircraftAnonTip</li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr style="vertical-align:top">
+                    <td>
+                        <div style="font-weight:bold;">@Resources.Aircraft.ImportAircraftHeaderModel</div>
+                        <div>@Resources.Aircraft.ImportAircraftHeaderRequired</div>
+                    </td>
+                    <td>@Resources.Aircraft.ImportAircraftHeaderModelDesc</td>
+                </tr>
+                <tr style="vertical-align: top">
+                    <td>
+                        <div style="font-weight: bold;">@Resources.Aircraft.ImportAircraftHeaderActive</div>
+                        <div>@Resources.LocalizedText.OptionalData</div>
+                    </td>
+                    <td>@Resources.Aircraft.ImportAircraftHeaderActiveDesc</td>
+                </tr>
+                <tr style="vertical-align: top">
+                    <td>
+                        <div style="font-weight: bold;">@Resources.Aircraft.ImportAircraftHeaderPrivateNote</div>
+                        <div>@Resources.LocalizedText.OptionalData</div>
+                    </td>
+                    <td>@Resources.Aircraft.ImportAircraftHeaderPrivateNoteDesc</td>
+                </tr>
+                <tr style="vertical-align: top">
+                    <td>
+                        <div style="font-weight: bold;">@Resources.Aircraft.ImportAircraftHeaderAircraftID</div>
+                        <div>@Resources.LocalizedText.OptionalData</div>
+                    </td>
+                    <td>@Resources.Aircraft.ImportAircraftHeaderAircraftIDDesc</td>
+                </tr>
+            </tbody>
+        </table>
+        <p>@Resources.Aircraft.ImportAircraftAnyOrder</p>
+        <p>@Resources.Aircraft.ImportAircraftSamplePrompt</p>
+        <table style="margin-left:auto; margin-right: auto; max-width: 80%; min-width: 50%;">
+            <tr style="font-weight: bold;">
+                <td style="padding: 5px">@Resources.Aircraft.ImportAircraftSampleExcel</td>
+                <td style="padding: 5px">@Resources.Aircraft.ImportAircraftSampleTextEditor</td>
+            </tr>
+            <tr>
+                <td style="padding: 5px"><img src="@("~/images/AircraftImportSample.png".ToAbsolute())" alt="@Resources.Aircraft.ImportAircraftExcelAlt" title="@Resources.Aircraft.ImportAircraftExcelAlt" /></td>
+                <td style="padding: 5px">
+                    <pre>Tail Number,Model
+N12345,C172
+N6789,B777
+...</pre>
+                </td>
+            </tr>
+        </table>
+        <p>@Resources.Aircraft.ImportAircraftBatchTip</p>
+        <p style="font-weight:bold">@Resources.Aircraft.ImportAircraftPreviewTip</p>
+        <div style="margin-left: auto; margin-right: auto;">
+            <div id="divUploadAircraftCSV"></div>
+        </div>
+        <div class="error" id="lblUploadErr"></div>
+    </div>
+    <div id="wzStep2" style="display: none;">
+        <div id="divImportSummary">
+            <img src="@("~/images/progress.gif".ToAbsolute())" style="height: 18pt; width: 18pt;" />
+        </div>
+    </div>
+    <div id="wzStep3" style="display: none;">
+        <p>@Resources.Aircraft.ImportAircraftUnmatchedHeader</p>
+        <p>@Html.Raw(Resources.Aircraft.ImportAircraftUmmatchedHeader2.Linkify())</p>
+        <p>@Resources.Aircraft.ImportAircraftEditTip</p>
+        @{ 
+            // Html.RenderAction("ATDFTDNote", "Aircraft");
+        }
+        <p>
+            @Resources.Aircraft.ImportAircraftAddModelTip
+            <span style="font-weight: bold;">
+                @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "divAddModel", labelClass= "expandoATD" }); }
+            </span>
+        </p>
+        <div id="divAddModel" class="logbookForm" style="display: none; padding: 5px; border: 1px solid gray;">
+            @{ Html.RenderAction("ModelEditor", "Aircraft", new { idModel = MakeModel.UnknownModel, onCommitFunc = "modelCommitted" }); }
+        </div>
+        <p>@Html.Raw(Resources.Aircraft.ImportAircraftFinishTip.Linkify())</p>
+        <div id="divImportNewAircraft">
+
+        </div>
+        <div class="error" id="lblImportFinishErr"></div>
+    </div>
+</div>
+<div id="wizNav" style="width: 100%; text-align: center; margin-top: 18pt;">
+    <button type="button" id="btnWizPrev" style="display:none;">@Resources.LocalizedText.PreviousPrompt</button>
+    <button type="button" id="btnWizNext" disabled>@Resources.LocalizedText.NextPrompt</button>
+    <button type="button" id="btnWizFinish" style="display:none;">@Resources.LocalizedText.FinishPrompt</button>
+</div>

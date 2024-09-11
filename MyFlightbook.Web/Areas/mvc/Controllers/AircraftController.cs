@@ -166,6 +166,12 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.hasTemplates = tc.Any();
             return PartialView(fAdminMode ? "_adminAircraftList" : "_aircraftListItem");
         }
+
+        [ChildActionOnly]
+        public ActionResult ATDFTDNote()
+        {
+            return PartialView("_noteATDFTD");
+        }
         #endregion
 
         #region Endpoints
@@ -245,8 +251,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return modelBrowser(mq, mq.IsAdvanced, true);
         }
         #endregion // Makes
-        #endregion // Endpoints
 
+        #region View Aircraft
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -297,5 +303,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.fAdminMode = fAdminMode;
             return View("myAircraft");
         }
+        #endregion
+        #endregion // Endpoints
     }
 }
