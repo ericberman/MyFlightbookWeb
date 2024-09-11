@@ -224,33 +224,17 @@
             }, "@Resources.Makes.errYesNotValidType"
         );
 
-        $("form[name='frmEditMake']").validate({
-            errorClass: "error",
-            errorElement: "div",
-            errorPlacement: function (error, element) {
-                // the parent's next sibling is the explanation text; put this in a div AFTER that.
-                var location = $(element).parent().next();
-                error.insertAfter(location);
-            },
-            rules: {
+        validateForm($("form[name='frmEditMake']"), {
                 manufacturerName: "required",
                 model: "required",
                 typeName: { validTypeName: true }
-            },
-            messages: {
-                manufacturerName: "@Resources.Makes.errManufacturerNameRequired",
-                model: "@Resources.Makes.editMakeValModelNameRequired",
-                validTypeName: "@Resources.Makes.errYesNotValidType"
-           },
-            highlight: function (element, errorClass) {
-                $(element).removeClass(errorClass);
-            }
+        }, {
+            manufacturerName: "@Resources.Makes.errManufacturerNameRequired",
+            model: "@Resources.Makes.editMakeValModelNameRequired",
+            validTypeName: "@Resources.Makes.errYesNotValidType"
         });
 
-        $("form[name='frmNewMan']").validate({
-            errorClass: "error",
-            errorElement: "div"
-        });
+        validateForm($("form[name='frmNewMan']"), {}, {});
 
         catClassChanged($("#cmbCatClass").val());   // ensure the correct things are shown for this category/class
     });
@@ -258,7 +242,6 @@
     // ]]>
 </script>
 <div class="noprint" id="divEditMakeForm">
-    @{ Html.RenderPartial("_noteATDFTD"); }
     @using (Html.BeginForm("EditMake", "Aircraft", FormMethod.Post, new { id = "frmEditMake", name = "frmEditMake" }))
     {
         @Html.AntiForgeryToken()

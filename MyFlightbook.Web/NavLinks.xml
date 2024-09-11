@@ -78,7 +78,7 @@
         <Roles></Roles>
       </Item>
       <Item>
-        <Link>~/Member/ImpAircraft.aspx</Link>
+        <Link>~/mvc/import/aircraft</Link>
         <ID>actImportAircraft</ID>
         <Roles></Roles>
       </Item>

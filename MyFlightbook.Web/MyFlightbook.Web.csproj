@@ -556,7 +556,6 @@
     <Content Include="Controls\mfbDecimalEdit.ascx" />
     <Content Include="Controls\mfbEditableImage.ascx" />
     <Content Include="Controls\mfbEditAircraft.ascx" />
-    <Content Include="Controls\mfbEditMake.ascx" />
     <Content Include="Controls\mfbFacebookFan.ascx" />
     <Content Include="Controls\mfbFileUpload.ascx" />
     <Content Include="Controls\mfbFooter.ascx" />
@@ -788,7 +787,6 @@
     <Content Include="MasterPage.master" />
     <Content Include="Member\Ajax.asmx" />
     <Content Include="Member\EditAircraft.aspx" />
-    <Content Include="Member\ImpAircraft.aspx" />
     <Content Include="Member\ImpAircraftService.aspx" />
     <Content Include="Member\Import.aspx" />
     <Content Include="Member\PrintView.aspx" />
@@ -2128,13 +2126,6 @@
     <Compile Include="Controls\mfbEditAircraft.ascx.designer.cs">
       <DependentUpon>mfbEditAircraft.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Controls\mfbEditMake.ascx.cs">
-      <DependentUpon>mfbEditMake.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbEditMake.ascx.designer.cs">
-      <DependentUpon>mfbEditMake.ascx</DependentUpon>
-    </Compile>
     <Compile Include="Controls\mfbFacebookFan.ascx.cs">
       <DependentUpon>mfbFacebookFan.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2425,13 +2416,6 @@
     </Compile>
     <Compile Include="Member\EditAircraft.aspx.designer.cs">
       <DependentUpon>EditAircraft.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Member\ImpAircraft.aspx.cs">
-      <DependentUpon>ImpAircraft.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\ImpAircraft.aspx.designer.cs">
-      <DependentUpon>ImpAircraft.aspx</DependentUpon>
     </Compile>
     <Compile Include="Member\ImpAircraftService.aspx.cs">
       <DependentUpon>ImpAircraftService.aspx</DependentUpon>

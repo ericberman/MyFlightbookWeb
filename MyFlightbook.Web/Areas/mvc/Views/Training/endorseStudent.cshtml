@@ -13,7 +13,7 @@
     ViewBag.Title = String.IsNullOrEmpty(szTargetUser) ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.Profile.EndorsementsHeader, pfStudent.UserFullName);
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
 }
-<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/Public/Scripts/ajaxUpload.js?v=7")"></script>
+<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/Public/Scripts/ajaxUpload.js?v=8")"></script>
 <script type="text/javascript">
     $(() => {
         ajaxFileUpload($("#divUploadEndorsements"), {

@@ -9,6 +9,7 @@
 <script type="text/javascript">
     function modelCommitted(m) {
         $(".expandoATD")[0].click();
+        $("#divAddModel input").val("");
     }
 
     var importAircraft = new aircraftImportEditor("@("~/mvc/Import".ToAbsolute())", {
@@ -57,13 +58,17 @@
                 $("#btnWizNext")[0].click();
             },
             onErr: function (err) { $("#lblUploadErr").text(err); },
-            dropPrompt: "@Resources.Aircraft.ImportAircraftFileDropPrompt",
+            promptID: "divDropAcCSV",
             errTooManyFiles: "@Resources.LocalizedText.fileUploadTooManyFiles",
             errDisallowedFileType: "@Resources.LocalizedText.fileUploadInvalidType",
             abortPrompt: "@Resources.LocalizedText.fileUploadAbort"
         });
     });
 </script>
+<div id="divDropAcCSV">
+    <div>@Resources.Aircraft.ImportAircraftFileDropPrompt</div>
+    <div><img src="@("~/images/csvicon_med.png".ToAbsolute())" /></div>
+</div>
 <div id="wizardHead">
     <span>@Resources.Aircraft.ImportAircraftStep1&nbsp; </span>
     <span>@Resources.Aircraft.ImportAircraftStep2&nbsp; </span>
@@ -153,9 +158,7 @@ N6789,B777
         <p>@Resources.Aircraft.ImportAircraftUnmatchedHeader</p>
         <p>@Html.Raw(Resources.Aircraft.ImportAircraftUmmatchedHeader2.Linkify())</p>
         <p>@Resources.Aircraft.ImportAircraftEditTip</p>
-        @{ 
-            // Html.RenderAction("ATDFTDNote", "Aircraft");
-        }
+        @{ Html.RenderAction("ATDFTDNote", "Aircraft"); }
         <p>
             @Resources.Aircraft.ImportAircraftAddModelTip
             <span style="font-weight: bold;">
