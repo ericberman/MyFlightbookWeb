@@ -7,7 +7,7 @@ using MySql.Data.MySqlClient;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2022 MyFlightbook LLC
+ * Copyright (c) 2009-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -111,10 +111,10 @@ namespace MyFlightbook
         {
             switch (ccid)
             {
-                case CategoryClass.CatClassID.ASEL:
-                case CategoryClass.CatClassID.ASES:
-                case CategoryClass.CatClassID.AMEL:
-                case CategoryClass.CatClassID.AMES:
+                case CatClassID.ASEL:
+                case CatClassID.ASES:
+                case CatClassID.AMEL:
+                case CatClassID.AMES:
                     return true;
                 default:
                     return false;
@@ -139,6 +139,7 @@ namespace MyFlightbook
                 case CatClassID.PoweredLift:
                 case CatClassID.PoweredParachuteLand:
                 case CatClassID.PoweredParachuteSea:
+                case CatClassID.Airship:
                     return true;
                 default:
                     return false;
