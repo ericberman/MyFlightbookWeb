@@ -4,7 +4,7 @@
     IEnumerable<TotalsItem> rgAfter = ViewBag.afterTotals;
     bool fUseHHMM = MyFlightbook.Profile.GetUser(User.Identity.Name).UsesHHMM;
 
-    if ((rgBefore?.Any() ?? false) && (rgAfter?.Any() ?? false))
+    if (rgAfter.Any())
     {
         <p>@Resources.LogbookEntry.StartingTotalsPreviewLegend</p>
         <table class="stickyHeaderTable">
