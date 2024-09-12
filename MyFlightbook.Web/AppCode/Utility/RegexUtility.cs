@@ -189,6 +189,13 @@ namespace MyFlightbook
 
         private static Regex mPseudoManufacturer = null;
         public static Regex FakeManufacturer { get { return mPseudoManufacturer ?? (mPseudoManufacturer = new Regex("GROUND|VARIOUS|UNKNOWN|MISC|MISCELLANEOUS|OTHER|NONE", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
+
+        private static Regex mAnonymous = null;
+
+        public static Regex AnonymousTail {  get { return mAnonymous ?? (mAnonymous = new Regex("^#\\d{6}$")); } }
+
+        private static Regex rNormal = null;
+        public static Regex NormalizedTailChars { get { return rNormal ?? (rNormal = new Regex("[^a-zA-Z0-9#]", RegexOptions.Compiled)); } }
         #endregion
 
         #region latitudes/longitude

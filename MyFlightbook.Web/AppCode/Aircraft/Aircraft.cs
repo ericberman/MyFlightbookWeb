@@ -1089,7 +1089,7 @@ WHERE
                 (comm) =>
                 {
                     comm.Parameters.AddWithValue("tailnumber", TailNumber);
-                    comm.Parameters.AddWithValue("tailNormal", rNormalChars.Replace(TailNumber, string.Empty));
+                    comm.Parameters.AddWithValue("tailNormal", RegexUtility.NormalizedTailChars.Replace(TailNumber, string.Empty));
                     comm.Parameters.AddWithValue("idmodel", ModelID);
                     comm.Parameters.AddWithValue("instanceType", InstanceTypeID);
                     comm.Parameters.AddWithValue("HasGlass", IsGlass);
@@ -1955,7 +1955,6 @@ WHERE
         }
         #endregion
 
-        private readonly static Regex rNormalChars = new Regex("[^a-zA-Z0-9#]", RegexOptions.Compiled);
 
         /// <summary>
         /// Removes all of the dashes/hyphens from a tailnumber, except optionally the one separating the country code from the rest of the registration
@@ -1973,7 +1972,7 @@ WHERE
                 return szTail;
 
             // strip all hyphens/dashes/etc
-            string szResult = rNormalChars.Replace(szTail.ToUpperInvariant(), string.Empty);
+            string szResult = RegexUtility.NormalizedTailChars.Replace(szTail.ToUpperInvariant(), string.Empty);
 
             // if a country code is specified, follow it's lead w.r.t. prefix
             if (cc != null)
@@ -1998,7 +1997,7 @@ WHERE
 
         public string SearchTail
         {
-            get { return String.IsNullOrEmpty(TailNormal) ? rNormalChars.Replace(TailNumber, string.Empty) : TailNormal; }
+            get { return String.IsNullOrEmpty(TailNormal) ? RegexUtility.NormalizedTailChars.Replace(TailNumber, string.Empty) : TailNormal; }
         }
 
         /// <summary>
@@ -3363,6 +3362,11 @@ ORDER BY f.date DESC LIMIT 10) tach", (int)CustomPropertyType.KnownProperties.ID
             }
             else if (TailsFound.Contains(szTailNormal))
                 return null;
+            else if (RegexUtility.AnonymousTail.IsMatch(szTail) && int.TryParse(szTailNormal, NumberStyles.Integer, CultureInfo.InvariantCulture, out int idmodel) && !MakeModel.GetModel(idmodel).IsNew)    // issue #1306 - need to properly handle #123456
+            {
+                // Restore the tail - we'll match it up elsehwere
+                TailsFound.Add(szTail);
+            }
 
             RowsFound = true;
 
