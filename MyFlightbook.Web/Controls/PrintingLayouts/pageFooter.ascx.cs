@@ -3,7 +3,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2020-2022 MyFlightbook LLC
+ * Copyright (c) 2020-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -23,8 +23,13 @@ namespace MyFlightbook.Printing
             {
                 m_userName = value;
                 CurrentUser = Profile.GetUser(value);
-                lblShowModified.Visible = ShowFooter && CurrentUser.PreferenceExists(MFBConstants.keyTrackOriginal);
+                lblShowModified.Visible = CurrentUser.PreferenceExists(MFBConstants.keyTrackOriginal);
             }
+        }
+
+        protected string UserFullName
+        {
+            get { return String.IsNullOrEmpty(CurrentUser?.FirstName ?? string.Empty + CurrentUser?.LastName ?? string.Empty) ? string.Empty : String.Format(System.Globalization.CultureInfo.CurrentCulture, "[{0}]", CurrentUser.UserFullName); }
         }
 
         public int PageNum { get; set; }
@@ -33,12 +38,8 @@ namespace MyFlightbook.Printing
 
         public bool ShowFooter
         {
-            get { return pnlPageCount.Visible; }
-            set
-            {
-                pnlPageCount.Visible = lblCertification.Visible = value;
-                lblShowModified.Visible = value && CurrentUser != null && CurrentUser.PreferenceExists(MFBConstants.keyTrackOriginal);
-            }
+            get { return divpagefooter.Visible; }
+            set { divpagefooter.Visible = value; }
         }
 
         protected Profile CurrentUser { get; set; }

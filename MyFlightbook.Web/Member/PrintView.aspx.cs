@@ -188,13 +188,20 @@ namespace MyFlightbook.Printing
         {
             get
             {
+                string serializedfooter = new PDFFooterOptions()
+                {
+                    fCover = ckIncludeCoverSheet.Checked,
+                    fTotalPages = ckPrintTotalPages.Checked,
+                    fTrackChanges = CurrentUser.PreferenceExists(MFBConstants.keyTrackOriginal),
+                    UserName = String.IsNullOrEmpty(CurrentUser.FirstName + CurrentUser.LastName) ? string.Empty : String.Format(System.Globalization.CultureInfo.CurrentCulture, "[{0}]", CurrentUser.UserFullName)
+                }.ToEncodedPathSegment();
                 return new PDFOptions()
                 {
                     PaperSize = (PDFOptions.PageSize)Enum.Parse(typeof(PDFOptions.PageSize), cmbPageSize.SelectedValue),
                     PageHeight = decCustHeight.IntValue,
                     PageWidth = decCustWidth.IntValue,
                     Orientation = rbLandscape.Checked ? PDFOptions.PageOrientation.Landscape : PDFOptions.PageOrientation.Portrait,
-                    FooterUri = VirtualPathUtility.ToAbsolute("~/mvc/Internal/PrintFooter/" + PDFOptions.PathEncodeOptions(ckIncludeCoverSheet.Checked, ckPrintTotalPages.Checked, CurrentUser.PreferenceExists(MFBConstants.keyTrackOriginal))).ToAbsoluteURL(Request),
+                    FooterUri = VirtualPathUtility.ToAbsolute("~/mvc/Internal/PrintFooter/" + serializedfooter).ToAbsoluteURL(Request),
                     LeftMargin = decLeftMargin.IntValue,
                     RightMargin = decRightMargin.IntValue,
                     TopMargin = decTopMargin.IntValue,

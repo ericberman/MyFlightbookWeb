@@ -163,7 +163,6 @@
     </table>
     <uc1:pageFooter runat="server" ID="pageFooter" ShowFooter="<%# ShowFooter %>" UserName="<%# CurrentUser.UserName %>" PageNum='<%#Eval("PageNum") %>' TotalPages='<%# Eval("TotalPages") %>'>
         <LayoutNotes>
-            <div><%=Resources.LogbookEntry.PrintLabelEASA %></div>
             <div><% = (CurrentUser.UsesUTCDateOfFlight) ? Resources.LogbookEntry.PrintLabelUTCDates : Resources.LogbookEntry.PrintLabelLocalDates %></div>
         </LayoutNotes>
     </uc1:pageFooter>

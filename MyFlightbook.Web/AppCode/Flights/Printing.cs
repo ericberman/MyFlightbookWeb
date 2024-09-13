@@ -725,6 +725,79 @@ namespace MyFlightbook.Printing
     }
 
     /// <summary>
+    /// Encapsulates options that are sent to the page footer in a pdf
+    /// </summary>
+    [Serializable]
+    public class PDFFooterOptions
+    {
+        private const uint flagCoverPage = 0x00000001;
+        private const uint flagTotalPages = 0x00000002;
+        private const uint flagShowTracking = 0x00000004;
+
+        public uint OptionFlags { get; set; }
+
+        /// <summary>
+        /// The full name (if any) to show on the signture line
+        /// </summary>
+        public string UserName { get; set; } = string.Empty;
+
+        /// <summary>
+        /// True if a cover page is present
+        /// </summary>
+        [JsonIgnore]
+        public bool fCover
+        {
+            get { return (OptionFlags & flagCoverPage) != 0; }
+            set { OptionFlags |= value ? flagCoverPage : 0; }
+        }
+
+        /// <summary>
+        /// Whether to include the total # of pages
+        /// </summary>
+        [JsonIgnore]
+        public bool fTotalPages {
+            get { return (OptionFlags & flagTotalPages) != 0; }
+            set { OptionFlags |= value ? flagTotalPages : 0; }
+        }
+
+        /// <summary>
+        /// Whether or not we are tracking changes
+        /// </summary>
+        [JsonIgnore]
+        public bool fTrackChanges
+        {
+            get { return (OptionFlags & flagShowTracking) != 0; }
+            set { OptionFlags |= value ? flagShowTracking : 0; }
+        }
+
+        public PDFFooterOptions() { }
+
+        private readonly static char[] trailingPeriods = new char[] {'.'};
+
+        public string ToEncodedPathSegment()
+        {
+            // Need to remove the final
+            return JsonConvert.SerializeObject(this).Compress().ToSafeBase64().TrimEnd(trailingPeriods);
+        }
+
+        public static PDFFooterOptions FromEncodedPathSegment(string safeBase64)
+        {
+            switch ((safeBase64?.Length ?? 0) % 4)
+            {
+                case 2:
+                    safeBase64 += "..";
+                    break;
+                case 3:
+                    safeBase64 += ".";
+                    break;
+                default:
+                    break;
+            }
+            return JsonConvert.DeserializeObject<PDFFooterOptions>(safeBase64.FromSafeBase64().Uncompress());
+        }
+    }
+
+    /// <summary>
     /// Describes options for saving to PDF
     /// </summary>
     [Serializable]
@@ -785,45 +858,6 @@ namespace MyFlightbook.Printing
         {
             get { return String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrintedFooterPageCount, "[page]" /* , "[topage]" */); }
         }
-        #endregion
-
-        #region Options encoded to pass to the footer
-        private const UInt32 flagCoverPage = 0x00000001;
-        private const UInt32 flagTotalPages = 0x00000002;
-        private const UInt32 flagShowTracking = 0x00000004;
-
-        public static string PathEncodeOptions(bool fCover, bool fTotal, bool fTrackChanges)
-        {
-            UInt32 flags = ((fCover ? 0xffffffff : 0) & flagCoverPage) | ((fTotal ? 0xffffffff : 0) & flagTotalPages) | ((fTrackChanges ? 0xffffffff : 0) & flagShowTracking);
-            return flags.ToString(CultureInfo.InvariantCulture);
-        }
-
-        private static bool FlagFromString(string sz, UInt32 flag)
-        {
-            if (sz == null)
-                throw new ArgumentNullException(nameof(sz));
-
-            if (UInt32.TryParse(sz, NumberStyles.Integer, CultureInfo.InvariantCulture, out UInt32 flags))
-                return (flags & flag) != 0;
-            else
-                return false;
-        }
-
-        public static bool CoverFromEncodedOptions(string sz)
-        {
-            return FlagFromString(sz, flagCoverPage);
-        }
-
-        public static bool TotalPagesFromEncodedOptions(string sz)
-        {
-            return FlagFromString(sz, flagTotalPages);
-        }
-
-        public static bool ShowChangeTrack(string sz)
-        {
-            return FlagFromString(sz, flagShowTracking);
-        }
-
         #endregion
 
         public PDFOptions() { }
