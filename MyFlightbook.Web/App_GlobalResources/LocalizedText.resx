@@ -1991,4 +1991,22 @@
   <data name="CloudStorageBox" xml:space="preserve">
     <value>Box</value>
   </data>
+  <data name="ImportPromptSelectSource" xml:space="preserve">
+    <value>Choose a source for your import</value>
+  </data>
+  <data name="ImportSourceCSVFile" xml:space="preserve">
+    <value>Import from a file</value>
+  </data>
+  <data name="ImportExternalDatePrompt" xml:space="preserve">
+    <value>Import flights between</value>
+  </data>
+  <data name="ImportExternalDateFrom" xml:space="preserve">
+    <value>From</value>
+  </data>
+  <data name="ImportExternalDateTo" xml:space="preserve">
+    <value>To</value>
+  </data>
+  <data name="ImportExternalDateOptional" xml:space="preserve">
+    <value>(Optional)</value>
+  </data>
 </root>

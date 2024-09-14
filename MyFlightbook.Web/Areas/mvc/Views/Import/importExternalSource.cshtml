@@ -1,0 +1,67 @@
+﻿@using MyFlightbook.OAuth
+@{
+    ViewBag.Title = Resources.LogbookEntry.ImportHeader;
+    ViewBag.defaultTab = tabID.tabLogbook;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    ExternalFlightSource source = ViewBag.source;
+    MyFlightbook.Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+}
+<script type="text/javascript">
+    $(() => {
+        defaultButtonForDiv("divImportExternal", "btnImportExternal");
+    });
+
+    function doImport() {
+        var f = $('#frmImportExternal');
+        if (f.valid()) {
+            $("#imgProgress").show();
+            f.submit();
+        }
+    }
+</script>
+@if (source.RequiresDateRange)
+{
+    <script type="text/javascript">
+        $(() => {
+            $("#mfbDateImportFrom").attr("required", true);
+            $("#mfbDateImportTo").attr("required", true);
+        });
+    </script>
+}
+
+@using (Html.BeginForm("ImportExternal", "Import", FormMethod.Post, new { id = "frmImportExternal", name = "frmImportExternal" }))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="externalSourceID" value="@source.ID" />
+    <h2>@source.ServicePrompt</h2>
+    <div id="divImportExternal">
+        <div style="font-weight: bold;">@Resources.LocalizedText.ImportExternalDatePrompt</div>
+        <table cellpadding="5">
+            <tr style="vertical-align:top">
+                <td>
+                    <div>@Resources.LocalizedText.ImportExternalDateFrom</div>
+                    @if (!source.RequiresDateRange)
+                    {
+                        <div class="fineprint">@Resources.LocalizedText.ImportExternalDateOptional</div>
+                    }
+                </td>
+                <td>@{ Html.RenderAction("RenderDatefield", "MFBTemplate", new { id = "mfbDateImportFrom", name = "startDate", value = source.FetchHighWaterDate(pf) ?? DateTime.MinValue }); }</td>
+            </tr>
+            <tr style="vertical-align:top">
+                <td>
+                    <div>@Resources.LocalizedText.ImportExternalDateTo</div>
+                    @if (!source.RequiresDateRange)
+                    {
+                        <div class="fineprint">@Resources.LocalizedText.ImportExternalDateOptional</div>
+                    }
+                </td>
+                <td>@{ Html.RenderAction("RenderDatefield", "MFBTemplate", new { id = "mfbDateImportTo", name = "endDate", value = DateTime.MinValue }); }</td>
+            </tr>
+        </table>
+        <div class="error">@(ViewBag.error ?? string.Empty)</div>
+        <div style="text-align:center">
+            <button type="button" style="font-weight: bold;" onclick="javascript: doImport();">@Resources.LogbookEntry.ImportWizardFinishButton</button>
+            <br /><img src="@("~/images/ajax-loader.gif".ToAbsolute())" style="display: none;" id="imgProgress" />
+        </div>
+    </div>
+}

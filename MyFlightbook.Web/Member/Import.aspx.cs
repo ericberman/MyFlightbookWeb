@@ -1,6 +1,3 @@
-using MyFlightbook.OAuth.FlightCrewView;
-using MyFlightbook.OAuth.Leon;
-using MyFlightbook.OAuth.RosterBuster;
 using MyFlightbook.Telemetry;
 using System;
 using System.Collections.Generic;
@@ -83,21 +80,6 @@ namespace MyFlightbook.ImportFlights
 
             if (!IsPostBack)
             {
-                pnlCloudAhoy.Visible = pf.CloudAhoyToken != null && pf.CloudAhoyToken.AccessToken != null;
-                pnlLeon.Visible = pf.PreferenceExists(LeonClient.TokenPrefKey);
-                if (pnlRosterBuster.Visible = pf.PreferenceExists(RosterBusterClient.TokenPrefKey))
-                {
-                    // if appropriate, initialize the "From" date to the previously used "To" date.
-                    DateTime? dt = pf.GetPreferenceForKey<DateTime?>(RosterBusterClient.rbLastToDateKey, null);
-                    if (dt.HasValue)
-                        rbFromDate.Date = dt.Value;
-                }
-                if (pnlFlightCrewView.Visible = pf.PreferenceExists(FlightCrewViewClient.AccessTokenPrefKey))
-                {
-                    DateTime? dt = pf.GetPreferenceForKey<DateTime?>(FlightCrewViewClient.LastAccessPrefKey, null);
-                    if (dt.HasValue)
-                        fcvFromDate.Date = dt.Value;
-                }
                 lblAutofillPreferred.Text = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.ImportWizardAutofillTryPreferred, pf.PreferredTimeZone.DisplayName).Linkify();
             }
         }
@@ -465,86 +447,6 @@ namespace MyFlightbook.ImportFlights
                 throw new ArgumentNullException(nameof(sender));
             SetWizardStep(wsUpload);
             ((Control)sender).Visible = false;
-        }
-
-        protected async void btnImportCloudAhoy_Click(object sender, EventArgs e)
-        {
-            DateTime? dtStart = null;
-            if (mfbCloudAhoyStartDate.Date.HasValue())
-                dtStart = mfbCloudAhoyStartDate.Date;
-            DateTime? dtEnd = null;
-            if (mfbCloudAhoyEndDate.Date.HasValue())
-                dtEnd = mfbCloudAhoyEndDate.Date;
-
-            PendingFlight.FlushCacheForUser(User.Identity.Name);    // Flush while still on the main thread with an http context
-            string szResult = await PendingFlight.ImportCloudAhoy(User.Identity.Name, !Branding.CurrentBrand.MatchesHost(Request.Url.Host), dtStart, dtEnd);
-            if (String.IsNullOrEmpty(szResult))
-            {
-                // Avoid a "Thread was being aborted" (ThreadAbortException).
-                Response.Redirect("~/mvc/flightedit/pending", false);
-                Context.ApplicationInstance.CompleteRequest();
-            }
-            else
-                lblCloudAhoyErr.Text = HttpUtility.HtmlEncode(szResult);
-        }
-
-        protected async void btnImportLeonFlights_Click(object sender, EventArgs e)
-        {
-            DateTime? from = null;
-            DateTime? to = null;
-
-            if (dtLeonFrom.Date.HasValue())
-                from = dtLeonFrom.Date;
-            if (dtLeonTo.Date.HasValue())
-                to = dtLeonTo.Date;
-
-            PendingFlight.FlushCacheForUser(User.Identity.Name);    // Flush while still on the main thread with an http context
-            string szResult = await PendingFlight.ImportLeon(User.Identity.Name, Request.Url.Host, from, to);
-            if (String.IsNullOrEmpty(szResult))
-            {
-                // If we are here, then any flights were imported - redirect to review them.
-                // Avoid a "Thread was being aborted" (ThreadAbortException).
-                Response.Redirect("~/mvc/flightedit/pending", false);
-                Context.ApplicationInstance.CompleteRequest();
-            }
-            else
-                lblLeonErr.Text = HttpUtility.HtmlEncode(szResult);
-        }
-
-        protected async void btnImportRosterBuster_Click(object sender, EventArgs e)
-        {
-            DateTime? from = null;
-            DateTime? to = null;
-
-            if (rbFromDate.Date.HasValue())
-                from = rbFromDate.Date;
-            if (rbToDate.Date.HasValue())
-                to = rbToDate.Date;
-
-            PendingFlight.FlushCacheForUser(User.Identity.Name);    // Flush while still on the main thread with an http context
-            string szResult = await PendingFlight.ImportRosterBuster(User.Identity.Name, Request.Url.Host, from, to);
-            if (String.IsNullOrEmpty(szResult))
-            {
-                // If we are here, then any flights were imported - redirect to review them.
-                // Avoid a "Thread was being aborted" (ThreadAbortException).
-                Response.Redirect("~/mvc/flightedit/pending", false);
-                Context.ApplicationInstance.CompleteRequest();
-                
-            }
-            else
-                lblRosterBusterErrror.Text = HttpUtility.HtmlEncode(szResult);
-        }
-
-        protected async void btnImportFlightCrewView_Click(object sender, EventArgs e)
-        {
-            PendingFlight.FlushCacheForUser(User.Identity.Name);    // Flush while still on the main thread with an http context
-            string szResult = await PendingFlight.ImportFlightCrewView(User.Identity.Name, fcvFromDate.Date, fcvToDate.Date);
-            if (String.IsNullOrEmpty(szResult)) 
-            {
-                    Response.Redirect("~/mvc/flightedit/pending", false);
-                    Context.ApplicationInstance.CompleteRequest();
-            }
-            lblFCViewError.Text = szResult;
         }
     }
 }

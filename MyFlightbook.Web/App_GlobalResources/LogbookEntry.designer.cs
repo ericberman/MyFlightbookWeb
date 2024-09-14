@@ -2032,7 +2032,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Import flights from CloudAhoy.
+        ///   Looks up a localized string similar to Import from CloudAhoy.
         /// </summary>
         internal static string ImportCloudAhoyImport {
             get {
@@ -2647,7 +2647,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Import from your Leon account.
+        ///   Looks up a localized string similar to Import from Leon.
         /// </summary>
         internal static string LeonImportHeader {
             get {

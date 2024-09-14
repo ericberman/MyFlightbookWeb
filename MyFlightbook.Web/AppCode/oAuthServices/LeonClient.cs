@@ -21,12 +21,36 @@ using System.Web;
 
 namespace MyFlightbook.OAuth.Leon
 {
-    public class LeonClient : OAuthClientBase
+    public class LeonClient : OAuthClientBase, IExternalFlightSource
     {
         private const string leonDevHost = "daily.leon.aero";
         private const string leonLiveHost = "leon.aero";
         public const string TokenPrefKey = "LeonPrefKey";
         public const string SubDomainPrefKey = "LeonSubDomainPrefKey";
+
+        #region IExternalFlightSource
+        async Task<string> IExternalFlightSource.ImportFlights(string username, DateTime? startDate, DateTime? endDate, HttpRequestBase request)
+        {
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
+            try
+            {
+                Profile pf = Profile.GetUser(username);
+                bool fNeedsRefresh = !CheckAccessToken();
+
+                await ImportFlights(username, startDate, endDate);
+                if (fNeedsRefresh)
+                    pf.SetPreferenceForKey(TokenPrefKey, AuthState, AuthState == null);
+
+                return string.Empty;    // no issues!
+            }
+            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            {
+                return ex.Message;
+            }
+        }
+        #endregion
+
         private string FlightsEndpoint { get; set; }
 
         private string RefreshEndpoint { get; set; }

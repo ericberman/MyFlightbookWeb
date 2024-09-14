@@ -177,12 +177,19 @@ namespace MyFlightbook.OAuth.CloudAhoy
     /// <summary>
     /// CloudAhow class
     /// </summary>
-    public class CloudAhoyClient : OAuthClientBase
+    public class CloudAhoyClient : OAuthClientBase, IExternalFlightSource
     {
         private const string cloudAhoyDebugHost = "www.cloudahoy.com";
         private const string cloudAhoyLiveHost = "www.cloudahoy.com";
 
         private string FlightsEndpoint { get; set; }
+
+        #region IExternalFlightSource
+        async Task<string> IExternalFlightSource.ImportFlights(string username, DateTime? startDate, DateTime? endDate, HttpRequestBase request)
+        {
+            return await ImportCloudAhoyFlights(username, !Branding.CurrentBrand.MatchesHost(request.Url.Host), startDate, endDate);
+        }
+        #endregion
 
         private static readonly string[] scopes = new string[] { "flights:read",  "flights:import" };
 

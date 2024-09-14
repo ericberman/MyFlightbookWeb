@@ -1,10 +1,12 @@
 ﻿using MyFlightbook.Currency;
+using MyFlightbook.OAuth;
 using MyFlightbook.StartingFlights;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using Newtonsoft.Json;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 /******************************************************
@@ -225,11 +227,46 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return View("startingTotals");
         }
 
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ImportExternal(string externalSourceID, string startDate, string endDate)
+        {
+            Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+            ExternalFlightSource source = ExternalFlightSource.SourceForID(externalSourceID, ExternalFlightSource.ExternalSourcesForUser(pf));
+            PendingFlight.FlushCacheForUser(User.Identity.Name);    // pre-emptively, since there may not be any context available during the async import
+
+            string result = (source == null) ? "Unknown source ID " + externalSourceID :
+                await source.GetClient(pf, Request).ImportFlights(User.Identity.Name,
+                DateTime.TryParse(startDate, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime dtStart) ? dtStart : (DateTime?)null,
+                DateTime.TryParse(endDate, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime dtEnd) ? dtEnd : (DateTime?)null,
+                Request);
+
+            if (String.IsNullOrEmpty(result))
+                return Redirect("~/mvc/flightedit/pending");
+            else
+            {
+                ViewBag.error = result;
+                ViewBag.source = source;
+                return View("importExternalSource");
+            }
+        }
+
         [Authorize]
         // GET: mvc/Import
-        public ActionResult Index()
+        public ActionResult Index(string id)
         {
-            throw new NotImplementedException();
+            Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+            IList<ExternalFlightSource> externalSources = id.CompareCurrentCultureIgnoreCase("csv") == 0 ? new List<ExternalFlightSource>() : ExternalFlightSource.ExternalSourcesForUser(pf);
+            ViewBag.externalSources = externalSources;
+            ExternalFlightSource source = ExternalFlightSource.SourceForID(id, externalSources);
+            if (source == null)
+                return externalSources.Count == 0 ? (ActionResult) Redirect("~/member/import.aspx") /* View("importCSV") */ : View("importSelectSource");
+            else
+            {
+                ViewBag.source = source;
+                return View("importExternalSource");
+            }
         }
         #endregion
     }

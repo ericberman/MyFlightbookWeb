@@ -1,9 +1,14 @@
 ﻿using DotNetOpenAuth.OAuth2;
+using MyFlightbook.OAuth.CloudAhoy;
+using MyFlightbook.OAuth.FlightCrewView;
+using MyFlightbook.OAuth.Leon;
+using MyFlightbook.OAuth.RosterBuster;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography;
@@ -20,6 +25,125 @@ using System.Web;
 
 namespace MyFlightbook.OAuth
 {
+    public interface IExternalFlightSource
+    {
+        /// <summary>
+        /// Abstraction to import flights into pending flights
+        /// </summary>
+        /// <param name="username">The user</param>
+        /// <param name="startDate">Optional starting date</param>
+        /// <param name="endDate">Optional ending date</param>
+        /// <param name="request">(optional) some sources require the current context</param>
+        /// <returns>An error string or empty for success.  Any pending flights loaded are a side-effect and are in pending flights</returns>
+        Task<string> ImportFlights(string username, DateTime? startDate, DateTime? endDate, HttpRequestBase request = null);
+    }
+
+    /// <summary>
+    /// A standard interface for finding and describing any oAuth source that can be a source for flights.
+    /// </summary>
+    public class ExternalFlightSource
+    {
+        public enum FlightSourceID { CSV, CloudAhoy, RosterBuster, Leon, FlightCrewView }
+
+        #region properties
+        /// <summary>
+        /// A unique URL-safe identifier for the source
+        /// </summary>
+        public FlightSourceID ID { get; private set; }
+
+        /// <summary>
+        /// A call-to-action string to import from this source
+        /// </summary>
+        public string ServicePrompt { get; private set; }
+
+        /// <summary>
+        /// An absolute path to the icon/image for the source
+        /// </summary>
+        public string IconHRef { get; private set; }
+
+        public bool RequiresDateRange { get; private set; }
+
+        /// <summary>
+        /// True if this service is set up for this user
+        /// </summary>
+        public Func<Profile, bool> AvailableForUser { get; private set; }
+
+        /// <summary>
+        /// If we've stored the high watermark date for retrieval for this service, that is returned here.
+        /// </summary>
+        public Func<Profile, DateTime?> FetchHighWaterDate { get; private set; }
+
+        /// <summary>
+        /// Returns an IExternalFlightsource for the service
+        /// </summary>
+        public Func<Profile, HttpRequestBase, IExternalFlightSource> GetClient { get; private set; }
+        #endregion
+
+        protected ExternalFlightSource() { }
+
+        protected ExternalFlightSource(FlightSourceID id, string servicePrompt, string iconHRef, bool requiresDates, Func<Profile, bool> isAvailable, Func<Profile, DateTime?> fetchHighWater, Func<Profile, HttpRequestBase, IExternalFlightSource> getClient)
+        {
+            ID = id;
+            ServicePrompt = servicePrompt;
+            IconHRef = iconHRef;
+            RequiresDateRange = requiresDates;
+            AvailableForUser = isAvailable;
+            GetClient = getClient;
+            FetchHighWaterDate = fetchHighWater;
+        }
+
+        /// <summary>
+        /// The full set of potentially available external flight sources
+        /// </summary>
+        private static readonly List<ExternalFlightSource> mAvailableSources = new List<ExternalFlightSource>()
+        {
+            new ExternalFlightSource(FlightSourceID.RosterBuster, Resources.LogbookEntry.RosterBusterImportHeader, "~/images/rb_logo.png".ToAbsolute(), false,
+                (pf) => pf.PreferenceExists(RosterBusterClient.TokenPrefKey),
+                (pf) => pf.GetPreferenceForKey<DateTime?>(RosterBusterClient.rbLastToDateKey, null),
+                (pf, req) => new RosterBusterClient(pf.GetPreferenceForKey<AuthorizationState>(RosterBusterClient.TokenPrefKey), req.Url.Host)),
+            new ExternalFlightSource(FlightSourceID.Leon, Resources.LogbookEntry.LeonImportHeader, "~/images/LeonLogo.svg".ToAbsolute(), true,
+                (pf) => pf.PreferenceExists(LeonClient.TokenPrefKey),
+                (pf) => null,
+                (pf, req) => new LeonClient(pf.GetPreferenceForKey<AuthorizationState>(LeonClient.TokenPrefKey), pf.GetPreferenceForKey<string>(LeonClient.SubDomainPrefKey), LeonClient.UseSandbox(req.Url.Host))),
+            new ExternalFlightSource(FlightSourceID.FlightCrewView, Resources.LogbookEntry.FlightCrewViewImportHeader, "~/images/flightcrewview.png".ToAbsolute(), false,
+                (pf) => pf.PreferenceExists(FlightCrewViewClient.AccessTokenPrefKey),
+                (pf) => pf.GetPreferenceForKey<DateTime?>(FlightCrewViewClient.LastAccessPrefKey, null),
+                (pf, req) => new FlightCrewViewClient(pf.GetPreferenceForKey<AuthorizationState>(FlightCrewViewClient.AccessTokenPrefKey))),
+            new ExternalFlightSource(FlightSourceID.CloudAhoy, Resources.LogbookEntry.ImportCloudAhoyImport, "~/images/CloudAhoyTrans.png".ToAbsolute(), false,
+                (pf) => pf.CloudAhoyToken != null,
+                (pf) => null,
+                (pf, req) => new CloudAhoyClient(!Branding.CurrentBrand.MatchesHost(req.Url.Host)))
+        };
+
+        /// <summary>
+        /// Returns the set of external flight sources that are available (configured) for the specified user
+        /// </summary>
+        /// <param name="pf">The profile for the user</param>
+        /// <returns>A possibly empty set of configured external flight sources</returns>
+        public static IList<ExternalFlightSource> ExternalSourcesForUser(Profile pf)
+        {
+            List<ExternalFlightSource> lst = new List<ExternalFlightSource>(mAvailableSources);
+            lst.RemoveAll(efs => !efs.AvailableForUser(pf));
+            return lst;
+        }
+
+        /// <summary>
+        /// Return the specified source from a list
+        /// </summary>
+        /// <param name="id">The ID of the source</param>
+        /// <param name="lst">The set of sources from which to search; if null, all known sources are searched</param>
+        /// <returns></returns>
+        public static ExternalFlightSource SourceForID(FlightSourceID id, IEnumerable<ExternalFlightSource> lst = null)
+        {
+            return (lst ?? mAvailableSources).FirstOrDefault(efs => efs.ID == id);
+        }
+
+        public static ExternalFlightSource SourceForID(string id, IEnumerable<ExternalFlightSource> lst = null)
+        {
+            return (Enum.TryParse<FlightSourceID>(id, true, out FlightSourceID flightSourceID)) ? SourceForID(flightSourceID, lst) : null;
+        }
+    }
+
     /// <summary>
     /// Base class for any oAuth2 Client
     /// </summary>

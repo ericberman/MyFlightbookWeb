@@ -1613,6 +1613,9 @@
     <Content Include="Areas\mvc\Views\Import\importAircraft.cshtml" />
     <Content Include="Areas\mvc\Views\Import\_aircraftImportReviewExisting.cshtml" />
     <Content Include="Areas\mvc\Views\Import\_aircraftImportList.cshtml" />
+    <Content Include="Areas\mvc\Views\Import\importSelectSource.cshtml" />
+    <Content Include="Areas\mvc\Views\Import\importExternalSource.cshtml" />
+    <Content Include="Areas\mvc\Views\Import\importCSV.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />

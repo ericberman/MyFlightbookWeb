@@ -1,0 +1,45 @@
+﻿@using MyFlightbook.OAuth
+@{
+    ViewBag.Title = Resources.LogbookEntry.ImportHeader;
+    ViewBag.defaultTab = tabID.tabLogbook;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    IList<ExternalFlightSource> sources = ViewBag.externalSources;
+}
+<h2>@Resources.LocalizedText.ImportPromptSelectSource</h2>
+<table cellpadding="5">
+    <tr>
+        <td style="text-align: center; height: 150px;"><img style="vertical-align: middle; max-width: 150px;" src="@("~/images/flightimportsample.png".ToAbsolute())" onclick="javascript: window.location = 'import?id=CSV';" /></td>
+        <td>
+            <ul class="nextStep">
+                <li style="font-weight: bold;"><a href="import?id=csv">@Resources.LocalizedText.ImportSourceCSVFile</a></li>
+            </ul>
+        </td>
+    </tr>
+    @foreach (ExternalFlightSource source in sources)
+    {
+        <tr>
+            <td style="text-align: center; height: 150px;"><img style="vertical-align: middle; max-width: 150px;" src="@source.IconHRef" onclick="javascript: window.location='import?id=@source.ID';" /></td>
+            <td>
+                <ul class="nextStep">
+                    <li style="font-weight: bold;"><a href="import?id=@source.ID">@source.ServicePrompt</a></li>
+                </ul>
+            </td>
+        </tr>
+    }
+</table>
+
+<div style="margin-left:auto; margin-right:auto; margin-top: 28pt; max-width: 600px;">
+    <div id="pnlAcuLog" class="calloutSmall calloutSponsor shadowed" style="text-align:left;">
+        <table>
+            <tr>
+                <td style="max-width:300px;">
+                    <h3>@Branding.ReBrand(Resources.LogbookEntry.ImportAculogHeader)</h3>
+                    @Html.Raw(Branding.ReBrand(Resources.LogbookEntry.ImportAculogPromo).Linkify())
+                </td>
+                <td>
+                    @{ Html.RenderAction("RenderSponsoredAd", "MFBTemplate", new { id = 2 });}
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

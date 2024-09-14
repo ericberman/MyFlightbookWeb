@@ -41,7 +41,7 @@
         <Roles></Roles>
       </Item>
       <Item>
-        <Link>~/Member/Import.aspx</Link>
+        <Link>~/mvc/import</Link>
         <ID>lbtImport</ID>
         <Roles></Roles>
       </Item>

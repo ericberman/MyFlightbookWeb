@@ -198,7 +198,7 @@ namespace MyFlightbook.OAuth.RosterBuster
         public string status { get; set; }
         public Dictionary<string, string> data;
     }
-    public class RosterBusterClient : OAuthClientBase
+    public class RosterBusterClient : OAuthClientBase, IExternalFlightSource
     {
         private const string rbDevHost = "app-dev.rosterbuster.aero";
         private const string rbLiveHost = "app.rosterbuster.aero";
@@ -213,6 +213,41 @@ namespace MyFlightbook.OAuth.RosterBuster
         public const string TokenPrefKey = "rosterBusterAuth";
         public const string RBDownloadLink = "https://k5745.app.goo.gl/WoQcV";
         public const string rbLastToDateKey = "rbLastToDate";
+
+        #region IExternalFlightSource
+        async Task<string> IExternalFlightSource.ImportFlights(string username, DateTime? startDate, DateTime? endDate, HttpRequestBase request)
+        {
+            if (string.IsNullOrEmpty(username))
+                throw new ArgumentNullException(nameof(username));
+
+            Profile pf = Profile.GetUser(username);
+            AuthState = pf.GetPreferenceForKey<AuthorizationState>(TokenPrefKey);
+
+            if (!CheckAccessToken())
+            {
+                try
+                {
+                    IAuthorizationState newAuth = await RefreshToken();
+                    pf.SetPreferenceForKey(TokenPrefKey, newAuth);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    pf.SetPreferenceForKey(TokenPrefKey, null, true);
+                    return Branding.ReBrand(Resources.LogbookEntry.RosterBusterRefreshFailed);
+                }
+            }
+
+            try
+            {
+                bool _ = await GetFlights(username, startDate, endDate);
+                return string.Empty;
+            }
+            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            {
+                return HttpUtility.HtmlEncode(ex.Message + (ex.InnerException == null ? string.Empty : ex.InnerException.Message));
+            }
+        }
+        #endregion
 
         private static bool UseSandbox(string host)
         {
@@ -448,7 +483,7 @@ namespace MyFlightbook.OAuth.RosterBuster
                     }
 
                     IAuthorizationState authstate = null;
-                    string error = (string) await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri(oAuth2TokenEndpoint), null, HttpMethod.Post, form, (response) =>
+                    string error = (string)await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri(oAuth2TokenEndpoint), null, HttpMethod.Post, form, (response) =>
                     {
                         string szResult = string.Empty;
                         try
@@ -500,9 +535,9 @@ namespace MyFlightbook.OAuth.RosterBuster
             flightsEndpoint = String.Format(CultureInfo.InvariantCulture, "https://{0}/v2/thirdparty/flight-data", UseSandbox(host) ? rbAPIDev : rbAPILive);
             refreshEndpoint = String.Format(CultureInfo.InvariantCulture, "https://{0}/rb/v1/thirdparty/refresh", UseSandbox(host) ? rbDevAuthHost : rbLiveAuthHost);
         }
-    #endregion
+        #endregion
 
-    public RosterBusterClient(IAuthorizationState authstate, string szHost) : this(szHost)
+        public RosterBusterClient(IAuthorizationState authstate, string szHost) : this(szHost)
         {
             AuthState = authstate;
         }

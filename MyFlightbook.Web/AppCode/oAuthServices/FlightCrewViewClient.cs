@@ -18,7 +18,7 @@ using System.Web;
 *******************************************************/
 namespace MyFlightbook.OAuth.FlightCrewView
 {
-    public class FlightCrewViewClient : OAuthClientBase
+    public class FlightCrewViewClient : OAuthClientBase, IExternalFlightSource
     {
         private const string authEndpoint = "https://www.flightcrewview2.com/logbook/logbookuserauth/";
         private const string tokenEndpoint = "https://www.flightcrewview2.com/logbook/api/token/";
@@ -27,6 +27,31 @@ namespace MyFlightbook.OAuth.FlightCrewView
         public const string AccessTokenPrefKey = "FlightCrewViewAuthToken";
         public const string LastAccessPrefKey = "FlightCrewViewLastDate";
 
+        #region IExternalFlightSource
+        async Task<string> IExternalFlightSource.ImportFlights(string username, DateTime? startDate, DateTime? endDate, HttpRequestBase request)
+        {
+            try
+            {
+                if (AuthState == null)
+                    throw new UnauthorizedAccessException("No FlightCrewView Authorization State");
+
+                if (!CheckAccessToken() && !String.IsNullOrEmpty(AuthState.RefreshToken))
+                {
+                    AuthState = await RefreshAccessToken(AuthState.RefreshToken, AuthState.Callback.ToString());
+                    Profile pf = Profile.GetUser(username);
+                    pf.SetPreferenceForKey(AccessTokenPrefKey, AuthState);
+                }
+
+                IEnumerable<PendingFlight> _ = await FlightsFromDate(username, startDate, endDate);
+                return string.Empty;
+            }
+            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            {
+                return ex.Message;
+            }
+        }
+        #endregion
+
         public FlightCrewViewClient() : base("FlightCrewViewClientID", "FlightCrewViewClientSecret", authEndpoint, tokenEndpoint, null, null, disableEndpoint)
         {
         }
@@ -34,26 +59,6 @@ namespace MyFlightbook.OAuth.FlightCrewView
         public FlightCrewViewClient(IAuthorizationState authstate) : this()
         {
             AuthState = authstate;
-        }
-
-        public static async Task<FlightCrewViewClient> RefreshedClientForUser(string szUsername)
-        {
-            if (String.IsNullOrEmpty(szUsername))
-                throw new ArgumentNullException(nameof(szUsername));
-
-            Profile pf = Profile.GetUser(szUsername);
-
-            FlightCrewViewClient fcv = new FlightCrewViewClient(pf.GetPreferenceForKey<AuthorizationState>(AccessTokenPrefKey));
-            if (fcv.AuthState == null)
-                throw new UnauthorizedAccessException("No FlightCrewView Authorization State");
-
-            if (!fcv.CheckAccessToken() && !String.IsNullOrEmpty(fcv.AuthState.RefreshToken))
-            {
-                fcv.AuthState = await fcv.RefreshAccessToken(fcv.AuthState.RefreshToken, fcv.AuthState.Callback.ToString());
-                pf.SetPreferenceForKey(AccessTokenPrefKey, fcv.AuthState);
-            }
-
-            return fcv;
         }
 
         public async Task<IEnumerable<PendingFlight>> FlightsFromDate(string szUser, DateTime? dtFrom, DateTime? dtTo)

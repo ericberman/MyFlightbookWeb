@@ -1194,7 +1194,7 @@ Proceed with import?</value>
     <value>End Date:</value>
   </data>
   <data name="ImportCloudAhoyImport" xml:space="preserve">
-    <value>Import flights from CloudAhoy</value>
+    <value>Import from CloudAhoy</value>
   </data>
   <data name="ImportCloudAhoyOptional" xml:space="preserve">
     <value>(Optional)</value>
@@ -1424,7 +1424,7 @@ Proceed with import?</value>
     <value>From:</value>
   </data>
   <data name="LeonImportHeader" xml:space="preserve">
-    <value>Import from your Leon account</value>
+    <value>Import from Leon</value>
   </data>
   <data name="LeonImportNow" xml:space="preserve">
     <value>Import</value>

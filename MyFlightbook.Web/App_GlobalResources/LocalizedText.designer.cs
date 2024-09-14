@@ -3029,6 +3029,60 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to From.
+        /// </summary>
+        internal static string ImportExternalDateFrom {
+            get {
+                return ResourceManager.GetString("ImportExternalDateFrom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Optional).
+        /// </summary>
+        internal static string ImportExternalDateOptional {
+            get {
+                return ResourceManager.GetString("ImportExternalDateOptional", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import flights between.
+        /// </summary>
+        internal static string ImportExternalDatePrompt {
+            get {
+                return ResourceManager.GetString("ImportExternalDatePrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To.
+        /// </summary>
+        internal static string ImportExternalDateTo {
+            get {
+                return ResourceManager.GetString("ImportExternalDateTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose a source for your import.
+        /// </summary>
+        internal static string ImportPromptSelectSource {
+            get {
+                return ResourceManager.GetString("ImportPromptSelectSource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import from a file.
+        /// </summary>
+        internal static string ImportSourceCSVFile {
+            get {
+                return ResourceManager.GetString("ImportSourceCSVFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Download Insurance Data.
         /// </summary>
         internal static string InsuranceBackupName {

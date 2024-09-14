@@ -1,0 +1,22 @@
+﻿@using System.Globalization
+@{
+    ViewBag.Title = Resources.LogbookEntry.ImportHeader;
+    ViewBag.defaultTab = tabID.tabLogbook;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+
+<div style="margin-left:auto; margin-right:auto; margin-top: 28pt; max-width: 600px;">
+    <div id="pnlAcuLog" class="calloutSmall calloutSponsor shadowed" style="text-align:left;">
+        <table>
+            <tr>
+                <td style="max-width:300px;">
+                    <h3>@Branding.ReBrand(Resources.LogbookEntry.ImportAculogHeader)</h3>
+                    @Html.Raw(Branding.ReBrand(Resources.LogbookEntry.ImportAculogPromo).Linkify())
+                </td>
+                <td>
+                    @{ Html.RenderAction("RenderSponsoredAd", "MFBTemplate", new { id = 2 });}
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
