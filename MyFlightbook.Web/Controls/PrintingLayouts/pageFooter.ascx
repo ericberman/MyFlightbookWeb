@@ -5,7 +5,7 @@
         <asp:Panel runat="server" ID="pnlPageCount"><% =String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.PrintedFooterPageCount, PageNum, TotalPages) %></asp:Panel>
     </div>
     <div>
-        <div><asp:Label ID="lblCertification" runat="server" Text="<%$ Resources:LogbookEntry, LogbookCertification %>" /><asp:Label ID="lblFullName" runat="server" Text="<%#: UserFullName %>" /></div>
+        <div><asp:Label ID="lblCertification" runat="server" Text="<%$ Resources:LogbookEntry, LogbookCertification %>" /><asp:Label ID="lblFullName" runat="server" Text="<%#: UserFullName %>" /> _____________________________</div>
     </div>
 </div>
 <div class="fineprint"><asp:PlaceHolder ID="plcMiddle" runat="server"></asp:PlaceHolder></div>

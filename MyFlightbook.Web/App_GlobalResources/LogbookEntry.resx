@@ -262,7 +262,7 @@
     <value>This flight was recorded with a DIFFERENT category/class than usual for the airplane.  This could be appropriate, for example, if the plane on floats part-time, or is amphibian.</value>
   </data>
   <data name="LogbookCertification" xml:space="preserve">
-    <value>I certify that the entries in this log are true: _____________________________</value>
+    <value>I certify that the entries in this log are true </value>
   </data>
   <data name="LogbookConfirmDelete" xml:space="preserve">
     <value>Are you sure you want to delete this flight?  This action cannot be undone!{0}{1}</value>

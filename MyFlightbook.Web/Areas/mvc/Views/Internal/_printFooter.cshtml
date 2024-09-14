@@ -15,6 +15,6 @@
     {
         <div>&nbsp;</div>
         <div style="float: right">@(opt.fTotalPages ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrintedFooterPageCountWithTotals, page, topage) : String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrintedFooterPageCount, page))</div>
-        <div>@Resources.LogbookEntry.LogbookCertification @(opt.UserName ?? string.Empty)</div>
+        <div>@Resources.LogbookEntry.LogbookCertification @(opt.UserName ?? string.Empty) _____________________________</div>
     }
 }

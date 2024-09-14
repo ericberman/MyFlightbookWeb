@@ -2728,7 +2728,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to I certify that the entries in this log are true: _____________________________.
+        ///   Looks up a localized string similar to I certify that the entries in this log are true .
         /// </summary>
         internal static string LogbookCertification {
             get {
