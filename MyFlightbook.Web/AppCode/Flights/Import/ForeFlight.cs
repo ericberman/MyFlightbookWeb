@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2022 MyFlightbook LLC
+ * Copyright (c) 2017-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -29,17 +29,16 @@ namespace MyFlightbook.ImportFlights
     /// </summary>
     public class ForeFlight : ExternalFormat
     {
-        private readonly static Regex rLatLon = new Regex("(\\d{0,2}[.,]\\d*)\\D{0,2}°?([NS])/(\\d{0,3}[.,]\\d*)\\D{0,2}°?([EW])", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private readonly static Regex regApproach = new Regex("\\b(?<count>\\d{1,2});(?<desc>[-a-zA-Z() /]{3,}?)(?: *RWY[^;]*?)?;(?<rwy>[0-3]?\\d[LRC]?);(?<airport>[a-zA-Z0-9]{3,4});(?<remark>.*)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
-        private readonly static Regex regApproachCountOnly = new Regex("\\b(?<count>\\d{1,2});", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
-
         #region Properties
         public DateTime Date { get; set; }
         public string AircraftID { get; set; }
+        public string TailNum { get; set; }
         public string From { get; set; }
         public string To { get; set; }
         public string Route { get; set; }
         public DateTime TimeOut { get; set; }
+        public DateTime TimeOff { get; set; }
+        public DateTime TimeOn { get; set; }
         public DateTime TimeIn { get; set; }
         public DateTime OnDuty { get; set; }
         public DateTime OffDuty { get; set; }
@@ -146,6 +145,8 @@ namespace MyFlightbook.ImportFlights
 
             TimeOut = FixedUTCDateFromTime(Date, TimeOut);
             TimeIn = FixedUTCDateFromTime(Date, TimeIn, TimeOut);
+            TimeOff = FixedUTCDateFromTime(Date, TimeOff);
+            TimeOn = FixedUTCDateFromTime(Date, TimeOn);
 
             List<string> lstApproachStrings = new List<string>() { Approach1, Approach2, Approach3, Approach4, Approach5, Approach6 };
             StringBuilder sbApproaches = new StringBuilder();
@@ -157,11 +158,11 @@ namespace MyFlightbook.ImportFlights
                     string szFixedApproach = Regex.Replace(szApproach, " ?\\(GPS\\)", "/GPS", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.Singleline);
                     try
                     {
-                        MatchCollection mc = regApproach.Matches(szFixedApproach);
+                        MatchCollection mc = RegexUtility.ApproachDescriptionForeflight.Matches(szFixedApproach);
                         if (mc.Count == 0)
                         {
                             // handle the case of "2;;;;" (i.e., 2 approaches, no additional details
-                            mc = regApproachCountOnly.Matches(szFixedApproach);
+                            mc = RegexUtility.ApproachCountForeFlight.Matches(szFixedApproach);
                             if (mc.Count == 1)
                                 cApproaches += Convert.ToInt32(mc[0].Groups["count"].Value, CultureInfo.CurrentCulture);
                         }
@@ -196,7 +197,7 @@ namespace MyFlightbook.ImportFlights
             InstructorName = JoinStrings(InstructorNames);
             
             if (AircraftID == null)
-                AircraftID = string.Empty;
+                AircraftID = TailNum ?? string.Empty;
 
             if (AircraftID.StartsWith(CountryCodePrefix.szSimPrefix, StringComparison.CurrentCultureIgnoreCase))
                 AircraftID = CountryCodePrefix.szSimPrefix;
@@ -208,9 +209,9 @@ namespace MyFlightbook.ImportFlights
                 Date = this.Date,
                 ModelDisplay = szModel,
                 TailNumDisplay = String.IsNullOrWhiteSpace(AircraftID) ? (SimulatedFlight > 0 ? CountryCodePrefix.SimCountry.Prefix : CountryCodePrefix.AnonymousCountry.Prefix) : AircraftID,
-                Route = rLatLon.Replace(JoinStrings(new string[] { From, Route, To }), (m) => { return "@" + m.Groups[1].Value + m.Groups[2].Value + m.Groups[3].Value + m.Groups[4].Value; }),
-                EngineStart = TimeOut,
-                EngineEnd = TimeIn,
+                Route = RegexUtility.DMSDegreesSlashed.Replace(JoinStrings(new string[] { From, Route, To }), (m) => { return "@" + m.Groups[1].Value + m.Groups[2].Value + m.Groups[3].Value + m.Groups[4].Value; }),
+                FlightStart = TimeOff,
+                FlightEnd = TimeOn,
                 TotalFlightTime = TotalTime,
                 PIC = this.PIC,
                 SIC = this.SIC,
@@ -237,6 +238,8 @@ namespace MyFlightbook.ImportFlights
             {
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightDutyTimeStart, OnDuty, true),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightDutyTimeEnd, OffDuty, true),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDBlockOut, TimeOut, true),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDBlockIn, TimeIn, true),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropSolo, Solo),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNightTakeoff, NightTakeoffs),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropTachStart, TachStart),

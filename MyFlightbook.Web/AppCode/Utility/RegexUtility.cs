@@ -129,6 +129,21 @@ namespace MyFlightbook
         /// </summary>
         public static Regex ApproachDescription { get { return mApproach ?? (mApproach = new Regex("\\b(?<count>\\d{1,2})[-.:/ ]?(?<desc>[-a-zA-Z/]{3,}?(?:-[abcxyzABCXYZ])?)[-.:/ ]?(?:RWY)?(?<rwy>[0-3]?\\d[LRC]?)[-.:/ @](?<airport>[a-zA-Z0-9]{3,4})\\b", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
 
+        private static Regex mApproachForeFlight = null;
+
+        /// <summary>
+        /// Approach description, in the form used by foreflight (e.g., 1;LOC;17;KUAO;Circle)
+        /// </summary>
+        public static Regex ApproachDescriptionForeflight { get { return mApproachForeFlight ?? (mApproachForeFlight = new Regex("\\b(?<count>\\d{1,2});(?<desc>[-a-zA-Z() /]{3,}?)(?: *RWY[^;]*?)?;(?<rwy>[0-3]?\\d[LRC]?);(?<airport>[a-zA-Z0-9]{3,4});(?<remark>.*)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline)); } }
+
+        private static Regex mApproachCountForeFlight = null;
+
+        /// <summary>
+        /// Returns an approach count as used in Foreflight, which is just 1- or 2- digits
+        /// </summary>
+        public static Regex ApproachCountForeFlight { get { return mApproachCountForeFlight ?? (mApproachCountForeFlight = new Regex("\\b(?<count>\\d{1,2});", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline)); } }
+
+
         private static Regex mFlightHash = null;
         /// <summary>
         /// Read a logbookentry (flight) from its flight hash
@@ -216,6 +231,7 @@ namespace MyFlightbook
         private static Regex mDMSDecimal = null;
         private static Regex mDMSDotted = null;
         private static Regex mDMSDegrees = null;
+        private static Regex mDMSDegreesSlashed = null;
 
         /// <summary>
         /// Matches a degree-minute-second latitude/longitude string using apostrophes in the format of "22 03' 26.123"S
@@ -236,6 +252,12 @@ namespace MyFlightbook
         /// Matches a degree-minute-second string that uses the degree sign, e.g., 48°01.3358"
         /// </summary>
         public static Regex DMSDegrees { get { return mDMSDegrees ?? (mDMSDegrees = new Regex("-?(\\d+)°(\\d+([.,]\\d+)?)", RegexOptions.IgnoreCase | RegexOptions.Compiled)); } }
+
+
+        /// <summary>
+        /// Matches a degree-minute-second string that uses the degree sign and NS or EW and a slash, e.g., 47.39°N/121.24°W
+        /// </summary>
+        public static Regex DMSDegreesSlashed { get { return mDMSDegreesSlashed ?? (mDMSDegreesSlashed = new Regex("(\\d{0,2}[.,]\\d*)\\D{0,2}°?([NS])/(\\d{0,3}[.,]\\d*)\\D{0,2}°?([EW])", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
         #endregion
 
         #region Dates/Times
