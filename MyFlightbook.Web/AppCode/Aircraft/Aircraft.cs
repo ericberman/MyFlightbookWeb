@@ -3299,6 +3299,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int)CustomPropertyType.KnownProperties.ID
         /// <summary>
         /// Returns all unmatched aircraft
         /// </summary>
+        [JsonIgnore]
         public Collection<AircraftImportMatchRow> AllUnmatched
         {
             get { return new Collection<AircraftImportMatchRow>(_matchResults.FindAll(mr => mr.State == AircraftImportMatchRow.MatchState.UnMatched)); }
@@ -3307,14 +3308,16 @@ ORDER BY f.date DESC LIMIT 10) tach", (int)CustomPropertyType.KnownProperties.ID
         /// <summary>
         /// All candidates that were not found in the user's profile.
         /// </summary>
+        [JsonIgnore]
         public Collection<AircraftImportMatchRow> AllMissing
         {
             get { return new Collection<AircraftImportMatchRow>(_matchResults.FindAll(mr => mr.State == AircraftImportMatchRow.MatchState.UnMatched || mr.State == AircraftImportMatchRow.MatchState.MatchedExisting)); }
         }
-        
+
         /// <summary>
         /// Returns unmatched or just-added aircraft (I.e., ones to display)
         /// </summary>
+        [JsonIgnore]
         public Collection<AircraftImportMatchRow> UnmatchedOrJustAdded
         {
             get { return new Collection<AircraftImportMatchRow>(_matchResults.FindAll(mr => mr.State == AircraftImportMatchRow.MatchState.UnMatched || mr.State == AircraftImportMatchRow.MatchState.JustAdded)); }
@@ -3323,6 +3326,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int)CustomPropertyType.KnownProperties.ID
         /// <summary>
         /// Returns all aircraft that are not unmatched (matched to existing aircraft, or to profile, or just added)
         /// </summary>
+        [JsonIgnore]
         public Collection<AircraftImportMatchRow> AllMatched
         {
             get { return new Collection<AircraftImportMatchRow>(_matchResults.FindAll(mr => mr.State != AircraftImportMatchRow.MatchState.UnMatched)); }

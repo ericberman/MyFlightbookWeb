@@ -19,7 +19,7 @@ class aircraftImportEditor {
 
         this.renderSummary = function () {
             var params = new Object();
-            params.contextJSON = JSON.stringify(this.aircraftParseContext);
+            params.contextJSON = this.aircraftParseContext;
             var d = JSON.stringify(params);
             $.ajax({
                 url: aircraftImportEndpoint + "/ImportSummary",
@@ -33,7 +33,7 @@ class aircraftImportEditor {
 
         this.renderUnmatched = function () {
             var params = new Object();
-            params.contextJSON = JSON.stringify(this.aircraftParseContext);
+            params.contextJSON = this.aircraftParseContext;
             var d = JSON.stringify(params);
             $.ajax({
                 url: aircraftImportEndpoint + "/ReviewNewAircraft",
@@ -67,7 +67,7 @@ class aircraftImportEditor {
             var prg = $("#" + progress).dialog({ modal: true, resizable: false, draggable: false });
             $(".ui-dialog-titlebar").hide();
             var params = new Object();
-            params.contextJSON = JSON.stringify(this.aircraftParseContext);
+            params.contextJSON = this.aircraftParseContext;
             var pthis = this;
             var d = JSON.stringify(params);
             $.ajax({
