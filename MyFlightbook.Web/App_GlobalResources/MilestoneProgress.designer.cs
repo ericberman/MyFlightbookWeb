@@ -1231,7 +1231,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to *10 solo landings* at *night* (since PPL, circuits are assumed).
+        ///   Looks up a localized string similar to *10 solo landings* at *night* (since PPL; circuits are assumed).
         /// </summary>
         internal static string CommCanadaSoloNightLandings {
             get {
@@ -1240,7 +1240,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to *10 solo takeoffs* at *night* (since PPL) (circuits are assumed).
+        ///   Looks up a localized string similar to *10 solo takeoffs* at *night* (since PPL; circuits are assumed).
         /// </summary>
         internal static string CommCanadaSoloNightTakeoffs {
             get {

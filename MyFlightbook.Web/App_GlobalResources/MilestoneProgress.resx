@@ -1494,10 +1494,10 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <value>*5* hours *solo* time at *night* (since PPL)</value>
   </data>
   <data name="CommCanadaSoloNightLandings" xml:space="preserve">
-    <value>*10 solo landings* at *night* (since PPL, circuits are assumed)</value>
+    <value>*10 solo landings* at *night* (since PPL; circuits are assumed)</value>
   </data>
   <data name="CommCanadaSoloNightTakeoffs" xml:space="preserve">
-    <value>*10 solo takeoffs* at *night* (since PPL) (circuits are assumed)</value>
+    <value>*10 solo takeoffs* at *night* (since PPL; circuits are assumed)</value>
   </data>
   <data name="CommCanadaSoloNote" xml:space="preserve">
     <value>The regs require an emphasis on "the improvement of general flying skills"; this is assumed.</value>

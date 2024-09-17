@@ -1348,8 +1348,9 @@ namespace MyFlightbook.RatingsProgress
             if (cfr.FlightProps.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropCheckridePPL))
                 HasSeenPPL = true;
 
+            // Issue #1309 - assume all sim time is training time in Canada.
             if (!HasSeenPPL && cfr.fIsCertifiedIFR)
-                miMinInstrument.AddTrainingEvent(Math.Min(cfr.Dual, cfr.IMC + cfr.IMCSim), MaxSim, !cfr.fIsRealAircraft);
+                miMinInstrument.AddTrainingEvent(!cfr.fIsRealAircraft ? cfr.IMCSim : Math.Min(cfr.Dual, cfr.IMC + cfr.IMCSim), MaxSim, !cfr.fIsRealAircraft);
 
             if (!cfr.fIsRealAircraft)
                 return;
