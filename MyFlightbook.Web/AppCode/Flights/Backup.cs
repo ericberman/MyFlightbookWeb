@@ -63,8 +63,11 @@ namespace MyFlightbook
         {
             tw.Write(v.EmbedHTML());
             tw.RenderBeginTag(HtmlTextWriterTag.P);
-            tw.Write(String.Format(CultureInfo.InvariantCulture, "<a href=\"{0}\"{1}</a></p>", v.VideoReference, v.DisplayString));
-            tw.Write(v.Comment);
+            tw.AddAttribute("href", v.VideoReference);
+            tw.RenderBeginTag(HtmlTextWriterTag.A);
+            tw.WriteEncodedText(v.DisplayString);
+            tw.RenderEndTag();
+            tw.WriteEncodedText(v.Comment);
             tw.RenderEndTag();  // P
         }
 
@@ -105,14 +108,22 @@ namespace MyFlightbook
             if (String.IsNullOrEmpty(szValue))
                 return;
 
-            tw.Write(String.Format(CultureInfo.InvariantCulture, "<div {0}>{1}: {2}</div>", fBoldKey ? "style=\"font-weight:bold\"" : string.Empty, szKey, szValue));
+            if (fBoldKey)
+                tw.AddAttribute("style", "font-weight: bold;");
+            tw.RenderBeginTag(HtmlTextWriterTag.Div);
+            tw.WriteEncodedText(String.Format(CultureInfo.CurrentCulture, "{0}: {1}", szKey, szValue));
+            tw.RenderEndTag();  // div
         }
 
         private static void WriteProfileEvent(HtmlTextWriter tw, IDictionary<string, object> d)
         {
             tw.RenderBeginTag(HtmlTextWriterTag.Li);
-            tw.Write(String.Format(CultureInfo.InvariantCulture, "<span style=\"font-weight: bold\">{0}</span>: {1} ({2})", d["Date"], d["Property Type"], String.Format(CultureInfo.CurrentCulture, "{0}, {1}, {2}", d["Model"], d["Category"], d["Type"]).Trim()));
-            tw.RenderEndTag();
+            tw.AddAttribute("style", "font-weight: bold;");
+            tw.RenderBeginTag(HtmlTextWriterTag.Span);
+            tw.WriteEncodedText(d["Date"].ToString());
+            tw.RenderEndTag();  // span
+            tw.WriteEncodedText(String.Format(CultureInfo.CurrentCulture, ": {0} ({1})", d["Property Type"], String.Format(CultureInfo.CurrentCulture, "{0}, {1}, {2}", d["Model"], d["Category"], d["Type"]).Trim()));
+            tw.RenderEndTag();  // li
         }
 
         private static void WritePilotInformation(HtmlTextWriter tw, Profile pf)
@@ -128,7 +139,7 @@ namespace MyFlightbook
                 return;
 
             tw.RenderBeginTag(HtmlTextWriterTag.H1);
-            tw.Write(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ImagesBackupPilotInfoHeader, pf.UserFullName));
+            tw.WriteEncodedText(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ImagesBackupPilotInfoHeader, pf.UserFullName));
             tw.RenderEndTag();
 
             // Write out the top line strings, ignoring empty values
@@ -142,7 +153,7 @@ namespace MyFlightbook
             if (flightreviews.Any())
             {
                 tw.RenderBeginTag(HtmlTextWriterTag.H2);
-                tw.Write(Resources.Preferences.PilotInfoBFRs);
+                tw.WriteEncodedText(Resources.Preferences.PilotInfoBFRs);
                 tw.RenderEndTag();
 
                 tw.RenderBeginTag(HtmlTextWriterTag.Ul);
@@ -155,7 +166,7 @@ namespace MyFlightbook
             if (ipcs.Any())
             {
                 tw.RenderBeginTag(HtmlTextWriterTag.H2);
-                tw.Write(Resources.Preferences.PilotInfoIPCHeader);
+                tw.WriteEncodedText(Resources.Preferences.PilotInfoIPCHeader);
                 tw.RenderEndTag();
 
                 tw.RenderBeginTag(HtmlTextWriterTag.Ul);
@@ -171,13 +182,13 @@ namespace MyFlightbook
             if (certificates.Any())
             {
                 tw.RenderBeginTag(HtmlTextWriterTag.H2);
-                tw.Write(Resources.Preferences.PilotInfoRatings);
+                tw.WriteEncodedText(Resources.Preferences.PilotInfoRatings);
                 tw.RenderEndTag();
 
                 foreach (var rating in certificates)
                 {
                     tw.RenderBeginTag(HtmlTextWriterTag.P);
-                    tw.Write(rating["Certificate Name"]);
+                    tw.WriteEncodedText(rating["Certificate Name"].ToString());
                     tw.RenderEndTag();
 
                     tw.RenderBeginTag(HtmlTextWriterTag.Ul);
@@ -185,7 +196,7 @@ namespace MyFlightbook
                     foreach (string sz in rgPrivs)
                     {
                         tw.RenderBeginTag(HtmlTextWriterTag.Li);
-                        tw.Write(sz);
+                        tw.WriteEncodedText(sz);
                         tw.RenderEndTag();
                     }
                     tw.RenderEndTag();
@@ -218,7 +229,7 @@ namespace MyFlightbook
         private static void WriteFlightInfo(HtmlTextWriter tw, ZipArchive zip, LogbookEntry le)
         {
             tw.RenderBeginTag(HtmlTextWriterTag.H2);
-            tw.Write(String.Format(CultureInfo.CurrentCulture, "{0} - {1}", HttpUtility.HtmlEncode(le.Date.ToShortDateString()), HttpUtility.HtmlEncode(le.TailNumDisplay)));
+            tw.WriteEncodedText(String.Format(CultureInfo.CurrentCulture, "{0} - {1}", le.Date.ToShortDateString(), le.TailNumDisplay));
             tw.RenderEndTag();
 
             if (!String.IsNullOrEmpty(le.Route))
@@ -298,7 +309,11 @@ namespace MyFlightbook
             tw.Write(String.Format(CultureInfo.CurrentCulture, "<p>{0}</p>", Resources.Profile.BasicMedHeader));
             tw.RenderBeginTag(HtmlTextWriterTag.Ul);
             foreach (BasicMedEvent bme in lstBMed)
-                tw.Write(String.Format(CultureInfo.InvariantCulture, "<li>{0} - {1} {2}</li>", bme.EventDate.YMDString(), bme.EventTypeDescription, bme.Description));
+            {
+                tw.RenderBeginTag(HtmlTextWriterTag.Li);
+                tw.WriteEncodedText(String.Format(CultureInfo.CurrentCulture, "{0} - {1} {2}", bme.EventDate.YMDString(), bme.EventTypeDescription, bme.Description));
+                tw.RenderEndTag();  // li
+            }
             tw.RenderEndTag(); // Ul
 
             foreach (BasicMedEvent bme in lstBMed)
