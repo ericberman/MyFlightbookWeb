@@ -149,7 +149,6 @@ class aircraftImportEditor {
             params.szTail = szTail;
             params.idModel = idModel;
             params.instanceType = instanceType;
-            var aipc = this.aircraftParseContext;
 
             $.ajax(
                 {

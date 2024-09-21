@@ -74,14 +74,13 @@ function ajaxFileUpload(container, options) {
             },
             complete: function (response) {
                 status.setProgress(100);
-                if (options.onFileUploaded)
-                    options.onFileUploaded(status, response.responseText);
-                else 
-                    status.setThumbnail(response.responseText);
                 processQueue();
             },
-            success: function (data) {
-                
+            success: function (response) {
+                if (options.onFileUploaded)
+                    options.onFileUploaded(status, response);
+                else
+                    status.setThumbnail(response.responseText);
             }
         }));
     }

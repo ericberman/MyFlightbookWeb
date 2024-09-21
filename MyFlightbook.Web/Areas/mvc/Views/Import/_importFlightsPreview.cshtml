@@ -1,0 +1,137 @@
+﻿@using System.Globalization
+@using MyFlightbook.ImportFlights
+@{
+    CSVImporter importer = ViewBag.importer;
+    Dictionary<int, string> errorContext = ViewBag.errorContext;
+    Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+    int iRow = 0;
+    bool isPendingOnly = ViewBag.isPendingOnly;
+    bool hasErrors = false;
+}
+@if (importer.FlightsToImport.Count > 0)
+{
+    <div>&nbsp;</div>
+    if (errorContext.Count > 0 && !isPendingOnly)
+    {
+        <div class="error">@Resources.LogbookEntry.ImportPreviewNotSuccessful</div>
+    }
+<div>
+    @foreach (int i in errorContext.Keys)
+    {
+        LogbookEntry le = importer.FlightsToImport[i];
+        if (!String.IsNullOrEmpty(le.ErrorString))
+        {
+            <div><a style="font-weight: bold; font-size: 12pt;" href="#@String.Format(CultureInfo.InvariantCulture, "importErr{0}", i)"><img src="@("~/images/windvector.png".ToAbsolute())" /></a> <span class="error">@String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errImportRowHasError, i + 1, le.ErrorString)</span></div>
+        }
+    }
+</div>
+    <table class="stickyHeaderTable stickyHeaderAlternate">
+        <thead>
+            <tr>
+                <th class="gvhDefault"></th>
+                <th class="gvhDefault"></th>
+                <th class="gvhDefault">@Resources.LogbookEntry.FieldTail</th>
+                <th class="gvhDefault">@Resources.LogbookEntry.FieldApproaches</th>
+                <th class="gvhDefault" style="min-width: 3em;">@Resources.LogbookEntry.FieldHold</th>
+                <th class="gvhDefault">
+                    @Resources.LogbookEntry.FieldLanding@{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "tipLandingKey", tipTextHTML = Resources.LogbookEntry.LogbookLandingKey }); }
+                </th>
+                <th class="gvhDefault" style="min-width: 3em;">@Resources.LogbookEntry.FieldXCountry</th>
+                <th class="gvhDefault" style="min-width: 3em;">@Resources.LogbookEntry.FieldNight</th>
+                <th class="gvhDefault" style="min-width: 3em;">@Html.Raw(Resources.LogbookEntry.FieldSimIMC)</th>
+                <th class="gvhDefault" style="min-width: 3em;">@Resources.LogbookEntry.FieldIMC</th>
+                <th class="gvhDefault" style="min-width: 3em;">@Html.Raw(Resources.LogbookEntry.FieldGroundSim)</th>
+                <th class="gvhDefault" style="min-width: 3em;">@Resources.LogbookEntry.FieldDual</th>
+                <th class="gvhDefault" style="min-width: 3em;">@Resources.LogbookEntry.FieldCFI</th>
+                <th class="gvhDefault" style="min-width: 3em;">@Resources.LogbookEntry.FieldSIC</th>
+                <th class="gvhDefault" style="min-width: 3em;">@Resources.LogbookEntry.FieldPIC</th>
+                <th class="gvhDefault" style="min-width: 3em;">@Resources.LogbookEntry.FieldTotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (LogbookEntry le in importer.FlightsToImport)
+            {
+                bool hasError = !String.IsNullOrEmpty(le.ErrorString);
+                hasErrors = hasError || hasErrors;
+                bool fHasParseErr = errorContext.TryGetValue(iRow++, out string errVal);
+                if (fHasParseErr)
+                {
+                    <tr id="@String.Format(CultureInfo.InvariantCulture, "importErr{0}", iRow)" style="@(hasError ? "background-color: #ffefef;" : string.Empty)">
+                        <td colspan="16">
+                            <div class="error" name="error">@le.ErrorString @{ Html.RenderAction("RenderExpandoImg", "MFBTemplate", new { fExpanded = false, targetID = String.Format(CultureInfo.InvariantCulture, "divRaw{0}", iRow) });}</div>
+                            <div style="display: none;" id="@String.Format(CultureInfo.InvariantCulture, "divRaw{0}", iRow)">@errVal</div>
+                        </td>
+                    </tr>
+                }
+                <tr style="@(fHasParseErr ? "background-color: #ffefef;" : string.Empty)">
+                    <td>(@iRow.ToString(CultureInfo.CurrentCulture))</td>
+                    <td>
+                        <div>
+                            @if (String.IsNullOrEmpty(le.ErrorString) || fHasParseErr)
+                            {
+                                <img src="@((!hasError ? (le.IsNewFlight ? "~/images/add.png" : "~/images/update.png") : "~/images/circleslash.png").ToAbsolute())" style="vertical-align:middle;"
+                                     title="@(!hasError ? (le.IsNewFlight ? Resources.LogbookEntry.ImportAddTooltip : Resources.LogbookEntry.ImportUpdateTooltip) : le.ErrorString)" />
+                            }
+                            else
+                            {
+                                <img src="@("~/images/pendingflights.png".ToAbsolute())" style="vertical-align: middle" title="@Resources.LogbookEntry.ImportIconPendingFlight" />
+                            }
+                            <span style="font-weight:bold">@le.Date.ToShortDateString()</span>
+                            @le.Route
+                        </div>
+                        <div>@le.Comment</div>
+                        <div>@LogbookEntryDisplay.FormatEngineTime(le.EngineStart, le.EngineEnd, true, pf.UsesHHMM)</div>
+                        <div>@LogbookEntryDisplay.FormatFlightTime(le.FlightStart, le.FlightEnd, true, pf.UsesHHMM)</div>
+                        <div>@LogbookEntryDisplay.FormatHobbs(le.HobbsStart, le.HobbsEnd)</div>
+                        @foreach (string s in CustomFlightProperty.PropDisplayAsList(le.CustomProperties, pf.UsesHHMM, true, true))
+                        {
+                            <div>@Html.Raw(s)</div>
+                        }
+                        @if (!le.IsNewFlight && importer.OriginalFlightsToModify.TryGetValue(le.FlightID, out LogbookEntry le2))
+                        {
+                            List<PropertyDelta> lst = new List<PropertyDelta>(le2.CompareTo(le, pf.UsesHHMM));
+                            if (lst.Count > 0)
+                            {
+                                <div class="calloutBackground calloutSmall">
+                                    <ul>
+                                        @foreach (PropertyDelta pd in lst)
+                                        {
+                                            <li>@pd.ToString()</li>
+                                        }
+                                    </ul>
+                                </div>
+                            }
+                        }
+                    </td>
+                    <td>
+                        <div style="font-weight:bold">@le.TailNumDisplay</div>
+                        <div>@le.ModelDisplay</div>
+                        <div>@le.CatClassDisplay</div>
+                    </td>
+                    <td>@le.Approaches.FormatInt()</td>
+                    <td style="font-weight:bold; padding: 3px;">@Html.Raw(le.fHoldingProcedures.FormatBoolean())</td>
+                    <td>@LogbookEntryDisplay.LandingDisplayForFlight(le)</td>
+                    <td>@le.CrossCountry.FormatDecimal(pf.UsesHHMM)</td>
+                    <td>@le.Nighttime.FormatDecimal(pf.UsesHHMM)</td>
+                    <td>@le.SimulatedIFR.FormatDecimal(pf.UsesHHMM)</td>
+                    <td>@le.IMC.FormatDecimal(pf.UsesHHMM)</td>
+                    <td>@le.GroundSim.FormatDecimal(pf.UsesHHMM)</td>
+                    <td>@le.Dual.FormatDecimal(pf.UsesHHMM)</td>
+                    <td>@le.CFI.FormatDecimal(pf.UsesHHMM)</td>
+                    <td>@le.SIC.FormatDecimal(pf.UsesHHMM)</td>
+                    <td>@le.PIC.FormatDecimal(pf.UsesHHMM)</td>
+                    <td>@le.TotalFlightTime.FormatDecimal(pf.UsesHHMM)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div style="text-align:center" class="error">@Resources.LogbookEntry.ImportErrNoFlightsFound</div>
+}
+    <script type="text/javascript">
+        $(() => {
+            $("#hdnPendingOnly").val("@Json.Encode(isPendingOnly)");
+        });
+    </script>

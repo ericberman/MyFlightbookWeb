@@ -1055,14 +1055,7 @@ namespace MyFlightbook.ImportFlights
 
                 try
                 {
-                    try
-                    {
-                        m_ImportContext = new ImportContext(csvr.GetCSVLine(true), szUser) { ModelMapping = ModelNameMappings };
-                    }
-                    catch (CSVReaderInvalidCSVException ex)
-                    {
-                        throw new MyFlightbookException(ex.Message);
-                    }
+                    m_ImportContext = new ImportContext(csvr.GetCSVLine(true), szUser) { ModelMapping = ModelNameMappings };
 
                     RowReader rr = new RowReader(m_ImportContext);
 
@@ -1111,7 +1104,7 @@ namespace MyFlightbook.ImportFlights
                     }
 
                 }
-                catch (MyFlightbookException ex)
+                catch (Exception ex) when (ex is MyFlightbookException || ex is CSVReaderInvalidCSVException)
                 {
                     HasErrors = true;
                     ErrorMessage = ex.Message;

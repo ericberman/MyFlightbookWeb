@@ -2108,6 +2108,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your import session has expired; please reload the page and upload a file again..
+        /// </summary>
+        internal static string ImportFlightSessionExpired {
+            get {
+                return ResourceManager.GetString("ImportFlightSessionExpired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Import Flights.
         /// </summary>
         internal static string ImportFlightsPageTitle {
@@ -2144,11 +2153,29 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flight has an error; if you import, it will be go to your pending flights, not to your logbook.
+        /// </summary>
+        internal static string ImportIconErrorFlight {
+            get {
+                return ResourceManager.GetString("ImportIconErrorFlight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Flight will be ADDED - be sure it&apos;s not already present, or it will be a duplicate!.
         /// </summary>
         internal static string ImportIconNewFlight {
             get {
                 return ResourceManager.GetString("ImportIconNewFlight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flight will be added to pending flights.
+        /// </summary>
+        internal static string ImportIconPendingFlight {
+            get {
+                return ResourceManager.GetString("ImportIconPendingFlight", resourceCulture);
             }
         }
         

@@ -1,22 +1,218 @@
-﻿@using System.Globalization
+﻿@using MyFlightbook.Telemetry
+@using System.Globalization
 @{
     ViewBag.Title = Resources.LogbookEntry.ImportHeader;
     ViewBag.defaultTab = tabID.tabLogbook;
+    MyFlightbook.Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
 }
+<script type="text/javascript" src="@("~/Public/Scripts/import.js?v=2".ToAbsolute())"></script>
+<script type="text/javascript" src="@("~/Public/Scripts/ajaxUpload.js?v=9".ToAbsolute())"></script>
+<script type="text/javascript">
+    var importAircraft = new aircraftImportEditor("@("~/mvc/Import".ToAbsolute())", {
+        unmatchedContainer: "divImportNewAircraft"
+    });
 
-<div style="margin-left:auto; margin-right:auto; margin-top: 28pt; max-width: 600px;">
-    <div id="pnlAcuLog" class="calloutSmall calloutSponsor shadowed" style="text-align:left;">
+    var wiz = null;
+
+    function stepChange(oldStep, newStep) {
+        $("#btnWizNext").text(newStep == 0 ? "@Resources.LogbookEntry.ImportWizardBeginButton" : "@Resources.LocalizedText.NextPrompt");
+        $("#btnWizNewFile").toggle(newStep == 3);
+        $("#pnlAcuLog").toggle(newStep == 0);
+        $("#btnWizNext").attr("disabled", newStep == 1);
+        if (newStep < 3)
+            $("#divImportPreview").html("");
+        if (newStep == 3) {
+            $("#divImportPreview").html("");
+            $("#imgProgress").clone().appendTo($("#divImportPreview"));
+            var params = new Object();
+            params.autoFillOpt = $("input[name='autoFillOpt']:checked").val();
+            params.isPendingOnly = $("#hdnPendingOnly").val() === "true";
+            var d = JSON.stringify(params);
+            $.ajax({
+                url: "@Url.Action("PreviewResults", "Import")",
+                type: "POST", data: d, dataType: "html", contentType: "application/json",
+                error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                success: function (response) { $("#divImportPreview").html(response); }
+            });
+        }
+        return true;
+    }
+
+    $(() => {
+        wiz = wizardizeContainer({
+            headerContainer: $("#wizardHead"),
+            stepsContainer: $("#wizardSteps"),
+            navContainer: $("#wizNav"),
+            initialStep: 0,
+            nextButton: $("#btnWizNext"),
+            prevButton: $("#btnWizPrev"),
+            finishButton: $("#btnWizFinish"),
+            onStepChange: stepChange,
+            onFinish: function () {
+                if ($("div.error[name='error']").length == 0 || confirm($("#divConfirmHome")[0].innerText))
+                    $("#frmDoImport").submit();
+            }
+        });
+
+
+        ajaxupload = ajaxFileUpload($("#divUploadFlightCSV"), {
+            uploadURL: "@Url.Action("UploadFlightsCSV", "Import")",
+            allowedTypes: "csv txt htm html",
+            dragTargetClass: "fileDragTarget",
+            additionalParams: [],
+            maxFiles: 1,
+            onFileUploaded: function (status, responsetext) {
+                $(".fileInQueueContainer").hide();
+                $("#divImportReviewaircraft").html("");
+                $("#imgProgress").clone().appendTo($("#divImportReviewaircraft"))
+                $("#btnWizNext").attr("disabled", false);
+                $("#btnWizNext")[0].click();
+                $.ajax({
+                    url: "@Url.Action("ReviewAircraft", "Import")",
+                    type: "POST", data: JSON.stringify(new Object()), dataType: "html", contentType: "application/json",
+                    error: function (xhr, status, error) {
+                        wiz.setStep(1);
+                        $("#lblUploadErr").text(xhr.responseText);
+                    },
+                    success: function (response) {
+                        $("#divImportReviewaircraft").html(response);
+                    }
+                });
+            },
+            onErr: function (err) { $("#lblUploadErr").text(err); },
+            promptID: "divDropAcCSV",
+            errTooManyFiles: "@Resources.LocalizedText.fileUploadTooManyFiles",
+            errDisallowedFileType: "@Resources.LocalizedText.fileUploadInvalidType",
+            abortPrompt: "@Resources.LocalizedText.fileUploadAbort"
+        });
+    });
+</script>
+<div style="display: none;" id="divProgressHome"><img src="@("~/images/progress.gif".ToAbsolute())" id="imgProgress" /></div>
+<div style="display: none;" id="divConfirmHome">@Resources.LogbookEntry.ImportErrorsConfirm</div>
+
+<div id="wizardHead">
+    <span>@Resources.LogbookEntry.ImportWizardStep1&nbsp; </span>
+    <span>@Resources.LogbookEntry.ImportWizardStep2&nbsp; </span>
+    <span>@Resources.LogbookEntry.ImportWizardStep3&nbsp; </span>
+    <span>@Resources.LogbookEntry.ImportWizardStep4&nbsp; </span>
+</div>
+<div id="wizardSteps" style="margin-top: 10pt;">
+    <div>
+        <div>@Html.Raw(Branding.ReBrand(Resources.LogbookEntry.ImportOverview).Replace("%SAMPLEREF%", "~/images/flightimportsample.png".ToAbsoluteURL(Request).ToString()))</div>
+        <ul class="nextStep">
+            <li><img style="vertical-align: middle" src="@("~/images/csvicon_sm.png".ToAbsolute())" /> <a href="@Url.Action("ImportTemplate", "Import")" style="font-weight: bold;">@Resources.LogbookEntry.ImportStartingTemplate</a></li>
+            <li><a style="font-weight:bold;" href="@("~/mvc/pub/ImportTable".ToAbsolute())" target="_blank">@Resources.LogbookEntry.ImportColumnDescriptions</a></li>
+            <li><a style="font-weight:bold;" href="@("~/mvc/faq?q=44#44".ToAbsolute())">@Resources.LogbookEntry.ImportFAQTipsLink</a></li>
+            <li><a style="font-weight:bold;" href="@("https://myflightbookblog.blogspot.com/2020/05/importing-in-depth.html")">@Resources.LogbookEntry.ImportBlogLink</a></li>
+        </ul>
+    </div>
+    <div style="display: none;">
+        <p>@Resources.LogbookEntry.ImportWizardUploadPrompt</p>
         <table>
+            <tr style="vertical-align:top">
+                <td><input type="radio" id="rbAutofillNone" name=autoFillOpt checked value="" /></td>
+                <td><label for="rbautofillNone">@Resources.LogbookEntry.ImportWizardAutofillNone</label></td>
+            </tr>
             <tr>
-                <td style="max-width:300px;">
-                    <h3>@Branding.ReBrand(Resources.LogbookEntry.ImportAculogHeader)</h3>
-                    @Html.Raw(Branding.ReBrand(Resources.LogbookEntry.ImportAculogPromo).Linkify())
-                </td>
+                <td colspan="2">@Resources.LogbookEntry.ImportWizardAutofillPromptPart1</td>
+            </tr>
+            <tr style="vertical-align:top">
+                <td><input type="radio" id="rbAutofillUtc" name=autoFillOpt value="@AutoFillOptions.TimeConversionCriteria.None" /></td>
+                <td><label for="rbAutofillUtc">@Html.Raw(Resources.LogbookEntry.ImportWizardAutofillPrompt.Linkify())</label></td>
+            </tr>
+            <tr style="vertical-align:top">
+                <td><input type="radio" id="rbAutofillLocal" name=autoFillOpt value="@AutoFillOptions.TimeConversionCriteria.Local" /></td>
                 <td>
-                    @{ Html.RenderAction("RenderSponsoredAd", "MFBTemplate", new { id = 2 });}
+                    <div><label for="rbAutofillLocal">@Html.Raw(Resources.LogbookEntry.ImportWizardAutofillTryLocal.Linkify())</label></div>
+                    <div class="fineprint">
+                        <span style="font-weight:bold;">@Resources.LocalizedText.Note</span>
+                        @Html.Raw(Resources.LogbookEntry.ImportWizardAutofillTryLocalNote.Linkify())
+                    </div>
                 </td>
             </tr>
+            <tr style="vertical-align:top;">
+                <td><input type="radio" id="rbAutofillPreferred" name=autoFillOpt value="@AutoFillOptions.TimeConversionCriteria.Preferred" /></td>
+                <td><label for="rbAutofillPreferred">@Html.Raw(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.ImportWizardAutofillTryPreferred, pf.PreferredTimeZone.DisplayName).Linkify())</label></td>
+            </tr>
         </table>
+        <div style="margin: 10pt auto;">
+            <div id="divUploadFlightCSV"></div>
+            <div id="divDropAcCSV">
+                <div>@Resources.Aircraft.ImportAircraftFileDropPrompt</div>
+                <div><img src="@("~/images/csvicon_med.png".ToAbsolute())" /></div>
+            </div>
+        </div>
+        <div style="white-space:pre" class="error" id="lblUploadErr"></div>
+    </div>
+    <div style="display: none;">
+        <div id="divImportReviewaircraft">
+
+        </div>
+    </div>
+    <div style="display: none;">
+        <p>@Resources.LogbookEntry.ImportWizardPreviewHeader</p>
+        <p><span style="font-weight: bold;">@Resources.LogbookEntry.ImportWizardImportant</span> @Resources.LogbookEntry.ImportWizardOnlyClickOnce</p>
+        <div>
+            @Resources.LogbookEntry.ImportWizardUpdateVsNew
+            <table cellpadding="5">
+                <tr style="vertical-align:middle">
+                    <td>&nbsp;&nbsp;</td>
+                    <td><img src="@("~/images/add.png".ToAbsolute())" style="vertical-align: middle" /></td>
+                    <td>@Resources.LogbookEntry.ImportIconNewFlight</td>
+                </tr>
+                <tr style="vertical-align:middle">
+                    <td>&nbsp;&nbsp;</td>
+                    <td><img src="@("~/images/update.png".ToAbsolute())" style="vertical-align: middle" /></td>
+                    <td>@Resources.LogbookEntry.ImportIconUpdatedFlight</td>
+                </tr>
+                <tr style="vertical-align:middle">
+                    <td>&nbsp;&nbsp;</td>
+                    <td><img src="@("~/images/circleslash.png".ToAbsolute())" style="vertical-align: middle" /></td>
+                    <td>@Resources.LogbookEntry.ImportIconErrorFlight</td>
+                </tr>
+                <tr style="vertical-align:middle">
+                    <td>&nbsp;&nbsp;</td>
+                    <td><img src="@("~/images/pendingflights.png".ToAbsolute())" style="vertical-align: middle" /></td>
+                    <td>@Resources.LogbookEntry.ImportIconPendingFlight</td>
+                </tr>
+            </table>
+        </div>
+        <div id="lblError" class="error"></div>
+        <div id="plcErrorList"></div>
+        <div>&nbsp;</div>
+    </div>
+</div>
+<div id="wizNav" style="width: 100%; text-align: center; margin-top: 18pt;">
+    <button type="button" id="btnWizNewFile" onclick="javascript: wiz.setStep(1); stepChange(4, 1); return false;" style="display:none;">@Resources.LogbookEntry.ImportUploadNewFile</button>
+    <button type="button" id="btnWizPrev" style="display:none;">@Resources.LocalizedText.PreviousPrompt</button>
+    <button type="button" id="btnWizNext">@Resources.LogbookEntry.ImportWizardBeginButton</button>
+    <button type="button" id="btnWizFinish" style="display:none;">@Resources.LogbookEntry.ImportWizardFinishButton</button>
+</div>
+
+@using (Html.BeginForm("DoImport", "Import", FormMethod.Post, new { id = "frmDoImport", name = "frmDoImport" }))
+{
+    <input type="hidden" name="isPendingOnly" value="@Json.Encode(false)" id="hdnPendingOnly" />
+    @Html.AntiForgeryToken();
+}
+
+<div id="divImportPreview"></div>
+<input type="hidden" name="pendingOnly" id="hdnPendingOnly" value="" />
+<div id="pnlAcuLog" style="margin-top: 28pt;">
+    <hr />
+    <div style="margin-left:auto; margin-right:auto; max-width: 600px;">
+        <div class="calloutSmall calloutSponsor shadowed" style="text-align:left;">
+            <table>
+                <tr>
+                    <td style="max-width:300px;">
+                        <h3>@Branding.ReBrand(Resources.LogbookEntry.ImportAculogHeader)</h3>
+                        @Html.Raw(Branding.ReBrand(Resources.LogbookEntry.ImportAculogPromo).Linkify())
+                    </td>
+                    <td>
+                        @{ Html.RenderAction("RenderSponsoredAd", "MFBTemplate", new { id = 2 });}
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
 </div>

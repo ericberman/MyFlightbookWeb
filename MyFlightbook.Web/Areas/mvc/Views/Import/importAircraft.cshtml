@@ -4,8 +4,8 @@
     ViewBag.defaultTab = tabID.tabAircraft;
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
 }
-<script type="text/javascript" src="@("~/Public/Scripts/import.js".ToAbsolute())"></script>
-<script type="text/javascript" src="@("~/Public/Scripts/ajaxUpload.js?v=8".ToAbsolute())"></script>
+<script type="text/javascript" src="@("~/Public/Scripts/import.js?v=2".ToAbsolute())"></script>
+<script type="text/javascript" src="@("~/Public/Scripts/ajaxUpload.js?v=9".ToAbsolute())"></script>
 <script type="text/javascript">
     function modelCommitted(m) {
         $(".expandoATD")[0].click();
@@ -51,9 +51,9 @@
             dragTargetClass: "fileDragTarget",
             additionalParams: [],
             maxFiles: 1,
-            onFileUploaded: function (status, responsetext) {
+            onFileUploaded: function (status, response) {
                 $(".fileInQueueContainer").hide();
-                importAircraft.aircraftParseContext = JSON.parse(responsetext);
+                importAircraft.aircraftParseContext = response;
                 $("#btnWizNext").prop("disabled", false);
                 $("#btnWizNext")[0].click();
             },
