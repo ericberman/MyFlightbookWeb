@@ -16,6 +16,7 @@ using System.Text.RegularExpressions;
 
 namespace MyFlightbook
 {
+    [Serializable]
     /// <summary>
     /// Maintains a mapping of which aircraft are used by which users
     /// </summary>

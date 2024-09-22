@@ -7,7 +7,7 @@
 <div style="display:inline-block;">
     <p>@Branding.ReBrand(Resources.LogbookEntry.RosterBusterAuthed)</p>
     <ul class="nextStep">
-        <li><a href="@VirtualPathUtility.ToAbsolute("~/Member/Import.aspx")">@Resources.LogbookEntry.RosterBusterImportNow</a></li>
+        <li><a href="@VirtualPathUtility.ToAbsolute("~/mvc/import")">@Resources.LogbookEntry.RosterBusterImportNow</a></li>
         <li><a href="javascript:showModalById('downloadRB', '@Resources.Preferences.ScheduleServiceRBDownloadPrompt', 350);">@Resources.Preferences.ScheduleServiceRBDownloadPrompt</a></li>
         @using (Html.BeginForm("DeAuth", "rbredirect", FormMethod.Post, new Dictionary<string, object> { { "id", "DeAuth" } }))
         {

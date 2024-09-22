@@ -1550,24 +1550,24 @@ namespace MyFlightbook.Image
                 image.Orientation = OrientationType.TopLeft;
 
                 // Make it square and then resize.  Cut off from half of longer dimension on each end.
-                int curHeight = image.Height;
-                int curWidth = image.Width;
+                uint curHeight = image.Height;
+                uint curWidth = image.Width;
                 
                 if (curWidth > curHeight)
                 {
-                    int dWidth = (curWidth - curHeight) / 2;
+                    uint dWidth = (curWidth - curHeight) / 2;
                     image.ChopHorizontal(0, dWidth);
-                    image.ChopHorizontal(image.Width - dWidth, dWidth);
+                    image.ChopHorizontal((int) (image.Width - dWidth), dWidth);
                 }
                 else if (curHeight > curWidth)
                 {
-                    int dHeight = (curHeight - curWidth) / 2;
+                    uint dHeight = (curHeight - curWidth) / 2;
                     image.ChopVertical(0, dHeight);
-                    image.ChopVertical(image.Height - dHeight, dHeight);
+                    image.ChopVertical((int) (image.Height - dHeight), dHeight);
                 }
 
                 // Now it is square - resize it, maintaining aspect ratio
-                image.Resize(new MagickGeometry(width, height));
+                image.Resize(new MagickGeometry((uint) width, (uint) height));
 
                 // below is from https://github.com/dlemstra/Magick.NET/issues/57 and puts the image into a circle.  We will keep it square and use CSS for the circle
                 /*

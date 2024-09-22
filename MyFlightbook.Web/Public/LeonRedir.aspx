@@ -23,7 +23,7 @@
 			<asp:View ID="vwAuthorized" runat="server">
 				<div><asp:Label ID="lblAuthedHeader" runat="server" /></div>
 				<ul>
-					<li><asp:HyperLink ID="lnkImport" runat="server" Text="<%$ Resources:LogbookEntry, LeonGoToImport %>" NavigateUrl="~/Member/Import.aspx" /></li>
+					<li><asp:HyperLink ID="lnkImport" runat="server" Text="<%$ Resources:LogbookEntry, LeonGoToImport %>" NavigateUrl="~/mvc/import" /></li>
 					<li><asp:LinkButton ID="btnDeAuth" runat="server" OnClick="btnDeAuth_Click" /></li>
 				</ul>
 			</asp:View>
