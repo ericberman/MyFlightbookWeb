@@ -154,7 +154,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (specs == null)
                     throw new ArgumentNullException(nameof(specs));
 
-                IDictionary<string, MakeModel> d = String.IsNullOrEmpty(szJsonMapping) ? new Dictionary<string, MakeModel>() : JsonConvert.DeserializeObject<Dictionary<string, MakeModel>>(szJsonMapping);
+                IDictionary<string, AircraftImportSpec> d = String.IsNullOrEmpty(szJsonMapping) ? new Dictionary<string, AircraftImportSpec>() : JsonConvert.DeserializeObject<Dictionary<string, AircraftImportSpec>>(szJsonMapping);
 
                 foreach (AircraftImportSpec spec in specs)
                 {
@@ -175,7 +175,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             return SafeOp(() =>
             {
-                IDictionary<string, MakeModel> d = String.IsNullOrEmpty(szJsonMapping) ? new Dictionary<string, MakeModel>() : JsonConvert.DeserializeObject<Dictionary<string, MakeModel>>(szJsonMapping);
+                IDictionary<string, AircraftImportSpec> d = String.IsNullOrEmpty(szJsonMapping) ? new Dictionary<string, AircraftImportSpec>() : JsonConvert.DeserializeObject<Dictionary<string, AircraftImportSpec>>(szJsonMapping);
                 d = AircraftUtility.AddNewAircraft(User.Identity.Name, spec, d);
                 return Json(d);
             });
@@ -260,7 +260,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
-        public ActionResult PreviewResults(string autoFillOpt, bool isPendingOnly)
+        public ActionResult PreviewResults(string autoFillOpt, bool isPendingOnly, string szJsonMapping)
         {
             return SafeOp(() =>
             {
@@ -286,7 +286,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     // ignore errors if the importer is only pending flights and the error is a logbook validation error (no tail, future date, night, etc.)
                     if (!isPendingOnly || le.LastError == LogbookEntryCore.ErrorCode.None)
                         errorContext[iRow - 1] = szContext; // if we're here, we are *either* not pending only *or* we didn't have a logbookentry validation error (e.g., could be malformed row)
-                }, afo);
+                }, afo, String.IsNullOrEmpty(szJsonMapping) ? new Dictionary<string, AircraftImportSpec>() : JsonConvert.DeserializeObject<Dictionary<string, AircraftImportSpec>>(szJsonMapping));
                 Session[keyImportFlightsImporter] = importer;
                 ViewBag.errorContext = errorContext;
                 ViewBag.importer = importer;

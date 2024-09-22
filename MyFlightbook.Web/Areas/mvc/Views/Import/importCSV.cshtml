@@ -28,6 +28,7 @@
             var params = new Object();
             params.autoFillOpt = $("input[name='autoFillOpt']:checked").val();
             params.isPendingOnly = $("#hdnPendingOnly").val() === "true";
+            params.szJsonMapping = importAircraft.dictModelMapping;
             var d = JSON.stringify(params);
             $.ajax({
                 url: "@Url.Action("PreviewResults", "Import")",
@@ -73,6 +74,7 @@
                     type: "POST", data: JSON.stringify(new Object()), dataType: "html", contentType: "application/json",
                     error: function (xhr, status, error) {
                         wiz.setStep(1);
+                        $("#btnWizNext").attr("disabled", true);
                         $("#lblUploadErr").text(xhr.responseText);
                     },
                     success: function (response) {
@@ -112,7 +114,7 @@
         <table>
             <tr style="vertical-align:top">
                 <td><input type="radio" id="rbAutofillNone" name=autoFillOpt checked value="" /></td>
-                <td><label for="rbautofillNone">@Resources.LogbookEntry.ImportWizardAutofillNone</label></td>
+                <td><label for="rbAutofillNone">@Resources.LogbookEntry.ImportWizardAutofillNone</label></td>
             </tr>
             <tr>
                 <td colspan="2">@Resources.LogbookEntry.ImportWizardAutofillPromptPart1</td>

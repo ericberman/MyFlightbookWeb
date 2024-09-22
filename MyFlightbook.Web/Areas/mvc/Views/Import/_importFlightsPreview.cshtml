@@ -56,7 +56,7 @@
                 bool fHasParseErr = errorContext.TryGetValue(iRow++, out string errVal);
                 if (fHasParseErr)
                 {
-                    <tr id="@String.Format(CultureInfo.InvariantCulture, "importErr{0}", iRow)" style="@(hasError ? "background-color: #ffefef;" : string.Empty)">
+                    <tr id="@String.Format(CultureInfo.InvariantCulture, "importErr{0}", iRow - 1)" style="@(hasError ? "background-color: #ffefef;" : string.Empty)">
                         <td colspan="16">
                             <div class="error" name="error">@le.ErrorString @{ Html.RenderAction("RenderExpandoImg", "MFBTemplate", new { fExpanded = false, targetID = String.Format(CultureInfo.InvariantCulture, "divRaw{0}", iRow) });}</div>
                             <div style="display: none;" id="@String.Format(CultureInfo.InvariantCulture, "divRaw{0}", iRow)">@errVal</div>

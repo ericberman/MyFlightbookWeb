@@ -2141,10 +2141,19 @@ WHERE
     [Serializable]
     public class AircraftImportSpec
     {
-        public string TailNum { get; set; } = "";
-        public string ProposedModel { get; set; } = "";
+        public string TailNum { get; set; } = string.Empty;
+        public string ProposedModel { get; set; } = string.Empty;
         public int ModelID { get; set; } = MakeModel.UnknownModel;
         public int InstanceType { get; set; } = (int)AircraftInstanceTypes.RealAircraft;
+
+        public int AircraftID { get; set; } = Aircraft.idAircraftUnknown;
+
+        public static string KeyForTailModel(string tail, string model)
+        {
+            return String.Format(CultureInfo.InvariantCulture, "{0}|{1}", tail, model);
+        }
+
+        public string Key { get { return KeyForTailModel(TailNum, ProposedModel); } }
     }
 
     /// <summary>
@@ -2747,7 +2756,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int)CustomPropertyType.KnownProperties.ID
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="MyFlightbookValidationException"></exception>
-        public static IDictionary<string, MakeModel> AddNewAircraft(string szUser, AircraftImportSpec spec, IDictionary<string, MakeModel> d)
+        public static IDictionary<string, AircraftImportSpec> AddNewAircraft(string szUser, AircraftImportSpec spec, IDictionary<string, AircraftImportSpec> d)
         {
             if (spec == null)
                 throw new ArgumentNullException(nameof(spec));
@@ -2757,7 +2766,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int)CustomPropertyType.KnownProperties.ID
             if (String.IsNullOrWhiteSpace(szUser))
                 throw new ArgumentNullException(nameof(szUser));
 
-            Dictionary<string, MakeModel> dModelMapping = (Dictionary<string, MakeModel>)(d ?? new Dictionary<string, MakeModel>());
+            Dictionary<string, AircraftImportSpec> dModelMapping = (Dictionary<string, AircraftImportSpec>)(d ?? new Dictionary<string, AircraftImportSpec>());
 
             Aircraft ac = new Aircraft() { TailNumber = spec.TailNum, ModelID = spec.ModelID, InstanceTypeID = spec.InstanceType };
 
@@ -2780,7 +2789,10 @@ ORDER BY f.date DESC LIMIT 10) tach", (int)CustomPropertyType.KnownProperties.ID
                 ua.InvalidateCache();
 
                 if (!String.IsNullOrEmpty(spec.ProposedModel))
-                    dModelMapping[spec.ProposedModel] = MakeModel.GetModel(spec.ModelID);
+                {
+                    spec.AircraftID = ac.AircraftID;
+                    dModelMapping[spec.Key] = spec;
+                }
             }
             else
                 throw new MyFlightbookValidationException(ac.ErrorString);
@@ -2803,7 +2815,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int)CustomPropertyType.KnownProperties.ID
         /// <exception cref="MyFlightbookValidationException"></exception>
         public static string AddNewAircraft(string szUser, string szTail, int idModel, int instanceType, string szModelGiven, string szJsonMapping)
         {
-            IDictionary<string, MakeModel> dModelMapping = String.IsNullOrEmpty(szJsonMapping) ? new Dictionary<string, MakeModel>() : JsonConvert.DeserializeObject<Dictionary<string, MakeModel>>(szJsonMapping);
+            IDictionary<string, AircraftImportSpec> dModelMapping = String.IsNullOrEmpty(szJsonMapping) ? new Dictionary<string, AircraftImportSpec>() : JsonConvert.DeserializeObject<Dictionary<string, AircraftImportSpec>>(szJsonMapping);
 
             dModelMapping = AddNewAircraft(szUser, new AircraftImportSpec() { TailNum = szTail, ModelID = idModel, InstanceType = instanceType, ProposedModel = szModelGiven }, dModelMapping);
             return JsonConvert.SerializeObject(dModelMapping);
@@ -2966,7 +2978,6 @@ ORDER BY f.date DESC LIMIT 10) tach", (int)CustomPropertyType.KnownProperties.ID
     public class AircraftImportMatchRow : IComparable, IEquatable<AircraftImportMatchRow>
     {
         public enum MatchState { MatchedExisting, UnMatched, MatchedInProfile, JustAdded }
-        static readonly private Regex rNormalize = new Regex("[^a-zA-Z0-9#]*", RegexOptions.Compiled);
 
         #region Comparable
         public int CompareTo(object obj)
@@ -3067,7 +3078,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int)CustomPropertyType.KnownProperties.ID
 
         public static string NormalizeModel(string sz)
         {
-            return rNormalize.Replace(sz, string.Empty).ToUpperInvariant();
+            return RegexUtility.NormalizedTailChars.Replace(sz, string.Empty).ToUpperInvariant();
         }
 
         /// <summary>
@@ -3088,8 +3099,8 @@ ORDER BY f.date DESC LIMIT 10) tach", (int)CustomPropertyType.KnownProperties.ID
             {
                 if (mr.State == MatchState.UnMatched)
                 {
-                    string szNormal = rNormalize.Replace(mr.TailNumber, string.Empty);
-                    if (rgac.Exists(ac => String.Compare(rNormalize.Replace(ac.TailNumber, string.Empty), szNormal, StringComparison.CurrentCultureIgnoreCase) == 0))
+                    string szNormal = RegexUtility.NormalizedTailChars.Replace(mr.TailNumber, string.Empty);
+                    if (rgac.Exists(ac => String.Compare(RegexUtility.NormalizedTailChars.Replace(ac.TailNumber, string.Empty), szNormal, StringComparison.CurrentCultureIgnoreCase) == 0))
                         mr.State = MatchState.JustAdded;
                 }
             }
@@ -3509,13 +3520,64 @@ ORDER BY f.date DESC LIMIT 10) tach", (int)CustomPropertyType.KnownProperties.ID
         }
 
         /// <summary>
+        /// Determines if there is a match on the aircraft spec.
+        /// </summary>
+        /// <param name="mr"></param>
+        /// <param name="spec"></param>
+        /// <param name="lstUserAircraft"></param>
+        /// <param name="makes"></param>
+        /// <returns></returns>
+        public bool CheckNakedSimOrAnon(AircraftImportMatchRow mr, AircraftImportSpec spec, List<Aircraft> lstUserAircraft, IEnumerable<MakeModel> makes)
+        {
+            if (mr == null)
+                throw new ArgumentNullException(nameof(mr));
+            if (lstUserAircraft == null)
+                throw new ArgumentNullException(nameof(lstUserAircraft));
+
+            if (spec?.AircraftID > 0)
+            {
+                // If we already matched up a specification to a specific aircraft, awesome - we're done.
+                mr.BestMatchAircraft = lstUserAircraft.FirstOrDefault(ac => ac.AircraftID == spec.AircraftID);
+                SetModelMatch(mr, AircraftImportMatchRow.MatchState.MatchedInProfile);
+                return true;
+            }
+
+            if (mr.TailNumber.CompareCurrentCultureIgnoreCase(CountryCodePrefix.szSimPrefix) == 0)
+            {
+                // See if we have a sim in the user's profile that matches one of the models; if so, re-use that.
+                mr.SetMatchingModels(MakeModel.MatchingMakes(makes, mr.NormalizedModelGiven));
+                if (mr.MatchingModels.Count > 0)
+                {
+                    if ((mr.BestMatchAircraft = lstUserAircraft.Find(ac => ac.InstanceType != AircraftInstanceTypes.RealAircraft && (mr.MatchingModels.FirstOrDefault(mm => mm.MakeModelID == ac.ModelID) != null))) != null)
+                    {
+                        SetModelMatch(mr, AircraftImportMatchRow.MatchState.MatchedInProfile);
+                        return true;
+                    }
+                }
+            }
+            else if (String.IsNullOrEmpty(mr.TailNumber) || mr.TailNumber.CompareCurrentCultureIgnoreCase(CountryCodePrefix.szAnonPrefix) == 0)
+            {
+                mr.SetMatchingModels(MakeModel.MatchingMakes(makes, mr.NormalizedModelGiven));
+                if ((mr.BestMatchAircraft = lstUserAircraft.FirstOrDefault(ac => ac.IsAnonymous && mr.MatchingModels.FirstOrDefault(m => m.MakeModelID == ac.ModelID) != null)) != null)
+                {
+                    SetModelMatch(mr, AircraftImportMatchRow.MatchState.MatchedInProfile);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// After loading up the tailnumber/modelname pairs, this sets up best matches and sets the status for each match
         /// </summary>
         /// <param name="szUser">The user for whom we are doing this.</param>
-        public void ProcessParseResultsForUser(string szUser)
+        /// <param name="d">If not null, provides the mapping from what the user provided</param>
+        public void ProcessParseResultsForUser(string szUser, IDictionary<string, AircraftImportSpec> d = null)
         {
             if (String.IsNullOrEmpty(szUser))
                 throw new ArgumentNullException(nameof(szUser), "ProcessParseResultsForUser - no user specified");
+
+            d = d ?? new Dictionary<string, AircraftImportSpec>();
 
             // Now, get a list of user aircraft and of all potential matching aircraft (at most 2 DB hits, rather than 1 per aircraft)
             List<Aircraft> lstUserAircraft = new List<Aircraft>(new UserAircraft(szUser).GetAircraftForUser());
@@ -3540,20 +3602,9 @@ ORDER BY f.date DESC LIMIT 10) tach", (int)CustomPropertyType.KnownProperties.ID
                     continue;
                 }
 
-                // Special case naked "SIM"
-                if (mr.BestMatchAircraft == null && mr.TailNumber.CompareCurrentCultureIgnoreCase(CountryCodePrefix.szSimPrefix) == 0)
-                {
-                    // See if we have a sim in the user's profile that matches one of the models; if so, re-use that.
-                    mr.SetMatchingModels(MakeModel.MatchingMakes(makes, mr.NormalizedModelGiven));
-                    if (mr.MatchingModels.Count > 0)
-                    {
-                        if ((mr.BestMatchAircraft = lstUserAircraft.Find(ac => ac.InstanceType != AircraftInstanceTypes.RealAircraft && (mr.MatchingModels.FirstOrDefault(mm => mm.MakeModelID == ac.ModelID) != null))) != null)
-                        {
-                            SetModelMatch(mr, AircraftImportMatchRow.MatchState.MatchedInProfile);
-                            continue;
-                        }
-                    }
-                }
+                // Special case naked "SIM" or naked "#"
+                if (mr.BestMatchAircraft == null && CheckNakedSimOrAnon(mr, d.TryGetValue(AircraftImportSpec.KeyForTailModel(mr.TailNumber, mr.ModelGiven), out AircraftImportSpec s) ? s : null, lstUserAircraft, makes))
+                    continue;
 
                 // If not in the profile, see if it is in the list of ALL aircraft
                 List<Aircraft> lstExistingMatches = lstAllAircraft.FindAll(ac => String.Compare(RegexUtility.NonAlphaNumeric.Replace(ac.TailNumber, string.Empty), RegexUtility.NonAlphaNumeric.Replace(mr.TailNumber, string.Empty), StringComparison.OrdinalIgnoreCase) == 0);

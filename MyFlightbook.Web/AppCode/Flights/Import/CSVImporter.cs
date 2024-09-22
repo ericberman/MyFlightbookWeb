@@ -1,5 +1,4 @@
-﻿using Amazon.Runtime.Internal.Transform;
-using JouniHeikniemi.Tools.Text;
+﻿using JouniHeikniemi.Tools.Text;
 using MyFlightbook.Telemetry;
 using System;
 using System.Collections;
@@ -634,32 +633,47 @@ namespace MyFlightbook.ImportFlights
                 le.CustomProperties.SetItems(lstCustPropsForFlight);
             }
 
-            private void InitFlightAircraftFromRow(LogbookEntry le, string szTail, int idAircraft)
+            private void InitFlightAircraft(LogbookEntry le, Aircraft ac)
             {
-                Aircraft ac = null;
+                le.AircraftID = ac.AircraftID;
+                le.TailNumDisplay = ac.DisplayTailnumber;
+                le.ModelDisplay = ac.ModelDescription;  // for display
+                le.CatClassOverride = GetMappedInt(m_cm.iColCatClassOverride);
+                le.CatClassDisplay = (le.CatClassOverride == 0) ? ac.CategoryClassDisplay : CategoryClass.CategoryClassFromID((CategoryClass.CatClassID)le.CatClassOverride).CatClass;
+            }
+
+            private Aircraft MappedAircraftForTailModel(string szTail, string szModel, out string szModelShort)
+            {
+                AircraftImportSpec spec1 = (m_cm.AircraftMapping?.TryGetValue(AircraftImportSpec.KeyForTailModel(szTail, szModel), out AircraftImportSpec s1) ?? false) ? s1 : null;
+
+                szModelShort = szModel;
+                int i = szModel.IndexOf(",", StringComparison.CurrentCulture);
+                if (i > 0)
+                    szModelShort = szModel.Substring(0, i);
+
+                AircraftImportSpec spec2 = (m_cm.AircraftMapping?.TryGetValue(AircraftImportSpec.KeyForTailModel(szTail, szModelShort), out AircraftImportSpec s2) ?? false) ? s2 : null;
+
+                return m_cm.AircraftForUser[spec1?.AircraftID ?? spec2?.AircraftID ?? Aircraft.idAircraftUnknown];
+            }
+
+            private void InitFlightAircraftFromRow(LogbookEntry le, string szTail, int idAircraft, string szModel)
+            {
+                if (szModel == null)
+                    throw new ArgumentNullException(nameof(szModel));
+
                 if (String.IsNullOrWhiteSpace(szTail.Trim()))
                     szTail = CountryCodePrefix.szAnonPrefix;
 
-                if (m_cm.AircraftForUser.ContainsKey(szTail))
-                {
-                    if (idAircraft > 0)
-                    {
-                        UserAircraft ua = new UserAircraft(m_cm.User);
-                        Aircraft acByID = ua.GetUserAircraftByID(idAircraft);
-                        if (acByID != null && Aircraft.NormalizeTail(acByID.TailNumber).CompareCurrentCultureIgnoreCase(szTail) == 0)   // it matches - use aircraft ID for disambiguation
-                            ac = acByID;
-                    }
-                }
-                else
+                string szModelShort = null;
+                // See if we can find the aircraft by tail, by unambiguous ID, or in the aircraft mapping
+                Aircraft ac = m_cm.AircraftForUser[idAircraft] ?? m_cm.AircraftForUser[szTail] ?? MappedAircraftForTailModel(szTail, szModel, out szModelShort);
+                if (ac == null)
                 {
                     if (!dictFoundAircraft.ContainsKey(szTail)) // Avoid more than one DB hit per aircraft
                         dictFoundAircraft[szTail] = Aircraft.AircraftMatchingTail(szTail);
                     List<Aircraft> lst = dictFoundAircraft[szTail];
                     if (lst.Count == 1) // it exists and there are no alternative versions (i.e., no ambiguity) - just go ahead and add it.
-                    {
-                        m_cm.AircraftForUser[szTail] = lst[0];
-                        new UserAircraft(m_cm.User).FAddAircraftForUser(lst[0]);
-                    }
+                        m_cm.AircraftForUser.FAddAircraftForUser(ac = lst[0]);
                     else
                     {
                         /* 
@@ -669,21 +683,18 @@ namespace MyFlightbook.ImportFlights
                          *  c) anonymous or sim prefix - look it up in the user's profile and match to that if found, and then continue.
                          */
                         bool fFoundAnonOrSim = false;
-                        string szModel = string.Empty;
 
                         if (m_cm.iColModel >= 0 && !String.IsNullOrEmpty(szModel = m_rgszRow[m_cm.iColModel]))
                         {
                             MakeModel mappedModel = (m_cm.ModelMapping != null && m_cm.ModelMapping.ContainsKey(szModel)) ? m_cm.ModelMapping[szModel] : null;   // see if we have a mapping for this, BEFORE trimming the comma
 
                             // trim anything after a comma, if necessary
-                            int i = szModel.IndexOf(",", StringComparison.CurrentCulture);
-                            if (i > 0)
-                                szModel = szModel.Substring(0, i);
+                            szModel = szModelShort ?? szModel;
 
                             if (CountryCodePrefix.IsNakedSim(szTail) || CountryCodePrefix.IsNakedAnon(szTail))
                             {
                                 string szModelNormal = AircraftImportMatchRow.NormalizeModel(szModel);
-                                foreach (string szExistingTail in m_cm.AircraftForUser.Keys)
+                                foreach (string szExistingTail in m_cm.AircraftForUser.DictAircraftForUser().Keys)
                                 {
                                     if (szExistingTail.StartsWith(szTail, StringComparison.CurrentCultureIgnoreCase))
                                     {
@@ -714,14 +725,7 @@ namespace MyFlightbook.ImportFlights
                     }
                 }
 
-                if (ac == null)
-                    ac = m_cm.AircraftForUser[szTail];
-
-                le.AircraftID = ac.AircraftID;
-                le.TailNumDisplay = ac.DisplayTailnumber;
-                le.ModelDisplay = ac.ModelDescription;  // for display
-                le.CatClassOverride = GetMappedInt(m_cm.iColCatClassOverride);
-                le.CatClassDisplay = (le.CatClassOverride == 0) ? ac.CategoryClassDisplay : CategoryClass.CategoryClassFromID((CategoryClass.CatClassID)le.CatClassOverride).CatClass;
+                InitFlightAircraft(le, ac ?? m_cm.AircraftForUser[szTail]);
             }
             #endregion
 
@@ -796,7 +800,7 @@ namespace MyFlightbook.ImportFlights
                 }
 
                 // See if the aircraft exists
-                InitFlightAircraftFromRow(le, szTail, idAircraft);
+                InitFlightAircraftFromRow(le, szTail, idAircraft, m_cm.iColModel >= 0 ? m_rgszRow[m_cm.iColModel] : string.Empty);
 
                 if (!le.IsValid())
                     throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errImportFlightIsInvalid, le.ErrorString));
@@ -896,11 +900,10 @@ namespace MyFlightbook.ImportFlights
             #endregion
 
             #region public properties
-            private readonly IDictionary<string, Aircraft> _dictAircraft;
-            public IDictionary<string, Aircraft> AircraftForUser
-            {
-                get { return _dictAircraft; }
-            }
+            public UserAircraft AircraftForUser { get; private set; }
+
+            public IDictionary<string, AircraftImportSpec> AircraftMapping { get; private set; }
+
             public IReadOnlyDictionary<string, MakeModel> ModelMapping { get; set; }
 
             public string User { get; set; }
@@ -995,10 +998,11 @@ namespace MyFlightbook.ImportFlights
                 }
             }
 
-            public ImportContext(string[] rgszHeader, string szUser)
+            public ImportContext(string[] rgszHeader, string szUser, IDictionary<string, AircraftImportSpec> aircraftMapping)
             {
                 User = szUser;
-                _dictAircraft = new UserAircraft(szUser).DictAircraftForUser();
+                AircraftForUser = new UserAircraft(szUser);
+                AircraftMapping = aircraftMapping;
                 AircraftToImport = new AircraftImportParseContext();
 
                 OrphanedPropsByFlightID = new Dictionary<int, List<CustomFlightProperty>>();
@@ -1036,84 +1040,87 @@ namespace MyFlightbook.ImportFlights
         /// <summary>
         /// Reads a CSV file and returns a list of LogbookEntry objects from it. DOES NOT WRITE THE FLIGHTS!!!
         /// </summary>
-        /// <param name="fileContent">The CSV file stream</param>
         /// <param name="szUser">The username for whom the import is being performed</param>
         /// <param name="rowHasError">Delegate called for a row that has an error.  Has the entry (error string indicates the error), the raw row data, and the index of the row</param>
         /// <param name="rowOK">Delegate called for a row that does not have an error.  Has the entry and the row index</param>
         /// <param name="afo">If not null, contains the options for performing autofill on flights.</param>
+        /// <param name="dMappingContext">If not null, contains a dictionary that maps provided model IDs</param>
         /// <returns>false for an error (look at "ErrorString" for information).</returns>
-        public bool FInitFromStream(Stream fileContent, string szUser, Action<LogbookEntryCore, int> rowOK, Action<LogbookEntryCore, string, int> rowHasError, AutoFillOptions afo)
+        public bool InitWithBytes(byte[] rgb, string szUser, Action<LogbookEntryCore, int> rowOK, Action<LogbookEntryCore, string, int> rowHasError, AutoFillOptions afo, IDictionary<string, AircraftImportSpec> dMappingContext = null)
         {
-            using (CSVReader csvr = new CSVReader(fileContent))
+            using (MemoryStream ms2 = new MemoryStream(rgb))
             {
-                FlightsToImport.Clear();
-                OriginalFlightsToModify = new Dictionary<int, LogbookEntry>();
-                int iRow = 0;
-
-                HasErrors = false;
-                ErrorMessage = string.Empty;
-
-                try
+                using (CSVReader csvr = new CSVReader(ms2))
                 {
-                    m_ImportContext = new ImportContext(csvr.GetCSVLine(true), szUser) { ModelMapping = ModelNameMappings };
-
-                    RowReader rr = new RowReader(m_ImportContext);
-
-                    string[] rgszRow = null;
-                    while ((rgszRow = csvr.GetCSVLine()) != null)
-                    {
-                        iRow++;
-
-                        // Check for empty row; skip it if necessary
-                        bool fHasData = false;
-                        Array.ForEach<string>(rgszRow, (sz) => { if (sz.Trim().Length > 0) fHasData = true; });
-                        if (!fHasData)
-                            continue;
-
-                        LogbookEntry le = new LogbookEntry();
-
-                        try
-                        {
-                            le = rr.FlightFromRow(le, rgszRow, afo);
-                            rowOK?.Invoke(le, iRow);
-                        }
-                        catch (MyFlightbookException ex)
-                        {
-                            HasErrors = true;
-                            le.ErrorString = ex.Message;
-                            rowHasError?.Invoke(le, String.Join(",", rgszRow), iRow);
-                        }
-
-                        FlightsToImport.Add(le);
-                    }
-                    m_ImportContext.AircraftToImport.ProcessParseResultsForUser(szUser);
-                    m_missingAircraft.AddRange(m_ImportContext.AircraftToImport.AllMissing);
-
-                    // Collect base versions of any flights being modified.
-                    HashSet<int> hsModifiedFlightIDs = new HashSet<int>();
-                    foreach (LogbookEntry le in FlightsToImport)
-                        if (!le.IsNewFlight)
-                            hsModifiedFlightIDs.Add(le.FlightID);
-
-                    if (hsModifiedFlightIDs.Count > 0)
-                    {
-                        IEnumerable<LogbookEntryDisplay> lstFlightsToModify = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntryDisplay.QueryCommand(new FlightQuery(szUser)), szUser, "FlightID", System.Web.UI.WebControls.SortDirection.Ascending, false, false);
-                        foreach (LogbookEntry le in lstFlightsToModify)
-                            if (hsModifiedFlightIDs.Contains(le.FlightID))
-                                OriginalFlightsToModify.Add(le.FlightID, le);
-                    }
-
-                }
-                catch (Exception ex) when (ex is MyFlightbookException || ex is CSVReaderInvalidCSVException)
-                {
-                    HasErrors = true;
-                    ErrorMessage = ex.Message;
                     FlightsToImport.Clear();
-                    return false;
-                }
-            }
+                    OriginalFlightsToModify = new Dictionary<int, LogbookEntry>();
+                    int iRow = 0;
 
-            return !HasErrors;
+                    HasErrors = false;
+                    ErrorMessage = string.Empty;
+
+                    try
+                    {
+                        m_ImportContext = new ImportContext(csvr.GetCSVLine(true), szUser, dMappingContext) { ModelMapping = ModelNameMappings };
+
+                        RowReader rr = new RowReader(m_ImportContext);
+
+                        string[] rgszRow = null;
+                        while ((rgszRow = csvr.GetCSVLine()) != null)
+                        {
+                            iRow++;
+
+                            // Check for empty row; skip it if necessary
+                            bool fHasData = false;
+                            Array.ForEach(rgszRow, (sz) => { if (sz.Trim().Length > 0) fHasData = true; });
+                            if (!fHasData)
+                                continue;
+
+                            LogbookEntry le = new LogbookEntry();
+
+                            try
+                            {
+                                le = rr.FlightFromRow(le, rgszRow, afo);
+                                rowOK?.Invoke(le, iRow);
+                            }
+                            catch (MyFlightbookException ex)
+                            {
+                                HasErrors = true;
+                                le.ErrorString = ex.Message;
+                                rowHasError?.Invoke(le, String.Join(",", rgszRow), iRow);
+                            }
+
+                            FlightsToImport.Add(le);
+                        }
+                        m_ImportContext.AircraftToImport.ProcessParseResultsForUser(szUser, dMappingContext);
+                        m_missingAircraft.AddRange(m_ImportContext.AircraftToImport.AllMissing);
+
+                        // Collect base versions of any flights being modified.
+                        HashSet<int> hsModifiedFlightIDs = new HashSet<int>();
+                        foreach (LogbookEntry le in FlightsToImport)
+                            if (!le.IsNewFlight)
+                                hsModifiedFlightIDs.Add(le.FlightID);
+
+                        if (hsModifiedFlightIDs.Count > 0)
+                        {
+                            IEnumerable<LogbookEntryDisplay> lstFlightsToModify = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntryBase.QueryCommand(new FlightQuery(szUser)), szUser, "FlightID", System.Web.UI.WebControls.SortDirection.Ascending, false, false);
+                            foreach (LogbookEntry le in lstFlightsToModify)
+                                if (hsModifiedFlightIDs.Contains(le.FlightID))
+                                    OriginalFlightsToModify.Add(le.FlightID, le);
+                        }
+
+                    }
+                    catch (Exception ex) when (ex is MyFlightbookException || ex is CSVReaderInvalidCSVException)
+                    {
+                        HasErrors = true;
+                        ErrorMessage = ex.Message;
+                        FlightsToImport.Clear();
+                        return false;
+                    }
+                }
+
+                return !HasErrors;
+            }
         }
 
         /// <summary>
@@ -1157,14 +1164,6 @@ namespace MyFlightbook.ImportFlights
 
             EventRecorder.UpdateCount(EventRecorder.MFBCountID.ImportedFlight, cFlightsImported);
             return true;
-        }
-
-        public bool InitWithBytes(byte[] rgb, string szUser, Action<LogbookEntryCore, int> rowOK, Action<LogbookEntryCore, string, int> rowHasError, AutoFillOptions afo)
-        {
-            using (MemoryStream ms2 = new MemoryStream(rgb))
-            {
-                return FInitFromStream(ms2, szUser, rowOK, rowHasError, afo);
-            }
         }
     }
 }
