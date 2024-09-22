@@ -4634,6 +4634,53 @@ WHERE f1.username = ?uName ");
             }
         }
         #endregion
+
+        #region Condensed print layout support
+        /// <summary>
+        /// Returns a condensed set of flights given the input set of flights.  THIS IS DESTRUCTIVE TO THE SOURCE LIST - DO NOT CALL TWICE WITHOUT REFRESHING (issue #1314)
+        /// </summary>
+        /// <param name="lstIn"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static IList<LogbookEntryDisplay> CondenseFlights(IEnumerable<LogbookEntryDisplay> lstIn)
+        {
+            List<LogbookEntryDisplay> lstOut = new List<LogbookEntryDisplay>();
+
+            if (lstIn == null)
+                throw new ArgumentNullException(nameof(lstIn));
+
+            LogbookEntryDisplay ledCurrent = null;
+            foreach (LogbookEntryDisplay ledSrc in lstIn)
+            {
+                if (ledCurrent == null)
+                {
+                    ledCurrent = ledSrc;
+                    ledSrc.FlightCount = 1;
+                }
+                else if (ledSrc.Date.Date.CompareTo(ledCurrent.Date.Date) != 0 || ledSrc.CatClassDisplay.CompareCurrentCultureIgnoreCase(ledCurrent.CatClassDisplay) != 0)
+                {
+                    lstOut.Add(ledCurrent);
+                    ledCurrent = ledSrc;
+                    ledSrc.FlightCount = 1;
+                }
+                else
+                {
+                    ledCurrent.AddFrom(ledSrc);
+                    List<string> lst = new List<string>() { ledCurrent.Route, ledSrc.Route };
+                    lst.RemoveAll(sz => String.IsNullOrWhiteSpace(sz));
+                    ledCurrent.Route = String.Join(" / ", lst);
+                    lst = new List<string>() { ledCurrent.Comment, ledSrc.Comment };
+                    lst.RemoveAll(sz => String.IsNullOrWhiteSpace(sz));
+                    ledCurrent.Comment = String.Join(" / ", lst);
+                    ledSrc.FlightCount++;
+                }
+            }
+            if (ledCurrent != null)
+                lstOut.Add(ledCurrent);
+
+            return lstOut;
+        }
+        #endregion
     }
 
     /// <summary>

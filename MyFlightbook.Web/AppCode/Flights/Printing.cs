@@ -32,11 +32,8 @@ namespace MyFlightbook.Printing
         /// <param name="showFooter">True to display the certification/page numbers in the footer.</param>
         /// <param name="options">The options used for printing</param>
         void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, PrintingOptions options, bool showFooter = true);
-    }
 
-    public interface ICondenseFlights
-    {
-        IList<LogbookEntryDisplay> CondenseFlights(IEnumerable<LogbookEntryDisplay> lstIn);
+        bool IsCondensed { get; }
     }
 
     public enum PrintLayoutType { Native, Portrait, EASA, USA, Canada, SACAA, CASA, NZ, Glider, Condensed, PCAA, UASCivi, TwoPage, Navy, Airline, HongKong }
@@ -1319,8 +1316,8 @@ namespace MyFlightbook.Printing
             }
 
             // Condense the flights, if the template supports condensing
-            if (pt is ICondenseFlights cf)
-                lstFlights = cf.CondenseFlights(lstFlights);
+            if (pt.IsCondensed)
+                lstFlights = LogbookEntryDisplay.CondenseFlights(lstFlights);
 
             pt.BindPages(LogbookPrintedPage.Paginate(lstFlights, printingOptions), pf, printingOptions, !fSuppressFooter);
 
@@ -1453,6 +1450,8 @@ namespace MyFlightbook.Printing
             PropSeparator = options.PropertySeparatorText;
             ShowTrackChanges = CurrentUser.PreferenceExists(MFBConstants.keyTrackOriginal);
         }
+
+        public virtual bool IsCondensed { get { return false; } }
         #endregion
     }
 }

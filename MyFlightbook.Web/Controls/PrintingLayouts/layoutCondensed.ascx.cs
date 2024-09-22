@@ -4,14 +4,14 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2021 MyFlightbook LLC
+ * Copyright (c) 2019-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
 namespace MyFlightbook.Printing.Layouts
 {
-    public partial class LayoutCondensed : PrintLayoutBase, ICondenseFlights
+    public partial class LayoutCondensed : PrintLayoutBase
     {
         #region IPrintingTemplate
         public override void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, PrintingOptions options, bool showFooter = true)
@@ -22,6 +22,8 @@ namespace MyFlightbook.Printing.Layouts
             rptPages.DataBind();
         }
         #endregion
+
+        public override bool IsCondensed => true; 
 
         protected void Page_Load(object sender, EventArgs e) { }
 
@@ -51,45 +53,6 @@ namespace MyFlightbook.Printing.Layouts
             Repeater rpt = (Repeater)e.Item.FindControl("rptSubtotals");
             rpt.DataSource = sc.Subtotals;
             rpt.DataBind();
-        }
-
-        public IList<LogbookEntryDisplay> CondenseFlights(IEnumerable<LogbookEntryDisplay> lstIn)
-        {
-            List<LogbookEntryDisplay> lstOut = new List<LogbookEntryDisplay>();
-
-            if (lstIn == null)
-                throw new ArgumentNullException(nameof(lstIn));
-
-            LogbookEntryDisplay ledCurrent = null;
-            foreach (LogbookEntryDisplay ledSrc in lstIn)
-            {
-                if (ledCurrent == null)
-                {
-                    ledCurrent = ledSrc;
-                    ledSrc.FlightCount = 1;
-                }
-                else if (ledSrc.Date.Date.CompareTo(ledCurrent.Date.Date) != 0 || ledSrc.CatClassDisplay.CompareCurrentCultureIgnoreCase(ledCurrent.CatClassDisplay) != 0)
-                {
-                    lstOut.Add(ledCurrent);
-                    ledCurrent = ledSrc;
-                    ledSrc.FlightCount = 1;
-                }
-                else
-                {
-                    ledCurrent.AddFrom(ledSrc);
-                    List<string> lst = new List<string>() { ledCurrent.Route, ledSrc.Route };
-                    lst.RemoveAll(sz => String.IsNullOrWhiteSpace(sz));
-                    ledCurrent.Route = String.Join(" / ", lst);
-                    lst = new List<string>() { ledCurrent.Comment, ledSrc.Comment };
-                    lst.RemoveAll(sz => String.IsNullOrWhiteSpace(sz));
-                    ledCurrent.Comment = String.Join(" / ", lst);
-                    ledSrc.FlightCount++;
-                }
-            }
-            if (ledCurrent != null)
-                lstOut.Add(ledCurrent);
-
-            return lstOut;
         }
     }
 }
