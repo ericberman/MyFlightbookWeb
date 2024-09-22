@@ -565,8 +565,14 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             PendingFlight pf = le as PendingFlight;
 
             // If this is a new flight and we have an existing flight in progress, pick that one up instead.
-            if (le.IsNewFlight && pf == null &&  Session[keySessionInProgress] != null)
+            if (le.IsNewFlight && pf == null && Session[keySessionInProgress] != null)
+            {
                 le = (LogbookEntry)Session[keySessionInProgress];
+                // Issue #1312 - coming back from add new aircraft should use that aircraft
+                int lastTail = AircraftUtility.LastTail;
+                if (lastTail > 0)
+                    le.AircraftID = lastTail;
+            }
 
             CheckCanSaveFlight(targetUser, le);
 
