@@ -1068,13 +1068,13 @@ namespace MyFlightbook.ImportFlights
                         string[] rgszRow = null;
                         while ((rgszRow = csvr.GetCSVLine()) != null)
                         {
-                            iRow++;
-
                             // Check for empty row; skip it if necessary
                             bool fHasData = false;
                             Array.ForEach(rgszRow, (sz) => { if (sz.Trim().Length > 0) fHasData = true; });
                             if (!fHasData)
                                 continue;
+
+                            iRow++;
 
                             LogbookEntry le = new LogbookEntry();
 
