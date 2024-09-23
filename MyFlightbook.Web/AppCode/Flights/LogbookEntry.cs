@@ -1,5 +1,4 @@
-﻿using DotNetOpenAuth.Messaging;
-using MyFlightbook.Airports;
+﻿using MyFlightbook.Airports;
 using MyFlightbook.Encryptors;
 using MyFlightbook.FlightStatistics;
 using MyFlightbook.Histogram;
@@ -195,6 +194,54 @@ namespace MyFlightbook
         public DateTime Date { get; set; } = DateTime.Now;
 
         /// <summary>
+        /// A read-only display string for custom properties (efficiency for display)
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnore]
+        [Newtonsoft.Json.JsonIgnore]
+        public string CustPropertyDisplay { get; set; }
+
+
+        /// <summary>
+        /// The ID of the model of aircraft
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnore]
+        [Newtonsoft.Json.JsonIgnore]
+        public int ModelID { get; protected set; }
+
+        /// <summary>
+        /// Is the category/class overridden?
+        /// </summary>
+        public bool IsOverridden { get; set; }
+
+        /// <summary>
+        /// CatClassOverride in base class can be 0 if it's not overridden; this is the net category class.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnore]
+        [Newtonsoft.Json.JsonIgnore]
+        public int EffectiveCatClass { get; set; }
+
+        [System.Xml.Serialization.XmlIgnore]
+        [Newtonsoft.Json.JsonIgnore]
+        public string ShortModelName { get; protected set; }
+
+        [System.Xml.Serialization.XmlIgnore]
+        [Newtonsoft.Json.JsonIgnore]
+        public string FamilyName { get; protected set; }
+
+        /// <summary>
+        /// Instance type used for the flight.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnore]
+        [Newtonsoft.Json.JsonIgnore]
+        public AircraftInstanceTypes InstanceType { get; set; }
+
+        /// <summary>
+        /// A place to store and serialize the color for the flight for flightcoloring.  MUST BE EXPLICITLY SET; it is NOT automatically computed.
+        /// Representation is either null/empty, or 6 hex digits.
+        /// </summary>
+        public string FlightColorHex { get; set; }
+
+        /// <summary>
         /// An error message for the last operation that failed
         /// </summary>
         public String ErrorString { get; set; } = string.Empty;
@@ -325,10 +372,10 @@ namespace MyFlightbook
             // If this is a new flight, pull in any pending flight images
             if (IsNewFlight)
             {
-                Collection<MFBImageInfo> rg = new Collection<MFBImageInfo>();
+                List<MFBImageInfo> rg = new List<MFBImageInfo>();
                 rg.AddRange(FlightImages);
                 rg.AddRange(MFBPendingImage.PendingImagesInSession());
-                FlightImages = rg;
+                FlightImages = new Collection<MFBImageInfo>(rg);
             }
         }
 
@@ -357,7 +404,7 @@ namespace MyFlightbook
         /// <summary>
         /// Videos associated with the flight.
         /// </summary>
-        public Collection<VideoRef> Videos { get; private set; } = new Collection<VideoRef>();
+        public Collection<VideoRef> Videos { get; protected set; } = new Collection<VideoRef>();
 
         #region Display
         /// <summary>
@@ -2142,10 +2189,15 @@ namespace MyFlightbook
 
                     string szVids = dr["FlightVids"].ToString();
                     if (!String.IsNullOrEmpty(szVids))
-                    {
-                        Videos.Clear();
-                        Videos.AddRange(JsonConvert.DeserializeObject<VideoRef[]>(szVids));
-                    }
+                        Videos = new Collection<VideoRef>(JsonConvert.DeserializeObject<VideoRef[]>(szVids));
+
+                    ModelID = Convert.ToInt32(dr["idModel"], CultureInfo.InvariantCulture);
+                    IsOverridden = Convert.ToBoolean(dr["IsOverridden"], CultureInfo.InvariantCulture);
+                    EffectiveCatClass = (IsOverridden) ? Convert.ToInt32(dr["CatClassOverride"], CultureInfo.InvariantCulture) : EffectiveCatClass = Convert.ToInt32(dr["idcategoryclass"], CultureInfo.InvariantCulture);
+
+                    InstanceType = (AircraftInstanceTypes)Convert.ToInt32(dr["InstanceType"], CultureInfo.InvariantCulture);
+                    ShortModelName = (string)dr["ShortModelDisplay"];
+                    FamilyName = (string)dr["FamilyDisplay"];
 
                     return true;
                 }
@@ -3224,6 +3276,19 @@ WHERE f1.username = ?uName ");
             }
         }
         #endregion
+
+        #region Flight Coloring support
+        /// <summary>
+        /// For CannedQuery matching (flight coloring) - return the search string, appending any additional text.
+        /// </summary>
+        /// <param name="szAdditional">Any additional text</param>
+        /// <param name="fHHMM">Whether or not to use HHMM format (false by default)</param>
+        /// <returns>A concatenated string on which to do a generalized text match</returns>
+        public string SearchStringForFlight(string szAdditional, bool fHHMM = false)
+        {
+            return String.Join(" ", new string[] { ModelDisplay, TailNumDisplay, Route, Comment, CatClassDisplay, String.IsNullOrEmpty(CustPropertyDisplay) ? CustomFlightProperty.PropListDisplay(CustomProperties, fHHMM) : CustPropertyDisplay, CFIComments ?? string.Empty, CFIName ?? string.Empty, szAdditional ?? string.Empty }).ToUpper(CultureInfo.CurrentCulture).Trim();
+        }
+        #endregion
     }
 
 
@@ -3237,16 +3302,6 @@ WHERE f1.username = ?uName ");
 
         #region properties
         /// <summary>
-        /// Is the category/class overridden?
-        /// </summary>
-        public bool IsOverridden { get; set; }
-
-        /// <summary>
-        /// A read-only display string for custom properties (efficiency for display)
-        /// </summary>
-        public string CustPropertyDisplay { get; set; }
-
-        /// <summary>
         /// Display category/class but without any type.
         /// </summary>
         [System.Xml.Serialization.XmlIgnore]
@@ -3255,15 +3310,6 @@ WHERE f1.username = ?uName ");
         {
             get { return RowType == LogbookRowType.Flight ? CategoryClass.CategoryClassFromID((CategoryClass.CatClassID)EffectiveCatClass).CatClass : string.Empty; }
         }
-
-        public string ShortModelName { get; set; }
-
-        public string FamilyName { get; set; }
-
-        /// <summary>
-        /// The ID of the model of aircraft
-        /// </summary>
-        public int ModelID { get; set; }
 
         #region Printing support
         /// <summary>
@@ -3280,11 +3326,6 @@ WHERE f1.username = ?uName ");
         /// # of flight rows needed to properly display this entry.
         /// </summary>
         public int RowHeight { get; set; }
-
-        /// <summary>
-        /// CatClassOverride in base class can be 0 if it's not overridden; this is the net category class.
-        /// </summary>
-        public int EffectiveCatClass { get; set; }
 
         /// <summary>
         /// Quick access to the PIC Name, if specified - for printing.
@@ -3373,11 +3414,6 @@ WHERE f1.username = ?uName ");
                 return String.Format(CultureInfo.CurrentCulture, "({0} / {1})", (IMC == 0) ? "0" : IMC.FormatDecimal(UseHHMM), (SimulatedIFR == 0) ? "0" : SimulatedIFR.FormatDecimal(UseHHMM));
             }
         }
-
-        /// <summary>
-        /// Instance type used for the flight.
-        /// </summary>
-        public AircraftInstanceTypes InstanceType { get; set; }
 
         #region Glider properties
         public int GroundLaunches
@@ -3879,17 +3915,6 @@ WHERE f1.username = ?uName ");
         {
             get { return CustomFlightProperty.PropDisplayAsList(CustomProperties, UseHHMM, true, true); }
         }
-
-        /// <summary>
-        /// For CannedQuery matching (flight coloring) - return the search string, appending any additional text.
-        /// </summary>
-        /// <param name="ac"></param>
-        /// <returns></returns>
-        public string SearchStringForFlight(string szAdditional)
-        {
-            List<string> lst = new List<string>() { ModelDisplay, TailNumDisplay, Route, Comment, CatClassDisplay, CustPropertyDisplay, CFIComments ?? string.Empty, CFIName ?? string.Empty, szAdditional ?? string.Empty };
-            return String.Join(" ", lst).ToUpper(CultureInfo.CurrentCulture).Trim();
-        }
         #endregion
         #endregion
 
@@ -3906,15 +3931,7 @@ WHERE f1.username = ?uName ");
 
         private void InitPropertiesFromDB(MySqlDataReader dr)
         {
-            ModelID = Convert.ToInt32(dr["idModel"], CultureInfo.InvariantCulture);
-            IsOverridden = Convert.ToBoolean(dr["IsOverridden"], CultureInfo.InvariantCulture);
-            EffectiveCatClass = (IsOverridden) ? Convert.ToInt32(dr["CatClassOverride"], CultureInfo.InvariantCulture) : EffectiveCatClass = Convert.ToInt32(dr["idcategoryclass"], CultureInfo.InvariantCulture);
-
             CustPropertyDisplay = CustomFlightProperty.PropListDisplay(CustomProperties, UseHHMM);
-
-            InstanceType = (AircraftInstanceTypes) Convert.ToInt32(dr["InstanceType"], CultureInfo.InvariantCulture);
-            ShortModelName = (string)dr["ShortModelDisplay"];
-            FamilyName = (string)dr["FamilyDisplay"];
         }
 
         protected LogbookEntryDisplay(MySqlDataReader dr, string szUser, bool fUseHHMM, bool fUseUTCDate)
@@ -4681,40 +4698,6 @@ WHERE f1.username = ?uName ");
             return lstOut;
         }
         #endregion
-    }
-
-    /// <summary>
-    /// Events for a logbookentry
-    /// </summary>
-    public class LogbookEventArgs : EventArgs
-    {
-        public int FlightID { get; set; }
-
-        public LogbookEntry Flight {get; set;}
-
-        /// <summary>
-        /// If there is a flight to which we should navigate, this includes it.
-        /// </summary>
-        public int IDNextFlight { get; set; }
-
-        public LogbookEventArgs() : base()
-        {
-            FlightID = IDNextFlight = LogbookEntry.idFlightNone;
-            Flight = null;
-        }
-
-        public LogbookEventArgs(int idFlight, int idNextFlight = LogbookEntry.idFlightNone) : this()
-        {
-            FlightID = idFlight;
-            IDNextFlight = idNextFlight;
-        }
-
-        public LogbookEventArgs(LogbookEntry le) : this()
-        {
-            Flight = le;
-            if (le != null)
-                FlightID = le.FlightID;
-        }
     }
 
     /// <summary>

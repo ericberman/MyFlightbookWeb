@@ -17,7 +17,7 @@ using System.Web.Services;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2023 MyFlightbook LLC
+ * Copyright (c) 2008-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -637,7 +637,22 @@ namespace MyFlightbook
 
             util.UnescapeObject(fq);    // fix for iPhone HTML encoding issues.
             EventRecorder.LogCall("FlightsWithQuery - user {user}, offset {offset}, maxCount {maxCount}", fq.UserName, offset, maxCount);
-            return LogbookEntry.GetFlightsForUser(fq, offset, maxCount).ToArray();
+            IEnumerable<LogbookEntry> rgFlights = LogbookEntry.GetFlightsForUser(fq, offset, maxCount).ToArray();
+            IEnumerable<CannedQuery> colorQueryMap = FlightColor.QueriesToColor(fq.UserName);
+            // Color the flights
+            foreach (LogbookEntry le in rgFlights)
+            {
+                foreach (CannedQuery cq in colorQueryMap)
+                {
+                    if (cq.MatchesFlight(le))
+                    {
+                        // Break on a match, doing these in order - this needs to be deterministic
+                        le.FlightColorHex = cq.ColorString;
+                        break;
+                    }
+                }
+            }
+            return rgFlights.ToArray();
         }
 
         /// <summary>

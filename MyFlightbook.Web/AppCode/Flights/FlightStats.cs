@@ -179,7 +179,13 @@ namespace MyFlightbook.FlightStatistics
                   0 AS distance,
                   '' AS flightpath,
                   0 AS telemetrytype,
-                  '' AS metadata
+                  '' AS metadata,
+                  0 AS idModel,
+                  false AS IsOverridden,
+                  0 AS idcategoryclass,
+                  0 AS InstanceType,
+                  '' AS ShortModelDisplay,
+                  '' AS FamilyDisplay
                 FROM flights f 
                   INNER JOIN Aircraft ac ON f.idaircraft=ac.idaircraft 
                   INNER JOIN models m ON ac.idmodel=m.idmodel 

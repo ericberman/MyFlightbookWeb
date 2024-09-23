@@ -1908,7 +1908,7 @@ namespace MyFlightbook
             return true;
         }
 
-        private bool IsModelMatch(LogbookEntryDisplay le)
+        private bool IsModelMatch(LogbookEntry le)
         {
             if (MakeList.Count != 0 && MakeList.FirstOrDefault(mm => le.ModelID == mm.MakeModelID) == null)
                 return false;
@@ -1965,7 +1965,7 @@ namespace MyFlightbook
             return true;
         }
 
-        private bool IsEngineTypeMatch(MakeModel mm, LogbookEntryDisplay le)
+        private bool IsEngineTypeMatch(MakeModel mm, LogbookEntry le)
         {
             if (CategoryClass.IsPowered(le.IsOverridden ? (CategoryClass.CatClassID)le.CatClassOverride : mm.CategoryClassID) || mm.IsMotorGlider)
             {
@@ -1990,7 +1990,7 @@ namespace MyFlightbook
                 return EngineType == EngineTypeRestriction.AllEngines;  // if unpowered, then it's not a match unless "allengines" is specified; issue #1305
         }
 
-        private bool IsAircraftCharacteristicsMatch(LogbookEntryDisplay le)
+        private bool IsAircraftCharacteristicsMatch(LogbookEntry le)
         {
             UserAircraft ua = new UserAircraft(le.User);
             Aircraft ac = ua.GetUserAircraftByID(le.AircraftID);
@@ -2069,7 +2069,7 @@ namespace MyFlightbook
             return (EnumeratedFlights == null || EnumeratedFlights.Count == 0 || EnumeratedFlights.Contains(le.FlightID));
         }
 
-        private bool IsGeneralTextMatch(LogbookEntryDisplay le)
+        private bool IsGeneralTextMatch(LogbookEntry le)
         {
             // This is the most complicated to match what the database does.
             if (String.IsNullOrWhiteSpace(GeneralText))
@@ -2205,7 +2205,7 @@ namespace MyFlightbook
                 return Regex.IsMatch(szMatch.Trim(), szPhrase.ConvertToRegexWildcards(), RegexOptions.IgnoreCase);
         }
 
-        public bool MatchesFlight(LogbookEntryDisplay le)
+        public bool MatchesFlight(LogbookEntry le)
         {
             if (le == null)
                 return false;
