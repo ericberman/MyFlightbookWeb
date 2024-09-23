@@ -543,7 +543,6 @@
     <Content Include="Controls\TwoFactorAuth.ascx" />
     <Content Include="Controls\AccountQuestions.ascx" />
     <Content Include="Controls\AircraftControls\SelectMake.ascx" />
-    <Content Include="Controls\AutofillOptionsChooser.ascx" />
     <Content Include="Controls\ChecklistControls\ChecklistItem.ascx" />
     <Content Include="Controls\Expando.ascx" />
     <Content Include="Controls\GoogleAnalytics.ascx" />
@@ -563,7 +562,6 @@
     <Content Include="Controls\mfbHeader.ascx" />
     <Content Include="Controls\mfbHoverImageList.ascx" />
     <Content Include="Controls\mfbImageList.ascx" />
-    <Content Include="Controls\mfbImportAircraft.ascx" />
     <Content Include="Controls\mfbMaintainAircraft.ascx" />
     <Content Include="Controls\mfbMultiFileUpload.ascx" />
     <Content Include="Controls\mfbQueryDescriptor.ascx" />
@@ -787,8 +785,6 @@
     <Content Include="MasterPage.master" />
     <Content Include="Member\Ajax.asmx" />
     <Content Include="Member\EditAircraft.aspx" />
-    <Content Include="Member\ImpAircraftService.aspx" />
-    <Content Include="Member\Import.aspx" />
     <Content Include="Member\PrintView.aspx" />
     <Content Include="Public\CSS\jquery.passwordRequirements.css" />
     <Content Include="Public\CSS\printAirline.css" />
@@ -1424,7 +1420,6 @@
     <Content Include="Public\Scripts\endless-scroll.js" />
     <Content Include="Public\Scripts\gchart.js" />
     <Content Include="Public\Scripts\GMapScript.js" />
-    <Content Include="Public\Scripts\ImpAircraft.js" />
     <Content Include="Public\Scripts\jquery.fitvids.js" />
     <Content Include="Public\Scripts\jqueryutil.js" />
     <Content Include="Public\Scripts\listdrag.js" />
@@ -2041,13 +2036,6 @@
     <Compile Include="Controls\AircraftControls\SelectMake.ascx.designer.cs">
       <DependentUpon>SelectMake.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Controls\AutofillOptionsChooser.ascx.cs">
-      <DependentUpon>AutofillOptionsChooser.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\AutofillOptionsChooser.ascx.designer.cs">
-      <DependentUpon>AutofillOptionsChooser.ascx</DependentUpon>
-    </Compile>
     <Compile Include="Controls\ChecklistControls\ChecklistItem.ascx.cs">
       <DependentUpon>ChecklistItem.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2180,13 +2168,6 @@
     </Compile>
     <Compile Include="Controls\mfbImageList.ascx.designer.cs">
       <DependentUpon>mfbImageList.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\mfbImportAircraft.ascx.cs">
-      <DependentUpon>mfbImportAircraft.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbImportAircraft.ascx.designer.cs">
-      <DependentUpon>mfbImportAircraft.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\mfbMaintainAircraft.ascx.cs">
       <DependentUpon>mfbMaintainAircraft.ascx</DependentUpon>
@@ -2422,20 +2403,6 @@
     </Compile>
     <Compile Include="Member\EditAircraft.aspx.designer.cs">
       <DependentUpon>EditAircraft.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Member\ImpAircraftService.aspx.cs">
-      <DependentUpon>ImpAircraftService.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\ImpAircraftService.aspx.designer.cs">
-      <DependentUpon>ImpAircraftService.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Member\Import.aspx.cs">
-      <DependentUpon>Import.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\Import.aspx.designer.cs">
-      <DependentUpon>Import.aspx</DependentUpon>
     </Compile>
     <Compile Include="Member\PrintView.aspx.cs">
       <DependentUpon>PrintView.aspx</DependentUpon>
