@@ -87,15 +87,6 @@ namespace MyFlightbook.Controls.ImageControls
         protected global::System.Web.UI.WebControls.Image myThrobber;
 
         /// <summary>
-        /// imgPullGoogle control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.ImageButton imgPullGoogle;
-
-        /// <summary>
         /// AjaxFileUpload1 control.
         /// </summary>
         /// <remarks>
@@ -175,41 +166,5 @@ namespace MyFlightbook.Controls.ImageControls
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hImg;
-
-        /// <summary>
-        /// lblGPhotoResult control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblGPhotoResult;
-
-        /// <summary>
-        /// pnlGPResult control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlGPResult;
-
-        /// <summary>
-        /// rptGPhotos control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptGPhotos;
-
-        /// <summary>
-        /// lnkMoreGPhotos control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton lnkMoreGPhotos;
     }
 }

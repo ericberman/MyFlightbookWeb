@@ -1,5 +1,4 @@
-﻿using MyFlightbook.CloudStorage;
-using MyFlightbook.Geography;
+﻿using MyFlightbook.Geography;
 using MyFlightbook.Image;
 using System;
 using System.Collections.Generic;
@@ -7,11 +6,10 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2023 MyFlightbook LLC
+ * Copyright (c) 2008-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -45,44 +43,6 @@ namespace MyFlightbook.Controls.ImageControls
         /// Called when upload is complete on a single file 
         /// </summary>
         public event EventHandler UploadComplete;
-
-        /// <summary>
-        /// Called before fetching images from GooglePhotos - allows setting of things like date to fetch
-        /// </summary>
-        public event EventHandler FetchingGooglePhotos;
-
-        /// <summary>
-        /// Called before importing an image from GooglePhotos - allows for geotagging, if possible.
-        /// </summary>
-        public event EventHandler<PositionEventArgs> ImportingGooglePhoto;
-
-        #region Google Photos import
-        private GoogleMediaResponse RetrievedGooglePhotos
-        {
-            get
-            {
-                GoogleMediaResponse gmr = (GoogleMediaResponse)ViewState[keyVSGPhotos];
-                if (gmr == null)
-                    ViewState[keyVSGPhotos] = gmr = new GoogleMediaResponse();
-                return gmr;
-            }
-            set { ViewState[keyVSGPhotos] = value; }
-        }
-
-        private DateTime? RetrievedGooglePhotosDate
-        {
-            get { return (DateTime?)ViewState[keyVSLastPhotosDate]; }
-            set { ViewState[keyVSLastPhotosDate] = value; }
-        }
-
-        public DateTime GooglePhotosDateToRetrieve { get; set; }
-
-        public bool AllowGoogleImport
-        {
-            get { return imgPullGoogle.Visible; }
-            set { imgPullGoogle.Visible = value; }
-        }
-        #endregion
 
         /// <summary>
         /// Set to true to force the whole page to refresh (via postback) on upload
@@ -379,80 +339,5 @@ namespace MyFlightbook.Controls.ImageControls
         {
             Mode = UploadMode.Legacy;
         }
-
-        #region Processing Google Photos
-
-        protected void AppendMoreGoogleImages()
-        {
-            Profile pf = Profile.GetUser(Page.User.Identity.Name);
-
-            // Get an update
-            FetchingGooglePhotos?.Invoke(this, new EventArgs());
-
-            if (!GooglePhotosDateToRetrieve.HasValue())
-                return; // nothing to do.
-
-            DateTime? lastDate = RetrievedGooglePhotosDate;
-
-            // flush results if the requested date has changed because the "more results" link will break otherwise.
-            if (lastDate != null && lastDate.HasValue && lastDate.Value.CompareTo(GooglePhotosDateToRetrieve) != 0)
-                RetrievedGooglePhotos = new GoogleMediaResponse();
-
-            RetrievedGooglePhotosDate = GooglePhotosDateToRetrieve;
-
-            GoogleMediaResponse result = RetrievedGooglePhotos = GooglePhoto.AppendImagesForDate(pf, GooglePhotosDateToRetrieve, IncludeVideos, RetrievedGooglePhotos).Result;
-
-            lnkMoreGPhotos.Visible = false;
-            if (result == null || !result.mediaItems.Any())
-            {
-                lblGPhotoResult.Text = Resources.LocalizedText.GooglePhotosNoneFound;
-                result = new GoogleMediaResponse();
-            }
-
-            rptGPhotos.DataSource = result.mediaItems;
-            rptGPhotos.DataBind();
-            lnkMoreGPhotos.Visible = !String.IsNullOrEmpty(result.nextPageToken);
-            pnlGPResult.Visible = RetrievedGooglePhotos.mediaItems.Any();
-        }
-
-        protected void imgPullGoogle_Click(object sender, EventArgs e)
-        {
-            RetrievedGooglePhotos = new GoogleMediaResponse();
-            AppendMoreGoogleImages();
-        }
-
-        protected void lnkMoreGPhotos_Click(object sender, EventArgs e)
-        {
-            AppendMoreGoogleImages();
-        }
-
-        protected void imgAdd_Command(object sender, CommandEventArgs e)
-        {
-            if (e == null)
-                throw new ArgumentNullException(nameof(e));
-
-            // Find the appropriate image
-            List<GoogleMediaItem> items = new List<GoogleMediaItem>(RetrievedGooglePhotos.mediaItems);
-            GoogleMediaItem clickedItem = items.Find(i => i.productUrl.CompareOrdinal((string)e.CommandArgument) == 0);
-
-            if (clickedItem == null)
-                throw new ArgumentOutOfRangeException("Can't find item with id " + e.CommandArgument);
-
-            PositionEventArgs pea = new PositionEventArgs(null, clickedItem.mediaMetadata.CreationTime);
-            ImportingGooglePhoto?.Invoke(sender, pea);
-
-            MFBPostedFile pf = RetrievedGooglePhotos.ImportImage(e.CommandArgument.ToString());
-
-            if (pf == null)
-                return;
-
-            MFBPendingImage pi = AddPostedFile(pf, pea.ExpectedPosition);
-
-            rptGPhotos.DataSource = RetrievedGooglePhotos.mediaItems;
-            rptGPhotos.DataBind();
-
-            pnlGPResult.Visible = RetrievedGooglePhotos.mediaItems.Any();
-        }
-        #endregion
     }
 }

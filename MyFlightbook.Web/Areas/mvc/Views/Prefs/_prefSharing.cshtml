@@ -110,6 +110,10 @@
 </div>
 <div class="prefSectionRow">
     <h2>@Resources.LocalizedText.PrefSharingGooglePhotos</h2>
+    @if (m_pf.PreferenceExists(GooglePhoto.ObsoletePrefKeyAuthToken))
+    {
+        <div class="callout calloutSmall calloutBackground shadowed">@Branding.ReBrand(Resources.LocalizedText.PrefSharingGooglePhotosReAuth)</div>
+    }
     <p>@Branding.ReBrand(Resources.LocalizedText.PrefSharingGooglePhotosDesc)</p>
     <div>
         <img src="https://ssl.gstatic.com/social/photosui/images/logo/favicon_alldp.ico" style="float:left; margin-right: 5px; max-width: 30px;" />
@@ -117,11 +121,11 @@
             @if (m_pf.PreferenceExists(GooglePhoto.PrefKeyAuthToken))
             {
                 <div>@Branding.ReBrand(Resources.LocalizedText.PrefSharingGooglePhotosEnabled)</div>
-                <div><a href="@("~/mvc/oauth/DeAuthorizeGPhoto".ToAbsolute())">@Branding.ReBrand(Resources.LocalizedText.PrefSharingGooglePhotosDisable)</a></div>
+                <div><a href="@("~/mvc/oauth/DeAuthorizeGPhotoNew".ToAbsolute())">@Branding.ReBrand(Resources.LocalizedText.PrefSharingGooglePhotosDisable)</a></div>
             }
             else
             {
-                <a href="@("~/mvc/oauth/AuthorizeGPhoto".ToAbsolute())">@Branding.ReBrand(Resources.LocalizedText.PrefSharingGooglePhotosAuthorize)</a>
+                <a href="@("~/mvc/oauth/AuthorizeGPhotoNew".ToAbsolute())">@Branding.ReBrand(Resources.LocalizedText.PrefSharingGooglePhotosAuthorize)</a>
             }
         </div>
     </div>

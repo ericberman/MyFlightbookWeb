@@ -3,7 +3,6 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Net;
 using System.Text.RegularExpressions;
 using System.Web;
 
@@ -83,23 +82,6 @@ namespace MyFlightbook.Image
                 WriteStreamToTempFile(ms);
                 ContentLength = ms.Length;
                 FileName = TempFileName;
-            }
-        }
-
-        public static MFBPostedFile PostedFileFromURL(Uri uri, string szFilename, string szContentType)
-        {
-            if (uri == null)
-                throw new ArgumentNullException(nameof(uri));
-
-            if (szContentType == null)
-                throw new ArgumentNullException(szContentType);
-
-            using (WebClient wc = new WebClient())
-            {
-                string szTempFile = Path.GetTempFileName();
-                wc.DownloadFile(uri, szTempFile);
-                FileInfo fi = new FileInfo(szTempFile);
-                return new MFBPostedFile() { ContentLength = (int) fi.Length, ContentType = szContentType, FileID = szFilename, FileName = szFilename, TempFileName = szTempFile };
             }
         }
 

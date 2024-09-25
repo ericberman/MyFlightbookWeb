@@ -46,7 +46,6 @@
     <asp:View ID="vwAjaxUpload" runat="server">
         <asp:Image ID="myThrobber" ImageUrl="~/images/ajax-loader.gif" runat="server" style="display:None" />
         <div>
-            <asp:ImageButton ID="imgPullGoogle" runat="server" style="float: left; margin-top: 15px; margin-right: 8px" ImageUrl="https://ssl.gstatic.com/social/photosui/images/logo/favicon_alldp.ico" Width="30" Visible="false" OnClick="imgPullGoogle_Click" ToolTip="<%$ Resources:LocalizedText, GooglePhotosViewImages %>" AlternateText="<%$ Resources:LocalizedText, GooglePhotosViewImages %>" />
             <asp:AjaxFileUpload ID="AjaxFileUpload1" runat="server" AutoStartUpload="true" CssClass="mfbDefault" MaxFileSize="300000"
                     ThrobberID="myThrobber" AllowedFileTypes="heic,jpg,jpeg,pdf,jpe,png" MaximumNumberOfFiles="10" OnUploadComplete="AjaxFileUpload1_UploadComplete" OnUploadCompleteAll="AjaxFileUpload1_UploadCompleteAll" />
         </div>
@@ -68,27 +67,5 @@
     <asp:Image ID="iThrb" runat="server" ImageUrl="~/images/ajax-loader.gif" />
     <asp:HiddenField ID="hImg" runat="server" EnableViewState="false" />
 </asp:Panel>
-<div>
-    <div><asp:Label ID="lblGPhotoResult" runat="server" EnableViewState="false" /></div>
-    <asp:Panel runat="server" ID="pnlGPResult" Visible="false" style="margin: 20px; border-radius: 8px; padding: 5px; background-color:lightgray; border: 1px solid darkgray;">
-        <div>
-            <asp:Repeater ID="rptGPhotos" runat="server">
-                <ItemTemplate>
-                    <div style="display: inline-block;">
-                        <asp:HyperLink ID="lIm" runat="server" Target="_blank" NavigateUrl='<%# Eval("productUrl") %>'>
-                                <asp:Image ID="img" runat="server" ImageUrl='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}=w150-h150", Eval("baseUrl")) %>' AlternateText='<%# Eval("filename") %>' />
-                        </asp:HyperLink>
-                        <div class="imageMenu" runat="server" id="divActions">
-                            <div><asp:ImageButton ID="imgAdd" runat="server" ImageUrl="~/images/add.png" CommandArgument='<%# Eval("productUrl") %>' OnCommand="imgAdd_Command" ToolTip="<%$ Resources:LocalizedText, GooglePhotosAddToFlight %>" AlternateText="<%$ Resources:LocalizedText, GooglePhotosAddToFlight %>" /></div>
-                        </div>
-                    </div>
-                </ItemTemplate>
-            </asp:Repeater>
-        </div>
-        <div>
-            <asp:LinkButton ID="lnkMoreGPhotos" runat="server" Text="<%$ Resources:LocalizedText, GooglePhotosGetMore %>" Visible="false" OnClick="lnkMoreGPhotos_Click" />
-        </div>
-    </asp:Panel>
-</div>
 
 

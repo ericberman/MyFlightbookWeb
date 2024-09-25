@@ -365,11 +365,10 @@
     <div class="header">@szPixBlockLabel <span class="fineprint">@Resources.LocalizedText.ImageDisclaimer</span></div>
     @if (pfViewer.PreferenceExists(MyFlightbook.CloudStorage.GooglePhoto.PrefKeyAuthToken))
     {
-        <input type="hidden" name="gPhotoClickIndex" id="hdnGPhotoClickedItem" value="" />
-        <input type="hidden" id="hdnGPhotoLastDate" value="" />
+        <input type="hidden" id="hdnGPhotoLastResponse" value="" name="gmrJSON" />
         <div style="float: left; vertical-align:middle; margin-top: 15px; margin-right: 8px; width: 30px">
-            <image style="width: 100%;" src="https://ssl.gstatic.com/social/photosui/images/logo/favicon_alldp.ico" onclick="javascript: getGooglePhoto($('#txtDate').val(), '');" title="@Resources.LocalizedText.GooglePhotosViewImages" alt="@Resources.LocalizedText.GooglePhotosViewImages" />
-            <div><img src="@("~/images/progress.gif".ToAbsolute())" style="display:none; width: 14pt; height: 14pt;" id="imgGPhotoProg" /></div>
+            <img style="width: 100%;" src="https://ssl.gstatic.com/social/photosui/images/logo/favicon_alldp.ico" onclick="javascript: getGooglePhotoNew();" title="@Resources.LocalizedText.GooglePhotosViewImages" alt="@Resources.LocalizedText.GooglePhotosViewImages" />
+            <div><img style="width: 18pt; height: 18pt; display: none;" id="gPhotoPrg" src="@("~/images/progress.gif".ToAbsolute())" /></div>
         </div>
     }
 
@@ -389,8 +388,7 @@
             }
         </div>
     </div>
-
-    <div id="divGooglePhotoResult">
+    <div id="divGooglePhotoResult" class="error">
     </div>
     <div id="pnlEmbeddedVideo">
         @{ Html.RenderAction("EmbeddedVideos", "FlightEdit", new { le = le, fCanDoVideo = fCanDoVideo }); }

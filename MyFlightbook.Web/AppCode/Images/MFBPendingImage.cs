@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 
 /******************************************************
@@ -160,27 +160,66 @@ namespace MyFlightbook.Image
             Comment = szText;
         }
 
-        public static MFBPendingImage FromGooglePhoto(string flightData, int clickedIndex, string gmrJSON, string key)
+        /// <summary>
+        /// Pull in an image from google photos, usin the user's accesstoken, and optionally geo-tagging it
+        /// </summary>
+        /// <param name="flightData">Optional data for the flight for geotagging</param>
+        /// <param name="accessToken">Required - the user's access token</param>
+        /// <param name="item">The item to import.</param>
+        /// <param name="key">A unique key for the image</param>
+        /// <returns>The imported image as a pending image</returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public static async Task<MFBPendingImage> FromGooglePhoto(string flightData, string accessToken, GPickerMediaItem item, string key)
         {
-            if (String.IsNullOrEmpty(gmrJSON))
-                throw new ArgumentNullException(nameof(gmrJSON));
-            GoogleMediaResponse gmr = JsonConvert.DeserializeObject<GoogleMediaResponse>(gmrJSON);
-
-            GoogleMediaItem clickedItem = gmr.mediaItems.ElementAt(clickedIndex);
-            MFBPostedFile pf = gmr.ImportImage(clickedItem.productUrl) ?? throw new InvalidOperationException("Unable to import image");
+            MFBPostedFile pf = await item?.ImportImage(accessToken) ?? throw new InvalidOperationException("Unable to import image");
             MFBPendingImage pi = new MFBPendingImage(pf, key);
 
             // Geo tag, if  possible
-            if (clickedItem.mediaMetadata.CreationTime.HasValue && !String.IsNullOrEmpty(flightData))
+            if (item.createTime.HasValue && !String.IsNullOrEmpty(flightData))
             {
                 using (Telemetry.FlightData fd = new Telemetry.FlightData())
                 {
                     if (fd.ParseFlightData(flightData) && fd.HasDateTime && fd.HasLatLongInfo)
-                        pi.Location = Position.Interpolate(clickedItem.mediaMetadata.CreationTime.Value, fd.GetTrajectory());
+                        pi.Location = Position.Interpolate(item.createTime.Value, fd.GetTrajectory());
                 }
             }
 
             return pi;
+        }
+
+        /// <summary>
+        /// Process the result from the google photo picker, producing pending images
+        /// </summary>
+        /// <param name="szJSONResponse">A JSON string representing a GPickerMediaResponse</param>
+        /// <param name="flightData">Any flight data (for geotagging)</param>
+        /// <param name="userName">user for whom this is being called</param>
+        /// <param name="onProcess">An action called on each pending image; commit it or stash it away somewhere as needed</param>
+        /// <returns>true if no errors were encountered</returns>
+        public static async Task<bool> ProcessSelectedPhotosResult(string userName, string szJSONResponse, string flightData, Action<MFBPendingImage, string> onProcess)
+        {
+            if (String.IsNullOrEmpty(szJSONResponse))
+                return false;
+            if (String.IsNullOrEmpty(userName))
+                throw new ArgumentNullException(nameof(userName));
+            if (onProcess == null)
+                throw new ArgumentNullException(nameof(onProcess));
+
+            Profile pf = Profile.GetUser(userName);
+            string accessToken = new GooglePhoto(pf).AuthState.AccessToken;
+            if (String.IsNullOrEmpty(accessToken))
+                throw new UnauthorizedAccessException("Attempt to fetch Google photo without an access token!");
+
+            GPickerMediaResponse gmr = JsonConvert.DeserializeObject<GPickerMediaResponse>(szJSONResponse);
+
+            int i = 0;
+            foreach (GPickerMediaItem item in gmr.mediaItems)
+            {
+                string szKey = String.Format(CultureInfo.InvariantCulture, "googlePhoto_{0}_{1}", i++, DateTime.Now.Ticks);
+                MFBPendingImage pi = await FromGooglePhoto(flightData, accessToken, item, szKey);
+                onProcess(pi, szKey);
+            }
+
+            return true;
         }
     }
 }

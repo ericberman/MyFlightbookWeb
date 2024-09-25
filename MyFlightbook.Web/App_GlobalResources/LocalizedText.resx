@@ -2009,4 +2009,7 @@
   <data name="ImportExternalDateOptional" xml:space="preserve">
     <value>(Optional)</value>
   </data>
+  <data name="PrefSharingGooglePhotosReAuth" xml:space="preserve">
+    <value>You previously gave %APP_NAME% access to your Google Photos.  Google has updated how this works, however, and no longer supports the method that you authorized.  Please re-authorize if you wish to continue to pull images/videos from Google Photos into your flights.</value>
+  </data>
 </root>

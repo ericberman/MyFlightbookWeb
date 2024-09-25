@@ -1506,34 +1506,48 @@ namespace MyFlightbook.CloudStorage
     [Serializable]
     public class GoogleMediaItem
     {
-        public string id { get; set; }
-        public string description { get; set; }
-
-#pragma warning disable CA1056 // URI-like properties should not be strings
-        public string productUrl { get; set; }
-        public string baseUrl { get; set; }
-#pragma warning restore CA1056 // URI-like properties should not be strings
+        [JsonProperty("baseUrl")]
+        public string baseHref { get; set; }
 
         public string mimeType { get; set; }
         public string filename { get; set; }
 
-        public GoogleMediaMetaData mediaMetadata { get; set; }
+        public GoogleMediaMetaData mediaFileMetaData { get; set; } = null;
     }
 
     [Serializable]
     public class GoogleMediaMetaData
     {
-        public string creationTime { get; set; }
-
         public string width { get; set; }
 
         public string height { get; set; }
 
-        public DateTime? CreationTime { get { return String.IsNullOrEmpty(creationTime) ? null : new DateTime?(creationTime.ParseUTCDateTime()); } }
+        public int Width { get { return int.TryParse(width, NumberStyles.Integer, CultureInfo.InvariantCulture, out int w) ? w : 0; } }
 
-        public int Width { get { return String.IsNullOrEmpty(width) ? 0 : int.Parse(width, CultureInfo.InvariantCulture); } }
+        public int Height { get { return int.TryParse(height, NumberStyles.Integer, CultureInfo.InvariantCulture, out int h) ? h : 0; } }
 
-        public int Height { get { return String.IsNullOrEmpty(height) ? 0 : int.Parse(height, CultureInfo.InvariantCulture); } }
+        public string cameraMake { get; set; }
+        public string cameraModel { get; set; }
+
+        public GooglePhotoMetaData photoMetadata { get; set; }
+
+        public GoogleVideoMetaData videoMetadata { get; set; }
+    }
+
+    [Serializable]
+    public class GooglePhotoMetaData
+    {
+        public double focalLength { get; set; }
+        public double apertureFNumber { get; set; }
+        public int isoEquivalent { get; set; }
+        public string exposureTime { get; set; }
+    }
+
+    [Serializable]
+    public class GoogleVideoMetaData
+    {
+        public double fps { get; set; }
+        public string processingStatus { get; set; }
     }
 
     [Serializable]
@@ -1541,70 +1555,114 @@ namespace MyFlightbook.CloudStorage
     {
         public IEnumerable<GoogleMediaItem> mediaItems { get; set; } = Array.Empty<GoogleMediaItem>();
         public string nextPageToken { get; set; }
+    }
 
-        public GoogleMediaResponse AddResponse(GoogleMediaResponse gmr)
+    #region new google picker data types
+    [Serializable]
+    public class GPickerMediaResponse
+    {
+        public IEnumerable<GPickerMediaItem> mediaItems { get; set; } = Array.Empty<GPickerMediaItem>();
+        public string nextPageToken { get; set; }
+    }
+
+    [Serializable]
+    public enum GpickerMediaType { TYPE_UNSPECIFIED, PHOTO, VIDEO }
+
+    [Serializable]
+    public class GPickerMediaItem
+    {
+        public string id { get; set; }
+        /// <summary>
+        /// Time when the media item was created (not when it was uploaded to Google Photos).
+        /// /// A timestamp in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits.Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z"
+        /// </summary>
+        public DateTime? createTime { get; set; }
+        public GpickerMediaType type { get; set; }
+        public GoogleMediaItem mediaFile { get; set; }
+
+        public async Task<MFBPostedFile> ImportImage(string accessToken)
         {
-            if (gmr == null)
-                return this;
+            Uri uri = new Uri(String.Format(CultureInfo.InvariantCulture, "{0}={1}", mediaFile.baseHref, (mediaFile.mimeType.StartsWith("image/", StringComparison.CurrentCultureIgnoreCase)) ? "d" : "dv"));
 
-            nextPageToken = gmr.nextPageToken;
+            return (MFBPostedFile) await SharedHttpClient.GetResponseForAuthenticatedUri(uri, accessToken, HttpMethod.Get, (response) =>
+            {
+                string szResult = string.Empty;
+                try
+                {
+                    using (Stream contentStream = response.Content.ReadAsStreamAsync().Result)
+                    {
+                        return new MFBPostedFile(contentStream, mediaFile.filename, mediaFile.mimeType, (int) contentStream.Length);
+                    }
+                }
+                catch (HttpRequestException ex)
+                {
+                    if (response == null)
+                        throw new MyFlightbookException("Unknown error in GetSession", ex);
 
-            List<GoogleMediaItem> lst = (mediaItems == null) ? new List<GoogleMediaItem>() : new List<GoogleMediaItem>(mediaItems);
-            if (gmr.mediaItems != null)
-                lst.AddRange(gmr.mediaItems);
-            mediaItems = lst;
-            return this;
+                    Dictionary<string, GoogleDriveError> d = String.IsNullOrEmpty(szResult) ? null : JsonConvert.DeserializeObject<Dictionary<string, GoogleDriveError>>(szResult);
+                    GoogleDriveError gde = (d == null || !d.TryGetValue("error", out GoogleDriveError value)) ? null : value;
+
+                    throw new MyFlightbookException(response.ReasonPhrase + " " + (szResult ?? string.Empty));
+                }
+            });
         }
+    }
+    #endregion
+
+    [Serializable]
+    public class GooglePhotoPollingConfig
+    {
+        /// <summary>
+        /// Output only. Recommended time between poll requests.
+        /// A duration in seconds with up to nine fractional digits, ending with 's'. Example: "3.5s".
+        /// </summary>
+        public string pollInterval { get; set; }
+        /// <summary>
+        /// Output only. The length of time after which the client should stop polling.
+        /// A value of 0 indicates that the client should stop polling if it hasn't already.
+        /// A duration in seconds with up to nine fractional digits, ending with 's'. Example: "3.5s".
+        /// </summary>
+        public string timeoutIn { get; set; } // 
+    }
+
+    [Serializable]
+    public class GooglePhotoPickerSession
+    {
+        public string id { get; set; } = null;
+
+        [JsonProperty(PropertyName = "pickerUri")]
+        public string pickerHref { get; set; } = null;
 
         /// <summary>
-        /// Returns the media item matching the specified reference and removes it from the list.
+        /// Output only. Time when access to this session (and its picked media items) will expire.
+        /// A timestamp in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits. Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
         /// </summary>
-        /// <param name="href"></param>
-        /// <returns></returns>
-        protected GoogleMediaItem RemoveByHRef(string href)
-        {
-            if (String.IsNullOrEmpty(href) || mediaItems == null || !mediaItems.Any())
-                return null;
+        public string expireTime { get; set; } = null;
 
-            List<GoogleMediaItem> lst = new List<GoogleMediaItem>(mediaItems);
+        /// <summary>
+        /// The recommended configuration that applications should use while polling sessions.get.
+        /// This field is only populated if media items have not yet been picked for this session(i.e., mediaItemsSet is false).
+        /// </summary>
+        public GooglePhotoPollingConfig pollingConfig { get; set; } = null;
 
-            GoogleMediaItem item = lst.Find(mi => mi.productUrl.CompareOrdinal(href) == 0);
-            if (item != null)
-            {
-                lst.Remove(item);
-                mediaItems = lst;
-            }
-            return item;
-        }
-
-        public MFBPostedFile ImportImage(string href)
-        {
-            GoogleMediaItem item = RemoveByHRef(href);
-            if (item == null)
-                return null;
-
-            Uri uri = new Uri(String.Format(CultureInfo.InvariantCulture, "{0}={1}", item.baseUrl, (item.mimeType.StartsWith("image/", StringComparison.CurrentCultureIgnoreCase)) ? "d" : "dv"));
-
-            return MFBPostedFile.PostedFileFromURL(uri, item.filename, item.mimeType);
-        }
+        /// <summary>
+        /// Output only. If set to true, media items have been picked for this session and your application can request the list of picked media items via mediaItems.list
+        /// </summary>
+        public bool mediaItemsSet { get; set; } = false;
     }
 
     public class GooglePhoto : GoogleOAuthBase
     {
-        public const string szParamGPhotoAuth = "gPhotoOAuth";
-        public const string PrefKeyAuthToken = "googlePhotoAuthToken";
-        private static readonly string[] _gDriveScopes = new string[] { "https://www.googleapis.com/auth/photoslibrary.readonly" };
+        public const string szParamGPhotoAuth = "gPhotoOAuthNew";
+        public const string PrefKeyAuthToken = "googlePhotoAuthTokenNew";
+        public const string ObsoletePrefKeyAuthToken = "googlePhotoAuthToken";
+        private static readonly string[] _gDriveScopes = new string[] { "https://www.googleapis.com/auth/photospicker.mediaitems.readonly" };
 
-        public GooglePhoto(Profile pf = null) : base("GoogleDriveAccessID", "GoogleDriveClientSecret", "https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent", "https://www.googleapis.com/oauth2/v4/token", _gDriveScopes)
+        public GooglePhoto(Profile pf = null) : base("GoogleDriveAccessID", "GoogleDriveClientSecret", "https://accounts.google.com/o/oauth2/v2/auth?prompt=consent", "https://www.googleapis.com/oauth2/v4/token", _gDriveScopes)
         {
             AuthParam = szParamGPhotoAuth;
             CurrentUser = pf;
-            if (pf != null)
-            {
-                string szAuthJSon = pf?.GetPreferenceForKey<string>(PrefKeyAuthToken, null);
-                if (!String.IsNullOrWhiteSpace(szAuthJSon))
-                    AuthState = JsonConvert.DeserializeObject<AuthorizationState>(szAuthJSon);
-            }
+            AuthState = pf?.GetPreferenceForKey<AuthorizationState>(PrefKeyAuthToken);
         }
 
         public GooglePhoto(Profile pf, IAuthorizationState authstate) : this(pf)
@@ -1612,64 +1670,45 @@ namespace MyFlightbook.CloudStorage
             AuthState = authstate;
         }
 
-        public async Task<string> GetImagesForDate(DateTime dt, bool fIncludeVideos, string nextPageToken)
+        public async Task<dynamic> GetSession()
         {
             string szResult = string.Empty;
             try
             {
                 if (await RefreshAccessToken().ConfigureAwait(false) && CurrentUser != null)
-                    CurrentUser.SetPreferenceForKey(GooglePhoto.PrefKeyAuthToken, JsonConvert.SerializeObject(AuthState));
+                    CurrentUser.SetPreferenceForKey(PrefKeyAuthToken, AuthState);
             }
             catch (DotNetOpenAuth.Messaging.ProtocolException)
             {
-                return string.Empty;
+                return null;
             }
 
-            GoogleImageRequest googleImageRequest = new GoogleImageRequest() { filters = new GoogleImageFilter() { dateFilter = new GoogleDateFilter(dt) }, pageToken = nextPageToken };
-            if (!fIncludeVideos)
-                googleImageRequest.filters.mediaTypeFilter = new GoogleMediaTypeFilter() { mediaTypes = new string[] { GoogleMediaType.PHOTO.ToString() } };
+            GooglePhotoPickerSession sess = new GooglePhotoPickerSession();
 
-            string imgReqJSON = JsonConvert.SerializeObject(googleImageRequest);
-
-            using (StringContent sc = new StringContent(imgReqJSON, System.Text.Encoding.UTF8))
+            using (StringContent sc = new StringContent(JsonConvert.SerializeObject(sess), System.Text.Encoding.UTF8))
             {
                 sc.Headers.ContentType = new MediaTypeHeaderValue("application/json") { CharSet = "UTF-8" };
-
-                Dictionary<string, string> dHeaders = new Dictionary<string, string>()
+                return await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri("https://photospicker.googleapis.com/v1/sessions"), AuthState.AccessToken, HttpMethod.Post, sc, (response) =>
+                {
+                    try
                     {
-                        {"Accept", "application/json" },
-                        { "referer", String.Format(CultureInfo.InvariantCulture, "https://{0}", Branding.CurrentBrand.HostName) }
-                    };
-
-                return (string)await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri(String.Format(CultureInfo.InvariantCulture, "https://photoslibrary.googleapis.com/v1/mediaItems:search?key={0}", MyFlightbook.SocialMedia.GooglePlusConstants.MapsKey)),
-                    AuthState.AccessToken, HttpMethod.Post, sc, (response) =>
+                        szResult = response.Content.ReadAsStringAsync().Result;
+                        response.EnsureSuccessStatusCode();
+                        GooglePhotoPickerSession gpsess = JsonConvert.DeserializeObject<GooglePhotoPickerSession>(szResult);
+                        return new { sess = gpsess, token = AuthState.AccessToken };
+                    }
+                    catch (HttpRequestException ex)
                     {
-                        try
-                        {
-                            szResult = response.Content.ReadAsStringAsync().Result;
-                            response.EnsureSuccessStatusCode();
-                            return szResult;
-                        }
-                        catch (HttpRequestException ex)
-                        {
-                            if (response == null)
-                                throw new MyFlightbookException("Unknown error in GetImagesForDate", ex);
+                        if (response == null)
+                            throw new MyFlightbookException("Unknown error in GetSession", ex);
 
-                            Dictionary<string, GoogleDriveError> d = String.IsNullOrEmpty(szResult) ? null : JsonConvert.DeserializeObject<Dictionary<string, GoogleDriveError>>(szResult);
-                            GoogleDriveError gde = (d == null || !d.TryGetValue("error", out GoogleDriveError value)) ? null : value;
+                        Dictionary<string, GoogleDriveError> d = String.IsNullOrEmpty(szResult) ? null : JsonConvert.DeserializeObject<Dictionary<string, GoogleDriveError>>(szResult);
+                        GoogleDriveError gde = (d == null || !d.TryGetValue("error", out GoogleDriveError value)) ? null : value;
 
-                            throw new MyFlightbookException(response.ReasonPhrase + " " + (szResult ?? string.Empty));
-                        }
-                    }, dHeaders);
+                        throw new MyFlightbookException(response.ReasonPhrase + " " + (szResult ?? string.Empty));
+                    }
+                });
             }
-        }
-
-        public async static Task<GoogleMediaResponse> AppendImagesForDate(Profile pf, DateTime dt, bool fCanDoVideo, GoogleMediaResponse priorResponse)
-        {
-            string szResult = await new GooglePhoto(pf).GetImagesForDate(dt, fCanDoVideo, priorResponse?.nextPageToken).ConfigureAwait(false);
-            GoogleMediaResponse result = JsonConvert.DeserializeObject<GoogleMediaResponse>(szResult);
-
-            return (priorResponse == null) ? result : priorResponse.AddResponse(result);
         }
     }
     #endregion

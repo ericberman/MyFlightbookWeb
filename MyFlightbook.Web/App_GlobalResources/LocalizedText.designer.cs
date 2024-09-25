@@ -4071,6 +4071,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You previously gave %APP_NAME% access to your Google Photos.  Google has updated how this works, however, and no longer supports the method that you authorized.  Please re-authorize if you wish to continue to pull images/videos from Google Photos into your flights..
+        /// </summary>
+        internal static string PrefSharingGooglePhotosReAuth {
+            get {
+                return ResourceManager.GetString("PrefSharingGooglePhotosReAuth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sharing.
         /// </summary>
         internal static string PrefSharingHeader {

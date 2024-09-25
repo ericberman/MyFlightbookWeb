@@ -1553,7 +1553,6 @@
     <Content Include="Areas\mvc\Views\FlightEdit\_flightlint.cshtml" />
     <Content Include="Areas\mvc\Views\FlightEdit\_editFlightBody.cshtml" />
     <Content Include="Areas\mvc\Views\FlightEdit\_videoRefs.cshtml" />
-    <Content Include="Areas\mvc\Views\Image\_googlePhoto.cshtml" />
     <Content Include="Areas\mvc\Views\MFBTemplate\_dateEdit.cshtml" />
     <Content Include="Areas\mvc\Views\FlightEdit\_pendingFlightTable.cshtml" />
     <Content Include="Areas\mvc\Views\Print\_printPrefsSections.cshtml" />

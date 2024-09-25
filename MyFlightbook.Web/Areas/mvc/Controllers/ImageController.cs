@@ -1,13 +1,10 @@
-﻿using MyFlightbook.CloudStorage;
-using MyFlightbook.Clubs;
+﻿using MyFlightbook.Clubs;
 using MyFlightbook.Image;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 using System.Web.Mvc;
 
 /******************************************************
@@ -104,31 +101,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     il.Refresh(fIncludeDocs);
                 }
                 return ImageListDisplay(il, altText, fCanDelete, fCanEdit, fCanMakeDefault, zoomLinkType, fIsDefault, confirmText = "", defaultImage, onMakeDefault, onDelete, onAnnotate);
-            });
-        }
-
-        [Authorize]
-        [HttpPost]
-        public Task<ActionResult> GetGooglePhotos(string date, string dtLast, string lastResponseJSON)
-        {
-            return SafeOp(async () =>
-            {
-                Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
-                if (!pf.PreferenceExists(GooglePhoto.PrefKeyAuthToken))
-                    throw new UnauthorizedAccessException();
-
-                if (DateTime.TryParse(date, out DateTime dt))
-                {
-                    GoogleMediaResponse gmr = (date.CompareOrdinal(dtLast ?? string.Empty) != 0 || string.IsNullOrEmpty(lastResponseJSON)) ? new GoogleMediaResponse() : JsonConvert.DeserializeObject<GoogleMediaResponse>(lastResponseJSON);
-
-                    bool fCanDoVideo = Payments.EarnedGratuity.UserQualifies(User.Identity.Name, Payments.Gratuity.GratuityTypes.Videos);
-                    gmr = await GooglePhoto.AppendImagesForDate(pf, dt, fCanDoVideo, gmr);
-                    ViewBag.gmr = gmr;
-                    ViewBag.date = date;
-                    return PartialView("_googlePhoto");
-                }
-                else
-                    throw new InvalidOperationException("\"" + date + "\" is not a valid date");
             });
         }
         #endregion

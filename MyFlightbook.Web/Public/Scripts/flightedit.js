@@ -143,42 +143,61 @@ function updateFlightImage(sender, imageClass, key, thumbnail, newComment) {
     });
 }
 
-function addGoogleItem(sender, idx) {
-    var f = $("#frmEditFlight");
-    if (f.valid()) {
-        $("#hdnGPhotoClickedItem").val(idx);
-        updatePropertyTuples(-1);
-        $.ajax({
-            url: "/logbook/mvc/flightedit/AddGooglePhoto",
-            type: "POST", data: new FormData(f[0]), dataType: "html", contentType: false, processData: false,
-            error: function (xhr, status, error) { window.alert(xhr.responseText); },
-            success: function (r) {
-                $(sender).parent().parent().parent().hide();
-                var photoResult = $("#divGooglePhotoResult");
-                photoResult.detach();
-                $("#pnlFlightEditorBody").html(r);
-                $("#divGooglePhotoResult").append(photoResult);
-            }
-        });
-    }
+function getGooglePhotoNew() {
+    $("#divGooglePhotoResult").text("");
+    $("#gPhotoPrg").show();
+    var params = {};
+    $.ajax({
+        url: "/logbook/mvc/oAuth/GooglePhotoPickerSession",
+        type: "POST", data: JSON.stringify(params), dataType: "json", contentType: "application/json",
+        error: function (xhr) {
+            window.alert(xhr.responseText);
+            $("#gPhotoPrg").hide();
+        },
+        success: function (r) {
+            window.open(r.sess.pickerHref, "_blank");
+            setTimeout(function () { pollGS(r.sess, r.token); }, googleTimeToMS(r.sess.pollingConfig.pollInterval));
+        }
+    });
 }
 
-function getGooglePhoto(date, lastResponse) {
-    var lastDate = $("#hdnGPhotoLastDate");
-    var params = {
-        date: date,
-        dtLast: lastDate.val(),
-        lastResponseJSON: lastResponse
-    };
-    lastDate.val(date);
-    $("#imgGPhotoProg").show();
+function googleTimeToMS(s) {
+    return (s == "") ? 3000 : parseInt(s.slice(0, -1)) * 1000;
+}
+
+function pollGS(sess, token) {
     $.ajax({
-        url: "/logbook/mvc/Image/GetGooglePhotos",
-        type: "POST", data: JSON.stringify(params), dataType: "html", contentType: "application/json",
-        error: function (xhr, status, error) { window.alert(xhr.responseText); },
-        complete: function () { $("#imgGPhotoProg").hide(); },
-        success: function (r) {
-            $("#divGooglePhotoResult").html(r);
+        url: "https://photospicker.googleapis.com/v1/sessions/" + sess.id,
+        beforeSend: function (xhr) { xhr.setRequestHeader('Authorization', 'Bearer ' + token); },
+        type: "GET", contentType: "text",
+        error: function (xhr, a, b) { $("#gPhotoPrg").hide(); },
+        success: function (newsession) {
+            if (newsession.mediaItemsSet) {
+                const lstTarget = new URL("https://photospicker.googleapis.com/v1/mediaItems");
+                lstTarget.searchParams.append("sessionId", newsession.id);
+                lstTarget.searchParams.append("pageSize", 10);
+
+                $.ajax({
+                    url: lstTarget,
+                    type: "GET", contentType: "text",
+                    beforeSend: function (xhr) { xhr.setRequestHeader('Authorization', 'Bearer ' + token); },
+                    error: function (xhr, a, b) { window.alert(xhr.responseText); $("#gPhotoPrg").hide(); },
+                    success: function (items) {
+                        $("#hdnGPhotoLastResponse").val(JSON.stringify(items));
+                        var f = $("#frmEditFlight");
+                        $.ajax({
+                            url: '/logbook/mvc/flightedit/AddGooglePhotosNew',
+                            type: "POST", data: new FormData(f[0]), dataType: "html", contentType: false, processData: false,
+                            error: function (xhr) { $("#divGooglePhotoResult").text(xhr.responseText); },
+                            success: function (r) {
+                                $("#pnlFlightEditorBody").html(r);
+                            }
+                        });
+                    }
+                });
+            } else {
+                setTimeout(function () { pollGS(newsession, token); }, googleTimeToMS(newsession.pollingConfig.pollInterval));
+            }
         }
     });
 }

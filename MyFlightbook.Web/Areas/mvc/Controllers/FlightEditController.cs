@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
 
@@ -208,9 +209,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public ActionResult AddGooglePhoto()
+        public async Task<ActionResult> AddGooglePhotosNew()
         {
-            return SafeOp(() =>
+            return await SafeOp(async () =>
             {
                 LogbookEntry le = LogbookEntryFromForm();
 
@@ -218,15 +219,13 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (!le.IsNewFlight && String.IsNullOrEmpty(le.FlightData))
                     le.FlightData = new LogbookEntry(le.FlightID, le.User, LogbookEntryCore.LoadTelemetryOption.LoadAll).FlightData;
 
-                string szKey = "googlePhoto_" + DateTime.Now.Ticks.ToString(CultureInfo.InvariantCulture);
-
-                MFBPendingImage pi = MFBPendingImage.FromGooglePhoto(le.FlightData, Convert.ToInt32(Request["gPhotoClickIndex"], CultureInfo.InvariantCulture), Request["gmrJSON"], szKey);
-
-                if (le.IsNewFlight)
-                    Session[szKey] = pi;
-                else
-                    pi?.Commit(MFBImageInfoBase.ImageClass.Flight, le.FlightID.ToString(CultureInfo.InvariantCulture));
-
+                await MFBPendingImage.ProcessSelectedPhotosResult(User.Identity.Name, Request["gmrJSON"], le.FlightData, (pi, szKey) =>
+                {
+                    if (le.IsNewFlight)
+                        Session[szKey] = pi;
+                    else
+                        pi?.Commit(MFBImageInfoBase.ImageClass.Flight, le.FlightID.ToString(CultureInfo.InvariantCulture));
+                });
                 le.PopulateImages();
 
                 Profile pfTarget = MyFlightbook.Profile.GetUser(Request["szTargetUser"]);

@@ -15,6 +15,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Mvc;
 
 /******************************************************
@@ -175,34 +176,50 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         #region Google Photos
         [Authorize]
-        public ActionResult AuthorizeGPhoto()
-        {
-            new GooglePhoto().Authorize(String.Format(CultureInfo.InvariantCulture, "~/mvc/oAuth/GooglePhotoRedir?{0}=1", GooglePhoto.szParamGPhotoAuth).ToAbsoluteURL(Request));
-            return new EmptyResult();
-        }
-
-        [Authorize]
-        public ActionResult DeAuthorizeGPhoto()
-        {
-            MyFlightbook.Profile.GetUser(User.Identity.Name).SetPreferenceForKey(GooglePhoto.PrefKeyAuthToken, null, true);
-            return Redirect("~/mvc/prefs?pane=social");
-        }
-
-        [Authorize]
         public ActionResult GooglePhotoRedir()
         {
             string szErr = util.GetStringParam(Request, "error");
             if (String.IsNullOrEmpty(szErr))
             {
                 IAuthorizationState token = new GooglePhoto().ConvertToken(Request);
-                string szTokenJSON = JsonConvert.SerializeObject(token);
-                MyFlightbook.Profile.GetUser(User.Identity.Name).SetPreferenceForKey(GooglePhoto.PrefKeyAuthToken, szTokenJSON);
+
+                // Remove old token if we successfully converted the new one.
+                Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+                if (pf.PreferenceExists(GooglePhoto.ObsoletePrefKeyAuthToken))
+                    pf.SetPreferenceForKey(GooglePhoto.ObsoletePrefKeyAuthToken, null, true);
+
+                pf.SetPreferenceForKey(GooglePhoto.PrefKeyAuthToken, token);
             }
             var nvc = HttpUtility.ParseQueryString(string.Empty);
             nvc["pane"] = "social";
             if (!String.IsNullOrEmpty(szErr))
                 nvc["oauthErr"] = szErr;
             return Redirect(String.Format(CultureInfo.InvariantCulture, "~/mvc/prefs?{0}", nvc.ToString()));
+        }
+
+        [Authorize]
+        public ActionResult AuthorizeGPhotoNew()
+        {
+            new GooglePhoto().Authorize(String.Format(CultureInfo.InvariantCulture, "~/mvc/oAuth/GooglePhotoRedir?{0}=1", GooglePhoto.szParamGPhotoAuth).ToAbsoluteURL(Request));
+            return new EmptyResult();
+        }
+
+        [Authorize]
+        public ActionResult DeAuthorizeGPhotoNew()
+        {
+            MyFlightbook.Profile.GetUser(User.Identity.Name).SetPreferenceForKey(GooglePhoto.PrefKeyAuthToken, null, true);
+            return Redirect("~/mvc/prefs?pane=social");
+        }
+
+        [Authorize]
+        public async Task<ActionResult> GooglePhotoPickerSession()
+        {
+            return await SafeOp(async () =>
+            {
+                Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+                GooglePhoto gpn = new GooglePhoto(pf);
+                return Json(await gpn.GetSession());
+            });
         }
         #endregion
 
