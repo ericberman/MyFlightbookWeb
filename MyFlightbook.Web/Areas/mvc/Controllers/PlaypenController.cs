@@ -431,6 +431,14 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         #endregion
 
+        #region Image Debug
+        [Authorize]
+        public ActionResult ImageDebug()
+        {
+            return View("imageDebug");
+        }
+        #endregion
+
         // GET: mvc/Playpen
         public ActionResult Index()
         {

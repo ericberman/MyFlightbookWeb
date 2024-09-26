@@ -1,0 +1,32 @@
+﻿@{
+    ViewBag.defaultTab = tabID.tabLogbook;
+    ViewBag.Title = "Debug Images";
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript" src="@("~/Public/Scripts/ajaxUpload.js?v=9".ToAbsolute())"></script>
+<script type="text/javascript">
+    $(() => {
+        ajaxFileUpload($("#uploadFile"), {
+            uploadURL: "@Url.Action("ImageDebug", "Image")",
+            allowedTypes: "@MyFlightbook.Image.FileExtensions.AllowedExtensionsForTypes(true, false, false)",
+            dragTargetClass: "fileDragTarget",
+            additionalParams: [],
+            maxFiles: 10,
+            onFileUploaded: function (status, response) {
+                $(".fileInQueueContainer").hide();
+                $(response).appendTo($("#fileResults"));
+            },
+            onErr: function (err) { $("#lblUploadErr").text(err); },
+            promptID: "divDropImages",
+            errTooManyFiles: "@Resources.LocalizedText.fileUploadTooManyFiles",
+            errDisallowedFileType: "@Resources.LocalizedText.fileUploadInvalidType",
+            abortPrompt: "@Resources.LocalizedText.fileUploadAbort"
+        });
+    });
+</script>
+<div id="uploadFile"></div>
+<div id="fileResults"></div>
+<div id="divDropImages">
+    <div>Drop images here</div>
+    <div><img src="@("~/images/camera.png".ToAbsolute())" /></div>
+</div>

@@ -1,10 +1,13 @@
-﻿using MyFlightbook.Clubs;
+﻿using ImageMagick;
+using MyFlightbook.Clubs;
 using MyFlightbook.Image;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Text;
+using System.Web;
 using System.Web.Mvc;
 
 /******************************************************
@@ -101,6 +104,72 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     il.Refresh(fIncludeDocs);
                 }
                 return ImageListDisplay(il, altText, fCanDelete, fCanEdit, fCanMakeDefault, zoomLinkType, fIsDefault, confirmText = "", defaultImage, onMakeDefault, onDelete, onAnnotate);
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult ImageDebug()
+        {
+            return SafeOp(() =>
+            {
+                if (Request.Files.Count == 0)
+                    throw new InvalidOperationException("Invalid Image");
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < Request.Files.Count; i++)
+                {
+                    HttpPostedFileBase file = Request.Files[i];
+                    sb.AppendFormat(CultureInfo.InvariantCulture, "<hr /><div style='font-weight: bold;'>File: {0}</div>", file.FileName);
+                    try
+                    {
+                        using (IMagickImage image = new MagickImage(file.InputStream))
+                        {
+                            IExifProfile exif = image.GetExifProfile();
+
+                            if (exif == null)
+                                continue;
+
+                            // Write all values to the console
+                            foreach (IExifValue value in exif.Values)
+                            {
+                                if (value.IsArray)
+                                {
+                                    List<string> lst = new List<string>();
+                                    object o = value.GetValue();
+
+                                    if (o is byte[] rgbyte)
+                                    {
+                                        foreach (byte b in rgbyte)
+                                            lst.Add(b.ToString("X", CultureInfo.InvariantCulture));
+                                    }
+                                    else if (o is ushort[] rgshort)
+                                    {
+                                        foreach (ushort u in rgshort)
+                                            lst.Add(u.ToString(CultureInfo.InvariantCulture));
+                                    }
+                                    else if (o is Rational[] rgrational)
+                                    {
+                                        foreach (Rational r in rgrational)
+                                            lst.Add(r.ToString(CultureInfo.InvariantCulture));
+                                    }
+                                    else
+                                        lst.Add(o.ToString());
+
+                                    sb.AppendFormat(CultureInfo.CurrentCulture, "<div>{0}({1}): [{2}]</div>", value.Tag, value.DataType, String.Join(", ", lst));
+
+                                }
+                                else
+                                    sb.AppendFormat(CultureInfo.CurrentCulture, "<div>{0}({1}): {2}</div>", value.Tag, value.DataType, value.ToString());
+                            }
+                        }
+                    }
+                    catch (MagickException ex)
+                    {
+                        sb.AppendFormat(CultureInfo.InvariantCulture, "<div class='error'>{0}</div>", ex.Message);
+                    }
+                }
+
+                return Content(sb.ToString());
             });
         }
         #endregion
