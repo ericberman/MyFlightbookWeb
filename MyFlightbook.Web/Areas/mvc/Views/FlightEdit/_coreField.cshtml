@@ -1,4 +1,4 @@
 ﻿<div class="@ViewBag.cssClass">
     <div class="itemlabel">@ViewBag.label</div>
-    <div class="itemdata">@{ Html.RenderAction("RenderDecimalField", "MFBTemplate", new { mode = ViewBag.fHHMM ? EditMode.HHMMFormat : EditMode.Decimal, id = ViewBag.id, name = ViewBag.name, value = ViewBag.value, cfd = ViewBag.cfd }); }</div>
+    <div class="itemdata">@{ Html.RenderAction("RenderDecimalField", "MFBTemplate", new { mode = ViewBag.fHHMM ? EditMode.HHMMFormat : EditMode.Decimal, id = ViewBag.id, name = ViewBag.name, value = ViewBag.value, cfd = String.IsNullOrEmpty(ViewBag.xFillSource) ? null : new CrossFillDescriptor(Resources.LocalizedText.CrossfillPrompt, "getTotalFillFunc('fieldTotal')") }); }</div>
 </div>

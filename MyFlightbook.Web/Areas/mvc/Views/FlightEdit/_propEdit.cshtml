@@ -4,7 +4,7 @@
     string tipID = String.Format(CultureInfo.InvariantCulture, "cptTip{0}", fp.PropTypeID);
     string propValID = String.Format(CultureInfo.InvariantCulture, "pv{0}", fp.PropTypeID);
     bool fHHMM = ViewBag.fHHMM;
-    CrossFillDescriptor cfd = ViewBag.xfillDescriptor;
+    CrossFillDescriptor cfd = null;
     TimeZoneInfo timeZone = ViewBag.timeZone;
     string propTitle = fp.PropertyType.Title;
     string propTT = string.Empty;
@@ -21,6 +21,36 @@
         {
             propTT = timeZone.DisplayName;
             description = description.Replace("(UTC)", timeZone.DisplayName);
+        }
+    }
+    else if (fp.PropertyType.Type == CFPPropertyType.cfpInteger)
+    {
+        if (fp.PropertyType.IsLanding || fp.PropertyType.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropGliderTow)
+        {
+            cfd = new CrossFillDescriptor(Resources.LocalizedText.CrossfillPromptLandings, "getTotalFillFunc('fieldLandings')");
+        }
+        else if (fp.PropertyType.IsApproach)
+        {
+            cfd = new CrossFillDescriptor(Resources.LocalizedText.CrossfillPromptApproaches, "getTotalFillFunc('fieldApproaches')");
+        }
+    }
+    else if (fp.PropertyType.Type == CFPPropertyType.cfpDecimal)
+    {
+        if (fp.PropertyType.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTachStart)
+        {
+            cfd = new CrossFillDescriptor(Resources.LogbookEntry.TachCrossfillTip, String.Format(CultureInfo.InvariantCulture, "getTachFill(currentlySelectedAircraft, '{0}')", "~/Member/Ajax.asmx".ToAbsolute()));
+        }
+        else if (fp.PropertyType.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTaxiTime)
+        {
+            cfd = new CrossFillDescriptor(Resources.LogbookEntry.TaxiCrossFillTip, String.Format(CultureInfo.InvariantCulture, "getTaxiFill('{0}')", "~/Member/Ajax.asmx".ToAbsolute()));
+        }
+        else if (fp.PropertyType.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropAirborneTime)
+        {
+            cfd = new CrossFillDescriptor(Resources.LogbookEntry.AirborneCrossFillTip, String.Format(CultureInfo.InvariantCulture, "getAirborneFill('{0}')", "~/Member/Ajax.asmx".ToAbsolute()));
+        }
+        else if (!fp.PropertyType.IsBasicDecimal)
+        {
+            cfd = new CrossFillDescriptor(Resources.LocalizedText.CrossfillPrompt, "getTotalFillFunc('fieldTotal')");
         }
     }
 

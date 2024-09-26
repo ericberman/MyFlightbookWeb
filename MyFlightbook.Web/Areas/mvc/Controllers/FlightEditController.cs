@@ -190,19 +190,15 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (Request.Files.Count == 0)
                     throw new InvalidOperationException("No file uploaded");
 
-                MFBPostedFile pf = new MFBPostedFile(Request.Files[0]);
-                string szID = String.Format(CultureInfo.InvariantCulture, "{0}-pendingImage-{1}-{2}", MFBImageInfoBase.ImageClass.Flight.ToString(), (pf.FileName ?? string.Empty).Replace(".", "_"), pf.GetHashCode());
-                MFBPendingImage pi = new MFBPendingImage(pf, szID);
-
-                if (!LogbookEntryCore.ValidateFileType(MFBImageInfo.ImageTypeFromFile(pf), fCanDoVideo))
-                    return Content(string.Empty);
-
-                if (szKey > 0)
-                    pi?.Commit(MFBImageInfoBase.ImageClass.Flight, szKey.ToString(CultureInfo.InvariantCulture));
-                else if (pi?.IsValid ?? false)
-                    Session[szID] = pi;
-
-                return Content(pi.URLThumbnail.ToAbsolute());
+                return Content(MFBPendingImage.ProcessUploadedFile(Request.Files[0], fCanDoVideo, MFBImageInfoBase.ImageClass.Flight,
+                    (imgType) => { return LogbookEntryCore.ValidateFileType(imgType, fCanDoVideo); },
+                    (pi, szID) =>
+                    {
+                        if (szKey > 0)
+                            pi?.Commit(MFBImageInfoBase.ImageClass.Flight, szKey.ToString(CultureInfo.InvariantCulture));
+                        else if (pi?.IsValid ?? false)
+                            Session[szID] = pi;
+                    }));
             });
         }
 
@@ -697,26 +693,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.fHHMM = fHHMM;
             ViewBag.timeZone = timeZone;
 
-            // Add any cross-fill:
-
-            if (fp.PropertyType.Type == CFPPropertyType.cfpInteger)
-            {
-                if (fp.PropertyType.IsLanding || fp.PropertyType.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropGliderTow)
-                    ViewBag.xfillDescriptor = new CrossFillDescriptor(Resources.LocalizedText.CrossfillPromptLandings, "getTotalFillFunc('fieldLandings')");
-                else if (fp.PropertyType.IsApproach)
-                    ViewBag.xfillDescriptor = new CrossFillDescriptor(Resources.LocalizedText.CrossfillPromptApproaches, "getTotalFillFunc('fieldApproaches')");
-            }
-            else if (fp.PropertyType.Type == CFPPropertyType.cfpDecimal)
-            {
-                if (fp.PropertyType.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTachStart)
-                    ViewBag.xfillDescriptor = new CrossFillDescriptor(Resources.LogbookEntry.TachCrossfillTip, String.Format(CultureInfo.InvariantCulture, "getTachFill(currentlySelectedAircraft, '{0}')", "~/Member/Ajax.asmx".ToAbsolute()));
-                else if (fp.PropertyType.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTaxiTime)
-                    ViewBag.xfillDescriptor = new CrossFillDescriptor(Resources.LogbookEntry.TaxiCrossFillTip, String.Format(CultureInfo.InvariantCulture, "getTaxiFill('{0}')", "~/Member/Ajax.asmx".ToAbsolute()));
-                else if (fp.PropertyType.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropAirborneTime)
-                    ViewBag.XFillDescriptor = new CrossFillDescriptor(Resources.LogbookEntry.AirborneCrossFillTip, String.Format(CultureInfo.InvariantCulture, "getAirborneFill('{0}')", "~/Member/Ajax.asmx".ToAbsolute()));
-                else if (!fp.PropertyType.IsBasicDecimal)
-                    ViewBag.xfillDescriptor = new CrossFillDescriptor(Resources.LocalizedText.CrossfillPrompt, "getTotalFillFunc('fieldTotal')");
-            }
             ViewBag.hideByDefault = fHidden;
 
             return PartialView("_propEdit");
@@ -730,7 +706,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.value = value;
             ViewBag.cssClass = cssClass;
             ViewBag.label = label;
-            ViewBag.cfd = String.IsNullOrEmpty(xFillSource) ? null : new CrossFillDescriptor(Resources.LocalizedText.CrossfillPrompt, "getTotalFillFunc('fieldTotal')");
+            ViewBag.xFillSource = xFillSource;
             ViewBag.fHHMM = fHHMM;
             return PartialView("_coreField");
         }
