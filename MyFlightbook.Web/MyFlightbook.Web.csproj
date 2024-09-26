@@ -1330,8 +1330,6 @@
     <Content Include="OAuth\oAuthToken.aspx" />
     <Content Include="PlayPen\Checklist.aspx" />
     <Content Include="PlayPen\DutyPeriodAnalyzer.aspx" />
-    <Content Include="PlayPen\iCalConvert.aspx" />
-    <Content Include="PlayPen\ImgDbg.aspx" />
     <Content Include="Private\SetupNotes.txt" />
     <Content Include="Public\AndroidImages\Android1.png" />
     <Content Include="Public\AndroidImages\Android2.png" />
@@ -1614,6 +1612,7 @@
     <Content Include="Areas\mvc\Views\Import\_importFlightsPreview.cshtml" />
     <Content Include="Areas\mvc\Views\Import\importResults.cshtml" />
     <Content Include="Areas\mvc\Views\Playpen\imageDebug.cshtml" />
+    <Content Include="Areas\mvc\Views\Playpen\iCalConvert.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -2431,20 +2430,6 @@
     </Compile>
     <Compile Include="PlayPen\DutyPeriodAnalyzer.aspx.designer.cs">
       <DependentUpon>DutyPeriodAnalyzer.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="PlayPen\iCalConvert.aspx.cs">
-      <DependentUpon>iCalConvert.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="PlayPen\iCalConvert.aspx.designer.cs">
-      <DependentUpon>iCalConvert.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="PlayPen\ImgDbg.aspx.cs">
-      <DependentUpon>ImgDbg.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="PlayPen\ImgDbg.aspx.designer.cs">
-      <DependentUpon>ImgDbg.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Public\authredir.aspx.cs">

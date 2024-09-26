@@ -1,0 +1,24 @@
+﻿@{
+    ViewBag.Title = "Convert CSV to Outlook Calendar";
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript">
+    $(() => {
+        defaultButtonForDiv('divMain', 'btnSubmit');
+    });
+</script>
+@using (Html.BeginForm("iCalConvert", "PlayPen", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div id="divMain">
+        <p>Gimme a CSV file:</p>
+        <input type="file" name="fuCSV" />
+        <p>Columns: Subject, Start Date, Start Time, End Date, End Time, Location</p>
+        <p>Provide a title for the calendar:</p>
+        @Html.AntiForgeryToken()
+        <input name="calTitle" type="text" required />
+        <p><button type="submit" id="btnUpload">Upload!</button></p>
+        <p class="error">@(ViewBag.error ?? string.Empty)</p>
+    </div>
+}
+
+

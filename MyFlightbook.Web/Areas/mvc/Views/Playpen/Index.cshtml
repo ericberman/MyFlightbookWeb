@@ -3,17 +3,23 @@
     ViewBag.defaultTab = tabID.tabUnknown;
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
 }
-    <p>Not everything makes the cut for functionality.  Sometimes there's a need for a quick-and-dirty tool, or a need for a testbed, or just a need for a place to try stuff out.</p>
-    <p>The playpen is where these things live.  These tools are NOT ready for "prime time", they lack fit-and-finish, they often don't have good error reporting, and so forth.  But they may be useful or interesting.  So they are offered here AS-IS.</p>
-    <ul>
-        <li><a style="font-weight:bold;" href="@VirtualPathUtility.ToAbsolute("~/PlayPen/Checklist.aspx")">Checklist</a> - Create interactive checklists for your aircraft.</li>
-        <li><a style="font-weight:bold;" href="@VirtualPathUtility.ToAbsolute("~/mvc/PlayPen/DayNight")">Day/Night</a> - See the angle of the sun (and thus sunset/night time) at various points around the world.</li>
-        <li><a style="font-weight:bold;" href="@VirtualPathUtility.ToAbsolute("~/PlayPen/iCalConvert.aspx")">iCal Convert</a> - Take a spreadsheet of appointments and create an iCal file (that you can load into Outlook).</li>
-        <li><a style="font-weight:bold;" href="@VirtualPathUtility.ToAbsolute("~/mvc/PlayPen/ImageDebug")">Image Debugger</a> - See metadata about images.</li>
-        <li><a style="font-weight:bold;" href="@VirtualPathUtility.ToAbsolute("~/mvc/PlayPen/MergeFlights")">Merge Flights</a> - Merge multiple flights into one.  USE WITH CARE - THIS ACTS ON YOUR LOGBOOK DATA!!!!</li>
-        <li><a style="font-weight:bold;" href="@VirtualPathUtility.ToAbsolute("~/mvc/Playpen/MergeTelemetry")">Merge Telemetry</a> - Merge multiple telemetry files into one.</li>
-        <li><a style="font-weight:bold;" href="@VirtualPathUtility.ToAbsolute("~/mvc/playpen/importfromtelemetry")">Bulk Create Flights from Telemetry</a> - Load multiple telemetry files and create pending flights from each one.</li>
-        <li><a style="font-weight:bold;" href="@VirtualPathUtility.ToAbsolute("~/mvc/playpen/ImportTelemetry")">Bulk Upload Telemetry</a> - Upload multiple telemetry files and match to existing flights.</li>
-        <li><a style="font-weight:bold;" href="@VirtualPathUtility.ToAbsolute("~/PlayPen/DutyPeriodAnalyzer.aspx")">Duty Period Analyzer</a> - view duty periods and do simple analysis.</li>
-        <li><a style="font-weight:bold;" href="@VirtualPathUtility.ToAbsolute("~/mvc/playpen/ClientTestBed")">oAuth Client Tester</a> - Tool for testing oAuth access to MyFlightbook; see the <a href="@VirtualPathUtility.ToAbsolute("~/Public/Developer.aspx")">Developer</a> page for more information.</li>
-    </ul>
+<style type="text/css">
+    ul.spacedBullets li {
+        margin-top: 4pt;
+        margin-bottom: 4pt;
+    }
+</style>
+<p>Not everything makes the cut for functionality.  Sometimes there's a need for a quick-and-dirty tool, or a need for a testbed, or just a need for a place to try stuff out.</p>
+<p>The playpen is where these things live.  These tools are NOT ready for "prime time", they lack fit-and-finish, they often don't have good error reporting, and so forth.  But they may be useful or interesting.  So they are offered here AS-IS.</p>
+<ul class="spacedBullets">
+    <li><a style="font-weight:bold;" href="@VirtualPathUtility.ToAbsolute("~/PlayPen/Checklist.aspx")">Checklist</a> - Create interactive checklists for your aircraft.</li>
+    <li><a style="font-weight:bold;" href="@VirtualPathUtility.ToAbsolute("~/mvc/PlayPen/DayNight")">Day/Night</a> - See the angle of the sun (and thus sunset/night time) at various points around the world.</li>
+    <li><a style="font-weight:bold;" href="@VirtualPathUtility.ToAbsolute("~/mvc/PlayPen/iCalConvert")">iCal Convert</a> - Take a spreadsheet of appointments and create an iCal file (that you can load into Outlook).</li>
+    <li><a style="font-weight:bold;" href="@VirtualPathUtility.ToAbsolute("~/mvc/PlayPen/ImageDebug")">Image Debugger</a> - See metadata about images.</li>
+    <li><a style="font-weight:bold;" href="@VirtualPathUtility.ToAbsolute("~/mvc/PlayPen/MergeFlights")">Merge Flights</a> - Merge multiple flights into one.  USE WITH CARE - THIS ACTS ON YOUR LOGBOOK DATA!!!!</li>
+    <li><a style="font-weight:bold;" href="@VirtualPathUtility.ToAbsolute("~/mvc/Playpen/MergeTelemetry")">Merge Telemetry</a> - Merge multiple telemetry files into one.</li>
+    <li><a style="font-weight:bold;" href="@VirtualPathUtility.ToAbsolute("~/mvc/playpen/importfromtelemetry")">Bulk Create Flights from Telemetry</a> - Load multiple telemetry files and create pending flights from each one.</li>
+    <li><a style="font-weight:bold;" href="@VirtualPathUtility.ToAbsolute("~/mvc/playpen/ImportTelemetry")">Bulk Upload Telemetry</a> - Upload multiple telemetry files and match to existing flights.</li>
+    <li><a style="font-weight:bold;" href="@VirtualPathUtility.ToAbsolute("~/PlayPen/DutyPeriodAnalyzer.aspx")">Duty Period Analyzer</a> - view duty periods and do simple analysis.</li>
+    <li><a style="font-weight:bold;" href="@VirtualPathUtility.ToAbsolute("~/mvc/playpen/ClientTestBed")">oAuth Client Tester</a> - Tool for testing oAuth access to MyFlightbook; see the <a href="@VirtualPathUtility.ToAbsolute("~/Public/Developer.aspx")">Developer</a> page for more information.</li>
+</ul>

@@ -2,6 +2,7 @@
 using Ical.Net.CalendarComponents;
 using Ical.Net.DataTypes;
 using Ical.Net.Serialization;
+using JouniHeikniemi.Tools.Text;
 using MyFlightbook.Clubs;
 using MyFlightbook.CSV;
 using MySql.Data.MySqlClient;
@@ -18,7 +19,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2023 MyFlightbook LLC
+ * Copyright (c) 2015-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1001,6 +1002,118 @@ namespace MyFlightbook.Schedule
 
             return Encoding.UTF8.GetBytes(s.SerializeToString(ic));
         }
+
+        /// <summary>
+        /// Reads a CSV Stream and creates a byte array of an iCal for that stream.
+        /// CSV Fields MUST be:
+        ///  * Subject
+        ///  * Start Date
+        ///  * Start Time
+        ///  * End Date
+        ///  * End Time
+        ///  * Location
+        /// </summary>
+        /// <param name="s">The stream for the CSV</param>
+        /// <returns></returns>
+        /// <exception cref="MyFlightbookException"></exception>
+        public static byte[] WriteICalFromCSVStream(Stream s)
+        {
+            try
+            {
+                if (s == null)
+                    throw new ArgumentNullException(nameof(s));
+
+                Ical.Net.Calendar ic = new Ical.Net.Calendar();
+                using (CSVReader cr = new CSVReader(s))
+                {
+                    string[] rgCols = cr.GetCSVLine(true);
+
+                    int iColSubject = -1;
+                    int iColStartDate = -1;
+                    int iColStartTime = -1;
+                    int iColEndDate = -1;
+                    int iColEndTime = -1;
+                    int iColLocation = -1;
+
+                    for (int i = 0; i < rgCols.Length; i++)
+                    {
+                        switch (rgCols[i])
+                        {
+                            case "Subject":
+                                iColSubject = i;
+                                break;
+                            case "Start Date":
+                                iColStartDate = i;
+                                break;
+                            case "Start Time":
+                                iColStartTime = i;
+                                break;
+                            case "End Date":
+                                iColEndDate = i;
+                                break;
+                            case "End Time":
+                                iColEndTime = i;
+                                break;
+                            case "Location":
+                                iColLocation = i;
+                                break;
+                        }
+                    }
+
+                    if (iColSubject < 0)
+                        throw new MyFlightbookException("No subject column found");
+                    if (iColStartDate < 0)
+                        throw new MyFlightbookException("No start date column found");
+                    if (iColStartTime < 0)
+                        throw new MyFlightbookException("No start time column found");
+                    if (iColEndDate < 0)
+                        throw new MyFlightbookException("No end date column found");
+                    if (iColEndTime < 0)
+                        throw new MyFlightbookException("No end time column found");
+                    if (iColLocation < 0)
+                        throw new MyFlightbookException("No location column found");
+
+                    int id = 0;
+                    while ((rgCols = cr.GetCSVLine()) != null)
+                    {
+                        if (String.IsNullOrEmpty(rgCols[iColSubject]))
+                            continue;
+
+                        CalendarEvent ev = new CalendarEvent()
+                        {
+                            Uid = id++.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                            IsAllDay = false,
+                            Description = rgCols[iColSubject],
+                            Summary = rgCols[iColSubject],
+                            Location = rgCols[iColLocation]
+                        };
+
+                        DateTime dtStart = Convert.ToDateTime(String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0} {1}", rgCols[iColStartDate], rgCols[iColStartTime]), System.Globalization.CultureInfo.CurrentCulture);
+                        DateTime dtEnd = Convert.ToDateTime(String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0} {1}", rgCols[iColEndDate], rgCols[iColEndTime]), System.Globalization.CultureInfo.CurrentCulture);
+                        ev.Start = new CalDateTime(dtStart, "Pacific Standard Time");
+                        ev.End = new CalDateTime(dtEnd, "Pacific Standard Time");
+
+                        Alarm a = new Alarm()
+                        {
+                            Action = AlarmAction.Display,
+                            Description = ev.Summary,
+                            Trigger = new Trigger() { DateTime = ev.Start.AddMinutes(-30) }
+                        };
+                        ev.Alarms.Add(a);
+                        ic.Events.Add(ev);
+
+                        ic.Calendar.Method = "PUBLISH";
+                    }
+
+                    return Encoding.UTF8.GetBytes((new CalendarSerializer()).SerializeToString(ic));
+                }
+            }
+            catch (Exception ex) when (ex is CSVReaderInvalidCSVException || ex is ArgumentNullException)
+            {
+                throw new MyFlightbookException("Error converting CSV to iCal: " + ex.Message, ex);
+            }
+        }
+
         #endregion
         public override string ToString()
         {

@@ -3,6 +3,7 @@ using MyFlightbook.Airports;
 using MyFlightbook.Geography;
 using MyFlightbook.Mapping;
 using MyFlightbook.OAuth;
+using MyFlightbook.Schedule;
 using MyFlightbook.SolarTools;
 using MyFlightbook.Telemetry;
 using OAuthAuthorizationServer.Code;
@@ -436,6 +437,31 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         public ActionResult ImageDebug()
         {
             return View("imageDebug");
+        }
+        #endregion
+
+        #region iCal Converter
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult iCalConvert(string calTitle, HttpPostedFileBase fuCSV)
+        {
+            try
+            {
+                return File(ScheduledEvent.WriteICalFromCSVStream(fuCSV?.InputStream), "text/calendar", String.Format(CultureInfo.InvariantCulture, "inline;filename={0}.ics", calTitle ?? string.Empty));
+            }
+            catch (MyFlightbookException ex)
+            {
+                ViewBag.error = ex.Message;
+                return View("iCalConvert");
+            }
+        }
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult iCalConvert()
+        {
+            return View("iCalConvert");
         }
         #endregion
 
