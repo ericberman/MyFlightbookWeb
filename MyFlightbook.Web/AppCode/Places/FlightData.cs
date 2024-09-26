@@ -2729,6 +2729,46 @@ ORDER BY f.idFlight DESC;");
             MatchedFlightDescription = Status = TelemetryFileName = string.Empty;
         }
 
+        /// <summary>
+        /// Matches a set of telemetry files to a set of flights for a user for bulk import.
+        /// </summary>
+        /// <param name="userName">The user name</param>
+        /// <param name="tz">the flights to use</param>
+        /// <param name="d">A dictionary mapping a filename to the data for that flight</param>
+        /// <returns>An enumerable of TelemetryMatchResults</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static IEnumerable<TelemetryMatchResult> MatchToFlights(string userName, string importTimeZone, IDictionary<string, string> d)
+        {
+            if (String.IsNullOrEmpty(userName))
+                throw new ArgumentNullException(nameof(userName));
+            if (d == null)
+                throw new ArgumentNullException(nameof(d));
+
+            TimeZoneInfo tz = TimeZoneInfo.FindSystemTimeZoneById(importTimeZone);
+            List<TelemetryMatchResult> lst = new List<TelemetryMatchResult>();
+            foreach (string fname in d.Keys)
+            {
+                TelemetryMatchResult tmr = new TelemetryMatchResult() { TelemetryFileName = fname };
+                if (tz != null)
+                    tmr.TimeZoneOffset = tz.BaseUtcOffset.TotalHours;
+
+                DateTime? dtFallback = null;
+                MatchCollection mc = RegexUtility.RegexYMDDate.Matches(fname);
+                if (mc != null && mc.Count > 0 && mc[0].Groups.Count > 0)
+                {
+                    if (DateTime.TryParse(mc[0].Groups[0].Value, out DateTime dt))
+                    {
+                        dtFallback = dt;
+                        tmr.TimeZoneOffset = 0; // do it all in local time.
+                    }
+                }
+
+                tmr.MatchToFlight(d[fname], userName, dtFallback);
+                lst.Add(tmr);
+            }
+            return lst;
+        }
+
         private static DateTime? ExtractDate(string szData, out LatLong ll)
         {
             ll = null;

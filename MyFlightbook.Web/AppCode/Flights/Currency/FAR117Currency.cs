@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 
 /******************************************************
  * 
@@ -419,6 +420,40 @@ namespace MyFlightbook.Currency
             IncludeAllFlights = includeAllFlights;
             m_edpCurrent = null;
             UseHHMM = useHHMM;
+        }
+
+        /// <summary>
+        /// Returns the set of duty periods over the preceding number of days for the specified user
+        /// </summary>
+        /// <param name="szUser">The user</param>
+        /// <param name="numDays">Number of days</param>
+        /// <returns>A list of effective duty periods</returns>
+        public static IEnumerable<EffectiveDutyPeriod> DutyPeriodsForPastDays(string szUser, int numDays, out string cutoffDate, out string totalFD, out string totalDuty, out string totalRest)
+        {
+            DutyPeriodExaminer dpe = new DutyPeriodExaminer(Profile.GetUser(szUser).UsesFAR117DutyTimeAllFlights);
+            DBHelper dbh = new DBHelper(FlightCurrency.CurrencyQuery(FlightCurrency.CurrencyQueryDirection.Descending));
+            dbh.ReadRows(
+                (comm) =>
+                {
+                    comm.Parameters.AddWithValue("UserName", szUser);
+                    comm.Parameters.AddWithValue("langID", Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName);
+                },
+                (dr) => { dpe.ExamineFlight(new ExaminerFlightRow(dr)); });
+
+            dpe.Finalize(0, 0);
+
+            TimeSpan ts = new TimeSpan(numDays, 0, 0, 0);
+            cutoffDate = DateTime.UtcNow.Subtract(ts).UTCDateFormatString(false);
+
+            IEnumerable<EffectiveDutyPeriod> effectiveDutyPeriods = dpe.EffectiveDutyPeriods;
+
+            decimal dutyTime = EffectiveDutyPeriod.DutyTimeSince(ts, effectiveDutyPeriods);
+            decimal flightdutyTime = EffectiveDutyPeriod.FlightDutyTimeSince(ts, effectiveDutyPeriods);
+            decimal rest = (decimal)((decimal)ts.TotalHours - dutyTime);
+            totalFD = String.Format(CultureInfo.CurrentCulture, "{0:#,##0.0}hrs ({1})", flightdutyTime, flightdutyTime.ToHHMM());
+            totalDuty = String.Format(CultureInfo.CurrentCulture, "{0:#,##0.0}hrs ({1})", dutyTime, dutyTime.ToHHMM());
+            totalRest = String.Format(CultureInfo.CurrentCulture, "{0:#,##0.0}hrs ({1})", rest, rest.ToHHMM());
+            return effectiveDutyPeriods;
         }
 
         /// <summary>

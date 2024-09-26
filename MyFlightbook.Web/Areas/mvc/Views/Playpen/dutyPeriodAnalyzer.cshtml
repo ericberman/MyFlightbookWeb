@@ -1,0 +1,69 @@
+﻿@using MyFlightbook.Currency
+@using System.Globalization
+@{
+    ViewBag.defaultTab = tabID.tabLogbook;
+    ViewBag.Title = "Analyze Duty Periods";
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript">
+    $(() => {
+        defaultButtonForDiv('divAnalyze', 'btnViewDutyPeriods');
+    });
+</script>
+<div id="divAnalyze">
+    @using (Html.BeginForm("DutyPeriodAnalyzer", "PlayPen", FormMethod.Post))
+    {
+        <p>
+            View duty stats since <input type="number" step="1" required min="1" value="@(ViewBag.numDays ?? 30)" id="decDayTimeSpan" name="timeSpan" /> days ago (Same UTC time as now)
+            @Html.AntiForgeryToken()
+            <button type="submit" id="btnViewDutyPeriods">Go</button>
+            <div class="error">@(ViewBag.error ?? string.Empty)</div>
+        </p>
+    }
+</div>
+@if (ViewBag.results != null)
+{
+    <table>
+        <tr><td>Current UTC Time:</td><td style="font-weight:bold">@DateTime.UtcNow.UTCDateFormatString()</td></tr>
+        <tr><td>Period start date/time: </td><td style="font-weight:bold">@ViewBag.cutoffDate</td></tr>
+        <tr><td>Total Flight Duty: </td><td style="font-weight:bold">@ViewBag.totalFD</td></tr>
+        <tr><td>Total Duty (non-rest): </td><td style="font-weight:bold">@ViewBag.totalDuty</td></tr>
+        <tr><td>Total Rest: </td><td style="font-weight:bold">@ViewBag.totalRest</td></tr>
+    </table>
+    <h2>All duty periods</h2>
+    if (ViewBag.results.Count > 0)
+    {
+        <table class="stickyHeaderTable stickyHeaderAlternate">
+            <thead>
+                <tr>
+                    <th class="gvhDefault gvhLeft">FDP Start</th>
+                    <th class="gvhDefault gvhLeft">FDP End</th>
+                    <th class="gvhDefault gvhLeft">Elapsed Flight duty</th>
+                    <th class="gvhDefault gvhLeft">Duty Start</th>
+                    <th class="gvhDefault gvhLeft">Duty End</th>
+                    <th class="gvhDefault gvhLeft">Non-rest Start</th>
+                    <th class="gvhDefault gvhLeft">Non-rest End</th>
+                    <th class="gvhDefault gvhLeft">Elapsed NonRest</th>
+                    <th class="gvhDefault gvhLeft">Rest since end of period</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (EffectiveDutyPeriod efp in ViewBag.results)
+                {
+
+                    <tr>
+                        <td>@efp.FlightDutyStart.UTCFormattedStringOrEmpty(false)</td>
+                        <td>@efp.FlightDutyEnd.UTCFormattedStringOrEmpty(false)</td>
+                        <td>@efp.ElapsedFlightDuty.ToString("#,##0.#", CultureInfo.CurrentCulture) (@(((decimal)efp.ElapsedFlightDuty).ToHHMM()))</td>
+                        <td>@(efp.AdditionalDutyStart.HasValue ? efp.AdditionalDutyStart.Value.ToString("yyyy-MM-dd HH:mm") : string.Empty)</td>
+                        <td>@(efp.AdditionalDutyEnd.HasValue ? efp.AdditionalDutyEnd.Value.ToString("yyyy-MM-dd HH:mm") : string.Empty)</td>
+                        <td>@efp.EffectiveDutyStart.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td>@efp.EffectiveDutyEnd.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td>@efp.NonRestTime.ToString("#,##0.#", CultureInfo.CurrentCulture) (@(((decimal)efp.NonRestTime).ToHHMM()))</td>
+                        <td>@efp.RestSince.ToString("#,##0.#", CultureInfo.CurrentCulture) (@(((decimal)efp.RestSince).ToHHMM()))</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}

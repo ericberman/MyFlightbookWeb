@@ -1,5 +1,6 @@
 ﻿using DotNetOpenAuth.OAuth2;
 using MyFlightbook.Airports;
+using MyFlightbook.Currency;
 using MyFlightbook.Geography;
 using MyFlightbook.Mapping;
 using MyFlightbook.OAuth;
@@ -14,7 +15,6 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -255,32 +255,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         public ActionResult ImportTelemetry(string importTimeZone = null)
         {
             if (importTimeZone != null && Request.HttpMethod == "POST" && Session[SessionKeyFiles] != null)
-            {
-                TimeZoneInfo tz = TimeZoneInfo.FindSystemTimeZoneById(importTimeZone);
-                List<TelemetryMatchResult> lst = new List<TelemetryMatchResult>();
-                Dictionary<string, string> d = (Dictionary<string, string>)Session[SessionKeyFiles];
-                foreach (string fname in d.Keys)
-                {
-                    TelemetryMatchResult tmr = new TelemetryMatchResult() { TelemetryFileName = fname };
-                    if (tz != null)
-                        tmr.TimeZoneOffset = tz.BaseUtcOffset.TotalHours;
-
-                    DateTime? dtFallback = null;
-                    MatchCollection mc = RegexUtility.RegexYMDDate.Matches(fname);
-                    if (mc != null && mc.Count > 0 && mc[0].Groups.Count > 0)
-                    {
-                        if (DateTime.TryParse(mc[0].Groups[0].Value, out DateTime dt))
-                        {
-                            dtFallback = dt;
-                            tmr.TimeZoneOffset = 0; // do it all in local time.
-                        }
-                    }
-
-                    tmr.MatchToFlight(d[fname], User.Identity.Name, dtFallback);
-                    lst.Add(tmr);
-                }
-                ViewBag.results = lst;
-            }
+                ViewBag.results = TelemetryMatchResult.MatchToFlights(User.Identity.Name, importTimeZone, (Dictionary<string, string>)Session[SessionKeyFiles]);
             Session[SessionKeyFiles] = null;  // clear this out regardless
             return View("bulkImportTelemetry");
         }
@@ -462,6 +437,28 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         public ActionResult iCalConvert()
         {
             return View("iCalConvert");
+        }
+        #endregion
+
+        #region Duty Period Analyzer
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DutyPeriodAnalyzer(int timeSpan)
+        {
+            ViewBag.results = DutyPeriodExaminer.DutyPeriodsForPastDays(User.Identity.Name, timeSpan, out string cutoffDate, out string totalFD, out string totalDuty, out string totalRest);
+            ViewBag.cutoffDate = cutoffDate;
+            ViewBag.totalFD = totalFD;
+            ViewBag.totalDuty = totalDuty;
+            ViewBag.totalRest = totalRest;
+            return View("dutyPeriodAnalyzer");
+        }
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult DutyPeriodAnalyzer()
+        {
+            return View("dutyPeriodAnalyzer");
         }
         #endregion
 
