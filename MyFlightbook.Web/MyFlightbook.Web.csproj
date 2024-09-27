@@ -543,7 +543,6 @@
     <Content Include="Controls\TwoFactorAuth.ascx" />
     <Content Include="Controls\AccountQuestions.ascx" />
     <Content Include="Controls\AircraftControls\SelectMake.ascx" />
-    <Content Include="Controls\ChecklistControls\ChecklistItem.ascx" />
     <Content Include="Controls\Expando.ascx" />
     <Content Include="Controls\GoogleAnalytics.ascx" />
     <Content Include="Controls\imageSlider.ascx" />
@@ -1328,8 +1327,6 @@
     <Content Include="Public\tmap\stylesheets\demo.css" />
     <Content Include="NavLinks.xml" />
     <Content Include="OAuth\oAuthToken.aspx" />
-    <Content Include="PlayPen\Checklist.aspx" />
-    <Content Include="PlayPen\DutyPeriodAnalyzer.aspx" />
     <Content Include="Private\SetupNotes.txt" />
     <Content Include="Public\AndroidImages\Android1.png" />
     <Content Include="Public\AndroidImages\Android2.png" />
@@ -1614,6 +1611,9 @@
     <Content Include="Areas\mvc\Views\Playpen\imageDebug.cshtml" />
     <Content Include="Areas\mvc\Views\Playpen\iCalConvert.cshtml" />
     <Content Include="Areas\mvc\Views\Playpen\dutyPeriodAnalyzer.cshtml" />
+    <Content Include="Areas\mvc\Views\Playpen\checklist.cshtml" />
+    <Content Include="Areas\mvc\Views\Playpen\_checklistContainerRow.cshtml" />
+    <Content Include="PlayPen\Web.config" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -2036,13 +2036,6 @@
     <Compile Include="Controls\AircraftControls\SelectMake.ascx.designer.cs">
       <DependentUpon>SelectMake.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ChecklistControls\ChecklistItem.ascx.cs">
-      <DependentUpon>ChecklistItem.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\ChecklistControls\ChecklistItem.ascx.designer.cs">
-      <DependentUpon>ChecklistItem.ascx</DependentUpon>
-    </Compile>
     <Compile Include="Controls\Expando.ascx.cs">
       <DependentUpon>Expando.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2418,20 +2411,6 @@
     <Compile Include="OAuth\oAuthToken.aspx.designer.cs">
       <DependentUpon>oAuthToken.aspx</DependentUpon>
     </Compile>
-    <Compile Include="PlayPen\Checklist.aspx.cs">
-      <DependentUpon>Checklist.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="PlayPen\Checklist.aspx.designer.cs">
-      <DependentUpon>Checklist.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="PlayPen\DutyPeriodAnalyzer.aspx.cs">
-      <DependentUpon>DutyPeriodAnalyzer.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="PlayPen\DutyPeriodAnalyzer.aspx.designer.cs">
-      <DependentUpon>DutyPeriodAnalyzer.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Public\authredir.aspx.cs">
       <DependentUpon>authredir.aspx</DependentUpon>
@@ -2555,7 +2534,6 @@
     <Content Include="appsettings.config" />
     <Content Include="App_Data\debug.config" />
     <Content Include="App_Data\email.config" />
-    <Content Include="PlayPen\Web.config" />
     <Content Include="Private\Web.Config" />
     <Content Include="Public\CSS\Web.config" />
     <Content Include="Public\Fonts\open-sans.bold.ttf" />

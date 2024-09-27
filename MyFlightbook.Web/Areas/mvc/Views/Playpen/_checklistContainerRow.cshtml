@@ -1,0 +1,109 @@
+﻿@using MyFlightbook.Checklists
+@using System.Globalization
+@{
+    ChecklistRow row = ViewBag.row;
+    bool fNoHeader = ViewBag.noHeader;
+    string rootID = "ckrID" + (ViewBag.rootID ?? string.Empty);
+    List<ChecklistRow> contents = new List<ChecklistRow>();
+    List<ChecklistRow> tabs = new List<ChecklistRow>();
+    List<ChecklistRow> headers = new List<ChecklistRow>();
+    List<ChecklistRow> subheaders = new List<ChecklistRow>();
+
+    ContentRow contentRow = row as ContentRow;
+    CheckboxRow checkboxRow = row as CheckboxRow;
+    ContainerRow container = row as ContainerRow;
+
+    if (container != null)
+    {
+        foreach (ChecklistRow ckl in container.ContainedItems)
+        {
+            if (ckl is TabContainer)
+            {
+                tabs.Add(ckl);
+            }
+            else if (ckl is HeaderContainer)
+            {
+                headers.Add(ckl);
+            }
+            else if (ckl is SubHeaderContainer)
+            {
+                subheaders.Add(ckl);
+            }
+            else
+            {
+                contents.Add(ckl);
+            }
+        }
+    }
+    else if (checkboxRow != null || contentRow != null)
+    {
+        contents.Add(row);
+    }
+    int iRow = 0;
+}
+<div class="checklistSubHeader">@(fNoHeader ? string.Empty : row.Content ?? string.Empty)</div>
+@if (contents.Count > 0)
+{
+    <table style="width: 100%; border-collapse: separate; border-spacing: 0px;">
+        @foreach (ContentRow ckrow in contents)
+        {
+            CheckboxRow cbRow = ckrow as CheckboxRow;
+            if (cbRow != null)
+            {
+                string func = cbRow.ActionForRow;
+                <tr class="@((iRow % 2 == 0 ? "rowEven" : "rowOdd"))" onclick="javascript: clickRow(event, this);">
+                    <td class="checkCell"><input type="checkbox" runat="server" onchange="@(String.IsNullOrEmpty(func) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "{0}(event, this)", func));" onclick="javascript: clickRow(e, $(this).closest('tr')[0]);" /></td>
+                    <td class="checklistCell"><span class="challengeItem">@cbRow.Content</span></td>
+                    <td class="responseCell"><span class="responseItem">@cbRow.Response</span></td>
+                </tr>
+            }
+            else
+            {
+                <tr><td colspan="3"><span class="@Checklist.CssClassForContentStyle(ckrow.Style)">@ckrow.Content</span></td></tr>
+            }
+            iRow++;
+        }
+    </table>
+}
+@if (subheaders.Count > 0)
+{
+    foreach (ChecklistRow ckr in subheaders)
+    {
+        Html.RenderAction("RenderCheckListRow", "Playpen", new { fNoHeader = false, row = ckr, rootID = rootID + iRow++.ToString(CultureInfo.InvariantCulture) });
+    }
+}
+@if (headers.Count > 0)
+{
+    Html.RenderAction("RenderAccordion", "MFBTemplate", new { containerID = rootID + "accRow", active = "false" });
+    <div id="@(rootID + "accRow")">
+        @foreach (HeaderContainer headerContainer in headers)
+        {
+            <h3>@headerContainer.Content</h3>
+            <div>
+                @{ Html.RenderAction("RenderCheckListRow", "Playpen", new { fNoHeader = true, row = headerContainer, rootID = rootID + iRow++.ToString(CultureInfo.InvariantCulture) }); }
+            </div>
+        }
+    </div>
+}
+@if (tabs.Count > 0)
+{
+    <script type="text/javascript">
+    $(() => { $("#@(rootID)tabContainer").tabs(); });
+    </script>
+    <div id="@(rootID)tabContainer">
+        <ol>
+            @foreach (ChecklistRow tabRow in tabs)
+            {
+                string rowID = rootID + RegexUtility.NonAlphaNumeric.Replace(tabRow.Content, string.Empty);
+                <li><a href="#@rowID">@tabRow.Content</a></li>
+            }
+        </ol>
+        @foreach (ChecklistRow tabRow in tabs)
+        {
+            string rowID = rootID + RegexUtility.NonAlphaNumeric.Replace(tabRow.Content, string.Empty);
+            <div id="@rowID">
+                @{ Html.RenderAction("RenderCheckListRow", "Playpen", new { fNoHeader = true, row = tabRow, rootID = rootID + iRow++.ToString(CultureInfo.InvariantCulture) }); }
+            </div>
+        }
+    </div>
+}

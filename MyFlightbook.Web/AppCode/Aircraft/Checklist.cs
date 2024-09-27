@@ -146,6 +146,27 @@ namespace MyFlightbook.Checklists
             Response = response;
             Action = checkboxAction;
         }
+
+        public string ActionForRow
+        {
+            get
+            {
+                switch (Action)
+                {
+                    default:
+                    case CheckboxAction.None:
+                        return string.Empty;
+                    case CheckboxAction.StartEngine:
+                        return "startEngine";
+                    case CheckboxAction.StopEngine:
+                        return "stopEngine";
+                    case CheckboxAction.BlockOut:
+                        return "blockOut";
+                    case CheckboxAction.BlockIn:
+                        return "blockIn";
+                }
+            }
+        }
     }
 
     #region Container rows
@@ -206,6 +227,20 @@ namespace MyFlightbook.Checklists
     public class Checklist
     {
         private readonly ContainerRow m_rootContainer;
+
+        public static string CssClassForContentStyle(ContentStyle style)
+        {
+            switch (style)
+            {
+                default:
+                case ContentStyle.Normal:
+                    return "checklistContentStyleNormal";
+                case ContentStyle.Emphasis:
+                    return "checklistContentStyleEmphasis";
+                case ContentStyle.Emergency:
+                    return "checklistContentStyleEmergency";
+            }
+        }
 
         #region Properties
         public ContainerRow Root { get { return m_rootContainer; } }

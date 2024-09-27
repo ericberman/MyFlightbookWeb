@@ -462,6 +462,23 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
         #endregion
 
+        #region CheckList
+        [ChildActionOnly]
+        public ActionResult RenderCheckListRow(bool fNoHeader, Checklists.ChecklistRow row, string rootID = "")
+        {
+            ViewBag.row = row;
+            ViewBag.noHeader = fNoHeader;
+            ViewBag.rootID = rootID;
+            return PartialView("_checklistContainerRow");
+        }
+
+        public ActionResult CheckList(string s = null)
+        {
+            ViewBag.checkListSource = s ?? string.Empty;
+            return View("checklist");
+        }
+        #endregion
+
         // GET: mvc/Playpen
         public ActionResult Index()
         {

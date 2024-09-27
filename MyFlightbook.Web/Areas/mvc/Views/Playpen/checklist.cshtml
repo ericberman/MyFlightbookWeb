@@ -1,22 +1,11 @@
-﻿using MyFlightbook;
-using MyFlightbook.Checklists;
-using System;
-using System.Globalization;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-
-/******************************************************
- * 
- * Copyright (c) 2018-2020 MyFlightbook LLC
- * Contact myflightbook-at-gmail.com for more information
- *
-*******************************************************/
-
-public partial class PlayPen_Checklist : Page
-{
-    private readonly string[] rgSamples =
-    {
-        @"TAB Inspections
+﻿@using MyFlightbook.Checklists
+@{
+    ViewBag.defaultTab = tabID.tabLogbook;
+    ViewBag.Title = "checklist";
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    string source = ViewBag.checkListSource;
+    Checklist checklist = String.IsNullOrEmpty(source) ? null : new Checklist(source);
+    string sample = @"TAB Inspections
 - CABIN
 [] Maintenance...SQUAWKS, VOR CHECK CURRENT
 [] Manuals & Papers...ON BOARD
@@ -91,7 +80,7 @@ Tab Pre-Flight
 [] Annunciator Panel...PRESS TO TEST (LEFT/RIGHT FUEL AND ALTERNATOR WILL STAY OFF)
 [] Volt Meter...CHECK FOR POSITIVE VOLTAGE
 [] Cowl Flaps...OPEN
-[] Wing Flaps...FLAPS UP 
+[] Wing Flaps...FLAPS UP
 [] Fuel Selector...FULLEST TANK (or left tank)
 [] Beacon Light (Strobe)...ON
 [] Mixture...RICH (FULL FORWARD)
@@ -108,10 +97,10 @@ Tab Pre-Flight
 [] Start Power Light...OFF
 [] Avionics Master...ON
 [] Auto Pilot...TEST (warn pax about loud beep)
-[] PFD...PRESS “AP TEST” 
+[] PFD...PRESS “AP TEST”
 [] Fuel levels...CHECKED, RESET AS REQUIRED
-[] Transponder...STANDBY 
-[] Flight Instruments...CHECKED (FLAGS) AND SET 
+[] Transponder...STANDBY
+[] Flight Instruments...CHECKED (FLAGS) AND SET
 [] Headphones...CHECK IN “STEREO” MODE
 [] Clearance ...RECV’D, RECORDED, READ BACK
 [] ATIS...RECORDED
@@ -119,7 +108,7 @@ Tab Pre-Flight
 
 - BEFORE TAKEOFF – RUNUP
 [] Doors & Windows...CLOSED AND LATCHED
-[] Flight Controls...FREE AND CORRECT 
+[] Flight Controls...FREE AND CORRECT
 [] Autopilot...OFF
 [] Elevator Trim...TAKEOFF POSITION
 [] Flight Instruments...CHECKED AND SET (FLAGS)
@@ -156,18 +145,18 @@ TAB In Flight
 [] Initial Climb...86 KIAS (VY) (Climb checklist)
 [] Landing Gear...RETRACT (W/ POSITIVE RATE of CLIMB)
 [] Flaps...RETRACT (CLEAR OF OBSTACLES)
- 
+
 - CLIMB
-[] Best Rate (Vy)...86 KIAS, PITCH FOR 
-[] Best Angle (Vx)...66 KIAS, PITCH FOR 
-[] Enroute ...100 KIAS, PITCH FOR 
+[] Best Rate (Vy)...86 KIAS, PITCH FOR
+[] Best Angle (Vx)...66 KIAS, PITCH FOR
+[] Enroute ...100 KIAS, PITCH FOR
 [] Fuel Pump...OFF (UPON REACHING SAFE ALTITUDE)
 [] Prop...2600 RPM
 [] Mixture...LEAN (ABOVE 3000' MSL)
 
 - LEVEL OFF / CRUISE
-[] Cowl Flaps...CLOSE - (CHT < 350° F). 
-[] Pitch Level...REACH CRUISING SPEED 
+[] Cowl Flaps...CLOSE - (CHT < 350° F).
+[] Pitch Level...REACH CRUISING SPEED
 [] Power...SET (Reference Power Setting Table)
 [] Trim...AS REQUIRED
 [] Mixture...LEAN (EGT 75-100° F RICH OF PEAK)
@@ -175,10 +164,10 @@ TAB In Flight
 - DESCENT
 [] Cowl Flaps...CHECK CLOSED
 [] Throttle...ADJUST FOR DESCENT (~20” MP)
-[] Airspeed...MONITOR 
+[] Airspeed...MONITOR
 [] Mixture...ADJUST (enrich from high-altitude lean setting)
 
-- BEFORE LANDING 
+- BEFORE LANDING
 [] ATIS...RECORDED
 [] Radios...SET (Approach Control, Tower, ILS, Missed Approach)
 [] Cowl Flaps...CLOSED
@@ -186,15 +175,15 @@ TAB In Flight
 [] Mixture...RICH
 [] Fuel Pump...ON
 [] UNDERCARRIAGE...DOWN & LOCKED (EMERGENCY HANDLED LOCKED)
-[] M P (Throttle)...DOWNWIND SETTING 
+[] M P (Throttle)...DOWNWIND SETTING
 [] Prop...FULL FORWARD
 [] Safety & Switches...SEAT BELTS FASTENED – LIGHTS (AS REQ’D)
- 
+
 - NORMAL LANDING
-[] Cowl Flaps...CLOSED - 
+[] Cowl Flaps...CLOSED -
 [] Gas...FULL TANK; PUMP ON; MIXTURE RICH
 [] Undercarriage GEAR...VERIFIED DOWN & LOCKED
-[] Manifold Pressure...SET 
+[] Manifold Pressure...SET
 [] Prop...SET (Full)
 [] Safety & Switches...SEAT BELT, DOORS, & LIGHTS
 
@@ -228,7 +217,7 @@ Tab Post Flight
 [] Aircraft Cover...ON AND SECURE IF OUTSIDE
 [] Tie Downs...SECURE
 [] Wheel Chocks...IN PLACE
-[] Fuel...TO TABS 
+[] Fuel...TO TABS
 
 TAB Procedures
 - ABNORMAL ENGINE START PROCEDURES--
@@ -257,12 +246,12 @@ TAB Procedures
 [] External Power Plug...DISCONNECT FROM FUSELAGE
 [] ALT Switch...ON (check ammeter)
 [] Oil Pressure...CHECK
- 
+
 - ABNORMAL TAKEOFFS
 -- SHORT FIELD/OBSTACLE CLEARANCE TAKEOFF
 [] Speed Brakes...CHECKED & RETRACTED
 [] Flaps...TAKEOFF POSITION
-[] Position...RUNWAY CENTERLINE 
+[] Position...RUNWAY CENTERLINE
 (using all available runway)
 [] Brakes...HOLD
 [] Throttle...ADVANCE (smoothly to full power)
@@ -285,7 +274,7 @@ TAB Procedures
 [] Flaps...RETRACT AFTER OBSTACLE CLEARANCE
 [] Climb After Obstacle Clearance...86 KIAS
 [] Landing Gear...RETRACT WHEN CLEAR OF RUNWAY, BELOW 107 KNOTS
- 
+
 - NON-STANDARD LANDINGS
 -- SHORT FIELD LANDING
 [] Flaps...TAKEOFF/DOWN (on final)
@@ -304,13 +293,13 @@ TAB Procedures
 [] Flaps...TAKEOFF/DOWN (on final)
 [] Landing Gear...EXTENDED
 [] Trim...FOR TARGET POINT
-[] Throttle...AS REQUIRED 
+[] Throttle...AS REQUIRED
 [] Level Out...IN GROUND EFFECT
 [] Throttle...RETARD AS APPROPRIATE (may require additional of small amount of power just prior to touchdown)
 [] Rotate...MAIN GEAR ONTO GROUND (keep nose high)
 [] Nose Wheel...LOWER SLOWLY (maintaining back pressure as long as possible)
 [] Exit Runway...AS SOON AS SAFELY POSSIBLE
- 
+
 TAB EMERGENCY
 - ENGINE FIRE DURING START
 [] Starter...CRANK ENGINE, KEEP ENGAGED
@@ -335,7 +324,7 @@ Make only shallow turns to avoid obstructions
 Flaps as situation requires
 --If sufficient altitude has been gained to attempt a restart:
 [] Maintain Safe Airspeed...84-93 KIAS
-[] Fuel Selector...SWITCH TO FULLEST TANK 
+[] Fuel Selector...SWITCH TO FULLEST TANK
 [] Master Switch...ON
 [] Fuel Boost Pump...CHECK ON
 [] Throttle...FULL FORWARD
@@ -343,13 +332,13 @@ Flaps as situation requires
 [] Mixture...FULL FORWARD
 [] Ignition Switch...ON “BOTH”
 [] If Power Is Not Regained...PROCEED WITH POWER OFF LANDING –[NEXT PAGE]
- 
+
 - ENGINE ROUGHNESS
 [] Engine Gauges...CHECK
 [] Fuel Boost Pump...ON
 [] Fuel Selector...SWITCH TANKS
 [] Mixture...ADJUST
-[] Ignition Switch...LEFT, THEN RIGHT, THEN BOTH 
+[] Ignition Switch...LEFT, THEN RIGHT, THEN BOTH
 [] Checklist...REVIEW POWER-OFF LANDING CHECKLIST
 
 - ENGINE LOSS IN FLIGHT
@@ -377,7 +366,7 @@ Flaps as situation requires
 [] Mixture...IDLE CUT OFF (FULL BACK)
 [] Ignition Switch...OFF
 [] Flaps...FULL DOWN
-[] Landing Gear...DOWN or UP (depending on terrain) 
+[] Landing Gear...DOWN or UP (depending on terrain)
 [] Master Switch, Alternator Switch...OFF
 
 - ENGINE FIRE IN FLIGHT
@@ -390,11 +379,11 @@ Flaps as situation requires
 [] Cowl Flaps...CLOSED
 [] Landing Gear...DOWN or UP (depending on terrain)
 [] Flaps...EXTEND AS NECESSARY
-[] If fire not extinguished - ...INCREASE GLIDE SPEED 
+[] If fire not extinguished - ...INCREASE GLIDE SPEED
 OPEN COWL FLAPS
 DO NOT ATTEMPT RESTART
 Conduct Power-off Landing Checklist
- 
+
 - OIL PRESSURE LOW – BELOW 25 PSI
 [] Land...AS SOON AS PRACTICAL AND INVESTIGATE CAUSE
 Review Power-off Landing Checklist
@@ -419,7 +408,7 @@ Review Power-off Landing Checklist
 [] Propeller...DECREASE IF CONTROL POSSIBLE
 [] Airspeed...REDUCE
 [] Throttle...AS REQUIRED TO KEEP RPM BELOW 2700
- 
+
 - LANDING GEAR FAILS TO EXTEND
 [] Landing Gear Circuit Breaker...PULL
 [] Landing Gear Switch...DOWN
@@ -464,31 +453,69 @@ Review Power-off Landing Checklist
 [] Yoke...FULL FORWARD
 [] Rudder...NEUTRAL (when rotation stops)
 [] Yoke...AS REQUIRED TO SMOOTHLY REGAIN LEVEL FLIGHT ATTITUDE
-"
-    };
-
-    protected void Page_Load(object sender, EventArgs e)
-    {
-        string szCSSRef = String.Format(CultureInfo.InvariantCulture, "<link href=\"{0}?v=6\" type=\"text/css\" rel=\"stylesheet\">", ResolveClientUrl("~/Public/CSS/ChecklistBase.css"));
-        Literal lit = new Literal();
-        Header.Controls.Add(lit);
-        lit.Text = szCSSRef;
-
-        int sample = util.GetIntParam(Request, "s", -1);
-        if (sample >= 0 && sample < rgSamples.Length)
-        {
-            pnlEditor.Visible = false;
-            ChecklistItem1.DataItem = new Checklist(rgSamples[sample]).Root;
-        }
+";
+}
+<link href="@("~/Public/CSS/ChecklistBase.css?v=6".ToAbsolute())" type="text/css" rel="stylesheet" />
+<script type="text/javascript">
+    function clickRow(e, sender) {
+        var ck = $(sender).find("input[type='checkbox']")[0];
+        ck.checked = !ck.checked;
+        if (ck.onchange != null)
+            ck.onchange(e, ck);
     }
 
-    protected void btnPreview_Click(object sender, EventArgs e)
-    {
-        ChecklistItem1.DataItem = new Checklist(txtChecklistSrc.Text).Root;
+    function startEngine(e, sender) {
+        if (sender.checked)
+            window.alert('Start Engine');
     }
 
-    protected void btnLoadSample_Click(object sender, EventArgs e)
-    {
-        txtChecklistSrc.Text = rgSamples[0];
+    function stopEngine(e, sender) {
+        if (sender.checked)
+            window.alert('Stop Engine');
     }
+
+    function blockOut(e, sender) {
+        if (sender.checked)
+            window.alert('Block Out');
+    }
+
+    function blockIn(e, sender) {
+        if (sender.checked)
+            window.alert('Block In');
+    }
+</script>
+<div ID="pnlEditor" runat="server">
+    <h2>Cheat sheet:</h2>
+    <h3>Plain text:</h3>
+    <ul>
+        <li>XXX - Plain text</li>
+        <li>*XXX - Emphasized line of text (boldface)</li>
+        <li>**XXX Really emphasized line of text (e.g., for emergency)</li>
+    </ul>
+    <h3>Grouping/sections</h3>
+    <ul>
+        <li>Tab xxx - The following sections goes in a tab with title xxx</li>
+        <li>- XXX - Expandable/Collapsible header; subsequent items grouped in it</li>
+        <li>-- XXX - Non-expandable header</li>
+    </ul>
+    <h3>Checklist items</h3>
+    <ul>
+        <li>[] xxx...yyy: Checkbox with challenge x and optional response y</li>
+        <li>[E+]([E-]) - Checkbox denoting engine start (stop)</li>
+        <li>[B+]([B-]) - Checkbox denoting block out (in)</li>
+    </ul>
+    @using (Html.BeginForm("CheckList", "PlayPen", FormMethod.Post))
+    {
+        <div><textarea name="s" id="txtSrc" rows="20" style="width: 100%;">@source</textarea></div>
+        @Html.AntiForgeryToken()
+        <div>
+            <button type="button" onclick="javascript: $('#txtSrc').text($('#hdnSample').val()); return false;">Load Sample</button>
+            <button type="submit" id="btnPreview">Preview</button>
+        </div>
+    }
+    <input type="hidden" id="hdnSample" value="@sample" />
+</div>
+@if (checklist != null)
+{
+    Html.RenderAction("RenderCheckListRow", "Playpen", new { fNoHeader = false, row = checklist.Root });
 }
