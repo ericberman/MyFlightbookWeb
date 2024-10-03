@@ -5,19 +5,16 @@ using MyFlightbook.CloudStorage;
 using MyFlightbook.OAuth.CloudAhoy;
 using MyFlightbook.OAuth.FlightCrewView;
 using MyFlightbook.OAuth.Leon;
-using MyFlightbook.Web.Admin;
 using Newtonsoft.Json;
 using OAuthAuthorizationServer.Code;
 using OAuthAuthorizationServer.Services;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
-using System.Web.Helpers;
 using System.Web.Mvc;
 
 /******************************************************
@@ -201,7 +198,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 }
 
                 pf.SetPreferenceForKey(LeonClient.SubDomainPrefKey, subDomain, String.IsNullOrEmpty(subDomain));
-                new LeonClient(subDomain, LeonClient.UseSandbox(Request.Url.Host)).Authorize("~/public/LeonRedir.aspx".ToAbsoluteURL(Request));
+                new LeonClient(subDomain, LeonClient.UseSandbox(Request.Url.Host)).Authorize("~/mvc/oauth/ManageLeon".ToAbsoluteURL(Request));
                 return new EmptyResult();
             }
             throw new InvalidOperationException("Unknown action: " + action);
@@ -211,22 +208,14 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         public ActionResult ManageLeon()
         {
             Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
-            ViewBag.subDomain = pf.GetPreferenceForKey<string>(LeonClient.SubDomainPrefKey);
-            return View("leonmanage");
-        }
-
-        [Authorize]
-        public ActionResult LeonRedirect(string code)
-        {
-            Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
             string szSubDomain = pf.GetPreferenceForKey<string>(LeonClient.SubDomainPrefKey);
-
+            string code = Request["code"];
             if (!String.IsNullOrEmpty(code) && !String.IsNullOrWhiteSpace(szSubDomain))
             {
                 IAuthorizationState AuthState = new LeonClient(szSubDomain, LeonClient.UseSandbox(Request.Url.Host)).ConvertToken(Request);
                 pf.SetPreferenceForKey(LeonClient.TokenPrefKey, AuthState, AuthState == null);
             }
-            return Redirect("~/ManageLeon");
+            return View("leonmanage");
         }
         #endregion
 

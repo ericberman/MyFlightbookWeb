@@ -1404,7 +1404,6 @@
     <Content Include="Public\iPhoneImages\iPhone6.png" />
     <Content Include="Public\iPhoneImages\iPhone7.png" />
     <Content Include="Public\iPhoneImages\iPhone8.png" />
-    <Content Include="Public\LeonRedir.aspx" />
     <Content Include="Public\PaypalIPNListener.aspx" />
     <Content Include="Public\RSSCurrency.aspx" />
     <Content Include="Public\Scripts\aircraftcontext.js" />
@@ -2447,13 +2446,6 @@
     </Compile>
     <Compile Include="Public\Developer.aspx.designer.cs">
       <DependentUpon>Developer.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Public\LeonRedir.aspx.cs">
-      <DependentUpon>LeonRedir.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\LeonRedir.aspx.designer.cs">
-      <DependentUpon>LeonRedir.aspx</DependentUpon>
     </Compile>
     <Compile Include="Public\PaypalIPNListener.aspx.cs">
       <DependentUpon>PaypalIPNListener.aspx</DependentUpon>

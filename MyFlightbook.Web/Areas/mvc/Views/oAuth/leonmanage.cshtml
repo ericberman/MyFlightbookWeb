@@ -1,6 +1,6 @@
 ﻿@using MyFlightbook.OAuth.Leon
 @{
-    ViewBag.Title = Resources.LogbookEntry.LeonImportHeader;
+    ViewBag.Title = Resources.Preferences.ScheduleServiceLeonName;
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
     ViewBag.defaultTab = tabID.tabProfile;
     MyFlightbook.Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
@@ -22,7 +22,7 @@
         else
         {
             <input type="hidden" value="auth" name="action" />
-            <p>Branding.ReBrand(Resources.LogbookEntry.LeonUnauthorized)</p>
+            <p>@Branding.ReBrand(Resources.LogbookEntry.LeonUnauthorized)</p>
             <p>@Resources.LogbookEntry.LeonSubDomainPrompt</p>
             <div>https://<input type="text" required style="width: 10em;" pattern="[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*" name="leonSubDomain" value="@(ViewBag.subDomain ?? string.Empty)" />.leon.aero</div>
             <div><a href="#" onclick="javascript: $('#frmDeauth')[0].submit();">@Branding.ReBrand(Resources.LogbookEntry.LeonAuthorize)</a></div>
