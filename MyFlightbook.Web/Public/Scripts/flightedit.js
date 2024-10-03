@@ -297,7 +297,7 @@ function populateApproachHelper(containerID, cmbType, cmbTypeSuffix, cmbRnwy, cm
     ['', '-A', '-B', '-C', '-D', '-V', '-W', '-X', '-Y', '-Z'].forEach((s) => cmbTypeSuffix.append($("<option />").val(s).text(s)));
 
     ['CONTACT', 'COPTER', 'GCA', 'GLS', 'ILS', 'ILS (Cat I)', 'ILS (Cat II)', 'ILS (Cat III)', 'ILS/PRM',
-        'JPLAS', 'LAAS', 'LDA', 'LOC', 'LOC-BC', 'MLS', 'NDB', 'OSAP', 'PAR', 'RNAV/GPS', 'SDF', 'SRA/ASR',
+        'JPLAS', 'LAAS', 'LDA', 'LOC', 'LOC-BC', 'MLS', 'NDB', 'OSAP', 'PAR', 'RNAV/GPS', 'RNAV/GPS (RNP)', 'SDF', 'SRA/ASR',
         'TACAN', 'TYPE1', 'TYPE2', 'TYPE3', 'TYPE4', 'TYPEA', 'TYPEB', 'VISUAL', 'VOR', 'VOR/DME', 'VOR/DME-ARC'].forEach((s) =>
             cmbType.append($("<option />").val(s).text(s)));
 

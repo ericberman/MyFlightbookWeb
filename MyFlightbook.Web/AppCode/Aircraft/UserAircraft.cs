@@ -171,7 +171,7 @@ namespace MyFlightbook
 
                 szTail = Aircraft.NormalizeTail(szTail).Trim().ToUpperInvariant();
                 List<Aircraft> rgac = GetAircraftForUserInternal(AircraftRestriction.UserAircraft);
-                return rgac.Find(ac => ac.NormalizedTail.CompareCurrentCultureIgnoreCase(szTail) == 0);
+                return rgac.Find(ac => ac.SearchTail.CompareCurrentCultureIgnoreCase(szTail) == 0);
             }
         }
 
