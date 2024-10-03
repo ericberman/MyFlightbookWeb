@@ -1,0 +1,32 @@
+﻿@using MyFlightbook.OAuth.Leon
+@{
+    ViewBag.Title = Resources.Preferences.ScheduleServiceLeonName;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    ViewBag.defaultTab = tabID.tabProfile;
+    MyFlightbook.Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+}
+@using (Html.BeginForm("ManageLeon", "oAuth", FormMethod.Post, new { id = "frmDeauth", name = "frmDeauth" }))
+{
+    <img style="float:left; margin-right: 40px; width: 100px;" src='@("~/images/LeonLogo.svg".ToAbsolute())' />
+    @Html.AntiForgeryToken()
+    <div style="margin-top: 30px">
+        @if (pf.PreferenceExists(LeonClient.TokenPrefKey))
+        {
+            <input type="hidden" value="deAuth" name="action" />
+            <div>@Branding.ReBrand(Resources.LogbookEntry.LeonAuthorizedHeader)</div>
+            <ul>
+                <li><a href="@("~/mvc/import".ToAbsolute())">@Resources.LogbookEntry.LeonGoToImport</a></li>
+                <li><a href="#" onclick="javascript: $('#frmDeauth')[0].submit();">@Branding.ReBrand(Resources.LogbookEntry.LeonDeauthorize)</a></li>
+            </ul>
+        }
+        else
+        {
+            <input type="hidden" value="auth" name="action" />
+            <p>@Branding.ReBrand(Resources.LogbookEntry.LeonUnauthorized)</p>
+            <p>@Resources.LogbookEntry.LeonSubDomainPrompt</p>
+            <div>https://<input type="text" required style="width: 10em;" pattern="[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*" name="leonSubDomain" value="@(ViewBag.subDomain ?? string.Empty)" />.leon.aero</div>
+            <div><a href="#" onclick="javascript: $('#frmDeauth')[0].submit();">@Branding.ReBrand(Resources.LogbookEntry.LeonAuthorize)</a></div>
+            <div class="error">@(ViewBag.error ?? string.Empty)</div>
+        }
+    </div>
+}

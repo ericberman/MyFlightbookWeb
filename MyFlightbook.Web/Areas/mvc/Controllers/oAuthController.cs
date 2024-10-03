@@ -4,18 +4,17 @@ using DotNetOpenAuth.OAuth2.Messages;
 using MyFlightbook.CloudStorage;
 using MyFlightbook.OAuth.CloudAhoy;
 using MyFlightbook.OAuth.FlightCrewView;
+using MyFlightbook.OAuth.Leon;
 using Newtonsoft.Json;
 using OAuthAuthorizationServer.Code;
 using OAuthAuthorizationServer.Services;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
-using System.Web.Helpers;
 using System.Web.Mvc;
 
 /******************************************************
@@ -28,6 +27,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 {
     public class oAuthController : AdminControllerBase
     {
+        #region oAuth server functions
         [Authorize]
         [HttpGet]
         public ActionResult Authorize()
@@ -128,6 +128,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             OAuthServiceCall.ProcessRequest(id);
             return new EmptyResult();
         }
+        #endregion
 
         #region FlightCrewView
 
@@ -171,6 +172,50 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         public ActionResult ManageFlightCrewView()
         {
             return View("flightcrewviewmanage");
+        }
+        #endregion
+
+        #region Leon
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ManageLeon(string action)
+        {
+            Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+            if (action.CompareOrdinal("deAuth") == 0)
+            {
+                pf.SetPreferenceForKey(LeonClient.TokenPrefKey, null, true);
+                pf.SetPreferenceForKey(LeonClient.SubDomainPrefKey, null, true);
+                return Redirect(Request.Path);
+            }
+            else if (action.CompareOrdinal("auth") == 0)
+            {
+                string subDomain = Request["leonSubDomain"];
+                if (String.IsNullOrEmpty(subDomain))
+                {
+                    ViewBag.error = Resources.LogbookEntry.LeonSubDomainRequired;
+                    return View("leonmanage");
+                }
+
+                pf.SetPreferenceForKey(LeonClient.SubDomainPrefKey, subDomain, String.IsNullOrEmpty(subDomain));
+                new LeonClient(subDomain, LeonClient.UseSandbox(Request.Url.Host)).Authorize("~/mvc/oauth/ManageLeon".ToAbsoluteURL(Request));
+                return new EmptyResult();
+            }
+            throw new InvalidOperationException("Unknown action: " + action);
+        }
+
+        [Authorize]
+        public ActionResult ManageLeon()
+        {
+            Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+            string szSubDomain = pf.GetPreferenceForKey<string>(LeonClient.SubDomainPrefKey);
+            string code = Request["code"];
+            if (!String.IsNullOrEmpty(code) && !String.IsNullOrWhiteSpace(szSubDomain))
+            {
+                IAuthorizationState AuthState = new LeonClient(szSubDomain, LeonClient.UseSandbox(Request.Url.Host)).ConvertToken(Request);
+                pf.SetPreferenceForKey(LeonClient.TokenPrefKey, AuthState, AuthState == null);
+            }
+            return View("leonmanage");
         }
         #endregion
 
