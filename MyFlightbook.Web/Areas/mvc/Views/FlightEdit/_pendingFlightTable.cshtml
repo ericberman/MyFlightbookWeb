@@ -1,7 +1,9 @@
 ﻿@using System.Globalization
+@using MyFlightbook.Image
 @{
     MyFlightbook.Profile viewer = ViewBag.viewer;
     IEnumerable<PendingFlight> rgpf = ViewBag.pendingFlights;
+    UserAircraft ua = new UserAircraft(viewer.UserName);
     int pageSize = ViewBag.pageSize;
     int offset = ViewBag.offset;
     int curPage = ViewBag.curPage;
@@ -9,12 +11,18 @@
     string sortField = ViewBag.sortField;
     System.Web.UI.WebControls.SortDirection sortDir = ViewBag.sortDir;
     System.Func<string, string> sortCss = (h) => { return h.CompareCurrentCulture(sortField) == 0 ? (sortDir == System.Web.UI.WebControls.SortDirection.Ascending ? "headerSortAsc" : "headerSortDesc") : string.Empty; };
+    HashSet<int> hsPropExclusion = new HashSet<int>()
+    {
+        (int) CustomPropertyType.KnownProperties.IDPropFlightNumber
+    };
+    HashSet<int> aircraftWithPopulatedImages = new HashSet<int>();
 }
 <table class="lbTable" id="tblPending">
     <thead>
         <tr class="gvhDefault" style="vertical-align: bottom">
             <th class="headerBase gvhLeft @sortCss("Date")" onclick="javascript: navigateToPendingPage(@curPage, @pageSize, 'Date');">@Resources.LogbookEntry.FieldFlight</th>
             <th class="headerBase gvhCentered @sortCss("TailNumDisplay")" onclick="javascript: navigateToPendingPage(@curPage, @pageSize, 'TailNumDisplay');">@Resources.LogbookEntry.FieldTail</th>
+            <th class="headerBase gvhCentered @sortCss("CatClassDisplay")" onclick="javascript: navigateToPendingPage(@curPage, @pageSize, 'CatClassDisplay');">@Html.Raw(Resources.LogbookEntry.FieldCatClassType)</th>
             <th class="headerBase gvhCentered @sortCss("Approaches")" onclick="javascript: navigateToPendingPage(@curPage, @pageSize, 'Approaches');">@Resources.LogbookEntry.PrintHeaderApproaches</th>
             <th class="headerBase gvhCentered @sortCss("fHoldingProcedures")" onclick="javascript: navigateToPendingPage(@curPage, @pageSize, 'fHoldingProcedures');">@Resources.LogbookEntry.FieldHold</th>
             <th class="headerBase gvhCentered @sortCss("Landings")" onclick="javascript: navigateToPendingPage(@curPage, @pageSize, 'Landings');">@Resources.LogbookEntry.PrintHeaderLandingsShort</th>
@@ -35,12 +43,21 @@
     <tbody>
         @foreach (PendingFlight pf in rgpf)
         {
+            Aircraft ac = pf.AircraftID > 0 ? ua[pf.AircraftID] : null;
+
+            if (ac != null && !aircraftWithPopulatedImages.Contains(ac.AircraftID))
+            {
+                aircraftWithPopulatedImages.Add(ac.AircraftID);
+                ac.PopulateImages();
+            }
+
             <tr class="logbookRow logbookRowEven">
                 <td class="gvcLeft">
                     <span style="display:none">@pf.Date.YMDString()</span>
                     <div>
                         <a href="@Url.Action("Pending", "FlightEdit", new { id = pf.PendingID })" style="font-weight: bold; font-size: larger">@pf.Date.ToShortDateString()</a>
-                        <span style="font-weight: bold">@pf.Route</span>
+                        <span style="font-weight: bold; font-size: larger;">@pf.CustomProperties.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropFlightNumber)</span>
+                        <a href="@(String.Format(CultureInfo.InvariantCulture, "~/mvc/airport/maproute?Airports={0}", pf.Route).ToAbsolute())" style="font-weight: bold">@pf.Route</a>
                         <div style="clear: left; white-space: pre-line;" dir="auto">@Html.Raw(ApproachDescription.ReplaceApproaches(pf.Comment.Linkify()))</div>
                     </div>
                     <div>
@@ -52,15 +69,40 @@
                         }
                     </div>
                     <div>
-                        @foreach (string s in CustomFlightProperty.PropDisplayAsList(pf.CustomProperties, viewer.UsesHHMM, true, true))
+                        @foreach (string s in CustomFlightProperty.PropDisplayAsList(pf.CustomProperties, viewer.UsesHHMM, true, true, hsPropExclusion))
                         {
                             <div>@Html.Raw(s)</div>
                         }
                     </div>
+                    <div class="error">@(pf.ErrorString ?? string.Empty)</div>
                 </td>
-                <td class="gvcCentered">@pf.TailNumDisplay</td>
+                <td class="gvcCentered">
+                    @if (ac == null)
+                    {
+                        <span>@pf.TailNumDisplay</span>
+                    }
+                    else
+                    {
+                        <a class="popTrigger" href="@String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}", ac.AircraftID).ToAbsolute()">@ac.DisplayTailnumber</a>
+                        <div class="popMenuContent popMenuHidden hintPopup" style="margin-top: -60px; margin-left: 50px">
+                            <div style="text-align: center">@pf.ModelDisplay</div>
+                            @foreach (MFBImageInfo img in ac.AircraftImages)
+                            {
+                                if (img.ImageType == MFBImageInfoBase.ImageFileType.JPEG)
+                                {
+                                    <div class="ilItem">
+                                        <img src="@img.URLThumbnail" width="@img.WidthThumbnail" height="@img.HeightThumbnail" title="@img.Comment" alt="@img.Comment"
+                                             onclick="@String.Format(CultureInfo.InvariantCulture, img.ImageType == MFBImageInfoBase.ImageFileType.PDF || img.ImageType == MFBImageInfoBase.ImageFileType.S3PDF ? "javascript:window.location = '{0}';" : "javascript:viewMFBImg('{0}');", VirtualPathUtility.ToAbsolute(img.URLFullImage))" />
+                                        <div>@img.Comment</div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    }
+                </td>
+                <td class="gvcCentered"> @pf.CatClassDisplay</td>
                 <td class="gvcCentered">@pf.Approaches.FormatInt()<span style="display:none">@pf.Approaches.ToString(CultureInfo.InvariantCulture)</span></td>
-                <td class="gvcCentered">@Html.Raw(pf.fHoldingProcedures.FormatBoolean())</td>
+                <td class="gvcCentered largeBold">@Html.Raw(pf.fHoldingProcedures.FormatBoolean())</td>
                 <td class="gvcCentered">@LogbookEntryDisplay.LandingDisplayForFlight(pf)<span style="display:none">@pf.Landings.ToString(CultureInfo.InvariantCulture)</span></td>
                 <td class="gvcCentered">@pf.CrossCountry.FormatDecimal(viewer.UsesHHMM)<span style="display:none">@pf.CrossCountry.ToString(CultureInfo.InvariantCulture)</span></td>
                 <td class="gvcCentered">@pf.Nighttime.FormatDecimal(viewer.UsesHHMM)<span style="display:none">@pf.Nighttime.ToString(CultureInfo.InvariantCulture)</span></td>

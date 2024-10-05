@@ -184,7 +184,16 @@ namespace MyFlightbook
 
             // Now map those missing aircraft
             foreach (PendingFlight pf in flightsToMap)
-                pf.AircraftID = d.TryGetValue(pf.TailNumDisplay, out int acid) ? acid : Aircraft.idAircraftUnknown;
+            {
+                if (pf.AircraftID < 0)
+                    pf.AircraftID = d.TryGetValue(pf.TailNumDisplay, out int acid) ? acid : Aircraft.idAircraftUnknown;
+                else
+                {
+                    Aircraft ac = ua[pf.AircraftID];
+                    pf.CatClassDisplay = ac.CategoryClassDisplay;
+                    pf.ModelDisplay = ac.ModelDescription;
+                }
+            }
 
             // Sort by date, desc
             lst.Sort((l1, l2) => { return CompareFlights(l1, l2, "Date", System.Web.UI.WebControls.SortDirection.Descending); });
