@@ -1,0 +1,81 @@
+﻿
+@{
+    ViewBag.Title = Resources.LocalizedText.ContactUsTitle;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    ViewBag.defaultTab = tabID.tabHome;
+    bool fSuccess = ViewBag.success ?? false;
+    bool fShowReturn = ViewBag.showReturn ?? false;
+    int noCap = util.GetIntParam(Request, "noCap", ViewBag.noCap ?? 0);
+    Profile pf = User.Identity.IsAuthenticated ? MyFlightbook.Profile.GetUser(User.Identity.Name) : null;
+    string szEmail = pf?.Email ?? Request["email"] ?? string.Empty;
+    if (pf == null && !String.IsNullOrEmpty(szEmail))
+    {
+        string szUser = Membership.GetUserNameByEmail(szEmail);
+        if (!String.IsNullOrEmpty(szUser))
+        {
+            pf = MyFlightbook.Profile.GetUser(szUser);
+        }
+    }
+    string szName = pf?.UserFullName ?? string.Empty;
+    string szSubject = ViewBag.subject ?? Request["subj"] ?? string.Empty;
+    string captchaKey = LocalConfig.SettingForKey("recaptchaKey");
+}
+<script src="https://www.google.com/recaptcha/enterprise.js" async defer></script>
+<script type="text/javascript">
+    $(() => {
+        defaultButtonForDiv("divcm", "btnct");
+
+        validateForm($("#frmCtc"), {
+            name: { required: true },
+            email: { required: true, email: true },
+            subject: { required: true }
+        }, {
+            name: { required: "@Resources.LocalizedText.ValidationNameRequired" },
+            email: { required: "@Resources.LocalizedText.ValidationEmailRequired", email: "@Resources.LocalizedText.ValidationEmailFormat" },
+            subject: { required: "@Resources.LocalizedText.ValidationSubjectRequired" }
+        });
+    });
+</script>
+
+@if (fSuccess)
+{
+    <p>@Resources.LocalizedText.ContactUsThankYou</p>
+    if (fShowReturn)
+    {
+        <p><a href="@("~/Default.aspx".ToAbsolute())">@Resources.LocalizedText.ContactUsReturnHome</a></p>
+    }
+}
+else
+{
+    using (Html.BeginForm("Contact", "Pub", FormMethod.Post, new { id = "frmCtc", name = "frmCtc", enctype = "multipart/form-data" }))
+    {
+        <div id="divcm">
+            <input type="hidden" name="noCap" value="@noCap" />
+            @Html.AntiForgeryToken()
+            <p><a style="font-weight:bold;" target="_blank" href="@("~/mvc/faq".ToAbsolute())">@Resources.LocalizedText.ContactUsReadFAQ</a></p>
+            <div>@Resources.LocalizedText.ContactUsName</div>
+            <div><input type="text" name="name" value="@szName" style="width: 25em" required /></div>
+            <div>&nbsp;</div>
+            <div>@Resources.LocalizedText.ContactUsEmail</div>
+            <div><input type="email" name="email" value="@szEmail" style="width: 25em;" required /></div>
+            <div>&nbsp;</div>
+            <div>@Resources.LocalizedText.ContactUsSubject</div>
+            <div><input type="text" name="subject" style="width: 25em" required value="@szSubject" /></div>
+            <div>&nbsp;</div>
+            <div>@Resources.LocalizedText.ContactUsMessage</div>
+            <div><textarea rows="5" style="width: 25em" name="message">@(ViewBag.message ?? string.Empty)</textarea></div>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <input type="file" name="uploadedFile" multiple />
+            }
+            <div style="margin-top: 10pt; margin-bottom: 10pt;" class="g-recaptcha" data-sitekey="@captchaKey" data-action="SUBMIT"></div>
+            <div><input type="text" name="rcp" style="visibility:hidden;" /></div>
+            <div style="width:25em; text-align:right;">
+                <button type="submit">
+                    @Resources.LocalizedText.ContactUsSend
+                </button>
+            </div>
+            <div id="lblErr" class="error">@(ViewBag.error ?? string.Empty)</div>
+        </div>
+    }
+}

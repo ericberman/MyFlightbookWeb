@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -280,6 +282,40 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.Title = Resources.LocalizedText.errContentBlockedTitle;
             ViewBag.HTMLContent = Resources.LocalizedText.ContentBlocked;
             return View("_localizedContent");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Contact(string name, string email, string subject, string message, int noCap)
+        {
+            try
+            {
+                if (!await RecaptchaUtil.ValidateRecaptcha(Request["g-recaptcha-response"], "Contact", Request.Url.Host))
+                    throw new InvalidOperationException(Resources.LocalizedText.ValidationRecaptchaFailed);
+            }
+            catch (HttpRequestException)
+            {
+                // couldn't reach google to validate the captcha - go ahead and eat the error; better to allow the occassional bot than to disallow a user.
+            }
+            catch (Exception ex) when (ex is InvalidOperationException || ex is ArgumentNullException)
+            {
+                ViewBag.subject = subject;
+                ViewBag.message = message;
+                ViewBag.noCap = noCap;
+                ViewBag.error = ex.Message;
+                return View("contact");
+            }
+
+            util.ContactUs(User.Identity.Name, name, email, subject, message, Request.Files);
+            ViewBag.success = true;
+            ViewBag.showReturn = (noCap == 0);
+            return View("contact");
+        }
+
+        [HttpGet]
+        public ActionResult Contact()
+        {
+            return View("contact");
         }
 
         // GET: mvc/Pub - shouldn't ever call.

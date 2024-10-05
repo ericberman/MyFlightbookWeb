@@ -1,0 +1,2 @@
+INSERT INTO `logbook`.`localconfig` (`keyName`, `keyValue`) VALUES ('recaptchaKey', '');
+INSERT INTO `logbook`.`localconfig` (`keyName`, `keyValue`) VALUES ('recaptchaValidateEndpoint', '');

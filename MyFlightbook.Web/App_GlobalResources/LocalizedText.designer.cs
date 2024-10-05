@@ -5466,6 +5466,33 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Recaptcha failed - please try again.
+        /// </summary>
+        internal static string ValidationRecaptchaFailed {
+            get {
+                return ResourceManager.GetString("ValidationRecaptchaFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please indicate that you are not a bot.
+        /// </summary>
+        internal static string ValidationRecaptchaRequired {
+            get {
+                return ResourceManager.GetString("ValidationRecaptchaRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please provide a subject.
+        /// </summary>
+        internal static string ValidationSubjectRequired {
+            get {
+                return ResourceManager.GetString("ValidationSubjectRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add Video.
         /// </summary>
         internal static string videoAdd {

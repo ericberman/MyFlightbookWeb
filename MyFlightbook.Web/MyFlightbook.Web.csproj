@@ -1614,6 +1614,7 @@
     <Content Include="Areas\mvc\Views\Playpen\_checklistContainerRow.cshtml" />
     <Content Include="PlayPen\Web.config" />
     <Content Include="Areas\mvc\Views\oAuth\leonmanage.cshtml" />
+    <Content Include="Areas\mvc\Views\Pub\contact.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -1634,6 +1635,7 @@
     <Content Include="Shunt.aspx" />
     <Content Include="Support\2024-06-14 - AddFlysto.sql" />
     <Content Include="Support\2024-06-27 - AddFlightCrewView.txt" />
+    <Content Include="Support\2024-10-03 - Add recaptcha.txt" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>

@@ -1,5 +1,6 @@
 using MyFlightbook.CSV;
 using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -228,6 +229,49 @@ namespace MyFlightbook
                 }
             }
             return result;
+        }
+    }
+
+    public static class RecaptchaUtil
+    {
+        /// <summary>
+        /// Validates a recaptcha token
+        /// </summary>
+        /// <param name="token">The token</param>
+        /// <param name="action">Optional, the action being validated</param>
+        /// <param name="referringDomain">The referring domain</param>
+        /// <returns>true if all is good</returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="HttpRequestException"></exception>
+        static async public Task<bool> ValidateRecaptcha(string token, string action, string referringDomain)
+        {
+            if (String.IsNullOrEmpty(token))
+                throw new InvalidOperationException(Resources.LocalizedText.ValidationRecaptchaRequired);
+
+            Dictionary<string, string> dInner = new Dictionary<string, string>()
+            {
+                {"token", token },
+                { "expectedAction", (action ?? string.Empty) },
+                { "siteKey", LocalConfig.SettingForKey("recaptchaKey") }
+            };
+            Dictionary<string, object> dOuter = new Dictionary<string, object>() { { "event", dInner } };
+
+            using (StringContent sc = new StringContent(JsonConvert.SerializeObject(dOuter)))
+            {
+                string r = (string)await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri(LocalConfig.SettingForKey("recaptchaValidateEndpoint")), null, HttpMethod.Post, sc, (response) =>
+                {
+                    string szResult = response.Content.ReadAsStringAsync().Result;
+                    response.EnsureSuccessStatusCode();
+                    return szResult;
+                }, new Dictionary<string, string> { { "Referer", referringDomain } });
+
+                dynamic d = JsonConvert.DeserializeObject<dynamic>(r);
+
+                if (d?.riskAnalysis?.score == null) // let's debug this
+                    util.NotifyAdminEvent("Unrecognized recaptcha response", r, ProfileRoles.maskSiteAdminOnly);
+
+                return (d?.riskAnalysis?.score ?? 1.0) > 0.5;   // if d, riskAnalysis, or score are null, just let it through - better to allow a bot then disallow a user
+            }
         }
     }
 
@@ -544,7 +588,63 @@ namespace MyFlightbook
             return d;
         }
 
-        #region Admin Email
+        #region Email
+        /// <summary>
+        /// Contact the authors/admins of the system.  Will reply with an out-of-office message, if needed.
+        /// </summary>
+        /// <param name="userName">Username of the user, if known.  This can be null</param>
+        /// <param name="displayName">The user's name</param>
+        /// <param name="email">User's email</param>
+        /// <param name="message">The message</param>
+        /// <param name="subject">The subject of the message</param>
+        /// <param name="postedFile">If provided, any posted files</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        static public void ContactUs(string userName, string displayName, string email, string subject, string message, HttpFileCollectionBase postedFiles)
+        {
+            if (String.IsNullOrWhiteSpace(displayName))
+                throw new ArgumentNullException(Resources.LocalizedText.ValidationNameRequired);
+            if (String.IsNullOrWhiteSpace(email))
+                throw new ArgumentNullException(Resources.LocalizedText.ValidationEmailRequired);
+            if (!RegexUtility.Email.IsMatch(email))
+                throw new InvalidOperationException(Resources.LocalizedText.ValidationEmailFormat);
+            if (string.IsNullOrWhiteSpace(subject))
+                throw new ArgumentNullException(Resources.LocalizedText.ValidationSubjectRequired);
+            
+            MailAddress ma = new MailAddress(email, displayName ?? string.Empty);
+
+            string szBody = String.Format(CultureInfo.InvariantCulture, "<html><body><div>{0}</div><pre>\r\n\r\nUser = {1}\r\n{2}\r\nSent: {3}</pre></body></html>", 
+                (message ?? string.Empty).Replace("\r\n", "<br />").Replace("\n", "<br />"), 
+                (String.IsNullOrEmpty(userName) ? "anonymous" : userName), 
+                email, 
+                DateTime.Now.ToLongDateString());
+            string szSubject = String.Format(CultureInfo.CurrentCulture, "{0} - {1}", Branding.CurrentBrand.AppName, subject);
+            using (MailMessage msg = new MailMessage()
+            {
+                From = new MailAddress(Branding.CurrentBrand.EmailAddress, String.Format(CultureInfo.InvariantCulture, Resources.SignOff.EmailSenderAddress, Branding.CurrentBrand.AppName, displayName)),
+                Subject = szSubject,
+                Body = szBody,
+                IsBodyHtml = true
+            })
+            {
+                if (postedFiles != null)
+                {
+                    for (int i = 0; i < postedFiles.Count; i++)
+                    {
+                        HttpPostedFileBase pf = postedFiles[i];
+                        if (pf.ContentLength > 0 && !String.IsNullOrEmpty(pf.FileName) && !String.IsNullOrEmpty(pf.ContentType))
+                            msg.Attachments.Add(new Attachment(pf.InputStream, pf.FileName, pf.ContentType));
+                    }
+                }
+                msg.ReplyToList.Add(ma);
+                AddAdminsToMessage(msg, true, ProfileRoles.maskCanContact);
+                SendMessage(msg);
+            }
+
+            if ((ConfigurationManager.AppSettings["UseOOF"] ?? string.Empty).CompareCurrentCultureIgnoreCase("yes") == 0)
+                NotifyUser(szSubject, ApplyHtmlEmailTemplate(Resources.EmailTemplates.ContactMeResponse, false), ma, false, false);
+        }
+
         /// <summary>
         /// Sends a message, setting enableSSL appropriately
         /// </summary>
