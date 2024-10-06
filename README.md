@@ -50,10 +50,12 @@ and the application should be called "logbook" and point to the /logbook branch.
  * sql_mode ALLOW_INVALID_DATES
  
  #### LocalConfig settings
- * AdminAuthAccessKey - Enables use of certain admin-only functionality 
- * AuthorizedWebServiceClients - Comma separated list of authorized clients of the web services
+ * AdminAuthAccessKey - Enables use of certain admin-only functionality (provides an encrytion seed)
+ * AuthorizedWebServiceClients - Comma separated list of authorized clients of the web services (i.e., the iOS and Android apps)
  * AWSAccessKey - Access key for Amazon Web services
  * AWSSecretKey - Secret for Amazon Web Services
+ * BoxClientID - oAuth ID for Box.com
+ * BoxClientSecret - oAuth secret for Box.com
  * CloudAhoyID - oAuth ID for CloudAhoy oAuth
  * CloudAhoySecret - oAuth secret for CloudAhoy oAuth
  * DebugDomains - Identifies local domains (e.g., http://localhost) from which oAuth requests may originate
@@ -63,27 +65,33 @@ and the application should be called "logbook" and point to the /logbook branch.
  * ETSPipelineIDDebug - Amazon Elastic Transcoder ID for processing videos from a debug/development website
  * ETSPipelineIDStaging - Amazon Elastic Transcoder ID for processing videos from staging website
  * FacebookAccessID - Access key for Facebook (Obsolete)
+ * facebookAppId - ID to link to the MyFlightbook Facebook page
  * FacebookClientSecret - Secret for Facebook (Obsolete)
- * facebookAppId - ID for MyFlightbook app on Facebook
+ * GoogleAdClient - ID for google adsense ads (shown only on select public pages)
+ * GoogleAdHorizontalSlot - ID for adsense horizontal ads
+ * GoogleAdVerticalSlot - ID for adsense vertical ads
  * GoogleAnalyticsDeveloper - ID for google analytics on developer machines (Obsolete)
  * GoogleAnalyticsProduction - ID for google analytics on production environment. (Obsolete)
  * GoogleAnalyticsGA4Developer - ID for current Google Analytics GA4 on developer machine
  * GoogleAnalyticsGA4Production - ID for current Google Analytics GA4 on production environment
  * GoogleDriveAccessID - oAuth ID for Google Drive
  * GoogleDriveClientSecret - oAuth secret for Google Drive
- * GoogleMapID - ID for google maps (required to use AdvancedMarkerElement)
+ * GoogleMapID - ID for google maps (required to use AdvancedMarkerElement and recaptcha)
  * GoogleMapsKey - Key for using Google maps. Get your own
  * GooglePlusAccessID - Access key for Google Plus (Obsolete)
  * GooglePlusAPIKey - API key for Google Plus (Obsolete)
  * GooglePlusClientSecret - Secret for Google Plus (Obsolete)
+ * GroundSchoolDiscountLink - promotion text (in markup) for a donation tier
  * LeonClientID - oAuth ID for Leon Scheduling System
  * LeonClientSecret - oAuth secret for Leon Scheduling System
  * OneDriveAccessID - oAuth ID for OneDrive
  * OneDriveClientSecret - oAuth secret for OneDrive
  * PeerRequestEncryptorKey - Key used for encrypting/decrypting requests between peer users
- * SharedDataEncryptorKey - Key used to encrypt access to data being shared with the world
  * rbClientID - oAuth ID for RosterBuster (production)
  * rbClientDIDDev - oAuth ID for RosterBuster (development)
+ * recaptchaKey - ID for using Google's recaptcha
+ * recaptchValidateEndpoint - the url for validating recaptcha
+ * SharedDataEncryptorKey - Key used to encrypt access to data being shared with the world
  * TwitterAccessID - oAuth ID for Twitter (obsolete)
  * TwitterClientSecret - Secret for Twitter (Obsolete)
  * UseAWSS3 - Set to "yes" to migrate images to S3. Best to leave this "no" for local debugging
