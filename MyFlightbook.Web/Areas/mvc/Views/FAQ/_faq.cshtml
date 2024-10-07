@@ -5,7 +5,7 @@
 
 <div style="padding-top:3px;">
     @Branding.ReBrand(Resources.LocalizedText.FAQDesc)
-    <a href="@VirtualPathUtility.ToAbsolute("~/Public/ContactMe.aspx")">@Resources.LocalizedText.FAQContactUs</a>
+    <a href="@VirtualPathUtility.ToAbsolute("~/mvc/pub/contact")">@Resources.LocalizedText.FAQContactUs</a>
     <div style="display:inline-block; vertical-align:middle;">
         @using (Html.BeginForm("", "FAQ", FormMethod.Post))
         {

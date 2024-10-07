@@ -8,4 +8,4 @@ New Item:
 
 Thank-you.
 
-To contact us, please visit https://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.
+To contact us, please visit https://%APP_URL%%APP_ROOT%/mvc/pub/contact.

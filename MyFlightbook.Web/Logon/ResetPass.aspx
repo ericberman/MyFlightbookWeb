@@ -23,7 +23,7 @@
             <ul>
                 <li><asp:Label ID="lblNoAccount" runat="server" Text="Verify that the email address you used is one for which an account exists.  For security, we don't tell you whether or not an account exists." meta:resourcekey="lblNoAccountResource1"></asp:Label></li>
                 <li><asp:Label ID="lblJunk" runat="server" Text="Check your junk mail folder" meta:resourcekey="lblJunkResource1"></asp:Label></li>
-                <li><asp:Hyperlink ID="lnkContactUs" runat="server" Text="Contact Us" NavigateUrl="~/Public/ContactMe.aspx" meta:resourcekey="lnkContactUsResource1"></asp:Hyperlink></li>
+                <li><asp:Hyperlink ID="lnkContactUs" runat="server" Text="Contact Us" NavigateUrl="~/mvc/pub/contact" meta:resourcekey="lnkContactUsResource1"></asp:Hyperlink></li>
             </ul>
         </asp:View>
         <asp:View ID="vwVerifyTFAPass" runat="server">

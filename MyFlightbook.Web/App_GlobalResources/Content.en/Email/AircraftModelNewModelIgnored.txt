@@ -15,4 +15,4 @@ Sometimes, aircraft identifiers are reused, or the aircraft in the system is inc
 
 If you believe that the model you specified is correct, you can update it (or choose the correct version) at https://%APP_URL%, under the "Aircraft" section. 
 
-Please [contact us](https://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx) if you need more assistance.
+Please [contact us](https://%APP_URL%%APP_ROOT%/mvc/pub/contact) if you need more assistance.

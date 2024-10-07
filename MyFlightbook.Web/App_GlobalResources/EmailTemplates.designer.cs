@@ -221,7 +221,7 @@ namespace Resources {
         ///
         ///Depending on the level at which you gave, you may have earned a gratuity; this has been activated on your behalf.
         ///
-        ///Please don&apos;t hesitate to [contact us](https://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx) with any thoughts, questions, concerns, or ideas at.  We love hearing from you!
+        ///Please don&apos;t hesitate to [contact us](https://%APP_URL%%APP_ROOT%/mvc/pub/contact) with any thoughts, questions, concerns, or ideas at.  We love hearing from you!
         ///.
         /// </summary>
         internal static string DonationThankYou {

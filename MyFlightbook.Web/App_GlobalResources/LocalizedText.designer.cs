@@ -4700,7 +4700,7 @@ namespace Resources {
         ///
         ///Thank-you for using %APP_NAME%!
         ///
-        ///To contact us, please visit https://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx..
+        ///To contact us, please visit https://%APP_URL%%APP_ROOT%/mvc/pub/contact..
         /// </summary>
         internal static string ResetPassEmail {
             get {

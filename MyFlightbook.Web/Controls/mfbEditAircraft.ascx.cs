@@ -880,7 +880,7 @@ namespace MyFlightbook.AircraftControls
 
         protected void SelectMake1_MajorChangeRequested(object sender, EventArgs e)
         {
-            Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Public/ContactMe.aspx?subj={0}", System.Web.HttpUtility.UrlEncode(String.Format(CultureInfo.CurrentCulture, "Incorrect definition for aircraft {0}", m_ac.TailNumber))));
+            Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/mvc/pub/contact?subj={0}", System.Web.HttpUtility.UrlEncode(String.Format(CultureInfo.CurrentCulture, "Incorrect definition for aircraft {0}", m_ac.TailNumber))));
         }
     }
 }

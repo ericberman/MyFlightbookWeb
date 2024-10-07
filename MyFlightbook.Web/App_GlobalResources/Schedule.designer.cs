@@ -67,7 +67,7 @@ namespace Resources {
         ///
         ///Thank-you.
         ///
-        ///To contact us, please visit http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.
+        ///To contact us, please visit http://%APP_URL%%APP_ROOT%/mvc/pub/contact.
         ///
         ///&lt;% TimeStamp %&gt;.
         /// </summary>
@@ -381,7 +381,7 @@ namespace Resources {
         ///
         ///Thank-you.
         ///
-        ///To contact us, please visit http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.
+        ///To contact us, please visit http://%APP_URL%%APP_ROOT%/mvc/pub/contact.
         ///.
         /// </summary>
         internal static string ResourceBooked {
@@ -401,7 +401,7 @@ namespace Resources {
         ///
         ///Thank-you.
         ///
-        ///To contact us, please visit http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.
+        ///To contact us, please visit http://%APP_URL%%APP_ROOT%/mvc/pub/contact.
         ///.
         /// </summary>
         internal static string ResourceChangedByOther {

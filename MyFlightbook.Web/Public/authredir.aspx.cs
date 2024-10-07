@@ -42,7 +42,7 @@ namespace MyFlightbook.PublicPages
                 { "CUSTOMCURRENCY", "~/mvc/prefs"},
                 { "ACCOUNT", "~/mvc/prefs/account"},
                 { "BIGREDBUTTONS", "~/mvc/prefs/account"},
-                { "CONTACT", "~/public/ContactMe.aspx"},
+                { "CONTACT", "~/mvc/pub/contact"},
                 { "SIGNENTRY", "~/mvc/flightedit/SignMobile"}
         };
 

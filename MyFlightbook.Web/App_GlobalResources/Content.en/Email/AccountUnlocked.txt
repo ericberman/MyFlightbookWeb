@@ -10,4 +10,4 @@ Thank-you
 
 --The %APP_NAME% Team
 
-To contact us, please visit https://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.
+To contact us, please visit https://%APP_URL%%APP_ROOT%/mvc/pub/contact.
