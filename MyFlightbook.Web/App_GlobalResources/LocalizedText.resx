@@ -2021,4 +2021,22 @@
   <data name="ValidationRecaptchaFailed" xml:space="preserve">
     <value>Recaptcha failed - please try again</value>
   </data>
+  <data name="HomePageMiniPrompt" xml:space="preserve">
+    <value>What would you like to do?</value>
+  </data>
+  <data name="HomePageMiniActionNewFlight" xml:space="preserve">
+    <value>Enter a flight</value>
+  </data>
+  <data name="HomePageMiniActionTotals" xml:space="preserve">
+    <value>View Totals and Currency</value>
+  </data>
+  <data name="HomePageMiniActionAircraft" xml:space="preserve">
+    <value>View Aircraft</value>
+  </data>
+  <data name="HomePageMiniActionRecent" xml:space="preserve">
+    <value>ViewRecentFlights</value>
+  </data>
+  <data name="HomePageMiniActionProfile" xml:space="preserve">
+    <value>Edit your Profile and Preferences</value>
+  </data>
 </root>

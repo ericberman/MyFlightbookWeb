@@ -1,4 +1,5 @@
 ﻿using MyFlightbook.Airports;
+using MyFlightbook.Image;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -142,6 +143,47 @@ namespace MyFlightbook.FlightStatistics
                     lstStats.Add(new LinkedString(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsUsersFlights, NumUsers, NumFlights), VirtualPathUtility.ToAbsolute("~/mvc/flights/myflights")));
                 return lstStats;
             }
+        }
+
+        public IEnumerable<MFBImageInfo> RecentImages()
+        {
+            List<LogbookEntry> lstRecent = m_lstFlights;
+            List<MFBImageInfo> lstRecentImages = new List<MFBImageInfo>();
+            HashSet<int> recentAircraft = new HashSet<int>();
+
+            foreach (LogbookEntry le in lstRecent)
+            {
+                if (le.FlightImages == null || le.FlightImages.Count == 0)
+                    le.PopulateImages();
+                if (le.FlightImages.Count > 0)
+                {
+                    foreach (MFBImageInfo mfbii in le.FlightImages)
+                    {
+                        if (mfbii.ImageType == MFBImageInfoBase.ImageFileType.JPEG || mfbii.ImageType == MFBImageInfoBase.ImageFileType.S3VideoMP4)
+                        {
+                            lstRecentImages.Add(mfbii);
+                            break;
+                        }
+                    }
+                }
+                else
+                    recentAircraft.Add(le.AircraftID);
+
+                if (lstRecentImages.Count > 10)
+                    break;
+            }
+
+            foreach (int aircraftID in recentAircraft)
+            {
+                ImageList il = new ImageList(MFBImageInfo.ImageClass.Aircraft, aircraftID.ToString(CultureInfo.InvariantCulture));
+                il.Refresh();
+                if (il.ImageArray.Count > 0)
+                    lstRecentImages.Add(il.ImageArray[0]);
+                if (lstRecentImages.Count > 10)
+                    break;
+            }
+
+            return lstRecentImages;
         }
         #endregion
 

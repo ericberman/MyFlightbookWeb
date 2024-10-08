@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Items>
   <Item>
-    <Link>~/Default.aspx</Link>
+    <Link>~/mvc/pub</Link>
     <ID>tabHome</ID>
     <Roles></Roles>
   </Item>

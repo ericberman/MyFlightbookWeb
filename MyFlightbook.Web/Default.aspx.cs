@@ -2,7 +2,6 @@ using MyFlightbook;
 using MyFlightbook.FlightStatistics;
 using MyFlightbook.Image;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Web;
 
@@ -15,21 +14,6 @@ using System.Web;
 
 public partial class Public_Home : System.Web.UI.Page
 {
-    protected class AppAreaDescriptor {
-        public string Title { get; set; }
-        public string Link { get; set; }
-        public string Description { get; set; }
-        public tabID TabID { get; set; }
-
-        public AppAreaDescriptor(string title, string link, string description, tabID id)
-        {
-            Title = title;
-            Link = link;
-            Description = description;
-            TabID = id;
-        }
-    }
-
     protected void Page_Load(object sender, EventArgs e)
     {
         Master.SelectedTab = tabID.tabHome;
@@ -43,15 +27,7 @@ public partial class Public_Home : System.Web.UI.Page
 
         if (!IsPostBack)
         {
-            List<AppAreaDescriptor> lst = new List<AppAreaDescriptor>()
-            {
-                new AppAreaDescriptor(Resources.Tabs.TabLogbook, "~/mvc/flights", Branding.ReBrand(Resources.Profile.appDescriptionLogbook), tabID.tabLogbook),
-                new AppAreaDescriptor(Resources.Tabs.TabAircraft, "~/mvc/Aircraft", Branding.ReBrand(Resources.Profile.appDescriptionAircraft), tabID.tabAircraft),
-                new AppAreaDescriptor(Resources.Tabs.TabAirports, "~/mvc/Airport/MapRoute", Branding.ReBrand(Resources.Profile.appDescriptionAirports), tabID.tabMaps),
-                new AppAreaDescriptor(Resources.Tabs.TabInstruction, "~/mvc/training/", Branding.ReBrand(Resources.Profile.appDescriptionTraining), tabID.tabTraining),
-                new AppAreaDescriptor(Resources.Tabs.TabProfile, "~/mvc/prefs", Branding.ReBrand(Resources.Profile.appDescriptionProfile), tabID.tabProfile)
-            };
-            rptFeatures.DataSource = lst;
+            rptFeatures.DataSource = AppAreaDescriptor.DefaultDescriptors;
             rptFeatures.DataBind();
 
             if (User.Identity.IsAuthenticated)
@@ -78,47 +54,6 @@ public partial class Public_Home : System.Web.UI.Page
                 Response.Redirect("DefaultMini.aspx");
         }
 
-        PopulateRecentImages(fs.RecentPublicFlights);
-    }
-
-    protected void PopulateRecentImages(IEnumerable<LogbookEntry> flights)
-    {
-        List<LogbookEntry> lstRecent = new List<LogbookEntry>(flights);
-        List<MFBImageInfo> lstRecentImages = new List<MFBImageInfo>();
-        HashSet<int> recentAircraft = new HashSet<int>();
-
-        foreach (LogbookEntry le in lstRecent)
-        {
-            if (le.FlightImages == null || le.FlightImages.Count == 0)
-                le.PopulateImages();
-            if (le.FlightImages.Count > 0)
-            {
-                foreach (MFBImageInfo mfbii in le.FlightImages)
-                {
-                    if (mfbii.ImageType == MFBImageInfoBase.ImageFileType.JPEG || mfbii.ImageType == MFBImageInfoBase.ImageFileType.S3VideoMP4)
-                    {
-                        lstRecentImages.Add(mfbii);
-                        break;
-                    }
-                }
-            }
-            else
-                recentAircraft.Add(le.AircraftID);
-
-            if (lstRecentImages.Count > 10)
-                break;
-        }
-
-        foreach (int aircraftID in recentAircraft)
-        {
-            ImageList il = new ImageList(MFBImageInfo.ImageClass.Aircraft, aircraftID.ToString(CultureInfo.InvariantCulture));
-            il.Refresh();
-            if (il.ImageArray.Count > 0)
-                lstRecentImages.Add(il.ImageArray[0]);
-            if (lstRecentImages.Count > 10)
-                break;
-        }
-
-        imageSlider.Images = lstRecentImages;
+        imageSlider.Images = fs.RecentImages();
     }
 }

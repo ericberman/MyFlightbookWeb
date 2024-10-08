@@ -1,0 +1,70 @@
+﻿@using MyFlightbook.FlightStatistics;
+@using System.Globalization
+@{
+    ViewBag.Title = User.Identity.IsAuthenticated ?
+        String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageWelcomeBack, MyFlightbook.Profile.GetUser(User.Identity.Name).PreferredGreeting) :
+        String.Format(CultureInfo.CurrentCulture, Resources.Profile.WelcomeTitle, Branding.CurrentBrand.AppName);
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    ViewBag.defaultTab = tabID.tabHome;
+    FlightStats fs = FlightStats.GetFlightStats();
+    string fbfeed = Branding.CurrentBrand.FacebookFeed;
+}
+@if (!String.IsNullOrEmpty(fbfeed))
+{
+    <script type="text/javascript">
+        window.fbAsyncInit = function() { FB.init({appId: '@LocalConfig.SettingForKey("facebookAppId")', autoLogAppEvents: true, xfbml: true, version: 'v5.0'});};
+    </script>
+    <script async defer src="https://connect.facebook.net/en_US/sdk.js"></script>
+}
+@if (!User.Identity.IsAuthenticated)
+{
+    <div id="homePagePromo" class="welcomeHeader"><a href="@("~/mvc/pub/FeatureChart".ToAbsolute())">@Html.Raw(Branding.ReBrand(Resources.Profile.NewAccountPromo))</a></div>
+}
+<table style="width:100%">
+    <tr style="vertical-align:top">
+        <td>
+            <div style="margin-left: auto; margin-right:auto; max-width:700px; text-align:center;">
+                @foreach (AppAreaDescriptor aad in AppAreaDescriptor.DefaultDescriptors)
+                {
+                    <div style="display:inline-block; vertical-align:middle; ">
+                        <div id="@("tabID" + aad.TabID.ToString())" class="featureAreaDescriptorIcon">&nbsp;</div>
+                        <div style="border: 3px solid #aaaaaa; border-radius: 10px; margin: 10px; padding: 10px; height: 120px; width: 180px;">
+                            <div class="featureAreaDescriptionHeader"><a href='@aad.Link'>@aad.Title</a></div>
+                            <div class="featureAreaDescriptionBody">@aad.Description</div>
+                        </div>
+                    </div>
+                }
+                <p>
+                    <span style="font-weight: bold;">@Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsHeader, fs.MaxDays))</span>
+                    @foreach (LinkedString ls in fs.Stats)
+                    {
+                        @:●
+                        if (String.IsNullOrEmpty(ls.Link))
+                        {
+                            @ls.Value
+                        }
+                        else
+                        {
+                            <a href="@ls.Link" target="_blank">@ls.Value</a>
+                        }
+                    }
+                </p>
+                <div style="max-width: 480px; margin-left:auto; margin-right:auto;">@{ Html.RenderAction("ImageSlider", "Image", new { rgImages = fs.RecentImages(), id = "divSlider" }); }</div>
+            </div>
+        </td>
+        <td>
+            @if (!String.IsNullOrEmpty(fbfeed))
+            {
+                <div style="min-width:250px; margin:5px;">
+                    <div class="fb-page" data-href="@Branding.CurrentBrand.FacebookFeed" data-tabs="timeline" data-height="600" data-small-header="true" data-adapt-container-width="true" data-hide-cover="true" data-show-facepile="true">
+                        <blockquote cite="@Branding.CurrentBrand.FacebookFeed" class="fb-xfbml-parse-ignore"><a href="@Branding.CurrentBrand.FacebookFeed">@Branding.CurrentBrand.AppName</a></blockquote>
+                    </div>
+                </div>
+            }
+        </td>
+    </tr>
+</table>
+<div style="text-align:center">
+    @{ Html.RenderAction("RenderGoogleAd", "MFBTemplate", new { fVertical = false }); }
+</div>
+

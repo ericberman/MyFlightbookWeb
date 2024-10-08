@@ -115,7 +115,7 @@ namespace MyFlightbook
             {
                 if (_defFooterLinksMobile == null)
                     _defFooterLinksMobile = new Dictionary<FooterLinkKey, BrandLink>()
-                { { FooterLinkKey.Classic, new BrandLink() { Name = Resources.LocalizedText.footerClassicView, LinkRef = "~/Default.aspx?m=no" } } };
+                { { FooterLinkKey.Classic, new BrandLink() { Name = Resources.LocalizedText.footerClassicView, LinkRef = "~/mvc/pub?m=no" } } };
                 return _defFooterLinksMobile;
             }
         }
@@ -135,7 +135,7 @@ namespace MyFlightbook
                         { FooterLinkKey.FAQ, new BrandLink() {Name = Resources.LocalizedText.footerFAQ, LinkRef = "~/mvc/faq" } },
                         { FooterLinkKey.Videos, new BrandLink() {Name = Resources.LocalizedText.footerVideos, OpenInNewPage=true, LinkRef = VideoRef } },
                         { FooterLinkKey.Blog , new BrandLink() { Name=Resources.LocalizedText.footerBlog, OpenInNewPage = true, LinkRef = BlogAddress } },
-                        { FooterLinkKey.Mobile, new BrandLink() {Name = Resources.LocalizedText.footerMobileAccess, LinkRef = "~/DefaultMini.aspx" } },
+                        { FooterLinkKey.Mobile, new BrandLink() {Name = Resources.LocalizedText.footerMobileAccess, LinkRef = "~/mvc/pub?m=yes" } },
                         { FooterLinkKey.Facebook, new BrandLink() {Name = Branding.ReBrand(Resources.LocalizedText.FollowOnFacebook, this), OpenInNewPage = true, LinkRef = FacebookFeed, ImageRef = "~/images/f_logo_20.png" } },
                         { FooterLinkKey.Twitter, new BrandLink() { Name = Branding.ReBrand(Resources.LocalizedText.FollowOnTwitter, this), OpenInNewPage = true, LinkRef = TwitterFeed, ImageRef = "~/images/twitter_round_20.png" } },
                         { FooterLinkKey.Swag, new BrandLink() {Name = Branding.ReBrand(Resources.LocalizedText.BuySwag, this), OpenInNewPage = true, LinkRef = SwagRef } }

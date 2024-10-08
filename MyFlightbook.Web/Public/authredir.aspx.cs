@@ -73,7 +73,7 @@ namespace MyFlightbook.PublicPages
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            const string szDestErr = "~/Default.aspx";
+            const string szDestErr = "~/mvc/pub";
 
             string szUser = util.GetStringParam(Request, "u");
             string szPass = util.GetStringParam(Request, "p");

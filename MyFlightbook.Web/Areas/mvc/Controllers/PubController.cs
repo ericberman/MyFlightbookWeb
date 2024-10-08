@@ -83,7 +83,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             LogbookEntry le = new LogbookEntry();
             if (id <= 0 || !le.FLoadFromDB(id, User.Identity.Name, LogbookEntryCore.LoadTelemetryOption.MetadataOrDB, true))
-                return Redirect("~/Default.aspx");
+                return Redirect("~/mvc/pub");
 
             if (!le.fIsPublic && (String.Compare(le.User, User.Identity.Name, StringComparison.OrdinalIgnoreCase) != 0)) // not public and this isn't the owner...
                 return Redirect("~/mvc/Airport/MapRoute?sm=1&Airports=" + HttpUtility.UrlEncode(le.Route));
@@ -290,7 +290,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             try
             {
-                if (!await RecaptchaUtil.ValidateRecaptcha(Request["g-recaptcha-response"], "Contact", Request.Url.Host))
+                if (!string.IsNullOrEmpty(LocalConfig.SettingForKey("recaptchaKey")) && !await RecaptchaUtil.ValidateRecaptcha(Request["g-recaptcha-response"], "Contact", Request.Url.Host))
                     throw new InvalidOperationException(Resources.LocalizedText.ValidationRecaptchaFailed);
             }
             catch (HttpRequestException)
@@ -318,12 +318,25 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return View("contact");
         }
 
-        // GET: mvc/Pub - shouldn't ever call.
+        /// <summary>
+        /// Returns the home page for the site, redirecting to mini if needed.
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
-            Response.Redirect("~");
-            Response.End();
-            return null;
+            string s = util.GetStringParam(Request, "m");
+            if (s.Length > 0)
+                util.SetMobile(s.CompareCurrentCultureIgnoreCase("no") != 0);
+
+            // redirect to a mobile view if this is from a mobile device UNLESS cookies suggest to do otherwise.
+            bool fShouldBeMobile = Request.IsMobileSession() && (Request.Cookies[MFBConstants.keyClassic]?.Value ?? "yes").CompareCurrentCultureIgnoreCase("yes") != 0;
+            if (fShouldBeMobile)
+            {
+                util.SetMobile(true);
+                return View("homemini");
+            }
+
+            return View("home");
         }
     }
 }

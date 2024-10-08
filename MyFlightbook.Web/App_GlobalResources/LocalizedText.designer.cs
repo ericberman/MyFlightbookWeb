@@ -2948,6 +2948,60 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to View Aircraft.
+        /// </summary>
+        internal static string HomePageMiniActionAircraft {
+            get {
+                return ResourceManager.GetString("HomePageMiniActionAircraft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter a flight.
+        /// </summary>
+        internal static string HomePageMiniActionNewFlight {
+            get {
+                return ResourceManager.GetString("HomePageMiniActionNewFlight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit your Profile and Preferences.
+        /// </summary>
+        internal static string HomePageMiniActionProfile {
+            get {
+                return ResourceManager.GetString("HomePageMiniActionProfile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ViewRecentFlights.
+        /// </summary>
+        internal static string HomePageMiniActionRecent {
+            get {
+                return ResourceManager.GetString("HomePageMiniActionRecent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View Totals and Currency.
+        /// </summary>
+        internal static string HomePageMiniActionTotals {
+            get {
+                return ResourceManager.GetString("HomePageMiniActionTotals", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What would you like to do?.
+        /// </summary>
+        internal static string HomePageMiniPrompt {
+            get {
+                return ResourceManager.GetString("HomePageMiniPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You may only upload images for which you have all necessary rights to do so..
         /// </summary>
         internal static string ImageDisclaimer {

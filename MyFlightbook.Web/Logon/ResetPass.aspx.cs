@@ -158,7 +158,7 @@ namespace MyFlightbook.LogonPages
 
                     CurrentRequest.Status = PasswordResetRequest.RequestStatus.Success;
                     CurrentRequest.FCommit();
-                    Response.Redirect("~/Default.aspx");
+                    Response.Redirect("~/mvc/pub");
                 }
                 catch (MyFlightbookException ex)
                 {

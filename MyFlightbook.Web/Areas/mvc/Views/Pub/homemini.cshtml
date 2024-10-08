@@ -1,0 +1,18 @@
+﻿@using System.Globalization
+@{
+    Profile pf = User.Identity.IsAuthenticated ? MyFlightbook.Profile.GetUser(User.Identity.Name) : null;
+    ViewBag.Title = User.Identity.IsAuthenticated ?
+        String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageWelcomeBack, pf.PreferredGreeting) :
+        String.Format(CultureInfo.CurrentCulture, Resources.Profile.WelcomeTitle, Branding.CurrentBrand.AppName);
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    ViewBag.defaultTab = tabID.tabHome;
+}
+<div>@Resources.LocalizedText.HomePageMiniPrompt</div>
+<ul>
+    <li><a href="@("~/mvc/flights/minilogbook".ToAbsolute())">@Resources.LocalizedText.HomePageMiniActionNewFlight</a></li>
+    <li><a href="@("~/mvc/flights/minitotals".ToAbsolute())">@Resources.LocalizedText.HomePageMiniActionTotals</a></li>
+    <li><a href="@("~/mvc/Aircraft".ToAbsolute())">@Resources.LocalizedText.HomePageMiniActionAircraft</a></li>
+    <li><a href="@("~/mvc/flights/minirecents".ToAbsolute())">@Resources.LocalizedText.HomePageMiniActionRecent</a></li>
+    <li><a href="@("~/mvc/prefs".ToAbsolute())">@Resources.LocalizedText.HomePageMiniActionProfile</a></li>
+</ul>
+

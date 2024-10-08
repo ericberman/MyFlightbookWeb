@@ -5,7 +5,7 @@
     <asp:Panel runat="server" ID="FullHeader" style="width: 100%">
         <div id="headerBar">
             <div id="headerLogo">
-                <asp:HyperLink ID="lnkLogo" NavigateUrl="~/Default.aspx" runat="server"></asp:HyperLink>
+                <asp:HyperLink ID="lnkLogo" NavigateUrl="~/mvc/pub" runat="server"></asp:HyperLink>
             </div>
             <div id="headerProfile">
                 <div id="headerSearchAndSign">

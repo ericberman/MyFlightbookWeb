@@ -5,7 +5,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2023 MyFlightbook LLC
+ * Copyright (c) 2007-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -36,7 +36,7 @@ namespace MyFlightbook.PublicPages
                 Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/mvc/Pub/ViewFlight/{0}?{1}", id, nvcNew.ToString()));
             }
             else
-                Response.Redirect("~/Default.aspx");
+                Response.Redirect("~/mvc/pub");
         }
    }
 }

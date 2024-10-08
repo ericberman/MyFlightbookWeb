@@ -9,7 +9,7 @@ using System.Xml.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2022 MyFlightbook LLC
+ * Copyright (c) 2008-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -484,6 +484,39 @@ namespace MyFlightbook
                 }
                 return sw.ToString();
             }
+        }
+    }
+
+    /// <summary>
+    /// Descriptor of various areas of the site, with links to the relevant top-level tabs
+    /// </summary>
+    public class AppAreaDescriptor
+    {
+        public string Title { get; set; }
+        public string Link { get; set; }
+        public string Description { get; set; }
+        public tabID TabID { get; set; }
+
+        public AppAreaDescriptor(string title, string link, string description, tabID id)
+        {
+            Title = title;
+            Link = link;
+            Description = description;
+            TabID = id;
+        }
+
+        private static readonly IEnumerable<AppAreaDescriptor> _defaultDescriptors = new AppAreaDescriptor[]
+        {
+            new AppAreaDescriptor(Resources.Tabs.TabLogbook, "~/mvc/flights".ToAbsolute(), Branding.ReBrand(Resources.Profile.appDescriptionLogbook), tabID.tabLogbook),
+            new AppAreaDescriptor(Resources.Tabs.TabAircraft, "~/mvc/Aircraft".ToAbsolute(), Branding.ReBrand(Resources.Profile.appDescriptionAircraft), tabID.tabAircraft),
+            new AppAreaDescriptor(Resources.Tabs.TabAirports, "~/mvc/Airport/MapRoute".ToAbsolute(), Branding.ReBrand(Resources.Profile.appDescriptionAirports), tabID.tabMaps),
+            new AppAreaDescriptor(Resources.Tabs.TabInstruction, "~/mvc/training/".ToAbsolute(), Branding.ReBrand(Resources.Profile.appDescriptionTraining), tabID.tabTraining),
+            new AppAreaDescriptor(Resources.Tabs.TabProfile, "~/mvc/prefs".ToAbsolute(), Branding.ReBrand(Resources.Profile.appDescriptionProfile), tabID.tabProfile)
+        };
+
+        public static IEnumerable<AppAreaDescriptor> DefaultDescriptors
+        {
+            get { return _defaultDescriptors; }
         }
     }
 }

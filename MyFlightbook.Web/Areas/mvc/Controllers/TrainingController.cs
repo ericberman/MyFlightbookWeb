@@ -600,7 +600,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         public ActionResult ConfirmRelationship()
         {
             if (Request["btnCancel"] != null)
-                return Redirect("~/Default.aspx");
+                return Redirect("~/mvc/pub");
             else
             {
                 try

@@ -1615,6 +1615,8 @@
     <Content Include="PlayPen\Web.config" />
     <Content Include="Areas\mvc\Views\oAuth\leonmanage.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\contact.cshtml" />
+    <Content Include="Areas\mvc\Views\Pub\home.cshtml" />
+    <Content Include="Areas\mvc\Views\Pub\homemini.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
