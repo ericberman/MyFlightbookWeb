@@ -147,7 +147,7 @@ namespace MyFlightbook.FlightStatistics
 
         public IEnumerable<MFBImageInfo> RecentImages()
         {
-            List<LogbookEntry> lstRecent = m_lstFlights;
+            List<LogbookEntry> lstRecent = new List<LogbookEntry>(m_lstFlights);    // create a new list in case m_lstFlights is modified.
             List<MFBImageInfo> lstRecentImages = new List<MFBImageInfo>();
             HashSet<int> recentAircraft = new HashSet<int>();
 
