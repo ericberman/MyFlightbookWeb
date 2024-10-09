@@ -589,7 +589,6 @@
     <Content Include="Controls\SponsoredAd.ascx" />
     <Content Include="Controls\TwoFactorAuthVerifyCode.ascx" />
     <Content Include="Default.aspx" />
-    <Content Include="DefaultMini.aspx" />
     <Content Include="Global.asax" />
     <Content Include="HTTP403.htm" />
     <Content Include="HTTP404.htm" />
@@ -1347,7 +1346,6 @@
     <Content Include="Public\ClubsManual_files\image022.jpg" />
     <Content Include="Public\ClubsManual_files\image023.jpg" />
     <Content Include="Public\ClubsManual_files\updatehours.png" />
-    <Content Include="Public\ContactMe.aspx" />
     <Content Include="Public\CrashReport.aspx" />
     <Content Include="Public\CSS\ChecklistBase.css" />
     <Content Include="Public\CSS\jqueryuimods.css" />
@@ -1405,7 +1403,6 @@
     <Content Include="Public\iPhoneImages\iPhone7.png" />
     <Content Include="Public\iPhoneImages\iPhone8.png" />
     <Content Include="Public\PaypalIPNListener.aspx" />
-    <Content Include="Public\RSSCurrency.aspx" />
     <Content Include="Public\Scripts\aircraftcontext.js" />
     <Content Include="Public\Scripts\autoinsert.js" />
     <Content Include="Public\Scripts\CopyClipboard.js" />
@@ -1638,7 +1635,6 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Secure\login.aspx" />
-    <Content Include="Shunt.aspx" />
     <Content Include="Support\2024-06-14 - AddFlysto.sql" />
     <Content Include="Support\2024-06-27 - AddFlightCrewView.txt" />
     <Content Include="Support\2024-10-03 - Add recaptcha.txt" />
@@ -2366,13 +2362,6 @@
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
-    <Compile Include="DefaultMini.aspx.cs">
-      <DependentUpon>DefaultMini.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="DefaultMini.aspx.designer.cs">
-      <DependentUpon>DefaultMini.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -2434,13 +2423,6 @@
     <Compile Include="Public\AWS-SNSListener.aspx.designer.cs">
       <DependentUpon>AWS-SNSListener.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Public\ContactMe.aspx.cs">
-      <DependentUpon>ContactMe.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\ContactMe.aspx.designer.cs">
-      <DependentUpon>ContactMe.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Public\CrashReport.aspx.cs">
       <DependentUpon>CrashReport.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2461,13 +2443,6 @@
     </Compile>
     <Compile Include="Public\PaypalIPNListener.aspx.designer.cs">
       <DependentUpon>PaypalIPNListener.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Public\RSSCurrency.aspx.cs">
-      <DependentUpon>RSSCurrency.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\RSSCurrency.aspx.designer.cs">
-      <DependentUpon>RSSCurrency.aspx</DependentUpon>
     </Compile>
     <Compile Include="Public\StatsForMail.aspx.cs">
       <DependentUpon>StatsForMail.aspx</DependentUpon>
@@ -2517,13 +2492,6 @@
     </Compile>
     <Compile Include="Secure\login.aspx.designer.cs">
       <DependentUpon>login.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Shunt.aspx.cs">
-      <DependentUpon>Shunt.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Shunt.aspx.designer.cs">
-      <DependentUpon>Shunt.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
