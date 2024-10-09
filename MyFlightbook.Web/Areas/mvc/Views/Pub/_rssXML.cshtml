@@ -13,6 +13,7 @@
         <title>@String.Format(System.Globalization.CultureInfo.CurrentCulture, fTotals ? Resources.Currency.RSSTitleTotals : Resources.Currency.RSSTitle, Branding.CurrentBrand.AppName)</title>
         <link>https://@Request.Url.Host</link>
         <ttl>2</ttl>
+        <atom:link href="@Request.Url.ToString()" rel="self" type="application/rss+xml" />
         <item>
             <title>@String.Format(CultureInfo.CurrentCulture, fTotals ? Resources.Currency.RSSHeaderTotals : Resources.Currency.RSSHeader, szUser, DateTime.Now.ToShortDateString())</title>
             <description>
@@ -30,6 +31,5 @@
                 ]]>
             </description>
         </item>
-        <atom:link href="@Request.Url.ToString()" rel="self" type="application/rss+xml" />
     </channel>
 </rss>
