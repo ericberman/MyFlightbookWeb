@@ -274,7 +274,7 @@
                 <div>@{ Html.RenderAction("PropEdit", "FlightEdit", new { fp = fpBlockIn, fHHMM = fHHMM, timeZone = defaultTZ, fHidden = false }); }</div>
             </div>
         }
-        <div class="flightinfoitem" id="lblFlightStart" style="margin-right: 1em; @(pfTarget.UseFlight || le.FlightStart.HasValue() || le.FlightEnd.HasValue() ? string.Empty : "display: none;")">
+        <div class="flightinfoitem" style="margin-right: 1em; @(pfTarget.UseFlight || le.FlightStart.HasValue() || le.FlightEnd.HasValue() ? string.Empty : "display: none;")">
             <div style="display: none;" id="lblFlightStartTip">
                 <p style="font-weight: bold;">@Resources.LogbookEntry.FlightStartShort.IndicateUTCOrCustomTimeZone(defaultTZ)</p>
                 <p style="font-weight: bold;">@defaultTZ</p>
