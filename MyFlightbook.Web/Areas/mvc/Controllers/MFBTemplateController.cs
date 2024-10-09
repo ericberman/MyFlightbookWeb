@@ -314,7 +314,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             // Handle parameters here.
             if (ShuntState.IsShunted && String.IsNullOrEmpty(Request["noshunt"]))
             {
-                Response.Redirect(VirtualPathUtility.ToAbsolute("~/Shunt.aspx"));
+                Response.Redirect(VirtualPathUtility.ToAbsolute("~/mvc/pub/shunt"));
                 Response.End();
                 return null;
             }

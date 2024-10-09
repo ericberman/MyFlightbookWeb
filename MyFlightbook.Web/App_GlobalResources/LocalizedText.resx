@@ -2066,4 +2066,10 @@
   <data name="RSSCurrencyDescription" xml:space="preserve">
     <value>My Currency from %APP_NAME%</value>
   </data>
+  <data name="ShuntTitle" xml:space="preserve">
+    <value>%APP_NAME% Down for Maintenance</value>
+  </data>
+  <data name="ShuntHeader" xml:space="preserve">
+    <value>Scheduled Maintenance Underway</value>
+  </data>
 </root>

@@ -160,7 +160,7 @@ namespace MyFlightbook.Web
             if (!IsPostBack)
             {
                 if (ShuntState.IsShunted && String.IsNullOrEmpty(Request["noshunt"]))
-                    Response.Redirect("~/Shunt.aspx");
+                    Response.Redirect("~/mvc/pub/shunt");
 
                 // if "m=no" is passed in, override mobile detection and force classic view
                 if (util.GetStringParam(Request, "m") == "no")

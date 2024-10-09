@@ -1620,6 +1620,7 @@
     <Content Include="Areas\mvc\Views\Pub\rss.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\_rssHTML.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\_rssXML.cshtml" />
+    <Content Include="Areas\mvc\Views\Pub\shunt.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />

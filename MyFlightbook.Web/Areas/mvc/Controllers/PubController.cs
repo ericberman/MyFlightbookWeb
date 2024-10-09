@@ -348,6 +348,11 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return View("contact");
         }
 
+        public ActionResult Shunt()
+        {
+            return View("shunt");
+        }
+
         /// <summary>
         /// Returns the home page for the site, redirecting to mini if needed.
         /// </summary>

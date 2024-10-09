@@ -5206,6 +5206,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Scheduled Maintenance Underway.
+        /// </summary>
+        internal static string ShuntHeader {
+            get {
+                return ResourceManager.GetString("ShuntHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to %APP_NAME% Down for Maintenance.
+        /// </summary>
+        internal static string ShuntTitle {
+            get {
+                return ResourceManager.GetString("ShuntTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sign In.
         /// </summary>
         internal static string SignInButtonTitle {

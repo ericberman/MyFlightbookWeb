@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+@using System.Configuration
+@{
+    Layout = null;
+    string fbID = LocalConfig.SettingForKey("facebookAppId");
+}
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@Branding.ReBrand(Resources.LocalizedText.ShuntTitle)</title>
+    <link href="@("~/Public/stylesheet.css".ToAbsolute())" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div>
+        <a href="@("~/mvc/pub".ToAbsolute())"><img src="@("~/Images/mfblogonew.png".ToAbsolute())" /></a>
+        <h1>@Resources.LocalizedText.ShuntHeader</h1>
+        <p>@Branding.ReBrand((string)ConfigurationManager.AppSettings["ShuntMessage"])</p>
+        @if (!String.IsNullOrEmpty(fbID))
+        {
+            <script>
+(function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.9&appId=@fbID";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+            </script>
+            <div class="fb-page" data-href="https://www.facebook.com/MyFlightbook/" data-tabs="timeline" data-height="600" data-small-header="true" data-adapt-container-width="true" data-hide-cover="true" data-show-facepile="true">
+                <blockquote cite="https://www.facebook.com/MyFlightbook/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/MyFlightbook/">@Branding.CurrentBrand.AppName</a></blockquote>
+            </div>
+        }
+    </div>
+</body>
+</html>
