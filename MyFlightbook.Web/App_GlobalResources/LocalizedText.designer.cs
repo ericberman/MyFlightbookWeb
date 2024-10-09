@@ -4844,6 +4844,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to My Currency from %APP_NAME%.
+        /// </summary>
+        internal static string RSSCurrencyDescription {
+            get {
+                return ResourceManager.GetString("RSSCurrencyDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you subscribe to an RSS feed or use &quot;gadgets&quot;, you can put your currency or totals there.  RSS feeds are XML, some gadgets use XML others use HTML.  Copy and paste the URL below as you like.  BE CAREFUL, though - anybody with these URLs will see your live data!.
+        /// </summary>
+        internal static string RSSFeedDescription {
+            get {
+                return ResourceManager.GetString("RSSFeedDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add to Google.
         /// </summary>
         internal static string RSSGoogle {
@@ -4853,11 +4871,74 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to RSS Feed of Flight Currency.
+        ///   Looks up a localized string similar to RSS Feed.
+        /// </summary>
+        internal static string RSSHeader {
+            get {
+                return ResourceManager.GetString("RSSHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Currency (HTML) URL:.
+        /// </summary>
+        internal static string RSSHTMLCurrencyPrompt {
+            get {
+                return ResourceManager.GetString("RSSHTMLCurrencyPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Totals (HTML) URL:.
+        /// </summary>
+        internal static string RSSHTMLTotalsPrompt {
+            get {
+                return ResourceManager.GetString("RSSHTMLTotalsPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please sign in and connect using a secure connection to view this page.
+        /// </summary>
+        internal static string RSSNotSignedIn {
+            get {
+                return ResourceManager.GetString("RSSNotSignedIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to RSS Feed.
         /// </summary>
         internal static string RSSTitle {
             get {
                 return ResourceManager.GetString("RSSTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to My Totals from %APP_NAME%.
+        /// </summary>
+        internal static string RSSTotalsDescription {
+            get {
+                return ResourceManager.GetString("RSSTotalsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Currency (XML) URL:.
+        /// </summary>
+        internal static string RSSXmlCurrencyPrompt {
+            get {
+                return ResourceManager.GetString("RSSXmlCurrencyPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Totals (XML) URL:.
+        /// </summary>
+        internal static string RSSXmlTotalsPrompt {
+            get {
+                return ResourceManager.GetString("RSSXmlTotalsPrompt", resourceCulture);
             }
         }
         

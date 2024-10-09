@@ -1,0 +1,53 @@
+﻿@using MyFlightbook
+@using MyFlightbook.Encryptors
+@using System.Globalization
+@{
+    ViewBag.Title = Resources.LocalizedText.RSSHeader;
+    ViewBag.defaultTab = tabID.tabHome;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+
+    if (User.Identity.IsAuthenticated && Request.IsSecureConnection)
+    {
+        SharedDataEncryptor ec = new SharedDataEncryptor("mfb");
+        string szEncrypted = ec.Encrypt(User.Identity.Name);
+        string szXMLTotals = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?uid={2}&t=1", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/mvc/pub/rss"), HttpUtility.UrlEncode(szEncrypted));
+        string szHTMLTotals = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?uid={2}&t=1&HTML=1", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/mvc/pub/rss"), HttpUtility.UrlEncode(szEncrypted));
+        string szXMLCurrency = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?uid={2}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/mvc/pub/rss"), HttpUtility.UrlEncode(szEncrypted));
+        string szHTMLCurrency = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?uid={2}&HTML=1", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/mvc/pub/rss"), HttpUtility.UrlEncode(szEncrypted));
+        <script src="@("~/Public/Scripts/CopyClipboard.js".ToAbsolute())"></script>
+        <p>@Resources.LocalizedText.RSSFeedDescription</p>
+
+        <p>@Resources.LocalizedText.RSSXmlTotalsPrompt</p>
+        <div>
+            <input type="text" readonly style="width: 50em;" id="txtTotalsXML" value="@szXMLTotals" />
+            <img style="vertical-align:text-bottom;" src="@("~/images/copyflight.png".ToAbsolute())" alt="@Resources.LocalizedText.CopyToClipboard" title="@Resources.LocalizedText.CopyToClipboard"
+                 onclick="javascript:copyClipboard(null, 'txtTotalsXML', true, 'lblCopiedTX');return false;" />
+            <span id="lblCopiedTX" class="hintPopup" style="display:none; font-weight:bold; font-size: 10pt; color:black; ">@Resources.LocalizedText.CopiedToClipboard</span>
+        </div>
+        <p>@Resources.LocalizedText.RSSHTMLTotalsPrompt</p>
+        <div>
+            <input type="text" readonly style="width: 50em;" id="txtTotalsHTML" value="@szHTMLTotals" />
+            <img style="vertical-align:text-bottom;" src="@("~/images/copyflight.png".ToAbsolute())" alt="@Resources.LocalizedText.CopyToClipboard" title="@Resources.LocalizedText.CopyToClipboard"
+                 onclick="javascript:copyClipboard(null, 'txtTotalsHTML', true, 'lblCopiedTH');return false;" />
+            <span id="lblCopiedTH" class="hintPopup" style="display:none; font-weight:bold; font-size: 10pt; color:black; ">@Resources.LocalizedText.CopiedToClipboard</span>
+        </div>
+        <p>@Resources.LocalizedText.RSSXmlCurrencyPrompt</p>
+        <div>
+            <input type="text" readonly style="width: 50em;" id="txtCurrencyXML" value="@szXMLCurrency" />
+            <img style="vertical-align:text-bottom;" src="@("~/images/copyflight.png".ToAbsolute())" alt="@Resources.LocalizedText.CopyToClipboard" title="@Resources.LocalizedText.CopyToClipboard"
+                 onclick="javascript:copyClipboard(null, 'txtCurrencyXML', true, 'lblCopiedCX');return false;" />
+            <span id="lblCopiedCX" class="hintPopup" style="display:none; font-weight:bold; font-size: 10pt; color:black; ">@Resources.LocalizedText.CopiedToClipboard</span>
+        </div>
+        <p>@Resources.LocalizedText.RSSHTMLCurrencyPrompt</p>
+        <div>
+            <input type="text" readonly style="width: 50em;" id="txtCurrencyHTML" value="@szHTMLCurrency" />
+            <img style="vertical-align:text-bottom;" src="@("~/images/copyflight.png".ToAbsolute())" alt="@Resources.LocalizedText.CopyToClipboard" title="@Resources.LocalizedText.CopyToClipboard"
+                 onclick="javascript:copyClipboard(null, 'txtCurrencyHTML', true, 'lblCopiedCH');return false;" />
+            <span id="lblCopiedCH" class="hintPopup" style="display:none; font-weight:bold; font-size: 10pt; color:black; ">@Resources.LocalizedText.CopiedToClipboard</span>
+        </div>
+    }
+    else
+    {
+        <p class="error">@Resources.LocalizedText.RSSNotSignedIn</p>
+    }
+}

@@ -1,0 +1,28 @@
+﻿@using System.Globalization
+@using MyFlightbook.Currency
+@{ 
+    string szUser = ViewBag.userName;
+    string debug = ViewBag.debug;
+    bool fTotals = ViewBag.fTotals;
+}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="@String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Request.Url.Host, MFBConstants.BaseStylesheet.ToAbsolute())" />
+</head>
+<body>
+    @if (fTotals)
+    {
+        UserTotals ut = new UserTotals(szUser, new FlightQuery(szUser), true);
+        ut.DataBind();
+        Html.RenderAction("TotalsForUser", "Flights", new { rgti = ut.Totals, userName = szUser, linkItems = true, grouped = false });
+    }
+    else
+    {
+        Html.RenderAction("CurrencyForUser", "Flights", new { rgcsi = CurrencyStatusItem.GetCurrencyItemsForUser(szUser), userName = szUser, linkItems = true, useInlineFormatting = true });
+    }
+    <!-- @debug -->
+</body>
+</html>
+

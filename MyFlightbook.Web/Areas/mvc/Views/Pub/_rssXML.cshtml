@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    @using System.Globalization
+    @using MyFlightbook.Currency
+    @{
+        string szUser = ViewBag.userName;
+        string debug = ViewBag.debug;
+        bool fTotals = ViewBag.fTotals;
+        Response.ContentType = "text/xml";
+    }
+    <channel>
+        <description>@Branding.ReBrand(fTotals ? Resources.LocalizedText.RSSTotalsDescription : Resources.LocalizedText.RSSCurrencyDescription)</description>
+        <title>@String.Format(System.Globalization.CultureInfo.CurrentCulture, fTotals ? Resources.Currency.RSSTitleTotals : Resources.Currency.RSSTitle, Branding.CurrentBrand.AppName)</title>
+        <link>https://@Request.Url.Host</link>
+        <ttl>2</ttl>
+        <item>
+            <title>@String.Format(CultureInfo.CurrentCulture, fTotals ? Resources.Currency.RSSHeaderTotals : Resources.Currency.RSSHeader, szUser, DateTime.Now.ToShortDateString())</title>
+            <description>
+                <![CDATA[
+                @if (fTotals)
+                {
+                    UserTotals ut = new UserTotals(szUser, new FlightQuery(szUser), true);
+                    ut.DataBind();
+                    Html.RenderAction("TotalsForUser", "Flights", new { rgti = ut.Totals, userName = szUser, linkItems = true, grouped = false });
+                }
+                else
+                {
+                    Html.RenderAction("CurrencyForUser", "Flights", new { rgcsi = CurrencyStatusItem.GetCurrencyItemsForUser(szUser), userName = szUser, linkItems = true, useInlineFormatting = true });
+                }
+                ]]>
+            </description>
+        </item>
+        <atom:link href="@Request.Url.ToString()" rel="self" type="application/rss+xml" />
+    </channel>
+</rss>

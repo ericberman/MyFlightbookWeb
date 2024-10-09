@@ -312,6 +312,36 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return View("contact");
         }
 
+        public ActionResult RSS(string uid, string HTML = null, string t = null)
+        {
+            if (uid == null)
+                return View("rss");
+
+            string szUser = string.Empty;
+            string szDebug = string.Empty;
+            if (String.IsNullOrEmpty(uid))
+            {
+                if (User.Identity.IsAuthenticated)
+                {
+                    szDebug = "Using cached credentials...";
+                    szUser = User.Identity.Name;
+                }
+                else
+                    throw new UnauthorizedAccessException();
+            }
+            else
+            {
+                SharedDataEncryptor ec = new SharedDataEncryptor("mfb");
+                szDebug = "original uid=" + Request.Params["uid"] + " fixed szUid=" + uid + " and szUser=" + szUser + " and timestamp = " + DateTime.Now.ToLongDateString() + DateTime.Now.ToLongTimeString();
+                szUser = ec.Decrypt(uid);
+            }
+
+            ViewBag.userName = szUser;
+            ViewBag.debug = szDebug;
+            ViewBag.fTotals = ((t ?? string.Empty).CompareCurrentCulture("1") == 0);
+            return PartialView((HTML ?? string.Empty).CompareCurrentCultureIgnoreCase("1") == 0 ? "_rssHTML" : "_rssXML");
+        }
+
         [HttpGet]
         public ActionResult Contact()
         {

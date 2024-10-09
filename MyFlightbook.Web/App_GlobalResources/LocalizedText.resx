@@ -527,7 +527,7 @@
     <value>Add to Google</value>
   </data>
   <data name="RSSTitle" xml:space="preserve">
-    <value>RSS Feed of Flight Currency</value>
+    <value>RSS Feed</value>
   </data>
   <data name="TweetThis" xml:space="preserve">
     <value>Tweet this</value>
@@ -2038,5 +2038,32 @@
   </data>
   <data name="HomePageMiniActionProfile" xml:space="preserve">
     <value>Edit your Profile and Preferences</value>
+  </data>
+  <data name="RSSHeader" xml:space="preserve">
+    <value>RSS Feed</value>
+  </data>
+  <data name="RSSFeedDescription" xml:space="preserve">
+    <value>If you subscribe to an RSS feed or use "gadgets", you can put your currency or totals there.  RSS feeds are XML, some gadgets use XML others use HTML.  Copy and paste the URL below as you like.  BE CAREFUL, though - anybody with these URLs will see your live data!</value>
+  </data>
+  <data name="RSSXmlTotalsPrompt" xml:space="preserve">
+    <value>Totals (XML) URL:</value>
+  </data>
+  <data name="RSSHTMLTotalsPrompt" xml:space="preserve">
+    <value>Totals (HTML) URL:</value>
+  </data>
+  <data name="RSSXmlCurrencyPrompt" xml:space="preserve">
+    <value>Currency (XML) URL:</value>
+  </data>
+  <data name="RSSHTMLCurrencyPrompt" xml:space="preserve">
+    <value>Currency (HTML) URL:</value>
+  </data>
+  <data name="RSSNotSignedIn" xml:space="preserve">
+    <value>Please sign in and connect using a secure connection to view this page</value>
+  </data>
+  <data name="RSSTotalsDescription" xml:space="preserve">
+    <value>My Totals from %APP_NAME%</value>
+  </data>
+  <data name="RSSCurrencyDescription" xml:space="preserve">
+    <value>My Currency from %APP_NAME%</value>
   </data>
 </root>

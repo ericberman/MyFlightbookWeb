@@ -230,15 +230,12 @@ namespace MyFlightbook
             // only offer RSS feed on a secure, authenticated connection.
             if (!String.IsNullOrWhiteSpace(szUser) && (HttpContext.Current?.Request?.IsAuthenticated ?? false) && HttpContext.Current.Request.IsSecureConnection)
             {
-                Encryptors.SharedDataEncryptor ec = new Encryptors.SharedDataEncryptor("mfb");
-                string szEncrypted = ec.Encrypt(szUser);
-                BrandLink l = new BrandLink()
+                d[FooterLinkKey.RSS] = new BrandLink()
                 {
                     ImageRef = "~/images/xml.gif",
                     Name = Resources.LocalizedText.RSSTitle,
-                    LinkRef = String.Format(System.Globalization.CultureInfo.InvariantCulture, "https://{0}{1}?uid={2}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/Public/RSSCurrency.aspx"), HttpUtility.UrlEncode(szEncrypted))
+                    LinkRef = "~/mvc/pub/rss"
                 };
-                d[FooterLinkKey.RSS] = l;
             }
 
             return (IReadOnlyDictionary<FooterLinkKey, BrandLink>) d;
