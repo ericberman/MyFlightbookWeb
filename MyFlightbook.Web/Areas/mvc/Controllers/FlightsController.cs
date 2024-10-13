@@ -958,6 +958,20 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
         #endregion
 
+        #region Nightly Email
+        [HttpGet]
+        public ActionResult NightlyEmail(string k, string u, string p)
+        {
+            if (!IsLocalCall())
+                throw new InvalidOperationException("This endpoint may only be called internally");
+
+            ViewBag.szAuthKey = k;
+            ViewBag.username = u;
+            ViewBag.szParam = p;
+            return View("nightlyEmail");
+        }
+        #endregion
+
         // GET: mvc/Flights
         #region Main Logbook
         private ViewResult MainLogbookInternal(FlightQuery fq, bool fPropDeleteClicked = false, string propToDelete = null)

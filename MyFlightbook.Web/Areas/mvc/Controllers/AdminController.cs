@@ -3,6 +3,7 @@ using MyFlightbook.Charting;
 using MyFlightbook.Histogram;
 using MyFlightbook.Image;
 using MyFlightbook.Instruction;
+using MyFlightbook.Subscriptions;
 using MyFlightbook.Web.Admin;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ using System.Web.Mvc;
 
 /******************************************************
  * 
- * Copyright (c) 2023 MyFlightbook LLC
+ * Copyright (c) 2023-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -97,22 +98,43 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #endregion
 
         #region Misc - Nightly run
+        private static void StartNightlyRun(int dbg = 0, string userRestriction = null, string tasksToRun = null)
+        {
+            // request came from this machine - make a request to ourselves and send it out in email
+            EmailSubscriptionManager em = new EmailSubscriptionManager() { ActiveBrand = Branding.CurrentBrand };
+            if (dbg != 0 && !String.IsNullOrEmpty(userRestriction))
+                em.UserRestriction = userRestriction;
+            if (!String.IsNullOrEmpty(tasksToRun))
+                em.TasksToRun = Enum.TryParse(tasksToRun, out EmailSubscriptionManager.SelectedTasks tasks) ?tasks : EmailSubscriptionManager.SelectedTasks.All;
+            new Thread(new ThreadStart(em.NightlyRun)).Start();
+        }
+
         [HttpPost]
         [Authorize]
         public string KickOffNightlyRun()
         {
             return SafeOp(ProfileRoles.maskSiteAdminOnly, () =>
             {
-                string szURL = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Request.Url.Host, VirtualPathUtility.ToAbsolute("~/public/TotalsAndcurrencyEmail.aspx"));
-                using (System.Net.WebClient wc = new System.Net.WebClient())
-                {
-                    byte[] rgdata = wc.DownloadData(szURL);
-                    string szContent = Encoding.UTF8.GetString(rgdata);
-                    if (!szContent.Contains("-- SuccessToken --"))
-                        throw new InvalidOperationException();
-                    return string.Empty;
-                }
+                StartNightlyRun();
+                return string.Empty;
             });
+        }
+
+        /// <summary>
+        /// Kicks off a nightly email run MUST BE CALLED FROM LOCAL MACHINE
+        /// </summary>
+        /// <param name="dbg">If non-zero, then limits to the specified user</param>
+        /// <param name="tasks">If provided, limits to the specified task (e.g., just cloud backup, for example)</param>
+        /// <returns>Status</returns>
+        /// <exception cref="UnauthorizedAccessException"></exception>
+        [HttpGet]
+        public ActionResult NightlyRun(int dbg = 0, string tasks = null)
+        {
+            if (!IsLocalCall())
+                throw new UnauthorizedAccessException("NightlyRun can ONLY be called from the local machine.  Otherwise, use the admin tool");
+
+            StartNightlyRun(dbg, User.Identity.IsAuthenticated ? User.Identity.Name : null, tasks);
+            return Content("Success - nightly run has been started");
         }
         #endregion
 
@@ -238,7 +260,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #endregion
 
         #region Images
-
         private static void CacheProgress(string key, StringBuilder sb)
         {
             HttpRuntime.Cache.Add(key, sb, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 30, 0), CacheItemPriority.Normal, null);
@@ -425,7 +446,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #endregion
 
         #region Full page endpoints
-
         [HttpGet]
         [Authorize]
         public ActionResult Images(string id = null, int skip = 0)
@@ -444,13 +464,39 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             }
         }
 
+        /// <summary>
+        /// Emails nightly stats.  MUST be called from the local machine OR by 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<ActionResult> NightlyStats()
+        {
+            if (!IsLocalCall())
+                CheckAuth(ProfileRoles.maskCanReport);
+
+            AdminStats astats = new AdminStats();
+            if (await astats.Refresh(false))
+            {
+                ViewBag.stats = astats;
+                ViewBag.emailOnly = true;
+                util.NotifyAdminEvent(String.Format(CultureInfo.CurrentCulture,
+                    "{0} site stats as of {1} {2}",
+                    Request.Url.Host,
+                    DateTime.Now.ToShortDateString(),
+                    DateTime.Now.ToShortTimeString()),
+                    RenderViewToString(ControllerContext, "adminStatsNightlyMail", null),
+                    ProfileRoles.maskCanReport);
+            }
+
+            return Content("Success!");
+        }
+
         [HttpGet]
         public async Task<ActionResult> Stats(bool fForEmail = false)
         {
             // Allow local requests, unless you are authenticated AND can report AND not requesting the full page
             // Request.islocal doesn't work when we access via dns name, so actually check IP addresses.
-            string szIPThis = System.Net.Dns.GetHostAddresses(Request.Url.Host)[0].ToString();
-            if (!fForEmail || String.Compare(Request.UserHostAddress, szIPThis, StringComparison.CurrentCultureIgnoreCase) != 0)
+            if (!fForEmail || !IsLocalCall())
                 CheckAuth(ProfileRoles.maskCanReport);
 
             AdminStats astats = new AdminStats();
@@ -459,94 +505,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 ViewBag.stats = astats;
                 ViewBag.emailOnly = fForEmail;
 
-                GoogleChartData newUserChart = new GoogleChartData()
-                {
-                    ChartType = GoogleChartType.LineChart,
-                    XDataType = GoogleColumnDataType.date,
-                    YDataType = GoogleColumnDataType.number,
-                    Y2DataType = GoogleColumnDataType.number,
-                    UseMonthYearDate = true,
-                    Title = "Number of Users",
-                    LegendType = GoogleLegendType.bottom,
-                    TickSpacing = 1,
-                    SlantAngle = 0,
-                    XLabel = "Year/Month",
-                    YLabel = "New Users",
-                    Y2Label = "Cumulative Users",
-                    Width = 800,
-                    Height = 400,
-                    ContainerID = "newUserDiv"
-                };
-                foreach (NewUserStats nus in astats.NewUserStatsMonthly)
-                {
-                    newUserChart.XVals.Add(nus.DisplayPeriod);
-                    newUserChart.YVals.Add(nus.NewUsers);
-                    newUserChart.Y2Vals.Add(nus.RunningTotal);
-                }
-                ViewBag.newUserChart = newUserChart;
 
-                if (!fForEmail)
-                {
-                    GoogleChartData userActivityChart = new GoogleChartData()
-                    {
-                        LegendType = GoogleLegendType.right,
-                        UseMonthYearDate = true,
-                        XDataType = GoogleColumnDataType.date,
-                        Title = "User Activity",
-                        XLabel = "Date of Last Activity",
-                        YLabel = "Users",
-                        SlantAngle = 90,
-                        ChartType = GoogleChartType.LineChart,
-                        Width = 800,
-                        Height = 400,
-                        ContainerID = "userActivityDiv"
-                    };
-                    foreach (UserActivityStats uas in astats.UserActivity)
-                    {
-                        userActivityChart.XVals.Add(uas.Date);
-                        userActivityChart.YVals.Add(uas.Count);
-                    }
-                    ViewBag.activityChart = userActivityChart;
-
-                    GoogleChartData flightsByDateChart = new GoogleChartData()
-                    {
-                        LegendType = GoogleLegendType.bottom,
-                        Title = "Flights recorded / month",
-                        XDataType = GoogleColumnDataType.@string,
-                        YDataType = GoogleColumnDataType.number,
-                        UseMonthYearDate = true,
-                        Y2DataType = GoogleColumnDataType.number,
-                        XLabel = "Flights/Month",
-                        TickSpacing = 36,
-                        YLabel = "Flights",
-                        Y2Label = "Running Total",
-                        SlantAngle = 90,
-                        ChartType = GoogleChartType.LineChart,
-                        Width = 1000,
-                        Height = 500,
-                        ContainerID = "flightsByDateDiv"
-                    };
-                    YearMonthBucketManager bmFlights = new YearMonthBucketManager() { BucketSelectorName = "DateRange" };
-
-                    HistogramManager hmFlightsByDate = new HistogramManager()
-                    {
-                        SourceData = astats.FlightsByDate,
-                        SupportedBucketManagers = new BucketManager[] { bmFlights },
-                        Values = new HistogramableValue[] { new HistogramableValue("DateRange", "Flights", HistogramValueTypes.Time) }
-                    };
-                    bmFlights.ScanData(hmFlightsByDate);
-
-                    using (DataTable dt = bmFlights.ToDataTable(hmFlightsByDate))
-                    {
-                        foreach (DataRow dr in dt.Rows)
-                        {
-                            flightsByDateChart.XVals.Add((string)dr["DisplayName"]);
-                            flightsByDateChart.YVals.Add((int)Convert.ToDouble(dr["Flights"], CultureInfo.InvariantCulture));
-                            flightsByDateChart.Y2Vals.Add((int)Convert.ToDouble(dr["Flights Running Total"], CultureInfo.InvariantCulture));
-                        }
-                    }
-                    ViewBag.flightsByDateChart = flightsByDateChart;
-                }
                 return View("stats");
             }
             else

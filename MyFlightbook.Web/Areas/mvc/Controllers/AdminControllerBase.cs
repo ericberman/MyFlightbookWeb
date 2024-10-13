@@ -1,5 +1,6 @@
 ﻿using Google.Authenticator;
 using System;
+using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -15,6 +16,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 {
     public class AdminControllerBase : Controller
     {
+        #region authentication/authorization
         /// <summary>
         /// Determines if the user has the requested role (for admin operations).
         /// </summary>
@@ -28,6 +30,35 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             if (!User.Identity.IsAuthenticated || (((uint)MyFlightbook.Profile.GetUser(User.Identity.Name).Role & roleMask) == 0))
                 throw new UnauthorizedAccessException("Attempt to access an admin page by an unauthorized user: " + User.Identity.Name);
         }
+
+        protected bool IsLocalCall()
+        {
+            string szIPThis = Dns.GetHostAddresses(Request.Url.Host)[0].ToString();
+            return Request.UserHostAddress.CompareCurrentCultureIgnoreCase(szIPThis) == 0;
+        }
+        #endregion
+
+        #region Non-standard page renderings
+        public static string RenderViewToString(ControllerContext context, string viewName, object model)
+        {
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+
+            var viewEngineResult = ViewEngines.Engines.FindView(context, viewName, null);
+            if (viewEngineResult.View == null)
+                throw new FileNotFoundException($"View '{viewName}' was not found.");
+
+            var view = viewEngineResult.View;
+            context.Controller.ViewData.Model = model;
+
+            using (var stringWriter = new StringWriter())
+            {
+                var viewContext = new ViewContext(context, view, context.Controller.ViewData, context.Controller.TempData, stringWriter);
+                view.Render(viewContext, stringWriter);
+                return stringWriter.GetStringBuilder().ToString();
+            }
+        }
+        #endregion
 
         #region SafeOp - return an actionresult with a naked error (no html error) as oppropriate
         /// <summary>

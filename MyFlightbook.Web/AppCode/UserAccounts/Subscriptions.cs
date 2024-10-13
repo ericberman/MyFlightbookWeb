@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using System.Web;
 using MyFlightbook.Encryptors;
 using static MyFlightbook.CloudStorage.BoxDrive;
+using System.Collections.Specialized;
+using System.Net.Http;
 
 /******************************************************
  * 
@@ -196,7 +198,7 @@ namespace MyFlightbook.Subscriptions
         /// <summary>
         /// Sends the nightly/monthly emails for users that have requested it.
         /// </summary>
-        private void SendNightlyEmails()
+        private async Task<bool> SendNightlyEmails()
         {
             // Find all users who qualify for expiring currency notifications - they may trigger an early email.
             List<EarnedGratuity> lstUsersWithExpiringCurrencies = EarnedGratuity.GratuitiesForUser(null, Gratuity.GratuityTypes.CurrencyAlerts);
@@ -227,7 +229,7 @@ namespace MyFlightbook.Subscriptions
                 }
                 if (expiringCurrencies.Any())
                 {
-                    if (SendMailForUser(pf, Resources.Profile.EmailCurrencyExpiringMailSubject, string.Empty))
+                    if (await SendMailForUser(pf, Resources.Profile.EmailCurrencyExpiringMailSubject, string.Empty))
                     {
                         // Don't send the weekly mail, since we just pre-empted it.
                         lstUsersToSend.RemoveAll(p => pf.UserName.CompareCurrentCultureIgnoreCase(eg.Username) == 0);
@@ -239,7 +241,7 @@ namespace MyFlightbook.Subscriptions
 
             foreach (Profile pf in lstUsersToSend)
             {
-                if (SendMailForUser(pf, Resources.Profile.EmailWeeklyMailSubject, String.Empty))
+                if (await SendMailForUser(pf, Resources.Profile.EmailWeeklyMailSubject, String.Empty))
                 {
                     pf.LastEmailDate = DateTime.Now;
                     pf.FCommit();
@@ -259,7 +261,7 @@ namespace MyFlightbook.Subscriptions
 
                 // We don't update the last-email sent on this because this email is asynchronous - i.e., not dependent on any other mail that was sent.
                 foreach (Profile pf in lstUsersToSend)
-                    SendMailForUser(pf, szSubject, "monthly");
+                    await SendMailForUser(pf, szSubject, "monthly");
             }
 
             // Do a pending flights reminder - every week or so
@@ -274,6 +276,8 @@ namespace MyFlightbook.Subscriptions
                         new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, true);
                 }
             }
+
+            return true;
         }
 
         private async Task<bool> BackupDropbox(LogbookBackup lb, Profile pf, StringBuilder sb, StringBuilder sbFailures)
@@ -608,7 +612,7 @@ namespace MyFlightbook.Subscriptions
                 if (ActiveBrand == null)
                     ActiveBrand = Branding.CurrentBrand;
                 if (TasksToRun == SelectedTasks.All || TasksToRun == SelectedTasks.EmailOnly)
-                    SendNightlyEmails();
+                    await SendNightlyEmails().ConfigureAwait(false);
 
                 // Do any Cloud Storage updates
                 if (TasksToRun == SelectedTasks.All || TasksToRun == SelectedTasks.CloudStorageOnly)
@@ -626,7 +630,6 @@ namespace MyFlightbook.Subscriptions
             }
 
             EventRecorder.LogCall("Ended nightly run");
-
         }
 
         /// <summary>
@@ -636,26 +639,36 @@ namespace MyFlightbook.Subscriptions
         /// <param name="szSubject">The subject line of the mail</param>
         /// <param name="szParam">Additional parameter to pass</param>
         /// <returns>True if the mail is successfully sent</returns>
-        private bool SendMailForUser(Profile pf, string szSubject, string szParam)
+        private async Task<bool> SendMailForUser(Profile pf, string szSubject, string szParam)
         {
-            Encryptors.AdminAuthEncryptor enc = new Encryptors.AdminAuthEncryptor();
+            AdminAuthEncryptor enc = new AdminAuthEncryptor();
 
-            string szURL = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?k={2}&u={3}&p={4}", ActiveBrand.HostName, VirtualPathUtility.ToAbsolute("~/public/TotalsAndcurrencyEmail.aspx"), HttpUtility.UrlEncode(enc.Encrypt(DateTime.Now.ToString("s", CultureInfo.InvariantCulture))), HttpUtility.UrlEncode(pf.UserName), HttpUtility.UrlEncode(szParam));
-            try
+            NameValueCollection nvc = HttpUtility.ParseQueryString(string.Empty);
+            nvc["k"] = enc.Encrypt(DateTime.Now.ToString("s", CultureInfo.InvariantCulture));
+            nvc["u"] = pf.UserName;
+            nvc["p"] = szParam;
+
+            string szURL = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?{2}", ActiveBrand.HostName, "~/mvc/flights/NightlyEmail".ToAbsolute(), nvc.ToString());
+
+            string szResult = string.Empty;
+            return (bool)await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri(szURL), null, HttpMethod.Get, (response) =>
             {
-                using (System.Net.WebClient wc = new System.Net.WebClient())
+                try
                 {
-                    byte[] rgdata = wc.DownloadData(szURL);
-                    string szContent = System.Text.UTF8Encoding.UTF8.GetString(rgdata);
-                    if (szContent.Contains("-- SuccessToken --"))
+                    szResult = response.Content.ReadAsStringAsync().Result;
+                    response.EnsureSuccessStatusCode();
+                    if (szResult.Contains("-- SuccessToken --"))
                     {
-                        util.NotifyUser(szSubject, System.Text.UTF8Encoding.UTF8.GetString(rgdata), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, true, String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?u={2}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/mvc/pub/unsubscribe"), HttpUtility.UrlEncode(new UserAccessEncryptor().Encrypt(pf.UserName))));
+                        util.NotifyUser(szSubject, szResult, new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, true, String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?u={2}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/mvc/pub/unsubscribe"), HttpUtility.UrlEncode(new UserAccessEncryptor().Encrypt(pf.UserName))));
                         return true;
                     }
+                    return !String.IsNullOrEmpty(szResult);
                 }
-            }
-            catch (Exception ex) when (ex is MyFlightbookException) { }    // EAT ANY ERRORS so that we don't skip subsequent users.  NotifyUser shouldn't cause any, though.
-            return false;
+                catch (Exception ex) when (ex is HttpRequestException || ex is MyFlightbookException || !(ex is OutOfMemoryException))  // EAT ANY ERRORS so that we don't skip subsequent users.  NotifyUser shouldn't cause any, though.
+                {
+                    return false;
+                }
+            });
         }
     }
 }

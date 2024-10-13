@@ -29,19 +29,25 @@ namespace MyFlightbook.RatingsProgress
         {
             get
             {
+                string result = null;
                 switch (Category)
                 {
                     case RecentAchievementCategory.Trends:
-                        return VirtualPathUtility.ToAbsolute("~/Images/BadgeOverlays/trend.svg");
+                        result = "~/Images/BadgeOverlays/trend.png";
+                        break;
                     case RecentAchievementCategory.Aircraft:
-                        return VirtualPathUtility.ToAbsolute("~/Images/BadgeOverlays/aircraft.svg");
+                        result = "~/Images/BadgeOverlays/aircraft.png";
+                        break;
                     case RecentAchievementCategory.Geography:
-                        return VirtualPathUtility.ToAbsolute("~/Images/BadgeOverlays/globe.svg");
+                        result = "~/Images/BadgeOverlays/globe.png";
+                        break;
                     case RecentAchievementCategory.Time:
-                        return VirtualPathUtility.ToAbsolute("~/Images/BadgeOverlays/calendar.svg");
+                        result = "~/Images/BadgeOverlays/calendar.png";
+                        break;
                     default:
-                        return null;
+                        return result;
                 }
+                return result.ToAbsolute();
             }
         }
 

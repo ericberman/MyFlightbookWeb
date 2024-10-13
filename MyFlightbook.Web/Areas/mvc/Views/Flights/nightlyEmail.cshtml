@@ -1,0 +1,142 @@
+﻿@using MyFlightbook
+@using MyFlightbook.Encryptors
+@using MyFlightbook.RatingsProgress
+@using MyFlightbook.Subscriptions
+@using MyFlightbook.Currency
+@using MyFlightbook.Payments
+@using System.Globalization
+@using System.Collections.ObjectModel
+@{
+    Layout = null;
+    string szAuthKey = ViewBag.szAuthKey;
+    string szParam = ViewBag.szParam;
+    string Username = ViewBag.userName;
+
+    if (szAuthKey.CompareCurrentCultureIgnoreCase("local") == 0 && User.Identity.IsAuthenticated)
+    {
+        Username = User.Identity.Name;
+    }
+    else
+    {
+        if (String.IsNullOrEmpty(szAuthKey))
+        {
+            throw new UnauthorizedAccessException("Unauthorized attempt to view stats for mail - no auth key provided");
+        }
+        AdminAuthEncryptor enc = new AdminAuthEncryptor();
+        string szDate = enc.Decrypt(szAuthKey);
+        DateTime dt = DateTime.Parse(szDate, CultureInfo.InvariantCulture);
+        double elapsedSeconds = DateTime.Now.Subtract(dt).TotalSeconds;
+        if (elapsedSeconds < 0 || elapsedSeconds > 10)
+        {
+            throw new UnauthorizedAccessException("Unauthorized attempt to view stats for mail - invalid auth key provided");
+        }
+    }
+
+    MyFlightbook.Profile pf = MyFlightbook.Profile.GetUser(Username);
+
+    // Set up the correct decimal formatting for the user
+    if (pf.PreferenceExists(MFBConstants.keyDecimalSettings))
+    {
+        Session[MFBConstants.keyDecimalSettings] = pf.GetPreferenceForKey<DecimalFormat>(MFBConstants.keyDecimalSettings);
+    }
+
+    // Issue #1069 - set up best guess locale for user
+    string szLocale = pf.GetPreferenceForKey<string>(MFBConstants.keyPrefLastUsedLocale, MFBConstants.USCulture);
+    if (szLocale != null)
+    {
+        util.SetCulture(szLocale);
+    }
+
+    EmailSubscriptionManager em = new EmailSubscriptionManager(pf.Subscriptions);
+
+    IEnumerable<CurrencyStatusItem> rgExpiringCurrencies = pf.AssociatedData.TryGetValue(CurrencyStatusItem.AssociatedDateKeyExpiringCurrencies, out object o) ? (IEnumerable<CurrencyStatusItem>)o : null;
+    IEnumerable<CurrencyStatusItem> rgPrecomputedCurrencies = pf.AssociatedData.TryGetValue(CurrencyStatusItem.AssociatedDataKeyCachedCurrencies, out object o2) ? (IEnumerable<CurrencyStatusItem>)o2 : null;
+
+    pf.AssociatedData.Remove(CurrencyStatusItem.AssociatedDateKeyExpiringCurrencies);
+    pf.AssociatedData.Remove(CurrencyStatusItem.AssociatedDataKeyCachedCurrencies);
+
+    bool fHasCurrency = em.HasSubscription(SubscriptionType.Currency) || (em.HasSubscription(SubscriptionType.Expiration) && rgExpiringCurrencies != null && rgPrecomputedCurrencies != null);
+    bool fHasTotals = em.HasSubscription(SubscriptionType.Totals);
+    bool fHasMonthly = em.HasSubscription(SubscriptionType.MonthlyTotals);
+
+    bool fMonthlySummary = (String.Compare(szParam, "monthly", StringComparison.OrdinalIgnoreCase) == 0);
+
+    if (!fHasCurrency && !fHasTotals && !fMonthlySummary)
+    {
+        throw new InvalidOperationException("Email requested but no subscriptions found! User =" + Username);
+    }
+
+    if (fMonthlySummary && !fHasMonthly)
+    {
+        throw new InvalidOperationException("Monthly email requested but user does not subscribe to monthly email.  User = " + Username);
+    }
+    bool fAnnual = (DateTime.Now.Month == 1 && DateTime.Now.Day == 1);  // if it's January 1, show prior year; else show YTD
+    TimeRollup tr = new TimeRollup(Username, null) { IncludeLast7Days = !fMonthlySummary, IncludeMonthToDate = !fMonthlySummary, IncludePreviousMonth = true, IncludePreviousYear = true, IncludeYearToDate = !fAnnual, IncludeTrailing12 = !fAnnual };
+    tr.Bind();
+
+    DateTime dtRAStart = fAnnual ? new DateTime(DateTime.Now.Year - 1, 1, 1) : new DateTime(DateTime.Now.Year, 1, 1);
+    DateTime dtRaEnd = fAnnual ? new DateTime(DateTime.Now.Year - 1, 12, 31) : DateTime.Now;
+
+    RecentAchievements ra = new RecentAchievements(dtRAStart, dtRaEnd) { Username = Username, AutoDateRange = false };
+    Collection<MilestoneItem> recentAchievements = ra.Refresh();
+
+    string szTitle = @String.Format(CultureInfo.CurrentCulture, fMonthlySummary ? Resources.Profile.EmailMonthlyMailIntro : Resources.Profile.EmailWeeklyMailIntro, Branding.CurrentBrand.AppName);
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@szTitle</title>
+    <base href="@Branding.ReBrand("https://%APP_URL%")" />
+    <link href="@MFBConstants.BaseStylesheet.ToAbsoluteURL(Request.Url.Scheme, Branding.CurrentBrand.HostName, Request.Url.Port).ToString()" rel="stylesheet" type="text/css" />
+    <link rel="Stylesheet" type="text/css" href='@ViewBag.NightCSS' />
+    <link href="@ViewBag.BrandCSS" rel="Stylesheet" type="text/css" />
+    <link rel="Stylesheet" type="text/css" href='@ViewBag.MobileCSS' />
+</head>
+<body>
+    <div style="margin-left: auto; margin-right:auto; max-width: 1000px;">
+        <p style="text-align:center"><img alt="%APP_NAME% Logo" src="https://%APP_URL%%APP_LOGO%" /></p>
+        <h1>@szTitle</h1>
+        <div style="margin-left: auto; margin-right:auto; margin-top: 5px; margin-bottom: 5px; text-align:center; width:80%; border: 1px solid black; background-color:#EEEEEE">
+            @if (Payment.TotalPaidSinceDate(DateTime.Now.AddYears(-1), Username) > 0)
+            {
+                <p>@Branding.ReBrand(Resources.LocalizedText.DonateThankYouTitle)</p>
+            }
+            else
+            {
+                <p>@Branding.ReBrand(Resources.LocalizedText.DonatePrompt)</p>
+                <p><a style="font-weight:bold;" href="@String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/mvc/donate"))">@Branding.ReBrand(Resources.LocalizedText.DonateSolicitation)</a></p>
+            }
+        </div>
+        @if (fHasCurrency || fMonthlySummary)
+        {
+            <h2>@String.Format(CultureInfo.CurrentCulture, Resources.Profile.EmailCurrencyHeader, DateTime.Now.ToLongDateString())</h2>
+            if (rgExpiringCurrencies?.Any() ?? false)
+            {
+                <h3>@Resources.Currency.CurrencyExpiringHeader</h3>
+                <ul>
+                    @foreach (CurrencyStatusItem csi in rgExpiringCurrencies)
+                    {
+                        <li>@csi.Attribute</li>
+                    }
+                </ul>
+            }
+            <div style="margin-left: auto; margin-right: auto;">
+                @{ Html.RenderAction("CurrencyForUser", "Flights", new { rgcsi = CurrencyStatusItem.GetCurrencyItemsForUser(Username), userName = Username, linkItems = true, useInlineFormatting = true }); }
+            </div>
+        }
+        @if (fHasTotals || fMonthlySummary)
+        {
+            <h2>@String.Format(CultureInfo.CurrentCulture, Resources.Profile.EmailTotalsHeader, DateTime.Now.ToLongDateString())</h2>
+            @Html.Raw(tr.RenderHTML(pf.UsesHHMM, true));
+            <h2>@String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementsTitle, ra.StartDate, ra.EndDate)</h2>
+            Html.RenderAction("RenderRecentAchievements", "Training", new { ra = ra });
+        }
+
+        <p><a href="@("~/mvc/prefs?pane=email".ToAbsolute())" class="fineprint">@Resources.Profile.EmailWeeklyMailUnsubscribeLink</a></p>
+        <p><a href="@String.Format(CultureInfo.InvariantCulture, "~/mvc/pub/unsubscribe?u={0}".ToAbsolute(), HttpUtility.UrlEncode(new UserAccessEncryptor().Encrypt(Username)))" class="fineprint">@Resources.Profile.EmailQuickUnsubscribeLink</a></p>
+        <p>MyFlightbook LLC<br />Woodinville, WA, 98072</p>
+        <!-- SuccessToken -->
+    </div>
+</body>
+</html>

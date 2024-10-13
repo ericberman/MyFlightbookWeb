@@ -1,0 +1,20 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Site Stats</title>
+    <base href="@Branding.ReBrand("https://%APP_URL%")" />
+    <link href="@MFBConstants.BaseStylesheet.ToAbsoluteURL(Request.Url.Scheme, Branding.CurrentBrand.HostName, Request.Url.Port).ToString()" rel="stylesheet" type="text/css" />
+    <link rel="Stylesheet" type="text/css" href='@ViewBag.NightCSS' />
+    <link href="@ViewBag.BrandCSS" rel="Stylesheet" type="text/css" />
+    <link rel="Stylesheet" type="text/css" href='@ViewBag.MobileCSS' />
+</head>
+<body>
+    <p style="text-align:center"><img alt="%APP_NAME% Logo" src="https://%APP_URL%%APP_LOGO%" /></p>
+    <h1>Site Stats for @Branding.CurrentBrand.AppName</h1>
+    @{ Html.RenderPartial("_statsContent"); }
+</body>
+</html>

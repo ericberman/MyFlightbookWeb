@@ -599,10 +599,14 @@
     <Content Include="images\AppleAppStore.svg" />
     <Content Include="images\audio.png" />
     <Content Include="images\back.png" />
+    <Content Include="images\BadgeOverlays\aircraft.png" />
     <Content Include="images\BadgeOverlays\aircraft.svg" />
+    <Content Include="images\BadgeOverlays\calendar.png" />
     <Content Include="images\BadgeOverlays\calendar.svg" />
     <Content Include="images\BadgeOverlays\eclipse.png" />
+    <Content Include="images\BadgeOverlays\globe.png" />
     <Content Include="images\BadgeOverlays\globe.svg" />
+    <Content Include="images\BadgeOverlays\trend.png" />
     <Content Include="images\BadgeOverlays\trend.svg" />
     <Content Include="images\Collapsed.png" />
     <Content Include="images\favicon-dev.png" />
@@ -1618,6 +1622,9 @@
     <Content Include="Areas\mvc\Views\Pub\_rssHTML.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\_rssXML.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\shunt.cshtml" />
+    <Content Include="Areas\mvc\Views\Admin\_statsContent.cshtml" />
+    <Content Include="Areas\mvc\Views\Admin\adminStatsNightlyMail.cshtml" />
+    <Content Include="Areas\mvc\Views\Flights\nightlyEmail.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
